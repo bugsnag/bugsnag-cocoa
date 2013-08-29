@@ -40,11 +40,11 @@
 
 - (void) notifyUncaughtException:(NSException *)exception {
     if ([self shouldAutoNotify]) {
-        [self notifyException:exception withMetaData:nil];
+        [self notifyException:exception withData:nil];
     }
 }
 
-- (void) notifyException:(NSException*)exception withMetaData:(NSDictionary*)metaData {
+- (void) notifyException:(NSException*)exception withData:(NSDictionary*)metaData {
     if ([self shouldNotify]) {
         BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData:nil];
         [event addException:exception];
@@ -126,6 +126,9 @@
     [events addObject:event];
     NSString *jsonPayload = [BugsnagJSON encodeDictionary:notifyPayload];
     if(jsonPayload){
+        // TODO:SM Remove this
+        NSLog(@"Would send: %@", jsonPayload);
+        return YES;
         NSMutableURLRequest *request = nil;
         if(self.configuration.enableSSL) {
             request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://notify.bugsnag.com"]];

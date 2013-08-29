@@ -18,7 +18,7 @@ typedef void (^BugsnagNotifyBlock)(BugsnagEvent*);
 
 - (void) notifySignal:(int)signal;
 - (void) notifyUncaughtException:(NSException*)exception;
-- (void) notifyException:(NSException*)exception withMetaData:(NSDictionary*)metaData;
+- (void) notifyException:(NSException*)exception withData:(NSDictionary*)metaData;
 
 - (BOOL) shouldAutoNotify;
 - (BOOL) shouldNotify;

@@ -20,6 +20,6 @@
 - (NSDictionary *) toDictionary;
 
 + (NSDictionary *) loadedImages;
-+ (NSDictionary *) getStackTraceWithException:(NSException*) exception;
++ (NSArray *) getStackTraceWithException:(NSException*) exception;
 
 @end

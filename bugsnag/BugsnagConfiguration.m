@@ -12,6 +12,8 @@
 
 - (id) init {
     if(self = [super init]) {
+        self.enableSSL = YES;
+        self.autoNotify = YES;
 #if DEBUG
         self.releaseStage = @"development";
 #else

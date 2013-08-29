@@ -19,7 +19,7 @@ static BugsnagNotifier *notifier = nil;
  - We should report low memory kills and I dont think we do right now.
  */
 
-int signals_count = 7;
+int signals_count = 9;
 int signals[] = {
 	SIGABRT,
 	SIGBUS,
@@ -27,6 +27,8 @@ int signals[] = {
 	SIGILL,
 	SIGSEGV,
     EXC_BAD_ACCESS,
+    EXC_ARITHMETIC,
+    EXC_BAD_INSTRUCTION,
     SIGTRAP,
 };
 
@@ -71,7 +73,7 @@ void handle_exception(NSException *exception) {
 
 @implementation Bugsnag
 
-+ (void)startWithApiKey:(NSString*)apiKey {
++ (void)startBugsnagWithApiKey:(NSString*)apiKey {
     notifier = [[BugsnagNotifier alloc] init];
     notifier.configuration.apiKey = apiKey;
     
@@ -100,11 +102,11 @@ void handle_exception(NSException *exception) {
 }
 
 + (void) notify:(NSException *)exception {
-    [notifier notifyException:exception withMetaData:nil];
+    [notifier notifyException:exception withData:nil];
 }
 
 + (void) notify:(NSException *)exception withData:(NSDictionary*)metaData {
-    [notifier notifyException:exception withMetaData:metaData];
+    [notifier notifyException:exception withData:metaData];
 }
 
 + (void) setUserAttribute:(NSString*)attributeName withValue:(id)value {
