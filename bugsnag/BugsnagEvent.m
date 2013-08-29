@@ -38,13 +38,13 @@
 - (void) addSignal:(int) signal {
     NSString *errorClass = [NSString stringWithCString:strsignal(signal) encoding:NSUTF8StringEncoding];
     NSString *message = @"";
-    NSArray *stacktrace = [BugsnagEvent getStackTraceWithException:nil];
+    NSArray *stacktrace = [self getStackTraceWithException:nil];
     
     [self addExceptionWithClass:errorClass andMessage:message andStacktrace:stacktrace];
 }
 
 - (void) addException:(NSException*)exception {
-    NSArray *stacktrace = [BugsnagEvent getStackTraceWithException:nil];
+    NSArray *stacktrace = [self getStackTraceWithException:nil];
     //TODO:SM can we use userdata on the exception as metadata?
     
     [self addExceptionWithClass:exception.name andMessage:exception.reason andStacktrace:stacktrace];
@@ -62,10 +62,11 @@
     [exceptions addObject:dictionary];
 }
 
-+ (NSArray *) getStackTraceWithException:(NSException*) exception {
+- (NSArray *) getStackTraceWithException:(NSException*) exception {
     // TODO:SM Make this work with non stripped code
     int count = 256;
     void *frames[count];
+    int offset = 0;
     
     // Try to grab the addresses from the exception, if not just grab what we have now
     if (exception != nil && [[exception callStackReturnAddresses] count] != 0 ) {
@@ -75,43 +76,38 @@
             frames[i] = (void *)[[stackFrames objectAtIndex:i] intValue];
         }
     } else {
-        //TODO:SM When we have this settled we should think about stripping our own code from these frames
         count = backtrace(frames, count);
+        
+        // This offset is a hack to remove our own frames for creating the stacktrace in the event
+        // that we have either been passed a signal or an exception without a stack. We could pass
+        // this in from up top if we want to, but thats almost as hacky as this.
+        offset = 4;
     }
     Dl_info info;
     
     NSMutableArray *stackTrace = [NSMutableArray array];
     NSDictionary *loadedImages = [self loadedImages];
     
-    for(uint32_t i = 0; i < count; i++) {
+    for(uint32_t i = offset; i < count; i++) {
         int status = dladdr(frames[i], &info);
         if (status != 0) {
-            NSString *fileName = info.dli_fname ? [NSString stringWithCString:info.dli_fname encoding:NSStringEncodingConversionAllowLossy] : @"";
-//            NSString *sname = info.dli_sname ? [NSString stringWithCString:info.dli_sname encoding:NSStringEncodingConversionAllowLossy] : @"";
-//            
-//            NSLog(@"dli_fname: %@, dli_sname: %@, dli_fbase: 0x%08x, dli_saddr: 0x%08x", fileName, sname, (uint32_t)info.dli_fbase, (uint32_t)info.dli_saddr);
-//            
+            NSString *fileName = [NSString stringWithCString:info.dli_fname encoding:NSUTF8StringEncoding];
             NSMutableDictionary *frame = [NSMutableDictionary dictionaryWithDictionary:[loadedImages objectForKey:fileName]];
-            [frame setObject:[NSString stringWithFormat:@"0x%08x", (uint32_t)info.dli_saddr] forKey:@"objectAddress"];
-            //TODO:SM Set the mainObject field appropriately
+            [frame setObject:[NSNumber numberWithUnsignedInt:(uint32_t)frames[i]] forKey:@"frameAddress"];
+            
+            if (info.dli_sname != NULL && strcmp(info.dli_sname, "<redacted>") != 0) {
+                NSString *method = [NSString stringWithCString:info.dli_sname encoding:NSUTF8StringEncoding];
+                [frame setObject:method forKey:@"method"];
+            }
             
             [stackTrace addObject:[NSDictionary dictionaryWithDictionary:frame]];
         }
     }
     
-//    NSLog(@"That was the dladdr now for symbols");
-//    char **strs = backtrace_symbols(frames, count);
-//    for(uint32_t i = 0; i < count; i++) {
-//        NSLog(@"%@\n", [NSString stringWithCString:strs[i] encoding:NSStringEncodingConversionAllowLossy]);
-//    }
-    
-//    NSLog(@"Now to log the loaded images");
-//    NSLog(@"%@", loadedImages);
-    
     return [NSArray arrayWithArray:stackTrace];
 }
 
-+ (NSDictionary *) loadedImages {
+- (NSDictionary *) loadedImages {
     //Get count of all currently loaded images
     uint32_t count = _dyld_image_count();
     NSMutableDictionary *returnValue = [NSMutableDictionary dictionary];
@@ -119,13 +115,11 @@
     for (uint32_t i = 0; i < count; i++) {
         const char *dyld = _dyld_get_image_name(i);
         const struct mach_header *header = _dyld_get_image_header(i);
-        const NXArchInfo *info = NXGetArchInfoFromCpuType(header->cputype, header->cpusubtype);
         
-        NSString *objectFile = [NSString stringWithCString:dyld encoding:NSStringEncodingConversionAllowLossy];
-        //NSString *objectName = [NSString stringWithCString:(rindex(dyld, '/') + sizeof(char)) encoding:NSStringEncodingConversionAllowLossy];
-        NSString *objectAddress = [NSString stringWithFormat:@"0x%08x", (uint32_t)header];
-        NSString *objectArchitecture = [NSString stringWithCString:info->name encoding:NSStringEncodingConversionAllowLossy];
-        NSString *objectUUID = nil;
+        NSString *machoFile = [NSString stringWithCString:dyld encoding:NSUTF8StringEncoding];
+        NSNumber *machoLoadAddress = [NSNumber numberWithUnsignedInt:(uint32_t)header];
+        NSString *machoUUID = nil;
+        NSNumber *machoVMAddress = nil;
         
         // Now lets look at the load_commands
         uint8_t *header_ptr = (uint8_t*)header;
@@ -140,14 +134,14 @@
                 CFStringRef suuid = CFUUIDCreateString(kCFAllocatorDefault, cuuid);
                 CFStringEncoding encoding = CFStringGetFastestEncoding(suuid);
                 
-                objectUUID = [NSString stringWithCString:CFStringGetCStringPtr(suuid, encoding) encoding:NSStringEncodingConversionAllowLossy];
+                machoUUID = [NSString stringWithCString:CFStringGetCStringPtr(suuid, encoding) encoding:NSUTF8StringEncoding];
                 
                 CFRelease(cuuid);
                 CFRelease(suuid);
             } else if (command->cmd == LC_SEGMENT) {
                 struct segment_command ucmd = *(struct segment_command*)header_ptr;
                 if (strcmp("__TEXT", ucmd.segname) == 0) {
-                    objectAddress = [NSString stringWithFormat:@"0x%08x", (uint32_t)header - (uint32_t)ucmd.vmaddr];
+                    machoVMAddress = [NSNumber numberWithUnsignedInt:(uint32_t)ucmd.vmaddr];
                 }
             }
             
@@ -155,11 +149,11 @@
             command = (struct load_command*)header_ptr;
         }
         
-        NSDictionary *objectValues = [NSDictionary dictionaryWithObjectsAndKeys:objectFile, @"objectFile",
-                                                                                objectAddress, @"objectAddress",
-                                                                                objectUUID, @"objectUUID",
-                                                                                objectArchitecture, @"objectArchitecture", nil];
-        [returnValue setObject:objectValues forKey:objectFile];
+        NSDictionary *objectValues = [NSDictionary dictionaryWithObjectsAndKeys:machoFile, @"machoFile",
+                                                                                machoLoadAddress, @"machoLoadAddress",
+                                                                                machoUUID, @"machoUUID",
+                                                                                machoVMAddress, @"machoVMAddress", nil];
+        [returnValue setObject:objectValues forKey:machoFile];
     }
     return returnValue;
 }

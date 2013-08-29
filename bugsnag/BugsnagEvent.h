@@ -19,7 +19,7 @@
 
 - (NSDictionary *) toDictionary;
 
-+ (NSDictionary *) loadedImages;
-+ (NSArray *) getStackTraceWithException:(NSException*) exception;
+- (NSDictionary *) loadedImages;
+- (NSArray *) getStackTraceWithException:(NSException*) exception;
 
 @end

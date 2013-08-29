@@ -8,9 +8,21 @@
 
 #import <mach/mach.h>
 
+#include "TargetConditionals.h"
 #import "Bugsnag.h"
 #import "BugsnagLogger.h"
-#import "BugsnagNotifier.h"
+
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    // iOS Simulator or iOS device
+    #import "BugsnagIosNotifier.h"
+    static NSString *notiferClass = @"BugsnagIosNotifier";
+#elif TARGET_OS_MAC
+    // Other kinds of Mac OS
+#else
+    // Unsupported platform
+    #import "BugsnagNotifier.h"
+    static NSString *notiferClass = @"BugsnagNotifier";
+#endif
 
 static BugsnagNotifier *notifier = nil;
 
@@ -74,7 +86,7 @@ void handle_exception(NSException *exception) {
 @implementation Bugsnag
 
 + (void)startBugsnagWithApiKey:(NSString*)apiKey {
-    notifier = [[BugsnagNotifier alloc] init];
+    notifier = [[NSClassFromString(notiferClass) alloc] init];
     notifier.configuration.apiKey = apiKey;
     
     [notifier sendSavedEvents];
