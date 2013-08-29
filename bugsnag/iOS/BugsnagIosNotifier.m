@@ -21,6 +21,7 @@
     if((self = [super init])) {
         self.configuration.appVersion = self.appVersion;
         self.configuration.osVersion = self.osVersion;
+        self.notifierName = @"Bugsnag iOS Notifier";
         
         [self beforeNotify:^(BugsnagEvent *event) {
             [self addIosDiagnosticsToEvent:event];

@@ -24,6 +24,11 @@
     if((self = [super init])) {
         self.configuration = [[BugsnagConfiguration alloc] init];
         self.beforeBugsnagNotifyBlocks = [NSMutableArray array];
+        
+        self.notifierName = @"Bugsnag Objective-C";
+        //TODO:SM Pull this out from somewhere in cocoapods if poss
+        self.notifierVersion = @"3.0.0";
+        self.notifierURL = @"https://github.com/bugsnag/bugsnag-objective-c";
     }
     return self;
 }
