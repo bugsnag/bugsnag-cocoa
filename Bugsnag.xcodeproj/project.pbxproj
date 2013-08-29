@@ -12,7 +12,7 @@
 		F4C71CEA17CE8B9900009E4B /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = F4C71CE917CE8B9900009E4B /* Bugsnag.m */; };
 		F4C71CF217CE8B9900009E4B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C71CF117CE8B9900009E4B /* SenTestingKit.framework */; };
 		F4C71CF517CE8B9900009E4B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C71CE217CE8B9900009E4B /* Foundation.framework */; };
-		F4C71CF817CE8B9900009E4B /* libBugsnag.temp_caseinsensitive_rename.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C71CDF17CE8B9900009E4B /* libBugsnag.temp_caseinsensitive_rename.a */; };
+		F4C71CF817CE8B9900009E4B /* libBugsnag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C71CDF17CE8B9900009E4B /* libBugsnag.a */; };
 		F4C71CFE17CE8B9900009E4B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F4C71CFC17CE8B9900009E4B /* InfoPlist.strings */; };
 		F4C71D0117CE8B9900009E4B /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F4C71D0017CE8B9900009E4B /* BugsnagTests.m */; };
 		F4FCBA0E17CE90B200A264EC /* BugsnagConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FCBA0D17CE90B200A264EC /* BugsnagConfiguration.m */; };
@@ -47,7 +47,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		F4C71CDF17CE8B9900009E4B /* libBugsnag.temp_caseinsensitive_rename.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnag.temp_caseinsensitive_rename.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4C71CDF17CE8B9900009E4B /* libBugsnag.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnag.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4C71CE217CE8B9900009E4B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F4C71CE617CE8B9900009E4B /* Bugsnag.temp_caseinsensitive_rename-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bugsnag.temp_caseinsensitive_rename-Prefix.pch"; sourceTree = "<group>"; };
 		F4C71CE717CE8B9900009E4B /* Bugsnag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bugsnag.h; sourceTree = "<group>"; };
@@ -88,7 +88,7 @@
 			files = (
 				F4C71CF217CE8B9900009E4B /* SenTestingKit.framework in Frameworks */,
 				F4C71CF517CE8B9900009E4B /* Foundation.framework in Frameworks */,
-				F4C71CF817CE8B9900009E4B /* libBugsnag.temp_caseinsensitive_rename.a in Frameworks */,
+				F4C71CF817CE8B9900009E4B /* libBugsnag.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,7 +108,7 @@
 		F4C71CE017CE8B9900009E4B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F4C71CDF17CE8B9900009E4B /* libBugsnag.temp_caseinsensitive_rename.a */,
+				F4C71CDF17CE8B9900009E4B /* libBugsnag.a */,
 				F4C71CF017CE8B9900009E4B /* Bugsnag.octest */,
 			);
 			name = Products;
@@ -200,7 +200,7 @@
 			);
 			name = Bugsnag;
 			productName = bugsnag;
-			productReference = F4C71CDF17CE8B9900009E4B /* libBugsnag.temp_caseinsensitive_rename.a */;
+			productReference = F4C71CDF17CE8B9900009E4B /* libBugsnag.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		F4C71CEF17CE8B9900009E4B /* BugsnagTest */ = {
@@ -347,6 +347,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = BugsnagTests;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -369,6 +370,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				PRODUCT_NAME = BugsnagTests;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -381,7 +383,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "bugsnag/Bugsnag-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = Bugsnag.temp_caseinsensitive_rename;
+				PRODUCT_NAME = Bugsnag;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -393,7 +395,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "bugsnag/Bugsnag-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = Bugsnag.temp_caseinsensitive_rename;
+				PRODUCT_NAME = Bugsnag;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;

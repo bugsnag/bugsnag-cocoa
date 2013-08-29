@@ -31,7 +31,8 @@
     }
     @catch (NSException *exception) {
         NSLog(@"%@",[exception callStackSymbols]);
+        NSLog(@"%@",[BugsnagEvent getStackTraceWithException:nil]);
     }
-    NSLog(@"%@",[BugsnagEvent loadedImages]);
+    //NSLog(@"%@",[BugsnagEvent loadedImages]);
 }
 @end

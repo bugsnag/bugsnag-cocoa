@@ -6,9 +6,8 @@
 //  Copyright (c) 2013 Simon Maynard. All rights reserved.
 //
 
+#include <dlfcn.h>
 #import <execinfo.h>
-#include <string.h>
-#import <mach-o/loader.h>
 #import <mach-o/dyld.h>
 #import <mach-o/arch.h>
 
@@ -35,9 +34,7 @@
 }
 
 - (void) addSignal:(int) signal {
-    int count = 256;
-    void *frames[count];
-    count = backtrace(frames, count);
+    
 }
 
 - (void) addException:(NSException*)exception {
@@ -49,8 +46,21 @@
     }
 }
 
-- (NSDictionary *) getStackTraceWithException:(NSException*) exception {
++ (NSDictionary *) getStackTraceWithException:(NSException*) exception {
+    int count = 256;
+    void *frames[count];
+    count = backtrace(frames, count);
+    Dl_info info;
     
+    for(uint32_t i = 0; i < count; i++) {
+        int status = dladdr(frames[i], &info);
+        if (status != 0) {
+            printf("dli_fname: %s, dli_sname: %s, dli_fbase: 0x%08x, dli_saddr: 0x%08x\n", info.dli_fname, info.dli_sname, (uint32_t)info.dli_fbase, (uint32_t)info.dli_saddr);
+            
+        }
+    }
+    
+    return nil;
 }
 
 + (NSDictionary *) loadedImages {
@@ -65,7 +75,7 @@
         
         NSString *objectFile = [NSString stringWithCString:dyld encoding:NSStringEncodingConversionAllowLossy];
         NSString *objectName = [NSString stringWithCString:(rindex(dyld, '/') + sizeof(char)) encoding:NSStringEncodingConversionAllowLossy];
-        NSNumber *objectAddress = [NSNumber numberWithUnsignedInt:(uint32_t)header];
+        NSString *objectAddress = [NSString stringWithFormat:@"0x%08x", (uint32_t)header];
         NSString *objectArchitecture = [NSString stringWithCString:info->name encoding:NSStringEncodingConversionAllowLossy];
         NSString *objectUUID = nil;
         

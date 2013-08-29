@@ -14,7 +14,12 @@
 
 static BugsnagNotifier *notifier = nil;
 
-int signals_count = 6;
+/*
+ TODO:
+ - We should report low memory kills and I dont think we do right now.
+ */
+
+int signals_count = 7;
 int signals[] = {
 	SIGABRT,
 	SIGBUS,
@@ -22,6 +27,7 @@ int signals[] = {
 	SIGILL,
 	SIGSEGV,
     EXC_BAD_ACCESS,
+    SIGTRAP,
 };
 
 void remove_handlers(void);
