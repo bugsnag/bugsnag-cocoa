@@ -22,6 +22,13 @@
 
 @property (atomic) BOOL enableSSL;
 @property (atomic) BOOL autoNotify;
+@property (atomic) BOOL collectMAU;
 @property (atomic, copy) NSArray *notifyReleaseStages;
+
+@property (readonly) NSURL *metricsURL;
+@property (readonly) NSURL *notifyURL;
+
+@property (atomic, copy) NSString *notifyEndpoint;
+@property (atomic, copy) NSString *uuidPath;
 
 @end

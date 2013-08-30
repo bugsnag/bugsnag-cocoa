@@ -73,7 +73,9 @@ void mergeDictionaries(NSMutableDictionary *destination, NSDictionary *source) {
 }
 
 - (NSDictionary*) toDictionary {
-    return [NSDictionary dictionaryWithDictionary:self.dictionary];
+    @synchronized(self) {
+        return [NSDictionary dictionaryWithDictionary:self.dictionary];
+    }
 }
 
 - (void) addAttribute:(NSString*)attributeName withValue:(id)value toTabWithName:(NSString*)tabName {

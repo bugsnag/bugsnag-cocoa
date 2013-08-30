@@ -17,10 +17,11 @@
 
 @implementation BugsnagIosNotifier
 
-- (id) init {
-    if((self = [super init])) {
-        self.configuration.appVersion = self.appVersion;
-        self.configuration.osVersion = self.osVersion;
+- (id) initWithConfiguration:(BugsnagConfiguration*) configuration {
+    if((self = [super initWithConfiguration:configuration])) {
+        if (self.configuration.appVersion == nil) self.configuration.appVersion = self.appVersion;
+        if (self.configuration.osVersion == nil) self.configuration.osVersion = self.osVersion;
+
         self.notifierName = @"Bugsnag iOS Notifier";
         
         [self beforeNotify:^(BugsnagEvent *event) {
@@ -30,8 +31,12 @@
     return self;
 }
 
+- (void) start {
+    //TODO:SM Add hook for application hitting foreground etc
+}
+
 - (void) addIosDiagnosticsToEvent:(BugsnagEvent *) event {
-    
+    //TODO:SM Add the runtime data to the event
 }
 
 - (NSString *) appVersion {
@@ -53,6 +58,15 @@
 #else
 	return [[NSProcessInfo processInfo] operatingSystemVersionString];
 #endif
+}
+
+- (NSString *) userUUID {
+    // Return the already determined the UUID
+    if ([[UIDevice currentDevice] respondsToSelector:@selector(identifierForVendor)]) {
+        return [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    } else {
+        return [super userUUID];
+    }
 }
 
 @end

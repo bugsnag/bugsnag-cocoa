@@ -14,6 +14,9 @@
     if(self = [super init]) {
         self.enableSSL = YES;
         self.autoNotify = YES;
+        self.collectMAU = YES;
+        
+        self.uuidPath = @"bugsnag-user-id";
 #if DEBUG
         self.releaseStage = @"development";
 #else
@@ -21,6 +24,20 @@
 #endif
     }
     return self;
+}
+
+- (NSURL*) metricsURL {
+    return [self.notifyURL URLByAppendingPathComponent:@"metrics"];
+}
+
+- (NSURL*) notifyURL {
+    if(self.notifyEndpoint) {
+        return [NSURL URLWithString:self.notifyEndpoint];
+    } else if (self.enableSSL) {
+        return [NSURL URLWithString:@"https://notify.bugsnag.com"];
+    } else {
+        return [NSURL URLWithString:@"http://notify.bugsnag.com"];
+    }
 }
 
 @end

@@ -12,9 +12,14 @@
 
 typedef void (^BugsnagNotifyBlock)(BugsnagEvent*);
 
-@interface BugsnagNotifier : NSObject
+@interface BugsnagNotifier : NSObject {
+    @private
+    NSString *_errorPath;
+    NSString *_uuid;
+}
 
-- (id) init;
+- (id) initWithConfiguration:(BugsnagConfiguration*) configuration;
+- (void) start;
 
 - (void) notifySignal:(int)signal;
 - (void) notifyUncaughtException:(NSException*)exception;
@@ -36,5 +41,6 @@ typedef void (^BugsnagNotifyBlock)(BugsnagEvent*);
 @property (atomic, copy) NSString *notifierURL;
 @property (atomic) BugsnagConfiguration *configuration;
 @property (atomic, readonly) NSString *errorPath;
+@property (atomic, readonly) NSString *userUUID;
 
 @end

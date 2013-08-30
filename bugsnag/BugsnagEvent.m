@@ -51,15 +51,17 @@
 }
 
 - (void) addExceptionWithClass:(NSString*) errorClass andMessage:(NSString*) message andStacktrace:(NSArray*) stacktrace {
-    NSMutableArray *exceptions = [self.dictionary objectForKey:@"exceptions"];
-    if (exceptions == nil) {
-        exceptions = [NSMutableArray array];
-        [self.dictionary setObject:exceptions forKey:@"exceptions"];
+    @synchronized(self) {
+        NSMutableArray *exceptions = [self.dictionary objectForKey:@"exceptions"];
+        if (exceptions == nil) {
+            exceptions = [NSMutableArray array];
+            [self.dictionary setObject:exceptions forKey:@"exceptions"];
+        }
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: errorClass, @"errorClass",
+                                                                               message, @"message",
+                                                                               stacktrace, @"stacktrace", nil];
+        [exceptions addObject:dictionary];
     }
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: errorClass, @"errorClass",
-                                                                           message, @"message",
-                                                                           stacktrace, @"stacktrace", nil];
-    [exceptions addObject:dictionary];
 }
 
 - (NSArray *) getStackTraceWithException:(NSException*) exception {
@@ -159,6 +161,8 @@
 }
 
 - (NSDictionary *) toDictionary {
-    return [NSDictionary dictionaryWithDictionary:self.dictionary];
+    @synchronized(self) {
+        return [NSDictionary dictionaryWithDictionary:self.dictionary];
+    }
 }
 @end
