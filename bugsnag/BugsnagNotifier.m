@@ -13,8 +13,6 @@
 #import "BugsnagJSON.h"
 
 @interface BugsnagNotifier ()
-@property (atomic, strong) NSMutableArray *beforeBugsnagNotifyBlocks;
-
 - (BOOL) transmitPayload:(NSString *)payload toURL:(NSURL*)url;
 @end
 
@@ -23,7 +21,6 @@
 - (id) initWithConfiguration:(BugsnagConfiguration*) configuration {
     if((self = [super init])) {
         self.configuration = configuration;
-        self.beforeBugsnagNotifyBlocks = [NSMutableArray array];
         
         self.notifierName = @"Bugsnag Objective-C";
         //TODO:SM Pull this out from somewhere in cocoapods if poss
@@ -42,9 +39,7 @@
     if([self shouldAutoNotify]) {
         BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData:nil];
         [event addSignal:signal];
-        
-        [self saveEvent:event];
-        [self sendSavedEvents];
+        [self notifyEvent:event];
     }
 }
 
@@ -58,10 +53,21 @@
     if ([self shouldNotify]) {
         BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData:nil];
         [event addException:exception];
-        
-        [self saveEvent:event];
-        [self sendSavedEvents];
+        [self notifyEvent:event];
     }
+}
+
+- (BOOL) notifyEvent:(BugsnagEvent*) event {
+    @synchronized(self.configuration) {
+        for (BugsnagNotifyBlock block in self.configuration.beforeBugsnagNotifyBlocks) {
+            BOOL retVal = block(event);
+            if (retVal == NO) {
+                return NO;
+            }
+        }
+    }
+    [self saveEvent:event];
+    [self sendSavedEvents];
 }
 
 - (BOOL) shouldNotify {
@@ -84,8 +90,8 @@
 }
 
 - (void) beforeNotify:(BugsnagNotifyBlock)block {
-    @synchronized(self.beforeBugsnagNotifyBlocks) {
-        [self.beforeBugsnagNotifyBlocks addObject:block];
+    @synchronized(self.configuration) {
+        [self.configuration.beforeBugsnagNotifyBlocks addObject:[block copy]];
     }
 }
 

@@ -26,6 +26,7 @@
         
         [self beforeNotify:^(BugsnagEvent *event) {
             [self addIosDiagnosticsToEvent:event];
+            return YES;
         }];
     }
     return self;

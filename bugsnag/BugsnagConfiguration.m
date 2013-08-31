@@ -17,6 +17,7 @@
         self.collectMAU = YES;
         
         self.uuidPath = @"bugsnag-user-id";
+        self.beforeBugsnagNotifyBlocks = [NSMutableArray array];
 #if DEBUG
         self.releaseStage = @"development";
 #else

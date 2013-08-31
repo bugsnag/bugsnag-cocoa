@@ -30,5 +30,6 @@
 
 @property (atomic, copy) NSString *notifyEndpoint;
 @property (atomic, copy) NSString *uuidPath;
+@property (atomic, strong) NSMutableArray *beforeBugsnagNotifyBlocks;
 
 @end

@@ -44,7 +44,7 @@
 }
 
 - (void) addException:(NSException*)exception {
-    NSArray *stacktrace = [self getStackTraceWithException:nil];
+    NSArray *stacktrace = [self getStackTraceWithException:exception];
     //TODO:SM can we use userdata on the exception as metadata?
     
     [self addExceptionWithClass:exception.name andMessage:exception.reason andStacktrace:stacktrace];

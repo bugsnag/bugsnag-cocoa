@@ -29,6 +29,7 @@ static BugsnagNotifier *notifier = nil;
 /*
  TODO:
  - We should report low memory kills and I dont think we do right now.
+ - We should access the ASL http://www.cocoanetics.com/2011/03/accessing-the-ios-system-log/
  */
 
 int signals_count = 9;

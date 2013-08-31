@@ -10,7 +10,7 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagEvent.h"
 
-typedef void (^BugsnagNotifyBlock)(BugsnagEvent*);
+typedef BOOL (^BugsnagNotifyBlock)(BugsnagEvent*);
 
 @interface BugsnagNotifier : NSObject {
     @private
