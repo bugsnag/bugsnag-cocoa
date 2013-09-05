@@ -100,7 +100,25 @@
     NSDictionary *loadedImages = [self loadedImages];
     
     for(uint32_t i = offset; i < count; i++) {
-        int status = dladdr(frames[i], &info);
+        uint32_t frameAddress;
+
+        // The pointer returned by backtrace() is the address of the instruction immediately after a function call.
+        // We actually want to know the address of the function call instruction itself, so we subtract one instruction.
+        // To confuse things further armv7 has two instruction modes "thumb" and "full". Thumb instructions are either
+        // 2 or 4 bytes long, and full instructions are always 4 bytes. Because pointers to instructions in either architecture
+        // will always be even, by convention pointers to thumb instructions have the least significant bit set so that the
+        // same instructions can be used for jumping to and returning from code in either instruction set.
+
+        // In the case of "thumb" instructions, we always subtract 2 (even though some instructions are 4 bytes long) this
+        // is because DWARF gives us the same result whn we look up a pointer half way through an instruction. Apple take
+        // a different approach in their crash logs, and always subtract 4. This is unlikely to give any meaningful difference.
+        if ((uint32_t)frames[i] & ARMV7_IS_THUMB_MASK) {
+            frameAddress = ((uint32_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_THUMB_INSTRUCTION_SIZE;
+        } else {
+            frameAddress = ((uint32_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_FULL_INSTRUCTION_SIZE;
+        }
+
+        int status = dladdr(frameAddress, &info);
         if (status != 0) {
             NSString *fileName = [NSString stringWithCString:info.dli_fname encoding:NSUTF8StringEncoding];
             NSDictionary *image = [loadedImages objectForKey:fileName];
@@ -112,24 +130,7 @@
             uint32_t machoLoadAddress = [[image objectForKey:@"machoLoadAddress"] unsignedIntValue];
             uint32_t machoVMAddress = [[image objectForKey:@"machoVMAddress"] unsignedIntValue];
 
-            uint32_t frameAddress;
             uint32_t symbolAddress;
-
-            // The pointer returned by backtrace() is the address of the instruction immediately after a function call.
-            // We actually want to know the address of the function call instruction itself, so we subtract one instruction.
-            // To confused things further armv7 has two instruction modes "thumb" and "full". Thumb instructions are either
-            // 2 or 4 bytes long, and full instructions are always 4 bytes. Because pointers to instructions in either architecture
-            // will always be even, by convention pointers to thumb instructions have the least significant bit set so that the
-            // same instructions can be used for jumping to and returning from code in either instruction set.
-
-            // In the case of "thumb" instructions, we always subtract 2 (even though some instructions are 4 bytes long) this
-            // is because DWARF gives us the same result whn we look up a pointer half way through an instruction. Apple take
-            // a different approach in their crash logs, and always subtract 4. This is unlikely to give any meaningful difference.
-            if ((uint32_t)frames[i] & ARMV7_IS_THUMB_MASK) {
-                frameAddress = ((uint32_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_THUMB_INSTRUCTION_SIZE;
-            } else {
-                frameAddress = ((uint32_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_FULL_INSTRUCTION_SIZE;
-            }
 
             // The frameAddress we have is relative to process memory. This changes every time the process is run
             // due to address space layout randomization, so we actually want to report the address relative to the
