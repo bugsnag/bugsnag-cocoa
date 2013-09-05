@@ -32,7 +32,7 @@ static BugsnagNotifier *notifier = nil;
  - We should access the ASL http://www.cocoanetics.com/2011/03/accessing-the-ios-system-log/
  */
 
-int signals_count = 9;
+int signals_count = 11;
 int signals[] = {
 	SIGABRT,
 	SIGBUS,
@@ -43,6 +43,8 @@ int signals[] = {
     EXC_ARITHMETIC,
     EXC_BAD_INSTRUCTION,
     SIGTRAP,
+    SIGSYS,
+    SIGXCPU
 };
 
 void remove_handlers(void);
