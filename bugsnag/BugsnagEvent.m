@@ -103,8 +103,17 @@
         int status = dladdr(frames[i], &info);
         if (status != 0) {
             NSString *fileName = [NSString stringWithCString:info.dli_fname encoding:NSUTF8StringEncoding];
-            NSMutableDictionary *frame = [NSMutableDictionary dictionaryWithDictionary:[loadedImages objectForKey:fileName]];
-            NSNumber *frameAddress;
+            NSDictionary *image = [loadedImages objectForKey:fileName];
+            NSMutableDictionary *frame = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                          [image objectForKey:@"machoUUID"], @"machoUUID",
+                                          [image objectForKey:@"machoFile"], @"machoFile",
+                                          nil];
+
+            uint32_t machoLoadAddress = [[image objectForKey:@"machoLoadAddress"] unsignedIntValue];
+            uint32_t machoVMAddress = [[image objectForKey:@"machoVMAddress"] unsignedIntValue];
+
+            uint32_t frameAddress;
+            uint32_t symbolAddress;
 
             // The pointer returned by backtrace() is the address of the instruction immediately after a function call.
             // We actually want to know the address of the function call instruction itself, so we subtract one instruction.
@@ -117,15 +126,20 @@
             // is because DWARF gives us the same result whn we look up a pointer half way through an instruction. Apple take
             // a different approach in their crash logs, and always subtract 4. This is unlikely to give any meaningful difference.
             if ((uint32_t)frames[i] & ARMV7_IS_THUMB_MASK) {
-                frameAddress = [NSNumber numberWithUnsignedInt: ((uint32_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_THUMB_INSTRUCTION_SIZE];
+                frameAddress = ((uint32_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_THUMB_INSTRUCTION_SIZE;
             } else {
-                frameAddress = [NSNumber numberWithUnsignedInt: ((uint32_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_FULL_INSTRUCTION_SIZE];
+                frameAddress = ((uint32_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_FULL_INSTRUCTION_SIZE;
             }
 
-            [frame setObject:frameAddress forKey:@"frameAddress"];
+            // The frameAddress we have is relative to process memory. This changes every time the process is run
+            // due to address space layout randomization, so we actually want to report the address relative to the
+            // start of the __TEXT section of the object file instead.
+            frameAddress = (frameAddress - machoLoadAddress) + machoVMAddress;
+            [frame setObject:[NSNumber numberWithUnsignedInt: frameAddress] forKey:@"frameAddress"];
             
             if (info.dli_saddr) {
-                [frame setObject:[NSNumber numberWithUnsignedInt: (uint32_t)info.dli_saddr] forKey:@"symbolAddress"];
+                symbolAddress = (((uint32_t)info.dli_saddr & ARMV7_ADDRESS_MASK) - machoLoadAddress) + machoVMAddress;
+                [frame setObject:[NSNumber numberWithUnsignedInt: symbolAddress] forKey:@"symbolAddress"];
             }
 
             if (info.dli_sname != NULL && strcmp(info.dli_sname, "<redacted>") != 0) {
