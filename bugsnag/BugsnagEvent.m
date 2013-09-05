@@ -115,6 +115,10 @@
 
             [frame setObject:frameAddress forKey:@"frameAddress"];
             
+            if (info.dli_saddr) {
+                [frame setObject:[NSNumber numberWithUnsignedInt: (uint32_t)info.dli_saddr] forKey:@"symbolAddress"];
+            }
+
             if (info.dli_sname != NULL && strcmp(info.dli_sname, "<redacted>") != 0) {
                 NSString *method = [NSString stringWithCString:info.dli_sname encoding:NSUTF8StringEncoding];
                 [frame setObject:method forKey:@"method"];
