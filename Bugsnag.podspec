@@ -11,4 +11,8 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.ios.source_files = "bugsnag/iOS/*.{h,m}"
+
+  s.post_install do |lib|
+    puts lib.target.inspect
+  end
 end

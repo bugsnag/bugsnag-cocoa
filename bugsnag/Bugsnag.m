@@ -32,20 +32,16 @@ static BugsnagNotifier *notifier = nil;
  - We should access the ASL http://www.cocoanetics.com/2011/03/accessing-the-ios-system-log/
  */
 
-int signals_count = 11;
-int signals[] = {
-	SIGABRT,
-	SIGBUS,
-	SIGFPE,
-	SIGILL,
-	SIGSEGV,
-    EXC_BAD_ACCESS,
-    EXC_ARITHMETIC,
-    EXC_BAD_INSTRUCTION,
-    SIGTRAP,
-    SIGSYS,
-    SIGXCPU
+static int signals[] = {
+    SIGABRT,
+    SIGBUS,
+    SIGFPE,
+    SIGILL,
+    SIGSEGV,
+    SIGTRAP
 };
+
+static int signals_count = (sizeof(signals) / sizeof(signals[0]));
 
 void remove_handlers(void);
 void handle_signal(int);
@@ -62,10 +58,10 @@ void remove_handlers() {
 // Handles a raised signal
 void handle_signal(int signalReceived) {
     if (notifier) {
-        [notifier notifySignal:signalReceived];
-        
         // We dont want to be double notified
         remove_handlers();
+        
+        [notifier notifySignal:signalReceived];
     }
     
     //Propagate the signal back up to take the app down
