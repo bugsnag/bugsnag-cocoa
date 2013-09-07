@@ -229,34 +229,50 @@
 }
 
 - (NSString*) appVersion {
-    
+    @synchronized(self) {
+        return [self.dictionary objectForKey:@"appVersion"];
+    }
 }
 
 - (void) setAppVersion:(NSString *)appVersion {
-    
+    @synchronized(self) {
+        [self.dictionary setObject:appVersion forKey:@"appVersion"];
+    }
 }
 
 - (NSString*) osVersion {
-    
+    @synchronized(self) {
+        return [self.dictionary objectForKey:@"osVersion"];
+    }
 }
 
 - (void) setOsVersion:(NSString *)osVersion {
-    
+    @synchronized(self) {
+        [self.dictionary setObject:osVersion forKey:@"osVersion"];
+    }
 }
 
 - (NSString*) context {
-    
+    @synchronized(self) {
+        return [self.dictionary objectForKey:@"context"];
+    }
 }
 
 - (void) setContext:(NSString *)context {
-    
+    @synchronized(self) {
+        [self.dictionary setObject:context forKey:@"context"];
+    }
 }
 
 - (NSString*) releaseStage {
-    
+    @synchronized(self) {
+        return [self.dictionary objectForKey:@"releaseStage"];
+    }
 }
 
 - (void) setReleaseStage:(NSString *)releaseStage {
-    
+    @synchronized(self) {
+        [self.dictionary setObject:releaseStage forKey:@"releaseStage"];
+    }
 }
 @end
