@@ -50,7 +50,7 @@
 
 - (void) notifyException:(NSException*)exception withData:(NSDictionary*)metaData inBackground:(BOOL)inBackground {
     if ([self shouldNotify]) {
-        BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData:nil];
+        BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData:metaData];
         [event addException:exception];
         [self notifyEvent:event inBackground: inBackground];
     }

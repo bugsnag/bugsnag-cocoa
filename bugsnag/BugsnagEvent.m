@@ -30,16 +30,27 @@
 
 @implementation BugsnagEvent
 
-- (id) initWithConfiguration:(BugsnagConfiguration *)configuration andMetaData:(BugsnagMetaData*)metaData {
+- (id) initWithConfiguration:(BugsnagConfiguration *)configuration andMetaData:(NSDictionary*)metaData {
     if (self = [super init]) {
         self.dictionary = [[NSMutableDictionary alloc] init];
         
-        if (configuration.userId != nil) [self.dictionary setObject:configuration.userId forKey:@"userId"];
-        if (configuration.appVersion != nil) [self.dictionary setObject:configuration.appVersion forKey:@"appVersion"];
-        if (configuration.osVersion != nil) [self.dictionary setObject:configuration.osVersion forKey:@"osVersion"];
-        if (configuration.context != nil) [self.dictionary setObject:configuration.context forKey:@"context"];
-        if (configuration.releaseStage != nil) [self.dictionary setObject:configuration.releaseStage forKey:@"releaseStage"];
-        if (metaData != nil) [self.dictionary setObject:[metaData toDictionary] forKey:@"metaData"];
+        if (configuration.userId != nil) self.userId = configuration.userId;
+        if (configuration.appVersion != nil) self.appVersion = configuration.appVersion;
+        if (configuration.osVersion != nil) self.osVersion = configuration.osVersion;
+        if (configuration.context != nil) self.context = configuration.context;
+        if (configuration.releaseStage != nil) self.releaseStage = configuration.releaseStage;
+        
+        NSDictionary *dict = nil;
+        if (configuration.metaData != nil && metaData != nil) {
+            BugsnagMetaData *data = [configuration.metaData copy];
+            [data mergeWith:metaData];
+            dict = [data toDictionary];
+        } else if (configuration.metaData != nil) {
+            dict = [configuration.metaData toDictionary];
+        } else if (metaData != nil) {
+            dict = metaData;
+        }
+        if (dict != nil) [self.dictionary setObject:dict forKey:@"metaData"];
     }
     return self;
 }
@@ -273,6 +284,18 @@
 - (void) setReleaseStage:(NSString *)releaseStage {
     @synchronized(self) {
         [self.dictionary setObject:releaseStage forKey:@"releaseStage"];
+    }
+}
+
+- (NSString*) userId {
+    @synchronized(self) {
+        return [self.dictionary objectForKey:@"userId"];
+    }
+}
+
+- (void) setUserId:(NSString *)userId {
+    @synchronized(self) {
+        [self.dictionary setObject:userId forKey:@"userId"];
     }
 }
 @end

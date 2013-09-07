@@ -12,7 +12,7 @@
 
 @interface BugsnagEvent : NSObject
 
-- (id) initWithConfiguration:(BugsnagConfiguration *)configuration andMetaData:(BugsnagMetaData*)metaData;
+- (id) initWithConfiguration:(BugsnagConfiguration *)configuration andMetaData:(NSDictionary*)metaData;
 
 - (void) addSignal:(int) signal;
 - (void) addException:(NSException*)exception;
@@ -31,5 +31,6 @@
 @property (atomic, copy) NSString *osVersion;
 @property (atomic, copy) NSString *context;
 @property (atomic, copy) NSString *releaseStage;
+@property (atomic, copy) NSString *userId;
 
 @end
