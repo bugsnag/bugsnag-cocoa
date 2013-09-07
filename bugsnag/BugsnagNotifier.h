@@ -23,7 +23,7 @@ typedef BOOL (^BugsnagNotifyBlock)(BugsnagEvent*);
 
 - (void) notifySignal:(int)signal;
 - (void) notifyUncaughtException:(NSException*)exception;
-- (void) notifyException:(NSException*)exception withData:(NSDictionary*)metaData;
+- (void) notifyException:(NSException*)exception withData:(NSDictionary*)metaData inBackground:(BOOL)inBackground;
 
 - (BOOL) shouldAutoNotify;
 - (BOOL) shouldNotify;

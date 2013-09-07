@@ -31,33 +31,32 @@
 }
 
 - (void) start {
-    [self sendMetrics];
-    [self sendSavedEvents];
+    [self performSelectorInBackground:@selector(backgroundStart) withObject:nil];
 }
 
 - (void) notifySignal:(int)signal {
     if([self shouldAutoNotify]) {
         BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData:nil];
         [event addSignal:signal];
-        [self notifyEvent:event];
+        [self notifyEvent:event inBackground: false];
     }
 }
 
 - (void) notifyUncaughtException:(NSException *)exception {
     if ([self shouldAutoNotify]) {
-        [self notifyException:exception withData:nil];
+        [self notifyException:exception withData:nil inBackground:false];
     }
 }
 
-- (void) notifyException:(NSException*)exception withData:(NSDictionary*)metaData {
+- (void) notifyException:(NSException*)exception withData:(NSDictionary*)metaData inBackground:(BOOL)inBackground {
     if ([self shouldNotify]) {
         BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData:nil];
         [event addException:exception];
-        [self notifyEvent:event];
+        [self notifyEvent:event inBackground: inBackground];
     }
 }
 
-- (BOOL) notifyEvent:(BugsnagEvent*) event {
+- (BOOL) notifyEvent:(BugsnagEvent*) event inBackground:(BOOL) inBackground{
     @synchronized(self.configuration) {
         for (BugsnagNotifyBlock block in self.configuration.beforeBugsnagNotifyBlocks) {
             BOOL retVal = block(event);
@@ -66,8 +65,26 @@
             }
         }
     }
-    [self saveEvent:event];
-    [self sendSavedEvents];
+    if (inBackground) {
+        [self performSelectorInBackground:@selector(backgroundNotifyEvent:) withObject:event];
+    } else {
+        [self saveEvent:event];
+        [self sendSavedEvents];
+    }
+}
+
+- (void) backgroundNotifyEvent: (BugsnagEvent*)event {
+    @autoreleasepool {
+        [self saveEvent:event];
+        [self sendSavedEvents];
+    }
+}
+
+- (void) backgroundStart {
+    @autoreleasepool {
+        [self sendMetrics];
+        [self sendSavedEvents];
+    }
 }
 
 - (BOOL) shouldNotify {

@@ -33,6 +33,7 @@
 }
 
 - (void) start {
+    [super start];
     //TODO:SM Add hook for application hitting foreground etc
 }
 

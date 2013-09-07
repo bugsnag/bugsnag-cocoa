@@ -119,11 +119,11 @@ void handle_exception(NSException *exception) {
 }
 
 + (void) notify:(NSException *)exception {
-    [notifier notifyException:exception withData:nil];
+    [notifier notifyException:exception withData:nil inBackground: true];
 }
 
 + (void) notify:(NSException *)exception withData:(NSDictionary*)metaData {
-    [notifier notifyException:exception withData:metaData];
+    [notifier notifyException:exception withData:metaData inBackground: true];
 }
 
 + (void) setUserAttribute:(NSString*)attributeName withValue:(id)value {
