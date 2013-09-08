@@ -32,5 +32,6 @@
 @property (atomic, copy) NSString *context;
 @property (atomic, copy) NSString *releaseStage;
 @property (atomic, copy) NSString *userId;
+@property (atomic, copy) BugsnagMetaData *metaData;
 
 @end

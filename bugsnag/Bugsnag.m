@@ -127,11 +127,11 @@ void handle_exception(NSException *exception) {
 }
 
 + (void) setUserAttribute:(NSString*)attributeName withValue:(id)value {
-    [self addAttribute:attributeName withValue:value toTabWithName:@"user"];
+    [self addAttribute:attributeName withValue:value toTabWithName:USER_TAB_NAME];
 }
 
 + (void) clearUser {
-    [self clearTabWithName:@"user"];
+    [self clearTabWithName:USER_TAB_NAME];
 }
 
 + (void) addAttribute:(NSString*)attributeName withValue:(id)value toTabWithName:(NSString*)tabName {

@@ -40,17 +40,13 @@
         if (configuration.context != nil) self.context = configuration.context;
         if (configuration.releaseStage != nil) self.releaseStage = configuration.releaseStage;
         
-        NSDictionary *dict = nil;
-        if (configuration.metaData != nil && metaData != nil) {
-            BugsnagMetaData *data = [configuration.metaData copy];
-            [data mergeWith:metaData];
-            dict = [data toDictionary];
-        } else if (configuration.metaData != nil) {
-            dict = [configuration.metaData toDictionary];
-        } else if (metaData != nil) {
-            dict = metaData;
+        if (configuration.metaData != nil) {
+            self.metaData = [configuration.metaData copy];
+        } else {
+            self.metaData = [[BugsnagMetaData alloc] init];
         }
-        if (dict != nil) [self.dictionary setObject:dict forKey:@"metaData"];
+        
+        if (metaData != nil) [self.metaData mergeWith:metaData];
     }
     return self;
 }
@@ -219,24 +215,25 @@
 
 - (NSDictionary *) toDictionary {
     @synchronized(self) {
+        [self.dictionary setObject:[self.metaData toDictionary] forKey:@"metaData"];
         return [NSDictionary dictionaryWithDictionary:self.dictionary];
     }
 }
 
 - (void) setUserAttribute:(NSString*)attributeName withValue:(id)value {
-    
+    [self addAttribute:attributeName withValue:value toTabWithName:USER_TAB_NAME];
 }
 
 - (void) clearUser {
-    
+    [self.metaData clearTab:USER_TAB_NAME];
 }
 
 - (void) addAttribute:(NSString*)attributeName withValue:(id)value toTabWithName:(NSString*)tabName {
-    
+    [self.metaData addAttribute:attributeName withValue:value toTabWithName:tabName];
 }
 
 - (void) clearTabWithName:(NSString*)tabName {
-    
+    [self.metaData clearTab:tabName];
 }
 
 - (NSString*) appVersion {

@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "BugsnagMetaData.h"
 
+#define USER_TAB_NAME @"User"
+
 @interface BugsnagConfiguration : NSObject
 
 @property (atomic, copy) NSString *apiKey;
