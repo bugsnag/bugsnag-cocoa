@@ -41,7 +41,7 @@
         if (configuration.releaseStage != nil) self.releaseStage = configuration.releaseStage;
         
         if (configuration.metaData != nil) {
-            self.metaData = [configuration.metaData copy];
+            self.metaData = [configuration.metaData mutableCopy];
         } else {
             self.metaData = [[BugsnagMetaData alloc] init];
         }

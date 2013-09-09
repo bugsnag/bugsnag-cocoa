@@ -12,7 +12,8 @@
 @interface BugsnagIosNotifier ()
 @property (readonly) NSString* appVersion;
 @property (readonly) NSString* osVersion;
-@property (readonly) NSString* context;
+@property (readonly) NSString* topMostViewController;
+@property (readonly) NSString* architecture;
 @end
 
 @implementation BugsnagIosNotifier
@@ -21,6 +22,7 @@
     if((self = [super initWithConfiguration:configuration])) {
         if (self.configuration.appVersion == nil) self.configuration.appVersion = self.appVersion;
         if (self.configuration.osVersion == nil) self.configuration.osVersion = self.osVersion;
+        if (self.configuration.userId == nil) self.configuration.userId = self.userUUID;
 
         self.notifierName = @"Bugsnag iOS Notifier";
         
@@ -38,7 +40,7 @@
 }
 
 - (void) addIosDiagnosticsToEvent:(BugsnagEvent *) event {
-    //TODO:SM Add the runtime data to the event
+    [event addAttribute:@"Architecture" withValue:self.architecture toTabWithName:@"Device"];
 }
 
 - (NSString *) appVersion {
@@ -71,4 +73,22 @@
     }
 }
 
+- (NSString *) architecture {
+#ifdef _ARM_ARCH_7
+    NSString *arch = @"armv7";
+#else
+#ifdef _ARM_ARCH_6
+    NSString *arch = @"armv6";
+#else
+#ifdef __i386__
+    NSString *arch = @"i386";
+#endif
+#endif
+#endif
+    return arch;
+}
+
+- (NSString *) topMostViewController {
+    
+}
 @end
