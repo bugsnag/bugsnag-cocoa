@@ -73,6 +73,7 @@
         [self saveEvent:event];
         [self sendSavedEvents];
     }
+    return YES;
 }
 
 - (void) backgroundNotifyEvent: (BugsnagEvent*)event {

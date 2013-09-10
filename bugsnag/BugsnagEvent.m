@@ -125,7 +125,7 @@
             frameAddress = ((uint32_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_FULL_INSTRUCTION_SIZE;
         }
 
-        int status = dladdr(frameAddress, &info);
+        int status = dladdr((void *)frameAddress, &info);
         if (status != 0) {
             NSString *fileName = [NSString stringWithCString:info.dli_fname encoding:NSUTF8StringEncoding];
             NSString *binaryName = [NSString stringWithCString:rindex(info.dli_fname, '/') + sizeof(char) encoding:NSUTF8StringEncoding];

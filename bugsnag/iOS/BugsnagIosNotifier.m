@@ -144,6 +144,8 @@
         return @"Reachable via WiFi";
     } else if (status == ReachableViaWWAN) {
         return @"Reachable via Mobile";
+    } else {
+        return @"Unknown";
     }
 }
 

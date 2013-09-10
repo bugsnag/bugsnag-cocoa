@@ -14,25 +14,15 @@
 - (void)setUp
 {
     [super setUp];
-    
     // Set-up code here.
 }
 
 - (void)tearDown
 {
     // Tear-down code here.
-    
     [super tearDown];
 }
 
 - (void)testExceptions {
-    @try {
-        @throw [NSException exceptionWithName:@"errorClass" reason:@"errorMessage" userInfo:nil];
-    }
-    @catch (NSException *exception) {
-        NSLog(@"%@",[exception callStackSymbols]);
-        NSLog(@"%@",[BugsnagEvent getStackTraceWithException:exception]);
-    }
-    //NSLog(@"%@",[BugsnagEvent loadedImages]);
 }
 @end
