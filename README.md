@@ -17,7 +17,7 @@ Installation & Setup
 - Add Bugsnag to your Podfile
 
 ```ruby
-pod 'Bugsnag'
+pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-objective-c"
 ```
 
 - Install Bugsnag
@@ -38,29 +38,14 @@ pod install
 [Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
 ```
 
-### Manual Install
+- Add the following script to your main target's build phase
 
-- Download and unzip the latest version.
-
-```bash
-wget -O bugsnag.zip https://github.com/bugsnag/bugsnag-ios/zipball/master
-unzip bugsnag.zip
-```
-
-- Include all files in the `Bugsnag Plugin` folder in your Xcode project.
-
-- Add `SystemConfiguration.framework` to your Link Binary With Libraries section in your project's Build Phases.
-
-- Import the `Bugsnag.h` file into your application delegate.
-
-```objective-c
-#import "Bugsnag.h"
-```
-
-- In your application:didFinishLaunchingWithOptions: method, register with bugsnag by calling,
-
-```objective-c
-[Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
+```sh
+if [[ "$DEBUG_INFORMATION_FORMAT" == "dwarf-with-dsym" && "$STRIP_INSTALLED_PRODUCT" == "YES" && "$DEPLOYMENT_POSTPROCESSING" == "YES" ]]; then
+    for dsym in "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/"*; do
+        curl -F "dsym=@${dsym}" -F "projectRoot=${PROJECT_DIR}" https://upload.bugsnag.com >/dev/null 2>&1
+    done
+fi
 ```
 
 ###ARC Support
@@ -70,19 +55,6 @@ Since version 2.2.0 Bugsnag has fully supported Arc. If you wish to run a non-Ar
 If you are using Bugsnag 2.2.0 or newer in your non-arc project, you will need to set a `-fobjc-arc` compiler flag on all of the Bugsnag source files. Conversely, if you are adding a pre-2.2.0 version of Bugsnag, you will need to set a `-fno-objc-arc` compiler flag.
 
 To set a compiler flag in Xcode, go to your active target and select the "Build Phases" tab. Now select all Bugsnag source files, press Enter, insert `-fobjc-arc` or `-fno-objc-arc` and then "Done" to enable or disable ARC for Bugsnag.
-
-JSON Library
-------------
-
-The Bugsnag iOS notifier requires a JSON library. It is able to use the library introduced in iOS 5 if it is available. Otherwise it looks for any of the following libraries:
-
-- [JSONKit](https://github.com/johnezang/JSONKit)
-- [NextiveJson](https://github.com/nextive/NextiveJson)
-- [SBJson](https://stig.github.com/json-framework/)
-- [YAJL](https://lloyd.github.com/yajl/)
-
-If you are targetting iOS 4.3 or older, you should include one of these libraries in your project to ensure you are notified of crashes on those versions of iOS.
-
 
 Send Non-Fatal Exceptions to Bugsnag
 ------------------------------------
