@@ -7,13 +7,13 @@
 //
 
 #import <execinfo.h>
+#import <sys/sysctl.h>
 
 #import "BugsnagNotifier.h"
 #import "BugsnagLogger.h"
-#import "BugsnagJSON.h"
 
 @interface BugsnagNotifier ()
-- (BOOL) transmitPayload:(NSString *)payload toURL:(NSURL*)url;
+- (BOOL) transmitPayload:(NSData *)payload toURL:(NSURL*)url;
 @end
 
 @implementation BugsnagNotifier
@@ -21,6 +21,8 @@
 - (id) initWithConfiguration:(BugsnagConfiguration*) configuration {
     if((self = [super init])) {
         self.configuration = configuration;
+        
+        [self.configuration.metaData addAttribute:@"Machine" withValue:self.machine toTabWithName:@"device"];
         
         self.notifierName = @"Bugsnag Objective-C";
         //TODO:SM Pull this out from somewhere in cocoapods if poss
@@ -159,7 +161,7 @@
     NSDictionary *notifyPayload = [self buildNotifyPayload];
     [[notifyPayload objectForKey:@"events"] addObject:event];
     
-    NSString *jsonPayload = [BugsnagJSON encodeDictionary:notifyPayload];
+    NSData *jsonPayload = [NSJSONSerialization dataWithJSONObject:notifyPayload options:0 error:nil];
     
     return [self transmitPayload:jsonPayload toURL:self.configuration.notifyURL];
 }
@@ -168,8 +170,11 @@
     NSMutableDictionary *payload = [NSMutableDictionary dictionary];
     [payload setObject:self.configuration.apiKey forKey:@"apiKey"];
     [payload setObject:self.userUUID forKey:@"userId"];
+    [payload setObject:self.machine forKey:@"machine"];
+    if (self.configuration.osVersion != nil ) [payload setObject:self.configuration.osVersion forKey:@"osVersion"];
+    if (self.configuration.appVersion != nil ) [payload setObject:self.configuration.appVersion forKey:@"appVersion"];
     
-    NSString *jsonPayload = [BugsnagJSON encodeDictionary:payload];
+    NSData *jsonPayload = [NSJSONSerialization dataWithJSONObject:payload options:0 error:nil];
     
     return [self transmitPayload:jsonPayload toURL:self.configuration.metricsURL];
 }
@@ -188,12 +193,12 @@
     return [[self.errorPath stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]] stringByAppendingPathExtension:@"bugsnag"];
 }
 
-- (BOOL) transmitPayload:(NSString *)payload toURL:(NSURL*)url {
+- (BOOL) transmitPayload:(NSData *)payload toURL:(NSURL*)url {
     if(payload){
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
         
         [request setHTTPMethod:@"POST"];
-        [request setHTTPBody:[payload dataUsingEncoding:NSUTF8StringEncoding]];
+        [request setHTTPBody:payload];
         [request setValue:@"application/json" forHTTPHeaderField:@"content-type"];
         
         NSURLResponse* response = nil;
@@ -229,6 +234,31 @@
         [defaults synchronize];
         return _uuid;
     }
+}
+
+- (NSString *) machine {
+    size_t size = 256;
+	char *machineCString = malloc(size);
+    sysctlbyname("hw.machine", machineCString, &size, NULL, 0);
+    NSString *machine = [NSString stringWithCString:machineCString encoding:NSUTF8StringEncoding];
+    free(machineCString);
+    
+    return machine;
+}
+
+- (NSString *)fileSize:(NSNumber *)value {
+    float fileSize = [value floatValue];
+    if (fileSize<1023.0f)
+        return([NSString stringWithFormat:@"%i bytes",[value intValue]]);
+    fileSize = fileSize / 1024.0f;
+    if ([value intValue]<1023.0f)
+        return([NSString stringWithFormat:@"%1.1f KB",fileSize]);
+    fileSize = fileSize / 1024.0f;
+    if (fileSize<1023.0f)
+        return([NSString stringWithFormat:@"%1.1f MB",fileSize]);
+    fileSize = fileSize / 1024.0f;
+    
+    return([NSString stringWithFormat:@"%1.1f GB",fileSize]);
 }
 
 @end

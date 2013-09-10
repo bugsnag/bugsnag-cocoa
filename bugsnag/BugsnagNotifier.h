@@ -36,11 +36,14 @@ typedef BOOL (^BugsnagNotifyBlock)(BugsnagEvent*);
 - (NSArray*) savedEvents;
 - (void) sendSavedEvents;
 
+- (NSString *)fileSize:(NSNumber *)value;
+
 @property (atomic, copy) NSString *notifierName;
 @property (atomic, copy) NSString *notifierVersion;
 @property (atomic, copy) NSString *notifierURL;
 @property (atomic) BugsnagConfiguration *configuration;
 @property (atomic, readonly) NSString *errorPath;
 @property (atomic, readonly) NSString *userUUID;
+@property (readonly) NSString* machine;
 
 @end

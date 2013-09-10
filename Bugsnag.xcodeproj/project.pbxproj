@@ -19,7 +19,6 @@
 		F4FCBA1117CE90EB00A264EC /* BugsnagMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FCBA1017CE90EB00A264EC /* BugsnagMetaData.m */; };
 		F4FCBA1417CE90FB00A264EC /* BugsnagEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FCBA1317CE90FB00A264EC /* BugsnagEvent.m */; };
 		F4FCBA1717CE924400A264EC /* BugsnagNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FCBA1617CE924400A264EC /* BugsnagNotifier.m */; };
-		F4FCBA1D17CEEAF100A264EC /* BugsnagJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FCBA1C17CEEAF100A264EC /* BugsnagJSON.m */; };
 		F4FCBA2117CEF24E00A264EC /* BugsnagIosNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FCBA2017CEF24E00A264EC /* BugsnagIosNotifier.m */; };
 /* End PBXBuildFile section */
 
@@ -67,8 +66,6 @@
 		F4FCBA1517CE924400A264EC /* BugsnagNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagNotifier.h; sourceTree = "<group>"; };
 		F4FCBA1617CE924400A264EC /* BugsnagNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagNotifier.m; sourceTree = "<group>"; };
 		F4FCBA1817CEB47B00A264EC /* BugsnagLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagLogger.h; sourceTree = "<group>"; };
-		F4FCBA1B17CEEAF100A264EC /* BugsnagJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagJSON.h; sourceTree = "<group>"; };
-		F4FCBA1C17CEEAF100A264EC /* BugsnagJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagJSON.m; sourceTree = "<group>"; };
 		F4FCBA1F17CEF24E00A264EC /* BugsnagIosNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagIosNotifier.h; path = iOS/BugsnagIosNotifier.h; sourceTree = "<group>"; };
 		F4FCBA2017CEF24E00A264EC /* BugsnagIosNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagIosNotifier.m; path = iOS/BugsnagIosNotifier.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -133,8 +130,6 @@
 				F4FCBA0D17CE90B200A264EC /* BugsnagConfiguration.m */,
 				F4FCBA1217CE90FB00A264EC /* BugsnagEvent.h */,
 				F4FCBA1317CE90FB00A264EC /* BugsnagEvent.m */,
-				F4FCBA1B17CEEAF100A264EC /* BugsnagJSON.h */,
-				F4FCBA1C17CEEAF100A264EC /* BugsnagJSON.m */,
 				F4FCBA1817CEB47B00A264EC /* BugsnagLogger.h */,
 				F4FCBA0F17CE90EB00A264EC /* BugsnagMetaData.h */,
 				F4FCBA1017CE90EB00A264EC /* BugsnagMetaData.m */,
@@ -286,7 +281,6 @@
 				F4FCBA1117CE90EB00A264EC /* BugsnagMetaData.m in Sources */,
 				F4FCBA1417CE90FB00A264EC /* BugsnagEvent.m in Sources */,
 				F4FCBA1717CE924400A264EC /* BugsnagNotifier.m in Sources */,
-				F4FCBA1D17CEEAF100A264EC /* BugsnagJSON.m in Sources */,
 				F4FCBA2117CEF24E00A264EC /* BugsnagIosNotifier.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

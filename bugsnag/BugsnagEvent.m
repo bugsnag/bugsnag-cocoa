@@ -128,11 +128,14 @@
         int status = dladdr(frameAddress, &info);
         if (status != 0) {
             NSString *fileName = [NSString stringWithCString:info.dli_fname encoding:NSUTF8StringEncoding];
+            NSString *binaryName = [NSString stringWithCString:rindex(info.dli_fname, '/') + sizeof(char) encoding:NSUTF8StringEncoding];
             NSDictionary *image = [loadedImages objectForKey:fileName];
             NSMutableDictionary *frame = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                           [image objectForKey:@"machoUUID"], @"machoUUID",
-                                          [image objectForKey:@"machoFile"], @"machoFile",
+                                          binaryName, @"machoFile",
                                           nil];
+            
+            if ([binaryName isEqualToString:[[NSProcessInfo processInfo] processName]]) [frame setObject:[NSNumber numberWithBool:YES] forKey:@"inProject"];
 
             uint32_t machoLoadAddress = [[image objectForKey:@"machoLoadAddress"] unsignedIntValue];
             uint32_t machoVMAddress = [[image objectForKey:@"machoVMAddress"] unsignedIntValue];
@@ -155,6 +158,7 @@
                 [frame setObject:method forKey:@"method"];
             }
             
+            NSLog(@"%@", frame);
             [stackTrace addObject:[NSDictionary dictionaryWithDictionary:frame]];
         }
     }
