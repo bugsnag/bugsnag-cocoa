@@ -158,7 +158,6 @@
                 [frame setObject:method forKey:@"method"];
             }
             
-            NSLog(@"%@", frame);
             [stackTrace addObject:[NSDictionary dictionaryWithDictionary:frame]];
         }
     }

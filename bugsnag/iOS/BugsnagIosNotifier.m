@@ -51,7 +51,7 @@
 
 - (void) addIosDiagnosticsToEvent:(BugsnagEvent *) event {
     NSString *topMostViewController = self.topMostViewController;
-    if (event.context == nil) event.context = topMostViewController;
+    if (event.context == nil && topMostViewController != nil) event.context = topMostViewController;
     
     [event addAttribute:@"Top Most View Controller" withValue:topMostViewController toTabWithName:@"application"];
     [event addAttribute:@"In Foreground" withValue:[NSNumber numberWithBool:self.inForeground] toTabWithName:@"application"];
