@@ -18,7 +18,6 @@ fork do
   require 'shellwords'
 
   Dir["#{ENV["DWARF_DSYM_FOLDER_PATH"]}/#{ENV["DWARF_DSYM_FILE_NAME"]}/Contents/Resources/DWARF/*"].each do |dsym|
-    puts dsym
     system("curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(dsym)} https://upload.bugsnag.com/")
   end
 end
