@@ -50,13 +50,19 @@ RUBY
     def bugsnag_native_targets
       @bugsnag_native_targets ||=(
         target_uuids = target.user_target_uuids
-        target_uuids.map do |uuid|
+        native_targets = target_uuids.map do |uuid|
           native_target = user_project.objects_by_uuid[uuid]
           unless native_target
             raise Informative, "[Bug] Unable to find the target with " \
               "the `#{uuid}` UUID for the `#{target}` integration library"
           end
           native_target
+        end
+
+        native_targets.reject do |native_target|
+          native_target.shell_script_build_phases.any? do |bp|
+            bp.name == BUGSNAG_PHASE_NAME && bp.shell_script == BUGSNAG_PHASE_SCRIPT
+          end
         end
       )
     end
