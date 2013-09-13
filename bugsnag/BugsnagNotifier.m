@@ -8,12 +8,16 @@
 
 #import <execinfo.h>
 #import <sys/sysctl.h>
+#import <mach/mach.h>
 
 #import "BugsnagNotifier.h"
 #import "BugsnagLogger.h"
 
 @interface BugsnagNotifier ()
 - (BOOL) transmitPayload:(NSData *)payload toURL:(NSURL*)url;
+- (void) addDiagnosticsToEvent:(BugsnagEvent*)event;
+
+@property (readonly) NSDictionary* memoryStats;
 @end
 
 @implementation BugsnagNotifier
@@ -23,6 +27,11 @@
         self.configuration = configuration;
         
         [self.configuration.metaData addAttribute:@"Machine" withValue:self.machine toTabWithName:@"device"];
+        
+        [self beforeNotify:^(BugsnagEvent *event) {
+            [self addDiagnosticsToEvent:event];
+            return YES;
+        }];
         
         self.notifierName = @"Bugsnag Objective-C";
         //TODO:SM Pull this out from somewhere in cocoapods if poss
@@ -34,6 +43,14 @@
 
 - (void) start {
     [self performSelectorInBackground:@selector(backgroundStart) withObject:nil];
+}
+
+- (void) addDiagnosticsToEvent:(BugsnagEvent*)event {
+    [event addAttribute:@"Application Version" withValue:self.configuration.appVersion toTabWithName:@"application"];
+    
+    [event addAttribute:@"OS Version" withValue:self.configuration.osVersion toTabWithName:@"device"];
+    [event addAttribute:@"Memory" withValue:self.memoryStats toTabWithName:@"device"];
+    [event addAttribute:@"Network" withValue:self.networkReachability toTabWithName:@"device"];
 }
 
 - (void) notifySignal:(int)signal {
@@ -260,6 +277,43 @@
     fileSize = fileSize / 1024.0f;
     
     return([NSString stringWithFormat:@"%1.1f GB",fileSize]);
+}
+
+- (NSString *) networkReachability {
+    Class reachabilityClass = NSClassFromString(@"Reachability");
+    if (reachabilityClass == nil) reachabilityClass = NSClassFromString(@"BugsnagReachability");
+    if (reachabilityClass == nil) return nil;
+    
+    id reachability = [reachabilityClass performSelector:@selector(reachabilityForInternetConnection)];
+    [reachability performSelector:@selector(startNotifier)];
+    NSString *returnValue = [reachability performSelector:@selector(currentReachabilityString)];
+    [reachability performSelector:@selector(stopNotifier)];
+    
+    return returnValue;
+}
+
+- (NSDictionary *) memoryStats {
+    natural_t usedMem = 0;
+    natural_t freeMem = 0;
+    natural_t totalMem = 0;
+    
+    struct task_basic_info info;
+    mach_msg_type_number_t size = sizeof(info);
+    kern_return_t kerr = task_info(mach_task_self(),
+                                   TASK_BASIC_INFO,
+                                   (task_info_t)&info,
+                                   &size);
+    if( kerr == KERN_SUCCESS ) {
+        usedMem = info.resident_size;
+        totalMem = info.virtual_size;
+        freeMem = totalMem - usedMem;
+        return [NSDictionary dictionaryWithObjectsAndKeys:
+                [self fileSize:[NSNumber numberWithInt:freeMem]], @"Free",
+                [self fileSize:[NSNumber numberWithInt:totalMem]], @"Total",
+                [self fileSize:[NSNumber numberWithInt:usedMem]], @"Used", nil];
+    } else {
+        return nil;
+    }
 }
 
 @end

@@ -7,9 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <mach/mach.h>
 
-#import "Reachability.h"
 #import "BugsnagIosNotifier.h"
 
 @interface BugsnagIosNotifier ()
@@ -17,8 +15,6 @@
 @property (readonly) NSString* osVersion;
 @property (readonly) NSString* topMostViewController;
 @property (atomic) BOOL inForeground;
-@property (readonly) NSString* networkReachability;
-@property (readonly) NSDictionary* memoryStats;
 
 - (void)applicationDidBecomeActive:(NSNotification *)notif;
 - (void)applicationDidEnterBackground:(NSNotification *)notif;
@@ -55,11 +51,6 @@
     
     [event addAttribute:@"Top Most View Controller" withValue:topMostViewController toTabWithName:@"application"];
     [event addAttribute:@"In Foreground" withValue:[NSNumber numberWithBool:self.inForeground] toTabWithName:@"application"];
-    [event addAttribute:@"Application Version" withValue:self.configuration.appVersion toTabWithName:@"application"];
-
-    [event addAttribute:@"OS Version" withValue:self.configuration.osVersion toTabWithName:@"device"];
-    [event addAttribute:@"Network" withValue:self.networkReachability toTabWithName:@"device"];
-    [event addAttribute:@"Memory" withValue:self.memoryStats toTabWithName:@"device"];
 }
 
 - (NSString *) appVersion {
@@ -130,47 +121,6 @@
     }
     
     return NSStringFromClass([visibleViewController class]);
-}
-
-- (NSString *) networkReachability {
-    Reachability *reachability = [Reachability reachabilityForInternetConnection];
-    [reachability startNotifier];
-    NetworkStatus status = [reachability currentReachabilityStatus];
-    [reachability stopNotifier];
-    
-    if(status == NotReachable) {
-        return @"Not Reachable";
-    } else if (status == ReachableViaWiFi) {
-        return @"Reachable via WiFi";
-    } else if (status == ReachableViaWWAN) {
-        return @"Reachable via Mobile";
-    } else {
-        return @"Unknown";
-    }
-}
-
-- (NSDictionary *) memoryStats {
-    natural_t usedMem = 0;
-    natural_t freeMem = 0;
-    natural_t totalMem = 0;
-    
-    struct task_basic_info info;
-    mach_msg_type_number_t size = sizeof(info);
-    kern_return_t kerr = task_info(mach_task_self(),
-                                   TASK_BASIC_INFO,
-                                   (task_info_t)&info,
-                                   &size);
-    if( kerr == KERN_SUCCESS ) {
-        usedMem = info.resident_size;
-        totalMem = info.virtual_size;
-        freeMem = totalMem - usedMem;
-        return [NSDictionary dictionaryWithObjectsAndKeys:
-                [self fileSize:[NSNumber numberWithInt:freeMem]], @"Free",
-                [self fileSize:[NSNumber numberWithInt:totalMem]], @"Total",
-                [self fileSize:[NSNumber numberWithInt:usedMem]], @"Used", nil];
-    } else {
-        return nil;
-    }
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)notif {
