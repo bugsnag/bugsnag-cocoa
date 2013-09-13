@@ -114,6 +114,10 @@ void handle_exception(NSException *exception) {
     return nil;
 }
 
++ (BugsnagConfiguration*)instance {
+    return [self configuration];
+}
+
 + (BugsnagNotifier*)notifier {
     return notifier;
 }

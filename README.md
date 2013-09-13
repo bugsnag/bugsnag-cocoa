@@ -1,7 +1,7 @@
-Bugsnag Notifier for iOS
-========================
+Bugsnag Notifier for Objective-C
+================================
 
-The Bugsnag Notifier for iOS gives you instant notification of exceptions thrown from your iOS applications.
+The Bugsnag Notifier for Objective-C gives you instant notification of exceptions thrown from your Objective-C applications.
 The notifier hooks into `NSSetUncaughtExceptionHandler`, which means any uncaught exceptions will trigger a notification to be sent to your Bugsnag project. Bugsnag will also monitor for fatal signals sent to your application, for example a Segmentation Fault.
 
 [Bugsnag](http://bugsnag.com) captures errors in real-time from your web, mobile and desktop applications, helping you to understand and resolve them as fast as possible. [Create a free account](http://bugsnag.com) to start capturing exceptions from your applications.
@@ -12,49 +12,81 @@ Installation & Setup
 
 ###CocoaPods (Recommended)
 
-[Cocoapods](http://cocoapods.org/) is a library management system for iOS which allows you to manage your libraries, detail your dependencies and handle updates nicely. It is the recommended way of installing the Bugsnag iOS library.
+[Cocoapods](http://cocoapods.org/) is a library management system for iOS/OSX which allows you to manage your libraries, detail your dependencies and handle updates nicely. It is the recommended way of installing the Bugsnag Objective-C library.
 
-- Add Bugsnag to your Podfile
+-   Add Bugsnag to your Podfile
 
 ```ruby
 pod 'Bugsnag', :git => "git@github.com:bugsnag/bugsnag-objective-c.git"
 ```
 
-- Install Bugsnag
+-   Install Bugsnag
 
 ```bash
 pod install
 ```
 
-- Import the `Bugsnag.h` file into your application delegate.
+-   Import the `Bugsnag.h` file into your application delegate.
 
 ```objective-c
 #import "Bugsnag.h"
 ```
 
-- In your application:didFinishLaunchingWithOptions: method, register with bugsnag by calling,
+-   In your application:didFinishLaunchingWithOptions: method, register with bugsnag by calling,
 
 ```objective-c
 [Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
 ```
 
-- Add the following script to your main target's build phase
+###Without Cocoapods
 
-```sh
-if [[ "$DEBUG_INFORMATION_FORMAT" == "dwarf-with-dsym" && "$STRIP_INSTALLED_PRODUCT" == "YES" && "$DEPLOYMENT_POSTPROCESSING" == "YES" ]]; then
-    for dsym in "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/"*; do
-        curl -F "dsym=@${dsym}" -F "projectRoot=${PROJECT_DIR}" https://upload.bugsnag.com >/dev/null 2>&1
-    done
-fi
+-   Add Bugsnag to your project
+
+-   Import the `Bugsnag.h` file into your application delegate.
+
+```objective-c
+#import "Bugsnag.h"
+```
+
+-   In your application:didFinishLaunchingWithOptions: method, register with bugsnag by calling,
+
+```objective-c
+[Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
+```
+
+-   Add the SystemConfiguration Framework
+
+Click your project, click on your main target, then navigate to "Build Phases", select "Link Binary with Libraries" and click on the "+" button. Then add SystemConfiguration.framework.
+
+-   Add a build phase to upload the symbolication information to Bugsnag
+
+From the same "Build Phases" screen, click the plus in the bottom right of the screen labelled "Add Build Phase", then select "Add Run Script". Then expand the newly added "Run Script" section, and set the shell to `/usr/bin/env ruby` and copy the following script into the text box,
+
+```ruby
+if ENV["EFFECTIVE_PLATFORM_NAME"] == "-iphonesimulator" ||
+   ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym"
+  exit
+end
+
+fork do
+  Process.setsid
+  STDIN.reopen("/dev/null")
+  STDOUT.reopen("/dev/null", "a")
+  STDERR.reopen("/dev/null", "a")
+
+  require 'shellwords'
+
+  Dir["#{ENV["DWARF_DSYM_FOLDER_PATH"]}/#{ENV["DWARF_DSYM_FILE_NAME"]}/Contents/Resources/DWARF/*"].each do |dsym|
+    system("curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(dsym)} https://upload.bugsnag.com/")
+  end
+end
 ```
 
 ###ARC Support
 
-Since version 2.2.0 Bugsnag has fully supported Arc. If you wish to run a non-Arc build of Bugsnag you should use version 2.1.0 or older.
+Bugsnag uses ARC features If you are using Bugsnag 2.2.0 or newer in your non-arc project, you will need to set a `-fobjc-arc` compiler flag on all of the Bugsnag source files.
 
-If you are using Bugsnag 2.2.0 or newer in your non-arc project, you will need to set a `-fobjc-arc` compiler flag on all of the Bugsnag source files. Conversely, if you are adding a pre-2.2.0 version of Bugsnag, you will need to set a `-fno-objc-arc` compiler flag.
-
-To set a compiler flag in Xcode, go to your active target and select the "Build Phases" tab. Now select all Bugsnag source files, press Enter, insert `-fobjc-arc` or `-fno-objc-arc` and then "Done" to enable or disable ARC for Bugsnag.
+To set a compiler flag in Xcode, go to your active target and select the "Build Phases" tab. Now select all Bugsnag source files, press Enter, insert `-fobjc-arc` and then "Done" to enable ARC for Bugsnag.
 
 Send Non-Fatal Exceptions to Bugsnag
 ------------------------------------
@@ -101,10 +133,10 @@ Configuration
 
 ###context
 
-Bugsnag uses the concept of "contexts" to help display and group your errors. Contexts represent what was happening in your application at the time an error occurs. The iOS Notifier will set this to be the top most UIViewController, but if in a certain case you need to override the context, you can do so using this property:
+Bugsnag uses the concept of "contexts" to help display and group your errors. Contexts represent what was happening in your application at the time an error occurs. The Notifier will set this to be the top most UIViewController, but if in a certain case you need to override the context, you can do so using this property:
 
 ```objective-c
-[Bugsnag instance].context = @"MyUIViewController";
+[Bugsnag configuration].context = @"MyUIViewController";
 ```
 
 ###userId
@@ -114,23 +146,23 @@ Bugsnag helps you understand how many of your users are affected by each error. 
 If you would like to override this `userId`, for example to set it to be a username of your currently logged in user, you can set the `userId` property:
 
 ```objective-c
-[Bugsnag instance].userId = @"leeroy-jenkins";
+[Bugsnag configuration].userId = @"leeroy-jenkins";
 ```
 
 ###releaseStage
 
-In order to distinguish between errors that occur in different stages of the application release process a release stage is sent to Bugsnag when an error occurs. This is automatically configured by the iOS notifier to be "production", unless DEBUG is defined during compilation. In this case it will be set to "development". If you wish to override this, you can do so by setting the releaseStage property manually:
+In order to distinguish between errors that occur in different stages of the application release process a release stage is sent to Bugsnag when an error occurs. This is automatically configured by the notifier to be "production", unless DEBUG is defined during compilation. In this case it will be set to "development". If you wish to override this, you can do so by setting the releaseStage property manually:
 
 ```objective-c
-[Bugsnag instance].releaseStage = @"development";
+[Bugsnag configuration].releaseStage = @"development";
 ```
 
 ###notifyReleaseStages
 
-By default, we will only notify Bugsnag of exceptions that happen when your `releaseStage` is set to be either "production" or "development". If you would like to change which release stages notify Bugsnag of exceptions you can set the `notifyReleaseStages` property:
+By default, we notify Bugsnag of all exceptions that happen in your app. If you would like to change which release stages notify Bugsnag of exceptions you can set the `notifyReleaseStages` property:
 
 ```objective-c
-[Bugsnag instance].notifyReleaseStages = [NSArray arrayWithObjects:@"production", nil];
+[Bugsnag configuration].notifyReleaseStages = [NSArray arrayWithObjects:@"production", nil];
 ```
 
 ###autoNotify
@@ -138,7 +170,7 @@ By default, we will only notify Bugsnag of exceptions that happen when your `rel
 By default, we will automatically notify Bugsnag of any fatal exceptions in your application. If you want to stop this from happening, you can set `autoNotify` to NO:
 
 ```objective-c
-[Bugsnag instance].autoNotify = NO;
+[Bugsnag configuration].autoNotify = NO;
 ```
 
 ###enableSSL
@@ -146,34 +178,21 @@ By default, we will automatically notify Bugsnag of any fatal exceptions in your
 By default, Bugsnag enables the use of SSL encryption when sending errors to Bugsnag. If you want to use an unencrypted connection to Bugsnag, you can set `enableSSL` to NO:
 
 ```objective-c
-[Bugsnag instance].enableSSL = NO;
+[Bugsnag configuration].enableSSL = NO;
 ```
-
-Stacktrace Information
-----------------------
-
-In order for the stacktrace information to be included with the bug reports on Bugsnag, the following settings should be
-configured.
-
-- Deployment Postprocessing: Off
-- Strip debug symbols during copy: Off
-- Strip linked product: Off
-
-**Note:** This will increase the size of the application slightly.
-
 
 Reporting Bugs or Feature Requests
 ----------------------------------
 
 Please report any bugs or feature requests on the github issues page for this project here:
 
-<https://github.com/bugsnag/bugsnag-ios/issues>
+<https://github.com/bugsnag/bugsnag-objective-c/issues>
 
 
 Contributing
 ------------
 
--   [Fork](https://help.github.com/articles/fork-a-repo) the [notifier on github](https://github.com/bugsnag/bugsnag-ios)
+-   [Fork](https://help.github.com/articles/fork-a-repo) the [notifier on github](https://github.com/bugsnag/bugsnag-objective-c)
 -   Commit and push until you are happy with your contribution
 -   [Make a pull request](https://help.github.com/articles/using-pull-requests)
 -   Thanks!
@@ -182,4 +201,4 @@ Contributing
 License
 -------
 
-The Bugsnag iOS notifier is free software released under the MIT License. See [LICENSE.txt](https://github.com/bugsnag/bugsnag-ios/blob/master/LICENSE.txt) for details.
+The Bugsnag Objective-C notifier is free software released under the MIT License. See [LICENSE.txt](https://github.com/bugsnag/bugsnag-objective-c/blob/master/LICENSE.txt) for details.

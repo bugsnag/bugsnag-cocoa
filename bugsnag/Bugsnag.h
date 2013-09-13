@@ -13,6 +13,7 @@
 
 + (void)startBugsnagWithApiKey:(NSString*)apiKey;
 + (BugsnagConfiguration*)configuration;
++ (BugsnagConfiguration*)instance; // For backwards compatability
 + (void) notify:(NSException *)exception;
 + (void) notify:(NSException *)exception withData:(NSDictionary*)metaData;
 
