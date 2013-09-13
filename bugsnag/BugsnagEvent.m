@@ -53,15 +53,14 @@
 
 - (void) addSignal:(int) signal {
     NSString *errorClass = [NSString stringWithCString:strsignal(signal) encoding:NSUTF8StringEncoding];
-    NSString *message = @"";
     NSArray *stacktrace = [self getStackTraceWithException:nil];
     
-    [self addExceptionWithClass:errorClass andMessage:message andStacktrace:stacktrace];
+    [self addExceptionWithClass:errorClass andMessage:nil andStacktrace:stacktrace];
 }
 
 - (void) addException:(NSException*)exception {
     NSArray *stacktrace = [self getStackTraceWithException:exception];
-    //TODO:SM can we use userdata on the exception as metadata?
+    //TODO:SM can we use userdata on the exception as metadata? Would require filtering
     
     [self addExceptionWithClass:exception.name andMessage:exception.reason andStacktrace:stacktrace];
 }
@@ -73,15 +72,16 @@
             exceptions = [NSMutableArray array];
             [self.dictionary setObject:exceptions forKey:@"exceptions"];
         }
-        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: errorClass, @"errorClass",
-                                                                               message, @"message",
-                                                                               stacktrace, @"stacktrace", nil];
+        
+        NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys: errorClass, @"errorClass",
+                                                                                             stacktrace, @"stacktrace", nil];
+        if (message != nil) [dictionary setObject:message forKey:@"message"];
+        
         [exceptions addObject:dictionary];
     }
 }
 
 - (NSArray *) getStackTraceWithException:(NSException*) exception {
-    // TODO:SM Make this work with non stripped code
     int count = 256;
     void *frames[count];
     int offset = 0;
@@ -106,8 +106,8 @@
     NSMutableArray *stackTrace = [NSMutableArray array];
     NSDictionary *loadedImages = [self loadedImages];
     
-    for(uint32_t i = offset; i < count; i++) {
-        uint32_t frameAddress;
+    for(uint64_t i = offset; i < count; i++) {
+        uint64_t frameAddress;
 
         // The pointer returned by backtrace() is the address of the instruction immediately after a function call.
         // We actually want to know the address of the function call instruction itself, so we subtract one instruction.
@@ -119,10 +119,10 @@
         // In the case of "thumb" instructions, we always subtract 2 (even though some instructions are 4 bytes long) this
         // is because DWARF gives us the same result whn we look up a pointer half way through an instruction. Apple take
         // a different approach in their crash logs, and always subtract 4. This is unlikely to give any meaningful difference.
-        if ((uint32_t)frames[i] & ARMV7_IS_THUMB_MASK) {
-            frameAddress = ((uint32_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_THUMB_INSTRUCTION_SIZE;
+        if ((uint64_t)frames[i] & ARMV7_IS_THUMB_MASK) {
+            frameAddress = ((uint64_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_THUMB_INSTRUCTION_SIZE;
         } else {
-            frameAddress = ((uint32_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_FULL_INSTRUCTION_SIZE;
+            frameAddress = ((uint64_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_FULL_INSTRUCTION_SIZE;
         }
 
         int status = dladdr((void *)frameAddress, &info);
@@ -137,10 +137,10 @@
             
             if ([binaryName isEqualToString:[[NSProcessInfo processInfo] processName]]) [frame setObject:[NSNumber numberWithBool:YES] forKey:@"inProject"];
 
-            uint32_t machoLoadAddress = [[image objectForKey:@"machoLoadAddress"] unsignedIntValue];
-            uint32_t machoVMAddress = [[image objectForKey:@"machoVMAddress"] unsignedIntValue];
+            uint64_t machoLoadAddress = [[image objectForKey:@"machoLoadAddress"] unsignedIntValue];
+            uint64_t machoVMAddress = [[image objectForKey:@"machoVMAddress"] unsignedIntValue];
 
-            uint32_t symbolAddress;
+            uint64_t symbolAddress;
 
             // The frameAddress we have is relative to process memory. This changes every time the process is run
             // due to address space layout randomization, so we actually want to report the address relative to the
@@ -149,7 +149,7 @@
             [frame setObject:[NSNumber numberWithUnsignedInt: frameAddress] forKey:@"frameAddress"];
             
             if (info.dli_saddr) {
-                symbolAddress = (((uint32_t)info.dli_saddr & ARMV7_ADDRESS_MASK) - machoLoadAddress) + machoVMAddress;
+                symbolAddress = (((uint64_t)info.dli_saddr & ARMV7_ADDRESS_MASK) - machoLoadAddress) + machoVMAddress;
                 [frame setObject:[NSNumber numberWithUnsignedInt: symbolAddress] forKey:@"symbolAddress"];
             }
 
@@ -167,24 +167,28 @@
 
 - (NSDictionary *) loadedImages {
     //Get count of all currently loaded images
-    uint32_t count = _dyld_image_count();
+    uint64_t count = _dyld_image_count();
     NSMutableDictionary *returnValue = [NSMutableDictionary dictionary];
     
-    for (uint32_t i = 0; i < count; i++) {
+    for (uint64_t i = 0; i < count; i++) {
         const char *dyld = _dyld_get_image_name(i);
-        const struct mach_header *header = _dyld_get_image_header(i);
+        const struct mach_header *header32 = _dyld_get_image_header(i);
+        const struct mach_header_64 *header64 = (struct mach_header_64 *)_dyld_get_image_header(i);
+        BOOL machHeader64Bit = header32->magic == MH_MAGIC_64;
         
         NSString *machoFile = [NSString stringWithCString:dyld encoding:NSUTF8StringEncoding];
-        NSNumber *machoLoadAddress = [NSNumber numberWithUnsignedInt:(uint32_t)header];
+        NSNumber *machoLoadAddress = [NSNumber numberWithUnsignedInt:(uint64_t)header32];
         NSString *machoUUID = nil;
         NSNumber *machoVMAddress = nil;
         
         // Now lets look at the load_commands
-        uint8_t *header_ptr = (uint8_t*)header;
-        header_ptr += sizeof(struct mach_header);
+        uint8_t *header_ptr = (uint8_t*)header32;
+        header_ptr += machHeader64Bit ? sizeof(header64) : sizeof(header32);
         struct load_command *command = (struct load_command*)header_ptr;
         
-        for (int i = 0; i < header->ncmds > 0; ++i) {
+        int numCommands = machHeader64Bit ? header64->ncmds : header32->ncmds;
+        
+        for (int i = 0; i < numCommands > 0; ++i) {
             if (command->cmd == LC_UUID) {
                 struct uuid_command ucmd = *(struct uuid_command*)header_ptr;
                 
@@ -199,7 +203,7 @@
             } else if (command->cmd == LC_SEGMENT) {
                 struct segment_command ucmd = *(struct segment_command*)header_ptr;
                 if (strcmp("__TEXT", ucmd.segname) == 0) {
-                    machoVMAddress = [NSNumber numberWithUnsignedInt:(uint32_t)ucmd.vmaddr];
+                    machoVMAddress = [NSNumber numberWithUnsignedInt:(uint64_t)ucmd.vmaddr];
                 }
             }
             

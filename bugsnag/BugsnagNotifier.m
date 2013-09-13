@@ -26,6 +26,9 @@
     if((self = [super init])) {
         self.configuration = configuration;
         
+        if (self.configuration.appVersion == nil) self.configuration.appVersion = self.appVersion;
+        if (self.configuration.userId == nil) self.configuration.userId = self.userUUID;
+        
         [self.configuration.metaData addAttribute:@"Machine" withValue:self.machine toTabWithName:@"device"];
         
         [self beforeNotify:^(BugsnagEvent *event) {
@@ -34,8 +37,7 @@
         }];
         
         self.notifierName = @"Bugsnag Objective-C";
-        //TODO:SM Pull this out from somewhere in cocoapods if poss
-        self.notifierVersion = @"3.0.0";
+        self.notifierVersion = [NSString stringWithFormat:@"%i.%i.%i", COCOAPODS_VERSION_MAJOR_Bugsnag, COCOAPODS_VERSION_MINOR_Bugsnag, COCOAPODS_VERSION_PATCH_Bugsnag];
         self.notifierURL = @"https://github.com/bugsnag/bugsnag-objective-c";
     }
     return self;
@@ -314,6 +316,19 @@
     } else {
         return nil;
     }
+}
+
+- (NSString *) appVersion {
+    NSString *bundleVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    NSString *versionString = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    if (bundleVersion != nil && versionString != nil && ![bundleVersion isEqualToString:versionString]) {
+        return [NSString stringWithFormat:@"%@ (%@)", versionString, bundleVersion];
+    } else if (bundleVersion != nil) {
+        return bundleVersion;
+    } else if(versionString != nil) {
+        return versionString;
+    }
+    return @"";
 }
 
 @end

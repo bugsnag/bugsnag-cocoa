@@ -1,1087 +1,516 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>archiveVersion</key>
-	<string>1</string>
-	<key>classes</key>
-	<dict/>
-	<key>objectVersion</key>
-	<string>46</string>
-	<key>objects</key>
-	<dict>
-		<key>8EC29DBC958246E7960FA48F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>E8CC6D16892443F0806C2133</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>901B9BD39D5B42F6A0626D5A</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array/>
-			<key>inputPaths</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXShellScriptBuildPhase</string>
-			<key>name</key>
-			<string>Check Pods Manifest.lock</string>
-			<key>outputPaths</key>
-			<array/>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-			<key>shellPath</key>
-			<string>/bin/sh</string>
-			<key>shellScript</key>
-			<string>diff "${PODS_ROOT}/../Podfile.lock" "${PODS_ROOT}/Manifest.lock" &gt; /dev/null
-if [[ $? != 0 ]] ; then
-    cat &lt;&lt; EOM
-error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.
-EOM
-    exit 1
-fi
-</string>
-			<key>showEnvVarsInLog</key>
-			<string>0</string>
-		</dict>
-		<key>DDC662714BC3470B9C4EBC4E</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array/>
-			<key>inputPaths</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXShellScriptBuildPhase</string>
-			<key>name</key>
-			<string>Copy Pods Resources</string>
-			<key>outputPaths</key>
-			<array/>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-			<key>shellPath</key>
-			<string>/bin/sh</string>
-			<key>shellScript</key>
-			<string>"${SRCROOT}/Pods/Pods-resources.sh"
-</string>
-			<key>showEnvVarsInLog</key>
-			<string>0</string>
-		</dict>
-		<key>E02BD607FB994044A4AC0F70</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>name</key>
-			<string>Pods.xcconfig</string>
-			<key>path</key>
-			<string>Pods/Pods.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>E8CC6D16892443F0806C2133</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>archive.ar</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>libPods.a</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>F4C71CD617CE8B9900009E4B</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>F4C71CE417CE8B9900009E4B</string>
-				<string>F4C71CF917CE8B9900009E4B</string>
-				<string>F4C71CE117CE8B9900009E4B</string>
-				<string>F4C71CE017CE8B9900009E4B</string>
-				<string>E02BD607FB994044A4AC0F70</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71CD717CE8B9900009E4B</key>
-		<dict>
-			<key>attributes</key>
-			<dict>
-				<key>LastUpgradeCheck</key>
-				<string>0460</string>
-				<key>ORGANIZATIONNAME</key>
-				<string>Simon Maynard</string>
-			</dict>
-			<key>buildConfigurationList</key>
-			<string>F4C71CDA17CE8B9900009E4B</string>
-			<key>compatibilityVersion</key>
-			<string>Xcode 3.2</string>
-			<key>developmentRegion</key>
-			<string>English</string>
-			<key>hasScannedForEncodings</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXProject</string>
-			<key>knownRegions</key>
-			<array>
-				<string>en</string>
-			</array>
-			<key>mainGroup</key>
-			<string>F4C71CD617CE8B9900009E4B</string>
-			<key>productRefGroup</key>
-			<string>F4C71CE017CE8B9900009E4B</string>
-			<key>projectDirPath</key>
-			<string></string>
-			<key>projectReferences</key>
-			<array/>
-			<key>projectRoot</key>
-			<string></string>
-			<key>targets</key>
-			<array>
-				<string>F4C71CDE17CE8B9900009E4B</string>
-				<string>F4C71CEF17CE8B9900009E4B</string>
-			</array>
-		</dict>
-		<key>F4C71CDA17CE8B9900009E4B</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>F4C71D0217CE8B9900009E4B</string>
-				<string>F4C71D0317CE8B9900009E4B</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>F4C71CDB17CE8B9900009E4B</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>F4C71CEA17CE8B9900009E4B</string>
-				<string>F4FCBA0E17CE90B200A264EC</string>
-				<string>F4FCBA1117CE90EB00A264EC</string>
-				<string>F4FCBA1417CE90FB00A264EC</string>
-				<string>F4FCBA1717CE924400A264EC</string>
-				<string>F4FCBA2117CEF24E00A264EC</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>F4C71CDC17CE8B9900009E4B</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>F4C71CE317CE8B9900009E4B</string>
-				<string>8EC29DBC958246E7960FA48F</string>
-			</array>
-			<key>isa</key>
-			<string>PBXFrameworksBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>F4C71CDD17CE8B9900009E4B</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>dstPath</key>
-			<string>include/${PRODUCT_NAME}</string>
-			<key>dstSubfolderSpec</key>
-			<string>16</string>
-			<key>files</key>
-			<array>
-				<string>F4C71CE817CE8B9900009E4B</string>
-			</array>
-			<key>isa</key>
-			<string>PBXCopyFilesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>F4C71CDE17CE8B9900009E4B</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>F4C71D0417CE8B9900009E4B</string>
-			<key>buildPhases</key>
-			<array>
-				<string>901B9BD39D5B42F6A0626D5A</string>
-				<string>F4C71CDB17CE8B9900009E4B</string>
-				<string>F4C71CDC17CE8B9900009E4B</string>
-				<string>F4C71CDD17CE8B9900009E4B</string>
-				<string>DDC662714BC3470B9C4EBC4E</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>Bugsnag</string>
-			<key>productName</key>
-			<string>bugsnag</string>
-			<key>productReference</key>
-			<string>F4C71CDF17CE8B9900009E4B</string>
-			<key>productType</key>
-			<string>com.apple.product-type.library.static</string>
-		</dict>
-		<key>F4C71CDF17CE8B9900009E4B</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>archive.ar</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>libBugsnag.a</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>F4C71CE017CE8B9900009E4B</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>F4C71CDF17CE8B9900009E4B</string>
-				<string>F4C71CF017CE8B9900009E4B</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Products</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71CE117CE8B9900009E4B</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>F4C71CE217CE8B9900009E4B</string>
-				<string>F4C71CF117CE8B9900009E4B</string>
-				<string>E8CC6D16892443F0806C2133</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Frameworks</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71CE217CE8B9900009E4B</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>Foundation.framework</string>
-			<key>path</key>
-			<string>System/Library/Frameworks/Foundation.framework</string>
-			<key>sourceTree</key>
-			<string>SDKROOT</string>
-		</dict>
-		<key>F4C71CE317CE8B9900009E4B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F4C71CE217CE8B9900009E4B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F4C71CE417CE8B9900009E4B</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>F4FCBA1E17CEECC300A264EC</string>
-				<string>F4C71CE717CE8B9900009E4B</string>
-				<string>F4C71CE917CE8B9900009E4B</string>
-				<string>F4FCBA0C17CE90B200A264EC</string>
-				<string>F4FCBA0D17CE90B200A264EC</string>
-				<string>F4FCBA1217CE90FB00A264EC</string>
-				<string>F4FCBA1317CE90FB00A264EC</string>
-				<string>F4FCBA1817CEB47B00A264EC</string>
-				<string>F4FCBA0F17CE90EB00A264EC</string>
-				<string>F4FCBA1017CE90EB00A264EC</string>
-				<string>F4FCBA1517CE924400A264EC</string>
-				<string>F4FCBA1617CE924400A264EC</string>
-				<string>F4C71CE517CE8B9900009E4B</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Bugsnag</string>
-			<key>path</key>
-			<string>bugsnag</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71CE517CE8B9900009E4B</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>F4C71CE617CE8B9900009E4B</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Supporting Files</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71CE617CE8B9900009E4B</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>Bugsnag.temp_caseinsensitive_rename-Prefix.pch</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71CE717CE8B9900009E4B</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>Bugsnag.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71CE817CE8B9900009E4B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F4C71CE717CE8B9900009E4B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F4C71CE917CE8B9900009E4B</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>Bugsnag.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71CEA17CE8B9900009E4B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F4C71CE917CE8B9900009E4B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F4C71CEB17CE8B9900009E4B</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>F4C71D0117CE8B9900009E4B</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>F4C71CEC17CE8B9900009E4B</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>F4C71CF217CE8B9900009E4B</string>
-				<string>F4C71CF517CE8B9900009E4B</string>
-				<string>F4C71CF817CE8B9900009E4B</string>
-			</array>
-			<key>isa</key>
-			<string>PBXFrameworksBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>F4C71CED17CE8B9900009E4B</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>F4C71CFE17CE8B9900009E4B</string>
-			</array>
-			<key>isa</key>
-			<string>PBXResourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>F4C71CEE17CE8B9900009E4B</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array/>
-			<key>inputPaths</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXShellScriptBuildPhase</string>
-			<key>outputPaths</key>
-			<array/>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-			<key>shellPath</key>
-			<string>/bin/sh</string>
-			<key>shellScript</key>
-			<string># Run the unit tests in this test bundle.
-"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests"
-</string>
-		</dict>
-		<key>F4C71CEF17CE8B9900009E4B</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>F4C71D0717CE8B9900009E4B</string>
-			<key>buildPhases</key>
-			<array>
-				<string>F4C71CEB17CE8B9900009E4B</string>
-				<string>F4C71CEC17CE8B9900009E4B</string>
-				<string>F4C71CED17CE8B9900009E4B</string>
-				<string>F4C71CEE17CE8B9900009E4B</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array>
-				<string>F4C71CF717CE8B9900009E4B</string>
-			</array>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>BugsnagTest</string>
-			<key>productName</key>
-			<string>bugsnagTests</string>
-			<key>productReference</key>
-			<string>F4C71CF017CE8B9900009E4B</string>
-			<key>productType</key>
-			<string>com.apple.product-type.bundle</string>
-		</dict>
-		<key>F4C71CF017CE8B9900009E4B</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>wrapper.cfbundle</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>Bugsnag.octest</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>F4C71CF117CE8B9900009E4B</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>SenTestingKit.framework</string>
-			<key>path</key>
-			<string>Library/Frameworks/SenTestingKit.framework</string>
-			<key>sourceTree</key>
-			<string>DEVELOPER_DIR</string>
-		</dict>
-		<key>F4C71CF217CE8B9900009E4B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F4C71CF117CE8B9900009E4B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F4C71CF517CE8B9900009E4B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F4C71CE217CE8B9900009E4B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F4C71CF617CE8B9900009E4B</key>
-		<dict>
-			<key>containerPortal</key>
-			<string>F4C71CD717CE8B9900009E4B</string>
-			<key>isa</key>
-			<string>PBXContainerItemProxy</string>
-			<key>proxyType</key>
-			<string>1</string>
-			<key>remoteGlobalIDString</key>
-			<string>F4C71CDE17CE8B9900009E4B</string>
-			<key>remoteInfo</key>
-			<string>bugsnag</string>
-		</dict>
-		<key>F4C71CF717CE8B9900009E4B</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXTargetDependency</string>
-			<key>target</key>
-			<string>F4C71CDE17CE8B9900009E4B</string>
-			<key>targetProxy</key>
-			<string>F4C71CF617CE8B9900009E4B</string>
-		</dict>
-		<key>F4C71CF817CE8B9900009E4B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F4C71CDF17CE8B9900009E4B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F4C71CF917CE8B9900009E4B</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>F4C71CFF17CE8B9900009E4B</string>
-				<string>F4C71D0017CE8B9900009E4B</string>
-				<string>F4C71CFA17CE8B9900009E4B</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>BugsnagTests</string>
-			<key>path</key>
-			<string>bugsnagTests</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71CFA17CE8B9900009E4B</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>F4C71CFB17CE8B9900009E4B</string>
-				<string>F4C71CFC17CE8B9900009E4B</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Supporting Files</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71CFB17CE8B9900009E4B</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.plist.xml</string>
-			<key>path</key>
-			<string>Bugsnag.temp_caseinsensitive_renameTests-Info.plist</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71CFC17CE8B9900009E4B</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>F4C71CFD17CE8B9900009E4B</string>
-			</array>
-			<key>isa</key>
-			<string>PBXVariantGroup</string>
-			<key>name</key>
-			<string>InfoPlist.strings</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71CFD17CE8B9900009E4B</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.plist.strings</string>
-			<key>name</key>
-			<string>en</string>
-			<key>path</key>
-			<string>en.lproj/InfoPlist.strings</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71CFE17CE8B9900009E4B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F4C71CFC17CE8B9900009E4B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F4C71CFF17CE8B9900009E4B</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>BugsnagTests.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71D0017CE8B9900009E4B</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>BugsnagTests.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4C71D0117CE8B9900009E4B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F4C71D0017CE8B9900009E4B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F4C71D0217CE8B9900009E4B</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>ALWAYS_SEARCH_USER_PATHS</key>
-				<string>NO</string>
-				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
-				<string>gnu++0x</string>
-				<key>CLANG_CXX_LIBRARY</key>
-				<string>libc++</string>
-				<key>CLANG_ENABLE_OBJC_ARC</key>
-				<string>YES</string>
-				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_EMPTY_BODY</key>
-				<string>YES</string>
-				<key>CLANG_WARN_ENUM_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_INT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
-				<string>YES</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
-				<key>GCC_C_LANGUAGE_STANDARD</key>
-				<string>gnu99</string>
-				<key>GCC_DYNAMIC_NO_PIC</key>
-				<string>NO</string>
-				<key>GCC_OPTIMIZATION_LEVEL</key>
-				<string>0</string>
-				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
-				<array>
-					<string>DEBUG=1</string>
-					<string>$(inherited)</string>
-				</array>
-				<key>GCC_SYMBOLS_PRIVATE_EXTERN</key>
-				<string>NO</string>
-				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNUSED_VARIABLE</key>
-				<string>YES</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>6.1</string>
-				<key>ONLY_ACTIVE_ARCH</key>
-				<string>YES</string>
-				<key>PRODUCT_NAME</key>
-				<string>BugsnagTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>F4C71D0317CE8B9900009E4B</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>ALWAYS_SEARCH_USER_PATHS</key>
-				<string>NO</string>
-				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
-				<string>gnu++0x</string>
-				<key>CLANG_CXX_LIBRARY</key>
-				<string>libc++</string>
-				<key>CLANG_ENABLE_OBJC_ARC</key>
-				<string>YES</string>
-				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_EMPTY_BODY</key>
-				<string>YES</string>
-				<key>CLANG_WARN_ENUM_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_INT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
-				<string>YES</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>YES</string>
-				<key>GCC_C_LANGUAGE_STANDARD</key>
-				<string>gnu99</string>
-				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNUSED_VARIABLE</key>
-				<string>YES</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>6.1</string>
-				<key>PRODUCT_NAME</key>
-				<string>BugsnagTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>VALIDATE_PRODUCT</key>
-				<string>YES</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>F4C71D0417CE8B9900009E4B</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>F4C71D0517CE8B9900009E4B</string>
-				<string>F4C71D0617CE8B9900009E4B</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>F4C71D0517CE8B9900009E4B</key>
-		<dict>
-			<key>baseConfigurationReference</key>
-			<string>E02BD607FB994044A4AC0F70</string>
-			<key>buildSettings</key>
-			<dict>
-				<key>DSTROOT</key>
-				<string>/tmp/bugsnag.dst</string>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>bugsnag/Bugsnag-Prefix.pch</string>
-				<key>OTHER_LDFLAGS</key>
-				<string>-ObjC</string>
-				<key>PRODUCT_NAME</key>
-				<string>Bugsnag</string>
-				<key>SKIP_INSTALL</key>
-				<string>YES</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>F4C71D0617CE8B9900009E4B</key>
-		<dict>
-			<key>baseConfigurationReference</key>
-			<string>E02BD607FB994044A4AC0F70</string>
-			<key>buildSettings</key>
-			<dict>
-				<key>DSTROOT</key>
-				<string>/tmp/bugsnag.dst</string>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>bugsnag/Bugsnag-Prefix.pch</string>
-				<key>OTHER_LDFLAGS</key>
-				<string>-ObjC</string>
-				<key>PRODUCT_NAME</key>
-				<string>Bugsnag</string>
-				<key>SKIP_INSTALL</key>
-				<string>YES</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>F4C71D0717CE8B9900009E4B</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>F4C71D0817CE8B9900009E4B</string>
-				<string>F4C71D0917CE8B9900009E4B</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>F4C71D0817CE8B9900009E4B</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>FRAMEWORK_SEARCH_PATHS</key>
-				<array>
-					<string>"$(SDKROOT)/Developer/Library/Frameworks"</string>
-					<string>"$(DEVELOPER_LIBRARY_DIR)/Frameworks"</string>
-				</array>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>bugsnag/Bugsnag-Prefix.pch</string>
-				<key>INFOPLIST_FILE</key>
-				<string>bugsnagTests/BugsnagTests-Info.plist</string>
-				<key>PRODUCT_NAME</key>
-				<string>Bugsnag</string>
-				<key>WRAPPER_EXTENSION</key>
-				<string>octest</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>F4C71D0917CE8B9900009E4B</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>FRAMEWORK_SEARCH_PATHS</key>
-				<array>
-					<string>"$(SDKROOT)/Developer/Library/Frameworks"</string>
-					<string>"$(DEVELOPER_LIBRARY_DIR)/Frameworks"</string>
-				</array>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>bugsnag/Bugsnag-Prefix.pch</string>
-				<key>INFOPLIST_FILE</key>
-				<string>bugsnagTests/BugsnagTests-Info.plist</string>
-				<key>PRODUCT_NAME</key>
-				<string>Bugsnag</string>
-				<key>WRAPPER_EXTENSION</key>
-				<string>octest</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>F4FCBA0C17CE90B200A264EC</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>BugsnagConfiguration.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4FCBA0D17CE90B200A264EC</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>BugsnagConfiguration.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4FCBA0E17CE90B200A264EC</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F4FCBA0D17CE90B200A264EC</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F4FCBA0F17CE90EB00A264EC</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>BugsnagMetaData.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4FCBA1017CE90EB00A264EC</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>BugsnagMetaData.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4FCBA1117CE90EB00A264EC</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F4FCBA1017CE90EB00A264EC</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F4FCBA1217CE90FB00A264EC</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>BugsnagEvent.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4FCBA1317CE90FB00A264EC</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>BugsnagEvent.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4FCBA1417CE90FB00A264EC</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F4FCBA1317CE90FB00A264EC</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F4FCBA1517CE924400A264EC</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>BugsnagNotifier.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4FCBA1617CE924400A264EC</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>BugsnagNotifier.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4FCBA1717CE924400A264EC</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F4FCBA1617CE924400A264EC</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F4FCBA1817CEB47B00A264EC</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>BugsnagLogger.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4FCBA1E17CEECC300A264EC</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>F4FCBA1F17CEF24E00A264EC</string>
-				<string>F4FCBA2017CEF24E00A264EC</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>iOS</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4FCBA1F17CEF24E00A264EC</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>BugsnagIosNotifier.h</string>
-			<key>path</key>
-			<string>iOS/BugsnagIosNotifier.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4FCBA2017CEF24E00A264EC</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>BugsnagIosNotifier.m</string>
-			<key>path</key>
-			<string>iOS/BugsnagIosNotifier.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>F4FCBA2117CEF24E00A264EC</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F4FCBA2017CEF24E00A264EC</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-	</dict>
-	<key>rootObject</key>
-	<string>F4C71CD717CE8B9900009E4B</string>
-</dict>
-</plist>
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8EC29DBC958246E7960FA48F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E8CC6D16892443F0806C2133 /* libPods.a */; };
+		F495C52F17E2A8E700B1995A /* BugsnagOSXNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = F495C52E17E2A8E700B1995A /* BugsnagOSXNotifier.m */; };
+		F495C53017E2A8E700B1995A /* BugsnagOSXNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = F495C52E17E2A8E700B1995A /* BugsnagOSXNotifier.m */; };
+		F4C71CE317CE8B9900009E4B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C71CE217CE8B9900009E4B /* Foundation.framework */; };
+		F4C71CE817CE8B9900009E4B /* Bugsnag.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F4C71CE717CE8B9900009E4B /* Bugsnag.h */; };
+		F4C71CEA17CE8B9900009E4B /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = F4C71CE917CE8B9900009E4B /* Bugsnag.m */; };
+		F4C71CF217CE8B9900009E4B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C71CF117CE8B9900009E4B /* SenTestingKit.framework */; };
+		F4C71CF517CE8B9900009E4B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C71CE217CE8B9900009E4B /* Foundation.framework */; };
+		F4C71CF817CE8B9900009E4B /* libBugsnag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C71CDF17CE8B9900009E4B /* libBugsnag.a */; };
+		F4C71CFE17CE8B9900009E4B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F4C71CFC17CE8B9900009E4B /* InfoPlist.strings */; };
+		F4C71D0117CE8B9900009E4B /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F4C71D0017CE8B9900009E4B /* BugsnagTests.m */; };
+		F4FCBA0E17CE90B200A264EC /* BugsnagConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FCBA0D17CE90B200A264EC /* BugsnagConfiguration.m */; };
+		F4FCBA1117CE90EB00A264EC /* BugsnagMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FCBA1017CE90EB00A264EC /* BugsnagMetaData.m */; };
+		F4FCBA1417CE90FB00A264EC /* BugsnagEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FCBA1317CE90FB00A264EC /* BugsnagEvent.m */; };
+		F4FCBA1717CE924400A264EC /* BugsnagNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FCBA1617CE924400A264EC /* BugsnagNotifier.m */; };
+		F4FCBA2117CEF24E00A264EC /* BugsnagIosNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FCBA2017CEF24E00A264EC /* BugsnagIosNotifier.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F4C71CF617CE8B9900009E4B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F4C71CD717CE8B9900009E4B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F4C71CDE17CE8B9900009E4B;
+			remoteInfo = bugsnag;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F4C71CDD17CE8B9900009E4B /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/${PRODUCT_NAME}";
+			dstSubfolderSpec = 16;
+			files = (
+				F4C71CE817CE8B9900009E4B /* Bugsnag.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		E02BD607FB994044A4AC0F70 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		E8CC6D16892443F0806C2133 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		F495C52D17E2A8E700B1995A /* BugsnagOSXNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagOSXNotifier.h; path = OSX/BugsnagOSXNotifier.h; sourceTree = "<group>"; };
+		F495C52E17E2A8E700B1995A /* BugsnagOSXNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagOSXNotifier.m; path = OSX/BugsnagOSXNotifier.m; sourceTree = "<group>"; };
+		F4C71CDF17CE8B9900009E4B /* libBugsnag.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnag.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4C71CE217CE8B9900009E4B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		F4C71CE617CE8B9900009E4B /* Bugsnag.temp_caseinsensitive_rename-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bugsnag.temp_caseinsensitive_rename-Prefix.pch"; sourceTree = "<group>"; };
+		F4C71CE717CE8B9900009E4B /* Bugsnag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bugsnag.h; sourceTree = "<group>"; };
+		F4C71CE917CE8B9900009E4B /* Bugsnag.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Bugsnag.m; sourceTree = "<group>"; };
+		F4C71CF017CE8B9900009E4B /* Bugsnag.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Bugsnag.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4C71CF117CE8B9900009E4B /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		F4C71CFB17CE8B9900009E4B /* Bugsnag.temp_caseinsensitive_renameTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Bugsnag.temp_caseinsensitive_renameTests-Info.plist"; sourceTree = "<group>"; };
+		F4C71CFD17CE8B9900009E4B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F4C71CFF17CE8B9900009E4B /* BugsnagTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagTests.h; sourceTree = "<group>"; };
+		F4C71D0017CE8B9900009E4B /* BugsnagTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagTests.m; sourceTree = "<group>"; };
+		F4FCBA0C17CE90B200A264EC /* BugsnagConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagConfiguration.h; sourceTree = "<group>"; };
+		F4FCBA0D17CE90B200A264EC /* BugsnagConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagConfiguration.m; sourceTree = "<group>"; };
+		F4FCBA0F17CE90EB00A264EC /* BugsnagMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagMetaData.h; sourceTree = "<group>"; };
+		F4FCBA1017CE90EB00A264EC /* BugsnagMetaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagMetaData.m; sourceTree = "<group>"; };
+		F4FCBA1217CE90FB00A264EC /* BugsnagEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagEvent.h; sourceTree = "<group>"; };
+		F4FCBA1317CE90FB00A264EC /* BugsnagEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagEvent.m; sourceTree = "<group>"; };
+		F4FCBA1517CE924400A264EC /* BugsnagNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagNotifier.h; sourceTree = "<group>"; };
+		F4FCBA1617CE924400A264EC /* BugsnagNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagNotifier.m; sourceTree = "<group>"; };
+		F4FCBA1817CEB47B00A264EC /* BugsnagLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagLogger.h; sourceTree = "<group>"; };
+		F4FCBA1F17CEF24E00A264EC /* BugsnagIosNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagIosNotifier.h; path = iOS/BugsnagIosNotifier.h; sourceTree = "<group>"; };
+		F4FCBA2017CEF24E00A264EC /* BugsnagIosNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagIosNotifier.m; path = iOS/BugsnagIosNotifier.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F4C71CDC17CE8B9900009E4B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F4C71CE317CE8B9900009E4B /* Foundation.framework in Frameworks */,
+				8EC29DBC958246E7960FA48F /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F4C71CEC17CE8B9900009E4B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F4C71CF217CE8B9900009E4B /* SenTestingKit.framework in Frameworks */,
+				F4C71CF517CE8B9900009E4B /* Foundation.framework in Frameworks */,
+				F4C71CF817CE8B9900009E4B /* libBugsnag.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F495C53117E2A8ED00B1995A /* OSX */ = {
+			isa = PBXGroup;
+			children = (
+				F495C52D17E2A8E700B1995A /* BugsnagOSXNotifier.h */,
+				F495C52E17E2A8E700B1995A /* BugsnagOSXNotifier.m */,
+			);
+			name = OSX;
+			sourceTree = "<group>";
+		};
+		F4C71CD617CE8B9900009E4B = {
+			isa = PBXGroup;
+			children = (
+				F4C71CE417CE8B9900009E4B /* Bugsnag */,
+				F4C71CF917CE8B9900009E4B /* BugsnagTests */,
+				F4C71CE117CE8B9900009E4B /* Frameworks */,
+				F4C71CE017CE8B9900009E4B /* Products */,
+				E02BD607FB994044A4AC0F70 /* Pods.xcconfig */,
+			);
+			sourceTree = "<group>";
+		};
+		F4C71CE017CE8B9900009E4B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F4C71CDF17CE8B9900009E4B /* libBugsnag.a */,
+				F4C71CF017CE8B9900009E4B /* Bugsnag.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F4C71CE117CE8B9900009E4B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F4C71CE217CE8B9900009E4B /* Foundation.framework */,
+				F4C71CF117CE8B9900009E4B /* SenTestingKit.framework */,
+				E8CC6D16892443F0806C2133 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F4C71CE417CE8B9900009E4B /* Bugsnag */ = {
+			isa = PBXGroup;
+			children = (
+				F495C53117E2A8ED00B1995A /* OSX */,
+				F4FCBA1E17CEECC300A264EC /* iOS */,
+				F4C71CE717CE8B9900009E4B /* Bugsnag.h */,
+				F4C71CE917CE8B9900009E4B /* Bugsnag.m */,
+				F4FCBA0C17CE90B200A264EC /* BugsnagConfiguration.h */,
+				F4FCBA0D17CE90B200A264EC /* BugsnagConfiguration.m */,
+				F4FCBA1217CE90FB00A264EC /* BugsnagEvent.h */,
+				F4FCBA1317CE90FB00A264EC /* BugsnagEvent.m */,
+				F4FCBA1817CEB47B00A264EC /* BugsnagLogger.h */,
+				F4FCBA0F17CE90EB00A264EC /* BugsnagMetaData.h */,
+				F4FCBA1017CE90EB00A264EC /* BugsnagMetaData.m */,
+				F4FCBA1517CE924400A264EC /* BugsnagNotifier.h */,
+				F4FCBA1617CE924400A264EC /* BugsnagNotifier.m */,
+				F4C71CE517CE8B9900009E4B /* Supporting Files */,
+			);
+			name = Bugsnag;
+			path = bugsnag;
+			sourceTree = "<group>";
+		};
+		F4C71CE517CE8B9900009E4B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F4C71CE617CE8B9900009E4B /* Bugsnag.temp_caseinsensitive_rename-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F4C71CF917CE8B9900009E4B /* BugsnagTests */ = {
+			isa = PBXGroup;
+			children = (
+				F4C71CFF17CE8B9900009E4B /* BugsnagTests.h */,
+				F4C71D0017CE8B9900009E4B /* BugsnagTests.m */,
+				F4C71CFA17CE8B9900009E4B /* Supporting Files */,
+			);
+			name = BugsnagTests;
+			path = bugsnagTests;
+			sourceTree = "<group>";
+		};
+		F4C71CFA17CE8B9900009E4B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F4C71CFB17CE8B9900009E4B /* Bugsnag.temp_caseinsensitive_renameTests-Info.plist */,
+				F4C71CFC17CE8B9900009E4B /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F4FCBA1E17CEECC300A264EC /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				F4FCBA1F17CEF24E00A264EC /* BugsnagIosNotifier.h */,
+				F4FCBA2017CEF24E00A264EC /* BugsnagIosNotifier.m */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F4C71CDE17CE8B9900009E4B /* Bugsnag */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F4C71D0417CE8B9900009E4B /* Build configuration list for PBXNativeTarget "Bugsnag" */;
+			buildPhases = (
+				901B9BD39D5B42F6A0626D5A /* Check Pods Manifest.lock */,
+				F4C71CDB17CE8B9900009E4B /* Sources */,
+				F4C71CDC17CE8B9900009E4B /* Frameworks */,
+				F4C71CDD17CE8B9900009E4B /* CopyFiles */,
+				DDC662714BC3470B9C4EBC4E /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Bugsnag;
+			productName = bugsnag;
+			productReference = F4C71CDF17CE8B9900009E4B /* libBugsnag.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		F4C71CEF17CE8B9900009E4B /* BugsnagTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F4C71D0717CE8B9900009E4B /* Build configuration list for PBXNativeTarget "BugsnagTest" */;
+			buildPhases = (
+				F4C71CEB17CE8B9900009E4B /* Sources */,
+				F4C71CEC17CE8B9900009E4B /* Frameworks */,
+				F4C71CED17CE8B9900009E4B /* Resources */,
+				F4C71CEE17CE8B9900009E4B /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F4C71CF717CE8B9900009E4B /* PBXTargetDependency */,
+			);
+			name = BugsnagTest;
+			productName = bugsnagTests;
+			productReference = F4C71CF017CE8B9900009E4B /* Bugsnag.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F4C71CD717CE8B9900009E4B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Simon Maynard";
+			};
+			buildConfigurationList = F4C71CDA17CE8B9900009E4B /* Build configuration list for PBXProject "Bugsnag" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = F4C71CD617CE8B9900009E4B;
+			productRefGroup = F4C71CE017CE8B9900009E4B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F4C71CDE17CE8B9900009E4B /* Bugsnag */,
+				F4C71CEF17CE8B9900009E4B /* BugsnagTest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F4C71CED17CE8B9900009E4B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F4C71CFE17CE8B9900009E4B /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		901B9BD39D5B42F6A0626D5A /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		DDC662714BC3470B9C4EBC4E /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F4C71CEE17CE8B9900009E4B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F4C71CDB17CE8B9900009E4B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F4C71CEA17CE8B9900009E4B /* Bugsnag.m in Sources */,
+				F4FCBA0E17CE90B200A264EC /* BugsnagConfiguration.m in Sources */,
+				F4FCBA1117CE90EB00A264EC /* BugsnagMetaData.m in Sources */,
+				F4FCBA1417CE90FB00A264EC /* BugsnagEvent.m in Sources */,
+				F4FCBA1717CE924400A264EC /* BugsnagNotifier.m in Sources */,
+				F4FCBA2117CEF24E00A264EC /* BugsnagIosNotifier.m in Sources */,
+				F495C52F17E2A8E700B1995A /* BugsnagOSXNotifier.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F4C71CEB17CE8B9900009E4B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F4C71D0117CE8B9900009E4B /* BugsnagTests.m in Sources */,
+				F495C53017E2A8E700B1995A /* BugsnagOSXNotifier.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F4C71CF717CE8B9900009E4B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F4C71CDE17CE8B9900009E4B /* Bugsnag */;
+			targetProxy = F4C71CF617CE8B9900009E4B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		F4C71CFC17CE8B9900009E4B /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F4C71CFD17CE8B9900009E4B /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F4C71D0217CE8B9900009E4B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = BugsnagTests;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		F4C71D0317CE8B9900009E4B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				PRODUCT_NAME = BugsnagTests;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F4C71D0517CE8B9900009E4B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E02BD607FB994044A4AC0F70 /* Pods.xcconfig */;
+			buildSettings = {
+				DSTROOT = /tmp/bugsnag.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "bugsnag/Bugsnag-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = Bugsnag;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		F4C71D0617CE8B9900009E4B /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E02BD607FB994044A4AC0F70 /* Pods.xcconfig */;
+			buildSettings = {
+				DSTROOT = /tmp/bugsnag.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "bugsnag/Bugsnag-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = Bugsnag;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		F4C71D0817CE8B9900009E4B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "bugsnag/Bugsnag-Prefix.pch";
+				INFOPLIST_FILE = "bugsnagTests/BugsnagTests-Info.plist";
+				PRODUCT_NAME = Bugsnag;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		F4C71D0917CE8B9900009E4B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "bugsnag/Bugsnag-Prefix.pch";
+				INFOPLIST_FILE = "bugsnagTests/BugsnagTests-Info.plist";
+				PRODUCT_NAME = Bugsnag;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F4C71CDA17CE8B9900009E4B /* Build configuration list for PBXProject "Bugsnag" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F4C71D0217CE8B9900009E4B /* Debug */,
+				F4C71D0317CE8B9900009E4B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F4C71D0417CE8B9900009E4B /* Build configuration list for PBXNativeTarget "Bugsnag" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F4C71D0517CE8B9900009E4B /* Debug */,
+				F4C71D0617CE8B9900009E4B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F4C71D0717CE8B9900009E4B /* Build configuration list for PBXNativeTarget "BugsnagTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F4C71D0817CE8B9900009E4B /* Debug */,
+				F4C71D0917CE8B9900009E4B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F4C71CD717CE8B9900009E4B /* Project object */;
+}
