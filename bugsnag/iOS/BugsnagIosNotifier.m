@@ -24,8 +24,6 @@
 
 - (id) initWithConfiguration:(BugsnagConfiguration*) configuration {
     if((self = [super initWithConfiguration:configuration])) {
-        if (self.configuration.osVersion == nil) self.configuration.osVersion = self.osVersion;
-
         self.notifierName = @"Bugsnag iOS Notifier";
         self.inForeground = YES;
         
@@ -49,7 +47,7 @@
 }
 
 - (NSString *) osVersion {
-#if TARGET_IPHONE_SIMULATOR
+#ifdef TARGET_IPHONE_SIMULATOR
 	return [[UIDevice currentDevice] systemVersion];
 #else
 	return [[NSProcessInfo processInfo] operatingSystemVersionString];

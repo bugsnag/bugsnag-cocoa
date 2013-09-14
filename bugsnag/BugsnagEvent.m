@@ -183,7 +183,7 @@
         
         // Now lets look at the load_commands
         uint8_t *header_ptr = (uint8_t*)header32;
-        header_ptr += machHeader64Bit ? sizeof(header64) : sizeof(header32);
+        header_ptr += machHeader64Bit ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
         struct load_command *command = (struct load_command*)header_ptr;
         
         int numCommands = machHeader64Bit ? header64->ncmds : header32->ncmds;

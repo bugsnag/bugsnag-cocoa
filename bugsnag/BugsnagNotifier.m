@@ -18,6 +18,10 @@
 - (void) addDiagnosticsToEvent:(BugsnagEvent*)event;
 
 @property (readonly) NSDictionary* memoryStats;
+@property (readonly) NSString *model;
+@property (readonly) NSString* machine;
+@property (readonly) NSString* networkReachability;
+@property (readonly) NSString* appVersion;
 @end
 
 @implementation BugsnagNotifier
@@ -30,6 +34,7 @@
         if (self.configuration.userId == nil) self.configuration.userId = self.userUUID;
         
         [self.configuration.metaData addAttribute:@"Machine" withValue:self.machine toTabWithName:@"device"];
+        [self.configuration.metaData addAttribute:@"Model" withValue:self.model toTabWithName:@"device"];
         
         [self beforeNotify:^(BugsnagEvent *event) {
             [self addDiagnosticsToEvent:event];
@@ -37,7 +42,9 @@
         }];
         
         self.notifierName = @"Bugsnag Objective-C";
+#ifdef COCOAPODS_VERSION_MAJOR_Bugsnag
         self.notifierVersion = [NSString stringWithFormat:@"%i.%i.%i", COCOAPODS_VERSION_MAJOR_Bugsnag, COCOAPODS_VERSION_MINOR_Bugsnag, COCOAPODS_VERSION_PATCH_Bugsnag];
+#endif
         self.notifierURL = @"https://github.com/bugsnag/bugsnag-objective-c";
     }
     return self;
@@ -266,12 +273,22 @@
     return machine;
 }
 
+- (NSString *) model {
+    size_t size = 256;
+	char *modelCString = malloc(size);
+    sysctlbyname("hw.model", modelCString, &size, NULL, 0);
+    NSString *model = [NSString stringWithCString:modelCString encoding:NSUTF8StringEncoding];
+    free(modelCString);
+    
+    return model;
+}
+
 - (NSString *)fileSize:(NSNumber *)value {
     float fileSize = [value floatValue];
     if (fileSize<1023.0f)
         return([NSString stringWithFormat:@"%i bytes",[value intValue]]);
     fileSize = fileSize / 1024.0f;
-    if ([value intValue]<1023.0f)
+    if (fileSize<1023.0f)
         return([NSString stringWithFormat:@"%1.1f KB",fileSize]);
     fileSize = fileSize / 1024.0f;
     if (fileSize<1023.0f)
@@ -295,9 +312,7 @@
 }
 
 - (NSDictionary *) memoryStats {
-    natural_t usedMem = 0;
-    natural_t freeMem = 0;
-    natural_t totalMem = 0;
+    NSMutableDictionary *memoryStats = [NSMutableDictionary dictionary];
     
     struct task_basic_info info;
     mach_msg_type_number_t size = sizeof(info);
@@ -306,16 +321,25 @@
                                    (task_info_t)&info,
                                    &size);
     if( kerr == KERN_SUCCESS ) {
-        usedMem = info.resident_size;
-        totalMem = info.virtual_size;
-        freeMem = totalMem - usedMem;
-        return [NSDictionary dictionaryWithObjectsAndKeys:
-                [self fileSize:[NSNumber numberWithInt:freeMem]], @"Free",
-                [self fileSize:[NSNumber numberWithInt:totalMem]], @"Total",
-                [self fileSize:[NSNumber numberWithInt:usedMem]], @"Used", nil];
-    } else {
-        return nil;
+        [memoryStats setObject:[self fileSize:[NSNumber numberWithInteger:info.resident_size]] forKey:@"App Using"];
     }
+    
+    uint64_t total = 0;
+    uint64_t pageSize = 0;
+    uint64_t pagesFree = 0;
+    size_t sysCtlSize = sizeof(uint64_t);
+    if (!sysctlbyname("hw.memsize", &total, &sysCtlSize, NULL, 0)) {
+        [memoryStats setObject:[self fileSize:[NSNumber numberWithInteger:total]] forKey:@"Total"];
+    }
+    
+    if (!sysctlbyname("vm.page_free_count", &pagesFree, &sysCtlSize, NULL, 0)) {
+        if (!sysctlbyname("hw.pagesize", &pageSize, &sysCtlSize, NULL, 0)) {
+            [memoryStats setObject:[self fileSize:[NSNumber numberWithInteger:pagesFree*pageSize]] forKey:@"Free"];
+            [memoryStats setObject:[self fileSize:[NSNumber numberWithInteger:total-(pagesFree*pageSize)]] forKey:@"Used"];
+        }
+    }
+    
+    return memoryStats;
 }
 
 - (NSString *) appVersion {
