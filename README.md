@@ -16,27 +16,27 @@ Installation & Setup
 
 -   Add Bugsnag to your Podfile
 
-```ruby
-pod 'Bugsnag', :git => "git@github.com:bugsnag/bugsnag-objective-c.git"
-```
+    ```ruby
+    pod 'Bugsnag', :git => "git@github.com:bugsnag/bugsnag-objective-c.git"
+    ```
 
 -   Install Bugsnag
 
-```bash
-pod install
-```
+    ```bash
+    pod install
+    ```
 
 -   Import the `Bugsnag.h` file into your application delegate.
 
-```objective-c
-#import "Bugsnag.h"
-```
+    ```objective-c
+    #import "Bugsnag.h"
+    ```
 
 -   In your application:didFinishLaunchingWithOptions: method, register with bugsnag by calling,
 
-```objective-c
-[Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
-```
+    ```objective-c
+    [Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
+    ```
 
 ###Without Cocoapods
 
@@ -44,43 +44,43 @@ pod install
 
 -   Import the `Bugsnag.h` file into your application delegate.
 
-```objective-c
-#import "Bugsnag.h"
-```
+    ```objective-c
+    #import "Bugsnag.h"
+    ```
 
 -   In your application:didFinishLaunchingWithOptions: method, register with bugsnag by calling,
 
-```objective-c
-[Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
-```
+    ```objective-c
+    [Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
+    ```
 
 -   Add the SystemConfiguration Framework
 
-Click your project, click on your main target, then navigate to "Build Phases", select "Link Binary with Libraries" and click on the "+" button. Then add SystemConfiguration.framework.
+    Click your project, click on your main target, then navigate to "Build Phases", select "Link Binary with Libraries" and click on the "+" button. Then add SystemConfiguration.framework.
 
 -   Add a build phase to upload the symbolication information to Bugsnag
 
-From the same "Build Phases" screen, click the plus in the bottom right of the screen labelled "Add Build Phase", then select "Add Run Script". Then expand the newly added "Run Script" section, and set the shell to `/usr/bin/env ruby` and copy the following script into the text box,
+    From the same "Build Phases" screen, click the plus in the bottom right of the screen labelled "Add Build Phase", then select "Add Run Script". Then expand the newly added "Run Script" section, and set the shell to `/usr/bin/env ruby` and copy the following script into the text box,
 
-```ruby
-if ENV["EFFECTIVE_PLATFORM_NAME"] == "-iphonesimulator" ||
-   ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym"
-  exit
-end
+    ```ruby
+    if ENV["EFFECTIVE_PLATFORM_NAME"] == "-iphonesimulator" ||
+       ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym"
+      exit
+    end
 
-fork do
-  Process.setsid
-  STDIN.reopen("/dev/null")
-  STDOUT.reopen("/dev/null", "a")
-  STDERR.reopen("/dev/null", "a")
+    fork do
+      Process.setsid
+      STDIN.reopen("/dev/null")
+      STDOUT.reopen("/dev/null", "a")
+      STDERR.reopen("/dev/null", "a")
 
-  require 'shellwords'
+      require 'shellwords'
 
-  Dir["#{ENV["DWARF_DSYM_FOLDER_PATH"]}/#{ENV["DWARF_DSYM_FILE_NAME"]}/Contents/Resources/DWARF/*"].each do |dsym|
-    system("curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(dsym)} https://upload.bugsnag.com/")
-  end
-end
-```
+      Dir["#{ENV["DWARF_DSYM_FOLDER_PATH"]}/#{ENV["DWARF_DSYM_FILE_NAME"]}/Contents/Resources/DWARF/*"].each do |dsym|
+        system("curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(dsym)} https://upload.bugsnag.com/")
+      end
+    end
+    ```
 
 ###ARC Support
 
