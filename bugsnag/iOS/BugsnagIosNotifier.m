@@ -24,7 +24,7 @@
 
 - (id) initWithConfiguration:(BugsnagConfiguration*) configuration {
     if((self = [super initWithConfiguration:configuration])) {
-        self.notifierName = @"Bugsnag iOS Notifier";
+        self.notifierName = @"iOS Bugsnag Notifier";
         self.inForeground = YES;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];

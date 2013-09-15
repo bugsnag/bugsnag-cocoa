@@ -4,8 +4,7 @@ Pod::Installer::UserProjectIntegrator::TargetIntegrator.class_eval do
     BUGSNAG_PHASE_NAME = "Upload Bugsnag dSYM"
     BUGSNAG_PHASE_SCRIPT = <<'RUBY'
 
-if ENV["EFFECTIVE_PLATFORM_NAME"] == "-iphonesimulator" ||
-   ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym"
+if ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym"
   exit
 end
 
@@ -18,7 +17,7 @@ fork do
   require 'shellwords'
 
   Dir["#{ENV["DWARF_DSYM_FOLDER_PATH"]}/#{ENV["DWARF_DSYM_FILE_NAME"]}/Contents/Resources/DWARF/*"].each do |dsym|
-    system("curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(dsym)} https://upload.bugsnag.com/")
+    system("curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV["PROJECT_DIR"])} https://upload.bugsnag.com/")
   end
 end
 RUBY
@@ -70,7 +69,7 @@ end
 
 Pod::Spec.new do |s|
   s.name         = "Bugsnag"
-  s.version      = "1.0.0-pre1"
+  s.version      = "3.0.0"
   s.summary      = "Objective-C notifier for SDK for bugsnag.com"
   s.homepage     = "https://bugsnag.com"
   s.license      = 'MIT'

@@ -21,7 +21,7 @@
     if((self = [super initWithConfiguration:configuration])) {
         if (self.configuration.osVersion == nil) self.configuration.osVersion = self.osVersion;
         
-        self.notifierName = @"Bugsnag OSX Notifier";
+        self.notifierName = @"OSX Bugsnag Notifier";
         
         [self beforeNotify:^(BugsnagEvent *event) {
             [self addOSXDiagnosticsToEvent:event];

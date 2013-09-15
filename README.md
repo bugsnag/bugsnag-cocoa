@@ -63,8 +63,7 @@ Installation & Setup
     From the same "Build Phases" screen, click the plus in the bottom right of the screen labelled "Add Build Phase", then select "Add Run Script". Then expand the newly added "Run Script" section, and set the shell to `/usr/bin/env ruby` and copy the following script into the text box,
 
     ```ruby
-    if ENV["EFFECTIVE_PLATFORM_NAME"] == "-iphonesimulator" ||
-       ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym"
+    if ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym"
       exit
     end
 
@@ -77,7 +76,7 @@ Installation & Setup
       require 'shellwords'
 
       Dir["#{ENV["DWARF_DSYM_FOLDER_PATH"]}/#{ENV["DWARF_DSYM_FILE_NAME"]}/Contents/Resources/DWARF/*"].each do |dsym|
-        system("curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(dsym)} https://upload.bugsnag.com/")
+        system("curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV["PROJECT_DIR"])} https://upload.bugsnag.com/")
       end
     end
     ```
