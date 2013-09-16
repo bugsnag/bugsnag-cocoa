@@ -15,6 +15,7 @@
         self.enableSSL = YES;
         self.autoNotify = YES;
         self.collectMAU = YES;
+        self.metaData = [[BugsnagMetaData alloc] init];
         
         self.uuidPath = @"bugsnag-user-id";
         self.beforeBugsnagNotifyBlocks = [NSMutableArray array];

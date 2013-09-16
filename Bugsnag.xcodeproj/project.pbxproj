@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		8EC29DBC958246E7960FA48F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E8CC6D16892443F0806C2133 /* libPods.a */; };
-		F495C52F17E2A8E700B1995A /* BugsnagOSXNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = F495C52E17E2A8E700B1995A /* BugsnagOSXNotifier.m */; };
 		F495C53017E2A8E700B1995A /* BugsnagOSXNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = F495C52E17E2A8E700B1995A /* BugsnagOSXNotifier.m */; };
 		F4C71CE317CE8B9900009E4B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C71CE217CE8B9900009E4B /* Foundation.framework */; };
 		F4C71CE817CE8B9900009E4B /* Bugsnag.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F4C71CE717CE8B9900009E4B /* Bugsnag.h */; };
@@ -53,6 +52,7 @@
 		E8CC6D16892443F0806C2133 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F495C52D17E2A8E700B1995A /* BugsnagOSXNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagOSXNotifier.h; path = OSX/BugsnagOSXNotifier.h; sourceTree = "<group>"; };
 		F495C52E17E2A8E700B1995A /* BugsnagOSXNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagOSXNotifier.m; path = OSX/BugsnagOSXNotifier.m; sourceTree = "<group>"; };
+		F4BD0C9317E7875400E92185 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		F4C71CDF17CE8B9900009E4B /* libBugsnag.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnag.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4C71CE217CE8B9900009E4B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F4C71CE617CE8B9900009E4B /* Bugsnag.temp_caseinsensitive_rename-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bugsnag.temp_caseinsensitive_rename-Prefix.pch"; sourceTree = "<group>"; };
@@ -132,6 +132,7 @@
 		F4C71CE117CE8B9900009E4B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F4BD0C9317E7875400E92185 /* Cocoa.framework */,
 				F4C71CE217CE8B9900009E4B /* Foundation.framework */,
 				F4C71CF117CE8B9900009E4B /* SenTestingKit.framework */,
 				E8CC6D16892443F0806C2133 /* libPods.a */,
@@ -334,7 +335,6 @@
 				F4FCBA1417CE90FB00A264EC /* BugsnagEvent.m in Sources */,
 				F4FCBA1717CE924400A264EC /* BugsnagNotifier.m in Sources */,
 				F4FCBA2117CEF24E00A264EC /* BugsnagIosNotifier.m in Sources */,
-				F495C52F17E2A8E700B1995A /* BugsnagOSXNotifier.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

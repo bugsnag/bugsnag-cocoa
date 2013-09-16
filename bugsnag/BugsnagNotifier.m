@@ -10,6 +10,12 @@
 #import <sys/sysctl.h>
 #import <mach/mach.h>
 
+#ifdef TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR
+#import <UIKit/UIKit.h>
+#endif
+#endif
+
 #import "BugsnagNotifier.h"
 #import "BugsnagLogger.h"
 
@@ -22,6 +28,7 @@
 @property (readonly) NSString* machine;
 @property (readonly) NSString* networkReachability;
 @property (readonly) NSString* appVersion;
+@property (readonly) NSString* osVersion;
 @end
 
 @implementation BugsnagNotifier
@@ -31,6 +38,7 @@
         self.configuration = configuration;
         
         if (self.configuration.appVersion == nil) self.configuration.appVersion = self.appVersion;
+        if (self.configuration.osVersion == nil) self.configuration.osVersion = self.osVersion;
         if (self.configuration.userId == nil) self.configuration.userId = self.userUUID;
         
         [self.configuration.metaData addAttribute:@"Machine" withValue:self.machine toTabWithName:@"device"];
@@ -58,8 +66,15 @@
     [event addAttribute:@"Application Version" withValue:self.configuration.appVersion toTabWithName:@"application"];
     
     [event addAttribute:@"OS Version" withValue:self.configuration.osVersion toTabWithName:@"device"];
-    [event addAttribute:@"Memory" withValue:self.memoryStats toTabWithName:@"device"];
     [event addAttribute:@"Network" withValue:self.networkReachability toTabWithName:@"device"];
+    
+#ifdef TARGET_IPHONE_SIMULATOR
+#if !TARGET_IPHONE_SIMULATOR
+    [event addAttribute:@"Memory" withValue:self.memoryStats toTabWithName:@"device"];
+#endif
+#else
+    [event addAttribute:@"Memory" withValue:self.memoryStats toTabWithName:@"device"];
+#endif
 }
 
 - (void) notifySignal:(int)signal {
@@ -353,6 +368,18 @@
         return versionString;
     }
     return @"";
+}
+
+- (NSString *) osVersion {
+#ifdef TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR
+	return [[UIDevice currentDevice] systemVersion];
+#else
+    return [[NSProcessInfo processInfo] operatingSystemVersionString];
+#endif
+#else
+	return [[NSProcessInfo processInfo] operatingSystemVersionString];
+#endif
 }
 
 @end

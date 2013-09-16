@@ -9,7 +9,6 @@
 #import "BugsnagOSXNotifier.h"
 
 @interface BugsnagOSXNotifier ()
-@property (readonly) NSString* osVersion;
 @property (readonly) NSString* topMostWindowTitle;
 @property (readonly) NSString* topMostDocumentDisplayName;
 - (void) addOSXDiagnosticsToEvent:(BugsnagEvent*) event;
@@ -19,8 +18,6 @@
 
 - (id) initWithConfiguration:(BugsnagConfiguration*) configuration {
     if((self = [super initWithConfiguration:configuration])) {
-        if (self.configuration.osVersion == nil) self.configuration.osVersion = self.osVersion;
-        
         self.notifierName = @"OSX Bugsnag Notifier";
         
         [self beforeNotify:^(BugsnagEvent *event) {
@@ -43,10 +40,6 @@
     if (topMostDocumentDisplayName != nil) [event addAttribute:@"Top Most Document" withValue:topMostDocumentDisplayName toTabWithName:@"application"];
     
     [event addAttribute:@"Active" withValue:[NSNumber numberWithBool:[[NSApplication sharedApplication] isActive]] toTabWithName:@"application"];
-}
-
-- (NSString *) osVersion {
-    return [[NSProcessInfo processInfo] operatingSystemVersionString];
 }
 
 - (NSString *) topMostWindowTitle {

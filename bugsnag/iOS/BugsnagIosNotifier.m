@@ -11,7 +11,6 @@
 #import "BugsnagIosNotifier.h"
 
 @interface BugsnagIosNotifier ()
-@property (readonly) NSString* osVersion;
 @property (readonly) NSString* topMostViewController;
 @property (atomic) BOOL inForeground;
 
@@ -44,14 +43,6 @@
     
     [event addAttribute:@"Top Most View Controller" withValue:topMostViewController toTabWithName:@"application"];
     [event addAttribute:@"In Foreground" withValue:[NSNumber numberWithBool:self.inForeground] toTabWithName:@"application"];
-}
-
-- (NSString *) osVersion {
-#ifdef TARGET_IPHONE_SIMULATOR
-	return [[UIDevice currentDevice] systemVersion];
-#else
-	return [[NSProcessInfo processInfo] operatingSystemVersionString];
-#endif
 }
 
 - (NSString *) userUUID {
