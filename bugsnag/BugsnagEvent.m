@@ -172,7 +172,7 @@
                 struct segment_command ucmd32 = *(struct segment_command*)header_ptr;
                 
                 if ( strcmp("__TEXT", ucmd32.segname) == 0) {
-                    machoVMAddress = [NSString stringWithFormat:@"0x%ix", (uint32_t)ucmd32.vmaddr];
+                    machoVMAddress = [NSString stringWithFormat:@"0x%x", (uint32_t)ucmd32.vmaddr];
                 }
             } else if (command->cmd == LC_SEGMENT_64) {
                 struct segment_command_64 ucmd64 = *(struct segment_command_64*)header_ptr;
