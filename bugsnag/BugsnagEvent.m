@@ -112,12 +112,13 @@
             
             if ([binaryName isEqualToString:[[NSProcessInfo processInfo] processName]]) [frame setObject:[NSNumber numberWithBool:YES] forKey:@"inProject"];
 
-            [frame setObject:[NSString stringWithFormat:@"0x%llux", frameAddress] forKey:@"frameAddress"];
+            [frame setObject:[NSString stringWithFormat:@"0x%llx", frameAddress] forKey:@"frameAddress"];
+            
             [frame setObject:[image objectForKey:@"machoVMAddress"] forKey:@"machoVMAddress"];
             [frame setObject:[image objectForKey:@"machoLoadAddress"] forKey:@"machoLoadAddress"];
             
             if (info.dli_saddr) {
-                [frame setObject:[NSString stringWithFormat:@"0x%llux", (uint64_t)info.dli_saddr] forKey:@"symbolAddress"];
+                [frame setObject:[NSString stringWithFormat:@"0x%llx", (uint64_t)info.dli_saddr] forKey:@"symbolAddress"];
             }
 
             if (info.dli_sname != NULL && strcmp(info.dli_sname, "<redacted>") != 0) {
@@ -144,7 +145,7 @@
         BOOL machHeader64Bit = header32->magic == MH_MAGIC_64;
         
         NSString *machoFile = [NSString stringWithCString:dyld encoding:NSUTF8StringEncoding];
-        NSNumber *machoLoadAddress = [NSString stringWithFormat:@"0x%llux", (uint64_t)header32];
+        NSNumber *machoLoadAddress = [NSString stringWithFormat:@"0x%llx", (uint64_t)header32];
         NSString *machoUUID = nil;
         NSNumber *machoVMAddress = nil;
         
@@ -168,9 +169,18 @@
                 CFRelease(cuuid);
                 CFRelease(suuid);
             } else if (command->cmd == LC_SEGMENT) {
-                struct segment_command ucmd = *(struct segment_command*)header_ptr;
-                if (strcmp("__TEXT", ucmd.segname) == 0) {
-                    machoVMAddress = [NSString stringWithFormat:@"0x%llux", (uint64_t)ucmd.vmaddr];
+                struct segment_command ucmd32 = *(struct segment_command*)header_ptr;
+                
+                if ( strcmp("__TEXT", ucmd32.segname) == 0) {
+                    machoVMAddress = [NSString stringWithFormat:@"0x%ix", (uint32_t)ucmd32.vmaddr];
+                }
+            } else if (command->cmd == LC_SEGMENT_64) {
+                struct segment_command_64 ucmd64 = *(struct segment_command_64*)header_ptr;
+                
+                if ( strcmp("__TEXT", ucmd64.segname) == 0) {
+                    if (machHeader64Bit) {
+                        machoVMAddress = [NSString stringWithFormat:@"0x%llx", (uint64_t)ucmd64.vmaddr];
+                    }
                 }
             }
             
