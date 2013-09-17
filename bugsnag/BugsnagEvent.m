@@ -13,15 +13,6 @@
 
 #import "BugsnagEvent.h"
 
-// "bit[0] of lr is set to the current value of the Thumb bit in the CPSR.
-// The means that the return instruction can automatically return to the correct processor state."
-// http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0203h/Cacbacic.html
-//
-#define ARMV7_IS_THUMB_MASK (0x00000001)
-#define ARMV7_ADDRESS_MASK (~ARMV7_IS_THUMB_MASK)
-#define ARMV7_THUMB_INSTRUCTION_SIZE 2
-#define ARMV7_FULL_INSTRUCTION_SIZE 4
-
 @interface BugsnagEvent ()
 @property (atomic, strong) NSMutableDictionary *dictionary;
 
@@ -107,23 +98,7 @@
     NSDictionary *loadedImages = [self loadedImages];
     
     for(uint64_t i = offset; i < count; i++) {
-        uint64_t frameAddress;
-
-        // The pointer returned by backtrace() is the address of the instruction immediately after a function call.
-        // We actually want to know the address of the function call instruction itself, so we subtract one instruction.
-        // To confuse things further armv7 has two instruction modes "thumb" and "full". Thumb instructions are either
-        // 2 or 4 bytes long, and full instructions are always 4 bytes. Because pointers to instructions in either architecture
-        // will always be even, by convention pointers to thumb instructions have the least significant bit set so that the
-        // same instructions can be used for jumping to and returning from code in either instruction set.
-
-        // In the case of "thumb" instructions, we always subtract 2 (even though some instructions are 4 bytes long) this
-        // is because DWARF gives us the same result whn we look up a pointer half way through an instruction. Apple take
-        // a different approach in their crash logs, and always subtract 4. This is unlikely to give any meaningful difference.
-        if ((uint64_t)frames[i] & ARMV7_IS_THUMB_MASK) {
-            frameAddress = ((uint64_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_THUMB_INSTRUCTION_SIZE;
-        } else {
-            frameAddress = ((uint64_t)frames[i] & ARMV7_ADDRESS_MASK) - ARMV7_FULL_INSTRUCTION_SIZE;
-        }
+        uint64_t frameAddress = (uint64_t)frames[i];
 
         int status = dladdr((void *)frameAddress, &info);
         if (status != 0) {
@@ -137,20 +112,13 @@
             
             if ([binaryName isEqualToString:[[NSProcessInfo processInfo] processName]]) [frame setObject:[NSNumber numberWithBool:YES] forKey:@"inProject"];
 
-            uint64_t machoLoadAddress = [[image objectForKey:@"machoLoadAddress"] unsignedIntValue];
-            uint64_t machoVMAddress = [[image objectForKey:@"machoVMAddress"] unsignedIntValue];
-
-            uint64_t symbolAddress;
-
-            // The frameAddress we have is relative to process memory. This changes every time the process is run
-            // due to address space layout randomization, so we actually want to report the address relative to the
-            // start of the __TEXT section of the object file instead.
-            frameAddress = (frameAddress - machoLoadAddress) + machoVMAddress;
-            [frame setObject:[NSNumber numberWithUnsignedInt: frameAddress] forKey:@"frameAddress"];
+            [frame setObject:[NSString stringWithFormat:@"0x%llx", frameAddress] forKey:@"frameAddress"];
+            
+            [frame setObject:[image objectForKey:@"machoVMAddress"] forKey:@"machoVMAddress"];
+            [frame setObject:[image objectForKey:@"machoLoadAddress"] forKey:@"machoLoadAddress"];
             
             if (info.dli_saddr) {
-                symbolAddress = (((uint64_t)info.dli_saddr & ARMV7_ADDRESS_MASK) - machoLoadAddress) + machoVMAddress;
-                [frame setObject:[NSNumber numberWithUnsignedInt: symbolAddress] forKey:@"symbolAddress"];
+                [frame setObject:[NSString stringWithFormat:@"0x%llx", (uint64_t)info.dli_saddr] forKey:@"symbolAddress"];
             }
 
             if (info.dli_sname != NULL && strcmp(info.dli_sname, "<redacted>") != 0) {
@@ -177,7 +145,7 @@
         BOOL machHeader64Bit = header32->magic == MH_MAGIC_64;
         
         NSString *machoFile = [NSString stringWithCString:dyld encoding:NSUTF8StringEncoding];
-        NSNumber *machoLoadAddress = [NSNumber numberWithUnsignedInt:(uint64_t)header32];
+        NSNumber *machoLoadAddress = [NSString stringWithFormat:@"0x%llx", (uint64_t)header32];
         NSString *machoUUID = nil;
         NSNumber *machoVMAddress = nil;
         
@@ -201,9 +169,18 @@
                 CFRelease(cuuid);
                 CFRelease(suuid);
             } else if (command->cmd == LC_SEGMENT) {
-                struct segment_command ucmd = *(struct segment_command*)header_ptr;
-                if (strcmp("__TEXT", ucmd.segname) == 0) {
-                    machoVMAddress = [NSNumber numberWithUnsignedInt:(uint64_t)ucmd.vmaddr];
+                struct segment_command ucmd32 = *(struct segment_command*)header_ptr;
+                
+                if ( strcmp("__TEXT", ucmd32.segname) == 0) {
+                    machoVMAddress = [NSString stringWithFormat:@"0x%x", (uint32_t)ucmd32.vmaddr];
+                }
+            } else if (command->cmd == LC_SEGMENT_64) {
+                struct segment_command_64 ucmd64 = *(struct segment_command_64*)header_ptr;
+                
+                if ( strcmp("__TEXT", ucmd64.segname) == 0) {
+                    if (machHeader64Bit) {
+                        machoVMAddress = [NSString stringWithFormat:@"0x%llx", (uint64_t)ucmd64.vmaddr];
+                    }
                 }
             }
             

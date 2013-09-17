@@ -213,6 +213,7 @@
     [payload setObject:self.configuration.apiKey forKey:@"apiKey"];
     [payload setObject:self.userUUID forKey:@"userId"];
     [payload setObject:self.machine forKey:@"machine"];
+    [payload setObject:self.model forKey:@"model"];
     if (self.configuration.osVersion != nil ) [payload setObject:self.configuration.osVersion forKey:@"osVersion"];
     if (self.configuration.appVersion != nil ) [payload setObject:self.configuration.appVersion forKey:@"appVersion"];
     

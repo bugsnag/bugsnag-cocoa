@@ -1,7 +1,7 @@
-Bugsnag Notifier for Objective-C
-================================
+Bugsnag Notifier for Cocoa
+==========================
 
-The Bugsnag Notifier for Objective-C gives you instant notification of exceptions thrown from your Objective-C applications.
+The Bugsnag Notifier for Cocoa gives you instant notification of exceptions thrown from your Cocoa applications.
 The notifier hooks into `NSSetUncaughtExceptionHandler`, which means any uncaught exceptions will trigger a notification to be sent to your Bugsnag project. Bugsnag will also monitor for fatal signals sent to your application, for example a Segmentation Fault.
 
 [Bugsnag](http://bugsnag.com) captures errors in real-time from your web, mobile and desktop applications, helping you to understand and resolve them as fast as possible. [Create a free account](http://bugsnag.com) to start capturing exceptions from your applications.
@@ -12,12 +12,12 @@ Installation & Setup
 
 ###CocoaPods (Recommended)
 
-[Cocoapods](http://cocoapods.org/) is a library management system for iOS/OSX which allows you to manage your libraries, detail your dependencies and handle updates nicely. It is the recommended way of installing the Bugsnag Objective-C library.
+[Cocoapods](http://cocoapods.org/) is a library management system for iOS/OSX which allows you to manage your libraries, detail your dependencies and handle updates nicely. It is the recommended way of installing the Bugsnag Cocoa library.
 
 -   Add Bugsnag to your Podfile
 
     ```ruby
-    pod 'Bugsnag', :git => "git@github.com:bugsnag/bugsnag-objective-c.git"
+    pod 'Bugsnag', :git => "git@github.com:bugsnag/bugsnag-cocoa.git"
     ```
 
 -   Install Bugsnag
@@ -83,7 +83,7 @@ Installation & Setup
 
 ###ARC Support
 
-Bugsnag uses ARC features If you are using Bugsnag 2.2.0 or newer in your non-arc project, you will need to set a `-fobjc-arc` compiler flag on all of the Bugsnag source files.
+Bugsnag uses ARC features. If you are using Bugsnag 2.2.0 or newer in your non-arc project, you will need to set a `-fobjc-arc` compiler flag on all of the Bugsnag source files.
 
 To set a compiler flag in Xcode, go to your active target and select the "Build Phases" tab. Now select all Bugsnag source files, press Enter, insert `-fobjc-arc` and then "Done" to enable ARC for Bugsnag.
 
@@ -185,13 +185,13 @@ Reporting Bugs or Feature Requests
 
 Please report any bugs or feature requests on the github issues page for this project here:
 
-<https://github.com/bugsnag/bugsnag-objective-c/issues>
+<https://github.com/bugsnag/bugsnag-cocoa/issues>
 
 
 Contributing
 ------------
 
--   [Fork](https://help.github.com/articles/fork-a-repo) the [notifier on github](https://github.com/bugsnag/bugsnag-objective-c)
+-   [Fork](https://help.github.com/articles/fork-a-repo) the [notifier on github](https://github.com/bugsnag/bugsnag-cocoa)
 -   Commit and push until you are happy with your contribution
 -   [Make a pull request](https://help.github.com/articles/using-pull-requests)
 -   Thanks!
@@ -200,4 +200,4 @@ Contributing
 License
 -------
 
-The Bugsnag Objective-C notifier is free software released under the MIT License. See [LICENSE.txt](https://github.com/bugsnag/bugsnag-objective-c/blob/master/LICENSE.txt) for details.
+The Bugsnag Cocoa notifier is free software released under the MIT License. See [LICENSE.txt](https://github.com/bugsnag/bugsnag-cocoa/blob/master/LICENSE.txt) for details.
