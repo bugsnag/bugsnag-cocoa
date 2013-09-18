@@ -93,12 +93,6 @@ Installation & Setup
     end
     ```
 
-###ARC Support
-
-Bugsnag uses ARC features. If you are using Bugsnag 2.2.0 or newer in your non-arc project, you will need to set a `-fobjc-arc` compiler flag on all of the Bugsnag source files.
-
-To set a compiler flag in Xcode, go to your active target and select the "Build Phases" tab. Now select all Bugsnag source files, press Enter, insert `-fobjc-arc` and then "Done" to enable ARC for Bugsnag.
-
 Send Non-Fatal Exceptions to Bugsnag
 ------------------------------------
 
@@ -191,6 +185,14 @@ By default, Bugsnag enables the use of SSL encryption when sending errors to Bug
 ```objective-c
 [Bugsnag configuration].enableSSL = NO;
 ```
+
+ARC Support
+-----------
+
+Bugsnag uses ARC features. If you are using Bugsnag 2.2.0 or newer in your non-arc project, you will need to set a `-fobjc-arc` compiler flag on all of the Bugsnag source files.
+
+To set a compiler flag in Xcode, go to your active target and select the "Build Phases" tab. Now select all Bugsnag source files, press Enter, insert `-fobjc-arc` and then "Done" to enable ARC for Bugsnag.
+
 
 Reporting Bugs or Feature Requests
 ----------------------------------
