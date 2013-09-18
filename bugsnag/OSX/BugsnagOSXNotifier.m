@@ -8,6 +8,8 @@
 
 #import "BugsnagOSXNotifier.h"
 
+#import <ExceptionHandling/NSExceptionHandler.h>
+
 @interface BugsnagOSXNotifier ()
 @property (readonly) NSString* topMostWindowTitle;
 @property (readonly) NSString* topMostDocumentDisplayName;
@@ -19,6 +21,9 @@
 - (id) initWithConfiguration:(BugsnagConfiguration*) configuration {
     if((self = [super initWithConfiguration:configuration])) {
         self.notifierName = @"OSX Bugsnag Notifier";
+        
+        [[NSExceptionHandler defaultExceptionHandler] setExceptionHandlingMask:NSLogAndHandleEveryExceptionMask];
+        [[NSExceptionHandler defaultExceptionHandler] setDelegate:self];
         
         [self beforeNotify:^(BugsnagEvent *event) {
             [self addOSXDiagnosticsToEvent:event];
@@ -58,6 +63,11 @@
     } else {
         return nil;
     }
+}
+
+- (BOOL)exceptionHandler:(NSExceptionHandler *)sender shouldLogException:(NSException *)exception mask:(NSUInteger)aMask {
+    [self notifyException:exception withData:nil inBackground:YES];
+    return NO;
 }
 
 @end

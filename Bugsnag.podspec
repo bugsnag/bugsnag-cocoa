@@ -78,11 +78,13 @@ Pod::Spec.new do |s|
   s.source_files = ['bugsnag/*.{h,m}']
   s.requires_arc = true
   s.dependency "Reachability"
+  s.frameworks = "SystemConfiguration"
 
   s.ios.source_files = "bugsnag/iOS/*.{h,m}"
   s.ios.deployment_target = '5.0'
 
   s.osx.source_files = "bugsnag/OSX/*.{h,m}"
   s.osx.deployment_target = '10.6'
+  s.osx.frameworks = "ExceptionHandling"
 end
 

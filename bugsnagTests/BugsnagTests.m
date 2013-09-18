@@ -39,6 +39,7 @@ static NSURL *g_url;
 }
 
 - (void)testExceptions {
+    NSLog(@"test");
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] init];
     configuration.apiKey = @"12345678901234567890123456789012";
     TestBugsnagNotifier *notifier = [[TestBugsnagNotifier alloc] initWithConfiguration: configuration];

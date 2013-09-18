@@ -102,7 +102,7 @@ void handle_exception(NSException *exception) {
     
     for (NSUInteger i = 0; i < signals_count; i++) {
         int signalType = signals[i];
-        if (signal(signalType, handle_signal) != 0) {
+        if (signal(signalType, handle_signal) == SIG_ERR) {
             BugsnagLog(@"Unable to register signal handler for %s", strsignal(signalType));
         }
     }

@@ -40,7 +40,15 @@ Installation & Setup
 
 ###Without Cocoapods
 
--   Add Bugsnag to your project
+-   Clone the github bugsnag repository.
+
+    ```shell
+    git clone git@github.com:bugsnag/bugsnag-cocoa.git
+    ```
+
+-   Copy the bugsnag directory from inside the bugsnag-cocoa repository into your project.
+
+-   Delete any platform you are not using. For example, if you are writing iOS code, delete the OSX directory from within the bugsnag directory.
 
 -   Import the `Bugsnag.h` file into your application delegate.
 
@@ -58,9 +66,13 @@ Installation & Setup
 
     Click your project, click on your main target, then navigate to "Build Phases", select "Link Binary with Libraries" and click on the "+" button. Then add SystemConfiguration.framework.
 
+-   If you are building an OSX project, you also need to link with the ExceptionHandling Framework. This step is not required for iOS.
+
+    Click your project, click on your main target, then navigate to "Build Phases", select "Link Binary with Libraries" and click on the "+" button. Then add ExceptionHandling.framework.
+
 -   Add a build phase to upload the symbolication information to Bugsnag
 
-    From the same "Build Phases" screen, click the plus in the bottom right of the screen labelled "Add Build Phase", then select "Add Run Script". Then expand the newly added "Run Script" section, and set the shell to `/usr/bin/env ruby` and copy the following script into the text box,
+    From the same "Build Phases" screen, click the plus in the bottom right of the screen labelled "Add Build Phase", then select "Add Run Script". Then expand the newly added "Run Script" section, and set the shell to `/usr/bin/ruby` and copy the following script into the text box,
 
     ```ruby
     if ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym"
