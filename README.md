@@ -1,20 +1,20 @@
 Bugsnag Notifier for Cocoa
 ==========================
 
-The Bugsnag Notifier for Cocoa gives you instant notification of exceptions thrown from your Cocoa applications.
-The notifier hooks into `NSSetUncaughtExceptionHandler`, which means any uncaught exceptions will trigger a notification to be sent to your Bugsnag project. Bugsnag will also monitor for fatal signals sent to your application, for example a Segmentation Fault.
+The Bugsnag Notifier for Cocoa gives you instant notification of exceptions thrown from your *iOS* or *OSX* applications.
+The notifier hooks into `NSSetUncaughtExceptionHandler`, which means any uncaught exceptions will trigger a notification to be sent to your Bugsnag dashboard. Bugsnag will also monitor for fatal signals sent to your application, for example, Segmentation Faults.
 
-[Bugsnag](http://bugsnag.com) captures errors in real-time from your web, mobile and desktop applications, helping you to understand and resolve them as fast as possible. [Create a free account](http://bugsnag.com) to start capturing exceptions from your applications.
+[Bugsnag](https://bugsnag.com) captures errors in real-time from your web, mobile and desktop applications, helping you to understand and resolve them as fast as possible. [Create a free account](https://bugsnag.com) to start capturing exceptions from your applications.
 
 
 Installation & Setup
 --------------------
 
-###CocoaPods (Recommended)
+###Using CocoaPods (Recommended)
 
 [Cocoapods](http://cocoapods.org/) is a library management system for iOS/OSX which allows you to manage your libraries, detail your dependencies and handle updates nicely. It is the recommended way of installing the Bugsnag Cocoa library.
 
--   Add Bugsnag to your Podfile
+-   Add Bugsnag to your `Podfile`
 
     ```ruby
     pod 'Bugsnag', :git => "git@github.com:bugsnag/bugsnag-cocoa.git"
@@ -32,7 +32,7 @@ Installation & Setup
     #import "Bugsnag.h"
     ```
 
--   In your application:didFinishLaunchingWithOptions: method, register with bugsnag by calling,
+-   In your `application:didFinishLaunchingWithOptions:` method, initialize Bugsnag by calling,
 
     ```objective-c
     [Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
@@ -56,7 +56,7 @@ Installation & Setup
     #import "Bugsnag.h"
     ```
 
--   In your application:didFinishLaunchingWithOptions: method, register with bugsnag by calling,
+-   In your `application:didFinishLaunchingWithOptions:` method, register with bugsnag by calling,
 
     ```objective-c
     [Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
