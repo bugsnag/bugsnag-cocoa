@@ -52,6 +52,8 @@
         self.notifierName = @"Bugsnag Objective-C";
 #ifdef COCOAPODS_VERSION_MAJOR_Bugsnag
         self.notifierVersion = [NSString stringWithFormat:@"%i.%i.%i", COCOAPODS_VERSION_MAJOR_Bugsnag, COCOAPODS_VERSION_MINOR_Bugsnag, COCOAPODS_VERSION_PATCH_Bugsnag];
+#else
+        self.notifierVersion = @"3.0.1";
 #endif
         self.notifierURL = @"https://github.com/bugsnag/bugsnag-objective-c";
     }
@@ -247,9 +249,9 @@
         NSURLResponse* response = nil;
         [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
         
-        int statusCode = [((NSHTTPURLResponse *)response) statusCode];
+        NSInteger statusCode = [((NSHTTPURLResponse *)response) statusCode];
         if (statusCode != 200) {
-            BugsnagLog(@"Bad response from bugsnag received: %d.", statusCode);
+            BugsnagLog(@"Bad response from bugsnag received: %ld.", (long)statusCode);
         } else {
             return YES;
         }

@@ -8,12 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import "BugsnagConfiguration.h"
+#import "BugsnagNotifier.h"
 
 @interface Bugsnag : NSObject
 
 + (void)startBugsnagWithApiKey:(NSString*)apiKey;
 + (BugsnagConfiguration*)configuration;
 + (BugsnagConfiguration*)instance; // For backwards compatability
++ (BugsnagNotifier*)notifier;
 + (void) notify:(NSException *)exception;
 + (void) notify:(NSException *)exception withData:(NSDictionary*)metaData;
 

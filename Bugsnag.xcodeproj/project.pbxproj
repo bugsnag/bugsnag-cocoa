@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8EC29DBC958246E7960FA48F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E8CC6D16892443F0806C2133 /* libPods.a */; };
 		F4C71CE317CE8B9900009E4B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C71CE217CE8B9900009E4B /* Foundation.framework */; };
 		F4C71CE817CE8B9900009E4B /* Bugsnag.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F4C71CE717CE8B9900009E4B /* Bugsnag.h */; };
 		F4C71CEA17CE8B9900009E4B /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = F4C71CE917CE8B9900009E4B /* Bugsnag.m */; };
@@ -48,8 +47,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		E02BD607FB994044A4AC0F70 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
-		E8CC6D16892443F0806C2133 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F495C52D17E2A8E700B1995A /* BugsnagOSXNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagOSXNotifier.h; path = OSX/BugsnagOSXNotifier.h; sourceTree = "<group>"; };
 		F495C52E17E2A8E700B1995A /* BugsnagOSXNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagOSXNotifier.m; path = OSX/BugsnagOSXNotifier.m; sourceTree = "<group>"; };
 		F4BD0C9317E7875400E92185 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -82,7 +79,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4C71CE317CE8B9900009E4B /* Foundation.framework in Frameworks */,
-				8EC29DBC958246E7960FA48F /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -117,7 +113,6 @@
 				F4C71CF917CE8B9900009E4B /* BugsnagTests */,
 				F4C71CE117CE8B9900009E4B /* Frameworks */,
 				F4C71CE017CE8B9900009E4B /* Products */,
-				E02BD607FB994044A4AC0F70 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -136,7 +131,6 @@
 				F4BD0C9317E7875400E92185 /* Cocoa.framework */,
 				F4C71CE217CE8B9900009E4B /* Foundation.framework */,
 				F4C71CF117CE8B9900009E4B /* SenTestingKit.framework */,
-				E8CC6D16892443F0806C2133 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -197,11 +191,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F4C71D0417CE8B9900009E4B /* Build configuration list for PBXNativeTarget "Bugsnag" */;
 			buildPhases = (
-				901B9BD39D5B42F6A0626D5A /* Check Pods Manifest.lock */,
 				F4C71CDB17CE8B9900009E4B /* Sources */,
 				F4C71CDC17CE8B9900009E4B /* Frameworks */,
 				F4C71CDD17CE8B9900009E4B /* CopyFiles */,
-				DDC662714BC3470B9C4EBC4E /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -270,36 +262,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		901B9BD39D5B42F6A0626D5A /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		DDC662714BC3470B9C4EBC4E /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		F4C71CEE17CE8B9900009E4B /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -416,11 +378,12 @@
 		};
 		F4C71D0517CE8B9900009E4B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E02BD607FB994044A4AC0F70 /* Pods.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				DSTROOT = /tmp/bugsnag.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Bugsnag-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Bugsnag;
 				SKIP_INSTALL = YES;
@@ -429,11 +392,12 @@
 		};
 		F4C71D0617CE8B9900009E4B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E02BD607FB994044A4AC0F70 /* Pods.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				DSTROOT = /tmp/bugsnag.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Bugsnag-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Bugsnag;
 				SKIP_INSTALL = YES;
@@ -443,6 +407,7 @@
 		F4C71D0817CE8B9900009E4B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
@@ -450,6 +415,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Bugsnag-Prefix.pch";
 				INFOPLIST_FILE = "bugsnagTests/BugsnagTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Bugsnag;
 				WRAPPER_EXTENSION = octest;
 			};
@@ -458,6 +424,7 @@
 		F4C71D0917CE8B9900009E4B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
@@ -465,6 +432,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Bugsnag-Prefix.pch";
 				INFOPLIST_FILE = "bugsnagTests/BugsnagTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Bugsnag;
 				WRAPPER_EXTENSION = octest;
 			};

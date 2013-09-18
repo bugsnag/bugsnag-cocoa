@@ -80,9 +80,9 @@
     // Try to grab the addresses from the exception, if not just grab what we have now
     if (exception != nil && [[exception callStackReturnAddresses] count] != 0 ) {
         NSArray *stackFrames = [exception callStackReturnAddresses];
-        count = stackFrames.count;
+        count = (int)stackFrames.count;
         for (int i = 0; i < count; ++i) {
-            frames[i] = (void *)[[stackFrames objectAtIndex:i] intValue];
+            frames[i] = (void *)[[stackFrames objectAtIndex:i] longValue];
         }
     } else {
         count = backtrace(frames, count);
@@ -130,19 +130,19 @@
 
 - (NSDictionary *) loadedImages {
     //Get count of all currently loaded images
-    uint64_t count = _dyld_image_count();
+    uint32_t count = _dyld_image_count();
     NSMutableDictionary *returnValue = [NSMutableDictionary dictionary];
     
-    for (uint64_t i = 0; i < count; i++) {
+    for (uint32_t i = 0; i < count; i++) {
         const char *dyld = _dyld_get_image_name(i);
         const struct mach_header *header32 = _dyld_get_image_header(i);
         const struct mach_header_64 *header64 = (struct mach_header_64 *)_dyld_get_image_header(i);
         BOOL machHeader64Bit = header32->magic == MH_MAGIC_64;
         
         NSString *machoFile = [NSString stringWithCString:dyld encoding:NSUTF8StringEncoding];
-        NSNumber *machoLoadAddress = [NSString stringWithFormat:@"0x%llx", (uint64_t)header32];
+        NSString *machoLoadAddress = [NSString stringWithFormat:@"0x%llx", (uint64_t)header32];
         NSString *machoUUID = nil;
-        NSNumber *machoVMAddress = nil;
+        NSString *machoVMAddress = nil;
         
         // Now lets look at the load_commands
         uint8_t *header_ptr = (uint8_t*)header32;
