@@ -86,11 +86,6 @@
         }
     } else {
         count = backtrace(frames, count);
-        
-        // This offset is a hack to remove our own frames for creating the stacktrace in the event
-        // that we have either been passed a signal or an exception without a stack. We could pass
-        // this in from up top if we want to, but thats almost as hacky as this.
-        offset = 4;
     }
     Dl_info info;
     
