@@ -7,12 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#include <sys/utsname.h>
+
 
 #import "BugsnagIosNotifier.h"
 
 @interface BugsnagIosNotifier ()
 @property (readonly) NSString* topMostViewController;
 @property (atomic) BOOL inForeground;
+@property (atomic) CFAbsoluteTime lastEnteredForeground;
+@property (atomic) CFAbsoluteTime appStarted;
 
 - (void)applicationDidBecomeActive:(NSNotification *)notif;
 - (void)applicationDidEnterBackground:(NSNotification *)notif;
@@ -25,6 +29,8 @@
     if((self = [super initWithConfiguration:configuration])) {
         self.notifierName = @"iOS Bugsnag Notifier";
         self.inForeground = YES;
+        self.appStarted = self.lastEnteredForeground = CFAbsoluteTimeGetCurrent();
+
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
@@ -96,10 +102,35 @@
 
 - (void)applicationDidBecomeActive:(NSNotification *)notif {
     self.inForeground = YES;
+    self.lastEnteredForeground = CFAbsoluteTimeGetCurrent();
     [self start];
 }
 
 - (void)applicationDidEnterBackground:(NSNotification *)notif {
     self.inForeground = NO;
 }
+
+
+- (NSDictionary*) collectHostData {
+    NSMutableDictionary *hostData = [NSMutableDictionary dictionaryWithDictionary:[super collectHostData]];
+    [hostData setValue: [self density] forKey: @"screenDensity"];
+    [hostData setValue: [self resolution] forKey: @"screenResolution"];
+    [hostData setValue: [[UIDevice currentDevice] systemVersion] forKey: @"OSVersion"];
+    [hostData setValue: [[UIDevice currentDevice] systemName] forKey:@"OSName"];
+    return hostData;
+}
+
+- (NSString *) resolution {
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    int scale = [[UIScreen mainScreen] scale];
+    return [NSString stringWithFormat:@"%ix%i", (int)screenSize.width * scale, (int)screenSize.height * scale];
+}
+- (NSString *) density {
+    if ([[UIScreen mainScreen] scale] > 1.0) {
+        return @"retina";
+    } else {
+        return @"non-retina";
+    }
+}
+
 @end

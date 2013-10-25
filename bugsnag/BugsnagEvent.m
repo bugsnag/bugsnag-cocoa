@@ -26,10 +26,9 @@
         self.dictionary = [[NSMutableDictionary alloc] init];
         
         if (configuration.userId != nil) self.userId = configuration.userId;
-        if (configuration.appVersion != nil) self.appVersion = configuration.appVersion;
-        if (configuration.osVersion != nil) self.osVersion = configuration.osVersion;
         if (configuration.context != nil) self.context = configuration.context;
-        if (configuration.releaseStage != nil) self.releaseStage = configuration.releaseStage;
+        if (configuration.appData != nil) [self.dictionary setObject:configuration.appData forKey:@"app"];
+        if (configuration.hostData != nil) [self.dictionary setObject:configuration.hostData forKey:@"host"];
         
         if (configuration.metaData != nil) {
             self.metaData = [configuration.metaData mutableCopy];
@@ -215,30 +214,6 @@
     [self.metaData clearTab:tabName];
 }
 
-- (NSString*) appVersion {
-    @synchronized(self) {
-        return [self.dictionary objectForKey:@"appVersion"];
-    }
-}
-
-- (void) setAppVersion:(NSString *)appVersion {
-    @synchronized(self) {
-        [self.dictionary setObject:appVersion forKey:@"appVersion"];
-    }
-}
-
-- (NSString*) osVersion {
-    @synchronized(self) {
-        return [self.dictionary objectForKey:@"osVersion"];
-    }
-}
-
-- (void) setOsVersion:(NSString *)osVersion {
-    @synchronized(self) {
-        [self.dictionary setObject:osVersion forKey:@"osVersion"];
-    }
-}
-
 - (NSString*) context {
     @synchronized(self) {
         return [self.dictionary objectForKey:@"context"];
@@ -248,18 +223,6 @@
 - (void) setContext:(NSString *)context {
     @synchronized(self) {
         [self.dictionary setObject:context forKey:@"context"];
-    }
-}
-
-- (NSString*) releaseStage {
-    @synchronized(self) {
-        return [self.dictionary objectForKey:@"releaseStage"];
-    }
-}
-
-- (void) setReleaseStage:(NSString *)releaseStage {
-    @synchronized(self) {
-        [self.dictionary setObject:releaseStage forKey:@"releaseStage"];
     }
 }
 

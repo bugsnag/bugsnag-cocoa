@@ -29,6 +29,7 @@
 @property (readonly) NSString* networkReachability;
 @property (readonly) NSString* appVersion;
 @property (readonly) NSString* osVersion;
+
 @end
 
 @implementation BugsnagNotifier
@@ -37,12 +38,9 @@
     if((self = [super init])) {
         self.configuration = configuration;
         
-        if (self.configuration.appVersion == nil) self.configuration.appVersion = self.appVersion;
-        if (self.configuration.osVersion == nil) self.configuration.osVersion = self.osVersion;
         if (self.configuration.userId == nil) self.configuration.userId = self.userUUID;
-        
-        [self.configuration.metaData addAttribute:@"Machine" withValue:self.machine toTabWithName:@"device"];
-        [self.configuration.metaData addAttribute:@"Model" withValue:self.model toTabWithName:@"device"];
+        if (self.configuration.appData == nil) self.configuration.appData = [self collectAppData];
+        if (self.configuration.hostData == nil) self.configuration.hostData = [self collectHostData];
         
         [self beforeNotify:^(BugsnagEvent *event) {
             [self addDiagnosticsToEvent:event];
@@ -373,6 +371,54 @@
     return @"";
 }
 
+
+- (NSDictionary *) collectAppData {
+    NSBundle* bundle = [NSBundle mainBundle];
+    NSString* version = [bundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSString* bundleVersion = [bundle objectForInfoDictionaryKey:@"CFBundleVersion"];
+    NSString* name = [bundle objectForInfoDictionaryKey:@"CFBundleDisplayName"];
+
+    NSMutableDictionary *appData = [[NSMutableDictionary alloc] init];
+
+    if (version != nil) [appData setObject: version forKey: @"version"];
+    if (bundleVersion != nil) [appData setObject: bundleVersion forKey: @"bundleVersion"];
+    if (name != nil) [appData setObject: name forKey:@"name"];
+    [appData setObject: [bundle bundleIdentifier] forKey: @"id"];
+
+#if DEBUG
+    [appData setObject: @"development" forKey:@"releaseStage"];
+#else
+    [appData setObject: @"production" forKey:@"releaseStage"];
+#endif
+
+    return appData;
+}
+
+- (NSDictionary *) collectHostData {
+
+    NSMutableDictionary *hostData = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                      [self userUUID], @"id",
+                                      @"Apple", @"manufacturer",
+                                      [self machine], @"model",
+                                      [NSNumber numberWithBool: (sizeof(int*) == 8)], @"64bit",
+                                      nil];
+
+    uint64_t totalMemory = 0;
+    size_t size = sizeof(totalMemory);
+    if (!sysctlbyname("hw.memsize", &totalMemory, &size, NULL, 0)) {
+        [hostData setValue:[NSNumber numberWithInteger: totalMemory] forKey: @"totalMemory"];
+    }
+
+    // Get a path on the main disk (lots of stack-overflow answers suggest using @"/", but that doesn't work).
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSDictionary *atDict = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error:NULL];
+    if (atDict) {
+        [hostData setValue: [atDict objectForKey:NSFileSystemSize] forKey:@"diskSize"];
+    }
+
+    return hostData;
+}
+
 - (NSString *) osVersion {
 #ifdef TARGET_IPHONE_SIMULATOR
 #if TARGET_IPHONE_SIMULATOR
@@ -384,5 +430,6 @@
 	return [[NSProcessInfo processInfo] operatingSystemVersionString];
 #endif
 }
+
 
 @end

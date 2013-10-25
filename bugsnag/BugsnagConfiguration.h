@@ -21,6 +21,8 @@
 @property (atomic, copy) NSString *releaseStage;
 @property (atomic, copy) NSString *context;
 @property (atomic, strong) BugsnagMetaData *metaData;
+@property (atomic, strong) NSDictionary *appData;
+@property (atomic, strong) NSDictionary *hostData;
 
 @property (atomic) BOOL enableSSL;
 @property (atomic) BOOL autoNotify;
