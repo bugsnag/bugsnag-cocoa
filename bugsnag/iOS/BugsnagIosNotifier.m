@@ -119,6 +119,31 @@
     return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cydia://"]];
 }
 
+- (NSString *) locationStatus {
+    id CLLocationManager = NSClassFromString(@"CLLocationManager");
+    if (CLLocationManager == nil) {
+        return @"notloaded";
+    }
+    switch ((int)[CLLocationManager performSelector: @selector(authorizationStatus)]) {
+        case 0: // kCLAuthorizationStatusNotDetermined
+            return @"notdetermined";
+        case 1: // kCLAuthorizationStatusRestricted
+            return @"restricted";
+        case 2: // kCLAuthorizationStatusDenied
+            return @"denied";
+        case 3: // kCLAuthorizationStatusAuthorized
+            
+            if ((BOOL)[CLLocationManager performSelector: @selector(locationServicesEnabled)]) {
+                return @"enabled";
+            } else {
+                return @"disabled";
+            }
+            
+        default:
+            return @"unknown";
+    }
+}
+
 - (void)applicationDidBecomeActive:(NSNotification *)notif {
     self.inForeground = YES;
     self.lastEnteredForeground = CFAbsoluteTimeGetCurrent();
@@ -193,12 +218,15 @@
 - (NSDictionary *) collectHostState {
     NSMutableDictionary *hostState = [NSMutableDictionary dictionaryWithDictionary:[super collectHostState]];
     
+    if (NSClassFromString(@"CLLocationManager") != nil) {
+        [hostState setValue: [self locationStatus] forKey:@"locationStatus"];
+    }
+    
     [hostState setValue: [NSNumber numberWithInteger: round(100.0 * self.batteryLevel)] forKey: @"batteryLevel"];
     [hostState setValue: [NSNumber numberWithBool: self.charging] forKey: @"charging"];
     if (self.orientation != nil) {
         [hostState setValue: [self orientation] forKey: @"orientation"];
     }
-
     
     return hostState;
 }

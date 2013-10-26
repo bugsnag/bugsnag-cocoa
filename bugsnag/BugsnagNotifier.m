@@ -199,6 +199,7 @@
     
     NSData *jsonPayload = [NSJSONSerialization dataWithJSONObject:notifyPayload options:0 error:nil];
     
+    NSLog(@"sending %@", notifyPayload);
     return [self transmitPayload:jsonPayload toURL:self.configuration.notifyURL];
 }
 
@@ -398,10 +399,6 @@
     NSDictionary *atDict = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error:NULL];
     if (atDict) {
         [hostState setValue: [atDict objectForKey:NSFileSystemFreeSize] forKey:@"freeDisk"];
-    }
-    
-    if (NSClassFromString(@"CLLocationManager")) {
-        // TODO
     }
     
     [hostState setValue: self.networkReachability forKey: @"networkAccess"];
