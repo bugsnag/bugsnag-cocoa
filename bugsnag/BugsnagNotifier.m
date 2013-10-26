@@ -23,8 +23,6 @@
 - (BOOL) transmitPayload:(NSData *)payload toURL:(NSURL*)url;
 - (void) addDiagnosticsToEvent:(BugsnagEvent*)event;
 
-@property (readonly) NSDictionary* memoryStats;
-@property (readonly) NSString *model;
 @property (readonly) NSString* machine;
 @property (readonly) NSString* networkReachability;
 @property (readonly) NSString* appVersion;
@@ -63,18 +61,8 @@
 }
 
 - (void) addDiagnosticsToEvent:(BugsnagEvent*)event {
-    [event addAttribute:@"Application Version" withValue:self.configuration.appVersion toTabWithName:@"application"];
-    
-    [event addAttribute:@"OS Version" withValue:self.configuration.osVersion toTabWithName:@"device"];
-    [event addAttribute:@"Network" withValue:self.networkReachability toTabWithName:@"device"];
-    
-#ifdef TARGET_IPHONE_SIMULATOR
-#if !TARGET_IPHONE_SIMULATOR
-    [event addAttribute:@"Memory" withValue:self.memoryStats toTabWithName:@"device"];
-#endif
-#else
-    [event addAttribute:@"Memory" withValue:self.memoryStats toTabWithName:@"device"];
-#endif
+    event.hostState = [self collectHostState];
+    event.appState = [self collectAppState];
 }
 
 - (void) notifySignal:(int)signal {
@@ -212,8 +200,7 @@
     NSMutableDictionary *payload = [NSMutableDictionary dictionary];
     [payload setObject:self.configuration.apiKey forKey:@"apiKey"];
     [payload setObject:self.userUUID forKey:@"userId"];
-    [payload setObject:self.machine forKey:@"machine"];
-    [payload setObject:self.model forKey:@"model"];
+    [payload setObject:self.machine forKey:@"model"];
     if (self.configuration.osVersion != nil ) [payload setObject:self.configuration.osVersion forKey:@"osVersion"];
     if (self.configuration.appVersion != nil ) [payload setObject:self.configuration.appVersion forKey:@"appVersion"];
     
@@ -289,31 +276,6 @@
     return machine;
 }
 
-- (NSString *) model {
-    size_t size = 256;
-	char *modelCString = malloc(size);
-    sysctlbyname("hw.model", modelCString, &size, NULL, 0);
-    NSString *model = [NSString stringWithCString:modelCString encoding:NSUTF8StringEncoding];
-    free(modelCString);
-    
-    return model;
-}
-
-- (NSString *)fileSize:(NSNumber *)value {
-    float fileSize = [value floatValue];
-    if (fileSize<1023.0f)
-        return([NSString stringWithFormat:@"%i bytes",[value intValue]]);
-    fileSize = fileSize / 1024.0f;
-    if (fileSize<1023.0f)
-        return([NSString stringWithFormat:@"%1.1f KB",fileSize]);
-    fileSize = fileSize / 1024.0f;
-    if (fileSize<1023.0f)
-        return([NSString stringWithFormat:@"%1.1f MB",fileSize]);
-    fileSize = fileSize / 1024.0f;
-    
-    return([NSString stringWithFormat:@"%1.1f GB",fileSize]);
-}
-
 - (NSString *) networkReachability {
     Class reachabilityClass = NSClassFromString(@"Reachability");
     if (reachabilityClass == nil) reachabilityClass = NSClassFromString(@"BugsnagReachability");
@@ -321,41 +283,17 @@
     
     id reachability = [reachabilityClass performSelector:@selector(reachabilityForInternetConnection)];
     [reachability performSelector:@selector(startNotifier)];
-    NSString *returnValue = [reachability performSelector:@selector(currentReachabilityString)];
+    
+    NSString *returnValue = @"none";
+    if ([reachability performSelector:@selector(isReachableViaWiFi)]) {
+         returnValue = @"wifi";
+    } else if ([reachability performSelector:@selector(isReachableViaWWAN)]) {
+        returnValue = @"cellular";
+    }
+    
     [reachability performSelector:@selector(stopNotifier)];
     
     return returnValue;
-}
-
-- (NSDictionary *) memoryStats {
-    NSMutableDictionary *memoryStats = [NSMutableDictionary dictionary];
-    
-    struct task_basic_info info;
-    mach_msg_type_number_t size = sizeof(info);
-    kern_return_t kerr = task_info(mach_task_self(),
-                                   TASK_BASIC_INFO,
-                                   (task_info_t)&info,
-                                   &size);
-    if( kerr == KERN_SUCCESS ) {
-        [memoryStats setObject:[self fileSize:[NSNumber numberWithInteger:info.resident_size]] forKey:@"App Using"];
-    }
-    
-    uint64_t total = 0;
-    uint64_t pageSize = 0;
-    uint64_t pagesFree = 0;
-    size_t sysCtlSize = sizeof(uint64_t);
-    if (!sysctlbyname("hw.memsize", &total, &sysCtlSize, NULL, 0)) {
-        [memoryStats setObject:[self fileSize:[NSNumber numberWithInteger:total]] forKey:@"Total"];
-    }
-    
-    if (!sysctlbyname("vm.page_free_count", &pagesFree, &sysCtlSize, NULL, 0)) {
-        if (!sysctlbyname("hw.pagesize", &pageSize, &sysCtlSize, NULL, 0)) {
-            [memoryStats setObject:[self fileSize:[NSNumber numberWithInteger:pagesFree*pageSize]] forKey:@"Free"];
-            [memoryStats setObject:[self fileSize:[NSNumber numberWithInteger:total-(pagesFree*pageSize)]] forKey:@"Used"];
-        }
-    }
-    
-    return memoryStats;
 }
 
 - (NSString *) appVersion {
@@ -415,8 +353,54 @@
     if (atDict) {
         [hostData setValue: [atDict objectForKey:NSFileSystemSize] forKey:@"diskSize"];
     }
+    
+    [hostData setValue: [[NSLocale currentLocale] localeIdentifier] forKey:@"locale"];
 
     return hostData;
+}
+
+- (NSDictionary *) collectAppState {
+    NSMutableDictionary *appState = [[NSMutableDictionary alloc] init];
+    
+    struct task_basic_info info;
+    mach_msg_type_number_t size = sizeof(info);
+    kern_return_t kerr = task_info(mach_task_self(),
+                                    TASK_BASIC_INFO,
+                                    (task_info_t)&info,
+                                    &size);
+                                     
+    if ( kerr == KERN_SUCCESS ) {
+       [appState setObject:[NSNumber numberWithInteger:info.resident_size] forKey:@"memoryUsage"];
+    }
+                                     
+    return appState;
+}
+
+- (NSDictionary *) collectHostState {
+    NSMutableDictionary *hostState = [[NSMutableDictionary alloc] init];
+    
+    uint64_t pageSize = 0;
+    uint64_t pagesFree = 0;
+    size_t sysCtlSize = sizeof(uint64_t);
+    if (!sysctlbyname("vm.page_free_count", &pagesFree, &sysCtlSize, NULL, 0)) {
+        if (!sysctlbyname("hw.pagesize", &pageSize, &sysCtlSize, NULL, 0)) {
+            [hostState setValue: [NSNumber numberWithInteger:pagesFree*pageSize] forKey:@"freeMemory"];
+        }
+    }
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSDictionary *atDict = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error:NULL];
+    if (atDict) {
+        [hostState setValue: [atDict objectForKey:NSFileSystemFreeSize] forKey:@"freeDisk"];
+    }
+    
+    if (NSClassFromString(@"CLLocationManager")) {
+        // TODO
+    }
+    
+    [hostState setValue: self.networkReachability forKey: @"networkAccess"];
+    
+    return hostState;
 }
 
 - (NSString *) osVersion {

@@ -17,6 +17,10 @@
 @property (atomic) BOOL inForeground;
 @property (atomic) CFAbsoluteTime lastEnteredForeground;
 @property (atomic) CFAbsoluteTime appStarted;
+@property (atomic) CFAbsoluteTime lastMemoryWarning;
+@property (atomic) float batteryLevel;
+@property (atomic) BOOL charging;
+@property (atomic) NSString *orientation;
 
 - (void)applicationDidBecomeActive:(NSNotification *)notif;
 - (void)applicationDidEnterBackground:(NSNotification *)notif;
@@ -30,25 +34,22 @@
         self.notifierName = @"iOS Bugsnag Notifier";
         self.inForeground = YES;
         self.appStarted = self.lastEnteredForeground = CFAbsoluteTimeGetCurrent();
+        self.charging = false;
+        self.batteryLevel = -1.0;
+        self.lastMemoryWarning = 0.0;
 
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryChanged:) name:UIDeviceBatteryStateDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryChanged:) name:UIDeviceBatteryLevelDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lowMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
-        [self beforeNotify:^(BugsnagEvent *event) {
-            [self addIosDiagnosticsToEvent:event];
-            return YES;
-        }];
+        [UIDevice currentDevice].batteryMonitoringEnabled = TRUE;
+        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     }
     return self;
-}
-
-- (void) addIosDiagnosticsToEvent:(BugsnagEvent *) event {
-    NSString *topMostViewController = self.topMostViewController;
-    if (event.context == nil && topMostViewController != nil) event.context = topMostViewController;
-    
-    [event addAttribute:@"Top Most View Controller" withValue:topMostViewController toTabWithName:@"application"];
-    [event addAttribute:@"In Foreground" withValue:[NSNumber numberWithBool:self.inForeground] toTabWithName:@"application"];
 }
 
 - (NSString *) userUUID {
@@ -100,6 +101,24 @@
     return NSStringFromClass([visibleViewController class]);
 }
 
+- (NSString *) resolution {
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    int scale = [[UIScreen mainScreen] scale];
+    return [NSString stringWithFormat:@"%ix%i", (int)screenSize.width * scale, (int)screenSize.height * scale];
+}
+
+- (NSString *) density {
+    if ([[UIScreen mainScreen] scale] > 1.0) {
+        return @"retina";
+    } else {
+        return @"non-retina";
+    }
+}
+
+- (BOOL) jailbroken {
+    return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cydia://"]];
+}
+
 - (void)applicationDidBecomeActive:(NSNotification *)notif {
     self.inForeground = YES;
     self.lastEnteredForeground = CFAbsoluteTimeGetCurrent();
@@ -110,27 +129,78 @@
     self.inForeground = NO;
 }
 
+- (void)batteryChanged:(NSNotification *)notif {
+    self.batteryLevel = [UIDevice currentDevice].batteryLevel;
+    self.charging = [UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging;
+}
 
-- (NSDictionary*) collectHostData {
+- (void)orientationChanged:(NSNotification *)notif {
+    switch([UIDevice currentDevice].orientation) {
+        case UIDeviceOrientationPortraitUpsideDown:
+            self.orientation = @"portraitupsidedown";
+            break;
+        case UIDeviceOrientationPortrait:
+            self.orientation = @"portrait";
+            break;
+        case UIDeviceOrientationLandscapeRight:
+            self.orientation = @"landscaperight";
+            break;
+        case UIDeviceOrientationLandscapeLeft:
+            self.orientation = @"landscapeleft";
+            break;
+        case UIDeviceOrientationFaceUp:
+            self.orientation = @"faceup";
+            break;
+        case UIDeviceOrientationFaceDown:
+            self.orientation = @"facedown";
+            break;
+        case UIDeviceOrientationUnknown:
+        default:
+            self.orientation = @"unknown";
+    }
+}
+- (void)lowMemoryWarning:(NSNotification *)notif {
+    self.lastMemoryWarning = CFAbsoluteTimeGetCurrent();
+}
+
+- (NSDictionary *) collectHostData {
     NSMutableDictionary *hostData = [NSMutableDictionary dictionaryWithDictionary:[super collectHostData]];
     [hostData setValue: [self density] forKey: @"screenDensity"];
     [hostData setValue: [self resolution] forKey: @"screenResolution"];
-    [hostData setValue: [[UIDevice currentDevice] systemVersion] forKey: @"OSVersion"];
-    [hostData setValue: [[UIDevice currentDevice] systemName] forKey:@"OSName"];
+    [hostData setValue: [[UIDevice currentDevice] systemVersion] forKey: @"osVersion"];
+    [hostData setValue: [[UIDevice currentDevice] systemName] forKey:@"osName"];
+    if ([self jailbroken]) {
+        [hostData setValue: [NSNumber numberWithBool: [self jailbroken]] forKey: @"jailbroken"];
+    }
     return hostData;
 }
 
-- (NSString *) resolution {
-    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-    int scale = [[UIScreen mainScreen] scale];
-    return [NSString stringWithFormat:@"%ix%i", (int)screenSize.width * scale, (int)screenSize.height * scale];
-}
-- (NSString *) density {
-    if ([[UIScreen mainScreen] scale] > 1.0) {
-        return @"retina";
-    } else {
-        return @"non-retina";
+- (NSDictionary *) collectAppState {
+    NSMutableDictionary *appState = [NSMutableDictionary dictionaryWithDictionary:[super collectAppState]];
+    
+    CFAbsoluteTime now = CFAbsoluteTimeGetCurrent();
+    [appState setValue: [self topMostViewController] forKey:@"viewController"];
+    [appState setValue: [NSNumber numberWithBool: self.inForeground] forKey:@"inForeground"];
+    [appState setValue: [NSNumber numberWithInteger: round(1000.0 * (now - self.lastEnteredForeground))] forKey: @"durationInForeground"];
+    [appState setValue: [NSNumber numberWithInteger: round(1000.0 * (now - self.appStarted))] forKey: @"duration"];
+    if (self.lastMemoryWarning > 0.0) {
+        [appState setValue: [NSNumber numberWithInteger: round(1000.0 * (now - self.lastMemoryWarning))] forKey: @"timeSinceMemoryWarning"];
     }
+    
+    return appState;
+}
+
+- (NSDictionary *) collectHostState {
+    NSMutableDictionary *hostState = [NSMutableDictionary dictionaryWithDictionary:[super collectHostState]];
+    
+    [hostState setValue: [NSNumber numberWithInteger: round(100.0 * self.batteryLevel)] forKey: @"batteryLevel"];
+    [hostState setValue: [NSNumber numberWithBool: self.charging] forKey: @"charging"];
+    if (self.orientation != nil) {
+        [hostState setValue: [self orientation] forKey: @"orientation"];
+    }
+
+    
+    return hostState;
 }
 
 @end

@@ -30,5 +30,7 @@
 @property (atomic, copy) NSString *context;
 @property (atomic, copy) NSString *userId;
 @property (atomic, strong) BugsnagMetaData *metaData;
+@property (atomic, strong) NSDictionary *hostState;
+@property (atomic, strong) NSDictionary *appState;
 
 @end

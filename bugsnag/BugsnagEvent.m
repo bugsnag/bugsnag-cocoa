@@ -226,6 +226,30 @@
     }
 }
 
+- (NSDictionary *) hostState {
+    @synchronized(self) {
+        [self.dictionary objectForKey:@"hostState"];
+    }
+}
+
+- (void) setHostState:(NSDictionary *)hostState {
+    @synchronized(self) {
+        [self.dictionary setObject:hostState forKey:@"hostState"];
+    }
+}
+
+- (NSDictionary *) appState {
+    @synchronized(self) {
+        [self.dictionary objectForKey:@"appState"];
+    }
+}
+
+- (void) setAppState:(NSDictionary *)appState {
+    @synchronized(self) {
+        [self.dictionary setObject:appState forKey:@"appState"];
+    }
+}
+
 - (NSString*) userId {
     @synchronized(self) {
         return [self.dictionary objectForKey:@"userId"];
