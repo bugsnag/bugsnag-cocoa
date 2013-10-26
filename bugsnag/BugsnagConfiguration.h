@@ -13,9 +13,14 @@
 
 @interface BugsnagConfiguration : NSObject
 
+- setUser: (NSString*) userId withName: (NSString*) userName andEmail: (NSString*) userEmail;
+
 @property (atomic, copy) NSString *apiKey;
 
 @property (atomic, copy) NSString *userId;
+@property (atomic, copy) NSString *userName;
+@property (atomic, copy) NSString *userEmail;
+
 @property (atomic, copy) NSString *appVersion;
 @property (atomic, copy) NSString *osVersion;
 @property (atomic, copy) NSString *releaseStage;
@@ -23,6 +28,7 @@
 @property (atomic, strong) BugsnagMetaData *metaData;
 @property (atomic, strong) NSDictionary *appData;
 @property (atomic, strong) NSDictionary *hostData;
+@property (atomic, strong) NSMutableDictionary *userData;
 
 @property (atomic) BOOL enableSSL;
 @property (atomic) BOOL autoNotify;

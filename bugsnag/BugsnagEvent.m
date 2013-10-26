@@ -24,9 +24,10 @@
 - (id) initWithConfiguration:(BugsnagConfiguration *)configuration andMetaData:(NSDictionary*)metaData {
     if (self = [super init]) {
         self.dictionary = [[NSMutableDictionary alloc] init];
+        self.severity = @"error";
         
-        if (configuration.userId != nil) self.userId = configuration.userId;
         if (configuration.context != nil) self.context = configuration.context;
+        if (configuration.userData != nil) [self.dictionary setObject:configuration.userData forKey:@"user"];
         if (configuration.appData != nil) [self.dictionary setObject:configuration.appData forKey:@"app"];
         if (configuration.hostData != nil) [self.dictionary setObject:configuration.hostData forKey:@"host"];
         
@@ -36,7 +37,9 @@
             self.metaData = [[BugsnagMetaData alloc] init];
         }
         
-        if (metaData != nil) [self.metaData mergeWith:metaData];
+        if (metaData != nil) {
+            [self.metaData mergeWith:metaData];
+        }
     }
     return self;
 }
@@ -250,15 +253,16 @@
     }
 }
 
-- (NSString*) userId {
+- (NSString *) severity {
     @synchronized(self) {
-        return [self.dictionary objectForKey:@"userId"];
+        [self.dictionary objectForKey:@"severity"];
     }
 }
 
-- (void) setUserId:(NSString *)userId {
+- (void) setSeverity:(NSString *)severity {
     @synchronized(self) {
-        [self.dictionary setObject:userId forKey:@"userId"];
+        [self.dictionary setObject:severity forKey:@"severity"];
     }
 }
+
 @end

@@ -16,6 +16,7 @@
         self.autoNotify = YES;
         self.collectMAU = YES;
         self.metaData = [[BugsnagMetaData alloc] init];
+        self.userData = [[NSMutableDictionary alloc] init];
         
         self.uuidPath = @"bugsnag-user-id";
         self.beforeBugsnagNotifyBlocks = [NSMutableArray array];
@@ -40,6 +41,33 @@
     } else {
         return [NSURL URLWithString:@"http://notify.bugsnag.com"];
     }
+}
+
+- (void) setUser: (NSString*)userId withName:(NSString *)userName andEmail:(NSString*)userEmail {
+    self.userId = userId;
+    self.userName = userName;
+    self.userEmail = userEmail;
+}
+
+- (NSString*) userEmail {
+    return [self.userData objectForKey: @"email"];
+}
+- (void) setUserEmail:(NSString*) userEmail {
+    [self.userData setValue:userEmail forKey: @"email"];
+}
+
+- (NSString*) userId {
+    return [self.userData objectForKey: @"id"];
+}
+- (void) setUserId:(NSString*) userId {
+    [self.userData setValue:userId forKey: @"id"];
+}
+
+- (NSString*) userName {
+    return [self.userData objectForKey: @"name"];
+}
+- (void) setUserName:(NSString*) userName {
+    [self.userData setValue:userName forKey: @"name"];
 }
 
 @end

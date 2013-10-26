@@ -67,22 +67,28 @@
 
 - (void) notifySignal:(int)signal {
     if([self shouldAutoNotify]) {
-        BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData:nil];
+        BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData: nil];
         [event addSignal:signal];
+        event.severity = @"fatal";
         [self notifyEvent:event inBackground: false];
     }
 }
 
 - (void) notifyUncaughtException:(NSException *)exception {
     if ([self shouldAutoNotify]) {
-        [self notifyException:exception withData:nil inBackground:false];
+        [self notifyException:exception withData:nil atSeverity: @"fatal" inBackground:false];
     }
 }
 
-- (void) notifyException:(NSException*)exception withData:(NSDictionary*)metaData inBackground:(BOOL)inBackground {
+- (void) notifyException:(NSException*)exception withData:(NSDictionary*)metaData atSeverity:(NSString*)severity inBackground:(BOOL)inBackground {
     if ([self shouldNotify]) {
         BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData:metaData];
         [event addException:exception];
+
+        if (severity == nil || !([severity isEqualToString:@"info"] || [severity isEqualToString:@"warn"] || [severity isEqualToString:@"error"] || [severity isEqualToString:@"fatal"])) {
+            severity = @"error";
+        }
+        event.severity = severity;
         [self notifyEvent:event inBackground: inBackground];
     }
 }

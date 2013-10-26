@@ -124,11 +124,15 @@ void handle_exception(NSException *exception) {
 }
 
 + (void) notify:(NSException *)exception {
-    [notifier notifyException:exception withData:nil inBackground: true];
+    [notifier notifyException:exception withData:nil atSeverity: @"error" inBackground: true];
 }
 
 + (void) notify:(NSException *)exception withData:(NSDictionary*)metaData {
-    [notifier notifyException:exception withData:metaData inBackground: true];
+    [notifier notifyException:exception withData:metaData atSeverity: @"error" inBackground: true];
+}
+
++ (void) notify:(NSException *)exception withData:(NSDictionary*)metaData atSeverity:(NSString*)severity {
+    [notifier notifyException:exception withData:nil atSeverity: severity inBackground: true];
 }
 
 + (void) setUserAttribute:(NSString*)attributeName withValue:(id)value {
