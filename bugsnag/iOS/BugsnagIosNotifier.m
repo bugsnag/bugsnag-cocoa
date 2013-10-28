@@ -122,25 +122,24 @@
 - (NSString *) locationStatus {
     id CLLocationManager = NSClassFromString(@"CLLocationManager");
     if (CLLocationManager == nil) {
-        return @"notloaded";
+        return nil;
     }
     switch ((int)[CLLocationManager performSelector: @selector(authorizationStatus)]) {
         case 0: // kCLAuthorizationStatusNotDetermined
-            return @"notdetermined";
+            return nil;
         case 1: // kCLAuthorizationStatusRestricted
-            return @"restricted";
         case 2: // kCLAuthorizationStatusDenied
-            return @"denied";
+            return @"disallowed";
         case 3: // kCLAuthorizationStatusAuthorized
             
             if ((BOOL)[CLLocationManager performSelector: @selector(locationServicesEnabled)]) {
-                return @"enabled";
+                return @"allowed";
             } else {
-                return @"disabled";
+                return @"disallowed";
             }
             
         default:
-            return @"unknown";
+            return nil;
     }
 }
 
@@ -218,7 +217,9 @@
 - (NSDictionary *) collectHostState {
     NSMutableDictionary *hostState = [NSMutableDictionary dictionaryWithDictionary:[super collectHostState]];
     
-    if (NSClassFromString(@"CLLocationManager") != nil) {
+    NSString *locationStatus = [self locationStatus];
+
+    if (locationStatus) {
         [hostState setValue: [self locationStatus] forKey:@"locationStatus"];
     }
     
