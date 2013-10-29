@@ -44,30 +44,56 @@
 }
 
 - (void) setUser: (NSString*)userId withName:(NSString *)userName andEmail:(NSString*)userEmail {
-    self.userId = userId;
-    self.userName = userName;
-    self.userEmail = userEmail;
+    @synchronized(self) {
+        self.userId = userId;
+        self.userName = userName;
+        self.userEmail = userEmail;
+    }
 }
 
 - (NSString*) userEmail {
-    return [self.userData objectForKey: @"email"];
+    @synchronized(self) {
+        return [self.userData objectForKey: @"email"];
+    }
 }
 - (void) setUserEmail:(NSString*) userEmail {
-    [self.userData setValue:userEmail forKey: @"email"];
+    @synchronized(self) {
+        [self.userData setValue:[userEmail copy] forKey: @"email"];
+    }
 }
 
 - (NSString*) userId {
-    return [self.userData objectForKey: @"id"];
+    @synchronized(self) {
+        return [self.userData objectForKey: @"id"];
+    }
 }
 - (void) setUserId:(NSString*) userId {
-    [self.userData setValue:userId forKey: @"id"];
+    @synchronized(self) {
+        [self.userData setValue:[userId copy] forKey: @"id"];
+    }
 }
 
 - (NSString*) userName {
-    return [self.userData objectForKey: @"name"];
+    @synchronized(self) {
+        return [self.userData objectForKey: @"name"];
+    }
 }
 - (void) setUserName:(NSString*) userName {
-    [self.userData setValue:userName forKey: @"name"];
+    @synchronized(self) {
+        [self.userData setValue:[userName copy] forKey: @"name"];
+
+    }
 }
 
+- (NSString*) releaseStage {
+    @synchronized(self) {
+        [self.appData objectForKey:@"releaseStage"];
+    }
+}
+
+- (void) setReleaseStage:(NSString*) releaseStage {
+    @synchronized(self) {
+        [self.appData setValue: releaseStage forKey:@"releaseStage"];
+    }
+}
 @end

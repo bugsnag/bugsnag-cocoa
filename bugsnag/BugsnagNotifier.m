@@ -25,8 +25,6 @@
 
 @property (readonly) NSString* machine;
 @property (readonly) NSString* networkReachability;
-@property (readonly) NSString* appVersion;
-@property (readonly) NSString* osVersion;
 
 @end
 
@@ -198,18 +196,16 @@
     [[notifyPayload objectForKey:@"events"] addObject:event];
     
     NSData *jsonPayload = [NSJSONSerialization dataWithJSONObject:notifyPayload options:0 error:nil];
-    
-    NSLog(@"sending %@", notifyPayload);
+
     return [self transmitPayload:jsonPayload toURL:self.configuration.notifyURL];
 }
 
 - (BOOL) sendMetrics {
     NSMutableDictionary *payload = [NSMutableDictionary dictionary];
     [payload setObject:self.configuration.apiKey forKey:@"apiKey"];
-    [payload setObject:self.userUUID forKey:@"userId"];
-    [payload setObject:self.machine forKey:@"model"];
-    if (self.configuration.osVersion != nil ) [payload setObject:self.configuration.osVersion forKey:@"osVersion"];
-    if (self.configuration.appVersion != nil ) [payload setObject:self.configuration.appVersion forKey:@"appVersion"];
+    [payload setObject:self.configuration.appData forKey:@"app"];
+    [payload setObject:self.configuration.hostData forKey:@"host"];
+    [payload setObject:self.configuration.userData forKey:@"user"];
     
     NSData *jsonPayload = [NSJSONSerialization dataWithJSONObject:payload options:0 error:nil];
     
@@ -303,21 +299,7 @@
     return returnValue;
 }
 
-- (NSString *) appVersion {
-    NSString *bundleVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-    NSString *versionString = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    if (bundleVersion != nil && versionString != nil && ![bundleVersion isEqualToString:versionString]) {
-        return [NSString stringWithFormat:@"%@ (%@)", versionString, bundleVersion];
-    } else if (bundleVersion != nil) {
-        return bundleVersion;
-    } else if(versionString != nil) {
-        return versionString;
-    }
-    return @"";
-}
-
-
-- (NSDictionary *) collectAppData {
+- (NSMutableDictionary *) collectAppData {
     NSBundle* bundle = [NSBundle mainBundle];
     NSString* version = [bundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     NSString* bundleVersion = [bundle objectForInfoDictionaryKey:@"CFBundleVersion"];
@@ -330,16 +312,10 @@
     if (name != nil) [appData setObject: name forKey:@"name"];
     [appData setObject: [bundle bundleIdentifier] forKey: @"id"];
 
-#if DEBUG
-    [appData setObject: @"development" forKey:@"releaseStage"];
-#else
-    [appData setObject: @"production" forKey:@"releaseStage"];
-#endif
-
     return appData;
 }
 
-- (NSDictionary *) collectHostData {
+- (NSMutableDictionary *) collectHostData {
 
     NSMutableDictionary *hostData = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                       [self userUUID], @"id",
@@ -362,11 +338,13 @@
     }
     
     [hostData setValue: [[NSLocale currentLocale] localeIdentifier] forKey:@"locale"];
+    [hostData setValue: [self osVersion] forKey:@"osVersion"];
+    [hostData setValue: [self osName] forKey:@"osName"];
 
     return hostData;
 }
 
-- (NSDictionary *) collectAppState {
+- (NSMutableDictionary *) collectAppState {
     NSMutableDictionary *appState = [[NSMutableDictionary alloc] init];
     
     struct task_basic_info info;
@@ -383,7 +361,7 @@
     return appState;
 }
 
-- (NSDictionary *) collectHostState {
+- (NSMutableDictionary *) collectHostState {
     NSMutableDictionary *hostState = [[NSMutableDictionary alloc] init];
     
     uint64_t pageSize = 0;
@@ -415,6 +393,17 @@
 #endif
 #else
 	return [[NSProcessInfo processInfo] operatingSystemVersionString];
+#endif
+}
+
+- (NSString *) osName {
+#if TARGET_OS_IPHONE
+    return [[UIDevice currentDevice] systemName];
+#else
+    // TODO... This doesn't seem to be exposed anywhere.
+    // NSProcessInfo-operatingSystemName == "NSMachOperatingSystem"
+    // sysctlbyname('kern.osrelease') == "Darwin"
+    return @"OS X";
 #endif
 }
 

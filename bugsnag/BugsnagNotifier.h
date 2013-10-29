@@ -36,10 +36,10 @@ typedef BOOL (^BugsnagNotifyBlock)(BugsnagEvent*);
 - (NSArray*) savedEvents;
 - (void) sendSavedEvents;
 
-- (NSDictionary *)collectHostData;
-- (NSDictionary *)collectAppData;
-- (NSDictionary *)collectHostState;
-- (NSDictionary *)collectAppState;
+- (NSMutableDictionary *)collectHostData;
+- (NSMutableDictionary *)collectAppData;
+- (NSMutableDictionary *)collectHostState;
+- (NSMutableDictionary *)collectAppState;
 
 @property (atomic, copy) NSString *notifierName;
 @property (atomic, copy) NSString *notifierVersion;

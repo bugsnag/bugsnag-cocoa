@@ -187,23 +187,21 @@
     self.lastMemoryWarning = CFAbsoluteTimeGetCurrent();
 }
 
-- (NSDictionary *) collectHostData {
-    NSMutableDictionary *hostData = [NSMutableDictionary dictionaryWithDictionary:[super collectHostData]];
+- (NSMutableDictionary *) collectHostData {
+    NSMutableDictionary *hostData = [super collectHostData];
     [hostData setValue: [self density] forKey: @"screenDensity"];
     [hostData setValue: [self resolution] forKey: @"screenResolution"];
-    [hostData setValue: [[UIDevice currentDevice] systemVersion] forKey: @"osVersion"];
-    [hostData setValue: [[UIDevice currentDevice] systemName] forKey:@"osName"];
     if ([self jailbroken]) {
         [hostData setValue: [NSNumber numberWithBool: [self jailbroken]] forKey: @"jailbroken"];
     }
     return hostData;
 }
 
-- (NSDictionary *) collectAppState {
-    NSMutableDictionary *appState = [NSMutableDictionary dictionaryWithDictionary:[super collectAppState]];
+- (NSMutableDictionary *) collectAppState {
+    NSMutableDictionary *appState = [super collectAppState];
     
     CFAbsoluteTime now = CFAbsoluteTimeGetCurrent();
-    [appState setValue: [self topMostViewController] forKey:@"viewController"];
+    [appState setValue: [self topMostViewController] forKey:@"activeScreen"];
     [appState setValue: [NSNumber numberWithBool: self.inForeground] forKey:@"inForeground"];
     [appState setValue: [NSNumber numberWithInteger: round(1000.0 * (now - self.lastEnteredForeground))] forKey: @"durationInForeground"];
     [appState setValue: [NSNumber numberWithInteger: round(1000.0 * (now - self.appStarted))] forKey: @"duration"];
