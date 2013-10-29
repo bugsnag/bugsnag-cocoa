@@ -94,9 +94,7 @@ void handle_exception(NSException *exception) {
 
 + (void)startBugsnagWithConfiguration:(BugsnagConfiguration*) configuration {
     notifier = [[NSClassFromString(notiferClass) alloc] initWithConfiguration:configuration];
-    
-    [notifier start];
-    
+
     // Register the notifier to receive exceptions and signals
     NSSetUncaughtExceptionHandler(&handle_exception);
     
