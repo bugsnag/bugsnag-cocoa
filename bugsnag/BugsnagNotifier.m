@@ -36,7 +36,7 @@
         
         if (self.configuration.userId == nil) self.configuration.userId = self.userUUID;
         if (self.configuration.appData == nil) self.configuration.appData = [self collectAppData];
-        if (self.configuration.hostData == nil) self.configuration.hostData = [self collectHostData];
+        if (self.configuration.deviceData == nil) self.configuration.deviceData = [self collectdeviceData];
         
         [self beforeNotify:^(BugsnagEvent *event) {
             [self addDiagnosticsToEvent:event];
@@ -59,7 +59,7 @@
 }
 
 - (void) addDiagnosticsToEvent:(BugsnagEvent*)event {
-    event.hostState = [self collectHostState];
+    event.deviceState = [self collectdeviceState];
     event.appState = [self collectAppState];
 }
 
@@ -204,7 +204,7 @@
     NSMutableDictionary *payload = [NSMutableDictionary dictionary];
     [payload setObject:self.configuration.apiKey forKey:@"apiKey"];
     [payload setObject:self.configuration.appData forKey:@"app"];
-    [payload setObject:self.configuration.hostData forKey:@"host"];
+    [payload setObject:self.configuration.deviceData forKey:@"device"];
     [payload setObject:self.configuration.userData forKey:@"user"];
     
     NSData *jsonPayload = [NSJSONSerialization dataWithJSONObject:payload options:0 error:nil];
@@ -315,9 +315,9 @@
     return appData;
 }
 
-- (NSMutableDictionary *) collectHostData {
+- (NSMutableDictionary *) collectdeviceData {
 
-    NSMutableDictionary *hostData = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+    NSMutableDictionary *deviceData = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                       [self userUUID], @"id",
                                       @"Apple", @"manufacturer",
                                       [self machine], @"model",
@@ -327,21 +327,21 @@
     uint64_t totalMemory = 0;
     size_t size = sizeof(totalMemory);
     if (!sysctlbyname("hw.memsize", &totalMemory, &size, NULL, 0)) {
-        [hostData setValue:[NSNumber numberWithInteger: totalMemory] forKey: @"totalMemory"];
+        [deviceData setValue:[NSNumber numberWithInteger: totalMemory] forKey: @"totalMemory"];
     }
 
     // Get a path on the main disk (lots of stack-overflow answers suggest using @"/", but that doesn't work).
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSDictionary *atDict = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error:NULL];
     if (atDict) {
-        [hostData setValue: [atDict objectForKey:NSFileSystemSize] forKey:@"diskSize"];
+        [deviceData setValue: [atDict objectForKey:NSFileSystemSize] forKey:@"diskSize"];
     }
     
-    [hostData setValue: [[NSLocale currentLocale] localeIdentifier] forKey:@"locale"];
-    [hostData setValue: [self osVersion] forKey:@"osVersion"];
-    [hostData setValue: [self osName] forKey:@"osName"];
+    [deviceData setValue: [[NSLocale currentLocale] localeIdentifier] forKey:@"locale"];
+    [deviceData setValue: [self osVersion] forKey:@"osVersion"];
+    [deviceData setValue: [self osName] forKey:@"osName"];
 
-    return hostData;
+    return deviceData;
 }
 
 - (NSMutableDictionary *) collectAppState {
@@ -361,27 +361,27 @@
     return appState;
 }
 
-- (NSMutableDictionary *) collectHostState {
-    NSMutableDictionary *hostState = [[NSMutableDictionary alloc] init];
+- (NSMutableDictionary *) collectdeviceState {
+    NSMutableDictionary *deviceState = [[NSMutableDictionary alloc] init];
     
     uint64_t pageSize = 0;
     uint64_t pagesFree = 0;
     size_t sysCtlSize = sizeof(uint64_t);
     if (!sysctlbyname("vm.page_free_count", &pagesFree, &sysCtlSize, NULL, 0)) {
         if (!sysctlbyname("hw.pagesize", &pageSize, &sysCtlSize, NULL, 0)) {
-            [hostState setValue: [NSNumber numberWithInteger:pagesFree*pageSize] forKey:@"freeMemory"];
+            [deviceState setValue: [NSNumber numberWithInteger:pagesFree*pageSize] forKey:@"freeMemory"];
         }
     }
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSDictionary *atDict = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error:NULL];
     if (atDict) {
-        [hostState setValue: [atDict objectForKey:NSFileSystemFreeSize] forKey:@"freeDisk"];
+        [deviceState setValue: [atDict objectForKey:NSFileSystemFreeSize] forKey:@"freeDisk"];
     }
     
-    [hostState setValue: self.networkReachability forKey: @"networkAccess"];
+    [deviceState setValue: self.networkReachability forKey: @"networkAccess"];
     
-    return hostState;
+    return deviceState;
 }
 
 - (NSString *) osVersion {

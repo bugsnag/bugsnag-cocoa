@@ -29,7 +29,7 @@
 
 @property (atomic, copy) NSString *context;
 @property (atomic, strong) BugsnagMetaData *metaData;
-@property (atomic, strong) NSDictionary *hostState;
+@property (atomic, strong) NSDictionary *deviceState;
 @property (atomic, strong) NSDictionary *appState;
 @property (atomic, strong) NSString *severity;
 

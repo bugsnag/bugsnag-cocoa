@@ -26,7 +26,7 @@
 
 @property (atomic, strong) BugsnagMetaData *metaData;
 @property (atomic, strong) NSMutableDictionary *appData;
-@property (atomic, strong) NSMutableDictionary *hostData;
+@property (atomic, strong) NSMutableDictionary *deviceData;
 @property (atomic, strong) NSMutableDictionary *userData;
 
 @property (atomic) BOOL enableSSL;

@@ -29,7 +29,7 @@
         if (configuration.context != nil) self.context = configuration.context;
         if (configuration.userData != nil) [self.dictionary setObject:configuration.userData forKey:@"user"];
         if (configuration.appData != nil) [self.dictionary setObject:configuration.appData forKey:@"app"];
-        if (configuration.hostData != nil) [self.dictionary setObject:configuration.hostData forKey:@"host"];
+        if (configuration.deviceData != nil) [self.dictionary setObject:configuration.deviceData forKey:@"device"];
         
         if (configuration.metaData != nil) {
             self.metaData = [configuration.metaData mutableCopy];
@@ -229,15 +229,15 @@
     }
 }
 
-- (NSDictionary *) hostState {
+- (NSDictionary *) deviceState {
     @synchronized(self) {
-        [self.dictionary objectForKey:@"hostState"];
+        [self.dictionary objectForKey:@"deviceState"];
     }
 }
 
-- (void) setHostState:(NSDictionary *)hostState {
+- (void) setDeviceState:(NSDictionary *)deviceState {
     @synchronized(self) {
-        [self.dictionary setObject:hostState forKey:@"hostState"];
+        [self.dictionary setObject:deviceState forKey:@"deviceState"];
     }
 }
 

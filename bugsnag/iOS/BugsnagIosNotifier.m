@@ -187,14 +187,14 @@
     self.lastMemoryWarning = CFAbsoluteTimeGetCurrent();
 }
 
-- (NSMutableDictionary *) collectHostData {
-    NSMutableDictionary *hostData = [super collectHostData];
-    [hostData setValue: [self density] forKey: @"screenDensity"];
-    [hostData setValue: [self resolution] forKey: @"screenResolution"];
+- (NSMutableDictionary *) collectDeviceData {
+    NSMutableDictionary *deviceData = [super collectdeviceData];
+    [deviceData setValue: [self density] forKey: @"screenDensity"];
+    [deviceData setValue: [self resolution] forKey: @"screenResolution"];
     if ([self jailbroken]) {
-        [hostData setValue: [NSNumber numberWithBool: [self jailbroken]] forKey: @"jailbroken"];
+        [deviceData setValue: [NSNumber numberWithBool: [self jailbroken]] forKey: @"jailbroken"];
     }
-    return hostData;
+    return deviceData;
 }
 
 - (NSMutableDictionary *) collectAppState {
@@ -212,22 +212,22 @@
     return appState;
 }
 
-- (NSDictionary *) collectHostState {
-    NSMutableDictionary *hostState = [NSMutableDictionary dictionaryWithDictionary:[super collectHostState]];
+- (NSDictionary *) collectdeviceState {
+    NSMutableDictionary *deviceState = [NSMutableDictionary dictionaryWithDictionary:[super collectdeviceState]];
     
     NSString *locationStatus = [self locationStatus];
 
     if (locationStatus) {
-        [hostState setValue: [self locationStatus] forKey:@"locationStatus"];
+        [deviceState setValue: [self locationStatus] forKey:@"locationStatus"];
     }
     
-    [hostState setValue: [NSNumber numberWithInteger: round(100.0 * self.batteryLevel)] forKey: @"batteryLevel"];
-    [hostState setValue: [NSNumber numberWithBool: self.charging] forKey: @"charging"];
+    [deviceState setValue: [NSNumber numberWithInteger: round(100.0 * self.batteryLevel)] forKey: @"batteryLevel"];
+    [deviceState setValue: [NSNumber numberWithBool: self.charging] forKey: @"charging"];
     if (self.orientation != nil) {
-        [hostState setValue: [self orientation] forKey: @"orientation"];
+        [deviceState setValue: [self orientation] forKey: @"orientation"];
     }
     
-    return hostState;
+    return deviceState;
 }
 
 @end
