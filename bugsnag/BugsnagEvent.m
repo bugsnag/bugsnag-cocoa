@@ -231,7 +231,7 @@
 
 - (NSDictionary *) deviceState {
     @synchronized(self) {
-        [self.dictionary objectForKey:@"deviceState"];
+        return [self.dictionary objectForKey:@"deviceState"];
     }
 }
 
@@ -243,7 +243,7 @@
 
 - (NSDictionary *) appState {
     @synchronized(self) {
-        [self.dictionary objectForKey:@"appState"];
+        return [self.dictionary objectForKey:@"appState"];
     }
 }
 
@@ -255,7 +255,7 @@
 
 - (NSString *) severity {
     @synchronized(self) {
-        [self.dictionary objectForKey:@"severity"];
+        return [self.dictionary objectForKey:@"severity"];
     }
 }
 

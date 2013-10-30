@@ -15,6 +15,9 @@
 #import <UIKit/UIKit.h>
 #endif
 #endif
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#endif
 
 #import "BugsnagNotifier.h"
 #import "BugsnagLogger.h"

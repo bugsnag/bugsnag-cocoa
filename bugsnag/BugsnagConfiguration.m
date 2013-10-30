@@ -87,7 +87,7 @@
 
 - (NSString*) releaseStage {
     @synchronized(self) {
-        [self.appData objectForKey:@"releaseStage"];
+        return [self.appData objectForKey:@"releaseStage"];
     }
 }
 
