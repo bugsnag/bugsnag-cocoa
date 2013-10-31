@@ -17,6 +17,8 @@
         self.collectMAU = YES;
         self.metaData = [[BugsnagMetaData alloc] init];
         self.userData = [[NSMutableDictionary alloc] init];
+        self.appData = [[NSMutableDictionary alloc] init];
+        self.deviceData = [[NSMutableDictionary alloc] init];
         
         self.uuidPath = @"bugsnag-user-id";
         self.beforeBugsnagNotifyBlocks = [NSMutableArray array];
@@ -94,6 +96,30 @@
 - (void) setReleaseStage:(NSString*) releaseStage {
     @synchronized(self) {
         [self.appData setValue: releaseStage forKey:@"releaseStage"];
+    }
+}
+
+- (NSString*) appVersion {
+    @synchronized(self) {
+        return [self.appData objectForKey:@"version"];
+    }
+}
+
+- (void) setAppVersion:(NSString *)appVersion {
+    @synchronized(self) {
+        [self.appData setValue: appVersion forKey:@"version"];
+    }
+}
+
+- (NSString*) osVersion {
+    @synchronized(self) {
+        return [self.deviceData objectForKey:@"osVersion"];
+    }
+}
+
+- (void) setOsVersion:(NSString *)osVersion {
+    @synchronized(self) {
+        [self.deviceData setObject:osVersion forKey:@"osVersion"];
     }
 }
 @end

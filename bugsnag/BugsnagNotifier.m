@@ -38,8 +38,8 @@
         self.configuration = configuration;
         
         if (self.configuration.userId == nil) self.configuration.userId = self.userUUID;
-        if (self.configuration.appData == nil) self.configuration.appData = [self collectAppData];
-        if (self.configuration.deviceData == nil) self.configuration.deviceData = [self collectdeviceData];
+        [self.configuration.appData addEntriesFromDictionary: [self collectAppData]];
+        [self.configuration.deviceData addEntriesFromDictionary: [self collectDeviceData]];
         
         [self beforeNotify:^(BugsnagEvent *event) {
             [self addDiagnosticsToEvent:event];
@@ -318,7 +318,7 @@
     return appData;
 }
 
-- (NSMutableDictionary *) collectdeviceData {
+- (NSMutableDictionary *) collectDeviceData {
 
     NSMutableDictionary *deviceData = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                       [self userUUID], @"id",

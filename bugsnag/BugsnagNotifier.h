@@ -36,7 +36,7 @@ typedef BOOL (^BugsnagNotifyBlock)(BugsnagEvent*);
 - (NSArray*) savedEvents;
 - (void) sendSavedEvents;
 
-- (NSMutableDictionary *)collectdeviceData;
+- (NSMutableDictionary *)collectDeviceData;
 - (NSMutableDictionary *)collectAppData;
 - (NSMutableDictionary *)collectdeviceState;
 - (NSMutableDictionary *)collectAppState;

@@ -22,6 +22,8 @@
 @property (atomic, copy) NSString *userEmail;
 
 @property (atomic, copy) NSString *releaseStage;
+@property (atomic, copy) NSString *osVersion;
+@property (atomic, copy) NSString *appVersion;
 @property (atomic, copy) NSString *context;
 
 @property (atomic, strong) BugsnagMetaData *metaData;

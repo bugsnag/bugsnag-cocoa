@@ -188,7 +188,7 @@
 }
 
 - (NSMutableDictionary *) collectDeviceData {
-    NSMutableDictionary *deviceData = [super collectdeviceData];
+    NSMutableDictionary *deviceData = [super collectDeviceData];
     [deviceData setValue: [self density] forKey: @"screenDensity"];
     [deviceData setValue: [self resolution] forKey: @"screenResolution"];
     if ([self jailbroken]) {
