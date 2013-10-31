@@ -286,7 +286,8 @@
     Class reachabilityClass = NSClassFromString(@"Reachability");
     if (reachabilityClass == nil) reachabilityClass = NSClassFromString(@"BugsnagReachability");
     if (reachabilityClass == nil) return nil;
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
     id reachability = [reachabilityClass performSelector:@selector(reachabilityForInternetConnection)];
     [reachability performSelector:@selector(startNotifier)];
     
@@ -298,7 +299,7 @@
     }
     
     [reachability performSelector:@selector(stopNotifier)];
-    
+#pragma clang diagnostic pop
     return returnValue;
 }
 
@@ -330,7 +331,7 @@
     uint64_t totalMemory = 0;
     size_t size = sizeof(totalMemory);
     if (!sysctlbyname("hw.memsize", &totalMemory, &size, NULL, 0)) {
-        [deviceData setValue:[NSNumber numberWithInteger: totalMemory] forKey: @"totalMemory"];
+        [deviceData setValue:[NSNumber numberWithLongLong: totalMemory] forKey: @"totalMemory"];
     }
 
     // Get a path on the main disk (lots of stack-overflow answers suggest using @"/", but that doesn't work).
@@ -372,7 +373,7 @@
     size_t sysCtlSize = sizeof(uint64_t);
     if (!sysctlbyname("vm.page_free_count", &pagesFree, &sysCtlSize, NULL, 0)) {
         if (!sysctlbyname("hw.pagesize", &pageSize, &sysCtlSize, NULL, 0)) {
-            [deviceState setValue: [NSNumber numberWithInteger:pagesFree*pageSize] forKey:@"freeMemory"];
+            [deviceState setValue: [NSNumber numberWithLongLong:pagesFree*pageSize] forKey:@"freeMemory"];
         }
     }
     

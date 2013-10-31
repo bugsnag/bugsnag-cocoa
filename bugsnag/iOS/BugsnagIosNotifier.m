@@ -124,6 +124,8 @@
     if (CLLocationManager == nil) {
         return nil;
     }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
     switch ((int)[CLLocationManager performSelector: @selector(authorizationStatus)]) {
         case 0: // kCLAuthorizationStatusNotDetermined
             return nil;
@@ -141,6 +143,7 @@
         default:
             return nil;
     }
+#pragma clang diagnostic pop
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)notif {
