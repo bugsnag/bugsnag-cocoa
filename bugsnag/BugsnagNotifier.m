@@ -62,7 +62,7 @@
 }
 
 - (void) addDiagnosticsToEvent:(BugsnagEvent*)event {
-    event.deviceState = [self collectdeviceState];
+    event.deviceState = [self collectDeviceState];
     event.appState = [self collectAppState];
 }
 
@@ -206,9 +206,9 @@
 - (BOOL) sendMetrics {
     NSMutableDictionary *payload = [NSMutableDictionary dictionary];
     [payload setObject:self.configuration.apiKey forKey:@"apiKey"];
-    [payload setObject:self.configuration.appData forKey:@"app"];
-    [payload setObject:self.configuration.deviceData forKey:@"device"];
-    [payload setObject:self.configuration.userData forKey:@"user"];
+    [payload setObject:self.configuration.appData.data forKey:@"app"];
+    [payload setObject:self.configuration.deviceData.data forKey:@"device"];
+    [payload setObject:self.configuration.userData.data forKey:@"user"];
     
     NSData *jsonPayload = [NSJSONSerialization dataWithJSONObject:payload options:0 error:nil];
     
@@ -331,25 +331,25 @@
     uint64_t totalMemory = 0;
     size_t size = sizeof(totalMemory);
     if (!sysctlbyname("hw.memsize", &totalMemory, &size, NULL, 0)) {
-        [deviceData setValue:[NSNumber numberWithLongLong: totalMemory] forKey: @"totalMemory"];
+        [deviceData setObject:[NSNumber numberWithLongLong: totalMemory] forKey: @"totalMemory"];
     }
 
     // Get a path on the main disk (lots of stack-overflow answers suggest using @"/", but that doesn't work).
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSDictionary *atDict = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error:NULL];
     if (atDict) {
-        [deviceData setValue: [atDict objectForKey:NSFileSystemSize] forKey:@"diskSize"];
+        [deviceData setObject: [atDict objectForKey:NSFileSystemSize] forKey:@"diskSize"];
     }
     
-    [deviceData setValue: [[NSLocale currentLocale] localeIdentifier] forKey:@"locale"];
-    [deviceData setValue: [self osVersion] forKey:@"osVersion"];
-    [deviceData setValue: [self osName] forKey:@"osName"];
+    [deviceData setObject: [[NSLocale currentLocale] localeIdentifier] forKey:@"locale"];
+    [deviceData setObject: [self osVersion] forKey:@"osVersion"];
+    [deviceData setObject: [self osName] forKey:@"osName"];
 
     return deviceData;
 }
 
-- (NSMutableDictionary *) collectAppState {
-    NSMutableDictionary *appState = [[NSMutableDictionary alloc] init];
+- (BugsnagDictionary *) collectAppState {
+    BugsnagDictionary *appState = [[BugsnagDictionary alloc] init];
     
     struct task_basic_info info;
     mach_msg_type_number_t size = sizeof(info);
@@ -365,25 +365,25 @@
     return appState;
 }
 
-- (NSMutableDictionary *) collectdeviceState {
-    NSMutableDictionary *deviceState = [[NSMutableDictionary alloc] init];
+- (BugsnagDictionary *) collectDeviceState {
+    BugsnagDictionary *deviceState = [[BugsnagDictionary alloc] init];
     
     uint64_t pageSize = 0;
     uint64_t pagesFree = 0;
     size_t sysCtlSize = sizeof(uint64_t);
     if (!sysctlbyname("vm.page_free_count", &pagesFree, &sysCtlSize, NULL, 0)) {
         if (!sysctlbyname("hw.pagesize", &pageSize, &sysCtlSize, NULL, 0)) {
-            [deviceState setValue: [NSNumber numberWithLongLong:pagesFree*pageSize] forKey:@"freeMemory"];
+            [deviceState setObject: [NSNumber numberWithLongLong:pagesFree*pageSize] forKey:@"freeMemory"];
         }
     }
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSDictionary *atDict = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error:NULL];
     if (atDict) {
-        [deviceState setValue: [atDict objectForKey:NSFileSystemFreeSize] forKey:@"freeDisk"];
+        [deviceState setObject: [atDict objectForKey:NSFileSystemFreeSize] forKey:@"freeDisk"];
     }
     
-    [deviceState setValue: self.networkReachability forKey: @"networkAccess"];
+    [deviceState setObject: self.networkReachability forKey: @"networkAccess"];
     
     return deviceState;
 }

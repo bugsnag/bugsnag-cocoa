@@ -190,44 +190,44 @@
     self.lastMemoryWarning = CFAbsoluteTimeGetCurrent();
 }
 
-- (NSMutableDictionary *) collectDeviceData {
-    NSMutableDictionary *deviceData = [super collectDeviceData];
-    [deviceData setValue: [self density] forKey: @"screenDensity"];
-    [deviceData setValue: [self resolution] forKey: @"screenResolution"];
+- (BugsnagDictionary *) collectDeviceData {
+    BugsnagDictionary *deviceData = [super collectDeviceData];
+    [deviceData setObject: [self density] forKey: @"screenDensity"];
+    [deviceData setObject: [self resolution] forKey: @"screenResolution"];
     if ([self jailbroken]) {
-        [deviceData setValue: [NSNumber numberWithBool: [self jailbroken]] forKey: @"jailbroken"];
+        [deviceData setObject: [NSNumber numberWithBool: [self jailbroken]] forKey: @"jailbroken"];
     }
     return deviceData;
 }
 
-- (NSMutableDictionary *) collectAppState {
-    NSMutableDictionary *appState = [super collectAppState];
+- (BugsnagDictionary *) collectAppState {
+    BugsnagDictionary *appState = [super collectAppState];
     
     CFAbsoluteTime now = CFAbsoluteTimeGetCurrent();
-    [appState setValue: [self topMostViewController] forKey:@"activeScreen"];
-    [appState setValue: [NSNumber numberWithBool: self.inForeground] forKey:@"inForeground"];
-    [appState setValue: [NSNumber numberWithInteger: round(1000.0 * (now - self.lastEnteredForeground))] forKey: @"durationInForeground"];
-    [appState setValue: [NSNumber numberWithInteger: round(1000.0 * (now - self.appStarted))] forKey: @"duration"];
+    [appState setObject: [self topMostViewController] forKey:@"activeScreen"];
+    [appState setObject: [NSNumber numberWithBool: self.inForeground] forKey:@"inForeground"];
+    [appState setObject: [NSNumber numberWithInteger: round(1000.0 * (now - self.lastEnteredForeground))] forKey: @"durationInForeground"];
+    [appState setObject: [NSNumber numberWithInteger: round(1000.0 * (now - self.appStarted))] forKey: @"duration"];
     if (self.lastMemoryWarning > 0.0) {
-        [appState setValue: [NSNumber numberWithInteger: round(1000.0 * (now - self.lastMemoryWarning))] forKey: @"timeSinceMemoryWarning"];
+        [appState setObject: [NSNumber numberWithInteger: round(1000.0 * (now - self.lastMemoryWarning))] forKey: @"timeSinceMemoryWarning"];
     }
     
     return appState;
 }
 
-- (NSDictionary *) collectdeviceState {
-    NSMutableDictionary *deviceState = [NSMutableDictionary dictionaryWithDictionary:[super collectdeviceState]];
-    
+- (BugsnagDictionary *) collectDeviceState {
+    BugsnagDictionary *deviceState = [super collectDeviceState];
+
     NSString *locationStatus = [self locationStatus];
 
     if (locationStatus) {
-        [deviceState setValue: [self locationStatus] forKey:@"locationStatus"];
+        [deviceState setObject: [self locationStatus] forKey:@"locationStatus"];
     }
     
-    [deviceState setValue: [NSNumber numberWithInteger: round(100.0 * self.batteryLevel)] forKey: @"batteryLevel"];
-    [deviceState setValue: [NSNumber numberWithBool: self.charging] forKey: @"charging"];
+    [deviceState setObject: [NSNumber numberWithInteger: round(100.0 * self.batteryLevel)] forKey: @"batteryLevel"];
+    [deviceState setObject: [NSNumber numberWithBool: self.charging] forKey: @"charging"];
     if (self.orientation != nil) {
-        [deviceState setValue: [self orientation] forKey: @"orientation"];
+        [deviceState setObject: [self orientation] forKey: @"orientation"];
     }
     
     return deviceState;

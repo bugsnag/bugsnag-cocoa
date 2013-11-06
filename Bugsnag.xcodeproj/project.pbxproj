@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7926BB43182332D000E31332 /* BugsnagDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 7926BB42182332D000E31332 /* BugsnagDictionary.m */; };
 		F4C71CE317CE8B9900009E4B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C71CE217CE8B9900009E4B /* Foundation.framework */; };
 		F4C71CE817CE8B9900009E4B /* Bugsnag.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F4C71CE717CE8B9900009E4B /* Bugsnag.h */; };
 		F4C71CEA17CE8B9900009E4B /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = F4C71CE917CE8B9900009E4B /* Bugsnag.m */; };
@@ -47,6 +48,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7926BB41182332D000E31332 /* BugsnagDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagDictionary.h; sourceTree = "<group>"; };
+		7926BB42182332D000E31332 /* BugsnagDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagDictionary.m; sourceTree = "<group>"; };
 		F495C52D17E2A8E700B1995A /* BugsnagOSXNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagOSXNotifier.h; path = OSX/BugsnagOSXNotifier.h; sourceTree = "<group>"; };
 		F495C52E17E2A8E700B1995A /* BugsnagOSXNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagOSXNotifier.m; path = OSX/BugsnagOSXNotifier.m; sourceTree = "<group>"; };
 		F4BD0C9317E7875400E92185 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -67,7 +70,7 @@
 		F4FCBA1217CE90FB00A264EC /* BugsnagEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagEvent.h; sourceTree = "<group>"; };
 		F4FCBA1317CE90FB00A264EC /* BugsnagEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagEvent.m; sourceTree = "<group>"; };
 		F4FCBA1517CE924400A264EC /* BugsnagNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagNotifier.h; sourceTree = "<group>"; };
-		F4FCBA1617CE924400A264EC /* BugsnagNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagNotifier.m; sourceTree = "<group>"; };
+		F4FCBA1617CE924400A264EC /* BugsnagNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagNotifier.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F4FCBA1817CEB47B00A264EC /* BugsnagLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagLogger.h; sourceTree = "<group>"; };
 		F4FCBA1F17CEF24E00A264EC /* BugsnagIosNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagIosNotifier.h; path = iOS/BugsnagIosNotifier.h; sourceTree = "<group>"; };
 		F4FCBA2017CEF24E00A264EC /* BugsnagIosNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagIosNotifier.m; path = iOS/BugsnagIosNotifier.m; sourceTree = "<group>"; };
@@ -151,6 +154,8 @@
 				F4FCBA1017CE90EB00A264EC /* BugsnagMetaData.m */,
 				F4FCBA1517CE924400A264EC /* BugsnagNotifier.h */,
 				F4FCBA1617CE924400A264EC /* BugsnagNotifier.m */,
+				7926BB41182332D000E31332 /* BugsnagDictionary.h */,
+				7926BB42182332D000E31332 /* BugsnagDictionary.m */,
 			);
 			name = Bugsnag;
 			path = bugsnag;
@@ -286,6 +291,7 @@
 				F4FCBA0E17CE90B200A264EC /* BugsnagConfiguration.m in Sources */,
 				F4FCBA1117CE90EB00A264EC /* BugsnagMetaData.m in Sources */,
 				F4FCBA1417CE90FB00A264EC /* BugsnagEvent.m in Sources */,
+				7926BB43182332D000E31332 /* BugsnagDictionary.m in Sources */,
 				F4FCBA1717CE924400A264EC /* BugsnagNotifier.m in Sources */,
 				F4FCBA2117CEF24E00A264EC /* BugsnagIosNotifier.m in Sources */,
 			);

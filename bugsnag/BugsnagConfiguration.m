@@ -16,9 +16,9 @@
         self.autoNotify = YES;
         self.collectMAU = YES;
         self.metaData = [[BugsnagMetaData alloc] init];
-        self.userData = [[NSMutableDictionary alloc] init];
-        self.appData = [[NSMutableDictionary alloc] init];
-        self.deviceData = [[NSMutableDictionary alloc] init];
+        self.userData = [[BugsnagDictionary alloc] init];
+        self.appData = [[BugsnagDictionary alloc] init];
+        self.deviceData = [[BugsnagDictionary alloc] init];
         
         self.uuidPath = @"bugsnag-user-id";
         self.beforeBugsnagNotifyBlocks = [NSMutableArray array];
@@ -54,72 +54,49 @@
 }
 
 - (NSString*) userEmail {
-    @synchronized(self) {
-        return [self.userData objectForKey: @"email"];
-    }
+    return [self.userData objectForKey: @"email"];
 }
 - (void) setUserEmail:(NSString*) userEmail {
-    @synchronized(self) {
-        [self.userData setValue:[userEmail copy] forKey: @"email"];
-    }
+    [self.userData setObject:[userEmail copy] forKey: @"email"];
 }
 
 - (NSString*) userId {
-    @synchronized(self) {
-        return [self.userData objectForKey: @"id"];
-    }
+    return [self.userData objectForKey: @"id"];
 }
+
 - (void) setUserId:(NSString*) userId {
-    @synchronized(self) {
-        [self.userData setValue:[userId copy] forKey: @"id"];
-    }
+    [self.userData setObject:[userId copy] forKey: @"id"];
 }
 
 - (NSString*) userName {
-    @synchronized(self) {
-        return [self.userData objectForKey: @"name"];
-    }
+    return [self.userData objectForKey: @"name"];
 }
-- (void) setUserName:(NSString*) userName {
-    @synchronized(self) {
-        [self.userData setValue:[userName copy] forKey: @"name"];
 
-    }
+- (void) setUserName:(NSString*) userName {
+    [self.userData setObject:[userName copy] forKey: @"name"];
 }
 
 - (NSString*) releaseStage {
-    @synchronized(self) {
-        return [self.appData objectForKey:@"releaseStage"];
-    }
+    return [self.appData objectForKey:@"releaseStage"];
 }
 
 - (void) setReleaseStage:(NSString*) releaseStage {
-    @synchronized(self) {
-        [self.appData setValue: releaseStage forKey:@"releaseStage"];
-    }
+    [self.appData setObject: releaseStage forKey:@"releaseStage"];
 }
 
 - (NSString*) appVersion {
-    @synchronized(self) {
-        return [self.appData objectForKey:@"version"];
-    }
+    return [self.appData objectForKey:@"version"];
 }
 
 - (void) setAppVersion:(NSString *)appVersion {
-    @synchronized(self) {
-        [self.appData setValue: appVersion forKey:@"version"];
-    }
+    [self.appData setObject: appVersion forKey:@"version"];
 }
 
 - (NSString*) osVersion {
-    @synchronized(self) {
-        return [self.deviceData objectForKey:@"osVersion"];
-    }
+    return [self.deviceData objectForKey:@"osVersion"];
 }
 
 - (void) setOsVersion:(NSString *)osVersion {
-    @synchronized(self) {
-        [self.deviceData setObject:osVersion forKey:@"osVersion"];
-    }
+    [self.deviceData setObject:osVersion forKey:@"osVersion"];
 }
 @end

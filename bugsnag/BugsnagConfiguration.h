@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "BugsnagMetaData.h"
+#import "BugsnagDictionary.h"
 
 #define USER_TAB_NAME @"User"
 
@@ -27,9 +28,9 @@
 @property (atomic, copy) NSString *context;
 
 @property (atomic, strong) BugsnagMetaData *metaData;
-@property (atomic, strong) NSMutableDictionary *appData;
-@property (atomic, strong) NSMutableDictionary *deviceData;
-@property (atomic, strong) NSMutableDictionary *userData;
+@property (atomic, strong) BugsnagDictionary *appData;
+@property (atomic, strong) BugsnagDictionary *deviceData;
+@property (atomic, strong) BugsnagDictionary *userData;
 
 @property (atomic) BOOL enableSSL;
 @property (atomic) BOOL autoNotify;

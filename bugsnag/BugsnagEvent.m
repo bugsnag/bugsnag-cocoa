@@ -27,9 +27,9 @@
         self.severity = @"error";
         
         if (configuration.context != nil) self.context = configuration.context;
-        if (configuration.userData != nil) [self.dictionary setObject:configuration.userData forKey:@"user"];
-        if (configuration.appData != nil) [self.dictionary setObject:configuration.appData forKey:@"app"];
-        if (configuration.deviceData != nil) [self.dictionary setObject:configuration.deviceData forKey:@"device"];
+        [self.dictionary setObject:configuration.userData.data forKey:@"user"];
+        [self.dictionary setObject:configuration.appData.data forKey:@"app"];
+        [self.dictionary setObject:configuration.deviceData.data forKey:@"device"];
         
         if (configuration.metaData != nil) {
             self.metaData = [configuration.metaData mutableCopy];
@@ -229,27 +229,27 @@
     }
 }
 
-- (NSDictionary *) deviceState {
+- (BugsnagDictionary *) deviceState {
     @synchronized(self) {
-        return [self.dictionary objectForKey:@"deviceState"];
+        return [[BugsnagDictionary alloc] initWithMutableDictionary: [self.dictionary objectForKey:@"deviceState"]];
     }
 }
 
-- (void) setDeviceState:(NSDictionary *)deviceState {
+- (void) setDeviceState:(BugsnagDictionary *)deviceState {
     @synchronized(self) {
-        [self.dictionary setObject:deviceState forKey:@"deviceState"];
+        [self.dictionary setObject:deviceState.data forKey:@"deviceState"];
     }
 }
 
-- (NSDictionary *) appState {
+- (BugsnagDictionary *) appState {
     @synchronized(self) {
-        return [self.dictionary objectForKey:@"appState"];
+        return [[BugsnagDictionary alloc] initWithMutableDictionary: [self.dictionary objectForKey:@"appState"]];
     }
 }
 
-- (void) setAppState:(NSDictionary *)appState {
+- (void) setAppState:(BugsnagDictionary *)appState {
     @synchronized(self) {
-        [self.dictionary setObject:appState forKey:@"appState"];
+        [self.dictionary setObject:appState.data forKey:@"appState"];
     }
 }
 
