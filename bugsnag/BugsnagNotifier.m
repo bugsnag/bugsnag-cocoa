@@ -40,7 +40,7 @@
         if (self.configuration.userId == nil) self.configuration.userId = self.userUUID;
         [self.configuration.appData addEntriesFromDictionary: [self collectAppData]];
         [self.configuration.deviceData addEntriesFromDictionary: [self collectDeviceData]];
-        
+
         [self beforeNotify:^(BugsnagEvent *event) {
             [self addDiagnosticsToEvent:event];
             return YES;
@@ -303,15 +303,19 @@
     return returnValue;
 }
 
-- (NSMutableDictionary *) collectAppData {
+- (BugsnagDictionary *) collectAppData {
     NSBundle* bundle = [NSBundle mainBundle];
     NSString* version = [bundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     NSString* bundleVersion = [bundle objectForInfoDictionaryKey:@"CFBundleVersion"];
     NSString* name = [bundle objectForInfoDictionaryKey:@"CFBundleDisplayName"];
 
-    NSMutableDictionary *appData = [[NSMutableDictionary alloc] init];
+    BugsnagDictionary *appData = [[BugsnagDictionary alloc] init];
 
-    if (version != nil) [appData setObject: version forKey: @"version"];
+    if (version != nil) {
+        [appData setObject: version forKey: @"version"];
+    } else if (bundleVersion != nil) {
+        [appData setObject: bundleVersion forKey: @"version"];
+    }
     if (bundleVersion != nil) [appData setObject: bundleVersion forKey: @"bundleVersion"];
     if (name != nil) [appData setObject: name forKey:@"name"];
     [appData setObject: [bundle bundleIdentifier] forKey: @"id"];
@@ -319,14 +323,12 @@
     return appData;
 }
 
-- (NSMutableDictionary *) collectDeviceData {
+- (BugsnagDictionary *) collectDeviceData {
 
-    NSMutableDictionary *deviceData = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                      [self userUUID], @"id",
-                                      @"Apple", @"manufacturer",
-                                      [self machine], @"model",
-                                      [NSNumber numberWithBool: (sizeof(int*) == 8)], @"64bit",
-                                      nil];
+    BugsnagDictionary *deviceData = [[BugsnagDictionary alloc] init];
+    [deviceData setObject: [self userUUID] forKey: @"id"];
+    [deviceData setObject: @"Apple" forKey: @"manufacturer"];
+    [deviceData setObject: [self machine] forKey: @"model"];
 
     uint64_t totalMemory = 0;
     size_t size = sizeof(totalMemory);
@@ -402,7 +404,7 @@
 
 - (NSString *) osName {
 #if TARGET_OS_IPHONE
-    return [[UIDevice currentDevice] systemName];
+    return @"iOS";
 #else
     // TODO... This doesn't seem to be exposed anywhere.
     // NSProcessInfo-operatingSystemName == "NSMachOperatingSystem"
