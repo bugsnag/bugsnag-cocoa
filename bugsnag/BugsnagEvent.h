@@ -27,11 +27,10 @@
 - (void) addAttribute:(NSString*)attributeName withValue:(id)value toTabWithName:(NSString*)tabName;
 - (void) clearTabWithName:(NSString*)tabName;
 
-@property (atomic, copy) NSString *appVersion;
-@property (atomic, copy) NSString *osVersion;
 @property (atomic, copy) NSString *context;
-@property (atomic, copy) NSString *releaseStage;
-@property (atomic, copy) NSString *userId;
 @property (atomic, strong) BugsnagMetaData *metaData;
+@property (atomic, strong) BugsnagDictionary *deviceState;
+@property (atomic, strong) BugsnagDictionary *appState;
+@property (atomic, strong) NSString *severity;
 
 @end

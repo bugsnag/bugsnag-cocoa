@@ -11,9 +11,6 @@
 #import <ExceptionHandling/NSExceptionHandler.h>
 
 @interface BugsnagOSXNotifier ()
-@property (readonly) NSString* topMostWindowTitle;
-@property (readonly) NSString* topMostDocumentDisplayName;
-- (void) addOSXDiagnosticsToEvent:(BugsnagEvent*) event;
 @end
 
 @implementation BugsnagOSXNotifier
@@ -24,49 +21,41 @@
         
         [[NSExceptionHandler defaultExceptionHandler] setExceptionHandlingMask:NSLogAndHandleEveryExceptionMask];
         [[NSExceptionHandler defaultExceptionHandler] setDelegate:self];
-        
-        [self beforeNotify:^(BugsnagEvent *event) {
-            [self addOSXDiagnosticsToEvent:event];
-            return YES;
-        }];
     }
     return self;
 }
 
-- (void) addOSXDiagnosticsToEvent:(BugsnagEvent*) event {
-    NSString *topMostWindowTitle = self.topMostWindowTitle;
-    if (topMostWindowTitle != nil) {
-        if (event.context == nil) event.context = topMostWindowTitle;
+- (BugsnagDictionary *) collectAppState {
 
-        [event addAttribute:@"Top Most Window" withValue:topMostWindowTitle toTabWithName:@"application"];
-    }
-    
-    NSString *topMostDocumentDisplayName = self.topMostDocumentDisplayName;
-    if (topMostDocumentDisplayName != nil) [event addAttribute:@"Top Most Document" withValue:topMostDocumentDisplayName toTabWithName:@"application"];
-    
-    [event addAttribute:@"Active" withValue:[NSNumber numberWithBool:[[NSApplication sharedApplication] isActive]] toTabWithName:@"application"];
-}
+    BugsnagDictionary *appState = [super collectAppState];
 
-- (NSString *) topMostWindowTitle {
-    NSArray *windows = [[NSApplication sharedApplication] orderedWindows];
-    if (windows.count > 0) {
-        return ((NSWindow*)[windows objectAtIndex:0]).title;
-    } else {
-        return nil;
-    }
-}
-
-- (NSString *) topMostDocumentDisplayName {
     NSArray *documents = [[NSApplication sharedApplication] orderedDocuments];
-    if (documents.count > 0) {
-        return ((NSDocument*)[documents objectAtIndex:0]).displayName;
-    } else {
-        return nil;
+    NSArray *windows = [[NSApplication sharedApplication] orderedWindows];
+
+    NSMutableArray *documentNames = [NSMutableArray arrayWithCapacity: documents.count];
+    NSMutableArray *windowTitles = [NSMutableArray arrayWithCapacity: windows.count];
+
+    for (int i = 0; i < windows.count; i++) {
+        [windowTitles insertObject: ((NSWindow*)[windows objectAtIndex: i]).title atIndex: i];
     }
+    for (int i = 0; i < documents.count; i++) {
+        [documentNames insertObject:((NSDocument*)[documents objectAtIndex: i]).displayName atIndex: i];
+    }
+    
+    if (windowTitles.count > 0) {
+        [appState setObject: [windowTitles objectAtIndex:0] forKey:@"activeScreen"];
+        [appState setObject: windowTitles forKey:@"orderedWindows"];
+    }
+    
+    if (documentNames.count > 0) {
+        [appState setObject: documentNames forKey:@"orderedDocuments"];
+    }
+
+    return appState;
 }
 
 - (BOOL)exceptionHandler:(NSExceptionHandler *)sender shouldLogException:(NSException *)exception mask:(NSUInteger)aMask {
-    [self notifyException:exception withData:nil inBackground:YES];
+    [self notifyException:exception withData:nil atSeverity:@"fatal" inBackground:YES];
     return NO;
 }
 
