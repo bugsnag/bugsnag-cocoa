@@ -93,10 +93,8 @@ void handle_exception(NSException *exception) {
 }
 
 + (void)startBugsnagWithConfiguration:(BugsnagConfiguration*) configuration {
+
     notifier = [[NSClassFromString(notiferClass) alloc] initWithConfiguration:configuration];
-    
-    [notifier start];
-    
     // Register the notifier to receive exceptions and signals
     NSSetUncaughtExceptionHandler(&handle_exception);
     
@@ -124,11 +122,15 @@ void handle_exception(NSException *exception) {
 }
 
 + (void) notify:(NSException *)exception {
-    [notifier notifyException:exception withData:nil inBackground: true];
+    [notifier notifyException:exception withData:nil atSeverity: @"error" inBackground: true];
 }
 
 + (void) notify:(NSException *)exception withData:(NSDictionary*)metaData {
-    [notifier notifyException:exception withData:metaData inBackground: true];
+    [notifier notifyException:exception withData:metaData atSeverity: @"error" inBackground: true];
+}
+
++ (void) notify:(NSException *)exception withData:(NSDictionary*)metaData atSeverity:(NSString*)severity {
+    [notifier notifyException:exception withData:nil atSeverity: severity inBackground: true];
 }
 
 + (void) setUserAttribute:(NSString*)attributeName withValue:(id)value {

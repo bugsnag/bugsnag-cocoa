@@ -15,6 +15,9 @@
 #import <UIKit/UIKit.h>
 #endif
 #endif
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#endif
 
 #import "BugsnagNotifier.h"
 #import "BugsnagLogger.h"
@@ -23,12 +26,9 @@
 - (BOOL) transmitPayload:(NSData *)payload toURL:(NSURL*)url;
 - (void) addDiagnosticsToEvent:(BugsnagEvent*)event;
 
-@property (readonly) NSDictionary* memoryStats;
-@property (readonly) NSString *model;
 @property (readonly) NSString* machine;
 @property (readonly) NSString* networkReachability;
-@property (readonly) NSString* appVersion;
-@property (readonly) NSString* osVersion;
+
 @end
 
 @implementation BugsnagNotifier
@@ -37,13 +37,10 @@
     if((self = [super init])) {
         self.configuration = configuration;
         
-        if (self.configuration.appVersion == nil) self.configuration.appVersion = self.appVersion;
-        if (self.configuration.osVersion == nil) self.configuration.osVersion = self.osVersion;
         if (self.configuration.userId == nil) self.configuration.userId = self.userUUID;
-        
-        [self.configuration.metaData addAttribute:@"Machine" withValue:self.machine toTabWithName:@"device"];
-        [self.configuration.metaData addAttribute:@"Model" withValue:self.model toTabWithName:@"device"];
-        
+        [self.configuration.appData addEntriesFromDictionary: [self collectAppData]];
+        [self.configuration.deviceData addEntriesFromDictionary: [self collectDeviceData]];
+
         [self beforeNotify:^(BugsnagEvent *event) {
             [self addDiagnosticsToEvent:event];
             return YES;
@@ -65,38 +62,34 @@
 }
 
 - (void) addDiagnosticsToEvent:(BugsnagEvent*)event {
-    [event addAttribute:@"Application Version" withValue:self.configuration.appVersion toTabWithName:@"application"];
-    
-    [event addAttribute:@"OS Version" withValue:self.configuration.osVersion toTabWithName:@"device"];
-    [event addAttribute:@"Network" withValue:self.networkReachability toTabWithName:@"device"];
-    
-#ifdef TARGET_IPHONE_SIMULATOR
-#if !TARGET_IPHONE_SIMULATOR
-    [event addAttribute:@"Memory" withValue:self.memoryStats toTabWithName:@"device"];
-#endif
-#else
-    [event addAttribute:@"Memory" withValue:self.memoryStats toTabWithName:@"device"];
-#endif
+    event.deviceState = [self collectDeviceState];
+    event.appState = [self collectAppState];
 }
 
 - (void) notifySignal:(int)signal {
     if([self shouldAutoNotify]) {
-        BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData:nil];
+        BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData: nil];
         [event addSignal:signal];
+        event.severity = @"fatal";
         [self notifyEvent:event inBackground: false];
     }
 }
 
 - (void) notifyUncaughtException:(NSException *)exception {
     if ([self shouldAutoNotify]) {
-        [self notifyException:exception withData:nil inBackground:false];
+        [self notifyException:exception withData:nil atSeverity: @"fatal" inBackground:false];
     }
 }
 
-- (void) notifyException:(NSException*)exception withData:(NSDictionary*)metaData inBackground:(BOOL)inBackground {
+- (void) notifyException:(NSException*)exception withData:(NSDictionary*)metaData atSeverity:(NSString*)severity inBackground:(BOOL)inBackground {
     if ([self shouldNotify]) {
         BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData:metaData];
         [event addException:exception];
+
+        if (severity == nil || !([severity isEqualToString:@"info"] || [severity isEqualToString:@"warn"] || [severity isEqualToString:@"error"] || [severity isEqualToString:@"fatal"])) {
+            severity = @"error";
+        }
+        event.severity = severity;
         [self notifyEvent:event inBackground: inBackground];
     }
 }
@@ -206,18 +199,16 @@
     [[notifyPayload objectForKey:@"events"] addObject:event];
     
     NSData *jsonPayload = [NSJSONSerialization dataWithJSONObject:notifyPayload options:0 error:nil];
-    
+
     return [self transmitPayload:jsonPayload toURL:self.configuration.notifyURL];
 }
 
 - (BOOL) sendMetrics {
     NSMutableDictionary *payload = [NSMutableDictionary dictionary];
     [payload setObject:self.configuration.apiKey forKey:@"apiKey"];
-    [payload setObject:self.userUUID forKey:@"userId"];
-    [payload setObject:self.machine forKey:@"machine"];
-    [payload setObject:self.model forKey:@"model"];
-    if (self.configuration.osVersion != nil ) [payload setObject:self.configuration.osVersion forKey:@"osVersion"];
-    if (self.configuration.appVersion != nil ) [payload setObject:self.configuration.appVersion forKey:@"appVersion"];
+    [payload setObject:self.configuration.appData.data forKey:@"app"];
+    [payload setObject:self.configuration.deviceData.data forKey:@"device"];
+    [payload setObject:self.configuration.userData.data forKey:@"user"];
     
     NSData *jsonPayload = [NSJSONSerialization dataWithJSONObject:payload options:0 error:nil];
     
@@ -291,86 +282,112 @@
     return machine;
 }
 
-- (NSString *) model {
-    size_t size = 256;
-	char *modelCString = malloc(size);
-    sysctlbyname("hw.model", modelCString, &size, NULL, 0);
-    NSString *model = [NSString stringWithCString:modelCString encoding:NSUTF8StringEncoding];
-    free(modelCString);
-    
-    return model;
-}
-
-- (NSString *)fileSize:(NSNumber *)value {
-    float fileSize = [value floatValue];
-    if (fileSize<1023.0f)
-        return([NSString stringWithFormat:@"%i bytes",[value intValue]]);
-    fileSize = fileSize / 1024.0f;
-    if (fileSize<1023.0f)
-        return([NSString stringWithFormat:@"%1.1f KB",fileSize]);
-    fileSize = fileSize / 1024.0f;
-    if (fileSize<1023.0f)
-        return([NSString stringWithFormat:@"%1.1f MB",fileSize]);
-    fileSize = fileSize / 1024.0f;
-    
-    return([NSString stringWithFormat:@"%1.1f GB",fileSize]);
-}
-
 - (NSString *) networkReachability {
     Class reachabilityClass = NSClassFromString(@"Reachability");
     if (reachabilityClass == nil) reachabilityClass = NSClassFromString(@"BugsnagReachability");
     if (reachabilityClass == nil) return nil;
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
     id reachability = [reachabilityClass performSelector:@selector(reachabilityForInternetConnection)];
     [reachability performSelector:@selector(startNotifier)];
-    NSString *returnValue = [reachability performSelector:@selector(currentReachabilityString)];
-    [reachability performSelector:@selector(stopNotifier)];
     
+    NSString *returnValue = @"none";
+    if ([reachability performSelector:@selector(isReachableViaWiFi)]) {
+         returnValue = @"wifi";
+    } else if ([reachability performSelector:@selector(isReachableViaWWAN)]) {
+        returnValue = @"cellular";
+    }
+    
+    [reachability performSelector:@selector(stopNotifier)];
+#pragma clang diagnostic pop
     return returnValue;
 }
 
-- (NSDictionary *) memoryStats {
-    NSMutableDictionary *memoryStats = [NSMutableDictionary dictionary];
+- (BugsnagDictionary *) collectAppData {
+    NSBundle* bundle = [NSBundle mainBundle];
+    NSString* version = [bundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSString* bundleVersion = [bundle objectForInfoDictionaryKey:@"CFBundleVersion"];
+    NSString* name = [bundle objectForInfoDictionaryKey:@"CFBundleDisplayName"];
+
+    BugsnagDictionary *appData = [[BugsnagDictionary alloc] init];
+
+    if (version != nil) {
+        [appData setObject: version forKey: @"version"];
+    } else if (bundleVersion != nil) {
+        [appData setObject: bundleVersion forKey: @"version"];
+    }
+    if (bundleVersion != nil) [appData setObject: bundleVersion forKey: @"bundleVersion"];
+    if (name != nil) [appData setObject: name forKey:@"name"];
+    [appData setObject: [bundle bundleIdentifier] forKey: @"id"];
+
+    return appData;
+}
+
+- (BugsnagDictionary *) collectDeviceData {
+
+    BugsnagDictionary *deviceData = [[BugsnagDictionary alloc] init];
+    [deviceData setObject: [self userUUID] forKey: @"id"];
+    [deviceData setObject: @"Apple" forKey: @"manufacturer"];
+    [deviceData setObject: [self machine] forKey: @"model"];
+
+    uint64_t totalMemory = 0;
+    size_t size = sizeof(totalMemory);
+    if (!sysctlbyname("hw.memsize", &totalMemory, &size, NULL, 0)) {
+        [deviceData setObject:[NSNumber numberWithLongLong: totalMemory] forKey: @"totalMemory"];
+    }
+
+    // Get a path on the main disk (lots of stack-overflow answers suggest using @"/", but that doesn't work).
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSDictionary *atDict = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error:NULL];
+    if (atDict) {
+        [deviceData setObject: [atDict objectForKey:NSFileSystemSize] forKey:@"diskSize"];
+    }
+    
+    [deviceData setObject: [[NSLocale currentLocale] localeIdentifier] forKey:@"locale"];
+    [deviceData setObject: [self osVersion] forKey:@"osVersion"];
+    [deviceData setObject: [self osName] forKey:@"osName"];
+
+    return deviceData;
+}
+
+- (BugsnagDictionary *) collectAppState {
+    BugsnagDictionary *appState = [[BugsnagDictionary alloc] init];
     
     struct task_basic_info info;
     mach_msg_type_number_t size = sizeof(info);
     kern_return_t kerr = task_info(mach_task_self(),
-                                   TASK_BASIC_INFO,
-                                   (task_info_t)&info,
-                                   &size);
-    if( kerr == KERN_SUCCESS ) {
-        [memoryStats setObject:[self fileSize:[NSNumber numberWithInteger:info.resident_size]] forKey:@"App Using"];
+                                    TASK_BASIC_INFO,
+                                    (task_info_t)&info,
+                                    &size);
+                                     
+    if ( kerr == KERN_SUCCESS ) {
+       [appState setObject:[NSNumber numberWithInteger:info.resident_size] forKey:@"memoryUsage"];
     }
+                                     
+    return appState;
+}
+
+- (BugsnagDictionary *) collectDeviceState {
+    BugsnagDictionary *deviceState = [[BugsnagDictionary alloc] init];
     
-    uint64_t total = 0;
     uint64_t pageSize = 0;
     uint64_t pagesFree = 0;
     size_t sysCtlSize = sizeof(uint64_t);
-    if (!sysctlbyname("hw.memsize", &total, &sysCtlSize, NULL, 0)) {
-        [memoryStats setObject:[self fileSize:[NSNumber numberWithInteger:total]] forKey:@"Total"];
-    }
-    
     if (!sysctlbyname("vm.page_free_count", &pagesFree, &sysCtlSize, NULL, 0)) {
         if (!sysctlbyname("hw.pagesize", &pageSize, &sysCtlSize, NULL, 0)) {
-            [memoryStats setObject:[self fileSize:[NSNumber numberWithInteger:pagesFree*pageSize]] forKey:@"Free"];
-            [memoryStats setObject:[self fileSize:[NSNumber numberWithInteger:total-(pagesFree*pageSize)]] forKey:@"Used"];
+            [deviceState setObject: [NSNumber numberWithLongLong:pagesFree*pageSize] forKey:@"freeMemory"];
         }
     }
     
-    return memoryStats;
-}
-
-- (NSString *) appVersion {
-    NSString *bundleVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-    NSString *versionString = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    if (bundleVersion != nil && versionString != nil && ![bundleVersion isEqualToString:versionString]) {
-        return [NSString stringWithFormat:@"%@ (%@)", versionString, bundleVersion];
-    } else if (bundleVersion != nil) {
-        return bundleVersion;
-    } else if(versionString != nil) {
-        return versionString;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSDictionary *atDict = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error:NULL];
+    if (atDict) {
+        [deviceState setObject: [atDict objectForKey:NSFileSystemFreeSize] forKey:@"freeDisk"];
     }
-    return @"";
+    
+    [deviceState setObject: self.networkReachability forKey: @"networkAccess"];
+    
+    return deviceState;
 }
 
 - (NSString *) osVersion {
@@ -384,5 +401,17 @@
 	return [[NSProcessInfo processInfo] operatingSystemVersionString];
 #endif
 }
+
+- (NSString *) osName {
+#if TARGET_OS_IPHONE
+    return @"iOS";
+#else
+    // TODO... This doesn't seem to be exposed anywhere.
+    // NSProcessInfo-operatingSystemName == "NSMachOperatingSystem"
+    // sysctlbyname('kern.osrelease') == "Darwin"
+    return @"OS X";
+#endif
+}
+
 
 @end

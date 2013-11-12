@@ -24,12 +24,12 @@
 - (id) initWithConfiguration:(BugsnagConfiguration *)configuration andMetaData:(NSDictionary*)metaData {
     if (self = [super init]) {
         self.dictionary = [[NSMutableDictionary alloc] init];
+        self.severity = @"error";
         
-        if (configuration.userId != nil) self.userId = configuration.userId;
-        if (configuration.appVersion != nil) self.appVersion = configuration.appVersion;
-        if (configuration.osVersion != nil) self.osVersion = configuration.osVersion;
         if (configuration.context != nil) self.context = configuration.context;
-        if (configuration.releaseStage != nil) self.releaseStage = configuration.releaseStage;
+        [self.dictionary setObject:configuration.userData.data forKey:@"user"];
+        [self.dictionary setObject:configuration.appData.data forKey:@"app"];
+        [self.dictionary setObject:configuration.deviceData.data forKey:@"device"];
         
         if (configuration.metaData != nil) {
             self.metaData = [configuration.metaData mutableCopy];
@@ -37,7 +37,9 @@
             self.metaData = [[BugsnagMetaData alloc] init];
         }
         
-        if (metaData != nil) [self.metaData mergeWith:metaData];
+        if (metaData != nil) {
+            [self.metaData mergeWith:metaData];
+        }
     }
     return self;
 }
@@ -215,30 +217,6 @@
     [self.metaData clearTab:tabName];
 }
 
-- (NSString*) appVersion {
-    @synchronized(self) {
-        return [self.dictionary objectForKey:@"appVersion"];
-    }
-}
-
-- (void) setAppVersion:(NSString *)appVersion {
-    @synchronized(self) {
-        [self.dictionary setObject:appVersion forKey:@"appVersion"];
-    }
-}
-
-- (NSString*) osVersion {
-    @synchronized(self) {
-        return [self.dictionary objectForKey:@"osVersion"];
-    }
-}
-
-- (void) setOsVersion:(NSString *)osVersion {
-    @synchronized(self) {
-        [self.dictionary setObject:osVersion forKey:@"osVersion"];
-    }
-}
-
 - (NSString*) context {
     @synchronized(self) {
         return [self.dictionary objectForKey:@"context"];
@@ -251,27 +229,40 @@
     }
 }
 
-- (NSString*) releaseStage {
+- (BugsnagDictionary *) deviceState {
     @synchronized(self) {
-        return [self.dictionary objectForKey:@"releaseStage"];
+        return [[BugsnagDictionary alloc] initWithMutableDictionary: [self.dictionary objectForKey:@"deviceState"]];
     }
 }
 
-- (void) setReleaseStage:(NSString *)releaseStage {
+- (void) setDeviceState:(BugsnagDictionary *)deviceState {
     @synchronized(self) {
-        [self.dictionary setObject:releaseStage forKey:@"releaseStage"];
+        [self.dictionary setObject:deviceState.data forKey:@"deviceState"];
     }
 }
 
-- (NSString*) userId {
+- (BugsnagDictionary *) appState {
     @synchronized(self) {
-        return [self.dictionary objectForKey:@"userId"];
+        return [[BugsnagDictionary alloc] initWithMutableDictionary: [self.dictionary objectForKey:@"appState"]];
     }
 }
 
-- (void) setUserId:(NSString *)userId {
+- (void) setAppState:(BugsnagDictionary *)appState {
     @synchronized(self) {
-        [self.dictionary setObject:userId forKey:@"userId"];
+        [self.dictionary setObject:appState.data forKey:@"appState"];
     }
 }
+
+- (NSString *) severity {
+    @synchronized(self) {
+        return [self.dictionary objectForKey:@"severity"];
+    }
+}
+
+- (void) setSeverity:(NSString *)severity {
+    @synchronized(self) {
+        [self.dictionary setObject:severity forKey:@"severity"];
+    }
+}
+
 @end

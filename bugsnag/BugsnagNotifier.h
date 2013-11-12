@@ -23,7 +23,7 @@ typedef BOOL (^BugsnagNotifyBlock)(BugsnagEvent*);
 
 - (void) notifySignal:(int)signal;
 - (void) notifyUncaughtException:(NSException*)exception;
-- (void) notifyException:(NSException*)exception withData:(NSDictionary*)metaData inBackground:(BOOL)inBackground;
+- (void) notifyException:(NSException*)exception withData:(NSDictionary*)metaData atSeverity: (NSString*)severity inBackground:(BOOL)inBackground;
 
 - (BOOL) shouldAutoNotify;
 - (BOOL) shouldNotify;
@@ -36,7 +36,10 @@ typedef BOOL (^BugsnagNotifyBlock)(BugsnagEvent*);
 - (NSArray*) savedEvents;
 - (void) sendSavedEvents;
 
-- (NSString *)fileSize:(NSNumber *)value;
+- (BugsnagDictionary *)collectDeviceData;
+- (BugsnagDictionary *)collectAppData;
+- (BugsnagDictionary *)collectDeviceState;
+- (BugsnagDictionary *)collectAppState;
 
 @property (atomic, copy) NSString *notifierName;
 @property (atomic, copy) NSString *notifierVersion;

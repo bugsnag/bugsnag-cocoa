@@ -10,5 +10,4 @@
 #import "BugsnagNotifier.h"
 
 @interface BugsnagIosNotifier : BugsnagNotifier
-- (void) addIosDiagnosticsToEvent:(BugsnagEvent *) event;
 @end
