@@ -4,7 +4,7 @@ Pod::Installer::UserProjectIntegrator::TargetIntegrator.class_eval do
     BUGSNAG_PHASE_NAME = "Upload Bugsnag dSYM"
     BUGSNAG_PHASE_SCRIPT = <<'RUBY'
 
-if ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym"
+if ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym" or ENV["PLATFORM_NAME"] == "iphonesimulator"
   exit
 end
 
