@@ -55,10 +55,16 @@
 - (NSString *) userUUID {
     // Return the already determined the UUID
     if ([[UIDevice currentDevice] respondsToSelector:@selector(identifierForVendor)]) {
-        return [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-    } else {
-        return [super userUUID];
+        NSString *uuid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+     
+        if (uuid) {
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setValue:uuid forKey:self.configuration.uuidPath];
+            [defaults synchronize];
+            return uuid;
+        }
     }
+    return [super userUUID];
 }
 
 - (NSString *) topMostViewController {
@@ -231,6 +237,10 @@
     }
     
     return deviceState;
+}
+
+- (NSString *) osVersion {
+    return [[UIDevice currentDevice] systemVersion];
 }
 
 @end
