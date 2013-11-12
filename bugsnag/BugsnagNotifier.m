@@ -55,7 +55,7 @@
 #else
         self.notifierVersion = @"3.0.1";
 #endif
-        self.notifierURL = @"https://github.com/bugsnag/bugsnag-objective-c";
+        self.notifierURL = @"https://github.com/bugsnag/bugsnag-cocoa";
     }
     return self;
 }
