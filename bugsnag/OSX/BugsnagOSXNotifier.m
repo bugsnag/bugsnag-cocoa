@@ -25,9 +25,9 @@
     return self;
 }
 
-- (NSMutableDictionary *) collectAppState {
+- (BugsnagDictionary *) collectAppState {
 
-    NSMutableDictionary *appState = [super collectAppState];
+    BugsnagDictionary *appState = [super collectAppState];
 
     NSArray *documents = [[NSApplication sharedApplication] orderedDocuments];
     NSArray *windows = [[NSApplication sharedApplication] orderedWindows];
