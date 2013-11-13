@@ -1,6 +1,11 @@
 Changelog
 =========
 
+3.1.0
+-----
+-   Disable dsym uploading on iphonesimulator builds
+-   Send better diagnostics with a better format
+
 3.0.1
 -----
 -   Remove Pods from repo.
