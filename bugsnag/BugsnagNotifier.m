@@ -22,6 +22,24 @@
 #import "BugsnagNotifier.h"
 #import "BugsnagLogger.h"
 
+#pragma mark - Weak Linked Reachability Interface
+
+typedef enum {
+	ReachabilityNotReachable = 0,
+	ReachabilityReachableViaWiFi,
+	ReachabilityReachableViaWWAN
+} ReachabilityNetworkStatus;
+
+@protocol WeakLinkedReachability <NSObject>
+- (int)currentReachabilityStatus;
+- (BOOL)startNotifier;
+- (void)stopNotifier;
+- (id)reachabilityForInternetConnection;
+@end
+
+#pragma mark -
+
+
 @interface BugsnagNotifier ()
 - (BOOL) transmitPayload:(NSData *)payload toURL:(NSURL*)url;
 - (void) addDiagnosticsToEvent:(BugsnagEvent*)event;
@@ -284,6 +302,36 @@
 
 - (NSString *) networkReachability {
     Class reachabilityClass = NSClassFromString(@"Reachability");
+	if (reachabilityClass != nil)
+	{
+		NSString *returnValue = @"none";
+		id <WeakLinkedReachability> reachability = nil;
+		if ([reachabilityClass respondsToSelector:@selector(reachabilityForInternetConnection)])
+		{
+			reachability = [reachabilityClass reachabilityForInternetConnection];
+		}
+		if ([reachability respondsToSelector:@selector(startNotifier)])
+		{
+			[reachability startNotifier];
+		}
+		if ([reachability respondsToSelector:@selector(currentReachabilityStatus)])
+		{
+			ReachabilityNetworkStatus status = [reachability currentReachabilityStatus];
+			if (status == ReachabilityReachableViaWiFi)
+			{
+				returnValue = @"wifi";
+			}
+			else if (status == ReachabilityReachableViaWWAN)
+			{
+				returnValue = @"cellular";
+			}
+		}
+		if ([reachability respondsToSelector:@selector(stopNotifier)])
+		{
+			[reachability stopNotifier];
+		}
+		return returnValue;
+	}
     if (reachabilityClass == nil) reachabilityClass = NSClassFromString(@"BugsnagReachability");
     if (reachabilityClass == nil) return nil;
 #pragma clang diagnostic push
