@@ -144,15 +144,17 @@ Bugsnag uses the concept of "contexts" to help display and group your errors. Co
 [Bugsnag configuration].context = @"MyUIViewController";
 ```
 
-###userId
+###user
 
 Bugsnag helps you understand how many of your users are affected by each error. In order to do this, we send along a userId with every exception. By default we will generate a unique ID and send this ID along with every exception from an individual device.
 
 If you would like to override this `userId`, for example to set it to be a username of your currently logged in user, you can set the `userId` property:
 
 ```objective-c
-[Bugsnag configuration].userId = @"leeroy-jenkins";
+[[Bugsnag configuration] setUser:@"userId" withName:@"User Name" andEmail:@"user@email.com"];
 ```
+
+You can also set the email and name of the user and these will be searchable in the dashboard.
 
 ###releaseStage
 
