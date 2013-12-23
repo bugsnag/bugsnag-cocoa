@@ -1,6 +1,10 @@
 Changelog
 =========
 
+3.1.1
+-----
+-   Package BugsnagReachability in package for reliability
+
 3.1.0
 -----
 -   Disable dsym uploading on iphonesimulator builds

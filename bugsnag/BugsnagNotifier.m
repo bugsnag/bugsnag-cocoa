@@ -51,7 +51,7 @@
 #ifdef COCOAPODS_VERSION_MAJOR_Bugsnag
         self.notifierVersion = [NSString stringWithFormat:@"%i.%i.%i", COCOAPODS_VERSION_MAJOR_Bugsnag, COCOAPODS_VERSION_MINOR_Bugsnag, COCOAPODS_VERSION_PATCH_Bugsnag];
 #else
-        self.notifierVersion = @"3.1.0";
+        self.notifierVersion = @"3.1.1";
 #endif
         self.notifierURL = @"https://github.com/bugsnag/bugsnag-cocoa";
     }
