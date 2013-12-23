@@ -21,6 +21,7 @@
 
 #import "BugsnagNotifier.h"
 #import "BugsnagLogger.h"
+#import "BugsnagReachability.h"
 
 @interface BugsnagNotifier ()
 - (BOOL) transmitPayload:(NSData *)payload toURL:(NSURL*)url;
@@ -283,23 +284,19 @@
 }
 
 - (NSString *) networkReachability {
-    Class reachabilityClass = NSClassFromString(@"Reachability");
-    if (reachabilityClass == nil) reachabilityClass = NSClassFromString(@"BugsnagReachability");
-    if (reachabilityClass == nil) return nil;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wundeclared-selector"
-    id reachability = [reachabilityClass performSelector:@selector(reachabilityForInternetConnection)];
-    [reachability performSelector:@selector(startNotifier)];
+    
+    BugsnagReachability *reachability = [BugsnagReachability reachabilityForInternetConnection];
+    [reachability startNotifier];
     
     NSString *returnValue = @"none";
-    if ([reachability performSelector:@selector(isReachableViaWiFi)]) {
+    if ([reachability isReachableViaWiFi]) {
          returnValue = @"wifi";
-    } else if ([reachability performSelector:@selector(isReachableViaWWAN)]) {
+    } else if ([reachability isReachableViaWWAN]) {
         returnValue = @"cellular";
     }
     
-    [reachability performSelector:@selector(stopNotifier)];
-#pragma clang diagnostic pop
+    [reachability stopNotifier];
+
     return returnValue;
 }
 

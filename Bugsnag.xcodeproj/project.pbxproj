@@ -16,6 +16,7 @@
 		F4C71CF817CE8B9900009E4B /* libBugsnag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C71CDF17CE8B9900009E4B /* libBugsnag.a */; };
 		F4C71CFE17CE8B9900009E4B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F4C71CFC17CE8B9900009E4B /* InfoPlist.strings */; };
 		F4C71D0117CE8B9900009E4B /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F4C71D0017CE8B9900009E4B /* BugsnagTests.m */; };
+		F4D04F211868C4460012A0E0 /* BugsnagReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = F4D04F201868C4460012A0E0 /* BugsnagReachability.m */; };
 		F4DE7CED17E9238A00BFD1C8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4DE7CEC17E9238A00BFD1C8 /* UIKit.framework */; };
 		F4FCBA0E17CE90B200A264EC /* BugsnagConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FCBA0D17CE90B200A264EC /* BugsnagConfiguration.m */; };
 		F4FCBA1117CE90EB00A264EC /* BugsnagMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = F4FCBA1017CE90EB00A264EC /* BugsnagMetaData.m */; };
@@ -62,6 +63,8 @@
 		F4C71CFD17CE8B9900009E4B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F4C71CFF17CE8B9900009E4B /* BugsnagTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagTests.h; sourceTree = "<group>"; };
 		F4C71D0017CE8B9900009E4B /* BugsnagTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagTests.m; sourceTree = "<group>"; };
+		F4D04F1F1868C4460012A0E0 /* BugsnagReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagReachability.h; sourceTree = "<group>"; };
+		F4D04F201868C4460012A0E0 /* BugsnagReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagReachability.m; sourceTree = "<group>"; };
 		F4DE7CEC17E9238A00BFD1C8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		F4FCBA0C17CE90B200A264EC /* BugsnagConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagConfiguration.h; sourceTree = "<group>"; };
 		F4FCBA0D17CE90B200A264EC /* BugsnagConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagConfiguration.m; sourceTree = "<group>"; };
@@ -154,6 +157,8 @@
 				F4FCBA1017CE90EB00A264EC /* BugsnagMetaData.m */,
 				F4FCBA1517CE924400A264EC /* BugsnagNotifier.h */,
 				F4FCBA1617CE924400A264EC /* BugsnagNotifier.m */,
+				F4D04F1F1868C4460012A0E0 /* BugsnagReachability.h */,
+				F4D04F201868C4460012A0E0 /* BugsnagReachability.m */,
 				7926BB41182332D000E31332 /* BugsnagDictionary.h */,
 				7926BB42182332D000E31332 /* BugsnagDictionary.m */,
 			);
@@ -287,6 +292,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4D04F211868C4460012A0E0 /* BugsnagReachability.m in Sources */,
 				F4C71CEA17CE8B9900009E4B /* Bugsnag.m in Sources */,
 				F4FCBA0E17CE90B200A264EC /* BugsnagConfiguration.m in Sources */,
 				F4FCBA1117CE90EB00A264EC /* BugsnagMetaData.m in Sources */,
