@@ -274,11 +274,25 @@
 }
 
 - (NSString *) machine {
-    size_t size = 256;
-	char *machineCString = malloc(size);
-    sysctlbyname("hw.machine", machineCString, &size, NULL, 0);
-    NSString *machine = [NSString stringWithCString:machineCString encoding:NSUTF8StringEncoding];
-    free(machineCString);
+    NSString *machine = nil;
+    
+    int mib[] = { CTL_HW, HW_MACHINE };
+    const size_t mibLen = sizeof(mib)/sizeof(*mib);
+    
+    // Get length of requested string
+    size_t machineCStringLenEstimate;
+    if (0 == sysctl(mib, mibLen, NULL, &machineCStringLenEstimate, NULL, 0)) {
+        char *machineCString = malloc(machineCStringLenEstimate);
+        if (NULL != machineCString) {
+            // Copy value to buffer
+            size_t machineCStringLen;
+            if (0 == sysctl(mib, mibLen, machineCString, &machineCStringLen, NULL, 0)
+                && machineCStringLen <= machineCStringLenEstimate) {
+                machine = [[NSString alloc] initWithCString:machineCString encoding:NSUTF8StringEncoding];
+            }
+            free(machineCString);
+        }
+    }
     
     return machine;
 }
