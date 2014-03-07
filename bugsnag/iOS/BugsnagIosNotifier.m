@@ -37,6 +37,13 @@
         self.charging = false;
         self.batteryLevel = -1.0;
         self.lastMemoryWarning = 0.0;
+        
+        [self beforeNotify:^(BugsnagEvent *event) {
+            if (event.context == nil) {
+                event.context = [self topMostViewController];
+            }
+            return YES;
+        }];
 
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
