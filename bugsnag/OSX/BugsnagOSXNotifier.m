@@ -19,6 +19,16 @@
     if((self = [super initWithConfiguration:configuration])) {
         self.notifierName = @"OSX Bugsnag Notifier";
         
+        [self beforeNotify:^(BugsnagEvent *event) {
+            if (event.context == nil) {
+                NSArray *windows = [[NSApplication sharedApplication] orderedWindows];
+                if (windows.count > 0) {
+                    event.context = ((NSWindow*)[windows objectAtIndex: 0]).title;
+                }
+            }
+            return YES;
+        }];
+        
         [[NSExceptionHandler defaultExceptionHandler] setExceptionHandlingMask:NSLogAndHandleEveryExceptionMask];
         [[NSExceptionHandler defaultExceptionHandler] setDelegate:self];
     }
