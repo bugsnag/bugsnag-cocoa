@@ -75,7 +75,7 @@ Installation & Setup
     From the same "Build Phases" screen, click the plus in the bottom right of the screen labelled "Add Build Phase", then select "Add Run Script". Then expand the newly added "Run Script" section, and set the shell to `/usr/bin/ruby` and copy the following script into the text box,
 
     ```ruby
-    if ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym"
+    if ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym" or ENV["PLATFORM_NAME"] == "iphonesimulator"
       exit
     end
 
