@@ -24,7 +24,7 @@
 - (id) initWithConfiguration:(BugsnagConfiguration *)configuration andMetaData:(NSDictionary*)metaData {
     if (self = [super init]) {
         self.dictionary = [[NSMutableDictionary alloc] init];
-        self.severity = @"error";
+        self.severity = @"warning";
         [self.dictionary setObject:@"2" forKey:@"payloadVersion"];
         
         if (configuration.context != nil) self.context = configuration.context;

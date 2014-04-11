@@ -71,14 +71,14 @@
     if([self shouldAutoNotify]) {
         BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData: nil];
         [event addSignal:signal];
-        event.severity = @"fatal";
+        event.severity = @"error";
         [self notifyEvent:event inBackground: false];
     }
 }
 
 - (void) notifyUncaughtException:(NSException *)exception {
     if ([self shouldAutoNotify]) {
-        [self notifyException:exception withData:nil atSeverity: @"fatal" inBackground:false];
+        [self notifyException:exception withData:nil atSeverity: @"error" inBackground:false];
     }
 }
 
@@ -87,8 +87,8 @@
         BugsnagEvent *event = [[BugsnagEvent alloc] initWithConfiguration:self.configuration andMetaData:metaData];
         [event addException:exception];
 
-        if (severity == nil || !([severity isEqualToString:@"info"] || [severity isEqualToString:@"warn"] || [severity isEqualToString:@"error"] || [severity isEqualToString:@"fatal"])) {
-            severity = @"error";
+        if (severity == nil || !([severity isEqualToString:@"info"] || [severity isEqualToString:@"warning"] || [severity isEqualToString:@"error"])) {
+            severity = @"warning";
         }
         event.severity = severity;
         [self notifyEvent:event inBackground: inBackground];
@@ -200,6 +200,7 @@
     [[notifyPayload objectForKey:@"events"] addObject:event];
     
     NSData *jsonPayload = [NSJSONSerialization dataWithJSONObject:notifyPayload options:0 error:nil];
+    NSLog(@"%@", [NSString stringWithUTF8String:[jsonPayload bytes]]);
 
     return [self transmitPayload:jsonPayload toURL:self.configuration.notifyURL];
 }

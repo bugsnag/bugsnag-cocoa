@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		7926BB43182332D000E31332 /* BugsnagDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 7926BB42182332D000E31332 /* BugsnagDictionary.m */; };
+		C7D029D618F8A52500A0F34F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7D029D518F8A52500A0F34F /* SystemConfiguration.framework */; };
+		C7D029D718F8A55B00A0F34F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7D029D518F8A52500A0F34F /* SystemConfiguration.framework */; };
 		F4C71CE317CE8B9900009E4B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C71CE217CE8B9900009E4B /* Foundation.framework */; };
 		F4C71CE817CE8B9900009E4B /* Bugsnag.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F4C71CE717CE8B9900009E4B /* Bugsnag.h */; };
 		F4C71CEA17CE8B9900009E4B /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = F4C71CE917CE8B9900009E4B /* Bugsnag.m */; };
@@ -51,6 +53,7 @@
 /* Begin PBXFileReference section */
 		7926BB41182332D000E31332 /* BugsnagDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagDictionary.h; sourceTree = "<group>"; };
 		7926BB42182332D000E31332 /* BugsnagDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagDictionary.m; sourceTree = "<group>"; };
+		C7D029D518F8A52500A0F34F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		F495C52D17E2A8E700B1995A /* BugsnagOSXNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagOSXNotifier.h; path = OSX/BugsnagOSXNotifier.h; sourceTree = "<group>"; };
 		F495C52E17E2A8E700B1995A /* BugsnagOSXNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagOSXNotifier.m; path = OSX/BugsnagOSXNotifier.m; sourceTree = "<group>"; };
 		F4BD0C9317E7875400E92185 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -84,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7D029D618F8A52500A0F34F /* SystemConfiguration.framework in Frameworks */,
 				F4C71CE317CE8B9900009E4B /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -92,6 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7D029D718F8A55B00A0F34F /* SystemConfiguration.framework in Frameworks */,
 				F4DE7CED17E9238A00BFD1C8 /* UIKit.framework in Frameworks */,
 				F4C71CF217CE8B9900009E4B /* SenTestingKit.framework in Frameworks */,
 				F4C71CF517CE8B9900009E4B /* Foundation.framework in Frameworks */,
@@ -134,6 +139,7 @@
 		F4C71CE117CE8B9900009E4B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C7D029D518F8A52500A0F34F /* SystemConfiguration.framework */,
 				F4BD0C9317E7875400E92185 /* Cocoa.framework */,
 				F4C71CE217CE8B9900009E4B /* Foundation.framework */,
 				F4C71CF117CE8B9900009E4B /* SenTestingKit.framework */,
