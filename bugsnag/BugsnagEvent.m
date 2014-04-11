@@ -25,6 +25,7 @@
     if (self = [super init]) {
         self.dictionary = [[NSMutableDictionary alloc] init];
         self.severity = @"error";
+        [self.dictionary setObject:@"2" forKey:@"payloadVersion"];
         
         if (configuration.context != nil) self.context = configuration.context;
         [self.dictionary setObject:configuration.userData.data forKey:@"user"];
