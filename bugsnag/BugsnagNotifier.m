@@ -37,7 +37,7 @@
 - (id) initWithConfiguration:(BugsnagConfiguration*) configuration {
     if((self = [super init])) {
         self.configuration = configuration;
-        
+
         if (self.configuration.userId == nil) self.configuration.userId = self.userUUID;
         [self.configuration.appData addEntriesFromDictionary: [self collectAppData]];
         [self.configuration.deviceData addEntriesFromDictionary: [self collectDeviceData]];
@@ -46,12 +46,12 @@
             [self addDiagnosticsToEvent:event];
             return YES;
         }];
-        
+
         self.notifierName = @"Bugsnag Objective-C";
 #ifdef COCOAPODS_VERSION_MAJOR_Bugsnag
         self.notifierVersion = [NSString stringWithFormat:@"%i.%i.%i", COCOAPODS_VERSION_MAJOR_Bugsnag, COCOAPODS_VERSION_MINOR_Bugsnag, COCOAPODS_VERSION_PATCH_Bugsnag];
 #else
-        self.notifierVersion = @"3.1.1";
+        self.notifierVersion = @"3.1.2";
 #endif
         self.notifierURL = @"https://github.com/bugsnag/bugsnag-cocoa";
     }
@@ -142,7 +142,7 @@
     NSDictionary *payload = [NSDictionary dictionaryWithObjectsAndKeys:notifierDetails, @"notifier",
                                                                        self.configuration.apiKey, @"apiKey",
                                                                        [NSMutableArray array], @"events", nil];
-    
+
     return payload;
 }
 
@@ -154,9 +154,9 @@
 
 - (void) saveEvent:(BugsnagEvent*)event {
     [[NSFileManager defaultManager] createDirectoryAtPath:self.errorPath withIntermediateDirectories:YES attributes:nil error:nil];
-    
+
     NSDictionary *eventDictionary = [event toDictionary];
-    
+
     if(![eventDictionary writeToFile:[self generateEventFilename] atomically:YES]) {
         BugsnagLog(@"BUGSNAG: Unable to write event file!");
     }
@@ -195,10 +195,10 @@
     if (event == nil) {
         return NO;
     }
-    
+
     NSDictionary *notifyPayload = [self buildNotifyPayload];
     [[notifyPayload objectForKey:@"events"] addObject:event];
-    
+
     NSData *jsonPayload = [NSJSONSerialization dataWithJSONObject:notifyPayload options:0 error:nil];
 
     return [self transmitPayload:jsonPayload toURL:self.configuration.notifyURL];
@@ -210,9 +210,9 @@
     [payload setObject:self.configuration.appData.data forKey:@"app"];
     [payload setObject:self.configuration.deviceData.data forKey:@"device"];
     [payload setObject:self.configuration.userData.data forKey:@"user"];
-    
+
     NSData *jsonPayload = [NSJSONSerialization dataWithJSONObject:payload options:0 error:nil];
-    
+
     return [self transmitPayload:jsonPayload toURL:self.configuration.metricsURL];
 }
 
@@ -233,14 +233,14 @@
 - (BOOL) transmitPayload:(NSData *)payload toURL:(NSURL*)url {
     if(payload){
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-        
+
         [request setHTTPMethod:@"POST"];
         [request setHTTPBody:payload];
         [request setValue:@"application/json" forHTTPHeaderField:@"content-type"];
-        
+
         NSURLResponse* response = nil;
         [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
-        
+
         NSInteger statusCode = [((NSHTTPURLResponse *)response) statusCode];
         if (statusCode != 200) {
             BugsnagLog(@"Bad response from bugsnag received: %ld.", (long)statusCode);
@@ -255,16 +255,16 @@
     @synchronized(_uuid) {
         // Return the already determined the UUID
         if(_uuid) return _uuid;
-        
+
         // Try to read UUID from NSUserDefaults
         _uuid = [[NSUserDefaults standardUserDefaults] stringForKey:self.configuration.uuidPath];
         if(_uuid) return _uuid;
-        
+
         // Generate a fresh UUID
         CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
         _uuid = (NSString *)CFBridgingRelease(CFUUIDCreateString(kCFAllocatorDefault, uuid));
         CFRelease(uuid);
-        
+
         // Try to save the UUID to the NSUserDefaults
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setValue:_uuid forKey:self.configuration.uuidPath];
@@ -275,10 +275,10 @@
 
 - (NSString *) machine {
     NSString *machine = nil;
-    
+
     int mib[] = { CTL_HW, HW_MACHINE };
     const size_t mibLen = sizeof(mib)/sizeof(*mib);
-    
+
     // Get length of requested string
     size_t machineCStringLenEstimate;
     if (0 == sysctl(mib, mibLen, NULL, &machineCStringLenEstimate, NULL, 0)) {
@@ -293,22 +293,22 @@
             free(machineCString);
         }
     }
-    
+
     return machine;
 }
 
 - (NSString *) networkReachability {
-    
+
     BugsnagReachability *reachability = [BugsnagReachability reachabilityForInternetConnection];
     [reachability startNotifier];
-    
+
     NSString *returnValue = @"none";
     if ([reachability isReachableViaWiFi]) {
          returnValue = @"wifi";
     } else if ([reachability isReachableViaWWAN]) {
         returnValue = @"cellular";
     }
-    
+
     [reachability stopNotifier];
 
     return returnValue;
@@ -353,7 +353,7 @@
     if (atDict) {
         [deviceData setObject: [atDict objectForKey:NSFileSystemSize] forKey:@"diskSize"];
     }
-    
+
     [deviceData setObject: [[NSLocale currentLocale] localeIdentifier] forKey:@"locale"];
     [deviceData setObject: [self osVersion] forKey:@"osVersion"];
     [deviceData setObject: [self osName] forKey:@"osName"];
@@ -363,24 +363,24 @@
 
 - (BugsnagDictionary *) collectAppState {
     BugsnagDictionary *appState = [[BugsnagDictionary alloc] init];
-    
+
     struct task_basic_info info;
     mach_msg_type_number_t size = sizeof(info);
     kern_return_t kerr = task_info(mach_task_self(),
                                     TASK_BASIC_INFO,
                                     (task_info_t)&info,
                                     &size);
-                                     
+
     if ( kerr == KERN_SUCCESS ) {
        [appState setObject:[NSNumber numberWithInteger:info.resident_size] forKey:@"memoryUsage"];
     }
-                                     
+
     return appState;
 }
 
 - (BugsnagDictionary *) collectDeviceState {
     BugsnagDictionary *deviceState = [[BugsnagDictionary alloc] init];
-    
+
     uint64_t pageSize = 0;
     uint64_t pagesFree = 0;
     size_t sysCtlSize = sizeof(uint64_t);
@@ -389,15 +389,15 @@
             [deviceState setObject: [NSNumber numberWithLongLong:pagesFree*pageSize] forKey:@"freeMemory"];
         }
     }
-    
+
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSDictionary *atDict = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error:NULL];
     if (atDict) {
         [deviceState setObject: [atDict objectForKey:NSFileSystemFreeSize] forKey:@"freeDisk"];
     }
-    
+
     [deviceState setObject: self.networkReachability forKey: @"networkAccess"];
-    
+
     return deviceState;
 }
 
