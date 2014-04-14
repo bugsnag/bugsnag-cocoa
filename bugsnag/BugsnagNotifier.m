@@ -200,7 +200,6 @@
     [[notifyPayload objectForKey:@"events"] addObject:event];
     
     NSData *jsonPayload = [NSJSONSerialization dataWithJSONObject:notifyPayload options:0 error:nil];
-    NSLog(@"%@", [NSString stringWithUTF8String:[jsonPayload bytes]]);
 
     return [self transmitPayload:jsonPayload toURL:self.configuration.notifyURL];
 }
