@@ -65,7 +65,7 @@
 }
 
 - (BOOL)exceptionHandler:(NSExceptionHandler *)sender shouldLogException:(NSException *)exception mask:(NSUInteger)aMask {
-    [self notifyException:exception withData:nil atSeverity:@"fatal" inBackground:YES];
+    [self notifyException:exception withData:nil atSeverity:@"error" inBackground:YES];
     return NO;
 }
 

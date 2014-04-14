@@ -122,11 +122,11 @@ void handle_exception(NSException *exception) {
 }
 
 + (void) notify:(NSException *)exception {
-    [notifier notifyException:exception withData:nil atSeverity: @"error" inBackground: true];
+    [notifier notifyException:exception withData:nil atSeverity: @"warning" inBackground: true];
 }
 
 + (void) notify:(NSException *)exception withData:(NSDictionary*)metaData {
-    [notifier notifyException:exception withData:metaData atSeverity: @"error" inBackground: true];
+    [notifier notifyException:exception withData:metaData atSeverity: @"warning" inBackground: true];
 }
 
 + (void) notify:(NSException *)exception withData:(NSDictionary*)metaData atSeverity:(NSString*)severity {

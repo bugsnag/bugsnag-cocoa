@@ -1,1 +1,4 @@
 language: objective-c
+xcode_project: Bugsnag.xcodeproj
+xcode_scheme: Bugsnag
+xcode_sdk: iphonesimulator
