@@ -1,6 +1,10 @@
 Changelog
 =========
 
+3.1.2
+-----
+-   Prepare 'severity' feature for release
+
 3.1.1
 -----
 -   Package BugsnagReachability in package for reliability
