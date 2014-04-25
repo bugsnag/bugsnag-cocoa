@@ -109,6 +109,21 @@ You can also send additional meta-data with your exception:
        withData:[NSDictionary dictionaryWithObjectsAndKeys:@"username", @"bob-hoskins", nil]];
 ```
 
+### Severity
+
+You can set the severity of an error in Bugsnag by including the severity option when
+notifying bugsnag of the error,
+
+```objective-c
+[Bugsnag notify:[NSException exceptionWithName:@"ExceptionName" reason:@"Something bad happened" userInfo:nil] withData:nil atSeverity:@"error"];
+```
+
+Valid severities are `error`, `warning` and `info`.
+
+Severity is displayed in the dashboard and can be used to filter the error list.
+By default all crashes (or unhandled exceptions) are set to `error` and all
+`[Bugsnag notify]` calls default to `warning`.
+
 Adding Tabs to Bugsnag Error Reports
 ------------------------------------
 
