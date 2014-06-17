@@ -10,6 +10,8 @@
 
 #include "TargetConditionals.h"
 #import "Bugsnag.h"
+#import "BugsnagNotifier.h"
+#import "BugsnagConfiguration.h"
 #import "BugsnagLogger.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
