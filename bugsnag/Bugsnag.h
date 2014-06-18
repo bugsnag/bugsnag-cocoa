@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BugsnagConfiguration.h"
-#import "BugsnagNotifier.h"
+
+@class BugsnagNotifier;
+@class BugsnagConfiguration;
 
 @interface Bugsnag : NSObject
 
