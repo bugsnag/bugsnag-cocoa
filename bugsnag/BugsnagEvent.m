@@ -197,7 +197,7 @@
 
 - (NSDictionary *) toDictionary {
     @synchronized(self) {
-        [self.dictionary setObject:[self.metaData toDictionary] forKey:@"metaData"];
+        [self.dictionary setObject:[self.metaData toDescriptionDictionary] forKey:@"metaData"];
         return [NSDictionary dictionaryWithDictionary:self.dictionary];
     }
 }
