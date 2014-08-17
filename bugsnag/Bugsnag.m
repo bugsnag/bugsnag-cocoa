@@ -88,8 +88,13 @@ void handle_exception(NSException *exception) {
 @implementation Bugsnag
 
 + (void)startBugsnagWithApiKey:(NSString*)apiKey {
+    [self startBugsnagWithApiKey:apiKey andStartExceptionHandler:YES];
+}
+
++ (void)startBugsnagWithApiKey:(NSString*)apiKey andStartExceptionHandler:(BOOL)shouldStartExceptionHandler{
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] init];
     configuration.apiKey = apiKey;
+    configuration.shouldRegisterExceptionHandler = shouldStartExceptionHandler;
     
     [self startBugsnagWithConfiguration:configuration];
 }
@@ -97,6 +102,10 @@ void handle_exception(NSException *exception) {
 + (void)startBugsnagWithConfiguration:(BugsnagConfiguration*) configuration {
 
     notifier = [[NSClassFromString(notiferClass) alloc] initWithConfiguration:configuration];
+    
+    if (!configuration.shouldRegisterExceptionHandler)
+        return;
+    
     // Register the notifier to receive exceptions and signals
     NSSetUncaughtExceptionHandler(&handle_exception);
     

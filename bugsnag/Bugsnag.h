@@ -14,6 +14,7 @@
 @interface Bugsnag : NSObject
 
 + (void)startBugsnagWithApiKey:(NSString*)apiKey;
++ (void)startBugsnagWithApiKey:(NSString*)apiKey andStartExceptionHandler:(BOOL)shouldStartExceptionHandler;
 + (BugsnagConfiguration*)configuration;
 + (BugsnagConfiguration*)instance; // For backwards compatability
 + (BugsnagNotifier*)notifier;
