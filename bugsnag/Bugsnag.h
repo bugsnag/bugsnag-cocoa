@@ -19,6 +19,7 @@
 + (BugsnagNotifier*)notifier;
 + (void) notify:(NSException *)exception;
 + (void) notify:(NSException *)exception withData:(NSDictionary*)metaData;
++ (void) notify:(NSException *)exception withData:(NSDictionary*)metaData atSeverity:(NSString*)severity;
 
 + (void) setUserAttribute:(NSString*)attributeName withValue:(id)value;
 + (void) clearUser;
