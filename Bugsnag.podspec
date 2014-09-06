@@ -69,12 +69,12 @@ end
 
 Pod::Spec.new do |s|
   s.name         = "Bugsnag"
-  s.version      = "3.1.2"
+  s.version      = "3.1.3"
   s.summary      = "Cocoa notifier for SDK for bugsnag.com"
   s.homepage     = "https://bugsnag.com"
   s.license      = 'MIT'
   s.author       = { "Bugsnag" => "notifiers@bugsnag.com" }
-  s.source       = { :git => "https://github.com/bugsnag/bugsnag-cocoa.git", :tag => "3.1.2" }
+  s.source       = { :git => "https://github.com/bugsnag/bugsnag-cocoa.git", :tag => "3.1.3" }
   s.source_files = ['bugsnag/*.{h,m}']
   s.requires_arc = true
   s.frameworks = "SystemConfiguration"

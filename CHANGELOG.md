@@ -1,6 +1,10 @@
 Changelog
 =========
 
+3.1.3
+-----
+-   Add [Bugsnag notify:withMetaData:atSeverity:] to public API
+
 3.1.2
 -----
 -   Prepare 'severity' feature for release
