@@ -39,7 +39,7 @@
         self.lastMemoryWarning = 0.0;
         
         [self beforeNotify:^(BugsnagEvent *event) {
-            if (event.context == nil) {
+            if (event.context == nil && [self topMostViewController]) {
                 event.context = [self topMostViewController];
             }
             return YES;
