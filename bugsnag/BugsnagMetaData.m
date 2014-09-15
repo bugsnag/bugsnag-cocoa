@@ -78,6 +78,43 @@ void mergeDictionaries(NSMutableDictionary *destination, NSDictionary *source) {
     }
 }
 
+- (NSDictionary *) toDescriptionDictionary {
+    id (^convertValue)(id);
+    __block __weak id (^weak_convertValue)(id) = convertValue = ^(id value) {
+        if ([value isKindOfClass:[NSDictionary class]]) {
+            NSMutableDictionary *dictionary = [NSMutableDictionary new];
+            [value enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+                dictionary[key] = weak_convertValue(obj);
+            }];
+            return (id)dictionary;
+        }
+        else if ([value isKindOfClass:[NSArray class]]) {
+            NSMutableArray *array = [NSMutableArray new];
+            [value enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                [array addObject:weak_convertValue(obj)];
+            }];
+            return (id)array;
+        }
+        else if ([value isKindOfClass:[NSString class]]
+                 || [value isKindOfClass:[NSData class]]
+                 || [value isKindOfClass:[NSDate class]]
+                 || [value isKindOfClass:[NSNumber class]]) {
+            return (id)value;
+        }
+        else {
+            return (id)[value description];
+        }
+    };
+
+    @synchronized(self) {
+        NSMutableDictionary *convertedDictionary = [NSMutableDictionary new];
+        [self.dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+            convertedDictionary[key] = convertValue(obj);
+        }];
+        return [NSDictionary dictionaryWithDictionary:convertedDictionary];
+    }
+}
+
 - (void) addAttribute:(NSString*)attributeName withValue:(id)value toTabWithName:(NSString*)tabName {
     @synchronized(self) {
         if(value) {

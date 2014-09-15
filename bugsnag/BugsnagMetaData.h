@@ -15,6 +15,7 @@
 - (void) clearTab:(NSString*)tabName;
 - (void) mergeWith:(NSDictionary*)data;
 - (NSDictionary*) toDictionary;
+- (NSDictionary *) toDescriptionDictionary;
 - (void) addAttribute:(NSString*)attributeName withValue:(id)value toTabWithName:(NSString*)tabName;
 
 @end
