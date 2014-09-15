@@ -132,7 +132,7 @@ void handle_exception(NSException *exception) {
 }
 
 + (void) notify:(NSException *)exception withData:(NSDictionary*)metaData atSeverity:(NSString*)severity {
-    [notifier notifyException:exception withData:nil atSeverity: severity inBackground: true];
+    [notifier notifyException:exception withData:metaData atSeverity: severity inBackground: true];
 }
 
 + (void) setUserAttribute:(NSString*)attributeName withValue:(id)value {
