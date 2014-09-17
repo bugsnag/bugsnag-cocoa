@@ -34,6 +34,7 @@
 
 @property (atomic) BOOL enableSSL;
 @property (atomic) BOOL autoNotify;
+@property (atomic) BOOL shouldRegisterExceptionHandler;
 @property (atomic) BOOL collectMAU;
 @property (atomic, copy) NSArray *notifyReleaseStages;
 
