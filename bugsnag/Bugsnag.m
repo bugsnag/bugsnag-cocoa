@@ -90,7 +90,7 @@ void handle_exception(NSException *exception) {
 + (void)startBugsnagWithApiKey:(NSString*)apiKey {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] init];
     configuration.apiKey = apiKey;
-    
+    configuration.context = @"Indetermined";
     [self startBugsnagWithConfiguration:configuration];
 }
 
