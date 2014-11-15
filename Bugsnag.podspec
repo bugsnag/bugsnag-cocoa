@@ -75,15 +75,20 @@ Pod::Spec.new do |s|
   s.license      = 'MIT'
   s.author       = { "Bugsnag" => "notifiers@bugsnag.com" }
   s.source       = { :git => "https://github.com/bugsnag/bugsnag-cocoa.git", :tag => "3.1.3" }
-  s.source_files = ['bugsnag/*.{h,m}']
-  s.requires_arc = true
-  s.frameworks = "SystemConfiguration"
 
-  s.ios.source_files = "bugsnag/iOS/*.{h,m}"
-  s.ios.deployment_target = '5.0'
+  s.source       = { :git => "https://github.com/bugsnag/bugsnag-cocoa.git", :tag=>s.version.to_s }
+  s.frameworks   = 'Foundation'
+  s.libraries    = 'c++'
+  s.xcconfig     = { 'GCC_ENABLE_CPP_EXCEPTIONS' => 'YES' }
 
-  s.osx.source_files = "bugsnag/OSX/*.{h,m}"
-  s.osx.deployment_target = '10.6'
-  s.osx.frameworks = "ExceptionHandling"
+  s.source_files = ["KSCrash/Source/KSCrash/Recording/**/*.{m,h,mm,c,cpp}",
+                    "KSCrash/Source/KSCrash/Reporting/Filters/KSCrashReportFilter.h",
+                    "Source/Bugsnag/**/*.{m,h,mm,c,cpp}"]
+
+  s.exclude_files = ["KSCrash/Source/KSCrash/Recording/Tools/KSZombie.{h,m}"]
+
+  s.subspec 'no-arc' do |sp|
+    sp.source_files = ["KSCrash/Source/KSCrash/Recording/Tools/KSZombie.{h,m}"]
+    sp.requires_arc = false
+  end
 end
-

@@ -1,8 +1,0 @@
-language: objective-c
-xcode_project: Bugsnag.xcodeproj
-xcode_scheme: Bugsnag
-xcode_sdk: iphonesimulator
-notifications:
-  hipchat:
-    rooms:
-      secure: hfHwgyJMOU9QKP3+i52CzymvmCccAm+2zxwe9qICYpWxxoqzzo5qqummJjgko1vY2Y/2pUCUcgjyNrkv/RlhNsJVlsOLelOO1sTeLq6icPW4Sdk6DwW+XslCwVliY1cP+FoB38jjoiHJ/qOEI/4kfJrwNCkaTYgSQks3m5BFiGA=

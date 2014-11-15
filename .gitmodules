@@ -1,0 +1,3 @@
+[submodule "KSCrash"]
+	path = KSCrash
+	url = git@github.com:kstenerud/KSCrash
