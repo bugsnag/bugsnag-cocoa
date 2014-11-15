@@ -17,7 +17,7 @@ Installation & Setup
 -   Add Bugsnag to your `Podfile`
 
     ```ruby
-    pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git", :branch => 'v4'
+    pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git", :branch => 'v4', :submodules => true
     ```
 
 -   Install Bugsnag
