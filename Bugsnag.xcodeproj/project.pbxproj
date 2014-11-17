@@ -466,8 +466,8 @@
 				79FD0D951A0C16C70050DBC5 /* Tools */,
 			);
 			name = Recording;
-			path = ../KSCrash/Source/KSCrash/Recording;
-			sourceTree = "<group>";
+			path = KSCrash/Source/KSCrash/Recording;
+			sourceTree = SOURCE_ROOT;
 		};
 		79FD0D851A0C16C70050DBC5 /* Sentry */ = {
 			isa = PBXGroup;
@@ -1060,7 +1060,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-                GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KSCrash/iOS/KSCrash/KSCrash-Prefix.pch";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1566,7 +1566,7 @@
 				79FD0D161A0C150E0050DBC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-            defaultConfigurationName = Release;
+			defaultConfigurationName = Release;
 		};
 		79FD0D1A1A0C150E0050DBC5 /* Build configuration list for PBXNativeTarget "Bugsnag-DeviceTests" */ = {
 			isa = XCConfigurationList;
@@ -1575,7 +1575,7 @@
 				79FD0D181A0C150E0050DBC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-            defaultConfigurationName = Release;
+			defaultConfigurationName = Release;
 		};
 		79FD0D301A0C151F0050DBC5 /* Build configuration list for PBXNativeTarget "Bugsnag-Simulator" */ = {
 			isa = XCConfigurationList;
@@ -1584,7 +1584,7 @@
 				79FD0D321A0C151F0050DBC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-            defaultConfigurationName = Release;
+			defaultConfigurationName = Release;
 		};
 		79FD0D331A0C151F0050DBC5 /* Build configuration list for PBXNativeTarget "Bugsnag-SimulatorTests" */ = {
 			isa = XCConfigurationList;
@@ -1593,7 +1593,7 @@
 				79FD0D351A0C151F0050DBC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-            defaultConfigurationName = Release;
+			defaultConfigurationName = Release;
 		};
 		79FD0E2A1A0C18F30050DBC5 /* Build configuration list for PBXNativeTarget "Bugsnag" */ = {
 			isa = XCConfigurationList;
@@ -1602,7 +1602,7 @@
 				79FD0E2C1A0C18F30050DBC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-            defaultConfigurationName = Release;
+			defaultConfigurationName = Release;
 		};
 		79FD0E2D1A0C18F30050DBC5 /* Build configuration list for PBXNativeTarget "BugsnagTests" */ = {
 			isa = XCConfigurationList;
@@ -1611,7 +1611,7 @@
 				79FD0E2F1A0C18F30050DBC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-            defaultConfigurationName = Release;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
