@@ -24,6 +24,8 @@
 // THE SOFTWARE.
 //
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+
 #import <UIKit/UIKit.h>
 #include <sys/utsname.h>
 
@@ -100,3 +102,5 @@
 }
 
 @end
+
+#endif
