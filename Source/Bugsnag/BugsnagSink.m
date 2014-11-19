@@ -164,6 +164,8 @@
     [formatted safeSetObject: [self appStateFromSystem: system] forKey:@"appState"];
     [formatted safeSetObject: [self appFromSystem: system] forKey:@"app"];
     [formatted safeSetObject: severity forKey:@"severity"];
+    [formatted safeSetObject: @"2" forKey:@"payloadVersion"];
+
     if ([context isKindOfClass:[NSString class]]) {
         [formatted safeSetObject: context forKey:@"context"];
     }
