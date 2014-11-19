@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 //
 
-#if TARGET_OS_MAC
+#if !(TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE) && TARGET_OS_MAC
 
 #import <ExceptionHandling/NSExceptionHandler.h>
 
