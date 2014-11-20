@@ -36,6 +36,30 @@
 #import "KSSafeCollections.h"
 #import "NSDictionary+Merge.h"
 
+
+struct bugsnag_data_t {
+    // Contains the user-specified metaData, including the user tab from config.
+    char *metaDataJSON;
+    // Contains the Bugsnag configuration, all under the "config" tab.
+    char *configJSON;
+    // Contains notifier state, under "deviceState" and crash-specific information under "crash".
+    char *stateJSON;
+};
+
+static struct bugsnag_data_t g_bugsnag_data;
+
+void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
+    if (g_bugsnag_data.configJSON) {
+        writer->addJSONElement(writer, "config", g_bugsnag_data.configJSON);
+    }
+    if (g_bugsnag_data.metaDataJSON) {
+        writer->addJSONElement(writer, "metaData", g_bugsnag_data.metaDataJSON);
+    }
+    if (g_bugsnag_data.stateJSON) {
+        writer->addJSONElement(writer, "state", g_bugsnag_data.stateJSON);
+    }
+}
+
 @implementation BugsnagNotifier
 
 @synthesize configuration;
@@ -43,9 +67,17 @@
 - (id) initWithConfiguration:(BugsnagConfiguration*) initConfiguration {
     if((self = [super init])) {
         self.configuration = initConfiguration;
+        self.state = [[BugsnagMetaData alloc] init];
+
         self.configuration.metaData.delegate = self;
-        [self metaDataChanged:self.configuration.metaData];
+        self.configuration.config.delegate = self;
+        self.state.delegate = self;
+
+        [self metaDataChanged: self.configuration.metaData];
+        [self metaDataChanged: self.configuration.config];
+        [self metaDataChanged: self.state];
     }
+
     return self;
 }
 
@@ -54,6 +86,8 @@
     // We don't use this feature yet, so we turn it off to avoid any possibility of bugs.
     [KSCrash sharedInstance].introspectMemory = NO;
     
+    [KSCrash sharedInstance].onCrash = &serialize_bugsnag_data;
+
     if (configuration.autoNotify) {
         [[KSCrash sharedInstance] install];
     }
@@ -66,15 +100,21 @@
     if (!metaData) {
         metaData = [[NSDictionary alloc] init];
     }
-    [KSCrash sharedInstance].userInfo = @{@"metaData": [metaData mergedInto: [[self configuration].metaData toDictionary]],
-                                          @"context": [self configuration].context ? [self configuration].context : [NSNull null],
-                                          @"severity": severity ? severity : BugsnagSeverityWarning,
-                                          @"depth": [NSNumber numberWithUnsignedInteger:depth + 3]};
+    metaData = [metaData mergedInto: [[self configuration].metaData toDictionary]];
+    if (!severity) {
+        severity = BugsnagSeverityWarning;
+    }
+
+    [self serializeDictionary: metaData toJSON: &g_bugsnag_data.metaDataJSON];
+
+    [[self state] addAttribute:@"severity" withValue: severity toTabWithName: @"crash"];
+    [[self state] addAttribute:@"depth" withValue: [NSNumber numberWithUnsignedInteger:depth + 3] toTabWithName: @"crash"];
     
     [[KSCrash sharedInstance] reportUserException:[exception name] reason:[exception reason] lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
     
-    // Reset the KSCrash userInfo.
-    [self metaDataChanged:[self configuration].metaData];
+    // Restore metaData to pre-crash state.
+    [self metaDataChanged: [self configuration].metaData];
+    [[self state] clearTab:@"crash"];
     
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
 }
@@ -93,9 +133,31 @@
 }
 
 - (void) metaDataChanged:(BugsnagMetaData *)metaData {
-    [KSCrash sharedInstance].userInfo = @{@"metaData": [metaData toDictionary],
-                                          @"severity": BugsnagSeverityError,
-                                          @"context": [self configuration].context ? [self configuration].context : [NSNull null],
-                                          @"depth": [NSNumber numberWithUnsignedInteger:0]};
+
+    if (metaData == self.configuration.metaData) {
+        [self serializeDictionary: [metaData toDictionary] toJSON: &g_bugsnag_data.metaDataJSON];
+    } else if (metaData == self.configuration.config) {
+        [self serializeDictionary: [metaData getTab:@"config"] toJSON: &g_bugsnag_data.configJSON];
+    } else if (metaData == self.state) {
+        [self serializeDictionary: [metaData toDictionary] toJSON: &g_bugsnag_data.stateJSON];
+    } else {
+        NSLog(@"Unknown meta-Data dictionary changed");
+    }
+}
+
+- (void) serializeDictionary: (NSDictionary*) dictionary toJSON: (char **) destination {
+    NSError *error;
+    NSData *json = [KSJSONCodec encode: dictionary options:0 error:&error];
+
+    if (!json) {
+        NSLog(@"Bugsnag could not serialize metaData: %@", error);
+        return;
+    }
+
+    *destination = reallocf(*destination, [json length] + 1);
+    if (*destination) {
+        memcpy(*destination, [json bytes], [json length]);
+        (*destination)[[json length]] = '\0';
+    }
 }
 @end

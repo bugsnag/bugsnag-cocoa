@@ -31,6 +31,8 @@
 
 
 #import "BugsnagIosNotifier.h"
+#import "BugsnagNotifier.h"
+
 #import "RFC3339DateTool.h"
 
 @implementation BugsnagIosNotifier
@@ -51,54 +53,43 @@
 }
 
 - (void) batteryChanged:(NSNotification *)notif {
-    self.batteryLevel = [UIDevice currentDevice].batteryLevel;
-    self.charging = [UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging;
+    NSNumber *batteryLevel = [NSNumber numberWithFloat:[UIDevice currentDevice].batteryLevel];
+    NSNumber *charging = [NSNumber numberWithBool: [UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging];
+
+    [[self state] addAttribute: @"batteryLevel" withValue: batteryLevel toTabWithName:@"deviceState"];
+    [[self state] addAttribute: @"charging" withValue: charging toTabWithName:@"deviceState"];
 }
 
 - (void)orientationChanged:(NSNotification *)notif {
+    NSString *orientation;
     switch([UIDevice currentDevice].orientation) {
         case UIDeviceOrientationPortraitUpsideDown:
-            self.orientation = @"portraitupsidedown";
+            orientation = @"portraitupsidedown";
             break;
         case UIDeviceOrientationPortrait:
-            self.orientation = @"portrait";
+            orientation = @"portrait";
             break;
         case UIDeviceOrientationLandscapeRight:
-            self.orientation = @"landscaperight";
+            orientation = @"landscaperight";
             break;
         case UIDeviceOrientationLandscapeLeft:
-            self.orientation = @"landscapeleft";
+            orientation = @"landscapeleft";
             break;
         case UIDeviceOrientationFaceUp:
-            self.orientation = @"faceup";
+            orientation = @"faceup";
             break;
         case UIDeviceOrientationFaceDown:
-            self.orientation = @"facedown";
+            orientation = @"facedown";
             break;
         case UIDeviceOrientationUnknown:
         default:
-            self.orientation = @"unknown";
+            orientation = @"unknown";
     }
+    [[self state] addAttribute:@"orientation" withValue:orientation toTabWithName:@"deviceState"];
 }
 
 - (void)lowMemoryWarning:(NSNotification *)notif {
-    self.lastMemoryWarning = [NSDate date];
-}
-
-- (void)setOrientation: (NSString*) orientation {
-    [self.configuration.metaData addAttribute:@"orientation" withValue:orientation toTabWithName:@"app"];
-}
-
-- (void)setBatteryLevel: (float) batteryLevel {
-    [self.configuration.metaData addAttribute:@"batteryLevel" withValue:[NSNumber numberWithFloat:batteryLevel] toTabWithName:@"app"];
-}
-
-- (void)setCharging: (bool) charging {
-    [self.configuration.metaData addAttribute:@"charging" withValue:[NSNumber numberWithBool:charging] toTabWithName:@"app"];
-}
-
-- (void)setLastMemoryWarning: (NSDate*) date {
-    [self.configuration.metaData addAttribute:@"lastEnteredForeground" withValue: [RFC3339DateTool stringFromDate:date] toTabWithName:@"app"];
+    [[self state] addAttribute: @"lowMemoryWarning" withValue: [RFC3339DateTool stringFromDate:[NSDate date]] toTabWithName:@"deviceState"];
 }
 
 @end

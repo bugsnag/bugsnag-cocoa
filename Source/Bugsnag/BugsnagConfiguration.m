@@ -34,6 +34,8 @@
         self.autoNotify = true;
         self.notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
         self.metaData = [[BugsnagMetaData alloc] init];
+        self.config = [[BugsnagMetaData alloc] init];
+
         self.notifyReleaseStages = nil;
 #if DEBUG
         self.releaseStage = @"development";
@@ -50,18 +52,40 @@
     [[self metaData] addAttribute:@"email" withValue:userEmail toTabWithName:@"user"];
 }
 
+@synthesize metaData;
+@synthesize config;
+
 @synthesize notifyURL;
 @synthesize apiKey;
 @synthesize autoNotify;
-@synthesize metaData;
 @synthesize releaseStage;
 @synthesize notifyReleaseStages;
 @synthesize context;
 
--(void)setContext:(NSString *)newContext
+
+-(void) setNotifyURL:(NSURL *)newNotifyURL {
+    self->notifyURL = newNotifyURL;
+    [self.config addAttribute:@"notifyURL" withValue: [newNotifyURL absoluteString] toTabWithName:@"config"];
+}
+
+-(void) setApiKey:(NSString *)newApiKey {
+    self->apiKey = newApiKey;
+    [self.config addAttribute:@"apiKey" withValue:newApiKey toTabWithName:@"config"];
+}
+
+-(void) setReleaseStage:(NSString *)newReleaseStage {
+    self->releaseStage = newReleaseStage;
+    [self.config addAttribute:@"releaseStage" withValue:newReleaseStage toTabWithName:@"config"];
+}
+
+-(void) setNotifyReleaseStages:(NSArray *)newNotifyReleaseStages {
+    self->notifyReleaseStages = newNotifyReleaseStages;
+    [self.config addAttribute:@"notifyReleaseStages" withValue:newNotifyReleaseStages toTabWithName:@"config"];
+}
+
+-(void) setContext:(NSString *)newContext
 {
     self->context = newContext;
-    // TODO:CI unhack this.
-    [[self metaData].delegate metaDataChanged:[self metaData]];
+    [self.config addAttribute:@"context" withValue: newContext toTabWithName:@"config"];
 }
 @end

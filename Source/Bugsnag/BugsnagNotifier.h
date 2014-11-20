@@ -28,9 +28,12 @@
 
 #import "BugsnagConfiguration.h"
 
+
+
 @interface BugsnagNotifier : NSObject <BugsnagMetaDataDelegate>
 
 @property(nonatomic,readwrite,retain) BugsnagConfiguration* configuration;
+@property(nonatomic,readwrite,retain) BugsnagMetaData* state;
 
 - (id) initWithConfiguration:(BugsnagConfiguration*) configuration;
 - (void) start;

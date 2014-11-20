@@ -36,7 +36,10 @@
 @property(nonatomic,readwrite,retain) NSArray* notifyReleaseStages;
 @property(nonatomic,readwrite,retain) NSURL* notifyURL;
 @property(nonatomic,readwrite,retain) BugsnagMetaData* metaData;
+@property(nonatomic,readwrite,retain) BugsnagMetaData* config;
+
 @property(nonatomic) BOOL autoNotify;
+
 - (void) setUser:(NSString*) userId withName:(NSString*) name andEmail:(NSString*) email;
 
 @end

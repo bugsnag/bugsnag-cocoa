@@ -37,7 +37,9 @@
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     
     [data safeSetObject: [Bugsnag configuration].apiKey forKey: @"apiKey"];
-    [data safeSetObject: @{@"name": @"iOS Bugsnag Notifier", @"version": @"4.0.0", @"url": @"https://bugsnag.com/docs/notifiers/cocoa"} forKey: @"notifier"];
+    [data safeSetObject: @{@"name": @"iOS Bugsnag Notifier",
+                           @"version": @"4.0.0",
+                           @"url": @"https://bugsnag.com/docs/notifiers/cocoa"} forKey: @"notifier"];
     
     NSMutableArray* formatted = [[NSMutableArray alloc] initWithCapacity:[reports count]];
     
@@ -52,22 +54,30 @@
 
 - (NSDictionary*) formatReport:(NSDictionary*) report {
     
+    NSLog(@"%s", [[KSJSONCodec encode: report options:KSJSONEncodeOptionPretty error:nil] bytes]);
+
     NSMutableDictionary* formatted = [[NSMutableDictionary alloc] init];
     NSMutableDictionary* exception = [[NSMutableDictionary alloc] init];
 
     NSArray* binaryImages = [report objectForKey:@"binary_images"];
     NSDictionary* crash = [report objectForKey:@"crash"];
     NSDictionary* system = [report objectForKey:@"system"];
-    NSMutableDictionary* metaData  = [NSMutableDictionary dictionaryWithDictionary:[[report objectForKey:@"user"] objectForKey:@"metaData"]];
-    NSString* severity = [[report objectForKey:@"user"] objectForKey:@"severity"];
+    
+    NSMutableDictionary* metaData  = [NSMutableDictionary dictionaryWithDictionary:
+                                      [[report objectForKey:@"user"] objectForKey:@"metaData"]];
+    NSMutableDictionary* state = [NSMutableDictionary dictionaryWithDictionary:
+                                  [[report objectForKey:@"user"] objectForKey:@"state"]];
+    NSMutableDictionary* config = [NSMutableDictionary dictionaryWithDictionary:
+                                   [[report objectForKey:@"user"] objectForKey:@"config"]];
+    
     NSMutableDictionary* user = [NSMutableDictionary dictionaryWithDictionary: [metaData objectForKey:@"user"]];
-    
-    NSUInteger depth = [[[report objectForKey:@"user"] objectForKey:@"depth"] unsignedIntegerValue];
-    NSString *context = [[report objectForKey:@"user"] objectForKey:@"context"];
-
-
-    
     [metaData setObject:user forKey:@"user"];
+
+    NSString* severity = [[state objectForKey:@"crash"] objectForKey:@"severity"];
+    NSUInteger depth = [[[state objectForKey:@"crash"] objectForKey:@"depth"] unsignedIntegerValue];
+    NSString *context = [config objectForKey:@"context"];
+
+
     if (![user objectForKey:@"id"]) {
         [user setObject: [system objectForKey:@"device_app_hash"] forKey:@"id"];
     }
@@ -159,7 +169,7 @@
 
     [formatted safeSetObject: @[exception] forKey: @"exceptions"];
     [formatted safeSetObject: metaData forKey: @"metaData"];
-    [formatted safeSetObject: [self deviceStateFromSystem: system] forKey:@"deviceState"];
+    [formatted safeSetObject: [self deviceStateFromSystem: system andState: state] forKey:@"deviceState"];
     [formatted safeSetObject: [self deviceFromSystem: system] forKey:@"device"];
     [formatted safeSetObject: [self appStateFromSystem: system] forKey:@"appState"];
     [formatted safeSetObject: [self appFromSystem: system] forKey:@"app"];
@@ -175,9 +185,9 @@
     return formatted;
 }
 
-- (NSDictionary*) deviceStateFromSystem: (NSDictionary*)system
+- (NSDictionary*) deviceStateFromSystem: (NSDictionary*)system andState: (NSDictionary*) state
 {
-    NSMutableDictionary* deviceState = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary* deviceState = [NSMutableDictionary dictionaryWithDictionary: [state objectForKey:@"deviceState"]];
 
     [deviceState safeSetObject:[[system objectForKey:@"memory"] objectForKey:@"free" ] forKey: @"freeMemory"];
     
@@ -207,7 +217,6 @@
 
     return device;
 }
-
 
 - (NSDictionary*) appStateFromSystem: (NSDictionary*)system
 {
@@ -287,6 +296,7 @@
         }
         return;
     }
+
 
     NSData* jsonData = [KSJSONCodec encode:[self getBodyFromReports: reports]
                                    options:KSJSONEncodeOptionSorted | KSJSONEncodeOptionPretty
