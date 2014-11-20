@@ -96,9 +96,11 @@
         errorClass = [(NSDictionary*)[error objectForKey:@"mach"] objectForKey:@"exception_name"];
 
         NSString* diagnosis = [crash objectForKey:@"diagnosis"];
-        if (diagnosis) {
+        if (diagnosis && ![diagnosis hasPrefix:@"No diagnosis"]) {
             message = [[diagnosis componentsSeparatedByString:@"\n"] firstObject];
         }
+    } else if ([errorType isEqualToString:@"signal"]) {
+        errorClass = [(NSDictionary*)[error objectForKey:@"signal"] objectForKey:@"name"];
 
     } else if ([errorType isEqualToString:@"nsexception"]) {
         errorClass = [(NSDictionary*)[error objectForKey:@"nsexception"] objectForKey:@"name"];
@@ -131,15 +133,6 @@
             for (NSDictionary* frame in backtrace) {
                 if (seen++ >= depth) {
                     [stacktrace addObjectIfNotNil: [self formatFrame: frame withBinaryImages: binaryImages]];
-                }
-            }
-
-            NSDictionary* linkRegister = [thread objectForKey:@"link_register"];
-            if (linkRegister && [stacktrace count] >= 1) {
-                NSMutableDictionary* fmt = [self formatFrame: linkRegister withBinaryImages: binaryImages];
-                if (fmt) {
-                    [fmt safeSetObject:@(YES) forKey:@"linkRegister"];
-                    [stacktrace safeInsertObject:fmt atIndex: 1];
                 }
             }
 
