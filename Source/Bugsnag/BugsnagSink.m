@@ -268,8 +268,9 @@
         if ([(NSNumber*)[image objectForKey:@"image_addr"] unsignedLongValue] == imageAddress) {
             unsigned long imageSlide = [(NSNumber*)[image objectForKey: @"image_vmaddr"] unsignedLongValue];
 
-            NSString *uuid = [image objectForKey:@"uuid"];
-            [formatted setObjectIfNotNil: uuid forKey: @"machoUUID"];
+            [formatted setObjectIfNotNil: [image objectForKey:@"uuid"] forKey: @"machoUUID"];
+            [formatted setObjectIfNotNil: [image objectForKey:@"name"] forKey: @"machoFile"];
+
             [formatted safeSetObject: [NSString stringWithFormat: @"0x%lx", imageSlide] forKey: @"machoVMAddress"];
 
             return formatted;
