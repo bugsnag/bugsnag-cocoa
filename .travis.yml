@@ -2,7 +2,7 @@ language: objective-c
 xcode_project: Bugsnag.xcodeproj
 xcode_scheme: Bugsnag
 xcode_sdk:
-  - iphonesimulator8.0
+  - iphonesimulator8.1
   - iphonesimulator7.1
   - iphonesimulator7.0
 notifications:
