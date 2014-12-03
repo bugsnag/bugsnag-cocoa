@@ -1,6 +1,6 @@
 language: objective-c
 xcode_project: Bugsnag.xcodeproj
-xcode_scheme: Test
+xcode_scheme: Bugsnag
 notifications:
   hipchat:
     rooms:
