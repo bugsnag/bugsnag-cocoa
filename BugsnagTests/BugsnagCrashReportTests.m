@@ -41,11 +41,11 @@
 }
 
 - (void)testBinaryImages {
-    XCTAssertEqual(self.report.binaryImages.count, 149);
+    XCTAssert(self.report.binaryImages.count == 149);
 }
 
 - (void)testThreads {
-    XCTAssertEqual(self.report.threads.count, 9);
+    XCTAssert(self.report.threads.count == 9);
 }
 
 - (void)testError {
@@ -96,7 +96,7 @@
 }
 
 - (void)testDepth {
-    XCTAssertEqual(self.report.depth, 4);
+    XCTAssert(self.report.depth == 4);
 }
 
 - (void)testMetaData {

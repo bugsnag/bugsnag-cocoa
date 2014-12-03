@@ -58,7 +58,7 @@
     XCTAssert([[[dict objectForKey:@"notifier"] valueForKey:@"version"] isKindOfClass:[NSString class]]);
     
     // Check events array
-    XCTAssertEqual(((NSArray*)[dict objectForKey:@"events"]).count, 1);
+    XCTAssert(((NSArray*)[dict objectForKey:@"events"]).count == 1);
     
     // Check event
     NSDictionary *event = [((NSArray*)[dict objectForKey:@"events"]) objectAtIndex:0];
@@ -100,7 +100,7 @@
 }
 
 - (void)check:(NSArray*)subject ContainsOnly:(NSArray*)values {
-    XCTAssertEqual(subject.count, values.count);
+    XCTAssert(subject.count == values.count);
     for (id object in values) {
         XCTAssert([subject containsObject:object]);
     }
