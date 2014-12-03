@@ -31,10 +31,10 @@
 @interface BugsnagConfiguration : NSObject
 
 @property(nonatomic,readwrite,retain) NSString* apiKey;
-@property(nonatomic,readwrite,retain) NSString* context;
+@property(nonatomic,readwrite,retain) NSURL* notifyURL;
 @property(nonatomic,readwrite,retain) NSString* releaseStage;
 @property(nonatomic,readwrite,retain) NSArray* notifyReleaseStages;
-@property(nonatomic,readwrite,retain) NSURL* notifyURL;
+@property(nonatomic,readwrite,retain) NSString* context;
 @property(nonatomic,readwrite,retain) BugsnagMetaData* metaData;
 @property(nonatomic,readwrite,retain) BugsnagMetaData* config;
 

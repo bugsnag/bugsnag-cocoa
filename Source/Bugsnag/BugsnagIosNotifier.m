@@ -39,6 +39,8 @@
 
 - (void) start {
     [super start];
+    
+    [self.details setValue: @"iOS Bugsnag Notifier" forKey:@"name"];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryChanged:) name:UIDeviceBatteryStateDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryChanged:) name:UIDeviceBatteryLevelDidChangeNotification object:nil];

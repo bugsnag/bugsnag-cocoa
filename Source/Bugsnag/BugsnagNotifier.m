@@ -36,6 +36,8 @@
 #import "KSSafeCollections.h"
 #import "NSDictionary+Merge.h"
 
+#define NOTIFIER_VERSION @"4.0.0"
+#define NOTIFIER_URL @"https://github.com/bugsnag/bugsnag-cocoa"
 
 struct bugsnag_data_t {
     // Contains the user-specified metaData, including the user tab from config.
@@ -68,6 +70,10 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
     if((self = [super init])) {
         self.configuration = initConfiguration;
         self.state = [[BugsnagMetaData alloc] init];
+        self.details = [@{
+                         @"name": @"Bugsnag Objective-C",
+                         @"version": NOTIFIER_VERSION,
+                         @"url": NOTIFIER_URL} mutableCopy];
 
         self.configuration.metaData.delegate = self;
         self.configuration.config.delegate = self;
@@ -83,7 +89,7 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
 
 - (void) start {
     [KSCrash sharedInstance].sink = [[BugsnagSink alloc] init];
-    // We don't use this feature yet, so we turn it off to avoid any possibility of bugs.
+    // We don't use this feature yet, so we turn it off
     [KSCrash sharedInstance].introspectMemory = NO;
     
     [KSCrash sharedInstance].onCrash = &serialize_bugsnag_data;
@@ -100,20 +106,20 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
     if (!metaData) {
         metaData = [[NSDictionary alloc] init];
     }
-    metaData = [metaData mergedInto: [[self configuration].metaData toDictionary]];
+    metaData = [metaData mergedInto: [self.configuration.metaData toDictionary]];
     if (!severity) {
         severity = BugsnagSeverityWarning;
     }
 
     [self serializeDictionary: metaData toJSON: &g_bugsnag_data.metaDataJSON];
 
-    [[self state] addAttribute:@"severity" withValue: severity toTabWithName: @"crash"];
-    [[self state] addAttribute:@"depth" withValue: [NSNumber numberWithUnsignedInteger:depth + 3] toTabWithName: @"crash"];
+    [self.state addAttribute:@"severity" withValue: severity toTabWithName: @"crash"];
+    [self.state addAttribute:@"depth" withValue: [NSNumber numberWithUnsignedInteger:depth + 3] toTabWithName: @"crash"];
     
     [[KSCrash sharedInstance] reportUserException:[exception name] reason:[exception reason] lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
     
     // Restore metaData to pre-crash state.
-    [self metaDataChanged: [self configuration].metaData];
+    [self metaDataChanged: self.configuration.metaData];
     [[self state] clearTab:@"crash"];
     
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];

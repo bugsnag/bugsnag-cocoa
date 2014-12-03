@@ -25,282 +25,54 @@
 //
 
 #import "BugsnagSink.h"
+#import "BugsnagNotifier.h"
 #import "Bugsnag.h"
+#import "BugsnagCrashReport.h"
 
 #import "KSSafeCollections.h"
 #import "KSJSONCodecObjC.h"
 
+// This is private in Bugsnag, but really we want package private so define
+// it here.
+@interface Bugsnag ()
++ (BugsnagNotifier*)notifier;
+@end
+
 @implementation BugsnagSink
 
-- (NSDictionary*) getBodyFromReports:(NSArray*) reports
-{
-    NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
-    
-    [data safeSetObject: [Bugsnag configuration].apiKey forKey: @"apiKey"];
-    [data safeSetObject: @{@"name": @"iOS Bugsnag Notifier",
-                           @"version": @"4.0.0",
-                           @"url": @"https://bugsnag.com/docs/notifiers/cocoa"} forKey: @"notifier"];
-    
-    NSMutableArray* formatted = [[NSMutableArray alloc] initWithCapacity:[reports count]];
-    
-    for (NSDictionary* report in reports) {
-        [formatted safeAddObject:[self formatReport:report]];
-    }
-    
-    [data safeSetObject: formatted forKey:@"events"];
-    
-    return data;
-}
-
-- (NSDictionary*) formatReport:(NSDictionary*) report {
-    
-    NSLog(@"%s", [[KSJSONCodec encode: report options:KSJSONEncodeOptionPretty error:nil] bytes]);
-
-    NSMutableDictionary* formatted = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary* exception = [[NSMutableDictionary alloc] init];
-
-    NSArray* binaryImages = [report objectForKey:@"binary_images"];
-    NSDictionary* crash = [report objectForKey:@"crash"];
-    NSDictionary* system = [report objectForKey:@"system"];
-    
-    NSMutableDictionary* metaData  = [NSMutableDictionary dictionaryWithDictionary:
-                                      [[report objectForKey:@"user"] objectForKey:@"metaData"]];
-    NSMutableDictionary* state = [NSMutableDictionary dictionaryWithDictionary:
-                                  [[report objectForKey:@"user"] objectForKey:@"state"]];
-    NSMutableDictionary* config = [NSMutableDictionary dictionaryWithDictionary:
-                                   [[report objectForKey:@"user"] objectForKey:@"config"]];
-    
-    NSMutableDictionary* user = [NSMutableDictionary dictionaryWithDictionary: [metaData objectForKey:@"user"]];
-    [metaData setObject:user forKey:@"user"];
-
-    NSString* severity = [[state objectForKey:@"crash"] objectForKey:@"severity"];
-    NSUInteger depth = [[[state objectForKey:@"crash"] objectForKey:@"depth"] unsignedIntegerValue];
-    NSString *context = [config objectForKey:@"context"];
-
-
-    if (![user objectForKey:@"id"]) {
-        [user setObject: [system objectForKey:@"device_app_hash"] forKey:@"id"];
-    }
-
-    NSDictionary* error = [crash objectForKey:@"error"];
-    NSString* errorType = [error objectForKey: @"type"];
-    
-    NSString* errorClass;
-    NSString* message;
-
-    NSString* dsymUUID = [system objectForKey:@"app_uuid"];
-
-    if ([errorType isEqualToString: @"cpp_exception"]) {
-        errorClass = [(NSDictionary*)[error objectForKey:@"cpp_exception"] objectForKey:@"name"];
-    } else if ([errorType isEqualToString:@"mach"]) {
-        errorClass = [(NSDictionary*)[error objectForKey:@"mach"] objectForKey:@"exception_name"];
-
-        NSString* diagnosis = [crash objectForKey:@"diagnosis"];
-        if (diagnosis && ![diagnosis hasPrefix:@"No diagnosis"]) {
-            message = [[diagnosis componentsSeparatedByString:@"\n"] firstObject];
-        }
-    } else if ([errorType isEqualToString:@"signal"]) {
-        errorClass = [(NSDictionary*)[error objectForKey:@"signal"] objectForKey:@"name"];
-
-    } else if ([errorType isEqualToString:@"nsexception"]) {
-        errorClass = [(NSDictionary*)[error objectForKey:@"nsexception"] objectForKey:@"name"];
-    }
-
-    if (errorClass != nil) {
-        [exception safeSetObject: errorClass forKey: @"errorClass"];
-    } else {
-        [exception safeSetObject: @"Exception" forKey: @"errorClass"];
-    }
-    
-    if (message == nil) {
-        message = [error objectForKey:@"reason"];
-    }
-
-    [exception setObjectIfNotNil: message forKey: @"message"];
-    [formatted setObjectIfNotNil: dsymUUID forKey: @"dsymUUID"];
-    
-    NSArray *threads = [crash objectForKey: @"threads"];
-    NSMutableArray *bugsnagThreads = [[NSMutableArray alloc] init];
-
-    NSMutableArray* stacktrace = [[NSMutableArray alloc] init];
-    for (NSDictionary* thread in threads) {
-        NSArray* backtrace = [(NSDictionary*)[thread objectForKey: @"backtrace"] objectForKey: @"contents"];
-
-        if ([(NSNumber*)[thread objectForKey: @"crashed"] boolValue]) {
-            
-            NSUInteger seen = 0;
-
-            for (NSDictionary* frame in backtrace) {
-                if (seen++ >= depth) {
-                    [stacktrace addObjectIfNotNil: [self formatFrame: frame withBinaryImages: binaryImages]];
-                }
-            }
-
-        } else {
-
-            NSMutableArray* threadStack = [[NSMutableArray alloc] init];
-
-            for (NSDictionary* frame in backtrace) {
-                NSDictionary* fmt = [self formatFrame: frame withBinaryImages: binaryImages];
-                [threadStack addObjectIfNotNil: fmt];
-            }
-
-            NSMutableDictionary *threadDict = [[NSMutableDictionary alloc] init];
-            [threadDict safeSetObject: [thread objectForKey: @"index"] forKey: @"id"];
-            [threadDict safeSetObject: threadStack forKey: @"stacktrace"];
-            // only if this is enabled in KSCrash.
-            if ([thread objectForKey: @"name"]) {
-                [threadDict safeSetObject:[thread objectForKey: @"name"] forKey:@"name"];
-            }
-
-            [bugsnagThreads safeAddObject: threadDict];
-        }
-    }
-
-    [exception safeSetObject: stacktrace forKey: @"stacktrace"];
-    [metaData safeSetObject: error forKey:@"error"];
-
-    [formatted safeSetObject: @[exception] forKey: @"exceptions"];
-    [formatted safeSetObject: metaData forKey: @"metaData"];
-    [formatted safeSetObject: [self deviceStateFromSystem: system andState: state] forKey:@"deviceState"];
-    [formatted safeSetObject: [self deviceFromSystem: system] forKey:@"device"];
-    [formatted safeSetObject: [self appStateFromSystem: system] forKey:@"appState"];
-    [formatted safeSetObject: [self appFromSystem: system] forKey:@"app"];
-    [formatted safeSetObject: severity forKey:@"severity"];
-    [formatted safeSetObject: @"2" forKey:@"payloadVersion"];
-
-    if ([context isKindOfClass:[NSString class]]) {
-        [formatted safeSetObject: context forKey:@"context"];
-    }
-
-    [formatted safeSetObject: bugsnagThreads forKey: @"threads"];
-
-    return formatted;
-}
-
-- (NSDictionary*) deviceStateFromSystem: (NSDictionary*)system andState: (NSDictionary*) state
-{
-    NSMutableDictionary* deviceState = [NSMutableDictionary dictionaryWithDictionary: [state objectForKey:@"deviceState"]];
-
-    [deviceState safeSetObject:[[system objectForKey:@"memory"] objectForKey:@"free" ] forKey: @"freeMemory"];
-    
-    //[deviceState safeSetObject: forKey: @"freeDisk"];
-    //[deviceState safeSetObject: forKey: @"locationStatus"];
-    //[deviceState safeSetObject: forKey: @"networkAccess"];
-
-    return deviceState;
-}
-
-- (NSDictionary*) deviceFromSystem: (NSDictionary*)system
-{
-    NSMutableDictionary* device = [[NSMutableDictionary alloc] init];
-
-    //[device safeSetObject: forKey: @"locale"];
-    //[device safeSetObject: forKey: @"diskSize"];
-    //[device safeSetObject: forKey: @"screenDensity"];
-    //[device safeSetObject: forKey: @"screenResolution"];
-    //[device safeSetObject: forKey: @"manufacturer"];
-
-    [device safeSetObject: [system objectForKey:@"device_app_hash"] forKey: @"id"];
-    [device safeSetObject: [system objectForKey:@"time_zone"] forKey: @"timezone"];
-    [device safeSetObject: [system objectForKey:@"model"] forKey: @"model"];
-    [device safeSetObject: [system objectForKey:@"system_name"] forKey: @"osName"];
-    [device safeSetObject: [system objectForKey:@"system_version"] forKey: @"osVersion"];
-    [device safeSetObject:[[system objectForKey:@"memory"] objectForKey:@"usable" ] forKey: @"totalMemory"];
-
-    return device;
-}
-
-- (NSDictionary*) appStateFromSystem: (NSDictionary*)system
-{
-    NSMutableDictionary* appState = [[NSMutableDictionary alloc] init];
-
-    NSDictionary* applicationStats = [system objectForKey:@"application_stats"];
-    NSNumber* activeTimeSinceLaunch = [applicationStats objectForKey: @"active_time_since_launch"];
-    NSNumber* backgroundTimeSinceLaunch = [applicationStats objectForKey: @"background_time_since_launch"];
-    
-    if (activeTimeSinceLaunch && backgroundTimeSinceLaunch) {
-        [appState safeSetObject:[NSNumber numberWithDouble: [activeTimeSinceLaunch doubleValue] - [backgroundTimeSinceLaunch doubleValue]] forKey:@"durationInForeground"];
-    }
-
-    [appState safeSetObject: activeTimeSinceLaunch forKey: @"duration"];
-    [appState safeSetObject: [applicationStats objectForKey: @"application_in_foreground"] forKey: @"inForeground"];
-    [appState safeSetObject: applicationStats forKey: @"stats"];
-    
-    //[appState safeSetObject: forKey: @"activeScreen"];
-    //[appState safeSetObject: forKey: @"memoryUsage"];
-
-    return appState;
-}
-
-- (NSDictionary*) appFromSystem: (NSDictionary*)system
-{
-    NSMutableDictionary* app = [[NSMutableDictionary alloc] init];
-
-    [app safeSetObject: [system objectForKey:@"CFBundleVersion"] forKey: @"bundleVersion"];
-    [app safeSetObject: [system objectForKey:@"CFBundleIdentifier"] forKey: @"id"];
-    [app safeSetObject: [system objectForKey:@"CFBundleExecutable"] forKey: @"name"];
-    [app safeSetObject: [Bugsnag configuration].releaseStage forKey: @"releaseStage"];
-    [app safeSetObject: [system objectForKey:@"CFBundleShortVersionString"] forKey: @"version"];
-
-    return app;
-}
-
-- (NSMutableDictionary*) formatFrame: (NSDictionary*) frame withBinaryImages: (NSArray*) binaryImages
-{
-    NSMutableDictionary* formatted = [[NSMutableDictionary alloc] init];
-    
-    unsigned long instructionAddress = [(NSNumber*)[frame objectForKey: @"instruction_addr"] unsignedLongValue];
-    unsigned long symbolAddress = [(NSNumber*)[frame objectForKey: @"symbol_addr"] unsignedLongValue];
-    unsigned long imageAddress = [(NSNumber*)[frame objectForKey: @"object_addr"] unsignedLongValue];
-    
-    [formatted safeSetObject: [NSString stringWithFormat: @"0x%lx", instructionAddress] forKey: @"frameAddress"];
-    [formatted safeSetObject: [NSString stringWithFormat: @"0x%lx", symbolAddress] forKey: @"symbolAddress"];
-    [formatted safeSetObject: [NSString stringWithFormat: @"0x%lx", imageAddress] forKey: @"machoLoadAddress"];
-
-    NSString *file = [frame objectForKey:@"object_name"];
-    NSString *method = [frame objectForKey:@"symbol_name"];
-
-    [formatted setObjectIfNotNil: file forKey: @"machoFile"];
-    [formatted setObjectIfNotNil: method forKey: @"method"];
-    
-    for (NSDictionary *image in binaryImages) {
-        if ([(NSNumber*)[image objectForKey:@"image_addr"] unsignedLongValue] == imageAddress) {
-            unsigned long imageSlide = [(NSNumber*)[image objectForKey: @"image_vmaddr"] unsignedLongValue];
-
-            [formatted setObjectIfNotNil: [image objectForKey:@"uuid"] forKey: @"machoUUID"];
-            [formatted setObjectIfNotNil: [image objectForKey:@"name"] forKey: @"machoFile"];
-
-            [formatted safeSetObject: [NSString stringWithFormat: @"0x%lx", imageSlide] forKey: @"machoVMAddress"];
-
-            return formatted;
-        }
-    }
-    
-    return nil;
-}
-
+// Entry point called by KSCrash when a report needs to be sent
 - (void) filterReports:(NSArray*) reports onCompletion:(KSCrashReportFilterCompletion) onCompletion
 {
     NSError *error = nil;
+    NSMutableArray *bugsnagReports = [NSMutableArray arrayWithCapacity:[reports count]];
+    for (NSDictionary* report in reports) {
+        BugsnagCrashReport *bugsnagReport = [[BugsnagCrashReport alloc] initWithKSReport:report];
+        
+        // Filter the reports here, we have to do it now as we dont want to hack KSCrash to do it at crash time.
+        // We also in the docs imply that the filtering happens when the crash happens - so we use the values
+        // saved in the report.
+        if(!bugsnagReport.notifyReleaseStages || [bugsnagReport.notifyReleaseStages containsObject: bugsnagReport.releaseStage]) {
+            [bugsnagReports addObject:bugsnagReport];
+        }
+    }
     
-    if ([Bugsnag configuration].notifyReleaseStages && ![[Bugsnag configuration].notifyReleaseStages containsObject: [Bugsnag configuration].releaseStage]) {
+    if (bugsnagReports.count == 0) {
         if (onCompletion) {
             onCompletion(reports, YES, nil);
         }
         return;
     }
-
-
-    NSData* jsonData = [KSJSONCodec encode:[self getBodyFromReports: reports]
+    
+    
+    NSData* jsonData = [KSJSONCodec encode:[self getBodyFromReports: bugsnagReports]
                                    options:KSJSONEncodeOptionSorted | KSJSONEncodeOptionPretty
                                      error:&error];
     
     if (jsonData == nil) {
         if (onCompletion) {
             onCompletion(reports, NO, error);
-            return;
         }
+        return;
     }
     
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL: [Bugsnag configuration].notifyURL
@@ -316,5 +88,214 @@
     if (onCompletion) {
         onCompletion(reports, error == nil, error);
     }
+}
+
+// Generates the payload for notifying Bugsnag
+- (NSDictionary*) getBodyFromReports:(NSArray*) reports {
+    NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+    
+    [data safeSetObject: [Bugsnag configuration].apiKey forKey: @"apiKey"];
+    [data safeSetObject: [Bugsnag notifier].details forKey: @"notifier"];
+    
+    NSMutableArray* formatted = [[NSMutableArray alloc] initWithCapacity:[reports count]];
+    
+    for (BugsnagCrashReport* report in reports) {
+        [formatted safeAddObject:[self formatEvent:report]];
+    }
+    
+    [data safeSetObject: formatted forKey:@"events"];
+    
+    return data;
+}
+
+// Generates the "event" portion of the Bugsnag payload
+- (NSDictionary*) formatEvent:(BugsnagCrashReport*) report {
+    NSMutableDictionary* event = [NSMutableDictionary dictionary];
+    NSMutableDictionary* exception = [NSMutableDictionary dictionary];
+    NSMutableArray *bugsnagThreads = [NSMutableArray array];
+    NSMutableDictionary *metaData = [report.metaData mutableCopy];
+    
+    // Build Event
+    [event safeSetObject: bugsnagThreads forKey: @"threads"];
+    [event safeSetObject: @[exception] forKey: @"exceptions"];
+    [event setObjectIfNotNil: report.dsymUUID forKey: @"dsymUUID"];
+    [event safeSetObject: report.severity forKey:@"severity"];
+    [event safeSetObject: @"2" forKey:@"payloadVersion"];
+    [event safeSetObject: metaData forKey: @"metaData"];
+    [event safeSetObject: [self deviceStateFromReport: report] forKey:@"deviceState"];
+    [event safeSetObject: [self deviceFromReport: report] forKey:@"device"];
+    [event safeSetObject: [self appStateFromReport: report] forKey:@"appState"];
+    [event safeSetObject: [self appFromReport: report] forKey:@"app"];
+    [event safeSetObject: report.context forKey:@"context"];
+    
+    //  Build MetaData
+    [metaData safeSetObject: report.error forKey:@"error"];
+    
+    // Make user mutable and set the id if the user hasn't already
+    NSMutableDictionary* user = [[metaData objectForKey:@"user"] mutableCopy];
+    if(user == nil) user = [NSMutableDictionary dictionary];
+    [metaData safeSetObject:user forKey:@"user"];
+    
+    if (![user objectForKey:@"id"]) {
+        [user safeSetObject: report.deviceAppHash forKey:@"id"];
+    }
+
+    // Build Exception
+    [exception safeSetObject: report.errorClass forKey: @"errorClass"];
+    [exception setObjectIfNotNil: report.errorMessage forKey: @"message"];
+
+    // Build all stacktraces for threads and the error
+    for (NSDictionary* thread in report.threads) {
+        NSArray* backtrace = [[thread objectForKey: @"backtrace"] objectForKey: @"contents"];
+        BOOL stackOverflow = [[[thread objectForKey: @"stack"] objectForKey: @"overflow"] boolValue];
+
+        if ([(NSNumber*)[thread objectForKey: @"crashed"] boolValue]) {
+            NSUInteger seen = 0;
+            NSMutableArray* stacktrace = [NSMutableArray array];
+
+            for (NSDictionary* frame in backtrace) {
+                NSMutableDictionary *mutableFrame = [frame mutableCopy];
+                if (seen++ >= report.depth) {
+                    // Mark the frame so we know where it came from
+                    if(seen == 1 && !stackOverflow) {
+                        [mutableFrame safeSetObject:[NSNumber numberWithBool:YES] forKey:@"isPC"];
+                    }
+                    if(seen == 2 && !stackOverflow && [@[@"signal", @"deadlock", @"mach"] containsObject:report.errorType]) {
+                        [mutableFrame safeSetObject:[NSNumber numberWithBool:YES] forKey:@"isLR"];
+                    }
+                    [stacktrace addObjectIfNotNil: [self formatFrame: mutableFrame withBinaryImages: report.binaryImages]];
+                }
+            }
+            
+            [exception safeSetObject: stacktrace forKey: @"stacktrace"];
+        } else {
+
+            NSMutableArray* threadStack = [NSMutableArray array];
+
+            for (NSDictionary* frame in backtrace) {
+                [threadStack addObjectIfNotNil: [self formatFrame: frame withBinaryImages: report.binaryImages]];
+            }
+
+            NSMutableDictionary *threadDict = [NSMutableDictionary dictionary];
+            [threadDict safeSetObject: [thread objectForKey: @"index"] forKey: @"id"];
+            [threadDict safeSetObject: threadStack forKey: @"stacktrace"];
+            // only if this is enabled in KSCrash.
+            if ([thread objectForKey: @"name"]) {
+                [threadDict safeSetObject:[thread objectForKey: @"name"] forKey:@"name"];
+            }
+
+            [bugsnagThreads safeAddObject: threadDict];
+        }
+    }
+    return event;
+}
+
+// Generates the deviceState section of the payload
+- (NSDictionary*) deviceStateFromReport: (BugsnagCrashReport*)report
+{
+    NSMutableDictionary* deviceState = [[report.state objectForKey:@"deviceState"] mutableCopy];
+
+    [deviceState safeSetObject:[[report.system objectForKey:@"memory"] objectForKey:@"free" ] forKey: @"freeMemory"];
+    
+    //[deviceState safeSetObject: forKey: @"freeDisk"];
+    //[deviceState safeSetObject: forKey: @"locationStatus"];
+    //[deviceState safeSetObject: forKey: @"networkAccess"];
+
+    return deviceState;
+}
+
+// Generates the device section of the payload
+- (NSDictionary*) deviceFromReport: (BugsnagCrashReport*)report
+{
+    NSMutableDictionary* device = [NSMutableDictionary dictionary];
+
+    //[device safeSetObject: forKey: @"locale"];
+    //[device safeSetObject: forKey: @"diskSize"];
+    //[device safeSetObject: forKey: @"screenDensity"];
+    //[device safeSetObject: forKey: @"screenResolution"];
+    //[device safeSetObject: forKey: @"manufacturer"];
+
+    [device safeSetObject: [report.system objectForKey:@"device_app_hash"] forKey: @"id"];
+    [device safeSetObject: [report.system objectForKey:@"time_zone"] forKey: @"timezone"];
+    [device safeSetObject: [report.system objectForKey:@"model"] forKey: @"modelNumber"];
+    [device safeSetObject: [report.system objectForKey:@"machine"] forKey: @"model"];
+    [device safeSetObject: [report.system objectForKey:@"system_name"] forKey: @"osName"];
+    [device safeSetObject: [report.system objectForKey:@"system_version"] forKey: @"osVersion"];
+    [device safeSetObject:[[report.system objectForKey:@"memory"] objectForKey:@"usable" ] forKey: @"totalMemory"];
+
+    return device;
+}
+
+// Generates the appState section of the payload
+- (NSDictionary*) appStateFromReport: (BugsnagCrashReport*)report
+{
+    NSMutableDictionary* appState = [NSMutableDictionary dictionary];
+
+    NSInteger activeTimeSinceLaunch = [[report.appStats objectForKey: @"active_time_since_launch"] doubleValue] * 1000.0f;
+    NSInteger backgroundTimeSinceLaunch = [[report.appStats objectForKey: @"background_time_since_launch"] doubleValue] * 1000.0f;
+    
+    if (activeTimeSinceLaunch && backgroundTimeSinceLaunch) {
+        [appState safeSetObject:[NSNumber numberWithDouble: (activeTimeSinceLaunch - backgroundTimeSinceLaunch)] forKey:@"durationInForeground"];
+    }
+
+    [appState safeSetObject: [NSNumber numberWithInteger:activeTimeSinceLaunch] forKey: @"duration"];
+    [appState safeSetObject: [report.appStats objectForKey: @"application_in_foreground"] forKey: @"inForeground"];
+    [appState safeSetObject: report.appStats forKey: @"stats"];
+    
+    //[appState safeSetObject: forKey: @"activeScreen"];
+    //[appState safeSetObject: forKey: @"memoryUsage"];
+
+    return appState;
+}
+
+// Generates the app section of the payload
+- (NSDictionary*) appFromReport: (BugsnagCrashReport*)report
+{
+    NSMutableDictionary* app = [NSMutableDictionary dictionary];
+
+    [app safeSetObject: [report.system objectForKey:@"CFBundleVersion"] forKey: @"bundleVersion"];
+    [app safeSetObject: [report.system objectForKey:@"CFBundleIdentifier"] forKey: @"id"];
+    [app safeSetObject: [report.system objectForKey:@"CFBundleExecutable"] forKey: @"name"];
+    [app safeSetObject: [Bugsnag configuration].releaseStage forKey: @"releaseStage"];
+    [app safeSetObject: [report.system objectForKey:@"CFBundleShortVersionString"] forKey: @"version"];
+
+    return app;
+}
+
+// Formats a stackframe into the format that Bugsnag needs
+- (NSMutableDictionary*) formatFrame: (NSDictionary*) frame withBinaryImages: (NSArray*) binaryImages
+{
+    NSMutableDictionary* formatted = [NSMutableDictionary dictionary];
+    
+    unsigned long instructionAddress = [[frame objectForKey: @"instruction_addr"] unsignedLongValue];
+    unsigned long symbolAddress = [[frame objectForKey: @"symbol_addr"] unsignedLongValue];
+    unsigned long imageAddress = [[frame objectForKey: @"object_addr"] unsignedLongValue];
+    
+    [formatted safeSetObject: [NSString stringWithFormat: @"0x%lx", instructionAddress] forKey: @"frameAddress"];
+    [formatted safeSetObject: [NSString stringWithFormat: @"0x%lx", symbolAddress] forKey: @"symbolAddress"];
+    [formatted safeSetObject: [NSString stringWithFormat: @"0x%lx", imageAddress] forKey: @"machoLoadAddress"];
+    if([frame objectForKey:@"isPC"]) [formatted safeSetObject: [frame objectForKey:@"isPC"] forKey:@"isPC"];
+    if([frame objectForKey:@"isLR"]) [formatted safeSetObject: [frame objectForKey:@"isLR"] forKey:@"isLR"];
+
+    NSString *file = [frame objectForKey:@"object_name"];
+    NSString *method = [frame objectForKey:@"symbol_name"];
+
+    [formatted setObjectIfNotNil: file forKey: @"machoFile"];
+    [formatted setObjectIfNotNil: method forKey: @"method"];
+    
+    for (NSDictionary *image in binaryImages) {
+        if ([(NSNumber*)[image objectForKey:@"image_addr"] unsignedLongValue] == imageAddress) {
+            unsigned long imageSlide = [[image objectForKey: @"image_vmaddr"] unsignedLongValue];
+
+            [formatted setObjectIfNotNil: [image objectForKey:@"uuid"] forKey: @"machoUUID"];
+            [formatted setObjectIfNotNil: [image objectForKey:@"name"] forKey: @"machoFile"];
+
+            [formatted safeSetObject: [NSString stringWithFormat: @"0x%lx", imageSlide] forKey: @"machoVMAddress"];
+
+            return formatted;
+        }
+    }
+    
+    return nil;
 }
 @end

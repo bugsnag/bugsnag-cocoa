@@ -30,11 +30,11 @@
 
 -(id)init {
     if (self = [super init])  {
+        self.metaData = [[BugsnagMetaData alloc] init];
+        self.config = [[BugsnagMetaData alloc] init];
         self.apiKey = @"";
         self.autoNotify = true;
         self.notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
-        self.metaData = [[BugsnagMetaData alloc] init];
-        self.config = [[BugsnagMetaData alloc] init];
 
         self.notifyReleaseStages = nil;
 #if DEBUG
@@ -47,9 +47,9 @@
 }
 -(void)setUser:(NSString*)userId withName: (NSString*) userName andEmail:(NSString*)userEmail
 {
-    [[self metaData] addAttribute:@"id" withValue:userId toTabWithName:@"user"];
-    [[self metaData] addAttribute:@"name" withValue:userName toTabWithName:@"user"];
-    [[self metaData] addAttribute:@"email" withValue:userEmail toTabWithName:@"user"];
+    [self.metaData addAttribute:@"id" withValue:userId toTabWithName:@"user"];
+    [self.metaData addAttribute:@"name" withValue:userName toTabWithName:@"user"];
+    [self.metaData addAttribute:@"email" withValue:userEmail toTabWithName:@"user"];
 }
 
 @synthesize metaData;
@@ -62,25 +62,9 @@
 @synthesize notifyReleaseStages;
 @synthesize context;
 
-
--(void) setNotifyURL:(NSURL *)newNotifyURL {
-    self->notifyURL = newNotifyURL;
-    [self.config addAttribute:@"notifyURL" withValue: [newNotifyURL absoluteString] toTabWithName:@"config"];
-}
-
--(void) setApiKey:(NSString *)newApiKey {
-    self->apiKey = newApiKey;
-    [self.config addAttribute:@"apiKey" withValue:newApiKey toTabWithName:@"config"];
-}
-
 -(void) setReleaseStage:(NSString *)newReleaseStage {
     self->releaseStage = newReleaseStage;
     [self.config addAttribute:@"releaseStage" withValue:newReleaseStage toTabWithName:@"config"];
-}
-
--(void) setNotifyReleaseStages:(NSArray *)newNotifyReleaseStages {
-    self->notifyReleaseStages = newNotifyReleaseStages;
-    [self.config addAttribute:@"notifyReleaseStages" withValue:newNotifyReleaseStages toTabWithName:@"config"];
 }
 
 -(void) setContext:(NSString *)newContext
