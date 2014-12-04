@@ -197,10 +197,6 @@
 
     [deviceState safeSetObject:[[report.system objectForKey:@"memory"] objectForKey:@"free" ] forKey: @"freeMemory"];
     
-    //[deviceState safeSetObject: forKey: @"freeDisk"];
-    //[deviceState safeSetObject: forKey: @"locationStatus"];
-    //[deviceState safeSetObject: forKey: @"networkAccess"];
-
     return deviceState;
 }
 
@@ -209,12 +205,8 @@
 {
     NSMutableDictionary* device = [NSMutableDictionary dictionary];
 
-    //[device safeSetObject: forKey: @"locale"];
-    //[device safeSetObject: forKey: @"diskSize"];
-    //[device safeSetObject: forKey: @"screenDensity"];
-    //[device safeSetObject: forKey: @"screenResolution"];
-    //[device safeSetObject: forKey: @"manufacturer"];
-
+    [device safeSetObject: @"Apple" forKey: @"manufacturer"];
+    [device safeSetObject: [[NSLocale currentLocale] localeIdentifier] forKey: @"locale"];
     [device safeSetObject: [report.system objectForKey:@"device_app_hash"] forKey: @"id"];
     [device safeSetObject: [report.system objectForKey:@"time_zone"] forKey: @"timezone"];
     [device safeSetObject: [report.system objectForKey:@"model"] forKey: @"modelNumber"];
@@ -243,7 +235,6 @@
     [appState safeSetObject: report.appStats forKey: @"stats"];
     
     //[appState safeSetObject: forKey: @"activeScreen"];
-    //[appState safeSetObject: forKey: @"memoryUsage"];
 
     return appState;
 }
