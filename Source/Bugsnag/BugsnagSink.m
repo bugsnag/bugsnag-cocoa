@@ -235,10 +235,10 @@
     NSInteger backgroundTimeSinceLaunch = [[report.appStats objectForKey: @"background_time_since_launch"] doubleValue] * 1000.0f;
     
     if (activeTimeSinceLaunch && backgroundTimeSinceLaunch) {
-        [appState safeSetObject:[NSNumber numberWithDouble: (activeTimeSinceLaunch - backgroundTimeSinceLaunch)] forKey:@"durationInForeground"];
+        [appState safeSetObject:[NSNumber numberWithDouble: activeTimeSinceLaunch] forKey:@"durationInForeground"];
     }
 
-    [appState safeSetObject: [NSNumber numberWithInteger:activeTimeSinceLaunch] forKey: @"duration"];
+    [appState safeSetObject: [NSNumber numberWithDouble:(activeTimeSinceLaunch + backgroundTimeSinceLaunch)] forKey: @"duration"];
     [appState safeSetObject: [report.appStats objectForKey: @"application_in_foreground"] forKey: @"inForeground"];
     [appState safeSetObject: report.appStats forKey: @"stats"];
     
