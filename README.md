@@ -17,7 +17,7 @@ Installation & Setup
 -   Add Bugsnag to your `Podfile`
 
     ```ruby
-    pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git"
+    pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git", :branch => 'v4', :submodules => true
     ```
 
 -   Install Bugsnag
@@ -75,10 +75,6 @@ Installation & Setup
     From the same "Build Phases" screen, click the plus in the bottom right of the screen labelled "Add Build Phase", then select "Add Run Script". Then expand the newly added "Run Script" section, and set the shell to `/usr/bin/ruby` and copy the following script into the text box,
 
     ```ruby
-    if ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym" or ENV["PLATFORM_NAME"] == "iphonesimulator"
-      exit
-    end
-
     fork do
       Process.setsid
       STDIN.reopen("/dev/null")
@@ -87,7 +83,7 @@ Installation & Setup
 
       require 'shellwords'
 
-      Dir["#{ENV["DWARF_DSYM_FOLDER_PATH"]}/#{ENV["DWARF_DSYM_FILE_NAME"]}/Contents/Resources/DWARF/*"].each do |dsym|
+      Dir["#{ENV["DWARF_DSYM_FOLDER_PATH"]}/*/Contents/Resources/DWARF/*"].each do |dsym|
         system("curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV["PROJECT_DIR"])} https://upload.bugsnag.com/")
       end
     end

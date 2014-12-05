@@ -3,11 +3,6 @@ Pod::Installer::UserProjectIntegrator::TargetIntegrator.class_eval do
 
     BUGSNAG_PHASE_NAME = "Upload Bugsnag dSYM"
     BUGSNAG_PHASE_SCRIPT = <<'RUBY'
-
-if ENV["DEBUG_INFORMATION_FORMAT"] != "dwarf-with-dsym" or ENV["PLATFORM_NAME"] == "iphonesimulator"
-  exit
-end
-
 fork do
   Process.setsid
   STDIN.reopen("/dev/null")
@@ -16,7 +11,7 @@ fork do
 
   require 'shellwords'
 
-  Dir["#{ENV["DWARF_DSYM_FOLDER_PATH"]}/#{ENV["DWARF_DSYM_FILE_NAME"]}/Contents/Resources/DWARF/*"].each do |dsym|
+  Dir["#{ENV["DWARF_DSYM_FOLDER_PATH"]}/*/Contents/Resources/DWARF/*"].each do |dsym|
     system("curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV["PROJECT_DIR"])} https://upload.bugsnag.com/")
   end
 end
@@ -69,21 +64,25 @@ end
 
 Pod::Spec.new do |s|
   s.name         = "Bugsnag"
-  s.version      = "3.1.3"
+  s.version      = "4.0.0"
   s.summary      = "Cocoa notifier for SDK for bugsnag.com"
   s.homepage     = "https://bugsnag.com"
   s.license      = 'MIT'
   s.author       = { "Bugsnag" => "notifiers@bugsnag.com" }
-  s.source       = { :git => "https://github.com/bugsnag/bugsnag-cocoa.git", :tag => "3.1.3" }
-  s.source_files = ['bugsnag/*.{h,m}']
-  s.requires_arc = true
-  s.frameworks = "SystemConfiguration"
 
-  s.ios.source_files = "bugsnag/iOS/*.{h,m}"
-  s.ios.deployment_target = '5.0'
+  s.source       = { :git => "https://github.com/bugsnag/bugsnag-cocoa.git", :tag=>"v#{s.version}", :submodules => true }
+  s.frameworks   = 'Foundation'
+  s.libraries    = 'c++'
+  s.xcconfig     = { 'GCC_ENABLE_CPP_EXCEPTIONS' => 'YES' }
 
-  s.osx.source_files = "bugsnag/OSX/*.{h,m}"
-  s.osx.deployment_target = '10.6'
-  s.osx.frameworks = "ExceptionHandling"
+  s.source_files = ["KSCrash/Source/KSCrash/Recording/**/*.{m,h,mm,c,cpp}",
+                    "KSCrash/Source/KSCrash/Reporting/Filters/KSCrashReportFilter.h",
+                    "Source/Bugsnag/**/*.{m,h,mm,c,cpp}"]
+
+  s.exclude_files = ["KSCrash/Source/KSCrash/Recording/Tools/KSZombie.{h,m}"]
+
+  s.subspec 'no-arc' do |sp|
+    sp.source_files = ["KSCrash/Source/KSCrash/Recording/Tools/KSZombie.{h,m}"]
+    sp.requires_arc = false
+  end
 end
-
