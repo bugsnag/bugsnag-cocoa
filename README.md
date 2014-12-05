@@ -17,7 +17,7 @@ Installation & Setup
 -   Add Bugsnag to your `Podfile`
 
     ```ruby
-    pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git", :branch => 'v4', :submodules => true
+    pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git"
     ```
 
 -   Install Bugsnag
@@ -40,35 +40,13 @@ Installation & Setup
 
 ###Without Cocoapods
 
--   Clone the github bugsnag repository.
+-   Download Bugsnag.zip from the [latest release](https://github.com/bugsnag/bugsnag-cocoa/releases/latest)
 
-    ```shell
-    git clone git@github.com:bugsnag/bugsnag-cocoa.git
-    ```
+-   Drag Bugsnag.framework from the zip file into your project, enabling "Copy items if needed" when prompted.
 
--   Copy the bugsnag directory from inside the bugsnag-cocoa repository into your project.
+-   Under "Build Settings" add "-ObjC" to "Other Linker Flags" (search for "ldflags")
 
--   Delete any platform you are not using. For example, if you are writing iOS code, delete the OSX directory from within the bugsnag directory.
-
--   Import the `Bugsnag.h` file into your application delegate.
-
-    ```objective-c
-    #import "Bugsnag.h"
-    ```
-
--   In your `application:didFinishLaunchingWithOptions:` method, register with bugsnag by calling,
-
-    ```objective-c
-    [Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
-    ```
-
--   Add the SystemConfiguration Framework
-
-    Click your project, click on your main target, then navigate to "Build Phases", select "Link Binary with Libraries" and click on the "+" button. Then add SystemConfiguration.framework.
-
--   If you are building an OSX project, you also need to link with the ExceptionHandling Framework. This step is not required for iOS.
-
-    Click your project, click on your main target, then navigate to "Build Phases", select "Link Binary with Libraries" and click on the "+" button. Then add ExceptionHandling.framework.
+-   Under "General" add "libc++" and "SystemConfiguration.framework" to "Linked Frameworks and Libraries"
 
 -   Add a build phase to upload the symbolication information to Bugsnag
 
@@ -87,6 +65,18 @@ Installation & Setup
         system("curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV["PROJECT_DIR"])} https://upload.bugsnag.com/")
       end
     end
+    ```
+
+-   Import the `Bugsnag.h` file into your application delegate.
+
+    ```objective-c
+    #import <Bugsnag/Bugsnag.h>
+    ```
+
+-   In your `application:didFinishLaunchingWithOptions:` method, register with bugsnag by calling,
+
+    ```objective-c
+    [Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
     ```
 
 Send Non-Fatal Exceptions to Bugsnag
