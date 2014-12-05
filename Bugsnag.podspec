@@ -64,14 +64,13 @@ end
 
 Pod::Spec.new do |s|
   s.name         = "Bugsnag"
-  s.version      = "3.1.3"
+  s.version      = "4.0.0"
   s.summary      = "Cocoa notifier for SDK for bugsnag.com"
   s.homepage     = "https://bugsnag.com"
   s.license      = 'MIT'
   s.author       = { "Bugsnag" => "notifiers@bugsnag.com" }
-  s.source       = { :git => "https://github.com/bugsnag/bugsnag-cocoa.git", :tag => "3.1.3" }
 
-  s.source       = { :git => "https://github.com/bugsnag/bugsnag-cocoa.git", :tag=>s.version.to_s }
+  s.source       = { :git => "https://github.com/bugsnag/bugsnag-cocoa.git", :tag=>"v#{s.version}", :submodules => true }
   s.frameworks   = 'Foundation'
   s.libraries    = 'c++'
   s.xcconfig     = { 'GCC_ENABLE_CPP_EXCEPTIONS' => 'YES' }
