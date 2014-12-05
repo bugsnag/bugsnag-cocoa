@@ -19,4 +19,11 @@ task build: [:submodule] do
   sh "xcodebuild -target Bugsnag build"
 end
 
+desc 'Vendor KSCrash'
+task vendor: do
+  sh "git rm --cached KSCrash"
+  sh "rm -rf .git/modules/KSCrash KSCrash/.git"
+  sh "git add KSCrash && git commit -am 'vendor KSCrash'"
+end
+
 task :default => [:test]
