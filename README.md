@@ -181,12 +181,15 @@ By default, we will automatically notify Bugsnag of any fatal exceptions in your
 [Bugsnag configuration].autoNotify = NO;
 ```
 
-###enableSSL
+###notifyURL
 
-By default, Bugsnag enables the use of SSL encryption when sending errors to Bugsnag. If you want to use an unencrypted connection to Bugsnag, you can set `enableSSL` to NO:
+By default Bugsnag sends reports to `https://notify.bugsnag.com/` if you need to change this you can do so by starting Bugsnag with a different configuration object.
 
 ```objective-c
-[Bugsnag configuration].enableSSL = NO;
+BugsnagConfiguration *config = [[BugsnagConfiguration alloc] init];
+config.notifyURL = [NSURL URLWithString:@"https://bugsnag.example.com/"];
+config.apiKey = @"YOUR_API_KEY_HERE";
+[Bugsnag startBugsnagWithConfiguration: config];
 ```
 
 ARC Support
