@@ -36,6 +36,8 @@
 - (void) start {
     [super start];
 
+    [self.details setValue: @"OSX Bugsnag Notifier" forKey:@"name"];
+
     [[NSExceptionHandler defaultExceptionHandler] setExceptionHandlingMask:NSLogAndHandleEveryExceptionMask];
     [[NSExceptionHandler defaultExceptionHandler] setDelegate:self];
 }
