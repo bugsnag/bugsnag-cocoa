@@ -83,6 +83,8 @@ Pod::Spec.new do |s|
 
   s.exclude_files = ["KSCrash/Source/KSCrash/Recording/Tools/KSZombie.{h,m}"]
 
+  s.requires_arc = true
+
   s.subspec 'no-arc' do |sp|
     sp.source_files = ["KSCrash/Source/KSCrash/Recording/Tools/KSZombie.{h,m}"]
     sp.requires_arc = false
