@@ -75,6 +75,8 @@ Pod::Spec.new do |s|
   s.libraries    = 'c++'
   s.xcconfig     = { 'GCC_ENABLE_CPP_EXCEPTIONS' => 'YES' }
 
+  s.platforms    = {:ios =>  "5.0", :osx => "10.7"}
+
   s.source_files = ["KSCrash/Source/KSCrash/Recording/**/*.{m,h,mm,c,cpp}",
                     "KSCrash/Source/KSCrash/Reporting/Filters/KSCrashReportFilter.h",
                     "Source/Bugsnag/**/*.{m,h,mm,c,cpp}"]
