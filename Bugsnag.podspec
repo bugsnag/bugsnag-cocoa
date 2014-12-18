@@ -34,7 +34,7 @@ RUBY
         phase = native_target.shell_script_build_phases.select{ |bp| bp.name == BUGSNAG_PHASE_NAME }.first ||
                 native_target.new_shell_script_build_phase(BUGSNAG_PHASE_NAME)
 
-        phase.shell_path = "/usr/bin/ruby"
+        phase.shell_path = "/usr/bin/env ruby"
         phase.shell_script = BUGSNAG_PHASE_SCRIPT
         phase.show_env_vars_in_log = '0'
       end
