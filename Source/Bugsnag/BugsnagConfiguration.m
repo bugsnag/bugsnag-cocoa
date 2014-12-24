@@ -61,6 +61,7 @@
 @synthesize releaseStage;
 @synthesize notifyReleaseStages;
 @synthesize context;
+@synthesize appVersion;
 
 -(void) setReleaseStage:(NSString *)newReleaseStage {
     self->releaseStage = newReleaseStage;
@@ -71,5 +72,11 @@
 {
     self->context = newContext;
     [self.config addAttribute:@"context" withValue: newContext toTabWithName:@"config"];
+}
+
+-(void) setAppVersion:(NSString *)newVersion
+{
+    self->appVersion = newVersion;
+    [self.config addAttribute:@"appVersion" withValue: newVersion toTabWithName:@"config"];
 }
 @end

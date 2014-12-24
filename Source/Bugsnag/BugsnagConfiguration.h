@@ -35,6 +35,7 @@
 @property(nonatomic,readwrite,retain) NSString* releaseStage;
 @property(nonatomic,readwrite,retain) NSArray* notifyReleaseStages;
 @property(nonatomic,readwrite,retain) NSString* context;
+@property(nonatomic,readwrite,retain) NSString* appVersion;
 @property(nonatomic,readwrite,retain) BugsnagMetaData* metaData;
 @property(nonatomic,readwrite,retain) BugsnagMetaData* config;
 

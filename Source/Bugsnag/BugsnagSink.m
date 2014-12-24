@@ -245,7 +245,11 @@
     [app safeSetObject: [report.system objectForKey:@"CFBundleIdentifier"] forKey: @"id"];
     [app safeSetObject: [report.system objectForKey:@"CFBundleExecutable"] forKey: @"name"];
     [app safeSetObject: [Bugsnag configuration].releaseStage forKey: @"releaseStage"];
-    [app safeSetObject: [report.system objectForKey:@"CFBundleShortVersionString"] forKey: @"version"];
+    if (report.appVersion) {
+        [app safeSetObject: report.appVersion forKey: @"version"];
+    } else {
+        [app safeSetObject: [report.system objectForKey:@"CFBundleShortVersionString"] forKey: @"version"];
+    }
 
     return app;
 }
