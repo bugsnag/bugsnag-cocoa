@@ -32,6 +32,13 @@
     return nil;
 }
 
+-(NSString*) appVersion {
+    if ([[self.config objectForKey:@"appVersion"] isKindOfClass:[NSString class]]) {
+        return [self.config objectForKey:@"appVersion"];
+    }
+    return nil;
+}
+
 -(NSArray*) binaryImages {
     return [self.ksReport objectForKey:@"binary_images"];
 }

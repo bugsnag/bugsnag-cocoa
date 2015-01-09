@@ -17,6 +17,7 @@
 @property (readonly) NSString *releaseStage;
 @property (readonly) NSArray *notifyReleaseStages;
 @property (readonly) NSString *context;
+@property (readonly) NSString *appVersion;
 
 @property (readonly) NSArray *binaryImages;
 @property (readonly) NSArray *threads;
