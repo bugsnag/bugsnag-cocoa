@@ -36,7 +36,7 @@
 - (void) mergeWith:(NSDictionary*)data;
 - (NSDictionary*) toDictionary;
 - (void) addAttribute:(NSString*)attributeName withValue:(id)value toTabWithName:(NSString*)tabName;
-@property(weak) id<BugsnagMetaDataDelegate> delegate;
+@property(unsafe_unretained) id<BugsnagMetaDataDelegate> delegate;
 
 @end
 
