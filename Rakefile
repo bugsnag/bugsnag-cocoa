@@ -1,9 +1,3 @@
-
-desc 'Update submodules'
-task :submodule do
-  sh "git submodule update --init --recursive"
-end
-
 desc 'Clean'
 task :clean do
   sh "xcodebuild  -scheme Bugsnag -target Bugsnag -configuration Release clean"
@@ -21,9 +15,11 @@ end
 
 desc 'Vendor KSCrash'
 task vendor: do
-  sh "git rm --cached KSCrash"
-  sh "rm -rf .git/modules/KSCrash KSCrash/.git"
-  sh "git add KSCrash && git commit -am 'vendor KSCrash'"
+  sh "git submodule update --init --recursive"
+  sh "git rm --cached -r KSCrash"
+  sh "mv KSCrashModule/* KSCrash/"
+  sh "rm -rf .git/modules/KSCrashModule KSCrash/.git"
+  #sh "git add KSCrash && git commit -am 'vendor KSCrash'"
 end
 
 task :default => [:test]
