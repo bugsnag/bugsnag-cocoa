@@ -100,7 +100,7 @@
     NSMutableArray* formatted = [[NSMutableArray alloc] initWithCapacity:[reports count]];
     
     for (BugsnagCrashReport* report in reports) {
-        [formatted safeAddObject:[self formatEvent:report]];
+        [formatted safeAddObject:[self formatEvent:report forData: data]];
     }
     
     [data safeSetObject: formatted forKey:@"events"];
@@ -109,7 +109,7 @@
 }
 
 // Generates the "event" portion of the Bugsnag payload
-- (NSDictionary*) formatEvent:(BugsnagCrashReport*) report {
+- (NSDictionary*) formatEvent:(BugsnagCrashReport*) report forData: (NSMutableDictionary*) data {
     NSMutableDictionary* event = [NSMutableDictionary dictionary];
     NSMutableDictionary* exception = [NSMutableDictionary dictionary];
     NSMutableArray *bugsnagThreads = [NSMutableArray array];
@@ -143,6 +143,16 @@
     // Build Exception
     [exception safeSetObject: report.errorClass forKey: @"errorClass"];
     [exception setObjectIfNotNil: report.errorMessage forKey: @"message"];
+
+    // HACK: For the Unity Notifier. We don't include ObjectiveC exceptions or threads
+    // if this is an exception from Unity-land.
+    NSDictionary *unityReport = [metaData objectForKey:@"_bugsnag_unity_exception"];
+    if (unityReport) {
+        [data safeSetObject: [unityReport objectForKey:@"notifier"] forKey: @"notifier"];
+        [exception safeSetObject: [unityReport objectForKey: @"stacktrace"] forKey: @"stacktrace"];
+        [metaData removeObjectForKey:@"_bugsnag_unity_exception"];
+        return event;
+    }
 
     // Build all stacktraces for threads and the error
     for (NSDictionary* thread in report.threads) {
