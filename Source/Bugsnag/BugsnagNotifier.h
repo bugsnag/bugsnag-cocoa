@@ -35,6 +35,7 @@
 @property(nonatomic,readwrite,retain) BugsnagConfiguration* configuration;
 @property(nonatomic,readwrite,retain) BugsnagMetaData* state;
 @property(nonatomic,readwrite,retain) NSDictionary *details;
+@property(nonatomic,readwrite,retain) NSLock *metaDataLock;
 
 - (id) initWithConfiguration:(BugsnagConfiguration*) configuration;
 - (void) start;
