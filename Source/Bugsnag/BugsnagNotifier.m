@@ -75,6 +75,7 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
                          @"version": NOTIFIER_VERSION,
                          @"url": NOTIFIER_URL} mutableCopy];
 
+        self.metaDataLock = [[NSLock alloc] init];
         self.configuration.metaData.delegate = self;
         self.configuration.config.delegate = self;
         self.state.delegate = self;
@@ -111,6 +112,7 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
         severity = BugsnagSeverityWarning;
     }
 
+    [self.metaDataLock lock];
     [self serializeDictionary: metaData toJSON: &g_bugsnag_data.metaDataJSON];
 
     [self.state addAttribute:@"severity" withValue: severity toTabWithName: @"crash"];
@@ -119,6 +121,7 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
     [[KSCrash sharedInstance] reportUserException:[exception name] reason:[exception reason] lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
     
     // Restore metaData to pre-crash state.
+    [self.metaDataLock unlock];
     [self metaDataChanged: self.configuration.metaData];
     [[self state] clearTab:@"crash"];
     
@@ -141,7 +144,10 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
 - (void) metaDataChanged:(BugsnagMetaData *)metaData {
 
     if (metaData == self.configuration.metaData) {
-        [self serializeDictionary: [metaData toDictionary] toJSON: &g_bugsnag_data.metaDataJSON];
+        if ([self.metaDataLock tryLock]) {
+            [self serializeDictionary: [metaData toDictionary] toJSON: &g_bugsnag_data.metaDataJSON];
+            [self.metaDataLock unlock];
+        }
     } else if (metaData == self.configuration.config) {
         [self serializeDictionary: [metaData getTab:@"config"] toJSON: &g_bugsnag_data.configJSON];
     } else if (metaData == self.state) {
