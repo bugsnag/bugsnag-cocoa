@@ -1,6 +1,11 @@
 Changelog
 =========
 
+4.0.2
+-----
+
+- Make metaData access thread-safe
+
 4.0.1
 -----
 
