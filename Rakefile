@@ -1,3 +1,5 @@
+require 'cocoapods'
+
 desc 'Clean'
 task :clean do
   sh "xcodebuild  -scheme Bugsnag -target Bugsnag -configuration Release clean"
@@ -9,8 +11,18 @@ task test: [:submodule] do
 end
 
 desc 'Build the framework'
-task build: [:submodule] do
+task :build do
+
+  podspec = eval File.read("Bugsnag.podspec"), TOPLEVEL_BINDING, "Bugsnag.podspec", 1
+  version = podspec.version.to_s
+
   sh "xcodebuild -target Bugsnag build"
+
+  Dir.chdir "build/Release" do
+    sh "zip -r Bugsnag-#{version}.zip Bugsnag.framework"
+    sh "open ."
+    sh "open https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v#{version}"
+  end
 end
 
 desc 'Vendor KSCrash'

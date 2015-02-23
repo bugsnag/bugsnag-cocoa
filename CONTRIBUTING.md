@@ -33,7 +33,7 @@ If you're a member of the core team, you can release the cocoa pod as follows:
 ### Every time
 
 * Update the CHANGELOG. Update the README.md if appropriate.
-* Update the version number in `Source/Bugsnag/BugsnagNotifier.m` and `Podspec`
+* Update the version number in `Source/Bugsnag/BugsnagNotifier.m` and `Bugsnag.podspec`
 * Commit tag and push
 
     ```
@@ -45,6 +45,19 @@ If you're a member of the core team, you can release the cocoa pod as follows:
 * Update cocoapods
 
     ```
-    pod trunk push Bugsnag
+    pod trunk push
     ```
+
+* Build a new Zipfile to build/relase/Bugsnag-4.x.x.zip
+
+    ```
+    rake build
+    ```
+
+* Create a new release https://github.com/bugsnag/bugsnag-cocoa/releases/new
+* Select the tag you just pushed
+* Set the title to the tag (v4.x.x)
+* Copy the changelog entries into the release notes
+* Drag and drop the zipfile
+* Click "Publish Release"
 
