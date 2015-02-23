@@ -126,7 +126,14 @@
     [event safeSetObject: [self deviceFromReport: report] forKey:@"device"];
     [event safeSetObject: [self appStateFromReport: report] forKey:@"appState"];
     [event safeSetObject: [self appFromReport: report] forKey:@"app"];
-    [event safeSetObject: report.context forKey:@"context"];
+
+    if ([[metaData objectForKey: @"context"] isKindOfClass: [NSString class]]) {
+        [event safeSetObject: [metaData objectForKey: @"context"] forKey: @"context"];
+        [metaData removeObjectForKey: @"context"];
+
+    } else {
+        [event safeSetObject: report.context forKey:@"context"];
+    }
     
     //  Build MetaData
     [metaData safeSetObject: report.error forKey:@"error"];
