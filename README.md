@@ -203,11 +203,7 @@ Please report any bugs or feature requests on the github issues page for this pr
 Contributing
 ------------
 
--   [Fork](https://help.github.com/articles/fork-a-repo) the [notifier on github](https://github.com/bugsnag/bugsnag-cocoa)
--   Commit and push until you are happy with your contribution
--   [Make a pull request](https://help.github.com/articles/using-pull-requests)
--   Thanks!
-
+We love getting issue reports, and pull requests. For more detailed instructions see [CONTRIBUTING.md](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CONTRIBUTING.md)
 
 License
 -------
