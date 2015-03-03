@@ -1,6 +1,11 @@
 Changelog
 =========
 
+4.0.3
+-----
+
+- In dealloc remove notifier from notifications
+
 4.0.2
 -----
 
