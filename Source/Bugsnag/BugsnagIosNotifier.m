@@ -94,6 +94,10 @@
     [[self state] addAttribute: @"lowMemoryWarning" withValue: [RFC3339DateTool stringFromDate:[NSDate date]] toTabWithName:@"deviceState"];
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 @end
 
 #endif
