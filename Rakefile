@@ -1,4 +1,4 @@
-require 'cocoapods'
+Bundler.require
 
 desc 'Clean'
 task :clean do
@@ -17,9 +17,11 @@ task :build do
   version = podspec.version.to_s
 
   sh "xcodebuild -target Bugsnag build"
+  sh "xcodebuild -target BugsnagOSX build"
 
   Dir.chdir "build/Release" do
     sh "zip -r Bugsnag-#{version}.zip Bugsnag.framework"
+    sh "zip -r Bugsnag-#{version}.zip BugsnagOSX.framework"
     sh "open ."
     sh "open https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v#{version}"
   end

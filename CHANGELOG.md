@@ -1,6 +1,11 @@
 Changelog
 =========
 
+4.0.4
+-----
+
+- Build OSX framework as part of release
+
 4.0.3
 -----
 
