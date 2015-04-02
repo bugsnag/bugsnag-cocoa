@@ -85,6 +85,8 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
 
+  s.public_header_files = "Source/Bugsnag/Bugsnag.h"
+
   s.subspec 'no-arc' do |sp|
     sp.source_files = ["KSCrash/Source/KSCrash/Recording/Tools/KSZombie.{h,m}"]
     sp.requires_arc = false
