@@ -1,0 +1,1 @@
+../../../Bugsnag/KSCrash/Source/KSCrash/Recording/KSSystemInfoC.h
