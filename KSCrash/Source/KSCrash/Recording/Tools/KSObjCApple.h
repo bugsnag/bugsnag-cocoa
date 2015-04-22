@@ -48,7 +48,7 @@ typedef struct property_list_t property_list_t;
 #   define WORD_MASK 3UL
 #endif
 
-typedef struct objc_cache *Cache;
+typedef struct objc_cache *XCache;
 
 
 // ======================================================================
@@ -119,7 +119,7 @@ typedef struct class_rw_t {
 typedef struct class_t {
     struct class_t *isa;
     struct class_t *superclass;
-    Cache cache;
+    XCache cache;
     IMP *vtable;
     uintptr_t data_NEVER_USE;  // class_rw_t * plus custom rr/alloc flags
 } class_t;

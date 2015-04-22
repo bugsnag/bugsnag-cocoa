@@ -10,11 +10,11 @@
 #define COCOAPODS_POD_AVAILABLE_Bugsnag
 #define COCOAPODS_VERSION_MAJOR_Bugsnag 4
 #define COCOAPODS_VERSION_MINOR_Bugsnag 0
-#define COCOAPODS_VERSION_PATCH_Bugsnag 4
+#define COCOAPODS_VERSION_PATCH_Bugsnag 5
 
 // Bugsnag/no-arc
 #define COCOAPODS_POD_AVAILABLE_Bugsnag_no_arc
 #define COCOAPODS_VERSION_MAJOR_Bugsnag_no_arc 4
 #define COCOAPODS_VERSION_MINOR_Bugsnag_no_arc 0
-#define COCOAPODS_VERSION_PATCH_Bugsnag_no_arc 4
+#define COCOAPODS_VERSION_PATCH_Bugsnag_no_arc 5
 
