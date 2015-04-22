@@ -1,6 +1,11 @@
 Changelog
 =========
 
+4.0.5
+-----
+
+- Fix buffer over-read in JSON parser
+
 4.0.4
 -----
 
