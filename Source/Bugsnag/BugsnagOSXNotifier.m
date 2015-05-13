@@ -43,7 +43,7 @@
 }
 
 - (BOOL)exceptionHandler:(NSExceptionHandler *)sender shouldLogException:(NSException *)exception mask:(NSUInteger)aMask {
-    [self notify:exception withData:nil atSeverity:BugsnagSeverityError atDepth:1];
+    [self notify:exception withData:nil atSeverity:BugsnagSeverityWarning atDepth:2];
     return NO;
 }
 
