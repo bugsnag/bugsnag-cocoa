@@ -1,6 +1,11 @@
 Changelog
 =========
 
+4.0.6
+-----
+
+- Uncaught exceptions in OSX are now marked as warnings
+
 4.0.5
 -----
 

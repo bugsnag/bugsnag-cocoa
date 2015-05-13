@@ -36,7 +36,7 @@
 #import "KSSafeCollections.h"
 #import "NSDictionary+Merge.h"
 
-#define NOTIFIER_VERSION @"4.0.4"
+#define NOTIFIER_VERSION @"4.0.6"
 #define NOTIFIER_URL @"https://github.com/bugsnag/bugsnag-cocoa"
 
 struct bugsnag_data_t {
@@ -92,18 +92,18 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
     [KSCrash sharedInstance].sink = [[BugsnagSink alloc] init];
     // We don't use this feature yet, so we turn it off
     [KSCrash sharedInstance].introspectMemory = NO;
-    
+
     [KSCrash sharedInstance].onCrash = &serialize_bugsnag_data;
 
     if (configuration.autoNotify) {
         [[KSCrash sharedInstance] install];
     }
-    
+
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
 }
 
 - (void)notify:(NSException *)exception withData:(NSDictionary *)metaData atSeverity:(NSString *)severity atDepth:(NSUInteger) depth {
-    
+
     if (!metaData) {
         metaData = [[NSDictionary alloc] init];
     }
@@ -117,14 +117,14 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
 
     [self.state addAttribute:@"severity" withValue: severity toTabWithName: @"crash"];
     [self.state addAttribute:@"depth" withValue: [NSNumber numberWithUnsignedInteger:depth + 3] toTabWithName: @"crash"];
-    
+
     [[KSCrash sharedInstance] reportUserException:[exception name] reason:[exception reason] lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
-    
+
     // Restore metaData to pre-crash state.
     [self.metaDataLock unlock];
     [self metaDataChanged: self.configuration.metaData];
     [[self state] clearTab:@"crash"];
-    
+
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
 }
 
