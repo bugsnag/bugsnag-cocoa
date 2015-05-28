@@ -1,6 +1,11 @@
 Changelog
 =========
 
+4.0.7
+-----
+
+- Fix compilation on arm64 under Unity
+
 4.0.6
 -----
 
