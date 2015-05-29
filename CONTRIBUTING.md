@@ -45,7 +45,7 @@ If you're a member of the core team, you can release the cocoa pod as follows:
 * Update cocoapods
 
     ```
-    pod trunk push
+    pod trunk push --allow-warnings
     ```
 
 * Build a new Zipfile to build/relase/Bugsnag-4.x.x.zip
