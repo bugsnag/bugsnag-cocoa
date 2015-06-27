@@ -20,8 +20,8 @@ task :build do
   sh "xcodebuild -target BugsnagOSX build"
 
   Dir.chdir "build/Release" do
-    sh "zip -r Bugsnag-#{version}.zip Bugsnag.framework"
-    sh "zip -r Bugsnag-#{version}.zip BugsnagOSX.framework"
+    sh "zip --symlinks -r Bugsnag-#{version}.zip Bugsnag.framework"
+    sh "zip --symlinks -r Bugsnag-#{version}.zip BugsnagOSX.framework"
     sh "open ."
     sh "open https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v#{version}"
   end
