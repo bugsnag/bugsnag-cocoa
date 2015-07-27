@@ -1,1 +1,0 @@
-../../../Bugsnag/KSCrash/Source/KSCrash/Recording/KSCrashReportStore.h
