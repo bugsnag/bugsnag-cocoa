@@ -26,10 +26,7 @@
 
 #if !(TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE) && TARGET_OS_MAC
 
-#import <ExceptionHandling/NSExceptionHandler.h>
-
 #import "BugsnagOSXNotifier.h"
-#import "Bugsnag.h"
 
 @implementation BugsnagOSXNotifier
 
@@ -37,14 +34,6 @@
     [super start];
 
     [self.details setValue: @"OSX Bugsnag Notifier" forKey:@"name"];
-
-    [[NSExceptionHandler defaultExceptionHandler] setExceptionHandlingMask:NSLogAndHandleEveryExceptionMask];
-    [[NSExceptionHandler defaultExceptionHandler] setDelegate:self];
-}
-
-- (BOOL)exceptionHandler:(NSExceptionHandler *)sender shouldLogException:(NSException *)exception mask:(NSUInteger)aMask {
-    [self notify:exception withData:nil atSeverity:BugsnagSeverityWarning atDepth:2];
-    return NO;
 }
 
 @end

@@ -79,6 +79,36 @@ Installation & Setup
     [Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
     ```
 
+Mac Specific Setup
+------------------
+
+Mac exceptions in the main thread are caught by cocoa and don't reach Bugsnag by default. You should subclass NSApplication to get notifications sent to Bugsnag.
+
+- Create a new Cocoa class in your Mac project that is a subclass of NSApplication.
+
+- Import Bugsnag in the implementation
+
+```objective-c
+<Bugsnag/Bugsnag.h>
+```
+
+- Define a reportException method to notify Bugsnag of exceptions.
+
+```objective-c
+- (void)reportException:(NSException *)theException {
+    [Bugsnag notify:theException];
+    [super reportException:theException];
+}
+```
+
+- Edit your target settings by clicking on the info tab and editing Principal class to contain your new NSApplication class name.
+
+Exceptions on your main thread will now be sent to Bugsnag.
+
+It is worth noting that you should also use `try{}catch{}` blocks inside your
+application delegate functions and manually notify Bugsnag of any exceptions. This is another limitation of the exception handling
+in Mac applications that the exception handler is only guaranteed to be called after application initialization has completed.
+
 Send Non-Fatal Exceptions to Bugsnag
 ------------------------------------
 

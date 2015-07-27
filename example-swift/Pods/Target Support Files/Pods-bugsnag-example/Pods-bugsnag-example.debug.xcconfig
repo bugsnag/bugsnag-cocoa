@@ -1,7 +1,0 @@
-GCC_ENABLE_CPP_EXCEPTIONS = YES
-GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/Bugsnag"
-OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/Bugsnag"
-OTHER_LDFLAGS = $(inherited) -ObjC -l"Pods-bugsnag-example-Bugsnag" -l"c++" -framework "Foundation"
-OTHER_LIBTOOLFLAGS = $(OTHER_LDFLAGS)
-PODS_ROOT = ${SRCROOT}/Pods
