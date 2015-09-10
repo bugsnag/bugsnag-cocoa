@@ -57,3 +57,6 @@ PLATFORMS
 DEPENDENCIES
   cocoapods
   rake
+
+BUNDLED WITH
+   1.10.3

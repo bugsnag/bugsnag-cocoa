@@ -1,6 +1,12 @@
 Changelog
 =========
 
+4.0.8
+-----
+
+- Reduce deployment target to 4.3
+- Catch less crashes on OSX
+
 4.0.7
 -----
 
