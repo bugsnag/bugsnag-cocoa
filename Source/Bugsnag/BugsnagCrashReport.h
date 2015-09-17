@@ -21,6 +21,7 @@
 
 @property (readonly) NSArray *binaryImages;
 @property (readonly) NSArray *threads;
+@property (readonly) NSArray *breadcrumbs;
 @property (readonly) NSDictionary *error;
 @property (readonly) NSString *errorType;
 @property (readonly) NSString *errorClass;
