@@ -87,6 +87,11 @@
     XCTAssertEqualObjects(self.report.severity, @"warning");
 }
 
+- (void)testBreadcrumbs {
+    NSArray* breadcrumbs = @[@[@"1442466386", @"App launched"], @[@"1442466386", @"Tapped button"]];
+    XCTAssertEqualObjects(self.report.breadcrumbs, breadcrumbs);
+}
+
 - (void)testDSYMUUID {
     XCTAssertEqualObjects(self.report.dsymUUID, @"D0A41830-4FD2-3B02-A23B-0741AD4C7F52");
 }

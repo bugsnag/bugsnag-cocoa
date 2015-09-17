@@ -80,6 +80,10 @@
     return [self.error objectForKey:@"reason"];
 }
 
+- (NSArray*) breadcrumbs {
+    return [[self.state objectForKey:@"crash"] objectForKey:@"breadcrumbs"];
+}
+
 -(NSString*) severity {
     return [[self.state objectForKey:@"crash"] objectForKey:@"severity"];
 }
