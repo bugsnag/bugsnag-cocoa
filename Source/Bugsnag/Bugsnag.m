@@ -25,6 +25,7 @@
 //
 
 #import "Bugsnag.h"
+#import "BugsnagBreadcrumb.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
@@ -113,6 +114,18 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
         return false;
     }
     return true;
+}
+
++ (void) leaveBreadcrumbWithMessage:(NSString *)message {
+    [self.notifier.configuration.breadcrumbs addBreadcrumb:message];
+}
+
++ (void) setBreadcrumbCapacity:(NSUInteger)capacity {
+    self.notifier.configuration.breadcrumbs.capacity = capacity;
+}
+
++ (void) clearBreadcrumbs {
+    [self.notifier.configuration.breadcrumbs clearBreadcrumbs];
 }
 
 @end
