@@ -25,6 +25,7 @@
 //
 
 #import "BugsnagConfiguration.h"
+#import "BugsnagBreadcrumb.h"
 
 @implementation BugsnagConfiguration
 
@@ -37,6 +38,7 @@
         self.notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
 
         self.notifyReleaseStages = nil;
+        _breadcrumbs = [BugsnagBreadcrumbs new];
 #if DEBUG
         self.releaseStage = @"development";
 #else
