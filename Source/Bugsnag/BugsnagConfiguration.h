@@ -28,6 +28,8 @@
 
 #import "BugsnagMetaData.h"
 
+@class BugsnagBreadcrumbs;
+
 @interface BugsnagConfiguration : NSObject
 
 @property(nonatomic,readwrite,retain) NSString* apiKey;
@@ -38,6 +40,7 @@
 @property(nonatomic,readwrite,retain) NSString* appVersion;
 @property(nonatomic,readwrite,retain) BugsnagMetaData* metaData;
 @property(nonatomic,readwrite,retain) BugsnagMetaData* config;
+@property(nonatomic,readonly,strong) BugsnagBreadcrumbs* breadcrumbs;
 
 @property(nonatomic) BOOL autoNotify;
 

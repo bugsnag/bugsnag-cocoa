@@ -27,6 +27,7 @@
 
 #import "Bugsnag.h"
 #import "ARCSafe_MemMgmt.h"
+#import "BugsnagBreadcrumb.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
 #import "KSCrash.h"
@@ -114,10 +115,9 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
 
     [self.metaDataLock lock];
     [self serializeDictionary: metaData toJSON: &g_bugsnag_data.metaDataJSON];
-
     [self.state addAttribute:@"severity" withValue: severity toTabWithName: @"crash"];
     [self.state addAttribute:@"depth" withValue: [NSNumber numberWithUnsignedInteger:depth + 3] toTabWithName: @"crash"];
-
+    [self serializeBreadcrumbs];
     [[KSCrash sharedInstance] reportUserException:[exception name] reason:[exception reason] lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
 
     // Restore metaData to pre-crash state.
@@ -126,6 +126,14 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
     [[self state] clearTab:@"crash"];
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
+}
+
+- (void) serializeBreadcrumbs {
+    BugsnagBreadcrumbs* crumbs = self.configuration.breadcrumbs;
+    if (crumbs.count == 0) {
+        return;
+    }
+    [self.state addAttribute:@"breadcrumbs" withValue:[crumbs arrayValue] toTabWithName:@"crash"];
 }
 
 - (void) sendPendingReports {
