@@ -55,18 +55,21 @@
     XCTAssertEqualObjects([[dict objectForKey:@"notifier"] valueForKey:@"name"], @"iOS Bugsnag Notifier");
     XCTAssertEqualObjects([[dict objectForKey:@"notifier"] valueForKey:@"url"], @"https://github.com/bugsnag/bugsnag-cocoa");
     XCTAssertNotEqualObjects([[dict objectForKey:@"notifier"] valueForKey:@"version"], nil);
-    XCTAssert([[[dict objectForKey:@"notifier"] valueForKey:@"version"] isKindOfClass:[NSString class]]);
+    XCTAssertTrue([[[dict objectForKey:@"notifier"] valueForKey:@"version"] isKindOfClass:[NSString class]]);
     
     // Check events array
     XCTAssert(((NSArray*)[dict objectForKey:@"events"]).count == 1);
     
     // Check event
     NSDictionary *event = [((NSArray*)[dict objectForKey:@"events"]) objectAtIndex:0];
-    [self check:[event allKeys] ContainsOnly:@[@"exceptions", @"metaData", @"context", @"payloadVersion", @"severity", @"device", @"deviceState", @"app", @"appState", @"dsymUUID", @"threads"]];
-    
+    NSArray* eventKeys = @[@"app", @"appState", @"breadcrumbs", @"context", @"device",
+                           @"deviceState", @"dsymUUID", @"exceptions", @"metaData",
+                           @"payloadVersion", @"severity", @"threads"];
+    XCTAssertEqualObjects([[event allKeys] sortedArrayUsingSelector:@selector(compare:)], eventKeys);
     XCTAssertEqualObjects([event objectForKey:@"dsymUUID"], self.report.dsymUUID);
     XCTAssertEqualObjects([event objectForKey:@"payloadVersion"], @"2");
     XCTAssertEqualObjects([event objectForKey:@"severity"], self.report.severity);
+    XCTAssertEqualObjects([event objectForKey:@"breadcrumbs"], self.report.breadcrumbs);
     XCTAssertEqualObjects([event objectForKey:@"context"], self.report.context);
     XCTAssertEqualObjects([event objectForKey:@"metaData"], (@{
                                                                @"error": @{
