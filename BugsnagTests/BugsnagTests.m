@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+#import "Bugsnag.h"
 
 @interface BugsnagTests : XCTestCase
 
@@ -17,6 +18,7 @@
 
 - (void)setUp {
     [super setUp];
+    [Bugsnag startBugsnagWithApiKey:@"123456789012345678901234"];
 }
 
 - (void)tearDown {
@@ -24,6 +26,13 @@
 }
 
 - (void)testExample {
+    XCTAssert(YES, @"Pass");
+}
+
+- (void)testNotifyWithNilName {
+    NSString *nilName = nil;
+    NSException *exception = [NSException exceptionWithName:nilName reason:nil userInfo:nil];
+    [Bugsnag notify:exception];
     XCTAssert(YES, @"Pass");
 }
 
