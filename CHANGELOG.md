@@ -1,6 +1,11 @@
 Changelog
 =========
 
+4.0.9
+-----
+
+- Protect against nil named exceptions
+
 4.0.8
 -----
 
