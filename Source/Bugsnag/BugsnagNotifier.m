@@ -118,7 +118,8 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
     [self.state addAttribute:@"severity" withValue: severity toTabWithName: @"crash"];
     [self.state addAttribute:@"depth" withValue: [NSNumber numberWithUnsignedInteger:depth + 3] toTabWithName: @"crash"];
 
-    [[KSCrash sharedInstance] reportUserException:[exception name] reason:[exception reason] lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
+    NSString *exceptionName = [exception name] != nil ? [exception name] : @"NSException";
+    [[KSCrash sharedInstance] reportUserException:exceptionName reason:[exception reason] lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
 
     // Restore metaData to pre-crash state.
     [self.metaDataLock unlock];
