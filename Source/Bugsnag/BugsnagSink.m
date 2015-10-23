@@ -45,13 +45,14 @@
 {
     NSError *error = nil;
     NSMutableArray *bugsnagReports = [NSMutableArray arrayWithCapacity:[reports count]];
+    BugsnagConfiguration *configuration = [Bugsnag configuration];
     for (NSDictionary* report in reports) {
         BugsnagCrashReport *bugsnagReport = [[BugsnagCrashReport alloc] initWithKSReport:report];
         
         // Filter the reports here, we have to do it now as we dont want to hack KSCrash to do it at crash time.
         // We also in the docs imply that the filtering happens when the crash happens - so we use the values
         // saved in the report.
-        if(!bugsnagReport.notifyReleaseStages || [bugsnagReport.notifyReleaseStages containsObject: bugsnagReport.releaseStage]) {
+        if(!configuration.notifyReleaseStages || [configuration.notifyReleaseStages containsObject: configuration.releaseStage]) {
             [bugsnagReports addObject:bugsnagReport];
         }
     }
@@ -75,7 +76,7 @@
         return;
     }
     
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL: [Bugsnag configuration].notifyURL
+    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL: configuration.notifyURL
                                                            cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
                                                        timeoutInterval: 15];
     request.HTTPMethod = @"POST";
