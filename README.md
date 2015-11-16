@@ -38,6 +38,25 @@ Installation & Setup
     [Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
     ```
 
+-   In a Swift Project you might prefer to add Bugsnag as a framework in your Podfile.
+
+    ```ruby
+    use_frameworks!
+    pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git"
+    ```
+
+-   Import the Bugsnag framework into your application delegate.
+
+    ```swift
+    import BugSnag
+    ```
+
+-   In your `application:didFinishLaunchingWithOptions:` method, initialize Bugsnag by calling,
+
+    ```swift
+    Bugsnag.startBugsnagWithApiKey("your-api-key-goes-here")
+    ```
+
 ###Without Cocoapods
 
 -   Download Bugsnag.zip from the [latest release](https://github.com/bugsnag/bugsnag-cocoa/releases/latest)
