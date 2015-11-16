@@ -88,7 +88,7 @@ After installation, the Bugsnag library must be imported into your project and i
 1.   Import the Bugsnag framework into your application delegate.
 
     ```swift
-    import BugSnag
+    import Bugsnag
     ```
 
 2.   In your `application:didFinishLaunchingWithOptions:` method, initialize Bugsnag by calling,
