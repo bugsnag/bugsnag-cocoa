@@ -7,8 +7,8 @@ The notifier hooks into `NSSetUncaughtExceptionHandler`, which means any uncaugh
 [Bugsnag](https://bugsnag.com) captures errors in real-time from your web, mobile and desktop applications, helping you to understand and resolve them as fast as possible. [Create a free account](https://bugsnag.com) to start capturing exceptions from your applications.
 
 
-Installation & Setup
---------------------
+Installation
+------------
 
 ###Using CocoaPods (Recommended)
 
@@ -18,43 +18,20 @@ Installation & Setup
 
     ```ruby
     pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git"
+
     ```
 
--   Install Bugsnag
-
-    ```bash
-    pod install
-    ```
-
--   Import the `Bugsnag.h` file into your application delegate.
-
-    ```objective-c
-    #import "Bugsnag.h"
-    ```
-
--   In your `application:didFinishLaunchingWithOptions:` method, initialize Bugsnag by calling,
-
-    ```objective-c
-    [Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
-    ```
-
--   In a Swift Project you might prefer to add Bugsnag as a framework in your Podfile.
+-   In a Swift Project you might prefer to add Bugsnag as a framework in your Podfile
 
     ```ruby
     use_frameworks!
     pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git"
     ```
 
--   Import the Bugsnag framework into your application delegate.
+-   Install Bugsnag
 
-    ```swift
-    import BugSnag
-    ```
-
--   In your `application:didFinishLaunchingWithOptions:` method, initialize Bugsnag by calling,
-
-    ```swift
-    Bugsnag.startBugsnagWithApiKey("your-api-key-goes-here")
+    ```bash
+    pod install
     ```
 
 ###Without Cocoapods
@@ -86,19 +63,43 @@ Installation & Setup
     end
     ```
 
--   Import the `Bugsnag.h` file into your application delegate.
+
+Setup
+-----
+
+After installation, the Bugsnag library must be imported into your project and initialized with your API key.
+
+#### Objective-C
+
+1.   Import the `Bugsnag.h` file into your application delegate.
 
     ```objective-c
     #import <Bugsnag/Bugsnag.h>
     ```
 
--   In your `application:didFinishLaunchingWithOptions:` method, register with bugsnag by calling,
+2.   In your `application:didFinishLaunchingWithOptions:` method, initialize Bugsnag by calling,
 
     ```objective-c
     [Bugsnag startBugsnagWithApiKey:@"your-api-key-goes-here"];
     ```
 
-Mac Specific Setup
+#### Swift
+
+1.   Import the Bugsnag framework into your application delegate.
+
+    ```swift
+    import BugSnag
+    ```
+
+2.   In your `application:didFinishLaunchingWithOptions:` method, initialize Bugsnag by calling,
+
+    ```swift
+    Bugsnag.startBugsnagWithApiKey("your-api-key-goes-here")
+    ```
+
+
+
+Mac-specific Setup
 ------------------
 
 Mac exceptions in the main thread are caught by cocoa and don't reach Bugsnag by default. You should subclass NSApplication to get notifications sent to Bugsnag.
