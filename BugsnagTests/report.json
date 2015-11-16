@@ -2093,7 +2093,8 @@
             },
             "crash": {
                 "depth": 4,
-                "severity": "warning"
+                "severity": "warning",
+                "breadcrumbs": [["1442466386","App launched"],["1442466386","Tapped button"]]
             }
         }
     }

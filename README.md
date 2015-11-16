@@ -160,6 +160,15 @@ Severity is displayed in the dashboard and can be used to filter the error list.
 By default all crashes (or unhandled exceptions) are set to `error` and all
 `[Bugsnag notify]` calls default to `warning`.
 
+Logging Breadcrumbs
+-------------------
+
+You can add custom log messages called "breadcrumbs" to document what user interactions occurred in your application prior to a crash. Each breadcrumb also records the time at which it was left. To record a breadcrumb:
+
+```objective-c
+[Bugsnag leaveBreadcrumbWithMessage:@"Button tapped"];
+```
+
 Adding Tabs to Bugsnag Error Reports
 ------------------------------------
 

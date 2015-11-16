@@ -121,6 +121,7 @@
     [event safeSetObject: @[exception] forKey: @"exceptions"];
     [event setObjectIfNotNil: report.dsymUUID forKey: @"dsymUUID"];
     [event safeSetObject: report.severity forKey:@"severity"];
+    [event safeSetObject: report.breadcrumbs forKey:@"breadcrumbs"];
     [event safeSetObject: @"2" forKey:@"payloadVersion"];
     [event safeSetObject: metaData forKey: @"metaData"];
     [event safeSetObject: [self deviceStateFromReport: report] forKey:@"deviceState"];
