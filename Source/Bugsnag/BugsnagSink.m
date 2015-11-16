@@ -40,19 +40,29 @@
 
 @implementation BugsnagSink
 
-// Entry point called by KSCrash when a report needs to be sent
+// Entry point called by KSCrash when a report needs to be sent. Handles report filtering based on the configuration
+// options for `notifyReleaseStages`.
+// Removes all reports not meeting at least one of the following conditions:
+// - the report-specific config specifies the `notifyReleaseStages` property and it contains the current stage
+// - the report-specific and global `notifyReleaseStages` properties are unset
+// - the report-specific `notifyReleaseStages` property is unset and the global `notifyReleaseStages` property
+//   and it contains the current stage
 - (void) filterReports:(NSArray*) reports onCompletion:(KSCrashReportFilterCompletion) onCompletion
 {
     NSError *error = nil;
     NSMutableArray *bugsnagReports = [NSMutableArray arrayWithCapacity:[reports count]];
     BugsnagConfiguration *configuration = [Bugsnag configuration];
+    BOOL configuredShouldNotify = configuration.notifyReleaseStages.count == 0
+        || [configuration.notifyReleaseStages containsObject:configuration.releaseStage];
     for (NSDictionary* report in reports) {
         BugsnagCrashReport *bugsnagReport = [[BugsnagCrashReport alloc] initWithKSReport:report];
         
         // Filter the reports here, we have to do it now as we dont want to hack KSCrash to do it at crash time.
         // We also in the docs imply that the filtering happens when the crash happens - so we use the values
         // saved in the report.
-        if(!configuration.notifyReleaseStages || [configuration.notifyReleaseStages containsObject: configuration.releaseStage]) {
+        BOOL shouldNotify = [bugsnagReport.notifyReleaseStages containsObject:bugsnagReport.releaseStage]
+            || (bugsnagReport.notifyReleaseStages.count == 0 && configuredShouldNotify);
+        if(shouldNotify) {
             [bugsnagReports addObject:bugsnagReport];
         }
     }
