@@ -142,7 +142,7 @@ You can also send additional meta-data with your exception:
 
 ```objective-c
 [Bugsnag notify:[NSException exceptionWithName:@"ExceptionName" reason:@"Something bad happened" userInfo:nil]
-       withData:[NSDictionary dictionaryWithObjectsAndKeys:@"username", @"bob-hoskins", nil]];
+       withData:@{@"username": @"bob-hoskins"}];
 ```
 
 ### Severity
@@ -229,7 +229,7 @@ In order to distinguish between errors that occur in different stages of the app
 By default, we notify Bugsnag of all exceptions that happen in your app. If you would like to change which release stages notify Bugsnag of exceptions you can set the `notifyReleaseStages` property:
 
 ```objective-c
-[Bugsnag configuration].notifyReleaseStages = [NSArray arrayWithObjects:@"production", nil];
+[Bugsnag configuration].notifyReleaseStages = @[@"production"];
 ```
 
 ###autoNotify
