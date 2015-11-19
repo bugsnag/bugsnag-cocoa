@@ -37,8 +37,8 @@
 #import "KSSafeCollections.h"
 #import "NSDictionary+Merge.h"
 
-#define NOTIFIER_VERSION @"4.1.0"
-#define NOTIFIER_URL @"https://github.com/bugsnag/bugsnag-cocoa"
+NSString *const NOTIFIER_VERSION = @"4.1.0";
+NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 
 struct bugsnag_data_t {
     // Contains the user-specified metaData, including the user tab from config.
