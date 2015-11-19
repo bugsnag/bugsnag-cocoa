@@ -58,7 +58,7 @@ void mergeDictionaries(NSMutableDictionary *destination, NSDictionary *source) {
 - (id) mutableCopyWithZone:(NSZone *)zone {
     @synchronized(self) {
         NSMutableDictionary *dict = [self.dictionary mutableCopy];
-        return [[BugsnagMetaData alloc] initWithDictionary:dict];
+        return [[BugsnagMetaData allocWithZone:zone] initWithDictionary:dict];
     }
 }
 
