@@ -1,21 +1,16 @@
 PODS:
-  - Bugsnag (4.0.5):
-    - Bugsnag/no-arc (= 4.0.5)
-  - Bugsnag/no-arc (4.0.5)
+  - Bugsnag (4.0.9):
+    - Bugsnag/no-arc (= 4.0.9)
+  - Bugsnag/no-arc (4.0.9)
 
 DEPENDENCIES:
-  - Bugsnag (from `https://github.com/bugsnag/bugsnag-cocoa.git`)
+  - Bugsnag (from `../..`)
 
 EXTERNAL SOURCES:
   Bugsnag:
-    :git: https://github.com/bugsnag/bugsnag-cocoa.git
-
-CHECKOUT OPTIONS:
-  Bugsnag:
-    :commit: dbb4affbc19efb831ed4bc34d7db83c86269a380
-    :git: https://github.com/bugsnag/bugsnag-cocoa.git
+    :path: ../..
 
 SPEC CHECKSUMS:
-  Bugsnag: 55a90bc87b467fe72bbedaba430753b5822420ce
+  Bugsnag: a4bdbf356f318cef00d12eb1601f16d8d0c71ba4
 
-COCOAPODS: 0.36.4
+COCOAPODS: 0.39.0
