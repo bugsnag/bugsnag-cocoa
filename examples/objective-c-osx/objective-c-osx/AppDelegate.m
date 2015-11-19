@@ -20,9 +20,7 @@ void exceptionHandler(NSException *ex) {
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    //NSSetUncaughtExceptionHandler(&exceptionHandler);
-    [Bugsnag startBugsnagWithApiKey:@"f35a2472bd230ac0ab0f52715bbdc65d"];
-    // Insert code here to initialize your application
+    [Bugsnag startBugsnagWithApiKey:@""];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

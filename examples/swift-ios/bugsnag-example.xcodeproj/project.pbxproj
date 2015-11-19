@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		91F377322F7D472DC794F034 /* libPods-bugsnag-example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5105F92501B7D4F9956EE260 /* libPods-bugsnag-example.a */; };
 		D175F4BE1ACDBD81009AFFB7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4BD1ACDBD81009AFFB7 /* AppDelegate.swift */; };
 		D175F4C01ACDBD81009AFFB7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */; };
 		D175F4C31ACDBD81009AFFB7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C11ACDBD81009AFFB7 /* Main.storyboard */; };
@@ -15,7 +16,6 @@
 		D175F4D41ACDBD81009AFFB7 /* bugsnag_exampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4D31ACDBD81009AFFB7 /* bugsnag_exampleTests.swift */; };
 		D175F4DF1ACDBEFA009AFFB7 /* AnotherClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4DE1ACDBEFA009AFFB7 /* AnotherClass.swift */; };
 		D175F4E21ACDBFD9009AFFB7 /* AnObjCClass.m in Sources */ = {isa = PBXBuildFile; fileRef = D175F4E11ACDBFD9009AFFB7 /* AnObjCClass.m */; };
-		E8F1BC81B65B27A6F56D38B1 /* libPods-bugsnag-example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C94486B6E9E4278C4E0DB97B /* libPods-bugsnag-example.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,9 +29,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		23EAF491D4B7D23C8B77F659 /* Pods-bugsnag-example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-bugsnag-example/Pods-bugsnag-example.debug.xcconfig"; sourceTree = "<group>"; };
-		59056F2250385EB8642046B7 /* Pods-bugsnag-example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example.release.xcconfig"; path = "Pods/Target Support Files/Pods-bugsnag-example/Pods-bugsnag-example.release.xcconfig"; sourceTree = "<group>"; };
-		C94486B6E9E4278C4E0DB97B /* libPods-bugsnag-example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bugsnag-example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D21F274CCAFD09F0E4BFA38 /* Pods-bugsnag-example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example.release.xcconfig"; path = "Pods/Target Support Files/Pods-bugsnag-example/Pods-bugsnag-example.release.xcconfig"; sourceTree = "<group>"; };
+		5105F92501B7D4F9956EE260 /* libPods-bugsnag-example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bugsnag-example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFF07CCCB826F552FE8EC93B /* Pods-bugsnag-example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-bugsnag-example/Pods-bugsnag-example.debug.xcconfig"; sourceTree = "<group>"; };
 		D175F4B81ACDBD81009AFFB7 /* bugsnag-example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "bugsnag-example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D175F4BC1ACDBD81009AFFB7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D175F4BD1ACDBD81009AFFB7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -53,7 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E8F1BC81B65B27A6F56D38B1 /* libPods-bugsnag-example.a in Frameworks */,
+				91F377322F7D472DC794F034 /* libPods-bugsnag-example.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,19 +67,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4D745F523D6F7960BBB6D85F /* Pods */ = {
+		4E3624747112504218050327 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				23EAF491D4B7D23C8B77F659 /* Pods-bugsnag-example.debug.xcconfig */,
-				59056F2250385EB8642046B7 /* Pods-bugsnag-example.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
-		AD86E70C5EDE10CAC85A4E47 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				C94486B6E9E4278C4E0DB97B /* libPods-bugsnag-example.a */,
+				5105F92501B7D4F9956EE260 /* libPods-bugsnag-example.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -90,8 +81,8 @@
 				D175F4BA1ACDBD81009AFFB7 /* bugsnag-example */,
 				D175F4D01ACDBD81009AFFB7 /* bugsnag-exampleTests */,
 				D175F4B91ACDBD81009AFFB7 /* Products */,
-				4D745F523D6F7960BBB6D85F /* Pods */,
-				AD86E70C5EDE10CAC85A4E47 /* Frameworks */,
+				FB625C5894FB2A64AD9ACF56 /* Pods */,
+				4E3624747112504218050327 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -146,6 +137,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		FB625C5894FB2A64AD9ACF56 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				CFF07CCCB826F552FE8EC93B /* Pods-bugsnag-example.debug.xcconfig */,
+				3D21F274CCAFD09F0E4BFA38 /* Pods-bugsnag-example.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -153,12 +153,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D175F4D71ACDBD81009AFFB7 /* Build configuration list for PBXNativeTarget "bugsnag-example" */;
 			buildPhases = (
-				FD38A7171694CD88E4C3D5DF /* Check Pods Manifest.lock */,
+				D133197115A3C1BDED60127F /* Check Pods Manifest.lock */,
 				D175F4B41ACDBD81009AFFB7 /* Sources */,
 				D175F4B51ACDBD81009AFFB7 /* Frameworks */,
 				D175F4B61ACDBD81009AFFB7 /* Resources */,
-				7E005CF8A3F2B64128F0FF01 /* Copy Pods Resources */,
 				9AFEEED933DC82BFDDB374F6 /* Upload Bugsnag dSYM */,
+				477DC7A40E76CCDF278F385A /* Embed Pods Frameworks */,
+				89388DAF5D85DFFB0EE384A7 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -193,6 +194,7 @@
 		D175F4B01ACDBD81009AFFB7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0620;
 				ORGANIZATIONNAME = "Isaac Waller";
 				TargetAttributes = {
@@ -245,7 +247,22 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		7E005CF8A3F2B64128F0FF01 /* Copy Pods Resources */ = {
+		477DC7A40E76CCDF278F385A /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-bugsnag-example/Pods-bugsnag-example-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		89388DAF5D85DFFB0EE384A7 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -275,7 +292,7 @@
 			shellScript = "fork do\n  Process.setsid\n  STDIN.reopen(\"/dev/null\")\n  STDOUT.reopen(\"/dev/null\", \"a\")\n  STDERR.reopen(\"/dev/null\", \"a\")\n\n  require 'shellwords'\n\n  Dir[\"#{ENV[\"DWARF_DSYM_FOLDER_PATH\"]}/*/Contents/Resources/DWARF/*\"].each do |dsym|\n    system(\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\"PROJECT_DIR\"])} https://upload.bugsnag.com/\")\n  end\nend\n";
 			showEnvVarsInLog = 0;
 		};
-		FD38A7171694CD88E4C3D5DF /* Check Pods Manifest.lock */ = {
+		D133197115A3C1BDED60127F /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -423,26 +440,34 @@
 		};
 		D175F4D81ACDBD81009AFFB7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 23EAF491D4B7D23C8B77F659 /* Pods-bugsnag-example.debug.xcconfig */;
+			baseConfigurationReference = CFF07CCCB826F552FE8EC93B /* Pods-bugsnag-example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = "bugsnag-example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.bugsnag-example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "bugsnag-example/bugsnag-example-Bridging-Header.h";
 			};
 			name = Debug;
 		};
 		D175F4D91ACDBD81009AFFB7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 59056F2250385EB8642046B7 /* Pods-bugsnag-example.release.xcconfig */;
+			baseConfigurationReference = 3D21F274CCAFD09F0E4BFA38 /* Pods-bugsnag-example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = "bugsnag-example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.bugsnag-example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "bugsnag-example/bugsnag-example-Bridging-Header.h";
 			};
 			name = Release;

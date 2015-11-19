@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "C4519EFDD2C3B96E9BD67A5CED575450FFB87C90",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "D2885296440547CB23891301E79B480A22EAC5F6" : 0,
+    "C4519EFDD2C3B96E9BD67A5CED575450FFB87C90" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "82318139-119A-40E7-B344-A16BEC2CE289",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "D2885296440547CB23891301E79B480A22EAC5F6" : "bugsnag-cocoa\/KSCrashModule\/",
+    "C4519EFDD2C3B96E9BD67A5CED575450FFB87C90" : "bugsnag-cocoa\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Bugsnag Test App",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "examples\/objective-c-ios\/Bugsnag Test App.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:bugsnag\/bugsnag-cocoa.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "C4519EFDD2C3B96E9BD67A5CED575450FFB87C90"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:bugsnag\/KSCrash.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D2885296440547CB23891301E79B480A22EAC5F6"
+    }
+  ]
+}
