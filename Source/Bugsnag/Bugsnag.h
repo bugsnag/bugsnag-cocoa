@@ -105,7 +105,7 @@ static NSString* BugsnagSeverityInfo    = @"info";
  *
  * @param attributeName  The name of the data.
  *
- * @param value          It's value.
+ * @param value          Its value.
  *
  * @param tabName        The tab to show it on on the Bugsnag dashboard.
  */
