@@ -16,19 +16,18 @@
 
 @implementation ViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    [Bugsnag leaveBreadcrumbWithMessage:@"Loaded iOS Objective-C test app"];
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    [Bugsnag leaveBreadcrumbWithMessage:@"Received memory warning"];
 }
 
 - (IBAction)generateException:(id)sender {
+    [Bugsnag leaveBreadcrumbWithMessage:@"Generating exception by non-existent selector"];
     [self performSelectorOnMainThread:@selector(someRandomMethod) withObject:nil waitUntilDone:NO];
 }
 
@@ -45,10 +44,12 @@
 }
 
 - (IBAction)delayedException:(id)sender {
+    [Bugsnag leaveBreadcrumbWithMessage:@"Queuing a non-fatal exception in 5 seconds"];
     [self performSelector:@selector(nonFatalException:) withObject:sender afterDelay:5];
 }
 
 - (IBAction)nonFatalException:(id)sender {
+    [Bugsnag leaveBreadcrumbWithMessage:@"generate non-fatal exception"];
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     [data setObject: data forKey: @"data"];
     

@@ -37,8 +37,17 @@
 #import "KSSafeCollections.h"
 #import "NSDictionary+Merge.h"
 
-#define NOTIFIER_VERSION @"4.0.9"
-#define NOTIFIER_URL @"https://github.com/bugsnag/bugsnag-cocoa"
+NSString *const NOTIFIER_VERSION = @"4.0.9";
+NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
+NSString *const BSTabCrash = @"crash";
+NSString *const BSTabConfig = @"config";
+NSString *const BSAttributeSeverity = @"severity";
+NSString *const BSAttributeDepth = @"depth";
+NSString *const BSAttributeBreadcrumbs = @"breadcrumbs";
+
+@interface Bugsnag ()
++ (BugsnagNotifier*)notifier;
+@end
 
 struct bugsnag_data_t {
     // Contains the user-specified metaData, including the user tab from config.
@@ -51,13 +60,61 @@ struct bugsnag_data_t {
 
 static struct bugsnag_data_t g_bugsnag_data;
 
-void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
+/**
+ *  Writes a dictionary to a destination using the KSCrash JSON encoding
+ *
+ *  @param dictionary  data to encode
+ *  @param destination target location of the data
+ */
+void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
+    NSError *error;
+    NSData *json = [KSJSONCodec encode: dictionary options:0 error:&error];
+
+    if (!json) {
+        NSLog(@"Bugsnag could not serialize metaData: %@", error);
+        return;
+    }
+
+    *destination = reallocf(*destination, [json length] + 1);
+    if (*destination) {
+        memcpy(*destination, [json bytes], [json length]);
+        (*destination)[[json length]] = '\0';
+    }
+}
+
+/**
+ *  Add data about breadcrumbs, the report severity, and stacktrace depth to an instance of metadata
+ *
+ *  @param metadata metadata instance to modify
+ *  @param crumbs   related breadcrumbs or nil
+ *  @param depth    depth of the stack frames to ignore
+ *  @param severity severity of the error
+ */
+void BSAppendCrashData(BugsnagMetaData *metadata, BugsnagBreadcrumbs *crumbs, NSUInteger depth, NSString *severity) {
+    [metadata addAttribute:BSAttributeSeverity withValue:severity toTabWithName:BSTabCrash];
+    [metadata addAttribute:BSAttributeDepth withValue:@(depth) toTabWithName:BSTabCrash];
+    if (crumbs.count > 0) {
+        [metadata addAttribute:BSAttributeBreadcrumbs withValue:[crumbs arrayValue] toTabWithName:BSTabCrash];
+    }
+}
+
+/**
+ *  Handler executed when the application crashes. Writes information about the
+ *  current application state using the crash report writer.
+ *
+ *  @param writer report writer which will receive updated metadata
+ */
+void BSSerializeCrashData(const KSCrashReportWriter *writer) {
     if (g_bugsnag_data.configJSON) {
         writer->addJSONElement(writer, "config", g_bugsnag_data.configJSON);
     }
     if (g_bugsnag_data.metaDataJSON) {
         writer->addJSONElement(writer, "metaData", g_bugsnag_data.metaDataJSON);
     }
+    BugsnagNotifier *notifier = [Bugsnag notifier];
+    BugsnagMetaData *metadata = [notifier.state mutableCopy];
+    BSAppendCrashData(metadata, notifier.configuration.breadcrumbs, 4, BugsnagSeverityError);
+    BSSerializeJSONDictionary([metadata toDictionary], &g_bugsnag_data.stateJSON);
     if (g_bugsnag_data.stateJSON) {
         writer->addJSONElement(writer, "state", g_bugsnag_data.stateJSON);
     }
@@ -94,7 +151,7 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
     // We don't use this feature yet, so we turn it off
     [KSCrash sharedInstance].introspectMemory = NO;
 
-    [KSCrash sharedInstance].onCrash = &serialize_bugsnag_data;
+    [KSCrash sharedInstance].onCrash = &BSSerializeCrashData;
 
     if (configuration.autoNotify) {
         [[KSCrash sharedInstance] install];
@@ -114,27 +171,17 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
     }
 
     [self.metaDataLock lock];
-    [self serializeDictionary: metaData toJSON: &g_bugsnag_data.metaDataJSON];
-    [self.state addAttribute:@"severity" withValue: severity toTabWithName: @"crash"];
-    [self.state addAttribute:@"depth" withValue: [NSNumber numberWithUnsignedInteger:depth + 3] toTabWithName: @"crash"];
-    [self serializeBreadcrumbs];
-    NSString *exceptionName = [exception name] != nil ? [exception name] : @"NSException";
+    BSSerializeJSONDictionary(metaData, &g_bugsnag_data.metaDataJSON);
+    BSAppendCrashData(self.state, self.configuration.breadcrumbs, depth + 3, severity);
+    NSString *exceptionName = [exception name] ?: NSStringFromClass([NSException class]);
     [[KSCrash sharedInstance] reportUserException:exceptionName reason:[exception reason] lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
 
     // Restore metaData to pre-crash state.
     [self.metaDataLock unlock];
     [self metaDataChanged: self.configuration.metaData];
-    [[self state] clearTab:@"crash"];
+    [[self state] clearTab:BSTabCrash];
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
-}
-
-- (void) serializeBreadcrumbs {
-    BugsnagBreadcrumbs* crumbs = self.configuration.breadcrumbs;
-    if (crumbs.count == 0) {
-        return;
-    }
-    [self.state addAttribute:@"breadcrumbs" withValue:[crumbs arrayValue] toTabWithName:@"crash"];
 }
 
 - (void) sendPendingReports {
@@ -154,31 +201,16 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
 
     if (metaData == self.configuration.metaData) {
         if ([self.metaDataLock tryLock]) {
-            [self serializeDictionary: [metaData toDictionary] toJSON: &g_bugsnag_data.metaDataJSON];
+            BSSerializeJSONDictionary([metaData toDictionary], &g_bugsnag_data.metaDataJSON);
             [self.metaDataLock unlock];
         }
     } else if (metaData == self.configuration.config) {
-        [self serializeDictionary: [metaData getTab:@"config"] toJSON: &g_bugsnag_data.configJSON];
+        BSSerializeJSONDictionary([metaData getTab:BSTabConfig], &g_bugsnag_data.configJSON);
     } else if (metaData == self.state) {
-        [self serializeDictionary: [metaData toDictionary] toJSON: &g_bugsnag_data.stateJSON];
+        BSSerializeJSONDictionary([metaData toDictionary], &g_bugsnag_data.stateJSON);
     } else {
         NSLog(@"Unknown meta-Data dictionary changed");
     }
 }
 
-- (void) serializeDictionary: (NSDictionary*) dictionary toJSON: (char **) destination {
-    NSError *error;
-    NSData *json = [KSJSONCodec encode: dictionary options:0 error:&error];
-
-    if (!json) {
-        NSLog(@"Bugsnag could not serialize metaData: %@", error);
-        return;
-    }
-
-    *destination = reallocf(*destination, [json length] + 1);
-    if (*destination) {
-        memcpy(*destination, [json bytes], [json length]);
-        (*destination)[[json length]] = '\0';
-    }
-}
 @end
