@@ -37,7 +37,7 @@
 #import "KSSafeCollections.h"
 #import "NSDictionary+Merge.h"
 
-#define NOTIFIER_VERSION @"4.0.9"
+#define NOTIFIER_VERSION @"4.1.0"
 #define NOTIFIER_URL @"https://github.com/bugsnag/bugsnag-cocoa"
 
 struct bugsnag_data_t {

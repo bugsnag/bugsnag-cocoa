@@ -64,7 +64,7 @@ end
 
 Pod::Spec.new do |s|
   s.name         = "Bugsnag"
-  s.version      = "4.0.9"
+  s.version      = "4.1.0"
   s.summary      = "Cocoa notifier for SDK for bugsnag.com"
   s.homepage     = "https://bugsnag.com"
   s.license      = 'MIT'
