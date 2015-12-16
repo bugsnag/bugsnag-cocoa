@@ -70,6 +70,14 @@
     [self.config addAttribute:@"releaseStage" withValue:newReleaseStage toTabWithName:@"config"];
 }
 
+
+- (void)setNotifyReleaseStages:(NSArray *)newNotifyReleaseStages;
+{
+    NSArray *notifyReleaseStagesCopy = [newNotifyReleaseStages copy];
+    self->notifyReleaseStages = notifyReleaseStagesCopy;
+    [self.config addAttribute:@"notifyReleaseStages" withValue:notifyReleaseStagesCopy toTabWithName:@"config"];
+}
+
 -(void) setContext:(NSString *)newContext
 {
     self->context = newContext;
