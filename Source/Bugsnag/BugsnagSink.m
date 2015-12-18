@@ -29,8 +29,8 @@
 #import "Bugsnag.h"
 #import "BugsnagCrashReport.h"
 
-#import "KSSafeCollections.h"
-#import "KSJSONCodecObjC.h"
+#import "BugsnagKSSafeCollections.h"
+#import "BugsnagKSJSONCodecObjC.h"
 
 // This is private in Bugsnag, but really we want package private so define
 // it here.
@@ -47,7 +47,7 @@
 // - the report-specific and global `notifyReleaseStages` properties are unset
 // - the report-specific `notifyReleaseStages` property is unset and the global `notifyReleaseStages` property
 //   and it contains the current stage
-- (void) filterReports:(NSArray*) reports onCompletion:(KSCrashReportFilterCompletion) onCompletion
+- (void) filterReports:(NSArray*) reports onCompletion:(BugsnagKSCrashReportFilterCompletion) onCompletion
 {
     NSError *error = nil;
     NSMutableArray *bugsnagReports = [NSMutableArray arrayWithCapacity:[reports count]];
@@ -75,8 +75,8 @@
     }
     
     
-    NSData* jsonData = [KSJSONCodec encode:[self getBodyFromReports: bugsnagReports]
-                                   options:KSJSONEncodeOptionSorted | KSJSONEncodeOptionPretty
+    NSData* jsonData = [BugsnagKSJSONCodec encode:[self getBodyFromReports: bugsnagReports]
+                                   options:BugsnagKSJSONEncodeOptionSorted | BugsnagKSJSONEncodeOptionPretty
                                      error:&error];
     
     if (jsonData == nil) {

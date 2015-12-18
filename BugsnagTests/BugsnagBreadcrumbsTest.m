@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "BugsnagBreadcrumb.h"
-#import "RFC3339DateTool.h"
+#import "BugsnagRFC3339DateTool.h"
 
 @interface BugsnagBreadcrumbsTest : XCTestCase
 @property (nonatomic,strong) BugsnagBreadcrumbs* crumbs;
@@ -71,7 +71,7 @@
     for (NSArray* item in value) {
         XCTAssertTrue([item isKindOfClass:[NSArray class]]);
         XCTAssertTrue(item.count == 2);
-        XCTAssertTrue([[RFC3339DateTool dateFromString:item[0]] isKindOfClass:[NSDate class]]);
+        XCTAssertTrue([[BugsnagRFC3339DateTool dateFromString:item[0]] isKindOfClass:[NSDate class]]);
     }
     XCTAssertEqualObjects(value[0][1], @"Launch app");
     XCTAssertEqualObjects(value[1][1], @"Tap button");
