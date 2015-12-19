@@ -49,6 +49,14 @@ which allows you to manage your libraries, detail your dependencies and handle
 updates nicely. It is the recommended way of installing the Bugsnag Cocoa
 library.
 
+0.  Install Cocoapods and the [Bugsnag Cocoapods Plugin](https://github.com/bugsnag/cocoapods-bugsnag).
+    The plugin is not required, but it adds a build phase to your projects for
+    uploading dSYM files to Bugsnag for symbolicating crash reports.
+
+    ```
+    gem install cocoapods cocoapods-bugsnag
+    ```
+
 1.  Add Bugsnag to your `Podfile`
 
     ```ruby
