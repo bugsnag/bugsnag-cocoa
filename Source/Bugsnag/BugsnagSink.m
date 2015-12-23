@@ -91,10 +91,13 @@
                                                        timeoutInterval: 15];
     request.HTTPMethod = @"POST";
     request.HTTPBody = jsonData;
-    
+
+#pragma clang diagnostic push
+#pragma clang diaginostic ignored "-Wdeprecated-declarations"
     [NSURLConnection sendSynchronousRequest:request
                           returningResponse:NULL
                                       error:&error];
+#pragma clang diagnostic pop
     
     if (onCompletion) {
         onCompletion(reports, error == nil, error);
