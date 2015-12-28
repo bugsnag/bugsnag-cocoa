@@ -31,8 +31,8 @@ RUBY
 
     def add_bugsnag_upload_script_phase
 
-      pre_script = ENV['BUGSNAG_PRE_PHASE_SCRIPT'] || ""
-      post_script = ENV['BUGSNAG_POST_PHASE_SCRIPT'] || ""
+      pre_script = ENV['BUGSNAG_PRE_PHASE_SCRIPT'] || "\n"
+      post_script = ENV['BUGSNAG_POST_PHASE_SCRIPT'] || "\n"
       script = pre_script + BUGSNAG_PHASE_SCRIPT + post_script
 
       bugsnag_native_targets.each do |native_target|
