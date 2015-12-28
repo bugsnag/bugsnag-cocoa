@@ -30,13 +30,23 @@ RUBY
     alias integrate! integrate_with_bugsnag!
 
     def add_bugsnag_upload_script_phase
+
+      pre_script = ENV['BUGSNAG_PRE_PHASE_SCRIPT'] || ""
+      post_script = ENV['BUGSNAG_POST_PHASE_SCRIPT'] || ""
+      script = pre_script + BUGSNAG_PHASE_SCRIPT + post_script
+
       bugsnag_native_targets.each do |native_target|
         phase = native_target.shell_script_build_phases.select{ |bp| bp.name == BUGSNAG_PHASE_NAME }.first ||
                 native_target.new_shell_script_build_phase(BUGSNAG_PHASE_NAME)
 
-        phase.shell_path = "/usr/bin/env ruby"
-        phase.shell_script = BUGSNAG_PHASE_SCRIPT
-        phase.show_env_vars_in_log = '0'
+        if ENV['BUGSNAG_SKIP_PHASE_SCRIPT']
+          phase.remove_from_project
+        else
+          phase.shell_path = "/usr/bin/env ruby"
+          phase.shell_script = script
+          phase.show_env_vars_in_log = '0'
+        end
+
       end
     end
 
