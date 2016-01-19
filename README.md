@@ -216,9 +216,9 @@ Demo Applications
 
 The repository includes a few example applications for various configurations:
 
-- [iOS (Objective-C)](examples/objective-c-ios)
-- [iOS (Swift)](examples/swift-ios)
-- [OS X (Objective-C)](examples/objective-c-osx)
+- [iOS (Objective-C)](https://github.com/bugsnag/bugsnag-cocoa/tree/master/examples/objective-c-ios)
+- [iOS (Swift)](https://github.com/bugsnag/bugsnag-cocoa/tree/master/examples/swift-ios)
+- [OS X (Objective-C)](https://github.com/bugsnag/bugsnag-cocoa/tree/master/examples/objective-c-osx)
 
 
 Support
