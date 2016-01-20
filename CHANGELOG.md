@@ -1,12 +1,6 @@
 Changelog
 =========
 
-4.1.0
------
-
-- Breadcrumbs support.
-- Send notifications with current configuration rather than that in the report.
-
 4.0.9
 -----
 

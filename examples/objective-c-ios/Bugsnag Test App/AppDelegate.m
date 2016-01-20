@@ -12,13 +12,8 @@
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] init];
-    
-    configuration.notifyURL = [NSURL URLWithString:@"http://192.168.1.2:8000/"];
-    configuration.apiKey = @"0c4e6d64759a754b63c4c7efa52f35ed";
-    [Bugsnag startBugsnagWithConfiguration: configuration];
-
+{ //some problems
+    [Bugsnag startBugsnagWithApiKey:@"f44fdb20e58204a4e649d0e35fe6087b"];
     // Override point for customization after application launch.
     return YES;
 }
