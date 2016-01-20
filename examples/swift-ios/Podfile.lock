@@ -16,6 +16,6 @@ CHECKOUT OPTIONS:
     :git: https://github.com/bugsnag/bugsnag-cocoa.git
 
 SPEC CHECKSUMS:
-  Bugsnag: d9499492dd99434e97808c139aa1539e45610736
+  Bugsnag: 61a3f0b077a25f4f7f2ea085ae51a0abfb202816
 
-COCOAPODS: 0.36.3
+COCOAPODS: 0.35.0

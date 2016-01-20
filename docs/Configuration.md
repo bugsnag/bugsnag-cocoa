@@ -12,7 +12,7 @@ Your Bugsnag API key
 ```objective-c
 [Bugsnag configuration].apiKey = @"YOUR-API-KEY";
 ```
-
+ 
 ### `appVersion`
 
 If you want to manually track in which versions of your application each
