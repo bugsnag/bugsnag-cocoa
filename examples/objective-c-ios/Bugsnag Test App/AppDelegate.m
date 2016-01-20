@@ -12,7 +12,7 @@
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+{ //some problems
     [Bugsnag startBugsnagWithApiKey:@"f44fdb20e58204a4e649d0e35fe6087b"];
     // Override point for customization after application launch.
     return YES;
