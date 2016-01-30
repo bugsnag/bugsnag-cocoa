@@ -14,18 +14,18 @@ Pod::Spec.new do |s|
 
   s.platforms    = {:ios =>  "5.0", :osx => "10.7"}
 
-  s.source_files = ["KSCrash/Source/KSCrash/Recording/**/*.{m,h,mm,c,cpp}",
-                    "KSCrash/Source/KSCrash/Reporting/Filters/KSCrashReportFilter.h",
+  s.source_files = ["KSCrashModule/Source/KSCrash/Recording/**/*.{m,h,mm,c,cpp}",
+                    "KSCrashModule/Source/KSCrash/Reporting/Filters/BugsnagKSCrashReportFilter.h",
                     "Source/Bugsnag/**/*.{m,h,mm,c,cpp}"]
 
-  s.exclude_files = ["KSCrash/Source/KSCrash/Recording/Tools/KSZombie.{h,m}"]
+  s.exclude_files = ["KSCrashModule/Source/KSCrash/Recording/Tools/BugsnagKSZombie.{h,m}"]
 
   s.requires_arc = true
 
-  s.public_header_files = ["Source/Bugsnag/*.h", "KSCrash/Source/KSCrash/Reporting/Filters/KSCrashReportFilter.h"]
+  s.public_header_files = ["Source/Bugsnag/*.h", "KSCrashModule/Source/KSCrash/Reporting/Filters/BugsnagKSCrashReportFilter.h"]
 
   s.subspec 'no-arc' do |sp|
-    sp.source_files = ["KSCrash/Source/KSCrash/Recording/Tools/KSZombie.{h,m}"]
+    sp.source_files = ["KSCrashModule/Source/KSCrash/Recording/Tools/BugsnagKSZombie.{h,m}"]
     sp.requires_arc = false
   end
 end

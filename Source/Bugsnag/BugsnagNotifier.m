@@ -30,11 +30,11 @@
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
-#import "KSCrash.h"
-#import "KSCrashAdvanced.h"
-#import "KSCrashReportWriter.h"
-#import "KSJSONCodecObjC.h"
-#import "KSSafeCollections.h"
+#import "BugsnagKSCrash.h"
+#import "BugsnagKSCrashAdvanced.h"
+#import "BugsnagKSCrashReportWriter.h"
+#import "BugsnagKSJSONCodecObjC.h"
+#import "BugsnagKSSafeCollections.h"
 #import "NSDictionary+Merge.h"
 
 #define NOTIFIER_VERSION @"4.1.0"
@@ -51,7 +51,7 @@ struct bugsnag_data_t {
 
 static struct bugsnag_data_t g_bugsnag_data;
 
-void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
+void serialize_bugsnag_data(const BugsnagKSCrashReportWriter *writer) {
     if (g_bugsnag_data.configJSON) {
         writer->addJSONElement(writer, "config", g_bugsnag_data.configJSON);
     }
@@ -90,14 +90,14 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
 }
 
 - (void) start {
-    [KSCrash sharedInstance].sink = [[BugsnagSink alloc] init];
+    [BugsnagKSCrash sharedInstance].sink = [[BugsnagSink alloc] init];
     // We don't use this feature yet, so we turn it off
-    [KSCrash sharedInstance].introspectMemory = NO;
+    [BugsnagKSCrash sharedInstance].introspectMemory = NO;
 
-    [KSCrash sharedInstance].onCrash = &serialize_bugsnag_data;
+    [BugsnagKSCrash sharedInstance].onCrash = &serialize_bugsnag_data;
 
     if (configuration.autoNotify) {
-        [[KSCrash sharedInstance] install];
+        [[BugsnagKSCrash sharedInstance] install];
     }
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
@@ -119,7 +119,7 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
     [self.state addAttribute:@"depth" withValue: [NSNumber numberWithUnsignedInteger:depth + 3] toTabWithName: @"crash"];
     [self serializeBreadcrumbs];
     NSString *exceptionName = [exception name] != nil ? [exception name] : @"NSException";
-    [[KSCrash sharedInstance] reportUserException:exceptionName reason:[exception reason] lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
+    [[BugsnagKSCrash sharedInstance] reportUserException:exceptionName reason:[exception reason] lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
 
     // Restore metaData to pre-crash state.
     [self.metaDataLock unlock];
@@ -140,7 +140,7 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
 - (void) sendPendingReports {
     @autoreleasepool {
         @try {
-            [[KSCrash sharedInstance] sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
+            [[BugsnagKSCrash sharedInstance] sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
                 NSLog(@"Bugsnag reports sent.");
             }];
         }
@@ -168,7 +168,7 @@ void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
 
 - (void) serializeDictionary: (NSDictionary*) dictionary toJSON: (char **) destination {
     NSError *error;
-    NSData *json = [KSJSONCodec encode: dictionary options:0 error:&error];
+    NSData *json = [BugsnagKSJSONCodec encode: dictionary options:0 error:&error];
 
     if (!json) {
         NSLog(@"Bugsnag could not serialize metaData: %@", error);

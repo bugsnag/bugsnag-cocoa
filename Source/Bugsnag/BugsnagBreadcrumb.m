@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 //
 #import "BugsnagBreadcrumb.h"
-#import "RFC3339DateTool.h"
+#import "BugsnagRFC3339DateTool.h"
 
 @interface BugsnagBreadcrumbs()
 
@@ -108,7 +108,7 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
     }
     NSMutableArray* contents = [[NSMutableArray alloc] initWithCapacity:[self count]];
     for (BugsnagBreadcrumb* crumb in self.breadcrumbs) {
-        NSString* timestamp = [RFC3339DateTool stringFromDate:crumb.timestamp];
+        NSString* timestamp = [BugsnagRFC3339DateTool stringFromDate:crumb.timestamp];
         if (timestamp && crumb.message.length > 0) {
             [contents addObject:@[timestamp,crumb.message]];
         }

@@ -26,8 +26,8 @@
 
 #import <Foundation/Foundation.h>
 
-#import "KSCrashReportFilter.h"
+#import "BugsnagKSCrashReportFilter.h"
 
-@interface BugsnagSink : NSObject <KSCrashReportFilter>
+@interface BugsnagSink : NSObject <BugsnagKSCrashReportFilter>
 
 @end
