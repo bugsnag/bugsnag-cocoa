@@ -128,12 +128,13 @@
     NSMutableDictionary* exception = [NSMutableDictionary dictionary];
     NSMutableArray *bugsnagThreads = [NSMutableArray array];
     NSMutableDictionary *metaData = [report.metaData mutableCopy];
-    
+    NSString *severity = report.severity.length > 0 ? report.severity : BugsnagSeverityError;
+
     // Build Event
     [event safeSetObject: bugsnagThreads forKey: @"threads"];
     [event safeSetObject: @[exception] forKey: @"exceptions"];
     [event setObjectIfNotNil: report.dsymUUID forKey: @"dsymUUID"];
-    [event safeSetObject: report.severity forKey:@"severity"];
+    [event safeSetObject: severity forKey:@"severity"];
     [event safeSetObject: report.breadcrumbs forKey:@"breadcrumbs"];
     [event safeSetObject: @"2" forKey:@"payloadVersion"];
     [event safeSetObject: metaData forKey: @"metaData"];
