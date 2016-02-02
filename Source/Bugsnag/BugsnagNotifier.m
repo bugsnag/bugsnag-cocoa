@@ -150,7 +150,6 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     BSSerializeJSONDictionary(metaData, &g_bugsnag_data.metaDataJSON);
     [self.state addAttribute:BSAttributeSeverity withValue:severity toTabWithName:BSTabCrash];
     [self.state addAttribute:BSAttributeDepth withValue:@(depth + 3) toTabWithName:BSTabCrash];
-    [self serializeBreadcrumbs];
     NSString *exceptionName = [exception name] ?: NSStringFromClass([NSException class]);
     [[KSCrash sharedInstance] reportUserException:exceptionName reason:[exception reason] lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
 
@@ -164,10 +163,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
 - (void) serializeBreadcrumbs {
     BugsnagBreadcrumbs* crumbs = self.configuration.breadcrumbs;
-    if (crumbs.count == 0) {
-        return;
-    }
-    [self.state addAttribute:BSAttributeBreadcrumbs withValue:[crumbs arrayValue] toTabWithName:BSTabCrash];
+    NSArray* arrayValue = crumbs.count == 0 ? nil : [crumbs arrayValue];
+    [self.state addAttribute:BSAttributeBreadcrumbs withValue:arrayValue toTabWithName:BSTabCrash];
 }
 
 - (void) sendPendingReports {

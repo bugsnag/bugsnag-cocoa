@@ -118,6 +118,7 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
 
 + (void) leaveBreadcrumbWithMessage:(NSString *)message {
     [self.notifier.configuration.breadcrumbs addBreadcrumb:message];
+    [self.notifier serializeBreadcrumbs];
 }
 
 + (void) setBreadcrumbCapacity:(NSUInteger)capacity {
@@ -126,6 +127,7 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
 
 + (void) clearBreadcrumbs {
     [self.notifier.configuration.breadcrumbs clearBreadcrumbs];
+    [self.notifier serializeBreadcrumbs];
 }
 
 @end
