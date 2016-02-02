@@ -56,7 +56,13 @@ struct bugsnag_data_t {
 
 static struct bugsnag_data_t g_bugsnag_data;
 
-void serialize_bugsnag_data(const KSCrashReportWriter *writer) {
+/**
+ *  Handler executed when the application crashes. Writes information about the
+ *  current application state using the crash report writer.
+ *
+ *  @param writer report writer which will receive updated metadata
+ */
+void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer) {
     if (g_bugsnag_data.configJSON) {
         writer->addJSONElement(writer, "config", g_bugsnag_data.configJSON);
     }
@@ -121,7 +127,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     // We don't use this feature yet, so we turn it off
     [KSCrash sharedInstance].introspectMemory = NO;
 
-    [KSCrash sharedInstance].onCrash = &serialize_bugsnag_data;
+    [KSCrash sharedInstance].onCrash = &BSSerializeDataCrashHandler;
 
     if (configuration.autoNotify) {
         [[KSCrash sharedInstance] install];
