@@ -720,7 +720,7 @@
                 "name": "name",
                 "line_of_code": ""
             },
-            "reason": "reason",
+            "reason": "You should've written more tests!",
             "signal": {
                 "name": "SIGABRT",
                 "signal": 6,
