@@ -12,7 +12,8 @@ build/Release/%.framework:
 	xcodebuild -target $* build $(FORMATTER)
 
 build/Release/%-$(VERSION).zip: build/Release/%.framework
-	zip -r build/Release/$*.zip build/Release/$*.framework
+	cd build/Release; \
+	zip --symlinks -r $*.zip $*.framework
 
 .PHONY: all build test
 
