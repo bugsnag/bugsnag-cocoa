@@ -33,7 +33,6 @@
 - (id) initWithDictionary:(NSMutableDictionary*)dict;
 - (NSMutableDictionary *) getTab:(NSString*)tabName;
 - (void) clearTab:(NSString*)tabName;
-- (void) mergeWith:(NSDictionary*)data;
 - (NSDictionary*) toDictionary;
 - (void) addAttribute:(NSString*)attributeName withValue:(id)value toTabWithName:(NSString*)tabName;
 @property(unsafe_unretained) id<BugsnagMetaDataDelegate> delegate;

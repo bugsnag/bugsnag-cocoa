@@ -26,16 +26,6 @@
 
 #import "BugsnagMetaData.h"
 
-void mergeDictionaries(NSMutableDictionary *destination, NSDictionary *source) {
-    [source enumerateKeysAndObjectsUsingBlock: ^(id key, id value, BOOL *stop) {
-        if ([destination objectForKey:key] && [value isKindOfClass:[NSDictionary class]]) {
-            [[destination objectForKey: key] mergeWith: (NSDictionary *) value];
-        } else {
-            [destination setObject: value forKey: key];
-        }
-    }];
-}
-
 @interface BugsnagMetaData ()
 @property (atomic, strong) NSMutableDictionary *dictionary;
 @end
@@ -79,20 +69,6 @@ void mergeDictionaries(NSMutableDictionary *destination, NSDictionary *source) {
     }
     
     [self.delegate metaDataChanged: self];
-}
-
-- (void) mergeWith:(NSDictionary*)data {
-    @synchronized(self) {
-        [data enumerateKeysAndObjectsUsingBlock: ^(id key, id value, BOOL *stop) {
-            if ([value isKindOfClass:[NSDictionary class]]) {
-                mergeDictionaries([self getTab:key], value);
-            } else {
-                [[self getTab:@"customData"] setObject: value forKey: key];
-            }
-        }];
-        
-        [self.delegate metaDataChanged: self];
-    }
 }
 
 - (NSDictionary*) toDictionary {
