@@ -126,7 +126,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     [KSCrash sharedInstance].sink = [[BugsnagSink alloc] init];
     // We don't use this feature yet, so we turn it off
     [KSCrash sharedInstance].introspectMemory = NO;
-
+    [KSCrash sharedInstance].deleteBehaviorAfterSendAll = KSCDeleteOnSucess;
     [KSCrash sharedInstance].onCrash = &BSSerializeDataCrashHandler;
 
     if (configuration.autoNotify) {
