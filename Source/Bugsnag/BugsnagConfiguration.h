@@ -27,6 +27,7 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagMetaData.h"
+#import "KSCrashReportWriter.h"
 
 @class BugsnagBreadcrumbs;
 
@@ -41,6 +42,7 @@
 @property(nonatomic,readwrite,retain) BugsnagMetaData* metaData;
 @property(nonatomic,readwrite,retain) BugsnagMetaData* config;
 @property(nonatomic,readonly,strong) BugsnagBreadcrumbs* breadcrumbs;
+@property(nonatomic) void (*onCrashHandler)(const KSCrashReportWriter* writer);
 
 @property(nonatomic) BOOL autoNotify;
 
