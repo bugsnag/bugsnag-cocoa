@@ -42,6 +42,7 @@
   config.autoNotify = NO;
   config.apiKey = @"apiKeyHere";
   config.releaseStage = @"MagicalTestingTime";
+  config.notifyURL = nil;
   [Bugsnag startBugsnagWithConfiguration:config];
 }
 
