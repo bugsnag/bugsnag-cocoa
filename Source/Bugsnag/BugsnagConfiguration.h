@@ -28,24 +28,40 @@
 
 #import "BugsnagMetaData.h"
 #import "KSCrashReportWriter.h"
+/**
+ *  A handler for modifying data before sending it to Bugsnag
+ *
+ *  @param rawEventReports The raw event data written at crash time. This
+ *                         includes data added in onCrashHandler.
+ *  @param report          The default report payload
+ *
+ *  @return the report payload intended to be sent or nil to cancel sending
+ */
+typedef NSDictionary * (^BugsnagBeforeNotifyHook)(NSArray *rawEventReports,
+                                                  NSDictionary *report);
 
 @class BugsnagBreadcrumbs;
 
 @interface BugsnagConfiguration : NSObject
 
-@property(nonatomic,readwrite,retain) NSString* apiKey;
-@property(nonatomic,readwrite,retain) NSURL* notifyURL;
-@property(nonatomic,readwrite,retain) NSString* releaseStage;
-@property(nonatomic,readwrite,retain) NSArray* notifyReleaseStages;
-@property(nonatomic,readwrite,retain) NSString* context;
-@property(nonatomic,readwrite,retain) NSString* appVersion;
-@property(nonatomic,readwrite,retain) BugsnagMetaData* metaData;
-@property(nonatomic,readwrite,retain) BugsnagMetaData* config;
-@property(nonatomic,readonly,strong) BugsnagBreadcrumbs* breadcrumbs;
-@property(nonatomic) void (*onCrashHandler)(const KSCrashReportWriter* writer);
+@property(nonatomic, readwrite, retain) NSString *apiKey;
+@property(nonatomic, readwrite, retain) NSURL *notifyURL;
+@property(nonatomic, readwrite, retain) NSString *releaseStage;
+@property(nonatomic, readwrite, retain) NSArray *notifyReleaseStages;
+@property(nonatomic, readwrite, retain) NSString *context;
+@property(nonatomic, readwrite, retain) NSString *appVersion;
+@property(nonatomic, readwrite, retain) BugsnagMetaData *metaData;
+@property(nonatomic, readwrite, retain) BugsnagMetaData *config;
+@property(nonatomic, readonly, strong) BugsnagBreadcrumbs *breadcrumbs;
+@property(nonatomic, readonly, strong) NSArray *beforeNotifyHooks;
+@property(nonatomic) void (*onCrashHandler)(const KSCrashReportWriter *writer);
 
 @property(nonatomic) BOOL autoNotify;
 
-- (void) setUser:(NSString*) userId withName:(NSString*) name andEmail:(NSString*) email;
+- (void)setUser:(NSString *)userId
+       withName:(NSString *)name
+       andEmail:(NSString *)email;
+
+- (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook)hook;
 
 @end
