@@ -52,6 +52,8 @@ struct bugsnag_data_t {
     char *configJSON;
     // Contains notifier state, under "deviceState" and crash-specific information under "crash".
     char *stateJSON;
+    // User onCrash handler
+    void (*onCrash)(const KSCrashReportWriter* writer);
 };
 
 static struct bugsnag_data_t g_bugsnag_data;
@@ -71,6 +73,9 @@ void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer) {
     }
     if (g_bugsnag_data.stateJSON) {
         writer->addJSONElement(writer, "state", g_bugsnag_data.stateJSON);
+    }
+    if (g_bugsnag_data.onCrash) {
+        g_bugsnag_data.onCrash(writer);
     }
 }
 
@@ -117,6 +122,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         [self metaDataChanged: self.configuration.metaData];
         [self metaDataChanged: self.configuration.config];
         [self metaDataChanged: self.state];
+        g_bugsnag_data.onCrash = self.configuration.onCrashHandler;
     }
 
     return self;
