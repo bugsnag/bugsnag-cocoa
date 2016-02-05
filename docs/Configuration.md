@@ -93,15 +93,17 @@ config.apiKey = @"YOUR_API_KEY_HERE";
 When a crash occurs in an application, information about the runtime state of
 the application is collected and prepared to be sent to Bugsnag on the next
 launch. The `onCrashHandler` hook allows you to execute additional code after
-the crash report has been written.
+the crash report has been written. This data is available for inspection after
+the next launch during the [`beforeNotifyHooks`](#beforenotifyhooks) phase.
 
 **NOTE:** All functions called from a signal handler must be
 [asynchronous-safe](https://www.securecoding.cert.org/confluence/display/c/SIG30-C.+Call+only+asynchronous-safe+functions+within+signal+handlers).
 This excludes any Objective-C, in particular.
 
-```objective-c
+```c
 void HandleCrashedThread(const KSCrashReportWriter *writer) {
   // possibly serialize data, call another crash reporter
+  writer->addJSONElement(writer, "dessertMap", dessertMapObj);
 }
 
 // ...
@@ -109,6 +111,9 @@ void HandleCrashedThread(const KSCrashReportWriter *writer) {
 BugsnagConfiguration *config = [[BugsnagConfiguration alloc] init];
 config.onCrashHandler = &HandleCrashedThread;
 ```
+
+[Functions available on `KSCrashReportWriter`](https://github.com/kstenerud/KSCrash/blob/master/Source/KSCrash/Recording/KSCrashReportWriter.h)
+
 
 ### `releaseStage`
 
