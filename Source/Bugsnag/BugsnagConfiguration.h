@@ -35,7 +35,7 @@
  *                         includes data added in onCrashHandler.
  *  @param report          The default report payload
  *
- *  @return the report payload intended to be sent
+ *  @return the report payload intended to be sent or nil to cancel sending
  */
 typedef NSDictionary * (^BugsnagBeforeNotifyHook)(NSArray *rawEventReports,
                                                   NSDictionary *report);

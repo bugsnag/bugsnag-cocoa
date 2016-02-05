@@ -41,6 +41,8 @@ modify or filter report information uploaded. Each `report` has an `apiKey`,
 the application state. The `rawEventReports` are the data written at crash-time,
 including any additional information written during `onCrashHandler`.
 
+**NOTE:** If a hook returns nil from execution, no report is sent.
+
 **NOTE:** Segmentation faults and other similar crashes cannot be caught within
 handlers.
 
