@@ -6,8 +6,28 @@ How to contribute
 
 -   [Fork](https://help.github.com/articles/fork-a-repo) the [notifier on github](https://github.com/bugsnag/bugsnag-cocoa)
 -   Commit and push until you are happy with your contribution
+-   Test your changes
 -   [Make a pull request](https://help.github.com/articles/using-pull-requests)
 -   Thanks!
+
+Running the tests
+-----------------
+
+Run the tests using the default SDK (iOS 9.2) by using:
+
+    make test
+
+Alternately, you can specify an iOS SDK:
+
+    make SDK=iphonesimulator8.1 test
+
+Or test on OS X:
+
+    make BUILD_OSX=1 test
+
+If you are interested in cleaner formatting, run `make bootstrap` to install
+[xcpretty](https://github.com/supermarin/xcpretty) as an output formatter.
+
 
 Releasing a new version
 -----------------------
