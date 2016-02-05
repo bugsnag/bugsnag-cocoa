@@ -27,6 +27,10 @@
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagConfiguration.h"
 
+@interface BugsnagConfiguration ()
+@property(nonatomic, readwrite, strong) NSMutableArray *beforeNotifyHooks;
+@end
+
 @implementation BugsnagConfiguration
 
 - (id)init {
@@ -36,7 +40,7 @@
     _apiKey = @"";
     _autoNotify = true;
     _notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
-
+    _beforeNotifyHooks = [NSMutableArray new];
     _notifyReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
 #if DEBUG
@@ -55,6 +59,10 @@
   [self.metaData addAttribute:@"email"
                     withValue:userEmail
                 toTabWithName:@"user"];
+}
+
+- (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook)hook {
+  [(NSMutableArray *)self.beforeNotifyHooks addObject:[hook copy]];
 }
 
 - (void)setReleaseStage:(NSString *)newReleaseStage {

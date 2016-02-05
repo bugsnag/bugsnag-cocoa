@@ -73,9 +73,12 @@
         }
         return;
     }
-    
-    
-    NSData* jsonData = [KSJSONCodec encode:[self getBodyFromReports: bugsnagReports]
+
+    NSDictionary *reportData = [self getBodyFromReports:bugsnagReports];
+    for (BugsnagBeforeNotifyHook hook in configuration.beforeNotifyHooks) {
+        reportData = hook(reports, reportData);
+    }
+    NSData* jsonData = [KSJSONCodec encode:reportData
                                    options:KSJSONEncodeOptionSorted | KSJSONEncodeOptionPretty
                                      error:&error];
     

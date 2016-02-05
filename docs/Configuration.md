@@ -32,6 +32,27 @@ to NO:
 [Bugsnag configuration].autoNotify = NO;
 ```
 
+### `beforeNotifyHooks`
+
+When an app first launches after a crash or a manual notification is triggered,
+crash reports are sent to Bugsnag. The `beforeNotifyHooks` allow you to
+modify or filter report information uploaded. Each `report` has an `apiKey`,
+`notifier` info, and `events`, which contains crash details and `metaData` about
+the application state. The `rawEventReports` are the data written at crash-time,
+including any additional information written during `onCrashHandler`.
+
+**NOTE:** Segmentation faults and other similar crashes cannot be caught within
+handlers.
+
+```objective-c
+BugsnagConfiguration *config = [BugsnagConfiguration new];
+[config addBeforeNotifyHook:^NSDictionary *(NSArray *rawEventReports, NSDictionary *report) {
+  NSMutableDictionary *reportCopy = [report mutableCopy];
+  // ...
+  return [reportCopy copy];
+}];
+```
+
 ### `context`
 
 Bugsnag uses the concept of "contexts" to help display and group your errors.
