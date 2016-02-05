@@ -1,7 +1,8 @@
-ifeq ($(IPHONE_SDK),)
- IPHONE_SDK=iphonesimulator9.2
+ifeq ($(SDK),)
+ SDK=iphonesimulator9.2
 endif
-BUILD_FLAGS=-project Bugsnag.xcodeproj -scheme Bugsnag -sdk $(IPHONE_SDK) -destination "platform=iOS Simulator,name=iPhone 5" -configuration Debug
+IOS_BUILD_FLAGS=-project Bugsnag.xcodeproj -scheme Bugsnag -sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5" -configuration Debug
+OSX_BUILD_FLAGS=-project Bugsnag.xcodeproj -scheme BugsnagOSX CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 XCODEBUILD=set -o pipefail && xcodebuild
 VERSION=$(shell cat VERSION)
 ifneq ($(strip $(shell which xcpretty)),)
@@ -23,14 +24,24 @@ bootstrap:
 	@gem install xcpretty --quiet --no-ri --no-rdoc
 
 build:
-	$(XCODEBUILD) $(BUILD_FLAGS) build $(FORMATTER)
+	$(XCODEBUILD) $(IOS_BUILD_FLAGS) build $(FORMATTER)
 
 clean:
-	$(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
+	$(XCODEBUILD) $(IOS_BUILD_FLAGS) clean $(FORMATTER)
 	@rm -r build
 
 test:
-	$(XCODEBUILD) $(BUILD_FLAGS) test $(FORMATTER)
+ifeq ($(BUILD_OSX), 1)
+	@$(MAKE) test-osx
+else
+	@$(MAKE) test-ios
+endif
+
+test-ios:
+	$(XCODEBUILD) $(IOS_BUILD_FLAGS) test $(FORMATTER)
+
+test-osx:
+	$(XCODEBUILD) $(OSX_BUILD_FLAGS) test $(FORMATTER)
 
 release: build/Release/Bugsnag-$(VERSION).zip build/Release/BugsnagOSX-$(VERSION).zip
 	@open .
