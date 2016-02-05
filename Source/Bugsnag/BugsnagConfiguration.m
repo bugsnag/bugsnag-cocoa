@@ -24,69 +24,66 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagConfiguration.h"
 #import "BugsnagBreadcrumb.h"
+#import "BugsnagConfiguration.h"
 
 @implementation BugsnagConfiguration
 
--(id)init {
-    if (self = [super init])  {
-        self.metaData = [[BugsnagMetaData alloc] init];
-        self.config = [[BugsnagMetaData alloc] init];
-        self.apiKey = @"";
-        self.autoNotify = true;
-        self.notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
+- (id)init {
+  if (self = [super init]) {
+    _metaData = [[BugsnagMetaData alloc] init];
+    _config = [[BugsnagMetaData alloc] init];
+    _apiKey = @"";
+    _autoNotify = true;
+    _notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
 
-        self.notifyReleaseStages = nil;
-        _breadcrumbs = [BugsnagBreadcrumbs new];
+    _notifyReleaseStages = nil;
+    _breadcrumbs = [BugsnagBreadcrumbs new];
 #if DEBUG
-        self.releaseStage = @"development";
+    _releaseStage = @"development";
 #else
-        self.releaseStage = @"production";
+    _releaseStage = @"production";
 #endif
-    }
-    return self;
+  }
+  return self;
 }
--(void)setUser:(NSString*)userId withName: (NSString*) userName andEmail:(NSString*)userEmail
-{
-    [self.metaData addAttribute:@"id" withValue:userId toTabWithName:@"user"];
-    [self.metaData addAttribute:@"name" withValue:userName toTabWithName:@"user"];
-    [self.metaData addAttribute:@"email" withValue:userEmail toTabWithName:@"user"];
-}
-
-@synthesize metaData;
-@synthesize config;
-
-@synthesize notifyURL;
-@synthesize apiKey;
-@synthesize autoNotify;
-@synthesize releaseStage;
-@synthesize notifyReleaseStages;
-@synthesize context;
-@synthesize appVersion;
-
--(void) setReleaseStage:(NSString *)newReleaseStage {
-    self->releaseStage = newReleaseStage;
-    [self.config addAttribute:@"releaseStage" withValue:newReleaseStage toTabWithName:@"config"];
+- (void)setUser:(NSString *)userId
+       withName:(NSString *)userName
+       andEmail:(NSString *)userEmail {
+  [self.metaData addAttribute:@"id" withValue:userId toTabWithName:@"user"];
+  [self.metaData addAttribute:@"name" withValue:userName toTabWithName:@"user"];
+  [self.metaData addAttribute:@"email"
+                    withValue:userEmail
+                toTabWithName:@"user"];
 }
 
+- (void)setReleaseStage:(NSString *)newReleaseStage {
+  _releaseStage = newReleaseStage;
+  [self.config addAttribute:@"releaseStage"
+                  withValue:newReleaseStage
+              toTabWithName:@"config"];
+}
 
 - (void)setNotifyReleaseStages:(NSArray *)newNotifyReleaseStages;
 {
-    NSArray *notifyReleaseStagesCopy = [newNotifyReleaseStages copy];
-    self->notifyReleaseStages = notifyReleaseStagesCopy;
-    [self.config addAttribute:@"notifyReleaseStages" withValue:notifyReleaseStagesCopy toTabWithName:@"config"];
+  NSArray *notifyReleaseStagesCopy = [newNotifyReleaseStages copy];
+  _notifyReleaseStages = notifyReleaseStagesCopy;
+  [self.config addAttribute:@"notifyReleaseStages"
+                  withValue:notifyReleaseStagesCopy
+              toTabWithName:@"config"];
 }
 
--(void) setContext:(NSString *)newContext
-{
-    self->context = newContext;
-    [self.config addAttribute:@"context" withValue: newContext toTabWithName:@"config"];
+- (void)setContext:(NSString *)newContext {
+  _context = newContext;
+  [self.config addAttribute:@"context"
+                  withValue:newContext
+              toTabWithName:@"config"];
 }
 
--(void) setAppVersion:(NSString *)newVersion
-{
-    self->appVersion = newVersion;
-    [self.config addAttribute:@"appVersion" withValue: newVersion toTabWithName:@"config"];
+- (void)setAppVersion:(NSString *)newVersion {
+  _appVersion = newVersion;
+  [self.config addAttribute:@"appVersion"
+                  withValue:newVersion
+              toTabWithName:@"config"];
 }
 @end
