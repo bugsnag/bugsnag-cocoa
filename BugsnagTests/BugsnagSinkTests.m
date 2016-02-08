@@ -42,6 +42,7 @@
   config.autoNotify = NO;
   config.apiKey = @"apiKeyHere";
   config.releaseStage = @"MagicalTestingTime";
+  config.notifyURL = nil;
   [Bugsnag startBugsnagWithConfiguration:config];
 }
 
@@ -74,7 +75,11 @@
 
 - (void)testNotifierName {
   NSString *name = self.processedData[@"notifier"][@"name"];
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
   XCTAssertEqualObjects(name, @"iOS Bugsnag Notifier");
+#else
+  XCTAssertEqualObjects(name, @"OSX Bugsnag Notifier");
+#endif
 }
 
 - (void)testNotifierDefaultURL {
