@@ -27,7 +27,7 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagMetaData.h"
-#import "KSCrashReportWriter.h"
+#import <KSCrash/KSCrash.h>
 /**
  *  A handler for modifying data before sending it to Bugsnag
  *

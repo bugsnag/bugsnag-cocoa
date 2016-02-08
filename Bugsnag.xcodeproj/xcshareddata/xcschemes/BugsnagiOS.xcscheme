@@ -14,9 +14,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "932642CA1AB2494F0006C447"
-               BuildableName = "BugsnagOSX.framework"
-               BlueprintName = "BugsnagOSX"
+               BlueprintIdentifier = "79FD0E161A0C18F30050DBC5"
+               BuildableName = "BugsnagiOS.framework"
+               BlueprintName = "BugsnagiOS"
+               ReferencedContainer = "container:Bugsnag.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "79FD0E201A0C18F30050DBC5"
+               BuildableName = "BugsnagTests.xctest"
+               BlueprintName = "BugsnagTests"
                ReferencedContainer = "container:Bugsnag.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +46,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "8AAF52FA1C653DF500CDFF50"
-               BuildableName = "BugsnagOSXTests.xctest"
-               BlueprintName = "BugsnagOSXTests"
+               BlueprintIdentifier = "79FD0E201A0C18F30050DBC5"
+               BuildableName = "BugsnagTests.xctest"
+               BlueprintName = "BugsnagTests"
                ReferencedContainer = "container:Bugsnag.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -42,9 +56,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "932642CA1AB2494F0006C447"
-            BuildableName = "BugsnagOSX.framework"
-            BlueprintName = "BugsnagOSX"
+            BlueprintIdentifier = "79FD0E161A0C18F30050DBC5"
+            BuildableName = "BugsnagiOS.framework"
+            BlueprintName = "BugsnagiOS"
             ReferencedContainer = "container:Bugsnag.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -64,9 +78,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "932642CA1AB2494F0006C447"
-            BuildableName = "BugsnagOSX.framework"
-            BlueprintName = "BugsnagOSX"
+            BlueprintIdentifier = "79FD0E161A0C18F30050DBC5"
+            BuildableName = "BugsnagiOS.framework"
+            BlueprintName = "BugsnagiOS"
             ReferencedContainer = "container:Bugsnag.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -82,9 +96,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "932642CA1AB2494F0006C447"
-            BuildableName = "BugsnagOSX.framework"
-            BlueprintName = "BugsnagOSX"
+            BlueprintIdentifier = "79FD0E161A0C18F30050DBC5"
+            BuildableName = "BugsnagiOS.framework"
+            BlueprintName = "BugsnagiOS"
             ReferencedContainer = "container:Bugsnag.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

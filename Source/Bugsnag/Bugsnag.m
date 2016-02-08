@@ -29,7 +29,7 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
-#import "KSCrashAdvanced.h"
+#import <KSCrash/KSCrashAdvanced.h>
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     // iOS Simulator or iOS device
