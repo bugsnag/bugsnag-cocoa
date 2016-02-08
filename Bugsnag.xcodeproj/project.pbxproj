@@ -163,6 +163,7 @@
 		938596851A2EB6730082E445 /* BugsnagSinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 938595BA1A2D51FE0082E445 /* BugsnagSinkTests.m */; };
 		938596891A2EB7510082E445 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FD0E171A0C18F30050DBC5 /* Bugsnag.framework */; };
 		93C8640E1B578D0900058362 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C8640D1B578D0900058362 /* libc++.dylib */; };
+		B59DB7381C69192900ECCBF3 /* KSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 79FD0D7D1A0C16C70050DBC5 /* KSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -628,6 +629,7 @@
 				79FD0E321A0C1AB30050DBC5 /* BugsnagConfiguration.h in Headers */,
 				79FD0E311A0C1AAF0050DBC5 /* BugsnagMetaData.h in Headers */,
 				79FD0E301A0C1AAB0050DBC5 /* Bugsnag.h in Headers */,
+				B59DB7381C69192900ECCBF3 /* KSCrashReportWriter.h in Headers */,
 				8A4C96F41BAA2EC9007B2BFC /* BugsnagBreadcrumb.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1073,7 +1075,6 @@
 		79659E151A0AFFF800280978 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Developer ID Application";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
@@ -1083,7 +1084,6 @@
 		79659E161A0AFFF800280978 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 			};
