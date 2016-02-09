@@ -13,8 +13,8 @@
   },
   "frameworks": "Foundation",
   "platforms": {
-    "ios": "5.0",
-    "osx": "10.7"
+    "ios": "7.0",
+    "osx": "10.8"
   },
   "source_files": [
     "Source/Bugsnag/**/*.{m,h,mm,c,cpp}"
