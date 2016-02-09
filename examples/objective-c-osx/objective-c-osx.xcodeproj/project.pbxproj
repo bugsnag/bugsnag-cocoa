@@ -158,6 +158,7 @@
 				93BE1CCD1B62CC360016380C /* Resources */,
 				40A5C5D356170963159E944D /* Copy Pods Resources */,
 				D24AA2BFC04EE1A1916426C8 /* Upload Bugsnag dSYM */,
+				09E7C9406C6A00A6A35079BC /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -243,6 +244,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		09E7C9406C6A00A6A35079BC /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		40A5C5D356170963159E944D /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -419,13 +435,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "objective-c-osx/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-l\"c++\"",
-					"-framework",
-					"\"Foundation\"",
-					"-lPods-Bugsnag",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -438,13 +448,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "objective-c-osx/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-l\"c++\"",
-					"-framework",
-					"\"Foundation\"",
-					"-lPods-Bugsnag",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

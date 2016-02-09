@@ -20,7 +20,7 @@ void exceptionHandler(NSException *ex) {
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    [Bugsnag startBugsnagWithApiKey:@""];
+    [Bugsnag startBugsnagWithApiKey:@"API-KEY"];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
