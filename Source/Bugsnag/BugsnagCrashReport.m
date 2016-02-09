@@ -7,8 +7,8 @@
 //
 
 #import "Bugsnag.h"
+#import "BugsnagCollections.h"
 #import "BugsnagCrashReport.h"
-#import "KSSafeCollections.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {
@@ -19,33 +19,33 @@ NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
   unsigned long symbolAddress = [frame[@"symbol_addr"] unsignedLongValue];
   unsigned long imageAddress = [frame[@"object_addr"] unsignedLongValue];
 
-  [formatted
-      safeSetObject:[NSString stringWithFormat:@"0x%lx", instructionAddress]
-             forKey:@"frameAddress"];
-  [formatted safeSetObject:[NSString stringWithFormat:@"0x%lx", symbolAddress]
-                    forKey:@"symbolAddress"];
-  [formatted safeSetObject:[NSString stringWithFormat:@"0x%lx", imageAddress]
-                    forKey:@"machoLoadAddress"];
-  if (frame[@"isPC"])
-    [formatted safeSetObject:frame[@"isPC"] forKey:@"isPC"];
-  if (frame[@"isLR"])
-    [formatted safeSetObject:frame[@"isLR"] forKey:@"isLR"];
+  BSGDictSetSafeObject(formatted,
+                       [NSString stringWithFormat:@"0x%lx", instructionAddress],
+                       @"frameAddress");
+  BSGDictSetSafeObject(formatted,
+                       [NSString stringWithFormat:@"0x%lx", symbolAddress],
+                       @"symbolAddress");
+  BSGDictSetSafeObject(formatted,
+                       [NSString stringWithFormat:@"0x%lx", imageAddress],
+                       @"machoLoadAddress");
+  BSGDictInsertIfNotNil(formatted, frame[@"isPC"], @"isPC");
+  BSGDictInsertIfNotNil(formatted, frame[@"isLR"], @"isLR");
 
   NSString *file = frame[@"object_name"];
   NSString *method = frame[@"symbol_name"];
 
-  [formatted setObjectIfNotNil:file forKey:@"machoFile"];
-  [formatted setObjectIfNotNil:method forKey:@"method"];
+  BSGDictInsertIfNotNil(formatted, file, @"machoFile");
+  BSGDictInsertIfNotNil(formatted, method, @"method");
 
   for (NSDictionary *image in binaryImages) {
     if ([(NSNumber *)image[@"image_addr"] unsignedLongValue] == imageAddress) {
       unsigned long imageSlide = [image[@"image_vmaddr"] unsignedLongValue];
 
-      [formatted setObjectIfNotNil:image[@"uuid"] forKey:@"machoUUID"];
-      [formatted setObjectIfNotNil:image[@"name"] forKey:@"machoFile"];
-
-      [formatted safeSetObject:[NSString stringWithFormat:@"0x%lx", imageSlide]
-                        forKey:@"machoVMAddress"];
+      BSGDictInsertIfNotNil(formatted, image[@"uuid"], @"machoUUID");
+      BSGDictInsertIfNotNil(formatted, image[@"name"], @"machoFile");
+      BSGDictSetSafeObject(formatted,
+                           [NSString stringWithFormat:@"0x%lx", imageSlide],
+                           @"machoVMAddress");
 
       return formatted;
     }
@@ -185,55 +185,55 @@ NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
       [self severity].length > 0 ? [self severity] : BugsnagSeverityError;
 
   // Build Event
-  [event safeSetObject:@[ exception ] forKey:@"exceptions"];
-  [event setObjectIfNotNil:[self dsymUUID] forKey:@"dsymUUID"];
-  [event safeSetObject:severity forKey:@"severity"];
-  [event safeSetObject:[self breadcrumbs] forKey:@"breadcrumbs"];
-  [event safeSetObject:@"2" forKey:@"payloadVersion"];
-  [event safeSetObject:metaData forKey:@"metaData"];
-  [event safeSetObject:[self deviceState] forKey:@"deviceState"];
-  [event safeSetObject:[self device] forKey:@"device"];
-  [event safeSetObject:[self appState] forKey:@"appState"];
-  [event safeSetObject:[self app] forKey:@"app"];
+  BSGDictSetSafeObject(event, @[ exception ], @"exceptions");
+  BSGDictInsertIfNotNil(event, [self dsymUUID], @"dsymUUID");
+  BSGDictSetSafeObject(event, severity, @"severity");
+  BSGDictSetSafeObject(event, [self breadcrumbs], @"breadcrumbs");
+  BSGDictSetSafeObject(event, @"2", @"payloadVersion");
+  BSGDictSetSafeObject(event, metaData, @"metaData");
+  BSGDictSetSafeObject(event, [self deviceState], @"deviceState");
+  BSGDictSetSafeObject(event, [self device], @"device");
+  BSGDictSetSafeObject(event, [self appState], @"appState");
+  BSGDictSetSafeObject(event, [self app], @"app");
 
   if ([metaData[@"context"] isKindOfClass:[NSString class]]) {
-    [event safeSetObject:metaData[@"context"] forKey:@"context"];
+    BSGDictSetSafeObject(event, metaData[@"context"], @"context");
     [metaData removeObjectForKey:@"context"];
 
   } else {
-    [event safeSetObject:[self context] forKey:@"context"];
+    BSGDictSetSafeObject(event, [self context], @"context");
   }
 
   //  Build MetaData
-  [metaData safeSetObject:[self error] forKey:@"error"];
+  BSGDictSetSafeObject(metaData, [self error], @"error");
 
   // Make user mutable and set the id if the user hasn't already
   NSMutableDictionary *user = [metaData[@"user"] mutableCopy];
   if (user == nil)
     user = [NSMutableDictionary dictionary];
-  [metaData safeSetObject:user forKey:@"user"];
+  BSGDictSetSafeObject(metaData, user, @"user");
 
   if (!user[@"id"]) {
-    [user safeSetObject:[self deviceAppHash] forKey:@"id"];
+    BSGDictSetSafeObject(user, [self deviceAppHash], @"id");
   }
 
   // Build Exception
-  [exception safeSetObject:[self errorClass] forKey:@"errorClass"];
-  [exception setObjectIfNotNil:[self errorMessage] forKey:@"message"];
+  BSGDictSetSafeObject(exception, [self errorClass], @"errorClass");
+  BSGDictInsertIfNotNil(exception, [self errorMessage], @"message");
 
   // HACK: For the Unity Notifier. We don't include ObjectiveC exceptions or
   // threads
   // if this is an exception from Unity-land.
   NSDictionary *unityReport = metaData[@"_bugsnag_unity_exception"];
   if (unityReport) {
-    [data safeSetObject:unityReport[@"notifier"] forKey:@"notifier"];
-    [exception safeSetObject:unityReport[@"stacktrace"] forKey:@"stacktrace"];
+    BSGDictSetSafeObject(data, unityReport[@"notifier"], @"notifier");
+    BSGDictSetSafeObject(exception, unityReport[@"stacktrace"], @"stacktrace");
     [metaData removeObjectForKey:@"_bugsnag_unity_exception"];
     return event;
   }
 
-  [event safeSetObject:[self serializeThreadsWithException:exception]
-                forKey:@"threads"];
+  BSGDictSetSafeObject(event, [self serializeThreadsWithException:exception],
+                       @"threads");
   return event;
 }
 
@@ -253,36 +253,36 @@ NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
         if (seen++ >= [self depth]) {
           // Mark the frame so we know where it came from
           if (seen == 1 && !stackOverflow) {
-            [mutableFrame safeSetObject:@YES forKey:@"isPC"];
+            BSGDictSetSafeObject(mutableFrame, @YES, @"isPC");
           }
           if (seen == 2 && !stackOverflow &&
               [@[ @"signal", @"deadlock", @"mach" ]
                   containsObject:[self errorType]]) {
-            [mutableFrame safeSetObject:@YES forKey:@"isLR"];
+            BSGDictSetSafeObject(mutableFrame, @YES, @"isLR");
           }
-          [stacktrace addObjectIfNotNil:BSGFormatFrame(mutableFrame,
-                                                       [self binaryImages])];
+          BSGArrayInsertIfNotNil(
+              stacktrace, BSGFormatFrame(mutableFrame, [self binaryImages]));
         }
       }
 
-      [exception safeSetObject:stacktrace forKey:@"stacktrace"];
+      BSGDictSetSafeObject(exception, stacktrace, @"stacktrace");
     } else {
       NSMutableArray *threadStack = [NSMutableArray array];
 
       for (NSDictionary *frame in backtrace) {
-        [threadStack
-            addObjectIfNotNil:BSGFormatFrame(frame, [self binaryImages])];
+        BSGArrayInsertIfNotNil(threadStack,
+                               BSGFormatFrame(frame, [self binaryImages]));
       }
 
       NSMutableDictionary *threadDict = [NSMutableDictionary dictionary];
-      [threadDict safeSetObject:thread[@"index"] forKey:@"id"];
-      [threadDict safeSetObject:threadStack forKey:@"stacktrace"];
+      BSGDictSetSafeObject(threadDict, thread[@"index"], @"id");
+      BSGDictSetSafeObject(threadDict, threadStack, @"stacktrace");
       // only if this is enabled in KSCrash.
       if (thread[@"name"]) {
-        [threadDict safeSetObject:thread[@"name"] forKey:@"name"];
+        BSGDictSetSafeObject(threadDict, thread[@"name"], @"name");
       }
 
-      [bugsnagThreads safeAddObject:threadDict];
+      BSGArrayAddSafeObject(bugsnagThreads, threadDict);
     }
   }
   return bugsnagThreads;
@@ -291,8 +291,8 @@ NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
 // Generates the deviceState section of the payload
 - (NSDictionary *)deviceState {
   NSMutableDictionary *deviceState = [[self state][@"deviceState"] mutableCopy];
-  [deviceState safeSetObject:[self system][@"memory"][@"free"]
-                      forKey:@"freeMemory"];
+  BSGDictSetSafeObject(deviceState, [self system][@"memory"][@"free"],
+                       @"freeMemory");
   return deviceState;
 }
 
@@ -300,17 +300,17 @@ NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
 - (NSDictionary *)device {
   NSMutableDictionary *device = [NSMutableDictionary dictionary];
 
-  [device safeSetObject:@"Apple" forKey:@"manufacturer"];
-  [device safeSetObject:[[NSLocale currentLocale] localeIdentifier]
-                 forKey:@"locale"];
-  [device safeSetObject:[self system][@"device_app_hash"] forKey:@"id"];
-  [device safeSetObject:[self system][@"time_zone"] forKey:@"timezone"];
-  [device safeSetObject:[self system][@"model"] forKey:@"modelNumber"];
-  [device safeSetObject:[self system][@"machine"] forKey:@"model"];
-  [device safeSetObject:[self system][@"system_name"] forKey:@"osName"];
-  [device safeSetObject:[self system][@"system_version"] forKey:@"osVersion"];
-  [device safeSetObject:[self system][@"memory"][@"usable"]
-                 forKey:@"totalMemory"];
+  BSGDictSetSafeObject(device, @"Apple", @"manufacturer");
+  BSGDictSetSafeObject(device, [[NSLocale currentLocale] localeIdentifier],
+                       @"locale");
+  BSGDictSetSafeObject(device, [self system][@"device_app_hash"], @"id");
+  BSGDictSetSafeObject(device, [self system][@"time_zone"], @"timezone");
+  BSGDictSetSafeObject(device, [self system][@"model"], @"modelNumber");
+  BSGDictSetSafeObject(device, [self system][@"machine"], @"model");
+  BSGDictSetSafeObject(device, [self system][@"system_name"], @"osName");
+  BSGDictSetSafeObject(device, [self system][@"system_version"], @"osVersion");
+  BSGDictSetSafeObject(device, [self system][@"memory"][@"usable"],
+                       @"totalMemory");
 
   return device;
 }
@@ -323,13 +323,14 @@ NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
   NSInteger backgroundTimeSinceLaunch =
       [[self appStats][@"background_time_since_launch"] doubleValue] * 1000.0;
 
-  [appState safeSetObject:@(activeTimeSinceLaunch)
-                   forKey:@"durationInForeground"];
-  [appState safeSetObject:@(activeTimeSinceLaunch + backgroundTimeSinceLaunch)
-                   forKey:@"duration"];
-  [appState safeSetObject:[self appStats][@"application_in_foreground"]
-                   forKey:@"inForeground"];
-  [appState safeSetObject:[self appStats] forKey:@"stats"];
+  BSGDictSetSafeObject(appState, @(activeTimeSinceLaunch),
+                       @"durationInForeground");
+  BSGDictSetSafeObject(appState,
+                       @(activeTimeSinceLaunch + backgroundTimeSinceLaunch),
+                       @"duration");
+  BSGDictSetSafeObject(appState, [self appStats][@"application_in_foreground"],
+                       @"inForeground");
+  BSGDictSetSafeObject(appState, [self appStats], @"stats");
 
   return appState;
 }
@@ -338,16 +339,17 @@ NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
 - (NSDictionary *)app {
   NSMutableDictionary *app = [NSMutableDictionary dictionary];
 
-  [app safeSetObject:[self system][@"CFBundleVersion"] forKey:@"bundleVersion"];
-  [app safeSetObject:[self system][@"CFBundleIdentifier"] forKey:@"id"];
-  [app safeSetObject:[self system][@"CFBundleExecutable"] forKey:@"name"];
-  [app safeSetObject:[Bugsnag configuration].releaseStage
-              forKey:@"releaseStage"];
+  BSGDictSetSafeObject(app, [self system][@"CFBundleVersion"],
+                       @"bundleVersion");
+  BSGDictSetSafeObject(app, [self system][@"CFBundleIdentifier"], @"id");
+  BSGDictSetSafeObject(app, [self system][@"CFBundleExecutable"], @"name");
+  BSGDictSetSafeObject(app, [Bugsnag configuration].releaseStage,
+                       @"releaseStage");
   if ([self appVersion]) {
-    [app safeSetObject:[self appVersion] forKey:@"version"];
+    BSGDictSetSafeObject(app, [self appVersion], @"version");
   } else {
-    [app safeSetObject:[self system][@"CFBundleShortVersionString"]
-                forKey:@"version"];
+    BSGDictSetSafeObject(app, [self system][@"CFBundleShortVersionString"],
+                         @"version");
   }
 
   return app;

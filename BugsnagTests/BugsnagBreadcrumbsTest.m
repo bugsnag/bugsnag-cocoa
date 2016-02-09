@@ -8,7 +8,6 @@
 
 #import <XCTest/XCTest.h>
 #import "BugsnagBreadcrumb.h"
-#import "RFC3339DateTool.h"
 
 @interface BugsnagBreadcrumbsTest : XCTestCase
 @property (nonatomic,strong) BugsnagBreadcrumbs* crumbs;
@@ -68,10 +67,12 @@
     NSArray* value = [self.crumbs arrayValue];
     XCTAssertNotNil(value);
     XCTAssertTrue(value.count == 3);
+    NSDateFormatter *formatter = [NSDateFormatter new];
+    formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssX5";
     for (NSArray* item in value) {
         XCTAssertTrue([item isKindOfClass:[NSArray class]]);
         XCTAssertTrue(item.count == 2);
-        XCTAssertTrue([[RFC3339DateTool dateFromString:item[0]] isKindOfClass:[NSDate class]]);
+        XCTAssertTrue([[formatter dateFromString:item[0]] isKindOfClass:[NSDate class]]);
     }
     XCTAssertEqualObjects(value[0][1], @"Launch app");
     XCTAssertEqualObjects(value[1][1], @"Tap button");

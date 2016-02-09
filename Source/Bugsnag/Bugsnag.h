@@ -140,4 +140,6 @@ static NSString* BugsnagSeverityInfo    = @"info";
  */
 + (void) clearBreadcrumbs;
 
++ (NSDateFormatter *)payloadDateFormatter;
+
 @end

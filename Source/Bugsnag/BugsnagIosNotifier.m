@@ -29,11 +29,9 @@
 #import <UIKit/UIKit.h>
 #include <sys/utsname.h>
 
-
+#import "Bugsnag.h"
 #import "BugsnagIosNotifier.h"
 #import "BugsnagNotifier.h"
-
-#import "RFC3339DateTool.h"
 
 @implementation BugsnagIosNotifier
 
@@ -91,7 +89,7 @@
 }
 
 - (void)lowMemoryWarning:(NSNotification *)notif {
-    [[self state] addAttribute: @"lowMemoryWarning" withValue: [RFC3339DateTool stringFromDate:[NSDate date]] toTabWithName:@"deviceState"];
+    [[self state] addAttribute: @"lowMemoryWarning" withValue: [[Bugsnag payloadDateFormatter] stringFromDate:[NSDate date]] toTabWithName:@"deviceState"];
 }
 
 - (void)dealloc {

@@ -24,13 +24,12 @@
 // THE SOFTWARE.
 //
 
+#import <KSCrash/KSCrash.h>
 #import "BugsnagSink.h"
 #import "BugsnagNotifier.h"
 #import "Bugsnag.h"
 #import "BugsnagCrashReport.h"
-
-#import "KSSafeCollections.h"
-#import "KSJSONCodecObjC.h"
+#import "BugsnagCollections.h"
 
 // This is private in Bugsnag, but really we want package private so define
 // it here.
@@ -88,9 +87,9 @@
         }
         return;
     }
-    NSData* jsonData = [KSJSONCodec encode:reportData
-                                   options:KSJSONEncodeOptionSorted | KSJSONEncodeOptionPretty
-                                     error:&error];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:reportData
+                                                       options:NSJSONWritingPrettyPrinted
+                                                         error:&error];
     
     if (jsonData == nil) {
         if (onCompletion) {
@@ -120,17 +119,16 @@
 // Generates the payload for notifying Bugsnag
 - (NSDictionary*) getBodyFromReports:(NSArray*) reports {
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
-    
-    [data safeSetObject: [Bugsnag configuration].apiKey forKey: @"apiKey"];
-    [data safeSetObject: [Bugsnag notifier].details forKey: @"notifier"];
+    BSGDictSetSafeObject(data, [Bugsnag configuration].apiKey, @"apiKey");
+    BSGDictSetSafeObject(data, [Bugsnag notifier].details, @"notifier");
     
     NSMutableArray* formatted = [[NSMutableArray alloc] initWithCapacity:[reports count]];
     
     for (BugsnagCrashReport* report in reports) {
-        [formatted safeAddObject:[report serializableValueWithTopLevelData:data]];
+        BSGArrayAddSafeObject(formatted, [report serializableValueWithTopLevelData:data]);
     }
-    
-    [data safeSetObject: formatted forKey:@"events"];
+
+    BSGDictSetSafeObject(data, formatted, @"events");
     
     return data;
 }
