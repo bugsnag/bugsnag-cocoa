@@ -32,6 +32,11 @@
 #import "BugsnagCollections.h"
 #import "BugsnagSink.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#include <sys/utsname.h>
+#endif
+
 NSString *const NOTIFIER_VERSION = @"4.1.0";
 NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 NSString *const BSTabCrash = @"crash";
@@ -139,6 +144,23 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     }
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
+
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+  [self.details setValue: @"iOS Bugsnag Notifier" forKey:@"name"];
+
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryChanged:) name:UIDeviceBatteryStateDidChangeNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryChanged:) name:UIDeviceBatteryLevelDidChangeNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lowMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+
+  [UIDevice currentDevice].batteryMonitoringEnabled = TRUE;
+  [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+
+  [self batteryChanged:nil];
+  [self orientationChanged:nil];
+#elif TARGET_OS_MAC
+  [self.details setValue: @"OSX Bugsnag Notifier" forKey:@"name"];
+#endif
 }
 
 - (void)notify:(NSException *)exception withData:(NSDictionary *)metaData atSeverity:(NSString *)severity atDepth:(NSUInteger) depth {
@@ -200,6 +222,52 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         NSLog(@"Unknown metadata dictionary changed");
     }
 }
+
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+- (void) batteryChanged:(NSNotification *)notif {
+  NSNumber *batteryLevel = [NSNumber numberWithFloat:[UIDevice currentDevice].batteryLevel];
+  NSNumber *charging = [NSNumber numberWithBool: [UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging];
+
+  [[self state] addAttribute: @"batteryLevel" withValue: batteryLevel toTabWithName:@"deviceState"];
+  [[self state] addAttribute: @"charging" withValue: charging toTabWithName:@"deviceState"];
+}
+
+- (void)orientationChanged:(NSNotification *)notif {
+  NSString *orientation;
+  switch([UIDevice currentDevice].orientation) {
+    case UIDeviceOrientationPortraitUpsideDown:
+      orientation = @"portraitupsidedown";
+      break;
+    case UIDeviceOrientationPortrait:
+      orientation = @"portrait";
+      break;
+    case UIDeviceOrientationLandscapeRight:
+      orientation = @"landscaperight";
+      break;
+    case UIDeviceOrientationLandscapeLeft:
+      orientation = @"landscapeleft";
+      break;
+    case UIDeviceOrientationFaceUp:
+      orientation = @"faceup";
+      break;
+    case UIDeviceOrientationFaceDown:
+      orientation = @"facedown";
+      break;
+    case UIDeviceOrientationUnknown:
+    default:
+      orientation = @"unknown";
+  }
+  [[self state] addAttribute:@"orientation" withValue:orientation toTabWithName:@"deviceState"];
+}
+
+- (void)lowMemoryWarning:(NSNotification *)notif {
+  [[self state] addAttribute: @"lowMemoryWarning" withValue: [[Bugsnag payloadDateFormatter] stringFromDate:[NSDate date]] toTabWithName:@"deviceState"];
+}
+
+- (void)dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+#endif
 
 @end
 

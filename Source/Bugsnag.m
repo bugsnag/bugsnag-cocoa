@@ -31,22 +31,6 @@
 #import "BugsnagSink.h"
 #import <KSCrash/KSCrashAdvanced.h>
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    // iOS Simulator or iOS device
-    #import "BugsnagIosNotifier.h"
-    static NSString *notifierClass = @"BugsnagIosNotifier";
-#elif TARGET_OS_MAC
-    // Other kinds of Mac OS
-    #import "BugsnagOSXNotifier.h"
-    static NSString *notifierClass = @"BugsnagOSXNotifier";
-#else
-
-#pragma warn "Unsupported platform"
-    // Unsupported platform
-    #import "BugsnagNotifier.h"
-    static NSString *notifierClass = @"BugsnagNotifier";
-#endif
-
 static BugsnagNotifier* g_bugsnag_notifier = NULL;
 
 @interface Bugsnag ()
@@ -64,7 +48,7 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
 }
 
 + (void)startBugsnagWithConfiguration:(BugsnagConfiguration*) configuration {
-    g_bugsnag_notifier = [[NSClassFromString(notifierClass) alloc] initWithConfiguration:configuration];
+    g_bugsnag_notifier = [[BugsnagNotifier alloc] initWithConfiguration:configuration];
     [g_bugsnag_notifier start];
 }
 

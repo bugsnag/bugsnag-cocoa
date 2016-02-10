@@ -28,8 +28,6 @@
 		8A6174151C6ABF1C003A0092 /* BugsnagConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174011C6ABF1C003A0092 /* BugsnagConfiguration.m */; };
 		8A6174161C6ABF1C003A0092 /* BugsnagCrashReport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174021C6ABF1C003A0092 /* BugsnagCrashReport.h */; };
 		8A6174171C6ABF1C003A0092 /* BugsnagCrashReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174031C6ABF1C003A0092 /* BugsnagCrashReport.m */; };
-		8A6174181C6ABF1C003A0092 /* BugsnagIosNotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174041C6ABF1C003A0092 /* BugsnagIosNotifier.h */; };
-		8A6174191C6ABF1C003A0092 /* BugsnagIosNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174051C6ABF1C003A0092 /* BugsnagIosNotifier.m */; };
 		8A61741A1C6ABF1C003A0092 /* BugsnagMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174061C6ABF1C003A0092 /* BugsnagMetaData.h */; };
 		8A61741B1C6ABF1C003A0092 /* BugsnagMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174071C6ABF1C003A0092 /* BugsnagMetaData.m */; };
 		8A61741C1C6ABF1C003A0092 /* BugsnagNotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174081C6ABF1C003A0092 /* BugsnagNotifier.h */; };
@@ -55,8 +53,6 @@
 		8A6174501C6AC26B003A0092 /* BugsnagMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174071C6ABF1C003A0092 /* BugsnagMetaData.m */; };
 		8A6174511C6AC26B003A0092 /* BugsnagNotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174081C6ABF1C003A0092 /* BugsnagNotifier.h */; };
 		8A6174521C6AC26B003A0092 /* BugsnagNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174091C6ABF1C003A0092 /* BugsnagNotifier.m */; };
-		8A6174531C6AC26B003A0092 /* BugsnagOSXNotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A61740A1C6ABF1C003A0092 /* BugsnagOSXNotifier.h */; };
-		8A6174541C6AC26B003A0092 /* BugsnagOSXNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A61740B1C6ABF1C003A0092 /* BugsnagOSXNotifier.m */; };
 		8A6174551C6AC26B003A0092 /* BugsnagSink.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A61740C1C6ABF1C003A0092 /* BugsnagSink.h */; };
 		8A6174561C6AC26B003A0092 /* BugsnagSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A61740D1C6ABF1C003A0092 /* BugsnagSink.m */; };
 		8A6174581C6AC304003A0092 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6174571C6AC304003A0092 /* libc++.tbd */; };
@@ -109,14 +105,10 @@
 		8A6174011C6ABF1C003A0092 /* BugsnagConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfiguration.m; path = Source/BugsnagConfiguration.m; sourceTree = SOURCE_ROOT; };
 		8A6174021C6ABF1C003A0092 /* BugsnagCrashReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagCrashReport.h; path = Source/BugsnagCrashReport.h; sourceTree = SOURCE_ROOT; };
 		8A6174031C6ABF1C003A0092 /* BugsnagCrashReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagCrashReport.m; path = Source/BugsnagCrashReport.m; sourceTree = SOURCE_ROOT; };
-		8A6174041C6ABF1C003A0092 /* BugsnagIosNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagIosNotifier.h; path = Source/BugsnagIosNotifier.h; sourceTree = SOURCE_ROOT; };
-		8A6174051C6ABF1C003A0092 /* BugsnagIosNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagIosNotifier.m; path = Source/BugsnagIosNotifier.m; sourceTree = SOURCE_ROOT; };
 		8A6174061C6ABF1C003A0092 /* BugsnagMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagMetaData.h; path = Source/BugsnagMetaData.h; sourceTree = SOURCE_ROOT; };
 		8A6174071C6ABF1C003A0092 /* BugsnagMetaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagMetaData.m; path = Source/BugsnagMetaData.m; sourceTree = SOURCE_ROOT; };
 		8A6174081C6ABF1C003A0092 /* BugsnagNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagNotifier.h; path = Source/BugsnagNotifier.h; sourceTree = SOURCE_ROOT; };
 		8A6174091C6ABF1C003A0092 /* BugsnagNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagNotifier.m; path = Source/BugsnagNotifier.m; sourceTree = SOURCE_ROOT; };
-		8A61740A1C6ABF1C003A0092 /* BugsnagOSXNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagOSXNotifier.h; path = Source/BugsnagOSXNotifier.h; sourceTree = SOURCE_ROOT; };
-		8A61740B1C6ABF1C003A0092 /* BugsnagOSXNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagOSXNotifier.m; path = Source/BugsnagOSXNotifier.m; sourceTree = SOURCE_ROOT; };
 		8A61740C1C6ABF1C003A0092 /* BugsnagSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagSink.h; path = Source/BugsnagSink.h; sourceTree = SOURCE_ROOT; };
 		8A61740D1C6ABF1C003A0092 /* BugsnagSink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSink.m; path = Source/BugsnagSink.m; sourceTree = SOURCE_ROOT; };
 		8A6174291C6AC1EA003A0092 /* BugsnagOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,7 +121,8 @@
 		8A61745D1C6AC310003A0092 /* libKSCrashLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libKSCrashLib.a; path = "../../Library/Developer/Xcode/DerivedData/Bugsnag-dvqrtebfcsywyhcrxrokvhfryvyc/Build/Products/Debug-iphoneos/libKSCrashLib.a"; sourceTree = "<group>"; };
 		8A61746B1C6AC349003A0092 /* libKSCrashLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libKSCrashLib.a; path = Carthage/Checkouts/KSCrash/Mac/build/Debug/libKSCrashLib.a; sourceTree = "<group>"; };
 		8A61746D1C6AC41F003A0092 /* report.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = report.json; path = Tests/report.json; sourceTree = SOURCE_ROOT; };
-		8A6174761C6ACC4E003A0092 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = Source/module.modulemap; sourceTree = SOURCE_ROOT; };
+		8A6174791C6ADA3C003A0092 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = iOS/module.modulemap; sourceTree = SOURCE_ROOT; };
+		8A61747A1C6ADA4D003A0092 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = OSX/module.modulemap; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -220,7 +213,6 @@
 				8A6174091C6ABF1C003A0092 /* BugsnagNotifier.m */,
 				8A61740C1C6ABF1C003A0092 /* BugsnagSink.h */,
 				8A61740D1C6ABF1C003A0092 /* BugsnagSink.m */,
-				8A6174761C6ACC4E003A0092 /* module.modulemap */,
 			);
 			name = Source;
 			path = Bugsnag;
@@ -262,8 +254,7 @@
 		8A6174221C6ABF5B003A0092 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				8A6174041C6ABF1C003A0092 /* BugsnagIosNotifier.h */,
-				8A6174051C6ABF1C003A0092 /* BugsnagIosNotifier.m */,
+				8A6174791C6ADA3C003A0092 /* module.modulemap */,
 				8A61738F1C6AB592003A0092 /* Info.plist */,
 			);
 			name = iOS;
@@ -272,8 +263,7 @@
 		8A6174231C6ABF5F003A0092 /* OSX */ = {
 			isa = PBXGroup;
 			children = (
-				8A61740A1C6ABF1C003A0092 /* BugsnagOSXNotifier.h */,
-				8A61740B1C6ABF1C003A0092 /* BugsnagOSXNotifier.m */,
+				8A61747A1C6ADA4D003A0092 /* module.modulemap */,
 				8A61742D1C6AC1EB003A0092 /* Info.plist */,
 			);
 			name = OSX;
@@ -303,7 +293,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A6174181C6ABF1C003A0092 /* BugsnagIosNotifier.h in Headers */,
 				8A6174121C6ABF1C003A0092 /* BugsnagCollections.h in Headers */,
 				8A61740E1C6ABF1C003A0092 /* Bugsnag.h in Headers */,
 				8A61741A1C6ABF1C003A0092 /* BugsnagMetaData.h in Headers */,
@@ -325,7 +314,6 @@
 				8A6174491C6AC26B003A0092 /* BugsnagCollections.h in Headers */,
 				8A6174551C6AC26B003A0092 /* BugsnagSink.h in Headers */,
 				8A61744D1C6AC26B003A0092 /* BugsnagCrashReport.h in Headers */,
-				8A6174531C6AC26B003A0092 /* BugsnagOSXNotifier.h in Headers */,
 				8A6174511C6AC26B003A0092 /* BugsnagNotifier.h in Headers */,
 				8A6174471C6AC26B003A0092 /* BugsnagBreadcrumb.h in Headers */,
 			);
@@ -490,7 +478,6 @@
 				8A6174211C6ABF1C003A0092 /* BugsnagSink.m in Sources */,
 				8A61741B1C6ABF1C003A0092 /* BugsnagMetaData.m in Sources */,
 				8A6174151C6ABF1C003A0092 /* BugsnagConfiguration.m in Sources */,
-				8A6174191C6ABF1C003A0092 /* BugsnagIosNotifier.m in Sources */,
 				8A61741D1C6ABF1C003A0092 /* BugsnagNotifier.m in Sources */,
 				8A6174111C6ABF1C003A0092 /* BugsnagBreadcrumb.m in Sources */,
 				8A6174131C6ABF1C003A0092 /* BugsnagCollections.m in Sources */,
@@ -514,7 +501,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A6174541C6AC26B003A0092 /* BugsnagOSXNotifier.m in Sources */,
 				8A61744C1C6AC26B003A0092 /* BugsnagConfiguration.m in Sources */,
 				8A6174561C6AC26B003A0092 /* BugsnagSink.m in Sources */,
 				8A6174521C6AC26B003A0092 /* BugsnagNotifier.m in Sources */,
@@ -591,7 +577,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
-				MODULEMAP_FILE = Source/module.modulemap;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -633,7 +618,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
-				MODULEMAP_FILE = Source/module.modulemap;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -657,6 +641,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Checkouts/KSCrash/iOS/build/Debug-iphoneos",
 				);
+				MODULEMAP_FILE = iOS/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
 				PRODUCT_NAME = Bugsnag;
 				SKIP_INSTALL = YES;
@@ -677,6 +662,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Checkouts/KSCrash/iOS/build/Debug-iphoneos",
 				);
+				MODULEMAP_FILE = iOS/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
 				PRODUCT_NAME = Bugsnag;
 				SKIP_INSTALL = YES;
@@ -721,6 +707,7 @@
 					"$(PROJECT_DIR)/Carthage/Checkouts/KSCrash/Mac/build/Debug",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MODULEMAP_FILE = OSX/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagOSX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -746,6 +733,7 @@
 					"$(PROJECT_DIR)/Carthage/Checkouts/KSCrash/Mac/build/Debug",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MODULEMAP_FILE = OSX/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagOSX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
