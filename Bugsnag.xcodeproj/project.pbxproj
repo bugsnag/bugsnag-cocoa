@@ -7,312 +7,341 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1AC829330A914FC382A5DC05 /* libPods-BugsnagiOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CFD830943BD5EC306724D140 /* libPods-BugsnagiOS.a */; };
-		1D44532C9B7AC708EFE2CF6B /* libPods-BugsnagOSX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C46B75ABAB74A3F33D4F3B8A /* libPods-BugsnagOSX.a */; };
-		79FD0E301A0C1AAB0050DBC5 /* Bugsnag.h in Headers */ = {isa = PBXBuildFile; fileRef = 79FD0D541A0C168B0050DBC5 /* Bugsnag.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		79FD0E311A0C1AAF0050DBC5 /* BugsnagMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 79FD0D5A1A0C168B0050DBC5 /* BugsnagMetaData.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		79FD0E321A0C1AB30050DBC5 /* BugsnagConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 79FD0D561A0C168B0050DBC5 /* BugsnagConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8A4C96F11BAA2DEA007B2BFC /* BugsnagBreadcrumbsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4C96F01BAA2DEA007B2BFC /* BugsnagBreadcrumbsTest.m */; };
-		8A4C96F41BAA2EC9007B2BFC /* BugsnagBreadcrumb.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A4C96F21BAA2EC9007B2BFC /* BugsnagBreadcrumb.h */; };
-		8A4C96F81BAA2EDA007B2BFC /* BugsnagBreadcrumb.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A4C96F21BAA2EC9007B2BFC /* BugsnagBreadcrumb.h */; };
-		8A4C96F91BAA2EDD007B2BFC /* BugsnagBreadcrumb.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4C96F31BAA2EC9007B2BFC /* BugsnagBreadcrumb.m */; };
-		8AAF53001C653DF500CDFF50 /* BugsnagOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 932642CB1AB2494F0006C447 /* BugsnagOSX.framework */; };
-		8AAF53061C653E0100CDFF50 /* BugsnagBreadcrumbsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4C96F01BAA2DEA007B2BFC /* BugsnagBreadcrumbsTest.m */; };
-		8AAF53071C653E0400CDFF50 /* BugsnagCrashReportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 938595BC1A2D52400082E445 /* BugsnagCrashReportTests.m */; };
-		8AAF53081C653E0700CDFF50 /* BugsnagSinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 938595BA1A2D51FE0082E445 /* BugsnagSinkTests.m */; };
-		8AAF53091C653E0A00CDFF50 /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FD0E281A0C18F30050DBC5 /* BugsnagTests.m */; };
-		8AAF530A1C6541E600CDFF50 /* report.json in Resources */ = {isa = PBXBuildFile; fileRef = 938595BE1A2D54D40082E445 /* report.json */; };
-		8ABAB0DC1C6A69D100D2A542 /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FD0D551A0C168B0050DBC5 /* Bugsnag.m */; };
-		8ABAB0DD1C6A69DF00D2A542 /* BugsnagConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FD0D571A0C168B0050DBC5 /* BugsnagConfiguration.m */; };
-		8ABAB0DE1C6A69DF00D2A542 /* BugsnagIosNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FD0D591A0C168B0050DBC5 /* BugsnagIosNotifier.m */; };
-		8ABAB0DF1C6A69DF00D2A542 /* BugsnagMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FD0D5B1A0C168B0050DBC5 /* BugsnagMetaData.m */; };
-		8ABAB0E01C6A69DF00D2A542 /* BugsnagNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FD0D5D1A0C168B0050DBC5 /* BugsnagNotifier.m */; };
-		8ABAB0E11C6A69DF00D2A542 /* BugsnagSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FD0D5F1A0C168B0050DBC5 /* BugsnagSink.m */; };
-		8ABAB0E21C6A69DF00D2A542 /* BugsnagCrashReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 938594C41A2686DD0082E445 /* BugsnagCrashReport.m */; };
-		8ABAB0E31C6A69DF00D2A542 /* BugsnagBreadcrumb.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4C96F31BAA2EC9007B2BFC /* BugsnagBreadcrumb.m */; };
-		932643081AB249800006C447 /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FD0D551A0C168B0050DBC5 /* Bugsnag.m */; };
-		932643091AB249800006C447 /* BugsnagConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FD0D571A0C168B0050DBC5 /* BugsnagConfiguration.m */; };
-		9326430B1AB249800006C447 /* BugsnagMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FD0D5B1A0C168B0050DBC5 /* BugsnagMetaData.m */; };
-		9326430C1AB249800006C447 /* BugsnagNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FD0D5D1A0C168B0050DBC5 /* BugsnagNotifier.m */; };
-		9326430D1AB249800006C447 /* BugsnagSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FD0D5F1A0C168B0050DBC5 /* BugsnagSink.m */; };
-		9326430E1AB249800006C447 /* BugsnagCrashReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 938594C41A2686DD0082E445 /* BugsnagCrashReport.m */; };
-		932643121AB24AAE0006C447 /* Bugsnag.h in Headers */ = {isa = PBXBuildFile; fileRef = 79FD0D541A0C168B0050DBC5 /* Bugsnag.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		932643131AB24AAE0006C447 /* BugsnagConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 79FD0D561A0C168B0050DBC5 /* BugsnagConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		932643141AB24AAE0006C447 /* BugsnagMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 79FD0D5A1A0C168B0050DBC5 /* BugsnagMetaData.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		932643201AB24D820006C447 /* BugsnagOSXNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 9326431E1AB24D820006C447 /* BugsnagOSXNotifier.m */; };
-		938595BF1A2D54D40082E445 /* report.json in Resources */ = {isa = PBXBuildFile; fileRef = 938595BE1A2D54D40082E445 /* report.json */; };
-		938596831A2EB6730082E445 /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FD0E281A0C18F30050DBC5 /* BugsnagTests.m */; };
-		938596841A2EB6730082E445 /* BugsnagCrashReportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 938595BC1A2D52400082E445 /* BugsnagCrashReportTests.m */; };
-		938596851A2EB6730082E445 /* BugsnagSinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 938595BA1A2D51FE0082E445 /* BugsnagSinkTests.m */; };
-		938596891A2EB7510082E445 /* BugsnagiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FD0E171A0C18F30050DBC5 /* BugsnagiOS.framework */; };
+		8A6173951C6AB592003A0092 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A61738A1C6AB592003A0092 /* Bugsnag.framework */; };
+		8A6173A81C6AB6E2003A0092 /* BugsnagBreadcrumbsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173A41C6AB6E2003A0092 /* BugsnagBreadcrumbsTest.m */; };
+		8A6173A91C6AB6E2003A0092 /* BugsnagCrashReportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173A51C6AB6E2003A0092 /* BugsnagCrashReportTests.m */; };
+		8A6173AA1C6AB6E2003A0092 /* BugsnagSinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173A61C6AB6E2003A0092 /* BugsnagSinkTests.m */; };
+		8A6173AB1C6AB6E2003A0092 /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173A71C6AB6E2003A0092 /* BugsnagTests.m */; };
+		8A6173D61C6AB761003A0092 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6173D51C6AB761003A0092 /* libz.tbd */; };
+		8A6173D81C6AB765003A0092 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6173D71C6AB765003A0092 /* libc++.tbd */; };
+		8A6173DA1C6AB76A003A0092 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6173D91C6AB76A003A0092 /* SystemConfiguration.framework */; };
+		8A6173DC1C6AB78D003A0092 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6173DB1C6AB78D003A0092 /* MessageUI.framework */; };
+		8A6173F71C6AB802003A0092 /* libKSCrashLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6173F61C6AB802003A0092 /* libKSCrashLib.a */; };
+		8A6173F91C6AB85A003A0092 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6173F81C6AB85A003A0092 /* UIKit.framework */; };
+		8A61740E1C6ABF1C003A0092 /* Bugsnag.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6173FA1C6ABF1C003A0092 /* Bugsnag.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8A61740F1C6ABF1C003A0092 /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173FB1C6ABF1C003A0092 /* Bugsnag.m */; };
+		8A6174101C6ABF1C003A0092 /* BugsnagBreadcrumb.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6173FC1C6ABF1C003A0092 /* BugsnagBreadcrumb.h */; };
+		8A6174111C6ABF1C003A0092 /* BugsnagBreadcrumb.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173FD1C6ABF1C003A0092 /* BugsnagBreadcrumb.m */; };
+		8A6174121C6ABF1C003A0092 /* BugsnagCollections.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6173FE1C6ABF1C003A0092 /* BugsnagCollections.h */; };
+		8A6174131C6ABF1C003A0092 /* BugsnagCollections.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173FF1C6ABF1C003A0092 /* BugsnagCollections.m */; };
+		8A6174141C6ABF1C003A0092 /* BugsnagConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174001C6ABF1C003A0092 /* BugsnagConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8A6174151C6ABF1C003A0092 /* BugsnagConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174011C6ABF1C003A0092 /* BugsnagConfiguration.m */; };
+		8A6174161C6ABF1C003A0092 /* BugsnagCrashReport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174021C6ABF1C003A0092 /* BugsnagCrashReport.h */; };
+		8A6174171C6ABF1C003A0092 /* BugsnagCrashReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174031C6ABF1C003A0092 /* BugsnagCrashReport.m */; };
+		8A6174181C6ABF1C003A0092 /* BugsnagIosNotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174041C6ABF1C003A0092 /* BugsnagIosNotifier.h */; };
+		8A6174191C6ABF1C003A0092 /* BugsnagIosNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174051C6ABF1C003A0092 /* BugsnagIosNotifier.m */; };
+		8A61741A1C6ABF1C003A0092 /* BugsnagMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174061C6ABF1C003A0092 /* BugsnagMetaData.h */; };
+		8A61741B1C6ABF1C003A0092 /* BugsnagMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174071C6ABF1C003A0092 /* BugsnagMetaData.m */; };
+		8A61741C1C6ABF1C003A0092 /* BugsnagNotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174081C6ABF1C003A0092 /* BugsnagNotifier.h */; };
+		8A61741D1C6ABF1C003A0092 /* BugsnagNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174091C6ABF1C003A0092 /* BugsnagNotifier.m */; };
+		8A6174201C6ABF1C003A0092 /* BugsnagSink.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A61740C1C6ABF1C003A0092 /* BugsnagSink.h */; };
+		8A6174211C6ABF1C003A0092 /* BugsnagSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A61740D1C6ABF1C003A0092 /* BugsnagSink.m */; };
+		8A6174331C6AC1EB003A0092 /* BugsnagOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6174291C6AC1EA003A0092 /* BugsnagOSX.framework */; };
+		8A6174401C6AC202003A0092 /* BugsnagBreadcrumbsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173A41C6AB6E2003A0092 /* BugsnagBreadcrumbsTest.m */; };
+		8A6174411C6AC202003A0092 /* BugsnagCrashReportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173A51C6AB6E2003A0092 /* BugsnagCrashReportTests.m */; };
+		8A6174421C6AC202003A0092 /* BugsnagSinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173A61C6AB6E2003A0092 /* BugsnagSinkTests.m */; };
+		8A6174431C6AC202003A0092 /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173A71C6AB6E2003A0092 /* BugsnagTests.m */; };
+		8A6174451C6AC26B003A0092 /* Bugsnag.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6173FA1C6ABF1C003A0092 /* Bugsnag.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8A6174461C6AC26B003A0092 /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173FB1C6ABF1C003A0092 /* Bugsnag.m */; };
+		8A6174471C6AC26B003A0092 /* BugsnagBreadcrumb.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6173FC1C6ABF1C003A0092 /* BugsnagBreadcrumb.h */; };
+		8A6174481C6AC26B003A0092 /* BugsnagBreadcrumb.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173FD1C6ABF1C003A0092 /* BugsnagBreadcrumb.m */; };
+		8A6174491C6AC26B003A0092 /* BugsnagCollections.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6173FE1C6ABF1C003A0092 /* BugsnagCollections.h */; };
+		8A61744A1C6AC26B003A0092 /* BugsnagCollections.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6173FF1C6ABF1C003A0092 /* BugsnagCollections.m */; };
+		8A61744B1C6AC26B003A0092 /* BugsnagConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174001C6ABF1C003A0092 /* BugsnagConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8A61744C1C6AC26B003A0092 /* BugsnagConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174011C6ABF1C003A0092 /* BugsnagConfiguration.m */; };
+		8A61744D1C6AC26B003A0092 /* BugsnagCrashReport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174021C6ABF1C003A0092 /* BugsnagCrashReport.h */; };
+		8A61744E1C6AC26B003A0092 /* BugsnagCrashReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174031C6ABF1C003A0092 /* BugsnagCrashReport.m */; };
+		8A61744F1C6AC26B003A0092 /* BugsnagMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174061C6ABF1C003A0092 /* BugsnagMetaData.h */; };
+		8A6174501C6AC26B003A0092 /* BugsnagMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174071C6ABF1C003A0092 /* BugsnagMetaData.m */; };
+		8A6174511C6AC26B003A0092 /* BugsnagNotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6174081C6ABF1C003A0092 /* BugsnagNotifier.h */; };
+		8A6174521C6AC26B003A0092 /* BugsnagNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A6174091C6ABF1C003A0092 /* BugsnagNotifier.m */; };
+		8A6174531C6AC26B003A0092 /* BugsnagOSXNotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A61740A1C6ABF1C003A0092 /* BugsnagOSXNotifier.h */; };
+		8A6174541C6AC26B003A0092 /* BugsnagOSXNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A61740B1C6ABF1C003A0092 /* BugsnagOSXNotifier.m */; };
+		8A6174551C6AC26B003A0092 /* BugsnagSink.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A61740C1C6ABF1C003A0092 /* BugsnagSink.h */; };
+		8A6174561C6AC26B003A0092 /* BugsnagSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A61740D1C6ABF1C003A0092 /* BugsnagSink.m */; };
+		8A6174581C6AC304003A0092 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6174571C6AC304003A0092 /* libc++.tbd */; };
+		8A61745A1C6AC309003A0092 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6174591C6AC309003A0092 /* SystemConfiguration.framework */; };
+		8A61745C1C6AC30E003A0092 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A61745B1C6AC30E003A0092 /* libz.tbd */; };
+		8A61746C1C6AC349003A0092 /* libKSCrashLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A61746B1C6AC349003A0092 /* libKSCrashLib.a */; };
+		8A6174721C6AC4B5003A0092 /* report.json in Resources */ = {isa = PBXBuildFile; fileRef = 8A61746D1C6AC41F003A0092 /* report.json */; };
+		8A6174731C6AC4B6003A0092 /* report.json in Resources */ = {isa = PBXBuildFile; fileRef = 8A61746D1C6AC41F003A0092 /* report.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		8AAF53011C653DF500CDFF50 /* PBXContainerItemProxy */ = {
+		8A6173961C6AB592003A0092 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 79659E111A0AFFF800280978 /* Project object */;
+			containerPortal = 8A6173811C6AB592003A0092 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 932642CA1AB2494F0006C447;
-			remoteInfo = BugsnagOSX;
-		};
-		9385968A1A2EB7580082E445 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 79659E111A0AFFF800280978 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 79FD0E161A0C18F30050DBC5;
+			remoteGlobalIDString = 8A6173891C6AB592003A0092;
 			remoteInfo = Bugsnag;
+		};
+		8A6174341C6AC1EB003A0092 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8A6173811C6AB592003A0092 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8A6174281C6AC1EA003A0092;
+			remoteInfo = BugsnagOSX;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2F6DEA20592D913AB5AFDDA8 /* Pods-BugsnagOSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BugsnagOSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BugsnagOSX/Pods-BugsnagOSX.debug.xcconfig"; sourceTree = "<group>"; };
-		79FD0D541A0C168B0050DBC5 /* Bugsnag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Bugsnag.h; path = Source/Bugsnag/Bugsnag.h; sourceTree = "<group>"; };
-		79FD0D551A0C168B0050DBC5 /* Bugsnag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Bugsnag.m; path = Source/Bugsnag/Bugsnag.m; sourceTree = "<group>"; };
-		79FD0D561A0C168B0050DBC5 /* BugsnagConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagConfiguration.h; path = Source/Bugsnag/BugsnagConfiguration.h; sourceTree = "<group>"; };
-		79FD0D571A0C168B0050DBC5 /* BugsnagConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfiguration.m; path = Source/Bugsnag/BugsnagConfiguration.m; sourceTree = "<group>"; };
-		79FD0D581A0C168B0050DBC5 /* BugsnagIosNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagIosNotifier.h; path = Source/Bugsnag/BugsnagIosNotifier.h; sourceTree = "<group>"; };
-		79FD0D591A0C168B0050DBC5 /* BugsnagIosNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagIosNotifier.m; path = Source/Bugsnag/BugsnagIosNotifier.m; sourceTree = "<group>"; };
-		79FD0D5A1A0C168B0050DBC5 /* BugsnagMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagMetaData.h; path = Source/Bugsnag/BugsnagMetaData.h; sourceTree = "<group>"; };
-		79FD0D5B1A0C168B0050DBC5 /* BugsnagMetaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagMetaData.m; path = Source/Bugsnag/BugsnagMetaData.m; sourceTree = "<group>"; };
-		79FD0D5C1A0C168B0050DBC5 /* BugsnagNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagNotifier.h; path = Source/Bugsnag/BugsnagNotifier.h; sourceTree = "<group>"; };
-		79FD0D5D1A0C168B0050DBC5 /* BugsnagNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagNotifier.m; path = Source/Bugsnag/BugsnagNotifier.m; sourceTree = "<group>"; };
-		79FD0D5E1A0C168B0050DBC5 /* BugsnagSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagSink.h; path = Source/Bugsnag/BugsnagSink.h; sourceTree = "<group>"; };
-		79FD0D5F1A0C168B0050DBC5 /* BugsnagSink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSink.m; path = Source/Bugsnag/BugsnagSink.m; sourceTree = "<group>"; };
-		79FD0E171A0C18F30050DBC5 /* BugsnagiOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagiOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		79FD0E1A1A0C18F30050DBC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		79FD0E211A0C18F30050DBC5 /* BugsnagTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		79FD0E271A0C18F30050DBC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		79FD0E281A0C18F30050DBC5 /* BugsnagTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagTests.m; sourceTree = "<group>"; };
-		7DDE54F026315C90C12AB9E6 /* Pods-BugsnagOSX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BugsnagOSX.release.xcconfig"; path = "Pods/Target Support Files/Pods-BugsnagOSX/Pods-BugsnagOSX.release.xcconfig"; sourceTree = "<group>"; };
-		8A4C96F01BAA2DEA007B2BFC /* BugsnagBreadcrumbsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagBreadcrumbsTest.m; sourceTree = "<group>"; };
-		8A4C96F21BAA2EC9007B2BFC /* BugsnagBreadcrumb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagBreadcrumb.h; path = Source/Bugsnag/BugsnagBreadcrumb.h; sourceTree = "<group>"; };
-		8A4C96F31BAA2EC9007B2BFC /* BugsnagBreadcrumb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagBreadcrumb.m; path = Source/Bugsnag/BugsnagBreadcrumb.m; sourceTree = "<group>"; };
-		8AAF52FB1C653DF500CDFF50 /* BugsnagOSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagOSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8AAF52FF1C653DF500CDFF50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8ABAB0DB1C6A62D100D2A542 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		932642CB1AB2494F0006C447 /* BugsnagOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9326431D1AB24D820006C447 /* BugsnagOSXNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagOSXNotifier.h; path = Source/Bugsnag/BugsnagOSXNotifier.h; sourceTree = "<group>"; };
-		9326431E1AB24D820006C447 /* BugsnagOSXNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagOSXNotifier.m; path = Source/Bugsnag/BugsnagOSXNotifier.m; sourceTree = "<group>"; };
-		938594C31A2686DD0082E445 /* BugsnagCrashReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagCrashReport.h; path = Source/Bugsnag/BugsnagCrashReport.h; sourceTree = "<group>"; };
-		938594C41A2686DD0082E445 /* BugsnagCrashReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagCrashReport.m; path = Source/Bugsnag/BugsnagCrashReport.m; sourceTree = "<group>"; };
-		938595BA1A2D51FE0082E445 /* BugsnagSinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagSinkTests.m; sourceTree = "<group>"; };
-		938595BC1A2D52400082E445 /* BugsnagCrashReportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagCrashReportTests.m; sourceTree = "<group>"; };
-		938595BE1A2D54D40082E445 /* report.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = report.json; sourceTree = "<group>"; };
-		AB3F2958738E8A351A1DE895 /* Pods-BugsnagiOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BugsnagiOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-BugsnagiOS/Pods-BugsnagiOS.release.xcconfig"; sourceTree = "<group>"; };
-		C46B75ABAB74A3F33D4F3B8A /* libPods-BugsnagOSX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BugsnagOSX.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C6D1FFEDA0F5E90F3E02D2E3 /* Pods-BugsnagiOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BugsnagiOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BugsnagiOS/Pods-BugsnagiOS.debug.xcconfig"; sourceTree = "<group>"; };
-		CFD830943BD5EC306724D140 /* libPods-BugsnagiOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BugsnagiOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A61738A1C6AB592003A0092 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A61738F1C6AB592003A0092 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = iOS/Info.plist; sourceTree = "<group>"; };
+		8A6173941C6AB592003A0092 /* BugsnagTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A61739B1C6AB592003A0092 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = Tests/iOS/Info.plist; sourceTree = "<group>"; };
+		8A6173A41C6AB6E2003A0092 /* BugsnagBreadcrumbsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagBreadcrumbsTest.m; path = Tests/BugsnagBreadcrumbsTest.m; sourceTree = SOURCE_ROOT; };
+		8A6173A51C6AB6E2003A0092 /* BugsnagCrashReportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagCrashReportTests.m; path = Tests/BugsnagCrashReportTests.m; sourceTree = SOURCE_ROOT; };
+		8A6173A61C6AB6E2003A0092 /* BugsnagSinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSinkTests.m; path = Tests/BugsnagSinkTests.m; sourceTree = SOURCE_ROOT; };
+		8A6173A71C6AB6E2003A0092 /* BugsnagTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagTests.m; path = Tests/BugsnagTests.m; sourceTree = SOURCE_ROOT; };
+		8A6173D51C6AB761003A0092 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		8A6173D71C6AB765003A0092 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		8A6173D91C6AB76A003A0092 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		8A6173DB1C6AB78D003A0092 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		8A6173F61C6AB802003A0092 /* libKSCrashLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libKSCrashLib.a; path = "Carthage/Checkouts/KSCrash/iOS/build/Debug-iphoneos/libKSCrashLib.a"; sourceTree = "<group>"; };
+		8A6173F81C6AB85A003A0092 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		8A6173FA1C6ABF1C003A0092 /* Bugsnag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Bugsnag.h; path = Source/Bugsnag.h; sourceTree = SOURCE_ROOT; };
+		8A6173FB1C6ABF1C003A0092 /* Bugsnag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Bugsnag.m; path = Source/Bugsnag.m; sourceTree = SOURCE_ROOT; };
+		8A6173FC1C6ABF1C003A0092 /* BugsnagBreadcrumb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagBreadcrumb.h; path = Source/BugsnagBreadcrumb.h; sourceTree = SOURCE_ROOT; };
+		8A6173FD1C6ABF1C003A0092 /* BugsnagBreadcrumb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagBreadcrumb.m; path = Source/BugsnagBreadcrumb.m; sourceTree = SOURCE_ROOT; };
+		8A6173FE1C6ABF1C003A0092 /* BugsnagCollections.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagCollections.h; path = Source/BugsnagCollections.h; sourceTree = SOURCE_ROOT; };
+		8A6173FF1C6ABF1C003A0092 /* BugsnagCollections.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagCollections.m; path = Source/BugsnagCollections.m; sourceTree = SOURCE_ROOT; };
+		8A6174001C6ABF1C003A0092 /* BugsnagConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagConfiguration.h; path = Source/BugsnagConfiguration.h; sourceTree = SOURCE_ROOT; };
+		8A6174011C6ABF1C003A0092 /* BugsnagConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfiguration.m; path = Source/BugsnagConfiguration.m; sourceTree = SOURCE_ROOT; };
+		8A6174021C6ABF1C003A0092 /* BugsnagCrashReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagCrashReport.h; path = Source/BugsnagCrashReport.h; sourceTree = SOURCE_ROOT; };
+		8A6174031C6ABF1C003A0092 /* BugsnagCrashReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagCrashReport.m; path = Source/BugsnagCrashReport.m; sourceTree = SOURCE_ROOT; };
+		8A6174041C6ABF1C003A0092 /* BugsnagIosNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagIosNotifier.h; path = Source/BugsnagIosNotifier.h; sourceTree = SOURCE_ROOT; };
+		8A6174051C6ABF1C003A0092 /* BugsnagIosNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagIosNotifier.m; path = Source/BugsnagIosNotifier.m; sourceTree = SOURCE_ROOT; };
+		8A6174061C6ABF1C003A0092 /* BugsnagMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagMetaData.h; path = Source/BugsnagMetaData.h; sourceTree = SOURCE_ROOT; };
+		8A6174071C6ABF1C003A0092 /* BugsnagMetaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagMetaData.m; path = Source/BugsnagMetaData.m; sourceTree = SOURCE_ROOT; };
+		8A6174081C6ABF1C003A0092 /* BugsnagNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagNotifier.h; path = Source/BugsnagNotifier.h; sourceTree = SOURCE_ROOT; };
+		8A6174091C6ABF1C003A0092 /* BugsnagNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagNotifier.m; path = Source/BugsnagNotifier.m; sourceTree = SOURCE_ROOT; };
+		8A61740A1C6ABF1C003A0092 /* BugsnagOSXNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagOSXNotifier.h; path = Source/BugsnagOSXNotifier.h; sourceTree = SOURCE_ROOT; };
+		8A61740B1C6ABF1C003A0092 /* BugsnagOSXNotifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagOSXNotifier.m; path = Source/BugsnagOSXNotifier.m; sourceTree = SOURCE_ROOT; };
+		8A61740C1C6ABF1C003A0092 /* BugsnagSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagSink.h; path = Source/BugsnagSink.h; sourceTree = SOURCE_ROOT; };
+		8A61740D1C6ABF1C003A0092 /* BugsnagSink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSink.m; path = Source/BugsnagSink.m; sourceTree = SOURCE_ROOT; };
+		8A6174291C6AC1EA003A0092 /* BugsnagOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A61742D1C6AC1EB003A0092 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = OSX/Info.plist; sourceTree = SOURCE_ROOT; };
+		8A6174321C6AC1EB003A0092 /* BugsnagOSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagOSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A6174391C6AC1EB003A0092 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = Tests/OSX/Info.plist; sourceTree = "<group>"; };
+		8A6174571C6AC304003A0092 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
+		8A6174591C6AC309003A0092 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
+		8A61745B1C6AC30E003A0092 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/lib/libz.tbd; sourceTree = DEVELOPER_DIR; };
+		8A61745D1C6AC310003A0092 /* libKSCrashLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libKSCrashLib.a; path = "../../Library/Developer/Xcode/DerivedData/Bugsnag-dvqrtebfcsywyhcrxrokvhfryvyc/Build/Products/Debug-iphoneos/libKSCrashLib.a"; sourceTree = "<group>"; };
+		8A61746B1C6AC349003A0092 /* libKSCrashLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libKSCrashLib.a; path = Carthage/Checkouts/KSCrash/Mac/build/Debug/libKSCrashLib.a; sourceTree = "<group>"; };
+		8A61746D1C6AC41F003A0092 /* report.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = report.json; path = Tests/report.json; sourceTree = SOURCE_ROOT; };
+		8A6174761C6ACC4E003A0092 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = Source/module.modulemap; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		79FD0E131A0C18F30050DBC5 /* Frameworks */ = {
+		8A6173861C6AB592003A0092 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1AC829330A914FC382A5DC05 /* libPods-BugsnagiOS.a in Frameworks */,
+				8A6173F91C6AB85A003A0092 /* UIKit.framework in Frameworks */,
+				8A6173F71C6AB802003A0092 /* libKSCrashLib.a in Frameworks */,
+				8A6173DC1C6AB78D003A0092 /* MessageUI.framework in Frameworks */,
+				8A6173DA1C6AB76A003A0092 /* SystemConfiguration.framework in Frameworks */,
+				8A6173D81C6AB765003A0092 /* libc++.tbd in Frameworks */,
+				8A6173D61C6AB761003A0092 /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		79FD0E1E1A0C18F30050DBC5 /* Frameworks */ = {
+		8A6173911C6AB592003A0092 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				938596891A2EB7510082E445 /* BugsnagiOS.framework in Frameworks */,
+				8A6173951C6AB592003A0092 /* Bugsnag.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8AAF52F81C653DF500CDFF50 /* Frameworks */ = {
+		8A6174251C6AC1EA003A0092 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8AAF53001C653DF500CDFF50 /* BugsnagOSX.framework in Frameworks */,
+				8A61746C1C6AC349003A0092 /* libKSCrashLib.a in Frameworks */,
+				8A61745C1C6AC30E003A0092 /* libz.tbd in Frameworks */,
+				8A61745A1C6AC309003A0092 /* SystemConfiguration.framework in Frameworks */,
+				8A6174581C6AC304003A0092 /* libc++.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		932642C71AB2494F0006C447 /* Frameworks */ = {
+		8A61742F1C6AC1EB003A0092 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D44532C9B7AC708EFE2CF6B /* libPods-BugsnagOSX.a in Frameworks */,
+				8A6174331C6AC1EB003A0092 /* BugsnagOSX.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		79659E101A0AFFF800280978 = {
+		8A6173801C6AB592003A0092 = {
 			isa = PBXGroup;
 			children = (
-				79FD0D6C1A0C16920050DBC5 /* Bugsnag */,
-				79FD0E251A0C18F30050DBC5 /* Tests */,
-				79FD0D041A0C150E0050DBC5 /* Products */,
-				E891126A008CBD02D63DAACE /* Pods */,
-				F646B181884576104F3C39D5 /* Frameworks */,
+				8A61738C1C6AB592003A0092 /* Source */,
+				8A6173981C6AB592003A0092 /* Tests */,
+				8A6173E91C6AB7D2003A0092 /* Frameworks */,
+				8A61738B1C6AB592003A0092 /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
-		79FD0D041A0C150E0050DBC5 /* Products */ = {
+		8A61738B1C6AB592003A0092 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				79FD0E171A0C18F30050DBC5 /* BugsnagiOS.framework */,
-				79FD0E211A0C18F30050DBC5 /* BugsnagTests.xctest */,
-				932642CB1AB2494F0006C447 /* BugsnagOSX.framework */,
-				8AAF52FB1C653DF500CDFF50 /* BugsnagOSXTests.xctest */,
+				8A61738A1C6AB592003A0092 /* Bugsnag.framework */,
+				8A6173941C6AB592003A0092 /* BugsnagTests.xctest */,
+				8A6174291C6AC1EA003A0092 /* BugsnagOSX.framework */,
+				8A6174321C6AC1EB003A0092 /* BugsnagOSXTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		79FD0D6C1A0C16920050DBC5 /* Bugsnag */ = {
+		8A61738C1C6AB592003A0092 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				9326431C1AB24D680006C447 /* OSX */,
-				8ABAB0E41C6A6C6000D2A542 /* iOS */,
-				79FD0E191A0C18F30050DBC5 /* Supporting Files */,
-				79FD0D541A0C168B0050DBC5 /* Bugsnag.h */,
-				79FD0D551A0C168B0050DBC5 /* Bugsnag.m */,
-				79FD0D561A0C168B0050DBC5 /* BugsnagConfiguration.h */,
-				79FD0D571A0C168B0050DBC5 /* BugsnagConfiguration.m */,
-				79FD0D5A1A0C168B0050DBC5 /* BugsnagMetaData.h */,
-				79FD0D5B1A0C168B0050DBC5 /* BugsnagMetaData.m */,
-				79FD0D5C1A0C168B0050DBC5 /* BugsnagNotifier.h */,
-				79FD0D5D1A0C168B0050DBC5 /* BugsnagNotifier.m */,
-				79FD0D5E1A0C168B0050DBC5 /* BugsnagSink.h */,
-				79FD0D5F1A0C168B0050DBC5 /* BugsnagSink.m */,
-				938594C31A2686DD0082E445 /* BugsnagCrashReport.h */,
-				938594C41A2686DD0082E445 /* BugsnagCrashReport.m */,
-				8A4C96F21BAA2EC9007B2BFC /* BugsnagBreadcrumb.h */,
-				8A4C96F31BAA2EC9007B2BFC /* BugsnagBreadcrumb.m */,
+				8A6174231C6ABF5F003A0092 /* OSX */,
+				8A6174221C6ABF5B003A0092 /* iOS */,
+				8A6173FA1C6ABF1C003A0092 /* Bugsnag.h */,
+				8A6173FB1C6ABF1C003A0092 /* Bugsnag.m */,
+				8A6173FC1C6ABF1C003A0092 /* BugsnagBreadcrumb.h */,
+				8A6173FD1C6ABF1C003A0092 /* BugsnagBreadcrumb.m */,
+				8A6173FE1C6ABF1C003A0092 /* BugsnagCollections.h */,
+				8A6173FF1C6ABF1C003A0092 /* BugsnagCollections.m */,
+				8A6174001C6ABF1C003A0092 /* BugsnagConfiguration.h */,
+				8A6174011C6ABF1C003A0092 /* BugsnagConfiguration.m */,
+				8A6174021C6ABF1C003A0092 /* BugsnagCrashReport.h */,
+				8A6174031C6ABF1C003A0092 /* BugsnagCrashReport.m */,
+				8A6174061C6ABF1C003A0092 /* BugsnagMetaData.h */,
+				8A6174071C6ABF1C003A0092 /* BugsnagMetaData.m */,
+				8A6174081C6ABF1C003A0092 /* BugsnagNotifier.h */,
+				8A6174091C6ABF1C003A0092 /* BugsnagNotifier.m */,
+				8A61740C1C6ABF1C003A0092 /* BugsnagSink.h */,
+				8A61740D1C6ABF1C003A0092 /* BugsnagSink.m */,
+				8A6174761C6ACC4E003A0092 /* module.modulemap */,
 			);
-			name = Bugsnag;
-			sourceTree = "<group>";
-		};
-		79FD0E191A0C18F30050DBC5 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				8ABAB0DB1C6A62D100D2A542 /* module.modulemap */,
-				79FD0E1A1A0C18F30050DBC5 /* Info.plist */,
-			);
-			name = "Supporting Files";
+			name = Source;
 			path = Bugsnag;
 			sourceTree = "<group>";
 		};
-		79FD0E251A0C18F30050DBC5 /* Tests */ = {
+		8A6173981C6AB592003A0092 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				8A4C96F01BAA2DEA007B2BFC /* BugsnagBreadcrumbsTest.m */,
-				938595BC1A2D52400082E445 /* BugsnagCrashReportTests.m */,
-				938595BA1A2D51FE0082E445 /* BugsnagSinkTests.m */,
-				79FD0E281A0C18F30050DBC5 /* BugsnagTests.m */,
-				79FD0E261A0C18F30050DBC5 /* Supporting Files */,
+				8A6174441C6AC223003A0092 /* iOS */,
+				8A6174361C6AC1EB003A0092 /* OSX */,
+				8A6173A41C6AB6E2003A0092 /* BugsnagBreadcrumbsTest.m */,
+				8A6173A51C6AB6E2003A0092 /* BugsnagCrashReportTests.m */,
+				8A6173A61C6AB6E2003A0092 /* BugsnagSinkTests.m */,
+				8A6173A71C6AB6E2003A0092 /* BugsnagTests.m */,
+				8A61746D1C6AC41F003A0092 /* report.json */,
 			);
 			name = Tests;
 			path = BugsnagTests;
 			sourceTree = "<group>";
 		};
-		79FD0E261A0C18F30050DBC5 /* Supporting Files */ = {
+		8A6173E91C6AB7D2003A0092 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				938595BE1A2D54D40082E445 /* report.json */,
-				8AAF530B1C655F7100CDFF50 /* iOS */,
-				8AAF52FC1C653DF500CDFF50 /* OS X */,
+				8A61746B1C6AC349003A0092 /* libKSCrashLib.a */,
+				8A61745D1C6AC310003A0092 /* libKSCrashLib.a */,
+				8A61745B1C6AC30E003A0092 /* libz.tbd */,
+				8A6174591C6AC309003A0092 /* SystemConfiguration.framework */,
+				8A6174571C6AC304003A0092 /* libc++.tbd */,
+				8A6173F81C6AB85A003A0092 /* UIKit.framework */,
+				8A6173F61C6AB802003A0092 /* libKSCrashLib.a */,
+				8A6173DB1C6AB78D003A0092 /* MessageUI.framework */,
+				8A6173D91C6AB76A003A0092 /* SystemConfiguration.framework */,
+				8A6173D71C6AB765003A0092 /* libc++.tbd */,
+				8A6173D51C6AB761003A0092 /* libz.tbd */,
 			);
-			name = "Supporting Files";
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		8AAF52FC1C653DF500CDFF50 /* OS X */ = {
+		8A6174221C6ABF5B003A0092 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				8AAF52FF1C653DF500CDFF50 /* Info.plist */,
-			);
-			name = "OS X";
-			path = ../BugsnagOSXTests;
-			sourceTree = "<group>";
-		};
-		8AAF530B1C655F7100CDFF50 /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				79FD0E271A0C18F30050DBC5 /* Info.plist */,
-			);
-			name = iOS;
-			sourceTree = "<group>";
-		};
-		8ABAB0E41C6A6C6000D2A542 /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				79FD0D581A0C168B0050DBC5 /* BugsnagIosNotifier.h */,
-				79FD0D591A0C168B0050DBC5 /* BugsnagIosNotifier.m */,
+				8A6174041C6ABF1C003A0092 /* BugsnagIosNotifier.h */,
+				8A6174051C6ABF1C003A0092 /* BugsnagIosNotifier.m */,
+				8A61738F1C6AB592003A0092 /* Info.plist */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
 		};
-		9326431C1AB24D680006C447 /* OSX */ = {
+		8A6174231C6ABF5F003A0092 /* OSX */ = {
 			isa = PBXGroup;
 			children = (
-				9326431D1AB24D820006C447 /* BugsnagOSXNotifier.h */,
-				9326431E1AB24D820006C447 /* BugsnagOSXNotifier.m */,
+				8A61740A1C6ABF1C003A0092 /* BugsnagOSXNotifier.h */,
+				8A61740B1C6ABF1C003A0092 /* BugsnagOSXNotifier.m */,
+				8A61742D1C6AC1EB003A0092 /* Info.plist */,
 			);
 			name = OSX;
 			sourceTree = "<group>";
 		};
-		E891126A008CBD02D63DAACE /* Pods */ = {
+		8A6174361C6AC1EB003A0092 /* OSX */ = {
 			isa = PBXGroup;
 			children = (
-				2F6DEA20592D913AB5AFDDA8 /* Pods-BugsnagOSX.debug.xcconfig */,
-				7DDE54F026315C90C12AB9E6 /* Pods-BugsnagOSX.release.xcconfig */,
-				C6D1FFEDA0F5E90F3E02D2E3 /* Pods-BugsnagiOS.debug.xcconfig */,
-				AB3F2958738E8A351A1DE895 /* Pods-BugsnagiOS.release.xcconfig */,
+				8A6174391C6AC1EB003A0092 /* Info.plist */,
 			);
-			name = Pods;
+			name = OSX;
+			path = ../BugsnagOSXTests;
 			sourceTree = "<group>";
 		};
-		F646B181884576104F3C39D5 /* Frameworks */ = {
+		8A6174441C6AC223003A0092 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				C46B75ABAB74A3F33D4F3B8A /* libPods-BugsnagOSX.a */,
-				CFD830943BD5EC306724D140 /* libPods-BugsnagiOS.a */,
+				8A61739B1C6AB592003A0092 /* Info.plist */,
 			);
-			name = Frameworks;
+			name = iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		79FD0E141A0C18F30050DBC5 /* Headers */ = {
+		8A6173871C6AB592003A0092 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79FD0E321A0C1AB30050DBC5 /* BugsnagConfiguration.h in Headers */,
-				79FD0E311A0C1AAF0050DBC5 /* BugsnagMetaData.h in Headers */,
-				79FD0E301A0C1AAB0050DBC5 /* Bugsnag.h in Headers */,
-				8A4C96F41BAA2EC9007B2BFC /* BugsnagBreadcrumb.h in Headers */,
+				8A6174181C6ABF1C003A0092 /* BugsnagIosNotifier.h in Headers */,
+				8A6174121C6ABF1C003A0092 /* BugsnagCollections.h in Headers */,
+				8A61740E1C6ABF1C003A0092 /* Bugsnag.h in Headers */,
+				8A61741A1C6ABF1C003A0092 /* BugsnagMetaData.h in Headers */,
+				8A6174101C6ABF1C003A0092 /* BugsnagBreadcrumb.h in Headers */,
+				8A6174201C6ABF1C003A0092 /* BugsnagSink.h in Headers */,
+				8A6174161C6ABF1C003A0092 /* BugsnagCrashReport.h in Headers */,
+				8A61741C1C6ABF1C003A0092 /* BugsnagNotifier.h in Headers */,
+				8A6174141C6ABF1C003A0092 /* BugsnagConfiguration.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		932642C81AB2494F0006C447 /* Headers */ = {
+		8A6174261C6AC1EA003A0092 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				932643121AB24AAE0006C447 /* Bugsnag.h in Headers */,
-				932643131AB24AAE0006C447 /* BugsnagConfiguration.h in Headers */,
-				932643141AB24AAE0006C447 /* BugsnagMetaData.h in Headers */,
-				8A4C96F81BAA2EDA007B2BFC /* BugsnagBreadcrumb.h in Headers */,
+				8A6174451C6AC26B003A0092 /* Bugsnag.h in Headers */,
+				8A61744B1C6AC26B003A0092 /* BugsnagConfiguration.h in Headers */,
+				8A61744F1C6AC26B003A0092 /* BugsnagMetaData.h in Headers */,
+				8A6174491C6AC26B003A0092 /* BugsnagCollections.h in Headers */,
+				8A6174551C6AC26B003A0092 /* BugsnagSink.h in Headers */,
+				8A61744D1C6AC26B003A0092 /* BugsnagCrashReport.h in Headers */,
+				8A6174531C6AC26B003A0092 /* BugsnagOSXNotifier.h in Headers */,
+				8A6174511C6AC26B003A0092 /* BugsnagNotifier.h in Headers */,
+				8A6174471C6AC26B003A0092 /* BugsnagBreadcrumb.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		79FD0E161A0C18F30050DBC5 /* BugsnagiOS */ = {
+		8A6173891C6AB592003A0092 /* BugsnagiOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 79FD0E2A1A0C18F30050DBC5 /* Build configuration list for PBXNativeTarget "BugsnagiOS" */;
+			buildConfigurationList = 8A61739E1C6AB592003A0092 /* Build configuration list for PBXNativeTarget "BugsnagiOS" */;
 			buildPhases = (
-				C4D56A2D96FAAFC4A0C63C0A /* Check Pods Manifest.lock */,
-				79FD0E121A0C18F30050DBC5 /* Sources */,
-				79FD0E131A0C18F30050DBC5 /* Frameworks */,
-				79FD0E141A0C18F30050DBC5 /* Headers */,
-				79FD0E151A0C18F30050DBC5 /* Resources */,
-				938594AD1A2405560082E445 /* Run Script */,
-				71353E0BC8A7417724E2C804 /* Copy Pods Resources */,
+				8A6173851C6AB592003A0092 /* Sources */,
+				8A6173861C6AB592003A0092 /* Frameworks */,
+				8A6173871C6AB592003A0092 /* Headers */,
+				8A6173881C6AB592003A0092 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -320,55 +349,35 @@
 			);
 			name = BugsnagiOS;
 			productName = Bugsnag;
-			productReference = 79FD0E171A0C18F30050DBC5 /* BugsnagiOS.framework */;
+			productReference = 8A61738A1C6AB592003A0092 /* Bugsnag.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		79FD0E201A0C18F30050DBC5 /* BugsnagTests */ = {
+		8A6173931C6AB592003A0092 /* BugsnagTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 79FD0E2D1A0C18F30050DBC5 /* Build configuration list for PBXNativeTarget "BugsnagTests" */;
+			buildConfigurationList = 8A6173A11C6AB592003A0092 /* Build configuration list for PBXNativeTarget "BugsnagTests" */;
 			buildPhases = (
-				79FD0E1D1A0C18F30050DBC5 /* Sources */,
-				79FD0E1E1A0C18F30050DBC5 /* Frameworks */,
-				79FD0E1F1A0C18F30050DBC5 /* Resources */,
+				8A6173901C6AB592003A0092 /* Sources */,
+				8A6173911C6AB592003A0092 /* Frameworks */,
+				8A6173921C6AB592003A0092 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				9385968B1A2EB7580082E445 /* PBXTargetDependency */,
+				8A6173971C6AB592003A0092 /* PBXTargetDependency */,
 			);
 			name = BugsnagTests;
 			productName = BugsnagTests;
-			productReference = 79FD0E211A0C18F30050DBC5 /* BugsnagTests.xctest */;
+			productReference = 8A6173941C6AB592003A0092 /* BugsnagTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		8AAF52FA1C653DF500CDFF50 /* BugsnagOSXTests */ = {
+		8A6174281C6AC1EA003A0092 /* BugsnagOSX */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8AAF53051C653DF500CDFF50 /* Build configuration list for PBXNativeTarget "BugsnagOSXTests" */;
+			buildConfigurationList = 8A61743A1C6AC1EB003A0092 /* Build configuration list for PBXNativeTarget "BugsnagOSX" */;
 			buildPhases = (
-				8AAF52F71C653DF500CDFF50 /* Sources */,
-				8AAF52F81C653DF500CDFF50 /* Frameworks */,
-				8AAF52F91C653DF500CDFF50 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				8AAF53021C653DF500CDFF50 /* PBXTargetDependency */,
-			);
-			name = BugsnagOSXTests;
-			productName = BugsnagOSXTests;
-			productReference = 8AAF52FB1C653DF500CDFF50 /* BugsnagOSXTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		932642CA1AB2494F0006C447 /* BugsnagOSX */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 932642DE1AB2494F0006C447 /* Build configuration list for PBXNativeTarget "BugsnagOSX" */;
-			buildPhases = (
-				15D3DE529438B364A4CA291B /* Check Pods Manifest.lock */,
-				932642C61AB2494F0006C447 /* Sources */,
-				932642C71AB2494F0006C447 /* Frameworks */,
-				932642C81AB2494F0006C447 /* Headers */,
-				932642C91AB2494F0006C447 /* Resources */,
-				CDD1362FC72A10CC44DFCBEB /* Copy Pods Resources */,
+				8A6174241C6AC1EA003A0092 /* Sources */,
+				8A6174251C6AC1EA003A0092 /* Frameworks */,
+				8A6174261C6AC1EA003A0092 /* Headers */,
+				8A6174271C6AC1EA003A0092 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -376,263 +385,176 @@
 			);
 			name = BugsnagOSX;
 			productName = BugsnagOSX;
-			productReference = 932642CB1AB2494F0006C447 /* BugsnagOSX.framework */;
+			productReference = 8A6174291C6AC1EA003A0092 /* BugsnagOSX.framework */;
 			productType = "com.apple.product-type.framework";
+		};
+		8A6174311C6AC1EB003A0092 /* BugsnagOSXTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A61743D1C6AC1EB003A0092 /* Build configuration list for PBXNativeTarget "BugsnagOSXTests" */;
+			buildPhases = (
+				8A61742E1C6AC1EB003A0092 /* Sources */,
+				8A61742F1C6AC1EB003A0092 /* Frameworks */,
+				8A6174301C6AC1EB003A0092 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8A6174351C6AC1EB003A0092 /* PBXTargetDependency */,
+			);
+			name = BugsnagOSXTests;
+			productName = BugsnagOSXTests;
+			productReference = 8A6174321C6AC1EB003A0092 /* BugsnagOSXTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		79659E111A0AFFF800280978 /* Project object */ = {
+		8A6173811C6AB592003A0092 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = Bugsnag;
 				TargetAttributes = {
-					79FD0E161A0C18F30050DBC5 = {
-						CreatedOnToolsVersion = 6.1;
-					};
-					79FD0E201A0C18F30050DBC5 = {
-						CreatedOnToolsVersion = 6.1;
-						DevelopmentTeam = 372ZUL2ZB7;
-					};
-					8AAF52FA1C653DF500CDFF50 = {
+					8A6173891C6AB592003A0092 = {
 						CreatedOnToolsVersion = 7.2.1;
 					};
-					932642CA1AB2494F0006C447 = {
-						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = 372ZUL2ZB7;
+					8A6173931C6AB592003A0092 = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+					8A6174281C6AC1EA003A0092 = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+					8A6174311C6AC1EB003A0092 = {
+						CreatedOnToolsVersion = 7.2.1;
 					};
 				};
 			};
-			buildConfigurationList = 79659E141A0AFFF800280978 /* Build configuration list for PBXProject "Bugsnag" */;
+			buildConfigurationList = 8A6173841C6AB592003A0092 /* Build configuration list for PBXProject "Bugsnag" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = 79659E101A0AFFF800280978;
-			productRefGroup = 79FD0D041A0C150E0050DBC5 /* Products */;
+			mainGroup = 8A6173801C6AB592003A0092;
+			productRefGroup = 8A61738B1C6AB592003A0092 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				79FD0E161A0C18F30050DBC5 /* BugsnagiOS */,
-				79FD0E201A0C18F30050DBC5 /* BugsnagTests */,
-				932642CA1AB2494F0006C447 /* BugsnagOSX */,
-				8AAF52FA1C653DF500CDFF50 /* BugsnagOSXTests */,
+				8A6173891C6AB592003A0092 /* BugsnagiOS */,
+				8A6173931C6AB592003A0092 /* BugsnagTests */,
+				8A6174281C6AC1EA003A0092 /* BugsnagOSX */,
+				8A6174311C6AC1EB003A0092 /* BugsnagOSXTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		79FD0E151A0C18F30050DBC5 /* Resources */ = {
+		8A6173881C6AB592003A0092 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		79FD0E1F1A0C18F30050DBC5 /* Resources */ = {
+		8A6173921C6AB592003A0092 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				938595BF1A2D54D40082E445 /* report.json in Resources */,
+				8A6174721C6AC4B5003A0092 /* report.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8AAF52F91C653DF500CDFF50 /* Resources */ = {
+		8A6174271C6AC1EA003A0092 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8AAF530A1C6541E600CDFF50 /* report.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		932642C91AB2494F0006C447 /* Resources */ = {
+		8A6174301C6AC1EB003A0092 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A6174731C6AC4B6003A0092 /* report.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		15D3DE529438B364A4CA291B /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		71353E0BC8A7417724E2C804 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BugsnagiOS/Pods-BugsnagiOS-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		938594AD1A2405560082E445 /* Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ $PLATFORM_NAME == \"iphonesimulator\" ]\nthen\n    lipo \\\n    \"${BUILD_DIR}/${CONFIGURATION}/libBugsnag-Simulator.a\" \\\n    -create -output \"${BUILD_DIR}/${CONFIGURATION}/Bugsnag.framework/Bugsnag\"\nelse\n    lipo \\\n    \"${BUILD_DIR}/${CONFIGURATION}/libBugsnag-Device.a\" \\\n    \"${BUILD_DIR}/${CONFIGURATION}/libBugsnag-Simulator.a\" \\\n    -create -output \"${BUILD_DIR}/${CONFIGURATION}/Bugsnag.framework/Bugsnag\"\nfi";
-			showEnvVarsInLog = 0;
-		};
-		C4D56A2D96FAAFC4A0C63C0A /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		CDD1362FC72A10CC44DFCBEB /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BugsnagOSX/Pods-BugsnagOSX-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		79FD0E121A0C18F30050DBC5 /* Sources */ = {
+		8A6173851C6AB592003A0092 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8ABAB0DF1C6A69DF00D2A542 /* BugsnagMetaData.m in Sources */,
-				8ABAB0DD1C6A69DF00D2A542 /* BugsnagConfiguration.m in Sources */,
-				8ABAB0E21C6A69DF00D2A542 /* BugsnagCrashReport.m in Sources */,
-				8ABAB0E11C6A69DF00D2A542 /* BugsnagSink.m in Sources */,
-				8ABAB0E31C6A69DF00D2A542 /* BugsnagBreadcrumb.m in Sources */,
-				8ABAB0DE1C6A69DF00D2A542 /* BugsnagIosNotifier.m in Sources */,
-				8ABAB0DC1C6A69D100D2A542 /* Bugsnag.m in Sources */,
-				8ABAB0E01C6A69DF00D2A542 /* BugsnagNotifier.m in Sources */,
+				8A6174211C6ABF1C003A0092 /* BugsnagSink.m in Sources */,
+				8A61741B1C6ABF1C003A0092 /* BugsnagMetaData.m in Sources */,
+				8A6174151C6ABF1C003A0092 /* BugsnagConfiguration.m in Sources */,
+				8A6174191C6ABF1C003A0092 /* BugsnagIosNotifier.m in Sources */,
+				8A61741D1C6ABF1C003A0092 /* BugsnagNotifier.m in Sources */,
+				8A6174111C6ABF1C003A0092 /* BugsnagBreadcrumb.m in Sources */,
+				8A6174131C6ABF1C003A0092 /* BugsnagCollections.m in Sources */,
+				8A6174171C6ABF1C003A0092 /* BugsnagCrashReport.m in Sources */,
+				8A61740F1C6ABF1C003A0092 /* Bugsnag.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		79FD0E1D1A0C18F30050DBC5 /* Sources */ = {
+		8A6173901C6AB592003A0092 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A4C96F11BAA2DEA007B2BFC /* BugsnagBreadcrumbsTest.m in Sources */,
-				938596831A2EB6730082E445 /* BugsnagTests.m in Sources */,
-				938596841A2EB6730082E445 /* BugsnagCrashReportTests.m in Sources */,
-				938596851A2EB6730082E445 /* BugsnagSinkTests.m in Sources */,
+				8A6173A81C6AB6E2003A0092 /* BugsnagBreadcrumbsTest.m in Sources */,
+				8A6173AA1C6AB6E2003A0092 /* BugsnagSinkTests.m in Sources */,
+				8A6173A91C6AB6E2003A0092 /* BugsnagCrashReportTests.m in Sources */,
+				8A6173AB1C6AB6E2003A0092 /* BugsnagTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8AAF52F71C653DF500CDFF50 /* Sources */ = {
+		8A6174241C6AC1EA003A0092 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8AAF53081C653E0700CDFF50 /* BugsnagSinkTests.m in Sources */,
-				8AAF53061C653E0100CDFF50 /* BugsnagBreadcrumbsTest.m in Sources */,
-				8AAF53071C653E0400CDFF50 /* BugsnagCrashReportTests.m in Sources */,
-				8AAF53091C653E0A00CDFF50 /* BugsnagTests.m in Sources */,
+				8A6174541C6AC26B003A0092 /* BugsnagOSXNotifier.m in Sources */,
+				8A61744C1C6AC26B003A0092 /* BugsnagConfiguration.m in Sources */,
+				8A6174561C6AC26B003A0092 /* BugsnagSink.m in Sources */,
+				8A6174521C6AC26B003A0092 /* BugsnagNotifier.m in Sources */,
+				8A6174481C6AC26B003A0092 /* BugsnagBreadcrumb.m in Sources */,
+				8A61744A1C6AC26B003A0092 /* BugsnagCollections.m in Sources */,
+				8A61744E1C6AC26B003A0092 /* BugsnagCrashReport.m in Sources */,
+				8A6174501C6AC26B003A0092 /* BugsnagMetaData.m in Sources */,
+				8A6174461C6AC26B003A0092 /* Bugsnag.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		932642C61AB2494F0006C447 /* Sources */ = {
+		8A61742E1C6AC1EB003A0092 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				932643081AB249800006C447 /* Bugsnag.m in Sources */,
-				932643091AB249800006C447 /* BugsnagConfiguration.m in Sources */,
-				9326430B1AB249800006C447 /* BugsnagMetaData.m in Sources */,
-				9326430C1AB249800006C447 /* BugsnagNotifier.m in Sources */,
-				9326430D1AB249800006C447 /* BugsnagSink.m in Sources */,
-				9326430E1AB249800006C447 /* BugsnagCrashReport.m in Sources */,
-				8A4C96F91BAA2EDD007B2BFC /* BugsnagBreadcrumb.m in Sources */,
-				932643201AB24D820006C447 /* BugsnagOSXNotifier.m in Sources */,
+				8A6174421C6AC202003A0092 /* BugsnagSinkTests.m in Sources */,
+				8A6174401C6AC202003A0092 /* BugsnagBreadcrumbsTest.m in Sources */,
+				8A6174411C6AC202003A0092 /* BugsnagCrashReportTests.m in Sources */,
+				8A6174431C6AC202003A0092 /* BugsnagTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		8AAF53021C653DF500CDFF50 /* PBXTargetDependency */ = {
+		8A6173971C6AB592003A0092 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 932642CA1AB2494F0006C447 /* BugsnagOSX */;
-			targetProxy = 8AAF53011C653DF500CDFF50 /* PBXContainerItemProxy */;
+			target = 8A6173891C6AB592003A0092 /* BugsnagiOS */;
+			targetProxy = 8A6173961C6AB592003A0092 /* PBXContainerItemProxy */;
 		};
-		9385968B1A2EB7580082E445 /* PBXTargetDependency */ = {
+		8A6174351C6AC1EB003A0092 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 79FD0E161A0C18F30050DBC5 /* BugsnagiOS */;
-			targetProxy = 9385968A1A2EB7580082E445 /* PBXContainerItemProxy */;
+			target = 8A6174281C6AC1EA003A0092 /* BugsnagOSX */;
+			targetProxy = 8A6174341C6AC1EB003A0092 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		79659E151A0AFFF800280978 /* Debug */ = {
+		8A61739C1C6AB592003A0092 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Developer ID Application";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				ENABLE_TESTABILITY = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
-				MODULEMAP_FILE = Bugsnag/module.modulemap;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "";
-			};
-			name = Debug;
-		};
-		79659E161A0AFFF800280978 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
-				MODULEMAP_FILE = Bugsnag/module.modulemap;
-				OTHER_LDFLAGS = "";
-			};
-			name = Release;
-		};
-		79FD0E2B1A0C18F30050DBC5 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = C6D1FFEDA0F5E90F3E02D2E3 /* Pods-BugsnagiOS.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -651,219 +573,6 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Bugsnag/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		79FD0E2C1A0C18F30050DBC5 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AB3F2958738E8A351A1DE895 /* Pods-BugsnagiOS.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Bugsnag/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		79FD0E2E1A0C18F30050DBC5 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "compiler-default";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				COPY_PHASE_STRIP = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = BugsnagTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-framework",
-					XCTest,
-					"-ObjC",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SDKROOT = iphoneos;
-			};
-			name = Debug;
-		};
-		79FD0E2F1A0C18F30050DBC5 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "compiler-default";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				COPY_PHASE_STRIP = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = BugsnagTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-framework",
-					XCTest,
-					"-ObjC",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SDKROOT = iphoneos;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		8AAF53031C653DF500CDFF50 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -881,18 +590,18 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = BugsnagOSXTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MODULEMAP_FILE = Source/module.modulemap;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagOSXTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
-		8AAF53041C653DF500CDFF50 /* Release */ = {
+		8A61739D1C6AB592003A0092 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -909,9 +618,9 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -923,177 +632,204 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = BugsnagOSXTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MODULEMAP_FILE = Source/module.modulemap;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		8A61739F1C6AB592003A0092 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = iOS/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/KSCrash/iOS/build/Debug-iphoneos",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
+				PRODUCT_NAME = Bugsnag;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		8A6173A01C6AB592003A0092 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = iOS/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/KSCrash/iOS/build/Debug-iphoneos",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
+				PRODUCT_NAME = Bugsnag;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		8A6173A21C6AB592003A0092 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = Tests/iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		8A6173A31C6AB592003A0092 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = Tests/iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		8A61743B1C6AC1EB003A0092 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = OSX/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/KSCrash/Mac/build/Debug",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagOSX;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		8A61743C1C6AC1EB003A0092 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = OSX/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/KSCrash/Mac/build/Debug",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagOSX;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		8A61743E1C6AC1EB003A0092 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Tests/OSX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagOSXTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		8A61743F1C6AC1EB003A0092 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Tests/OSX/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagOSXTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
 			name = Release;
 		};
-		932642DF1AB2494F0006C447 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F6DEA20592D913AB5AFDDA8 /* Pods-BugsnagOSX.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_VERSION = A;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "$(SRCROOT)/Bugsnag/Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		932642E01AB2494F0006C447 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7DDE54F026315C90C12AB9E6 /* Pods-BugsnagOSX.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_VERSION = A;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "$(SRCROOT)/Bugsnag/Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		79659E141A0AFFF800280978 /* Build configuration list for PBXProject "Bugsnag" */ = {
+		8A6173841C6AB592003A0092 /* Build configuration list for PBXProject "Bugsnag" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				79659E151A0AFFF800280978 /* Debug */,
-				79659E161A0AFFF800280978 /* Release */,
+				8A61739C1C6AB592003A0092 /* Debug */,
+				8A61739D1C6AB592003A0092 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		79FD0E2A1A0C18F30050DBC5 /* Build configuration list for PBXNativeTarget "BugsnagiOS" */ = {
+		8A61739E1C6AB592003A0092 /* Build configuration list for PBXNativeTarget "BugsnagiOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				79FD0E2B1A0C18F30050DBC5 /* Debug */,
-				79FD0E2C1A0C18F30050DBC5 /* Release */,
+				8A61739F1C6AB592003A0092 /* Debug */,
+				8A6173A01C6AB592003A0092 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		79FD0E2D1A0C18F30050DBC5 /* Build configuration list for PBXNativeTarget "BugsnagTests" */ = {
+		8A6173A11C6AB592003A0092 /* Build configuration list for PBXNativeTarget "BugsnagTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				79FD0E2E1A0C18F30050DBC5 /* Debug */,
-				79FD0E2F1A0C18F30050DBC5 /* Release */,
+				8A6173A21C6AB592003A0092 /* Debug */,
+				8A6173A31C6AB592003A0092 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8AAF53051C653DF500CDFF50 /* Build configuration list for PBXNativeTarget "BugsnagOSXTests" */ = {
+		8A61743A1C6AC1EB003A0092 /* Build configuration list for PBXNativeTarget "BugsnagOSX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				8AAF53031C653DF500CDFF50 /* Debug */,
-				8AAF53041C653DF500CDFF50 /* Release */,
+				8A61743B1C6AC1EB003A0092 /* Debug */,
+				8A61743C1C6AC1EB003A0092 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		932642DE1AB2494F0006C447 /* Build configuration list for PBXNativeTarget "BugsnagOSX" */ = {
+		8A61743D1C6AC1EB003A0092 /* Build configuration list for PBXNativeTarget "BugsnagOSXTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				932642DF1AB2494F0006C447 /* Debug */,
-				932642E01AB2494F0006C447 /* Release */,
+				8A61743E1C6AC1EB003A0092 /* Debug */,
+				8A61743F1C6AC1EB003A0092 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 79659E111A0AFFF800280978 /* Project object */;
+	rootObject = 8A6173811C6AB592003A0092 /* Project object */;
 }

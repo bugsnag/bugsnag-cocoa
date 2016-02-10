@@ -1,0 +1,9 @@
+module Bugsnag {
+    umbrella header "Bugsnag.h"
+
+    header "BugsnagConfiguration.h"
+    header "BugsnagMetaData.h"
+
+    export *
+    module * { export * }
+}

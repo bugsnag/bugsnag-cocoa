@@ -17,7 +17,7 @@
     "osx": "10.8"
   },
   "source_files": [
-    "Source/Bugsnag/**/*.{m,h,mm,c,cpp}"
+    "Source/*.{m,h,mm,c,cpp}"
   ],
   "requires_arc": true,
   "public_header_files": [

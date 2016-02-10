@@ -24,8 +24,11 @@
 // THE SOFTWARE.
 //
 
+#import <KSCrash/KSCrashReportWriter.h>
+
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagConfiguration.h"
+#import "BugsnagMetaData.h"
 
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeNotifyHooks;

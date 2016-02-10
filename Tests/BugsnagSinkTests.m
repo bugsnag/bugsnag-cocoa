@@ -34,16 +34,16 @@
   NSData *contentData = [contents dataUsingEncoding:NSUTF8StringEncoding];
   self.rawReportData =
       [NSJSONSerialization JSONObjectWithData:contentData options:0 error:nil];
-  BugsnagCrashReport *report =
-      [[BugsnagCrashReport alloc] initWithKSReport:self.rawReportData];
-  self.processedData = [[BugsnagSink new] getBodyFromReports:@[ report ]];
-  self.processedEvent = [self.processedData objectForKey:@"events"][0];
   BugsnagConfiguration *config = [BugsnagConfiguration new];
   config.autoNotify = NO;
   config.apiKey = @"apiKeyHere";
   config.releaseStage = @"MagicalTestingTime";
   config.notifyURL = nil;
   [Bugsnag startBugsnagWithConfiguration:config];
+  BugsnagCrashReport *report =
+      [[BugsnagCrashReport alloc] initWithKSReport:self.rawReportData];
+  self.processedEvent = [self.processedData objectForKey:@"events"][0];
+  self.processedData = [[BugsnagSink new] getBodyFromReports:@[ report ]];
 }
 
 - (void)tearDown {
@@ -148,7 +148,8 @@
 }
 
 - (void)testEventContext {
-  NSArray *expected = [self.rawReportData valueForKeyPath:@"user.config.context"];
+  NSArray *expected =
+      [self.rawReportData valueForKeyPath:@"user.config.context"];
   NSArray *context = [self processedEvent][@"context"];
   XCTAssertEqualObjects(context, expected);
 }
@@ -238,7 +239,7 @@
 - (void)testExceptionStacktrace {
   NSArray *exceptions = [self processedEvent][@"exceptions"];
   NSArray *stacktrace = [exceptions firstObject][@"stacktrace"];
-  XCTAssert([stacktrace count] !=  0);
+  XCTAssert([stacktrace count] != 0);
   XCTAssertNotNil(stacktrace);
   for (NSDictionary *frame in stacktrace) {
     XCTAssertNotNil([frame valueForKey:@"machoUUID"]);

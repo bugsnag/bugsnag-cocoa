@@ -146,7 +146,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     if (!metaData) {
         metaData = [[NSDictionary alloc] init];
     }
-    metaData = [metaData KS_mergedInto: [self.configuration.metaData toDictionary]];
+    metaData = [metaData BSG_mergedInto: [self.configuration.metaData toDictionary]];
     if (!severity) {
         severity = BugsnagSeverityWarning;
     }
@@ -250,7 +250,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     if([dstEntry isKindOfClass:[NSDictionary class]] &&
        [srcEntry isKindOfClass:[NSDictionary class]])
     {
-      srcEntry = [srcEntry KS_mergedInto:dstEntry];
+      srcEntry = [srcEntry BSG_mergedInto:dstEntry];
     }
     [dict setObject:srcEntry forKey:key];
   }

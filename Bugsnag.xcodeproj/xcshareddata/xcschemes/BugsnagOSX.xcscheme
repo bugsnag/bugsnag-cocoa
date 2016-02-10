@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "932642CA1AB2494F0006C447"
+               BlueprintIdentifier = "8A6174281C6AC1EA003A0092"
                BuildableName = "BugsnagOSX.framework"
                BlueprintName = "BugsnagOSX"
                ReferencedContainer = "container:Bugsnag.xcodeproj">
@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "8AAF52FA1C653DF500CDFF50"
+               BlueprintIdentifier = "8A6174311C6AC1EB003A0092"
                BuildableName = "BugsnagOSXTests.xctest"
                BlueprintName = "BugsnagOSXTests"
                ReferencedContainer = "container:Bugsnag.xcodeproj">
@@ -42,7 +42,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "932642CA1AB2494F0006C447"
+            BlueprintIdentifier = "8A6174281C6AC1EA003A0092"
             BuildableName = "BugsnagOSX.framework"
             BlueprintName = "BugsnagOSX"
             ReferencedContainer = "container:Bugsnag.xcodeproj">
@@ -64,7 +64,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "932642CA1AB2494F0006C447"
+            BlueprintIdentifier = "8A6174281C6AC1EA003A0092"
             BuildableName = "BugsnagOSX.framework"
             BlueprintName = "BugsnagOSX"
             ReferencedContainer = "container:Bugsnag.xcodeproj">
@@ -82,7 +82,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "932642CA1AB2494F0006C447"
+            BlueprintIdentifier = "8A6174281C6AC1EA003A0092"
             BuildableName = "BugsnagOSX.framework"
             BlueprintName = "BugsnagOSX"
             ReferencedContainer = "container:Bugsnag.xcodeproj">

@@ -37,7 +37,7 @@ void BSGDictInsertIfNotNil(NSMutableDictionary *dict, id object,
   }
 }
 
-void BSGArrayInsertIfNotNill(NSMutableArray *array, id object) {
+void BSGArrayInsertIfNotNil(NSMutableArray *array, id object) {
   if (object) {
     [array addObject:object];
   }

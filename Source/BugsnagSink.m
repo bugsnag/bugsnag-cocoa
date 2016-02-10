@@ -105,7 +105,7 @@
     request.HTTPBody = jsonData;
 
 #pragma clang diagnostic push
-#pragma clang diaginostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [NSURLConnection sendSynchronousRequest:request
                           returningResponse:NULL
                                       error:&error];

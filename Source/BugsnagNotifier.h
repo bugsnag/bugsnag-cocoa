@@ -27,7 +27,7 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagConfiguration.h"
-
+#import "BugsnagMetaData.h"
 
 
 @interface BugsnagNotifier : NSObject <BugsnagMetaDataDelegate>
