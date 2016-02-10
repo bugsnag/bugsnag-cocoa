@@ -2,7 +2,7 @@ Bugsnag Notifier for Cocoa <img src="https://travis-ci.org/bugsnag/bugsnag-cocoa
 ==========================
 
 The Bugsnag Notifier for Cocoa gives you instant notification of exceptions
-thrown from your **iOS** 5.0+ or **OSX** applications. The notifier hooks into
+thrown from your **iOS** 7.0+ or **OS X** applications. The notifier hooks into
 `NSSetUncaughtExceptionHandler`, which means any uncaught exceptions will
 trigger a notification to be sent to your Bugsnag dashboard. Bugsnag will also
 monitor for fatal signals sent to your application such as Segmentation
@@ -85,11 +85,12 @@ library.
 2.  Drag Bugsnag.framework from the zip file into your project, enabling "Copy
     items if needed" when prompted.
 
-3.  Under "Build Settings" add "-ObjC" to "Other Linker Flags" (search for
-    "ldflags")
+3.  Add Bugsnag.framework to the "Embedded Binaries" section of the "General"
+    tab of project settings
 
-4.  Under "General" add "libc++" and "SystemConfiguration.framework" to "Linked
-    Frameworks and Libraries"
+4.  Add [KSCrash.framework](https://github.com/kstenerud/KSCrash#how-to-use-kscrash)
+    to your project and the required dependencies. Bugsnag requires KSCrash
+    v1.0.0 or greater.
 
 5.  Add a build phase to upload the symbolication information to Bugsnag
 
