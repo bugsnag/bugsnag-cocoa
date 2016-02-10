@@ -1,13 +1,17 @@
 ifeq ($(SDK),)
  SDK=iphonesimulator9.2
 endif
-IOS_BUILD_FLAGS=-project Bugsnag.xcodeproj -scheme Bugsnag -sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5" -configuration Debug
-OSX_BUILD_FLAGS=-project Bugsnag.xcodeproj -scheme BugsnagOSX CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+IOS_BUILD_FLAGS=-workspace Bugsnag.xcworkspace -scheme BugsnagiOS -sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5" -configuration Debug
+OSX_BUILD_FLAGS=-workspace Bugsnag.xcworkspace -scheme BugsnagOSX CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 XCODEBUILD=set -o pipefail && xcodebuild
 VERSION=$(shell cat VERSION)
 ifneq ($(strip $(shell which xcpretty)),)
  FORMATTER = | tee xcodebuild.log | xcpretty
 endif
+KSCRASH_DEP = Carthage/Checkouts/KSCrash
+
+$(KSCRASH_DEP):
+	git submodule update --init
 
 build/Release/%.framework:
 	xcodebuild -target $* build $(FORMATTER)
@@ -23,10 +27,10 @@ all: build
 bootstrap:
 	@gem install xcpretty --quiet --no-ri --no-rdoc
 
-build:
+build: $(KSCRASH_DEP)
 	$(XCODEBUILD) $(IOS_BUILD_FLAGS) build $(FORMATTER)
 
-clean:
+clean: $(KSCRASH_DEP)
 	$(XCODEBUILD) $(IOS_BUILD_FLAGS) clean $(FORMATTER)
 	@rm -r build
 
@@ -37,10 +41,10 @@ else
 	@$(MAKE) test-ios
 endif
 
-test-ios:
+test-ios: $(KSCRASH_DEP)
 	$(XCODEBUILD) $(IOS_BUILD_FLAGS) test $(FORMATTER)
 
-test-osx:
+test-osx: $(KSCRASH_DEP)
 	$(XCODEBUILD) $(OSX_BUILD_FLAGS) test $(FORMATTER)
 
 release: build/Release/Bugsnag-$(VERSION).zip build/Release/BugsnagOSX-$(VERSION).zip
