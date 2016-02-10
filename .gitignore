@@ -15,4 +15,5 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
+*.log
 Pods
