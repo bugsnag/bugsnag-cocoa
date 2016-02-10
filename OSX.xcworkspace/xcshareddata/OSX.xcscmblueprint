@@ -7,14 +7,14 @@
     "D2885296440547CB23891301E79B480A22EAC5F6" : 0,
     "C4519EFDD2C3B96E9BD67A5CED575450FFB87C90" : 0
   },
-  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "B8F93C40-CD28-4093-903C-13155399B3FF",
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "64F71D72-7937-47C7-9FA1-099F1EFA7F49",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
     "D2885296440547CB23891301E79B480A22EAC5F6" : "bugsnag-cocoa-r\/Carthage\/Checkouts\/KSCrash\/",
     "C4519EFDD2C3B96E9BD67A5CED575450FFB87C90" : "bugsnag-cocoa-r\/"
   },
-  "DVTSourceControlWorkspaceBlueprintNameKey" : "Bugsnag",
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "OSX",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
-  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Bugsnag.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "OSX.xcworkspace",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:bugsnag\/bugsnag-cocoa",
