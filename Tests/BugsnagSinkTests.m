@@ -15,7 +15,6 @@
 @interface BugsnagSinkTests : XCTestCase
 @property NSDictionary *rawReportData;
 @property NSDictionary *processedData;
-@property NSDictionary *processedEvent;
 @end
 
 @interface BugsnagSink ()
@@ -42,13 +41,11 @@
   [Bugsnag startBugsnagWithConfiguration:config];
   BugsnagCrashReport *report =
       [[BugsnagCrashReport alloc] initWithKSReport:self.rawReportData];
-  self.processedEvent = [self.processedData objectForKey:@"events"][0];
   self.processedData = [[BugsnagSink new] getBodyFromReports:@[ report ]];
 }
 
 - (void)tearDown {
   self.rawReportData = nil;
-  self.processedEvent = nil;
   self.processedData = nil;
   [super tearDown];
 }
@@ -98,7 +95,7 @@
 }
 
 - (void)testCorrectEventKeys {
-  NSArray *actualKeys = [[[self processedEvent] allKeys]
+  NSArray *actualKeys = [[[self.processedData[@"events"] firstObject] allKeys]
       sortedArrayUsingSelector:@selector(compare:)];
   NSArray *eventKeys = @[
     @"app",
@@ -118,44 +115,44 @@
 }
 
 - (void)testEventReleaseStage {
-  NSString *releaseStage = self.processedEvent[@"app"][@"releaseStage"];
+  NSString *releaseStage = [self.processedData[@"events"] firstObject][@"app"][@"releaseStage"];
   XCTAssertEqualObjects(releaseStage, @"MagicalTestingTime");
 }
 
 - (void)testEventDsymUUID {
-  NSString *dsymUUID = [self processedEvent][@"dsymUUID"];
+  NSString *dsymUUID = [self.processedData[@"events"] firstObject][@"dsymUUID"];
   NSString *expectedUUID = self.rawReportData[@"system"][@"app_uuid"];
   XCTAssertEqualObjects(dsymUUID, expectedUUID);
 }
 
 - (void)testEventPayloadVersion {
-  NSString *payloadVersion = [self processedEvent][@"payloadVersion"];
+  NSString *payloadVersion = [self.processedData[@"events"] firstObject][@"payloadVersion"];
   XCTAssertEqualObjects(payloadVersion, @"2");
 }
 
 - (void)testEventSeverity {
   NSString *expected =
       [self.rawReportData valueForKeyPath:@"user.state.crash.severity"];
-  NSString *severity = [self processedEvent][@"severity"];
+  NSString *severity = [self.processedData[@"events"] firstObject][@"severity"];
   XCTAssertEqualObjects(severity, expected);
 }
 
 - (void)testEventBreadcrumbs {
   NSArray *expected =
       [self.rawReportData valueForKeyPath:@"user.state.crash.breadcrumbs"];
-  NSArray *breadcrumbs = [self processedEvent][@"breadcrumbs"];
+  NSArray *breadcrumbs = [self.processedData[@"events"] firstObject][@"breadcrumbs"];
   XCTAssertEqualObjects(breadcrumbs, expected);
 }
 
 - (void)testEventContext {
   NSArray *expected =
       [self.rawReportData valueForKeyPath:@"user.config.context"];
-  NSArray *context = [self processedEvent][@"context"];
+  NSArray *context = [self.processedData[@"events"] firstObject][@"context"];
   XCTAssertEqualObjects(context, expected);
 }
 
 - (void)testEventMetadataUser {
-  NSDictionary *user = [self processedEvent][@"metaData"][@"user"];
+  NSDictionary *user = [self.processedData[@"events"] firstObject][@"metaData"][@"user"];
   NSDictionary *expected = @{
     @"id" : self.rawReportData[@"system"][@"device_app_hash"]
   };
@@ -163,30 +160,30 @@
 }
 
 - (void)testEventMetadataCustomTab {
-  NSDictionary *customTab = [self processedEvent][@"metaData"][@"tab"];
+  NSDictionary *customTab = [self.processedData[@"events"] firstObject][@"metaData"][@"tab"];
   NSDictionary *expected = @{ @"key" : @"value" };
   XCTAssertEqualObjects(customTab, expected);
 }
 
 - (void)testEventMetadataErrorAddress {
   id address =
-      [[self processedEvent] valueForKeyPath:@"metaData.error.address"];
+      [[self.processedData[@"events"] firstObject] valueForKeyPath:@"metaData.error.address"];
   XCTAssertEqualObjects(address, @0);
 }
 
 - (void)testEventMetadataErrorType {
-  id errorType = [[self processedEvent] valueForKeyPath:@"metaData.error.type"];
+  id errorType = [[self.processedData[@"events"] firstObject] valueForKeyPath:@"metaData.error.type"];
   XCTAssertEqualObjects(errorType, @"user");
 }
 
 - (void)testEventMetadataErrorReason {
-  id reason = [[self processedEvent] valueForKeyPath:@"metaData.error.reason"];
+  id reason = [[self.processedData[@"events"] firstObject] valueForKeyPath:@"metaData.error.reason"];
   XCTAssertEqualObjects(reason, @"You should've written more tests!");
 }
 
 - (void)testEventMetadataErrorSignal {
   NSDictionary *signal =
-      [[self processedEvent] valueForKeyPath:@"metaData.error.signal"];
+      [[self.processedData[@"events"] firstObject] valueForKeyPath:@"metaData.error.signal"];
   XCTAssert([signal[@"name"] isEqual:@"SIGABRT"]);
   XCTAssert([signal[@"signal"] isEqual:@6]);
   XCTAssert([signal[@"code"] isEqual:@0]);
@@ -194,7 +191,7 @@
 
 - (void)testEventMetadataErrorMach {
   NSDictionary *mach =
-      [[self processedEvent] valueForKeyPath:@"metaData.error.mach"];
+      [[self.processedData[@"events"] firstObject] valueForKeyPath:@"metaData.error.mach"];
   XCTAssert([mach[@"exception_name"] isEqual:@"EXC_CRASH"]);
   XCTAssert([mach[@"subcode"] isEqual:@0]);
   XCTAssert([mach[@"code"] isEqual:@0]);
@@ -203,13 +200,13 @@
 
 - (void)testEventMetadataErrorUserReported {
   NSDictionary *reported =
-      [[self processedEvent] valueForKeyPath:@"metaData.error.user_reported"];
+      [[self.processedData[@"events"] firstObject] valueForKeyPath:@"metaData.error.user_reported"];
   XCTAssertEqualObjects(reported[@"name"], @"name");
   XCTAssertEqualObjects(reported[@"line_of_code"], @"");
 }
 
 - (void)testBinaryThreadStacktraces {
-  for (NSDictionary *thread in [self processedEvent][@"threads"]) {
+  for (NSDictionary *thread in [self.processedData[@"events"] firstObject][@"threads"]) {
     NSArray *stacktrace = thread[@"stacktrace"];
     XCTAssertNotNil(stacktrace);
     for (NSDictionary *frame in stacktrace) {
@@ -224,12 +221,12 @@
 }
 
 - (void)testEventExceptionCount {
-  NSArray *exceptions = [self processedEvent][@"exceptions"];
+  NSArray *exceptions = [self.processedData[@"events"] firstObject][@"exceptions"];
   XCTAssert(exceptions.count == 1);
 }
 
 - (void)testEventExceptionData {
-  NSArray *exceptions = [self processedEvent][@"exceptions"];
+  NSArray *exceptions = [self.processedData[@"events"] firstObject][@"exceptions"];
   NSDictionary *exception = [exceptions firstObject];
   XCTAssertEqualObjects(exception[@"message"],
                         @"You should've written more tests!");
@@ -237,7 +234,7 @@
 }
 
 - (void)testExceptionStacktrace {
-  NSArray *exceptions = [self processedEvent][@"exceptions"];
+  NSArray *exceptions = [self.processedData[@"events"] firstObject][@"exceptions"];
   NSArray *stacktrace = [exceptions firstObject][@"stacktrace"];
   XCTAssert([stacktrace count] != 0);
   XCTAssertNotNil(stacktrace);
@@ -252,19 +249,20 @@
 }
 
 - (void)testEventThreadCount {
-  NSArray *threads = [self processedEvent][@"threads"];
+  NSArray *threads = [self.processedData[@"events"] firstObject][@"threads"];
   XCTAssert(threads.count == 8);
 }
 
 - (void)testEventAppState {
-  NSDictionary *appState = self.processedEvent[@"appState"];
+  NSDictionary *event = [self.processedData[@"events"] firstObject];
+  NSDictionary *appState = event[@"appState"];
   XCTAssertEqualObjects([appState valueForKey:@"durationInForeground"], @0);
   XCTAssertEqualObjects([appState valueForKey:@"inForeground"], @YES);
   XCTAssertEqualObjects([appState valueForKey:@"duration"], @0);
 }
 
 - (void)testEventAppStats {
-  NSDictionary *stats = self.processedEvent[@"appState"][@"stats"];
+  NSDictionary *stats = [self.processedData[@"events"] firstObject][@"appState"][@"stats"];
   XCTAssertEqualObjects(stats, (@{
                           @"background_time_since_last_crash" : @0,
                           @"active_time_since_launch" : @0,
