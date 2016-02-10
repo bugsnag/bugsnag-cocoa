@@ -2,9 +2,13 @@ ifeq ($(SDK),)
  SDK=iphonesimulator9.2
 endif
 ifeq ($(BUILD_OSX), 1)
+ PLATFORM=OSX
+ RELEASE_DIR=Release
  BUILD_FLAGS=-workspace OSX.xcworkspace -scheme Bugsnag
  BUILD_ONLY_FLAGS=CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 else
+ PLATFORM=iOS
+ RELEASE_DIR=Release-iphoneos
  BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag
  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5" -configuration Debug
 endif
@@ -19,16 +23,18 @@ all: build
 # Vendored dependency on KSCrash, pinned to the required version
 KSCRASH_DEP = Carthage/Checkouts/KSCrash
 $(KSCRASH_DEP):
-	git submodule update --init
+	@git submodule update --init
 
 # Generated framework package for Bugsnag for either iOS or OS X
-build/Release/%.framework:
-	xcodebuild $(BUILD_FLAGS) build -configuration Release $(FORMATTER)
+build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework:
+	@xcodebuild $(BUILD_FLAGS) \
+		-configuration Release \
+		-derivedDataPath build clean build $(FORMATTER)
 
 # Compressed bundle for release version of Bugsnag framework
-build/Release/%-$(VERSION).zip: build/Release/%.framework
-	cd build/Release; \
-	zip --symlinks -r $*.zip $*.framework
+build/Bugsnag-%-$(VERSION).zip: build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework
+	@cd build/Build/Products/$(RELEASE_DIR); \
+		zip --symlinks -rq ../../../Bugsnag-$*-$(VERSION).zip Bugsnag.framework
 
 .PHONY: all build test
 
@@ -36,16 +42,20 @@ bootstrap:
 	@gem install xcpretty --quiet --no-ri --no-rdoc
 
 build: $(KSCRASH_DEP)
-	$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) build $(FORMATTER)
+	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) build $(FORMATTER)
 
 clean: $(KSCRASH_DEP)
-	$(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
+	@$(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
 	@rm -rf build
 
 test: $(KSCRASH_DEP)
-	$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
+	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
 
-release: build/Release/Bugsnag-$(VERSION).zip build/Release/BugsnagOSX-$(VERSION).zip
-	@open .
+archive: build/Bugsnag-$(PLATFORM)-$(VERSION).zip
+
+release:
+	@$(MAKE) archive
+	@$(MAKE) BUILD_OSX=1 archive
+	@open build
 	@open 'https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v'$(VERSION)
 
