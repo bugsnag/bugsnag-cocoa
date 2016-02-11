@@ -126,7 +126,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         [self metaDataChanged: self.configuration.metaData];
         [self metaDataChanged: self.configuration.config];
         [self metaDataChanged: self.state];
-        g_bugsnag_data.onCrash = self.configuration.onCrashHandler;
+        g_bugsnag_data.onCrash = (void (*)(const KSCrashReportWriter *))self.configuration.onCrashHandler;
     }
 
     return self;

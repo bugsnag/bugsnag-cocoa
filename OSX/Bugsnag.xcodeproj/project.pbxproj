@@ -32,6 +32,7 @@
 		8A2C8FF01C6BC3A200846019 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8FEF1C6BC3A200846019 /* SystemConfiguration.framework */; };
 		8A2C90031C6BC3FA00846019 /* libKSCrashLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C90021C6BC3FA00846019 /* libKSCrashLib.a */; };
 		8A2C90441C6C040700846019 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C90401C6C03F000846019 /* Cocoa.framework */; };
+		8A87352C1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A87352B1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +78,7 @@
 		8A2C902F1C6BF3AC00846019 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = SOURCE_ROOT; };
 		8A2C90401C6C03F000846019 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8A2C90421C6C03FF00846019 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		8A87352B1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSGKSCrashReportWriter.h; path = ../Source/BSGKSCrashReportWriter.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 		8A2C8FA31C6BC1F700846019 /* Bugsnag */ = {
 			isa = PBXGroup;
 			children = (
+				8A87352B1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h */,
 				8A2C8FBB1C6BC2C800846019 /* Bugsnag.h */,
 				8A2C8FBC1C6BC2C800846019 /* Bugsnag.m */,
 				8A2C8FBD1C6BC2C800846019 /* BugsnagBreadcrumb.h */,
@@ -185,6 +188,7 @@
 				8A2C8FCF1C6BC2C800846019 /* BugsnagBreadcrumb.h in Headers */,
 				8A2C8FD91C6BC2C800846019 /* BugsnagNotifier.h in Headers */,
 				8A2C8FDD1C6BC2C800846019 /* BugsnagSink.h in Headers */,
+				8A87352C1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h in Headers */,
 				8A2C8FD51C6BC2C800846019 /* BugsnagCrashReport.h in Headers */,
 				8A2C8FD31C6BC2C800846019 /* BugsnagConfiguration.h in Headers */,
 			);

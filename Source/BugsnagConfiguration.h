@@ -27,6 +27,7 @@
 #import <Foundation/Foundation.h>
 #import "BugsnagMetaData.h"
 #import "BugsnagBreadcrumb.h"
+#import "BSGKSCrashReportWriter.h"
 
 /**
  *  A handler for modifying data before sending it to Bugsnag
@@ -54,7 +55,7 @@ typedef NSDictionary * (^BugsnagBeforeNotifyHook)(NSArray *rawEventReports,
 @property(nonatomic, readwrite, retain) BugsnagMetaData *config;
 @property(nonatomic, readonly, strong) BugsnagBreadcrumbs *breadcrumbs;
 @property(nonatomic, readonly, strong) NSArray *beforeNotifyHooks;
-@property(nonatomic) void (*onCrashHandler)(const KSCrashReportWriter *writer);
+@property(nonatomic) void (*onCrashHandler)(const BSGKSCrashReportWriter* writer);
 
 @property(nonatomic) BOOL autoNotify;
 

@@ -33,6 +33,7 @@
 		8A2C8F921C6BBFDD00846019 /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8F8E1C6BBFDD00846019 /* BugsnagTests.m */; };
 		8A2C8F941C6BBFE700846019 /* libKSCrashLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8F931C6BBFE700846019 /* libKSCrashLib.a */; };
 		8A2C8F961C6BC08600846019 /* report.json in Resources */ = {isa = PBXBuildFile; fileRef = 8A2C8F951C6BC08600846019 /* report.json */; };
+		8A87351E1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A87351D1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +79,7 @@
 		8A2C8F8E1C6BBFDD00846019 /* BugsnagTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagTests.m; path = ../Tests/BugsnagTests.m; sourceTree = SOURCE_ROOT; };
 		8A2C8F931C6BBFE700846019 /* libKSCrashLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libKSCrashLib.a; path = "../Carthage/Checkouts/KSCrash/iOS/build/Debug-iphoneos/libKSCrashLib.a"; sourceTree = "<group>"; };
 		8A2C8F951C6BC08600846019 /* report.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = report.json; path = ../Tests/report.json; sourceTree = SOURCE_ROOT; };
+		8A87351D1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSGKSCrashReportWriter.h; path = ../Source/BSGKSCrashReportWriter.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				8A2C8F3D1C6BBE3C00846019 /* Bugsnag.h */,
+				8A87351D1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h */,
 				8A2C8F3E1C6BBE3C00846019 /* Bugsnag.m */,
 				8A2C8F3F1C6BBE3C00846019 /* BugsnagBreadcrumb.h */,
 				8A2C8F401C6BBE3C00846019 /* BugsnagBreadcrumb.m */,
@@ -187,6 +190,7 @@
 				8A2C8F511C6BBE3C00846019 /* BugsnagBreadcrumb.h in Headers */,
 				8A2C8F5D1C6BBE3C00846019 /* BugsnagNotifier.h in Headers */,
 				8A2C8F531C6BBE3C00846019 /* BugsnagCollections.h in Headers */,
+				8A87351E1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h in Headers */,
 				8A2C8F5F1C6BBE3C00846019 /* BugsnagSink.h in Headers */,
 				8A2C8F571C6BBE3C00846019 /* BugsnagCrashReport.h in Headers */,
 			);
