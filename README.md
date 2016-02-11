@@ -44,12 +44,12 @@ Getting Started
 
 #### Using CocoaPods (Recommended)
 
-[Cocoapods](http://cocoapods.org/) is a library management system for iOS/OSX
+[CocoaPods](http://cocoapods.org/) is a library management system for iOS/OSX
 which allows you to manage your libraries, detail your dependencies and handle
 updates nicely. It is the recommended way of installing the Bugsnag Cocoa
 library.
 
-0.  Install Cocoapods and the [Bugsnag Cocoapods Plugin](https://github.com/bugsnag/cocoapods-bugsnag).
+0.  Install CocoaPods and the [Bugsnag CocoaPods Plugin](https://github.com/bugsnag/cocoapods-bugsnag).
     The plugin is not required, but it adds a build phase to your projects for
     uploading dSYM files to Bugsnag for symbolicating crash reports.
 
@@ -78,7 +78,7 @@ library.
     pod install
     ```
 
-#### Without Cocoapods
+#### Without CocoaPods
 
 1.  Download Bugsnag.zip from the [latest release](https://github.com/bugsnag/bugsnag-cocoa/releases/latest)
 
