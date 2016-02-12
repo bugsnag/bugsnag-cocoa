@@ -13,7 +13,7 @@
   },
   "frameworks": "Foundation",
   "platforms": {
-    "ios": "7.0",
+    "ios": "6.0",
     "osx": "10.8"
   },
   "source_files": [
