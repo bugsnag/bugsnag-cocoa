@@ -25,10 +25,10 @@
   ],
   "dependencies": {
     "KSCrash/Reporting": [
-      "~> 1.0.0"
+      "~> 1.0.1"
     ],
     "KSCrash/Recording": [
-      "~> 1.0.0"
+      "~> 1.0.1"
     ]
   }
 }
