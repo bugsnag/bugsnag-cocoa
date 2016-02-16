@@ -2,7 +2,7 @@ Bugsnag Notifier for Cocoa <img src="https://travis-ci.org/bugsnag/bugsnag-cocoa
 ==========================
 
 The Bugsnag Notifier for Cocoa gives you instant notification of exceptions
-thrown from your **iOS** 5.0+ or **OSX** applications. The notifier hooks into
+thrown from your **iOS** 7.0+ or **OS X** applications. The notifier hooks into
 `NSSetUncaughtExceptionHandler`, which means any uncaught exceptions will
 trigger a notification to be sent to your Bugsnag dashboard. Bugsnag will also
 monitor for fatal signals sent to your application such as Segmentation
@@ -22,6 +22,7 @@ Contents
 		- [Objective-C](#objective-c)
 		- [Swift](#swift)
 		- [Additional Setup for Mac Applications](#additional-setup-for-mac-applications)
+  - [Crash Report Symbolication](#crash-report-symbolication)
 - [Usage](#usage)
 	- [Catching and Reporting Exceptions](#catching-and-reporting-exceptions)
 	- [Sending Handled Exceptions](#sending-handled-exceptions)
@@ -44,17 +45,15 @@ Getting Started
 
 #### Using CocoaPods (Recommended)
 
-[Cocoapods](http://cocoapods.org/) is a library management system for iOS/OSX
+[CocoaPods](http://cocoapods.org/) is a library management system for iOS/OSX
 which allows you to manage your libraries, detail your dependencies and handle
 updates nicely. It is the recommended way of installing the Bugsnag Cocoa
 library.
 
-0.  Install Cocoapods and the [Bugsnag Cocoapods Plugin](https://github.com/bugsnag/cocoapods-bugsnag).
-    The plugin is not required, but it adds a build phase to your projects for
-    uploading dSYM files to Bugsnag for symbolicating crash reports.
+0.  Install CocoaPods
 
     ```
-    gem install cocoapods cocoapods-bugsnag
+    gem install cocoapods
     ```
 
 1.  Add Bugsnag to your `Podfile`
@@ -78,41 +77,19 @@ library.
     pod install
     ```
 
-#### Without Cocoapods
+#### Without CocoaPods
 
 1.  Download Bugsnag.zip from the [latest release](https://github.com/bugsnag/bugsnag-cocoa/releases/latest)
 
 2.  Drag Bugsnag.framework from the zip file into your project, enabling "Copy
     items if needed" when prompted.
 
-3.  Under "Build Settings" add "-ObjC" to "Other Linker Flags" (search for
-    "ldflags")
+3.  Add Bugsnag.framework to the "Embedded Binaries" section of the "General"
+    tab of project settings
 
-4.  Under "General" add "libc++" and "SystemConfiguration.framework" to "Linked
-    Frameworks and Libraries"
-
-5.  Add a build phase to upload the symbolication information to Bugsnag
-
-    From the same "Build Phases" screen, click the plus in the bottom right of
-    the screen labelled "Add Build Phase", then select "Add Run Script". Then
-    expand the newly added "Run Script" section, and set the shell to
-    `/usr/bin/ruby` and copy the following script into the text box,
-
-    ```ruby
-    fork do
-      Process.setsid
-      STDIN.reopen("/dev/null")
-      STDOUT.reopen("/dev/null", "a")
-      STDERR.reopen("/dev/null", "a")
-
-      require 'shellwords'
-
-      Dir["#{ENV["DWARF_DSYM_FOLDER_PATH"]}/*/Contents/Resources/DWARF/*"].each do |dsym|
-        system("curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV["PROJECT_DIR"])} https://upload.bugsnag.com/")
-      end
-    end
-    ```
-
+4.  Add [KSCrash.framework](https://github.com/kstenerud/KSCrash#how-to-use-kscrash)
+    to your project and the required dependencies. Bugsnag requires KSCrash
+    v1.0.0 or greater.
 
 ### Setup
 
@@ -183,6 +160,51 @@ application delegate functions and manually notify Bugsnag of any exceptions.
 This is another limitation of the exception handling in Mac applications that
 the exception handler is only guaranteed to be called after application
 initialization has completed.
+
+### Crash Report Symbolication
+
+The Bugsnag Cocoa Notifier supports symbolicating crash reports from client
+devices. In order to make this work, Bugsnag needs the contents of your dSYM
+file.
+
+#### With Bitcode
+
+If you have [Bitcode](https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/AppThinning/AppThinning.html#//apple_ref/doc/uid/TP40012582-CH35-SW2)
+enabled in your application's project settings:
+
+1. Open the Xcode Organizer, select your app, then use "Download dSYMs..." to
+   download the dSYM files.
+2. Upload the dSYM file to Bugsnag using the [dSYM Upload API](https://bugsnag.com/docs/notifiers/ios/dsym):
+
+       curl https://upload.bugsnag.com/ -F dsym=@MyApp.app.dSYM/Contents/Resources/DWARF/MyApp
+
+#### Without Bitcode
+
+Without Bitcode enabled, the dSYM files for your application can be
+automatically uploaded by adding a build phase to your project. If you are using
+CocoaPods, installing the [cocoapods-bugsnag plugin](https://github.com/bugsnag/cocoapods-bugsnag)
+will add the build phase when you run `pod install`. Otherwise:
+
+1. From the same "Build Phases" screen, click the plus in the bottom right of
+   the screen labelled "Add Build Phase", then select "Add Run Script"
+2. Expand the newly added "Run Script" section, and set the shell to
+   `/usr/bin/ruby`
+3. Copy the following script into the text box:
+
+```ruby
+fork do
+  Process.setsid
+  STDIN.reopen("/dev/null")
+  STDOUT.reopen("/dev/null", "a")
+  STDERR.reopen("/dev/null", "a")
+
+  require 'shellwords'
+
+  Dir["#{ENV["DWARF_DSYM_FOLDER_PATH"]}/*/Contents/Resources/DWARF/*"].each do |dsym|
+    system("curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV["PROJECT_DIR"])} https://upload.bugsnag.com/")
+  end
+end
+```
 
 Usage
 -----

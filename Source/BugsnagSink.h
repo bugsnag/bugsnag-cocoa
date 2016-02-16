@@ -1,4 +1,9 @@
-// Copyright (c) 2016 Bugsnag, Inc. All rights reserved.
+//
+//  BugsnagSink.h
+//
+//  Created by Conrad Irwin on 2014-10-01.
+//
+//  Copyright (c) 2014 Bugsnag, Inc. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,17 +22,11 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+//
 
-import UIKit
+#import <Foundation/Foundation.h>
+#import <KSCrash/KSCrash.h>
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+@interface BugsnagSink : NSObject <KSCrashReportFilter>
 
-    var window: UIWindow?
-
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        Bugsnag.startBugsnagWithApiKey("API-KEY")
-        return true
-    }
-}
-
+@end

@@ -1,49 +1,61 @@
 ifeq ($(SDK),)
  SDK=iphonesimulator9.2
 endif
-IOS_BUILD_FLAGS=-project Bugsnag.xcodeproj -scheme Bugsnag -sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5" -configuration Debug
-OSX_BUILD_FLAGS=-project Bugsnag.xcodeproj -scheme BugsnagOSX CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+ifeq ($(BUILD_OSX), 1)
+ PLATFORM=OSX
+ RELEASE_DIR=Release
+ BUILD_FLAGS=-workspace OSX.xcworkspace -scheme Bugsnag
+ BUILD_ONLY_FLAGS=CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+else
+ PLATFORM=iOS
+ RELEASE_DIR=Release-iphoneos
+ BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag
+ BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5" -configuration Debug
+endif
 XCODEBUILD=set -o pipefail && xcodebuild
 VERSION=$(shell cat VERSION)
 ifneq ($(strip $(shell which xcpretty)),)
  FORMATTER = | tee xcodebuild.log | xcpretty
 endif
 
-build/Release/%.framework:
-	xcodebuild -target $* build $(FORMATTER)
+all: build
 
-build/Release/%-$(VERSION).zip: build/Release/%.framework
-	cd build/Release; \
-	zip --symlinks -r $*.zip $*.framework
+# Vendored dependency on KSCrash, pinned to the required version
+KSCRASH_DEP = Carthage/Checkouts/KSCrash
+$(KSCRASH_DEP):
+	@git submodule update --init
+
+# Generated framework package for Bugsnag for either iOS or OS X
+build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework:
+	@xcodebuild $(BUILD_FLAGS) \
+		-configuration Release \
+		-derivedDataPath build clean build $(FORMATTER)
+
+# Compressed bundle for release version of Bugsnag framework
+build/Bugsnag-%-$(VERSION).zip: build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework
+	@cd build/Build/Products/$(RELEASE_DIR); \
+		zip --symlinks -rq ../../../Bugsnag-$*-$(VERSION).zip Bugsnag.framework
 
 .PHONY: all build test
-
-all: build
 
 bootstrap:
 	@gem install xcpretty --quiet --no-ri --no-rdoc
 
-build:
-	$(XCODEBUILD) $(IOS_BUILD_FLAGS) build $(FORMATTER)
+build: $(KSCRASH_DEP)
+	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) build $(FORMATTER)
 
-clean:
-	$(XCODEBUILD) $(IOS_BUILD_FLAGS) clean $(FORMATTER)
-	@rm -r build
+clean: $(KSCRASH_DEP)
+	@$(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
+	@rm -rf build
 
-test:
-ifeq ($(BUILD_OSX), 1)
-	@$(MAKE) test-osx
-else
-	@$(MAKE) test-ios
-endif
+test: $(KSCRASH_DEP)
+	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
 
-test-ios:
-	$(XCODEBUILD) $(IOS_BUILD_FLAGS) test $(FORMATTER)
+archive: build/Bugsnag-$(PLATFORM)-$(VERSION).zip
 
-test-osx:
-	$(XCODEBUILD) $(OSX_BUILD_FLAGS) test $(FORMATTER)
-
-release: build/Release/Bugsnag-$(VERSION).zip build/Release/BugsnagOSX-$(VERSION).zip
-	@open .
+release:
+	@$(MAKE) archive
+	@$(MAKE) BUILD_OSX=1 archive
+	@open build
 	@open 'https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v'$(VERSION)
 

@@ -1,4 +1,5 @@
-// Copyright (c) 2016 Bugsnag, Inc. All rights reserved.
+//
+//  Copyright (c) 2016 Bugsnag, Inc. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,16 +19,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import UIKit
+#import <Foundation/Foundation.h>
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+/**
+ *  Insert an object or NSNull into a collection
+ *
+ *  @param dict   a mutable dictionary
+ *  @param object an object or nil
+ */
+void BSGDictSetSafeObject(NSMutableDictionary *dict, id object, id<NSCopying> key);
 
-    var window: UIWindow?
+/**
+ *  Insert an object or NSNull into a collection
+ *
+ *  @param dict   a mutable array
+ *  @param object an object or nil
+ */
+void BSGArrayAddSafeObject(NSMutableArray *array, id object);
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        Bugsnag.startBugsnagWithApiKey("API-KEY")
-        return true
-    }
-}
 
+/**
+ *  Insert an object into a collection only if not nil
+ *
+ *  @param dict   a mutable dictionary
+ *  @param object an object or nil
+ *  @param key    the key of the object
+ */
+void BSGDictInsertIfNotNil(NSMutableDictionary *dict, id object, id<NSCopying> key);
+
+/**
+ *  Insert an object into a collection only if not nil
+ *
+ *  @param dict   a mutable array
+ *  @param object an object or nil
+ */
+void BSGArrayInsertIfNotNil(NSMutableArray *array, id object);

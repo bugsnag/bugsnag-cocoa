@@ -1,4 +1,5 @@
-// Copyright (c) 2016 Bugsnag, Inc. All rights reserved.
+//
+//  Copyright (c) 2016 Bugsnag, Inc. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,16 +19,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import UIKit
+#import "BugsnagCollections.h"
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
-    var window: UIWindow?
-
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        Bugsnag.startBugsnagWithApiKey("API-KEY")
-        return true
-    }
+void BSGDictSetSafeObject(NSMutableDictionary *dict, id object,
+                          id<NSCopying> key) {
+  dict[key] = object ?: [NSNull null];
 }
 
+void BSGArrayAddSafeObject(NSMutableArray *array, id object) {
+  [array addObject:object ?: [NSNull null]];
+}
+
+void BSGDictInsertIfNotNil(NSMutableDictionary *dict, id object,
+                           id<NSCopying> key) {
+  if (object && key) {
+    dict[key] = object;
+  }
+}
+
+void BSGArrayInsertIfNotNil(NSMutableArray *array, id object) {
+  if (object) {
+    [array addObject:object];
+  }
+}
