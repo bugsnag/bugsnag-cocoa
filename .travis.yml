@@ -9,7 +9,5 @@ matrix:
           env: SDK=iphonesimulator8.1
         - osx_image: xcode6.1
           env: SDK=iphonesimulator7.1
-        - osx_image: xcode6.1
-          env: SDK=iphonesimulator7.0
 install: make bootstrap
 script: make test
