@@ -8,6 +8,9 @@ This release includes an upgrade to [KSCrash](https://github.com/kstenerud/KSCra
 Crash handling for heap corruption and link register overwriting has also been
 improved.
 
+**NOTE:** The minimum supported iOS and OS X versions have been updated to 6.0
+and 10.8 respectively.
+
 
 ### Bug Fixes
 
