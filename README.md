@@ -2,8 +2,8 @@ Bugsnag Notifier for Cocoa <a href="https://travis-ci.org/bugsnag/bugsnag-cocoa"
 ==========================
 
 The Bugsnag Notifier for Cocoa gives you instant notification of exceptions
-thrown from your **iOS** 7.0+ or **OS X** applications. The notifier hooks into
-`NSSetUncaughtExceptionHandler`, which means any uncaught exceptions will
+thrown from your **iOS** 6.0+ or **OS X** 10.8+ applications. The notifier hooks
+into `NSSetUncaughtExceptionHandler`, which means any uncaught exceptions will
 trigger a notification to be sent to your Bugsnag dashboard. Bugsnag will also
 monitor for fatal signals sent to your application such as Segmentation
 Faults.
