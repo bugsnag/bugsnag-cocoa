@@ -59,7 +59,7 @@ library.
 1.  Add Bugsnag to your `Podfile`
 
     ```ruby
-    pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git"
+    pod 'Bugsnag'
 
     ```
 
@@ -68,7 +68,7 @@ library.
 
     ```ruby
     use_frameworks!
-    pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git"
+    pod 'Bugsnag'
     ```
 
 2.  Install Bugsnag
