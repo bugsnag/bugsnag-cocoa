@@ -1,4 +1,4 @@
-Bugsnag Notifier for Cocoa <img src="https://travis-ci.org/bugsnag/bugsnag-cocoa.svg?branch=master" alt="build status" class="build-status">
+Bugsnag Notifier for Cocoa <a href="https://travis-ci.org/bugsnag/bugsnag-cocoa"><img src="https://travis-ci.org/bugsnag/bugsnag-cocoa.svg?branch=master" alt="build status" class="build-status"></a>
 ==========================
 
 The Bugsnag Notifier for Cocoa gives you instant notification of exceptions
