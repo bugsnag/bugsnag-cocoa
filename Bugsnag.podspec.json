@@ -1,6 +1,6 @@
 {
   "name": "Bugsnag",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "summary": "Cocoa notifier for SDK for bugsnag.com",
   "homepage": "https://bugsnag.com",
   "license": "MIT",
@@ -9,7 +9,7 @@
   },
   "source": {
     "git": "https://github.com/bugsnag/bugsnag-cocoa.git",
-    "tag": "v4.1.0"
+    "tag": "v5.0.0"
   },
   "frameworks": "Foundation",
   "platforms": {
@@ -21,7 +21,7 @@
   ],
   "requires_arc": true,
   "public_header_files": [
-    "Source/Bugsnag/*.h"
+    "Source/*.h"
   ],
   "dependencies": {
     "KSCrash/Reporting": [
