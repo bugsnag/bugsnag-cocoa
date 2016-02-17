@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## 5.0.1
+
+### Bug Fixes
+
+* Fix header issue when linking to Bugsnag via CocoaPods from within another pod
+  [#98](https://github.com/bugsnag/bugsnag-cocoa/issues/98)
+  [#99](https://github.com/bugsnag/bugsnag-cocoa/pull/99)
+  - Related to: [CocoaPods#4420](https://github.com/cocoapods/cocoapods/issues/4420)
+
 ## 5.0.0
 
 This release includes an upgrade to [KSCrash](https://github.com/kstenerud/KSCrash)
