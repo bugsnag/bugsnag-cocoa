@@ -9,7 +9,7 @@
   },
   "source": {
     "git": "https://github.com/bugsnag/bugsnag-cocoa.git",
-    "tag": "v5.0.0"
+    "tag": "v5.0.1"
   },
   "frameworks": "Foundation",
   "platforms": {
