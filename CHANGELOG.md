@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 5.0.2
+
+### Bug Fixes
+
+* Fix typo in updated payload date format. Should instead use RFC 3339 format
+
 ## 5.0.1
 
 ### Bug Fixes
