@@ -25,11 +25,8 @@
     "Source/Bugsnag{,MetaData,Configuration,Breadcrumb}.h"
   ],
   "dependencies": {
-    "KSCrash/Reporting": [
-      "~> 1.0.1"
-    ],
-    "KSCrash/Recording": [
-      "~> 1.0.1"
+    "KSCrash/RecordingAdvanced": [
+      "~> 1.0.3"
     ]
   }
 }
