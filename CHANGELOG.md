@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## 5.1.0
+
+### Bug Fixes
+
+* Fix build failure when building with frameworks
+  [#101](https://github.com/bugsnag/bugsnag-cocoa/issues/101)
+
+### Enhancements
+
+* Add support for iOS Application Extensions
+  [#100](https://github.com/bugsnag/bugsnag-cocoa/issues/100)
+
 ## 5.0.2
 
 ### Bug Fixes

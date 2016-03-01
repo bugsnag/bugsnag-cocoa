@@ -1,6 +1,6 @@
 {
   "name": "Bugsnag",
-  "version": "5.0.2",
+  "version": "5.1.0",
   "summary": "Cocoa notifier for SDK for bugsnag.com",
   "homepage": "https://bugsnag.com",
   "license": "MIT",
@@ -9,7 +9,7 @@
   },
   "source": {
     "git": "https://github.com/bugsnag/bugsnag-cocoa.git",
-    "tag": "v5.0.2"
+    "tag": "v5.1.0"
   },
   "frameworks": "Foundation",
   "platforms": {
