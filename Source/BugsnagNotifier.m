@@ -198,7 +198,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     @autoreleasepool {
         @try {
             [[KSCrash sharedInstance] sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
-                NSLog(@"Bugsnag reports sent.");
+                if (filteredReports.count > 0)
+                    NSLog(@"Bugsnag reports sent.");
             }];
         }
         @catch (NSException* e) {
