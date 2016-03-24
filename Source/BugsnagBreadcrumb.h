@@ -35,11 +35,13 @@
 
 @interface BugsnagBreadcrumb : NSObject
 
-@property (readonly) NSDate* timestamp;
-@property (readonly,copy) NSString* message;
 
-- (instancetype) initWithMessage:(NSString*)message
-                       timestamp:(NSDate*)date NS_DESIGNATED_INITIALIZER;
+@property(readonly,nullable) NSDate *timestamp;
+@property(readonly, copy, nullable) NSString *message;
+
+- (instancetype _Nullable)initWithMessage:(NSString *_Nullable)message
+                                timestamp:(NSDate *_Nullable)date
+    NS_DESIGNATED_INITIALIZER;
 @end
 
 @interface BugsnagBreadcrumbs : NSObject
@@ -57,21 +59,23 @@
  * Store a new breadcrumb with a provided message. Must be called from the
  * main thread.
  */
-- (void) addBreadcrumb:(NSString*)breadcrumbMessage;
+- (void)addBreadcrumb:(NSString* _Nonnull)breadcrumbMessage;
 
 /**
  * Clear all stored breadcrumbs. Must be called from the main thread.
  */
-- (void) clearBreadcrumbs;
+- (void)clearBreadcrumbs;
 
 /** Breadcrumb object for a particular index or nil */
-- (BugsnagBreadcrumb*) objectAtIndexedSubscript:(NSUInteger)index;
+- (BugsnagBreadcrumb *_Nullable)objectAtIndexedSubscript:(NSUInteger)index;
 
 /** 
  * Serializable array representation of breadcrumbs, represented as nested
  * strings in the format:
  * [[timestamp,message]...]
+ *
+ * returns nil if empty
  */
-- (NSArray*) arrayValue;
+- (NSArray* _Nullable)arrayValue;
 
 @end

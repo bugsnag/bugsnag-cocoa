@@ -28,9 +28,9 @@
 #import "BugsnagMetaData.h"
 #import "BugsnagConfiguration.h"
 
-static NSString* BugsnagSeverityError   = @"error";
-static NSString* BugsnagSeverityWarning = @"warning";
-static NSString* BugsnagSeverityInfo    = @"info";
+static NSString *_Nonnull const BugsnagSeverityError = @"error";
+static NSString *_Nonnull const BugsnagSeverityWarning = @"warning";
+static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 @interface Bugsnag : NSObject
 
@@ -42,7 +42,7 @@ static NSString* BugsnagSeverityInfo    = @"info";
  *
  * @return The configuration, or nil.
  */
-+ (BugsnagConfiguration*) configuration;
++ (BugsnagConfiguration* _Nullable)configuration;
 
 /** Start listening for crashes.
  *
@@ -53,7 +53,7 @@ static NSString* BugsnagSeverityInfo    = @"info";
  *
  * @param apiKey  The API key from your Bugsnag dashboard.
  */
-+ (void)startBugsnagWithApiKey:(NSString*) apiKey;
++ (void)startBugsnagWithApiKey:(NSString* _Nonnull) apiKey;
 
 /** Start listening for crashes.
  *
@@ -64,7 +64,7 @@ static NSString* BugsnagSeverityInfo    = @"info";
  *
  * @param configuration  The configuration to use.
  */
-+ (void)startBugsnagWithConfiguration:(BugsnagConfiguration*) configuration;
++ (void)startBugsnagWithConfiguration:(BugsnagConfiguration* _Nonnull)configuration;
 
 /** Send a custom or caught exception to Bugsnag.
  *
@@ -73,7 +73,7 @@ static NSString* BugsnagSeverityInfo    = @"info";
  *
  * @param exception  The exception.
  */
-+ (void) notify:(NSException *) exception;
++ (void)notify:(NSException * _Nonnull)exception;
 
 /** Send a custom or caught exception to Bugsnag.
  *
@@ -84,7 +84,8 @@ static NSString* BugsnagSeverityInfo    = @"info";
  *
  * @param metaData   Any additional information you want to send with the report.
  */
-+ (void) notify:(NSException *) exception withData:(NSDictionary*) metaData;
++ (void)notify:(NSException * _Nonnull)exception
+      withData:(NSDictionary* _Nullable)metaData;
 
 /** Send a custom or caught exception to Bugsnag.
  *
@@ -97,9 +98,12 @@ static NSString* BugsnagSeverityInfo    = @"info";
  *
  * @param severity   The severity level (default: BugsnagSeverityWarning)
  */
-+ (void) notify:(NSException *) exception withData:(NSDictionary*) metaData atSeverity:(NSString*) severity;
++ (void)notify:(NSException * _Nonnull)exception
+      withData:(NSDictionary* _Nullable)metaData
+    atSeverity:(NSString* _Nullable)severity;
 
-/** Add custom data to send to Bugsnag with every exception.
+/** Add custom data to send to Bugsnag with every exception. If value is nil,
+ *  delete the current value for attributeName
  *
  * See also [Bugsnag configuration].metaData;
  *
@@ -109,13 +113,15 @@ static NSString* BugsnagSeverityInfo    = @"info";
  *
  * @param tabName        The tab to show it on on the Bugsnag dashboard.
  */
-+ (void) addAttribute:(NSString*) attributeName withValue:(id) value toTabWithName:(NSString*) tabName;
++ (void)addAttribute:(NSString* _Nonnull)attributeName
+           withValue:(id _Nullable)value
+       toTabWithName:(NSString* _Nonnull)tabName;
 
 /** Remove custom data from Bugsnag reports.
  *
  * @param tabName        The tab to clear.
  */
-+ (void) clearTabWithName:(NSString*) tabName;
++ (void)clearTabWithName:(NSString* _Nonnull)tabName;
 
 /**
  * Leave a "breadcrumb" log message, representing an action that occurred
@@ -123,7 +129,7 @@ static NSString* BugsnagSeverityInfo    = @"info";
  *
  * @param message  the log message to leave (max 140 chars)
  */
-+ (void) leaveBreadcrumbWithMessage:(NSString*)message;
++ (void) leaveBreadcrumbWithMessage:(NSString* _Nonnull)message;
 
 /**
  * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.
@@ -140,6 +146,6 @@ static NSString* BugsnagSeverityInfo    = @"info";
  */
 + (void) clearBreadcrumbs;
 
-+ (NSDateFormatter *)payloadDateFormatter;
++ (NSDateFormatter * _Nonnull)payloadDateFormatter;
 
 @end
