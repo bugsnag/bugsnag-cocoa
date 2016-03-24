@@ -29,7 +29,6 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagMetaData.h"
 
-
 @interface BugsnagNotifier : NSObject <BugsnagMetaDataDelegate>
 
 @property(nonatomic, readwrite, retain)
@@ -38,7 +37,8 @@
 @property(nonatomic, readwrite, retain) NSDictionary *_Nonnull details;
 @property(nonatomic, readwrite, retain) NSLock *_Nonnull metaDataLock;
 
-- (instancetype _Nonnull)initWithConfiguration:(BugsnagConfiguration* _Nonnull)configuration;
+- (instancetype _Nonnull)initWithConfiguration:
+    (BugsnagConfiguration *_Nonnull)configuration;
 - (void)start;
 
 /** Notify bugsnag of an exception.
@@ -51,10 +51,10 @@
  *
  * @param depth  How many stack frames to remove from the report.
  */
-- (void)notify:(NSException * _Nonnull)exception
-      withData:(NSDictionary* _Nullable)metaData
-    atSeverity:(NSString* _Nullable)severity
-       atDepth:(NSUInteger) depth;
+- (void)notify:(NSException *_Nonnull)exception
+      withData:(NSDictionary *_Nullable)metaData
+    atSeverity:(NSString *_Nullable)severity
+       atDepth:(NSUInteger)depth;
 
 /**
  *  Write breadcrumbs to the cached metadata for error reports

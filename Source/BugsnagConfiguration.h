@@ -24,10 +24,10 @@
 // THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import "BugsnagMetaData.h"
-#import "BugsnagBreadcrumb.h"
 #import "BSGKSCrashReportWriter.h"
+#import "BugsnagBreadcrumb.h"
+#import "BugsnagMetaData.h"
+#import <Foundation/Foundation.h>
 
 /**
  *  A handler for modifying data before sending it to Bugsnag
@@ -61,9 +61,9 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
 
 @property(nonatomic) BOOL autoNotify;
 
-- (void)setUser:(NSString * _Nullable)userId
-       withName:(NSString * _Nullable)name
-       andEmail:(NSString * _Nullable)email;
+- (void)setUser:(NSString *_Nullable)userId
+       withName:(NSString *_Nullable)name
+       andEmail:(NSString *_Nullable)email;
 
 - (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook _Nonnull)hook;
 

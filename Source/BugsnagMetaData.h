@@ -28,19 +28,19 @@
 
 @protocol BugsnagMetaDataDelegate;
 
-@interface BugsnagMetaData : NSObject < NSMutableCopying >
+@interface BugsnagMetaData : NSObject <NSMutableCopying>
 
 - (instancetype _Nonnull)initWithDictionary:(NSMutableDictionary *_Nonnull)dict;
 
-- (NSMutableDictionary * _Nonnull)getTab:(NSString* _Nonnull)tabName;
+- (NSMutableDictionary *_Nonnull)getTab:(NSString *_Nonnull)tabName;
 
-- (void)clearTab:(NSString* _Nonnull)tabName;
+- (void)clearTab:(NSString *_Nonnull)tabName;
 
-- (NSDictionary* _Nonnull)toDictionary;
+- (NSDictionary *_Nonnull)toDictionary;
 
-- (void)addAttribute:(NSString* _Nonnull)attributeName
+- (void)addAttribute:(NSString *_Nonnull)attributeName
            withValue:(id _Nullable)value
-       toTabWithName:(NSString* _Nonnull)tabName;
+       toTabWithName:(NSString *_Nonnull)tabName;
 
 @property(unsafe_unretained) id<BugsnagMetaDataDelegate> _Nullable delegate;
 

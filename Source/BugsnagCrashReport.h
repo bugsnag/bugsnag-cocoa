@@ -10,7 +10,7 @@
 
 @interface BugsnagCrashReport : NSObject
 
-@property(readonly,nonnull) NSDictionary *ksReport;
+@property(readonly, nonnull) NSDictionary *ksReport;
 
 - (instancetype _Nonnull)initWithKSReport:(NSDictionary *_Nonnull)report;
 - (NSDictionary *_Nonnull)serializableValueWithTopLevelData:
