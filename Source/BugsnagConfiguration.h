@@ -24,10 +24,10 @@
 // THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import "BugsnagMetaData.h"
-#import "BugsnagBreadcrumb.h"
 #import "BSGKSCrashReportWriter.h"
+#import "BugsnagBreadcrumb.h"
+#import "BugsnagMetaData.h"
+#import <Foundation/Foundation.h>
 
 /**
  *  A handler for modifying data before sending it to Bugsnag
@@ -38,31 +38,33 @@
  *
  *  @return the report payload intended to be sent or nil to cancel sending
  */
-typedef NSDictionary * (^BugsnagBeforeNotifyHook)(NSArray *rawEventReports,
-                                                  NSDictionary *report);
+typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
+    NSArray *_Nonnull rawEventReports, NSDictionary *_Nonnull report);
 
 @class BugsnagBreadcrumbs;
 
 @interface BugsnagConfiguration : NSObject
 
-@property(nonatomic, readwrite, retain) NSString *apiKey;
-@property(nonatomic, readwrite, retain) NSURL *notifyURL;
-@property(nonatomic, readwrite, retain) NSString *releaseStage;
-@property(nonatomic, readwrite, retain) NSArray *notifyReleaseStages;
-@property(nonatomic, readwrite, retain) NSString *context;
-@property(nonatomic, readwrite, retain) NSString *appVersion;
-@property(nonatomic, readwrite, retain) BugsnagMetaData *metaData;
-@property(nonatomic, readwrite, retain) BugsnagMetaData *config;
-@property(nonatomic, readonly, strong) BugsnagBreadcrumbs *breadcrumbs;
-@property(nonatomic, readonly, strong) NSArray *beforeNotifyHooks;
-@property(nonatomic) void (*onCrashHandler)(const BSGKSCrashReportWriter* writer);
+@property(nonatomic, readwrite, retain, nullable) NSString *apiKey;
+@property(nonatomic, readwrite, retain, nullable) NSURL *notifyURL;
+@property(nonatomic, readwrite, retain, nullable) NSString *releaseStage;
+@property(nonatomic, readwrite, retain, nullable) NSArray *notifyReleaseStages;
+@property(nonatomic, readwrite, retain, nullable) NSString *context;
+@property(nonatomic, readwrite, retain, nullable) NSString *appVersion;
+@property(nonatomic, readwrite, retain, nullable) BugsnagMetaData *metaData;
+@property(nonatomic, readwrite, retain, nullable) BugsnagMetaData *config;
+@property(nonatomic, readonly, strong, nullable)
+    BugsnagBreadcrumbs *breadcrumbs;
+@property(nonatomic, readonly, strong, nullable) NSArray *beforeNotifyHooks;
+@property(nonatomic) void (*_Nullable onCrashHandler)
+    (const BSGKSCrashReportWriter *_Nonnull writer);
 
 @property(nonatomic) BOOL autoNotify;
 
-- (void)setUser:(NSString *)userId
-       withName:(NSString *)name
-       andEmail:(NSString *)email;
+- (void)setUser:(NSString *_Nullable)userId
+       withName:(NSString *_Nullable)name
+       andEmail:(NSString *_Nullable)email;
 
-- (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook)hook;
+- (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook _Nonnull)hook;
 
 @end

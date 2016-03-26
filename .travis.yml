@@ -1,13 +1,11 @@
 language: objective-c
 matrix:
     include:
-        - osx_image: xcode7.2
+        - osx_image: xcode7.3
           env: SDK=macosx10.11 BUILD_OSX=1
+        - osx_image: xcode7.3
+          env: SDK=iphonesimulator9.3
         - osx_image: xcode7.2
           env: SDK=iphonesimulator9.2
-        - osx_image: xcode6.1
-          env: SDK=iphonesimulator8.1
-        - osx_image: xcode6.1
-          env: SDK=iphonesimulator7.1
 install: make bootstrap
 script: make test

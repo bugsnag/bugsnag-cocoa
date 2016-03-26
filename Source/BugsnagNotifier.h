@@ -29,16 +29,17 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagMetaData.h"
 
-
 @interface BugsnagNotifier : NSObject <BugsnagMetaDataDelegate>
 
-@property(nonatomic,readwrite,retain) BugsnagConfiguration* configuration;
-@property(nonatomic,readwrite,retain) BugsnagMetaData* state;
-@property(nonatomic,readwrite,retain) NSDictionary *details;
-@property(nonatomic,readwrite,retain) NSLock *metaDataLock;
+@property(nonatomic, readwrite, retain)
+    BugsnagConfiguration *_Nullable configuration;
+@property(nonatomic, readwrite, retain) BugsnagMetaData *_Nonnull state;
+@property(nonatomic, readwrite, retain) NSDictionary *_Nonnull details;
+@property(nonatomic, readwrite, retain) NSLock *_Nonnull metaDataLock;
 
-- (id) initWithConfiguration:(BugsnagConfiguration*) configuration;
-- (void) start;
+- (instancetype _Nonnull)initWithConfiguration:
+    (BugsnagConfiguration *_Nonnull)configuration;
+- (void)start;
 
 /** Notify bugsnag of an exception.
  *
@@ -50,11 +51,14 @@
  *
  * @param depth  How many stack frames to remove from the report.
  */
-- (void) notify:(NSException *)exception withData:(NSDictionary*)metaData atSeverity:(NSString*)severity atDepth:(NSUInteger) depth;
+- (void)notify:(NSException *_Nonnull)exception
+      withData:(NSDictionary *_Nullable)metaData
+    atSeverity:(NSString *_Nullable)severity
+       atDepth:(NSUInteger)depth;
 
 /**
  *  Write breadcrumbs to the cached metadata for error reports
  */
-- (void) serializeBreadcrumbs;
+- (void)serializeBreadcrumbs;
 
 @end

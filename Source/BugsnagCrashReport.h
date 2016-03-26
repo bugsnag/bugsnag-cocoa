@@ -10,12 +10,13 @@
 
 @interface BugsnagCrashReport : NSObject
 
-@property(readonly) NSDictionary *ksReport;
+@property(readonly, nonnull) NSDictionary *ksReport;
 
-- (id)initWithKSReport:(NSDictionary *)report;
-- (NSDictionary *)serializableValueWithTopLevelData:(NSMutableDictionary *)data;
+- (instancetype _Nonnull)initWithKSReport:(NSDictionary *_Nonnull)report;
+- (NSDictionary *_Nonnull)serializableValueWithTopLevelData:
+    (NSMutableDictionary *_Nonnull)data;
 
-- (NSString *)releaseStage;
-- (NSArray *)notifyReleaseStages;
+- (NSString *_Nullable)releaseStage;
+- (NSArray *_Nullable)notifyReleaseStages;
 
 @end
