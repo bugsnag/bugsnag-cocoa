@@ -81,4 +81,5 @@ If you're a member of the core team, you can release the cocoa pod as follows:
 * Copy the changelog entries into the release notes
 * Drag and drop the zipfile
 * Click "Publish Release"
-
+* Update the setup guides for Objective-C and Swift on docs.bugsnag.com with any
+  new content
