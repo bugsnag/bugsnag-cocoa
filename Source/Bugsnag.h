@@ -151,4 +151,8 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 + (NSDateFormatter *_Nonnull)payloadDateFormatter;
 
++ (void)setSuspendThreadsForUserReported:(bool)suspendThreadsForUserReported;
+
++ (void)setReportWhenDebuggerIsAttached:(bool)reportWhenDebuggerIsAttached;
+
 @end

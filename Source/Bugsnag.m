@@ -30,6 +30,7 @@
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
 #import <KSCrash/KSCrashAdvanced.h>
+#import <KSCrash/KsCrash.h>
 
 static BugsnagNotifier* g_bugsnag_notifier = NULL;
 
@@ -122,6 +123,14 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
         formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
     });
     return formatter;
+}
+
++ (void)setSuspendThreadsForUserReported:(bool)suspendThreadsForUserReported {
+    [[KSCrash sharedInstance] setSuspendThreadsForUserReported:suspendThreadsForUserReported];
+}
+
++ (void)setReportWhenDebuggerIsAttached:(bool)reportWhenDebuggerIsAttached {
+    [[KSCrash sharedInstance] setReportWhenDebuggerIsAttached:reportWhenDebuggerIsAttached];
 }
 
 @end
