@@ -30,7 +30,7 @@
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
 #import <KSCrash/KSCrashAdvanced.h>
-#import <KSCrash/KsCrash.h>
+#import <KSCrash/KSCrash.h>
 
 static BugsnagNotifier* g_bugsnag_notifier = NULL;
 
