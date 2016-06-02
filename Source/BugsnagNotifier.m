@@ -37,7 +37,7 @@
 #include <sys/utsname.h>
 #endif
 
-NSString *const NOTIFIER_VERSION = @"5.1.0";
+NSString *const NOTIFIER_VERSION = @"5.2.0";
 NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 NSString *const BSTabCrash = @"crash";
 NSString *const BSTabConfig = @"config";
