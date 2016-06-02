@@ -86,18 +86,21 @@ void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer) {
  *  @param destination target location of the data
  */
 void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
-    NSError *error;
-    NSData *json = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
+    @try {
+        NSError *error;
+        NSData *json = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
 
-    if (!json) {
-        NSLog(@"Bugsnag could not serialize metaData: %@", error);
-        return;
-    }
-
-    *destination = reallocf(*destination, [json length] + 1);
-    if (*destination) {
-        memcpy(*destination, [json bytes], [json length]);
-        (*destination)[[json length]] = '\0';
+        if (!json) {
+            NSLog(@"Bugsnag could not serialize metaData: %@", error);
+            return;
+        }
+        *destination = reallocf(*destination, [json length] + 1);
+        if (*destination) {
+            memcpy(*destination, [json bytes], [json length]);
+            (*destination)[[json length]] = '\0';
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"Bugsnag could not serialize metaData: %@", exception);
     }
 }
 

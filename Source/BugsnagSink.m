@@ -48,7 +48,6 @@
 //   and it contains the current stage
 - (void) filterReports:(NSArray*) reports onCompletion:(KSCrashReportFilterCompletion) onCompletion
 {
-    NSError *error = nil;
     NSMutableArray *bugsnagReports = [NSMutableArray arrayWithCapacity:[reports count]];
     BugsnagConfiguration *configuration = [Bugsnag configuration];
     BOOL configuredShouldNotify = configuration.notifyReleaseStages.count == 0
@@ -87,32 +86,41 @@
         }
         return;
     }
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:reportData
-                                                       options:NSJSONWritingPrettyPrinted
-                                                         error:&error];
-    
-    if (jsonData == nil) {
-        if (onCompletion) {
-            onCompletion(reports, NO, error);
+
+    @try {
+        NSError *error = nil;
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:reportData
+                                                           options:NSJSONWritingPrettyPrinted
+                                                             error:&error];
+
+        if (jsonData == nil) {
+            if (onCompletion) {
+                onCompletion(reports, NO, error);
+            }
+            return;
         }
-        return;
-    }
-    
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL: configuration.notifyURL
-                                                           cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
-                                                       timeoutInterval: 15];
-    request.HTTPMethod = @"POST";
-    request.HTTPBody = jsonData;
+        NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL: configuration.notifyURL
+                                                               cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
+                                                           timeoutInterval: 15];
+        request.HTTPMethod = @"POST";
+        request.HTTPBody = jsonData;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [NSURLConnection sendSynchronousRequest:request
-                          returningResponse:NULL
-                                      error:&error];
+        [NSURLConnection sendSynchronousRequest:request
+                              returningResponse:NULL
+                                          error:&error];
 #pragma clang diagnostic pop
-    
-    if (onCompletion) {
-        onCompletion(reports, error == nil, error);
+
+        if (onCompletion) {
+            onCompletion(reports, error == nil, error);
+        }
+    } @catch (NSException *exception) {
+        if (onCompletion) {
+            onCompletion(reports, NO, [NSError errorWithDomain:exception.reason
+                                                          code:420
+                                                      userInfo:@{@"exception": exception}]);
+        }
     }
 }
 
