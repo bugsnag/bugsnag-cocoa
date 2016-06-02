@@ -181,7 +181,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     [self.state addAttribute:BSAttributeSeverity withValue:severity toTabWithName:BSTabCrash];
     [self.state addAttribute:BSAttributeDepth withValue:@(depth + 3) toTabWithName:BSTabCrash];
     NSString *exceptionName = [exception name] ?: NSStringFromClass([NSException class]);
-    [[KSCrash sharedInstance] reportUserException:exceptionName reason:[exception reason] lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
+    [[KSCrash sharedInstance] reportUserException:exceptionName reason:[exception reason] language:NULL lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
 
     // Restore metaData to pre-crash state.
     [self.metaDataLock unlock];
