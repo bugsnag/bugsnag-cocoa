@@ -79,9 +79,4 @@
     XCTAssertEqualObjects(value[2][1], @"Close tutorial");
 }
 
-- (void)testDiscardInvalidCrumbs {
-    [self.crumbs addBreadcrumb:nil];
-    XCTAssertTrue(self.crumbs.count == 3);
-}
-
 @end

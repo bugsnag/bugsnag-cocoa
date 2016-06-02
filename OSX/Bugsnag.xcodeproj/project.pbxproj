@@ -27,7 +27,6 @@
 		8A2C8FEA1C6BC38900846019 /* BugsnagBreadcrumbsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FE01C6BC38200846019 /* BugsnagBreadcrumbsTest.m */; };
 		8A2C8FEB1C6BC38900846019 /* BugsnagCrashReportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FE11C6BC38200846019 /* BugsnagCrashReportTests.m */; };
 		8A2C8FEC1C6BC38900846019 /* BugsnagSinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FE21C6BC38200846019 /* BugsnagSinkTests.m */; };
-		8A2C8FED1C6BC38900846019 /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FE31C6BC38200846019 /* BugsnagTests.m */; };
 		8A2C8FEE1C6BC38900846019 /* report.json in Resources */ = {isa = PBXBuildFile; fileRef = 8A2C8FE41C6BC38200846019 /* report.json */; };
 		8A2C8FF01C6BC3A200846019 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8FEF1C6BC3A200846019 /* SystemConfiguration.framework */; };
 		8A2C90031C6BC3FA00846019 /* libKSCrashLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C90021C6BC3FA00846019 /* libKSCrashLib.a */; };
@@ -69,7 +68,6 @@
 		8A2C8FE01C6BC38200846019 /* BugsnagBreadcrumbsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagBreadcrumbsTest.m; path = ../Tests/BugsnagBreadcrumbsTest.m; sourceTree = SOURCE_ROOT; };
 		8A2C8FE11C6BC38200846019 /* BugsnagCrashReportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagCrashReportTests.m; path = ../Tests/BugsnagCrashReportTests.m; sourceTree = SOURCE_ROOT; };
 		8A2C8FE21C6BC38200846019 /* BugsnagSinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSinkTests.m; path = ../Tests/BugsnagSinkTests.m; sourceTree = SOURCE_ROOT; };
-		8A2C8FE31C6BC38200846019 /* BugsnagTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagTests.m; path = ../Tests/BugsnagTests.m; sourceTree = SOURCE_ROOT; };
 		8A2C8FE41C6BC38200846019 /* report.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = report.json; path = ../Tests/report.json; sourceTree = SOURCE_ROOT; };
 		8A2C8FEF1C6BC3A200846019 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		8A2C8FF11C6BC3A800846019 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -154,7 +152,6 @@
 				8A2C8FE01C6BC38200846019 /* BugsnagBreadcrumbsTest.m */,
 				8A2C8FE11C6BC38200846019 /* BugsnagCrashReportTests.m */,
 				8A2C8FE21C6BC38200846019 /* BugsnagSinkTests.m */,
-				8A2C8FE31C6BC38200846019 /* BugsnagTests.m */,
 				8A2C8FE41C6BC38200846019 /* report.json */,
 				8A2C8FB21C6BC1F700846019 /* TestsInfo.plist */,
 			);
@@ -309,7 +306,6 @@
 				8A2C8FEA1C6BC38900846019 /* BugsnagBreadcrumbsTest.m in Sources */,
 				8A2C8FEC1C6BC38900846019 /* BugsnagSinkTests.m in Sources */,
 				8A2C8FEB1C6BC38900846019 /* BugsnagCrashReportTests.m in Sources */,
-				8A2C8FED1C6BC38900846019 /* BugsnagTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
