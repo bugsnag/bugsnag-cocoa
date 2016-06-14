@@ -25,7 +25,7 @@ KSCRASH_DEP = Carthage/Checkouts/KSCrash
 $(KSCRASH_DEP):
 	@git submodule update --init
 
-# Generated framework package for Bugsnag for either iOS or OS X
+# Generated framework package for Bugsnag for either iOS or macOS
 build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework:
 	@xcodebuild $(BUILD_FLAGS) \
 		-configuration Release \

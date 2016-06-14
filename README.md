@@ -1,6 +1,6 @@
-# Bugsnag exception reporter for iOS and OS X
+# Bugsnag exception reporter for iOS and macOS
 [![iOS Documentation](https://img.shields.io/badge/ios_documentation-latest-blue.svg)](http://docs.bugsnag.com/platforms/ios/)
-[![OS X Documentation](https://img.shields.io/badge/os%20x%20documentation-latest-blue.svg)](http://docs.bugsnag.com/platforms/osx/)
+[![macOS Documentation](https://img.shields.io/badge/macos_documentation-latest-blue.svg)](http://docs.bugsnag.com/platforms/osx/)
 [![Build status](https://travis-ci.org/bugsnag/bugsnag-cocoa.svg?branch=master)](https://travis-ci.org/bugsnag/bugsnag-cocoa)
 
 The Bugsnag crash reporter for Cocoa library automatically detects crashes and fatal signals in your iOS 6.0+ or OS X 10.8+  apps, collecting diagnostic information and immediately notifying your development team, helping you to understand and resolve issues as fast as possible.
@@ -22,16 +22,16 @@ The Bugsnag crash reporter for Cocoa library automatically detects crashes and f
 1. Report handled exceptions using [`[Bugsnag notify:]`](http://docs.bugsnag.com/platforms/ios/reporting-handled-exceptions/)
 1. Customize your integration using the [configuration options](http://docs.bugsnag.com/platforms/ios/configuration-options/)
 
-### OS X
+### macOS
 
 1. [Create a Bugsnag account](https://bugsnag.com)
-1. Complete the instructions in the integration guide for [OS X](http://docs.bugsnag.com/platforms/osx/)
+1. Complete the instructions in the integration guide for [macOS](http://docs.bugsnag.com/platforms/osx/)
 1. Report handled exceptions using [`[Bugsnag notify:]`](http://docs.bugsnag.com/platforms/osx/reporting-handled-exceptions/)
 1. Customize your integration using the [configuration options](http://docs.bugsnag.com/platforms/osx/configuration-options/)
 
 ## Support
 
-* Read the [iOS](http://docs.bugsnag.com/platforms/ios/configuration-options) or [OS X](http://docs.bugsnag.com/platforms/osx/configuration-options) configuration reference
+* Read the [iOS](http://docs.bugsnag.com/platforms/ios/configuration-options) or [macOS](http://docs.bugsnag.com/platforms/osx/configuration-options) configuration reference
 * [Search open and closed issues](https://github.com/bugsnag/bugsnag-cocoa/issues?utf8=✓&q=is%3Aissue) for similar problems
 * [Report a bug or request a feature](https://github.com/bugsnag/bugsnag-cocoa/issues/new)
 
