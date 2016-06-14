@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## 5.2.0 (2 June 2016)
+
+### Bug Fixes
+
+* Catch JSON (de)serialization exceptions thrown from `NSJSONSerialization`
+
+### Enhancements
+
+* Add nullability annotations
+* Remove logging when no reports were sent
+
 ## 5.1.0
 
 ### Bug Fixes
