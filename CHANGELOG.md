@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 5.2.1 (16 June 2016)
+
+Add Carthage support
+
 ## 5.2.0 (2 June 2016)
 
 ### Bug Fixes
