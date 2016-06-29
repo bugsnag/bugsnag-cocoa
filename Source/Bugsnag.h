@@ -85,6 +85,22 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)notify:(NSException *_Nonnull)exception
          block:(BugsnagNotifyBlock _Nullable)block;
 
+/**
+ *  Send an error to Bugsnag
+ *
+ *  @param error The error
+ */
++ (void)notifyError:(NSError *_Nonnull)error;
+
+/**
+ *  Send an error to Bugsnag
+ *
+ *  @param error The error
+ *  @param block A block for optionally configuring the error report
+ */
++ (void)notifyError:(NSError *_Nonnull)error
+              block:(BugsnagNotifyBlock _Nullable)block;
+
 /** Send a custom or caught exception to Bugsnag.
  *
  * The exception will be sent to Bugsnag in the background allowing your

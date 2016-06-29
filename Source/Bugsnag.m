@@ -87,6 +87,23 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
     }];
 }
 
++ (void) notifyError:(NSError *)error {
+    [self.notifier notifyError:error
+                         block:^(BugsnagCrashReport * _Nonnull report) {
+        report.depth = 1;
+    }];
+}
+
+
++ (void)notifyError:(NSError *)error block:(BugsnagNotifyBlock)block {
+    [[self notifier] notifyError:error
+                           block:^(BugsnagCrashReport * _Nonnull report) {
+        report.depth = 1;
+        if (block)
+            block(report);
+    }];
+}
+
 + (void)notify:(NSException *)exception withData:(NSDictionary*)metaData {
     [[self notifier] notifyException:exception
                                block:^(BugsnagCrashReport * _Nonnull report) {
