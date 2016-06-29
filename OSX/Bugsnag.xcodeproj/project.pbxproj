@@ -16,7 +16,7 @@
 		8A2C8FD21C6BC2C800846019 /* BugsnagCollections.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FC01C6BC2C800846019 /* BugsnagCollections.m */; };
 		8A2C8FD31C6BC2C800846019 /* BugsnagConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A2C8FC11C6BC2C800846019 /* BugsnagConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8A2C8FD41C6BC2C800846019 /* BugsnagConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FC21C6BC2C800846019 /* BugsnagConfiguration.m */; };
-		8A2C8FD51C6BC2C800846019 /* BugsnagCrashReport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A2C8FC31C6BC2C800846019 /* BugsnagCrashReport.h */; };
+		8A2C8FD51C6BC2C800846019 /* BugsnagCrashReport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A2C8FC31C6BC2C800846019 /* BugsnagCrashReport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8A2C8FD61C6BC2C800846019 /* BugsnagCrashReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FC41C6BC2C800846019 /* BugsnagCrashReport.m */; };
 		8A2C8FD71C6BC2C800846019 /* BugsnagMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A2C8FC51C6BC2C800846019 /* BugsnagMetaData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8A2C8FD81C6BC2C800846019 /* BugsnagMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FC61C6BC2C800846019 /* BugsnagMetaData.m */; };
@@ -31,6 +31,8 @@
 		8A2C8FF01C6BC3A200846019 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8FEF1C6BC3A200846019 /* SystemConfiguration.framework */; };
 		8A2C90031C6BC3FA00846019 /* libKSCrashLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C90021C6BC3FA00846019 /* libKSCrashLib.a */; };
 		8A2C90441C6C040700846019 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C90401C6C03F000846019 /* Cocoa.framework */; };
+		8A7630E21D2523AE000D6737 /* Kiwi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A7630E11D2523AE000D6737 /* Kiwi.framework */; };
+		8A7630E51D2524DB000D6737 /* BugsnagSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A7630DF1D252309000D6737 /* BugsnagSpec.m */; };
 		8A87352C1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A87352B1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
@@ -76,6 +78,8 @@
 		8A2C902F1C6BF3AC00846019 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = SOURCE_ROOT; };
 		8A2C90401C6C03F000846019 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8A2C90421C6C03FF00846019 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		8A7630DF1D252309000D6737 /* BugsnagSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSpec.m; path = ../Tests/BugsnagSpec.m; sourceTree = SOURCE_ROOT; };
+		8A7630E11D2523AE000D6737 /* Kiwi.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kiwi.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/OSX-fywomumlxcstijawyihsvjfwghcm/Build/Products/Debug/Kiwi.framework"; sourceTree = "<group>"; };
 		8A87352B1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSGKSCrashReportWriter.h; path = ../Source/BSGKSCrashReportWriter.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -94,6 +98,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A7630E21D2523AE000D6737 /* Kiwi.framework in Frameworks */,
 				8A2C8FAC1C6BC1F700846019 /* Bugsnag.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -151,6 +156,7 @@
 			children = (
 				8A2C8FE01C6BC38200846019 /* BugsnagBreadcrumbsTest.m */,
 				8A2C8FE11C6BC38200846019 /* BugsnagCrashReportTests.m */,
+				8A7630DF1D252309000D6737 /* BugsnagSpec.m */,
 				8A2C8FE21C6BC38200846019 /* BugsnagSinkTests.m */,
 				8A2C8FE41C6BC38200846019 /* report.json */,
 				8A2C8FB21C6BC1F700846019 /* TestsInfo.plist */,
@@ -162,6 +168,7 @@
 		8A2C8FF51C6BC3C200846019 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8A7630E11D2523AE000D6737 /* Kiwi.framework */,
 				8A2C90421C6C03FF00846019 /* Foundation.framework */,
 				8A2C90401C6C03F000846019 /* Cocoa.framework */,
 				8A2C90021C6BC3FA00846019 /* libKSCrashLib.a */,
@@ -183,10 +190,10 @@
 				8A2C8FD71C6BC2C800846019 /* BugsnagMetaData.h in Headers */,
 				8A2C8FCD1C6BC2C800846019 /* Bugsnag.h in Headers */,
 				8A2C8FCF1C6BC2C800846019 /* BugsnagBreadcrumb.h in Headers */,
+				8A2C8FD51C6BC2C800846019 /* BugsnagCrashReport.h in Headers */,
 				8A2C8FD91C6BC2C800846019 /* BugsnagNotifier.h in Headers */,
 				8A2C8FDD1C6BC2C800846019 /* BugsnagSink.h in Headers */,
 				8A87352C1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h in Headers */,
-				8A2C8FD51C6BC2C800846019 /* BugsnagCrashReport.h in Headers */,
 				8A2C8FD31C6BC2C800846019 /* BugsnagConfiguration.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -305,6 +312,7 @@
 			files = (
 				8A2C8FEA1C6BC38900846019 /* BugsnagBreadcrumbsTest.m in Sources */,
 				8A2C8FEC1C6BC38900846019 /* BugsnagSinkTests.m in Sources */,
+				8A7630E51D2524DB000D6737 /* BugsnagSpec.m in Sources */,
 				8A2C8FEB1C6BC38900846019 /* BugsnagCrashReportTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
