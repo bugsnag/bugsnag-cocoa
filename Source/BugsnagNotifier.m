@@ -30,6 +30,7 @@
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagCollections.h"
+#import "BugsnagCrashReport.h"
 #import "BugsnagSink.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
@@ -104,10 +105,6 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     }
 }
 
-@interface NSDictionary (BSGKSMerge)
-- (NSDictionary*)BSG_mergedInto:(NSDictionary *)dest;
-@end
-
 @implementation BugsnagNotifier
 
 @synthesize configuration;
@@ -166,26 +163,49 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 #endif
 }
 
-- (void)notify:(NSException *)exception withData:(NSDictionary *)metaData atSeverity:(NSString *)severity atDepth:(NSUInteger) depth {
+- (void)notifyError:(NSError *)error block:(void (^)(BugsnagCrashReport *))block {
+    [self notify:NSStringFromClass([error class])
+         message:error.localizedDescription
+           block:^(BugsnagCrashReport * _Nonnull report) {
+               NSMutableDictionary *metadata = [report.metaData mutableCopy];
+               metadata[@"NSError"] = @{@"code": @(error.code),
+                                        @"domain": error.domain,
+                                        @"reason": error.localizedFailureReason?: @"" };
+               if (block)
+                   block(report);
+           }];
+}
 
-    if (!metaData) {
-        metaData = [[NSDictionary alloc] init];
-    }
-    metaData = [metaData BSG_mergedInto: [self.configuration.metaData toDictionary]];
-    if (!severity) {
-        severity = BugsnagSeverityWarning;
-    }
+- (void)notifyException:(NSException *)exception
+                  block:(void (^)(BugsnagCrashReport *))block {
+    [self notify:exception.name ?: NSStringFromClass([exception class])
+         message:exception.reason
+           block:block];
+}
+
+- (void)notify:(NSString *)exceptionName
+       message:(NSString *)message
+         block:(void (^)(BugsnagCrashReport *))block {
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:exceptionName
+                                                                  errorMessage:message
+                                                                 configuration:self.configuration
+                                                                      metaData:[self.configuration.metaData toDictionary]
+                                                                      severity:BSGSeverityWarning];
+    if (block)
+        block(report);
 
     [self.metaDataLock lock];
-    BSSerializeJSONDictionary(metaData, &g_bugsnag_data.metaDataJSON);
-    [self.state addAttribute:BSAttributeSeverity withValue:severity toTabWithName:BSTabCrash];
-    [self.state addAttribute:BSAttributeDepth withValue:@(depth + 3) toTabWithName:BSTabCrash];
-    NSString *exceptionName = [exception name] ?: NSStringFromClass([NSException class]);
-    [[KSCrash sharedInstance] reportUserException:exceptionName reason:[exception reason] language:NULL lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
-
+    BSSerializeJSONDictionary(report.metaData, &g_bugsnag_data.metaDataJSON);
+    [self.state addAttribute:BSAttributeSeverity withValue:BSGFormatSeverity(report.severity) toTabWithName:BSTabCrash];
+    [self.state addAttribute:BSAttributeDepth withValue:@(report.depth + 3) toTabWithName:BSTabCrash];
+    [[KSCrash sharedInstance] reportUserException:exceptionName ?: NSStringFromClass([NSException class])
+                                           reason:report.errorMessage ?: @""
+                                         language:NULL lineOfCode:@""
+                                       stackTrace:@[]
+                                 terminateProgram:NO];
     // Restore metaData to pre-crash state.
     [self.metaDataLock unlock];
-    [self metaDataChanged: self.configuration.metaData];
+    [self metaDataChanged:self.configuration.metaData];
     [[self state] clearTab:BSTabCrash];
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
@@ -275,58 +295,3 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
 @end
 
-//
-//  NSDictionary+Merge.m
-//
-//  Created by Karl Stenerud on 2012-10-01.
-//
-//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall remain in place
-// in this source code.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-//
-
-@implementation NSDictionary (BSGKSMerge)
-
-- (NSDictionary*)BSG_mergedInto:(NSDictionary *)dest
-{
-  if([dest count] == 0)
-  {
-    return self;
-  }
-  if([self count] == 0)
-  {
-    return dest;
-  }
-
-  NSMutableDictionary* dict = [dest mutableCopy];
-  for(id key in [self allKeys])
-  {
-    id srcEntry = [self objectForKey:key];
-    id dstEntry = [dest objectForKey:key];
-    if([dstEntry isKindOfClass:[NSDictionary class]] &&
-       [srcEntry isKindOfClass:[NSDictionary class]])
-    {
-      srcEntry = [srcEntry BSG_mergedInto:dstEntry];
-    }
-    [dict setObject:srcEntry forKey:key];
-  }
-  return dict;
-}
-
-@end

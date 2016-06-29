@@ -46,21 +46,21 @@
 // - the report-specific and global `notifyReleaseStages` properties are unset
 // - the report-specific `notifyReleaseStages` property is unset and the global `notifyReleaseStages` property
 //   and it contains the current stage
-- (void) filterReports:(NSArray*) reports onCompletion:(KSCrashReportFilterCompletion) onCompletion
-{
-    NSMutableArray *bugsnagReports = [NSMutableArray arrayWithCapacity:[reports count]];
+- (void)filterReports:(NSArray*) reports
+         onCompletion:(KSCrashReportFilterCompletion) onCompletion {
+    NSMutableArray *bugsnagReports = [NSMutableArray new];
     BugsnagConfiguration *configuration = [Bugsnag configuration];
-    BOOL configuredShouldNotify = configuration.notifyReleaseStages.count == 0
-        || [configuration.notifyReleaseStages containsObject:configuration.releaseStage];
     for (NSDictionary* report in reports) {
         BugsnagCrashReport *bugsnagReport = [[BugsnagCrashReport alloc] initWithKSReport:report];
-        
-        // Filter the reports here, we have to do it now as we dont want to hack KSCrash to do it at crash time.
-        // We also in the docs imply that the filtering happens when the crash happens - so we use the values
-        // saved in the report.
-        BOOL shouldNotify = [bugsnagReport.notifyReleaseStages containsObject:bugsnagReport.releaseStage]
-            || (bugsnagReport.notifyReleaseStages.count == 0 && configuredShouldNotify);
-        if(shouldNotify) {
+        if (![bugsnagReport shouldBeSent])
+            continue;
+        BOOL shouldSend = YES;
+        for (BugsnagBeforeNotifyBlock block in configuration.beforeNotifyBlocks) {
+            shouldSend = block(report, bugsnagReport);
+            if (!shouldSend)
+                break;
+        }
+        if(shouldSend) {
             [bugsnagReports addObject:bugsnagReport];
         }
     }
@@ -72,6 +72,8 @@
         return;
     }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     NSDictionary *reportData = [self getBodyFromReports:bugsnagReports];
     for (BugsnagBeforeNotifyHook hook in configuration.beforeNotifyHooks) {
         if (reportData) {
@@ -80,6 +82,8 @@
             break;
         }
     }
+#pragma clang diagnostic pop
+
     if (reportData == nil) {
         if (onCompletion) {
             onCompletion(@[], YES, nil);
