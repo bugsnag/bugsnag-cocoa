@@ -109,16 +109,12 @@
         request.HTTPMethod = @"POST";
         request.HTTPBody = jsonData;
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        [NSURLConnection sendSynchronousRequest:request
-                              returningResponse:NULL
-                                          error:&error];
-#pragma clang diagnostic pop
-
-        if (onCompletion) {
-            onCompletion(reports, error == nil, error);
-        }
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue currentQueue]
+                               completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+            if (onCompletion)
+                onCompletion(reports, connectionError == nil, connectionError);
+        }];
     } @catch (NSException *exception) {
         if (onCompletion) {
             onCompletion(reports, NO, [NSError errorWithDomain:exception.reason
