@@ -11,6 +11,12 @@
 
 #define shouldSoon shouldEventuallyBeforeTimingOutAfter(0.1)
 
+@interface BugsnagTestError : NSError
+@end
+
+@implementation BugsnagTestError
+@end
+
 SPEC_BEGIN(BugsnagSpec)
 
 beforeAll(^{
@@ -115,6 +121,73 @@ describe(@"Bugsnag", ^{
         
         it(@"sends the breadcrumbs", ^{
             [[expectFutureValue(requestEventKeyPath(@"breadcrumbs")) shouldSoon] equal:breadcrumbs];
+        });
+    });
+
+    describe(@"notifyError:", ^{
+
+        beforeEach(^{
+            NSError *error = [BugsnagTestError errorWithDomain:@"com.bugsnag.ios-error"
+                                                          code:420
+                                                      userInfo:@{NSLocalizedDescriptionKey: @"Stuff is broken",
+                                                                 NSLocalizedFailureReasonErrorKey: @"The rent is too high"}];
+            [Bugsnag notifyError:error];
+        });
+
+        it(@"sends the error class", ^{
+            [[expectFutureValue(requestExceptionValue(@"errorClass")) shouldSoon] equal:@"BugsnagTestError"];
+        });
+
+        it(@"sends the error message", ^{
+            [[expectFutureValue(requestExceptionValue(@"message")) shouldSoon] equal:@"Stuff is broken"];
+        });
+
+        it(@"sends the domain", ^{
+            [[expectFutureValue(requestEventKeyPath(@"metaData.nserror.domain")) shouldSoon] equal: @"com.bugsnag.ios-error"];
+        });
+
+        it(@"sends the code", ^{
+            [[expectFutureValue(requestEventKeyPath(@"metaData.nserror.code")) shouldSoon] equal: @420];
+        });
+
+        it(@"sends the failure reason", ^{
+            [[expectFutureValue(requestEventKeyPath(@"metaData.nserror.reason")) shouldSoon] equal: @"The rent is too high"];
+        });
+    });
+
+    describe(@"notifyError:", ^{
+        beforeEach(^{
+            NSError *error = [BugsnagTestError errorWithDomain:@"com.bugsnag.ios-error"
+                                                          code:420
+                                                      userInfo:@{NSLocalizedDescriptionKey: @"Stuff is broken",
+                                                                 NSLocalizedFailureReasonErrorKey: @"The rent is too high"}];
+            [Bugsnag notifyError:error block:^(BugsnagCrashReport * _Nonnull report) {
+                NSMutableDictionary *metadata = [report.metaData mutableCopy];
+                metadata[@"nserror"] = @{ @"code": @504, @"domain": @"com.example.borg", @"reason": @"None" };
+                report.metaData = metadata;
+                report.errorClass = @"Doughnut";
+                report.errorMessage = @"None";
+            }];
+        });
+
+        it(@"updates the error class", ^{
+            [[expectFutureValue(requestExceptionValue(@"errorClass")) shouldSoon] equal:@"Doughnut"];
+        });
+
+        it(@"updates the error message", ^{
+            [[expectFutureValue(requestExceptionValue(@"message")) shouldSoon] equal:@"None"];
+        });
+
+        it(@"updates the code", ^{
+            [[expectFutureValue(requestEventKeyPath(@"metaData.nserror.code")) shouldSoon] equal: @504];
+        });
+
+        it(@"updates the domain", ^{
+            [[expectFutureValue(requestEventKeyPath(@"metaData.nserror.domain")) shouldSoon] equal: @"com.example.borg"];
+        });
+
+        it(@"update the failure reason", ^{
+            [[expectFutureValue(requestEventKeyPath(@"metaData.nserror.reason")) shouldSoon] equal: @"None"];
         });
     });
 });

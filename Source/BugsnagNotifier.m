@@ -173,9 +173,10 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
          message:error.localizedDescription
            block:^(BugsnagCrashReport * _Nonnull report) {
                NSMutableDictionary *metadata = [report.metaData mutableCopy];
-               metadata[@"NSError"] = @{@"code": @(error.code),
+               metadata[@"nserror"] = @{@"code": @(error.code),
                                         @"domain": error.domain,
                                         @"reason": error.localizedFailureReason?: @"" };
+               report.metaData = metadata;
                if (block)
                    block(report);
            }];
