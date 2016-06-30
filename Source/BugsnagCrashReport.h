@@ -106,6 +106,10 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
  */
 @property (nonatomic, readwrite, copy, nullable) NSString *errorMessage;
 /**
+ *  Customized hash for grouping this report with other errors
+ */
+@property (nonatomic, readwrite, copy, nullable) NSString *groupingHash;
+/**
  *  Breadcrumbs from user events leading up to the error
  */
 @property (nonatomic, readwrite, copy, nullable) NSArray *breadcrumbs;
@@ -114,6 +118,10 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
  *  generates a section on bugsnag, displaying key/value pairs
  */
 @property (nonatomic, readwrite, copy, nonnull) NSDictionary *metaData;
+/**
+ *  Property overrides
+ */
+@property (nonatomic, readonly, copy, nonnull) NSDictionary *overrides;
 
 @property (nonatomic, readwrite) NSUInteger depth;
 @end

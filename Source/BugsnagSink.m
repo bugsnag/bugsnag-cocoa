@@ -72,9 +72,10 @@
         return;
     }
 
+    NSDictionary *reportData = [self getBodyFromReports:bugsnagReports];
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    NSDictionary *reportData = [self getBodyFromReports:bugsnagReports];
     for (BugsnagBeforeNotifyHook hook in configuration.beforeNotifyHooks) {
         if (reportData) {
             reportData = hook(reports, reportData);
@@ -91,6 +92,16 @@
         return;
     }
 
+    [self sendReports:bugsnagReports
+              payload:reportData
+                toURL:configuration.notifyURL
+         onCompletion:onCompletion];
+}
+
+- (void)sendReports:(NSArray <BugsnagCrashReport *>*)reports
+            payload:(NSDictionary *)reportData
+              toURL:(NSURL *)url
+       onCompletion:(KSCrashReportFilterCompletion) onCompletion {
     @try {
         NSError *error = nil;
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:reportData
@@ -103,7 +114,7 @@
             }
             return;
         }
-        NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL: configuration.notifyURL
+        NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url
                                                                cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
                                                            timeoutInterval: 15];
         request.HTTPMethod = @"POST";
@@ -112,9 +123,9 @@
         [NSURLConnection sendAsynchronousRequest:request
                                            queue:[NSOperationQueue currentQueue]
                                completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
-            if (onCompletion)
-                onCompletion(reports, connectionError == nil, connectionError);
-        }];
+                                   if (onCompletion)
+                                       onCompletion(reports, connectionError == nil, connectionError);
+                               }];
     } @catch (NSException *exception) {
         if (onCompletion) {
             onCompletion(reports, NO, [NSError errorWithDomain:exception.reason

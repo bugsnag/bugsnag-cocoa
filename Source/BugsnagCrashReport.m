@@ -147,13 +147,36 @@ NSDictionary *BSGParseDeviceState(NSDictionary *report) {
 }
 
 NSString *BSGParseContext(NSDictionary *report, NSDictionary *metaData) {
-    id context = metaData[@"context"];
+    id context = [report valueForKeyPath:@"user.overrides.context"];
+    if ([context isKindOfClass:[NSString class]])
+        return context;
+    context = metaData[@"context"];
     if ([context isKindOfClass:[NSString class]])
         return context;
     context = [report valueForKeyPath:@"user.config.context"];
     if ([context isKindOfClass:[NSString class]])
         return context;
     return nil;
+}
+
+NSString *BSGParseGroupingHash(NSDictionary *report, NSDictionary *metaData) {
+    id groupingHash = [report valueForKeyPath:@"user.overrides.groupingHash"];
+    if (groupingHash)
+        return groupingHash;
+    groupingHash = metaData[@"groupingHash"];
+    if ([groupingHash isKindOfClass:[NSString class]])
+        return groupingHash;
+    return nil;
+}
+
+NSArray *BSGParseBreadcrumbs(NSDictionary *report) {
+    return [report valueForKeyPath:@"user.overrides.breadcrumbs"] ?:
+        [report valueForKeyPath:@"user.state.crash.breadcrumbs"];
+}
+
+NSString *BSGParseReleaseStage(NSDictionary *report) {
+    return [report valueForKeyPath:@"user.overrides.releaseStage"] ?:
+    [report valueForKeyPath:@"user.config.releaseStage"];
 }
 
 BSGSeverity BSGParseSeverity(NSString *severity) {
@@ -224,14 +247,14 @@ NSString *BSGFormatSeverity(BSGSeverity severity) {
 - (instancetype)initWithKSReport:(NSDictionary *)report {
   if (self = [super init]) {
       _notifyReleaseStages = [report valueForKeyPath:@"user.config.notifyReleaseStages"];
-      _releaseStage = [report valueForKeyPath:@"user.config.releaseStage"];
+      _releaseStage = BSGParseReleaseStage(report);
       _error = [report valueForKeyPath:@"crash.error"];
       _errorType = _error[@"type"];
       _errorClass = BSGParseErrorClass(_error, _errorType);
       _errorMessage = BSGParseErrorMessage(report, _error, _errorType);
       _binaryImages = report[@"binary_images"];
       _threads = [report valueForKeyPath:@"crash.threads"];
-      _breadcrumbs = [report valueForKeyPath:@"user.state.crash.breadcrumbs"];
+      _breadcrumbs = BSGParseBreadcrumbs(report);
       _severity = BSGParseSeverity([report valueForKeyPath:@"user.state.crash.severity"]);
       _depth = [[report valueForKeyPath:@"user.state.crash.depth"] unsignedIntegerValue];
       _dsymUUID = [report valueForKeyPath:@"system.app_uuid"];
@@ -242,6 +265,8 @@ NSString *BSGFormatSeverity(BSGSeverity severity) {
       _device = BSGParseDevice(report);
       _app = BSGParseApp(report, [report valueForKeyPath:@"user.config.appVersion"]);
       _appState = BSGParseAppState(report);
+      _groupingHash = BSGParseGroupingHash(report, _metaData);
+      _overrides = [report valueForKeyPath:@"user.overrides"];
   }
   return self;
 }
@@ -260,6 +285,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity) {
         _notifyReleaseStages = config.notifyReleaseStages;
         _context = BSGParseContext(nil, metaData);
         _breadcrumbs = [config.breadcrumbs arrayValue];
+        _overrides = [NSDictionary new];
     }
     return self;
 }
@@ -267,6 +293,36 @@ NSString *BSGFormatSeverity(BSGSeverity severity) {
 - (BOOL)shouldBeSent {
     return [self.notifyReleaseStages containsObject:self.releaseStage]
         || (self.notifyReleaseStages.count == 0 && [[Bugsnag configuration] shouldSendReports]);
+}
+
+- (void)setContext:(NSString *)context {
+    [self setOverrideProperty:@"context" value:context];
+    _context = context;
+}
+
+- (void)setGroupingHash:(NSString *)groupingHash {
+    [self setOverrideProperty:@"groupingHash" value:groupingHash];
+    _groupingHash = groupingHash;
+}
+
+- (void)setBreadcrumbs:(NSArray *)breadcrumbs {
+    [self setOverrideProperty:@"breadcrumbs" value:breadcrumbs];
+    _breadcrumbs = breadcrumbs;
+}
+
+- (void)setReleaseStage:(NSString *)releaseStage {
+    [self setOverrideProperty:@"releaseStage" value:releaseStage];
+    _releaseStage = releaseStage;
+}
+
+- (void)setOverrideProperty:(NSString *)key value:(id)value {
+    NSMutableDictionary *metadata = [self.overrides mutableCopy];
+    if (value) {
+        metadata[key] = value;
+    } else {
+        [metadata removeObjectForKey:key];
+    }
+    _overrides = metadata;
 }
 
 - (NSDictionary *)serializableValueWithTopLevelData:
@@ -287,6 +343,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity) {
   BSGDictSetSafeObject(event, [self appState], @"appState");
   BSGDictSetSafeObject(event, [self app], @"app");
   BSGDictSetSafeObject(event, [self context], @"context");
+  BSGDictInsertIfNotNil(event, self.groupingHash, @"groupingHash");
 
   //  Inserted into `context` property
   [metaData removeObjectForKey:@"context"];

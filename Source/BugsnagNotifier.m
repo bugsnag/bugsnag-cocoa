@@ -53,6 +53,8 @@ struct bugsnag_data_t {
     char *configJSON;
     // Contains notifier state, under "deviceState" and crash-specific information under "crash".
     char *stateJSON;
+    // Contains properties in the Bugsnag payload overridden by the user before it was sent
+    char *userOverridesJSON;
     // User onCrash handler
     void (*onCrash)(const KSCrashReportWriter* writer);
 };
@@ -74,6 +76,9 @@ void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer) {
     }
     if (g_bugsnag_data.stateJSON) {
         writer->addJSONElement(writer, "state", g_bugsnag_data.stateJSON);
+    }
+    if (g_bugsnag_data.userOverridesJSON) {
+        writer->addJSONElement(writer, "overrides", g_bugsnag_data.userOverridesJSON);
     }
     if (g_bugsnag_data.onCrash) {
         g_bugsnag_data.onCrash(writer);
@@ -196,9 +201,10 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
     [self.metaDataLock lock];
     BSSerializeJSONDictionary(report.metaData, &g_bugsnag_data.metaDataJSON);
+    BSSerializeJSONDictionary(report.overrides, &g_bugsnag_data.userOverridesJSON);
     [self.state addAttribute:BSAttributeSeverity withValue:BSGFormatSeverity(report.severity) toTabWithName:BSTabCrash];
     [self.state addAttribute:BSAttributeDepth withValue:@(report.depth + 3) toTabWithName:BSTabCrash];
-    [[KSCrash sharedInstance] reportUserException:exceptionName ?: NSStringFromClass([NSException class])
+    [[KSCrash sharedInstance] reportUserException:report.errorClass ?: NSStringFromClass([NSException class])
                                            reason:report.errorMessage ?: @""
                                          language:NULL lineOfCode:@""
                                        stackTrace:@[]
