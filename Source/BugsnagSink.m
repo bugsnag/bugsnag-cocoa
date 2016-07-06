@@ -55,7 +55,7 @@
         if (![bugsnagReport shouldBeSent])
             continue;
         BOOL shouldSend = YES;
-        for (BugsnagBeforeNotifyBlock block in configuration.beforeNotifyBlocks) {
+        for (BugsnagBeforeSendBlock block in configuration.beforeSendBlocks) {
             shouldSend = block(report, bugsnagReport);
             if (!shouldSend)
                 break;

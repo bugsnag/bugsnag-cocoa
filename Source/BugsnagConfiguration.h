@@ -48,7 +48,7 @@ typedef void (^BugsnagNotifyBlock)(BugsnagCrashReport *_Nonnull report);
  *
  *  @return YES if the report should be sent
  */
-typedef bool (^BugsnagBeforeNotifyBlock)(
+typedef bool (^BugsnagBeforeSendBlock)(
     NSDictionary *_Nonnull rawEventData,
     BugsnagCrashReport *_Nonnull reports);
 
@@ -108,7 +108,7 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
  *  Hooks for modifying crash reports before it is sent to Bugsnag
  */
 @property(nonatomic, readonly, strong, nullable)
-    NSArray <BugsnagBeforeNotifyBlock>* beforeNotifyBlocks;
+    NSArray <BugsnagBeforeSendBlock>* beforeSendBlocks;
 /**
  *  Optional handler invoked when a crash or fatal signal occurs
  */
@@ -136,7 +136,7 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
  *
  *  @param block A block which returns YES if the report should be sent
  */
-- (void)addBeforeNotifyBlock:(BugsnagBeforeNotifyBlock _Nonnull)block;
+- (void)addBeforeSendBlock:(BugsnagBeforeSendBlock _Nonnull)block;
 
 /**
  *  Whether reports shoould be sent, based on release stage options
