@@ -121,7 +121,9 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
 /**
  *  Property overrides
  */
-@property (nonatomic, readonly, copy, nonnull) NSDictionary *overrides;
-
-@property (nonatomic, readwrite) NSUInteger depth;
+@property(nonatomic, readonly, copy, nonnull) NSDictionary *overrides;
+/**
+ *  Number of frames to discard at the top of the stacktrace
+ */
+@property(nonatomic, readwrite) NSUInteger depth;
 @end
