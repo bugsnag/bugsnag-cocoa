@@ -26,6 +26,29 @@
 #import "BugsnagBreadcrumb.h"
 #import "Bugsnag.h"
 
+NSString *const BSGBreadcrumbDefaultName = @"Custom";
+
+NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
+    switch (type) {
+        case BSGBreadcrumbTypeLog:
+            return @"log";
+        case BSGBreadcrumbTypeUser:
+            return @"user";
+        case BSGBreadcrumbTypeError:
+            return @"error";
+        case BSGBreadcrumbTypeState:
+            return @"state";
+        case BSGBreadcrumbTypeCustom:
+            return @"custom";
+        case BSGBreadcrumbTypeProcess:
+            return @"process";
+        case BSGBreadcrumbTypeRequest:
+            return @"request";
+        case BSGBreadcrumbTypeNavigation:
+            return @"navigation";
+    }
+}
+
 @interface BugsnagBreadcrumbs()
 
 @property (nonatomic,readwrite,strong) NSMutableArray* breadcrumbs;
@@ -43,8 +66,23 @@
         return nil;
 
     if (self = [super init]) {
-        _message = [message copy];
+        _metadata = @{@"message": message};
         _timestamp = date;
+        _type = BSGBreadcrumbTypeCustom;
+        _name = BSGBreadcrumbDefaultName;
+    }
+    return self;
+}
+
+- (instancetype)initWithName:(NSString *)name
+                   timestamp:(NSDate *)date
+                        type:(BSGBreadcrumbType)type
+                    metadata:(NSDictionary *)metadata {
+    if (self = [super init]) {
+        _name = name;
+        _timestamp = date;
+        _type = type;
+        _metadata = metadata;
     }
     return self;
 }
@@ -109,8 +147,15 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
     NSMutableArray* contents = [[NSMutableArray alloc] initWithCapacity:[self count]];
     for (BugsnagBreadcrumb* crumb in self.breadcrumbs) {
         NSString* timestamp = [[Bugsnag payloadDateFormatter] stringFromDate:crumb.timestamp];
-        if (timestamp && crumb.message.length > 0) {
-            [contents addObject:@[timestamp,crumb.message]];
+        if (timestamp && crumb.name.length > 0) {
+            NSMutableDictionary *data = @{
+                @"name": crumb.name,
+                @"timestamp": timestamp,
+                @"type": BSGBreadcrumbTypeValue(crumb.type)
+            }.mutableCopy;
+            if (crumb.metadata)
+                data[@"metaData"] = crumb.metadata;
+            [contents addObject:data];
         }
     }
     return contents;

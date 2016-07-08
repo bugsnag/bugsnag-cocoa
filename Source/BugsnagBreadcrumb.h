@@ -33,14 +33,59 @@
 #endif
 #endif
 
+typedef NS_ENUM(NSUInteger, BSGBreadcrumbType) {
+    /**
+     *  Any breadcrumb sent via Bugsnag.leaveBreadcrumb()
+     */
+    BSGBreadcrumbTypeCustom,
+    /**
+     *  A call to Bugsnag.notify() (internal use only)
+     */
+    BSGBreadcrumbTypeError,
+    /**
+     *  A log message
+     */
+    BSGBreadcrumbTypeLog,
+    /**
+     *  A navigation action, such as pushing a view controller or dismissing an
+     *  alert
+     */
+    BSGBreadcrumbTypeNavigation,
+    /**
+     *  A background process, such performing a database query
+     */
+    BSGBreadcrumbTypeProcess,
+    /**
+     *  A network request
+     */
+    BSGBreadcrumbTypeRequest,
+    /**
+     *  Change in application or view state
+     */
+    BSGBreadcrumbTypeState,
+    /**
+     *  A user event, such as authentication or control events
+     */
+    BSGBreadcrumbTypeUser,
+};
+
 @interface BugsnagBreadcrumb : NSObject
 
-@property(readonly, nullable) NSDate *timestamp;
-@property(readonly, copy, nullable) NSString *message;
+@property(readonly, nonatomic, nullable) NSDate *timestamp;
+@property(readonly) BSGBreadcrumbType type;
+@property(readonly, nonatomic, copy, nonnull) NSString *name;
+@property(readonly, nonatomic, copy, nonnull) NSDictionary *metadata;
 
 - (instancetype _Nullable)initWithMessage:(NSString *_Nullable)message
                                 timestamp:(NSDate *_Nullable)date
     NS_DESIGNATED_INITIALIZER;
+
+- (instancetype _Nullable)initWithName:(NSString *_Nonnull)name
+                             timestamp:(NSDate *_Nonnull)date
+                                  type:(BSGBreadcrumbType)type
+                              metadata:(NSDictionary *_Nullable)metadata
+    NS_DESIGNATED_INITIALIZER;
+
 @end
 
 @interface BugsnagBreadcrumbs : NSObject
