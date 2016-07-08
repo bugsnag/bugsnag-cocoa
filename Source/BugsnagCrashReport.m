@@ -339,7 +339,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity) {
   BSGDictInsertIfNotNil(event, [self dsymUUID], @"dsymUUID");
   BSGDictSetSafeObject(event, BSGFormatSeverity(self.severity), @"severity");
   BSGDictSetSafeObject(event, [self breadcrumbs], @"breadcrumbs");
-  BSGDictSetSafeObject(event, @"2", @"payloadVersion");
+  BSGDictSetSafeObject(event, @"3", @"payloadVersion");
   BSGDictSetSafeObject(event, metaData, @"metaData");
   BSGDictSetSafeObject(event, [self deviceState], @"deviceState");
   BSGDictSetSafeObject(event, [self device], @"device");

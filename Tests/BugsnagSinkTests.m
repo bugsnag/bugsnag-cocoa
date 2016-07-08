@@ -127,7 +127,7 @@
 
 - (void)testEventPayloadVersion {
   NSString *payloadVersion = [self.processedData[@"events"] firstObject][@"payloadVersion"];
-  XCTAssertEqualObjects(payloadVersion, @"2");
+  XCTAssertEqualObjects(payloadVersion, @"3");
 }
 
 - (void)testEventSeverity {
