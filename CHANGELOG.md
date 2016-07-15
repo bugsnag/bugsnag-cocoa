@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## 5.3.0 (15 Jul 2016)
+
+### Bug fixes
+
+* Fix intermittent crashes via NSZombie detection being enabled by default
+  [#111](https://github.com/bugsnag/bugsnag-cocoa/issues/111)
+  [KSCrash#160](https://github.com/kstenerud/KSCrash/pull/160)
+
 ## 5.2.1 (16 June 2016)
 
 Add Carthage support
