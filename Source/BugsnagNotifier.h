@@ -74,4 +74,11 @@
  *  Write breadcrumbs to the cached metadata for error reports
  */
 - (void)serializeBreadcrumbs;
+
+/**
+ *  Listen for notifications and attach breadcrumbs when received
+ *
+ *  @param notificationName name of the notification
+ */
+- (void)crumbleNotification:(NSString *_Nonnull)notificationName;
 @end

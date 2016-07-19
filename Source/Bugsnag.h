@@ -162,6 +162,22 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message;
 
 /**
+ *  Leave a "breadcrumb" log message with additional information about the
+ *  environment at the time the breadcrumb was captured.
+ *
+ *  @param block configuration block
+ */
++ (void)leaveBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
+
+/**
+ *  Leave a "breadcrumb" log message each time a notification with a provided
+ *  name is received by the application
+ *
+ *  @param notificationName name of the notification to capture
+ */
++ (void)leaveBreadcrumbForNotificationName:(NSString *_Nonnull)notificationName;
+
+/**
  * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.
  * By default, we'll keep and send the 20 most recent breadcrumb log
  * messages. Must be called from the main thread.

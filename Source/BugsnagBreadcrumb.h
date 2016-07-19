@@ -37,7 +37,7 @@ typedef NS_ENUM(NSUInteger, BSGBreadcrumbType) {
     /**
      *  Any breadcrumb sent via Bugsnag.leaveBreadcrumb()
      */
-    BSGBreadcrumbTypeCustom,
+    BSGBreadcrumbTypeManual,
     /**
      *  A call to Bugsnag.notify() (internal use only)
      */
@@ -69,22 +69,18 @@ typedef NS_ENUM(NSUInteger, BSGBreadcrumbType) {
     BSGBreadcrumbTypeUser,
 };
 
+@class BugsnagBreadcrumb;
+
+typedef void(^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
+
 @interface BugsnagBreadcrumb : NSObject
 
 @property(readonly, nonatomic, nullable) NSDate *timestamp;
-@property(readonly) BSGBreadcrumbType type;
-@property(readonly, nonatomic, copy, nonnull) NSString *name;
-@property(readonly, nonatomic, copy, nonnull) NSDictionary *metadata;
+@property(readwrite) BSGBreadcrumbType type;
+@property(readwrite, nonatomic, copy, nonnull) NSString *name;
+@property(readwrite, nonatomic, copy, nonnull) NSDictionary *metadata;
 
-- (instancetype _Nullable)initWithMessage:(NSString *_Nullable)message
-                                timestamp:(NSDate *_Nullable)date
-    NS_DESIGNATED_INITIALIZER;
-
-- (instancetype _Nullable)initWithName:(NSString *_Nonnull)name
-                             timestamp:(NSDate *_Nonnull)date
-                                  type:(BSGBreadcrumbType)type
-                              metadata:(NSDictionary *_Nullable)metadata
-    NS_DESIGNATED_INITIALIZER;
++ (instancetype _Nullable)breadcrumbWithBlock:(BSGBreadcrumbConfiguration _Nonnull)block;
 
 @end
 
@@ -104,6 +100,14 @@ typedef NS_ENUM(NSUInteger, BSGBreadcrumbType) {
  * main thread.
  */
 - (void)addBreadcrumb:(NSString *_Nonnull)breadcrumbMessage;
+
+/**
+ *  Store a new breadcrumb configured via block. Must be called from the main
+ *  thread
+ *
+ *  @param block configuration block
+ */
+- (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
 
 /**
  * Clear all stored breadcrumbs. Must be called from the main thread.

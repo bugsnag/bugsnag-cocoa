@@ -45,6 +45,7 @@ NSString *const BSTabConfig = @"config";
 NSString *const BSAttributeSeverity = @"severity";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSAttributeBreadcrumbs = @"breadcrumbs";
+NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
 struct bugsnag_data_t {
     // Contains the user-specified metaData, including the user tab from config.
@@ -151,20 +152,73 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-  [self.details setValue: @"iOS Bugsnag Notifier" forKey:@"name"];
+  [self.details setValue:@"iOS Bugsnag Notifier" forKey:@"name"];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryChanged:) name:UIDeviceBatteryStateDidChangeNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryChanged:) name:UIDeviceBatteryLevelDidChangeNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lowMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(batteryChanged:)
+             name:UIDeviceBatteryStateDidChangeNotification
+           object:nil];
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(batteryChanged:)
+             name:UIDeviceBatteryLevelDidChangeNotification
+           object:nil];
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(orientationChanged:)
+             name:UIDeviceOrientationDidChangeNotification
+           object:nil];
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(lowMemoryWarning:)
+             name:UIApplicationDidReceiveMemoryWarningNotification
+           object:nil];
+  [self crumbleNotification:UIWindowDidBecomeHiddenNotification];
+  [self crumbleNotification:UIWindowDidBecomeVisibleNotification];
+  [self crumbleNotification:UIApplicationWillTerminateNotification];
+  [self crumbleNotification:UIApplicationWillEnterForegroundNotification];
+  [self crumbleNotification:UIApplicationDidEnterBackgroundNotification];
+  [self crumbleNotification:UIApplicationUserDidTakeScreenshotNotification];
+  [self crumbleNotification:UIKeyboardDidShowNotification];
+  [self crumbleNotification:UIKeyboardDidHideNotification];
+  [self crumbleNotification:UITextFieldTextDidBeginEditingNotification];
+  [self crumbleNotification:UITextViewTextDidBeginEditingNotification];
+  [self crumbleNotification:UITextFieldTextDidEndEditingNotification];
+  [self crumbleNotification:UITextViewTextDidEndEditingNotification];
+  [self crumbleNotification:UIMenuControllerDidShowMenuNotification];
+  [self crumbleNotification:UIMenuControllerDidHideMenuNotification];
+  [self crumbleNotification:NSUndoManagerDidUndoChangeNotification];
+  [self crumbleNotification:NSUndoManagerDidRedoChangeNotification];
+  [self crumbleNotification:UITableViewSelectionDidChangeNotification];
 
-  [UIDevice currentDevice].batteryMonitoringEnabled = TRUE;
+  [UIDevice currentDevice].batteryMonitoringEnabled = YES;
   [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 
   [self batteryChanged:nil];
   [self orientationChanged:nil];
 #elif TARGET_OS_MAC
-  [self.details setValue: @"OSX Bugsnag Notifier" forKey:@"name"];
+  [self.details setValue:@"OSX Bugsnag Notifier" forKey:@"name"];
+  [self crumbleNotification:NSApplicationDidBecomeActiveNotification];
+  [self crumbleNotification:NSApplicationDidResignActiveNotification];
+  [self crumbleNotification:NSApplicationDidHideNotification];
+  [self crumbleNotification:NSApplicationDidUnhideNotification];
+  [self crumbleNotification:NSApplicationWillTerminateNotification];
+  [self crumbleNotification:NSWorkspaceScreensDidSleepNotification];
+  [self crumbleNotification:NSWorkspaceScreensDidWakeNotification];
+  [self crumbleNotification:NSWindowWillCloseNotification];
+  [self crumbleNotification:NSWindowDidBecomeKeyNotification];
+  [self crumbleNotification:NSWindowWillMiniaturizeNotification];
+  [self crumbleNotification:NSWindowDidEnterFullScreenNotification];
+  [self crumbleNotification:NSWindowDidExitFullScreenNotification];
+  [self crumbleNotification:NSControlTextDidBeginEditingNotification];
+  [self crumbleNotification:NSControlTextDidEndEditingNotification];
+  [self crumbleNotification:NSTableViewSelectionDidChangeNotification];
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(didReceiveMenuAction:)
+             name:NSMenuWillSendActionNotification
+           object:nil];
 #endif
 }
 
@@ -214,6 +268,10 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     [self.metaDataLock unlock];
     [self metaDataChanged:self.configuration.metaData];
     [[self state] clearTab:BSTabCrash];
+    [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
+      crumb.type = BSGBreadcrumbTypeError;
+      crumb.name = exceptionName;
+    }];
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
 }
@@ -257,50 +315,103 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 }
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-- (void) batteryChanged:(NSNotification *)notif {
-  NSNumber *batteryLevel = [NSNumber numberWithFloat:[UIDevice currentDevice].batteryLevel];
-  NSNumber *charging = [NSNumber numberWithBool: [UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging];
+- (void)batteryChanged:(NSNotification *)notif {
+  NSNumber *batteryLevel =
+      [NSNumber numberWithFloat:[UIDevice currentDevice].batteryLevel];
+  NSNumber *charging =
+      [NSNumber numberWithBool:[UIDevice currentDevice].batteryState ==
+                               UIDeviceBatteryStateCharging];
 
-  [[self state] addAttribute: @"batteryLevel" withValue: batteryLevel toTabWithName:@"deviceState"];
-  [[self state] addAttribute: @"charging" withValue: charging toTabWithName:@"deviceState"];
+  [[self state] addAttribute:@"batteryLevel"
+                   withValue:batteryLevel
+               toTabWithName:@"deviceState"];
+  [[self state] addAttribute:@"charging"
+                   withValue:charging
+               toTabWithName:@"deviceState"];
 }
 
 - (void)orientationChanged:(NSNotification *)notif {
   NSString *orientation;
-  switch([UIDevice currentDevice].orientation) {
-    case UIDeviceOrientationPortraitUpsideDown:
-      orientation = @"portraitupsidedown";
-      break;
-    case UIDeviceOrientationPortrait:
-      orientation = @"portrait";
-      break;
-    case UIDeviceOrientationLandscapeRight:
-      orientation = @"landscaperight";
-      break;
-    case UIDeviceOrientationLandscapeLeft:
-      orientation = @"landscapeleft";
-      break;
-    case UIDeviceOrientationFaceUp:
-      orientation = @"faceup";
-      break;
-    case UIDeviceOrientationFaceDown:
-      orientation = @"facedown";
-      break;
-    case UIDeviceOrientationUnknown:
-    default:
-      orientation = @"unknown";
+  switch ([UIDevice currentDevice].orientation) {
+  case UIDeviceOrientationPortraitUpsideDown:
+    orientation = @"portraitupsidedown";
+    break;
+  case UIDeviceOrientationPortrait:
+    orientation = @"portrait";
+    break;
+  case UIDeviceOrientationLandscapeRight:
+    orientation = @"landscaperight";
+    break;
+  case UIDeviceOrientationLandscapeLeft:
+    orientation = @"landscapeleft";
+    break;
+  case UIDeviceOrientationFaceUp:
+    orientation = @"faceup";
+    break;
+  case UIDeviceOrientationFaceDown:
+    orientation = @"facedown";
+    break;
+  case UIDeviceOrientationUnknown:
+  default:
+    orientation = @"unknown";
   }
-  [[self state] addAttribute:@"orientation" withValue:orientation toTabWithName:@"deviceState"];
+  [[self state] addAttribute:@"orientation"
+                   withValue:orientation
+               toTabWithName:@"deviceState"];
+  [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+    breadcrumb.type = BSGBreadcrumbTypeState;
+    breadcrumb.name = [self breadcrumbNameForNotificationName:notif.name];
+    breadcrumb.metadata = @{ @"orientation" : orientation };
+  }];
 }
 
 - (void)lowMemoryWarning:(NSNotification *)notif {
-  [[self state] addAttribute: @"lowMemoryWarning" withValue: [[Bugsnag payloadDateFormatter] stringFromDate:[NSDate date]] toTabWithName:@"deviceState"];
+  [[self state] addAttribute:BSEventLowMemoryWarning
+                   withValue:[[Bugsnag payloadDateFormatter]
+                                 stringFromDate:[NSDate date]]
+               toTabWithName:@"deviceState"];
+  [self sendBreadcrumbForNotification:notif];
+}
+
+#elif TARGET_OS_MAC
+- (void)didReceiveMenuAction:(NSNotification *)notif {
+  NSMenuItem *menuItem = [[notif userInfo] valueForKey:@"MenuItem"];
+  if ([menuItem isKindOfClass:[NSMenuItem class]]) {
+    [Bugsnag
+        leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+          breadcrumb.type = BSGBreadcrumbTypeState;
+          breadcrumb.name = [self breadcrumbNameForNotificationName:notif.name];
+          if (menuItem.title.length > 0)
+            breadcrumb.metadata = @{ @"action" : menuItem.title };
+        }];
+  }
+}
+#endif
+
+- (void)crumbleNotification:(NSString *)notificationName {
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(sendBreadcrumbForNotification:)
+             name:notificationName
+           object:nil];
 }
 
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-#endif
+
+- (void)sendBreadcrumbForNotification:(NSNotification *)note {
+  [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+    breadcrumb.type = BSGBreadcrumbTypeState;
+    breadcrumb.name = [self breadcrumbNameForNotificationName:note.name];
+  }];
+  [self serializeBreadcrumbs];
+}
+
+- (NSString *)breadcrumbNameForNotificationName:(NSString *)name {
+  return [name stringByReplacingOccurrencesOfString:@"Notification"
+                                         withString:@""];
+}
 
 @end
 

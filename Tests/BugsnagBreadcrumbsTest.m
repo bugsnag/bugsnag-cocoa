@@ -72,8 +72,8 @@
     for (int i = 0; i < value.count; i++) {
         NSDictionary *item = value[i];
         XCTAssertTrue([item isKindOfClass:[NSDictionary class]]);
-        XCTAssertEqualObjects(item[@"name"], @"Custom");
-        XCTAssertEqualObjects(item[@"type"], @"custom");
+        XCTAssertEqualObjects(item[@"name"], @"manual");
+        XCTAssertEqualObjects(item[@"type"], @"manual");
         XCTAssertTrue([[formatter dateFromString:item[@"timestamp"]] isKindOfClass:[NSDate class]]);
     }
     XCTAssertEqualObjects(value[0][@"metaData"][@"message"], @"Launch app");
