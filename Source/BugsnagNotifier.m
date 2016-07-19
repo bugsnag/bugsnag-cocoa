@@ -36,6 +36,8 @@
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
 #include <sys/utsname.h>
+#elif TARGET_OS_MAC
+#import <AppKit/AppKit.h>
 #endif
 
 NSString *const NOTIFIER_VERSION = @"5.3.0";
@@ -150,7 +152,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     }
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
-
+    [self updateAutomaticBreadcrumbDetectionSettings];
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
   [self.details setValue:@"iOS Bugsnag Notifier" forKey:@"name"];
 
@@ -174,23 +176,6 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
          selector:@selector(lowMemoryWarning:)
              name:UIApplicationDidReceiveMemoryWarningNotification
            object:nil];
-  [self crumbleNotification:UIWindowDidBecomeHiddenNotification];
-  [self crumbleNotification:UIWindowDidBecomeVisibleNotification];
-  [self crumbleNotification:UIApplicationWillTerminateNotification];
-  [self crumbleNotification:UIApplicationWillEnterForegroundNotification];
-  [self crumbleNotification:UIApplicationDidEnterBackgroundNotification];
-  [self crumbleNotification:UIApplicationUserDidTakeScreenshotNotification];
-  [self crumbleNotification:UIKeyboardDidShowNotification];
-  [self crumbleNotification:UIKeyboardDidHideNotification];
-  [self crumbleNotification:UITextFieldTextDidBeginEditingNotification];
-  [self crumbleNotification:UITextViewTextDidBeginEditingNotification];
-  [self crumbleNotification:UITextFieldTextDidEndEditingNotification];
-  [self crumbleNotification:UITextViewTextDidEndEditingNotification];
-  [self crumbleNotification:UIMenuControllerDidShowMenuNotification];
-  [self crumbleNotification:UIMenuControllerDidHideMenuNotification];
-  [self crumbleNotification:NSUndoManagerDidUndoChangeNotification];
-  [self crumbleNotification:NSUndoManagerDidRedoChangeNotification];
-  [self crumbleNotification:UITableViewSelectionDidChangeNotification];
 
   [UIDevice currentDevice].batteryMonitoringEnabled = YES;
   [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -199,26 +184,6 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
   [self orientationChanged:nil];
 #elif TARGET_OS_MAC
   [self.details setValue:@"OSX Bugsnag Notifier" forKey:@"name"];
-  [self crumbleNotification:NSApplicationDidBecomeActiveNotification];
-  [self crumbleNotification:NSApplicationDidResignActiveNotification];
-  [self crumbleNotification:NSApplicationDidHideNotification];
-  [self crumbleNotification:NSApplicationDidUnhideNotification];
-  [self crumbleNotification:NSApplicationWillTerminateNotification];
-  [self crumbleNotification:NSWorkspaceScreensDidSleepNotification];
-  [self crumbleNotification:NSWorkspaceScreensDidWakeNotification];
-  [self crumbleNotification:NSWindowWillCloseNotification];
-  [self crumbleNotification:NSWindowDidBecomeKeyNotification];
-  [self crumbleNotification:NSWindowWillMiniaturizeNotification];
-  [self crumbleNotification:NSWindowDidEnterFullScreenNotification];
-  [self crumbleNotification:NSWindowDidExitFullScreenNotification];
-  [self crumbleNotification:NSControlTextDidBeginEditingNotification];
-  [self crumbleNotification:NSControlTextDidEndEditingNotification];
-  [self crumbleNotification:NSTableViewSelectionDidChangeNotification];
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self
-         selector:@selector(didReceiveMenuAction:)
-             name:NSMenuWillSendActionNotification
-           object:nil];
 #endif
 }
 
@@ -358,11 +323,13 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
   [[self state] addAttribute:@"orientation"
                    withValue:orientation
                toTabWithName:@"deviceState"];
-  [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-    breadcrumb.type = BSGBreadcrumbTypeState;
-    breadcrumb.name = [self breadcrumbNameForNotificationName:notif.name];
-    breadcrumb.metadata = @{ @"orientation" : orientation };
-  }];
+  if ([self.configuration automaticallyCollectBreadcrumbs]) {
+    [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+      breadcrumb.type = BSGBreadcrumbTypeState;
+      breadcrumb.name = [self breadcrumbNameForNotificationName:notif.name];
+      breadcrumb.metadata = @{ @"orientation" : orientation };
+    }];
+  }
 }
 
 - (void)lowMemoryWarning:(NSNotification *)notif {
@@ -370,23 +337,100 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                    withValue:[[Bugsnag payloadDateFormatter]
                                  stringFromDate:[NSDate date]]
                toTabWithName:@"deviceState"];
-  [self sendBreadcrumbForNotification:notif];
-}
-
-#elif TARGET_OS_MAC
-- (void)didReceiveMenuAction:(NSNotification *)notif {
-  NSMenuItem *menuItem = [[notif userInfo] valueForKey:@"MenuItem"];
-  if ([menuItem isKindOfClass:[NSMenuItem class]]) {
-    [Bugsnag
-        leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-          breadcrumb.type = BSGBreadcrumbTypeState;
-          breadcrumb.name = [self breadcrumbNameForNotificationName:notif.name];
-          if (menuItem.title.length > 0)
-            breadcrumb.metadata = @{ @"action" : menuItem.title };
-        }];
+  if ([self.configuration automaticallyCollectBreadcrumbs]) {
+    [self sendBreadcrumbForNotification:notif];
   }
 }
 #endif
+
+- (void)updateAutomaticBreadcrumbDetectionSettings {
+    if ([self.configuration automaticallyCollectBreadcrumbs]) {
+        for (NSString *name in [self automaticBreadcrumbStateEvents]) {
+            [self crumbleNotification:name];
+        }
+        for (NSString *name in [self automaticBreadcrumbControlEvents]) {
+            [[NSNotificationCenter defaultCenter]
+             addObserver:self
+             selector:@selector(sendBreadcrumbForControlNotification:)
+             name:name
+             object:nil];
+        }
+        for (NSString *name in [self automaticBreadcrumbMenuItemEvents]) {
+            [[NSNotificationCenter defaultCenter]
+             addObserver:self
+             selector:@selector(sendBreadcrumbForMenuItemNotification:)
+             name:name
+             object:nil];
+        }
+    } else {
+        NSArray* eventNames = [[[self automaticBreadcrumbStateEvents]
+          arrayByAddingObjectsFromArray:[self automaticBreadcrumbControlEvents]]
+          arrayByAddingObjectsFromArray:[self automaticBreadcrumbMenuItemEvents]];
+        for (NSString *name in eventNames) {
+            [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                            name:name
+                                                          object:nil];
+        }
+    }
+}
+
+- (NSArray <NSString *>*)automaticBreadcrumbStateEvents {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    return @[UIWindowDidBecomeHiddenNotification,
+             UIWindowDidBecomeVisibleNotification,
+             UIApplicationWillTerminateNotification,
+             UIApplicationWillEnterForegroundNotification,
+             UIApplicationDidEnterBackgroundNotification,
+             UIApplicationUserDidTakeScreenshotNotification,
+             UIKeyboardDidShowNotification,
+             UIKeyboardDidHideNotification,
+             UIMenuControllerDidShowMenuNotification,
+             UIMenuControllerDidHideMenuNotification,
+             NSUndoManagerDidUndoChangeNotification,
+             NSUndoManagerDidRedoChangeNotification,
+             UITableViewSelectionDidChangeNotification];
+#elif TARGET_OS_MAC
+    return @[NSApplicationDidBecomeActiveNotification,
+             NSApplicationDidResignActiveNotification,
+             NSApplicationDidHideNotification,
+             NSApplicationDidUnhideNotification,
+             NSApplicationWillTerminateNotification,
+             NSWorkspaceScreensDidSleepNotification,
+             NSWorkspaceScreensDidWakeNotification,
+             NSWindowWillCloseNotification,
+             NSWindowDidBecomeKeyNotification,
+             NSWindowWillMiniaturizeNotification,
+             NSWindowDidEnterFullScreenNotification,
+             NSWindowDidExitFullScreenNotification,
+             NSTableViewSelectionDidChangeNotification];
+#else
+    return nil;
+#endif
+}
+
+- (NSArray <NSString *>*)automaticBreadcrumbControlEvents {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    return @[UITextFieldTextDidBeginEditingNotification,
+             UITextViewTextDidBeginEditingNotification,
+             UITextFieldTextDidEndEditingNotification,
+             UITextViewTextDidEndEditingNotification];
+#elif TARGET_OS_MAC
+    return @[NSControlTextDidBeginEditingNotification,
+             NSControlTextDidEndEditingNotification];
+#else
+    return nil;
+#endif
+}
+
+- (NSArray <NSString *>*)automaticBreadcrumbMenuItemEvents {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    return nil;
+#elif TARGET_OS_MAC
+    return @[NSMenuWillSendActionNotification];
+#else
+    return nil;
+#endif
+}
 
 - (void)crumbleNotification:(NSString *)notificationName {
   [[NSNotificationCenter defaultCenter]
@@ -406,6 +450,46 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     breadcrumb.name = [self breadcrumbNameForNotificationName:note.name];
   }];
   [self serializeBreadcrumbs];
+}
+
+- (void)sendBreadcrumbForMenuItemNotification:(NSNotification *)notif {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif TARGET_OS_MAC
+    NSMenuItem *menuItem = [[notif userInfo] valueForKey:@"MenuItem"];
+    if ([menuItem isKindOfClass:[NSMenuItem class]]) {
+        [Bugsnag
+         leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+             breadcrumb.type = BSGBreadcrumbTypeState;
+             breadcrumb.name = [self breadcrumbNameForNotificationName:notif.name];
+             if (menuItem.title.length > 0)
+                 breadcrumb.metadata = @{ @"action" : menuItem.title };
+         }];
+    }
+#endif
+}
+
+- (void)sendBreadcrumbForControlNotification:(NSNotification *)note {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    UIControl* control = note.object;
+    [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+        breadcrumb.type = BSGBreadcrumbTypeUser;
+        breadcrumb.name = [self breadcrumbNameForNotificationName:note.name];
+        NSString *label = control.accessibilityLabel;
+        if (label.length > 0) {
+            breadcrumb.metadata = @{ @"label": label };
+        }
+    }];
+#elif TARGET_OS_MAC
+    NSControl *control = note.object;
+    [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+        breadcrumb.type = BSGBreadcrumbTypeUser;
+        breadcrumb.name = [self breadcrumbNameForNotificationName:note.name];
+        NSString *label = control.accessibilityLabel;
+        if (label.length > 0) {
+            breadcrumb.metadata = @{ @"label": label };
+        }
+    }];
+#endif
 }
 
 - (NSString *)breadcrumbNameForNotificationName:(NSString *)name {

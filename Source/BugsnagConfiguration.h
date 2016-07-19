@@ -90,6 +90,7 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
  *  The version of the application
  */
 @property(nonatomic, readwrite, retain, nullable) NSString *appVersion;
+
 /**
  *  Additional information about the state of the app or environment at the 
  *  time the report was generated
@@ -104,6 +105,12 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
  */
 @property(nonatomic, readonly, strong, nullable)
     BugsnagBreadcrumbs *breadcrumbs;
+
+/**
+ *  Whether to allow collection of automatic breadcrumbs for notable events
+ */
+@property(nonatomic, readwrite) BOOL automaticallyCollectBreadcrumbs;
+
 /**
  *  Hooks for modifying crash reports before it is sent to Bugsnag
  */

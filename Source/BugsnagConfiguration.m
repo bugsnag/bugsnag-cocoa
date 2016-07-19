@@ -29,6 +29,12 @@
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagMetaData.h"
+#import "Bugsnag.h"
+#import "BugsnagNotifier.h"
+
+@interface Bugsnag ()
++ (BugsnagNotifier*)notifier;
+@end
 
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeNotifyHooks;
@@ -42,12 +48,13 @@
     _metaData = [[BugsnagMetaData alloc] init];
     _config = [[BugsnagMetaData alloc] init];
     _apiKey = @"";
-    _autoNotify = true;
+    _autoNotify = YES;
     _notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
     _beforeNotifyHooks = [NSMutableArray new];
     _BugsnagBeforeSendBlock = [NSMutableArray new];
     _notifyReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
+    _automaticallyCollectBreadcrumbs = YES;
 #if DEBUG
     _releaseStage = @"development";
 #else
@@ -94,6 +101,14 @@
   [self.config addAttribute:@"notifyReleaseStages"
                   withValue:notifyReleaseStagesCopy
               toTabWithName:@"config"];
+}
+
+- (void)setAutomaticallyCollectBreadcrumbs:(BOOL)automaticallyCollectBreadcrumbs {
+    if (automaticallyCollectBreadcrumbs == _automaticallyCollectBreadcrumbs)
+        return;
+
+    _automaticallyCollectBreadcrumbs = automaticallyCollectBreadcrumbs;
+    [[Bugsnag notifier] updateAutomaticBreadcrumbDetectionSettings];
 }
 
 - (void)setContext:(NSString *)newContext {

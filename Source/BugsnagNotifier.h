@@ -81,4 +81,9 @@
  *  @param notificationName name of the notification
  */
 - (void)crumbleNotification:(NSString *_Nonnull)notificationName;
+
+/**
+ *  Enable or disable automatic breadcrumb collection based on configuration
+ */
+- (void)updateAutomaticBreadcrumbDetectionSettings;
 @end
