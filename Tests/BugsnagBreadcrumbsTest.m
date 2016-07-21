@@ -81,4 +81,32 @@
     XCTAssertEqualObjects(value[2][@"metaData"][@"message"], @"Close tutorial");
 }
 
+- (void)testStateType {
+    BugsnagBreadcrumbs* crumbs = [BugsnagBreadcrumbs new];
+    [crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
+        crumb.type = BSGBreadcrumbTypeState;
+        crumb.name = @"Rotated Menu";
+        crumb.metadata = @{ @"direction": @"right" };
+    }];
+    NSArray* value = [crumbs arrayValue];
+    XCTAssertEqualObjects(value[0][@"metaData"][@"direction"], @"right");
+    XCTAssertEqualObjects(value[0][@"name"], @"Rotated Menu");
+    XCTAssertEqualObjects(value[0][@"type"], @"state");
+}
+
+- (void)testByteSizeLimit {
+    BugsnagBreadcrumbs* crumbs = [BugsnagBreadcrumbs new];
+    [crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
+        crumb.type = BSGBreadcrumbTypeState;
+        crumb.name = @"Rotated Menu";
+        NSMutableDictionary *metadata = @{}.mutableCopy;
+        for (int i = 0; i < 400; i++) {
+            metadata[[NSString stringWithFormat:@"%d", i]] = @"!!";
+        }
+        crumb.metadata = metadata;
+    }];
+    NSArray* value = [crumbs arrayValue];
+    XCTAssertTrue(value.count == 0);
+}
+
 @end
