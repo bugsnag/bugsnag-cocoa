@@ -14,7 +14,8 @@
   "frameworks": "Foundation",
   "platforms": {
     "ios": "6.0",
-    "osx": "10.8"
+    "osx": "10.8",
+    "tvos": "9.0"
   },
   "source_files": [
     "Source/*.{m,h,mm,c,cpp}"

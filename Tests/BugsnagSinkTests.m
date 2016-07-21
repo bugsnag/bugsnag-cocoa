@@ -72,7 +72,9 @@
 
 - (void)testNotifierName {
   NSString *name = self.processedData[@"notifier"][@"name"];
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV
+  XCTAssertEqualObjects(name, @"tvOS Bugsnag Notifier");
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
   XCTAssertEqualObjects(name, @"iOS Bugsnag Notifier");
 #else
   XCTAssertEqualObjects(name, @"OSX Bugsnag Notifier");
