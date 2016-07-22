@@ -143,6 +143,9 @@ NSDictionary *BSGParseDeviceState(NSDictionary *report) {
     BSGDictSetSafeObject(deviceState,
                          [report valueForKeyPath:@"system.memory.free"],
                          @"freeMemory");
+    BSGDictSetSafeObject(deviceState,
+                         [report valueForKeyPath:@"report.timestamp"],
+                         @"time");
     return deviceState;
 }
 

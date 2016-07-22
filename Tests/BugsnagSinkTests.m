@@ -171,6 +171,11 @@
   XCTAssertEqualObjects(address, @0);
 }
 
+- (void)testTimestamp {
+    id timestamp = [[self.processedData[@"events"] firstObject] valueForKeyPath:@"deviceState.time"];
+    XCTAssertEqualObjects(timestamp, @"2014-12-02T01:56:13Z");
+}
+
 - (void)testEventMetadataErrorType {
   id errorType = [[self.processedData[@"events"] firstObject] valueForKeyPath:@"metaData.error.type"];
   XCTAssertEqualObjects(errorType, @"user");
