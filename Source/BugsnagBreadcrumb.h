@@ -33,14 +33,55 @@
 #endif
 #endif
 
+typedef NS_ENUM(NSUInteger, BSGBreadcrumbType) {
+    /**
+     *  Any breadcrumb sent via Bugsnag.leaveBreadcrumb()
+     */
+    BSGBreadcrumbTypeManual,
+    /**
+     *  A call to Bugsnag.notify() (internal use only)
+     */
+    BSGBreadcrumbTypeError,
+    /**
+     *  A log message
+     */
+    BSGBreadcrumbTypeLog,
+    /**
+     *  A navigation action, such as pushing a view controller or dismissing an
+     *  alert
+     */
+    BSGBreadcrumbTypeNavigation,
+    /**
+     *  A background process, such performing a database query
+     */
+    BSGBreadcrumbTypeProcess,
+    /**
+     *  A network request
+     */
+    BSGBreadcrumbTypeRequest,
+    /**
+     *  Change in application or view state
+     */
+    BSGBreadcrumbTypeState,
+    /**
+     *  A user event, such as authentication or control events
+     */
+    BSGBreadcrumbTypeUser,
+};
+
+@class BugsnagBreadcrumb;
+
+typedef void(^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
+
 @interface BugsnagBreadcrumb : NSObject
 
-@property(readonly, nullable) NSDate *timestamp;
-@property(readonly, copy, nullable) NSString *message;
+@property(readonly, nonatomic, nullable) NSDate *timestamp;
+@property(readwrite) BSGBreadcrumbType type;
+@property(readwrite, nonatomic, copy, nonnull) NSString *name;
+@property(readwrite, nonatomic, copy, nonnull) NSDictionary *metadata;
 
-- (instancetype _Nullable)initWithMessage:(NSString *_Nullable)message
-                                timestamp:(NSDate *_Nullable)date
-    NS_DESIGNATED_INITIALIZER;
++ (instancetype _Nullable)breadcrumbWithBlock:(BSGBreadcrumbConfiguration _Nonnull)block;
+
 @end
 
 @interface BugsnagBreadcrumbs : NSObject
@@ -59,6 +100,14 @@
  * main thread.
  */
 - (void)addBreadcrumb:(NSString *_Nonnull)breadcrumbMessage;
+
+/**
+ *  Store a new breadcrumb configured via block. Must be called from the main
+ *  thread
+ *
+ *  @param block configuration block
+ */
+- (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
 
 /**
  * Clear all stored breadcrumbs. Must be called from the main thread.

@@ -36,9 +36,9 @@
     self.crumbs.capacity = 3;
     [self.crumbs addBreadcrumb:@"Clear notifications"];
     XCTAssertTrue(self.crumbs.count == 3);
-    XCTAssertEqualObjects(self.crumbs[0].message, @"Tap button");
-    XCTAssertEqualObjects(self.crumbs[1].message, @"Close tutorial");
-    XCTAssertEqualObjects(self.crumbs[2].message, @"Clear notifications");
+    XCTAssertEqualObjects(self.crumbs[0].metadata[@"message"], @"Tap button");
+    XCTAssertEqualObjects(self.crumbs[1].metadata[@"message"], @"Close tutorial");
+    XCTAssertEqualObjects(self.crumbs[2].metadata[@"message"], @"Clear notifications");
     XCTAssertNil(self.crumbs[3]);
 }
 
@@ -58,8 +58,8 @@
 - (void)testResizeBreadcrumbs {
     self.crumbs.capacity = 2;
     XCTAssertTrue(self.crumbs.count == 2);
-    XCTAssertEqualObjects(self.crumbs[0].message, @"Tap button");
-    XCTAssertEqualObjects(self.crumbs[1].message, @"Close tutorial");
+    XCTAssertEqualObjects(self.crumbs[0].metadata[@"message"], @"Tap button");
+    XCTAssertEqualObjects(self.crumbs[1].metadata[@"message"], @"Close tutorial");
     XCTAssertNil(self.crumbs[2]);
 }
 
@@ -69,14 +69,44 @@
     XCTAssertTrue(value.count == 3);
     NSDateFormatter *formatter = [NSDateFormatter new];
     formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssX5";
-    for (NSArray* item in value) {
-        XCTAssertTrue([item isKindOfClass:[NSArray class]]);
-        XCTAssertTrue(item.count == 2);
-        XCTAssertTrue([[formatter dateFromString:item[0]] isKindOfClass:[NSDate class]]);
+    for (int i = 0; i < value.count; i++) {
+        NSDictionary *item = value[i];
+        XCTAssertTrue([item isKindOfClass:[NSDictionary class]]);
+        XCTAssertEqualObjects(item[@"name"], @"manual");
+        XCTAssertEqualObjects(item[@"type"], @"manual");
+        XCTAssertTrue([[formatter dateFromString:item[@"timestamp"]] isKindOfClass:[NSDate class]]);
     }
-    XCTAssertEqualObjects(value[0][1], @"Launch app");
-    XCTAssertEqualObjects(value[1][1], @"Tap button");
-    XCTAssertEqualObjects(value[2][1], @"Close tutorial");
+    XCTAssertEqualObjects(value[0][@"metaData"][@"message"], @"Launch app");
+    XCTAssertEqualObjects(value[1][@"metaData"][@"message"], @"Tap button");
+    XCTAssertEqualObjects(value[2][@"metaData"][@"message"], @"Close tutorial");
+}
+
+- (void)testStateType {
+    BugsnagBreadcrumbs* crumbs = [BugsnagBreadcrumbs new];
+    [crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
+        crumb.type = BSGBreadcrumbTypeState;
+        crumb.name = @"Rotated Menu";
+        crumb.metadata = @{ @"direction": @"right" };
+    }];
+    NSArray* value = [crumbs arrayValue];
+    XCTAssertEqualObjects(value[0][@"metaData"][@"direction"], @"right");
+    XCTAssertEqualObjects(value[0][@"name"], @"Rotated Menu");
+    XCTAssertEqualObjects(value[0][@"type"], @"state");
+}
+
+- (void)testByteSizeLimit {
+    BugsnagBreadcrumbs* crumbs = [BugsnagBreadcrumbs new];
+    [crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
+        crumb.type = BSGBreadcrumbTypeState;
+        crumb.name = @"Rotated Menu";
+        NSMutableDictionary *metadata = @{}.mutableCopy;
+        for (int i = 0; i < 400; i++) {
+            metadata[[NSString stringWithFormat:@"%d", i]] = @"!!";
+        }
+        crumb.metadata = metadata;
+    }];
+    NSArray* value = [crumbs arrayValue];
+    XCTAssertTrue(value.count == 0);
 }
 
 @end

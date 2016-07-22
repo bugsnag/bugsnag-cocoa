@@ -141,14 +141,25 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
     if (self.notifier == nil) {
         NSLog(@"Ensure you have started Bugsnag with startWithApiKey: before calling any other Bugsnag functions.");
 
-        return false;
+        return NO;
     }
-    return true;
+    return YES;
 }
 
 + (void) leaveBreadcrumbWithMessage:(NSString *)message {
-    [self.notifier.configuration.breadcrumbs addBreadcrumb:message];
+    [self leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumbs) {
+        crumbs.metadata = @{ @"message": message };
+    }];
+}
+
++ (void)leaveBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
+    BugsnagBreadcrumbs *crumbs = self.notifier.configuration.breadcrumbs;
+    [crumbs addBreadcrumbWithBlock:block];
     [self.notifier serializeBreadcrumbs];
+}
+
++ (void)leaveBreadcrumbForNotificationName:(NSString *_Nonnull)notificationName {
+  [self.notifier crumbleNotification:notificationName];
 }
 
 + (void) setBreadcrumbCapacity:(NSUInteger)capacity {
