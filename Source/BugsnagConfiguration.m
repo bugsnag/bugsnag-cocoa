@@ -32,6 +32,7 @@
 
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeNotifyHooks;
+@property(nonatomic, readwrite, strong) NSMutableArray *BugsnagBeforeSendBlock;
 @end
 
 @implementation BugsnagConfiguration
@@ -44,6 +45,7 @@
     _autoNotify = true;
     _notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
     _beforeNotifyHooks = [NSMutableArray new];
+    _BugsnagBeforeSendBlock = [NSMutableArray new];
     _notifyReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
 #if DEBUG
@@ -54,6 +56,12 @@
   }
   return self;
 }
+
+- (BOOL)shouldSendReports {
+    return self.notifyReleaseStages.count == 0
+        || [self.notifyReleaseStages containsObject:self.releaseStage];
+}
+
 - (void)setUser:(NSString *)userId
        withName:(NSString *)userName
        andEmail:(NSString *)userEmail {
@@ -62,6 +70,10 @@
   [self.metaData addAttribute:@"email"
                     withValue:userEmail
                 toTabWithName:@"user"];
+}
+
+- (void)addBeforeSendBlock:(BugsnagBeforeSendBlock)block {
+  [(NSMutableArray *)self.beforeSendBlocks addObject:[block copy]];
 }
 
 - (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook)hook {

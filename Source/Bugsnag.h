@@ -76,6 +76,31 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (void)notify:(NSException *_Nonnull)exception;
 
+/**
+ *  Send a custom or caught exception to Bugsnag
+ *
+ *  @param exception The exception
+ *  @param block     A block for optionally configuring the error report
+ */
++ (void)notify:(NSException *_Nonnull)exception
+         block:(BugsnagNotifyBlock _Nullable)block;
+
+/**
+ *  Send an error to Bugsnag
+ *
+ *  @param error The error
+ */
++ (void)notifyError:(NSError *_Nonnull)error;
+
+/**
+ *  Send an error to Bugsnag
+ *
+ *  @param error The error
+ *  @param block A block for optionally configuring the error report
+ */
++ (void)notifyError:(NSError *_Nonnull)error
+              block:(BugsnagNotifyBlock _Nullable)block;
+
 /** Send a custom or caught exception to Bugsnag.
  *
  * The exception will be sent to Bugsnag in the background allowing your
@@ -87,7 +112,8 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * report.
  */
 + (void)notify:(NSException *_Nonnull)exception
-      withData:(NSDictionary *_Nullable)metaData;
+      withData:(NSDictionary *_Nullable)metaData
+    __deprecated_msg("Use notify:block: instead and add the metadata to the report directly.");
 
 /** Send a custom or caught exception to Bugsnag.
  *
@@ -103,7 +129,8 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (void)notify:(NSException *_Nonnull)exception
       withData:(NSDictionary *_Nullable)metaData
-    atSeverity:(NSString *_Nullable)severity;
+    atSeverity:(NSString *_Nullable)severity
+    __deprecated_msg("Use notify:block: instead and add the metadata and severity to the report directly.");
 
 /** Add custom data to send to Bugsnag with every exception. If value is nil,
  *  delete the current value for attributeName
