@@ -9,7 +9,7 @@
 #import <Kiwi/Kiwi.h>
 #import "Bugsnag.h"
 
-#define shouldSoon shouldEventuallyBeforeTimingOutAfter(0.1)
+#define shouldSoon shouldEventuallyBeforeTimingOutAfter(0.2)
 
 @interface BugsnagTestError : NSError
 @end
