@@ -7,10 +7,16 @@ ifeq ($(BUILD_OSX), 1)
  BUILD_FLAGS=-workspace OSX.xcworkspace -scheme Bugsnag
  BUILD_ONLY_FLAGS=CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 else
- PLATFORM=iOS
- RELEASE_DIR=Release-iphoneos
- BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag
- BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5" -configuration Debug
+ ifeq ($(SDK),appletvsimulator9.2)
+  PLATFORM=tvOS
+  BUILD_FLAGS=-workspace tvOS.xcworkspace -scheme Bugsnag
+  BUILD_ONLY_FLAGS=-sdk $(SDK) -configuration Debug
+ else
+  PLATFORM=iOS
+  RELEASE_DIR=Release-iphoneos
+  BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag
+  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5" -configuration Debug
+ endif
 endif
 XCODEBUILD=set -o pipefail && xcodebuild
 VERSION=$(shell cat VERSION)

@@ -70,7 +70,7 @@ NSString *BSGParseErrorClass(NSDictionary *error, NSString *errorType) {
 }
 
 NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSString *errorType) {
-    if ([errorType isEqualToString:@"mach"]) {
+    if ([errorType isEqualToString:@"mach"] || error[@"reason"] == nil) {
         NSString *diagnosis = [report valueForKeyPath:@"crash.diagnosis"];
         if (diagnosis && ![diagnosis hasPrefix:@"No diagnosis"]) {
             return [[diagnosis componentsSeparatedByString:@"\n"] firstObject];

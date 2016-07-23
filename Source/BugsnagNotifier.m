@@ -153,7 +153,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
     [self updateAutomaticBreadcrumbDetectionSettings];
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV
+  [self.details setValue:@"tvOS Bugsnag Notifier" forKey:@"name"];
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
   [self.details setValue:@"iOS Bugsnag Notifier" forKey:@"name"];
 
   [[NSNotificationCenter defaultCenter]
@@ -279,7 +281,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     }
 }
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 - (void)batteryChanged:(NSNotification *)notif {
   NSNumber *batteryLevel =
       [NSNumber numberWithFloat:[UIDevice currentDevice].batteryLevel];
@@ -375,7 +378,16 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 }
 
 - (NSArray <NSString *>*)automaticBreadcrumbStateEvents {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV
+    return @[NSUndoManagerDidUndoChangeNotification,
+             NSUndoManagerDidRedoChangeNotification,
+             UIWindowDidBecomeVisibleNotification,
+             UIWindowDidBecomeHiddenNotification,
+             UIWindowDidBecomeKeyNotification,
+             UIWindowDidResignKeyNotification,
+             UIScreenBrightnessDidChangeNotification,
+             UITableViewSelectionDidChangeNotification];
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     return @[UIWindowDidBecomeHiddenNotification,
              UIWindowDidBecomeVisibleNotification,
              UIApplicationWillTerminateNotification,
@@ -423,7 +435,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 }
 
 - (NSArray <NSString *>*)automaticBreadcrumbMenuItemEvents {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV
+    return @[];
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     return nil;
 #elif TARGET_OS_MAC
     return @[NSMenuWillSendActionNotification];
@@ -453,7 +467,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 }
 
 - (void)sendBreadcrumbForMenuItemNotification:(NSNotification *)notif {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #elif TARGET_OS_MAC
     NSMenuItem *menuItem = [[notif userInfo] valueForKey:@"MenuItem"];
     if ([menuItem isKindOfClass:[NSMenuItem class]]) {
@@ -469,7 +484,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 }
 
 - (void)sendBreadcrumbForControlNotification:(NSNotification *)note {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     UIControl* control = note.object;
     [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
         breadcrumb.type = BSGBreadcrumbTypeUser;
