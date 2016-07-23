@@ -1,6 +1,27 @@
 Changelog
 =========
 
+## 5.4.0 (22 Jul 2016)
+
+### Enhancements
+
+* Add support for automated breadcrumb collection for common events and the new
+  breadcrumbs API
+  [#112](https://github.com/bugsnag/bugsnag-cocoa/pull/112)
+
+* Add support for Apple TV
+  [#113](https://github.com/bugsnag/bugsnag-cocoa/pull/113)
+
+* Add ability to customize error reports via `notify:withBlock`
+  [#110](https://github.com/bugsnag/bugsnag-cocoa/pull/110)
+
+* Add support for sending reports for `NSError` instances via `notifyError:`
+  and `notifyError:withBlock:`
+  [#110](https://github.com/bugsnag/bugsnag-cocoa/pull/110)
+
+* Add crash time to the "Device" tab of error reports
+  [#110](https://github.com/bugsnag/bugsnag-cocoa/pull/110)
+
 ## 5.3.0 (15 Jul 2016)
 
 ### Bug fixes
