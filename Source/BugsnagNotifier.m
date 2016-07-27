@@ -88,6 +88,11 @@ void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer) {
     }
 }
 
+NSString *BSGBreadcrumbNameForNotificationName(NSString *name) {
+    return [name stringByReplacingOccurrencesOfString:@"Notification"
+                                           withString:@""];
+}
+
 /**
  *  Writes a dictionary to a destination using the KSCrash JSON encoding
  *
@@ -235,12 +240,22 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     [self.metaDataLock unlock];
     [self metaDataChanged:self.configuration.metaData];
     [[self state] clearTab:BSTabCrash];
-    [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
       crumb.type = BSGBreadcrumbTypeError;
       crumb.name = exceptionName;
     }];
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
+}
+
+- (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
+    [self.configuration.breadcrumbs addBreadcrumbWithBlock:block];
+    [self serializeBreadcrumbs];
+}
+
+- (void)clearBreadcrumbs {
+    [self.configuration.breadcrumbs clearBreadcrumbs];
+    [self serializeBreadcrumbs];
 }
 
 - (void) serializeBreadcrumbs {
@@ -327,9 +342,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                    withValue:orientation
                toTabWithName:@"deviceState"];
   if ([self.configuration automaticallyCollectBreadcrumbs]) {
-    [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeState;
-      breadcrumb.name = [self breadcrumbNameForNotificationName:notif.name];
+      breadcrumb.name = BSGBreadcrumbNameForNotificationName(notif.name);
       breadcrumb.metadata = @{ @"orientation" : orientation };
     }];
   }
@@ -459,11 +474,10 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 }
 
 - (void)sendBreadcrumbForNotification:(NSNotification *)note {
-  [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+  [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
     breadcrumb.type = BSGBreadcrumbTypeState;
-    breadcrumb.name = [self breadcrumbNameForNotificationName:note.name];
+    breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
   }];
-  [self serializeBreadcrumbs];
 }
 
 - (void)sendBreadcrumbForMenuItemNotification:(NSNotification *)notif {
@@ -472,10 +486,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 #elif TARGET_OS_MAC
     NSMenuItem *menuItem = [[notif userInfo] valueForKey:@"MenuItem"];
     if ([menuItem isKindOfClass:[NSMenuItem class]]) {
-        [Bugsnag
-         leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+        [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
              breadcrumb.type = BSGBreadcrumbTypeState;
-             breadcrumb.name = [self breadcrumbNameForNotificationName:notif.name];
+             breadcrumb.name = BSGBreadcrumbNameForNotificationName(notif.name);
              if (menuItem.title.length > 0)
                  breadcrumb.metadata = @{ @"action" : menuItem.title };
          }];
@@ -487,9 +500,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 #if TARGET_OS_TV
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     UIControl* control = note.object;
-    [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
         breadcrumb.type = BSGBreadcrumbTypeUser;
-        breadcrumb.name = [self breadcrumbNameForNotificationName:note.name];
+        breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
         NSString *label = control.accessibilityLabel;
         if (label.length > 0) {
             breadcrumb.metadata = @{ @"label": label };
@@ -497,20 +510,15 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     }];
 #elif TARGET_OS_MAC
     NSControl *control = note.object;
-    [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
         breadcrumb.type = BSGBreadcrumbTypeUser;
-        breadcrumb.name = [self breadcrumbNameForNotificationName:note.name];
+        breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
         NSString *label = control.accessibilityLabel;
         if (label.length > 0) {
             breadcrumb.metadata = @{ @"label": label };
         }
     }];
 #endif
-}
-
-- (NSString *)breadcrumbNameForNotificationName:(NSString *)name {
-  return [name stringByReplacingOccurrencesOfString:@"Notification"
-                                         withString:@""];
 }
 
 @end

@@ -71,9 +71,16 @@
               block:(BugsnagNotifyBlock _Nullable)block;
 
 /**
- *  Write breadcrumbs to the cached metadata for error reports
+ *  Add a breadcrumb
+ *
+ *  @param block configuration block
  */
-- (void)serializeBreadcrumbs;
+- (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
+
+/**
+ * Clear all stored breadcrumbs.
+ */
+- (void)clearBreadcrumbs;
 
 /**
  *  Listen for notifications and attach breadcrumbs when received

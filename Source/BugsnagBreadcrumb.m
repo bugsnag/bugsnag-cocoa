@@ -53,7 +53,7 @@ NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
 @interface BugsnagBreadcrumbs()
 
 @property (nonatomic,readwrite,strong) NSMutableArray* breadcrumbs;
-
+@property (nonatomic,readonly,strong) NSLock* lock;
 @end
 
 @interface BugsnagBreadcrumb ()
@@ -112,6 +112,7 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
     if (self = [super init]) {
         _breadcrumbs = [NSMutableArray new];
         _capacity = BreadcrumbsDefaultCapacity;
+        _lock = [NSLock new];
     }
     return self;
 }
@@ -123,19 +124,19 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
 }
 
 - (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
-    NSAssert([[NSThread currentThread] isMainThread], @"Breadcrumbs must be mutated on the main thread.");
     if (self.capacity == 0) {
         return;
     }
     BugsnagBreadcrumb* crumb = [BugsnagBreadcrumb breadcrumbWithBlock:block];
     if (crumb) {
         [self resizeToFitCapacity:self.capacity - 1];
+        [self.lock lock];
         [self.breadcrumbs addObject:crumb];
+        [self.lock unlock];
     }
 }
 
 - (void)setCapacity:(NSUInteger)capacity {
-    NSAssert([[NSThread currentThread] isMainThread], @"Breadcrumbs must be mutated on the main thread.");
     if (capacity == _capacity) {
         return;
     }
@@ -146,8 +147,9 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
 }
 
 - (void)clearBreadcrumbs {
-    NSAssert([[NSThread currentThread] isMainThread], @"Breadcrumbs must be mutated on the main thread.");
+    [self.lock lock];
     [self.breadcrumbs removeAllObjects];
+    [self.lock unlock];
 }
 
 - (NSUInteger)count {
@@ -156,7 +158,10 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
 
 - (BugsnagBreadcrumb *)objectAtIndexedSubscript:(NSUInteger)index {
     if (index < [self count]) {
-        return self.breadcrumbs[index];
+        [self.lock lock];
+        BugsnagBreadcrumb *crumb = self.breadcrumbs[index];
+        [self.lock unlock];
+        return crumb;
     }
     return nil;
 }
@@ -166,6 +171,7 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
         return nil;
     }
     NSMutableArray* contents = [[NSMutableArray alloc] initWithCapacity:[self count]];
+    [self.lock lock];
     for (BugsnagBreadcrumb* crumb in self.breadcrumbs) {
         NSDictionary *objectValue = [crumb objectValue];
         NSError *error = nil;
@@ -179,6 +185,7 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
             NSLog(@"Unable to serialize breadcrumb for Bugsnag: %@", error);
         }
     }
+    [self.lock unlock];
     return contents;
 }
 
@@ -187,9 +194,11 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
         [self clearBreadcrumbs];
         return;
     }
+    [self.lock lock];
     while ([self count] > capacity) {
         [self.breadcrumbs removeObjectAtIndex:0];
     }
+    [self.lock unlock];
 }
 
 @end
