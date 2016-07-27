@@ -231,8 +231,10 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     BSSerializeJSONDictionary(report.overrides, &g_bugsnag_data.userOverridesJSON);
     [self.state addAttribute:BSAttributeSeverity withValue:BSGFormatSeverity(report.severity) toTabWithName:BSTabCrash];
     [self.state addAttribute:BSAttributeDepth withValue:@(report.depth + 3) toTabWithName:BSTabCrash];
-    [[KSCrash sharedInstance] reportUserException:report.errorClass ?: NSStringFromClass([NSException class])
-                                           reason:report.errorMessage ?: @""
+    NSString *reportName = report.errorClass ?: NSStringFromClass([NSException class]);
+    NSString *reportMessage = report.errorMessage ?: @"";
+    [[KSCrash sharedInstance] reportUserException:reportName
+                                           reason:reportMessage
                                          language:NULL lineOfCode:@""
                                        stackTrace:@[]
                                  terminateProgram:NO];
@@ -242,7 +244,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     [[self state] clearTab:BSTabCrash];
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
       crumb.type = BSGBreadcrumbTypeError;
-      crumb.name = exceptionName;
+      crumb.name = reportName;
+      crumb.metadata = @{ @"message": reportMessage, @"severity": BSGFormatSeverity(report.severity) };
     }];
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
@@ -381,9 +384,10 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
              object:nil];
         }
     } else {
-        NSArray* eventNames = [[[self automaticBreadcrumbStateEvents]
+        NSArray* eventNames = [[[[self automaticBreadcrumbStateEvents]
           arrayByAddingObjectsFromArray:[self automaticBreadcrumbControlEvents]]
-          arrayByAddingObjectsFromArray:[self automaticBreadcrumbMenuItemEvents]];
+          arrayByAddingObjectsFromArray:[self automaticBreadcrumbMenuItemEvents]]
+          arrayByAddingObjectsFromArray:[self automaticBreadcrumbTableItemEvents]];
         for (NSString *name in eventNames) {
             [[NSNotificationCenter defaultCenter] removeObserver:self
                                                             name:name
@@ -400,8 +404,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
              UIWindowDidBecomeHiddenNotification,
              UIWindowDidBecomeKeyNotification,
              UIWindowDidResignKeyNotification,
-             UIScreenBrightnessDidChangeNotification,
-             UITableViewSelectionDidChangeNotification];
+             UIScreenBrightnessDidChangeNotification];
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     return @[UIWindowDidBecomeHiddenNotification,
              UIWindowDidBecomeVisibleNotification,
@@ -414,8 +417,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
              UIMenuControllerDidShowMenuNotification,
              UIMenuControllerDidHideMenuNotification,
              NSUndoManagerDidUndoChangeNotification,
-             NSUndoManagerDidRedoChangeNotification,
-             UITableViewSelectionDidChangeNotification];
+             NSUndoManagerDidRedoChangeNotification];
 #elif TARGET_OS_MAC
     return @[NSApplicationDidBecomeActiveNotification,
              NSApplicationDidResignActiveNotification,
@@ -428,8 +430,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
              NSWindowDidBecomeKeyNotification,
              NSWindowWillMiniaturizeNotification,
              NSWindowDidEnterFullScreenNotification,
-             NSWindowDidExitFullScreenNotification,
-             NSTableViewSelectionDidChangeNotification];
+             NSWindowDidExitFullScreenNotification];
 #else
     return nil;
 #endif
@@ -444,6 +445,16 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 #elif TARGET_OS_MAC
     return @[NSControlTextDidBeginEditingNotification,
              NSControlTextDidEndEditingNotification];
+#else
+    return nil;
+#endif
+}
+
+- (NSArray <NSString *>*)automaticBreadcrumbTableItemEvents {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE || TARGET_OS_TV
+    return @[UITableViewSelectionDidChangeNotification];
+#elif TARGET_OS_MAC
+    return @[NSTableViewSelectionDidChangeNotification];
 #else
     return nil;
 #endif
@@ -478,6 +489,35 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     breadcrumb.type = BSGBreadcrumbTypeState;
     breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
   }];
+}
+
+- (void)sendBreadcrumbForTableViewNotification:(NSNotification *)note {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE || TARGET_OS_TV
+    UITableView *tableView = [note object];
+    NSIndexPath *indexPath = [tableView indexPathForSelectedRow];
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+        breadcrumb.type = BSGBreadcrumbTypeNavigation;
+        breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
+        if (indexPath) {
+            breadcrumb.metadata = @{
+                @"row": @(indexPath.row),
+                @"section": @(indexPath.section)
+            };
+        }
+    }];
+#elif TARGET_OS_MAC
+    NSTableView *tableView = [note object];
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+        breadcrumb.type = BSGBreadcrumbTypeNavigation;
+        breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
+        if (tableView) {
+            breadcrumb.metadata = @{
+                @"selectedRow": @(tableView.selectedRow),
+                @"selectedColumn": @(tableView.selectedColumn)
+            };
+        }
+    }];
+#endif
 }
 
 - (void)sendBreadcrumbForMenuItemNotification:(NSNotification *)notif {
