@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## 5.4.1 (27 Jul 2016)
+
+### Bug fixes
+
+* Fix breadcrumb type for table events
+* Add error message and severity to error breadcrumbs
+* Make breadcrumbs accessible from background queues
+
 ## 5.4.0 (22 Jul 2016)
 
 ### Enhancements
