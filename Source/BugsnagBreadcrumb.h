@@ -87,8 +87,7 @@ typedef void(^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 @interface BugsnagBreadcrumbs : NSObject
 
 /**
- * The maximum number of breadcrumbs. Resizable. Must be called from the
- * main thread.
+ * The maximum number of breadcrumbs. Resizable.
  */
 @property(assign, nonatomic, readwrite) NSUInteger capacity;
 
@@ -96,8 +95,7 @@ typedef void(^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 @property(assign, readonly) NSUInteger count;
 
 /**
- * Store a new breadcrumb with a provided message. Must be called from the
- * main thread.
+ * Store a new breadcrumb with a provided message.
  */
 - (void)addBreadcrumb:(NSString *_Nonnull)breadcrumbMessage;
 
@@ -110,7 +108,7 @@ typedef void(^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 - (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
 
 /**
- * Clear all stored breadcrumbs. Must be called from the main thread.
+ * Clear all stored breadcrumbs.
  */
 - (void)clearBreadcrumbs;
 

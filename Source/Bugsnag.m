@@ -153,9 +153,7 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
 }
 
 + (void)leaveBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
-    BugsnagBreadcrumbs *crumbs = self.notifier.configuration.breadcrumbs;
-    [crumbs addBreadcrumbWithBlock:block];
-    [self.notifier serializeBreadcrumbs];
+    [self.notifier addBreadcrumbWithBlock:block];
 }
 
 + (void)leaveBreadcrumbForNotificationName:(NSString *_Nonnull)notificationName {
@@ -167,8 +165,7 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
 }
 
 + (void) clearBreadcrumbs {
-    [self.notifier.configuration.breadcrumbs clearBreadcrumbs];
-    [self.notifier serializeBreadcrumbs];
+    [self.notifier clearBreadcrumbs];
 }
 
 + (NSDateFormatter *)payloadDateFormatter {
