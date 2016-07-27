@@ -59,9 +59,4 @@ test: $(KSCRASH_DEP)
 
 archive: build/Bugsnag-$(PLATFORM)-$(VERSION).zip
 
-release:
-	@$(MAKE) archive
-	@$(MAKE) BUILD_OSX=1 archive
-	@open build
-	@open 'https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v'$(VERSION)
 
