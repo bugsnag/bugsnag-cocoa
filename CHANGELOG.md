@@ -20,11 +20,11 @@ Changelog
 * Add support for Apple TV
   [#113](https://github.com/bugsnag/bugsnag-cocoa/pull/113)
 
-* Add ability to customize error reports via `notify:withBlock`
+* Add ability to customize error reports via `notify:block`
   [#110](https://github.com/bugsnag/bugsnag-cocoa/pull/110)
 
 * Add support for sending reports for `NSError` instances via `notifyError:`
-  and `notifyError:withBlock:`
+  and `notifyError:block:`
   [#110](https://github.com/bugsnag/bugsnag-cocoa/pull/110)
 
 * Add crash time to the "Device" tab of error reports
