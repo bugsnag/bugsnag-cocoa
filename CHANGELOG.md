@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 5.4.2 (17 Aug 2016)
+
+### Bug fixes
+
+* Fix a condition where bug reports would be sent multiple times
+
+
 ## 5.4.1 (27 Jul 2016)
 
 ### Bug fixes
