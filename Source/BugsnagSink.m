@@ -120,12 +120,17 @@
         request.HTTPMethod = @"POST";
         request.HTTPBody = jsonData;
 
-        [NSURLConnection sendAsynchronousRequest:request
-                                           queue:[NSOperationQueue currentQueue]
-                               completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
-                                   if (onCompletion)
-                                       onCompletion(reports, connectionError == nil, connectionError);
-                               }];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        NSURLResponse *response = nil;
+        [NSURLConnection sendSynchronousRequest:request
+                              returningResponse:&response
+                                          error:&error];
+#pragma clang diagnostic pop
+
+        if (onCompletion) {
+            onCompletion(reports, error == nil, error);
+        }
     } @catch (NSException *exception) {
         if (onCompletion) {
             onCompletion(reports, NO, [NSError errorWithDomain:exception.reason
