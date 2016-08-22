@@ -39,10 +39,8 @@ describe(@"Bugsnag", ^{
     };
 
     beforeEach(^{
-        [NSURLConnection stub:@selector(sendAsynchronousRequest:queue:completionHandler:) withBlock:^id(NSArray *params) {
+        [NSURLConnection stub:@selector(sendSynchronousRequest:returningResponse:error:) withBlock:^id(NSArray *params) {
             request = [params firstObject];
-            void (^block)(NSURLResponse *, NSData *, NSError *) = [params lastObject];
-            block(nil, nil, nil);
             return nil;
         }];
     });
