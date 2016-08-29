@@ -76,7 +76,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
             return [[diagnosis componentsSeparatedByString:@"\n"] firstObject];
         }
     }
-    return error[@"reason"];
+    return error[@"reason"] ?: @"";
 }
 
 NSDictionary *BSGParseDevice(NSDictionary *report) {
@@ -201,6 +201,19 @@ NSString *BSGFormatSeverity(BSGSeverity severity) {
     }
 }
 
+NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass, NSString *message) {
+    id frames = [report valueForKeyPath:@"user.overrides.customStacktraceFrames"];
+    id type = [report valueForKeyPath:@"user.overrides.customStacktraceType"];
+    if (type && frames) {
+        return @{ @"stacktrace": frames,
+                  @"type": type,
+                  @"errorClass": errorClass,
+                  @"message": message};
+    }
+
+    return nil;
+}
+
 @interface BugsnagCrashReport ()
 
 /**
@@ -243,6 +256,10 @@ NSString *BSGFormatSeverity(BSGSeverity severity) {
  *  Device state such as oreground status and run duration
  */
 @property (nonatomic, readwrite, copy, nullable) NSDictionary *appState;
+/**
+ *  User-provided exception metadata
+ */
+@property (nonatomic, readwrite, copy, nullable) NSDictionary *customException;
 @end
 
 @implementation BugsnagCrashReport
@@ -270,6 +287,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity) {
       _appState = BSGParseAppState(report);
       _groupingHash = BSGParseGroupingHash(report, _metaData);
       _overrides = [report valueForKeyPath:@"user.overrides"];
+      _customException = BSGParseCustomException(report, [_errorClass copy], [_errorMessage copy]);
   }
   return self;
 }
@@ -318,6 +336,11 @@ NSString *BSGFormatSeverity(BSGSeverity severity) {
     _releaseStage = releaseStage;
 }
 
+- (void)attachCustomStacktrace:(NSArray *)frames withType:(NSString *)type {
+    [self setOverrideProperty:@"customStacktraceFrames" value:frames];
+    [self setOverrideProperty:@"customStacktraceType" value:type];
+}
+
 - (void)setOverrideProperty:(NSString *)key value:(id)value {
     NSMutableDictionary *metadata = [self.overrides mutableCopy];
     if (value) {
@@ -330,12 +353,38 @@ NSString *BSGFormatSeverity(BSGSeverity severity) {
 
 - (NSDictionary *)serializableValueWithTopLevelData:
     (NSMutableDictionary *)data {
+  NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
   NSMutableDictionary *event = [NSMutableDictionary dictionary];
-  NSMutableDictionary *exception = [NSMutableDictionary dictionary];
   NSMutableDictionary *metaData = [[self metaData] mutableCopy];
 
+  if (self.customException) {
+      BSGDictSetSafeObject(event, @[self.customException], @"exceptions");
+      BSGDictSetSafeObject(event,
+                           [self serializeThreadsWithException:nil],
+                           @"threads");
+  } else {
+      NSMutableDictionary *exception = [NSMutableDictionary dictionary];
+      BSGDictSetSafeObject(exception, [self errorClass], @"errorClass");
+      BSGDictInsertIfNotNil(exception, [self errorMessage], @"message");
+      BSGDictInsertIfNotNil(exception, DEFAULT_EXCEPTION_TYPE, @"type");
+      BSGDictSetSafeObject(event, @[exception], @"exceptions");
+
+      // HACK: For the Unity Notifier. We don't include ObjectiveC exceptions or
+      // threads
+      // if this is an exception from Unity-land.
+      NSDictionary *unityReport = metaData[@"_bugsnag_unity_exception"];
+      if (unityReport) {
+          BSGDictSetSafeObject(data, unityReport[@"notifier"], @"notifier");
+          BSGDictSetSafeObject(exception, unityReport[@"stacktrace"], @"stacktrace");
+          [metaData removeObjectForKey:@"_bugsnag_unity_exception"];
+          return event;
+      }
+
+      BSGDictSetSafeObject(event,
+                           [self serializeThreadsWithException:exception],
+                           @"threads");
+  }
   // Build Event
-  BSGDictSetSafeObject(event, @[ exception ], @"exceptions");
   BSGDictInsertIfNotNil(event, [self dsymUUID], @"dsymUUID");
   BSGDictSetSafeObject(event, BSGFormatSeverity(self.severity), @"severity");
   BSGDictSetSafeObject(event, [self breadcrumbs], @"breadcrumbs");
@@ -363,23 +412,6 @@ NSString *BSGFormatSeverity(BSGSeverity severity) {
     BSGDictSetSafeObject(user, [self deviceAppHash], @"id");
   }
 
-  // Build Exception
-  BSGDictSetSafeObject(exception, [self errorClass], @"errorClass");
-  BSGDictInsertIfNotNil(exception, [self errorMessage], @"message");
-
-  // HACK: For the Unity Notifier. We don't include ObjectiveC exceptions or
-  // threads
-  // if this is an exception from Unity-land.
-  NSDictionary *unityReport = metaData[@"_bugsnag_unity_exception"];
-  if (unityReport) {
-    BSGDictSetSafeObject(data, unityReport[@"notifier"], @"notifier");
-    BSGDictSetSafeObject(exception, unityReport[@"stacktrace"], @"stacktrace");
-    [metaData removeObjectForKey:@"_bugsnag_unity_exception"];
-    return event;
-  }
-
-  BSGDictSetSafeObject(event, [self serializeThreadsWithException:exception],
-                       @"threads");
   return event;
 }
 

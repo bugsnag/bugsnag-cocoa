@@ -81,6 +81,12 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
 - (BOOL)shouldBeSent;
 
 /**
+ *  Prepend a custom stacktrace with a provided type to the crash report
+ */
+- (void)attachCustomStacktrace:(NSArray *_Nonnull)frames
+                      withType:(NSString *_Nonnull)type;
+
+/**
  *  The release stages used to notify at the time this report is captured
  */
 @property (nonatomic, readwrite, copy, nullable) NSArray *notifyReleaseStages;
