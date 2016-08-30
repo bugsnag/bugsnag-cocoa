@@ -153,7 +153,7 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
 - (BOOL)shouldSendReports;
 
 - (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook _Nonnull)hook
-    __deprecated_msg("Use addBeforeNotifyBlock: instead.");
+    __deprecated_msg("Use addBeforeSendBlock: instead.");
 /**
  *  Hooks for processing raw report data before it is sent to Bugsnag
  */
