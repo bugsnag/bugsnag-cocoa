@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 5.5.0 (14 Sep 2016)
+
+### Enhancements
+
+* Add "Require Only App-Extension-Safe API" flag for iOS App Extension support
+* Send requests via NSURLSession by default
+
 ## 5.4.2 (17 Aug 2016)
 
 ### Bug fixes
