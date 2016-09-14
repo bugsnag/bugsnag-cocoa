@@ -7,7 +7,9 @@
 //
 
 #import <Kiwi/Kiwi.h>
+#import <KSCrash/KSCrash.h>
 #import "Bugsnag.h"
+#import "BugsnagSink.h"
 
 #define shouldSoon shouldEventuallyBeforeTimingOutAfter(0.2)
 
@@ -26,9 +28,10 @@ beforeAll(^{
 describe(@"Bugsnag", ^{
 
     __block NSURLRequest *request;
+    __block NSData *httpBody;
 
     id(^requestEventKeyPath)(NSString *) = ^id(NSString *keyPath) {
-        NSDictionary *body = [NSJSONSerialization JSONObjectWithData:[request HTTPBody] options:0 error:nil];
+        NSDictionary *body = [NSJSONSerialization JSONObjectWithData:httpBody options:0 error:nil];
         NSDictionary *event = [body valueForKeyPath:@"events.@firstObject"];
         return [event valueForKeyPath:keyPath];
     };
@@ -39,14 +42,20 @@ describe(@"Bugsnag", ^{
     };
 
     beforeEach(^{
-        [NSURLConnection stub:@selector(sendSynchronousRequest:returningResponse:error:) withBlock:^id(NSArray *params) {
+        BugsnagSink *sink = [[KSCrash sharedInstance] valueForKeyPath:@"sink"];
+        NSURLSession *session = [sink valueForKeyPath:@"session"];
+        [session stub:@selector(uploadTaskWithRequest:fromData:completionHandler:) withBlock:^id(NSArray *params) {
             request = [params firstObject];
+            httpBody = params[1];
+            void (^handler)(NSData *, NSURLResponse *, NSError *) = [params lastObject];
+            handler(nil, nil, nil);
             return nil;
         }];
     });
 
     afterEach(^{
         request = nil;
+        httpBody = nil;
     });
 
     describe(@"notify:", ^{

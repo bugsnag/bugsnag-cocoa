@@ -37,7 +37,18 @@
 + (BugsnagNotifier*)notifier;
 @end
 
+@interface BugsnagSink ()
+@property (nonatomic, strong) NSURLSession *session;
+@end
+
 @implementation BugsnagSink
+
+- (instancetype)init {
+    if (self = [super init])
+        _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    
+    return self;
+}
 
 // Entry point called by KSCrash when a report needs to be sent. Handles report filtering based on the configuration
 // options for `notifyReleaseStages`.
@@ -118,18 +129,26 @@
                                                                cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
                                                            timeoutInterval: 15];
         request.HTTPMethod = @"POST";
-        request.HTTPBody = jsonData;
 
+
+        if ([NSURLSession class]) {
+            NSURLSessionTask *task = [self.session uploadTaskWithRequest:request fromData:jsonData completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                if (onCompletion)
+                    onCompletion(reports, error == nil, error);
+            }];
+            [task resume];
+        } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        NSURLResponse *response = nil;
-        [NSURLConnection sendSynchronousRequest:request
-                              returningResponse:&response
-                                          error:&error];
+            NSURLResponse *response = nil;
+            request.HTTPBody = jsonData;
+            [NSURLConnection sendSynchronousRequest:request
+                                  returningResponse:&response
+                                              error:&error];
+            if (onCompletion) {
+                onCompletion(reports, error == nil, error);
+            }
 #pragma clang diagnostic pop
-
-        if (onCompletion) {
-            onCompletion(reports, error == nil, error);
         }
     } @catch (NSException *exception) {
         if (onCompletion) {
