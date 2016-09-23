@@ -72,7 +72,9 @@
 
 - (void)testNotifierName {
   NSString *name = self.processedData[@"notifier"][@"name"];
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV
+  XCTAssertEqualObjects(name, @"tvOS Bugsnag Notifier");
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
   XCTAssertEqualObjects(name, @"iOS Bugsnag Notifier");
 #else
   XCTAssertEqualObjects(name, @"OSX Bugsnag Notifier");
@@ -127,7 +129,7 @@
 
 - (void)testEventPayloadVersion {
   NSString *payloadVersion = [self.processedData[@"events"] firstObject][@"payloadVersion"];
-  XCTAssertEqualObjects(payloadVersion, @"2");
+  XCTAssertEqualObjects(payloadVersion, @"3");
 }
 
 - (void)testEventSeverity {
@@ -169,6 +171,11 @@
   id address =
       [[self.processedData[@"events"] firstObject] valueForKeyPath:@"metaData.error.address"];
   XCTAssertEqualObjects(address, @0);
+}
+
+- (void)testTimestamp {
+    id timestamp = [[self.processedData[@"events"] firstObject] valueForKeyPath:@"deviceState.time"];
+    XCTAssertEqualObjects(timestamp, @"2014-12-02T01:56:13Z");
 }
 
 - (void)testEventMetadataErrorType {

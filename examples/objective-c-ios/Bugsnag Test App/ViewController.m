@@ -52,8 +52,10 @@
     [Bugsnag leaveBreadcrumbWithMessage:@"generate non-fatal exception"];
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     [data setObject: data forKey: @"data"];
-    
-    [Bugsnag notify:[NSException exceptionWithName:@"wat" reason:nil userInfo:nil] withData:@{@"tab": @{@"user": @"rar\"watrar"}}];
+
+    [Bugsnag notify:[NSException exceptionWithName:@"wat" reason:nil userInfo:nil] block:^(BugsnagCrashReport * _Nonnull report) {
+        report.metaData = @{@"tab": @{@"user": @"rar\"watrar"}};
+    }];
 }
 
 - (IBAction)objectiveCLockSignal:(id)sender {

@@ -76,6 +76,31 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (void)notify:(NSException *_Nonnull)exception;
 
+/**
+ *  Send a custom or caught exception to Bugsnag
+ *
+ *  @param exception The exception
+ *  @param block     A block for optionally configuring the error report
+ */
++ (void)notify:(NSException *_Nonnull)exception
+         block:(BugsnagNotifyBlock _Nullable)block;
+
+/**
+ *  Send an error to Bugsnag
+ *
+ *  @param error The error
+ */
++ (void)notifyError:(NSError *_Nonnull)error;
+
+/**
+ *  Send an error to Bugsnag
+ *
+ *  @param error The error
+ *  @param block A block for optionally configuring the error report
+ */
++ (void)notifyError:(NSError *_Nonnull)error
+              block:(BugsnagNotifyBlock _Nullable)block;
+
 /** Send a custom or caught exception to Bugsnag.
  *
  * The exception will be sent to Bugsnag in the background allowing your
@@ -87,7 +112,8 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * report.
  */
 + (void)notify:(NSException *_Nonnull)exception
-      withData:(NSDictionary *_Nullable)metaData;
+      withData:(NSDictionary *_Nullable)metaData
+    __deprecated_msg("Use notify:block: instead and add the metadata to the report directly.");
 
 /** Send a custom or caught exception to Bugsnag.
  *
@@ -103,7 +129,8 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (void)notify:(NSException *_Nonnull)exception
       withData:(NSDictionary *_Nullable)metaData
-    atSeverity:(NSString *_Nullable)severity;
+    atSeverity:(NSString *_Nullable)severity
+    __deprecated_msg("Use notify:block: instead and add the metadata and severity to the report directly.");
 
 /** Add custom data to send to Bugsnag with every exception. If value is nil,
  *  delete the current value for attributeName
@@ -128,24 +155,39 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 /**
  * Leave a "breadcrumb" log message, representing an action that occurred
- * in your app, to aid with debugging. Must be called from the main thread.
+ * in your app, to aid with debugging.
  *
  * @param message  the log message to leave (max 140 chars)
  */
 + (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message;
 
 /**
+ *  Leave a "breadcrumb" log message with additional information about the
+ *  environment at the time the breadcrumb was captured.
+ *
+ *  @param block configuration block
+ */
++ (void)leaveBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
+
+/**
+ *  Leave a "breadcrumb" log message each time a notification with a provided
+ *  name is received by the application
+ *
+ *  @param notificationName name of the notification to capture
+ */
++ (void)leaveBreadcrumbForNotificationName:(NSString *_Nonnull)notificationName;
+
+/**
  * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.
  * By default, we'll keep and send the 20 most recent breadcrumb log
- * messages. Must be called from the main thread.
+ * messages.
  *
  * @param max  number of breadcrumb log messages to send
  */
 + (void)setBreadcrumbCapacity:(NSUInteger)capacity;
 
 /**
- * Clear any breadcrumbs that have been left so far. Must be called from
- * the main thread.
+ * Clear any breadcrumbs that have been left so far.
  */
 + (void)clearBreadcrumbs;
 
