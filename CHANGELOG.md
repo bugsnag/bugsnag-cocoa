@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 5.6.0 (26 Sep 2016)
+
+### Enhancements
+
+* Add support for attaching a custom stacktrace to an error report
+* Upgrade required version of KSCrash
+
 ## 5.5.0 (14 Sep 2016)
 
 ### Enhancements
