@@ -214,6 +214,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
     return nil;
 }
 
+static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
+
 @interface BugsnagCrashReport ()
 
 /**
@@ -353,7 +355,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
 
 - (NSDictionary *)serializableValueWithTopLevelData:
     (NSMutableDictionary *)data {
-  NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
   NSMutableDictionary *event = [NSMutableDictionary dictionary];
   NSMutableDictionary *metaData = [[self metaData] mutableCopy];
 
@@ -455,6 +456,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
       NSMutableDictionary *threadDict = [NSMutableDictionary dictionary];
       BSGDictSetSafeObject(threadDict, thread[@"index"], @"id");
       BSGDictSetSafeObject(threadDict, threadStack, @"stacktrace");
+      BSGDictSetSafeObject(threadDict, DEFAULT_EXCEPTION_TYPE, @"type");
       // only if this is enabled in KSCrash.
       if (thread[@"name"]) {
         BSGDictSetSafeObject(threadDict, thread[@"name"], @"name");
