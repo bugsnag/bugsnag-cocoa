@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 5.6.1 (05 Oct 2016)
+
+### Miscellaneous
+
+* Include thread type in payload to match new payload specification
+
 ## 5.6.0 (26 Sep 2016)
 
 ### Enhancements
