@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 5.6.2 (10 Oct 2016)
+
+### Bug fixes
+
+* Update imports to be compatible with KSCrash 1.8.8+
+* Lock KSCrash dependency to 1.8.13 to reduce instability
+
 ## 5.6.1 (05 Oct 2016)
 
 ### Miscellaneous
