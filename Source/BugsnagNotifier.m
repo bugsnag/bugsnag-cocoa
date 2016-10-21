@@ -25,6 +25,7 @@
 //
 
 #import <KSCrash/KSCrashAdvanced.h>
+#import <KSCrash/KSCrashC.h>
 
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumb.h"
@@ -152,9 +153,10 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     [KSCrash sharedInstance].deleteBehaviorAfterSendAll = KSCDeleteOnSucess;
     [KSCrash sharedInstance].onCrash = &BSSerializeDataCrashHandler;
 
-    if (configuration.autoNotify) {
-        [[KSCrash sharedInstance] install];
+    if (!configuration.autoNotify) {
+        kscrash_setHandlingCrashTypes(KSCrashTypeUserReported);
     }
+    [[KSCrash sharedInstance] install];
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
     [self updateAutomaticBreadcrumbDetectionSettings];
