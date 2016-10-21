@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 5.6.3 (21 Oct 2016)
+
+### Bug fixes
+
+* Fix `autoNotify`: Disabling unhandled exception capturing only sends
+  user-reported exceptions via `Bugsnag.notify()`
+
 ## 5.6.2 (10 Oct 2016)
 
 ### Bug fixes
