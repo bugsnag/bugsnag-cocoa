@@ -7,15 +7,28 @@
 //
 
 #import "AppDelegate.h"
-#import "Bugsnag.h"
+#import <Bugsnag/Bugsnag.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [Bugsnag startBugsnagWithApiKey:@"API-KEY"];
-
+    [self startBugsnagWithAPIKey];
+    //[self startBugsnagWithConfiguration];
     return YES;
 }
 
+- (void)startBugsnagWithConfiguration {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    config.apiKey = @"API-KEY";
+    config.releaseStage = @"production";
+    config.notifyReleaseStages = @[@"production"];
+    [Bugsnag startBugsnagWithConfiguration:config];
+}
+
+- (void)startBugsnagWithAPIKey {
+    [Bugsnag startBugsnagWithApiKey:@"API-KEY"];
+    [Bugsnag configuration].releaseStage = @"production";
+    [Bugsnag configuration].notifyReleaseStages = @[@"production"];
+}
 @end
