@@ -6,6 +6,7 @@
 //
 //
 
+#import "Bugsnag.h"
 #import "BugsnagCrashReport.h"
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
@@ -35,13 +36,41 @@
   self.report = nil;
 }
 
-- (void)testReleaseStage {
+- (void)testReadReleaseStage {
   XCTAssertEqualObjects(self.report.releaseStage, @"production");
 }
 
-- (void)testNotifyReleaseStages {
+- (void)testReadNotifyReleaseStages {
   XCTAssertEqualObjects(self.report.notifyReleaseStages,
                         (@[ @"production", @"development" ]));
+}
+
+- (void)testReadNotifyReleaseStagesSends {
+    XCTAssertTrue([self.report shouldBeSent]);
+}
+
+- (void)testNotifyReleaseStagesSendsFromConfig {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    config.notifyReleaseStages = @[@"foo"];
+    config.releaseStage = @"foo";
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
+                                                                  errorMessage:@"it was so bad"
+                                                                 configuration:config
+                                                                      metaData:@{}
+                                                                      severity:BSGSeverityWarning];
+    XCTAssertTrue([report shouldBeSent]);
+}
+
+- (void)testNotifyReleaseStagesSkipsSendFromConfig {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    config.notifyReleaseStages = @[@"foo", @"bar"];
+    config.releaseStage = @"not foo or bar";
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
+                                                                  errorMessage:@"it was so bad"
+                                                                 configuration:config
+                                                                      metaData:@{}
+                                                                      severity:BSGSeverityWarning];
+    XCTAssertFalse([report shouldBeSent]);
 }
 
 @end
