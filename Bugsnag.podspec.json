@@ -1,6 +1,6 @@
 {
   "name": "Bugsnag",
-  "version": "5.1.0",
+  "version": "5.5.0",
   "summary": "Cocoa notifier for SDK for bugsnag.com",
   "homepage": "https://bugsnag.com",
   "license": "MIT",
@@ -9,12 +9,13 @@
   },
   "source": {
     "git": "https://github.com/bugsnag/bugsnag-cocoa.git",
-    "tag": "v5.1.0"
+    "tag": "v5.5.0"
   },
   "frameworks": "Foundation",
   "platforms": {
     "ios": "6.0",
-    "osx": "10.8"
+    "osx": "10.8",
+    "tvos": "9.0"
   },
   "source_files": [
     "Source/*.{m,h,mm,c,cpp}"
@@ -22,11 +23,14 @@
   "requires_arc": true,
   "public_header_files": [
     "Source/BSGKSCrashReportWriter.h",
-    "Source/Bugsnag{,MetaData,Configuration,Breadcrumb}.h"
+    "Source/Bugsnag{,MetaData,Configuration,Breadcrumb,CrashReport}.h"
   ],
+  "pod_target_xcconfig": {
+    "APPLICATION_EXTENSION_API_ONLY": "YES"
+  },
   "dependencies": {
     "KSCrash/RecordingAdvanced": [
-      "~> 1.0.3"
+      "~> 1.6.4"
     ]
   }
 }

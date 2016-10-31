@@ -1,6 +1,72 @@
 Changelog
 =========
 
+## 5.5.0 (14 Sep 2016)
+
+### Enhancements
+
+* Add "Require Only App-Extension-Safe API" flag for iOS App Extension support
+* Send requests via NSURLSession by default
+
+## 5.4.2 (17 Aug 2016)
+
+### Bug fixes
+
+* Fix a condition where bug reports would be sent multiple times
+
+
+## 5.4.1 (27 Jul 2016)
+
+### Bug fixes
+
+* Fix breadcrumb type for table events
+* Add error message and severity to error breadcrumbs
+* Make breadcrumbs accessible from background queues
+
+## 5.4.0 (22 Jul 2016)
+
+### Enhancements
+
+* Add support for automated breadcrumb collection for common events and the new
+  breadcrumbs API
+  [#112](https://github.com/bugsnag/bugsnag-cocoa/pull/112)
+
+* Add support for Apple TV
+  [#113](https://github.com/bugsnag/bugsnag-cocoa/pull/113)
+
+* Add ability to customize error reports via `notify:block`
+  [#110](https://github.com/bugsnag/bugsnag-cocoa/pull/110)
+
+* Add support for sending reports for `NSError` instances via `notifyError:`
+  and `notifyError:block:`
+  [#110](https://github.com/bugsnag/bugsnag-cocoa/pull/110)
+
+* Add crash time to the "Device" tab of error reports
+  [#110](https://github.com/bugsnag/bugsnag-cocoa/pull/110)
+
+## 5.3.0 (15 Jul 2016)
+
+### Bug fixes
+
+* Fix intermittent crashes via NSZombie detection being enabled by default
+  [#111](https://github.com/bugsnag/bugsnag-cocoa/issues/111)
+  [KSCrash#160](https://github.com/kstenerud/KSCrash/pull/160)
+
+## 5.2.1 (16 June 2016)
+
+Add Carthage support
+
+## 5.2.0 (2 June 2016)
+
+### Bug Fixes
+
+* Catch JSON (de)serialization exceptions thrown from `NSJSONSerialization`
+
+### Enhancements
+
+* Add nullability annotations
+* Remove logging when no reports were sent
+
 ## 5.1.0
 
 ### Bug Fixes

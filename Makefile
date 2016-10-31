@@ -7,10 +7,16 @@ ifeq ($(BUILD_OSX), 1)
  BUILD_FLAGS=-workspace OSX.xcworkspace -scheme Bugsnag
  BUILD_ONLY_FLAGS=CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 else
- PLATFORM=iOS
- RELEASE_DIR=Release-iphoneos
- BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag
- BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5" -configuration Debug
+ ifeq ($(SDK),appletvsimulator9.2)
+  PLATFORM=tvOS
+  BUILD_FLAGS=-workspace tvOS.xcworkspace -scheme Bugsnag
+  BUILD_ONLY_FLAGS=-sdk $(SDK) -configuration Debug
+ else
+  PLATFORM=iOS
+  RELEASE_DIR=Release-iphoneos
+  BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag
+  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5" -configuration Debug
+ endif
 endif
 XCODEBUILD=set -o pipefail && xcodebuild
 VERSION=$(shell cat VERSION)
@@ -25,7 +31,7 @@ KSCRASH_DEP = Carthage/Checkouts/KSCrash
 $(KSCRASH_DEP):
 	@git submodule update --init
 
-# Generated framework package for Bugsnag for either iOS or OS X
+# Generated framework package for Bugsnag for either iOS or macOS
 build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework:
 	@xcodebuild $(BUILD_FLAGS) \
 		-configuration Release \
@@ -53,9 +59,4 @@ test: $(KSCRASH_DEP)
 
 archive: build/Bugsnag-$(PLATFORM)-$(VERSION).zip
 
-release:
-	@$(MAKE) archive
-	@$(MAKE) BUILD_OSX=1 archive
-	@open build
-	@open 'https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v'$(VERSION)
 

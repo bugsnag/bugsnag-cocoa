@@ -69,17 +69,10 @@ If you're a member of the core team, you can release the cocoa pod as follows:
     pod trunk push
     ```
 
-* Build a new Zipfile to build/relase/Bugsnag-5.x.x.zip
-
-    ```
-    make release
-    ```
-
 * Create a new release https://github.com/bugsnag/bugsnag-cocoa/releases/new
 * Select the tag you just pushed
 * Set the title to the tag (v5.x.x)
 * Copy the changelog entries into the release notes
-* Drag and drop the zipfile
 * Click "Publish Release"
 * Update the setup guides for Objective-C and Swift on docs.bugsnag.com with any
   new content

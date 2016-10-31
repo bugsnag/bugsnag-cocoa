@@ -27,6 +27,7 @@
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagConfiguration.h"
+#import "BugsnagCrashReport.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
 #import <KSCrash/KSCrashAdvanced.h>
@@ -39,12 +40,15 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
 + (BOOL) bugsnagStarted;
 @end
 
+@interface NSDictionary (BSGKSMerge)
+- (NSDictionary*)BSG_mergedInto:(NSDictionary *)dest;
+@end
+
 @implementation Bugsnag
 
 + (void)startBugsnagWithApiKey:(NSString*)apiKey {
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] init];
+    BugsnagConfiguration *configuration = [BugsnagConfiguration new];
     configuration.apiKey = apiKey;
-
     [self startBugsnagWithConfiguration:configuration];
 }
 
@@ -69,15 +73,57 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
 }
 
 + (void) notify:(NSException *)exception {
-    [self.notifier notify:exception withData:nil atSeverity: BugsnagSeverityWarning atDepth: 1];
+    [self.notifier notifyException:exception
+                             block:^(BugsnagCrashReport * _Nonnull report) {
+        report.depth = 1;
+    }];
 }
 
-+ (void) notify:(NSException *)exception withData:(NSDictionary*)metaData {
-    [self.notifier notify:exception withData:metaData atSeverity: BugsnagSeverityWarning atDepth: 1];
++ (void)notify:(NSException *)exception block:(BugsnagNotifyBlock)block {
+    [[self notifier] notifyException:exception
+                               block:^(BugsnagCrashReport * _Nonnull report) {
+        report.depth = 1;
+        if (block)
+            block(report);
+    }];
 }
 
-+ (void) notify:(NSException *)exception withData:(NSDictionary*)metaData atSeverity:(NSString*)severity {
-    [self.notifier notify:exception withData:metaData atSeverity: severity atDepth: 1];
++ (void) notifyError:(NSError *)error {
+    [self.notifier notifyError:error
+                         block:^(BugsnagCrashReport * _Nonnull report) {
+        report.depth = 1;
+    }];
+}
+
+
++ (void)notifyError:(NSError *)error block:(BugsnagNotifyBlock)block {
+    [[self notifier] notifyError:error
+                           block:^(BugsnagCrashReport * _Nonnull report) {
+        report.depth = 1;
+        if (block)
+            block(report);
+    }];
+}
+
++ (void)notify:(NSException *)exception withData:(NSDictionary*)metaData {
+    [[self notifier] notifyException:exception
+                               block:^(BugsnagCrashReport * _Nonnull report) {
+        report.depth = 1;
+        report.metaData = [metaData BSG_mergedInto:
+                           [self.notifier.configuration.metaData toDictionary]];
+    }];
+}
+
++ (void)notify:(NSException *)exception
+      withData:(NSDictionary*)metaData
+    atSeverity:(NSString*)severity {
+    [[self notifier] notifyException:exception
+                               block:^(BugsnagCrashReport * _Nonnull report) {
+        report.depth = 1;
+        report.metaData = [metaData BSG_mergedInto:
+                           [self.notifier.configuration.metaData toDictionary]];
+        report.severity = BSGParseSeverity(severity);
+    }];
 }
 
 + (void) addAttribute:(NSString*)attributeName withValue:(id)value toTabWithName:(NSString*)tabName {
@@ -96,14 +142,23 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
     if (self.notifier == nil) {
         NSLog(@"Ensure you have started Bugsnag with startWithApiKey: before calling any other Bugsnag functions.");
 
-        return false;
+        return NO;
     }
-    return true;
+    return YES;
 }
 
 + (void) leaveBreadcrumbWithMessage:(NSString *)message {
-    [self.notifier.configuration.breadcrumbs addBreadcrumb:message];
-    [self.notifier serializeBreadcrumbs];
+    [self leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumbs) {
+        crumbs.metadata = @{ @"message": message };
+    }];
+}
+
++ (void)leaveBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
+    [self.notifier addBreadcrumbWithBlock:block];
+}
+
++ (void)leaveBreadcrumbForNotificationName:(NSString *_Nonnull)notificationName {
+  [self.notifier crumbleNotification:notificationName];
 }
 
 + (void) setBreadcrumbCapacity:(NSUInteger)capacity {
@@ -111,8 +166,7 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
 }
 
 + (void) clearBreadcrumbs {
-    [self.notifier.configuration.breadcrumbs clearBreadcrumbs];
-    [self.notifier serializeBreadcrumbs];
+    [self.notifier clearBreadcrumbs];
 }
 
 + (NSDateFormatter *)payloadDateFormatter {
@@ -131,6 +185,62 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
 
 + (void)setReportWhenDebuggerIsAttached:(bool)reportWhenDebuggerIsAttached {
     [[KSCrash sharedInstance] setReportWhenDebuggerIsAttached:reportWhenDebuggerIsAttached];
+}
+
+@end
+
+//
+//  NSDictionary+Merge.m
+//
+//  Created by Karl Stenerud on 2012-10-01.
+//
+//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall remain in place
+// in this source code.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+@implementation NSDictionary (BSGKSMerge)
+
+- (NSDictionary*)BSG_mergedInto:(NSDictionary *)dest
+{
+    if([dest count] == 0)
+    {
+        return self;
+    }
+    if([self count] == 0)
+    {
+        return dest;
+    }
+
+    NSMutableDictionary* dict = [dest mutableCopy];
+    for(id key in [self allKeys])
+    {
+        id srcEntry = [self objectForKey:key];
+        id dstEntry = [dest objectForKey:key];
+        if([dstEntry isKindOfClass:[NSDictionary class]] &&
+           [srcEntry isKindOfClass:[NSDictionary class]])
+        {
+            srcEntry = [srcEntry BSG_mergedInto:dstEntry];
+        }
+        [dict setObject:srcEntry forKey:key];
+    }
+    return dict;
 }
 
 @end

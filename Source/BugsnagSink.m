@@ -37,7 +37,18 @@
 + (BugsnagNotifier*)notifier;
 @end
 
+@interface BugsnagSink ()
+@property (nonatomic, strong) NSURLSession *session;
+@end
+
 @implementation BugsnagSink
+
+- (instancetype)init {
+    if (self = [super init])
+        _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    
+    return self;
+}
 
 // Entry point called by KSCrash when a report needs to be sent. Handles report filtering based on the configuration
 // options for `notifyReleaseStages`.
@@ -46,22 +57,21 @@
 // - the report-specific and global `notifyReleaseStages` properties are unset
 // - the report-specific `notifyReleaseStages` property is unset and the global `notifyReleaseStages` property
 //   and it contains the current stage
-- (void) filterReports:(NSArray*) reports onCompletion:(KSCrashReportFilterCompletion) onCompletion
-{
-    NSError *error = nil;
-    NSMutableArray *bugsnagReports = [NSMutableArray arrayWithCapacity:[reports count]];
+- (void)filterReports:(NSArray*) reports
+         onCompletion:(KSCrashReportFilterCompletion) onCompletion {
+    NSMutableArray *bugsnagReports = [NSMutableArray new];
     BugsnagConfiguration *configuration = [Bugsnag configuration];
-    BOOL configuredShouldNotify = configuration.notifyReleaseStages.count == 0
-        || [configuration.notifyReleaseStages containsObject:configuration.releaseStage];
     for (NSDictionary* report in reports) {
         BugsnagCrashReport *bugsnagReport = [[BugsnagCrashReport alloc] initWithKSReport:report];
-        
-        // Filter the reports here, we have to do it now as we dont want to hack KSCrash to do it at crash time.
-        // We also in the docs imply that the filtering happens when the crash happens - so we use the values
-        // saved in the report.
-        BOOL shouldNotify = [bugsnagReport.notifyReleaseStages containsObject:bugsnagReport.releaseStage]
-            || (bugsnagReport.notifyReleaseStages.count == 0 && configuredShouldNotify);
-        if(shouldNotify) {
+        if (![bugsnagReport shouldBeSent])
+            continue;
+        BOOL shouldSend = YES;
+        for (BugsnagBeforeSendBlock block in configuration.beforeSendBlocks) {
+            shouldSend = block(report, bugsnagReport);
+            if (!shouldSend)
+                break;
+        }
+        if(shouldSend) {
             [bugsnagReports addObject:bugsnagReport];
         }
     }
@@ -74,6 +84,9 @@
     }
 
     NSDictionary *reportData = [self getBodyFromReports:bugsnagReports];
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     for (BugsnagBeforeNotifyHook hook in configuration.beforeNotifyHooks) {
         if (reportData) {
             reportData = hook(reports, reportData);
@@ -81,38 +94,68 @@
             break;
         }
     }
+#pragma clang diagnostic pop
+
     if (reportData == nil) {
         if (onCompletion) {
             onCompletion(@[], YES, nil);
         }
         return;
     }
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:reportData
-                                                       options:NSJSONWritingPrettyPrinted
-                                                         error:&error];
-    
-    if (jsonData == nil) {
-        if (onCompletion) {
-            onCompletion(reports, NO, error);
-        }
-        return;
-    }
-    
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL: configuration.notifyURL
-                                                           cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
-                                                       timeoutInterval: 15];
-    request.HTTPMethod = @"POST";
-    request.HTTPBody = jsonData;
 
+    [self sendReports:bugsnagReports
+              payload:reportData
+                toURL:configuration.notifyURL
+         onCompletion:onCompletion];
+}
+
+- (void)sendReports:(NSArray <BugsnagCrashReport *>*)reports
+            payload:(NSDictionary *)reportData
+              toURL:(NSURL *)url
+       onCompletion:(KSCrashReportFilterCompletion) onCompletion {
+    @try {
+        NSError *error = nil;
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:reportData
+                                                           options:NSJSONWritingPrettyPrinted
+                                                             error:&error];
+
+        if (jsonData == nil) {
+            if (onCompletion) {
+                onCompletion(reports, NO, error);
+            }
+            return;
+        }
+        NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url
+                                                               cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
+                                                           timeoutInterval: 15];
+        request.HTTPMethod = @"POST";
+
+
+        if ([NSURLSession class]) {
+            NSURLSessionTask *task = [self.session uploadTaskWithRequest:request fromData:jsonData completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                if (onCompletion)
+                    onCompletion(reports, error == nil, error);
+            }];
+            [task resume];
+        } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [NSURLConnection sendSynchronousRequest:request
-                          returningResponse:NULL
-                                      error:&error];
+            NSURLResponse *response = nil;
+            request.HTTPBody = jsonData;
+            [NSURLConnection sendSynchronousRequest:request
+                                  returningResponse:&response
+                                              error:&error];
+            if (onCompletion) {
+                onCompletion(reports, error == nil, error);
+            }
 #pragma clang diagnostic pop
-    
-    if (onCompletion) {
-        onCompletion(reports, error == nil, error);
+        }
+    } @catch (NSException *exception) {
+        if (onCompletion) {
+            onCompletion(reports, NO, [NSError errorWithDomain:exception.reason
+                                                          code:420
+                                                      userInfo:@{@"exception": exception}]);
+        }
     }
 }
 

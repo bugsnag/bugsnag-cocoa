@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		100749203726440EA4E45D3E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BBE4E4C4FB284B448E57166E /* libPods.a */; };
+		321A7A5215CE53185867D601 /* libPods-Bugsnag Test App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E418DB0D05F9A8F968578F10 /* libPods-Bugsnag Test App.a */; };
+		8ACFFA0C1D895D4D00357B5E /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */; };
+		8ACFFA101D895D4D00357B5E /* custom-keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8ACFFA091D895D4D00357B5E /* custom-keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874A16AA233500676BB2 /* UIKit.framework */; };
 		F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874C16AA233500676BB2 /* Foundation.framework */; };
 		F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874E16AA233500676BB2 /* CoreGraphics.framework */; };
@@ -20,12 +22,44 @@
 		F40B876416AA233500676BB2 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F40B876216AA233500676BB2 /* MainStoryboard_iPhone.storyboard */; };
 		F40B876716AA233500676BB2 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F40B876516AA233500676BB2 /* MainStoryboard_iPad.storyboard */; };
 		F40B876A16AA233500676BB2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F40B876916AA233500676BB2 /* ViewController.m */; };
+		FEDDACB7651D9C4AD82BB1D3 /* libPods-custom-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 609ECD669F95BBE28D00C825 /* libPods-custom-keyboard.a */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		8ACFFA0E1D895D4D00357B5E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F40B873D16AA233500676BB2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8ACFFA081D895D4D00357B5E;
+			remoteInfo = "custom-keyboard";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8ACFFA141D895D4D00357B5E /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				8ACFFA101D895D4D00357B5E /* custom-keyboard.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		1D860917AA32015D2A67696B /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
-		2CA6385EE8EA5F91543DE7E0 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
-		BBE4E4C4FB284B448E57166E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		11FAEC9A8235AA00BF998CE8 /* Pods-custom-keyboard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-custom-keyboard.release.xcconfig"; path = "Pods/Target Support Files/Pods-custom-keyboard/Pods-custom-keyboard.release.xcconfig"; sourceTree = "<group>"; };
+		609ECD669F95BBE28D00C825 /* libPods-custom-keyboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-custom-keyboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		89117F5055F6B6F9FA00FBEC /* Pods-Bugsnag Test App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bugsnag Test App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bugsnag Test App/Pods-Bugsnag Test App.debug.xcconfig"; sourceTree = "<group>"; };
+		8ACFFA091D895D4D00357B5E /* custom-keyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "custom-keyboard.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
+		8ACFFA0D1D895D4D00357B5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8ACFFA151D895E0300357B5E /* BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
+		AF2C7221BC705BF69E871268 /* Pods-custom-keyboard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-custom-keyboard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-custom-keyboard/Pods-custom-keyboard.debug.xcconfig"; sourceTree = "<group>"; };
+		E418DB0D05F9A8F968578F10 /* libPods-Bugsnag Test App.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bugsnag Test App.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2E14F3E5A46514C8F874A58 /* Pods-Bugsnag Test App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bugsnag Test App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Bugsnag Test App/Pods-Bugsnag Test App.release.xcconfig"; sourceTree = "<group>"; };
 		F40B874616AA233500676BB2 /* Bugsnag Test App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bugsnag Test App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F40B874A16AA233500676BB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		F40B874C16AA233500676BB2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -46,6 +80,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8ACFFA061D895D4D00357B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEDDACB7651D9C4AD82BB1D3 /* libPods-custom-keyboard.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F40B874316AA233500676BB2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -53,18 +95,30 @@
 				F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */,
 				F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */,
 				F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */,
-				100749203726440EA4E45D3E /* libPods.a in Frameworks */,
+				321A7A5215CE53185867D601 /* libPods-Bugsnag Test App.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		7F7F36E5290F6E12E446687F /* Pods */ = {
+		8ACFFA0A1D895D4D00357B5E /* custom-keyboard */ = {
 			isa = PBXGroup;
 			children = (
-				1D860917AA32015D2A67696B /* Pods.debug.xcconfig */,
-				2CA6385EE8EA5F91543DE7E0 /* Pods.release.xcconfig */,
+				8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */,
+				8ACFFA0D1D895D4D00357B5E /* Info.plist */,
+				8ACFFA151D895E0300357B5E /* BridgingHeader.h */,
+			);
+			path = "custom-keyboard";
+			sourceTree = "<group>";
+		};
+		9454D93E2BC4F75FD6540595 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				89117F5055F6B6F9FA00FBEC /* Pods-Bugsnag Test App.debug.xcconfig */,
+				F2E14F3E5A46514C8F874A58 /* Pods-Bugsnag Test App.release.xcconfig */,
+				AF2C7221BC705BF69E871268 /* Pods-custom-keyboard.debug.xcconfig */,
+				11FAEC9A8235AA00BF998CE8 /* Pods-custom-keyboard.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -73,9 +127,10 @@
 			isa = PBXGroup;
 			children = (
 				F40B875016AA233500676BB2 /* Bugsnag Test App */,
+				8ACFFA0A1D895D4D00357B5E /* custom-keyboard */,
 				F40B874916AA233500676BB2 /* Frameworks */,
 				F40B874716AA233500676BB2 /* Products */,
-				7F7F36E5290F6E12E446687F /* Pods */,
+				9454D93E2BC4F75FD6540595 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -83,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				F40B874616AA233500676BB2 /* Bugsnag Test App.app */,
+				8ACFFA091D895D4D00357B5E /* custom-keyboard.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -93,7 +149,8 @@
 				F40B874A16AA233500676BB2 /* UIKit.framework */,
 				F40B874C16AA233500676BB2 /* Foundation.framework */,
 				F40B874E16AA233500676BB2 /* CoreGraphics.framework */,
-				BBE4E4C4FB284B448E57166E /* libPods.a */,
+				E418DB0D05F9A8F968578F10 /* libPods-Bugsnag Test App.a */,
+				609ECD669F95BBE28D00C825 /* libPods-custom-keyboard.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -129,21 +186,43 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F40B874516AA233500676BB2 /* Bugsnag Test App */ = {
+		8ACFFA081D895D4D00357B5E /* custom-keyboard */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F40B876D16AA233500676BB2 /* Build configuration list for PBXNativeTarget "Bugsnag Test App" */;
+			buildConfigurationList = 8ACFFA131D895D4D00357B5E /* Build configuration list for PBXNativeTarget "custom-keyboard" */;
 			buildPhases = (
-				0E579FC164E842FBB5C923B7 /* Check Pods Manifest.lock */,
-				F40B874216AA233500676BB2 /* Sources */,
-				F40B874316AA233500676BB2 /* Frameworks */,
-				F40B874416AA233500676BB2 /* Resources */,
-				EC9C64C5098541749BAC1444 /* Copy Pods Resources */,
-				5142A2F8286744A694BDB5BA /* Upload Bugsnag dSYM */,
-				4C4EF4DB138A9BB5E2D23D4A /* Embed Pods Frameworks */,
+				CA8830D54F3B13DA6F392619 /* [CP] Check Pods Manifest.lock */,
+				8ACFFA051D895D4D00357B5E /* Sources */,
+				8ACFFA061D895D4D00357B5E /* Frameworks */,
+				8ACFFA071D895D4D00357B5E /* Resources */,
+				F1420EBC0B40587166E8FA13 /* [CP] Embed Pods Frameworks */,
+				EB1FF3EE2A0141A6EF88796D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+			);
+			name = "custom-keyboard";
+			productName = "custom-keyboard";
+			productReference = 8ACFFA091D895D4D00357B5E /* custom-keyboard.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		F40B874516AA233500676BB2 /* Bugsnag Test App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F40B876D16AA233500676BB2 /* Build configuration list for PBXNativeTarget "Bugsnag Test App" */;
+			buildPhases = (
+				6D3E90BD4495FE724F7FF283 /* [CP] Check Pods Manifest.lock */,
+				F40B874216AA233500676BB2 /* Sources */,
+				F40B874316AA233500676BB2 /* Frameworks */,
+				F40B874416AA233500676BB2 /* Resources */,
+				5142A2F8286744A694BDB5BA /* Upload Bugsnag dSYM */,
+				765F7485E02A01DA5E42AC27 /* [CP] Embed Pods Frameworks */,
+				E142138E1656CA8499F1E0A3 /* [CP] Copy Pods Resources */,
+				8ACFFA141D895D4D00357B5E /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8ACFFA0F1D895D4D00357B5E /* PBXTargetDependency */,
 			);
 			name = "Bugsnag Test App";
 			productName = "Bugsnag Test App";
@@ -156,9 +235,14 @@
 		F40B873D16AA233500676BB2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Simon Maynard";
 				TargetAttributes = {
+					8ACFFA081D895D4D00357B5E = {
+						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 372ZUL2ZB7;
+					};
 					F40B874516AA233500676BB2 = {
 						DevelopmentTeam = 372ZUL2ZB7;
 					};
@@ -177,11 +261,19 @@
 			projectRoot = "";
 			targets = (
 				F40B874516AA233500676BB2 /* Bugsnag Test App */,
+				8ACFFA081D895D4D00357B5E /* custom-keyboard */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8ACFFA071D895D4D00357B5E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F40B874416AA233500676BB2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -198,36 +290,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0E579FC164E842FBB5C923B7 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		4C4EF4DB138A9BB5E2D23D4A /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		5142A2F8286744A694BDB5BA /* Upload Bugsnag dSYM */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -243,24 +305,107 @@
 			shellScript = "fork do\n  Process.setsid\n  STDIN.reopen(\"/dev/null\")\n  STDOUT.reopen(\"/dev/null\", \"a\")\n  STDERR.reopen(\"/dev/null\", \"a\")\n\n  require 'shellwords'\n\n  Dir[\"#{ENV[\"DWARF_DSYM_FOLDER_PATH\"]}/*/Contents/Resources/DWARF/*\"].each do |dsym|\n    system(\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\"PROJECT_DIR\"])} https://upload.bugsnag.com/\")\n  end\nend\n";
 			showEnvVarsInLog = 0;
 		};
-		EC9C64C5098541749BAC1444 /* Copy Pods Resources */ = {
+		6D3E90BD4495FE724F7FF283 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		765F7485E02A01DA5E42AC27 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Bugsnag Test App/Pods-Bugsnag Test App-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CA8830D54F3B13DA6F392619 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		E142138E1656CA8499F1E0A3 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Bugsnag Test App/Pods-Bugsnag Test App-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EB1FF3EE2A0141A6EF88796D /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-custom-keyboard/Pods-custom-keyboard-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F1420EBC0B40587166E8FA13 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-custom-keyboard/Pods-custom-keyboard-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8ACFFA051D895D4D00357B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8ACFFA0C1D895D4D00357B5E /* KeyboardViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F40B874216AA233500676BB2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -272,6 +417,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8ACFFA0F1D895D4D00357B5E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8ACFFA081D895D4D00357B5E /* custom-keyboard */;
+			targetProxy = 8ACFFA0E1D895D4D00357B5E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		F40B875316AA233500676BB2 /* InfoPlist.strings */ = {
@@ -301,6 +454,81 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		8ACFFA111D895D4D00357B5E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AF2C7221BC705BF69E871268 /* Pods-custom-keyboard.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "custom-keyboard/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "bugsnag.Bugsnag-Test-App.custom-keyboard";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "custom-keyboard/BridgingHeader.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		8ACFFA121D895D4D00357B5E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 11FAEC9A8235AA00BF998CE8 /* Pods-custom-keyboard.release.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "custom-keyboard/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "bugsnag.Bugsnag-Test-App.custom-keyboard";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "custom-keyboard/BridgingHeader.h";
+			};
+			name = Release;
+		};
 		F40B876B16AA233500676BB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -360,13 +588,15 @@
 		};
 		F40B876E16AA233500676BB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1D860917AA32015D2A67696B /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 89117F5055F6B6F9FA00FBEC /* Pods-Bugsnag Test App.debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_BITCODE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Bugsnag Test App/Bugsnag Test App-Prefix.pch";
@@ -382,12 +612,14 @@
 		};
 		F40B876F16AA233500676BB2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2CA6385EE8EA5F91543DE7E0 /* Pods.release.xcconfig */;
+			baseConfigurationReference = F2E14F3E5A46514C8F874A58 /* Pods-Bugsnag Test App.release.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEPLOYMENT_POSTPROCESSING = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_BITCODE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Bugsnag Test App/Bugsnag Test App-Prefix.pch";
@@ -403,6 +635,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8ACFFA131D895D4D00357B5E /* Build configuration list for PBXNativeTarget "custom-keyboard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8ACFFA111D895D4D00357B5E /* Debug */,
+				8ACFFA121D895D4D00357B5E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F40B874016AA233500676BB2 /* Build configuration list for PBXProject "Bugsnag Test App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

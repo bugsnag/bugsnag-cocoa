@@ -26,27 +26,80 @@
 #import "BugsnagBreadcrumb.h"
 #import "Bugsnag.h"
 
+NSString *const BSGBreadcrumbDefaultName = @"manual";
+NSUInteger const BSGBreadcrumbMaxByteSize = 4096;
+
+NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
+    switch (type) {
+        case BSGBreadcrumbTypeLog:
+            return @"log";
+        case BSGBreadcrumbTypeUser:
+            return @"user";
+        case BSGBreadcrumbTypeError:
+            return @"error";
+        case BSGBreadcrumbTypeState:
+            return @"state";
+        case BSGBreadcrumbTypeManual:
+            return @"manual";
+        case BSGBreadcrumbTypeProcess:
+            return @"process";
+        case BSGBreadcrumbTypeRequest:
+            return @"request";
+        case BSGBreadcrumbTypeNavigation:
+            return @"navigation";
+    }
+}
+
 @interface BugsnagBreadcrumbs()
 
 @property (nonatomic,readwrite,strong) NSMutableArray* breadcrumbs;
+@property (nonatomic,readonly,strong) NSLock* lock;
+@end
+
+@interface BugsnagBreadcrumb ()
+
+- (NSDictionary *_Nullable)objectValue;
 @end
 
 @implementation BugsnagBreadcrumb
 
 - (instancetype)init {
-    self = [self initWithMessage:nil timestamp:nil];
+    if (self = [super init]) {
+        _timestamp = [NSDate date];
+        _name = BSGBreadcrumbDefaultName;
+        _type = BSGBreadcrumbTypeManual;
+        _metadata = @{};
+    }
     return self;
 }
 
-- (instancetype)initWithMessage:(NSString *)message timestamp:(NSDate *)date {
-    if (message.length == 0)
-        return nil;
+- (BOOL)isValid {
+    return self.name.length > 0 && self.timestamp != nil;
+}
 
-    if (self = [super init]) {
-        _message = [message copy];
-        _timestamp = date;
+- (NSDictionary *)objectValue {
+    NSString* timestamp = [[Bugsnag payloadDateFormatter] stringFromDate:self.timestamp];
+    if (timestamp && self.name.length > 0) {
+        NSMutableDictionary *data = @{
+            @"name": self.name,
+            @"timestamp": timestamp,
+            @"type": BSGBreadcrumbTypeValue(self.type)
+        }.mutableCopy;
+        if (self.metadata)
+            data[@"metaData"] = self.metadata;
+        return data;
     }
-    return self;
+    return nil;
+}
+
++ (instancetype)breadcrumbWithBlock:(BSGBreadcrumbConfiguration)block {
+    BugsnagBreadcrumb *crumb = [self new];
+    if (block)
+        block(crumb);
+    if ([crumb isValid]) {
+        return crumb;
+    }
+    return nil;
 }
 
 @end
@@ -59,24 +112,31 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
     if (self = [super init]) {
         _breadcrumbs = [NSMutableArray new];
         _capacity = BreadcrumbsDefaultCapacity;
+        _lock = [NSLock new];
     }
     return self;
 }
 
 - (void)addBreadcrumb:(NSString *)breadcrumbMessage {
-    NSAssert([[NSThread currentThread] isMainThread], @"Breadcrumbs must be mutated on the main thread.");
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
+        crumb.metadata = @{ @"message": breadcrumbMessage };
+    }];
+}
+
+- (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
     if (self.capacity == 0) {
         return;
     }
-    BugsnagBreadcrumb* crumb = [[BugsnagBreadcrumb alloc] initWithMessage:breadcrumbMessage timestamp:[NSDate date]];
+    BugsnagBreadcrumb* crumb = [BugsnagBreadcrumb breadcrumbWithBlock:block];
     if (crumb) {
         [self resizeToFitCapacity:self.capacity - 1];
+        [self.lock lock];
         [self.breadcrumbs addObject:crumb];
+        [self.lock unlock];
     }
 }
 
 - (void)setCapacity:(NSUInteger)capacity {
-    NSAssert([[NSThread currentThread] isMainThread], @"Breadcrumbs must be mutated on the main thread.");
     if (capacity == _capacity) {
         return;
     }
@@ -87,8 +147,9 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
 }
 
 - (void)clearBreadcrumbs {
-    NSAssert([[NSThread currentThread] isMainThread], @"Breadcrumbs must be mutated on the main thread.");
+    [self.lock lock];
     [self.breadcrumbs removeAllObjects];
+    [self.lock unlock];
 }
 
 - (NSUInteger)count {
@@ -97,7 +158,10 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
 
 - (BugsnagBreadcrumb *)objectAtIndexedSubscript:(NSUInteger)index {
     if (index < [self count]) {
-        return self.breadcrumbs[index];
+        [self.lock lock];
+        BugsnagBreadcrumb *crumb = self.breadcrumbs[index];
+        [self.lock unlock];
+        return crumb;
     }
     return nil;
 }
@@ -107,12 +171,21 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
         return nil;
     }
     NSMutableArray* contents = [[NSMutableArray alloc] initWithCapacity:[self count]];
+    [self.lock lock];
     for (BugsnagBreadcrumb* crumb in self.breadcrumbs) {
-        NSString* timestamp = [[Bugsnag payloadDateFormatter] stringFromDate:crumb.timestamp];
-        if (timestamp && crumb.message.length > 0) {
-            [contents addObject:@[timestamp,crumb.message]];
+        NSDictionary *objectValue = [crumb objectValue];
+        NSError *error = nil;
+        @try {
+            NSData* data = [NSJSONSerialization dataWithJSONObject:objectValue options:0 error:&error];
+            if (data.length <= BSGBreadcrumbMaxByteSize)
+                [contents addObject:objectValue];
+            else
+                NSLog(@"Dropping Bugsnag breadcrumb (%@) exceeding %lu byte size limit", crumb.name, (unsigned long)BSGBreadcrumbMaxByteSize);
+        } @catch (NSException *exception) {
+            NSLog(@"Unable to serialize breadcrumb for Bugsnag: %@", error);
         }
     }
+    [self.lock unlock];
     return contents;
 }
 
@@ -121,9 +194,11 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
         [self clearBreadcrumbs];
         return;
     }
+    [self.lock lock];
     while ([self count] > capacity) {
         [self.breadcrumbs removeObjectAtIndex:0];
     }
+    [self.lock unlock];
 }
 
 @end

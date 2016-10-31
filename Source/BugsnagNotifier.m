@@ -30,20 +30,24 @@
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagCollections.h"
+#import "BugsnagCrashReport.h"
 #import "BugsnagSink.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
 #include <sys/utsname.h>
+#elif TARGET_OS_MAC
+#import <AppKit/AppKit.h>
 #endif
 
-NSString *const NOTIFIER_VERSION = @"5.1.0";
+NSString *const NOTIFIER_VERSION = @"5.5.0";
 NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 NSString *const BSTabCrash = @"crash";
 NSString *const BSTabConfig = @"config";
 NSString *const BSAttributeSeverity = @"severity";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSAttributeBreadcrumbs = @"breadcrumbs";
+NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
 struct bugsnag_data_t {
     // Contains the user-specified metaData, including the user tab from config.
@@ -52,6 +56,8 @@ struct bugsnag_data_t {
     char *configJSON;
     // Contains notifier state, under "deviceState" and crash-specific information under "crash".
     char *stateJSON;
+    // Contains properties in the Bugsnag payload overridden by the user before it was sent
+    char *userOverridesJSON;
     // User onCrash handler
     void (*onCrash)(const KSCrashReportWriter* writer);
 };
@@ -74,9 +80,17 @@ void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer) {
     if (g_bugsnag_data.stateJSON) {
         writer->addJSONElement(writer, "state", g_bugsnag_data.stateJSON);
     }
+    if (g_bugsnag_data.userOverridesJSON) {
+        writer->addJSONElement(writer, "overrides", g_bugsnag_data.userOverridesJSON);
+    }
     if (g_bugsnag_data.onCrash) {
         g_bugsnag_data.onCrash(writer);
     }
+}
+
+NSString *BSGBreadcrumbNameForNotificationName(NSString *name) {
+    return [name stringByReplacingOccurrencesOfString:@"Notification"
+                                           withString:@""];
 }
 
 /**
@@ -86,24 +100,23 @@ void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer) {
  *  @param destination target location of the data
  */
 void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
-    NSError *error;
-    NSData *json = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
+    @try {
+        NSError *error;
+        NSData *json = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
 
-    if (!json) {
-        NSLog(@"Bugsnag could not serialize metaData: %@", error);
-        return;
-    }
-
-    *destination = reallocf(*destination, [json length] + 1);
-    if (*destination) {
-        memcpy(*destination, [json bytes], [json length]);
-        (*destination)[[json length]] = '\0';
+        if (!json) {
+            NSLog(@"Bugsnag could not serialize metaData: %@", error);
+            return;
+        }
+        *destination = reallocf(*destination, [json length] + 1);
+        if (*destination) {
+            memcpy(*destination, [json bytes], [json length]);
+            (*destination)[[json length]] = '\0';
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"Bugsnag could not serialize metaData: %@", exception);
     }
 }
-
-@interface NSDictionary (BSGKSMerge)
-- (NSDictionary*)BSG_mergedInto:(NSDictionary *)dest;
-@end
 
 @implementation BugsnagNotifier
 
@@ -144,48 +157,108 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     }
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
+    [self updateAutomaticBreadcrumbDetectionSettings];
+#if TARGET_OS_TV
+  [self.details setValue:@"tvOS Bugsnag Notifier" forKey:@"name"];
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+  [self.details setValue:@"iOS Bugsnag Notifier" forKey:@"name"];
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-  [self.details setValue: @"iOS Bugsnag Notifier" forKey:@"name"];
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(batteryChanged:)
+             name:UIDeviceBatteryStateDidChangeNotification
+           object:nil];
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(batteryChanged:)
+             name:UIDeviceBatteryLevelDidChangeNotification
+           object:nil];
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(orientationChanged:)
+             name:UIDeviceOrientationDidChangeNotification
+           object:nil];
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(lowMemoryWarning:)
+             name:UIApplicationDidReceiveMemoryWarningNotification
+           object:nil];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryChanged:) name:UIDeviceBatteryStateDidChangeNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryChanged:) name:UIDeviceBatteryLevelDidChangeNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lowMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-
-  [UIDevice currentDevice].batteryMonitoringEnabled = TRUE;
+  [UIDevice currentDevice].batteryMonitoringEnabled = YES;
   [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 
   [self batteryChanged:nil];
   [self orientationChanged:nil];
 #elif TARGET_OS_MAC
-  [self.details setValue: @"OSX Bugsnag Notifier" forKey:@"name"];
+  [self.details setValue:@"OSX Bugsnag Notifier" forKey:@"name"];
 #endif
 }
 
-- (void)notify:(NSException *)exception withData:(NSDictionary *)metaData atSeverity:(NSString *)severity atDepth:(NSUInteger) depth {
+- (void)notifyError:(NSError *)error block:(void (^)(BugsnagCrashReport *))block {
+    [self notify:NSStringFromClass([error class])
+         message:error.localizedDescription
+           block:^(BugsnagCrashReport * _Nonnull report) {
+               NSMutableDictionary *metadata = [report.metaData mutableCopy];
+               metadata[@"nserror"] = @{@"code": @(error.code),
+                                        @"domain": error.domain,
+                                        @"reason": error.localizedFailureReason?: @"" };
+               report.metaData = metadata;
+               if (block)
+                   block(report);
+           }];
+}
 
-    if (!metaData) {
-        metaData = [[NSDictionary alloc] init];
-    }
-    metaData = [metaData BSG_mergedInto: [self.configuration.metaData toDictionary]];
-    if (!severity) {
-        severity = BugsnagSeverityWarning;
-    }
+- (void)notifyException:(NSException *)exception
+                  block:(void (^)(BugsnagCrashReport *))block {
+    [self notify:exception.name ?: NSStringFromClass([exception class])
+         message:exception.reason
+           block:block];
+}
+
+- (void)notify:(NSString *)exceptionName
+       message:(NSString *)message
+         block:(void (^)(BugsnagCrashReport *))block {
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:exceptionName
+                                                                  errorMessage:message
+                                                                 configuration:self.configuration
+                                                                      metaData:[self.configuration.metaData toDictionary]
+                                                                      severity:BSGSeverityWarning];
+    if (block)
+        block(report);
 
     [self.metaDataLock lock];
-    BSSerializeJSONDictionary(metaData, &g_bugsnag_data.metaDataJSON);
-    [self.state addAttribute:BSAttributeSeverity withValue:severity toTabWithName:BSTabCrash];
-    [self.state addAttribute:BSAttributeDepth withValue:@(depth + 3) toTabWithName:BSTabCrash];
-    NSString *exceptionName = [exception name] ?: NSStringFromClass([NSException class]);
-    [[KSCrash sharedInstance] reportUserException:exceptionName reason:[exception reason] language:@"" lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
-
+    BSSerializeJSONDictionary(report.metaData, &g_bugsnag_data.metaDataJSON);
+    BSSerializeJSONDictionary(report.overrides, &g_bugsnag_data.userOverridesJSON);
+    [self.state addAttribute:BSAttributeSeverity withValue:BSGFormatSeverity(report.severity) toTabWithName:BSTabCrash];
+    [self.state addAttribute:BSAttributeDepth withValue:@(report.depth + 3) toTabWithName:BSTabCrash];
+    NSString *reportName = report.errorClass ?: NSStringFromClass([NSException class]);
+    NSString *reportMessage = report.errorMessage ?: @"";
+    [[KSCrash sharedInstance] reportUserException:reportName
+                                           reason:reportMessage
+                                         language:NULL lineOfCode:@""
+                                       stackTrace:@[]
+                                 terminateProgram:NO];
     // Restore metaData to pre-crash state.
     [self.metaDataLock unlock];
-    [self metaDataChanged: self.configuration.metaData];
+    [self metaDataChanged:self.configuration.metaData];
     [[self state] clearTab:BSTabCrash];
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
+      crumb.type = BSGBreadcrumbTypeError;
+      crumb.name = reportName;
+      crumb.metadata = @{ @"message": reportMessage, @"severity": BSGFormatSeverity(report.severity) };
+    }];
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
+}
+
+- (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
+    [self.configuration.breadcrumbs addBreadcrumbWithBlock:block];
+    [self serializeBreadcrumbs];
+}
+
+- (void)clearBreadcrumbs {
+    [self.configuration.breadcrumbs clearBreadcrumbs];
+    [self serializeBreadcrumbs];
 }
 
 - (void) serializeBreadcrumbs {
@@ -198,7 +271,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     @autoreleasepool {
         @try {
             [[KSCrash sharedInstance] sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
-                if (filteredReports.count > 0)
+                if (error)
+                    NSLog(@"Failed to send Bugsnag reports: %@", error);
+                else if (filteredReports.count > 0)
                     NSLog(@"Bugsnag reports sent.");
             }];
         }
@@ -224,106 +299,267 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     }
 }
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-- (void) batteryChanged:(NSNotification *)notif {
-  NSNumber *batteryLevel = [NSNumber numberWithFloat:[UIDevice currentDevice].batteryLevel];
-  NSNumber *charging = [NSNumber numberWithBool: [UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging];
+#if TARGET_OS_TV
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+- (void)batteryChanged:(NSNotification *)notif {
+  NSNumber *batteryLevel =
+      [NSNumber numberWithFloat:[UIDevice currentDevice].batteryLevel];
+  NSNumber *charging =
+      [NSNumber numberWithBool:[UIDevice currentDevice].batteryState ==
+                               UIDeviceBatteryStateCharging];
 
-  [[self state] addAttribute: @"batteryLevel" withValue: batteryLevel toTabWithName:@"deviceState"];
-  [[self state] addAttribute: @"charging" withValue: charging toTabWithName:@"deviceState"];
+  [[self state] addAttribute:@"batteryLevel"
+                   withValue:batteryLevel
+               toTabWithName:@"deviceState"];
+  [[self state] addAttribute:@"charging"
+                   withValue:charging
+               toTabWithName:@"deviceState"];
 }
 
 - (void)orientationChanged:(NSNotification *)notif {
   NSString *orientation;
-  switch([UIDevice currentDevice].orientation) {
-    case UIDeviceOrientationPortraitUpsideDown:
-      orientation = @"portraitupsidedown";
-      break;
-    case UIDeviceOrientationPortrait:
-      orientation = @"portrait";
-      break;
-    case UIDeviceOrientationLandscapeRight:
-      orientation = @"landscaperight";
-      break;
-    case UIDeviceOrientationLandscapeLeft:
-      orientation = @"landscapeleft";
-      break;
-    case UIDeviceOrientationFaceUp:
-      orientation = @"faceup";
-      break;
-    case UIDeviceOrientationFaceDown:
-      orientation = @"facedown";
-      break;
-    case UIDeviceOrientationUnknown:
-    default:
-      orientation = @"unknown";
+  switch ([UIDevice currentDevice].orientation) {
+  case UIDeviceOrientationPortraitUpsideDown:
+    orientation = @"portraitupsidedown";
+    break;
+  case UIDeviceOrientationPortrait:
+    orientation = @"portrait";
+    break;
+  case UIDeviceOrientationLandscapeRight:
+    orientation = @"landscaperight";
+    break;
+  case UIDeviceOrientationLandscapeLeft:
+    orientation = @"landscapeleft";
+    break;
+  case UIDeviceOrientationFaceUp:
+    orientation = @"faceup";
+    break;
+  case UIDeviceOrientationFaceDown:
+    orientation = @"facedown";
+    break;
+  case UIDeviceOrientationUnknown:
+  default:
+    orientation = @"unknown";
   }
-  [[self state] addAttribute:@"orientation" withValue:orientation toTabWithName:@"deviceState"];
+  [[self state] addAttribute:@"orientation"
+                   withValue:orientation
+               toTabWithName:@"deviceState"];
+  if ([self.configuration automaticallyCollectBreadcrumbs]) {
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+      breadcrumb.type = BSGBreadcrumbTypeState;
+      breadcrumb.name = BSGBreadcrumbNameForNotificationName(notif.name);
+      breadcrumb.metadata = @{ @"orientation" : orientation };
+    }];
+  }
 }
 
 - (void)lowMemoryWarning:(NSNotification *)notif {
-  [[self state] addAttribute: @"lowMemoryWarning" withValue: [[Bugsnag payloadDateFormatter] stringFromDate:[NSDate date]] toTabWithName:@"deviceState"];
+  [[self state] addAttribute:BSEventLowMemoryWarning
+                   withValue:[[Bugsnag payloadDateFormatter]
+                                 stringFromDate:[NSDate date]]
+               toTabWithName:@"deviceState"];
+  if ([self.configuration automaticallyCollectBreadcrumbs]) {
+    [self sendBreadcrumbForNotification:notif];
+  }
+}
+#endif
+
+- (void)updateAutomaticBreadcrumbDetectionSettings {
+    if ([self.configuration automaticallyCollectBreadcrumbs]) {
+        for (NSString *name in [self automaticBreadcrumbStateEvents]) {
+            [self crumbleNotification:name];
+        }
+        for (NSString *name in [self automaticBreadcrumbControlEvents]) {
+            [[NSNotificationCenter defaultCenter]
+             addObserver:self
+             selector:@selector(sendBreadcrumbForControlNotification:)
+             name:name
+             object:nil];
+        }
+        for (NSString *name in [self automaticBreadcrumbMenuItemEvents]) {
+            [[NSNotificationCenter defaultCenter]
+             addObserver:self
+             selector:@selector(sendBreadcrumbForMenuItemNotification:)
+             name:name
+             object:nil];
+        }
+    } else {
+        NSArray* eventNames = [[[[self automaticBreadcrumbStateEvents]
+          arrayByAddingObjectsFromArray:[self automaticBreadcrumbControlEvents]]
+          arrayByAddingObjectsFromArray:[self automaticBreadcrumbMenuItemEvents]]
+          arrayByAddingObjectsFromArray:[self automaticBreadcrumbTableItemEvents]];
+        for (NSString *name in eventNames) {
+            [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                            name:name
+                                                          object:nil];
+        }
+    }
+}
+
+- (NSArray <NSString *>*)automaticBreadcrumbStateEvents {
+#if TARGET_OS_TV
+    return @[NSUndoManagerDidUndoChangeNotification,
+             NSUndoManagerDidRedoChangeNotification,
+             UIWindowDidBecomeVisibleNotification,
+             UIWindowDidBecomeHiddenNotification,
+             UIWindowDidBecomeKeyNotification,
+             UIWindowDidResignKeyNotification,
+             UIScreenBrightnessDidChangeNotification];
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    return @[UIWindowDidBecomeHiddenNotification,
+             UIWindowDidBecomeVisibleNotification,
+             UIApplicationWillTerminateNotification,
+             UIApplicationWillEnterForegroundNotification,
+             UIApplicationDidEnterBackgroundNotification,
+             UIApplicationUserDidTakeScreenshotNotification,
+             UIKeyboardDidShowNotification,
+             UIKeyboardDidHideNotification,
+             UIMenuControllerDidShowMenuNotification,
+             UIMenuControllerDidHideMenuNotification,
+             NSUndoManagerDidUndoChangeNotification,
+             NSUndoManagerDidRedoChangeNotification];
+#elif TARGET_OS_MAC
+    return @[NSApplicationDidBecomeActiveNotification,
+             NSApplicationDidResignActiveNotification,
+             NSApplicationDidHideNotification,
+             NSApplicationDidUnhideNotification,
+             NSApplicationWillTerminateNotification,
+             NSWorkspaceScreensDidSleepNotification,
+             NSWorkspaceScreensDidWakeNotification,
+             NSWindowWillCloseNotification,
+             NSWindowDidBecomeKeyNotification,
+             NSWindowWillMiniaturizeNotification,
+             NSWindowDidEnterFullScreenNotification,
+             NSWindowDidExitFullScreenNotification];
+#else
+    return nil;
+#endif
+}
+
+- (NSArray <NSString *>*)automaticBreadcrumbControlEvents {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    return @[UITextFieldTextDidBeginEditingNotification,
+             UITextViewTextDidBeginEditingNotification,
+             UITextFieldTextDidEndEditingNotification,
+             UITextViewTextDidEndEditingNotification];
+#elif TARGET_OS_MAC
+    return @[NSControlTextDidBeginEditingNotification,
+             NSControlTextDidEndEditingNotification];
+#else
+    return nil;
+#endif
+}
+
+- (NSArray <NSString *>*)automaticBreadcrumbTableItemEvents {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE || TARGET_OS_TV
+    return @[UITableViewSelectionDidChangeNotification];
+#elif TARGET_OS_MAC
+    return @[NSTableViewSelectionDidChangeNotification];
+#else
+    return nil;
+#endif
+}
+
+- (NSArray <NSString *>*)automaticBreadcrumbMenuItemEvents {
+#if TARGET_OS_TV
+    return @[];
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    return nil;
+#elif TARGET_OS_MAC
+    return @[NSMenuWillSendActionNotification];
+#else
+    return nil;
+#endif
+}
+
+- (void)crumbleNotification:(NSString *)notificationName {
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(sendBreadcrumbForNotification:)
+             name:notificationName
+           object:nil];
 }
 
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
+- (void)sendBreadcrumbForNotification:(NSNotification *)note {
+  [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+    breadcrumb.type = BSGBreadcrumbTypeState;
+    breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
+  }];
+}
+
+- (void)sendBreadcrumbForTableViewNotification:(NSNotification *)note {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE || TARGET_OS_TV
+    UITableView *tableView = [note object];
+    NSIndexPath *indexPath = [tableView indexPathForSelectedRow];
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+        breadcrumb.type = BSGBreadcrumbTypeNavigation;
+        breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
+        if (indexPath) {
+            breadcrumb.metadata = @{
+                @"row": @(indexPath.row),
+                @"section": @(indexPath.section)
+            };
+        }
+    }];
+#elif TARGET_OS_MAC
+    NSTableView *tableView = [note object];
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+        breadcrumb.type = BSGBreadcrumbTypeNavigation;
+        breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
+        if (tableView) {
+            breadcrumb.metadata = @{
+                @"selectedRow": @(tableView.selectedRow),
+                @"selectedColumn": @(tableView.selectedColumn)
+            };
+        }
+    }];
 #endif
+}
 
-@end
-
-//
-//  NSDictionary+Merge.m
-//
-//  Created by Karl Stenerud on 2012-10-01.
-//
-//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall remain in place
-// in this source code.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-//
-
-@implementation NSDictionary (BSGKSMerge)
-
-- (NSDictionary*)BSG_mergedInto:(NSDictionary *)dest
-{
-  if([dest count] == 0)
-  {
-    return self;
-  }
-  if([self count] == 0)
-  {
-    return dest;
-  }
-
-  NSMutableDictionary* dict = [dest mutableCopy];
-  for(id key in [self allKeys])
-  {
-    id srcEntry = [self objectForKey:key];
-    id dstEntry = [dest objectForKey:key];
-    if([dstEntry isKindOfClass:[NSDictionary class]] &&
-       [srcEntry isKindOfClass:[NSDictionary class]])
-    {
-      srcEntry = [srcEntry BSG_mergedInto:dstEntry];
+- (void)sendBreadcrumbForMenuItemNotification:(NSNotification *)notif {
+#if TARGET_OS_TV
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif TARGET_OS_MAC
+    NSMenuItem *menuItem = [[notif userInfo] valueForKey:@"MenuItem"];
+    if ([menuItem isKindOfClass:[NSMenuItem class]]) {
+        [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+             breadcrumb.type = BSGBreadcrumbTypeState;
+             breadcrumb.name = BSGBreadcrumbNameForNotificationName(notif.name);
+             if (menuItem.title.length > 0)
+                 breadcrumb.metadata = @{ @"action" : menuItem.title };
+         }];
     }
-    [dict setObject:srcEntry forKey:key];
-  }
-  return dict;
+#endif
+}
+
+- (void)sendBreadcrumbForControlNotification:(NSNotification *)note {
+#if TARGET_OS_TV
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    UIControl* control = note.object;
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+        breadcrumb.type = BSGBreadcrumbTypeUser;
+        breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
+        NSString *label = control.accessibilityLabel;
+        if (label.length > 0) {
+            breadcrumb.metadata = @{ @"label": label };
+        }
+    }];
+#elif TARGET_OS_MAC
+    NSControl *control = note.object;
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+        breadcrumb.type = BSGBreadcrumbTypeUser;
+        breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
+        NSString *label = control.accessibilityLabel;
+        if (label.length > 0) {
+            breadcrumb.metadata = @{ @"label": label };
+        }
+    }];
+#endif
 }
 
 @end
+
