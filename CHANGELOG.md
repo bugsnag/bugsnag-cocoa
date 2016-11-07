@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 5.6.4 (7 Nov 2016)
+
+### Miscellaneous
+
+* Expose `app`, `appState`, `device`, `deviceState`, and `error` to crash report
+  callback blocks
+
 ## 5.6.3 (21 Oct 2016)
 
 ### Bug fixes
