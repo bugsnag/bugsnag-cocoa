@@ -38,7 +38,7 @@
 
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeNotifyHooks;
-@property(nonatomic, readwrite, strong) NSMutableArray *BugsnagBeforeSendBlock;
+@property(nonatomic, readwrite, strong) NSMutableArray *beforeSendBlocks;
 @end
 
 @implementation BugsnagConfiguration
