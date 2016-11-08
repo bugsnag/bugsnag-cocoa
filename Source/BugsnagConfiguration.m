@@ -51,7 +51,7 @@
     _autoNotify = YES;
     _notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
     _beforeNotifyHooks = [NSMutableArray new];
-    _BugsnagBeforeSendBlock = [NSMutableArray new];
+    _beforeSendBlocks = [NSMutableArray new];
     _notifyReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
     _automaticallyCollectBreadcrumbs = YES;
