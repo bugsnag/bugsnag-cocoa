@@ -145,6 +145,12 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
  */
 - (void)addBeforeSendBlock:(BugsnagBeforeSendBlock _Nonnull)block;
 
+
+/**
+ * Clear all callbacks
+ */
+- (void)clearBeforeSendBlocks;
+
 /**
  *  Whether reports shoould be sent, based on release stage options
  *

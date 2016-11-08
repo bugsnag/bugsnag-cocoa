@@ -83,6 +83,10 @@
   [(NSMutableArray *)self.beforeSendBlocks addObject:[block copy]];
 }
 
+- (void)clearBeforeSendBlocks {
+  [(NSMutableArray *)self.beforeSendBlocks removeAllObjects];
+}
+
 - (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook)hook {
   [(NSMutableArray *)self.beforeNotifyHooks addObject:[hook copy]];
 }
