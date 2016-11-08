@@ -42,6 +42,7 @@ describe(@"Bugsnag", ^{
     };
 
     beforeEach(^{
+        request = nil;
         BugsnagSink *sink = [[KSCrash sharedInstance] valueForKeyPath:@"sink"];
         NSURLSession *session = [sink valueForKeyPath:@"session"];
         [session stub:@selector(uploadTaskWithRequest:fromData:completionHandler:) withBlock:^id(NSArray *params) {
@@ -56,6 +57,7 @@ describe(@"Bugsnag", ^{
     afterEach(^{
         request = nil;
         httpBody = nil;
+        [[Bugsnag configuration] clearBeforeSendBlocks];
     });
 
     describe(@"notify:", ^{
@@ -84,6 +86,46 @@ describe(@"Bugsnag", ^{
 
         it(@"sends the exception type", ^{
             [[expectFutureValue(requestExceptionValue(@"type")) shouldSoon] equal:@"cocoa"];
+        });
+    });
+
+    describe(@"updating a report via notify: with beforeSend block", ^{
+        __block NSException *exception;
+        __block BOOL called;
+        beforeEach(^{
+            called = NO;
+            exception = [NSException exceptionWithName:@"failure to launch"
+                                                reason:@"no fuel" userInfo:nil];
+            [[Bugsnag configuration] addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagCrashReport * _Nonnull report) {
+                report.errorClass = @"FatalException";
+                called = YES;
+                return YES;
+            }];
+            [Bugsnag notify:exception];
+        });
+
+        it(@"invokes the block", ^{
+            [[expectFutureValue(@(called)) shouldSoon] equal:@YES];
+        });
+
+        it(@"updates report data", ^{
+             [[expectFutureValue(requestExceptionValue(@"errorClass")) shouldSoon] equal:@"FatalException"];
+        });
+    });
+
+    describe(@"cancelling a report via notify: with beforeSend block", ^{
+        __block NSException *exception;
+        beforeEach(^{
+            exception = [NSException exceptionWithName:@"failure to launch"
+                                                reason:@"no fuel" userInfo:nil];
+            [[Bugsnag configuration] addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagCrashReport * _Nonnull report) {
+                return NO;
+            }];
+            [Bugsnag notify:exception];
+        });
+
+        it(@"cancels the report", ^{
+            [[expectFutureValue(request) shouldAfterWait] beNil];
         });
     });
 
