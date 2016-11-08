@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## 5.6.5 (7 Nov 2016)
+
+### Bug fixes
+
+* Fix assignment of `beforeSendBlocks` to incorrect property name
+  [Spike Brehm](https://github.com/spikebrehm)
+  [#125](https://github.com/bugsnag/bugsnag-cocoa/pull/125)
+
 ## 5.6.4 (7 Nov 2016)
 
 ### Miscellaneous
