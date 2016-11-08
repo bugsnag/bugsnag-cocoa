@@ -38,7 +38,7 @@
 
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeNotifyHooks;
-@property(nonatomic, readwrite, strong) NSMutableArray *BugsnagBeforeSendBlock;
+@property(nonatomic, readwrite, strong) NSMutableArray *beforeSendBlocks;
 @end
 
 @implementation BugsnagConfiguration
@@ -51,7 +51,7 @@
     _autoNotify = YES;
     _notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
     _beforeNotifyHooks = [NSMutableArray new];
-    _BugsnagBeforeSendBlock = [NSMutableArray new];
+    _beforeSendBlocks = [NSMutableArray new];
     _notifyReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
     _automaticallyCollectBreadcrumbs = YES;
@@ -81,6 +81,10 @@
 
 - (void)addBeforeSendBlock:(BugsnagBeforeSendBlock)block {
   [(NSMutableArray *)self.beforeSendBlocks addObject:[block copy]];
+}
+
+- (void)clearBeforeSendBlocks {
+  [(NSMutableArray *)self.beforeSendBlocks removeAllObjects];
 }
 
 - (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook)hook {
