@@ -78,7 +78,7 @@
     
     if (bugsnagReports.count == 0) {
         if (onCompletion) {
-            onCompletion(reports, YES, nil);
+            onCompletion(bugsnagReports, YES, nil);
         }
         return;
     }
