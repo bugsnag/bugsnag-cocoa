@@ -34,6 +34,8 @@
 		8A7630E21D2523AE000D6737 /* Kiwi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A7630E11D2523AE000D6737 /* Kiwi.framework */; };
 		8A7630E51D2524DB000D6737 /* BugsnagSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A7630DF1D252309000D6737 /* BugsnagSpec.m */; };
 		8A87352C1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A87352B1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8AD9FA881E08633F002859A7 /* BugsnagConfigurationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD9FA841E0862DC002859A7 /* BugsnagConfigurationSpec.m */; };
+		8AD9FA891E086351002859A7 /* BugsnagConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD9FA851E0862DC002859A7 /* BugsnagConfigurationTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +83,8 @@
 		8A7630DF1D252309000D6737 /* BugsnagSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSpec.m; path = ../Tests/BugsnagSpec.m; sourceTree = SOURCE_ROOT; };
 		8A7630E11D2523AE000D6737 /* Kiwi.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kiwi.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/OSX-fywomumlxcstijawyihsvjfwghcm/Build/Products/Debug/Kiwi.framework"; sourceTree = "<group>"; };
 		8A87352B1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSGKSCrashReportWriter.h; path = ../Source/BSGKSCrashReportWriter.h; sourceTree = SOURCE_ROOT; };
+		8AD9FA841E0862DC002859A7 /* BugsnagConfigurationSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationSpec.m; path = ../Tests/BugsnagConfigurationSpec.m; sourceTree = SOURCE_ROOT; };
+		8AD9FA851E0862DC002859A7 /* BugsnagConfigurationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationTests.m; path = ../Tests/BugsnagConfigurationTests.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +158,8 @@
 		8A2C8FAF1C6BC1F700846019 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				8AD9FA841E0862DC002859A7 /* BugsnagConfigurationSpec.m */,
+				8AD9FA851E0862DC002859A7 /* BugsnagConfigurationTests.m */,
 				8A2C8FE01C6BC38200846019 /* BugsnagBreadcrumbsTest.m */,
 				8A2C8FE11C6BC38200846019 /* BugsnagCrashReportTests.m */,
 				8A7630DF1D252309000D6737 /* BugsnagSpec.m */,
@@ -310,9 +316,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8AD9FA881E08633F002859A7 /* BugsnagConfigurationSpec.m in Sources */,
 				8A2C8FEA1C6BC38900846019 /* BugsnagBreadcrumbsTest.m in Sources */,
 				8A2C8FEC1C6BC38900846019 /* BugsnagSinkTests.m in Sources */,
 				8A7630E51D2524DB000D6737 /* BugsnagSpec.m in Sources */,
+				8AD9FA891E086351002859A7 /* BugsnagConfigurationTests.m in Sources */,
 				8A2C8FEB1C6BC38900846019 /* BugsnagCrashReportTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

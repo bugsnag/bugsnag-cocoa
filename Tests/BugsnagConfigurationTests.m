@@ -1,11 +1,17 @@
 #import <XCTest/XCTest.h>
 #import "BugsnagConfiguration.h"
+#import "Bugsnag.h"
 
 
 @interface BugsnagConfigurationTests : XCTestCase
 @end
 
 @implementation BugsnagConfigurationTests
+
+- (void)testDefaultSessionNotNil {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertNotNil(config.session);
+}
 
 - (void)testNotifyReleaseStagesDefaultSends {
     BugsnagConfiguration *config = [BugsnagConfiguration new];

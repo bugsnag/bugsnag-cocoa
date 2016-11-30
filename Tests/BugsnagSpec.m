@@ -43,8 +43,7 @@ describe(@"Bugsnag", ^{
 
     beforeEach(^{
         request = nil;
-        BugsnagSink *sink = [[KSCrash sharedInstance] valueForKeyPath:@"sink"];
-        NSURLSession *session = [sink valueForKeyPath:@"session"];
+        NSURLSession *session = [Bugsnag configuration].session;
         [session stub:@selector(uploadTaskWithRequest:fromData:completionHandler:) withBlock:^id(NSArray *params) {
             request = [params firstObject];
             httpBody = params[1];
