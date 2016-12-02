@@ -67,7 +67,7 @@ struct bugsnag_data_t {
 static struct bugsnag_data_t g_bugsnag_data;
 
 // Store the current number of reports written, but not sent
-int32_t report_count = 0;
+NSInteger report_count = 0;
 
 // Lock used to ensure notifies are not written / deleted or sent at the same time
 NSLock  *report_lock;
