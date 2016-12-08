@@ -66,14 +66,7 @@ struct bugsnag_data_t {
 
 static struct bugsnag_data_t g_bugsnag_data;
 
-// Store the current number of reports written, but not sent
-NSInteger report_count = 0;
 
-// Lock used to ensure notifies are not written / deleted or sent at the same time
-NSLock  *report_lock;
-
-// The timer used to send reports that are not in a complete batch
-NSTimer *send_reports_timer;
 
 /**
  *  Handler executed when the application crashes. Writes information about the
@@ -129,6 +122,11 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     }
 }
 
+@interface BugsnagNotifier()
+@property (nonatomic, strong) NSTimer *reportBatchTimer;
+@property (nonatomic) NSInteger unsentReportCount;
+@end
+
 @implementation BugsnagNotifier
 
 @synthesize configuration;
@@ -151,7 +149,6 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         [self metaDataChanged: self.configuration.config];
         [self metaDataChanged: self.state];
         g_bugsnag_data.onCrash = (void (*)(const KSCrashReportWriter *))self.configuration.onCrashHandler;
-        report_lock = [NSLock new];
     }
 
     return self;
@@ -247,20 +244,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     NSString *reportMessage = report.errorMessage ?: @"";
     NSArray *reportDetails = @[[reportName copy], [reportMessage copy]];
 
-    // Reset the timer for sending incomplete batched
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [send_reports_timer invalidate];
-        send_reports_timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(sendPendingReports) userInfo:nil repeats:NO];
-    });
-
     // Send the individual report in the background
     [self performSelectorInBackground:@selector(sendReport:) withObject:reportDetails];
 
-    [[KSCrash sharedInstance] reportUserException:reportName
-                                           reason:reportMessage
-                                         language:NULL lineOfCode:@""
-                                       stackTrace:@[]
-                                 terminateProgram:NO];
     // Restore metaData to pre-crash state.
     [self.metaDataLock unlock];
     [self metaDataChanged:self.configuration.metaData];
@@ -290,17 +276,37 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     [self.state addAttribute:BSAttributeBreadcrumbs withValue:arrayValue toTabWithName:BSTabCrash];
 }
 
++ (NSLock *)reportDeliveryLock {
+    static NSLock *lock = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        lock = [NSLock new];
+    });
+
+    return lock;
+}
+
+- (void)resetDeliveryTimer {
+    [self.reportBatchTimer invalidate];
+    self.reportBatchTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f
+                                                             target:self
+                                                           selector:@selector(sendPendingReports)
+                                                           userInfo:nil
+                                                            repeats:NO];
+}
+
 - (void) sendReport:(NSArray*) reportDetails {
-    @synchronized(report_lock) {
+    [self resetDeliveryTimer];
+    @synchronized([BugsnagNotifier reportDeliveryLock]) {
         [[KSCrash sharedInstance] reportUserException:reportDetails[0]
                                                reason:reportDetails[1]
                                              language:NULL lineOfCode:@""
                                            stackTrace:@[]
                                      terminateProgram:NO];
-        report_count++;
+        self.unsentReportCount++;
 
         // Send the reports if we have reached the max reports to send
-        if (report_count == MAX_BATCH_REPORT_SIZE) {
+        if (self.unsentReportCount == MAX_BATCH_REPORT_SIZE) {
             [self sendPendingReports];
 
         }
@@ -309,7 +315,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
 - (void) sendPendingReports {
     // Make sure we're not trying to write an other user reports or sending any
-    @synchronized(report_lock) {
+    @synchronized([BugsnagNotifier reportDeliveryLock]) {
         @autoreleasepool {
             // Use a semaphore to synchronize sending with completion to ensure the report file is deleted
             // before carrying on
@@ -322,7 +328,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                         NSLog(@"Bugsnag reports sent.");
 
                     dispatch_semaphore_signal(notify_semaphore);
-                    report_count = 0;
+                    self.unsentReportCount = 0;
                 }];
                 // Don't carry on till the send complete (or after a second if it timeouts)
                 dispatch_semaphore_wait(notify_semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)));
