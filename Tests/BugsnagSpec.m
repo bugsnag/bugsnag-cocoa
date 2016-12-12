@@ -11,7 +11,7 @@
 #import "Bugsnag.h"
 #import "BugsnagSink.h"
 
-#define shouldSoon shouldEventuallyBeforeTimingOutAfter(0.2)
+#define shouldSoon shouldEventuallyBeforeTimingOutAfter(1.2)
 
 @interface BugsnagTestError : NSError
 @end
