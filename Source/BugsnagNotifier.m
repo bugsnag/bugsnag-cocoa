@@ -227,37 +227,49 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 - (void)notify:(NSString *)exceptionName
        message:(NSString *)message
          block:(void (^)(BugsnagCrashReport *))block {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:exceptionName
-                                                                  errorMessage:message
-                                                                 configuration:self.configuration
-                                                                      metaData:[self.configuration.metaData toDictionary]
-                                                                      severity:BSGSeverityWarning];
-    if (block)
-        block(report);
 
-    [self.metaDataLock lock];
-    BSSerializeJSONDictionary(report.metaData, &g_bugsnag_data.metaDataJSON);
-    BSSerializeJSONDictionary(report.overrides, &g_bugsnag_data.userOverridesJSON);
-    [self.state addAttribute:BSAttributeSeverity withValue:BSGFormatSeverity(report.severity) toTabWithName:BSTabCrash];
-    [self.state addAttribute:BSAttributeDepth withValue:@(report.depth + 3) toTabWithName:BSTabCrash];
-    NSString *reportName = report.errorClass ?: NSStringFromClass([NSException class]);
-    NSString *reportMessage = report.errorMessage ?: @"";
-    NSArray *reportDetails = @[[reportName copy], [reportMessage copy]];
+    @synchronized([BugsnagNotifier reportDeliveryLock]) {
+        BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:exceptionName
+                                                                      errorMessage:message
+                                                                     configuration:self.configuration
+                                                                          metaData:[self.configuration.metaData toDictionary]
+                                                                          severity:BSGSeverityWarning];
+        if (block)
+            block(report);
 
-    // Send the individual report in the background
-    [self performSelectorInBackground:@selector(sendReport:) withObject:reportDetails];
+        [self.metaDataLock lock];
+        BSSerializeJSONDictionary(report.metaData, &g_bugsnag_data.metaDataJSON);
+        BSSerializeJSONDictionary(report.overrides, &g_bugsnag_data.userOverridesJSON);
+        [self.state addAttribute:BSAttributeSeverity withValue:BSGFormatSeverity(report.severity) toTabWithName:BSTabCrash];
+        [self.state addAttribute:BSAttributeDepth withValue:@(report.depth + 3) toTabWithName:BSTabCrash];
+        NSString *reportName = report.errorClass ?: NSStringFromClass([NSException class]);
+        NSString *reportMessage = report.errorMessage ?: @"";
+        NSArray *reportDetails = @[[reportName copy], [reportMessage copy]];
 
-    // Restore metaData to pre-crash state.
-    [self.metaDataLock unlock];
-    [self metaDataChanged:self.configuration.metaData];
-    [[self state] clearTab:BSTabCrash];
-    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
-      crumb.type = BSGBreadcrumbTypeError;
-      crumb.name = reportName;
-      crumb.metadata = @{ @"message": reportMessage, @"severity": BSGFormatSeverity(report.severity) };
-    }];
-
-    [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
+        // Send the individual report in the background
+        [[KSCrash sharedInstance] reportUserException:reportDetails[0]
+                                               reason:reportDetails[1]
+                                             language:NULL lineOfCode:@""
+                                           stackTrace:@[]
+                                     terminateProgram:NO];
+        self.unsentReportCount++;
+        
+        // Restore metaData to pre-crash state.
+        [self.metaDataLock unlock];
+        [self metaDataChanged:self.configuration.metaData];
+        [[self state] clearTab:BSTabCrash];
+        [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
+            crumb.type = BSGBreadcrumbTypeError;
+            crumb.name = reportName;
+            crumb.metadata = @{ @"message": reportMessage, @"severity": BSGFormatSeverity(report.severity) };
+        }];
+    }
+    [self resetDeliveryTimer];
+    
+    // Send the reports if we have reached the max reports to send
+    if (self.unsentReportCount == MAX_BATCH_REPORT_SIZE) {
+        [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
+    }
 }
 
 - (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
@@ -293,24 +305,6 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                                                            selector:@selector(sendPendingReports)
                                                            userInfo:nil
                                                             repeats:NO];
-}
-
-- (void) sendReport:(NSArray*) reportDetails {
-    [self resetDeliveryTimer];
-    @synchronized([BugsnagNotifier reportDeliveryLock]) {
-        [[KSCrash sharedInstance] reportUserException:reportDetails[0]
-                                               reason:reportDetails[1]
-                                             language:NULL lineOfCode:@""
-                                           stackTrace:@[]
-                                     terminateProgram:NO];
-        self.unsentReportCount++;
-
-        // Send the reports if we have reached the max reports to send
-        if (self.unsentReportCount == MAX_BATCH_REPORT_SIZE) {
-            [self sendPendingReports];
-
-        }
-    }
 }
 
 - (void) sendPendingReports {
