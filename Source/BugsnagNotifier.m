@@ -227,16 +227,21 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 - (void)notify:(NSString *)exceptionName
        message:(NSString *)message
          block:(void (^)(BugsnagCrashReport *))block {
+    
+    
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:exceptionName
+                                                                  errorMessage:message
+                                                                 configuration:self.configuration
+                                                                      metaData:[self.configuration.metaData toDictionary]
+                                                                      severity:BSGSeverityWarning];
+    if (block)
+        block(report);
+    
+    [self performSelectorInBackground:@selector(sendReport:) withObject:report];
+}
 
+- (void)sendReport:(BugsnagCrashReport *) report {
     @synchronized([BugsnagNotifier reportDeliveryLock]) {
-        BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:exceptionName
-                                                                      errorMessage:message
-                                                                     configuration:self.configuration
-                                                                          metaData:[self.configuration.metaData toDictionary]
-                                                                          severity:BSGSeverityWarning];
-        if (block)
-            block(report);
-
         [self.metaDataLock lock];
         BSSerializeJSONDictionary(report.metaData, &g_bugsnag_data.metaDataJSON);
         BSSerializeJSONDictionary(report.overrides, &g_bugsnag_data.userOverridesJSON);
@@ -263,12 +268,14 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
             crumb.name = reportName;
             crumb.metadata = @{ @"message": reportMessage, @"severity": BSGFormatSeverity(report.severity) };
         }];
-    }
-    [self resetDeliveryTimer];
-    
-    // Send the reports if we have reached the max reports to send
-    if (self.unsentReportCount == MAX_BATCH_REPORT_SIZE) {
-        [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
+        
+        
+        // Send the reports if we have reached the max reports to send
+        if (self.unsentReportCount == MAX_BATCH_REPORT_SIZE) {
+            [self sendPendingReports];
+        } else {
+            [self resetDeliveryTimer];
+        }
     }
 }
 
@@ -300,11 +307,14 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
 - (void)resetDeliveryTimer {
     [self.reportBatchTimer invalidate];
-    self.reportBatchTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f
-                                                             target:self
-                                                           selector:@selector(sendPendingReports)
-                                                           userInfo:nil
-                                                            repeats:NO];
+    
+    self.reportBatchTimer = [NSTimer timerWithTimeInterval:1.0f
+                                                    target:self
+                                                  selector:@selector(sendPendingReports)
+                                                  userInfo:nil
+                                                   repeats:NO];
+    
+    [[NSRunLoop mainRunLoop] addTimer:self.reportBatchTimer forMode:NSRunLoopCommonModes];
 }
 
 - (void) sendPendingReports {
