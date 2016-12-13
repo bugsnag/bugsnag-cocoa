@@ -64,7 +64,7 @@ describe(@"Bugsnag", ^{
             NSException *exception = [NSException exceptionWithName:@"failure to launch"
                                                              reason:@"no pilot" userInfo:nil];
             [Bugsnag notify:exception];
-            [NSThread sleepForTimeInterval:1.2];
+            [NSThread sleepForTimeInterval:1.5];
         });
 
         it(@"sends to the default endpoint", ^{
@@ -101,7 +101,7 @@ describe(@"Bugsnag", ^{
                 report.metaData = @{ @"labels": @{ @"enabled": @"false" }};
                 report.breadcrumbs = breadcrumbs;
             }];
-            [NSThread sleepForTimeInterval:1.2];
+            [NSThread sleepForTimeInterval:1.5];
         });
 
         it(@"sends the context", ^{
@@ -141,7 +141,7 @@ describe(@"Bugsnag", ^{
                                                       userInfo:@{NSLocalizedDescriptionKey: @"Stuff is broken",
                                                                  NSLocalizedFailureReasonErrorKey: @"The rent is too high"}];
             [Bugsnag notifyError:error];
-            [NSThread sleepForTimeInterval:1.2];
+            [NSThread sleepForTimeInterval:1.5];
         });
 
         it(@"sends the error class", ^{
@@ -178,7 +178,7 @@ describe(@"Bugsnag", ^{
                 report.errorClass = @"Doughnut";
                 report.errorMessage = @"None";
             }];
-            [NSThread sleepForTimeInterval:1.2];
+            [NSThread sleepForTimeInterval:1.5];
         });
 
         it(@"updates the error class", ^{
