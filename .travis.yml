@@ -5,8 +5,6 @@ matrix:
           env: SDK=macosx10.11 BUILD_OSX=1
         - osx_image: xcode7.3
           env: SDK=iphonesimulator9.3
-        - osx_image: xcode7.2
-          env: SDK=iphonesimulator9.2
         - osx_image: xcode7.3
           env: SDK=appletvsimulator9.2
 install: make bootstrap
