@@ -125,6 +125,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 @interface BugsnagNotifier()
 @property (nonatomic, strong) NSTimer *reportBatchTimer;
 @property (nonatomic) NSInteger unsentReportCount;
+@property (nonatomic) dispatch_queue_t sendQueue;
 @end
 
 @implementation BugsnagNotifier
@@ -144,10 +145,12 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         self.configuration.metaData.delegate = self;
         self.configuration.config.delegate = self;
         self.state.delegate = self;
+        self.sendQueue = dispatch_queue_create("com.bugsnag.sendQueue", NULL);
 
         [self metaDataChanged: self.configuration.metaData];
         [self metaDataChanged: self.configuration.config];
         [self metaDataChanged: self.state];
+        
         g_bugsnag_data.onCrash = (void (*)(const KSCrashReportWriter *))self.configuration.onCrashHandler;
     }
 
@@ -237,7 +240,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     if (block)
         block(report);
     
-    [self performSelectorInBackground:@selector(sendReport:) withObject:report];
+    dispatch_async(self.sendQueue, ^{
+        [self sendReport:report];
+    });
 }
 
 - (void)sendReport:(BugsnagCrashReport *) report {
