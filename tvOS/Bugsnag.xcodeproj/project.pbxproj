@@ -30,6 +30,7 @@
 		8AD9A5031D42EEB0004E1CC5 /* BugsnagNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB151331D41366400C9B218 /* BugsnagNotifier.m */; };
 		8AD9A5041D42EEB0004E1CC5 /* BugsnagSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB151351D41366400C9B218 /* BugsnagSink.m */; };
 		8AD9A5051D42EEE9004E1CC5 /* BSGKSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AB151251D41366400C9B218 /* BSGKSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8AD9FA8D1E0863A1002859A7 /* BugsnagConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD9FA8B1E0863A1002859A7 /* BugsnagConfigurationTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,8 @@
 		8AB151341D41366400C9B218 /* BugsnagSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagSink.h; path = ../Source/BugsnagSink.h; sourceTree = "<group>"; };
 		8AB151351D41366400C9B218 /* BugsnagSink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSink.m; path = ../Source/BugsnagSink.m; sourceTree = "<group>"; };
 		8AB1513E1D4136F100C9B218 /* KSCrash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KSCrash.framework; path = "../../../../Library/Developer/Xcode/DerivedData/tvOS-ebsbvpxsfrmszpejtqlahdcmtszc/Build/Products/Debug-appletvsimulator/KSCrash.framework"; sourceTree = "<group>"; };
+		8AD9FA8A1E0863A1002859A7 /* BugsnagConfigurationSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationSpec.m; path = ../Tests/BugsnagConfigurationSpec.m; sourceTree = SOURCE_ROOT; };
+		8AD9FA8B1E0863A1002859A7 /* BugsnagConfigurationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationTests.m; path = ../Tests/BugsnagConfigurationTests.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +141,8 @@
 		8AB151131D41356800C9B218 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				8AD9FA8A1E0863A1002859A7 /* BugsnagConfigurationSpec.m */,
+				8AD9FA8B1E0863A1002859A7 /* BugsnagConfigurationTests.m */,
 				8AB1511D1D41361700C9B218 /* BugsnagBreadcrumbsTest.m */,
 				8AB1511E1D41361700C9B218 /* BugsnagCrashReportTests.m */,
 				8AB1511F1D41361700C9B218 /* BugsnagSinkTests.m */,
@@ -289,6 +294,7 @@
 				8AB151231D41361700C9B218 /* BugsnagSinkTests.m in Sources */,
 				8AB151211D41361700C9B218 /* BugsnagBreadcrumbsTest.m in Sources */,
 				8AB151221D41361700C9B218 /* BugsnagCrashReportTests.m in Sources */,
+				8AD9FA8D1E0863A1002859A7 /* BugsnagConfigurationTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

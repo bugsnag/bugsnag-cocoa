@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Add support for customizing the `NSURLSession` used when sending error reports
+  to Bugsnag
+  [#127](https://github.com/bugsnag/bugsnag-cocoa/pull/127)
+
 ## 5.6.5 (7 Nov 2016)
 
 ### Bug fixes

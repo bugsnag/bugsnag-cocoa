@@ -92,6 +92,11 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
 @property(nonatomic, readwrite, retain, nullable) NSString *appVersion;
 
 /**
+ *  The URL session used to send requests to Bugsnag.
+ */
+@property(nonatomic, readwrite, strong, nonnull) NSURLSession *session;
+
+/**
  *  Additional information about the state of the app or environment at the 
  *  time the report was generated
  */

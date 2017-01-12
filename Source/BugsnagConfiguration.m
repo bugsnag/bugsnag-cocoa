@@ -55,6 +55,9 @@
     _notifyReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
     _automaticallyCollectBreadcrumbs = YES;
+    if ([NSURLSession class]) {
+      _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    }
 #if DEBUG
     _releaseStage = @"development";
 #else

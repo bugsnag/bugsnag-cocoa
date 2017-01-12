@@ -37,18 +37,8 @@
 + (BugsnagNotifier*)notifier;
 @end
 
-@interface BugsnagSink ()
-@property (nonatomic, strong) NSURLSession *session;
-@end
 
 @implementation BugsnagSink
-
-- (instancetype)init {
-    if (self = [super init])
-        _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-    
-    return self;
-}
 
 // Entry point called by KSCrash when a report needs to be sent. Handles report filtering based on the configuration
 // options for `notifyReleaseStages`.
@@ -132,7 +122,11 @@
 
 
         if ([NSURLSession class]) {
-            NSURLSessionTask *task = [self.session uploadTaskWithRequest:request fromData:jsonData completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            NSURLSession *session = [Bugsnag configuration].session;
+            if (!session) {
+                session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+            }
+            NSURLSessionTask *task = [session uploadTaskWithRequest:request fromData:jsonData completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                 if (onCompletion)
                     onCompletion(reports, error == nil, error);
             }];
