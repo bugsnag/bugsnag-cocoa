@@ -1,7 +1,11 @@
 Changelog
 =========
 
-## TBD
+## 5.7.0
+
+This release updates the dependent KSCrash version to 1.11.2, which changes the
+signature of `KSCrashReportWriter.addJSONElement()` to include whether to close
+the JSON container.
 
 ### Enhancements
 
