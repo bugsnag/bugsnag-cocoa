@@ -3,7 +3,7 @@
 [![macOS Documentation](https://img.shields.io/badge/macos_documentation-latest-blue.svg)](http://docs.bugsnag.com/platforms/osx/)
 [![Build status](https://travis-ci.org/bugsnag/bugsnag-cocoa.svg?branch=master)](https://travis-ci.org/bugsnag/bugsnag-cocoa)
 
-The Bugsnag crash reporter for Cocoa library automatically detects crashes and fatal signals in your iOS 6.0+ or OS X 10.8+  apps, collecting diagnostic information and immediately notifying your development team, helping you to understand and resolve issues as fast as possible.
+The Bugsnag crash reporter for Cocoa library automatically detects crashes and fatal signals in your iOS 6.0+ or OS X 10.8+  apps, collecting diagnostic information and immediately notifying your development team, helping you to understand and resolve issues as fast as possible. Learn more about [iOS crash reporting with Bugsnag](https://www.bugsnag.com/platforms/ios-crash-reporting/). 
 
 ## Features
 
