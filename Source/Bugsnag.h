@@ -182,7 +182,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * By default, we'll keep and send the 20 most recent breadcrumb log
  * messages.
  *
- * @param max  number of breadcrumb log messages to send
+ * @param capacity max number of breadcrumb log messages to send
  */
 + (void)setBreadcrumbCapacity:(NSUInteger)capacity;
 
