@@ -44,7 +44,7 @@ typedef void (^BugsnagNotifyBlock)(BugsnagCrashReport *_Nonnull report);
  *
  *  @param rawEventData The raw event data written at crash time. This
  *                      includes data added in onCrashHandler.
- *  @param report       The report generated from the rawEventData
+ *  @param reports      The report generated from the rawEventData
  *
  *  @return YES if the report should be sent
  */
