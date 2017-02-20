@@ -1,56 +1,8 @@
 PODS:
-  - Bugsnag (4.1.0):
-    - KSCrash/Recording (~> 1.0.0)
-    - KSCrash/Reporting (~> 1.0.0)
-  - KSCrash/no-arc (1.0.0)
-  - KSCrash/Recording (1.0.0):
-    - KSCrash/no-arc
-  - KSCrash/Reporting (1.0.0):
-    - KSCrash/Recording
-    - KSCrash/Reporting/Filters (= 1.0.0)
-    - KSCrash/Reporting/MessageUI (= 1.0.0)
-    - KSCrash/Reporting/Sinks (= 1.0.0)
-    - KSCrash/Reporting/Tools (= 1.0.0)
-  - KSCrash/Reporting/Filters (1.0.0):
-    - KSCrash/Recording
-    - KSCrash/Reporting/Filters/Alert (= 1.0.0)
-    - KSCrash/Reporting/Filters/AppleFmt (= 1.0.0)
-    - KSCrash/Reporting/Filters/Base (= 1.0.0)
-    - KSCrash/Reporting/Filters/Basic (= 1.0.0)
-    - KSCrash/Reporting/Filters/GZip (= 1.0.0)
-    - KSCrash/Reporting/Filters/JSON (= 1.0.0)
-    - KSCrash/Reporting/Filters/Sets (= 1.0.0)
-  - KSCrash/Reporting/Filters/Alert (1.0.0):
-    - KSCrash/Recording
-    - KSCrash/Reporting/Filters/Base
-  - KSCrash/Reporting/Filters/AppleFmt (1.0.0):
-    - KSCrash/Recording
-    - KSCrash/Reporting/Filters/Base
-  - KSCrash/Reporting/Filters/Base (1.0.0):
-    - KSCrash/Recording
-  - KSCrash/Reporting/Filters/Basic (1.0.0):
-    - KSCrash/Recording
-    - KSCrash/Reporting/Filters/Base
-  - KSCrash/Reporting/Filters/GZip (1.0.0):
-    - KSCrash/Recording
-    - KSCrash/Reporting/Filters/Base
-  - KSCrash/Reporting/Filters/JSON (1.0.0):
-    - KSCrash/Recording
-    - KSCrash/Reporting/Filters/Base
-  - KSCrash/Reporting/Filters/Sets (1.0.0):
-    - KSCrash/Recording
-    - KSCrash/Reporting/Filters/AppleFmt
-    - KSCrash/Reporting/Filters/Base
-    - KSCrash/Reporting/Filters/Basic
-    - KSCrash/Reporting/Filters/GZip
-    - KSCrash/Reporting/Filters/JSON
-  - KSCrash/Reporting/MessageUI (1.0.0):
-    - KSCrash/Recording
-  - KSCrash/Reporting/Sinks (1.0.0):
-    - KSCrash/Recording
-    - KSCrash/Reporting/Filters
-    - KSCrash/Reporting/Tools
-  - KSCrash/Reporting/Tools (1.0.0):
+  - Bugsnag (5.7.0):
+    - KSCrash/RecordingAdvanced (= 1.11.2)
+  - KSCrash/Recording (1.11.2)
+  - KSCrash/RecordingAdvanced (1.11.2):
     - KSCrash/Recording
 
 DEPENDENCIES:
@@ -61,7 +13,9 @@ EXTERNAL SOURCES:
     :path: "../.."
 
 SPEC CHECKSUMS:
-  Bugsnag: 3f6f32511a1488f3f91adb329234827b11398192
-  KSCrash: 248e7d1d5b3c375b3cbcc9654f570eb756ebbbb5
+  Bugsnag: d86488d670f91acbce0186e6570e500039676ef0
+  KSCrash: 8acc46aca72b2772d5d1e3cba1da9173db4d705e
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: 2107babfbfdb18f0288407b9d9ebd48cbee8661c
+
+COCOAPODS: 1.2.0.beta.1

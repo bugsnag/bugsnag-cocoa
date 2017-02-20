@@ -22,7 +22,7 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    @IBAction func doCrash(sender: AnyObject) {
+    @IBAction func doCrash(_ sender: AnyObject) {
         AnotherClass().crash()
     }
 }

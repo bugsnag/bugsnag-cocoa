@@ -1,3 +1,5 @@
 platform :ios, '8.0'
-pod 'Bugsnag', :path => "../.."
 
+target 'bugsnag-example' do
+  pod 'Bugsnag', :path => "../.."
+end

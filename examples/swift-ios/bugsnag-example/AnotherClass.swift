@@ -31,11 +31,11 @@ class AnotherClass: NSObject {
         }
     }
 
-    func makingAStackTrace(block: () -> ()) {
+    func makingAStackTrace(_ block: () -> ()) {
         block()
     }
 
     func crash3() {
-        Bugsnag.notify(NSException(name: "Test error", reason: "Testing if this works", userInfo: nil))
+        preconditionFailure("This should NEVER happen")
     }
 }
