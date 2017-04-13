@@ -36,7 +36,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 /** Get the current Bugsnag configuration.
  *
- * This method returns nil if called before +startBugsnagWIthApiKey: or
+ * This method returns nil if called before +startBugsnagWithApiKey: or
  * +startBugsnagWithConfiguration:, and otherwise returns the current
  * configuration for Bugsnag.
  *
