@@ -7,10 +7,10 @@ ifeq ($(BUILD_OSX), 1)
  BUILD_FLAGS=-workspace OSX.xcworkspace -scheme Bugsnag
  BUILD_ONLY_FLAGS=CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 else
- ifeq ($(SDK),appletvsimulator9.2)
+ ifeq ($(BUILD_TV), 1)
   PLATFORM=tvOS
   BUILD_FLAGS=-workspace tvOS.xcworkspace -scheme Bugsnag
-  BUILD_ONLY_FLAGS=-sdk $(SDK) -configuration Debug
+  BUILD_ONLY_FLAGS=-sdk $(SDK) -configuration Debug -destination "platform=tvOS Simulator,name=Apple TV 1080p"
  else
   PLATFORM=iOS
   RELEASE_DIR=Release-iphoneos
