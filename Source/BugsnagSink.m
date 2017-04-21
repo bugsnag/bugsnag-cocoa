@@ -37,8 +37,35 @@
 + (BugsnagNotifier*)notifier;
 @end
 
+@interface BugsnagSink ()
+@property (nonatomic, strong) NSOperationQueue *sendQueue;
+@end
+
+@interface BSGDelayOperation : NSOperation
+@end
+
+@interface BSGDeliveryOperation : NSOperation
+@end
 
 @implementation BugsnagSink
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _sendQueue = [[NSOperationQueue alloc] init];
+        _sendQueue.maxConcurrentOperationCount = 1;
+        _sendQueue.qualityOfService = NSQualityOfServiceUtility;
+        _sendQueue.name = @"Bugsnag Delivery Queue";
+    }
+    return self;
+}
+
+- (void)sendPendingReports {
+    [self.sendQueue cancelAllOperations];
+    BSGDelayOperation *delay = [BSGDelayOperation new];
+    BSGDeliveryOperation *deliver = [BSGDeliveryOperation new];
+    [deliver addDependency:delay];
+    [self.sendQueue addOperations:@[delay, deliver] waitUntilFinished:NO];
+}
 
 // Entry point called by KSCrash when a report needs to be sent. Handles report filtering based on the configuration
 // options for `notifyReleaseStages`.
@@ -168,6 +195,35 @@
     BSGDictSetSafeObject(data, formatted, @"events");
     
     return data;
+}
+
+@end
+
+@implementation BSGDelayOperation
+const NSTimeInterval BSG_SEND_DELAY_SECS = 1;
+
+- (void)main {
+    [NSThread sleepForTimeInterval:BSG_SEND_DELAY_SECS];
+}
+
+@end
+
+@implementation BSGDeliveryOperation
+
+-(void)main {
+    @autoreleasepool {
+        @try {
+            [[KSCrash sharedInstance] sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
+                if (error)
+                    NSLog(@"Failed to send Bugsnag reports: %@", error);
+                else if (filteredReports.count > 0)
+                    NSLog(@"Bugsnag reports sent.");
+            }];
+        }
+        @catch (NSException* e) {
+            NSLog(@"Error sending report to Bugsnag: %@", e);
+        }
+    }
 }
 
 @end

@@ -36,7 +36,7 @@ describe(@"BugsnagConfiguration", ^{
                                                   delegateQueue:[NSOperationQueue mainQueue]];
         [Bugsnag startBugsnagWithConfiguration:config];
         [Bugsnag notify:[NSException exceptionWithName:@"oh no" reason:nil userInfo:nil]];
-        [[expectFutureValue(@(delegate.didInvoke)) shouldEventually] beYes];
+        [[expectFutureValue(@(delegate.didInvoke)) shouldEventuallyBeforeTimingOutAfter(3)] beYes];
     });
 });
 
