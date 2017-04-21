@@ -32,6 +32,7 @@
 		8A2C8F911C6BBFDD00846019 /* BugsnagSinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8F8D1C6BBFDD00846019 /* BugsnagSinkTests.m */; };
 		8A2C8F941C6BBFE700846019 /* libKSCrashLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8F931C6BBFE700846019 /* libKSCrashLib.a */; };
 		8A2C8F961C6BC08600846019 /* report.json in Resources */ = {isa = PBXBuildFile; fileRef = 8A2C8F951C6BC08600846019 /* report.json */; };
+		8A381D4B1EAA49A700AF8429 /* BugsnagLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A381D491EAA49A700AF8429 /* BugsnagLogger.h */; };
 		8A4E733F1DC13281001F7CC8 /* BugsnagConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4E733E1DC13281001F7CC8 /* BugsnagConfigurationTests.m */; };
 		8A87351E1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A87351D1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8AAA64011D2407CE00A9A123 /* Kiwi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AAA64001D2407CE00A9A123 /* Kiwi.framework */; };
@@ -80,6 +81,7 @@
 		8A2C8F8D1C6BBFDD00846019 /* BugsnagSinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSinkTests.m; path = ../Tests/BugsnagSinkTests.m; sourceTree = SOURCE_ROOT; };
 		8A2C8F931C6BBFE700846019 /* libKSCrashLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libKSCrashLib.a; path = "../Carthage/Checkouts/KSCrash/iOS/build/Debug-iphoneos/libKSCrashLib.a"; sourceTree = "<group>"; };
 		8A2C8F951C6BC08600846019 /* report.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = report.json; path = ../Tests/report.json; sourceTree = SOURCE_ROOT; };
+		8A381D491EAA49A700AF8429 /* BugsnagLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagLogger.h; path = ../Source/BugsnagLogger.h; sourceTree = SOURCE_ROOT; };
 		8A4E733E1DC13281001F7CC8 /* BugsnagConfigurationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationTests.m; path = ../Tests/BugsnagConfigurationTests.m; sourceTree = SOURCE_ROOT; };
 		8A87351D1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSGKSCrashReportWriter.h; path = ../Source/BSGKSCrashReportWriter.h; sourceTree = SOURCE_ROOT; };
 		8AAA63FE1D2404BB00A9A123 /* Nocilla.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nocilla.framework; path = "../development/Nocilla/build/Debug-iphoneos/Nocilla.framework"; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 		8A2C8F1A1C6BBD2300846019 /* Bugsnag */ = {
 			isa = PBXGroup;
 			children = (
+				8A381D491EAA49A700AF8429 /* BugsnagLogger.h */,
 				8A2C8F3D1C6BBE3C00846019 /* Bugsnag.h */,
 				8A87351D1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h */,
 				8A2C8F3E1C6BBE3C00846019 /* Bugsnag.m */,
@@ -195,6 +198,7 @@
 			files = (
 				8A2C8F4F1C6BBE3C00846019 /* Bugsnag.h in Headers */,
 				8A2C8F5B1C6BBE3C00846019 /* BugsnagMetaData.h in Headers */,
+				8A381D4B1EAA49A700AF8429 /* BugsnagLogger.h in Headers */,
 				8A2C8F551C6BBE3C00846019 /* BugsnagConfiguration.h in Headers */,
 				8A2C8F511C6BBE3C00846019 /* BugsnagBreadcrumb.h in Headers */,
 				8A2C8F571C6BBE3C00846019 /* BugsnagCrashReport.h in Headers */,

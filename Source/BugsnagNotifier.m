@@ -33,6 +33,7 @@
 #import "BugsnagCollections.h"
 #import "BugsnagCrashReport.h"
 #import "BugsnagSink.h"
+#import "BugsnagLogger.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -107,7 +108,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         NSData *json = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
 
         if (!json) {
-            NSLog(@"Bugsnag could not serialize metaData: %@", error);
+            bsg_log_err(@"could not serialize metaData: %@", error);
             return;
         }
         *destination = reallocf(*destination, [json length] + 1);
@@ -116,7 +117,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
             (*destination)[[json length]] = '\0';
         }
     } @catch (NSException *exception) {
-        NSLog(@"Bugsnag could not serialize metaData: %@", exception);
+        bsg_log_err(@"could not serialize metaData: %@", exception);
     }
 }
 
@@ -160,7 +161,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         kscrash_setHandlingCrashTypes(KSCrashTypeUserReported);
     }
     if (![[KSCrash sharedInstance] install])
-        NSLog(@"Failed to install");
+        bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");
 
     [sink sendPendingReports];
     [self updateAutomaticBreadcrumbDetectionSettings];
@@ -287,7 +288,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     } else if (metaData == self.state) {
         BSSerializeJSONDictionary([metaData toDictionary], &g_bugsnag_data.stateJSON);
     } else {
-        NSLog(@"Unknown metadata dictionary changed");
+        bsg_log_debug(@"Unknown metadata dictionary changed");
     }
 }
 

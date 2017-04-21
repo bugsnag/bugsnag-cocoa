@@ -30,6 +30,7 @@
 #import "Bugsnag.h"
 #import "BugsnagCrashReport.h"
 #import "BugsnagCollections.h"
+#import "BugsnagLogger.h"
 
 // This is private in Bugsnag, but really we want package private so define
 // it here.
@@ -214,14 +215,15 @@ const NSTimeInterval BSG_SEND_DELAY_SECS = 1;
     @autoreleasepool {
         @try {
             [[KSCrash sharedInstance] sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
-                if (error)
-                    NSLog(@"Failed to send Bugsnag reports: %@", error);
-                else if (filteredReports.count > 0)
-                    NSLog(@"Bugsnag reports sent.");
+                if (error) {
+                    bsg_log_warn(@"Failed to send reports: %@", error);
+                } else if (filteredReports.count > 0) {
+                    bsg_log_info(@"Reports sent.");
+                }
             }];
         }
         @catch (NSException* e) {
-            NSLog(@"Error sending report to Bugsnag: %@", e);
+            bsg_log_err(@"Could not send report: %@", e);
         }
     }
 }
