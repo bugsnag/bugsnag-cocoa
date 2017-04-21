@@ -1,7 +1,29 @@
 Changelog
 =========
 
-## 5.7.0
+
+## 5.8.0 (21 Apr 2017)
+
+This release downgrades the dependent KSCrash version to 1.8.13, reverting the
+change to the signature of `KSCrashReportWriter.addJSONElement()` in 5.7.0. This
+change only affects users setting a custom `onCrash` handler to be executed at
+crash time.
+
+### Enhancements
+
+* Increases the number of crash reports stored on disk before cycling
+* Make logging configurable by setting `BSG_LOG_LEVEL`. Default is
+  `BSG_LOGLEVEL_INFO`, and available values include `WARN` and `ERR` variants.
+
+### Bug fixes
+
+* Fixes deadlock which can occur when repeatedly calling `notify`
+  [#143](https://github.com/bugsnag/bugsnag-cocoa/issues/143)
+* Fixes periodic issue where no report is captured at all
+* Fixes issue where a report written at crash time cannot be deserialized from
+  disk at send time.
+
+## 5.7.0 (30 Jan 2017)
 
 This release updates the dependent KSCrash version to 1.11.2, which changes the
 signature of `KSCrashReportWriter.addJSONElement()` to include whether to close
