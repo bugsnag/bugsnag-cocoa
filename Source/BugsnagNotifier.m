@@ -49,6 +49,7 @@ NSString *const BSAttributeSeverity = @"severity";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSAttributeBreadcrumbs = @"breadcrumbs";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
+NSUInteger const BSG_MAX_STORED_REPORTS = 12;
 
 struct bugsnag_data_t {
     // Contains the user-specified metaData, including the user tab from config.
@@ -153,6 +154,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     [KSCrash sharedInstance].introspectMemory = NO;
     [KSCrash sharedInstance].deleteBehaviorAfterSendAll = KSCDeleteOnSucess;
     [KSCrash sharedInstance].onCrash = &BSSerializeDataCrashHandler;
+    [KSCrash sharedInstance].maxStoredReports = BSG_MAX_STORED_REPORTS;
 
     if (!configuration.autoNotify) {
         kscrash_setHandlingCrashTypes(KSCrashTypeUserReported);
