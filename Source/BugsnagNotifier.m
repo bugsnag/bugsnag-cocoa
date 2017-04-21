@@ -156,6 +156,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     [KSCrash sharedInstance].deleteBehaviorAfterSendAll = KSCDeleteOnSucess;
     [KSCrash sharedInstance].onCrash = &BSSerializeDataCrashHandler;
     [KSCrash sharedInstance].maxStoredReports = BSG_MAX_STORED_REPORTS;
+    [KSCrash sharedInstance].demangleLanguages = 0;
 
     if (!configuration.autoNotify) {
         kscrash_setHandlingCrashTypes(KSCrashTypeUserReported);
