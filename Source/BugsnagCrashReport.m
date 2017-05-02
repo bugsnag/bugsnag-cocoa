@@ -216,6 +216,10 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
 
 static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
+@interface NSDictionary (BSGKSMerge)
+- (NSDictionary*)BSG_mergedInto:(NSDictionary *)dest;
+@end
+
 @interface BugsnagCrashReport ()
 
 /**
@@ -291,6 +295,27 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
         _overrides = [NSDictionary new];
     }
     return self;
+}
+
+- (void)addMetadata:(NSDictionary *)tabData toTabWithName:(NSString *)tabName {
+    NSMutableDictionary *allMetadata = [self.metaData mutableCopy];
+    NSMutableDictionary *allTabData = allMetadata[tabName] ?: [NSMutableDictionary new];
+    allMetadata[tabName] = [tabData BSG_mergedInto:allTabData];
+    self.metaData = allMetadata;
+}
+
+- (void)addAttribute:(NSString*)attributeName
+           withValue:(id)value
+       toTabWithName:(NSString*)tabName {
+    NSMutableDictionary *allMetadata = [self.metaData mutableCopy];
+    NSMutableDictionary *allTabData = allMetadata[tabName] ?: [NSMutableDictionary new];
+    if (value) {
+        allTabData[attributeName] = value;
+    } else {
+        [allTabData removeObjectForKey:attributeName];
+    }
+    allMetadata[tabName] = allTabData;
+    self.metaData = allMetadata;
 }
 
 - (BOOL)shouldBeSent {
