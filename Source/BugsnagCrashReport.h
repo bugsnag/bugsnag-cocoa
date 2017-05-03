@@ -86,6 +86,29 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
 - (void)attachCustomStacktrace:(NSArray *_Nonnull)frames
                       withType:(NSString *_Nonnull)type;
 
+
+/**
+ * Add metadata to a report to a tab. If the tab does not exist, it will be added.
+ *
+ * @param metadata The key/value pairs to add
+ * @param tabName  The name of the report section
+ */
+- (void)addMetadata:(NSDictionary *_Nonnull)metadata
+      toTabWithName:(NSString *_Nonnull)tabName;
+
+
+/**
+ * Add or remove a value from report metadata. If value is nil, the existing value
+ * will be removed.
+
+ @param attributeName The key name
+ @param value The value to set
+ @param tabName The name of the report section
+ */
+- (void)addAttribute:(NSString*_Nonnull)attributeName
+           withValue:(id _Nullable)value
+       toTabWithName:(NSString*_Nonnull)tabName;
+
 /**
  *  The release stages used to notify at the time this report is captured
  */
