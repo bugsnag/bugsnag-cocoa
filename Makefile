@@ -1,5 +1,5 @@
 ifeq ($(SDK),)
- SDK=iphonesimulator9.3
+ SDK=iphonesimulator10.3
 endif
 ifeq ($(BUILD_OSX), 1)
  PLATFORM=OSX
