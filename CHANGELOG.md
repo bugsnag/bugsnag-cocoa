@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## 5.9.0 (08 May 2017)
+
+### Enhancements
+
+* Adds methods to `BugsnagCrashReport` for appending metadata, simplifying
+  making the most common changes from a callback block
+  [#145](https://github.com/bugsnag/bugsnag-cocoa/pull/145)
+
+### Bug fixes
+
+* Fix linking failure when using Bugsnag with Carthage on tvOS
+  [#139](https://github.com/bugsnag/bugsnag-cocoa/issues/139)
 
 ## 5.8.0 (21 Apr 2017)
 
