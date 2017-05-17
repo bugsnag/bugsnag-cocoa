@@ -13,6 +13,14 @@
 @property (nonatomic,strong) BugsnagBreadcrumbs* crumbs;
 @end
 
+@interface BugsnagBreadcrumbs ()
+@property (nonatomic,readonly,strong) dispatch_queue_t readWriteQueue;
+@end
+
+void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
+    dispatch_barrier_sync(crumbs.readWriteQueue, ^{ usleep(300000); });
+}
+
 @implementation BugsnagBreadcrumbsTest
 
 - (void)setUp {
@@ -35,7 +43,8 @@
 - (void)testMaxBreadcrumbs {
     self.crumbs.capacity = 3;
     [self.crumbs addBreadcrumb:@"Clear notifications"];
-    XCTAssertTrue(self.crumbs.count == 3);
+    awaitBreadcrumbSync(self.crumbs);
+    XCTAssertEqual(self.crumbs.count, 3);
     XCTAssertEqualObjects(self.crumbs[0].metadata[@"message"], @"Tap button");
     XCTAssertEqualObjects(self.crumbs[1].metadata[@"message"], @"Close tutorial");
     XCTAssertEqualObjects(self.crumbs[2].metadata[@"message"], @"Clear notifications");
@@ -44,6 +53,7 @@
 
 - (void)testClearBreadcrumbs {
     [self.crumbs clearBreadcrumbs];
+    awaitBreadcrumbSync(self.crumbs);
     XCTAssertTrue(self.crumbs.count == 0);
     XCTAssertNil(self.crumbs[0]);
 }
@@ -51,19 +61,21 @@
 - (void)testEmptyCapacity {
     self.crumbs.capacity = 0;
     [self.crumbs addBreadcrumb:@"Clear notifications"];
-    XCTAssertTrue(self.crumbs.count == 0);
+    XCTAssertEqual(self.crumbs.count, 0);
     XCTAssertNil(self.crumbs[0]);
 }
 
 - (void)testResizeBreadcrumbs {
     self.crumbs.capacity = 2;
-    XCTAssertTrue(self.crumbs.count == 2);
+    awaitBreadcrumbSync(self.crumbs);
+    XCTAssertEqual(self.crumbs.count, 2);
     XCTAssertEqualObjects(self.crumbs[0].metadata[@"message"], @"Tap button");
     XCTAssertEqualObjects(self.crumbs[1].metadata[@"message"], @"Close tutorial");
     XCTAssertNil(self.crumbs[2]);
 }
 
 - (void)testArrayValue {
+    awaitBreadcrumbSync(self.crumbs);
     NSArray* value = [self.crumbs arrayValue];
     XCTAssertNotNil(value);
     XCTAssertTrue(value.count == 3);
@@ -88,6 +100,7 @@
         crumb.name = @"Rotated Menu";
         crumb.metadata = @{ @"direction": @"right" };
     }];
+    awaitBreadcrumbSync(self.crumbs);
     NSArray* value = [crumbs arrayValue];
     XCTAssertEqualObjects(value[0][@"metaData"][@"direction"], @"right");
     XCTAssertEqualObjects(value[0][@"name"], @"Rotated Menu");

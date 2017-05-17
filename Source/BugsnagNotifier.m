@@ -103,6 +103,10 @@ NSString *BSGBreadcrumbNameForNotificationName(NSString *name) {
  *  @param destination target location of the data
  */
 void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
+    if (![NSJSONSerialization isValidJSONObject:dictionary]) {
+        bsg_log_err(@"could not serialize metadata: is not valid JSON object");
+        return;
+    }
     @try {
         NSError *error;
         NSData *json = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
