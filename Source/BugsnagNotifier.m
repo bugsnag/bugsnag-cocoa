@@ -404,18 +404,20 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
              UIWindowDidResignKeyNotification,
              UIScreenBrightnessDidChangeNotification];
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    return @[UIWindowDidBecomeHiddenNotification,
+    NSMutableArray *notifications = @[UIWindowDidBecomeHiddenNotification,
              UIWindowDidBecomeVisibleNotification,
              UIApplicationWillTerminateNotification,
              UIApplicationWillEnterForegroundNotification,
              UIApplicationDidEnterBackgroundNotification,
-             UIApplicationUserDidTakeScreenshotNotification,
              UIKeyboardDidShowNotification,
              UIKeyboardDidHideNotification,
              UIMenuControllerDidShowMenuNotification,
              UIMenuControllerDidHideMenuNotification,
              NSUndoManagerDidUndoChangeNotification,
-             NSUndoManagerDidRedoChangeNotification];
+             NSUndoManagerDidRedoChangeNotification].mutableCopy;
+    if (&UIApplicationUserDidTakeScreenshotNotification)
+        [notifications addObject:UIApplicationUserDidTakeScreenshotNotification];
+    return notifications;
 #elif TARGET_OS_MAC
     return @[NSApplicationDidBecomeActiveNotification,
              NSApplicationDidResignActiveNotification,
@@ -551,9 +553,11 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
         breadcrumb.type = BSGBreadcrumbTypeUser;
         breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
-        NSString *label = control.accessibilityLabel;
-        if (label.length > 0) {
-            breadcrumb.metadata = @{ @"label": label };
+        if ([control respondsToSelector:@selector(accessibilityLabel)]) {
+            NSString *label = control.accessibilityLabel;
+            if (label.length > 0) {
+                breadcrumb.metadata = @{ @"label": label };
+            }
         }
     }];
 #endif

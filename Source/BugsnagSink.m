@@ -54,7 +54,8 @@
     if (self = [super init]) {
         _sendQueue = [[NSOperationQueue alloc] init];
         _sendQueue.maxConcurrentOperationCount = 1;
-        _sendQueue.qualityOfService = NSQualityOfServiceUtility;
+        if ([_sendQueue respondsToSelector:@selector(qualityOfService)])
+            _sendQueue.qualityOfService = NSQualityOfServiceUtility;
         _sendQueue.name = @"Bugsnag Delivery Queue";
     }
     return self;
