@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## 5.10.0 (22 May 2017)
+
+### Enhancements
+
+* Sanitize attached metadata to remove objects which cannot be serialized as
+  JSON directly, logging during removal
+* Make breadcrumb functionality available for background operations
+
+### Bug fixes
+
+* Lower effective deployment targets from iOS 8 and OS X 10.10 to iOS6 and OS X
+  10.8
+
 ## 5.9.0 (08 May 2017)
 
 ### Enhancements
