@@ -415,8 +415,13 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
              UIMenuControllerDidHideMenuNotification,
              NSUndoManagerDidUndoChangeNotification,
              NSUndoManagerDidRedoChangeNotification].mutableCopy;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wbool-conversion"
     if (&UIApplicationUserDidTakeScreenshotNotification)
         [notifications addObject:UIApplicationUserDidTakeScreenshotNotification];
+#pragma clang diagnostic pop
+    
     return notifications;
 #elif TARGET_OS_MAC
     return @[NSApplicationDidBecomeActiveNotification,
