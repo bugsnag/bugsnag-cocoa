@@ -404,7 +404,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
              UIWindowDidResignKeyNotification,
              UIScreenBrightnessDidChangeNotification];
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    NSMutableArray *notifications = @[UIWindowDidBecomeHiddenNotification,
+    return @[UIWindowDidBecomeHiddenNotification,
              UIWindowDidBecomeVisibleNotification,
              UIApplicationWillTerminateNotification,
              UIApplicationWillEnterForegroundNotification,
@@ -414,10 +414,11 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
              UIMenuControllerDidShowMenuNotification,
              UIMenuControllerDidHideMenuNotification,
              NSUndoManagerDidUndoChangeNotification,
-             NSUndoManagerDidRedoChangeNotification].mutableCopy;
-    if (&UIApplicationUserDidTakeScreenshotNotification)
-        [notifications addObject:UIApplicationUserDidTakeScreenshotNotification];
-    return notifications;
+             NSUndoManagerDidRedoChangeNotification,
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0
+             UIApplicationUserDidTakeScreenshotNotification
+#endif
+            ];
 #elif TARGET_OS_MAC
     return @[NSApplicationDidBecomeActiveNotification,
              NSApplicationDidResignActiveNotification,
