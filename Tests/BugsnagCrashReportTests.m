@@ -36,6 +36,14 @@
   self.report = nil;
 }
 
+// checks that any periods are stripped out of the app.version, so that it is a valid integer.
+// see https://developer.apple.com/library/content/technotes/tn2420/_index.html
+- (void)testReportAppVersion {
+    NSDictionary *dict = self.report.app;
+    XCTAssertEqualObjects(@"103", dict[@"version"]);
+    XCTAssertEqualObjects(@"1.0.3.295", dict[@"bundleVersion"]);
+}
+
 - (void)testReadReleaseStage {
   XCTAssertEqualObjects(self.report.releaseStage, @"production");
 }
