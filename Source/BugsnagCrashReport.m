@@ -104,18 +104,21 @@ NSDictionary *BSGParseApp(NSDictionary *report, NSString *appVersion) {
     NSDictionary *system = report[@"system"];
     NSMutableDictionary *app = [NSMutableDictionary dictionary];
 
-    BSGDictSetSafeObject(app, system[@"CFBundleVersion"], @"bundleVersion");
+    NSString *bundleVersion = system[@"CFBundleVersion"];
+    
+    if (![appVersion isKindOfClass:[NSString class]]) {
+        appVersion = system[@"CFBundleShortVersionString"];
+    }
+    if (appVersion) {
+        appVersion = [appVersion stringByReplacingOccurrencesOfString:@"." withString:@""];
+    }
+    
+    BSGDictSetSafeObject(app, bundleVersion, @"bundleVersion");
     BSGDictSetSafeObject(app, system[@"CFBundleIdentifier"], @"id");
     BSGDictSetSafeObject(app, system[@"CFBundleExecutable"], @"name");
     BSGDictSetSafeObject(app, [Bugsnag configuration].releaseStage,
                          @"releaseStage");
-    if ([appVersion isKindOfClass:[NSString class]]) {
-        BSGDictSetSafeObject(app, appVersion, @"version");
-    } else {
-        BSGDictSetSafeObject(app, system[@"CFBundleShortVersionString"],
-                             @"version");
-    }
-    
+    BSGDictSetSafeObject(app, appVersion, @"version");
     return app;
 }
 

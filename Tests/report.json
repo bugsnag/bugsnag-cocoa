@@ -19,9 +19,9 @@
             "application_in_foreground": true,
             "background_time_since_launch": 0
         },
-        "CFBundleVersion": "1",
+        "CFBundleVersion": "1.0.3.295",
         "cpu_type": 7,
-        "CFBundleShortVersionString": "1.0",
+        "CFBundleShortVersionString": "1.0.3",
         "binary_cpu_subtype": 3,
         "system_name": "iPhone OS",
         "app_start_time": "2014-12-02T01:56:13Z",
