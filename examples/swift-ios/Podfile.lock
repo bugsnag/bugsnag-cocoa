@@ -1,8 +1,8 @@
 PODS:
-  - Bugsnag (5.7.0):
-    - KSCrash/RecordingAdvanced (= 1.11.2)
-  - KSCrash/Recording (1.11.2)
-  - KSCrash/RecordingAdvanced (1.11.2):
+  - Bugsnag (5.10.1):
+    - KSCrash/RecordingAdvanced (= 1.8.13)
+  - KSCrash/Recording (1.8.13)
+  - KSCrash/RecordingAdvanced (1.8.13):
     - KSCrash/Recording
 
 DEPENDENCIES:
@@ -10,12 +10,12 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   Bugsnag:
-    :path: "../.."
+    :path: ../..
 
 SPEC CHECKSUMS:
-  Bugsnag: d86488d670f91acbce0186e6570e500039676ef0
-  KSCrash: 8acc46aca72b2772d5d1e3cba1da9173db4d705e
+  Bugsnag: 9c2d242eac7f215c40ff0f5813d378e9fcccf6e4
+  KSCrash: 4c3a83f133b60f4bd57e05235ebf8d46e36d378d
 
 PODFILE CHECKSUM: 2107babfbfdb18f0288407b9d9ebd48cbee8661c
 
-COCOAPODS: 1.2.0.beta.1
+COCOAPODS: 1.2.1
