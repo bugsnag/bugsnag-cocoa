@@ -50,6 +50,7 @@ NSString *const BSAttributeSeverity = @"severity";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSAttributeBreadcrumbs = @"breadcrumbs";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
+
 NSUInteger const BSG_MAX_STORED_REPORTS = 12;
 
 struct bugsnag_data_t {
@@ -165,7 +166,18 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     return self;
 }
 
+NSString *const kWindowVisible = @"Window Became Visible";
+NSString *const kWindowHidden = @"Window Became Hidden";
+NSString *const kBeganTextEdit = @"Began Editing Text";
+NSString *const kStoppedTextEdit = @"Stopped Editing Text";
+NSString *const kUndoOperation = @"Undo Operation";
+NSString *const kRedoOperation = @"Redo Operation";
+NSString *const kTableViewSelectionChange = @"TableView Select Change";
+NSString *const kAppWillTerminate = @"App Will Terminate";
+
 - (void)initializeNotificationNameMap {
+    
+    
     notificationNameMap = @{
                                 UIDeviceBatteryStateDidChangeNotification: @"Battery State Changed",
                                 UIDeviceBatteryLevelDidChangeNotification: @"Battery Level Changed",
@@ -173,53 +185,54 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                                 UIApplicationDidReceiveMemoryWarningNotification: @"Memory Warning",
                             
 #if TARGET_OS_TV
-                                NSUndoManagerDidUndoChangeNotification: @"Undo Operation",
-                                NSUndoManagerDidRedoChangeNotification: @"Redo Operation",
-                                UIWindowDidBecomeVisibleNotification: @"",
-                                UIWindowDidBecomeHiddenNotification: @"",
-                                UIWindowDidBecomeKeyNotification: @"",
-                                UIWindowDidResignKeyNotification: @"",
-                                UIScreenBrightnessDidChangeNotification: @"",
-                                UITableViewSelectionDidChangeNotification: @"",
+                                NSUndoManagerDidUndoChangeNotification: kUndoOperation,
+                                NSUndoManagerDidRedoChangeNotification: kRedoOperation,
+                                UIWindowDidBecomeVisibleNotification: kWindowVisible,
+                                UIWindowDidBecomeHiddenNotification: kWindowHidden,
+                                UIWindowDidBecomeKeyNotification: @"Window Became Key",
+                                UIWindowDidResignKeyNotification: @"Window Resigned Key",
+                                UIScreenBrightnessDidChangeNotification: @"Screen Brightness Changed",
+                                UITableViewSelectionDidChangeNotification: kTableViewSelectionChange,
                             
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-                                UIWindowDidBecomeHiddenNotification: @"",
-                                UIWindowDidBecomeVisibleNotification: @"",
-                                UIApplicationWillTerminateNotification: @"",
-                                UIApplicationWillEnterForegroundNotification: @"",
-                                UIApplicationDidEnterBackgroundNotification: @"",
-                                UIKeyboardDidShowNotification: @"",
-                                UIKeyboardDidHideNotification: @"",
-                                UIMenuControllerDidShowMenuNotification: @"",
-                                UIMenuControllerDidHideMenuNotification: @"",
-                                NSUndoManagerDidUndoChangeNotification: @"",
-                                NSUndoManagerDidRedoChangeNotification: @"",
-                                UIApplicationUserDidTakeScreenshotNotification: @"",
-                                UITextFieldTextDidBeginEditingNotification: @"",
-                                UITextViewTextDidBeginEditingNotification: @"",
-                                UITextFieldTextDidEndEditingNotification: @"",
-                                UITextViewTextDidEndEditingNotification: @"",
-                                UITableViewSelectionDidChangeNotification: @"",
+                                UIWindowDidBecomeVisibleNotification: kWindowVisible,
+                                UIWindowDidBecomeHiddenNotification: kWindowHidden,
+                                UIApplicationWillTerminateNotification: kAppWillTerminate,
+                                UIApplicationWillEnterForegroundNotification: @"App Will Enter Foreground",
+                                UIApplicationDidEnterBackgroundNotification: @"App Did Enter Background",
+                                UIKeyboardDidShowNotification: @"Keyboard Became Visible",
+                                UIKeyboardDidHideNotification: @"Keyboard Became Hidden",
+                                UIMenuControllerDidShowMenuNotification: @"Did Show Menu",
+                                UIMenuControllerDidHideMenuNotification: @"Did Hide Menu",
+                                NSUndoManagerDidUndoChangeNotification: kUndoOperation,
+                                NSUndoManagerDidRedoChangeNotification: kRedoOperation,
+                                UIApplicationUserDidTakeScreenshotNotification: @"Took Screenshot",
+                                UITextFieldTextDidBeginEditingNotification: kBeganTextEdit,
+                                UITextViewTextDidBeginEditingNotification: kBeganTextEdit,
+                                UITextFieldTextDidEndEditingNotification: kStoppedTextEdit,
+                                UITextViewTextDidEndEditingNotification: kStoppedTextEdit,
+                                UITableViewSelectionDidChangeNotification: kTableViewSelectionChange,
 
 #elif TARGET_OS_MAC
-                                NSApplicationDidBecomeActiveNotification: @"",
-                                NSApplicationDidResignActiveNotification: @"",
-                                NSApplicationDidHideNotification: @"",
-                                NSApplicationDidUnhideNotification: @"",
-                                NSApplicationWillTerminateNotification: @"",
-                                NSWorkspaceScreensDidSleepNotification: @"",
-                                NSWorkspaceScreensDidWakeNotification: @"",
-                                NSWindowWillCloseNotification: @"",
-                                NSWindowDidBecomeKeyNotification: @"",
-                                NSWindowWillMiniaturizeNotification: @"",
-                                NSWindowDidEnterFullScreenNotification: @"",
-                                NSWindowDidExitFullScreenNotification: @"",
-                                NSControlTextDidBeginEditingNotification: @"",
-                                NSControlTextDidEndEditingNotification: @"",
-                                NSMenuWillSendActionNotification: @"",
-                                NSTableViewSelectionDidChangeNotification: @"",
+                                NSApplicationDidBecomeActiveNotification: @"App Became Active",
+                                NSApplicationDidResignActiveNotification: @"App Resigned Active",
+                                NSApplicationDidHideNotification: @"App Did Hide",
+                                NSApplicationDidUnhideNotification: @"App Did Unhide",
+                                NSApplicationWillTerminateNotification: kAppWillTerminate,
+                                NSWorkspaceScreensDidSleepNotification: @"Workspace Screen Slept",
+                                NSWorkspaceScreensDidWakeNotification: @"Workspace Screen Awoke",
+                                NSWindowWillCloseNotification: @"Window Will Close",
+                                NSWindowDidBecomeKeyNotification: @"Window Became Key",
+                                NSWindowWillMiniaturizeNotification: @"Window Will Miniaturize",
+                                NSWindowDidEnterFullScreenNotification: @"Window Entered Full Screen",
+                                NSWindowDidExitFullScreenNotification: @"Window Exited Full Screen",
+                                NSControlTextDidBeginEditingNotification: @"Control Text Began Edit",
+                                NSControlTextDidEndEditingNotification: @"Control Text Ended Edit",
+                                NSMenuWillSendActionNotification: @"Menu Will Send Action",
+                                NSTableViewSelectionDidChangeNotification: kTableViewSelectionChange,
 #endif
                             };
+    
 }
 
 - (void) start {
