@@ -159,15 +159,67 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         
         static dispatch_once_t once_t;
         dispatch_once(&once_t, ^{
-            notificationNameMap = @{
-                                    UIDeviceBatteryStateDidChangeNotification: @"Battery State Changed",
-                                    UIDeviceBatteryLevelDidChangeNotification: @"Battery Level Changed",
-                                    UIDeviceOrientationDidChangeNotification: @"Orientation Changed",
-                                    UIApplicationDidReceiveMemoryWarningNotification: @"Memory Warning"
-                                    };
+            [self initializeNotificationNameMap];
         });
     }
     return self;
+}
+
+- (void)initializeNotificationNameMap {
+    notificationNameMap = @{
+                                UIDeviceBatteryStateDidChangeNotification: @"Battery State Changed",
+                                UIDeviceBatteryLevelDidChangeNotification: @"Battery Level Changed",
+                                UIDeviceOrientationDidChangeNotification: @"Orientation Changed",
+                                UIApplicationDidReceiveMemoryWarningNotification: @"Memory Warning",
+                            
+#if TARGET_OS_TV
+                                NSUndoManagerDidUndoChangeNotification: @"Undo Operation",
+                                NSUndoManagerDidRedoChangeNotification: @"Redo Operation",
+                                UIWindowDidBecomeVisibleNotification: @"",
+                                UIWindowDidBecomeHiddenNotification: @"",
+                                UIWindowDidBecomeKeyNotification: @"",
+                                UIWindowDidResignKeyNotification: @"",
+                                UIScreenBrightnessDidChangeNotification: @"",
+                                UITableViewSelectionDidChangeNotification: @"",
+                            
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+                                UIWindowDidBecomeHiddenNotification: @"",
+                                UIWindowDidBecomeVisibleNotification: @"",
+                                UIApplicationWillTerminateNotification: @"",
+                                UIApplicationWillEnterForegroundNotification: @"",
+                                UIApplicationDidEnterBackgroundNotification: @"",
+                                UIKeyboardDidShowNotification: @"",
+                                UIKeyboardDidHideNotification: @"",
+                                UIMenuControllerDidShowMenuNotification: @"",
+                                UIMenuControllerDidHideMenuNotification: @"",
+                                NSUndoManagerDidUndoChangeNotification: @"",
+                                NSUndoManagerDidRedoChangeNotification: @"",
+                                UIApplicationUserDidTakeScreenshotNotification: @"",
+                                UITextFieldTextDidBeginEditingNotification: @"",
+                                UITextViewTextDidBeginEditingNotification: @"",
+                                UITextFieldTextDidEndEditingNotification: @"",
+                                UITextViewTextDidEndEditingNotification: @"",
+                                UITableViewSelectionDidChangeNotification: @"",
+
+#elif TARGET_OS_MAC
+                                NSApplicationDidBecomeActiveNotification: @"",
+                                NSApplicationDidResignActiveNotification: @"",
+                                NSApplicationDidHideNotification: @"",
+                                NSApplicationDidUnhideNotification: @"",
+                                NSApplicationWillTerminateNotification: @"",
+                                NSWorkspaceScreensDidSleepNotification: @"",
+                                NSWorkspaceScreensDidWakeNotification: @"",
+                                NSWindowWillCloseNotification: @"",
+                                NSWindowDidBecomeKeyNotification: @"",
+                                NSWindowWillMiniaturizeNotification: @"",
+                                NSWindowDidEnterFullScreenNotification: @"",
+                                NSWindowDidExitFullScreenNotification: @"",
+                                NSControlTextDidBeginEditingNotification: @"",
+                                NSControlTextDidEndEditingNotification: @"",
+                                NSMenuWillSendActionNotification: @"",
+                                NSTableViewSelectionDidChangeNotification: @"",
+#endif
+                            };
 }
 
 - (void) start {
@@ -395,6 +447,13 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     if ([self.configuration automaticallyCollectBreadcrumbs]) {
         for (NSString *name in [self automaticBreadcrumbStateEvents]) {
             [self crumbleNotification:name];
+        }
+        for (NSString *name in [self automaticBreadcrumbTableItemEvents]) {
+            [[NSNotificationCenter defaultCenter]
+             addObserver:self
+             selector:@selector(sendBreadcrumbForTableViewNotification:)
+             name:name
+             object:nil];
         }
         for (NSString *name in [self automaticBreadcrumbControlEvents]) {
             [[NSNotificationCenter defaultCenter]
