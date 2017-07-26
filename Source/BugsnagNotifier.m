@@ -340,6 +340,13 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
   default:
     return; // always ignore unknown breadcrumbs
   }
+  
+  NSDictionary *lastBreadcrumb = [[self.configuration.breadcrumbs arrayValue] lastObject];
+    
+  if (lastBreadcrumb && [orientation isEqualToString:lastBreadcrumb[@"name"]]) {
+    return; // ignore duplicate orientation event
+  }
+    
   [[self state] addAttribute:@"orientation"
                    withValue:orientation
                toTabWithName:@"deviceState"];
