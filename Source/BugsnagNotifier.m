@@ -316,7 +316,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
 - (void)orientationChanged:(NSNotification *)notif {
   NSString *orientation;
-  switch ([UIDevice currentDevice].orientation) {
+  UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
+    
+  switch (deviceOrientation) {
   case UIDeviceOrientationPortraitUpsideDown:
     orientation = @"portraitupsidedown";
     break;
@@ -335,9 +337,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
   case UIDeviceOrientationFaceDown:
     orientation = @"facedown";
     break;
-  case UIDeviceOrientationUnknown:
   default:
-    orientation = @"unknown";
+    return; // always ignore unknown breadcrumbs
   }
   [[self state] addAttribute:@"orientation"
                    withValue:orientation
