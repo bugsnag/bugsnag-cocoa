@@ -148,6 +148,21 @@ NSDictionary *BSGParseDeviceState(NSDictionary *report) {
     BSGDictSetSafeObject(deviceState,
                          [report valueForKeyPath:@"report.timestamp"],
                          @"time");
+    
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, true);
+    NSString *path = [searchPaths lastObject];
+    
+    NSError *error;
+    NSDictionary *fileSystemAttrs = [fileManager attributesOfFileSystemForPath:path error:&error];
+    
+    if (error) {
+        bsg_log_warn(@"Failed to read free disk space: %@", error);
+    }
+    
+    NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
+    BSGDictSetSafeObject(deviceState, freeBytes, @"freeDisk");
     return deviceState;
 }
 
