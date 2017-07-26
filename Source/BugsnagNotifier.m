@@ -67,6 +67,8 @@ struct bugsnag_data_t {
 
 static struct bugsnag_data_t g_bugsnag_data;
 
+static NSDictionary *notificationNameMap;
+
 /**
  *  Handler executed when the application crashes. Writes information about the
  *  current application state using the crash report writer.
@@ -92,8 +94,15 @@ void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer) {
 }
 
 NSString *BSGBreadcrumbNameForNotificationName(NSString *name) {
-    return [name stringByReplacingOccurrencesOfString:@"Notification"
-                                           withString:@""];
+    NSString *readableName = notificationNameMap[name];
+    
+    if (readableName) {
+        return readableName;
+    }
+    else {
+        return [name stringByReplacingOccurrencesOfString:@"Notification"
+                                               withString:@""];
+    }
 }
 
 /**
@@ -130,7 +139,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 @synthesize configuration;
 
 - (id) initWithConfiguration:(BugsnagConfiguration*) initConfiguration {
-    if((self = [super init])) {
+    if ((self = [super init])) {
         self.configuration = initConfiguration;
         self.state = [[BugsnagMetaData alloc] init];
         self.details = [@{
@@ -147,8 +156,17 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         [self metaDataChanged: self.configuration.config];
         [self metaDataChanged: self.state];
         g_bugsnag_data.onCrash = (void (*)(const KSCrashReportWriter *))self.configuration.onCrashHandler;
+        
+        static dispatch_once_t once_t;
+        dispatch_once(&once_t, ^{
+            notificationNameMap = @{
+                                    UIDeviceBatteryStateDidChangeNotification: @"Battery State Changed",
+                                    UIDeviceBatteryLevelDidChangeNotification: @"Battery Level Changed",
+                                    UIDeviceOrientationDidChangeNotification: @"Orientation Changed",
+                                    UIApplicationDidReceiveMemoryWarningNotification: @"Memory Warning"
+                                    };
+        });
     }
-
     return self;
 }
 
@@ -165,8 +183,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     if (!configuration.autoNotify) {
         kscrash_setHandlingCrashTypes(KSCrashTypeUserReported);
     }
-    if (![[KSCrash sharedInstance] install])
+    if (![[KSCrash sharedInstance] install]) {
         bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");
+    }
 
     [sink sendPendingReports];
     [self updateAutomaticBreadcrumbDetectionSettings];
@@ -235,8 +254,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                                                                  configuration:self.configuration
                                                                       metaData:[self.configuration.metaData toDictionary]
                                                                       severity:BSGSeverityWarning];
-    if (block)
+    if (block) {
         block(report);
+    }
 
     [self.metaDataLock lock];
     BSSerializeJSONDictionary(report.metaData, &g_bugsnag_data.metaDataJSON);
@@ -261,8 +281,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     }];
 
     BugsnagSink *sink = [KSCrash sharedInstance].sink;
-    if ([sink isKindOfClass:[BugsnagSink class]])
+    if ([sink isKindOfClass:[BugsnagSink class]]) {
         [sink sendPendingReports];
+    }
 }
 
 - (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
