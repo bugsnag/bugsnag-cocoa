@@ -176,14 +176,7 @@ NSString *const kTableViewSelectionChange = @"TableView Select Change";
 NSString *const kAppWillTerminate = @"App Will Terminate";
 
 - (void)initializeNotificationNameMap {
-    
-    
     notificationNameMap = @{
-                                UIDeviceBatteryStateDidChangeNotification: @"Battery State Changed",
-                                UIDeviceBatteryLevelDidChangeNotification: @"Battery Level Changed",
-                                UIDeviceOrientationDidChangeNotification: @"Orientation Changed",
-                                UIApplicationDidReceiveMemoryWarningNotification: @"Memory Warning",
-                            
 #if TARGET_OS_TV
                                 NSUndoManagerDidUndoChangeNotification: kUndoOperation,
                                 NSUndoManagerDidRedoChangeNotification: kRedoOperation,
@@ -212,6 +205,10 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                                 UITextFieldTextDidEndEditingNotification: kStoppedTextEdit,
                                 UITextViewTextDidEndEditingNotification: kStoppedTextEdit,
                                 UITableViewSelectionDidChangeNotification: kTableViewSelectionChange,
+                                UIDeviceBatteryStateDidChangeNotification: @"Battery State Changed",
+                                UIDeviceBatteryLevelDidChangeNotification: @"Battery Level Changed",
+                                UIDeviceOrientationDidChangeNotification: @"Orientation Changed",
+                                UIApplicationDidReceiveMemoryWarningNotification: @"Memory Warning",
 
 #elif TARGET_OS_MAC
                                 NSApplicationDidBecomeActiveNotification: @"App Became Active",
