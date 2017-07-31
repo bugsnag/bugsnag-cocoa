@@ -425,9 +425,14 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
   }
   
   NSDictionary *lastBreadcrumb = [[self.configuration.breadcrumbs arrayValue] lastObject];
+  NSString *orientationNotifName = BSGBreadcrumbNameForNotificationName(notif.name);
     
-  if (lastBreadcrumb && [orientation isEqualToString:lastBreadcrumb[@"name"]]) {
-    return; // ignore duplicate orientation event
+  if (lastBreadcrumb && [orientationNotifName isEqualToString:lastBreadcrumb[@"name"]]) {
+    NSDictionary *metaData = lastBreadcrumb[@"metaData"];
+    
+    if ([orientation isEqualToString:metaData[@"orientation"]]) {
+      return; // ignore duplicate orientation event
+    }
   }
     
   [[self state] addAttribute:@"orientation"
@@ -436,7 +441,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
   if ([self.configuration automaticallyCollectBreadcrumbs]) {
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeState;
-      breadcrumb.name = BSGBreadcrumbNameForNotificationName(notif.name);
+      breadcrumb.name = orientationNotifName;
       breadcrumb.metadata = @{ @"orientation" : orientation };
     }];
   }
