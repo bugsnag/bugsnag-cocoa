@@ -1,6 +1,6 @@
 //
-//  BugsnagUITests.swift
-//  BugsnagUITests
+//  CrashyUITest.swift
+//  CrashyUITest
 //
 //  Created by Jamie Lynch on 28/07/2017.
 //  Copyright © 2017 Simon Maynard. All rights reserved.
@@ -8,7 +8,7 @@
 
 import XCTest
 
-class BugsnagUITests: XCTestCase {
+class CrashyUITest: XCTestCase {
         
     override func setUp() {
         super.setUp()
