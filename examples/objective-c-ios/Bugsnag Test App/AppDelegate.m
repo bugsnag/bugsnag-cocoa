@@ -30,5 +30,6 @@
     [Bugsnag startBugsnagWithApiKey:@"API-KEY"];
     [Bugsnag configuration].releaseStage = @"production";
     [Bugsnag configuration].notifyReleaseStages = @[@"production"];
+    [Bugsnag configuration].notifyURL = [NSURL URLWithString:@"http://localhost:9999"];
 }
 @end

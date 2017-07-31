@@ -22,7 +22,7 @@ class UIHarnessTest: XCTestCase {
     }
     
     func testExample() {
-        
+        // launches app and sends reports
     }
     
 }
