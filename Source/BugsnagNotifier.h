@@ -29,6 +29,8 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagMetaData.h"
 
+@class Reachability;
+
 @interface BugsnagNotifier : NSObject <BugsnagMetaDataDelegate>
 
 @property(nonatomic, readwrite, retain)
@@ -36,6 +38,8 @@
 @property(nonatomic, readwrite, retain) BugsnagMetaData *_Nonnull state;
 @property(nonatomic, readwrite, retain) NSDictionary *_Nonnull details;
 @property(nonatomic, readwrite, retain) NSLock *_Nonnull metaDataLock;
+
+@property(nonatomic) Reachability *networkReachable;
 
 - (instancetype _Nonnull)initWithConfiguration:
     (BugsnagConfiguration *_Nonnull)configuration;
@@ -93,4 +97,7 @@
  *  Enable or disable automatic breadcrumb collection based on configuration
  */
 - (void)updateAutomaticBreadcrumbDetectionSettings;
+
+- (void)didChangeReachableStatus:(NSNotification *)notification;
+
 @end

@@ -34,6 +34,7 @@
 #import "BugsnagCrashReport.h"
 #import "BugsnagSink.h"
 #import "BugsnagLogger.h"
+#import "Reachability.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -285,6 +286,14 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 #elif TARGET_OS_MAC
   [self.details setValue:@"OSX Bugsnag Notifier" forKey:@"name"];
 #endif
+
+  static NSString *kReachableNotifName = @"ReachabilityChange";
+  self.networkReachable = [Reachability reachabilityForInternetConnection];
+  [self.networkReachable startNotifier];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(didChangeReachableStatus:)
+                                               name:kReachableNotifName
+                                             object:nil];
 }
 
 - (void)notifyError:(NSError *)error block:(void (^)(BugsnagCrashReport *))block {
@@ -377,6 +386,12 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
         BSSerializeJSONDictionary([metaData toDictionary], &g_bugsnag_data.stateJSON);
     } else {
         bsg_log_debug(@"Unknown metadata dictionary changed");
+    }
+}
+
+- (void)didChangeReachableStatus:(NSNotification *)notification {
+    if ([self.networkReachable currentReachabilityStatus] != NotReachable) {
+        bsg_log_info(@"Flushing any stored reports");
     }
 }
 
