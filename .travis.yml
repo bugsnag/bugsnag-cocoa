@@ -12,7 +12,7 @@ matrix:
 install: make bootstrap
 script: make test
 
-before_deploy: headerdoc2html -o docs Source -j; cd docs; gatherheaderdoc .
+before_deploy: headerdoc2html -o docs Source -j; gatherheaderdoc docs; mv docs/masterTOC.html docs/index.html
 
 deploy:
   provider: pages
