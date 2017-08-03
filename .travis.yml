@@ -20,4 +20,4 @@ deploy:
   skip_cleanup: true
   github_token: $GITHUB_TOKEN # set in travis-ci dashboard
   on:
-    branch: add-travis-docs
+    tags: true # only deploy when tag is applied to commit
