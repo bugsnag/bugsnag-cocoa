@@ -1,5 +1,5 @@
 //
-//  Reachability.h
+//  test.h
 //  Bugsnag
 //
 //  Created by Jamie Lynch on 03/08/2017.
@@ -8,6 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Reachability : NSObject
+@interface test : NSObject
 
 @end
