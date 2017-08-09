@@ -11,3 +11,13 @@ matrix:
           env: SDK=appletvsimulator10.1 BUILD_TV=1
 install: make bootstrap
 script: make test
+
+before_deploy: headerdoc2html -o docs Source -j; gatherheaderdoc docs; mv docs/masterTOC.html docs/index.html
+
+deploy:
+  provider: pages
+  local_dir: docs # only include the contents of the generated docs dir
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN # set in travis-ci dashboard
+  on:
+    tags: true # only deploy when tag is applied to commit
