@@ -95,8 +95,9 @@ NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
 
 + (instancetype)breadcrumbWithBlock:(BSGBreadcrumbConfiguration)block {
     BugsnagBreadcrumb *crumb = [self new];
-    if (block)
+    if (block) {
         block(crumb);
+    }
     if ([crumb isValid]) {
         return crumb;
     }

@@ -50,6 +50,7 @@ NSString *const BSAttributeSeverity = @"severity";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSAttributeBreadcrumbs = @"breadcrumbs";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
+
 NSUInteger const BSG_MAX_STORED_REPORTS = 12;
 
 struct bugsnag_data_t {
@@ -66,6 +67,8 @@ struct bugsnag_data_t {
 };
 
 static struct bugsnag_data_t g_bugsnag_data;
+
+static NSDictionary *notificationNameMap;
 
 /**
  *  Handler executed when the application crashes. Writes information about the
@@ -92,8 +95,15 @@ void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer) {
 }
 
 NSString *BSGBreadcrumbNameForNotificationName(NSString *name) {
-    return [name stringByReplacingOccurrencesOfString:@"Notification"
-                                           withString:@""];
+    NSString *readableName = notificationNameMap[name];
+    
+    if (readableName) {
+        return readableName;
+    }
+    else {
+        return [name stringByReplacingOccurrencesOfString:@"Notification"
+                                               withString:@""];
+    }
 }
 
 /**
@@ -130,7 +140,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 @synthesize configuration;
 
 - (id) initWithConfiguration:(BugsnagConfiguration*) initConfiguration {
-    if((self = [super init])) {
+    if ((self = [super init])) {
         self.configuration = initConfiguration;
         self.state = [[BugsnagMetaData alloc] init];
         self.details = [@{
@@ -147,9 +157,79 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         [self metaDataChanged: self.configuration.config];
         [self metaDataChanged: self.state];
         g_bugsnag_data.onCrash = (void (*)(const KSCrashReportWriter *))self.configuration.onCrashHandler;
+        
+        static dispatch_once_t once_t;
+        dispatch_once(&once_t, ^{
+            [self initializeNotificationNameMap];
+        });
     }
-
     return self;
+}
+
+NSString *const kWindowVisible = @"Window Became Visible";
+NSString *const kWindowHidden = @"Window Became Hidden";
+NSString *const kBeganTextEdit = @"Began Editing Text";
+NSString *const kStoppedTextEdit = @"Stopped Editing Text";
+NSString *const kUndoOperation = @"Undo Operation";
+NSString *const kRedoOperation = @"Redo Operation";
+NSString *const kTableViewSelectionChange = @"TableView Select Change";
+NSString *const kAppWillTerminate = @"App Will Terminate";
+
+- (void)initializeNotificationNameMap {
+    notificationNameMap = @{
+#if TARGET_OS_TV
+                                NSUndoManagerDidUndoChangeNotification: kUndoOperation,
+                                NSUndoManagerDidRedoChangeNotification: kRedoOperation,
+                                UIWindowDidBecomeVisibleNotification: kWindowVisible,
+                                UIWindowDidBecomeHiddenNotification: kWindowHidden,
+                                UIWindowDidBecomeKeyNotification: @"Window Became Key",
+                                UIWindowDidResignKeyNotification: @"Window Resigned Key",
+                                UIScreenBrightnessDidChangeNotification: @"Screen Brightness Changed",
+                                UITableViewSelectionDidChangeNotification: kTableViewSelectionChange,
+                            
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+                                UIWindowDidBecomeVisibleNotification: kWindowVisible,
+                                UIWindowDidBecomeHiddenNotification: kWindowHidden,
+                                UIApplicationWillTerminateNotification: kAppWillTerminate,
+                                UIApplicationWillEnterForegroundNotification: @"App Will Enter Foreground",
+                                UIApplicationDidEnterBackgroundNotification: @"App Did Enter Background",
+                                UIKeyboardDidShowNotification: @"Keyboard Became Visible",
+                                UIKeyboardDidHideNotification: @"Keyboard Became Hidden",
+                                UIMenuControllerDidShowMenuNotification: @"Did Show Menu",
+                                UIMenuControllerDidHideMenuNotification: @"Did Hide Menu",
+                                NSUndoManagerDidUndoChangeNotification: kUndoOperation,
+                                NSUndoManagerDidRedoChangeNotification: kRedoOperation,
+                                UIApplicationUserDidTakeScreenshotNotification: @"Took Screenshot",
+                                UITextFieldTextDidBeginEditingNotification: kBeganTextEdit,
+                                UITextViewTextDidBeginEditingNotification: kBeganTextEdit,
+                                UITextFieldTextDidEndEditingNotification: kStoppedTextEdit,
+                                UITextViewTextDidEndEditingNotification: kStoppedTextEdit,
+                                UITableViewSelectionDidChangeNotification: kTableViewSelectionChange,
+                                UIDeviceBatteryStateDidChangeNotification: @"Battery State Changed",
+                                UIDeviceBatteryLevelDidChangeNotification: @"Battery Level Changed",
+                                UIDeviceOrientationDidChangeNotification: @"Orientation Changed",
+                                UIApplicationDidReceiveMemoryWarningNotification: @"Memory Warning",
+
+#elif TARGET_OS_MAC
+                                NSApplicationDidBecomeActiveNotification: @"App Became Active",
+                                NSApplicationDidResignActiveNotification: @"App Resigned Active",
+                                NSApplicationDidHideNotification: @"App Did Hide",
+                                NSApplicationDidUnhideNotification: @"App Did Unhide",
+                                NSApplicationWillTerminateNotification: kAppWillTerminate,
+                                NSWorkspaceScreensDidSleepNotification: @"Workspace Screen Slept",
+                                NSWorkspaceScreensDidWakeNotification: @"Workspace Screen Awoke",
+                                NSWindowWillCloseNotification: @"Window Will Close",
+                                NSWindowDidBecomeKeyNotification: @"Window Became Key",
+                                NSWindowWillMiniaturizeNotification: @"Window Will Miniaturize",
+                                NSWindowDidEnterFullScreenNotification: @"Window Entered Full Screen",
+                                NSWindowDidExitFullScreenNotification: @"Window Exited Full Screen",
+                                NSControlTextDidBeginEditingNotification: @"Control Text Began Edit",
+                                NSControlTextDidEndEditingNotification: @"Control Text Ended Edit",
+                                NSMenuWillSendActionNotification: @"Menu Will Send Action",
+                                NSTableViewSelectionDidChangeNotification: kTableViewSelectionChange,
+#endif
+                            };
+    
 }
 
 - (void) start {
@@ -165,8 +245,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     if (!configuration.autoNotify) {
         kscrash_setHandlingCrashTypes(KSCrashTypeUserReported);
     }
-    if (![[KSCrash sharedInstance] install])
+    if (![[KSCrash sharedInstance] install]) {
         bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");
+    }
 
     [sink sendPendingReports];
     [self updateAutomaticBreadcrumbDetectionSettings];
@@ -235,8 +316,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                                                                  configuration:self.configuration
                                                                       metaData:[self.configuration.metaData toDictionary]
                                                                       severity:BSGSeverityWarning];
-    if (block)
+    if (block) {
         block(report);
+    }
 
     [self.metaDataLock lock];
     BSSerializeJSONDictionary(report.metaData, &g_bugsnag_data.metaDataJSON);
@@ -261,8 +343,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     }];
 
     BugsnagSink *sink = [KSCrash sharedInstance].sink;
-    if ([sink isKindOfClass:[BugsnagSink class]])
+    if ([sink isKindOfClass:[BugsnagSink class]]) {
         [sink sendPendingReports];
+    }
 }
 
 - (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
@@ -316,7 +399,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
 - (void)orientationChanged:(NSNotification *)notif {
   NSString *orientation;
-  switch ([UIDevice currentDevice].orientation) {
+  UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
+    
+  switch (deviceOrientation) {
   case UIDeviceOrientationPortraitUpsideDown:
     orientation = @"portraitupsidedown";
     break;
@@ -335,17 +420,28 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
   case UIDeviceOrientationFaceDown:
     orientation = @"facedown";
     break;
-  case UIDeviceOrientationUnknown:
   default:
-    orientation = @"unknown";
+    return; // always ignore unknown breadcrumbs
   }
+  
+  NSDictionary *lastBreadcrumb = [[self.configuration.breadcrumbs arrayValue] lastObject];
+  NSString *orientationNotifName = BSGBreadcrumbNameForNotificationName(notif.name);
+    
+  if (lastBreadcrumb && [orientationNotifName isEqualToString:lastBreadcrumb[@"name"]]) {
+    NSDictionary *metaData = lastBreadcrumb[@"metaData"];
+    
+    if ([orientation isEqualToString:metaData[@"orientation"]]) {
+      return; // ignore duplicate orientation event
+    }
+  }
+    
   [[self state] addAttribute:@"orientation"
                    withValue:orientation
                toTabWithName:@"deviceState"];
   if ([self.configuration automaticallyCollectBreadcrumbs]) {
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeState;
-      breadcrumb.name = BSGBreadcrumbNameForNotificationName(notif.name);
+      breadcrumb.name = orientationNotifName;
       breadcrumb.metadata = @{ @"orientation" : orientation };
     }];
   }
@@ -366,6 +462,13 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     if ([self.configuration automaticallyCollectBreadcrumbs]) {
         for (NSString *name in [self automaticBreadcrumbStateEvents]) {
             [self crumbleNotification:name];
+        }
+        for (NSString *name in [self automaticBreadcrumbTableItemEvents]) {
+            [[NSNotificationCenter defaultCenter]
+             addObserver:self
+             selector:@selector(sendBreadcrumbForTableViewNotification:)
+             name:name
+             object:nil];
         }
         for (NSString *name in [self automaticBreadcrumbControlEvents]) {
             [[NSNotificationCenter defaultCenter]
