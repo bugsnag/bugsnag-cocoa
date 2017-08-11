@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-#import <KSCrash/KSCrashAdvanced.h>
-#import <KSCrash/KSCrashC.h>
+//#import <KSCrash/KSCrashAdvanced.h>
+//#import <KSCrash/KSCrashC.h>
 
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumb.h"
@@ -51,8 +51,6 @@ NSString *const BSAttributeSeverity = @"severity";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSAttributeBreadcrumbs = @"breadcrumbs";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
-
-NSUInteger const BSG_MAX_STORED_REPORTS = 12;
 
 struct bugsnag_data_t {
     // Contains the user-specified metaData, including the user tab from config.
@@ -135,6 +133,11 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         bsg_log_err(@"could not serialize metaData: %@", exception);
     }
 }
+
+@interface BugsnagNotifier ()
+@property (nonatomic) BugsnagCrashSentry *crashSentry;
+@property (nonatomic) BugsnagErrorReportApiClient *apiClient;
+@end
 
 @implementation BugsnagNotifier
 
@@ -234,23 +237,13 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void) start {
-    BugsnagSink* sink = [BugsnagSink new];
-    [KSCrash sharedInstance].sink = sink;
-    // We don't use this feature yet, so we turn it off
-    [KSCrash sharedInstance].introspectMemory = NO;
-    [KSCrash sharedInstance].deleteBehaviorAfterSendAll = KSCDeleteOnSucess;
-    [KSCrash sharedInstance].onCrash = &BSSerializeDataCrashHandler;
-    [KSCrash sharedInstance].maxStoredReports = BSG_MAX_STORED_REPORTS;
-    [KSCrash sharedInstance].demangleLanguages = 0;
-
-    if (!configuration.autoNotify) {
-        kscrash_setHandlingCrashTypes(KSCrashTypeUserReported);
-    }
-    if (![[KSCrash sharedInstance] install]) {
-        bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");
-    }
-
-    [sink.apiClient sendPendingReports];
+    self.crashSentry = [BugsnagCrashSentry new];
+    self.apiClient = [BugsnagErrorReportApiClient new];
+    
+    [self.crashSentry install:self.configuration
+                    apiClient:self.apiClient
+                      onCrash:&BSSerializeDataCrashHandler];
+        
     [self updateAutomaticBreadcrumbDetectionSettings];
 #if TARGET_OS_TV
   [self.details setValue:@"tvOS Bugsnag Notifier" forKey:@"name"];
@@ -343,10 +336,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
       crumb.metadata = @{ @"message": reportMessage, @"severity": BSGFormatSeverity(report.severity) };
     }];
 
-    BugsnagSink *sink = [KSCrash sharedInstance].sink;
-    if ([sink isKindOfClass:[BugsnagSink class]]) {
-        [sink.apiClient sendPendingReports];
-    }
+    [self.apiClient sendPendingReports];
 }
 
 - (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block {

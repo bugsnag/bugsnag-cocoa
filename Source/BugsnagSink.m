@@ -39,9 +39,9 @@
 
 @implementation BugsnagSink
 
-- (instancetype)init {
+- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient {
     if (self = [super init]) {
-        self.apiClient = [BugsnagErrorReportApiClient new];
+        self.apiClient = apiClient;
     }
     return self;
 }

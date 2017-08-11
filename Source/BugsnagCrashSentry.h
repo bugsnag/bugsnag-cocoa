@@ -8,8 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+#import "BugsnagConfiguration.h"
+#import "BugsnagErrorReportApiClient.h"
+
 @interface BugsnagCrashSentry : NSObject
 
-- (void)install;
+- (void)install:(BugsnagConfiguration *)config
+      apiClient:(BugsnagErrorReportApiClient *)apiClient
+        onCrash:(KSReportWriteCallback)onCrash;
 
 @end

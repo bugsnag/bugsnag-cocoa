@@ -31,5 +31,8 @@
 #import "BugsnagErrorReportApiClient.h"
 
 @interface BugsnagSink : NSObject<KSCrashReportFilter>
+
+- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient;
 @property (nonatomic) BugsnagErrorReportApiClient *apiClient;
+
 @end
