@@ -31,7 +31,6 @@
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
 #import "BugsnagLogger.h"
-#import <KSCrash/KSCrash.h>
 
 static BugsnagNotifier* g_bugsnag_notifier = NULL;
 
