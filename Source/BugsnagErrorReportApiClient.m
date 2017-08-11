@@ -20,7 +20,7 @@
 + (BugsnagNotifier*)notifier;
 @end
 
-@interface BugsnagErrorReportApiClient () // <KSCrashReportFilter>
+@interface BugsnagErrorReportApiClient ()
 @property (nonatomic, strong) NSOperationQueue *sendQueue;
 @end
 
@@ -50,7 +50,6 @@
     [deliver addDependency:delay];
     [self.sendQueue addOperations:@[delay, deliver] waitUntilFinished:NO];
 }
-
 
 - (void)sendReports:(NSArray <BugsnagCrashReport *>*)reports
             payload:(NSDictionary *)reportData

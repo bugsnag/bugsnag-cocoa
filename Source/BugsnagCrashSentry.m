@@ -40,4 +40,14 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
     [sink.apiClient sendPendingReports];
 }
 
+- (void)reportUserException:(NSString *)reportName
+                     reason:(NSString *)reportMessage {
+    
+    [[KSCrash sharedInstance] reportUserException:reportName
+                                           reason:reportMessage
+                                         language:NULL lineOfCode:@""
+                                       stackTrace:@[]
+                                 terminateProgram:NO];
+}
+
 @end

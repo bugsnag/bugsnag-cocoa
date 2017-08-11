@@ -17,4 +17,7 @@
       apiClient:(BugsnagErrorReportApiClient *)apiClient
         onCrash:(KSReportWriteCallback)onCrash;
 
+- (void)reportUserException:(NSString *)reportName
+                     reason:(NSString *)reportMessage;
+
 @end

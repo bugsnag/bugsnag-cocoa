@@ -24,9 +24,6 @@
 // THE SOFTWARE.
 //
 
-//#import <KSCrash/KSCrashAdvanced.h>
-//#import <KSCrash/KSCrashC.h>
-
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagNotifier.h"
@@ -321,11 +318,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self.state addAttribute:BSAttributeDepth withValue:@(report.depth + 3) toTabWithName:BSTabCrash];
     NSString *reportName = report.errorClass ?: NSStringFromClass([NSException class]);
     NSString *reportMessage = report.errorMessage ?: @"";
-    [[KSCrash sharedInstance] reportUserException:reportName
-                                           reason:reportMessage
-                                         language:NULL lineOfCode:@""
-                                       stackTrace:@[]
-                                 terminateProgram:NO];
+    
+    [self.crashSentry reportUserException:reportName reason:reportMessage];
+    
     // Restore metaData to pre-crash state.
     [self.metaDataLock unlock];
     [self metaDataChanged:self.configuration.metaData];

@@ -26,7 +26,6 @@
 
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumb.h"
-#import "BugsnagConfiguration.h"
 #import "BugsnagCrashReport.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
