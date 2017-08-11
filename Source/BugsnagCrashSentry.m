@@ -8,9 +8,9 @@
 
 #import <KSCrash/KSCrash.h>
 
-#import "BugsnagKSCrashSentry.h"
+#import "BugsnagCrashSentry.h"
 
-@implementation BugsnagKSCrashSentry
+@implementation BugsnagCrashSentry
 
 - (void)install {
     // TODO initialise KSCrash
