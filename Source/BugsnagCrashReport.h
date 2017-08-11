@@ -1,5 +1,5 @@
 //
-//  KSCrashReport.h
+//  BugsnagCrashReport.h
 //  Bugsnag
 //
 //  Created by Simon Maynard on 11/26/14.

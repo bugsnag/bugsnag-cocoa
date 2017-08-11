@@ -1,5 +1,5 @@
 //
-//  BugsnagKSCrashSentry.h
+//  BugsnagCrashSentry.h
 //  Pods
 //
 //  Created by Jamie Lynch on 11/08/2017.
