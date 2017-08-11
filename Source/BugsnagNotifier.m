@@ -250,7 +250,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
         bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");
     }
 
-    [sink sendPendingReports];
+    [sink.apiClient sendPendingReports];
     [self updateAutomaticBreadcrumbDetectionSettings];
 #if TARGET_OS_TV
   [self.details setValue:@"tvOS Bugsnag Notifier" forKey:@"name"];
@@ -345,7 +345,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
     BugsnagSink *sink = [KSCrash sharedInstance].sink;
     if ([sink isKindOfClass:[BugsnagSink class]]) {
-        [sink sendPendingReports];
+        [sink.apiClient sendPendingReports];
     }
 }
 

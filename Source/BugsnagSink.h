@@ -25,12 +25,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <KSCrash/KSCrash.h>
+#import <KSCrash/KSCrashReportFilter.h>
 
-@interface BugsnagSink : NSObject
+#import "BugsnagErrorReportApiClient.h"
 
-
-/**
- * Send outstanding error reports
- */
-- (void)sendPendingReports;
+@interface BugsnagSink : NSObject<KSCrashReportFilter>
+@property (nonatomic) BugsnagErrorReportApiClient *apiClient;
 @end
