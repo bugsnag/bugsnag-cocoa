@@ -49,5 +49,6 @@
 + (NSString *)modelName;
 + (NSString *)modelNumber;
 + (NSNumber *)usableMemory;
++ (NSString*) appUUID;
 
 @end

@@ -362,66 +362,6 @@
 {
     NSMutableDictionary* sysInfo = [NSMutableDictionary dictionary];
     
-    NSBundle* mainBundle = [NSBundle mainBundle];
-    NSDictionary* infoDict = [mainBundle infoDictionary];
-    const struct mach_header* header = _dyld_get_image_header(0);
-    
-#if KSCRASH_HAS_UIDEVICE
-    [sysInfo ksc_safeSetObject:[UIDevice currentDevice].systemName forKey:@KSSystemField_SystemName];
-    [sysInfo ksc_safeSetObject:[UIDevice currentDevice].systemVersion forKey:@KSSystemField_SystemVersion];
-#else
-    [sysInfo ksc_safeSetObject:@"Mac OS" forKey:@KSSystemField_SystemName];
-    NSOperatingSystemVersion version =[NSProcessInfo processInfo].operatingSystemVersion;
-    NSString* systemVersion;
-    if(version.patchVersion == 0)
-    {
-        systemVersion = [NSString stringWithFormat:@"%ld.%ld", version.majorVersion, version.minorVersion];
-    }
-    else
-    {
-        systemVersion = [NSString stringWithFormat:@"%ld.%ld.%ld", version.majorVersion, version.minorVersion, version.patchVersion];
-    }
-    [sysInfo ksc_safeSetObject:systemVersion forKey:@KSSystemField_SystemVersion];
-#endif
-    
-    
-    
-    if([self isSimulatorBuild])
-    {
-        NSString* model = [NSProcessInfo processInfo].environment[@"SIMULATOR_MODEL_IDENTIFIER"];
-        [sysInfo ksc_safeSetObject:@"simulator" forKey:@KSSystemField_Model];
-    }
-    else
-    {
-        [sysInfo ksc_safeSetObject:[self stringSysctl:@"hw.model"] forKey:@KSSystemField_Model];
-    }
-    
-        
-    
-    [sysInfo ksc_safeSetObject:[self stringSysctl:@"kern.version"] forKey:@KSSystemField_KernelVersion];
-    [sysInfo ksc_safeSetObject:[self stringSysctl:@"kern.osversion"] forKey:@KSSystemField_OSVersion];
-    [sysInfo ksc_safeSetObject:[NSNumber numberWithBool:[self isJailbroken]] forKey:@KSSystemField_Jailbroken];
-    [sysInfo ksc_safeSetObject:[self dateSysctl:@"kern.boottime"] forKey:@KSSystemField_BootTime];
-    [sysInfo ksc_safeSetObject:[NSDate date] forKey:@KSSystemField_AppStartTime];
-    [sysInfo ksc_safeSetObject:[self executablePath] forKey:@KSSystemField_ExecutablePath];
-    [sysInfo ksc_safeSetObject:[infoDict objectForKey:@"CFBundleExecutable"] forKey:@KSSystemField_Executable];
-    [sysInfo ksc_safeSetObject:[infoDict objectForKey:@"CFBundleIdentifier"] forKey:@KSSystemField_BundleID];
-    [sysInfo ksc_safeSetObject:[infoDict objectForKey:@"CFBundleName"] forKey:@KSSystemField_BundleName];
-    [sysInfo ksc_safeSetObject:[infoDict objectForKey:@"CFBundleVersion"] forKey:@KSSystemField_BundleVersion];
-    [sysInfo ksc_safeSetObject:[infoDict objectForKey:@"CFBundleShortVersionString"] forKey:@KSSystemField_BundleShortVersion];
-    [sysInfo ksc_safeSetObject:[self appUUID] forKey:@KSSystemField_AppUUID];
-    [sysInfo ksc_safeSetObject:[self currentCPUArch] forKey:@KSSystemField_CPUArch];
-    [sysInfo ksc_safeSetObject:[self int32Sysctl:@"hw.cputype"] forKey:@KSSystemField_CPUType];
-    [sysInfo ksc_safeSetObject:[self int32Sysctl:@"hw.cpusubtype"] forKey:@KSSystemField_CPUSubType];
-    [sysInfo ksc_safeSetObject:[NSNumber numberWithInt:header->cputype] forKey:@KSSystemField_BinaryCPUType];
-    [sysInfo ksc_safeSetObject:[NSNumber numberWithInt:header->cpusubtype] forKey:@KSSystemField_BinaryCPUSubType];
-    [sysInfo ksc_safeSetObject:[[NSTimeZone localTimeZone] abbreviation] forKey:@KSSystemField_TimeZone];
-    [sysInfo ksc_safeSetObject:[NSProcessInfo processInfo].processName forKey:@KSSystemField_ProcessName];
-    [sysInfo ksc_safeSetObject:[NSNumber numberWithInt:[NSProcessInfo processInfo].processIdentifier] forKey:@KSSystemField_ProcessID];
-    [sysInfo ksc_safeSetObject:[NSNumber numberWithInt:getppid()] forKey:@KSSystemField_ParentProcessID];
-    [sysInfo ksc_safeSetObject:[self deviceAndAppHash] forKey:@KSSystemField_DeviceAppHash];
-    [sysInfo ksc_safeSetObject:[BugsnagSystemInfo buildType] forKey:@KSSystemField_BuildType];
-    
     NSDictionary* memory = [NSDictionary dictionaryWithObject:[self int64Sysctl:@"hw.memsize"] forKey:@KSSystemField_Size];
     [sysInfo ksc_safeSetObject:memory forKey:@KSSystemField_Memory];
     
