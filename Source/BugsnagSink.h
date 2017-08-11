@@ -25,9 +25,8 @@
 //
 
 #import <Foundation/Foundation.h>
-//#import <KSCrash/KSCrashReportFilter.h>
 
-@interface BugsnagSink : NSObject // depends on (not  <KSCrashReportFilter>
+@interface BugsnagSink : NSObject
 
 
 /**

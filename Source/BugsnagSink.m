@@ -25,6 +25,8 @@
 //
 
 #import <KSCrash/KSCrash.h>
+#import <KSCrash/KSCrashReportFilter.h>
+
 #import "BugsnagSink.h"
 #import "BugsnagNotifier.h"
 #import "Bugsnag.h"
@@ -38,7 +40,7 @@
 + (BugsnagNotifier*)notifier;
 @end
 
-@interface BugsnagSink ()
+@interface BugsnagSink () // <KSCrashReportFilter>
 @property (nonatomic, strong) NSOperationQueue *sendQueue;
 @end
 
