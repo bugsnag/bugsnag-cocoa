@@ -11,6 +11,7 @@
 #import "BugsnagCrashReport.h"
 #import "BugsnagLogger.h"
 #import "BSGSerialization.h"
+#import "BugsnagSystemInfo.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {
@@ -91,17 +92,14 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
     
     UIDevice *device = [UIDevice currentDevice];
     
-    NSString *modelNumber = system[@"model"];
-    NSString *model = system[@"machine"];
-    NSString *deviceAppHash = system[@"device_app_hash"];
-    NSNumber *totalMemory = system[@"memory"][@"usable"];
-//    NSNumber *mem = @(NSProcessInfo.processInfo.physicalMemory);
-    
     // TODO remove KSCrash dependencies in report param
-    BSGDictSetSafeObject(data, deviceAppHash, @"id");
-    BSGDictSetSafeObject(data, [NSTimeZone systemTimeZone].abbreviation, @"timezone");
-    BSGDictSetSafeObject(data, modelNumber, @"modelNumber");
-    BSGDictSetSafeObject(data, model, @"model");
+    NSNumber *totalMemory = system[@"memory"][@"usable"];
+    NSNumber *mem = BugsnagSystemInfo.usableMemory;
+    
+    BSGDictSetSafeObject(data, BugsnagSystemInfo.deviceAndAppHash, @"id");
+    BSGDictSetSafeObject(data, NSTimeZone.localTimeZone.abbreviation, @"timezone");
+    BSGDictSetSafeObject(data, BugsnagSystemInfo.modelNumber, @"modelNumber");
+    BSGDictSetSafeObject(data, BugsnagSystemInfo.modelName, @"model");
     BSGDictSetSafeObject(data, device.systemName, @"osName");
     BSGDictSetSafeObject(data, device.systemVersion, @"osVersion");
     BSGDictSetSafeObject(data, totalMemory, @"totalMemory");
