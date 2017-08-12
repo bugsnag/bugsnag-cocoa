@@ -273,6 +273,8 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
   if (self = [super init]) {
       _notifyReleaseStages = [report valueForKeyPath:@"user.config.notifyReleaseStages"];
       _releaseStage = BSGParseReleaseStage(report);
+      
+      // TODO KSCrash replacement
       _error = [report valueForKeyPath:@"crash.error"];
       _errorType = _error[@"type"];
       _errorClass = BSGParseErrorClass(_error, _errorType);
