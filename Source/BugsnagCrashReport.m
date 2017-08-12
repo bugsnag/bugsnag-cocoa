@@ -83,7 +83,6 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
 }
 
 NSDictionary *BSGParseDevice(NSDictionary *report) {
-    NSDictionary *system = report[@"system"];
     NSMutableDictionary *data = [NSMutableDictionary dictionary];
 
     BSGDictSetSafeObject(data, @"Apple", @"manufacturer");
@@ -92,17 +91,13 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
     
     UIDevice *device = [UIDevice currentDevice];
     
-    // TODO remove KSCrash dependencies in report param
-    NSNumber *totalMemory = system[@"memory"][@"usable"];
-    NSNumber *mem = BugsnagSystemInfo.usableMemory;
-    
     BSGDictSetSafeObject(data, BugsnagSystemInfo.deviceAndAppHash, @"id");
     BSGDictSetSafeObject(data, NSTimeZone.localTimeZone.abbreviation, @"timezone");
     BSGDictSetSafeObject(data, BugsnagSystemInfo.modelNumber, @"modelNumber");
     BSGDictSetSafeObject(data, BugsnagSystemInfo.modelName, @"model");
     BSGDictSetSafeObject(data, device.systemName, @"osName");
     BSGDictSetSafeObject(data, device.systemVersion, @"osVersion");
-    BSGDictSetSafeObject(data, totalMemory, @"totalMemory");
+    BSGDictSetSafeObject(data, BugsnagSystemInfo.usableMemory, @"totalMemory");
     
     return data;
 }

@@ -13,6 +13,7 @@
 #import "KSSysCtl.h"
 #import "KSJSONCodecObjC.h"
 #import "KSSystemCapabilities.h"
+#import "KSMach.h"
 
 //#define KSLogger_LocalLevel TRACE
 #import "KSLogger.h"
@@ -370,7 +371,7 @@
 
 
 + (NSNumber *)usableMemory {
-    return [self int64Sysctl:@"hw.memsize"];
+    return @(ksmach_usableMemory());
 }
 
 
