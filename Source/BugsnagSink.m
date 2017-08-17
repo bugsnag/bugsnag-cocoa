@@ -148,7 +148,7 @@
                                                                cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
                                                            timeoutInterval: 15];
         request.HTTPMethod = @"POST";
-
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 
         if ([NSURLSession class]) {
             NSURLSession *session = [Bugsnag configuration].session;
