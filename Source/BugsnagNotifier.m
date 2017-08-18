@@ -287,13 +287,18 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
   [self.details setValue:@"OSX Bugsnag Notifier" forKey:@"name"];
 #endif
 
-  static NSString *kReachableNotifName = @"ReachabilityChange";
-  self.networkReachable = [Reachability reachabilityForInternetConnection];
-  [self.networkReachable startNotifier];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(didChangeReachableStatus:)
-                                               name:kReachableNotifName
-                                             object:nil];
+  [self setupConnectivityListener];
+}
+
+- (void)setupConnectivityListener {
+    static NSString *kReachableNotifName = @"ReachabilityChange";
+    
+    self.networkReachable = [Reachability reachabilityForInternetConnection];
+    [self.networkReachable startNotifier];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didChangeReachableStatus:)
+                                                 name:kReachableNotifName
+                                               object:nil];
 }
 
 - (void)notifyError:(NSError *)error block:(void (^)(BugsnagCrashReport *))block {

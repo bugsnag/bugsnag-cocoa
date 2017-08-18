@@ -39,7 +39,7 @@
 @property(nonatomic, readwrite, retain) NSDictionary *_Nonnull details;
 @property(nonatomic, readwrite, retain) NSLock *_Nonnull metaDataLock;
 
-@property(nonatomic) Reachability *networkReachable;
+@property(nonatomic) Reachability * _Nonnull networkReachable;
 
 - (instancetype _Nonnull)initWithConfiguration:
     (BugsnagConfiguration *_Nonnull)configuration;
@@ -98,6 +98,6 @@
  */
 - (void)updateAutomaticBreadcrumbDetectionSettings;
 
-- (void)didChangeReachableStatus:(NSNotification *)notification;
+- (void)didChangeReachableStatus:(NSNotification *_Nullable)notification;
 
 @end

@@ -39,10 +39,6 @@
 		8A87351E1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A87351D1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8AAA64011D2407CE00A9A123 /* Kiwi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AAA64001D2407CE00A9A123 /* Kiwi.framework */; };
 		8AE1BC951DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1BC941DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m */; };
-		E7989EF01F3361C7007C37A4 /* Reachability.h in Headers */ = {isa = PBXBuildFile; fileRef = E7989EEE1F3361C7007C37A4 /* Reachability.h */; };
-		E7989EF11F3361C7007C37A4 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = E7989EEF1F3361C7007C37A4 /* Reachability.m */; };
-		E7989EF41F3361D3007C37A4 /* test.h in Headers */ = {isa = PBXBuildFile; fileRef = E7989EF21F3361D3007C37A4 /* test.h */; };
-		E7989EF51F3361D3007C37A4 /* test.m in Sources */ = {isa = PBXBuildFile; fileRef = E7989EF31F3361D3007C37A4 /* test.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,10 +91,6 @@
 		8AAA63FE1D2404BB00A9A123 /* Nocilla.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nocilla.framework; path = "../development/Nocilla/build/Debug-iphoneos/Nocilla.framework"; sourceTree = "<group>"; };
 		8AAA64001D2407CE00A9A123 /* Kiwi.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kiwi.framework; path = "../development/Kiwi/build/Debug-iphoneos/Kiwi.framework"; sourceTree = "<group>"; };
 		8AE1BC941DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationSpec.m; path = ../Tests/BugsnagConfigurationSpec.m; sourceTree = SOURCE_ROOT; };
-		E7989EEE1F3361C7007C37A4 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reachability.h; path = ../../Source/Reachability.h; sourceTree = "<group>"; };
-		E7989EEF1F3361C7007C37A4 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reachability.m; path = ../../Source/Reachability.m; sourceTree = "<group>"; };
-		E7989EF21F3361D3007C37A4 /* test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = test.h; path = ../../Source/test.h; sourceTree = "<group>"; };
-		E7989EF31F3361D3007C37A4 /* test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = test.m; path = ../../Source/test.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,10 +161,6 @@
 				8A2C8F4E1C6BBE3C00846019 /* BugsnagSink.m */,
 				8A2C8F321C6BBD7200846019 /* module.modulemap */,
 				8A2C8F1D1C6BBD2300846019 /* Info.plist */,
-				E7989EEE1F3361C7007C37A4 /* Reachability.h */,
-				E7989EEF1F3361C7007C37A4 /* Reachability.m */,
-				E7989EF21F3361D3007C37A4 /* test.h */,
-				E7989EF31F3361D3007C37A4 /* test.m */,
 			);
 			path = Bugsnag;
 			sourceTree = "<group>";
@@ -214,7 +202,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7989EF41F3361D3007C37A4 /* test.h in Headers */,
 				8A2C8F4F1C6BBE3C00846019 /* Bugsnag.h in Headers */,
 				8A627CD01EC2A5FD00F7C04E /* BSGSerialization.h in Headers */,
 				8A2C8F5B1C6BBE3C00846019 /* BugsnagMetaData.h in Headers */,
@@ -224,7 +211,6 @@
 				8A2C8F571C6BBE3C00846019 /* BugsnagCrashReport.h in Headers */,
 				8A2C8F5D1C6BBE3C00846019 /* BugsnagNotifier.h in Headers */,
 				8A2C8F531C6BBE3C00846019 /* BugsnagCollections.h in Headers */,
-				E7989EF01F3361C7007C37A4 /* Reachability.h in Headers */,
 				8A87351E1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h in Headers */,
 				8A2C8F5F1C6BBE3C00846019 /* BugsnagSink.h in Headers */,
 			);
@@ -329,10 +315,8 @@
 			files = (
 				8A2C8F561C6BBE3C00846019 /* BugsnagConfiguration.m in Sources */,
 				8A627CD21EC2A62900F7C04E /* BSGSerialization.m in Sources */,
-				E7989EF51F3361D3007C37A4 /* test.m in Sources */,
 				8A2C8F501C6BBE3C00846019 /* Bugsnag.m in Sources */,
 				8A2C8F5E1C6BBE3C00846019 /* BugsnagNotifier.m in Sources */,
-				E7989EF11F3361C7007C37A4 /* Reachability.m in Sources */,
 				8A2C8F601C6BBE3C00846019 /* BugsnagSink.m in Sources */,
 				8A2C8F5C1C6BBE3C00846019 /* BugsnagMetaData.m in Sources */,
 				8A2C8F521C6BBE3C00846019 /* BugsnagBreadcrumb.m in Sources */,
