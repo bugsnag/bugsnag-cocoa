@@ -39,7 +39,7 @@
 @property(nonatomic, readwrite, retain) NSDictionary *_Nonnull details;
 @property(nonatomic, readwrite, retain) NSLock *_Nonnull metaDataLock;
 
-@property(nonatomic) Reachability * _Nonnull networkReachable;
+@property(nonatomic) Reachability * _Nonnull apiReachable;
 
 - (instancetype _Nonnull)initWithConfiguration:
     (BugsnagConfiguration *_Nonnull)configuration;

@@ -293,12 +293,18 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 - (void)setupConnectivityListener {
     static NSString *kReachableNotifName = @"ReachabilityChange";
     
-    self.networkReachable = [Reachability reachabilityForInternetConnection];
-    [self.networkReachable startNotifier];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didChangeReachableStatus:)
                                                  name:kReachableNotifName
                                                object:nil];
+    
+    self.apiReachable = [Reachability reachabilityWithHostName:[self apiHostUrl]];
+    [self.apiReachable startNotifier];
+    [Reachability reachabilityWithHostName:[self apiHostUrl]];
+}
+
+- (NSString *)apiHostUrl {
+    return [self.configuration.notifyURL absoluteString];
 }
 
 - (void)notifyError:(NSError *)error block:(void (^)(BugsnagCrashReport *))block {
@@ -395,7 +401,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)didChangeReachableStatus:(NSNotification *)notification {
-    if ([self.networkReachable currentReachabilityStatus] != NotReachable) {
+    if ([self.apiReachable currentReachabilityStatus] != NotReachable) {
         bsg_log_info(@"Flushing any stored reports");
     }
 }
