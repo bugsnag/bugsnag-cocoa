@@ -38,7 +38,6 @@
 		8A87351E1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A87351D1C6D2ADE00EDBD5B /* BSGKSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8AAA64011D2407CE00A9A123 /* Kiwi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AAA64001D2407CE00A9A123 /* Kiwi.framework */; };
 		8AE1BC951DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1BC941DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m */; };
-		E7107C291F4C97F100BB3F98 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = E7107BB41F4C97F100BB3F98 /* LICENSE */; };
 		E7107C2B1F4C97F100BB3F98 /* None.h in Headers */ = {isa = PBXBuildFile; fileRef = E7107BBA1F4C97F100BB3F98 /* None.h */; };
 		E7107C2C1F4C97F100BB3F98 /* Optional.h in Headers */ = {isa = PBXBuildFile; fileRef = E7107BBB1F4C97F100BB3F98 /* Optional.h */; };
 		E7107C2D1F4C97F100BB3F98 /* StringRef.h in Headers */ = {isa = PBXBuildFile; fileRef = E7107BBC1F4C97F100BB3F98 /* StringRef.h */; };
@@ -147,6 +146,7 @@
 		E72962D91F4BBA8B00CEA15D /* BugsnagErrorReportApiClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E72962D31F4BBA8B00CEA15D /* BugsnagErrorReportApiClient.m */; };
 		E72962DA1F4BBA8B00CEA15D /* BugsnagSystemInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = E72962D41F4BBA8B00CEA15D /* BugsnagSystemInfo.h */; };
 		E72962DB1F4BBA8B00CEA15D /* BugsnagSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E72962D51F4BBA8B00CEA15D /* BugsnagSystemInfo.m */; };
+		E79FEBE71F4CB1320048FAD6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E79FEBE61F4CB1320048FAD6 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -308,6 +308,7 @@
 		E72962D31F4BBA8B00CEA15D /* BugsnagErrorReportApiClient.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = BugsnagErrorReportApiClient.m; path = ../Source/BugsnagErrorReportApiClient.m; sourceTree = SOURCE_ROOT; };
 		E72962D41F4BBA8B00CEA15D /* BugsnagSystemInfo.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = BugsnagSystemInfo.h; path = ../Source/BugsnagSystemInfo.h; sourceTree = SOURCE_ROOT; };
 		E72962D51F4BBA8B00CEA15D /* BugsnagSystemInfo.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = BugsnagSystemInfo.m; path = ../Source/BugsnagSystemInfo.m; sourceTree = SOURCE_ROOT; };
+		E79FEBE61F4CB1320048FAD6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -315,6 +316,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E79FEBE71F4CB1320048FAD6 /* Foundation.framework in Frameworks */,
 				8A2C8F741C6BBEAD00846019 /* UIKit.framework in Frameworks */,
 				8A2C8F721C6BBEA400846019 /* MessageUI.framework in Frameworks */,
 				8A2C8F6C1C6BBE9500846019 /* SystemConfiguration.framework in Frameworks */,
@@ -406,6 +408,7 @@
 		8A2C8F751C6BBEBB00846019 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E79FEBE61F4CB1320048FAD6 /* Foundation.framework */,
 				8AAA64001D2407CE00A9A123 /* Kiwi.framework */,
 				8AAA63FE1D2404BB00A9A123 /* Nocilla.framework */,
 				8A2C8F731C6BBEAD00846019 /* UIKit.framework */,
@@ -647,6 +650,7 @@
 				E7107C7E1F4C97F100BB3F98 /* NSDictionary+Merge.h in Headers */,
 				E7107C331F4C97F100BB3F98 /* KSCrash.h in Headers */,
 				E7107C791F4C97F100BB3F98 /* KSString.h in Headers */,
+				E7107C4C1F4C97F100BB3F98 /* KSCrashSentry_CPPException.h in Headers */,
 				E7107C5B1F4C97F100BB3F98 /* KSBacktrace.h in Headers */,
 				E7107C601F4C97F100BB3F98 /* KSDynamicLinker.h in Headers */,
 				E7107C6A1F4C97F100BB3F98 /* KSMach.h in Headers */,
@@ -694,7 +698,6 @@
 				E7107C8B1F4C97F100BB3F98 /* Fallthrough.h in Headers */,
 				8A2C8F511C6BBE3C00846019 /* BugsnagBreadcrumb.h in Headers */,
 				E7107C861F4C97F100BB3F98 /* KSCrashReportFilter.h in Headers */,
-				E7107C4C1F4C97F100BB3F98 /* KSCrashSentry_CPPException.h in Headers */,
 				8A2C8F571C6BBE3C00846019 /* BugsnagCrashReport.h in Headers */,
 				E72962D81F4BBA8B00CEA15D /* BugsnagErrorReportApiClient.h in Headers */,
 				E7107C731F4C97F100BB3F98 /* KSSafeCollections.h in Headers */,
@@ -799,7 +802,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7107C291F4C97F100BB3F98 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
