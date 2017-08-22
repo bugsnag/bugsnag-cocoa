@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		8ACFFA0C1D895D4D00357B5E /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */; };
 		8ACFFA101D895D4D00357B5E /* custom-keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8ACFFA091D895D4D00357B5E /* custom-keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C7C8AD5C7612838DDE1F5B4E /* libPods-custom-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9333D154DE949C52593C64D3 /* libPods-custom-keyboard.a */; };
+		DB7A2D239A0F25E0ED01EBF7 /* libPods-Bugsnag Test App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */; };
 		F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874A16AA233500676BB2 /* UIKit.framework */; };
 		F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874C16AA233500676BB2 /* Foundation.framework */; };
 		F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874E16AA233500676BB2 /* CoreGraphics.framework */; };
@@ -53,6 +55,7 @@
 		8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		8ACFFA0D1D895D4D00357B5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8ACFFA151D895E0300357B5E /* BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
+		9333D154DE949C52593C64D3 /* libPods-custom-keyboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-custom-keyboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF2C7221BC705BF69E871268 /* Pods-custom-keyboard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-custom-keyboard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-custom-keyboard/Pods-custom-keyboard.debug.xcconfig"; sourceTree = "<group>"; };
 		F2E14F3E5A46514C8F874A58 /* Pods-Bugsnag Test App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bugsnag Test App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Bugsnag Test App/Pods-Bugsnag Test App.release.xcconfig"; sourceTree = "<group>"; };
 		F40B874616AA233500676BB2 /* Bugsnag Test App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bugsnag Test App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -71,6 +74,7 @@
 		F40B876316AA233500676BB2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		F40B876816AA233500676BB2 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		F40B876916AA233500676BB2 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bugsnag Test App.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7C8AD5C7612838DDE1F5B4E /* libPods-custom-keyboard.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +93,7 @@
 				F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */,
 				F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */,
 				F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */,
+				DB7A2D239A0F25E0ED01EBF7 /* libPods-Bugsnag Test App.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,6 +147,8 @@
 				F40B874A16AA233500676BB2 /* UIKit.framework */,
 				F40B874C16AA233500676BB2 /* Foundation.framework */,
 				F40B874E16AA233500676BB2 /* CoreGraphics.framework */,
+				F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */,
+				9333D154DE949C52593C64D3 /* libPods-custom-keyboard.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

@@ -6,8 +6,8 @@
 //
 //
 
-#import <KSCrash/KSCrashAdvanced.h>
-#import <KSCrash/KSCrashC.h>
+#import "KSCrashAdvanced.h"
+#import "KSCrashC.h"
 
 #import "BugsnagCrashSentry.h"
 #import "BugsnagLogger.h"
