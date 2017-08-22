@@ -24,10 +24,5 @@
   "public_header_files": [
     "Source/BSGKSCrashReportWriter.h",
     "Source/Bugsnag{,MetaData,Configuration,Breadcrumb,CrashReport}.h"
-  ],
-  "dependencies": {
-    "KSCrash/RecordingAdvanced": [
-      "= 1.8.13"
-    ]
-  }
+  ]
 }

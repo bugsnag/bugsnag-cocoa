@@ -6,6 +6,8 @@
 //
 //
 
+#import <UIKit/UIKit.h>
+
 #import "Bugsnag.h"
 #import "BugsnagCollections.h"
 #import "BugsnagCrashReport.h"

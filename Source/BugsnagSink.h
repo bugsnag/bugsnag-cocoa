@@ -25,8 +25,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <KSCrash/KSCrash.h>
-#import <KSCrash/KSCrashReportFilter.h>
+#import "KSCrash.h"
+#import "KSCrashReportFilter.h"
 
 #import "BugsnagErrorReportApiClient.h"
 

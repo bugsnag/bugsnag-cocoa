@@ -1,10 +1,10 @@
-module Bugsnag {
-    umbrella header "Bugsnag.h"
-
-    header "BugsnagConfiguration.h"
-    header "BugsnagMetaData.h"
-    header "BugsnagBreadcrumb.h"
-
-    export *
-    module * { export * }
-}
+//module Bugsnag {
+//    umbrella header "Bugsnag.h"
+//
+//    header "BugsnagConfiguration.h"
+//    header "BugsnagMetaData.h"
+//    header "BugsnagBreadcrumb.h"
+//
+//    export *
+//    module * { export * }
+//}
