@@ -121,12 +121,6 @@
   XCTAssertEqualObjects(releaseStage, @"MagicalTestingTime");
 }
 
-- (void)testEventDsymUUID {
-  NSString *dsymUUID = [self.processedData[@"events"] firstObject][@"dsymUUID"];
-  NSString *expectedUUID = self.rawReportData[@"system"][@"app_uuid"];
-  XCTAssertEqualObjects(dsymUUID, expectedUUID);
-}
-
 - (void)testEventPayloadVersion {
   NSString *payloadVersion = [self.processedData[@"events"] firstObject][@"payloadVersion"];
   XCTAssertEqualObjects(payloadVersion, @"3");
@@ -213,18 +207,20 @@
 }
 
 - (void)testBinaryThreadStacktraces {
-  for (NSDictionary *thread in [self.processedData[@"events"] firstObject][@"threads"]) {
-    NSArray *stacktrace = thread[@"stacktrace"];
-    XCTAssertNotNil(stacktrace);
-    for (NSDictionary *frame in stacktrace) {
-      XCTAssertNotNil([frame valueForKey:@"machoUUID"]);
-      XCTAssertNotNil([frame valueForKey:@"machoFile"]);
-      XCTAssertNotNil([frame valueForKey:@"frameAddress"]);
-      XCTAssertNotNil([frame valueForKey:@"symbolAddress"]);
-      XCTAssertNotNil([frame valueForKey:@"machoLoadAddress"]);
-      XCTAssertNotNil([frame valueForKey:@"machoVMAddress"]);
+    NSArray *events =  self.processedData[@"events"];
+    for (NSDictionary *thread in [events firstObject][@"threads"]) {
+        NSArray *stacktrace = thread[@"stacktrace"];
+        
+        XCTAssertNotNil(stacktrace);
+        for (NSDictionary *frame in stacktrace) {
+            XCTAssertNotNil([frame valueForKey:@"machoUUID"]);
+            XCTAssertNotNil([frame valueForKey:@"machoFile"]);
+            XCTAssertNotNil([frame valueForKey:@"frameAddress"]);
+            XCTAssertNotNil([frame valueForKey:@"symbolAddress"]);
+            XCTAssertNotNil([frame valueForKey:@"machoLoadAddress"]);
+            XCTAssertNotNil([frame valueForKey:@"machoVMAddress"]);
+        }
     }
-  }
 }
 
 - (void)testEventExceptionCount {

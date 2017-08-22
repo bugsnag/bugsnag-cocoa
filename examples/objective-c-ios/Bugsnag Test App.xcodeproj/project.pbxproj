@@ -11,10 +11,10 @@
 		8ACFFA101D895D4D00357B5E /* custom-keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8ACFFA091D895D4D00357B5E /* custom-keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C7C8AD5C7612838DDE1F5B4E /* libPods-custom-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9333D154DE949C52593C64D3 /* libPods-custom-keyboard.a */; };
 		DB7A2D239A0F25E0ED01EBF7 /* libPods-Bugsnag Test App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */; };
+		E75E62DC1F4CCDD4000C44C0 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */; };
+		E75E62DD1F4CCDD9000C44C0 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */; };
 		E7EC04241F4CCB6F00C2E9D5 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */; };
 		E7EC04251F4CCB7400C2E9D5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */; };
-		E7EC04261F4CCB7E00C2E9D5 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */; };
-		E7EC04271F4CCB8400C2E9D5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */; };
 		F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874A16AA233500676BB2 /* UIKit.framework */; };
 		F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874C16AA233500676BB2 /* Foundation.framework */; };
 		F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874E16AA233500676BB2 /* CoreGraphics.framework */; };
@@ -100,8 +100,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7EC04271F4CCB8400C2E9D5 /* libc++.tbd in Frameworks */,
-				E7EC04261F4CCB7E00C2E9D5 /* libz.tbd in Frameworks */,
+				E75E62DD1F4CCDD9000C44C0 /* libc++.tbd in Frameworks */,
+				E75E62DC1F4CCDD4000C44C0 /* libz.tbd in Frameworks */,
 				F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */,
 				F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */,
 				F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */,

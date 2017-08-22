@@ -6,7 +6,7 @@
 //  Copyright 2016 Bugsnag. All rights reserved.
 //
 
-#import <Kiwi/Kiwi.h>
+//#import <Kiwi/Kiwi.h>
 #import "BugsnagConfiguration.h"
 #import "Bugsnag.h"
 
@@ -24,20 +24,20 @@
 @end
 
 
-SPEC_BEGIN(BugsnagConfigurationSpec)
-
-describe(@"BugsnagConfiguration", ^{
-
-    it(@"sets the request session", ^{
-        SomeDelegate *delegate = [SomeDelegate new];
-        BugsnagConfiguration *config = [BugsnagConfiguration new];
-        config.session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
-                                                       delegate:delegate
-                                                  delegateQueue:[NSOperationQueue mainQueue]];
-        [Bugsnag startBugsnagWithConfiguration:config];
-        [Bugsnag notify:[NSException exceptionWithName:@"oh no" reason:nil userInfo:nil]];
-        [[expectFutureValue(@(delegate.didInvoke)) shouldEventuallyBeforeTimingOutAfter(3)] beYes];
-    });
-});
-
-SPEC_END
+//SPEC_BEGIN(BugsnagConfigurationSpec)
+//
+//describe(@"BugsnagConfiguration", ^{
+//
+//    it(@"sets the request session", ^{
+//        SomeDelegate *delegate = [SomeDelegate new];
+//        BugsnagConfiguration *config = [BugsnagConfiguration new];
+//        config.session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
+//                                                       delegate:delegate
+//                                                  delegateQueue:[NSOperationQueue mainQueue]];
+//        [Bugsnag startBugsnagWithConfiguration:config];
+//        [Bugsnag notify:[NSException exceptionWithName:@"oh no" reason:nil userInfo:nil]];
+//        [[expectFutureValue(@(delegate.didInvoke)) shouldEventuallyBeforeTimingOutAfter(3)] beYes];
+//    });
+//});
+//
+//SPEC_END
