@@ -11,6 +11,10 @@
 		8ACFFA101D895D4D00357B5E /* custom-keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8ACFFA091D895D4D00357B5E /* custom-keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C7C8AD5C7612838DDE1F5B4E /* libPods-custom-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9333D154DE949C52593C64D3 /* libPods-custom-keyboard.a */; };
 		DB7A2D239A0F25E0ED01EBF7 /* libPods-Bugsnag Test App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */; };
+		E7EC04241F4CCB6F00C2E9D5 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */; };
+		E7EC04251F4CCB7400C2E9D5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */; };
+		E7EC04261F4CCB7E00C2E9D5 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */; };
+		E7EC04271F4CCB8400C2E9D5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */; };
 		F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874A16AA233500676BB2 /* UIKit.framework */; };
 		F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874C16AA233500676BB2 /* Foundation.framework */; };
 		F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874E16AA233500676BB2 /* CoreGraphics.framework */; };
@@ -57,6 +61,10 @@
 		8ACFFA151D895E0300357B5E /* BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
 		9333D154DE949C52593C64D3 /* libPods-custom-keyboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-custom-keyboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF2C7221BC705BF69E871268 /* Pods-custom-keyboard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-custom-keyboard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-custom-keyboard/Pods-custom-keyboard.debug.xcconfig"; sourceTree = "<group>"; };
+		E7EC04121F4CC87300C2E9D5 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
+		E7EC04131F4CC87300C2E9D5 /* libz.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.dylib; path = ../../../../../../usr/lib/libz.1.dylib; sourceTree = "<group>"; };
+		E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		F2E14F3E5A46514C8F874A58 /* Pods-Bugsnag Test App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bugsnag Test App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Bugsnag Test App/Pods-Bugsnag Test App.release.xcconfig"; sourceTree = "<group>"; };
 		F40B874616AA233500676BB2 /* Bugsnag Test App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bugsnag Test App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F40B874A16AA233500676BB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -82,6 +90,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7EC04251F4CCB7400C2E9D5 /* libc++.tbd in Frameworks */,
+				E7EC04241F4CCB6F00C2E9D5 /* libz.tbd in Frameworks */,
 				C7C8AD5C7612838DDE1F5B4E /* libPods-custom-keyboard.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -90,6 +100,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7EC04271F4CCB8400C2E9D5 /* libc++.tbd in Frameworks */,
+				E7EC04261F4CCB7E00C2E9D5 /* libz.tbd in Frameworks */,
 				F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */,
 				F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */,
 				F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */,
@@ -144,6 +156,10 @@
 		F40B874916AA233500676BB2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */,
+				E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */,
+				E7EC04121F4CC87300C2E9D5 /* libc++.1.dylib */,
+				E7EC04131F4CC87300C2E9D5 /* libz.1.dylib */,
 				F40B874A16AA233500676BB2 /* UIKit.framework */,
 				F40B874C16AA233500676BB2 /* Foundation.framework */,
 				F40B874E16AA233500676BB2 /* CoreGraphics.framework */,
