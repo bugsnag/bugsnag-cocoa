@@ -91,6 +91,7 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
     BSGDictSetSafeObject(data, [[NSLocale currentLocale] localeIdentifier],
                          @"locale");
     
+    
     UIDevice *device = [UIDevice currentDevice];
     
     BSGDictSetSafeObject(data, BugsnagSystemInfo.deviceAndAppHash, @"id");
