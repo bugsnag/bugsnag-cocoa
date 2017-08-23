@@ -6,7 +6,12 @@
 //
 //
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+#include <sys/utsname.h>
+#elif TARGET_OS_MAC
+
+#endif
 
 #import "Bugsnag.h"
 #import "BugsnagCollections.h"
@@ -92,14 +97,21 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
                          @"locale");
     
     
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     UIDevice *device = [UIDevice currentDevice];
+    BSGDictSetSafeObject(data, device.systemName, @"osName");
+    BSGDictSetSafeObject(data, device.systemVersion, @"osVersion");
+#elif TARGET_OS_MAC
+    NSProcessInfo *processInfo = [NSProcessInfo processInfo];
+    BSGDictSetSafeObject(data, processInfo.operatingSystemName, @"osName");
+    BSGDictSetSafeObject(data, processInfo.operatingSystemVersionString, @"osVersion");
+#endif
+    
     
     BSGDictSetSafeObject(data, BugsnagSystemInfo.deviceAndAppHash, @"id");
     BSGDictSetSafeObject(data, NSTimeZone.localTimeZone.abbreviation, @"timezone");
     BSGDictSetSafeObject(data, BugsnagSystemInfo.modelNumber, @"modelNumber");
     BSGDictSetSafeObject(data, BugsnagSystemInfo.modelName, @"model");
-    BSGDictSetSafeObject(data, device.systemName, @"osName");
-    BSGDictSetSafeObject(data, device.systemVersion, @"osVersion");
     BSGDictSetSafeObject(data, BugsnagSystemInfo.usableMemory, @"totalMemory");
     
     return data;
