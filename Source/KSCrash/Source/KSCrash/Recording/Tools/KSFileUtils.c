@@ -62,7 +62,7 @@ bool ksfu_writeBytesToFD(FILE *file,
                          const char* const bytes,
                          ssize_t length)
 {
-    fwrite(bytes, sizeof(bytes[0]), sizeof(bytes), file);
+    fwrite(bytes, sizeof(char), length, file);
     return true; // TODO error handling!
 }
 
