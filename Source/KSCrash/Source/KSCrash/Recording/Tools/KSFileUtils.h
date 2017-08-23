@@ -36,7 +36,7 @@
 extern "C" {
 #endif
 
-
+#include <stdio.h>
 #include <stdbool.h>
 #include <stdarg.h>
 #include <sys/types.h>
@@ -52,7 +52,7 @@ const char* ksfu_lastPathEntry(const char* path);
 
 /** Write bytes to a file descriptor.
  *
- * @param fd The file descriptor.
+ * @param file The file to write to.
  *
  * @param bytes Buffer containing the bytes.
  *
@@ -60,7 +60,7 @@ const char* ksfu_lastPathEntry(const char* path);
  *
  * @return true if the operation was successful.
  */
-bool ksfu_writeBytesToFD(const int fd, const char* bytes, ssize_t length);
+bool ksfu_writeBytesToFD(FILE *file, const char* bytes, ssize_t length);
 
 /** Read bytes from a file descriptor.
  *
