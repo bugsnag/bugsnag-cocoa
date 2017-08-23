@@ -330,7 +330,9 @@ void kscrw_i_addJSONElementFromFile(const KSCrashReportWriter* const writer,
     ssize_t bytesRead;
     while((bytesRead = read(fd, buffer, sizeof(buffer))) > 0)
     {
-        if(addJSONData(getJsonContext(writer), buffer))
+        if(ksjson_addRawJSONData(getJsonContext(writer),
+                                 buffer,
+                                 (size_t)bytesRead) != KSJSON_OK)
         {
             KSLOG_ERROR("Could not append JSON data");
             goto done;
@@ -356,6 +358,15 @@ void kscrw_i_beginArray(const KSCrashReportWriter* const writer,
 void kscrw_i_endContainer(const KSCrashReportWriter* const writer)
 {
     ksjson_endContainer(getJsonContext(writer));
+}
+
+int kscrw_i_addJSONData(const char* const data,
+                        const size_t length,
+                        void* const userData)
+{
+    const int fd = *((int*)userData);
+    const bool success = ksfu_writeBytesToFD(fd, data, (ssize_t)length);
+    return success ? KSJSON_OK : KSJSON_ERROR_CANNOT_ADD_DATA;
 }
 
 
@@ -2087,24 +2098,81 @@ void kscrw_i_callUserCrashHandler(KSCrash_Context* const crashContext,
 #pragma mark - Main API -
 // ============================================================================
 
+void kscrashreport_writeMinimalReport(KSCrash_Context* const crashContext,
+                                      const char* const path)
+{
+    KSLOG_INFO("Writing minimal crash report to %s", path);
+
+    int fd = kscrw_i_openCrashReportFile(path);
+    if(fd < 0)
+    {
+        return;
+    }
+
+    g_introspectionRules = &crashContext->config.introspectionRules;
+    
+    kscrw_i_updateStackOverflowStatus(crashContext);
+
+    KSJSONEncodeContext jsonContext;
+    jsonContext.userData = &fd;
+    KSCrashReportWriter concreteWriter;
+    KSCrashReportWriter* writer = &concreteWriter;
+    kscrw_i_prepareReportWriter(writer, &jsonContext);
+
+    ksjson_beginEncode(getJsonContext(writer),
+                       true,
+                       kscrw_i_addJSONData,
+                       &fd);
+
+    writer->beginObject(writer, KSCrashField_Report);
+    {
+        kscrw_i_writeReportInfo(writer,
+                                KSCrashField_Report,
+                                KSCrashReportType_Minimal,
+                                crashContext->config.crashID,
+                                crashContext->config.processName);
+
+        writer->beginObject(writer, KSCrashField_Crash);
+        {
+            kscrw_i_writeThread(writer,
+                                KSCrashField_CrashedThread,
+                                &crashContext->crash,
+                                crashContext->crash.offendingThread,
+                                kscrw_i_threadIndex(crashContext->crash.offendingThread),
+                                false, false, false);
+            kscrw_i_writeError(writer, KSCrashField_Error, &crashContext->crash);
+        }
+        writer->endContainer(writer);
+    }
+    writer->endContainer(writer);
+
+    ksjson_endEncode(getJsonContext(writer));
+
+    close(fd);
+}
 
 void kscrashreport_writeStandardReport(KSCrash_Context* const crashContext,
                                        const char* const path)
 {
     KSLOG_INFO("Writing crash report to %s", path);
-    FILE *reportFile = fopen(path, "w"); // TODO err handling
+
+    int fd = kscrw_i_openCrashReportFile(path);
+    if(fd < 0)
+    {
+        return;
+    }
     
     g_introspectionRules = &crashContext->config.introspectionRules;
 
     kscrw_i_updateStackOverflowStatus(crashContext);
 
     KSJSONEncodeContext jsonContext;
+    jsonContext.userData = &fd;
     KSCrashReportWriter concreteWriter;
     KSCrashReportWriter* writer = &concreteWriter;
     kscrw_i_prepareReportWriter(writer, &jsonContext);
 
-    ksjson_beginEncode(getJsonContext(writer), true);
-    jsonContext.reportFile = reportFile;
+    ksjson_beginEncode(getJsonContext(writer), true, kscrw_i_addJSONData, &fd);
 
     writer->beginObject(writer, KSCrashField_Report);
     {
@@ -2160,7 +2228,7 @@ void kscrashreport_writeStandardReport(KSCrash_Context* const crashContext,
     
     ksjson_endEncode(getJsonContext(writer));
     
-    fclose(reportFile);
+    close(fd);
 }
 
 void kscrashreport_logCrash(const KSCrash_Context* const crashContext)

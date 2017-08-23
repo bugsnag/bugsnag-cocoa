@@ -8,15 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		8ACFFA0C1D895D4D00357B5E /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */; };
+
+		8ACFFA101D895D4D00357B5E /* custom-keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8ACFFA091D895D4D00357B5E /* custom-keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C7C8AD5C7612838DDE1F5B4E /* libPods-custom-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9333D154DE949C52593C64D3 /* libPods-custom-keyboard.a */; };
 		DB7A2D239A0F25E0ED01EBF7 /* libPods-Bugsnag Test App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */; };
 		E75E62DC1F4CCDD4000C44C0 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */; };
 		E75E62DD1F4CCDD9000C44C0 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */; };
+		E7EC04241F4CCB6F00C2E9D5 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */; };
+		E7EC04251F4CCB7400C2E9D5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */; };
+
 		E77F7CCE1F2B90800017CE04 /* CrashyUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77F7CCD1F2B90800017CE04 /* CrashyUITest.swift */; };
 		E7AB1DE21F2F3AC0000AAF94 /* CrashyUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77F7CCD1F2B90800017CE04 /* CrashyUITest.swift */; };
 		E7AB1DEE1F2F3EE1000AAF94 /* UIHarnessTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AB1DED1F2F3EE1000AAF94 /* UIHarnessTest.swift */; };
-		E7EC04241F4CCB6F00C2E9D5 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */; };
-		E7EC04251F4CCB7400C2E9D5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */; };
+
 		F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874A16AA233500676BB2 /* UIKit.framework */; };
 		F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874C16AA233500676BB2 /* Foundation.framework */; };
 		F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874E16AA233500676BB2 /* CoreGraphics.framework */; };
@@ -56,15 +60,19 @@
 		8ACFFA151D895E0300357B5E /* BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
 		9333D154DE949C52593C64D3 /* libPods-custom-keyboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-custom-keyboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF2C7221BC705BF69E871268 /* Pods-custom-keyboard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-custom-keyboard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-custom-keyboard/Pods-custom-keyboard.debug.xcconfig"; sourceTree = "<group>"; };
+
+		E7EC04121F4CC87300C2E9D5 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
+		E7EC04131F4CC87300C2E9D5 /* libz.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.dylib; path = ../../../../../../usr/lib/libz.1.dylib; sourceTree = "<group>"; };
+		E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+
+		E418DB0D05F9A8F968578F10 /* libPods-Bugsnag Test App.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bugsnag Test App.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E77F7CCB1F2B90800017CE04 /* BugsnagUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E77F7CCD1F2B90800017CE04 /* CrashyUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashyUITest.swift; sourceTree = "<group>"; };
 		E77F7CCF1F2B90800017CE04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E7AB1DE81F2F3AC0000AAF94 /* BugsnagUIHarness.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagUIHarness.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7AB1DED1F2F3EE1000AAF94 /* UIHarnessTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIHarnessTest.swift; sourceTree = "<group>"; };
-		E7EC04121F4CC87300C2E9D5 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
-		E7EC04131F4CC87300C2E9D5 /* libz.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.dylib; path = ../../../../../../usr/lib/libz.1.dylib; sourceTree = "<group>"; };
-		E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
-		E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+
 		F2E14F3E5A46514C8F874A58 /* Pods-Bugsnag Test App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bugsnag Test App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Bugsnag Test App/Pods-Bugsnag Test App.release.xcconfig"; sourceTree = "<group>"; };
 		F40B874616AA233500676BB2 /* Bugsnag Test App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bugsnag Test App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F40B874A16AA233500676BB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -309,7 +317,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Simon Maynard";
 				TargetAttributes = {
 					8ACFFA081D895D4D00357B5E = {
@@ -876,6 +884,7 @@
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DEVELOPMENT_TEAM = LB9U9M53WT;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -901,6 +910,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DEVELOPMENT_TEAM = LB9U9M53WT;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

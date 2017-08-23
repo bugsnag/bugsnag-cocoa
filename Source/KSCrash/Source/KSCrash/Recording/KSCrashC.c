@@ -106,7 +106,15 @@ void kscrash_i_onCrash(void)
     {
         kscrashreport_logCrash(context);
     }
-    kscrashreport_writeStandardReport(context, g_crashReportFilePath);
+
+    if(context->crash.crashedDuringCrashHandling)
+    {
+        kscrashreport_writeMinimalReport(context, g_recrashReportFilePath);
+    }
+    else
+    {
+        kscrashreport_writeStandardReport(context, g_crashReportFilePath);
+    }
 }
 
 

@@ -31,12 +31,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "KSFileUtils.h"
-
-int addJSONData(KSJSONEncodeContext* const context, const char* const data)
-{
-    return ksfu_writeBytesToFD(context->reportFile, data) ? KSJSON_OK : KSJSON_ERROR_CANNOT_ADD_DATA;
-}
 
 
 // ============================================================================
@@ -99,6 +93,21 @@ const char* ksjson_stringForError(const int error)
 #pragma mark - Encode -
 // ============================================================================
 
+// Avoiding static functions due to linker issues.
+
+/** Add JSON encoded data to an external handler.
+ * The external handler will decide how to handle the data (store/transmit/etc).
+ *
+ * @param context The encoding context.
+ *
+ * @param data The encoded data.
+ *
+ * @param length The length of the data.
+ *
+ * @return true if the data was handled successfully.
+ */
+#define addJSONData(CONTEXT,DATA,LENGTH) \
+    (CONTEXT)->addJSONData(DATA, LENGTH, (CONTEXT)->userData)
 
 /** Escape a string portion for use with JSON and send to data handler.
  *
@@ -171,7 +180,7 @@ int ksjsoncodec_i_appendEscapedString(KSJSONEncodeContext* const context,
     }
     size_t encLength = (size_t)(dst - workBuffer);
     dst -= encLength;
-    return addJSONData(context, dst);
+    return addJSONData(context, dst, encLength);
 }
 
 /** Escape a string for use with JSON and send to data handler.
@@ -226,7 +235,7 @@ int ksjsoncodec_i_addQuotedEscapedString(KSJSONEncodeContext* const context,
                                          size_t length)
 {
     int result;
-    unlikely_if((result = addJSONData(context, "\"")) != KSJSON_OK)
+    unlikely_if((result = addJSONData(context, "\"", 1)) != KSJSON_OK)
     {
         return result;
     }
@@ -236,7 +245,7 @@ int ksjsoncodec_i_addQuotedEscapedString(KSJSONEncodeContext* const context,
     {
         return result;
     }
-    return addJSONData(context, "\"");
+    return addJSONData(context, "\"", 1);
 }
 
 int ksjson_beginElement(KSJSONEncodeContext* const context,
@@ -251,7 +260,7 @@ int ksjson_beginElement(KSJSONEncodeContext* const context,
     }
     else
     {
-        unlikely_if((result = addJSONData(context, ",")) != KSJSON_OK)
+        unlikely_if((result = addJSONData(context, ",", 1)) != KSJSON_OK)
         {
             return result;
         }
@@ -260,13 +269,13 @@ int ksjson_beginElement(KSJSONEncodeContext* const context,
     // Pretty printing
     unlikely_if(context->prettyPrint && context->containerLevel > 0)
     {
-        unlikely_if((result = addJSONData(context, "\n")) != KSJSON_OK)
+        unlikely_if((result = addJSONData(context, "\n", 1)) != KSJSON_OK)
         {
             return result;
         }
         for(int i = 0; i < context->containerLevel; i++)
         {
-            unlikely_if((result = addJSONData(context, "    ")) != KSJSON_OK)
+            unlikely_if((result = addJSONData(context, "    ", 4)) != KSJSON_OK)
             {
                 return result;
             }
@@ -289,20 +298,27 @@ int ksjson_beginElement(KSJSONEncodeContext* const context,
         }
         unlikely_if(context->prettyPrint)
         {
-            unlikely_if((result = addJSONData(context, ": ")) != KSJSON_OK)
+            unlikely_if((result = addJSONData(context, ": ", 2)) != KSJSON_OK)
             {
                 return result;
             }
         }
         else
         {
-            unlikely_if((result = addJSONData(context, ":")) != KSJSON_OK)
+            unlikely_if((result = addJSONData(context, ":", 1)) != KSJSON_OK)
             {
                 return result;
             }
         }
     }
     return result;
+}
+
+int ksjson_addRawJSONData(KSJSONEncodeContext* const context,
+                          const char* const data,
+                          const size_t length)
+{
+    return addJSONData(context, data, length);
 }
 
 int ksjson_addBooleanElement(KSJSONEncodeContext* const context,
@@ -316,11 +332,11 @@ int ksjson_addBooleanElement(KSJSONEncodeContext* const context,
     }
     if(value)
     {
-        return addJSONData(context, "true");
+        return addJSONData(context, "true", 4);
     }
     else
     {
-        return addJSONData(context, "false");
+        return addJSONData(context, "false", 5);
     }
 }
 
@@ -335,7 +351,7 @@ int ksjson_addFloatingPointElement(KSJSONEncodeContext* const context,
     }
     char buff[30];
     sprintf(buff, "%lg", value);
-    return addJSONData(context, buff);
+    return addJSONData(context, buff, strlen(buff));
 }
 
 int ksjson_addIntegerElement(KSJSONEncodeContext* const context,
@@ -349,7 +365,7 @@ int ksjson_addIntegerElement(KSJSONEncodeContext* const context,
     }
     char buff[30];
     sprintf(buff, "%lld", value);
-    return addJSONData(context, buff);
+    return addJSONData(context, buff, strlen(buff));
 }
 
 int ksjson_addJSONElement(KSJSONEncodeContext* const context,
@@ -394,7 +410,7 @@ int ksjson_addJSONElement(KSJSONEncodeContext* const context,
     {
         return result;
     }
-    return addJSONData(context, element);
+    return addJSONData(context, element, length);
 }
 
 int ksjson_addNullElement(KSJSONEncodeContext* const context,
@@ -405,7 +421,7 @@ int ksjson_addNullElement(KSJSONEncodeContext* const context,
     {
         return result;
     }
-    return addJSONData(context, "null");
+    return addJSONData(context, "null", 4);
 }
 
 int ksjson_addStringElement(KSJSONEncodeContext* const context,
@@ -437,7 +453,7 @@ int ksjson_beginStringElement(KSJSONEncodeContext* const context,
     {
         return result;
     }
-    return addJSONData(context, "\"");
+    return addJSONData(context, "\"", 1);
 }
 
 int ksjson_appendStringElement(KSJSONEncodeContext* const context,
@@ -449,7 +465,7 @@ int ksjson_appendStringElement(KSJSONEncodeContext* const context,
 
 int ksjson_endStringElement(KSJSONEncodeContext* const context)
 {
-    return addJSONData(context, "\"");
+    return addJSONData(context, "\"", 1);
 }
 
 int ksjson_addDataElement(KSJSONEncodeContext* const context,
@@ -488,7 +504,7 @@ int ksjson_appendDataElement(KSJSONEncodeContext* const context,
     {
         chars[0] = g_hexNybbles[(*currentByte>>4)&15];
         chars[1] = g_hexNybbles[*currentByte&15];
-        result = addJSONData(context, chars);
+        result = addJSONData(context, chars, sizeof(chars));
         if(result != KSJSON_OK)
         {
             break;
@@ -519,7 +535,7 @@ int ksjson_beginArray(KSJSONEncodeContext* const context,
     context->isObject[context->containerLevel] = false;
     context->containerFirstEntry = true;
 
-    return addJSONData(context, "[");
+    return addJSONData(context, "[", 1);
 }
 
 int ksjson_beginObject(KSJSONEncodeContext* const context,
@@ -538,7 +554,7 @@ int ksjson_beginObject(KSJSONEncodeContext* const context,
     context->isObject[context->containerLevel] = true;
     context->containerFirstEntry = true;
 
-    return addJSONData(context, "{");
+    return addJSONData(context, "{", 1);
 }
 
 int ksjson_endContainer(KSJSONEncodeContext* const context)
@@ -555,26 +571,30 @@ int ksjson_endContainer(KSJSONEncodeContext* const context)
     unlikely_if(context->prettyPrint && !context->containerFirstEntry)
     {
         int result;
-        unlikely_if((result = addJSONData(context, "\n")) != KSJSON_OK)
+        unlikely_if((result = addJSONData(context, "\n", 1)) != KSJSON_OK)
         {
             return result;
         }
         for(int i = 0; i < context->containerLevel; i++)
         {
-            unlikely_if((result = addJSONData(context, "    ")) != KSJSON_OK)
+            unlikely_if((result = addJSONData(context, "    ", 4)) != KSJSON_OK)
             {
                 return result;
             }
         }
     }
     context->containerFirstEntry = false;
-    return addJSONData(context, isObject ? "}" : "]");
+    return addJSONData(context, isObject ? "}" : "]", 1);
 }
 
 void ksjson_beginEncode(KSJSONEncodeContext* const context,
-                        bool prettyPrint)
+                        bool prettyPrint,
+                        KSJSONAddDataFunc addJSONDataFunc,
+                        void* const userData)
 {
     memset(context, 0, sizeof(*context));
+    context->addJSONData = addJSONDataFunc;
+    context->userData = userData;
     context->prettyPrint = prettyPrint;
     context->containerFirstEntry = true;
 }

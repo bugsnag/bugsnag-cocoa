@@ -36,8 +36,7 @@
 extern "C" {
 #endif
 
-    
-#include <stdio.h>
+
 #include <stdbool.h>
 #include <sys/types.h>
 
@@ -86,17 +85,23 @@ const char* ksjson_stringForError(const int error);
 
 /** Function pointer for adding more UTF-8 encoded JSON data.
  *
- * @param reportFile The file to write to.
- *
  * @param data The UTF-8 data to add.
+ *
+ * @param length The length of the data.
+ *
+ * @param userData user-specified contextual data.
  *
  * @return KSJSON_OK if the data was handled.
  *         otherwise KSJSON_ERROR_CANNOT_ADD_DATA.
  */
-typedef int (*KSJSONAddDataFunc)(FILE *reportFile, const char* data);
+typedef int (*KSJSONAddDataFunc)(const char* data,
+size_t length,
+void* userData);
 
 typedef struct
 {
+    /** Function to call to add more encoded JSON data. */
+    KSJSONAddDataFunc addJSONData;
 
     /** User-specified data */
     void* userData;
@@ -111,8 +116,6 @@ typedef struct
     bool containerFirstEntry;
 
     bool prettyPrint;
-    
-    FILE *reportFile;
 
 } KSJSONEncodeContext;
 
@@ -123,9 +126,14 @@ typedef struct
  *
  * @param prettyPrint If true, insert whitespace to make the output pretty.
  *
+ * @param addJSONData Function to handle adding data.
+ *
+ * @param userData User-specified data which gets passed to addJSONData.
  */
 void ksjson_beginEncode(KSJSONEncodeContext* context,
-                        bool prettyPrint);
+                        bool prettyPrint,
+                        KSJSONAddDataFunc addJSONData,
+                        void* userData);
 
 /** End the encoding process, ending any remaining open containers.
  *
@@ -348,9 +356,13 @@ int ksjson_beginElement(KSJSONEncodeContext* const context,
  *
  * @param data The data to write.
  *
+ * @param length The length of the data.
+ *
  * @return KSJSON_OK if the process was successful.
  */
-int addJSONData(KSJSONEncodeContext* const context, const char* const data);
+int ksjson_addRawJSONData(KSJSONEncodeContext* const context,
+                          const char* const data,
+                          const size_t length);
 
 /** End the current container and return to the next higher level.
  *
