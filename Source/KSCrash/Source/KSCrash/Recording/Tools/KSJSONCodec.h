@@ -36,7 +36,8 @@
 extern "C" {
 #endif
 
-
+    
+#include <stdio.h>
 #include <stdbool.h>
 #include <sys/types.h>
 
@@ -116,6 +117,8 @@ typedef struct
     bool containerFirstEntry;
 
     bool prettyPrint;
+    
+    FILE *reportFile;
 
 } KSJSONEncodeContext;
 
