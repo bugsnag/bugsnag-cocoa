@@ -6,11 +6,10 @@
 //
 //
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_MAC || TARGET_OS_TV
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
 #include <sys/utsname.h>
-#elif TARGET_OS_MAC
-
 #endif
 
 #import "Bugsnag.h"
@@ -97,14 +96,14 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
                          @"locale");
     
     
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    UIDevice *device = [UIDevice currentDevice];
-    BSGDictSetSafeObject(data, device.systemName, @"osName");
-    BSGDictSetSafeObject(data, device.systemVersion, @"osVersion");
-#elif TARGET_OS_MAC
+#if TARGET_OS_MAC || TARGET_OS_TV
     NSProcessInfo *processInfo = [NSProcessInfo processInfo];
     BSGDictSetSafeObject(data, processInfo.operatingSystemName, @"osName");
     BSGDictSetSafeObject(data, processInfo.operatingSystemVersionString, @"osVersion");
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    UIDevice *device = [UIDevice currentDevice];
+    BSGDictSetSafeObject(data, device.systemName, @"osName");
+    BSGDictSetSafeObject(data, device.systemVersion, @"osVersion");
 #endif
     
     

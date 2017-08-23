@@ -4,7 +4,4 @@
    <FileRef
       location = "group:tvOS/Bugsnag.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Carthage/Checkouts/KSCrash/TVOS/KSCrash-TVOS.xcodeproj">
-   </FileRef>
 </Workspace>
