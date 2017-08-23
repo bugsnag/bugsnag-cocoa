@@ -50,16 +50,6 @@ extern "C" {
 void kscrashreport_writeStandardReport(KSCrash_Context* crashContext,
                                        const char* path);
 
-/** Write a minimal crash report to a file.
- *
- * @param crashContext Contextual information about the crash and environment.
- *                     The caller must fill this out before passing it in.
- *
- * @param path The file to write to.
- */
-void kscrashreport_writeMinimalReport(KSCrash_Context* const crashContext,
-                                      const char* path);
-
 /** Write minimal information about the crash to the log.
  *
  * @param crashContext Contextual information about the crash and environment.

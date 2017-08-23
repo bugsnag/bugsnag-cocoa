@@ -542,24 +542,26 @@ int ksjsoncodecobjc_i_encodeObject(KSJSONCodec* codec,
            options:(KSJSONEncodeOption) encodeOptions
              error:(NSError* __autoreleasing *) error
 {
-    NSMutableData* data = [NSMutableData data];
-    KSJSONEncodeContext JSONContext;
-    ksjson_beginEncode(&JSONContext,
-                       encodeOptions & KSJSONEncodeOptionPretty,
-                       ksjsoncodecobjc_i_addJSONData,
-                       (__bridge void*)data);
-    KSJSONCodec* codec = [self codecWithEncodeOptions:encodeOptions
-                                        decodeOptions:0];
-
-    int result = ksjsoncodecobjc_i_encodeObject(codec,
-                                                object,
-                                                NULL,
-                                                &JSONContext);
-    if(error != nil)
-    {
-        *error = codec.error;
-    }
-    return result == KSJSON_OK ? data : nil;
+    // FIXME!!!
+    
+    return nil;
+    
+//    NSMutableData* data = [NSMutableData data];
+//    KSJSONEncodeContext JSONContext;
+//    ksjson_beginEncode(&JSONContext,
+//                       encodeOptions & KSJSONEncodeOptionPretty);
+//    KSJSONCodec* codec = [self codecWithEncodeOptions:encodeOptions
+//                                        decodeOptions:0];
+//
+//    int result = ksjsoncodecobjc_i_encodeObject(codec,
+//                                                object,
+//                                                NULL,
+//                                                &JSONContext);
+//    if(error != nil)
+//    {
+//        *error = codec.error;
+//    }
+//    return result == KSJSON_OK ? data : nil;
 }
 
 + (id) decode:(NSData*) JSONData

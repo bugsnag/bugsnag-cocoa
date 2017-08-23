@@ -171,13 +171,10 @@ int kscrashstate_i_onEndData(__unused void* const userData)
 
 /** Callback for adding JSON data.
  */
-int kscrashstate_i_addJSONData(const char* const data,
-                               const size_t length,
-                               void* const userData)
+int kscrashstate_i_addJSONData(FILE *reportFile,
+                               const char* const data)
 {
-    const int fd = *((int*)userData);
-    const bool success = ksfu_writeBytesToFD(fd, data, (ssize_t)length);
-    return success ? KSJSON_OK : KSJSON_ERROR_CANNOT_ADD_DATA;
+    return ksfu_writeBytesToFD(reportFile, data) ? KSJSON_OK : KSJSON_ERROR_CANNOT_ADD_DATA;
 }
 
 
@@ -243,29 +240,18 @@ bool kscrashstate_i_loadState(KSCrash_State* const context,
 
 /** Save the persistent state portion of a crash context.
  *
- * @param context The context to save from.
- *
  * @param path The path to the file to create.
  *
  * @return true if the operation was successful.
  */
 bool kscrashstate_i_saveState(const KSCrash_State* const state,
-                              const char* const path)
-{
-    int fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
-    if(fd < 0)
-    {
-        KSLOG_ERROR("Could not open file %s for writing: %s",
-                    path,
-                    strerror(errno));
-        return false;
-    }
+                              const char* const path) {
+    
+    FILE *reportFile = fopen(path, "w"); // TODO err handling
 
     KSJSONEncodeContext JSONContext;
-    ksjson_beginEncode(&JSONContext,
-                       true,
-                       kscrashstate_i_addJSONData,
-                       &fd);
+    ksjson_beginEncode(&JSONContext, true);
+    JSONContext.reportFile = reportFile;
 
     int result;
     if((result = ksjson_beginObject(&JSONContext, NULL)) != KSJSON_OK)
@@ -312,9 +298,9 @@ bool kscrashstate_i_saveState(const KSCrash_State* const state,
     result = ksjson_endEncode(&JSONContext);
 
 done:
-    close(fd);
-    if(result != KSJSON_OK)
-    {
+    fclose(reportFile);
+    
+    if (result != KSJSON_OK) {
         KSLOG_ERROR("%s: %s",
                     path, ksjson_stringForError(result));
         return false;

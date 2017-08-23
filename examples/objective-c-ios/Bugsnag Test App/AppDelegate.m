@@ -20,16 +20,15 @@
 
 - (void)startBugsnagWithConfiguration {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
-    config.apiKey = @"API-KEY";
+    config.apiKey = @"f35a2472bd230ac0ab0f52715bbdc65d";
     config.releaseStage = @"production";
     config.notifyReleaseStages = @[@"production"];
     [Bugsnag startBugsnagWithConfiguration:config];
 }
 
 - (void)startBugsnagWithAPIKey {
-    [Bugsnag startBugsnagWithApiKey:@"API-KEY"];
+    [Bugsnag startBugsnagWithApiKey:@"f35a2472bd230ac0ab0f52715bbdc65d"];
     [Bugsnag configuration].releaseStage = @"production";
     [Bugsnag configuration].notifyReleaseStages = @[@"production"];
-    [Bugsnag configuration].notifyURL = [NSURL URLWithString:@"http://localhost:9999"];
 }
 @end
