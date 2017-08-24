@@ -33,6 +33,8 @@
 		8AD9A5041D42EEB0004E1CC5 /* BugsnagSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB151351D41366400C9B218 /* BugsnagSink.m */; };
 		8AD9A5051D42EEE9004E1CC5 /* BSGKSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AB151251D41366400C9B218 /* BSGKSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8AD9FA8D1E0863A1002859A7 /* BugsnagConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD9FA8B1E0863A1002859A7 /* BugsnagConfigurationTests.m */; };
+		E7433AD61F4F650C00C082D1 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7433AD51F4F650C00C082D1 /* libc++.tbd */; };
+		E7433AD81F4F651200C082D1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7433AD71F4F651200C082D1 /* libz.tbd */; };
 		E76616F71F4E45950094CECF /* BugsnagCrashSentry.h in Headers */ = {isa = PBXBuildFile; fileRef = E76616F11F4E45950094CECF /* BugsnagCrashSentry.h */; };
 		E76616F81F4E45950094CECF /* BugsnagCrashSentry.m in Sources */ = {isa = PBXBuildFile; fileRef = E76616F21F4E45950094CECF /* BugsnagCrashSentry.m */; };
 		E76616F91F4E45950094CECF /* BugsnagErrorReportApiClient.h in Headers */ = {isa = PBXBuildFile; fileRef = E76616F31F4E45950094CECF /* BugsnagErrorReportApiClient.h */; };
@@ -184,6 +186,8 @@
 		8AB151351D41366400C9B218 /* BugsnagSink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSink.m; path = ../Source/BugsnagSink.m; sourceTree = "<group>"; };
 		8AD9FA8A1E0863A1002859A7 /* BugsnagConfigurationSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationSpec.m; path = ../Tests/BugsnagConfigurationSpec.m; sourceTree = SOURCE_ROOT; };
 		8AD9FA8B1E0863A1002859A7 /* BugsnagConfigurationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationTests.m; path = ../Tests/BugsnagConfigurationTests.m; sourceTree = SOURCE_ROOT; };
+		E7433AD51F4F650C00C082D1 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		E7433AD71F4F651200C082D1 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		E76616F11F4E45950094CECF /* BugsnagCrashSentry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagCrashSentry.h; path = ../Source/BugsnagCrashSentry.h; sourceTree = "<group>"; };
 		E76616F21F4E45950094CECF /* BugsnagCrashSentry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagCrashSentry.m; path = ../Source/BugsnagCrashSentry.m; sourceTree = "<group>"; };
 		E76616F31F4E45950094CECF /* BugsnagErrorReportApiClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagErrorReportApiClient.h; path = ../Source/BugsnagErrorReportApiClient.h; sourceTree = "<group>"; };
@@ -301,6 +305,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7433AD81F4F651200C082D1 /* libz.tbd in Frameworks */,
+				E7433AD61F4F650C00C082D1 /* libc++.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,6 +327,7 @@
 				8A8D51261D41343500D33797 /* tvOS */,
 				8AB151131D41356800C9B218 /* Tests */,
 				8A8D51251D41343500D33797 /* Products */,
+				E7433AD41F4F650C00C082D1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -380,6 +387,15 @@
 				8AB151161D41356800C9B218 /* TestsInfo.plist */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		E7433AD41F4F650C00C082D1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E7433AD71F4F651200C082D1 /* libz.tbd */,
+				E7433AD51F4F650C00C082D1 /* libc++.tbd */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		E76616FD1F4E459C0094CECF /* KSCrash */ = {

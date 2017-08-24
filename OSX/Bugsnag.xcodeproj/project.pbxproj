@@ -36,6 +36,8 @@
 		8A87352C1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A87352B1C6D3B1600EDBD5B /* BSGKSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8AD9FA881E08633F002859A7 /* BugsnagConfigurationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD9FA841E0862DC002859A7 /* BugsnagConfigurationSpec.m */; };
 		8AD9FA891E086351002859A7 /* BugsnagConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD9FA851E0862DC002859A7 /* BugsnagConfigurationTests.m */; };
+		E7433AD21F4F64EF00C082D1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8FF11C6BC3A800846019 /* libz.tbd */; };
+		E7433AD31F4F64F400C082D1 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8FF31C6BC3AE00846019 /* libc++.tbd */; };
 		E79E6B021F4E3847002B35F9 /* BugsnagCrashSentry.h in Headers */ = {isa = PBXBuildFile; fileRef = E79E6AFC1F4E3847002B35F9 /* BugsnagCrashSentry.h */; };
 		E79E6B031F4E3847002B35F9 /* BugsnagCrashSentry.m in Sources */ = {isa = PBXBuildFile; fileRef = E79E6AFD1F4E3847002B35F9 /* BugsnagCrashSentry.m */; };
 		E79E6B041F4E3847002B35F9 /* BugsnagErrorReportApiClient.h in Headers */ = {isa = PBXBuildFile; fileRef = E79E6AFE1F4E3847002B35F9 /* BugsnagErrorReportApiClient.h */; };
@@ -310,6 +312,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7433AD31F4F64F400C082D1 /* libc++.tbd in Frameworks */,
+				E7433AD21F4F64EF00C082D1 /* libz.tbd in Frameworks */,
 				8A2C90441C6C040700846019 /* Cocoa.framework in Frameworks */,
 				8A2C8FF01C6BC3A200846019 /* SystemConfiguration.framework in Frameworks */,
 			);

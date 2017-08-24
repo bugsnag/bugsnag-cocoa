@@ -12,6 +12,9 @@
     "tag": "v5.10.1"
   },
   "frameworks": "Foundation",
+  "libraries": [
+    "c++", "z"
+  ],
   "platforms": {
     "ios": "6.0",
     "osx": "10.8",

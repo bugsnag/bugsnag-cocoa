@@ -145,6 +145,8 @@
 		E72962D91F4BBA8B00CEA15D /* BugsnagErrorReportApiClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E72962D31F4BBA8B00CEA15D /* BugsnagErrorReportApiClient.m */; };
 		E72962DA1F4BBA8B00CEA15D /* BugsnagSystemInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = E72962D41F4BBA8B00CEA15D /* BugsnagSystemInfo.h */; };
 		E72962DB1F4BBA8B00CEA15D /* BugsnagSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E72962D51F4BBA8B00CEA15D /* BugsnagSystemInfo.m */; };
+		E7433AD01F4F64D400C082D1 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8F6F1C6BBE9F00846019 /* libc++.tbd */; };
+		E7433AD11F4F64D900C082D1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8F6D1C6BBE9A00846019 /* libz.tbd */; };
 		E7EC041A1F4CC97200C2E9D5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E79FEBE61F4CB1320048FAD6 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -316,6 +318,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7433AD11F4F64D900C082D1 /* libz.tbd in Frameworks */,
+				E7433AD01F4F64D400C082D1 /* libc++.tbd in Frameworks */,
 				E7EC041A1F4CC97200C2E9D5 /* Foundation.framework in Frameworks */,
 				8A2C8F741C6BBEAD00846019 /* UIKit.framework in Frameworks */,
 				8A2C8F721C6BBEA400846019 /* MessageUI.framework in Frameworks */,
