@@ -46,6 +46,10 @@
     #define KSFU_WriteFmtBufferSize 1024
 #endif
 
+#define BUFFER_SIZE 65536
+
+char charBuffer[BUFFER_SIZE];
+ssize_t bufferLen = 0;
 
 const char* ksfu_lastPathEntry(const char* const path)
 {
@@ -60,26 +64,37 @@ const char* ksfu_lastPathEntry(const char* const path)
 
 bool ksfu_flushWriteBuffer(const int fd)
 {
+    const char* pos = charBuffer;
+    while(bufferLen > 0)
+    {
+        ssize_t bytesWritten = write(fd, pos, (size_t)bufferLen);
+        if(bytesWritten == -1)
+        {
+            KSLOG_ERROR("Could not write to fd %d: %s", fd, strerror(errno));
+            return false;
+        }
+        bufferLen -= bytesWritten;
+        pos += bytesWritten;
+    }
     return true;
-    // TODO
 }
 
 bool ksfu_writeBytesToFD(const int fd,
                          const char* const bytes,
                          ssize_t length)
 {
-    const char* pos = bytes; // FIXME buffer up!
-    while(length > 0)
-    {
-        ssize_t bytesWritten = write(fd, pos, (size_t)length);
-        if(bytesWritten == -1)
-        {
-            KSLOG_ERROR("Could not write to fd %d: %s", fd, strerror(errno));
-            return false;
-        }
-        length -= bytesWritten;
-        pos += bytesWritten;
+    ssize_t newLen = bufferLen + length;
+    
+    if (newLen >= BUFFER_SIZE) { // flush the current buffer
+        ksfu_flushWriteBuffer(fd);
+        newLen = bufferLen + length; // recalculate new position
     }
+    
+    for (ssize_t k = bufferLen; k < newLen; k++) { // place in buffer for future write
+        ssize_t j = k - bufferLen;
+        charBuffer[k] = bytes[j];
+    }
+    bufferLen += length;
     return true;
 }
 
