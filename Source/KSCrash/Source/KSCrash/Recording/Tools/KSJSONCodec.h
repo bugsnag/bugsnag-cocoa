@@ -117,8 +117,6 @@ typedef struct
     bool containerFirstEntry;
 
     bool prettyPrint;
-    
-    FILE *reportFile;
 
 } KSJSONEncodeContext;
 

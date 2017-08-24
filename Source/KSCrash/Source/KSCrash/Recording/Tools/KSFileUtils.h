@@ -52,7 +52,7 @@ const char* ksfu_lastPathEntry(const char* path);
 
 /** Write bytes to a file descriptor.
  *
- * @param file The file to write to.
+ * @param fd The file descriptor
  *
  * @param bytes Buffer containing the bytes.
  *
@@ -60,7 +60,14 @@ const char* ksfu_lastPathEntry(const char* path);
  *
  * @return true if the operation was successful.
  */
-bool ksfu_writeBytesToFD(FILE *file, const char* bytes, ssize_t length);
+bool ksfu_writeBytesToFD(const int fd, const char* bytes, ssize_t length);
+
+/**
+ * Flushes the write buffer
+ *
+ * @param fd The file descriptor
+ */
+bool ksfu_flushWriteBuffer(const int fd);
 
 /** Read bytes from a file descriptor.
  *

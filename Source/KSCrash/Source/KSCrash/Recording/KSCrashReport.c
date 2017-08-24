@@ -364,8 +364,8 @@ int kscrw_i_addJSONData(const char* const data,
                         const size_t length,
                         void* const userData)
 {
-    FILE *file = userData;
-    const bool success = ksfu_writeBytesToFD(file, data, (ssize_t)length);
+    const int fd = *((int*)userData);
+    const bool success = ksfu_writeBytesToFD(fd, data, (ssize_t)length);
     return success ? KSJSON_OK : KSJSON_ERROR_CANNOT_ADD_DATA;
 }
 
@@ -2155,20 +2155,24 @@ void kscrashreport_writeStandardReport(KSCrash_Context* const crashContext,
                                        const char* const path)
 {
     KSLOG_INFO("Writing crash report to %s", path);
-    FILE *reportFile = fopen(path, "w");
+    
+    int fd = kscrw_i_openCrashReportFile(path);
+    if(fd < 0)
+    {
+        return;
+    }
     
     g_introspectionRules = &crashContext->config.introspectionRules;
 
     kscrw_i_updateStackOverflowStatus(crashContext);
 
     KSJSONEncodeContext jsonContext;
-    jsonContext.userData = reportFile;
+    jsonContext.userData = &fd;
     KSCrashReportWriter concreteWriter;
     KSCrashReportWriter* writer = &concreteWriter;
     kscrw_i_prepareReportWriter(writer, &jsonContext);
 
-    ksjson_beginEncode(getJsonContext(writer), true, kscrw_i_addJSONData, reportFile);
-    jsonContext.reportFile = reportFile;
+    ksjson_beginEncode(getJsonContext(writer), true, kscrw_i_addJSONData, &fd);
 
     writer->beginObject(writer, KSCrashField_Report);
     {
@@ -2224,7 +2228,10 @@ void kscrashreport_writeStandardReport(KSCrash_Context* const crashContext,
     
     ksjson_endEncode(getJsonContext(writer));
     
-    fclose(reportFile);
+    if (!ksfu_flushWriteBuffer(fd)) {
+        KSLOG_ERROR("Failed to flush write buffer");
+    }
+    close(fd);
 }
 
 void kscrashreport_logCrash(const KSCrash_Context* const crashContext)

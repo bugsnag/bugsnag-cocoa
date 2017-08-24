@@ -58,12 +58,29 @@ const char* ksfu_lastPathEntry(const char* const path)
     return lastFile == NULL ? path : lastFile + 1;
 }
 
-bool ksfu_writeBytesToFD(FILE *file,
+bool ksfu_flushWriteBuffer(const int fd)
+{
+    return true;
+    // TODO
+}
+
+bool ksfu_writeBytesToFD(const int fd,
                          const char* const bytes,
                          ssize_t length)
 {
-    fwrite(bytes, sizeof(char), length, file);
-    return true; // TODO error handling!
+    const char* pos = bytes; // FIXME buffer up!
+    while(length > 0)
+    {
+        ssize_t bytesWritten = write(fd, pos, (size_t)length);
+        if(bytesWritten == -1)
+        {
+            KSLOG_ERROR("Could not write to fd %d: %s", fd, strerror(errno));
+            return false;
+        }
+        length -= bytesWritten;
+        pos += bytesWritten;
+    }
+    return true;
 }
 
 bool ksfu_readBytesFromFD(const int fd,

@@ -175,8 +175,8 @@ int kscrashstate_i_addJSONData(const char* const data,
                                const size_t length,
                                void* const userData)
 {
-    FILE *file = userData;
-    const bool success = ksfu_writeBytesToFD(file, data, (ssize_t)length);
+    const int fd = *((int*)userData);
+    const bool success = ksfu_writeBytesToFD(fd, data, (ssize_t)length);
     return success ? KSJSON_OK : KSJSON_ERROR_CANNOT_ADD_DATA;
 }
 
@@ -252,14 +252,20 @@ bool kscrashstate_i_loadState(KSCrash_State* const context,
 bool kscrashstate_i_saveState(const KSCrash_State* const state,
                               const char* const path)
 {
-    FILE *reportFile = fopen(path, "w");
+    int fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
+    if(fd < 0)
+    {
+        KSLOG_ERROR("Could not open file %s for writing: %s",
+                    path,
+                    strerror(errno));
+        return false;
+    }
     
     KSJSONEncodeContext JSONContext;
     ksjson_beginEncode(&JSONContext,
                        true,
                        kscrashstate_i_addJSONData,
-                       reportFile);
-    JSONContext.reportFile = reportFile;
+                       &fd);
 
     int result;
     if((result = ksjson_beginObject(&JSONContext, NULL)) != KSJSON_OK)
@@ -306,7 +312,11 @@ bool kscrashstate_i_saveState(const KSCrash_State* const state,
     result = ksjson_endEncode(&JSONContext);
 
 done:
-    fclose(reportFile);
+    if (!ksfu_flushWriteBuffer(fd)) {
+        KSLOG_ERROR("Failed to flush write buffer");
+    }
+    close(fd);
+    
     if(result != KSJSON_OK)
     {
         KSLOG_ERROR("%s: %s",
