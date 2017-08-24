@@ -46,7 +46,7 @@
     #define KSFU_WriteFmtBufferSize 1024
 #endif
 
-#define BUFFER_SIZE 65536
+#define BUFFER_SIZE 131072
 
 char charBuffer[BUFFER_SIZE];
 ssize_t bufferLen = 0;
