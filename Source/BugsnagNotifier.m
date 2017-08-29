@@ -298,9 +298,15 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                                                  name:kReachableNotifName
                                                object:nil];
     
-    self.apiReachable = [Reachability reachabilityWithHostName:[self apiHostUrl]];
+    NSString *hostUrl = [self apiHostUrl];
+    self.apiReachable = [Reachability reachabilityWithHostName:hostUrl];
     [self.apiReachable startNotifier];
-    [Reachability reachabilityWithHostName:[self apiHostUrl]];
+    
+    __weak id weakSelf = self;
+    self.apiReachable.reachableBlock = ^(Reachability *reachability) {
+        [weakSelf flushPendingReports];
+    };
+    [self.apiReachable isReachable];
 }
 
 - (NSString *)apiHostUrl {
@@ -361,7 +367,10 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
       crumb.name = reportName;
       crumb.metadata = @{ @"message": reportMessage, @"severity": BSGFormatSeverity(report.severity) };
     }];
+    [self flushPendingReports];
+}
 
+- (void)flushPendingReports {
     BugsnagSink *sink = [KSCrash sharedInstance].sink;
     if ([sink isKindOfClass:[BugsnagSink class]]) {
         [sink sendPendingReports];
