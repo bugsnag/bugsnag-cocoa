@@ -98,6 +98,4 @@
  */
 - (void)updateAutomaticBreadcrumbDetectionSettings;
 
-- (void)didChangeReachableStatus:(NSNotification *_Nullable)notification;
-
 @end

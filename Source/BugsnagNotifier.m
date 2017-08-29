@@ -234,6 +234,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void) start {
+    [self setupConnectivityListener];
+    
     BugsnagSink* sink = [BugsnagSink new];
     [KSCrash sharedInstance].sink = sink;
     // We don't use this feature yet, so we turn it off
@@ -250,7 +252,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
         bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");
     }
 
-    [sink sendPendingReports];
+    [self flushPendingReports];
     [self updateAutomaticBreadcrumbDetectionSettings];
 #if TARGET_OS_TV
   [self.details setValue:@"tvOS Bugsnag Notifier" forKey:@"name"];
@@ -286,18 +288,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 #elif TARGET_OS_MAC
   [self.details setValue:@"OSX Bugsnag Notifier" forKey:@"name"];
 #endif
-
-  [self setupConnectivityListener];
 }
 
 - (void)setupConnectivityListener {
-    static NSString *kReachableNotifName = @"ReachabilityChange";
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didChangeReachableStatus:)
-                                                 name:kReachableNotifName
-                                               object:nil];
-    
     NSString *hostUrl = [self apiHostUrl];
     self.apiReachable = [Reachability reachabilityWithHostName:hostUrl];
     [self.apiReachable startNotifier];
@@ -306,7 +299,6 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     self.apiReachable.reachableBlock = ^(Reachability *reachability) {
         [weakSelf flushPendingReports];
     };
-    [self.apiReachable isReachable];
 }
 
 - (NSString *)apiHostUrl {
@@ -406,12 +398,6 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
         BSSerializeJSONDictionary([metaData toDictionary], &g_bugsnag_data.stateJSON);
     } else {
         bsg_log_debug(@"Unknown metadata dictionary changed");
-    }
-}
-
-- (void)didChangeReachableStatus:(NSNotification *)notification {
-    if ([self.apiReachable currentReachabilityStatus] != NotReachable) {
-        bsg_log_info(@"Flushing any stored reports");
     }
 }
 
