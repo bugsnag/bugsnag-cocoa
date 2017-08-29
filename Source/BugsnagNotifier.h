@@ -29,7 +29,7 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagMetaData.h"
 
-@class Reachability;
+@class BSGReachability;
 
 @interface BugsnagNotifier : NSObject <BugsnagMetaDataDelegate>
 
@@ -39,7 +39,7 @@
 @property(nonatomic, readwrite, retain) NSDictionary *_Nonnull details;
 @property(nonatomic, readwrite, retain) NSLock *_Nonnull metaDataLock;
 
-@property(nonatomic) Reachability * _Nonnull apiReachable;
+@property(nonatomic) BSGReachability * _Nonnull apiReachable;
 
 - (instancetype _Nonnull)initWithConfiguration:
     (BugsnagConfiguration *_Nonnull)configuration;
