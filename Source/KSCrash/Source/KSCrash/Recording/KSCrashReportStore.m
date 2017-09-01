@@ -32,7 +32,6 @@
 #import "KSSafeCollections.h"
 #import "NSDictionary+Merge.h"
 #import "NSError+SimpleConstructor.h"
-#import "NSString+Demangle.h"
 #import "RFC3339DateTool.h"
 #import "KSCrashDoctor.h"
 #import "KSCrashReportVersion.h"
@@ -312,28 +311,6 @@
     }
 }
 
-- (void) symbolicateField:(NSArray*) fieldPath inReport:(NSMutableDictionary*) report okIfNotFound:(BOOL) isOkIfNotFound
-{
-    NSString* lastPath = fieldPath[fieldPath.count - 1];
-    [self performOnFields:fieldPath inReport:report operation:^(NSMutableDictionary* parent, NSString* field)
-    {
-        NSString* processedField = nil;
-        if(self.demangleCPP)
-        {
-            processedField = [field demangledAsCPP];
-        }
-        if(processedField == nil && self.demangleSwift)
-        {
-            processedField = [field demangledAsSwift];
-        }
-        if(processedField == nil)
-        {
-            processedField = field;
-        }
-        parent[lastPath] = processedField;
-    } okIfNotFound:isOkIfNotFound];
-}
-
 - (NSMutableDictionary*) fixupCrashReport:(NSDictionary*) report
 {
     if(![report isKindOfClass:[NSDictionary class]])
@@ -361,10 +338,7 @@
     [mutableReport ksc_setObjectIfNotNil:crashReport forKey:@KSCrashField_Crash];
     KSCrashDoctor* doctor = [KSCrashDoctor doctor];
     [crashReport ksc_setObjectIfNotNil:[doctor diagnoseCrash:report] forKey:@KSCrashField_Diagnosis];
-
-    [self symbolicateField:@[@"threads", @"backtrace", @"contents", @"symbol_name"] inReport:crashReport okIfNotFound:YES];
-    [self symbolicateField:@[@"error", @"cpp_exception", @"name"] inReport:crashReport okIfNotFound:YES];
-
+    
     return mutableReport;
 }
 
