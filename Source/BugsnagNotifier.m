@@ -34,7 +34,7 @@
 #import "BugsnagCrashReport.h"
 #import "BugsnagSink.h"
 #import "BugsnagLogger.h"
-#import "BSGReachability.h"
+#import "BSGConnectivity.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -291,18 +291,14 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)setupConnectivityListener {
-    NSString *hostUrl = [self apiHostUrl];
-    self.apiReachable = [BSGReachability reachabilityWithHostName:hostUrl];
-    [self.apiReachable startNotifier];
+    NSURL *url = self.configuration.notifyURL;
+    self.networkReachable = [[BSGConnectivity alloc] initWithURL:url];
+    [self.networkReachable start];
     
     __weak id weakSelf = self;
-    self.apiReachable.reachableBlock = ^(BSGReachability *reachability) {
+    self.networkReachable.connectivityChangeBlock = ^(BSGConnectivity *connectivity) {
         [weakSelf flushPendingReports];
     };
-}
-
-- (NSString *)apiHostUrl {
-    return [self.configuration.notifyURL absoluteString];
 }
 
 - (void)notifyError:(NSError *)error block:(void (^)(BugsnagCrashReport *))block {
