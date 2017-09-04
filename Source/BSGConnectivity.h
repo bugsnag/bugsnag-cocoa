@@ -36,7 +36,7 @@ typedef void (^ConnectivityChange)(BSGConnectivity *connectivity);
 @property (nonatomic, copy) ConnectivityChange connectivityChangeBlock;
 
 - (instancetype)initWithURL:(NSURL *)url;
-- (void)start;
-- (void)stop;
+- (void)startWatchingConnectivity;
+- (void)stopWatchingConnectivity;
 
 @end

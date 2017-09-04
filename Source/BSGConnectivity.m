@@ -65,21 +65,21 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkRe
 }
 
 - (void)dealloc {
-    [self stop];
+    [self stopWatchingConnectivity];
 
     if (self.reachabilityRef) {
         CFRelease(self.reachabilityRef);
         self.reachabilityRef = nil;
     }
 
-	self.connectivityChangeBlock = nil;
+    self.connectivityChangeBlock = nil;
     self.serialQueue = nil;
 }
 
 /**
  * Sets a callback with SCNetworkReachability
  */
-- (void)start {
+- (void)startWatchingConnectivity {
     SCNetworkReachabilityContext context = { 0, NULL, NULL, NULL, NULL };
     context.info = (__bridge void *) self;
 
@@ -95,7 +95,7 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkRe
 /**
  * Stops the callback with SCNetworkReachability
  */
--(void)stop {
+-(void)stopWatchingConnectivity {
     SCNetworkReachabilitySetCallback(self.reachabilityRef, NULL, NULL);
     SCNetworkReachabilitySetDispatchQueue(self.reachabilityRef, NULL);
     self.reachability = nil;
