@@ -33,23 +33,23 @@
 #import <ifaddrs.h>
 #import <netdb.h>
 
+typedef void (^CallbackBlock)(SCNetworkReachabilityFlags flags);
+
+/**
+ * Callback invoked by SCNetworkReachability, which calls an Objective-C block that handles the connection change.
+ */
+static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void* info) {
+    void (^callbackBlock)(SCNetworkReachabilityFlags) = (__bridge id)(info);
+    callbackBlock(flags);
+}
+
 @interface BSGConnectivity ()
 
 @property (nonatomic, assign) SCNetworkReachabilityRef reachabilityRef;
 @property (nonatomic, strong) dispatch_queue_t serialQueue;
-@property (nonatomic, strong) BSGConnectivity *reachability;
-
-- (void)connectivityChanged:(SCNetworkReachabilityFlags)flags;
+@property (nonatomic) CallbackBlock callbackBlock;
 
 @end
-
-static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void* info) {
-    
-    BSGConnectivity *connectivity = ((__bridge BSGConnectivity *) info);
-    @autoreleasepool {
-        [connectivity connectivityChanged:flags];
-    }
-}
 
 @implementation BSGConnectivity
 
@@ -61,13 +61,20 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkRe
         _connectivityChangeBlock = changeBlock;
         self.reachabilityRef = ref;
         self.serialQueue = dispatch_queue_create("com.bugsnag.cocoa", NULL);
+        
+        __weak id weakSelf = self;
+        self.callbackBlock = ^(SCNetworkReachabilityFlags flags) {
+            if (weakSelf) {
+                [weakSelf connectivityChanged:flags];
+            }
+        };
     }
     return self;    
 }
 
 - (void)dealloc {
     [self stopWatchingConnectivity];
-
+    
     if (self.reachabilityRef) {
         CFRelease(self.reachabilityRef);
         self.reachabilityRef = nil;
@@ -81,16 +88,14 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkRe
  * Sets a callback with SCNetworkReachability
  */
 - (void)startWatchingConnectivity {
-    SCNetworkReachabilityContext context = { 0, NULL, NULL, NULL, NULL };
-    context.info = (__bridge void *) self;
-
-    if (SCNetworkReachabilitySetCallback(self.reachabilityRef, BSGConnectivityCallback, &context)) {
-        if (SCNetworkReachabilitySetDispatchQueue(self.reachabilityRef, self.serialQueue)) {
-            self.reachability = self;
-        } else {
-            SCNetworkReachabilitySetCallback(self.reachabilityRef, NULL, NULL);
-        }
-    }
+    SCNetworkReachabilityContext context = {
+        .version = 0,
+        .info = (void *) CFBridgingRetain(self.callbackBlock),
+        .release = CFRelease
+    };
+    
+    SCNetworkReachabilitySetCallback(self.reachabilityRef, BSGConnectivityCallback, &context);
+    SCNetworkReachabilitySetDispatchQueue(self.reachabilityRef, self.serialQueue);
 }
 
 /**
@@ -99,7 +104,6 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkRe
 -(void)stopWatchingConnectivity {
     SCNetworkReachabilitySetCallback(self.reachabilityRef, NULL, NULL);
     SCNetworkReachabilitySetDispatchQueue(self.reachabilityRef, NULL);
-    self.reachability = nil;
 }
 
 - (void)connectivityChanged:(SCNetworkReachabilityFlags)flags {
