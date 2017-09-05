@@ -94,16 +94,20 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkRe
         .release = CFRelease
     };
     
-    SCNetworkReachabilitySetCallback(self.reachabilityRef, BSGConnectivityCallback, &context);
-    SCNetworkReachabilitySetDispatchQueue(self.reachabilityRef, self.serialQueue);
+    if (self.reachabilityRef) {
+        SCNetworkReachabilitySetCallback(self.reachabilityRef, BSGConnectivityCallback, &context);
+        SCNetworkReachabilitySetDispatchQueue(self.reachabilityRef, self.serialQueue);
+    }
 }
 
 /**
  * Stops the callback with SCNetworkReachability
  */
 -(void)stopWatchingConnectivity {
-    SCNetworkReachabilitySetCallback(self.reachabilityRef, NULL, NULL);
-    SCNetworkReachabilitySetDispatchQueue(self.reachabilityRef, NULL);
+    if (self.reachabilityRef) {
+        SCNetworkReachabilitySetCallback(self.reachabilityRef, NULL, NULL);
+        SCNetworkReachabilitySetDispatchQueue(self.reachabilityRef, NULL);
+    }
 }
 
 - (void)connectivityChanged:(SCNetworkReachabilityFlags)flags {
