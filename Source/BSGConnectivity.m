@@ -37,7 +37,7 @@
 
 @property (nonatomic, assign) SCNetworkReachabilityRef reachabilityRef;
 @property (nonatomic, strong) dispatch_queue_t serialQueue;
-@property (nonatomic, strong) id reachability;
+@property (nonatomic, strong) BSGConnectivity *reachability;
 
 - (void)connectivityChanged:(SCNetworkReachabilityFlags)flags;
 
@@ -107,7 +107,7 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkRe
     if (!(flags & kSCNetworkReachabilityFlagsReachable)) {
         connected = NO;
     }
-    if (connected) { // notify via block
+    if (connected && self.connectivityChangeBlock) { // notify via block
         self.connectivityChangeBlock(self);
     }
 }
