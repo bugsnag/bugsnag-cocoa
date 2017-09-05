@@ -292,13 +292,13 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
 - (void)setupConnectivityListener {
     NSURL *url = self.configuration.notifyURL;
-    self.networkReachable = [[BSGConnectivity alloc] initWithURL:url];
-    [self.networkReachable startWatchingConnectivity];
     
     __weak id weakSelf = self;
-    self.networkReachable.connectivityChangeBlock = ^(BSGConnectivity *connectivity) {
+    self.networkReachable = [[BSGConnectivity alloc] initWithURL:url
+                                                     changeBlock:^(BSGConnectivity *connectivity) {
         [weakSelf flushPendingReports];
-    };
+    }];
+    [self.networkReachable startWatchingConnectivity];
 }
 
 - (void)notifyError:(NSError *)error block:(void (^)(BugsnagCrashReport *))block {

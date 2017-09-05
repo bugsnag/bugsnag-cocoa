@@ -53,11 +53,12 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkRe
 
 @implementation BSGConnectivity
 
-- (instancetype)initWithURL:(NSURL *)url {
+- (instancetype)initWithURL:(NSURL *)url changeBlock:(ConnectivityChange)changeBlock {
     NSString *hostName = [url absoluteString];
     SCNetworkReachabilityRef ref = SCNetworkReachabilityCreateWithName(NULL, [hostName UTF8String]);
     
     if (self = [super init]) {
+        _connectivityChangeBlock = changeBlock;
         self.reachabilityRef = ref;
         self.serialQueue = dispatch_queue_create("com.bugsnag.cocoa", NULL);
     }
@@ -72,7 +73,7 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkRe
         self.reachabilityRef = nil;
     }
 
-    self.connectivityChangeBlock = nil;
+    _connectivityChangeBlock = nil;
     self.serialQueue = nil;
 }
 
