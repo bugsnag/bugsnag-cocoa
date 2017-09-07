@@ -34,6 +34,9 @@
 		8AD9A5041D42EEB0004E1CC5 /* BugsnagSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB151351D41366400C9B218 /* BugsnagSink.m */; };
 		8AD9A5051D42EEE9004E1CC5 /* BSGKSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AB151251D41366400C9B218 /* BSGKSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8AD9FA8D1E0863A1002859A7 /* BugsnagConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD9FA8B1E0863A1002859A7 /* BugsnagConfigurationTests.m */; };
+		E72352BA1F55922F00436528 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E72352B91F55922F00436528 /* SystemConfiguration.framework */; };
+		E72352BD1F55923700436528 /* BSGConnectivity.h in Headers */ = {isa = PBXBuildFile; fileRef = E72352BB1F55923700436528 /* BSGConnectivity.h */; };
+		E72352BE1F55923700436528 /* BSGConnectivity.m in Sources */ = {isa = PBXBuildFile; fileRef = E72352BC1F55923700436528 /* BSGConnectivity.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +81,9 @@
 		8AB1513E1D4136F100C9B218 /* KSCrash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KSCrash.framework; path = "../../../../Library/Developer/Xcode/DerivedData/tvOS-ebsbvpxsfrmszpejtqlahdcmtszc/Build/Products/Debug-appletvsimulator/KSCrash.framework"; sourceTree = "<group>"; };
 		8AD9FA8A1E0863A1002859A7 /* BugsnagConfigurationSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationSpec.m; path = ../Tests/BugsnagConfigurationSpec.m; sourceTree = SOURCE_ROOT; };
 		8AD9FA8B1E0863A1002859A7 /* BugsnagConfigurationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationTests.m; path = ../Tests/BugsnagConfigurationTests.m; sourceTree = SOURCE_ROOT; };
+		E72352B91F55922F00436528 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		E72352BB1F55923700436528 /* BSGConnectivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSGConnectivity.h; path = ../Source/BSGConnectivity.h; sourceTree = "<group>"; };
+		E72352BC1F55923700436528 /* BSGConnectivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSGConnectivity.m; path = ../Source/BSGConnectivity.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +91,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E72352BA1F55922F00436528 /* SystemConfiguration.framework in Frameworks */,
 				8AB1513F1D4136F100C9B218 /* KSCrash.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -107,6 +114,7 @@
 				8AB151131D41356800C9B218 /* Tests */,
 				8A8D51251D41343500D33797 /* Products */,
 				8AB151401D41370500C9B218 /* Framekworks */,
+				E72352B81F55922E00436528 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -122,6 +130,8 @@
 		8A8D51261D41343500D33797 /* tvOS */ = {
 			isa = PBXGroup;
 			children = (
+				E72352BB1F55923700436528 /* BSGConnectivity.h */,
+				E72352BC1F55923700436528 /* BSGConnectivity.m */,
 				8AB151251D41366400C9B218 /* BSGKSCrashReportWriter.h */,
 				8AB151261D41366400C9B218 /* Bugsnag.h */,
 				8AB151271D41366400C9B218 /* Bugsnag.m */,
@@ -169,6 +179,14 @@
 			name = Framekworks;
 			sourceTree = "<group>";
 		};
+		E72352B81F55922E00436528 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E72352B91F55922F00436528 /* SystemConfiguration.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -184,6 +202,7 @@
 				8AD9A4F61D42EE8E004E1CC5 /* BugsnagBreadcrumb.h in Headers */,
 				8AD9A4F91D42EE96004E1CC5 /* BugsnagCrashReport.h in Headers */,
 				8AD9A5051D42EEE9004E1CC5 /* BSGKSCrashReportWriter.h in Headers */,
+				E72352BD1F55923700436528 /* BSGConnectivity.h in Headers */,
 				8AD9A4F71D42EE90004E1CC5 /* BugsnagCollections.h in Headers */,
 				8AD9A4FB1D42EE96004E1CC5 /* BugsnagNotifier.h in Headers */,
 				8AD9A4FC1D42EE96004E1CC5 /* BugsnagSink.h in Headers */,
@@ -296,6 +315,7 @@
 				8AD9A5011D42EEB0004E1CC5 /* BugsnagCrashReport.m in Sources */,
 				8AD9A5021D42EEB0004E1CC5 /* BugsnagMetaData.m in Sources */,
 				8AD9A4FD1D42EE99004E1CC5 /* Bugsnag.m in Sources */,
+				E72352BE1F55923700436528 /* BSGConnectivity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

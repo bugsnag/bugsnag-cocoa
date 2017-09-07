@@ -34,6 +34,7 @@
 #import "BugsnagCrashReport.h"
 #import "BugsnagSink.h"
 #import "BugsnagLogger.h"
+#import "BSGConnectivity.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -233,6 +234,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void) start {
+    [self setupConnectivityListener];
+    
     BugsnagSink* sink = [BugsnagSink new];
     [KSCrash sharedInstance].sink = sink;
     // We don't use this feature yet, so we turn it off
@@ -249,7 +252,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
         bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");
     }
 
-    [sink sendPendingReports];
+    [self flushPendingReports];
     [self updateAutomaticBreadcrumbDetectionSettings];
 #if TARGET_OS_TV
   [self.details setValue:@"tvOS Bugsnag Notifier" forKey:@"name"];
@@ -285,6 +288,17 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 #elif TARGET_OS_MAC
   [self.details setValue:@"OSX Bugsnag Notifier" forKey:@"name"];
 #endif
+}
+
+- (void)setupConnectivityListener {
+    NSURL *url = self.configuration.notifyURL;
+    
+    __weak id weakSelf = self;
+    self.networkReachable = [[BSGConnectivity alloc] initWithURL:url
+                                                     changeBlock:^(BSGConnectivity *connectivity) {
+        [weakSelf flushPendingReports];
+    }];
+    [self.networkReachable startWatchingConnectivity];
 }
 
 - (void)notifyError:(NSError *)error block:(void (^)(BugsnagCrashReport *))block {
@@ -341,7 +355,10 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
       crumb.name = reportName;
       crumb.metadata = @{ @"message": reportMessage, @"severity": BSGFormatSeverity(report.severity) };
     }];
+    [self flushPendingReports];
+}
 
+- (void)flushPendingReports {
     BugsnagSink *sink = [KSCrash sharedInstance].sink;
     if ([sink isKindOfClass:[BugsnagSink class]]) {
         [sink sendPendingReports];
