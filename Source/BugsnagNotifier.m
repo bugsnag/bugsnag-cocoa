@@ -32,6 +32,7 @@
 #import "BugsnagSink.h"
 #import "BugsnagLogger.h"
 #import "BugsnagCrashSentry.h"
+#import "BSGConnectivity.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -92,7 +93,7 @@ void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer) {
 
 NSString *BSGBreadcrumbNameForNotificationName(NSString *name) {
     NSString *readableName = notificationNameMap[name];
-    
+
     if (readableName) {
         return readableName;
     }
@@ -158,7 +159,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         [self metaDataChanged: self.configuration.config];
         [self metaDataChanged: self.state];
         g_bugsnag_data.onCrash = (void (*)(const KSCrashReportWriter *))self.configuration.onCrashHandler;
-        
+
         static dispatch_once_t once_t;
         dispatch_once(&once_t, ^{
             [self initializeNotificationNameMap];
@@ -187,7 +188,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                                 UIWindowDidResignKeyNotification: @"Window Resigned Key",
                                 UIScreenBrightnessDidChangeNotification: @"Screen Brightness Changed",
                                 UITableViewSelectionDidChangeNotification: kTableViewSelectionChange,
-                            
+
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
                                 UIWindowDidBecomeVisibleNotification: kWindowVisible,
                                 UIWindowDidBecomeHiddenNotification: kWindowHidden,
@@ -230,18 +231,21 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                                 NSTableViewSelectionDidChangeNotification: kTableViewSelectionChange,
 #endif
                             };
-    
+
 }
 
 - (void) start {
     self.crashSentry = [BugsnagCrashSentry new];
     self.apiClient = [BugsnagErrorReportApiClient new];
-    
+
     [self.crashSentry install:self.configuration
                     apiClient:self.apiClient
                       onCrash:&BSSerializeDataCrashHandler];
-        
+
+
+    [self setupConnectivityListener];
     [self updateAutomaticBreadcrumbDetectionSettings];
+    
 #if TARGET_OS_TV
   [self.details setValue:@"tvOS Bugsnag Notifier" forKey:@"name"];
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
@@ -276,6 +280,21 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 #elif TARGET_OS_MAC
   [self.details setValue:@"OSX Bugsnag Notifier" forKey:@"name"];
 #endif
+}
+
+- (void)flushPendingReports {
+    [self.apiClient sendPendingReports];
+}
+
+- (void)setupConnectivityListener {
+    NSURL *url = self.configuration.notifyURL;
+
+    __weak id weakSelf = self;
+    self.networkReachable = [[BSGConnectivity alloc] initWithURL:url
+                                                     changeBlock:^(BSGConnectivity *connectivity) {
+        [weakSelf flushPendingReports];
+    }];
+    [self.networkReachable startWatchingConnectivity];
 }
 
 - (void)notifyError:(NSError *)error block:(void (^)(BugsnagCrashReport *))block {
@@ -318,9 +337,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self.state addAttribute:BSAttributeDepth withValue:@(report.depth + 3) toTabWithName:BSTabCrash];
     NSString *reportName = report.errorClass ?: NSStringFromClass([NSException class]);
     NSString *reportMessage = report.errorMessage ?: @"";
-    
+
     [self.crashSentry reportUserException:reportName reason:reportMessage];
-    
+
     // Restore metaData to pre-crash state.
     [self.metaDataLock unlock];
     [self metaDataChanged:self.configuration.metaData];
@@ -330,8 +349,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
       crumb.name = reportName;
       crumb.metadata = @{ @"message": reportMessage, @"severity": BSGFormatSeverity(report.severity) };
     }];
-
-    [self.apiClient sendPendingReports];
+    [self flushPendingReports];
 }
 
 - (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
@@ -386,7 +404,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 - (void)orientationChanged:(NSNotification *)notif {
   NSString *orientation;
   UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
-    
+
   switch (deviceOrientation) {
   case UIDeviceOrientationPortraitUpsideDown:
     orientation = @"portraitupsidedown";
@@ -409,18 +427,18 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
   default:
     return; // always ignore unknown breadcrumbs
   }
-  
+
   NSDictionary *lastBreadcrumb = [[self.configuration.breadcrumbs arrayValue] lastObject];
   NSString *orientationNotifName = BSGBreadcrumbNameForNotificationName(notif.name);
-    
+
   if (lastBreadcrumb && [orientationNotifName isEqualToString:lastBreadcrumb[@"name"]]) {
     NSDictionary *metaData = lastBreadcrumb[@"metaData"];
-    
+
     if ([orientation isEqualToString:metaData[@"orientation"]]) {
       return; // ignore duplicate orientation event
     }
   }
-    
+
   [[self state] addAttribute:@"orientation"
                    withValue:orientation
                toTabWithName:@"deviceState"];
@@ -654,4 +672,3 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 @end
-

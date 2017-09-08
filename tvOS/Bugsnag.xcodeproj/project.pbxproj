@@ -33,6 +33,9 @@
 		8AD9A5041D42EEB0004E1CC5 /* BugsnagSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB151351D41366400C9B218 /* BugsnagSink.m */; };
 		8AD9A5051D42EEE9004E1CC5 /* BSGKSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AB151251D41366400C9B218 /* BSGKSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8AD9FA8D1E0863A1002859A7 /* BugsnagConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD9FA8B1E0863A1002859A7 /* BugsnagConfigurationTests.m */; };
+		E72352BA1F55922F00436528 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E72352B91F55922F00436528 /* SystemConfiguration.framework */; };
+		E72352BD1F55923700436528 /* BSGConnectivity.h in Headers */ = {isa = PBXBuildFile; fileRef = E72352BB1F55923700436528 /* BSGConnectivity.h */; };
+		E72352BE1F55923700436528 /* BSGConnectivity.m in Sources */ = {isa = PBXBuildFile; fileRef = E72352BC1F55923700436528 /* BSGConnectivity.m */; };
 		E7433AD61F4F650C00C082D1 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7433AD51F4F650C00C082D1 /* libc++.tbd */; };
 		E7433AD81F4F651200C082D1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7433AD71F4F651200C082D1 /* libz.tbd */; };
 		E76616F71F4E45950094CECF /* BugsnagCrashSentry.h in Headers */ = {isa = PBXBuildFile; fileRef = E76616F11F4E45950094CECF /* BugsnagCrashSentry.h */; };
@@ -41,14 +44,6 @@
 		E76616FA1F4E45950094CECF /* BugsnagErrorReportApiClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E76616F41F4E45950094CECF /* BugsnagErrorReportApiClient.m */; };
 		E76616FB1F4E45950094CECF /* BugsnagSystemInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = E76616F51F4E45950094CECF /* BugsnagSystemInfo.h */; };
 		E76616FC1F4E45950094CECF /* BugsnagSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E76616F61F4E45950094CECF /* BugsnagSystemInfo.m */; };
-		E76617751F4E459C0094CECF /* None.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617041F4E459C0094CECF /* None.h */; };
-		E76617761F4E459C0094CECF /* Optional.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617051F4E459C0094CECF /* Optional.h */; };
-		E76617771F4E459C0094CECF /* StringRef.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617061F4E459C0094CECF /* StringRef.h */; };
-		E76617781F4E459C0094CECF /* llvm-config.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617081F4E459C0094CECF /* llvm-config.h */; };
-		E76617791F4E459C0094CECF /* AlignOf.h in Headers */ = {isa = PBXBuildFile; fileRef = E766170A1F4E459C0094CECF /* AlignOf.h */; };
-		E766177A1F4E459C0094CECF /* Casting.h in Headers */ = {isa = PBXBuildFile; fileRef = E766170B1F4E459C0094CECF /* Casting.h */; };
-		E766177B1F4E459C0094CECF /* Compiler.h in Headers */ = {isa = PBXBuildFile; fileRef = E766170C1F4E459C0094CECF /* Compiler.h */; };
-		E766177C1F4E459C0094CECF /* type_traits.h in Headers */ = {isa = PBXBuildFile; fileRef = E766170D1F4E459C0094CECF /* type_traits.h */; };
 		E766177D1F4E459C0094CECF /* KSCrash.h in Headers */ = {isa = PBXBuildFile; fileRef = E766170F1F4E459C0094CECF /* KSCrash.h */; };
 		E766177E1F4E459C0094CECF /* KSCrash.m in Sources */ = {isa = PBXBuildFile; fileRef = E76617101F4E459C0094CECF /* KSCrash.m */; };
 		E766177F1F4E459C0094CECF /* KSCrashAdvanced.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617111F4E459C0094CECF /* KSCrashAdvanced.h */; };
@@ -128,21 +123,10 @@
 		E76617C91F4E459C0094CECF /* NSDictionary+Merge.m in Sources */ = {isa = PBXBuildFile; fileRef = E766175D1F4E459C0094CECF /* NSDictionary+Merge.m */; };
 		E76617CA1F4E459C0094CECF /* NSError+SimpleConstructor.h in Headers */ = {isa = PBXBuildFile; fileRef = E766175E1F4E459C0094CECF /* NSError+SimpleConstructor.h */; };
 		E76617CB1F4E459C0094CECF /* NSError+SimpleConstructor.m in Sources */ = {isa = PBXBuildFile; fileRef = E766175F1F4E459C0094CECF /* NSError+SimpleConstructor.m */; };
-		E76617CC1F4E459C0094CECF /* NSString+Demangle.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617601F4E459C0094CECF /* NSString+Demangle.h */; };
-		E76617CD1F4E459C0094CECF /* NSString+Demangle.mm in Sources */ = {isa = PBXBuildFile; fileRef = E76617611F4E459C0094CECF /* NSString+Demangle.mm */; };
 		E76617CE1F4E459C0094CECF /* RFC3339DateTool.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617621F4E459C0094CECF /* RFC3339DateTool.h */; };
 		E76617CF1F4E459C0094CECF /* RFC3339DateTool.m in Sources */ = {isa = PBXBuildFile; fileRef = E76617631F4E459C0094CECF /* RFC3339DateTool.m */; };
 		E76617D01F4E459C0094CECF /* KSCrashReportFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617661F4E459C0094CECF /* KSCrashReportFilter.h */; };
 		E76617D11F4E459C0094CECF /* KSCrashReportFilterCompletion.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617671F4E459C0094CECF /* KSCrashReportFilterCompletion.h */; };
-		E76617D21F4E459C0094CECF /* Demangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E766176A1F4E459C0094CECF /* Demangle.cpp */; };
-		E76617D31F4E459C0094CECF /* Demangle.h in Headers */ = {isa = PBXBuildFile; fileRef = E766176B1F4E459C0094CECF /* Demangle.h */; };
-		E76617D41F4E459C0094CECF /* DemangleNodes.h in Headers */ = {isa = PBXBuildFile; fileRef = E766176C1F4E459C0094CECF /* DemangleNodes.h */; };
-		E76617D51F4E459C0094CECF /* Fallthrough.h in Headers */ = {isa = PBXBuildFile; fileRef = E766176D1F4E459C0094CECF /* Fallthrough.h */; };
-		E76617D61F4E459C0094CECF /* LLVM.h in Headers */ = {isa = PBXBuildFile; fileRef = E766176E1F4E459C0094CECF /* LLVM.h */; };
-		E76617D71F4E459C0094CECF /* Malloc.h in Headers */ = {isa = PBXBuildFile; fileRef = E766176F1F4E459C0094CECF /* Malloc.h */; };
-		E76617D81F4E459C0094CECF /* Punycode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E76617701F4E459C0094CECF /* Punycode.cpp */; };
-		E76617D91F4E459C0094CECF /* Punycode.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617711F4E459C0094CECF /* Punycode.h */; };
-		E76617DA1F4E459C0094CECF /* SwiftStrings.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617721F4E459C0094CECF /* SwiftStrings.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -186,6 +170,9 @@
 		8AB151351D41366400C9B218 /* BugsnagSink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSink.m; path = ../Source/BugsnagSink.m; sourceTree = "<group>"; };
 		8AD9FA8A1E0863A1002859A7 /* BugsnagConfigurationSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationSpec.m; path = ../Tests/BugsnagConfigurationSpec.m; sourceTree = SOURCE_ROOT; };
 		8AD9FA8B1E0863A1002859A7 /* BugsnagConfigurationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationTests.m; path = ../Tests/BugsnagConfigurationTests.m; sourceTree = SOURCE_ROOT; };
+		E72352B91F55922F00436528 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		E72352BB1F55923700436528 /* BSGConnectivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSGConnectivity.h; path = ../Source/BSGConnectivity.h; sourceTree = "<group>"; };
+		E72352BC1F55923700436528 /* BSGConnectivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSGConnectivity.m; path = ../Source/BSGConnectivity.m; sourceTree = "<group>"; };
 		E7433AD51F4F650C00C082D1 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		E7433AD71F4F651200C082D1 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		E76616F11F4E45950094CECF /* BugsnagCrashSentry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagCrashSentry.h; path = ../Source/BugsnagCrashSentry.h; sourceTree = "<group>"; };
@@ -196,14 +183,6 @@
 		E76616F61F4E45950094CECF /* BugsnagSystemInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSystemInfo.m; path = ../Source/BugsnagSystemInfo.m; sourceTree = "<group>"; };
 		E76616FE1F4E459C0094CECF /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		E76616FF1F4E459C0094CECF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		E76617041F4E459C0094CECF /* None.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = None.h; sourceTree = "<group>"; };
-		E76617051F4E459C0094CECF /* Optional.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Optional.h; sourceTree = "<group>"; };
-		E76617061F4E459C0094CECF /* StringRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringRef.h; sourceTree = "<group>"; };
-		E76617081F4E459C0094CECF /* llvm-config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "llvm-config.h"; sourceTree = "<group>"; };
-		E766170A1F4E459C0094CECF /* AlignOf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlignOf.h; sourceTree = "<group>"; };
-		E766170B1F4E459C0094CECF /* Casting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Casting.h; sourceTree = "<group>"; };
-		E766170C1F4E459C0094CECF /* Compiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Compiler.h; sourceTree = "<group>"; };
-		E766170D1F4E459C0094CECF /* type_traits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = type_traits.h; sourceTree = "<group>"; };
 		E766170F1F4E459C0094CECF /* KSCrash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KSCrash.h; sourceTree = "<group>"; };
 		E76617101F4E459C0094CECF /* KSCrash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSCrash.m; sourceTree = "<group>"; };
 		E76617111F4E459C0094CECF /* KSCrashAdvanced.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KSCrashAdvanced.h; sourceTree = "<group>"; };
@@ -283,21 +262,10 @@
 		E766175D1F4E459C0094CECF /* NSDictionary+Merge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Merge.m"; sourceTree = "<group>"; };
 		E766175E1F4E459C0094CECF /* NSError+SimpleConstructor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+SimpleConstructor.h"; sourceTree = "<group>"; };
 		E766175F1F4E459C0094CECF /* NSError+SimpleConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+SimpleConstructor.m"; sourceTree = "<group>"; };
-		E76617601F4E459C0094CECF /* NSString+Demangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Demangle.h"; sourceTree = "<group>"; };
-		E76617611F4E459C0094CECF /* NSString+Demangle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSString+Demangle.mm"; sourceTree = "<group>"; };
 		E76617621F4E459C0094CECF /* RFC3339DateTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFC3339DateTool.h; sourceTree = "<group>"; };
 		E76617631F4E459C0094CECF /* RFC3339DateTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFC3339DateTool.m; sourceTree = "<group>"; };
 		E76617661F4E459C0094CECF /* KSCrashReportFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KSCrashReportFilter.h; sourceTree = "<group>"; };
 		E76617671F4E459C0094CECF /* KSCrashReportFilterCompletion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KSCrashReportFilterCompletion.h; sourceTree = "<group>"; };
-		E766176A1F4E459C0094CECF /* Demangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Demangle.cpp; sourceTree = "<group>"; };
-		E766176B1F4E459C0094CECF /* Demangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demangle.h; sourceTree = "<group>"; };
-		E766176C1F4E459C0094CECF /* DemangleNodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemangleNodes.h; sourceTree = "<group>"; };
-		E766176D1F4E459C0094CECF /* Fallthrough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fallthrough.h; sourceTree = "<group>"; };
-		E766176E1F4E459C0094CECF /* LLVM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLVM.h; sourceTree = "<group>"; };
-		E766176F1F4E459C0094CECF /* Malloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Malloc.h; sourceTree = "<group>"; };
-		E76617701F4E459C0094CECF /* Punycode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Punycode.cpp; sourceTree = "<group>"; };
-		E76617711F4E459C0094CECF /* Punycode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Punycode.h; sourceTree = "<group>"; };
-		E76617721F4E459C0094CECF /* SwiftStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftStrings.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -307,6 +275,7 @@
 			files = (
 				E7433AD81F4F651200C082D1 /* libz.tbd in Frameworks */,
 				E7433AD61F4F650C00C082D1 /* libc++.tbd in Frameworks */,
+				E72352BA1F55922F00436528 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,6 +297,7 @@
 				8AB151131D41356800C9B218 /* Tests */,
 				8A8D51251D41343500D33797 /* Products */,
 				E7433AD41F4F650C00C082D1 /* Frameworks */,
+				E72352B81F55922E00436528 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -350,6 +320,8 @@
 				E76616F41F4E45950094CECF /* BugsnagErrorReportApiClient.m */,
 				E76616F51F4E45950094CECF /* BugsnagSystemInfo.h */,
 				E76616F61F4E45950094CECF /* BugsnagSystemInfo.m */,
+				E72352BB1F55923700436528 /* BSGConnectivity.h */,
+				E72352BC1F55923700436528 /* BSGConnectivity.m */,
 				8AB151251D41366400C9B218 /* BSGKSCrashReportWriter.h */,
 				8AB151261D41366400C9B218 /* Bugsnag.h */,
 				8AB151271D41366400C9B218 /* Bugsnag.m */,
@@ -389,6 +361,14 @@
 			path = Tests;
 			sourceTree = "<group>";
 		};
+		E72352B81F55922E00436528 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E72352B91F55922F00436528 /* SystemConfiguration.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		E7433AD41F4F650C00C082D1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -423,7 +403,6 @@
 				E76617021F4E459C0094CECF /* llvm */,
 				E766170E1F4E459C0094CECF /* Recording */,
 				E76617641F4E459C0094CECF /* Reporting */,
-				E76617681F4E459C0094CECF /* swift */,
 			);
 			path = KSCrash;
 			sourceTree = "<group>";
@@ -431,40 +410,8 @@
 		E76617021F4E459C0094CECF /* llvm */ = {
 			isa = PBXGroup;
 			children = (
-				E76617031F4E459C0094CECF /* ADT */,
-				E76617071F4E459C0094CECF /* Config */,
-				E76617091F4E459C0094CECF /* Support */,
 			);
 			path = llvm;
-			sourceTree = "<group>";
-		};
-		E76617031F4E459C0094CECF /* ADT */ = {
-			isa = PBXGroup;
-			children = (
-				E76617041F4E459C0094CECF /* None.h */,
-				E76617051F4E459C0094CECF /* Optional.h */,
-				E76617061F4E459C0094CECF /* StringRef.h */,
-			);
-			path = ADT;
-			sourceTree = "<group>";
-		};
-		E76617071F4E459C0094CECF /* Config */ = {
-			isa = PBXGroup;
-			children = (
-				E76617081F4E459C0094CECF /* llvm-config.h */,
-			);
-			path = Config;
-			sourceTree = "<group>";
-		};
-		E76617091F4E459C0094CECF /* Support */ = {
-			isa = PBXGroup;
-			children = (
-				E766170A1F4E459C0094CECF /* AlignOf.h */,
-				E766170B1F4E459C0094CECF /* Casting.h */,
-				E766170C1F4E459C0094CECF /* Compiler.h */,
-				E766170D1F4E459C0094CECF /* type_traits.h */,
-			);
-			path = Support;
 			sourceTree = "<group>";
 		};
 		E766170E1F4E459C0094CECF /* Recording */ = {
@@ -565,8 +512,6 @@
 				E766175D1F4E459C0094CECF /* NSDictionary+Merge.m */,
 				E766175E1F4E459C0094CECF /* NSError+SimpleConstructor.h */,
 				E766175F1F4E459C0094CECF /* NSError+SimpleConstructor.m */,
-				E76617601F4E459C0094CECF /* NSString+Demangle.h */,
-				E76617611F4E459C0094CECF /* NSString+Demangle.mm */,
 				E76617621F4E459C0094CECF /* RFC3339DateTool.h */,
 				E76617631F4E459C0094CECF /* RFC3339DateTool.m */,
 			);
@@ -590,30 +535,6 @@
 			path = Filters;
 			sourceTree = "<group>";
 		};
-		E76617681F4E459C0094CECF /* swift */ = {
-			isa = PBXGroup;
-			children = (
-				E76617691F4E459C0094CECF /* Basic */,
-				E76617721F4E459C0094CECF /* SwiftStrings.h */,
-			);
-			path = swift;
-			sourceTree = "<group>";
-		};
-		E76617691F4E459C0094CECF /* Basic */ = {
-			isa = PBXGroup;
-			children = (
-				E766176A1F4E459C0094CECF /* Demangle.cpp */,
-				E766176B1F4E459C0094CECF /* Demangle.h */,
-				E766176C1F4E459C0094CECF /* DemangleNodes.h */,
-				E766176D1F4E459C0094CECF /* Fallthrough.h */,
-				E766176E1F4E459C0094CECF /* LLVM.h */,
-				E766176F1F4E459C0094CECF /* Malloc.h */,
-				E76617701F4E459C0094CECF /* Punycode.cpp */,
-				E76617711F4E459C0094CECF /* Punycode.h */,
-			);
-			path = Basic;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -621,7 +542,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E766177A1F4E459C0094CECF /* Casting.h in Headers */,
 				E76617AE1F4E459C0094CECF /* KSJSONCodec.h in Headers */,
 				E766177D1F4E459C0094CECF /* KSCrash.h in Headers */,
 				E766179C1F4E459C0094CECF /* KSCrashSentry_NSException.h in Headers */,
@@ -630,21 +550,16 @@
 				E76617A51F4E459C0094CECF /* KSBacktrace.h in Headers */,
 				E76617AA1F4E459C0094CECF /* KSDynamicLinker.h in Headers */,
 				E76617B41F4E459C0094CECF /* KSMach.h in Headers */,
-				E76617D31F4E459C0094CECF /* Demangle.h in Headers */,
 				E76617AF1F4E459C0094CECF /* KSJSONCodecObjC.h in Headers */,
 				E76617B11F4E459C0094CECF /* KSLogger.h in Headers */,
 				8AD9A4F51D42EE87004E1CC5 /* Bugsnag.h in Headers */,
 				E76617831F4E459C0094CECF /* KSCrashDoctor.h in Headers */,
-				E76617CC1F4E459C0094CECF /* NSString+Demangle.h in Headers */,
 				E76617CA1F4E459C0094CECF /* NSError+SimpleConstructor.h in Headers */,
 				E76617A71F4E459C0094CECF /* KSCrashCallCompletion.h in Headers */,
-				E76617781F4E459C0094CECF /* llvm-config.h in Headers */,
 				E76617C51F4E459C0094CECF /* KSSysCtl.h in Headers */,
 				E76617821F4E459C0094CECF /* KSCrashContext.h in Headers */,
 				E76617901F4E459C0094CECF /* KSSystemCapabilities.h in Headers */,
 				E76617A01F4E459C0094CECF /* KSCrashSentry_Signal.h in Headers */,
-				E766177C1F4E459C0094CECF /* type_traits.h in Headers */,
-				E76617D91F4E459C0094CECF /* Punycode.h in Headers */,
 				E76617931F4E459C0094CECF /* KSSystemInfoC.h in Headers */,
 				E76617BC1F4E459C0094CECF /* KSObjCApple.h in Headers */,
 				E76617C01F4E459C0094CECF /* KSSignalInfo.h in Headers */,
@@ -652,9 +567,7 @@
 				8A627CD51EC3B69300F7C04E /* BSGSerialization.h in Headers */,
 				E76617A31F4E459C0094CECF /* KSArchSpecific.h in Headers */,
 				E76617AC1F4E459C0094CECF /* KSFileUtils.h in Headers */,
-				E76617791F4E459C0094CECF /* AlignOf.h in Headers */,
 				E766178A1F4E459C0094CECF /* KSCrashReportVersion.h in Headers */,
-				E76617771F4E459C0094CECF /* StringRef.h in Headers */,
 				E766178F1F4E459C0094CECF /* KSCrashType.h in Headers */,
 				E766178D1F4E459C0094CECF /* KSCrashState.h in Headers */,
 				E76617981F4E459C0094CECF /* KSCrashSentry_Deadlock.h in Headers */,
@@ -664,14 +577,9 @@
 				E76617861F4E459C0094CECF /* KSCrashReport.h in Headers */,
 				E76617C71F4E459C0094CECF /* KSZombie.h in Headers */,
 				8A48EF291EAA824100B70024 /* BugsnagLogger.h in Headers */,
-				E76617751F4E459C0094CECF /* None.h in Headers */,
-				E76617D41F4E459C0094CECF /* DemangleNodes.h in Headers */,
 				E76617C11F4E459C0094CECF /* KSSingleton.h in Headers */,
-				E76617761F4E459C0094CECF /* Optional.h in Headers */,
-				E76617DA1F4E459C0094CECF /* SwiftStrings.h in Headers */,
 				8AD9A4F81D42EE96004E1CC5 /* BugsnagConfiguration.h in Headers */,
 				E766178B1F4E459C0094CECF /* KSCrashReportWriter.h in Headers */,
-				E76617D51F4E459C0094CECF /* Fallthrough.h in Headers */,
 				8AD9A4F61D42EE8E004E1CC5 /* BugsnagBreadcrumb.h in Headers */,
 				E76617D01F4E459C0094CECF /* KSCrashReportFilter.h in Headers */,
 				E76617961F4E459C0094CECF /* KSCrashSentry_CPPException.h in Headers */,
@@ -684,17 +592,15 @@
 				E76617B91F4E459C0094CECF /* KSMachApple.h in Headers */,
 				E76617A21F4E459C0094CECF /* KSCrashSentry_User.h in Headers */,
 				E76616FB1F4E45950094CECF /* BugsnagSystemInfo.h in Headers */,
-				E766177B1F4E459C0094CECF /* Compiler.h in Headers */,
 				E76617951F4E459C0094CECF /* KSCrashSentry.h in Headers */,
 				E766179E1F4E459C0094CECF /* KSCrashSentry_Private.h in Headers */,
-				E76617D71F4E459C0094CECF /* Malloc.h in Headers */,
 				8AD9A5051D42EEE9004E1CC5 /* BSGKSCrashReportWriter.h in Headers */,
-				E76617D61F4E459C0094CECF /* LLVM.h in Headers */,
 				E766177F1F4E459C0094CECF /* KSCrashAdvanced.h in Headers */,
 				E76617BB1F4E459C0094CECF /* KSObjC.h in Headers */,
 				E76617C31F4E459C0094CECF /* KSString.h in Headers */,
 				E76617871F4E459C0094CECF /* KSCrashReportFields.h in Headers */,
 				E76617CE1F4E459C0094CECF /* RFC3339DateTool.h in Headers */,
+				E72352BD1F55923700436528 /* BSGConnectivity.h in Headers */,
 				8AD9A4F71D42EE90004E1CC5 /* BugsnagCollections.h in Headers */,
 				8AD9A4FB1D42EE96004E1CC5 /* BugsnagNotifier.h in Headers */,
 				8AD9A4FC1D42EE96004E1CC5 /* BugsnagSink.h in Headers */,
@@ -821,7 +727,6 @@
 				E76617B01F4E459C0094CECF /* KSJSONCodecObjC.m in Sources */,
 				8AD9A5041D42EEB0004E1CC5 /* BugsnagSink.m in Sources */,
 				E76617BA1F4E459C0094CECF /* KSObjC.c in Sources */,
-				E76617D81F4E459C0094CECF /* Punycode.cpp in Sources */,
 				E76617B61F4E459C0094CECF /* KSMach_Arm64.c in Sources */,
 				E76617AB1F4E459C0094CECF /* KSFileUtils.c in Sources */,
 				E76617941F4E459C0094CECF /* KSCrashSentry.c in Sources */,
@@ -836,19 +741,18 @@
 				E76617921F4E459C0094CECF /* KSSystemInfo.m in Sources */,
 				8AD9A5011D42EEB0004E1CC5 /* BugsnagCrashReport.m in Sources */,
 				E76616FA1F4E45950094CECF /* BugsnagErrorReportApiClient.m in Sources */,
-				E76617D21F4E459C0094CECF /* Demangle.cpp in Sources */,
 				E76617AD1F4E459C0094CECF /* KSJSONCodec.c in Sources */,
 				E766179D1F4E459C0094CECF /* KSCrashSentry_NSException.m in Sources */,
 				E76617851F4E459C0094CECF /* KSCrashReport.c in Sources */,
 				8AD9A5021D42EEB0004E1CC5 /* BugsnagMetaData.m in Sources */,
 				E766179A1F4E459C0094CECF /* KSCrashSentry_MachException.c in Sources */,
-				E76617CD1F4E459C0094CECF /* NSString+Demangle.mm in Sources */,
 				E76617A91F4E459C0094CECF /* KSDynamicLinker.c in Sources */,
 				E76616F81F4E45950094CECF /* BugsnagCrashSentry.m in Sources */,
 				8AD9A4FD1D42EE99004E1CC5 /* Bugsnag.m in Sources */,
 				E766177E1F4E459C0094CECF /* KSCrash.m in Sources */,
 				E76617A11F4E459C0094CECF /* KSCrashSentry_User.c in Sources */,
 				E76617CF1F4E459C0094CECF /* RFC3339DateTool.m in Sources */,
+				E72352BE1F55923700436528 /* BSGConnectivity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
