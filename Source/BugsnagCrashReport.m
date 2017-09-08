@@ -279,6 +279,17 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
  *  User-provided exception metadata
  */
 @property (nonatomic, readwrite, copy, nullable) NSDictionary *customException;
+
+/**
+ * Whether the error was handled or not
+ */
+@property (nonatomic, readonly) BOOL unhandled;
+
+/**
+ * The original severity of the reported error
+ */
+@property (nonatomic, readonly) BSGSeverity originalSeverity;
+
 @end
 
 @implementation BugsnagCrashReport
@@ -309,6 +320,8 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       _groupingHash = BSGParseGroupingHash(report, _metaData);
       _overrides = [report valueForKeyPath:@"user.overrides"];
       _customException = BSGParseCustomException(report, [_errorClass copy], [_errorMessage copy]);
+      _unhandled = YES;
+      _originalSeverity = _severity;
   }
   return self;
 }
@@ -328,6 +341,8 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
         _context = BSGParseContext(nil, metaData);
         _breadcrumbs = [config.breadcrumbs arrayValue];
         _overrides = [NSDictionary new];
+        _unhandled = NO;
+        _originalSeverity = severity;
     }
     return self;
 }
@@ -452,6 +467,16 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
   BSGDictSetSafeObject(event, [self app], @"app");
   BSGDictSetSafeObject(event, [self context], @"context");
   BSGDictInsertIfNotNil(event, self.groupingHash, @"groupingHash");
+    
+    BOOL defaultSeverity = self.originalSeverity == self.severity;
+    BSGDictSetSafeObject(event, @(defaultSeverity), @"defaultSeverity");
+    BSGDictSetSafeObject(event, @(self.unhandled), @"unhandled");
+    
+    if (self.unhandled) {
+        NSDictionary *severityReason = @{@"type": @"exception_handler"};
+        BSGDictSetSafeObject(event, severityReason, @"severityReason");
+    }
+    
 
   //  Inserted into `context` property
   [metaData removeObjectForKey:@"context"];

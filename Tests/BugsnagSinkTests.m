@@ -104,6 +104,7 @@
     @"appState",
     @"breadcrumbs",
     @"context",
+    @"defaultSeverity",
     @"device",
     @"deviceState",
     @"dsymUUID",
@@ -111,7 +112,9 @@
     @"metaData",
     @"payloadVersion",
     @"severity",
-    @"threads"
+    @"severityReason",
+    @"threads",
+    @"unhandled",
   ];
   XCTAssertEqualObjects(actualKeys, eventKeys);
 }
@@ -134,21 +137,42 @@
     
     NSDictionary *severityReason = [event objectForKey:@"severityReason"];
     XCTAssertNotNil(severityReason);
-    XCTAssertEqual(@"exception_handler", severityReason[@"type"]);
+    NSString *severityType = severityReason[@"type"];
+    XCTAssertEqualObjects(@"exception_handler", severityType);
 }
 
 - (void)testHandledSerialization {
-    NSDictionary *event = [self.processedData[@"events"] firstObject];
+    BugsnagCrashReport *report =
+    [[BugsnagCrashReport alloc] initWithErrorName:@"TestError"
+                                     errorMessage:@"Error for testing"
+                                    configuration:[BugsnagConfiguration new]
+                                         metaData:[NSDictionary new]
+                                         severity:BSGSeverityWarning];
+    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    NSDictionary *event = [data[@"events"] firstObject];
+    
     XCTAssertNotNil(event);
-    XCTAssertTrue(event[@"defaultSeverity"]);
-    XCTAssertFalse(event[@"unhandled"]);
+    XCTAssertTrue([event[@"defaultSeverity"] boolValue]);
+    XCTAssertFalse([event[@"unhandled"] boolValue]);
     XCTAssertNil([event objectForKey:@"severityReason"]);
 }
 
 - (void)testSeverityMutation {
-    NSDictionary *event = [self.processedData[@"events"] firstObject]; // TODO alter event severity
+    BugsnagCrashReport *report =
+    [[BugsnagCrashReport alloc] initWithKSReport:self.rawReportData];
+    report.severity = BSGSeverityInfo; // alter report severity
+    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    
+    NSDictionary *event = [data[@"events"] firstObject];
     XCTAssertNotNil(event);
-    XCTAssertFalse(event[@"defaultSeverity"]);
+    XCTAssertFalse([event[@"defaultSeverity"] boolValue]);
+    
+    report.severity = BSGSeverityWarning; // alter report to default
+    data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    
+    event = [data[@"events"] firstObject];
+    XCTAssertNotNil(event);
+    XCTAssertTrue([event[@"defaultSeverity"] boolValue]);
 }
 
 - (void)testEventSeverity {
@@ -159,8 +183,8 @@
     XCTAssertNotNil(event);
     
     NSString *severity = event[@"severity"];
-    XCTAssertTrue(event[@"defaultSeverity"]);
-    XCTAssertFalse(event[@"unhandled"]);
+    XCTAssertTrue([event[@"defaultSeverity"] boolValue]);
+    XCTAssertTrue([event[@"unhandled"] boolValue]);
     XCTAssertEqualObjects(severity, expected);
 }
 
