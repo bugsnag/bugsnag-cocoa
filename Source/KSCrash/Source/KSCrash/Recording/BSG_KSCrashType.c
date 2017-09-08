@@ -1,9 +1,7 @@
 //
-//  BugsnagSink.h
+//  KSCrashType.c
 //
-//  Created by Conrad Irwin on 2014-10-01.
-//
-//  Copyright (c) 2014 Bugsnag, Inc. All rights reserved.
+//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +22,37 @@
 // THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import "BSG_KSCrash.h"
-#import "BSG_KSCrashReportFilter.h"
 
-#import "BugsnagErrorReportApiClient.h"
+#include "BSG_KSCrashType.h"
 
-@interface BugsnagSink : NSObject<KSCrashReportFilter>
+#include <stdlib.h>
 
-- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient;
-@property (nonatomic) BugsnagErrorReportApiClient *apiClient;
 
-@end
+static const struct
+{
+    const KSCrashType type;
+    const char* const name;
+} g_crashTypes[] =
+{
+#define CRASHTYPE(NAME) {NAME, #NAME}
+    CRASHTYPE(KSCrashTypeMachException),
+    CRASHTYPE(KSCrashTypeSignal),
+    CRASHTYPE(KSCrashTypeCPPException),
+    CRASHTYPE(KSCrashTypeNSException),
+    CRASHTYPE(KSCrashTypeMainThreadDeadlock),
+    CRASHTYPE(KSCrashTypeUserReported),
+};
+static const int g_crashTypesCount = sizeof(g_crashTypes) / sizeof(*g_crashTypes);
+
+
+const char* kscrashtype_name(const KSCrashType crashType)
+{
+    for(int i = 0; i < g_crashTypesCount; i++)
+    {
+        if(g_crashTypes[i].type == crashType)
+        {
+            return g_crashTypes[i].name;
+        }
+    }
+    return NULL;
+}

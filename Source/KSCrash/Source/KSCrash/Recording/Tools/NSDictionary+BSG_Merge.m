@@ -1,9 +1,9 @@
 //
-//  BugsnagSink.h
+//  NSDictionary+Merge.m
 //
-//  Created by Conrad Irwin on 2014-10-01.
+//  Created by Karl Stenerud on 2012-10-01.
 //
-//  Copyright (c) 2014 Bugsnag, Inc. All rights reserved.
+//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,38 @@
 // THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import "BSG_KSCrash.h"
-#import "BSG_KSCrashReportFilter.h"
 
-#import "BugsnagErrorReportApiClient.h"
+#import "NSDictionary+BSG_Merge.h"
 
-@interface BugsnagSink : NSObject<KSCrashReportFilter>
 
-- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient;
-@property (nonatomic) BugsnagErrorReportApiClient *apiClient;
+@implementation NSDictionary (KSMerge)
+
+- (NSDictionary*) mergedInto:(NSDictionary*) dest
+{
+    if([dest count] == 0)
+    {
+        return self;
+    }
+    if([self count] == 0)
+    {
+        return dest;
+    }
+
+    NSMutableDictionary* dict = [dest mutableCopy];
+    for(id key in [self allKeys])
+    {
+        id srcEntry = [self objectForKey:key];
+        id dstEntry = [dest objectForKey:key];
+        if([dstEntry isKindOfClass:[NSDictionary class]] &&
+           [srcEntry isKindOfClass:[NSDictionary class]])
+        {
+            srcEntry = [srcEntry mergedInto:dstEntry];
+        }
+        [dict setObject:srcEntry forKey:key];
+    }
+    return dict;
+}
 
 @end
+
+@interface NSDictionary_Merge_O8FG4A : NSObject @end @implementation NSDictionary_Merge_O8FG4A @end

@@ -1,9 +1,9 @@
 //
-//  BugsnagSink.h
+//  KSCrashCallCompletion.m
 //
-//  Created by Conrad Irwin on 2014-10-01.
+//  Created by Karl Stenerud on 2013-02-10.
 //
-//  Copyright (c) 2014 Bugsnag, Inc. All rights reserved.
+//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,15 @@
 // THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import "BSG_KSCrash.h"
-#import "BSG_KSCrashReportFilter.h"
+#import "BSG_KSCrashCallCompletion.h"
 
-#import "BugsnagErrorReportApiClient.h"
-
-@interface BugsnagSink : NSObject<KSCrashReportFilter>
-
-- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient;
-@property (nonatomic) BugsnagErrorReportApiClient *apiClient;
-
-@end
+void kscrash_i_callCompletion(KSCrashReportFilterCompletion onCompletion,
+                              NSArray* filteredReports,
+                              BOOL completed,
+                              NSError* error)
+{
+    if(onCompletion)
+    {
+        onCompletion(filteredReports, completed, error);
+    }
+}

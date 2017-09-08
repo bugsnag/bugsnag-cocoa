@@ -100,7 +100,7 @@ Now with KSCrash, you get the uncaught exception type, description, and where it
 If you turn on trace printing:
 
 ```objective-c
-[KSCrash sharedInstance].printTraceToStdout = YES;
+[BSG_KSCrash sharedInstance].printTraceToStdout = YES;
 ```
 
 It will print a proper stack trace to stdout whenever your app throws an

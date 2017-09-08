@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagCrashReport.h"
-#import "KSCrashReportFilterCompletion.h"
+#import "BSG_KSCrashReportFilterCompletion.h"
 
 @interface BugsnagErrorReportApiClient : NSObject
 

@@ -1,9 +1,9 @@
 //
-//  BugsnagSink.h
+//  KSCrashSentry_Deadlock.h
 //
-//  Created by Conrad Irwin on 2014-10-01.
+//  Created by Karl Stenerud on 2012-12-09.
 //
-//  Copyright (c) 2014 Bugsnag, Inc. All rights reserved.
+//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,43 @@
 // THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import "BSG_KSCrash.h"
-#import "BSG_KSCrashReportFilter.h"
+/* Catches deadlocks in threads and queues.
+ */
 
-#import "BugsnagErrorReportApiClient.h"
 
-@interface BugsnagSink : NSObject<KSCrashReportFilter>
+#ifndef HDR_KSCrashSentry_Deadlock_h
+#define HDR_KSCrashSentry_Deadlock_h
 
-- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient;
-@property (nonatomic) BugsnagErrorReportApiClient *apiClient;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-@end
+
+#include "BSG_KSCrashSentry.h"
+
+
+/** Install the deadlock handler.
+ *
+ * @param context The crash context to fill out when a crash occurs.
+ *
+ * @return true if installation was succesful.
+ */
+bool kscrashsentry_installDeadlockHandler(KSCrash_SentryContext* context);
+
+/** Uninstall our custome NSException handler.
+ */
+void kscrashsentry_uninstallDeadlockHandler(void);
+
+/** Set the interval between watchdog checks on the main thread.
+ * Default is 5 seconds.
+ *
+ * @param value The number of seconds between checks (0 = disabled).
+ */
+void kscrashsentry_setDeadlockHandlerWatchdogInterval(double value);
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // HDR_KSCrashSentry_Deadlock_h

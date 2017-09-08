@@ -1,19 +1,39 @@
 //
-//  BugsnagSystemInfo.m
-//  Pods
+//  KSSystemInfo.m
 //
-//  Created by Jamie Lynch on 11/08/2017.
+//  Created by Karl Stenerud on 2012-02-05.
 //
+//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall remain in place
+// in this source code.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 //
 
-#import "BugsnagSystemInfo.h"
+
+#import "BSG_KSSystemInfo.h"
+#import "BSG_KSSystemInfoC.h"
+
 #import "BSG_KSDynamicLinker.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSSafeCollections.h"
 #import "BSG_KSSysCtl.h"
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSSystemCapabilities.h"
-#import "BSG_KSMach.h"
 
 //#define KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
@@ -23,8 +43,8 @@
 #import <UIKit/UIKit.h>
 #endif
 
-@implementation BugsnagSystemInfo
 
+@implementation KSSystemInfo
 
 // ============================================================================
 #pragma mark - Utility -
@@ -334,19 +354,19 @@
 
 + (NSString*) buildType
 {
-    if([BugsnagSystemInfo isSimulatorBuild])
+    if([KSSystemInfo isSimulatorBuild])
     {
         return @"simulator";
     }
-    if([BugsnagSystemInfo isDebugBuild])
+    if([KSSystemInfo isDebugBuild])
     {
         return @"debug";
     }
-    if([BugsnagSystemInfo isTestBuild])
+    if([KSSystemInfo isTestBuild])
     {
         return @"test";
     }
-    if([BugsnagSystemInfo hasAppStoreReceipt])
+    if([KSSystemInfo hasAppStoreReceipt])
     {
         return @"app store";
     }
@@ -357,11 +377,70 @@
 #pragma mark - API -
 // ============================================================================
 
-
-
 + (NSDictionary*) systemInfo
 {
     NSMutableDictionary* sysInfo = [NSMutableDictionary dictionary];
+    
+    NSBundle* mainBundle = [NSBundle mainBundle];
+    NSDictionary* infoDict = [mainBundle infoDictionary];
+    const struct mach_header* header = _dyld_get_image_header(0);
+    
+#if KSCRASH_HAS_UIDEVICE
+    [sysInfo ksc_safeSetObject:[UIDevice currentDevice].systemName forKey:@KSSystemField_SystemName];
+    [sysInfo ksc_safeSetObject:[UIDevice currentDevice].systemVersion forKey:@KSSystemField_SystemVersion];
+#else
+    [sysInfo ksc_safeSetObject:@"Mac OS" forKey:@KSSystemField_SystemName];
+    NSOperatingSystemVersion version =[NSProcessInfo processInfo].operatingSystemVersion;
+    NSString* systemVersion;
+    if(version.patchVersion == 0)
+    {
+        systemVersion = [NSString stringWithFormat:@"%ld.%ld", version.majorVersion, version.minorVersion];
+    }
+    else
+    {
+        systemVersion = [NSString stringWithFormat:@"%ld.%ld.%ld", version.majorVersion, version.minorVersion, version.patchVersion];
+    }
+    [sysInfo ksc_safeSetObject:systemVersion forKey:@KSSystemField_SystemVersion];
+#endif
+    if([self isSimulatorBuild])
+    {
+        NSString* model = [NSProcessInfo processInfo].environment[@"SIMULATOR_MODEL_IDENTIFIER"];
+        [sysInfo ksc_safeSetObject:model forKey:@KSSystemField_Machine];
+        [sysInfo ksc_safeSetObject:@"simulator" forKey:@KSSystemField_Model];
+    }
+    else
+    {
+#if KSCRASH_HOST_OSX
+        // MacOS has the machine in the model field, and no model
+        [sysInfo ksc_safeSetObject:[self stringSysctl:@"hw.model"] forKey:@KSSystemField_Machine];
+#else
+        [sysInfo ksc_safeSetObject:[self stringSysctl:@"hw.machine"] forKey:@KSSystemField_Machine];
+        [sysInfo ksc_safeSetObject:[self stringSysctl:@"hw.model"] forKey:@KSSystemField_Model];
+#endif
+    }
+    [sysInfo ksc_safeSetObject:[self stringSysctl:@"kern.version"] forKey:@KSSystemField_KernelVersion];
+    [sysInfo ksc_safeSetObject:[self stringSysctl:@"kern.osversion"] forKey:@KSSystemField_OSVersion];
+    [sysInfo ksc_safeSetObject:[NSNumber numberWithBool:[self isJailbroken]] forKey:@KSSystemField_Jailbroken];
+    [sysInfo ksc_safeSetObject:[self dateSysctl:@"kern.boottime"] forKey:@KSSystemField_BootTime];
+    [sysInfo ksc_safeSetObject:[NSDate date] forKey:@KSSystemField_AppStartTime];
+    [sysInfo ksc_safeSetObject:[self executablePath] forKey:@KSSystemField_ExecutablePath];
+    [sysInfo ksc_safeSetObject:[infoDict objectForKey:@"CFBundleExecutable"] forKey:@KSSystemField_Executable];
+    [sysInfo ksc_safeSetObject:[infoDict objectForKey:@"CFBundleIdentifier"] forKey:@KSSystemField_BundleID];
+    [sysInfo ksc_safeSetObject:[infoDict objectForKey:@"CFBundleName"] forKey:@KSSystemField_BundleName];
+    [sysInfo ksc_safeSetObject:[infoDict objectForKey:@"CFBundleVersion"] forKey:@KSSystemField_BundleVersion];
+    [sysInfo ksc_safeSetObject:[infoDict objectForKey:@"CFBundleShortVersionString"] forKey:@KSSystemField_BundleShortVersion];
+    [sysInfo ksc_safeSetObject:[self appUUID] forKey:@KSSystemField_AppUUID];
+    [sysInfo ksc_safeSetObject:[self currentCPUArch] forKey:@KSSystemField_CPUArch];
+    [sysInfo ksc_safeSetObject:[self int32Sysctl:@"hw.cputype"] forKey:@KSSystemField_CPUType];
+    [sysInfo ksc_safeSetObject:[self int32Sysctl:@"hw.cpusubtype"] forKey:@KSSystemField_CPUSubType];
+    [sysInfo ksc_safeSetObject:[NSNumber numberWithInt:header->cputype] forKey:@KSSystemField_BinaryCPUType];
+    [sysInfo ksc_safeSetObject:[NSNumber numberWithInt:header->cpusubtype] forKey:@KSSystemField_BinaryCPUSubType];
+    [sysInfo ksc_safeSetObject:[[NSTimeZone localTimeZone] abbreviation] forKey:@KSSystemField_TimeZone];
+    [sysInfo ksc_safeSetObject:[NSProcessInfo processInfo].processName forKey:@KSSystemField_ProcessName];
+    [sysInfo ksc_safeSetObject:[NSNumber numberWithInt:[NSProcessInfo processInfo].processIdentifier] forKey:@KSSystemField_ProcessID];
+    [sysInfo ksc_safeSetObject:[NSNumber numberWithInt:getppid()] forKey:@KSSystemField_ParentProcessID];
+    [sysInfo ksc_safeSetObject:[self deviceAndAppHash] forKey:@KSSystemField_DeviceAppHash];
+    [sysInfo ksc_safeSetObject:[KSSystemInfo buildType] forKey:@KSSystemField_BuildType];
     
     NSDictionary* memory = [NSDictionary dictionaryWithObject:[self int64Sysctl:@"hw.memsize"] forKey:@KSSystemField_Size];
     [sysInfo ksc_safeSetObject:memory forKey:@KSSystemField_Memory];
@@ -369,39 +448,12 @@
     return sysInfo;
 }
 
-
-+ (NSNumber *)usableMemory {
-    return @(ksmach_usableMemory());
-}
-
-
-+ (NSString *)modelName {
-    if ([self isSimulatorBuild]) {
-        return [NSProcessInfo processInfo].environment[@"SIMULATOR_MODEL_IDENTIFIER"];
-    } else {
-#if KSCRASH_HOST_OSX
-        // MacOS has the machine in the model field, and no model
-        return [self stringSysctl:@"hw.model"];
-#else
-        return [self stringSysctl:@"hw.machine"];
-#endif
-    }
-}
-
-+ (NSString *)modelNumber {
-    if ([self isSimulatorBuild]) {
-        return [NSProcessInfo processInfo].environment[@"SIMULATOR_MODEL_IDENTIFIER"];
-    } else {
-        return [self stringSysctl:@"hw.model"];
-    }
-}
-
 @end
 
-const char* BugsnagSystemInfo_toJSON(void)
+const char* kssysteminfo_toJSON(void)
 {
     NSError* error;
-    NSDictionary* systemInfo = [NSMutableDictionary dictionaryWithDictionary:[BugsnagSystemInfo systemInfo]];
+    NSDictionary* systemInfo = [NSMutableDictionary dictionaryWithDictionary:[KSSystemInfo systemInfo]];
     NSMutableData* jsonData = (NSMutableData*)[KSJSONCodec encode:systemInfo
                                                           options:KSJSONEncodeOptionSorted
                                                             error:&error];
@@ -419,7 +471,7 @@ const char* BugsnagSystemInfo_toJSON(void)
     return strdup([jsonData bytes]);
 }
 
-char* BugsnagSystemInfo_copyProcessName(void)
+char* kssysteminfo_copyProcessName(void)
 {
     return strdup([[NSProcessInfo processInfo].processName UTF8String]);
 }

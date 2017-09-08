@@ -1,9 +1,9 @@
 //
-//  BugsnagSink.h
+//  KSCrashSentry_NSException.h
 //
-//  Created by Conrad Irwin on 2014-10-01.
+//  Created by Karl Stenerud on 2012-01-28.
 //
-//  Copyright (c) 2014 Bugsnag, Inc. All rights reserved.
+//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,37 @@
 // THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import "BSG_KSCrash.h"
-#import "BSG_KSCrashReportFilter.h"
 
-#import "BugsnagErrorReportApiClient.h"
+/* Catches Objective-C exceptions.
+ */
 
-@interface BugsnagSink : NSObject<KSCrashReportFilter>
 
-- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient;
-@property (nonatomic) BugsnagErrorReportApiClient *apiClient;
+#ifndef HDR_KSCrashSentry_NSException_h
+#define HDR_KSCrashSentry_NSException_h
 
-@end
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+#include "BSG_KSCrashSentry.h"
+
+
+/** Install our custom NSException handler.
+ *
+ * @param context The crash context to fill out when a crash occurs.
+ *
+ * @return true if installation was succesful.
+ */
+bool kscrashsentry_installNSExceptionHandler(KSCrash_SentryContext* context);
+
+/** Uninstall our custome NSException handler.
+ */
+void kscrashsentry_uninstallNSExceptionHandler(void);
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // HDR_KSCrashSentry_NSException_h

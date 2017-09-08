@@ -1,9 +1,9 @@
 //
-//  BugsnagSink.h
+//  KSCrashSentry_Private.h
 //
-//  Created by Conrad Irwin on 2014-10-01.
+//  Created by Karl Stenerud on 2012-09-29.
 //
-//  Copyright (c) 2014 Bugsnag, Inc. All rights reserved.
+//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,43 @@
 // THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import "BSG_KSCrash.h"
-#import "BSG_KSCrashReportFilter.h"
 
-#import "BugsnagErrorReportApiClient.h"
+#ifndef HDR_KSCrashSentry_Private_h
+#define HDR_KSCrashSentry_Private_h
 
-@interface BugsnagSink : NSObject<KSCrashReportFilter>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient;
-@property (nonatomic) BugsnagErrorReportApiClient *apiClient;
+    
+#include "BSG_KSCrashSentry.h"
 
-@end
+
+/** Suspend all non-reserved threads.
+ *
+ * Reserved threads include the current thread and all threads in
+ "reservedThreads" in the context.
+ */
+void kscrashsentry_suspendThreads(void);
+
+/** Resume all non-reserved threads.
+ *
+ * Reserved threads include the current thread and all threads in
+ * "reservedThreads" in the context.
+ */
+void kscrashsentry_resumeThreads(void);
+
+/** Prepare the context for handling a new crash.
+ */
+void kscrashsentry_beginHandlingCrash(KSCrash_SentryContext* context);
+
+/** Clear a crash sentry context.
+ */
+void kscrashsentry_clearContext(KSCrash_SentryContext* context);
+
+    
+#ifdef __cplusplus
+}
+#endif
+
+#endif // HDR_KSCrashSentry_Private_h

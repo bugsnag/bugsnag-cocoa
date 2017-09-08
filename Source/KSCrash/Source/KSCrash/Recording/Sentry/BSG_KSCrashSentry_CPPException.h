@@ -1,9 +1,7 @@
 //
-//  BugsnagSink.h
+//  KSCrashSentry_CPPException.h
 //
-//  Created by Conrad Irwin on 2014-10-01.
-//
-//  Copyright (c) 2014 Bugsnag, Inc. All rights reserved.
+//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +22,31 @@
 // THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import "BSG_KSCrash.h"
-#import "BSG_KSCrashReportFilter.h"
+#ifndef HDR_KSCrashSentry_CPPException_h
+#define HDR_KSCrashSentry_CPPException_h
 
-#import "BugsnagErrorReportApiClient.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-@interface BugsnagSink : NSObject<KSCrashReportFilter>
+#include "BSG_KSCrashSentry.h"
 
-- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient;
-@property (nonatomic) BugsnagErrorReportApiClient *apiClient;
 
-@end
+/** Install the C++ exception handler.
+ *
+ * @param context Contextual information for the crash handler.
+ *
+ * @return true if installation was succesful.
+ */
+bool kscrashsentry_installCPPExceptionHandler(KSCrash_SentryContext* context);
+
+/** Uninstall the C++ exception handler.
+ */
+void kscrashsentry_uninstallCPPExceptionHandler(void);
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // HDR_KSCrashSentry_CPPException_h

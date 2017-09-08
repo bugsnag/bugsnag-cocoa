@@ -6,8 +6,8 @@
 //
 //
 
-#import "KSCrashAdvanced.h"
-#import "KSCrashC.h"
+#import "BSG_KSCrashAdvanced.h"
+#import "BSG_KSCrashC.h"
 
 #import "BugsnagCrashSentry.h"
 #import "BugsnagLogger.h"
@@ -22,18 +22,18 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
         onCrash:(KSReportWriteCallback)onCrash {
     
     BugsnagSink *sink = [[BugsnagSink alloc] initWithApiClient:apiClient];
-    [KSCrash sharedInstance].sink = sink;
+    [BSG_KSCrash sharedInstance].sink = sink;
     // We don't use this feature yet, so we turn it off
-    [KSCrash sharedInstance].introspectMemory = NO;
-    [KSCrash sharedInstance].deleteBehaviorAfterSendAll = KSCDeleteOnSucess;
-    [KSCrash sharedInstance].onCrash = onCrash;
-    [KSCrash sharedInstance].maxStoredReports = BSG_MAX_STORED_REPORTS;
-    [KSCrash sharedInstance].demangleLanguages = 0;
+    [BSG_KSCrash sharedInstance].introspectMemory = NO;
+    [BSG_KSCrash sharedInstance].deleteBehaviorAfterSendAll = KSCDeleteOnSucess;
+    [BSG_KSCrash sharedInstance].onCrash = onCrash;
+    [BSG_KSCrash sharedInstance].maxStoredReports = BSG_MAX_STORED_REPORTS;
+    [BSG_KSCrash sharedInstance].demangleLanguages = 0;
     
     if (!config.autoNotify) {
         kscrash_setHandlingCrashTypes(KSCrashTypeUserReported);
     }
-    if (![[KSCrash sharedInstance] install]) {
+    if (![[BSG_KSCrash sharedInstance] install]) {
         bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");
     }
     
@@ -43,7 +43,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
 - (void)reportUserException:(NSString *)reportName
                      reason:(NSString *)reportMessage {
     
-    [[KSCrash sharedInstance] reportUserException:reportName
+    [[BSG_KSCrash sharedInstance] reportUserException:reportName
                                            reason:reportMessage
                                          language:NULL lineOfCode:@""
                                        stackTrace:@[]
