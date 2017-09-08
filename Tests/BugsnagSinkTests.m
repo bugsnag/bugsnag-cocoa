@@ -126,11 +126,42 @@
   XCTAssertEqualObjects(payloadVersion, @"3");
 }
 
+- (void)testUnhandledSerialization {
+    NSDictionary *event = [self.processedData[@"events"] firstObject]; // TODO created unhandled event
+    XCTAssertNotNil(event);
+    XCTAssertTrue(event[@"defaultSeverity"]);
+    XCTAssertTrue(event[@"unhandled"]);
+    
+    NSDictionary *severityReason = [event objectForKey:@"severityReason"];
+    XCTAssertNotNil(severityReason);
+    XCTAssertEqual(@"exception_handler", severityReason[@"type"]);
+}
+
+- (void)testHandledSerialization {
+    NSDictionary *event = [self.processedData[@"events"] firstObject];
+    XCTAssertNotNil(event);
+    XCTAssertTrue(event[@"defaultSeverity"]);
+    XCTAssertFalse(event[@"unhandled"]);
+    XCTAssertNil([event objectForKey:@"severityReason"]);
+}
+
+- (void)testSeverityMutation {
+    NSDictionary *event = [self.processedData[@"events"] firstObject]; // TODO alter event severity
+    XCTAssertNotNil(event);
+    XCTAssertFalse(event[@"defaultSeverity"]);
+}
+
 - (void)testEventSeverity {
-  NSString *expected =
-      [self.rawReportData valueForKeyPath:@"user.state.crash.severity"];
-  NSString *severity = [self.processedData[@"events"] firstObject][@"severity"];
-  XCTAssertEqualObjects(severity, expected);
+    NSString *expected =
+    [self.rawReportData valueForKeyPath:@"user.state.crash.severity"];
+    
+    NSDictionary *event = [self.processedData[@"events"] firstObject];
+    XCTAssertNotNil(event);
+    
+    NSString *severity = event[@"severity"];
+    XCTAssertTrue(event[@"defaultSeverity"]);
+    XCTAssertFalse(event[@"unhandled"]);
+    XCTAssertEqualObjects(severity, expected);
 }
 
 - (void)testEventBreadcrumbs {
