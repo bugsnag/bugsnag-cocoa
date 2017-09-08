@@ -60,7 +60,8 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
                               errorMessage:(NSString *_Nonnull)message
                              configuration:(BugsnagConfiguration *_Nonnull)config
                                   metaData:(NSDictionary *_Nonnull)metaData
-                                  severity:(BSGSeverity)severity;
+                                  severity:(BSGSeverity)severity
+                                 unhandled:(BOOL)unhandled;
 
 /**
  *  Serialize a crash report as a JSON payload
@@ -147,6 +148,11 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
  *  generates a section on bugsnag, displaying key/value pairs
  */
 @property (nonatomic, readwrite, copy, nonnull) NSDictionary *metaData;
+/**
+ *  The event state (whether the error is handled/unhandled)
+ */
+@property (nonatomic, readonly, nonnull) NSDictionary *eventHandledState;
+
 /**
  *  Property overrides
  */

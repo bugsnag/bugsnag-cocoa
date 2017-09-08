@@ -50,6 +50,8 @@ NSString *const BSAttributeBreadcrumbs = @"breadcrumbs";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
 struct bugsnag_data_t {
+    // Contains the state of the event (handled/unhandled)
+    char *eventHandledState;
     // Contains the user-specified metaData, including the user tab from config.
     char *metaDataJSON;
     // Contains the Bugsnag configuration, all under the "config" tab.
@@ -78,6 +80,9 @@ void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer) {
     }
     if (g_bugsnag_data.metaDataJSON) {
         writer->addJSONElement(writer, "metaData", g_bugsnag_data.metaDataJSON);
+    }
+    if (g_bugsnag_data.eventHandledState) {
+        writer->addJSONElement(writer, "eventHandledState", g_bugsnag_data.eventHandledState);
     }
     if (g_bugsnag_data.stateJSON) {
         writer->addJSONElement(writer, "state", g_bugsnag_data.stateJSON);
@@ -306,12 +311,14 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                                                                   errorMessage:message
                                                                  configuration:self.configuration
                                                                       metaData:[self.configuration.metaData toDictionary]
-                                                                      severity:BSGSeverityWarning];
+                                                                      severity:BSGSeverityWarning
+                                                                     unhandled:NO];
     if (block) {
         block(report);
     }
 
     [self.metaDataLock lock];
+    BSSerializeJSONDictionary(report.eventHandledState, &g_bugsnag_data.eventHandledState);
     BSSerializeJSONDictionary(report.metaData, &g_bugsnag_data.metaDataJSON);
     BSSerializeJSONDictionary(report.overrides, &g_bugsnag_data.userOverridesJSON);
     [self.state addAttribute:BSAttributeSeverity withValue:BSGFormatSeverity(report.severity) toTabWithName:BSTabCrash];

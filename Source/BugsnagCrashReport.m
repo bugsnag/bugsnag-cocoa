@@ -280,16 +280,6 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
  */
 @property (nonatomic, readwrite, copy, nullable) NSDictionary *customException;
 
-/**
- * Whether the error was handled or not
- */
-@property (nonatomic, readonly) BOOL unhandled;
-
-/**
- * The original severity of the reported error
- */
-@property (nonatomic, readonly) BSGSeverity originalSeverity;
-
 @end
 
 @implementation BugsnagCrashReport
@@ -320,8 +310,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       _groupingHash = BSGParseGroupingHash(report, _metaData);
       _overrides = [report valueForKeyPath:@"user.overrides"];
       _customException = BSGParseCustomException(report, [_errorClass copy], [_errorMessage copy]);
-      _unhandled = YES;
-      _originalSeverity = _severity;
+      _eventHandledState = [report valueForKeyPath:@"user.eventHandledState"] ?: [NSDictionary new];
   }
   return self;
 }
@@ -330,7 +319,9 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
                      errorMessage:(NSString *)message
                     configuration:(BugsnagConfiguration *)config
                          metaData:(NSDictionary *)metaData
-                         severity:(BSGSeverity)severity {
+                         severity:(BSGSeverity)severity
+                        unhandled:(BOOL)unhandled {
+    
     if (self = [super init]) {
         _errorClass = name;
         _errorMessage = message;
@@ -341,8 +332,16 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
         _context = BSGParseContext(nil, metaData);
         _breadcrumbs = [config.breadcrumbs arrayValue];
         _overrides = [NSDictionary new];
-        _unhandled = NO;
-        _originalSeverity = severity;
+        
+        NSMutableDictionary *handledState = [NSMutableDictionary new];
+        handledState[@"unhandled"] = @(unhandled);
+        handledState[@"originalSeverity"] = BSGFormatSeverity(self.severity);
+        
+        if (unhandled) {
+            handledState[@"severityReason"] = @{@"type": @"exception_handler"};
+        }
+        
+        _eventHandledState = [NSDictionary dictionaryWithDictionary:handledState];
     }
     return self;
 }
@@ -468,11 +467,11 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
   BSGDictSetSafeObject(event, [self context], @"context");
   BSGDictInsertIfNotNil(event, self.groupingHash, @"groupingHash");
     
-    BOOL defaultSeverity = self.originalSeverity == self.severity;
+    BOOL defaultSeverity = BSGParseSeverity(self.eventHandledState[@"originalSeverity"]) == self.severity;
     BSGDictSetSafeObject(event, @(defaultSeverity), @"defaultSeverity");
-    BSGDictSetSafeObject(event, @(self.unhandled), @"unhandled");
+    BSGDictSetSafeObject(event, self.eventHandledState[@"unhandled"], @"unhandled");
     
-    if (self.unhandled) {
+    if ([event[@"unhandled"] boolValue]) { // TODO set me in report json!
         NSDictionary *severityReason = @{@"type": @"exception_handler"};
         BSGDictSetSafeObject(event, severityReason, @"severityReason");
     }
