@@ -42,8 +42,8 @@
 /** Buffer size to use in the "writeFmt" functions.
  * If the formatted output length would exceed this value, it is truncated.
  */
-#ifndef KSFU_WriteFmtBufferSize
-    #define KSFU_WriteFmtBufferSize 1024
+#ifndef BSG_KSFU_WriteFmtBufferSize
+    #define BSG_KSFU_WriteFmtBufferSize 1024
 #endif
 
 #define BUFFER_SIZE 131072
@@ -51,7 +51,7 @@
 char charBuffer[BUFFER_SIZE];
 ssize_t bufferLen = 0;
 
-const char* ksfu_lastPathEntry(const char* const path)
+const char* bsg_ksfulastPathEntry(const char* const path)
 {
     if(path == NULL)
     {
@@ -62,7 +62,7 @@ const char* ksfu_lastPathEntry(const char* const path)
     return lastFile == NULL ? path : lastFile + 1;
 }
 
-bool ksfu_flushWriteBuffer(const int fd)
+bool bsg_ksfuflushWriteBuffer(const int fd)
 {
     const char* pos = charBuffer;
     while(bufferLen > 0)
@@ -70,7 +70,7 @@ bool ksfu_flushWriteBuffer(const int fd)
         ssize_t bytesWritten = write(fd, pos, (size_t)bufferLen);
         if(bytesWritten == -1)
         {
-            KSLOG_ERROR("Could not write to fd %d: %s", fd, strerror(errno));
+            BSG_KSLOG_ERROR("Could not write to fd %d: %s", fd, strerror(errno));
             return false;
         }
         bufferLen -= bytesWritten;
@@ -79,14 +79,14 @@ bool ksfu_flushWriteBuffer(const int fd)
     return true;
 }
 
-bool ksfu_writeBytesToFD(const int fd,
+bool bsg_ksfuwriteBytesToFD(const int fd,
                          const char* const bytes,
                          ssize_t length)
 {
     ssize_t newLen = bufferLen + length;
     
     if (newLen >= BUFFER_SIZE) { // flush the current buffer
-        ksfu_flushWriteBuffer(fd);
+        bsg_ksfuflushWriteBuffer(fd);
         newLen = bufferLen + length; // recalculate new position
     }
     
@@ -98,7 +98,7 @@ bool ksfu_writeBytesToFD(const int fd,
     return true;
 }
 
-bool ksfu_readBytesFromFD(const int fd,
+bool bsg_ksfureadBytesFromFD(const int fd,
                           char* const bytes,
                           ssize_t length)
 {
@@ -108,7 +108,7 @@ bool ksfu_readBytesFromFD(const int fd,
         ssize_t bytesRead = read(fd, pos, (size_t)length);
         if(bytesRead == -1)
         {
-            KSLOG_ERROR("Could not write to fd %d: %s", fd, strerror(errno));
+            BSG_KSLOG_ERROR("Could not write to fd %d: %s", fd, strerror(errno));
             return false;
         }
         length -= bytesRead;
@@ -117,14 +117,14 @@ bool ksfu_readBytesFromFD(const int fd,
     return true;
 }
 
-bool ksfu_readEntireFile(const char* const path,
+bool bsg_ksfureadEntireFile(const char* const path,
                          char** data,
                          size_t* length)
 {
     struct stat st;
     if(stat(path, &st) < 0)
     {
-        KSLOG_ERROR("Could not stat %s: %s", path, strerror(errno));
+        BSG_KSLOG_ERROR("Could not stat %s: %s", path, strerror(errno));
         return false;
     }
 
@@ -132,18 +132,18 @@ bool ksfu_readEntireFile(const char* const path,
     int fd = open(path, O_RDONLY);
     if(fd < 0)
     {
-        KSLOG_ERROR("Could not open %s: %s", path, strerror(errno));
+        BSG_KSLOG_ERROR("Could not open %s: %s", path, strerror(errno));
         return false;
     }
 
     mem = malloc((size_t)st.st_size);
     if(mem == NULL)
     {
-        KSLOG_ERROR("Out of memory");
+        BSG_KSLOG_ERROR("Out of memory");
         goto failed;
     }
 
-    if(!ksfu_readBytesFromFD(fd, mem, (ssize_t)st.st_size))
+    if(!bsg_ksfureadBytesFromFD(fd, mem, (ssize_t)st.st_size))
     {
         goto failed;
     }
@@ -162,7 +162,7 @@ failed:
     return false;
 }
 
-bool ksfu_writeStringToFD(const int fd, const char* const string)
+bool bsg_ksfuwriteStringToFD(const int fd, const char* const string)
 {
     if(*string != 0)
     {
@@ -173,7 +173,7 @@ bool ksfu_writeStringToFD(const int fd, const char* const string)
             ssize_t bytesWritten = write(fd, pos, bytesToWrite);
             if(bytesWritten == -1)
             {
-                KSLOG_ERROR("Could not write to fd %d: %s",
+                BSG_KSLOG_ERROR("Could not write to fd %d: %s",
                             fd, strerror(errno));
                 return false;
             }
@@ -185,33 +185,33 @@ bool ksfu_writeStringToFD(const int fd, const char* const string)
     return false;
 }
 
-bool ksfu_writeFmtToFD(const int fd, const char* const fmt, ...)
+bool bsg_ksfuwriteFmtToFD(const int fd, const char* const fmt, ...)
 {
     if(*fmt != 0)
     {
         va_list args;
         va_start(args,fmt);
-        bool result = ksfu_writeFmtArgsToFD(fd, fmt, args);
+        bool result = bsg_ksfuwriteFmtArgsToFD(fd, fmt, args);
         va_end(args);
         return result;
     }
     return false;
 }
 
-bool ksfu_writeFmtArgsToFD(const int fd,
+bool bsg_ksfuwriteFmtArgsToFD(const int fd,
                            const char* const fmt,
                            va_list args)
 {
     if(*fmt != 0)
     {
-        char buffer[KSFU_WriteFmtBufferSize];
+        char buffer[BSG_KSFU_WriteFmtBufferSize];
         vsnprintf(buffer, sizeof(buffer), fmt, args);
-        return ksfu_writeStringToFD(fd, buffer);
+        return bsg_ksfuwriteStringToFD(fd, buffer);
     }
     return false;
 }
 
-ssize_t ksfu_readLineFromFD(const int fd,
+ssize_t bsg_ksfureadLineFromFD(const int fd,
                             char* const buffer,
                             const int maxLength)
 {
@@ -223,7 +223,7 @@ ssize_t ksfu_readLineFromFD(const int fd,
         ssize_t bytesRead = read(fd, ch, 1);
         if(bytesRead < 0)
         {
-            KSLOG_ERROR("Could not read from fd %d: %s", fd, strerror(errno));
+            BSG_KSLOG_ERROR("Could not read from fd %d: %s", fd, strerror(errno));
             return -1;
         }
         else if(bytesRead == 0 || *ch == '\n')

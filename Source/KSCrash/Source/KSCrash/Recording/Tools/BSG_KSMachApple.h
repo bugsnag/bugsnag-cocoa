@@ -16,8 +16,8 @@
 // This file contains structures and constants copied from Apple header
 // files, arranged for use in KSMach.
 
-#ifndef HDR_KSMachApple_h
-#define HDR_KSMachApple_h
+#ifndef HDR_BSG_KSMachApple_h
+#define HDR_BSG_KSMachApple_h
 
 #ifdef __cplusplus
 extern "C" {

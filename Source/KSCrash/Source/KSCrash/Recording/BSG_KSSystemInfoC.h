@@ -29,8 +29,8 @@
  */
 
 
-#ifndef KSCrash_KSSystemInfoC_h
-#define KSCrash_KSSystemInfoC_h
+#ifndef BSG_KSCrash_KSSystemInfoC_h
+#define BSG_KSCrash_KSSystemInfoC_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,13 +41,13 @@ extern "C" {
  *
  * @return System info as JSON. Caller is responsible for calling free().
  */
-const char* kssysteminfo_toJSON(void);
+const char* bsg_kssysteminfo_toJSON(void);
 
 /** Create a copy of the current process name.
  *
  * @return The process name. Caller is responsible for calling free().
  */
-char* kssysteminfo_copyProcessName(void);
+char* bsg_kssysteminfo_copyProcessName(void);
 
 #ifdef __cplusplus
 }

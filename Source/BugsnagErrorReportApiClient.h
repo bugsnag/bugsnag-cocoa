@@ -21,6 +21,6 @@
 - (void)sendReports:(NSArray <BugsnagCrashReport *>*)reports
             payload:(NSDictionary *)reportData
               toURL:(NSURL *)url
-       onCompletion:(KSCrashReportFilterCompletion) onCompletion;
+       onCompletion:(BSG_KSCrashReportFilterCompletion) onCompletion;
 
 @end

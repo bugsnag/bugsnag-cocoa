@@ -63,13 +63,13 @@
  * in objective-C files and regular strings in regular C files):
  *
  * Code:
- *    KSLOG_ERROR(@"Some error message");
+ *    BSG_KSLOG_ERROR(@"Some error message");
  *
  * Prints:
  *    2011-07-16 05:41:01.379 TestApp[4439:f803] ERROR: SomeClass.m (21): -[SomeFunction]: Some error message 
  *
  * Code:
- *    KSLOG_INFO(@"Info about %@", someObject);
+ *    BSG_KSLOG_INFO(@"Info about %@", someObject);
  *
  * Prints:
  *    2011-07-16 05:44:05.239 TestApp[4473:f803] INFO : SomeClass.m (20): -[SomeFunction]: Info about <NSObject: 0xb622840>
@@ -79,7 +79,7 @@
  * except they respect the KSLogger_Level setting:
  *
  * Code:
- *    KSLOGBASIC_ERROR(@"A basic log entry");
+ *    BSG_KSLOGBASIC_ERROR(@"A basic log entry");
  *
  * Prints:
  *    2011-07-16 05:44:05.916 TestApp[4473:f803] A basic log entry
@@ -89,12 +89,12 @@
  *       in C files do not print the NSLog preamble:
  *
  * Objective-C version:
- *    KSLOG_ERROR(@"Some error message");
+ *    BSG_KSLOG_ERROR(@"Some error message");
  *
  *    2011-07-16 05:41:01.379 TestApp[4439:f803] ERROR: SomeClass.m (21): -[SomeFunction]: Some error message
  *
  * C version:
- *    KSLOG_ERROR("Some error message");
+ *    BSG_KSLOG_ERROR("Some error message");
  *
  *    ERROR: SomeClass.c (21): SomeFunction(): Some error message
  *
@@ -107,7 +107,7 @@
  * "KSLogger_LocalLevel" define. Note that it must be defined BEFORE
  * including KSLogger.h
  *
- * The KSLOG_XX() and KSLOGBASIC_XX() macros will print out based on the LOWER
+ * The BSG_KSLOG_XX() and BSG_KSLOGBASIC_XX() macros will print out based on the LOWER
  * of KSLogger_Level and KSLogger_LocalLevel, so if KSLogger_Level is DEBUG
  * and KSLogger_LocalLevel is TRACE, it will print all the way down to the trace
  * level for the local file where KSLogger_LocalLevel was defined, and to the
@@ -144,8 +144,8 @@
 // ============================================================================
 
 
-#ifndef HDR_KSLogger_h
-#define HDR_KSLogger_h
+#ifndef HDR_BSG_KSLogger_h
+#define HDR_BSG_KSLogger_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -188,27 +188,27 @@ void i_kslog_logCBasic(const char* fmt, ...);
 
 /* Back up any existing defines by the same name */
 #ifdef NONE
-    #define KSLOG_BAK_NONE NONE
+    #define BSG_KSLOG_BAK_NONE NONE
     #undef NONE
 #endif
 #ifdef ERROR
-    #define KSLOG_BAK_ERROR ERROR
+    #define BSG_KSLOG_BAK_ERROR ERROR
     #undef ERROR
 #endif
 #ifdef WARN
-    #define KSLOG_BAK_WARN WARN
+    #define BSG_KSLOG_BAK_WARN WARN
     #undef WARN
 #endif
 #ifdef INFO
-    #define KSLOG_BAK_INFO INFO
+    #define BSG_KSLOG_BAK_INFO INFO
     #undef INFO
 #endif
 #ifdef DEBUG
-    #define KSLOG_BAK_DEBUG DEBUG
+    #define BSG_KSLOG_BAK_DEBUG DEBUG
     #undef DEBUG
 #endif
 #ifdef TRACE
-    #define KSLOG_BAK_TRACE TRACE
+    #define BSG_KSLOG_BAK_TRACE TRACE
     #undef TRACE
 #endif
 
@@ -269,16 +269,16 @@ bool kslog_setLogFilename(const char* filename, bool overwrite);
  *
  * @return TRUE if the logger would print at the specified level.
  */
-#define KSLOG_PRINTS_AT_LEVEL(LEVEL) \
-    (KSLogger_Level >= LEVEL || KSLogger_LocalLevel >= LEVEL)
+#define BSG_KSLOG_PRINTS_AT_LEVEL(LEVEL) \
+    (BSG_KSLogger_Level >= LEVEL || KSLogger_LocalLevel >= LEVEL)
 
 /** Log a message regardless of the log settings.
  * Normal version prints out full context. Basic version prints directly.
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#define KSLOG_ALWAYS(FMT, ...) a_KSLOG_FULL("FORCE", FMT, ##__VA_ARGS__)
-#define KSLOGBASIC_ALWAYS(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
+#define BSG_KSLOG_ALWAYS(FMT, ...) a_KSLOG_FULL("FORCE", FMT, ##__VA_ARGS__)
+#define BSG_KSLOGBASIC_ALWAYS(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
 
 
 /** Log an error.
@@ -286,12 +286,12 @@ bool kslog_setLogFilename(const char* filename, bool overwrite);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if KSLOG_PRINTS_AT_LEVEL(KSLogger_Level_Error)
-    #define KSLOG_ERROR(FMT, ...) a_KSLOG_FULL("ERROR", FMT, ##__VA_ARGS__)
-    #define KSLOGBASIC_ERROR(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
+#if BSG_KSLOG_PRINTS_AT_LEVEL(BSG_KSLogger_Level_Error)
+    #define BSG_KSLOG_ERROR(FMT, ...) a_KSLOG_FULL("ERROR", FMT, ##__VA_ARGS__)
+    #define BSG_KSLOGBASIC_ERROR(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define KSLOG_ERROR(FMT, ...)
-    #define KSLOGBASIC_ERROR(FMT, ...)
+    #define BSG_KSLOG_ERROR(FMT, ...)
+    #define BSG_KSLOGBASIC_ERROR(FMT, ...)
 #endif
 
 /** Log a warning.
@@ -299,12 +299,12 @@ bool kslog_setLogFilename(const char* filename, bool overwrite);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if KSLOG_PRINTS_AT_LEVEL(KSLogger_Level_Warn)
-    #define KSLOG_WARN(FMT, ...)  a_KSLOG_FULL("WARN ", FMT, ##__VA_ARGS__)
-    #define KSLOGBASIC_WARN(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
+#if BSG_KSLOG_PRINTS_AT_LEVEL(BSG_KSLogger_Level_Warn)
+    #define BSG_KSLOG_WARN(FMT, ...)  a_KSLOG_FULL("WARN ", FMT, ##__VA_ARGS__)
+    #define BSG_KSLOGBASIC_WARN(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define KSLOG_WARN(FMT, ...)
-    #define KSLOGBASIC_WARN(FMT, ...)
+    #define BSG_KSLOG_WARN(FMT, ...)
+    #define BSG_KSLOGBASIC_WARN(FMT, ...)
 #endif
 
 /** Log an info message.
@@ -312,12 +312,12 @@ bool kslog_setLogFilename(const char* filename, bool overwrite);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if KSLOG_PRINTS_AT_LEVEL(KSLogger_Level_Info)
-    #define KSLOG_INFO(FMT, ...)  a_KSLOG_FULL("INFO ", FMT, ##__VA_ARGS__)
-    #define KSLOGBASIC_INFO(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
+#if BSG_KSLOG_PRINTS_AT_LEVEL(BSG_KSLogger_Level_Info)
+    #define BSG_KSLOG_INFO(FMT, ...)  a_KSLOG_FULL("INFO ", FMT, ##__VA_ARGS__)
+    #define BSG_KSLOGBASIC_INFO(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define KSLOG_INFO(FMT, ...)
-    #define KSLOGBASIC_INFO(FMT, ...)
+    #define BSG_KSLOG_INFO(FMT, ...)
+    #define BSG_KSLOGBASIC_INFO(FMT, ...)
 #endif
 
 /** Log a debug message.
@@ -325,12 +325,12 @@ bool kslog_setLogFilename(const char* filename, bool overwrite);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if KSLOG_PRINTS_AT_LEVEL(KSLogger_Level_Debug)
-    #define KSLOG_DEBUG(FMT, ...) a_KSLOG_FULL("DEBUG", FMT, ##__VA_ARGS__)
-    #define KSLOGBASIC_DEBUG(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
+#if BSG_KSLOG_PRINTS_AT_LEVEL(BSG_KSLogger_Level_Debug)
+    #define BSG_KSLOG_DEBUG(FMT, ...) a_KSLOG_FULL("DEBUG", FMT, ##__VA_ARGS__)
+    #define BSG_KSLOGBASIC_DEBUG(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define KSLOG_DEBUG(FMT, ...)
-    #define KSLOGBASIC_DEBUG(FMT, ...)
+    #define BSG_KSLOG_DEBUG(FMT, ...)
+    #define BSG_KSLOGBASIC_DEBUG(FMT, ...)
 #endif
 
 /** Log a trace message.
@@ -338,12 +338,12 @@ bool kslog_setLogFilename(const char* filename, bool overwrite);
  *
  * @param FMT The format specifier, followed by its arguments.
  */
-#if KSLOG_PRINTS_AT_LEVEL(KSLogger_Level_Trace)
-    #define KSLOG_TRACE(FMT, ...) a_KSLOG_FULL("TRACE", FMT, ##__VA_ARGS__)
-    #define KSLOGBASIC_TRACE(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
+#if BSG_KSLOG_PRINTS_AT_LEVEL(BSG_KSLogger_Level_Trace)
+    #define BSG_KSLOG_TRACE(FMT, ...) a_KSLOG_FULL("TRACE", FMT, ##__VA_ARGS__)
+    #define BSG_KSLOGBASIC_TRACE(FMT, ...) i_KSLOG_BASIC(FMT, ##__VA_ARGS__)
 #else
-    #define KSLOG_TRACE(FMT, ...)
-    #define KSLOGBASIC_TRACE(FMT, ...)
+    #define BSG_KSLOG_TRACE(FMT, ...)
+    #define BSG_KSLOGBASIC_TRACE(FMT, ...)
 #endif
 
 
@@ -354,29 +354,29 @@ bool kslog_setLogFilename(const char* filename, bool overwrite);
 
 /* Put everything back to the way we found it. */
 #undef ERROR
-#ifdef KSLOG_BAK_ERROR
-    #define ERROR KSLOG_BAK_ERROR
-    #undef KSLOG_BAK_ERROR
+#ifdef BSG_KSLOG_BAK_ERROR
+    #define ERROR BSG_KSLOG_BAK_ERROR
+    #undef BSG_KSLOG_BAK_ERROR
 #endif
 #undef WARNING
-#ifdef KSLOG_BAK_WARN
-    #define WARNING KSLOG_BAK_WARN
-    #undef KSLOG_BAK_WARN
+#ifdef BSG_KSLOG_BAK_WARN
+    #define WARNING BSG_KSLOG_BAK_WARN
+    #undef BSG_KSLOG_BAK_WARN
 #endif
 #undef INFO
-#ifdef KSLOG_BAK_INFO
-    #define INFO KSLOG_BAK_INFO
-    #undef KSLOG_BAK_INFO
+#ifdef BSG_KSLOG_BAK_INFO
+    #define INFO BSG_KSLOG_BAK_INFO
+    #undef BSG_KSLOG_BAK_INFO
 #endif
 #undef DEBUG
-#ifdef KSLOG_BAK_DEBUG
-    #define DEBUG KSLOG_BAK_DEBUG
-    #undef KSLOG_BAK_DEBUG
+#ifdef BSG_KSLOG_BAK_DEBUG
+    #define DEBUG BSG_KSLOG_BAK_DEBUG
+    #undef BSG_KSLOG_BAK_DEBUG
 #endif
 #undef TRACE
-#ifdef KSLOG_BAK_TRACE
-    #define TRACE KSLOG_BAK_TRACE
-    #undef KSLOG_BAK_TRACE
+#ifdef BSG_KSLOG_BAK_TRACE
+    #define TRACE BSG_KSLOG_BAK_TRACE
+    #undef BSG_KSLOG_BAK_TRACE
 #endif
 
 

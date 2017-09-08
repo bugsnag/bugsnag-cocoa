@@ -54,8 +54,8 @@
  *
  * Unless you're logging from within signal handlers, it's safe to set it to 0.
  */
-#ifndef KSLOGGER_CBufferSize
-    #define KSLOGGER_CBufferSize 1024
+#ifndef BSG_KSLOGGER_CBufferSize
+    #define BSG_KSLOGGER_CBufferSize 1024
 #endif
 
 
@@ -107,10 +107,10 @@ static inline void writeFmtToLog(const char* fmt, ...)
     va_end(args);
 }
 
-#if KSLOGGER_CBufferSize > 0
+#if BSG_KSLOGGER_CBufferSize > 0
 
 /** The file descriptor where log entries get written. */
-static int g_fd = STDOUT_FILENO;
+static int bsg_g_fd = STDOUT_FILENO;
 
 
 static void writeToLog(const char* const str)
@@ -150,11 +150,11 @@ static inline void flushLog(void)
 
 static inline void setLogFD(int fd)
 {
-    if(g_fd >= 0 && g_fd != STDOUT_FILENO && g_fd != STDERR_FILENO && g_fd != STDIN_FILENO)
+    if(g_fd >= 0 && bsg_g_fd != STDOUT_FILENO && bsg_g_fd != STDERR_FILENO && bsg_g_fd != STDIN_FILENO)
     {
         close(g_fd);
     }
-    g_fd = fd;
+    bsg_g_fd = fd;
 }
 
 bool kslog_setLogFilename(const char* filename, bool overwrite)
@@ -183,22 +183,22 @@ bool kslog_setLogFilename(const char* filename, bool overwrite)
 
 #else // if KSLogger_CBufferSize <= 0
 
-static FILE* g_file = NULL;
+static FILE* bsg_g_file = NULL;
 
 static inline void setLogFD(FILE* file)
 {
-    if(g_file != NULL && g_file != stdout && g_file != stderr && g_file != stdin)
+    if(g_file != NULL && bsg_g_file != stdout && bsg_g_file != stderr && bsg_g_file != stdin)
     {
         fclose(g_file);
     }
-    g_file = file;
+    bsg_g_file = file;
 }
 
 static void writeToLog(const char* const str)
 {
     unlikely_if(g_file == NULL)
     {
-        g_file = stdout;
+        bsg_g_file = stdout;
     }
     
     fprintf(g_file, "%s", str);
@@ -208,7 +208,7 @@ static inline void writeFmtArgsToLog(const char* fmt, va_list args)
 {
     unlikely_if(g_file == NULL)
     {
-        g_file = stdout;
+        bsg_g_file = stdout;
     }
 
     if(fmt == NULL)

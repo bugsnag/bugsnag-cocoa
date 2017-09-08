@@ -1,5 +1,5 @@
 //
-//  KSCrashType.h
+//  BSG_KSCrashType.h
 //
 //  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
@@ -23,8 +23,8 @@
 //
 
 
-#ifndef HDR_KSCrashType_h
-#define HDR_KSCrashType_h
+#ifndef HDR_BSG_KSCrashType_h
+#define HDR_BSG_KSCrashType_h
 
 
 /** Different ways an application can crash:
@@ -37,51 +37,51 @@
  */
 typedef enum
 {
-    KSCrashTypeMachException      = 0x01,
-    KSCrashTypeSignal             = 0x02,
-    KSCrashTypeCPPException       = 0x04,
-    KSCrashTypeNSException        = 0x08,
-    KSCrashTypeMainThreadDeadlock = 0x10,
-    KSCrashTypeUserReported       = 0x20,
-} KSCrashType;
+    BSG_KSCrashTypeMachException      = 0x01,
+    BSG_KSCrashTypeSignal             = 0x02,
+    BSG_KSCrashTypeCPPException       = 0x04,
+    BSG_KSCrashTypeNSException        = 0x08,
+    BSG_KSCrashTypeMainThreadDeadlock = 0x10,
+    BSG_KSCrashTypeUserReported       = 0x20,
+} BSG_KSCrashType;
 
-#define KSCrashTypeAll              \
+#define BSG_KSCrashTypeAll              \
 (                                   \
-    KSCrashTypeMachException      | \
-    KSCrashTypeSignal             | \
-    KSCrashTypeCPPException       | \
-    KSCrashTypeNSException        | \
-    KSCrashTypeMainThreadDeadlock | \
-    KSCrashTypeUserReported         \
+    BSG_KSCrashTypeMachException      | \
+    BSG_KSCrashTypeSignal             | \
+    BSG_KSCrashTypeCPPException       | \
+    BSG_KSCrashTypeNSException        | \
+    BSG_KSCrashTypeMainThreadDeadlock | \
+    BSG_KSCrashTypeUserReported         \
 )
 
-#define KSCrashTypeExperimental     \
+#define BSG_KSCrashTypeExperimental     \
 (                                   \
-    KSCrashTypeMainThreadDeadlock   \
+    BSG_KSCrashTypeMainThreadDeadlock   \
 )
 
-#define KSCrashTypeDebuggerUnsafe   \
+#define BSG_KSCrashTypeDebuggerUnsafe   \
 (                                   \
-    KSCrashTypeMachException      | \
-    KSCrashTypeNSException          \
+    BSG_KSCrashTypeMachException      | \
+    BSG_KSCrashTypeNSException          \
 )
 
-#define KSCrashTypeAsyncSafe        \
+#define BSG_KSCrashTypeAsyncSafe        \
 (                                   \
-    KSCrashTypeMachException      | \
-    KSCrashTypeSignal               \
+    BSG_KSCrashTypeMachException      | \
+    BSG_KSCrashTypeSignal               \
 )
 
 /** Crash types that are safe to enable in a debugger. */
-#define KSCrashTypeDebuggerSafe (KSCrashTypeAll & (~KSCrashTypeDebuggerUnsafe))
+#define BSG_KSCrashTypeDebuggerSafe (BSG_KSCrashTypeAll & (~BSG_KSCrashTypeDebuggerUnsafe))
 
 /** It is safe to catch these kinds of crashes in a production environment.
  * All other crash types should be considered experimental.
  */
-#define KSCrashTypeProductionSafe (KSCrashTypeAll & (~KSCrashTypeExperimental))
+#define BSG_KSCrashTypeProductionSafe (BSG_KSCrashTypeAll & (~BSG_KSCrashTypeExperimental))
 
-#define KSCrashTypeNone 0
+#define BSG_KSCrashTypeNone 0
 
-const char* kscrashtype_name(KSCrashType crashType);
+const char* bsg_kscrashtype_name(BSG_KSCrashType crashType);
 
 #endif // HDR_KSCrashType_h

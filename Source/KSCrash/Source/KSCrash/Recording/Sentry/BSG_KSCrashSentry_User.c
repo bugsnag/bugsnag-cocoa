@@ -1,5 +1,5 @@
 //
-//  KSCrashSentry_User.c
+//  BSG_KSCrashSentry_User.c
 //
 //  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
@@ -34,23 +34,23 @@
 
 
 /** Context to fill with crash information. */
-static KSCrash_SentryContext* g_context;
+static BSG_KSCrash_SentryContext* bsg_g_context;
 
 
-bool kscrashsentry_installUserExceptionHandler(KSCrash_SentryContext* const context)
+bool kscrashsentry_installUserExceptionHandler(BSG_KSCrash_SentryContext* const context)
 {
-    KSLOG_DEBUG("Installing user exception handler.");
-    g_context = context;
+    BSG_KSLOG_DEBUG("Installing user exception handler.");
+    bsg_g_context = context;
     return true;
 }
 
-void kscrashsentry_uninstallUserExceptionHandler(void)
+void bsg_kscrashsentry_uninstallUserExceptionHandler(void)
 {
-    KSLOG_DEBUG("Uninstalling user exception handler.");
-    g_context = NULL;
+    BSG_KSLOG_DEBUG("Uninstalling user exception handler.");
+    bsg_g_context = NULL;
 }
 
-void kscrashsentry_reportUserException(const char* name,
+void bsg_kscrashsentry_reportUserException(const char* name,
                                        const char* reason,
                                        const char* language,
                                        const char* lineOfCode,
@@ -59,43 +59,43 @@ void kscrashsentry_reportUserException(const char* name,
 {
     if(g_context == NULL)
     {
-        KSLOG_WARN("User-reported exception sentry is not installed. Exception has not been recorded.");
+        BSG_KSLOG_WARN("User-reported exception sentry is not installed. Exception has not been recorded.");
     }
     else
     {
         kscrashsentry_beginHandlingCrash(g_context);
 
-        KSLOG_DEBUG("Suspending all threads");
+        BSG_KSLOG_DEBUG("Suspending all threads");
         kscrashsentry_suspendThreads();
 
-        KSLOG_DEBUG("Fetching call stack.");
+        BSG_KSLOG_DEBUG("Fetching call stack.");
         int callstackCount = 100;
         uintptr_t callstack[callstackCount];
         callstackCount = backtrace((void**)callstack, callstackCount);
         if(callstackCount <= 0)
         {
-            KSLOG_ERROR("backtrace() returned call stack length of %d", callstackCount);
+            BSG_KSLOG_ERROR("backtrace() returned call stack length of %d", callstackCount);
             callstackCount = 0;
         }
 
-        KSLOG_DEBUG("Filling out context.");
-        g_context->crashType = KSCrashTypeUserReported;
-        g_context->offendingThread = ksmach_thread_self();
-        g_context->registersAreValid = false;
-        g_context->crashReason = reason;
-        g_context->stackTrace = callstack;
-        g_context->stackTraceLength = callstackCount;
-        g_context->userException.name = name;
-        g_context->userException.language = language;
-        g_context->userException.lineOfCode = lineOfCode;
-        g_context->userException.customStackTrace = stackTrace;
+        BSG_KSLOG_DEBUG("Filling out context.");
+        bsg_g_context->crashType = BSG_KSCrashTypeUserReported;
+        bsg_g_context->offendingThread = bsg_ksmachthread_self();
+        bsg_g_context->registersAreValid = false;
+        bsg_g_context->crashReason = reason;
+        bsg_g_context->stackTrace = callstack;
+        bsg_g_context->stackTraceLength = callstackCount;
+        bsg_g_context->userException.name = name;
+        bsg_g_context->userException.language = language;
+        bsg_g_context->userException.lineOfCode = lineOfCode;
+        bsg_g_context->userException.customStackTrace = stackTrace;
 
-        KSLOG_DEBUG("Calling main crash handler.");
-        g_context->onCrash();
+        BSG_KSLOG_DEBUG("Calling main crash handler.");
+        bsg_g_context->onCrash();
 
         if(terminateProgram)
         {
-            kscrashsentry_uninstall(KSCrashTypeAll);
+            kscrashsentry_uninstall(BSG_KSCrashTypeAll);
             kscrashsentry_resumeThreads();
             abort();
         }

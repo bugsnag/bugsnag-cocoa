@@ -1,5 +1,5 @@
 //
-//  KSCrashCallCompletion.m
+//  BSG_KSCrashCallCompletion.m
 //
 //  Created by Karl Stenerud on 2013-02-10.
 //
@@ -26,7 +26,7 @@
 
 #import "BSG_KSCrashCallCompletion.h"
 
-void kscrash_i_callCompletion(KSCrashReportFilterCompletion onCompletion,
+void bsg_kscrash_i_callCompletion(BSG_KSCrashReportFilterCompletion onCompletion,
                               NSArray* filteredReports,
                               BOOL completed,
                               NSError* error)

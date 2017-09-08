@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSString_h
-#define HDR_KSString_h
+#ifndef HDR_BSG_KSString_h
+#define HDR_BSG_KSString_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,7 +45,7 @@ extern "C" {
  *
  * @param maxLength The maximum length to be considered a valid string.
  */
-bool ksstring_isNullTerminatedUTF8String(const void* memory,
+bool bsg_ksstring_isNullTerminatedUTF8String(const void* memory,
                                          int minLength,
                                          int maxLength);
 
@@ -59,7 +59,7 @@ bool ksstring_isNullTerminatedUTF8String(const void* memory,
  *
  * @return true if the operation was successful.
  */
-bool ksstring_extractHexValue(const char* string,
+bool bsg_ksstring_extractHexValue(const char* string,
                               size_t stringLength,
                               uint64_t* result);
 
@@ -73,7 +73,7 @@ bool ksstring_extractHexValue(const char* string,
  *
  * @param replacement The string to replace with.
  */
-void ksstring_replace(const char** dest, const char* replacement);
+void bsg_bsg_ksstring_replace(const char** dest, const char* replacement);
     
 #ifdef __cplusplus
 }

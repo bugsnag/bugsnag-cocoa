@@ -1,5 +1,5 @@
 //
-//  KSCrashReportStore.m
+//  BSG_KSCrashReportStore.m
 //
 //  Created by Karl Stenerud on 2012-02-05.
 //
@@ -36,7 +36,7 @@
 #import "BSG_KSCrashDoctor.h"
 #import "BSG_KSCrashReportVersion.h"
 
-//#define KSLogger_LocalLevel TRACE
+//#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
 
 
@@ -44,8 +44,8 @@
 #pragma mark - Constants -
 // ============================================================================
 
-#define kCrashReportSuffix @"-CrashReport-"
-#define kRecrashReportSuffix @"-RecrashReport-"
+#define BSG_kCrashReportSuffix @"-CrashReport-"
+#define BSG_kRecrashReportSuffix @"-RecrashReport-"
 
 
 // ============================================================================
@@ -56,26 +56,26 @@
  * Metadata class to hold name and creation date for a file, with
  * default comparison based on the creation date (ascending).
  */
-@interface KSCrashReportInfo: NSObject
+@interface BSG_KSCrashReportInfo: NSObject
 
 @property(nonatomic,readonly,retain) NSString* reportID;
 @property(nonatomic,readonly,retain) NSDate* creationDate;
 
-+ (KSCrashReportInfo*) reportInfoWithID:(NSString*) reportID
++ (BSG_KSCrashReportInfo*) reportInfoWithID:(NSString*) reportID
                            creationDate:(NSDate*) creationDate;
 
 - (id) initWithID:(NSString*) reportID creationDate:(NSDate*) creationDate;
 
-- (NSComparisonResult) compare:(KSCrashReportInfo*) other;
+- (NSComparisonResult) compare:(BSG_KSCrashReportInfo*) other;
 
 @end
 
-@implementation KSCrashReportInfo
+@implementation BSG_KSCrashReportInfo
 
 @synthesize reportID = _reportID;
 @synthesize creationDate = _creationDate;
 
-+ (KSCrashReportInfo*) reportInfoWithID:(NSString*) reportID
++ (BSG_KSCrashReportInfo*) reportInfoWithID:(NSString*) reportID
                            creationDate:(NSDate*) creationDate
 {
     return [[self alloc] initWithID:reportID creationDate:creationDate];
@@ -91,7 +91,7 @@
     return self;
 }
 
-- (NSComparisonResult) compare:(KSCrashReportInfo*) other
+- (NSComparisonResult) compare:(BSG_KSCrashReportInfo*) other
 {
     return [_creationDate compare:other->_creationDate];
 }
@@ -103,7 +103,7 @@
 #pragma mark - Main Class -
 // ============================================================================
 
-@interface KSCrashReportStore ()
+@interface BSG_KSCrashReportStore ()
 
 @property(nonatomic,readwrite,retain) NSString* path;
 @property(nonatomic,readwrite,retain) NSString* bundleName;
@@ -111,7 +111,7 @@
 @end
 
 
-@implementation KSCrashReportStore
+@implementation BSG_KSCrashReportStore
 
 #pragma mark Properties
 
@@ -123,7 +123,7 @@
 
 #pragma mark Construction
 
-+ (KSCrashReportStore*) storeWithPath:(NSString*) path
++ (BSG_KSCrashReportStore*) storeWithPath:(NSString*) path
 {
     return [[self alloc] initWithPath:path];
 }
@@ -149,7 +149,7 @@
     NSArray* filenames = [fm contentsOfDirectoryAtPath:self.path error:&error];
     if(filenames == nil)
     {
-        KSLOG_ERROR(@"Could not get contents of directory %@: %@", self.path, error);
+        BSG_KSLOG_ERROR(@"Could not get contents of directory %@: %@", self.path, error);
         return nil;
     }
 
@@ -163,11 +163,11 @@
             NSDictionary* fileAttribs = [fm attributesOfItemAtPath:fullPath error:&error];
             if(fileAttribs == nil)
             {
-                KSLOG_ERROR(@"Could not read file attributes for %@: %@", fullPath, error);
+                BSG_KSLOG_ERROR(@"Could not read file attributes for %@: %@", fullPath, error);
             }
             else
             {
-                [reports addObject:[KSCrashReportInfo reportInfoWithID:reportId
+                [reports addObject:[BSG_KSCrashReportInfo reportInfoWithID:reportId
                                                           creationDate:[fileAttribs valueForKey:NSFileCreationDate]]];
             }
         }
@@ -175,7 +175,7 @@
     [reports sortUsingSelector:@selector(compare:)];
 
     NSMutableArray* sortedIDs = [NSMutableArray arrayWithCapacity:[reports count]];
-    for(KSCrashReportInfo* info in reports)
+    for(BSG_KSCrashReportInfo* info in reports)
     {
         [sortedIDs addObject:info.reportID];
     }
@@ -193,15 +193,15 @@
     NSMutableDictionary* crashReport = [self readReport:[self pathToCrashReportWithID:reportID] error:&error];
     if(error != nil)
     {
-        KSLOG_ERROR(@"Encountered error loading crash report %@: %@", reportID, error);
+        BSG_KSLOG_ERROR(@"Encountered error loading crash report %@: %@", reportID, error);
     }
     if(crashReport == nil)
     {
-        KSLOG_ERROR(@"Could not load crash report");
+        BSG_KSLOG_ERROR(@"Could not load crash report");
         return nil;
     }
     NSMutableDictionary* recrashReport = [self readReport:[self pathToRecrashReportWithID:reportID] error:nil];
-    [crashReport ksc_setObjectIfNotNil:recrashReport forKey:@KSCrashField_RecrashReport];
+    [crashReport bsg_ksc_setObjectIfNotNil:recrashReport forKey:@BSG_KSCrashField_RecrashReport];
 
     return crashReport;
 }
@@ -230,7 +230,7 @@
     [[NSFileManager defaultManager] removeItemAtPath:filename error:&error];
     if(error != nil)
     {
-        KSLOG_ERROR(@"Could not delete file %@: %@", filename, error);
+        BSG_KSLOG_ERROR(@"Could not delete file %@: %@", filename, error);
     }
 
     // Don't care if this succeeds or not since it may not exist.
@@ -263,7 +263,7 @@
 {
     if(fieldPath.count == 0)
     {
-        KSLOG_ERROR(@"Unexpected end of field path");
+        BSG_KSLOG_ERROR(@"Unexpected end of field path");
         return;
     }
 
@@ -282,7 +282,7 @@
     {
         if(!isOkIfNotFound)
         {
-            KSLOG_ERROR(@"%@: No such field in report. Candidates are: %@", currentField, report.allKeys);
+            BSG_KSLOG_ERROR(@"%@: No such field in report. Candidates are: %@", currentField, report.allKeys);
         }
         return;
     }
@@ -315,29 +315,29 @@
 {
     if(![report isKindOfClass:[NSDictionary class]])
     {
-        KSLOG_ERROR(@"Report should be a dictionary, not %@", [report class]);
+        BSG_KSLOG_ERROR(@"Report should be a dictionary, not %@", [report class]);
         return nil;
     }
 
     NSMutableDictionary* mutableReport = [report mutableCopy];
-    NSMutableDictionary* mutableInfo = [[report objectForKey:@KSCrashField_Report] mutableCopy];
-    [mutableReport ksc_setObjectIfNotNil:mutableInfo forKey:@KSCrashField_Report];
+    NSMutableDictionary* mutableInfo = [[report objectForKey:@BSG_KSCrashField_Report] mutableCopy];
+    [mutableReport bsg_ksc_setObjectIfNotNil:mutableInfo forKey:@BSG_KSCrashField_Report];
 
     // Timestamp gets stored as a unix timestamp. Convert it to rfc3339.
-    [self convertTimestamp:@KSCrashField_Timestamp inReport:mutableInfo];
+    [self convertTimestamp:@BSG_KSCrashField_Timestamp inReport:mutableInfo];
 
-    [self mergeDictWithKey:@KSCrashField_SystemAtCrash
-           intoDictWithKey:@KSCrashField_System
+    [self mergeDictWithKey:@BSG_KSCrashField_SystemAtCrash
+           intoDictWithKey:@BSG_KSCrashField_System
                   inReport:mutableReport];
 
-    [self mergeDictWithKey:@KSCrashField_UserAtCrash
-           intoDictWithKey:@KSCrashField_User
+    [self mergeDictWithKey:@BSG_KSCrashField_UserAtCrash
+           intoDictWithKey:@BSG_KSCrashField_User
                   inReport:mutableReport];
 
-    NSMutableDictionary* crashReport = [[report objectForKey:@KSCrashField_Crash] mutableCopy];
-    [mutableReport ksc_setObjectIfNotNil:crashReport forKey:@KSCrashField_Crash];
-    KSCrashDoctor* doctor = [KSCrashDoctor doctor];
-    [crashReport ksc_setObjectIfNotNil:[doctor diagnoseCrash:report] forKey:@KSCrashField_Diagnosis];
+    NSMutableDictionary* crashReport = [[report objectForKey:@BSG_KSCrashField_Crash] mutableCopy];
+    [mutableReport bsg_ksc_setObjectIfNotNil:crashReport forKey:@BSG_KSCrashField_Crash];
+    BSG_KSCrashDoctor* doctor = [BSG_KSCrashDoctor doctor];
+    [crashReport bsg_ksc_setObjectIfNotNil:[doctor diagnoseCrash:report] forKey:@BSG_KSCrashField_Diagnosis];
     
     return mutableReport;
 }
@@ -354,7 +354,7 @@
     }
     if(![srcDict isKindOfClass:[NSDictionary class]])
     {
-        KSLOG_ERROR(@"'%@' should be a dictionary, not %@", srcKey, [srcDict class]);
+        BSG_KSLOG_ERROR(@"'%@' should be a dictionary, not %@", srcKey, [srcDict class]);
         return;
     }
 
@@ -365,11 +365,11 @@
     }
     if(![dstDict isKindOfClass:[NSDictionary class]])
     {
-        KSLOG_ERROR(@"'%@' should be a dictionary, not %@", dstKey, [dstDict class]);
+        BSG_KSLOG_ERROR(@"'%@' should be a dictionary, not %@", dstKey, [dstDict class]);
         return;
     }
 
-    [report ksc_setObjectIfNotNil:[srcDict mergedInto:dstDict] forKey:dstKey];
+    [report bsg_ksc_setObjectIfNotNil:[srcDict mergedInto:dstDict] forKey:dstKey];
     [report removeObjectForKey:srcKey];
 }
 
@@ -379,12 +379,12 @@
     NSNumber* timestamp = [report objectForKey:key];
     if(timestamp == nil)
     {
-        KSLOG_ERROR(@"entry '%@' not found", key);
+        BSG_KSLOG_ERROR(@"entry '%@' not found", key);
         return;
     }
     if(![timestamp isKindOfClass:[NSNumber class]])
     {
-        KSLOG_ERROR(@"'%@' should be a number, not %@", key, [key class]);
+        BSG_KSLOG_ERROR(@"'%@' should be a number, not %@", key, [key class]);
         return;
     }
     [report setValue:[RFC3339DateTool stringFromUNIXTimestamp:[timestamp unsignedLongLongValue]]
@@ -393,13 +393,13 @@
 
 - (NSString*) crashReportFilenameWithID:(NSString*) reportID
 {
-    return [NSString stringWithFormat:@"%@" kCrashReportSuffix "%@.json",
+    return [NSString stringWithFormat:@"%@" BSG_kCrashReportSuffix "%@.json",
             self.bundleName, reportID];
 }
 
 - (NSString*) recrashReportFilenameWithID:(NSString*) reportID
 {
-    return [NSString stringWithFormat:@"%@" kRecrashReportSuffix "%@.json",
+    return [NSString stringWithFormat:@"%@" BSG_kRecrashReportSuffix "%@.json",
             self.bundleName, reportID];
 }
 
@@ -410,7 +410,7 @@
         return nil;
     }
 
-    NSString* prefix = [NSString stringWithFormat:@"%@" kCrashReportSuffix,
+    NSString* prefix = [NSString stringWithFormat:@"%@" BSG_kCrashReportSuffix,
                         self.bundleName];
     NSString* suffix = @".json";
 
@@ -439,12 +439,12 @@
 
 - (NSString*) getReportType:(NSDictionary*) report
 {
-    NSDictionary* reportSection = report[@KSCrashField_Report];
+    NSDictionary* reportSection = report[@BSG_KSCrashField_Report];
     if(reportSection)
     {
-        return reportSection[@KSCrashField_Type];
+        return reportSection[@BSG_KSCrashField_Type];
     }
-    KSLOG_ERROR(@"Expected a report section in the report.");
+    BSG_KSLOG_ERROR(@"Expected a report section in the report.");
     return nil;
 }
 
@@ -464,20 +464,20 @@
         return nil;
     }
 
-    NSMutableDictionary* report = [KSJSONCodec decode:jsonData
-                                              options:KSJSONDecodeOptionIgnoreNullInArray |
-                                   KSJSONDecodeOptionIgnoreNullInObject |
-                                   KSJSONDecodeOptionKeepPartialObject
+    NSMutableDictionary* report = [BSG_KSJSONCodec decode:jsonData
+                                              options:BSG_KSJSONDecodeOptionIgnoreNullInArray |
+                                   BSG_KSJSONDecodeOptionIgnoreNullInObject |
+                                   BSG_KSJSONDecodeOptionKeepPartialObject
                                                 error:error];
     if(error != nil && *error != nil)
     {
         
-        KSLOG_ERROR(@"Error decoding JSON data from %@: %@", path, *error);
-        [report setObject:[NSNumber numberWithBool:YES] forKey:@KSCrashField_Incomplete];
+        BSG_KSLOG_ERROR(@"Error decoding JSON data from %@: %@", path, *error);
+        [report setObject:[NSNumber numberWithBool:YES] forKey:@BSG_KSCrashField_Incomplete];
     }
     
     NSString* reportType = [self getReportType:report];
-    if([reportType isEqualToString:@KSCrashReportType_Standard] || [reportType isEqualToString:@KSCrashReportType_Minimal])
+    if([reportType isEqualToString:@BSG_KSCrashReportType_Standard] || [reportType isEqualToString:@BSG_KSCrashReportType_Minimal])
     {
         report = [self fixupCrashReport:report];
     }
@@ -488,13 +488,13 @@
 - (void) addReportSectionForCustomReport:(NSMutableDictionary*) report
 {
     NSMutableDictionary* reportSection = [NSMutableDictionary new];
-    reportSection[@KSCrashField_Version] = @KSCRASH_REPORT_VERSION;
-    reportSection[@KSCrashField_ID] = [NSUUID UUID].UUIDString;
-    reportSection[@KSCrashField_ProcessName] = [NSProcessInfo processInfo].processName;
-    reportSection[@KSCrashField_Timestamp] = [NSNumber numberWithLong:time(NULL)];
-    reportSection[@KSCrashField_Type] = @KSCrashReportType_Custom;
+    reportSection[@BSG_KSCrashField_Version] = @BSG_KSCRASH_REPORT_VERSION;
+    reportSection[@BSG_KSCrashField_ID] = [NSUUID UUID].UUIDString;
+    reportSection[@BSG_KSCrashField_ProcessName] = [NSProcessInfo processInfo].processName;
+    reportSection[@BSG_KSCrashField_Timestamp] = [NSNumber numberWithLong:time(NULL)];
+    reportSection[@BSG_KSCrashField_Type] = @BSG_KSCrashReportType_Custom;
 
-    report[@KSCrashField_Report] = reportSection;
+    report[@BSG_KSCrashField_Report] = reportSection;
 }
 
 - (NSString*) addCustomReport:(NSDictionary*) report
@@ -502,20 +502,20 @@
     NSMutableDictionary* mutableReport = [report mutableCopy];
     [self addReportSectionForCustomReport:mutableReport];
     NSError* error = nil;
-    NSData* data = [KSJSONCodec encode:mutableReport options:0 error:&error];
+    NSData* data = [BSG_KSJSONCodec encode:mutableReport options:0 error:&error];
     if(error)
     {
-        KSLOG_ERROR(@"Error encoding custom report: %@", error);
+        BSG_KSLOG_ERROR(@"Error encoding custom report: %@", error);
         return nil;
     }
 
-    NSString* identifier = mutableReport[@KSCrashField_Report][@KSCrashField_ID];
+    NSString* identifier = mutableReport[@BSG_KSCrashField_Report][@BSG_KSCrashField_ID];
     NSString* path = [self pathToCrashReportWithID:identifier];
     error = nil;
     BOOL didWriteFile = [data writeToFile:path options:0 error:&error];
     if(!didWriteFile || error)
     {
-        KSLOG_ERROR(@"Could not write custom report to %@: %@", path, error);
+        BSG_KSLOG_ERROR(@"Could not write custom report to %@: %@", path, error);
         return nil;
     }
     

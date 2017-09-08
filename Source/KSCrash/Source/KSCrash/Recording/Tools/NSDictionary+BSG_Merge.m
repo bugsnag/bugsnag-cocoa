@@ -28,7 +28,7 @@
 #import "NSDictionary+BSG_Merge.h"
 
 
-@implementation NSDictionary (KSMerge)
+@implementation NSDictionary (BSG_KSMerge)
 
 - (NSDictionary*) mergedInto:(NSDictionary*) dest
 {

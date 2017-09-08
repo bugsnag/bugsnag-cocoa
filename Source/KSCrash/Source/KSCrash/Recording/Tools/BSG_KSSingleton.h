@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSSingleton_h
-#define HDR_KSSingleton_h
+#ifndef HDR_BSG_KSSingleton_h
+#define HDR_BSG_KSSingleton_h
 
 /** Create a "sharedInstance" method with the specified type.
  *

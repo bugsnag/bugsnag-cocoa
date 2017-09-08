@@ -1,5 +1,5 @@
 //
-//  KSCrash.h
+//  BSG_KSCrash.h
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -34,10 +34,10 @@
 
 typedef enum
 {
-    KSCDeleteNever,
-    KSCDeleteOnSucess,
-    KSCDeleteAlways
-} KSCDeleteBehavior;
+    BSG_KSCDeleteNever,
+    BSG_KSCDeleteOnSucess,
+    BSG_KSCDeleteAlways
+} BSG_KSCDeleteBehavior;
 
 /**
  * Reports any crashes that occur in the application.
@@ -63,13 +63,13 @@ typedef enum
  *
  * Default: KSCDeleteAlways
  */
-@property(nonatomic,readwrite,assign) KSCDeleteBehavior deleteBehaviorAfterSendAll;
+@property(nonatomic,readwrite,assign) BSG_KSCDeleteBehavior deleteBehaviorAfterSendAll;
 
 /** The crash types that are being handled.
- * Note: This value may change once KSCrash is installed if some handlers
+ * Note: This value may change once BSG_KSCrash is installed if some handlers
  *       fail to install.
  */
-@property(nonatomic,readwrite,assign) KSCrashType handlingCrashTypes;
+@property(nonatomic,readwrite,assign) BSG_KSCrashType handlingCrashTypes;
 
 /** Maximum time to allow the main thread to run without returning.
  * If a task occupies the main thread for longer than this interval, the
@@ -159,7 +159,7 @@ typedef enum
  *
  * @param onCompletion Called when sending is complete (nil = ignore).
  */
-- (void) sendAllReportsWithCompletion:(KSCrashReportFilterCompletion) onCompletion;
+- (void) sendAllReportsWithCompletion:(BSG_KSCrashReportFilterCompletion) onCompletion;
 
 /** Delete all unsent reports.
  */
@@ -192,8 +192,8 @@ typedef enum
 
 @end
 
-//! Project version number for KSCrashFramework.
-FOUNDATION_EXPORT const double KSCrashFrameworkVersionNumber;
+//! Project version number for BSG_KSCrashFramework.
+FOUNDATION_EXPORT const double BSG_KSCrashFrameworkVersionNumber;
 
-//! Project version string for KSCrashFramework.
-FOUNDATION_EXPORT const unsigned char KSCrashFrameworkVersionString[];
+//! Project version string for BSG_KSCrashFramework.
+FOUNDATION_EXPORT const unsigned char BSG_KSCrashFrameworkVersionString[];

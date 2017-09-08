@@ -1,5 +1,5 @@
 //
-//  KSCrashState.h
+//  BSG_KSCrashState.h
 //
 //  Created by Karl Stenerud on 2012-02-05.
 //
@@ -30,8 +30,8 @@
  */
 
 
-#ifndef HDR_KSCrashState_h
-#define HDR_KSCrashState_h
+#ifndef HDR_BSG_KSCrashState_h
+#define HDR_BSG_KSCrashState_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -88,7 +88,7 @@ typedef struct
     /** If true, the application is currently in the foreground. */
     bool applicationIsInForeground;
 
-} KSCrash_State;
+} BSG_KSCrash_State;
 
 
 /** Initialize the state monitor.
@@ -99,32 +99,32 @@ typedef struct
  *
  * @return true if initialization was successful.
  */
-bool kscrashstate_init(const char* stateFilePath, KSCrash_State* state);
+bool bsg_kscrashstate_init(const char* stateFilePath, BSG_KSCrash_State* state);
 
 /** Notify the crash reporter of the application active state.
  *
  * @param isActive true if the application is active, otherwise false.
  */
-void kscrashstate_notifyAppActive(bool isActive);
+void bsg_kscrashstate_notifyAppActive(bool isActive);
 
 /** Notify the crash reporter of the application foreground/background state.
  *
  * @param isActive true if the application is in the foreground, false if
  *                 it is in the background.
  */
-void kscrashstate_notifyAppInForeground(bool isInForeground);
+void bsg_kscrashstate_notifyAppInForeground(bool isInForeground);
 
 /** Notify the crash reporter that the application is terminating.
  */
-void kscrashstate_notifyAppTerminate(void);
+void bsg_kscrashstate_notifyAppTerminate(void);
 
 /** Notify the crash reporter that the application has crashed.
  */
-void kscrashstate_notifyAppCrash(void);
+void bsg_kscrashstate_notifyAppCrash(void);
 
 /** Read-only access into the current state.
  */
-const KSCrash_State* const kscrashstate_currentState(void);
+const BSG_KSCrash_State* const bsg_kscrashstate_currentState(void);
 
 
 #ifdef __cplusplus

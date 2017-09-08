@@ -1,5 +1,5 @@
 //
-//  KSJSONCodecObjC.h
+// BSG_KSJSONCodecObjC.h
 //
 //  Created by Karl Stenerud on 2012-01-08.
 //
@@ -32,11 +32,11 @@
 typedef enum
 {
     /** Indent 4 spaces per object/array level */
-    KSJSONEncodeOptionPretty = 1,
+   BSG_KSJSONEncodeOptionPretty = 1,
 
     /** Sort object contents by key name */
-    KSJSONEncodeOptionSorted = 2,
-} KSJSONEncodeOption;
+   BSG_KSJSONEncodeOptionSorted = 2,
+} BSG_KSJSONEncodeOption;
 
 
 /** Optional behavior when decoding JSON data */
@@ -46,26 +46,26 @@ typedef enum
      * If this option is set, do not store anything when a null element is
      * encountered inside an array.
      */
-    KSJSONDecodeOptionIgnoreNullInArray = 1,
+   BSG_KSJSONDecodeOptionIgnoreNullInArray = 1,
 
     /** Normally, null elements get stored as [NSNull null].
      * If this option is set, do not store anything when a null element is
      * encountered inside an object.
      */
-    KSJSONDecodeOptionIgnoreNullInObject = 2,
+   BSG_KSJSONDecodeOptionIgnoreNullInObject = 2,
 
     /** Convenience enum to ignore nulls in arrays and objects. */
-    KSJSONDecodeOptionIgnoreAllNulls = 3,
+   BSG_KSJSONDecodeOptionIgnoreAllNulls = 3,
 
     /** If an error is encountered, return the partially decoded object. */
-    KSJSONDecodeOptionKeepPartialObject = 4,
-} KSJSONDecodeOption;
+   BSG_KSJSONDecodeOptionKeepPartialObject = 4,
+} BSG_KSJSONDecodeOption;
 
 
 /**
  * Encodes and decodes UTF-8 JSON data.
  */
-@interface KSJSONCodec : NSObject
+@interface BSG_KSJSONCodec : NSObject
 
 /** Encode an object to JSON data.
  *
@@ -79,7 +79,7 @@ typedef enum
  * @return The encoded UTF-8 JSON data or nil if an error occurred.
  */
 + (NSData*) encode:(id) object
-           options:(KSJSONEncodeOption) options
+           options:(BSG_KSJSONEncodeOption) options
              error:(NSError**) error;
 
 /** Decode JSON data to an object.
@@ -91,11 +91,11 @@ typedef enum
  * @param error Place to store any error that occurs (nil = ignore). Will be
  *              set to nil on success.
  *
- * @return The decoded object or, if the KSJSONDecodeOptionKeepPartialFile
+ * @return The decoded object or, if the BSG_KSJSONDecodeOptionKeepPartialFile
  *         option is not set, nil when an error occurs.
  */
 + (id) decode:(NSData*) JSONData
-      options:(KSJSONDecodeOption) options
+      options:(BSG_KSJSONDecodeOption) options
         error:(NSError**) error;
 
 @end

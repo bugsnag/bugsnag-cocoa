@@ -1,5 +1,5 @@
 //
-//  KSCrashSentry_User.h
+//  BSG_KSCrashSentry_User.h
 //
 //  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSCrashSentry_User_h
-#define HDR_KSCrashSentry_User_h
+#ifndef HDR_BSG_KSCrashSentry_User_h
+#define HDR_BSG_KSCrashSentry_User_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,11 +42,11 @@ extern "C" {
  *
  * @return true if installation was succesful.
  */
-bool kscrashsentry_installUserExceptionHandler(KSCrash_SentryContext* context);
+bool kscrashsentry_installUserExceptionHandler(BSG_KSCrash_SentryContext* context);
 
 /** Uninstall the user exception handler.
  */
-void kscrashsentry_uninstallUserExceptionHandler(void);
+void bsg_kscrashsentry_uninstallUserExceptionHandler(void);
 
 
 /** Report a custom, user defined exception.
@@ -66,7 +66,7 @@ void kscrashsentry_uninstallUserExceptionHandler(void);
  *
  * @param terminateProgram If true, do not return from this function call. Terminate the program instead.
  */
-void kscrashsentry_reportUserException(const char* name,
+void bsg_kscrashsentry_reportUserException(const char* name,
                                        const char* reason,
                                        const char* language,
                                        const char* lineOfCode,

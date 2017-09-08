@@ -1,5 +1,5 @@
 //
-//  KSCrashSentry_Deadlock.h
+//  BSG_KSCrashSentry_Deadlock.h
 //
 //  Created by Karl Stenerud on 2012-12-09.
 //
@@ -28,8 +28,8 @@
  */
 
 
-#ifndef HDR_KSCrashSentry_Deadlock_h
-#define HDR_KSCrashSentry_Deadlock_h
+#ifndef HDR_BSG_KSCrashSentry_Deadlock_h
+#define HDR_BSG_KSCrashSentry_Deadlock_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,18 +45,18 @@ extern "C" {
  *
  * @return true if installation was succesful.
  */
-bool kscrashsentry_installDeadlockHandler(KSCrash_SentryContext* context);
+bool kscrashsentry_installDeadlockHandler(BSG_KSCrash_SentryContext* context);
 
 /** Uninstall our custome NSException handler.
  */
-void kscrashsentry_uninstallDeadlockHandler(void);
+void bsg_kscrashsentry_uninstallDeadlockHandler(void);
 
 /** Set the interval between watchdog checks on the main thread.
  * Default is 5 seconds.
  *
  * @param value The number of seconds between checks (0 = disabled).
  */
-void kscrashsentry_setDeadlockHandlerWatchdogInterval(double value);
+void bsg_kscrashsentry_setDeadlockHandlerWatchdogInterval(double value);
 
 
 #ifdef __cplusplus

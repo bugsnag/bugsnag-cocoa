@@ -19,7 +19,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
 
 - (void)install:(BugsnagConfiguration *)config
       apiClient:(BugsnagErrorReportApiClient *)apiClient
-        onCrash:(KSReportWriteCallback)onCrash {
+        onCrash:(BSG_KSReportWriteCallback)onCrash {
     
     BugsnagSink *sink = [[BugsnagSink alloc] initWithApiClient:apiClient];
     [BSG_KSCrash sharedInstance].sink = sink;
@@ -31,7 +31,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
     [BSG_KSCrash sharedInstance].demangleLanguages = 0;
     
     if (!config.autoNotify) {
-        kscrash_setHandlingCrashTypes(KSCrashTypeUserReported);
+        kscrash_setHandlingCrashTypes(BSG_KSCrashTypeUserReported);
     }
     if (![[BSG_KSCrash sharedInstance] install]) {
         bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");

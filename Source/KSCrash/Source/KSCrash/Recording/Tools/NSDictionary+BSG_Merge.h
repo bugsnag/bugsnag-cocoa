@@ -30,7 +30,7 @@
 
 /** Adds dictionary merging capabilities.
  */
-@interface NSDictionary (KSMerge)
+@interface NSDictionary (BSG_KSMerge)
 
 /** Recursively merge this dictionary into the destination dictionary.
  * If the same key exists in both dictionaries, the following occurs:

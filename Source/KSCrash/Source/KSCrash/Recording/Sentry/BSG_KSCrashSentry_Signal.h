@@ -1,5 +1,5 @@
 //
-//  KSCrashSentry_Signal.h
+//  BSG_KSCrashSentry_Signal.h
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef HDR_KSCrashSentry_Signal_h
-#define HDR_KSCrashSentry_Signal_h
+#ifndef HDR_BSG_KSCrashSentry_Signal_h
+#define HDR_BSG_KSCrashSentry_Signal_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,11 +46,11 @@ extern "C" {
  *
  * @return true if installation was succesful.
  */
-bool kscrashsentry_installSignalHandler(KSCrash_SentryContext* context);
+bool kscrashsentry_installSignalHandler(BSG_KSCrash_SentryContext* context);
 
 /** Uninstall our custom signal handlers and restore the previous ones.
  */
-void kscrashsentry_uninstallSignalHandler(void);
+void bsg_kscrashsentry_uninstallSignalHandler(void);
 
 
 #ifdef __cplusplus

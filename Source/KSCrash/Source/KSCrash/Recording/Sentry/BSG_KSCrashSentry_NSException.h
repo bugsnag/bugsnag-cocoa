@@ -1,5 +1,5 @@
 //
-//  KSCrashSentry_NSException.h
+//  BSG_KSCrashSentry_NSException.h
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef HDR_KSCrashSentry_NSException_h
-#define HDR_KSCrashSentry_NSException_h
+#ifndef HDR_BSG_KSCrashSentry_NSException_h
+#define HDR_BSG_KSCrashSentry_NSException_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,11 +46,11 @@ extern "C" {
  *
  * @return true if installation was succesful.
  */
-bool kscrashsentry_installNSExceptionHandler(KSCrash_SentryContext* context);
+bool kscrashsentry_installNSExceptionHandler(BSG_KSCrash_SentryContext* context);
 
 /** Uninstall our custome NSException handler.
  */
-void kscrashsentry_uninstallNSExceptionHandler(void);
+void bsg_kscrashsentry_uninstallNSExceptionHandler(void);
 
 
 #ifdef __cplusplus

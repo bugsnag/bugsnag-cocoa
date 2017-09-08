@@ -1,5 +1,5 @@
 //
-//  KSCrashState.c
+//  BSG_KSCrashState.c
 //
 //  Created by Karl Stenerud on 2012-02-05.
 //
@@ -46,15 +46,15 @@
 #pragma mark - Constants -
 // ============================================================================
 
-#define kFormatVersion 1
+#define BSG_kFormatVersion 1
 
-#define kKeyFormatVersion "version"
-#define kKeyCrashedLastLaunch "crashedLastLaunch"
-#define kKeyActiveDurationSinceLastCrash "activeDurationSinceLastCrash"
-#define kKeyBackgroundDurationSinceLastCrash "backgroundDurationSinceLastCrash"
-#define kKeyLaunchesSinceLastCrash "launchesSinceLastCrash"
-#define kKeySessionsSinceLastCrash "sessionsSinceLastCrash"
-#define kKeySessionsSinceLaunch "sessionsSinceLaunch"
+#define BSG_kKeyFormatVersion "version"
+#define BSG_kKeyCrashedLastLaunch "crashedLastLaunch"
+#define BSG_kKeyActiveDurationSinceLastCrash "activeDurationSinceLastCrash"
+#define BSG_kKeyBackgroundDurationSinceLastCrash "backgroundDurationSinceLastCrash"
+#define BSG_kKeyLaunchesSinceLastCrash "launchesSinceLastCrash"
+#define BSG_kKeySessionsSinceLastCrash "sessionsSinceLastCrash"
+#define BSG_kKeySessionsSinceLaunch "sessionsSinceLaunch"
 
 
 // ============================================================================
@@ -62,10 +62,10 @@
 // ============================================================================
 
 /** Location where stat file is stored. */
-static const char* g_stateFilePath;
+static const char* bsg_g_stateFilePath;
 
 /** Current state. */
-static KSCrash_State* g_state;
+static BSG_KSCrash_State* bsg_g_state;
 
 
 // Avoiding static functions due to linker issues.
@@ -74,57 +74,57 @@ static KSCrash_State* g_state;
 #pragma mark - JSON Encoding -
 // ============================================================================
 
-int kscrashstate_i_onBooleanElement(const char* const name,
+int bsg_kscrashstate_i_onBooleanElement(const char* const name,
                                     const bool value,
                                     void* const userData)
 {
-    KSCrash_State* state = userData;
+    BSG_KSCrash_State* state = userData;
 
-    if(strcmp(name, kKeyCrashedLastLaunch) == 0)
+    if(strcmp(name, BSG_kKeyCrashedLastLaunch) == 0)
     {
         state->crashedLastLaunch = value;
     }
 
-    return KSJSON_OK;
+    return BSG_KSJSON_OK;
 }
 
-int kscrashstate_i_onFloatingPointElement(const char* const name,
+int bsg_kscrashstate_i_onFloatingPointElement(const char* const name,
                                           const double value,
                                           void* const userData)
 {
-    KSCrash_State* state = userData;
+    BSG_KSCrash_State* state = userData;
 
-    if(strcmp(name, kKeyActiveDurationSinceLastCrash) == 0)
+    if(strcmp(name, BSG_kKeyActiveDurationSinceLastCrash) == 0)
     {
         state->activeDurationSinceLastCrash = value;
     }
-    if(strcmp(name, kKeyBackgroundDurationSinceLastCrash) == 0)
+    if(strcmp(name, BSG_kKeyBackgroundDurationSinceLastCrash) == 0)
     {
         state->backgroundDurationSinceLastCrash = value;
     }
 
-    return KSJSON_OK;
+    return BSG_KSJSON_OK;
 }
 
-int kscrashstate_i_onIntegerElement(const char* const name,
+int bsg_kscrashstate_i_onIntegerElement(const char* const name,
                                     const long long value,
                                     void* const userData)
 {
-    KSCrash_State* state = userData;
+    BSG_KSCrash_State* state = userData;
 
-    if(strcmp(name, kKeyFormatVersion) == 0)
+    if(strcmp(name, BSG_kKeyFormatVersion) == 0)
     {
-        if(value != kFormatVersion)
+        if(value != BSG_kFormatVersion)
         {
-            KSLOG_ERROR("Expected version 1 but got %lld", value);
-            return KSJSON_ERROR_INVALID_DATA;
+            BSG_KSLOG_ERROR("Expected version 1 but got %lld", value);
+            return BSG_KSJSON_ERROR_INVALID_DATA;
         }
     }
-    else if(strcmp(name, kKeyLaunchesSinceLastCrash) == 0)
+    else if(strcmp(name, BSG_kKeyLaunchesSinceLastCrash) == 0)
     {
         state->launchesSinceLastCrash = (int)value;
     }
-    else if(strcmp(name, kKeySessionsSinceLastCrash) == 0)
+    else if(strcmp(name, BSG_kKeySessionsSinceLastCrash) == 0)
     {
         state->sessionsSinceLastCrash = (int)value;
     }
@@ -133,51 +133,51 @@ int kscrashstate_i_onIntegerElement(const char* const name,
     return kscrashstate_i_onFloatingPointElement(name, value, userData);
 }
 
-int kscrashstate_i_onNullElement(__unused const char* const name,
+int bsg_kscrashstate_i_onNullElement(__unused const char* const name,
                                  __unused void* const userData)
 {
-    return KSJSON_OK;
+    return BSG_KSJSON_OK;
 }
 
-int kscrashstate_i_onStringElement(__unused const char* const name,
+int bsg_kscrashstate_i_onStringElement(__unused const char* const name,
                                    __unused const char* const value,
                                    __unused void* const userData)
 {
-    return KSJSON_OK;
+    return BSG_KSJSON_OK;
 }
 
-int kscrashstate_i_onBeginObject(__unused const char* const name,
+int bsg_kscrashstate_i_onBeginObject(__unused const char* const name,
                                  __unused void* const userData)
 {
-    return KSJSON_OK;
+    return BSG_KSJSON_OK;
 }
 
-int kscrashstate_i_onBeginArray(__unused const char* const name,
+int bsg_kscrashstate_i_onBeginArray(__unused const char* const name,
                                 __unused void* const userData)
 {
-    return KSJSON_OK;
+    return BSG_KSJSON_OK;
 }
 
-int kscrashstate_i_onEndContainer(__unused void* const userData)
+int bsg_kscrashstate_i_onEndContainer(__unused void* const userData)
 {
-    return KSJSON_OK;
+    return BSG_KSJSON_OK;
 }
 
-int kscrashstate_i_onEndData(__unused void* const userData)
+int bsg_kscrashstate_i_onEndData(__unused void* const userData)
 {
-    return KSJSON_OK;
+    return BSG_KSJSON_OK;
 }
 
 
 /** Callback for adding JSON data.
  */
-int kscrashstate_i_addJSONData(const char* const data,
+int bsg_kscrashstate_i_addJSONData(const char* const data,
                                const size_t length,
                                void* const userData)
 {
     const int fd = *((int*)userData);
-    const bool success = ksfu_writeBytesToFD(fd, data, (ssize_t)length);
-    return success ? KSJSON_OK : KSJSON_ERROR_CANNOT_ADD_DATA;
+    const bool success = bsg_ksfuwriteBytesToFD(fd, data, (ssize_t)length);
+    return success ? BSG_KSJSON_OK : BSG_KSJSON_ERROR_CANNOT_ADD_DATA;
 }
 
 
@@ -193,7 +193,7 @@ int kscrashstate_i_addJSONData(const char* const data,
  *
  * @return true if the operation was successful.
  */
-bool kscrashstate_i_loadState(KSCrash_State* const context,
+bool bsg_kscrashstate_i_loadState(BSG_KSCrash_State* const context,
                               const char* const path)
 {
     // Stop if the file doesn't exist.
@@ -207,35 +207,35 @@ bool kscrashstate_i_loadState(KSCrash_State* const context,
 
     char* data;
     size_t length;
-    if(!ksfu_readEntireFile(path, &data, &length))
+    if(!bsg_ksfureadEntireFile(path, &data, &length))
     {
-        KSLOG_ERROR("%s: Could not load file", path);
+        BSG_KSLOG_ERROR("%s: Could not load file", path);
         return false;
     }
 
-    KSJSONDecodeCallbacks callbacks;
-    callbacks.onBeginArray = kscrashstate_i_onBeginArray;
-    callbacks.onBeginObject = kscrashstate_i_onBeginObject;
-    callbacks.onBooleanElement = kscrashstate_i_onBooleanElement;
-    callbacks.onEndContainer = kscrashstate_i_onEndContainer;
-    callbacks.onEndData = kscrashstate_i_onEndData;
-    callbacks.onFloatingPointElement = kscrashstate_i_onFloatingPointElement;
-    callbacks.onIntegerElement = kscrashstate_i_onIntegerElement;
-    callbacks.onNullElement = kscrashstate_i_onNullElement;
-    callbacks.onStringElement = kscrashstate_i_onStringElement;
+    BSG_KSJSONDecodeCallbacks callbacks;
+    callbacks.onBeginArray = bsg_kscrashstate_i_onBeginArray;
+    callbacks.onBeginObject = bsg_kscrashstate_i_onBeginObject;
+    callbacks.onBooleanElement = bsg_kscrashstate_i_onBooleanElement;
+    callbacks.onEndContainer = bsg_kscrashstate_i_onEndContainer;
+    callbacks.onEndData = bsg_kscrashstate_i_onEndData;
+    callbacks.onFloatingPointElement = bsg_kscrashstate_i_onFloatingPointElement;
+    callbacks.onIntegerElement = bsg_kscrashstate_i_onIntegerElement;
+    callbacks.onNullElement = bsg_kscrashstate_i_onNullElement;
+    callbacks.onStringElement = bsg_kscrashstate_i_onStringElement;
 
     size_t errorOffset = 0;
 
-    const int result = ksjson_decode(data,
+    const int result = bsg_ksjson_decode(data,
                                      length,
                                      &callbacks,
                                      context,
                                      &errorOffset);
     free(data);
-    if(result != KSJSON_OK)
+    if(result != BSG_KSJSON_OK)
     {
-        KSLOG_ERROR("%s, offset %d: %s",
-                    path, errorOffset, ksjson_stringForError(result));
+        BSG_KSLOG_ERROR("%s, offset %d: %s",
+                    path, errorOffset, bsg_ksjson_stringForError(result));
         return false;
     }
     return true;
@@ -249,78 +249,78 @@ bool kscrashstate_i_loadState(KSCrash_State* const context,
  *
  * @return true if the operation was successful.
  */
-bool kscrashstate_i_saveState(const KSCrash_State* const state,
+bool bsg_kscrashstate_i_saveState(const BSG_KSCrash_State* const state,
                               const char* const path)
 {
     int fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
     if(fd < 0)
     {
-        KSLOG_ERROR("Could not open file %s for writing: %s",
+        BSG_KSLOG_ERROR("Could not open file %s for writing: %s",
                     path,
                     strerror(errno));
         return false;
     }
     
-    KSJSONEncodeContext JSONContext;
-    ksjson_beginEncode(&JSONContext,
+    BSG_KSJSONEncodeContext JSONContext;
+    bsg_ksjson_beginEncode(&JSONContext,
                        true,
-                       kscrashstate_i_addJSONData,
+                       bsg_kscrashstate_i_addJSONData,
                        &fd);
 
     int result;
-    if((result = ksjson_beginObject(&JSONContext, NULL)) != KSJSON_OK)
+    if((result = bsg_ksjson_beginObject(&JSONContext, NULL)) != BSG_KSJSON_OK)
     {
         goto done;
     }
     if((result = ksjson_addIntegerElement(&JSONContext,
                                           kKeyFormatVersion,
-                                          kFormatVersion)) != KSJSON_OK)
+                                          kFormatVersion)) != BSG_KSJSON_OK)
     {
         goto done;
     }
     // Record this launch crashed state into "crashed last launch" field.
-    if((result = ksjson_addBooleanElement(&JSONContext,
+    if((result = bsg_ksjson_addBooleanElement(&JSONContext,
                                           kKeyCrashedLastLaunch,
-                                          state->crashedThisLaunch)) != KSJSON_OK)
+                                          state->crashedThisLaunch)) != BSG_KSJSON_OK)
     {
         goto done;
     }
-    if((result = ksjson_addFloatingPointElement(&JSONContext,
+    if((result = bsg_ksjson_addFloatingPointElement(&JSONContext,
                                                 kKeyActiveDurationSinceLastCrash,
-                                                state->activeDurationSinceLastCrash)) != KSJSON_OK)
+                                                state->activeDurationSinceLastCrash)) != BSG_KSJSON_OK)
     {
         goto done;
     }
-    if((result = ksjson_addFloatingPointElement(&JSONContext,
+    if((result = bsg_ksjson_addFloatingPointElement(&JSONContext,
                                                 kKeyBackgroundDurationSinceLastCrash,
-                                                state->backgroundDurationSinceLastCrash)) != KSJSON_OK)
+                                                state->backgroundDurationSinceLastCrash)) != BSG_KSJSON_OK)
     {
         goto done;
     }
-    if((result = ksjson_addIntegerElement(&JSONContext,
+    if((result = bsg_ksjson_addIntegerElement(&JSONContext,
                                           kKeyLaunchesSinceLastCrash,
-                                          state->launchesSinceLastCrash)) != KSJSON_OK)
+                                          state->launchesSinceLastCrash)) != BSG_KSJSON_OK)
     {
         goto done;
     }
-    if((result = ksjson_addIntegerElement(&JSONContext,
+    if((result = bsg_ksjson_addIntegerElement(&JSONContext,
                                           kKeySessionsSinceLastCrash,
-                                          state->sessionsSinceLastCrash)) != KSJSON_OK)
+                                          state->sessionsSinceLastCrash)) != BSG_KSJSON_OK)
     {
         goto done;
     }
-    result = ksjson_endEncode(&JSONContext);
+    result = bsg_ksjson_endEncode(&JSONContext);
 
 done:
-    if (!ksfu_flushWriteBuffer(fd)) {
-        KSLOG_ERROR("Failed to flush write buffer");
+    if (!bsg_bsg_ksfuflushWriteBuffer(fd)) {
+        BSG_KSLOG_ERROR("Failed to flush write buffer");
     }
     close(fd);
     
-    if(result != KSJSON_OK)
+    if(result != BSG_KSJSON_OK)
     {
-        KSLOG_ERROR("%s: %s",
-                    path, ksjson_stringForError(result));
+        BSG_KSLOG_ERROR("%s: %s",
+                    path, bsg_ksjson_stringForError(result));
         return false;
     }
     return true;
@@ -331,11 +331,11 @@ done:
 #pragma mark - API -
 // ============================================================================
 
-bool kscrashstate_init(const char* const stateFilePath,
-                       KSCrash_State* const state)
+bool bsg_kscrashstate_init(const char* const stateFilePath,
+                       BSG_KSCrash_State* const state)
 {
-    g_stateFilePath = stateFilePath;
-    g_state = state;
+    bsg_g_stateFilePath = stateFilePath;
+    bsg_g_state = state;
 
     kscrashstate_i_loadState(state, stateFilePath);
 
@@ -359,9 +359,9 @@ bool kscrashstate_init(const char* const stateFilePath,
     return kscrashstate_i_saveState(state, stateFilePath);
 }
 
-void kscrashstate_notifyAppActive(const bool isActive)
+void bsg_kscrashstate_notifyAppActive(const bool isActive)
 {
-    KSCrash_State* const state = g_state;
+    BSG_KSCrash_State* const state = bsg_g_state;
 
     state->applicationIsActive = isActive;
     if(isActive)
@@ -370,22 +370,22 @@ void kscrashstate_notifyAppActive(const bool isActive)
     }
     else
     {
-        double duration = ksmach_timeDifferenceInSeconds(mach_absolute_time(),
+        double duration = bsg_ksmachtimeDifferenceInSeconds(mach_absolute_time(),
                                                          state->appStateTransitionTime);
         state->activeDurationSinceLaunch += duration;
         state->activeDurationSinceLastCrash += duration;
     }
 }
 
-void kscrashstate_notifyAppInForeground(const bool isInForeground)
+void bsg_kscrashstate_notifyAppInForeground(const bool isInForeground)
 {
-    KSCrash_State* const state = g_state;
-    const char* const stateFilePath = g_stateFilePath;
+    BSG_KSCrash_State* const state = bsg_g_state;
+    const char* const stateFilePath = bsg_g_stateFilePath;
 
     state->applicationIsInForeground = isInForeground;
     if(isInForeground)
     {
-        double duration = ksmach_timeDifferenceInSeconds(mach_absolute_time(),
+        double duration = bsg_ksmachtimeDifferenceInSeconds(mach_absolute_time(),
                                                          state->appStateTransitionTime);
         state->backgroundDurationSinceLaunch += duration;
         state->backgroundDurationSinceLastCrash += duration;
@@ -399,23 +399,23 @@ void kscrashstate_notifyAppInForeground(const bool isInForeground)
     }
 }
 
-void kscrashstate_notifyAppTerminate(void)
+void bsg_kscrashstate_notifyAppTerminate(void)
 {
-    KSCrash_State* const state = g_state;
-    const char* const stateFilePath = g_stateFilePath;
+    BSG_KSCrash_State* const state = bsg_g_state;
+    const char* const stateFilePath = bsg_g_stateFilePath;
 
-    const double duration = ksmach_timeDifferenceInSeconds(mach_absolute_time(),
+    const double duration = bsg_ksmachtimeDifferenceInSeconds(mach_absolute_time(),
                                                            state->appStateTransitionTime);
     state->backgroundDurationSinceLastCrash += duration;
     kscrashstate_i_saveState(state, stateFilePath);
 }
 
-void kscrashstate_notifyAppCrash(void)
+void bsg_kscrashstate_notifyAppCrash(void)
 {
-    KSCrash_State* const state = g_state;
-    const char* const stateFilePath = g_stateFilePath;
+    BSG_KSCrash_State* const state = bsg_g_state;
+    const char* const stateFilePath = bsg_g_stateFilePath;
 
-    const double duration = ksmach_timeDifferenceInSeconds(mach_absolute_time(),
+    const double duration = bsg_ksmachtimeDifferenceInSeconds(mach_absolute_time(),
                                                            state->appStateTransitionTime);
     if(state->applicationIsActive)
     {
@@ -431,7 +431,7 @@ void kscrashstate_notifyAppCrash(void)
     kscrashstate_i_saveState(state, stateFilePath);
 }
 
-const KSCrash_State* const kscrashstate_currentState(void)
+const BSG_KSCrash_State* const kscrashstate_currentState(void)
 {
-    return g_state;
+    return bsg_g_state;
 }

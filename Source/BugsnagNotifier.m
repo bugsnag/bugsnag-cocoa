@@ -60,10 +60,10 @@ struct bugsnag_data_t {
     // Contains properties in the Bugsnag payload overridden by the user before it was sent
     char *userOverridesJSON;
     // User onCrash handler
-    void (*onCrash)(const KSCrashReportWriter* writer);
+    void (*onCrash)(const BSG_KSCrashReportWriter* writer);
 };
 
-static struct bugsnag_data_t g_bugsnag_data;
+static struct bugsnag_data_t bsg_g_bugsnag_data;
 
 static NSDictionary *notificationNameMap;
 
@@ -73,21 +73,21 @@ static NSDictionary *notificationNameMap;
  *
  *  @param writer report writer which will receive updated metadata
  */
-void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer) {
+void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
     if (g_bugsnag_data.configJSON) {
-        writer->addJSONElement(writer, "config", g_bugsnag_data.configJSON);
+        writer->addJSONElement(writer, "config", bsg_g_bugsnag_data.configJSON);
     }
     if (g_bugsnag_data.metaDataJSON) {
-        writer->addJSONElement(writer, "metaData", g_bugsnag_data.metaDataJSON);
+        writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metaDataJSON);
     }
     if (g_bugsnag_data.stateJSON) {
-        writer->addJSONElement(writer, "state", g_bugsnag_data.stateJSON);
+        writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
     }
     if (g_bugsnag_data.userOverridesJSON) {
-        writer->addJSONElement(writer, "overrides", g_bugsnag_data.userOverridesJSON);
+        writer->addJSONElement(writer, "overrides", bsg_g_bugsnag_data.userOverridesJSON);
     }
     if (g_bugsnag_data.onCrash) {
-        g_bugsnag_data.onCrash(writer);
+        bsg_g_bugsnag_data.onCrash(writer);
     }
 }
 
@@ -104,7 +104,7 @@ NSString *BSGBreadcrumbNameForNotificationName(NSString *name) {
 }
 
 /**
- *  Writes a dictionary to a destination using the KSCrash JSON encoding
+ *  Writes a dictionary to a destination using the BSG_KSCrash JSON encoding
  *
  *  @param dictionary  data to encode
  *  @param destination target location of the data
@@ -158,7 +158,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         [self metaDataChanged: self.configuration.metaData];
         [self metaDataChanged: self.configuration.config];
         [self metaDataChanged: self.state];
-        g_bugsnag_data.onCrash = (void (*)(const KSCrashReportWriter *))self.configuration.onCrashHandler;
+        bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
 
         static dispatch_once_t once_t;
         dispatch_once(&once_t, ^{

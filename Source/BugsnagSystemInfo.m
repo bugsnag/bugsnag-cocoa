@@ -39,7 +39,7 @@
 + (NSNumber*) int32Sysctl:(NSString*) name
 {
     return [NSNumber numberWithInt:
-            kssysctl_int32ForName([name cStringUsingEncoding:NSUTF8StringEncoding])];
+            bsg_kssysctl_int32ForName([name cStringUsingEncoding:NSUTF8StringEncoding])];
 }
 
 /** Get a sysctl value as an NSNumber.
@@ -51,7 +51,7 @@
 + (NSNumber*) int64Sysctl:(NSString*) name
 {
     return [NSNumber numberWithLongLong:
-            kssysctl_int64ForName([name cStringUsingEncoding:NSUTF8StringEncoding])];
+            bsg_kssysctl_int64ForName([name cStringUsingEncoding:NSUTF8StringEncoding])];
 }
 
 /** Get a sysctl value as an NSString.
@@ -63,7 +63,7 @@
 + (NSString*) stringSysctl:(NSString*) name
 {
     NSString* str = nil;
-    size_t size = kssysctl_stringForName([name cStringUsingEncoding:NSUTF8StringEncoding],
+    size_t size = bsg_kssysctl_stringForName([name cStringUsingEncoding:NSUTF8StringEncoding],
                                          NULL,
                                          0);
     
@@ -74,7 +74,7 @@
     
     NSMutableData* value = [NSMutableData dataWithLength:size];
     
-    if(kssysctl_stringForName([name cStringUsingEncoding:NSUTF8StringEncoding],
+    if(bsg_kssysctl_stringForName([name cStringUsingEncoding:NSUTF8StringEncoding],
                               value.mutableBytes,
                               size) != 0)
     {
@@ -94,7 +94,7 @@
 {
     NSDate* result = nil;
     
-    struct timeval value = kssysctl_timevalForName([name cStringUsingEncoding:NSUTF8StringEncoding]);
+    struct timeval value = bsg_kssysctl_timevalForName([name cStringUsingEncoding:NSUTF8StringEncoding]);
     if(!(value.tv_sec == 0 && value.tv_usec == 0))
     {
         result = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)value.tv_sec];
@@ -143,11 +143,11 @@
     
     if(exePath != nil)
     {
-        const uint8_t* uuidBytes = ksdl_imageUUID([exePath UTF8String], true);
+        const uint8_t* uuidBytes = _bsg_ksdlimageUUID([exePath UTF8String], true);
         if(uuidBytes == NULL)
         {
             // OSX app image path is a lie.
-            uuidBytes = ksdl_imageUUID([exePath.lastPathComponent UTF8String], false);
+            uuidBytes = _bsg_ksdlimageUUID([exePath.lastPathComponent UTF8String], false);
         }
         if(uuidBytes != NULL)
         {
@@ -178,7 +178,7 @@
 #endif
     {
         data = [NSMutableData dataWithLength:6];
-        kssysctl_getMacAddress("en0", [data mutableBytes]);
+        bsg_kssysctl_getMacAddress("en0", [data mutableBytes]);
     }
     
     // Append some device-specific data.
@@ -245,8 +245,8 @@
 
 + (NSString*) currentCPUArch
 {
-    NSString* result = [self CPUArchForCPUType:kssysctl_int32ForName("hw.cputype")
-                                       subType:kssysctl_int32ForName("hw.cpusubtype")];
+    NSString* result = [self CPUArchForCPUType:bsg_kssysctl_int32ForName("hw.cputype")
+                                       subType:bsg_kssysctl_int32ForName("hw.cpusubtype")];
     
     return result ?:[NSString stringWithUTF8String:ksmach_currentCPUArch()];
 }
@@ -257,7 +257,7 @@
  */
 + (BOOL) isJailbroken
 {
-    return ksdl_imageNamed("MobileSubstrate", false) != UINT32_MAX;
+    return _bsg_ksdlimageNamed("MobileSubstrate", false) != UINT32_MAX;
 }
 
 /** Check if the current build is a debug build.
@@ -363,8 +363,8 @@
 {
     NSMutableDictionary* sysInfo = [NSMutableDictionary dictionary];
     
-    NSDictionary* memory = [NSDictionary dictionaryWithObject:[self int64Sysctl:@"hw.memsize"] forKey:@KSSystemField_Size];
-    [sysInfo ksc_safeSetObject:memory forKey:@KSSystemField_Memory];
+    NSDictionary* memory = [NSDictionary dictionaryWithObject:[self int64Sysctl:@"hw.memsize"] forKey:@BSG_KSSystemField_Size];
+    [sysInfo bsg_ksc_safeSetObject:memory forKey:@BSG_KSSystemField_Memory];
     
     return sysInfo;
 }
@@ -407,7 +407,7 @@ const char* BugsnagSystemInfo_toJSON(void)
                                                             error:&error];
     if(error != nil)
     {
-        KSLOG_ERROR(@"Could not serialize system info: %@", error);
+        BSG_KSLOG_ERROR(@"Could not serialize system info: %@", error);
         return NULL;
     }
     if(![jsonData isKindOfClass:[NSMutableData class]])

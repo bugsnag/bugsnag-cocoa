@@ -32,7 +32,7 @@
 #include <string.h>
 
 
-uint32_t ksdl_imageNamed(const char* const imageName, bool exactMatch)
+uint32_t  bsg_ksdlimageNamed(const char* const imageName, bool exactMatch)
 {
     if(imageName != NULL)
     {
@@ -60,17 +60,17 @@ uint32_t ksdl_imageNamed(const char* const imageName, bool exactMatch)
     return UINT32_MAX;
 }
 
-const uint8_t* ksdl_imageUUID(const char* const imageName, bool exactMatch)
+const uint8_t*  bsg_ksdlimageUUID(const char* const imageName, bool exactMatch)
 {
     if(imageName != NULL)
     {
-        const uint32_t iImg = ksdl_imageNamed(imageName, exactMatch);
+        const uint32_t iImg =  bsg_ksdlimageNamed(imageName, exactMatch);
         if(iImg != UINT32_MAX)
         {
             const struct mach_header* header = _dyld_get_image_header(iImg);
             if(header != NULL)
             {
-                uintptr_t cmdPtr = ksdl_firstCmdAfterHeader(header);
+                uintptr_t cmdPtr =  bsg_ksdlfirstCmdAfterHeader(header);
                 if(cmdPtr != 0)
                 {
                     for(uint32_t iCmd = 0;iCmd < header->ncmds; iCmd++)
@@ -90,7 +90,7 @@ const uint8_t* ksdl_imageUUID(const char* const imageName, bool exactMatch)
     return NULL;
 }
 
-uintptr_t ksdl_firstCmdAfterHeader(const struct mach_header* const header)
+uintptr_t  bsg_ksdlfirstCmdAfterHeader(const struct mach_header* const header)
 {
     switch(header->magic)
     {
@@ -106,7 +106,7 @@ uintptr_t ksdl_firstCmdAfterHeader(const struct mach_header* const header)
     }
 }
 
-uint32_t ksdl_imageIndexContainingAddress(const uintptr_t address)
+uint32_t  bsg_ksdlimageIndexContainingAddress(const uintptr_t address)
 {
     const uint32_t imageCount = _dyld_image_count();
     const struct mach_header* header = 0;
@@ -118,7 +118,7 @@ uint32_t ksdl_imageIndexContainingAddress(const uintptr_t address)
         {
             // Look for a segment command with this address within its range.
             uintptr_t addressWSlide = address - (uintptr_t)_dyld_get_image_vmaddr_slide(iImg);
-            uintptr_t cmdPtr = ksdl_firstCmdAfterHeader(header);
+            uintptr_t cmdPtr =  bsg_ksdlfirstCmdAfterHeader(header);
             if(cmdPtr == 0)
             {
                 continue;
@@ -151,12 +151,12 @@ uint32_t ksdl_imageIndexContainingAddress(const uintptr_t address)
     return UINT_MAX;
 }
 
-uintptr_t ksdl_segmentBaseOfImageIndex(const uint32_t idx)
+uintptr_t  bsg_ksdlsegmentBaseOfImageIndex(const uint32_t idx)
 {
     const struct mach_header* header = _dyld_get_image_header(idx);
 
     // Look for a segment command and return the file image address.
-    uintptr_t cmdPtr = ksdl_firstCmdAfterHeader(header);
+    uintptr_t cmdPtr =  bsg_ksdlfirstCmdAfterHeader(header);
     if(cmdPtr == 0)
     {
         return 0;
@@ -186,14 +186,14 @@ uintptr_t ksdl_segmentBaseOfImageIndex(const uint32_t idx)
     return 0;
 }
 
-bool ksdl_dladdr(const uintptr_t address, Dl_info* const info)
+bool  bsg_ksdldladdr(const uintptr_t address, Dl_info* const info)
 {
     info->dli_fname = NULL;
     info->dli_fbase = NULL;
     info->dli_sname = NULL;
     info->dli_saddr = NULL;
 
-    const uint32_t idx = ksdl_imageIndexContainingAddress(address);
+    const uint32_t idx =  bsg_ksdlimageIndexContainingAddress(address);
     if(idx == UINT_MAX)
     {
         return false;
@@ -201,7 +201,7 @@ bool ksdl_dladdr(const uintptr_t address, Dl_info* const info)
     const struct mach_header* header = _dyld_get_image_header(idx);
     const uintptr_t imageVMAddrSlide = (uintptr_t)_dyld_get_image_vmaddr_slide(idx);
     const uintptr_t addressWithSlide = address - imageVMAddrSlide;
-    const uintptr_t segmentBase = ksdl_segmentBaseOfImageIndex(idx) + imageVMAddrSlide;
+    const uintptr_t segmentBase =  bsg_ksdlsegmentBaseOfImageIndex(idx) + imageVMAddrSlide;
     if(segmentBase == 0)
     {
         return false;
@@ -211,9 +211,9 @@ bool ksdl_dladdr(const uintptr_t address, Dl_info* const info)
     info->dli_fbase = (void*)header;
 
     // Find symbol tables and get whichever symbol is closest to the address.
-    const STRUCT_NLIST* bestMatch = NULL;
+    const BSG_STRUCT_NLIST* bestMatch = NULL;
     uintptr_t bestDistance = ULONG_MAX;
-    uintptr_t cmdPtr = ksdl_firstCmdAfterHeader(header);
+    uintptr_t cmdPtr =  bsg_ksdlfirstCmdAfterHeader(header);
     if(cmdPtr == 0)
     {
         return false;
@@ -224,7 +224,7 @@ bool ksdl_dladdr(const uintptr_t address, Dl_info* const info)
         if(loadCmd->cmd == LC_SYMTAB)
         {
             const struct symtab_command* symtabCmd = (struct symtab_command*)cmdPtr;
-            const STRUCT_NLIST* symbolTable = (STRUCT_NLIST*)(segmentBase + symtabCmd->symoff);
+            const BSG_STRUCT_NLIST* symbolTable = (BSG_STRUCT_NLIST*)(segmentBase + symtabCmd->symoff);
             const uintptr_t stringTable = segmentBase + symtabCmd->stroff;
 
             for(uint32_t iSym = 0; iSym < symtabCmd->nsyms; iSym++)
@@ -264,7 +264,7 @@ bool ksdl_dladdr(const uintptr_t address, Dl_info* const info)
     return true;
 }
 
-const void* ksdl_getSymbolAddrInImage(uint32_t imageIdx, const char* symbolName)
+const void*  bsg_ksdlgetSymbolAddrInImage(uint32_t imageIdx, const char* symbolName)
 {
     const struct mach_header* header = _dyld_get_image_header(imageIdx);
     if(header == NULL)
@@ -272,12 +272,12 @@ const void* ksdl_getSymbolAddrInImage(uint32_t imageIdx, const char* symbolName)
         return NULL;
     }
     const uintptr_t imageVMAddrSlide = (uintptr_t)_dyld_get_image_vmaddr_slide(imageIdx);
-    const uintptr_t segmentBase = ksdl_segmentBaseOfImageIndex(imageIdx) + imageVMAddrSlide;
+    const uintptr_t segmentBase =  bsg_ksdlsegmentBaseOfImageIndex(imageIdx) + imageVMAddrSlide;
     if(segmentBase == 0)
     {
         return NULL;
     }
-    uintptr_t cmdPtr = ksdl_firstCmdAfterHeader(header);
+    uintptr_t cmdPtr =  bsg_ksdlfirstCmdAfterHeader(header);
     if(cmdPtr == 0)
     {
         return NULL;
@@ -288,7 +288,7 @@ const void* ksdl_getSymbolAddrInImage(uint32_t imageIdx, const char* symbolName)
         if(loadCmd->cmd == LC_SYMTAB)
         {
             const struct symtab_command* symtabCmd = (struct symtab_command*)cmdPtr;
-            const STRUCT_NLIST* symbolTable = (STRUCT_NLIST*)(segmentBase + symtabCmd->symoff);
+            const BSG_STRUCT_NLIST* symbolTable = (STRUCT_NLIST*)(segmentBase + symtabCmd->symoff);
             const uintptr_t stringTable = segmentBase + symtabCmd->stroff;
 
             for(uint32_t iSym = 0; iSym < symtabCmd->nsyms; iSym++)
@@ -313,13 +313,13 @@ const void* ksdl_getSymbolAddrInImage(uint32_t imageIdx, const char* symbolName)
     return NULL;
 }
 
-const void* ksdl_getSymbolAddrInAnyImage(const char* symbolName)
+const void*  bsg_ksdlgetSymbolAddrInAnyImage(const char* symbolName)
 {
     const uint32_t imageCount = _dyld_image_count();
 
     for(uint32_t iImg = 0; iImg < imageCount; iImg++)
     {
-        const void* symbolAddr = ksdl_getSymbolAddrInImage(iImg, symbolName);
+        const void* symbolAddr =  bsg_ksdlgetSymbolAddrInImage(iImg, symbolName);
         if(symbolAddr != NULL)
         {
             return symbolAddr;

@@ -1,5 +1,5 @@
 //
-//  KSCrashAdvanced.h
+//  BSG_KSCrashAdvanced.h
 //
 //  Created by Karl Stenerud on 2012-05-06.
 //
@@ -31,13 +31,13 @@
 
 typedef enum
 {
-    KSCrashDemangleLanguageCPlusPlus = 1,
-    KSCrashDemangleLanguageSwift = 2,
-    KSCrashDemangleLanguageAll = ~1
-} KSCrashDemangleLanguage;
+    BSG_KSCrashDemangleLanguageCPlusPlus = 1,
+    BSG_KSCrashDemangleLanguageSwift = 2,
+    BSG_KSCrashDemangleLanguageAll = ~1
+} BSG_KSCrashDemangleLanguage;
 
 /**
- * Advanced interface to the KSCrash system.
+ * Advanced interface to the BSG_KSCrash system.
  */
 @interface BSG_KSCrash (Advanced)
 
@@ -70,8 +70,8 @@ typedef enum
 /** Max number of reports to store on disk before throwing older reports out. (default 5) */
 @property(nonatomic,readwrite,assign) int maxStoredReports;
 
-/** Which languages to demangle when getting stack traces (default KSCrashDemangleLanguageAll) */
-@property(nonatomic,readwrite,assign) KSCrashDemangleLanguage demangleLanguages;
+/** Which languages to demangle when getting stack traces (default BSG_KSCrashDemangleLanguageAll) */
+@property(nonatomic,readwrite,assign) BSG_KSCrashDemangleLanguage demangleLanguages;
 
 /** The total number of unsent reports. Note: This is an expensive operation.
  */
@@ -84,11 +84,11 @@ typedef enum
 
 #pragma mark - Configuration -
 
-/** Init KSCrash instance with custom report files directory path. */
+/** Init BSG_KSCrash instance with custom report files directory path. */
 - (id) initWithReportFilesDirectory:(NSString *)reportFilesDirectory;
 
 /** Store containing all crash reports. */
-@property(nonatomic, readwrite, retain) KSCrashReportStore* crashReportStore;
+@property(nonatomic, readwrite, retain) BSG_KSCrashReportStore* crashReportStore;
 
 /** The report sink where reports get sent.
  * This MUST be set or else the reporter will not send reports (although it will
@@ -97,7 +97,7 @@ typedef enum
  * Note: If you use an installation, it will automatically set this property.
  *       Do not modify it in such a case.
  */
-@property(nonatomic,readwrite,retain) id<KSCrashReportFilter> sink;
+@property(nonatomic,readwrite,retain) id<BSG_KSCrashReportFilter> sink;
 
 /** C Function to call during a crash report to give the callee an opportunity to
  * add to the report. NULL = ignore.
@@ -108,9 +108,9 @@ typedef enum
  * Note: If you use an installation, it will automatically set this property.
  *       Do not modify it in such a case.
  */
-@property(nonatomic,readwrite,assign) KSReportWriteCallback onCrash;
+@property(nonatomic,readwrite,assign) BSG_KSReportWriteCallback onCrash;
 
-/** Path where the log of KSCrash's activities will be written.
+/** Path where the log of BSG_KSCrash's activities will be written.
  * If nil, log entries will be printed to the console.
  *
  * This property cannot be set directly. Use one of the "redirectConsoleLogs"
@@ -134,7 +134,7 @@ typedef enum
  */
 - (BOOL) redirectConsoleLogsToDefaultFile;
 
-/** Redirect the log of KSCrash's activities from the console to the specified log file.
+/** Redirect the log of BSG_KSCrash's activities from the console to the specified log file.
  *
  * @param fullPath The path to the logfile (nil = log to console instead).
  * @param overwrite If true, overwrite the file (ignored if fullPath is nil).
@@ -151,6 +151,6 @@ typedef enum
  * @param reports The reports to send.
  * @param onCompletion Called when sending is complete (nil = ignore).
  */
-- (void) sendReports:(NSArray*) reports onCompletion:(KSCrashReportFilterCompletion) onCompletion;
+- (void) sendReports:(NSArray*) reports onCompletion:(BSG_KSCrashReportFilterCompletion) onCompletion;
 
 @end

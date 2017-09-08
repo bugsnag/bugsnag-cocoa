@@ -1,5 +1,5 @@
 //
-//  KSCrashC.h
+//  BSG_KSCrashC.h
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef HDR_KSCrashC_h
-#define HDR_KSCrashC_h
+#ifndef HDR_BSG_KSCrashC_h
+#define HDR_BSG_KSCrashC_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,7 +56,7 @@ extern "C" {
  *
  * @return The crash types that are being handled.
  */
-KSCrashType kscrash_install(const char* const crashReportFilePath,
+BSG_KSCrashType kscrash_install(const char* const crashReportFilePath,
                             const char* const recrashReportFilePath,
                             const char* stateFilePath,
                             const char* crashID);
@@ -67,12 +67,12 @@ KSCrashType kscrash_install(const char* const crashReportFilePath,
  *
  * @param crashTypes The crash types to handle.
  *
- * @return The crash types that are now behing handled. If KSCrash has been
+ * @return The crash types that are now behing handled. If BSG_KSCrash has been
  *         installed, the return value represents the crash sentries that were
  *         successfully installed. Otherwise it represents which sentries it
- *         will attempt to activate when KSCrash installs.
+ *         will attempt to activate when BSG_KSCrash installs.
  */
-KSCrashType kscrash_setHandlingCrashTypes(KSCrashType crashTypes);
+BSG_KSCrashType kscrash_setHandlingCrashTypes(BSG_KSCrashType crashTypes);
 
 /** Reinstall the crash reporter. Useful for resetting the crash reporter
  * after a "soft" crash.
@@ -86,7 +86,7 @@ KSCrashType kscrash_setHandlingCrashTypes(KSCrashType crashTypes);
  *
  * @param crashID The unique identifier to assign to the next crash report.
  */
-void kscrash_reinstall(const char* const crashReportFilePath,
+void bsg_kscrash_reinstall(const char* const crashReportFilePath,
                        const char* const recrashReportFilePath,
                        const char* const stateFilePath,
                        const char* const crashID);
@@ -96,7 +96,7 @@ void kscrash_reinstall(const char* const crashReportFilePath,
  * @param userInfoJSON Pre-baked JSON containing user-supplied information.
  *                     NULL = delete.
  */
-void kscrash_setUserInfoJSON(const char* const userInfoJSON);
+void bsg_kscrash_setUserInfoJSON(const char* const userInfoJSON);
 
 /** Set the maximum time to allow the main thread to run without returning.
  * If a task occupies the main thread for longer than this interval, the
@@ -113,25 +113,25 @@ void kscrash_setUserInfoJSON(const char* const userInfoJSON);
  *
  * Default: 0
  */
-void kscrash_setDeadlockWatchdogInterval(double deadlockWatchdogInterval);
+void bsg_kscrash_setDeadlockWatchdogInterval(double deadlockWatchdogInterval);
 
 /** Set whether or not to print a stack trace to stdout when a crash occurs.
  *
  * Default: false
  */
-void kscrash_setPrintTraceToStdout(bool printTraceToStdout);
+void bsg_kscrash_setPrintTraceToStdout(bool printTraceToStdout);
 
 /** If true, search for thread names where appropriate.
  * Thread name searching is not async-safe, and so comes with the risk of
  * timing out and panicking in thread_lock().
  */
-void kscrash_setSearchThreadNames(bool shouldSearchThreadNames);
+void bsg_kscrash_setSearchThreadNames(bool shouldSearchThreadNames);
 
 /** If true, search for dispatch queue names where appropriate.
 * Queue name searching is not async-safe, and so comes with the risk of
 * timing out and panicking in thread_lock().
 */
-void kscrash_setSearchQueueNames(bool shouldSearchQueueNames);
+void bsg_kscrash_setSearchQueueNames(bool shouldSearchQueueNames);
 
 /** If true, introspect memory contents during a crash.
  * Any Objective-C objects or C strings near the stack pointer or referenced by
@@ -140,14 +140,14 @@ void kscrash_setSearchQueueNames(bool shouldSearchQueueNames);
  *
  * Default: false
  */
-void kscrash_setIntrospectMemory(bool introspectMemory);
+void bsg_kscrash_setIntrospectMemory(bool introspectMemory);
 
 /** If true, monitor all Objective-C/Swift deallocations and keep track of any
  * accesses after deallocation.
  *
  * Default: false
  */
-void kscrash_setCatchZombies(bool catchZombies);
+void bsg_kscrash_setCatchZombies(bool catchZombies);
 
 /** List of Objective-C classes that should never be introspected.
  * Whenever a class in this list is encountered, only the class name will be recorded.
@@ -155,7 +155,7 @@ void kscrash_setCatchZombies(bool catchZombies);
  *
  * Default: NULL
  */
-void kscrash_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, size_t length);
+void bsg_kscrash_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, size_t length);
 
 /** Set the callback to invoke upon a crash.
  *
@@ -168,7 +168,7 @@ void kscrash_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, size
  *
  * Default: NULL
  */
-void kscrash_setCrashNotifyCallback(const KSReportWriteCallback onCrashNotify);
+void bsg_kscrash_setCrashNotifyCallback(const KSReportWriteCallback onCrashNotify);
 
 /** Report a custom, user defined exception.
  * This can be useful when dealing with scripting languages.
@@ -189,7 +189,7 @@ void kscrash_setCrashNotifyCallback(const KSReportWriteCallback onCrashNotify);
  *
  * @param terminateProgram If true, do not return from this function call. Terminate the program instead.
  */
-void kscrash_reportUserException(const char* name,
+void bsg_kscrash_reportUserException(const char* name,
                                  const char* reason,
                                  const char* language,
                                  const char* lineOfCode,

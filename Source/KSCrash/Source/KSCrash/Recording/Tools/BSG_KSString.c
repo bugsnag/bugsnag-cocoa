@@ -34,7 +34,7 @@
 #define likely_if(x) if(__builtin_expect(x,1))
 #define unlikely_if(x) if(__builtin_expect(x,0))
 
-static const int g_printableControlChars[0x20] =
+static const int bsg_g_printableControlChars[0x20] =
 {
     // Only tab, CR, and LF are considered printable
     // 1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
@@ -42,7 +42,7 @@ static const int g_printableControlChars[0x20] =
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-static const int g_continuationByteCount[0x40] =
+static const int bsg_g_continuationByteCount[0x40] =
 {
     /*
      --0xxxxx = 1 (00-1f)
@@ -58,7 +58,7 @@ static const int g_continuationByteCount[0x40] =
     3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 0, 0,
 };
 
-bool ksstring_isNullTerminatedUTF8String(const void* memory,
+bool bsg_ksstring_isNullTerminatedUTF8String(const void* memory,
                                         int minLength,
                                         int maxLength)
 {
@@ -78,7 +78,7 @@ bool ksstring_isNullTerminatedUTF8String(const void* memory,
             {
                 return false;
             }
-            int continuationBytes = g_continuationByteCount[ch & 0x3f];
+            int continuationBytes = bsg_g_continuationByteCount[ch & 0x3f];
             unlikely_if(continuationBytes == 0 || ptr + continuationBytes >= end)
             {
                 return false;
@@ -107,7 +107,7 @@ bool ksstring_isNullTerminatedUTF8String(const void* memory,
  * INV (0x11111) is used to mark invalid characters so that any attempted
  * invalid nybble conversion is always > 0xffff.
  */
-static const unsigned int g_hexConversion[] =
+static const unsigned int bsg_g_hexConversion[] =
 {
     INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV,
     INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV,
@@ -127,7 +127,7 @@ static const unsigned int g_hexConversion[] =
     INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV,
 };
 
-bool ksstring_extractHexValue(const char* string,
+bool bsg_ksstring_extractHexValue(const char* string,
                               size_t stringLength,
                               uint64_t* const result)
 {
@@ -154,7 +154,7 @@ bool ksstring_extractHexValue(const char* string,
             unsigned int nybble = 0;
             while(current < end)
             {
-                nybble = g_hexConversion[*current++];
+                nybble = bsg_g_hexConversion[*current++];
                 unlikely_if(nybble == INV)
                 {
                     break;
@@ -169,7 +169,7 @@ bool ksstring_extractHexValue(const char* string,
     return false;
 }
 
-void ksstring_replace(const char** dest, const char* replacement)
+void bsg_bsg_ksstring_replace(const char** dest, const char* replacement)
 {
     if(*dest != NULL)
     {

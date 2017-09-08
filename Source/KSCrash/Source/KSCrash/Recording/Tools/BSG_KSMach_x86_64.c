@@ -34,7 +34,7 @@
 #include "BSG_KSLogger.h"
 
 
-static const char* g_registerNames[] =
+static const char* bsg_g_registerNames[] =
 {
     "rax", "rbx", "rcx", "rdx",
     "rdi", "rsi",
@@ -43,80 +43,80 @@ static const char* g_registerNames[] =
     "rip", "rflags",
     "cs", "fs", "gs"
 };
-static const int g_registerNamesCount =
+static const int bsg_g_registerNamesCount =
 sizeof(g_registerNames) / sizeof(*g_registerNames);
 
 
-static const char* g_exceptionRegisterNames[] =
+static const char* bsg_g_exceptionRegisterNames[] =
 {
     "trapno", "err", "faultvaddr"
 };
-static const int g_exceptionRegisterNamesCount =
+static const int bsg_g_exceptionRegisterNamesCount =
 sizeof(g_exceptionRegisterNames) / sizeof(*g_exceptionRegisterNames);
 
 
-uintptr_t ksmach_framePointer(const STRUCT_MCONTEXT_L* const machineContext)
+uintptr_t bsg_ksmachframePointer(const STRUCT_MCONTEXT_L* const machineContext)
 {
     return machineContext->__ss.__rbp;
 }
 
-uintptr_t ksmach_stackPointer(const STRUCT_MCONTEXT_L* const machineContext)
+uintptr_t bsg_ksmachstackPointer(const STRUCT_MCONTEXT_L* const machineContext)
 {
     return machineContext->__ss.__rsp;
 }
 
-uintptr_t ksmach_instructionAddress(const STRUCT_MCONTEXT_L* const machineContext)
+uintptr_t bsg_ksmachinstructionAddress(const STRUCT_MCONTEXT_L* const machineContext)
 {
     return machineContext->__ss.__rip;
 }
 
-uintptr_t ksmach_linkRegister(const STRUCT_MCONTEXT_L* const machineContext __attribute__ ((unused)))
+uintptr_t bsg_ksmachlinkRegister(const STRUCT_MCONTEXT_L* const machineContext __attribute__ ((unused)))
 {
     return 0;
 }
 
-bool ksmach_threadState(const thread_t thread,
+bool bsg_ksmachthreadState(const thread_t thread,
                         STRUCT_MCONTEXT_L* const machineContext)
 {
-    return ksmach_fillState(thread,
+    return bsg_ksmachfillState(thread,
                             (thread_state_t)&machineContext->__ss,
                             x86_THREAD_STATE64,
                             x86_THREAD_STATE64_COUNT);
 }
 
-bool ksmach_floatState(const thread_t thread,
+bool bsg_ksmachfloatState(const thread_t thread,
                        STRUCT_MCONTEXT_L* const machineContext)
 {
-    return ksmach_fillState(thread,
+    return bsg_ksmachfillState(thread,
                             (thread_state_t)&machineContext->__fs,
                             x86_FLOAT_STATE64,
                             x86_FLOAT_STATE64_COUNT);
 }
 
-bool ksmach_exceptionState(const thread_t thread,
+bool bsg_ksmachexceptionState(const thread_t thread,
                            STRUCT_MCONTEXT_L* const machineContext)
 {
-    return ksmach_fillState(thread,
+    return bsg_ksmachfillState(thread,
                             (thread_state_t)&machineContext->__es,
                             x86_EXCEPTION_STATE64,
                             x86_EXCEPTION_STATE64_COUNT);
 }
 
-int ksmach_numRegisters(void)
+int bsg_ksmachnumRegisters(void)
 {
-    return g_registerNamesCount;
+    return bsg_g_registerNamesCount;
 }
 
-const char* ksmach_registerName(const int regNumber)
+const char* bsg_ksmachregisterName(const int regNumber)
 {
-    if(regNumber < ksmach_numRegisters())
+    if(regNumber < bsg_ksmachnumRegisters())
     {
-        return g_registerNames[regNumber];
+        return bsg_g_registerNames[regNumber];
     }
     return NULL;
 }
 
-uint64_t ksmach_registerValue(const STRUCT_MCONTEXT_L* const machineContext,
+uint64_t bsg_ksmachregisterValue(const STRUCT_MCONTEXT_L* const machineContext,
                               const int regNumber)
 {
     switch(regNumber)
@@ -165,26 +165,26 @@ uint64_t ksmach_registerValue(const STRUCT_MCONTEXT_L* const machineContext,
             return machineContext->__ss.__gs;
     }
 
-    KSLOG_ERROR("Invalid register number: %d", regNumber);
+    BSG_KSLOG_ERROR("Invalid register number: %d", regNumber);
     return 0;
 }
 
-int ksmach_numExceptionRegisters(void)
+int bsg_ksmachnumExceptionRegisters(void)
 {
-    return g_exceptionRegisterNamesCount;
+    return bsg_g_exceptionRegisterNamesCount;
 }
 
-const char* ksmach_exceptionRegisterName(const int regNumber)
+const char* bsg_ksmachexceptionRegisterName(const int regNumber)
 {
-    if(regNumber < ksmach_numExceptionRegisters())
+    if(regNumber < bsg_ksmachnumExceptionRegisters())
     {
-        return g_exceptionRegisterNames[regNumber];
+        return bsg_g_exceptionRegisterNames[regNumber];
     }
-    KSLOG_ERROR("Invalid register number: %d", regNumber);
+    BSG_KSLOG_ERROR("Invalid register number: %d", regNumber);
     return NULL;
 }
 
-uint64_t ksmach_exceptionRegisterValue(const STRUCT_MCONTEXT_L* const machineContext,
+uint64_t bsg_ksmachexceptionRegisterValue(const STRUCT_MCONTEXT_L* const machineContext,
                                        const int regNumber)
 {
     switch(regNumber)
@@ -197,16 +197,16 @@ uint64_t ksmach_exceptionRegisterValue(const STRUCT_MCONTEXT_L* const machineCon
             return machineContext->__es.__faultvaddr;
     }
 
-    KSLOG_ERROR("Invalid register number: %d", regNumber);
+    BSG_KSLOG_ERROR("Invalid register number: %d", regNumber);
     return 0;
 }
 
-uintptr_t ksmach_faultAddress(const STRUCT_MCONTEXT_L* const machineContext)
+uintptr_t bsg_ksmachfaultAddress(const STRUCT_MCONTEXT_L* const machineContext)
 {
     return machineContext->__es.__faultvaddr;
 }
 
-int ksmach_stackGrowDirection(void)
+int bsg_ksmachstackGrowDirection(void)
 {
     return -1;
 }

@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-#ifndef HDR_KSDynamicLinker_h
-#define HDR_KSDynamicLinker_h
+#ifndef HDR_BSG_KSDynamicLinker_h
+#define HDR_BSG_KSDynamicLinker_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,7 +44,7 @@ extern "C" {
  *
  * @return the index of the matched image, or UINT32_MAX if not found.
  */
-uint32_t ksdl_imageNamed(const char* const imageName, bool exactMatch);
+uint32_t bsg_ksdlimageNamed(const char* const imageName, bool exactMatch);
 
 /** Get the UUID of a loaded binary image with the specified name.
  *
@@ -55,7 +55,7 @@ uint32_t ksdl_imageNamed(const char* const imageName, bool exactMatch);
  * @return A pointer to the binary (16 byte) UUID of the image, or NULL if it
  *         wasn't found.
  */
-const uint8_t* ksdl_imageUUID(const char* const imageName, bool exactMatch);
+const uint8_t* bsg_ksdlimageUUID(const char* const imageName, bool exactMatch);
 
 /** Get the address of the first command following a header (which will be of
  * type struct load_command).
@@ -65,14 +65,14 @@ const uint8_t* ksdl_imageUUID(const char* const imageName, bool exactMatch);
  * @return The address of the first command, or NULL if none was found (which
  *         should not happen unless the header or image is corrupt).
  */
-uintptr_t ksdl_firstCmdAfterHeader(const struct mach_header* header);
+uintptr_t bsg_ksdlfirstCmdAfterHeader(const struct mach_header* header);
 
 /** Get the image index that the specified address is part of.
  *
  * @param address The address to examine.
  * @return The index of the image it is part of, or UINT_MAX if none was found.
  */
-uint32_t ksdl_imageIndexContainingAddress(const uintptr_t address);
+uint32_t bsg_ksdlimageIndexContainingAddress(const uintptr_t address);
 
 /** Get the segment base address of the specified image.
  *
@@ -81,7 +81,7 @@ uint32_t ksdl_imageIndexContainingAddress(const uintptr_t address);
  * @param index The image index.
  * @return The image's base address, or 0 if none was found.
  */
-uintptr_t ksdl_segmentBaseOfImageIndex(const uint32_t idx);
+uintptr_t bsg_ksdlsegmentBaseOfImageIndex(const uint32_t idx);
 
 /** async-safe version of dladdr.
  *
@@ -97,7 +97,7 @@ uintptr_t ksdl_segmentBaseOfImageIndex(const uint32_t idx);
  * @param info Gets filled out by this function.
  * @return true if at least some information was found.
  */
-bool ksdl_dladdr(const uintptr_t address, Dl_info* const info);
+bool bsg_ksdldladdr(const uintptr_t address, Dl_info* const info);
 
 /** Get the address of a symbol in the specified image.
  *
@@ -105,7 +105,7 @@ bool ksdl_dladdr(const uintptr_t address, Dl_info* const info);
  * @param symbolName The symbol to search for.
  * @return The address of the symbol or NULL if not found.
  */
-const void* ksdl_getSymbolAddrInImage(uint32_t imageIdx, const char* symbolName);
+const void* bsg_ksdlgetSymbolAddrInImage(uint32_t imageIdx, const char* symbolName);
 
 /** Get the address of a symbol in any image.
  * Searches all images starting at index 0.
@@ -113,7 +113,7 @@ const void* ksdl_getSymbolAddrInImage(uint32_t imageIdx, const char* symbolName)
  * @param symbolName The symbol to search for.
  * @return The address of the symbol or NULL if not found.
  */
-const void* ksdl_getSymbolAddrInAnyImage(const char* symbolName);
+const void* bsg_ksdlgetSymbolAddrInAnyImage(const char* symbolName);
 
 
 #ifdef __cplusplus

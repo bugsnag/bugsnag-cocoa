@@ -1,5 +1,5 @@
 //
-//  KSCrashCallCompletion.h
+//  BSG_KSCrashCallCompletion.h
 //
 //  Created by Karl Stenerud on 2013-02-10.
 //
@@ -33,7 +33,7 @@
  * @param completed The parameter to send as "completed".
  * @param error The parameter to send as "error".
  */
-void kscrash_i_callCompletion(KSCrashReportFilterCompletion onCompletion,
+void bsg_kscrash_i_callCompletion(BSG_KSCrashReportFilterCompletion onCompletion,
                               NSArray* filteredReports,
                               BOOL completed,
                               NSError* error);

@@ -1,5 +1,5 @@
 //
-//  KSCrashSentry_Signal.c
+//  BSG_KSCrashSentry_Signal.c
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -49,18 +49,18 @@
  * It's not fully thread safe, but it's safer than locking and slightly better
  * than nothing.
  */
-static volatile sig_atomic_t g_installed = 0;
+static volatile sig_atomic_t bsg_g_installed = 0;
 
 #if !TARGET_OS_TV
 /** Our custom signal stack. The signal handler will use this as its stack. */
-static stack_t g_signalStack = {0};
+static stack_t bsg_g_signalStack = {0};
 #endif
 
 /** Signal handlers that were installed before we installed ours. */
-static struct sigaction* g_previousSignalHandlers = NULL;
+static struct sigaction* bsg_g_previousSignalHandlers = NULL;
 
 /** Context to fill with crash information. */
-static KSCrash_SentryContext* g_context;
+static BSG_KSCrash_SentryContext* bsg_g_context;
 
 
 // ============================================================================
@@ -81,48 +81,48 @@ static KSCrash_SentryContext* g_context;
  *
  * @param userContext Other contextual information.
  */
-void kssighndl_i_handleSignal(int sigNum,
+void bsg_kssighndl_i_handleSignal(int sigNum,
                               siginfo_t* signalInfo,
                               void* userContext)
 {
-    KSLOG_DEBUG("Trapped signal %d", sigNum);
+    BSG_KSLOG_DEBUG("Trapped signal %d", sigNum);
     if(g_installed)
     {
-        bool wasHandlingCrash = g_context->handlingCrash;
+        bool wasHandlingCrash = bsg_g_context->handlingCrash;
         kscrashsentry_beginHandlingCrash(g_context);
 
-        KSLOG_DEBUG("Signal handler is installed. Continuing signal handling.");
+        BSG_KSLOG_DEBUG("Signal handler is installed. Continuing signal handling.");
 
-        KSLOG_DEBUG("Suspending all threads.");
+        BSG_KSLOG_DEBUG("Suspending all threads.");
         kscrashsentry_suspendThreads();
 
         if(wasHandlingCrash)
         {
-            KSLOG_INFO("Detected crash in the crash reporter. Restoring original handlers.");
-            g_context->crashedDuringCrashHandling = true;
-            kscrashsentry_uninstall(KSCrashTypeAsyncSafe);
+            BSG_KSLOG_INFO("Detected crash in the crash reporter. Restoring original handlers.");
+            bsg_g_context->crashedDuringCrashHandling = true;
+            kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
         }
 
 
-        KSLOG_DEBUG("Filling out context.");
-        g_context->crashType = KSCrashTypeSignal;
-        g_context->offendingThread = ksmach_thread_self();
-        g_context->registersAreValid = true;
-        g_context->faultAddress = (uintptr_t)signalInfo->si_addr;
-        g_context->signal.userContext = userContext;
-        g_context->signal.signalInfo = signalInfo;
+        BSG_KSLOG_DEBUG("Filling out context.");
+        bsg_g_context->crashType = BSG_KSCrashTypeSignal;
+        bsg_g_context->offendingThread = bsg_ksmachthread_self();
+        bsg_g_context->registersAreValid = true;
+        bsg_g_context->faultAddress = (uintptr_t)signalInfo->si_addr;
+        bsg_g_context->signal.userContext = userContext;
+        bsg_g_context->signal.signalInfo = signalInfo;
 
 
-        KSLOG_DEBUG("Calling main crash handler.");
-        g_context->onCrash();
+        BSG_KSLOG_DEBUG("Calling main crash handler.");
+        bsg_g_context->onCrash();
 
 
-        KSLOG_DEBUG("Crash handling complete. Restoring original handlers.");
-        kscrashsentry_uninstall(KSCrashTypeAsyncSafe);
+        BSG_KSLOG_DEBUG("Crash handling complete. Restoring original handlers.");
+        kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
         kscrashsentry_resumeThreads();
     }
 
-    KSLOG_DEBUG("Re-raising signal for regular handlers to catch.");
+    BSG_KSLOG_DEBUG("Re-raising signal for regular handlers to catch.");
     // This is technically not allowed, but it works in OSX and iOS.
     raise(sigNum);
 }
@@ -132,42 +132,42 @@ void kssighndl_i_handleSignal(int sigNum,
 #pragma mark - API -
 // ============================================================================
 
-bool kscrashsentry_installSignalHandler(KSCrash_SentryContext* context)
+bool kscrashsentry_installSignalHandler(BSG_KSCrash_SentryContext* context)
 {
-    KSLOG_DEBUG("Installing signal handler.");
+    BSG_KSLOG_DEBUG("Installing signal handler.");
 
     if(g_installed)
     {
-        KSLOG_DEBUG("Signal handler already installed.");
+        BSG_KSLOG_DEBUG("Signal handler already installed.");
         return true;
     }
-    g_installed = 1;
+    bsg_g_installed = 1;
 
-    g_context = context;
+    bsg_g_context = context;
 
 #if !TARGET_OS_TV
     if(g_signalStack.ss_size == 0)
     {
-        KSLOG_DEBUG("Allocating signal stack area.");
-        g_signalStack.ss_size = SIGSTKSZ;
-        g_signalStack.ss_sp = malloc(g_signalStack.ss_size);
+        BSG_KSLOG_DEBUG("Allocating signal stack area.");
+        bsg_g_signalStack.ss_size = SIGSTKSZ;
+        bsg_g_signalStack.ss_sp = malloc(g_signalStack.ss_size);
     }
 
-    KSLOG_DEBUG("Setting signal stack area.");
+    BSG_KSLOG_DEBUG("Setting signal stack area.");
     if(sigaltstack(&g_signalStack, NULL) != 0)
     {
-        KSLOG_ERROR("signalstack: %s", strerror(errno));
+        BSG_KSLOG_ERROR("signalstack: %s", strerror(errno));
         goto failed;
     }
 #endif
 
-    const int* fatalSignals = kssignal_fatalSignals();
-    int fatalSignalsCount = kssignal_numFatalSignals();
+    const int* fatalSignals = bsg_kssignal_fatalSignals();
+    int fatalSignalsCount = bsg_kssignal_numFatalSignals();
 
     if(g_previousSignalHandlers == NULL)
     {
-        KSLOG_DEBUG("Allocating memory to store previous signal handlers.");
-        g_previousSignalHandlers = malloc(sizeof(*g_previousSignalHandlers)
+        BSG_KSLOG_DEBUG("Allocating memory to store previous signal handlers.");
+        bsg_g_previousSignalHandlers = malloc(sizeof(*g_previousSignalHandlers)
                                           * (unsigned)fatalSignalsCount);
     }
 
@@ -181,17 +181,17 @@ bool kscrashsentry_installSignalHandler(KSCrash_SentryContext* context)
 
     for(int i = 0; i < fatalSignalsCount; i++)
     {
-        KSLOG_DEBUG("Assigning handler for signal %d", fatalSignals[i]);
+        BSG_KSLOG_DEBUG("Assigning handler for signal %d", fatalSignals[i]);
         if(sigaction(fatalSignals[i], &action, &g_previousSignalHandlers[i]) != 0)
         {
             char sigNameBuff[30];
-            const char* sigName = kssignal_signalName(fatalSignals[i]);
+            const char* sigName = bsg_kssignal_signalName(fatalSignals[i]);
             if(sigName == NULL)
             {
                 snprintf(sigNameBuff, sizeof(sigNameBuff), "%d", fatalSignals[i]);
                 sigName = sigNameBuff;
             }
-            KSLOG_ERROR("sigaction (%s): %s", sigName, strerror(errno));
+            BSG_KSLOG_ERROR("sigaction (%s): %s", sigName, strerror(errno));
             // Try to reverse the damage
             for(i--;i >= 0; i--)
             {
@@ -200,34 +200,34 @@ bool kscrashsentry_installSignalHandler(KSCrash_SentryContext* context)
             goto failed;
         }
     }
-    KSLOG_DEBUG("Signal handlers installed.");
+    BSG_KSLOG_DEBUG("Signal handlers installed.");
     return true;
 
 failed:
-    KSLOG_DEBUG("Failed to install signal handlers.");
-    g_installed = 0;
+    BSG_KSLOG_DEBUG("Failed to install signal handlers.");
+    bsg_g_installed = 0;
     return false;
 }
 
-void kscrashsentry_uninstallSignalHandler(void)
+void bsg_kscrashsentry_uninstallSignalHandler(void)
 {
-    KSLOG_DEBUG("Uninstalling signal handlers.");
+    BSG_KSLOG_DEBUG("Uninstalling signal handlers.");
     if(!g_installed)
     {
-        KSLOG_DEBUG("Signal handlers were already uninstalled.");
+        BSG_KSLOG_DEBUG("Signal handlers were already uninstalled.");
         return;
     }
 
-    const int* fatalSignals = kssignal_fatalSignals();
-    int fatalSignalsCount = kssignal_numFatalSignals();
+    const int* fatalSignals = bsg_kssignal_fatalSignals();
+    int fatalSignalsCount = bsg_kssignal_numFatalSignals();
 
     for(int i = 0; i < fatalSignalsCount; i++)
     {
-        KSLOG_DEBUG("Restoring original handler for signal %d", fatalSignals[i]);
+        BSG_KSLOG_DEBUG("Restoring original handler for signal %d", fatalSignals[i]);
         sigaction(fatalSignals[i], &g_previousSignalHandlers[i], NULL);
     }
     
-    KSLOG_DEBUG("Signal handlers uninstalled.");
-    g_installed = 0;
+    BSG_KSLOG_DEBUG("Signal handlers uninstalled.");
+    bsg_g_installed = 0;
 }
 

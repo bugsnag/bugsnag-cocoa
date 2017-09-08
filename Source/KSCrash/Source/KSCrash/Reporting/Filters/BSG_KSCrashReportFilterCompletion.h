@@ -1,5 +1,5 @@
 //
-//  KSCrashReportFilterCompletion.h
+//  BSG_KSCrashReportFilterCompletion.h
 //
 //  Created by Karl Stenerud on 2016-10-06.
 //
@@ -36,6 +36,6 @@
  *                  user cancelling the operation).
  * @param error Non-nil if an error occurred.
  */
-typedef void(^KSCrashReportFilterCompletion)(NSArray* filteredReports,
+typedef void(^BSG_KSCrashReportFilterCompletion)(NSArray* filteredReports,
                                              BOOL completed,
                                              NSError* error);

@@ -1,5 +1,5 @@
 //
-//  KSCrashType.c
+//  BSG_KSCrashType.c
 //
 //  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
@@ -30,28 +30,28 @@
 
 static const struct
 {
-    const KSCrashType type;
+    const BSG_KSCrashType type;
     const char* const name;
-} g_crashTypes[] =
+} bsg_g_crashTypes[] =
 {
-#define CRASHTYPE(NAME) {NAME, #NAME}
-    CRASHTYPE(KSCrashTypeMachException),
-    CRASHTYPE(KSCrashTypeSignal),
-    CRASHTYPE(KSCrashTypeCPPException),
-    CRASHTYPE(KSCrashTypeNSException),
-    CRASHTYPE(KSCrashTypeMainThreadDeadlock),
-    CRASHTYPE(KSCrashTypeUserReported),
+#define BSG_CRASHTYPE(NAME) {NAME, #NAME}
+    BSG_CRASHTYPE(BSG_KSCrashTypeMachException),
+    BSG_CRASHTYPE(BSG_KSCrashTypeSignal),
+    BSG_CRASHTYPE(BSG_KSCrashTypeCPPException),
+    BSG_CRASHTYPE(BSG_KSCrashTypeNSException),
+    BSG_CRASHTYPE(BSG_KSCrashTypeMainThreadDeadlock),
+    BSG_CRASHTYPE(BSG_KSCrashTypeUserReported),
 };
-static const int g_crashTypesCount = sizeof(g_crashTypes) / sizeof(*g_crashTypes);
+static const int bsg_g_crashTypesCount = sizeof(bsg_g_crashTypes) / sizeof(*bsg_g_crashTypes);
 
 
-const char* kscrashtype_name(const KSCrashType crashType)
+const char* bsg_kscrashtype_name(const BSG_KSCrashType crashType)
 {
-    for(int i = 0; i < g_crashTypesCount; i++)
+    for(int i = 0; i < bsg_g_crashTypesCount; i++)
     {
-        if(g_crashTypes[i].type == crashType)
+        if(bsg_g_crashTypes[i].type == crashType)
         {
-            return g_crashTypes[i].name;
+            return bsg_g_crashTypes[i].name;
         }
     }
     return NULL;

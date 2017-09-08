@@ -29,8 +29,8 @@
  */
 
 
-#ifndef HDR_KSArchSpecific_h
-#define HDR_KSArchSpecific_h
+#ifndef HDR_BSG_KSArchSpecific_h
+#define HDR_BSG_KSArchSpecific_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,16 +40,16 @@ extern "C" {
 #include <sys/_structs.h>
 
 #ifdef __LP64__
-    #define STRUCT_NLIST struct nlist_64
+    #define BSG_STRUCT_NLIST struct nlist_64
 #else
-    #define STRUCT_NLIST struct nlist
+    #define BSG_STRUCT_NLIST struct nlist
 #endif
 
 
 #ifdef __arm64__
-    #define STRUCT_MCONTEXT_L _STRUCT_MCONTEXT64
+    #define BSG_STRUCT_MCONTEXT_L _STRUCT_MCONTEXT64
 #else
-    #define STRUCT_MCONTEXT_L _STRUCT_MCONTEXT
+    #define BSG_STRUCT_MCONTEXT_L _STRUCT_MCONTEXT
 #endif
 
 

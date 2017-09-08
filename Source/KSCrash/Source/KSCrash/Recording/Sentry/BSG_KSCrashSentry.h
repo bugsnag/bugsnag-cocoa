@@ -1,5 +1,5 @@
 //
-//  KSCrashSentry.h
+//  BSG_KSCrashSentry.h
 //
 //  Created by Karl Stenerud on 2012-02-12.
 //
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef HDR_KSCrashSentry_h
-#define HDR_KSCrashSentry_h
+#ifndef HDR_BSG_KSCrashSentry_h
+#define HDR_BSG_KSCrashSentry_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,12 +47,12 @@ extern "C" {
 
 typedef enum
 {
-    KSCrashReservedThreadTypeMachPrimary,
-    KSCrashReservedThreadTypeMachSecondary,
-    KSCrashReservedThreadTypeCount
-} KSCrashReservedTheadType;
+    BSG_KSCrashReservedThreadTypeMachPrimary,
+    BSG_KSCrashReservedThreadTypeMachSecondary,
+    BSG_KSCrashReservedThreadTypeCount
+} BSG_KSCrashReservedTheadType;
 
-typedef struct KSCrash_SentryContext
+typedef struct BSG_KSCrash_SentryContext
 {
     // Caller defined values. Caller must fill these out prior to installation.
 
@@ -63,7 +63,7 @@ typedef struct KSCrash_SentryContext
     // Implementation defined values. Caller does not initialize these.
 
     /** Threads reserved by the crash handlers, which must not be suspended. */
-    thread_t reservedThreads[KSCrashReservedThreadTypeCount];
+    thread_t reservedThreads[BSG_KSCrashReservedThreadTypeCount];
 
     /** If true, the crash handling system is currently handling a crash.
      * When false, all values below this field are considered invalid.
@@ -87,7 +87,7 @@ typedef struct KSCrash_SentryContext
 
     /** The type of crash that occurred.
      * This determines which other fields are valid. */
-    KSCrashType crashType;
+    BSG_KSCrashType crashType;
 
     /** Short description of why the crash occurred. */
     const char* crashReason;
@@ -148,7 +148,7 @@ typedef struct KSCrash_SentryContext
         const char* customStackTrace;
     } userException;
 
-} KSCrash_SentryContext;
+} BSG_KSCrash_SentryContext;
 
 
 /** Install crash sentry.
@@ -161,15 +161,15 @@ typedef struct KSCrash_SentryContext
  *
  * @return which crash handlers were installed successfully.
  */
-KSCrashType kscrashsentry_installWithContext(KSCrash_SentryContext* context,
-                                             KSCrashType crashTypes,
+BSG_KSCrashType bsg_kscrashsentry_installWithContext(BSG_KSCrash_SentryContext* context,
+                                             BSG_KSCrashType crashTypes,
                                              void (*onCrash)(void));
 
 /** Uninstall crash sentry.
  *
  * @param crashTypes The crash types to install handlers for.
  */
-void kscrashsentry_uninstall(KSCrashType crashTypes);
+void bsg_kscrashsentry_uninstall(BSG_KSCrashType crashTypes);
 
 
 #ifdef __cplusplus

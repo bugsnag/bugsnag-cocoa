@@ -1,5 +1,5 @@
 //
-//  KSCrashReportStore.h
+//  BSG_KSCrashReportStore.h
 //
 //  Created by Karl Stenerud on 2012-02-05.
 //
@@ -31,7 +31,7 @@
 /**
  * Manages a store of crash reports.
  */
-@interface KSCrashReportStore: NSObject
+@interface BSG_KSCrashReportStore: NSObject
 
 /** Location where reports are stored. */
 @property(nonatomic,readonly,retain) NSString* path;
@@ -51,7 +51,7 @@
  *
  * @return A new crash report store.
  */
-+ (KSCrashReportStore*) storeWithPath:(NSString*) path;
++ (BSG_KSCrashReportStore*) storeWithPath:(NSString*) path;
 
 /** Initialize a store.
  *

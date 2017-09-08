@@ -1,5 +1,5 @@
 //
-//  KSCrashSentry.c
+//  BSG_KSCrashSentry.c
 //
 //  Created by Karl Stenerud on 2012-02-12.
 //
@@ -36,8 +36,6 @@
 #include "BSG_KSCrashSentry_User.h"
 #include "BSG_KSMach.h"
 #include "BSG_KSSystemCapabilities.h"
-
-//#define KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 
 
@@ -47,83 +45,83 @@
 
 typedef struct
 {
-    KSCrashType crashType;
-    bool (*install)(KSCrash_SentryContext* context);
+    BSG_KSCrashType crashType;
+    bool (*install)(BSG_KSCrash_SentryContext* context);
     void (*uninstall)(void);
-} CrashSentry;
+} BSG_CrashSentry;
 
-static CrashSentry g_sentries[] =
+static BSG_CrashSentry bsg_g_sentries[] =
 {
 #if KSCRASH_HAS_MACH
     {
-        KSCrashTypeMachException,
-        kscrashsentry_installMachHandler,
-        kscrashsentry_uninstallMachHandler,
+        BSG_KSCrashTypeMachException,
+        bsg_kscrashsentry_installMachHandler,
+        bsg_kscrashsentry_uninstallMachHandler,
     },
 #endif
     {
-        KSCrashTypeSignal,
-        kscrashsentry_installSignalHandler,
-        kscrashsentry_uninstallSignalHandler,
+        BSG_KSCrashTypeSignal,
+        bsg_kscrashsentry_installSignalHandler,
+        bsg_kscrashsentry_uninstallSignalHandler,
     },
     {
-        KSCrashTypeCPPException,
-        kscrashsentry_installCPPExceptionHandler,
-        kscrashsentry_uninstallCPPExceptionHandler,
+        BSG_KSCrashTypeCPPException,
+        bsg_kscrashsentry_installCPPExceptionHandler,
+        bsg_kscrashsentry_uninstallCPPExceptionHandler,
     },
     {
-        KSCrashTypeNSException,
-        kscrashsentry_installNSExceptionHandler,
-        kscrashsentry_uninstallNSExceptionHandler,
+        BSG_KSCrashTypeNSException,
+        bsg_kscrashsentry_installNSExceptionHandler,
+        bsg_kscrashsentry_uninstallNSExceptionHandler,
     },
     {
-        KSCrashTypeMainThreadDeadlock,
-        kscrashsentry_installDeadlockHandler,
-        kscrashsentry_uninstallDeadlockHandler,
+        BSG_KSCrashTypeMainThreadDeadlock,
+        bsg_kscrashsentry_installDeadlockHandler,
+        bsg_kscrashsentry_uninstallDeadlockHandler,
     },
     {
-        KSCrashTypeUserReported,
-        kscrashsentry_installUserExceptionHandler,
-        kscrashsentry_uninstallUserExceptionHandler,
+        BSG_KSCrashTypeUserReported,
+        bsg_kscrashsentry_installUserExceptionHandler,
+        bsg_kscrashsentry_uninstallUserExceptionHandler,
     },
 };
-static size_t g_sentriesCount = sizeof(g_sentries) / sizeof(*g_sentries);
+static size_t bsg_g_sentriesCount = sizeof(bsg_g_sentries) / sizeof(*bsg_g_sentries);
 
 /** Context to fill with crash information. */
-static KSCrash_SentryContext* g_context = NULL;
+static BSG_KSCrash_SentryContext* bsg_g_context = NULL;
 
 /** Keeps track of whether threads have already been suspended or not.
  * This won't handle multiple suspends in a row.
  */
-static bool g_threads_are_running = true;
+static bool bsg_g_threads_are_running = true;
 
 
 // ============================================================================
 #pragma mark - API -
 // ============================================================================
 
-KSCrashType kscrashsentry_installWithContext(KSCrash_SentryContext* context,
-                                             KSCrashType crashTypes,
+BSG_KSCrashType bsg_bsg_kscrashsentry_installWithContext(BSG_KSCrash_SentryContext* context,
+                                             BSG_KSCrashType crashTypes,
                                              void (*onCrash)(void))
 {
     if(ksmach_isBeingTraced())
     {
-        KSLOGBASIC_WARN("KSCrash: App is running in a debugger. Only user reported events will be handled.");
-        crashTypes = KSCrashTypeUserReported;
+        BSG_KSLOGBASIC_WARN("KSCrash: App is running in a debugger. Only user reported events will be handled.");
+        crashTypes = BSG_KSCrashTypeUserReported;
     }
     else
     {
-        KSLOG_DEBUG("Installing handlers with context %p, crash types 0x%x.", context, crashTypes);
+        BSG_KSLOG_DEBUG("Installing handlers with context %p, crash types 0x%x.", context, crashTypes);
     }
 
-    g_context = context;
-    kscrashsentry_clearContext(g_context);
-    g_context->onCrash = onCrash;
+    bsg_g_context = context;
+    bsg_kscrashsentry_clearContext(bsg_g_context);
+    bsg_g_context->onCrash = onCrash;
 
-    KSCrashType installed = 0;
-    for(size_t i = 0; i < g_sentriesCount; i++)
+    BSG_KSCrashType installed = 0;
+    for(size_t i = 0; i < bsg_g_sentriesCount; i++)
     {
-        CrashSentry* sentry = &g_sentries[i];
+        BSG_CrashSentry* sentry = &bsg_g_sentries[i];
         if(sentry->crashType & crashTypes)
         {
             if(sentry->install == NULL || sentry->install(context))
@@ -133,16 +131,16 @@ KSCrashType kscrashsentry_installWithContext(KSCrash_SentryContext* context,
         }
     }
 
-    KSLOG_DEBUG("Installation complete. Installed types 0x%x.", installed);
+    BSG_KSLOG_DEBUG("Installation complete. Installed types 0x%x.", installed);
     return installed;
 }
 
-void kscrashsentry_uninstall(KSCrashType crashTypes)
+void bsg_kscrashsentry_uninstall(BSG_KSCrashType crashTypes)
 {
-    KSLOG_DEBUG("Uninstalling handlers with crash types 0x%x.", crashTypes);
-    for(size_t i = 0; i < g_sentriesCount; i++)
+    BSG_KSLOG_DEBUG("Uninstalling handlers with crash types 0x%x.", crashTypes);
+    for(size_t i = 0; i < bsg_g_sentriesCount; i++)
     {
-        CrashSentry* sentry = &g_sentries[i];
+        BSG_CrashSentry* sentry = &bsg_g_sentries[i];
         if(sentry->crashType & crashTypes)
         {
             if(sentry->install != NULL)
@@ -151,7 +149,7 @@ void kscrashsentry_uninstall(KSCrashType crashTypes)
             }
         }
     }
-    KSLOG_DEBUG("Uninstall complete.");
+    BSG_KSLOG_DEBUG("Uninstall complete.");
 }
 
 
@@ -159,77 +157,77 @@ void kscrashsentry_uninstall(KSCrashType crashTypes)
 #pragma mark - Private API -
 // ============================================================================
 
-void kscrashsentry_suspendThreads(void)
+void bsg_kscrashsentry_suspendThreads(void)
 {
-    KSLOG_DEBUG("Suspending threads.");
-    if(!g_threads_are_running)
+    BSG_KSLOG_DEBUG("Suspending threads.");
+    if(!bsg_g_threads_are_running)
     {
-        KSLOG_DEBUG("Threads already suspended.");
+        BSG_KSLOG_DEBUG("Threads already suspended.");
         return;
     }
 
-    if(g_context != NULL)
+    if(bsg_g_context != NULL)
     {
         int numThreads = sizeof(g_context->reservedThreads) / sizeof(g_context->reservedThreads[0]);
-        KSLOG_DEBUG("Suspending all threads except for %d reserved threads.", numThreads);
+        BSG_KSLOG_DEBUG("Suspending all threads except for %d reserved threads.", numThreads);
         if(ksmach_suspendAllThreadsExcept(g_context->reservedThreads, numThreads))
         {
-            KSLOG_DEBUG("Suspend successful.");
-            g_threads_are_running = false;
+            BSG_KSLOG_DEBUG("Suspend successful.");
+            bsg_g_threads_are_running = false;
         }
     }
     else
     {
-        KSLOG_DEBUG("Suspending all threads.");
+        BSG_KSLOG_DEBUG("Suspending all threads.");
         if(ksmach_suspendAllThreads())
         {
-            KSLOG_DEBUG("Suspend successful.");
-            g_threads_are_running = false;
+            BSG_KSLOG_DEBUG("Suspend successful.");
+            bsg_g_threads_are_running = false;
         }
     }
-    KSLOG_DEBUG("Suspend complete.");
+    BSG_KSLOG_DEBUG("Suspend complete.");
 }
 
-void kscrashsentry_resumeThreads(void)
+void bsg_kscrashsentry_resumeThreads(void)
 {
-    KSLOG_DEBUG("Resuming threads.");
-    if(g_threads_are_running)
+    BSG_KSLOG_DEBUG("Resuming threads.");
+    if(bsg_g_threads_are_running)
     {
-        KSLOG_DEBUG("Threads already resumed.");
+        BSG_KSLOG_DEBUG("Threads already resumed.");
         return;
     }
 
-    if(g_context != NULL)
+    if(bsg_g_context != NULL)
     {
-        int numThreads = sizeof(g_context->reservedThreads) / sizeof(g_context->reservedThreads[0]);
-        KSLOG_DEBUG("Resuming all threads except for %d reserved threads.", numThreads);
-        if(ksmach_resumeAllThreadsExcept(g_context->reservedThreads, numThreads))
+        int numThreads = sizeof(bsg_g_context->reservedThreads) / sizeof(bsg_g_context->reservedThreads[0]);
+        BSG_KSLOG_DEBUG("Resuming all threads except for %d reserved threads.", numThreads);
+        if(bsg_ksmach_resumeAllThreadsExcept(bsg_g_context->reservedThreads, numThreads))
         {
-            KSLOG_DEBUG("Resume successful.");
-            g_threads_are_running = true;
+            BSG_KSLOG_DEBUG("Resume successful.");
+            bsg_g_threads_are_running = true;
         }
     }
     else
     {
-        KSLOG_DEBUG("Resuming all threads.");
+        BSG_KSLOG_DEBUG("Resuming all threads.");
         if(ksmach_resumeAllThreads())
         {
-            KSLOG_DEBUG("Resume successful.");
-            g_threads_are_running = true;
+            BSG_KSLOG_DEBUG("Resume successful.");
+            bsg_g_threads_are_running = true;
         }
     }
-    KSLOG_DEBUG("Resume complete.");
+    BSG_KSLOG_DEBUG("Resume complete.");
 }
 
-void kscrashsentry_clearContext(KSCrash_SentryContext* context)
+void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext* context)
 {
     void (*onCrash)(void) = context->onCrash;
     memset(context, 0, sizeof(*context));
     context->onCrash = onCrash;
 }
 
-void kscrashsentry_beginHandlingCrash(KSCrash_SentryContext* context)
+void bsg_kscrashsentry_beginHandlingCrash(BSG_KSCrash_SentryContext* context)
 {
-    kscrashsentry_clearContext(context);
+    bsg_kscrashsentry_clearContext(context);
     context->handlingCrash = true;
 }

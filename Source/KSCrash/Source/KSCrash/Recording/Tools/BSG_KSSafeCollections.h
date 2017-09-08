@@ -28,27 +28,27 @@
 #import <Foundation/Foundation.h>
 
 
-@interface NSMutableArray (KSSafeCollections)
+@interface NSMutableArray (BSG_KSSafeCollections)
 
-- (void) ksc_addObjectIfNotNil:(id) object;
+- (void) bsg_ksc_addObjectIfNotNil:(id) object;
 
-- (void) ksc_safeAddObject:(id) object;
+- (void) bsg_ksc_safeAddObject:(id) object;
 
-- (void) ksc_insertObjectIfNotNil:(id) object atIndex:(NSUInteger) index;
+- (void) bsg_ksc_insertObjectIfNotNil:(id) object atIndex:(NSUInteger) index;
 
-- (void) ksc_safeInsertObject:(id) object atIndex:(NSUInteger) index;
+- (void) bsg_ksc_safeInsertObject:(id) object atIndex:(NSUInteger) index;
 
 @end
 
 
-@interface NSMutableDictionary (KSSafeCollections)
+@interface NSMutableDictionary (BSG_KSSafeCollections)
 
-- (void) ksc_setObjectIfNotNil:(id) object forKey:(id) key;
+- (void) bsg_ksc_setObjectIfNotNil:(id) object forKey:(id) key;
 
-- (void) ksc_safeSetObject:(id) object forKey:(id) key;
+- (void) bsg_ksc_safeSetObject:(id) object forKey:(id) key;
 
-- (void) ksc_setValueIfNotNil:(id) value forKey:(NSString*) key;
+- (void) bsg_ksc_setValueIfNotNil:(id) value forKey:(NSString*) key;
 
-- (void) ksc_safeSetValue:(id) value forKey:(NSString*) key;
+- (void) bsg_ksc_safeSetValue:(id) value forKey:(NSString*) key;
 
 @end

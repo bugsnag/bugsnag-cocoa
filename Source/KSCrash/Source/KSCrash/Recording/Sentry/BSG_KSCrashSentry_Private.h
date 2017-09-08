@@ -1,5 +1,5 @@
 //
-//  KSCrashSentry_Private.h
+//  BSG_KSCrashSentry_Private.h
 //
 //  Created by Karl Stenerud on 2012-09-29.
 //
@@ -25,8 +25,8 @@
 //
 
 
-#ifndef HDR_KSCrashSentry_Private_h
-#define HDR_KSCrashSentry_Private_h
+#ifndef HDR_BSG_KSCrashSentry_Private_h
+#define HDR_BSG_KSCrashSentry_Private_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,22 +41,22 @@ extern "C" {
  * Reserved threads include the current thread and all threads in
  "reservedThreads" in the context.
  */
-void kscrashsentry_suspendThreads(void);
+void bsg_kscrashsentry_suspendThreads(void);
 
 /** Resume all non-reserved threads.
  *
  * Reserved threads include the current thread and all threads in
  * "reservedThreads" in the context.
  */
-void kscrashsentry_resumeThreads(void);
+void bsg_kscrashsentry_resumeThreads(void);
 
 /** Prepare the context for handling a new crash.
  */
-void kscrashsentry_beginHandlingCrash(KSCrash_SentryContext* context);
+void bsg_kscrashsentry_beginHandlingCrash(BSG_KSCrash_SentryContext* context);
 
 /** Clear a crash sentry context.
  */
-void kscrashsentry_clearContext(KSCrash_SentryContext* context);
+void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext* context);
 
     
 #ifdef __cplusplus

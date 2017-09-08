@@ -1,5 +1,5 @@
 //
-//  KSObjCApple.h
+//  BSG_KSObjCApple.h
 //
 //  Created by Karl Stenerud on 2012-08-30.
 //
@@ -14,10 +14,10 @@
 //
 
 // This file contains structures and constants copied from Apple header
-// files, arranged for use in KSObjC.
+// files, arranged for use in BSG_KSObjC.
 
-#ifndef HDR_KSObjCApple_h
-#define HDR_KSObjCApple_h
+#ifndef HDR_BSG_BSG_KSObjCApple_h
+#define HDR_BSG_BSG_KSObjCApple_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -647,4 +647,4 @@ CF_INLINE uintptr_t __CFBasicHashGetSlotCount(CFConstBasicHashRef ht, CFIndex id
 }
 #endif
 
-#endif // HDR_KSObjCApple_h
+#endif // HDR_BSG_KSObjCApple_h

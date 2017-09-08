@@ -46,7 +46,7 @@ typedef struct
 
 #define ENUM_NAME_MAPPING(A) {A, #A}
 
-static const KSSignalCodeInfo g_sigIllCodes[] =
+static const KSSignalCodeInfo bsg_g_sigIllCodes[] =
 {
     ENUM_NAME_MAPPING(ILL_NOOP),
     ENUM_NAME_MAPPING(EXC_CRASH),
@@ -59,14 +59,14 @@ static const KSSignalCodeInfo g_sigIllCodes[] =
     ENUM_NAME_MAPPING(ILL_BADSTK),
 };
 
-static const KSSignalCodeInfo g_sigTrapCodes[] =
+static const KSSignalCodeInfo bsg_g_sigTrapCodes[] =
 {
     ENUM_NAME_MAPPING(0),
     ENUM_NAME_MAPPING(TRAP_BRKPT),
     ENUM_NAME_MAPPING(TRAP_TRACE),
 };
 
-static const KSSignalCodeInfo g_sigFPECodes[] =
+static const KSSignalCodeInfo bsg_g_sigFPECodes[] =
 {
     ENUM_NAME_MAPPING(FPE_NOOP),
     ENUM_NAME_MAPPING(FPE_FLTDIV),
@@ -79,7 +79,7 @@ static const KSSignalCodeInfo g_sigFPECodes[] =
     ENUM_NAME_MAPPING(FPE_INTOVF),
 };
 
-static const KSSignalCodeInfo g_sigBusCodes[] =
+static const KSSignalCodeInfo bsg_g_sigBusCodes[] =
 {
     ENUM_NAME_MAPPING(BUS_NOOP),
     ENUM_NAME_MAPPING(BUS_ADRALN),
@@ -87,7 +87,7 @@ static const KSSignalCodeInfo g_sigBusCodes[] =
     ENUM_NAME_MAPPING(BUS_OBJERR),
 };
 
-static const KSSignalCodeInfo g_sigSegVCodes[] =
+static const KSSignalCodeInfo bsg_g_sigSegVCodes[] =
 {
     ENUM_NAME_MAPPING(SEGV_NOOP),
     ENUM_NAME_MAPPING(SEGV_MAPERR),
@@ -97,22 +97,22 @@ static const KSSignalCodeInfo g_sigSegVCodes[] =
 #define SIGNAL_INFO(SIGNAL, CODES) {SIGNAL, #SIGNAL, CODES, sizeof(CODES) / sizeof(*CODES)}
 #define SIGNAL_INFO_NOCODES(SIGNAL) {SIGNAL, #SIGNAL, 0, 0}
 
-static const KSSignalInfo g_fatalSignalData[] =
+static const KSSignalInfo bsg_g_fatalSignalData[] =
 {
     SIGNAL_INFO_NOCODES(SIGABRT),
-    SIGNAL_INFO(SIGBUS, g_sigBusCodes),
-    SIGNAL_INFO(SIGFPE, g_sigFPECodes),
-    SIGNAL_INFO(SIGILL, g_sigIllCodes),
+    SIGNAL_INFO(SIGBUS, bsg_g_sigBusCodes),
+    SIGNAL_INFO(SIGFPE, bsg_g_sigFPECodes),
+    SIGNAL_INFO(SIGILL, bsg_g_sigIllCodes),
     SIGNAL_INFO_NOCODES(SIGPIPE),
-    SIGNAL_INFO(SIGSEGV, g_sigSegVCodes),
+    SIGNAL_INFO(SIGSEGV, bsg_g_sigSegVCodes),
     SIGNAL_INFO_NOCODES(SIGSYS),
-    SIGNAL_INFO(SIGTERM, g_sigTrapCodes),
+    SIGNAL_INFO(SIGTERM, bsg_g_sigTrapCodes),
 };
-static const int g_fatalSignalsCount = sizeof(g_fatalSignalData) / sizeof(*g_fatalSignalData);
+static const int bsg_g_fatalSignalsCount = sizeof(g_fatalSignalData) / sizeof(*g_fatalSignalData);
 
 // Note: Dereferencing a NULL pointer causes SIGILL, ILL_ILLOPC on i386
 //       but causes SIGTRAP, 0 on arm.
-static const int g_fatalSignals[] =
+static const int bsg_g_fatalSignals[] =
 {
     SIGABRT,
     SIGBUS,
@@ -124,29 +124,29 @@ static const int g_fatalSignals[] =
     SIGTRAP,
 };
 
-const char* kssignal_signalName(const int sigNum)
+const char* bsg_kssignal_signalName(const int sigNum)
 {
-    for(int i = 0; i < g_fatalSignalsCount; i++)
+    for(int i = 0; i < bsg_g_fatalSignalsCount; i++)
     {
         if(g_fatalSignalData[i].sigNum == sigNum)
         {
-            return g_fatalSignalData[i].name;
+            return bsg_g_fatalSignalData[i].name;
         }
     }
     return NULL;
 }
 
-const char* kssignal_signalCodeName(const int sigNum, const int code)
+const char* bsg_kssignal_signalCodeName(const int sigNum, const int code)
 {
-    for(int si = 0; si < g_fatalSignalsCount; si++)
+    for(int si = 0; si < bsg_g_fatalSignalsCount; si++)
     {
         if(g_fatalSignalData[si].sigNum == sigNum)
         {
-            for(int ci = 0; ci < g_fatalSignalData[si].numCodes; ci++)
+            for(int ci = 0; ci < bsg_g_fatalSignalData[si].numCodes; ci++)
             {
                 if(g_fatalSignalData[si].codes[ci].code == code)
                 {
-                    return g_fatalSignalData[si].codes[ci].name;
+                    return bsg_g_fatalSignalData[si].codes[ci].name;
                 }
             }
         }
@@ -154,21 +154,21 @@ const char* kssignal_signalCodeName(const int sigNum, const int code)
     return NULL;
 }
 
-const int* kssignal_fatalSignals(void)
+const int* bsg_kssignal_fatalSignals(void)
 {
-    return g_fatalSignals;
+    return bsg_g_fatalSignals;
 }
 
-int kssignal_numFatalSignals(void)
+int bsg_kssignal_numFatalSignals(void)
 {
-    return g_fatalSignalsCount;
+    return bsg_g_fatalSignalsCount;
 }
 
 #define EXC_UNIX_BAD_SYSCALL 0x10000 /* SIGSYS */
 #define EXC_UNIX_BAD_PIPE    0x10001 /* SIGPIPE */
 #define EXC_UNIX_ABORT       0x10002 /* SIGABRT */
 
-int kssignal_machExceptionForSignal(const int sigNum)
+int bsg_kssignal_machExceptionForSignal(const int sigNum)
 {
     switch(sigNum)
     {
@@ -197,7 +197,7 @@ int kssignal_machExceptionForSignal(const int sigNum)
     return 0;
 }
 
-int kssignal_signalForMachException(const int exception,
+int bsg_kssignal_signalForMachException(const int exception,
                                     const mach_exception_code_t code)
 {
     switch(exception)

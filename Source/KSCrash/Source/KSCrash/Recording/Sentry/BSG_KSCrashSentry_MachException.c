@@ -1,5 +1,5 @@
 //
-//  KSCrashSentry_MachException.c
+//  BSG_KSCrashSentry_MachException.c
 //
 //  Created by Karl Stenerud on 2012-02-04.
 //
@@ -112,7 +112,7 @@ typedef struct
  * It's not fully thread safe, but it's safer than locking and slightly better
  * than nothing.
  */
-static volatile sig_atomic_t g_installed = 0;
+static volatile sig_atomic_t bsg_g_installed = 0;
 
 /** Holds exception port info regarding the previously installed exception
  * handlers.
@@ -124,21 +124,21 @@ static struct
     exception_behavior_t    behaviors[EXC_TYPES_COUNT];
     thread_state_flavor_t   flavors[EXC_TYPES_COUNT];
     mach_msg_type_number_t  count;
-} g_previousExceptionPorts;
+} bsg_g_previousExceptionPorts;
 
 /** Our exception port. */
-static mach_port_t g_exceptionPort = MACH_PORT_NULL;
+static mach_port_t bsg_g_exceptionPort = MACH_PORT_NULL;
 
 /** Primary exception handler thread. */
-static pthread_t g_primaryPThread;
-static thread_t g_primaryMachThread;
+static pthread_t bsg_g_primaryPThread;
+static thread_t bsg_g_primaryMachThread;
 
 /** Secondary exception handler thread in case crash handler crashes. */
-static pthread_t g_secondaryPThread;
-static thread_t g_secondaryMachThread;
+static pthread_t bsg_g_secondaryPThread;
+static thread_t bsg_g_secondaryMachThread;
 
 /** Context to fill with crash information. */
-static KSCrash_SentryContext* g_context;
+static BSG_KSCrash_SentryContext* bsg_g_context;
 
 
 // ============================================================================
@@ -172,12 +172,12 @@ bool ksmachexc_i_fetchMachineState(const thread_t thread,
 
 /** Restore the original mach exception ports.
  */
-void ksmachexc_i_restoreExceptionPorts(void)
+void bsg_ksmachexc_i_restoreExceptionPorts(void)
 {
-    KSLOG_DEBUG("Restoring original exception ports.");
+    BSG_KSLOG_DEBUG("Restoring original exception ports.");
     if(g_previousExceptionPorts.count == 0)
     {
-        KSLOG_DEBUG("Original exception ports were already restored.");
+        BSG_KSLOG_DEBUG("Original exception ports were already restored.");
         return;
     }
 
@@ -185,22 +185,22 @@ void ksmachexc_i_restoreExceptionPorts(void)
     kern_return_t kr;
 
     // Reinstall old exception ports.
-    for(mach_msg_type_number_t i = 0; i < g_previousExceptionPorts.count; i++)
+    for(mach_msg_type_number_t i = 0; i < bsg_g_previousExceptionPorts.count; i++)
     {
-        KSLOG_TRACE("Restoring port index %d", i);
+        BSG_KSLOG_TRACE("Restoring port index %d", i);
         kr = task_set_exception_ports(thisTask,
-                                      g_previousExceptionPorts.masks[i],
-                                      g_previousExceptionPorts.ports[i],
-                                      g_previousExceptionPorts.behaviors[i],
-                                      g_previousExceptionPorts.flavors[i]);
+                                      bsg_g_previousExceptionPorts.masks[i],
+                                      bsg_g_previousExceptionPorts.ports[i],
+                                      bsg_g_previousExceptionPorts.behaviors[i],
+                                      bsg_g_previousExceptionPorts.flavors[i]);
         if(kr != KERN_SUCCESS)
         {
-            KSLOG_ERROR("task_set_exception_ports: %s",
+            BSG_KSLOG_ERROR("task_set_exception_ports: %s",
                         mach_error_string(kr));
         }
     }
-    KSLOG_DEBUG("Exception ports restored.");
-    g_previousExceptionPorts.count = 0;
+    BSG_KSLOG_DEBUG("Exception ports restored.");
+    bsg_g_previousExceptionPorts.count = 0;
 }
 
 
@@ -221,20 +221,20 @@ void* ksmachexc_i_handleExceptions(void* const userData)
     pthread_setname_np(threadName);
     if(threadName == kThreadSecondary)
     {
-        KSLOG_DEBUG("This is the secondary thread. Suspending.");
+        BSG_KSLOG_DEBUG("This is the secondary thread. Suspending.");
         thread_suspend(ksmach_thread_self());
     }
 
     for(;;)
     {
-        KSLOG_DEBUG("Waiting for mach exception");
+        BSG_KSLOG_DEBUG("Waiting for mach exception");
 
         // Wait for a message.
         kern_return_t kr = mach_msg(&exceptionMessage.header,
                                     MACH_RCV_MSG,
                                     0,
                                     sizeof(exceptionMessage),
-                                    g_exceptionPort,
+                                    bsg_g_exceptionPort,
                                     MACH_MSG_TIMEOUT_NONE,
                                     MACH_PORT_NULL);
         if(kr == KERN_SUCCESS)
@@ -243,81 +243,81 @@ void* ksmachexc_i_handleExceptions(void* const userData)
         }
 
         // Loop and try again on failure.
-        KSLOG_ERROR("mach_msg: %s", mach_error_string(kr));
+        BSG_KSLOG_ERROR("mach_msg: %s", mach_error_string(kr));
     }
 
-    KSLOG_DEBUG("Trapped mach exception code 0x%x, subcode 0x%x",
+    BSG_KSLOG_DEBUG("Trapped mach exception code 0x%x, subcode 0x%x",
                 exceptionMessage.code[0], exceptionMessage.code[1]);
     if(g_installed)
     {
-        bool wasHandlingCrash = g_context->handlingCrash;
+        bool wasHandlingCrash = bsg_g_context->handlingCrash;
         kscrashsentry_beginHandlingCrash(g_context);
 
-        KSLOG_DEBUG("Exception handler is installed. Continuing exception handling.");
+        BSG_KSLOG_DEBUG("Exception handler is installed. Continuing exception handling.");
 
-        KSLOG_DEBUG("Suspending all threads");
+        BSG_KSLOG_DEBUG("Suspending all threads");
         kscrashsentry_suspendThreads();
 
         // Switch to the secondary thread if necessary, or uninstall the handler
         // to avoid a death loop.
-        if(ksmach_thread_self() == g_primaryMachThread)
+        if(ksmach_thread_self() == bsg_g_primaryMachThread)
         {
-            KSLOG_DEBUG("This is the primary exception thread. Activating secondary thread.");
+            BSG_KSLOG_DEBUG("This is the primary exception thread. Activating secondary thread.");
             if(thread_resume(g_secondaryMachThread) != KERN_SUCCESS)
             {
-                KSLOG_DEBUG("Could not activate secondary thread. Restoring original exception ports.");
+                BSG_KSLOG_DEBUG("Could not activate secondary thread. Restoring original exception ports.");
                 ksmachexc_i_restoreExceptionPorts();
             }
         }
         else
         {
-            KSLOG_DEBUG("This is the secondary exception thread. Restoring original exception ports.");
+            BSG_KSLOG_DEBUG("This is the secondary exception thread. Restoring original exception ports.");
             ksmachexc_i_restoreExceptionPorts();
         }
 
         if(wasHandlingCrash)
         {
-            KSLOG_INFO("Detected crash in the crash reporter. Restoring original handlers.");
+            BSG_KSLOG_INFO("Detected crash in the crash reporter. Restoring original handlers.");
             // The crash reporter itself crashed. Make a note of this and
             // uninstall all handlers so that we don't get stuck in a loop.
-            g_context->crashedDuringCrashHandling = true;
-            kscrashsentry_uninstall(KSCrashTypeAsyncSafe);
+            bsg_g_context->crashedDuringCrashHandling = true;
+            kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
         }
 
         // Fill out crash information
-        KSLOG_DEBUG("Fetching machine state.");
+        BSG_KSLOG_DEBUG("Fetching machine state.");
         STRUCT_MCONTEXT_L machineContext;
         if(ksmachexc_i_fetchMachineState(exceptionMessage.thread.name, &machineContext))
         {
             if(exceptionMessage.exception == EXC_BAD_ACCESS)
             {
-                g_context->faultAddress = ksmach_faultAddress(&machineContext);
+                bsg_g_context->faultAddress = bsg_ksmachfaultAddress(&machineContext);
             }
             else
             {
-                g_context->faultAddress = ksmach_instructionAddress(&machineContext);
+                bsg_g_context->faultAddress = bsg_ksmachinstructionAddress(&machineContext);
             }
         }
 
-        KSLOG_DEBUG("Filling out context.");
-        g_context->crashType = KSCrashTypeMachException;
-        g_context->offendingThread = exceptionMessage.thread.name;
-        g_context->registersAreValid = true;
-        g_context->mach.type = exceptionMessage.exception;
-        g_context->mach.code = exceptionMessage.code[0];
-        g_context->mach.subcode = exceptionMessage.code[1];
+        BSG_KSLOG_DEBUG("Filling out context.");
+        bsg_g_context->crashType = BSG_KSCrashTypeMachException;
+        bsg_g_context->offendingThread = exceptionMessage.thread.name;
+        bsg_g_context->registersAreValid = true;
+        bsg_g_context->mach.type = exceptionMessage.exception;
+        bsg_g_context->mach.code = exceptionMessage.code[0];
+        bsg_g_context->mach.subcode = exceptionMessage.code[1];
 
 
-        KSLOG_DEBUG("Calling main crash handler.");
-        g_context->onCrash();
+        BSG_KSLOG_DEBUG("Calling main crash handler.");
+        bsg_g_context->onCrash();
 
 
-        KSLOG_DEBUG("Crash handling complete. Restoring original handlers.");
-        kscrashsentry_uninstall(KSCrashTypeAsyncSafe);
+        BSG_KSLOG_DEBUG("Crash handling complete. Restoring original handlers.");
+        kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
         kscrashsentry_resumeThreads();
     }
 
-    KSLOG_DEBUG("Replying to mach exception message.");
+    BSG_KSLOG_DEBUG("Replying to mach exception message.");
     // Send a reply saying "I didn't handle this exception".
     replyMessage.header = exceptionMessage.header;
     replyMessage.NDR = exceptionMessage.NDR;
@@ -339,9 +339,9 @@ void* ksmachexc_i_handleExceptions(void* const userData)
 #pragma mark - API -
 // ============================================================================
 
-bool kscrashsentry_installMachHandler(KSCrash_SentryContext* const context)
+bool kscrashsentry_installMachHandler(BSG_KSCrash_SentryContext* const context)
 {
-    KSLOG_DEBUG("Installing mach exception handler.");
+    BSG_KSLOG_DEBUG("Installing mach exception handler.");
 
     bool attributes_created = false;
     pthread_attr_t attr;
@@ -358,10 +358,10 @@ bool kscrashsentry_installMachHandler(KSCrash_SentryContext* const context)
 
     if(g_installed)
     {
-        KSLOG_DEBUG("Exception handler already installed.");
+        BSG_KSLOG_DEBUG("Exception handler already installed.");
         return true;
     }
-    g_installed = 1;
+    bsg_g_installed = 1;
 
     if(ksmach_isBeingTraced())
     {
@@ -370,63 +370,63 @@ bool kscrashsentry_installMachHandler(KSCrash_SentryContext* const context)
         // and LLDB uses EXC_SOFTWARE to stop a debug session.
         // Because of this, it's safer to not hook into the mach exception
         // system at all while being debugged.
-        KSLOG_WARN("Process is being debugged. Not installing handler.");
+        BSG_KSLOG_WARN("Process is being debugged. Not installing handler.");
         goto failed;
     }
 
-    g_context = context;
+    bsg_g_context = context;
 
-    KSLOG_DEBUG("Backing up original exception ports.");
+    BSG_KSLOG_DEBUG("Backing up original exception ports.");
     kr = task_get_exception_ports(thisTask,
                                   mask,
-                                  g_previousExceptionPorts.masks,
+                                  bsg_g_previousExceptionPorts.masks,
                                   &g_previousExceptionPorts.count,
-                                  g_previousExceptionPorts.ports,
-                                  g_previousExceptionPorts.behaviors,
-                                  g_previousExceptionPorts.flavors);
+                                  bsg_g_previousExceptionPorts.ports,
+                                  bsg_g_previousExceptionPorts.behaviors,
+                                  bsg_g_previousExceptionPorts.flavors);
     if(kr != KERN_SUCCESS)
     {
-        KSLOG_ERROR("task_get_exception_ports: %s", mach_error_string(kr));
+        BSG_KSLOG_ERROR("task_get_exception_ports: %s", mach_error_string(kr));
         goto failed;
     }
 
     if(g_exceptionPort == MACH_PORT_NULL)
     {
-        KSLOG_DEBUG("Allocating new port with receive rights.");
+        BSG_KSLOG_DEBUG("Allocating new port with receive rights.");
         kr = mach_port_allocate(thisTask,
                                 MACH_PORT_RIGHT_RECEIVE,
                                 &g_exceptionPort);
         if(kr != KERN_SUCCESS)
         {
-            KSLOG_ERROR("mach_port_allocate: %s", mach_error_string(kr));
+            BSG_KSLOG_ERROR("mach_port_allocate: %s", mach_error_string(kr));
             goto failed;
         }
 
-        KSLOG_DEBUG("Adding send rights to port.");
+        BSG_KSLOG_DEBUG("Adding send rights to port.");
         kr = mach_port_insert_right(thisTask,
-                                    g_exceptionPort,
-                                    g_exceptionPort,
+                                    bsg_g_exceptionPort,
+                                    bsg_g_exceptionPort,
                                     MACH_MSG_TYPE_MAKE_SEND);
         if(kr != KERN_SUCCESS)
         {
-            KSLOG_ERROR("mach_port_insert_right: %s", mach_error_string(kr));
+            BSG_KSLOG_ERROR("mach_port_insert_right: %s", mach_error_string(kr));
             goto failed;
         }
     }
 
-    KSLOG_DEBUG("Installing port as exception handler.");
+    BSG_KSLOG_DEBUG("Installing port as exception handler.");
     kr = task_set_exception_ports(thisTask,
                                   mask,
-                                  g_exceptionPort,
+                                  bsg_g_exceptionPort,
                                   EXCEPTION_DEFAULT,
                                   THREAD_STATE_NONE);
     if(kr != KERN_SUCCESS)
     {
-        KSLOG_ERROR("task_set_exception_ports: %s", mach_error_string(kr));
+        BSG_KSLOG_ERROR("task_set_exception_ports: %s", mach_error_string(kr));
         goto failed;
     }
 
-    KSLOG_DEBUG("Creating secondary exception thread (suspended).");
+    BSG_KSLOG_DEBUG("Creating secondary exception thread (suspended).");
     pthread_attr_init(&attr);
     attributes_created = true;
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
@@ -436,32 +436,32 @@ bool kscrashsentry_installMachHandler(KSCrash_SentryContext* const context)
                            kThreadSecondary);
     if(error != 0)
     {
-        KSLOG_ERROR("pthread_create_suspended_np: %s", strerror(error));
+        BSG_KSLOG_ERROR("pthread_create_suspended_np: %s", strerror(error));
         goto failed;
     }
-    g_secondaryMachThread = pthread_mach_thread_np(g_secondaryPThread);
-    context->reservedThreads[KSCrashReservedThreadTypeMachSecondary] = g_secondaryMachThread;
+    bsg_g_secondaryMachThread = pthread_mach_thread_np(g_secondaryPThread);
+    context->reservedThreads[KSCrashReservedThreadTypeMachSecondary] = bsg_g_secondaryMachThread;
 
-    KSLOG_DEBUG("Creating primary exception thread.");
+    BSG_KSLOG_DEBUG("Creating primary exception thread.");
     error = pthread_create(&g_primaryPThread,
                            &attr,
                            &ksmachexc_i_handleExceptions,
                            kThreadPrimary);
     if(error != 0)
     {
-        KSLOG_ERROR("pthread_create: %s", strerror(error));
+        BSG_KSLOG_ERROR("pthread_create: %s", strerror(error));
         goto failed;
     }
     pthread_attr_destroy(&attr);
-    g_primaryMachThread = pthread_mach_thread_np(g_primaryPThread);
-    context->reservedThreads[KSCrashReservedThreadTypeMachPrimary] = g_primaryMachThread;
+    bsg_g_primaryMachThread = pthread_mach_thread_np(g_primaryPThread);
+    context->reservedThreads[KSCrashReservedThreadTypeMachPrimary] = bsg_g_primaryMachThread;
 
-    KSLOG_DEBUG("Mach exception handler installed.");
+    BSG_KSLOG_DEBUG("Mach exception handler installed.");
     return true;
 
 
 failed:
-    KSLOG_DEBUG("Failed to install mach exception handler.");
+    BSG_KSLOG_DEBUG("Failed to install mach exception handler.");
     if(attributes_created)
     {
         pthread_attr_destroy(&attr);
@@ -471,13 +471,13 @@ failed:
 }
 
 
-void kscrashsentry_uninstallMachHandler(void)
+void bsg_kscrashsentry_uninstallMachHandler(void)
 {
-    KSLOG_DEBUG("Uninstalling mach exception handler.");
+    BSG_KSLOG_DEBUG("Uninstalling mach exception handler.");
 
     if(!g_installed)
     {
-        KSLOG_DEBUG("Mach exception handler was already uninstalled.");
+        BSG_KSLOG_DEBUG("Mach exception handler was already uninstalled.");
         return;
     }
 
@@ -486,11 +486,11 @@ void kscrashsentry_uninstallMachHandler(void)
 
     ksmachexc_i_restoreExceptionPorts();
 
-    thread_t thread_self = ksmach_thread_self();
+    thread_t thread_self = bsg_ksmachthread_self();
 
-    if(g_primaryPThread != 0 && g_primaryMachThread != thread_self)
+    if(g_primaryPThread != 0 && bsg_g_primaryMachThread != thread_self)
     {
-        KSLOG_DEBUG("Cancelling primary exception thread.");
+        BSG_KSLOG_DEBUG("Cancelling primary exception thread.");
         if(g_context->handlingCrash)
         {
             thread_terminate(g_primaryMachThread);
@@ -499,12 +499,12 @@ void kscrashsentry_uninstallMachHandler(void)
         {
             pthread_cancel(g_primaryPThread);
         }
-        g_primaryMachThread = 0;
-        g_primaryPThread = 0;
+        bsg_g_primaryMachThread = 0;
+        bsg_g_primaryPThread = 0;
     }
-    if(g_secondaryPThread != 0 && g_secondaryMachThread != thread_self)
+    if(g_secondaryPThread != 0 && bsg_g_secondaryMachThread != thread_self)
     {
-        KSLOG_DEBUG("Cancelling secondary exception thread.");
+        BSG_KSLOG_DEBUG("Cancelling secondary exception thread.");
         if(g_context->handlingCrash)
         {
             thread_terminate(g_secondaryMachThread);
@@ -513,23 +513,23 @@ void kscrashsentry_uninstallMachHandler(void)
         {
             pthread_cancel(g_secondaryPThread);
         }
-        g_secondaryMachThread = 0;
-        g_secondaryPThread = 0;
+        bsg_g_secondaryMachThread = 0;
+        bsg_g_secondaryPThread = 0;
     }
 
-    KSLOG_DEBUG("Mach exception handlers uninstalled.");
-    g_installed = 0;
+    BSG_KSLOG_DEBUG("Mach exception handlers uninstalled.");
+    bsg_g_installed = 0;
 }
 
 #else
 
-bool kscrashsentry_installMachHandler(__unused KSCrash_SentryContext* const context)
+bool kscrashsentry_installMachHandler(__unused BSG_KSCrash_SentryContext* const context)
 {
-    KSLOG_WARN("Mach exception handler not available on this platform.");
+    BSG_KSLOG_WARN("Mach exception handler not available on this platform.");
     return false;
 }
 
-void kscrashsentry_uninstallMachHandler(void)
+void bsg_kscrashsentry_uninstallMachHandler(void)
 {
 }
 

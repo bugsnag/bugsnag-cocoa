@@ -28,11 +28,11 @@
 
 @implementation RFC3339DateTool
 
-static NSDateFormatter* g_formatter;
+static NSDateFormatter* bsg_g_formatter;
 
 + (void) initialize
 {
-    g_formatter = [[NSDateFormatter alloc] init];
+    bsg_g_formatter = [[NSDateFormatter alloc] init];
     NSLocale* locale = [[NSLocale alloc]
                         initWithLocaleIdentifier:@"en_US_POSIX"];
     [g_formatter setLocale:locale];

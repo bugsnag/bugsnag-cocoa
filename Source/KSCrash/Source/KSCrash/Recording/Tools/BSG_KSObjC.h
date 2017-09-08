@@ -1,5 +1,5 @@
 //
-//  KSObjC.h
+//  BSG_KSObjC.h
 //
 //  Created by Karl Stenerud on 2012-08-30.
 //
@@ -25,8 +25,8 @@
 //
 
 
-#ifndef HDR_KSObjC_h
-#define HDR_KSObjC_h
+#ifndef HDR_BSG_BSG_KSObjC_h
+#define HDR_BSG_BSG_KSObjC_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,39 +39,39 @@ extern "C" {
 
 typedef enum
 {
-    KSObjCTypeUnknown = 0,
-    KSObjCTypeClass,
-    KSObjCTypeObject,
-    KSObjCTypeBlock,
-} KSObjCType;
+    BSG_KSObjCTypeUnknown = 0,
+    BSG_KSObjCTypeClass,
+    BSG_KSObjCTypeObject,
+    BSG_KSObjCTypeBlock,
+} BSG_KSObjCType;
 
 typedef enum
 {
-    KSObjCClassTypeUnknown = 0,
-    KSObjCClassTypeString,
-    KSObjCClassTypeDate,
-    KSObjCClassTypeURL,
-    KSObjCClassTypeArray,
-    KSObjCClassTypeDictionary,
-    KSObjCClassTypeNumber,
-    KSObjCClassTypeException,
-} KSObjCClassType;
+    BSG_KSObjCClassTypeUnknown = 0,
+    BSG_KSObjCClassTypeString,
+    BSG_KSObjCClassTypeDate,
+    BSG_KSObjCClassTypeURL,
+    BSG_KSObjCClassTypeArray,
+    BSG_KSObjCClassTypeDictionary,
+    BSG_KSObjCClassTypeNumber,
+    BSG_KSObjCClassTypeException,
+} BSG_KSObjCClassType;
 
 typedef struct
 {
     const char* name;
     const char* type;
     size_t index;
-} KSObjCIvar;
+} BSG_KSObjCIvar;
 
 
 //======================================================================
 #pragma mark - Initialization -
 //======================================================================
 
-/** Initialize KSObjC.
+/** Initialize BSG_KSObjC.
  */
-void ksobjc_init(void);
+void bsg_ksobjc_init(void);
 
 
 //======================================================================
@@ -83,14 +83,14 @@ void ksobjc_init(void);
  * @param pointer The pointer to check.
  * @return true if it's a tagged pointer.
  */
-bool ksobjc_isTaggedPointer(const void* const pointer);
+bool bsg_ksobjc_isTaggedPointer(const void* const pointer);
 
 /** Check if a pointer is a valid tagged pointer.
  *
  * @param pointer The pointer to check.
  * @return true if it's a valid tagged pointer.
  */
-bool ksobjc_isValidTaggedPointer(const void* const pointer);
+bool bsg_ksobjc_isValidTaggedPointer(const void* const pointer);
     
 /** Query a pointer to see what kind of object it points to.
  * If the pointer points to a class, this method will verify that its basic
@@ -101,15 +101,15 @@ bool ksobjc_isValidTaggedPointer(const void* const pointer);
  *
  * Warning: In order to ensure that an object is both valid and accessible,
  *          always call this method on an object or class pointer (including
- *          those returned by ksobjc_isaPointer() and ksobjc_superclass())
+ *          those returned by bsg_ksobjc_isaPointer() and bsg_ksobjc_superclass())
  *          BEFORE calling any other function in this module.
  *
  * @param objectOrClassPtr Pointer to something that may be an object or class.
  *
- * @return The type of object, or KSObjCTypeNone if it was not an object or
+ * @return The type of object, or BSG_KSObjCTypeNone if it was not an object or
  *         was inaccessible.
  */
-KSObjCType ksobjc_objectType(const void* objectOrClassPtr);
+BSG_KSObjCType bsg_ksobjc_objectType(const void* objectOrClassPtr);
 
 /** Check that an object contains valid data.
  * If the object is of a recognized type (string, date, array, etc),
@@ -121,7 +121,7 @@ KSObjCType ksobjc_objectType(const void* objectOrClassPtr);
  *
  * @return true if the object is valid.
  */
-bool ksobjc_isValidObject(const void* object);
+bool bsg_ksobjc_isValidObject(const void* object);
 
 /** Fetch the isa pointer from an object or class.
  *
@@ -129,7 +129,7 @@ bool ksobjc_isValidObject(const void* object);
  *
  * @return The isa pointer.
  */
-const void* ksobjc_isaPointer(const void* objectOrClassPtr);
+const void* bsg_ksobjc_isaPointer(const void* objectOrClassPtr);
 
 /** Fetch the super class pointer from a class.
  *
@@ -137,7 +137,7 @@ const void* ksobjc_isaPointer(const void* objectOrClassPtr);
  *
  * @param the super class.
  */
-const void* ksobjc_superClass(const void* classPtr);
+const void* bsg_ksobjc_superClass(const void* classPtr);
 
 /** Get the base class this class is derived from.
  * It will always return the highest level non-root class in the hierarchy
@@ -148,7 +148,7 @@ const void* ksobjc_superClass(const void* classPtr);
  *
  * @return The base class.
  */
-const void* ksobjc_baseClass(const void* const classPtr);
+const void* bsg_ksobjc_baseClass(const void* const classPtr);
 
 /** Check if a class is a meta class.
  *
@@ -156,7 +156,7 @@ const void* ksobjc_baseClass(const void* const classPtr);
  *
  * @return true if the class is a meta class.
  */
-bool ksobjc_isMetaClass(const void* classPtr);
+bool bsg_ksobjc_isMetaClass(const void* classPtr);
 
 /** Check if a class is a root class.
  *
@@ -164,7 +164,7 @@ bool ksobjc_isMetaClass(const void* classPtr);
  *
  * @return true if the class is a root class.
  */
-bool ksobjc_isRootClass(const void* classPtr);
+bool bsg_ksobjc_isRootClass(const void* classPtr);
 
 /** Get the name of a class.
  *
@@ -172,7 +172,7 @@ bool ksobjc_isRootClass(const void* classPtr);
  *
  * @return the name, or NULL if the name inaccessible.
  */
-const char* ksobjc_className(const void* classPtr);
+const char* bsg_ksobjc_className(const void* classPtr);
 
 /** Get the name of an object's class.
  * This also handles tagged pointers.
@@ -181,7 +181,7 @@ const char* ksobjc_className(const void* classPtr);
  *
  * @return the name, or NULL if the name is inaccessible.
  */
-const char* ksobjc_objectClassName(const void* objectPtr);
+const char* bsg_ksobjc_objectClassName(const void* objectPtr);
 
 /** Check if a class has a specific name.
  *
@@ -191,10 +191,10 @@ const char* ksobjc_objectClassName(const void* objectPtr);
  *
  * @param true if the class has the specified name.
  */
-bool ksobjc_isClassNamed(const void* const classPtr, const char* const className);
+bool bsg_ksobjc_isClassNamed(const void* const classPtr, const char* const className);
 
 /** Check if a class is of the specified type or a subclass thereof.
- * Note: This function is considerably slower than ksobjc_baseClassName().
+ * Note: This function is considerably slower than bsg_ksobjc_baseClassName().
  *
  * @param classPtr Pointer to a valid class.
  *
@@ -202,7 +202,7 @@ bool ksobjc_isClassNamed(const void* const classPtr, const char* const className
  *
  * @param true if the class is of the specified type or a subclass of that type.
  */
-bool ksobjc_isKindOfClass(const void* classPtr, const char* className);
+bool bsg_ksobjc_isKindOfClass(const void* classPtr, const char* className);
 
 /** Get the number of ivars registered with a class.
  *
@@ -210,7 +210,7 @@ bool ksobjc_isKindOfClass(const void* classPtr, const char* className);
  *
  * @return The number of ivars.
  */
-size_t ksobjc_ivarCount(const void* classPtr);
+size_t bsg_ksobjc_ivarCount(const void* classPtr);
 
 /** Get information about ivars in a class.
  *
@@ -222,7 +222,7 @@ size_t ksobjc_ivarCount(const void* classPtr);
  *
  * @return The number of ivars copied.
  */
-size_t ksobjc_ivarList(const void* classPtr, KSObjCIvar* dstIvars, size_t ivarsCount);
+size_t bsg_ksobjc_ivarList(const void* classPtr, BSG_KSObjCIvar* dstIvars, size_t ivarsCount);
 
 /** Get ivar information by name/
  *
@@ -234,7 +234,7 @@ size_t ksobjc_ivarList(const void* classPtr, KSObjCIvar* dstIvars, size_t ivarsC
  *
  * @return true if the operation was successful.
  */
-bool ksobjc_ivarNamed(const void* const classPtr, const char* name, KSObjCIvar* dst);
+bool bsg_ksobjc_ivarNamed(const void* const classPtr, const char* name, BSG_KSObjCIvar* dst);
 
 /** Get the value of an ivar in an object.
  *
@@ -246,7 +246,7 @@ bool ksobjc_ivarNamed(const void* const classPtr, const char* name, KSObjCIvar* 
  *
  * @return true if the operation was successful.
  */
-bool ksobjc_ivarValue(const void* objectPtr, size_t ivarIndex, void* dst);
+bool bsg_ksobjc_ivarValue(const void* objectPtr, size_t ivarIndex, void* dst);
 
 /* Get the payload from a tagged pointer.
  *
@@ -254,7 +254,7 @@ bool ksobjc_ivarValue(const void* objectPtr, size_t ivarIndex, void* dst);
  *
  * @return the payload value.
  */
-uintptr_t ksobjc_taggedPointerPayload(const void* taggedObjectPtr);
+uintptr_t bsg_ksobjc_taggedPointerPayload(const void* taggedObjectPtr);
 
 /** Generate a description of an object.
  *
@@ -276,19 +276,19 @@ uintptr_t ksobjc_taggedPointerPayload(const void* taggedObjectPtr);
  *
  * @return the number of bytes copied (not including null terminator).
  */
-size_t ksobjc_getDescription(void* object,
+size_t bsg_ksobjc_getDescription(void* object,
                              char* buffer,
                              size_t bufferLength);
 
 /** Get the class type of an object.
- * There are a number of common class types that KSObjC understamds,
- * listed in KSObjCClassType.
+ * There are a number of common class types that BSG_KSObjC understamds,
+ * listed in BSG_KSObjCClassType.
  *
  * @param object The object to query.
  *
- * @return The class type, or KSObjCClassTypeUnknown if it couldn't be determined.
+ * @return The class type, or BSG_KSObjCClassTypeUnknown if it couldn't be determined.
  */
-KSObjCClassType ksobjc_objectClassType(const void* object);
+BSG_KSObjCClassType bsg_ksobjc_objectClassType(const void* object);
 
 
 //======================================================================
@@ -300,14 +300,14 @@ KSObjCClassType ksobjc_objectClassType(const void* object);
  * @param object The number to query.
  * @return true if the number is floating point.
  */
-bool ksobjc_numberIsFloat(const void* object);
+bool bsg_ksobjc_numberIsFloat(const void* object);
 
 /** Get the contents of a number as a floating point value.
  *
  * @param object The number.
  * @return The value.
  */
-Float64 ksobjc_numberAsFloat(const void* object);
+Float64 bsg_ksobjc_numberAsFloat(const void* object);
 
 /** Get the contents of a number as an integer value.
  * If the number was stored as floating point, it will be
@@ -316,7 +316,7 @@ Float64 ksobjc_numberAsFloat(const void* object);
  * @param object The number.
  * @return The value.
  */
-int64_t ksobjc_numberAsInteger(const void* object);
+int64_t bsg_ksobjc_numberAsInteger(const void* object);
 
 /** Copy the contents of a date object.
  *
@@ -324,7 +324,7 @@ int64_t ksobjc_numberAsInteger(const void* object);
  *
  * @return Time interval since Jan 1 2001 00:00:00 GMT.
  */
-CFAbsoluteTime ksobjc_dateContents(const void* datePtr);
+CFAbsoluteTime bsg_ksobjc_dateContents(const void* datePtr);
 
 /** Copy the contents of a URL object.
  *
@@ -339,7 +339,7 @@ CFAbsoluteTime ksobjc_dateContents(const void* datePtr);
  *
  * @return the number of bytes copied (not including null terminator).
  */
-size_t ksobjc_copyURLContents(const void* nsurl, char* dst, size_t maxLength);
+size_t bsg_ksobjc_copyURLContents(const void* nsurl, char* dst, size_t maxLength);
 
 /** Get the length of a string in characters.
  *
@@ -347,7 +347,7 @@ size_t ksobjc_copyURLContents(const void* nsurl, char* dst, size_t maxLength);
  *
  * @return The length of the string.
  */
-size_t ksobjc_stringLength(const void* const stringPtr);
+size_t bsg_ksobjc_stringLength(const void* const stringPtr);
 
 /** Copy the contents of a string object.
  *
@@ -362,7 +362,7 @@ size_t ksobjc_stringLength(const void* const stringPtr);
  *
  * @return the number of bytes copied (not including null terminator).
  */
-size_t ksobjc_copyStringContents(const void* string, char* dst, size_t maxLength);
+size_t bsg_ksobjc_copyStringContents(const void* string, char* dst, size_t maxLength);
 
 /** Get an NSArray's count.
  *
@@ -370,7 +370,7 @@ size_t ksobjc_copyStringContents(const void* string, char* dst, size_t maxLength
  *
  * @return The array's count.
  */
-size_t ksobjc_arrayCount(const void* arrayPtr);
+size_t bsg_ksobjc_arrayCount(const void* arrayPtr);
 
 /** Get an NSArray's contents.
  *
@@ -382,7 +382,7 @@ size_t ksobjc_arrayCount(const void* arrayPtr);
  *
  * @return The number of items copied.
  */
-size_t ksobjc_arrayContents(const void* arrayPtr, uintptr_t* contents, size_t count);
+size_t bsg_ksobjc_arrayContents(const void* arrayPtr, uintptr_t* contents, size_t count);
 
 
 //======================================================================
@@ -401,15 +401,15 @@ size_t ksobjc_arrayContents(const void* arrayPtr, uintptr_t* contents, size_t co
  *
  * @return true if the operation was successful.
  */
-bool ksobjc_dictionaryFirstEntry(const void* dict, uintptr_t* key, uintptr_t* value);
+bool bsg_ksobjc_dictionaryFirstEntry(const void* dict, uintptr_t* key, uintptr_t* value);
 
 /** UNIMPLEMENTED
  */
-size_t ksobjc_dictionaryCount(const void* dict);
+size_t bsg_ksobjc_dictionaryCount(const void* dict);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // HDR_KSObjC_h
+#endif // HDR_BSG_KSObjC_h

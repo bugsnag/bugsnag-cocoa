@@ -1,5 +1,5 @@
 //
-//  KSCrash.m
+//  BSG_KSCrash.m
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -38,7 +38,7 @@
 //#define KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
 
-#if KSCRASH_HAS_UIKIT
+#if BSG_KSCRASH_HAS_UIKIT
 #import <UIKit/UIKit.h>
 #endif
 
@@ -48,8 +48,8 @@
 // ============================================================================
 
 /** The directory under "Caches" to store the crash reports. */
-#ifndef KSCRASH_DefaultReportFilesDirectory
-    #define KSCRASH_DefaultReportFilesDirectory @"KSCrashReports"
+#ifndef BSG_KSCRASH_DefaultReportFilesDirectory
+    #define BSG_KSCRASH_DefaultReportFilesDirectory @"KSCrashReports"
 #endif
 
 
@@ -57,8 +57,8 @@
 #pragma mark - Constants -
 // ============================================================================
 
-#define kCrashLogFilenameSuffix "-CrashLog.txt"
-#define kCrashStateFilenameSuffix "-CrashState.json"
+#define BSG_kCrashLogFilenameSuffix "-CrashLog.txt"
+#define BSG_kCrashStateFilenameSuffix "-CrashState.json"
 
 
 // ============================================================================
@@ -73,11 +73,11 @@
 @property(nonatomic,readonly,retain) NSString* recrashReportPath;
 @property(nonatomic,readonly,retain) NSString* stateFilePath;
 
-// Mirrored from KSCrashAdvanced.h to provide ivars
-@property(nonatomic,readwrite,retain) id<KSCrashReportFilter> sink;
+// Mirrored from BSG_KSCrashAdvanced.h to provide ivars
+@property(nonatomic,readwrite,retain) id<BSG_KSCrashReportFilter> sink;
 @property(nonatomic,readwrite,retain) NSString* logFilePath;
-@property(nonatomic,readwrite,retain) KSCrashReportStore* crashReportStore;
-@property(nonatomic,readwrite,assign) KSReportWriteCallback onCrash;
+@property(nonatomic,readwrite,retain) BSG_KSCrashReportStore* crashReportStore;
+@property(nonatomic,readwrite,assign) BSG_KSReportWriteCallback onCrash;
 @property(nonatomic,readwrite,assign) bool printTraceToStdout;
 @property(nonatomic,readwrite,assign) int maxStoredReports;
 
@@ -113,22 +113,22 @@
 #pragma mark - Lifecycle -
 // ============================================================================
 
-- (void) setDemangleLanguages:(KSCrashDemangleLanguage)demangleLanguages
+- (void) setDemangleLanguages:(BSG_KSCrashDemangleLanguage)demangleLanguages
 {
-    self.crashReportStore.demangleCPP = (demangleLanguages & KSCrashDemangleLanguageCPlusPlus) != 0;
-    self.crashReportStore.demangleSwift = (demangleLanguages & KSCrashDemangleLanguageSwift) != 0;
+    self.crashReportStore.demangleCPP = (demangleLanguages & BSG_KSCrashDemangleLanguageCPlusPlus) != 0;
+    self.crashReportStore.demangleSwift = (demangleLanguages & BSG_KSCrashDemangleLanguageSwift) != 0;
 }
 
-- (KSCrashDemangleLanguage) demangleLanguages
+- (BSG_KSCrashDemangleLanguage) demangleLanguages
 {
-    KSCrashDemangleLanguage languages = 0;
+    BSG_KSCrashDemangleLanguage languages = 0;
     if(self.crashReportStore.demangleCPP)
     {
-        languages |= KSCrashDemangleLanguageCPlusPlus;
+        languages |= BSG_KSCrashDemangleLanguageCPlusPlus;
     }
     if(self.crashReportStore.demangleSwift)
     {
-        languages |= KSCrashDemangleLanguageSwift;
+        languages |= BSG_KSCrashDemangleLanguageSwift;
     }
     return languages;
 }
@@ -137,7 +137,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 
 - (id) init
 {
-    return [self initWithReportFilesDirectory:KSCRASH_DefaultReportFilesDirectory];
+    return [self initWithReportFilesDirectory:BSG_KSCRASH_DefaultReportFilesDirectory];
 }
 
 - (id) initWithReportFilesDirectory:(NSString *)reportFilesDirectory
@@ -151,20 +151,20 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
                                                                    YES);
         if([directories count] == 0)
         {
-            KSLOG_ERROR(@"Could not locate cache directory path.");
+            BSG_KSLOG_ERROR(@"Could not locate cache directory path.");
             goto failed;
         }
         NSString* cachePath = [directories objectAtIndex:0];
         if([cachePath length] == 0)
         {
-            KSLOG_ERROR(@"Could not locate cache directory path.");
+            BSG_KSLOG_ERROR(@"Could not locate cache directory path.");
             goto failed;
         }
         NSString* storePathEnd = [reportFilesDirectory stringByAppendingPathComponent:self.bundleName];
         NSString* storePath = [cachePath stringByAppendingPathComponent:storePathEnd];
         if([storePath length] == 0)
         {
-            KSLOG_ERROR(@"Could not determine report files path.");
+            BSG_KSLOG_ERROR(@"Could not determine report files path.");
             goto failed;
         }
         if(![self ensureDirectoryExists:storePath])
@@ -173,8 +173,8 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         }
 
         self.nextCrashID = [NSUUID UUID].UUIDString;
-        self.crashReportStore = [KSCrashReportStore storeWithPath:storePath];
-        self.deleteBehaviorAfterSendAll = KSCDeleteAlways;
+        self.crashReportStore = [BSG_KSCrashReportStore storeWithPath:storePath];
+        self.deleteBehaviorAfterSendAll = BSG_KSCDeleteAlways;
         self.searchThreadNames = NO;
         self.searchQueueNames = NO;
         self.introspectMemory = YES;
@@ -184,7 +184,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     return self;
 
 failed:
-    KSLOG_ERROR(@"Failed to initialize crash handler. Crash reporting disabled.");
+    BSG_KSLOG_ERROR(@"Failed to initialize crash handler. Crash reporting disabled.");
     return nil;
 }
 
@@ -199,65 +199,65 @@ failed:
     NSData* userInfoJSON = nil;
     if(userInfo != nil)
     {
-        userInfoJSON = [self nullTerminated:[KSJSONCodec encode:userInfo
-                                                        options:KSJSONEncodeOptionSorted
+        userInfoJSON = [self nullTerminated:[BSG_KSJSONCodec encode:userInfo
+                                                        options:BSG_KSJSONEncodeOptionSorted
                                                           error:&error]];
         if(error != NULL)
         {
-            KSLOG_ERROR(@"Could not serialize user info: %@", error);
+            BSG_KSLOG_ERROR(@"Could not serialize user info: %@", error);
             return;
         }
     }
     
     _userInfo = userInfo;
-    kscrash_setUserInfoJSON([userInfoJSON bytes]);
+    bsg_kscrash_setUserInfoJSON([userInfoJSON bytes]);
 }
 
-- (void) setHandlingCrashTypes:(KSCrashType)handlingCrashTypes
+- (void) setHandlingCrashTypes:(BSG_KSCrashType)handlingCrashTypes
 {
-    _handlingCrashTypes = kscrash_setHandlingCrashTypes(handlingCrashTypes);
+    _handlingCrashTypes = bsg_kscrash_setHandlingCrashTypes(handlingCrashTypes);
 }
 
 - (void) setDeadlockWatchdogInterval:(double) deadlockWatchdogInterval
 {
     _deadlockWatchdogInterval = deadlockWatchdogInterval;
-    kscrash_setDeadlockWatchdogInterval(deadlockWatchdogInterval);
+    bsg_kscrash_setDeadlockWatchdogInterval(deadlockWatchdogInterval);
 }
 
 - (void) setPrintTraceToStdout:(bool)printTraceToStdout
 {
     _printTraceToStdout = printTraceToStdout;
-    kscrash_setPrintTraceToStdout(printTraceToStdout);
+    bsg_kscrash_setPrintTraceToStdout(printTraceToStdout);
 }
 
-- (void) setOnCrash:(KSReportWriteCallback) onCrash
+- (void) setOnCrash:(BSG_KSReportWriteCallback) onCrash
 {
     _onCrash = onCrash;
-    kscrash_setCrashNotifyCallback(onCrash);
+    bsg_kscrash_setCrashNotifyCallback(onCrash);
 }
 
 - (void) setSearchThreadNames:(bool)searchThreadNames
 {
     _searchThreadNames = searchThreadNames;
-    kscrash_setSearchThreadNames(searchThreadNames);
+    bsg_kscrash_setSearchThreadNames(searchThreadNames);
 }
 
 - (void) setSearchQueueNames:(bool)searchQueueNames
 {
     _searchQueueNames = searchQueueNames;
-    kscrash_setSearchQueueNames(searchQueueNames);
+    bsg_kscrash_setSearchQueueNames(searchQueueNames);
 }
 
 - (void) setIntrospectMemory:(bool) introspectMemory
 {
     _introspectMemory = introspectMemory;
-    kscrash_setIntrospectMemory(introspectMemory);
+    bsg_kscrash_setIntrospectMemory(introspectMemory);
 }
 
 - (void) setCatchZombies:(bool)catchZombies
 {
     _catchZombies = catchZombies;
-    kscrash_setCatchZombies(catchZombies);
+    bsg_kscrash_setCatchZombies(catchZombies);
 }
 
 - (void) setDoNotIntrospectClasses:(NSArray *)doNotIntrospectClasses
@@ -266,7 +266,7 @@ failed:
     size_t count = [doNotIntrospectClasses count];
     if(count == 0)
     {
-        kscrash_setDoNotIntrospectClasses(nil, 0);
+        bsg_kscrash_setDoNotIntrospectClasses(nil, 0);
     }
     else
     {
@@ -276,7 +276,7 @@ failed:
         {
             classes[i] = [[doNotIntrospectClasses objectAtIndex:i] cStringUsingEncoding:NSUTF8StringEncoding];
         }
-        kscrash_setDoNotIntrospectClasses(classes, count);
+        bsg_kscrash_setDoNotIntrospectClasses(classes, count);
     }
 }
 
@@ -292,13 +292,13 @@ failed:
 
 - (NSString*) stateFilePath
 {
-    NSString* stateFilename = [NSString stringWithFormat:@"%@" kCrashStateFilenameSuffix, self.bundleName];
+    NSString* stateFilename = [NSString stringWithFormat:@"%@" BSG_kCrashStateFilenameSuffix, self.bundleName];
     return [self.crashReportStore.path stringByAppendingPathComponent:stateFilename];
 }
 
 - (BOOL) install
 {
-    _handlingCrashTypes = kscrash_install([self.crashReportPath UTF8String],
+    _handlingCrashTypes = bsg_kscrash_install([self.crashReportPath UTF8String],
                                           [self.recrashReportPath UTF8String],
                                           [self.stateFilePath UTF8String],
                                           [self.nextCrashID UTF8String]);
@@ -334,28 +334,28 @@ failed:
     return true;
 }
 
-- (void) sendAllReportsWithCompletion:(KSCrashReportFilterCompletion) onCompletion
+- (void) sendAllReportsWithCompletion:(BSG_KSCrashReportFilterCompletion) onCompletion
 {
     [self.crashReportStore pruneReportsLeaving:self.maxStoredReports];
     
     NSArray* reports = [self allReports];
     
-    KSLOG_INFO(@"Sending %d crash reports", [reports count]);
+    BSG_KSLOG_INFO(@"Sending %d crash reports", [reports count]);
     
     [self sendReports:reports
          onCompletion:^(NSArray* filteredReports, BOOL completed, NSError* error)
      {
-         KSLOG_DEBUG(@"Process finished with completion: %d", completed);
+         BSG_KSLOG_DEBUG(@"Process finished with completion: %d", completed);
          if(error != nil)
          {
-             KSLOG_ERROR(@"Failed to send reports: %@", error);
+             BSG_KSLOG_ERROR(@"Failed to send reports: %@", error);
          }
-         if((self.deleteBehaviorAfterSendAll == KSCDeleteOnSucess && completed) ||
-            self.deleteBehaviorAfterSendAll == KSCDeleteAlways)
+         if((self.deleteBehaviorAfterSendAll == BSG_KSCDeleteOnSucess && completed) ||
+            self.deleteBehaviorAfterSendAll == BSG_KSCDeleteAlways)
          {
              [self deleteAllReports];
          }
-         kscrash_i_callCompletion(onCompletion, filteredReports, completed, error);
+         bsg_kscrash_i_callCompletion(onCompletion, filteredReports, completed, error);
      }];
 }
 
@@ -376,28 +376,28 @@ failed:
     const char* cLanguage = [language cStringUsingEncoding:NSUTF8StringEncoding];
     const char* cLineOfCode = [lineOfCode cStringUsingEncoding:NSUTF8StringEncoding];
     NSError* error = nil;
-    NSData* jsonData = [KSJSONCodec encode:stackTrace options:0 error:&error];
+    NSData* jsonData = [BSG_KSJSONCodec encode:stackTrace options:0 error:&error];
     if(jsonData == nil || error != nil)
     {
-        KSLOG_ERROR(@"Error encoding stack trace to JSON: %@", error);
+        BSG_KSLOG_ERROR(@"Error encoding stack trace to JSON: %@", error);
         // Don't return, since we can still record other useful information.
     }
     NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     const char* cStackTrace = [jsonString cStringUsingEncoding:NSUTF8StringEncoding];
 
-    kscrash_reportUserException(cName,
+    bsg_kscrash_reportUserException(cName,
                                 cReason,
                                 cLanguage,
                                 cLineOfCode,
                                 cStackTrace,
                                 terminateProgram);
 
-    // If kscrash_reportUserException() returns, we did not terminate.
+    // If bsg_kscrash_reportUserException() returns, we did not terminate.
     // Set up IDs and paths for the next crash.
 
     self.nextCrashID = [NSUUID UUID].UUIDString;
 
-    kscrash_reinstall([self.crashReportPath UTF8String],
+    bsg_kscrash_reinstall([self.crashReportPath UTF8String],
                       [self.recrashReportPath UTF8String],
                       [self.stateFilePath UTF8String],
                       [self.nextCrashID UTF8String]);
@@ -407,20 +407,20 @@ failed:
 #pragma mark - Advanced API -
 // ============================================================================
 
-#define SYNTHESIZE_CRASH_STATE_PROPERTY(TYPE, NAME) \
+#define BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(TYPE, NAME) \
 - (TYPE) NAME \
 { \
-    return kscrashstate_currentState()->NAME; \
+    return bsg_kscrashstate_currentState()->NAME; \
 }
 
-SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval, activeDurationSinceLastCrash)
-SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval, backgroundDurationSinceLastCrash)
-SYNTHESIZE_CRASH_STATE_PROPERTY(int, launchesSinceLastCrash)
-SYNTHESIZE_CRASH_STATE_PROPERTY(int, sessionsSinceLastCrash)
-SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval, activeDurationSinceLaunch)
-SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval, backgroundDurationSinceLaunch)
-SYNTHESIZE_CRASH_STATE_PROPERTY(int, sessionsSinceLaunch)
-SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
+BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval, activeDurationSinceLastCrash)
+BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval, backgroundDurationSinceLastCrash)
+BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(int, launchesSinceLastCrash)
+BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(int, sessionsSinceLastCrash)
+BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval, activeDurationSinceLaunch)
+BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval, backgroundDurationSinceLaunch)
+BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(int, sessionsSinceLaunch)
+BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 
 - (NSUInteger) reportCount
 {
@@ -432,17 +432,17 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
     return self.crashReportStore.path;
 }
 
-- (void) sendReports:(NSArray*) reports onCompletion:(KSCrashReportFilterCompletion) onCompletion
+- (void) sendReports:(NSArray*) reports onCompletion:(BSG_KSCrashReportFilterCompletion) onCompletion
 {
     if([reports count] == 0)
     {
-        kscrash_i_callCompletion(onCompletion, reports, YES, nil);
+        bsg_kscrash_i_callCompletion(onCompletion, reports, YES, nil);
         return;
     }
     
     if(self.sink == nil)
     {
-        kscrash_i_callCompletion(onCompletion, reports, NO,
+        bsg_kscrash_i_callCompletion(onCompletion, reports, NO,
                                  [NSError errorWithDomain:[[self class] description]
                                                      code:0
                                               description:@"No sink set. Crash reports not sent."]);
@@ -452,7 +452,7 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
     [self.sink filterReports:reports
                 onCompletion:^(NSArray* filteredReports, BOOL completed, NSError* error)
      {
-         kscrash_i_callCompletion(onCompletion, filteredReports, completed, error);
+         bsg_kscrash_i_callCompletion(onCompletion, filteredReports, completed, error);
      }];
 }
 
@@ -477,7 +477,7 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
     NSString* logFilePath = [self.crashReportStore.path stringByAppendingPathComponent:logFilename];
     if(![self redirectConsoleLogsToFile:logFilePath overwrite:YES])
     {
-        KSLOG_ERROR(@"Could not redirect logs to %@", logFilePath);
+        BSG_KSLOG_ERROR(@"Could not redirect logs to %@", logFilePath);
         return NO;
     }
     return YES;
@@ -500,7 +500,7 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
                            attributes:nil
                                 error:&error])
         {
-            KSLOG_ERROR(@"Could not create directory %@: %@.", path, error);
+            BSG_KSLOG_ERROR(@"Could not create directory %@: %@.", path, error);
             return NO;
         }
     }
@@ -526,34 +526,34 @@ SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 
 - (void) applicationDidBecomeActive
 {
-    kscrashstate_notifyAppActive(true);
+    bsg_kscrashstate_notifyAppActive(true);
 }
 
 - (void) applicationWillResignActive
 {
-    kscrashstate_notifyAppActive(false);
+    bsg_kscrashstate_notifyAppActive(false);
 }
 
 - (void) applicationDidEnterBackground
 {
-    kscrashstate_notifyAppInForeground(false);
+    bsg_kscrashstate_notifyAppInForeground(false);
 }
 
 - (void) applicationWillEnterForeground
 {
-    kscrashstate_notifyAppInForeground(true);
+    bsg_kscrashstate_notifyAppInForeground(true);
 }
 
 - (void) applicationWillTerminate
 {
-    kscrashstate_notifyAppTerminate();
+    bsg_kscrashstate_notifyAppTerminate();
 }
 
 @end
 
 
-//! Project version number for KSCrashFramework.
-const double KSCrashFrameworkVersionNumber = 1.813;
+//! Project version number for BSG_KSCrashFramework.
+const double BSG_KSCrashFrameworkVersionNumber = 1.813;
 
-//! Project version string for KSCrashFramework.
-const unsigned char KSCrashFrameworkVersionString[] = "1.8.13";
+//! Project version string for BSG_KSCrashFramework.
+const unsigned char BSG_KSCrashFrameworkVersionString[] = "1.8.13";

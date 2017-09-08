@@ -1,5 +1,5 @@
 //
-//  KSCrashContext.h
+//  BSG_KSCrashContext.h
 //
 //  Created by Karl Stenerud on 2012-01-28.
 //
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef HDR_KSCrashContext_h
-#define HDR_KSCrashContext_h
+#ifndef HDR_BSG_KSCrashContext_h
+#define HDR_BSG_KSCrashContext_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,7 +58,7 @@ typedef struct
      */
     const char** restrictedClasses;
     size_t restrictedClassesCount;
-} KSCrash_IntrospectionRules;
+} BSG_KSCrash_IntrospectionRules;
 
 typedef struct
 {
@@ -84,25 +84,25 @@ typedef struct
     bool searchQueueNames;
 
     /** The types of crashes that will be handled. */
-    KSCrashType handlingCrashTypes;
+    BSG_KSCrashType handlingCrashTypes;
 
     /** Rules for introspecting Objective-C objects. */
-    KSCrash_IntrospectionRules introspectionRules;
+    BSG_KSCrash_IntrospectionRules introspectionRules;
     
     /** Callback allowing the application the opportunity to add extra data to
      * the report file. Application MUST NOT call async-unsafe methods!
      */
     KSReportWriteCallback onCrashNotify;
-} KSCrash_Configuration;
+} BSG_KSCrash_Configuration;
 
 /** Contextual data used by the crash report writer.
  */
 typedef struct
 {
-    KSCrash_Configuration config;
-    KSCrash_State state;
-    KSCrash_SentryContext crash;
-} KSCrash_Context;
+    BSG_KSCrash_Configuration config;
+    BSG_KSCrash_State state;
+    BSG_KSCrash_SentryContext crash;
+} BSG_KSCrash_Context;
 
 
 #ifdef __cplusplus

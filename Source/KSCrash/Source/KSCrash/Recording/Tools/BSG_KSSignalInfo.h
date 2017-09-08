@@ -29,8 +29,8 @@
  */
 
 
-#ifndef HDR_KSSignalInfo_h
-#define HDR_KSSignalInfo_h
+#ifndef HDR_BSG_KSSignalInfo_h
+#define HDR_BSG_KSSignalInfo_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,7 +46,7 @@ extern "C" {
  *
  * @return The signal's name or NULL if not found.
  */
-const char* kssignal_signalName(int signal);
+const char* bsg_kssignal_signalName(int signal);
 
 /** Get the name of a signal's subcode.
  *
@@ -56,19 +56,19 @@ const char* kssignal_signalName(int signal);
  *
  * @return The code's name or NULL if not found.
  */
-const char* kssignal_signalCodeName(int signal, int code);
+const char* bsg_kssignal_signalCodeName(int signal, int code);
 
 /** Get a list of fatal signals.
  *
  * @return A list of fatal signals.
  */
-const int* kssignal_fatalSignals(void);
+const int* bsg_kssignal_fatalSignals(void);
 
 /** Get the size of the fatal signals list.
  *
  * @return The size of the fatal signals list.
  */
-int kssignal_numFatalSignals(void);
+int bsg_kssignal_numFatalSignals(void);
 
 /** Get the signal equivalent of a mach exception.
  *
@@ -78,7 +78,7 @@ int kssignal_numFatalSignals(void);
  *
  * @return The matching signal, or 0 if not found.
  */
-int kssignal_signalForMachException(int exception,
+int bsg_kssignal_signalForMachException(int exception,
                                     mach_exception_code_t code);
 
 /** Get the mach exception equivalent of a signal.
@@ -87,7 +87,7 @@ int kssignal_signalForMachException(int exception,
  *
  * @return The matching mach exception, or 0 if not found.
  */
-int kssignal_machExceptionForSignal(int signal);
+int bsg_kssignal_machExceptionForSignal(int signal);
 
 
 #ifdef __cplusplus

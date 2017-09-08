@@ -1,5 +1,5 @@
 //
-//  KSCrashSentry_Deadlock.m
+//  BSG_KSCrashSentry_Deadlock.m
 //
 //  Created by Karl Stenerud on 2012-12-09.
 //
@@ -35,7 +35,7 @@
 #define kIdleInterval 5.0f
 
 
-@class KSCrashDeadlockMonitor;
+@class BSG_KSCrashDeadlockMonitor;
 
 // ============================================================================
 #pragma mark - Globals -
@@ -45,16 +45,16 @@
  * It's not fully thread safe, but it's safer than locking and slightly better
  * than nothing.
  */
-static volatile sig_atomic_t g_installed = 0;
+static volatile sig_atomic_t bsg_g_installed = 0;
 
 /** Thread which monitors other threads. */
-static KSCrashDeadlockMonitor* g_monitor;
+static BSG_KSCrashDeadlockMonitor* bsg_g_monitor;
 
 /** Context to fill with crash information. */
-static KSCrash_SentryContext* g_context;
+static BSG_KSCrash_SentryContext* bsg_g_context;
 
 /** Interval between watchdog pulses. */
-static NSTimeInterval g_watchdogInterval = 0;
+static NSTimeInterval bsg_g_watchdogInterval = 0;
 
 
 // ============================================================================
@@ -62,7 +62,7 @@ static NSTimeInterval g_watchdogInterval = 0;
 // ============================================================================
 
 
-@interface KSCrashDeadlockMonitor: NSObject
+@interface BSG_KSCrashDeadlockMonitor: NSObject
 
 @property(nonatomic, readwrite, retain) NSThread* monitorThread;
 @property(nonatomic, readwrite, assign) thread_t mainThread;
@@ -70,7 +70,7 @@ static NSTimeInterval g_watchdogInterval = 0;
 
 @end
 
-@implementation KSCrashDeadlockMonitor
+@implementation BSG_KSCrashDeadlockMonitor
 
 @synthesize monitorThread = _monitorThread;
 @synthesize mainThread = _mainThread;
@@ -87,7 +87,7 @@ static NSTimeInterval g_watchdogInterval = 0;
 
         dispatch_async(dispatch_get_main_queue(), ^
         {
-            self.mainThread = ksmach_thread_self();
+            self.mainThread = bsg_ksmachthread_self();
         });
     }
     return self;
@@ -117,19 +117,19 @@ static NSTimeInterval g_watchdogInterval = 0;
 {
     kscrashsentry_beginHandlingCrash(g_context);
 
-    KSLOG_DEBUG(@"Filling out context.");
-    g_context->crashType = KSCrashTypeMainThreadDeadlock;
-    g_context->offendingThread = self.mainThread;
-    g_context->registersAreValid = false;
+    BSG_KSLOG_DEBUG(@"Filling out context.");
+    bsg_g_context->crashType = BSG_KSCrashTypeMainThreadDeadlock;
+    bsg_g_context->offendingThread = self.mainThread;
+    bsg_g_context->registersAreValid = false;
     
-    KSLOG_DEBUG(@"Calling main crash handler.");
-    g_context->onCrash();
+    BSG_KSLOG_DEBUG(@"Calling main crash handler.");
+    bsg_g_context->onCrash();
     
     
-    KSLOG_DEBUG(@"Crash handling complete. Restoring original handlers.");
-    kscrashsentry_uninstall(KSCrashTypeAll);
+    BSG_KSLOG_DEBUG(@"Crash handling complete. Restoring original handlers.");
+    kscrashsentry_uninstall(BSG_KSCrashTypeAll);
     
-    KSLOG_DEBUG(@"Calling abort()");
+    BSG_KSLOG_DEBUG(@"Calling abort()");
     abort();
 }
 
@@ -141,7 +141,7 @@ static NSTimeInterval g_watchdogInterval = 0;
         // Only do a watchdog check if the watchdog interval is > 0.
         // If the interval is <= 0, just idle until the user changes it.
         @autoreleasepool {
-            NSTimeInterval sleepInterval = g_watchdogInterval;
+            NSTimeInterval sleepInterval = bsg_g_watchdogInterval;
             BOOL runWatchdogCheck = sleepInterval > 0;
             if(!runWatchdogCheck)
             {
@@ -170,40 +170,40 @@ static NSTimeInterval g_watchdogInterval = 0;
 #pragma mark - API -
 // ============================================================================
 
-bool kscrashsentry_installDeadlockHandler(KSCrash_SentryContext* context)
+bool kscrashsentry_installDeadlockHandler(BSG_KSCrash_SentryContext* context)
 {
-    KSLOG_DEBUG(@"Installing deadlock handler.");
+    BSG_KSLOG_DEBUG(@"Installing deadlock handler.");
     if(g_installed)
     {
-        KSLOG_DEBUG(@"Deadlock handler already installed.");
+        BSG_KSLOG_DEBUG(@"Deadlock handler already installed.");
         return true;
     }
-    g_installed = 1;
+    bsg_g_installed = 1;
 
-    g_context = context;
+    bsg_g_context = context;
 
-    KSLOG_DEBUG(@"Creating new deadlock monitor.");
-    g_monitor = [[KSCrashDeadlockMonitor alloc] init];
+    BSG_KSLOG_DEBUG(@"Creating new deadlock monitor.");
+    bsg_g_monitor = [[KSCrashDeadlockMonitor alloc] init];
     return true;
 }
 
-void kscrashsentry_uninstallDeadlockHandler(void)
+void bsg_kscrashsentry_uninstallDeadlockHandler(void)
 {
-    KSLOG_DEBUG(@"Uninstalling deadlock handler.");
+    BSG_KSLOG_DEBUG(@"Uninstalling deadlock handler.");
     if(!g_installed)
     {
-        KSLOG_DEBUG(@"Deadlock handler was already uninstalled.");
+        BSG_KSLOG_DEBUG(@"Deadlock handler was already uninstalled.");
         return;
     }
 
-    KSLOG_DEBUG(@"Stopping deadlock monitor.");
+    BSG_KSLOG_DEBUG(@"Stopping deadlock monitor.");
     [g_monitor cancel];
-    g_monitor = nil;
+    bsg_g_monitor = nil;
 
-    g_installed = 0;
+    bsg_g_installed = 0;
 }
 
-void kscrashsentry_setDeadlockHandlerWatchdogInterval(double value)
+void bsg_kscrashsentry_setDeadlockHandlerWatchdogInterval(double value)
 {
-    g_watchdogInterval = value;
+    bsg_g_watchdogInterval = value;
 }

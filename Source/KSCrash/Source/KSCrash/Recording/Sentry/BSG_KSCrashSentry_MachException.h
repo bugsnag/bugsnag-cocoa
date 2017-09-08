@@ -1,5 +1,5 @@
 //
-//  KSCrashSentry_MachException.h
+//  BSG_KSCrashSentry_MachException.h
 //
 //  Created by Karl Stenerud on 2012-02-04.
 //
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef HDR_KSCrashSentry_MachException_h
-#define HDR_KSCrashSentry_MachException_h
+#ifndef HDR_BSG_KSCrashSentry_MachException_h
+#define HDR_BSG_KSCrashSentry_MachException_h
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,11 +46,11 @@ extern "C" {
  *
  * @return true if installation was succesful.
  */
-bool kscrashsentry_installMachHandler(KSCrash_SentryContext* context);
+bool kscrashsentry_installMachHandler(BSG_KSCrash_SentryContext* context);
 
 /** Uninstall our custom mach exception handler.
  */
-void kscrashsentry_uninstallMachHandler(void);
+void bsg_kscrashsentry_uninstallMachHandler(void);
 
 
 #ifdef __cplusplus
