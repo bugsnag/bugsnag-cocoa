@@ -227,7 +227,7 @@ typedef struct BSG_KSCrashReportWriter
 
 } BSG_KSCrashReportWriter;
 
-typedef void (*KSReportWriteCallback)(const BSG_KSCrashReportWriter* writer);
+typedef void (*BSG_KSReportWriteCallback)(const BSG_KSCrashReportWriter* writer);
 
 
 #ifdef __cplusplus

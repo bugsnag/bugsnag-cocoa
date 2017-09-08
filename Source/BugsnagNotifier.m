@@ -74,19 +74,19 @@ static NSDictionary *notificationNameMap;
  *  @param writer report writer which will receive updated metadata
  */
 void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
-    if (g_bugsnag_data.configJSON) {
+    if (bsg_g_bugsnag_data.configJSON) {
         writer->addJSONElement(writer, "config", bsg_g_bugsnag_data.configJSON);
     }
-    if (g_bugsnag_data.metaDataJSON) {
+    if (bsg_g_bugsnag_data.metaDataJSON) {
         writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metaDataJSON);
     }
-    if (g_bugsnag_data.stateJSON) {
+    if (bsg_g_bugsnag_data.stateJSON) {
         writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
     }
-    if (g_bugsnag_data.userOverridesJSON) {
+    if (bsg_g_bugsnag_data.userOverridesJSON) {
         writer->addJSONElement(writer, "overrides", bsg_g_bugsnag_data.userOverridesJSON);
     }
-    if (g_bugsnag_data.onCrash) {
+    if (bsg_g_bugsnag_data.onCrash) {
         bsg_g_bugsnag_data.onCrash(writer);
     }
 }
@@ -331,8 +331,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     }
 
     [self.metaDataLock lock];
-    BSSerializeJSONDictionary(report.metaData, &g_bugsnag_data.metaDataJSON);
-    BSSerializeJSONDictionary(report.overrides, &g_bugsnag_data.userOverridesJSON);
+    BSSerializeJSONDictionary(report.metaData, &bsg_g_bugsnag_data.metaDataJSON);
+    BSSerializeJSONDictionary(report.overrides, &bsg_g_bugsnag_data.userOverridesJSON);
     [self.state addAttribute:BSAttributeSeverity withValue:BSGFormatSeverity(report.severity) toTabWithName:BSTabCrash];
     [self.state addAttribute:BSAttributeDepth withValue:@(report.depth + 3) toTabWithName:BSTabCrash];
     NSString *reportName = report.errorClass ?: NSStringFromClass([NSException class]);
@@ -372,13 +372,13 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
     if (metaData == self.configuration.metaData) {
         if ([self.metaDataLock tryLock]) {
-            BSSerializeJSONDictionary([metaData toDictionary], &g_bugsnag_data.metaDataJSON);
+            BSSerializeJSONDictionary([metaData toDictionary], &bsg_g_bugsnag_data.metaDataJSON);
             [self.metaDataLock unlock];
         }
     } else if (metaData == self.configuration.config) {
-        BSSerializeJSONDictionary([metaData getTab:BSTabConfig], &g_bugsnag_data.configJSON);
+        BSSerializeJSONDictionary([metaData getTab:BSTabConfig], &bsg_g_bugsnag_data.configJSON);
     } else if (metaData == self.state) {
-        BSSerializeJSONDictionary([metaData toDictionary], &g_bugsnag_data.stateJSON);
+        BSSerializeJSONDictionary([metaData toDictionary], &bsg_g_bugsnag_data.stateJSON);
     } else {
         bsg_log_debug(@"Unknown metadata dictionary changed");
     }

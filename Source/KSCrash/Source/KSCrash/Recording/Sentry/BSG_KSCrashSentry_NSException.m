@@ -29,7 +29,7 @@
 #import "BSG_KSCrashSentry_Private.h"
 #include "BSG_KSMach.h"
 
-//#define KSLogger_LocalLevel TRACE
+//#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
 
 
@@ -64,10 +64,10 @@ static BSG_KSCrash_SentryContext* bsg_g_context;
 void bsg_ksnsexc_i_handleException(NSException* exception)
 {
     BSG_KSLOG_DEBUG(@"Trapped exception %@", exception);
-    if(g_installed)
+    if(bsg_g_installed)
     {
         bool wasHandlingCrash = bsg_g_context->handlingCrash;
-        kscrashsentry_beginHandlingCrash(g_context);
+        bsg_kscrashsentry_beginHandlingCrash(bsg_g_context);
 
         BSG_KSLOG_DEBUG(@"Exception handler is installed. Continuing exception handling.");
 
@@ -75,11 +75,11 @@ void bsg_ksnsexc_i_handleException(NSException* exception)
         {
             BSG_KSLOG_INFO(@"Detected crash in the crash reporter. Restoring original handlers.");
             bsg_g_context->crashedDuringCrashHandling = true;
-            kscrashsentry_uninstall(BSG_KSCrashTypeAll);
+            bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAll);
         }
 
         BSG_KSLOG_DEBUG(@"Suspending all threads.");
-        kscrashsentry_suspendThreads();
+        bsg_kscrashsentry_suspendThreads();
 
         BSG_KSLOG_DEBUG(@"Filling out context.");
         NSArray* addresses = [exception callStackReturnAddresses];
@@ -104,9 +104,9 @@ void bsg_ksnsexc_i_handleException(NSException* exception)
 
 
         BSG_KSLOG_DEBUG(@"Crash handling complete. Restoring original handlers.");
-        kscrashsentry_uninstall(BSG_KSCrashTypeAll);
+        bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAll);
 
-        if (g_previousUncaughtExceptionHandler != NULL)
+        if (bsg_g_previousUncaughtExceptionHandler != NULL)
         {
             BSG_KSLOG_DEBUG(@"Calling original exception handler.");
             bsg_g_previousUncaughtExceptionHandler(exception);
@@ -119,10 +119,10 @@ void bsg_ksnsexc_i_handleException(NSException* exception)
 #pragma mark - API -
 // ============================================================================
 
-bool kscrashsentry_installNSExceptionHandler(BSG_KSCrash_SentryContext* const context)
+bool bsg_kscrashsentry_installNSExceptionHandler(BSG_KSCrash_SentryContext* const context)
 {
     BSG_KSLOG_DEBUG(@"Installing NSException handler.");
-    if(g_installed)
+    if(bsg_g_installed)
     {
         BSG_KSLOG_DEBUG(@"NSException handler already installed.");
         return true;
@@ -135,7 +135,7 @@ bool kscrashsentry_installNSExceptionHandler(BSG_KSCrash_SentryContext* const co
     bsg_g_previousUncaughtExceptionHandler = NSGetUncaughtExceptionHandler();
 
     BSG_KSLOG_DEBUG(@"Setting new handler.");
-    NSSetUncaughtExceptionHandler(&ksnsexc_i_handleException);
+    NSSetUncaughtExceptionHandler(&bsg_ksnsexc_i_handleException);
 
     return true;
 }
@@ -143,13 +143,13 @@ bool kscrashsentry_installNSExceptionHandler(BSG_KSCrash_SentryContext* const co
 void bsg_kscrashsentry_uninstallNSExceptionHandler(void)
 {
     BSG_KSLOG_DEBUG(@"Uninstalling NSException handler.");
-    if(!g_installed)
+    if(!bsg_g_installed)
     {
         BSG_KSLOG_DEBUG(@"NSException handler was already uninstalled.");
         return;
     }
 
     BSG_KSLOG_DEBUG(@"Restoring original handler.");
-    NSSetUncaughtExceptionHandler(g_previousUncaughtExceptionHandler);
+    NSSetUncaughtExceptionHandler(bsg_g_previousUncaughtExceptionHandler);
     bsg_g_installed = 0;
 }

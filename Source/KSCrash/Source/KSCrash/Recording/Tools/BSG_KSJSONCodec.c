@@ -37,7 +37,7 @@
 #pragma mark - Configuration -
 // ============================================================================
 
-/** Set to 1 if you're also compiling KSLogger and want to use it here */
+/** Set to 1 if you're also compiling BSG_KSLogger and want to use it here */
 #ifndef BSG_KSJSONCODEC_UseKSLogger
     #define BSG_KSJSONCODEC_UseKSLogger 1
 #endif
@@ -71,7 +71,7 @@ static char bsg_g_hexNybbles[] =
     '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
 };
 
-const char* ksjson_stringForError(const int error)
+const char* bsg_ksjsonstringForError(const int error)
 {
     switch (error)
     {
@@ -119,11 +119,11 @@ const char* ksjson_stringForError(const int error)
  *
  * @return true if the data was handled successfully.
  */
-int ksjsoncodec_i_appendEscapedString(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsoncodec_i_appendEscapedString(BSG_KSJSONEncodeContext* const context,
                                       const char* restrict const string,
                                       size_t length)
 {
-    char workBuffer[KSJSONCODEC_WorkBufferSize];
+    char workBuffer[BSG_KSJSONCODEC_WorkBufferSize];
     const char* const srcEnd = string + length;
 
     const char* restrict src = string;
@@ -193,7 +193,7 @@ int ksjsoncodec_i_appendEscapedString(BSG_KSJSONEncodeContext* const context,
  *
  * @return true if the data was handled successfully.
  */
-int ksjsoncodec_i_addEscapedString(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsoncodec_i_addEscapedString(BSG_KSJSONEncodeContext* const context,
                                    const char* restrict const string,
                                    size_t length)
 {
@@ -208,7 +208,7 @@ int ksjsoncodec_i_addEscapedString(BSG_KSJSONEncodeContext* const context,
         {
             toAdd = BSG_KSJSONCODEC_WorkBufferSize / 2;
         }
-        result = ksjsoncodec_i_appendEscapedString(context,
+        result = bsg_ksjsoncodec_i_appendEscapedString(context,
                                                    string + offset,
                                                    toAdd);
         unlikely_if(result != BSG_KSJSON_OK)
@@ -230,7 +230,7 @@ int ksjsoncodec_i_addEscapedString(BSG_KSJSONEncodeContext* const context,
  *
  * @return true if the data was handled successfully.
  */
-int ksjsoncodec_i_addQuotedEscapedString(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsoncodec_i_addQuotedEscapedString(BSG_KSJSONEncodeContext* const context,
                                          const char* restrict const string,
                                          size_t length)
 {
@@ -239,7 +239,7 @@ int ksjsoncodec_i_addQuotedEscapedString(BSG_KSJSONEncodeContext* const context,
     {
         return result;
     }
-    unlikely_if((result = ksjsoncodec_i_addEscapedString(context,
+    unlikely_if((result = bsg_ksjsoncodec_i_addEscapedString(context,
                                                          string,
                                                          length)) != BSG_KSJSON_OK)
     {
@@ -248,7 +248,7 @@ int ksjsoncodec_i_addQuotedEscapedString(BSG_KSJSONEncodeContext* const context,
     return addJSONData(context, "\"", 1);
 }
 
-int ksjson_beginElement(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonbeginElement(BSG_KSJSONEncodeContext* const context,
                         const char* const name)
 {
     int result = BSG_KSJSON_OK;
@@ -290,7 +290,7 @@ int ksjson_beginElement(BSG_KSJSONEncodeContext* const context,
             BSG_KSLOG_DEBUG("Name was null inside an object");
             return BSG_KSJSON_ERROR_INVALID_DATA;
         }
-        unlikely_if((result = ksjsoncodec_i_addQuotedEscapedString(context,
+        unlikely_if((result = bsg_ksjsoncodec_i_addQuotedEscapedString(context,
                                                                    name,
                                                                    strlen(name))) != BSG_KSJSON_OK)
         {
@@ -314,18 +314,18 @@ int ksjson_beginElement(BSG_KSJSONEncodeContext* const context,
     return result;
 }
 
-int ksjson_addRawJSONData(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonaddRawJSONData(BSG_KSJSONEncodeContext* const context,
                           const char* const data,
                           const size_t length)
 {
     return addJSONData(context, data, length);
 }
 
-int ksjson_addBooleanElement(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonaddBooleanElement(BSG_KSJSONEncodeContext* const context,
                              const char* const name,
                              const bool value)
 {
-    int result = ksjson_beginElement(context, name);
+    int result = bsg_ksjsonbeginElement(context, name);
     unlikely_if(result != BSG_KSJSON_OK)
     {
         return result;
@@ -340,11 +340,11 @@ int ksjson_addBooleanElement(BSG_KSJSONEncodeContext* const context,
     }
 }
 
-int ksjson_addFloatingPointElement(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonaddFloatingPointElement(BSG_KSJSONEncodeContext* const context,
                                    const char* const name,
                                    double value)
 {
-    int result = ksjson_beginElement(context, name);
+    int result = bsg_ksjsonbeginElement(context, name);
     unlikely_if(result != BSG_KSJSON_OK)
     {
         return result;
@@ -354,11 +354,11 @@ int ksjson_addFloatingPointElement(BSG_KSJSONEncodeContext* const context,
     return addJSONData(context, buff, strlen(buff));
 }
 
-int ksjson_addIntegerElement(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonaddIntegerElement(BSG_KSJSONEncodeContext* const context,
                              const char* const name,
                              long long value)
 {
-    int result = ksjson_beginElement(context, name);
+    int result = bsg_ksjsonbeginElement(context, name);
     unlikely_if(result != BSG_KSJSON_OK)
     {
         return result;
@@ -368,14 +368,14 @@ int ksjson_addIntegerElement(BSG_KSJSONEncodeContext* const context,
     return addJSONData(context, buff, strlen(buff));
 }
 
-int ksjson_addJSONElement(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonaddJSONElement(BSG_KSJSONEncodeContext* const context,
                           const char* restrict const name,
                           const char* restrict const element,
                           size_t length)
 {
     unlikely_if(element == NULL)
     {
-        return ksjson_addNullElement(context, name);
+        return bsg_ksjsonaddNullElement(context, name);
     }
     size_t idx = 0;
     while(idx < length &&
@@ -405,7 +405,7 @@ int ksjson_addJSONElement(BSG_KSJSONEncodeContext* const context,
             return BSG_KSJSON_ERROR_INVALID_DATA;
     }
 
-    int result = ksjson_beginElement(context, name);
+    int result = bsg_ksjsonbeginElement(context, name);
     unlikely_if(result != BSG_KSJSON_OK)
     {
         return result;
@@ -413,10 +413,10 @@ int ksjson_addJSONElement(BSG_KSJSONEncodeContext* const context,
     return addJSONData(context, element, length);
 }
 
-int ksjson_addNullElement(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonaddNullElement(BSG_KSJSONEncodeContext* const context,
                           const char* const name)
 {
-    int result = ksjson_beginElement(context, name);
+    int result = bsg_ksjsonbeginElement(context, name);
     unlikely_if(result != BSG_KSJSON_OK)
     {
         return result;
@@ -424,16 +424,16 @@ int ksjson_addNullElement(BSG_KSJSONEncodeContext* const context,
     return addJSONData(context, "null", 4);
 }
 
-int ksjson_addStringElement(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonaddStringElement(BSG_KSJSONEncodeContext* const context,
                             const char* const name,
                             const char* const value,
                             size_t length)
 {
     unlikely_if(value == NULL)
     {
-        return ksjson_addNullElement(context, name);
+        return bsg_ksjsonaddNullElement(context, name);
     }
-    int result = ksjson_beginElement(context, name);
+    int result = bsg_ksjsonbeginElement(context, name);
     unlikely_if(result != BSG_KSJSON_OK)
     {
         return result;
@@ -442,13 +442,13 @@ int ksjson_addStringElement(BSG_KSJSONEncodeContext* const context,
     {
         length = strlen(value);
     }
-    return ksjsoncodec_i_addQuotedEscapedString(context, value, length);
+    return bsg_ksjsoncodec_i_addQuotedEscapedString(context, value, length);
 }
 
-int ksjson_beginStringElement(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonbeginStringElement(BSG_KSJSONEncodeContext* const context,
                               const char* const name)
 {
-    int result = ksjson_beginElement(context, name);
+    int result = bsg_ksjsonbeginElement(context, name);
     unlikely_if(result != BSG_KSJSON_OK)
     {
         return result;
@@ -456,43 +456,43 @@ int ksjson_beginStringElement(BSG_KSJSONEncodeContext* const context,
     return addJSONData(context, "\"", 1);
 }
 
-int ksjson_appendStringElement(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonappendStringElement(BSG_KSJSONEncodeContext* const context,
                                const char* const value,
                                size_t length)
 {
-    return ksjsoncodec_i_addEscapedString(context, value, length);
+    return bsg_ksjsoncodec_i_addEscapedString(context, value, length);
 }
 
-int ksjson_endStringElement(BSG_KSJSONEncodeContext* const context)
+int bsg_ksjsonendStringElement(BSG_KSJSONEncodeContext* const context)
 {
     return addJSONData(context, "\"", 1);
 }
 
-int ksjson_addDataElement(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonaddDataElement(BSG_KSJSONEncodeContext* const context,
                           const char* name,
                           const char* value,
                           size_t length)
 {
     int result = BSG_KSJSON_OK;
-    result = ksjson_beginDataElement(context, name);
+    result = bsg_ksjsonbeginDataElement(context, name);
     if(result == BSG_KSJSON_OK)
     {
-        result = ksjson_appendDataElement(context, value, length);
+        result = bsg_ksjsonappendDataElement(context, value, length);
     }
     if(result == BSG_KSJSON_OK)
     {
-        result = ksjson_endDataElement(context);
+        result = bsg_ksjsonendDataElement(context);
     }
     return result;
 }
 
-int ksjson_beginDataElement(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonbeginDataElement(BSG_KSJSONEncodeContext* const context,
                             const char* const name)
 {
-    return ksjson_beginStringElement(context, name);
+    return bsg_ksjsonbeginStringElement(context, name);
 }
 
-int ksjson_appendDataElement(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonappendDataElement(BSG_KSJSONEncodeContext* const context,
                              const char* const value,
                              size_t length)
 {
@@ -514,17 +514,17 @@ int ksjson_appendDataElement(BSG_KSJSONEncodeContext* const context,
     return result;
 }
 
-int ksjson_endDataElement(BSG_KSJSONEncodeContext* const context)
+int bsg_ksjsonendDataElement(BSG_KSJSONEncodeContext* const context)
 {
-    return ksjson_endStringElement(context);
+    return bsg_ksjsonendStringElement(context);
 }
 
-int ksjson_beginArray(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonbeginArray(BSG_KSJSONEncodeContext* const context,
                       const char* const name)
 {
     likely_if(context->containerLevel >= 0)
     {
-        int result = ksjson_beginElement(context, name);
+        int result = bsg_ksjsonbeginElement(context, name);
         unlikely_if(result != BSG_KSJSON_OK)
         {
             return result;
@@ -538,12 +538,12 @@ int ksjson_beginArray(BSG_KSJSONEncodeContext* const context,
     return addJSONData(context, "[", 1);
 }
 
-int ksjson_beginObject(BSG_KSJSONEncodeContext* const context,
+int bsg_ksjsonbeginObject(BSG_KSJSONEncodeContext* const context,
                        const char* const name)
 {
     likely_if(context->containerLevel >= 0)
     {
-        int result = ksjson_beginElement(context, name);
+        int result = bsg_ksjsonbeginElement(context, name);
         unlikely_if(result != BSG_KSJSON_OK)
         {
             return result;
@@ -557,7 +557,7 @@ int ksjson_beginObject(BSG_KSJSONEncodeContext* const context,
     return addJSONData(context, "{", 1);
 }
 
-int ksjson_endContainer(BSG_KSJSONEncodeContext* const context)
+int bsg_ksjsonendContainer(BSG_KSJSONEncodeContext* const context)
 {
     unlikely_if(context->containerLevel <= 0)
     {
@@ -587,7 +587,7 @@ int ksjson_endContainer(BSG_KSJSONEncodeContext* const context)
     return addJSONData(context, isObject ? "}" : "]", 1);
 }
 
-void bsg_ksjson_beginEncode(BSG_KSJSONEncodeContext* const context,
+void bsg_ksjsonbeginEncode(BSG_KSJSONEncodeContext* const context,
                         bool prettyPrint,
                        BSG_KSJSONAddDataFunc addJSONDataFunc,
                         void* const userData)
@@ -599,12 +599,12 @@ void bsg_ksjson_beginEncode(BSG_KSJSONEncodeContext* const context,
     context->containerFirstEntry = true;
 }
 
-int ksjson_endEncode(BSG_KSJSONEncodeContext* const context)
+int bsg_ksjsonendEncode(BSG_KSJSONEncodeContext* const context)
 {
     int result = BSG_KSJSON_OK;
     while(context->containerLevel > 0)
     {
-        unlikely_if((result = ksjson_endContainer(context)) != BSG_KSJSON_OK)
+        unlikely_if((result = bsg_ksjsonendContainer(context)) != BSG_KSJSON_OK)
         {
             return result;
         }
@@ -653,7 +653,7 @@ static const unsigned int bsg_g_hexConversion[] =
  *
  * @return BSG_KSJSON_OK if the encoding was successful.
  */
-int ksjsoncodec_i_writeUTF8(unsigned int character, char** dst);
+int bsg_ksjsoncodec_i_writeUTF8(unsigned int character, char** dst);
 
 /** Decode a string value. The newly allocated string is stored in dstString
  * (only if parsing was successful) and it is the responsibility of the caller
@@ -668,7 +668,7 @@ int ksjsoncodec_i_writeUTF8(unsigned int character, char** dst);
  *
  * @return BSG_KSJSON_OK if successful.
  */
-int ksjsoncodec_i_decodeString(const char** ptr,
+int bsg_ksjsoncodec_i_decodeString(const char** ptr,
                                const char* const end,
                                char** dstString);
 
@@ -682,11 +682,11 @@ int ksjsoncodec_i_decodeString(const char** ptr,
  *
  * @param callbacks The callbacks to call while decoding.
  *
- * @param userData Data that was specified when calling ksjson_decode().
+ * @param userData Data that was specified when calling bsg_ksjsondecode().
  *
  * @return BSG_KSJSON_OK if successful.
  */
-int ksjsoncodec_i_decodeElement(const char** ptr,
+int bsg_ksjsoncodec_i_decodeElement(const char** ptr,
                                 const char* const end,
                                 const char* const name,
                                BSG_KSJSONDecodeCallbacks* const callbacks,
@@ -729,7 +729,7 @@ static inline bool isFPChar(char ch)
     }
 }
 
-int ksjsoncodec_i_writeUTF8(unsigned int character, char** dst)
+int bsg_ksjsoncodec_i_writeUTF8(unsigned int character, char** dst)
 {
     likely_if(character <= 0x7f)
     {
@@ -768,7 +768,7 @@ int ksjsoncodec_i_writeUTF8(unsigned int character, char** dst)
     return BSG_KSJSON_ERROR_INVALID_CHARACTER;
 }
 
-int ksjsoncodec_i_decodeString(const char** ptr,
+int bsg_ksjsoncodec_i_decodeString(const char** ptr,
                                const char* const end,
                                char** dstString)
 {
@@ -913,7 +913,7 @@ int ksjsoncodec_i_decodeString(const char** ptr,
                         accum = ((accum - 0xd800) << 10) | (accum2 - 0xdc00);
                     }
 
-                    result = ksjsoncodec_i_writeUTF8(accum, &dst);
+                    result = bsg_ksjsoncodec_i_writeUTF8(accum, &dst);
                     unlikely_if(result != BSG_KSJSON_OK)
                     {
                         goto failed;
@@ -940,7 +940,7 @@ failed:
     return result;
 }
 
-int ksjsoncodec_i_decodeElement(const char** ptr,
+int bsg_ksjsoncodec_i_decodeElement(const char** ptr,
                                 const char* const end,
                                 const char* const name,
                                BSG_KSJSONDecodeCallbacks* const callbacks,
@@ -975,7 +975,7 @@ int ksjsoncodec_i_decodeElement(const char** ptr,
                     (*ptr)++;
                     return callbacks->onEndContainer(userData);
                 }
-                result = ksjsoncodec_i_decodeElement(ptr,
+                result = bsg_ksjsoncodec_i_decodeElement(ptr,
                                                      end,
                                                      NULL,
                                                      callbacks,
@@ -1012,7 +1012,7 @@ int ksjsoncodec_i_decodeElement(const char** ptr,
                     return callbacks->onEndContainer(userData);
                 }
                 char* key;
-                result = ksjsoncodec_i_decodeString(ptr, end, &key);
+                result = bsg_ksjsoncodec_i_decodeString(ptr, end, &key);
                 unlikely_if(result != BSG_KSJSON_OK) return result;
                 skipWhitespace(ptr, end);
                 unlikely_if(*ptr >= end)
@@ -1028,7 +1028,7 @@ int ksjsoncodec_i_decodeElement(const char** ptr,
                 }
                 (*ptr)++;
                 skipWhitespace(ptr, end);
-                result = ksjsoncodec_i_decodeElement(ptr,
+                result = bsg_ksjsoncodec_i_decodeElement(ptr,
                                                      end,
                                                      key,
                                                      callbacks,
@@ -1051,7 +1051,7 @@ int ksjsoncodec_i_decodeElement(const char** ptr,
         case '\"':
         {
             char* string;
-            result = ksjsoncodec_i_decodeString(ptr, end, &string);
+            result = bsg_ksjsoncodec_i_decodeString(ptr, end, &string);
             unlikely_if(result != BSG_KSJSON_OK) return result;
             result = callbacks->onStringElement(name,
                                                 string,
@@ -1184,7 +1184,7 @@ int ksjsoncodec_i_decodeElement(const char** ptr,
     return BSG_KSJSON_ERROR_INVALID_CHARACTER;
 }
 
-int ksjson_decode(const char* const data,
+int bsg_ksjsondecode(const char* const data,
                   size_t length,
                  BSG_KSJSONDecodeCallbacks* const callbacks,
                   void* const userData,
@@ -1192,7 +1192,7 @@ int ksjson_decode(const char* const data,
 {
     const char* ptr = data;
 
-    int result = ksjsoncodec_i_decodeElement(&ptr,
+    int result = bsg_ksjsoncodec_i_decodeElement(&ptr,
                                              ptr + length,
                                              NULL,
                                              callbacks,

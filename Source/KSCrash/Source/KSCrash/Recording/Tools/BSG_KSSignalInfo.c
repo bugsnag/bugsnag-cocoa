@@ -1,5 +1,5 @@
 //
-//  KSSignalInfo.c
+//  BSG_KSSignalInfo.c
 //
 //  Created by Karl Stenerud on 2012-02-03.
 //
@@ -34,19 +34,19 @@ typedef struct
 {
     const int code;
     const char* const name;
-} KSSignalCodeInfo;
+} BSG_KSSignalCodeInfo;
 
 typedef struct
 {
     const int sigNum;
     const char* const name;
-    const KSSignalCodeInfo* const codes;
+    const BSG_KSSignalCodeInfo* const codes;
     const int numCodes;
-} KSSignalInfo;
+} BSG_KSSignalInfo;
 
 #define ENUM_NAME_MAPPING(A) {A, #A}
 
-static const KSSignalCodeInfo bsg_g_sigIllCodes[] =
+static const BSG_KSSignalCodeInfo bsg_g_sigIllCodes[] =
 {
     ENUM_NAME_MAPPING(ILL_NOOP),
     ENUM_NAME_MAPPING(EXC_CRASH),
@@ -59,14 +59,14 @@ static const KSSignalCodeInfo bsg_g_sigIllCodes[] =
     ENUM_NAME_MAPPING(ILL_BADSTK),
 };
 
-static const KSSignalCodeInfo bsg_g_sigTrapCodes[] =
+static const BSG_KSSignalCodeInfo bsg_g_sigTrapCodes[] =
 {
     ENUM_NAME_MAPPING(0),
     ENUM_NAME_MAPPING(TRAP_BRKPT),
     ENUM_NAME_MAPPING(TRAP_TRACE),
 };
 
-static const KSSignalCodeInfo bsg_g_sigFPECodes[] =
+static const BSG_KSSignalCodeInfo bsg_g_sigFPECodes[] =
 {
     ENUM_NAME_MAPPING(FPE_NOOP),
     ENUM_NAME_MAPPING(FPE_FLTDIV),
@@ -79,7 +79,7 @@ static const KSSignalCodeInfo bsg_g_sigFPECodes[] =
     ENUM_NAME_MAPPING(FPE_INTOVF),
 };
 
-static const KSSignalCodeInfo bsg_g_sigBusCodes[] =
+static const BSG_KSSignalCodeInfo bsg_g_sigBusCodes[] =
 {
     ENUM_NAME_MAPPING(BUS_NOOP),
     ENUM_NAME_MAPPING(BUS_ADRALN),
@@ -87,7 +87,7 @@ static const KSSignalCodeInfo bsg_g_sigBusCodes[] =
     ENUM_NAME_MAPPING(BUS_OBJERR),
 };
 
-static const KSSignalCodeInfo bsg_g_sigSegVCodes[] =
+static const BSG_KSSignalCodeInfo bsg_g_sigSegVCodes[] =
 {
     ENUM_NAME_MAPPING(SEGV_NOOP),
     ENUM_NAME_MAPPING(SEGV_MAPERR),
@@ -97,7 +97,7 @@ static const KSSignalCodeInfo bsg_g_sigSegVCodes[] =
 #define SIGNAL_INFO(SIGNAL, CODES) {SIGNAL, #SIGNAL, CODES, sizeof(CODES) / sizeof(*CODES)}
 #define SIGNAL_INFO_NOCODES(SIGNAL) {SIGNAL, #SIGNAL, 0, 0}
 
-static const KSSignalInfo bsg_g_fatalSignalData[] =
+static const BSG_KSSignalInfo bsg_g_fatalSignalData[] =
 {
     SIGNAL_INFO_NOCODES(SIGABRT),
     SIGNAL_INFO(SIGBUS, bsg_g_sigBusCodes),
@@ -108,7 +108,7 @@ static const KSSignalInfo bsg_g_fatalSignalData[] =
     SIGNAL_INFO_NOCODES(SIGSYS),
     SIGNAL_INFO(SIGTERM, bsg_g_sigTrapCodes),
 };
-static const int bsg_g_fatalSignalsCount = sizeof(g_fatalSignalData) / sizeof(*g_fatalSignalData);
+static const int bsg_g_fatalSignalsCount = sizeof(bsg_g_fatalSignalData) / sizeof(*bsg_g_fatalSignalData);
 
 // Note: Dereferencing a NULL pointer causes SIGILL, ILL_ILLOPC on i386
 //       but causes SIGTRAP, 0 on arm.
@@ -128,7 +128,7 @@ const char* bsg_kssignal_signalName(const int sigNum)
 {
     for(int i = 0; i < bsg_g_fatalSignalsCount; i++)
     {
-        if(g_fatalSignalData[i].sigNum == sigNum)
+        if(bsg_g_fatalSignalData[i].sigNum == sigNum)
         {
             return bsg_g_fatalSignalData[i].name;
         }
@@ -140,11 +140,11 @@ const char* bsg_kssignal_signalCodeName(const int sigNum, const int code)
 {
     for(int si = 0; si < bsg_g_fatalSignalsCount; si++)
     {
-        if(g_fatalSignalData[si].sigNum == sigNum)
+        if(bsg_g_fatalSignalData[si].sigNum == sigNum)
         {
             for(int ci = 0; ci < bsg_g_fatalSignalData[si].numCodes; ci++)
             {
-                if(g_fatalSignalData[si].codes[ci].code == code)
+                if(bsg_g_fatalSignalData[si].codes[ci].code == code)
                 {
                     return bsg_g_fatalSignalData[si].codes[ci].name;
                 }

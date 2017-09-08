@@ -25,8 +25,8 @@
 //
 
 
-#include "BSG_BSG_KSObjC.h"
-#include "BSG_BSG_KSObjCApple.h"
+#include "BSG_KSObjC.h"
+#include "BSG_KSObjCApple.h"
 
 #include "BSG_KSMach.h"
 #include "BSG_KSString.h"
@@ -147,7 +147,7 @@ static ClassData bsg_g_taggedClassData[] =
     {"NSDate",               BSG_KSObjCClassTypeDate,    ClassSubtypeNone,             false, taggedDateIsValid,   taggedDateDescription},
     {NULL,                   BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,             false, taggedObjectIsValid, taggedObjectDescription},
 };
-static size_t bsg_g_taggedClassDataCount = sizeof(g_taggedClassData) / sizeof(*g_taggedClassData);
+static size_t bsg_g_taggedClassDataCount = sizeof(bsg_g_taggedClassData) / sizeof(*bsg_g_taggedClassData);
 
 static const char* bsg_g_blockBaseClassName = "NSBlock";
 
@@ -174,7 +174,7 @@ uintptr_t getTaggedPayload(const void* pointer) { return (uintptr_t)pointer; }
 static const ClassData* getClassDataFromTaggedPointer(const void* const object)
 {
     uintptr_t slot = getTaggedSlot(object);
-    return &g_taggedClassData[slot];
+    return &bsg_g_taggedClassData[slot];
 }
 
 static bool isValidTaggedPointer(const void* object)
@@ -484,9 +484,9 @@ static const unsigned int bsg_g_nameChars[] =
     INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV, INV,
 };
 
-#define VALID_NAME_CHAR(A) ((g_nameChars[(uint8_t)(A)] & 1) != 0)
-#define VALID_NAME_START_CHAR(A) ((g_nameChars[(uint8_t)(A)] & 2) != 0)
-#define VALID_TYPE_CHAR(A) ((g_nameChars[(uint8_t)(A)] & 7) != 0)
+#define VALID_NAME_CHAR(A) ((bsg_g_nameChars[(uint8_t)(A)] & 1) != 0)
+#define VALID_NAME_START_CHAR(A) ((bsg_g_nameChars[(uint8_t)(A)] & 2) != 0)
+#define VALID_TYPE_CHAR(A) ((bsg_g_nameChars[(uint8_t)(A)] & 7) != 0)
 
 static bool isValidName(const char* const name, const size_t maxLength)
 {
@@ -550,15 +550,15 @@ static bool containsValidROData(const void* const classPtr)
     struct class_t class;
     struct class_rw_t rw;
     struct class_ro_t ro;
-    if(ksmach_copyMem(classPtr, &class, sizeof(class)) != KERN_SUCCESS)
+    if(bsg_ksmachcopyMem(classPtr, &class, sizeof(class)) != KERN_SUCCESS)
     {
         return false;
     }
-    if(ksmach_copyMem(getClassRW(&class), &rw, sizeof(rw)) != KERN_SUCCESS)
+    if(bsg_ksmachcopyMem(getClassRW(&class), &rw, sizeof(rw)) != KERN_SUCCESS)
     {
         return false;
     }
-    if(ksmach_copyMem(rw.ro, &ro, sizeof(ro)) != KERN_SUCCESS)
+    if(bsg_ksmachcopyMem(rw.ro, &ro, sizeof(ro)) != KERN_SUCCESS)
     {
         return false;
     }
@@ -575,7 +575,7 @@ static bool containsValidIvarData(const void* const classPtr)
     }
     
     struct ivar_list_t ivarsBuffer;
-    if(ksmach_copyMem(ivars, &ivarsBuffer, sizeof(ivarsBuffer)) != KERN_SUCCESS)
+    if(bsg_ksmachcopyMem(ivars, &ivarsBuffer, sizeof(ivarsBuffer)) != KERN_SUCCESS)
     {
         return false;
     }
@@ -586,12 +586,12 @@ static bool containsValidIvarData(const void* const classPtr)
         uint8_t* ivarPtr = (uint8_t*)(&ivars->first) + ivars->entsizeAndFlags;
         for(uint32_t i = 1; i < ivarsBuffer.count; i++)
         {
-            if(ksmach_copyMem(ivarPtr, &ivar, sizeof(ivar)) != KERN_SUCCESS)
+            if(bsg_ksmachcopyMem(ivarPtr, &ivar, sizeof(ivar)) != KERN_SUCCESS)
             {
                 return false;
             }
             uintptr_t offset;
-            if(ksmach_copyMem(ivar.offset, &offset, sizeof(offset)) != KERN_SUCCESS)
+            if(bsg_ksmachcopyMem(ivar.offset, &offset, sizeof(offset)) != KERN_SUCCESS)
             {
                 return false;
             }
@@ -817,7 +817,7 @@ bool bsg_ksobjc_ivarValue(const void* const objectPtr, size_t ivarIndex, void* d
     const struct ivar_t* ivar = (void*)(ivarPtr + ivars->entsizeAndFlags * ivarIndex);
     
     uintptr_t valuePtr = (uintptr_t)objectPtr + (uintptr_t)*ivar->offset;
-    if(ksmach_copyMem((void*)valuePtr, dst, ivar->size) != KERN_SUCCESS)
+    if(bsg_ksmachcopyMem((void*)valuePtr, dst, ivar->size) != KERN_SUCCESS)
     {
         return false;
     }
@@ -953,14 +953,14 @@ static bool stringIsValid(const void* const stringPtr)
     struct __CFString temp;
     uint8_t oneByte;
     CFIndex length = -1;
-    if(ksmach_copyMem(string, &temp, sizeof(string->base)) != KERN_SUCCESS)
+    if(bsg_ksmachcopyMem(string, &temp, sizeof(string->base)) != KERN_SUCCESS)
     {
         return false;
     }
     
     if(__CFStrIsInline(string))
     {
-        if(ksmach_copyMem(&string->variants.inline1, &temp, sizeof(string->variants.inline1)) != KERN_SUCCESS)
+        if(bsg_ksmachcopyMem(&string->variants.inline1, &temp, sizeof(string->variants.inline1)) != KERN_SUCCESS)
         {
             return false;
         }
@@ -968,7 +968,7 @@ static bool stringIsValid(const void* const stringPtr)
     }
     else if(__CFStrIsMutable(string))
     {
-        if(ksmach_copyMem(&string->variants.notInlineMutable, &temp, sizeof(string->variants.notInlineMutable)) != KERN_SUCCESS)
+        if(bsg_ksmachcopyMem(&string->variants.notInlineMutable, &temp, sizeof(string->variants.notInlineMutable)) != KERN_SUCCESS)
         {
             return false;
         }
@@ -976,7 +976,7 @@ static bool stringIsValid(const void* const stringPtr)
     }
     else if(!__CFStrHasLengthByte(string))
     {
-        if(ksmach_copyMem(&string->variants.notInlineImmutable1, &temp, sizeof(string->variants.notInlineImmutable1)) != KERN_SUCCESS)
+        if(bsg_ksmachcopyMem(&string->variants.notInlineImmutable1, &temp, sizeof(string->variants.notInlineImmutable1)) != KERN_SUCCESS)
         {
             return false;
         }
@@ -984,11 +984,11 @@ static bool stringIsValid(const void* const stringPtr)
     }
     else
     {
-        if(ksmach_copyMem(&string->variants.notInlineImmutable2, &temp, sizeof(string->variants.notInlineImmutable2)) != KERN_SUCCESS)
+        if(bsg_ksmachcopyMem(&string->variants.notInlineImmutable2, &temp, sizeof(string->variants.notInlineImmutable2)) != KERN_SUCCESS)
         {
             return false;
         }
-        if(ksmach_copyMem(__CFStrContents(string), &oneByte, sizeof(oneByte)) != KERN_SUCCESS)
+        if(bsg_ksmachcopyMem(__CFStrContents(string), &oneByte, sizeof(oneByte)) != KERN_SUCCESS)
         {
             return false;
         }
@@ -1001,7 +1001,7 @@ static bool stringIsValid(const void* const stringPtr)
     }
     else if(length > 0)
     {
-        if(ksmach_copyMem(stringStart(string), &oneByte, sizeof(oneByte)) != KERN_SUCCESS)
+        if(bsg_ksmachcopyMem(stringStart(string), &oneByte, sizeof(oneByte)) != KERN_SUCCESS)
         {
             return false;
         }
@@ -1152,7 +1152,7 @@ size_t bsg_ksobjc_i_copy8BitString(const void* const src, void* const dst, size_
     {
         charCount = maxByteCount - 1;
     }
-    unlikely_if(ksmach_copyMem(src, dst, charCount) != KERN_SUCCESS)
+    unlikely_if(bsg_ksmachcopyMem(src, dst, charCount) != KERN_SUCCESS)
     {
         *((uint8_t*)dst) = 0;
         return 0;
@@ -1211,7 +1211,7 @@ static size_t taggedStringDescription(const void* object, char* buffer, __unused
 static bool urlIsValid(const void* const urlPtr)
 {
     struct __CFURL url;
-    if(ksmach_copyMem(urlPtr, &url, sizeof(url)) != KERN_SUCCESS)
+    if(bsg_ksmachcopyMem(urlPtr, &url, sizeof(url)) != KERN_SUCCESS)
     {
         return false;
     }
@@ -1358,7 +1358,7 @@ static size_t numberDescription(const void* object, char* buffer, size_t bufferL
 
     pBuffer += objectDescription(object, pBuffer, (size_t)(pEnd - pBuffer));
 
-    if(ksobjc_numberIsFloat(object))
+    if(bsg_ksobjc_numberIsFloat(object))
     {
         int64_t value = bsg_ksobjc_numberAsInteger(object);
         pBuffer += stringPrintf(pBuffer, (size_t)(pEnd - pBuffer), ": %ld", value);
@@ -1412,7 +1412,7 @@ static inline bool nsarrayIsMutable(const void* const arrayPtr)
 static inline bool nsarrayIsValid(const void* const arrayPtr)
 {
     struct NSArray temp;
-    if(ksmach_copyMem(arrayPtr, &temp, sizeof(temp.basic)) != KERN_SUCCESS)
+    if(bsg_ksmachcopyMem(arrayPtr, &temp, sizeof(temp.basic)) != KERN_SUCCESS)
     {
         return false;
     }
@@ -1443,7 +1443,7 @@ static size_t nsarrayContents(const void* const arrayPtr, uintptr_t* contents, s
         return 0;
     }
     
-    if(ksmach_copyMem(&array->basic.firstEntry, contents, sizeof(*contents) * count) != KERN_SUCCESS)
+    if(bsg_ksmachcopyMem(&array->basic.firstEntry, contents, sizeof(*contents) * count) != KERN_SUCCESS)
     {
         return 0;
     }
@@ -1454,7 +1454,7 @@ static size_t nsarrayContents(const void* const arrayPtr, uintptr_t* contents, s
 static inline bool cfarrayIsValid(const void* const arrayPtr)
 {
     struct __CFArray temp;
-    if(ksmach_copyMem(arrayPtr, &temp, sizeof(temp)) != KERN_SUCCESS)
+    if(bsg_ksmachcopyMem(arrayPtr, &temp, sizeof(temp)) != KERN_SUCCESS)
     {
         return false;
     }
@@ -1464,7 +1464,7 @@ static inline bool cfarrayIsValid(const void* const arrayPtr)
         if(array->_store != NULL)
         {
             struct __CFArrayDeque deque;
-            if(ksmach_copyMem(array->_store, &deque, sizeof(deque)) != KERN_SUCCESS)
+            if(bsg_ksmachcopyMem(array->_store, &deque, sizeof(deque)) != KERN_SUCCESS)
             {
                 return false;
             }
@@ -1497,7 +1497,7 @@ static size_t cfarrayContents(const void* const arrayPtr, uintptr_t* contents, s
     }
     
     const void* firstEntry = cfarrayData(array);
-    if(ksmach_copyMem(firstEntry, contents, sizeof(*contents) * count) != KERN_SUCCESS)
+    if(bsg_ksmachcopyMem(firstEntry, contents, sizeof(*contents) * count) != KERN_SUCCESS)
     {
         return 0;
     }
@@ -1550,7 +1550,7 @@ static size_t arrayDescription(const void* object, char* buffer, size_t bufferLe
     if(pBuffer < pEnd-1 && bsg_ksobjc_arrayCount(object) > 0)
     {
         uintptr_t contents = 0;
-        if(ksobjc_arrayContents(object, &contents, 1) == 1)
+        if(bsg_ksobjc_arrayContents(object, &contents, 1) == 1)
         {
             pBuffer += bsg_ksobjc_getDescription((void*)contents, pBuffer, (size_t)(pEnd - pBuffer));
         }

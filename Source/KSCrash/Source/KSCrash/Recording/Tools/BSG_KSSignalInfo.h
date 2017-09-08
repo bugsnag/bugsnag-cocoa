@@ -1,5 +1,5 @@
 //
-//  KSSignalInfo.h
+//  BSG_KSSignalInfo.h
 //
 //  Created by Karl Stenerud on 2012-02-03.
 //
@@ -94,4 +94,4 @@ int bsg_kssignal_machExceptionForSignal(int signal);
 }
 #endif
 
-#endif // HDR_KSSignalInfo_h
+#endif // HDR_BSG_KSSignalInfo_h

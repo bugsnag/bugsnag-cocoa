@@ -1,5 +1,5 @@
 //
-//  KSLogger.m
+//  BSG_KSLogger.m
 //
 //  Created by Karl Stenerud on 11-06-25.
 //
@@ -119,7 +119,7 @@ static void writeToLog(const char* const str)
     const char* pos = str;
     while(bytesToWrite > 0)
     {
-        ssize_t bytesWritten = write(g_fd, pos, bytesToWrite);
+        ssize_t bytesWritten = write(bsg_g_fd, pos, bytesToWrite);
         unlikely_if(bytesWritten == -1)
         {
             return;
@@ -137,7 +137,7 @@ static inline void writeFmtArgsToLog(const char* fmt, va_list args)
     }
     else
     {
-        char buffer[KSLOGGER_CBufferSize];
+        char buffer[BSG_KSLOGGER_CBufferSize];
         vsnprintf(buffer, sizeof(buffer), fmt, args);
         writeToLog(buffer);
     }
@@ -150,9 +150,9 @@ static inline void flushLog(void)
 
 static inline void setLogFD(int fd)
 {
-    if(g_fd >= 0 && bsg_g_fd != STDOUT_FILENO && bsg_g_fd != STDERR_FILENO && bsg_g_fd != STDIN_FILENO)
+    if(bsg_g_fd >= 0 && bsg_g_fd != STDOUT_FILENO && bsg_g_fd != STDERR_FILENO && bsg_g_fd != STDIN_FILENO)
     {
-        close(g_fd);
+        close(bsg_g_fd);
     }
     bsg_g_fd = fd;
 }
@@ -181,7 +181,7 @@ bool kslog_setLogFilename(const char* filename, bool overwrite)
     return true;
 }
 
-#else // if KSLogger_CBufferSize <= 0
+#else // if BSG_KSLogger_CBufferSize <= 0
 
 static FILE* bsg_g_file = NULL;
 

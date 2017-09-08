@@ -26,7 +26,7 @@
 #include "BSG_KSCrashSentry_Private.h"
 #include "BSG_KSMach.h"
 
-//#define KSLogger_LocalLevel TRACE
+//#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 
 #include <execinfo.h>
@@ -37,7 +37,7 @@
 static BSG_KSCrash_SentryContext* bsg_g_context;
 
 
-bool kscrashsentry_installUserExceptionHandler(BSG_KSCrash_SentryContext* const context)
+bool bsg_kscrashsentry_installUserExceptionHandler(BSG_KSCrash_SentryContext* const context)
 {
     BSG_KSLOG_DEBUG("Installing user exception handler.");
     bsg_g_context = context;
@@ -57,16 +57,16 @@ void bsg_kscrashsentry_reportUserException(const char* name,
                                        const char* stackTrace,
                                        bool terminateProgram)
 {
-    if(g_context == NULL)
+    if(bsg_g_context == NULL)
     {
         BSG_KSLOG_WARN("User-reported exception sentry is not installed. Exception has not been recorded.");
     }
     else
     {
-        kscrashsentry_beginHandlingCrash(g_context);
+        bsg_kscrashsentry_beginHandlingCrash(bsg_g_context);
 
         BSG_KSLOG_DEBUG("Suspending all threads");
-        kscrashsentry_suspendThreads();
+        bsg_kscrashsentry_suspendThreads();
 
         BSG_KSLOG_DEBUG("Fetching call stack.");
         int callstackCount = 100;
@@ -95,14 +95,14 @@ void bsg_kscrashsentry_reportUserException(const char* name,
 
         if(terminateProgram)
         {
-            kscrashsentry_uninstall(BSG_KSCrashTypeAll);
-            kscrashsentry_resumeThreads();
+            bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAll);
+            bsg_kscrashsentry_resumeThreads();
             abort();
         }
         else
         {
-            kscrashsentry_clearContext(g_context);
-            kscrashsentry_resumeThreads();
+            bsg_kscrashsentry_clearContext(bsg_g_context);
+            bsg_kscrashsentry_resumeThreads();
         }
     }
 }

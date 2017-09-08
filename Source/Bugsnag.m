@@ -52,7 +52,7 @@ static BugsnagNotifier* bsg_g_bugsnag_notifier = NULL;
 
 + (void)startBugsnagWithConfiguration:(BugsnagConfiguration*) configuration {
     bsg_g_bugsnag_notifier = [[BugsnagNotifier alloc] initWithConfiguration:configuration];
-    [g_bugsnag_notifier start];
+    [bsg_g_bugsnag_notifier start];
 }
 
 + (BugsnagConfiguration*)configuration {

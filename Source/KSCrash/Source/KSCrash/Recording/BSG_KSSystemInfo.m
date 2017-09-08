@@ -39,7 +39,7 @@
 #import "BSG_KSLogger.h"
 
 #import <CommonCrypto/CommonDigest.h>
-#if KSCRASH_HAS_UIKIT
+#if BSG_KSCRASH_HAS_UIKIT
 #import <UIKit/UIKit.h>
 #endif
 
@@ -59,7 +59,7 @@
 + (NSNumber*) int32Sysctl:(NSString*) name
 {
     return [NSNumber numberWithInt:
-            bsg_bsg_kssysctl_int32ForName([name cStringUsingEncoding:NSUTF8StringEncoding])];
+            bsg_kssysctl_int32ForName([name cStringUsingEncoding:NSUTF8StringEncoding])];
 }
 
 /** Get a sysctl value as an NSNumber.
@@ -71,7 +71,7 @@
 + (NSNumber*) int64Sysctl:(NSString*) name
 {
     return [NSNumber numberWithLongLong:
-            bsg_bsg_kssysctl_int64ForName([name cStringUsingEncoding:NSUTF8StringEncoding])];
+            bsg_kssysctl_int64ForName([name cStringUsingEncoding:NSUTF8StringEncoding])];
 }
 
 /** Get a sysctl value as an NSString.
@@ -83,7 +83,7 @@
 + (NSString*) stringSysctl:(NSString*) name
 {
     NSString* str = nil;
-    size_t size = bsg_bsg_kssysctl_stringForName([name cStringUsingEncoding:NSUTF8StringEncoding],
+    size_t size = bsg_kssysctl_stringForName([name cStringUsingEncoding:NSUTF8StringEncoding],
                                          NULL,
                                          0);
     
@@ -94,7 +94,7 @@
     
     NSMutableData* value = [NSMutableData dataWithLength:size];
     
-    if(bsg_bsg_kssysctl_stringForName([name cStringUsingEncoding:NSUTF8StringEncoding],
+    if(bsg_kssysctl_stringForName([name cStringUsingEncoding:NSUTF8StringEncoding],
                               value.mutableBytes,
                               size) != 0)
     {
@@ -114,7 +114,7 @@
 {
     NSDate* result = nil;
     
-    struct timeval value = bsg_bsg_kssysctl_timevalForName([name cStringUsingEncoding:NSUTF8StringEncoding]);
+    struct timeval value = bsg_kssysctl_timevalForName([name cStringUsingEncoding:NSUTF8StringEncoding]);
     if(!(value.tv_sec == 0 && value.tv_usec == 0))
     {
         result = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)value.tv_sec];
@@ -163,11 +163,11 @@
     
     if(exePath != nil)
     {
-        const uint8_t* uuidBytes = bsg_ksdl_imageUUID([exePath UTF8String], true);
+        const uint8_t* uuidBytes = bsg_ksdlimageUUID([exePath UTF8String], true);
         if(uuidBytes == NULL)
         {
             // OSX app image path is a lie.
-            uuidBytes = bsg_ksdl_imageUUID([exePath.lastPathComponent UTF8String], false);
+            uuidBytes = bsg_ksdlimageUUID([exePath.lastPathComponent UTF8String], false);
         }
         if(uuidBytes != NULL)
         {
@@ -198,7 +198,7 @@
 #endif
     {
         data = [NSMutableData dataWithLength:6];
-        bsg_bsg_kssysctl_getMacAddress("en0", [data mutableBytes]);
+        bsg_kssysctl_getMacAddress("en0", [data mutableBytes]);
     }
     
     // Append some device-specific data.
@@ -265,10 +265,10 @@
 
 + (NSString*) currentCPUArch
 {
-    NSString* result = [self CPUArchForCPUType:bsg_bsg_kssysctl_int32ForName("hw.cputype")
-                                       subType:bsg_bsg_kssysctl_int32ForName("hw.cpusubtype")];
+    NSString* result = [self CPUArchForCPUType:bsg_kssysctl_int32ForName("hw.cputype")
+                                       subType:bsg_kssysctl_int32ForName("hw.cpusubtype")];
     
-    return result ?:[NSString stringWithUTF8String:bsg_ksmach_currentCPUArch()];
+    return result ?:[NSString stringWithUTF8String:bsg_ksmachcurrentCPUArch()];
 }
 
 /** Check if the current device is jailbroken.
@@ -277,7 +277,7 @@
  */
 + (BOOL) isJailbroken
 {
-    return bsg_ksdl_imageNamed("MobileSubstrate", false) != UINT32_MAX;
+    return bsg_ksdlimageNamed("MobileSubstrate", false) != UINT32_MAX;
 }
 
 /** Check if the current build is a debug build.
@@ -440,7 +440,7 @@
     [sysInfo bsg_ksc_safeSetObject:[NSNumber numberWithInt:[NSProcessInfo processInfo].processIdentifier] forKey:@BSG_KSSystemField_ProcessID];
     [sysInfo bsg_ksc_safeSetObject:[NSNumber numberWithInt:getppid()] forKey:@BSG_KSSystemField_ParentProcessID];
     [sysInfo bsg_ksc_safeSetObject:[self deviceAndAppHash] forKey:@BSG_KSSystemField_DeviceAppHash];
-    [sysInfo bsg_ksc_safeSetObject:[KSSystemInfo buildType] forKey:@BSG_KSSystemField_BuildType];
+    [sysInfo bsg_ksc_safeSetObject:[BSG_KSSystemInfo buildType] forKey:@BSG_KSSystemField_BuildType];
     
     NSDictionary* memory = [NSDictionary dictionaryWithObject:[self int64Sysctl:@"hw.memsize"] forKey:@BSG_KSSystemField_Size];
     [sysInfo bsg_ksc_safeSetObject:memory forKey:@BSG_KSSystemField_Memory];
@@ -454,7 +454,7 @@ const char* bsg_kssysteminfo_toJSON(void)
 {
     NSError* error;
     NSDictionary* systemInfo = [NSMutableDictionary dictionaryWithDictionary:[BSG_KSSystemInfo systemInfo]];
-    NSMutableData* jsonData = (NSMutableData*)[KSJSONCodec encode:systemInfo
+    NSMutableData* jsonData = (NSMutableData*)[BSG_KSJSONCodec encode:systemInfo
                                                           options:BSG_KSJSONEncodeOptionSorted
                                                             error:&error];
     if(error != nil)

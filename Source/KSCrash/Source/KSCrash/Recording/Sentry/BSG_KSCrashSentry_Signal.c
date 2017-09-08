@@ -32,7 +32,7 @@
 #include "BSG_KSSignalInfo.h"
 #include "BSG_KSMach.h"
 
-//#define KSLogger_LocalLevel TRACE
+//#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 
 #include <errno.h>
@@ -86,21 +86,21 @@ void bsg_kssighndl_i_handleSignal(int sigNum,
                               void* userContext)
 {
     BSG_KSLOG_DEBUG("Trapped signal %d", sigNum);
-    if(g_installed)
+    if(bsg_g_installed)
     {
         bool wasHandlingCrash = bsg_g_context->handlingCrash;
-        kscrashsentry_beginHandlingCrash(g_context);
+        bsg_kscrashsentry_beginHandlingCrash(bsg_g_context);
 
         BSG_KSLOG_DEBUG("Signal handler is installed. Continuing signal handling.");
 
         BSG_KSLOG_DEBUG("Suspending all threads.");
-        kscrashsentry_suspendThreads();
+        bsg_kscrashsentry_suspendThreads();
 
         if(wasHandlingCrash)
         {
             BSG_KSLOG_INFO("Detected crash in the crash reporter. Restoring original handlers.");
             bsg_g_context->crashedDuringCrashHandling = true;
-            kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
+            bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
         }
 
 
@@ -118,8 +118,8 @@ void bsg_kssighndl_i_handleSignal(int sigNum,
 
 
         BSG_KSLOG_DEBUG("Crash handling complete. Restoring original handlers.");
-        kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
-        kscrashsentry_resumeThreads();
+        bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
+        bsg_kscrashsentry_resumeThreads();
     }
 
     BSG_KSLOG_DEBUG("Re-raising signal for regular handlers to catch.");
@@ -132,11 +132,11 @@ void bsg_kssighndl_i_handleSignal(int sigNum,
 #pragma mark - API -
 // ============================================================================
 
-bool kscrashsentry_installSignalHandler(BSG_KSCrash_SentryContext* context)
+bool bsg_kscrashsentry_installSignalHandler(BSG_KSCrash_SentryContext* context)
 {
     BSG_KSLOG_DEBUG("Installing signal handler.");
 
-    if(g_installed)
+    if(bsg_g_installed)
     {
         BSG_KSLOG_DEBUG("Signal handler already installed.");
         return true;
@@ -146,15 +146,15 @@ bool kscrashsentry_installSignalHandler(BSG_KSCrash_SentryContext* context)
     bsg_g_context = context;
 
 #if !TARGET_OS_TV
-    if(g_signalStack.ss_size == 0)
+    if(bsg_g_signalStack.ss_size == 0)
     {
         BSG_KSLOG_DEBUG("Allocating signal stack area.");
         bsg_g_signalStack.ss_size = SIGSTKSZ;
-        bsg_g_signalStack.ss_sp = malloc(g_signalStack.ss_size);
+        bsg_g_signalStack.ss_sp = malloc(bsg_g_signalStack.ss_size);
     }
 
     BSG_KSLOG_DEBUG("Setting signal stack area.");
-    if(sigaltstack(&g_signalStack, NULL) != 0)
+    if(sigaltstack(&bsg_g_signalStack, NULL) != 0)
     {
         BSG_KSLOG_ERROR("signalstack: %s", strerror(errno));
         goto failed;
@@ -164,10 +164,10 @@ bool kscrashsentry_installSignalHandler(BSG_KSCrash_SentryContext* context)
     const int* fatalSignals = bsg_kssignal_fatalSignals();
     int fatalSignalsCount = bsg_kssignal_numFatalSignals();
 
-    if(g_previousSignalHandlers == NULL)
+    if(bsg_g_previousSignalHandlers == NULL)
     {
         BSG_KSLOG_DEBUG("Allocating memory to store previous signal handlers.");
-        bsg_g_previousSignalHandlers = malloc(sizeof(*g_previousSignalHandlers)
+        bsg_g_previousSignalHandlers = malloc(sizeof(*bsg_g_previousSignalHandlers)
                                           * (unsigned)fatalSignalsCount);
     }
 
@@ -177,12 +177,12 @@ bool kscrashsentry_installSignalHandler(BSG_KSCrash_SentryContext* context)
     action.sa_flags |= SA_64REGSET;
 #endif
     sigemptyset(&action.sa_mask);
-    action.sa_sigaction = &kssighndl_i_handleSignal;
+    action.sa_sigaction = &bsg_kssighndl_i_handleSignal;
 
     for(int i = 0; i < fatalSignalsCount; i++)
     {
         BSG_KSLOG_DEBUG("Assigning handler for signal %d", fatalSignals[i]);
-        if(sigaction(fatalSignals[i], &action, &g_previousSignalHandlers[i]) != 0)
+        if(sigaction(fatalSignals[i], &action, &bsg_g_previousSignalHandlers[i]) != 0)
         {
             char sigNameBuff[30];
             const char* sigName = bsg_kssignal_signalName(fatalSignals[i]);
@@ -195,7 +195,7 @@ bool kscrashsentry_installSignalHandler(BSG_KSCrash_SentryContext* context)
             // Try to reverse the damage
             for(i--;i >= 0; i--)
             {
-                sigaction(fatalSignals[i], &g_previousSignalHandlers[i], NULL);
+                sigaction(fatalSignals[i], &bsg_g_previousSignalHandlers[i], NULL);
             }
             goto failed;
         }
@@ -212,7 +212,7 @@ failed:
 void bsg_kscrashsentry_uninstallSignalHandler(void)
 {
     BSG_KSLOG_DEBUG("Uninstalling signal handlers.");
-    if(!g_installed)
+    if(!bsg_g_installed)
     {
         BSG_KSLOG_DEBUG("Signal handlers were already uninstalled.");
         return;
@@ -224,7 +224,7 @@ void bsg_kscrashsentry_uninstallSignalHandler(void)
     for(int i = 0; i < fatalSignalsCount; i++)
     {
         BSG_KSLOG_DEBUG("Restoring original handler for signal %d", fatalSignals[i]);
-        sigaction(fatalSignals[i], &g_previousSignalHandlers[i], NULL);
+        sigaction(fatalSignals[i], &bsg_g_previousSignalHandlers[i], NULL);
     }
     
     BSG_KSLOG_DEBUG("Signal handlers uninstalled.");

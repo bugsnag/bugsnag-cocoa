@@ -25,13 +25,13 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
     [BSG_KSCrash sharedInstance].sink = sink;
     // We don't use this feature yet, so we turn it off
     [BSG_KSCrash sharedInstance].introspectMemory = NO;
-    [BSG_KSCrash sharedInstance].deleteBehaviorAfterSendAll = KSCDeleteOnSucess;
+    [BSG_KSCrash sharedInstance].deleteBehaviorAfterSendAll = BSG_KSCDeleteOnSucess;
     [BSG_KSCrash sharedInstance].onCrash = onCrash;
     [BSG_KSCrash sharedInstance].maxStoredReports = BSG_MAX_STORED_REPORTS;
     [BSG_KSCrash sharedInstance].demangleLanguages = 0;
     
     if (!config.autoNotify) {
-        kscrash_setHandlingCrashTypes(BSG_KSCrashTypeUserReported);
+        bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeUserReported);
     }
     if (![[BSG_KSCrash sharedInstance] install]) {
         bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");

@@ -35,7 +35,7 @@
 #import "NSError+BSG_SimpleConstructor.h"
 #import "BSG_KSSystemCapabilities.h"
 
-//#define KSLogger_LocalLevel TRACE
+//#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
 
 #if BSG_KSCRASH_HAS_UIKIT
@@ -307,7 +307,7 @@ failed:
         return false;
     }
 
-#if KSCRASH_HAS_UIKIT
+#if BSG_KSCRASH_HAS_UIKIT
     NSNotificationCenter* nCenter = [NSNotificationCenter defaultCenter];
     [nCenter addObserver:self
                 selector:@selector(applicationDidBecomeActive)
@@ -473,7 +473,7 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 
 - (BOOL) redirectConsoleLogsToDefaultFile
 {
-    NSString* logFilename = [NSString stringWithFormat:@"%@" kCrashLogFilenameSuffix, self.bundleName];
+    NSString* logFilename = [NSString stringWithFormat:@"%@" BSG_kCrashLogFilenameSuffix, self.bundleName];
     NSString* logFilePath = [self.crashReportStore.path stringByAppendingPathComponent:logFilename];
     if(![self redirectConsoleLogsToFile:logFilePath overwrite:YES])
     {

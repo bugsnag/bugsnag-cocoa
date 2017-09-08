@@ -16,8 +16,8 @@
 // This file contains structures and constants copied from Apple header
 // files, arranged for use in BSG_KSObjC.
 
-#ifndef HDR_BSG_BSG_KSObjCApple_h
-#define HDR_BSG_BSG_KSObjCApple_h
+#ifndef HDR_BSG_KSObjCApple_h
+#define HDR_BSG_KSObjCApple_h
 
 #ifdef __cplusplus
 extern "C" {

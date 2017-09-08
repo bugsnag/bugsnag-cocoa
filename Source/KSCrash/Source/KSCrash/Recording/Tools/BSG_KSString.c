@@ -92,7 +92,7 @@ bool bsg_ksstring_isNullTerminatedUTF8String(const void* memory,
                 }
             }
         }
-        else unlikely_if(ch < 0x20 && !g_printableControlChars[ch])
+        else unlikely_if(ch < 0x20 && !bsg_g_printableControlChars[ch])
         {
             return false;
         }
@@ -145,7 +145,7 @@ bool bsg_ksstring_extractHexValue(const char* string,
             current += 2;
             
             // Must have at least one valid digit after "0x".
-            unlikely_if(g_hexConversion[*current] == INV)
+            unlikely_if(bsg_g_hexConversion[*current] == INV)
             {
                 continue;
             }
@@ -169,7 +169,7 @@ bool bsg_ksstring_extractHexValue(const char* string,
     return false;
 }
 
-void bsg_bsg_ksstring_replace(const char** dest, const char* replacement)
+void bsg_ksstring_replace(const char** dest, const char* replacement)
 {
     if(*dest != NULL)
     {

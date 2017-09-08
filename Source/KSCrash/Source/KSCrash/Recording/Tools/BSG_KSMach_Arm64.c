@@ -29,7 +29,7 @@
 
 #include "BSG_KSMach.h"
 
-//#define KSLogger_LocalLevel TRACE
+//#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 
 
@@ -53,28 +53,28 @@ static const int bsg_g_exceptionRegisterNamesCount =
 sizeof(g_exceptionRegisterNames) / sizeof(*g_exceptionRegisterNames);
 
 
-uintptr_t bsg_ksmachframePointer(const STRUCT_MCONTEXT_L* const machineContext)
+uintptr_t bsg_ksmachframePointer(const BSG_STRUCT_MCONTEXT_L* const machineContext)
 {
     return machineContext->__ss.__fp;
 }
 
-uintptr_t bsg_ksmachstackPointer(const STRUCT_MCONTEXT_L* const machineContext)
+uintptr_t bsg_ksmachstackPointer(const BSG_STRUCT_MCONTEXT_L* const machineContext)
 {
     return machineContext->__ss.__sp;
 }
 
-uintptr_t bsg_ksmachinstructionAddress(const STRUCT_MCONTEXT_L* const machineContext)
+uintptr_t bsg_ksmachinstructionAddress(const BSG_STRUCT_MCONTEXT_L* const machineContext)
 {
     return machineContext->__ss.__pc;
 }
 
-uintptr_t bsg_ksmachlinkRegister(const STRUCT_MCONTEXT_L* const machineContext)
+uintptr_t bsg_ksmachlinkRegister(const BSG_STRUCT_MCONTEXT_L* const machineContext)
 {
     return machineContext->__ss.__lr;
 }
 
 bool bsg_ksmachthreadState(const thread_t thread,
-                        STRUCT_MCONTEXT_L* const machineContext)
+                        BSG_STRUCT_MCONTEXT_L* const machineContext)
 {
     return bsg_ksmachfillState(thread,
                             (thread_state_t)&machineContext->__ss,
@@ -83,7 +83,7 @@ bool bsg_ksmachthreadState(const thread_t thread,
 }
 
 bool bsg_ksmachfloatState(const thread_t thread,
-                       STRUCT_MCONTEXT_L* const machineContext)
+                       BSG_STRUCT_MCONTEXT_L* const machineContext)
 {
     return bsg_ksmachfillState(thread,
                             (thread_state_t)&machineContext->__ns,
@@ -92,7 +92,7 @@ bool bsg_ksmachfloatState(const thread_t thread,
 }
 
 bool bsg_ksmachexceptionState(const thread_t thread,
-                           STRUCT_MCONTEXT_L* const machineContext)
+                           BSG_STRUCT_MCONTEXT_L* const machineContext)
 {
     return bsg_ksmachfillState(thread,
                             (thread_state_t)&machineContext->__es,
@@ -114,7 +114,7 @@ const char* bsg_ksmachregisterName(const int regNumber)
     return NULL;
 }
 
-uint64_t bsg_ksmachregisterValue(const STRUCT_MCONTEXT_L* const machineContext,
+uint64_t bsg_ksmachregisterValue(const BSG_STRUCT_MCONTEXT_L* const machineContext,
                               const int regNumber)
 {
     if(regNumber <= 29)
@@ -150,7 +150,7 @@ const char* bsg_ksmachexceptionRegisterName(const int regNumber)
     return NULL;
 }
 
-uint64_t bsg_ksmachexceptionRegisterValue(const STRUCT_MCONTEXT_L* const machineContext,
+uint64_t bsg_ksmachexceptionRegisterValue(const BSG_STRUCT_MCONTEXT_L* const machineContext,
                                        const int regNumber)
 {
     switch(regNumber)
@@ -167,7 +167,7 @@ uint64_t bsg_ksmachexceptionRegisterValue(const STRUCT_MCONTEXT_L* const machine
     return 0;
 }
 
-uintptr_t bsg_ksmachfaultAddress(const STRUCT_MCONTEXT_L* const machineContext)
+uintptr_t bsg_ksmachfaultAddress(const BSG_STRUCT_MCONTEXT_L* const machineContext)
 {
     return machineContext->__es.__far;
 }

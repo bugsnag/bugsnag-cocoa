@@ -28,7 +28,7 @@
 #import "BSG_KSCrashSentry_Private.h"
 #include "BSG_KSMach.h"
 
-//#define KSLogger_LocalLevel TRACE
+//#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
 
 
@@ -115,7 +115,7 @@ static NSTimeInterval bsg_g_watchdogInterval = 0;
 
 - (void) handleDeadlock
 {
-    kscrashsentry_beginHandlingCrash(g_context);
+    bsg_kscrashsentry_beginHandlingCrash(bsg_g_context);
 
     BSG_KSLOG_DEBUG(@"Filling out context.");
     bsg_g_context->crashType = BSG_KSCrashTypeMainThreadDeadlock;
@@ -127,7 +127,7 @@ static NSTimeInterval bsg_g_watchdogInterval = 0;
     
     
     BSG_KSLOG_DEBUG(@"Crash handling complete. Restoring original handlers.");
-    kscrashsentry_uninstall(BSG_KSCrashTypeAll);
+    bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAll);
     
     BSG_KSLOG_DEBUG(@"Calling abort()");
     abort();
@@ -170,10 +170,10 @@ static NSTimeInterval bsg_g_watchdogInterval = 0;
 #pragma mark - API -
 // ============================================================================
 
-bool kscrashsentry_installDeadlockHandler(BSG_KSCrash_SentryContext* context)
+bool bsg_kscrashsentry_installDeadlockHandler(BSG_KSCrash_SentryContext* context)
 {
     BSG_KSLOG_DEBUG(@"Installing deadlock handler.");
-    if(g_installed)
+    if(bsg_g_installed)
     {
         BSG_KSLOG_DEBUG(@"Deadlock handler already installed.");
         return true;
@@ -183,21 +183,21 @@ bool kscrashsentry_installDeadlockHandler(BSG_KSCrash_SentryContext* context)
     bsg_g_context = context;
 
     BSG_KSLOG_DEBUG(@"Creating new deadlock monitor.");
-    bsg_g_monitor = [[KSCrashDeadlockMonitor alloc] init];
+    bsg_g_monitor = [[BSG_KSCrashDeadlockMonitor alloc] init];
     return true;
 }
 
 void bsg_kscrashsentry_uninstallDeadlockHandler(void)
 {
     BSG_KSLOG_DEBUG(@"Uninstalling deadlock handler.");
-    if(!g_installed)
+    if(!bsg_g_installed)
     {
         BSG_KSLOG_DEBUG(@"Deadlock handler was already uninstalled.");
         return;
     }
 
     BSG_KSLOG_DEBUG(@"Stopping deadlock monitor.");
-    [g_monitor cancel];
+    [bsg_g_monitor cancel];
     bsg_g_monitor = nil;
 
     bsg_g_installed = 0;

@@ -25,8 +25,8 @@
 //
 
 
-#ifndef HDR_BSG_BSG_KSObjC_h
-#define HDR_BSG_BSG_KSObjC_h
+#ifndef HDR_BSG_KSObjC_h
+#define HDR_BSG_KSObjC_h
 
 #ifdef __cplusplus
 extern "C" {

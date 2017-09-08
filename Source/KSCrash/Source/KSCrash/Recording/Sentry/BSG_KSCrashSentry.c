@@ -100,11 +100,11 @@ static bool bsg_g_threads_are_running = true;
 #pragma mark - API -
 // ============================================================================
 
-BSG_KSCrashType bsg_bsg_kscrashsentry_installWithContext(BSG_KSCrash_SentryContext* context,
+BSG_KSCrashType bsg_kscrashsentry_installWithContext(BSG_KSCrash_SentryContext* context,
                                              BSG_KSCrashType crashTypes,
                                              void (*onCrash)(void))
 {
-    if(ksmach_isBeingTraced())
+    if(bsg_ksmachisBeingTraced())
     {
         BSG_KSLOGBASIC_WARN("KSCrash: App is running in a debugger. Only user reported events will be handled.");
         crashTypes = BSG_KSCrashTypeUserReported;
@@ -168,9 +168,9 @@ void bsg_kscrashsentry_suspendThreads(void)
 
     if(bsg_g_context != NULL)
     {
-        int numThreads = sizeof(g_context->reservedThreads) / sizeof(g_context->reservedThreads[0]);
+        int numThreads = sizeof(bsg_g_context->reservedThreads) / sizeof(bsg_g_context->reservedThreads[0]);
         BSG_KSLOG_DEBUG("Suspending all threads except for %d reserved threads.", numThreads);
-        if(ksmach_suspendAllThreadsExcept(g_context->reservedThreads, numThreads))
+        if(bsg_ksmachsuspendAllThreadsExcept(bsg_g_context->reservedThreads, numThreads))
         {
             BSG_KSLOG_DEBUG("Suspend successful.");
             bsg_g_threads_are_running = false;
@@ -179,7 +179,7 @@ void bsg_kscrashsentry_suspendThreads(void)
     else
     {
         BSG_KSLOG_DEBUG("Suspending all threads.");
-        if(ksmach_suspendAllThreads())
+        if(bsg_ksmachsuspendAllThreads())
         {
             BSG_KSLOG_DEBUG("Suspend successful.");
             bsg_g_threads_are_running = false;
@@ -201,7 +201,7 @@ void bsg_kscrashsentry_resumeThreads(void)
     {
         int numThreads = sizeof(bsg_g_context->reservedThreads) / sizeof(bsg_g_context->reservedThreads[0]);
         BSG_KSLOG_DEBUG("Resuming all threads except for %d reserved threads.", numThreads);
-        if(bsg_ksmach_resumeAllThreadsExcept(bsg_g_context->reservedThreads, numThreads))
+        if(bsg_ksmachresumeAllThreadsExcept(bsg_g_context->reservedThreads, numThreads))
         {
             BSG_KSLOG_DEBUG("Resume successful.");
             bsg_g_threads_are_running = true;
@@ -210,7 +210,7 @@ void bsg_kscrashsentry_resumeThreads(void)
     else
     {
         BSG_KSLOG_DEBUG("Resuming all threads.");
-        if(ksmach_resumeAllThreads())
+        if(bsg_ksmachresumeAllThreads())
         {
             BSG_KSLOG_DEBUG("Resume successful.");
             bsg_g_threads_are_running = true;

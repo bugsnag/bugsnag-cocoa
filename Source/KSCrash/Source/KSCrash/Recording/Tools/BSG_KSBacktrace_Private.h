@@ -39,7 +39,7 @@ extern "C" {
 #include <sys/ucontext.h>
 
 
-/** Point at which ksbt_backtraceLength() will give up trying to count.
+/** Point at which bsg_ksbt_backtraceLength() will give up trying to count.
  *
  * This really only comes into play during a stack overflow.
  */
@@ -66,7 +66,7 @@ int bsg_ksbt_backtraceLength(const BSG_STRUCT_MCONTEXT_L* machineContext);
  *
  * @return true if the backtrace is longer than maxLength.
  */
-bool ksbt_isBacktraceTooLong(const BSG_STRUCT_MCONTEXT_L* const machineContext,
+bool bsg_ksbt_isBacktraceTooLong(const BSG_STRUCT_MCONTEXT_L* const machineContext,
                              int maxLength);
 
 

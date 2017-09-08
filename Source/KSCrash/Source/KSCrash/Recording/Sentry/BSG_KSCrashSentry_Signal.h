@@ -46,7 +46,7 @@ extern "C" {
  *
  * @return true if installation was succesful.
  */
-bool kscrashsentry_installSignalHandler(BSG_KSCrash_SentryContext* context);
+bool bsg_kscrashsentry_installSignalHandler(BSG_KSCrash_SentryContext* context);
 
 /** Uninstall our custom signal handlers and restore the previous ones.
  */

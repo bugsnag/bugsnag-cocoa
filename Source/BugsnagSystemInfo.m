@@ -14,12 +14,13 @@
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSSystemCapabilities.h"
 #import "BSG_KSMach.h"
+#import "BSG_KSSystemInfo.h"
 
-//#define KSLogger_LocalLevel TRACE
+//#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
 
 #import <CommonCrypto/CommonDigest.h>
-#if KSCRASH_HAS_UIKIT
+#if BSG_KSCRASH_HAS_UIKIT
 #import <UIKit/UIKit.h>
 #endif
 
@@ -143,11 +144,11 @@
     
     if(exePath != nil)
     {
-        const uint8_t* uuidBytes = _bsg_ksdlimageUUID([exePath UTF8String], true);
+        const uint8_t* uuidBytes = bsg_ksdlimageUUID([exePath UTF8String], true);
         if(uuidBytes == NULL)
         {
             // OSX app image path is a lie.
-            uuidBytes = _bsg_ksdlimageUUID([exePath.lastPathComponent UTF8String], false);
+            uuidBytes = bsg_ksdlimageUUID([exePath.lastPathComponent UTF8String], false);
         }
         if(uuidBytes != NULL)
         {
@@ -248,7 +249,7 @@
     NSString* result = [self CPUArchForCPUType:bsg_kssysctl_int32ForName("hw.cputype")
                                        subType:bsg_kssysctl_int32ForName("hw.cpusubtype")];
     
-    return result ?:[NSString stringWithUTF8String:ksmach_currentCPUArch()];
+    return result ?:[NSString stringWithUTF8String:bsg_ksmachcurrentCPUArch()];
 }
 
 /** Check if the current device is jailbroken.
@@ -257,7 +258,7 @@
  */
 + (BOOL) isJailbroken
 {
-    return _bsg_ksdlimageNamed("MobileSubstrate", false) != UINT32_MAX;
+    return bsg_ksdlimageNamed("MobileSubstrate", false) != UINT32_MAX;
 }
 
 /** Check if the current build is a debug build.
@@ -293,12 +294,12 @@
 + (NSString*)receiptUrlPath
 {
     NSString* path = nil;
-#if KSCRASH_HOST_IOS
+#if BSG_KSCRASH_HOST_IOS
     // For iOS 6 compatibility
     if ([[UIDevice currentDevice].systemVersion compare:@"7" options:NSNumericSearch] != NSOrderedAscending) {
 #endif
         path = [NSBundle mainBundle].appStoreReceiptURL.path;
-#if KSCRASH_HOST_IOS
+#if BSG_KSCRASH_HOST_IOS
     }
 #endif
     return path;
@@ -371,7 +372,7 @@
 
 
 + (NSNumber *)usableMemory {
-    return @(ksmach_usableMemory());
+    return @(bsg_ksmachusableMemory());
 }
 
 
@@ -402,8 +403,8 @@ const char* BugsnagSystemInfo_toJSON(void)
 {
     NSError* error;
     NSDictionary* systemInfo = [NSMutableDictionary dictionaryWithDictionary:[BugsnagSystemInfo systemInfo]];
-    NSMutableData* jsonData = (NSMutableData*)[KSJSONCodec encode:systemInfo
-                                                          options:KSJSONEncodeOptionSorted
+    NSMutableData* jsonData = (NSMutableData*)[BSG_KSJSONCodec encode:systemInfo
+                                                          options:BSG_KSJSONEncodeOptionSorted
                                                             error:&error];
     if(error != nil)
     {

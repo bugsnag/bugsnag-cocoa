@@ -288,7 +288,7 @@ const void*  bsg_ksdlgetSymbolAddrInImage(uint32_t imageIdx, const char* symbolN
         if(loadCmd->cmd == LC_SYMTAB)
         {
             const struct symtab_command* symtabCmd = (struct symtab_command*)cmdPtr;
-            const BSG_STRUCT_NLIST* symbolTable = (STRUCT_NLIST*)(segmentBase + symtabCmd->symoff);
+            const BSG_STRUCT_NLIST* symbolTable = (BSG_STRUCT_NLIST*)(segmentBase + symtabCmd->symoff);
             const uintptr_t stringTable = segmentBase + symtabCmd->stroff;
 
             for(uint32_t iSym = 0; iSym < symtabCmd->nsyms; iSym++)

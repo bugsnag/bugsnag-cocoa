@@ -1,5 +1,5 @@
 //
-//  KSLogger.h
+//  BSG_KSLogger.h
 //
 //  Created by Karl Stenerud on 11-06-25.
 //
@@ -26,7 +26,7 @@
 
 
 /**
- * KSLogger
+ * BSG_KSLogger
  * ========
  *
  * Prints log entries to the console consisting of:
@@ -48,9 +48,9 @@
  * Set the log level in your "Preprocessor Macros" build setting. You may choose
  * TRACE, DEBUG, INFO, WARN, ERROR. If nothing is set, it defaults to INFO.
  *
- * Example: KSLogger_Level=WARN
+ * Example: BSG_KSLogger_Level=WARN
  *
- * Anything below the level specified for KSLogger_Level will not be compiled
+ * Anything below the level specified for BSG_KSLogger_Level will not be compiled
  * or printed.
  * 
  *
@@ -76,7 +76,7 @@
  *
  *
  * The "BASIC" versions of the macros behave exactly like NSLog() or printf(),
- * except they respect the KSLogger_Level setting:
+ * except they respect the BSG_KSLogger_Level setting:
  *
  * Code:
  *    BSG_KSLOGBASIC_ERROR(@"A basic log entry");
@@ -105,18 +105,18 @@
  *
  * You can control logging messages at the local file level using the
  * "KSLogger_LocalLevel" define. Note that it must be defined BEFORE
- * including KSLogger.h
+ * including BSG_KSLogger.h
  *
  * The BSG_KSLOG_XX() and BSG_KSLOGBASIC_XX() macros will print out based on the LOWER
- * of KSLogger_Level and KSLogger_LocalLevel, so if KSLogger_Level is DEBUG
- * and KSLogger_LocalLevel is TRACE, it will print all the way down to the trace
- * level for the local file where KSLogger_LocalLevel was defined, and to the
+ * of BSG_KSLogger_Level and BSG_KSLogger_LocalLevel, so if BSG_KSLogger_Level is DEBUG
+ * and BSG_KSLogger_LocalLevel is TRACE, it will print all the way down to the trace
+ * level for the local file where BSG_KSLogger_LocalLevel was defined, and to the
  * debug level everywhere else.
  *
  * Example:
  *
- * // KSLogger_LocalLevel, if defined, MUST come BEFORE including KSLogger.h
- * #define KSLogger_LocalLevel TRACE
+ * // BSG_KSLogger_LocalLevel, if defined, MUST come BEFORE including BSG_KSLogger.h
+ * #define BSG_KSLogger_LocalLevel TRACE
  * #import "BSG_KSLogger.h"
  *
  *
@@ -125,16 +125,16 @@
  * ===============
  *
  * The C logger changes its behavior depending on the value of the preprocessor
- * define KSLogger_CBufferSize.
+ * define BSG_KSLogger_CBufferSize.
  *
- * If KSLogger_CBufferSize is > 0, the C logger will behave in an async-safe
+ * If BSG_KSLogger_CBufferSize is > 0, the C logger will behave in an async-safe
  * manner, calling write() instead of printf(). Any log messages that exceed the
- * length specified by KSLogger_CBufferSize will be truncated.
+ * length specified by BSG_KSLogger_CBufferSize will be truncated.
  *
- * If KSLogger_CBufferSize == 0, the C logger will use printf(), and there will
+ * If BSG_KSLogger_CBufferSize == 0, the C logger will use printf(), and there will
  * be no limit on the log message length.
  *
- * KSLogger_CBufferSize can only be set as a preprocessor define, and will
+ * BSG_KSLogger_CBufferSize can only be set as a preprocessor define, and will
  * default to 1024 if not specified during compilation.
  */
 
@@ -213,27 +213,27 @@ void i_kslog_logCBasic(const char* fmt, ...);
 #endif
 
 
-#define KSLogger_Level_None   0
-#define KSLogger_Level_Error 10
-#define KSLogger_Level_Warn  20
-#define KSLogger_Level_Info  30
-#define KSLogger_Level_Debug 40
-#define KSLogger_Level_Trace 50
+#define BSG_KSLogger_Level_None   0
+#define BSG_KSLogger_Level_Error 10
+#define BSG_KSLogger_Level_Warn  20
+#define BSG_KSLogger_Level_Info  30
+#define BSG_KSLogger_Level_Debug 40
+#define BSG_KSLogger_Level_Trace 50
 
-#define NONE  KSLogger_Level_None
-#define ERROR KSLogger_Level_Error
-#define WARN  KSLogger_Level_Warn
-#define INFO  KSLogger_Level_Info
-#define DEBUG KSLogger_Level_Debug
-#define TRACE KSLogger_Level_Trace
+#define NONE  BSG_KSLogger_Level_None
+#define ERROR BSG_KSLogger_Level_Error
+#define WARN  BSG_KSLogger_Level_Warn
+#define INFO  BSG_KSLogger_Level_Info
+#define DEBUG BSG_KSLogger_Level_Debug
+#define TRACE BSG_KSLogger_Level_Trace
 
 
-#ifndef KSLogger_Level
-    #define KSLogger_Level KSLogger_Level_Info
+#ifndef BSG_KSLogger_Level
+    #define BSG_KSLogger_Level BSG_KSLogger_Level_Info
 #endif
 
-#ifndef KSLogger_LocalLevel
-    #define KSLogger_LocalLevel KSLogger_Level_None
+#ifndef BSG_KSLogger_LocalLevel
+    #define BSG_KSLogger_LocalLevel BSG_KSLogger_Level_None
 #endif
 
 #define a_KSLOG_FULL(LEVEL, FMT, ...) \
@@ -261,16 +261,16 @@ bool kslog_setLogFilename(const char* filename, bool overwrite);
 /** Tests if the logger would print at the specified level.
  *
  * @param LEVEL The level to test for. One of:
- *            KSLogger_Level_Error,
- *            KSLogger_Level_Warn,
- *            KSLogger_Level_Info,
- *            KSLogger_Level_Debug,
- *            KSLogger_Level_Trace,
+ *            BSG_KSLogger_Level_Error,
+ *            BSG_KSLogger_Level_Warn,
+ *            BSG_KSLogger_Level_Info,
+ *            BSG_KSLogger_Level_Debug,
+ *            BSG_KSLogger_Level_Trace,
  *
  * @return TRUE if the logger would print at the specified level.
  */
 #define BSG_KSLOG_PRINTS_AT_LEVEL(LEVEL) \
-    (BSG_KSLogger_Level >= LEVEL || KSLogger_LocalLevel >= LEVEL)
+    (BSG_KSLogger_Level >= LEVEL || BSG_KSLogger_LocalLevel >= LEVEL)
 
 /** Log a message regardless of the log settings.
  * Normal version prints out full context. Basic version prints directly.

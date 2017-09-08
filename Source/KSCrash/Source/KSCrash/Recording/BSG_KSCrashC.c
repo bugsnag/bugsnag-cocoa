@@ -30,7 +30,7 @@
 #include "BSG_KSCrashReport.h"
 #include "BSG_KSString.h"
 #include "BSG_KSMach.h"
-#include "BSG_BSG_KSObjC.h"
+#include "BSG_KSObjC.h"
 #include "BSG_KSSignalInfo.h"
 #include "BSG_KSSystemInfoC.h"
 #include "BSG_KSZombie.h"
@@ -176,14 +176,14 @@ void bsg_kscrash_reinstall(const char* const crashReportFilePath,
     BSG_KSCrash_Context* context = crashContext();
     bsg_ksstring_replace(&context->config.crashID, crashID);
 
-    if(!kscrashstate_init(bsg_g_stateFilePath, &context->state))
+    if(!bsg_kscrashstate_init(bsg_g_stateFilePath, &context->state))
     {
         BSG_KSLOG_ERROR("Failed to initialize persistent crash state");
     }
     context->state.appLaunchTime = mach_absolute_time();
 }
 
-BSG_KSCrashType kscrash_setHandlingCrashTypes(BSG_KSCrashType crashTypes)
+BSG_KSCrashType bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashType crashTypes)
 {
     BSG_KSCrash_Context* context = crashContext();
     context->config.handlingCrashTypes = crashTypes;
@@ -201,7 +201,7 @@ void bsg_kscrash_setUserInfoJSON(const char* const userInfoJSON)
 {
     BSG_KSLOG_TRACE("set userInfoJSON to %p", userInfoJSON);
     BSG_KSCrash_Context* context = crashContext();
-    bsg_bsg_ksstring_replace(&context->config.userInfoJSON, userInfoJSON);
+    bsg_ksstring_replace(&context->config.userInfoJSON, userInfoJSON);
 }
 
 void bsg_kscrash_setDeadlockWatchdogInterval(double deadlockWatchdogInterval)
@@ -270,7 +270,7 @@ void bsg_kscrash_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, 
     }
 }
 
-void bsg_kscrash_setCrashNotifyCallback(const KSReportWriteCallback onCrashNotify)
+void bsg_kscrash_setCrashNotifyCallback(const BSG_KSReportWriteCallback onCrashNotify)
 {
     BSG_KSLOG_TRACE("Set onCrashNotify to %p", onCrashNotify);
     crashContext()->config.onCrashNotify = onCrashNotify;

@@ -60,21 +60,21 @@
  * and seems to work fine in ARM as well. I haven't included the args pointer
  * since it's not needed in this context.
  */
-typedef struct KSFrameEntry
+typedef struct BSG_KSFrameEntry
 {
     /** The previous frame in the list. */
-    const struct KSFrameEntry* const previous;
+    const struct BSG_KSFrameEntry* const previous;
 
     /** The instruction address. */
     const uintptr_t return_address;
-} KSFrameEntry;
+} BSG_KSFrameEntry;
 
 
 // Avoiding static functions due to linker issues.
 
 
 
-int bsg_ksbt_backtraceLength(const STRUCT_MCONTEXT_L* const machineContext)
+int bsg_ksbt_backtraceLength(const BSG_STRUCT_MCONTEXT_L* const machineContext)
 {
     const uintptr_t instructionAddress = bsg_ksmachinstructionAddress(machineContext);
 
@@ -83,14 +83,14 @@ int bsg_ksbt_backtraceLength(const STRUCT_MCONTEXT_L* const machineContext)
         return 0;
     }
 
-    KSFrameEntry frame = {0};
+    BSG_KSFrameEntry frame = {0};
     const uintptr_t framePtr = bsg_ksmachframePointer(machineContext);
     if(framePtr == 0 ||
        bsg_ksmachcopyMem((void*)framePtr, &frame, sizeof(frame)) != KERN_SUCCESS)
     {
         return 1;
     }
-    for(int i = 1; i < kBacktraceGiveUpPoint; i++)
+    for(int i = 1; i < BSG_kBacktraceGiveUpPoint; i++)
     {
         if(frame.previous == 0 ||
            bsg_ksmachcopyMem(frame.previous, &frame, sizeof(frame)) != KERN_SUCCESS)
@@ -99,10 +99,10 @@ int bsg_ksbt_backtraceLength(const STRUCT_MCONTEXT_L* const machineContext)
         }
     }
 
-    return kBacktraceGiveUpPoint;
+    return BSG_kBacktraceGiveUpPoint;
 }
 
-bool ksbt_isBacktraceTooLong(const STRUCT_MCONTEXT_L* const machineContext,
+bool bsg_ksbt_isBacktraceTooLong(const BSG_STRUCT_MCONTEXT_L* const machineContext,
                              int maxLength)
 {
     const uintptr_t instructionAddress = bsg_ksmachinstructionAddress(machineContext);
@@ -112,7 +112,7 @@ bool ksbt_isBacktraceTooLong(const STRUCT_MCONTEXT_L* const machineContext,
         return 0;
     }
 
-    KSFrameEntry frame = {0};
+    BSG_KSFrameEntry frame = {0};
     const uintptr_t framePtr = bsg_ksmachframePointer(machineContext);
     if(framePtr == 0 ||
        bsg_ksmachcopyMem((void*)framePtr, &frame, sizeof(frame)) != KERN_SUCCESS)
@@ -131,7 +131,7 @@ bool ksbt_isBacktraceTooLong(const STRUCT_MCONTEXT_L* const machineContext,
     return true;
 }
 
-int bsg_ksbt_backtraceThreadState(const STRUCT_MCONTEXT_L* const machineContext,
+int bsg_ksbt_backtraceThreadState(const BSG_STRUCT_MCONTEXT_L* const machineContext,
                               uintptr_t*const backtraceBuffer,
                               const int skipEntries,
                               const int maxEntries)
@@ -171,7 +171,7 @@ int bsg_ksbt_backtraceThreadState(const STRUCT_MCONTEXT_L* const machineContext,
         }
     }
 
-    KSFrameEntry frame = {0};
+    BSG_KSFrameEntry frame = {0};
 
     const uintptr_t framePtr = bsg_ksmachframePointer(machineContext);
     if(framePtr == 0 ||
@@ -205,14 +205,14 @@ int bsg_ksbt_backtraceThread(const thread_t thread,
                          uintptr_t* const backtraceBuffer,
                          const int maxEntries)
 {
-    STRUCT_MCONTEXT_L machineContext;
+    BSG_STRUCT_MCONTEXT_L machineContext;
 
-    if(!ksmach_threadState(thread, &machineContext))
+    if(!bsg_ksmachthreadState(thread, &machineContext))
     {
         return 0;
     }
 
-    return ksbt_backtraceThreadState(&machineContext,
+    return bsg_ksbt_backtraceThreadState(&machineContext,
                                      backtraceBuffer,
                                      0,
                                      maxEntries);
@@ -227,13 +227,13 @@ int bsg_ksbt_backtracePthread(const pthread_t thread,
     {
         return 0;
     }
-    return ksbt_backtraceThread(mach_thread, backtraceBuffer, maxEntries);
+    return bsg_ksbt_backtraceThread(mach_thread, backtraceBuffer, maxEntries);
 }
 
 int bsg_ksbt_backtraceSelf(uintptr_t* const backtraceBuffer,
                        const int maxEntries)
 {
-    return ksbt_backtraceThread(ksmach_thread_self(),
+    return bsg_ksbt_backtraceThread(bsg_ksmachthread_self(),
                                 backtraceBuffer,
                                 maxEntries);
 }
@@ -248,12 +248,12 @@ void bsg_ksbt_symbolicate(const uintptr_t* const backtraceBuffer,
 
     if(!skippedEntries && i < numEntries)
     {
-        _bsg_ksdldladdr(backtraceBuffer[i], &symbolsBuffer[i]);
+        bsg_ksdldladdr(backtraceBuffer[i], &symbolsBuffer[i]);
         i++;
     }
 
     for(; i < numEntries; i++)
     {
-        _bsg_ksdldladdr(CALL_INSTRUCTION_FROM_RETURN_ADDRESS(backtraceBuffer[i]), &symbolsBuffer[i]);
+        bsg_ksdldladdr(CALL_INSTRUCTION_FROM_RETURN_ADDRESS(backtraceBuffer[i]), &symbolsBuffer[i]);
     }
 }

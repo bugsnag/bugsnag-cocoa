@@ -31,7 +31,7 @@
 #include "BSG_KSJSONCodec.h"
 #include "BSG_KSMach.h"
 
-//#define KSLogger_LocalLevel TRACE
+//#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 
 #include <errno.h>
@@ -130,7 +130,7 @@ int bsg_kscrashstate_i_onIntegerElement(const char* const name,
     }
 
     // FP value might have been written as a whole number.
-    return kscrashstate_i_onFloatingPointElement(name, value, userData);
+    return bsg_kscrashstate_i_onFloatingPointElement(name, value, userData);
 }
 
 int bsg_kscrashstate_i_onNullElement(__unused const char* const name,
@@ -226,7 +226,7 @@ bool bsg_kscrashstate_i_loadState(BSG_KSCrash_State* const context,
 
     size_t errorOffset = 0;
 
-    const int result = bsg_ksjson_decode(data,
+    const int result = bsg_ksjsondecode(data,
                                      length,
                                      &callbacks,
                                      context,
@@ -235,7 +235,7 @@ bool bsg_kscrashstate_i_loadState(BSG_KSCrash_State* const context,
     if(result != BSG_KSJSON_OK)
     {
         BSG_KSLOG_ERROR("%s, offset %d: %s",
-                    path, errorOffset, bsg_ksjson_stringForError(result));
+                    path, errorOffset, bsg_ksjsonstringForError(result));
         return false;
     }
     return true;
@@ -262,57 +262,57 @@ bool bsg_kscrashstate_i_saveState(const BSG_KSCrash_State* const state,
     }
     
     BSG_KSJSONEncodeContext JSONContext;
-    bsg_ksjson_beginEncode(&JSONContext,
+    bsg_ksjsonbeginEncode(&JSONContext,
                        true,
                        bsg_kscrashstate_i_addJSONData,
                        &fd);
 
     int result;
-    if((result = bsg_ksjson_beginObject(&JSONContext, NULL)) != BSG_KSJSON_OK)
+    if((result = bsg_ksjsonbeginObject(&JSONContext, NULL)) != BSG_KSJSON_OK)
     {
         goto done;
     }
-    if((result = ksjson_addIntegerElement(&JSONContext,
-                                          kKeyFormatVersion,
-                                          kFormatVersion)) != BSG_KSJSON_OK)
+    if((result = bsg_ksjsonaddIntegerElement(&JSONContext,
+                                          BSG_kKeyFormatVersion,
+                                          BSG_kFormatVersion)) != BSG_KSJSON_OK)
     {
         goto done;
     }
     // Record this launch crashed state into "crashed last launch" field.
-    if((result = bsg_ksjson_addBooleanElement(&JSONContext,
-                                          kKeyCrashedLastLaunch,
+    if((result = bsg_ksjsonaddBooleanElement(&JSONContext,
+                                          BSG_kKeyCrashedLastLaunch,
                                           state->crashedThisLaunch)) != BSG_KSJSON_OK)
     {
         goto done;
     }
-    if((result = bsg_ksjson_addFloatingPointElement(&JSONContext,
-                                                kKeyActiveDurationSinceLastCrash,
+    if((result = bsg_ksjsonaddFloatingPointElement(&JSONContext,
+                                                BSG_kKeyActiveDurationSinceLastCrash,
                                                 state->activeDurationSinceLastCrash)) != BSG_KSJSON_OK)
     {
         goto done;
     }
-    if((result = bsg_ksjson_addFloatingPointElement(&JSONContext,
-                                                kKeyBackgroundDurationSinceLastCrash,
+    if((result = bsg_ksjsonaddFloatingPointElement(&JSONContext,
+                                                BSG_kKeyBackgroundDurationSinceLastCrash,
                                                 state->backgroundDurationSinceLastCrash)) != BSG_KSJSON_OK)
     {
         goto done;
     }
-    if((result = bsg_ksjson_addIntegerElement(&JSONContext,
-                                          kKeyLaunchesSinceLastCrash,
+    if((result = bsg_ksjsonaddIntegerElement(&JSONContext,
+                                          BSG_kKeyLaunchesSinceLastCrash,
                                           state->launchesSinceLastCrash)) != BSG_KSJSON_OK)
     {
         goto done;
     }
-    if((result = bsg_ksjson_addIntegerElement(&JSONContext,
-                                          kKeySessionsSinceLastCrash,
+    if((result = bsg_ksjsonaddIntegerElement(&JSONContext,
+                                          BSG_kKeySessionsSinceLastCrash,
                                           state->sessionsSinceLastCrash)) != BSG_KSJSON_OK)
     {
         goto done;
     }
-    result = bsg_ksjson_endEncode(&JSONContext);
+    result = bsg_ksjsonendEncode(&JSONContext);
 
 done:
-    if (!bsg_bsg_ksfuflushWriteBuffer(fd)) {
+    if (!bsg_ksfuflushWriteBuffer(fd)) {
         BSG_KSLOG_ERROR("Failed to flush write buffer");
     }
     close(fd);
@@ -320,7 +320,7 @@ done:
     if(result != BSG_KSJSON_OK)
     {
         BSG_KSLOG_ERROR("%s: %s",
-                    path, bsg_ksjson_stringForError(result));
+                    path, bsg_ksjsonstringForError(result));
         return false;
     }
     return true;
@@ -337,7 +337,7 @@ bool bsg_kscrashstate_init(const char* const stateFilePath,
     bsg_g_stateFilePath = stateFilePath;
     bsg_g_state = state;
 
-    kscrashstate_i_loadState(state, stateFilePath);
+    bsg_kscrashstate_i_loadState(state, stateFilePath);
 
     state->sessionsSinceLaunch = 1;
     state->activeDurationSinceLaunch = 0;
@@ -356,7 +356,7 @@ bool bsg_kscrashstate_init(const char* const stateFilePath,
     state->sessionsSinceLastCrash++;
     state->applicationIsInForeground = true;
 
-    return kscrashstate_i_saveState(state, stateFilePath);
+    return bsg_kscrashstate_i_saveState(state, stateFilePath);
 }
 
 void bsg_kscrashstate_notifyAppActive(const bool isActive)
@@ -395,7 +395,7 @@ void bsg_kscrashstate_notifyAppInForeground(const bool isInForeground)
     else
     {
         state->appStateTransitionTime = mach_absolute_time();
-        kscrashstate_i_saveState(state, stateFilePath);
+        bsg_kscrashstate_i_saveState(state, stateFilePath);
     }
 }
 
@@ -407,7 +407,7 @@ void bsg_kscrashstate_notifyAppTerminate(void)
     const double duration = bsg_ksmachtimeDifferenceInSeconds(mach_absolute_time(),
                                                            state->appStateTransitionTime);
     state->backgroundDurationSinceLastCrash += duration;
-    kscrashstate_i_saveState(state, stateFilePath);
+    bsg_kscrashstate_i_saveState(state, stateFilePath);
 }
 
 void bsg_kscrashstate_notifyAppCrash(void)
@@ -428,10 +428,10 @@ void bsg_kscrashstate_notifyAppCrash(void)
         state->backgroundDurationSinceLastCrash += duration;
     }
     state->crashedThisLaunch = true;
-    kscrashstate_i_saveState(state, stateFilePath);
+    bsg_kscrashstate_i_saveState(state, stateFilePath);
 }
 
-const BSG_KSCrash_State* const kscrashstate_currentState(void)
+const BSG_KSCrash_State* const bsg_kscrashstate_currentState(void)
 {
     return bsg_g_state;
 }

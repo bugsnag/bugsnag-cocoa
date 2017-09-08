@@ -27,7 +27,7 @@
 
 #include "BSG_KSFileUtils.h"
 
-//#define KSLogger_LocalLevel TRACE
+//#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 
 #include <errno.h>

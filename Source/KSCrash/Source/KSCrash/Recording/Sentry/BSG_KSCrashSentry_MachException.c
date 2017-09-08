@@ -29,7 +29,7 @@
 #include "BSG_KSMach.h"
 #include "BSG_KSSystemCapabilities.h"
 
-//#define KSLogger_LocalLevel TRACE
+//#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 
 #if KSCRASH_HAS_MACH
@@ -155,7 +155,7 @@ static BSG_KSCrash_SentryContext* bsg_g_context;
  * @param machineContext The machine context to fill out.
  */
 bool ksmachexc_i_fetchMachineState(const thread_t thread,
-                                   STRUCT_MCONTEXT_L* const machineContext)
+                                   BSG_STRUCT_MCONTEXT_L* const machineContext)
 {
     if(!ksmach_threadState(thread, machineContext))
     {
@@ -222,7 +222,7 @@ void* ksmachexc_i_handleExceptions(void* const userData)
     if(threadName == kThreadSecondary)
     {
         BSG_KSLOG_DEBUG("This is the secondary thread. Suspending.");
-        thread_suspend(ksmach_thread_self());
+        thread_suspend(bsg_ksmach_thread_self());
     }
 
     for(;;)
@@ -248,19 +248,19 @@ void* ksmachexc_i_handleExceptions(void* const userData)
 
     BSG_KSLOG_DEBUG("Trapped mach exception code 0x%x, subcode 0x%x",
                 exceptionMessage.code[0], exceptionMessage.code[1]);
-    if(g_installed)
+    if(bsg_g_installed)
     {
         bool wasHandlingCrash = bsg_g_context->handlingCrash;
-        kscrashsentry_beginHandlingCrash(g_context);
+        bsg_kscrashsentry_beginHandlingCrash(bsg_g_context);
 
         BSG_KSLOG_DEBUG("Exception handler is installed. Continuing exception handling.");
 
         BSG_KSLOG_DEBUG("Suspending all threads");
-        kscrashsentry_suspendThreads();
+        bsg_kscrashsentry_suspendThreads();
 
         // Switch to the secondary thread if necessary, or uninstall the handler
         // to avoid a death loop.
-        if(ksmach_thread_self() == bsg_g_primaryMachThread)
+        if(bsg_ksmach_thread_self() == bsg_g_primaryMachThread)
         {
             BSG_KSLOG_DEBUG("This is the primary exception thread. Activating secondary thread.");
             if(thread_resume(g_secondaryMachThread) != KERN_SUCCESS)
@@ -281,13 +281,13 @@ void* ksmachexc_i_handleExceptions(void* const userData)
             // The crash reporter itself crashed. Make a note of this and
             // uninstall all handlers so that we don't get stuck in a loop.
             bsg_g_context->crashedDuringCrashHandling = true;
-            kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
+            bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
         }
 
         // Fill out crash information
         BSG_KSLOG_DEBUG("Fetching machine state.");
-        STRUCT_MCONTEXT_L machineContext;
-        if(ksmachexc_i_fetchMachineState(exceptionMessage.thread.name, &machineContext))
+        BSG_STRUCT_MCONTEXT_L machineContext;
+        if(bsg_ksmachexc_i_fetchMachineState(exceptionMessage.thread.name, &machineContext))
         {
             if(exceptionMessage.exception == EXC_BAD_ACCESS)
             {
@@ -313,8 +313,8 @@ void* ksmachexc_i_handleExceptions(void* const userData)
 
 
         BSG_KSLOG_DEBUG("Crash handling complete. Restoring original handlers.");
-        kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
-        kscrashsentry_resumeThreads();
+        bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
+        bsg_kscrashsentry_resumeThreads();
     }
 
     BSG_KSLOG_DEBUG("Replying to mach exception message.");
@@ -339,7 +339,7 @@ void* ksmachexc_i_handleExceptions(void* const userData)
 #pragma mark - API -
 // ============================================================================
 
-bool kscrashsentry_installMachHandler(BSG_KSCrash_SentryContext* const context)
+bool bsg_kscrashsentry_installMachHandler(BSG_KSCrash_SentryContext* const context)
 {
     BSG_KSLOG_DEBUG("Installing mach exception handler.");
 
@@ -356,14 +356,14 @@ bool kscrashsentry_installMachHandler(BSG_KSCrash_SentryContext* const context)
     EXC_MASK_SOFTWARE |
     EXC_MASK_BREAKPOINT;
 
-    if(g_installed)
+    if(bsg_g_installed)
     {
         BSG_KSLOG_DEBUG("Exception handler already installed.");
         return true;
     }
     bsg_g_installed = 1;
 
-    if(ksmach_isBeingTraced())
+    if(bsg_ksmach_isBeingTraced())
     {
         // Different debuggers hook into different exception types.
         // For example, GDB uses EXC_BAD_ACCESS for single stepping,
@@ -466,7 +466,7 @@ failed:
     {
         pthread_attr_destroy(&attr);
     }
-    kscrashsentry_uninstallMachHandler();
+    bsg_kscrashsentry_uninstallMachHandler();
     return false;
 }
 
@@ -475,7 +475,7 @@ void bsg_kscrashsentry_uninstallMachHandler(void)
 {
     BSG_KSLOG_DEBUG("Uninstalling mach exception handler.");
 
-    if(!g_installed)
+    if(!bsg_g_installed)
     {
         BSG_KSLOG_DEBUG("Mach exception handler was already uninstalled.");
         return;
@@ -491,7 +491,7 @@ void bsg_kscrashsentry_uninstallMachHandler(void)
     if(g_primaryPThread != 0 && bsg_g_primaryMachThread != thread_self)
     {
         BSG_KSLOG_DEBUG("Cancelling primary exception thread.");
-        if(g_context->handlingCrash)
+        if(bsg_g_context->handlingCrash)
         {
             thread_terminate(g_primaryMachThread);
         }
@@ -505,7 +505,7 @@ void bsg_kscrashsentry_uninstallMachHandler(void)
     if(g_secondaryPThread != 0 && bsg_g_secondaryMachThread != thread_self)
     {
         BSG_KSLOG_DEBUG("Cancelling secondary exception thread.");
-        if(g_context->handlingCrash)
+        if(bsg_g_context->handlingCrash)
         {
             thread_terminate(g_secondaryMachThread);
         }
@@ -523,7 +523,7 @@ void bsg_kscrashsentry_uninstallMachHandler(void)
 
 #else
 
-bool kscrashsentry_installMachHandler(__unused BSG_KSCrash_SentryContext* const context)
+bool bsg_kscrashsentry_installMachHandler(__unused BSG_KSCrash_SentryContext* const context)
 {
     BSG_KSLOG_WARN("Mach exception handler not available on this platform.");
     return false;

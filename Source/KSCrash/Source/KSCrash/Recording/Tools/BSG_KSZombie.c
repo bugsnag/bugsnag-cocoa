@@ -26,7 +26,7 @@
 
 
 #include "BSG_KSZombie.h"
-#include "BSG_BSG_KSObjC.h"
+#include "BSG_KSObjC.h"
 #include "BSG_KSLogger.h"
 
 #include <objc/runtime.h>
@@ -43,9 +43,9 @@ typedef struct
 {
     const void* object;
     const char* className;
-} Zombie;
+} BSG_Zombie;
 
-static volatile Zombie* bsg_g_zombieCache;
+static volatile BSG_Zombie* bsg_g_zombieCache;
 static size_t bsg_g_zombieHashMask;
 
 static struct
@@ -67,14 +67,14 @@ static bool copyStringIvar(const void* self, const char* ivarName, char* buffer,
 {
     Class class = object_getClass((id)self);
     BSG_KSObjCIvar ivar = {0};
-    likely_if(ksobjc_ivarNamed(class, ivarName, &ivar))
+    likely_if(bsg_ksobjc_ivarNamed(class, ivarName, &ivar))
     {
         void* pointer;
-        likely_if(ksobjc_ivarValue(self, ivar.index, &pointer))
+        likely_if(bsg_ksobjc_ivarValue(self, ivar.index, &pointer))
         {
-            likely_if(ksobjc_isValidObject(pointer))
+            likely_if(bsg_ksobjc_isValidObject(pointer))
             {
-                likely_if(ksobjc_copyStringContents(pointer, buffer, bufferLength) > 0)
+                likely_if(bsg_ksobjc_copyStringContents(pointer, buffer, bufferLength) > 0)
                 {
                     return true;
                 }
@@ -103,16 +103,16 @@ static bool copyStringIvar(const void* self, const char* ivarName, char* buffer,
 static void storeException(const void* exception)
 {
     bsg_g_lastDeallocedException.address = exception;
-    copyStringIvar(exception, "name", bsg_g_lastDeallocedException.name, sizeof(g_lastDeallocedException.name));
-    copyStringIvar(exception, "reason", bsg_g_lastDeallocedException.reason, sizeof(g_lastDeallocedException.reason));
+    copyStringIvar(exception, "name", bsg_g_lastDeallocedException.name, sizeof(bsg_g_lastDeallocedException.name));
+    copyStringIvar(exception, "reason", bsg_g_lastDeallocedException.reason, sizeof(bsg_g_lastDeallocedException.reason));
 }
 
 static inline void handleDealloc(const void* self)
 {
-    volatile Zombie* cache = bsg_g_zombieCache;
+    volatile BSG_Zombie* cache = bsg_g_zombieCache;
     likely_if(cache != NULL)
     {
-        Zombie* zombie = (Zombie*)cache + hashIndex(self);
+        BSG_Zombie* zombie = (BSG_Zombie*)cache + hashIndex(self);
         zombie->object = self;
         Class class = object_getClass((id)self);
         zombie->className = class_getName(class);
@@ -126,13 +126,13 @@ static inline void handleDealloc(const void* self)
     }
 }
 
-#define CREATE_ZOMBIE_HANDLER_INSTALLER(CLASS) \
+#define BSG_CREATE_ZOMBIE_HANDLER_INSTALLER(CLASS) \
 static IMP bsg_g_originalDealloc_ ## CLASS; \
 static void handleDealloc_ ## CLASS(id self, SEL _cmd) \
 { \
     handleDealloc(self); \
     typedef void (*fn)(id,SEL); \
-    fn f = (fn)g_originalDealloc_ ## CLASS; \
+    fn f = (fn)bsg_g_originalDealloc_ ## CLASS; \
     f(self, _cmd); \
 } \
 static void installDealloc_ ## CLASS() \
@@ -146,18 +146,18 @@ static void uninstallDealloc_ ## CLASS() \
     method_setImplementation(class_getInstanceMethod(objc_getClass(#CLASS), sel_registerName("dealloc")), bsg_g_originalDealloc_ ## CLASS); \
 }
 
-CREATE_ZOMBIE_HANDLER_INSTALLER(NSObject)
-CREATE_ZOMBIE_HANDLER_INSTALLER(NSProxy)
+BSG_CREATE_ZOMBIE_HANDLER_INSTALLER(NSObject)
+BSG_CREATE_ZOMBIE_HANDLER_INSTALLER(NSProxy)
 
 static void install()
 {
     size_t cacheSize = CACHE_SIZE;
     bsg_g_zombieHashMask = cacheSize - 1;
-    bsg_g_zombieCache = calloc(cacheSize, sizeof(*g_zombieCache));
-    if(g_zombieCache == NULL)
+    bsg_g_zombieCache = calloc(cacheSize, sizeof(*bsg_g_zombieCache));
+    if(bsg_g_zombieCache == NULL)
     {
         BSG_KSLOG_ERROR("Error: Could not allocate %ld bytes of memory. KSZombie NOT installed!",
-              cacheSize * sizeof(*g_zombieCache));
+              cacheSize * sizeof(*bsg_g_zombieCache));
         return;
     }
 
@@ -175,7 +175,7 @@ static void uninstall(void)
     uninstallDealloc_NSObject();
     uninstallDealloc_NSProxy();
 
-    void* ptr = (void*)g_zombieCache;
+    void* ptr = (void*)bsg_g_zombieCache;
     bsg_g_zombieCache = NULL;
     dispatch_time_t tenSeconds = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10.0 * NSEC_PER_SEC));
     dispatch_after(tenSeconds, dispatch_get_main_queue(), ^
@@ -199,13 +199,13 @@ void bsg_kszombie_setEnabled(bool shouldEnable)
 
 const char* bsg_kszombie_className(const void* object)
 {
-    volatile Zombie* cache = bsg_g_zombieCache;
+    volatile BSG_Zombie* cache = bsg_g_zombieCache;
     if(cache == NULL || object == NULL)
     {
         return NULL;
     }
 
-    Zombie* zombie = (Zombie*)cache + hashIndex(object);
+    BSG_Zombie* zombie = (BSG_Zombie*)cache + hashIndex(object);
     if(zombie->object == object)
     {
         return zombie->className;

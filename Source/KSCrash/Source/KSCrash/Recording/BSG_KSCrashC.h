@@ -56,7 +56,7 @@ extern "C" {
  *
  * @return The crash types that are being handled.
  */
-BSG_KSCrashType kscrash_install(const char* const crashReportFilePath,
+BSG_KSCrashType bsg_kscrash_install(const char* const crashReportFilePath,
                             const char* const recrashReportFilePath,
                             const char* stateFilePath,
                             const char* crashID);
@@ -72,7 +72,7 @@ BSG_KSCrashType kscrash_install(const char* const crashReportFilePath,
  *         successfully installed. Otherwise it represents which sentries it
  *         will attempt to activate when BSG_KSCrash installs.
  */
-BSG_KSCrashType kscrash_setHandlingCrashTypes(BSG_KSCrashType crashTypes);
+BSG_KSCrashType bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashType crashTypes);
 
 /** Reinstall the crash reporter. Useful for resetting the crash reporter
  * after a "soft" crash.
@@ -168,7 +168,7 @@ void bsg_kscrash_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, 
  *
  * Default: NULL
  */
-void bsg_kscrash_setCrashNotifyCallback(const KSReportWriteCallback onCrashNotify);
+void bsg_kscrash_setCrashNotifyCallback(const BSG_KSReportWriteCallback onCrashNotify);
 
 /** Report a custom, user defined exception.
  * This can be useful when dealing with scripting languages.

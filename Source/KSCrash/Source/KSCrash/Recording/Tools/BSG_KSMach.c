@@ -29,7 +29,7 @@
 
 #include "BSG_KSMachApple.h"
 
-//#define KSLogger_LocalLevel TRACE
+//#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 
 #include <errno.h>
@@ -62,7 +62,7 @@ uint64_t bsg_ksmachfreeMemory(void)
 {
     vm_statistics_data_t vmStats;
     vm_size_t pageSize;
-    if(ksmach_i_VMStats(&vmStats, &pageSize))
+    if(bsg_ksmachi_VMStats(&vmStats, &pageSize))
     {
         return ((uint64_t)pageSize) * vmStats.free_count;
     }
@@ -73,7 +73,7 @@ uint64_t bsg_ksmachusableMemory(void)
 {
     vm_statistics_data_t vmStats;
     vm_size_t pageSize;
-    if(ksmach_i_VMStats(&vmStats, &pageSize))
+    if(bsg_ksmachi_VMStats(&vmStats, &pageSize))
     {
         return ((uint64_t)pageSize) * (vmStats.active_count +
                                        vmStats.inactive_count +
@@ -228,7 +228,7 @@ thread_t bsg_ksmachmachThreadFromPThread(const pthread_t pthread)
 {
     const internal_pthread_t threadStruct = (internal_pthread_t)pthread;
     thread_t machThread = 0;
-    if(ksmach_copyMem(&threadStruct->kernel_thread, &machThread, sizeof(machThread)) != KERN_SUCCESS)
+    if(bsg_ksmachcopyMem(&threadStruct->kernel_thread, &machThread, sizeof(machThread)) != KERN_SUCCESS)
     {
         BSG_KSLOG_TRACE("Could not copy mach thread from %p", threadStruct->kernel_thread);
         return 0;
@@ -238,12 +238,12 @@ thread_t bsg_ksmachmachThreadFromPThread(const pthread_t pthread)
 
 pthread_t bsg_ksmachpthreadFromMachThread(const thread_t thread)
 {
-    internal_pthread_t threadStruct = (internal_pthread_t)g_topThread;
+    internal_pthread_t threadStruct = (internal_pthread_t)bsg_g_topThread;
     thread_t machThread = 0;
 
     for(int i = 0; i < 50; i++)
     {
-        if(ksmach_copyMem(&threadStruct->kernel_thread, &machThread, sizeof(machThread)) != KERN_SUCCESS)
+        if(bsg_ksmachcopyMem(&threadStruct->kernel_thread, &machThread, sizeof(machThread)) != KERN_SUCCESS)
         {
             break;
         }
@@ -252,7 +252,7 @@ pthread_t bsg_ksmachpthreadFromMachThread(const thread_t thread)
             return (pthread_t)threadStruct;
         }
 
-        if(ksmach_copyMem(&threadStruct->plist.tqe_next, &threadStruct, sizeof(threadStruct)) != KERN_SUCCESS)
+        if(bsg_ksmachcopyMem(&threadStruct->plist.tqe_next, &threadStruct, sizeof(threadStruct)) != KERN_SUCCESS)
         {
             break;
         }
@@ -454,7 +454,7 @@ size_t bsg_ksmachcopyMaxPossibleMem(const void* const src,
     size_t bytesCopied = 0;
 
     // Short-circuit if no memory is readable
-    if(ksmach_copyMem(src, dst, 1) != KERN_SUCCESS)
+    if(bsg_ksmachcopyMem(src, dst, 1) != KERN_SUCCESS)
     {
         return 0;
     }
@@ -471,7 +471,7 @@ size_t bsg_ksmachcopyMaxPossibleMem(const void* const src,
             break;
         }
 
-        if(ksmach_copyMem(pSrc, pDst, (size_t)copyLength) == KERN_SUCCESS)
+        if(bsg_ksmachcopyMem(pSrc, pDst, (size_t)copyLength) == KERN_SUCCESS)
         {
             bytesCopied += (size_t)copyLength;
             pSrc += copyLength;

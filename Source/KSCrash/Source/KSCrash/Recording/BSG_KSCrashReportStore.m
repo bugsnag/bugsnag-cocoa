@@ -387,7 +387,7 @@
         BSG_KSLOG_ERROR(@"'%@' should be a number, not %@", key, [key class]);
         return;
     }
-    [report setValue:[RFC3339DateTool stringFromUNIXTimestamp:[timestamp unsignedLongLongValue]]
+    [report setValue:[BSG_RFC3339DateTool stringFromUNIXTimestamp:[timestamp unsignedLongLongValue]]
               forKey:key];
 }
 

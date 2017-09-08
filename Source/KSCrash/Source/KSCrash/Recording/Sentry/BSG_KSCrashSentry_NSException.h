@@ -46,7 +46,7 @@ extern "C" {
  *
  * @return true if installation was succesful.
  */
-bool kscrashsentry_installNSExceptionHandler(BSG_KSCrash_SentryContext* context);
+bool bsg_kscrashsentry_installNSExceptionHandler(BSG_KSCrash_SentryContext* context);
 
 /** Uninstall our custome NSException handler.
  */
