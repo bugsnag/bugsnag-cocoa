@@ -43,7 +43,7 @@ static const char* bsg_g_registerNames[] =
     "cs", "ds", "es", "fs", "gs",
 };
 static const int bsg_g_registerNamesCount =
-sizeof(g_registerNames) / sizeof(*g_registerNames);
+sizeof(bsg_g_registerNames) / sizeof(*bsg_g_registerNames);
 
 
 static const char* bsg_g_exceptionRegisterNames[] =
@@ -51,7 +51,7 @@ static const char* bsg_g_exceptionRegisterNames[] =
     "trapno", "err", "faultvaddr"
 };
 static const int bsg_g_exceptionRegisterNamesCount =
-sizeof(g_exceptionRegisterNames) / sizeof(*g_exceptionRegisterNames);
+sizeof(bsg_g_exceptionRegisterNames) / sizeof(*bsg_g_exceptionRegisterNames);
 
 
 uintptr_t bsg_ksmachframePointer(const BSG_STRUCT_MCONTEXT_L* const machineContext)

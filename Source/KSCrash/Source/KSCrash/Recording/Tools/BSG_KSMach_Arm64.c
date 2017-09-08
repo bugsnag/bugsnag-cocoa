@@ -42,7 +42,7 @@ static const char* bsg_g_registerNames[] =
     "fp", "lr", "sp", "pc", "cpsr"
 };
 static const int bsg_g_registerNamesCount =
-sizeof(g_registerNames) / sizeof(*g_registerNames);
+sizeof(bsg_g_registerNames) / sizeof(*bsg_g_registerNames);
 
 
 static const char* bsg_g_exceptionRegisterNames[] =
