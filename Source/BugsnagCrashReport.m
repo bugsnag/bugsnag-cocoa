@@ -483,7 +483,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
     BSGDictSetSafeObject(event, @(defaultSeverity), @"defaultSeverity");
     BSGDictSetSafeObject(event, self.eventHandledState[@"unhandled"], @"unhandled");
     
-    if ([event[@"unhandled"] boolValue]) { // TODO set me in report json!
+    if ([event[@"unhandled"] boolValue]) {
         NSDictionary *severityReason = @{@"type": @"exception_handler"};
         BSGDictSetSafeObject(event, severityReason, @"severityReason");
     }

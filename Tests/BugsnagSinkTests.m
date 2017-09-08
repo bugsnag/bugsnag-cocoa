@@ -130,7 +130,7 @@
 }
 
 - (void)testUnhandledSerialization {
-    NSDictionary *event = [self.processedData[@"events"] firstObject]; // TODO created unhandled event
+    NSDictionary *event = [self.processedData[@"events"] firstObject];
     XCTAssertNotNil(event);
     XCTAssertTrue(event[@"defaultSeverity"]);
     XCTAssertTrue(event[@"unhandled"]);
