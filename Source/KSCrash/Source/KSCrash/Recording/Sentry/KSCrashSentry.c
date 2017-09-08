@@ -106,15 +106,15 @@ KSCrashType kscrashsentry_installWithContext(KSCrash_SentryContext* context,
                                              KSCrashType crashTypes,
                                              void (*onCrash)(void))
 {
-//    if(ksmach_isBeingTraced())
-//    {
-//        KSLOGBASIC_WARN("KSCrash: App is running in a debugger. Only user reported events will be handled.");
-//        crashTypes = KSCrashTypeUserReported;
-//    }
-//    else
-//    {
-//        KSLOG_DEBUG("Installing handlers with context %p, crash types 0x%x.", context, crashTypes);
-//    }
+    if(ksmach_isBeingTraced())
+    {
+        KSLOGBASIC_WARN("KSCrash: App is running in a debugger. Only user reported events will be handled.");
+        crashTypes = KSCrashTypeUserReported;
+    }
+    else
+    {
+        KSLOG_DEBUG("Installing handlers with context %p, crash types 0x%x.", context, crashTypes);
+    }
 
     g_context = context;
     kscrashsentry_clearContext(g_context);

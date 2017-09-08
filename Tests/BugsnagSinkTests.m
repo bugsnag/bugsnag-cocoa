@@ -147,7 +147,8 @@
                                      errorMessage:@"Error for testing"
                                     configuration:[BugsnagConfiguration new]
                                          metaData:[NSDictionary new]
-                                         severity:BSGSeverityWarning];
+                                         severity:BSGSeverityWarning
+                                        unhandled:NO];
     NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
     NSDictionary *event = [data[@"events"] firstObject];
     

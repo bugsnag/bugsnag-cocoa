@@ -314,9 +314,9 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       
       NSDictionary *recordedState = [report valueForKeyPath:@"user.eventHandledState"];
       
-      if (recordedState) { // was a handled exception
+      if (recordedState) {
           _eventHandledState = recordedState;
-      } else {
+      } else { // the event was unhandled.
           _eventHandledState = @{
                                  @"unhandled": @YES,
                                  @"originalSeverity": BSGFormatSeverity(BSGSeverityWarning),
