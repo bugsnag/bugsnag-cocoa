@@ -28,7 +28,7 @@
 #import "NSDictionary+BSG_Merge.h"
 
 
-@implementation NSDictionary (BSG_KSMerge)
+@implementation NSDictionary (BSG_Merge)
 
 - (NSDictionary*) mergedInto:(NSDictionary*) dest
 {
@@ -55,5 +55,7 @@
     }
     return dict;
 }
-
 @end
+
+@interface NSDictionary_BSG_Merge_O8FG4A : NSObject @end @implementation NSDictionary_BSG_Merge_O8FG4A @end
+

@@ -75,5 +75,5 @@
 
 @end
 
-@interface NSError_SimpleConstructor_AOG8G : NSObject @end @implementation NSError_SimpleConstructor_AOG8G @end
+@interface NSError_BSG_SimpleConstructor_AOG8G : NSObject @end @implementation NSError_BSG_SimpleConstructor_AOG8G @end
 
