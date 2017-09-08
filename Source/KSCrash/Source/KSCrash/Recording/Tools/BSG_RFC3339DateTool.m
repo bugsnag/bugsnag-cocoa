@@ -26,7 +26,7 @@
 #import "BSG_RFC3339DateTool.h"
 
 
-@implementation RFC3339DateTool
+@implementation BSG_RFC3339DateTool
 
 static NSDateFormatter* bsg_g_formatter;
 
@@ -35,9 +35,9 @@ static NSDateFormatter* bsg_g_formatter;
     bsg_g_formatter = [[NSDateFormatter alloc] init];
     NSLocale* locale = [[NSLocale alloc]
                         initWithLocaleIdentifier:@"en_US_POSIX"];
-    [g_formatter setLocale:locale];
-    [g_formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
-    [g_formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    [bsg_g_formatter setLocale:locale];
+    [bsg_g_formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
+    [bsg_g_formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 }
 
 + (NSString*) stringFromDate:(NSDate*) date
@@ -46,7 +46,7 @@ static NSDateFormatter* bsg_g_formatter;
     {
         return nil;
     }
-    return [g_formatter stringFromDate:date];
+    return [bsg_g_formatter stringFromDate:date];
 }
 
 + (NSDate*) dateFromString:(NSString*) string
@@ -55,7 +55,7 @@ static NSDateFormatter* bsg_g_formatter;
     {
         return nil;
     }
-    return [g_formatter dateFromString:string];
+    return [bsg_g_formatter dateFromString:string];
 }
 
 + (NSString*) stringFromUNIXTimestamp:(unsigned long long) timestamp

@@ -27,7 +27,7 @@
 #import "NSError+BSG_SimpleConstructor.h"
 
 
-@implementation NSError (SimpleConstructor)
+@implementation NSError (BSG_SimpleConstructor)
 
 + (NSError*) errorWithDomain:(NSString*) domain code:(NSInteger) code description:(NSString*) fmt, ...
 {

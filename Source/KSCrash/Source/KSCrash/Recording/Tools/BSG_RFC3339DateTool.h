@@ -29,7 +29,7 @@
 /**
  * Tool for converting to/from RFC3339 compliant date strings.
  */
-@interface RFC3339DateTool : NSObject
+@interface BSG_RFC3339DateTool : NSObject
 
 /** Convert a date to an RFC3339 string representation.
  *
