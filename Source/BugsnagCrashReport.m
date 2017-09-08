@@ -310,7 +310,19 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       _groupingHash = BSGParseGroupingHash(report, _metaData);
       _overrides = [report valueForKeyPath:@"user.overrides"];
       _customException = BSGParseCustomException(report, [_errorClass copy], [_errorMessage copy]);
-      _eventHandledState = [report valueForKeyPath:@"user.eventHandledState"] ?: [NSDictionary new];
+      
+      
+      NSDictionary *recordedState = [report valueForKeyPath:@"user.eventHandledState"];
+      
+      if (recordedState) { // was a handled exception
+          _eventHandledState = recordedState;
+      } else {
+          _eventHandledState = @{
+                                 @"unhandled": @YES,
+                                 @"originalSeverity": BSGFormatSeverity(BSGSeverityWarning),
+                                 @"severityReason": @{@"type": @"exception_handler"},
+                                 };
+      }
   }
   return self;
 }
