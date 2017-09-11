@@ -167,7 +167,7 @@
     XCTAssertNotNil(event);
     XCTAssertFalse([event[@"defaultSeverity"] boolValue]);
     
-    report.severity = BSGSeverityWarning; // alter report to default
+    report.severity = BSGSeverityError; // alter report back to default severity
     data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
     
     event = [data[@"events"] firstObject];
@@ -176,16 +176,13 @@
 }
 
 - (void)testEventSeverity {
-    NSString *expected =
-    [self.rawReportData valueForKeyPath:@"user.state.crash.severity"];
-    
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     XCTAssertNotNil(event);
     
     NSString *severity = event[@"severity"];
     XCTAssertTrue([event[@"defaultSeverity"] boolValue]);
     XCTAssertTrue([event[@"unhandled"] boolValue]);
-    XCTAssertEqualObjects(severity, expected);
+    XCTAssertEqualObjects(severity, @"error");
 }
 
 - (void)testEventBreadcrumbs {

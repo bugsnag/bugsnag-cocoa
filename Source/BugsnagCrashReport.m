@@ -289,7 +289,6 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       _notifyReleaseStages = [report valueForKeyPath:@"user.config.notifyReleaseStages"];
       _releaseStage = BSGParseReleaseStage(report);
       
-      // TODO BSG_KSCrash replacement
       _error = [report valueForKeyPath:@"crash.error"];
       _errorType = _error[@"type"];
       _errorClass = BSGParseErrorClass(_error, _errorType);
@@ -323,6 +322,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
                                  @"severityReason": @{@"type": @"exception_handler"},
                                  };
       }
+      _severity = BSGParseSeverity(_eventHandledState[@"originalSeverity"]);
   }
   return self;
 }
