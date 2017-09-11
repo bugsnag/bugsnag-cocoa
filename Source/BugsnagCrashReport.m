@@ -319,7 +319,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       } else { // the event was unhandled.
           _eventHandledState = @{
                                  @"unhandled": @YES,
-                                 @"originalSeverity": BSGFormatSeverity(BSGSeverityWarning),
+                                 @"originalSeverity": BSGFormatSeverity(BSGSeverityError),
                                  @"severityReason": @{@"type": @"exception_handler"},
                                  };
       }
