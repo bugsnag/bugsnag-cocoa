@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagCrashReport.h"
-#import "KSCrashReportFilterCompletion.h"
+#import "BSG_KSCrashReportFilterCompletion.h"
 
 @interface BugsnagErrorReportApiClient : NSObject
 
@@ -21,6 +21,6 @@
 - (void)sendReports:(NSArray <BugsnagCrashReport *>*)reports
             payload:(NSDictionary *)reportData
               toURL:(NSURL *)url
-       onCompletion:(KSCrashReportFilterCompletion) onCompletion;
+       onCompletion:(BSG_KSCrashReportFilterCompletion) onCompletion;
 
 @end

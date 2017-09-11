@@ -68,7 +68,7 @@
                             "object_addr": 4490747904
                         },
                         {
-                            "symbol_name": "-[KSCrash reportUserException:reason:lineOfCode:stackTrace:terminateProgram:]",
+                            "symbol_name": "-[BSG_KSCrash reportUserException:reason:lineOfCode:stackTrace:terminateProgram:]",
                             "symbol_addr": 4490972466,
                             "instruction_addr": 4490972815,
                             "object_name": "CrashProbeiOS",
@@ -636,7 +636,7 @@
                             "object_addr": 4490747904
                         },
                         {
-                            "symbol_name": "-[KSCrash sendAllReportsWithCompletion:]",
+                            "symbol_name": "-[BSG_KSCrash sendAllReportsWithCompletion:]",
                             "symbol_addr": 4490971768,
                             "instruction_addr": 4490971856,
                             "object_name": "CrashProbeiOS",

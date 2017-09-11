@@ -289,7 +289,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       _notifyReleaseStages = [report valueForKeyPath:@"user.config.notifyReleaseStages"];
       _releaseStage = BSGParseReleaseStage(report);
       
-      // TODO KSCrash replacement
+      // TODO BSG_KSCrash replacement
       _error = [report valueForKeyPath:@"crash.error"];
       _errorType = _error[@"type"];
       _errorClass = BSGParseErrorClass(_error, _errorType);
@@ -548,7 +548,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       BSGDictSetSafeObject(threadDict, thread[@"index"], @"id");
       BSGDictSetSafeObject(threadDict, threadStack, @"stacktrace");
       BSGDictSetSafeObject(threadDict, DEFAULT_EXCEPTION_TYPE, @"type");
-      // only if this is enabled in KSCrash.
+      // only if this is enabled in BSG_KSCrash.
       if (thread[@"name"]) {
         BSGDictSetSafeObject(threadDict, thread[@"name"], @"name");
       }

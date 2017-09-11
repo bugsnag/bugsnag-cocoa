@@ -25,12 +25,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "KSCrash.h"
-#import "KSCrashReportFilter.h"
+#import "BSG_KSCrash.h"
+#import "BSG_KSCrashReportFilter.h"
 
 #import "BugsnagErrorReportApiClient.h"
 
-@interface BugsnagSink : NSObject<KSCrashReportFilter>
+@interface BugsnagSink : NSObject<BSG_KSCrashReportFilter>
 
 - (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient;
 @property (nonatomic) BugsnagErrorReportApiClient *apiClient;

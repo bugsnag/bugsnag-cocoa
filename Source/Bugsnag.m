@@ -31,7 +31,7 @@
 #import "BugsnagSink.h"
 #import "BugsnagLogger.h"
 
-static BugsnagNotifier* g_bugsnag_notifier = NULL;
+static BugsnagNotifier* bsg_g_bugsnag_notifier = NULL;
 
 @interface Bugsnag ()
 + (BugsnagNotifier*)notifier;
@@ -51,8 +51,8 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
 }
 
 + (void)startBugsnagWithConfiguration:(BugsnagConfiguration*) configuration {
-    g_bugsnag_notifier = [[BugsnagNotifier alloc] initWithConfiguration:configuration];
-    [g_bugsnag_notifier start];
+    bsg_g_bugsnag_notifier = [[BugsnagNotifier alloc] initWithConfiguration:configuration];
+    [bsg_g_bugsnag_notifier start];
 }
 
 + (BugsnagConfiguration*)configuration {
@@ -67,7 +67,7 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
 }
 
 + (BugsnagNotifier*)notifier {
-    return g_bugsnag_notifier;
+    return bsg_g_bugsnag_notifier;
 }
 
 + (void) notify:(NSException *)exception {

@@ -46,7 +46,7 @@
     return self;
 }
 
-// Entry point called by KSCrash when a report needs to be sent. Handles report filtering based on the configuration
+// Entry point called by BSG_KSCrash when a report needs to be sent. Handles report filtering based on the configuration
 // options for `notifyReleaseStages`.
 // Removes all reports not meeting at least one of the following conditions:
 // - the report-specific config specifies the `notifyReleaseStages` property and it contains the current stage
@@ -54,7 +54,7 @@
 // - the report-specific `notifyReleaseStages` property is unset and the global `notifyReleaseStages` property
 //   and it contains the current stage
 - (void)filterReports:(NSArray*) reports
-         onCompletion:(KSCrashReportFilterCompletion) onCompletion {
+         onCompletion:(BSG_KSCrashReportFilterCompletion) onCompletion {
     NSMutableArray *bugsnagReports = [NSMutableArray new];
     BugsnagConfiguration *configuration = [Bugsnag configuration];
     for (NSDictionary* report in reports) {
@@ -109,7 +109,7 @@
 - (void)sendReports:(NSArray <BugsnagCrashReport *>*)reports
             payload:(NSDictionary *)reportData
               toURL:(NSURL *)url
-       onCompletion:(KSCrashReportFilterCompletion) onCompletion {
+       onCompletion:(BSG_KSCrashReportFilterCompletion) onCompletion {
     @try {
         NSError *error = nil;
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:reportData

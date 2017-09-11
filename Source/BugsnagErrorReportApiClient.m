@@ -54,7 +54,7 @@
 - (void)sendReports:(NSArray <BugsnagCrashReport *>*)reports
             payload:(NSDictionary *)reportData
               toURL:(NSURL *)url
-       onCompletion:(KSCrashReportFilterCompletion) onCompletion {
+       onCompletion:(BSG_KSCrashReportFilterCompletion) onCompletion {
     @try {
         NSError *error = nil;
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:reportData
@@ -121,7 +121,7 @@ const NSTimeInterval BSG_SEND_DELAY_SECS = 1;
 -(void)main {
     @autoreleasepool {
         @try {
-            [[KSCrash sharedInstance] sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
+            [[BSG_KSCrash sharedInstance] sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
                 if (error) {
                     bsg_log_warn(@"Failed to send reports: %@", error);
                 } else if (filteredReports.count > 0) {
