@@ -46,7 +46,9 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
 - (instancetype _Nonnull)initWithKSReport:(NSDictionary *_Nonnull)report;
 
 /**
- *  Create a basic crash report from raw parts
+ *  Create a basic crash report from raw parts.
+ *
+ *  Assumes that the exception is handled.
  *
  *  @param name      The name of the exception
  *  @param message   The reason or message from the exception
@@ -60,8 +62,7 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
                               errorMessage:(NSString *_Nonnull)message
                              configuration:(BugsnagConfiguration *_Nonnull)config
                                   metaData:(NSDictionary *_Nonnull)metaData
-                                  severity:(BSGSeverity)severity
-                                 unhandled:(BOOL)unhandled;
+                                  severity:(BSGSeverity)severity;
 
 /**
  *  Serialize a crash report as a JSON payload

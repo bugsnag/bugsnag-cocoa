@@ -330,8 +330,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                                                                   errorMessage:message
                                                                  configuration:self.configuration
                                                                       metaData:[self.configuration.metaData toDictionary]
-                                                                      severity:BSGSeverityWarning
-                                                                     unhandled:NO];
+                                                                      severity:BSGSeverityWarning];
     if (block) {
         block(report);
     }

@@ -98,8 +98,7 @@
                                                                   errorMessage:@"it was so bad"
                                                                  configuration:config
                                                                       metaData:@{}
-                                                                      severity:BSGSeverityWarning
-                                                                     unhandled:NO];
+                                                                      severity:BSGSeverityWarning];
     XCTAssertTrue([report shouldBeSent]);
 }
 
@@ -111,8 +110,7 @@
                                                                   errorMessage:@"it was so bad"
                                                                  configuration:config
                                                                       metaData:@{}
-                                                                      severity:BSGSeverityWarning
-                                                                     unhandled:NO];
+                                                                      severity:BSGSeverityWarning];
     XCTAssertFalse([report shouldBeSent]);
 }
 

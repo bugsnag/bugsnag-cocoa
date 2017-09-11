@@ -331,8 +331,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
                      errorMessage:(NSString *)message
                     configuration:(BugsnagConfiguration *)config
                          metaData:(NSDictionary *)metaData
-                         severity:(BSGSeverity)severity
-                        unhandled:(BOOL)unhandled {
+                         severity:(BSGSeverity)severity {
     
     if (self = [super init]) {
         _errorClass = name;
@@ -346,13 +345,8 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
         _overrides = [NSDictionary new];
         
         NSMutableDictionary *handledState = [NSMutableDictionary new];
-        handledState[@"unhandled"] = @(unhandled);
+        handledState[@"unhandled"] = @(NO);
         handledState[@"originalSeverity"] = BSGFormatSeverity(self.severity);
-        
-        if (unhandled) {
-            handledState[@"severityReason"] = @{@"type": @"exception_handler"};
-        }
-        
         _eventHandledState = [NSDictionary dictionaryWithDictionary:handledState];
     }
     return self;
