@@ -79,9 +79,8 @@ typedef struct _pthread {
               _INTERNAL_POSIX_THREAD_KEYS_MAX]; /* Thread specific data */
     void
         *stackaddr; /* Base of the stack (is aligned on vm_page_size boundary */
-    size_t
-        stacksize; /* Size of the stack (is a multiple of vm_page_size and >=
-                      PTHREAD_STACK_MIN) */
+    size_t stacksize; /* Size of the stack (is a multiple of vm_page_size and >=
+                         PTHREAD_STACK_MIN) */
     mach_port_t reply_port; /* Cached MiG reply port */
 #if defined(__LP64__)
     int pad2; /* for natural alignment */
