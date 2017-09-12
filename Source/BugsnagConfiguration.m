@@ -24,14 +24,14 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagBreadcrumb.h"
 #import "BugsnagConfiguration.h"
-#import "BugsnagMetaData.h"
 #import "Bugsnag.h"
+#import "BugsnagBreadcrumb.h"
+#import "BugsnagMetaData.h"
 #import "BugsnagNotifier.h"
 
 @interface Bugsnag ()
-+ (BugsnagNotifier*)notifier;
++ (BugsnagNotifier *)notifier;
 @end
 
 @interface BugsnagConfiguration ()
@@ -42,73 +42,78 @@
 @implementation BugsnagConfiguration
 
 - (id)init {
-  if (self = [super init]) {
-    _metaData = [[BugsnagMetaData alloc] init];
-    _config = [[BugsnagMetaData alloc] init];
-    _apiKey = @"";
-    _autoNotify = YES;
-    _notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
-    _beforeNotifyHooks = [NSMutableArray new];
-    _beforeSendBlocks = [NSMutableArray new];
-    _notifyReleaseStages = nil;
-    _breadcrumbs = [BugsnagBreadcrumbs new];
-    _automaticallyCollectBreadcrumbs = YES;
-    if ([NSURLSession class]) {
-      _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-    }
+    if (self = [super init]) {
+        _metaData = [[BugsnagMetaData alloc] init];
+        _config = [[BugsnagMetaData alloc] init];
+        _apiKey = @"";
+        _autoNotify = YES;
+        _notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
+        _beforeNotifyHooks = [NSMutableArray new];
+        _beforeSendBlocks = [NSMutableArray new];
+        _notifyReleaseStages = nil;
+        _breadcrumbs = [BugsnagBreadcrumbs new];
+        _automaticallyCollectBreadcrumbs = YES;
+        if ([NSURLSession class]) {
+            _session = [NSURLSession
+                sessionWithConfiguration:[NSURLSessionConfiguration
+                                             defaultSessionConfiguration]];
+        }
 #if DEBUG
-    _releaseStage = @"development";
+        _releaseStage = @"development";
 #else
-    _releaseStage = @"production";
+        _releaseStage = @"production";
 #endif
-  }
-  return self;
+    }
+    return self;
 }
 
 - (BOOL)shouldSendReports {
-    return self.notifyReleaseStages.count == 0
-        || [self.notifyReleaseStages containsObject:self.releaseStage];
+    return self.notifyReleaseStages.count == 0 ||
+           [self.notifyReleaseStages containsObject:self.releaseStage];
 }
 
 - (void)setUser:(NSString *)userId
        withName:(NSString *)userName
        andEmail:(NSString *)userEmail {
-  [self.metaData addAttribute:@"id" withValue:userId toTabWithName:@"user"];
-  [self.metaData addAttribute:@"name" withValue:userName toTabWithName:@"user"];
-  [self.metaData addAttribute:@"email"
-                    withValue:userEmail
-                toTabWithName:@"user"];
+    [self.metaData addAttribute:@"id" withValue:userId toTabWithName:@"user"];
+    [self.metaData addAttribute:@"name"
+                      withValue:userName
+                  toTabWithName:@"user"];
+    [self.metaData addAttribute:@"email"
+                      withValue:userEmail
+                  toTabWithName:@"user"];
 }
 
 - (void)addBeforeSendBlock:(BugsnagBeforeSendBlock)block {
-  [(NSMutableArray *)self.beforeSendBlocks addObject:[block copy]];
+    [(NSMutableArray *)self.beforeSendBlocks addObject:[block copy]];
 }
 
 - (void)clearBeforeSendBlocks {
-  [(NSMutableArray *)self.beforeSendBlocks removeAllObjects];
+    [(NSMutableArray *)self.beforeSendBlocks removeAllObjects];
 }
 
 - (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook)hook {
-  [(NSMutableArray *)self.beforeNotifyHooks addObject:[hook copy]];
+    [(NSMutableArray *)self.beforeNotifyHooks addObject:[hook copy]];
 }
 
 - (void)setReleaseStage:(NSString *)newReleaseStage {
-  _releaseStage = newReleaseStage;
-  [self.config addAttribute:@"releaseStage"
-                  withValue:newReleaseStage
-              toTabWithName:@"config"];
+    _releaseStage = newReleaseStage;
+    [self.config addAttribute:@"releaseStage"
+                    withValue:newReleaseStage
+                toTabWithName:@"config"];
 }
 
 - (void)setNotifyReleaseStages:(NSArray *)newNotifyReleaseStages;
 {
-  NSArray *notifyReleaseStagesCopy = [newNotifyReleaseStages copy];
-  _notifyReleaseStages = notifyReleaseStagesCopy;
-  [self.config addAttribute:@"notifyReleaseStages"
-                  withValue:notifyReleaseStagesCopy
-              toTabWithName:@"config"];
+    NSArray *notifyReleaseStagesCopy = [newNotifyReleaseStages copy];
+    _notifyReleaseStages = notifyReleaseStagesCopy;
+    [self.config addAttribute:@"notifyReleaseStages"
+                    withValue:notifyReleaseStagesCopy
+                toTabWithName:@"config"];
 }
 
-- (void)setAutomaticallyCollectBreadcrumbs:(BOOL)automaticallyCollectBreadcrumbs {
+- (void)setAutomaticallyCollectBreadcrumbs:
+    (BOOL)automaticallyCollectBreadcrumbs {
     if (automaticallyCollectBreadcrumbs == _automaticallyCollectBreadcrumbs)
         return;
 
@@ -117,16 +122,16 @@
 }
 
 - (void)setContext:(NSString *)newContext {
-  _context = newContext;
-  [self.config addAttribute:@"context"
-                  withValue:newContext
-              toTabWithName:@"config"];
+    _context = newContext;
+    [self.config addAttribute:@"context"
+                    withValue:newContext
+                toTabWithName:@"config"];
 }
 
 - (void)setAppVersion:(NSString *)newVersion {
-  _appVersion = newVersion;
-  [self.config addAttribute:@"appVersion"
-                  withValue:newVersion
-              toTabWithName:@"config"];
+    _appVersion = newVersion;
+    [self.config addAttribute:@"appVersion"
+                    withValue:newVersion
+                toTabWithName:@"config"];
 }
 @end

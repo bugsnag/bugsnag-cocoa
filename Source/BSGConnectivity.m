@@ -26,55 +26,60 @@
 
 #import "BSGConnectivity.h"
 
-#import <sys/socket.h>
-#import <netinet/in.h>
-#import <netinet6/in6.h>
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 #import <netdb.h>
+#import <netinet/in.h>
+#import <netinet6/in6.h>
+#import <sys/socket.h>
 
 typedef void (^CallbackBlock)(SCNetworkReachabilityFlags flags);
 
 /**
- * Callback invoked by SCNetworkReachability, which calls an Objective-C block that handles the connection change.
+ * Callback invoked by SCNetworkReachability, which calls an Objective-C block
+ * that handles the connection change.
  */
-static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void* info) {
+static void BSGConnectivityCallback(SCNetworkReachabilityRef target,
+                                    SCNetworkReachabilityFlags flags,
+                                    void *info) {
     void (^callbackBlock)(SCNetworkReachabilityFlags) = (__bridge id)(info);
     callbackBlock(flags);
 }
 
 @interface BSGConnectivity ()
 
-@property (nonatomic, assign) SCNetworkReachabilityRef reachabilityRef;
-@property (nonatomic, strong) dispatch_queue_t serialQueue;
-@property (nonatomic) CallbackBlock callbackBlock;
+@property(nonatomic, assign) SCNetworkReachabilityRef reachabilityRef;
+@property(nonatomic, strong) dispatch_queue_t serialQueue;
+@property(nonatomic) CallbackBlock callbackBlock;
 
 @end
 
 @implementation BSGConnectivity
 
-- (instancetype)initWithURL:(NSURL *)url changeBlock:(ConnectivityChange)changeBlock {
+- (instancetype)initWithURL:(NSURL *)url
+                changeBlock:(ConnectivityChange)changeBlock {
     NSString *hostName = [url absoluteString];
-    SCNetworkReachabilityRef ref = SCNetworkReachabilityCreateWithName(NULL, [hostName UTF8String]);
-    
+    SCNetworkReachabilityRef ref =
+        SCNetworkReachabilityCreateWithName(NULL, [hostName UTF8String]);
+
     if (self = [super init]) {
         _connectivityChangeBlock = changeBlock;
         self.reachabilityRef = ref;
         self.serialQueue = dispatch_queue_create("com.bugsnag.cocoa", NULL);
-        
+
         __weak id weakSelf = self;
         self.callbackBlock = ^(SCNetworkReachabilityFlags flags) {
-            if (weakSelf) {
-                [weakSelf connectivityChanged:flags];
-            }
+          if (weakSelf) {
+              [weakSelf connectivityChanged:flags];
+          }
         };
     }
-    return self;    
+    return self;
 }
 
 - (void)dealloc {
     [self stopWatchingConnectivity];
-    
+
     if (self.reachabilityRef) {
         CFRelease(self.reachabilityRef);
         self.reachabilityRef = nil;
@@ -90,20 +95,21 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkRe
 - (void)startWatchingConnectivity {
     SCNetworkReachabilityContext context = {
         .version = 0,
-        .info = (void *) CFBridgingRetain(self.callbackBlock),
-        .release = CFRelease
-    };
-    
+        .info = (void *)CFBridgingRetain(self.callbackBlock),
+        .release = CFRelease};
+
     if (self.reachabilityRef) {
-        SCNetworkReachabilitySetCallback(self.reachabilityRef, BSGConnectivityCallback, &context);
-        SCNetworkReachabilitySetDispatchQueue(self.reachabilityRef, self.serialQueue);
+        SCNetworkReachabilitySetCallback(self.reachabilityRef,
+                                         BSGConnectivityCallback, &context);
+        SCNetworkReachabilitySetDispatchQueue(self.reachabilityRef,
+                                              self.serialQueue);
     }
 }
 
 /**
  * Stops the callback with SCNetworkReachability
  */
--(void)stopWatchingConnectivity {
+- (void)stopWatchingConnectivity {
     if (self.reachabilityRef) {
         SCNetworkReachabilitySetCallback(self.reachabilityRef, NULL, NULL);
         SCNetworkReachabilitySetDispatchQueue(self.reachabilityRef, NULL);
@@ -112,7 +118,7 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkRe
 
 - (void)connectivityChanged:(SCNetworkReachabilityFlags)flags {
     BOOL connected = YES;
-    
+
     if (!(flags & kSCNetworkReachabilityFlagsReachable)) {
         connected = NO;
     }

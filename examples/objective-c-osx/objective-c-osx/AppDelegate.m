@@ -13,9 +13,7 @@
 
 @end
 
-void exceptionHandler(NSException *ex) {
-    NSLog(@"%@", [ex reason]);
-}
+void exceptionHandler(NSException *ex) { NSLog(@"%@", [ex reason]); }
 
 @implementation AppDelegate
 
