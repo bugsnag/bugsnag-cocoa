@@ -39,7 +39,7 @@
 @property(nonatomic, readwrite, retain) NSDictionary *_Nonnull details;
 @property(nonatomic, readwrite, retain) NSLock *_Nonnull metaDataLock;
 
-@property(nonatomic) BSGConnectivity * _Nonnull networkReachable;
+@property(nonatomic) BSGConnectivity *_Nonnull networkReachable;
 
 - (instancetype _Nonnull)initWithConfiguration:
     (BugsnagConfiguration *_Nonnull)configuration;
@@ -60,7 +60,8 @@
  *  Notify Bugsnag of an exception
  *
  *  @param exception the exception
- *  @param block     Configuration block for adding additional report information
+ *  @param block     Configuration block for adding additional report
+ * information
  */
 - (void)notifyException:(NSException *_Nonnull)exception
                   block:(BugsnagNotifyBlock _Nullable)block;
@@ -79,7 +80,8 @@
  *
  *  @param block configuration block
  */
-- (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
+- (void)addBreadcrumbWithBlock:
+    (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
 
 /**
  * Clear all stored breadcrumbs.

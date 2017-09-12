@@ -48,9 +48,8 @@ typedef void (^BugsnagNotifyBlock)(BugsnagCrashReport *_Nonnull report);
  *
  *  @return YES if the report should be sent
  */
-typedef bool (^BugsnagBeforeSendBlock)(
-    NSDictionary *_Nonnull rawEventData,
-    BugsnagCrashReport *_Nonnull reports);
+typedef bool (^BugsnagBeforeSendBlock)(NSDictionary *_Nonnull rawEventData,
+                                       BugsnagCrashReport *_Nonnull reports);
 
 /**
  *  A handler for modifying data before sending it to Bugsnag
@@ -97,7 +96,7 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
 @property(nonatomic, readwrite, strong, nonnull) NSURLSession *session;
 
 /**
- *  Additional information about the state of the app or environment at the 
+ *  Additional information about the state of the app or environment at the
  *  time the report was generated
  */
 @property(nonatomic, readwrite, retain, nullable) BugsnagMetaData *metaData;
@@ -120,7 +119,7 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
  *  Hooks for modifying crash reports before it is sent to Bugsnag
  */
 @property(nonatomic, readonly, strong, nullable)
-    NSArray <BugsnagBeforeSendBlock>* beforeSendBlocks;
+    NSArray<BugsnagBeforeSendBlock> *beforeSendBlocks;
 /**
  *  Optional handler invoked when a crash or fatal signal occurs
  */
@@ -150,7 +149,6 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
  */
 - (void)addBeforeSendBlock:(BugsnagBeforeSendBlock _Nonnull)block;
 
-
 /**
  * Clear all callbacks
  */
@@ -168,6 +166,6 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
 /**
  *  Hooks for processing raw report data before it is sent to Bugsnag
  */
-@property(nonatomic, readonly, strong, nullable) NSArray *beforeNotifyHooks
-    __deprecated_msg("Use beforeNotify instead.");
+@property(nonatomic, readonly, strong, nullable)
+    NSArray *beforeNotifyHooks __deprecated_msg("Use beforeNotify instead.");
 @end

@@ -22,50 +22,43 @@
 // THE SOFTWARE.
 //
 
-
 #import "BSG_RFC3339DateTool.h"
-
 
 @implementation BSG_RFC3339DateTool
 
-static NSDateFormatter* bsg_g_formatter;
+static NSDateFormatter *bsg_g_formatter;
 
-+ (void) initialize
-{
++ (void)initialize {
     bsg_g_formatter = [[NSDateFormatter alloc] init];
-    NSLocale* locale = [[NSLocale alloc]
-                        initWithLocaleIdentifier:@"en_US_POSIX"];
+    NSLocale *locale =
+        [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
     [bsg_g_formatter setLocale:locale];
     [bsg_g_formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
     [bsg_g_formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 }
 
-+ (NSString*) stringFromDate:(NSDate*) date
-{
-    if(![date isKindOfClass:[NSDate class]])
-    {
++ (NSString *)stringFromDate:(NSDate *)date {
+    if (![date isKindOfClass:[NSDate class]]) {
         return nil;
     }
     return [bsg_g_formatter stringFromDate:date];
 }
 
-+ (NSDate*) dateFromString:(NSString*) string
-{
-    if(![string isKindOfClass:[NSString class]])
-    {
++ (NSDate *)dateFromString:(NSString *)string {
+    if (![string isKindOfClass:[NSString class]]) {
         return nil;
     }
     return [bsg_g_formatter dateFromString:string];
 }
 
-+ (NSString*) stringFromUNIXTimestamp:(unsigned long long) timestamp
-{
-    return [self stringFromDate:[NSDate dateWithTimeIntervalSince1970:timestamp]];
++ (NSString *)stringFromUNIXTimestamp:(unsigned long long)timestamp {
+    return
+        [self stringFromDate:[NSDate dateWithTimeIntervalSince1970:timestamp]];
 }
 
-+ (unsigned long long) UNIXTimestampFromString:(NSString*) string
-{
-    return (unsigned long long)[[self dateFromString:string] timeIntervalSince1970];
++ (unsigned long long)UNIXTimestampFromString:(NSString *)string {
+    return (unsigned long long)[[self dateFromString:string]
+        timeIntervalSince1970];
 }
 
 @end
