@@ -4,7 +4,7 @@ Changelog
 ## 5.11.0 (14 Sep 2017)
 
 * Update example apps to use Swift 3 syntax
-* Discard duplicate orientation notifications in breadcrumbs
+* Discard duplicate automatic breadcrumbs recording orientation changes
 * Map NSNotification keys in breadcrumbs into more human-readable strings
 * Attempt to send reports stored on disk when connection regained
 * Forked KSCrash library
