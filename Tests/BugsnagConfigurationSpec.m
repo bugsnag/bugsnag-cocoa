@@ -5,7 +5,6 @@
 //  Created by Delisa Mason on 11/30/16.
 //  Copyright 2016 Bugsnag. All rights reserved.
 //
-
 #import "BugsnagConfiguration.h"
 #import "Bugsnag.h"
 

@@ -26,11 +26,6 @@ endif
 
 all: build
 
-# Vendored dependency on KSCrash, pinned to the required version
-KSCRASH_DEP = Carthage/Checkouts/KSCrash
-$(KSCRASH_DEP):
-	@git submodule update --init
-
 # Generated framework package for Bugsnag for either iOS or macOS
 build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework:
 	@xcodebuild $(BUILD_FLAGS) \
@@ -47,16 +42,14 @@ build/Bugsnag-%-$(VERSION).zip: build/Build/Products/$(RELEASE_DIR)/Bugsnag.fram
 bootstrap:
 	@gem install xcpretty --quiet --no-ri --no-rdoc
 
-build: $(KSCRASH_DEP)
+build:
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) build $(FORMATTER)
 
-clean: $(KSCRASH_DEP)
+clean:
 	@$(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
 	@rm -rf build
 
-test: $(KSCRASH_DEP)
+test:
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
 
 archive: build/Bugsnag-$(PLATFORM)-$(VERSION).zip
-
-

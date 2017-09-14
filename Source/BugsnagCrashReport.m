@@ -1,16 +1,23 @@
 //
-//  KSCrashReport.m
+//  BugsnagCrashReport.m
 //  Bugsnag
 //
 //  Created by Simon Maynard on 11/26/14.
 //
 //
 
+#if TARGET_OS_MAC || TARGET_OS_TV
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#include <sys/utsname.h>
+#endif
+
 #import "Bugsnag.h"
 #import "BugsnagCollections.h"
 #import "BugsnagCrashReport.h"
 #import "BugsnagLogger.h"
 #import "BSGSerialization.h"
+#import "BugsnagSystemInfo.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {
@@ -82,22 +89,31 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
 }
 
 NSDictionary *BSGParseDevice(NSDictionary *report) {
-    NSDictionary *system = report[@"system"];
-    NSMutableDictionary *device = [NSMutableDictionary dictionary];
+    NSMutableDictionary *data = [NSMutableDictionary dictionary];
 
-    BSGDictSetSafeObject(device, @"Apple", @"manufacturer");
-    BSGDictSetSafeObject(device, [[NSLocale currentLocale] localeIdentifier],
+    BSGDictSetSafeObject(data, @"Apple", @"manufacturer");
+    BSGDictSetSafeObject(data, [[NSLocale currentLocale] localeIdentifier],
                          @"locale");
-    BSGDictSetSafeObject(device, system[@"device_app_hash"], @"id");
-    BSGDictSetSafeObject(device, system[@"time_zone"], @"timezone");
-    BSGDictSetSafeObject(device, system[@"model"], @"modelNumber");
-    BSGDictSetSafeObject(device, system[@"machine"], @"model");
-    BSGDictSetSafeObject(device, system[@"system_name"], @"osName");
-    BSGDictSetSafeObject(device, system[@"system_version"], @"osVersion");
-    BSGDictSetSafeObject(device, system[@"memory"][@"usable"],
-                         @"totalMemory");
     
-    return device;
+    
+#if TARGET_OS_MAC || TARGET_OS_TV
+    NSProcessInfo *processInfo = [NSProcessInfo processInfo];
+    BSGDictSetSafeObject(data, processInfo.operatingSystemName, @"osName");
+    BSGDictSetSafeObject(data, processInfo.operatingSystemVersionString, @"osVersion");
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    UIDevice *device = [UIDevice currentDevice];
+    BSGDictSetSafeObject(data, device.systemName, @"osName");
+    BSGDictSetSafeObject(data, device.systemVersion, @"osVersion");
+#endif
+    
+    
+    BSGDictSetSafeObject(data, BugsnagSystemInfo.deviceAndAppHash, @"id");
+    BSGDictSetSafeObject(data, NSTimeZone.localTimeZone.abbreviation, @"timezone");
+    BSGDictSetSafeObject(data, BugsnagSystemInfo.modelNumber, @"modelNumber");
+    BSGDictSetSafeObject(data, BugsnagSystemInfo.modelName, @"model");
+    BSGDictSetSafeObject(data, BugsnagSystemInfo.usableMemory, @"totalMemory");
+    
+    return data;
 }
 
 NSDictionary *BSGParseApp(NSDictionary *report, NSString *appVersion) {
@@ -271,6 +287,8 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
   if (self = [super init]) {
       _notifyReleaseStages = [report valueForKeyPath:@"user.config.notifyReleaseStages"];
       _releaseStage = BSGParseReleaseStage(report);
+      
+      // TODO BSG_KSCrash replacement
       _error = [report valueForKeyPath:@"crash.error"];
       _errorType = _error[@"type"];
       _errorClass = BSGParseErrorClass(_error, _errorType);
@@ -280,7 +298,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       _breadcrumbs = BSGParseBreadcrumbs(report);
       _severity = BSGParseSeverity([report valueForKeyPath:@"user.state.crash.severity"]);
       _depth = [[report valueForKeyPath:@"user.state.crash.depth"] unsignedIntegerValue];
-      _dsymUUID = [report valueForKeyPath:@"system.app_uuid"];
+      _dsymUUID = BugsnagSystemInfo.appUUID;
       _deviceAppHash = [report valueForKeyPath:@"system.device_app_hash"];
       _metaData = [report valueForKeyPath:@"user.metaData"] ?: [NSDictionary new];
       _context = BSGParseContext(report, _metaData);
@@ -494,7 +512,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       BSGDictSetSafeObject(threadDict, thread[@"index"], @"id");
       BSGDictSetSafeObject(threadDict, threadStack, @"stacktrace");
       BSGDictSetSafeObject(threadDict, DEFAULT_EXCEPTION_TYPE, @"type");
-      // only if this is enabled in KSCrash.
+      // only if this is enabled in BSG_KSCrash.
       if (thread[@"name"]) {
         BSGDictSetSafeObject(threadDict, thread[@"name"], @"name");
       }

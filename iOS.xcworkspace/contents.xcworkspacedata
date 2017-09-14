@@ -2,12 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Carthage/Checkouts/KSCrash/iOS/KSCrash-iOS.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:iOS/Bugsnag.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:development/Kiwi/Kiwi.xcodeproj">
    </FileRef>
 </Workspace>

@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		321A7A5215CE53185867D601 /* libPods-Bugsnag Test App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E418DB0D05F9A8F968578F10 /* libPods-Bugsnag Test App.a */; };
 		8ACFFA0C1D895D4D00357B5E /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */; };
+		DB7A2D239A0F25E0ED01EBF7 /* libPods-Bugsnag Test App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */; };
 		E77F7CCE1F2B90800017CE04 /* CrashyUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77F7CCD1F2B90800017CE04 /* CrashyUITest.swift */; };
 		E7AB1DE21F2F3AC0000AAF94 /* CrashyUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77F7CCD1F2B90800017CE04 /* CrashyUITest.swift */; };
 		E7AB1DEE1F2F3EE1000AAF94 /* UIHarnessTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AB1DED1F2F3EE1000AAF94 /* UIHarnessTest.swift */; };
@@ -49,6 +49,7 @@
 		8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		8ACFFA0D1D895D4D00357B5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8ACFFA151D895E0300357B5E /* BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
+		9333D154DE949C52593C64D3 /* libPods-custom-keyboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-custom-keyboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E418DB0D05F9A8F968578F10 /* libPods-Bugsnag Test App.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bugsnag Test App.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E77F7CCB1F2B90800017CE04 /* BugsnagUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E77F7CCD1F2B90800017CE04 /* CrashyUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashyUITest.swift; sourceTree = "<group>"; };
@@ -56,6 +57,10 @@
 		E7989EEC1F33619D007C37A4 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E7AB1DE81F2F3AC0000AAF94 /* BugsnagUIHarness.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagUIHarness.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7AB1DED1F2F3EE1000AAF94 /* UIHarnessTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIHarnessTest.swift; sourceTree = "<group>"; };
+		E7EC04121F4CC87300C2E9D5 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
+		E7EC04131F4CC87300C2E9D5 /* libz.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.dylib; path = ../../../../../../usr/lib/libz.1.dylib; sourceTree = "<group>"; };
+		E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		F2E14F3E5A46514C8F874A58 /* Pods-Bugsnag Test App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bugsnag Test App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Bugsnag Test App/Pods-Bugsnag Test App.release.xcconfig"; sourceTree = "<group>"; };
 		F40B874616AA233500676BB2 /* Bugsnag Test App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bugsnag Test App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F40B874A16AA233500676BB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -73,6 +78,7 @@
 		F40B876316AA233500676BB2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		F40B876816AA233500676BB2 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		F40B876916AA233500676BB2 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bugsnag Test App.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,7 +110,7 @@
 				F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */,
 				F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */,
 				F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */,
-				321A7A5215CE53185867D601 /* libPods-Bugsnag Test App.a in Frameworks */,
+				DB7A2D239A0F25E0ED01EBF7 /* libPods-Bugsnag Test App.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,12 +172,16 @@
 		F40B874916AA233500676BB2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */,
+				E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */,
+				E7EC04121F4CC87300C2E9D5 /* libc++.1.dylib */,
+				E7EC04131F4CC87300C2E9D5 /* libz.1.dylib */,
 				E7989EEC1F33619D007C37A4 /* SystemConfiguration.framework */,
 				F40B874A16AA233500676BB2 /* UIKit.framework */,
 				F40B874C16AA233500676BB2 /* Foundation.framework */,
 				F40B874E16AA233500676BB2 /* CoreGraphics.framework */,
-				E418DB0D05F9A8F968578F10 /* libPods-Bugsnag Test App.a */,
-				609ECD669F95BBE28D00C825 /* libPods-custom-keyboard.a */,
+				F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */,
+				9333D154DE949C52593C64D3 /* libPods-custom-keyboard.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -737,7 +747,6 @@
 		F40B876B16AA233500676BB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -781,7 +790,6 @@
 		F40B876C16AA233500676BB2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
