@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 5.11.1 (14 Sep 2017)
+
+* Fixed issue with header file visibility
+
 ## 5.11.0 (14 Sep 2017)
 
 * Update example apps to use Swift 3 syntax
