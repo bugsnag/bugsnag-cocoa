@@ -41,7 +41,7 @@
 #import <AppKit/AppKit.h>
 #endif
 
-NSString *const NOTIFIER_VERSION = @"5.10.1";
+NSString *const NOTIFIER_VERSION = @"5.11.0";
 NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 NSString *const BSTabCrash = @"crash";
 NSString *const BSTabConfig = @"config";
@@ -245,7 +245,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
     [self setupConnectivityListener];
     [self updateAutomaticBreadcrumbDetectionSettings];
-    
+
 #if TARGET_OS_TV
   [self.details setValue:@"tvOS Bugsnag Notifier" forKey:@"name"];
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
