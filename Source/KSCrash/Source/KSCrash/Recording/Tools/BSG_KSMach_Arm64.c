@@ -50,7 +50,7 @@ static const char* bsg_g_exceptionRegisterNames[] =
     "exception", "esr", "far"
 };
 static const int bsg_g_exceptionRegisterNamesCount =
-sizeof(g_exceptionRegisterNames) / sizeof(*g_exceptionRegisterNames);
+sizeof(bsg_g_exceptionRegisterNames) / sizeof(*bsg_g_exceptionRegisterNames);
 
 
 uintptr_t bsg_ksmachframePointer(const BSG_STRUCT_MCONTEXT_L* const machineContext)
