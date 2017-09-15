@@ -52,7 +52,7 @@ NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
 struct bugsnag_data_t {
     // Contains the state of the event (handled/unhandled)
-    char *eventHandledState;
+    char *handledState;
     // Contains the user-specified metaData, including the user tab from config.
     char *metaDataJSON;
     // Contains the Bugsnag configuration, all under the "config" tab.
@@ -82,8 +82,8 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
     if (bsg_g_bugsnag_data.metaDataJSON) {
         writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metaDataJSON);
     }
-    if (bsg_g_bugsnag_data.eventHandledState) {
-        writer->addJSONElement(writer, "eventHandledState", bsg_g_bugsnag_data.eventHandledState);
+    if (bsg_g_bugsnag_data.handledState) {
+        writer->addJSONElement(writer, "handledState", bsg_g_bugsnag_data.handledState);
     }
     if (bsg_g_bugsnag_data.stateJSON) {
         writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
@@ -336,7 +336,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     }
 
     [self.metaDataLock lock];
-    BSSerializeJSONDictionary(report.eventHandledState, &bsg_g_bugsnag_data.eventHandledState);
+    BSSerializeJSONDictionary(report.handledState, &bsg_g_bugsnag_data.handledState);
     BSSerializeJSONDictionary(report.metaData, &bsg_g_bugsnag_data.metaDataJSON);
     BSSerializeJSONDictionary(report.overrides, &bsg_g_bugsnag_data.userOverridesJSON);
     

@@ -311,18 +311,18 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       _customException = BSGParseCustomException(report, [_errorClass copy], [_errorMessage copy]);
       
       
-      NSDictionary *recordedState = [report valueForKeyPath:@"user.eventHandledState"];
+      NSDictionary *recordedState = [report valueForKeyPath:@"user.handledState"];
       
       if (recordedState) {
-          _eventHandledState = recordedState;
+          _handledState = recordedState;
       } else { // the event was unhandled.
-          _eventHandledState = @{
+          _handledState = @{
                                  @"unhandled": @YES,
                                  @"originalSeverity": BSGFormatSeverity(BSGSeverityError),
                                  @"severityReason": @{@"type": @"exception_handler"},
                                  };
       }
-      _severity = BSGParseSeverity(_eventHandledState[@"originalSeverity"]);
+      _severity = BSGParseSeverity(_handledState[@"originalSeverity"]);
   }
   return self;
 }
@@ -347,7 +347,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
         NSMutableDictionary *handledState = [NSMutableDictionary new];
         handledState[@"unhandled"] = @(NO);
         handledState[@"originalSeverity"] = BSGFormatSeverity(self.severity);
-        _eventHandledState = [NSDictionary dictionaryWithDictionary:handledState];
+        _handledState = [NSDictionary dictionaryWithDictionary:handledState];
     }
     return self;
 }
@@ -473,9 +473,9 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
   BSGDictSetSafeObject(event, [self context], @"context");
   BSGDictInsertIfNotNil(event, self.groupingHash, @"groupingHash");
     
-    BOOL defaultSeverity = BSGParseSeverity(self.eventHandledState[@"originalSeverity"]) == self.severity;
+    BOOL defaultSeverity = BSGParseSeverity(self.handledState[@"originalSeverity"]) == self.severity;
     BSGDictSetSafeObject(event, @(defaultSeverity), @"defaultSeverity");
-    BSGDictSetSafeObject(event, self.eventHandledState[@"unhandled"], @"unhandled");
+    BSGDictSetSafeObject(event, self.handledState[@"unhandled"], @"unhandled");
     
     if ([event[@"unhandled"] boolValue]) {
         NSDictionary *severityReason = @{@"type": @"exception_handler"};

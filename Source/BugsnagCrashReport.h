@@ -152,7 +152,7 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
 /**
  *  The event state (whether the error is handled/unhandled)
  */
-@property (nonatomic, readonly, nonnull) NSDictionary *eventHandledState;
+@property (nonatomic, readonly, nonnull) NSDictionary *handledState;
 
 /**
  *  Property overrides
