@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 5.11.2 (15 Sep 2017)
+
+* Fixed wrong tag in Cocoapods spec
+
 ## 5.11.1 (14 Sep 2017)
 
 * Fixed issue with header file visibility
