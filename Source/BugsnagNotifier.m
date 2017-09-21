@@ -304,8 +304,12 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)notifyError:(NSError *)error block:(void (^)(BugsnagCrashReport *))block {
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError
+                                                                            severity:BSGSeverityWarning
+                                                                           attrValue:error.domain];
     [self notify:NSStringFromClass([error class])
          message:error.localizedDescription
+    handledState:state
            block:^(BugsnagCrashReport * _Nonnull report) {
                NSMutableDictionary *metadata = [report.metaData mutableCopy];
                metadata[@"nserror"] = @{@"code": @(error.code),
@@ -318,14 +322,28 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)notifyException:(NSException *)exception
-                  block:(void (^)(BugsnagCrashReport *))block {
+             atSeverity:(BSGSeverity)severity
+                   block:(void (^)(BugsnagCrashReport *))block {
+    
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:UserSpecifiedSeverity severity:severity attrValue:nil];
     [self notify:exception.name ?: NSStringFromClass([exception class])
          message:exception.reason
+    handledState:state
+           block:block];
+}
+
+- (void)notifyException:(NSException *)exception
+                  block:(void (^)(BugsnagCrashReport *))block {
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    [self notify:exception.name ?: NSStringFromClass([exception class])
+         message:exception.reason
+    handledState:state
            block:block];
 }
 
 - (void)notify:(NSString *)exceptionName
        message:(NSString *)message
+  handledState:(BugsnagHandledState *)handledState
          block:(void (^)(BugsnagCrashReport *))block {
     
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
