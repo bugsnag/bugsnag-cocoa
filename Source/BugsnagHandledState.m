@@ -91,7 +91,7 @@ static NSString *const kUserCallbackSetSeverity = @"userCallbackSetSeverity";
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super init]) {
-        _unhandled = dict[kUnhandled];
+        _unhandled = [dict[kUnhandled] boolValue];
         _severityReasonType = [BugsnagHandledState severityReasonFromString:dict[kSeverityReasonType]];
         _originalSeverity = BSGParseSeverity(dict[kOriginalSeverity]);
         _currentSeverity = BSGParseSeverity(dict[kCurrentSeverity]);
