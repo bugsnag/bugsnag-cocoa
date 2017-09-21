@@ -6,11 +6,13 @@
 //
 //
 
+#import <Foundation/Foundation.h>
+#import <XCTest/XCTest.h>
+
 #import "Bugsnag.h"
 #import "BugsnagCrashReport.h"
 #import "BugsnagSink.h"
-#import <Foundation/Foundation.h>
-#import <XCTest/XCTest.h>
+#import "BugsnagHandledState.h"
 
 @interface BugsnagSinkTests : XCTestCase
 @property NSDictionary *rawReportData;
@@ -104,7 +106,6 @@
     @"appState",
     @"breadcrumbs",
     @"context",
-    @"defaultSeverity",
     @"device",
     @"deviceState",
     @"dsymUUID",
@@ -129,58 +130,11 @@
   XCTAssertEqualObjects(payloadVersion, @"3");
 }
 
-- (void)testUnhandledSerialization {
-    NSDictionary *event = [self.processedData[@"events"] firstObject];
-    XCTAssertNotNil(event);
-    XCTAssertTrue(event[@"defaultSeverity"]);
-    XCTAssertTrue(event[@"unhandled"]);
-    
-    NSDictionary *severityReason = [event objectForKey:@"severityReason"];
-    XCTAssertNotNil(severityReason);
-    NSString *severityType = severityReason[@"type"];
-    XCTAssertEqualObjects(@"exception_handler", severityType);
-}
-
-- (void)testHandledSerialization {
-    BugsnagCrashReport *report =
-    [[BugsnagCrashReport alloc] initWithErrorName:@"TestError"
-                                     errorMessage:@"Error for testing"
-                                    configuration:[BugsnagConfiguration new]
-                                         metaData:[NSDictionary new]
-                                         severity:BSGSeverityWarning];
-    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
-    NSDictionary *event = [data[@"events"] firstObject];
-    
-    XCTAssertNotNil(event);
-    XCTAssertTrue([event[@"defaultSeverity"] boolValue]);
-    XCTAssertFalse([event[@"unhandled"] boolValue]);
-    XCTAssertNil([event objectForKey:@"severityReason"]);
-}
-
-- (void)testSeverityMutation {
-    BugsnagCrashReport *report =
-    [[BugsnagCrashReport alloc] initWithKSReport:self.rawReportData];
-    report.severity = BSGSeverityInfo; // alter report severity
-    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
-    
-    NSDictionary *event = [data[@"events"] firstObject];
-    XCTAssertNotNil(event);
-    XCTAssertFalse([event[@"defaultSeverity"] boolValue]);
-    
-    report.severity = BSGSeverityError; // alter report back to default severity
-    data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
-    
-    event = [data[@"events"] firstObject];
-    XCTAssertNotNil(event);
-    XCTAssertTrue([event[@"defaultSeverity"] boolValue]);
-}
-
 - (void)testEventSeverity {
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     XCTAssertNotNil(event);
     
     NSString *severity = event[@"severity"];
-    XCTAssertTrue([event[@"defaultSeverity"] boolValue]);
     XCTAssertTrue([event[@"unhandled"] boolValue]);
     XCTAssertEqualObjects(severity, @"error");
 }
@@ -330,5 +284,131 @@
                           @"background_time_since_launch" : @0
                         }));
 }
+
+
+# pragma mark - handled/unhandled serialisation
+
+
+- (NSDictionary *)reportFromHandledState:(BugsnagHandledState *)state {
+     // TODO handledstate change!
+    
+    BugsnagCrashReport *report =
+    [[BugsnagCrashReport alloc] initWithErrorName:@"TestError"
+                                     errorMessage:@"Error for testing"
+                                    configuration:[BugsnagConfiguration new]
+                                         metaData:[NSDictionary new]
+                                         severity:state.currentSeverity];
+    
+    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    return [data[@"events"] firstObject];
+}
+
+- (void)testHandledSerialization {
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    NSDictionary *payload = [self reportFromHandledState:state];
+    
+    XCTAssertEqualObjects(@"warning", payload[@"severity"]);
+    XCTAssertFalse([payload[@"unhandled"] boolValue]);
+    
+    NSDictionary *severityReason = payload[@"severityReason"];
+    XCTAssertNotNil(severityReason);
+    
+    NSString *expected = [BugsnagHandledState stringFromSeverityReason:HandledException];
+    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    XCTAssertNil(severityReason[@"attributes"]);
+}
+
+- (void)testUnhandledSerialization {
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    NSDictionary *payload = [self reportFromHandledState:state];
+    
+    XCTAssertEqualObjects(@"error", payload[@"severity"]);
+    XCTAssertTrue([payload[@"unhandled"] boolValue]);
+    
+    NSDictionary *severityReason = payload[@"severityReason"];
+    XCTAssertNotNil(severityReason);
+    
+    NSString *expected = [BugsnagHandledState stringFromSeverityReason:UnhandledException];
+    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    XCTAssertNil(severityReason[@"attributes"]);
+}
+
+- (void)testUserSpecifiedSerialisation {
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:UserSpecifiedSeverity];
+    NSDictionary *payload = [self reportFromHandledState:state];
+    
+    XCTAssertEqualObjects(@"warning", payload[@"severity"]);
+    XCTAssertFalse([payload[@"unhandled"] boolValue]);
+    
+    NSDictionary *severityReason = payload[@"severityReason"];
+    XCTAssertNotNil(severityReason);
+    
+    NSString *expected = [BugsnagHandledState stringFromSeverityReason:UserSpecifiedSeverity];
+    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    XCTAssertNil(severityReason[@"attributes"]);
+}
+
+- (void)testCallbackSpecified { // FIXME
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    BugsnagCrashReport *report =
+    [[BugsnagCrashReport alloc] initWithErrorName:@"TestError"
+                                     errorMessage:@"Error for testing"
+                                    configuration:[BugsnagConfiguration new]
+                                         metaData:[NSDictionary new]
+                                         severity:state.currentSeverity];
+    report.handledState.currentSeverity = BSGSeverityInfo;
+    
+    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    NSDictionary *payload = [data[@"events"] firstObject];
+    
+    XCTAssertEqualObjects(@"info", payload[@"severity"]);
+    XCTAssertFalse([payload[@"unhandled"] boolValue]);
+    
+    NSDictionary *severityReason = payload[@"severityReason"];
+    XCTAssertNotNil(severityReason);
+    
+    NSString *expected = [BugsnagHandledState stringFromSeverityReason:UserCallbackSetSeverity];
+    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    XCTAssertNil(severityReason[@"attributes"]);
+}
+
+- (void)testHandledErrorSerialization {
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError];
+    NSDictionary *payload = [self reportFromHandledState:state];
+    
+    XCTAssertEqualObjects(@"warning", payload[@"severity"]);
+    XCTAssertFalse([payload[@"unhandled"] boolValue]);
+    
+    NSDictionary *severityReason = payload[@"severityReason"];
+    XCTAssertNotNil(severityReason);
+    
+    NSString *expected = [BugsnagHandledState stringFromSeverityReason:HandledError];
+    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    
+    NSDictionary *attrs = severityReason[@"attributes"];
+    XCTAssertNotNil(attrs);
+    XCTAssertEqual(1, [attrs count]);
+    XCTAssertEqualObjects(@"test", attrs[@"errorType"]);
+}
+
+- (void)testSignalSerialization {
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:Signal];
+    NSDictionary *payload = [self reportFromHandledState:state];
+    
+    XCTAssertEqualObjects(@"error", payload[@"severity"]);
+    XCTAssertTrue([payload[@"unhandled"] boolValue]);
+    
+    NSDictionary *severityReason = payload[@"severityReason"];
+    XCTAssertNotNil(severityReason);
+    
+    NSString *expected = [BugsnagHandledState stringFromSeverityReason:Signal];
+    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    
+    NSDictionary *attrs = severityReason[@"attributes"];
+    XCTAssertNotNil(attrs);
+    XCTAssertEqual(1, [attrs count]);
+    XCTAssertEqualObjects(@"test", attrs[@"signalType"]);
+}
+
 
 @end
