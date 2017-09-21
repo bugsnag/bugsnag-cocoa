@@ -312,11 +312,13 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       _customException = BSGParseCustomException(report, [_errorClass copy], [_errorMessage copy]);
       
       NSDictionary *recordedState = [report valueForKeyPath:@"user.handledState"];
-
+      
       if (recordedState) {
           _handledState = [[BugsnagHandledState alloc] initWithDictionary:recordedState];
       } else { // the event was unhandled.
-          _handledState = [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
+          BOOL isSignal = [@"signal" isEqualToString:_errorType];
+          SeverityReasonType severityReason = isSignal ? Signal : UnhandledException;
+          _handledState = [BugsnagHandledState handledStateWithSeverityReason:severityReason];
       }
       _severity = _handledState.currentSeverity;
   }
