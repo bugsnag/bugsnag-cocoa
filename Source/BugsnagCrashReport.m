@@ -479,7 +479,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
     
     BSGDictSetSafeObject(event, @(self.handledState.unhandled), @"unhandled");
     
-    
+    // serialize handled/unhandled into payload
     NSMutableDictionary *severityReason = [NSMutableDictionary new];
     NSString *reasonType = [BugsnagHandledState stringFromSeverityReason:self.handledState.calculateSeverityReasonType];
     severityReason[@"type"] = reasonType;
@@ -488,7 +488,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
        severityReason[@"attributes"] = @{self.handledState.attrKey: self.handledState.attrValue};
     }
     
-    BSGDictSetSafeObject(event, severityReason, @"severityReason");
+    BSGDictSetSafeObject(event, [self.handledState toJson], @"severityReason");
     
 
   //  Inserted into `context` property
