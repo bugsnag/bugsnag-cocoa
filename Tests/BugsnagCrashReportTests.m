@@ -6,10 +6,12 @@
 //
 //
 
-#import "Bugsnag.h"
-#import "BugsnagCrashReport.h"
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
+
+#import "Bugsnag.h"
+#import "BugsnagCrashReport.h"
+#import "BugsnagHandledState.h"
 
 @interface BugsnagCrashReportTests : XCTestCase
 @property BugsnagCrashReport *report;
@@ -94,11 +96,12 @@
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     config.notifyReleaseStages = @[@"foo"];
     config.releaseStage = @"foo";
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
                                                                   errorMessage:@"it was so bad"
                                                                  configuration:config
                                                                       metaData:@{}
-                                                                      severity:BSGSeverityWarning];
+                                                                      handledState:state];
     XCTAssertTrue([report shouldBeSent]);
 }
 
@@ -106,11 +109,13 @@
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     config.notifyReleaseStages = @[@"foo", @"bar"];
     config.releaseStage = @"not foo or bar";
+    
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
                                                                   errorMessage:@"it was so bad"
                                                                  configuration:config
                                                                       metaData:@{}
-                                                                      severity:BSGSeverityWarning];
+                                                                  handledState:state];
     XCTAssertFalse([report shouldBeSent]);
 }
 

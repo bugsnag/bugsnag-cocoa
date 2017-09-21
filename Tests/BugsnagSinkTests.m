@@ -290,14 +290,12 @@
 
 
 - (NSDictionary *)reportFromHandledState:(BugsnagHandledState *)state {
-     // TODO handledstate change!
-    
     BugsnagCrashReport *report =
     [[BugsnagCrashReport alloc] initWithErrorName:@"TestError"
                                      errorMessage:@"Error for testing"
                                     configuration:[BugsnagConfiguration new]
                                          metaData:[NSDictionary new]
-                                         severity:state.currentSeverity];
+                                         handledState:state];
     
     NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
     return [data[@"events"] firstObject];
@@ -319,7 +317,7 @@
 }
 
 - (void)testUnhandledSerialization {
-    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
     NSDictionary *payload = [self reportFromHandledState:state];
     
     XCTAssertEqualObjects(@"error", payload[@"severity"]);
@@ -348,14 +346,14 @@
     XCTAssertNil(severityReason[@"attributes"]);
 }
 
-- (void)testCallbackSpecified { // FIXME
+- (void)testCallbackSpecified {
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     BugsnagCrashReport *report =
     [[BugsnagCrashReport alloc] initWithErrorName:@"TestError"
                                      errorMessage:@"Error for testing"
                                     configuration:[BugsnagConfiguration new]
                                          metaData:[NSDictionary new]
-                                         severity:state.currentSeverity];
+                                         handledState:state];
     report.handledState.currentSeverity = BSGSeverityInfo;
     
     NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];

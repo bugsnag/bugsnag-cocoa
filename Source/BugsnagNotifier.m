@@ -33,6 +33,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagCrashSentry.h"
 #import "BSGConnectivity.h"
+#import "BugsnagHandledState.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -326,11 +327,13 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 - (void)notify:(NSString *)exceptionName
        message:(NSString *)message
          block:(void (^)(BugsnagCrashReport *))block {
+    
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:exceptionName
                                                                   errorMessage:message
                                                                  configuration:self.configuration
                                                                       metaData:[self.configuration.metaData toDictionary]
-                                                                      severity:BSGSeverityWarning];
+                                                                      handledState:state];
     if (block) {
         block(report);
     }

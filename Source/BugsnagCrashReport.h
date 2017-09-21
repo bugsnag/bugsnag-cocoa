@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class BugsnagConfiguration;
+@class BugsnagHandledState;
 
 typedef NS_ENUM(NSUInteger, BSGSeverity) {
     BSGSeverityError,
@@ -54,7 +55,7 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
  *  @param message   The reason or message from the exception
  *  @param config    Bugsnag configuration
  *  @param metaData  additional data to attach to the report
- *  @param severity  severity of the error
+ *  @param handledState  the handled state of the error
  *
  *  @return a Bugsnag crash report
  */
@@ -62,7 +63,7 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
                               errorMessage:(NSString *_Nonnull)message
                              configuration:(BugsnagConfiguration *_Nonnull)config
                                   metaData:(NSDictionary *_Nonnull)metaData
-                                  severity:(BSGSeverity)severity;
+                                  handledState:(BugsnagHandledState *_Nonnull)handledState;
 
 /**
  *  Serialize a crash report as a JSON payload
@@ -152,7 +153,7 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
 /**
  *  The event state (whether the error is handled/unhandled)
  */
-@property (nonatomic, readonly, nonnull) NSDictionary *handledState;
+@property (nonatomic, readonly, nonnull) BugsnagHandledState *handledState;
 
 /**
  *  Property overrides
