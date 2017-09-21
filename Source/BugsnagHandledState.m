@@ -15,6 +15,13 @@ static NSString *const kCurrentSeverity = @"currentSeverity";
 static NSString *const kAttrValue = @"attrValue";
 static NSString *const kAttrKey = @"attrKey";
 
+static NSString *const kUnhandledException = @"unhandledException";
+static NSString *const kSignal = @"signal";
+static NSString *const kHandledError = @"handledError";
+static NSString *const kHandledException = @"handledException";
+static NSString *const kUserSpecifiedSeverity = @"userSpecifiedSeverity";
+static NSString *const kUserCallbackSetSeverity = @"userCallbackSetSeverity";
+
 @implementation BugsnagHandledState
 
 + (instancetype)handledStateWithSeverityReason:(SeverityReasonType)severityReason {
@@ -98,13 +105,6 @@ static NSString *const kAttrKey = @"attrKey";
     return _originalSeverity == _currentSeverity ?
     _severityReasonType : UserCallbackSetSeverity;
 }
-
-static NSString *const kUnhandledException = @"unhandledException";
-static NSString *const kSignal = @"signal";
-static NSString *const kHandledError = @"handledError";
-static NSString *const kHandledException = @"handledException";
-static NSString *const kUserSpecifiedSeverity = @"userSpecifiedSeverity";
-static NSString *const kUserCallbackSetSeverity = @"userCallbackSetSeverity";
 
 + (NSString *)stringFromSeverityReason:(SeverityReasonType)severityReason {
     switch (severityReason) {

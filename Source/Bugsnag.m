@@ -116,7 +116,7 @@ static BugsnagNotifier* bsg_g_bugsnag_notifier = NULL;
       withData:(NSDictionary*)metaData
     atSeverity:(NSString*)severity {
     [[self notifier] notifyException:exception
-                          atSeverity:severity
+                          atSeverity:BSGParseSeverity(severity)
                                block:^(BugsnagCrashReport * _Nonnull report) {
         report.depth = 1;
         report.metaData = [metaData BSG_mergedInto:

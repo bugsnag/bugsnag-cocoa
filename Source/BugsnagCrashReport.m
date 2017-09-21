@@ -311,21 +311,14 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       _overrides = [report valueForKeyPath:@"user.overrides"];
       _customException = BSGParseCustomException(report, [_errorClass copy], [_errorMessage copy]);
       
-      
-      // FIXME handle loading from disk
-      
-//      NSDictionary *recordedState = [report valueForKeyPath:@"user.handledState"];
-//      
-//      if (recordedState) {
-//          _handledState = recordedState;
-//      } else { // the event was unhandled.
-//          _handledState = @{
-//                                 @"unhandled": @YES,
-//                                 @"originalSeverity": BSGFormatSeverity(BSGSeverityError),
-//                                 @"severityReason": @{@"type": @"exception_handler"},
-//                                 };
-//      }
-//      _severity = BSGParseSeverity(_handledState[@"originalSeverity"]);
+      NSDictionary *recordedState = [report valueForKeyPath:@"user.handledState"];
+
+      if (recordedState) {
+          _handledState = [[BugsnagHandledState alloc] initWithDictionary:recordedState];
+      } else { // the event was unhandled.
+          _handledState = [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
+      }
+      _severity = _handledState.currentSeverity;
   }
   return self;
 }
@@ -488,7 +481,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
        severityReason[@"attributes"] = @{self.handledState.attrKey: self.handledState.attrValue};
     }
     
-    BSGDictSetSafeObject(event, [self.handledState toJson], @"severityReason");
+    BSGDictSetSafeObject(event, severityReason, @"severityReason");
     
 
   //  Inserted into `context` property

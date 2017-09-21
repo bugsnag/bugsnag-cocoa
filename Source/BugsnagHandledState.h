@@ -38,4 +38,6 @@ typedef NS_ENUM(NSUInteger, SeverityReasonType) {
 
 - (NSDictionary *)toJson;
 
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
+
 @end
