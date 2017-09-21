@@ -417,6 +417,11 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
     [self setOverrideProperty:@"customStacktraceType" value:type];
 }
 
+- (void)setSeverity:(BSGSeverity)severity {
+    _severity = severity;
+    _handledState.currentSeverity = severity;
+}
+
 - (void)setOverrideProperty:(NSString *)key value:(id)value {
     NSMutableDictionary *metadata = [self.overrides mutableCopy];
     if (value) {
@@ -474,11 +479,14 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
     
     BSGDictSetSafeObject(event, @(self.handledState.unhandled), @"unhandled");
     
-    NSString *reasonType = [BugsnagHandledState stringFromSeverityReason:self.handledState.severityReasonType];
+    
     NSMutableDictionary *severityReason = [NSMutableDictionary new];
+    NSString *reasonType = [BugsnagHandledState stringFromSeverityReason:self.handledState.calculateSeverityReasonType];
     severityReason[@"type"] = reasonType;
     
-    // TODO handle inserting attributes
+    if (self.handledState.attrKey) {
+       severityReason[@"attributes"] = @{self.handledState.attrKey: self.handledState.attrValue};
+    }
     
     BSGDictSetSafeObject(event, severityReason, @"severityReason");
     

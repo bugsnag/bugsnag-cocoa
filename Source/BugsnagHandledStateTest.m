@@ -21,6 +21,8 @@
     XCTAssertNotNil(state);
     XCTAssertTrue(state.unhandled);
     XCTAssertEqual(BSGSeverityError, state.currentSeverity);
+    XCTAssertNil(state.attrValue);
+    XCTAssertNil(state.attrKey);
 }
 
 - (void)testHandledException {
@@ -29,15 +31,20 @@
     XCTAssertNotNil(state);
     XCTAssertFalse(state.unhandled);
     XCTAssertEqual(BSGSeverityWarning, state.currentSeverity);
+    XCTAssertNil(state.attrValue);
+    XCTAssertNil(state.attrKey);
 }
 
 - (void)testUserSpecified {
     BugsnagHandledState *state = [BugsnagHandledState
                                   handledStateWithSeverityReason:UserSpecifiedSeverity
-                                  severity:BSGSeverityInfo];
+                                  severity:BSGSeverityInfo
+                                  attrValue:nil];
     XCTAssertNotNil(state);
     XCTAssertFalse(state.unhandled);
     XCTAssertEqual(BSGSeverityInfo, state.currentSeverity);
+    XCTAssertNil(state.attrValue);
+    XCTAssertNil(state.attrKey);
 }
 
 - (void)testCallbackSpecified {
@@ -47,22 +54,30 @@
     
     state.currentSeverity = BSGSeverityInfo;
     XCTAssertEqual(UserCallbackSetSeverity, state.calculateSeverityReasonType);
+    XCTAssertNil(state.attrValue);
+    XCTAssertNil(state.attrKey);
 }
 
 - (void)testHandledError {
     BugsnagHandledState *state = [BugsnagHandledState
-                                  handledStateWithSeverityReason:HandledError];
+                                  handledStateWithSeverityReason:HandledError
+                                  severity:BSGSeverityWarning
+                                  attrValue:@"Test"];
     XCTAssertNotNil(state);
     XCTAssertFalse(state.unhandled);
     XCTAssertEqual(BSGSeverityWarning, state.currentSeverity);
+    XCTAssertEqualObjects(@"Test", state.attrValue);
 }
 
 - (void)testSignal {
     BugsnagHandledState *state = [BugsnagHandledState
-                                  handledStateWithSeverityReason:Signal];
+                                  handledStateWithSeverityReason:Signal
+                                  severity:BSGSeverityError
+                                  attrValue:@"Test"];
     XCTAssertNotNil(state);
     XCTAssertTrue(state.unhandled);
     XCTAssertEqual(BSGSeverityError, state.currentSeverity);
+    XCTAssertEqualObjects(@"Test", state.attrValue);
 }
 
 - (void)testInvalidUserSpecified {

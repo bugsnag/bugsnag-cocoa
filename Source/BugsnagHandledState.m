@@ -12,11 +12,13 @@
 
 + (instancetype)handledStateWithSeverityReason:(SeverityReasonType)severityReason {
     return [self handledStateWithSeverityReason:severityReason
-                                       severity:BSGSeverityWarning];
+                                       severity:BSGSeverityWarning
+                                      attrValue:nil];
 }
 
 + (instancetype)handledStateWithSeverityReason:(SeverityReasonType)severityReason
-                                      severity:(BSGSeverity)severity {
+                                      severity:(BSGSeverity)severity
+                                     attrValue:(NSString *)attrValue {
     BOOL unhandled = NO;
     
     switch (severityReason) {
@@ -43,17 +45,32 @@
     
     return [[BugsnagHandledState alloc] initWithSeverityReason:severityReason
                                                       severity:severity
-                                                     unhandled:unhandled];
+                                                     unhandled:unhandled
+                                                     attrValue:attrValue];
 }
 
 - (instancetype)initWithSeverityReason:(SeverityReasonType)severityReason
                               severity:(BSGSeverity)severity
-                             unhandled:(BOOL)unhandled {
+                             unhandled:(BOOL)unhandled
+                             attrValue:(NSString *)attrValue {
     if (self = [super init]) {
         _severityReasonType = severityReason;
         _currentSeverity = severity;
         _originalSeverity = severity;
         _unhandled = unhandled;
+        
+        switch (severityReason) {
+            case Signal:
+                _attrValue = attrValue;
+                _attrKey = @"signalType";
+                break;
+            case HandledError:
+                _attrValue = attrValue;
+                _attrKey = @"errorType";
+                break;
+            default:
+                break;
+        }
     }
     return self;
 }

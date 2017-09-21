@@ -354,7 +354,7 @@
                                     configuration:[BugsnagConfiguration new]
                                          metaData:[NSDictionary new]
                                          handledState:state];
-    report.handledState.currentSeverity = BSGSeverityInfo;
+    report.severity = BSGSeverityInfo;
     
     NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
     NSDictionary *payload = [data[@"events"] firstObject];
@@ -371,7 +371,8 @@
 }
 
 - (void)testHandledErrorSerialization {
-    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError];
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError
+                                                                            severity:BSGSeverityWarning attrValue:@"test"];
     NSDictionary *payload = [self reportFromHandledState:state];
     
     XCTAssertEqualObjects(@"warning", payload[@"severity"]);
@@ -390,7 +391,8 @@
 }
 
 - (void)testSignalSerialization {
-    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:Signal];
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:Signal
+                                                                            severity:BSGSeverityError attrValue:@"test"];
     NSDictionary *payload = [self reportFromHandledState:state];
     
     XCTAssertEqualObjects(@"error", payload[@"severity"]);
