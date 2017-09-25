@@ -400,9 +400,7 @@
     XCTAssertEqualObjects(expected, severityReason[@"type"]);
     
     NSDictionary *attrs = severityReason[@"attributes"];
-    XCTAssertNotNil(attrs);
-    XCTAssertEqual(1, [attrs count]);
-    XCTAssertEqualObjects(@"test", attrs[@"errorType"]);
+    XCTAssertNil(attrs);
 }
 
 - (void)testSignalSerialization {

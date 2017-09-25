@@ -30,6 +30,7 @@ typedef NS_ENUM(NSUInteger, SeverityReasonType) {
 @property (nonatomic, readonly) NSString *attrKey;
 
 + (NSString *)stringFromSeverityReason:(SeverityReasonType)severityReason;
++ (SeverityReasonType)severityReasonFromString:(NSString *)string;
 
 + (instancetype)handledStateWithSeverityReason:(SeverityReasonType)severityReason;
 
