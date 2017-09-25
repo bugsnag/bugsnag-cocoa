@@ -331,6 +331,21 @@
     XCTAssertNil(severityReason[@"attributes"]);
 }
 
+- (void)testPromiseRejectionSerialization {
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:PromiseRejection];
+    NSDictionary *payload = [self reportFromHandledState:state];
+    
+    XCTAssertEqualObjects(@"error", payload[@"severity"]);
+    XCTAssertTrue([payload[@"unhandled"] boolValue]);
+    
+    NSDictionary *severityReason = payload[@"severityReason"];
+    XCTAssertNotNil(severityReason);
+    
+    NSString *expected = [BugsnagHandledState stringFromSeverityReason:PromiseRejection];
+    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    XCTAssertNil(severityReason[@"attributes"]);
+}
+
 - (void)testUserSpecifiedSerialisation {
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:UserSpecifiedSeverity];
     NSDictionary *payload = [self reportFromHandledState:state];

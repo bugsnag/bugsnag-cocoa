@@ -66,7 +66,7 @@
     XCTAssertNotNil(state);
     XCTAssertFalse(state.unhandled);
     XCTAssertEqual(BSGSeverityWarning, state.currentSeverity);
-    XCTAssertEqualObjects(@"Test", state.attrValue);
+    XCTAssertNil(state.attrValue);
 }
 
 - (void)testSignal {
@@ -78,6 +78,15 @@
     XCTAssertTrue(state.unhandled);
     XCTAssertEqual(BSGSeverityError, state.currentSeverity);
     XCTAssertEqualObjects(@"Test", state.attrValue);
+}
+
+- (void)testPromiseRejection {
+    BugsnagHandledState *state = [BugsnagHandledState
+                                  handledStateWithSeverityReason:PromiseRejection];
+    XCTAssertNotNil(state);
+    XCTAssertTrue(state.unhandled);
+    XCTAssertEqual(BSGSeverityError, state.currentSeverity);
+    XCTAssertNil(state.attrValue);
 }
 
 - (void)testInvalidUserSpecified {

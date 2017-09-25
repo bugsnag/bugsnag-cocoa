@@ -15,7 +15,8 @@ typedef NS_ENUM(NSUInteger, SeverityReasonType) {
     HandledError,
     HandledException,
     UserSpecifiedSeverity,
-    UserCallbackSetSeverity
+    UserCallbackSetSeverity,
+    PromiseRejection
 };
 
 @interface BugsnagHandledState : NSObject
