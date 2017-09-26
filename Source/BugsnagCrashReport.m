@@ -72,10 +72,6 @@ NSString *BSGParseErrorClass(NSDictionary *error, NSString *errorType) {
         errorClass = error[@"mach"][@"exception_name"];
     } else if ([errorType isEqualToString:@"signal"]) {
         errorClass = error[@"signal"][@"name"];
-        
-        if (!errorClass) { // attempt to use mach instead (special case)
-            errorClass = error[@"mach"][@"exception_name"];
-        }
     } else if ([errorType isEqualToString:@"nsexception"]) {
         errorClass = error[@"nsexception"][@"name"];
     } else if ([errorType isEqualToString:@"user"]) {
