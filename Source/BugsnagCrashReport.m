@@ -63,19 +63,25 @@ NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
   return nil;
 }
 
-NSString *BSGParseErrorClass(NSDictionary *error, NSString *errorType) {
+NSString * _Nonnull BSGParseErrorClass(NSDictionary *error, NSString *errorType) {
+    NSString *errorClass;
+    
     if ([errorType isEqualToString:@"cpp_exception"]) {
-        return error[@"cpp_exception"][@"name"];
+        errorClass = error[@"cpp_exception"][@"name"];
     } else if ([errorType isEqualToString:@"mach"]) {
-        return error[@"mach"][@"exception_name"];
+        errorClass = error[@"mach"][@"exception_name"];
     } else if ([errorType isEqualToString:@"signal"]) {
-        return error[@"signal"][@"name"];
+        errorClass = error[@"signal"][@"name"];
     } else if ([errorType isEqualToString:@"nsexception"]) {
-        return error[@"nsexception"][@"name"];
+        errorClass = error[@"nsexception"][@"name"];
     } else if ([errorType isEqualToString:@"user"]) {
-        return error[@"user_reported"][@"name"];
+        errorClass = error[@"user_reported"][@"name"];
     }
-    return @"Exception";
+    
+    if (!errorClass) { // use a default value
+        errorClass = @"Exception";
+    }
+    return errorClass;
 }
 
 NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSString *errorType) {
