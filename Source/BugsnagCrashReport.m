@@ -63,7 +63,7 @@ NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
   return nil;
 }
 
-NSString *BSGParseErrorClass(NSDictionary *error, NSString *errorType) {
+NSString * _Nonnull BSGParseErrorClass(NSDictionary *error, NSString *errorType) {
     NSString *errorClass;
     
     if ([errorType isEqualToString:@"cpp_exception"]) {
