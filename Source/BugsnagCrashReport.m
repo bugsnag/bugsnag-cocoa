@@ -104,7 +104,6 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
     
 #if TARGET_OS_MAC || TARGET_OS_TV
     NSProcessInfo *processInfo = [NSProcessInfo processInfo];
-    BSGDictSetSafeObject(data, processInfo.operatingSystemName, @"osName");
     BSGDictSetSafeObject(data, processInfo.operatingSystemVersionString, @"osVersion");
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     UIDevice *device = [UIDevice currentDevice];
