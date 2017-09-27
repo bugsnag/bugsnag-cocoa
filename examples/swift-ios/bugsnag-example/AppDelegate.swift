@@ -26,8 +26,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        Bugsnag.start(withApiKey: "API-KEY")
+        Bugsnag.start(withApiKey: "6ef10e3707a961373e8592ae65d68ff1")
         return true
     }
+    
+    func LogNonFatal(_ message: String) {
+        let isMainThead = Thread.isMainThread
+        let error = NSError(domain: "co.recharge", code: 1)
+        Bugsnag.notifyError(error, block: { report in
+            report.errorMessage = message
+//            report.depth = 0// += 2
+//            report.depth += 1 // Don't group by LogNonFatal always being at the top of the stack.
+            report.addAttribute("isMainThread", withValue: isMainThead, toTabWithName: "extra")
+        })
+    }
+    
 }
 
