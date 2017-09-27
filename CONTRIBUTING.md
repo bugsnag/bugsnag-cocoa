@@ -32,6 +32,13 @@ If you are interested in cleaner formatting, run `make bootstrap` to install
 Releasing a new version
 -----------------------
 
+## Release Checklist
+Please follow the testing instructions in [the platforms release checklist](https://github.com/bugsnag/platforms-release-checklist/blob/master/README.md), and any additional steps directly below.
+
+- Please ensure that release builds are run on a physical device with an ad-hoc archive.
+
+### Cocoapods
+
 If you're a member of the core team, you can release the cocoa pod as follows:
 
 ### One time setup
