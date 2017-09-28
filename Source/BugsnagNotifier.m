@@ -50,7 +50,7 @@ NSString *const BSAttributeDepth = @"depth";
 NSString *const BSAttributeBreadcrumbs = @"breadcrumbs";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
-static NSInteger const BSGNotifierStackFrameCount = 4;
+static NSInteger const BSGNotifierStackFrameCount = 5;
 
 struct bugsnag_data_t {
     // Contains the user-specified metaData, including the user tab from config.
@@ -308,10 +308,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                                         @"domain": error.domain,
                                         @"reason": error.localizedFailureReason?: @"" };
                report.metaData = metadata;
-               report.depth += 2;
                
                if (block) {
-                   report.depth += 1;
                    block(report);
                }
            }];
@@ -322,10 +320,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self notify:exception.name ?: NSStringFromClass([exception class])
          message:exception.reason
            block:^(BugsnagCrashReport * _Nonnull report) {
-               report.depth += 2;
                
                if (block) {
-                   report.depth += 1;
                    block(report);
                }
            }];
@@ -348,8 +344,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     BSSerializeJSONDictionary(report.overrides, &bsg_g_bugsnag_data.userOverridesJSON);
     [self.state addAttribute:BSAttributeSeverity withValue:BSGFormatSeverity(report.severity) toTabWithName:BSTabCrash];
     
-    
-    //    We discard 4 stack frames (including this one) by default,
+    //    We discard 5 stack frames (including this one) by default,
     //    and sum that with the number specified by report.depth:
     //
     //    0 bsg_kscrashsentry_reportUserException
@@ -358,7 +353,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     //    3 -[BugsnagCrashSentry reportUserException:reason:]
     //    4 -[BugsnagNotifier notify:message:block:]
     
-    NSNumber *depth = @(report.depth + BSGNotifierStackFrameCount);
+    NSNumber *depth = @(BSGNotifierStackFrameCount + report.depth);
     [self.state addAttribute:BSAttributeDepth withValue:depth toTabWithName:BSTabCrash];
     
     NSString *reportName = report.errorClass ?: NSStringFromClass([NSException class]);

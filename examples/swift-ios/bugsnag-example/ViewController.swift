@@ -23,14 +23,6 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBAction func doCrash(_ sender: AnyObject) {
-//        let delegate = UIApplication.shared.delegate as! AppDelegate
-//
-//        DispatchQueue.main.async {
-//            delegate.LogNonFatal("Depth 0 Async")
-//        }
-        
-        Bugsnag.notifyError(NSError(domain: "test", code: 1, userInfo: nil))
-        
-//        AnotherClass().crash()
+        AnotherClass().crash()
     }
 }
