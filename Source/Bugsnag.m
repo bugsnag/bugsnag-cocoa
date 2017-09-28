@@ -30,6 +30,7 @@
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
 #import "BugsnagLogger.h"
+#import "BSG_KSCrash.h"
 
 static BugsnagNotifier* bsg_g_bugsnag_notifier = NULL;
 
@@ -184,6 +185,14 @@ static BugsnagNotifier* bsg_g_bugsnag_notifier = NULL;
         formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
     });
     return formatter;
+}
+
++ (void)setSuspendThreadsForUserReported:(BOOL)suspendThreadsForUserReported {
+    [[BSG_KSCrash sharedInstance] setSuspendThreadsForUserReported:suspendThreadsForUserReported];
+}
+
++ (void)setReportWhenDebuggerIsAttached:(BOOL)reportWhenDebuggerIsAttached {
+    [[BSG_KSCrash sharedInstance] setReportWhenDebuggerIsAttached:reportWhenDebuggerIsAttached];
 }
 
 @end

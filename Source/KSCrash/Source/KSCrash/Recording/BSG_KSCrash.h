@@ -190,6 +190,21 @@ typedef enum
                   stackTrace:(NSArray*) stackTrace
             terminateProgram:(BOOL) terminateProgram;
 
+/** If YES, user reported exceptions will suspend all threads during report generation.
+  * All threads will be suspended while generating a crash report for a user
+  * reported exception.
+  *
+  * Default: YES
+  */
+@property(nonatomic,readwrite,assign) BOOL suspendThreadsForUserReported;
+
+/** If YES, reports will be sent even if a debugger is attached
+ *
+ * Default: NO
+ */
+@property(nonatomic,readwrite,assign) BOOL reportWhenDebuggerIsAttached;
+
+
 @end
 
 //! Project version number for BSG_KSCrashFramework.

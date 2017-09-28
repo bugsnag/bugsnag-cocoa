@@ -2182,7 +2182,10 @@ void bsg_kscrashreport_writeStandardReport(BSG_KSCrash_Context* const crashConte
                                 crashContext->config.crashID,
                                 crashContext->config.processName);
 
-        bsg_kscrw_i_writeBinaryImages(writer, BSG_KSCrashField_BinaryImages);
+        // Don't write the binary images for user reported crashes to improve performance
+        if (crashContext->crash.crashType != BSG_KSCrashTypeUserReported) { // TODO!!!
+            bsg_kscrw_i_writeBinaryImages(writer, BSG_KSCrashField_BinaryImages);
+        }
 
         bsg_kscrw_i_writeProcessState(writer, BSG_KSCrashField_ProcessState);
 
@@ -2205,13 +2208,16 @@ void bsg_kscrashreport_writeStandardReport(BSG_KSCrash_Context* const crashConte
 
         writer->beginObject(writer, BSG_KSCrashField_Crash);
         {
-            bsg_kscrw_i_writeAllThreads(writer,
-                                    BSG_KSCrashField_Threads,
-                                    &crashContext->crash,
-                                    crashContext->config.introspectionRules.enabled,
-                                    crashContext->config.searchThreadNames,
-                                    crashContext->config.searchQueueNames);
-            bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error, &crashContext->crash);
+            // Don't write the threads for user reported crashes to improve performance
+            if (crashContext->crash.crashType != BSG_KSCrashTypeUserReported) { // TODO!!!
+                bsg_kscrw_i_writeAllThreads(writer,
+                                            BSG_KSCrashField_Threads,
+                                            &crashContext->crash,
+                                            crashContext->config.introspectionRules.enabled,
+                                            crashContext->config.searchThreadNames,
+                                            crashContext->config.searchQueueNames);
+                bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error, &crashContext->crash);
+            }
         }
         writer->endContainer(writer);
 

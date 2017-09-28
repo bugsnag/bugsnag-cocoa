@@ -290,3 +290,11 @@ void bsg_kscrash_reportUserException(const char* name,
                                       stackTrace,
                                       terminateProgram);
 }
+
+void bsg_kscrash_setSuspendThreadsForUserReported(bool suspendThreadsForUserReported) {
+    crashContext()->crash.suspendThreadsForUserReported = suspendThreadsForUserReported;
+}
+
+void bsg_kscrash_setReportWhenDebuggerIsAttached(bool reportWhenDebuggerIsAttached) {
+    crashContext()->crash.reportWhenDebuggerIsAttached = reportWhenDebuggerIsAttached;
+}
