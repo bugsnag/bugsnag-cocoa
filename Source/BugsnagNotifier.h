@@ -65,7 +65,7 @@
 - (void)notifyException:(NSException *_Nonnull)exception
                   block:(BugsnagNotifyBlock _Nullable)block;
 
-/**
+/**`
  *  Notify Bugsnag of an error
  *
  *  @param error the error

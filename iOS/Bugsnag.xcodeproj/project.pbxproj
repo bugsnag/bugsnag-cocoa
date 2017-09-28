@@ -130,7 +130,6 @@
 		E72962DB1F4BBA8B00CEA15D /* BugsnagSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E72962D51F4BBA8B00CEA15D /* BugsnagSystemInfo.m */; };
 		E7433AD01F4F64D400C082D1 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8F6F1C6BBE9F00846019 /* libc++.tbd */; };
 		E7433AD11F4F64D900C082D1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8F6D1C6BBE9A00846019 /* libz.tbd */; };
-		E74D8FAC1F7BF6A70045A52B /* StackFrameDepthTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E74D8FAB1F7BF6A70045A52B /* StackFrameDepthTest.m */; };
 		E7EC041A1F4CC97200C2E9D5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E79FEBE61F4CB1320048FAD6 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -274,7 +273,6 @@
 		E72962D31F4BBA8B00CEA15D /* BugsnagErrorReportApiClient.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = BugsnagErrorReportApiClient.m; path = ../Source/BugsnagErrorReportApiClient.m; sourceTree = SOURCE_ROOT; };
 		E72962D41F4BBA8B00CEA15D /* BugsnagSystemInfo.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = BugsnagSystemInfo.h; path = ../Source/BugsnagSystemInfo.h; sourceTree = SOURCE_ROOT; };
 		E72962D51F4BBA8B00CEA15D /* BugsnagSystemInfo.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = BugsnagSystemInfo.m; path = ../Source/BugsnagSystemInfo.m; sourceTree = SOURCE_ROOT; };
-		E74D8FAB1F7BF6A70045A52B /* StackFrameDepthTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = StackFrameDepthTest.m; path = ../Tests/StackFrameDepthTest.m; sourceTree = SOURCE_ROOT; };
 		E79FEBE61F4CB1320048FAD6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E7EC040C1F4CC6A000C2E9D5 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
 		E7EC040D1F4CC6A000C2E9D5 /* libz.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.dylib; path = ../../../../../usr/lib/libz.1.dylib; sourceTree = "<group>"; };
@@ -371,7 +369,6 @@
 				8AE1BC941DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m */,
 				8A4E733E1DC13281001F7CC8 /* BugsnagConfigurationTests.m */,
 				8A2C8F8D1C6BBFDD00846019 /* BugsnagSinkTests.m */,
-				E74D8FAB1F7BF6A70045A52B /* StackFrameDepthTest.m */,
 				8A2C8F951C6BC08600846019 /* report.json */,
 				8A2C8F291C6BBD2300846019 /* TestsInfo.plist */,
 			);
@@ -771,7 +768,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E74D8FAC1F7BF6A70045A52B /* StackFrameDepthTest.m in Sources */,
 				8A2C8F8F1C6BBFDD00846019 /* BugsnagBreadcrumbsTest.m in Sources */,
 				8AE1BC951DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m in Sources */,
 				8A2C8F911C6BBFDD00846019 /* BugsnagSinkTests.m in Sources */,
