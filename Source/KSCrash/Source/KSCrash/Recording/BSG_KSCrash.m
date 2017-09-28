@@ -109,6 +109,7 @@
 @synthesize maxStoredReports = _maxStoredReports;
 @synthesize suspendThreadsForUserReported = _suspendThreadsForUserReported;
 @synthesize reportWhenDebuggerIsAttached = _reportWhenDebuggerIsAttached;
+@synthesize threadTracingEnabled = _threadTracingEnabled;
 
 
 // ============================================================================
@@ -184,6 +185,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         self.maxStoredReports = 5;
         self.suspendThreadsForUserReported = YES;
         self.reportWhenDebuggerIsAttached = NO;
+        self.threadTracingEnabled = YES;
     }
     return self;
 
@@ -273,6 +275,12 @@ failed:
     _reportWhenDebuggerIsAttached = reportWhenDebuggerIsAttached;
     bsg_kscrash_setReportWhenDebuggerIsAttached(reportWhenDebuggerIsAttached);
 }
+
+- (void)setThreadTracingEnabled:(BOOL)threadTracingEnabled {
+    _threadTracingEnabled = threadTracingEnabled;
+    bsg_kscrash_setThreadTracingEnabled(threadTracingEnabled);
+}
+
 
 - (void) setDoNotIntrospectClasses:(NSArray *)doNotIntrospectClasses
 {

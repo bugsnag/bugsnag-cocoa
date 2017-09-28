@@ -204,6 +204,8 @@ typedef enum
  */
 @property(nonatomic,readwrite,assign) BOOL reportWhenDebuggerIsAttached;
 
+@property(nonatomic,readwrite,assign) BOOL threadTracingEnabled;
+
 
 @end
 

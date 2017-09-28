@@ -298,3 +298,7 @@ void bsg_kscrash_setSuspendThreadsForUserReported(bool suspendThreadsForUserRepo
 void bsg_kscrash_setReportWhenDebuggerIsAttached(bool reportWhenDebuggerIsAttached) {
     crashContext()->crash.reportWhenDebuggerIsAttached = reportWhenDebuggerIsAttached;
 }
+
+void bsg_kscrash_setThreadTracingEnabled(bool threadTracingEnabled) {
+    crashContext()->crash.threadTracingEnabled = threadTracingEnabled;
+}

@@ -195,6 +195,10 @@ static BugsnagNotifier* bsg_g_bugsnag_notifier = NULL;
     [[BSG_KSCrash sharedInstance] setReportWhenDebuggerIsAttached:reportWhenDebuggerIsAttached];
 }
 
++ (void)setThreadTracingEnabled:(BOOL)threadTracingEnabled {
+    [[BSG_KSCrash sharedInstance] setThreadTracingEnabled:threadTracingEnabled];
+}
+
 @end
 
 //

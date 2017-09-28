@@ -203,5 +203,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 + (void)setSuspendThreadsForUserReported:(BOOL)suspendThreadsForUserReported;
 + (void)setReportWhenDebuggerIsAttached:(BOOL)reportWhenDebuggerIsAttached;
++ (void)setThreadTracingEnabled:(BOOL)threadTracingEnabled;
 
 @end
