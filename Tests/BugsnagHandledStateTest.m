@@ -89,14 +89,5 @@
     XCTAssertNil(state.attrValue);
 }
 
-- (void)testInvalidUserSpecified {
-    @try {
-        [BugsnagHandledState handledStateWithSeverityReason:UserCallbackSetSeverity];
-        XCTFail();
-    }
-    @catch (NSException *ignored) {
-    }
-}
-
 @end
 
