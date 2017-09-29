@@ -479,7 +479,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
     NSString *reasonType = [BugsnagHandledState stringFromSeverityReason:self.handledState.calculateSeverityReasonType];
     severityReason[@"type"] = reasonType;
     
-    if (self.handledState.attrKey) {
+    if (self.handledState.attrKey && self.handledState.attrValue) {
        severityReason[@"attributes"] = @{self.handledState.attrKey: self.handledState.attrValue};
     }
     
