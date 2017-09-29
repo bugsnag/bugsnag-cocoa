@@ -318,7 +318,9 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       } else { // the event was unhandled.
           BOOL isSignal = [@"signal" isEqualToString:_errorType];
           SeverityReasonType severityReason = isSignal ? Signal : UnhandledException;
-          _handledState = [BugsnagHandledState handledStateWithSeverityReason:severityReason];
+          _handledState = [BugsnagHandledState handledStateWithSeverityReason:severityReason
+                                                                     severity:BSGSeverityError
+                                                                    attrValue:_errorClass];
       }
       _severity = _handledState.currentSeverity;
   }

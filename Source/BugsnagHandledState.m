@@ -76,14 +76,10 @@ static NSString *const kUserCallbackSetSeverity = @"userCallbackSetSeverity";
         _currentSeverity = severity;
         _originalSeverity = severity;
         _unhandled = unhandled;
-        
-        switch (severityReason) {
-            case Signal:
-                _attrValue = attrValue;
-                _attrKey = @"signalType";
-                break;
-            default:
-                break;
+
+        if (severityReason == Signal) {
+            _attrValue = attrValue;
+            _attrKey = @"signalType";
         }
     }
     return self;
