@@ -23,6 +23,36 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBAction func doCrash(_ sender: AnyObject) {
-        AnotherClass().crash()
+        callbackModifiedException()
+    }
+
+    func unhandledCrash() {
+        AnObjCClass().raise()
+    }
+
+    func handledError() {
+        let error = NSError(domain: "com.bugsnag", code: 402, userInfo: nil)
+        Bugsnag.notifyError(error)
+    }
+
+    func handledException() {
+        let ex = NSException(name: NSExceptionName("handled exception"), reason: "Should've had coffee", userInfo: nil)
+        Bugsnag.notify(ex)
+    }
+
+    func callbackModifiedException() {
+        let ex = NSException(name: NSExceptionName("handled exception in callback"), reason: "Should've had coffee", userInfo: nil)
+        Bugsnag.notify(ex) { (report) in
+            report.severity = .info
+        }
+    }
+
+    func userSetSeverity() {
+        let ex = NSException(name: NSExceptionName("handled exception with custom severity"), reason: "Should've had coffee", userInfo: nil)
+        Bugsnag.notify(ex, withData: nil, atSeverity: "error")
+    }
+
+    func signal() {
+        AnObjCClass().trap()
     }
 }
