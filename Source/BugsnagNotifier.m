@@ -365,15 +365,14 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
 - (void)notify:(NSString *)exceptionName
        message:(NSString *)message
-  handledState:(BugsnagHandledState *)handledState
+  handledState:(BugsnagHandledState *_Nonnull)handledState
          block:(void (^)(BugsnagCrashReport *))block {
-    
-    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:exceptionName
                                                                   errorMessage:message
                                                                  configuration:self.configuration
                                                                       metaData:[self.configuration.metaData toDictionary]
-                                                                      handledState:state];
+                                                                      handledState:handledState];
     if (block) {
         block(report);
     }
