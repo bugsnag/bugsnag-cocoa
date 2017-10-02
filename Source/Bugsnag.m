@@ -199,6 +199,10 @@ static BugsnagNotifier* bsg_g_bugsnag_notifier = NULL;
     [[BSG_KSCrash sharedInstance] setThreadTracingEnabled:threadTracingEnabled];
 }
 
++ (void)setWriteBinaryImagesForUserReported:(BOOL)writeBinaryImagesForUserReported {
+    [[BSG_KSCrash sharedInstance] setWriteBinaryImagesForUserReported:writeBinaryImagesForUserReported];
+}
+
 @end
 
 //

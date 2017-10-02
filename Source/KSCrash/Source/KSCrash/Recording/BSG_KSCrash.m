@@ -110,6 +110,7 @@
 @synthesize suspendThreadsForUserReported = _suspendThreadsForUserReported;
 @synthesize reportWhenDebuggerIsAttached = _reportWhenDebuggerIsAttached;
 @synthesize threadTracingEnabled = _threadTracingEnabled;
+@synthesize writeBinaryImagesForUserReported = _writeBinaryImagesForUserReported;
 
 
 // ============================================================================
@@ -183,9 +184,11 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         self.introspectMemory = YES;
         self.catchZombies = NO;
         self.maxStoredReports = 5;
+        
         self.suspendThreadsForUserReported = YES;
         self.reportWhenDebuggerIsAttached = NO;
         self.threadTracingEnabled = YES;
+        self.writeBinaryImagesForUserReported = YES;
     }
     return self;
 
@@ -279,6 +282,11 @@ failed:
 - (void)setThreadTracingEnabled:(BOOL)threadTracingEnabled {
     _threadTracingEnabled = threadTracingEnabled;
     bsg_kscrash_setThreadTracingEnabled(threadTracingEnabled);
+}
+
+- (void)setWriteBinaryImagesForUserReported:(BOOL)writeBinaryImagesForUserReported {
+    _writeBinaryImagesForUserReported = writeBinaryImagesForUserReported;
+    bsg_kscrash_setWriteBinaryImagesForUserReported(writeBinaryImagesForUserReported);
 }
 
 

@@ -295,6 +295,10 @@ void bsg_kscrash_setSuspendThreadsForUserReported(bool suspendThreadsForUserRepo
     crashContext()->crash.suspendThreadsForUserReported = suspendThreadsForUserReported;
 }
 
+void bsg_kscrash_setWriteBinaryImagesForUserReported(bool writeBinaryImagesForUserReported) {
+    crashContext()->crash.writeBinaryImagesForUserReported = writeBinaryImagesForUserReported;
+}
+
 void bsg_kscrash_setReportWhenDebuggerIsAttached(bool reportWhenDebuggerIsAttached) {
     crashContext()->crash.reportWhenDebuggerIsAttached = reportWhenDebuggerIsAttached;
 }

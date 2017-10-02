@@ -212,6 +212,8 @@ void bsg_kscrash_setSuspendThreadsForUserReported(bool suspendThreadsForUserRepo
 void bsg_kscrash_setReportWhenDebuggerIsAttached(bool reportWhenDebuggerIsAttached);
     
 void bsg_kscrash_setThreadTracingEnabled(bool threadTracingEnabled);
+
+void bsg_kscrash_setWriteBinaryImagesForUserReported(bool writeBinaryImagesForUserReported);
     
 
 #ifdef __cplusplus

@@ -204,8 +204,15 @@ typedef enum
  */
 @property(nonatomic,readwrite,assign) BOOL reportWhenDebuggerIsAttached;
 
+/**
+ * If YES, thread traces will be collected with each report.
+ */
 @property(nonatomic,readwrite,assign) BOOL threadTracingEnabled;
 
+/**
+ * If YES, binary images will be collected for each report.
+ */
+@property(nonatomic,readwrite,assign) BOOL writeBinaryImagesForUserReported;
 
 @end
 

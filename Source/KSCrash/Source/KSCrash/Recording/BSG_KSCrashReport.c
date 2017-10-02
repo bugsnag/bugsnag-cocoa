@@ -2183,7 +2183,7 @@ void bsg_kscrashreport_writeStandardReport(BSG_KSCrash_Context* const crashConte
                                 crashContext->config.processName);
 
         // Don't write the binary images for user reported crashes to improve performance
-        if (crashContext->crash.threadTracingEnabled == true ||
+        if (crashContext->crash.writeBinaryImagesForUserReported == true ||
             crashContext->crash.crashType != BSG_KSCrashTypeUserReported) {
             bsg_kscrw_i_writeBinaryImages(writer, BSG_KSCrashField_BinaryImages);
         }
