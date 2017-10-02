@@ -27,7 +27,7 @@
 }
 
 - (void)startBugsnagWithAPIKey {
-    [Bugsnag startBugsnagWithApiKey:@"f35a2472bd230ac0ab0f52715bbdc65d"];
+    [Bugsnag startBugsnagWithApiKey:@"your-api-key"];
     [Bugsnag configuration].releaseStage = @"production";
     [Bugsnag configuration].notifyReleaseStages = @[@"production"];
 }

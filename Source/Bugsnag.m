@@ -74,23 +74,25 @@ static BugsnagNotifier* bsg_g_bugsnag_notifier = NULL;
 + (void) notify:(NSException *)exception {
     [self.notifier notifyException:exception
                              block:^(BugsnagCrashReport * _Nonnull report) {
-        report.depth = 1;
+        report.depth += 2;
     }];
 }
 
 + (void)notify:(NSException *)exception block:(BugsnagNotifyBlock)block {
     [[self notifier] notifyException:exception
                                block:^(BugsnagCrashReport * _Nonnull report) {
-        report.depth = 1;
-        if (block)
-            block(report);
+                                   report.depth += 2;
+                                   
+                                   if (block) {
+                                       block(report);
+                                   }
     }];
 }
 
 + (void) notifyError:(NSError *)error {
     [self.notifier notifyError:error
                          block:^(BugsnagCrashReport * _Nonnull report) {
-        report.depth = 1;
+        report.depth += 2;
     }];
 }
 
@@ -98,16 +100,19 @@ static BugsnagNotifier* bsg_g_bugsnag_notifier = NULL;
 + (void)notifyError:(NSError *)error block:(BugsnagNotifyBlock)block {
     [[self notifier] notifyError:error
                            block:^(BugsnagCrashReport * _Nonnull report) {
-        report.depth = 1;
-        if (block)
-            block(report);
+                               report.depth += 2;
+                               
+                               if (block) {
+                                   block(report);
+                               }
     }];
 }
 
 + (void)notify:(NSException *)exception withData:(NSDictionary*)metaData {
+    
     [[self notifier] notifyException:exception
                                block:^(BugsnagCrashReport * _Nonnull report) {
-        report.depth = 1;
+        report.depth += 2;
         report.metaData = [metaData BSG_mergedInto:
                            [self.notifier.configuration.metaData toDictionary]];
     }];
@@ -116,10 +121,11 @@ static BugsnagNotifier* bsg_g_bugsnag_notifier = NULL;
 + (void)notify:(NSException *)exception
       withData:(NSDictionary*)metaData
     atSeverity:(NSString*)severity {
+    
     [[self notifier] notifyException:exception
                           atSeverity:BSGParseSeverity(severity)
                                block:^(BugsnagCrashReport * _Nonnull report) {
-        report.depth = 1;
+        report.depth += 2;
         report.metaData = [metaData BSG_mergedInto:
                            [self.notifier.configuration.metaData toDictionary]];
         report.severity = BSGParseSeverity(severity);

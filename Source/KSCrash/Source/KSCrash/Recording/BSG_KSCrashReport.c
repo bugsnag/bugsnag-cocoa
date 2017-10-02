@@ -485,7 +485,7 @@ BSG_STRUCT_MCONTEXT_L* bsg_kscrw_i_getMachineContext(const BSG_KSCrash_SentryCon
  * @param backtraceLength In: The length of backtraceBuffer.
  *                        Out: The length of the backtrace.
  *
- * @param skippedEntries: Out: The number of entries that were skipped due to
+ * @param skippedEntries Out: The number of entries that were skipped due to
  *                             stack overflow.
  *
  * @return The backtrace, or NULL if not found.
@@ -1149,7 +1149,7 @@ void bsg_kscrw_i_writeAddressReferencedByString(const BSG_KSCrashReportWriter* c
  *
  * @param address The memory address.
  *
- * @param dlInfo Information about the nearest symbols to the address.
+ * @param info Information about the nearest symbols to the address.
  */
 void bsg_kscrw_i_writeBacktraceEntry(const BSG_KSCrashReportWriter* const writer,
                                  const char* const key,
@@ -1385,7 +1385,7 @@ void bsg_kscrw_i_writeExceptionRegisters(const BSG_KSCrashReportWriter* const wr
  *
  * @param machineContext The context to retrieve the registers from.
  *
- * @param isCrashedThread If true, this context represents the crashing thread.
+ * @param isCrashedContext If true, this context represents the crashing thread.
  */
 void bsg_kscrw_i_writeRegisters(const BSG_KSCrashReportWriter* const writer,
                             const char* const key,
@@ -1468,7 +1468,7 @@ void bsg_kscrw_i_writeNotableAddresses(const BSG_KSCrashReportWriter* const writ
  *
  * @param index The thread's index relative to all threads.
  *
- * @paran If true, write any notable addresses found.
+ * @param writeNotableAddresses If true, write any notable addresses found.
  */
 void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter* const writer,
                          const char* const key,
