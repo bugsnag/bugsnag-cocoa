@@ -363,6 +363,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     
     [self notify:exception.name ?: NSStringFromClass([exception class])
          message:exception.reason
+    handledState:state
            block:^(BugsnagCrashReport * _Nonnull report) {
                if (block) {
                    block(report);
