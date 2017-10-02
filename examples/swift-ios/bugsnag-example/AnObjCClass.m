@@ -31,4 +31,12 @@
     [other crash3];
 }
 
+- (void)trap {
+    __builtin_trap();
+}
+
+- (void)raise {
+    [NSException raise:@"UNHANDLED EXCEPTION WEEWOOO WEEWOOOOOO" format:@"Shouldn't have had too much coffee"];
+}
+
 @end
