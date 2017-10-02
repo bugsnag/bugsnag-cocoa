@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 5.12.0 (02 Oct 2017)
+
+* Fix fatalError not producing crash report
+* Update library's calculation of stack frame depth
+* Reduced build warning count
+
 ## 5.11.2 (15 Sep 2017)
 
 * Fixed wrong tag in Cocoapods spec
