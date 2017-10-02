@@ -18,6 +18,7 @@
 #import "BugsnagLogger.h"
 #import "BSGSerialization.h"
 #import "BugsnagSystemInfo.h"
+#import "BugsnagHandledState.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {
@@ -284,6 +285,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
  *  User-provided exception metadata
  */
 @property (nonatomic, readwrite, copy, nullable) NSDictionary *customException;
+
 @end
 
 @implementation BugsnagCrashReport
@@ -293,7 +295,6 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       _notifyReleaseStages = [report valueForKeyPath:@"user.config.notifyReleaseStages"];
       _releaseStage = BSGParseReleaseStage(report);
       
-      // TODO BSG_KSCrash replacement
       _error = [report valueForKeyPath:@"crash.error"];
       _errorType = _error[@"type"];
       _errorClass = BSGParseErrorClass(_error, _errorType);
@@ -314,25 +315,40 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
       _groupingHash = BSGParseGroupingHash(report, _metaData);
       _overrides = [report valueForKeyPath:@"user.overrides"];
       _customException = BSGParseCustomException(report, [_errorClass copy], [_errorMessage copy]);
+      
+      NSDictionary *recordedState = [report valueForKeyPath:@"user.handledState"];
+      
+      if (recordedState) {
+          _handledState = [[BugsnagHandledState alloc] initWithDictionary:recordedState];
+      } else { // the event was unhandled.
+          BOOL isSignal = [@"signal" isEqualToString:_errorType];
+          SeverityReasonType severityReason = isSignal ? Signal : UnhandledException;
+          _handledState = [BugsnagHandledState handledStateWithSeverityReason:severityReason
+                                                                     severity:BSGSeverityError
+                                                                    attrValue:_errorClass];
+      }
+      _severity = _handledState.currentSeverity;
   }
   return self;
 }
 
-- (instancetype)initWithErrorName:(NSString *)name
-                     errorMessage:(NSString *)message
-                    configuration:(BugsnagConfiguration *)config
-                         metaData:(NSDictionary *)metaData
-                         severity:(BSGSeverity)severity {
+- (instancetype _Nonnull)initWithErrorName:(NSString *_Nonnull)name
+                              errorMessage:(NSString *_Nonnull)message
+                             configuration:(BugsnagConfiguration *_Nonnull)config
+                                  metaData:(NSDictionary *_Nonnull)metaData
+                              handledState:(BugsnagHandledState *_Nonnull)handledState {
     if (self = [super init]) {
         _errorClass = name;
         _errorMessage = message;
         _metaData = metaData ?: [NSDictionary new];
-        _severity = severity;
         _releaseStage = config.releaseStage;
         _notifyReleaseStages = config.notifyReleaseStages;
         _context = BSGParseContext(nil, metaData);
         _breadcrumbs = [config.breadcrumbs arrayValue];
         _overrides = [NSDictionary new];
+        
+        _handledState = handledState;
+        _severity = handledState.currentSeverity;
     }
     return self;
 }
@@ -403,6 +419,11 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
     [self setOverrideProperty:@"customStacktraceType" value:type];
 }
 
+- (void)setSeverity:(BSGSeverity)severity {
+    _severity = severity;
+    _handledState.currentSeverity = severity;
+}
+
 - (void)setOverrideProperty:(NSString *)key value:(id)value {
     NSMutableDictionary *metadata = [self.overrides mutableCopy];
     if (value) {
@@ -457,6 +478,20 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
   BSGDictSetSafeObject(event, [self app], @"app");
   BSGDictSetSafeObject(event, [self context], @"context");
   BSGDictInsertIfNotNil(event, self.groupingHash, @"groupingHash");
+    
+    BSGDictSetSafeObject(event, @(self.handledState.unhandled), @"unhandled");
+    
+    // serialize handled/unhandled into payload
+    NSMutableDictionary *severityReason = [NSMutableDictionary new];
+    NSString *reasonType = [BugsnagHandledState stringFromSeverityReason:self.handledState.calculateSeverityReasonType];
+    severityReason[@"type"] = reasonType;
+    
+    if (self.handledState.attrKey && self.handledState.attrValue) {
+       severityReason[@"attributes"] = @{self.handledState.attrKey: self.handledState.attrValue};
+    }
+    
+    BSGDictSetSafeObject(event, severityReason, @"severityReason");
+    
 
   //  Inserted into `context` property
   [metaData removeObjectForKey:@"context"];

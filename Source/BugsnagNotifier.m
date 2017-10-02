@@ -33,6 +33,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagCrashSentry.h"
 #import "BSGConnectivity.h"
+#import "BugsnagHandledState.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -41,7 +42,7 @@
 #import <AppKit/AppKit.h>
 #endif
 
-NSString *const NOTIFIER_VERSION = @"5.11.2";
+NSString *const NOTIFIER_VERSION = @"5.12.0";
 NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 NSString *const BSTabCrash = @"crash";
 NSString *const BSTabConfig = @"config";
@@ -53,6 +54,8 @@ NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 static NSInteger const BSGNotifierStackFrameCount = 5;
 
 struct bugsnag_data_t {
+    // Contains the state of the event (handled/unhandled)
+    char *handledState;
     // Contains the user-specified metaData, including the user tab from config.
     char *metaDataJSON;
     // Contains the Bugsnag configuration, all under the "config" tab.
@@ -81,6 +84,9 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
     }
     if (bsg_g_bugsnag_data.metaDataJSON) {
         writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metaDataJSON);
+    }
+    if (bsg_g_bugsnag_data.handledState) {
+        writer->addJSONElement(writer, "handledState", bsg_g_bugsnag_data.handledState);
     }
     if (bsg_g_bugsnag_data.stateJSON) {
         writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
@@ -300,15 +306,19 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)notifyError:(NSError *)error block:(void (^)(BugsnagCrashReport *))block {
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError
+                                                                            severity:BSGSeverityWarning
+                                                                           attrValue:error.domain];
     [self notify:NSStringFromClass([error class])
          message:error.localizedDescription
+    handledState:state
            block:^(BugsnagCrashReport * _Nonnull report) {
                NSMutableDictionary *metadata = [report.metaData mutableCopy];
                metadata[@"nserror"] = @{@"code": @(error.code),
                                         @"domain": error.domain,
                                         @"reason": error.localizedFailureReason?: @"" };
                report.metaData = metadata;
-               
+
                if (block) {
                    block(report);
                }
@@ -316,9 +326,44 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)notifyException:(NSException *)exception
-                  block:(void (^)(BugsnagCrashReport *))block {
+             atSeverity:(BSGSeverity)severity
+                   block:(void (^)(BugsnagCrashReport *))block {
+
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:UserSpecifiedSeverity severity:severity attrValue:nil];
     [self notify:exception.name ?: NSStringFromClass([exception class])
          message:exception.reason
+    handledState:state
+           block:block];
+}
+
+- (void)notifyException:(NSException *)exception
+                  block:(void (^)(BugsnagCrashReport *))block {
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    [self notify:exception.name ?: NSStringFromClass([exception class])
+         message:exception.reason
+    handledState:state
+           block:block];
+}
+
+- (void)internalClientNotify:(NSException *_Nonnull)exception
+                    withData:(NSDictionary *_Nullable)metaData
+                       block:(BugsnagNotifyBlock _Nullable)block {
+
+    NSString *severity = [metaData objectForKey:@"severity"];
+    NSString *severityReason = [metaData objectForKey:@"severityReason"];
+    NSParameterAssert(severity.length > 0);
+    NSParameterAssert(severityReason.length > 0);
+
+    SeverityReasonType severityReasonType = [BugsnagHandledState severityReasonFromString:severityReason];
+
+    BugsnagHandledState *state =
+    [BugsnagHandledState handledStateWithSeverityReason:severityReasonType
+                                               severity:BSGParseSeverity(severity)
+                                              attrValue:nil];
+
+    [self notify:exception.name ?: NSStringFromClass([exception class])
+         message:exception.reason
+    handledState:state
            block:^(BugsnagCrashReport * _Nonnull report) {
                if (block) {
                    block(report);
@@ -328,21 +373,27 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
 - (void)notify:(NSString *)exceptionName
        message:(NSString *)message
+  handledState:(BugsnagHandledState *_Nonnull)handledState
          block:(void (^)(BugsnagCrashReport *))block {
+
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:exceptionName
                                                                   errorMessage:message
                                                                  configuration:self.configuration
                                                                       metaData:[self.configuration.metaData toDictionary]
-                                                                      severity:BSGSeverityWarning];
+                                                                      handledState:handledState];
     if (block) {
         block(report);
     }
 
+    // TODO need to serialise unhandled here!!
+
     [self.metaDataLock lock];
+    BSSerializeJSONDictionary([report.handledState toJson], &bsg_g_bugsnag_data.handledState);
     BSSerializeJSONDictionary(report.metaData, &bsg_g_bugsnag_data.metaDataJSON);
     BSSerializeJSONDictionary(report.overrides, &bsg_g_bugsnag_data.userOverridesJSON);
+
     [self.state addAttribute:BSAttributeSeverity withValue:BSGFormatSeverity(report.severity) toTabWithName:BSTabCrash];
-    
+
     //    We discard 5 stack frames (including this one) by default,
     //    and sum that with the number specified by report.depth:
     //
@@ -351,10 +402,10 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     //    2 -[BSG_KSCrash reportUserException:reason:language:lineOfCode:stackTrace:terminateProgram:]
     //    3 -[BugsnagCrashSentry reportUserException:reason:]
     //    4 -[BugsnagNotifier notify:message:block:]
-    
+
     NSNumber *depth = @(BSGNotifierStackFrameCount + report.depth);
     [self.state addAttribute:BSAttributeDepth withValue:depth toTabWithName:BSTabCrash];
-    
+
     NSString *reportName = report.errorClass ?: NSStringFromClass([NSException class]);
     NSString *reportMessage = report.errorMessage ?: @"";
 

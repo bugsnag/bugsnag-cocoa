@@ -30,6 +30,7 @@
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
 #import "BugsnagLogger.h"
+#import "BSG_KSCrash.h"
 
 static BugsnagNotifier* bsg_g_bugsnag_notifier = NULL;
 
@@ -122,12 +123,21 @@ static BugsnagNotifier* bsg_g_bugsnag_notifier = NULL;
     atSeverity:(NSString*)severity {
     
     [[self notifier] notifyException:exception
+                          atSeverity:BSGParseSeverity(severity)
                                block:^(BugsnagCrashReport * _Nonnull report) {
         report.depth += 2;
         report.metaData = [metaData BSG_mergedInto:
                            [self.notifier.configuration.metaData toDictionary]];
         report.severity = BSGParseSeverity(severity);
     }];
+}
+
++ (void)internalClientNotify:(NSException *_Nonnull)exception
+                    withData:(NSDictionary *_Nullable)metaData
+                       block:(BugsnagNotifyBlock _Nullable)block {
+    [self.notifier internalClientNotify:exception
+                               withData:metaData
+                                  block:block];
 }
 
 + (void) addAttribute:(NSString*)attributeName withValue:(id)value toTabWithName:(NSString*)tabName {
@@ -181,6 +191,22 @@ static BugsnagNotifier* bsg_g_bugsnag_notifier = NULL;
         formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
     });
     return formatter;
+}
+
++ (void)setSuspendThreadsForUserReported:(BOOL)suspendThreadsForUserReported {
+    [[BSG_KSCrash sharedInstance] setSuspendThreadsForUserReported:suspendThreadsForUserReported];
+}
+
++ (void)setReportWhenDebuggerIsAttached:(BOOL)reportWhenDebuggerIsAttached {
+    [[BSG_KSCrash sharedInstance] setReportWhenDebuggerIsAttached:reportWhenDebuggerIsAttached];
+}
+
++ (void)setThreadTracingEnabled:(BOOL)threadTracingEnabled {
+    [[BSG_KSCrash sharedInstance] setThreadTracingEnabled:threadTracingEnabled];
+}
+
++ (void)setWriteBinaryImagesForUserReported:(BOOL)writeBinaryImagesForUserReported {
+    [[BSG_KSCrash sharedInstance] setWriteBinaryImagesForUserReported:writeBinaryImagesForUserReported];
 }
 
 @end
