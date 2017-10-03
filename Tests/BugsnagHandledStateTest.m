@@ -25,6 +25,18 @@
     XCTAssertNil(state.attrKey);
 }
 
+- (void)testLogMessage {
+    BugsnagHandledState *state = [BugsnagHandledState
+                                  handledStateWithSeverityReason:LogMessage
+                                  severity:BSGSeverityInfo
+                                  attrValue:@"info"];
+    XCTAssertNotNil(state);
+    XCTAssertFalse(state.unhandled);
+    XCTAssertEqual(BSGSeverityInfo, state.currentSeverity);
+    XCTAssertEqualObjects(@"info", state.attrValue);
+    XCTAssertEqualObjects(@"level", state.attrKey);
+}
+
 - (void)testHandledException {
     BugsnagHandledState *state = [BugsnagHandledState
                                   handledStateWithSeverityReason:HandledException];
