@@ -37,7 +37,7 @@ Please follow the testing instructions in [the platforms release checklist](http
 
 - Please ensure that release builds are run on a physical device with an ad-hoc archive.
 
-### Cocoapods
+### CocoaPods
 
 If you're a member of the core team, you can release the cocoa pod as follows:
 
