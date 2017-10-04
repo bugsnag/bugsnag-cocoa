@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 5.12.1 (04 Oct 2017)
+
+* Fix duplicate symbols in KSCrash when Sentry library included in project
+
 ## 5.12.0 (02 Oct 2017)
 
 * Fix fatalError not producing crash report
