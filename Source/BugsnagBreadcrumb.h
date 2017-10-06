@@ -71,7 +71,7 @@ typedef NS_ENUM(NSUInteger, BSGBreadcrumbType) {
 
 @class BugsnagBreadcrumb;
 
-typedef void(^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
+typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 
 @interface BugsnagBreadcrumb : NSObject
 
@@ -80,7 +80,8 @@ typedef void(^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 @property(readwrite, nonatomic, copy, nonnull) NSString *name;
 @property(readwrite, nonatomic, copy, nonnull) NSDictionary *metadata;
 
-+ (instancetype _Nullable)breadcrumbWithBlock:(BSGBreadcrumbConfiguration _Nonnull)block;
++ (instancetype _Nullable)breadcrumbWithBlock:
+    (BSGBreadcrumbConfiguration _Nonnull)block;
 
 @end
 
@@ -104,7 +105,8 @@ typedef void(^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
  *
  *  @param block configuration block
  */
-- (void)addBreadcrumbWithBlock:(void(^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
+- (void)addBreadcrumbWithBlock:
+    (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
 
 /**
  * Clear all stored breadcrumbs.

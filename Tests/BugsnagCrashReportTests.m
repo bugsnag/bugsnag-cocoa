@@ -20,31 +20,31 @@
 @implementation BugsnagCrashReportTests
 
 - (void)setUp {
-  [super setUp];
-  NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-  NSString *path = [bundle pathForResource:@"report" ofType:@"json"];
-  NSString *contents = [NSString stringWithContentsOfFile:path
-                                                 encoding:NSUTF8StringEncoding
-                                                    error:nil];
-  NSDictionary *dictionary = [NSJSONSerialization
-      JSONObjectWithData:[contents dataUsingEncoding:NSUTF8StringEncoding]
-                 options:0
-                   error:nil];
-  self.report = [[BugsnagCrashReport alloc] initWithKSReport:dictionary];
+    [super setUp];
+    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    NSString *path = [bundle pathForResource:@"report" ofType:@"json"];
+    NSString *contents = [NSString stringWithContentsOfFile:path
+                                                   encoding:NSUTF8StringEncoding
+                                                      error:nil];
+    NSDictionary *dictionary = [NSJSONSerialization
+        JSONObjectWithData:[contents dataUsingEncoding:NSUTF8StringEncoding]
+                   options:0
+                     error:nil];
+    self.report = [[BugsnagCrashReport alloc] initWithKSReport:dictionary];
 }
 
 - (void)tearDown {
-  [super tearDown];
-  self.report = nil;
+    [super tearDown];
+    self.report = nil;
 }
 
 - (void)testReadReleaseStage {
-  XCTAssertEqualObjects(self.report.releaseStage, @"production");
+    XCTAssertEqualObjects(self.report.releaseStage, @"production");
 }
 
 - (void)testReadNotifyReleaseStages {
-  XCTAssertEqualObjects(self.report.notifyReleaseStages,
-                        (@[ @"production", @"development" ]));
+    XCTAssertEqualObjects(self.report.notifyReleaseStages,
+                          (@[ @"production", @"development" ]));
 }
 
 - (void)testReadNotifyReleaseStagesSends {
@@ -52,7 +52,7 @@
 }
 
 - (void)testAddMetadataAddsNewTab {
-    NSDictionary *metadata = @{ @"color": @"blue", @"beverage": @"tea" };
+    NSDictionary *metadata = @{@"color" : @"blue", @"beverage" : @"tea"};
     [self.report addMetadata:metadata toTabWithName:@"user prefs"];
     NSDictionary *prefs = self.report.metaData[@"user prefs"];
     XCTAssertEqual(@"blue", prefs[@"color"]);
@@ -61,9 +61,9 @@
 }
 
 - (void)testAddMetadataMergesExistingTab {
-    NSDictionary *oldMetadata = @{ @"color": @"red", @"food": @"carrots" };
+    NSDictionary *oldMetadata = @{@"color" : @"red", @"food" : @"carrots"};
     [self.report addMetadata:oldMetadata toTabWithName:@"user prefs"];
-    NSDictionary *metadata = @{ @"color": @"blue", @"beverage": @"tea" };
+    NSDictionary *metadata = @{@"color" : @"blue", @"beverage" : @"tea"};
     [self.report addMetadata:metadata toTabWithName:@"user prefs"];
     NSDictionary *prefs = self.report.metaData[@"user prefs"];
     XCTAssertEqual(@"blue", prefs[@"color"]);
@@ -73,14 +73,18 @@
 }
 
 - (void)testAddAttributeAddsNewTab {
-    [self.report addAttribute:@"color" withValue:@"blue" toTabWithName:@"prefs"];
+    [self.report addAttribute:@"color"
+                    withValue:@"blue"
+                toTabWithName:@"prefs"];
     NSDictionary *prefs = self.report.metaData[@"prefs"];
     XCTAssertEqual(@"blue", prefs[@"color"]);
 }
 
 - (void)testAddAttributeOverridesExistingValue {
     [self.report addAttribute:@"color" withValue:@"red" toTabWithName:@"prefs"];
-    [self.report addAttribute:@"color" withValue:@"blue" toTabWithName:@"prefs"];
+    [self.report addAttribute:@"color"
+                    withValue:@"blue"
+                toTabWithName:@"prefs"];
     NSDictionary *prefs = self.report.metaData[@"prefs"];
     XCTAssertEqual(@"blue", prefs[@"color"]);
 }
@@ -94,28 +98,32 @@
 
 - (void)testNotifyReleaseStagesSendsFromConfig {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
-    config.notifyReleaseStages = @[@"foo"];
+    config.notifyReleaseStages = @[ @"foo" ];
     config.releaseStage = @"foo";
-    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
-                                                                  errorMessage:@"it was so bad"
-                                                                 configuration:config
-                                                                      metaData:@{}
-                                                                      handledState:state];
+    BugsnagHandledState *state =
+        [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    BugsnagCrashReport *report =
+        [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
+                                         errorMessage:@"it was so bad"
+                                        configuration:config
+                                             metaData:@{}
+                                         handledState:state];
     XCTAssertTrue([report shouldBeSent]);
 }
 
 - (void)testNotifyReleaseStagesSkipsSendFromConfig {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
-    config.notifyReleaseStages = @[@"foo", @"bar"];
+    config.notifyReleaseStages = @[ @"foo", @"bar" ];
     config.releaseStage = @"not foo or bar";
-    
-    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
-                                                                  errorMessage:@"it was so bad"
-                                                                 configuration:config
-                                                                      metaData:@{}
-                                                                  handledState:state];
+
+    BugsnagHandledState *state =
+        [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    BugsnagCrashReport *report =
+        [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
+                                         errorMessage:@"it was so bad"
+                                        configuration:config
+                                             metaData:@{}
+                                         handledState:state];
     XCTAssertFalse([report shouldBeSent]);
 }
 
