@@ -19,7 +19,7 @@ else
  endif
 endif
 XCODEBUILD=set -o pipefail && xcodebuild
-VERSION=$(shell cat VERSION)
+PRESET_VERSION=$(shell cat VERSION)
 ifneq ($(strip $(shell which xcpretty)),)
  FORMATTER = | tee xcodebuild.log | xcpretty
 endif
@@ -33,11 +33,11 @@ build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework:
 		-derivedDataPath build clean build $(FORMATTER)
 
 # Compressed bundle for release version of Bugsnag framework
-build/Bugsnag-%-$(VERSION).zip: build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework
+build/Bugsnag-%-$(PRESET_VERSION).zip: build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework
 	@cd build/Build/Products/$(RELEASE_DIR); \
-		zip --symlinks -rq ../../../Bugsnag-$*-$(VERSION).zip Bugsnag.framework
+		zip --symlinks -rq ../../../Bugsnag-$*-$(PRESET_VERSION).zip Bugsnag.framework
 
-.PHONY: all build test
+.PHONY: all build test bump
 
 bootstrap:
 	@gem install xcpretty --quiet --no-ri --no-rdoc
@@ -52,4 +52,4 @@ clean:
 test:
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
 
-archive: build/Bugsnag-$(PLATFORM)-$(VERSION).zip
+archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip
