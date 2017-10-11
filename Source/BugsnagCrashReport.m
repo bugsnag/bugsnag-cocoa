@@ -540,6 +540,8 @@ initWithErrorName:(NSString *_Nonnull)name
     for (NSDictionary *thread in [self threads]) {
         NSArray *backtrace = thread[@"backtrace"][@"contents"];
         BOOL stackOverflow = [thread[@"stack"][@"overflow"] boolValue];
+        
+        NSDictionary *notableAddresses = thread[@"notableAddresses"]; // TODO use me!
 
         if ([thread[@"crashed"] boolValue]) {
             NSUInteger seen = 0;
