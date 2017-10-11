@@ -31,11 +31,11 @@ class AnotherClass: NSObject {
         }
     }
 
-    func makingAStackTrace(_ block: () -> ()) {
+   func makingAStackTrace(_ block: () -> ()) {
         block()
     }
 
-    func crash3() {
+   @objc func crash3() {
         preconditionFailure("This should NEVER happen")
     }
 }

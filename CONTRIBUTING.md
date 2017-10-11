@@ -60,12 +60,11 @@ If you're a member of the core team, you can release the cocoa pod as follows:
 ### Every time
 
 * Update the CHANGELOG. Update the README.md if appropriate.
-* Update the version number in `VERSION`, `Source/BugsnagNotifier.m`,
-  and `Bugsnag.podspec.json`
+* Update the version number by running `make VERSION=[number] bump`
 * Commit tag and push
 
     ```
-    git commit -am v5.x.x
+    git commit -am 'Release v5.x.x'
     git tag v5.x.x
     git push origin master v5.x.x
     ```

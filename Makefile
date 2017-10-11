@@ -19,7 +19,7 @@ else
  endif
 endif
 XCODEBUILD=set -o pipefail && xcodebuild
-VERSION=$(shell cat VERSION)
+PRESET_VERSION=$(shell cat VERSION)
 ifneq ($(strip $(shell which xcpretty)),)
  FORMATTER = | tee xcodebuild.log | xcpretty
 endif
@@ -33,17 +33,27 @@ build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework:
 		-derivedDataPath build clean build $(FORMATTER)
 
 # Compressed bundle for release version of Bugsnag framework
-build/Bugsnag-%-$(VERSION).zip: build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework
+build/Bugsnag-%-$(PRESET_VERSION).zip: build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework
 	@cd build/Build/Products/$(RELEASE_DIR); \
-		zip --symlinks -rq ../../../Bugsnag-$*-$(VERSION).zip Bugsnag.framework
+		zip --symlinks -rq ../../../Bugsnag-$*-$(PRESET_VERSION).zip Bugsnag.framework
 
-.PHONY: all build test
+.PHONY: all build test bump
 
 bootstrap:
 	@gem install xcpretty --quiet --no-ri --no-rdoc
 
 build:
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) build $(FORMATTER)
+
+bump:
+ifeq ($(VERSION),)
+	@$(error VERSION is not defined. Run with `make VERSION=number bump`)
+endif
+	@echo Bumping the version number to $(VERSION)
+	@echo $(VERSION) > VERSION
+	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" Bugsnag.podspec.json
+	@sed -i '' "s/\"tag\": .*,/\"tag\": \"v$(VERSION)\",/" Bugsnag.podspec.json
+	@sed -i '' "s/NOTIFIER_VERSION = .*;/NOTIFIER_VERSION = @\"$(VERSION)\";/" Source/BugsnagNotifier.m
 
 clean:
 	@$(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
@@ -52,4 +62,4 @@ clean:
 test:
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
 
-archive: build/Bugsnag-$(PLATFORM)-$(VERSION).zip
+archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip
