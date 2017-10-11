@@ -23,7 +23,7 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBAction func doCrash(_ sender: AnyObject) {
-        callbackModifiedException()
+        unhandledCrash()
     }
 
     func unhandledCrash() {
