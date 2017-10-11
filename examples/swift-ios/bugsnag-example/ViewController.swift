@@ -23,7 +23,10 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBAction func doCrash(_ sender: AnyObject) {
-        callbackModifiedException()
+//        fatalError("Whoops - fatalerror")
+        preconditionFailure("Whoops - preconditionFailure")
+        assertionFailure("Whoops - assertionFailure")
+        assert(false, "Whoops - assert")
     }
 
     func unhandledCrash() {

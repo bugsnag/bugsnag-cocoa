@@ -127,4 +127,61 @@
     XCTAssertFalse([report shouldBeSent]);
 }
 
+- (void)testEnhancedErrorMessage {
+    BugsnagCrashReport *errorReport = [BugsnagCrashReport new];
+    NSMutableDictionary *thread = [NSMutableDictionary new];
+    
+    // nil for empty threads
+    XCTAssertNil([errorReport enhancedErrorMessageForThread:thread]);
+    NSMutableDictionary *addresses = [NSMutableDictionary new];
+    
+    // nil for empty notable addresses
+    thread[@"notable_addresses"] = addresses;
+    XCTAssertNil([errorReport enhancedErrorMessageForThread:thread]);
+    
+    // nil for "fatal error" with no additional dict present
+    
+    for (NSString *reservedWord in @[@"fatal error", @"assert", @"preconditionFailure", @"assertionFailure"]) {
+        addresses[@"r14"] = @{
+                              @"address": @4511089532,
+                              @"type": @"string",
+                              @"value": reservedWord
+                              };
+        XCTAssertNil([errorReport enhancedErrorMessageForThread:thread]);
+    }
+    
+    // returns msg for "fatal error" with additional dict present
+    addresses[@"r12"] = @{
+                          @"address": @4511086448,
+                          @"type": @"string",
+                          @"value": @"Whoops - fatalerror"
+                          };
+    XCTAssertEqualObjects(@"Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
+    
+    
+    // ignores additional dict if more than 2 "/" present
+    addresses[@"r24"] = @{
+                          @"address": @4511084983,
+                          @"type": @"string",
+                          @"value": @"/usr/include/lib/something.swift"
+                          };
+    XCTAssertEqualObjects(@"Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
+    
+    // ignores dict if not type string
+    addresses[@"r25"] = @{
+                          @"address": @4511084983,
+                          @"type": @"long",
+                          @"value": @"Swift is hard"
+                          };
+    XCTAssertEqualObjects(@"Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
+    
+    // sorts and concatenates multiple multiple messages
+    addresses[@"r26"] = @{
+                          @"address": @4511082095,
+                          @"type": @"string",
+                          @"value": @"Swift is hard"
+                          };
+    XCTAssertEqualObjects(@"Swift is hard | Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
+}
+
 @end

@@ -540,14 +540,15 @@ initWithErrorName:(NSString *_Nonnull)name
     for (NSDictionary *thread in [self threads]) {
         NSArray *backtrace = thread[@"backtrace"][@"contents"];
         BOOL stackOverflow = [thread[@"stack"][@"overflow"] boolValue];
+        BOOL isCrashedThread = [thread[@"crashed"] boolValue];
         
-        NSDictionary *notableAddresses = thread[@"notable_addresses"]; // TODO use me!
-        
-        if (notableAddresses) {
-            NSLog(@"Notable address: %@", notableAddresses);
-        }
-
-        if ([thread[@"crashed"] boolValue]) {
+        if (isCrashedThread) {
+            NSString *errMsg = [self enhancedErrorMessageForThread:thread];
+            
+            if (errMsg) {
+                
+            }
+            
             NSUInteger seen = 0;
             NSMutableArray *stacktrace = [NSMutableArray array];
 
@@ -591,6 +592,44 @@ initWithErrorName:(NSString *_Nonnull)name
         }
     }
     return bugsnagThreads;
+}
+
+/**
+ * Returns the enhanced error message for the thread, or nil if none exists.
+ */
+- (NSString *)enhancedErrorMessageForThread:(NSDictionary *)thread {
+    NSDictionary *notableAddresses = thread[@"notable_addresses"];
+    NSMutableArray *msgBuffer = [NSMutableArray new];
+    
+    if (notableAddresses) {
+        for (NSString *key in notableAddresses) {
+            NSDictionary *data = notableAddresses[key];
+            NSString *contentValue = data[@"value"];
+            
+            if ([@"string" isEqualToString:data[@"type"]]
+                && ![self isReservedWord:contentValue]
+                && !([[contentValue componentsSeparatedByString:@"/"] count] > 2)) {
+                
+                [msgBuffer addObject:contentValue];
+            }
+        }
+        [msgBuffer sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    }
+    
+    if ([msgBuffer count] > 0) {
+        return [msgBuffer componentsJoinedByString:@" | "];
+    } else {
+        return nil;
+    }
+}
+
+- (BOOL)isReservedWord:(NSString *)contentValue {
+    for (NSString *word in @[@"fatal error", @"assert", @"preconditionFailure", @"assertionFailure"]) {
+        if ([word isEqualToString:contentValue]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 @end
