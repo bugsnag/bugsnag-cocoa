@@ -541,7 +541,11 @@ initWithErrorName:(NSString *_Nonnull)name
         NSArray *backtrace = thread[@"backtrace"][@"contents"];
         BOOL stackOverflow = [thread[@"stack"][@"overflow"] boolValue];
         
-        NSDictionary *notableAddresses = thread[@"notableAddresses"]; // TODO use me!
+        NSDictionary *notableAddresses = thread[@"notable_addresses"]; // TODO use me!
+        
+        if (notableAddresses) {
+            NSLog(@"Notable address: %@", notableAddresses);
+        }
 
         if ([thread[@"crashed"] boolValue]) {
             NSUInteger seen = 0;
