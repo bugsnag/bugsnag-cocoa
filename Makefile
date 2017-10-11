@@ -45,6 +45,16 @@ bootstrap:
 build:
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) build $(FORMATTER)
 
+bump:
+ifeq ($(VERSION),)
+	@$(error VERSION is not defined. Run with `make VERSION=number bump`)
+endif
+	@echo Bumping the version number to $(VERSION)
+	@echo $(VERSION) > VERSION
+	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" Bugsnag.podspec.json
+	@sed -i '' "s/\"tag\": .*,/\"tag\": \"v$(VERSION)\",/" Bugsnag.podspec.json
+	@sed -i '' "s/NOTIFIER_VERSION = .*;/NOTIFIER_VERSION = @\"$(VERSION)\";/" Source/BugsnagNotifier.m
+
 clean:
 	@$(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
 	@rm -rf build
