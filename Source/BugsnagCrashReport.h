@@ -187,4 +187,11 @@ initWithErrorName:(NSString *_Nonnull)name
  *  Device state such as oreground status and run duration
  */
 @property(nonatomic, readwrite, copy, nullable) NSDictionary *appState;
+
+
+/**
+ * Returns the enhanced error message for the thread, or nil if none exists.
+ */
+- (NSString *_Nullable)enhancedErrorMessageForThread:(NSDictionary *_Nullable)thread;
+
 @end
