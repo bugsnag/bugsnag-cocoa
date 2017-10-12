@@ -546,7 +546,7 @@ initWithErrorName:(NSString *_Nonnull)name
             NSString *errMsg = [self enhancedErrorMessageForThread:thread];
             
             if (errMsg) {
-                
+                NSLog(@"Enhanced error message: %@",errMsg);
             }
             
             NSUInteger seen = 0;
@@ -596,40 +596,51 @@ initWithErrorName:(NSString *_Nonnull)name
 
 /**
  * Returns the enhanced error message for the thread, or nil if none exists.
+ *
+ * This relies very heavily on heuristics rather than any documented APIs.
  */
 - (NSString *)enhancedErrorMessageForThread:(NSDictionary *)thread {
     NSDictionary *notableAddresses = thread[@"notable_addresses"];
     NSMutableArray *msgBuffer = [NSMutableArray new];
+    BOOL hasReservedWord = NO;
     
     if (notableAddresses) {
         for (NSString *key in notableAddresses) {
-            NSDictionary *data = notableAddresses[key];
-            NSString *contentValue = data[@"value"];
-            
-            if ([@"string" isEqualToString:data[@"type"]]
-                && ![self isReservedWord:contentValue]
-                && !([[contentValue componentsSeparatedByString:@"/"] count] > 2)) {
+            if (![key hasPrefix:@"stack"]) { // skip stack frames, only use register values
+                NSDictionary *data = notableAddresses[key];
+                NSString *contentValue = data[@"value"];
                 
-                [msgBuffer addObject:contentValue];
+                hasReservedWord = hasReservedWord || [self isReservedWord:contentValue];
+                
+                // must be a string that isn't a reserved word and isn't a filepath
+                if ([@"string" isEqualToString:data[@"type"]]
+                    && ![self isReservedWord:contentValue]
+                    && !([[contentValue componentsSeparatedByString:@"/"] count] > 2)) {
+                    
+                    [msgBuffer addObject:contentValue];
+                }
             }
         }
         [msgBuffer sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     }
     
-    if ([msgBuffer count] > 0) {
+    if (hasReservedWord && [msgBuffer count] > 0) { // needs to have a reserved word used + a message
         return [msgBuffer componentsJoinedByString:@" | "];
     } else {
         return nil;
     }
 }
 
+/**
+ * Determines whether a string is a "reserved word" that identifies it as a known value.
+ *
+ * For fatalError, preconditionFailure, and assertionFailure, "fatal error" will be in one of the registers.
+ *
+ * For assert, "assertion failed" will be in one of the registers.
+ */
 - (BOOL)isReservedWord:(NSString *)contentValue {
-    for (NSString *word in @[@"fatal error", @"assert", @"preconditionFailure", @"assertionFailure"]) {
-        if ([word isEqualToString:contentValue]) {
-            return YES;
-        }
-    }
-    return NO;
+    return [@"assertion failed" isEqualToString:contentValue]
+    || [@"fatal error" isEqualToString:contentValue];
 }
 
 @end

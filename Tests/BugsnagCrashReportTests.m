@@ -141,7 +141,7 @@
     
     // nil for "fatal error" with no additional dict present
     
-    for (NSString *reservedWord in @[@"fatal error", @"assert", @"preconditionFailure", @"assertionFailure"]) {
+    for (NSString *reservedWord in @[@"fatal error", @"assertion failed"]) {
         addresses[@"r14"] = @{
                               @"address": @4511089532,
                               @"type": @"string",
@@ -182,6 +182,18 @@
                           @"value": @"Swift is hard"
                           };
     XCTAssertEqualObjects(@"Swift is hard | Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
+    
+    // ignores stack frames
+    addresses[@"stack523409"] = @{
+                          @"address": @4511080001,
+                          @"type": @"string",
+                          @"value": @"Not a register"
+                          };
+    XCTAssertEqualObjects(@"Swift is hard | Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
+    
+    // ignores values if no reserved word used
+    addresses[@"r14"] = nil;
+    XCTAssertNil([errorReport enhancedErrorMessageForThread:thread]);
 }
 
 @end
