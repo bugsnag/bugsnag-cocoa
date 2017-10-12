@@ -1,5 +1,10 @@
 Changelog
 =========
+## 5.13.0 (12 Oct 2017)
+
+* Update podspec iOS version to 8.0
+* Updated example apps to Swift 4
+* Report error message for Swift's `fatalError`, `preconditionFailure`, `assertionFailure`, and `assert`.
 
 ## 5.12.1 (04 Oct 2017)
 
