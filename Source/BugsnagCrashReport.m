@@ -545,8 +545,8 @@ initWithErrorName:(NSString *_Nonnull)name
         if (isCrashedThread) {
             NSString *errMsg = [self enhancedErrorMessageForThread:thread];
             
-            if (errMsg) {
-                NSLog(@"Enhanced error message: %@",errMsg);
+            if (errMsg) { // use enhanced error message (currently swift assertions)
+                BSGDictInsertIfNotNil(exception, errMsg, @"message");
             }
             
             NSUInteger seen = 0;
