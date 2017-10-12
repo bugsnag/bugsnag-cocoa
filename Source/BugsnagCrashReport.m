@@ -474,17 +474,6 @@ initWithErrorName:(NSString *_Nonnull)name
         BSGDictInsertIfNotNil(exception, DEFAULT_EXCEPTION_TYPE, @"type");
         BSGDictSetSafeObject(event, @[ exception ], @"exceptions");
 
-        // HACK: For the Unity Notifier. We don't include ObjectiveC exceptions
-        // or threads if this is an exception from Unity-land.
-        NSDictionary *unityReport = metaData[@"_bugsnag_unity_exception"];
-        if (unityReport) {
-            BSGDictSetSafeObject(data, unityReport[@"notifier"], @"notifier");
-            BSGDictSetSafeObject(exception, unityReport[@"stacktrace"],
-                                 @"stacktrace");
-            [metaData removeObjectForKey:@"_bugsnag_unity_exception"];
-            return event;
-        }
-
         BSGDictSetSafeObject(
             event, [self serializeThreadsWithException:exception], @"threads");
     }
