@@ -12,6 +12,7 @@
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
 #import "BugsnagKeys.h"
+#import "BugsnagCrashSentry.h"
 
 // This is private in Bugsnag, but really we want package private so define
 // it here.
@@ -33,7 +34,7 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        _sendQueue = [[NSOperationQueue alloc] init];
+        _sendQueue = [NSOperationQueue new];
         _sendQueue.maxConcurrentOperationCount = 1;
         if ([_sendQueue respondsToSelector:@selector(qualityOfService)])
             _sendQueue.qualityOfService = NSQualityOfServiceUtility;
@@ -43,15 +44,18 @@
 }
 
 - (void)sendPendingReports:(BOOL)synchronous {
-    if (synchronous) {
-        BSGDeliveryOperation *deliver = [BSGDeliveryOperation new];
-        [[NSOperationQueue mainQueue] addOperation:deliver];
-    } else {
-        [self.sendQueue cancelAllOperations];
-        BSGDelayOperation *delay = [BSGDelayOperation new];
-        BSGDeliveryOperation *deliver = [BSGDeliveryOperation new];
-        [deliver addDependency:delay];
-        [self.sendQueue addOperations:@[delay, deliver] waitUntilFinished:NO];
+    @try {
+        [[BSG_KSCrash sharedInstance]
+         sendAllReportsWithCompletion:^(NSArray *filteredReports,
+                                        BOOL completed, NSError *error) {
+             if (error) {
+                 bsg_log_warn(@"Failed to send reports: %@", error);
+             } else if (filteredReports.count > 0) {
+                 bsg_log_info(@"Reports sent.");
+             }
+         }];
+    } @catch (NSException *e) {
+        bsg_log_err(@"Could not send report: %@", e);
     }
 }
 
@@ -59,55 +63,16 @@
             payload:(NSDictionary *)reportData
               toURL:(NSURL *)url
        onCompletion:(BSG_KSCrashReportFilterCompletion)onCompletion {
-    @try {
-        NSError *error = nil;
-        NSData *jsonData =
-            [NSJSONSerialization dataWithJSONObject:reportData
-                                            options:NSJSONWritingPrettyPrinted
-                                              error:&error];
 
-        if (jsonData == nil) {
-            if (onCompletion) {
-                onCompletion(reports, NO, error);
-            }
-            return;
-        }
-        NSMutableURLRequest *request = [NSMutableURLRequest
-             requestWithURL:url
-                cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
-            timeoutInterval:15];
-        request.HTTPMethod = @"POST";
+    @try { // TODO sync or not?
 
-        if ([NSURLSession class]) {
-            NSURLSession *session = [Bugsnag configuration].session;
-            if (!session) {
-                session = [NSURLSession
-                    sessionWithConfiguration:[NSURLSessionConfiguration
-                                                 defaultSessionConfiguration]];
-            }
-            NSURLSessionTask *task = [session
-                uploadTaskWithRequest:request
-                             fromData:jsonData
-                    completionHandler:^(NSData *_Nullable data,
-                                        NSURLResponse *_Nullable response,
-                                        NSError *_Nullable error) {
-                      if (onCompletion)
-                          onCompletion(reports, error == nil, error);
-                    }];
-            [task resume];
-        } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            NSURLResponse *response = nil;
-            request.HTTPBody = jsonData;
-            [NSURLConnection sendSynchronousRequest:request
-                                  returningResponse:&response
-                                              error:&error];
-            if (onCompletion) {
-                onCompletion(reports, error == nil, error);
-            }
-#pragma clang diagnostic pop
-        }
+        NSArray *events = reportData[@"events"];
+        [BugsnagCrashSentry isCrashOnLaunch:[Bugsnag configuration] events:events];
+
+        [self sendReportData:reports
+                     payload:reportData
+                       toURL:url
+                onCompletion:onCompletion];
     } @catch (NSException *exception) {
         if (onCompletion) {
             onCompletion(reports, NO,
@@ -118,33 +83,53 @@
     }
 }
 
-@end
+- (void)sendReportData:(NSArray<BugsnagCrashReport *> *)reports
+               payload:(NSDictionary *)reportData
+                 toURL:(NSURL *)url
+          onCompletion:(BSG_KSCrashReportFilterCompletion)onCompletion {
+    NSError *error = nil;
+    NSData *jsonData =
+    [NSJSONSerialization dataWithJSONObject:reportData
+                                    options:NSJSONWritingPrettyPrinted
+                                      error:&error];
+    if (jsonData == nil) {
+        if (onCompletion) {
+            onCompletion(reports, NO, error);
+        }
+        return;
+    }
 
-@implementation BSGDelayOperation
-const NSTimeInterval BSG_SEND_DELAY_SECS = 1;
+    NSMutableURLRequest *request = [NSMutableURLRequest
+                                    requestWithURL:url
+                                    cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                    timeoutInterval:15];
+    request.HTTPMethod = @"POST";
 
-- (void)main {
-    [NSThread sleepForTimeInterval:BSG_SEND_DELAY_SECS];
-}
-
-@end
-
-@implementation BSGDeliveryOperation
-
-- (void)main {
-    @autoreleasepool {
-        @try {
-            [[BSG_KSCrash sharedInstance]
-                sendAllReportsWithCompletion:^(NSArray *filteredReports,
-                                               BOOL completed, NSError *error) {
-                  if (error) {
-                      bsg_log_warn(@"Failed to send reports: %@", error);
-                  } else if (filteredReports.count > 0) {
-                      bsg_log_info(@"Reports sent.");
-                  }
-                }];
-        } @catch (NSException *e) {
-            bsg_log_err(@"Could not send report: %@", e);
+    if ([NSURLSession class]) {
+        NSURLSession *session = [Bugsnag configuration].session;
+        if (!session) {
+            session = [NSURLSession
+                       sessionWithConfiguration:[NSURLSessionConfiguration
+                                                 defaultSessionConfiguration]];
+        }
+        NSURLSessionTask *task = [session
+                                  uploadTaskWithRequest:request
+                                  fromData:jsonData
+                                  completionHandler:^(NSData *_Nullable data,
+                                                      NSURLResponse *_Nullable response,
+                                                      NSError *_Nullable error) {
+                                      if (onCompletion)
+                                          onCompletion(reports, error == nil, error);
+                                  }];
+        [task resume];
+    } else {
+        NSURLResponse *response = nil;
+        request.HTTPBody = jsonData;
+        [NSURLConnection sendSynchronousRequest:request
+                              returningResponse:&response
+                                          error:&error];
+        if (onCompletion) {
+            onCompletion(reports, error == nil, error);
         }
     }
 }

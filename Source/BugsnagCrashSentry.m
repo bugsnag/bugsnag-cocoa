@@ -52,20 +52,14 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
                                      terminateProgram:NO];
 }
 
-+ (BOOL)isCrashOnLaunch:(BugsnagConfiguration *)config currentDate:(NSDate *)now {
-    NSInteger delta = [self msSinceLaunch:config currentDate:now];
-    NSInteger thresholdMs = config.launchCrashThresholdMs;
-    return thresholdMs > 0 && delta <= thresholdMs;
-}
-
-+ (NSInteger)msSinceLaunch:(BugsnagConfiguration *)config currentDate:(NSDate *)now {
-    BugsnagMetaData *metaData = config.metaData;
-
-    // TODO read from metadata
-
-//    config.metaData a
-//    NSInteger launchTimeMs = 0;
-    return 0;// - launchTimeMs;
++ (BOOL)isCrashOnLaunch:(BugsnagConfiguration *)config events:(NSArray *)events {
+    for (NSDictionary *event in events) {
+        NSUInteger duration = [[event valueForKeyPath:@"metaData.appState.duration"] unsignedIntegerValue];
+        if (duration > 0 && duration <= config.launchCrashThresholdMs) {
+            return true;
+        }
+    }
+    return false;
 }
 
 @end

@@ -197,17 +197,19 @@
 }
 
 - (void)testIsCrashOnLaunch {
-	    BugsnagConfiguration *config = [BugsnagConfiguration new];
-    NSDate *now = [NSDate date];
-
-    XCTAssertTrue([BugsnagCrashSentry isCrashOnLaunch:config currentDate:now]);
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+    NSArray *events = @[@{@"metaData": @{@"appState": dict}}];
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    dict[@"duration"] = @100;
+    
+    XCTAssertTrue([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
 
     config.launchCrashThresholdMs = 0;
-    XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config currentDate:now]);
+    XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
 
+    dict[@"duration"] = @20000;
     config.launchCrashThresholdMs = 10000;
-    NSDate *date = [now dateByAddingTimeInterval:20];
-    XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config currentDate:date]);
+    XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
 }
 
 @end
