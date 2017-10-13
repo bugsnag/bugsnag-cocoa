@@ -51,4 +51,16 @@
     XCTAssertFalse([config shouldSendReports]);
 }
 
+- (void)testLaunchThreshold {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertEqual(10000, config.launchCrashThresholdMs);
+    
+    config.launchCrashThresholdMs = 0;
+    XCTAssertEqual(0, config.launchCrashThresholdMs);
+    
+    int expected = 1500;
+    config.launchCrashThresholdMs = expected;
+    XCTAssertEqual(expected, config.launchCrashThresholdMs);
+}
+
 @end

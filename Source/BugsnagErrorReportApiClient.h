@@ -18,6 +18,8 @@
  */
 - (void)sendPendingReports;
 
+- (void)sendPendingReports:(BOOL)synchronous;
+
 - (void)sendReports:(NSArray<BugsnagCrashReport *> *)reports
             payload:(NSDictionary *)reportData
               toURL:(NSURL *)url

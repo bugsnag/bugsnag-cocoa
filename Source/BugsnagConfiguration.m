@@ -36,12 +36,14 @@
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeNotifyHooks;
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeSendBlocks;
+@property (nonatomic) NSUInteger startupCrashThresholdMs;
 @end
 
 @implementation BugsnagConfiguration
 
 - (id)init {
     if (self = [super init]) {
+        _launchCrashThresholdMs = 10000;
         _metaData = [[BugsnagMetaData alloc] init];
         _config = [[BugsnagMetaData alloc] init];
         _apiKey = @"";

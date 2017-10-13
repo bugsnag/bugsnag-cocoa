@@ -18,6 +18,8 @@
       apiClient:(BugsnagErrorReportApiClient *)apiClient
         onCrash:(BSG_KSReportWriteCallback)onCrash;
 
++ (BOOL)isCrashOnLaunch:(BugsnagConfiguration *)config currentDate:(NSDate *)now;
+
 - (void)reportUserException:(NSString *)reportName
                      reason:(NSString *)reportMessage;
 

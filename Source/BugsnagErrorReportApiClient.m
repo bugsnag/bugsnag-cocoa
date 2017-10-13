@@ -42,12 +42,17 @@
     return self;
 }
 
-- (void)sendPendingReports {
-    [self.sendQueue cancelAllOperations];
-    BSGDelayOperation *delay = [BSGDelayOperation new];
-    BSGDeliveryOperation *deliver = [BSGDeliveryOperation new];
-    [deliver addDependency:delay];
-    [self.sendQueue addOperations:@[ delay, deliver ] waitUntilFinished:NO];
+- (void)sendPendingReports:(BOOL)synchronous {
+    if (synchronous) {
+        BSGDeliveryOperation *deliver = [BSGDeliveryOperation new];
+        [[NSOperationQueue mainQueue] addOperation:deliver];
+    } else {
+        [self.sendQueue cancelAllOperations];
+        BSGDelayOperation *delay = [BSGDelayOperation new];
+        BSGDeliveryOperation *deliver = [BSGDeliveryOperation new];
+        [deliver addDependency:delay];
+        [self.sendQueue addOperations:@[delay, deliver] waitUntilFinished:NO];
+    }
 }
 
 - (void)sendReports:(NSArray<BugsnagCrashReport *> *)reports

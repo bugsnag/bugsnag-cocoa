@@ -38,7 +38,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
                     @"reported!");
     }
 
-    [sink.apiClient sendPendingReports];
+    [sink.apiClient sendPendingReports:NO];
 }
 
 - (void)reportUserException:(NSString *)reportName
@@ -50,6 +50,22 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
                                            lineOfCode:@""
                                            stackTrace:@[]
                                      terminateProgram:NO];
+}
+
++ (BOOL)isCrashOnLaunch:(BugsnagConfiguration *)config currentDate:(NSDate *)now {
+    NSInteger delta = [self msSinceLaunch:config currentDate:now];
+    NSInteger thresholdMs = config.launchCrashThresholdMs;
+    return thresholdMs > 0 && delta <= thresholdMs;
+}
+
++ (NSInteger)msSinceLaunch:(BugsnagConfiguration *)config currentDate:(NSDate *)now {
+    BugsnagMetaData *metaData = config.metaData;
+
+    // TODO read from metadata
+
+//    config.metaData a
+//    NSInteger launchTimeMs = 0;
+    return 0;// - launchTimeMs;
 }
 
 @end
