@@ -292,7 +292,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)flushPendingReports {
-    [self.apiClient sendPendingReports:NO];
+    [self.apiClient sendPendingReports];
 }
 
 - (void)setupConnectivityListener {

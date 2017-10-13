@@ -38,7 +38,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
                     @"reported!");
     }
 
-    [sink.apiClient sendPendingReports:NO];
+    [sink.apiClient sendPendingReports];
 }
 
 - (void)reportUserException:(NSString *)reportName
@@ -54,7 +54,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
 
 + (BOOL)isCrashOnLaunch:(BugsnagConfiguration *)config events:(NSArray *)events {
     for (NSDictionary *event in events) {
-        NSUInteger duration = [[event valueForKeyPath:@"metaData.appState.duration"] unsignedIntegerValue];
+        NSUInteger duration = [[event valueForKeyPath:@"appState.duration"] unsignedIntegerValue];
         if (duration > 0 && duration <= config.launchCrashThresholdMs) {
             return true;
         }
