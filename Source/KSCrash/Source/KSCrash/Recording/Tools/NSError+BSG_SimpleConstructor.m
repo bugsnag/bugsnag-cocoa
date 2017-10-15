@@ -67,13 +67,6 @@
     return NO;
 }
 
-+ (BOOL)bsg_clearError:(NSError *__autoreleasing *)error {
-    if (error != nil) {
-        *error = nil;
-    }
-    return NO;
-}
-
 @end
 
 @interface NSError_BSG_SimpleConstructor_AOG8G : NSObject

@@ -235,8 +235,8 @@ int bsg_ksjsoncodecobjc_i_onElement(BSG_KSJSONCodec *codec, NSString *name,
         codec.error = [NSError
             bsg_errorWithDomain:@"KSJSONCodecObjC"
                            code:0
-                       description:@"Type %@ not allowed as top level container",
-                                   [element class]];
+                    description:@"Type %@ not allowed as top level container",
+                                [element class]];
         return BSG_KSJSON_ERROR_INVALID_DATA;
     }
 
@@ -339,7 +339,7 @@ int bsg_ksjsoncodecobjc_i_onEndContainer(void *const userData) {
         codec.error = [NSError
             bsg_errorWithDomain:@"KSJSONCodecObjC"
                            code:0
-                       description:
+                    description:
                            @"Already at the top level; no container left to end"];
         return BSG_KSJSON_ERROR_INVALID_DATA;
     }

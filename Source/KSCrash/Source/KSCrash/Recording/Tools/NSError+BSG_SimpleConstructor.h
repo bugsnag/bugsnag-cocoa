@@ -57,11 +57,4 @@
                  code:(NSInteger)code
           description:(NSString *)fmt, ...;
 
-/** Clear a pointer-to-error to nil of its pointer is not nil.
- *
- * @param error Error pointer to fill (ignored if nil).
- * @return NO (to keep the analyzer happy).
- */
-+ (BOOL)bsg_clearError:(NSError **)error;
-
 @end
