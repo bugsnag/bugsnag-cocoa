@@ -347,7 +347,7 @@
         return;
     }
 
-    [report bsg_ksc_setObjectIfNotNil:[srcDict mergedInto:dstDict]
+    [report bsg_ksc_setObjectIfNotNil:[srcDict bsg_mergedInto:dstDict]
                                forKey:dstKey];
     [report removeObjectForKey:srcKey];
 }
