@@ -423,10 +423,10 @@
 - (NSMutableDictionary *)readReport:(NSString *)path
                               error:(NSError *__autoreleasing *)error {
     if (path == nil) {
-        [NSError fillError:error
-                withDomain:[[self class] description]
-                      code:0
-               description:@"Path is nil"];
+        [NSError bsg_fillError:error
+                    withDomain:[[self class] description]
+                          code:0
+                   description:@"Path is nil"];
         return nil;
     }
 

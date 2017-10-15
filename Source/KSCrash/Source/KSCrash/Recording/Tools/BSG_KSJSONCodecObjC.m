@@ -233,10 +233,10 @@ int bsg_ksjsoncodecobjc_i_onElement(BSG_KSJSONCodec *codec, NSString *name,
                                     id element) {
     if (codec->_currentContainer == nil) {
         codec.error = [NSError
-            errorWithDomain:@"KSJSONCodecObjC"
-                       code:0
-                description:@"Type %@ not allowed as top level container",
-                            [element class]];
+            bsg_errorWithDomain:@"KSJSONCodecObjC"
+                           code:0
+                       description:@"Type %@ not allowed as top level container",
+                                   [element class]];
         return BSG_KSJSON_ERROR_INVALID_DATA;
     }
 
@@ -337,10 +337,10 @@ int bsg_ksjsoncodecobjc_i_onEndContainer(void *const userData) {
 
     if ([codec->_containerStack count] == 0) {
         codec.error = [NSError
-            errorWithDomain:@"KSJSONCodecObjC"
-                       code:0
-                description:
-                    @"Already at the top level; no container left to end"];
+            bsg_errorWithDomain:@"KSJSONCodecObjC"
+                           code:0
+                       description:
+                           @"Already at the top level; no container left to end"];
         return BSG_KSJSON_ERROR_INVALID_DATA;
     }
     [codec->_containerStack removeLastObject];
@@ -377,9 +377,9 @@ int bsg_ksjsoncodecobjc_i_encodeObject(BSG_KSJSONCodec *codec, id object,
                                             [data length]);
         if (result == BSG_KSJSON_ERROR_INVALID_CHARACTER) {
             codec.error =
-                [NSError errorWithDomain:@"KSJSONCodecObjC"
-                                    code:0
-                             description:@"Invalid character in %@", object];
+                [NSError bsg_errorWithDomain:@"KSJSONCodecObjC"
+                                        code:0
+                                 description:@"Invalid character in %@", object];
         }
         return result;
     }
@@ -474,9 +474,9 @@ int bsg_ksjsoncodecobjc_i_encodeObject(BSG_KSJSONCodec *codec, id object,
     }
 
     codec.error = [NSError
-        errorWithDomain:@"KSJSONCodecObjC"
-                   code:0
-            description:@"Could not determine type of %@", [object class]];
+        bsg_errorWithDomain:@"KSJSONCodecObjC"
+                       code:0
+                description:@"Could not determine type of %@", [object class]];
     return BSG_KSJSON_ERROR_INVALID_DATA;
 }
 
@@ -512,10 +512,10 @@ int bsg_ksjsoncodecobjc_i_encodeObject(BSG_KSJSONCodec *codec, id object,
                          (__bridge void *)codec, &errorOffset);
     if (result != BSG_KSJSON_OK && codec.error == nil) {
         codec.error = [NSError
-            errorWithDomain:@"KSJSONCodecObjC"
-                       code:0
-                description:@"%s (offset %d)", bsg_ksjsonstringForError(result),
-                            errorOffset];
+           bsg_errorWithDomain:@"KSJSONCodecObjC"
+                          code:0
+                   description:@"%s (offset %d)", bsg_ksjsonstringForError(result),
+                               errorOffset];
     }
     if (error != nil) {
         *error = codec.error;

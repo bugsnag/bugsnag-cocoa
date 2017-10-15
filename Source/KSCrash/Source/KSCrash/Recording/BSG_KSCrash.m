@@ -444,9 +444,9 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
     if (self.sink == nil) {
         bsg_kscrash_i_callCompletion(
             onCompletion, reports, NO,
-            [NSError errorWithDomain:[[self class] description]
-                                code:0
-                         description:@"No sink set. Crash reports not sent."]);
+            [NSError bsg_errorWithDomain:[[self class] description]
+                                    code:0
+                             description:@"No sink set. Crash reports not sent."]);
         return;
     }
 
