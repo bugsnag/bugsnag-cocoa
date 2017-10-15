@@ -36,6 +36,7 @@ Releasing a new version
 Please follow the testing instructions in [the platforms release checklist](https://github.com/bugsnag/platforms-release-checklist/blob/master/README.md), and any additional steps directly below.
 
 - Please ensure that release builds are run on a physical device with an ad-hoc archive.
+- Run the static anayser (Product -> Analyse in Xcode) to ensure that problems are introduced.
 
 ### CocoaPods
 
