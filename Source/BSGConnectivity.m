@@ -50,7 +50,7 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target,
 
 @property(nonatomic, assign) SCNetworkReachabilityRef reachabilityRef;
 @property(nonatomic, strong) dispatch_queue_t serialQueue;
-@property(nonatomic) CallbackBlock callbackBlock;
+@property(nonatomic, copy) CallbackBlock callbackBlock;
 
 @end
 
@@ -58,13 +58,11 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target,
 
 - (instancetype)initWithURL:(NSURL *)url
                 changeBlock:(ConnectivityChange)changeBlock {
-    NSString *hostName = [url absoluteString];
-    SCNetworkReachabilityRef ref =
-        SCNetworkReachabilityCreateWithName(NULL, [hostName UTF8String]);
-
     if (self = [super init]) {
-        _connectivityChangeBlock = changeBlock;
-        self.reachabilityRef = ref;
+        NSString *hostName = [url absoluteString];
+        _reachabilityRef = SCNetworkReachabilityCreateWithName(NULL, [hostName UTF8String]);
+
+        _connectivityChangeBlock = [changeBlock copy];
         self.serialQueue = dispatch_queue_create("com.bugsnag.cocoa", NULL);
 
         __weak id weakSelf = self;
@@ -84,9 +82,6 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target,
         CFRelease(self.reachabilityRef);
         self.reachabilityRef = nil;
     }
-
-    _connectivityChangeBlock = nil;
-    self.serialQueue = nil;
 }
 
 /**
@@ -95,8 +90,10 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target,
 - (void)startWatchingConnectivity {
     SCNetworkReachabilityContext context = {
         .version = 0,
-        .info = (void *)CFBridgingRetain(self.callbackBlock),
-        .release = CFRelease};
+        .info = (__bridge void *)self.callbackBlock,
+        .retain = CFRetain,
+        .release = CFRelease,
+    };
 
     if (self.reachabilityRef) {
         SCNetworkReachabilitySetCallback(self.reachabilityRef,
