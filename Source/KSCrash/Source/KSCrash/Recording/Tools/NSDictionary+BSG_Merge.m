@@ -28,7 +28,7 @@
 
 @implementation NSDictionary (BSG_Merge)
 
-- (NSDictionary *)mergedInto:(NSDictionary *)dest {
+- (NSDictionary *)bsg_mergedInto:(NSDictionary *)dest {
     if ([dest count] == 0) {
         return self;
     }
@@ -42,7 +42,7 @@
         id dstEntry = [dest objectForKey:key];
         if ([dstEntry isKindOfClass:[NSDictionary class]] &&
             [srcEntry isKindOfClass:[NSDictionary class]]) {
-            srcEntry = [srcEntry mergedInto:dstEntry];
+            srcEntry = [srcEntry bsg_mergedInto:dstEntry];
         }
         [dict setObject:srcEntry forKey:key];
     }

@@ -28,9 +28,9 @@
 
 @implementation NSError (BSG_SimpleConstructor)
 
-+ (NSError *)errorWithDomain:(NSString *)domain
-                        code:(NSInteger)code
-                 description:(NSString *)fmt, ... {
++ (NSError *)bsg_errorWithDomain:(NSString *)domain
+                            code:(NSInteger)code
+                     description:(NSString *)fmt, ... {
     va_list args;
     va_start(args, fmt);
 
@@ -45,10 +45,10 @@
                                           forKey:NSLocalizedDescriptionKey]];
 }
 
-+ (BOOL)fillError:(NSError *__autoreleasing *)error
-       withDomain:(NSString *)domain
-             code:(NSInteger)code
-      description:(NSString *)fmt, ... {
++ (BOOL)bsg_fillError:(NSError *__autoreleasing *)error
+           withDomain:(NSString *)domain
+                 code:(NSInteger)code
+          description:(NSString *)fmt, ... {
     if (error != nil) {
         va_list args;
         va_start(args, fmt);
@@ -63,13 +63,6 @@
                        [NSDictionary
                            dictionaryWithObject:desc
                                          forKey:NSLocalizedDescriptionKey]];
-    }
-    return NO;
-}
-
-+ (BOOL)clearError:(NSError *__autoreleasing *)error {
-    if (error != nil) {
-        *error = nil;
     }
     return NO;
 }
