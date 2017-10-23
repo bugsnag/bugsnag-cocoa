@@ -136,7 +136,7 @@ BugsnagBreadcrumbs *breadcrumbs;
  *
  * By default, this value is set at 10,000ms. Set at 0 to disable this functionality.
  */
-@property (nonatomic) NSUInteger launchCrashThresholdMs;
+@property (nonatomic) NSTimeInterval launchCrashThresholdMs;
 
 /**
  *  Set user metadata

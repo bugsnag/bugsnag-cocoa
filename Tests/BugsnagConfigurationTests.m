@@ -53,14 +53,14 @@
 
 - (void)testLaunchThreshold {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
-    XCTAssertEqual(10000, config.launchCrashThresholdMs);
+    XCTAssertEqual(config.launchCrashThresholdMs, 10000);
     
     config.launchCrashThresholdMs = 0;
-    XCTAssertEqual(0, config.launchCrashThresholdMs);
+    XCTAssertEqual(config.launchCrashThresholdMs, 0);
     
-    int expected = 1500;
+    NSTimeInterval expected = 1500;
     config.launchCrashThresholdMs = expected;
-    XCTAssertEqual(expected, config.launchCrashThresholdMs);
+    XCTAssertEqual(config.launchCrashThresholdMs, expected);
 }
 
 @end

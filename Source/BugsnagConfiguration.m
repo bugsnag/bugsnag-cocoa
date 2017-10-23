@@ -36,7 +36,6 @@
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeNotifyHooks;
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeSendBlocks;
-@property (nonatomic) NSUInteger startupCrashThresholdMs;
 @end
 
 @implementation BugsnagConfiguration

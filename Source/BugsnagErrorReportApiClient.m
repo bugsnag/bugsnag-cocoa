@@ -21,7 +21,7 @@
 @end
 
 @interface BugsnagErrorReportApiClient ()
-@property(nonatomic, strong) NSOperationQueue *backgroundQueue;
+@property(nonatomic, strong) NSOperationQueue *sendQueue;
 @property(nonatomic, strong) NSOperationQueue *mainQueue;
 @end
 
@@ -32,14 +32,14 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        _backgroundQueue = [NSOperationQueue new];
+        _sendQueue = [NSOperationQueue new];
         _mainQueue = [NSOperationQueue mainQueue];
-        _backgroundQueue.maxConcurrentOperationCount = 1;
+        _sendQueue.maxConcurrentOperationCount = 1;
 
-        if ([_backgroundQueue respondsToSelector:@selector(qualityOfService)]) {
-            _backgroundQueue.qualityOfService = NSQualityOfServiceUtility;
+        if ([_sendQueue respondsToSelector:@selector(qualityOfService)]) {
+            _sendQueue.qualityOfService = NSQualityOfServiceUtility;
         }
-        _backgroundQueue.name = @"Bugsnag Delivery Queue";
+        _sendQueue.name = @"Bugsnag Delivery Queue";
     }
     return self;
 }
@@ -76,7 +76,7 @@
                     onCompletion:onCompletion];
         } else {
             bsg_log_info(@"Sending async");
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [self sendReportData:reports
                              payload:reportData
                                toURL:url
@@ -133,6 +133,8 @@
                                   }];
         [task resume];
     } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         NSURLResponse *response = nil;
         request.HTTPBody = jsonData;
         [NSURLConnection sendSynchronousRequest:request
@@ -141,6 +143,7 @@
         if (onCompletion) {
             onCompletion(reports, error == nil, error);
         }
+#pragma clang diagnostic pop
     }
 }
 
