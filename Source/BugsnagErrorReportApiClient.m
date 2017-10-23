@@ -22,7 +22,6 @@
 
 @interface BugsnagErrorReportApiClient ()
 @property(nonatomic, strong) NSOperationQueue *sendQueue;
-@property(nonatomic, strong) NSOperationQueue *mainQueue;
 @end
 
 @interface BSGDeliveryOperation : NSOperation
@@ -33,7 +32,6 @@
 - (instancetype)init {
     if (self = [super init]) {
         _sendQueue = [NSOperationQueue new];
-        _mainQueue = [NSOperationQueue mainQueue];
         _sendQueue.maxConcurrentOperationCount = 1;
 
         if ([_sendQueue respondsToSelector:@selector(qualityOfService)]) {
@@ -67,24 +65,22 @@
     @try {
         NSArray *events = reportData[@"events"];
         BOOL synchronous = [BugsnagCrashSentry isCrashOnLaunch:[Bugsnag configuration] events:events];
-        NSOperationQueue *operationQueue;
 
         if (synchronous) {
             bsg_log_info(@"Crash during launch period, sending sync");
-            operationQueue = _mainQueue;
-        } else {
-            bsg_log_info(@"Sending async");
-            operationQueue = _sendQueue;
-            [_sendQueue cancelAllOperations];
-        }
-
-        [operationQueue addOperationWithBlock:^{
             [self sendReportData:reports
                          payload:reportData
                            toURL:url
                     onCompletion:onCompletion];
-        }];
-
+        } else {
+            bsg_log_info(@"Sending async");
+            [_sendQueue addOperationWithBlock:^{
+                [self sendReportData:reports
+                             payload:reportData
+                               toURL:url
+                        onCompletion:onCompletion];
+            }];
+        }
     } @catch (NSException *exception) {
         if (onCompletion) {
             onCompletion(reports, NO,
