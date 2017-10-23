@@ -67,22 +67,24 @@
     @try {
         NSArray *events = reportData[@"events"];
         BOOL synchronous = [BugsnagCrashSentry isCrashOnLaunch:[Bugsnag configuration] events:events];
+        NSOperationQueue *operationQueue;
 
         if (synchronous) {
             bsg_log_info(@"Crash during launch period, sending sync");
+            operationQueue = _mainQueue;
+        } else {
+            bsg_log_info(@"Sending async");
+            operationQueue = _sendQueue;
+            [_sendQueue cancelAllOperations];
+        }
+
+        [operationQueue addOperationWithBlock:^{
             [self sendReportData:reports
                          payload:reportData
                            toURL:url
                     onCompletion:onCompletion];
-        } else {
-            bsg_log_info(@"Sending async");
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [self sendReportData:reports
-                             payload:reportData
-                               toURL:url
-                        onCompletion:onCompletion];
-            });
-        }
+        }];
+
     } @catch (NSException *exception) {
         if (onCompletion) {
             onCompletion(reports, NO,
@@ -137,11 +139,11 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
         NSURLResponse *response = nil;
         request.HTTPBody = jsonData;
-        [NSURLConnection sendSynchronousRequest:request
-                              returningResponse:&response
-                                          error:&error];
+        NSData *data = [NSURLConnection sendSynchronousRequest:request
+                                             returningResponse:&response
+                                                         error:&error];
         if (onCompletion) {
-            onCompletion(reports, error == nil, error);
+            onCompletion(reports, data != nil, error);
         }
 #pragma clang diagnostic pop
     }
