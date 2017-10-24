@@ -7,6 +7,7 @@
 //
 
 #import "BugsnagHandledState.h"
+#import "BugsnagKeys.h"
 #import <XCTest/XCTest.h>
 
 @interface BugsnagHandledStateTest : XCTestCase
@@ -29,11 +30,11 @@
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:LogMessage
                                                    severity:BSGSeverityInfo
-                                                  attrValue:@"info"];
+                                                  attrValue:BSGKeyInfo];
     XCTAssertNotNil(state);
     XCTAssertFalse(state.unhandled);
     XCTAssertEqual(BSGSeverityInfo, state.currentSeverity);
-    XCTAssertEqualObjects(@"info", state.attrValue);
+    XCTAssertEqualObjects(BSGKeyInfo, state.attrValue);
     XCTAssertEqualObjects(@"level", state.attrKey);
 }
 

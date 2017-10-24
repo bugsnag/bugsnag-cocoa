@@ -30,6 +30,7 @@
 #import "BugsnagCrashReport.h"
 #import "BugsnagLogger.h"
 #import "BugsnagNotifier.h"
+#import "BugsnagKeys.h"
 
 // This is private in Bugsnag, but really we want package private so define
 // it here.
@@ -109,76 +110,12 @@
                    onCompletion:onCompletion];
 }
 
-- (void)sendReports:(NSArray<BugsnagCrashReport *> *)reports
-            payload:(NSDictionary *)reportData
-              toURL:(NSURL *)url
-       onCompletion:(BSG_KSCrashReportFilterCompletion)onCompletion {
-    @try {
-        NSError *error = nil;
-        NSData *jsonData =
-            [NSJSONSerialization dataWithJSONObject:reportData
-                                            options:NSJSONWritingPrettyPrinted
-                                              error:&error];
-
-        if (jsonData == nil) {
-            if (onCompletion) {
-                onCompletion(reports, NO, error);
-            }
-            return;
-        }
-        NSMutableURLRequest *request = [NSMutableURLRequest
-             requestWithURL:url
-                cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
-            timeoutInterval:15];
-        request.HTTPMethod = @"POST";
-        [request setValue:@"application/json"
-            forHTTPHeaderField:@"Content-Type"];
-
-        if ([NSURLSession class]) {
-            NSURLSession *session = [Bugsnag configuration].session;
-            if (!session) {
-                session = [NSURLSession
-                    sessionWithConfiguration:[NSURLSessionConfiguration
-                                                 defaultSessionConfiguration]];
-            }
-            NSURLSessionTask *task = [session
-                uploadTaskWithRequest:request
-                             fromData:jsonData
-                    completionHandler:^(NSData *_Nullable data,
-                                        NSURLResponse *_Nullable response,
-                                        NSError *_Nullable error) {
-                      if (onCompletion)
-                          onCompletion(reports, error == nil, error);
-                    }];
-            [task resume];
-        } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            NSURLResponse *response = nil;
-            request.HTTPBody = jsonData;
-            [NSURLConnection sendSynchronousRequest:request
-                                  returningResponse:&response
-                                              error:&error];
-            if (onCompletion) {
-                onCompletion(reports, error == nil, error);
-            }
-#pragma clang diagnostic pop
-        }
-    } @catch (NSException *exception) {
-        if (onCompletion) {
-            onCompletion(reports, NO,
-                         [NSError errorWithDomain:exception.reason
-                                             code:420
-                                         userInfo:@{@"exception" : exception}]);
-        }
-    }
-}
 
 // Generates the payload for notifying Bugsnag
 - (NSDictionary *)getBodyFromReports:(NSArray *)reports {
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-    BSGDictSetSafeObject(data, [Bugsnag configuration].apiKey, @"apiKey");
-    BSGDictSetSafeObject(data, [Bugsnag notifier].details, @"notifier");
+    BSGDictSetSafeObject(data, [Bugsnag configuration].apiKey, BSGKeyApiKey);
+    BSGDictSetSafeObject(data, [Bugsnag notifier].details, BSGKeyNotifier);
 
     NSMutableArray *formatted =
         [[NSMutableArray alloc] initWithCapacity:[reports count]];
@@ -188,7 +125,7 @@
                               [report serializableValueWithTopLevelData:data]);
     }
 
-    BSGDictSetSafeObject(data, formatted, @"events");
+    BSGDictSetSafeObject(data, formatted, BSGKeyEvents);
 
     return data;
 }

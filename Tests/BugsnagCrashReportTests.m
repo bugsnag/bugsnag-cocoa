@@ -10,6 +10,7 @@
 #import <XCTest/XCTest.h>
 
 #import "Bugsnag.h"
+#import "BugsnagKeys.h"
 #import "BugsnagCrashReport.h"
 #import "BugsnagHandledState.h"
 
@@ -39,12 +40,12 @@
 }
 
 - (void)testReadReleaseStage {
-    XCTAssertEqualObjects(self.report.releaseStage, @"production");
+    XCTAssertEqualObjects(self.report.releaseStage, BSGKeyProduction);
 }
 
 - (void)testReadNotifyReleaseStages {
     XCTAssertEqualObjects(self.report.notifyReleaseStages,
-                          (@[ @"production", @"development" ]));
+                          (@[ BSGKeyProduction, BSGKeyDevelopment ]));
 }
 
 - (void)testReadNotifyReleaseStagesSends {

@@ -235,8 +235,8 @@
 
 + (NSString *)currentCPUArch {
     NSString *result =
-        [self CPUArchForCPUType:bsg_kssysctl_int32ForName("hw.cputype")
-                        subType:bsg_kssysctl_int32ForName("hw.cpusubtype")];
+        [self CPUArchForCPUType:bsg_kssysctl_int32ForName(BSGKeyHwCputype)
+                        subType:bsg_kssysctl_int32ForName(BSGKeyHwCpusubtype)];
 
     return result ?: [NSString stringWithUTF8String:bsg_ksmachcurrentCPUArch()];
 }
@@ -358,7 +358,7 @@
 + (NSString *)modelName {
     if ([self isSimulatorBuild]) {
         return [NSProcessInfo processInfo]
-            .environment[@"SIMULATOR_MODEL_IDENTIFIER"];
+            .environment[BSGKeySimulatorModelId];
     } else {
 #if KSCRASH_HOST_OSX
         // MacOS has the machine in the model field, and no model
@@ -372,7 +372,7 @@
 + (NSString *)modelNumber {
     if ([self isSimulatorBuild]) {
         return [NSProcessInfo processInfo]
-            .environment[@"SIMULATOR_MODEL_IDENTIFIER"];
+            .environment[BSGKeySimulatorModelId];
     } else {
         return [self stringSysctl:BSGKeyHwModel];
     }

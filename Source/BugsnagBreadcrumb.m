@@ -38,7 +38,7 @@ NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
     case BSGBreadcrumbTypeUser:
         return @"user";
     case BSGBreadcrumbTypeError:
-        return @"error";
+        return BSGKeyError;
     case BSGBreadcrumbTypeState:
         return @"state";
     case BSGBreadcrumbTypeManual:

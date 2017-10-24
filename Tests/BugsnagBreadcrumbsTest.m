@@ -6,6 +6,7 @@
 //
 //
 
+#import "BugsnagKeys.h"
 #import "BugsnagBreadcrumb.h"
 #import <XCTest/XCTest.h>
 

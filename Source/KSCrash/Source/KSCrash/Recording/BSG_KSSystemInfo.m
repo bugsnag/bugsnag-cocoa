@@ -253,8 +253,8 @@
 
 + (NSString *)currentCPUArch {
     NSString *result =
-        [self CPUArchForCPUType:bsg_kssysctl_int32ForName("hw.cputype")
-                        subType:bsg_kssysctl_int32ForName("hw.cpusubtype")];
+        [self CPUArchForCPUType:bsg_kssysctl_int32ForName(BSGKeyHwCputype)
+                        subType:bsg_kssysctl_int32ForName(BSGKeyHwCpusubtype)];
 
     return result ?: [NSString stringWithUTF8String:bsg_ksmachcurrentCPUArch()];
 }
@@ -390,7 +390,7 @@
 #endif
     if ([self isSimulatorBuild]) {
         NSString *model = [NSProcessInfo processInfo]
-                              .environment[@"SIMULATOR_MODEL_IDENTIFIER"];
+                              .environment[BSGKeySimulatorModelId];
         [sysInfo bsg_ksc_safeSetObject:model forKey:@BSG_KSSystemField_Machine];
         [sysInfo bsg_ksc_safeSetObject:@"simulator"
                                 forKey:@BSG_KSSystemField_Model];
@@ -434,9 +434,9 @@
                             forKey:@BSG_KSSystemField_AppUUID];
     [sysInfo bsg_ksc_safeSetObject:[self currentCPUArch]
                             forKey:@BSG_KSSystemField_CPUArch];
-    [sysInfo bsg_ksc_safeSetObject:[self int32Sysctl:@"hw.cputype"]
+    [sysInfo bsg_ksc_safeSetObject:[self int32Sysctl:@BSGKeyHwCputype]
                             forKey:@BSG_KSSystemField_CPUType];
-    [sysInfo bsg_ksc_safeSetObject:[self int32Sysctl:@"hw.cpusubtype"]
+    [sysInfo bsg_ksc_safeSetObject:[self int32Sysctl:@BSGKeyHwCpusubtype]
                             forKey:@BSG_KSSystemField_CPUSubType];
     [sysInfo bsg_ksc_safeSetObject:[NSNumber numberWithInt:header->cputype]
                             forKey:@BSG_KSSystemField_BinaryCPUType];

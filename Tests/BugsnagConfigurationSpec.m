@@ -7,6 +7,7 @@
 //
 #import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
+#import "BugsnagKeys.h"
 
 @interface SomeDelegate : NSObject <NSURLSessionTaskDelegate>
 @property(nonatomic) BOOL didInvoke;
