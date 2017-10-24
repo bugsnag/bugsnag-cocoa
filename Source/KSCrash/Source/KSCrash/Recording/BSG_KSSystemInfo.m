@@ -26,15 +26,13 @@
 
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSSystemInfoC.h"
-
 #import "BSG_KSDynamicLinker.h"
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSSafeCollections.h"
 #import "BSG_KSSysCtl.h"
 #import "BSG_KSSystemCapabilities.h"
-
-//#define BSG_KSLogger_LocalLevel TRACE
+#import "BugsnagKeys.h"
 #import "BSG_KSLogger.h"
 
 #import <CommonCrypto/CommonDigest.h>
@@ -142,7 +140,7 @@
     NSBundle *mainBundle = [NSBundle mainBundle];
     NSDictionary *infoDict = [mainBundle infoDictionary];
     NSString *bundlePath = [mainBundle bundlePath];
-    NSString *executableName = infoDict[@"CFBundleExecutable"];
+    NSString *executableName = infoDict[BSGKeyExecutableName];
     return [bundlePath stringByAppendingPathComponent:executableName];
 }
 
@@ -190,13 +188,13 @@
 #endif
     {
         data = [NSMutableData dataWithLength:6];
-        bsg_kssysctl_getMacAddress("en0", [data mutableBytes]);
+        bsg_kssysctl_getMacAddress(BSGKeyDefaultMacName, [data mutableBytes]);
     }
 
     // Append some device-specific data.
-    [data appendData:(NSData * _Nonnull)[[self stringSysctl:@"hw.machine"]
+    [data appendData:(NSData * _Nonnull)[[self stringSysctl:BSGKeyHwMachine]
                          dataUsingEncoding:NSUTF8StringEncoding]];
-    [data appendData:(NSData * _Nonnull)[[self stringSysctl:@"hw.model"]
+    [data appendData:(NSData * _Nonnull)[[self stringSysctl:BSGKeyHwModel]
                          dataUsingEncoding:NSUTF8StringEncoding]];
     [data appendData:(NSData * _Nonnull)[[self currentCPUArch]
                          dataUsingEncoding:NSUTF8StringEncoding]];
@@ -399,12 +397,12 @@
     } else {
 #if KSCRASH_HOST_OSX
         // MacOS has the machine in the model field, and no model
-        [sysInfo bsg_ksc_safeSetObject:[self stringSysctl:@"hw.model"]
+        [sysInfo bsg_ksc_safeSetObject:[self stringSysctl:BSGKeyHwModel]
                                 forKey:@BSG_KSSystemField_Machine];
 #else
-        [sysInfo bsg_ksc_safeSetObject:[self stringSysctl:@"hw.machine"]
+        [sysInfo bsg_ksc_safeSetObject:[self stringSysctl:BSGKeyHwMachine]
                                 forKey:@BSG_KSSystemField_Machine];
-        [sysInfo bsg_ksc_safeSetObject:[self stringSysctl:@"hw.model"]
+        [sysInfo bsg_ksc_safeSetObject:[self stringSysctl:BSGKeyHwModel]
                                 forKey:@BSG_KSSystemField_Model];
 #endif
     }
@@ -420,7 +418,7 @@
                             forKey:@BSG_KSSystemField_AppStartTime];
     [sysInfo bsg_ksc_safeSetObject:[self executablePath]
                             forKey:@BSG_KSSystemField_ExecutablePath];
-    [sysInfo bsg_ksc_safeSetObject:[infoDict objectForKey:@"CFBundleExecutable"]
+    [sysInfo bsg_ksc_safeSetObject:[infoDict objectForKey:BSGKeyExecutableName]
                             forKey:@BSG_KSSystemField_Executable];
     [sysInfo bsg_ksc_safeSetObject:[infoDict objectForKey:@"CFBundleIdentifier"]
                             forKey:@BSG_KSSystemField_BundleID];

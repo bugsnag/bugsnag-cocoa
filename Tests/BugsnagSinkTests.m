@@ -66,7 +66,7 @@
 }
 
 - (void)testCorrectNotifierKeys {
-    NSArray *expectedKeys = @[ @"name", @"url", @"version" ];
+    NSArray *expectedKeys = @[ BSGKeyName, @"url", @"version" ];
     NSArray *notifierKeys = [self.processedData[@"notifier"] allKeys];
     XCTAssertEqualObjects(
         [notifierKeys sortedArrayUsingSelector:@selector(compare:)],
@@ -74,7 +74,7 @@
 }
 
 - (void)testNotifierName {
-    NSString *name = self.processedData[@"notifier"][@"name"];
+    NSString *name = self.processedData[@"notifier"][BSGKeyName];
 #if TARGET_OS_TV
     XCTAssertEqualObjects(name, @"tvOS Bugsnag Notifier");
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
@@ -111,7 +111,7 @@
         @"deviceState",
         @"dsymUUID",
         @"exceptions",
-        @"metaData",
+        BSGKeyMetaData,
         @"payloadVersion",
         @"severity",
         @"severityReason",
@@ -159,7 +159,7 @@
 
 - (void)testEventMetadataUser {
     NSDictionary *user =
-        [self.processedData[@"events"] firstObject][@"metaData"][@"user"];
+        [self.processedData[@"events"] firstObject][BSGKeyMetaData][@"user"];
     NSDictionary *expected =
         @{@"id" : self.rawReportData[@"system"][@"device_app_hash"]};
     XCTAssertEqualObjects(user, expected);
@@ -167,7 +167,7 @@
 
 - (void)testEventMetadataCustomTab {
     NSDictionary *customTab =
-        [self.processedData[@"events"] firstObject][@"metaData"][@"tab"];
+        [self.processedData[@"events"] firstObject][BSGKeyMetaData][@"tab"];
     NSDictionary *expected = @{@"key" : @"value"};
     XCTAssertEqualObjects(customTab, expected);
 }
@@ -199,7 +199,7 @@
 - (void)testEventMetadataErrorSignal {
     NSDictionary *signal = [[self.processedData[@"events"] firstObject]
         valueForKeyPath:@"metaData.error.signal"];
-    XCTAssert([signal[@"name"] isEqual:@"SIGABRT"]);
+    XCTAssert([signal[BSGKeyName] isEqual:@"SIGABRT"]);
     XCTAssert([signal[@"signal"] isEqual:@6]);
     XCTAssert([signal[@"code"] isEqual:@0]);
 }
@@ -216,7 +216,7 @@
 - (void)testEventMetadataErrorUserReported {
     NSDictionary *reported = [[self.processedData[@"events"] firstObject]
         valueForKeyPath:@"metaData.error.user_reported"];
-    XCTAssertEqualObjects(reported[@"name"], @"name");
+    XCTAssertEqualObjects(reported[BSGKeyName], BSGKeyName);
     XCTAssertEqualObjects(reported[@"line_of_code"], @"");
 }
 
@@ -247,9 +247,9 @@
     NSArray *exceptions =
         [self.processedData[@"events"] firstObject][@"exceptions"];
     NSDictionary *exception = [exceptions firstObject];
-    XCTAssertEqualObjects(exception[@"message"],
+    XCTAssertEqualObjects(exception[BSGKeyMessage],
                           @"You should've written more tests!");
-    XCTAssertEqualObjects(exception[@"errorClass"], @"name");
+    XCTAssertEqualObjects(exception[@"errorClass"], BSGKeyName);
 }
 
 - (void)testExceptionStacktrace {
@@ -324,7 +324,7 @@
 
     NSString *expected =
         [BugsnagHandledState stringFromSeverityReason:HandledException];
-    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    XCTAssertEqualObjects(expected, severityReason[BSGKeyType]);
     XCTAssertNil(severityReason[@"attributes"]);
 }
 
@@ -341,7 +341,7 @@
 
     NSString *expected =
         [BugsnagHandledState stringFromSeverityReason:UnhandledException];
-    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    XCTAssertEqualObjects(expected, severityReason[BSGKeyType]);
     XCTAssertNil(severityReason[@"attributes"]);
 }
 
@@ -358,7 +358,7 @@
 
     NSString *expected =
         [BugsnagHandledState stringFromSeverityReason:PromiseRejection];
-    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    XCTAssertEqualObjects(expected, severityReason[BSGKeyType]);
     XCTAssertNil(severityReason[@"attributes"]);
 }
 
@@ -375,7 +375,7 @@
 
     NSString *expected =
         [BugsnagHandledState stringFromSeverityReason:UserSpecifiedSeverity];
-    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    XCTAssertEqualObjects(expected, severityReason[BSGKeyType]);
     XCTAssertNil(severityReason[@"attributes"]);
 }
 
@@ -401,7 +401,7 @@
 
     NSString *expected =
         [BugsnagHandledState stringFromSeverityReason:UserCallbackSetSeverity];
-    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    XCTAssertEqualObjects(expected, severityReason[BSGKeyType]);
     XCTAssertNil(severityReason[@"attributes"]);
 }
 
@@ -420,7 +420,7 @@
 
     NSString *expected =
         [BugsnagHandledState stringFromSeverityReason:HandledError];
-    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    XCTAssertEqualObjects(expected, severityReason[BSGKeyType]);
 
     NSDictionary *attrs = severityReason[@"attributes"];
     XCTAssertNil(attrs);
@@ -440,7 +440,7 @@
     XCTAssertNotNil(severityReason);
 
     NSString *expected = [BugsnagHandledState stringFromSeverityReason:Signal];
-    XCTAssertEqualObjects(expected, severityReason[@"type"]);
+    XCTAssertEqualObjects(expected, severityReason[BSGKeyType]);
 
     NSDictionary *attrs = severityReason[@"attributes"];
     XCTAssertNotNil(attrs);

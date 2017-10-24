@@ -29,6 +29,7 @@
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagMetaData.h"
 #import "BugsnagNotifier.h"
+#import "BugsnagKeys.h"
 
 @interface Bugsnag ()
 + (BugsnagNotifier *)notifier;
@@ -47,7 +48,7 @@
         _config = [[BugsnagMetaData alloc] init];
         _apiKey = @"";
         _autoNotify = YES;
-        _notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
+        _notifyURL = [NSURL URLWithString:BSGDefaultNotifyUrl];
         _beforeNotifyHooks = [NSMutableArray new];
         _beforeSendBlocks = [NSMutableArray new];
         _notifyReleaseStages = nil;
@@ -76,7 +77,7 @@
        withName:(NSString *)userName
        andEmail:(NSString *)userEmail {
     [self.metaData addAttribute:@"id" withValue:userId toTabWithName:@"user"];
-    [self.metaData addAttribute:@"name"
+    [self.metaData addAttribute:BSGKeyName
                       withValue:userName
                   toTabWithName:@"user"];
     [self.metaData addAttribute:@"email"

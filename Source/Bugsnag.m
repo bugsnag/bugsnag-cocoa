@@ -31,6 +31,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
+#import "BugsnagKeys.h"
 
 static BugsnagNotifier *bsg_g_bugsnag_notifier = NULL;
 
@@ -172,7 +173,7 @@ static BugsnagNotifier *bsg_g_bugsnag_notifier = NULL;
 
 + (void)leaveBreadcrumbWithMessage:(NSString *)message {
     [self leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumbs) {
-      crumbs.metadata = @{@"message" : message};
+      crumbs.metadata = @{BSGKeyMessage : message};
     }];
 }
 

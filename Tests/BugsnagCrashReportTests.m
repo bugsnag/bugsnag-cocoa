@@ -144,7 +144,7 @@
     for (NSString *reservedWord in @[@"fatal error", @"assertion failed"]) {
         addresses[@"r14"] = @{
                               @"address": @4511089532,
-                              @"type": @"string",
+                              BSGKeyType: @"string",
                               @"value": reservedWord
                               };
         XCTAssertNil([errorReport enhancedErrorMessageForThread:thread]);
@@ -153,7 +153,7 @@
     // returns msg for "fatal error" with additional dict present
     addresses[@"r12"] = @{
                           @"address": @4511086448,
-                          @"type": @"string",
+                          BSGKeyType: @"string",
                           @"value": @"Whoops - fatalerror"
                           };
     XCTAssertEqualObjects(@"Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
@@ -162,7 +162,7 @@
     // ignores additional dict if more than 2 "/" present
     addresses[@"r24"] = @{
                           @"address": @4511084983,
-                          @"type": @"string",
+                          BSGKeyType: @"string",
                           @"value": @"/usr/include/lib/something.swift"
                           };
     XCTAssertEqualObjects(@"Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
@@ -170,7 +170,7 @@
     // ignores dict if not type string
     addresses[@"r25"] = @{
                           @"address": @4511084983,
-                          @"type": @"long",
+                          BSGKeyType: @"long",
                           @"value": @"Swift is hard"
                           };
     XCTAssertEqualObjects(@"Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
@@ -178,7 +178,7 @@
     // sorts and concatenates multiple multiple messages
     addresses[@"r26"] = @{
                           @"address": @4511082095,
-                          @"type": @"string",
+                          BSGKeyType: @"string",
                           @"value": @"Swift is hard"
                           };
     XCTAssertEqualObjects(@"Swift is hard | Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
@@ -186,7 +186,7 @@
     // ignores stack frames
     addresses[@"stack523409"] = @{
                           @"address": @4511080001,
-                          @"type": @"string",
+                          BSGKeyType: @"string",
                           @"value": @"Not a register"
                           };
     XCTAssertEqualObjects(@"Swift is hard | Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);

@@ -19,6 +19,7 @@
 #import "BugsnagHandledState.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSystemInfo.h"
+#import "BugsnagKeys.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {
@@ -54,7 +55,7 @@ NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                 [image[@"image_vmaddr"] unsignedLongValue];
 
             BSGDictInsertIfNotNil(formatted, image[@"uuid"], @"machoUUID");
-            BSGDictInsertIfNotNil(formatted, image[@"name"], @"machoFile");
+            BSGDictInsertIfNotNil(formatted, image[BSGKeyName], @"machoFile");
             BSGDictSetSafeObject(
                 formatted, [NSString stringWithFormat:@"0x%lx", imageSlide],
                 @"machoVMAddress");
@@ -71,15 +72,15 @@ NSString *_Nonnull BSGParseErrorClass(NSDictionary *error,
     NSString *errorClass;
 
     if ([errorType isEqualToString:@"cpp_exception"]) {
-        errorClass = error[@"cpp_exception"][@"name"];
+        errorClass = error[@"cpp_exception"][BSGKeyName];
     } else if ([errorType isEqualToString:@"mach"]) {
         errorClass = error[@"mach"][@"exception_name"];
     } else if ([errorType isEqualToString:@"signal"]) {
-        errorClass = error[@"signal"][@"name"];
+        errorClass = error[@"signal"][BSGKeyName];
     } else if ([errorType isEqualToString:@"nsexception"]) {
-        errorClass = error[@"nsexception"][@"name"];
+        errorClass = error[@"nsexception"][BSGKeyName];
     } else if ([errorType isEqualToString:@"user"]) {
-        errorClass = error[@"user_reported"][@"name"];
+        errorClass = error[@"user_reported"][BSGKeyName];
     }
 
     if (!errorClass) { // use a default value
@@ -132,7 +133,7 @@ NSDictionary *BSGParseApp(NSDictionary *report, NSString *appVersion) {
 
     BSGDictSetSafeObject(app, system[@"CFBundleVersion"], @"bundleVersion");
     BSGDictSetSafeObject(app, system[@"CFBundleIdentifier"], @"id");
-    BSGDictSetSafeObject(app, system[@"CFBundleExecutable"], @"name");
+    BSGDictSetSafeObject(app, system[BSGKeyExecutableName], BSGKeyName);
     BSGDictSetSafeObject(app, [Bugsnag configuration].releaseStage,
                          @"releaseStage");
     if ([appVersion isKindOfClass:[NSString class]]) {
@@ -252,9 +253,9 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     if (type && frames) {
         return @{
             @"stacktrace" : frames,
-            @"type" : type,
+            BSGKeyType : type,
             @"errorClass" : errorClass,
-            @"message" : message
+            BSGKeyMessage : message
         };
     }
 
@@ -305,7 +306,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
         _releaseStage = BSGParseReleaseStage(report);
 
         _error = [report valueForKeyPath:@"crash.error"];
-        _errorType = _error[@"type"];
+        _errorType = _error[BSGKeyType];
         _errorClass = BSGParseErrorClass(_error, _errorType);
         _errorMessage = BSGParseErrorMessage(report, _error, _errorType);
         _binaryImages = report[@"binary_images"];
@@ -470,8 +471,8 @@ initWithErrorName:(NSString *_Nonnull)name
     } else {
         NSMutableDictionary *exception = [NSMutableDictionary dictionary];
         BSGDictSetSafeObject(exception, [self errorClass], @"errorClass");
-        BSGDictInsertIfNotNil(exception, [self errorMessage], @"message");
-        BSGDictInsertIfNotNil(exception, DEFAULT_EXCEPTION_TYPE, @"type");
+        BSGDictInsertIfNotNil(exception, [self errorMessage], BSGKeyMessage);
+        BSGDictInsertIfNotNil(exception, DEFAULT_EXCEPTION_TYPE, BSGKeyType);
         BSGDictSetSafeObject(event, @[ exception ], @"exceptions");
 
         BSGDictSetSafeObject(
@@ -482,7 +483,7 @@ initWithErrorName:(NSString *_Nonnull)name
     BSGDictSetSafeObject(event, BSGFormatSeverity(self.severity), @"severity");
     BSGDictSetSafeObject(event, [self breadcrumbs], @"breadcrumbs");
     BSGDictSetSafeObject(event, @"3", @"payloadVersion");
-    BSGDictSetSafeObject(event, metaData, @"metaData");
+    BSGDictSetSafeObject(event, metaData, BSGKeyMetaData);
     BSGDictSetSafeObject(event, [self deviceState], @"deviceState");
     BSGDictSetSafeObject(event, [self device], @"device");
     BSGDictSetSafeObject(event, [self appState], @"appState");
@@ -496,7 +497,7 @@ initWithErrorName:(NSString *_Nonnull)name
     NSMutableDictionary *severityReason = [NSMutableDictionary new];
     NSString *reasonType = [BugsnagHandledState
         stringFromSeverityReason:self.handledState.calculateSeverityReasonType];
-    severityReason[@"type"] = reasonType;
+    severityReason[BSGKeyType] = reasonType;
 
     if (self.handledState.attrKey && self.handledState.attrValue) {
         severityReason[@"attributes"] =
@@ -535,7 +536,7 @@ initWithErrorName:(NSString *_Nonnull)name
             NSString *errMsg = [self enhancedErrorMessageForThread:thread];
             
             if (errMsg) { // use enhanced error message (currently swift assertions)
-                BSGDictInsertIfNotNil(exception, errMsg, @"message");
+                BSGDictInsertIfNotNil(exception, errMsg, BSGKeyMessage);
             }
             
             NSUInteger seen = 0;
@@ -571,10 +572,10 @@ initWithErrorName:(NSString *_Nonnull)name
             NSMutableDictionary *threadDict = [NSMutableDictionary dictionary];
             BSGDictSetSafeObject(threadDict, thread[@"index"], @"id");
             BSGDictSetSafeObject(threadDict, threadStack, @"stacktrace");
-            BSGDictSetSafeObject(threadDict, DEFAULT_EXCEPTION_TYPE, @"type");
+            BSGDictSetSafeObject(threadDict, DEFAULT_EXCEPTION_TYPE, BSGKeyType);
             // only if this is enabled in BSG_KSCrash.
-            if (thread[@"name"]) {
-                BSGDictSetSafeObject(threadDict, thread[@"name"], @"name");
+            if (thread[BSGKeyName]) {
+                BSGDictSetSafeObject(threadDict, thread[BSGKeyName], BSGKeyName);
             }
 
             BSGArrayAddSafeObject(bugsnagThreads, threadDict);
@@ -602,7 +603,7 @@ initWithErrorName:(NSString *_Nonnull)name
                 hasReservedWord = hasReservedWord || [self isReservedWord:contentValue];
                 
                 // must be a string that isn't a reserved word and isn't a filepath
-                if ([@"string" isEqualToString:data[@"type"]]
+                if ([@"string" isEqualToString:data[BSGKeyType]]
                     && ![self isReservedWord:contentValue]
                     && !([[contentValue componentsSeparatedByString:@"/"] count] > 2)) {
                     

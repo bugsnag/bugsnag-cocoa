@@ -34,6 +34,7 @@
 #import "BugsnagHandledState.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSink.h"
+#import "BugsnagKeys.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -160,7 +161,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         self.configuration = initConfiguration;
         self.state = [[BugsnagMetaData alloc] init];
         self.details = [@{
-            @"name" : @"Bugsnag Objective-C",
+            BSGKeyName : @"Bugsnag Objective-C",
             @"version" : NOTIFIER_VERSION,
             @"url" : NOTIFIER_URL
         } mutableCopy];
@@ -263,9 +264,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self updateAutomaticBreadcrumbDetectionSettings];
 
 #if TARGET_OS_TV
-    [self.details setValue:@"tvOS Bugsnag Notifier" forKey:@"name"];
+    [self.details setValue:@"tvOS Bugsnag Notifier" forKey:BSGKeyName];
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    [self.details setValue:@"iOS Bugsnag Notifier" forKey:@"name"];
+    [self.details setValue:@"iOS Bugsnag Notifier" forKey:BSGKeyName];
 
     [[NSNotificationCenter defaultCenter]
         addObserver:self
@@ -294,7 +295,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self batteryChanged:nil];
     [self orientationChanged:nil];
 #elif TARGET_OS_MAC
-    [self.details setValue:@"OSX Bugsnag Notifier" forKey:@"name"];
+    [self.details setValue:@"OSX Bugsnag Notifier" forKey:BSGKeyName];
 #endif
 }
 
@@ -448,7 +449,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
       crumb.type = BSGBreadcrumbTypeError;
       crumb.name = reportName;
       crumb.metadata = @{
-          @"message" : reportMessage,
+          BSGKeyMessage : reportMessage,
           @"severity" : BSGFormatSeverity(report.severity)
       };
     }];
@@ -544,8 +545,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
         BSGBreadcrumbNameForNotificationName(notif.name);
 
     if (lastBreadcrumb &&
-        [orientationNotifName isEqualToString:lastBreadcrumb[@"name"]]) {
-        NSDictionary *metaData = lastBreadcrumb[@"metaData"];
+        [orientationNotifName isEqualToString:lastBreadcrumb[BSGKeyName]]) {
+        NSDictionary *metaData = lastBreadcrumb[BSGKeyMetaData];
 
         if ([orientation isEqualToString:metaData[@"orientation"]]) {
             return; // ignore duplicate orientation event
