@@ -126,8 +126,9 @@
                                   completionHandler:^(NSData *_Nullable data,
                                                       NSURLResponse *_Nullable response,
                                                       NSError *_Nullable error) {
-                                      if (onCompletion)
-                                          onCompletion(reports, error == nil, error);
+                                      if (onCompletion) {
+                                          onCompletion(reports, data != nil, error);
+                                      }
                                   }];
         [task resume];
     } else {
