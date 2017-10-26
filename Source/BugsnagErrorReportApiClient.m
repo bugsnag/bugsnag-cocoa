@@ -74,6 +74,7 @@
                     onCompletion:onCompletion];
         } else {
             bsg_log_info(@"Sending async");
+            [_sendQueue cancelAllOperations];
             [_sendQueue addOperationWithBlock:^{
                 [self sendReportData:reports
                              payload:reportData
@@ -147,4 +148,3 @@
 }
 
 @end
-
