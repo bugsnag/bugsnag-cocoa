@@ -475,21 +475,22 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)metaDataChanged:(BugsnagMetaData *)metaData {
-
-    if (metaData == self.configuration.metaData) {
-        if ([self.metaDataLock tryLock]) {
+    @synchronized(metaData) {
+        if (metaData == self.configuration.metaData) {
+            if ([self.metaDataLock tryLock]) {
+                BSSerializeJSONDictionary([metaData toDictionary],
+                                          &bsg_g_bugsnag_data.metaDataJSON);
+                [self.metaDataLock unlock];
+            }
+        } else if (metaData == self.configuration.config) {
+            BSSerializeJSONDictionary([metaData getTab:BSTabConfig],
+                                      &bsg_g_bugsnag_data.configJSON);
+        } else if (metaData == self.state) {
             BSSerializeJSONDictionary([metaData toDictionary],
-                                      &bsg_g_bugsnag_data.metaDataJSON);
-            [self.metaDataLock unlock];
+                                      &bsg_g_bugsnag_data.stateJSON);
+        } else {
+            bsg_log_debug(@"Unknown metadata dictionary changed");
         }
-    } else if (metaData == self.configuration.config) {
-        BSSerializeJSONDictionary([metaData getTab:BSTabConfig],
-                                  &bsg_g_bugsnag_data.configJSON);
-    } else if (metaData == self.state) {
-        BSSerializeJSONDictionary([metaData toDictionary],
-                                  &bsg_g_bugsnag_data.stateJSON);
-    } else {
-        bsg_log_debug(@"Unknown metadata dictionary changed");
     }
 }
 
