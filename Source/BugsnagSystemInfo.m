@@ -14,9 +14,8 @@
 #import "BSG_KSSysCtl.h"
 #import "BSG_KSSystemCapabilities.h"
 #import "BSG_KSSystemInfo.h"
-
-//#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
+#import "BugsnagKeys.h"
 
 #import <CommonCrypto/CommonDigest.h>
 #if BSG_KSCRASH_HAS_UIKIT
@@ -123,7 +122,7 @@
     NSBundle *mainBundle = [NSBundle mainBundle];
     NSDictionary *infoDict = [mainBundle infoDictionary];
     NSString *bundlePath = [mainBundle bundlePath];
-    NSString *executableName = infoDict[@"CFBundleExecutable"];
+    NSString *executableName = infoDict[BSGKeyExecutableName];
     return [bundlePath stringByAppendingPathComponent:executableName];
 }
 
@@ -171,13 +170,13 @@
 #endif
     {
         data = [NSMutableData dataWithLength:6];
-        bsg_kssysctl_getMacAddress("en0", [data mutableBytes]);
+        bsg_kssysctl_getMacAddress(BSGKeyDefaultMacName, [data mutableBytes]);
     }
 
     // Append some device-specific data.
-    [data appendData:(NSData * _Nonnull)[[self stringSysctl:@"hw.machine"]
+    [data appendData:(NSData * _Nonnull)[[self stringSysctl:BSGKeyHwMachine]
                          dataUsingEncoding:NSUTF8StringEncoding]];
-    [data appendData:(NSData * _Nonnull)[[self stringSysctl:@"hw.model"]
+    [data appendData:(NSData * _Nonnull)[[self stringSysctl:BSGKeyHwModel]
                          dataUsingEncoding:NSUTF8StringEncoding]];
     [data appendData:(NSData * _Nonnull)[[self currentCPUArch]
                          dataUsingEncoding:NSUTF8StringEncoding]];
@@ -236,8 +235,8 @@
 
 + (NSString *)currentCPUArch {
     NSString *result =
-        [self CPUArchForCPUType:bsg_kssysctl_int32ForName("hw.cputype")
-                        subType:bsg_kssysctl_int32ForName("hw.cpusubtype")];
+        [self CPUArchForCPUType:bsg_kssysctl_int32ForName(BSGKeyHwCputype)
+                        subType:bsg_kssysctl_int32ForName(BSGKeyHwCpusubtype)];
 
     return result ?: [NSString stringWithUTF8String:bsg_ksmachcurrentCPUArch()];
 }
@@ -359,13 +358,13 @@
 + (NSString *)modelName {
     if ([self isSimulatorBuild]) {
         return [NSProcessInfo processInfo]
-            .environment[@"SIMULATOR_MODEL_IDENTIFIER"];
+            .environment[BSGKeySimulatorModelId];
     } else {
 #if KSCRASH_HOST_OSX
         // MacOS has the machine in the model field, and no model
-        return [self stringSysctl:@"hw.model"];
+        return [self stringSysctl:BSGKeyHwModel];
 #else
-        return [self stringSysctl:@"hw.machine"];
+        return [self stringSysctl:BSGKeyHwMachine];
 #endif
     }
 }
@@ -373,9 +372,9 @@
 + (NSString *)modelNumber {
     if ([self isSimulatorBuild]) {
         return [NSProcessInfo processInfo]
-            .environment[@"SIMULATOR_MODEL_IDENTIFIER"];
+            .environment[BSGKeySimulatorModelId];
     } else {
-        return [self stringSysctl:@"hw.model"];
+        return [self stringSysctl:BSGKeyHwModel];
     }
 }
 
