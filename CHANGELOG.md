@@ -1,5 +1,11 @@
 Changelog
 =========
+
+## 5.13.1 (26 Oct 2017)
+
+* Additional method prefixing
+* Prevent possible memory leak in connectivity check
+
 ## 5.13.0 (12 Oct 2017)
 
 * Update podspec iOS version to 8.0

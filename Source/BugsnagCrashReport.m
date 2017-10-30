@@ -517,7 +517,7 @@ initWithErrorName:(NSString *_Nonnull)name
         user = [NSMutableDictionary dictionary];
     BSGDictSetSafeObject(metaData, user, BSGKeyUser);
 
-    if (!user[BSGKeyId]) {
+    if (!user[BSGKeyId] && self.device[BSGKeyId]) { // if device id is null, don't set user id to default
         BSGDictSetSafeObject(user, [self deviceAppHash], BSGKeyId);
     }
 
