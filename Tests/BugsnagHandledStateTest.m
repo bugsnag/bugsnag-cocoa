@@ -7,7 +7,6 @@
 //
 
 #import "BugsnagHandledState.h"
-#import "BugsnagKeys.h"
 #import <XCTest/XCTest.h>
 
 @interface BugsnagHandledStateTest : XCTestCase
@@ -18,7 +17,7 @@
 
 - (void)testUnhandledException {
     BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
+    [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
     XCTAssertNotNil(state);
     XCTAssertTrue(state.unhandled);
     XCTAssertEqual(BSGSeverityError, state.currentSeverity);
@@ -28,19 +27,19 @@
 
 - (void)testLogMessage {
     BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:LogMessage
-                                                   severity:BSGSeverityInfo
-                                                  attrValue:BSGKeyInfo];
+    [BugsnagHandledState handledStateWithSeverityReason:LogMessage
+                                               severity:BSGSeverityInfo
+                                              attrValue:@"info"];
     XCTAssertNotNil(state);
     XCTAssertFalse(state.unhandled);
     XCTAssertEqual(BSGSeverityInfo, state.currentSeverity);
-    XCTAssertEqualObjects(BSGKeyInfo, state.attrValue);
+    XCTAssertEqualObjects(@"info", state.attrValue);
     XCTAssertEqualObjects(@"level", state.attrKey);
 }
 
 - (void)testHandledException {
     BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     XCTAssertNotNil(state);
     XCTAssertFalse(state.unhandled);
     XCTAssertEqual(BSGSeverityWarning, state.currentSeverity);
@@ -50,9 +49,9 @@
 
 - (void)testUserSpecified {
     BugsnagHandledState *state = [BugsnagHandledState
-        handledStateWithSeverityReason:UserSpecifiedSeverity
-                              severity:BSGSeverityInfo
-                             attrValue:nil];
+                                  handledStateWithSeverityReason:UserSpecifiedSeverity
+                                  severity:BSGSeverityInfo
+                                  attrValue:nil];
     XCTAssertNotNil(state);
     XCTAssertFalse(state.unhandled);
     XCTAssertEqual(BSGSeverityInfo, state.currentSeverity);
@@ -62,9 +61,9 @@
 
 - (void)testCallbackSpecified {
     BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     XCTAssertEqual(HandledException, state.calculateSeverityReasonType);
-
+    
     state.currentSeverity = BSGSeverityInfo;
     XCTAssertEqual(UserCallbackSetSeverity, state.calculateSeverityReasonType);
     XCTAssertNil(state.attrValue);
@@ -73,9 +72,9 @@
 
 - (void)testHandledError {
     BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:HandledError
-                                                   severity:BSGSeverityWarning
-                                                  attrValue:@"Test"];
+    [BugsnagHandledState handledStateWithSeverityReason:HandledError
+                                               severity:BSGSeverityWarning
+                                              attrValue:@"Test"];
     XCTAssertNotNil(state);
     XCTAssertFalse(state.unhandled);
     XCTAssertEqual(BSGSeverityWarning, state.currentSeverity);
@@ -84,9 +83,9 @@
 
 - (void)testSignal {
     BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:Signal
-                                                   severity:BSGSeverityError
-                                                  attrValue:@"Test"];
+    [BugsnagHandledState handledStateWithSeverityReason:Signal
+                                               severity:BSGSeverityError
+                                              attrValue:@"Test"];
     XCTAssertNotNil(state);
     XCTAssertTrue(state.unhandled);
     XCTAssertEqual(BSGSeverityError, state.currentSeverity);
@@ -95,7 +94,7 @@
 
 - (void)testPromiseRejection {
     BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:PromiseRejection];
+    [BugsnagHandledState handledStateWithSeverityReason:PromiseRejection];
     XCTAssertNotNil(state);
     XCTAssertTrue(state.unhandled);
     XCTAssertEqual(BSGSeverityError, state.currentSeverity);

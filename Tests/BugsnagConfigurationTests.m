@@ -1,6 +1,5 @@
 #import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
-#import "BugsnagKeys.h"
 #import <XCTest/XCTest.h>
 
 @interface BugsnagConfigurationTests : XCTestCase
@@ -42,14 +41,14 @@
 - (void)testNotifyReleaseStagesIncludedInManySends {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     config.releaseStage = @"beta";
-    config.notifyReleaseStages = @[ @"beta", BSGKeyProduction ];
+    config.notifyReleaseStages = @[ @"beta", @"production" ];
     XCTAssertTrue([config shouldSendReports]);
 }
 
 - (void)testNotifyReleaseStagesExcludedSkipsSending {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     config.releaseStage = @"beta";
-    config.notifyReleaseStages = @[ BSGKeyProduction ];
+    config.notifyReleaseStages = @[ @"production" ];
     XCTAssertFalse([config shouldSendReports]);
 }
 

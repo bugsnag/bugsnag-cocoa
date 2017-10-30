@@ -10,7 +10,6 @@
 #import <XCTest/XCTest.h>
 
 #import "Bugsnag.h"
-#import "BugsnagKeys.h"
 #import "BugsnagCrashReport.h"
 #import "BugsnagHandledState.h"
 
@@ -28,9 +27,9 @@
                                                    encoding:NSUTF8StringEncoding
                                                       error:nil];
     NSDictionary *dictionary = [NSJSONSerialization
-        JSONObjectWithData:[contents dataUsingEncoding:NSUTF8StringEncoding]
-                   options:0
-                     error:nil];
+                                JSONObjectWithData:[contents dataUsingEncoding:NSUTF8StringEncoding]
+                                options:0
+                                error:nil];
     self.report = [[BugsnagCrashReport alloc] initWithKSReport:dictionary];
 }
 
@@ -40,12 +39,12 @@
 }
 
 - (void)testReadReleaseStage {
-    XCTAssertEqualObjects(self.report.releaseStage, BSGKeyProduction);
+    XCTAssertEqualObjects(self.report.releaseStage, @"production");
 }
 
 - (void)testReadNotifyReleaseStages {
     XCTAssertEqualObjects(self.report.notifyReleaseStages,
-                          (@[ BSGKeyProduction, BSGKeyDevelopment ]));
+                          (@[ @"production", @"development" ]));
 }
 
 - (void)testReadNotifyReleaseStagesSends {
@@ -102,13 +101,13 @@
     config.notifyReleaseStages = @[ @"foo" ];
     config.releaseStage = @"foo";
     BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     BugsnagCrashReport *report =
-        [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
-                                         errorMessage:@"it was so bad"
-                                        configuration:config
-                                             metaData:@{}
-                                         handledState:state];
+    [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
+                                     errorMessage:@"it was so bad"
+                                    configuration:config
+                                         metaData:@{}
+                                     handledState:state];
     XCTAssertTrue([report shouldBeSent]);
 }
 
@@ -116,15 +115,15 @@
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     config.notifyReleaseStages = @[ @"foo", @"bar" ];
     config.releaseStage = @"not foo or bar";
-
+    
     BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     BugsnagCrashReport *report =
-        [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
-                                         errorMessage:@"it was so bad"
-                                        configuration:config
-                                             metaData:@{}
-                                         handledState:state];
+    [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
+                                     errorMessage:@"it was so bad"
+                                    configuration:config
+                                         metaData:@{}
+                                     handledState:state];
     XCTAssertFalse([report shouldBeSent]);
 }
 
@@ -145,7 +144,7 @@
     for (NSString *reservedWord in @[@"fatal error", @"assertion failed"]) {
         addresses[@"r14"] = @{
                               @"address": @4511089532,
-                              BSGKeyType: @"string",
+                              @"type": @"string",
                               @"value": reservedWord
                               };
         XCTAssertNil([errorReport enhancedErrorMessageForThread:thread]);
@@ -154,7 +153,7 @@
     // returns msg for "fatal error" with additional dict present
     addresses[@"r12"] = @{
                           @"address": @4511086448,
-                          BSGKeyType: @"string",
+                          @"type": @"string",
                           @"value": @"Whoops - fatalerror"
                           };
     XCTAssertEqualObjects(@"Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
@@ -163,7 +162,7 @@
     // ignores additional dict if more than 2 "/" present
     addresses[@"r24"] = @{
                           @"address": @4511084983,
-                          BSGKeyType: @"string",
+                          @"type": @"string",
                           @"value": @"/usr/include/lib/something.swift"
                           };
     XCTAssertEqualObjects(@"Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
@@ -171,7 +170,7 @@
     // ignores dict if not type string
     addresses[@"r25"] = @{
                           @"address": @4511084983,
-                          BSGKeyType: @"long",
+                          @"type": @"long",
                           @"value": @"Swift is hard"
                           };
     XCTAssertEqualObjects(@"Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
@@ -179,17 +178,17 @@
     // sorts and concatenates multiple multiple messages
     addresses[@"r26"] = @{
                           @"address": @4511082095,
-                          BSGKeyType: @"string",
+                          @"type": @"string",
                           @"value": @"Swift is hard"
                           };
     XCTAssertEqualObjects(@"Swift is hard | Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
     
     // ignores stack frames
     addresses[@"stack523409"] = @{
-                          @"address": @4511080001,
-                          BSGKeyType: @"string",
-                          @"value": @"Not a register"
-                          };
+                                  @"address": @4511080001,
+                                  @"type": @"string",
+                                  @"value": @"Not a register"
+                                  };
     XCTAssertEqualObjects(@"Swift is hard | Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
     
     // ignores values if no reserved word used

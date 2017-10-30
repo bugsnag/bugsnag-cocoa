@@ -7,7 +7,6 @@
 //
 #import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
-#import "BugsnagKeys.h"
 
 @interface SomeDelegate : NSObject <NSURLSessionTaskDelegate>
 @property(nonatomic) BOOL didInvoke;
@@ -16,11 +15,11 @@
 @implementation SomeDelegate
 
 - (void)URLSession:(NSURLSession *)session
-                   task:(NSURLSessionTask *)task
-    didReceiveChallenge:(nonnull NSURLAuthenticationChallenge *)challenge
-      completionHandler:
-          (nonnull void (^)(NSURLSessionAuthChallengeDisposition,
-                            NSURLCredential *_Nullable))completionHandler {
+              task:(NSURLSessionTask *)task
+didReceiveChallenge:(nonnull NSURLAuthenticationChallenge *)challenge
+ completionHandler:
+(nonnull void (^)(NSURLSessionAuthChallengeDisposition,
+                  NSURLCredential *_Nullable))completionHandler {
     self.didInvoke = YES;
     completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,
                       nil);
