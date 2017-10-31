@@ -329,6 +329,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                      @"domain" : error.domain,
                      BSGKeyReason : error.localizedFailureReason ?: @""
                  };
+                   if (report.context == nil) { // set context as error domain
+                       report.context = [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code];
+                   }
                  report.metaData = metadata;
 
                  if (block) {
