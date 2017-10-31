@@ -29,22 +29,19 @@
 static NSString *const kDateFormatterKey = @"RfcDateFormatter";
 
 + (NSDateFormatter *)sharedInstance {
-    @synchronized(self) {
+    NSMutableDictionary *threadDict = [[NSThread currentThread] threadDictionary];
+    NSDateFormatter *formatter = threadDict[kDateFormatterKey];
         
-        NSMutableDictionary *threadDict = [[NSThread currentThread] threadDictionary];
-        NSDateFormatter *formatter = threadDict[kDateFormatterKey];
-        
-        if (formatter == nil) {
-            formatter = [NSDateFormatter new];
-            NSLocale *locale =
-            [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-            [formatter setLocale:locale];
-            [formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
-            [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-            threadDict[kDateFormatterKey] = formatter;
-        }
-        return formatter;
+    if (formatter == nil) {
+        formatter = [NSDateFormatter new];
+        NSLocale *locale =
+        [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        [formatter setLocale:locale];
+        [formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
+        [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        threadDict[kDateFormatterKey] = formatter;
     }
+    return formatter;
 }
 
 + (NSString *)stringFromDate:(NSDate *)date {
