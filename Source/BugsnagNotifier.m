@@ -482,7 +482,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                 [self.metaDataLock unlock];
             }
         } else if (metaData == self.configuration.config) {
-            BSSerializeJSONDictionary([metaData getTab:BSTabConfig],
+            BSSerializeJSONDictionary([metaData getTab:BSGKeyConfig],
                                       &bsg_g_bugsnag_data.configJSON);
         } else if (metaData == self.state) {
             BSSerializeJSONDictionary([metaData toDictionary],
