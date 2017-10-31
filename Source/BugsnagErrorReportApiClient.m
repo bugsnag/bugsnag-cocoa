@@ -13,6 +13,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
+#import "BugsnagKeys.h"
 
 // This is private in Bugsnag, but really we want package private so define
 // it here.
@@ -109,7 +110,7 @@
             onCompletion(reports, NO,
                          [NSError errorWithDomain:exception.reason
                                              code:420
-                                         userInfo:@{@"exception" : exception}]);
+                                         userInfo:@{BSGKeyException : exception}]);
         }
     }
 }

@@ -34,6 +34,7 @@
 #import "BugsnagHandledState.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSink.h"
+#import "BugsnagKeys.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -45,10 +46,8 @@
 NSString *const NOTIFIER_VERSION = @"5.13.1";
 NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 NSString *const BSTabCrash = @"crash";
-NSString *const BSTabConfig = @"config";
-NSString *const BSAttributeSeverity = @"severity";
 NSString *const BSAttributeDepth = @"depth";
-NSString *const BSAttributeBreadcrumbs = @"breadcrumbs";
+NSString *const BSAttributeBreadcrumbs = BSGKeyBreadcrumbs;
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
 static NSInteger const BSGNotifierStackFrameCount = 5;
@@ -160,9 +159,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         self.configuration = initConfiguration;
         self.state = [[BugsnagMetaData alloc] init];
         self.details = [@{
-            @"name" : @"Bugsnag Objective-C",
-            @"version" : NOTIFIER_VERSION,
-            @"url" : NOTIFIER_URL
+            BSGKeyName : @"Bugsnag Objective-C",
+            BSGKeyVersion : NOTIFIER_VERSION,
+            BSGKeyUrl : NOTIFIER_URL
         } mutableCopy];
 
         self.metaDataLock = [[NSLock alloc] init];
@@ -263,9 +262,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self updateAutomaticBreadcrumbDetectionSettings];
 
 #if TARGET_OS_TV
-    [self.details setValue:@"tvOS Bugsnag Notifier" forKey:@"name"];
+    [self.details setValue:@"tvOS Bugsnag Notifier" forKey:BSGKeyName];
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    [self.details setValue:@"iOS Bugsnag Notifier" forKey:@"name"];
+    [self.details setValue:@"iOS Bugsnag Notifier" forKey:BSGKeyName];
 
     [[NSNotificationCenter defaultCenter]
         addObserver:self
@@ -294,7 +293,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self batteryChanged:nil];
     [self orientationChanged:nil];
 #elif TARGET_OS_MAC
-    [self.details setValue:@"OSX Bugsnag Notifier" forKey:@"name"];
+    [self.details setValue:@"OSX Bugsnag Notifier" forKey:BSGKeyName];
 #endif
 }
 
@@ -328,7 +327,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                  metadata[@"nserror"] = @{
                      @"code" : @(error.code),
                      @"domain" : error.domain,
-                     @"reason" : error.localizedFailureReason ?: @""
+                     BSGKeyReason : error.localizedFailureReason ?: @""
                  };
                  report.metaData = metadata;
 
@@ -366,9 +365,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                     withData:(NSDictionary *_Nullable)metaData
                        block:(BugsnagNotifyBlock _Nullable)block {
 
-    NSString *severity = [metaData objectForKey:@"severity"];
-    NSString *severityReason = [metaData objectForKey:@"severityReason"];
-    NSString *logLevel = [metaData objectForKey:@"logLevel"];
+    NSString *severity = [metaData objectForKey:BSGKeySeverity];
+    NSString *severityReason = [metaData objectForKey:BSGKeySeverityReason];
+    NSString *logLevel = [metaData objectForKey:BSGKeyLogLevel];
     NSParameterAssert(severity.length > 0);
     NSParameterAssert(severityReason.length > 0);
 
@@ -415,7 +414,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     BSSerializeJSONDictionary(report.overrides,
                               &bsg_g_bugsnag_data.userOverridesJSON);
 
-    [self.state addAttribute:BSAttributeSeverity
+    [self.state addAttribute:BSGKeySeverity
                    withValue:BSGFormatSeverity(report.severity)
                toTabWithName:BSTabCrash];
 
@@ -448,8 +447,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
       crumb.type = BSGBreadcrumbTypeError;
       crumb.name = reportName;
       crumb.metadata = @{
-          @"message" : reportMessage,
-          @"severity" : BSGFormatSeverity(report.severity)
+          BSGKeyMessage : reportMessage,
+          BSGKeySeverity : BSGFormatSeverity(report.severity)
       };
     }];
     [self flushPendingReports];
@@ -503,12 +502,12 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
         [NSNumber numberWithBool:[UIDevice currentDevice].batteryState ==
                                  UIDeviceBatteryStateCharging];
 
-    [[self state] addAttribute:@"batteryLevel"
+    [[self state] addAttribute:BSGKeyBatteryLevel
                      withValue:batteryLevel
-                 toTabWithName:@"deviceState"];
-    [[self state] addAttribute:@"charging"
+                 toTabWithName:BSGKeyDeviceState];
+    [[self state] addAttribute:BSGKeyCharging
                      withValue:charging
-                 toTabWithName:@"deviceState"];
+                 toTabWithName:BSGKeyDeviceState];
 }
 
 - (void)orientationChanged:(NSNotification *)notif {
@@ -545,22 +544,22 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
         BSGBreadcrumbNameForNotificationName(notif.name);
 
     if (lastBreadcrumb &&
-        [orientationNotifName isEqualToString:lastBreadcrumb[@"name"]]) {
-        NSDictionary *metaData = lastBreadcrumb[@"metaData"];
+        [orientationNotifName isEqualToString:lastBreadcrumb[BSGKeyName]]) {
+        NSDictionary *metaData = lastBreadcrumb[BSGKeyMetaData];
 
-        if ([orientation isEqualToString:metaData[@"orientation"]]) {
+        if ([orientation isEqualToString:metaData[BSGKeyOrientation]]) {
             return; // ignore duplicate orientation event
         }
     }
 
-    [[self state] addAttribute:@"orientation"
+    [[self state] addAttribute:BSGKeyOrientation
                      withValue:orientation
-                 toTabWithName:@"deviceState"];
+                 toTabWithName:BSGKeyDeviceState];
     if ([self.configuration automaticallyCollectBreadcrumbs]) {
         [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
           breadcrumb.type = BSGBreadcrumbTypeState;
           breadcrumb.name = orientationNotifName;
-          breadcrumb.metadata = @{@"orientation" : orientation};
+          breadcrumb.metadata = @{BSGKeyOrientation : orientation};
         }];
     }
 }
@@ -569,7 +568,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [[self state] addAttribute:BSEventLowMemoryWarning
                      withValue:[[Bugsnag payloadDateFormatter]
                                    stringFromDate:[NSDate date]]
-                 toTabWithName:@"deviceState"];
+                 toTabWithName:BSGKeyDeviceState];
     if ([self.configuration automaticallyCollectBreadcrumbs]) {
         [self sendBreadcrumbForNotification:notif];
     }
@@ -758,7 +757,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
           breadcrumb.type = BSGBreadcrumbTypeState;
           breadcrumb.name = BSGBreadcrumbNameForNotificationName(notif.name);
           if (menuItem.title.length > 0)
-              breadcrumb.metadata = @{@"action" : menuItem.title};
+              breadcrumb.metadata = @{BSGKeyAction : menuItem.title};
         }];
     }
 #endif
@@ -773,7 +772,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
       breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
       NSString *label = control.accessibilityLabel;
       if (label.length > 0) {
-          breadcrumb.metadata = @{@"label" : label};
+          breadcrumb.metadata = @{BSGKeyLabel : label};
       }
     }];
 #elif TARGET_OS_MAC
@@ -784,7 +783,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
       if ([control respondsToSelector:@selector(accessibilityLabel)]) {
           NSString *label = control.accessibilityLabel;
           if (label.length > 0) {
-              breadcrumb.metadata = @{@"label" : label};
+              breadcrumb.metadata = @{BSGKeyLabel : label};
           }
       }
     }];

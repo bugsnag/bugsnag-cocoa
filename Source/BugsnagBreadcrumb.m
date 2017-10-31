@@ -26,9 +26,10 @@
 #import "BugsnagBreadcrumb.h"
 #import "Bugsnag.h"
 #import "BugsnagLogger.h"
+#import "BugsnagKeys.h"
 
-NSString *const BSGBreadcrumbDefaultName = @"manual";
-NSUInteger const BSGBreadcrumbMaxByteSize = 4096;
+static NSString *const BSGBreadcrumbDefaultName = @"manual";
+static NSUInteger const BSGBreadcrumbMaxByteSize = 4096;
 
 NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
     switch (type) {
@@ -37,7 +38,7 @@ NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
     case BSGBreadcrumbTypeUser:
         return @"user";
     case BSGBreadcrumbTypeError:
-        return @"error";
+        return BSGKeyError;
     case BSGBreadcrumbTypeState:
         return @"state";
     case BSGBreadcrumbTypeManual:
@@ -83,13 +84,13 @@ NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
         [[Bugsnag payloadDateFormatter] stringFromDate:self.timestamp];
     if (timestamp && self.name.length > 0) {
         NSMutableDictionary *data = @{
-            @"name" : self.name,
-            @"timestamp" : timestamp,
-            @"type" : BSGBreadcrumbTypeValue(self.type)
+            BSGKeyName : self.name,
+            BSGKeyTimestamp : timestamp,
+            BSGKeyType : BSGBreadcrumbTypeValue(self.type)
         }
                                         .mutableCopy;
         if (self.metadata)
-            data[@"metaData"] = self.metadata;
+            data[BSGKeyMetaData] = self.metadata;
         return data;
     }
     return nil;
@@ -124,7 +125,7 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
 
 - (void)addBreadcrumb:(NSString *)breadcrumbMessage {
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
-      crumb.metadata = @{@"message" : breadcrumbMessage};
+      crumb.metadata = @{BSGKeyMessage : breadcrumbMessage};
     }];
 }
 

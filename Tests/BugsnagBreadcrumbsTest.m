@@ -19,7 +19,7 @@
 
 void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
     dispatch_barrier_sync(crumbs.readWriteQueue, ^{
-      usleep(300000);
+        usleep(300000);
     });
 }
 
@@ -92,7 +92,7 @@ void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
         XCTAssertEqualObjects(item[@"name"], @"manual");
         XCTAssertEqualObjects(item[@"type"], @"manual");
         XCTAssertTrue([[formatter dateFromString:item[@"timestamp"]]
-            isKindOfClass:[NSDate class]]);
+                       isKindOfClass:[NSDate class]]);
     }
     XCTAssertEqualObjects(value[0][@"metaData"][@"message"], @"Launch app");
     XCTAssertEqualObjects(value[1][@"metaData"][@"message"], @"Tap button");
@@ -102,9 +102,9 @@ void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
 - (void)testStateType {
     BugsnagBreadcrumbs *crumbs = [BugsnagBreadcrumbs new];
     [crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
-      crumb.type = BSGBreadcrumbTypeState;
-      crumb.name = @"Rotated Menu";
-      crumb.metadata = @{@"direction" : @"right"};
+        crumb.type = BSGBreadcrumbTypeState;
+        crumb.name = @"Rotated Menu";
+        crumb.metadata = @{@"direction" : @"right"};
     }];
     awaitBreadcrumbSync(self.crumbs);
     NSArray *value = [crumbs arrayValue];
@@ -116,13 +116,13 @@ void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
 - (void)testByteSizeLimit {
     BugsnagBreadcrumbs *crumbs = [BugsnagBreadcrumbs new];
     [crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
-      crumb.type = BSGBreadcrumbTypeState;
-      crumb.name = @"Rotated Menu";
-      NSMutableDictionary *metadata = @{}.mutableCopy;
-      for (int i = 0; i < 400; i++) {
-          metadata[[NSString stringWithFormat:@"%d", i]] = @"!!";
-      }
-      crumb.metadata = metadata;
+        crumb.type = BSGBreadcrumbTypeState;
+        crumb.name = @"Rotated Menu";
+        NSMutableDictionary *metadata = @{}.mutableCopy;
+        for (int i = 0; i < 400; i++) {
+            metadata[[NSString stringWithFormat:@"%d", i]] = @"!!";
+        }
+        crumb.metadata = metadata;
     }];
     NSArray *value = [crumbs arrayValue];
     XCTAssertTrue(value.count == 0);

@@ -27,9 +27,9 @@
                                                    encoding:NSUTF8StringEncoding
                                                       error:nil];
     NSDictionary *dictionary = [NSJSONSerialization
-        JSONObjectWithData:[contents dataUsingEncoding:NSUTF8StringEncoding]
-                   options:0
-                     error:nil];
+                                JSONObjectWithData:[contents dataUsingEncoding:NSUTF8StringEncoding]
+                                options:0
+                                error:nil];
     self.report = [[BugsnagCrashReport alloc] initWithKSReport:dictionary];
 }
 
@@ -101,13 +101,13 @@
     config.notifyReleaseStages = @[ @"foo" ];
     config.releaseStage = @"foo";
     BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     BugsnagCrashReport *report =
-        [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
-                                         errorMessage:@"it was so bad"
-                                        configuration:config
-                                             metaData:@{}
-                                         handledState:state];
+    [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
+                                     errorMessage:@"it was so bad"
+                                    configuration:config
+                                         metaData:@{}
+                                     handledState:state];
     XCTAssertTrue([report shouldBeSent]);
 }
 
@@ -115,15 +115,15 @@
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     config.notifyReleaseStages = @[ @"foo", @"bar" ];
     config.releaseStage = @"not foo or bar";
-
+    
     BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     BugsnagCrashReport *report =
-        [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
-                                         errorMessage:@"it was so bad"
-                                        configuration:config
-                                             metaData:@{}
-                                         handledState:state];
+    [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
+                                     errorMessage:@"it was so bad"
+                                    configuration:config
+                                         metaData:@{}
+                                     handledState:state];
     XCTAssertFalse([report shouldBeSent]);
 }
 
@@ -185,10 +185,10 @@
     
     // ignores stack frames
     addresses[@"stack523409"] = @{
-                          @"address": @4511080001,
-                          @"type": @"string",
-                          @"value": @"Not a register"
-                          };
+                                  @"address": @4511080001,
+                                  @"type": @"string",
+                                  @"value": @"Not a register"
+                                  };
     XCTAssertEqualObjects(@"Swift is hard | Whoops - fatalerror", [errorReport enhancedErrorMessageForThread:thread]);
     
     // ignores values if no reserved word used
