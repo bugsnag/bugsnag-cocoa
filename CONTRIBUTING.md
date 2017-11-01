@@ -61,21 +61,7 @@ If you're a member of the core team, you can release the cocoa pod as follows:
 ### Every time
 
 * Update the CHANGELOG. Update the README.md if appropriate.
-* Update the version number by running `make VERSION=[number] bump`
-* Commit tag and push
-
-    ```
-    git commit -am 'Release v5.x.x'
-    git tag v5.x.x
-    git push origin master v5.x.x
-    ```
-
-* Update cocoapods
-
-    ```
-    pod trunk push
-    ```
-
+* Update the version number, tag, and push by running `make VERSION=[number] release`
 * Create a new release https://github.com/bugsnag/bugsnag-cocoa/releases/new
 * Select the tag you just pushed
 * Set the title to the tag (v5.x.x)
