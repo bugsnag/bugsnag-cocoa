@@ -75,10 +75,10 @@ typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 
 @interface BugsnagBreadcrumb : NSObject
 
-@property(readonly, nonatomic, nullable) NSDate *timestamp;
+@property(readonly, nullable) NSDate *timestamp;
 @property(readwrite) BSGBreadcrumbType type;
-@property(readwrite, nonatomic, copy, nonnull) NSString *name;
-@property(readwrite, nonatomic, copy, nonnull) NSDictionary *metadata;
+@property(readwrite, copy, nonnull) NSString *name;
+@property(readwrite, copy, nonnull) NSDictionary *metadata;
 
 + (instancetype _Nullable)breadcrumbWithBlock:
     (BSGBreadcrumbConfiguration _Nonnull)block;
@@ -90,7 +90,7 @@ typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 /**
  * The maximum number of breadcrumbs. Resizable.
  */
-@property(assign, nonatomic, readwrite) NSUInteger capacity;
+@property(assign, readwrite) NSUInteger capacity;
 
 /** Number of breadcrumbs accumulated */
 @property(assign, readonly) NSUInteger count;

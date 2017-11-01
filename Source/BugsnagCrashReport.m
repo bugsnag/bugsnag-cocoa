@@ -442,13 +442,16 @@ initWithErrorName:(NSString *_Nonnull)name
 }
 
 - (void)setOverrideProperty:(NSString *)key value:(id)value {
-    NSMutableDictionary *metadata = [self.overrides mutableCopy];
-    if (value) {
-        metadata[key] = value;
-    } else {
-        [metadata removeObjectForKey:key];
+    @synchronized (self) {
+        NSMutableDictionary *metadata = [self.overrides mutableCopy];
+        if (value) {
+            metadata[key] = value;
+        } else {
+            [metadata removeObjectForKey:key];
+        }
+        _overrides = metadata;
     }
-    _overrides = metadata;
+    
 }
 
 - (NSDictionary *)serializableValueWithTopLevelData:

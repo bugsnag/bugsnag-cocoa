@@ -97,8 +97,8 @@
         } else {
             [[self getTab:tabName] removeObjectForKey:attributeName];
         }
-        [self.delegate metaDataChanged:self];
     }
+    [self.delegate metaDataChanged:self];
 }
 
 @end

@@ -119,74 +119,74 @@ initWithErrorName:(NSString *_Nonnull)name
 /**
  *  The release stages used to notify at the time this report is captured
  */
-@property(nonatomic, readwrite, copy, nullable) NSArray *notifyReleaseStages;
+@property(readwrite, copy, nullable) NSArray *notifyReleaseStages;
 /**
  *  A loose representation of what was happening in the application at the time
  *  of the event
  */
-@property(nonatomic, readwrite, copy, nullable) NSString *context;
+@property(readwrite, copy, nullable) NSString *context;
 /**
  *  The severity of the error generating the report
  */
-@property(nonatomic, readwrite) BSGSeverity severity;
+@property(readwrite) BSGSeverity severity;
 /**
  *  The release stage of the application
  */
-@property(nonatomic, readwrite, copy, nullable) NSString *releaseStage;
+@property(readwrite, copy, nullable) NSString *releaseStage;
 /**
  *  The class of the error generating the report
  */
-@property(nonatomic, readwrite, copy, nonnull) NSString *errorClass;
+@property(readwrite, copy, nonnull) NSString *errorClass;
 /**
  *  The message of or reason for the error generating the report
  */
-@property(nonatomic, readwrite, copy, nullable) NSString *errorMessage;
+@property(readwrite, copy, nullable) NSString *errorMessage;
 /**
  *  Customized hash for grouping this report with other errors
  */
-@property(nonatomic, readwrite, copy, nullable) NSString *groupingHash;
+@property(readwrite, copy, nullable) NSString *groupingHash;
 /**
  *  Breadcrumbs from user events leading up to the error
  */
-@property(nonatomic, readwrite, copy, nullable) NSArray *breadcrumbs;
+@property(readwrite, copy, nullable) NSArray *breadcrumbs;
 /**
  *  Further information attached to an error report, where each top level key
  *  generates a section on bugsnag, displaying key/value pairs
  */
-@property(nonatomic, readwrite, copy, nonnull) NSDictionary *metaData;
+@property(readwrite, copy, nonnull) NSDictionary *metaData;
 /**
  *  The event state (whether the error is handled/unhandled)
  */
-@property(nonatomic, readonly, nonnull) BugsnagHandledState *handledState;
+@property(readonly, nonnull) BugsnagHandledState *handledState;
 
 /**
  *  Property overrides
  */
-@property(nonatomic, readonly, copy, nonnull) NSDictionary *overrides;
+@property(readonly, copy, nonnull) NSDictionary *overrides;
 /**
  *  Number of frames to discard at the top of the stacktrace
  */
-@property(nonatomic, readwrite) NSUInteger depth;
+@property(readwrite) NSUInteger depth;
 /**
  *  Raw error data
  */
-@property(nonatomic, readwrite, copy, nullable) NSDictionary *error;
+@property(readwrite, copy, nullable) NSDictionary *error;
 /**
  *  Device information such as OS name and version
  */
-@property(nonatomic, readwrite, copy, nullable) NSDictionary *device;
+@property(readwrite, copy, nullable) NSDictionary *device;
 /**
  *  Device state such as memory allocation at crash time
  */
-@property(nonatomic, readwrite, copy, nullable) NSDictionary *deviceState;
+@property(readwrite, copy, nullable) NSDictionary *deviceState;
 /**
  *  App information such as the name, version, and bundle ID
  */
-@property(nonatomic, readwrite, copy, nullable) NSDictionary *app;
+@property(readwrite, copy, nullable) NSDictionary *app;
 /**
  *  Device state such as oreground status and run duration
  */
-@property(nonatomic, readwrite, copy, nullable) NSDictionary *appState;
+@property(readwrite, copy, nullable) NSDictionary *appState;
 
 
 /**
