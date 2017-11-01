@@ -26,29 +26,36 @@
 
 @implementation BSG_RFC3339DateTool
 
-static NSDateFormatter *bsg_g_formatter;
+static NSString *const kDateFormatterKey = @"RfcDateFormatter";
 
-+ (void)initialize {
-    bsg_g_formatter = [[NSDateFormatter alloc] init];
-    NSLocale *locale =
++ (NSDateFormatter *)sharedInstance {
+    NSMutableDictionary *threadDict = [[NSThread currentThread] threadDictionary];
+    NSDateFormatter *formatter = threadDict[kDateFormatterKey];
+        
+    if (formatter == nil) {
+        formatter = [NSDateFormatter new];
+        NSLocale *locale =
         [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-    [bsg_g_formatter setLocale:locale];
-    [bsg_g_formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
-    [bsg_g_formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [formatter setLocale:locale];
+        [formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
+        [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        threadDict[kDateFormatterKey] = formatter;
+    }
+    return formatter;
 }
 
 + (NSString *)stringFromDate:(NSDate *)date {
     if (![date isKindOfClass:[NSDate class]]) {
         return nil;
     }
-    return [bsg_g_formatter stringFromDate:date];
+    return [[self sharedInstance] stringFromDate:date];
 }
 
 + (NSDate *)dateFromString:(NSString *)string {
     if (![string isKindOfClass:[NSString class]]) {
         return nil;
     }
-    return [bsg_g_formatter dateFromString:string];
+    return [[self sharedInstance] dateFromString:string];
 }
 
 + (NSString *)stringFromUNIXTimestamp:(unsigned long long)timestamp {
