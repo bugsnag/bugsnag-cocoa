@@ -101,30 +101,22 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error,
 }
 
 NSDictionary *BSGParseDevice(NSDictionary *report) {
-    NSMutableDictionary *data = [NSMutableDictionary dictionary];
-
-    BSGDictSetSafeObject(data, @"Apple", @"manufacturer");
-    BSGDictSetSafeObject(data, [[NSLocale currentLocale] localeIdentifier],
+    NSDictionary *system = report[@"system"];
+    NSMutableDictionary *device = [NSMutableDictionary dictionary];
+    
+    BSGDictSetSafeObject(device, @"Apple", @"manufacturer");
+    BSGDictSetSafeObject(device, [[NSLocale currentLocale] localeIdentifier],
                          @"locale");
 
-#if TARGET_OS_MAC || TARGET_OS_TV
-    NSProcessInfo *processInfo = [NSProcessInfo processInfo];
-    BSGDictSetSafeObject(data, processInfo.operatingSystemVersionString,
-                         BSGKeyOsVersion);
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    UIDevice *device = [UIDevice currentDevice];
-    BSGDictSetSafeObject(data, device.systemName, @"osName");
-    BSGDictSetSafeObject(data, device.systemVersion, BSGOsVersion);
-#endif
-
-    BSGDictSetSafeObject(data, BugsnagSystemInfo.deviceAndAppHash, BSGKeyId);
-    BSGDictSetSafeObject(data, NSTimeZone.localTimeZone.abbreviation,
-                         @"timezone");
-    BSGDictSetSafeObject(data, BugsnagSystemInfo.modelNumber, @"modelNumber");
-    BSGDictSetSafeObject(data, BugsnagSystemInfo.modelName, @"model");
-    BSGDictSetSafeObject(data, BugsnagSystemInfo.usableMemory, @"totalMemory");
-
-    return data;
+    BSGDictSetSafeObject(device, system[@"device_app_hash"], @"id");
+    BSGDictSetSafeObject(device, system[@"time_zone"], @"timezone");
+    BSGDictSetSafeObject(device, system[@"model"], @"modelNumber");
+    BSGDictSetSafeObject(device, system[@"machine"], @"model");
+    BSGDictSetSafeObject(device, system[@"system_name"], @"osName");
+    BSGDictSetSafeObject(device, system[@"system_version"], @"osVersion");
+    BSGDictSetSafeObject(device, system[@"memory"][@"usable"],
+                         @"totalMemory");
+    return device;
 }
 
 NSDictionary *BSGParseApp(NSDictionary *report, NSString *appVersion) {
