@@ -57,11 +57,11 @@ endif
 
 # Makes a release and pushes to github/cocoapods
 release:
-	ifeq ($(VERSION),)g
-		@$(error VERSION is not defined. Run with `make VERSION=number release`)
-	endif
-		make VERSION=$(VERSION) bump && git commit -am "v$(VERSION)" && git tag v$(VERSION) \
-		&& git push origin && git push --tags && pod trunk push
+ifeq ($(VERSION),)
+	@$(error VERSION is not defined. Run with `make VERSION=number release`)
+endif
+	make VERSION=$(VERSION) bump && git commit -am "v$(VERSION)" && git tag v$(VERSION) \
+	&& git push origin && git push --tags && pod trunk push
 
 
 clean:

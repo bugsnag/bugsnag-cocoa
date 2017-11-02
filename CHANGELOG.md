@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 5.13.2 (02 Nov 2017)
+
+* Fix thread safety issue in breadcrumbs API
+* Allow setting device ID in report to null
+* When notifying of NSError, use the code and domain as the default context
+* Fix for wrong report context in some unhandled errors
+
 ## 5.13.1 (26 Oct 2017)
 
 * Additional method prefixing
