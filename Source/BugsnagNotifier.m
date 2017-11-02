@@ -441,6 +441,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     NSString *reportMessage = report.errorMessage ?: @"";
 
     [self.crashSentry reportUserException:reportName reason:reportMessage];
+    bsg_g_bugsnag_data.userOverridesJSON = NULL;
+    bsg_g_bugsnag_data.handledState = NULL;
 
     // Restore metaData to pre-crash state.
     [self.metaDataLock unlock];
