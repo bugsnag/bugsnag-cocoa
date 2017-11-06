@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 5.13.3 (06 Nov 2017)
+
+* Fix build on older versions of XCode
+
 ## 5.13.2 (02 Nov 2017)
 
 * Fix thread safety issue in breadcrumbs API
