@@ -18,7 +18,6 @@
 #import "BugsnagCrashReport.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagLogger.h"
-#import "BugsnagSystemInfo.h"
 #import "BugsnagKeys.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
@@ -308,7 +307,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             [report valueForKeyPath:@"user.state.crash.severity"]);
         _depth = [[report valueForKeyPath:@"user.state.crash.depth"]
             unsignedIntegerValue];
-        _dsymUUID = BugsnagSystemInfo.appUUID;
+        _dsymUUID = [report valueForKeyPath:@"system.app_uuid"];
         _deviceAppHash = [report valueForKeyPath:@"system.device_app_hash"];
         _metaData =
             [report valueForKeyPath:@"user.metaData"] ?: [NSDictionary new];
