@@ -1676,9 +1676,6 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
         crashReason = crash->crashReason;
         break;
     }
-    
-    
-    /** Only include for fatal errors **/
 
     const char *machExceptionName = bsg_ksmachexceptionName(machExceptionType);
     const char *machCodeName =
