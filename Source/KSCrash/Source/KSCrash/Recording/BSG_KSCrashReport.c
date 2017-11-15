@@ -1685,10 +1685,26 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
 
     writer->beginObject(writer, key);
     {
-        
-        // only report address, mach, and signal for fatal errors
-        
+
         if (BSG_KSCrashTypeUserReported != crash->crashType) {
+            writer->addUIntegerElement(writer, BSG_KSCrashField_Address,
+                                       crash->faultAddress);
+        }
+
+        if (crashReason != NULL) {
+            writer->addStringElement(writer, BSG_KSCrashField_Reason,
+                                     crashReason);
+        }
+
+
+        // Gather specific info.
+        switch (crash->crashType) {
+        case BSG_KSCrashTypeMainThreadDeadlock:
+            writer->addStringElement(writer, BSG_KSCrashField_Type,
+                                     BSG_KSCrashExcType_Deadlock);
+            break;
+
+        case BSG_KSCrashTypeMachException:
             writer->beginObject(writer, BSG_KSCrashField_Mach);
             {
                 writer->addUIntegerElement(writer, BSG_KSCrashField_Exception,
@@ -1707,42 +1723,6 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
                                            (unsigned)machSubCode);
             }
             writer->endContainer(writer);
-            
-            writer->beginObject(writer, BSG_KSCrashField_Signal);
-            {
-                writer->addUIntegerElement(writer, BSG_KSCrashField_Signal,
-                                           (unsigned)sigNum);
-                if (sigName != NULL) {
-                    writer->addStringElement(writer, BSG_KSCrashField_Name,
-                                             sigName);
-                }
-                writer->addUIntegerElement(writer, BSG_KSCrashField_Code,
-                                           (unsigned)sigCode);
-                if (sigCodeName != NULL) {
-                    writer->addStringElement(writer, BSG_KSCrashField_CodeName,
-                                             sigCodeName);
-                }
-            }
-            writer->endContainer(writer);
-            
-            writer->addUIntegerElement(writer, BSG_KSCrashField_Address,
-                                       crash->faultAddress);
-        }
-        
-        if (crashReason != NULL) {
-            writer->addStringElement(writer, BSG_KSCrashField_Reason,
-                                     crashReason);
-        }
-        
-        
-        // Gather specific info.
-        switch (crash->crashType) {
-        case BSG_KSCrashTypeMainThreadDeadlock:
-            writer->addStringElement(writer, BSG_KSCrashField_Type,
-                                     BSG_KSCrashExcType_Deadlock);
-            break;
-
-        case BSG_KSCrashTypeMachException:
             writer->addStringElement(writer, BSG_KSCrashField_Type,
                                      BSG_KSCrashExcType_Mach);
             break;
@@ -1772,6 +1752,22 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
             break;
         }
         case BSG_KSCrashTypeSignal:
+            writer->beginObject(writer, BSG_KSCrashField_Signal);
+            {
+                writer->addUIntegerElement(writer, BSG_KSCrashField_Signal,
+                                           (unsigned)sigNum);
+                if (sigName != NULL) {
+                    writer->addStringElement(writer, BSG_KSCrashField_Name,
+                                             sigName);
+                }
+                writer->addUIntegerElement(writer, BSG_KSCrashField_Code,
+                                           (unsigned)sigCode);
+                if (sigCodeName != NULL) {
+                    writer->addStringElement(writer, BSG_KSCrashField_CodeName,
+                                             sigCodeName);
+                }
+            }
+            writer->endContainer(writer);
             writer->addStringElement(writer, BSG_KSCrashField_Type,
                                      BSG_KSCrashExcType_Signal);
             break;
