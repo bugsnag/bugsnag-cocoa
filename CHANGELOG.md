@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## 5.13.4 (16 Nov 2017)
+
+* Fix buffer overflow for reports with large metadata
+* Treat warnings as errors
+
 ## 5.13.3 (06 Nov 2017)
 
 * Fix build on older versions of XCode
