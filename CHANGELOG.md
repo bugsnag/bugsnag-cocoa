@@ -32,6 +32,9 @@ Changelog
 * Fix fatalError not producing crash report
 * Update library's calculation of stack frame depth
 * Reduced build warning count
+* Track difference between handled and unhandled exceptions
+  [#164](https://github.com/bugsnag/bugsnag-cocoa/pull/164)
+  [Jamie Lynch](https://github.com/fractalwrench)
 
 ## 5.11.2 (15 Sep 2017)
 
