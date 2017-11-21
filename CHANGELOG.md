@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 5.13.5 (21 Nov 2017)
+
+* Remove misleading information (address, mach, signal) from non-fatal error reports
+
 ## 5.13.4 (16 Nov 2017)
 
 * Fix buffer overflow for reports with large metadata
