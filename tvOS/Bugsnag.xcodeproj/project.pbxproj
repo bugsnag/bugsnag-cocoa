@@ -31,7 +31,7 @@
 		8AD9A5021D42EEB0004E1CC5 /* BugsnagMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB151311D41366400C9B218 /* BugsnagMetaData.m */; };
 		8AD9A5031D42EEB0004E1CC5 /* BugsnagNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB151331D41366400C9B218 /* BugsnagNotifier.m */; };
 		8AD9A5041D42EEB0004E1CC5 /* BugsnagSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB151351D41366400C9B218 /* BugsnagSink.m */; };
-		8AD9A5051D42EEE9004E1CC5 /* BSGKSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AB151251D41366400C9B218 /* BSGKSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8AD9A5051D42EEE9004E1CC5 /* BSG_KSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AB151251D41366400C9B218 /* BSG_KSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8AD9FA8D1E0863A1002859A7 /* BugsnagConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD9FA8B1E0863A1002859A7 /* BugsnagConfigurationTests.m */; };
 		E72352BA1F55922F00436528 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E72352B91F55922F00436528 /* SystemConfiguration.framework */; };
 		E72352BD1F55923700436528 /* BSGConnectivity.h in Headers */ = {isa = PBXBuildFile; fileRef = E72352BB1F55923700436528 /* BSGConnectivity.h */; };
@@ -153,7 +153,7 @@
 		8AB1511E1D41361700C9B218 /* BugsnagCrashReportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagCrashReportTests.m; path = ../../Tests/BugsnagCrashReportTests.m; sourceTree = "<group>"; };
 		8AB1511F1D41361700C9B218 /* BugsnagSinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSinkTests.m; path = ../../Tests/BugsnagSinkTests.m; sourceTree = "<group>"; };
 		8AB151201D41361700C9B218 /* report.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = report.json; path = ../../Tests/report.json; sourceTree = "<group>"; };
-		8AB151251D41366400C9B218 /* BSGKSCrashReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSGKSCrashReportWriter.h; path = ../Source/BSGKSCrashReportWriter.h; sourceTree = "<group>"; };
+		8AB151251D41366400C9B218 /* BSG_KSCrashReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSCrashReportWriter.h; path = ../Source/BSG_KSCrashReportWriter.h; sourceTree = "<group>"; };
 		8AB151261D41366400C9B218 /* Bugsnag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Bugsnag.h; path = ../Source/Bugsnag.h; sourceTree = "<group>"; };
 		8AB151271D41366400C9B218 /* Bugsnag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Bugsnag.m; path = ../Source/Bugsnag.m; sourceTree = "<group>"; };
 		8AB151281D41366400C9B218 /* BugsnagBreadcrumb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagBreadcrumb.h; path = ../Source/BugsnagBreadcrumb.h; sourceTree = "<group>"; };
@@ -327,7 +327,7 @@
 				E76616F41F4E45950094CECF /* BugsnagErrorReportApiClient.m */,
 				E72352BB1F55923700436528 /* BSGConnectivity.h */,
 				E72352BC1F55923700436528 /* BSGConnectivity.m */,
-				8AB151251D41366400C9B218 /* BSGKSCrashReportWriter.h */,
+				8AB151251D41366400C9B218 /* BSG_KSCrashReportWriter.h */,
 				8AB151261D41366400C9B218 /* Bugsnag.h */,
 				8AB151271D41366400C9B218 /* Bugsnag.m */,
 				8AB151281D41366400C9B218 /* BugsnagBreadcrumb.h */,
@@ -593,7 +593,7 @@
 				E76617A21F4E459C0094CECF /* BSG_KSCrashSentry_User.h in Headers */,
 				E76617951F4E459C0094CECF /* BSG_KSCrashSentry.h in Headers */,
 				E766179E1F4E459C0094CECF /* BSG_KSCrashSentry_Private.h in Headers */,
-				8AD9A5051D42EEE9004E1CC5 /* BSGKSCrashReportWriter.h in Headers */,
+				8AD9A5051D42EEE9004E1CC5 /* BSG_KSCrashReportWriter.h in Headers */,
 				E766177F1F4E459C0094CECF /* BSG_KSCrashAdvanced.h in Headers */,
 				E76617BB1F4E459C0094CECF /* BSG_KSObjC.h in Headers */,
 				E76617C31F4E459C0094CECF /* BSG_KSString.h in Headers */,
