@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 5.14.0 (23 Nov 2017)
+
+* Use `BSG_KSCrashReportWriter` header rather than `KSCrashReportWriter` for custom JSON serialization
+
 ## 5.13.5 (21 Nov 2017)
 
 * Remove misleading information (address, mach, signal) from non-fatal error reports
