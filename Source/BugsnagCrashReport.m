@@ -533,17 +533,18 @@ initWithErrorName:(NSString *_Nonnull)name
             event, [self serializeThreadsWithException:exception], BSGKeyThreads);
     }
     // Build Event
-    BSGDictInsertIfNotNil(event, [self dsymUUID], @"dsymUUID");
+//    BSGDictInsertIfNotNil(event, [self dsymUUID], @"dsymUUID");
     BSGDictSetSafeObject(event, BSGFormatSeverity(self.severity), BSGKeySeverity);
     BSGDictSetSafeObject(event, [self breadcrumbs], BSGKeyBreadcrumbs);
     BSGDictSetSafeObject(event, @"4", BSGKeyPayloadVersion);
     BSGDictSetSafeObject(event, metaData, BSGKeyMetaData);
-    BSGDictSetSafeObject(event, [self deviceState], BSGKeyDeviceState);
+//    BSGDictSetSafeObject(event, [self deviceState], BSGKeyDeviceState);
     BSGDictSetSafeObject(event, [self device], BSGKeyDevice);
     BSGDictSetSafeObject(event, [self appState], BSGKeyAppState);
     BSGDictSetSafeObject(event, [self app], BSGKeyApp);
     BSGDictSetSafeObject(event, [self context], BSGKeyContext);
     BSGDictInsertIfNotNil(event, self.groupingHash, BSGKeyGroupingHash);
+    
 
     BSGDictSetSafeObject(event, @(self.handledState.unhandled), BSGKeyUnhandled);
 
@@ -567,9 +568,10 @@ initWithErrorName:(NSString *_Nonnull)name
 
     // Make user mutable and set the id if the user hasn't already
     NSMutableDictionary *user = [metaData[BSGKeyUser] mutableCopy];
-    if (user == nil)
+    if (user == nil) {
         user = [NSMutableDictionary dictionary];
-    BSGDictSetSafeObject(metaData, user, BSGKeyUser);
+    }
+    BSGDictInsertIfNotNil(event, user, BSGKeyUser);
 
     if (!user[BSGKeyId] && self.device[BSGKeyId]) { // if device id is null, don't set user id to default
         BSGDictSetSafeObject(user, [self deviceAppHash], BSGKeyId);
