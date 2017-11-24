@@ -99,12 +99,9 @@
                            sortedArrayUsingSelector:@selector(compare:)];
     NSArray *eventKeys = @[
                            @"app",
-                           @"appState",
                            @"breadcrumbs",
                            @"context",
                            @"device",
-                           @"deviceState",
-                           @"dsymUUID",
                            @"exceptions",
                            @"metaData",
                            @"payloadVersion",
@@ -112,6 +109,7 @@
                            @"severityReason",
                            @"threads",
                            @"unhandled",
+                           @"user",
                            ];
     XCTAssertEqualObjects(actualKeys, eventKeys);
 }
@@ -154,7 +152,7 @@
 
 - (void)testEventMetadataUser {
     NSDictionary *user =
-    [self.processedData[@"events"] firstObject][@"metaData"][@"user"];
+    [self.processedData[@"events"] firstObject][@"user"];
     NSDictionary *expected =
     @{@"id" : self.rawReportData[@"system"][@"device_app_hash"]};
     XCTAssertEqualObjects(user, expected);
@@ -268,28 +266,38 @@
     XCTAssert(threads.count == 8);
 }
 
-- (void)testEventAppState {
+
+- (void)testEventDevice {
     NSDictionary *event = [self.processedData[@"events"] firstObject];
-    NSDictionary *appState = event[@"appState"];
-    XCTAssertEqualObjects([appState valueForKey:@"durationInForeground"], @0);
-    XCTAssertEqualObjects([appState valueForKey:@"inForeground"], @YES);
-    XCTAssertEqualObjects([appState valueForKey:@"duration"], @0);
+    NSDictionary *device = event[@"device"];
+    XCTAssertNotNil(device);
+    
+    XCTAssertEqualObjects(device[@"id"], @"");
+    XCTAssertEqualObjects(device[@"manufacturer"], @"Apple");
+    XCTAssertEqualObjects(device[@"model"], @"");
+    XCTAssertEqualObjects(device[@"osName"], @"");
+    XCTAssertEqualObjects(device[@"osVersion"], @"");
+    XCTAssertEqualObjects(device[@"freeMemory"], @"");
+    XCTAssertEqualObjects(device[@"totalMemory"], @"");
+    XCTAssertEqualObjects(device[@"freeDisk"], @"");
+    XCTAssertEqualObjects(device[@"jailBroken"], @"");
+    XCTAssertEqualObjects(device[@"orientation"], @"");
 }
 
-- (void)testEventAppStats {
-    NSDictionary *stats =
-    [self.processedData[@"events"] firstObject][@"appState"][@"stats"];
-    XCTAssertEqualObjects(stats, (@{
-                                    @"background_time_since_last_crash" : @0,
-                                    @"active_time_since_launch" : @0,
-                                    @"sessions_since_last_crash" : @1,
-                                    @"launches_since_last_crash" : @1,
-                                    @"active_time_since_last_crash" : @0,
-                                    @"sessions_since_launch" : @1,
-                                    @"application_active" : @NO,
-                                    @"application_in_foreground" : @YES,
-                                    @"background_time_since_launch" : @0
-                                    }));
+- (void)testEventApp {
+    NSDictionary *event = [self.processedData[@"events"] firstObject];
+    NSDictionary *app = event[@"app"];
+    XCTAssertNotNil(app);
+    
+    XCTAssertEqualObjects(app[@"id"], @"com.bugsnag.android.example.debug");
+    XCTAssertEqualObjects(app[@"version"], @"1.0.0");
+    XCTAssertEqualObjects(app[@"bundleVersion"], @"12");
+    XCTAssertEqualObjects(app[@"buildUUID"], @"");
+    XCTAssertEqualObjects(app[@"releaseStage"], @"");
+    XCTAssertEqualObjects(app[@"dsymUUIDs"], @"");
+    XCTAssertEqualObjects(app[@"duration"], @100);
+    XCTAssertEqualObjects(app[@"durationInForeground"], @100);
+    XCTAssertEqualObjects(app[@"inForeground"], @YES);
 }
 
 #pragma mark - handled/unhandled serialisation
