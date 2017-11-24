@@ -114,7 +114,6 @@
 // Generates the payload for notifying Bugsnag
 - (NSDictionary *)getBodyFromReports:(NSArray *)reports {
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-    BSGDictSetSafeObject(data, [Bugsnag configuration].apiKey, BSGKeyApiKey);
     BSGDictSetSafeObject(data, [Bugsnag notifier].details, BSGKeyNotifier);
 
     NSMutableArray *formatted =

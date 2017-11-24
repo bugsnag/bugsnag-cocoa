@@ -536,7 +536,7 @@ initWithErrorName:(NSString *_Nonnull)name
     BSGDictInsertIfNotNil(event, [self dsymUUID], @"dsymUUID");
     BSGDictSetSafeObject(event, BSGFormatSeverity(self.severity), BSGKeySeverity);
     BSGDictSetSafeObject(event, [self breadcrumbs], BSGKeyBreadcrumbs);
-    BSGDictSetSafeObject(event, @"3", BSGKeyPayloadVersion);
+    BSGDictSetSafeObject(event, @"4", BSGKeyPayloadVersion);
     BSGDictSetSafeObject(event, metaData, BSGKeyMetaData);
     BSGDictSetSafeObject(event, [self deviceState], BSGKeyDeviceState);
     BSGDictSetSafeObject(event, [self device], BSGKeyDevice);

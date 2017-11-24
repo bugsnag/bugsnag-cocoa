@@ -54,15 +54,10 @@
 }
 
 - (void)testCorrectTopLevelKeys {
-    NSArray *expectedKeys = @[ @"apiKey", @"events", @"notifier" ];
+    NSArray *expectedKeys = @[@"events", @"notifier"];
     NSArray *topKeys = [self.processedData allKeys];
     XCTAssertEqualObjects(
                           [topKeys sortedArrayUsingSelector:@selector(compare:)], expectedKeys);
-}
-
-- (void)testGetAPIKey {
-    NSString *APIKey = self.processedData[@"apiKey"];
-    XCTAssertEqualObjects(APIKey, @"apiKeyHere");
 }
 
 - (void)testCorrectNotifierKeys {
@@ -130,7 +125,7 @@
 - (void)testEventPayloadVersion {
     NSString *payloadVersion =
     [self.processedData[@"events"] firstObject][@"payloadVersion"];
-    XCTAssertEqualObjects(payloadVersion, @"3");
+    XCTAssertEqualObjects(payloadVersion, @"4");
 }
 
 - (void)testEventSeverity {
