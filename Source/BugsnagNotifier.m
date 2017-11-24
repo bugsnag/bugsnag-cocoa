@@ -35,6 +35,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagSink.h"
 #import "BugsnagKeys.h"
+#import "BugsnagSessionTracker.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -147,6 +148,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 @interface BugsnagNotifier ()
 @property(nonatomic) BugsnagCrashSentry *crashSentry;
 @property(nonatomic) BugsnagErrorReportApiClient *apiClient;
+@property(nonatomic) BugsnagSessionTracker *sessionTracker;
 @end
 
 @implementation BugsnagNotifier
@@ -155,6 +157,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
 - (id)initWithConfiguration:(BugsnagConfiguration *)initConfiguration {
     if ((self = [super init])) {
+        self.sessionTracker = [BugsnagSessionTracker new];
         self.configuration = initConfiguration;
         self.state = [[BugsnagMetaData alloc] init];
         self.details = [@{
@@ -310,6 +313,10 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                                    [weakSelf flushPendingReports];
                                  }];
     [self.networkReachable startWatchingConnectivity];
+}
+
+- (void)startSession {
+    [self.sessionTracker startNewSession];
 }
 
 - (void)notifyError:(NSError *)error

@@ -210,4 +210,12 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)setWriteBinaryImagesForUserReported:
     (BOOL)writeBinaryImagesForUserReported;
 
+/**
+ * Manually starts tracking a new session.
+ * Automatic session tracking can be enabled via Configuration,
+ * which will automatically create a new
+ * session everytime the app enters the foreground.
+ */
++ (void)startSession;
+
 @end
