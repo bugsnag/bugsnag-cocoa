@@ -131,6 +131,16 @@ BugsnagBreadcrumbs *breadcrumbs;
 @property BOOL autoNotify;
 
 /**
+ * Whether app sessions should be tracked automatically
+ */
+@property BOOL shouldAutoCaptureSessions;
+
+/**
+ *  The URL used to send Tracked Sessions to Bugsnag
+ */
+@property(readwrite, retain, nullable) NSURL *sessionEndpoint;
+
+/**
  *  Set user metadata
  *
  *  @param userId ID of the user
@@ -168,4 +178,8 @@ BugsnagBreadcrumbs *breadcrumbs;
  */
 @property(readonly, strong, nullable)
     NSArray *beforeNotifyHooks __deprecated_msg("Use beforeNotify instead.");
+
+- (NSDictionary *_Nonnull)errorApiHeaders;
+- (NSDictionary *_Nonnull)sessionApiHeaders;
+
 @end

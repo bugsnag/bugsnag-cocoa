@@ -30,6 +30,11 @@
 #import "BugsnagMetaData.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagKeys.h"
+#import "BSG_RFC3339DateTool.h"
+
+static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
+static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
+static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 
 @interface Bugsnag ()
 + (BugsnagNotifier *)notifier;
@@ -47,6 +52,7 @@
         _metaData = [[BugsnagMetaData alloc] init];
         _config = [[BugsnagMetaData alloc] init];
         _apiKey = @"";
+        _sessionEndpoint = [NSURL URLWithString:@"https://sessions.bugsnag.com"];
         _autoNotify = YES;
         _notifyURL = [NSURL URLWithString:BSGDefaultNotifyUrl];
         _beforeNotifyHooks = [NSMutableArray new];
@@ -184,5 +190,20 @@
                         withValue:newVersion
                     toTabWithName:BSGKeyConfig];
     }
+}
+
+- (NSDictionary *)errorApiHeaders {
+    return @{
+             kHeaderApiPayloadVersion: @"4",
+             kHeaderApiKey: self.apiKey
+             };
+}
+
+- (NSDictionary *)sessionApiHeaders {
+    return @{
+             kHeaderApiPayloadVersion: @"1.0",
+             kHeaderApiKey: self.apiKey,
+             kHeaderApiSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate new]]
+             };
 }
 @end

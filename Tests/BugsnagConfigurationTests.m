@@ -52,4 +52,36 @@
     XCTAssertFalse([config shouldSendReports]);
 }
 
+- (void)testDefaultSessionConfig {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertFalse([config shouldAutoCaptureSessions]);
+}
+
+- (void)testErrorApiHeaders {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    NSDictionary *headers = [config errorApiHeaders];
+    XCTAssertEqualObjects(config.apiKey, headers[@"Bugsnag-Api-Key"]);
+    XCTAssertNotNil(headers[@"Bugsnag-Payload-Version"]);
+}
+
+- (void)testSessionApiHeaders {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    NSDictionary *headers = [config sessionApiHeaders];
+    XCTAssertEqualObjects(config.apiKey, headers[@"Bugsnag-Api-Key"]);
+    XCTAssertNotNil(headers[@"Bugsnag-Sent-At"]);
+    XCTAssertNotNil(headers[@"Bugsnag-Payload-Version"]);
+}
+
+- (void)testSessionEndpoints {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    
+    // Default endpoints
+    XCTAssertEqualObjects([NSURL URLWithString:@"https://sessions.bugsnag.com"], config.sessionEndpoint);
+    
+    // Setting an endpoint
+    NSURL *endpoint = [NSURL URLWithString:@"http://localhost:8000"];
+    config.sessionEndpoint = endpoint;
+    XCTAssertEqualObjects(endpoint, config.sessionEndpoint);
+}
+
 @end
