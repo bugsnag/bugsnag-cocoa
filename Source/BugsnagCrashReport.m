@@ -19,6 +19,7 @@
 #import "BugsnagHandledState.h"
 #import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
+#import "NSDictionary+BSG_Merge.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {
@@ -533,15 +534,20 @@ initWithErrorName:(NSString *_Nonnull)name
             event, [self serializeThreadsWithException:exception], BSGKeyThreads);
     }
     // Build Event
-//    BSGDictInsertIfNotNil(event, [self dsymUUID], @"dsymUUID");
     BSGDictSetSafeObject(event, BSGFormatSeverity(self.severity), BSGKeySeverity);
     BSGDictSetSafeObject(event, [self breadcrumbs], BSGKeyBreadcrumbs);
     BSGDictSetSafeObject(event, @"4", BSGKeyPayloadVersion);
     BSGDictSetSafeObject(event, metaData, BSGKeyMetaData);
-//    BSGDictSetSafeObject(event, [self deviceState], BSGKeyDeviceState);
-    BSGDictSetSafeObject(event, [self device], BSGKeyDevice);
-    BSGDictSetSafeObject(event, [self appState], BSGKeyAppState);
-    BSGDictSetSafeObject(event, [self app], BSGKeyApp);
+    
+    NSDictionary *device = [self.device bsg_mergedInto:self.deviceState];
+    BSGDictSetSafeObject(event, device, BSGKeyDevice);
+    
+    NSMutableDictionary *appObj = [NSMutableDictionary new];
+    [appObj addEntriesFromDictionary:self.app];
+    [appObj addEntriesFromDictionary:self.appState];
+    BSGDictInsertIfNotNil(appObj, self.dsymUUID, @"dsymUUID");
+    BSGDictSetSafeObject(event, appObj, BSGKeyApp);
+    
     BSGDictSetSafeObject(event, [self context], BSGKeyContext);
     BSGDictInsertIfNotNil(event, self.groupingHash, BSGKeyGroupingHash);
     

@@ -114,12 +114,6 @@
     XCTAssertEqualObjects(actualKeys, eventKeys);
 }
 
-- (void)testEventReleaseStage {
-    NSString *releaseStage =
-    [self.processedData[@"events"] firstObject][@"app"][@"releaseStage"];
-    XCTAssertEqualObjects(releaseStage, @"MagicalTestingTime");
-}
-
 - (void)testEventPayloadVersion {
     NSString *payloadVersion =
     [self.processedData[@"events"] firstObject][@"payloadVersion"];
@@ -169,12 +163,6 @@
     id address = [[self.processedData[@"events"] firstObject]
                   valueForKeyPath:@"metaData.error.address"];
     XCTAssertEqualObjects(address, @0);
-}
-
-- (void)testTimestamp {
-    id timestamp = [[self.processedData[@"events"] firstObject]
-                    valueForKeyPath:@"deviceState.time"];
-    XCTAssertEqualObjects(timestamp, @"2014-12-02T01:56:13Z");
 }
 
 - (void)testEventMetadataErrorType {
@@ -266,22 +254,22 @@
     XCTAssert(threads.count == 8);
 }
 
-
 - (void)testEventDevice {
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     NSDictionary *device = event[@"device"];
     XCTAssertNotNil(device);
     
-    XCTAssertEqualObjects(device[@"id"], @"");
+    XCTAssertEqualObjects(device[@"id"], @"f6d519a74213a57f8d052c53febfeee6f856d062");
     XCTAssertEqualObjects(device[@"manufacturer"], @"Apple");
-    XCTAssertEqualObjects(device[@"model"], @"");
-    XCTAssertEqualObjects(device[@"osName"], @"");
-    XCTAssertEqualObjects(device[@"osVersion"], @"");
-    XCTAssertEqualObjects(device[@"freeMemory"], @"");
-    XCTAssertEqualObjects(device[@"totalMemory"], @"");
-    XCTAssertEqualObjects(device[@"freeDisk"], @"");
-    XCTAssertEqualObjects(device[@"jailBroken"], @"");
-    XCTAssertEqualObjects(device[@"orientation"], @"");
+    XCTAssertEqualObjects(device[@"model"], @"x86_64");
+    XCTAssertEqualObjects(device[@"modelNumber"], @"MacBookPro11,3");
+    XCTAssertEqualObjects(device[@"osName"], @"iPhone OS");
+    XCTAssertEqualObjects(device[@"osVersion"], @"8.1");
+    XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
+    XCTAssertEqualObjects(device[@"totalMemory"], @15065522176);
+    XCTAssertNotNil(device[@"freeDisk"]);
+    XCTAssertEqualObjects(device[@"jailBroken"], @YES);
+    XCTAssertEqualObjects(device[@"orientation"], @"unknown");
 }
 
 - (void)testEventApp {
@@ -289,14 +277,13 @@
     NSDictionary *app = event[@"app"];
     XCTAssertNotNil(app);
     
-    XCTAssertEqualObjects(app[@"id"], @"com.bugsnag.android.example.debug");
-    XCTAssertEqualObjects(app[@"version"], @"1.0.0");
-    XCTAssertEqualObjects(app[@"bundleVersion"], @"12");
-    XCTAssertEqualObjects(app[@"buildUUID"], @"");
-    XCTAssertEqualObjects(app[@"releaseStage"], @"");
+    XCTAssertEqualObjects(app[@"id"], @"net.hockeyapp.CrashProbeiOS");
+    XCTAssertEqualObjects(app[@"version"], @"1.0");
+    XCTAssertEqualObjects(app[@"bundleVersion"], @"1");
+    XCTAssertEqualObjects(app[@"releaseStage"], @"MagicalTestingTime");
     XCTAssertEqualObjects(app[@"dsymUUIDs"], @"");
-    XCTAssertEqualObjects(app[@"duration"], @100);
-    XCTAssertEqualObjects(app[@"durationInForeground"], @100);
+    XCTAssertEqualObjects(app[@"duration"], @0);
+    XCTAssertEqualObjects(app[@"durationInForeground"], @0);
     XCTAssertEqualObjects(app[@"inForeground"], @YES);
 }
 
