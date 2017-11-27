@@ -324,7 +324,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
 - (void)willEnterBackground:(id)sender {
     if (self.configuration.shouldAutoCaptureSessions) {
-        [self.sessionTracker suspendCurrentSession];
+        [self.sessionTracker suspendCurrentSession:[NSDate date]];
     }
 }
 

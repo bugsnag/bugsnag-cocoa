@@ -12,6 +12,7 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagSession.h"
+#import "BSG_RFC3339DateTool.h"
 
 @interface BugsnagSessionTrackerTest : XCTestCase
 @property BugsnagConfiguration *configuration;
@@ -98,7 +99,32 @@
     XCTAssertEqual(0, session.unhandledCount);
 }
 
-// TODO test session timeout
+- (void)testPayloadSerialisation {
+    NSDictionary *rootNode = [NSDictionary new]; // TODO serialise
+    XCTAssertNotNil(rootNode);
+    
+    NSArray *sessions = rootNode[@"sessions"];
+    NSDictionary *sessionNode = sessions[0];
+    XCTAssertNotNil(sessionNode);
+    XCTAssertEqualObjects(@"test", sessionNode[@"id"]);
+    
+    NSString *expected = nil;
+    XCTAssertEqualObjects(expected, sessionNode[@"startedAt"]);
+    XCTAssertNotNil(sessionNode[@"user"]);
+    
+    XCTAssertNotNil(rootNode[@"notifier"]);
+    XCTAssertNotNil(rootNode[@"device"]);
+    XCTAssertNotNil(rootNode[@"app"]);
+}
+
+- (void)testBasicInForeground {
+    XCTAssertFalse(self.sessionTracker.isInForeground);
+    XCTAssertNil(self.sessionTracker.currentSession);
+
+    NSDate *now = [NSDate date];
+    [self.sessionTracker startNewSession:now withUser:nil autoCaptured:NO];
+    XCTAssertTrue(self.sessionTracker.isInForeground);
+}
 
 @end
 

@@ -9,17 +9,21 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagSession.h"
+#import "BugsnagConfiguration.h"
 
 @interface BugsnagSessionTracker : NSObject
+
+- (instancetype)initWithConfig:(BugsnagConfiguration *)config;
 
 - (void)startNewSession:(NSDate *)date
                withUser:(BugsnagUser *)user
            autoCaptured:(BOOL)autoCaptured;
 
-- (void)suspendCurrentSession;
+- (void)suspendCurrentSession:(NSDate *)date;
 - (void)incrementHandledError;
 - (void)incrementUnhandledError;
 
 @property (readonly) BugsnagSession *currentSession;
+@property (readonly) BOOL isInForeground;
 
 @end

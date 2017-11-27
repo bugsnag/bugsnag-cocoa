@@ -8,7 +8,18 @@
 
 #import "BugsnagSessionTracker.h"
 
+@interface BugsnagSessionTracker()
+@property BugsnagConfiguration *config;
+@end
+
 @implementation BugsnagSessionTracker
+
+- (instancetype)initWithConfig:(BugsnagConfiguration *)config {
+    if (self = [super init]) {
+        self.config = config;
+    }
+    return self;
+}
 
 
 - (void)startNewSession:(NSDate *)date
@@ -18,7 +29,7 @@
     // TODO implement
 }
 
-- (void)suspendCurrentSession {
+- (void)suspendCurrentSession:(NSDate *)date {
     NSLog(@"");
     // TODO implement
 }
