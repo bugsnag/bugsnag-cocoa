@@ -111,23 +111,5 @@
     XCTAssertFalse(self.sessionTracker.isInForeground);
 }
 
-//- (void)testPayloadSerialisation {
-//    NSDictionary *rootNode = [NSDictionary new]; // TODO serialise
-//    XCTAssertNotNil(rootNode);
-//
-//    NSArray *sessions = rootNode[@"sessions"];
-//    NSDictionary *sessionNode = sessions[0];
-//    XCTAssertNotNil(sessionNode);
-//    XCTAssertEqualObjects(@"test", sessionNode[@"id"]);
-//
-//    NSString *expected = nil;
-//    XCTAssertEqualObjects(expected, sessionNode[@"startedAt"]);
-//    XCTAssertNotNil(sessionNode[@"user"]);
-//
-//    XCTAssertNotNil(rootNode[@"notifier"]);
-//    XCTAssertNotNil(rootNode[@"device"]);
-//    XCTAssertNotNil(rootNode[@"app"]);
-//}
-
 @end
 
