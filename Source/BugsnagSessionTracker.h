@@ -8,9 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+#import "BugsnagSession.h"
+
 @interface BugsnagSessionTracker : NSObject
 
-- (void)startNewSession;
+- (void)startNewSession:(NSDate *)date
+               withUser:(BugsnagUser *)user
+           autoCaptured:(BOOL)autoCaptured;
+
 - (void)suspendCurrentSession;
+- (void)incrementHandledError;
+- (void)incrementUnhandledError;
+
+@property (readonly) BugsnagSession *currentSession;
 
 @end

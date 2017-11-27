@@ -316,7 +316,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
 - (void)willEnterForeground:(id)sender {
     if (self.configuration.shouldAutoCaptureSessions) {
-        [self.sessionTracker startNewSession];
+        [self.sessionTracker startNewSession:[NSDate date]
+                                    withUser:self.configuration.currentUser
+                                autoCaptured:YES];
     }
 }
 
@@ -343,7 +345,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)startSession {
-    [self.sessionTracker startNewSession];
+    [self.sessionTracker startNewSession:[NSDate date]
+                                withUser:self.configuration.currentUser
+                            autoCaptured:NO];
 }
 
 - (void)notifyError:(NSError *)error

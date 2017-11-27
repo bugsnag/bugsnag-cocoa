@@ -10,13 +10,24 @@
 
 @implementation BugsnagSessionTracker
 
-- (void)startNewSession {
+
+- (void)startNewSession:(NSDate *)date
+               withUser:(BugsnagUser *)user
+           autoCaptured:(BOOL)autoCaptured {
     NSLog(@"");
     // TODO implement
 }
 
 - (void)suspendCurrentSession {
     NSLog(@"");
+    // TODO implement
+}
+
+- (void)incrementHandledError {
+    // TODO implement
+}
+
+- (void)incrementUnhandledError {
     // TODO implement
 }
 
