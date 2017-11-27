@@ -26,7 +26,6 @@
                withUser:(BugsnagUser *)user
            autoCaptured:(BOOL)autoCaptured {
     NSLog(@"");
-    // TODO implement
     
     @synchronized(self) {
         _currentSession = [BugsnagSession new];

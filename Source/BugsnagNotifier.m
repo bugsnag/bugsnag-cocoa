@@ -315,17 +315,13 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)willEnterForeground:(id)sender {
-    if (self.configuration.shouldAutoCaptureSessions) {
-        [self.sessionTracker startNewSession:[NSDate date]
-                                    withUser:self.configuration.currentUser
-                                autoCaptured:YES];
-    }
+    [self.sessionTracker startNewSession:[NSDate date]
+                                withUser:self.configuration.currentUser
+                            autoCaptured:YES];
 }
 
 - (void)willEnterBackground:(id)sender {
-    if (self.configuration.shouldAutoCaptureSessions) {
-        [self.sessionTracker suspendCurrentSession:[NSDate date]];
-    }
+    [self.sessionTracker suspendCurrentSession:[NSDate date]];
 }
 
 - (void)flushPendingReports {
