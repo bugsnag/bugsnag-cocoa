@@ -17,29 +17,44 @@
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config {
     if (self = [super init]) {
         self.config = config;
+        _sessionQueue = [NSMutableArray new];
     }
     return self;
 }
-
 
 - (void)startNewSession:(NSDate *)date
                withUser:(BugsnagUser *)user
            autoCaptured:(BOOL)autoCaptured {
     NSLog(@"");
     // TODO implement
+    
+    @synchronized(self) {
+        _currentSession = [BugsnagSession new];
+        self.currentSession.sessionId = [[NSUUID UUID] UUIDString];
+        self.currentSession.startedAt = [date copy];
+        self.currentSession.user = user;
+        
+        if (self.config.shouldAutoCaptureSessions || ! autoCaptured) {
+            [self.sessionQueue addObject:self.currentSession];
+        }
+        _isInForeground = YES;
+    }
 }
 
 - (void)suspendCurrentSession:(NSDate *)date {
-    NSLog(@"");
-    // TODO implement
+    _isInForeground = NO;
 }
 
 - (void)incrementHandledError {
-    // TODO implement
+    @synchronized (self.currentSession) {
+        self.currentSession.handledCount++;
+    }
 }
 
 - (void)incrementUnhandledError {
-    // TODO implement
+    @synchronized (self.currentSession) {
+        self.currentSession.unhandledCount++;
+    }
 }
 
 @end

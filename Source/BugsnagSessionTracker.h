@@ -25,5 +25,6 @@
 
 @property (readonly) BugsnagSession *currentSession;
 @property (readonly) BOOL isInForeground;
+@property (readonly) NSMutableArray *sessionQueue;
 
 @end

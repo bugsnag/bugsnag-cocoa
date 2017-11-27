@@ -157,7 +157,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
 - (id)initWithConfiguration:(BugsnagConfiguration *)initConfiguration {
     if ((self = [super init])) {
-        self.sessionTracker = [BugsnagSessionTracker new];
+        self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:initConfiguration];
         self.configuration = initConfiguration;
         self.state = [[BugsnagMetaData alloc] init];
         self.details = [@{
