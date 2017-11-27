@@ -10,4 +10,8 @@
 
 @implementation BugsnagSession
 
+- (NSDictionary *)toJson {
+    return @{}; // TODO implement
+}
+
 @end

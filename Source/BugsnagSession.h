@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagUser.h"
+#import "JsonSerializable.h"
 
-@interface BugsnagSession : NSObject
+@interface BugsnagSession : NSObject<JsonSerializable>
 
 @property NSString *sessionId;
 @property NSDate *startedAt;

@@ -519,6 +519,10 @@ initWithErrorName:(NSString *_Nonnull)name
 
 - (NSDictionary *)serializableValueWithTopLevelData:
     (NSMutableDictionary *)data {
+    return [self toJson];
+}
+
+- (NSDictionary *)toJson {
     NSMutableDictionary *event = [NSMutableDictionary dictionary];
     NSMutableDictionary *metaData = [[self metaData] mutableCopy];
 

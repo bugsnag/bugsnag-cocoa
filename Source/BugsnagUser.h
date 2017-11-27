@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface BugsnagUser : NSObject
+#import "JsonSerializable.h"
+
+@interface BugsnagUser : NSObject<JsonSerializable>
 
 @property NSString *userId;
 @property NSString *name;

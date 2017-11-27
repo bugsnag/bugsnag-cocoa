@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagSession.h"
+#import "JsonSerializable.h"
 
-@interface BugsnagSessionTrackingPayload : NSObject
+@interface BugsnagSessionTrackingPayload : NSObject<JsonSerializable>
 
 @property NSArray<BugsnagSession *> *sessions;
 

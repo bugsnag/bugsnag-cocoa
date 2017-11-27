@@ -120,12 +120,10 @@
         [[NSMutableArray alloc] initWithCapacity:[reports count]];
 
     for (BugsnagCrashReport *report in reports) {
-        BSGArrayAddSafeObject(formatted,
-                              [report serializableValueWithTopLevelData:data]);
+        BSGArrayAddSafeObject(formatted, [report toJson]);
     }
 
     BSGDictSetSafeObject(data, formatted, BSGKeyEvents);
-
     return data;
 }
 

@@ -10,4 +10,10 @@
 
 @implementation BugsnagUser
 
+- (NSDictionary *)toJson {
+    
+    // TODO async + nil safe
+    return @{};
+}
+
 @end

@@ -8,13 +8,16 @@
 
 #import <XCTest/XCTest.h>
 
+#import "BugsnagSessionTrackingPayload.h"
+
 @interface BugsnagSessionTrackingPayloadTest : XCTestCase
 @end
 
 @implementation BugsnagSessionTrackingPayloadTest
 
 - (void)testPayloadSerialisation {
-    NSDictionary *rootNode = [NSDictionary new]; // TODO serialise session as JSON
+    BugsnagSessionTrackingPayload *payload = [BugsnagSessionTrackingPayload new];
+    NSDictionary *rootNode = [payload toJson];
     XCTAssertNotNil(rootNode);
 
     NSArray *sessions = rootNode[@"sessions"];
