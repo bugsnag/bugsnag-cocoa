@@ -1,5 +1,6 @@
 #import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
+#import "BugsnagUser.h"
 #import <XCTest/XCTest.h>
 
 @interface BugsnagConfigurationTests : XCTestCase
@@ -82,6 +83,18 @@
     NSURL *endpoint = [NSURL URLWithString:@"http://localhost:8000"];
     config.sessionEndpoint = endpoint;
     XCTAssertEqualObjects(endpoint, config.sessionEndpoint);
+}
+
+- (void)testUser {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertNil(config.currentUser);
+    
+    [config setUser:@"123" withName:@"foo" andEmail:@"test@example.com"];
+    
+    XCTAssertEqualObjects(@"123", config.currentUser.userId);
+    XCTAssertEqualObjects(@"foo", config.currentUser.name);
+    XCTAssertEqualObjects(@"test@example.com", config.currentUser.emailAddress);
+    
 }
 
 @end

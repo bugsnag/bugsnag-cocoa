@@ -31,6 +31,7 @@
 #import "BugsnagNotifier.h"
 #import "BugsnagKeys.h"
 #import "BSG_RFC3339DateTool.h"
+#import "BugsnagUser.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -82,6 +83,12 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 - (void)setUser:(NSString *)userId
        withName:(NSString *)userName
        andEmail:(NSString *)userEmail {
+    
+    self.currentUser = [BugsnagUser new];
+    self.currentUser.userId = userId;
+    self.currentUser.name = userName;
+    self.currentUser.emailAddress = userEmail;
+    
     [self.metaData addAttribute:BSGKeyId withValue:userId toTabWithName:BSGKeyUser];
     [self.metaData addAttribute:BSGKeyName
                       withValue:userName

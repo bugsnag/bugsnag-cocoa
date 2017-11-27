@@ -24,13 +24,15 @@
 // THE SOFTWARE.
 //
 
+#import <Foundation/Foundation.h>
+
 #import "BSG_KSCrashReportWriter.h"
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagCrashReport.h"
 #import "BugsnagMetaData.h"
-#import <Foundation/Foundation.h>
 
 @class BugsnagBreadcrumbs;
+@class BugsnagUser;
 
 /**
  *  A configuration block for modifying an error report
@@ -94,6 +96,11 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
  *  The URL session used to send requests to Bugsnag.
  */
 @property(readwrite, strong, nonnull) NSURLSession *session;
+
+/**
+ * The current user
+ */
+@property(nullable) BugsnagUser *currentUser;
 
 /**
  *  Additional information about the state of the app or environment at the
