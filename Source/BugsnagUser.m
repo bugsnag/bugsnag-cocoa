@@ -7,13 +7,16 @@
 //
 
 #import "BugsnagUser.h"
+#import "BugsnagCollections.h"
 
 @implementation BugsnagUser
 
 - (NSDictionary *)toJson {
-    
-    // TODO async + nil safe
-    return @{};
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+    BSGDictInsertIfNotNil(dict, self.userId, @"id");
+    BSGDictInsertIfNotNil(dict, self.emailAddress, @"emailAddress");
+    BSGDictInsertIfNotNil(dict, self.name, @"name");
+    return [NSDictionary dictionaryWithDictionary:dict];
 }
 
 @end

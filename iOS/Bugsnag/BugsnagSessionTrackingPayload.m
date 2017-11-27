@@ -7,11 +7,20 @@
 //
 
 #import "BugsnagSessionTrackingPayload.h"
+#import "BugsnagCollections.h"
 
 @implementation BugsnagSessionTrackingPayload
 
 - (NSDictionary *)toJson {
-    return @{}; // TODO implement me
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+    
+    NSMutableArray *sessionData = [NSMutableArray new];
+    
+    for (BugsnagSession *session in self.sessions) {
+        [sessionData addObject:[session toJson]];
+    }
+    BSGDictInsertIfNotNil(dict, sessionData, @"session");
+    return [NSDictionary dictionaryWithDictionary:dict];
 }
 
 @end
