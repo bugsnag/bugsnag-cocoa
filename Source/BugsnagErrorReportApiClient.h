@@ -10,8 +10,11 @@
 
 #import "BSG_KSCrashReportFilterCompletion.h"
 #import "BugsnagCrashReport.h"
+#import "BugsnagConfiguration.h"
 
 @interface BugsnagErrorReportApiClient : NSObject
+
+- (instancetype)initWithConfig:(BugsnagConfiguration *)config;
 
 /**
  * Send outstanding error reports

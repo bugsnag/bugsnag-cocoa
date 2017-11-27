@@ -254,7 +254,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
 - (void)start {
     self.crashSentry = [BugsnagCrashSentry new];
-    self.apiClient = [BugsnagErrorReportApiClient new];
+    self.apiClient = [[BugsnagErrorReportApiClient alloc] initWithConfig:configuration];
 
     [self.crashSentry install:self.configuration
                     apiClient:self.apiClient

@@ -23,6 +23,7 @@
 
 @interface BugsnagErrorReportApiClient ()
 @property(nonatomic, strong) NSOperationQueue *sendQueue;
+@property BugsnagConfiguration *config;
 @end
 
 @interface BSGDelayOperation : NSOperation
@@ -33,8 +34,9 @@
 
 @implementation BugsnagErrorReportApiClient
 
-- (instancetype)init {
+- (instancetype)initWithConfig:(BugsnagConfiguration *)config {
     if (self = [super init]) {
+        _config = config;
         _sendQueue = [[NSOperationQueue alloc] init];
         _sendQueue.maxConcurrentOperationCount = 1;
         if ([_sendQueue respondsToSelector:@selector(qualityOfService)])
@@ -74,6 +76,12 @@
                 cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
             timeoutInterval:15];
         request.HTTPMethod = @"POST";
+        
+        NSDictionary *headers = [self.config errorApiHeaders];
+        
+        for (NSString *key in [headers allKeys]) {
+            [request setValue:headers[key] forHTTPHeaderField:key];
+        }
 
         if ([NSURLSession class]) {
             NSURLSession *session = [Bugsnag configuration].session;
