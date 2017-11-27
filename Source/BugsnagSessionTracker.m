@@ -11,6 +11,12 @@
 @implementation BugsnagSessionTracker
 
 - (void)startNewSession {
+    NSLog(@"");
+    // TODO implement
+}
+
+- (void)suspendCurrentSession {
+    NSLog(@"");
     // TODO implement
 }
 

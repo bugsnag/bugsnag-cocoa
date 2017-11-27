@@ -11,5 +11,6 @@
 @interface BugsnagSessionTracker : NSObject
 
 - (void)startNewSession;
+- (void)suspendCurrentSession;
 
 @end

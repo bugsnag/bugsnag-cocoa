@@ -170,6 +170,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         self.configuration.metaData.delegate = self;
         self.configuration.config.delegate = self;
         self.state.delegate = self;
+        self.crashSentry = [BugsnagCrashSentry new];
+        self.apiClient = [[BugsnagErrorReportApiClient alloc] initWithConfig:configuration];
 
         [self metaDataChanged:self.configuration.metaData];
         [self metaDataChanged:self.configuration.config];
@@ -253,9 +255,6 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)start {
-    self.crashSentry = [BugsnagCrashSentry new];
-    self.apiClient = [[BugsnagErrorReportApiClient alloc] initWithConfig:configuration];
-
     [self.crashSentry install:self.configuration
                     apiClient:self.apiClient
                       onCrash:&BSSerializeDataCrashHandler];
@@ -267,27 +266,40 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self.details setValue:@"tvOS Bugsnag Notifier" forKey:BSGKeyName];
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     [self.details setValue:@"iOS Bugsnag Notifier" forKey:BSGKeyName];
-
-    [[NSNotificationCenter defaultCenter]
-        addObserver:self
-           selector:@selector(batteryChanged:)
-               name:UIDeviceBatteryStateDidChangeNotification
-             object:nil];
-    [[NSNotificationCenter defaultCenter]
-        addObserver:self
-           selector:@selector(batteryChanged:)
-               name:UIDeviceBatteryLevelDidChangeNotification
-             object:nil];
-    [[NSNotificationCenter defaultCenter]
-        addObserver:self
-           selector:@selector(orientationChanged:)
-               name:UIDeviceOrientationDidChangeNotification
-             object:nil];
-    [[NSNotificationCenter defaultCenter]
-        addObserver:self
-           selector:@selector(lowMemoryWarning:)
-               name:UIApplicationDidReceiveMemoryWarningNotification
-             object:nil];
+    
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    
+    // TODO support mac + tvOS with all these options?
+    [center addObserver:self
+               selector:@selector(willEnterForeground:)
+                   name:UIApplicationWillEnterForegroundNotification
+                 object:nil];
+    
+    [center addObserver:self
+               selector:@selector(willEnterBackground:)
+                   name:UIApplicationDidEnterBackgroundNotification
+                 object:nil];
+    
+    
+    [center addObserver:self
+               selector:@selector(batteryChanged:)
+                   name:UIDeviceBatteryStateDidChangeNotification
+                 object:nil];
+    
+    [center addObserver:self
+               selector:@selector(batteryChanged:)
+                   name:UIDeviceBatteryLevelDidChangeNotification
+                 object:nil];
+    
+    [center addObserver:self
+               selector:@selector(orientationChanged:)
+                   name:UIDeviceOrientationDidChangeNotification
+                 object:nil];
+    
+    [center addObserver:self
+               selector:@selector(lowMemoryWarning:)
+                   name:UIApplicationDidReceiveMemoryWarningNotification
+                 object:nil];
 
     [UIDevice currentDevice].batteryMonitoringEnabled = YES;
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -297,6 +309,21 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 #elif TARGET_OS_MAC
     [self.details setValue:@"OSX Bugsnag Notifier" forKey:BSGKeyName];
 #endif
+    
+    // notification not received in time on initial startup, so trigger manually
+    [self willEnterForeground:self];
+}
+
+- (void)willEnterForeground:(id)sender {
+    if (self.configuration.shouldAutoCaptureSessions) {
+        [self.sessionTracker startNewSession];
+    }
+}
+
+- (void)willEnterBackground:(id)sender {
+    if (self.configuration.shouldAutoCaptureSessions) {
+        [self.sessionTracker suspendCurrentSession];
+    }
 }
 
 - (void)flushPendingReports {
