@@ -167,6 +167,9 @@ NSDictionary *BSGParseDeviceState(NSDictionary *report) {
     BSGDictSetSafeObject(deviceState,
                          [report valueForKeyPath:@"report.timestamp"], @"time");
 
+    BSGDictSetSafeObject(deviceState,
+                         [report valueForKeyPath:@"system.jailbroken"], @"jailbroken");
+    
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(
         NSDocumentDirectory, NSUserDomainMask, true);
@@ -545,7 +548,11 @@ initWithErrorName:(NSString *_Nonnull)name
     NSMutableDictionary *appObj = [NSMutableDictionary new];
     [appObj addEntriesFromDictionary:self.app];
     [appObj addEntriesFromDictionary:self.appState];
-    BSGDictInsertIfNotNil(appObj, self.dsymUUID, @"dsymUUID");
+    
+    if (self.dsymUUID) {
+        BSGDictInsertIfNotNil(appObj, @[self.dsymUUID], @"dsymUUIDs");
+    }
+    
     BSGDictSetSafeObject(event, appObj, BSGKeyApp);
     
     BSGDictSetSafeObject(event, [self context], BSGKeyContext);

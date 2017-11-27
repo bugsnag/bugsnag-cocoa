@@ -268,7 +268,7 @@
     XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
     XCTAssertEqualObjects(device[@"totalMemory"], @15065522176);
     XCTAssertNotNil(device[@"freeDisk"]);
-    XCTAssertEqualObjects(device[@"jailBroken"], @YES);
+    XCTAssertEqualObjects(device[@"jailbroken"], @YES);
     XCTAssertEqualObjects(device[@"orientation"], @"unknown");
 }
 
@@ -281,7 +281,7 @@
     XCTAssertEqualObjects(app[@"version"], @"1.0");
     XCTAssertEqualObjects(app[@"bundleVersion"], @"1");
     XCTAssertEqualObjects(app[@"releaseStage"], @"MagicalTestingTime");
-    XCTAssertEqualObjects(app[@"dsymUUIDs"], @"");
+    XCTAssertEqualObjects(app[@"dsymUUIDs"], @[@"D0A41830-4FD2-3B02-A23B-0741AD4C7F52"]);
     XCTAssertEqualObjects(app[@"duration"], @0);
     XCTAssertEqualObjects(app[@"durationInForeground"], @0);
     XCTAssertEqualObjects(app[@"inForeground"], @YES);
