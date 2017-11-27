@@ -429,6 +429,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
          message:(NSString *)message
     handledState:(BugsnagHandledState *_Nonnull)handledState
            block:(void (^)(BugsnagCrashReport *))block {
+    
+    [self.sessionTracker incrementHandledError];
 
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc]
         initWithErrorName:exceptionName
