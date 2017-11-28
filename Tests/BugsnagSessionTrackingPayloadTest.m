@@ -17,6 +17,10 @@
 
 - (void)testPayloadSerialisation {
     BugsnagSessionTrackingPayload *payload = [BugsnagSessionTrackingPayload new];
+    BugsnagSession *session = [BugsnagSession new];
+    session.sessionId = @"test";
+    payload.sessions = @[session];
+    
     NSDictionary *rootNode = [payload toJson];
     XCTAssertNotNil(rootNode);
 
@@ -24,11 +28,7 @@
     NSDictionary *sessionNode = sessions[0];
     XCTAssertNotNil(sessionNode);
     XCTAssertEqualObjects(@"test", sessionNode[@"id"]);
-
-    NSString *expected = nil;
-    XCTAssertEqualObjects(expected, sessionNode[@"startedAt"]);
-    XCTAssertNotNil(sessionNode[@"user"]);
-
+    
     XCTAssertNotNil(rootNode[@"notifier"]);
     XCTAssertNotNil(rootNode[@"device"]);
     XCTAssertNotNil(rootNode[@"app"]);

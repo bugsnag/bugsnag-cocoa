@@ -24,18 +24,16 @@
     
     payload.unhandledCount = 1;
     payload.handledCount = 2;
-    payload.autoCaptured = YES;
     payload.user = [BugsnagUser new];
     
     NSDictionary *rootNode = [payload toJson];
     XCTAssertNotNil(rootNode);
-    XCTAssertEqual(6, [rootNode count]);
+    XCTAssertEqual(5, [rootNode count]);
     
     XCTAssertEqualObjects(@"test", rootNode[@"id"]);
     XCTAssertEqualObjects([BSG_RFC3339DateTool stringFromDate:now], rootNode[@"startedAt"]);
-    XCTAssertEqual(@1, rootNode[@"unhandledCount"]);
-    XCTAssertEqual(@2, rootNode[@"handledCount"]);
-    XCTAssertTrue(rootNode[@"autoCaptured"]);
+    XCTAssertEqualObjects(@1, rootNode[@"unhandledCount"]);
+    XCTAssertEqualObjects(@2, rootNode[@"handledCount"]);
     XCTAssertNotNil(rootNode[@"user"]);
 }
 

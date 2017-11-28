@@ -12,14 +12,16 @@
 @implementation BugsnagSessionTrackingPayload
 
 - (NSDictionary *)toJson {
-    NSMutableDictionary *dict = [NSMutableDictionary new];
     
+    // TODO serialise notifier, device, app
+    
+    NSMutableDictionary *dict = [NSMutableDictionary new];
     NSMutableArray *sessionData = [NSMutableArray new];
     
     for (BugsnagSession *session in self.sessions) {
         [sessionData addObject:[session toJson]];
     }
-    BSGDictInsertIfNotNil(dict, sessionData, @"session");
+    BSGDictInsertIfNotNil(dict, sessionData, @"sessions");
     return [NSDictionary dictionaryWithDictionary:dict];
 }
 

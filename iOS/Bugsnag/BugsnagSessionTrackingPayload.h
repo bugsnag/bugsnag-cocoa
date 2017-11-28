@@ -15,6 +15,4 @@
 
 @property NSArray<BugsnagSession *> *sessions;
 
-// TODO serialise notifier, device, app
-
 @end
