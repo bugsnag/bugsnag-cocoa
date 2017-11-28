@@ -54,7 +54,7 @@
     XCTAssertNotNil(app);
     XCTAssertEqual(4, app.count);
     
-    XCTAssertEqualObjects(app[@"id"], @"net.hockeyapp.CrashProbeiOS");
+    XCTAssertNotNil(app[@"type"]);
     XCTAssertEqualObjects(app[@"version"], @"1.0");
     XCTAssertEqualObjects(app[@"bundleVersion"], @"1");
     XCTAssertEqualObjects(app[@"releaseStage"], @"MagicalTestingTime");

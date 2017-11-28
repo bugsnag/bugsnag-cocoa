@@ -37,7 +37,6 @@ NSDictionary *BSGParseApp(NSDictionary *report) {
     
     BSGDictSetSafeObject(app, report[@"CFBundleVersion"], @"bundleVersion");
     BSGDictSetSafeObject(app, report[@"CFBundleIdentifier"], BSGKeyId);
-    BSGDictSetSafeObject(app, report[BSGKeyExecutableName], BSGKeyName);
     BSGDictSetSafeObject(app, [Bugsnag configuration].releaseStage,
                          BSGKeyReleaseStage);
     if ([appVersion isKindOfClass:[NSString class]]) {
@@ -46,6 +45,14 @@ NSDictionary *BSGParseApp(NSDictionary *report) {
         BSGDictSetSafeObject(app, report[@"CFBundleShortVersionString"],
                              BSGKeyVersion);
     }
+    
+#if TARGET_OS_TV
+    BSGDictSetSafeObject(app, @"tvOS", @"type");
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    BSGDictSetSafeObject(app, @"iOS", @"type");
+#elif TARGET_OS_MAC
+    BSGDictSetSafeObject(app, @"macOS", @"type");
+#endif
     
     return app;
 }
@@ -64,8 +71,6 @@ NSDictionary *BSGParseAppState(NSDictionary *report) {
                          @"duration");
     BSGDictSetSafeObject(appState, report[@"application_in_foreground"],
                          @"inForeground");
-    BSGDictSetSafeObject(appState, report, @"stats");
-    
     return appState;
 }
 

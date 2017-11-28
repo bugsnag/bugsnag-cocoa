@@ -258,7 +258,7 @@
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     NSDictionary *device = event[@"device"];
     XCTAssertNotNil(device);
-    XCTAssertEqual(11, device.count);
+    XCTAssertEqual(15, device.count); // includes some legacy metadata values
     
     XCTAssertEqualObjects(device[@"id"], @"f6d519a74213a57f8d052c53febfeee6f856d062");
     XCTAssertEqualObjects(device[@"manufacturer"], @"Apple");
@@ -280,7 +280,7 @@
     XCTAssertEqual(9, app.count);
     
     XCTAssertEqualObjects(app[@"id"], @"net.hockeyapp.CrashProbeiOS");
-    XCTAssertEqualObjects(app[@"type"], @"iOS"); // TODO tvos etc
+    XCTAssertNotNil(app[@"type"]);
     XCTAssertEqualObjects(app[@"version"], @"1.0");
     XCTAssertEqualObjects(app[@"bundleVersion"], @"1");
     XCTAssertEqualObjects(app[@"releaseStage"], @"MagicalTestingTime");
