@@ -42,11 +42,11 @@
     XCTAssertEqual(6, device.count);
     
     XCTAssertEqualObjects(device[@"manufacturer"], @"Apple");
-    XCTAssertEqualObjects(device[@"model"], @"x86_64");
-    XCTAssertEqualObjects(device[@"modelNumber"], @"MacBookPro11,3");
-    XCTAssertEqualObjects(device[@"osName"], @"iPhone OS");
-    XCTAssertEqualObjects(device[@"osVersion"], @"8.1");
-    XCTAssertEqualObjects(device[@"jailbroken"], @YES);
+    XCTAssertNotNil(device[@"model"]);
+    XCTAssertNotNil(device[@"modelNumber"]);
+    XCTAssertNotNil(device[@"osName"]);
+    XCTAssertNotNil(device[@"osVersion"]);
+    XCTAssertNotNil(device[@"jailbroken"]);
 }
 
 - (void)testAppSerialisation {
