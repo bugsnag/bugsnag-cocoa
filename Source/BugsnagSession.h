@@ -16,8 +16,8 @@
 @property NSString *sessionId;
 @property NSDate *startedAt;
 @property BugsnagUser *user;
-@property NSInteger unhandledCount;
-@property NSInteger handledCount;
+@property NSUInteger unhandledCount;
+@property NSUInteger handledCount;
 @property BOOL autoCaptured;
 
 @end
