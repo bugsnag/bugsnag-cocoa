@@ -33,7 +33,7 @@
     
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     BSGDictSetSafeObject(dict, BSGParseAppState(systemInfo), @"app");
-    BSGDictSetSafeObject(dict, BSGParseDevice(systemInfo), @"device");
+    BSGDictSetSafeObject(dict, BSGParseDeviceState(systemInfo), @"device");
     return [NSDictionary dictionaryWithDictionary:dict];
 }
 

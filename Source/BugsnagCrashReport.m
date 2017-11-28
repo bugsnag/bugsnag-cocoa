@@ -230,7 +230,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             [report valueForKeyPath:@"user.metaData"] ?: [NSDictionary new];
         _context = BSGParseContext(report, _metaData);
         _deviceState = BSGParseDeviceState(report);
-        _device = BSGParseDevice(report[@"system"]);
+        _device = BSGParseDevice(report);
         _app = BSGParseApp(report[BSGKeySystem]);
         _appState = BSGParseAppState(report[BSGKeySystem]);
         _groupingHash = BSGParseGroupingHash(report, _metaData);

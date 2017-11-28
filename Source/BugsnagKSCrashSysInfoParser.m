@@ -14,20 +14,39 @@
 #import "BugsnagLogger.h"
 
 NSDictionary *BSGParseDevice(NSDictionary *report) {
-    NSMutableDictionary *device = [NSMutableDictionary dictionary];
+    NSMutableDictionary *device =
+    [[report valueForKeyPath:@"user.state.deviceState"] mutableCopy];
     
-    BSGDictSetSafeObject(device, @"Apple", @"manufacturer");
+    [device addEntriesFromDictionary:BSGParseDeviceState(report[@"system"])];
+    
     BSGDictSetSafeObject(device, [[NSLocale currentLocale] localeIdentifier],
                          @"locale");
     
-    BSGDictSetSafeObject(device, report[@"device_app_hash"], @"id");
     BSGDictSetSafeObject(device, report[@"time_zone"], @"timezone");
-    BSGDictSetSafeObject(device, report[@"model"], @"modelNumber");
-    BSGDictSetSafeObject(device, report[@"machine"], @"model");
-    BSGDictSetSafeObject(device, report[@"system_name"], @"osName");
-    BSGDictSetSafeObject(device, report[@"system_version"], @"osVersion");
-    BSGDictSetSafeObject(device, report[@"memory"][@"usable"],
+    BSGDictSetSafeObject(device, [report valueForKeyPath:@"system.memory.usable"],
                          @"totalMemory");
+    
+    BSGDictSetSafeObject(device,
+                         [report valueForKeyPath:@"system.memory.free"],
+                         @"freeMemory");
+    
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(
+                                                               NSDocumentDirectory, NSUserDomainMask, true);
+    NSString *path = [searchPaths lastObject];
+    
+    NSError *error;
+    NSDictionary *fileSystemAttrs =
+    [fileManager attributesOfFileSystemForPath:path error:&error];
+    
+    if (error) {
+        bsg_log_warn(@"Failed to read free disk space: %@", error);
+    }
+    
+    NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
+    BSGDictSetSafeObject(device, freeBytes, @"freeDisk");
+    BSGDictSetSafeObject(device, report[@"system"][@"device_app_hash"], @"id");
     return device;
 }
 
@@ -77,30 +96,14 @@ NSDictionary *BSGParseAppState(NSDictionary *report) {
     return app;
 }
 
-NSDictionary *BSGParseDeviceState(NSDictionary *report) { // FIXME support for non-crash reports!
-    NSMutableDictionary *deviceState = [[report valueForKeyPath:@"user.state.deviceState"] mutableCopy];
-    BSGDictSetSafeObject(deviceState,
-                         [report valueForKeyPath:@"system.memory.free"],
-                         @"freeMemory");
-    
-    BSGDictSetSafeObject(deviceState,
-                         [report valueForKeyPath:@"system.jailbroken"], @"jailbroken");
-    
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(
-                                                               NSDocumentDirectory, NSUserDomainMask, true);
-    NSString *path = [searchPaths lastObject];
-    
-    NSError *error;
-    NSDictionary *fileSystemAttrs =
-    [fileManager attributesOfFileSystemForPath:path error:&error];
-    
-    if (error) {
-        bsg_log_warn(@"Failed to read free disk space: %@", error);
-    }
-    
-    NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
-    BSGDictSetSafeObject(deviceState, freeBytes, @"freeDisk");
+NSDictionary *BSGParseDeviceState(NSDictionary *report) {
+    NSMutableDictionary *deviceState = [NSMutableDictionary new];
+    BSGDictSetSafeObject(deviceState, report[@"model"], @"modelNumber");
+    BSGDictSetSafeObject(deviceState, report[@"machine"], @"model");
+    BSGDictSetSafeObject(deviceState, report[@"system_name"], @"osName");
+    BSGDictSetSafeObject(deviceState, report[@"system_version"], @"osVersion");
+    BSGDictSetSafeObject(deviceState, @"Apple", @"manufacturer");
+    BSGDictSetSafeObject(deviceState, report[@"jailbroken"], @"jailbroken");
     return deviceState;
 }
 

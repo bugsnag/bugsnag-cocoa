@@ -46,7 +46,7 @@
     XCTAssertNotNil(device[@"modelNumber"]);
     XCTAssertNotNil(device[@"osName"]);
     XCTAssertNotNil(device[@"osVersion"]);
-    XCTAssertNotNil(device[@"jailbroken"]);
+    XCTAssertEqualObjects(device[@"jailbroken"], @NO);
 }
 
 - (void)testAppSerialisation {

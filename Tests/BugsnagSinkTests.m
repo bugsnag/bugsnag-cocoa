@@ -266,10 +266,10 @@
     XCTAssertEqualObjects(device[@"modelNumber"], @"MacBookPro11,3");
     XCTAssertEqualObjects(device[@"osName"], @"iPhone OS");
     XCTAssertEqualObjects(device[@"osVersion"], @"8.1");
-    XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
     XCTAssertEqualObjects(device[@"totalMemory"], @15065522176);
     XCTAssertNotNil(device[@"freeDisk"]);
     XCTAssertEqualObjects(device[@"jailbroken"], @YES);
+    XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
     XCTAssertEqualObjects(device[@"orientation"], @"unknown");
 }
 
