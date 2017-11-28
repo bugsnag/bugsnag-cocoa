@@ -11,27 +11,53 @@
 #import "BugsnagSessionTrackingPayload.h"
 
 @interface BugsnagSessionTrackingPayloadTest : XCTestCase
+@property NSDictionary *payload;
 @end
 
 @implementation BugsnagSessionTrackingPayloadTest
 
-- (void)testPayloadSerialisation {
-    BugsnagSessionTrackingPayload *payload = [BugsnagSessionTrackingPayload new];
+- (void)setUp {
+    [super setUp];
+    BugsnagSessionTrackingPayload *data = [BugsnagSessionTrackingPayload new];
     BugsnagSession *session = [BugsnagSession new];
     session.sessionId = @"test";
-    payload.sessions = @[session];
-    
-    NSDictionary *rootNode = [payload toJson];
-    XCTAssertNotNil(rootNode);
+    data.sessions = @[session];
+    self.payload = [data toJson];
+}
 
-    NSArray *sessions = rootNode[@"sessions"];
+- (void)testPayloadSerialisation {
+    XCTAssertNotNil(self.payload);
+
+    NSArray *sessions = self.payload[@"sessions"];
     NSDictionary *sessionNode = sessions[0];
     XCTAssertNotNil(sessionNode);
     XCTAssertEqualObjects(@"test", sessionNode[@"id"]);
     
-    XCTAssertNotNil(rootNode[@"notifier"]);
-    XCTAssertNotNil(rootNode[@"device"]);
-    XCTAssertNotNil(rootNode[@"app"]);
+    XCTAssertNotNil(self.payload[@"notifier"]);
+}
+
+- (void)testDeviceSerialisation {
+    NSDictionary *device = self.payload[@"device"];
+    XCTAssertNotNil(device);
+    XCTAssertEqual(6, device.count);
+    
+    XCTAssertEqualObjects(device[@"manufacturer"], @"Apple");
+    XCTAssertEqualObjects(device[@"model"], @"x86_64");
+    XCTAssertEqualObjects(device[@"modelNumber"], @"MacBookPro11,3");
+    XCTAssertEqualObjects(device[@"osName"], @"iPhone OS");
+    XCTAssertEqualObjects(device[@"osVersion"], @"8.1");
+    XCTAssertEqualObjects(device[@"jailbroken"], @YES);
+}
+
+- (void)testAppSerialisation {
+    NSDictionary *app = self.payload[@"app"];
+    XCTAssertNotNil(app);
+    XCTAssertEqual(4, app.count);
+    
+    XCTAssertEqualObjects(app[@"id"], @"net.hockeyapp.CrashProbeiOS");
+    XCTAssertEqualObjects(app[@"version"], @"1.0");
+    XCTAssertEqualObjects(app[@"bundleVersion"], @"1");
+    XCTAssertEqualObjects(app[@"releaseStage"], @"MagicalTestingTime");
 }
 
 @end

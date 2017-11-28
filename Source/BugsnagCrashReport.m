@@ -20,6 +20,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
 #import "NSDictionary+BSG_Merge.h"
+#import "BugsnagKSCrashSysInfoParser.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {
@@ -98,94 +99,6 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error,
         }
     }
     return error[BSGKeyReason] ?: @"";
-}
-
-NSDictionary *BSGParseDevice(NSDictionary *report) {
-    NSDictionary *system = report[@"system"];
-    NSMutableDictionary *device = [NSMutableDictionary dictionary];
-    
-    BSGDictSetSafeObject(device, @"Apple", @"manufacturer");
-    BSGDictSetSafeObject(device, [[NSLocale currentLocale] localeIdentifier],
-                         @"locale");
-
-    BSGDictSetSafeObject(device, system[@"device_app_hash"], @"id");
-    BSGDictSetSafeObject(device, system[@"time_zone"], @"timezone");
-    BSGDictSetSafeObject(device, system[@"model"], @"modelNumber");
-    BSGDictSetSafeObject(device, system[@"machine"], @"model");
-    BSGDictSetSafeObject(device, system[@"system_name"], @"osName");
-    BSGDictSetSafeObject(device, system[@"system_version"], @"osVersion");
-    BSGDictSetSafeObject(device, system[@"memory"][@"usable"],
-                         @"totalMemory");
-    return device;
-}
-
-NSDictionary *BSGParseApp(NSDictionary *report, NSString *appVersion) {
-    NSDictionary *system = report[BSGKeySystem];
-    NSMutableDictionary *app = [NSMutableDictionary dictionary];
-
-    BSGDictSetSafeObject(app, system[@"CFBundleVersion"], @"bundleVersion");
-    BSGDictSetSafeObject(app, system[@"CFBundleIdentifier"], BSGKeyId);
-    BSGDictSetSafeObject(app, system[BSGKeyExecutableName], BSGKeyName);
-    BSGDictSetSafeObject(app, [Bugsnag configuration].releaseStage,
-                         BSGKeyReleaseStage);
-    if ([appVersion isKindOfClass:[NSString class]]) {
-        BSGDictSetSafeObject(app, appVersion, BSGKeyVersion);
-    } else {
-        BSGDictSetSafeObject(app, system[@"CFBundleShortVersionString"],
-                             BSGKeyVersion);
-    }
-
-    return app;
-}
-
-NSDictionary *BSGParseAppState(NSDictionary *report) {
-    NSDictionary *appStats = report[BSGKeySystem][@"application_stats"];
-    NSMutableDictionary *appState = [NSMutableDictionary dictionary];
-    NSInteger activeTimeSinceLaunch =
-        [appStats[@"active_time_since_launch"] doubleValue] * 1000.0;
-    NSInteger backgroundTimeSinceLaunch =
-        [appStats[@"background_time_since_launch"] doubleValue] * 1000.0;
-
-    BSGDictSetSafeObject(appState, @(activeTimeSinceLaunch),
-                         @"durationInForeground");
-    BSGDictSetSafeObject(appState,
-                         @(activeTimeSinceLaunch + backgroundTimeSinceLaunch),
-                         @"duration");
-    BSGDictSetSafeObject(appState, appStats[@"application_in_foreground"],
-                         @"inForeground");
-    BSGDictSetSafeObject(appState, appStats, @"stats");
-
-    return appState;
-}
-
-NSDictionary *BSGParseDeviceState(NSDictionary *report) {
-    NSMutableDictionary *deviceState =
-        [[report valueForKeyPath:@"user.state.deviceState"] mutableCopy];
-    BSGDictSetSafeObject(deviceState,
-                         [report valueForKeyPath:@"system.memory.free"],
-                         @"freeMemory");
-    BSGDictSetSafeObject(deviceState,
-                         [report valueForKeyPath:@"report.timestamp"], @"time");
-
-    BSGDictSetSafeObject(deviceState,
-                         [report valueForKeyPath:@"system.jailbroken"], @"jailbroken");
-    
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(
-        NSDocumentDirectory, NSUserDomainMask, true);
-    NSString *path = [searchPaths lastObject];
-
-    NSError *error;
-    NSDictionary *fileSystemAttrs =
-        [fileManager attributesOfFileSystemForPath:path error:&error];
-
-    if (error) {
-        bsg_log_warn(@"Failed to read free disk space: %@", error);
-    }
-
-    NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
-    BSGDictSetSafeObject(deviceState, freeBytes, @"freeDisk");
-    return deviceState;
 }
 
 NSString *BSGParseContext(NSDictionary *report, NSDictionary *metaData) {
@@ -317,10 +230,9 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             [report valueForKeyPath:@"user.metaData"] ?: [NSDictionary new];
         _context = BSGParseContext(report, _metaData);
         _deviceState = BSGParseDeviceState(report);
-        _device = BSGParseDevice(report);
-        _app = BSGParseApp(report,
-                           [report valueForKeyPath:@"user.config.appVersion"]);
-        _appState = BSGParseAppState(report);
+        _device = BSGParseDevice(report[@"system"]);
+        _app = BSGParseApp(report[BSGKeySystem]);
+        _appState = BSGParseAppState(report[BSGKeySystem][@"application_stats"]);
         _groupingHash = BSGParseGroupingHash(report, _metaData);
         _overrides = [report valueForKeyPath:@"user.overrides"];
         _customException = BSGParseCustomException(report, [_errorClass copy],
