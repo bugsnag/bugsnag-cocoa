@@ -55,9 +55,9 @@
     XCTAssertEqual(4, app.count);
     
     XCTAssertNotNil(app[@"type"]);
-    XCTAssertEqualObjects(app[@"version"], @"1.0");
-    XCTAssertEqualObjects(app[@"bundleVersion"], @"1");
-    XCTAssertEqualObjects(app[@"releaseStage"], @"MagicalTestingTime");
+    XCTAssertNotNil(app[@"version"]);
+    XCTAssertNotNil(app[@"bundleVersion"]);
+    XCTAssertNotNil(app[@"releaseStage"]);
 }
 
 @end

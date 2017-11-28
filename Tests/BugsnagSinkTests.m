@@ -258,7 +258,7 @@
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     NSDictionary *device = event[@"device"];
     XCTAssertNotNil(device);
-    XCTAssertEqual(15, device.count); // includes some legacy metadata values
+    XCTAssertEqual(15, device.count); // includes some legacy metadata 
     
     XCTAssertEqualObjects(device[@"id"], @"f6d519a74213a57f8d052c53febfeee6f856d062");
     XCTAssertEqualObjects(device[@"manufacturer"], @"Apple");
@@ -285,8 +285,8 @@
     XCTAssertEqualObjects(app[@"bundleVersion"], @"1");
     XCTAssertEqualObjects(app[@"releaseStage"], @"MagicalTestingTime");
     XCTAssertEqualObjects(app[@"dsymUUIDs"], @[@"D0A41830-4FD2-3B02-A23B-0741AD4C7F52"]);
-    XCTAssertEqualObjects(app[@"duration"], @0);
-    XCTAssertEqualObjects(app[@"durationInForeground"], @0);
+    XCTAssertEqualObjects(app[@"duration"], @4000);
+    XCTAssertEqualObjects(app[@"durationInForeground"], @2000);
     XCTAssertEqualObjects(app[@"inForeground"], @YES);
 }
 

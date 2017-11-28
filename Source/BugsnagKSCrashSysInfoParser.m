@@ -32,11 +32,31 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
 }
 
 NSDictionary *BSGParseApp(NSDictionary *report) {
+    NSMutableDictionary *appState = [NSMutableDictionary dictionary];
+    
+    NSDictionary *stats = report[@"application_stats"];
+    
+    NSInteger activeTimeSinceLaunch =
+    [stats[@"active_time_since_launch"] doubleValue] * 1000.0;
+    NSInteger backgroundTimeSinceLaunch =
+    [stats[@"background_time_since_launch"] doubleValue] * 1000.0;
+    
+    BSGDictSetSafeObject(appState, @(activeTimeSinceLaunch),
+                         @"durationInForeground");
+    BSGDictSetSafeObject(appState,
+                         @(activeTimeSinceLaunch + backgroundTimeSinceLaunch),
+                         @"duration");
+    BSGDictSetSafeObject(appState, stats[@"application_in_foreground"],
+                         @"inForeground");
+    BSGDictSetSafeObject(appState, report[@"CFBundleIdentifier"], BSGKeyId);
+    return appState;
+}
+
+NSDictionary *BSGParseAppState(NSDictionary *report) {
     NSMutableDictionary *app = [NSMutableDictionary dictionary];
     NSString *appVersion = [Bugsnag configuration].appVersion;
     
     BSGDictSetSafeObject(app, report[@"CFBundleVersion"], @"bundleVersion");
-    BSGDictSetSafeObject(app, report[@"CFBundleIdentifier"], BSGKeyId);
     BSGDictSetSafeObject(app, [Bugsnag configuration].releaseStage,
                          BSGKeyReleaseStage);
     if ([appVersion isKindOfClass:[NSString class]]) {
@@ -55,23 +75,6 @@ NSDictionary *BSGParseApp(NSDictionary *report) {
 #endif
     
     return app;
-}
-
-NSDictionary *BSGParseAppState(NSDictionary *report) {
-    NSMutableDictionary *appState = [NSMutableDictionary dictionary];
-    NSInteger activeTimeSinceLaunch =
-    [report[@"active_time_since_launch"] doubleValue] * 1000.0;
-    NSInteger backgroundTimeSinceLaunch =
-    [report[@"background_time_since_launch"] doubleValue] * 1000.0;
-    
-    BSGDictSetSafeObject(appState, @(activeTimeSinceLaunch),
-                         @"durationInForeground");
-    BSGDictSetSafeObject(appState,
-                         @(activeTimeSinceLaunch + backgroundTimeSinceLaunch),
-                         @"duration");
-    BSGDictSetSafeObject(appState, report[@"application_in_foreground"],
-                         @"inForeground");
-    return appState;
 }
 
 NSDictionary *BSGParseDeviceState(NSDictionary *report) { // FIXME support for non-crash reports!

@@ -32,7 +32,7 @@
     BSGDictSetSafeObject(dict, [Bugsnag notifier].details, BSGKeyNotifier);
     
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
-    BSGDictSetSafeObject(dict, BSGParseApp(systemInfo), @"app");
+    BSGDictSetSafeObject(dict, BSGParseAppState(systemInfo), @"app");
     BSGDictSetSafeObject(dict, BSGParseDevice(systemInfo), @"device");
     return [NSDictionary dictionaryWithDictionary:dict];
 }
