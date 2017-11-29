@@ -18,3 +18,4 @@ DerivedData
 *.log
 Pods
 Carthage
+*.idea
