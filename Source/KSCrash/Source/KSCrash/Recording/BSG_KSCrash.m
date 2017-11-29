@@ -167,8 +167,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         }
 
         self.nextCrashID = [NSUUID UUID].UUIDString;
-        self.crashReportStore =
-            [BSG_KSCrashReportStore storeWithPath:storePath];
+        self.crashReportStore = [BSG_KSCrashReportStore storeWithPath:storePath];
         self.deleteBehaviorAfterSendAll = BSG_KSCDeleteAlways;
         self.searchThreadNames = NO;
         self.searchQueueNames = NO;
@@ -290,7 +289,7 @@ failed:
 }
 
 - (NSString *)crashReportPath {
-    return [self.crashReportStore pathToCrashReportWithID:self.nextCrashID];
+    return [self.crashReportStore pathToFileWithId:self.nextCrashID];
 }
 
 - (NSString *)recrashReportPath {
@@ -341,7 +340,7 @@ failed:
 
 - (void)sendAllReportsWithCompletion:
     (BSG_KSCrashReportFilterCompletion)onCompletion {
-    [self.crashReportStore pruneReportsLeaving:self.maxStoredReports];
+    [self.crashReportStore pruneFilesLeaving:self.maxStoredReports];
 
     NSArray *reports = [self allReports];
 
@@ -365,7 +364,7 @@ failed:
 }
 
 - (void)deleteAllReports {
-    [self.crashReportStore deleteAllReports];
+    [self.crashReportStore deleteAllFiles];
 }
 
 - (void)reportUserException:(NSString *)name
@@ -427,7 +426,7 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(int, sessionsSinceLaunch)
 BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 
 - (NSUInteger)reportCount {
-    return [self.crashReportStore reportCount];
+    return [self.crashReportStore fileCount];
 }
 
 - (NSString *)crashReportsPath {
@@ -459,7 +458,7 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 }
 
 - (NSArray *)allReports {
-    return [self.crashReportStore allReports];
+    return [self.crashReportStore allFiles];
 }
 
 - (BOOL)redirectConsoleLogsToFile:(NSString *)fullPath
