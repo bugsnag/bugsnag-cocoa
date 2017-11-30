@@ -15,6 +15,21 @@
 
 @implementation BugsnagUserTest
 
+- (void)testDictDeserialisation {
+
+    NSDictionary *dict = @{
+            @"id": @"test",
+            @"emailAddress": @"fake@example.com",
+            @"name": @"Tom Bombadil"
+    };
+    BugsnagUser *user = [[BugsnagUser alloc] initWithDictionary:dict];
+
+    XCTAssertNotNil(user);
+    XCTAssertEqualObjects(user.userId, @"test");
+    XCTAssertEqualObjects(user.emailAddress, @"fake@example.com");
+    XCTAssertEqualObjects(user.name, @"Tom Bombadil");
+}
+
 - (void)testPayloadSerialisation {
     BugsnagUser *payload = [BugsnagUser new];
     payload.userId = @"test";

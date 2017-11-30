@@ -6,8 +6,11 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagFileStore.h"
-
+#import "BugsnagSession.h"
 
 @interface BugsnagSessionFileStore : BugsnagFileStore
 + (BugsnagSessionFileStore *)storeWithPath:(NSString *)path;
+
+- (void)serialiseSession:(BugsnagSession *)session;
+
 @end

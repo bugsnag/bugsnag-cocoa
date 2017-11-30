@@ -12,6 +12,8 @@
 
 @interface BugsnagUser : NSObject<JsonSerializable>
 
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
+
 @property NSString *userId;
 @property NSString *name;
 @property NSString *emailAddress;

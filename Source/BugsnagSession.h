@@ -18,6 +18,8 @@
                       user:(BugsnagUser *_Nullable)user
               autoCaptured:(BOOL)autoCaptured;
 
+- (_Nonnull instancetype)initWithDictionary:(NSDictionary *_Nonnull)dict;
+
 @property(readonly) NSString *_Nonnull sessionId;
 @property(readonly) NSDate *_Nonnull startedAt;
 @property(readonly) BugsnagUser *_Nullable user;

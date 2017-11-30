@@ -53,26 +53,7 @@
                 @"Failed to initialize session store.");
     } else {
         BugsnagSessionFileStore *sessionStore = [BugsnagSessionFileStore storeWithPath:storePath];
-        
-        
-        // serialise session
-        NSString *filepath = [sessionStore pathToFileWithId:self.currentSession.sessionId];
-        NSDictionary *dict = [self.currentSession toJson];
-
-        NSError *error;
-        NSData *json = [NSJSONSerialization dataWithJSONObject:dict options:0 error:&error];
-
-        if (error != nil || ![json writeToFile:filepath atomically:YES]) {
-            BSG_KSLOG_ERROR(@"Failed to write session %@", error);
-            return;
-        }
-        
-        
-        // deserialise session
-
-        NSArray *storedSessions = [sessionStore allFiles];
-        storedSessions.count;
-
+        [sessionStore serialiseSession:self.currentSession];
     }
     
 }
