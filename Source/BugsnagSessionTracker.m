@@ -7,9 +7,9 @@
 //
 
 #import "BugsnagSessionTracker.h"
-//#import "BugsnagSessionFileStore.h"
+#import "BugsnagSessionFileStore.h"
 
-@interface BugsnagSessionTracker()
+@interface BugsnagSessionTracker ()
 @property BugsnagConfiguration *config;
 @end
 
@@ -26,13 +26,17 @@
 - (void)startNewSession:(NSDate *)date
                withUser:(BugsnagUser *)user
            autoCaptured:(BOOL)autoCaptured {
-    @synchronized(self) {
+
+    BugsnagSessionFileStore *fileStore = [BugsnagSessionFileStore new];
+    NSArray *array = [fileStore allFiles];
+
+    @synchronized (self) {
         _currentSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                    startDate:date
                                                         user:user
                                                 autoCaptured:autoCaptured];
-        
-        if (self.config.shouldAutoCaptureSessions || ! autoCaptured) {
+
+        if (self.config.shouldAutoCaptureSessions || !autoCaptured) {
             [self.sessionQueue addObject:self.currentSession];
         }
         _isInForeground = YES;
