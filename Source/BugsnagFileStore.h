@@ -65,4 +65,7 @@
 - (NSMutableDictionary *)readFile:(NSString *)path
                             error:(NSError *__autoreleasing *)error;
 
++ (NSString *)findReportStorePath:(NSString *)customDirectory
+                       bundleName:(NSString *)bundleName;
+
 @end

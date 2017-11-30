@@ -9,4 +9,5 @@
 
 
 @interface BugsnagSessionFileStore : BugsnagFileStore
++ (BugsnagSessionFileStore *)storeWithPath:(NSString *)path;
 @end

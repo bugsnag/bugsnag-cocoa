@@ -179,6 +179,58 @@
         BSG_KSLOG_ERROR(@"Could not delete file %@: %@", filename, error);
     }
 }
+
++ (NSString *)findReportStorePath:(NSString *)customDirectory
+                       bundleName:(NSString *)bundleName {
+
+    NSArray *directories = NSSearchPathForDirectoriesInDomains(
+            NSCachesDirectory, NSUserDomainMask, YES);
+    if ([directories count] == 0) {
+        BSG_KSLOG_ERROR(@"Could not locate cache directory path.");
+        return nil;
+    }
+
+    NSString *cachePath = directories[0];
+
+    if ([cachePath length] == 0) {
+        BSG_KSLOG_ERROR(@"Could not locate cache directory path.");
+        return nil;
+    }
+
+    NSString *storePathEnd = [customDirectory
+            stringByAppendingPathComponent:bundleName];
+
+    NSString *storePath =
+            [cachePath stringByAppendingPathComponent:storePathEnd];
+
+    if ([storePath length] == 0) {
+        BSG_KSLOG_ERROR(@"Could not determine report files path.");
+        return nil;
+    }
+    if (![self ensureDirectoryExists:storePath]) {
+        BSG_KSLOG_ERROR(@"Store Directory does not exist.");
+        return nil;
+    }
+    return storePath;
+}
+
++ (BOOL)ensureDirectoryExists:(NSString *)path {
+    NSError *error = nil;
+    NSFileManager *fm = [NSFileManager defaultManager];
+
+    if (![fm fileExistsAtPath:path]) {
+        if (![fm createDirectoryAtPath:path
+           withIntermediateDirectories:YES
+                            attributes:nil
+                                 error:&error]) {
+            BSG_KSLOG_ERROR(@"Could not create directory %@: %@.", path, error);
+            return NO;
+        }
+    }
+
+    return YES;
+}
+
 #pragma mark Utility
 
 - (void)performOnFields:(NSArray *)fieldPath

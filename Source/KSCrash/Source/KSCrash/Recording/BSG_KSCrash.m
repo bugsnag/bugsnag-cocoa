@@ -140,30 +140,14 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 
 - (id)initWithReportFilesDirectory:(NSString *)reportFilesDirectory {
     if ((self = [super init])) {
-        self.bundleName = [[[NSBundle mainBundle] infoDictionary]
-            objectForKey:@"CFBundleName"];
+        self.bundleName = [[NSBundle mainBundle] infoDictionary][@"CFBundleName"];
+        NSString *storePath = [BugsnagFileStore findReportStorePath:reportFilesDirectory
+                                                         bundleName:self.bundleName];
 
-        NSArray *directories = NSSearchPathForDirectoriesInDomains(
-            NSCachesDirectory, NSUserDomainMask, YES);
-        if ([directories count] == 0) {
-            BSG_KSLOG_ERROR(@"Could not locate cache directory path.");
-            goto failed;
-        }
-        NSString *cachePath = [directories objectAtIndex:0];
-        if ([cachePath length] == 0) {
-            BSG_KSLOG_ERROR(@"Could not locate cache directory path.");
-            goto failed;
-        }
-        NSString *storePathEnd = [reportFilesDirectory
-            stringByAppendingPathComponent:self.bundleName];
-        NSString *storePath =
-            [cachePath stringByAppendingPathComponent:storePathEnd];
-        if ([storePath length] == 0) {
-            BSG_KSLOG_ERROR(@"Could not determine report files path.");
-            goto failed;
-        }
-        if (![self ensureDirectoryExists:storePath]) {
-            goto failed;
+        if (!storePath) {
+            BSG_KSLOG_ERROR(
+                    @"Failed to initialize crash handler. Crash reporting disabled.");
+            return nil;
         }
 
         self.nextCrashID = [NSUUID UUID].UUIDString;
@@ -181,11 +165,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         self.writeBinaryImagesForUserReported = YES;
     }
     return self;
-
-failed:
-    BSG_KSLOG_ERROR(
-        @"Failed to initialize crash handler. Crash reporting disabled.");
-    return nil;
 }
 
 // ============================================================================
@@ -486,22 +465,6 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 #pragma mark - Utility -
 // ============================================================================
 
-- (BOOL)ensureDirectoryExists:(NSString *)path {
-    NSError *error = nil;
-    NSFileManager *fm = [NSFileManager defaultManager];
-
-    if (![fm fileExistsAtPath:path]) {
-        if (![fm createDirectoryAtPath:path
-                withIntermediateDirectories:YES
-                                 attributes:nil
-                                      error:&error]) {
-            BSG_KSLOG_ERROR(@"Could not create directory %@: %@.", path, error);
-            return NO;
-        }
-    }
-
-    return YES;
-}
 
 - (NSMutableData *)nullTerminated:(NSData *)data {
     if (data == nil) {

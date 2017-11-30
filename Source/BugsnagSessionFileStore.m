@@ -5,8 +5,13 @@
 
 #import "BugsnagSessionFileStore.h"
 
+static NSString *const kSessionStoreSuffix = @"-Session-";
 
-@implementation BugsnagSessionFileStore {
+@implementation BugsnagSessionFileStore
 
++ (BugsnagSessionFileStore *)storeWithPath:(NSString *)path {
+    return [[self alloc] initWithPath:path
+                       filenameSuffix:kSessionStoreSuffix];
 }
+
 @end

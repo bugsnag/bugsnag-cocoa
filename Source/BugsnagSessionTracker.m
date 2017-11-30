@@ -8,6 +8,7 @@
 
 #import "BugsnagSessionTracker.h"
 #import "BugsnagSessionFileStore.h"
+#import "BSG_KSLogger.h"
 
 @interface BugsnagSessionTracker ()
 @property BugsnagConfiguration *config;
@@ -27,9 +28,6 @@
                withUser:(BugsnagUser *)user
            autoCaptured:(BOOL)autoCaptured {
 
-    BugsnagSessionFileStore *fileStore = [BugsnagSessionFileStore new];
-    NSArray *array = [fileStore allFiles];
-
     @synchronized (self) {
         _currentSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                    startDate:date
@@ -41,6 +39,42 @@
         }
         _isInForeground = YES;
     }
+
+
+    // TODO file store testing!
+
+
+    NSString *bundleName = [[NSBundle mainBundle] infoDictionary][@"CFBundleName"];
+    NSString *storePath = [BugsnagFileStore findReportStorePath:@"Sessions"
+                                                     bundleName:bundleName];
+
+    if (!storePath) {
+        BSG_KSLOG_ERROR(
+                @"Failed to initialize session store.");
+    } else {
+        BugsnagSessionFileStore *sessionStore = [BugsnagSessionFileStore storeWithPath:storePath];
+        
+        
+        // serialise session
+        NSString *filepath = [sessionStore pathToFileWithId:self.currentSession.sessionId];
+        NSDictionary *dict = [self.currentSession toJson];
+
+        NSError *error;
+        NSData *json = [NSJSONSerialization dataWithJSONObject:dict options:0 error:&error];
+
+        if (error != nil || ![json writeToFile:filepath atomically:YES]) {
+            BSG_KSLOG_ERROR(@"Failed to write session %@", error);
+            return;
+        }
+        
+        
+        // deserialise session
+
+        NSArray *storedSessions = [sessionStore allFiles];
+        storedSessions.count;
+
+    }
+    
 }
 
 - (void)suspendCurrentSession:(NSDate *)date {
