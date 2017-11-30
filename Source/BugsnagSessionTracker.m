@@ -7,6 +7,7 @@
 //
 
 #import "BugsnagSessionTracker.h"
+//#import "BugsnagSessionFileStore.h"
 
 @interface BugsnagSessionTracker()
 @property BugsnagConfiguration *config;
