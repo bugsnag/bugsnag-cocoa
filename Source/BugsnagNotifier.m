@@ -36,6 +36,7 @@
 #import "BugsnagSink.h"
 #import "BugsnagKeys.h"
 #import "BugsnagSessionTracker.h"
+#import "BugsnagSessionTrackingApiClient.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -147,7 +148,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
 @interface BugsnagNotifier ()
 @property(nonatomic) BugsnagCrashSentry *crashSentry;
-@property(nonatomic) BugsnagErrorReportApiClient *apiClient;
+@property(nonatomic) BugsnagErrorReportApiClient *errorReportApiClient;
+@property(nonatomic) BugsnagSessionTrackingApiClient *sessionTrackingApiClient;
 @property(nonatomic) BugsnagSessionTracker *sessionTracker;
 @end
 
@@ -171,7 +173,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         self.configuration.config.delegate = self;
         self.state.delegate = self;
         self.crashSentry = [BugsnagCrashSentry new];
-        self.apiClient = [[BugsnagErrorReportApiClient alloc] initWithConfig:configuration];
+        self.errorReportApiClient = [[BugsnagErrorReportApiClient alloc] initWithConfig:configuration];
+        self.sessionTrackingApiClient = [[BugsnagSessionTrackingApiClient alloc] initWithConfig:configuration];
 
         [self metaDataChanged:self.configuration.metaData];
         [self metaDataChanged:self.configuration.config];
@@ -256,7 +259,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
 - (void)start {
     [self.crashSentry install:self.configuration
-                    apiClient:self.apiClient
+                    apiClient:self.errorReportApiClient
                       onCrash:&BSSerializeDataCrashHandler];
 
     [self setupConnectivityListener];
@@ -325,7 +328,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)flushPendingReports {
-    [self.apiClient sendPendingReports];
+    [self.errorReportApiClient sendPendingReports];
 }
 
 - (void)setupConnectivityListener {
