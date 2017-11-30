@@ -19,8 +19,10 @@
 - (void)setUp {
     [super setUp];
     BugsnagSessionTrackingPayload *data = [BugsnagSessionTrackingPayload new];
-    BugsnagSession *session = [BugsnagSession new];
-    session.sessionId = @"test";
+    BugsnagSession *session = [[BugsnagSession alloc] initWithId:@"test"
+                                                       startDate:[NSDate date]
+                                                            user:nil
+                                                    autoCaptured:NO];
     data.sessions = @[session];
     self.payload = [data toJson];
 }

@@ -11,13 +11,19 @@
 #import "BugsnagUser.h"
 #import "JsonSerializable.h"
 
-@interface BugsnagSession : NSObject<JsonSerializable>
+@interface BugsnagSession : NSObject <JsonSerializable>
 
-@property NSString *sessionId;
-@property NSDate *startedAt;
-@property BugsnagUser *user;
+- (_Nonnull instancetype)initWithId:(NSString *_Nonnull)sessionId
+                 startDate:(NSDate *_Nonnull)startDate
+                      user:(BugsnagUser *_Nullable)user
+              autoCaptured:(BOOL)autoCaptured;
+
+@property(readonly) NSString *_Nonnull sessionId;
+@property(readonly) NSDate *_Nonnull startedAt;
+@property(readonly) BugsnagUser *_Nullable user;
+@property(readonly) BOOL autoCaptured;
+
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
-@property BOOL autoCaptured;
 
 @end

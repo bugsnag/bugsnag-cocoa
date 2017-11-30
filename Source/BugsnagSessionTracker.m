@@ -25,13 +25,11 @@
 - (void)startNewSession:(NSDate *)date
                withUser:(BugsnagUser *)user
            autoCaptured:(BOOL)autoCaptured {
-    NSLog(@"");
-    
     @synchronized(self) {
-        _currentSession = [BugsnagSession new];
-        self.currentSession.sessionId = [[NSUUID UUID] UUIDString];
-        self.currentSession.startedAt = [date copy];
-        self.currentSession.user = user;
+        _currentSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
+                                                   startDate:date
+                                                        user:user
+                                                autoCaptured:autoCaptured];
         
         if (self.config.shouldAutoCaptureSessions || ! autoCaptured) {
             [self.sessionQueue addObject:self.currentSession];

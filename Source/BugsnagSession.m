@@ -12,6 +12,21 @@
 
 @implementation BugsnagSession
 
+- (instancetype)initWithId:(NSString *_Nonnull)sessionId
+                 startDate:(NSDate *_Nonnull)startDate
+                      user:(BugsnagUser *_Nullable)user
+              autoCaptured:(BOOL)autoCaptured {
+
+    if (self = [super init]) {
+        _sessionId = sessionId;
+        _startedAt = [startDate copy];
+        _user = user;
+        _autoCaptured = autoCaptured;
+    }
+    return self;
+}
+
+
 - (NSDictionary *)toJson {
     NSMutableDictionary *dict = [NSMutableDictionary new];
     BSGDictInsertIfNotNil(dict, self.sessionId, @"id");

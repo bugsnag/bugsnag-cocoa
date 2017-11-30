@@ -17,15 +17,14 @@
 @implementation BugsnagSessionTest
 
 - (void)testPayloadSerialisation {
-    BugsnagSession *payload = [BugsnagSession new];
     NSDate *now = [NSDate date];
-    payload.sessionId = @"test";
-    payload.startedAt = now;
-    
+    BugsnagSession *payload = [[BugsnagSession alloc] initWithId:@"test"
+                                                       startDate:now
+                                                            user:[BugsnagUser new]
+                                                    autoCaptured:NO];
     payload.unhandledCount = 1;
     payload.handledCount = 2;
-    payload.user = [BugsnagUser new];
-    
+
     NSDictionary *rootNode = [payload toJson];
     XCTAssertNotNil(rootNode);
     XCTAssertEqual(5, [rootNode count]);
