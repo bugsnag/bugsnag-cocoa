@@ -27,7 +27,7 @@
 
 - (void)send;
 
-- (void)storeAllSessions;
+- (void)storeAllSessions; // TODO should call when about to crash!
 
 @property (readonly) BugsnagSession *currentSession;
 @property (readonly) BOOL isInForeground;

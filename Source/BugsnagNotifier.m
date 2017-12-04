@@ -342,6 +342,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)sessionTick:(id)sender {
+    [self.sessionTracker send];
     NSLog(@"Session Tick!");
 }
 

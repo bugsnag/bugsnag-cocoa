@@ -104,19 +104,21 @@
         }
         BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc] initWithSessions:sessions];
 
-        [self.apiClient sendData:payload
-                     withPayload:[payload toJson]
-                           toURL:self.config.sessionEndpoint
-                         headers:self.config.sessionApiHeaders
-                    onCompletion:^(id data, BOOL success, NSError *error) {
+        if (payload.sessions.count > 0) {
+            [self.apiClient sendData:payload
+                         withPayload:[payload toJson]
+                               toURL:self.config.sessionEndpoint
+                             headers:self.config.sessionApiHeaders
+                        onCompletion:^(id data, BOOL success, NSError *error) {
 
-                        if (success && error == nil) {
-                            NSLog(@"Sent sessions to Bugsnag");
-                            [self.sessionStore deleteAllFiles];
-                        } else {
-                            NSLog(@"Failed to send sessions to Bugsnag: %@", error);
-                        }
-                    }];
+                            if (success && error == nil) {
+                                NSLog(@"Sent sessions to Bugsnag");
+                                [self.sessionStore deleteAllFiles];
+                            } else {
+                                NSLog(@"Failed to send sessions to Bugsnag: %@", error);
+                            }
+                        }];
+        }
     }
 }
 
@@ -125,23 +127,25 @@
  */
 - (void)send:(BugsnagSessionTrackingPayload *)payload {
     @synchronized (self) {
-        [self.apiClient sendData:payload
-                     withPayload:[payload toJson]
-                           toURL:self.config.sessionEndpoint
-                         headers:self.config.sessionApiHeaders
-                    onCompletion:^(id data, BOOL success, NSError *error) {
+        if (payload.sessions.count > 0) {
+            [self.apiClient sendData:payload
+                         withPayload:[payload toJson]
+                               toURL:self.config.sessionEndpoint
+                             headers:self.config.sessionApiHeaders
+                        onCompletion:^(id data, BOOL success, NSError *error) {
 
-                        if (success && error == nil) {
-                            NSLog(@"Sent sessions to Bugsnag");
-                            [self.sessionStore deleteAllFiles];
-                        } else {
-                            BSG_KSLOG_ERROR(@"Failed to post session payload, storing on disk");
+                            if (success && error == nil) {
+                                NSLog(@"Sent sessions to Bugsnag");
+                                [self.sessionStore deleteAllFiles];
+                            } else {
+                                BSG_KSLOG_ERROR(@"Failed to post session payload, storing on disk");
 
-                            for (BugsnagSession *session in payload.sessions) {
-                                [self.sessionStore write:session];
+                                for (BugsnagSession *session in payload.sessions) {
+                                    [self.sessionStore write:session];
+                                }
                             }
-                        }
-                    }];
+                        }];
+        }
     }
 }
 
