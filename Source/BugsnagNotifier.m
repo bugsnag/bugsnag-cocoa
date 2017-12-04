@@ -91,6 +91,11 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
     if (bsg_g_bugsnag_data.handledState) {
         writer->addJSONElement(writer, "handledState",
                                bsg_g_bugsnag_data.handledState);
+    } else {
+        bsg_log_err(@"Unhandled error detected!");
+
+        // todo write session id, handled count, unhandled
+        // todo ensure in-memory session persisted
     }
     if (bsg_g_bugsnag_data.stateJSON) {
         writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
