@@ -11,9 +11,11 @@
 #import "BugsnagSession.h"
 #import "BugsnagConfiguration.h"
 
+@class BugsnagSessionTrackingApiClient;
+
 @interface BugsnagSessionTracker : NSObject
 
-- (instancetype)initWithConfig:(BugsnagConfiguration *)config;
+- (instancetype)initWithConfig:(BugsnagConfiguration *)config apiClient:(BugsnagSessionTrackingApiClient *)apiClient;
 
 - (void)startNewSession:(NSDate *)date
                withUser:(BugsnagUser *)user
@@ -22,6 +24,10 @@
 - (void)suspendCurrentSession:(NSDate *)date;
 - (void)incrementHandledError;
 - (void)incrementUnhandledError;
+
+- (void)send;
+
+- (void)storeAllSessions;
 
 @property (readonly) BugsnagSession *currentSession;
 @property (readonly) BOOL isInForeground;

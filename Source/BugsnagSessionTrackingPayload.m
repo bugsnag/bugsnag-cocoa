@@ -20,6 +20,14 @@
 
 @implementation BugsnagSessionTrackingPayload
 
+- (instancetype)initWithSessions:(NSArray<BugsnagSession *> *)sessions {
+    if (self = [super init]) {
+        _sessions = sessions;
+    }
+    return self;
+}
+
+
 - (NSDictionary *)toJson {
     
     NSMutableDictionary *dict = [NSMutableDictionary new];

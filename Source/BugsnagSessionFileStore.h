@@ -11,6 +11,6 @@
 @interface BugsnagSessionFileStore : BugsnagFileStore
 + (BugsnagSessionFileStore *)storeWithPath:(NSString *)path;
 
-- (void)serialiseSession:(BugsnagSession *)session;
+- (void)write:(BugsnagSession *)session;
 
 @end

@@ -13,6 +13,8 @@
 
 @interface BugsnagSessionTrackingPayload : NSObject<JsonSerializable>
 
+- (instancetype)initWithSessions:(NSArray<BugsnagSession *> *)sessions;
+
 @property NSArray<BugsnagSession *> *sessions;
 
 @end

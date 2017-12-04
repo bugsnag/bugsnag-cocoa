@@ -11,8 +11,7 @@
 #import "BugsnagUser.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagSessionTracker.h"
-#import "BugsnagSession.h"
-#import "BSG_RFC3339DateTool.h"
+#import "BugsnagSessionTrackingApiClient.h"
 
 @interface BugsnagSessionTrackerTest : XCTestCase
 @property BugsnagConfiguration *configuration;
@@ -28,7 +27,8 @@
     self.configuration.apiKey = @"test";
     self.configuration.shouldAutoCaptureSessions = YES;
     self.user = [BugsnagUser new];
-    self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration];
+    self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
+                                                              apiClient:[BugsnagSessionTrackingApiClient new]];
 }
 
 - (void)testStartNewSession {
@@ -47,13 +47,13 @@
 - (void)testStartSessionDisabled {
     XCTAssertNil(self.sessionTracker.currentSession);
     self.configuration.shouldAutoCaptureSessions = NO;
-    
+
     NSDate *now = [NSDate date];
     [self.sessionTracker startNewSession:now
                                 withUser:self.user
                             autoCaptured:YES];
     XCTAssertEqual(0, [self.sessionTracker sessionQueue].count);
-    
+
     [self.sessionTracker startNewSession:now
                                 withUser:self.user
                             autoCaptured:NO];
@@ -65,31 +65,31 @@
                                 withUser:self.user
                             autoCaptured:NO];
     BugsnagSession *firstSession = self.sessionTracker.currentSession;
-    
+
     [self.sessionTracker startNewSession:[NSDate date]
                                 withUser:self.user
                             autoCaptured:NO];
-    
+
     BugsnagSession *secondSession = self.sessionTracker.currentSession;
     XCTAssertNotEqualObjects(firstSession.sessionId, secondSession.sessionId);
 }
 
 - (void)testIncrementCounts {
-    
+
     [self.sessionTracker startNewSession:[NSDate date]
                                 withUser:self.user
                             autoCaptured:NO];
-     [self.sessionTracker incrementHandledError];
-     [self.sessionTracker incrementHandledError];
-     [self.sessionTracker incrementUnhandledError];
-     [self.sessionTracker incrementUnhandledError];
-     [self.sessionTracker incrementUnhandledError];
+    [self.sessionTracker incrementHandledError];
+    [self.sessionTracker incrementHandledError];
+    [self.sessionTracker incrementUnhandledError];
+    [self.sessionTracker incrementUnhandledError];
+    [self.sessionTracker incrementUnhandledError];
 
     BugsnagSession *session = self.sessionTracker.currentSession;
     XCTAssertNotNil(session);
     XCTAssertEqual(2, session.handledCount);
     XCTAssertEqual(3, session.unhandledCount);
-    
+
     [self.sessionTracker startNewSession:[NSDate date]
                                 withUser:self.user
                             autoCaptured:NO];
@@ -106,7 +106,7 @@
     NSDate *now = [NSDate date];
     [self.sessionTracker startNewSession:now withUser:nil autoCaptured:NO];
     XCTAssertTrue(self.sessionTracker.isInForeground);
-    
+
     [self.sessionTracker suspendCurrentSession:now];
     XCTAssertFalse(self.sessionTracker.isInForeground);
 }

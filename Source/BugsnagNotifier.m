@@ -160,7 +160,6 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
 - (id)initWithConfiguration:(BugsnagConfiguration *)initConfiguration {
     if ((self = [super init])) {
-        self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:initConfiguration];
         self.configuration = initConfiguration;
         self.state = [[BugsnagMetaData alloc] init];
         self.details = [@{
@@ -178,6 +177,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                                                                               queueName:@"Error API queue"];
         self.sessionTrackingApiClient = [[BugsnagSessionTrackingApiClient alloc] initWithConfig:configuration
                                                                                       queueName:@"Session API queue"];
+
+        self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:initConfiguration
+                                                                  apiClient:self.sessionTrackingApiClient];
 
         [self metaDataChanged:self.configuration.metaData];
         [self metaDataChanged:self.configuration.config];
@@ -325,7 +327,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                                 withUser:self.configuration.currentUser
                             autoCaptured:YES];
 
-    NSTimeInterval sessionTickSeconds = 10;
+    NSTimeInterval sessionTickSeconds = 10; // TODO increase duration
     _sessionTimer = [NSTimer scheduledTimerWithTimeInterval:sessionTickSeconds
                                               target:self
                                             selector:@selector(sessionTick:)
