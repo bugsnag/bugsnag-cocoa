@@ -151,6 +151,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 @property(nonatomic) BugsnagErrorReportApiClient *errorReportApiClient;
 @property(nonatomic) BugsnagSessionTrackingApiClient *sessionTrackingApiClient;
 @property(nonatomic) BugsnagSessionTracker *sessionTracker;
+@property(nonatomic) NSTimer *sessionTimer;
 @end
 
 @implementation BugsnagNotifier
@@ -323,10 +324,23 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self.sessionTracker startNewSession:[NSDate date]
                                 withUser:self.configuration.currentUser
                             autoCaptured:YES];
+
+    NSTimeInterval sessionTickSeconds = 10;
+    _sessionTimer = [NSTimer scheduledTimerWithTimeInterval:sessionTickSeconds
+                                              target:self
+                                            selector:@selector(sessionTick:)
+                                            userInfo:nil
+                                             repeats:YES];
+    [self sessionTick:self];
 }
 
 - (void)willEnterBackground:(id)sender {
     [self.sessionTracker suspendCurrentSession:[NSDate date]];
+    [self.sessionTimer invalidate];
+}
+
+- (void)sessionTick:(id)sender {
+    NSLog(@"Session Tick!");
 }
 
 - (void)flushPendingReports {
