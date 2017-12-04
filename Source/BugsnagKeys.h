@@ -74,6 +74,7 @@ static NSString *const BSGKeyApp = @"app";
 static NSString *const BSGKeyUnhandled = @"unhandled";
 static NSString *const BSGKeyAttributes = @"attributes";
 static NSString *const BSGKeyAction = @"action";
+static NSString *const BSGKeySession = @"session";
 
 
 static NSString *const BSGKeyExecutableName = @"CFBundleExecutable";

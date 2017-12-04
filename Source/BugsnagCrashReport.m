@@ -21,6 +21,8 @@
 #import "BugsnagKeys.h"
 #import "NSDictionary+BSG_Merge.h"
 #import "BugsnagKSCrashSysInfoParser.h"
+#import "BugsnagSession.h"
+#import "BSG_RFC3339DateTool.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {
@@ -202,6 +204,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
  *  User-provided exception metadata
  */
 @property(nonatomic, readwrite, copy, nullable) NSDictionary *customException;
+@property(nonatomic) BugsnagSession *session;
 
 @end
 
@@ -263,7 +266,8 @@ initWithErrorName:(NSString *_Nonnull)name
      errorMessage:(NSString *_Nonnull)message
     configuration:(BugsnagConfiguration *_Nonnull)config
          metaData:(NSDictionary *_Nonnull)metaData
-     handledState:(BugsnagHandledState *_Nonnull)handledState {
+     handledState:(BugsnagHandledState *_Nonnull)handledState
+          session:(BugsnagSession *_Nullable)session {
     if (self = [super init]) {
         _errorClass = name;
         _errorMessage = message;
@@ -276,6 +280,7 @@ initWithErrorName:(NSString *_Nonnull)name
 
         _handledState = handledState;
         _severity = handledState.currentSeverity;
+        _session = session;
     }
     return self;
 }
@@ -506,7 +511,23 @@ initWithErrorName:(NSString *_Nonnull)name
         BSGDictSetSafeObject(user, [self deviceAppHash], BSGKeyId);
     }
 
+    if (self.session) {
+        NSMutableDictionary *sessionJson = [self generateSessionDict];
+        BSGDictSetSafeObject(event, sessionJson, BSGKeySession);
+    }
     return event;
+}
+
+- (NSMutableDictionary *)generateSessionDict {
+    NSMutableDictionary *sessionJson = [NSMutableDictionary new];
+    BSGDictSetSafeObject(sessionJson, self.session.sessionId, BSGKeyId);
+    BSGDictSetSafeObject(sessionJson, [BSG_RFC3339DateTool stringFromDate:self.session.startedAt], @"startedAt");
+
+    NSMutableDictionary *events = [NSMutableDictionary new];
+    events[@"handled"] = @(self.session.handledCount);
+    events[@"unhandled"] = @(self.session.unhandledCount);
+    BSGDictSetSafeObject(sessionJson, events, @"events");
+    return sessionJson;
 }
 
 // Build all stacktraces for threads and the error

@@ -459,7 +459,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
              errorMessage:message
             configuration:self.configuration
                  metaData:[self.configuration.metaData toDictionary]
-             handledState:handledState];
+             handledState:handledState
+                  session:self.sessionTracker.currentSession];
     if (block) {
         block(report);
     }

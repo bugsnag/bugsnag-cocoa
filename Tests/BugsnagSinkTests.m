@@ -298,7 +298,8 @@
                                      errorMessage:@"Error for testing"
                                     configuration:[BugsnagConfiguration new]
                                          metaData:[NSDictionary new]
-                                     handledState:state];
+                                     handledState:state
+                                          session:nil];
     
     NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
     return [data[@"events"] firstObject];
@@ -380,7 +381,8 @@
                                      errorMessage:@"Error for testing"
                                     configuration:[BugsnagConfiguration new]
                                          metaData:[NSDictionary new]
-                                     handledState:state];
+                                     handledState:state
+                                          session:nil];
     report.severity = BSGSeverityInfo;
     
     NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
