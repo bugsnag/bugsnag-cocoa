@@ -4,13 +4,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BugsnagApiClient.h"
 
 @class BugsnagConfiguration;
 @class BugsnagSessionTrackingPayload;
+@class BugsnagSession;
+@class BugsnagSession;
 
 
-@interface BugsnagSessionTrackingApiClient : NSObject
-
-- (instancetype)initWithConfig:(BugsnagConfiguration *)configuration;
+@interface BugsnagSessionTrackingApiClient : BugsnagApiClient
 
 @end

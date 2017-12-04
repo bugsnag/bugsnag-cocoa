@@ -173,8 +173,10 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         self.configuration.config.delegate = self;
         self.state.delegate = self;
         self.crashSentry = [BugsnagCrashSentry new];
-        self.errorReportApiClient = [[BugsnagErrorReportApiClient alloc] initWithConfig:configuration];
-        self.sessionTrackingApiClient = [[BugsnagSessionTrackingApiClient alloc] initWithConfig:configuration];
+        self.errorReportApiClient = [[BugsnagErrorReportApiClient alloc] initWithConfig:configuration
+                                                                              queueName:@"Error API queue"];
+        self.sessionTrackingApiClient = [[BugsnagSessionTrackingApiClient alloc] initWithConfig:configuration
+                                                                                      queueName:@"Session API queue"];
 
         [self metaDataChanged:self.configuration.metaData];
         [self metaDataChanged:self.configuration.config];
@@ -269,36 +271,36 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self.details setValue:@"tvOS Bugsnag Notifier" forKey:BSGKeyName];
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     [self.details setValue:@"iOS Bugsnag Notifier" forKey:BSGKeyName];
-    
+
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    
+
     // TODO support mac + tvOS with all these options?
     [center addObserver:self
                selector:@selector(willEnterForeground:)
                    name:UIApplicationWillEnterForegroundNotification
                  object:nil];
-    
+
     [center addObserver:self
                selector:@selector(willEnterBackground:)
                    name:UIApplicationDidEnterBackgroundNotification
                  object:nil];
-    
-    
+
+
     [center addObserver:self
                selector:@selector(batteryChanged:)
                    name:UIDeviceBatteryStateDidChangeNotification
                  object:nil];
-    
+
     [center addObserver:self
                selector:@selector(batteryChanged:)
                    name:UIDeviceBatteryLevelDidChangeNotification
                  object:nil];
-    
+
     [center addObserver:self
                selector:@selector(orientationChanged:)
                    name:UIDeviceOrientationDidChangeNotification
                  object:nil];
-    
+
     [center addObserver:self
                selector:@selector(lowMemoryWarning:)
                    name:UIApplicationDidReceiveMemoryWarningNotification
@@ -312,7 +314,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 #elif TARGET_OS_MAC
     [self.details setValue:@"OSX Bugsnag Notifier" forKey:BSGKeyName];
 #endif
-    
+
     // notification not received in time on initial startup, so trigger manually
     [self willEnterForeground:self];
 }
@@ -328,7 +330,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)flushPendingReports {
-    [self.errorReportApiClient sendPendingReports];
+    [self.errorReportApiClient flushPendingData];
 }
 
 - (void)setupConnectivityListener {
@@ -432,7 +434,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
          message:(NSString *)message
     handledState:(BugsnagHandledState *_Nonnull)handledState
            block:(void (^)(BugsnagCrashReport *))block {
-    
+
     [self.sessionTracker incrementHandledError];
 
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc]
