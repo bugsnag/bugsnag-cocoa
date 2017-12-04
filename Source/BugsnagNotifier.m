@@ -367,9 +367,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                     withData:(NSDictionary *_Nullable)metaData
                        block:(BugsnagNotifyBlock _Nullable)block {
 
-    NSString *severity = [metaData objectForKey:BSGKeySeverity];
-    NSString *severityReason = [metaData objectForKey:BSGKeySeverityReason];
-    NSString *logLevel = [metaData objectForKey:BSGKeyLogLevel];
+    NSString *severity = metaData[BSGKeySeverity];
+    NSString *severityReason = metaData[BSGKeySeverityReason];
+    NSString *logLevel = metaData[BSGKeyLogLevel];
     NSParameterAssert(severity.length > 0);
     NSParameterAssert(severityReason.length > 0);
 
@@ -499,10 +499,10 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 - (void)batteryChanged:(NSNotification *)notif {
     NSNumber *batteryLevel =
-        [NSNumber numberWithFloat:[UIDevice currentDevice].batteryLevel];
+            @([UIDevice currentDevice].batteryLevel);
     NSNumber *charging =
-        [NSNumber numberWithBool:[UIDevice currentDevice].batteryState ==
-                                 UIDeviceBatteryStateCharging];
+            @([UIDevice currentDevice].batteryState ==
+                    UIDeviceBatteryStateCharging);
 
     [[self state] addAttribute:BSGKeyBatteryLevel
                      withValue:batteryLevel

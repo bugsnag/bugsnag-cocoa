@@ -38,11 +38,9 @@
     va_end(args);
 
     return [NSError
-        errorWithDomain:domain
-                   code:code
-               userInfo:[NSDictionary
-                            dictionaryWithObject:desc
-                                          forKey:NSLocalizedDescriptionKey]];
+            errorWithDomain:domain
+                       code:code
+                   userInfo:@{NSLocalizedDescriptionKey: desc}];
 }
 
 + (BOOL)bsg_fillError:(NSError *__autoreleasing *)error
@@ -57,12 +55,10 @@
         va_end(args);
 
         *error = [NSError
-            errorWithDomain:domain
-                       code:code
-                   userInfo:
-                       [NSDictionary
-                           dictionaryWithObject:desc
-                                         forKey:NSLocalizedDescriptionKey]];
+                errorWithDomain:domain
+                           code:code
+                       userInfo:
+                               @{NSLocalizedDescriptionKey: desc}];
     }
     return NO;
 }

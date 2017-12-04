@@ -179,7 +179,7 @@ NSDictionary *BSGParseDeviceState(NSDictionary *report) {
         bsg_log_warn(@"Failed to read free disk space: %@", error);
     }
 
-    NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
+    NSNumber *freeBytes = fileSystemAttrs[NSFileSystemFreeSize];
     BSGDictSetSafeObject(deviceState, freeBytes, @"freeDisk");
     return deviceState;
 }

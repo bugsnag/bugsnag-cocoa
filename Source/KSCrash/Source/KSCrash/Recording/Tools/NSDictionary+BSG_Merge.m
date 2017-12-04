@@ -38,13 +38,13 @@
 
     NSMutableDictionary *dict = [dest mutableCopy];
     for (id key in [self allKeys]) {
-        id srcEntry = [self objectForKey:key];
-        id dstEntry = [dest objectForKey:key];
+        id srcEntry = self[key];
+        id dstEntry = dest[key];
         if ([dstEntry isKindOfClass:[NSDictionary class]] &&
             [srcEntry isKindOfClass:[NSDictionary class]]) {
             srcEntry = [srcEntry bsg_mergedInto:dstEntry];
         }
-        [dict setObject:srcEntry forKey:key];
+        dict[key] = srcEntry;
     }
     return dict;
 }
