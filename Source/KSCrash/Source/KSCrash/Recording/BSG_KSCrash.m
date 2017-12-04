@@ -28,7 +28,6 @@
 
 #import "BSG_KSCrashC.h"
 #import "BSG_KSCrashCallCompletion.h"
-#import "BSG_KSCrashState.h"
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSSingleton.h"
 #import "BSG_KSSystemCapabilities.h"

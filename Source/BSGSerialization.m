@@ -1,6 +1,4 @@
 #import "BSGSerialization.h"
-#import <Foundation/Foundation.h>
-#import <math.h>
 
 BOOL BSGIsSanitizedType(id obj) {
     static dispatch_once_t onceToken;

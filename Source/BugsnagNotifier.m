@@ -27,18 +27,13 @@
 #import "BugsnagNotifier.h"
 #import "BSGConnectivity.h"
 #import "Bugsnag.h"
-#import "BugsnagBreadcrumb.h"
-#import "BugsnagCollections.h"
-#import "BugsnagCrashReport.h"
 #import "BugsnagCrashSentry.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagLogger.h"
-#import "BugsnagSink.h"
 #import "BugsnagKeys.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
-#include <sys/utsname.h>
 #elif TARGET_OS_MAC
 #import <AppKit/AppKit.h>
 #endif

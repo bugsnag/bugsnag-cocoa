@@ -6,7 +6,6 @@
 //  Copyright 2016 Bugsnag. All rights reserved.
 //
 #import "Bugsnag.h"
-#import "BugsnagConfiguration.h"
 
 @interface SomeDelegate : NSObject <NSURLSessionTaskDelegate>
 @property(nonatomic) BOOL didInvoke;

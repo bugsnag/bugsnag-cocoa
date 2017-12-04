@@ -26,11 +26,8 @@
 
 #import "Bugsnag.h"
 #import "BSG_KSCrash.h"
-#import "BugsnagBreadcrumb.h"
-#import "BugsnagCrashReport.h"
 #import "BugsnagLogger.h"
 #import "BugsnagNotifier.h"
-#import "BugsnagSink.h"
 #import "BugsnagKeys.h"
 
 static BugsnagNotifier *bsg_g_bugsnag_notifier = NULL;
