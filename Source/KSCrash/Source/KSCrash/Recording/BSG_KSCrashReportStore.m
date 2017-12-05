@@ -120,8 +120,7 @@
 - (id)initWithPath:(NSString *)path {
     if ((self = [super init])) {
         self.path = path;
-        self.bundleName = [[[NSBundle mainBundle] infoDictionary]
-            objectForKey:@"CFBundleName"];
+        self.bundleName = [[NSBundle mainBundle] infoDictionary][@"CFBundleName"];
         self.demangleCPP = YES;
         self.demangleSwift = YES;
     }
@@ -235,7 +234,7 @@
     NSArray *reportIDs = [self reportIDs];
     int deleteCount = (int)[reportIDs count] - numReports;
     for (int i = 0; i < deleteCount; i++) {
-        [self deleteReportWithID:[reportIDs objectAtIndex:(NSUInteger)i]];
+        [self deleteReportWithID:reportIDs[(NSUInteger) i]];
     }
 }
 
@@ -297,7 +296,7 @@
 
     NSMutableDictionary *mutableReport = [report mutableCopy];
     NSMutableDictionary *mutableInfo =
-        [[report objectForKey:@BSG_KSCrashField_Report] mutableCopy];
+        [report[@BSG_KSCrashField_Report] mutableCopy];
     [mutableReport bsg_ksc_setObjectIfNotNil:mutableInfo
                                       forKey:@BSG_KSCrashField_Report];
 
@@ -313,7 +312,7 @@
                   inReport:mutableReport];
 
     NSMutableDictionary *crashReport =
-        [[report objectForKey:@BSG_KSCrashField_Crash] mutableCopy];
+        [report[@BSG_KSCrashField_Crash] mutableCopy];
     [mutableReport bsg_ksc_setObjectIfNotNil:crashReport
                                       forKey:@BSG_KSCrashField_Crash];
     BSG_KSCrashDoctor *doctor = [BSG_KSCrashDoctor doctor];
@@ -326,7 +325,7 @@
 - (void)mergeDictWithKey:(NSString *)srcKey
          intoDictWithKey:(NSString *)dstKey
                 inReport:(NSMutableDictionary *)report {
-    NSDictionary *srcDict = [report objectForKey:srcKey];
+    NSDictionary *srcDict = report[srcKey];
     if (srcDict == nil) {
         // It's OK if the source dict didn't exist.
         return;
@@ -337,7 +336,7 @@
         return;
     }
 
-    NSDictionary *dstDict = [report objectForKey:dstKey];
+    NSDictionary *dstDict = report[dstKey];
     if (dstDict == nil) {
         dstDict = [NSDictionary dictionary];
     }
@@ -354,7 +353,7 @@
 
 - (void)convertTimestamp:(NSString *)key
                 inReport:(NSMutableDictionary *)report {
-    NSNumber *timestamp = [report objectForKey:key];
+    NSNumber *timestamp = report[key];
     if (timestamp == nil) {
         BSG_KSLOG_ERROR(@"entry '%@' not found", key);
         return;
@@ -445,8 +444,7 @@
     if (error != nil && *error != nil) {
 
         BSG_KSLOG_ERROR(@"Error decoding JSON data from %@: %@", path, *error);
-        [report setObject:[NSNumber numberWithBool:YES]
-                   forKey:@BSG_KSCrashField_Incomplete];
+        report[@BSG_KSCrashField_Incomplete] = @YES;
     }
 
     NSString *reportType = [self getReportType:report];
@@ -465,7 +463,7 @@
     reportSection[@BSG_KSCrashField_ProcessName] =
         [NSProcessInfo processInfo].processName;
     reportSection[@BSG_KSCrashField_Timestamp] =
-        [NSNumber numberWithLong:time(NULL)];
+            @(time(NULL));
     reportSection[@BSG_KSCrashField_Type] = @BSG_KSCrashReportType_Custom;
 
     report[@BSG_KSCrashField_Report] = reportSection;

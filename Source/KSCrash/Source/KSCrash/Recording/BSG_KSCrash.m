@@ -139,8 +139,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 
 - (id)initWithReportFilesDirectory:(NSString *)reportFilesDirectory {
     if ((self = [super init])) {
-        self.bundleName = [[[NSBundle mainBundle] infoDictionary]
-            objectForKey:@"CFBundleName"];
+        self.bundleName = [[NSBundle mainBundle] infoDictionary][@"CFBundleName"];
 
         NSArray *directories = NSSearchPathForDirectoriesInDomains(
             NSCachesDirectory, NSUserDomainMask, YES);
@@ -148,7 +147,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
             BSG_KSLOG_ERROR(@"Could not locate cache directory path.");
             goto failed;
         }
-        NSString *cachePath = [directories objectAtIndex:0];
+        NSString *cachePath = directories[0];
         if ([cachePath length] == 0) {
             BSG_KSLOG_ERROR(@"Could not locate cache directory path.");
             goto failed;
@@ -281,7 +280,7 @@ failed:
             [NSMutableData dataWithLength:count * sizeof(const char *)];
         const char **classes = data.mutableBytes;
         for (size_t i = 0; i < count; i++) {
-            classes[i] = [[doNotIntrospectClasses objectAtIndex:i]
+            classes[i] = [doNotIntrospectClasses[i]
                 cStringUsingEncoding:NSUTF8StringEncoding];
         }
         bsg_kscrash_setDoNotIntrospectClasses(classes, count);

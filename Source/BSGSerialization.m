@@ -41,7 +41,7 @@ NSDictionary *_Nonnull BSGSanitizeDict(NSDictionary *input) {
       if ([key isKindOfClass:[NSString class]]) {
           id cleanedObject = BSGSanitizeObject(obj);
           if (cleanedObject)
-              [output setObject:cleanedObject forKey:key];
+              output[key] = cleanedObject;
       }
     }];
     return output;
