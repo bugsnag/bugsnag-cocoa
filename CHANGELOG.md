@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 5.14.1 (29 Nov 2017)
+
+* Fix encoding of control characters in crash reports. Ensures crash reports are
+  written correctly and delivered when containing U+0000 - U+001F
+  [#214](https://github.com/bugsnag/bugsnag-cocoa/pull/214)
+  [Jamie Lynch](https://github.com/fractalwrench)
+
 ## 5.14.0 (23 Nov 2017)
 
 * Use `BSG_KSCrashReportWriter` header rather than `KSCrashReportWriter` for custom JSON serialization
