@@ -41,20 +41,18 @@
                withUser:(BugsnagUser *)user
            autoCaptured:(BOOL)autoCaptured {
 
-    @synchronized (self.sessionStore) {
-        _currentSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
-                                                   startDate:date
-                                                        user:user
-                                                autoCaptured:autoCaptured];
+    _currentSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
+                                                startDate:date
+                                                     user:user
+                                             autoCaptured:autoCaptured];
 
-        if (self.config.shouldAutoCaptureSessions || !autoCaptured) {
-            [self.sessionStore write:self.currentSession];
-        }
-        _isInForeground = YES;
+    if (self.config.shouldAutoCaptureSessions || !autoCaptured) {
+        [self.sessionStore write:self.currentSession];
+    }
+    _isInForeground = YES;
 
-        if (self.callback) {
-            self.callback(self.currentSession);
-        }
+    if (self.callback) {
+        self.callback(self.currentSession);
     }
 }
 
@@ -74,6 +72,7 @@
 - (void)send {
     @synchronized (self.sessionStore) {
         NSMutableArray *sessions = [NSMutableArray new];
+        NSArray *fileIds = [self.sessionStore fileIds];
 
         for (NSDictionary *dict in [self.sessionStore allFiles]) {
             [sessions addObject:[[BugsnagSession alloc] initWithDictionary:dict]];
@@ -89,7 +88,10 @@
 
                             if (success && error == nil) {
                                 NSLog(@"Sent sessions to Bugsnag");
-                                [self.sessionStore deleteAllFiles];
+
+                                for (NSString *fileId in fileIds) {
+                                    [self.sessionStore deleteFileWithId:fileId];
+                                }
                             } else {
                                 NSLog(@"Failed to send sessions to Bugsnag: %@", error);
                             }
