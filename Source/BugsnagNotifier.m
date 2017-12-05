@@ -37,6 +37,7 @@
 #import "BugsnagKeys.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagSessionTrackingApiClient.h"
+#import "BSG_RFC3339DateTool.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -74,6 +75,10 @@ static struct bugsnag_data_t bsg_g_bugsnag_data;
 
 static NSDictionary *notificationNameMap;
 
+NSString *sessionId;
+NSDate *startedAt;
+NSUInteger handledCount;
+
 /**
  *  Handler executed when the application crashes. Writes information about the
  *  current application state using the crash report writer.
@@ -94,8 +99,13 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
     } else {
         bsg_log_err(@"Unhandled error detected!");
 
-        // todo write session id, handled count, unhandled
-        // todo ensure in-memory session persisted
+        if (sessionId) { // a session is available
+            // persist session info
+            writer->addStringElement(writer, "id", [sessionId UTF8String]);
+            writer->addStringElement(writer, "startedAt", [[BSG_RFC3339DateTool stringFromDate:startedAt] UTF8String]);
+            writer->addUIntegerElement(writer, "handledCount", handledCount);
+            writer->addUIntegerElement(writer, "unhandledCount", 1);
+        }
     }
     if (bsg_g_bugsnag_data.stateJSON) {
         writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
@@ -185,6 +195,12 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
         self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:initConfiguration
                                                                   apiClient:self.sessionTrackingApiClient];
+
+        self.sessionTracker.callback = ^(BugsnagSession *session) { // record info for C JSON serialiser
+            sessionId = session.sessionId;
+            startedAt = session.startedAt;
+            handledCount = session.handledCount;
+        };
 
         [self metaDataChanged:self.configuration.metaData];
         [self metaDataChanged:self.configuration.config];

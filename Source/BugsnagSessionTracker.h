@@ -13,6 +13,8 @@
 
 @class BugsnagSessionTrackingApiClient;
 
+typedef void (^SessionTrackerCallback)(BugsnagSession *newSession);
+
 @interface BugsnagSessionTracker : NSObject
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config apiClient:(BugsnagSessionTrackingApiClient *)apiClient;
@@ -23,7 +25,6 @@
 
 - (void)suspendCurrentSession:(NSDate *)date;
 - (void)incrementHandledError;
-- (void)incrementUnhandledError;
 
 - (void)send;
 
@@ -32,5 +33,10 @@
 @property (readonly) BugsnagSession *currentSession;
 @property (readonly) BOOL isInForeground;
 @property (readonly) NSMutableArray *sessionQueue;
+
+/**
+ * Called when a session is altered
+ */
+@property SessionTrackerCallback callback;
 
 @end

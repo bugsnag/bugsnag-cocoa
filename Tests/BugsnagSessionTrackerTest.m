@@ -81,14 +81,11 @@
                             autoCaptured:NO];
     [self.sessionTracker incrementHandledError];
     [self.sessionTracker incrementHandledError];
-    [self.sessionTracker incrementUnhandledError];
-    [self.sessionTracker incrementUnhandledError];
-    [self.sessionTracker incrementUnhandledError];
 
     BugsnagSession *session = self.sessionTracker.currentSession;
     XCTAssertNotNil(session);
     XCTAssertEqual(2, session.handledCount);
-    XCTAssertEqual(3, session.unhandledCount);
+    XCTAssertEqual(0, session.unhandledCount);
 
     [self.sessionTracker startNewSession:[NSDate date]
                                 withUser:self.user

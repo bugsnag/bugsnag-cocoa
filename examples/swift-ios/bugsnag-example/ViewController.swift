@@ -28,7 +28,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction func doCrash(_ sender: AnyObject) {
-        handledError()
+        unhandledCrash()
     }
 
     func unhandledCrash() {

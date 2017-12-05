@@ -52,6 +52,10 @@
             [self.sessionQueue addObject:self.currentSession];
         }
         _isInForeground = YES;
+
+        if (self.callback) {
+            self.callback(self.currentSession);
+        }
     }
 }
 
@@ -62,15 +66,11 @@
 - (void)incrementHandledError {
     @synchronized (self.currentSession) {
         self.currentSession.handledCount++;
+        if (self.callback) {
+            self.callback(self.currentSession);
+        }
     }
 }
-
-- (void)incrementUnhandledError {
-    @synchronized (self.currentSession) {
-        self.currentSession.unhandledCount++;
-    }
-}
-
 
 - (void)send {
     BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc] initWithSessions:[self pendingSessions]];
