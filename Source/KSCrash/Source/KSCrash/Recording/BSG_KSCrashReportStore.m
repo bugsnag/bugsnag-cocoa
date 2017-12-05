@@ -469,29 +469,4 @@
     report[@BSG_KSCrashField_Report] = reportSection;
 }
 
-- (NSString *)addCustomReport:(NSDictionary *)report {
-    NSMutableDictionary *mutableReport = [report mutableCopy];
-    [self addReportSectionForCustomReport:mutableReport];
-    NSError *error = nil;
-    NSData *data =
-        [BSG_KSJSONCodec encode:mutableReport options:0 error:&error];
-    if (error) {
-        BSG_KSLOG_ERROR(@"Error encoding custom report: %@", error);
-        return nil;
-    }
-
-    NSString *identifier =
-        mutableReport[@BSG_KSCrashField_Report][@BSG_KSCrashField_ID];
-    NSString *path = [self pathToCrashReportWithID:identifier];
-    error = nil;
-    BOOL didWriteFile = [data writeToFile:path options:0 error:&error];
-    if (!didWriteFile || error) {
-        BSG_KSLOG_ERROR(@"Could not write custom report to %@: %@", path,
-                        error);
-        return nil;
-    }
-
-    return identifier;
-}
-
 @end

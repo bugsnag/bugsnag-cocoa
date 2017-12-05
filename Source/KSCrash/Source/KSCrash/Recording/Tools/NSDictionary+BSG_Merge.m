@@ -49,8 +49,3 @@
     return dict;
 }
 @end
-
-@interface NSDictionary_BSG_Merge_O8FG4A : NSObject
-@end
-@implementation NSDictionary_BSG_Merge_O8FG4A
-@end
