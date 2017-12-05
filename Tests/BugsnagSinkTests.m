@@ -105,7 +105,6 @@
                            @"exceptions",
                            @"metaData",
                            @"payloadVersion",
-                           @"session",
                            @"severity",
                            @"severityReason",
                            @"threads",

@@ -25,7 +25,6 @@
     if (self = [super init]) {
         self.config = config;
         self.apiClient = apiClient;
-        _sessionQueue = [NSMutableArray new];
 
         NSString *bundleName = [[NSBundle mainBundle] infoDictionary][@"CFBundleName"];
         NSString *storePath = [BugsnagFileStore findReportStorePath:@"Sessions"
@@ -42,14 +41,14 @@
                withUser:(BugsnagUser *)user
            autoCaptured:(BOOL)autoCaptured {
 
-    @synchronized (self) {
+    @synchronized (self.sessionStore) {
         _currentSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                    startDate:date
                                                         user:user
                                                 autoCaptured:autoCaptured];
 
         if (self.config.shouldAutoCaptureSessions || !autoCaptured) {
-            [self.sessionQueue addObject:self.currentSession];
+            [self.sessionStore write:self.currentSession];
         }
         _isInForeground = YES;
 
@@ -73,30 +72,7 @@
 }
 
 - (void)send {
-    BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc] initWithSessions:[self pendingSessions]];
-    [self send:payload];
-    [self flushStoredSessions];
-}
-
-- (void)storeAllSessions {
-    NSArray<BugsnagSession *> *sessions = [self pendingSessions];
-    for (BugsnagSession *session in sessions) {
-        [self.sessionStore write:session];
-    }
-}
-
-- (NSArray<BugsnagSession *> *)pendingSessions {
-    NSMutableArray *sessions = [NSMutableArray new];
-    [sessions addObjectsFromArray:self.sessionQueue];
-    [self.sessionQueue removeAllObjects];
-    return sessions;
-}
-
-/**
- * Attempts to flush session payloads stored on disk
- */
-- (void)flushStoredSessions {
-    @synchronized (self) {
+    @synchronized (self.sessionStore) {
         NSMutableArray *sessions = [NSMutableArray new];
 
         for (NSDictionary *dict in [self.sessionStore allFiles]) {
@@ -121,33 +97,5 @@
         }
     }
 }
-
-/**
- * Attempts to send any tracked sessions to the API, and store in the event of failure
- */
-- (void)send:(BugsnagSessionTrackingPayload *)payload {
-    @synchronized (self) {
-        if (payload.sessions.count > 0) {
-            [self.apiClient sendData:payload
-                         withPayload:[payload toJson]
-                               toURL:self.config.sessionEndpoint
-                             headers:self.config.sessionApiHeaders
-                        onCompletion:^(id data, BOOL success, NSError *error) {
-
-                            if (success && error == nil) {
-                                NSLog(@"Sent sessions to Bugsnag");
-                                [self.sessionStore deleteAllFiles];
-                            } else {
-                                BSG_KSLOG_ERROR(@"Failed to post session payload, storing on disk");
-
-                                for (BugsnagSession *session in payload.sessions) {
-                                    [self.sessionStore write:session];
-                                }
-                            }
-                        }];
-        }
-    }
-}
-
 
 @end

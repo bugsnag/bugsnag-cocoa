@@ -44,22 +44,6 @@
     XCTAssertNotNil(session.user);
 }
 
-- (void)testStartSessionDisabled {
-    XCTAssertNil(self.sessionTracker.currentSession);
-    self.configuration.shouldAutoCaptureSessions = NO;
-
-    NSDate *now = [NSDate date];
-    [self.sessionTracker startNewSession:now
-                                withUser:self.user
-                            autoCaptured:YES];
-    XCTAssertEqual(0, [self.sessionTracker sessionQueue].count);
-
-    [self.sessionTracker startNewSession:now
-                                withUser:self.user
-                            autoCaptured:NO];
-    XCTAssertEqual(1, [self.sessionTracker sessionQueue].count);
-}
-
 - (void)testUniqueSessionIds {
     [self.sessionTracker startNewSession:[NSDate date]
                                 withUser:self.user

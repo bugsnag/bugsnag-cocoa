@@ -25,14 +25,10 @@ typedef void (^SessionTrackerCallback)(BugsnagSession *newSession);
 
 - (void)suspendCurrentSession:(NSDate *)date;
 - (void)incrementHandledError;
-
 - (void)send;
-
-- (void)storeAllSessions; // TODO should call when about to crash!
 
 @property (readonly) BugsnagSession *currentSession;
 @property (readonly) BOOL isInForeground;
-@property (readonly) NSMutableArray *sessionQueue;
 
 /**
  * Called when a session is altered
