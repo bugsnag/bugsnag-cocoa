@@ -11,27 +11,10 @@
 #import "BugsnagKeys.h"
 #import "BugsnagSession.h"
 
-@interface SessionDeliveryOperation : NSOperation
-@end
-
 @implementation BugsnagSessionTrackingApiClient
 
 - (NSOperation *)deliveryOperation {
-    return [SessionDeliveryOperation new];
-}
-
-@end
-
-@implementation SessionDeliveryOperation
-
-- (void)main {
-    @autoreleasepool {
-        @try {
-            // TODO deliver sessions!
-        } @catch (NSException *e) {
-            bsg_log_err(@"Could not send sessions: %@", e);
-        }
-    }
+    return [NSOperation new];
 }
 
 @end

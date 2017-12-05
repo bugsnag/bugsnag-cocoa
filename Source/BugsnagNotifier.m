@@ -293,21 +293,15 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
 #if TARGET_OS_TV
     [self.details setValue:@"tvOS Bugsnag Notifier" forKey:BSGKeyName];
+    [self watchLifecycleEvents:[NSNotificationCenter defaultCenter]];
+
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     [self.details setValue:@"iOS Bugsnag Notifier" forKey:BSGKeyName];
 
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 
     // TODO support mac + tvOS with all these options?
-    [center addObserver:self
-               selector:@selector(willEnterForeground:)
-                   name:UIApplicationWillEnterForegroundNotification
-                 object:nil];
-
-    [center addObserver:self
-               selector:@selector(willEnterBackground:)
-                   name:UIApplicationDidEnterBackgroundNotification
-                 object:nil];
+    [self watchLifecycleEvents:center];
 
 
     [center addObserver:self
@@ -337,10 +331,35 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self orientationChanged:nil];
 #elif TARGET_OS_MAC
     [self.details setValue:@"OSX Bugsnag Notifier" forKey:BSGKeyName];
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+
+    [center addObserver:self
+               selector:@selector(willEnterForeground:)
+                   name:NSApplicationDidBecomeActiveNotification
+                 object:nil];
+
+    [center addObserver:self
+               selector:@selector(willEnterBackground:)
+                   name:NSApplicationDidResignActiveNotification
+                 object:nil];
+
+
 #endif
 
     // notification not received in time on initial startup, so trigger manually
     [self willEnterForeground:self];
+}
+
+- (void)watchLifecycleEvents:(NSNotificationCenter *)center {
+    [center addObserver:self
+               selector:@selector(willEnterForeground:)
+                   name:UIApplicationWillEnterForegroundNotification
+                 object:nil];
+
+    [center addObserver:self
+               selector:@selector(willEnterBackground:)
+                   name:UIApplicationDidEnterBackgroundNotification
+                 object:nil];
 }
 
 - (void)willEnterForeground:(id)sender {
