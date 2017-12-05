@@ -104,7 +104,6 @@
                            @"device",
                            @"exceptions",
                            @"metaData",
-                           @"payloadVersion",
                            @"severity",
                            @"severityReason",
                            @"threads",
@@ -117,7 +116,7 @@
 - (void)testEventPayloadVersion {
     NSString *payloadVersion =
     [self.processedData[@"events"] firstObject][@"payloadVersion"];
-    XCTAssertEqualObjects(payloadVersion, @"4");
+    XCTAssertNil(payloadVersion);
 }
 
 - (void)testEventSeverity {

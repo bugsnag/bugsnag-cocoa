@@ -201,7 +201,7 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 
 - (NSDictionary *)errorApiHeaders {
     return @{
-             kHeaderApiPayloadVersion: @"4",
+             kHeaderApiPayloadVersion: @"4.0",
              kHeaderApiKey: self.apiKey
              };
 }

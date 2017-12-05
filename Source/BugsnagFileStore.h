@@ -24,6 +24,8 @@
 - (instancetype)initWithPath:(NSString *)path
               filenameSuffix:(NSString *)filenameSuffix;
 
+- (NSArray *)fileIds;
+
 /** Fetch a file.
  *
  * @param fileId The ID of the file to fetch.

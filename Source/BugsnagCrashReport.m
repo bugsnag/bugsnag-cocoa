@@ -464,7 +464,6 @@ initWithErrorName:(NSString *_Nonnull)name
     // Build Event
     BSGDictSetSafeObject(event, BSGFormatSeverity(self.severity), BSGKeySeverity);
     BSGDictSetSafeObject(event, [self breadcrumbs], BSGKeyBreadcrumbs);
-    BSGDictSetSafeObject(event, @"4", BSGKeyPayloadVersion);
     BSGDictSetSafeObject(event, metaData, BSGKeyMetaData);
     
     NSDictionary *device = [self.device bsg_mergedInto:self.deviceState];

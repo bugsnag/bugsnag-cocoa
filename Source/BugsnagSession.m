@@ -54,7 +54,10 @@ static NSString *const kUser = @"user";
     BSGDictInsertIfNotNil(dict, @(self.unhandledCount), kUnhandledCount);
     BSGDictInsertIfNotNil(dict, @(self.handledCount), kHandledCount);
     BSGDictInsertIfNotNil(dict, [BSG_RFC3339DateTool stringFromDate:self.startedAt], kStartedAt);
-    BSGDictInsertIfNotNil(dict, [self.user toJson], kUser);
+
+    if (self.user) {
+        BSGDictInsertIfNotNil(dict, [self.user toJson], kUser);
+    }
     return [NSDictionary dictionaryWithDictionary:dict];
 }
 
