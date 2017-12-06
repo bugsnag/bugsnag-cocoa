@@ -390,6 +390,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
         [self.sessionTimer invalidate];
         self.sessionTimer = nil;
     }
+
 }
 
 - (void)sessionTick:(id)sender {

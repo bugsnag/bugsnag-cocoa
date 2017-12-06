@@ -27,7 +27,10 @@ class ViewController: UIViewController {
     }
 
     @IBAction func doCrash(_ sender: AnyObject) {
-        handledError()
+        Bugsnag.startSession()
+        unhandledCrash()
+//        handledError()
+//        handledError()
     }
 
     func unhandledCrash() {

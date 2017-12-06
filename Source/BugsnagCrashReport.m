@@ -258,7 +258,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
         }
         _severity = _handledState.currentSeverity;
 
-        if (report[@"user"][@"sessionId"]) {
+        if (report[@"user"][@"id"]) {
             _session = [[BugsnagSession alloc] initWithDictionary:report[@"user"]];
         }
     }
