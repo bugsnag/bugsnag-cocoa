@@ -263,6 +263,12 @@
 		E78C1EFA1FCC728D00B976D3 /* JsonSerializable.h in Headers */ = {isa = PBXBuildFile; fileRef = E78C1EF91FCC728D00B976D3 /* JsonSerializable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E78C1EFC1FCC759B00B976D3 /* BugsnagSessionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E78C1EFB1FCC759B00B976D3 /* BugsnagSessionTest.m */; };
 		E78C1EFE1FCC778700B976D3 /* BugsnagUserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E78C1EFD1FCC778700B976D3 /* BugsnagUserTest.m */; };
+		E79148251FD828E6003EFEBF /* BugsnagKeys.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E794E8021F9F743D00A67EE7 /* BugsnagKeys.h */; };
+		E79148261FD828E6003EFEBF /* BugsnagSessionTracker.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E72BF7731FC867E4004BE82F /* BugsnagSessionTracker.h */; };
+		E79148271FD828E6003EFEBF /* BugsnagSession.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E72BF7781FC869F7004BE82F /* BugsnagSession.h */; };
+		E79148281FD828E6003EFEBF /* BugsnagSessionTrackingPayload.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E78C1EF41FCC61EA00B976D3 /* BugsnagSessionTrackingPayload.h */; };
+		E79148291FD828E6003EFEBF /* BugsnagUser.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E72BF77D1FC86A7A004BE82F /* BugsnagUser.h */; };
+		E791482A1FD828E6003EFEBF /* BugsnagKSCrashSysInfoParser.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E7EB06721FCDAF2000C076A6 /* BugsnagKSCrashSysInfoParser.h */; };
 		E794E8031F9F743D00A67EE7 /* BugsnagKeys.h in Headers */ = {isa = PBXBuildFile; fileRef = E794E8021F9F743D00A67EE7 /* BugsnagKeys.h */; };
 		E7DC009A1FC5C4F6004AB8DF /* BugsnagNotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A2C8F4B1C6BBE3C00846019 /* BugsnagNotifier.h */; };
 		E7DC009B1FC5C4F6004AB8DF /* BugsnagCollections.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A2C8F411C6BBE3C00846019 /* BugsnagCollections.h */; };
@@ -302,6 +308,12 @@
 			dstPath = "include/${PRODUCT_NAME}";
 			dstSubfolderSpec = 16;
 			files = (
+				E79148251FD828E6003EFEBF /* BugsnagKeys.h in CopyFiles */,
+				E79148261FD828E6003EFEBF /* BugsnagSessionTracker.h in CopyFiles */,
+				E79148271FD828E6003EFEBF /* BugsnagSession.h in CopyFiles */,
+				E79148281FD828E6003EFEBF /* BugsnagSessionTrackingPayload.h in CopyFiles */,
+				E79148291FD828E6003EFEBF /* BugsnagUser.h in CopyFiles */,
+				E791482A1FD828E6003EFEBF /* BugsnagKSCrashSysInfoParser.h in CopyFiles */,
 				E71FF7591FD55CE50099C9DD /* BugsnagApiClient.h in CopyFiles */,
 				E74EFDC21FD04B9200577D23 /* BugsnagSessionTrackingApiClient.h in CopyFiles */,
 				E748DA781FD02A3F00B14909 /* BugsnagSessionFileStore.h in CopyFiles */,
@@ -377,7 +389,7 @@
 		8A2C8F181C6BBD2300846019 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A2C8F1D1C6BBD2300846019 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		8A2C8F221C6BBD2300846019 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8A2C8F291C6BBD2300846019 /* TestsInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = TestsInfo.plist; sourceTree = "<group>"; };
+		8A2C8F291C6BBD2300846019 /* TestsInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = TestsInfo.plist; sourceTree = SOURCE_ROOT; };
 		8A2C8F321C6BBD7200846019 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = SOURCE_ROOT; };
 		8A2C8F3D1C6BBE3C00846019 /* Bugsnag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Bugsnag.h; path = ../Source/Bugsnag.h; sourceTree = SOURCE_ROOT; };
 		8A2C8F3E1C6BBE3C00846019 /* Bugsnag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Bugsnag.m; path = ../Source/Bugsnag.m; sourceTree = SOURCE_ROOT; };

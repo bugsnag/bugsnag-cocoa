@@ -290,19 +290,15 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
     [self setupConnectivityListener];
     [self updateAutomaticBreadcrumbDetectionSettings];
+    
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [self watchLifecycleEvents:[NSNotificationCenter defaultCenter]];
 
 #if TARGET_OS_TV
     [self.details setValue:@"tvOS Bugsnag Notifier" forKey:BSGKeyName];
-    [self watchLifecycleEvents:[NSNotificationCenter defaultCenter]];
 
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     [self.details setValue:@"iOS Bugsnag Notifier" forKey:BSGKeyName];
-
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-
-    // TODO support mac + tvOS with all these options?
-    [self watchLifecycleEvents:center];
-
 
     [center addObserver:self
                selector:@selector(batteryChanged:)
@@ -331,7 +327,6 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self orientationChanged:nil];
 #elif TARGET_OS_MAC
     [self.details setValue:@"OSX Bugsnag Notifier" forKey:BSGKeyName];
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 
     [center addObserver:self
                selector:@selector(willEnterForeground:)
@@ -342,8 +337,6 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                selector:@selector(willEnterBackground:)
                    name:NSApplicationDidResignActiveNotification
                  object:nil];
-
-
 #endif
 
     // notification not received in time on initial startup, so trigger manually
@@ -351,14 +344,25 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)watchLifecycleEvents:(NSNotificationCenter *)center {
+    NSString *foregroundName;
+    NSString *backgroundName;
+    
+    #if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    foregroundName = UIApplicationWillEnterForegroundNotification;
+    backgroundName = UIApplicationWillEnterForegroundNotification;
+    #elif TARGET_OS_MAC
+    foregroundName = NSApplicationWillBecomeActiveNotification;
+    backgroundName = NSApplicationDidFinishLaunchingNotification;
+    #endif
+    
     [center addObserver:self
                selector:@selector(willEnterForeground:)
-                   name:UIApplicationWillEnterForegroundNotification
+                   name:foregroundName
                  object:nil];
 
     [center addObserver:self
                selector:@selector(willEnterBackground:)
-                   name:UIApplicationDidEnterBackgroundNotification
+                   name:backgroundName
                  object:nil];
 }
 
