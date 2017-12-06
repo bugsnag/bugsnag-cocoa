@@ -32,6 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         config.apiKey = "3b8bd9aa7f3e81ec54850b32805a7fe0"
         config.sessionEndpoint = URL(string: "http://localhost:10000")
         config.notifyURL = URL(string: "http://localhost:8000")
+        config.shouldAutoCaptureSessions = true
         Bugsnag.start(with: config)
 
         return true

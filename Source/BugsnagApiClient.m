@@ -117,6 +117,7 @@
                cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
            timeoutInterval:15];
     request.HTTPMethod = @"POST";
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 
     for (NSString *key in [headers allKeys]) {
         [request setValue:headers[key] forHTTPHeaderField:key];
