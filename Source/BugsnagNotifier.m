@@ -292,7 +292,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self updateAutomaticBreadcrumbDetectionSettings];
     
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [self watchLifecycleEvents:[NSNotificationCenter defaultCenter]];
+    [self watchLifecycleEvents:center];
 
 #if TARGET_OS_TV
     [self.details setValue:@"tvOS Bugsnag Notifier" forKey:BSGKeyName];
