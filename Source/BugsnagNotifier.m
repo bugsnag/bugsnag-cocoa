@@ -372,17 +372,24 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                             autoCaptured:YES];
 
     NSTimeInterval sessionTickSeconds = 10; // TODO increase duration
-    _sessionTimer = [NSTimer scheduledTimerWithTimeInterval:sessionTickSeconds
-                                              target:self
-                                            selector:@selector(sessionTick:)
-                                            userInfo:nil
-                                             repeats:YES];
-    [self sessionTick:self];
+
+    if (!self.sessionTimer) {
+        _sessionTimer = [NSTimer scheduledTimerWithTimeInterval:sessionTickSeconds
+                                                         target:self
+                                                       selector:@selector(sessionTick:)
+                                                       userInfo:nil
+                                                        repeats:YES];
+        [self sessionTick:self];
+    }
 }
 
 - (void)willEnterBackground:(id)sender {
     [self.sessionTracker suspendCurrentSession:[NSDate date]];
-    [self.sessionTimer invalidate];
+
+    if (self.sessionTimer) {
+        [self.sessionTimer invalidate];
+        self.sessionTimer = nil;
+    }
 }
 
 - (void)sessionTick:(id)sender {

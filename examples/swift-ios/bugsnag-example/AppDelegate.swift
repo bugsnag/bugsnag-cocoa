@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        Bugsnag.start(withApiKey: "your-api-key")
+//        Bugsnag.start(withApiKey: "your-api-key")
 
         let config = BugsnagConfiguration()
         config.apiKey = "3b8bd9aa7f3e81ec54850b32805a7fe0"
