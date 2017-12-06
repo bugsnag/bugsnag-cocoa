@@ -93,20 +93,25 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
         writer->addJSONElement(writer, "metaData",
                                bsg_g_bugsnag_data.metaDataJSON);
     }
+
+    if (sessionId) { // a session is available
+        // persist session info
+        writer->addStringElement(writer, "id", [sessionId UTF8String]);
+        writer->addStringElement(writer, "startedAt", [[BSG_RFC3339DateTool stringFromDate:startedAt] UTF8String]);
+        writer->addUIntegerElement(writer, "handledCount", handledCount);
+
+        if (!bsg_g_bugsnag_data.handledState) {
+            writer->addUIntegerElement(writer, "unhandledCount", 1);
+        } else {
+            writer->addUIntegerElement(writer, "unhandledCount", 0);
+        }
+    }
+
     if (bsg_g_bugsnag_data.handledState) {
         writer->addJSONElement(writer, "handledState",
                                bsg_g_bugsnag_data.handledState);
-    } else {
-        bsg_log_err(@"Unhandled error detected!");
-
-        if (sessionId) { // a session is available
-            // persist session info
-            writer->addStringElement(writer, "id", [sessionId UTF8String]);
-            writer->addStringElement(writer, "startedAt", [[BSG_RFC3339DateTool stringFromDate:startedAt] UTF8String]);
-            writer->addUIntegerElement(writer, "handledCount", handledCount);
-            writer->addUIntegerElement(writer, "unhandledCount", 1);
-        }
     }
+
     if (bsg_g_bugsnag_data.stateJSON) {
         writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
     }
