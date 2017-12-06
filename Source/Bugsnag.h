@@ -212,10 +212,12 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 /**
  * Manually starts tracking a new session.
- * Automatic session tracking can be enabled via Configuration,
- * which will automatically create a new
- * session everytime the app enters the foreground.
+ *
+ * Sessions automatically start when the application enters the foreground state, and end when the application exits
+ * the foreground.If you wish to manually start sessions, simply call this method from the relevant part of your
+ * application. Starting a new session will automatically end the previous one.
  */
+
 + (void)startSession;
 
 @end

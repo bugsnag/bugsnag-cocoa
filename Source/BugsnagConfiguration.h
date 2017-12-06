@@ -138,12 +138,13 @@ BugsnagBreadcrumbs *breadcrumbs;
 @property BOOL autoNotify;
 
 /**
- * Whether app sessions should be tracked automatically
+ * Determines whether app sessions should be tracked automatically. By default this value is false.
  */
 @property BOOL shouldAutoCaptureSessions;
 
 /**
- *  The URL used to send Tracked Sessions to Bugsnag
+ * Set the endpoint to which tracked sessions reports are sent. This defaults to https://sessions.bugsnag.com,
+ * but should be overridden if you are using Bugsnag On-premise, to point to your own Bugsnag endpoint.
  */
 @property(readwrite, retain, nullable) NSURL *sessionEndpoint;
 
