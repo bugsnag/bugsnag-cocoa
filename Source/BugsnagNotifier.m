@@ -376,7 +376,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                                 withUser:self.configuration.currentUser
                             autoCaptured:YES];
 
-    NSTimeInterval sessionTickSeconds = 10; // TODO increase duration
+    NSTimeInterval sessionTickSeconds = 60;
 
     if (!self.sessionTimer) {
         _sessionTimer = [NSTimer scheduledTimerWithTimeInterval:sessionTickSeconds

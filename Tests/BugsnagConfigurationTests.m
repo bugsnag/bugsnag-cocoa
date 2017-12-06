@@ -77,7 +77,7 @@
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     
     // Default endpoints
-    XCTAssertEqualObjects([NSURL URLWithString:@"http://10.0.2.2:10000"], config.sessionEndpoint);
+    XCTAssertEqualObjects([NSURL URLWithString:@"https://sessions.bugsnag.com"], config.sessionEndpoint);
     
     // Setting an endpoint
     NSURL *endpoint = [NSURL URLWithString:@"http://localhost:8000"];
