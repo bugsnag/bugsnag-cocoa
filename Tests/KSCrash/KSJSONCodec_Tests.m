@@ -1182,8 +1182,8 @@ static NSString* toString(NSData* data)
     NSString* result = toString([BSG_KSJSONCodec encode:source
                                             options:BSG_KSJSONEncodeOptionSorted
                                               error:&error]);
-    XCTAssertNil(result, @"");
-    XCTAssertNotNil(error, @"");
+    XCTAssertEqualObjects(result, @"{\"blah\\u001Blah\":\"blah\"}");
+    XCTAssertNil(error, @"");
 }
 
 - (void) testSerializeArrayBadCharacter
@@ -1193,8 +1193,8 @@ static NSString* toString(NSData* data)
     NSString* result = toString([BSG_KSJSONCodec encode:source
                                             options:BSG_KSJSONEncodeOptionSorted
                                               error:&error]);
-    XCTAssertNil(result, @"");
-    XCTAssertNotNil(error, @"");
+    XCTAssertEqualObjects(result, @"[\"test\\u0001ing\"]");
+    XCTAssertNil(error, @"");
 }
 
 - (void)testDeserializeArrayInvalidUnicodeSequence

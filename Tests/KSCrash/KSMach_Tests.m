@@ -173,7 +173,7 @@
     XCTAssertTrue(diff >= 0.1 && diff < 0.2, @"");
 }
 
-- (void) testIsBeingTraced
+- (void) testIsBeingTraced // fails if scheme is not debuggable!
 {
     bool traced = bsg_ksmachisBeingTraced();
     XCTAssertTrue(traced, @"");
