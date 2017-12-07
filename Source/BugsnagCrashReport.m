@@ -15,7 +15,6 @@
 #import "BSGSerialization.h"
 #import "Bugsnag.h"
 #import "BugsnagCollections.h"
-#import "BugsnagCrashReport.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
@@ -179,7 +178,7 @@ NSDictionary *BSGParseDeviceState(NSDictionary *report) {
         bsg_log_warn(@"Failed to read free disk space: %@", error);
     }
 
-    NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
+    NSNumber *freeBytes = fileSystemAttrs[NSFileSystemFreeSize];
     BSGDictSetSafeObject(deviceState, freeBytes, @"freeDisk");
     return deviceState;
 }

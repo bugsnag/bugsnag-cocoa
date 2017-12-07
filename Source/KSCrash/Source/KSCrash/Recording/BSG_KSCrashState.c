@@ -37,7 +37,6 @@
 #include <fcntl.h>
 #include <mach/mach_time.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 
 // ============================================================================

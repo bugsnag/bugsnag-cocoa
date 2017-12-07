@@ -10,7 +10,6 @@
 #import <XCTest/XCTest.h>
 
 #import "Bugsnag.h"
-#import "BugsnagCrashReport.h"
 #import "BugsnagHandledState.h"
 
 @interface BugsnagCrashReportTests : XCTestCase

@@ -8,8 +8,6 @@
 
 #import "BugsnagErrorReportApiClient.h"
 #import "Bugsnag.h"
-#import "BugsnagCollections.h"
-#import "BugsnagCrashReport.h"
 #import "BugsnagLogger.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"

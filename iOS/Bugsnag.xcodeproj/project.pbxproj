@@ -623,7 +623,6 @@
 				E70EE0891FD7047D00FA745C /* KSCrash */,
 				8A2C8F8B1C6BBFDD00846019 /* BugsnagBreadcrumbsTest.m */,
 				8A2C8F8C1C6BBFDD00846019 /* BugsnagCrashReportTests.m */,
-				8AE1BC941DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m */,
 				8A4E733E1DC13281001F7CC8 /* BugsnagConfigurationTests.m */,
 				8A2C8F8D1C6BBFDD00846019 /* BugsnagSinkTests.m */,
 				E77316E11F73B46600A14F06 /* BugsnagHandledStateTest.m */,
