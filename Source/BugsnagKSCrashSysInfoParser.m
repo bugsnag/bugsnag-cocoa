@@ -73,18 +73,12 @@ NSDictionary *BSGParseApp(NSDictionary *report) {
 
 NSDictionary *BSGParseAppState(NSDictionary *report) {
     NSMutableDictionary *app = [NSMutableDictionary dictionary];
-    NSString *appVersion = [Bugsnag configuration].appVersion;
-    
+
     BSGDictSetSafeObject(app, report[@"CFBundleVersion"], @"bundleVersion");
     BSGDictSetSafeObject(app, [Bugsnag configuration].releaseStage,
                          BSGKeyReleaseStage);
-    if ([appVersion isKindOfClass:[NSString class]]) {
-        BSGDictSetSafeObject(app, appVersion, BSGKeyVersion);
-    } else {
-        BSGDictSetSafeObject(app, report[@"CFBundleShortVersionString"],
-                             BSGKeyVersion);
-    }
-    
+    BSGDictSetSafeObject(app, report[@"CFBundleShortVersionString"], BSGKeyVersion);
+
 #if TARGET_OS_TV
     BSGDictSetSafeObject(app, @"tvOS", @"type");
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
