@@ -9,9 +9,8 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagUser.h"
-#import "JsonSerializable.h"
 
-@interface BugsnagSession : NSObject <JsonSerializable>
+@interface BugsnagSession : NSObject
 
 - (_Nonnull instancetype)initWithId:(NSString *_Nonnull)sessionId
                  startDate:(NSDate *_Nonnull)startDate
@@ -19,6 +18,8 @@
               autoCaptured:(BOOL)autoCaptured;
 
 - (_Nonnull instancetype)initWithDictionary:(NSDictionary *_Nonnull)dict;
+
+- (NSDictionary *_Nonnull)toJson;
 
 @property(readonly) NSString *_Nonnull sessionId;
 @property(readonly) NSDate *_Nonnull startedAt;

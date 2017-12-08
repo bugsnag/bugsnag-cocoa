@@ -57,7 +57,6 @@
 		E79148521FD82B36003EFEBF /* BugsnagUser.m in Sources */ = {isa = PBXBuildFile; fileRef = E791483F1FD82B35003EFEBF /* BugsnagUser.m */; };
 		E79148531FD82B36003EFEBF /* BugsnagFileStore.h in Headers */ = {isa = PBXBuildFile; fileRef = E79148401FD82B35003EFEBF /* BugsnagFileStore.h */; };
 		E79148541FD82B36003EFEBF /* BugsnagSessionTrackingApiClient.h in Headers */ = {isa = PBXBuildFile; fileRef = E79148411FD82B35003EFEBF /* BugsnagSessionTrackingApiClient.h */; };
-		E79148551FD82B36003EFEBF /* JsonSerializable.h in Headers */ = {isa = PBXBuildFile; fileRef = E79148421FD82B36003EFEBF /* JsonSerializable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E79148561FD82B36003EFEBF /* BugsnagSessionTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = E79148431FD82B36003EFEBF /* BugsnagSessionTracker.m */; };
 		E79148571FD82B36003EFEBF /* BugsnagSession.m in Sources */ = {isa = PBXBuildFile; fileRef = E79148441FD82B36003EFEBF /* BugsnagSession.m */; };
 		E79148581FD82B36003EFEBF /* BugsnagFileStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E79148451FD82B36003EFEBF /* BugsnagFileStore.m */; };
@@ -224,7 +223,6 @@
 		E791483F1FD82B35003EFEBF /* BugsnagUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagUser.m; path = ../Source/BugsnagUser.m; sourceTree = "<group>"; };
 		E79148401FD82B35003EFEBF /* BugsnagFileStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagFileStore.h; path = ../Source/BugsnagFileStore.h; sourceTree = "<group>"; };
 		E79148411FD82B35003EFEBF /* BugsnagSessionTrackingApiClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagSessionTrackingApiClient.h; path = ../Source/BugsnagSessionTrackingApiClient.h; sourceTree = "<group>"; };
-		E79148421FD82B36003EFEBF /* JsonSerializable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JsonSerializable.h; path = ../Source/JsonSerializable.h; sourceTree = "<group>"; };
 		E79148431FD82B36003EFEBF /* BugsnagSessionTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSessionTracker.m; path = ../Source/BugsnagSessionTracker.m; sourceTree = "<group>"; };
 		E79148441FD82B36003EFEBF /* BugsnagSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSession.m; path = ../Source/BugsnagSession.m; sourceTree = "<group>"; };
 		E79148451FD82B36003EFEBF /* BugsnagFileStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagFileStore.m; path = ../Source/BugsnagFileStore.m; sourceTree = "<group>"; };
@@ -382,7 +380,6 @@
 				E791483C1FD82B35003EFEBF /* BugsnagSessionTrackingPayload.m */,
 				E79148351FD82B34003EFEBF /* BugsnagUser.h */,
 				E791483F1FD82B35003EFEBF /* BugsnagUser.m */,
-				E79148421FD82B36003EFEBF /* JsonSerializable.h */,
 				E794E8041F9F746D00A67EE7 /* BugsnagKeys.h */,
 				E762E9FA1F73F80200E82B43 /* BugsnagHandledState.h */,
 				E762E9FB1F73F80200E82B43 /* BugsnagHandledState.m */,
@@ -612,7 +609,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E79148551FD82B36003EFEBF /* JsonSerializable.h in Headers */,
 				E79E6BB91F4E3850002B35F9 /* BSG_KSJSONCodec.h in Headers */,
 				E79148471FD82B36003EFEBF /* BugsnagKSCrashSysInfoParser.h in Headers */,
 				E79E6B881F4E3850002B35F9 /* BSG_KSCrash.h in Headers */,
