@@ -11,6 +11,10 @@
 @interface BSGDelayOperation : NSOperation
 @end
 
+@interface BugsnagApiClient()
+@property (nonatomic) NSURLSession *generatedSession;
+@end
+
 @implementation BugsnagApiClient
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)configuration
@@ -102,12 +106,16 @@
 
 - (NSURLSession *)prepareSession {
     NSURLSession *session = [Bugsnag configuration].session;
-    if (!session) {
-        session = [NSURLSession
-                sessionWithConfiguration:[NSURLSessionConfiguration
-                        defaultSessionConfiguration]];
+    if (session) {
+        return session;
+    } else {
+        if (self.generatedSession) {
+            _generatedSession = [NSURLSession
+                    sessionWithConfiguration:[NSURLSessionConfiguration
+                            defaultSessionConfiguration]];
+        }
+        return self.generatedSession;
     }
-    return session;
 }
 
 - (NSMutableURLRequest *)prepareRequest:(NSURL *)url
