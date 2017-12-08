@@ -202,8 +202,9 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 - (NSDictionary *)errorApiHeaders {
     return @{
              kHeaderApiPayloadVersion: @"4.0",
-             kHeaderApiKey: self.apiKey
-             };
+             kHeaderApiKey: self.apiKey,
+             kHeaderApiSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate new]]
+    };
 }
 
 - (NSDictionary *)sessionApiHeaders {

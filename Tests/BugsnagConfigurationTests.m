@@ -62,6 +62,7 @@
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     NSDictionary *headers = [config errorApiHeaders];
     XCTAssertEqualObjects(config.apiKey, headers[@"Bugsnag-Api-Key"]);
+    XCTAssertNotNil(headers[@"Bugsnag-Sent-At"]);
     XCTAssertNotNil(headers[@"Bugsnag-Payload-Version"]);
 }
 
