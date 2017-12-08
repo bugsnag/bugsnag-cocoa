@@ -515,21 +515,22 @@ initWithErrorName:(NSString *_Nonnull)name
     }
 
     if (self.session) {
-        NSMutableDictionary *sessionJson = [self generateSessionDict];
-        BSGDictSetSafeObject(event, sessionJson, BSGKeySession);
+        BSGDictSetSafeObject(event, [self generateSessionDict], BSGKeySession);
     }
     return event;
 }
 
-- (NSMutableDictionary *)generateSessionDict {
-    NSMutableDictionary *sessionJson = [NSMutableDictionary new];
-    BSGDictSetSafeObject(sessionJson, self.session.sessionId, BSGKeyId);
-    BSGDictSetSafeObject(sessionJson, [BSG_RFC3339DateTool stringFromDate:self.session.startedAt], @"startedAt");
+- (NSDictionary *)generateSessionDict {
+    NSDictionary *events = @{
+            @"handled": @(self.session.handledCount),
+            @"unhandled": @(self.session.unhandledCount)
+    };
 
-    NSMutableDictionary *events = [NSMutableDictionary new];
-    events[@"handled"] = @(self.session.handledCount);
-    events[@"unhandled"] = @(self.session.unhandledCount);
-    BSGDictSetSafeObject(sessionJson, events, @"events");
+    NSDictionary *sessionJson = @{
+            BSGKeyId: self.session.sessionId,
+            @"startedAt": [BSG_RFC3339DateTool stringFromDate:self.session.startedAt],
+            @"events": events
+    };
     return sessionJson;
 }
 
