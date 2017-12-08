@@ -7,6 +7,7 @@
 #import "BugsnagConfiguration.h"
 #import "Bugsnag.h"
 #import "BugsnagKeys.h"
+#import "BugsnagLogger.h"
 
 @interface BSGDelayOperation : NSOperation
 @end
@@ -41,6 +42,7 @@
 }
 
 - (NSOperation *)deliveryOperation {
+    bsg_log_err(@"Should override deliveryOperation in super class");
     return [NSOperation new];
 }
 
