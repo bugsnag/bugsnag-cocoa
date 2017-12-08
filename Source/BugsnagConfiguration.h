@@ -146,7 +146,7 @@ BugsnagBreadcrumbs *breadcrumbs;
  * Set the endpoint to which tracked sessions reports are sent. This defaults to https://sessions.bugsnag.com,
  * but should be overridden if you are using Bugsnag On-premise, to point to your own Bugsnag endpoint.
  */
-@property(readwrite, retain, nullable) NSURL *sessionEndpoint;
+@property(readwrite, retain, nullable) NSURL *sessionURL;
 
 /**
  *  Set user metadata

@@ -82,7 +82,7 @@
         if (payload.sessions.count > 0) {
             [self.apiClient sendData:payload
                          withPayload:[payload toJson]
-                               toURL:self.config.sessionEndpoint
+                               toURL:self.config.sessionURL
                              headers:self.config.sessionApiHeaders
                         onCompletion:^(id data, BOOL success, NSError *error) {
 

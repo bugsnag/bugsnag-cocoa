@@ -78,12 +78,12 @@
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     
     // Default endpoints
-    XCTAssertEqualObjects([NSURL URLWithString:@"https://sessions.bugsnag.com"], config.sessionEndpoint);
+    XCTAssertEqualObjects([NSURL URLWithString:@"https://sessions.bugsnag.com"], config.sessionURL);
     
     // Setting an endpoint
     NSURL *endpoint = [NSURL URLWithString:@"http://localhost:8000"];
-    config.sessionEndpoint = endpoint;
-    XCTAssertEqualObjects(endpoint, config.sessionEndpoint);
+    config.sessionURL = endpoint;
+    XCTAssertEqualObjects(endpoint, config.sessionURL);
 }
 
 - (void)testUser {
