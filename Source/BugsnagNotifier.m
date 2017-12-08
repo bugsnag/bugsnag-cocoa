@@ -75,8 +75,8 @@ static struct bugsnag_data_t bsg_g_bugsnag_data;
 
 static NSDictionary *notificationNameMap;
 
-NSString *sessionId;
-NSDate *startedAt;
+const char *sessionId;
+const char *sessionStartDate;
 NSUInteger handledCount;
 
 /**
@@ -96,8 +96,8 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 
     if (sessionId) { // a session is available
         // persist session info
-        writer->addStringElement(writer, "id", [sessionId UTF8String]);
-        writer->addStringElement(writer, "startedAt", [[BSG_RFC3339DateTool stringFromDate:startedAt] UTF8String]);
+        writer->addStringElement(writer, "id", sessionId);
+        writer->addStringElement(writer, "startedAt", sessionStartDate);
         writer->addUIntegerElement(writer, "handledCount", handledCount);
 
         if (!bsg_g_bugsnag_data.handledState) {
@@ -202,8 +202,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                                                                   apiClient:self.sessionTrackingApiClient];
 
         self.sessionTracker.callback = ^(BugsnagSession *session) { // record info for C JSON serialiser
-            sessionId = session.sessionId;
-            startedAt = session.startedAt;
+            sessionId = [session.sessionId UTF8String];
+            sessionStartDate = [[BSG_RFC3339DateTool stringFromDate:session.startedAt] UTF8String];
             handledCount = session.handledCount;
         };
 
