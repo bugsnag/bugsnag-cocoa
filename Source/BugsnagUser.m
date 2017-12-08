@@ -20,6 +20,21 @@
     return self;
 }
 
+- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress {
+    self = [super init];
+    if (self) {
+        self.userId = userId;
+        self.name = name;
+        self.emailAddress = emailAddress;
+    }
+    return self;
+}
+
++ (instancetype)userWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress {
+    return [[self alloc] initWithUserId:userId name:name emailAddress:emailAddress];
+}
+
+
 - (NSDictionary *)toJson {
     NSMutableDictionary *dict = [NSMutableDictionary new];
     BSGDictInsertIfNotNil(dict, self.userId, @"id");

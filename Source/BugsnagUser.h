@@ -13,6 +13,7 @@
 @interface BugsnagUser : NSObject<JsonSerializable>
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
 
 @property NSString *userId;
 @property NSString *name;
