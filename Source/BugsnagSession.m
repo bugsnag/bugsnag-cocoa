@@ -10,11 +10,11 @@
 #import "BugsnagCollections.h"
 #import "BSG_RFC3339DateTool.h"
 
-static NSString *const kSessionId = @"id";
-static NSString *const kUnhandledCount = @"unhandledCount";
-static NSString *const kHandledCount = @"handledCount";
-static NSString *const kStartedAt = @"startedAt";
-static NSString *const kUser = @"user";
+static NSString *const kBugsnagSessionId = @"id";
+static NSString *const kBugsnagUnhandledCount = @"unhandledCount";
+static NSString *const kBugsnagHandledCount = @"handledCount";
+static NSString *const kBugsnagStartedAt = @"startedAt";
+static NSString *const kBugsnagUser = @"user";
 
 @implementation BugsnagSession
 
@@ -34,12 +34,12 @@ static NSString *const kUser = @"user";
 
 - (instancetype)initWithDictionary:(NSDictionary *_Nonnull)dict {
     if (self = [super init]) {
-        _sessionId = dict[kSessionId];
-        _unhandledCount = [dict[kUnhandledCount] unsignedIntegerValue];
-        _handledCount = [dict[kHandledCount] unsignedIntegerValue];
-        _startedAt = [BSG_RFC3339DateTool dateFromString:dict[kStartedAt]];
+        _sessionId = dict[kBugsnagSessionId];
+        _unhandledCount = [dict[kBugsnagUnhandledCount] unsignedIntegerValue];
+        _handledCount = [dict[kBugsnagHandledCount] unsignedIntegerValue];
+        _startedAt = [BSG_RFC3339DateTool dateFromString:dict[kBugsnagStartedAt]];
 
-        NSDictionary *userDict = dict[kUser];
+        NSDictionary *userDict = dict[kBugsnagUser];
 
         if (userDict) {
             _user = [[BugsnagUser alloc] initWithDictionary:userDict];
@@ -50,13 +50,13 @@ static NSString *const kUser = @"user";
 
 - (NSDictionary *)toJson {
     NSMutableDictionary *dict = [NSMutableDictionary new];
-    BSGDictInsertIfNotNil(dict, self.sessionId, kSessionId);
-    BSGDictInsertIfNotNil(dict, @(self.unhandledCount), kUnhandledCount);
-    BSGDictInsertIfNotNil(dict, @(self.handledCount), kHandledCount);
-    BSGDictInsertIfNotNil(dict, [BSG_RFC3339DateTool stringFromDate:self.startedAt], kStartedAt);
+    BSGDictInsertIfNotNil(dict, self.sessionId, kBugsnagSessionId);
+    BSGDictInsertIfNotNil(dict, @(self.unhandledCount), kBugsnagUnhandledCount);
+    BSGDictInsertIfNotNil(dict, @(self.handledCount), kBugsnagHandledCount);
+    BSGDictInsertIfNotNil(dict, [BSG_RFC3339DateTool stringFromDate:self.startedAt], kBugsnagStartedAt);
 
     if (self.user) {
-        BSGDictInsertIfNotNil(dict, [self.user toJson], kUser);
+        BSGDictInsertIfNotNil(dict, [self.user toJson], kBugsnagUser);
     }
     return [NSDictionary dictionaryWithDictionary:dict];
 }
