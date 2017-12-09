@@ -21,10 +21,12 @@
 @implementation BugsnagSessionTracker
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config
-                     apiClient:(BugsnagSessionTrackingApiClient *)apiClient {
+                     apiClient:(BugsnagSessionTrackingApiClient *)apiClient
+                      callback:(void(^)(BugsnagSession *))callback {
     if (self = [super init]) {
-        self.config = config;
-        self.apiClient = apiClient;
+        _config = config;
+        _apiClient = apiClient;
+        _callback = callback;
 
         NSString *bundleName = [[NSBundle mainBundle] infoDictionary][@"CFBundleName"];
         NSString *storePath = [BugsnagFileStore findReportStorePath:@"Sessions"

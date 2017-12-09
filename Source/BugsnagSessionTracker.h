@@ -17,7 +17,9 @@ typedef void (^SessionTrackerCallback)(BugsnagSession *newSession);
 
 @interface BugsnagSessionTracker : NSObject
 
-- (instancetype)initWithConfig:(BugsnagConfiguration *)config apiClient:(BugsnagSessionTrackingApiClient *)apiClient;
+- (instancetype)initWithConfig:(BugsnagConfiguration *)config
+                     apiClient:(BugsnagSessionTrackingApiClient *)apiClient
+                      callback:(void(^)(BugsnagSession *))callback;
 
 - (void)startNewSession:(NSDate *)date
                withUser:(BugsnagUser *)user

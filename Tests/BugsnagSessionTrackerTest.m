@@ -28,7 +28,8 @@
     self.configuration.shouldAutoCaptureSessions = YES;
     self.user = [BugsnagUser new];
     self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
-                                                              apiClient:[BugsnagSessionTrackingApiClient new]];
+                                                              apiClient:[BugsnagSessionTrackingApiClient new]
+                                                               callback:NULL];
 }
 
 - (void)testStartNewSession {

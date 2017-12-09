@@ -199,13 +199,13 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                                                                                       queueName:@"Session API queue"];
 
         self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:initConfiguration
-                                                                  apiClient:self.sessionTrackingApiClient];
-
-        self.sessionTracker.callback = ^(BugsnagSession *session) { // record info for C JSON serialiser
-            sessionId = [session.sessionId UTF8String];
-            sessionStartDate = [[BSG_RFC3339DateTool stringFromDate:session.startedAt] UTF8String];
-            handledCount = session.handledCount;
-        };
+                                                                  apiClient:self.sessionTrackingApiClient
+                                                                   callback:^(BugsnagSession *session) {
+                                                                        // record info for C JSON serialiser
+                                                                       sessionId = [session.sessionId UTF8String];
+                                                                       sessionStartDate = [[BSG_RFC3339DateTool stringFromDate:session.startedAt] UTF8String];
+                                                                       handledCount = session.handledCount;
+                                                                   }];
 
         [self metaDataChanged:self.configuration.metaData];
         [self metaDataChanged:self.configuration.config];
