@@ -51,12 +51,10 @@
 
     NSDictionary *rootNode = [payload toJson];
     XCTAssertNotNil(rootNode);
-    XCTAssertEqual(5, [rootNode count]);
+    XCTAssertEqual(3, [rootNode count]);
     
     XCTAssertEqualObjects(@"test", rootNode[@"id"]);
     XCTAssertEqualObjects([BSG_RFC3339DateTool stringFromDate:now], rootNode[@"startedAt"]);
-    XCTAssertEqualObjects(@1, rootNode[@"unhandledCount"]);
-    XCTAssertEqualObjects(@2, rootNode[@"handledCount"]);
     XCTAssertNotNil(rootNode[@"user"]);
 }
 
