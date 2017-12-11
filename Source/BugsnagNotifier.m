@@ -106,7 +106,7 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
             writer->addUIntegerElement(writer, "unhandledCount", 0);
         }
     }
-g
+
     if (bsg_g_bugsnag_data.handledState) {
         writer->addJSONElement(writer, "handledState",
                                bsg_g_bugsnag_data.handledState);
