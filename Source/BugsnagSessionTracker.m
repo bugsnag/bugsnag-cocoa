@@ -50,12 +50,12 @@
 
     if (self.config.shouldAutoCaptureSessions || !autoCaptured) {
         [self.sessionStore write:self.currentSession];
+
+        if (self.callback) {
+            self.callback(self.currentSession);
+        }
     }
     _isInForeground = YES;
-
-    if (self.callback) {
-        self.callback(self.currentSession);
-    }
 }
 
 - (void)suspendCurrentSession:(NSDate *)date {
@@ -65,7 +65,7 @@
 - (void)incrementHandledError {
     @synchronized (self.currentSession) {
         self.currentSession.handledCount++;
-        if (self.callback) {
+        if (self.callback && (self.config.shouldAutoCaptureSessions || !self.currentSession.autoCaptured)) {
             self.callback(self.currentSession);
         }
     }

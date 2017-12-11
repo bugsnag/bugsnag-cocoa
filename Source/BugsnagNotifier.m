@@ -75,9 +75,10 @@ static struct bugsnag_data_t bsg_g_bugsnag_data;
 
 static NSDictionary *notificationNameMap;
 
-const char *sessionId;
-const char *sessionStartDate;
-NSUInteger handledCount;
+static char *sessionId[128];
+static char *sessionStartDate[128];
+static NSUInteger handledCount;
+static bool hasRecordedSessions;
 
 /**
  *  Handler executed when the application crashes. Writes information about the
@@ -94,7 +95,7 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
                                bsg_g_bugsnag_data.metaDataJSON);
     }
 
-    if (sessionId != NULL && sessionStartDate != NULL) { // a session is available
+    if (hasRecordedSessions) { // a session is available
         // persist session info
         writer->addStringElement(writer, "id", sessionId);
         writer->addStringElement(writer, "startedAt", sessionStartDate);
@@ -201,10 +202,21 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:initConfiguration
                                                                   apiClient:self.sessionTrackingApiClient
                                                                    callback:^(BugsnagSession *session) {
-                                                                        // record info for C JSON serialiser
-                                                                       sessionId = [session.sessionId UTF8String];
-                                                                       sessionStartDate = [[BSG_RFC3339DateTool stringFromDate:session.startedAt] UTF8String];
+
+                                                                       // copy session id
+                                                                       const char *newSessionId = [session.sessionId UTF8String];
+                                                                       size_t idSize = strlen(newSessionId);
+                                                                       strncpy(sessionId, newSessionId, idSize);
+                                                                       sessionId[idSize - 1] = '\0';
+
+                                                                       const char *newSessionDate = [[BSG_RFC3339DateTool stringFromDate:session.startedAt] UTF8String];
+                                                                       size_t dateSize = strlen(newSessionDate);
+                                                                       strncpy(sessionStartDate, newSessionDate, dateSize);
+                                                                       sessionStartDate[dateSize - 1] = '\0';
+
+                                                                       // record info for C JSON serialiser
                                                                        handledCount = session.handledCount;
+                                                                       hasRecordedSessions = true;
                                                                    }];
 
         if (self.configuration.shouldAutoCaptureSessions) { // create initial session
