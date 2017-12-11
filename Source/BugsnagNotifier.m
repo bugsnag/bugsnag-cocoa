@@ -94,7 +94,7 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
                                bsg_g_bugsnag_data.metaDataJSON);
     }
 
-    if (sessionId) { // a session is available
+    if (sessionId != NULL && sessionStartDate != NULL) { // a session is available
         // persist session info
         writer->addStringElement(writer, "id", sessionId);
         writer->addStringElement(writer, "startedAt", sessionStartDate);
@@ -106,7 +106,7 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
             writer->addUIntegerElement(writer, "unhandledCount", 0);
         }
     }
-
+g
     if (bsg_g_bugsnag_data.handledState) {
         writer->addJSONElement(writer, "handledState",
                                bsg_g_bugsnag_data.handledState);
