@@ -207,6 +207,10 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                                                                        handledCount = session.handledCount;
                                                                    }];
 
+        if (self.configuration.shouldAutoCaptureSessions) { // create initial session
+            [self.sessionTracker startNewSession:[NSDate date] withUser:nil autoCaptured:YES];
+        }
+
         [self metaDataChanged:self.configuration.metaData];
         [self metaDataChanged:self.configuration.config];
         [self metaDataChanged:self.state];
