@@ -97,8 +97,8 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 
     if (hasRecordedSessions) { // a session is available
         // persist session info
-        writer->addStringElement(writer, "id", sessionId);
-        writer->addStringElement(writer, "startedAt", sessionStartDate);
+        writer->addStringElement(writer, "id", (const char *) sessionId);
+        writer->addStringElement(writer, "startedAt", (const char *) sessionStartDate);
         writer->addUIntegerElement(writer, "handledCount", handledCount);
 
         if (!bsg_g_bugsnag_data.handledState) {
@@ -206,13 +206,13 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                                                                        // copy session id
                                                                        const char *newSessionId = [session.sessionId UTF8String];
                                                                        size_t idSize = strlen(newSessionId);
-                                                                       strncpy(sessionId, newSessionId, idSize);
-                                                                       sessionId[idSize - 1] = '\0';
+                                                                       strncpy((char *)sessionId, newSessionId, idSize);
+                                                                       sessionId[idSize - 1] = NULL;
 
                                                                        const char *newSessionDate = [[BSG_RFC3339DateTool stringFromDate:session.startedAt] UTF8String];
                                                                        size_t dateSize = strlen(newSessionDate);
-                                                                       strncpy(sessionStartDate, newSessionDate, dateSize);
-                                                                       sessionStartDate[dateSize - 1] = '\0';
+                                                                       strncpy((char *)sessionStartDate, newSessionDate, dateSize);
+                                                                       sessionStartDate[dateSize - 1] = NULL;
 
                                                                        // record info for C JSON serialiser
                                                                        handledCount = session.handledCount;
