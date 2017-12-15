@@ -104,12 +104,12 @@
     NSError* error = nil;
     NSString* result = [NSString stringWithContentsOfFile:logFileName encoding:NSUTF8StringEncoding error:&error];
     XCTAssertNil(error, @"");
-    result = [[result componentsSeparatedByString:@"\x0a"] objectAtIndex:0];
+    result = [result componentsSeparatedByString:@"\x0a"][0];
     XCTAssertEqualObjects(result, expected, @"");
 
     BSG_KSLOGBASIC_ALWAYS(@"blah blah");
     result = [NSString stringWithContentsOfFile:logFileName encoding:NSUTF8StringEncoding error:&error];
-    result = [[result componentsSeparatedByString:@"\x0a"] objectAtIndex:0];
+    result = [result componentsSeparatedByString:@"\x0a"][0];
     XCTAssertNil(error, @"");
     XCTAssertEqualObjects(result, expected, @"");
 }

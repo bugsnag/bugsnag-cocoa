@@ -74,9 +74,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[null]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNull null],
-                   nil];
+    id original = @[[NSNull null]];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -93,9 +91,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[true]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNumber numberWithBool:YES],
-                   nil];
+    id original = @[@YES];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -112,9 +108,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[false]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNumber numberWithBool:NO],
-                   nil];
+    id original = @[@NO];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -131,9 +125,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[1]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNumber numberWithInt:1],
-                   nil];
+    id original = @[@1];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -150,9 +142,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[-0.2]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNumber numberWithFloat:-0.2f],
-                   nil];
+    id original = @[@(-0.2f)];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -171,9 +161,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[-2e-15]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNumber numberWithFloat:-2e-15f],
-                   nil];
+    id original = @[@(-2e-15f)];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -192,9 +180,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[\"One\"]";
-    id original = [NSArray arrayWithObjects:
-                   @"One",
-                   nil];
+    id original = @[@"One"];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -211,9 +197,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[\"テスト\"]";
-    id original = [NSArray arrayWithObjects:
-                   @"テスト",
-                   nil];
+    id original = @[@"テスト"];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -230,11 +214,9 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[\"One\",1000,true]";
-    id original = [NSArray arrayWithObjects:
-                   @"One",
-                   [NSNumber numberWithInt:1000],
-                   [NSNumber numberWithBool:YES],
-                   nil];
+    id original = @[@"One",
+            @1000,
+            @YES];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -251,16 +233,12 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[\"One\",\"Three\",\"Two\"]";
-    id original = [NSArray arrayWithObjects:
-                   @"One",
-                   @"Two",
-                   @"Three",
-                   nil];
-    id sorted = [NSArray arrayWithObjects:
-                 @"One",
-                 @"Three",
-                 @"Two",
-                 nil];
+    id original = @[@"One",
+            @"Two",
+            @"Three"];
+    id sorted = @[@"One",
+            @"Three",
+            @"Two"];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -277,9 +255,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[[]]";
-    id original = [NSArray arrayWithObjects:
-                   [NSArray array],
-                   nil];
+    id original = @[[NSArray array]];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -296,9 +272,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[[\"Blah\"]]";
-    id original = [NSArray arrayWithObjects:
-                   [NSArray arrayWithObjects:@"Blah", nil],
-                   nil];
+    id original = @[@[@"Blah"]];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -315,9 +289,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[{}]";
-    id original = [NSArray arrayWithObjects:
-                   [NSDictionary dictionary],
-                   nil];
+    id original = @[[NSDictionary dictionary]];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -334,11 +306,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[{\"Blah\":true}]";
-    id original = [NSArray arrayWithObjects:
-                   [NSDictionary dictionaryWithObjectsAndKeys:
-                    [NSNumber numberWithBool:YES], @"Blah",
-                    nil],
-                   nil];
+    id original = @[@{@"Blah": @YES}];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -373,9 +341,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"{\"One\":null}";
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   [NSNull null], @"One",
-                   nil];
+    id original = @{@"One": [NSNull null]};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -392,9 +358,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"{\"One\":true}";
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   [NSNumber numberWithBool:YES], @"One",
-                   nil];
+    id original = @{@"One": @YES};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -411,9 +375,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"{\"One\":false}";
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   [NSNumber numberWithBool:NO], @"One",
-                   nil];
+    id original = @{@"One": @NO};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -430,9 +392,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"{\"One\":1}";
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   [NSNumber numberWithInt:1], @"One",
-                   nil];
+    id original = @{@"One": @1};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -449,9 +409,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"{\"One\":54.918}";
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   [NSNumber numberWithFloat:54.918f], @"One",
-                   nil];
+    id original = @{@"One": @54.918F};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -461,7 +419,7 @@ static NSString* toString(NSData* data)
     id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
     XCTAssertNotNil(result, @"");
     XCTAssertNil(error, @"");
-    XCTAssertEqual([[(NSDictionary*)result objectForKey:@"One"] floatValue], 54.918f, @"");
+    XCTAssertEqual([((NSDictionary *) result)[@"One"] floatValue], 54.918f, @"");
     // This always fails on NSNumber filled with float.
     //XCTAssertEqualObjects(result, original, @"");
 }
@@ -470,9 +428,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"{\"One\":5e+20}";
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   [NSNumber numberWithFloat:5e20f], @"One",
-                   nil];
+    id original = @{@"One": @5e20F};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -482,7 +438,7 @@ static NSString* toString(NSData* data)
     id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
     XCTAssertNotNil(result, @"");
     XCTAssertNil(error, @"");
-    XCTAssertEqual([[(NSDictionary*)result objectForKey:@"One"] floatValue], 5e20f, @"");
+    XCTAssertEqual([((NSDictionary *) result)[@"One"] floatValue], 5e20f, @"");
     // This always fails on NSNumber filled with float.
     //XCTAssertEqualObjects(result, original, @"");
 }
@@ -491,9 +447,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"{\"One\":\"Value\"}";
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   @"Value", @"One",
-                   nil];
+    id original = @{@"One": @"Value"};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -510,11 +464,9 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"{\"One\":\"Value\",\"Three\":true,\"Two\":1000}";
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   @"Value", @"One",
-                   [NSNumber numberWithInt:1000], @"Two",
-                   [NSNumber numberWithBool:YES], @"Three",
-                   nil];
+    id original = @{@"One": @"Value",
+            @"Two": @1000,
+            @"Three": @YES};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -531,9 +483,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"{\"One\":{}}";
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   [NSDictionary dictionary], @"One",
-                   nil];
+    id original = @{@"One": [NSDictionary dictionary]};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -550,11 +500,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"{\"One\":{\"Blah\":1}}";
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   [NSDictionary dictionaryWithObjectsAndKeys:
-                    [NSNumber numberWithInt:1], @"Blah",
-                    nil], @"One",
-                   nil];
+    id original = @{@"One": @{@"Blah": @1}};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -571,9 +517,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"{\"Key\":[]}";
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   [NSArray array], @"Key",
-                   nil];
+    id original = @{@"Key": [NSArray array]};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -590,9 +534,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"{\"Blah\":[true]}";
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   [NSArray arrayWithObject:[NSNumber numberWithBool:YES]], @"Blah",
-                   nil];
+    id original = @{@"Blah": @[@YES]};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -608,68 +550,66 @@ static NSString* toString(NSData* data)
 - (void)testSerializeDeserializeBigDictionary
 {
     NSError* error = (NSError*)self;
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   @"0", @"0",
-                   @"1", @"1",
-                   @"2", @"2",
-                   @"3", @"3",
-                   @"4", @"4",
-                   @"5", @"5",
-                   @"6", @"6",
-                   @"7", @"7",
-                   @"8", @"8",
-                   @"9", @"9",
-                   @"10", @"10",
-                   @"11", @"11",
-                   @"12", @"12",
-                   @"13", @"13",
-                   @"14", @"14",
-                   @"15", @"15",
-                   @"16", @"16",
-                   @"17", @"17",
-                   @"18", @"18",
-                   @"19", @"19",
-                   @"20", @"20",
-                   @"21", @"21",
-                   @"22", @"22",
-                   @"23", @"23",
-                   @"24", @"24",
-                   @"25", @"25",
-                   @"26", @"26",
-                   @"27", @"27",
-                   @"28", @"28",
-                   @"29", @"29",
-                   @"30", @"30",
-                   @"31", @"31",
-                   @"32", @"32",
-                   @"33", @"33",
-                   @"34", @"34",
-                   @"35", @"35",
-                   @"36", @"36",
-                   @"37", @"37",
-                   @"38", @"38",
-                   @"39", @"39",
-                   @"40", @"40",
-                   @"41", @"41",
-                   @"42", @"42",
-                   @"43", @"43",
-                   @"44", @"44",
-                   @"45", @"45",
-                   @"46", @"46",
-                   @"47", @"47",
-                   @"48", @"48",
-                   @"49", @"49",
-                   @"50", @"50",
-                   @"51", @"51",
-                   @"52", @"52",
-                   @"53", @"53",
-                   @"54", @"54",
-                   @"55", @"55",
-                   @"56", @"56",
-                   @"57", @"57",
-                   @"58", @"58",
-                   @"59", @"59",
-                   nil];
+    id original = @{@"0": @"0",
+            @"1": @"1",
+            @"2": @"2",
+            @"3": @"3",
+            @"4": @"4",
+            @"5": @"5",
+            @"6": @"6",
+            @"7": @"7",
+            @"8": @"8",
+            @"9": @"9",
+            @"10": @"10",
+            @"11": @"11",
+            @"12": @"12",
+            @"13": @"13",
+            @"14": @"14",
+            @"15": @"15",
+            @"16": @"16",
+            @"17": @"17",
+            @"18": @"18",
+            @"19": @"19",
+            @"20": @"20",
+            @"21": @"21",
+            @"22": @"22",
+            @"23": @"23",
+            @"24": @"24",
+            @"25": @"25",
+            @"26": @"26",
+            @"27": @"27",
+            @"28": @"28",
+            @"29": @"29",
+            @"30": @"30",
+            @"31": @"31",
+            @"32": @"32",
+            @"33": @"33",
+            @"34": @"34",
+            @"35": @"35",
+            @"36": @"36",
+            @"37": @"37",
+            @"38": @"38",
+            @"39": @"39",
+            @"40": @"40",
+            @"41": @"41",
+            @"42": @"42",
+            @"43": @"43",
+            @"44": @"44",
+            @"45": @"45",
+            @"46": @"46",
+            @"47": @"47",
+            @"48": @"48",
+            @"49": @"49",
+            @"50": @"50",
+            @"51": @"51",
+            @"52": @"52",
+            @"53": @"53",
+            @"54": @"54",
+            @"55": @"55",
+            @"56": @"56",
+            @"57": @"57",
+            @"58": @"58",
+            @"59": @"59"};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -685,20 +625,12 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"{\"a0\":\"A0\",\"a1\":{\"b0\":{\"c0\":\"C0\",\"c1\":{\"d0\":[[],[],[]],\"d1\":\"D1\"}},\"b1\":\"B1\"},\"a2\":\"A2\"}";
-    id original = [NSDictionary dictionaryWithObjectsAndKeys:
-                   @"A0", @"a0",
-                   [NSDictionary dictionaryWithObjectsAndKeys:
-                    [NSDictionary dictionaryWithObjectsAndKeys:
-                     @"C0", @"c0",
-                     [NSDictionary dictionaryWithObjectsAndKeys:
-                      [NSArray arrayWithObjects:[NSArray array], [NSArray array], [NSArray array], nil], @"d0",
-                      @"D1", @"d1",
-                      nil], @"c1",
-                     nil], @"b0",
-                    @"B1", @"b1",
-                    nil], @"a1",
-                   @"A2", @"a2",
-                   nil];
+    id original = @{@"a0": @"A0",
+            @"a1": @{@"b0": @{@"c0": @"C0",
+                    @"c1": @{@"d0": @[[NSArray array], [NSArray array], [NSArray array]],
+                            @"d1": @"D1"}},
+                    @"b1": @"B1"},
+            @"a2": @"A2"};
 
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
@@ -720,7 +652,7 @@ static NSString* toString(NSData* data)
     NSArray* result = [BSG_KSJSONCodec decode:toData(json) options:0 error:&error];
     XCTAssertNotNil(result, @"");
     XCTAssertNil(error, @"");
-    NSString* value = [result objectAtIndex:0];
+    NSString* value = result[0];
     XCTAssertEqualObjects(value, expected, @"");
 }
 
@@ -732,7 +664,7 @@ static NSString* toString(NSData* data)
     NSArray* result = [BSG_KSJSONCodec decode:toData(json) options:0 error:&error];
     XCTAssertNotNil(result, @"");
     XCTAssertNil(error, @"");
-    NSString* value = [result objectAtIndex:0];
+    NSString* value = result[0];
     XCTAssertEqualObjects(value, expected, @"");
 }
 
@@ -745,7 +677,7 @@ static NSString* toString(NSData* data)
     NSArray* result = [BSG_KSJSONCodec decode:toData(json) options:0 error:&error];
     XCTAssertNotNil(result, @"");
     XCTAssertNil(error, @"");
-    NSString* value = [result objectAtIndex:0];
+    NSString* value = result[0];
     XCTAssertEqualObjects(value, expected, @"");
 }
 
@@ -793,7 +725,7 @@ static NSString* toString(NSData* data)
     NSArray* result = [BSG_KSJSONCodec decode:toData(json) options:0 error:&error];
     XCTAssertNotNil(result, @"");
     XCTAssertNil(error, @"");
-    NSString* value = [result objectAtIndex:0];
+    NSString* value = result[0];
     XCTAssertEqualObjects(value, expected, @"");
 }
 
@@ -801,9 +733,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[\"\\b\\f\\n\\r\\t\"]";
-    id original = [NSArray arrayWithObjects:
-                   @"\b\f\n\r\t",
-                   nil];
+    id original = @[@"\b\f\n\r\t"];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -820,9 +750,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[\"Testing\\b escape \\f chars\\n\"]";
-    id original = [NSArray arrayWithObjects:
-                   @"Testing\b escape \f chars\n",
-                   nil];
+    id original = @[@"Testing\b escape \f chars\n"];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -839,9 +767,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[\"\\\"\\\\\"]";
-    id original = [NSArray arrayWithObjects:
-                   @"\"\\",
-                   nil];
+    id original = @[@"\"\\"];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -858,9 +784,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[1.2]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNumber numberWithFloat:1.2f],
-                   nil];
+    id original = @[@1.2F];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -877,9 +801,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[0.1]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNumber numberWithDouble:0.1],
-                   nil];
+    id original = @[@0.1];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -896,9 +818,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[20]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNumber numberWithChar:20],
-                   nil];
+    id original = @[@20];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -915,9 +835,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[2000]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNumber numberWithShort:2000],
-                   nil];
+    id original = @[@2000];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -934,9 +852,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[2000000000]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNumber numberWithLong:2000000000],
-                   nil];
+    id original = @[@2000000000];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -953,9 +869,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[200000000000]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNumber numberWithLongLong:200000000000],
-                   nil];
+    id original = @[@200000000000];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -972,9 +886,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[-2000]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNumber numberWithInt:-2000],
-                   nil];
+    id original = @[@(-2000)];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -991,9 +903,7 @@ static NSString* toString(NSData* data)
 {
     NSError* error = (NSError*)self;
     NSString* expected = @"[0]";
-    id original = [NSArray arrayWithObjects:
-                   [NSNumber numberWithInt:0],
-                   nil];
+    id original = @[@0];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -1011,9 +921,7 @@ static NSString* toString(NSData* data)
     NSError* error = (NSError*)self;
     NSString* string = @"";
     NSString* expected = @"[\"\"]";
-    id original = [NSArray arrayWithObjects:
-                   string,
-                   nil];
+    id original = @[string];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -1038,9 +946,7 @@ static NSString* toString(NSData* data)
     }
 
     NSString* expected = [NSString stringWithFormat:@"[\"%@\"]", string];
-    id original = [NSArray arrayWithObjects:
-                   string,
-                   nil];
+    id original = @[string];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -1061,9 +967,7 @@ static NSString* toString(NSData* data)
     buff[sizeof(buff)-1] = 0;
     NSString* string = [NSString stringWithCString:buff encoding:NSUTF8StringEncoding];
 
-    id original = [NSArray arrayWithObjects:
-                   string,
-                   nil];
+    id original = @[string];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
                                                   error:&error]);
@@ -1100,9 +1004,9 @@ static NSString* toString(NSData* data)
     XCTAssertNotNil(serialized, @"");
     XCTAssertNil(error, @"");
     XCTAssertEqualObjects(serialized, jsonString, @"");
-    int value = [[deserialized objectAtIndex:1] intValue];
+    int value = [deserialized[1] intValue];
     XCTAssertEqual(value, 1, @"");
-    value = [[deserialized objectAtIndex:9] intValue];
+    value = [deserialized[9] intValue];
     XCTAssertEqual(value, 9, @"");
 }
 
@@ -1125,7 +1029,7 @@ static NSString* toString(NSData* data)
     XCTAssertNotNil(deserialized, @"");
     XCTAssertNil(error, @"");
     XCTAssertEqual(deserializedCount, numEntries, @"");
-    int value = [[(NSDictionary*)deserialized objectForKey:@"1"] intValue];
+    int value = [((NSDictionary *) deserialized)[@"1"] intValue];
     XCTAssertEqual(value, 1, @"");
     NSString* serialized = toString([BSG_KSJSONCodec encode:deserialized
                                                 options:BSG_KSJSONEncodeOptionSorted
@@ -1156,7 +1060,7 @@ static NSString* toString(NSData* data)
 - (void) testSerializeArrayBadType
 {
     NSError* error = (NSError*)self;
-    id source = [NSArray arrayWithObject:[NSValue valueWithPointer:NULL]];
+    id source = @[[NSValue valueWithPointer:NULL]];
     NSString* result = toString([BSG_KSJSONCodec encode:source
                                             options:BSG_KSJSONEncodeOptionSorted
                                               error:&error]);
@@ -1167,7 +1071,7 @@ static NSString* toString(NSData* data)
 - (void) testSerializeDictionaryBadType
 {
     NSError* error = (NSError*)self;
-    id source = [NSDictionary dictionaryWithObject:[NSValue valueWithPointer:NULL] forKey:@"blah"];
+    id source = @{@"blah": [NSValue valueWithPointer:NULL]};
     NSString* result = toString([BSG_KSJSONCodec encode:source
                                             options:BSG_KSJSONEncodeOptionSorted
                                               error:&error]);
@@ -1178,7 +1082,7 @@ static NSString* toString(NSData* data)
 - (void) testSerializeDictionaryBadCharacter
 {
     NSError* error = (NSError*)self;
-    id source = [NSDictionary dictionaryWithObject:@"blah" forKey:@"blah\x01blah"];
+    id source = @{@"blah\x01blah": @"blah"};
     NSString* result = toString([BSG_KSJSONCodec encode:source
                                             options:BSG_KSJSONEncodeOptionSorted
                                               error:&error]);
@@ -1189,7 +1093,7 @@ static NSString* toString(NSData* data)
 - (void) testSerializeArrayBadCharacter
 {
     NSError* error = (NSError*)self;
-    id source = [NSArray arrayWithObject:@"test\x01ing"];
+    id source = @[@"test\x01ing"];
     NSString* result = toString([BSG_KSJSONCodec encode:source
                                             options:BSG_KSJSONEncodeOptionSorted
                                               error:&error]);
@@ -1396,7 +1300,7 @@ static NSString* toString(NSData* data)
                                     error:&error];
     XCTAssertNotNil(result, @"");
     XCTAssertNil(error, @"");
-    NSString* value = [result objectAtIndex:0];
+    NSString* value = result[0];
     XCTAssertEqualObjects(value, expected, @"");
 }
 
@@ -1422,7 +1326,7 @@ static NSString* toString(NSData* data)
                                     error:&error];
     XCTAssertNotNil(result, @"");
     XCTAssertNil(error, @"");
-    NSString* value = [result objectAtIndex:0];
+    NSString* value = result[0];
     XCTAssertEqualObjects(value, expected, @"");
 }
 

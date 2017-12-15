@@ -26,8 +26,6 @@
 
 
 #import "FileBasedTestCase.h"
-#include <stdio.h>
-#include <fcntl.h>
 
 #import "BSG_KSFileUtils.h"
 

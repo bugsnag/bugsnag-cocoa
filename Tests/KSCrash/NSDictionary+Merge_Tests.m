@@ -37,31 +37,19 @@
 
 - (void) testBasicMerge
 {
-    id src = [NSDictionary dictionaryWithObjectsAndKeys:
-              @"one", @"a",
-              nil];
-    id dst = [NSDictionary dictionaryWithObjectsAndKeys:
-              @"two", @"b",
-              nil];
-    NSDictionary* expected = [NSDictionary dictionaryWithObjectsAndKeys:
-                              @"one", @"a",
-                              @"two", @"b",
-                              nil];
+    id src = @{@"a": @"one"};
+    id dst = @{@"b": @"two"};
+    NSDictionary* expected = @{@"a": @"one",
+            @"b": @"two"};
     NSDictionary* actual = [src bsg_mergedInto:dst];
     XCTAssertEqualObjects(expected, actual, @"");
 }
 
 - (void) testOverwrite
 {
-    id src = [NSDictionary dictionaryWithObjectsAndKeys:
-              @"one", @"a",
-              nil];
-    id dst = [NSDictionary dictionaryWithObjectsAndKeys:
-              @"two", @"a",
-              nil];
-    NSDictionary* expected = [NSDictionary dictionaryWithObjectsAndKeys:
-                              @"one", @"a",
-                              nil];
+    id src = @{@"a": @"one"};
+    id dst = @{@"a": @"two"};
+    NSDictionary* expected = @{@"a": @"one"};
     NSDictionary* actual = [src bsg_mergedInto:dst];
     XCTAssertEqualObjects(expected, actual, @"");
 }
@@ -69,86 +57,54 @@
 - (void) testSrcEmpty
 {
     id src = [NSDictionary dictionary];
-    id dst = [NSDictionary dictionaryWithObjectsAndKeys:
-              @"two", @"b",
-              nil];
-    NSDictionary* expected = [NSDictionary dictionaryWithObjectsAndKeys:
-                              @"two", @"b",
-                              nil];
+    id dst = @{@"b": @"two"};
+    NSDictionary* expected = @{@"b": @"two"};
     NSDictionary* actual = [src bsg_mergedInto:dst];
     XCTAssertEqualObjects(expected, actual, @"");
 }
 
 - (void) testDstEmpty
 {
-    id src = [NSDictionary dictionaryWithObjectsAndKeys:
-              @"one", @"a",
-              nil];
+    id src = @{@"a": @"one"};
     id dst = [NSDictionary dictionary];
-    NSDictionary* expected = [NSDictionary dictionaryWithObjectsAndKeys:
-                              @"one", @"a",
-                              nil];
+    NSDictionary* expected = @{@"a": @"one"};
     NSDictionary* actual = [src bsg_mergedInto:dst];
     XCTAssertEqualObjects(expected, actual, @"");
 }
 
 - (void) testDstNil
 {
-    id src = [NSDictionary dictionaryWithObjectsAndKeys:
-              @"one", @"a",
-              nil];
+    id src = @{@"a": @"one"};
     id dst = nil;
-    NSDictionary* expected = [NSDictionary dictionaryWithObjectsAndKeys:
-                              @"one", @"a",
-                              nil];
+    NSDictionary* expected = @{@"a": @"one"};
     NSDictionary* actual = [src bsg_mergedInto:dst];
     XCTAssertEqualObjects(expected, actual, @"");
 }
 
 - (void) testSrcDict
 {
-    id src = [NSDictionary dictionaryWithObjectsAndKeys:
-              [NSDictionary dictionaryWithObjectsAndKeys:@"blah", @"x", nil], @"a",
-              nil];
-    id dst = [NSDictionary dictionaryWithObjectsAndKeys:
-              @"two", @"a",
-              nil];
-    NSDictionary* expected = [NSDictionary dictionaryWithObjectsAndKeys:
-                              [NSDictionary dictionaryWithObjectsAndKeys:@"blah", @"x", nil], @"a",
-                              nil];
+    id src = @{@"a": @{@"x": @"blah"}};
+    id dst = @{@"a": @"two"};
+    NSDictionary* expected = @{@"a": @{@"x": @"blah"}};
     NSDictionary* actual = [src bsg_mergedInto:dst];
     XCTAssertEqualObjects(expected, actual, @"");
 }
 
 - (void) testDstDict
 {
-    id src = [NSDictionary dictionaryWithObjectsAndKeys:
-              @"one", @"a",
-              nil];
-    id dst = [NSDictionary dictionaryWithObjectsAndKeys:
-              [NSDictionary dictionaryWithObjectsAndKeys:@"blah", @"x", nil], @"a",
-              nil];
-    NSDictionary* expected = [NSDictionary dictionaryWithObjectsAndKeys:
-                              @"one", @"a",
-                              nil];
+    id src = @{@"a": @"one"};
+    id dst = @{@"a": @{@"x": @"blah"}};
+    NSDictionary* expected = @{@"a": @"one"};
     NSDictionary* actual = [src bsg_mergedInto:dst];
     XCTAssertEqualObjects(expected, actual, @"");
 }
 
 - (void) testSrcDstDict
 {
-    id src = [NSDictionary dictionaryWithObjectsAndKeys:
-              [NSDictionary dictionaryWithObjectsAndKeys:@"blah", @"x", nil], @"a",
-              nil];
-    id dst = [NSDictionary dictionaryWithObjectsAndKeys:
-              [NSDictionary dictionaryWithObjectsAndKeys:@"something", @"y", nil], @"a",
-              nil];
-    NSDictionary* expected = [NSDictionary dictionaryWithObjectsAndKeys:
-                              [NSDictionary dictionaryWithObjectsAndKeys:
-                               @"blah", @"x",
-                               @"something", @"y",
-                               nil], @"a",
-                              nil];
+    id src = @{@"a": @{@"x": @"blah"}};
+    id dst = @{@"a": @{@"y": @"something"}};
+    NSDictionary* expected = @{@"a": @{@"x": @"blah",
+            @"y": @"something"}};
     NSDictionary* actual = [src bsg_mergedInto:dst];
     XCTAssertEqualObjects(expected, actual, @"");
 }

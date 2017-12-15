@@ -26,7 +26,6 @@
 
 
 #import "FileBasedTestCase.h"
-#import "XCTestCase+KSCrash.h"
 
 #import "BSG_KSCrashState.h"
 

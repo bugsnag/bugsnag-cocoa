@@ -68,7 +68,7 @@
 
 - (void) testInsertObjectIfNotNil
 {
-    NSMutableArray* array = [NSMutableArray arrayWithObjects:@"a", @"b", nil];
+    NSMutableArray* array = [@[@"a", @"b"] mutableCopy];
     id object = @"blah";
     [array bsg_ksc_insertObjectIfNotNil:object atIndex:1];
     XCTAssertTrue([array count] == 3, @"");
@@ -76,7 +76,7 @@
 
 - (void) testInsertObjectIfNotNil2
 {
-    NSMutableArray* array = [NSMutableArray arrayWithObjects:@"a", @"b", nil];
+    NSMutableArray* array = [@[@"a", @"b"] mutableCopy];
     id object = nil;
     [array bsg_ksc_insertObjectIfNotNil:object atIndex:1];
     XCTAssertTrue([array count] == 2, @"");
@@ -84,7 +84,7 @@
 
 - (void) testSafeInsertObject
 {
-    NSMutableArray* array = [NSMutableArray arrayWithObjects:@"a", @"b", nil];
+    NSMutableArray* array = [@[@"a", @"b"] mutableCopy];
     id object = @"blah";
     [array bsg_ksc_safeInsertObject:object atIndex:1];
     XCTAssertTrue([array count] == 3, @"");
@@ -92,7 +92,7 @@
 
 - (void) testSafeInsertObject2
 {
-    NSMutableArray* array = [NSMutableArray arrayWithObjects:@"a", @"b", nil];
+    NSMutableArray* array = [@[@"a", @"b"] mutableCopy];
     id object = nil;
     [array bsg_ksc_safeInsertObject:object atIndex:1];
     XCTAssertTrue([array count] == 3, @"");
@@ -104,7 +104,7 @@
     id key = @"key";
     id object = @"blah";
     [dict bsg_ksc_setObjectIfNotNil:object forKey:key];
-    id result = [dict objectForKey:key];
+    id result = dict[key];
     XCTAssertEqual(result, object, @"");
 }
 
@@ -114,7 +114,7 @@
     id key = @"key";
     id object = nil;
     [dict bsg_ksc_setObjectIfNotNil:object forKey:key];
-    id result = [dict objectForKey:key];
+    id result = dict[key];
     XCTAssertNil(result, @"");
 }
 
@@ -124,7 +124,7 @@
     id key = @"key";
     id object = @"blah";
     [dict bsg_ksc_safeSetObject:object forKey:key];
-    id result = [dict objectForKey:key];
+    id result = dict[key];
     XCTAssertEqual(result, object, @"");
 }
 
@@ -134,7 +134,7 @@
     id key = @"key";
     id object = nil;
     [dict bsg_ksc_safeSetObject:object forKey:key];
-    id result = [dict objectForKey:key];
+    id result = dict[key];
     XCTAssertNotNil(result, @"");
 }
 

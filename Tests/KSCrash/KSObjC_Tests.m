@@ -91,7 +91,7 @@ static NSArray* g_test_strings;
     NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"^<(\\w+): [^>]+>" options:0 error:&error];
     NSTextCheckingResult* result = [regex firstMatchInString:description options:0 range:NSMakeRange(0, [description length])];
     NSString* className = [description substringWithRange:[result rangeAtIndex:1]];
-    return [NSArray arrayWithObjects:className, nil];
+    return @[className];
 }
 
 - (NSArray*) componentsOfComplexDescription:(NSString*) description
@@ -101,7 +101,7 @@ static NSArray* g_test_strings;
     NSTextCheckingResult* result = [regex firstMatchInString:description options:0 range:NSMakeRange(0, [description length])];
     NSString* className = [description substringWithRange:[result rangeAtIndex:1]];
     NSString* theRest = [description substringWithRange:[result rangeAtIndex:2]];
-    return [NSArray arrayWithObjects:className, theRest, nil];
+    return @[className, theRest];
 }
 
 - (void) testObjectTypeInvalidMemory
@@ -477,8 +477,8 @@ static NSArray* g_test_strings;
         XCTAssertTrue(copied > 0, @"");
         NSString* description = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
         NSArray* components = [self componentsOfComplexDescription:description];
-        NSString* className = [components objectAtIndex:0];
-        NSString* theRest = [components objectAtIndex:1];
+        NSString* className = components[0];
+        NSString* theRest = components[1];
         XCTAssertEqualObjects(className, expectedClassName, @"");
         XCTAssertEqualObjects(theRest, expectedTheRest, @"");
     }
@@ -516,8 +516,8 @@ static NSArray* g_test_strings;
     XCTAssertTrue(copied > 0, @"");
     NSString* description = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
     NSArray* components = [self componentsOfComplexDescription:description];
-    NSString* className = [components objectAtIndex:0];
-    NSString* theRest = [components objectAtIndex:1];
+    NSString* className = components[0];
+    NSString* theRest = components[1];
     XCTAssertEqualObjects(className, expectedClassName, @"");
     XCTAssertEqualObjects(theRest, expectedTheRest, @"");
 }
@@ -550,15 +550,15 @@ static NSArray* g_test_strings;
     XCTAssertTrue(copied > 0, @"");
     NSString* description = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
     NSArray* components = [self componentsOfComplexDescription:description];
-    NSString* className = [components objectAtIndex:0];
-    NSString* theRest = [components objectAtIndex:1];
+    NSString* className = components[0];
+    NSString* theRest = components[1];
     XCTAssert([className hasSuffix:expectedClassName]);
     XCTAssertEqualObjects(theRest, expectedTheRest, @"");
 }
 
 - (void) testNumberIsValid
 {
-    NSNumber* number = [NSNumber numberWithInt:10];
+    NSNumber* number = @10;
     void* numberPtr = (__bridge void*)number;
     bool valid = bsg_ksobjc_isValidObject(numberPtr);
     XCTAssertTrue(valid, @"");
@@ -566,7 +566,7 @@ static NSArray* g_test_strings;
 
 - (void) testNumberIsFloat
 {
-    NSNumber* number = [NSNumber numberWithDouble:0.1];
+    NSNumber* number = @0.1;
     void* numberPtr = (__bridge void*)number;
     bool isFloat = bsg_ksobjc_numberIsFloat(numberPtr);
     XCTAssertTrue(isFloat, "");
@@ -574,7 +574,7 @@ static NSArray* g_test_strings;
 
 - (void) testNumberIsFloat2
 {
-    NSNumber* number = [NSNumber numberWithDouble:1];
+    NSNumber* number = @1.0;
     void* numberPtr = (__bridge void*)number;
     bool isFloat = bsg_ksobjc_numberIsFloat(numberPtr);
     XCTAssertTrue(isFloat, "");
@@ -582,7 +582,7 @@ static NSArray* g_test_strings;
 
 - (void) testNumberIsInt
 {
-    NSNumber* number = [NSNumber numberWithInt:1];
+    NSNumber* number = @1;
     void* numberPtr = (__bridge void*)number;
     bool isFloat = bsg_ksobjc_numberIsFloat(numberPtr);
     XCTAssertFalse(isFloat, "");
@@ -591,7 +591,7 @@ static NSArray* g_test_strings;
 - (void) testFloatNumber
 {
     Float64 expected = 0.1;
-    NSNumber* number = [NSNumber numberWithDouble:expected];
+    NSNumber* number = @(expected);
     void* numberPtr = (__bridge void*)number;
     Float64 actual = bsg_ksobjc_numberAsFloat(numberPtr);
     XCTAssertEqual(expected, actual, "");
@@ -600,7 +600,7 @@ static NSArray* g_test_strings;
 - (void) testFloatNumberWhole
 {
     Float64 expected = 1.0;
-    NSNumber* number = [NSNumber numberWithDouble:expected];
+    NSNumber* number = @(expected);
     void* numberPtr = (__bridge void*)number;
     Float64 actual = bsg_ksobjc_numberAsFloat(numberPtr);
     XCTAssertEqual(expected, actual, "");
@@ -609,7 +609,7 @@ static NSArray* g_test_strings;
 - (void) testFloatNumberFromInt
 {
     Float64 expected = 1.0;
-    NSNumber* number = [NSNumber numberWithInt:(int)expected];
+    NSNumber* number = @((int) expected);
     void* numberPtr = (__bridge void*)number;
     Float64 actual = bsg_ksobjc_numberAsFloat(numberPtr);
     XCTAssertEqual(expected, actual, "");
@@ -618,7 +618,7 @@ static NSArray* g_test_strings;
 - (void) testIntNumber
 {
     int64_t expected = 55;
-    NSNumber* number = [NSNumber numberWithLongLong:expected];
+    NSNumber* number = @(expected);
     void* numberPtr = (__bridge void*)number;
     int64_t actual = bsg_ksobjc_numberAsInteger(numberPtr);
     XCTAssertEqual(expected, actual, "");
@@ -627,7 +627,7 @@ static NSArray* g_test_strings;
 - (void) testLargeIntNumber
 {
     int64_t expected = 0x7fffffffffffffff;
-    NSNumber* number = [NSNumber numberWithLongLong:expected];
+    NSNumber* number = @(expected);
     void* numberPtr = (__bridge void*)number;
     int64_t actual = bsg_ksobjc_numberAsInteger(numberPtr);
     XCTAssertEqual(expected, actual, "");
@@ -636,7 +636,7 @@ static NSArray* g_test_strings;
 - (void) testIntNumberFromFloat
 {
     int64_t expected = 55;
-    NSNumber* number = [NSNumber numberWithDouble:expected];
+    NSNumber* number = @(expected);
     void* numberPtr = (__bridge void*)number;
     int64_t actual = bsg_ksobjc_numberAsInteger(numberPtr);
     XCTAssertEqual(expected, actual, "");
@@ -645,7 +645,7 @@ static NSArray* g_test_strings;
 - (void) testIntNumberFromFloatTruncated
 {
     int64_t expected = 55;
-    NSNumber* number = [NSNumber numberWithDouble:55.8];
+    NSNumber* number = @55.8;
     void* numberPtr = (__bridge void*)number;
     int64_t actual = bsg_ksobjc_numberAsInteger(numberPtr);
     XCTAssertEqual(expected, actual, "");
@@ -728,8 +728,8 @@ static NSArray* g_test_strings;
     XCTAssertTrue(copied > 0, @"");
     NSString* description = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
     NSArray* components = [self componentsOfComplexDescription:description];
-    NSString* className = [components objectAtIndex:0];
-    NSString* theRest = [components objectAtIndex:1];
+    NSString* className = components[0];
+    NSString* theRest = components[1];
     XCTAssertEqualObjects(className, expectedClassName, @"");
     XCTAssertEqualObjects(theRest, expectedTheRest, @"");
 }
@@ -748,7 +748,7 @@ static NSArray* g_test_strings;
 
 - (void) testCopyArrayContentsImmutable
 {
-    NSArray* array = [NSArray arrayWithObjects:@"1", @"2", @"3", @"4", nil];
+    NSArray* array = @[@"1", @"2", @"3", @"4"];
     void* arrayPtr = (__bridge void*)array;
     size_t expectedCount = [array count];
     size_t count = bsg_ksobjc_arrayCount(arrayPtr);
@@ -779,7 +779,7 @@ static NSArray* g_test_strings;
 
 - (void) testCopyArrayContentsMutable
 {
-    NSMutableArray* array = [NSMutableArray arrayWithObjects:@"1", @"2", @"3", @"4", nil];
+    NSMutableArray* array = [@[@"1", @"2", @"3", @"4"] mutableCopy];
     void* arrayPtr = (__bridge void*)array;
     size_t expectedCount = [array count];
     size_t count = bsg_ksobjc_arrayCount(arrayPtr);
@@ -859,7 +859,7 @@ static NSArray* g_test_strings;
     XCTAssertTrue(copied > 0, @"");
     NSString* description = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
     NSArray* components = [self componentsOfBasicDescription:description];
-    NSString* className = [components objectAtIndex:0];
+    NSString* className = components[0];
     XCTAssertEqualObjects(className, expectedClassName, @"");
 }
 
