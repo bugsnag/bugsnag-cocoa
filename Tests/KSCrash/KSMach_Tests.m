@@ -173,12 +173,6 @@
     XCTAssertTrue(diff >= 0.1 && diff < 0.2, @"");
 }
 
-- (void) testIsBeingTraced // fails if scheme is not debuggable!
-{
-    bool traced = bsg_ksmachisBeingTraced();
-    XCTAssertTrue(traced, @"");
-}
-
 // TODO: Disabling this until I figure out what's wrong with queue names.
 //- (void) testGetQueueName
 //{
