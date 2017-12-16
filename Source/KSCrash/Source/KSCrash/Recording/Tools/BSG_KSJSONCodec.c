@@ -974,6 +974,9 @@ int bsg_ksjsoncodec_i_decodeElement(const char **ptr, const char *const end,
         }
 
         if (!isFPChar(**ptr) && accum >= 0) {
+            if (name == NULL) {
+                return BSG_KSJSON_ERROR_INCOMPLETE;
+            }
             accum *= sign;
             return callbacks->onIntegerElement(name, accum, userData);
         }
