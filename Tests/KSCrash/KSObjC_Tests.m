@@ -777,6 +777,19 @@ static NSArray* g_test_strings;
     XCTAssertEqual(copied, expectedCount, @"");
 }
 
+- (void) testCopyArrayContentsMutable
+{
+    NSMutableArray* array = [@[@"1", @"2", @"3", @"4"] mutableCopy];
+    void* arrayPtr = (__bridge void*)array;
+    size_t expectedCount = [array count];
+    size_t count = bsg_ksobjc_arrayCount(arrayPtr);
+    XCTAssertEqual(count, expectedCount, @"");
+    uintptr_t contents[10];
+    size_t copied = bsg_ksobjc_arrayContents(arrayPtr, contents, sizeof(contents));
+    size_t expectedCopied = 0;
+    XCTAssertEqual(copied, expectedCopied, @"");
+}
+
 - (void) testCopyArrayContentsMutableEmpty
 {
     NSMutableArray* array = [NSMutableArray array];
