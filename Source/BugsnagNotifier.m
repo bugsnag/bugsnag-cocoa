@@ -27,13 +27,9 @@
 #import "BugsnagNotifier.h"
 #import "BSGConnectivity.h"
 #import "Bugsnag.h"
-#import "BugsnagBreadcrumb.h"
-#import "BugsnagCollections.h"
-#import "BugsnagCrashReport.h"
 #import "BugsnagCrashSentry.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagLogger.h"
-#import "BugsnagSink.h"
 #import "BugsnagKeys.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagSessionTrackingApiClient.h"
@@ -41,12 +37,11 @@
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
-#include <sys/utsname.h>
 #elif TARGET_OS_MAC
 #import <AppKit/AppKit.h>
 #endif
 
-NSString *const NOTIFIER_VERSION = @"5.15.0-beta0";
+NSString *const NOTIFIER_VERSION = @"5.14.2";
 NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 NSString *const BSTabCrash = @"crash";
 NSString *const BSAttributeDepth = @"depth";
@@ -496,9 +491,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                     withData:(NSDictionary *_Nullable)metaData
                        block:(BugsnagNotifyBlock _Nullable)block {
 
-    NSString *severity = [metaData objectForKey:BSGKeySeverity];
-    NSString *severityReason = [metaData objectForKey:BSGKeySeverityReason];
-    NSString *logLevel = [metaData objectForKey:BSGKeyLogLevel];
+    NSString *severity = metaData[BSGKeySeverity];
+    NSString *severityReason = metaData[BSGKeySeverityReason];
+    NSString *logLevel = metaData[BSGKeyLogLevel];
     NSParameterAssert(severity.length > 0);
     NSParameterAssert(severityReason.length > 0);
 
@@ -631,10 +626,10 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 - (void)batteryChanged:(NSNotification *)notif {
     NSNumber *batteryLevel =
-        [NSNumber numberWithFloat:[UIDevice currentDevice].batteryLevel];
+            @([UIDevice currentDevice].batteryLevel);
     NSNumber *charging =
-        [NSNumber numberWithBool:[UIDevice currentDevice].batteryState ==
-                                 UIDeviceBatteryStateCharging];
+            @([UIDevice currentDevice].batteryState ==
+                    UIDeviceBatteryStateCharging);
 
     [[self state] addAttribute:BSGKeyBatteryLevel
                      withValue:batteryLevel

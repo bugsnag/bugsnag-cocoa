@@ -26,11 +26,8 @@
 
 #import "Bugsnag.h"
 #import "BSG_KSCrash.h"
-#import "BugsnagBreadcrumb.h"
-#import "BugsnagCrashReport.h"
 #import "BugsnagLogger.h"
 #import "BugsnagNotifier.h"
-#import "BugsnagSink.h"
 #import "BugsnagKeys.h"
 
 static BugsnagNotifier *bsg_g_bugsnag_notifier = NULL;
@@ -271,13 +268,13 @@ static BugsnagNotifier *bsg_g_bugsnag_notifier = NULL;
 
     NSMutableDictionary *dict = [dest mutableCopy];
     for (id key in [self allKeys]) {
-        id srcEntry = [self objectForKey:key];
-        id dstEntry = [dest objectForKey:key];
+        id srcEntry = self[key];
+        id dstEntry = dest[key];
         if ([dstEntry isKindOfClass:[NSDictionary class]] &&
             [srcEntry isKindOfClass:[NSDictionary class]]) {
             srcEntry = [srcEntry BSG_mergedInto:dstEntry];
         }
-        [dict setObject:srcEntry forKey:key];
+        dict[key] = srcEntry;
     }
     return dict;
 }

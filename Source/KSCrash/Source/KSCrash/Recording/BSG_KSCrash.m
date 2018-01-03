@@ -28,7 +28,6 @@
 
 #import "BSG_KSCrashC.h"
 #import "BSG_KSCrashCallCompletion.h"
-#import "BSG_KSCrashState.h"
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSSingleton.h"
 #import "BSG_KSSystemCapabilities.h"
@@ -141,6 +140,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 - (id)initWithReportFilesDirectory:(NSString *)reportFilesDirectory {
     if ((self = [super init])) {
         self.bundleName = [[NSBundle mainBundle] infoDictionary][@"CFBundleName"];
+
         NSString *storePath = [BugsnagFileStore findReportStorePath:reportFilesDirectory
                                                          bundleName:self.bundleName];
 
@@ -260,7 +260,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
             [NSMutableData dataWithLength:count * sizeof(const char *)];
         const char **classes = data.mutableBytes;
         for (size_t i = 0; i < count; i++) {
-            classes[i] = [[doNotIntrospectClasses objectAtIndex:i]
+            classes[i] = [doNotIntrospectClasses[i]
                 cStringUsingEncoding:NSUTF8StringEncoding];
         }
         bsg_kscrash_setDoNotIntrospectClasses(classes, count);

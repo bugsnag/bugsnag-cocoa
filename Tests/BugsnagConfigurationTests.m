@@ -1,6 +1,7 @@
 #import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagUser.h"
+
 #import <XCTest/XCTest.h>
 
 @interface BugsnagConfigurationTests : XCTestCase
