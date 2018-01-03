@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## 5.14.2 (15 Dec 2017)
+
+### Bug Fixes
+
+* Fix possible crash when reading invalid JSON files from disk
+  [#220](https://github.com/bugsnag/bugsnag-cocoa/pull/220)
+  [#218](https://github.com/bugsnag/bugsnag-cocoa/issues/218)
+
 ## 5.14.1 (29 Nov 2017)
 
 * Fix encoding of control characters in crash reports. Ensures crash reports are
