@@ -54,7 +54,7 @@
 - (void)testAppSerialisation {
     NSDictionary *app = self.payload[@"app"];
     XCTAssertNotNil(app);
-    XCTAssertEqual(4, app.count);
+    XCTAssertEqual(5, app.count);
     
     XCTAssertNotNil(app[@"type"]);
     XCTAssertNotNil(app[@"version"]);

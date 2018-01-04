@@ -275,7 +275,7 @@
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     NSDictionary *app = event[@"app"];
     XCTAssertNotNil(app);
-    XCTAssertEqual(9, app.count);
+    XCTAssertEqual(10, app.count);
     
     XCTAssertEqualObjects(app[@"id"], @"net.hockeyapp.CrashProbeiOS");
     XCTAssertNotNil(app[@"type"]);
