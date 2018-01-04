@@ -190,4 +190,7 @@ BugsnagBreadcrumbs *breadcrumbs;
 - (NSDictionary *_Nonnull)errorApiHeaders;
 - (NSDictionary *_Nonnull)sessionApiHeaders;
 
+@property(nullable) NSString *codeBundleId;
+@property(nullable) NSString *notifierType;
+
 @end
