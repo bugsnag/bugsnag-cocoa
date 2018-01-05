@@ -141,32 +141,17 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     if ((self = [super init])) {
         self.bundleName = [[NSBundle mainBundle] infoDictionary][@"CFBundleName"];
 
-        NSArray *directories = NSSearchPathForDirectoriesInDomains(
-            NSCachesDirectory, NSUserDomainMask, YES);
-        if ([directories count] == 0) {
-            BSG_KSLOG_ERROR(@"Could not locate cache directory path.");
-            goto failed;
-        }
-        NSString *cachePath = directories[0];
-        if ([cachePath length] == 0) {
-            BSG_KSLOG_ERROR(@"Could not locate cache directory path.");
-            goto failed;
-        }
-        NSString *storePathEnd = [reportFilesDirectory
-            stringByAppendingPathComponent:self.bundleName];
-        NSString *storePath =
-            [cachePath stringByAppendingPathComponent:storePathEnd];
-        if ([storePath length] == 0) {
-            BSG_KSLOG_ERROR(@"Could not determine report files path.");
-            goto failed;
-        }
-        if (![self ensureDirectoryExists:storePath]) {
-            goto failed;
+        NSString *storePath = [BugsnagFileStore findReportStorePath:reportFilesDirectory
+                                                         bundleName:self.bundleName];
+
+        if (!storePath) {
+            BSG_KSLOG_ERROR(
+                    @"Failed to initialize crash handler. Crash reporting disabled.");
+            return nil;
         }
 
         self.nextCrashID = [NSUUID UUID].UUIDString;
-        self.crashReportStore =
-            [BSG_KSCrashReportStore storeWithPath:storePath];
+        self.crashReportStore = [BSG_KSCrashReportStore storeWithPath:storePath];
         self.deleteBehaviorAfterSendAll = BSG_KSCDeleteAlways;
         self.searchThreadNames = NO;
         self.searchQueueNames = NO;
@@ -180,11 +165,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         self.writeBinaryImagesForUserReported = YES;
     }
     return self;
-
-failed:
-    BSG_KSLOG_ERROR(
-        @"Failed to initialize crash handler. Crash reporting disabled.");
-    return nil;
 }
 
 // ============================================================================
@@ -288,7 +268,7 @@ failed:
 }
 
 - (NSString *)crashReportPath {
-    return [self.crashReportStore pathToCrashReportWithID:self.nextCrashID];
+    return [self.crashReportStore pathToFileWithId:self.nextCrashID];
 }
 
 - (NSString *)recrashReportPath {
@@ -339,7 +319,7 @@ failed:
 
 - (void)sendAllReportsWithCompletion:
     (BSG_KSCrashReportFilterCompletion)onCompletion {
-    [self.crashReportStore pruneReportsLeaving:self.maxStoredReports];
+    [self.crashReportStore pruneFilesLeaving:self.maxStoredReports];
 
     NSArray *reports = [self allReports];
 
@@ -363,7 +343,7 @@ failed:
 }
 
 - (void)deleteAllReports {
-    [self.crashReportStore deleteAllReports];
+    [self.crashReportStore deleteAllFiles];
 }
 
 - (void)reportUserException:(NSString *)name
@@ -425,7 +405,7 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(int, sessionsSinceLaunch)
 BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 
 - (NSUInteger)reportCount {
-    return [self.crashReportStore reportCount];
+    return [self.crashReportStore fileCount];
 }
 
 - (NSString *)crashReportsPath {
@@ -457,7 +437,7 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 }
 
 - (NSArray *)allReports {
-    return [self.crashReportStore allReports];
+    return [self.crashReportStore allFiles];
 }
 
 - (BOOL)redirectConsoleLogsToFile:(NSString *)fullPath
@@ -485,22 +465,6 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 #pragma mark - Utility -
 // ============================================================================
 
-- (BOOL)ensureDirectoryExists:(NSString *)path {
-    NSError *error = nil;
-    NSFileManager *fm = [NSFileManager defaultManager];
-
-    if (![fm fileExistsAtPath:path]) {
-        if (![fm createDirectoryAtPath:path
-                withIntermediateDirectories:YES
-                                 attributes:nil
-                                      error:&error]) {
-            BSG_KSLOG_ERROR(@"Could not create directory %@: %@.", path, error);
-            return NO;
-        }
-    }
-
-    return YES;
-}
 
 - (NSMutableData *)nullTerminated:(NSData *)data {
     if (data == nil) {

@@ -11,6 +11,8 @@
 
 #import "Bugsnag.h"
 #import "BugsnagHandledState.h"
+#import "BugsnagSession.h"
+#import "BSG_RFC3339DateTool.h"
 
 @interface BugsnagCrashReportTests : XCTestCase
 @property BugsnagCrashReport *report;
@@ -106,7 +108,8 @@
                                      errorMessage:@"it was so bad"
                                     configuration:config
                                          metaData:@{}
-                                     handledState:state];
+                                     handledState:state
+                                          session:nil];
     XCTAssertTrue([report shouldBeSent]);
 }
 
@@ -122,8 +125,43 @@
                                      errorMessage:@"it was so bad"
                                     configuration:config
                                          metaData:@{}
-                                     handledState:state];
+                                     handledState:state
+                                          session:nil];
     XCTAssertFalse([report shouldBeSent]);
+}
+
+- (void)testSessionJson {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+
+    BugsnagHandledState *state =
+            [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    NSDate *now = [NSDate date];
+    BugsnagSession *bugsnagSession = [[BugsnagSession alloc] initWithId:@"123"
+                                                              startDate:now
+                                                                   user:nil
+                                                           autoCaptured:NO];
+    bugsnagSession.handledCount = 2;
+    bugsnagSession.unhandledCount = 1;
+    
+    BugsnagCrashReport *report =
+            [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
+                                             errorMessage:@"it was so bad"
+                                            configuration:config
+                                                 metaData:@{}
+                                             handledState:state
+                                                  session:bugsnagSession];
+    NSDictionary *json = [report toJson];
+    XCTAssertNotNil(json);
+
+    NSDictionary *session = json[@"session"];
+    XCTAssertNotNil(session);
+    XCTAssertEqualObjects(@"123", session[@"id"]);
+    XCTAssertEqualObjects([BSG_RFC3339DateTool stringFromDate:now], session[@"startedAt"]);
+
+    NSDictionary *events = session[@"events"];
+    XCTAssertNotNil(events);
+    XCTAssertEqualObjects(@2, events[@"handled"]);
+    XCTAssertEqualObjects(@1, events[@"unhandled"]);
 }
 
 - (void)testEnhancedErrorMessage {
