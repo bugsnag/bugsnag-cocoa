@@ -1,5 +1,8 @@
 Changelog
 =========
+## 5.15.1 (09 Jan 2018)
+
+* Misc Session Tracking fixes and enhancements
 
 ## 5.15.0 (05 Jan 2018)
 
