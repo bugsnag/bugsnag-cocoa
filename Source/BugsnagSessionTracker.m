@@ -48,7 +48,7 @@
                                                      user:user
                                              autoCaptured:autoCaptured];
 
-    if (self.config.shouldAutoCaptureSessions || !autoCaptured) {
+    if ((self.config.shouldAutoCaptureSessions || !autoCaptured) && [self.config shouldSendReports]) {
         [self.sessionStore write:self.currentSession];
 
         if (self.callback) {
