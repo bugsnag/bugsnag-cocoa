@@ -30,6 +30,7 @@
 #import "BugsnagKeys.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagUser.h"
+#import "BugsnagSessionTracker.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -37,6 +38,10 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 
 @interface Bugsnag ()
 + (BugsnagNotifier *)notifier;
+@end
+
+@interface BugsnagNotifier ()
+@property BugsnagSessionTracker *sessionTracker;
 @end
 
 @interface BugsnagConfiguration ()
@@ -191,6 +196,23 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
         [self.config addAttribute:BSGKeyAppVersion
                         withValue:newVersion
                     toTabWithName:BSGKeyConfig];
+    }
+}
+
+@synthesize shouldAutoCaptureSessions = _shouldAutoCaptureSessions;
+
+- (BOOL)shouldAutoCaptureSessions {
+    return _shouldAutoCaptureSessions;
+}
+
+- (void)setShouldAutoCaptureSessions:(BOOL)shouldAutoCaptureSessions {
+    @synchronized (self) {
+        _shouldAutoCaptureSessions = shouldAutoCaptureSessions;
+        
+        if (shouldAutoCaptureSessions) { // track any existing sessions
+            BugsnagSessionTracker *sessionTracker = [Bugsnag notifier].sessionTracker;
+            [sessionTracker onAutoCaptureEnabled];
+        }
     }
 }
 

@@ -16,6 +16,7 @@
 @property BugsnagConfiguration *config;
 @property BugsnagSessionFileStore *sessionStore;
 @property BugsnagSessionTrackingApiClient *apiClient;
+@property BOOL trackedFirstSession;
 @end
 
 @implementation BugsnagSessionTracker
@@ -48,14 +49,28 @@
                                                      user:user
                                              autoCaptured:autoCaptured];
 
-    if (self.config.shouldAutoCaptureSessions || !autoCaptured) {
-        [self.sessionStore write:self.currentSession];
-
-        if (self.callback) {
-            self.callback(self.currentSession);
-        }
+    if ((self.config.shouldAutoCaptureSessions || !autoCaptured) && [self.config shouldSendReports]) {
+        [self trackSession];
     }
     _isInForeground = YES;
+}
+
+- (void)trackSession {
+    [self.sessionStore write:self.currentSession];
+    self.trackedFirstSession = YES;
+    
+    if (self.callback) {
+        self.callback(self.currentSession);
+    }
+}
+
+- (void)onAutoCaptureEnabled {
+    if (!self.trackedFirstSession) {
+        if (self.currentSession == nil) { // unlikely case, will be initialised later
+            return;
+        }
+        [self trackSession];
+    }
 }
 
 - (void)suspendCurrentSession:(NSDate *)date {

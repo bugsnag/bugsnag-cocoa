@@ -28,6 +28,7 @@ typedef void (^SessionTrackerCallback)(BugsnagSession *newSession);
 - (void)suspendCurrentSession:(NSDate *)date;
 - (void)incrementHandledError;
 - (void)send;
+- (void)onAutoCaptureEnabled;
 
 @property (readonly) BugsnagSession *currentSession;
 @property (readonly) BOOL isInForeground;
