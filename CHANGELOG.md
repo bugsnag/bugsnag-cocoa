@@ -1,5 +1,12 @@
 Changelog
 =========
+## 5.15.2 (11 Jan 2018)
+
+### Bug Fixes
+
+* Fix default user/device ID generation on iOS and tvOS devices
+* Fix mach exception detection
+
 ## 5.15.1 (09 Jan 2018)
 
 * Misc Session Tracking fixes and enhancements
