@@ -9,11 +9,10 @@
 #import "BugsnagKeys.h"
 #import "BugsnagLogger.h"
 
-@interface BSGDelayOperation : NSOperation
-@end
-
 @interface BugsnagApiClient()
 @property (nonatomic) NSURLSession *generatedSession;
+@property(readonly) NSOperationQueue *sendQueue;
+@property(readonly) BugsnagConfiguration *config;
 @end
 
 @implementation BugsnagApiClient
@@ -33,21 +32,32 @@
     return self;
 }
 
-- (void)flushPendingData {
-    [self.sendQueue cancelAllOperations];
-    BSGDelayOperation *delay = [BSGDelayOperation new];
-    NSOperation *deliver = [self deliveryOperation];
-    [deliver addDependency:delay];
-    [self.sendQueue addOperations:@[delay, deliver] waitUntilFinished:NO];
-}
-
-- (NSOperation *)deliveryOperation {
-    bsg_log_err(@"Should override deliveryOperation in super class");
-    return [NSOperation new];
-}
-
 #pragma mark - Delivery
 
+- (void)sendData:(id)data
+     withPayload:(NSDictionary *)payload
+           toURL:(NSURL *)url
+         headers:(NSDictionary *)headers
+     synchronous:(BOOL)synchronous
+    onCompletion:(RequestCompletion)onCompletion {
+    
+    if (synchronous) {
+        [self sendData:data
+           withPayload:payload
+                 toURL:url
+               headers:headers
+          onCompletion:onCompletion];
+    } else { // enqueue request
+        [self.sendQueue cancelAllOperations];
+        [self.sendQueue addOperationWithBlock:^{
+            [self sendData:data
+               withPayload:payload
+                     toURL:url
+                   headers:headers
+              onCompletion:onCompletion];
+        }];
+    }
+}
 
 - (void)sendData:(id)data
      withPayload:(NSDictionary *)payload
@@ -133,15 +143,6 @@
         [request setValue:headers[key] forHTTPHeaderField:key];
     }
     return request;
-}
-
-@end
-
-@implementation BSGDelayOperation
-const NSTimeInterval BSG_SEND_DELAY_SECS = 1;
-
-- (void)main {
-    [NSThread sleepForTimeInterval:BSG_SEND_DELAY_SECS];
 }
 
 @end

@@ -10,19 +10,19 @@
 #import "BugsnagSessionFileStore.h"
 #import "BSG_KSLogger.h"
 #import "BugsnagSessionTrackingPayload.h"
-#import "BugsnagSessionTrackingApiClient.h"
+#import "BugsnagApiClient.h"
 
 @interface BugsnagSessionTracker ()
 @property BugsnagConfiguration *config;
 @property BugsnagSessionFileStore *sessionStore;
-@property BugsnagSessionTrackingApiClient *apiClient;
+@property BugsnagApiClient *apiClient;
 @property BOOL trackedFirstSession;
 @end
 
 @implementation BugsnagSessionTracker
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config
-                     apiClient:(BugsnagSessionTrackingApiClient *)apiClient
+                     apiClient:(BugsnagApiClient *)apiClient
                       callback:(void(^)(BugsnagSession *))callback {
     if (self = [super init]) {
         _config = config;
@@ -101,6 +101,7 @@
                          withPayload:[payload toJson]
                                toURL:self.config.sessionURL
                              headers:self.config.sessionApiHeaders
+                         synchronous:NO
                         onCompletion:^(id data, BOOL success, NSError *error) {
 
                             if (success && error == nil) {
