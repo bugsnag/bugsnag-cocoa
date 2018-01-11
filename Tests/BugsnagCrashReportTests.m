@@ -236,29 +236,31 @@
 
 - (void)testIsCrashOnLaunch {
     NSMutableDictionary *appState = @{@"duration": @0}.mutableCopy;
-    NSMutableDictionary *event = @{@"appState": appState, @"unhandled": @YES}.mutableCopy;
+    NSMutableDictionary *handledState = @{@"unhandled": @YES}.mutableCopy;
+    NSMutableDictionary *event = @{@"app": appState, @"handledState": handledState}.mutableCopy;
     NSArray *events = @[event];
+    
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     appState[@"duration"] = @100;
-    event[@"unhandled"] = @YES;
+    handledState[@"unhandled"] = @YES;
     XCTAssertTrue([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
 
-    event[@"unhandled"] = @NO;
+    handledState[@"unhandled"] = @NO;
     XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
 
-    event[@"unhandled"] = @YES;
+    handledState[@"unhandled"] = @YES;
     config.launchCrashThresholdMs = 0;
     XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
 
-    event[@"unhandled"] = @NO;
+    handledState[@"unhandled"] = @NO;
     XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
 
-    event[@"unhandled"] = @YES;
+    handledState[@"unhandled"] = @YES;
     appState[@"duration"] = @20000;
     config.launchCrashThresholdMs = 10000;
     XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
 
-    event[@"unhandled"] = @NO;
+    handledState[@"unhandled"] = @NO;
     XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
 }
 

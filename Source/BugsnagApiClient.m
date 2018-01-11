@@ -41,22 +41,24 @@
      synchronous:(BOOL)synchronous
     onCompletion:(RequestCompletion)onCompletion {
     
-    if (synchronous) {
-        [self sendData:data
-           withPayload:payload
-                 toURL:url
-               headers:headers
-          onCompletion:onCompletion];
-    } else { // enqueue request
-        [self.sendQueue cancelAllOperations];
-        [self.sendQueue addOperationWithBlock:^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (synchronous) {
             [self sendData:data
                withPayload:payload
                      toURL:url
                    headers:headers
               onCompletion:onCompletion];
-        }];
-    }
+        } else { // enqueue request
+            [self.sendQueue cancelAllOperations];
+            [self.sendQueue addOperationWithBlock:^{
+                [self sendData:data
+                   withPayload:payload
+                         toURL:url
+                       headers:headers
+                  onCompletion:onCompletion];
+            }];
+        }
+    });
 }
 
 - (void)sendData:(id)data
