@@ -34,7 +34,7 @@
 - (IBAction)generateSignal:(id)sender {
     Byte *p[10000];
     int allocatedMB = 0;
-    
+
     while (true) {
         p[allocatedMB] = malloc(1048576);
         memset(p[allocatedMB], 0, 1048576);
@@ -63,7 +63,7 @@
     void *cache[] = {
         NULL, NULL, NULL
     };
-    
+
     void *displayStrings[6] = {
         "This little piggy went to the meerket",
         "This little piggy stayed at home",
@@ -72,13 +72,13 @@
         "This little piggy had none.",
         "And this little piggy went 'Wee! Wee! Wee!' all the way home",
     };
-    
+
     /* A corrupted/under-retained/re-used piece of memory */
     struct {
         void *isa;
     } corruptObj;
     corruptObj.isa = displayStrings;
-    
+
     /* Message an invalid/corrupt object. This will deadlock crash reporters
      * using Objective-C. */
     [(__bridge id)&corruptObj class];
@@ -95,7 +95,7 @@ static void *enable_threading (void *ctx) {
      * (such as dispatch) will trigger similar calls into the pthread APIs. */
     pthread_t thr;
     pthread_create(&thr, NULL, enable_threading, NULL);
-    
+
     /* This is the actual code that triggers a reproducible deadlock; include this
      * in your own app to test a different crash reporter's behavior.
      *
@@ -109,10 +109,10 @@ static void *enable_threading (void *ctx) {
     /* A small typo can trigger infinite recursion ... */
     NSArray *resultMessages = [NSMutableArray arrayWithObject: @"Error message!"];
     NSMutableArray *results = [[NSMutableArray alloc] init];
-    
+
     for (NSObject *result in resultMessages)
         [results addObject: results]; // Whoops!
-    
+
     NSLog(@"Results: %@", results);
 }
 

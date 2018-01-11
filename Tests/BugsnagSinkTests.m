@@ -53,15 +53,10 @@
 }
 
 - (void)testCorrectTopLevelKeys {
-    NSArray *expectedKeys = @[ @"apiKey", @"events", @"notifier" ];
+    NSArray *expectedKeys = @[@"events", @"notifier"];
     NSArray *topKeys = [self.processedData allKeys];
     XCTAssertEqualObjects(
                           [topKeys sortedArrayUsingSelector:@selector(compare:)], expectedKeys);
-}
-
-- (void)testGetAPIKey {
-    NSString *APIKey = self.processedData[@"apiKey"];
-    XCTAssertEqualObjects(APIKey, @"apiKeyHere");
 }
 
 - (void)testCorrectNotifierKeys {
@@ -103,33 +98,24 @@
                            sortedArrayUsingSelector:@selector(compare:)];
     NSArray *eventKeys = @[
                            @"app",
-                           @"appState",
                            @"breadcrumbs",
                            @"context",
                            @"device",
-                           @"deviceState",
-                           @"dsymUUID",
                            @"exceptions",
                            @"metaData",
-                           @"payloadVersion",
                            @"severity",
                            @"severityReason",
                            @"threads",
                            @"unhandled",
+                           @"user",
                            ];
     XCTAssertEqualObjects(actualKeys, eventKeys);
-}
-
-- (void)testEventReleaseStage {
-    NSString *releaseStage =
-    [self.processedData[@"events"] firstObject][@"app"][@"releaseStage"];
-    XCTAssertEqualObjects(releaseStage, @"MagicalTestingTime");
 }
 
 - (void)testEventPayloadVersion {
     NSString *payloadVersion =
     [self.processedData[@"events"] firstObject][@"payloadVersion"];
-    XCTAssertEqualObjects(payloadVersion, @"3");
+    XCTAssertNil(payloadVersion);
 }
 
 - (void)testEventSeverity {
@@ -158,7 +144,7 @@
 
 - (void)testEventMetadataUser {
     NSDictionary *user =
-    [self.processedData[@"events"] firstObject][@"metaData"][@"user"];
+    [self.processedData[@"events"] firstObject][@"user"];
     NSDictionary *expected =
     @{@"id" : self.rawReportData[@"system"][@"device_app_hash"]};
     XCTAssertEqualObjects(user, expected);
@@ -175,12 +161,6 @@
     id address = [[self.processedData[@"events"] firstObject]
                   valueForKeyPath:@"metaData.error.address"];
     XCTAssertEqualObjects(address, @0);
-}
-
-- (void)testTimestamp {
-    id timestamp = [[self.processedData[@"events"] firstObject]
-                    valueForKeyPath:@"deviceState.time"];
-    XCTAssertEqualObjects(timestamp, @"2014-12-02T01:56:13Z");
 }
 
 - (void)testEventMetadataErrorType {
@@ -272,28 +252,40 @@
     XCTAssert(threads.count == 8);
 }
 
-- (void)testEventAppState {
+- (void)testEventDevice {
     NSDictionary *event = [self.processedData[@"events"] firstObject];
-    NSDictionary *appState = event[@"appState"];
-    XCTAssertEqualObjects([appState valueForKey:@"durationInForeground"], @0);
-    XCTAssertEqualObjects([appState valueForKey:@"inForeground"], @YES);
-    XCTAssertEqualObjects([appState valueForKey:@"duration"], @0);
+    NSDictionary *device = event[@"device"];
+    XCTAssertNotNil(device);
+    XCTAssertEqual(15, device.count); // includes some legacy metadata 
+    
+    XCTAssertEqualObjects(device[@"id"], @"f6d519a74213a57f8d052c53febfeee6f856d062");
+    XCTAssertEqualObjects(device[@"manufacturer"], @"Apple");
+    XCTAssertEqualObjects(device[@"model"], @"x86_64");
+    XCTAssertEqualObjects(device[@"modelNumber"], @"MacBookPro11,3");
+    XCTAssertEqualObjects(device[@"osName"], @"iPhone OS");
+    XCTAssertEqualObjects(device[@"osVersion"], @"8.1");
+    XCTAssertEqualObjects(device[@"totalMemory"], @15065522176);
+    XCTAssertNotNil(device[@"freeDisk"]);
+    XCTAssertEqualObjects(device[@"jailbroken"], @YES);
+    XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
+    XCTAssertEqualObjects(device[@"orientation"], @"unknown");
 }
 
-- (void)testEventAppStats {
-    NSDictionary *stats =
-    [self.processedData[@"events"] firstObject][@"appState"][@"stats"];
-    XCTAssertEqualObjects(stats, (@{
-                                    @"background_time_since_last_crash" : @0,
-                                    @"active_time_since_launch" : @0,
-                                    @"sessions_since_last_crash" : @1,
-                                    @"launches_since_last_crash" : @1,
-                                    @"active_time_since_last_crash" : @0,
-                                    @"sessions_since_launch" : @1,
-                                    @"application_active" : @NO,
-                                    @"application_in_foreground" : @YES,
-                                    @"background_time_since_launch" : @0
-                                    }));
+- (void)testEventApp {
+    NSDictionary *event = [self.processedData[@"events"] firstObject];
+    NSDictionary *app = event[@"app"];
+    XCTAssertNotNil(app);
+    XCTAssertEqual(10, app.count);
+    
+    XCTAssertEqualObjects(app[@"id"], @"net.hockeyapp.CrashProbeiOS");
+    XCTAssertNotNil(app[@"type"]);
+    XCTAssertEqualObjects(app[@"version"], @"1.0");
+    XCTAssertEqualObjects(app[@"bundleVersion"], @"1");
+    XCTAssertEqualObjects(app[@"releaseStage"], @"MagicalTestingTime");
+    XCTAssertEqualObjects(app[@"dsymUUIDs"], @[@"D0A41830-4FD2-3B02-A23B-0741AD4C7F52"]);
+    XCTAssertEqualObjects(app[@"duration"], @4000);
+    XCTAssertEqualObjects(app[@"durationInForeground"], @2000);
+    XCTAssertEqualObjects(app[@"inForeground"], @YES);
 }
 
 #pragma mark - handled/unhandled serialisation
@@ -304,7 +296,8 @@
                                      errorMessage:@"Error for testing"
                                     configuration:[BugsnagConfiguration new]
                                          metaData:[NSDictionary new]
-                                     handledState:state];
+                                     handledState:state
+                                          session:nil];
     
     NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
     return [data[@"events"] firstObject];
@@ -386,7 +379,8 @@
                                      errorMessage:@"Error for testing"
                                     configuration:[BugsnagConfiguration new]
                                          metaData:[NSDictionary new]
-                                     handledState:state];
+                                     handledState:state
+                                          session:nil];
     report.severity = BSGSeverityInfo;
     
     NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
