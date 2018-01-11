@@ -42,9 +42,6 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
         bsg_log_err(@"Failed to install crash handler. No exceptions will be "
                     @"reported!");
     }
-    
-    
-    [[Bugsnag notifier] flushPendingReports];
 }
 
 - (void)reportUserException:(NSString *)reportName
