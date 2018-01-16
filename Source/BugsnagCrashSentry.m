@@ -12,13 +12,18 @@
 #import "BugsnagCrashSentry.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSink.h"
+#import "BugsnagNotifier.h"
+
+@interface Bugsnag
++ (BugsnagNotifier *)notifier;
+@end
 
 NSUInteger const BSG_MAX_STORED_REPORTS = 12;
 
 @implementation BugsnagCrashSentry
 
 - (void)install:(BugsnagConfiguration *)config
-      apiClient:(BugsnagErrorReportApiClient *)apiClient
+      apiClient:(BugsnagApiClient *)apiClient
         onCrash:(BSG_KSReportWriteCallback)onCrash {
 
     BugsnagSink *sink = [[BugsnagSink alloc] initWithApiClient:apiClient];
@@ -37,8 +42,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
         bsg_log_err(@"Failed to install crash handler. No exceptions will be "
                     @"reported!");
     }
-
-    [sink.apiClient flushPendingData];
+    [[Bugsnag notifier] flushPendingReports];
 }
 
 - (void)reportUserException:(NSString *)reportName
@@ -50,6 +54,20 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
                                            lineOfCode:@""
                                            stackTrace:@[]
                                      terminateProgram:NO];
+}
+
++ (BOOL)isCrashOnLaunch:(BugsnagConfiguration *)config events:(NSArray *)events {
+    for (NSDictionary *event in events) {
+        NSTimeInterval duration = [[event valueForKeyPath:@"app.duration"] unsignedIntegerValue];
+        if (duration > 0) {
+            duration /= 1000;
+        }
+        BOOL unhandled = [[event valueForKeyPath:@"handledState.unhandled"] boolValue];
+        if (unhandled && duration >= 0 && duration <= config.launchCrashThreshold) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 @end

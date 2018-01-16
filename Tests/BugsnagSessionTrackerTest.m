@@ -11,7 +11,7 @@
 #import "BugsnagUser.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagSessionTracker.h"
-#import "BugsnagSessionTrackingApiClient.h"
+#import "BugsnagApiClient.h"
 
 @interface BugsnagSessionTrackerTest : XCTestCase
 @property BugsnagConfiguration *configuration;
@@ -28,7 +28,7 @@
     self.configuration.shouldAutoCaptureSessions = YES;
     self.user = [BugsnagUser new];
     self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
-                                                              apiClient:[BugsnagSessionTrackingApiClient new]
+                                                              apiClient:[BugsnagApiClient new]
                                                                callback:NULL];
 }
 

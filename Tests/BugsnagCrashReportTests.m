@@ -11,6 +11,7 @@
 
 #import "Bugsnag.h"
 #import "BugsnagHandledState.h"
+#import "BugsnagCrashSentry.h"
 #import "BugsnagSession.h"
 #import "BSG_RFC3339DateTool.h"
 
@@ -231,6 +232,36 @@
     // ignores values if no reserved word used
     addresses[@"r14"] = nil;
     XCTAssertNil([errorReport enhancedErrorMessageForThread:thread]);
+}
+
+- (void)testIsCrashOnLaunch {
+    NSMutableDictionary *appState = @{@"duration": @0}.mutableCopy;
+    NSMutableDictionary *handledState = @{@"unhandled": @YES}.mutableCopy;
+    NSMutableDictionary *event = @{@"app": appState, @"handledState": handledState}.mutableCopy;
+    NSArray *events = @[event];
+    
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    appState[@"duration"] = @10000;
+    handledState[@"unhandled"] = @YES;
+    XCTAssertTrue([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
+
+    handledState[@"unhandled"] = @NO;
+    XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
+
+    handledState[@"unhandled"] = @YES;
+    config.launchCrashThreshold = 0;
+    XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
+
+    handledState[@"unhandled"] = @NO;
+    XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
+
+    handledState[@"unhandled"] = @YES;
+    appState[@"duration"] = @20000;
+    config.launchCrashThreshold = 10;
+    XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
+
+    handledState[@"unhandled"] = @NO;
+    XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
 }
 
 @end

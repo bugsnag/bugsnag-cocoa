@@ -14,21 +14,12 @@ typedef void (^RequestCompletion)(id data, BOOL success, NSError *error);
 - (instancetype)initWithConfig:(BugsnagConfiguration *)configuration
                      queueName:(NSString *)queueName;
 
-/**
- * Send outstanding reports
- */
-- (void)flushPendingData;
-
-- (NSOperation *)deliveryOperation;
-
 - (void)sendData:(id)data
      withPayload:(NSDictionary *)payload
            toURL:(NSURL *)url
          headers:(NSDictionary *)headers
+     synchronous:(BOOL)synchronous
     onCompletion:(RequestCompletion)onCompletion;
-
-@property(readonly) NSOperationQueue *sendQueue;
-@property(readonly) BugsnagConfiguration *config;
 
 
 @end

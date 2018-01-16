@@ -9,11 +9,12 @@
 #import "BugsnagKeys.h"
 #import "BugsnagLogger.h"
 
-@interface BSGDelayOperation : NSOperation
-@end
-
 @interface BugsnagApiClient()
 @property (nonatomic) NSURLSession *generatedSession;
+@property(readonly) NSOperationQueue *sendQueue;
+@property(readonly) NSOperationQueue *syncQueue;
+@property NSOperation *requestOperation;
+@property(readonly) BugsnagConfiguration *config;
 @end
 
 @implementation BugsnagApiClient
@@ -23,6 +24,7 @@
     if (self = [super init]) {
         _sendQueue = [NSOperationQueue new];
         _sendQueue.maxConcurrentOperationCount = 1;
+        _syncQueue = [NSOperationQueue mainQueue];
         _config = configuration;
 
         if ([_sendQueue respondsToSelector:@selector(qualityOfService)]) {
@@ -33,28 +35,39 @@
     return self;
 }
 
-- (void)flushPendingData {
-    [self.sendQueue cancelAllOperations];
-    BSGDelayOperation *delay = [BSGDelayOperation new];
-    NSOperation *deliver = [self deliveryOperation];
-    [deliver addDependency:delay];
-    [self.sendQueue addOperations:@[delay, deliver] waitUntilFinished:NO];
-}
-
-- (NSOperation *)deliveryOperation {
-    bsg_log_err(@"Should override deliveryOperation in super class");
-    return [NSOperation new];
-}
-
 #pragma mark - Delivery
 
+- (void)sendData:(id)data
+     withPayload:(NSDictionary *)payload
+           toURL:(NSURL *)url
+         headers:(NSDictionary *)headers
+     synchronous:(BOOL)synchronous
+    onCompletion:(RequestCompletion)onCompletion {
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.requestOperation != nil) { // cancel the previous request
+            [self.requestOperation cancel];
+        }
+        self.requestOperation = [NSBlockOperation blockOperationWithBlock:^{
+            [self sendData:data
+               withPayload:payload
+                     toURL:url
+                   headers:headers
+              onCompletion:onCompletion];
+        }];
+        
+        NSOperationQueue *queue = synchronous ? [NSOperationQueue mainQueue] : self.sendQueue;
+        [queue cancelAllOperations];
+        [queue addOperation:self.requestOperation];
+    });
+}
 
 - (void)sendData:(id)data
      withPayload:(NSDictionary *)payload
            toURL:(NSURL *)url
          headers:(NSDictionary *)headers
     onCompletion:(RequestCompletion)onCompletion {
-
+    
     @try {
         NSError *error = nil;
         NSData *jsonData =
@@ -133,15 +146,6 @@
         [request setValue:headers[key] forHTTPHeaderField:key];
     }
     return request;
-}
-
-@end
-
-@implementation BSGDelayOperation
-const NSTimeInterval BSG_SEND_DELAY_SECS = 1;
-
-- (void)main {
-    [NSThread sleepForTimeInterval:BSG_SEND_DELAY_SECS];
 }
 
 @end

@@ -32,8 +32,9 @@
 #import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
 #import "BugsnagSessionTracker.h"
-#import "BugsnagSessionTrackingApiClient.h"
+#import "BugsnagApiClient.h"
 #import "BSG_RFC3339DateTool.h"
+#import "BSG_KSCrash.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -164,8 +165,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
 
 @interface BugsnagNotifier ()
 @property(nonatomic) BugsnagCrashSentry *crashSentry;
-@property(nonatomic) BugsnagErrorReportApiClient *errorReportApiClient;
-@property(nonatomic) BugsnagSessionTrackingApiClient *sessionTrackingApiClient;
+@property(nonatomic) BugsnagApiClient *errorReportApiClient;
+@property(nonatomic) BugsnagApiClient *sessionTrackingApiClient;
 @property(nonatomic) BugsnagSessionTracker *sessionTracker;
 @property(nonatomic) NSTimer *sessionTimer;
 @end
@@ -189,9 +190,9 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         self.configuration.config.delegate = self;
         self.state.delegate = self;
         self.crashSentry = [BugsnagCrashSentry new];
-        self.errorReportApiClient = [[BugsnagErrorReportApiClient alloc] initWithConfig:configuration
+        self.errorReportApiClient = [[BugsnagApiClient alloc] initWithConfig:configuration
                                                                               queueName:@"Error API queue"];
-        self.sessionTrackingApiClient = [[BugsnagSessionTrackingApiClient alloc] initWithConfig:configuration
+        self.sessionTrackingApiClient = [[BugsnagApiClient alloc] initWithConfig:configuration
                                                                                       queueName:@"Session API queue"];
 
         self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:initConfiguration
@@ -414,7 +415,16 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)flushPendingReports {
-    [self.errorReportApiClient flushPendingData];
+    
+    [[BSG_KSCrash sharedInstance]
+     sendAllReportsWithCompletion:^(NSArray *filteredReports,
+                                    BOOL completed, NSError *error) {
+         if (error) {
+             bsg_log_warn(@"Failed to send reports: %@", error);
+         } else if (filteredReports.count > 0) {
+             bsg_log_info(@"Reports sent.");
+         }
+     }];
 }
 
 - (void)setupConnectivityListener {

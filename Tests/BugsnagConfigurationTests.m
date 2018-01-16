@@ -54,6 +54,18 @@
     XCTAssertFalse([config shouldSendReports]);
 }
 
+- (void)testLaunchThreshold {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertEqual(config.launchCrashThreshold, 10);
+    
+    config.launchCrashThreshold = 0;
+    XCTAssertEqual(config.launchCrashThreshold, 0);
+    
+    NSTimeInterval expected = 1500;
+    config.launchCrashThreshold = expected;
+    XCTAssertEqual(config.launchCrashThreshold, expected);
+}
+
 - (void)testDefaultSessionConfig {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     XCTAssertFalse([config shouldAutoCaptureSessions]);
@@ -96,7 +108,6 @@
     XCTAssertEqualObjects(@"123", config.currentUser.userId);
     XCTAssertEqualObjects(@"foo", config.currentUser.name);
     XCTAssertEqualObjects(@"test@example.com", config.currentUser.emailAddress);
-    
 }
 
 @end

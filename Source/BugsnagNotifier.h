@@ -115,4 +115,6 @@
  */
 - (void)updateAutomaticBreadcrumbDetectionSettings;
 
+- (void)flushPendingReports;
+
 @end

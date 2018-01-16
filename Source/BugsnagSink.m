@@ -29,6 +29,7 @@
 #import "BugsnagCollections.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagKeys.h"
+#import "BugsnagCrashSentry.h"
 
 // This is private in Bugsnag, but really we want package private so define
 // it here.
@@ -38,7 +39,7 @@
 
 @implementation BugsnagSink
 
-- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient {
+- (instancetype)initWithApiClient:(BugsnagApiClient *)apiClient {
     if (self = [super init]) {
         self.apiClient = apiClient;
     }
@@ -101,11 +102,14 @@
         }
         return;
     }
+    
+    BOOL syncReport = [BugsnagCrashSentry isCrashOnLaunch:configuration events:bugsnagReports];
 
     [self.apiClient sendData:bugsnagReports
                  withPayload:reportData
                        toURL:configuration.notifyURL
-            headers:[configuration errorApiHeaders]
+                     headers:[configuration errorApiHeaders]
+                 synchronous:syncReport
                 onCompletion:onCompletion];
 }
 
