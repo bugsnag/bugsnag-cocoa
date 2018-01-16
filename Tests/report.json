@@ -9,15 +9,15 @@
         "kernel_version": "Darwin Kernel Version 14.0.0: Fri Sep 19 00:26:44 PDT 2014; root:xnu-2782.1.97~2/RELEASE_X86_64",
         "machine": "x86_64",
         "application_stats": {
-            "background_time_since_last_crash": 0,
-            "active_time_since_launch": 0,
+            "background_time_since_last_crash": 2,
+            "active_time_since_launch": 2,
             "sessions_since_last_crash": 1,
             "launches_since_last_crash": 1,
-            "active_time_since_last_crash": 0,
+            "active_time_since_last_crash": 2,
             "sessions_since_launch": 1,
             "application_active": false,
             "application_in_foreground": true,
-            "background_time_since_launch": 0
+            "background_time_since_launch": 2
         },
         "CFBundleVersion": "1",
         "cpu_type": 7,
@@ -30,7 +30,7 @@
         "cpu_subtype": 8,
         "CFBundleIdentifier": "net.hockeyapp.CrashProbeiOS",
         "cpu_arch": "x86",
-        "jailbroken": false,
+        "jailbroken": true,
         "model": "MacBookPro11,3",
         "os_version": "14B25",
         "parent_process_name": "launchd_sim",

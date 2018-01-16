@@ -1,5 +1,20 @@
 Changelog
 =========
+## 5.15.2 (11 Jan 2018)
+
+### Bug Fixes
+
+* Fix default user/device ID generation on iOS and tvOS devices
+* Fix mach exception detection
+
+## 5.15.1 (09 Jan 2018)
+
+* Misc Session Tracking fixes and enhancements
+
+## 5.15.0 (05 Jan 2018)
+
+* - Adds support for tracking sessions and overall crash rate by setting `config.shouldAutoCaptureSessions` to `true`.
+In addition, sessions can be indicated manually using `[Bugsnag startSession]` [#222](https://github.com/bugsnag/bugsnag-cocoa/pull/222)
 
 ## 5.14.2 (15 Dec 2017)
 

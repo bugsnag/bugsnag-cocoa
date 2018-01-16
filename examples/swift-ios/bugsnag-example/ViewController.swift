@@ -22,8 +22,12 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+
     @IBAction func doCrash(_ sender: AnyObject) {
-        unhandledCrash()
+        handledError()
     }
 
     func unhandledCrash() {
