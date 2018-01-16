@@ -138,12 +138,12 @@ BugsnagBreadcrumbs *breadcrumbs;
 @property BOOL autoNotify;
 
 /**
- * Sets the threshold in ms for an uncaught error to be considered as a crash on launch.
+ * Sets the threshold in seconds for an uncaught error to be considered as a crash on launch.
  * If a crash is detected on launch, Bugsnag will attempt to send the report synchronously.
  *
- * By default, this value is set at 10,000ms. Set at 0 to disable this functionality.
+ * By default, this value is set at 10s. Set at 0 to disable this functionality.
  */
-@property (nonatomic) NSTimeInterval launchCrashThresholdMs;
+@property (nonatomic) NSTimeInterval launchCrashThreshold;
 
 /**
  * Determines whether app sessions should be tracked automatically. By default this value is false.

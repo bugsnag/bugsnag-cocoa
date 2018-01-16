@@ -53,7 +53,7 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 
 - (id)init {
     if (self = [super init]) {
-        _launchCrashThresholdMs = 10000;
+        _launchCrashThreshold = 10;
         _metaData = [[BugsnagMetaData alloc] init];
         _config = [[BugsnagMetaData alloc] init];
         _apiKey = @"";

@@ -60,7 +60,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
     for (NSDictionary *event in events) {
         NSUInteger duration = [[event valueForKeyPath:@"app.duration"] unsignedIntegerValue];
         BOOL unhandled = [[event valueForKeyPath:@"handledState.unhandled"] boolValue];
-        if (unhandled && duration > 0 && duration <= config.launchCrashThresholdMs) {
+        if (unhandled && duration > 0 && duration <= config.launchCrashThreshold) {
             return YES;
         }
     }
