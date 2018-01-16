@@ -28,9 +28,20 @@
 #import "Bugsnag.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagKeys.h"
+#import "BSG_RFC3339DateTool.h"
+#import "BugsnagUser.h"
+#import "BugsnagSessionTracker.h"
+
+static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
+static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
+static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 
 @interface Bugsnag ()
 + (BugsnagNotifier *)notifier;
+@end
+
+@interface BugsnagNotifier ()
+@property BugsnagSessionTracker *sessionTracker;
 @end
 
 @interface BugsnagConfiguration ()
@@ -45,6 +56,7 @@
         _metaData = [[BugsnagMetaData alloc] init];
         _config = [[BugsnagMetaData alloc] init];
         _apiKey = @"";
+        _sessionURL = [NSURL URLWithString:@"https://sessions.bugsnag.com"];
         _autoNotify = YES;
         _notifyURL = [NSURL URLWithString:BSGDefaultNotifyUrl];
         _beforeNotifyHooks = [NSMutableArray new];
@@ -74,6 +86,9 @@
 - (void)setUser:(NSString *)userId
        withName:(NSString *)userName
        andEmail:(NSString *)userEmail {
+    
+    self.currentUser = [[BugsnagUser alloc] initWithUserId:userId name:userName emailAddress:userEmail];
+
     [self.metaData addAttribute:BSGKeyId withValue:userId toTabWithName:BSGKeyUser];
     [self.metaData addAttribute:BSGKeyName
                       withValue:userName
@@ -182,5 +197,38 @@
                         withValue:newVersion
                     toTabWithName:BSGKeyConfig];
     }
+}
+
+@synthesize shouldAutoCaptureSessions = _shouldAutoCaptureSessions;
+
+- (BOOL)shouldAutoCaptureSessions {
+    return _shouldAutoCaptureSessions;
+}
+
+- (void)setShouldAutoCaptureSessions:(BOOL)shouldAutoCaptureSessions {
+    @synchronized (self) {
+        _shouldAutoCaptureSessions = shouldAutoCaptureSessions;
+        
+        if (shouldAutoCaptureSessions) { // track any existing sessions
+            BugsnagSessionTracker *sessionTracker = [Bugsnag notifier].sessionTracker;
+            [sessionTracker onAutoCaptureEnabled];
+        }
+    }
+}
+
+- (NSDictionary *)errorApiHeaders {
+    return @{
+             kHeaderApiPayloadVersion: @"4.0",
+             kHeaderApiKey: self.apiKey,
+             kHeaderApiSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate new]]
+    };
+}
+
+- (NSDictionary *)sessionApiHeaders {
+    return @{
+             kHeaderApiPayloadVersion: @"1.0",
+             kHeaderApiKey: self.apiKey,
+             kHeaderApiSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate new]]
+             };
 }
 @end

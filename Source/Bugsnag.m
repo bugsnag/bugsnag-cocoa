@@ -194,6 +194,10 @@ static BugsnagNotifier *bsg_g_bugsnag_notifier = NULL;
     [self.notifier clearBreadcrumbs];
 }
 
++ (void)startSession {
+    [self.notifier startSession];
+}
+
 + (NSDateFormatter *)payloadDateFormatter {
     static NSDateFormatter *formatter;
     static dispatch_once_t onceToken;

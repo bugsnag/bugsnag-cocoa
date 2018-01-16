@@ -1,4 +1,4 @@
 target 'Bugsnag Test App' do
-    platform :ios, "9.0"
+    platform :ios, "8.0"
     pod 'Bugsnag', :path => "../.."
 end

@@ -74,7 +74,7 @@
 
     NSString* expectedReportID = @"EEEC2645-5413-48C8-85AD-89638E1BE968";
     NSString* reportFilename = [NSString stringWithFormat:@"%@-CrashReport-%@.json", bundleName, expectedReportID];
-    NSString* reportID = [store reportIDFromFilename:reportFilename];
+    NSString* reportID = [store fileIdFromFilename:reportFilename];
     XCTAssertNotNil(reportID, @"");
     XCTAssertEqualObjects(reportID, expectedReportID, @"");
 }
@@ -84,7 +84,7 @@
     BSG_KSCrashReportStore* store = [self store];
 
     NSString* reportFilename = @"BundleID-CrashReport-REPORTID.xml";
-    NSString* reportID = [store reportIDFromFilename:reportFilename];
+    NSString* reportID = [store fileIdFromFilename:reportFilename];
     XCTAssertNil(reportID, @"");
 }
 
@@ -97,7 +97,7 @@
 
     NSString* expectedReportID = @"EEEC2645-5413-48C8-85AD-89638E1BE968";
     NSString* reportFilename = [NSString stringWithFormat:@"%@-CrashReport-%@.json", bundleName, expectedReportID];
-    NSString* reportID = [store reportIDFromFilename:reportFilename];
+    NSString* reportID = [store fileIdFromFilename:reportFilename];
     XCTAssertNotNil(reportID, @"");
     XCTAssertEqualObjects(reportID, expectedReportID, @"");
 }
