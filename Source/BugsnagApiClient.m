@@ -12,6 +12,8 @@
 @interface BugsnagApiClient()
 @property (nonatomic) NSURLSession *generatedSession;
 @property(readonly) NSOperationQueue *sendQueue;
+@property(readonly) NSOperationQueue *syncQueue;
+@property NSOperation *requestOperation;
 @property(readonly) BugsnagConfiguration *config;
 @end
 
@@ -22,6 +24,7 @@
     if (self = [super init]) {
         _sendQueue = [NSOperationQueue new];
         _sendQueue.maxConcurrentOperationCount = 1;
+        _syncQueue = [NSOperationQueue mainQueue];
         _config = configuration;
 
         if ([_sendQueue respondsToSelector:@selector(qualityOfService)]) {
@@ -42,22 +45,20 @@
     onCompletion:(RequestCompletion)onCompletion {
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (synchronous) {
+        if (self.requestOperation != nil) { // cancel the previous request
+            [self.requestOperation cancel];
+        }
+        self.requestOperation = [NSBlockOperation blockOperationWithBlock:^{
             [self sendData:data
                withPayload:payload
                      toURL:url
                    headers:headers
               onCompletion:onCompletion];
-        } else { // enqueue request
-            [self.sendQueue cancelAllOperations];
-            [self.sendQueue addOperationWithBlock:^{
-                [self sendData:data
-                   withPayload:payload
-                         toURL:url
-                       headers:headers
-                  onCompletion:onCompletion];
-            }];
-        }
+        }];
+        
+        NSOperationQueue *queue = synchronous ? [NSOperationQueue mainQueue] : self.sendQueue;
+        [queue cancelAllOperations];
+        [queue addOperation:self.requestOperation];
     });
 }
 
@@ -66,7 +67,7 @@
            toURL:(NSURL *)url
          headers:(NSDictionary *)headers
     onCompletion:(RequestCompletion)onCompletion {
-
+    
     @try {
         NSError *error = nil;
         NSData *jsonData =
