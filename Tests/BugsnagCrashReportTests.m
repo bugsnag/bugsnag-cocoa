@@ -241,7 +241,7 @@
     NSArray *events = @[event];
     
     BugsnagConfiguration *config = [BugsnagConfiguration new];
-    appState[@"duration"] = @10;
+    appState[@"duration"] = @10000;
     handledState[@"unhandled"] = @YES;
     XCTAssertTrue([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
 
@@ -257,7 +257,7 @@
 
     handledState[@"unhandled"] = @YES;
     appState[@"duration"] = @20000;
-    config.launchCrashThreshold = 10000;
+    config.launchCrashThreshold = 10;
     XCTAssertFalse([BugsnagCrashSentry isCrashOnLaunch:config events:events]);
 
     handledState[@"unhandled"] = @NO;
