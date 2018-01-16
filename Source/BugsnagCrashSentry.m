@@ -58,9 +58,12 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
 
 + (BOOL)isCrashOnLaunch:(BugsnagConfiguration *)config events:(NSArray *)events {
     for (NSDictionary *event in events) {
-        NSUInteger duration = [[event valueForKeyPath:@"app.duration"] unsignedIntegerValue];
+        NSTimeInterval duration = [[event valueForKeyPath:@"app.duration"] unsignedIntegerValue];
+        if (duration > 0) {
+            duration /= 1000;
+        }
         BOOL unhandled = [[event valueForKeyPath:@"handledState.unhandled"] boolValue];
-        if (unhandled && duration > 0 && duration <= config.launchCrashThreshold) {
+        if (unhandled && duration >= 0 && duration <= config.launchCrashThreshold) {
             return YES;
         }
     }
