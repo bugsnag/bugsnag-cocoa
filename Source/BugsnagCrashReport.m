@@ -638,8 +638,8 @@ initWithErrorName:(NSString *_Nonnull)name
  * For assert, "assertion failed" will be in one of the registers.
  */
 - (BOOL)isReservedWord:(NSString *)contentValue {
-    return [@"assertion failed" isEqualToString:contentValue]
-    || [@"fatal error" isEqualToString:contentValue];
+    return [@"assertion failed" caseInsensitiveCompare:contentValue] == NSOrderedSame
+    || [@"fatal error" caseInsensitiveCompare:contentValue] == NSOrderedSame;
 }
 
 @end
