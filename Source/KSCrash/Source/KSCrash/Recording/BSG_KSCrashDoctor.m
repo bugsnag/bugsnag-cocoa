@@ -15,6 +15,7 @@
 typedef enum {
     BSG_CPUFamilyUnknown,
     BSG_CPUFamilyArm,
+    BSG_CPUFamilyArm64,
     BSG_CPUFamilyX86,
     BSG_CPUFamilyX86_64
 } BSG_CPUFamily;
@@ -170,6 +171,9 @@ typedef enum {
 - (BSG_CPUFamily)cpuFamily:(NSDictionary *)report {
     NSDictionary *system = [self systemReport:report];
     NSString *cpuArch = system[@BSG_KSSystemField_CPUArch];
+    if ([cpuArch isEqualToString:@"arm64"]) {
+        return BSG_CPUFamilyArm64;
+    }
     if ([cpuArch rangeOfString:@"arm"].location == 0) {
         return BSG_CPUFamilyArm;
     }
@@ -196,6 +200,18 @@ typedef enum {
             return @"r2";
         case 3:
             return @"r3";
+        }
+    }
+    case BSG_CPUFamilyArm64: {
+        switch (index) {
+            case 0:
+                return @"x0";
+            case 1:
+                return @"x1";
+            case 2:
+                return @"x2";
+            case 3:
+                return @"x3";
         }
     }
     case BSG_CPUFamilyX86: {
