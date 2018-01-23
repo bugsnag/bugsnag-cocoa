@@ -177,8 +177,7 @@ typedef enum {
         [cpuArch rangeOfString:@"86"].location == 2) {
         return BSG_CPUFamilyX86;
     }
-    if ([cpuArch rangeOfString:@"x86_64" options:NSCaseInsensitiveSearch]
-            .location != NSNotFound) {
+    if ([@[@"x86_64", @"x86"] containsObject:cpuArch]) {
         return BSG_CPUFamilyX86_64;
     }
     return BSG_CPUFamilyUnknown;
