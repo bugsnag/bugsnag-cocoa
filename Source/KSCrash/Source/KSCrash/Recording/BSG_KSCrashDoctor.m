@@ -366,10 +366,13 @@ typedef enum {
     BSG_CPUFamily family = [self cpuFamily:report];
     NSDictionary *registers =
         [self basicRegistersFromThreadReport:crashedThread];
-    NSArray *regNames = @[[self registerNameForFamily:family paramIndex:0],
-            [self registerNameForFamily:family paramIndex:1],
-            [self registerNameForFamily:family paramIndex:2],
-            [self registerNameForFamily:family paramIndex:3]];
+    NSMutableArray *regNames = [NSMutableArray arrayWithCapacity:4];
+    for (int paramIndex = 0; paramIndex <= 3; paramIndex++) {
+        NSString *regName = [self registerNameForFamily:family paramIndex:paramIndex];
+        if (regName.length > 0) {
+            [regNames addObject:regName];
+        }
+    }
     NSMutableArray *params = [NSMutableArray arrayWithCapacity:4];
     for (NSString *regName in regNames) {
         BSG_KSCrashDoctorParam *param = [[BSG_KSCrashDoctorParam alloc] init];
