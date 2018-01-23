@@ -177,6 +177,12 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
 @end
 
+@interface RegisterErrorData : NSObject
+@property (nonatomic, strong) NSString *errorClass;
+@property (nonatomic, strong) NSString *errorMessage;
+- (instancetype)initWithClass:(NSString *_Nonnull)errorClass message:(NSString *_Nonnull)errorMessage NS_DESIGNATED_INITIALIZER;
+@end
+
 @interface BugsnagCrashReport ()
 
 /**
@@ -542,10 +548,10 @@ initWithErrorName:(NSString *_Nonnull)name
         BOOL isCrashedThread = [thread[@"crashed"] boolValue];
         
         if (isCrashedThread) {
-            NSString *errMsg = [self enhancedErrorMessageForThread:thread];
-            
-            if (errMsg) { // use enhanced error message (currently swift assertions)
-                BSGDictInsertIfNotNil(exception, errMsg, BSGKeyMessage);
+            RegisterErrorData *errorData = [self enhancedErrorContentForThread:thread];
+            if (errorData) {
+                BSGDictInsertIfNotNil(exception, errorData.errorMessage, BSGKeyMessage);
+                BSGDictInsertIfNotNil(exception, errorData.errorClass, BSGKeyErrorClass);
             }
             
             NSUInteger seen = 0;
@@ -595,36 +601,43 @@ initWithErrorName:(NSString *_Nonnull)name
 
 /**
  * Returns the enhanced error message for the thread, or nil if none exists.
+ */
+- (NSString *)enhancedErrorMessageForThread:(NSDictionary *)thread {
+    return [self enhancedErrorContentForThread:thread].errorMessage;
+}
+
+/**
+ * Inspect notable addresses to find the message and type from assertion failures
  *
  * This relies very heavily on heuristics rather than any documented APIs.
  */
-- (NSString *)enhancedErrorMessageForThread:(NSDictionary *)thread {
+- (RegisterErrorData *_Nullable)enhancedErrorContentForThread:(NSDictionary *)thread {
     NSDictionary *notableAddresses = thread[@"notable_addresses"];
-    NSMutableArray *msgBuffer = [NSMutableArray new];
-    BOOL hasReservedWord = NO;
-    
-    if (notableAddresses) {
-        for (NSString *key in notableAddresses) {
-            if (![key hasPrefix:@"stack"]) { // skip stack frames, only use register values
-                NSDictionary *data = notableAddresses[key];
-                NSString *contentValue = data[@"value"];
-                
-                hasReservedWord = hasReservedWord || [self isReservedWord:contentValue];
-                
-                // must be a string that isn't a reserved word and isn't a filepath
-                if ([@"string" isEqualToString:data[BSGKeyType]]
-                    && ![self isReservedWord:contentValue]
-                    && !([[contentValue componentsSeparatedByString:@"/"] count] > 2)) {
-                    
-                    [msgBuffer addObject:contentValue];
-                }
-            }
+    NSMutableArray *interestingValues = [NSMutableArray new];
+    NSString *reservedWord = nil;
+
+    for (NSString *key in notableAddresses) {
+        if ([key hasPrefix:@"stack"]) { // skip stack frames, only use register values
+            continue;
         }
-        [msgBuffer sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+        NSDictionary *data = notableAddresses[key];
+        NSString *contentValue = data[@"value"];
+
+        if ([self isReservedWord:contentValue]) {
+            reservedWord = contentValue;
+        } else if ([@"string" isEqualToString:data[BSGKeyType]]
+            && !([[contentValue componentsSeparatedByString:@"/"] count] > 2)) {
+            // must be a string that isn't a reserved word and isn't a filepath
+            [interestingValues addObject:contentValue];
+        }
     }
+
+    [interestingValues sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     
-    if (hasReservedWord && [msgBuffer count] > 0) { // needs to have a reserved word used + a message
-        return [msgBuffer componentsJoinedByString:@" | "];
+    if (reservedWord.length > 0 && [interestingValues count] > 0) { // needs to have a reserved word used + a message
+        NSString *message = [interestingValues componentsJoinedByString:@" | "];
+        return [[RegisterErrorData alloc] initWithClass:reservedWord
+                                                message:message];
     } else {
         return nil;
     }
@@ -642,4 +655,18 @@ initWithErrorName:(NSString *_Nonnull)name
     || [@"fatal error" caseInsensitiveCompare:contentValue] == NSOrderedSame;
 }
 
+@end
+
+@implementation RegisterErrorData
+- (instancetype)init {
+    return [self initWithClass:@"Unknown" message:@"<unset>"];
+}
+
+- (instancetype)initWithClass:(NSString *_Nonnull)errorClass message:(NSString *_Nonnull)errorMessage {
+    if (self = [super init]) {
+        _errorClass = errorClass;
+        _errorMessage = errorMessage;
+    }
+    return self;
+}
 @end
