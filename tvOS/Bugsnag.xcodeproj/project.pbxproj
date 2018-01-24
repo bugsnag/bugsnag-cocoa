@@ -13,8 +13,8 @@
 		8AB151171D41356800C9B218 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A8D51241D41343500D33797 /* Bugsnag.framework */; };
 		8AB151211D41361700C9B218 /* BugsnagBreadcrumbsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB1511D1D41361700C9B218 /* BugsnagBreadcrumbsTest.m */; };
 		8AB151221D41361700C9B218 /* BugsnagCrashReportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB1511E1D41361700C9B218 /* BugsnagCrashReportTests.m */; };
-		8AB151231D41361700C9B218 /* BugsnagSinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB1511F1D41361700C9B218 /* BugsnagSinkTests.m */; };
 		8AB151241D41361700C9B218 /* report.json in Resources */ = {isa = PBXBuildFile; fileRef = 8AB151201D41361700C9B218 /* report.json */; };
+		8ACF0F74201812AD00173809 /* BugsnagSinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB1511F1D41361700C9B218 /* BugsnagSinkTests.m */; };
 		8AD9A4F51D42EE87004E1CC5 /* Bugsnag.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AB151261D41366400C9B218 /* Bugsnag.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8AD9A4F61D42EE8E004E1CC5 /* BugsnagBreadcrumb.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AB151281D41366400C9B218 /* BugsnagBreadcrumb.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8AD9A4F71D42EE90004E1CC5 /* BugsnagCollections.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AB1512A1D41366400C9B218 /* BugsnagCollections.h */; };
@@ -927,6 +927,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8ACF0F74201812AD00173809 /* BugsnagSinkTests.m in Sources */,
 				E7CE78F21FD94F1B001D07E0 /* KSMach_Tests.m in Sources */,
 				E7CE79071FD94F1B001D07E0 /* KSSysCtl_Tests.m in Sources */,
 				E7CE78F71FD94F1B001D07E0 /* KSCrashSentry_Signal_Tests.m in Sources */,
@@ -938,11 +939,9 @@
 				E7CE78F31FD94F1B001D07E0 /* NSError+SimpleConstructor_Tests.m in Sources */,
 				E7CE79001FD94F1B001D07E0 /* KSJSONCodec_Tests.m in Sources */,
 				E7CE79051FD94F1B001D07E0 /* KSDynamicLinker_Tests.m in Sources */,
-				8AB151231D41361700C9B218 /* BugsnagSinkTests.m in Sources */,
 				E7CE78F61FD94F1B001D07E0 /* FileBasedTestCase.m in Sources */,
 				E7CE79031FD94F1B001D07E0 /* KSCrashReportConverter_Tests.m in Sources */,
 				E79148911FD82E77003EFEBF /* BugsnagUserTest.m in Sources */,
-				8AB151231D41361700C9B218 /* BugsnagSinkTests.m in Sources */,
 				E791488E1FD82E77003EFEBF /* BugsnagSessionTrackerTest.m in Sources */,
 				E79148901FD82E77003EFEBF /* BugsnagSessionTest.m in Sources */,
 				8AB151211D41361700C9B218 /* BugsnagBreadcrumbsTest.m in Sources */,
