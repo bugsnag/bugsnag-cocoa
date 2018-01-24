@@ -180,6 +180,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 @interface RegisterErrorData : NSObject
 @property (nonatomic, strong) NSString *errorClass;
 @property (nonatomic, strong) NSString *errorMessage;
++ (instancetype)errorDataFromThreads:(NSArray *)threads;
 - (instancetype)initWithClass:(NSString *_Nonnull)errorClass message:(NSString *_Nonnull)errorMessage NS_DESIGNATED_INITIALIZER;
 @end
 
@@ -223,10 +224,16 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
         _error = [report valueForKeyPath:@"crash.error"];
         _errorType = _error[BSGKeyType];
-        _errorClass = BSGParseErrorClass(_error, _errorType);
-        _errorMessage = BSGParseErrorMessage(report, _error, _errorType);
-        _binaryImages = report[@"binary_images"];
         _threads = [report valueForKeyPath:@"crash.threads"];
+        RegisterErrorData *data = [RegisterErrorData errorDataFromThreads:_threads];
+        if (data) {
+            _errorClass = data.errorClass;
+            _errorMessage = data.errorMessage;
+        } else {
+            _errorClass = BSGParseErrorClass(_error, _errorType);
+            _errorMessage = BSGParseErrorMessage(report, _error, _errorType);
+        }
+        _binaryImages = report[@"binary_images"];
         _breadcrumbs = BSGParseBreadcrumbs(report);
         _severity = BSGParseSeverity(
             [report valueForKeyPath:@"user.state.crash.severity"]);
@@ -548,12 +555,6 @@ initWithErrorName:(NSString *_Nonnull)name
         BOOL isCrashedThread = [thread[@"crashed"] boolValue];
         
         if (isCrashedThread) {
-            RegisterErrorData *errorData = [self enhancedErrorContentForThread:thread];
-            if (errorData) {
-                BSGDictInsertIfNotNil(exception, errorData.errorMessage, BSGKeyMessage);
-                BSGDictInsertIfNotNil(exception, errorData.errorClass, BSGKeyErrorClass);
-            }
-            
             NSUInteger seen = 0;
             NSMutableArray *stacktrace = [NSMutableArray array];
 
@@ -599,48 +600,45 @@ initWithErrorName:(NSString *_Nonnull)name
     return bugsnagThreads;
 }
 
-/**
- * Returns the enhanced error message for the thread, or nil if none exists.
- */
-- (NSString *)enhancedErrorMessageForThread:(NSDictionary *)thread {
-    return [self enhancedErrorContentForThread:thread].errorMessage;
+- (NSString *_Nullable)enhancedErrorMessageForThread:(NSDictionary *_Nullable)thread {
+    return [self errorMessage];
 }
 
-/**
- * Inspect notable addresses to find the message and type from assertion failures
- *
- * This relies very heavily on heuristics rather than any documented APIs.
- */
-- (RegisterErrorData *_Nullable)enhancedErrorContentForThread:(NSDictionary *)thread {
-    NSDictionary *notableAddresses = thread[@"notable_addresses"];
-    NSMutableArray *interestingValues = [NSMutableArray new];
-    NSString *reservedWord = nil;
+@end
 
-    for (NSString *key in notableAddresses) {
-        if ([key hasPrefix:@"stack"]) { // skip stack frames, only use register values
+@implementation RegisterErrorData
++ (instancetype)errorDataFromThreads:(NSArray *)threads {
+    for (NSDictionary *thread in threads) {
+        if (![thread[@"crashed"] boolValue]) {
             continue;
         }
-        NSDictionary *data = notableAddresses[key];
-        NSString *contentValue = data[@"value"];
+        NSDictionary *notableAddresses = thread[@"notable_addresses"];
+        NSMutableArray *interestingValues = [NSMutableArray new];
+        NSString *reservedWord = nil;
 
-        if ([self isReservedWord:contentValue]) {
-            reservedWord = contentValue;
-        } else if ([@"string" isEqualToString:data[BSGKeyType]]
-            && !([[contentValue componentsSeparatedByString:@"/"] count] > 2)) {
-            // must be a string that isn't a reserved word and isn't a filepath
-            [interestingValues addObject:contentValue];
+        for (NSString *key in notableAddresses) {
+            if ([key hasPrefix:@"stack"]) { // skip stack frames, only use register values
+                continue;
+            }
+            NSDictionary *data = notableAddresses[key];
+            NSString *contentValue = data[@"value"];
+
+            if ([self isReservedWord:contentValue]) {
+                reservedWord = contentValue;
+            } else if ([@"string" isEqualToString:data[BSGKeyType]]
+                       && !([[contentValue componentsSeparatedByString:@"/"] count] > 2)) {
+                // must be a string that isn't a reserved word and isn't a filepath
+                [interestingValues addObject:contentValue];
+            }
         }
-    }
 
-    [interestingValues sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    
-    if (reservedWord.length > 0 && [interestingValues count] > 0) { // needs to have a reserved word used + a message
+        [interestingValues sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+
         NSString *message = [interestingValues componentsJoinedByString:@" | "];
         return [[RegisterErrorData alloc] initWithClass:reservedWord
                                                 message:message];
-    } else {
-        return nil;
     }
+    return nil;
 }
 
 /**
@@ -650,19 +648,19 @@ initWithErrorName:(NSString *_Nonnull)name
  *
  * For assert, "assertion failed" will be in one of the registers.
  */
-- (BOOL)isReservedWord:(NSString *)contentValue {
++ (BOOL)isReservedWord:(NSString *)contentValue {
     return [@"assertion failed" caseInsensitiveCompare:contentValue] == NSOrderedSame
     || [@"fatal error" caseInsensitiveCompare:contentValue] == NSOrderedSame;
 }
 
-@end
-
-@implementation RegisterErrorData
 - (instancetype)init {
     return [self initWithClass:@"Unknown" message:@"<unset>"];
 }
 
-- (instancetype)initWithClass:(NSString *_Nonnull)errorClass message:(NSString *_Nonnull)errorMessage {
+- (instancetype)initWithClass:(NSString *)errorClass message:(NSString *)errorMessage {
+    if (errorClass.length == 0) {
+        return nil;
+    }
     if (self = [super init]) {
         _errorClass = errorClass;
         _errorMessage = errorMessage;
