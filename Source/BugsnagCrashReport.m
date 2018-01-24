@@ -652,7 +652,8 @@ initWithErrorName:(NSString *_Nonnull)name
  */
 + (BOOL)isReservedWord:(NSString *)contentValue {
     return [@"assertion failed" caseInsensitiveCompare:contentValue] == NSOrderedSame
-    || [@"fatal error" caseInsensitiveCompare:contentValue] == NSOrderedSame;
+    || [@"fatal error" caseInsensitiveCompare:contentValue] == NSOrderedSame
+    || [@"precondition failed" caseInsensitiveCompare:contentValue] == NSOrderedSame;
 }
 
 - (instancetype)init {
