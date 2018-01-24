@@ -1,5 +1,23 @@
 Changelog
 =========
+## 5.15.3 (23 Jan 2018)
+
+### Bug Fixes
+
+* Remove chatty logging from session tracking
+  [#231](https://github.com/bugsnag/bugsnag-cocoa/pull/231)
+  [Jamie Lynch](https://github.com/fractalwrench)
+* Re-add API key to payload body to preserve backwards compatibility with older
+  versions of the error reporting API
+  [#232](https://github.com/bugsnag/bugsnag-cocoa/pull/232)
+  [Jamie Lynch](https://github.com/fractalwrench)
+* Fix crash in iPhone X Simulator when reporting user exceptions
+  [#234](https://github.com/bugsnag/bugsnag-cocoa/pull/234)
+  [Paul Zabelin](https://github.com/paulz)
+* Improve capture of Swift assertion error messages on arm64 devices, inserting
+  the assertion type into the report's `errorClass`
+  [#235](https://github.com/bugsnag/bugsnag-cocoa/pull/235)
+
 ## 5.15.2 (11 Jan 2018)
 
 ### Bug Fixes
