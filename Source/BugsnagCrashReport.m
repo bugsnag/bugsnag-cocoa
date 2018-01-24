@@ -621,12 +621,14 @@ initWithErrorName:(NSString *_Nonnull)name
                 continue;
             }
             NSDictionary *data = notableAddresses[key];
+            if (![@"string" isEqualToString:data[BSGKeyType]]) {
+                continue;
+            }
             NSString *contentValue = data[@"value"];
 
             if ([self isReservedWord:contentValue]) {
                 reservedWord = contentValue;
-            } else if ([@"string" isEqualToString:data[BSGKeyType]]
-                       && !([[contentValue componentsSeparatedByString:@"/"] count] > 2)) {
+            } else if (!([[contentValue componentsSeparatedByString:@"/"] count] > 2)) {
                 // must be a string that isn't a reserved word and isn't a filepath
                 [interestingValues addObject:contentValue];
             }
