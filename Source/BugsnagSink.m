@@ -29,6 +29,7 @@
 #import "BugsnagCollections.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagKeys.h"
+#import "BugsnagHandledState.h"
 
 // This is private in Bugsnag, but really we want package private so define
 // it here.
@@ -59,9 +60,14 @@
          onCompletion:(BSG_KSCrashReportFilterCompletion)onCompletion {
     NSMutableArray *bugsnagReports = [NSMutableArray new];
     BugsnagConfiguration *configuration = [Bugsnag configuration];
+    
     for (NSDictionary *report in reports) {
-        BugsnagCrashReport *bugsnagReport =
-                [[BugsnagCrashReport alloc] initWithKSReport:report];
+        BOOL incompleteReport = (![@"standard" isEqualToString:[report valueForKeyPath:@"report.type"]] ||
+                                 [[report objectForKey:@"incomplete"] boolValue]);
+        
+        // TODO use detected incomplete report 
+        BugsnagCrashReport *bugsnagReport = [[BugsnagCrashReport alloc] initWithKSReport:report];
+        
         if (![bugsnagReport shouldBeSent])
             continue;
         BOOL shouldSend = YES;
