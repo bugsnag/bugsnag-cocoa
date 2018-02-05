@@ -29,7 +29,7 @@
 #import "BugsnagCollections.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagKeys.h"
-#import "BugsnagHandledState.h"
+#import "BSG_KSSystemInfo.h"
 
 // This is private in Bugsnag, but really we want package private so define
 // it here.
@@ -62,11 +62,31 @@
     BugsnagConfiguration *configuration = [Bugsnag configuration];
     
     for (NSDictionary *report in reports) {
+        BugsnagCrashReport *bugsnagReport = [[BugsnagCrashReport alloc] initWithKSReport:report];
         BOOL incompleteReport = (![@"standard" isEqualToString:[report valueForKeyPath:@"report.type"]] ||
                                  [[report objectForKey:@"incomplete"] boolValue]);
         
-        // TODO use detected incomplete report 
-        BugsnagCrashReport *bugsnagReport = [[BugsnagCrashReport alloc] initWithKSReport:report];
+        if (incompleteReport) { // append app/device data as this is unlikely to change between sessions
+            NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
+            
+            bugsnagReport.app = @{
+                                  @"bundleVersion": sysInfo[@BSG_KSSystemField_BundleVersion],
+                                  @"id": sysInfo[@BSG_KSSystemField_BundleID],
+                                  @"releaseStage": configuration.releaseStage,
+                                  @"type": sysInfo[@BSG_KSSystemField_SystemName],
+                                  @"version": sysInfo[@BSG_KSSystemField_BundleShortVersion]
+                                  };
+            
+            bugsnagReport.device = @{
+                                 @"jailbroken": sysInfo[@BSG_KSSystemField_Jailbroken],
+                                 @"locale": [[NSLocale currentLocale] localeIdentifier],
+                                 @"manufacturer": @"Apple",
+                                 @"model": sysInfo[@BSG_KSSystemField_Machine],
+                                 @"modelNumber": sysInfo[@BSG_KSSystemField_Model],
+                                 @"osName": sysInfo[@BSG_KSSystemField_SystemName],
+                                 @"osVersion": sysInfo[@BSG_KSSystemField_SystemVersion],
+                                 };
+        }
         
         if (![bugsnagReport shouldBeSent])
             continue;
