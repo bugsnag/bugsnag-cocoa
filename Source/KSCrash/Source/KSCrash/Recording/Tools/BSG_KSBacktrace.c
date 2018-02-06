@@ -128,16 +128,16 @@ int bsg_ksbt_backtraceThreadState(
         return 0;
     }
 
-    int i = 0;
+    int entryIndex = 0;
 
     if (skipEntries == 0) {
         const uintptr_t instructionAddress =
             bsg_ksmachinstructionAddress(machineContext);
-        backtraceBuffer[i] = instructionAddress;
-        i++;
+        backtraceBuffer[entryIndex] = instructionAddress;
+        entryIndex++;
 
-        if (i == maxEntries) {
-            return i;
+        if (entryIndex == maxEntries) {
+            return entryIndex;
         }
     }
 
@@ -145,11 +145,11 @@ int bsg_ksbt_backtraceThreadState(
         uintptr_t linkRegister = bsg_ksmachlinkRegister(machineContext);
 
         if (linkRegister) {
-            backtraceBuffer[i] = linkRegister;
-            i++;
+            backtraceBuffer[entryIndex] = linkRegister;
+            entryIndex++;
 
-            if (i == maxEntries) {
-                return i;
+            if (entryIndex == maxEntries) {
+                return entryIndex;
             }
         }
     }
@@ -169,15 +169,15 @@ int bsg_ksbt_backtraceThreadState(
         }
     }
 
-    for (; i < maxEntries; i++) {
-        backtraceBuffer[i] = frame.return_address;
-        if (backtraceBuffer[i] == 0 || frame.previous == 0 ||
+    for (; entryIndex < maxEntries; entryIndex++) {
+        backtraceBuffer[entryIndex] = frame.return_address;
+        if (backtraceBuffer[entryIndex] == 0 || frame.previous == 0 ||
             bsg_ksmachcopyMem(frame.previous, &frame, sizeof(frame)) !=
                 KERN_SUCCESS) {
             break;
         }
     }
-    return i;
+    return entryIndex;
 }
 
 int bsg_ksbt_backtraceThread(const thread_t thread,
@@ -212,15 +212,15 @@ int bsg_ksbt_backtraceSelf(uintptr_t *const backtraceBuffer,
 void bsg_ksbt_symbolicate(const uintptr_t *const backtraceBuffer,
                           Dl_info *const symbolsBuffer, const int numEntries,
                           const int skippedEntries) {
-    int i = 0;
+    int entryIndex = 0;
 
-    if (!skippedEntries && i < numEntries) {
-        bsg_ksdldladdr(backtraceBuffer[i], &symbolsBuffer[i]);
-        i++;
+    if (!skippedEntries && entryIndex < numEntries) {
+        bsg_ksdldladdr(backtraceBuffer[entryIndex], &symbolsBuffer[entryIndex]);
+        entryIndex++;
     }
 
-    for (; i < numEntries; i++) {
-        bsg_ksdldladdr(CALL_INSTRUCTION_FROM_RETURN_ADDRESS(backtraceBuffer[i]),
-                       &symbolsBuffer[i]);
+    for (; entryIndex < numEntries; entryIndex++) {
+        bsg_ksdldladdr(CALL_INSTRUCTION_FROM_RETURN_ADDRESS(backtraceBuffer[entryIndex]),
+                       &symbolsBuffer[entryIndex]);
     }
 }

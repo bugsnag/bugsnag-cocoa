@@ -86,8 +86,8 @@
 
 - (NSArray *)fileIds {
     NSError *error = nil;
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSArray *filenames = [fm contentsOfDirectoryAtPath:self.path error:&error];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *filenames = [fileManager contentsOfDirectoryAtPath:self.path error:&error];
     if (filenames == nil) {
         BSG_KSLOG_ERROR(@"Could not get contents of directory %@: %@",
                 self.path, error);
@@ -102,7 +102,7 @@
             NSString *fullPath =
                     [self.path stringByAppendingPathComponent:filename];
             NSDictionary *fileAttribs =
-                    [fm attributesOfItemAtPath:fullPath error:&error];
+                    [fileManager attributesOfItemAtPath:fullPath error:&error];
             if (fileAttribs == nil) {
                 BSG_KSLOG_ERROR(@"Could not read file attributes for %@: %@",
                         fullPath, error);
@@ -216,10 +216,10 @@
 
 + (BOOL)ensureDirectoryExists:(NSString *)path {
     NSError *error = nil;
-    NSFileManager *fm = [NSFileManager defaultManager];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
 
-    if (![fm fileExistsAtPath:path]) {
-        if (![fm createDirectoryAtPath:path
+    if (![fileManager fileExistsAtPath:path]) {
+        if (![fileManager createDirectoryAtPath:path
            withIntermediateDirectories:YES
                             attributes:nil
                                  error:&error]) {

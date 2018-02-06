@@ -121,12 +121,12 @@ static inline void flushLog(void) {
     // Nothing to do.
 }
 
-static inline void setLogFD(int fd) {
+static inline void setLogFD(int fileDescriptor) {
     if (bsg_g_fd >= 0 && bsg_g_fd != STDOUT_FILENO &&
         bsg_g_fd != STDERR_FILENO && bsg_g_fd != STDIN_FILENO) {
         close(bsg_g_fd);
     }
-    bsg_g_fd = fd;
+    bsg_g_fd = fileDescriptor;
 }
 
 bool bsg_kslog_setLogFilename(const char *filename, bool overwrite) {

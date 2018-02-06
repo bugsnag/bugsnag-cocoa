@@ -178,14 +178,14 @@ bool bsg_ksmachfillState(const thread_t thread, const thread_state_t state,
 void bsg_ksmach_init(void) {
     static volatile sig_atomic_t initialized = 0;
     if (!initialized) {
-        kern_return_t kr;
+        kern_return_t kernelReturn;
         const task_t thisTask = mach_task_self();
         thread_act_array_t threads;
         mach_msg_type_number_t numThreads;
 
-        if ((kr = task_threads(thisTask, &threads, &numThreads)) !=
+        if ((kernelReturn = task_threads(thisTask, &threads, &numThreads)) !=
             KERN_SUCCESS) {
-            BSG_KSLOG_ERROR("task_threads: %s", mach_error_string(kr));
+            BSG_KSLOG_ERROR("task_threads: %s", mach_error_string(kernelReturn));
             return;
         }
 
@@ -452,9 +452,9 @@ double bsg_ksmachtimeDifferenceInSeconds(const uint64_t endTime,
 
     if (conversion == 0) {
         mach_timebase_info_data_t info = {0};
-        kern_return_t kr = mach_timebase_info(&info);
-        if (kr != KERN_SUCCESS) {
-            BSG_KSLOG_ERROR("mach_timebase_info: %s", mach_error_string(kr));
+        kern_return_t kernelReturn = mach_timebase_info(&info);
+        if (kernelReturn != KERN_SUCCESS) {
+            BSG_KSLOG_ERROR("mach_timebase_info: %s", mach_error_string(kernelReturn));
             return 0;
         }
 

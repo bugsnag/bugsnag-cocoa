@@ -150,8 +150,8 @@ int bsg_kscrashstate_i_onEndData(__unused void *const userData) {
  */
 int bsg_kscrashstate_i_addJSONData(const char *const data, const size_t length,
                                    void *const userData) {
-    const int fd = *((int *)userData);
-    const bool success = bsg_ksfuwriteBytesToFD(fd, data, (ssize_t)length);
+    const int fileDescriptor = *((int *)userData);
+    const bool success = bsg_ksfuwriteBytesToFD(fileDescriptor, data, (ssize_t)length);
     return success ? BSG_KSJSON_OK : BSG_KSJSON_ERROR_CANNOT_ADD_DATA;
 }
 

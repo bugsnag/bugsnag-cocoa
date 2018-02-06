@@ -279,8 +279,8 @@ static inline bool isRootClass(const void *const classPtr) {
 }
 
 static inline const char *getClassName(const void *classPtr) {
-    const struct class_ro_t *ro = getClassRO(classPtr);
-    return ro->name;
+    const struct class_ro_t *classRo = getClassRO(classPtr);
+    return classRo->name;
 }
 
 /** Check if a tagged pointer is a number.
@@ -518,24 +518,24 @@ static bool isValidIvarType(const char *const type) {
 
 static bool containsValidROData(const void *const classPtr) {
     struct class_t class;
-    struct class_rw_t rw;
-    struct class_ro_t ro;
+    struct class_rw_t classRw;
+    struct class_ro_t classRo;
     if (bsg_ksmachcopyMem(classPtr, &class, sizeof(class)) != KERN_SUCCESS) {
         return false;
     }
-    if (bsg_ksmachcopyMem(getClassRW(&class), &rw, sizeof(rw)) !=
+    if (bsg_ksmachcopyMem(getClassRW(&class), &classRw, sizeof(classRw)) !=
         KERN_SUCCESS) {
         return false;
     }
-    if (bsg_ksmachcopyMem(rw.ro, &ro, sizeof(ro)) != KERN_SUCCESS) {
+    if (bsg_ksmachcopyMem(classRw.ro, &classRo, sizeof(classRo)) != KERN_SUCCESS) {
         return false;
     }
     return true;
 }
 
 static bool containsValidIvarData(const void *const classPtr) {
-    const struct class_ro_t *ro = getClassRO(classPtr);
-    const struct ivar_list_t *ivars = ro->ivars;
+    const struct class_ro_t *classRo = getClassRO(classPtr);
+    const struct ivar_list_t *ivars = classRo->ivars;
     if (ivars == NULL) {
         return true;
     }
@@ -572,8 +572,8 @@ static bool containsValidIvarData(const void *const classPtr) {
 }
 
 static bool containsValidClassName(const void *const classPtr) {
-    const struct class_ro_t *ro = getClassRO(classPtr);
-    return isValidName(ro->name, kMaxNameLength);
+    const struct class_ro_t *classRo = getClassRO(classPtr);
+    return isValidName(classRo->name, kMaxNameLength);
 }
 
 //======================================================================

@@ -153,8 +153,8 @@ void bsg_kscrw_i_addStringElement(const BSG_KSCrashReportWriter *const writer,
 void bsg_kscrw_i_addTextFileElement(const BSG_KSCrashReportWriter *const writer,
                                     const char *const key,
                                     const char *const filePath) {
-    const int fd = open(filePath, O_RDONLY);
-    if (fd < 0) {
+    const int fileDescriptor = open(filePath, O_RDONLY);
+    if (fileDescriptor < 0) {
         BSG_KSLOG_ERROR("Could not open file %s: %s", filePath,
                         strerror(errno));
         return;
@@ -168,8 +168,8 @@ void bsg_kscrw_i_addTextFileElement(const BSG_KSCrashReportWriter *const writer,
 
     char buffer[512];
     ssize_t bytesRead;
-    for (bytesRead = read(fd, buffer, sizeof(buffer)); bytesRead > 0;
-         bytesRead = read(fd, buffer, sizeof(buffer))) {
+    for (bytesRead = read(fileDescriptor, buffer, sizeof(buffer)); bytesRead > 0;
+         bytesRead = read(fileDescriptor, buffer, sizeof(buffer))) {
         if (bsg_ksjsonappendStringElement(bsg_getJsonContext(writer), buffer,
                                           (size_t)bytesRead) != BSG_KSJSON_OK) {
             BSG_KSLOG_ERROR("Could not append string element");
@@ -179,7 +179,7 @@ void bsg_kscrw_i_addTextFileElement(const BSG_KSCrashReportWriter *const writer,
 
 done:
     bsg_ksjsonendStringElement(bsg_getJsonContext(writer));
-    close(fd);
+    close(fileDescriptor);
 }
 
 void bsg_kscrw_i_addDataElement(const BSG_KSCrashReportWriter *const writer,
@@ -265,8 +265,8 @@ void bsg_kscrw_i_addJSONElement(const BSG_KSCrashReportWriter *const writer,
 void bsg_kscrw_i_addJSONElementFromFile(
     const BSG_KSCrashReportWriter *const writer, const char *const key,
     const char *const filePath) {
-    const int fd = open(filePath, O_RDONLY);
-    if (fd < 0) {
+    const int fileDescriptor = open(filePath, O_RDONLY);
+    if (fileDescriptor < 0) {
         BSG_KSLOG_ERROR("Could not open file %s: %s", filePath,
                         strerror(errno));
         return;
@@ -280,7 +280,7 @@ void bsg_kscrw_i_addJSONElementFromFile(
 
     char buffer[512];
     ssize_t bytesRead;
-    while ((bytesRead = read(fd, buffer, sizeof(buffer))) > 0) {
+    while ((bytesRead = read(fileDescriptor, buffer, sizeof(buffer))) > 0) {
         if (bsg_ksjsonaddRawJSONData(bsg_getJsonContext(writer), buffer,
                                      (size_t)bytesRead) != BSG_KSJSON_OK) {
             BSG_KSLOG_ERROR("Could not append JSON data");
@@ -289,7 +289,7 @@ void bsg_kscrw_i_addJSONElementFromFile(
     }
 
 done:
-    close(fd);
+    close(fileDescriptor);
 }
 
 void bsg_kscrw_i_beginObject(const BSG_KSCrashReportWriter *const writer,
@@ -308,8 +308,8 @@ void bsg_kscrw_i_endContainer(const BSG_KSCrashReportWriter *const writer) {
 
 int bsg_kscrw_i_addJSONData(const char *const data, const size_t length,
                             void *const userData) {
-    const int fd = *((int *)userData);
-    const bool success = bsg_ksfuwriteBytesToFD(fd, data, (ssize_t)length);
+    const int fileDescriptor = *((int *)userData);
+    const bool success = bsg_ksfuwriteBytesToFD(fileDescriptor, data, (ssize_t)length);
     return success ? BSG_KSJSON_OK : BSG_KSJSON_ERROR_CANNOT_ADD_DATA;
 }
 
@@ -1124,16 +1124,16 @@ void bsg_kscrw_i_writeStackContents(
     const BSG_KSCrashReportWriter *const writer, const char *const key,
     const BSG_STRUCT_MCONTEXT_L *const machineContext,
     const bool isStackOverflow) {
-    uintptr_t sp = bsg_ksmachstackPointer(machineContext);
-    if ((void *)sp == NULL) {
+    uintptr_t stackPointer = bsg_ksmachstackPointer(machineContext);
+    if ((void *)stackPointer == NULL) {
         return;
     }
 
     uintptr_t lowAddress =
-        sp + (uintptr_t)(BSG_kStackContentsPushedDistance * (int)sizeof(sp) *
+        stackPointer + (uintptr_t)(BSG_kStackContentsPushedDistance * (int)sizeof(stackPointer) *
                          bsg_ksmachstackGrowDirection() * -1);
     uintptr_t highAddress =
-        sp + (uintptr_t)(BSG_kStackContentsPoppedDistance * (int)sizeof(sp) *
+        stackPointer + (uintptr_t)(BSG_kStackContentsPoppedDistance * (int)sizeof(stackPointer) *
                          bsg_ksmachstackGrowDirection());
     if (highAddress < lowAddress) {
         uintptr_t tmp = lowAddress;
@@ -1149,10 +1149,10 @@ void bsg_kscrw_i_writeStackContents(
                                    lowAddress);
         writer->addUIntegerElement(writer, BSG_KSCrashField_DumpEnd,
                                    highAddress);
-        writer->addUIntegerElement(writer, BSG_KSCrashField_StackPtr, sp);
+        writer->addUIntegerElement(writer, BSG_KSCrashField_StackPtr, stackPointer);
         writer->addBooleanElement(writer, BSG_KSCrashField_Overflow,
                                   isStackOverflow);
-        uint8_t stackBuffer[BSG_kStackContentsTotalDistance * sizeof(sp)];
+        uint8_t stackBuffer[BSG_kStackContentsTotalDistance * sizeof(stackPointer)];
         size_t copyLength = highAddress - lowAddress;
         if (bsg_ksmachcopyMem((void *)lowAddress, stackBuffer, copyLength) ==
             KERN_SUCCESS) {
@@ -1180,15 +1180,15 @@ void bsg_kscrw_i_writeNotableStackContents(
     const BSG_KSCrashReportWriter *const writer,
     const BSG_STRUCT_MCONTEXT_L *const machineContext, const int backDistance,
     const int forwardDistance) {
-    uintptr_t sp = bsg_ksmachstackPointer(machineContext);
-    if ((void *)sp == NULL) {
+    uintptr_t stackPointer = bsg_ksmachstackPointer(machineContext);
+    if ((void *)stackPointer == NULL) {
         return;
     }
 
     uintptr_t lowAddress =
-        sp + (uintptr_t)(backDistance * (int)sizeof(sp) *
+        stackPointer + (uintptr_t)(backDistance * (int)sizeof(stackPointer) *
                          bsg_ksmachstackGrowDirection() * -1);
-    uintptr_t highAddress = sp + (uintptr_t)(forwardDistance * (int)sizeof(sp) *
+    uintptr_t highAddress = stackPointer + (uintptr_t)(forwardDistance * (int)sizeof(stackPointer) *
                                              bsg_ksmachstackGrowDirection());
     if (highAddress < lowAddress) {
         uintptr_t tmp = lowAddress;
@@ -1441,10 +1441,10 @@ void bsg_kscrw_i_writeAllThreads(const BSG_KSCrashReportWriter *const writer,
     const task_t thisTask = mach_task_self();
     thread_act_array_t threads;
     mach_msg_type_number_t numThreads;
-    kern_return_t kr;
+    kern_return_t kernReturn;
 
-    if ((kr = task_threads(thisTask, &threads, &numThreads)) != KERN_SUCCESS) {
-        BSG_KSLOG_ERROR("task_threads: %s", mach_error_string(kr));
+    if ((kernReturn = task_threads(thisTask, &threads, &numThreads)) != KERN_SUCCESS) {
+        BSG_KSLOG_ERROR("task_threads: %s", mach_error_string(kernReturn));
         return;
     }
 
@@ -1478,10 +1478,10 @@ int bsg_kscrw_i_threadIndex(const thread_t thread) {
     const task_t thisTask = mach_task_self();
     thread_act_array_t threads;
     mach_msg_type_number_t numThreads;
-    kern_return_t kr;
+    kern_return_t kernReturn;
 
-    if ((kr = task_threads(thisTask, &threads, &numThreads)) != KERN_SUCCESS) {
-        BSG_KSLOG_ERROR("task_threads: %s", mach_error_string(kr));
+    if ((kernReturn = task_threads(thisTask, &threads, &numThreads)) != KERN_SUCCESS) {
+        BSG_KSLOG_ERROR("task_threads: %s", mach_error_string(kernReturn));
         return -1;
     }
 
@@ -1939,12 +1939,12 @@ void bsg_kscrw_i_prepareReportWriter(BSG_KSCrashReportWriter *const writer,
  * @return The file descriptor, or -1 if an error occurred.
  */
 int bsg_kscrw_i_openCrashReportFile(const char *const path) {
-    int fd = open(path, O_RDWR | O_CREAT | O_EXCL, 0644);
-    if (fd < 0) {
+    int fileDescriptor = open(path, O_RDWR | O_CREAT | O_EXCL, 0644);
+    if (fileDescriptor < 0) {
         BSG_KSLOG_ERROR("Could not open crash report file %s: %s", path,
                         strerror(errno));
     }
-    return fd;
+    return fileDescriptor;
 }
 
 /** Record whether the crashed thread had a stack overflow or not.
@@ -1974,8 +1974,8 @@ void bsg_kscrashreport_writeMinimalReport(
     BSG_KSCrash_Context *const crashContext, const char *const path) {
     BSG_KSLOG_INFO("Writing minimal crash report to %s", path);
 
-    int fd = bsg_kscrw_i_openCrashReportFile(path);
-    if (fd < 0) {
+    int fileDescriptor = bsg_kscrw_i_openCrashReportFile(path);
+    if (fileDescriptor < 0) {
         return;
     }
 
@@ -1984,13 +1984,13 @@ void bsg_kscrashreport_writeMinimalReport(
     bsg_kscrw_i_updateStackOverflowStatus(crashContext);
 
     BSG_KSJSONEncodeContext jsonContext;
-    jsonContext.userData = &fd;
+    jsonContext.userData = &fileDescriptor;
     BSG_KSCrashReportWriter concreteWriter;
     BSG_KSCrashReportWriter *writer = &concreteWriter;
     bsg_kscrw_i_prepareReportWriter(writer, &jsonContext);
 
     bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), true,
-                          bsg_kscrw_i_addJSONData, &fd);
+                          bsg_kscrw_i_addJSONData, &fileDescriptor);
 
     writer->beginObject(writer, BSG_KSCrashField_Report);
     {
@@ -2014,15 +2014,15 @@ void bsg_kscrashreport_writeMinimalReport(
 
     bsg_ksjsonendEncode(bsg_getJsonContext(writer));
 
-    close(fd);
+    close(fileDescriptor);
 }
 
 void bsg_kscrashreport_writeStandardReport(
     BSG_KSCrash_Context *const crashContext, const char *const path) {
     BSG_KSLOG_INFO("Writing crash report to %s", path);
 
-    int fd = bsg_kscrw_i_openCrashReportFile(path);
-    if (fd < 0) {
+    int fileDescriptor = bsg_kscrw_i_openCrashReportFile(path);
+    if (fileDescriptor < 0) {
         return;
     }
 
@@ -2031,13 +2031,13 @@ void bsg_kscrashreport_writeStandardReport(
     bsg_kscrw_i_updateStackOverflowStatus(crashContext);
 
     BSG_KSJSONEncodeContext jsonContext;
-    jsonContext.userData = &fd;
+    jsonContext.userData = &fileDescriptor;
     BSG_KSCrashReportWriter concreteWriter;
     BSG_KSCrashReportWriter *writer = &concreteWriter;
     bsg_kscrw_i_prepareReportWriter(writer, &jsonContext);
 
     bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), true,
-                          bsg_kscrw_i_addJSONData, &fd);
+                          bsg_kscrw_i_addJSONData, &fileDescriptor);
 
     writer->beginObject(writer, BSG_KSCrashField_Report);
     {
@@ -2100,10 +2100,10 @@ void bsg_kscrashreport_writeStandardReport(
 
     bsg_ksjsonendEncode(bsg_getJsonContext(writer));
 
-    if (!bsg_ksfuflushWriteBuffer(fd)) {
+    if (!bsg_ksfuflushWriteBuffer(fileDescriptor)) {
         BSG_KSLOG_ERROR("Failed to flush write buffer");
     }
-    close(fd);
+    close(fileDescriptor);
 }
 
 void bsg_kscrashreport_logCrash(const BSG_KSCrash_Context *const crashContext) {
