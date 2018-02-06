@@ -19,3 +19,5 @@ DerivedData
 Pods
 Carthage
 *.idea
+compile_commands.json
+
