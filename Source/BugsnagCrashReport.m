@@ -181,7 +181,8 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 @property (nonatomic, strong) NSString *errorClass;
 @property (nonatomic, strong) NSString *errorMessage;
 + (instancetype)errorDataFromThreads:(NSArray *)threads;
-- (instancetype)initWithClass:(NSString *_Nonnull)errorClass message:(NSString *_Nonnull)errorMessage NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithClass:(NSString *_Nonnull)errorClass
+                      message:(NSString *_Nonnull)errorMessage NS_DESIGNATED_INITIALIZER;
 @end
 
 @interface BugsnagCrashReport ()
@@ -522,7 +523,8 @@ initWithErrorName:(NSString *_Nonnull)name
     }
     BSGDictInsertIfNotNil(event, user, BSGKeyUser);
 
-    if (!user[BSGKeyId] && self.device[BSGKeyId]) { // if device id is null, don't set user id to default
+    // if device id is null, don't set user id to default
+    if (!user[BSGKeyId] && self.device[BSGKeyId]) {
         BSGDictSetSafeObject(user, [self deviceAppHash], BSGKeyId);
     }
 
@@ -646,7 +648,8 @@ initWithErrorName:(NSString *_Nonnull)name
 /**
  * Determines whether a string is a "reserved word" that identifies it as a known value.
  *
- * For fatalError, preconditionFailure, and assertionFailure, "fatal error" will be in one of the registers.
+ * For fatalError, preconditionFailure, and assertionFailure,
+ * "fatal error" will be in one of the registers.
  *
  * For assert, "assertion failed" will be in one of the registers.
  */

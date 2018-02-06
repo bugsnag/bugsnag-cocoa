@@ -20,7 +20,9 @@
     return self;
 }
 
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress {
+- (instancetype)initWithUserId:(NSString *)userId
+                          name:(NSString *)name
+                  emailAddress:(NSString *)emailAddress {
     self = [super init];
     if (self) {
         self.userId = userId;
@@ -30,7 +32,9 @@
     return self;
 }
 
-+ (instancetype)userWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress {
++ (instancetype)userWithUserId:(NSString *)userId
+                          name:(NSString *)name
+                  emailAddress:(NSString *)emailAddress {
     return [[self alloc] initWithUserId:userId name:name emailAddress:emailAddress];
 }
 

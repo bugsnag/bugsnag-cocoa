@@ -34,8 +34,8 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
     
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(
-                                                               NSDocumentDirectory, NSUserDomainMask, true);
+    NSArray *searchPaths =
+    NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, true);
     NSString *path = [searchPaths lastObject];
     
     NSError *error;

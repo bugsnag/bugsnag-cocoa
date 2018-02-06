@@ -51,7 +51,9 @@ static NSString *const kBugsnagUser = @"user";
 - (NSDictionary *)toJson {
     NSMutableDictionary *dict = [NSMutableDictionary new];
     BSGDictInsertIfNotNil(dict, self.sessionId, kBugsnagSessionId);
-    BSGDictInsertIfNotNil(dict, [BSG_RFC3339DateTool stringFromDate:self.startedAt], kBugsnagStartedAt);
+    BSGDictInsertIfNotNil(dict,
+                          [BSG_RFC3339DateTool stringFromDate:self.startedAt],
+                          kBugsnagStartedAt);
 
     if (self.user) {
         BSGDictInsertIfNotNil(dict, [self.user toJson], kBugsnagUser);
