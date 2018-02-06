@@ -1,0 +1,18 @@
+rule-configurations:
+  - key: LONG_VARIABLE_NAME
+    value: 100
+  - key: SHORT_VARIABLE_NAME
+    value: 1
+  - key: LONG_METHOD
+    value: 300
+  - key: NCSS_METHOD
+    value: 300
+  - key: NPATH_COMPLEXITY
+    value: 9000
+  - key: LONG_LINE
+    value: 300
+  - key: CYCLOMATIC_COMPLEXITY
+    value: 300
+max-priority-1: 0
+max-priority-2: 9000
+max-priority-3: 9000
