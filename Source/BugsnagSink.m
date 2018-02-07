@@ -69,6 +69,10 @@
         if (incompleteReport) { // append app/device data as this is unlikely to change between sessions
             NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
             
+            // reset any existing data as it will be corrupted/nil
+            bugsnagReport.appState = @{};
+            bugsnagReport.deviceState = @{};
+            
             bugsnagReport.app = @{
                                   @"bundleVersion": sysInfo[@BSG_KSSystemField_BundleVersion],
                                   @"id": sysInfo[@BSG_KSSystemField_BundleID],
