@@ -53,7 +53,7 @@
 }
 
 - (void)testCorrectTopLevelKeys {
-    NSArray *expectedKeys = @[@"apiKey", @"events", @"notifier"];
+    NSArray *expectedKeys = @[@"apiKey", @"events", @"notifier", @"payloadVersion",];
     NSArray *topKeys = [self.processedData allKeys];
     XCTAssertEqualObjects(
                           [topKeys sortedArrayUsingSelector:@selector(compare:)], expectedKeys);
