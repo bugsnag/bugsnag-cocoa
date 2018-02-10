@@ -269,7 +269,11 @@
     XCTAssertEqualObjects(device[@"jailbroken"], @YES);
     XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
     XCTAssertEqualObjects(device[@"orientation"], @"unknown");
+#if defined(__LP64__)
     XCTAssertEqualObjects(device[@"wordSize"], @64);
+#else
+    XCTAssertEqualObjects(device[@"wordSize"], @32);
+#endif
 }
 
 - (void)testEventApp {
