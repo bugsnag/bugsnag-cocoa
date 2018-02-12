@@ -256,8 +256,12 @@
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     NSDictionary *device = event[@"device"];
     XCTAssertNotNil(device);
-    XCTAssertEqual(16, device.count); // includes some legacy metadata 
-    
+#if TARGET_OS_IPHONE || TARGET_OS_TV || TARGET_IPHONE_SIMULATOR
+    XCTAssertEqual(17, device.count);
+#else
+    XCTAssertEqual(16, device.count);
+#endif
+
     XCTAssertEqualObjects(device[@"id"], @"f6d519a74213a57f8d052c53febfeee6f856d062");
     XCTAssertEqualObjects(device[@"manufacturer"], @"Apple");
     XCTAssertEqualObjects(device[@"model"], @"x86_64");
