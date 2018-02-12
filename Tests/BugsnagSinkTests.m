@@ -53,7 +53,7 @@
 }
 
 - (void)testCorrectTopLevelKeys {
-    NSArray *expectedKeys = @[@"apiKey", @"events", @"notifier"];
+    NSArray *expectedKeys = @[@"apiKey", @"events", @"notifier", @"payloadVersion",];
     NSArray *topKeys = [self.processedData allKeys];
     XCTAssertEqualObjects(
                           [topKeys sortedArrayUsingSelector:@selector(compare:)], expectedKeys);
@@ -269,7 +269,11 @@
     XCTAssertEqualObjects(device[@"jailbroken"], @YES);
     XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
     XCTAssertEqualObjects(device[@"orientation"], @"unknown");
-    XCTAssertNotNil(device[@"wordSize"]);
+#if defined(__LP64__)
+    XCTAssertEqualObjects(device[@"wordSize"], @64);
+#else
+    XCTAssertEqualObjects(device[@"wordSize"], @32);
+#endif
 }
 
 - (void)testEventApp {
