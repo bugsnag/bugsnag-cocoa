@@ -1,5 +1,25 @@
 Changelog
 =========
+
+## 5.15.4 (21 Feb 2018)
+
+This release adds additional device metadata for filtering by whether an error
+occurred in a simulator ([#242](https://github.com/bugsnag/bugsnag-cocoa/pull/242))
+and by processor word size ([#228](https://github.com/bugsnag/bugsnag-cocoa/pull/228)).
+
+### Bug Fixes
+
+* Ensure error class and message are persisted when thread tracing is disabled
+  [#245](https://github.com/bugsnag/bugsnag-cocoa/pull/245)
+  [Jamie Lynch](https://github.com/fractalwrench)
+* Re-addapp name to the app tab of reports
+  [#244](https://github.com/bugsnag/bugsnag-cocoa/pull/244)
+  [Jamie Lynch](https://github.com/fractalwrench)
+* Add payload version to report body to preserve backwards compatibility with
+  older versions of the error reporting API
+  [#241](https://github.com/bugsnag/bugsnag-cocoa/pull/241)
+  [Jamie Lynch](https://github.com/fractalwrench)
+
 ## 5.15.3 (23 Jan 2018)
 
 ### Bug Fixes
