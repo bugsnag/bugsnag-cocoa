@@ -71,6 +71,8 @@ NSDictionary *BSGParseApp(NSDictionary *report) {
     
     BSGDictSetSafeObject(appState, @(activeTimeSinceLaunch),
                          @"durationInForeground");
+
+    BSGDictSetSafeObject(appState, report[BSGKeyExecutableName], BSGKeyName);
     BSGDictSetSafeObject(appState,
                          @(activeTimeSinceLaunch + backgroundTimeSinceLaunch),
                          @"duration");

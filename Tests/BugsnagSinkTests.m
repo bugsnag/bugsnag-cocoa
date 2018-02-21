@@ -284,11 +284,12 @@
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     NSDictionary *app = event[@"app"];
     XCTAssertNotNil(app);
-    XCTAssertEqual(10, app.count);
+    XCTAssertEqual(11, app.count);
     
     XCTAssertEqualObjects(app[@"id"], @"net.hockeyapp.CrashProbeiOS");
     XCTAssertNotNil(app[@"type"]);
     XCTAssertEqualObjects(app[@"version"], @"1.0");
+    XCTAssertEqualObjects(app[@"name"], @"CrashProbeiOS");
     XCTAssertEqualObjects(app[@"bundleVersion"], @"1");
     XCTAssertEqualObjects(app[@"releaseStage"], @"MagicalTestingTime");
     XCTAssertEqualObjects(app[@"dsymUUIDs"], @[@"D0A41830-4FD2-3B02-A23B-0741AD4C7F52"]);
