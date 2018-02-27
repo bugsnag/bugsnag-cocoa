@@ -49,6 +49,13 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
     NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
     BSGDictSetSafeObject(device, freeBytes, @"freeDisk");
     BSGDictSetSafeObject(device, report[@"system"][@"device_app_hash"], @"id");
+
+#if TARGET_OS_SIMULATOR
+    BSGDictSetSafeObject(device, @YES, @"simulator");
+#elif TARGET_OS_IPHONE || TARGET_OS_TV
+    BSGDictSetSafeObject(device, @NO, @"simulator");
+#endif
+
     return device;
 }
 

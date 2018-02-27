@@ -49,7 +49,11 @@
     XCTAssertNotNil(device[@"osName"]);
     XCTAssertNotNil(device[@"osVersion"]);
     XCTAssertEqualObjects(device[@"jailbroken"], @NO);
+#if defined(__LP64__)
     XCTAssertEqualObjects(device[@"wordSize"], @64);
+#else
+    XCTAssertEqualObjects(device[@"wordSize"], @32);
+#endif
 }
 
 - (void)testAppSerialisation {

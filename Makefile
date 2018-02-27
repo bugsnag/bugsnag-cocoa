@@ -1,5 +1,5 @@
 ifeq ($(SDK),)
- SDK=iphonesimulator10.3
+ SDK=iphonesimulator11.2
 endif
 ifeq ($(BUILD_OSX), 1)
  PLATFORM=OSX
@@ -70,5 +70,12 @@ clean:
 
 test:
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
+
+lint:
+	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) \
+    	COMPILER_INDEX_STORE_ENABLE=NO | \
+		tee xcodebuild.log | \
+		xcpretty -r json-compilation-database -o compile_commands.json
+	@oclint-json-compilation-database
 
 archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip

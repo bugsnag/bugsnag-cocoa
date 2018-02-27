@@ -115,6 +115,7 @@
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     BSGDictSetSafeObject(data, [Bugsnag notifier].details, BSGKeyNotifier);
     BSGDictSetSafeObject(data, [Bugsnag notifier].configuration.apiKey, BSGKeyApiKey);
+    BSGDictSetSafeObject(data, @"4.0", @"payloadVersion");
 
     NSMutableArray *formatted =
             [[NSMutableArray alloc] initWithCapacity:[reports count]];
