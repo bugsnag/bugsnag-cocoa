@@ -107,8 +107,9 @@
                 BSG_KSLOG_ERROR(@"Could not read file attributes for %@: %@",
                         fullPath, error);
             } else {
-                FileStoreInfo *info = [FileStoreInfo fileStoreInfoWithId:fileId
-                                                            creationDate:[fileAttribs valueForKey:NSFileCreationDate]];
+                FileStoreInfo *info =
+                [FileStoreInfo fileStoreInfoWithId:fileId
+                                      creationDate:[fileAttribs valueForKey:NSFileCreationDate]];
                 [files addObject:info];
             }
         }

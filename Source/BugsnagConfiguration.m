@@ -87,7 +87,9 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
        withName:(NSString *)userName
        andEmail:(NSString *)userEmail {
     
-    self.currentUser = [[BugsnagUser alloc] initWithUserId:userId name:userName emailAddress:userEmail];
+    self.currentUser = [[BugsnagUser alloc] initWithUserId:userId
+                                                      name:userName
+                                              emailAddress:userEmail];
 
     [self.metaData addAttribute:BSGKeyId withValue:userId toTabWithName:BSGKeyUser];
     [self.metaData addAttribute:BSGKeyName

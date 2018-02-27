@@ -464,7 +464,8 @@ typedef enum {
 
 - (NSString *)diagnoseCrash:(NSDictionary *)report {
     @try {
-        NSString *lastFunctionName = [self lastInAppStackEntry:report][@BSG_KSCrashField_SymbolName];
+        NSString *lastFunctionName =
+        [self lastInAppStackEntry:report][@BSG_KSCrashField_SymbolName];
         NSDictionary *crashedThreadReport = [self crashedThreadReport:report];
         NSDictionary *errorReport = [self errorReport:report];
 
@@ -518,7 +519,8 @@ typedef enum {
         }
 
         if ([self isInvalidAddress:errorReport]) {
-            uintptr_t address = (uintptr_t)[errorReport[@BSG_KSCrashField_Address] unsignedLongLongValue];
+            uintptr_t address =
+            (uintptr_t)[errorReport[@BSG_KSCrashField_Address] unsignedLongLongValue];
             if (address == 0) {
                 return [self appendOriginatingCall:
                                  @"Attempted to dereference null pointer."

@@ -189,30 +189,35 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         self.configuration.config.delegate = self;
         self.state.delegate = self;
         self.crashSentry = [BugsnagCrashSentry new];
-        self.errorReportApiClient = [[BugsnagErrorReportApiClient alloc] initWithConfig:configuration
-                                                                              queueName:@"Error API queue"];
-        self.sessionTrackingApiClient = [[BugsnagSessionTrackingApiClient alloc] initWithConfig:configuration
-                                                                                      queueName:@"Session API queue"];
+        self.errorReportApiClient =
+        [[BugsnagErrorReportApiClient alloc] initWithConfig:configuration
+                                                  queueName:@"Error API queue"];
+        self.sessionTrackingApiClient =
+        [[BugsnagSessionTrackingApiClient alloc] initWithConfig:configuration
+                                                      queueName:@"Session API queue"];
 
-        self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:initConfiguration
-                                                                  apiClient:self.sessionTrackingApiClient
-                                                                   callback:^(BugsnagSession *session) {
-
-                                                                       // copy session id
-                                                                       const char *newSessionId = [session.sessionId UTF8String];
-                                                                       size_t idSize = strlen(newSessionId);
-                                                                       strncpy((char *)sessionId, newSessionId, idSize);
-                                                                       sessionId[idSize - 1] = NULL;
-
-                                                                       const char *newSessionDate = [[BSG_RFC3339DateTool stringFromDate:session.startedAt] UTF8String];
-                                                                       size_t dateSize = strlen(newSessionDate);
-                                                                       strncpy((char *)sessionStartDate, newSessionDate, dateSize);
-                                                                       sessionStartDate[dateSize - 1] = NULL;
-
-                                                                       // record info for C JSON serialiser
-                                                                       handledCount = session.handledCount;
-                                                                       hasRecordedSessions = true;
-                                                                   }];
+        self.sessionTracker =
+        [[BugsnagSessionTracker alloc]
+         initWithConfig:initConfiguration
+         apiClient:self.sessionTrackingApiClient
+         callback:^(BugsnagSession *session) {
+             
+             // copy session id
+             const char *newSessionId = [session.sessionId UTF8String];
+             size_t idSize = strlen(newSessionId);
+             strncpy((char *)sessionId, newSessionId, idSize);
+             sessionId[idSize - 1] = NULL;
+             
+             const char *newSessionDate =
+             [[BSG_RFC3339DateTool stringFromDate:session.startedAt] UTF8String];
+             size_t dateSize = strlen(newSessionDate);
+             strncpy((char *)sessionStartDate, newSessionDate, dateSize);
+             sessionStartDate[dateSize - 1] = NULL;
+             
+             // record info for C JSON serialiser
+             handledCount = session.handledCount;
+             hasRecordedSessions = true;
+         }];
 
         
         [self.sessionTracker startNewSession:[NSDate date] withUser:nil autoCaptured:YES];
@@ -451,7 +456,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                      BSGKeyReason : error.localizedFailureReason ?: @""
                  };
                    if (report.context == nil) { // set context as error domain
-                       report.context = [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code];
+                       report.context =
+                       [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code];
                    }
                  report.metaData = metadata;
 

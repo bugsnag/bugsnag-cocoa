@@ -49,7 +49,8 @@
                                                      user:user
                                              autoCaptured:autoCaptured];
 
-    if ((self.config.shouldAutoCaptureSessions || !autoCaptured) && [self.config shouldSendReports]) {
+    if ((self.config.shouldAutoCaptureSessions ||
+         !autoCaptured) && [self.config shouldSendReports]) {
         [self trackSession];
     }
     _isInForeground = YES;
@@ -80,7 +81,8 @@
 - (void)incrementHandledError {
     @synchronized (self.currentSession) {
         self.currentSession.handledCount++;
-        if (self.callback && (self.config.shouldAutoCaptureSessions || !self.currentSession.autoCaptured)) {
+        if (self.callback &&
+            (self.config.shouldAutoCaptureSessions || !self.currentSession.autoCaptured)) {
             self.callback(self.currentSession);
         }
     }
@@ -94,7 +96,8 @@
         for (NSDictionary *dict in [self.sessionStore allFiles]) {
             [sessions addObject:[[BugsnagSession alloc] initWithDictionary:dict]];
         }
-        BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc] initWithSessions:sessions];
+        BugsnagSessionTrackingPayload *payload =
+        [[BugsnagSessionTrackingPayload alloc] initWithSessions:sessions];
 
         if (payload.sessions.count > 0) {
             [self.apiClient sendData:payload
