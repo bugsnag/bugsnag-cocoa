@@ -29,6 +29,7 @@
 #import "BugsnagCollections.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagKeys.h"
+#import "BSG_KSSystemInfo.h"
 
 // This is private in Bugsnag, but really we want package private so define
 // it here.
@@ -59,9 +60,40 @@
          onCompletion:(BSG_KSCrashReportFilterCompletion)onCompletion {
     NSMutableArray *bugsnagReports = [NSMutableArray new];
     BugsnagConfiguration *configuration = [Bugsnag configuration];
+    
     for (NSDictionary *report in reports) {
-        BugsnagCrashReport *bugsnagReport =
-                [[BugsnagCrashReport alloc] initWithKSReport:report];
+        BugsnagCrashReport *bugsnagReport = [[BugsnagCrashReport alloc] initWithKSReport:report];
+        BOOL incompleteReport = (![@"standard" isEqualToString:[report valueForKeyPath:@"report.type"]] ||
+                                 [[report objectForKey:@"incomplete"] boolValue]);
+        
+        if (incompleteReport) { // append app/device data as this is unlikely to change between sessions
+            NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
+            
+            // reset any existing data as it will be corrupted/nil
+            bugsnagReport.appState = @{};
+            bugsnagReport.deviceState = @{};
+
+
+            NSMutableDictionary *appDict = [NSMutableDictionary new];
+            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_BundleVersion], @"bundleVersion");
+            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_BundleID], @"id");
+            BSGDictInsertIfNotNil(appDict, configuration.releaseStage, @"releaseStage");
+            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_SystemName], @"type");
+            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_BundleShortVersion], @"version");
+
+            NSMutableDictionary *deviceDict = [NSMutableDictionary new];
+            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_Jailbroken], @"jailbroken");
+            BSGDictInsertIfNotNil(appDict, [[NSLocale currentLocale] localeIdentifier], @"locale");
+            BSGDictInsertIfNotNil(appDict, sysInfo[@"Apple"], @"manufacturer");
+            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_Machine], @"model");
+            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_Model], @"modelNumber");
+            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_SystemName], @"osName");
+            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_SystemVersion], @"osVersion");
+
+            bugsnagReport.app = appDict;
+            bugsnagReport.device = deviceDict;
+        }
+        
         if (![bugsnagReport shouldBeSent])
             continue;
         BOOL shouldSend = YES;
