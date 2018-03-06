@@ -7,13 +7,13 @@ import Foundation
 import Bugsnag
 
 /**
- * Sends a handled Exception to Bugsnag
+ * Sends a handled Error to Bugsnag
  */
-class HandledExceptionScenario: Scenario {
+class HandledErrorScenario: Scenario {
 
     override func run() {
         super.run()
-        Bugsnag.notify(self.generateException())
+        Bugsnag.notifyError(NSError(domain: "HandledErrorScenario", code: 100, userInfo: nil))
     }
 
 }
