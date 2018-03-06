@@ -13,19 +13,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    func triggerEvent(name: String, delay: TimeInterval) {
-        let when = DispatchTime.now() + delay
-        DispatchQueue.main.asyncAfter(deadline: when) {
-            if name == "NSException" {
-                InvariantException(name: NSExceptionName("Invariant violation"), reason: "The cake was rotten", userInfo: nil).raise()
-            }
-        }
-    }
-
-    func loadTestScenario() {
+    internal func loadTestScenario() {
         let arguments = ProcessInfo.processInfo.arguments
         var delay: TimeInterval = 0
-        var eventType = "none"
+        var eventType = "Wait"
         var bugsnagAPIKey = ""
         var mockAPIPath = ""
 
@@ -45,11 +36,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         assert(mockAPIPath.count > 0, "The mock API path must be set prior to triggering events")
 
-        let config = BugsnagConfiguration()
-        config.apiKey = bugsnagAPIKey
-        config.notifyURL = URL(string: mockAPIPath)
-        Bugsnag.start(with: config)
+        let config = prepareConfig(apiKey: bugsnagAPIKey, mockAPIPath: mockAPIPath)
+        let scenario = scenarioForEventType(eventType: eventType, config: config)
+        scenario.run()
+    }
 
-        triggerEvent(name: eventType, delay: delay)
+    internal func prepareConfig(apiKey: String, mockAPIPath: String) -> BugsnagConfiguration {
+        let config = BugsnagConfiguration()
+        let url = URL(string: mockAPIPath)
+        config.apiKey = apiKey
+        config.notifyURL = url
+        config.sessionURL = url
+        return config
+    }
+
+    internal func scenarioForEventType(eventType: String, config: BugsnagConfiguration) -> Scenario {
+        let eventTypeForClass = "iOSTestApp." + eventType // prefix with app name
+        let type = NSClassFromString(eventTypeForClass) as! Scenario.Type
+        return type.init(config: config)
     }
 }
