@@ -10,7 +10,7 @@ class HandledExceptionScenario: Scenario {
 
     override func run() {
         super.run()
-        Bugsnag.notify(self.generateException())
+        Bugsnag.notify(NSException(name: NSExceptionName("HandledExceptionScenario"), reason: "Handled Exception", userInfo: nil))
     }
 
 }
