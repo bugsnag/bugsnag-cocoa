@@ -10,4 +10,4 @@ xcrun xcodebuild \
   -configuration Debug \
   -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.2' \
   -derivedDataPath build \
-  build
+  clean build
