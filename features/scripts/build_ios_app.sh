@@ -4,6 +4,7 @@ if [ ! -d "iOSTestApp.xcworkspace" ]; then
     cd "$(dirname "$0")/.."
 fi
 
+rm -rf build
 xcrun xcodebuild \
   -scheme iOSTestApp \
   -workspace iOSTestApp.xcworkspace \
