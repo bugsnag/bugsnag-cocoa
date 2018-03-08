@@ -38,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let config = prepareConfig(apiKey: bugsnagAPIKey, mockAPIPath: mockAPIPath)
         let scenario = scenarioForEventType(eventType: eventType, config: config)
-        scenario.run()
+        triggerEvent(scenario: scenario, delay: delay)
     }
 
     internal func prepareConfig(apiKey: String, mockAPIPath: String) -> BugsnagConfiguration {
@@ -54,5 +54,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let eventTypeForClass = "iOSTestApp." + eventType // prefix with app name
         let type = NSClassFromString(eventTypeForClass) as! Scenario.Type
         return type.init(config: config)
+    }
+
+    func triggerEvent(scenario: Scenario, delay: TimeInterval) {
+        let when = DispatchTime.now() + delay
+        DispatchQueue.main.asyncAfter(deadline: when) {
+            scenario.run()
+        }
     }
 }
