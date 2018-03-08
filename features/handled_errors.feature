@@ -1,6 +1,6 @@
-Feature: Handled Error
+Feature: Handled Errors and Exceptions
 
-Scenario: Handled Error report override
+Scenario: Override errorClass and message from a notifyError() callback
     When I run "HandledErrorOverrideScenario" with the defaults
     Then I should receive a request
     And the request is a valid for the error reporting API
