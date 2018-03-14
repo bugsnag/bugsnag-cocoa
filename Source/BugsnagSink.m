@@ -82,13 +82,13 @@
             BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_BundleShortVersion], @"version");
 
             NSMutableDictionary *deviceDict = [NSMutableDictionary new];
-            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_Jailbroken], @"jailbroken");
-            BSGDictInsertIfNotNil(appDict, [[NSLocale currentLocale] localeIdentifier], @"locale");
-            BSGDictInsertIfNotNil(appDict, sysInfo[@"Apple"], @"manufacturer");
-            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_Machine], @"model");
-            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_Model], @"modelNumber");
-            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_SystemName], @"osName");
-            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_SystemVersion], @"osVersion");
+            BSGDictInsertIfNotNil(deviceDict, sysInfo[@BSG_KSSystemField_Jailbroken], @"jailbroken");
+            BSGDictInsertIfNotNil(deviceDict, [[NSLocale currentLocale] localeIdentifier], @"locale");
+            BSGDictInsertIfNotNil(deviceDict, sysInfo[@"Apple"], @"manufacturer");
+            BSGDictInsertIfNotNil(deviceDict, sysInfo[@BSG_KSSystemField_Machine], @"model");
+            BSGDictInsertIfNotNil(deviceDict, sysInfo[@BSG_KSSystemField_Model], @"modelNumber");
+            BSGDictInsertIfNotNil(deviceDict, sysInfo[@BSG_KSSystemField_SystemName], @"osName");
+            BSGDictInsertIfNotNil(deviceDict, sysInfo[@BSG_KSSystemField_SystemVersion], @"osVersion");
 
             bugsnagReport.app = appDict;
             bugsnagReport.device = deviceDict;
