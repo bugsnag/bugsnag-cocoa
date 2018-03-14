@@ -8,7 +8,7 @@ matrix:
         - osx_image: xcode9.2
           env: SDK=iphonesimulator11.2
         - osx_image: xcode9.2
-          env: SDK=appletvsimulator11.2 BUILD_TV=1
+          env: BUILD_TV=1
 install: make bootstrap
 script: make test
 
