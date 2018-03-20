@@ -17,8 +17,8 @@ Before do
 # Runs before every Scenario
 end
 
-After do
+at_exit do
   run_required_commands([
-    ['features/scripts/kill_ios_simulator.sh']
+    ['features/scripts/uninstall_ios_app.sh']
   ])
 end
