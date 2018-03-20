@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 osascript -e 'launch application "Simulator"'
+xcrun simctl terminate booted com.bugsnag.iOSTestApp
 xcrun simctl launch booted com.bugsnag.iOSTestApp \
     "EVENT_TYPE=$EVENT_TYPE" \
     "EVENT_DELAY=$EVENT_DELAY" \
