@@ -10,6 +10,4 @@ Scenario: Abort is reported
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
-    And the exception "errorClass" equals "Invariant violation"
-    And the exception "message" equals "The cake was rotten"
-    And the "machoFile" of stack frame 0 ends with "/CoreFoundation"
+    And the exception "errorClass" equals "SIGABRT"

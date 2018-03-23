@@ -5,5 +5,5 @@
 
 import Foundation
 
-internal class Wait: Scenario {
+class Wait: Scenario {
 }

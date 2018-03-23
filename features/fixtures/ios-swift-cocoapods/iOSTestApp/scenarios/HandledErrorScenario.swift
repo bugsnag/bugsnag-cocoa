@@ -12,7 +12,8 @@ import Bugsnag
 class HandledErrorScenario: Scenario {
 
     override func run() {
-        Bugsnag.notifyError(NSError(domain: "HandledErrorScenario", code: 100, userInfo: nil))
+        let error = NSError(domain: "HandledErrorScenario", code: 100, userInfo: nil)
+        Bugsnag.notifyError(error)
     }
 
 }

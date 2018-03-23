@@ -7,12 +7,14 @@
 #import "ClassUtils.h"
 #import "Scenario.h"
 
-
 @implementation ClassUtils
 
 + (Scenario *)instantiateClass:(NSString *)className
                     withConfig:(BugsnagConfiguration *)config {
 
+    if ([@"none" isEqualToString:className]) {
+        className = @"Wait";
+    }
     Class clz = NSClassFromString(className);
 
     if (clz == nil) { // swift class
