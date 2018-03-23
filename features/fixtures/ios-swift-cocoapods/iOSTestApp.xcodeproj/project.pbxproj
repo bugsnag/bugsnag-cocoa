@@ -14,7 +14,7 @@
 		8AB8866E20404DD30003E444 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8AB8866C20404DD30003E444 /* LaunchScreen.storyboard */; };
 		C4D0B5FF8E60C0835B86DFE9 /* Pods_iOSTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */; };
 		F429526EE1BC60C5CA5F8A74 /* Wait.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42952865EF124B92FF9AB7F /* Wait.swift */; };
-		F429561C9CFE8750B030F369 /* HandledExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957FA1A3724BFBDC22E14 /* HandledExceptionScenario.swift */; };
+		F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */; };
 		F42956EC2A7B963366F45C4A /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */; };
 /* End PBXBuildFile section */
 
@@ -32,7 +32,7 @@
 		EE18B3777C62D7BCA8DDBE30 /* Pods-iOSTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.debug.xcconfig"; sourceTree = "<group>"; };
 		F42952865EF124B92FF9AB7F /* Wait.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wait.swift; sourceTree = "<group>"; };
 		F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
-		F42957FA1A3724BFBDC22E14 /* HandledExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledExceptionScenario.swift; sourceTree = "<group>"; };
+		F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSExceptionScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,7 +100,7 @@
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
-				F42957FA1A3724BFBDC22E14 /* HandledExceptionScenario.swift */,
+				F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */,
 				F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */,
 				F42952865EF124B92FF9AB7F /* Wait.swift */,
 			);
@@ -239,7 +239,7 @@
 			files = (
 				8AB8866620404DD30003E444 /* ViewController.swift in Sources */,
 				8AB8866420404DD30003E444 /* AppDelegate.swift in Sources */,
-				F429561C9CFE8750B030F369 /* HandledExceptionScenario.swift in Sources */,
+				F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */,
 				F42956EC2A7B963366F45C4A /* Scenario.swift in Sources */,
 				F429526EE1BC60C5CA5F8A74 /* Wait.swift in Sources */,
 			);
