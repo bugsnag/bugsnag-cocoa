@@ -6,11 +6,11 @@
 import Foundation
 import Bugsnag
 
-internal class Scenario {
+@objc open class Scenario: NSObject {
 
     let config: BugsnagConfiguration
 
-    required init(config: BugsnagConfiguration) {
+    @objc required public init(config: BugsnagConfiguration) {
         self.config = config
     }
 
