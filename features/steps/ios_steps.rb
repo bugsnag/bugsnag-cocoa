@@ -2,7 +2,7 @@ When("I run {string} with the defaults on {string}") do |eventType, simulator|
   steps %Q{
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I set environment variable "EVENT_TYPE" to "#{eventType}"
-    And I set environment variable "SIMULATOR" to "#{simulator}"
+    And I set environment variable "iOS_Simulator" to "#{simulator}"
     And I install the app
     And I launch the app
   }

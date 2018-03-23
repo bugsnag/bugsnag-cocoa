@@ -12,7 +12,6 @@ import Bugsnag
 class HandledErrorOverrideScenario: Scenario {
 
     override func run() {
-        super.run()
         let error = NSError(domain: "HandledErrorOverrideScenario", code: 100, userInfo: nil)
         Bugsnag.notifyError(error, block: { report in
             report.errorMessage = "Foo"

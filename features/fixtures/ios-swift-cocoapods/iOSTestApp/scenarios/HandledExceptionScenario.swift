@@ -12,7 +12,6 @@ import Bugsnag
 class HandledExceptionScenario: Scenario {
 
     override func run() {
-        super.run()
         Bugsnag.notify(NSException(name: NSExceptionName("HandledExceptionScenario"),
                 reason: "Message: HandledExceptionScenario",
                 userInfo: nil))
