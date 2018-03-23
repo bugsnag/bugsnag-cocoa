@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-# TODO: sub hardcoded device for $SIMULATOR
-xcrun simctl boot "iPhone 8"
+xcrun simctl boot "$iOS_Simulator"
 sleep 2
-xcrun simctl install "iPhone 8" \
+xcrun simctl install "$iOS_Simulator" \
   features/fixtures/ios-swift-cocoapods/build/Build/Products/Debug-iphonesimulator/iOSTestApp.app

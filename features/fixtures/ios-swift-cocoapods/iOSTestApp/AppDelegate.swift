@@ -51,13 +51,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     internal func scenarioForEventType(eventType: String, config: BugsnagConfiguration) -> Scenario {
-        let eventTypeForClass = "iOSTestApp." + eventType // prefix with app name
+        let clz = ("none" == eventType) ? "Wait" : eventType
+        let eventTypeForClass = "iOSTestApp." + clz // prefix with app name
         let type = NSClassFromString(eventTypeForClass) as! Scenario.Type
         return type.init(config: config)
     }
 
     func triggerEvent(scenario: Scenario, delay: TimeInterval) {
         let when = DispatchTime.now() + delay
+        scenario.initBugsnag()
+
         DispatchQueue.main.asyncAfter(deadline: when) {
             scenario.run()
         }

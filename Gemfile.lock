@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:bugsnag/maze-runner
-  revision: fe5b08212e7d50f33d1c2c779f1e2369afda2d4b
+  revision: e4ff82f6db6c038fa3118e0cfa019ac802df88f4
   specs:
     bugsnag-maze-runner (1.0.0)
       cucumber (~> 3.1.0)
@@ -76,7 +76,7 @@ GEM
     escape (0.0.4)
     fourflusher (2.0.1)
     fuzzy_match (2.0.4)
-    gh_inspector (1.1.2)
+    gh_inspector (1.1.3)
     gherkin (5.0.0)
     i18n (0.9.5)
       concurrent-ruby (~> 1.0)
