@@ -13,3 +13,4 @@ Scenario: Uncaught NSException is raised
     And the exception "errorClass" equals "Invariant violation"
     And the exception "message" equals "The cake was rotten"
     And the "machoFile" of stack frame 0 ends with "/CoreFoundation"
+    
