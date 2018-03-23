@@ -28,8 +28,7 @@
 
 @implementation AbortScenario
 
-- (void)crash __attribute__((noreturn))
-{
+- (void)run {
 	abort();
 }
 

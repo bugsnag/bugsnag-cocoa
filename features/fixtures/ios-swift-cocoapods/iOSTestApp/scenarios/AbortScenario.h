@@ -25,10 +25,8 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "iOSTestApp-Swift.h"
+#import "Scenario.h"
 
-@interface AbortScenario: NSObject
-
-- (void)crash __attribute__((noreturn));
+@interface AbortScenario: Scenario
 
 @end

@@ -3,7 +3,7 @@ Feature: Crashprobe scenarios
 Scenario: Abort is reported
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I configure the app to run on "iPhone 8"
-    And I crash the app using "NSExceptionScenario"
+    And I crash the app using "AbortScenario"
     And I relaunch the app
     Then I should receive a request
     And the request is a valid for the error reporting API
