@@ -270,6 +270,7 @@
     XCTAssertEqualObjects(device[@"osVersion"], @"8.1");
     XCTAssertEqualObjects(device[@"totalMemory"], @15065522176);
     XCTAssertNotNil(device[@"freeDisk"]);
+    XCTAssertEqualObjects(device[@"timezone"], @"PST");
     XCTAssertEqualObjects(device[@"jailbroken"], @YES);
     XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
     XCTAssertEqualObjects(device[@"orientation"], @"unknown");

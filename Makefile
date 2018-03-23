@@ -10,7 +10,7 @@ else
  ifeq ($(BUILD_TV), 1)
   PLATFORM=tvOS
   BUILD_FLAGS=-workspace tvOS.xcworkspace -scheme Bugsnag
-  BUILD_ONLY_FLAGS=-sdk $(SDK) -configuration Debug -destination "platform=tvOS Simulator,name=Apple TV 1080p"
+  BUILD_ONLY_FLAGS=-sdk $(SDK) -configuration Debug -destination "platform=tvOS Simulator,name=Apple TV"
  else
   PLATFORM=iOS
   RELEASE_DIR=Release-iphoneos
