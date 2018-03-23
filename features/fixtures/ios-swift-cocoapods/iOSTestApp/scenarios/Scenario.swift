@@ -17,7 +17,9 @@ internal class Scenario {
     /**
      * Executes the test case
      */
-    func run() {
+    func run() {}
+
+    func initBugsnag() {
         Bugsnag.start(with: self.config)
     }
 

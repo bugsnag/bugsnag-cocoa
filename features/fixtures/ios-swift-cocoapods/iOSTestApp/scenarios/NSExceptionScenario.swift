@@ -11,7 +11,6 @@ import Foundation
 class NSExceptionScenario: Scenario {
 
     override func run() {
-        super.run()
         let name = NSExceptionName("Invariant violation")
         InvariantException(name: name, reason: "The cake was rotten", userInfo: nil).raise()
     }
