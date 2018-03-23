@@ -3,6 +3,8 @@
 # Any helper functions added here will be available in step
 # definitions
 
+RUNNING_CI = ENV['TRAVIS'] == 'true'
+
 Dir.chdir('features/fixtures/ios-swift-cocoapods') do
   run_required_commands([
     ['bundle', 'install'],

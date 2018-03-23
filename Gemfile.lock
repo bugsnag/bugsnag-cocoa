@@ -1,6 +1,6 @@
 GIT
-  remote: git@github.com:bugsnag/maze-runner
-  revision: e4ff82f6db6c038fa3118e0cfa019ac802df88f4
+  remote: https://github.com/bugsnag/maze-runner
+  revision: 0766fae5490f9d7eb61e0f2a946038e660ff3781
   specs:
     bugsnag-maze-runner (1.0.0)
       cucumber (~> 3.1.0)
@@ -89,6 +89,7 @@ GEM
     netrc (0.11.0)
     power_assert (1.1.1)
     rack (2.0.4)
+    rouge (2.0.7)
     ruby-macho (1.1.0)
     test-unit (3.2.7)
       power_assert
@@ -101,6 +102,8 @@ GEM
       claide (>= 1.0.2, < 2.0)
       colored2 (~> 3.1)
       nanaimo (~> 0.2.3)
+    xcpretty (0.2.8)
+      rouge (~> 2.0.7)
 
 PLATFORMS
   ruby
@@ -108,6 +111,7 @@ PLATFORMS
 DEPENDENCIES
   bugsnag-maze-runner!
   cocoapods
+  xcpretty
 
 BUNDLED WITH
    1.16.1

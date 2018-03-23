@@ -40,7 +40,7 @@ build/Bugsnag-%-$(PRESET_VERSION).zip: build/Build/Products/$(RELEASE_DIR)/Bugsn
 .PHONY: all build test bump
 
 bootstrap:
-	@gem install xcpretty --quiet --no-ri --no-rdoc
+	@bundle install
 
 build:
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) build $(FORMATTER)
@@ -70,5 +70,8 @@ clean:
 
 test:
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
+
+e2e:
+	@bundle exec maze-runner
 
 archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip
