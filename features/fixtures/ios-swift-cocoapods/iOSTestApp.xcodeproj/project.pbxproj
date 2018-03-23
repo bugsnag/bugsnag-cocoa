@@ -19,6 +19,9 @@
 		F42956EC2A7B963366F45C4A /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */; };
 		F4295A7AA9B4A18992A2F020 /* HandledErrorOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */; };
 		F4295A94DD2D131A594A212C /* HandledErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */; };
+		F429526EE1BC60C5CA5F8A74 /* Wait.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42952865EF124B92FF9AB7F /* Wait.swift */; };
+		F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */; };
+		F42956EC2A7B963366F45C4A /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +42,9 @@
 		F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSExceptionScenario.swift; sourceTree = "<group>"; };
 		F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorScenario.swift; sourceTree = "<group>"; };
 		F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorOverrideScenario.swift; sourceTree = "<group>"; };
+		F42952865EF124B92FF9AB7F /* Wait.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wait.swift; sourceTree = "<group>"; };
+		F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
+		F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSExceptionScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
