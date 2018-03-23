@@ -8,6 +8,7 @@ Dir.chdir('features/fixtures/ios-swift-cocoapods') do
     ['bundle', 'install'],
     ['bundle', 'exec', 'pod', 'install'],
     ['../../scripts/build_ios_app.sh'],
+    ['../../scripts/launch_ios_simulators.sh'],
   ])
 end
 
@@ -16,8 +17,8 @@ Before do
 # Runs before every Scenario
 end
 
-After do
+at_exit do
   run_required_commands([
-    ['features/scripts/kill_ios_simulator.sh']
+    ['features/scripts/uninstall_ios_app.sh']
   ])
 end
