@@ -17,6 +17,6 @@
  */
 - (void)run;
 
-- (void)initBugsnag;
+- (void)startBugsnag;
 
 @end

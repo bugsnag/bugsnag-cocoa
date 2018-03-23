@@ -18,7 +18,7 @@
 - (void)run {
 }
 
-- (void)initBugsnag {
+- (void)startBugsnag {
     [Bugsnag startBugsnagWithConfiguration:self.config];
 }
 

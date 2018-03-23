@@ -19,7 +19,7 @@
         clz = NSClassFromString([NSString stringWithFormat:@"iOSTestApp.%@", className]);
     }
 
-    id obj = [[clz alloc] performSelector:NSSelectorFromString(@"init") withObject:config];
+    id obj = [[clz alloc] performSelector:NSSelectorFromString(@"initWithConfig:") withObject:config];
 
     if (![obj isKindOfClass:[Scenario class]]) {
         [[NSException exceptionWithName:@"ClassNotFound"

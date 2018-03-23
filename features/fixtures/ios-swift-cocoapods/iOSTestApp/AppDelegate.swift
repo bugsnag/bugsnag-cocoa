@@ -53,7 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func triggerEvent(scenario: Scenario, delay: TimeInterval) {
         let when = DispatchTime.now() + delay
-        scenario.initBugsnag()
+        scenario.startBugsnag()
 
         DispatchQueue.main.asyncAfter(deadline: when) {
             scenario.run()
