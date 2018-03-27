@@ -27,6 +27,9 @@
 #import <Foundation/Foundation.h>
 #import "Scenario.h"
 
+/**
+ * Call abort() to terminate the program.
+ */
 @interface AbortScenario: Scenario
 
 @end
