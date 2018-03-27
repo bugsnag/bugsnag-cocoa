@@ -11,3 +11,7 @@ Scenario: Abort is reported
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
     And the exception "errorClass" equals "SIGABRT"
+    And the "method" of stack frame 0 equals "__pthread_kill"
+    And the "method" of stack frame 1 equals "abort"
+    And the "method" of stack frame 2 equals "-[AbortScenario run]"
+    
