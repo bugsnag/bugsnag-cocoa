@@ -1,16 +1,27 @@
 language: objective-c
+cache: bundler
+rvm: 2.4.1
 matrix:
     include:
+        - osx_image: xcode7.3
+          env: SDK=iphonesimulator9.3
+          script: make test
         - osx_image: xcode8.3
           env: SDK=macosx10.12 BUILD_OSX=1
+          script: make test
         - osx_image: xcode8.3
           env: SDK=iphonesimulator10.3
+          script: make test
         - osx_image: xcode9.2
           env: SDK=iphonesimulator11.2
+          script: make test
         - osx_image: xcode9.2
           env: SDK=appletvsimulator11.2 BUILD_TV=1
+          script: make test
+        - osx_image: xcode9.2
+          env: SDK=iphonesimulator11.2
+          script: bundle exec maze-runner -c
 install: make bootstrap
-script: make test
 
 before_deploy: headerdoc2html -o docs Source -j; gatherheaderdoc docs; mv docs/masterTOC.html docs/index.html
 
