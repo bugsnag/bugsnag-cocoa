@@ -14,4 +14,10 @@ Scenario: Abort is reported
     And the "method" of stack frame 0 equals "__pthread_kill"
     And the "method" of stack frame 1 equals "abort"
     And the "method" of stack frame 2 equals "-[AbortScenario run]"
-    
+
+Scenario: C++ Exception is not reported
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone 8"
+    And I crash the app using "CxxExceptionScenario"
+    And I relaunch the app
+    Then I should receive no requests
