@@ -41,6 +41,10 @@ const char *kaboom_exception::what() const throw() {
  */
 @implementation CxxExceptionScenario
 
+- (void)run {
+    [self crash];
+}
+
 - (void)crash __attribute__((noreturn)) {
     throw new kaboom_exception;
 }
