@@ -25,3 +25,4 @@ Scenario: Send a message to an object whose memory has already been freed
     And the exception "message" equals "Attempted to dereference null pointer."
     And the exception "errorClass" equals "SIGSEGV"
     And the "method" of stack frame 0 equals "objc_msgSend"
+    And the "method" of stack frame 1 equals "-[ReleasedObjectScenario run]"
