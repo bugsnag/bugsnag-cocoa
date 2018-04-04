@@ -26,3 +26,8 @@ Scenario: Swift crash is reported
     And the request is a valid for the error reporting API
     And the exception "message" equals "Unexpectedly found nil while unwrapping an Optional value"
     And the exception "errorClass" equals "Fatal error"
+
+    And the "method" of stack frame 0 equals "_T0s18_fatalErrorMessages5NeverOs12StaticStringV_A2E4fileSu4lines6UInt32V5flagstFTf4nnddn_n"
+    And the "method" of stack frame 1 equals "_T0s18_fatalErrorMessages5NeverOs12StaticStringV_A2E4fileSu4lines6UInt32V5flagstF"
+    And the "method" of stack frame 2 equals "_T010iOSTestApp10SwiftCrashC3runyyF"
+    And the "method" of stack frame 3 equals "_T010iOSTestApp10SwiftCrashC3runyyFTo"
