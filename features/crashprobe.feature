@@ -77,6 +77,21 @@ Scenario: Attempt to execute an instruction undefined on the current architectur
     And the exception "errorClass" equals "SIGILL"
     And the "method" of stack frame 0 equals "-[UndefinedInstructionScenario run]"
 
+Scenario: Trigger a crash with libsystem_pthread's _pthread_list_lock held
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone 8"
+    And I crash the app using "AsyncSafeThreadScenario"
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
+    And the payload field "events" is an array with 1 element
+    And the exception "message" equals "Attempted to dereference garbage pointer 0x1."
+    And the exception "errorClass" equals "SIGSEGV"
+    And the "method" of stack frame 1 equals "pthread_getname_np"
+    And the "method" of stack frame 2 equals "-[AsyncSafeThreadScenario run]"
+
 Scenario: Read garbage pointer
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I configure the app to run on "iPhone 8"
