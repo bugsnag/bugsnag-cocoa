@@ -77,6 +77,16 @@ Scenario: Attempt to execute an instruction undefined on the current architectur
     And the exception "errorClass" equals "SIGILL"
     And the "method" of stack frame 0 equals "-[UndefinedInstructionScenario run]"
 
+Scenario: Read garbage pointer
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone 8"
+    And I crash the app using "ReadGarbagePointerScenario"
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "message" starts with "Attempted to dereference garbage pointer"
+    And the exception "errorClass" equals "SIGSEGV"
+    And the "method" of stack frame 0 equals "-[ReadGarbagePointerScenario run]"
 
 Scenario: Obj-C exception thrown
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
