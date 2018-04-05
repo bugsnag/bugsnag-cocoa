@@ -14,17 +14,6 @@ Scenario: Abort is reported
     And the "method" of stack frame 0 equals "__pthread_kill"
     And the "method" of stack frame 1 equals "abort"
     And the "method" of stack frame 2 equals "-[AbortScenario run]"
-
-Scenario: Crash inside Obj-C message send
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone 8"
-    And I crash the app using "ObjCMsgSendScenario"
-    And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
-    And the exception "errorClass" equals "SIGSEGV"
-    And the exception "message" equals "Attempted to dereference garbage pointer 0x42."
-    And the "method" of stack frame 0 equals "objc_msgSend"
     
 Scenario: Corrupt malloc heap
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
@@ -77,3 +66,14 @@ Scenario: Stack overflow is reported
     And the "method" of stack frame 7 equals "-[StackOverflowScenario run]"
     And the "method" of stack frame 8 equals "-[StackOverflowScenario run]"
     And the "method" of stack frame 9 equals "-[StackOverflowScenario run]"
+
+Scenario: Crash inside Obj-C message send
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone 8"
+    And I crash the app using "ObjCMsgSendScenario"
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "errorClass" equals "SIGSEGV"
+    And the exception "message" equals "Attempted to dereference garbage pointer 0x42."
+    And the "method" of stack frame 0 equals "objc_msgSend"
