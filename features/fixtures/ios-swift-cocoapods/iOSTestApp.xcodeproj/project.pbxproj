@@ -22,6 +22,7 @@
 		F429538D8941382EC2C857CE /* AsyncSafeThreadScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295CA6B6792DECA15C450B /* AsyncSafeThreadScenario.m */; };
 		F4295497A1582010C16F1861 /* AbortScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429534164257A2BE23ED72D /* AbortScenario.m */; };
 		F42955DB6D08642528917FAB /* CxxExceptionScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = F429550B682F8F9677305881 /* CxxExceptionScenario.mm */; };
+		F42954B7318A02824C65C514 /* ObjCMsgSendScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429511ED32FC9FB46649CAE /* ObjCMsgSendScenario.m */; };
 		F42955869D33EE0E510B9651 /* ReadGarbagePointerScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295B7431F98954DA62E47F /* ReadGarbagePointerScenario.m */; };
 		F42955E0916B8851F074D9B3 /* UserEmailScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */; };
 		F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */; };
@@ -53,6 +54,7 @@
 		8AB88675204052990003E444 /* iOSTestApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOSTestApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		960A6E7D4E847F1D76A4FD06 /* Pods-iOSTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.release.xcconfig"; sourceTree = "<group>"; };
 		EE18B3777C62D7BCA8DDBE30 /* Pods-iOSTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.debug.xcconfig"; sourceTree = "<group>"; };
+		F429511ED32FC9FB46649CAE /* ObjCMsgSendScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCMsgSendScenario.m; sourceTree = "<group>"; };
 		F42950588CE34967588DF438 /* ObjCExceptionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCExceptionScenario.h; sourceTree = "<group>"; };
 		F4295196419C0F6AAA7E89A5 /* AbortScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbortScenario.h; sourceTree = "<group>"; };
 		F42951B01B327C380EC2D8A6 /* CxxExceptionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CxxExceptionScenario.h; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 		F4295CD1B5437B73A7C254F7 /* ReadGarbagePointerScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadGarbagePointerScenario.h; sourceTree = "<group>"; };
 		F4295B041F9CC494473DD226 /* OverwriteLinkRegisterScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverwriteLinkRegisterScenario.m; sourceTree = "<group>"; };
 		F4295B8A6A7E451CDBA70EC1 /* ClassUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassUtils.h; sourceTree = "<group>"; };
+		F4295C6D7F0D52A2A906B33B /* ObjCMsgSendScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCMsgSendScenario.h; sourceTree = "<group>"; };
 		F4295C1C7C54101194B61E93 /* NullPointerScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NullPointerScenario.h; sourceTree = "<group>"; };
 		F4295E86DC0BE9DC731B0D1C /* NullPointerScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NullPointerScenario.m; sourceTree = "<group>"; };
 		F4295CA6B6792DECA15C450B /* AsyncSafeThreadScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncSafeThreadScenario.m; sourceTree = "<group>"; };
@@ -195,6 +198,8 @@
 				F4295ABA693D273D52AA9F6B /* Scenario.h */,
 				F429550B682F8F9677305881 /* CxxExceptionScenario.mm */,
 				F42951B01B327C380EC2D8A6 /* CxxExceptionScenario.h */,
+				F429511ED32FC9FB46649CAE /* ObjCMsgSendScenario.m */,
+				F4295C6D7F0D52A2A906B33B /* ObjCMsgSendScenario.h */,
 				F4295E86DC0BE9DC731B0D1C /* NullPointerScenario.m */,
 				F4295C1C7C54101194B61E93 /* NullPointerScenario.h */,
 				F4295CA6B6792DECA15C450B /* AsyncSafeThreadScenario.m */,
@@ -364,6 +369,7 @@
 				F42956B7A1CC63C1E17D2616 /* ClassUtils.m in Sources */,
 				F4295CEAD7C915EFA04898A5 /* Scenario.m in Sources */,
 				F42955DB6D08642528917FAB /* CxxExceptionScenario.mm in Sources */,
+				F42954B7318A02824C65C514 /* ObjCMsgSendScenario.m in Sources */,
 				F42953498545B853CC0B635E /* NullPointerScenario.m in Sources */,
 				F429538D8941382EC2C857CE /* AsyncSafeThreadScenario.m in Sources */,
 				F42955869D33EE0E510B9651 /* ReadGarbagePointerScenario.m in Sources */,
