@@ -15,6 +15,17 @@ Scenario: Abort is reported
     And the "method" of stack frame 1 equals "abort"
     And the "method" of stack frame 2 equals "-[AbortScenario run]"
 
+Scenario: C++ Exception is not reported
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone 8"
+    And I crash the app using "CxxExceptionScenario"
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "errorClass" equals "P16kaboom_exception"
+    And the exception "type" equals "cocoa"
+    And the payload field "events.0.exceptions.0.stacktrace" is an array with 0 element
+
 Scenario: Corrupt malloc heap
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I configure the app to run on "iPhone 8"
@@ -67,6 +78,17 @@ Scenario: Stack overflow is reported
     And the "method" of stack frame 8 equals "-[StackOverflowScenario run]"
     And the "method" of stack frame 9 equals "-[StackOverflowScenario run]"
 
+Scenario: Crash inside Obj-C message send
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone 8"
+    And I crash the app using "ObjCMsgSendScenario"
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "errorClass" equals "SIGSEGV"
+    And the exception "message" equals "Attempted to dereference garbage pointer 0x42."
+    And the "method" of stack frame 0 equals "objc_msgSend"
+
 Scenario: Attempt to execute an instruction undefined on the current architecture
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I configure the app to run on "iPhone 8"
@@ -93,3 +115,64 @@ Scenario: Swift crash is reported
     And the "method" of stack frame 1 starts with "_T0s18_fatalErrorMessages5NeverOs12StaticStringV_A2E4fileSu4lines6UInt32V5"
     And the "method" of stack frame 2 starts with "_T010iOSTestApp10SwiftCrashC3run"
     And the "method" of stack frame 3 starts with "_T010iOSTestApp10SwiftCrashC3run"
+
+Scenario: Dereferencing a null pointer
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone 8"
+    And I crash the app using "NullPointerScenario"
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "message" equals "Attempted to dereference null pointer."
+    And the exception "errorClass" equals "SIGSEGV"
+    And the "method" of stack frame 0 equals "-[NullPointerScenario run]"
+
+Scenario: Trigger a crash with libsystem_pthread's _pthread_list_lock held
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone 8"
+    And I crash the app using "AsyncSafeThreadScenario"
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
+    And the payload field "events" is an array with 1 element
+    And the exception "message" equals "Attempted to dereference garbage pointer 0x1."
+    And the exception "errorClass" equals "SIGSEGV"
+    And the "method" of stack frame 1 equals "pthread_getname_np"
+    And the "method" of stack frame 2 equals "-[AsyncSafeThreadScenario run]"
+
+Scenario: Read garbage pointer
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone 8"
+    And I crash the app using "ReadGarbagePointerScenario"
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "message" starts with "Attempted to dereference garbage pointer"
+    And the exception "errorClass" equals "SIGSEGV"
+    And the "method" of stack frame 0 equals "-[ReadGarbagePointerScenario run]"
+
+Scenario: Obj-C exception thrown
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone 8"
+    And I crash the app using "ObjCExceptionScenario"
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "message" equals "An uncaught exception! SCREAM."
+    And the exception "errorClass" equals "NSGenericException"
+    And the "method" of stack frame 0 equals "__exceptionPreprocess"
+    And the "method" of stack frame 1 equals "objc_exception_throw"
+    And the "method" of stack frame 2 equals "-[ObjCExceptionScenario run]"
+
+Scenario: Access non-object
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone 8"
+    And I crash the app using "AccessNonObjectScenario"
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "message" equals "Attempted to dereference garbage pointer 0x10."
+    And the exception "errorClass" equals "SIGSEGV"
+    And the "method" of stack frame 0 equals "objc_msgSend"
