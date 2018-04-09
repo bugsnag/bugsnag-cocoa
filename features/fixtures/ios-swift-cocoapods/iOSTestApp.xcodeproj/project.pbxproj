@@ -30,6 +30,7 @@
 		F42956B7A1CC63C1E17D2616 /* ClassUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295EB534A8426AF70D6889 /* ClassUtils.m */; };
 		F42956EC2A7B963366F45C4A /* PBXBuildFile */ = {isa = PBXBuildFile; fileRef = F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */; };
 		F4295836C8AF75547C675E8D /* ReleasedObjectScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */; };
+		F42958881D3F34A76CADE4EC /* SwiftCrash.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */; };
 		F42959124DB949EEF1420957 /* ReadOnlyPageScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295871D1BCF211398CAEBA /* ReadOnlyPageScenario.m */; };
 		F4295968571A4118D6A4606A /* UserEnabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42954E2B3FF0C5C0474DA74 /* UserEnabledScenario.swift */; };
 		F4295A036B228AF608641699 /* UserDisabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42951F865D328A43250640B /* UserDisabledScenario.swift */; };
@@ -116,6 +117,7 @@
 		F4295CA6B6792DECA15C450B /* AsyncSafeThreadScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncSafeThreadScenario.m; sourceTree = "<group>"; };
 		F4295C758B89038DD3A2A198 /* CorruptMallocScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CorruptMallocScenario.h; sourceTree = "<group>"; };
 		F4295EB534A8426AF70D6889 /* ClassUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassUtils.m; sourceTree = "<group>"; };
+		F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftCrash.swift; sourceTree = "<group>"; };
 		F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEmailScenario.swift; sourceTree = "<group>"; };
 		F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorOverrideScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -202,6 +204,7 @@
 				F4295ABA693D273D52AA9F6B /* Scenario.h */,
 				F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */,
 				F4295B7FE972945A50B3CA31 /* ReleasedObjectScenario.h */,
+				F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */,
 				F429550B682F8F9677305881 /* CxxExceptionScenario.mm */,
 				F42951B01B327C380EC2D8A6 /* CxxExceptionScenario.h */,
 				F429511ED32FC9FB46649CAE /* ObjCMsgSendScenario.m */,
@@ -375,6 +378,7 @@
 				F42956B7A1CC63C1E17D2616 /* ClassUtils.m in Sources */,
 				F4295CEAD7C915EFA04898A5 /* Scenario.m in Sources */,
 				F4295836C8AF75547C675E8D /* ReleasedObjectScenario.m in Sources */,
+				F42958881D3F34A76CADE4EC /* SwiftCrash.swift in Sources */,
 				F42955DB6D08642528917FAB /* CxxExceptionScenario.mm in Sources */,
 				F42954B7318A02824C65C514 /* ObjCMsgSendScenario.m in Sources */,
 				F42953498545B853CC0B635E /* NullPointerScenario.m in Sources */,
