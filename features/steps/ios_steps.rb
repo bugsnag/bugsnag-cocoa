@@ -19,7 +19,7 @@ end
 When("I install the app") do
   steps %Q{
     When I run the script "features/scripts/install_ios_app.sh" synchronously
-    And I wait for 1 second
+    And I wait for 5 second
   }
 end
 When("I launch the app") do

@@ -12,7 +12,6 @@ Dir.chdir('features/fixtures/ios-swift-cocoapods') do
     ['bundle', 'exec', 'pod', 'install'],
     ['../../scripts/build_ios_app.sh'],
     ['../../scripts/launch_ios_simulators.sh'],
-    ['sleep', '180']
   ])
 end
 
