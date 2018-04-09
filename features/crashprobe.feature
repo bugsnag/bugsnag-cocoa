@@ -14,7 +14,7 @@ Scenario: Abort is reported
     And the "method" of stack frame 0 equals "__pthread_kill"
     And the "method" of stack frame 1 equals "abort"
     And the "method" of stack frame 2 equals "-[AbortScenario run]"
-    
+
 Scenario: Corrupt malloc heap
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I configure the app to run on "iPhone 8"
@@ -89,7 +89,7 @@ Scenario: Swift crash is reported
     And the exception "message" equals "Unexpectedly found nil while unwrapping an Optional value"
     And the exception "errorClass" equals "Fatal error"
 
-    And the "method" of stack frame 0 equals "_T0s18_fatalErrorMessages5NeverOs12StaticStringV_A2E4fileSu4lines6UInt32V5flagstFTf4nnddn_n"
-    And the "method" of stack frame 1 equals "_T0s18_fatalErrorMessages5NeverOs12StaticStringV_A2E4fileSu4lines6UInt32V5flagstF"
-    And the "method" of stack frame 2 equals "_T010iOSTestApp10SwiftCrashC3runyyF"
-    And the "method" of stack frame 3 equals "_T010iOSTestApp10SwiftCrashC3runyyFTo"
+    And the "method" of stack frame 0 starts with "_T0s18_fatalErrorMessages5NeverOs12StaticStringV_A2E4fileSu4lines6UInt32V5"
+    And the "method" of stack frame 1 starts with "_T0s18_fatalErrorMessages5NeverOs12StaticStringV_A2E4fileSu4lines6UInt32V5"
+    And the "method" of stack frame 2 starts with "_T010iOSTestApp10SwiftCrashC3run"
+    And the "method" of stack frame 3 starts with "_T010iOSTestApp10SwiftCrashC3run"
