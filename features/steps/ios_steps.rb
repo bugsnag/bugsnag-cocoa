@@ -11,21 +11,24 @@ When("I run {string} with the defaults on {string}") do |eventType, simulator|
 end
 
 When("I build the app") do
+  wait_time = RUNNING_CI ? '10' : '5'
   steps %Q{
     When I run the script "features/scripts/build_ios_app.sh" synchronously
-    And I wait for 1 second
+    And I wait for #{wait_time} second
   }
 end
 When("I install the app") do
+  wait_time = RUNNING_CI ? '10' : '5'
   steps %Q{
     When I run the script "features/scripts/install_ios_app.sh" synchronously
-    And I wait for 5 second
+    And I wait for #{wait_time} second
   }
 end
 When("I launch the app") do
+  wait_time = RUNNING_CI ? '10' : '5'
   steps %Q{
     When I run the script "features/scripts/launch_ios_app.sh"
-    And I wait for 5 seconds
+    And I wait for #{wait_time} seconds
   }
 end
 When("I relaunch the app") do
