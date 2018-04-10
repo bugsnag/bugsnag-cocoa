@@ -7,6 +7,18 @@ Scenario: Override errorClass and message from a notifyError() callback
     And the exception "errorClass" equals "Bar"
     And the exception "message" equals "Foo"
 
+
+Scenario: Corrupt malloc heap
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone 8"
+    And I crash the app using "CorruptMallocScenario"
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "errorClass" equals "SIGABRT"
+    And the "method" of stack frame 0 equals "__pthread_kill"
+    And the "method" of stack frame 1 equals "abort"
+
 Scenario: Handled Error delivered
     When I run "HandledErrorScenario" with the defaults on "iPhone8-11.2"
     Then I should receive a request
