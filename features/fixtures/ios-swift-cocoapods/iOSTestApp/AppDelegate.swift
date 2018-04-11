@@ -1,7 +1,8 @@
 import UIKit
 import Bugsnag
 
-class InvariantException: NSException {}
+class InvariantException: NSException {
+}
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -24,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if argument.contains("EVENT_DELAY") {
                 let components = argument.split(separator: "=")
                 if let interval = TimeInterval(components.last!) {
-                  delay = interval
+                    delay = interval
                 }
             } else if argument.contains("EVENT_TYPE") {
                 eventType = String(argument.split(separator: "=").last!)
@@ -35,9 +36,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         assert(mockAPIPath.count > 0, "The mock API path must be set prior to triggering events")
+        if eventType == "preheat" {
+          assert(false)
+        }
 
         let config = prepareConfig(apiKey: bugsnagAPIKey, mockAPIPath: mockAPIPath)
-        let scenario = scenarioForEventType(eventType: eventType, config: config)
+        let scenario = ClassUtils.instantiateClass(eventType, withConfig: config)
         triggerEvent(scenario: scenario, delay: delay)
     }
 
@@ -50,16 +54,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return config
     }
 
-    internal func scenarioForEventType(eventType: String, config: BugsnagConfiguration) -> Scenario {
-        let clz = ("none" == eventType) ? "Wait" : eventType
-        let eventTypeForClass = "iOSTestApp." + clz // prefix with app name
-        let type = NSClassFromString(eventTypeForClass) as! Scenario.Type
-        return type.init(config: config)
-    }
-
     func triggerEvent(scenario: Scenario, delay: TimeInterval) {
         let when = DispatchTime.now() + delay
-        scenario.initBugsnag()
+        scenario.startBugsnag()
 
         DispatchQueue.main.asyncAfter(deadline: when) {
             scenario.run()

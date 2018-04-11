@@ -7,7 +7,7 @@ Scenario: Override errorClass and message from a notifyError() callback
     And the exception "errorClass" equals "Bar"
     And the exception "message" equals "Foo"
 
-Scenario: Handled Error delivered
+Scenario: Reporting an NSError
     When I run "HandledErrorScenario" with the defaults on "iPhone8-11.2"
     Then I should receive a request
     And the request is a valid for the error reporting API
@@ -17,7 +17,7 @@ Scenario: Handled Error delivered
     And the exception "errorClass" equals "NSError"
     And the exception "message" equals "The operation couldn’t be completed. (HandledErrorScenario error 100.)"
 
-Scenario: Handled Exception delivered
+Scenario: Reporting a handled exception
     When I run "HandledExceptionScenario" with the defaults on "iPhone8-11.2"
     Then I should receive a request
     And the request is a valid for the error reporting API

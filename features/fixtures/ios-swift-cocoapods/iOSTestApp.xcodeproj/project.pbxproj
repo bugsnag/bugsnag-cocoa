@@ -14,18 +14,34 @@
 		8AB8866E20404DD30003E444 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8AB8866C20404DD30003E444 /* LaunchScreen.storyboard */; };
 		C4D0B5FF8E60C0835B86DFE9 /* Pods_iOSTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */; };
 		F429502603396F8671B333B3 /* HandledExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F429526319377A8848136413 /* HandledExceptionScenario.swift */; };
+		F4295218A62E41518DC3C057 /* AccessNonObjectScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295A20DE438C2B28167714 /* AccessNonObjectScenario.m */; };
+		F42951A9FD696D9047149DA8 /* UndefinedInstructionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429538D19421F28D8EB0446 /* UndefinedInstructionScenario.m */; };
+		F4295262625F84A80282E520 /* CorruptMallocScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429581876FA1A9CFEE52615 /* CorruptMallocScenario.m */; };
 		F429526EE1BC60C5CA5F8A74 /* Wait.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42952865EF124B92FF9AB7F /* Wait.swift */; };
-		F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */; };
-		F42956EC2A7B963366F45C4A /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */; };
-		F4295A7AA9B4A18992A2F020 /* HandledErrorOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */; };
-		F4295A94DD2D131A594A212C /* HandledErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */; };
-		F429526EE1BC60C5CA5F8A74 /* Wait.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42952865EF124B92FF9AB7F /* Wait.swift */; };
+		F42953498545B853CC0B635E /* NullPointerScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295E86DC0BE9DC731B0D1C /* NullPointerScenario.m */; };
+		F429538D8941382EC2C857CE /* AsyncSafeThreadScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295CA6B6792DECA15C450B /* AsyncSafeThreadScenario.m */; };
+		F4295497A1582010C16F1861 /* AbortScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429534164257A2BE23ED72D /* AbortScenario.m */; };
+		F42955DB6D08642528917FAB /* CxxExceptionScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = F429550B682F8F9677305881 /* CxxExceptionScenario.mm */; };
+		F42954B7318A02824C65C514 /* ObjCMsgSendScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429511ED32FC9FB46649CAE /* ObjCMsgSendScenario.m */; };
+		F42955869D33EE0E510B9651 /* ReadGarbagePointerScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295B7431F98954DA62E47F /* ReadGarbagePointerScenario.m */; };
 		F42955E0916B8851F074D9B3 /* UserEmailScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */; };
 		F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */; };
 		F429565A951303E2C3136D0D /* UserIdScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */; };
-		F42956EC2A7B963366F45C4A /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */; };
+		F42956B7A1CC63C1E17D2616 /* ClassUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295EB534A8426AF70D6889 /* ClassUtils.m */; };
+		F42956EC2A7B963366F45C4A /* PBXBuildFile */ = {isa = PBXBuildFile; fileRef = F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */; };
+		F4295836C8AF75547C675E8D /* ReleasedObjectScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */; };
+		F42958881D3F34A76CADE4EC /* SwiftCrash.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */; };
+		F42959124DB949EEF1420957 /* ReadOnlyPageScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295871D1BCF211398CAEBA /* ReadOnlyPageScenario.m */; };
 		F4295968571A4118D6A4606A /* UserEnabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42954E2B3FF0C5C0474DA74 /* UserEnabledScenario.swift */; };
 		F4295A036B228AF608641699 /* UserDisabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42951F865D328A43250640B /* UserDisabledScenario.swift */; };
+		F4295A7AA9B4A18992A2F020 /* HandledErrorOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */; };
+		F4295A94DD2D131A594A212C /* HandledErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */; };
+		F4295CEAD7C915EFA04898A5 /* Scenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F42954E8B66F3FB7F5333CF7 /* Scenario.m */; };
+		F4295B56219D228FAA99BC14 /* ObjCExceptionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429521A8EEB435DCB6EACE1 /* ObjCExceptionScenario.m */; };
+		F4295CEAD7C915EFA04898A5 /* Scenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F42954E8B66F3FB7F5333CF7 /* Scenario.m */; };
+		F4295B75B2244F442D84D9CA /* StackOverflowScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295493796EA93321E5CDDB /* StackOverflowScenario.m */; };
+		F4295CEAD7C915EFA04898A5 /* Scenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F42954E8B66F3FB7F5333CF7 /* Scenario.m */; };
+		F4295D19B9E67F5786011698 /* OverwriteLinkRegisterScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295B041F9CC494473DD226 /* OverwriteLinkRegisterScenario.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,16 +56,70 @@
 		8AB88675204052990003E444 /* iOSTestApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOSTestApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		960A6E7D4E847F1D76A4FD06 /* Pods-iOSTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.release.xcconfig"; sourceTree = "<group>"; };
 		EE18B3777C62D7BCA8DDBE30 /* Pods-iOSTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.debug.xcconfig"; sourceTree = "<group>"; };
+		F429511ED32FC9FB46649CAE /* ObjCMsgSendScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCMsgSendScenario.m; sourceTree = "<group>"; };
+		F42950588CE34967588DF438 /* ObjCExceptionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCExceptionScenario.h; sourceTree = "<group>"; };
+		F4295196419C0F6AAA7E89A5 /* AbortScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbortScenario.h; sourceTree = "<group>"; };
+		F42951B01B327C380EC2D8A6 /* CxxExceptionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CxxExceptionScenario.h; sourceTree = "<group>"; };
 		F42951F865D328A43250640B /* UserDisabledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDisabledScenario.swift; sourceTree = "<group>"; };
+		F42951F865D328A43250640B /* UserDisabledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDisabledScenario.swift; sourceTree = "<group>"; };
+		F429521A8EEB435DCB6EACE1 /* ObjCExceptionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionScenario.m; sourceTree = "<group>"; };
 		F429526319377A8848136413 /* HandledExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledExceptionScenario.swift; sourceTree = "<group>"; };
-		F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorScenario.swift; sourceTree = "<group>"; };
-		F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorOverrideScenario.swift; sourceTree = "<group>"; };
 		F42952865EF124B92FF9AB7F /* Wait.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wait.swift; sourceTree = "<group>"; };
 		F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
+		F429534164257A2BE23ED72D /* AbortScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbortScenario.m; sourceTree = "<group>"; };
 		F42954E2B3FF0C5C0474DA74 /* UserEnabledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEnabledScenario.swift; sourceTree = "<group>"; };
+		F42954E8B66F3FB7F5333CF7 /* Scenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scenario.m; sourceTree = "<group>"; };
+		F429550B682F8F9677305881 /* CxxExceptionScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxExceptionScenario.mm; sourceTree = "<group>"; };
 		F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserIdScenario.swift; sourceTree = "<group>"; };
 		F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSExceptionScenario.swift; sourceTree = "<group>"; };
+		F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorScenario.swift; sourceTree = "<group>"; };
+		F4295ABA693D273D52AA9F6B /* Scenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scenario.h; sourceTree = "<group>"; };
+		F4295B8A6A7E451CDBA70EC1 /* ClassUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassUtils.h; sourceTree = "<group>"; };
+		F429526319377A8848136413 /* HandledExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledExceptionScenario.swift; sourceTree = "<group>"; };
+		F42952865EF124B92FF9AB7F /* Wait.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wait.swift; sourceTree = "<group>"; };
+		F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
+		F429534164257A2BE23ED72D /* AbortScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbortScenario.m; sourceTree = "<group>"; };
+		F42954E2B3FF0C5C0474DA74 /* UserEnabledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEnabledScenario.swift; sourceTree = "<group>"; };
+		F42954E8B66F3FB7F5333CF7 /* Scenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scenario.m; sourceTree = "<group>"; };
+		F429556E677F030F72C4C5D0 /* AsyncSafeThreadScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncSafeThreadScenario.h; sourceTree = "<group>"; };
+		F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserIdScenario.swift; sourceTree = "<group>"; };
+		F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSExceptionScenario.swift; sourceTree = "<group>"; };
+		F42956707AEC06754D9C2208 /* AccessNonObjectScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccessNonObjectScenario.h; sourceTree = "<group>"; };
+		F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserIdScenario.swift; sourceTree = "<group>"; };
+		F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSExceptionScenario.swift; sourceTree = "<group>"; };
+		F4295A20DE438C2B28167714 /* AccessNonObjectScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccessNonObjectScenario.m; sourceTree = "<group>"; };
+		F42952BCC8A05EFAAE503E3D /* StackOverflowScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StackOverflowScenario.h; sourceTree = "<group>"; };
+		F429534164257A2BE23ED72D /* AbortScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbortScenario.m; sourceTree = "<group>"; };
+		F429534E2FC03ED1AD8F4F28 /* OverwriteLinkRegisterScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverwriteLinkRegisterScenario.h; sourceTree = "<group>"; };
+		F429538D19421F28D8EB0446 /* UndefinedInstructionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UndefinedInstructionScenario.m; sourceTree = "<group>"; };
+		F429539C447B6BFA17C102D7 /* ReadOnlyPageScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadOnlyPageScenario.h; sourceTree = "<group>"; };
+		F4295493796EA93321E5CDDB /* StackOverflowScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StackOverflowScenario.m; sourceTree = "<group>"; };
+		F42954E2B3FF0C5C0474DA74 /* UserEnabledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEnabledScenario.swift; sourceTree = "<group>"; };
+		F42954E8B66F3FB7F5333CF7 /* Scenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scenario.m; sourceTree = "<group>"; };
+		F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserIdScenario.swift; sourceTree = "<group>"; };
+		F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSExceptionScenario.swift; sourceTree = "<group>"; };
+		F429581876FA1A9CFEE52615 /* CorruptMallocScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CorruptMallocScenario.m; sourceTree = "<group>"; };
+		F4295871D1BCF211398CAEBA /* ReadOnlyPageScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadOnlyPageScenario.m; sourceTree = "<group>"; };
+		F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorScenario.swift; sourceTree = "<group>"; };
+		F4295A4EF5288C60F978676F /* UndefinedInstructionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UndefinedInstructionScenario.h; sourceTree = "<group>"; };
+		F4295ABA693D273D52AA9F6B /* Scenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scenario.h; sourceTree = "<group>"; };
+		F4295B7FE972945A50B3CA31 /* ReleasedObjectScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasedObjectScenario.h; sourceTree = "<group>"; };
+		F4295B8A6A7E451CDBA70EC1 /* ClassUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassUtils.h; sourceTree = "<group>"; };
+		F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasedObjectScenario.m; sourceTree = "<group>"; };
+		F4295B7431F98954DA62E47F /* ReadGarbagePointerScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadGarbagePointerScenario.m; sourceTree = "<group>"; };
+		F4295B8A6A7E451CDBA70EC1 /* ClassUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassUtils.h; sourceTree = "<group>"; };
+		F4295CD1B5437B73A7C254F7 /* ReadGarbagePointerScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadGarbagePointerScenario.h; sourceTree = "<group>"; };
+		F4295B041F9CC494473DD226 /* OverwriteLinkRegisterScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverwriteLinkRegisterScenario.m; sourceTree = "<group>"; };
+		F4295B8A6A7E451CDBA70EC1 /* ClassUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassUtils.h; sourceTree = "<group>"; };
+		F4295C6D7F0D52A2A906B33B /* ObjCMsgSendScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCMsgSendScenario.h; sourceTree = "<group>"; };
+		F4295C1C7C54101194B61E93 /* NullPointerScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NullPointerScenario.h; sourceTree = "<group>"; };
+		F4295E86DC0BE9DC731B0D1C /* NullPointerScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NullPointerScenario.m; sourceTree = "<group>"; };
+		F4295CA6B6792DECA15C450B /* AsyncSafeThreadScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncSafeThreadScenario.m; sourceTree = "<group>"; };
+		F4295C758B89038DD3A2A198 /* CorruptMallocScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CorruptMallocScenario.h; sourceTree = "<group>"; };
+		F4295EB534A8426AF70D6889 /* ClassUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassUtils.m; sourceTree = "<group>"; };
+		F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftCrash.swift; sourceTree = "<group>"; };
 		F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEmailScenario.swift; sourceTree = "<group>"; };
+		F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorOverrideScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,7 +188,6 @@
 			isa = PBXGroup;
 			children = (
 				F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */,
-				F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */,
 				F42952865EF124B92FF9AB7F /* Wait.swift */,
 				F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */,
 				F42954E2B3FF0C5C0474DA74 /* UserEnabledScenario.swift */,
@@ -127,6 +196,39 @@
 				F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */,
 				F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */,
 				F429526319377A8848136413 /* HandledExceptionScenario.swift */,
+				F4295196419C0F6AAA7E89A5 /* AbortScenario.h */,
+				F429534164257A2BE23ED72D /* AbortScenario.m */,
+				F4295EB534A8426AF70D6889 /* ClassUtils.m */,
+				F4295B8A6A7E451CDBA70EC1 /* ClassUtils.h */,
+				F42954E8B66F3FB7F5333CF7 /* Scenario.m */,
+				F4295ABA693D273D52AA9F6B /* Scenario.h */,
+				F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */,
+				F4295B7FE972945A50B3CA31 /* ReleasedObjectScenario.h */,
+				F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */,
+				F429550B682F8F9677305881 /* CxxExceptionScenario.mm */,
+				F42951B01B327C380EC2D8A6 /* CxxExceptionScenario.h */,
+				F429511ED32FC9FB46649CAE /* ObjCMsgSendScenario.m */,
+				F4295C6D7F0D52A2A906B33B /* ObjCMsgSendScenario.h */,
+				F4295E86DC0BE9DC731B0D1C /* NullPointerScenario.m */,
+				F4295C1C7C54101194B61E93 /* NullPointerScenario.h */,
+				F4295CA6B6792DECA15C450B /* AsyncSafeThreadScenario.m */,
+				F429556E677F030F72C4C5D0 /* AsyncSafeThreadScenario.h */,
+				F4295B7431F98954DA62E47F /* ReadGarbagePointerScenario.m */,
+				F4295CD1B5437B73A7C254F7 /* ReadGarbagePointerScenario.h */,
+				F429521A8EEB435DCB6EACE1 /* ObjCExceptionScenario.m */,
+				F42950588CE34967588DF438 /* ObjCExceptionScenario.h */,
+				F4295A20DE438C2B28167714 /* AccessNonObjectScenario.m */,
+				F42956707AEC06754D9C2208 /* AccessNonObjectScenario.h */,
+				F429581876FA1A9CFEE52615 /* CorruptMallocScenario.m */,
+				F4295C758B89038DD3A2A198 /* CorruptMallocScenario.h */,
+				F4295B041F9CC494473DD226 /* OverwriteLinkRegisterScenario.m */,
+				F429534E2FC03ED1AD8F4F28 /* OverwriteLinkRegisterScenario.h */,
+				F4295871D1BCF211398CAEBA /* ReadOnlyPageScenario.m */,
+				F429539C447B6BFA17C102D7 /* ReadOnlyPageScenario.h */,
+				F4295493796EA93321E5CDDB /* StackOverflowScenario.m */,
+				F42952BCC8A05EFAAE503E3D /* StackOverflowScenario.h */,
+				F429538D19421F28D8EB0446 /* UndefinedInstructionScenario.m */,
+				F4295A4EF5288C60F978676F /* UndefinedInstructionScenario.h */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";
@@ -264,7 +366,6 @@
 				8AB8866620404DD30003E444 /* ViewController.swift in Sources */,
 				8AB8866420404DD30003E444 /* AppDelegate.swift in Sources */,
 				F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */,
-				F42956EC2A7B963366F45C4A /* Scenario.swift in Sources */,
 				F429526EE1BC60C5CA5F8A74 /* Wait.swift in Sources */,
 				F42955E0916B8851F074D9B3 /* UserEmailScenario.swift in Sources */,
 				F4295968571A4118D6A4606A /* UserEnabledScenario.swift in Sources */,
@@ -273,6 +374,23 @@
 				F4295A94DD2D131A594A212C /* HandledErrorScenario.swift in Sources */,
 				F4295A7AA9B4A18992A2F020 /* HandledErrorOverrideScenario.swift in Sources */,
 				F429502603396F8671B333B3 /* HandledExceptionScenario.swift in Sources */,
+				F4295497A1582010C16F1861 /* AbortScenario.m in Sources */,
+				F42956B7A1CC63C1E17D2616 /* ClassUtils.m in Sources */,
+				F4295CEAD7C915EFA04898A5 /* Scenario.m in Sources */,
+				F4295836C8AF75547C675E8D /* ReleasedObjectScenario.m in Sources */,
+				F42958881D3F34A76CADE4EC /* SwiftCrash.swift in Sources */,
+				F42955DB6D08642528917FAB /* CxxExceptionScenario.mm in Sources */,
+				F42954B7318A02824C65C514 /* ObjCMsgSendScenario.m in Sources */,
+				F42953498545B853CC0B635E /* NullPointerScenario.m in Sources */,
+				F429538D8941382EC2C857CE /* AsyncSafeThreadScenario.m in Sources */,
+				F42955869D33EE0E510B9651 /* ReadGarbagePointerScenario.m in Sources */,
+				F4295B56219D228FAA99BC14 /* ObjCExceptionScenario.m in Sources */,
+				F4295218A62E41518DC3C057 /* AccessNonObjectScenario.m in Sources */,
+				F4295262625F84A80282E520 /* CorruptMallocScenario.m in Sources */,
+				F4295D19B9E67F5786011698 /* OverwriteLinkRegisterScenario.m in Sources */,
+				F42959124DB949EEF1420957 /* ReadOnlyPageScenario.m in Sources */,
+				F4295B75B2244F442D84D9CA /* StackOverflowScenario.m in Sources */,
+				F42951A9FD696D9047149DA8 /* UndefinedInstructionScenario.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,11 +530,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				INFOPLIST_FILE = iOSTestApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.iOSTestApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "iOSTestApp/iOSTestApp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -431,11 +551,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				INFOPLIST_FILE = iOSTestApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.iOSTestApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "iOSTestApp/iOSTestApp-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -3,3 +3,5 @@
 //
 
 #import <Bugsnag/Bugsnag.h>
+#import "ClassUtils.h"
+#import "Scenario.h"
