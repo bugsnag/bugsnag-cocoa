@@ -1,0 +1,50 @@
+{
+  "apiKey": "a35a2a72bd230ac0aa0f52715bbdc6aa",
+  "payloadVersion": "4.0",
+  "events": [
+    {
+      "device": {
+        "locale": "en_US",
+        "osVersion": "11.2",
+        "model": "iPhone10,4",
+        "jailbroken": false,
+        "modelNumber": "simulator",
+        "osName": "iOS"
+      },
+      "exceptions": [
+        {
+          "message": "",
+          "errorClass": "Exception",
+          "type": "cocoa"
+        }
+      ],
+      "breadcrumbs": null,
+      "app": {
+        "releaseStage": "development",
+        "id": "com.bugsnag.iOSTestApp",
+        "type": "iOS",
+        "bundleVersion": "1",
+        "version": "1.0"
+      },
+      "threads": [
+
+      ],
+      "metaData": {
+        "error": null
+      },
+      "context": null,
+      "unhandled": true,
+      "severity": "error",
+      "severityReason": {
+        "type": "unhandledException"
+      },
+      "user": {
+      }
+    }
+  ],
+  "notifier": {
+    "name": "iOS Bugsnag Notifier",
+    "version": "^\\d+\\.\\d+\\.\\d+$",
+    "url": "https://github.com/bugsnag/bugsnag-cocoa"
+  }
+}

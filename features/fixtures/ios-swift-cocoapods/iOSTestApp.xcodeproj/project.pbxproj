@@ -24,6 +24,8 @@
 		F42955DB6D08642528917FAB /* CxxExceptionScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = F429550B682F8F9677305881 /* CxxExceptionScenario.mm */; };
 		F42954B7318A02824C65C514 /* ObjCMsgSendScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429511ED32FC9FB46649CAE /* ObjCMsgSendScenario.m */; };
 		F42955869D33EE0E510B9651 /* ReadGarbagePointerScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295B7431F98954DA62E47F /* ReadGarbagePointerScenario.m */; };
+		F429532277D8B4DAE53F3F77 /* MinimalCrashReportScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429514FFBD085C6FEB85BDC /* MinimalCrashReportScenario.m */; };
+		F4295497A1582010C16F1861 /* AbortScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429534164257A2BE23ED72D /* AbortScenario.m */; };
 		F42955E0916B8851F074D9B3 /* UserEmailScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */; };
 		F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */; };
 		F429565A951303E2C3136D0D /* UserIdScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */; };
@@ -63,6 +65,9 @@
 		F42951F865D328A43250640B /* UserDisabledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDisabledScenario.swift; sourceTree = "<group>"; };
 		F42951F865D328A43250640B /* UserDisabledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDisabledScenario.swift; sourceTree = "<group>"; };
 		F429521A8EEB435DCB6EACE1 /* ObjCExceptionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionScenario.m; sourceTree = "<group>"; };
+		F429514FFBD085C6FEB85BDC /* MinimalCrashReportScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MinimalCrashReportScenario.m; sourceTree = "<group>"; };
+		F4295196419C0F6AAA7E89A5 /* AbortScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbortScenario.h; sourceTree = "<group>"; };
+		F42951F865D328A43250640B /* UserDisabledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDisabledScenario.swift; sourceTree = "<group>"; };
 		F429526319377A8848136413 /* HandledExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledExceptionScenario.swift; sourceTree = "<group>"; };
 		F42952865EF124B92FF9AB7F /* Wait.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wait.swift; sourceTree = "<group>"; };
 		F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
@@ -70,6 +75,7 @@
 		F42954E2B3FF0C5C0474DA74 /* UserEnabledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEnabledScenario.swift; sourceTree = "<group>"; };
 		F42954E8B66F3FB7F5333CF7 /* Scenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scenario.m; sourceTree = "<group>"; };
 		F429550B682F8F9677305881 /* CxxExceptionScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxExceptionScenario.mm; sourceTree = "<group>"; };
+		F4295703713DA0D0ED768230 /* MinimalCrashReportScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MinimalCrashReportScenario.h; sourceTree = "<group>"; };
 		F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserIdScenario.swift; sourceTree = "<group>"; };
 		F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSExceptionScenario.swift; sourceTree = "<group>"; };
 		F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorScenario.swift; sourceTree = "<group>"; };
@@ -118,6 +124,7 @@
 		F4295C758B89038DD3A2A198 /* CorruptMallocScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CorruptMallocScenario.h; sourceTree = "<group>"; };
 		F4295EB534A8426AF70D6889 /* ClassUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassUtils.m; sourceTree = "<group>"; };
 		F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftCrash.swift; sourceTree = "<group>"; };
+		F4295EB534A8426AF70D6889 /* ClassUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassUtils.m; sourceTree = "<group>"; };
 		F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEmailScenario.swift; sourceTree = "<group>"; };
 		F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorOverrideScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -202,6 +209,8 @@
 				F4295B8A6A7E451CDBA70EC1 /* ClassUtils.h */,
 				F42954E8B66F3FB7F5333CF7 /* Scenario.m */,
 				F4295ABA693D273D52AA9F6B /* Scenario.h */,
+				F429514FFBD085C6FEB85BDC /* MinimalCrashReportScenario.m */,
+				F4295703713DA0D0ED768230 /* MinimalCrashReportScenario.h */,
 				F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */,
 				F4295B7FE972945A50B3CA31 /* ReleasedObjectScenario.h */,
 				F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */,
@@ -229,6 +238,8 @@
 				F42952BCC8A05EFAAE503E3D /* StackOverflowScenario.h */,
 				F429538D19421F28D8EB0446 /* UndefinedInstructionScenario.m */,
 				F4295A4EF5288C60F978676F /* UndefinedInstructionScenario.h */,
+				F429514FFBD085C6FEB85BDC /* MinimalCrashReportScenario.m */,
+				F4295703713DA0D0ED768230 /* MinimalCrashReportScenario.h */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";
@@ -391,6 +402,7 @@
 				F42959124DB949EEF1420957 /* ReadOnlyPageScenario.m in Sources */,
 				F4295B75B2244F442D84D9CA /* StackOverflowScenario.m in Sources */,
 				F42951A9FD696D9047149DA8 /* UndefinedInstructionScenario.m in Sources */,
+				F429532277D8B4DAE53F3F77 /* MinimalCrashReportScenario.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
