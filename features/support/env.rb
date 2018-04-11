@@ -4,7 +4,7 @@
 # definitions
 
 RUNNING_CI = ENV['TRAVIS'] == 'true'
-SIMULATOR = `xcrun simctl create iPhone8-11.3 "iPhone 8" "11.3"`
+SIMULATOR = `xcrun simctl create iPhone8-11.2 "iPhone 8" "11.2"`
 
 Dir.chdir('features/fixtures/ios-swift-cocoapods') do
   run_required_commands([

@@ -2,7 +2,7 @@ Feature: NSException handling
 
 Scenario: Uncaught NSException is raised
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.3"
+    And I configure the app to run on "iPhone8-11.2"
     And I crash the app using "NSExceptionScenario"
     And I relaunch the app
     Then I should receive a request

@@ -36,6 +36,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         assert(mockAPIPath.count > 0, "The mock API path must be set prior to triggering events")
+        if eventType == "preheat" {
+          assert(false)
+        }
 
         let config = prepareConfig(apiKey: bugsnagAPIKey, mockAPIPath: mockAPIPath)
         let scenario = ClassUtils.instantiateClass(eventType, withConfig: config)
