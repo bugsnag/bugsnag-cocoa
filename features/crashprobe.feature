@@ -124,9 +124,7 @@ Scenario: Crash within Swift code
     And the exception "errorClass" equals "Fatal error"
 
     And the "method" of stack frame 0 starts with "_T0s18_fatalErrorMessages5NeverOs12StaticStringV_A2E4fileSu4lines6UInt32V5"
-    And the "method" of stack frame 1 starts with "_T0s18_fatalErrorMessages5NeverOs12StaticStringV_A2E4fileSu4lines6UInt32V5"
-    And the "method" of stack frame 2 starts with "_T010iOSTestApp10SwiftCrashC3run"
-    And the "method" of stack frame 3 starts with "_T010iOSTestApp10SwiftCrashC3run"
+    And the "method" of stack frame 1 starts with "_T010iOSTestApp10SwiftCrashC3run"
 
 Scenario: Dereference a null pointer
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
