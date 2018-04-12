@@ -26,6 +26,25 @@ Scenario: Throwing a C++ exception
     And the exception "type" equals "cocoa"
     And the payload field "events.0.exceptions.0.stacktrace" is an array with 0 element
 
+Scenario: Calling non-existent method
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone8-11.2"
+    And I crash the app using "NonExistentMethodScenario"
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
+    And the payload field "events" is an array with 1 element
+    And the exception "message" starts with "-[NonExistentMethodScenario santaclaus:]: unrecognized selector sent to instance"
+    And the exception "errorClass" equals "NSInvalidArgumentException"
+    And the "method" of stack frame 0 equals "__exceptionPreprocess"
+    And the "method" of stack frame 1 equals "objc_exception_throw"
+    And the "method" of stack frame 2 equals "-[NSObject(NSObject) doesNotRecognizeSelector:]"
+    And the "method" of stack frame 3 equals "___forwarding___"
+    And the "method" of stack frame 4 equals "_CF_forwarding_prep_0"
+    And the "method" of stack frame 5 equals "-[NonExistentMethodScenario run]"
+
 Scenario: Heap corruption by writing garbage into data areas used by malloc to track allocations
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I configure the app to run on "iPhone8-11.2"
