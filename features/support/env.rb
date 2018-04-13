@@ -4,13 +4,13 @@
 # definitions
 
 RUNNING_CI = ENV['TRAVIS'] == 'true'
-SIMULATOR = `xcrun simctl create iPhone8-11.2 "iPhone 8" "11.2"`
 
 Dir.chdir('features/fixtures/ios-swift-cocoapods') do
   run_required_commands([
     ['bundle', 'install'],
     ['bundle', 'exec', 'pod', 'install'],
     ['../../scripts/build_ios_app.sh'],
+    ['../../scripts/remove_installed_simulators.sh'],
     ['../../scripts/launch_ios_simulators.sh'],
   ])
 end
@@ -22,6 +22,6 @@ end
 
 at_exit do
   run_required_commands([
-    ['xcrun', 'simctl', 'delete', SIMULATOR]
+    ['features/scripts/remove_installed_simulators.sh'],
   ])
 end
