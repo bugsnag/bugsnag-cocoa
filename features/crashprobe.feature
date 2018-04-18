@@ -10,12 +10,8 @@ Scenario: Calling __builtin_trap()
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
-    And the exception "errorClass" equals "Exception"
-    And the payload field "events.0.exceptions.0.stacktrace" is null
-    And the payload field "events.0.threads" is an array with 0 element
-    And the payload field "events.0.severity" equals "error"
-    And the payload field "events.0.severityReason.type" equals "unhandledException"
-    And the payload field "events.0.app.id" equals "com.bugsnag.iOSTestApp"
+    And the exception "errorClass" equals "SIGILL"
+    And the "method" of stack frame 0 equals "-[BuiltinTrapScenario run]"
 
 Scenario: Calling abort()
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
