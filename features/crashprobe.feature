@@ -65,7 +65,7 @@ Scenario: Heap corruption by writing garbage into data areas used by malloc to t
     And I relaunch the app
     Then I should receive a request
     And the request is a valid for the error reporting API
-    And the exception "errorClass" equals "SIGABRT"
+    And the exception "errorClass" matches "^(SIGABRT|SIGSEGV)$"
     And the "method" of stack frame 0 equals "__pthread_kill"
     And the "method" of stack frame 1 equals "abort"
 
