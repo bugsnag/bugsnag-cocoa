@@ -1,9 +1,6 @@
 import UIKit
 import Bugsnag
 
-class InvariantException: NSException {
-}
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

@@ -5,6 +5,9 @@
 
 import Foundation
 
+class InvariantException: NSException {
+}
+
 /**
  * Raises an NSException which should be received by Bugsnag
  */
