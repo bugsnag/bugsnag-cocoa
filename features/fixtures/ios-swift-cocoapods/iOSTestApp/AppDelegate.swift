@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     internal func loadTestScenario() {
         let arguments = ProcessInfo.processInfo.arguments
         var delay: TimeInterval = 0
-        var eventType = "Wait"
+        var eventType = "none"
         var bugsnagAPIKey = ""
         var mockAPIPath = ""
 
@@ -38,8 +38,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         let config = prepareConfig(apiKey: bugsnagAPIKey, mockAPIPath: mockAPIPath)
-        let scenario = ClassUtils.instantiateClass(eventType, withConfig: config)
-        triggerEvent(scenario: scenario, delay: delay)
+        if eventType == "none" {
+            Bugsnag.start(with: config)
+        } else {
+            let scenario = ClassUtils.instantiateClass(eventType, withConfig: config)
+            triggerEvent(scenario: scenario, delay: delay)
+        }
     }
 
     internal func prepareConfig(apiKey: String, mockAPIPath: String) -> BugsnagConfiguration {

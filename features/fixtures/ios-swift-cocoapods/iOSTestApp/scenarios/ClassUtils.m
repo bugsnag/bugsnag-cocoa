@@ -3,6 +3,8 @@
 // Copyright (c) 2018 Bugsnag. All rights reserved.
 //
 
+#import <objc/runtime.h>
+
 #import <Bugsnag/BugsnagConfiguration.h>
 #import "ClassUtils.h"
 #import "Scenario.h"
@@ -11,24 +13,24 @@
 
 + (Scenario *)instantiateClass:(NSString *)className
                     withConfig:(BugsnagConfiguration *)config {
-
-    if ([@"none" isEqualToString:className]) {
-        className = @"Wait";
-    }
     Class clz = NSClassFromString(className);
 
     if (clz == nil) { // swift class
         clz = NSClassFromString([NSString stringWithFormat:@"iOSTestApp.%@", className]);
     }
 
-    id obj = [[clz alloc] performSelector:NSSelectorFromString(@"initWithConfig:") withObject:config];
+    NSAssert(clz != nil, @"Failed to find class named '%@'", className);
 
-    if (![obj isKindOfClass:[Scenario class]]) {
-        [[NSException exceptionWithName:@"ClassNotFound"
-                                 reason:[NSString stringWithFormat:@"Could not find scenario %@", className]
-                               userInfo:nil] raise];
-    }
-    return obj;
+    BOOL implementsRun = method_getImplementation(class_getInstanceMethod([Scenario class], @selector(run))) !=
+                           method_getImplementation(class_getInstanceMethod(clz, @selector(run)));
+
+    NSAssert(implementsRun, @"Class '%@' does not implement the run method", className);
+
+    id obj = [clz alloc];
+
+    NSAssert([obj isKindOfClass:[Scenario class]], @"Class '%@' is not a subclass of Scenario", className);
+
+    return [(Scenario *)obj initWithConfig:config];
 }
 
 @end
