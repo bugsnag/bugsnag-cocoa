@@ -65,9 +65,7 @@ Scenario: Heap corruption by writing garbage into data areas used by malloc to t
     And I relaunch the app
     Then I should receive a request
     And the request is a valid for the error reporting API
-    And the exception "errorClass" matches "^(SIGABRT|SIGSEGV)$"
-    And the "method" of stack frame 0 equals "__pthread_kill"
-    And the "method" of stack frame 1 equals "abort"
+    And The exception reflects malloc corruption occurred
 
 Scenario: Trigger a crash after overwriting the link register
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
