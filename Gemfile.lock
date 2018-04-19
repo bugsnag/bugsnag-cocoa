@@ -1,9 +1,10 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: b50151bf963f81442347ff737daccf9a909b6fc7
+  revision: f7123450d5a75b719911c6dd3baa0507e6062c2d
   specs:
     bugsnag-maze-runner (1.0.0)
       cucumber (~> 3.1.0)
+      cucumber-expressions (= 5.0.15)
       minitest (~> 5.0)
       rack (~> 2.0.0)
       test-unit (~> 3.2.0)
@@ -18,7 +19,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     atomos (0.1.2)
-    backports (3.11.2)
+    backports (3.11.3)
     builder (3.2.3)
     claide (1.0.2)
     cocoapods (1.4.0)
