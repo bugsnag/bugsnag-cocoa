@@ -30,7 +30,6 @@
 		F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */; };
 		F429565A951303E2C3136D0D /* UserIdScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */; };
 		F42956B7A1CC63C1E17D2616 /* ClassUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295EB534A8426AF70D6889 /* ClassUtils.m */; };
-		F42956EC2A7B963366F45C4A /* PBXBuildFile */ = {isa = PBXBuildFile; fileRef = F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */; };
 		F4295836C8AF75547C675E8D /* ReleasedObjectScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */; };
 		F42958881D3F34A76CADE4EC /* SwiftCrash.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */; };
 		F42959124DB949EEF1420957 /* ReadOnlyPageScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295871D1BCF211398CAEBA /* ReadOnlyPageScenario.m */; };
@@ -65,7 +64,6 @@
 		F42951F865D328A43250640B /* UserDisabledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDisabledScenario.swift; sourceTree = "<group>"; };
 		F429521A8EEB435DCB6EACE1 /* ObjCExceptionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionScenario.m; sourceTree = "<group>"; };
 		F429526319377A8848136413 /* HandledExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledExceptionScenario.swift; sourceTree = "<group>"; };
-		F42952B9C6DAFE4A22BE1D80 /* Scenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
 		F42952BCC8A05EFAAE503E3D /* StackOverflowScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StackOverflowScenario.h; sourceTree = "<group>"; };
 		F429534164257A2BE23ED72D /* AbortScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbortScenario.m; sourceTree = "<group>"; };
 		F429534E2FC03ED1AD8F4F28 /* OverwriteLinkRegisterScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverwriteLinkRegisterScenario.h; sourceTree = "<group>"; };
@@ -210,8 +208,6 @@
 				F42952BCC8A05EFAAE503E3D /* StackOverflowScenario.h */,
 				F429538D19421F28D8EB0446 /* UndefinedInstructionScenario.m */,
 				F4295A4EF5288C60F978676F /* UndefinedInstructionScenario.h */,
-				F429514FFBD085C6FEB85BDC /* MinimalCrashReportScenario.m */,
-				F4295703713DA0D0ED768230 /* MinimalCrashReportScenario.h */,
 				F42956D34274D4ED16B4D491 /* BuiltinTrapScenario.m */,
 				F4295E2979ED53A2E82017CF /* BuiltinTrapScenario.h */,
 				F4295F13EBCAC9CB0ABC4008 /* NonExistentMethodScenario.m */,
