@@ -12,14 +12,14 @@ matrix:
         - osx_image: xcode8.3
           env: SDK=iphonesimulator10.3
           script: make test
-        - osx_image: xcode9.2
-          env: SDK=iphonesimulator11.2
+        - osx_image: xcode9.3
+          env: SDK=iphonesimulator11.3
           script: make test
-        - osx_image: xcode9.2
-          env: SDK=appletvsimulator11.2 BUILD_TV=1
+        - osx_image: xcode9.3
+          env: SDK=appletvsimulator11.3 BUILD_TV=1
           script: make test
-        - osx_image: xcode9.2
-          env: SDK=iphonesimulator11.2
+        - osx_image: xcode9.3
+          env: SDK=iphonesimulator11.3
           script: bundle exec maze-runner -c
 install: make bootstrap
 

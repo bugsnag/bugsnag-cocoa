@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-xcrun simctl list | grep "iPhone8-11.2" | awk '{gsub(/\(|\)/, "", $2); print $2 };' | xargs xcrun simctl delete; true
+OS_VERSION="11.3"
+
+xcrun simctl list | grep "iPhone8-$OS_VERSION" | awk '{gsub(/\(|\)/, "", $2); print $2 };' | xargs xcrun simctl delete; true

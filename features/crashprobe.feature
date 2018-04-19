@@ -2,7 +2,7 @@ Feature: Reporting crash events
 
 Scenario: Executing privileged instruction
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "PrivilegedInstructionScenario"
     And I relaunch the app
     Then I should receive a request
@@ -15,7 +15,7 @@ Scenario: Executing privileged instruction
 
 Scenario: Calling __builtin_trap()
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "BuiltinTrapScenario"
     And I relaunch the app
     Then I should receive a request
@@ -28,7 +28,7 @@ Scenario: Calling __builtin_trap()
 
 Scenario: Calling abort()
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "AbortScenario"
     And I relaunch the app
     Then I should receive a request
@@ -43,7 +43,7 @@ Scenario: Calling abort()
 
 Scenario: Throwing a C++ exception
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "CxxExceptionScenario"
     And I relaunch the app
     Then I should receive a request
@@ -54,7 +54,7 @@ Scenario: Throwing a C++ exception
 
 Scenario: Calling non-existent method
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "NonExistentMethodScenario"
     And I relaunch the app
     Then I should receive a request
@@ -73,7 +73,7 @@ Scenario: Calling non-existent method
 
 Scenario: Heap corruption by writing garbage into data areas used by malloc to track allocations
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "CorruptMallocScenario"
     And I relaunch the app
     Then I should receive a request
@@ -82,7 +82,7 @@ Scenario: Heap corruption by writing garbage into data areas used by malloc to t
 
 Scenario: Trigger a crash after overwriting the link register
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "OverwriteLinkRegisterScenario"
     And I relaunch the app
     Then I should receive a request
@@ -93,7 +93,7 @@ Scenario: Trigger a crash after overwriting the link register
 
 Scenario: Attempt to write into a read-only page
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "ReadOnlyPageScenario"
     And I relaunch the app
     Then I should receive a request
@@ -103,7 +103,7 @@ Scenario: Attempt to write into a read-only page
 
 Scenario: Stack overflow
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "StackOverflowScenario"
     And I relaunch the app
     Then I should receive a request
@@ -123,7 +123,7 @@ Scenario: Stack overflow
 
 Scenario: Crash inside objc_msgSend()
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "ObjCMsgSendScenario"
     And I relaunch the app
     Then I should receive a request
@@ -134,7 +134,7 @@ Scenario: Crash inside objc_msgSend()
 
 Scenario: Attempt to execute an instruction undefined on the current architecture
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "UndefinedInstructionScenario"
     And I relaunch the app
     Then I should receive a request
@@ -144,7 +144,7 @@ Scenario: Attempt to execute an instruction undefined on the current architectur
 
 Scenario: Send a message to an object whose memory has already been freed
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "ReleasedObjectScenario"
     And I relaunch the app
     Then I should receive a request
@@ -158,7 +158,7 @@ Scenario: Send a message to an object whose memory has already been freed
 # which is not tested here as this would require symbolication
 Scenario: Crash within Swift code
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "SwiftCrash"
     And I relaunch the app
     Then I should receive a request
@@ -166,12 +166,14 @@ Scenario: Crash within Swift code
     And the exception "message" equals "Unexpectedly found nil while unwrapping an Optional value"
     And the exception "errorClass" equals "Fatal error"
 
-    And the "method" of stack frame 0 starts with "_T0s18_fatalErrorMessages5NeverOs12StaticStringV_A2E4fileSu4lines6UInt32V5"
-    And the "method" of stack frame 1 starts with "_T010iOSTestApp10SwiftCrashC3run"
+    And the "method" of stack frame 0 equals "_T0s18_fatalErrorMessages5NeverOs12StaticStringV_A2E4fileSu4lines6UInt32V5flagstFTf4nnddn_n"
+    And the "method" of stack frame 1 equals "_T0s18_fatalErrorMessages5NeverOs12StaticStringV_A2E4fileSu4lines6UInt32V5flagstF"
+    And the "method" of stack frame 2 equals "_T010iOSTestApp10SwiftCrashC3runyyF"
+    And the "method" of stack frame 3 equals "_T010iOSTestApp10SwiftCrashC3runyyFTo"
 
 Scenario: Dereference a null pointer
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "NullPointerScenario"
     And I relaunch the app
     Then I should receive a request
@@ -182,7 +184,7 @@ Scenario: Dereference a null pointer
 
 Scenario: Trigger a crash with libsystem_pthread's _pthread_list_lock held
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "AsyncSafeThreadScenario"
     And I relaunch the app
     Then I should receive a request
@@ -197,7 +199,7 @@ Scenario: Trigger a crash with libsystem_pthread's _pthread_list_lock held
 
 Scenario: Read a garbage pointer
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "ReadGarbagePointerScenario"
     And I relaunch the app
     Then I should receive a request
@@ -208,7 +210,7 @@ Scenario: Read a garbage pointer
 
 Scenario: Throw a NSException
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "ObjCExceptionScenario"
     And I relaunch the app
     Then I should receive a request
@@ -221,7 +223,7 @@ Scenario: Throw a NSException
 
 Scenario: Access a non-object as an object
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
+    And I configure the app to run on "iPhone8-11.3"
     And I crash the app using "AccessNonObjectScenario"
     And I relaunch the app
     Then I should receive a request
