@@ -13,13 +13,13 @@ How to contribute
 Running the tests
 -----------------
 
-Run the tests using the default SDK (iOS 9.2) by using:
+Run the tests using the default SDK (iOS 11.2) by using:
 
-    make test
+    make test e2e
 
 Alternately, you can specify an iOS SDK:
 
-    make SDK=iphonesimulator8.1 test
+    make SDK=iphonesimulator11.3 test
 
 Or test on OS X:
 

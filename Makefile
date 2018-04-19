@@ -1,5 +1,5 @@
 ifeq ($(SDK),)
- SDK=iphonesimulator10.3
+ SDK=iphonesimulator11.2
 endif
 ifeq ($(BUILD_OSX), 1)
  PLATFORM=OSX
@@ -21,7 +21,7 @@ endif
 XCODEBUILD=set -o pipefail && xcodebuild
 PRESET_VERSION=$(shell cat VERSION)
 ifneq ($(strip $(shell which xcpretty)),)
- FORMATTER = | tee xcodebuild.log | xcpretty
+ FORMATTER = | tee xcodebuild.log | xcpretty -c
 endif
 
 all: build
