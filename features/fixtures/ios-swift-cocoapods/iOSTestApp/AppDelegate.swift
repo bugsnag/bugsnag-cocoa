@@ -41,7 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if eventType == "none" {
             Bugsnag.start(with: config)
         } else {
-            let scenario = ClassUtils.instantiateClass(eventType, withConfig: config)
+            let scenario = Scenario.createScenarioNamed(eventType, withConfig: config)
             triggerEvent(scenario: scenario, delay: delay)
         }
     }

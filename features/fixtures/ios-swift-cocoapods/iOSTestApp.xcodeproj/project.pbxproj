@@ -90,7 +90,6 @@
 		F4295B041F9CC494473DD226 /* OverwriteLinkRegisterScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverwriteLinkRegisterScenario.m; sourceTree = "<group>"; };
 		F4295B7431F98954DA62E47F /* ReadGarbagePointerScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadGarbagePointerScenario.m; sourceTree = "<group>"; };
 		F4295B7FE972945A50B3CA31 /* ReleasedObjectScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasedObjectScenario.h; sourceTree = "<group>"; };
-		F4295B8A6A7E451CDBA70EC1 /* ClassUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassUtils.h; sourceTree = "<group>"; };
 		F4295C1C7C54101194B61E93 /* NullPointerScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NullPointerScenario.h; sourceTree = "<group>"; };
 		F4295C6D7F0D52A2A906B33B /* ObjCMsgSendScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCMsgSendScenario.h; sourceTree = "<group>"; };
 		F4295C758B89038DD3A2A198 /* CorruptMallocScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CorruptMallocScenario.h; sourceTree = "<group>"; };
@@ -99,7 +98,6 @@
 		F4295E2979ED53A2E82017CF /* BuiltinTrapScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BuiltinTrapScenario.h; sourceTree = "<group>"; };
 		F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasedObjectScenario.m; sourceTree = "<group>"; };
 		F4295E86DC0BE9DC731B0D1C /* NullPointerScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NullPointerScenario.m; sourceTree = "<group>"; };
-		F4295EB534A8426AF70D6889 /* ClassUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassUtils.m; sourceTree = "<group>"; };
 		F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftCrash.swift; sourceTree = "<group>"; };
 		F4295F13EBCAC9CB0ABC4008 /* NonExistentMethodScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NonExistentMethodScenario.m; sourceTree = "<group>"; };
 		F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEmailScenario.swift; sourceTree = "<group>"; };
@@ -181,8 +179,6 @@
 				F429526319377A8848136413 /* HandledExceptionScenario.swift */,
 				F4295196419C0F6AAA7E89A5 /* AbortScenario.h */,
 				F429534164257A2BE23ED72D /* AbortScenario.m */,
-				F4295EB534A8426AF70D6889 /* ClassUtils.m */,
-				F4295B8A6A7E451CDBA70EC1 /* ClassUtils.h */,
 				F42954E8B66F3FB7F5333CF7 /* Scenario.m */,
 				F4295ABA693D273D52AA9F6B /* Scenario.h */,
 				F429514FFBD085C6FEB85BDC /* MinimalCrashReportScenario.m */,
@@ -365,7 +361,6 @@
 				F4295A7AA9B4A18992A2F020 /* HandledErrorOverrideScenario.swift in Sources */,
 				F429502603396F8671B333B3 /* HandledExceptionScenario.swift in Sources */,
 				F4295497A1582010C16F1861 /* AbortScenario.m in Sources */,
-				F42956B7A1CC63C1E17D2616 /* ClassUtils.m in Sources */,
 				F4295CEAD7C915EFA04898A5 /* Scenario.m in Sources */,
 				F4295836C8AF75547C675E8D /* ReleasedObjectScenario.m in Sources */,
 				F42958881D3F34A76CADE4EC /* SwiftCrash.swift in Sources */,

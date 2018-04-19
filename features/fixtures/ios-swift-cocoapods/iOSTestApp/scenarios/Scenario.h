@@ -8,9 +8,12 @@
 
 @interface Scenario : NSObject
 
-@property BugsnagConfiguration *config;
+@property (strong, nonatomic, nonnull) BugsnagConfiguration *config;
 
-- (instancetype)initWithConfig:(BugsnagConfiguration *)config;
++ (Scenario *_Nonnull)createScenarioNamed:(NSString *_Nonnull)className
+                               withConfig:(BugsnagConfiguration *_Nonnull)config;
+
+- (instancetype _Nonnull)initWithConfig:(BugsnagConfiguration *_Nonnull)config;
 
 /**
  * Executes the test case
