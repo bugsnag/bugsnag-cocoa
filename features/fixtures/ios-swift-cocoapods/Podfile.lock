@@ -1,0 +1,16 @@
+PODS:
+  - Bugsnag (5.15.4)
+
+DEPENDENCIES:
+  - Bugsnag (from `../../..`)
+
+EXTERNAL SOURCES:
+  Bugsnag:
+    :path: ../../..
+
+SPEC CHECKSUMS:
+  Bugsnag: 904211a0230f254808b47f3adb4b684900772962
+
+PODFILE CHECKSUM: 4d026fb83571f098c9fb4fa71c1564c72c55ab1a
+
+COCOAPODS: 1.4.0
