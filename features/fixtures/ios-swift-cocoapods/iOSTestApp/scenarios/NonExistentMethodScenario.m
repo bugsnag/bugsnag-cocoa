@@ -9,7 +9,10 @@
 @implementation NonExistentMethodScenario
 
 - (void)run {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     [self performSelector:NSSelectorFromString(@"santaclaus:")];
+#pragma clang diagnostic pop
 }
 
 
