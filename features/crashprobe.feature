@@ -10,7 +10,7 @@ Scenario: Executing privileged instruction
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
-    And the exception "errorClass" equals "SIGILL"
+    And the exception "errorClass" equals "SIGSEGV"
     And the "method" of stack frame 0 equals "-[PrivilegedInstructionScenario run]"
 
 Scenario: Calling __builtin_trap()
