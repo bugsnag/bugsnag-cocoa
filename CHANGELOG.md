@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## 5.15.5 (25 Apr 2018)
+
+### Bug Fixes
+
+* Changes report generation so that when a minimal or incomplete crash is recorded, essential app/device information is included in the report on the next application launch. [#239](https://github.com/bugsnag/bugsnag-cocoa/pull/239)
+[#250](https://github.com/bugsnag/bugsnag-cocoa/pull/250)
+
+* Ensure timezone is serialised in report payload.
+[#248](https://github.com/bugsnag/bugsnag-cocoa/pull/248)
+[Jamie Lynch](https://github.com/fractalwrench)
+
 ## 5.15.4 (21 Feb 2018)
 
 This release adds additional device metadata for filtering by whether an error
