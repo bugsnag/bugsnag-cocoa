@@ -1,5 +1,18 @@
 Feature: Reporting crash events
 
+Scenario: Executing privileged instruction
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I configure the app to run on "iPhone8-11.2"
+    And I crash the app using "PrivilegedInstructionScenario"
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
+    And the payload field "events" is an array with 1 element
+    And the exception "errorClass" equals "SIGSEGV"
+    And the "method" of stack frame 0 equals "-[PrivilegedInstructionScenario run]"
+
 Scenario: Calling __builtin_trap()
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I configure the app to run on "iPhone8-11.2"
