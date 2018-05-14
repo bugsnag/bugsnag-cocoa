@@ -1,5 +1,6 @@
 #import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
+#import "BugsnagSessionTracker.h"
 #import "BugsnagUser.h"
 
 #import <XCTest/XCTest.h>
@@ -93,6 +94,31 @@
     NSURL *endpoint = [NSURL URLWithString:@"http://localhost:8000"];
     config.notifyURL = endpoint;
     XCTAssertEqualObjects(endpoint, config.notifyURL);
+}
+
+- (void)testSetEndpoints {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    [config setEndpointsForNotify:@"http://notify.example.com" sessions:@"http://sessions.example.com"];
+    XCTAssertEqualObjects([NSURL URLWithString:@"http://notify.example.com"], config.notifyURL);
+    XCTAssertEqualObjects([NSURL URLWithString:@"http://sessions.example.com"], config.sessionURL);
+}
+
+- (void)testSetEmptyNotifyEndpoint {
+    @try {
+        BugsnagConfiguration *config = [BugsnagConfiguration new];
+        [config setEndpointsForNotify:@"" sessions:@"http://sessions.example.com"];
+        XCTFail();
+    } @catch(NSException * e) {
+    }
+}
+
+- (void)testSetMalformedNotifyEndpoint {
+    @try {
+        BugsnagConfiguration *config = [BugsnagConfiguration new];
+        [config setEndpointsForNotify:@"http://f" sessions:@"http://sessions.example.com"];
+        XCTFail();
+    } @catch(NSException * e) {
+    }
 }
 
 - (void)testUser {

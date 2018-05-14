@@ -86,7 +86,7 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 - (void)setUser:(NSString *)userId
        withName:(NSString *)userName
        andEmail:(NSString *)userEmail {
-    
+
     self.currentUser = [[BugsnagUser alloc] initWithUserId:userId name:userName emailAddress:userEmail];
 
     [self.metaData addAttribute:BSGKeyId withValue:userId toTabWithName:BSGKeyUser];
@@ -208,7 +208,7 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 - (void)setShouldAutoCaptureSessions:(BOOL)shouldAutoCaptureSessions {
     @synchronized (self) {
         _shouldAutoCaptureSessions = shouldAutoCaptureSessions;
-        
+
         if (shouldAutoCaptureSessions) { // track any existing sessions
             BugsnagSessionTracker *sessionTracker = [Bugsnag notifier].sessionTracker;
             [sessionTracker onAutoCaptureEnabled];
@@ -233,8 +233,16 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 }
 
 - (void)setEndpointsForNotify:(NSString *_Nonnull)notify sessions:(NSString *_Nonnull)sessions {
+    _notifyURL = [NSURL URLWithString:notify];
+    _sessionURL = [NSURL URLWithString:sessions];
 
+    if (![self isValidUrl:_notifyURL]) {
+        [NSException raise:NSGenericException format:@"Invalid URL supplied for notify endpoint"];
+    }
 }
 
+- (BOOL)isValidUrl:(NSURL *)url {
+    return url != nil && url.scheme != nil && url.host != nil;
+}
 
 @end
