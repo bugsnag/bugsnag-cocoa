@@ -71,10 +71,6 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
  */
 @property(readwrite, retain, nullable) NSString *apiKey;
 /**
- *  The URL used to notify Bugsnag
- */
-@property(readwrite, retain, nullable) NSURL *notifyURL;
-/**
  *  The release stage of the application, such as production, development, beta
  *  et cetera
  */
@@ -143,10 +139,18 @@ BugsnagBreadcrumbs *breadcrumbs;
 @property BOOL shouldAutoCaptureSessions;
 
 /**
+ *  The URL used to notify Bugsnag
+ */
+@property(readwrite, retain, nullable) NSURL *notifyURL;
+
+/**
  * Set the endpoint to which tracked sessions reports are sent. This defaults to https://sessions.bugsnag.com,
  * but should be overridden if you are using Bugsnag On-premise, to point to your own Bugsnag endpoint.
  */
 @property(readwrite, retain, nullable) NSURL *sessionURL;
+
+- (void)setEndpointsForNotify:(NSString *_Nonnull)notify
+                     sessions:(NSString *_Nonnull)sessions NS_SWIFT_NAME(setEndpoints(notify:sessions:));
 
 /**
  *  Set user metadata

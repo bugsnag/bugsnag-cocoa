@@ -231,4 +231,10 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
              kHeaderApiSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate new]]
              };
 }
+
+- (void)setEndpointsForNotify:(NSString *_Nonnull)notify sessions:(NSString *_Nonnull)sessions {
+
+}
+
+
 @end
