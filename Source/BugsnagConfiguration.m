@@ -64,6 +64,8 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
         _notifyReleaseStages = nil;
         _breadcrumbs = [BugsnagBreadcrumbs new];
         _automaticallyCollectBreadcrumbs = YES;
+        _shouldAutoCaptureSessions = YES;
+
         if ([NSURLSession class]) {
             _session = [NSURLSession
                 sessionWithConfiguration:[NSURLSessionConfiguration

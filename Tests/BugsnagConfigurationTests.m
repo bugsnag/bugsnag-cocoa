@@ -57,7 +57,7 @@
 
 - (void)testDefaultSessionConfig {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
-    XCTAssertFalse([config shouldAutoCaptureSessions]);
+    XCTAssertTrue([config shouldAutoCaptureSessions]);
 }
 
 - (void)testErrorApiHeaders {
