@@ -87,6 +87,14 @@
     XCTAssertEqualObjects(endpoint, config.sessionURL);
 }
 
+- (void)testNotifyEndpoint {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertEqualObjects([NSURL URLWithString:@"https://notify.bugsnag.com/"], config.notifyURL);
+    NSURL *endpoint = [NSURL URLWithString:@"http://localhost:8000"];
+    config.notifyURL = endpoint;
+    XCTAssertEqualObjects(endpoint, config.notifyURL);
+}
+
 - (void)testUser {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     XCTAssertNil(config.currentUser);
