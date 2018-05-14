@@ -11,6 +11,7 @@
 #import "BSG_KSLogger.h"
 #import "BugsnagSessionTrackingPayload.h"
 #import "BugsnagSessionTrackingApiClient.h"
+#import "BugsnagLogger.h"
 
 @interface BugsnagSessionTracker ()
 @property BugsnagConfiguration *config;
@@ -43,6 +44,10 @@
 - (void)startNewSession:(NSDate *)date
                withUser:(BugsnagUser *)user
            autoCaptured:(BOOL)autoCaptured {
+    if (self.config.sessionURL == nil) {
+        bsg_log_err(@"The session tracking endpoint has not been set. Session tracking is disabled");
+        return;
+    }
 
     _currentSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                 startDate:date

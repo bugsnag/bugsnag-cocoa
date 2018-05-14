@@ -115,10 +115,32 @@
 - (void)testSetMalformedNotifyEndpoint {
     @try {
         BugsnagConfiguration *config = [BugsnagConfiguration new];
-        [config setEndpointsForNotify:@"http://f" sessions:@"http://sessions.example.com"];
+        [config setEndpointsForNotify:@"http://" sessions:@"http://sessions.example.com"];
         XCTFail();
     } @catch(NSException * e) {
     }
+}
+
+- (void)testSetEmptySessionsEndpoint {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    [config setEndpointsForNotify:@"http://notify.example.com" sessions:@""];
+    BugsnagSessionTracker *sessionTracker
+            = [[BugsnagSessionTracker alloc] initWithConfig:config apiClient:nil callback:nil];
+
+    XCTAssertNil(sessionTracker.currentSession);
+    [sessionTracker startNewSession:[NSDate date] withUser:nil autoCaptured:NO];
+    XCTAssertNil(sessionTracker.currentSession);
+}
+
+- (void)testSetMalformedSessionsEndpoint {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    [config setEndpointsForNotify:@"http://notify.example.com" sessions:@"f"];
+    BugsnagSessionTracker *sessionTracker
+            = [[BugsnagSessionTracker alloc] initWithConfig:config apiClient:nil callback:nil];
+
+    XCTAssertNil(sessionTracker.currentSession);
+    [sessionTracker startNewSession:[NSDate date] withUser:nil autoCaptured:NO];
+    XCTAssertNil(sessionTracker.currentSession);
 }
 
 - (void)testUser {

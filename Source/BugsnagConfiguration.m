@@ -239,6 +239,9 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
     if (![self isValidUrl:_notifyURL]) {
         [NSException raise:NSGenericException format:@"Invalid URL supplied for notify endpoint"];
     }
+    if (![self isValidUrl:_sessionURL]) {
+        _sessionURL = nil;
+    }
 }
 
 - (BOOL)isValidUrl:(NSURL *)url {
