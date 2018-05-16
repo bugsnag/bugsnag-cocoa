@@ -17,7 +17,7 @@
 
 NSDictionary *BSGParseDevice(NSDictionary *report) {
     NSMutableDictionary *device = [NSMutableDictionary new];
-    NSDictionary *state = [[report valueForKeyPath:@"user.state.deviceState"] mutableCopy];
+    NSDictionary *state = [report valueForKeyPath:@"user.state.deviceState"];
     [device addEntriesFromDictionary:state];
 
     [device addEntriesFromDictionary:BSGParseDeviceState(report[@"system"])];
