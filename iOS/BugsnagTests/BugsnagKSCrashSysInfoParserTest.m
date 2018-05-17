@@ -24,4 +24,13 @@
     XCTAssertNotNil(device[@"simulator"]);
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+
+- (void)testNilDictSerialisation {
+    XCTAssertNotNil(BSGParseDevice(nil));
+}
+
+#pragma clang diagnostic pop
+
 @end
