@@ -99,4 +99,20 @@
     
 }
 
+- (void)testApiKeySetter {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertEqualObjects(@"", config.apiKey);
+
+    config.apiKey = @"test";
+    XCTAssertEqualObjects(@"test", config.apiKey);
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    config.apiKey = nil;
+#pragma clang diagnostic pop
+
+    XCTAssertEqualObjects(@"test", config.apiKey);
+}
+
+
 @end

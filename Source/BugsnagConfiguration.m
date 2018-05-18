@@ -31,6 +31,7 @@
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagUser.h"
 #import "BugsnagSessionTracker.h"
+#import "BugsnagLogger.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -196,6 +197,20 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
         [self.config addAttribute:BSGKeyAppVersion
                         withValue:newVersion
                     toTabWithName:BSGKeyConfig];
+    }
+}
+
+@synthesize apiKey = _apiKey;
+
+- (NSString *)apiKey {
+    return _apiKey;
+}
+
+- (void)setApiKey:(NSString *)apiKey {
+    if (apiKey != nil) {
+        _apiKey = apiKey;
+    } else {
+        bsg_log_err(@"Attempted to override non-null API key with nil - ignoring.");
     }
 }
 
