@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 5.X.X (TBD)
+
+* Enforce requiring API key to initialise notifier [#280](https://github.com/bugsnag/bugsnag-cocoa/pull/280)
+
 ## 5.15.5 (25 Apr 2018)
 
 ### Bug Fixes
