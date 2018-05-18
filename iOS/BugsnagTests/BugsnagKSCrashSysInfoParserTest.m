@@ -18,19 +18,24 @@
 - (void)testEmptyDictSerialisation {
     // ensures that an empty dictionary parameter returns a fallback dictionary populated with at least some information
     NSDictionary *device = BSGParseDevice(@{});
+    [self validateDeviceDict:device];
+}
+
+
+- (void)testNilDictSerialisation {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    NSDictionary *device = BSGParseDevice(nil);
+#pragma clang diagnostic pop
+    [self validateDeviceDict:device];
+}
+
+- (void)validateDeviceDict:(NSDictionary *)device {
     XCTAssertNotNil(device);
     XCTAssertNotNil(device[@"locale"]);
     XCTAssertNotNil(device[@"freeDisk"]);
     XCTAssertNotNil(device[@"simulator"]);
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnonnull"
-
-- (void)testNilDictSerialisation {
-    XCTAssertNotNil(BSGParseDevice(nil));
-}
-
-#pragma clang diagnostic pop
 
 @end
