@@ -246,4 +246,9 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
              kHeaderApiSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate new]]
              };
 }
+
+- (BOOL)hasValidApiKey {
+    return _apiKey != nil && ![@"" isEqualToString:_apiKey];
+}
+
 @end

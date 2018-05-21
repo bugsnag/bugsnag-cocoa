@@ -114,5 +114,16 @@
     XCTAssertEqualObjects(@"test", config.apiKey);
 }
 
+- (void)testHasValidApiKey {
+    BugsnagConfiguration *config = nil;
+    XCTAssertFalse([config hasValidApiKey]);
+
+    config = [BugsnagConfiguration new];
+    XCTAssertFalse([config hasValidApiKey]);
+
+    config.apiKey = @"5adf89e0aaa";
+    XCTAssertTrue([config hasValidApiKey]);
+}
+
 
 @end

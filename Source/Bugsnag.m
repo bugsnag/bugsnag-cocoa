@@ -51,7 +51,7 @@ static BugsnagNotifier *bsg_g_bugsnag_notifier = NULL;
 
 + (void)startBugsnagWithConfiguration:(BugsnagConfiguration *)configuration {
     @synchronized(self) {
-        if (configuration != nil && configuration.apiKey != nil) {
+        if ([configuration hasValidApiKey]) {
             bsg_g_bugsnag_notifier =
                     [[BugsnagNotifier alloc] initWithConfiguration:configuration];
             [bsg_g_bugsnag_notifier start];
