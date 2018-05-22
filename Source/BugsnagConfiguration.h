@@ -69,7 +69,7 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
 /**
  *  The API key of a Bugsnag project
  */
-@property(readwrite, retain, nonnull) NSString *apiKey;
+@property(readwrite, retain, nullable) NSString *apiKey;
 /**
  *  The URL used to notify Bugsnag
  */

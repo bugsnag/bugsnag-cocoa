@@ -207,7 +207,7 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 }
 
 - (void)setApiKey:(NSString *)apiKey {
-    if (apiKey != nil) {
+    if ([apiKey length] > 0) {
         _apiKey = apiKey;
     } else {
         bsg_log_err(@"Attempted to override non-null API key with nil - ignoring.");
@@ -248,7 +248,7 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 }
 
 - (BOOL)hasValidApiKey {
-    return _apiKey != nil && ![@"" isEqualToString:_apiKey];
+    return [_apiKey length] > 0;
 }
 
 @end
