@@ -177,7 +177,7 @@ static BugsnagNotifier *bsg_g_bugsnag_notifier = NULL;
 }
 
 + (BOOL)bugsnagStarted {
-    if (self.notifier == nil) {
+    if (!self.notifier.started) {
         bsg_log_err(@"Ensure you have started Bugsnag with startWithApiKey: "
                     @"before calling any other Bugsnag functions.");
 
