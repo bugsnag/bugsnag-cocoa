@@ -132,6 +132,7 @@ BugsnagBreadcrumbs *breadcrumbs;
  */
 @property void (*_Nullable onCrashHandler)
     (const BSG_KSCrashReportWriter *_Nonnull writer);
+
 /**
  *  YES if uncaught exceptions should be reported automatically
  */
