@@ -208,7 +208,9 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 
 - (void)setApiKey:(NSString *)apiKey {
     if ([apiKey length] > 0) {
+        [self willChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
         _apiKey = apiKey;
+        [self didChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
     } else {
         bsg_log_err(@"Attempted to override non-null API key with nil - ignoring.");
     }
