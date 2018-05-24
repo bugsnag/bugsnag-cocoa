@@ -3,6 +3,9 @@ Changelog
 
 ## 5.X.X (TBD)
 
+### Bug Fixes
+
+* Device info serialisation fix: adds fallback empty dictionary for serialisation [#279](https://github.com/bugsnag/bugsnag-cocoa/pull/279)
 * Enforce requiring API key to initialise notifier [#280](https://github.com/bugsnag/bugsnag-cocoa/pull/280)
 
 ## 5.15.5 (25 Apr 2018)
