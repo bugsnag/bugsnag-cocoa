@@ -103,12 +103,12 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type
     if (bsg_g_bugsnag_data.stateJSON) {
         writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
     }
+    if (bsg_g_bugsnag_data.metaDataJSON) {
+        writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metaDataJSON);
+    }
 
     // write additional user-supplied metadata
     if (userReported) {
-        if (bsg_g_bugsnag_data.metaDataJSON) {
-            writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metaDataJSON);
-        }
         if (bsg_g_bugsnag_data.handledState) {
             writer->addJSONElement(writer, "handledState", bsg_g_bugsnag_data.handledState);
         }
