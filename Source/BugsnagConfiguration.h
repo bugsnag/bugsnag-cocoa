@@ -193,4 +193,6 @@ BugsnagBreadcrumbs *breadcrumbs;
 @property(nullable) NSString *codeBundleId;
 @property(nullable) NSString *notifierType;
 
+- (BOOL)hasValidApiKey;
+
 @end
