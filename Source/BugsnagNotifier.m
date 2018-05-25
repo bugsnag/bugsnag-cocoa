@@ -34,6 +34,7 @@
 #import "BugsnagSessionTracker.h"
 #import "BugsnagSessionTrackingApiClient.h"
 #import "BSG_RFC3339DateTool.h"
+#import "BSG_KSCrashType.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -81,14 +82,8 @@ static bool hasRecordedSessions;
  *
  *  @param writer report writer which will receive updated metadata
  */
-void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
-    if (bsg_g_bugsnag_data.configJSON) {
-        writer->addJSONElement(writer, "config", bsg_g_bugsnag_data.configJSON);
-    }
-    if (bsg_g_bugsnag_data.metaDataJSON) {
-        writer->addJSONElement(writer, "metaData",
-                               bsg_g_bugsnag_data.metaDataJSON);
-    }
+void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type) {
+    BOOL userReported = BSG_KSCrashTypeUserReported == type;
 
     if (hasRecordedSessions) { // a session is available
         // persist session info
@@ -96,25 +91,32 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
         writer->addStringElement(writer, "startedAt", (const char *) sessionStartDate);
         writer->addUIntegerElement(writer, "handledCount", handledCount);
 
-        if (!bsg_g_bugsnag_data.handledState) {
+        if (!userReported) {
             writer->addUIntegerElement(writer, "unhandledCount", 1);
         } else {
             writer->addUIntegerElement(writer, "unhandledCount", 0);
         }
     }
-
-    if (bsg_g_bugsnag_data.handledState) {
-        writer->addJSONElement(writer, "handledState",
-                               bsg_g_bugsnag_data.handledState);
+    if (bsg_g_bugsnag_data.configJSON) {
+        writer->addJSONElement(writer, "config", bsg_g_bugsnag_data.configJSON);
     }
-
     if (bsg_g_bugsnag_data.stateJSON) {
         writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
     }
-    if (bsg_g_bugsnag_data.userOverridesJSON) {
-        writer->addJSONElement(writer, "overrides",
-                               bsg_g_bugsnag_data.userOverridesJSON);
+    if (bsg_g_bugsnag_data.metaDataJSON) {
+        writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metaDataJSON);
     }
+
+    // write additional user-supplied metadata
+    if (userReported) {
+        if (bsg_g_bugsnag_data.handledState) {
+            writer->addJSONElement(writer, "handledState", bsg_g_bugsnag_data.handledState);
+        }
+        if (bsg_g_bugsnag_data.userOverridesJSON) {
+            writer->addJSONElement(writer, "overrides", bsg_g_bugsnag_data.userOverridesJSON);
+        }
+    }
+
     if (bsg_g_bugsnag_data.onCrash) {
         bsg_g_bugsnag_data.onCrash(writer);
     }
