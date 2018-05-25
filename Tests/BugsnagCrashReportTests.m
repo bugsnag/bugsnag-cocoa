@@ -454,29 +454,33 @@
     XCTAssertNotNil(report);
 }
 
-- (void)testReportDepth {
+- (void)testUnhandledReportDepth {
     // unhandled reports should calculate their own depth
     NSDictionary *dict = @{@"user.state.crash.depth": @2};
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
     XCTAssertEqual(report.depth, 0);
+}
 
+- (void)testHandledReportDepth {
     // handled reports should use the serialised depth
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    dict = @{@"user.state.crash.depth": @2, @"user.handledState": [state toJson]};
-    report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    NSDictionary *dict = @{@"user.state.crash.depth": @2, @"user.handledState": [state toJson]};
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
     XCTAssertEqual(report.depth, 2);
 }
 
-- (void)testReportSeverity {
+- (void)testUnhandledReportSeverity {
     // unhandled reports should calculate their own severity
     NSDictionary *dict = @{@"user.state.crash.severity": @"info"};
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
     XCTAssertEqual(report.severity, BSGSeverityError);
+}
 
+- (void)testHandledReportSeverity {
     // handled reports should use the serialised depth
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    dict = @{@"user.state.crash.severity": @"info", @"user.handledState": [state toJson]};
-    report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    NSDictionary *dict = @{@"user.state.crash.severity": @"info", @"user.handledState": [state toJson]};
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
     XCTAssertEqual(report.severity, BSGSeverityWarning);
 }
 
