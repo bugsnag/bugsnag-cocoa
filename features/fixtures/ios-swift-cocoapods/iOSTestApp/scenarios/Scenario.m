@@ -34,7 +34,6 @@
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config {
     if (self = [super init]) {
         self.config = config;
-        self.config.shouldAutoCaptureSessions = NO;
     }
     return self;
 }

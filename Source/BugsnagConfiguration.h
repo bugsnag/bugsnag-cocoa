@@ -134,7 +134,7 @@ BugsnagBreadcrumbs *breadcrumbs;
 @property BOOL autoNotify;
 
 /**
- * Determines whether app sessions should be tracked automatically. By default this value is false.
+ * Determines whether app sessions should be tracked automatically. By default this value is true.
  */
 @property BOOL shouldAutoCaptureSessions;
 

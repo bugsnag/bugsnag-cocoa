@@ -50,8 +50,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let config = BugsnagConfiguration()
         let url = URL(string: mockAPIPath)
         config.apiKey = apiKey
-        config.notifyURL = url
-        config.sessionURL = url
+        config.setEndpoints(notify: url, sessions: url)
+        config.shouldAutoCaptureSessions = false;
         return config
     }
 
