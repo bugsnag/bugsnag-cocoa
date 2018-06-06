@@ -100,7 +100,7 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
 /**
  * The current user
  */
-@property(nullable) BugsnagUser *currentUser;
+@property(retain, nullable) BugsnagUser *currentUser;
 
 /**
  *  Additional information about the state of the app or environment at the
@@ -191,8 +191,8 @@ BugsnagBreadcrumbs *breadcrumbs;
 - (NSDictionary *_Nonnull)errorApiHeaders;
 - (NSDictionary *_Nonnull)sessionApiHeaders;
 
-@property(nullable) NSString *codeBundleId;
-@property(nullable) NSString *notifierType;
+@property(retain, nullable) NSString *codeBundleId;
+@property(retain, nullable) NSString *notifierType;
 
 - (BOOL)hasValidApiKey;
 
