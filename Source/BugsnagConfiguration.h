@@ -139,15 +139,37 @@ BugsnagBreadcrumbs *breadcrumbs;
 @property BOOL shouldAutoCaptureSessions;
 
 /**
- *  The URL used to notify Bugsnag
+ * Retrieves the endpoint used to notify Bugsnag of errors
+ *
+ * NOTE: it is strongly recommended that you set this value via setEndpointsForNotify:sessions: instead.
+ *
+ * @see setEndpointsForNotify:sessions:
  */
 @property(readwrite, retain, nullable) NSURL *notifyURL;
 
 /**
- * Set the endpoint to which tracked sessions reports are sent. This defaults to https://sessions.bugsnag.com,
- * but should be overridden if you are using Bugsnag On-premise, to point to your own Bugsnag endpoint.
+ * Retrieves the endpoint used to send tracked sessions to Bugsnag
+ *
+ * NOTE: it is strongly recommended that you set this value via setEndpointsForNotify:sessions: instead.
+ *
+ * @see setEndpointsForNotify:sessions
  */
 @property(readwrite, retain, nullable) NSURL *sessionURL;
+
+/**
+ * Set the endpoints to send data to. By default we'll send error reports to
+ * https://notify.bugsnag.com, and sessions to https://session.bugsnag.com, but you can
+ * override this if you are using Bugsnag Enterprise to point to your own Bugsnag endpoint.
+ *
+ * Please note that it is recommended that you set both endpoints. If the notify endpoint is
+ * missing, an assertion will be thrown. If the session endpoint is missing, a warning will be
+ * logged and sessions will not be sent automatically.
+ *
+ * @param notify the notify endpoint
+ * @param sessions the sessions endpoint
+ *
+ * @throws an assertion if the notify endpoint is not a valid URL
+ */
 
 - (void)setEndpointsForNotify:(NSString *_Nonnull)notify
                      sessions:(NSString *_Nonnull)sessions NS_SWIFT_NAME(setEndpoints(notify:sessions:));
