@@ -158,7 +158,7 @@ BugsnagBreadcrumbs *breadcrumbs;
 
 /**
  * Set the endpoints to send data to. By default we'll send error reports to
- * https://notify.bugsnag.com, and sessions to https://session.bugsnag.com, but you can
+ * https://notify.bugsnag.com, and sessions to https://sessions.bugsnag.com, but you can
  * override this if you are using Bugsnag Enterprise to point to your own Bugsnag endpoint.
  *
  * Please note that it is recommended that you set both endpoints. If the notify endpoint is
