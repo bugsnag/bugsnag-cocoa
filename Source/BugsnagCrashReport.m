@@ -629,6 +629,9 @@ initWithErrorName:(NSString *_Nonnull)name
                 continue;
             }
             NSString *contentValue = data[@"value"];
+            if (!contentValue) {
+                continue;
+            }
 
             if ([self isReservedWord:contentValue]) {
                 reservedWord = contentValue;
