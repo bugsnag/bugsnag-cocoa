@@ -152,7 +152,7 @@ BugsnagBreadcrumbs *breadcrumbs;
  *
  * NOTE: it is strongly recommended that you set this value via setEndpointsForNotify:sessions: instead.
  *
- * @see setEndpointsForNotify:sessions
+ * @see setEndpointsForNotify:sessions:
  */
 @property(readwrite, retain, nullable) NSURL *sessionURL;
 
