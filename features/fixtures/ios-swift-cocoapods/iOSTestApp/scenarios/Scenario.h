@@ -22,4 +22,6 @@
 
 - (void)startBugsnag;
 
+- (void)flushAllSessions;
+
 @end
