@@ -6,10 +6,6 @@
 
 #import "Scenario.h"
 
-@interface Bugsnag()
-+ (id) notifier;
-@end
-
 @implementation Scenario
 
 + (Scenario *)createScenarioNamed:(NSString *)className

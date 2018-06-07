@@ -5,9 +5,6 @@
 
 #import "ManualSessionScenario.h"
 
-/**
- * Sends a manual session payload to Bugsnag.
- */
 @implementation ManualSessionScenario
 
 - (void)run {

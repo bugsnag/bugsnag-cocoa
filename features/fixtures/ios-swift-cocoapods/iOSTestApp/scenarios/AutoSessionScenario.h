@@ -6,8 +6,9 @@
 #import <Foundation/Foundation.h>
 #import "Scenario.h"
 
+
 /**
- * Sends a manual session payload to Bugsnag.
+ * Sends an automatic session payload to Bugsnag.
  */
-@interface ManualSessionScenario : Scenario
+@interface AutoSessionScenario : Scenario
 @end
