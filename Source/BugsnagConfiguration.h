@@ -44,7 +44,7 @@ typedef void (^BugsnagNotifyBlock)(BugsnagCrashReport *_Nonnull report);
 /**
  *  A handler for modifying data before sending it to Bugsnag.
  *
- * It is worth noting that beforeSendBlocks will be invoked on a dedicated
+ * beforeSendBlocks will be invoked on a dedicated
  * background queue, which will be different from the queue where the block was originally added.
  *
  *  @param rawEventData The raw event data written at crash time. This
