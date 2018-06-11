@@ -449,4 +449,68 @@
                           payload[@"exceptions"][0][@"message"]);
 }
 
+- (void)testEmptyReport {
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{}];
+    XCTAssertNotNil(report);
+}
+
+- (void)testUnhandledReportDepth {
+    // unhandled reports should calculate their own depth
+    NSDictionary *dict = @{@"user.state.crash.depth": @2};
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    XCTAssertEqual(report.depth, 0);
+}
+
+- (void)testHandledReportDepth {
+    // handled reports should use the serialised depth
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    NSDictionary *dict = @{@"user.state.crash.depth": @2, @"user.handledState": [state toJson]};
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    XCTAssertEqual(report.depth, 2);
+}
+
+- (void)testUnhandledReportSeverity {
+    // unhandled reports should calculate their own severity
+    NSDictionary *dict = @{@"user.state.crash.severity": @"info"};
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    XCTAssertEqual(report.severity, BSGSeverityError);
+}
+
+- (void)testHandledReportSeverity {
+    // handled reports should use the serialised depth
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    NSDictionary *dict = @{@"user.state.crash.severity": @"info", @"user.handledState": [state toJson]};
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    XCTAssertEqual(report.severity, BSGSeverityWarning);
+}
+
+- (void)testHandledReportMetaData {
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    BugsnagMetaData *metaData = [BugsnagMetaData new];
+    [metaData addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
+    NSDictionary *dict = @{@"user.handledState": [state toJson], @"user.metaData": [metaData toDictionary]};
+
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    XCTAssertNotNil(report.metaData);
+    XCTAssertEqual(report.metaData.count, 1);
+    XCTAssertEqualObjects(report.metaData[@"Custom"][@"Foo"], @"Bar");
+}
+
+- (void)testUnhandledReportMetaData {
+    BugsnagMetaData *metaData = [BugsnagMetaData new];
+    [metaData addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
+    NSDictionary *dict = @{@"user.metaData": [metaData toDictionary]};
+
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    XCTAssertNotNil(report.metaData);
+    XCTAssertEqual(report.metaData.count, 1);
+    XCTAssertEqualObjects(report.metaData[@"Custom"][@"Foo"], @"Bar");
+}
+
+- (void)testNoReportMetaData {
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{}];
+    XCTAssertNotNil(report.metaData);
+    XCTAssertEqual(report.metaData.count, 0);
+}
+
 @end
