@@ -104,21 +104,15 @@
 }
 
 - (void)testSetEmptyNotifyEndpoint {
-    @try {
-        BugsnagConfiguration *config = [BugsnagConfiguration new];
-        [config setEndpointsForNotify:@"" sessions:@"http://sessions.example.com"];
-        XCTFail();
-    } @catch(NSException * e) {
-    }
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertThrowsSpecificNamed([config setEndpointsForNotify:@"" sessions:@"http://sessions.example.com"],
+            NSException, NSInternalInconsistencyException);
 }
 
 - (void)testSetMalformedNotifyEndpoint {
-    @try {
-        BugsnagConfiguration *config = [BugsnagConfiguration new];
-        [config setEndpointsForNotify:@"http://" sessions:@"http://sessions.example.com"];
-        XCTFail();
-    } @catch(NSException * e) {
-    }
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertThrowsSpecificNamed([config setEndpointsForNotify:@"http://" sessions:@"http://sessions.example.com"],
+            NSException, NSInternalInconsistencyException);
 }
 
 - (void)testSetEmptySessionsEndpoint {
