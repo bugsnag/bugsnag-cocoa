@@ -54,12 +54,26 @@
     XCTAssertNil(data);
 }
 
-- (void)testHasType {
+- (void)testNilValueImplicit {
     NSDictionary *thread = @{
             @"crashed": @YES,
             @"notable_addresses": @{
                     @"hello_world": @{
                             @"type": @"string"
+                    }
+            }
+    };
+    RegisterErrorData *data = [RegisterErrorData errorDataFromThreads:@[thread]];
+    XCTAssertNil(data);
+}
+
+- (void)testNilValueExplicit {
+    NSDictionary *thread = @{
+            @"crashed": @YES,
+            @"notable_addresses": @{
+                    @"hello_world": @{
+                            @"type": @"string",
+                            @"value": [NSNull null]
                     }
             }
     };

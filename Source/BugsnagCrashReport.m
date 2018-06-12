@@ -630,9 +630,12 @@ initWithErrorName:(NSString *_Nonnull)name
             }
             NSString *contentValue = data[@"value"];
 
-            if (!contentValue) {
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCDFAInspection"
+            if (contentValue == nil || ![contentValue isKindOfClass:[NSString class]]) {
                 continue;
             }
+#pragma clang diagnostic pop
 
             if ([self isReservedWord:contentValue]) {
                 reservedWord = contentValue;
