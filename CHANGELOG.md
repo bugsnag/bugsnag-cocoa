@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 5.X.X (TBD)
+
+### Bug Fixes
+
+* Handle potential nil content value in RegisterErrorData class [#289](https://github.com/bugsnag/bugsnag-cocoa/pull/289)
+
 ## 5.15.6 (30 May 2018)
 
 ### Bug Fixes
