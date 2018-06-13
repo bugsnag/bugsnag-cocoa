@@ -353,9 +353,10 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                  object:nil];
 #endif
 
+    _started = YES;
+
     // notification not received in time on initial startup, so trigger manually
     [self willEnterForeground:self];
-    _started = YES;
 }
 
 - (void)watchLifecycleEvents:(NSNotificationCenter *)center {
