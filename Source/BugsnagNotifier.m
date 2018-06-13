@@ -216,9 +216,6 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                                                                        hasRecordedSessions = true;
                                                                    }];
 
-        
-        [self.sessionTracker startNewSession:[NSDate date] withUser:nil autoCaptured:YES];
-
         [self metaDataChanged:self.configuration.metaData];
         [self metaDataChanged:self.configuration.config];
         [self metaDataChanged:self.state];
