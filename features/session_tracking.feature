@@ -8,7 +8,9 @@ Scenario: Automatic Session Tracking sends
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "sessions" is an array with 1 element
-    And the session "user.id" is not null
+
+    # N.B. user.id is null by default if not configured by the developer.
+    And the session "user.id" is null
     And the session "id" is not null
     And the session "startedAt" is not null
 
