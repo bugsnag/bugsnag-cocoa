@@ -145,20 +145,20 @@ BugsnagBreadcrumbs *breadcrumbs;
 /**
  * Retrieves the endpoint used to notify Bugsnag of errors
  *
- * NOTE: it is strongly recommended that you set this value via setEndpointsForNotify:sessions: instead.
+ * NOTE: If you want to set this value, you should do so via setEndpointsForNotify:sessions: instead.
  *
  * @see setEndpointsForNotify:sessions:
  */
-@property(readwrite, retain, nullable) NSURL *notifyURL;
+@property(readonly, retain, nullable) NSURL *notifyURL;
 
 /**
  * Retrieves the endpoint used to send tracked sessions to Bugsnag
  *
- * NOTE: it is strongly recommended that you set this value via setEndpointsForNotify:sessions: instead.
+ * NOTE: If you want to set this value, you should do so via setEndpointsForNotify:sessions: instead.
  *
  * @see setEndpointsForNotify:sessions:
  */
-@property(readwrite, retain, nullable) NSURL *sessionURL;
+@property(readonly, retain, nullable) NSURL *sessionURL;
 
 /**
  * Set the endpoints to send data to. By default we'll send error reports to
