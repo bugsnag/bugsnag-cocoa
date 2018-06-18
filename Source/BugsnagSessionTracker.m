@@ -63,7 +63,7 @@
 - (void)trackSession {
     [self.sessionStore write:self.currentSession];
     self.trackedFirstSession = YES;
-    
+
     if (self.callback) {
         self.callback(self.currentSession);
     }
@@ -123,6 +123,8 @@
                         }
                         dispatch_semaphore_signal(requestSemaphore);
                     }];
+    } else {
+        dispatch_semaphore_signal(requestSemaphore);
     }
     dispatch_semaphore_wait(requestSemaphore, DISPATCH_TIME_FOREVER);
 }
