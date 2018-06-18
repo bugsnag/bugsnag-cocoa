@@ -14,7 +14,6 @@
 }
 
 - (void)run {
-    [self flushAllSessions];
 }
 
 @end

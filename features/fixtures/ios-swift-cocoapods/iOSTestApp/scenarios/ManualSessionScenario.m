@@ -10,7 +10,6 @@
 - (void)run {
     [self.config setUser:@"123" withName:@"Joe Bloggs" andEmail:@"user@example.com"];
     [Bugsnag startSession];
-    [self flushAllSessions];
 }
 
 @end

@@ -2,7 +2,7 @@ Feature: Session Tracking
 
 Scenario: Automatic Session Tracking sends
     When I run "AutoSessionScenario" with the defaults on "iPhone8-11.2"
-    And I wait for 5 seconds
+    And I wait for 65 seconds
     Then I should receive a request
     And the request is a valid for the session tracking API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
@@ -16,6 +16,7 @@ Scenario: Automatic Session Tracking sends
 
 Scenario: Manual Session sends
     When I run "ManualSessionScenario" with the defaults on "iPhone8-11.2"
+    And I wait for 65 seconds
     Then I should receive a request
     And the request is a valid for the session tracking API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
@@ -29,5 +30,5 @@ Scenario: Manual Session sends
 
 Scenario: Disabled Session Tracking sends no requests
     When I run "DisabledSessionTrackingScenario" with the defaults on "iPhone8-11.2"
-    And I wait for 5 seconds
+    And I wait for 65 seconds
     Then I should receive 0 requests

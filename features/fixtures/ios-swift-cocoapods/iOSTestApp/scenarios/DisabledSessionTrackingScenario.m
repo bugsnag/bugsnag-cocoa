@@ -9,7 +9,6 @@
 @implementation DisabledSessionTrackingScenario
 
 - (void)run {
-    [self flushAllSessions];
 }
 
 @end
