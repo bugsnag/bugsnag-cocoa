@@ -83,17 +83,15 @@
     XCTAssertEqualObjects([NSURL URLWithString:@"https://sessions.bugsnag.com"], config.sessionURL);
     
     // Setting an endpoint
-    NSURL *endpoint = [NSURL URLWithString:@"http://localhost:8000"];
-    config.sessionURL = endpoint;
-    XCTAssertEqualObjects(endpoint, config.sessionURL);
+    [config setEndpointsForNotify:@"http://localhost:1234" sessions:@"http://localhost:8000"];
+    XCTAssertEqualObjects([NSURL URLWithString:@"http://localhost:8000"], config.sessionURL);
 }
 
 - (void)testNotifyEndpoint {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     XCTAssertEqualObjects([NSURL URLWithString:@"https://notify.bugsnag.com/"], config.notifyURL);
-    NSURL *endpoint = [NSURL URLWithString:@"http://localhost:8000"];
-    config.notifyURL = endpoint;
-    XCTAssertEqualObjects(endpoint, config.notifyURL);
+    [config setEndpointsForNotify:@"http://localhost:1234" sessions:@"http://localhost:8000"];
+    XCTAssertEqualObjects([NSURL URLWithString:@"http://localhost:1234"], config.notifyURL);
 }
 
 - (void)testSetEndpoints {
