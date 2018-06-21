@@ -48,10 +48,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     internal func prepareConfig(apiKey: String, mockAPIPath: String) -> BugsnagConfiguration {
         let config = BugsnagConfiguration()
-        let url = URL(string: mockAPIPath)
         config.apiKey = apiKey
-        config.notifyURL = url
-        config.sessionURL = url
+        config.setEndpoints(notify: mockAPIPath, sessions: mockAPIPath)
+        config.shouldAutoCaptureSessions = false;
         return config
     }
 

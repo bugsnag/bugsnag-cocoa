@@ -1,7 +1,14 @@
 Changelog
 =========
 
-## 5.X.X (TBD)
+## 5.16.0 (TBD)
+
+This release alters the behaviour of the notifier to track sessions automatically.
+A session will be automatically captured on each app launch and sent to [https://sessions.bugsnag.com](https://sessions.bugsnag.com).
+
+If you use Bugsnag On-Premise, it is now also recommended that you set your notify and session endpoints via `config.setEndpoints(notify:sessions:)`. The previous properties used to configure this, `config.notifyURL` and `config.sessionURL`, are now `readonly` and therefore no longer assignable.
+
+* Enable automatic session tracking by default [#286](https://github.com/bugsnag/bugsnag-cocoa/pull/286)
 
 ### Bug Fixes
 
