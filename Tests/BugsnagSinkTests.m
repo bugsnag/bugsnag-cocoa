@@ -39,7 +39,9 @@
     config.autoNotify = NO;
     config.apiKey = @"apiKeyHere";
     config.releaseStage = @"MagicalTestingTime";
-    config.notifyURL = nil;
+
+    // set a dummy endpoint, avoid hitting production
+    [config setEndpointsForNotify:@"http://localhost:1234" sessions:@"http://localhost:1234"];
     [Bugsnag startBugsnagWithConfiguration:config];
     BugsnagCrashReport *report =
     [[BugsnagCrashReport alloc] initWithKSReport:self.rawReportData];

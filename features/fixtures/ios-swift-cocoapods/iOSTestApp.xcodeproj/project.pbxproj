@@ -14,8 +14,10 @@
 		8AB8866E20404DD30003E444 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8AB8866C20404DD30003E444 /* LaunchScreen.storyboard */; };
 		C4D0B5FF8E60C0835B86DFE9 /* Pods_iOSTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */; };
 		F429502603396F8671B333B3 /* HandledExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F429526319377A8848136413 /* HandledExceptionScenario.swift */; };
+		F4295109FCAB93708FDAFE12 /* DisabledSessionTrackingScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429563584D9BC3A5B86BECF /* DisabledSessionTrackingScenario.m */; };
 		F42951A9FD696D9047149DA8 /* UndefinedInstructionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429538D19421F28D8EB0446 /* UndefinedInstructionScenario.m */; };
 		F42951BEB2518C610A85FE0D /* BuiltinTrapScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F42956D34274D4ED16B4D491 /* BuiltinTrapScenario.m */; };
+		F42951BF19D7F35A03273CFB /* AutoSessionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295EE3B0BD05E5FE513B20 /* AutoSessionScenario.m */; };
 		F4295218A62E41518DC3C057 /* AccessNonObjectScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295A20DE438C2B28167714 /* AccessNonObjectScenario.m */; };
 		F4295262625F84A80282E520 /* CorruptMallocScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429581876FA1A9CFEE52615 /* CorruptMallocScenario.m */; };
 		F429532277D8B4DAE53F3F77 /* MinimalCrashReportScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429514FFBD085C6FEB85BDC /* MinimalCrashReportScenario.m */; };
@@ -31,6 +33,7 @@
 		F429565A951303E2C3136D0D /* UserIdScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */; };
 		F4295836C8AF75547C675E8D /* ReleasedObjectScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */; };
 		F42958881D3F34A76CADE4EC /* SwiftCrash.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */; };
+		F42958BE5DDACDBF653CA926 /* ManualSessionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429570EE7A751B53D011481 /* ManualSessionScenario.m */; };
 		F42959124DB949EEF1420957 /* ReadOnlyPageScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295871D1BCF211398CAEBA /* ReadOnlyPageScenario.m */; };
 		F4295968571A4118D6A4606A /* UserEnabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42954E2B3FF0C5C0474DA74 /* UserEnabledScenario.swift */; };
 		F4295A036B228AF608641699 /* UserDisabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42951F865D328A43250640B /* UserDisabledScenario.swift */; };
@@ -74,10 +77,12 @@
 		F42954E8B66F3FB7F5333CF7 /* Scenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scenario.m; sourceTree = "<group>"; };
 		F429550B682F8F9677305881 /* CxxExceptionScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxExceptionScenario.mm; sourceTree = "<group>"; };
 		F429556E677F030F72C4C5D0 /* AsyncSafeThreadScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncSafeThreadScenario.h; sourceTree = "<group>"; };
+		F429563584D9BC3A5B86BECF /* DisabledSessionTrackingScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisabledSessionTrackingScenario.m; sourceTree = "<group>"; };
 		F429566550603ECAC2875333 /* PrivilegedInstructionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivilegedInstructionScenario.m; sourceTree = "<group>"; };
 		F42956707AEC06754D9C2208 /* AccessNonObjectScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccessNonObjectScenario.h; sourceTree = "<group>"; };
 		F42956D34274D4ED16B4D491 /* BuiltinTrapScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BuiltinTrapScenario.m; sourceTree = "<group>"; };
 		F4295703713DA0D0ED768230 /* MinimalCrashReportScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MinimalCrashReportScenario.h; sourceTree = "<group>"; };
+		F429570EE7A751B53D011481 /* ManualSessionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManualSessionScenario.m; sourceTree = "<group>"; };
 		F42957A23DB8145B4B702F15 /* PrivilegedInstructionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrivilegedInstructionScenario.h; sourceTree = "<group>"; };
 		F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserIdScenario.swift; sourceTree = "<group>"; };
 		F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSExceptionScenario.swift; sourceTree = "<group>"; };
@@ -95,11 +100,15 @@
 		F4295C758B89038DD3A2A198 /* CorruptMallocScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CorruptMallocScenario.h; sourceTree = "<group>"; };
 		F4295CA6B6792DECA15C450B /* AsyncSafeThreadScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncSafeThreadScenario.m; sourceTree = "<group>"; };
 		F4295CD1B5437B73A7C254F7 /* ReadGarbagePointerScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadGarbagePointerScenario.h; sourceTree = "<group>"; };
+		F4295CF00D2B7AE6DE5BBFC5 /* ManualSessionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManualSessionScenario.h; sourceTree = "<group>"; };
 		F4295E2979ED53A2E82017CF /* BuiltinTrapScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BuiltinTrapScenario.h; sourceTree = "<group>"; };
+		F4295E6960503E5BD75A2C35 /* DisabledSessionTrackingScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisabledSessionTrackingScenario.h; sourceTree = "<group>"; };
 		F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasedObjectScenario.m; sourceTree = "<group>"; };
 		F4295E86DC0BE9DC731B0D1C /* NullPointerScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NullPointerScenario.m; sourceTree = "<group>"; };
+		F4295EE3B0BD05E5FE513B20 /* AutoSessionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoSessionScenario.m; sourceTree = "<group>"; };
 		F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftCrash.swift; sourceTree = "<group>"; };
 		F4295F13EBCAC9CB0ABC4008 /* NonExistentMethodScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NonExistentMethodScenario.m; sourceTree = "<group>"; };
+		F4295F22AA1863213F4A5F51 /* AutoSessionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoSessionScenario.h; sourceTree = "<group>"; };
 		F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEmailScenario.swift; sourceTree = "<group>"; };
 		F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorOverrideScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -216,6 +225,12 @@
 				F42950D49A5F24FF7155EEE1 /* NonExistentMethodScenario.h */,
 				F429566550603ECAC2875333 /* PrivilegedInstructionScenario.m */,
 				F42957A23DB8145B4B702F15 /* PrivilegedInstructionScenario.h */,
+				F429570EE7A751B53D011481 /* ManualSessionScenario.m */,
+				F4295CF00D2B7AE6DE5BBFC5 /* ManualSessionScenario.h */,
+				F4295EE3B0BD05E5FE513B20 /* AutoSessionScenario.m */,
+				F4295F22AA1863213F4A5F51 /* AutoSessionScenario.h */,
+				F429563584D9BC3A5B86BECF /* DisabledSessionTrackingScenario.m */,
+				F4295E6960503E5BD75A2C35 /* DisabledSessionTrackingScenario.h */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";
@@ -232,7 +247,7 @@
 				8AB8865D20404DD30003E444 /* Frameworks */,
 				8AB8865E20404DD30003E444 /* Resources */,
 				4D2139E03F8B071F7DB7C7A6 /* [CP] Embed Pods Frameworks */,
-				421E0803F4159BB79BC285F5 /* [CP] Copy Pods Resources */,
+				F4E835AC090FCF28B6B12EC4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -310,21 +325,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		421E0803F4159BB79BC285F5 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		4D2139E03F8B071F7DB7C7A6 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -341,6 +341,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F4E835AC090FCF28B6B12EC4 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -380,6 +395,9 @@
 				F42951BEB2518C610A85FE0D /* BuiltinTrapScenario.m in Sources */,
 				F4295397AD31C1C1E64144F5 /* NonExistentMethodScenario.m in Sources */,
 				F4295A0B0DA0AF3B5502D29C /* PrivilegedInstructionScenario.m in Sources */,
+				F42958BE5DDACDBF653CA926 /* ManualSessionScenario.m in Sources */,
+				F42951BF19D7F35A03273CFB /* AutoSessionScenario.m in Sources */,
+				F4295109FCAB93708FDAFE12 /* DisabledSessionTrackingScenario.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

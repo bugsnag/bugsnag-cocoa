@@ -19,7 +19,7 @@
 
     NSDictionary *dict = @{
             @"id": @"test",
-            @"emailAddress": @"fake@example.com",
+            @"email": @"fake@example.com",
             @"name": @"Tom Bombadil"
     };
     BugsnagUser *user = [[BugsnagUser alloc] initWithDictionary:dict];
@@ -41,7 +41,7 @@
     XCTAssertEqual(3, [rootNode count]);
     
     XCTAssertEqualObjects(@"test", rootNode[@"id"]);
-    XCTAssertEqualObjects(@"fake@example.com", rootNode[@"emailAddress"]);
+    XCTAssertEqualObjects(@"fake@example.com", rootNode[@"email"]);
     XCTAssertEqualObjects(@"Tom Bombadil", rootNode[@"name"]);
 }
 

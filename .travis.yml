@@ -1,5 +1,7 @@
 language: objective-c
-cache: bundler
+cache:
+  - bundler
+  - cocoapods
 rvm: 2.3.7
 matrix:
     include:

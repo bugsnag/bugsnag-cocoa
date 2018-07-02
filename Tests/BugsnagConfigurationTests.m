@@ -1,5 +1,6 @@
 #import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
+#import "BugsnagSessionTracker.h"
 #import "BugsnagUser.h"
 
 #import <XCTest/XCTest.h>
@@ -56,7 +57,7 @@
 
 - (void)testDefaultSessionConfig {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
-    XCTAssertFalse([config shouldAutoCaptureSessions]);
+    XCTAssertTrue([config shouldAutoCaptureSessions]);
 }
 
 - (void)testErrorApiHeaders {
@@ -81,10 +82,59 @@
     // Default endpoints
     XCTAssertEqualObjects([NSURL URLWithString:@"https://sessions.bugsnag.com"], config.sessionURL);
     
-    // Setting an endpoint
-    NSURL *endpoint = [NSURL URLWithString:@"http://localhost:8000"];
-    config.sessionURL = endpoint;
-    XCTAssertEqualObjects(endpoint, config.sessionURL);
+    // Test overriding the session endpoint (use dummy endpoints to avoid hitting production)
+    [config setEndpointsForNotify:@"http://localhost:1234" sessions:@"http://localhost:8000"];
+    XCTAssertEqualObjects([NSURL URLWithString:@"http://localhost:8000"], config.sessionURL);
+}
+
+- (void)testNotifyEndpoint {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertEqualObjects([NSURL URLWithString:@"https://notify.bugsnag.com/"], config.notifyURL);
+
+    // Test overriding the notify endpoint (use dummy endpoints to avoid hitting production)
+    [config setEndpointsForNotify:@"http://localhost:1234" sessions:@"http://localhost:8000"];
+    XCTAssertEqualObjects([NSURL URLWithString:@"http://localhost:1234"], config.notifyURL);
+}
+
+- (void)testSetEndpoints {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    [config setEndpointsForNotify:@"http://notify.example.com" sessions:@"http://sessions.example.com"];
+    XCTAssertEqualObjects([NSURL URLWithString:@"http://notify.example.com"], config.notifyURL);
+    XCTAssertEqualObjects([NSURL URLWithString:@"http://sessions.example.com"], config.sessionURL);
+}
+
+- (void)testSetEmptyNotifyEndpoint {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertThrowsSpecificNamed([config setEndpointsForNotify:@"" sessions:@"http://sessions.example.com"],
+            NSException, NSInternalInconsistencyException);
+}
+
+- (void)testSetMalformedNotifyEndpoint {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertThrowsSpecificNamed([config setEndpointsForNotify:@"http://" sessions:@"http://sessions.example.com"],
+            NSException, NSInternalInconsistencyException);
+}
+
+- (void)testSetEmptySessionsEndpoint {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    [config setEndpointsForNotify:@"http://notify.example.com" sessions:@""];
+    BugsnagSessionTracker *sessionTracker
+            = [[BugsnagSessionTracker alloc] initWithConfig:config apiClient:nil callback:nil];
+
+    XCTAssertNil(sessionTracker.currentSession);
+    [sessionTracker startNewSession:[NSDate date] withUser:nil autoCaptured:NO];
+    XCTAssertNil(sessionTracker.currentSession);
+}
+
+- (void)testSetMalformedSessionsEndpoint {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    [config setEndpointsForNotify:@"http://notify.example.com" sessions:@"f"];
+    BugsnagSessionTracker *sessionTracker
+            = [[BugsnagSessionTracker alloc] initWithConfig:config apiClient:nil callback:nil];
+
+    XCTAssertNil(sessionTracker.currentSession);
+    [sessionTracker startNewSession:[NSDate date] withUser:nil autoCaptured:NO];
+    XCTAssertNil(sessionTracker.currentSession);
 }
 
 - (void)testUser {

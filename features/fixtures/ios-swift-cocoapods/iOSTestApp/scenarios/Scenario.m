@@ -6,7 +6,6 @@
 
 #import "Scenario.h"
 
-
 @implementation Scenario
 
 + (Scenario *)createScenarioNamed:(NSString *)className
@@ -31,7 +30,6 @@
     return [(Scenario *)obj initWithConfig:config];
 }
 
-
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config {
     if (self = [super init]) {
         self.config = config;
@@ -44,6 +42,12 @@
 
 - (void)startBugsnag {
     [Bugsnag startBugsnagWithConfiguration:self.config];
+}
+
+- (void)flushAllSessions {
+    id notifier = [Bugsnag notifier];
+    id sessionTracker = [notifier valueForKey:@"sessionTracker"];
+    [sessionTracker performSelector:@selector(send)];
 }
 
 @end

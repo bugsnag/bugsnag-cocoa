@@ -6,6 +6,10 @@
 #import <Foundation/Foundation.h>
 #import <Bugsnag/Bugsnag.h>
 
+@interface Bugsnag()
++ (id) notifier;
+@end
+
 @interface Scenario : NSObject
 
 @property (strong, nonatomic, nonnull) BugsnagConfiguration *config;
@@ -21,5 +25,7 @@
 - (void)run;
 
 - (void)startBugsnag;
+
+- (void)flushAllSessions;
 
 @end
