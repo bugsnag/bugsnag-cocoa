@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 5.16.0 (TBD)
+## 5.16.0 (02 Jul 2018)
 
 This release alters the behaviour of the notifier to track sessions automatically.
 A session will be automatically captured on each app launch and sent to [https://sessions.bugsnag.com](https://sessions.bugsnag.com).
