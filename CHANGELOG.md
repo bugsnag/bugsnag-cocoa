@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 5.X.X (TBD)
+
+### Bug Fixes
+
+* Respect appVersion override when serialising KSCrash report [#292](https://github.com/bugsnag/bugsnag-cocoa/pull/292)
+
 ## 5.16.0 (02 Jul 2018)
 
 This release alters the behaviour of the notifier to track sessions automatically.
