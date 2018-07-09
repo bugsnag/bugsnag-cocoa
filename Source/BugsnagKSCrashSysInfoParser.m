@@ -61,9 +61,11 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
 }
 
 NSDictionary *BSGParseApp(NSDictionary *report) {
+    NSDictionary *system = report[BSGKeySystem];
+
     NSMutableDictionary *appState = [NSMutableDictionary dictionary];
     
-    NSDictionary *stats = report[@"application_stats"];
+    NSDictionary *stats = system[@"application_stats"];
     
     NSInteger activeTimeSinceLaunch =
     [stats[@"active_time_since_launch"] doubleValue] * 1000.0;
@@ -73,23 +75,30 @@ NSDictionary *BSGParseApp(NSDictionary *report) {
     BSGDictSetSafeObject(appState, @(activeTimeSinceLaunch),
                          @"durationInForeground");
 
-    BSGDictSetSafeObject(appState, report[BSGKeyExecutableName], BSGKeyName);
+    BSGDictSetSafeObject(appState, system[BSGKeyExecutableName], BSGKeyName);
     BSGDictSetSafeObject(appState,
                          @(activeTimeSinceLaunch + backgroundTimeSinceLaunch),
                          @"duration");
     BSGDictSetSafeObject(appState, stats[@"application_in_foreground"],
                          @"inForeground");
-    BSGDictSetSafeObject(appState, report[@"CFBundleIdentifier"], BSGKeyId);
+    BSGDictSetSafeObject(appState, system[@"CFBundleIdentifier"], BSGKeyId);
     return appState;
 }
 
 NSDictionary *BSGParseAppState(NSDictionary *report) {
+    NSDictionary *system = report[BSGKeySystem];
     NSMutableDictionary *app = [NSMutableDictionary dictionary];
 
-    BSGDictSetSafeObject(app, report[@"CFBundleVersion"], @"bundleVersion");
+    NSString *version = [report valueForKeyPath:@"user.config.appVersion"];
+
+    if (!version) {
+        version = system[@"CFBundleShortVersionString"];
+    }
+
+    BSGDictSetSafeObject(app, system[@"CFBundleVersion"], @"bundleVersion");
     BSGDictSetSafeObject(app, [Bugsnag configuration].releaseStage,
                          BSGKeyReleaseStage);
-    BSGDictSetSafeObject(app, report[@"CFBundleShortVersionString"], BSGKeyVersion);
+    BSGDictSetSafeObject(app, version, BSGKeyVersion);
     
     BSGDictSetSafeObject(app, [Bugsnag configuration].codeBundleId, @"codeBundleId");
     
