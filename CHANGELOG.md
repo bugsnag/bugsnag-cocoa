@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 5.X.X (TBD)
+## 5.16.1 (11 Jul 2018)
 
 ### Bug Fixes
 
