@@ -395,7 +395,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                                                        selector:@selector(sessionTick:)
                                                        userInfo:nil
                                                         repeats:YES];
-        [self sessionTick:self];
+        [self.sessionTimer fire];
     }
 }
 
