@@ -30,6 +30,11 @@ import Foundation
  * Trigger a crash from inside a Swift method.
  */
 class SwiftCrash: Scenario {
+    override func startBugsnag() {
+      self.config.shouldAutoCaptureSessions = false;
+      super.startBugsnag()
+    }
+
     override func run() {
         let buf: UnsafeMutablePointer<UInt>? = nil;
         buf![1] = 1;

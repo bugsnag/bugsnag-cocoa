@@ -11,6 +11,11 @@ import Bugsnag
  */
 class HandledExceptionScenario: Scenario {
 
+    override func startBugsnag() {
+      self.config.shouldAutoCaptureSessions = false;
+      super.startBugsnag()
+    }
+
     override func run() {
         Bugsnag.notify(NSException(name: NSExceptionName("HandledExceptionScenario"),
                 reason: "Message: HandledExceptionScenario",

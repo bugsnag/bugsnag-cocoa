@@ -10,6 +10,10 @@ import Bugsnag
  * Sends a handled error to Bugsnag, which only includes a user's email
  */
 internal class UserEmailScenario: Scenario {
+    override func startBugsnag() {
+      self.config.shouldAutoCaptureSessions = false;
+      super.startBugsnag()
+    }
 
     override func run() {
         Bugsnag.configuration()?.setUser(nil, withName: nil, andEmail: "user@example.com")

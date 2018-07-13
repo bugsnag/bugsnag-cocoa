@@ -30,6 +30,11 @@
  */
 @implementation NullPointerScenario
 
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
 - (void)run {
     volatile char *ptr = NULL;
     (void) *ptr;

@@ -31,6 +31,11 @@
  */
 @implementation UndefinedInstructionScenario
 
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
 - (void)run {
 #if __i386__
     asm volatile ( "ud2" : : : );

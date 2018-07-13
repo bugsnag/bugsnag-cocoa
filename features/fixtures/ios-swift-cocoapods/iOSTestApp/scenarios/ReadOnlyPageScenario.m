@@ -31,6 +31,11 @@
  */
 @implementation ReadOnlyPageScenario
 
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
 static void __attribute__((used)) dummyfunc(void) {
 }
 

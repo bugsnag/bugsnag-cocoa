@@ -37,6 +37,11 @@
     return @"";
 }
 
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
 - (void)run {
     /* Call a method to trigger modification of LR. We use the result below to
      * convince the compiler to order this function the way we want it. */

@@ -32,6 +32,6 @@ When("I crash the app using {string}") do |event|
   steps %Q{
     When I set environment variable "EVENT_TYPE" to "#{event}"
     And I launch the app
-    And I set environment variable "EVENT_TYPE" to "none"
+    And I set environment variable "EVENT_MODE" to "noevent"
   }
 end

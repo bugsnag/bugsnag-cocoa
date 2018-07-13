@@ -10,6 +10,10 @@ import Bugsnag
  * Sends a handled error to Bugsnag, which does not include user data.
  */
 internal class UserDisabledScenario: Scenario {
+    override func startBugsnag() {
+      self.config.shouldAutoCaptureSessions = false;
+      super.startBugsnag()
+    }
 
     override func run() {
         Bugsnag.configuration()?.setUser(nil, withName: nil, andEmail: nil)

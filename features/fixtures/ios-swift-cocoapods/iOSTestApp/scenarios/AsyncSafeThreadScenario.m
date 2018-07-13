@@ -33,6 +33,11 @@
  */
 @implementation AsyncSafeThreadScenario
 
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
 - (void)run {
     pthread_getname_np(pthread_self(), ((char *) 0x1), 1);
 

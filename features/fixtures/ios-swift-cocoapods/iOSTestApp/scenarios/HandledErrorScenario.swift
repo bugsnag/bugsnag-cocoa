@@ -11,6 +11,11 @@ import Bugsnag
  */
 class HandledErrorScenario: Scenario {
 
+    override func startBugsnag() {
+      self.config.shouldAutoCaptureSessions = false;
+      super.startBugsnag()
+    }
+
     override func run() {
         let error = NSError(domain: "HandledErrorScenario", code: 100, userInfo: nil)
         Bugsnag.notifyError(error)
