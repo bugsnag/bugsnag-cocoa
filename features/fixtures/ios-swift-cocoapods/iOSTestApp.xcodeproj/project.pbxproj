@@ -14,6 +14,7 @@
 		8AB8866E20404DD30003E444 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8AB8866C20404DD30003E444 /* LaunchScreen.storyboard */; };
 		8AEFC73120F8D1A000A78779 /* AutoSessionWithUserScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AEFC73020F8D1A000A78779 /* AutoSessionWithUserScenario.m */; };
 		8AEFC73420F8D1BB00A78779 /* ManualSessionWithUserScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AEFC73320F8D1BB00A78779 /* ManualSessionWithUserScenario.m */; };
+		8AEFC79920F9132C00A78779 /* AutoSessionHandledEventsScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AEFC79820F9132C00A78779 /* AutoSessionHandledEventsScenario.m */; };
 		C4D0B5FF8E60C0835B86DFE9 /* Pods_iOSTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */; };
 		F429502603396F8671B333B3 /* HandledExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F429526319377A8848136413 /* HandledExceptionScenario.swift */; };
 		F4295109FCAB93708FDAFE12 /* DisabledSessionTrackingScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429563584D9BC3A5B86BECF /* DisabledSessionTrackingScenario.m */; };
@@ -62,6 +63,8 @@
 		8AEFC73020F8D1A000A78779 /* AutoSessionWithUserScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoSessionWithUserScenario.m; sourceTree = "<group>"; };
 		8AEFC73220F8D1BB00A78779 /* ManualSessionWithUserScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ManualSessionWithUserScenario.h; sourceTree = "<group>"; };
 		8AEFC73320F8D1BB00A78779 /* ManualSessionWithUserScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ManualSessionWithUserScenario.m; sourceTree = "<group>"; };
+		8AEFC79720F9132C00A78779 /* AutoSessionHandledEventsScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoSessionHandledEventsScenario.h; sourceTree = "<group>"; };
+		8AEFC79820F9132C00A78779 /* AutoSessionHandledEventsScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoSessionHandledEventsScenario.m; sourceTree = "<group>"; };
 		960A6E7D4E847F1D76A4FD06 /* Pods-iOSTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.release.xcconfig"; sourceTree = "<group>"; };
 		EE18B3777C62D7BCA8DDBE30 /* Pods-iOSTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.debug.xcconfig"; sourceTree = "<group>"; };
 		F42950588CE34967588DF438 /* ObjCExceptionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCExceptionScenario.h; sourceTree = "<group>"; };
@@ -241,6 +244,8 @@
 				8AEFC73020F8D1A000A78779 /* AutoSessionWithUserScenario.m */,
 				F429563584D9BC3A5B86BECF /* DisabledSessionTrackingScenario.m */,
 				F4295E6960503E5BD75A2C35 /* DisabledSessionTrackingScenario.h */,
+				8AEFC79720F9132C00A78779 /* AutoSessionHandledEventsScenario.h */,
+				8AEFC79820F9132C00A78779 /* AutoSessionHandledEventsScenario.m */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";
@@ -406,6 +411,7 @@
 				F429532277D8B4DAE53F3F77 /* MinimalCrashReportScenario.m in Sources */,
 				F42951BEB2518C610A85FE0D /* BuiltinTrapScenario.m in Sources */,
 				F4295397AD31C1C1E64144F5 /* NonExistentMethodScenario.m in Sources */,
+				8AEFC79920F9132C00A78779 /* AutoSessionHandledEventsScenario.m in Sources */,
 				F4295A0B0DA0AF3B5502D29C /* PrivilegedInstructionScenario.m in Sources */,
 				F42958BE5DDACDBF653CA926 /* ManualSessionScenario.m in Sources */,
 				F42951BF19D7F35A03273CFB /* AutoSessionScenario.m in Sources */,
