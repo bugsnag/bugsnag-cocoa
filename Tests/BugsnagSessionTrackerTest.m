@@ -25,35 +25,79 @@
     [super setUp];
     self.configuration = [BugsnagConfiguration new];
     self.configuration.apiKey = @"test";
-    self.configuration.shouldAutoCaptureSessions = YES;
-    self.user = [BugsnagUser new];
     self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
-                                                              apiClient:[BugsnagSessionTrackingApiClient new]
-                                                               callback:NULL];
+                                                     postRecordCallback:nil];
 }
 
 - (void)testStartNewSession {
     XCTAssertNil(self.sessionTracker.currentSession);
-    NSDate *now = [NSDate date];
-    [self.sessionTracker startNewSession:now
-                                withUser:self.user
-                            autoCaptured:NO];
+    [self.sessionTracker startNewSession];
     BugsnagSession *session = self.sessionTracker.currentSession;
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.sessionId);
-    XCTAssertEqualObjects(now, session.startedAt);
-    XCTAssertNotNil(session.user);
+    XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
+    XCTAssertNil(session.user);
+    XCTAssertFalse(session.autoCaptured);
+}
+
+- (void)testStartNewSessionWithUser {
+    [self.configuration setUser:@"123" withName:@"Bill" andEmail:nil];
+    XCTAssertNil(self.sessionTracker.currentSession);
+    [self.sessionTracker startNewSession];
+    BugsnagSession *session = self.sessionTracker.currentSession;
+
+    XCTAssertNotNil(session);
+    XCTAssertNotNil(session.sessionId);
+    XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
+    XCTAssertEqual(session.user.name, @"Bill");
+    XCTAssertEqual(session.user.userId, @"123");
+    XCTAssertNil(session.user.emailAddress);
+    XCTAssertFalse(session.autoCaptured);
+}
+
+- (void)testStartNewAutoCapturedSession {
+    XCTAssertNil(self.sessionTracker.currentSession);
+    [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
+    BugsnagSession *session = self.sessionTracker.currentSession;
+
+    XCTAssertNotNil(session);
+    XCTAssertNotNil(session.sessionId);
+    XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
+    XCTAssertNil(session.user.name);
+    XCTAssertNil(session.user.userId);
+    XCTAssertNil(session.user.emailAddress);
+    XCTAssertTrue(session.autoCaptured);
+}
+
+- (void)testStartNewAutoCapturedSessionWithUser {
+    [self.configuration setUser:@"123" withName:@"Bill" andEmail:@"bill@example.com"];
+    XCTAssertNil(self.sessionTracker.currentSession);
+    [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
+    BugsnagSession *session = self.sessionTracker.currentSession;
+
+    XCTAssertNotNil(session);
+    XCTAssertNotNil(session.sessionId);
+    XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
+    XCTAssertEqual(session.user.name, @"Bill");
+    XCTAssertEqual(session.user.userId, @"123");
+    XCTAssertEqual(session.user.emailAddress, @"bill@example.com");
+    XCTAssertTrue(session.autoCaptured);
+}
+
+- (void)testStartNewAutoCapturedSessionWithAutoCaptureDisabled {
+    XCTAssertNil(self.sessionTracker.currentSession);
+    self.configuration.shouldAutoCaptureSessions = NO;
+    [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
+    BugsnagSession *session = self.sessionTracker.currentSession;
+
+    XCTAssertNil(session);
 }
 
 - (void)testUniqueSessionIds {
-    [self.sessionTracker startNewSession:[NSDate date]
-                                withUser:self.user
-                            autoCaptured:NO];
+    [self.sessionTracker startNewSession];
     BugsnagSession *firstSession = self.sessionTracker.currentSession;
 
-    [self.sessionTracker startNewSession:[NSDate date]
-                                withUser:self.user
-                            autoCaptured:NO];
+    [self.sessionTracker startNewSession];
 
     BugsnagSession *secondSession = self.sessionTracker.currentSession;
     XCTAssertNotEqualObjects(firstSession.sessionId, secondSession.sessionId);
@@ -61,37 +105,20 @@
 
 - (void)testIncrementCounts {
 
-    [self.sessionTracker startNewSession:[NSDate date]
-                                withUser:self.user
-                            autoCaptured:NO];
-    [self.sessionTracker incrementHandledError];
-    [self.sessionTracker incrementHandledError];
+    [self.sessionTracker startNewSession];
+    [self.sessionTracker handleHandledErrorEvent];
+    [self.sessionTracker handleHandledErrorEvent];
 
     BugsnagSession *session = self.sessionTracker.currentSession;
     XCTAssertNotNil(session);
     XCTAssertEqual(2, session.handledCount);
     XCTAssertEqual(0, session.unhandledCount);
 
-    [self.sessionTracker startNewSession:[NSDate date]
-                                withUser:self.user
-                            autoCaptured:NO];
+    [self.sessionTracker startNewSession];
 
     session = self.sessionTracker.currentSession;
     XCTAssertEqual(0, session.handledCount);
     XCTAssertEqual(0, session.unhandledCount);
 }
 
-- (void)testBasicInForeground {
-    XCTAssertFalse(self.sessionTracker.isInForeground);
-    XCTAssertNil(self.sessionTracker.currentSession);
-
-    NSDate *now = [NSDate date];
-    [self.sessionTracker startNewSession:now withUser:nil autoCaptured:NO];
-    XCTAssertTrue(self.sessionTracker.isInForeground);
-
-    [self.sessionTracker suspendCurrentSession:now];
-    XCTAssertFalse(self.sessionTracker.isInForeground);
-}
-
 @end
-

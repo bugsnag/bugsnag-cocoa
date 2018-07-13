@@ -4,11 +4,16 @@
 //
 
 #import "ManualSessionScenario.h"
+#import <Bugsnag/Bugsnag.h>
 
 @implementation ManualSessionScenario
 
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
 - (void)run {
-    [self.config setUser:@"123" withName:@"Joe Bloggs" andEmail:@"user@example.com"];
     [Bugsnag startSession];
 }
 

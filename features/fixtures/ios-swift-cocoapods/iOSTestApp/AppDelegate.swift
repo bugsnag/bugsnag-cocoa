@@ -50,7 +50,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let config = BugsnagConfiguration()
         config.apiKey = apiKey
         config.setEndpoints(notify: mockAPIPath, sessions: mockAPIPath)
-        config.shouldAutoCaptureSessions = false;
         return config
     }
 
