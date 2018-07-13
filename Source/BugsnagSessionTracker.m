@@ -22,7 +22,6 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 @property (weak, nonatomic) BugsnagConfiguration *config;
 @property (strong, nonatomic) BugsnagSessionFileStore *sessionStore;
 @property (strong, nonatomic) BugsnagSessionTrackingApiClient *apiClient;
-@property BOOL trackedFirstSession;
 @property (strong, nonatomic) NSDate *backgroundStartTime;
 
 @property (strong, readwrite) BugsnagSession *currentSession;
@@ -74,7 +73,6 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
                                                 autoCaptured:isAutoCaptured];
 
     [self.sessionStore write:self.currentSession];
-    self.trackedFirstSession = YES;
 
     if (self.callback) {
         self.callback(self.currentSession);
@@ -83,12 +81,6 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 }
 
 #pragma mark - Handling events
-
-- (void)handleAutoCaptureEnabledEvent {
-    if (!self.trackedFirstSession) {
-        [self startNewSessionIfAutoCaptureEnabled];
-    }
-}
 
 - (void)handleAppBackgroundEvent {
     self.backgroundStartTime = [NSDate date];

@@ -52,11 +52,6 @@ typedef void (^SessionTrackerCallback)(BugsnagSession *newSession);
 - (void)handleAppBackgroundEvent;
 
 /**
- Handle auto-capture session being enabled in the configuration
- */
-- (void)handleAutoCaptureEnabledEvent;
-
-/**
  Handle some variation of Bugsnag.notify() being called.
  Increases the number of handled errors recorded for the current session, if
  a session exists.
