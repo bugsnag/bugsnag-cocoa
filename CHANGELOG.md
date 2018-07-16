@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 5.16.2 (17 Jul 2018)
 
 ### Bug fixes
 
