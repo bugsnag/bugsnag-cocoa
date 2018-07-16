@@ -6,8 +6,40 @@ Scenario: Launching using the default configuration sends a single session
     Then I should receive a request
     And the request is a valid for the session tracking API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload includes app and device data
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "sessions" is an array with 1 element
+    And the payload field "app.version" equals "1.0.3"
+    And the payload field "app.bundleVersion" equals "5"
+    And the payload field "app.releaseStage" equals "development"
+    And the payload field "app.type" equals "iOS"
+    And the payload field "device.osVersion" equals "11.2"
+    And the payload field "device.osName" equals "iOS"
+    And the payload field "device.model" equals "iPhone10,4"
+
+    And the session "id" is not null
+    And the session "startedAt" is not null
+    And the session "user.id" is null
+    And the session "user.email" is null
+    And the session "user.name" is null
+
+Scenario: Configuring a custom version sends it in a session request
+    When I run "AutoSessionCustomVersionScenario" with the defaults on "iPhone8-11.2"
+    And I wait for 10 seconds
+    Then I should receive a request
+    And the request is a valid for the session tracking API
+    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload includes app and device data
+    And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
+    And the payload field "sessions" is an array with 1 element
+    And the payload field "app.version" equals "2.0.14"
+    And the payload field "app.bundleVersion" equals "5"
+    And the payload field "app.releaseStage" equals "development"
+    And the payload field "app.type" equals "iOS"
+    And the payload field "device.osVersion" equals "11.2"
+    And the payload field "device.osName" equals "iOS"
+    And the payload field "device.model" equals "iPhone10,4"
+
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is null
@@ -20,6 +52,7 @@ Scenario: Configuring user info sends it with auto-captured sessions
     Then I should receive a request
     And the request is a valid for the session tracking API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload includes app and device data
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "sessions" is an array with 1 element
     And the session "id" is not null
@@ -33,6 +66,7 @@ Scenario: Configuring user info sends it with manually captured sessions
     Then I should receive a request
     And the request is a valid for the session tracking API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload includes app and device data
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "sessions" is an array with 1 element
     And the session "id" is not null
@@ -46,6 +80,7 @@ Scenario: Disabling auto-capture and calling startSession() manually sends a sin
     Then I should receive a request
     And the request is a valid for the session tracking API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload includes app and device data
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "sessions" is an array with 1 element
     And the session "id" is not null

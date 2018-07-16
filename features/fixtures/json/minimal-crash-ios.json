@@ -23,8 +23,8 @@
         "releaseStage": "development",
         "id": "com.bugsnag.iOSTestApp",
         "type": "iOS",
-        "bundleVersion": "1",
-        "version": "1.0"
+        "bundleVersion": "5",
+        "version": "1.0.3"
       },
       "threads": [
 

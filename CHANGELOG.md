@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix a regression in session tracking where app version was set to nil
+  [#296](https://github.com/bugsnag/bugsnag-cocoa/pull/296)
+
 * Fix a regression in session tracking which caused the first session HTTP
   request to be delivered on the calling thread when automatic session tracking
   is enabled
