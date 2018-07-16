@@ -41,13 +41,15 @@ typedef void (^SessionTrackerCallback)(BugsnagSession *newSession);
 /**
  Handle the app foregrounding event. If more than 30s has elapsed since being
  sent to the background, records a new session if session auto-capture is
- enabled
+ enabled.
+ Must be called from the main thread.
  */
 - (void)handleAppForegroundEvent;
 
 /**
  Handle the app backgrounding event. Tracks time between foreground and
  background to determine when to automatically record a session.
+ Must be called from the main thread.
  */
 - (void)handleAppBackgroundEvent;
 
