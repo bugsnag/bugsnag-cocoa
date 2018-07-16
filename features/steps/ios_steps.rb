@@ -32,6 +32,67 @@ When("I crash the app using {string}") do |event|
   steps %Q{
     When I set environment variable "EVENT_TYPE" to "#{event}"
     And I launch the app
-    And I set environment variable "EVENT_TYPE" to "none"
+    And I set environment variable "EVENT_MODE" to "noevent"
   }
+end
+
+# TODO: move upstream into maze-runner
+Then("request {int} is valid for the session tracking API") do |index|
+  steps %Q{
+    Then the "Bugsnag-API-Key" header is not null for request #{index}
+    And the "Content-Type" header equals "application/json" for request #{index}
+    And the "Bugsnag-Payload-Version" header equals "1.0" for request #{index}
+    And the "Bugsnag-Sent-At" header is a timestamp for request #{index}
+
+    And the payload field "app" is not null for request #{index}
+    And the payload field "device" is not null for request #{index}
+    And the payload field "notifier.name" is not null for request #{index}
+    And the payload field "notifier.url" is not null for request #{index}
+    And the payload field "notifier.version" is not null for request #{index}
+    And the payload has a valid sessions array for request #{index}
+  }
+end
+
+Then("request {int} is valid for the error reporting API") do |index|
+  steps %Q{
+    Then the "Bugsnag-API-Key" header is not null for request #{index}
+    And the "Content-Type" header equals "application/json" for request #{index}
+    And the "Bugsnag-Sent-At" header is a timestamp for request #{index}
+
+    And the payload field "notifier.name" is not null for request #{index}
+    And the payload field "notifier.url" is not null for request #{index}
+    And the payload field "notifier.version" is not null for request #{index}
+    And the payload field "events" is a non-empty array for request #{index}
+
+    And each element in payload field "events" has "severity" for request #{index}
+    And each element in payload field "events" has "severityReason.type" for request #{index}
+    And each element in payload field "events" has "unhandled" for request #{index}
+    And each element in payload field "events" has "exceptions" for request #{index}
+  }
+end
+
+Then("the payload field {string} of request {int} equals the payload field {string} of request {int}") do |field1, request_index1, field2, request_index2|
+  value1 = read_key_path(find_request(request_index1)[:body], field1)
+  value2 = read_key_path(find_request(request_index2)[:body], field2)
+  assert_equal(value1, value2)
+end
+
+Then("the payload field {string} of request {int} does not equal the payload field {string} of request {int}") do |field1, request_index1, field2, request_index2|
+  value1 = read_key_path(find_request(request_index1)[:body], field1)
+  value2 = read_key_path(find_request(request_index2)[:body], field2)
+  assert_not_equal(value1, value2)
+end
+
+Then("each event in the payload for request {int} matches one of:") do |request_index, table|
+  events = read_key_path(find_request(request_index)[:body], "events")
+  table.hashes.each do |values|
+    assert_not_nil(events.detect do |event|
+      handled_count = read_key_path(event, "session.events.handled")
+      unhandled_count = read_key_path(event, "session.events.unhandled")
+      error_class = read_key_path(event, "exceptions.0.errorClass")
+      handled_count == values["handled"].to_i &&
+        unhandled_count == values["unhandled"].to_i &&
+        error_class == values["class"]
+    end, "No event matches the following values: #{values}")
+  end
 end

@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix a regression in session tracking which caused the first session HTTP
+  request to be delivered on the calling thread when automatic session tracking
+  is enabled
+  [#295](https://github.com/bugsnag/bugsnag-cocoa/pull/295)
+
 ## 5.16.1 (11 Jul 2018)
 
 ### Bug Fixes

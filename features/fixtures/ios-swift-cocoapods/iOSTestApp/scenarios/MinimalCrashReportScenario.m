@@ -23,6 +23,7 @@ void HandleCrashedThread(const BSG_KSCrashReportWriter *writer) {
 
 - (void)startBugsnag {
     self.config.onCrashHandler = HandleCrashedThread;
+    self.config.shouldAutoCaptureSessions = NO;
     [super startBugsnag];
 }
 

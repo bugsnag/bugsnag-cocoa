@@ -31,6 +31,11 @@
  */
 @implementation AccessNonObjectScenario
 
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
 - (void)run {
 #if __i386__ && !TARGET_IPHONE_SIMULATOR
 #define __bridge

@@ -8,12 +8,7 @@
 
 @implementation AutoSessionScenario
 
-- (void)startBugsnag {
-    self.config.shouldAutoCaptureSessions = YES;
-    [super startBugsnag];
-}
-
 - (void)run {
-}
 
+}
 @end

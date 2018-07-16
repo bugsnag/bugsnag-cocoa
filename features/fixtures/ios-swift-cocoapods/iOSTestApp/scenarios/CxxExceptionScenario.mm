@@ -41,6 +41,11 @@ const char *kaboom_exception::what() const throw() {
  */
 @implementation CxxExceptionScenario
 
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
 - (void)run {
     [self crash];
 }

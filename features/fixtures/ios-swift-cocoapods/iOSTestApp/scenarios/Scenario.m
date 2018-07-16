@@ -44,10 +44,4 @@
     [Bugsnag startBugsnagWithConfiguration:self.config];
 }
 
-- (void)flushAllSessions {
-    id notifier = [Bugsnag notifier];
-    id sessionTracker = [notifier valueForKey:@"sessionTracker"];
-    [sessionTracker performSelector:@selector(send)];
-}
-
 @end

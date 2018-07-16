@@ -35,6 +35,11 @@
  */
 @implementation CorruptMallocScenario
 
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
 - (void)run {
     /* Smash the heap, and keep smashing it until we eventually hit something non-writable, or trigger
      * a malloc error (e.g., in NSLog). */
