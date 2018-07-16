@@ -85,17 +85,12 @@ NSDictionary *BSGParseApp(NSDictionary *report) {
     return appState;
 }
 
-NSDictionary *BSGParseAppState(NSDictionary *report) {
-    NSDictionary *system = report[BSGKeySystem];
+NSDictionary *BSGParseAppState(NSDictionary *report, NSString *preferredVersion) {
     NSMutableDictionary *app = [NSMutableDictionary dictionary];
 
-    NSString *version = [report valueForKeyPath:@"user.config.appVersion"];
+    NSString *version = preferredVersion ?: report[@"CFBundleShortVersionString"];
 
-    if (!version) {
-        version = system[@"CFBundleShortVersionString"];
-    }
-
-    BSGDictSetSafeObject(app, system[@"CFBundleVersion"], @"bundleVersion");
+    BSGDictSetSafeObject(app, report[@"CFBundleVersion"], @"bundleVersion");
     BSGDictSetSafeObject(app, [Bugsnag configuration].releaseStage,
                          BSGKeyReleaseStage);
     BSGDictSetSafeObject(app, version, BSGKeyVersion);
