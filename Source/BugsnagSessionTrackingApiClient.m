@@ -20,8 +20,10 @@
 
 - (void)deliverSessionsInStore:(BugsnagSessionFileStore *)store {
     [self.sendQueue addOperationWithBlock:^{
-        if (!self.config.apiKey)
+        if (!self.config.apiKey) {
+            bsg_log_err(@"No API key set. Refusing to send sessions.");
             return;
+        }
 
         NSArray *fileIds = [store fileIds];
 
