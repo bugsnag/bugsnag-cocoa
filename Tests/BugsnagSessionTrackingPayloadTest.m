@@ -41,7 +41,7 @@
 - (void)testDeviceSerialisation {
     NSDictionary *device = self.payload[@"device"];
     XCTAssertNotNil(device);
-    XCTAssertEqual(7, device.count);
+    XCTAssertEqual(8, device.count);
     
     XCTAssertEqualObjects(device[@"manufacturer"], @"Apple");
     XCTAssertNotNil(device[@"model"]);

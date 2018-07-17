@@ -259,9 +259,9 @@
     NSDictionary *device = event[@"device"];
     XCTAssertNotNil(device);
 #if TARGET_OS_IPHONE || TARGET_OS_TV || TARGET_IPHONE_SIMULATOR
-    XCTAssertEqual(17, device.count);
+    XCTAssertEqual(18, device.count);
 #else
-    XCTAssertEqual(16, device.count);
+    XCTAssertEqual(17, device.count);
 #endif
 
     XCTAssertEqualObjects(device[@"id"], @"f6d519a74213a57f8d052c53febfeee6f856d062");
@@ -270,6 +270,7 @@
     XCTAssertEqualObjects(device[@"modelNumber"], @"MacBookPro11,3");
     XCTAssertEqualObjects(device[@"osName"], @"iPhone OS");
     XCTAssertEqualObjects(device[@"osVersion"], @"8.1");
+    XCTAssertEqualObjects(device[@"osBuild"], @"14B25");
     XCTAssertEqualObjects(device[@"totalMemory"], @15065522176);
     XCTAssertNotNil(device[@"freeDisk"]);
     XCTAssertEqualObjects(device[@"timezone"], @"PST");
