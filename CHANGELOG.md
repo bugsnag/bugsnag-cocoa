@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 5.X.X (TBD)
+
+### Bug Fixes
+
+* Deregister notification observers and listeners before application termination [#301](https://github.com/bugsnag/bugsnag-cocoa/pull/301)
+
 ## 5.16.0 (02 Jul 2018)
 
 This release alters the behaviour of the notifier to track sessions automatically.
