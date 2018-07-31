@@ -1,5 +1,5 @@
 PODS:
-  - Bugsnag (5.15.6)
+  - Bugsnag (5.16.0)
 
 DEPENDENCIES:
   - Bugsnag (from `../..`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../.."
 
 SPEC CHECKSUMS:
-  Bugsnag: ff5f5e3059e6a9c9d27a899f3bf3774067553483
+  Bugsnag: 47bcc70b43e3c616ec35d30c2ca94497b957199f
 
 PODFILE CHECKSUM: 2107babfbfdb18f0288407b9d9ebd48cbee8661c
 
