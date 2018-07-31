@@ -35,6 +35,11 @@
 - (NSString *)category { return @"Objective-C"; }
 - (NSString *)title { return @"Message a released object"; }
 - (NSString *)desc { return @""; }
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
 
 - (void)run
 {

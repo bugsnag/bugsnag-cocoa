@@ -7,6 +7,24 @@ Changelog
 
 * Deregister notification observers and listeners before application termination [#301](https://github.com/bugsnag/bugsnag-cocoa/pull/301)
 
+## 5.16.2 (17 Jul 2018)
+
+### Bug fixes
+
+* Fix a regression in session tracking where app version was set to nil
+  [#296](https://github.com/bugsnag/bugsnag-cocoa/pull/296)
+
+* Fix a regression in session tracking which caused the first session HTTP
+  request to be delivered on the calling thread when automatic session tracking
+  is enabled
+  [#295](https://github.com/bugsnag/bugsnag-cocoa/pull/295)
+
+## 5.16.1 (11 Jul 2018)
+
+### Bug Fixes
+
+* Respect appVersion override when serialising KSCrash report [#292](https://github.com/bugsnag/bugsnag-cocoa/pull/292)
+
 ## 5.16.0 (02 Jul 2018)
 
 This release alters the behaviour of the notifier to track sessions automatically.

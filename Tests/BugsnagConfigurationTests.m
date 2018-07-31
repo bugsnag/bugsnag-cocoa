@@ -119,10 +119,10 @@
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     [config setEndpointsForNotify:@"http://notify.example.com" sessions:@""];
     BugsnagSessionTracker *sessionTracker
-            = [[BugsnagSessionTracker alloc] initWithConfig:config apiClient:nil callback:nil];
+            = [[BugsnagSessionTracker alloc] initWithConfig:config postRecordCallback:nil];
 
     XCTAssertNil(sessionTracker.currentSession);
-    [sessionTracker startNewSession:[NSDate date] withUser:nil autoCaptured:NO];
+    [sessionTracker startNewSession];
     XCTAssertNil(sessionTracker.currentSession);
 }
 
@@ -130,10 +130,10 @@
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     [config setEndpointsForNotify:@"http://notify.example.com" sessions:@"f"];
     BugsnagSessionTracker *sessionTracker
-            = [[BugsnagSessionTracker alloc] initWithConfig:config apiClient:nil callback:nil];
+            = [[BugsnagSessionTracker alloc] initWithConfig:config postRecordCallback:nil];
 
     XCTAssertNil(sessionTracker.currentSession);
-    [sessionTracker startNewSession:[NSDate date] withUser:nil autoCaptured:NO];
+    [sessionTracker startNewSession];
     XCTAssertNil(sessionTracker.currentSession);
 }
 

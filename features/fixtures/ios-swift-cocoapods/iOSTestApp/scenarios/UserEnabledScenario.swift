@@ -11,6 +11,11 @@ import Bugsnag
  */
 internal class UserEnabledScenario: Scenario {
 
+    override func startBugsnag() {
+      self.config.shouldAutoCaptureSessions = false;
+      super.startBugsnag()
+    }
+
     override func run() {
         Bugsnag.configuration()?.setUser("123", withName: "Joe Bloggs", andEmail: "user@example.com")
         let error = NSError(domain: "UserEnabledScenario", code: 100, userInfo: nil)

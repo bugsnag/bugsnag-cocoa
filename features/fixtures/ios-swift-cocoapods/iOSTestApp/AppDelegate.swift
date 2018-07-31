@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let arguments = ProcessInfo.processInfo.arguments
         var delay: TimeInterval = 0
         var eventType = "none"
+        var eventMode = "regular"
         var bugsnagAPIKey = ""
         var mockAPIPath = ""
 
@@ -30,36 +31,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 mockAPIPath = String(argument.split(separator: "=").last!)
             } else if argument.contains("BUGSNAG_API_KEY") {
                 bugsnagAPIKey = String(argument.split(separator: "=").last!)
+            } else if argument.contains("EVENT_MODE") {
+                eventMode = String(argument.split(separator: "=").last!)
             }
         }
-        assert(mockAPIPath.count > 0, "The mock API path must be set prior to triggering events")
+        assert(mockAPIPath.count > 0, "The mock API path must be set prior to triggering events. Event Type: '" + eventType + "'")
         if eventType == "preheat" {
           assert(false)
         }
 
         let config = prepareConfig(apiKey: bugsnagAPIKey, mockAPIPath: mockAPIPath)
-        if eventType == "none" {
-            Bugsnag.start(with: config)
-        } else {
-            let scenario = Scenario.createScenarioNamed(eventType, withConfig: config)
-            triggerEvent(scenario: scenario, delay: delay)
-        }
+        let scenario = Scenario.createScenarioNamed(eventType, withConfig: config)
+        triggerEvent(scenario: scenario, delay: delay, mode: eventMode)
     }
 
     internal func prepareConfig(apiKey: String, mockAPIPath: String) -> BugsnagConfiguration {
         let config = BugsnagConfiguration()
         config.apiKey = apiKey
         config.setEndpoints(notify: mockAPIPath, sessions: mockAPIPath)
-        config.shouldAutoCaptureSessions = false;
         return config
     }
 
-    func triggerEvent(scenario: Scenario, delay: TimeInterval) {
+    func triggerEvent(scenario: Scenario, delay: TimeInterval, mode: String) {
         let when = DispatchTime.now() + delay
         scenario.startBugsnag()
-
-        DispatchQueue.main.asyncAfter(deadline: when) {
-            scenario.run()
+        if mode != "noevent" {
+            DispatchQueue.main.asyncAfter(deadline: when) {
+                scenario.run()
+            }
         }
     }
 }

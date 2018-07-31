@@ -513,4 +513,25 @@
     XCTAssertEqual(report.metaData.count, 0);
 }
 
+- (void)testAppVersion {
+    NSDictionary *dictionary = [self.report toJson];
+    XCTAssertEqualObjects(@"1.0", dictionary[@"app"][@"version"]);
+}
+
+- (void)testAppVersionOverride {
+    BugsnagCrashReport *overrideReport = [[BugsnagCrashReport alloc] initWithKSReport:@{
+            @"system" : @{
+                    @"CFBundleShortVersionString": @"1.1",
+            },
+            @"user": @{
+                    @"config": @{
+                            @"appVersion": @"1.2.3"
+                    }
+            }
+    }];
+    NSDictionary *dictionary = [overrideReport toJson];
+    XCTAssertEqualObjects(@"1.2.3", dictionary[@"app"][@"version"]);
+}
+
+
 @end

@@ -32,6 +32,11 @@
  */
 @implementation StackOverflowScenario
 
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
 - (void)run {
     [self run];
 

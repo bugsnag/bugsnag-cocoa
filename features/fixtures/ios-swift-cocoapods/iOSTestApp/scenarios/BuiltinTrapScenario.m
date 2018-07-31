@@ -10,6 +10,11 @@
  */
 @implementation BuiltinTrapScenario
 
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
 
 - (void)run {
     __builtin_trap();

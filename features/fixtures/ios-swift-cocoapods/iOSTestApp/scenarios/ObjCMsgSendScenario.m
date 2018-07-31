@@ -32,6 +32,11 @@
  */
 @implementation ObjCMsgSendScenario
 
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
 - (void)run {
     struct {
         void *isa;
