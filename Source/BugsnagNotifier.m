@@ -304,12 +304,13 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
     [self setupConnectivityListener];
     [self updateAutomaticBreadcrumbDetectionSettings];
-    
+
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [self watchLifecycleEvents:center];
 
 #if TARGET_OS_TV
     [self.details setValue:@"tvOS Bugsnag Notifier" forKey:BSGKeyName];
+    [self addTerminationObserver:UIApplicationWillTerminateNotification];
 
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     [self.details setValue:@"iOS Bugsnag Notifier" forKey:BSGKeyName];
@@ -339,6 +340,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
     [self batteryChanged:nil];
     [self orientationChanged:nil];
+    [self addTerminationObserver:UIApplicationWillTerminateNotification];
+
 #elif TARGET_OS_MAC
     [self.details setValue:@"OSX Bugsnag Notifier" forKey:BSGKeyName];
 
@@ -351,6 +354,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                selector:@selector(willEnterBackground:)
                    name:NSApplicationDidResignActiveNotification
                  object:nil];
+
+    [self addTerminationObserver:NSApplicationWillTerminateNotification];
 #endif
 
     _started = YES;
@@ -359,10 +364,30 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self willEnterForeground:self];
 }
 
+- (void)addTerminationObserver:(NSString *)name {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(stop:)
+                                                 name:name
+                                               object:nil];
+}
+
+/**
+ * Removes observers and listeners to prevent allocations when the app is terminated
+ */
+- (void)stop:(id)sender {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.networkReachable stopWatchingConnectivity];
+
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    [UIDevice currentDevice].batteryMonitoringEnabled = NO;
+    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+#endif
+}
+
 - (void)watchLifecycleEvents:(NSNotificationCenter *)center {
     NSString *foregroundName;
     NSString *backgroundName;
-    
+
     #if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     foregroundName = UIApplicationWillEnterForegroundNotification;
     backgroundName = UIApplicationWillEnterForegroundNotification;
@@ -370,7 +395,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     foregroundName = NSApplicationWillBecomeActiveNotification;
     backgroundName = NSApplicationDidFinishLaunchingNotification;
     #endif
-    
+
     [center addObserver:self
                selector:@selector(willEnterForeground:)
                    name:foregroundName
