@@ -15,9 +15,6 @@ Then("The exception reflects malloc corruption occurred") do
     assert_equal(exception["errorClass"], "SIGSEGV")
     assert_equal(exception["message"], "Attempted to dereference null pointer.")
 
-    puts("Stacktrace")
-    puts(stacktrace)
-
     frame = 1
 
     if stacktrace[frame]["method"] == "registration_node_find"
@@ -25,15 +22,15 @@ Then("The exception reflects malloc corruption occurred") do
     end
 
     assert_equal(stacktrace[frame]["method"], "notify_check")
-    assert_equal(stacktrace[frame]["method"], "notify_check_tz")
-    assert_equal(stacktrace[frame]["method"], "tzsetwall_basic")
-    assert_equal(stacktrace[frame]["method"], "localtime_r")
-    assert_equal(stacktrace[frame]["method"], "_populateBanner")
-    assert_equal(stacktrace[frame]["method"], "_CFLogvEx2Predicate")
-    assert_equal(stacktrace[frame]["method"], "_CFLogvEx3")
-    assert_equal(stacktrace[frame]["method"], "_NSLogv")
-    assert_equal(stacktrace[frame]["method"], "NSLog")
-    assert_equal(stacktrace[frame]["method"], "-[CorruptMallocScenario run]")
+    assert_equal(stacktrace[frame + 1]["method"], "notify_check_tz")
+    assert_equal(stacktrace[frame + 2]["method"], "tzsetwall_basic")
+    assert_equal(stacktrace[frame + 3]["method"], "localtime_r")
+    assert_equal(stacktrace[frame + 4]["method"], "_populateBanner")
+    assert_equal(stacktrace[frame + 5]["method"], "_CFLogvEx2Predicate")
+    assert_equal(stacktrace[frame + 6]["method"], "_CFLogvEx3")
+    assert_equal(stacktrace[frame + 7]["method"], "_NSLogv")
+    assert_equal(stacktrace[frame + 8]["method"], "NSLog")
+    assert_equal(stacktrace[frame + 9]["method"], "-[CorruptMallocScenario run]")
   else
     fail("The exception does not reflect malloc corruption")
   end
