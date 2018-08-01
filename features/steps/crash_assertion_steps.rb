@@ -15,6 +15,9 @@ Then("The exception reflects malloc corruption occurred") do
     assert_equal(exception["errorClass"], "SIGSEGV")
     assert_equal(exception["message"], "Attempted to dereference null pointer.")
 
+    puts("Stacktrace")
+    puts(stacktrace)
+
     frame = 1
 
     if stacktrace[frame]["method"] == "registration_node_find"
