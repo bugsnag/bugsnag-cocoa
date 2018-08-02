@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Capture trace of error reporting thread and identify with boolean flag
+  [#303](https://github.com/bugsnag/bugsnag-cocoa/pull/303)
+
+### Bug Fixes
+
+* Prevent potential crash in session delivery during app teardown
+  [#308](https://github.com/bugsnag/bugsnag-cocoa/pull/308)
+
+
 ## 5.16.4 (13 Sept 2018)
 
 ### Bug Fixes
