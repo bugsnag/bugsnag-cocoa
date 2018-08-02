@@ -553,7 +553,8 @@ initWithErrorName:(NSString *_Nonnull)name
 // Build all stacktraces for threads and the error
 - (NSArray *)serializeThreadsWithException:(NSMutableDictionary *)exception {
     NSMutableArray *bugsnagThreads = [NSMutableArray array];
-    for (NSDictionary *thread in [self threads]) {
+
+    for (NSDictionary *thread in self.threads) {
         NSArray *backtrace = thread[@"backtrace"][@"contents"];
         BOOL stackOverflow = [thread[@"stack"][@"overflow"] boolValue];
         BOOL isCrashedThread = [thread[@"crashed"] boolValue];
@@ -579,29 +580,38 @@ initWithErrorName:(NSString *_Nonnull)name
                         BSGFormatFrame(mutableFrame, [self binaryImages]));
                 }
             }
-
             BSGDictSetSafeObject(exception, stacktrace, BSGKeyStacktrace);
-        } else {
-            NSMutableArray *threadStack = [NSMutableArray array];
+        }
+        [self serialiseThread:bugsnagThreads thread:thread backtrace:backtrace crashedThread:isCrashedThread];
+    }
+    return bugsnagThreads;
+}
 
-            for (NSDictionary *frame in backtrace) {
+- (void)serialiseThread:(NSMutableArray *)bugsnagThreads
+                 thread:(NSDictionary *)thread
+              backtrace:(NSArray *)backtrace
+          crashedThread:(BOOL)isCrashedThread {
+    NSMutableArray *threadStack = [NSMutableArray array];
+
+    for (NSDictionary *frame in backtrace) {
                 BSGArrayInsertIfNotNil(
                     threadStack, BSGFormatFrame(frame, [self binaryImages]));
             }
 
-            NSMutableDictionary *threadDict = [NSMutableDictionary dictionary];
-            BSGDictSetSafeObject(threadDict, thread[@"index"], BSGKeyId);
-            BSGDictSetSafeObject(threadDict, threadStack, BSGKeyStacktrace);
-            BSGDictSetSafeObject(threadDict, DEFAULT_EXCEPTION_TYPE, BSGKeyType);
-            // only if this is enabled in BSG_KSCrash.
-            if (thread[BSGKeyName]) {
-                BSGDictSetSafeObject(threadDict, thread[BSGKeyName], BSGKeyName);
-            }
+    NSMutableDictionary *threadDict = [NSMutableDictionary dictionary];
+    BSGDictSetSafeObject(threadDict, thread[@"index"], BSGKeyId);
+    BSGDictSetSafeObject(threadDict, threadStack, BSGKeyStacktrace);
+    BSGDictSetSafeObject(threadDict, DEFAULT_EXCEPTION_TYPE, BSGKeyType);
 
-            BSGArrayAddSafeObject(bugsnagThreads, threadDict);
-        }
+    // only if this is enabled in BSG_KSCrash.
+    if (thread[BSGKeyName]) {
+        BSGDictSetSafeObject(threadDict, thread[BSGKeyName], BSGKeyName);
     }
-    return bugsnagThreads;
+    if (isCrashedThread) {
+        BSGDictSetSafeObject(threadDict, @YES, @"errorReportingThread");
+    }
+
+    BSGArrayAddSafeObject(bugsnagThreads, threadDict);
 }
 
 - (NSString *_Nullable)enhancedErrorMessageForThread:(NSDictionary *_Nullable)thread {

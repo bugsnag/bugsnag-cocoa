@@ -251,7 +251,7 @@
 
 - (void)testEventThreadCount {
     NSArray *threads = [self.processedData[@"events"] firstObject][@"threads"];
-    XCTAssert(threads.count == 8);
+    XCTAssertTrue(threads.count == 9);
 }
 
 - (void)testEventDevice {
