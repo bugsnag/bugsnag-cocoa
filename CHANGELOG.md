@@ -3,6 +3,8 @@ Changelog
 
 ## 5.X.X (TBD)
 
+* Capture trace of error reporting thread and identify with boolean flag [#303](https://github.com/bugsnag/bugsnag-cocoa/pull/303)
+
 ### Bug Fixes
 
 * Deregister notification observers and listeners before application termination [#301](https://github.com/bugsnag/bugsnag-cocoa/pull/301)
