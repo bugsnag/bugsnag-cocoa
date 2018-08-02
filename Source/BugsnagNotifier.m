@@ -371,7 +371,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
 - (void)addTerminationObserver:(NSString *)name {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(stop:)
+                                             selector:@selector(unsubscribeFromNotifications:)
                                                  name:name
                                                object:nil];
 }
@@ -379,7 +379,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 /**
  * Removes observers and listeners to prevent allocations when the app is terminated
  */
-- (void)stop:(id)sender {
+- (void)unsubscribeFromNotifications:(id)sender {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.networkReachable stopWatchingConnectivity];
 
