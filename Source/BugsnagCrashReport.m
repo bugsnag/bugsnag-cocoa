@@ -557,9 +557,9 @@ initWithErrorName:(NSString *_Nonnull)name
     for (NSDictionary *thread in self.threads) {
         NSArray *backtrace = thread[@"backtrace"][@"contents"];
         BOOL stackOverflow = [thread[@"stack"][@"overflow"] boolValue];
-        BOOL isCrashedThread = [thread[@"crashed"] boolValue];
+        BOOL isReportingThread = [thread[@"crashed"] boolValue];
         
-        if (isCrashedThread) {
+        if (isReportingThread) {
             NSUInteger seen = 0;
             NSMutableArray *stacktrace = [NSMutableArray array];
 
@@ -582,7 +582,7 @@ initWithErrorName:(NSString *_Nonnull)name
             }
             BSGDictSetSafeObject(exception, stacktrace, BSGKeyStacktrace);
         }
-        [self serialiseThread:bugsnagThreads thread:thread backtrace:backtrace crashedThread:isCrashedThread];
+        [self serialiseThread:bugsnagThreads thread:thread backtrace:backtrace reportingThread:isReportingThread];
     }
     return bugsnagThreads;
 }
@@ -590,7 +590,7 @@ initWithErrorName:(NSString *_Nonnull)name
 - (void)serialiseThread:(NSMutableArray *)bugsnagThreads
                  thread:(NSDictionary *)thread
               backtrace:(NSArray *)backtrace
-          crashedThread:(BOOL)isCrashedThread {
+          reportingThread:(BOOL)isReportingThread {
     NSMutableArray *threadStack = [NSMutableArray array];
 
     for (NSDictionary *frame in backtrace) {
@@ -607,7 +607,7 @@ initWithErrorName:(NSString *_Nonnull)name
     if (thread[BSGKeyName]) {
         BSGDictSetSafeObject(threadDict, thread[BSGKeyName], BSGKeyName);
     }
-    if (isCrashedThread) {
+    if (isReportingThread) {
         BSGDictSetSafeObject(threadDict, @YES, @"errorReportingThread");
     }
 
