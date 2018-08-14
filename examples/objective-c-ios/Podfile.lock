@@ -1,16 +1,16 @@
 PODS:
-  - Bugsnag (5.15.3)
+  - Bugsnag (5.16.0)
 
 DEPENDENCIES:
   - Bugsnag (from `../..`)
 
 EXTERNAL SOURCES:
   Bugsnag:
-    :path: ../..
+    :path: "../.."
 
 SPEC CHECKSUMS:
-  Bugsnag: 49464c6c2fb7a2eb5a66064586c64a6e23454c04
+  Bugsnag: 47bcc70b43e3c616ec35d30c2ca94497b957199f
 
 PODFILE CHECKSUM: 4c48f26cc704429f747c4af7a40e026b20fdc83e
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.0
