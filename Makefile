@@ -64,7 +64,7 @@ endif
 	@git commit -m "v$(VERSION)"
 	@git tag v$(VERSION)
 	@git push origin master v$(VERSION)
-	@pod trunk push
+	@pod trunk push --allow-warnings
 
 
 clean:
