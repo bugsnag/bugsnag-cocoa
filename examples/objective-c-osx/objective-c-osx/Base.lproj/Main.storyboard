@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F2073" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12121"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -656,6 +657,9 @@
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="480" height="270"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+                        <connections>
+                            <outlet property="delegate" destination="B8D-0N-5wS" id="vpK-e3-Hor"/>
+                        </connections>
                     </window>
                     <connections>
                         <segue destination="XfG-lQ-9wD" kind="relationship" relationship="window.shadowedContentViewController" id="cq2-FE-JQM"/>
@@ -683,21 +687,8 @@
                                     <action selector="uncaughtExceptionClick:" target="XfG-lQ-9wD" id="yaX-jB-dub"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2bk-9O-Qjq">
-                                <rect key="frame" x="134" y="118" width="212" height="32"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="7ou-JR-HME"/>
-                                </constraints>
-                                <buttonCell key="cell" type="push" title="Caught Exception No Notify" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="eKb-Gv-RdZ">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="caughtExceptionNoNotifyClick:" target="XfG-lQ-9wD" id="4a6-iM-7WG"/>
-                                </connections>
-                            </button>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eg7-h0-j0y">
-                                <rect key="frame" x="145" y="85" width="191" height="32"/>
+                                <rect key="frame" x="145" y="118" width="191" height="32"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="179" id="cv2-X7-wWG"/>
                                 </constraints>
@@ -726,13 +717,11 @@
                         <constraints>
                             <constraint firstItem="3Vr-xS-gh5" firstAttribute="top" secondItem="HHl-Qj-Vaa" secondAttribute="bottom" constant="12" symbolic="YES" id="2bB-oQ-hu4"/>
                             <constraint firstItem="3Vr-xS-gh5" firstAttribute="leading" secondItem="HHl-Qj-Vaa" secondAttribute="leading" id="2bN-0f-Jpx"/>
-                            <constraint firstItem="2bk-9O-Qjq" firstAttribute="top" secondItem="3Vr-xS-gh5" secondAttribute="bottom" constant="12" symbolic="YES" id="8IA-bc-ngg"/>
+                            <constraint firstItem="eg7-h0-j0y" firstAttribute="centerX" secondItem="3Vr-xS-gh5" secondAttribute="centerX" id="5d3-lh-mlS"/>
                             <constraint firstItem="HHl-Qj-Vaa" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="58" id="BUj-36-Q64"/>
-                            <constraint firstItem="eg7-h0-j0y" firstAttribute="centerX" secondItem="2bk-9O-Qjq" secondAttribute="centerX" id="XRW-rW-d6Z"/>
-                            <constraint firstItem="2bk-9O-Qjq" firstAttribute="centerX" secondItem="3Vr-xS-gh5" secondAttribute="centerX" id="YsU-J8-9fZ"/>
                             <constraint firstItem="3Vr-xS-gh5" firstAttribute="trailing" secondItem="HHl-Qj-Vaa" secondAttribute="trailing" id="Z2z-Bt-Bf9"/>
-                            <constraint firstItem="eg7-h0-j0y" firstAttribute="top" secondItem="2bk-9O-Qjq" secondAttribute="bottom" constant="12" symbolic="YES" id="aHj-nO-xAL"/>
                             <constraint firstItem="HHl-Qj-Vaa" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" id="jJa-AF-yrD"/>
+                            <constraint firstItem="eg7-h0-j0y" firstAttribute="top" secondItem="3Vr-xS-gh5" secondAttribute="bottom" constant="12" symbolic="YES" id="tA3-Un-6ry"/>
                         </constraints>
                     </view>
                 </viewController>
