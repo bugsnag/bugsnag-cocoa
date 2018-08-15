@@ -29,15 +29,6 @@
     }
 }
 
-- (IBAction)caughtExceptionNoNotifyClick:(id)sender {
-    @try {
-        @throw [NSException exceptionWithName:@"caughtExceptionNoNotify" reason:@"reason" userInfo:nil];
-    }
-    @catch (NSException *exception) {
-        NSLog(@"Bad times");
-    }
-}
-
 - (IBAction)uncaughtExceptionClick:(id)sender {
     @throw [NSException exceptionWithName:@"uncaughtException" reason:@"reason" userInfo:nil];
 }
