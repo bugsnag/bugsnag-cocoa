@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 5.X.X (TBD)
+
+### Bug Fixes
+
+* Prevent potential crash in session delivery during app teardown [#308](https://github.com/bugsnag/bugsnag-cocoa/pull/308)
+
 ## 5.16.3 (14 Aug 2018)
 
 ### Bug Fixes
