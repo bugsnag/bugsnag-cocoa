@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 5.X.X (TBD)
+## 5.16.3 (14 Aug 2018)
 
 * Capture trace of error reporting thread and identify with boolean flag [#303](https://github.com/bugsnag/bugsnag-cocoa/pull/303)
 
