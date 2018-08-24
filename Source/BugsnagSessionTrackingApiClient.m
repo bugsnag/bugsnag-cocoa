@@ -19,8 +19,8 @@
 }
 
 - (void)deliverSessionsInStore:(BugsnagSessionFileStore *)store {
-    NSString *apiKey = self.config.apiKey;
-    NSURL *sessionURL = self.config.sessionURL;
+    NSString *apiKey = [self.config.apiKey copy];
+    NSURL *sessionURL = [self.config.sessionURL copy];
 
     [self.sendQueue addOperationWithBlock:^{
         if (!apiKey) {
