@@ -33,7 +33,6 @@
 		8A4E733F1DC13281001F7CC8 /* BugsnagConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4E733E1DC13281001F7CC8 /* BugsnagConfigurationTests.m */; };
 		8A627CD01EC2A5FD00F7C04E /* BSGSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A627CCF1EC2A5FD00F7C04E /* BSGSerialization.h */; };
 		8A627CD21EC2A62900F7C04E /* BSGSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A627CD11EC2A62900F7C04E /* BSGSerialization.m */; };
-		8AE1BC951DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1BC941DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m */; };
 		E70EE0781FD7039E00FA745C /* RFC3339DateTool_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EE0771FD7039D00FA745C /* RFC3339DateTool_Tests.m */; };
 		E70EE07E1FD703D600FA745C /* NSError+SimpleConstructor_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EE07A1FD703D500FA745C /* NSError+SimpleConstructor_Tests.m */; };
 		E70EE07F1FD703D600FA745C /* NSDictionary+Merge_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EE07B1FD703D500FA745C /* NSDictionary+Merge_Tests.m */; };
@@ -443,7 +442,6 @@
 		8A4E733E1DC13281001F7CC8 /* BugsnagConfigurationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationTests.m; path = ../Tests/BugsnagConfigurationTests.m; sourceTree = SOURCE_ROOT; };
 		8A627CCF1EC2A5FD00F7C04E /* BSGSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSGSerialization.h; path = ../Source/BSGSerialization.h; sourceTree = SOURCE_ROOT; };
 		8A627CD11EC2A62900F7C04E /* BSGSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSGSerialization.m; path = ../Source/BSGSerialization.m; sourceTree = SOURCE_ROOT; };
-		8AE1BC941DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationSpec.m; path = ../Tests/BugsnagConfigurationSpec.m; sourceTree = SOURCE_ROOT; };
 		E70EE0771FD7039D00FA745C /* RFC3339DateTool_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RFC3339DateTool_Tests.m; path = ../Tests/KSCrash/RFC3339DateTool_Tests.m; sourceTree = SOURCE_ROOT; };
 		E70EE07A1FD703D500FA745C /* NSError+SimpleConstructor_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSError+SimpleConstructor_Tests.m"; path = "../Tests/KSCrash/NSError+SimpleConstructor_Tests.m"; sourceTree = SOURCE_ROOT; };
 		E70EE07B1FD703D500FA745C /* NSDictionary+Merge_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+Merge_Tests.m"; path = "../Tests/KSCrash/NSDictionary+Merge_Tests.m"; sourceTree = SOURCE_ROOT; };
@@ -561,7 +559,6 @@
 		E733A76D1FD709B7003EAA29 /* KSCrashReportStore_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KSCrashReportStore_Tests.m; path = ../Tests/KSCrash/KSCrashReportStore_Tests.m; sourceTree = SOURCE_ROOT; };
 		E737DEA01F73AD7400BC7C80 /* BugsnagHandledState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagHandledState.h; path = ../Source/BugsnagHandledState.h; sourceTree = SOURCE_ROOT; };
 		E737DEA11F73AD7400BC7C80 /* BugsnagHandledState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagHandledState.m; path = ../Source/BugsnagHandledState.m; sourceTree = SOURCE_ROOT; };
-		E7397DB21F83BA410034242A /* Bugsnag copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Bugsnag copy-Info.plist"; path = "/Users/jamielynch/repos/bugsnag-cocoa/iOS/Bugsnag copy-Info.plist"; sourceTree = "<absolute>"; };
 		E7397DC41F83BAC50034242A /* libBugsnagStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnagStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E77316E11F73B46600A14F06 /* BugsnagHandledStateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagHandledStateTest.m; path = ../Tests/BugsnagHandledStateTest.m; sourceTree = SOURCE_ROOT; };
 		E784D2511FD70AE6004B01E1 /* KSCrashState_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KSCrashState_Tests.m; path = ../Tests/KSCrash/KSCrashState_Tests.m; sourceTree = SOURCE_ROOT; };
@@ -641,7 +638,6 @@
 				8A2C8F261C6BBD2300846019 /* Tests */,
 				8A2C8F751C6BBEBB00846019 /* Frameworks */,
 				8A2C8F191C6BBD2300846019 /* Products */,
-				E7397DB21F83BA410034242A /* Bugsnag copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1076,7 +1072,7 @@
 		8A2C8F0F1C6BBD2300846019 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0910;
+				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = Bugsnag;
 				TargetAttributes = {
 					8A2C8F171C6BBD2300846019 = {
@@ -1214,7 +1210,6 @@
 				E784D2561FD70B3E004B01E1 /* KSMach_Tests.m in Sources */,
 				8A2C8F8F1C6BBFDD00846019 /* BugsnagBreadcrumbsTest.m in Sources */,
 				E733A76A1FD7091F003EAA29 /* KSCrashSentry_Tests.m in Sources */,
-				8AE1BC951DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m in Sources */,
 				E784D25E1FD70E55004B01E1 /* KSString_Tests.m in Sources */,
 				E733A7681FD7091F003EAA29 /* KSCrashSentry_NSException_Tests.m in Sources */,
 				E70EE07F1FD703D600FA745C /* NSDictionary+Merge_Tests.m in Sources */,
@@ -1332,12 +1327,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -1387,12 +1384,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
