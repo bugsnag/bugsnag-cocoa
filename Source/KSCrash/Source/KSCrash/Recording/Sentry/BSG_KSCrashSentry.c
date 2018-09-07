@@ -62,10 +62,6 @@ static BSG_CrashSentry bsg_g_sentries[] = {
         bsg_kscrashsentry_uninstallCPPExceptionHandler,
     },
     {
-        BSG_KSCrashTypeNSException, bsg_kscrashsentry_installNSExceptionHandler,
-        bsg_kscrashsentry_uninstallNSExceptionHandler,
-    },
-    {
         BSG_KSCrashTypeMainThreadDeadlock,
         bsg_kscrashsentry_installDeadlockHandler,
         bsg_kscrashsentry_uninstallDeadlockHandler,
