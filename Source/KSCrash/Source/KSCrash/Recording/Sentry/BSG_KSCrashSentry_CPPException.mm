@@ -92,6 +92,47 @@ void __cxa_throw(void *thrown_exception, std::type_info *tinfo,
 }
 }
 
+static void handleNSException(NSException *exception) {
+    if (bsg_g_installed) {
+        bool wasHandlingCrash = bsg_g_context->handlingCrash;
+        bsg_kscrashsentry_beginHandlingCrash(bsg_g_context);
+
+        BSG_KSLOG_DEBUG(@"Exception handler is installed. Continuing exception handling.");
+
+        if (wasHandlingCrash) {
+            BSG_KSLOG_INFO(@"Detected crash in the crash reporter. Restoring "
+                           @"original handlers.");
+            bsg_g_context->crashedDuringCrashHandling = true;
+            bsg_kscrashsentry_uninstall((BSG_KSCrashType)BSG_KSCrashTypeAll);
+        }
+
+        BSG_KSLOG_DEBUG(@"Suspending all threads.");
+        bsg_kscrashsentry_suspendThreads();
+
+        BSG_KSLOG_DEBUG(@"Filling out context.");
+        NSArray *addresses = [exception callStackReturnAddresses];
+        NSUInteger numFrames = [addresses count];
+        uintptr_t *callstack = new uintptr_t[numFrames];
+        for (NSUInteger i = 0; i < numFrames; i++) {
+            callstack[i] = [addresses[i] unsignedLongValue];
+        }
+
+        bsg_g_context->crashType = BSG_KSCrashTypeNSException;
+        bsg_g_context->offendingThread = bsg_ksmachthread_self();
+        bsg_g_context->registersAreValid = false;
+        bsg_g_context->NSException.name = strdup([[exception name] UTF8String]);
+        bsg_g_context->crashReason = strdup([[exception reason] UTF8String]);
+        bsg_g_context->stackTrace = callstack;
+        bsg_g_context->stackTraceLength = (int)numFrames;
+
+        BSG_KSLOG_DEBUG(@"Calling main crash handler.");
+        bsg_g_context->onCrash();
+
+        BSG_KSLOG_DEBUG(@"Crash handling complete. Restoring original handlers.");
+        bsg_kscrashsentry_uninstall((BSG_KSCrashType)BSG_KSCrashTypeAll);
+    }
+}
+
 static void CPPExceptionTerminate(void) {
     BSG_KSLOG_DEBUG(@"Trapped c++ exception");
 
@@ -117,6 +158,7 @@ static void CPPExceptionTerminate(void) {
         BSG_KSLOG_DEBUG(@"Detected NSException. Letting the current "
                         @"NSException handler deal with it.");
         isNSException = true;
+        handleNSException(exception);
     } catch (std::exception &exc) {
         strncpy(descriptionBuff, exc.what(), sizeof(descriptionBuff));
     }
