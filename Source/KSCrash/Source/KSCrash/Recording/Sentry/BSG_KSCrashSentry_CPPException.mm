@@ -130,6 +130,13 @@ static void handleNSException(NSException *exception) {
 
         BSG_KSLOG_DEBUG(@"Crash handling complete. Restoring original handlers.");
         bsg_kscrashsentry_uninstall((BSG_KSCrashType)BSG_KSCrashTypeAll);
+
+        NSUncaughtExceptionHandler* handler = NSGetUncaughtExceptionHandler();
+
+        if (handler != NULL) {
+            BSG_KSLOG_DEBUG(@"Calling original exception handler.");
+            handler(exception);
+        }
     }
 }
 
