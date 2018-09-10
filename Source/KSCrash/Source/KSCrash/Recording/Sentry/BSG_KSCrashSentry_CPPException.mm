@@ -155,8 +155,7 @@ static void CPPExceptionTerminate(void) {
     try {
         throw;
     } catch (NSException *exception) {
-        BSG_KSLOG_DEBUG(@"Detected NSException. Letting the current "
-                        @"NSException handler deal with it.");
+        BSG_KSLOG_DEBUG(@"Detected NSException, beginning report serialisation.");
         isNSException = true;
         handleNSException(exception);
     } catch (std::exception &exc) {
