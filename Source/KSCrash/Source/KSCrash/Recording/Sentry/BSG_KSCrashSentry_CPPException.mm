@@ -222,9 +222,8 @@ static void CPPExceptionTerminate(void) {
             @"Crash handling complete. Restoring original handlers.");
         bsg_kscrashsentry_uninstall((BSG_KSCrashType)BSG_KSCrashTypeAll);
         bsg_kscrashsentry_resumeThreads();
+        bsg_g_originalTerminateHandler();
     }
-
-    bsg_g_originalTerminateHandler();
 }
 
 // ============================================================================
