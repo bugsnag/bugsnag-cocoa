@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+* Ensure NSException is captured when handler is overridden
+  [#313](https://github.com/bugsnag/bugsnag-cocoa/pull/313)
+
 ## 5.16.3 (14 Aug 2018)
 
 ### Bug Fixes
