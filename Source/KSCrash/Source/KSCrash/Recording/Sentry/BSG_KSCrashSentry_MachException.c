@@ -25,6 +25,7 @@
 //
 
 #include "BSG_KSCrashSentry_MachException.h"
+#include "BSG_KSSystemCapabilities.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
