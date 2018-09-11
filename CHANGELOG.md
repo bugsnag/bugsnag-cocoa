@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 5.X.X (TBD)
+
+Handle NSExceptions within C++ exception handler for PLCR compatibility [312](https://github.com/bugsnag/bugsnag-cocoa/pull/312)
+
 ## 5.16.3 (14 Aug 2018)
 
 ### Bug Fixes
