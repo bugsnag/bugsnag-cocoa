@@ -5,9 +5,13 @@ Changelog
 
 ### Bug Fixes
 
+* Ensure NSException is captured when handler is overridden
+  [#313](https://github.com/bugsnag/bugsnag-cocoa/pull/313)
+
 * Fix mach handler declaration and imports. This resolves an issue where signal
   codes were less specific than is possible.
   [#314](https://github.com/bugsnag/bugsnag-cocoa/pull/314)
+
 
 ## 5.16.3 (14 Aug 2018)
 
