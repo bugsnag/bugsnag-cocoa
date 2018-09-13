@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+* Fix mach handler declaration and imports. This resolves an issue where signal
+  codes were less specific than is possible.
+  [#314](https://github.com/bugsnag/bugsnag-cocoa/pull/314)
+
 ## 5.16.3 (14 Aug 2018)
 
 ### Bug Fixes
