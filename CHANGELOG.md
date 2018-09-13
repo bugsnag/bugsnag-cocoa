@@ -12,6 +12,11 @@ Changelog
   codes were less specific than is possible.
   [#314](https://github.com/bugsnag/bugsnag-cocoa/pull/314)
 
+* Only call previously installed C++ termination handler if non-null. Fixes an
+  unexpected termination if you override the handler with null before
+  initializing Bugsnag and then throw a C++ exception and would like the app to
+  continue after Bugsnag completes exception reporting.
+
 
 ## 5.16.3 (14 Aug 2018)
 

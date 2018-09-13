@@ -187,7 +187,9 @@ static void CPPExceptionTerminate(void) {
         bsg_kscrashsentry_resumeThreads();
     }
 
-    bsg_g_originalTerminateHandler();
+    if (bsg_g_originalTerminateHandler != NULL) {
+        bsg_g_originalTerminateHandler();
+    }
 }
 
 // ============================================================================
