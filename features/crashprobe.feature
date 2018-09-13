@@ -10,7 +10,7 @@ Scenario: Executing privileged instruction
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
-    And the exception "errorClass" equals "SIGSEGV"
+    And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "-[PrivilegedInstructionScenario run]"
 
 Scenario: Calling __builtin_trap()
@@ -23,7 +23,7 @@ Scenario: Calling __builtin_trap()
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
-    And the exception "errorClass" equals "SIGILL"
+    And the exception "errorClass" equals "EXC_BAD_INSTRUCTION"
     And the "method" of stack frame 0 equals "-[BuiltinTrapScenario run]"
 
 Scenario: Calling abort()
@@ -87,7 +87,7 @@ Scenario: Trigger a crash after overwriting the link register
     And I relaunch the app
     Then I should receive a request
     And the request is a valid for the error reporting API
-    And the exception "errorClass" equals "SIGSEGV"
+    And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the exception "message" equals "Attempted to dereference null pointer."
     And the "method" of stack frame 0 equals "-[OverwriteLinkRegisterScenario run]"
 
@@ -98,7 +98,7 @@ Scenario: Attempt to write into a read-only page
     And I relaunch the app
     Then I should receive a request
     And the request is a valid for the error reporting API
-    And the exception "errorClass" equals "SIGBUS"
+    And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "-[ReadOnlyPageScenario run]"
 
 Scenario: Stack overflow
@@ -109,7 +109,7 @@ Scenario: Stack overflow
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the exception "message" equals "Stack overflow in -[StackOverflowScenario run]"
-    And the exception "errorClass" equals "SIGSEGV"
+    And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "-[StackOverflowScenario run]"
     And the "method" of stack frame 1 equals "-[StackOverflowScenario run]"
     And the "method" of stack frame 2 equals "-[StackOverflowScenario run]"
@@ -128,7 +128,7 @@ Scenario: Crash inside objc_msgSend()
     And I relaunch the app
     Then I should receive a request
     And the request is a valid for the error reporting API
-    And the exception "errorClass" equals "SIGSEGV"
+    And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the exception "message" equals "Attempted to dereference garbage pointer 0x42."
     And the "method" of stack frame 0 equals "objc_msgSend"
 
@@ -139,7 +139,7 @@ Scenario: Attempt to execute an instruction undefined on the current architectur
     And I relaunch the app
     Then I should receive a request
     And the request is a valid for the error reporting API
-    And the exception "errorClass" equals "SIGILL"
+    And the exception "errorClass" equals "EXC_BAD_INSTRUCTION"
     And the "method" of stack frame 0 equals "-[UndefinedInstructionScenario run]"
 
 Scenario: Send a message to an object whose memory has already been freed
@@ -149,8 +149,8 @@ Scenario: Send a message to an object whose memory has already been freed
     And I relaunch the app
     Then I should receive a request
     And the request is a valid for the error reporting API
-    And the exception "message" equals "Attempted to dereference null pointer."
-    And the exception "errorClass" equals "SIGSEGV"
+    And the exception "message" starts with "Attempted to dereference garbage pointer"
+    And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "objc_msgSend"
     And the "method" of stack frame 1 equals "-[ReleasedObjectScenario run]"
 
@@ -177,7 +177,7 @@ Scenario: Dereference a null pointer
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the exception "message" equals "Attempted to dereference null pointer."
-    And the exception "errorClass" equals "SIGSEGV"
+    And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "-[NullPointerScenario run]"
 
 Scenario: Trigger a crash with libsystem_pthread's _pthread_list_lock held
@@ -191,7 +191,7 @@ Scenario: Trigger a crash with libsystem_pthread's _pthread_list_lock held
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
     And the exception "message" equals "Attempted to dereference garbage pointer 0x1."
-    And the exception "errorClass" equals "SIGSEGV"
+    And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 1 equals "pthread_getname_np"
     And the "method" of stack frame 2 equals "-[AsyncSafeThreadScenario run]"
 
@@ -203,7 +203,7 @@ Scenario: Read a garbage pointer
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the exception "message" starts with "Attempted to dereference garbage pointer"
-    And the exception "errorClass" equals "SIGSEGV"
+    And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "-[ReadGarbagePointerScenario run]"
 
 Scenario: Throw a NSException
@@ -227,5 +227,5 @@ Scenario: Access a non-object as an object
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the exception "message" equals "Attempted to dereference garbage pointer 0x10."
-    And the exception "errorClass" equals "SIGSEGV"
+    And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "objc_msgSend"
