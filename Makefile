@@ -4,17 +4,17 @@ endif
 ifeq ($(BUILD_OSX), 1)
  PLATFORM=OSX
  RELEASE_DIR=Release
- BUILD_FLAGS=-workspace OSX.xcworkspace -scheme Bugsnag
+ BUILD_FLAGS=-workspace OSX.xcworkspace -scheme Bugsnag -derivedDataPath build
  BUILD_ONLY_FLAGS=CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 else
  ifeq ($(BUILD_TV), 1)
   PLATFORM=tvOS
-  BUILD_FLAGS=-workspace tvOS.xcworkspace -scheme Bugsnag
+  BUILD_FLAGS=-workspace tvOS.xcworkspace -scheme Bugsnag -derivedDataPath build
   BUILD_ONLY_FLAGS=-sdk $(SDK) -configuration Debug -destination "platform=tvOS Simulator,name=Apple TV"
  else
   PLATFORM=iOS
   RELEASE_DIR=Release-iphoneos
-  BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag
+  BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag -derivedDataPath build
   BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5" -configuration Debug
  endif
 endif
