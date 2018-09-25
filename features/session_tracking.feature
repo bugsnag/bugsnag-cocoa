@@ -113,12 +113,13 @@ Scenario: Encountering a handled event during a session
 Scenario: Encountering an unhandled event during a session
     And I configure the app to run on "iPhone8-11.2"
     And I crash the app using "AutoSessionUnhandledScenario"
+    And I wait for 10 seconds
     And I relaunch the app
     Then I should receive 2 requests
     And request 0 is valid for the session tracking API
     And request 1 is valid for the error reporting API
 
-    And the payload field "sessions" is an array with 2 elements
+    And the payload field "sessions" is an array with 1 elements
     And the session "id" is not null
     And the session "startedAt" is not null
 

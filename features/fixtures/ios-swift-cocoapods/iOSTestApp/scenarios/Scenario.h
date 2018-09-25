@@ -22,4 +22,5 @@
 
 - (void)startBugsnag;
 
+@property (nonatomic, strong, nullable) NSString *eventMode;
 @end

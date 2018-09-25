@@ -10,10 +10,20 @@
 
 @implementation AutoSessionUnhandledScenario
 
+- (void)startBugsnag {
+    if ([self.eventMode isEqualToString:@"noevent"])
+        self.config.shouldAutoCaptureSessions = NO;
+    else
+        self.config.shouldAutoCaptureSessions = YES;
+    [super startBugsnag];
+}
+
 - (void)run {
-    NSException *ex = [NSException exceptionWithName:@"Kaboom" reason:@"The connection exploded" userInfo:nil];
-    
-    @throw ex;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        NSException *ex = [NSException exceptionWithName:@"Kaboom" reason:@"The connection exploded" userInfo:nil];
+
+        @throw ex;
+    });
 }
 
 @end

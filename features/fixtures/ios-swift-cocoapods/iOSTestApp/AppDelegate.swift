@@ -42,6 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let config = prepareConfig(apiKey: bugsnagAPIKey, mockAPIPath: mockAPIPath)
         let scenario = Scenario.createScenarioNamed(eventType, withConfig: config)
+        scenario.eventMode = eventMode
         triggerEvent(scenario: scenario, delay: delay, mode: eventMode)
     }
 
