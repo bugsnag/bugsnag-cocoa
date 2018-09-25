@@ -12,8 +12,13 @@ Then("The exception reflects malloc corruption occurred") do
     assert_equal(exception["errorClass"], "SIGABRT")
     assert_equal(stacktrace[1]["method"], "abort")
   when "_nc_table_find_64"
-    assert_equal(exception["errorClass"], "SIGSEGV")
-    assert_equal(exception["message"], "Attempted to dereference null pointer.")
+    # We don't know whether the mach handler or the signal handler will catch this
+    assert_true(["SIGSEGV", "EXC_BAD_ACCESS"].include?(exception["errorClass"]), "Error class was '#{exception["errorClass"]}'")
+    assert_true(
+      exception["message"] == "Attempted to dereference null pointer." ||
+      exception["message"].start_with?("Attempted to dereference garbage pointer 0x"),
+      "Message was '#{exception["message"]}'"
+    )
 
     frame = 1
 
