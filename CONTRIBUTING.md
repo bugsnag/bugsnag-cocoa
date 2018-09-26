@@ -32,13 +32,6 @@ If you are interested in cleaner formatting, run `make bootstrap` to install
 Releasing a new version
 -----------------------
 
-## Release Checklist
-Please follow the testing instructions in [the platforms release checklist](https://github.com/bugsnag/platforms-release-checklist/blob/master/README.md), and any additional steps directly below.
-
-- On a throttled network, is the request timeout reasonable, and the main thread not blocked by any visible UI freeze? (Throttling can be achieved by setting both endpoints to "https://httpstat.us/200?sleep=5000")
-- Please ensure that release builds are run on a physical device with an ad-hoc archive. (For release builds, select Edit Scheme, change the Build Configuration to Release, and uncheck Debug Executable)
-- Run the static analyzer (Product -> Analyze in Xcode) to ensure that no problems are introduced.
-
 ### CocoaPods
 
 If you're a member of the core team, you can release the cocoa pod as follows:
@@ -61,14 +54,33 @@ If you're a member of the core team, you can release the cocoa pod as follows:
 
 ### Every time
 
-* Update the CHANGELOG. Update the README.md if appropriate.
-* Update the version number, tag, and push by running `make VERSION=[number] release`
+* Add any missing entries to the CHANGELOG. Update the README.md if appropriate.
+* Update the version number by running `make VERSION=[number] bump`
+* Perform preflight checks:
+  - [ ] Run the static analyzer (Product -> Analyze in Xcode) to ensure that no problems are introduced.
+  - [ ] Does the build pass on the CI server?
+  - [ ] Have the changelog and README been updated?
+  - [ ] Have all the version numbers been incremented?
+  - [ ] Has all new functionality been manually tested on a release build?
+  - [ ] Do the installation instructions work when creating an example app from scratch?
+  - [ ] Have the installation instructions been updated on the [dashboard](https://github.com/bugsnag/bugsnag-website/tree/master/app/views/dashboard/projects/install) as well as the [docs site](https://github.com/bugsnag/docs.bugsnag.com)?
+  - [ ] Have all Docs PRs been merged?
+  - [ ] If a response is not received from the server, is the report queued for later?
+  - [ ] If no network connection is available, is the report queued for later?
+  - [ ] On a throttled network, is the request timeout reasonable, and the main thread not blocked?
+  - [ ] Are queued reports sent asynchronously?
+  - [ ] On a throttled network, is the request timeout reasonable, and the main thread not blocked by any visible UI freeze? (Throttling can be achieved by setting both endpoints to "https://httpstat.us/200?sleep=5000")
+  - [ ] Please ensure that release builds are run on a physical device with an ad-hoc archive. (For release builds, select Edit Scheme, change the Build Configuration to Release, and uncheck Debug Executable)
+* Commit, tag, and push by running `make VERSION=[number] release`
 * Create a new release https://github.com/bugsnag/bugsnag-cocoa/releases/new
 * Select the tag you just pushed
-* Set the title to the tag (v5.x.x)
 * Copy the changelog entries into the release notes
 * Click "Publish Release"
 * Update the setup guides for Objective-C and Swift on docs.bugsnag.com with any
   new content
 * Make releases to downstream libraries, if appropriate (generally for bug
   fixes)
+* Perform post-release checks:
+  - [ ] Do the installation instructions work using the released artefact?
+  - [ ] Can a freshly created example app send an error report from a release build, using the released artefact?
+  - [ ] Do the existing example apps send an error report using the released artefact?

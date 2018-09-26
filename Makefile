@@ -54,13 +54,14 @@ endif
 	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" Bugsnag.podspec.json
 	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" Bugsnag.podspec.json
 	@sed -i '' "s/NOTIFIER_VERSION = .*;/NOTIFIER_VERSION = @\"$(VERSION)\";/" Source/BugsnagNotifier.m
+	@sed -i '' "s/## TBD/## $(VERSION) ($(shell date '+%Y-%m-%d'))/" CHANGELOG.md
 
 # Makes a release and pushes to github/cocoapods
-release: bump
+release:
 ifeq ($(VERSION),)
 	@$(error VERSION is not defined. Run with `make VERSION=number release`)
 endif
-	@git add Source/BugsnagNotifier.m Bugsnag.podspec.json VERSION
+	@git add Source/BugsnagNotifier.m Bugsnag.podspec.json VERSION CHANGELOG.md
 	@git commit -m "v$(VERSION)"
 	@git tag v$(VERSION)
 	@git push origin master v$(VERSION)
