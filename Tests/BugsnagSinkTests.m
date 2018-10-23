@@ -277,7 +277,7 @@
     XCTAssertEqualObjects(device[@"jailbroken"], @YES);
     XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
     XCTAssertEqualObjects(device[@"orientation"], @"unknown");
-    XCTAssertNotNil(device[@"time"]); // TODO make more specific!
+    XCTAssertEqualObjects(device[@"time"], @"2014-12-02T01:56:13Z");
 
 #if defined(__LP64__)
     XCTAssertEqualObjects(device[@"wordSize"], @64);
