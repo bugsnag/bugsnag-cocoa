@@ -218,6 +218,7 @@ Scenario: Throw a NSException
     And the "method" of stack frame 0 equals "__exceptionPreprocess"
     And the "method" of stack frame 1 equals "objc_exception_throw"
     And the "method" of stack frame 2 equals "-[ObjCExceptionScenario run]"
+    And the payload field "events.0.device.time" is not null
 
 Scenario: Access a non-object as an object
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
