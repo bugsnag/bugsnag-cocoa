@@ -6,7 +6,7 @@ Scenario: Override errorClass and message from a notifyError() callback
     And the request is a valid for the error reporting API
     And the exception "errorClass" equals "Bar"
     And the exception "message" equals "Foo"
-    And the payload field "events.0.device.time" is not null
+    And the event "device.time" is a timestamp
 
 Scenario: Reporting an NSError
     When I run "HandledErrorScenario" with the defaults on "iPhone8-11.2"
