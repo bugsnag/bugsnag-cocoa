@@ -1,5 +1,5 @@
 When("I run {string} with the defaults on {string}") do |eventType, simulator|
-  wait_time = RUNNING_CI ? '20' : '1'
+  wait_time = '4'
   steps %Q{
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I set environment variable "EVENT_TYPE" to "#{eventType}"
@@ -10,14 +10,14 @@ When("I run {string} with the defaults on {string}") do |eventType, simulator|
 end
 
 When("I launch the app") do
-  wait_time = RUNNING_CI ? '10' : '5'
+  wait_time = '4'
   steps %Q{
     When I run the script "features/scripts/launch_ios_app.sh"
     And I wait for #{wait_time} seconds
   }
 end
 When("I relaunch the app") do
-  wait_time = RUNNING_CI ? '20' : '9'
+  wait_time = '4'
   steps %Q{
     When I run the script "features/scripts/launch_ios_app.sh"
     And I wait for #{wait_time} seconds
@@ -29,6 +29,7 @@ When("I configure the app to run on {string}") do |device|
   }
 end
 When("I crash the app using {string}") do |event|
+  wait_time = '4'
   steps %Q{
     When I set environment variable "EVENT_TYPE" to "#{event}"
     And I set environment variable "EVENT_MODE" to "normal"
