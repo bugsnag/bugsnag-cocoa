@@ -259,9 +259,9 @@
     NSDictionary *device = event[@"device"];
     XCTAssertNotNil(device);
 #if TARGET_OS_IPHONE || TARGET_OS_TV || TARGET_IPHONE_SIMULATOR
-    XCTAssertEqual(18, device.count);
+    XCTAssertEqual(19, device.count);
 #else
-    XCTAssertEqual(17, device.count);
+    XCTAssertEqual(18, device.count);
 #endif
 
     XCTAssertEqualObjects(device[@"id"], @"f6d519a74213a57f8d052c53febfeee6f856d062");
@@ -277,6 +277,8 @@
     XCTAssertEqualObjects(device[@"jailbroken"], @YES);
     XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
     XCTAssertEqualObjects(device[@"orientation"], @"unknown");
+    XCTAssertEqualObjects(device[@"time"], @"2014-12-02T01:56:13Z");
+
 #if defined(__LP64__)
     XCTAssertEqualObjects(device[@"wordSize"], @64);
 #else
