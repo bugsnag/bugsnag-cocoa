@@ -1,5 +1,3 @@
-require 'date'
-
 When("I run {string} with the defaults on {string}") do |eventType, simulator|
   wait_time = '4'
   steps %Q{
@@ -66,11 +64,11 @@ Then("each event in the payload for request {int} matches one of:") do |request_
   end
 end
 
-Then("the event {string} is within {int} ms of the current timestamp") do |field, threshold_ms|
+Then("the event {string} is within {int} seconds of the current timestamp") do |field, threshold_secs|
   value = read_key_path(find_request(0)[:body], "events.0.#{field}")
   assert_not_nil(value, "Expected a timestamp")
-  nowMs = Time.now.to_i
-  thenMs = Time.parse(value).to_i
-  delta = nowMs - thenMs
-  assert_true(delta.abs < threshold_ms, "Expected current timestamp, but received #{value}")
+  nowSecs = Time.now.to_i
+  thenSecs = Time.parse(value).to_i
+  delta = nowSecs - thenSecs
+  assert_true(delta.abs < threshold_secs, "Expected current timestamp, but received #{value}")
 end

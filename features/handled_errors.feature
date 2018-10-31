@@ -6,7 +6,7 @@ Scenario: Override errorClass and message from a notifyError() callback
     And the request is a valid for the error reporting API
     And the exception "errorClass" equals "Bar"
     And the exception "message" equals "Foo"
-    And the event "device.time" is within 30000 ms of the current timestamp
+    And the event "device.time" is within 30 seconds of the current timestamp
 
 Scenario: Reporting an NSError
     When I run "HandledErrorScenario" with the defaults on "iPhone8-11.2"
