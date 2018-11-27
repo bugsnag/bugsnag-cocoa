@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+* Fix stack trace resolution on iPhone XS sometimes reporting incorrect
+  addresses
+  [#319](https://github.com/bugsnag/bugsnag-cocoa/pull/319)
+
 ## 5.17.0 (2018-09-25)
 
 ### Enhancements
