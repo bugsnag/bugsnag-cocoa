@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A840FBA21AF5C450041DBFA /* SwiftAssertion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */; };
 		8A98400320FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */; };
 		8AB8866420404DD30003E444 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB8866320404DD30003E444 /* AppDelegate.swift */; };
 		8AB8866620404DD30003E444 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB8866520404DD30003E444 /* ViewController.swift */; };
@@ -54,6 +55,7 @@
 
 /* Begin PBXFileReference section */
 		4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOSTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftAssertion.swift; sourceTree = "<group>"; };
 		8A98400120FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoSessionCustomVersionScenario.h; sourceTree = "<group>"; };
 		8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoSessionCustomVersionScenario.m; sourceTree = "<group>"; };
 		8AB8866020404DD30003E444 /* iOSTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -196,6 +198,7 @@
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */,
 				F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */,
 				F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */,
 				F42954E2B3FF0C5C0474DA74 /* UserEnabledScenario.swift */,
@@ -277,7 +280,6 @@
 				8AB8865D20404DD30003E444 /* Frameworks */,
 				8AB8865E20404DD30003E444 /* Resources */,
 				4D2139E03F8B071F7DB7C7A6 /* [CP] Embed Pods Frameworks */,
-				F4E835AC090FCF28B6B12EC4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -373,21 +375,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F4E835AC090FCF28B6B12EC4 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -415,6 +402,7 @@
 				F42955DB6D08642528917FAB /* CxxExceptionScenario.mm in Sources */,
 				F42954B7318A02824C65C514 /* ObjCMsgSendScenario.m in Sources */,
 				F42953498545B853CC0B635E /* NullPointerScenario.m in Sources */,
+				8A840FBA21AF5C450041DBFA /* SwiftAssertion.swift in Sources */,
 				F429538D8941382EC2C857CE /* AsyncSafeThreadScenario.m in Sources */,
 				F42955869D33EE0E510B9651 /* ReadGarbagePointerScenario.m in Sources */,
 				8AEFC73420F8D1BB00A78779 /* ManualSessionWithUserScenario.m in Sources */,

@@ -9,6 +9,11 @@ Changelog
   addresses
   [#319](https://github.com/bugsnag/bugsnag-cocoa/pull/319)
 
+* Add `fatalError` and other assertion failure messages in reports for
+  Swift 4.2 apps. Note that this only includes messages which are 16
+  characters or longer. See the linked pull request for more information.
+  [#320](https://github.com/bugsnag/bugsnag-cocoa/pull/320)
+
 ## 5.17.0 (2018-09-25)
 
 ### Enhancements
