@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## TBD
+
+* Add Device time of report capture to JSON payload
+  [#315](https://github.com/bugsnag/bugsnag-cocoa/pull/315)
+
 ## 5.17.1 (2018-11-29)
 
 ### Bug Fixes

@@ -1,5 +1,5 @@
 When("I run {string}") do |event_type|
-  wait_time = RUNNING_CI ? '20' : '1'
+  wait_time = '4'
   steps %Q{
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I set environment variable "EVENT_TYPE" to "#{event_type}"
@@ -9,14 +9,14 @@ When("I run {string}") do |event_type|
 end
 
 When("I launch the app") do
-  wait_time = RUNNING_CI ? '10' : '5'
+  wait_time = '4'
   steps %Q{
     When I run the script "features/scripts/launch_ios_app.sh"
     And I wait for #{wait_time} seconds
   }
 end
 When("I relaunch the app") do
-  wait_time = RUNNING_CI ? '20' : '9'
+  wait_time = '4'
   steps %Q{
     When I run the script "features/scripts/launch_ios_app.sh"
     And I wait for #{wait_time} seconds
@@ -55,4 +55,13 @@ Then("each event in the payload for request {int} matches one of:") do |request_
         error_class == values["class"]
     end, "No event matches the following values: #{values}")
   end
+end
+
+Then("the event {string} is within {int} seconds of the current timestamp") do |field, threshold_secs|
+  value = read_key_path(find_request(0)[:body], "events.0.#{field}")
+  assert_not_nil(value, "Expected a timestamp")
+  nowSecs = Time.now.to_i
+  thenSecs = Time.parse(value).to_i
+  delta = nowSecs - thenSecs
+  assert_true(delta.abs < threshold_secs, "Expected current timestamp, but received #{value}")
 end
