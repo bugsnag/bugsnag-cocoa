@@ -65,6 +65,10 @@ endif
 	@git commit -m "v$(VERSION)"
 	@git tag v$(VERSION)
 	@git push origin master v$(VERSION)
+	# Workaround for CocoaPods/CocoaPods#8000
+	@export EXPANDED_CODE_SIGN_IDENTITY=""
+	@export EXPANDED_CODE_SIGN_IDENTITY_NAME=""
+	@export EXPANDED_PROVISIONING_PROFILE=""
 	@pod trunk push --allow-warnings
 
 
