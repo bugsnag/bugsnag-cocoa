@@ -1,45 +1,26 @@
 ## Goal
 
-<!-- What is the intent of this change?
-e.g. "When initializing the Bugsnag client, it is currently difficult to (...)
-      this change simplifies the process by (...)"
+<!-- What is the intent of this change? -->
 
-     "Improves the performance of data filtering"
-
-     "Adds additional test coverage to multi-threaded use of Configuration
-      objects"
+<!--
+Fixes #
+Related to #
 -->
-
-<!-- For new features, include design documentation:
 
 ## Design
 
-Why was this approach to the goal used?
-
--->
+<!-- How does this change work? Why was this approach to the goal used? -->
 
 ## Changeset
 
-<!-- What structures or properties or functions were:
-
-### Added
-
-### Removed
-
-### Changed
-
--->
+<!-- List what was added, removed, or changed: -->
 
 ## Tests
 
 <!-- How was this change tested? What manual and automated tests were
      run/added? -->
 
-## Discussion
-
-### Alternative Approaches
-
-<!-- What other approaches were considered or discussed? -->
+## Review
 
 ### Outstanding Questions
 
@@ -47,32 +28,20 @@ Why was this approach to the goal used?
      less than ideal and that could require additional discussion?
      List here: -->
 
-### Linked issues
+<!-- Preflight checks. Have I:
 
-<!--
-
-Fixes #
-Related to #
+* Added a changelog entry?
+* Checked the scope to ensure the commits are only related to the goal above?
 
 -->
 
-## Review
-
-<!-- When submitting for review, consider the points for self-review and the
-     criteria which will be used for secondary review -->
-
-For the submitter, initial self-review:
-
-- [ ] Commented on code changes inline explain the reasoning behind the approach
-- [ ] Reviewed the test cases added for completeness and possible points for discussion
-- [ ] A changelog entry was added for the goal of this pull request
-- [ ] Check the scope of the changeset - is everything in the diff required for the pull request?
 - This pull request is ready for:
   - [ ] Initial review of the intended approach, not yet feature complete
   - [ ] Structural review of the classes, functions, and properties modified
   - [ ] Final review
 
-For the pull request reviewer(s), this changeset has been reviewed for:
+<!-- What do you need from a reviewer to get this changeset
+     ready for release -->
 
 - [ ] Consistency across platforms for structures or concepts added or modified
 - [ ] Consistency between the changeset and the goal stated above
