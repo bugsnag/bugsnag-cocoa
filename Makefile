@@ -65,6 +65,10 @@ endif
 	@git commit -m "v$(VERSION)"
 	@git tag v$(VERSION)
 	@git push origin master v$(VERSION)
+	# Prep github release
+	@awk 'start && /^## /{exit;};/^## /{start=1;next};start' CHANGELOG.md | pbcopy
+	@echo Copied the changelog entry to the clipboard
+	@open 'https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v$(VERSION)'
 	# Workaround for CocoaPods/CocoaPods#8000
 	@export EXPANDED_CODE_SIGN_IDENTITY=""
 	@export EXPANDED_CODE_SIGN_IDENTITY_NAME=""
