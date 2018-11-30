@@ -1,86 +1,107 @@
+# Contributing
 
-We love people filing issues and sending pull requests!
+Thanks for stopping by! This document should cover most topics surrounding contributing to `bugsnag-react-native`.
 
-How to contribute
------------------
+* [How to contribute](#how-to-contribute)
+  * [Reporting issues](#reporting-issues)
+  * [Fixing issues](#fixing-issues)
+  * [Adding features](#adding-features)
+* [Building](#building)
+* [Testing](#testing)
+* [Releasing](#releasing)
 
--   [Fork](https://help.github.com/articles/fork-a-repo) the [notifier on github](https://github.com/bugsnag/bugsnag-cocoa)
--   Commit and push until you are happy with your contribution
--   Test your changes
--   [Make a pull request](https://help.github.com/articles/using-pull-requests)
--   Thanks!
+## Reporting issues
 
-Running the tests
------------------
+Are you having trouble getting started? Please [contact us directly](mailto:support@bugsnag.com?subject=%5BGitHub%5D%20Cocoa%20-%20having%20trouble%20getting%20started%20with%20Bugsnag&body=Description%3A%0A%0A%28Add%20a%20description%20here%2C%20and%20fill%20in%20your%20environment%20below%3A%29%0A%0A%0AEnvironment%3A%0A%0A%0APaste%20the%20output%20of%20this%20command%20into%20the%20code%20block%20below%20%28use%20%60npm%20ls%60%20instead%0Aof%20%60yarn%20list%60%20if%20you%20are%20using%20npm%29%3A%0A%0A%60%60%60%0Ayarn%20list%20react-native%20bugsnag-react-native%20react-native-code-push%0A%60%60%60%0A%0A-%20cocoapods%20version%20%28if%20any%29%20%28%60pod%20-v%60%29%3A%0A-%20iOS/Android%20version%28s%29%3A%0A-%20simulator/emulator%20or%20physical%20device%3F%3A%0A-%20debug%20mode%20or%20production%3F%3A%0A%0A-%20%5B%20%5D%20%28iOS%20only%29%20%60%5BBugsnagReactNative%20start%5D%60%20is%20present%20in%20the%0A%20%20%60application%3AdidFinishLaunchingWithOptions%3A%60%20method%20in%20your%20%60AppDelegate%60%0A%20%20class%3F%0A-%20%5B%20%5D%20%28Android%20only%29%20%60BugsnagReactNative.start%28this%29%60%20is%20present%20in%20the%0A%20%20%60onCreate%60%20method%20of%20your%20%60MainApplication%60%20class%3F) for assistance with integrating Bugsnag into your application.
+If you have spotted a problem with this module, feel free to open a [new issue](https://github.com/bugsnag/bugsnag-cocoa/issues/new?template=Bug_report.md). Here are a few things to check before doing so:
 
-Run the tests using the default SDK (iOS 11.2) by using:
+* Are you using the latest version of `Bugsnag`? If not, does updating to the latest version fix your issue?
+* Has somebody else [already reported](https://github.com/bugsnag/bugsnag-cocoa/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aopen) your issue? Feel free to add additional context to or check-in on an existing issue that matches your own.
+* Is your issue caused by this module? Only things related to the `bugsnag-cocoa` module should be reported here. For anything else, please [contact us directly](mailto:support@bugsnag.com) and we'd be happy to help you out.
 
-    make test e2e
+### Fixing issues
 
-Alternately, you can specify an iOS SDK:
+If you've identified a fix to a new or existing issue, we welcome contributions!
+Here are some helpful suggestions on contributing that help us merge your PR quickly and smoothly:
+
+* [Fork](https://help.github.com/articles/fork-a-repo) the
+  [library on GitHub](https://github.com/bugsnag/bugsnag-cocoa)
+* Build and test your changes. We have automated tests for many scenarios but its also helpful to use `npm pack` to build the module locally and install it in a real app.
+* Commit and push until you are happy with your contribution
+* [Make a pull request](https://help.github.com/articles/using-pull-requests)
+* Ensure the automated checks pass (and if it fails, please try to address the cause)
+
+### Adding features
+
+Unfortunately we’re unable to accept PRs that add features or refactor the library at this time.
+However, we’re very eager and welcome to hearing feedback about the library so please contact us directly to discuss your idea, or open a
+[feature request](https://github.com/bugsnag/bugsnag-cocoa/issues/new?template=Feature_request.md) to help us improve the library.
+
+Here’s a bit about our process designing and building the Bugsnag libraries:
+
+* We have an internal roadmap to plan out the features we build, and sometimes we will already be planning your suggested feature!
+* Our open source libraries span many languages and frameworks so we strive to ensure they are idiomatic on the given platform, but also consistent in terminology between platforms. That way the core concepts are familiar whether you adopt Bugsnag for one platform or many.
+* Finally, one of our goals is to ensure our libraries work reliably, even in crashy, multi-threaded environments. Oftentimes, this requires an intensive engineering design and code review process that adheres to our style and linting guidelines.
+
+## Building
+
+Each OS version of `Bugsnag` has an Xcode project in a directory named for the
+OS. For example, to build and run `Bugsnag` for iOS, open
+`iOS/Bugsnag.xcodeproj`.
+
+## Testing
+
+Run the unit tests for the `Bugsnag` library from Xcode or by running `make
+test` on the command-line. To specify a specific iOS SDK, run with the SDK name:
 
     make SDK=iphonesimulator11.3 test
 
-Or test on OS X:
+Or test on macOS:
 
     make BUILD_OSX=1 test
 
-If you are interested in cleaner formatting, run `make bootstrap` to install
-[xcpretty](https://github.com/supermarin/xcpretty) as an output formatter.
+Or to test on tvOS:
 
+    make BUILD_TV=1 appletvsimulator11.2 test
 
-Releasing a new version
------------------------
+Run the integration tests using `make e2e` (end-to-end)
 
-### CocoaPods
-
-If you're a member of the core team, you can release the cocoa pod as follows:
+## Releasing
 
 ### One time setup
 
-* Install Cocoapods
+1. Install release tools using `brew install cocoapods hub`
+2. Sign in to CocoaPods trunk:
 
-    ```
-    gem install cocoapods
-    ```
+   ```
+   pod trunk register notifiers@bugsnag.com 'Bugsnag Notifiers' --description='your name'
+   ```
+3. Click the link in the email that got sent to the platforms team
 
-* Register
-
-    ```
-    pod trunk register notifiers@bugsnag.com 'Bugsnag Notifiers' --description='your name'
-    ```
-
-* Click the link in the email that got sent to support
-
-### Every time
+### Pre-release steps
 
 * Add any missing entries to the CHANGELOG. Update the README.md if appropriate.
-* Update the version number by running `make VERSION=[number] bump`
+* Create a pull request for a new version by running `make VERSION=[number] prerelease`. Pull request generation depends on [`hub`](https://hub.github.com) (`brew install hub`)
 * Perform preflight checks:
-  - [ ] Run the static analyzer (Product -> Analyze in Xcode) to ensure that no problems are introduced.
-  - [ ] Does the build pass on the CI server?
   - [ ] Have the changelog and README been updated?
-  - [ ] Have all the version numbers been incremented?
+  - [ ] Are there pull requests for installation changes on the [dashboard](https://github.com/bugsnag/dashboard-js)?
+  - [ ] Are there pull requests for new features/behavior on the [docs site](https://github.com/bugsnag/docs.bugsnag.com)?
   - [ ] Has all new functionality been manually tested on a release build?
   - [ ] Do the installation instructions work when creating an example app from scratch?
-  - [ ] Have the installation instructions been updated on the [dashboard](https://github.com/bugsnag/bugsnag-website/tree/master/app/views/dashboard/projects/install) as well as the [docs site](https://github.com/bugsnag/docs.bugsnag.com)?
-  - [ ] Have all Docs PRs been merged?
   - [ ] If a response is not received from the server, is the report queued for later?
   - [ ] If no network connection is available, is the report queued for later?
   - [ ] On a throttled network, is the request timeout reasonable, and the main thread not blocked?
   - [ ] Are queued reports sent asynchronously?
   - [ ] On a throttled network, is the request timeout reasonable, and the main thread not blocked by any visible UI freeze? (Throttling can be achieved by setting both endpoints to "https://httpstat.us/200?sleep=5000")
   - [ ] Please ensure that release builds are run on a physical device with an ad-hoc archive. (For release builds, select Edit Scheme, change the Build Configuration to Release, and uncheck Debug Executable)
-* Commit, tag, and push by running `make VERSION=[number] release`
-* Create a new release https://github.com/bugsnag/bugsnag-cocoa/releases/new
-* Select the tag you just pushed
-* Copy the changelog entries into the release notes
-* Click "Publish Release"
-* Update the setup guides for Objective-C and Swift on docs.bugsnag.com with any
-  new content
-* Make releases to downstream libraries, if appropriate (generally for bug
-  fixes)
+
+### Release steps
+
+* Once the pull request is merged, publish the release by running `make release`
+* Click "Publish Release" in the freshly opened GitHub release page
 * Perform post-release checks:
+  - [ ] Have all Docs and dashboard PRs been merged?
   - [ ] Do the installation instructions work using the released artefact?
   - [ ] Can a freshly created example app send an error report from a release build, using the released artefact?
   - [ ] Do the existing example apps send an error report using the released artefact?
+* Make releases to downstream libraries, if appropriate (generally for bug fixes)
