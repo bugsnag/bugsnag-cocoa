@@ -1,7 +1,7 @@
 Feature: Session Tracking
 
 Scenario: Launching using the default configuration sends a single session
-    When I run "AutoSessionScenario" with the defaults on "iPhone8-11.2"
+    When I run "AutoSessionScenario"
     And I wait for 10 seconds
     Then I should receive a request
     And the request is a valid for the session tracking API
@@ -24,7 +24,7 @@ Scenario: Launching using the default configuration sends a single session
     And the session "user.name" is null
 
 Scenario: Configuring a custom version sends it in a session request
-    When I run "AutoSessionCustomVersionScenario" with the defaults on "iPhone8-11.2"
+    When I run "AutoSessionCustomVersionScenario"
     And I wait for 10 seconds
     Then I should receive a request
     And the request is a valid for the session tracking API
@@ -47,7 +47,7 @@ Scenario: Configuring a custom version sends it in a session request
     And the session "user.name" is null
 
 Scenario: Configuring user info sends it with auto-captured sessions
-    When I run "AutoSessionWithUserScenario" with the defaults on "iPhone8-11.2"
+    When I run "AutoSessionWithUserScenario"
     And I wait for 10 seconds
     Then I should receive a request
     And the request is a valid for the session tracking API
@@ -61,7 +61,7 @@ Scenario: Configuring user info sends it with auto-captured sessions
     And the session "user.name" equals "Joe Bloggs"
 
 Scenario: Configuring user info sends it with manually captured sessions
-    When I run "ManualSessionWithUserScenario" with the defaults on "iPhone8-11.2"
+    When I run "ManualSessionWithUserScenario"
     And I wait for 10 seconds
     Then I should receive a request
     And the request is a valid for the session tracking API
@@ -75,7 +75,7 @@ Scenario: Configuring user info sends it with manually captured sessions
     And the session "user.name" equals "Joe Bloggs"
 
 Scenario: Disabling auto-capture and calling startSession() manually sends a single session
-    When I run "ManualSessionScenario" with the defaults on "iPhone8-11.2"
+    When I run "ManualSessionScenario"
     And I wait for 10 seconds
     Then I should receive a request
     And the request is a valid for the session tracking API
@@ -90,12 +90,12 @@ Scenario: Disabling auto-capture and calling startSession() manually sends a sin
     And the session "user.name" is null
 
 Scenario: Disabling auto-capture sends no sessions
-    When I run "DisabledSessionTrackingScenario" with the defaults on "iPhone8-11.2"
+    When I run "DisabledSessionTrackingScenario"
     And I wait for 10 seconds
     Then I should receive 0 requests
 
 Scenario: Encountering a handled event during a session
-    When I run "AutoSessionHandledEventsScenario" with the defaults on "iPhone8-11.2"
+    When I run "AutoSessionHandledEventsScenario"
     And I wait for 10 seconds
     Then I should receive 3 requests
     And request 0 is valid for the session tracking API
@@ -111,7 +111,6 @@ Scenario: Encountering a handled event during a session
     And the payload field "events.0.session.id" of request 2 equals the payload field "sessions.0.id" of request 0
 
 Scenario: Encountering an unhandled event during a session
-    And I configure the app to run on "iPhone8-11.2"
     And I crash the app using "AutoSessionUnhandledScenario"
     And I wait for 10 seconds
     And I relaunch the app
@@ -130,7 +129,6 @@ Scenario: Encountering an unhandled event during a session
     And the payload field "events.0.session.id" of request 1 does not equal the payload field "sessions.1.id" of request 0
 
 Scenario: Encountering handled and unhandled events during a session
-    When I configure the app to run on "iPhone8-11.2"
     And I crash the app using "AutoSessionMixedEventsScenario"
     And I relaunch the app
     And I wait for 10 seconds

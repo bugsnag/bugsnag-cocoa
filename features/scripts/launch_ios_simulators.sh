@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 
 INSTALL_PATH=build/Build/Products/Debug-iphonesimulator/iOSTestApp.app
+OS_VERSION=${MAZE_SDK:="11.2"}
 
 # Create required simulators
-xcrun simctl create "iPhone8-11.2" "iPhone 8" "11.2"
+xcrun simctl create "maze-sim" "iPhone 8" "$OS_VERSION"
 
 # Simulators used in the test suite:
-xcrun simctl boot "iPhone8-11.2"; true
+xcrun simctl boot "maze-sim"; true
 
 # Install the app on each simulator
-xcrun simctl install "iPhone8-11.2" "$INSTALL_PATH"
+xcrun simctl install "maze-sim" "$INSTALL_PATH"
 
 # Preheat the simulators by triggering a crash
-xcrun simctl launch "iPhone8-11.2" com.bugsnag.iOSTestApp \
+xcrun simctl launch "maze-sim" com.bugsnag.iOSTestApp \
     "EVENT_TYPE=preheat"

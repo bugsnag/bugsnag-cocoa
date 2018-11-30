@@ -6,7 +6,6 @@ Feature: Minimal Crash report
 
 Scenario: Crash within the crash handler
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I configure the app to run on "iPhone8-11.2"
     And I crash the app using "MinimalCrashReportScenario"
     And I relaunch the app
     Then I should receive a request

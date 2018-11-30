@@ -17,7 +17,8 @@ end
 
 # Scenario hooks
 Before do
-# Runs before every Scenario
+  # Name set in launch_ios_simulators.sh
+  set_script_env('iOS_Simulator', 'maze-sim')
 end
 
 at_exit do
