@@ -43,6 +43,8 @@ Related to #
 <!-- What do you need from a reviewer to get this changeset
      ready for release -->
 
+- [ ] The correct target branch has been selected (`master` for fixes, `next` for
+  features)
 - [ ] Consistency across platforms for structures or concepts added or modified
 - [ ] Consistency between the changeset and the goal stated above
 - [ ] Internal consistency with the rest of the library - is there any overlap between existing interfaces and any which have been added?

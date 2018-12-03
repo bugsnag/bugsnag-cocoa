@@ -80,6 +80,9 @@ Run the integration tests using `make e2e` (end-to-end)
 
 ### Pre-release steps
 
+* Check the `master` and `next` branches for what changes are intended to be
+  released. If any changes on `next` should go out, check out that branch before
+  the subsequent steps.
 * Add any missing entries to the CHANGELOG. Update the README.md if appropriate.
 * Create a pull request for a new version by running `make VERSION=[number] prerelease`. Pull request generation depends on [`hub`](https://hub.github.com) (`brew install hub`)
 * Perform preflight checks:
