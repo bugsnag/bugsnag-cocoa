@@ -37,7 +37,9 @@ uint32_t bsg_ksdlimageNamed(const char *const imageName, bool exactMatch) {
 
         for (uint32_t iImg = 0; iImg < imageCount; iImg++) {
             const char *name = _dyld_get_image_name(iImg);
-            if (exactMatch) {
+            if (name == NULL) {
+                continue; // name is null if the index is out of range per dyld(3)
+            } else if (exactMatch) {
                 if (strcmp(name, imageName) == 0) {
                     return iImg;
                 }
