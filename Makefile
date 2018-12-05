@@ -60,7 +60,7 @@ prerelease: bump ## Generates a PR for the $VERSION release
 ifeq ($(VERSION),)
 	@$(error VERSION is not defined. Run with `make VERSION=number prerelease`)
 endif
-	@git checkout --branch release-v$(VERSION)
+	@git checkout -b release-v$(VERSION)
 	@git add Source/BugsnagNotifier.m Bugsnag.podspec.json VERSION CHANGELOG.md
 	@git commit -m "Release v$(VERSION)"
 	@git push origin release-v$(VERSION)
