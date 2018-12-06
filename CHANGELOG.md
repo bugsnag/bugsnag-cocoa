@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+* Fix possible crash when fetching system info to append to a crash report
+  [#321](https://github.com/bugsnag/bugsnag-cocoa/pull/321)
+
 ## 5.17.2 (2018-12-05)
 
 * Add Device time of report capture to JSON payload
