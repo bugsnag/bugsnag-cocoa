@@ -5,6 +5,9 @@ Changelog
 
 ### Bug Fixes
 
+* Fix case where notify() causes an unhandled report
+  [#322](https://github.com/bugsnag/bugsnag-cocoa/pull/322)
+
 * Fix possible crash when fetching system info to append to a crash report
   [#321](https://github.com/bugsnag/bugsnag-cocoa/pull/321)
 
