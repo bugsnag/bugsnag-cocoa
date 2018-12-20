@@ -26,13 +26,13 @@ The Bugsnag crash reporter for Cocoa library automatically detects crashes and f
 ### macOS
 
 1. [Create a Bugsnag account](https://bugsnag.com)
-1. Complete the instructions in the integration guide for [macOS](http://docs.bugsnag.com/platforms/osx/)
-1. Report handled exceptions using [`[Bugsnag notify:]`](http://docs.bugsnag.com/platforms/osx/reporting-handled-exceptions/)
-1. Customize your integration using the [configuration options](http://docs.bugsnag.com/platforms/osx/configuration-options/)
+1. Complete the instructions in the integration guide for [macOS](http://docs.bugsnag.com/platforms/macos/)
+1. Report handled exceptions using [`[Bugsnag notify:]`](http://docs.bugsnag.com/platforms/macos/reporting-handled-exceptions/)
+1. Customize your integration using the [configuration options](http://docs.bugsnag.com/platforms/macos/configuration-options/)
 
 ## Support
 
-* Read the [iOS](http://docs.bugsnag.com/platforms/ios/configuration-options) or [macOS](http://docs.bugsnag.com/platforms/osx/configuration-options) configuration reference
+* Read the [iOS](http://docs.bugsnag.com/platforms/ios/configuration-options) or [macOS](http://docs.bugsnag.com/platforms/macos/configuration-options) configuration reference
 * [Search open and closed issues](https://github.com/bugsnag/bugsnag-cocoa/issues?utf8=✓&q=is%3Aissue) for similar problems
 * [Report a bug or request a feature](https://github.com/bugsnag/bugsnag-cocoa/issues/new)
 
