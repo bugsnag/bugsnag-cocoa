@@ -80,12 +80,9 @@ endif
 	# Prep GitHub release
 	# We could technically do a `hub release` here but a verification step
 	# before it goes live always seems like a good thing
-	@open 'https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v$(VERSION)&body='$$(awk 'start && /^## /{exit;};/^## /{start=1;next};start' CHANGELOG.md | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
+	@open 'https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v$(PRESET_VERSION)&body='$$(awk 'start && /^## /{exit;};/^## /{start=1;next};start' CHANGELOG.md | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
 	# Workaround for CocoaPods/CocoaPods#8000
-	@export EXPANDED_CODE_SIGN_IDENTITY=""
-	@export EXPANDED_CODE_SIGN_IDENTITY_NAME=""
-	@export EXPANDED_PROVISIONING_PROFILE=""
-	@pod trunk push --allow-warnings
+	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings
 
 clean: ## Clean build artifacts
 	@$(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
