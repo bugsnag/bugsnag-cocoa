@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 5.X.X (TBD)
+
+Note for Carthage users: this release updates the Xcode configuration to the settings recommended by Xcode 10.
+
+* Update workspace to recommended settings suggested by XCode 10
+  [#324](https://github.com/bugsnag/bugsnag-cocoa/pull/324)
+
 ## 5.17.3 (2018-12-19)
 
 ### Bug Fixes
