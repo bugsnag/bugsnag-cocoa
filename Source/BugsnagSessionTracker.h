@@ -32,6 +32,9 @@ typedef void (^SessionTrackerCallback)(BugsnagSession *newSession);
  */
 - (void)startNewSession;
 
+- (void)stopSession;
+- (BOOL)resumeSession;
+
 /**
  Record a new auto-captured session if neededed. Auto-captured sessions are only
  recorded and sent if -[BugsnagConfiguration shouldAutoCaptureSessions] is YES

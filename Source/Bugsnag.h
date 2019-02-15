@@ -220,4 +220,8 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 + (void)startSession;
 
++ (void)stopSession;
+
++ (BOOL)resumeSession;
+
 @end

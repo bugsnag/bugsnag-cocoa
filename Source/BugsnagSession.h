@@ -25,6 +25,7 @@
 @property(readonly) NSDate *_Nonnull startedAt;
 @property(readonly) BugsnagUser *_Nullable user;
 @property(readonly) BOOL autoCaptured;
+@property BOOL isStopped;
 
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
