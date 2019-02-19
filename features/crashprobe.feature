@@ -218,3 +218,15 @@ Scenario: Access a non-object as an object
     And the exception "message" equals "Attempted to dereference garbage pointer 0x10."
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "objc_msgSend"
+
+Scenario: Crash report file corruption
+    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And I crash the app using "AccessNonObjectScenario"
+    And I corrupt all reports on disk
+    And I relaunch the app
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the exception "errorClass" equals "EXC_BAD_ACCESS"
+    And the event "unhandled" is true
+    And the event "incomplete" is true
+    And the event "severity" equals "error"
