@@ -43,7 +43,26 @@ Then("the payload field {string} of request {int} does not equal the payload fie
   assert_not_equal(value1, value2)
 end
 
-Then("each event in the payload for request {int} matches one of:") do |request_index, table|
+When("I corrupt all reports on disk") do
+  app_path = `xcrun simctl get_app_container booted com.bugsnag.iOSTestApp`.chomp
+  app_path.gsub!(/(.*Containers).*/, '\1')
+  files = Dir.glob("#{app_path}/**/KSCrashReports/iOSTestApp/*.json")
+  files.each do |path|
+    File.open(path, 'w') {|file| file.truncate(0) }
+  end
+end
+
+Then("each event in the payload matches one of:") do |table|
+  # Checks string equality of event fields against values
+  events = read_key_path(find_request(0)[:body], "events")
+  table.hashes.each do |values|
+    assert_not_nil(events.detect do |event|
+      values.all? {|k,v| v == read_key_path(event, k) }
+    end, "No event matches the following values: #{values}")
+  end
+end
+
+Then("each event with a session in the payload for request {int} matches one of:") do |request_index, table|
   events = read_key_path(find_request(request_index)[:body], "events")
   table.hashes.each do |values|
     assert_not_nil(events.detect do |event|

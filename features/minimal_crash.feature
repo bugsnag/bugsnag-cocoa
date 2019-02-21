@@ -11,4 +11,10 @@ Scenario: Crash within the crash handler
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And the payload body matches the JSON fixture in "features/fixtures/json/minimal-crash-ios.json"
+    And the payload field "events" is an array with 2 element
+    And the payload field "events.0.unhandled" is true
+    And the payload field "events.1.unhandled" is true
+    And each event in the payload matches one of:
+        | exceptions.0.errorClass | severity |
+        | SIGABRT                 | error    |
+        | NSGenericException      | error    |

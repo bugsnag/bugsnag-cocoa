@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Capture basic report diagnostics in the file path in case of crash report
+  content corruption
+  [#327](https://github.com/bugsnag/bugsnag-cocoa/pull/327)
+
 ## 5.17.3 (2018-12-19)
 
 ### Bug Fixes
