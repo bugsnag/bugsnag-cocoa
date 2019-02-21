@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 5.18.0 (2019-02-21)
 
 ### Enhancements
 
