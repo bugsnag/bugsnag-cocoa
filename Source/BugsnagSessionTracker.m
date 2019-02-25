@@ -57,36 +57,42 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 }
 
 - (void)stopSession {
-    BugsnagSession *session = _currentSession;
+    [[self runningSession] stop];
 
-    if (session != nil) {
-        session.isStopped = YES;
-    }
     if (self.callback) {
         self.callback(nil);
     }
 }
 
 - (BOOL)resumeSession {
-    BugsnagSession *session = _currentSession;
+    BugsnagSession *session = [self runningSession];
 
     if (session == nil) {
         [self startNewSessionWithAutoCaptureValue:NO];
         return NO;
     } else {
         BOOL stopped = session.isStopped;
-        session.isStopped = NO;
+        [session resume];
         return stopped;
     }
 }
 
+/**
+ * Retrieves any running session which has been started, regardless of whether it has been stopped.
+ *
+ * This is distinct from [self currentSession], which will return nil for stopped sessions.
+ */
+- (BugsnagSession *)runningSession {
+    return _currentSession;
+}
+
 - (BugsnagSession *)currentSession {
-    BugsnagSession *session = _currentSession;
+    BugsnagSession *session = [self runningSession];
 
     if (session == nil || session.isStopped) {
         return nil;
     }
-    return _currentSession;
+    return session;
 }
 
 - (void)startNewSessionIfAutoCaptureEnabled {
@@ -100,6 +106,9 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
         bsg_log_err(@"The session tracking endpoint has not been set. Session tracking is disabled");
         return;
     }
+
+    // when starting a new session, the ivar is used directly rather than the property setter,
+    // as self.currentSession uses custom accessors
     _currentSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                    startDate:[NSDate date]
                                                         user:self.config.currentUser

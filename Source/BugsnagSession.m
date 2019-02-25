@@ -59,4 +59,12 @@ static NSString *const kBugsnagUser = @"user";
     return [NSDictionary dictionaryWithDictionary:dict];
 }
 
+- (void)stop {
+    _stopped = YES;
+}
+
+- (void)resume {
+    _stopped = NO;
+}
+
 @end
