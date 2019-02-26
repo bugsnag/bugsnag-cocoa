@@ -16,6 +16,10 @@ static NSString *const kBugsnagHandledCount = @"handledCount";
 static NSString *const kBugsnagStartedAt = @"startedAt";
 static NSString *const kBugsnagUser = @"user";
 
+@interface BugsnagSession ()
+@property(readwrite, getter=isStopped) BOOL stopped;
+@end
+
 @implementation BugsnagSession
 
 - (instancetype)initWithId:(NSString *_Nonnull)sessionId
@@ -60,11 +64,11 @@ static NSString *const kBugsnagUser = @"user";
 }
 
 - (void)stop {
-    _stopped = YES;
+    self.stopped = YES;
 }
 
 - (void)resume {
-    _stopped = NO;
+    self.stopped = NO;
 }
 
 @end
