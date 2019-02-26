@@ -24,7 +24,7 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 @property (strong, nonatomic) BugsnagSessionTrackingApiClient *apiClient;
 @property (strong, nonatomic) NSDate *backgroundStartTime;
 
-@property (strong, readwrite) BugsnagSession *currentSession;
+@property (strong, readwrite) BugsnagSession *runningSession;
 
 /**
  * Called when a session is altered
@@ -65,7 +65,7 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 }
 
 - (BOOL)resumeSession {
-    BugsnagSession *session = [self runningSession];
+    BugsnagSession *session = _runningSession;
 
     if (session == nil) {
         [self startNewSessionWithAutoCaptureValue:NO];
@@ -77,17 +77,8 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
     }
 }
 
-/**
- * Retrieves any running session which has been started, regardless of whether it has been stopped.
- *
- * This is distinct from [self currentSession], which will return nil for stopped sessions.
- */
 - (BugsnagSession *)runningSession {
-    return _currentSession;
-}
-
-- (BugsnagSession *)currentSession {
-    BugsnagSession *session = [self runningSession];
+    BugsnagSession *session = _runningSession;
 
     if (session == nil || session.isStopped) {
         return nil;
@@ -109,15 +100,16 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 
     // when starting a new session, the ivar is used directly rather than the property setter,
     // as self.currentSession uses custom accessors
-    _currentSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
-                                                   startDate:[NSDate date]
-                                                        user:self.config.currentUser
-                                                autoCaptured:isAutoCaptured];
+    BugsnagSession *session = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
+                                                       startDate:[NSDate date]
+                                                            user:self.config.currentUser
+                                                    autoCaptured:isAutoCaptured];
+    self.runningSession = session;
 
-    [self.sessionStore write:_currentSession];
+    [self.sessionStore write:session];
 
     if (self.callback) {
-        self.callback(_currentSession);
+        self.callback(session);
     }
     [self.apiClient deliverSessionsInStore:self.sessionStore];
 }
@@ -137,7 +129,7 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 }
 
 - (void)handleHandledErrorEvent {
-    BugsnagSession *session = self.currentSession;
+    BugsnagSession *session = self.runningSession;
     if (session == nil) {
         return;
     }

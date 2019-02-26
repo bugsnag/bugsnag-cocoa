@@ -64,8 +64,8 @@ typedef void (^SessionTrackerCallback)(BugsnagSession *newSession);
 - (void)handleHandledErrorEvent;
 
 /**
- * Retrieves the current session, or nil if the session is stopped or has not yet been started/resumed.
+ * Retrieves the running session, or nil if the session is stopped or has not yet been started/resumed.
  */
-@property (nonatomic, strong, readonly) BugsnagSession *currentSession;
+@property (nonatomic, strong, readonly) BugsnagSession *runningSession;
 
 @end
