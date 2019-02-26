@@ -24,7 +24,7 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 @property (strong, nonatomic) BugsnagSessionTrackingApiClient *apiClient;
 @property (strong, nonatomic) NSDate *backgroundStartTime;
 
-@property (strong, readwrite) BugsnagSession *runningSession;
+@property (strong, readwrite) BugsnagSession *currentSession;
 
 /**
  * Called when a session is altered
@@ -57,7 +57,7 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 }
 
 - (void)stopSession {
-    [[self runningSession] stop];
+    [[self currentSession] stop];
 
     if (self.callback) {
         self.callback(nil);
@@ -65,7 +65,7 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 }
 
 - (BOOL)resumeSession {
-    BugsnagSession *session = _runningSession;
+    BugsnagSession *session = self.currentSession;
 
     if (session == nil) {
         [self startNewSessionWithAutoCaptureValue:NO];
@@ -78,7 +78,7 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 }
 
 - (BugsnagSession *)runningSession {
-    BugsnagSession *session = _runningSession;
+    BugsnagSession *session = self.currentSession;
 
     if (session == nil || session.isStopped) {
         return nil;
@@ -98,13 +98,11 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
         return;
     }
 
-    // when starting a new session, the ivar is used directly rather than the property setter,
-    // as self.currentSession uses custom accessors
     BugsnagSession *session = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                        startDate:[NSDate date]
                                                             user:self.config.currentUser
                                                     autoCaptured:isAutoCaptured];
-    self.runningSession = session;
+    self.currentSession = session;
 
     [self.sessionStore write:session];
 
