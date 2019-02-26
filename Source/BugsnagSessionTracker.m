@@ -98,16 +98,15 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
         return;
     }
 
-    BugsnagSession *session = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
-                                                       startDate:[NSDate date]
-                                                            user:self.config.currentUser
-                                                    autoCaptured:isAutoCaptured];
-    self.currentSession = session;
+    self.currentSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
+                                                   startDate:[NSDate date]
+                                                        user:self.config.currentUser
+                                                autoCaptured:isAutoCaptured];
 
-    [self.sessionStore write:session];
+    [self.sessionStore write:self.currentSession];
 
     if (self.callback) {
-        self.callback(session);
+        self.callback(self.currentSession);
     }
     [self.apiClient deliverSessionsInStore:self.sessionStore];
 }
@@ -127,15 +126,14 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 }
 
 - (void)handleHandledErrorEvent {
-    BugsnagSession *session = self.runningSession;
-    if (session == nil) {
+    if (self.currentSession == nil) {
         return;
     }
 
-    @synchronized (session) {
-        session.handledCount++;
-        if (self.callback && (self.config.shouldAutoCaptureSessions || !session.autoCaptured)) {
-            self.callback(session);
+    @synchronized (self.currentSession) {
+        self.currentSession.handledCount++;
+        if (self.callback && (self.config.shouldAutoCaptureSessions || !self.currentSession.autoCaptured)) {
+            self.callback(self.currentSession);
         }
     }
 }
