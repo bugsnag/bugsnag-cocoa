@@ -122,9 +122,10 @@ int bsg_create_filepath(char *base, char filepath[bsg_filepath_len], char severi
  */
 void bsg_kscrash_i_onCrash(char severity, char *errorClass) {
     BSG_KSLOG_DEBUG("Updating application state to note crash.");
-    bsg_kscrashstate_notifyAppCrash();
 
     BSG_KSCrash_Context *context = crashContext();
+
+    bsg_kscrashstate_notifyAppCrash(context->crash.crashType);
 
     if (context->config.printTraceToStdout) {
         bsg_kscrashreport_logCrash(context);

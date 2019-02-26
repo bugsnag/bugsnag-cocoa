@@ -88,7 +88,7 @@
     BSG_KSCrash_State checkpoint0 = context;
 
     usleep(1);
-    bsg_kscrashstate_notifyAppCrash();
+    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeSignal);
     BSG_KSCrash_State checkpointC = context;
 
     XCTAssertTrue(checkpointC.applicationIsInForeground ==
@@ -194,6 +194,30 @@
     XCTAssertFalse(context.crashedLastLaunch, @"");
 }
 
+- (void)testCrashThisLaunchWithUserReported
+{
+    BSG_KSCrash_State context = {0};
+    NSString* stateFile = [self.tempPath stringByAppendingPathComponent:@"state.json"];
+
+    bsg_kscrashstate_init([stateFile cStringUsingEncoding:NSUTF8StringEncoding],
+                          &context);
+    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeUserReported);
+    XCTAssertFalse(context.crashedThisLaunch, @"");
+    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeSignal);
+    XCTAssertTrue(context.crashedThisLaunch, @"");
+}
+
+- (void)testCrashThisLaunch
+{
+    BSG_KSCrash_State context = {0};
+    NSString* stateFile = [self.tempPath stringByAppendingPathComponent:@"state.json"];
+
+    bsg_kscrashstate_init([stateFile cStringUsingEncoding:NSUTF8StringEncoding],
+                          &context);
+    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeSignal);
+    XCTAssertTrue(context.crashedThisLaunch, @"");
+}
+
 - (void) testActCrash
 {
     BSG_KSCrash_State context = {0};
@@ -206,7 +230,7 @@
     BSG_KSCrash_State checkpoint0 = context;
 
     usleep(1);
-    bsg_kscrashstate_notifyAppCrash();
+    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeSignal);
     BSG_KSCrash_State checkpointC = context;
 
     XCTAssertTrue(checkpointC.applicationIsInForeground ==
@@ -330,7 +354,7 @@
     BSG_KSCrash_State checkpoint0 = context;
 
     usleep(1);
-    bsg_kscrashstate_notifyAppCrash();
+    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeSignal);
     BSG_KSCrash_State checkpointC = context;
 
     XCTAssertTrue(checkpointC.applicationIsInForeground ==
@@ -496,7 +520,7 @@
     BSG_KSCrash_State checkpoint0 = context;
 
     usleep(1);
-    bsg_kscrashstate_notifyAppCrash();
+    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeSignal);
     BSG_KSCrash_State checkpointC = context;
 
     XCTAssertTrue(checkpointC.applicationIsInForeground ==
@@ -629,7 +653,7 @@
     BSG_KSCrash_State checkpoint0 = context;
 
     usleep(1);
-    bsg_kscrashstate_notifyAppCrash();
+    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeSignal);
     BSG_KSCrash_State checkpointC = context;
 
     XCTAssertTrue(checkpointC.applicationIsInForeground ==
