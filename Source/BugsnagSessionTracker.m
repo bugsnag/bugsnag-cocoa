@@ -126,14 +126,16 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 }
 
 - (void)handleHandledErrorEvent {
-    if (self.currentSession == nil) {
+    BugsnagSession *session = [self runningSession];
+
+    if (session == nil) {
         return;
     }
 
-    @synchronized (self.currentSession) {
-        self.currentSession.handledCount++;
-        if (self.callback && (self.config.shouldAutoCaptureSessions || !self.currentSession.autoCaptured)) {
-            self.callback(self.currentSession);
+    @synchronized (session) {
+        session.handledCount++;
+        if (self.callback && (self.config.shouldAutoCaptureSessions || !session.autoCaptured)) {
+            self.callback(session);
         }
     }
 }
