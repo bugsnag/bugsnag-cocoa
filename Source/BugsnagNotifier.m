@@ -157,6 +157,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
  */
 void BSGWriteSessionCrashData(BugsnagSession *session) {
     if (session == nil) {
+        hasRecordedSessions = false;
         return;
     }
     // copy session id
@@ -411,6 +412,14 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self.sessionTracker startNewSession];
 }
 
+- (void)stopSession {
+    [self.sessionTracker stopSession];
+}
+
+- (BOOL)resumeSession {
+    return [self.sessionTracker resumeSession];
+}
+
 - (void)flushPendingReports {
     [self.errorReportApiClient flushPendingData];
 }
@@ -519,7 +528,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
             configuration:self.configuration
                  metaData:[self.configuration.metaData toDictionary]
              handledState:handledState
-                  session:self.sessionTracker.currentSession];
+                  session:self.sessionTracker.runningSession];
     if (block) {
         block(report);
     }

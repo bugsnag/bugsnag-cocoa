@@ -8,6 +8,11 @@ Note for Carthage users: this release updates the Xcode configuration to the set
 * Update workspace to recommended settings suggested by XCode 10
   [#324](https://github.com/bugsnag/bugsnag-cocoa/pull/324)
 
+### Enhancements
+
+* Add stopSession() and resumeSession() to Bugsnag
+  [#325](https://github.com/bugsnag/bugsnag-cocoa/pull/325)
+
 ## 5.17.3 (2018-12-19)
 
 ### Bug Fixes

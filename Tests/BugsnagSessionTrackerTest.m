@@ -30,9 +30,9 @@
 }
 
 - (void)testStartNewSession {
-    XCTAssertNil(self.sessionTracker.currentSession);
+    XCTAssertNil(self.sessionTracker.runningSession);
     [self.sessionTracker startNewSession];
-    BugsnagSession *session = self.sessionTracker.currentSession;
+    BugsnagSession *session = self.sessionTracker.runningSession;
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.sessionId);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
@@ -42,9 +42,9 @@
 
 - (void)testStartNewSessionWithUser {
     [self.configuration setUser:@"123" withName:@"Bill" andEmail:nil];
-    XCTAssertNil(self.sessionTracker.currentSession);
+    XCTAssertNil(self.sessionTracker.runningSession);
     [self.sessionTracker startNewSession];
-    BugsnagSession *session = self.sessionTracker.currentSession;
+    BugsnagSession *session = self.sessionTracker.runningSession;
 
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.sessionId);
@@ -56,9 +56,9 @@
 }
 
 - (void)testStartNewAutoCapturedSession {
-    XCTAssertNil(self.sessionTracker.currentSession);
+    XCTAssertNil(self.sessionTracker.runningSession);
     [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
-    BugsnagSession *session = self.sessionTracker.currentSession;
+    BugsnagSession *session = self.sessionTracker.runningSession;
 
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.sessionId);
@@ -71,9 +71,9 @@
 
 - (void)testStartNewAutoCapturedSessionWithUser {
     [self.configuration setUser:@"123" withName:@"Bill" andEmail:@"bill@example.com"];
-    XCTAssertNil(self.sessionTracker.currentSession);
+    XCTAssertNil(self.sessionTracker.runningSession);
     [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
-    BugsnagSession *session = self.sessionTracker.currentSession;
+    BugsnagSession *session = self.sessionTracker.runningSession;
 
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.sessionId);
@@ -85,21 +85,21 @@
 }
 
 - (void)testStartNewAutoCapturedSessionWithAutoCaptureDisabled {
-    XCTAssertNil(self.sessionTracker.currentSession);
+    XCTAssertNil(self.sessionTracker.runningSession);
     self.configuration.shouldAutoCaptureSessions = NO;
     [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
-    BugsnagSession *session = self.sessionTracker.currentSession;
+    BugsnagSession *session = self.sessionTracker.runningSession;
 
     XCTAssertNil(session);
 }
 
 - (void)testUniqueSessionIds {
     [self.sessionTracker startNewSession];
-    BugsnagSession *firstSession = self.sessionTracker.currentSession;
+    BugsnagSession *firstSession = self.sessionTracker.runningSession;
 
     [self.sessionTracker startNewSession];
 
-    BugsnagSession *secondSession = self.sessionTracker.currentSession;
+    BugsnagSession *secondSession = self.sessionTracker.runningSession;
     XCTAssertNotEqualObjects(firstSession.sessionId, secondSession.sessionId);
 }
 
@@ -109,14 +109,14 @@
     [self.sessionTracker handleHandledErrorEvent];
     [self.sessionTracker handleHandledErrorEvent];
 
-    BugsnagSession *session = self.sessionTracker.currentSession;
+    BugsnagSession *session = self.sessionTracker.runningSession;
     XCTAssertNotNil(session);
     XCTAssertEqual(2, session.handledCount);
     XCTAssertEqual(0, session.unhandledCount);
 
     [self.sessionTracker startNewSession];
 
-    session = self.sessionTracker.currentSession;
+    session = self.sessionTracker.runningSession;
     XCTAssertEqual(0, session.handledCount);
     XCTAssertEqual(0, session.unhandledCount);
 }
