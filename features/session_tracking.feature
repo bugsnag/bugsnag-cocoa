@@ -145,7 +145,7 @@ Scenario: Encountering handled and unhandled events during a session
     And the payload field "sessions" is an array with 1 element for request 1
 
     And the payload field "events" is an array with 3 elements for request 2
-    And each event in the payload for request 2 matches one of:
+    And each event with a session in the payload for request 2 matches one of:
         | class     | handled | unhandled |
         | FirstErr  | 1       | 0         |
         | SecondErr | 2       | 0         |

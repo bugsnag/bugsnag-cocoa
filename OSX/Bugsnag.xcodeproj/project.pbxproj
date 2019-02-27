@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A12006C221C50F40008C9C3 /* BSGFilepathTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A12006B221C50F40008C9C3 /* BSGFilepathTests.m */; };
 		8A2C8FAC1C6BC1F700846019 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8FA11C6BC1F700846019 /* Bugsnag.framework */; };
 		8A2C8FCD1C6BC2C800846019 /* Bugsnag.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A2C8FBB1C6BC2C800846019 /* Bugsnag.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8A2C8FCE1C6BC2C800846019 /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FBC1C6BC2C800846019 /* Bugsnag.m */; };
@@ -188,6 +189,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8A12006B221C50F40008C9C3 /* BSGFilepathTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGFilepathTests.m; sourceTree = "<group>"; };
 		8A2C8FA11C6BC1F700846019 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A2C8FA61C6BC1F700846019 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8A2C8FAB1C6BC1F700846019 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -469,6 +471,7 @@
 		8A2C8FAF1C6BC1F700846019 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				8A12006B221C50F40008C9C3 /* BSGFilepathTests.m */,
 				E7CE78861FD94E40001D07E0 /* KSCrash */,
 				E791482D1FD82B0C003EFEBF /* BugsnagSessionTest.m */,
 				E791482B1FD82B0C003EFEBF /* BugsnagSessionTrackerTest.m */,
@@ -933,6 +936,7 @@
 				8ACF0F752018136200173809 /* BugsnagCrashReportTests.m in Sources */,
 				E7CE78CC1FD94E77001D07E0 /* KSSystemInfo_Tests.m in Sources */,
 				E7CE78C91FD94E77001D07E0 /* KSSignalInfo_Tests.m in Sources */,
+				8A12006C221C50F40008C9C3 /* BSGFilepathTests.m in Sources */,
 				E7CE78C61FD94E77001D07E0 /* KSMach_Tests.m in Sources */,
 				E7CE78D61FD94E9E001D07E0 /* FileBasedTestCase.m in Sources */,
 				E7CE78D51FD94E93001D07E0 /* XCTestCase+KSCrash.m in Sources */,

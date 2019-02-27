@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 5.X.X (TBD)
+## 5.19.0 (2019-02-28)
 
 Note for Carthage users: this release updates the Xcode configuration to the settings recommended by Xcode 10.
 
@@ -12,6 +12,14 @@ Note for Carthage users: this release updates the Xcode configuration to the set
 
 * Add stopSession() and resumeSession() to Bugsnag
   [#325](https://github.com/bugsnag/bugsnag-cocoa/pull/325)
+
+## 5.18.0 (2019-02-21)
+
+### Enhancements
+
+* Capture basic report diagnostics in the file path in case of crash report
+  content corruption
+  [#327](https://github.com/bugsnag/bugsnag-cocoa/pull/327)
 
 ## 5.17.3 (2018-12-19)
 

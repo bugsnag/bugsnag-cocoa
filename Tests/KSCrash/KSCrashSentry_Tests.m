@@ -30,7 +30,7 @@
 #import "BSG_KSCrashSentry.h"
 #import "BSG_KSCrashSentry_Private.h"
 
-static void onCrash(void)
+static void onCrash(char severity, char *errorClass)
 {
     // Do nothing
 }
