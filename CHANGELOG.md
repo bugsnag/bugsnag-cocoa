@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## 5.19.0 (2019-02-28)
+
+Note for Carthage users: this release updates the Xcode configuration to the settings recommended by Xcode 10.
+
+* Update workspace to recommended settings suggested by XCode 10
+  [#324](https://github.com/bugsnag/bugsnag-cocoa/pull/324)
+
+### Enhancements
+
+* Add stopSession() and resumeSession() to Bugsnag
+  [#325](https://github.com/bugsnag/bugsnag-cocoa/pull/325)
+
 ## 5.18.0 (2019-02-21)
 
 ### Enhancements

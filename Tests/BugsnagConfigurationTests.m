@@ -121,9 +121,9 @@
     BugsnagSessionTracker *sessionTracker
             = [[BugsnagSessionTracker alloc] initWithConfig:config postRecordCallback:nil];
 
-    XCTAssertNil(sessionTracker.currentSession);
+    XCTAssertNil(sessionTracker.runningSession);
     [sessionTracker startNewSession];
-    XCTAssertNil(sessionTracker.currentSession);
+    XCTAssertNil(sessionTracker.runningSession);
 }
 
 - (void)testSetMalformedSessionsEndpoint {
@@ -132,9 +132,9 @@
     BugsnagSessionTracker *sessionTracker
             = [[BugsnagSessionTracker alloc] initWithConfig:config postRecordCallback:nil];
 
-    XCTAssertNil(sessionTracker.currentSession);
+    XCTAssertNil(sessionTracker.runningSession);
     [sessionTracker startNewSession];
-    XCTAssertNil(sessionTracker.currentSession);
+    XCTAssertNil(sessionTracker.runningSession);
 }
 
 - (void)testUser {
