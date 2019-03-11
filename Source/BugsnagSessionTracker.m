@@ -80,6 +80,21 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
     [self.apiClient deliverSessionsInStore:self.sessionStore];
 }
 
+- (void)registerExistingSession:(NSString *)sessionId
+                      startedAt:(NSDate *)startedAt
+                           user:(BugsnagUser *)user
+                   handledCount:(NSUInteger)handledCount
+                 unhandledCount:(NSUInteger)unhandledCount {
+    self.currentSession = [[BugsnagSession alloc] initWithId:sessionId
+                                                   startDate:startedAt
+                                                        user:user
+                                                handledCount:handledCount
+                                              unhandledCount:unhandledCount];
+    if (self.callback) {
+        self.callback(self.currentSession);
+    }
+}
+
 #pragma mark - Handling events
 
 - (void)handleAppBackgroundEvent {

@@ -178,7 +178,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @interface BugsnagNotifier ()
 @property(nonatomic) BugsnagCrashSentry *crashSentry;
 @property(nonatomic) BugsnagErrorReportApiClient *errorReportApiClient;
-@property(nonatomic) BugsnagSessionTracker *sessionTracker;
+@property(nonatomic, readwrite) BugsnagSessionTracker *sessionTracker;
 @end
 
 @implementation BugsnagNotifier
