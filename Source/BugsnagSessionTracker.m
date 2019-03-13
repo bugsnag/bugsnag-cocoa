@@ -116,11 +116,15 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
                            user:(BugsnagUser *)user
                    handledCount:(NSUInteger)handledCount
                  unhandledCount:(NSUInteger)unhandledCount {
-    self.currentSession = [[BugsnagSession alloc] initWithId:sessionId
-                                                   startDate:startedAt
-                                                        user:user
-                                                handledCount:handledCount
-                                              unhandledCount:unhandledCount];
+    if (sessionId != nil) {
+        self.currentSession = nil;
+    } else {
+        self.currentSession = [[BugsnagSession alloc] initWithId:sessionId
+                                                       startDate:startedAt
+                                                            user:user
+                                                    handledCount:handledCount
+                                                  unhandledCount:unhandledCount];
+    }
     if (self.callback) {
         self.callback(self.currentSession);
     }
