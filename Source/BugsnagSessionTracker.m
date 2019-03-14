@@ -116,7 +116,7 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
                            user:(BugsnagUser *)user
                    handledCount:(NSUInteger)handledCount
                  unhandledCount:(NSUInteger)unhandledCount {
-    if (sessionId != nil) {
+    if (sessionId == nil || startedAt == nil) {
         self.currentSession = nil;
     } else {
         self.currentSession = [[BugsnagSession alloc] initWithId:sessionId
