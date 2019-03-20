@@ -27,3 +27,17 @@ Scenario: Reporting a handled exception
     And the payload field "events" is an array with 1 element
     And the exception "errorClass" equals "HandledExceptionScenario"
     And the exception "message" equals "Message: HandledExceptionScenario"
+
+Scenario: Reporting a handled exception's stacktrace
+    When I run "NSExceptionShiftScenario"
+    Then I should receive a request
+    And the request is a valid for the error reporting API
+    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload notifier name is correct
+    And the payload field "events" is an array with 1 element
+    And the exception "errorClass" equals "Tertiary failure"
+    And the exception "message" equals "invalid invariant"
+    And the "method" of stack frame 0 equals "__exceptionPreprocess"
+    And the "method" of stack frame 1 equals "objc_exception_throw"
+    And the "method" of stack frame 2 equals "-[NSExceptionShiftScenario causeAnException]"
+    And the "method" of stack frame 3 equals "-[NSExceptionShiftScenario run]"

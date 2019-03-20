@@ -286,6 +286,8 @@ void bsg_kscrash_setCrashNotifyCallback(
 }
 
 void bsg_kscrash_reportUserException(const char *name, const char *reason,
+                                     uintptr_t *stackAddresses,
+                                     unsigned long stackLength,
                                      const char *severity,
                                      const char *handledState,
                                      const char *overrides,
@@ -294,7 +296,11 @@ void bsg_kscrash_reportUserException(const char *name, const char *reason,
                                      const char *config,
                                      int discardDepth,
                                      bool terminateProgram) {
-    bsg_kscrashsentry_reportUserException(name, reason, severity, handledState, overrides,
+    bsg_kscrashsentry_reportUserException(name, reason,
+                                          stackAddresses,
+                                          stackLength,
+                                          severity,
+                                          handledState, overrides,
                                           metadata, appState, config, discardDepth,
                                           terminateProgram);
 }
