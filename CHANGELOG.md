@@ -1,6 +1,20 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix generating an incorrect stacktrace used when logging an exception to
+  Bugsnag from a location other than the original call site (for example, from a
+  logging function or across threads).  If an exception was raised/thrown, then
+  the resulting Bugsnag report from `notify()` will now use the `NSException`
+  instance's call stack addresses to construct the stacktrace, ignoring depth.
+  This fixes an issue in macOS exception reporting where `reportException` is
+  reporting the handler code stacktrace rather than the reported exception
+  stack.
+  [#334](https://github.com/bugsnag/bugsnag-cocoa/pull/334)
+
 ## 5.19.0 (2019-02-28)
 
 Note for Carthage users: this release updates the Xcode configuration to the settings recommended by Xcode 10.
