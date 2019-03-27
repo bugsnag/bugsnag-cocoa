@@ -15,6 +15,10 @@ Changelog
   stack.
   [#334](https://github.com/bugsnag/bugsnag-cocoa/pull/334)
 
+* Fix network connectivity monitor by connecting to the correct domain
+  [Jacky Wijaya](https://github.com/Jekiwijaya)
+  [#332](https://github.com/bugsnag/bugsnag-cocoa/pull/332)
+
 ## 5.19.0 (2019-02-28)
 
 Note for Carthage users: this release updates the Xcode configuration to the settings recommended by Xcode 10.
