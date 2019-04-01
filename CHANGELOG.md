@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Persist breadcrumbs on disk to allow reading upon next boot in the event of an
+  uncatchable app termination.
+
 ## 5.19.1 (2019-03-27)
 
 ### Bug fixes
