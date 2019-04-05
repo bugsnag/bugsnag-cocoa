@@ -60,6 +60,11 @@
     XCTAssertTrue([config shouldAutoCaptureSessions]);
 }
 
+- (void)testDefaultReportBackgroundOOMs {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertTrue([config reportBackgroundOOMs]);
+}
+
 - (void)testErrorApiHeaders {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     NSDictionary *headers = [config errorApiHeaders];
