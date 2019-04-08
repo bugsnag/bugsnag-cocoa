@@ -232,6 +232,22 @@ NSUInteger BreadcrumbsDefaultCapacity = 20;
         });
     }
 }
+
+- (NSDictionary *)cachedBreadcrumbs {
+    __block NSDictionary *cache = nil;
+    dispatch_barrier_sync(self.readWriteQueue, ^{
+        NSError *error = nil;
+        NSData *data = [NSData dataWithContentsOfFile:self.cachePath options:0 error:&error];
+        if (error == nil) {
+            cache = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        }
+        if (error != nil) {
+            bsg_log_err(@"Failed to read breadcrumbs from disk: %@", error);
+        }
+    });
+    return cache;
+}
+
 @synthesize capacity = _capacity;
 
 - (NSUInteger)capacity {

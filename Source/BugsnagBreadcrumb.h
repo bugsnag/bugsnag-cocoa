@@ -129,4 +129,9 @@ typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
  */
 - (NSArray *_Nullable)arrayValue;
 
+/**
+ * Reads and return breadcrumb data currently stored on disk
+ */
+- (NSDictionary *_Nullable)cachedBreadcrumbs;
+
 @end
