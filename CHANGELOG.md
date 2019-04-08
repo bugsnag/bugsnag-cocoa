@@ -7,6 +7,8 @@ Changelog
 
 * Persist breadcrumbs on disk to allow reading upon next boot in the event of an
   uncatchable app termination.
+* Add `+[Bugsnag appDidCrashLastLaunch]` as a helper to determine if the
+  previous launch of the app ended in a crash or otherwise unexpected termination.
 
 ## 5.19.1 (2019-03-27)
 

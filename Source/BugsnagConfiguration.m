@@ -124,7 +124,10 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 
 - (void)setReleaseStage:(NSString *)newReleaseStage {
     @synchronized (self) {
+        NSString *key = NSStringFromSelector(@selector(releaseStage));
+        [self willChangeValueForKey:key];
         _releaseStage = newReleaseStage;
+        [self didChangeValueForKey:key];
         [self.config addAttribute:BSGKeyReleaseStage
                         withValue:newReleaseStage
                     toTabWithName:BSGKeyConfig];
