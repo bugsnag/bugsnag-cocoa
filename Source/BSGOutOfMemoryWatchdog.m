@@ -67,6 +67,10 @@
                selector:@selector(handleLowMemoryChange:)
                    name:UIApplicationDidReceiveMemoryWarningNotification
                  object:nil];
+    [center addObserver:self
+               selector:@selector(handleUpdateSession:)
+                   name:BSGSessionUpdateNotification
+                 object:nil];
     [[Bugsnag configuration]
         addObserver:self
          forKeyPath:NSStringFromSelector(@selector(releaseStage))
@@ -123,6 +127,17 @@
 - (void)handleLowMemoryChange:(NSNotification *)note {
     self.cachedFileInfo[@"device"][@"lowMemory"] = [[Bugsnag payloadDateFormatter]
                                                     stringFromDate:[NSDate date]];
+    [self writeSentinelFile];
+}
+
+- (void)handleUpdateSession:(NSNotification *)note {
+    id session = [note object];
+    NSMutableDictionary *cache = (id)self.cachedFileInfo;
+    if (session) {
+        cache[@"session"] = session;
+    } else {
+        [cache removeObjectForKey:@"session"];
+    }
     [self writeSentinelFile];
 }
 

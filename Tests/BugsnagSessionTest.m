@@ -58,4 +58,26 @@
     XCTAssertNotNil(rootNode[@"user"]);
 }
 
+- (void)testFullSerialization {
+    NSDate *startDate = [NSDate date];
+    NSDictionary *dict = @{
+                           @"id": @"test",
+                           @"startedAt": [BSG_RFC3339DateTool stringFromDate:[NSDate date]],
+                           @"unhandledCount": @1,
+                           @"handledCount": @2,
+                           @"user": @{
+                                   @"name": @"Joe Bloggs"
+                                   }
+                           };
+
+    BugsnagSession *session = [[BugsnagSession alloc] initWithDictionary:dict];
+    NSDictionary *newDict = [session toDictionary];
+    XCTAssertEqualObjects(@"test", newDict[@"id"]);
+    XCTAssertEqualObjects(@1, newDict[@"unhandledCount"]);
+    XCTAssertEqualObjects(@2, newDict[@"handledCount"]);
+    XCTAssertEqualObjects(@"Joe Bloggs", newDict[@"user"][@"name"]);
+    // same date within a reasonable delta
+    XCTAssert([startDate timeIntervalSince1970] - [[BSG_RFC3339DateTool dateFromString:newDict[@"startedAt"]] timeIntervalSince1970] < 1);
+}
+
 @end
