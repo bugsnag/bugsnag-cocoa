@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A4882E2224BCC130035B94C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A4882E1224BCC130035B94C /* WebKit.framework */; };
+		8A4882E5224BCD5D0035B94C /* BigHonkinWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4882E4224BCD5D0035B94C /* BigHonkinWebViewController.m */; };
 		8ACFFA0C1D895D4D00357B5E /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */; };
 		DB7A2D239A0F25E0ED01EBF7 /* libPods-Bugsnag Test App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */; };
 		E77F7CCE1F2B90800017CE04 /* CrashyUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77F7CCD1F2B90800017CE04 /* CrashyUITest.swift */; };
@@ -44,6 +46,9 @@
 
 /* Begin PBXFileReference section */
 		89117F5055F6B6F9FA00FBEC /* Pods-Bugsnag Test App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bugsnag Test App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bugsnag Test App/Pods-Bugsnag Test App.debug.xcconfig"; sourceTree = "<group>"; };
+		8A4882E1224BCC130035B94C /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		8A4882E3224BCD5D0035B94C /* BigHonkinWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BigHonkinWebViewController.h; sourceTree = "<group>"; };
+		8A4882E4224BCD5D0035B94C /* BigHonkinWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BigHonkinWebViewController.m; sourceTree = "<group>"; };
 		8ACFFA091D895D4D00357B5E /* custom-keyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "custom-keyboard.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		8ACFFA0D1D895D4D00357B5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -105,6 +110,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A4882E2224BCC130035B94C /* WebKit.framework in Frameworks */,
 				F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */,
 				F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */,
 				F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */,
@@ -170,6 +176,7 @@
 		F40B874916AA233500676BB2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8A4882E1224BCC130035B94C /* WebKit.framework */,
 				E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */,
 				E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */,
 				E7EC04121F4CC87300C2E9D5 /* libc++.1.dylib */,
@@ -187,6 +194,8 @@
 		F40B875016AA233500676BB2 /* Bugsnag Test App */ = {
 			isa = PBXGroup;
 			children = (
+				8A4882E3224BCD5D0035B94C /* BigHonkinWebViewController.h */,
+				8A4882E4224BCD5D0035B94C /* BigHonkinWebViewController.m */,
 				F40B875916AA233500676BB2 /* AppDelegate.h */,
 				F40B875A16AA233500676BB2 /* AppDelegate.m */,
 				F40B876216AA233500676BB2 /* MainStoryboard.storyboard */,
@@ -440,6 +449,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F40B875716AA233500676BB2 /* main.m in Sources */,
+				8A4882E5224BCD5D0035B94C /* BigHonkinWebViewController.m in Sources */,
 				F40B875B16AA233500676BB2 /* AppDelegate.m in Sources */,
 				F40B876A16AA233500676BB2 /* ViewController.m in Sources */,
 			);

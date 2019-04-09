@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F2073" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="ogA-pf-q3e">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="zpQ-TA-uk7">
+            <objects>
+                <navigationController id="ogA-pf-q3e" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="eMo-dQ-Ee0">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="2" kind="relationship" relationship="rootViewController" id="kgl-3x-76P"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ktm-VJ-qMZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-343" y="282"/>
+        </scene>
         <!--View Controller-->
         <scene sceneID="5">
             <objects>
@@ -22,12 +37,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oxr-6H-zaP">
-                                <rect key="frame" x="36" y="84" width="303" height="40"/>
+                                <rect key="frame" x="36" y="128" width="303" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="Jdg-Wd-JMi"/>
-
                                 </constraints>
                                 <state key="normal" title="Generate Exception">
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -36,10 +49,8 @@
                                     <action selector="generateException:" destination="2" eventType="touchUpInside" id="BzY-pb-0qk"/>
                                 </connections>
                             </button>
-
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8xv-Hz-oaJ">
-                                <rect key="frame" x="36" y="124" width="303" height="40"/>
-
+                                <rect key="frame" x="36" y="168" width="303" height="40"/>
                                 <state key="normal" title="Generate Signal">
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -47,10 +58,8 @@
                                     <action selector="generateSignal:" destination="2" eventType="touchUpInside" id="UPD-MJ-coG"/>
                                 </connections>
                             </button>
-
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YW2-Lb-cb2">
-                                <rect key="frame" x="36" y="204" width="303" height="40"/>
-
+                                <rect key="frame" x="36" y="248" width="303" height="40"/>
                                 <state key="normal" title="Non-Fatal Exception">
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -58,11 +67,8 @@
                                     <action selector="nonFatalException:" destination="2" eventType="touchUpInside" id="8xi-pG-IRm"/>
                                 </connections>
                             </button>
-
-                          
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sFG-vI-9OD">
-                                <rect key="frame" x="36" y="164" width="303" height="40"/>
-
+                                <rect key="frame" x="36" y="208" width="303" height="40"/>
                                 <state key="normal" title="Delayed Exception">
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -70,10 +76,8 @@
                                     <action selector="delayedException:" destination="2" eventType="touchUpInside" id="VYs-GP-qcw"/>
                                 </connections>
                             </button>
-
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rbY-70-dIG">
-                                <rect key="frame" x="36" y="284" width="303" height="40"/>
-
+                                <rect key="frame" x="36" y="328" width="303" height="40"/>
                                 <state key="normal" title="Objective-C Lock Signal">
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -81,10 +85,8 @@
                                     <action selector="objectiveCLockSignal:" destination="2" eventType="touchUpInside" id="UUf-ch-eLp"/>
                                 </connections>
                             </button>
-
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gtT-rK-OwM">
-                                <rect key="frame" x="36" y="324" width="303" height="40"/>
-
+                                <rect key="frame" x="36" y="368" width="303" height="40"/>
                                 <state key="normal" title="PThreads Lock Signal">
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -92,10 +94,8 @@
                                     <action selector="pthreadsLockSignal:" destination="2" eventType="touchUpInside" id="3EZ-Te-dHj"/>
                                 </connections>
                             </button>
-
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HZ8-LN-PKe">
-                                <rect key="frame" x="36" y="364" width="303" height="40"/>
-
+                                <rect key="frame" x="36" y="408" width="303" height="40"/>
                                 <state key="normal" title="StackOverflow">
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -103,10 +103,8 @@
                                     <action selector="stackOverflow:" destination="2" eventType="touchUpInside" id="2Ia-la-7OK"/>
                                 </connections>
                             </button>
-
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1M3-pO-mjr">
-                                <rect key="frame" x="36" y="404" width="303" height="40"/>
-
+                                <rect key="frame" x="36" y="448" width="303" height="40"/>
                                 <state key="normal" title="Check Event Loop Spin">
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -114,10 +112,16 @@
                                     <action selector="checkEventLoopSpin:" destination="2" eventType="touchUpInside" id="71j-ee-LE7"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="az6-L5-tEc">
+                                <rect key="frame" x="136" y="496" width="103" height="30"/>
+                                <state key="normal" title="Generate OOM"/>
+                                <connections>
+                                    <action selector="generateOOM:" destination="2" eventType="touchUpInside" id="K3I-Se-IF4"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-
                             <constraint firstItem="rbY-70-dIG" firstAttribute="height" secondItem="YW2-Lb-cb2" secondAttribute="height" id="2Xz-LL-SDN"/>
                             <constraint firstItem="1M3-pO-mjr" firstAttribute="leading" secondItem="HZ8-LN-PKe" secondAttribute="leading" id="2jL-Sa-BxP"/>
                             <constraint firstItem="gtT-rK-OwM" firstAttribute="leading" secondItem="rbY-70-dIG" secondAttribute="leading" id="56p-af-6Jh"/>
@@ -125,6 +129,7 @@
                             <constraint firstItem="8xv-Hz-oaJ" firstAttribute="leading" secondItem="Oxr-6H-zaP" secondAttribute="leading" id="8RT-x2-v9b"/>
                             <constraint firstItem="sFG-vI-9OD" firstAttribute="leading" secondItem="8xv-Hz-oaJ" secondAttribute="leading" id="C4e-aT-udS"/>
                             <constraint firstItem="rbY-70-dIG" firstAttribute="leading" secondItem="YW2-Lb-cb2" secondAttribute="leading" id="E60-5U-9HR"/>
+                            <constraint firstItem="az6-L5-tEc" firstAttribute="top" secondItem="1M3-pO-mjr" secondAttribute="bottom" constant="8" id="F1y-wh-FLB"/>
                             <constraint firstItem="YW2-Lb-cb2" firstAttribute="trailing" secondItem="sFG-vI-9OD" secondAttribute="trailing" id="FnQ-fN-qF8"/>
                             <constraint firstItem="HZ8-LN-PKe" firstAttribute="trailing" secondItem="gtT-rK-OwM" secondAttribute="trailing" id="Jp2-Ie-kuL"/>
                             <constraint firstItem="rbY-70-dIG" firstAttribute="top" secondItem="YW2-Lb-cb2" secondAttribute="bottom" constant="40" id="LBZ-Q4-fFJ"/>
@@ -133,6 +138,7 @@
                             <constraint firstItem="gtT-rK-OwM" firstAttribute="trailing" secondItem="rbY-70-dIG" secondAttribute="trailing" id="Ot3-Db-Den"/>
                             <constraint firstItem="HZ8-LN-PKe" firstAttribute="height" secondItem="gtT-rK-OwM" secondAttribute="height" id="SLd-L6-ltK"/>
                             <constraint firstItem="HZ8-LN-PKe" firstAttribute="top" secondItem="gtT-rK-OwM" secondAttribute="bottom" id="U4c-H6-Kua"/>
+                            <constraint firstItem="az6-L5-tEc" firstAttribute="centerX" secondItem="3" secondAttribute="centerX" id="URR-aY-4Dz"/>
                             <constraint firstItem="Oxr-6H-zaP" firstAttribute="top" secondItem="adP-me-sk4" secondAttribute="bottom" constant="64" id="Ulk-Hh-7HW"/>
                             <constraint firstItem="1M3-pO-mjr" firstAttribute="top" secondItem="HZ8-LN-PKe" secondAttribute="bottom" id="WNz-ab-DAb"/>
                             <constraint firstItem="YW2-Lb-cb2" firstAttribute="leading" secondItem="sFG-vI-9OD" secondAttribute="leading" id="X1B-jc-lu0"/>
@@ -149,18 +155,13 @@
                             <constraint firstItem="HZ8-LN-PKe" firstAttribute="leading" secondItem="gtT-rK-OwM" secondAttribute="leading" id="oip-gY-kQZ"/>
                             <constraint firstItem="rbY-70-dIG" firstAttribute="trailing" secondItem="YW2-Lb-cb2" secondAttribute="trailing" id="qaB-xi-PYJ"/>
                             <constraint firstItem="8xv-Hz-oaJ" firstAttribute="height" secondItem="Oxr-6H-zaP" secondAttribute="height" id="uZ8-p7-PHX"/>
-
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="Xwx-BY-cwr"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="368" y="314"/>
+            <point key="canvasLocation" x="588.79999999999995" y="282.4587706146927"/>
         </scene>
     </scenes>
-    <simulatedMetricsContainer key="defaultSimulatedMetrics">
-        <simulatedStatusBarMetrics key="statusBar"/>
-        <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4_7.fullscreen"/>
-    </simulatedMetricsContainer>
 </document>
