@@ -30,6 +30,12 @@ When("I crash the app using {string}") do |event|
     And I set environment variable "EVENT_MODE" to "noevent"
   }
 end
+When("I put the app in the background") do
+  steps %Q{
+    When I run the script "features/scripts/launch_ios_safari.sh"
+    And I wait for 2 seconds
+  }
+end
 
 Then("the payload field {string} of request {int} equals the payload field {string} of request {int}") do |field1, request_index1, field2, request_index2|
   value1 = read_key_path(find_request(request_index1)[:body], field1)
@@ -83,4 +89,13 @@ Then("the event {string} is within {int} seconds of the current timestamp") do |
   thenSecs = Time.parse(value).to_i
   delta = nowSecs - thenSecs
   assert_true(delta.abs < threshold_secs, "Expected current timestamp, but received #{value}")
+end
+
+Then("the event breadcrumbs contain {string}") do |string|
+  crumbs = read_key_path(find_request(0)[:body], "events.0.breadcrumbs")
+  assert_not_equal(0, crumbs.length, "There are no breadcrumbs on this event")
+  match = crumbs.detect do |crumb|
+    read_key_path(crumb, "metaData.message") == string
+  end
+  assert_not_nil(match, "No crumb matches the provided message")
 end

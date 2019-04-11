@@ -42,6 +42,14 @@ void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
     XCTAssertTrue([BugsnagBreadcrumbs new].count == 0);
 }
 
+- (void)testCachePath {
+    NSString *cachePath = [[NSSearchPathForDirectoriesInDomains(
+                              NSCachesDirectory, NSUserDomainMask, YES)
+                            firstObject]
+                           stringByAppendingPathComponent:@"bugsnag_breadcrumbs.json"];
+    XCTAssertEqualObjects([BugsnagBreadcrumbs new].cachePath, cachePath);
+}
+
 - (void)testMaxBreadcrumbs {
     self.crumbs.capacity = 3;
     [self.crumbs addBreadcrumb:@"Clear notifications"];
@@ -111,6 +119,39 @@ void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
     XCTAssertEqualObjects(value[0][@"metaData"][@"direction"], @"right");
     XCTAssertEqualObjects(value[0][@"name"], @"Rotated Menu");
     XCTAssertEqualObjects(value[0][@"type"], @"state");
+}
+
+- (void)testPersistentCrumbManual {
+    NSData *crumbs = [NSData dataWithContentsOfFile:self.crumbs.cachePath];
+    NSArray *value = [NSJSONSerialization JSONObjectWithData:crumbs options:0 error:nil];
+    XCTAssertEqual(value.count, 3);
+    XCTAssertEqualObjects(value[0][@"type"], @"manual");
+    XCTAssertEqualObjects(value[0][@"name"], @"manual");
+    XCTAssertEqualObjects(value[0][@"metaData"][@"message"], @"Launch app");
+    XCTAssertNotNil(value[0][@"timestamp"]);
+    XCTAssertEqualObjects(value[1][@"type"], @"manual");
+    XCTAssertEqualObjects(value[1][@"name"], @"manual");
+    XCTAssertEqualObjects(value[1][@"metaData"][@"message"], @"Tap button");
+    XCTAssertNotNil(value[1][@"timestamp"]);
+    XCTAssertEqualObjects(value[2][@"type"], @"manual");
+    XCTAssertEqualObjects(value[2][@"name"], @"manual");
+    XCTAssertEqualObjects(value[2][@"metaData"][@"message"], @"Close tutorial");
+    XCTAssertNotNil(value[2][@"timestamp"]);
+}
+
+- (void)testPersistentCrumbCustom {
+    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
+        crumb.name = @"Initiate sequence";
+        crumb.metadata = @{ @"captain": @"Bob"};
+        crumb.type = BSGBreadcrumbTypeState;
+    }];
+    NSData *crumbs = [NSData dataWithContentsOfFile:self.crumbs.cachePath];
+    NSArray *value = [NSJSONSerialization JSONObjectWithData:crumbs options:0 error:nil];
+    XCTAssertEqual(value.count, 4);
+    XCTAssertEqualObjects(value[3][@"type"], @"state");
+    XCTAssertEqualObjects(value[3][@"name"], @"Initiate sequence");
+    XCTAssertEqualObjects(value[3][@"metaData"][@"captain"], @"Bob");
+    XCTAssertNotNil(value[3][@"timestamp"]);
 }
 
 - (void)testByteSizeLimit {

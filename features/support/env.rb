@@ -22,8 +22,20 @@ Before do
   set_script_env('iOS_Simulator', 'maze-sim')
 end
 
+After do
+  # Clean up caches
+  files = Dir.glob("#{app_file_path}/**/Library/Caches/{KSCrashReports/,bugsnag_}*")
+  files.each {|f| FileUtils.rm_rf(f) }
+end
+
 at_exit do
   run_required_commands([
     ['features/scripts/remove_installed_simulators.sh'],
   ])
 end
+
+def app_file_path
+  app_path = `xcrun simctl get_app_container maze-sim com.bugsnag.iOSTestApp`.chomp
+  app_path.gsub(/(.*Containers).*/, '\1')
+end
+

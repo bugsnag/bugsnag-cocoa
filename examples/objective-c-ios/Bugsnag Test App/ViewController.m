@@ -7,8 +7,10 @@
 //
 
 #import "ViewController.h"
+#import "BigHonkinWebViewController.h"
 #import "Bugsnag.h"
 #import <pthread.h>
+#import <stdlib.h>
 
 @interface ViewController ()
 
@@ -24,6 +26,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     [Bugsnag leaveBreadcrumbWithMessage:@"Received memory warning"];
+}
+
+- (IBAction)generateOOM:(id)sender {
+    BigHonkinWebViewController *controller = [BigHonkinWebViewController new];
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 - (IBAction)generateException:(id)sender {

@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A22FC66225B598500CA8895 /* OOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A22FC65225B598500CA8895 /* OOMScenario.m */; };
 		8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */; };
+		8A42FD35225DEE04007AE561 /* SessionOOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A42FD33225DEE04007AE561 /* SessionOOMScenario.m */; };
 		8A840FBA21AF5C450041DBFA /* SwiftAssertion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */; };
 		8A98400320FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */; };
 		8AB8866420404DD30003E444 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB8866320404DD30003E444 /* AppDelegate.swift */; };
@@ -20,6 +22,8 @@
 		8AEFC73420F8D1BB00A78779 /* ManualSessionWithUserScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AEFC73320F8D1BB00A78779 /* ManualSessionWithUserScenario.m */; };
 		8AEFC79920F9132C00A78779 /* AutoSessionHandledEventsScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AEFC79820F9132C00A78779 /* AutoSessionHandledEventsScenario.m */; };
 		8AEFC79C20F92E2200A78779 /* AutoSessionUnhandledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AEFC79B20F92E2200A78779 /* AutoSessionUnhandledScenario.m */; };
+		8AF6FD77225E3F870056EF9E /* StopSessionOOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6FD76225E3F870056EF9E /* StopSessionOOMScenario.m */; };
+		8AF6FD7A225E3FA00056EF9E /* ResumeSessionOOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6FD79225E3FA00056EF9E /* ResumeSessionOOMScenario.m */; };
 		C4D0B5FF8E60C0835B86DFE9 /* Pods_iOSTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */; };
 		E7767F11221C21D90006648C /* StoppedSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7767F10221C21D90006648C /* StoppedSessionScenario.swift */; };
 		E7767F13221C21E30006648C /* ResumedSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7767F12221C21E30006648C /* ResumedSessionScenario.swift */; };
@@ -59,8 +63,13 @@
 
 /* Begin PBXFileReference section */
 		4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOSTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A22FC62225B3E4800CA8895 /* ReportDidCrashScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportDidCrashScenario.swift; sourceTree = "<group>"; };
+		8A22FC64225B598500CA8895 /* OOMScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OOMScenario.h; sourceTree = "<group>"; };
+		8A22FC65225B598500CA8895 /* OOMScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OOMScenario.m; sourceTree = "<group>"; };
 		8A32DB8022424E3000EDD92F /* NSExceptionShiftScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSExceptionShiftScenario.h; sourceTree = "<group>"; };
 		8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSExceptionShiftScenario.m; sourceTree = "<group>"; };
+		8A42FD33225DEE04007AE561 /* SessionOOMScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionOOMScenario.m; sourceTree = "<group>"; };
+		8A42FD34225DEE04007AE561 /* SessionOOMScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionOOMScenario.h; sourceTree = "<group>"; };
 		8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftAssertion.swift; sourceTree = "<group>"; };
 		8A98400120FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoSessionCustomVersionScenario.h; sourceTree = "<group>"; };
 		8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoSessionCustomVersionScenario.m; sourceTree = "<group>"; };
@@ -82,6 +91,10 @@
 		8AEFC79820F9132C00A78779 /* AutoSessionHandledEventsScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoSessionHandledEventsScenario.m; sourceTree = "<group>"; };
 		8AEFC79A20F92E2200A78779 /* AutoSessionUnhandledScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoSessionUnhandledScenario.h; sourceTree = "<group>"; };
 		8AEFC79B20F92E2200A78779 /* AutoSessionUnhandledScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoSessionUnhandledScenario.m; sourceTree = "<group>"; };
+		8AF6FD75225E3F870056EF9E /* StopSessionOOMScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StopSessionOOMScenario.h; sourceTree = "<group>"; };
+		8AF6FD76225E3F870056EF9E /* StopSessionOOMScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StopSessionOOMScenario.m; sourceTree = "<group>"; };
+		8AF6FD78225E3FA00056EF9E /* ResumeSessionOOMScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResumeSessionOOMScenario.h; sourceTree = "<group>"; };
+		8AF6FD79225E3FA00056EF9E /* ResumeSessionOOMScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResumeSessionOOMScenario.m; sourceTree = "<group>"; };
 		960A6E7D4E847F1D76A4FD06 /* Pods-iOSTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.release.xcconfig"; sourceTree = "<group>"; };
 		E7767F10221C21D90006648C /* StoppedSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoppedSessionScenario.swift; sourceTree = "<group>"; };
 		E7767F12221C21E30006648C /* ResumedSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumedSessionScenario.swift; sourceTree = "<group>"; };
@@ -278,6 +291,15 @@
 				E7767F10221C21D90006648C /* StoppedSessionScenario.swift */,
 				E7767F12221C21E30006648C /* ResumedSessionScenario.swift */,
 				E7767F14221C223C0006648C /* NewSessionScenario.swift */,
+				8A22FC62225B3E4800CA8895 /* ReportDidCrashScenario.swift */,
+				8A22FC64225B598500CA8895 /* OOMScenario.h */,
+				8A22FC65225B598500CA8895 /* OOMScenario.m */,
+				8A42FD34225DEE04007AE561 /* SessionOOMScenario.h */,
+				8A42FD33225DEE04007AE561 /* SessionOOMScenario.m */,
+				8AF6FD75225E3F870056EF9E /* StopSessionOOMScenario.h */,
+				8AF6FD76225E3F870056EF9E /* StopSessionOOMScenario.m */,
+				8AF6FD78225E3FA00056EF9E /* ResumeSessionOOMScenario.h */,
+				8AF6FD79225E3FA00056EF9E /* ResumeSessionOOMScenario.m */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";
@@ -405,18 +427,21 @@
 				F4295A036B228AF608641699 /* UserDisabledScenario.swift in Sources */,
 				E7767F13221C21E30006648C /* ResumedSessionScenario.swift in Sources */,
 				8AEFC73120F8D1A000A78779 /* AutoSessionWithUserScenario.m in Sources */,
+				8AF6FD7A225E3FA00056EF9E /* ResumeSessionOOMScenario.m in Sources */,
 				F429565A951303E2C3136D0D /* UserIdScenario.swift in Sources */,
 				8AEEBBD020FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m in Sources */,
 				F4295A94DD2D131A594A212C /* HandledErrorScenario.swift in Sources */,
 				F4295A7AA9B4A18992A2F020 /* HandledErrorOverrideScenario.swift in Sources */,
 				F429502603396F8671B333B3 /* HandledExceptionScenario.swift in Sources */,
 				F4295497A1582010C16F1861 /* AbortScenario.m in Sources */,
+				8A42FD35225DEE04007AE561 /* SessionOOMScenario.m in Sources */,
 				F4295CEAD7C915EFA04898A5 /* Scenario.m in Sources */,
 				F4295836C8AF75547C675E8D /* ReleasedObjectScenario.m in Sources */,
 				F42958881D3F34A76CADE4EC /* SwiftCrash.swift in Sources */,
 				F42955DB6D08642528917FAB /* CxxExceptionScenario.mm in Sources */,
 				8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */,
 				F42954B7318A02824C65C514 /* ObjCMsgSendScenario.m in Sources */,
+				8A22FC66225B598500CA8895 /* OOMScenario.m in Sources */,
 				F42953498545B853CC0B635E /* NullPointerScenario.m in Sources */,
 				8A840FBA21AF5C450041DBFA /* SwiftAssertion.swift in Sources */,
 				F429538D8941382EC2C857CE /* AsyncSafeThreadScenario.m in Sources */,
@@ -439,6 +464,7 @@
 				F4295A0B0DA0AF3B5502D29C /* PrivilegedInstructionScenario.m in Sources */,
 				F42958BE5DDACDBF653CA926 /* ManualSessionScenario.m in Sources */,
 				F42951BF19D7F35A03273CFB /* AutoSessionScenario.m in Sources */,
+				8AF6FD77225E3F870056EF9E /* StopSessionOOMScenario.m in Sources */,
 				F4295109FCAB93708FDAFE12 /* DisabledSessionTrackingScenario.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Persist breadcrumbs on disk to allow reading upon next boot in the event of an
+  uncatchable app termination.
+* Add `+[Bugsnag appDidCrashLastLaunch]` as a helper to determine if the
+  previous launch of the app ended in a crash or otherwise unexpected termination.
+* Report unexpected app terminations on iOS as likely out of memory events where
+  the operating system killed the app
+
 ## 5.19.1 (2019-03-27)
 
 ### Bug fixes
