@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Migrate version information to device.runtimeVersions
+  [#340](https://github.com/bugsnag/bugsnag-cocoa/pull/340)
+
 ## 5.20.0 (2019-04-11)
 
 ### Enhancements
