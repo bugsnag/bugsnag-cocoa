@@ -270,7 +270,7 @@
     XCTAssertEqualObjects(device[@"modelNumber"], @"MacBookPro11,3");
     XCTAssertEqualObjects(device[@"osName"], @"iPhone OS");
     XCTAssertEqualObjects(device[@"osVersion"], @"8.1");
-    XCTAssertEqualObjects(device[@"osBuild"], @"14B25");
+    XCTAssertEqualObjects(device[@"runtimeVersions"][@"osBuild"], @"14B25");
     XCTAssertEqualObjects(device[@"totalMemory"], @15065522176);
     XCTAssertNotNil(device[@"freeDisk"]);
     XCTAssertEqualObjects(device[@"timezone"], @"PST");
