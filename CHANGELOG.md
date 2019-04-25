@@ -7,6 +7,8 @@ Changelog
 
 * Migrate version information to device.runtimeVersions
   [#340](https://github.com/bugsnag/bugsnag-cocoa/pull/340)
+* Add internal api for mutating session payload before sending
+  [#341](https://github.com/bugsnag/bugsnag-cocoa/pull/341)
 
 ## 5.20.0 (2019-04-11)
 
