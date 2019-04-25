@@ -5,6 +5,9 @@ Changelog
 
 ### Enhancements
 
+* Add internal api for mutating session payload before sending
+  [#341](https://github.com/bugsnag/bugsnag-cocoa/pull/341)
+
 * Persist breadcrumbs on disk to allow reading upon next boot in the event of an
   uncatchable app termination.
 * Add `+[Bugsnag appDidCrashLastLaunch]` as a helper to determine if the
