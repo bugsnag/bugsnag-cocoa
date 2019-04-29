@@ -271,6 +271,7 @@
     XCTAssertEqualObjects(device[@"osName"], @"iPhone OS");
     XCTAssertEqualObjects(device[@"osVersion"], @"8.1");
     XCTAssertEqualObjects(device[@"runtimeVersions"][@"osBuild"], @"14B25");
+    XCTAssertEqualObjects(device[@"runtimeVersions"][@"clangVersion"], @"10.0.0 (clang-1000.11.45.5)");
     XCTAssertEqualObjects(device[@"totalMemory"], @15065522176);
     XCTAssertNotNil(device[@"freeDisk"]);
     XCTAssertEqualObjects(device[@"timezone"], @"PST");
