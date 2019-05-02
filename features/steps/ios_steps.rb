@@ -58,14 +58,28 @@ When("I corrupt all reports on disk") do
   end
 end
 
-Then("each event in the payload matches one of:") do |table|
+Then("each event in the payload for request {int} matches one of:") do |request_index, table|
   # Checks string equality of event fields against values
-  events = read_key_path(find_request(0)[:body], "events")
+  events = read_key_path(find_request(request_index)[:body], "events")
   table.hashes.each do |values|
     assert_not_nil(events.detect do |event|
-      values.all? {|k,v| v == read_key_path(event, k) }
+      values.all? do |k, v|
+        if k.start_with? 'has '
+          event_value = read_key_path(event, k.split(' ').last)
+          if v == 'yes'
+            !event_value.nil?
+          else
+            event_value.nil?
+          end
+        else
+          v == read_key_path(event, k) || (v.to_i > 0 && v.to_i == read_key_path(event, k).to_i)
+        end
+      end
     end, "No event matches the following values: #{values}")
   end
+end
+Then("each event in the payload matches one of:") do |table|
+  step("each event in the payload for request 0 matches one of:", table)
 end
 
 Then("each event with a session in the payload for request {int} matches one of:") do |request_index, table|
