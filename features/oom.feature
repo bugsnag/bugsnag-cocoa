@@ -23,6 +23,13 @@ Feature: Reporting out of memory events
         And I put the app in the background
         And I wait for 4 seconds
         And I relaunch the app
+        Then I should receive 0 requests
+
+    Scenario: The OS kills the application in the background and reportBackgroundOOMs is true
+        When I crash the app using "ReportBackgroundOOMsEnabledScenario"
+        And I put the app in the background
+        And I wait for 4 seconds
+        And I relaunch the app
         Then I should receive a request
         And the request is a valid for the error reporting API
         And the payload field "events" is an array with 1 element
@@ -79,3 +86,23 @@ Feature: Reporting out of memory events
         And the payload field "events.0.session.events.unhandled" equals 1 for request 2
         And the payload field "events.0.session.id" of request 1 equals the payload field "sessions.0.id" of request 0
         And the payload field "events.0.session.id" of request 1 equals the payload field "events.0.session.id" of request 2
+
+    Scenario: The OS kills the application in the foreground when reportOOMs is false
+        When I crash the app using "ReportOOMsDisabledScenario"
+        And I wait for 4 seconds
+        And I relaunch the app
+        Then I should receive 0 requests
+
+    Scenario: The OS kills the application in the background when reportOOMs is false
+        When I crash the app using "ReportOOMsDisabledScenario"
+        And I put the app in the background
+        And I wait for 4 seconds
+        And I relaunch the app
+        Then I should receive 0 requests
+
+    Scenario: The OS kills the application in the background when reportOOMs is false and reportBackgroundOOMs is true
+        When I crash the app using "ReportOOMsDisabledReportBackgroundOOMsEnabledScenario"
+        And I put the app in the background
+        And I wait for 4 seconds
+        And I relaunch the app
+        Then I should receive 0 requests

@@ -60,9 +60,14 @@
     XCTAssertTrue([config shouldAutoCaptureSessions]);
 }
 
+- (void)testDefaultReportOOMs {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    XCTAssertTrue([config reportOOMs]);
+}
+
 - (void)testDefaultReportBackgroundOOMs {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
-    XCTAssertTrue([config reportBackgroundOOMs]);
+    XCTAssertFalse([config reportBackgroundOOMs]);
 }
 
 - (void)testErrorApiHeaders {
