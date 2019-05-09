@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## 5.22.0 (2019-05-09)
+
+This release disables background out-of-memory termination reporting by default,
+as it may be confusing that foreground and background grouped together and are
+not necessarily at the same level of importance during triage.
+
+### Enhancements
+
+* Add configuration option (`reportOOMs`) to disable out-of-memory (OOM) event
+  reporting, defaulting to enabled.
+  [#345](https://github.com/bugsnag/bugsnag-cocoa/pull/345)
+* Disable background OOM reporting by default. It can be enabled using
+  `reportBackgroundOOMs`.
+  [#345](https://github.com/bugsnag/bugsnag-cocoa/pull/345)
+
 ## 5.21.0 (2019-05-01)
 
 ### Enhancements
