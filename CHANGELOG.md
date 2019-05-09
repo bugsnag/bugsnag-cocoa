@@ -1,7 +1,11 @@
 Changelog
 =========
 
-## TBD
+## 5.22.0 (2019-05-09)
+
+This release disables background out-of-memory termination reporting by default,
+as it may be confusing that foreground and background grouped together and are
+not necessarily at the same level of importance during triage.
 
 ### Enhancements
 
