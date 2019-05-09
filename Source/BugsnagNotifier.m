@@ -384,7 +384,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 #endif
 
     _started = YES;
-    if (!bsg_ksmachisBeingTraced() && self.configuration.autoNotify) {
+    if (self.configuration.reportOOMs && !bsg_ksmachisBeingTraced() && self.configuration.autoNotify) {
         [self.oomWatchdog enable];
     }
 

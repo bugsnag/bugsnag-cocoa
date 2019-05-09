@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Add configuration option (`reportOOMs`) to disable out-of-memory (OOM) event
+  reporting, defaulting to enabled.
+  [#345](https://github.com/bugsnag/bugsnag-cocoa/pull/345)
+* Disable background OOM reporting by default. It can be enabled using
+  `reportBackgroundOOMs`.
+  [#345](https://github.com/bugsnag/bugsnag-cocoa/pull/345)
+
 ## 5.21.0 (2019-05-01)
 
 ### Enhancements
