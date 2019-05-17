@@ -113,3 +113,8 @@ Then("the event breadcrumbs contain {string}") do |string|
   end
   assert_not_nil(match, "No crumb matches the provided message")
 end
+
+Then("the stack trace is an array with at least one stack frame") do
+  stack_trace = read_key_path(find_request(0)[:body], "events.0.exceptions.0.stacktrace")
+  assert_true(stack_trace.length > 0)
+end
