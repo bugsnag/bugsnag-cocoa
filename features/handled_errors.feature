@@ -29,7 +29,7 @@ Scenario: Reporting a handled exception
     And the payload field "events" is an array with 1 element
     And the exception "errorClass" equals "HandledExceptionScenario"
     And the exception "message" equals "Message: HandledExceptionScenario"
-    And the stack trace is an array with at least one stack frame
+    And the stack trace contains at least one stack frame
 
 Scenario: Reporting a handled exception's stacktrace
     When I run "NSExceptionShiftScenario"
