@@ -7,7 +7,7 @@ Scenario: Override errorClass and message from a notifyError() callback
     And the exception "errorClass" equals "Bar"
     And the exception "message" equals "Foo"
     And the event "device.time" is within 30 seconds of the current timestamp
-    And the stack trace is an array with at least one stack frame
+    And the stack trace contains at least one stack frame
 
 Scenario: Reporting an NSError
     When I run "HandledErrorScenario"
@@ -18,7 +18,7 @@ Scenario: Reporting an NSError
     And the payload field "events" is an array with 1 element
     And the exception "errorClass" equals "NSError"
     And the exception "message" equals "The operation couldn’t be completed. (HandledErrorScenario error 100.)"
-    And the stack trace is an array with at least one stack frame
+    And the stack trace contains at least one stack frame
 
 Scenario: Reporting a handled exception
     When I run "HandledExceptionScenario"
