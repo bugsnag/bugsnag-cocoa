@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## 5.22.1 (2019-05-20)
+
+* Fix handled stacktrace generation
+  [#348](https://github.com/bugsnag/bugsnag-cocoa/pull/348)
+
 ## 5.22.0 (2019-05-09)
 
 This release disables background out-of-memory termination reporting by default,
