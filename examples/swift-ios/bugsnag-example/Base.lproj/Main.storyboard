@@ -1,48 +1,190 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F2073" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_7" orientation="portrait">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="G92-m4-VCF">
+    <device id="retina6_1" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="tne-QT-ifu">
+        <!--Bugsnag Examples-->
+        <scene sceneID="Z3J-7T-myz">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="bugsnag_example" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
-                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                <tableViewController id="9hK-Do-Aqc" customClass="ViewController" customModule="bugsnag_example" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="KsG-nG-XCO">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cAZ-QF-pum">
-                                <rect key="frame" x="36" y="84" width="303" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="CFE-m7-ghl"/>
-                                </constraints>
-                                <state key="normal" title="Crash App"/>
-                                <connections>
-                                    <action selector="doCrash:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Dh9-jh-Rew"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="cAZ-QF-pum" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="64" id="NZr-2s-nv8"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="cAZ-QF-pum" secondAttribute="trailing" constant="20" id="b8w-cH-Ghm"/>
-                            <constraint firstItem="cAZ-QF-pum" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="20" id="fAp-Jf-Zo0"/>
-                        </constraints>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <sections>
+                            <tableViewSection headerTitle="Crashes" footerTitle="Events which terminate the app are sent to Bugsnag automatically. Reopen the app after a crash to send reports." id="7h6-1h-5UO">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="QbB-rU-kYH">
+                                        <rect key="frame" x="0.0" y="55.5" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="QbB-rU-kYH" id="NUP-7Y-ZOe">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dKl-4y-FY8">
+                                                    <rect key="frame" x="16" y="7" width="398" height="30"/>
+                                                    <state key="normal" title="Uncaught exception"/>
+                                                    <connections>
+                                                        <action selector="generateUncaughtException:" destination="9hK-Do-Aqc" eventType="touchUpInside" id="0Aq-hf-LLG"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="dKl-4y-FY8" firstAttribute="leading" secondItem="NUP-7Y-ZOe" secondAttribute="leading" constant="16" id="9YH-qf-ekK"/>
+                                                <constraint firstAttribute="trailing" secondItem="dKl-4y-FY8" secondAttribute="trailing" id="CXd-m2-NBN"/>
+                                                <constraint firstItem="dKl-4y-FY8" firstAttribute="centerY" secondItem="NUP-7Y-ZOe" secondAttribute="centerY" id="irp-6n-Bin"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="faP-iZ-xbK">
+                                        <rect key="frame" x="0.0" y="99.5" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="faP-iZ-xbK" id="TXb-Wu-rDg">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VDE-Mo-ZHy">
+                                                    <rect key="frame" x="16" y="7" width="398" height="30"/>
+                                                    <state key="normal" title="POSIX signal"/>
+                                                    <connections>
+                                                        <action selector="generatePOSIXSignal:" destination="9hK-Do-Aqc" eventType="touchUpInside" id="82J-Un-gBe"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="VDE-Mo-ZHy" firstAttribute="centerY" secondItem="TXb-Wu-rDg" secondAttribute="centerY" id="coE-hL-TaQ"/>
+                                                <constraint firstAttribute="trailing" secondItem="VDE-Mo-ZHy" secondAttribute="trailing" id="nWf-VD-d0u"/>
+                                                <constraint firstItem="VDE-Mo-ZHy" firstAttribute="leading" secondItem="TXb-Wu-rDg" secondAttribute="leading" constant="16" id="wjq-2L-8Xo"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="0Jp-Zg-DPd">
+                                        <rect key="frame" x="0.0" y="143.5" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0Jp-Zg-DPd" id="bhB-G9-rkY">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zHv-iF-OX3">
+                                                    <rect key="frame" x="16" y="7" width="398" height="30"/>
+                                                    <state key="normal" title="Memory corruption"/>
+                                                    <connections>
+                                                        <action selector="generateMemoryCorruption:" destination="9hK-Do-Aqc" eventType="touchUpInside" id="DIu-04-fPT"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="zHv-iF-OX3" firstAttribute="centerY" secondItem="bhB-G9-rkY" secondAttribute="centerY" id="YKs-9D-1aO"/>
+                                                <constraint firstItem="zHv-iF-OX3" firstAttribute="leading" secondItem="bhB-G9-rkY" secondAttribute="leading" constant="16" id="eIw-6h-ycy"/>
+                                                <constraint firstAttribute="trailing" secondItem="zHv-iF-OX3" secondAttribute="trailing" id="qsL-7T-vDd"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="nl4-Ib-Cug">
+                                        <rect key="frame" x="0.0" y="187.5" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nl4-Ib-Cug" id="igM-Ms-EQN">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gTW-a1-OEW">
+                                                    <rect key="frame" x="16" y="7" width="398" height="30"/>
+                                                    <state key="normal" title="Stack overflow"/>
+                                                    <connections>
+                                                        <action selector="generateStackOverflow:" destination="9hK-Do-Aqc" eventType="touchUpInside" id="IQg-0a-NSe"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="gTW-a1-OEW" firstAttribute="leading" secondItem="igM-Ms-EQN" secondAttribute="leading" constant="16" id="3qf-uZ-RjK"/>
+                                                <constraint firstItem="gTW-a1-OEW" firstAttribute="centerY" secondItem="igM-Ms-EQN" secondAttribute="centerY" id="nrI-IA-JwF"/>
+                                                <constraint firstAttribute="trailing" secondItem="gTW-a1-OEW" secondAttribute="trailing" id="png-g2-qC6"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="i5r-OQ-QyO">
+                                        <rect key="frame" x="0.0" y="231.5" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="i5r-OQ-QyO" id="5qq-qB-YDh">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wh1-Fq-EmE">
+                                                    <rect key="frame" x="16" y="7" width="398" height="30"/>
+                                                    <state key="normal" title="Assertion failure"/>
+                                                    <connections>
+                                                        <action selector="generateAssertionFailure:" destination="9hK-Do-Aqc" eventType="touchUpInside" id="nCO-qY-oCh"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Wh1-Fq-EmE" firstAttribute="centerY" secondItem="5qq-qB-YDh" secondAttribute="centerY" id="8Id-9q-WrG"/>
+                                                <constraint firstItem="Wh1-Fq-EmE" firstAttribute="leading" secondItem="5qq-qB-YDh" secondAttribute="leading" constant="16" id="OFk-Dh-Oie"/>
+                                                <constraint firstAttribute="trailing" secondItem="Wh1-Fq-EmE" secondAttribute="trailing" id="c4f-Jl-GwQ"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Handled errors" footerTitle="Events which can be handled gracefully can also be reported to Bugsnag." id="h0h-sl-rgg">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="lC1-Sl-uHl">
+                                        <rect key="frame" x="0.0" y="367" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="lC1-Sl-uHl" id="Sdc-Gj-y4b">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rQs-Qy-wfI">
+                                                    <rect key="frame" x="16" y="7" width="398" height="30"/>
+                                                    <state key="normal" title="Send error with notifyError()"/>
+                                                    <connections>
+                                                        <action selector="sendAnError:" destination="9hK-Do-Aqc" eventType="touchUpInside" id="Hds-Ph-aIh"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="rQs-Qy-wfI" secondAttribute="trailing" id="Q0q-1e-hAB"/>
+                                                <constraint firstItem="rQs-Qy-wfI" firstAttribute="centerY" secondItem="Sdc-Gj-y4b" secondAttribute="centerY" id="Zya-9j-h7I"/>
+                                                <constraint firstItem="rQs-Qy-wfI" firstAttribute="leading" secondItem="Sdc-Gj-y4b" secondAttribute="leading" constant="16" id="si3-ZM-QaO"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="9hK-Do-Aqc" id="DWO-X3-PCL"/>
+                            <outlet property="delegate" destination="9hK-Do-Aqc" id="DrM-cu-cDA"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Bugsnag Examples" id="emN-8u-3yg"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kkh-t9-6oq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="236" y="145"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Xjk-6i-Tg7">
+            <objects>
+                <navigationController id="G92-m4-VCF" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="dOo-8v-HUF">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="9hK-Do-Aqc" kind="relationship" relationship="rootViewController" id="ruM-ze-IvU"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4vV-ZD-7se" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-478" y="146"/>
         </scene>
     </scenes>
 </document>

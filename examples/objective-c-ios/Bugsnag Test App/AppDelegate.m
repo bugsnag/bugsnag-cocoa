@@ -13,22 +13,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [self startBugsnagWithAPIKey];
+    [Bugsnag startBugsnagWithApiKey:@"YOUR-API-KEY-HERE"];
     //[self startBugsnagWithConfiguration];
     return YES;
 }
 
-- (void)startBugsnagWithConfiguration {
-    BugsnagConfiguration *config = [BugsnagConfiguration new];
-    config.apiKey = @"API-KEY";
-    config.releaseStage = @"production";
-    config.notifyReleaseStages = @[@"production"];
-    [Bugsnag startBugsnagWithConfiguration:config];
-}
-
-- (void)startBugsnagWithAPIKey {
-    [Bugsnag startBugsnagWithApiKey:@"6ef10e3707a961373e8592ae65d68ff1"];
-    [Bugsnag configuration].releaseStage = @"production";
-    [Bugsnag configuration].notifyReleaseStages = @[@"production"];
-}
 @end
