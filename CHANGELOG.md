@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 5.22.1 (2019-05-21)
 
 * Report correct app version in out-of-memory reports. Previously the bundle
   version was reported as the version number rather than the short version
