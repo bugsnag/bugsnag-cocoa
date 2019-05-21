@@ -12,10 +12,6 @@
 #import <pthread.h>
 #import <stdlib.h>
 
-@interface ViewController ()
-
-@end
-
 @implementation ViewController
 
 - (void)viewDidLoad {
@@ -38,6 +34,14 @@
     [self performSelectorOnMainThread:@selector(someRandomMethod) withObject:nil waitUntilDone:NO];
 }
 
+- (IBAction)generateNSError:(id)sender {
+    NSError *error = nil;
+    [[NSFileManager defaultManager] removeItemAtPath:@"//invalid/path/somewhere" error:&error];
+    if (error) {
+        [Bugsnag notifyError:error];
+    }
+}
+
 - (IBAction)generateSignal:(id)sender {
     Byte *p[10000];
     int allocatedMB = 0;
@@ -57,12 +61,16 @@
 
 - (IBAction)nonFatalException:(id)sender {
     [Bugsnag leaveBreadcrumbWithMessage:@"generate non-fatal exception"];
-    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-    [data setObject: data forKey: @"data"];
+    @try {
+        // Code that can potentially throw an Exception:
+        NSDictionary *actuallyReallyJSON = nil;
+        [NSJSONSerialization dataWithJSONObject:actuallyReallyJSON options:0 error:nil];
+    } @catch (NSException *exception) {
+        [Bugsnag notify:exception block:^(BugsnagCrashReport * _Nonnull report) {
+            report.metaData = @{@"tab": @{@"user": @"Bob Loblaw"}};
+        }];
+    }
 
-    [Bugsnag notify:[NSException exceptionWithName:@"wat" reason:nil userInfo:nil] block:^(BugsnagCrashReport * _Nonnull report) {
-        report.metaData = @{@"tab": @{@"user": @"rar\"watrar"}};
-    }];
 }
 
 - (IBAction)objectiveCLockSignal:(id)sender {
@@ -123,10 +131,4 @@ static void *enable_threading (void *ctx) {
     NSLog(@"Results: %@", results);
 }
 
-- (IBAction)checkEventLoopSpin:(id)sender {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@"APPLICATION CODE IS RUNNING - Crash reporter is spinning runloop");
-    });
-    raise(SIGSEGV);
-}
 @end

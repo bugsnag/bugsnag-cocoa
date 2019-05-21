@@ -23,20 +23,34 @@
 
 @implementation AnObjCClass
 
-- (void)makeAStackTrace:(AnotherClass *)other {
-    [self bounce:other];
-}
-
-- (void)bounce:(AnotherClass *)other {
-    [other crash3];
-}
-
 - (void)trap {
     __builtin_trap();
 }
 
-- (void)raise {
-    [NSException raise:@"UNHANDLED EXCEPTION WEEWOOO WEEWOOOOOO" format:@"Shouldn't have had too much coffee"];
+- (void)corruptSomeMemory {
+    /* Some random data */
+    void *cache[] = {
+        NULL, NULL, NULL
+    };
+
+    void *displayStrings[6] = {
+        "This little piggy went to the meerket",
+        "This little piggy stayed at home",
+        cache,
+        "This little piggy had roast beef.",
+        "This little piggy had none.",
+        "And this little piggy went 'Wee! Wee! Wee!' all the way home",
+    };
+
+    /* A corrupted/under-retained/re-used piece of memory */
+    struct {
+        void *isa;
+    } corruptObj;
+    corruptObj.isa = displayStrings;
+
+    /* Message an invalid/corrupt object. This will deadlock crash reporters
+     * using Objective-C. */
+    [(__bridge id)&corruptObj class];
 }
 
 @end

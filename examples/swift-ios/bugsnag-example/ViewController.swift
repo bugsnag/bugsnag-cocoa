@@ -20,43 +20,50 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UITableViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-
-    @IBAction func doCrash(_ sender: AnyObject) {
-        handledError()
-    }
-
-    func unhandledCrash() {
-        AnObjCClass().raise()
-    }
-
-    func handledError() {
-        let error = NSError(domain: "com.bugsnag", code: 402, userInfo: nil)
-        Bugsnag.notifyError(error)
-    }
-
-    func handledException() {
-        let ex = NSException(name: NSExceptionName("handled exception"), reason: "Should've had coffee", userInfo: nil)
-        Bugsnag.notify(ex)
-    }
-
-    func callbackModifiedException() {
-        let ex = NSException(name: NSExceptionName("handled exception in callback"), reason: "Should've had coffee", userInfo: nil)
-        Bugsnag.notify(ex) { (report) in
-            report.severity = .info
+    @IBAction func generateUncaughtException(_ sender: AnyObject) {
+        let someJson : Dictionary = ["foo":self]
+        do {
+            let data = try JSONSerialization.data(withJSONObject: someJson, options: .prettyPrinted)
+            print("Received data: %@", data)
+        } catch {
+            // Why does this crash the app? A very good question.
         }
     }
 
-    func userSetSeverity() {
-        let ex = NSException(name: NSExceptionName("handled exception with custom severity"), reason: "Should've had coffee", userInfo: nil)
-        Bugsnag.notify(ex, withData: nil, atSeverity: "error")
+    @IBAction func generatePOSIXSignal(_ sender: Any) {
+        AnObjCClass().trap()
     }
 
-    func signal() {
-        AnObjCClass().trap()
+    @IBAction func generateStackOverflow(_ sender: Any) {
+        let items = ["Something!"]
+
+        if sender is ViewController || sender is UIButton {
+            generateStackOverflow(self)
+        }
+
+        print("items: %@", items)
+    }
+
+    @IBAction func generateMemoryCorruption(_ sender: Any) {
+        AnObjCClass().corruptSomeMemory()
+    }
+
+    @IBAction func generateAssertionFailure(_ sender: Any) {
+        AnotherClass.crash3()
+    }
+
+    @IBAction func sendAnError(_ sender: Any) {
+
+
+        do {
+            try FileManager.default.removeItem(atPath:"//invalid/file")
+        } catch {
+            Bugsnag.notifyError(error) { report in
+                // modify report properties in the (optional) block
+                report.severity = .info
+            }
+        }
     }
 }
