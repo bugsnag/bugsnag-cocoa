@@ -4,6 +4,11 @@ Changelog
 ## 5.22.1 (2019-05-20)
 
 * Fix handled stacktrace generation
+* Report correct app version in out-of-memory reports. Previously the bundle
+  version was reported as the version number rather than the short version
+  string.
+  [#349](https://github.com/bugsnag/bugsnag-cocoa/pull/349)
+
   [#348](https://github.com/bugsnag/bugsnag-cocoa/pull/348)
 
 ## 5.22.0 (2019-05-09)

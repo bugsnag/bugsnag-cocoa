@@ -556,6 +556,7 @@
 - (void)testAppVersion {
     NSDictionary *dictionary = [self.report toJson];
     XCTAssertEqualObjects(@"1.0", dictionary[@"app"][@"version"]);
+    XCTAssertEqualObjects(@"1", dictionary[@"app"][@"bundleVersion"]);
 }
 
 - (void)testAppVersionOverride {
