@@ -1,17 +1,23 @@
-ifeq ($(SDK),)
- SDK=iphonesimulator
-endif
 ifeq ($(BUILD_OSX), 1)
+ ifeq ($(SDK),)
+  SDK=macosx
+ endif
  PLATFORM=OSX
  RELEASE_DIR=Release
  BUILD_FLAGS=-workspace OSX.xcworkspace -scheme Bugsnag -derivedDataPath build
- BUILD_ONLY_FLAGS=CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+ BUILD_ONLY_FLAGS=-sdk $(SDK) CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 else
  ifeq ($(BUILD_TV), 1)
+  ifeq ($(SDK),)
+   SDK=appletvsimulator
+  endif
   PLATFORM=tvOS
   BUILD_FLAGS=-workspace tvOS.xcworkspace -scheme Bugsnag -derivedDataPath build
   BUILD_ONLY_FLAGS=-sdk $(SDK) -configuration Debug -destination "platform=tvOS Simulator,name=Apple TV"
  else
+  ifeq ($(SDK),)
+   SDK=iphonesimulator
+  endif
   PLATFORM=iOS
   RELEASE_DIR=Release-iphoneos
   BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag -derivedDataPath build
