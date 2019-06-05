@@ -17,6 +17,12 @@ matrix:
         - osx_image: xcode9.2
           env: SDK=iphonesimulator11.2
           script: make test
+        - osx_image: xcode10.1
+          env: SDK=iphonesimulator12.1
+          script: make test
+        - osx_image: xcode10.2
+          env: SDK=iphonesimulator12.2
+          script: make test
         - osx_image: xcode9.2
           env: SDK=appletvsimulator11.2 BUILD_TV=1
           script: make test
