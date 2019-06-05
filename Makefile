@@ -1,5 +1,5 @@
 ifeq ($(SDK),)
- SDK=iphonesimulator11.2
+ SDK=iphonesimulator
 endif
 ifeq ($(BUILD_OSX), 1)
  PLATFORM=OSX
@@ -15,7 +15,7 @@ else
   PLATFORM=iOS
   RELEASE_DIR=Release-iphoneos
   BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag -derivedDataPath build
-  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5" -configuration Debug
+  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5s" -configuration Debug
  endif
 endif
 XCODEBUILD=set -o pipefail && xcodebuild
