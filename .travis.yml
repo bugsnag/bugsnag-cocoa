@@ -2,7 +2,7 @@ language: objective-c
 cache:
   - bundler
   - cocoapods
-rvm: 2.3.7
+rvm: 2.4.3
 matrix:
     include:
         - osx_image: xcode9.4
