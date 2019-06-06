@@ -418,7 +418,7 @@
 
 - (void)testUnhandledReportDepth {
     // unhandled reports should calculate their own depth
-    NSDictionary *dict = @{@"user.state.crash.depth": @2};
+    NSDictionary *dict = @{@"user.depth": @2};
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
     XCTAssertEqual(report.depth, 0);
 }
@@ -426,7 +426,7 @@
 - (void)testHandledReportDepth {
     // handled reports should use the serialised depth
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    NSDictionary *dict = @{@"user.state.crash.depth": @2, @"user.handledState": [state toJson]};
+    NSDictionary *dict = @{@"user.depth": @2, @"user.handledState": [state toJson]};
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
     XCTAssertEqual(report.depth, 2);
 }
