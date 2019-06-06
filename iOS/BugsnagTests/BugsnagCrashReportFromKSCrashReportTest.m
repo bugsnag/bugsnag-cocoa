@@ -34,6 +34,10 @@
     self.report = nil;
 }
 
+- (void)testReportDepth {
+    XCTAssertEqual(0, self.report.depth);
+}
+
 - (void)testReadReleaseStage {
     XCTAssertEqualObjects(self.report.releaseStage, @"production");
 }
