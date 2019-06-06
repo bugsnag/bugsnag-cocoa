@@ -35,7 +35,7 @@
 }
 
 - (void)testReportDepth {
-    XCTAssertEqual(0, self.report.depth);
+    XCTAssertEqual(7, self.report.depth);
 }
 
 - (void)testReadReleaseStage {
