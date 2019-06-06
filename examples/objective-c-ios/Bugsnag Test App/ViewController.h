@@ -8,10 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-- (IBAction)generateException:(id)sender;
-- (IBAction)generateSignal:(id)sender;
-- (IBAction)delayedException:(id)sender;
-- (IBAction)nonFatalException:(id)sender;
+@interface ViewController : UITableViewController
 
 @end

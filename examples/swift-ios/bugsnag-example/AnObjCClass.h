@@ -22,8 +22,7 @@
 
 @interface AnObjCClass : NSObject
 
-- (void)makeAStackTrace:(id)other;
 - (void)trap;
-- (void)raise;
+- (void)corruptSomeMemory;
 
 @end
