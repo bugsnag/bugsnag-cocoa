@@ -2,23 +2,17 @@ language: objective-c
 cache:
   - bundler
   - cocoapods
-rvm: 2.3.7
+rvm: 2.4.3
 matrix:
     include:
-        - osx_image: xcode7.3
-          env: SDK=iphonesimulator9.3
+        - osx_image: xcode9.4
+          env: SDK=macosx10.13 BUILD_OSX=1
           script: make test
-        - osx_image: xcode8.3
-          env: SDK=macosx10.12 BUILD_OSX=1
+        - osx_image: xcode9.4
+          env: SDK=iphonesimulator11.4
           script: make test
-        - osx_image: xcode8.3
-          env: SDK=iphonesimulator10.3
-          script: make test
-        - osx_image: xcode9.2
-          env: SDK=iphonesimulator11.2
-          script: make test
-        - osx_image: xcode9.2
-          env: SDK=appletvsimulator11.2 BUILD_TV=1
+        - osx_image: xcode9.4
+          env: SDK=appletvsimulator11.4 BUILD_TV=1
           script: make test
         - osx_image: xcode9.2
           env: MAZE_SDK=11.2 SDK=iphonesimulator11.2
