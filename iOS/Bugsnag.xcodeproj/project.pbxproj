@@ -38,7 +38,6 @@
 		8A70D9CA22539C81006B696F /* BSGOutOfMemoryWatchdog.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A70D9C822539C81006B696F /* BSGOutOfMemoryWatchdog.m */; };
 		8A70D9CB22539C81006B696F /* BSGOutOfMemoryWatchdog.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A70D9C822539C81006B696F /* BSGOutOfMemoryWatchdog.m */; };
 		8A70D9CD2253C484006B696F /* BSGOutOfMemoryWatchdogTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A70D9CC2253C484006B696F /* BSGOutOfMemoryWatchdogTests.m */; };
-		8AE1BC951DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1BC941DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m */; };
 		E70E52152216E41C00A590AB /* BugsnagSessionTrackerStopTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E70E52142216E41C00A590AB /* BugsnagSessionTrackerStopTest.m */; };
 		E70EE0781FD7039E00FA745C /* RFC3339DateTool_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EE0771FD7039D00FA745C /* RFC3339DateTool_Tests.m */; };
 		E70EE07E1FD703D600FA745C /* NSError+SimpleConstructor_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EE07A1FD703D500FA745C /* NSError+SimpleConstructor_Tests.m */; };
@@ -454,7 +453,6 @@
 		8A70D9C722539C81006B696F /* BSGOutOfMemoryWatchdog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BSGOutOfMemoryWatchdog.h; path = ../Source/BSGOutOfMemoryWatchdog.h; sourceTree = "<group>"; };
 		8A70D9C822539C81006B696F /* BSGOutOfMemoryWatchdog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BSGOutOfMemoryWatchdog.m; path = ../Source/BSGOutOfMemoryWatchdog.m; sourceTree = "<group>"; };
 		8A70D9CC2253C484006B696F /* BSGOutOfMemoryWatchdogTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGOutOfMemoryWatchdogTests.m; sourceTree = "<group>"; };
-		8AE1BC941DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationSpec.m; path = ../Tests/BugsnagConfigurationSpec.m; sourceTree = SOURCE_ROOT; };
 		E70E52142216E41C00A590AB /* BugsnagSessionTrackerStopTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagSessionTrackerStopTest.m; path = ../../Tests/BugsnagSessionTrackerStopTest.m; sourceTree = "<group>"; };
 		E70EE0771FD7039D00FA745C /* RFC3339DateTool_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RFC3339DateTool_Tests.m; path = ../Tests/KSCrash/RFC3339DateTool_Tests.m; sourceTree = SOURCE_ROOT; };
 		E70EE07A1FD703D500FA745C /* NSError+SimpleConstructor_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSError+SimpleConstructor_Tests.m"; path = "../Tests/KSCrash/NSError+SimpleConstructor_Tests.m"; sourceTree = SOURCE_ROOT; };
@@ -646,14 +644,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4B47970822A9925D00FF9C2E /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				8AE1BC941DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m */,
-			);
-			name = "Recovered References";
-			sourceTree = "<group>";
-		};
 		8A2C8F0E1C6BBD2300846019 = {
 			isa = PBXGroup;
 			children = (
@@ -661,7 +651,6 @@
 				8A2C8F261C6BBD2300846019 /* Tests */,
 				8A2C8F751C6BBEBB00846019 /* Frameworks */,
 				8A2C8F191C6BBD2300846019 /* Products */,
-				4B47970822A9925D00FF9C2E /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1244,7 +1233,6 @@
 				E784D2561FD70B3E004B01E1 /* KSMach_Tests.m in Sources */,
 				8A2C8F8F1C6BBFDD00846019 /* BugsnagBreadcrumbsTest.m in Sources */,
 				E733A76A1FD7091F003EAA29 /* KSCrashSentry_Tests.m in Sources */,
-				8AE1BC951DEFCE8B00D16CEF /* BugsnagConfigurationSpec.m in Sources */,
 				E784D25E1FD70E55004B01E1 /* KSString_Tests.m in Sources */,
 				E733A7681FD7091F003EAA29 /* KSCrashSentry_NSException_Tests.m in Sources */,
 				E70EE07F1FD703D600FA745C /* NSDictionary+Merge_Tests.m in Sources */,
