@@ -14,9 +14,6 @@ matrix:
         - osx_image: xcode9.4
           env: SDK=appletvsimulator11.4 BUILD_TV=1
           script: make test
-        - osx_image: xcode9.4
-          env: MAZE_SDK=11.4 SDK=iphonesimulator11.4
-          script: bundle exec maze-runner -c
         - osx_image: xcode9.2
           env: MAZE_SDK=11.2 SDK=iphonesimulator11.2
           script: bundle exec maze-runner -c
