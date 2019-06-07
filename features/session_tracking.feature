@@ -13,7 +13,7 @@ Scenario: Launching using the default configuration sends a single session
     And the payload field "app.bundleVersion" equals "5"
     And the payload field "app.releaseStage" equals "development"
     And the payload field "app.type" equals "iOS"
-    And the payload field "device.osVersion" equals "11.2"
+    And the payload field "device.osVersion" equals "12.1"
     And the payload field "device.osName" equals "iOS"
     And the payload field "device.model" equals "iPhone10,4"
 
@@ -36,7 +36,7 @@ Scenario: Configuring a custom version sends it in a session request
     And the payload field "app.bundleVersion" equals "5"
     And the payload field "app.releaseStage" equals "development"
     And the payload field "app.type" equals "iOS"
-    And the payload field "device.osVersion" equals "11.2"
+    And the payload field "device.osVersion" equals "12.1"
     And the payload field "device.osName" equals "iOS"
     And the payload field "device.model" equals "iPhone10,4"
 

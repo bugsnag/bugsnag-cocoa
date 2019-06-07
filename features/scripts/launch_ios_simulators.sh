@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 INSTALL_PATH=build/Build/Products/Debug-iphonesimulator/iOSTestApp.app
-OS_VERSION=${MAZE_SDK:="11.2"}
+OS_VERSION=${MAZE_SDK:="12.1"}
 
 # Create required simulators
 xcrun simctl create "maze-sim" "iPhone 8" "$OS_VERSION"
