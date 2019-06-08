@@ -6,10 +6,13 @@ rvm: 2.4.3
 matrix:
     include:
         - osx_image: xcode9.4
-          env: SDK=iphonesimulator11.4
-          script: make test
+          env: PLATFORM=iOS
+          script:
+            make test
+            make test DESTINATION="platform=iOS Simulator,name=iPhone 5s,OS=10.3.1"
+            make test DESTINATION="platform=iOS Simulator,name=iPhone 5s,OS=9.3"
         - osx_image: xcode9.4
-          env: SDK=appletvsimulator11.4 BUILD_TV=1
+          env: PLATFORM=tvOS
           script: make test
 install: make bootstrap
 

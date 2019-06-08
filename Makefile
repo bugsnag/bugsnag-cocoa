@@ -1,27 +1,23 @@
-ifeq ($(BUILD_OSX), 1)
- ifeq ($(SDK),)
-  SDK=macosx
- endif
+PLATFORM?=iOS
+
+ifeq ($(PLATFORM),OSX)
+ SDK?=macosx
  PLATFORM=OSX
  RELEASE_DIR=Release
  BUILD_FLAGS=-workspace OSX.xcworkspace -scheme Bugsnag -derivedDataPath build
  BUILD_ONLY_FLAGS=-sdk $(SDK) CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 else
- ifeq ($(BUILD_TV), 1)
-  ifeq ($(SDK),)
-   SDK=appletvsimulator
-  endif
-  PLATFORM=tvOS
+ ifeq ($(PLATFORM),tvOS)
+  SDK?=appletvsimulator
+	DESTINATION?=platform=tvOS Simulator,name=Apple TV
   BUILD_FLAGS=-workspace tvOS.xcworkspace -scheme Bugsnag -derivedDataPath build
-  BUILD_ONLY_FLAGS=-sdk $(SDK) -configuration Debug -destination "platform=tvOS Simulator,name=Apple TV"
+  BUILD_ONLY_FLAGS=-sdk $(SDK) -configuration Debug -destination "$(DESTINATION)"
  else
-  ifeq ($(SDK),)
-   SDK=iphonesimulator
-  endif
-  PLATFORM=iOS
+  SDK?=iphonesimulator
+	DESTINATION?=platform=iOS Simulator,name=iPhone 5s
   RELEASE_DIR=Release-iphoneos
   BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag -derivedDataPath build
-  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5s" -destination "platform=iOS Simulator,name=iPhone 5s,OS=9.3" -destination "platform=iOS Simulator,name=iPhone 5s,OS=10.3.1" -configuration Debug
+  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "$(DESTINATION)" -configuration Debug
  endif
 endif
 XCODEBUILD=set -o pipefail && xcodebuild
