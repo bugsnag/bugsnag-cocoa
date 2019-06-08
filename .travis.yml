@@ -8,12 +8,14 @@ matrix:
         - osx_image: xcode9.4
           env: PLATFORM=iOS
           script:
-            make test
-            make test DESTINATION="platform=iOS Simulator,name=iPhone 5s,OS=10.3.1"
-            make test DESTINATION="platform=iOS Simulator,name=iPhone 5s,OS=9.3"
+            - make test
+            - make test DESTINATION="platform=iOS Simulator,name=iPhone 5s,OS=10.3.1"
+            - make test DESTINATION="platform=iOS Simulator,name=iPhone 5s,OS=9.3"
         - osx_image: xcode9.4
           env: PLATFORM=tvOS
-          script: make test
+          script:
+            - make test
+            - make test DESTINATION="platform=tvOS Simulator,name=Apple TV,OS=10.2"
 install: make bootstrap
 
 before_deploy: headerdoc2html -o docs Source -j; gatherheaderdoc docs; mv docs/masterTOC.html docs/index.html
