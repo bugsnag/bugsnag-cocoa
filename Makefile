@@ -1,25 +1,22 @@
 PLATFORM?=iOS
 OS?=latest
+BUILD_FLAGS=-workspace $(PLATFORM).xcworkspace -scheme Bugsnag -derivedDataPath build
 
 ifeq ($(PLATFORM),OSX)
  SDK?=macosx
  PLATFORM=OSX
  RELEASE_DIR=Release
- BUILD_FLAGS=-workspace OSX.xcworkspace -scheme Bugsnag -derivedDataPath build
  BUILD_ONLY_FLAGS=-sdk $(SDK) CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 else
  ifeq ($(PLATFORM),tvOS)
   SDK?=appletvsimulator
 	DESTINATION?=platform=tvOS Simulator,name=Apple TV,OS=$(OS)
-  BUILD_FLAGS=-workspace tvOS.xcworkspace -scheme Bugsnag -derivedDataPath build
-  BUILD_ONLY_FLAGS=-sdk $(SDK) -configuration Debug -destination "$(DESTINATION)"
  else
   SDK?=iphonesimulator
 	DESTINATION?=platform=iOS Simulator,name=iPhone 5s,OS=$(OS)
   RELEASE_DIR=Release-iphoneos
-  BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag -derivedDataPath build
-  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "$(DESTINATION)" -configuration Debug
  endif
+ BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "$(DESTINATION)" -configuration Debug
 endif
 XCODEBUILD=set -o pipefail && xcodebuild
 PRESET_VERSION=$(shell cat VERSION)
