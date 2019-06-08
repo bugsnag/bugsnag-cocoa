@@ -1,4 +1,5 @@
 PLATFORM?=iOS
+OS?=latest
 
 ifeq ($(PLATFORM),OSX)
  SDK?=macosx
@@ -9,12 +10,12 @@ ifeq ($(PLATFORM),OSX)
 else
  ifeq ($(PLATFORM),tvOS)
   SDK?=appletvsimulator
-	DESTINATION?=platform=tvOS Simulator,name=Apple TV
+	DESTINATION?=platform=tvOS Simulator,name=Apple TV,OS=$(OS)
   BUILD_FLAGS=-workspace tvOS.xcworkspace -scheme Bugsnag -derivedDataPath build
   BUILD_ONLY_FLAGS=-sdk $(SDK) -configuration Debug -destination "$(DESTINATION)"
  else
   SDK?=iphonesimulator
-	DESTINATION?=platform=iOS Simulator,name=iPhone 5s
+	DESTINATION?=platform=iOS Simulator,name=iPhone 5s,OS=$(OS)
   RELEASE_DIR=Release-iphoneos
   BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag -derivedDataPath build
   BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "$(DESTINATION)" -configuration Debug
