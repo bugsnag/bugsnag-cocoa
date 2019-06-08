@@ -21,7 +21,7 @@ else
   PLATFORM=iOS
   RELEASE_DIR=Release-iphoneos
   BUILD_FLAGS=-workspace iOS.xcworkspace -scheme Bugsnag -derivedDataPath build
-  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5s" -configuration Debug
+  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "platform=iOS Simulator,name=iPhone 5s" -destination "platform=iOS Simulator,name=iPhone 5s,OS=9.3" -destination "platform=iOS Simulator,name=iPhone 5s,OS=10.3.1" -configuration Debug
  endif
 endif
 XCODEBUILD=set -o pipefail && xcodebuild
@@ -95,7 +95,7 @@ clean: ## Clean build artifacts
 	@rm -rf build
 
 test: ## Run unit tests
-	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) -destination "platform=iOS Simulator,name=iPhone 5s,OS=9.3" -destination "platform=iOS Simulator,name=iPhone 5s,OS=10.3" test $(FORMATTER)
+	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
 
 e2e: ## Run integration tests
 	@bundle exec maze-runner
