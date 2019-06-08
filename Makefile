@@ -95,7 +95,7 @@ clean: ## Clean build artifacts
 	@rm -rf build
 
 test: ## Run unit tests
-	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
+	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) -destination "platform=iOS Simulator,name=iPhone 5s,OS=9.3" -destination "platform=iOS Simulator,name=iPhone 5s,OS=10.3" test $(FORMATTER)
 
 e2e: ## Run integration tests
 	@bundle exec maze-runner
