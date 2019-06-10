@@ -4,16 +4,15 @@ BUILD_FLAGS=-workspace $(PLATFORM).xcworkspace -scheme Bugsnag -derivedDataPath 
 
 ifeq ($(PLATFORM),OSX)
  SDK?=macosx
- PLATFORM=OSX
  RELEASE_DIR=Release
  BUILD_ONLY_FLAGS=-sdk $(SDK) CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 else
  ifeq ($(PLATFORM),tvOS)
   SDK?=appletvsimulator
-	DESTINATION?=platform=tvOS Simulator,name=Apple TV,OS=$(OS)
+  DESTINATION?=platform=tvOS Simulator,name=Apple TV,OS=$(OS)
  else
   SDK?=iphonesimulator
-	DESTINATION?=platform=iOS Simulator,name=iPhone 5s,OS=$(OS)
+  DESTINATION?=platform=iOS Simulator,name=iPhone 5s,OS=$(OS)
   RELEASE_DIR=Release-iphoneos
  endif
  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "$(DESTINATION)" -configuration Debug
