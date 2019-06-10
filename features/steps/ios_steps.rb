@@ -20,7 +20,7 @@ When("I launch the app") do
   }
 end
 When("I relaunch the app") do
-  wait_time = RUNNING_CI ? 20 : 5
+  wait_time = RUNNING_CI ? 20 : 10
   wait_time += 40 if RUNNING_CI && SLOW_CI_TESTS.include?(@scenario_class)
   steps %Q{
     When I run the script "features/scripts/launch_ios_app.sh"

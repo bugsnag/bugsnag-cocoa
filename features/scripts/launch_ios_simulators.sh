@@ -1,10 +1,18 @@
 #!/usr/bin/env bash
 
 INSTALL_PATH=build/Build/Products/Debug-iphonesimulator/iOSTestApp.app
+HOST_OS_VERSION=$(sw_vers | grep ProductVersion)
 OS_VERSION=${MAZE_SDK:="12.1"}
 
+if [[ $HOST_OS_VERSION == "ProductVersion: 10.13"* ]]; then
+SIM_DEVICE="iPhone 8"
+else
+OS_VERSION=com.apple.CoreSimulator.SimRuntime.iOS-"${OS_VERSION//\./$'-'}"
+SIM_DEVICE=com.apple.CoreSimulator.SimDeviceType.iPhone-8
+fi
+
 # Create required simulators
-xcrun simctl create "maze-sim" "iPhone 8" "$OS_VERSION"
+xcrun simctl create "maze-sim" "$SIM_DEVICE" "$OS_VERSION"
 
 # Simulators used in the test suite:
 xcrun simctl boot "maze-sim"; true
