@@ -183,8 +183,9 @@ Scenario: Trigger a crash with libsystem_pthread's _pthread_list_lock held
     And the payload field "events" is an array with 1 element
     And the exception "message" equals "Attempted to dereference garbage pointer 0x1."
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
-    And the "method" of stack frame 1 equals "pthread_getname_np"
-    And the "method" of stack frame 2 equals "-[AsyncSafeThreadScenario run]"
+    And the stacktrace contains methods:
+    |pthread_getname_np|
+    |-[AsyncSafeThreadScenario run]|
 
 Scenario: Read a garbage pointer
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"

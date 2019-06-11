@@ -134,3 +134,11 @@ Then("the payload field {string} equals the device version") do |field|
   value = read_key_path(find_request(0)[:body], field)
   assert_equal(MAZE_SDK, value)
 end
+
+Then("the stacktrace contains methods:") do |table|
+  stack_trace = read_key_path(find_request(0)[:body], "events.0.exceptions.0.stacktrace")
+  expected = table.raw.flatten
+  actual = stack_trace.map{|s| s["method"]}
+  contains = actual.each_cons(expected.length).to_a.include? expected
+  assert_true(contains, "Stacktrace methods #{actual} did not contain #{expected}")
+end
