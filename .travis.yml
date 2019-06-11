@@ -21,9 +21,9 @@ matrix:
             - make test
             - make test OS=10.2
             - make test OS=9.2
-        - osx_image: xcode9.2
-          env: MAZE_SDK=11.2 SDK=iphonesimulator11.2
-          script: bundle exec maze-runner -c
+        - osx_image: xcode10.1
+          env: MAZE_SDK=12.1 SDK=iphonesimulator12.1
+          script: bundle exec maze-runner -c || (cat maze_output/* && exit 1)
 install: make bootstrap
 
 before_deploy: headerdoc2html -o docs Source -j; gatherheaderdoc docs; mv docs/masterTOC.html docs/index.html

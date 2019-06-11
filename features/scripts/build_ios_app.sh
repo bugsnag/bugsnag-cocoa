@@ -9,7 +9,7 @@ xcrun xcodebuild \
   -scheme iOSTestApp \
   -workspace iOSTestApp.xcworkspace \
   -configuration Debug \
-  -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.2' \
+  -destination "platform=iOS Simulator,name=iPhone 8,OS=$MAZE_SDK" \
   -derivedDataPath build \
   -quiet \
   clean build
