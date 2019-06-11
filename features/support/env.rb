@@ -5,6 +5,9 @@
 
 RUNNING_CI = ENV['TRAVIS'] == 'true'
 
+ENV['MAZE_SDK'] = '12.1' unless ENV['MAZE_SDK']
+MAZE_SDK = ENV['MAZE_SDK']
+
 Dir.chdir('features/fixtures/ios-swift-cocoapods') do
   run_required_commands([
     ['bundle', 'install'],

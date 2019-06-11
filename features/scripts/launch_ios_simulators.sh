@@ -2,7 +2,7 @@
 
 INSTALL_PATH=build/Build/Products/Debug-iphonesimulator/iOSTestApp.app
 HOST_OS_VERSION=$(sw_vers | grep ProductVersion)
-OS_VERSION=${MAZE_SDK:="12.1"}
+OS_VERSION=$MAZE_SDK
 OS_VERSION=com.apple.CoreSimulator.SimRuntime.iOS-"${OS_VERSION//\./$'-'}"
 SIM_DEVICE="iPhone 8"
 
