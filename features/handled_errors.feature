@@ -1,12 +1,18 @@
 Feature: Handled Errors and Exceptions
 
-Scenario: Override errorClass and message from a notifyError() callback
+Scenario: Override errorClass and message from a notifyError() callback and discard lines from stack
+
+    Discard 2 lines from the stacktrace, as we have single place to report and log errors, see
+    https://docs.bugsnag.com/platforms/ios-objc/reporting-handled-exceptions/#depth
+    This way top of the stacktrace is not logError but run
+
     When I run "HandledErrorOverrideScenario"
     Then I should receive a request
     And the request is a valid for the error reporting API
     And the exception "errorClass" equals "Bar"
     And the exception "message" equals "Foo"
     And the event "device.time" is within 30 seconds of the current timestamp
+    And the "method" of stack frame 0 equals "$S10iOSTestApp28HandledErrorOverrideScenarioC3runyyF"
     And the stack trace is an array with 15 stack frames
 
 Scenario: Reporting an NSError
