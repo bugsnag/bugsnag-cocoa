@@ -9,19 +9,40 @@ Then("The exception reflects malloc corruption occurred") do
   stacktrace = exception["stacktrace"]
   assert_true(stacktrace.length > 0, "The stacktrace must have more than 0 elements")
 
+  case MAZE_SDK
+  when "12.1"
+    assert_exception_matches_12_1(exception, stacktrace)
+  when "11.2"
+    assert_exception_matches_11_2(exception, stacktrace)
+  else
+    fail("No SDK assertions matching #{MAZE_SDK}")
+  end
+end
+
+def assert_exception_matches_12_1(exception, stacktrace)
   case stacktrace.first["method"]
-  when "__pthread_kill" # Any
+  when "__pthread_kill"
     assert_equal(exception["errorClass"], "SIGABRT")
     assert_equal(stacktrace[1]["method"], "abort")
-  when "nanov2_allocate_from_block" # iOS 12.1
+  when "nanov2_allocate_from_block"
     assert_equal(exception["errorClass"], "EXC_BAD_INSTRUCTION")
     assert_equal(stacktrace[1]["method"], "nanov2_allocate")
     assert_equal(stacktrace[15]["method"], "NSLog")
     assert_equal(stacktrace[16]["method"], "-[CorruptMallocScenario run]")
-  when "notify_dump_status" # iOS 12.1
+  when "notify_dump_status"
     assert_equal(exception["errorClass"], "EXC_BAD_ACCESS")
     assert_equal(stacktrace[10]["method"], "NSLog")
     assert_equal(stacktrace[11]["method"], "-[CorruptMallocScenario run]")
+  else
+    fail("The exception does not reflect malloc corruption")
+  end
+end
+
+def assert_exception_matches_11_2(exception, stacktrace)
+  case stacktrace.first["method"]
+  when "__pthread_kill" # Any
+    assert_equal(exception["errorClass"], "SIGABRT")
+    assert_equal(stacktrace[1]["method"], "abort")
   when "_nc_table_find_64" # iOS 11.2
     # We don't know whether the mach handler or the signal handler will catch this
     assert_true(["SIGSEGV", "EXC_BAD_ACCESS"].include?(exception["errorClass"]), "Error class was '#{exception["errorClass"]}'")
