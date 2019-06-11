@@ -2087,7 +2087,7 @@
             "severityReasonType":"handledError",
             "originalSeverity":"warning"
         },
-        "depth":7,        
+        "depth":7,
         "config": {
             "releaseStage": "production",
             "notifyReleaseStages": ["production", "development"],
