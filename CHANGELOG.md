@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix trimming the stacktraces of handled error/exceptions using the
+  [`depth`](https://docs.bugsnag.com/platforms/ios/reporting-handled-exceptions/#depth)
+  property.
+  [Paul Zabelin](https://github.com/paulz)
+  [#363](https://github.com/bugsnag/bugsnag-cocoa/pull/363)
+
+
 ## 5.22.1 (2019-05-21)
 
 * Report correct app version in out-of-memory reports. Previously the bundle
