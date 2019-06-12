@@ -12,7 +12,7 @@ Scenario: Override errorClass and message from a notifyError() callback and disc
     And the exception "errorClass" equals "Bar"
     And the exception "message" equals "Foo"
     And the event "device.time" is within 30 seconds of the current timestamp
-    And the "method" of stack frame 0 equals "$S10iOSTestApp28HandledErrorOverrideScenarioC3runyyF"
+    And the "method" of stack frame 0 demangles to "iOSTestApp.HandledErrorOverrideScenario.run() -> ()"
     And the stack trace is an array with 15 stack frames
 
 Scenario: Reporting an NSError
