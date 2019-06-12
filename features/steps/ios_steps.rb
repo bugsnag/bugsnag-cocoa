@@ -120,9 +120,15 @@ Then("the event breadcrumbs contain {string}") do |string|
   assert_not_nil(match, "No crumb matches the provided message")
 end
 
+Then("the {string} of stack frame {int} demangles to {string}") do |field, frame_index, expected_value|
+  value = read_key_path(find_request(0)[:body], "events.0.exceptions.0.stacktrace.#{frame_index}.#{field}")
+  demangled_value = `xcrun swift-demangle -compact '#{value}'`.chomp
+  assert_equal(expected_value, demangled_value)
+end
+
 Then("the stack trace is an array with {int} stack frames") do |expected_length|
   stack_trace = read_key_path(find_request(0)[:body], "events.0.exceptions.0.stacktrace")
-  assert_equal(stack_trace.length, expected_length)
+  assert_equal(expected_length,  stack_trace.length)
 end
 Then("the payload field {string} equals the device version") do |field|
   value = read_key_path(find_request(0)[:body], field)

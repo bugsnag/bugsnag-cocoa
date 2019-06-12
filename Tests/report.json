@@ -2081,6 +2081,13 @@
             "key": "value"
           }
         },
+        "handledState":{
+            "unhandled":false,
+            "currentSeverity":"info",
+            "severityReasonType":"handledError",
+            "originalSeverity":"warning"
+        },
+        "depth":7,
         "config": {
             "releaseStage": "production",
             "notifyReleaseStages": ["production", "development"],

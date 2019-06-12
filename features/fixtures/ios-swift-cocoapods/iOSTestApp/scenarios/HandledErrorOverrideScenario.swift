@@ -7,7 +7,9 @@ import Foundation
 import Bugsnag
 
 /**
- * Sends a handled Error to Bugsnag and overrides the exception name + message
+ Sends a handled Error to Bugsnag and overrides the exception name + message
+ Demonstrates adjusting report depth to exclude common error handling code from grouping
+ See: https://docs.bugsnag.com/platforms/ios-objc/reporting-handled-exceptions/#depth
  */
 class HandledErrorOverrideScenario: Scenario {
 
@@ -16,12 +18,21 @@ class HandledErrorOverrideScenario: Scenario {
       super.startBugsnag()
     }
 
-    override func run() {
-        let error = NSError(domain: "HandledErrorOverrideScenario", code: 100, userInfo: nil)
-        Bugsnag.notifyError(error, block: { report in
+    fileprivate func logError(_ error: Error)  {
+        Bugsnag.notifyError(error) { report in
             report.errorMessage = "Foo"
             report.errorClass = "Bar"
-        })
+            report.depth += 2
+        }
+    }
+
+    private func handleError(_ error: NSError)  {
+        logError(error)
+    }
+
+    override func run() {
+        let error = NSError(domain: "HandledErrorOverrideScenario", code: 100, userInfo: nil)
+        handleError(error)
     }
 
 }

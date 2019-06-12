@@ -125,8 +125,8 @@
     XCTAssertNotNil(event);
     
     NSString *severity = event[@"severity"];
-    XCTAssertTrue([event[@"unhandled"] boolValue]);
-    XCTAssertEqualObjects(severity, @"error");
+    XCTAssertFalse([event[@"unhandled"] boolValue]);
+    XCTAssertEqualObjects(severity, @"info");
 }
 
 - (void)testEventBreadcrumbs {
