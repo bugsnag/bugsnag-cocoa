@@ -285,7 +285,7 @@ int bsg_ksjsoncodecobjc_i_onFloatingPointElement(const char *const cName,
 int bsg_ksjsoncodecobjc_i_onIntegerElement(const char *const cName,
                                            const long long value,
                                            void *const userData) {
-    NSString *name = stringFromCString(cName);
+    NSString *name = cName == NULL ? nil : stringFromCString(cName);
     id element = @(value);
     BSG_KSJSONCodec *codec = (__bridge BSG_KSJSONCodec *)userData;
     return bsg_ksjsoncodecobjc_i_onElement(codec, name, element);

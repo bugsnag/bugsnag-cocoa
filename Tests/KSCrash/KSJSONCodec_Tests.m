@@ -210,24 +210,24 @@ static NSString* toString(NSData* data)
     XCTAssertEqualObjects(result, original, @"");
 }
 
-//- (void)testSerializeDeserializeArrayMultipleEntries
-//{
-//    NSError* error = (NSError*)self;
-//    NSString* expected = @"[\"One\",1000,true]";
-//    id original = @[@"One",
-//            @1000,
-//            @YES];
-//    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
-//                                                options:BSG_KSJSONEncodeOptionSorted
-//                                                  error:&error]);
-//    XCTAssertNotNil(jsonString, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(jsonString, expected, @"");
-//    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
-//    XCTAssertNotNil(result, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(result, original, @"");
-//}
+- (void)testSerializeDeserializeArrayMultipleEntries
+{
+    NSError* error = (NSError*)self;
+    NSString* expected = @"[\"One\",1000,true]";
+    id original = @[@"One",
+            @1000,
+            @YES];
+    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
+                                                options:BSG_KSJSONEncodeOptionSorted
+                                                  error:&error]);
+    XCTAssertNotNil(jsonString, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(jsonString, expected, @"");
+    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
+    XCTAssertNotNil(result, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(result, original, @"");
+}
 
 - (void)testSerializeDeserializeArrayMultipleEntriesSorted
 {
@@ -814,107 +814,107 @@ static NSString* toString(NSData* data)
     XCTAssertTrue([[result objectAtIndex:0] floatValue] ==  [[original objectAtIndex:0] floatValue], @"");
 }
 
-//- (void) testSerializeDeserializeChar
-//{
-//    NSError* error = (NSError*)self;
-//    NSString* expected = @"[20]";
-//    id original = @[@20];
-//    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
-//                                                options:BSG_KSJSONEncodeOptionSorted
-//                                                  error:&error]);
-//    XCTAssertNotNil(jsonString, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(jsonString, expected, @"");
-//    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
-//    XCTAssertNotNil(result, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(result, original, @"");
-//}
-//
-//- (void) testSerializeDeserializeShort
-//{
-//    NSError* error = (NSError*)self;
-//    NSString* expected = @"[2000]";
-//    id original = @[@2000];
-//    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
-//                                                options:BSG_KSJSONEncodeOptionSorted
-//                                                  error:&error]);
-//    XCTAssertNotNil(jsonString, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(jsonString, expected, @"");
-//    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
-//    XCTAssertNotNil(result, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(result, original, @"");
-//}
-//
-//- (void) testSerializeDeserializeLong
-//{
-//    NSError* error = (NSError*)self;
-//    NSString* expected = @"[2000000000]";
-//    id original = @[@2000000000];
-//    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
-//                                                options:BSG_KSJSONEncodeOptionSorted
-//                                                  error:&error]);
-//    XCTAssertNotNil(jsonString, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(jsonString, expected, @"");
-//    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
-//    XCTAssertNotNil(result, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(result, original, @"");
-//}
-//
-//- (void) testSerializeDeserializeLongLong
-//{
-//    NSError* error = (NSError*)self;
-//    NSString* expected = @"[200000000000]";
-//    id original = @[@200000000000];
-//    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
-//                                                options:BSG_KSJSONEncodeOptionSorted
-//                                                  error:&error]);
-//    XCTAssertNotNil(jsonString, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(jsonString, expected, @"");
-//    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
-//    XCTAssertNotNil(result, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(result, original, @"");
-//}
-//
-//- (void) testSerializeDeserializeNegative
-//{
-//    NSError* error = (NSError*)self;
-//    NSString* expected = @"[-2000]";
-//    id original = @[@(-2000)];
-//    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
-//                                                options:BSG_KSJSONEncodeOptionSorted
-//                                                  error:&error]);
-//    XCTAssertNotNil(jsonString, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(jsonString, expected, @"");
-//    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
-//    XCTAssertNotNil(result, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(result, original, @"");
-//}
-//
-//- (void) testSerializeDeserialize0
-//{
-//    NSError* error = (NSError*)self;
-//    NSString* expected = @"[0]";
-//    id original = @[@0];
-//    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
-//                                                options:BSG_KSJSONEncodeOptionSorted
-//                                                  error:&error]);
-//    XCTAssertNotNil(jsonString, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(jsonString, expected, @"");
-//    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
-//    XCTAssertNotNil(result, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(result, original, @"");
-//}
+- (void) testSerializeDeserializeChar
+{
+    NSError* error = (NSError*)self;
+    NSString* expected = @"[20]";
+    id original = @[@20];
+    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
+                                                options:BSG_KSJSONEncodeOptionSorted
+                                                  error:&error]);
+    XCTAssertNotNil(jsonString, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(jsonString, expected, @"");
+    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
+    XCTAssertNotNil(result, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(result, original, @"");
+}
+
+- (void) testSerializeDeserializeShort
+{
+    NSError* error = (NSError*)self;
+    NSString* expected = @"[2000]";
+    id original = @[@2000];
+    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
+                                                options:BSG_KSJSONEncodeOptionSorted
+                                                  error:&error]);
+    XCTAssertNotNil(jsonString, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(jsonString, expected, @"");
+    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
+    XCTAssertNotNil(result, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(result, original, @"");
+}
+
+- (void) testSerializeDeserializeLong
+{
+    NSError* error = (NSError*)self;
+    NSString* expected = @"[2000000000]";
+    id original = @[@2000000000];
+    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
+                                                options:BSG_KSJSONEncodeOptionSorted
+                                                  error:&error]);
+    XCTAssertNotNil(jsonString, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(jsonString, expected, @"");
+    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
+    XCTAssertNotNil(result, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(result, original, @"");
+}
+
+- (void) testSerializeDeserializeLongLong
+{
+    NSError* error = (NSError*)self;
+    NSString* expected = @"[200000000000]";
+    id original = @[@200000000000];
+    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
+                                                options:BSG_KSJSONEncodeOptionSorted
+                                                  error:&error]);
+    XCTAssertNotNil(jsonString, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(jsonString, expected, @"");
+    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
+    XCTAssertNotNil(result, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(result, original, @"");
+}
+
+- (void) testSerializeDeserializeNegative
+{
+    NSError* error = (NSError*)self;
+    NSString* expected = @"[-2000]";
+    id original = @[@(-2000)];
+    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
+                                                options:BSG_KSJSONEncodeOptionSorted
+                                                  error:&error]);
+    XCTAssertNotNil(jsonString, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(jsonString, expected, @"");
+    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
+    XCTAssertNotNil(result, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(result, original, @"");
+}
+
+- (void) testSerializeDeserialize0
+{
+    NSError* error = (NSError*)self;
+    NSString* expected = @"[0]";
+    id original = @[@0];
+    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
+                                                options:BSG_KSJSONEncodeOptionSorted
+                                                  error:&error]);
+    XCTAssertNotNil(jsonString, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(jsonString, expected, @"");
+    id result = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
+    XCTAssertNotNil(result, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(result, original, @"");
+}
 
 - (void) testSerializeDeserializeEmptyString
 {
@@ -979,36 +979,36 @@ static NSString* toString(NSData* data)
     XCTAssertEqualObjects(result, original, @"");
 }
 
-//- (void) testSerializeDeserializeLargeArray
-//{
-//    NSError* error = (NSError*)self;
-//    unsigned int numEntries = 2000;
-//
-//    NSMutableString* jsonString = [NSMutableString string];
-//    [jsonString appendString:@"["];
-//    for(unsigned int i = 0; i < numEntries; i++)
-//    {
-//        [jsonString appendFormat:@"%d,", i%10];
-//    }
-//    [jsonString deleteCharactersInRange:NSMakeRange([jsonString length]-1, 1)];
-//    [jsonString appendString:@"]"];
-//
-//    NSArray* deserialized = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
-//    unsigned int deserializedCount = (unsigned int)[deserialized count];
-//    XCTAssertNotNil(deserialized, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqual(deserializedCount, numEntries, @"");
-//    NSString* serialized = toString([BSG_KSJSONCodec encode:deserialized
-//                                                options:0
-//                                                  error:&error]);
-//    XCTAssertNotNil(serialized, @"");
-//    XCTAssertNil(error, @"");
-//    XCTAssertEqualObjects(serialized, jsonString, @"");
-//    int value = [deserialized[1] intValue];
-//    XCTAssertEqual(value, 1, @"");
-//    value = [deserialized[9] intValue];
-//    XCTAssertEqual(value, 9, @"");
-//}
+- (void) testSerializeDeserializeLargeArray
+{
+    NSError* error = (NSError*)self;
+    unsigned int numEntries = 2000;
+
+    NSMutableString* jsonString = [NSMutableString string];
+    [jsonString appendString:@"["];
+    for(unsigned int i = 0; i < numEntries; i++)
+    {
+        [jsonString appendFormat:@"%d,", i%10];
+    }
+    [jsonString deleteCharactersInRange:NSMakeRange([jsonString length]-1, 1)];
+    [jsonString appendString:@"]"];
+
+    NSArray* deserialized = [BSG_KSJSONCodec decode:toData(jsonString) options:0 error:&error];
+    unsigned int deserializedCount = (unsigned int)[deserialized count];
+    XCTAssertNotNil(deserialized, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqual(deserializedCount, numEntries, @"");
+    NSString* serialized = toString([BSG_KSJSONCodec encode:deserialized
+                                                options:0
+                                                  error:&error]);
+    XCTAssertNotNil(serialized, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(serialized, jsonString, @"");
+    int value = [deserialized[1] intValue];
+    XCTAssertEqual(value, 1, @"");
+    value = [deserialized[9] intValue];
+    XCTAssertEqual(value, 9, @"");
+}
 
 - (void) testSerializeDeserializeLargeDictionary
 {

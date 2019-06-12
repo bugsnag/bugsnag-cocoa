@@ -10,6 +10,8 @@ Changelog
   property.
   [Paul Zabelin](https://github.com/paulz)
   [#363](https://github.com/bugsnag/bugsnag-cocoa/pull/363)
+* Fix crash report parsing logic around arrays of numbers. Metadata which
+  included arrays of numbers could previously had missing values.
 
 
 ## 5.22.1 (2019-05-21)
