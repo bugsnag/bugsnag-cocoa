@@ -23,6 +23,9 @@ class HandledErrorOverrideScenario: Scenario {
             report.errorMessage = "Foo"
             report.errorClass = "Bar"
             report.depth += 2
+            report.metaData["account"] = [
+                "items": [400,200]
+            ]
         }
     }
 
