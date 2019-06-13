@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 5.22.2 (2019-06-13)
 
 ### Bug fixes
 
@@ -12,6 +12,7 @@ Changelog
   [#363](https://github.com/bugsnag/bugsnag-cocoa/pull/363)
 * Fix crash report parsing logic around arrays of numbers. Metadata which
   included arrays of numbers could previously had missing values.
+  [#365](https://github.com/bugsnag/bugsnag-cocoa/pull/365)
 
 
 ## 5.22.1 (2019-05-21)
