@@ -8,9 +8,9 @@ matrix:
         - osx_image: xcode9.4
           env: PLATFORM=iOS
           script:
-            - fold_start(); make test; fold_end()
-            - fold_start(); make test OS=10.3.1; fold_end()
-            - fold_start(); make test OS=9.3; fold_end()
+            - fold_start; make test; fold_end
+            - fold_start; make test OS=10.3.1; fold_end
+            - fold_start; make test OS=9.3; fold_end
         - osx_image: xcode9.4
           env: PLATFORM=OSX
           script:
