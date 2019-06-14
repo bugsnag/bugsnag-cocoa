@@ -33,9 +33,12 @@
 - (void)validateDeviceDict:(NSDictionary *)device {
     XCTAssertNotNil(device);
     XCTAssertNotNil(device[@"locale"]);
-    XCTAssertNotNil(device[@"freeDisk"]);
     XCTAssertNotNil(device[@"simulator"]);
 }
 
+- (void)testDeviceFreeSpaceShouldBeAbsentWhenFailsToRetrieveIt {
+    NSDictionary *device = BSGParseDevice(@{});
+    XCTAssertNil(device[@"freeDisk"]);
+}
 
 @end

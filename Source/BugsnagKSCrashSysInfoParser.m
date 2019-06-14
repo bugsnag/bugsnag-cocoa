@@ -44,10 +44,11 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
     
     if (error) {
         bsg_log_warn(@"Failed to read free disk space: %@", error);
+    } else {
+        NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
+        BSGDictSetSafeObject(device, freeBytes, @"freeDisk");
     }
     
-    NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
-    BSGDictSetSafeObject(device, freeBytes, @"freeDisk");
     BSGDictSetSafeObject(device, report[@"system"][@"device_app_hash"], @"id");
 
 #if TARGET_OS_SIMULATOR
