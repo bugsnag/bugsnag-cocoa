@@ -258,7 +258,11 @@
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     NSDictionary *device = event[@"device"];
     XCTAssertNotNil(device);
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     XCTAssertEqual(18, device.count);
+#else
+    XCTAssertEqual(17, device.count);
+#endif
 
     XCTAssertEqualObjects(device[@"id"], @"f6d519a74213a57f8d052c53febfeee6f856d062");
     XCTAssertEqualObjects(device[@"manufacturer"], @"Apple");
