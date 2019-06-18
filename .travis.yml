@@ -8,22 +8,9 @@ matrix:
         - osx_image: xcode9.4
           env: PLATFORM=iOS
           script:
-            - make test
-            - make test OS=10.3.1
-            - make test OS=9.3
-        - osx_image: xcode9.4
-          env: PLATFORM=OSX
-          script:
-            - make test
-        - osx_image: xcode9.4
-          env: PLATFORM=tvOS
-          script:
-            - make test
-            - make test OS=10.2
-            - make test OS=9.2
-        - osx_image: xcode10.1
-          env: MAZE_SDK=12.1 SDK=iphonesimulator12.1
-          script: bundle exec maze-runner -c || (cat maze_output/* && exit 1)
+            - xcodebuild test -workspace iOS.xcworkspace -scheme Bugsnag -configuration Debug -destination "platform=iOS Simulator,name=iPhone 5s" GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
+          after_success:
+            - ./scripts/coveralls.sh
 install: make bootstrap
 
 before_deploy: headerdoc2html -o docs Source -j; gatherheaderdoc docs; mv docs/masterTOC.html docs/index.html
