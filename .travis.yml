@@ -8,9 +8,9 @@ matrix:
         - osx_image: xcode9.4
           env: PLATFORM=iOS
           script:
-            - xcodebuild test -workspace iOS.xcworkspace -scheme Bugsnag -configuration Debug -destination "platform=iOS Simulator,name=iPhone 5s" GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
+            - xcodebuild test -workspace iOS.xcworkspace -scheme Bugsnag -configuration Debug -destination "platform=iOS Simulator,name=iPhone 5s" -derivedDataPath DerivedData
           after_success:
-            - ./scripts/coveralls.sh
+            - bash <(curl -s 'https://codecov.io/bash') -Z -J '^Bugsnag$' -X gcov -X coveragepy -X fix -D DerivedData
 install: make bootstrap
 
 before_deploy: headerdoc2html -o docs Source -j; gatherheaderdoc docs; mv docs/masterTOC.html docs/index.html
