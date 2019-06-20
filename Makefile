@@ -95,5 +95,10 @@ e2e: ## Run integration tests
 
 archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip
 
+doc: ## Generate html documentation
+	@headerdoc2html -N -o docs $(shell ruby -e "require 'json'; print Dir.glob(JSON.parse(File.read('Bugsnag.podspec.json'))['public_header_files']).join(' ')") -j
+	@gatherheaderdoc docs
+	@mv docs/masterTOC.html docs/index.html
+
 help: ## Show help text
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
