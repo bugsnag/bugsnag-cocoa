@@ -4,8 +4,8 @@ Scenario: Executing privileged instruction
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "PrivilegedInstructionScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
@@ -16,8 +16,8 @@ Scenario: Calling __builtin_trap()
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "BuiltinTrapScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
@@ -28,8 +28,8 @@ Scenario: Calling abort()
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "AbortScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
@@ -42,8 +42,8 @@ Scenario: Throwing a C++ exception
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "CxxExceptionScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "errorClass" equals "P16kaboom_exception"
     And the exception "type" equals "cocoa"
     And the payload field "events.0.exceptions.0.stacktrace" is an array with 0 element
@@ -52,8 +52,8 @@ Scenario: Calling non-existent method
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "NonExistentMethodScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
@@ -70,16 +70,16 @@ Scenario: Heap corruption by writing garbage into data areas used by malloc to t
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "CorruptMallocScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And The exception reflects malloc corruption occurred
 
 Scenario: Trigger a crash after overwriting the link register
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "OverwriteLinkRegisterScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the exception "message" equals "Attempted to dereference null pointer."
     And the "method" of stack frame 0 equals "-[OverwriteLinkRegisterScenario run]"
@@ -88,8 +88,8 @@ Scenario: Attempt to write into a read-only page
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "ReadOnlyPageScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "-[ReadOnlyPageScenario run]"
 
@@ -97,8 +97,8 @@ Scenario: Stack overflow
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "StackOverflowScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "message" equals "Stack overflow in -[StackOverflowScenario run]"
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "-[StackOverflowScenario run]"
@@ -116,8 +116,8 @@ Scenario: Crash inside objc_msgSend()
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "ObjCMsgSendScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the exception "message" equals "Attempted to dereference garbage pointer 0x42."
     And the "method" of stack frame 0 equals "objc_msgSend"
@@ -126,8 +126,8 @@ Scenario: Attempt to execute an instruction undefined on the current architectur
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "UndefinedInstructionScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "errorClass" equals "EXC_BAD_INSTRUCTION"
     And the "method" of stack frame 0 equals "-[UndefinedInstructionScenario run]"
 
@@ -135,8 +135,8 @@ Scenario: Send a message to an object whose memory has already been freed
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "ReleasedObjectScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "message" starts with "Attempted to dereference garbage pointer"
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "objc_msgSend"
@@ -148,8 +148,8 @@ Scenario: Crash within Swift code
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "SwiftCrash"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "message" equals "Unexpectedly found nil while unwrapping an Optional value"
     And the exception "errorClass" equals "Fatal error"
 
@@ -157,8 +157,8 @@ Scenario: Assertion failure in Swift code
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "SwiftAssertion"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "errorClass" equals "Fatal error"
     And the exception "message" equals "several unfortunate things just happened"
 
@@ -166,8 +166,8 @@ Scenario: Dereference a null pointer
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "NullPointerScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "message" equals "Attempted to dereference null pointer."
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "-[NullPointerScenario run]"
@@ -176,8 +176,8 @@ Scenario: Trigger a crash with libsystem_pthread's _pthread_list_lock held
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "AsyncSafeThreadScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
@@ -191,8 +191,8 @@ Scenario: Read a garbage pointer
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "ReadGarbagePointerScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "message" starts with "Attempted to dereference garbage pointer"
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "-[ReadGarbagePointerScenario run]"
@@ -201,8 +201,8 @@ Scenario: Throw a NSException
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "ObjCExceptionScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "message" equals "An uncaught exception! SCREAM."
     And the exception "errorClass" equals "NSGenericException"
     And the "method" of stack frame 0 equals "__exceptionPreprocess"
@@ -214,8 +214,8 @@ Scenario: Access a non-object as an object
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "AccessNonObjectScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "message" equals "Attempted to dereference garbage pointer 0x10."
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "objc_msgSend"
@@ -225,8 +225,8 @@ Scenario: Crash report file corruption
     And I crash the app using "AccessNonObjectScenario"
     And I corrupt all reports on disk
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the event "unhandled" is true
     And the event "incomplete" is true
