@@ -107,6 +107,7 @@ Scenario: Encountering a handled event during a session
 Scenario: Encountering an unhandled event during a session
     When I crash the app using "AutoSessionUnhandledScenario"
     And I relaunch the app
+    And I wait for 2 requests
     Then request 0 is valid for the session tracking API
     And request 1 is valid for the error reporting API
 

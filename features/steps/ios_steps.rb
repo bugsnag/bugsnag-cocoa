@@ -1,34 +1,23 @@
-SLOW_CI_TESTS = ['PrivilegedInstructionScenario', 'BuiltinTrapScenario']
-
 When("I run {string}") do |event_type|
-  @scenario_class = event_type
-  wait_time = '4'
   steps %Q{
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I set environment variable "EVENT_TYPE" to "#{event_type}"
     And I launch the app
-    And I wait for #{wait_time} seconds
   }
 end
 
 When("I launch the app") do
-  wait_time = 4
-  wait_time += 10 if RUNNING_CI && SLOW_CI_TESTS.include?(@scenario_class)
   steps %Q{
     When I run the script "features/scripts/launch_ios_app.sh"
-    And I wait for #{wait_time} seconds
   }
 end
 When("I relaunch the app") do
-  wait_time = RUNNING_CI ? 20 : 10
-  wait_time += 40 if RUNNING_CI && SLOW_CI_TESTS.include?(@scenario_class)
   steps %Q{
-    When I run the script "features/scripts/launch_ios_app.sh"
-    And I wait for #{wait_time} seconds
+    When I run the script "features/scripts/await_app_termination.sh" synchronously
+    And I run the script "features/scripts/launch_ios_app.sh"
   }
 end
 When("I crash the app using {string}") do |event|
-  @scenario_class = event
   steps %Q{
     When I set environment variable "EVENT_TYPE" to "#{event}"
     And I set environment variable "EVENT_MODE" to "normal"
