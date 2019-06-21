@@ -27,6 +27,8 @@
 		8AEFC79C20F92E2200A78779 /* AutoSessionUnhandledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AEFC79B20F92E2200A78779 /* AutoSessionUnhandledScenario.m */; };
 		8AF6FD77225E3F870056EF9E /* StopSessionOOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6FD76225E3F870056EF9E /* StopSessionOOMScenario.m */; };
 		8AF6FD7A225E3FA00056EF9E /* ResumeSessionOOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6FD79225E3FA00056EF9E /* ResumeSessionOOMScenario.m */; };
+		8AF8FCAC22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF8FCAB22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift */; };
+		8AF8FCAE22BD23BA00A967CA /* HandledInternalNotifyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */; };
 		C4D0B5FF8E60C0835B86DFE9 /* Pods_iOSTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */; };
 		E7767F11221C21D90006648C /* StoppedSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7767F10221C21D90006648C /* StoppedSessionScenario.swift */; };
 		E7767F13221C21E30006648C /* ResumedSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7767F12221C21E30006648C /* ResumedSessionScenario.swift */; };
@@ -104,6 +106,8 @@
 		8AF6FD76225E3F870056EF9E /* StopSessionOOMScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StopSessionOOMScenario.m; sourceTree = "<group>"; };
 		8AF6FD78225E3FA00056EF9E /* ResumeSessionOOMScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResumeSessionOOMScenario.h; sourceTree = "<group>"; };
 		8AF6FD79225E3FA00056EF9E /* ResumeSessionOOMScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResumeSessionOOMScenario.m; sourceTree = "<group>"; };
+		8AF8FCAB22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnhandledInternalNotifyScenario.swift; sourceTree = "<group>"; };
+		8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandledInternalNotifyScenario.swift; sourceTree = "<group>"; };
 		960A6E7D4E847F1D76A4FD06 /* Pods-iOSTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.release.xcconfig"; sourceTree = "<group>"; };
 		E7767F10221C21D90006648C /* StoppedSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoppedSessionScenario.swift; sourceTree = "<group>"; };
 		E7767F12221C21E30006648C /* ResumedSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumedSessionScenario.swift; sourceTree = "<group>"; };
@@ -315,6 +319,8 @@
 				8AF6FD76225E3F870056EF9E /* StopSessionOOMScenario.m */,
 				8AF6FD78225E3FA00056EF9E /* ResumeSessionOOMScenario.h */,
 				8AF6FD79225E3FA00056EF9E /* ResumeSessionOOMScenario.m */,
+				8AF8FCAB22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift */,
+				8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";
@@ -446,10 +452,12 @@
 				8AF6FD7A225E3FA00056EF9E /* ResumeSessionOOMScenario.m in Sources */,
 				F429565A951303E2C3136D0D /* UserIdScenario.swift in Sources */,
 				8AEEBBD020FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m in Sources */,
+				8AF8FCAC22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift in Sources */,
 				F4295A94DD2D131A594A212C /* HandledErrorScenario.swift in Sources */,
 				F4295A7AA9B4A18992A2F020 /* HandledErrorOverrideScenario.swift in Sources */,
 				F429502603396F8671B333B3 /* HandledExceptionScenario.swift in Sources */,
 				F4295497A1582010C16F1861 /* AbortScenario.m in Sources */,
+				8AF8FCAE22BD23BA00A967CA /* HandledInternalNotifyScenario.swift in Sources */,
 				8A42FD35225DEE04007AE561 /* SessionOOMScenario.m in Sources */,
 				F4295CEAD7C915EFA04898A5 /* Scenario.m in Sources */,
 				F4295836C8AF75547C675E8D /* ReleasedObjectScenario.m in Sources */,
