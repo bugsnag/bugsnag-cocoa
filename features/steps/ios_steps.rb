@@ -56,7 +56,8 @@ Then("the payload field {string} of request {int} does not equal the payload fie
 end
 
 When("I corrupt all reports on disk") do
-  app_path = `xcrun simctl get_app_container booted com.bugsnag.iOSTestApp`.chomp
+  step("I wait for 4 seconds")
+  app_path = `xcrun simctl get_app_container maze-sim com.bugsnag.iOSTestApp`.chomp
   app_path.gsub!(/(.*Containers).*/, '\1')
   files = Dir.glob("#{app_path}/**/KSCrashReports/iOSTestApp/*.json")
   files.each do |path|

@@ -231,3 +231,4 @@ Scenario: Crash report file corruption
     And the event "unhandled" is true
     And the event "incomplete" is true
     And the event "severity" equals "error"
+    And the payload field "events.0.exceptions.0.stacktrace" is null
