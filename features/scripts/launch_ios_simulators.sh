@@ -12,6 +12,9 @@ xcrun simctl create "maze-sim" "$SIM_DEVICE" "$OS_VERSION"
 # Simulators used in the test suite:
 xcrun simctl boot "maze-sim"; true
 
+# Check if simulator has finished boot process
+xcrun simctl bootstatus "maze-sim"
+
 # Install the app on each simulator
 xcrun simctl install "maze-sim" "$INSTALL_PATH"
 

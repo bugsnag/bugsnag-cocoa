@@ -15,9 +15,9 @@ Dir.chdir('features/fixtures/ios-swift-cocoapods') do
     ['../../scripts/build_ios_app.sh'],
     ['../../scripts/remove_installed_simulators.sh'],
     ['../../scripts/launch_ios_simulators.sh'],
-    ['../../scripts/pre_launch.sh'],
   ])
 end
+
 
 # Scenario hooks
 Before do
