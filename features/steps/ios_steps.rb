@@ -10,12 +10,32 @@ When("I launch the app") do
   steps %Q{
     When I run the script "features/scripts/launch_ios_app.sh"
   }
+  start = Time.now
+  until test_app_is_running?
+    raise 'Never launched! Waited 60s.' if Time.now - start > 60
+
+    sleep 0.2
+  end
 end
 When("I relaunch the app") do
-  steps %Q{
-    When I run the script "features/scripts/await_app_termination.sh" synchronously
-    And I run the script "features/scripts/launch_ios_app.sh"
-  }
+  start = Time.now
+  while test_app_is_running?
+    raise 'Never crashed! Waited 60s.' if Time.now - start > 60
+
+    sleep 0.2
+  end
+  step('I launch the app')
+end
+When('the app is unexpectedly terminated') do
+  pid = test_app_pid
+  start = Time.now
+  while pid == '0'
+    sleep 0.2
+    pid = test_app_pid
+    raise "Never received app PID! Waited #{MAX_WAIT_TIME}s." if Time.now - start > MAX_WAIT_TIME
+  end
+  sleep 1
+  `kill -9 #{pid} &` if pid
 end
 When("I crash the app using {string}") do |event|
   steps %Q{
@@ -27,7 +47,7 @@ When("I crash the app using {string}") do |event|
 end
 When("I put the app in the background") do
   steps %Q{
-    When I run the script "features/scripts/launch_ios_safari.sh"
+    When I run the script "features/scripts/launch_ios_safari.sh" synchronously
     And I wait for 2 seconds
   }
 end

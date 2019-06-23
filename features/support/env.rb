@@ -42,3 +42,18 @@ def app_file_path
   app_path.gsub(/(.*Containers).*/, '\1')
 end
 
+def test_app_pid
+  output = `xcrun simctl spawn maze-sim launchctl print system | grep UIKitApplication:com.bugsnag.iOSTestApp`
+  pattern = /(\d+)\s+(-|-?\d+?)\s+UIKitApplication:com.bugsnag.iOSTestApp/
+  match = output.match(pattern)
+  if match.nil?
+    nil
+  else
+    match[1]
+  end
+end
+
+def test_app_is_running?
+  pid = test_app_pid
+  !pid.nil? # check that PID is valid
+end

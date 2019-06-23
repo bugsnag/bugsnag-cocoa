@@ -4,7 +4,8 @@ Feature: Reporting out of memory events
     it is likely that the app has been killed.
 
     Scenario: The OS kills the application in the foreground
-        When I crash the app using "OOMScenario"
+        When I run "OOMScenario"
+        And the app is unexpectedly terminated
         And I relaunch the app
         And I wait for a request
         Then the request is valid for the error reporting API
@@ -20,15 +21,17 @@ Feature: Reporting out of memory events
         And the event breadcrumbs contain "Crumb left before crash"
 
     Scenario: The OS kills the application in the background
-        When I crash the app using "OOMScenario"
+        When I run "OOMScenario"
         And I put the app in the background
+        And the app is unexpectedly terminated
         And I relaunch the app
         And I wait for 10 seconds
         Then I should receive 0 requests
 
     Scenario: The OS kills the application in the background and reportBackgroundOOMs is true
-        When I crash the app using "ReportBackgroundOOMsEnabledScenario"
+        When I run "ReportBackgroundOOMsEnabledScenario"
         And I put the app in the background
+        And the app is unexpectedly terminated
         And I relaunch the app
         And I wait for a request
         Then the request is valid for the error reporting API
@@ -45,6 +48,8 @@ Feature: Reporting out of memory events
 
     Scenario: The OS kills the application after a session is sent
         When I crash the app using "SessionOOMScenario"
+        And I wait for 2 requests
+        And the app is unexpectedly terminated
         And I relaunch the app
         And I wait for 3 requests
         And request 0 is a valid for the session tracking API
@@ -60,6 +65,8 @@ Feature: Reporting out of memory events
 
     Scenario: The OS kills the application after a session is stopped
         When I crash the app using "StopSessionOOMScenario"
+        And I wait for 2 requests
+        And the app is unexpectedly terminated
         And I relaunch the app
         And I wait for 3 requests
         And request 0 is a valid for the session tracking API
@@ -73,6 +80,8 @@ Feature: Reporting out of memory events
 
     Scenario: The OS kills the application after a session is resumed
         When I crash the app using "ResumeSessionOOMScenario"
+        And I wait for 2 requests
+        And the app is unexpectedly terminated
         And I relaunch the app
         And I wait for 3 requests
         And request 0 is a valid for the session tracking API
@@ -87,20 +96,23 @@ Feature: Reporting out of memory events
         And the payload field "events.0.session.id" of request 1 equals the payload field "events.0.session.id" of request 2
 
     Scenario: The OS kills the application in the foreground when reportOOMs is false
-        When I crash the app using "ReportOOMsDisabledScenario"
+        When I run "ReportOOMsDisabledScenario"
+        And the app is unexpectedly terminated
         And I relaunch the app
         And I wait for 4 seconds
         Then I should receive 0 requests
 
     Scenario: The OS kills the application in the background when reportOOMs is false
-        When I crash the app using "ReportOOMsDisabledScenario"
+        When I run "ReportOOMsDisabledScenario"
+        And the app is unexpectedly terminated
         And I relaunch the app
         And I wait for 4 seconds
         Then I should receive 0 requests
 
     Scenario: The OS kills the application in the background when reportOOMs is false and reportBackgroundOOMs is true
-        When I crash the app using "ReportOOMsDisabledReportBackgroundOOMsEnabledScenario"
+        When I run "ReportOOMsDisabledReportBackgroundOOMsEnabledScenario"
         And I put the app in the background
+        And the app is unexpectedly terminated
         And I relaunch the app
         And I wait for 4 seconds
         Then I should receive 0 requests
