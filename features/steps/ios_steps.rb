@@ -12,7 +12,7 @@ When("I launch the app") do
   }
   start = Time.now
   until test_app_is_running?
-    raise 'Never launched! Waited 60s.' if Time.now - start > 60
+    raise "Never launched! Waited #{MAX_WAIT_TIME}s." if Time.now - start > MAX_WAIT_TIME
 
     sleep 0.2
   end
@@ -20,7 +20,7 @@ end
 When("I relaunch the app") do
   start = Time.now
   while test_app_is_running?
-    raise 'Never crashed! Waited 60s.' if Time.now - start > 60
+    raise "Never crashed! Waited #{MAX_WAIT_TIME}s." if Time.now - start > MAX_WAIT_TIME
 
     sleep 0.2
   end

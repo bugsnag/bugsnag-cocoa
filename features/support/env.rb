@@ -5,6 +5,9 @@
 
 RUNNING_CI = ENV['TRAVIS'] == 'true'
 
+# Max time in seconds to wait for an action to complete
+MAX_WAIT_TIME = RUNNING_CI ? 300 : 60
+
 ENV['MAZE_SDK'] = '12.1' unless ENV['MAZE_SDK']
 MAZE_SDK = ENV['MAZE_SDK']
 

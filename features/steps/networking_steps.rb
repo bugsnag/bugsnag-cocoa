@@ -3,7 +3,7 @@ Then(/^I wait for a request$/) do
 end
 
 Then(/^I wait for (\d+) requests?$/) do |request_count|
-  max_attempts = 600
+  max_attempts = MAX_WAIT_TIME * 10
   attempts = 0
   received = false
   until (attempts >= max_attempts) || received
@@ -12,7 +12,7 @@ Then(/^I wait for (\d+) requests?$/) do |request_count|
     sleep 0.1
   end
   unless received
-    raise "Requests not received in 60s (received #{stored_requests.size})"
+    raise "Requests not received in #{MAX_WAIT_TIME}s (received #{stored_requests.size})"
   end
 
   # Wait an extra second to ensure there are no further requests
