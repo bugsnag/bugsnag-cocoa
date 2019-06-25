@@ -119,6 +119,14 @@
     session = self.sessionTracker.runningSession;
     XCTAssertEqual(0, session.handledCount);
     XCTAssertEqual(0, session.unhandledCount);
+
+    [self.sessionTracker handleUnhandledErrorEvent];
+    XCTAssertEqual(0, session.handledCount);
+    XCTAssertEqual(1, session.unhandledCount);
+
+    [self.sessionTracker handleHandledErrorEvent];
+    XCTAssertEqual(1, session.handledCount);
+    XCTAssertEqual(1, session.unhandledCount);
 }
 
 @end

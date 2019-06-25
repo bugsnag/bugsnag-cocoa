@@ -43,18 +43,6 @@ When("I put the app in the background") do
   }
 end
 
-Then("the payload field {string} of request {int} equals the payload field {string} of request {int}") do |field1, request_index1, field2, request_index2|
-  value1 = read_key_path(find_request(request_index1)[:body], field1)
-  value2 = read_key_path(find_request(request_index2)[:body], field2)
-  assert_equal(value1, value2)
-end
-
-Then("the payload field {string} of request {int} does not equal the payload field {string} of request {int}") do |field1, request_index1, field2, request_index2|
-  value1 = read_key_path(find_request(request_index1)[:body], field1)
-  value2 = read_key_path(find_request(request_index2)[:body], field2)
-  assert_not_equal(value1, value2)
-end
-
 When("I corrupt all reports on disk") do
   app_path = `xcrun simctl get_app_container booted com.bugsnag.iOSTestApp`.chomp
   app_path.gsub!(/(.*Containers).*/, '\1')
