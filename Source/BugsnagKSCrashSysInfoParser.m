@@ -13,6 +13,24 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagLogger.h"
 
+NSNumber *BSGDeviceFreeSpace(NSSearchPathDirectory directory) {
+    NSNumber *freeBytes = nil;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(directory, NSUserDomainMask, true);
+    NSString *path = [searchPaths lastObject];
+    
+    NSError *error;
+    NSDictionary *fileSystemAttrs =
+    [fileManager attributesOfFileSystemForPath:path error:&error];
+    
+    if (error) {
+        bsg_log_warn(@"Failed to read free disk space: %@", error);
+    } else {
+        freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
+    }
+    return freeBytes;
+}
+
 NSDictionary *BSGParseDevice(NSDictionary *report) {
     NSMutableDictionary *device = [NSMutableDictionary new];
     NSDictionary *state = [report valueForKeyPath:@"user.state.deviceState"];
@@ -33,21 +51,8 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
     
     BSGDictSetSafeObject(device, [report valueForKeyPath:@"report.timestamp"], @"time");
     
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(
-                                                               NSCachesDirectory, NSUserDomainMask, true);
-    NSString *path = [searchPaths lastObject];
-    
-    NSError *error;
-    NSDictionary *fileSystemAttrs =
-    [fileManager attributesOfFileSystemForPath:path error:&error];
-    
-    if (error) {
-        bsg_log_warn(@"Failed to read free disk space: %@", error);
-    } else {
-        NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
-        BSGDictSetSafeObject(device, freeBytes, @"freeDisk");
-    }
+    BSGDictSetSafeObject(device, BSGDeviceFreeSpace(NSCachesDirectory), @"freeDisk");
+
     
     BSGDictSetSafeObject(device, report[@"system"][@"device_app_hash"], @"id");
 
