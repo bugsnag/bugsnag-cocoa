@@ -8,8 +8,8 @@ Scenario: Crash within the crash handler
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "MinimalCrashReportScenario"
     And I relaunch the app
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "events" is an array with 2 element
     And the payload field "events.0.unhandled" is true

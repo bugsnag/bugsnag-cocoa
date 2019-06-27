@@ -1,34 +1,43 @@
-SLOW_CI_TESTS = ['PrivilegedInstructionScenario', 'BuiltinTrapScenario']
-
 When("I run {string}") do |event_type|
-  @scenario_class = event_type
-  wait_time = '4'
   steps %Q{
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I set environment variable "EVENT_TYPE" to "#{event_type}"
     And I launch the app
-    And I wait for #{wait_time} seconds
   }
 end
 
 When("I launch the app") do
-  wait_time = 4
-  wait_time += 10 if RUNNING_CI && SLOW_CI_TESTS.include?(@scenario_class)
   steps %Q{
     When I run the script "features/scripts/launch_ios_app.sh"
-    And I wait for #{wait_time} seconds
   }
+  start = Time.now
+  until test_app_is_running?
+    raise "Never launched! Waited #{MAX_WAIT_TIME}s." if Time.now - start > MAX_WAIT_TIME
+
+    sleep 0.2
+  end
 end
 When("I relaunch the app") do
-  wait_time = RUNNING_CI ? 20 : 10
-  wait_time += 40 if RUNNING_CI && SLOW_CI_TESTS.include?(@scenario_class)
-  steps %Q{
-    When I run the script "features/scripts/launch_ios_app.sh"
-    And I wait for #{wait_time} seconds
-  }
+  start = Time.now
+  while test_app_is_running?
+    raise "Never crashed! Waited #{MAX_WAIT_TIME}s." if Time.now - start > MAX_WAIT_TIME
+
+    sleep 0.2
+  end
+  step('I launch the app')
+end
+When('the app is unexpectedly terminated') do
+  pid = test_app_pid
+  start = Time.now
+  while pid == '0'
+    sleep 0.2
+    pid = test_app_pid
+    raise "Never received app PID! Waited #{MAX_WAIT_TIME}s." if Time.now - start > MAX_WAIT_TIME
+  end
+  sleep 1
+  `kill -9 #{pid} &` if pid
 end
 When("I crash the app using {string}") do |event|
-  @scenario_class = event
   steps %Q{
     When I set environment variable "EVENT_TYPE" to "#{event}"
     And I set environment variable "EVENT_MODE" to "normal"
@@ -38,13 +47,14 @@ When("I crash the app using {string}") do |event|
 end
 When("I put the app in the background") do
   steps %Q{
-    When I run the script "features/scripts/launch_ios_safari.sh"
+    When I run the script "features/scripts/launch_ios_safari.sh" synchronously
     And I wait for 2 seconds
   }
 end
 
 When("I corrupt all reports on disk") do
-  app_path = `xcrun simctl get_app_container booted com.bugsnag.iOSTestApp`.chomp
+  step("I wait for 4 seconds")
+  app_path = `xcrun simctl get_app_container maze-sim com.bugsnag.iOSTestApp`.chomp
   app_path.gsub!(/(.*Containers).*/, '\1')
   files = Dir.glob("#{app_path}/**/KSCrashReports/iOSTestApp/*.json")
   files.each do |path|
