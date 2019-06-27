@@ -258,10 +258,10 @@
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     NSDictionary *device = event[@"device"];
     XCTAssertNotNil(device);
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    XCTAssertEqual(18, device.count);
+#if TARGET_OS_IPHONE || TARGET_OS_TV || TARGET_IPHONE_SIMULATOR
+    XCTAssertEqual(19, device.count);
 #else
-    XCTAssertEqual(17, device.count);
+    XCTAssertEqual(18, device.count);
 #endif
 
     XCTAssertEqualObjects(device[@"id"], @"f6d519a74213a57f8d052c53febfeee6f856d062");
@@ -273,7 +273,7 @@
     XCTAssertEqualObjects(device[@"runtimeVersions"][@"osBuild"], @"14B25");
     XCTAssertEqualObjects(device[@"runtimeVersions"][@"clangVersion"], @"10.0.0 (clang-1000.11.45.5)");
     XCTAssertEqualObjects(device[@"totalMemory"], @15065522176);
-    XCTAssertNil(device[@"freeDisk"]);
+    XCTAssertNotNil(device[@"freeDisk"]);
     XCTAssertEqualObjects(device[@"timezone"], @"PST");
     XCTAssertEqualObjects(device[@"jailbroken"], @YES);
     XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
