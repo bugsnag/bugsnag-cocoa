@@ -8,8 +8,8 @@ Scenario: Override errorClass and message from a notifyError() callback, customi
     Include configured metadata dictionary into the report
 
     When I run "HandledErrorOverrideScenario"
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the exception "errorClass" equals "Bar"
     And the exception "message" equals "Foo"
     And the event "device.time" is within 30 seconds of the current timestamp
@@ -20,8 +20,8 @@ Scenario: Override errorClass and message from a notifyError() callback, customi
 
 Scenario: Reporting an NSError
     When I run "HandledErrorScenario"
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
@@ -31,8 +31,8 @@ Scenario: Reporting an NSError
 
 Scenario: Reporting a handled exception
     When I run "HandledExceptionScenario"
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element
@@ -42,8 +42,8 @@ Scenario: Reporting a handled exception
 
 Scenario: Reporting a handled exception's stacktrace
     When I run "NSExceptionShiftScenario"
-    Then I should receive a request
-    And the request is a valid for the error reporting API
+    And I wait for a request
+    Then the request is valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "events" is an array with 1 element

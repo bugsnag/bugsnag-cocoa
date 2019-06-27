@@ -2,9 +2,8 @@ Feature: Session Tracking
 
 Scenario: Launching using the default configuration sends a single session
     When I run "AutoSessionScenario"
-    And I wait for 10 seconds
-    Then I should receive a request
-    And the request is a valid for the session tracking API
+    And I wait for a request
+    Then the request is valid for the session tracking API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload includes app and device data
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
@@ -25,9 +24,8 @@ Scenario: Launching using the default configuration sends a single session
 
 Scenario: Configuring a custom version sends it in a session request
     When I run "AutoSessionCustomVersionScenario"
-    And I wait for 10 seconds
-    Then I should receive a request
-    And the request is a valid for the session tracking API
+    And I wait for a request
+    Then the request is valid for the session tracking API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload includes app and device data
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
@@ -48,9 +46,8 @@ Scenario: Configuring a custom version sends it in a session request
 
 Scenario: Configuring user info sends it with auto-captured sessions
     When I run "AutoSessionWithUserScenario"
-    And I wait for 10 seconds
-    Then I should receive a request
-    And the request is a valid for the session tracking API
+    And I wait for a request
+    Then the request is valid for the session tracking API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload includes app and device data
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
@@ -62,9 +59,8 @@ Scenario: Configuring user info sends it with auto-captured sessions
 
 Scenario: Configuring user info sends it with manually captured sessions
     When I run "ManualSessionWithUserScenario"
-    And I wait for 10 seconds
-    Then I should receive a request
-    And the request is a valid for the session tracking API
+    And I wait for a request
+    Then the request is valid for the session tracking API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload includes app and device data
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
@@ -76,9 +72,8 @@ Scenario: Configuring user info sends it with manually captured sessions
 
 Scenario: Disabling auto-capture and calling startSession() manually sends a single session
     When I run "ManualSessionScenario"
-    And I wait for 10 seconds
-    Then I should receive a request
-    And the request is a valid for the session tracking API
+    And I wait for a request
+    Then the request is valid for the session tracking API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload includes app and device data
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
@@ -96,9 +91,8 @@ Scenario: Disabling auto-capture sends no sessions
 
 Scenario: Encountering a handled event during a session
     When I run "AutoSessionHandledEventsScenario"
-    And I wait for 10 seconds
-    Then I should receive 3 requests
-    And request 0 is valid for the session tracking API
+    And I wait for 3 requests
+    Then request 0 is valid for the session tracking API
     And request 1 is valid for the error reporting API
     And request 2 is valid for the error reporting API
 
@@ -111,11 +105,10 @@ Scenario: Encountering a handled event during a session
     And the payload field "events.0.session.id" of request 2 equals the payload field "sessions.0.id" of request 0
 
 Scenario: Encountering an unhandled event during a session
-    And I crash the app using "AutoSessionUnhandledScenario"
-    And I wait for 10 seconds
+    When I crash the app using "AutoSessionUnhandledScenario"
     And I relaunch the app
-    Then I should receive 2 requests
-    And request 0 is valid for the session tracking API
+    And I wait for 2 requests
+    Then request 0 is valid for the session tracking API
     And request 1 is valid for the error reporting API
 
     And the payload field "sessions" is an array with 1 elements
@@ -129,12 +122,10 @@ Scenario: Encountering an unhandled event during a session
     And the payload field "events.0.session.id" of request 1 does not equal the payload field "sessions.1.id" of request 0
 
 Scenario: Encountering handled and unhandled events during a session
-    And I crash the app using "AutoSessionMixedEventsScenario"
+    When I crash the app using "AutoSessionMixedEventsScenario"
     And I relaunch the app
-    And I wait for 10 seconds
-
-    Then I should receive 3 requests
-    And request 0 is valid for the session tracking API
+    And I wait for 3 requests
+    Then request 0 is valid for the session tracking API
     And request 1 is valid for the session tracking API
     And request 2 is valid for the error reporting API
 

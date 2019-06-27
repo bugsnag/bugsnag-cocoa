@@ -5,6 +5,9 @@
 
 RUNNING_CI = ENV['TRAVIS'] == 'true'
 
+# Max time in seconds to wait for an action to complete
+MAX_WAIT_TIME = RUNNING_CI ? 300 : 60
+
 ENV['MAZE_SDK'] = '12.1' unless ENV['MAZE_SDK']
 MAZE_SDK = ENV['MAZE_SDK']
 
@@ -15,9 +18,9 @@ Dir.chdir('features/fixtures/ios-swift-cocoapods') do
     ['../../scripts/build_ios_app.sh'],
     ['../../scripts/remove_installed_simulators.sh'],
     ['../../scripts/launch_ios_simulators.sh'],
-    ['../../scripts/pre_launch.sh'],
   ])
 end
+
 
 # Scenario hooks
 Before do
@@ -42,3 +45,18 @@ def app_file_path
   app_path.gsub(/(.*Containers).*/, '\1')
 end
 
+def test_app_pid
+  output = `xcrun simctl spawn maze-sim launchctl print system | grep UIKitApplication:com.bugsnag.iOSTestApp`
+  pattern = /(\d+)\s+(-|-?\d+?)\s+UIKitApplication:com.bugsnag.iOSTestApp/
+  match = output.match(pattern)
+  if match.nil?
+    nil
+  else
+    match[1]
+  end
+end
+
+def test_app_is_running?
+  pid = test_app_pid
+  !pid.nil? # check that PID is valid
+end
