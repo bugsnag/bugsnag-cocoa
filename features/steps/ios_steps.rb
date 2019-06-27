@@ -1,4 +1,4 @@
-SLOW_CI_TESTS = ['PrivilegedInstructionScenario', 'BuiltinTrapScenario', 'MinimalCrashReportScenario', 'NullPointerScenario']
+SLOW_CI_TESTS = ['PrivilegedInstructionScenario', 'BuiltinTrapScenario']
 
 When("I run {string}") do |event_type|
   @scenario_class = event_type
