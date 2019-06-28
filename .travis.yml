@@ -20,9 +20,9 @@ matrix:
             - make test OS=11.4
             - make test OS=10.2
             - make test OS=9.2
-        # - osx_image: xcode10.1
-        #  script: bundle exec maze-runner -c || (cat maze_output/* && exit 1)
-        #  env: MAZE_SDK=12.1 SDK=iphonesimulator12.1 RUBYSHELL=/bin/bash
+        - osx_image: xcode10.1
+          script: bundle exec maze-runner -c || (cat maze_output/* && exit 1)
+          env: MAZE_SDK=12.1 SDK=iphonesimulator12.1 RUBYSHELL=/bin/bash
 install: make bootstrap
 
 before_deploy: make doc
