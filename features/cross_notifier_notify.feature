@@ -10,9 +10,9 @@ Feature: Communicating events between notifiers
         Event counts in the report's session should match the handled-ness.
 
         When I run "HandledInternalNotifyScenario"
-        Then I should receive 2 requests
-        And request 0 is a valid for the session tracking API
-        And request 1 is a valid for the error reporting API
+        And I wait for 2 requests
+        Then request 0 is valid for the session tracking API
+        And request 1 is valid for the error reporting API
         And the exception "errorClass" equals "Handled Error!" for request 1
         And the exception "message" equals "Internally reported a handled event" for request 1
         And the exception "type" equals "unreal" for request 1
@@ -40,9 +40,9 @@ Feature: Communicating events between notifiers
         Event counts in the report's session should match the handled-ness.
 
         When I run "UnhandledInternalNotifyScenario"
-        Then I should receive 2 requests
-        And request 0 is a valid for the session tracking API
-        And request 1 is a valid for the error reporting API
+        And I wait for 2 requests
+        Then request 0 is valid for the session tracking API
+        And request 1 is valid for the error reporting API
         And the exception "errorClass" equals "Unhandled Error?!" for request 1
         And the exception "message" equals "Internally reported an unhandled event" for request 1
         And the exception "type" equals "fake" for request 1
