@@ -1,8 +1,10 @@
 Feature: Reporting crash events
 
+Background:
+    Given I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+
 Scenario: Executing privileged instruction
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "PrivilegedInstructionScenario"
+    When I crash the app using "PrivilegedInstructionScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -13,8 +15,7 @@ Scenario: Executing privileged instruction
     And the "method" of stack frame 0 equals "-[PrivilegedInstructionScenario run]"
 
 Scenario: Calling __builtin_trap()
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "BuiltinTrapScenario"
+    When I crash the app using "BuiltinTrapScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -25,8 +26,7 @@ Scenario: Calling __builtin_trap()
     And the "method" of stack frame 0 equals "-[BuiltinTrapScenario run]"
 
 Scenario: Calling abort()
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "AbortScenario"
+    When I crash the app using "AbortScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -39,8 +39,7 @@ Scenario: Calling abort()
     And the "method" of stack frame 2 equals "-[AbortScenario run]"
 
 Scenario: Throwing a C++ exception
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "CxxExceptionScenario"
+    When I crash the app using "CxxExceptionScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -49,8 +48,7 @@ Scenario: Throwing a C++ exception
     And the payload field "events.0.exceptions.0.stacktrace" is an array with 0 element
 
 Scenario: Calling non-existent method
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "NonExistentMethodScenario"
+    When I crash the app using "NonExistentMethodScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -67,16 +65,14 @@ Scenario: Calling non-existent method
     And the "method" of stack frame 5 equals "-[NonExistentMethodScenario run]"
 
 Scenario: Heap corruption by writing garbage into data areas used by malloc to track allocations
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "CorruptMallocScenario"
+    When I crash the app using "CorruptMallocScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
     And The exception reflects malloc corruption occurred
 
 Scenario: Trigger a crash after overwriting the link register
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "OverwriteLinkRegisterScenario"
+    When I crash the app using "OverwriteLinkRegisterScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -85,8 +81,7 @@ Scenario: Trigger a crash after overwriting the link register
     And the "method" of stack frame 0 equals "-[OverwriteLinkRegisterScenario run]"
 
 Scenario: Attempt to write into a read-only page
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "ReadOnlyPageScenario"
+    When I crash the app using "ReadOnlyPageScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -94,8 +89,7 @@ Scenario: Attempt to write into a read-only page
     And the "method" of stack frame 0 equals "-[ReadOnlyPageScenario run]"
 
 Scenario: Stack overflow
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "StackOverflowScenario"
+    When I crash the app using "StackOverflowScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -113,8 +107,7 @@ Scenario: Stack overflow
     And the "method" of stack frame 9 equals "-[StackOverflowScenario run]"
 
 Scenario: Crash inside objc_msgSend()
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "ObjCMsgSendScenario"
+    When I crash the app using "ObjCMsgSendScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -123,8 +116,7 @@ Scenario: Crash inside objc_msgSend()
     And the "method" of stack frame 0 equals "objc_msgSend"
 
 Scenario: Attempt to execute an instruction undefined on the current architecture
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "UndefinedInstructionScenario"
+    When I crash the app using "UndefinedInstructionScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -132,8 +124,7 @@ Scenario: Attempt to execute an instruction undefined on the current architectur
     And the "method" of stack frame 0 equals "-[UndefinedInstructionScenario run]"
 
 Scenario: Send a message to an object whose memory has already been freed
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "ReleasedObjectScenario"
+    When I crash the app using "ReleasedObjectScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -145,8 +136,7 @@ Scenario: Send a message to an object whose memory has already been freed
 # N.B. this scenario is "imprecise" on CrashProbe due to line number info,
 # which is not tested here as this would require symbolication
 Scenario: Crash within Swift code
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "SwiftCrash"
+    When I crash the app using "SwiftCrash"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -154,8 +144,7 @@ Scenario: Crash within Swift code
     And the exception "errorClass" equals "Fatal error"
 
 Scenario: Assertion failure in Swift code
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "SwiftAssertion"
+    When I crash the app using "SwiftAssertion"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -163,8 +152,7 @@ Scenario: Assertion failure in Swift code
     And the exception "message" contains "several unfortunate things just happened"
 
 Scenario: Dereference a null pointer
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "NullPointerScenario"
+    When I crash the app using "NullPointerScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -173,8 +161,7 @@ Scenario: Dereference a null pointer
     And the "method" of stack frame 0 equals "-[NullPointerScenario run]"
 
 Scenario: Trigger a crash with libsystem_pthread's _pthread_list_lock held
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "AsyncSafeThreadScenario"
+    When I crash the app using "AsyncSafeThreadScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -188,8 +175,7 @@ Scenario: Trigger a crash with libsystem_pthread's _pthread_list_lock held
     |-[AsyncSafeThreadScenario run]|
 
 Scenario: Read a garbage pointer
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "ReadGarbagePointerScenario"
+    When I crash the app using "ReadGarbagePointerScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -198,8 +184,7 @@ Scenario: Read a garbage pointer
     And the "method" of stack frame 0 equals "-[ReadGarbagePointerScenario run]"
 
 Scenario: Throw a NSException
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "ObjCExceptionScenario"
+    When I crash the app using "ObjCExceptionScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -211,8 +196,7 @@ Scenario: Throw a NSException
     And the event "device.time" is within 60 seconds of the current timestamp
 
 Scenario: Access a non-object as an object
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "AccessNonObjectScenario"
+    When I crash the app using "AccessNonObjectScenario"
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
@@ -221,8 +205,7 @@ Scenario: Access a non-object as an object
     And the "method" of stack frame 0 equals "objc_msgSend"
 
 Scenario: Crash report file corruption
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I crash the app using "AccessNonObjectScenario"
+    When I crash the app using "AccessNonObjectScenario"
     And I corrupt all reports on disk
     And I relaunch the app
     And I wait for a request
