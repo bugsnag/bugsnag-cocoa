@@ -150,7 +150,7 @@ Scenario: Crash within Swift code
     And I relaunch the app
     And I wait for a request
     Then the request is valid for the error reporting API
-    And the exception "message" equals "Unexpectedly found nil while unwrapping an Optional value"
+    And the exception "message" contains "Unexpectedly found nil while unwrapping an Optional value"
     And the exception "errorClass" equals "Fatal error"
 
 Scenario: Assertion failure in Swift code
@@ -160,7 +160,7 @@ Scenario: Assertion failure in Swift code
     And I wait for a request
     Then the request is valid for the error reporting API
     And the exception "errorClass" equals "Fatal error"
-    And the exception "message" equals "several unfortunate things just happened"
+    And the exception "message" contains "several unfortunate things just happened"
 
 Scenario: Dereference a null pointer
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
