@@ -25,7 +25,6 @@
 //
 
 #import "BSG_KSSafeCollections.h"
-#import "BugsnagUtility.h"
 
 @implementation NSMutableArray (BSG_KSSafeCollections)
 
