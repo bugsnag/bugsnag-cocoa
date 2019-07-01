@@ -118,26 +118,6 @@
     XCTAssertNil(result, @"");
 }
 
-- (void) testSafeSetObject
-{
-    NSMutableDictionary* dict = [NSMutableDictionary dictionary];
-    id key = @"key";
-    id object = @"blah";
-    [dict bsg_ksc_safeSetObject:object forKey:key];
-    id result = dict[key];
-    XCTAssertEqual(result, object, @"");
-}
-
-- (void) testSafeSetObject2
-{
-    NSMutableDictionary* dict = [NSMutableDictionary dictionary];
-    id key = @"key";
-    id object = nil;
-    [dict bsg_ksc_safeSetObject:object forKey:key];
-    id result = dict[key];
-    XCTAssertNotNil(result, @"");
-}
-
 - (void) testSetValueIfNotNil
 {
     NSMutableDictionary* dict = [NSMutableDictionary dictionary];

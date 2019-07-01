@@ -59,10 +59,6 @@
     }
 }
 
-- (void)bsg_ksc_safeSetObject:(id)object forKey:(id)key {
-    BSGDictSafeSet(self, key, object);
-}
-
 - (void)bsg_ksc_setValueIfNotNil:(id)value forKey:(NSString *)key {
     if (value != nil && key != nil) {
         [self setValue:value forKey:key];
