@@ -10,6 +10,7 @@
 		4B3B193122CA77EB00475354 /* BugsnagUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B3B192F22CA77EB00475354 /* BugsnagUtility.h */; };
 		4B3B193222CA77EB00475354 /* BugsnagUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3B193022CA77EB00475354 /* BugsnagUtility.m */; };
 		4B3B193322CA77EB00475354 /* BugsnagUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3B193022CA77EB00475354 /* BugsnagUtility.m */; };
+		4B3B193522CA7B0900475354 /* BugsnagUtilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3B193422CA7B0900475354 /* BugsnagUtilityTest.m */; };
 		4B47970A22A9AE1F00FF9C2E /* BugsnagCrashReportFromKSCrashReportTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B47970922A9AE1F00FF9C2E /* BugsnagCrashReportFromKSCrashReportTest.m */; };
 		8A12006A221C36420008C9C3 /* BSGFilepathTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A120069221C36420008C9C3 /* BSGFilepathTests.m */; };
 		8A2C8F231C6BBD2300846019 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8F181C6BBD2300846019 /* Bugsnag.framework */; };
@@ -421,6 +422,7 @@
 /* Begin PBXFileReference section */
 		4B3B192F22CA77EB00475354 /* BugsnagUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagUtility.h; path = ../Source/BugsnagUtility.h; sourceTree = "<group>"; };
 		4B3B193022CA77EB00475354 /* BugsnagUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagUtility.m; path = ../Source/BugsnagUtility.m; sourceTree = "<group>"; };
+		4B3B193422CA7B0900475354 /* BugsnagUtilityTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagUtilityTest.m; path = ../../Tests/KSCrash/BugsnagUtilityTest.m; sourceTree = "<group>"; };
 		4B47970922A9AE1F00FF9C2E /* BugsnagCrashReportFromKSCrashReportTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagCrashReportFromKSCrashReportTest.m; sourceTree = "<group>"; };
 		8A120069221C36420008C9C3 /* BSGFilepathTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BSGFilepathTests.m; path = ../../Tests/BSGFilepathTests.m; sourceTree = "<group>"; };
 		8A2C8F181C6BBD2300846019 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -737,6 +739,7 @@
 			children = (
 				E70EE0891FD7047D00FA745C /* KSCrash */,
 				8A2C8F8B1C6BBFDD00846019 /* BugsnagBreadcrumbsTest.m */,
+				4B3B193422CA7B0900475354 /* BugsnagUtilityTest.m */,
 				8A2C8F8C1C6BBFDD00846019 /* BugsnagCrashReportTests.m */,
 				4B47970922A9AE1F00FF9C2E /* BugsnagCrashReportFromKSCrashReportTest.m */,
 				8A4E733E1DC13281001F7CC8 /* BugsnagConfigurationTests.m */,
@@ -1239,6 +1242,7 @@
 				8A70D9CD2253C484006B696F /* BSGOutOfMemoryWatchdogTests.m in Sources */,
 				E7B970341FD7031500590C27 /* XCTestCase+KSCrash.m in Sources */,
 				E70EE07E1FD703D600FA745C /* NSError+SimpleConstructor_Tests.m in Sources */,
+				4B3B193522CA7B0900475354 /* BugsnagUtilityTest.m in Sources */,
 				E70EE08D1FD705A700FA745C /* KSSafeCollections_Tests.m in Sources */,
 				E70EE0931FD706C700FA745C /* KSFileUtils_Tests.m in Sources */,
 				E70EE08E1FD705A700FA745C /* KSSignalInfo_Tests.m in Sources */,
