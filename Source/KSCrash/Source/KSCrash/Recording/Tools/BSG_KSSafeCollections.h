@@ -26,6 +26,10 @@
 
 #import <Foundation/Foundation.h>
 
+static inline id safeValue(id value) {
+    return value == nil ? [NSNull null] : value;
+}
+
 @interface NSMutableArray (BSG_KSSafeCollections)
 
 - (void)bsg_ksc_addObjectIfNotNil:(id)object;

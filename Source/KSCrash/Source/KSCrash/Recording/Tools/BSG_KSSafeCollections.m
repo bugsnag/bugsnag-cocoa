@@ -25,10 +25,7 @@
 //
 
 #import "BSG_KSSafeCollections.h"
-
-static inline id safeValue(id value) {
-    return value == nil ? [NSNull null] : value;
-}
+#import "BugsnagUtility.h"
 
 @implementation NSMutableArray (BSG_KSSafeCollections)
 
@@ -63,7 +60,7 @@ static inline id safeValue(id value) {
 }
 
 - (void)bsg_ksc_safeSetObject:(id)object forKey:(id)key {
-    self[key] = safeValue(object);
+    BSGDictSafeSet(self, key, object);
 }
 
 - (void)bsg_ksc_setValueIfNotNil:(id)value forKey:(NSString *)key {
