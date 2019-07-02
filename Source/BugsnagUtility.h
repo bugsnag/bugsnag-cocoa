@@ -10,7 +10,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-void BSGDictSafeSet(NSMutableDictionary *dict, id<NSCopying> key, _Nullable id valueOrNil);
 NSDictionary *BSGDictMerge(NSDictionary *source, NSDictionary * _Nullable destination);
 
 NS_ASSUME_NONNULL_END

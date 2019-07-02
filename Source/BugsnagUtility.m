@@ -7,11 +7,6 @@
 //
 
 #import "BugsnagUtility.h"
-#import "BSG_KSSafeCollections.h"
-
-void BSGDictSafeSet(NSMutableDictionary *dict, id<NSCopying> key, id valueOrNil) {
-    [dict setObject:safeValue(valueOrNil) forKey:key];
-}
 
 NSDictionary *BSGDictMerge(NSDictionary *source, NSDictionary *destination) {
     if ([destination count] == 0) {
