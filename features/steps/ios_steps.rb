@@ -27,15 +27,7 @@ When("I relaunch the app") do
   step('I launch the app')
 end
 When('the app is unexpectedly terminated') do
-  pid = test_app_pid
-  start = Time.now
-  while pid == '0'
-    sleep 0.2
-    pid = test_app_pid
-    raise "Never received app PID! Waited #{MAX_WAIT_TIME}s." if Time.now - start > MAX_WAIT_TIME
-  end
-  sleep 1
-  `kill -9 #{pid} &` if pid
+  kill_test_app
 end
 When("I crash the app using {string}") do |event|
   steps %Q{

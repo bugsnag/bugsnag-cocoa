@@ -60,3 +60,25 @@ def test_app_is_running?
   pid = test_app_pid
   !pid.nil? # check that PID is valid
 end
+
+def kill_test_app(attempt_retry = true)
+  pid = test_app_pid
+  start = Time.now
+  while pid == '0'
+    sleep 0.2
+    pid = test_app_pid
+    raise "Never received app PID! Waited #{MAX_WAIT_TIME}s." if Time.now - start > MAX_WAIT_TIME
+  end
+  sleep 1
+  `kill -9 #{pid} &` if pid
+  kill_time = Time.now
+  while test_app_is_running?
+    if Time.now - kill_time > 10
+      if attempt_retry
+        kill_test_app(false)
+      else
+        raise "Test app was not successfully killed"
+      end
+    end
+  end
+end
