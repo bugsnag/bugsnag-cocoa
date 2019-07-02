@@ -30,10 +30,32 @@
     XCTAssertEqualObjects(dst, BSGDictMerge(@{}, dst), @"should copy");
 }
 
-- (void) testDstEmpty {
+- (void)testDstEmpty {
     id src = @{@"a": @"one"};
     XCTAssertEqualObjects(src, BSGDictMerge(src, @{}), @"should copy");
 }
 
+- (void)testDstNil {
+    id src = @{@"a": @"one"};
+    XCTAssertEqualObjects(src, BSGDictMerge(src, nil), @"should copy");
+}
+
+- (void)testSrcDict {
+    id src = @{@"a": @{@"x": @"blah"}};
+    XCTAssertEqualObjects(src, BSGDictMerge(src, @{@"a": @"two"}), @"should not overwrite");
+}
+
+- (void)testDstDict {
+    id src = @{@"a": @"one"};
+    XCTAssertEqualObjects(src, BSGDictMerge(src, @{@"a": @{@"x": @"blah"}}), @"should not overwrite");
+}
+
+- (void)testSrcDstDict {
+    id src = @{@"a": @{@"x": @"blah"}};
+    id dst = @{@"a": @{@"y": @"something"}};
+    NSDictionary* expected = @{@"a": @{@"x": @"blah",
+                                       @"y": @"something"}};
+    XCTAssertEqualObjects(expected, BSGDictMerge(src, dst), @"should combine");
+}
 
 @end

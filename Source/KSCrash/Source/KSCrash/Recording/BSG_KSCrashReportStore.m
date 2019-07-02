@@ -30,8 +30,8 @@
 #import "BSG_KSCrashReportFields.h"
 #import "BSG_KSSafeCollections.h"
 #import "BSG_RFC3339DateTool.h"
-#import "NSDictionary+BSG_Merge.h"
 #import "BSG_KSLogger.h"
+#import "BugsnagUtility.h"
 
 static NSString *const kCrashReportSuffix = @"-CrashReport-";
 #define BSG_kRecrashReportSuffix @"-RecrashReport-"
@@ -160,7 +160,7 @@ static NSString *const kCrashReportSuffix = @"-CrashReport-";
         return;
     }
 
-    [report bsg_ksc_setObjectIfNotNil:[srcDict bsg_mergedInto:dstDict]
+    [report bsg_ksc_setObjectIfNotNil:BSGDictMerge(srcDict, dstDict)
                                forKey:dstKey];
     [report removeObjectForKey:srcKey];
 }
