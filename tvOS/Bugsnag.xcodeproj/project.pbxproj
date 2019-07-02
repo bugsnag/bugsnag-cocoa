@@ -13,7 +13,7 @@
 		4B3CD2BD22C5676800DBFF33 /* BugsnagThreadTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3CD2B922C5676700DBFF33 /* BugsnagThreadTest.m */; };
 		4B3CD2BE22C5676800DBFF33 /* RegisterErrorDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3CD2BA22C5676800DBFF33 /* RegisterErrorDataTest.m */; };
 		4B406C1422CAD94100464D1D /* BugsnagCollectionsBSGDictSetSafeObjectTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B406C1222CAD94100464D1D /* BugsnagCollectionsBSGDictSetSafeObjectTest.m */; };
-		4B406C1522CAD94100464D1D /* BugsnagUtilityBSGDictMergeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B406C1322CAD94100464D1D /* BugsnagUtilityBSGDictMergeTest.m */; };
+		4B406C1522CAD94100464D1D /* BugsnagCollectionsBSGDictMergeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B406C1322CAD94100464D1D /* BugsnagCollectionsBSGDictMergeTest.m */; };
 		4BE6C42322CAD33A0056305D /* BugsnagUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE6C42122CAD3390056305D /* BugsnagUtility.m */; };
 		4BE6C42422CAD33A0056305D /* BugsnagUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = 4BE6C42222CAD33A0056305D /* BugsnagUtility.h */; };
 		8A12006E221C51550008C9C3 /* BSGFilepathTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A12006D221C51550008C9C3 /* BSGFilepathTests.m */; };
@@ -202,7 +202,7 @@
 		4B3CD2B922C5676700DBFF33 /* BugsnagThreadTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagThreadTest.m; path = ../../iOS/BugsnagTests/BugsnagThreadTest.m; sourceTree = "<group>"; };
 		4B3CD2BA22C5676800DBFF33 /* RegisterErrorDataTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RegisterErrorDataTest.m; path = ../../iOS/BugsnagTests/RegisterErrorDataTest.m; sourceTree = "<group>"; };
 		4B406C1222CAD94100464D1D /* BugsnagCollectionsBSGDictSetSafeObjectTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagCollectionsBSGDictSetSafeObjectTest.m; path = ../../Tests/BugsnagCollectionsBSGDictSetSafeObjectTest.m; sourceTree = "<group>"; };
-		4B406C1322CAD94100464D1D /* BugsnagUtilityBSGDictMergeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagUtilityBSGDictMergeTest.m; path = ../../Tests/BugsnagUtilityBSGDictMergeTest.m; sourceTree = "<group>"; };
+		4B406C1322CAD94100464D1D /* BugsnagCollectionsBSGDictMergeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagCollectionsBSGDictMergeTest.m; path = ../../Tests/BugsnagCollectionsBSGDictMergeTest.m; sourceTree = "<group>"; };
 		4BE6C42122CAD3390056305D /* BugsnagUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagUtility.m; path = ../Source/BugsnagUtility.m; sourceTree = "<group>"; };
 		4BE6C42222CAD33A0056305D /* BugsnagUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagUtility.h; path = ../Source/BugsnagUtility.h; sourceTree = "<group>"; };
 		8A12006D221C51550008C9C3 /* BSGFilepathTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSGFilepathTests.m; path = ../../Tests/BSGFilepathTests.m; sourceTree = "<group>"; };
@@ -488,7 +488,7 @@
 			children = (
 				E7CE78D71FD94EF1001D07E0 /* KSCrash */,
 				8A12006D221C51550008C9C3 /* BSGFilepathTests.m */,
-				4B406C1322CAD94100464D1D /* BugsnagUtilityBSGDictMergeTest.m */,
+				4B406C1322CAD94100464D1D /* BugsnagCollectionsBSGDictMergeTest.m */,
 				4B406C1222CAD94100464D1D /* BugsnagCollectionsBSGDictSetSafeObjectTest.m */,
 				E791488C1FD82E77003EFEBF /* BugsnagSessionTest.m */,
 				E791488A1FD82E77003EFEBF /* BugsnagSessionTrackerTest.m */,
@@ -965,7 +965,7 @@
 				E7CE78FB1FD94F1B001D07E0 /* KSSafeCollections_Tests.m in Sources */,
 				E7CE78FE1FD94F1B001D07E0 /* KSSignalInfo_Tests.m in Sources */,
 				E7CE78FC1FD94F1B001D07E0 /* KSCrashSentry_NSException_Tests.m in Sources */,
-				4B406C1522CAD94100464D1D /* BugsnagUtilityBSGDictMergeTest.m in Sources */,
+				4B406C1522CAD94100464D1D /* BugsnagCollectionsBSGDictMergeTest.m in Sources */,
 				E7CE79081FD94F1B001D07E0 /* KSLogger_Tests.m in Sources */,
 				E7CE78F31FD94F1B001D07E0 /* NSError+SimpleConstructor_Tests.m in Sources */,
 				E7CE79001FD94F1B001D07E0 /* KSJSONCodec_Tests.m in Sources */,

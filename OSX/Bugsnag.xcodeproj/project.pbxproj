@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4B406C1822CAD96400464D1D /* BugsnagUtilityBSGDictMergeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B406C1622CAD96400464D1D /* BugsnagUtilityBSGDictMergeTest.m */; };
+		4B406C1822CAD96400464D1D /* BugsnagCollectionsBSGDictMergeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B406C1622CAD96400464D1D /* BugsnagCollectionsBSGDictMergeTest.m */; };
 		4B406C1922CAD96400464D1D /* BugsnagCollectionsBSGDictSetSafeObjectTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B406C1722CAD96400464D1D /* BugsnagCollectionsBSGDictSetSafeObjectTest.m */; };
 		4BE6C41F22CAD3000056305D /* BugsnagUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = 4BE6C41D22CAD2FF0056305D /* BugsnagUtility.h */; };
 		4BE6C42022CAD3000056305D /* BugsnagUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE6C41E22CAD2FF0056305D /* BugsnagUtility.m */; };
@@ -192,7 +192,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4B406C1622CAD96400464D1D /* BugsnagUtilityBSGDictMergeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagUtilityBSGDictMergeTest.m; sourceTree = "<group>"; };
+		4B406C1622CAD96400464D1D /* BugsnagCollectionsBSGDictMergeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagCollectionsBSGDictMergeTest.m; sourceTree = "<group>"; };
 		4B406C1722CAD96400464D1D /* BugsnagCollectionsBSGDictSetSafeObjectTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagCollectionsBSGDictSetSafeObjectTest.m; sourceTree = "<group>"; };
 		4BE6C41D22CAD2FF0056305D /* BugsnagUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagUtility.h; path = ../Source/BugsnagUtility.h; sourceTree = "<group>"; };
 		4BE6C41E22CAD2FF0056305D /* BugsnagUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagUtility.m; path = ../Source/BugsnagUtility.m; sourceTree = "<group>"; };
@@ -482,7 +482,7 @@
 			isa = PBXGroup;
 			children = (
 				8A12006B221C50F40008C9C3 /* BSGFilepathTests.m */,
-				4B406C1622CAD96400464D1D /* BugsnagUtilityBSGDictMergeTest.m */,
+				4B406C1622CAD96400464D1D /* BugsnagCollectionsBSGDictMergeTest.m */,
 				4B406C1722CAD96400464D1D /* BugsnagCollectionsBSGDictSetSafeObjectTest.m */,
 				E7CE78861FD94E40001D07E0 /* KSCrash */,
 				E791482D1FD82B0C003EFEBF /* BugsnagSessionTest.m */,
@@ -956,7 +956,7 @@
 				E7CE78CF1FD94E77001D07E0 /* NSError+SimpleConstructor_Tests.m in Sources */,
 				E7CE78C81FD94E77001D07E0 /* KSSafeCollections_Tests.m in Sources */,
 				E7CE78BF1FD94E77001D07E0 /* KSCrashSentry_Signal_Tests.m in Sources */,
-				4B406C1822CAD96400464D1D /* BugsnagUtilityBSGDictMergeTest.m in Sources */,
+				4B406C1822CAD96400464D1D /* BugsnagCollectionsBSGDictMergeTest.m in Sources */,
 				E7CE78CB1FD94E77001D07E0 /* KSSysCtl_Tests.m in Sources */,
 				E7CE78D01FD94E77001D07E0 /* RFC3339DateTool_Tests.m in Sources */,
 				E7CE78C71FD94E77001D07E0 /* KSObjC_Tests.m in Sources */,

@@ -9,10 +9,10 @@
 @import XCTest;
 #import "BugsnagCollections.h"
 
-@interface BugsnagUtilityBSGDictMergeTest : XCTestCase
+@interface BugsnagCollectionsBSGDictMergeTest : XCTestCase
 @end
 
-@implementation BugsnagUtilityBSGDictMergeTest
+@implementation BugsnagCollectionsBSGDictMergeTest
 
 - (void)testBasicMerge {
     NSDictionary *combined = @{@"a": @"one",
