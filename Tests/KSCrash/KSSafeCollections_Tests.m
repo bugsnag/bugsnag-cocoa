@@ -27,7 +27,6 @@
 
 #import <XCTest/XCTest.h>
 #import "BSG_KSSafeCollections.h"
-#import "BugsnagCollections.h"
 
 @interface KSSafeCollections_Tests : XCTestCase @end
 
@@ -96,26 +95,6 @@
     id object = nil;
     [array bsg_ksc_safeInsertObject:object atIndex:1];
     XCTAssertTrue([array count] == 3, @"");
-}
-
-- (void) testSetObjectIfNotNil
-{
-    NSMutableDictionary* dict = [NSMutableDictionary dictionary];
-    id key = @"key";
-    id object = @"blah";
-    BSGDictInsertIfNotNil(dict, object, key);
-    id result = dict[key];
-    XCTAssertEqual(result, object, @"");
-}
-
-- (void) testSetObjectIfNotNil2
-{
-    NSMutableDictionary* dict = [NSMutableDictionary dictionary];
-    id key = @"key";
-    id object = nil;
-    BSGDictInsertIfNotNil(dict, object, key);
-    id result = dict[key];
-    XCTAssertNil(result, @"");
 }
 
 - (void) testSetValueIfNotNil
