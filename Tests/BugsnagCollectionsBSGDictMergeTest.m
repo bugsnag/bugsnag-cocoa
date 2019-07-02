@@ -1,5 +1,5 @@
 //
-//  BugsnagUtilityBSGDictMergeTest.m
+//  BugsnagCollectionsBSGDictMergeTest.m
 //  Tests
 //
 //  Created by Paul Zabelin on 7/1/19.

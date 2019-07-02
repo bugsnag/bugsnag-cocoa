@@ -1,5 +1,5 @@
 //
-//  BugsnagUtilityTest.m
+//  BugsnagCollectionsBSGDictSetSafeObjectTest.m
 //  Tests
 //
 //  Created by Paul Zabelin on 7/1/19.
@@ -30,7 +30,7 @@
 
 - (void)testBSGDictSetSafeObjectNotNil {
     BSGDictSetSafeObject(self.dict, @"example", @"test");
-    XCTAssertEqual(self.dict[@"test"], @"example", @"should store example string");
+    XCTAssertEqualObjects(self.dict, @{@"test":@"example"}, @"should store example string for the given key");
 }
 
 @end

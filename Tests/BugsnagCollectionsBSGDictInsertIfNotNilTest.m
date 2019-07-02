@@ -37,5 +37,4 @@
     XCTAssertNil(self.dict[self.key], @"should not be inserted");
 }
 
-
 @end
