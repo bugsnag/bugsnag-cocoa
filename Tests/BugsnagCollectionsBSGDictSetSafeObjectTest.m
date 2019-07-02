@@ -7,13 +7,13 @@
 //
 
 @import XCTest;
-#import "BugsnagUtility.h"
+#import "BugsnagCollections.h"
 
-@interface BugsnagUtilityBSGDictSafeSetTest : XCTestCase
+@interface BugsnagCollectionsBSGDictSetSafeObjectTest : XCTestCase
 @property (nonatomic, strong) NSMutableDictionary *dict;
 @end
 
-@implementation BugsnagUtilityBSGDictSafeSetTest
+@implementation BugsnagCollectionsBSGDictSetSafeObjectTest
 
 - (void)setUp {
     self.dict = [@{} mutableCopy];
@@ -23,13 +23,13 @@
     self.dict = nil;
 }
 
-- (void)testBSGDictSafeSetNil {
-    BSGDictSafeSet(self.dict, @"test", nil);
+- (void)testBSGDictSetSafeObjectNil {
+    BSGDictSetSafeObject(self.dict, nil, @"test");
     XCTAssertEqual(self.dict[@"test"], [NSNull null], @"should store NSNull for nil");
 }
 
-- (void)testBSGDictSafeSetNotNil {
-    BSGDictSafeSet(self.dict, @"test", @"example");
+- (void)testBSGDictSetSafeObjectNotNil {
+    BSGDictSetSafeObject(self.dict, @"example", @"test");
     XCTAssertEqual(self.dict[@"test"], @"example", @"should store example string");
 }
 
