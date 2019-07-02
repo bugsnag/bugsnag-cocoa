@@ -9,11 +9,11 @@
 @import XCTest;
 #import "BugsnagUtility.h"
 
-@interface BugsnagUtilityTest : XCTestCase
+@interface BugsnagUtilityBSGDictSafeSetTest : XCTestCase
 @property (nonatomic, strong) NSMutableDictionary *dict;
 @end
 
-@implementation BugsnagUtilityTest
+@implementation BugsnagUtilityBSGDictSafeSetTest
 
 - (void)setUp {
     self.dict = [@{} mutableCopy];
