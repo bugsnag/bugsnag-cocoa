@@ -28,7 +28,6 @@
 
 #import "BSG_KSCrashDoctor.h"
 #import "BSG_KSCrashReportFields.h"
-#import "BSG_KSSafeCollections.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BSG_KSLogger.h"
 #import "BugsnagCollections.h"

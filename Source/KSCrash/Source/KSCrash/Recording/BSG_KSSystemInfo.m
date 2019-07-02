@@ -29,7 +29,6 @@
 #import "BSG_KSDynamicLinker.h"
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSMach.h"
-#import "BSG_KSSafeCollections.h"
 #import "BSG_KSSysCtl.h"
 #import "BSG_KSSystemCapabilities.h"
 #import "BugsnagKeys.h"

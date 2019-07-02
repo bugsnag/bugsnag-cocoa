@@ -138,8 +138,6 @@
 		E79E6BC51F4E3850002B35F9 /* BSG_KSObjC.c in Sources */ = {isa = PBXBuildFile; fileRef = E79E6B591F4E3850002B35F9 /* BSG_KSObjC.c */; };
 		E79E6BC61F4E3850002B35F9 /* BSG_KSObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = E79E6B5A1F4E3850002B35F9 /* BSG_KSObjC.h */; };
 		E79E6BC71F4E3850002B35F9 /* BSG_KSObjCApple.h in Headers */ = {isa = PBXBuildFile; fileRef = E79E6B5B1F4E3850002B35F9 /* BSG_KSObjCApple.h */; };
-		E79E6BC81F4E3850002B35F9 /* BSG_KSSafeCollections.h in Headers */ = {isa = PBXBuildFile; fileRef = E79E6B5C1F4E3850002B35F9 /* BSG_KSSafeCollections.h */; };
-		E79E6BC91F4E3850002B35F9 /* BSG_KSSafeCollections.m in Sources */ = {isa = PBXBuildFile; fileRef = E79E6B5D1F4E3850002B35F9 /* BSG_KSSafeCollections.m */; };
 		E79E6BCA1F4E3850002B35F9 /* BSG_KSSignalInfo.c in Sources */ = {isa = PBXBuildFile; fileRef = E79E6B5E1F4E3850002B35F9 /* BSG_KSSignalInfo.c */; };
 		E79E6BCB1F4E3850002B35F9 /* BSG_KSSignalInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = E79E6B5F1F4E3850002B35F9 /* BSG_KSSignalInfo.h */; };
 		E79E6BCC1F4E3850002B35F9 /* BSG_KSSingleton.h in Headers */ = {isa = PBXBuildFile; fileRef = E79E6B601F4E3850002B35F9 /* BSG_KSSingleton.h */; };
@@ -168,7 +166,6 @@
 		E7CE78C51FD94E77001D07E0 /* KSLogger_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE789E1FD94E60001D07E0 /* KSLogger_Tests.m */; };
 		E7CE78C61FD94E77001D07E0 /* KSMach_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78871FD94E5F001D07E0 /* KSMach_Tests.m */; };
 		E7CE78C71FD94E77001D07E0 /* KSObjC_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE789C1FD94E60001D07E0 /* KSObjC_Tests.m */; };
-		E7CE78C81FD94E77001D07E0 /* KSSafeCollections_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78901FD94E5F001D07E0 /* KSSafeCollections_Tests.m */; };
 		E7CE78C91FD94E77001D07E0 /* KSSignalInfo_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78941FD94E5F001D07E0 /* KSSignalInfo_Tests.m */; };
 		E7CE78CA1FD94E77001D07E0 /* KSString_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78921FD94E5F001D07E0 /* KSString_Tests.m */; };
 		E7CE78CB1FD94E77001D07E0 /* KSSysCtl_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE789D1FD94E60001D07E0 /* KSSysCtl_Tests.m */; };
@@ -329,8 +326,6 @@
 		E79E6B591F4E3850002B35F9 /* BSG_KSObjC.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BSG_KSObjC.c; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_KSObjC.c; sourceTree = SOURCE_ROOT; };
 		E79E6B5A1F4E3850002B35F9 /* BSG_KSObjC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSObjC.h; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_KSObjC.h; sourceTree = SOURCE_ROOT; };
 		E79E6B5B1F4E3850002B35F9 /* BSG_KSObjCApple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSObjCApple.h; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_KSObjCApple.h; sourceTree = SOURCE_ROOT; };
-		E79E6B5C1F4E3850002B35F9 /* BSG_KSSafeCollections.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSSafeCollections.h; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_KSSafeCollections.h; sourceTree = SOURCE_ROOT; };
-		E79E6B5D1F4E3850002B35F9 /* BSG_KSSafeCollections.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSG_KSSafeCollections.m; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_KSSafeCollections.m; sourceTree = SOURCE_ROOT; };
 		E79E6B5E1F4E3850002B35F9 /* BSG_KSSignalInfo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BSG_KSSignalInfo.c; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_KSSignalInfo.c; sourceTree = SOURCE_ROOT; };
 		E79E6B5F1F4E3850002B35F9 /* BSG_KSSignalInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSSignalInfo.h; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_KSSignalInfo.h; sourceTree = SOURCE_ROOT; };
 		E79E6B601F4E3850002B35F9 /* BSG_KSSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSSingleton.h; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_KSSingleton.h; sourceTree = SOURCE_ROOT; };
@@ -355,7 +350,6 @@
 		E7CE788D1FD94E5F001D07E0 /* KSCrashSentry_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSCrashSentry_Tests.m; sourceTree = "<group>"; };
 		E7CE788E1FD94E5F001D07E0 /* KSSystemInfo_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSSystemInfo_Tests.m; sourceTree = "<group>"; };
 		E7CE788F1FD94E5F001D07E0 /* KSZombie_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSZombie_Tests.m; sourceTree = "<group>"; };
-		E7CE78901FD94E5F001D07E0 /* KSSafeCollections_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSSafeCollections_Tests.m; sourceTree = "<group>"; };
 		E7CE78911FD94E5F001D07E0 /* KSCrashSentry_NSException_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSCrashSentry_NSException_Tests.m; sourceTree = "<group>"; };
 		E7CE78921FD94E5F001D07E0 /* KSString_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSString_Tests.m; sourceTree = "<group>"; };
 		E7CE78931FD94E5F001D07E0 /* FileBasedTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileBasedTestCase.h; sourceTree = "<group>"; };
@@ -624,8 +618,6 @@
 				E79E6B591F4E3850002B35F9 /* BSG_KSObjC.c */,
 				E79E6B5A1F4E3850002B35F9 /* BSG_KSObjC.h */,
 				E79E6B5B1F4E3850002B35F9 /* BSG_KSObjCApple.h */,
-				E79E6B5C1F4E3850002B35F9 /* BSG_KSSafeCollections.h */,
-				E79E6B5D1F4E3850002B35F9 /* BSG_KSSafeCollections.m */,
 				E79E6B5E1F4E3850002B35F9 /* BSG_KSSignalInfo.c */,
 				E79E6B5F1F4E3850002B35F9 /* BSG_KSSignalInfo.h */,
 				E79E6B601F4E3850002B35F9 /* BSG_KSSingleton.h */,
@@ -681,7 +673,6 @@
 				E7CE789E1FD94E60001D07E0 /* KSLogger_Tests.m */,
 				E7CE78871FD94E5F001D07E0 /* KSMach_Tests.m */,
 				E7CE789C1FD94E60001D07E0 /* KSObjC_Tests.m */,
-				E7CE78901FD94E5F001D07E0 /* KSSafeCollections_Tests.m */,
 				E7CE78941FD94E5F001D07E0 /* KSSignalInfo_Tests.m */,
 				E7CE78921FD94E5F001D07E0 /* KSString_Tests.m */,
 				E7CE789D1FD94E60001D07E0 /* KSSysCtl_Tests.m */,
@@ -754,7 +745,6 @@
 				E79E6BA11F4E3850002B35F9 /* BSG_KSCrashSentry_CPPException.h in Headers */,
 				8A2C8FD51C6BC2C800846019 /* BugsnagCrashReport.h in Headers */,
 				E79E6B041F4E3847002B35F9 /* BugsnagErrorReportApiClient.h in Headers */,
-				E79E6BC81F4E3850002B35F9 /* BSG_KSSafeCollections.h in Headers */,
 				E79E6BB11F4E3850002B35F9 /* BSG_KSBacktrace_Private.h in Headers */,
 				E79E6B8C1F4E3850002B35F9 /* BSG_KSCrashC.h in Headers */,
 				E79E6BDC1F4E3850002B35F9 /* BSG_KSCrashReportFilterCompletion.h in Headers */,
@@ -877,7 +867,6 @@
 			files = (
 				E79E6BCD1F4E3850002B35F9 /* BSG_KSString.c in Sources */,
 				E79E6BCF1F4E3850002B35F9 /* BSG_KSSysCtl.c in Sources */,
-				E79E6BC91F4E3850002B35F9 /* BSG_KSSafeCollections.m in Sources */,
 				8A2C8FD41C6BC2C800846019 /* BugsnagConfiguration.m in Sources */,
 				8A627CDA1EC3B75200F7C04E /* BSGSerialization.m in Sources */,
 				E79E6BAA1F4E3850002B35F9 /* BSG_KSCrashSentry_Signal.c in Sources */,
@@ -950,7 +939,6 @@
 				E7CE78D51FD94E93001D07E0 /* XCTestCase+KSCrash.m in Sources */,
 				E7CE78CD1FD94E77001D07E0 /* KSZombie_Tests.m in Sources */,
 				E7CE78CF1FD94E77001D07E0 /* NSError+SimpleConstructor_Tests.m in Sources */,
-				E7CE78C81FD94E77001D07E0 /* KSSafeCollections_Tests.m in Sources */,
 				E7CE78BF1FD94E77001D07E0 /* KSCrashSentry_Signal_Tests.m in Sources */,
 				4B406C1822CAD96400464D1D /* BugsnagCollectionsBSGDictMergeTest.m in Sources */,
 				E7CE78CB1FD94E77001D07E0 /* KSSysCtl_Tests.m in Sources */,
