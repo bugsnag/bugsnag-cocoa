@@ -21,7 +21,6 @@
 #import "BugsnagKSCrashSysInfoParser.h"
 #import "BugsnagSession.h"
 #import "BSG_RFC3339DateTool.h"
-#import "BugsnagUtility.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {

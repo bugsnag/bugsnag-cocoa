@@ -31,7 +31,7 @@
 #import "BSG_KSSafeCollections.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BSG_KSLogger.h"
-#import "BugsnagUtility.h"
+#import "BugsnagCollections.h"
 
 static NSString *const kCrashReportSuffix = @"-CrashReport-";
 #define BSG_kRecrashReportSuffix @"-RecrashReport-"

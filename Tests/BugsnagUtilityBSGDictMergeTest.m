@@ -7,7 +7,7 @@
 //
 
 @import XCTest;
-#import "BugsnagUtility.h"
+#import "BugsnagCollections.h"
 
 @interface BugsnagUtilityBSGDictMergeTest : XCTestCase
 @end
