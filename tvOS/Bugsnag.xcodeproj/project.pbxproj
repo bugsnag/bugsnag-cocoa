@@ -126,8 +126,6 @@
 		E76617C31F4E459C0094CECF /* BSG_KSString.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617571F4E459C0094CECF /* BSG_KSString.h */; };
 		E76617C41F4E459C0094CECF /* BSG_KSSysCtl.c in Sources */ = {isa = PBXBuildFile; fileRef = E76617581F4E459C0094CECF /* BSG_KSSysCtl.c */; };
 		E76617C51F4E459C0094CECF /* BSG_KSSysCtl.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617591F4E459C0094CECF /* BSG_KSSysCtl.h */; };
-		E76617C61F4E459C0094CECF /* BSG_KSZombie.c in Sources */ = {isa = PBXBuildFile; fileRef = E766175A1F4E459C0094CECF /* BSG_KSZombie.c */; };
-		E76617C71F4E459C0094CECF /* BSG_KSZombie.h in Headers */ = {isa = PBXBuildFile; fileRef = E766175B1F4E459C0094CECF /* BSG_KSZombie.h */; };
 		E76617CA1F4E459C0094CECF /* NSError+BSG_SimpleConstructor.h in Headers */ = {isa = PBXBuildFile; fileRef = E766175E1F4E459C0094CECF /* NSError+BSG_SimpleConstructor.h */; };
 		E76617CB1F4E459C0094CECF /* NSError+BSG_SimpleConstructor.m in Sources */ = {isa = PBXBuildFile; fileRef = E766175F1F4E459C0094CECF /* NSError+BSG_SimpleConstructor.m */; };
 		E76617CE1F4E459C0094CECF /* BSG_RFC3339DateTool.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617621F4E459C0094CECF /* BSG_RFC3339DateTool.h */; };
@@ -165,7 +163,6 @@
 		E7CE78F71FD94F1B001D07E0 /* KSCrashSentry_Signal_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78DD1FD94F18001D07E0 /* KSCrashSentry_Signal_Tests.m */; };
 		E7CE78F81FD94F1B001D07E0 /* KSCrashSentry_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78DE1FD94F18001D07E0 /* KSCrashSentry_Tests.m */; };
 		E7CE78F91FD94F1B001D07E0 /* KSSystemInfo_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78DF1FD94F18001D07E0 /* KSSystemInfo_Tests.m */; };
-		E7CE78FA1FD94F1B001D07E0 /* KSZombie_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78E01FD94F18001D07E0 /* KSZombie_Tests.m */; };
 		E7CE78FC1FD94F1B001D07E0 /* KSCrashSentry_NSException_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78E21FD94F18001D07E0 /* KSCrashSentry_NSException_Tests.m */; };
 		E7CE78FD1FD94F1B001D07E0 /* KSString_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78E31FD94F19001D07E0 /* KSString_Tests.m */; };
 		E7CE78FE1FD94F1B001D07E0 /* KSSignalInfo_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78E51FD94F19001D07E0 /* KSSignalInfo_Tests.m */; };
@@ -316,8 +313,6 @@
 		E76617571F4E459C0094CECF /* BSG_KSString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSString.h; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_KSString.h; sourceTree = SOURCE_ROOT; };
 		E76617581F4E459C0094CECF /* BSG_KSSysCtl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BSG_KSSysCtl.c; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_KSSysCtl.c; sourceTree = SOURCE_ROOT; };
 		E76617591F4E459C0094CECF /* BSG_KSSysCtl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSSysCtl.h; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_KSSysCtl.h; sourceTree = SOURCE_ROOT; };
-		E766175A1F4E459C0094CECF /* BSG_KSZombie.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BSG_KSZombie.c; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_KSZombie.c; sourceTree = SOURCE_ROOT; };
-		E766175B1F4E459C0094CECF /* BSG_KSZombie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSZombie.h; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_KSZombie.h; sourceTree = SOURCE_ROOT; };
 		E766175E1F4E459C0094CECF /* NSError+BSG_SimpleConstructor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSError+BSG_SimpleConstructor.h"; path = "../Source/KSCrash/Source/KSCrash/Recording/Tools/NSError+BSG_SimpleConstructor.h"; sourceTree = SOURCE_ROOT; };
 		E766175F1F4E459C0094CECF /* NSError+BSG_SimpleConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSError+BSG_SimpleConstructor.m"; path = "../Source/KSCrash/Source/KSCrash/Recording/Tools/NSError+BSG_SimpleConstructor.m"; sourceTree = SOURCE_ROOT; };
 		E76617621F4E459C0094CECF /* BSG_RFC3339DateTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_RFC3339DateTool.h; path = ../Source/KSCrash/Source/KSCrash/Recording/Tools/BSG_RFC3339DateTool.h; sourceTree = SOURCE_ROOT; };
@@ -355,7 +350,6 @@
 		E7CE78DD1FD94F18001D07E0 /* KSCrashSentry_Signal_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSCrashSentry_Signal_Tests.m; sourceTree = "<group>"; };
 		E7CE78DE1FD94F18001D07E0 /* KSCrashSentry_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSCrashSentry_Tests.m; sourceTree = "<group>"; };
 		E7CE78DF1FD94F18001D07E0 /* KSSystemInfo_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSSystemInfo_Tests.m; sourceTree = "<group>"; };
-		E7CE78E01FD94F18001D07E0 /* KSZombie_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSZombie_Tests.m; sourceTree = "<group>"; };
 		E7CE78E21FD94F18001D07E0 /* KSCrashSentry_NSException_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSCrashSentry_NSException_Tests.m; sourceTree = "<group>"; };
 		E7CE78E31FD94F19001D07E0 /* KSString_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSString_Tests.m; sourceTree = "<group>"; };
 		E7CE78E41FD94F19001D07E0 /* FileBasedTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileBasedTestCase.h; sourceTree = "<group>"; };
@@ -637,8 +631,6 @@
 				E76617571F4E459C0094CECF /* BSG_KSString.h */,
 				E76617581F4E459C0094CECF /* BSG_KSSysCtl.c */,
 				E76617591F4E459C0094CECF /* BSG_KSSysCtl.h */,
-				E766175A1F4E459C0094CECF /* BSG_KSZombie.c */,
-				E766175B1F4E459C0094CECF /* BSG_KSZombie.h */,
 				E766175E1F4E459C0094CECF /* NSError+BSG_SimpleConstructor.h */,
 				E766175F1F4E459C0094CECF /* NSError+BSG_SimpleConstructor.m */,
 				E76617621F4E459C0094CECF /* BSG_RFC3339DateTool.h */,
@@ -689,7 +681,6 @@
 				E7CE78E31FD94F19001D07E0 /* KSString_Tests.m */,
 				E7CE78EE1FD94F1A001D07E0 /* KSSysCtl_Tests.m */,
 				E7CE78DF1FD94F18001D07E0 /* KSSystemInfo_Tests.m */,
-				E7CE78E01FD94F18001D07E0 /* KSZombie_Tests.m */,
 				E7CE78D91FD94F18001D07E0 /* NSError+SimpleConstructor_Tests.m */,
 				E7CE78E91FD94F19001D07E0 /* RFC3339DateTool_Tests.m */,
 				E7CE78F01FD94F1A001D07E0 /* XCTestCase+KSCrash.h */,
@@ -747,7 +738,6 @@
 				8AD9A4FA1D42EE96004E1CC5 /* BugsnagMetaData.h in Headers */,
 				E76616F71F4E45950094CECF /* BugsnagCrashSentry.h in Headers */,
 				E76617861F4E459C0094CECF /* BSG_KSCrashReport.h in Headers */,
-				E76617C71F4E459C0094CECF /* BSG_KSZombie.h in Headers */,
 				8A48EF291EAA824100B70024 /* BugsnagLogger.h in Headers */,
 				E76617C11F4E459C0094CECF /* BSG_KSSingleton.h in Headers */,
 				8AD9A4F81D42EE96004E1CC5 /* BugsnagConfiguration.h in Headers */,
@@ -902,7 +892,6 @@
 				E76617BF1F4E459C0094CECF /* BSG_KSSignalInfo.c in Sources */,
 				E76617B71F4E459C0094CECF /* BSG_KSMach_x86_32.c in Sources */,
 				E791487E1FD82E6D003EFEBF /* BugsnagSessionFileStore.m in Sources */,
-				E76617C61F4E459C0094CECF /* BSG_KSZombie.c in Sources */,
 				8AD9A4FF1D42EEA0004E1CC5 /* BugsnagCollections.m in Sources */,
 				E76617B01F4E459C0094CECF /* BSG_KSJSONCodecObjC.m in Sources */,
 				8AD9A5041D42EEB0004E1CC5 /* BugsnagSink.m in Sources */,
@@ -964,7 +953,6 @@
 				E79148901FD82E77003EFEBF /* BugsnagSessionTest.m in Sources */,
 				8AB151211D41361700C9B218 /* BugsnagBreadcrumbsTest.m in Sources */,
 				E7CE78F81FD94F1B001D07E0 /* KSCrashSentry_Tests.m in Sources */,
-				E7CE78FA1FD94F1B001D07E0 /* KSZombie_Tests.m in Sources */,
 				E7CE78F51FD94F1B001D07E0 /* XCTestCase+KSCrash.m in Sources */,
 				E7CE79091FD94F1B001D07E0 /* KSCrashState_Tests.m in Sources */,
 				E7CE78FF1FD94F1B001D07E0 /* KSCrashReportStore_Tests.m in Sources */,
