@@ -70,7 +70,7 @@
 		E76617881F4E459C0094CECF /* BSG_KSCrashReportStore.h in Headers */ = {isa = PBXBuildFile; fileRef = E766171A1F4E459C0094CECF /* BSG_KSCrashReportStore.h */; };
 		E76617891F4E459C0094CECF /* BSG_KSCrashReportStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E766171B1F4E459C0094CECF /* BSG_KSCrashReportStore.m */; };
 		E766178A1F4E459C0094CECF /* BSG_KSCrashReportVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = E766171C1F4E459C0094CECF /* BSG_KSCrashReportVersion.h */; };
-		E766178C1F4E459C0094CECF /* BSG_KSCrashState.c in Sources */ = {isa = PBXBuildFile; fileRef = E766171E1F4E459C0094CECF /* BSG_KSCrashState.c */; };
+		E766178C1F4E459C0094CECF /* BSG_KSCrashState.m in Sources */ = {isa = PBXBuildFile; fileRef = E766171E1F4E459C0094CECF /* BSG_KSCrashState.m */; };
 		E766178D1F4E459C0094CECF /* BSG_KSCrashState.h in Headers */ = {isa = PBXBuildFile; fileRef = E766171F1F4E459C0094CECF /* BSG_KSCrashState.h */; };
 		E766178E1F4E459C0094CECF /* BSG_KSCrashType.c in Sources */ = {isa = PBXBuildFile; fileRef = E76617201F4E459C0094CECF /* BSG_KSCrashType.c */; };
 		E766178F1F4E459C0094CECF /* BSG_KSCrashType.h in Headers */ = {isa = PBXBuildFile; fileRef = E76617211F4E459C0094CECF /* BSG_KSCrashType.h */; };
@@ -260,7 +260,7 @@
 		E766171A1F4E459C0094CECF /* BSG_KSCrashReportStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSCrashReportStore.h; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashReportStore.h; sourceTree = SOURCE_ROOT; };
 		E766171B1F4E459C0094CECF /* BSG_KSCrashReportStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSG_KSCrashReportStore.m; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashReportStore.m; sourceTree = SOURCE_ROOT; };
 		E766171C1F4E459C0094CECF /* BSG_KSCrashReportVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSCrashReportVersion.h; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashReportVersion.h; sourceTree = SOURCE_ROOT; };
-		E766171E1F4E459C0094CECF /* BSG_KSCrashState.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BSG_KSCrashState.c; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashState.c; sourceTree = SOURCE_ROOT; };
+		E766171E1F4E459C0094CECF /* BSG_KSCrashState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSG_KSCrashState.m; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashState.m; sourceTree = SOURCE_ROOT; };
 		E766171F1F4E459C0094CECF /* BSG_KSCrashState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSCrashState.h; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashState.h; sourceTree = SOURCE_ROOT; };
 		E76617201F4E459C0094CECF /* BSG_KSCrashType.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BSG_KSCrashType.c; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashType.c; sourceTree = SOURCE_ROOT; };
 		E76617211F4E459C0094CECF /* BSG_KSCrashType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSCrashType.h; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashType.h; sourceTree = SOURCE_ROOT; };
@@ -564,7 +564,7 @@
 				E766171A1F4E459C0094CECF /* BSG_KSCrashReportStore.h */,
 				E766171B1F4E459C0094CECF /* BSG_KSCrashReportStore.m */,
 				E766171C1F4E459C0094CECF /* BSG_KSCrashReportVersion.h */,
-				E766171E1F4E459C0094CECF /* BSG_KSCrashState.c */,
+				E766171E1F4E459C0094CECF /* BSG_KSCrashState.m */,
 				E766171F1F4E459C0094CECF /* BSG_KSCrashState.h */,
 				E76617201F4E459C0094CECF /* BSG_KSCrashType.c */,
 				E76617211F4E459C0094CECF /* BSG_KSCrashType.h */,
@@ -893,7 +893,7 @@
 				8AD9A4FE1D42EE9D004E1CC5 /* BugsnagBreadcrumb.m in Sources */,
 				8A6C6FAD2257882400E8EF24 /* BSGOutOfMemoryWatchdog.m in Sources */,
 				E76617841F4E459C0094CECF /* BSG_KSCrashDoctor.m in Sources */,
-				E766178C1F4E459C0094CECF /* BSG_KSCrashState.c in Sources */,
+				E766178C1F4E459C0094CECF /* BSG_KSCrashState.m in Sources */,
 				E79148811FD82E6D003EFEBF /* BugsnagApiClient.m in Sources */,
 				E76617A81F4E459C0094CECF /* BSG_KSCrashCallCompletion.m in Sources */,
 				E76617971F4E459C0094CECF /* BSG_KSCrashSentry_CPPException.mm in Sources */,
