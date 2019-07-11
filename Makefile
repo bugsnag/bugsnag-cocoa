@@ -1,5 +1,6 @@
 PLATFORM?=iOS
 OS?=latest
+TEST_CONFIGURATION?=Debug
 BUILD_FLAGS=-workspace $(PLATFORM).xcworkspace -scheme Bugsnag -derivedDataPath build
 
 ifeq ($(PLATFORM),OSX)
@@ -15,7 +16,7 @@ else
   DESTINATION?=platform=iOS Simulator,name=iPhone 5s,OS=$(OS)
   RELEASE_DIR=Release-iphoneos
  endif
- BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "$(DESTINATION)" -configuration Debug
+ BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "$(DESTINATION)" -configuration $(TEST_CONFIGURATION)
 endif
 XCODEBUILD=set -o pipefail && xcodebuild
 PRESET_VERSION=$(shell cat VERSION)
