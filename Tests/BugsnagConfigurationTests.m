@@ -62,7 +62,11 @@
 
 - (void)testDefaultReportOOMs {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
+#if DEBUG
+    XCTAssertFalse([config reportOOMs]);
+#else
     XCTAssertTrue([config reportOOMs]);
+#endif
 }
 
 - (void)testDefaultReportBackgroundOOMs {
