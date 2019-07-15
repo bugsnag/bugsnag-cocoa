@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 5.22.3 (2019-07-15)
 
 This release disables reporting out-of-memory events in debug mode, to reduce
 false positives.
