@@ -65,7 +65,7 @@
 		E7107C3F1F4C97F100BB3F98 /* BSG_KSCrashReportStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E7107BD11F4C97F100BB3F98 /* BSG_KSCrashReportStore.m */; };
 		E7107C401F4C97F100BB3F98 /* BSG_KSCrashReportVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = E7107BD21F4C97F100BB3F98 /* BSG_KSCrashReportVersion.h */; };
 		E7107C411F4C97F100BB3F98 /* BSG_KSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = E7107BD31F4C97F100BB3F98 /* BSG_KSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E7107C421F4C97F100BB3F98 /* BSG_KSCrashState.c in Sources */ = {isa = PBXBuildFile; fileRef = E7107BD41F4C97F100BB3F98 /* BSG_KSCrashState.c */; };
+		E7107C421F4C97F100BB3F98 /* BSG_KSCrashState.m in Sources */ = {isa = PBXBuildFile; fileRef = E7107BD41F4C97F100BB3F98 /* BSG_KSCrashState.m */; };
 		E7107C431F4C97F100BB3F98 /* BSG_KSCrashState.h in Headers */ = {isa = PBXBuildFile; fileRef = E7107BD51F4C97F100BB3F98 /* BSG_KSCrashState.h */; };
 		E7107C441F4C97F100BB3F98 /* BSG_KSCrashType.c in Sources */ = {isa = PBXBuildFile; fileRef = E7107BD61F4C97F100BB3F98 /* BSG_KSCrashType.c */; };
 		E7107C451F4C97F100BB3F98 /* BSG_KSCrashType.h in Headers */ = {isa = PBXBuildFile; fileRef = E7107BD71F4C97F100BB3F98 /* BSG_KSCrashType.h */; };
@@ -181,7 +181,7 @@
 		E7397E311F83BC2A0034242A /* BugsnagHandledState.m in Sources */ = {isa = PBXBuildFile; fileRef = E737DEA11F73AD7400BC7C80 /* BugsnagHandledState.m */; };
 		E7397E321F83BC320034242A /* BSG_KSCrashC.c in Sources */ = {isa = PBXBuildFile; fileRef = E7107BC81F4C97F100BB3F98 /* BSG_KSCrashC.c */; };
 		E7397E331F83BC320034242A /* BSG_KSCrashReport.c in Sources */ = {isa = PBXBuildFile; fileRef = E7107BCD1F4C97F100BB3F98 /* BSG_KSCrashReport.c */; };
-		E7397E341F83BC320034242A /* BSG_KSCrashState.c in Sources */ = {isa = PBXBuildFile; fileRef = E7107BD41F4C97F100BB3F98 /* BSG_KSCrashState.c */; };
+		E7397E341F83BC320034242A /* BSG_KSCrashState.m in Sources */ = {isa = PBXBuildFile; fileRef = E7107BD41F4C97F100BB3F98 /* BSG_KSCrashState.m */; };
 		E7397E351F83BC320034242A /* BSG_KSCrashType.c in Sources */ = {isa = PBXBuildFile; fileRef = E7107BD61F4C97F100BB3F98 /* BSG_KSCrashType.c */; };
 		E7397E361F83BC320034242A /* BSG_KSCrashSentry.c in Sources */ = {isa = PBXBuildFile; fileRef = E7107BDD1F4C97F100BB3F98 /* BSG_KSCrashSentry.c */; };
 		E7397E371F83BC320034242A /* BSG_KSCrashSentry_MachException.c in Sources */ = {isa = PBXBuildFile; fileRef = E7107BE31F4C97F100BB3F98 /* BSG_KSCrashSentry_MachException.c */; };
@@ -469,7 +469,7 @@
 		E7107BD11F4C97F100BB3F98 /* BSG_KSCrashReportStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSG_KSCrashReportStore.m; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashReportStore.m; sourceTree = SOURCE_ROOT; };
 		E7107BD21F4C97F100BB3F98 /* BSG_KSCrashReportVersion.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = BSG_KSCrashReportVersion.h; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashReportVersion.h; sourceTree = SOURCE_ROOT; };
 		E7107BD31F4C97F100BB3F98 /* BSG_KSCrashReportWriter.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = BSG_KSCrashReportWriter.h; path = ../Source/BSG_KSCrashReportWriter.h; sourceTree = SOURCE_ROOT; };
-		E7107BD41F4C97F100BB3F98 /* BSG_KSCrashState.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BSG_KSCrashState.c; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashState.c; sourceTree = SOURCE_ROOT; };
+		E7107BD41F4C97F100BB3F98 /* BSG_KSCrashState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSG_KSCrashState.m; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashState.m; sourceTree = SOURCE_ROOT; };
 		E7107BD51F4C97F100BB3F98 /* BSG_KSCrashState.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = BSG_KSCrashState.h; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashState.h; sourceTree = SOURCE_ROOT; };
 		E7107BD61F4C97F100BB3F98 /* BSG_KSCrashType.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BSG_KSCrashType.c; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashType.c; sourceTree = SOURCE_ROOT; };
 		E7107BD71F4C97F100BB3F98 /* BSG_KSCrashType.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = BSG_KSCrashType.h; path = ../Source/KSCrash/Source/KSCrash/Recording/BSG_KSCrashType.h; sourceTree = SOURCE_ROOT; };
@@ -826,7 +826,7 @@
 				E7107BD01F4C97F100BB3F98 /* BSG_KSCrashReportStore.h */,
 				E7107BD11F4C97F100BB3F98 /* BSG_KSCrashReportStore.m */,
 				E7107BD21F4C97F100BB3F98 /* BSG_KSCrashReportVersion.h */,
-				E7107BD41F4C97F100BB3F98 /* BSG_KSCrashState.c */,
+				E7107BD41F4C97F100BB3F98 /* BSG_KSCrashState.m */,
 				E7107BD51F4C97F100BB3F98 /* BSG_KSCrashState.h */,
 				E7107BD61F4C97F100BB3F98 /* BSG_KSCrashType.c */,
 				E7107BD71F4C97F100BB3F98 /* BSG_KSCrashType.h */,
@@ -1142,7 +1142,7 @@
 				E7107C6B1F4C97F100BB3F98 /* BSG_KSMach_Arm.c in Sources */,
 				8A2C8F5E1C6BBE3C00846019 /* BugsnagNotifier.m in Sources */,
 				E7107C3A1F4C97F100BB3F98 /* BSG_KSCrashDoctor.m in Sources */,
-				E7107C421F4C97F100BB3F98 /* BSG_KSCrashState.c in Sources */,
+				E7107C421F4C97F100BB3F98 /* BSG_KSCrashState.m in Sources */,
 				E72BF77B1FC869F7004BE82F /* BugsnagSession.m in Sources */,
 				8A70D9CA22539C81006B696F /* BSGOutOfMemoryWatchdog.m in Sources */,
 				E7107C5E1F4C97F100BB3F98 /* BSG_KSCrashCallCompletion.m in Sources */,
@@ -1241,7 +1241,7 @@
 			files = (
 				E7397E321F83BC320034242A /* BSG_KSCrashC.c in Sources */,
 				E7397E331F83BC320034242A /* BSG_KSCrashReport.c in Sources */,
-				E7397E341F83BC320034242A /* BSG_KSCrashState.c in Sources */,
+				E7397E341F83BC320034242A /* BSG_KSCrashState.m in Sources */,
 				E7397E351F83BC320034242A /* BSG_KSCrashType.c in Sources */,
 				E7397E361F83BC320034242A /* BSG_KSCrashSentry.c in Sources */,
 				E72BF7771FC867E4004BE82F /* BugsnagSessionTracker.m in Sources */,

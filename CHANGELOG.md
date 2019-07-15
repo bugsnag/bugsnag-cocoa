@@ -11,6 +11,8 @@ false positives.
 * Fix incrementing unhandled counts when using internal notify() API. This
   resolves discrepancies in stability scores for users of bugsnag-react-native
   after receiving unhandled JavaScript events.
+* Fix JSON parsing errors in crash reports for control characters and some 
+  other sequences
 
 ## 5.22.2 (2019-06-13)
 

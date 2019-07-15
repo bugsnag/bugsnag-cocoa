@@ -123,50 +123,6 @@
 //    XCTAssertEqualObjects(actual, expected, @"");
 //}
 
-- (void) testReadEntireFile
-{
-    NSError* error = nil;
-    NSString* path = [self.tempPath stringByAppendingPathComponent:@"test.txt"];
-    NSString* expected = @"testing a bunch of stuff.\nOh look, a newline!";
-    [expected writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:&error];
-    XCTAssertNil(error, @"");
-
-    int fd = open([path UTF8String], O_RDONLY);
-    XCTAssertTrue(fd >= 0, @"");
-    char* bytes;
-    size_t readLength;
-    bool result = bsg_ksfureadEntireFile([path UTF8String], &bytes, &readLength);
-    XCTAssertTrue(result, @"");
-    NSMutableData* data = [NSMutableData dataWithBytesNoCopy:bytes length:readLength freeWhenDone:YES];
-    NSString* actual = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    XCTAssertNil(error, @"");
-    XCTAssertEqualObjects(actual, expected, @"");
-}
-
-- (void) testReadEntireFileBig
-{
-    NSError* error = nil;
-    NSString* path = [self.tempPath stringByAppendingPathComponent:@"test.txt"];
-    int length = 1000000;
-    NSMutableData* expected = [NSMutableData dataWithCapacity:(NSUInteger)length];
-    for(int i = 0; i < length; i++)
-    {
-        unsigned char byte = (unsigned char)i;
-        [expected appendBytes:&byte length:1];
-    }
-    [expected writeToFile:path options:0 error:&error];
-    XCTAssertNil(error, @"");
-
-    int fd = open([path UTF8String], O_RDONLY);
-    XCTAssertTrue(fd >= 0, @"");
-    char* bytes;
-    size_t readLength;
-    bool result = bsg_ksfureadEntireFile([path UTF8String], &bytes, &readLength);
-    XCTAssertTrue(result, @"");
-    NSMutableData* actual = [NSMutableData dataWithBytesNoCopy:bytes length:readLength freeWhenDone:YES];
-    XCTAssertEqualObjects(actual, expected, @"");
-}
-
 - (void) testWriteStringToFD
 {
     NSError* error = nil;
