@@ -11,6 +11,6 @@
  * @return a new BugsnagConfiguration object or nil if the a valid object could
  * not be created (including a non-empty API key)
  */
-+ (BugsnagConfiguration *_Nullable)configurationFromOptions:(NSDictionary *_Nullable)options;
++ (BugsnagConfiguration *_Nonnull)configurationFromOptions:(NSDictionary *_Nonnull)options;
 
 @end

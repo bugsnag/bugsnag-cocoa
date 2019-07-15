@@ -1,145 +1,115 @@
 #import "BSGConfigurationBuilder.h"
 #import "BugsnagConfiguration.h"
+#import "BugsnagEndpointConfiguration.h"
 
-NSString *const BSGAutoCollectBreadcrumbsKey = @"autoBreadcrumbs";
-NSString *const BSGAutoCaptureSessionsKey = @"autoSessions";
+NSString *const BSGKeyAppType = @"appType";
+NSString *const BSGKeyAppVersion = @"appVersion";
+NSString *const BSGKeyAutoDetectErrors = @"autoDetectErrors";
+NSString *const BSGKeyAutoTrackSessions = @"autoTrackSessions";
+NSString *const BSGKeyBundleVersion = @"bundleVersion";
+NSString *const BSGKeyPersistUser = @"persistUser";
+NSString *const BSGKeyReleaseStage = @"releaseStage";
+NSString *const BSGKeyEnabledReleaseStages = @"enabledReleaseStages";
+NSString *const BSGKeyRedactedKeys = @"redactedKeys";
+NSString *const BSGKeyEndpoints = @"endpoints";
+NSString *const BSGKeyNotifyEndpoint = @"notify";
+NSString *const BSGKeySessionsEndpoint = @"sessions";
+NSString *const BSGKeyMaxBreadcrumbs = @"maxBreadcrumbs";
+NSString *const BSGKeySendThreads = @"sendThreads";
 
-/**
- * Validate and set a value on config if the value is of the correct type.
- * Remove the value from options after successful validation.
- *
- * @return config or nil if the value is not of the correct type
- */
-BugsnagConfiguration *BSGValidateAndSetStringOption(BugsnagConfiguration *config, NSMutableDictionary *options, NSString *key);
-/**
- * Validate and set a value on config if the value is a boolean.
- * Remove the value from options after successful validation.
- *
- * @return config or nil if the value is a boolean
- */
-BugsnagConfiguration *BSGValidateAndSetBooleanOption(BugsnagConfiguration *config, NSMutableDictionary *options, NSString *key);
+static BOOL BSGValueIsBoolean(id object) {
+    return object != nil && [object isKindOfClass:[NSNumber class]]
+            && CFGetTypeID((__bridge CFTypeRef)object) == CFBooleanGetTypeID();
+}
 
-/**
- * Validate and set notifyReleaseStages on config if the value is an array of
- * strings.
- * Remove the value from options after successful validation.
- *
- * @return config or nil if the value or contained values are not of the correct
- * type
- */
-BugsnagConfiguration *BSGValidateAndSetNotifyReleaseStages(BugsnagConfiguration *config, NSMutableDictionary *options);
-
-/**
- * Validate and set notifyURL and sessionURL on config if the value is a
- * dictionary containing exactly two values for keys "notify" and "sessions".
- * Remove the value from options after successful validation.
- *
- * @return config or nil if the value or contained values are not of the correct
- * type or name, to avoid data leakage to the hosted version from on-premise.
- */
-BugsnagConfiguration *BSGValidateAndSetEndpoints(BugsnagConfiguration *config, NSMutableDictionary *options);
+@interface BugsnagConfiguration ()
++ (BOOL)isValidApiKey:(NSString *)apiKey;
+@end
 
 @implementation BSGConfigurationBuilder
 
 + (BugsnagConfiguration *)configurationFromOptions:(NSDictionary *)options {
-    BugsnagConfiguration *config = [BugsnagConfiguration new];
-    NSMutableDictionary *properties = [options mutableCopy];
-    config = BSGValidateAndSetStringOption(config, properties, NSStringFromSelector(@selector(apiKey)));
-    if (config.apiKey.length == 0) {
-        // The API key is not valid
-        return nil;
+    NSString *apiKey = options[@"apiKey"];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
+
+    if (![BugsnagConfiguration isValidApiKey:apiKey]) {
+        return config;
     }
-    config = BSGValidateAndSetBooleanOption(config, properties, NSStringFromSelector(@selector(autoNotify)));
-    config = BSGValidateAndSetBooleanOption(config, properties, BSGAutoCollectBreadcrumbsKey);
-    config = BSGValidateAndSetBooleanOption(config, properties, BSGAutoCaptureSessionsKey);
-    config = BSGValidateAndSetBooleanOption(config, properties, NSStringFromSelector(@selector(reportOOMs)));
-    config = BSGValidateAndSetBooleanOption(config, properties, NSStringFromSelector(@selector(reportBackgroundOOMs)));
-    config = BSGValidateAndSetStringOption(config, properties, NSStringFromSelector(@selector(releaseStage)));
-    config = BSGValidateAndSetNotifyReleaseStages(config, properties);
-    config = BSGValidateAndSetEndpoints(config, properties);
-    if (properties.count > 0) {
-        // The collection contains values unsupported in BugsnagConfiguration
-        return nil;
-    }
+
+    [self loadString:config options:options key:BSGKeyAppType];
+    [self loadString:config options:options key:BSGKeyAppVersion];
+    [self loadBoolean:config options:options key:BSGKeyAutoDetectErrors];
+    [self loadBoolean:config options:options key:BSGKeyAutoTrackSessions];
+    [self loadString:config options:options key:BSGKeyBundleVersion];
+    [self loadBoolean:config options:options key:BSGKeyPersistUser];
+    [self loadString:config options:options key:BSGKeyReleaseStage];
+
+    [self loadStringArray:config options:options key:BSGKeyEnabledReleaseStages];
+    [self loadStringArray:config options:options key:BSGKeyRedactedKeys];
+    [self loadEndpoints:config options:options];
+
+    [self loadMaxBreadcrumbs:config options:options];
+    [self loadSendThreads:config options:options];
     return config;
+}
+
++ (void)loadBoolean:(BugsnagConfiguration *)config options:(NSDictionary *)options key:(NSString *)key {
+    if (BSGValueIsBoolean(options[key])) {
+        [config setValue:options[key] forKey:key];
+    }
+}
+
++ (void)loadString:(BugsnagConfiguration *)config options:(NSDictionary *)options key:(NSString *)key {
+    if (options[key] && [options[key] isKindOfClass:[NSString class]]) {
+        [config setValue:options[key] forKey:key];
+    }
+}
+
++ (void)loadStringArray:(BugsnagConfiguration *)config options:(NSDictionary *)options key:(NSString *)key {
+    if (options[key] && [options[key] isKindOfClass:[NSArray class]]) {
+        NSArray *val = options[key];
+
+        for (NSString *obj in val) {
+            if (![obj isKindOfClass:[NSString class]]) {
+                return;
+            }
+        }
+        [config setValue:val forKey:key];
+    }
+}
+
++ (void)loadEndpoints:(BugsnagConfiguration *)config options:(NSDictionary *)options {
+    if (options[BSGKeyEndpoints] && [options[BSGKeyEndpoints] isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *endpoints = options[BSGKeyEndpoints];
+
+        if ([endpoints[BSGKeyNotifyEndpoint] isKindOfClass:[NSString class]]) {
+            config.endpoints.notify = endpoints[BSGKeyNotifyEndpoint];
+        }
+        if ([endpoints[BSGKeySessionsEndpoint] isKindOfClass:[NSString class]]) {
+            config.endpoints.sessions = endpoints[BSGKeySessionsEndpoint];
+        }
+    }
+}
+
++ (void)loadMaxBreadcrumbs:(BugsnagConfiguration *)config options:(NSDictionary *)options {
+    if (options[BSGKeyMaxBreadcrumbs] && [options[BSGKeyMaxBreadcrumbs] isKindOfClass:[NSNumber class]]) {
+        NSNumber *num = options[BSGKeyMaxBreadcrumbs];
+        config.maxBreadcrumbs = [num unsignedIntValue];
+    }
+}
+
++ (void)loadSendThreads:(BugsnagConfiguration *)config options:(NSDictionary *)options {
+    if (options[BSGKeySendThreads] && [options[BSGKeySendThreads] isKindOfClass:[NSString class]]) {
+        NSString *sendThreads = [options[BSGKeySendThreads] lowercaseString];
+
+        if ([@"unhandledonly" isEqualToString:sendThreads]) {
+            config.sendThreads = BSGThreadSendPolicyUnhandledOnly;
+        } else if ([@"always" isEqualToString:sendThreads]) {
+            config.sendThreads = BSGThreadSendPolicyAlways;
+        } else if ([@"never" isEqualToString:sendThreads]) {
+            config.sendThreads = BSGThreadSendPolicyNever;
+        }
+    }
 }
 
 @end
-
-static BOOL BSGValueIsBoolean(id object) {
-    return [object isKindOfClass:[NSNumber class]]
-    && CFGetTypeID((__bridge CFTypeRef)object) == CFBooleanGetTypeID();
-}
-
-NSString *BSGTransformOptionToPropertyName(NSString *option) {
-    if ([option isEqualToString:BSGAutoCollectBreadcrumbsKey]) {
-        return NSStringFromSelector(@selector(automaticallyCollectBreadcrumbs));
-    } else if ([option isEqualToString:BSGAutoCaptureSessionsKey]) {
-        return NSStringFromSelector(@selector(shouldAutoCaptureSessions));
-    }
-    return option;
-}
-
-BugsnagConfiguration *BSGValidateAndSetStringOption(BugsnagConfiguration *config, NSMutableDictionary *options, NSString *key) {
-    if ([options[key] isKindOfClass:[NSString class]]) {
-        [config setValue:options[key] forKey:key];
-    } else if (options[key]) {
-        return nil;
-    }
-    [options removeObjectForKey:key];
-    return config;
-}
-
-BugsnagConfiguration *BSGValidateAndSetBooleanOption(BugsnagConfiguration *config, NSMutableDictionary *options, NSString *key) {
-    if (BSGValueIsBoolean(options[key])) {
-        [config setValue:options[key] forKey:BSGTransformOptionToPropertyName(key)];
-    } else if (options[key]) {
-        return nil;
-    }
-    [options removeObjectForKey:key];
-    return config;
-}
-
-BugsnagConfiguration *BSGValidateAndSetNotifyReleaseStages(BugsnagConfiguration *config, NSMutableDictionary *options) {
-    NSString *const notifyReleaseStagesKey = NSStringFromSelector(@selector(notifyReleaseStages));
-    if (options[notifyReleaseStagesKey] && [options[notifyReleaseStagesKey] isKindOfClass:[NSArray class]]) {
-        NSArray *notifyReleaseStages = options[notifyReleaseStagesKey];
-        for (id stage in notifyReleaseStages) {
-            if (![stage isKindOfClass:[NSString class]]) {
-                return nil;
-            }
-        }
-        config.notifyReleaseStages = notifyReleaseStages;
-    } else if (options[notifyReleaseStagesKey]) {
-        return nil;
-    }
-    [options removeObjectForKey:notifyReleaseStagesKey];
-    return config;
-}
-
-BugsnagConfiguration *BSGValidateAndSetEndpoints(BugsnagConfiguration *config, NSMutableDictionary *options) {
-    NSString *const endpointsKey = @"endpoints";
-    NSString *const notifyEndpointKey = @"notify";
-    NSString *const sessionsEndpointKey = @"sessions";
-    if (options[endpointsKey] && [options[endpointsKey] isKindOfClass:[NSDictionary class]]) {
-        NSDictionary *endpoints = options[endpointsKey];
-        if (endpoints.count == 2
-            && [endpoints[notifyEndpointKey] isKindOfClass:[NSString class]]
-            && [endpoints[sessionsEndpointKey] isKindOfClass:[NSString class]]) {
-            NSString *notifyEndpoint = endpoints[notifyEndpointKey];
-            NSString *sessionsEndpoint = endpoints[sessionsEndpointKey];
-            if (notifyEndpoint.length > 0 && sessionsEndpoint.length > 0) {
-                [config setEndpointsForNotify:endpoints[notifyEndpointKey]
-                                     sessions:endpoints[sessionsEndpointKey]];
-            } else {
-                return nil;
-            }
-        } else {
-            return nil;
-        }
-    } else if (options[endpointsKey]) {
-        return nil;
-    }
-    [options removeObjectForKey:endpointsKey];
-    return config;
-}

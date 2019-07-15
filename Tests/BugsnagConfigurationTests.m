@@ -3,8 +3,9 @@
  */
 
 #import <XCTest/XCTest.h>
-#import "BugsnagTestConstants.h"
+#import <objc/runtime.h>
 
+#import "BugsnagTestConstants.h"
 #import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagCrashSentry.h"
@@ -67,10 +68,10 @@
 
 - (void)testSessionEndpoints {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    
+
     // Default endpoints
     XCTAssertEqualObjects([NSURL URLWithString:@"https://sessions.bugsnag.com"], config.sessionURL);
-    
+
     // Test overriding the session endpoint (use dummy endpoints to avoid hitting production)
 
     config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://localhost:1234"
@@ -106,7 +107,7 @@
  * Test that onSession blocks get called once added
  */
 - (void)testAddOnSessionBlock {
-    
+
     // Setup
     __block XCTestExpectation *expectation = [self expectationWithDescription:@"Remove On Session Block"];
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
@@ -120,7 +121,7 @@
     };
     [config addOnSessionBlock:sessionBlock];
     XCTAssertEqual([[config onSessionBlocks] count], 1);
-    
+
     // Call onSession blocks
     [Bugsnag startWithConfiguration:config];
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
@@ -143,7 +144,7 @@
         [calledExpectation fulfill];
         return true;
     };
-    
+
     // It's there (and from other tests we know it gets called) and then it's not there
     [config addOnSessionBlock:sessionBlock];
     XCTAssertEqual([[config onSessionBlocks] count], 1);
@@ -160,9 +161,9 @@
  * This test could be expanded to verify the behaviour when multiple blocks are added.
  */
 - (void)testAddOnSessionBlockThenRemove {
-    
+
     __block int called = 0; // A counter
-    
+
     // Setup
     __block XCTestExpectation *expectation1 = [self expectationWithDescription:@"Remove On Session Block 1"];
     __block XCTestExpectation *expectation2 = [self expectationWithDescription:@"Remove On Session Block 2"];
@@ -174,7 +175,7 @@
     config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notreal.bugsnag.com"
                                                                    sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
-    
+
     BugsnagOnSessionBlock sessionBlock = ^BOOL(BugsnagSession * _Nonnull sessionPayload) {
         switch (called) {
         case 0:
@@ -194,14 +195,14 @@
         }
         return true;
     };
-    
+
     [config addOnSessionBlock:sessionBlock];
     XCTAssertEqual([[config onSessionBlocks] count], 1);
-    
+
     // Call onSession blocks
     [Bugsnag startWithConfiguration:config];
     [self waitForExpectations:@[expectation1] timeout:1.0];
-    
+
     // Check it's called on new session start
     [Bugsnag pauseSession];
     called++;
@@ -214,7 +215,7 @@
     [config removeOnSessionBlock:sessionBlock];
     [Bugsnag startSession];
     [self waitForExpectations:@[expectation3] timeout:1.0];
-    
+
     // Check it's NOT called on session resume
     [Bugsnag pauseSession];
     called++;
@@ -231,7 +232,7 @@
     XCTAssertEqual([[config onSessionBlocks] count], 0);
     BugsnagOnSessionBlock sessionBlock1 = ^BOOL(BugsnagSession * _Nonnull sessionPayload) { return true; };
     BugsnagOnSessionBlock sessionBlock2 = ^BOOL(BugsnagSession * _Nonnull sessionPayload) { return true; };
-    
+
     [config addOnSessionBlock:sessionBlock1];
     XCTAssertEqual([[config onSessionBlocks] count], 1);
     [config removeOnSessionBlock:sessionBlock2];
@@ -392,33 +393,33 @@
     NSString *email  = @"test@example.com";
     NSString *name   = @"foo";
     NSString *userId = @"123";
-    
+
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    
+
     // Check property defaults to True
     XCTAssertTrue(config.persistUser);
-    
+
     // Start with no persisted user data
     [config deletePersistedUserData];
 //    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
 //    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
 //    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
-    
+
     // user should be persisted by default
     [config setUser:userId withEmail:email andName:name];
-    
+
     // Check values manually
 //    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount], email);
 //    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount], name);
 //    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount], userId);
-    
+
     // Check persistence between invocations (when values have been set)
     BugsnagConfiguration *config2 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    
+
 //    XCTAssertEqualObjects(config2.currentUser.emailAddress, email);
 //    XCTAssertTrue([config2.currentUser.name isEqualToString:name]);
 //    XCTAssertTrue([config2.currentUser.userId isEqualToString:userId]);
-    
+
     // Check that values we know to have been persisted are actuallty deleted.
     [config2 deletePersistedUserData];
 //    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
@@ -433,7 +434,7 @@
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.persistUser = false;
     [config deletePersistedUserData];
-    
+
     // Should be no persisted data, and should not persist between invocations
 //    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
 //    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
@@ -453,7 +454,7 @@
     NSString *email  = @"test@example.com";
     NSString *name   = @"foo";
     NSString *userId = @"123";
-    
+
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertTrue(config.persistUser);
     [config deletePersistedUserData];
@@ -504,7 +505,7 @@
     NSString *email  = @"test@example.com";
     NSString *name   = @"foo";
     NSString *userId = @"123";
-    
+
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertTrue(config.persistUser);
     [config deletePersistedUserData];
@@ -513,7 +514,7 @@
 //    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
 //    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
 //    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
-    
+
     // Persist user data
     [config setUser:userId withEmail:email andName:name];
 
@@ -533,21 +534,21 @@
  * Test that non-persisted user data interacts correctly with the configuration metadata
  */
 - (void)testNonPersistenceAndMetadata {
-    
+
     NSString *email  = @"test@example.com";
     NSString *name   = @"foo";
     NSString *userId = @"123";
-    
+
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertTrue(config.persistUser);
     [config setPersistUser:false];
     [config deletePersistedUserData];
-    
+
     BugsnagConfiguration *config2 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
 //    XCTAssertNil([[config2 metadata] getMetadata:BSGKeyUser key:BSGKeyId]);
 //    XCTAssertNil([[config2 metadata] getMetadata:BSGKeyUser key:BSGKeyName]);
 //    XCTAssertNil([[config2 metadata] getMetadata:BSGKeyUser key:BSGKeyEmail]);
-    
+
     [config2 setUser:userId withEmail:email andName:name];
 //    XCTAssertEqualObjects([config2.metadata getMetadata:BSGKeyUser key:BSGKeyEmail], email);
 //    XCTAssertEqualObjects([config2.metadata getMetadata:BSGKeyUser key:BSGKeyName], name);
@@ -613,7 +614,7 @@
     BugsnagConfiguration *validApiConfig1 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertNotNil(validApiConfig1);
     XCTAssertEqual([validApiConfig1 apiKey], DUMMY_APIKEY_32CHAR_1);
-    
+
     BugsnagConfiguration *validApiConfig2 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_2];
     XCTAssertNotNil(validApiConfig2);
     XCTAssertEqual([validApiConfig2 apiKey], DUMMY_APIKEY_32CHAR_2);
@@ -679,7 +680,7 @@
 #pragma clang diagnostic pop
 
     XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
-    
+
     XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
     XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
 }
@@ -689,14 +690,14 @@
 
     XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
     XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
-    
+
     config.apiKey = DUMMY_APIKEY_32CHAR_2;
     XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_2]);
 }
 
 -(void)testBSGErrorTypes {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    
+
     // Test all are set by default
     // See config init for details.  OOMs are disabled in debug.
     config.enabledErrorTypes.ooms = true;
@@ -739,7 +740,7 @@
     crashTypes = crashTypes | BSG_KSCrashTypeUserReported;
 
     XCTAssertNotEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
-    
+
     // Check partial sets
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
     errorTypes.ooms = false;
@@ -768,12 +769,12 @@
     // Prevent sending events
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
-    
+
     BugsnagOnSendErrorBlock block = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
 
     [configuration addOnSendErrorBlock:block];
     [Bugsnag startWithConfiguration:configuration];
-    
+
     XCTAssertEqual([[configuration onSendBlocks] count], 1);
 
     [configuration removeOnSendErrorBlock:block];
@@ -787,16 +788,16 @@
     // Prevent sending events
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
-    
+
     BugsnagOnSendErrorBlock block1 = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
     BugsnagOnSendErrorBlock block2 = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
-    
+
     // Add more than one
     [configuration addOnSendErrorBlock:block1];
     [configuration addOnSendErrorBlock:block2];
 
     [Bugsnag startWithConfiguration:configuration];
-    
+
     XCTAssertEqual([[configuration onSendBlocks] count], 2);
 }
 
@@ -807,7 +808,7 @@
 
 - (void)testNSCopying {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    
+
     // Set some arbirtary values:
     [config setUser:@"foo" withEmail:@"bar@baz.com" andName:@"Bill"];
     [config setApiKey:DUMMY_APIKEY_32CHAR_1];
@@ -821,11 +822,11 @@
 
     NSArray *sendBlocks = @[ onSendBlock1, onSendBlock2 ];
     [config setOnSendBlocks:[sendBlocks mutableCopy]]; // Mutable arg required
-    
+
     // Clone
     BugsnagConfiguration *clone = [config copy];
     XCTAssertNotEqual(config, clone);
-    
+
     // Change values
 
     // Redacted keys
@@ -838,7 +839,7 @@
     [clone setUser:@"Cthulu" withEmail:@"hp@lovecraft.com" andName:@"Howard"];
     XCTAssertEqualObjects(config.user.id, @"foo");
     XCTAssertEqualObjects(clone.user.id, @"Cthulu");
-    
+
     // String
     [clone setApiKey:DUMMY_APIKEY_32CHAR_2];
     XCTAssertEqualObjects(config.apiKey, DUMMY_APIKEY_32CHAR_1);
@@ -864,12 +865,12 @@
 
 - (void)testMetadataMutability {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    
+
     // Immutable in, mutable out
     [configuration addMetadata:@{@"foo" : @"bar"} toSection:@"section1"];
     NSObject *metadata1 = [configuration getMetadataFromSection:@"section1"];
     XCTAssertTrue([metadata1 isKindOfClass:[NSMutableDictionary class]]);
-    
+
     // Mutable in, mutable out
     [configuration addMetadata:[@{@"foo" : @"bar"} mutableCopy] toSection:@"section2"];
     NSObject *metadata2 = [configuration getMetadataFromSection:@"section2"];
