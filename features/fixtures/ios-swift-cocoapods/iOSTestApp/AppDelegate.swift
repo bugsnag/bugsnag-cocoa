@@ -49,6 +49,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     internal func prepareConfig(apiKey: String, mockAPIPath: String) -> BugsnagConfiguration {
         let config = BugsnagConfiguration()
         config.apiKey = apiKey
+        // Enabling by default to check not only the OOM reporting tests but 
+        // also that extra reports aren't erroneously sent in other conditions
+        // when OOM reporting is enabled
+        config.reportOOMs = true
         config.setEndpoints(notify: mockAPIPath, sessions: mockAPIPath)
         return config
     }

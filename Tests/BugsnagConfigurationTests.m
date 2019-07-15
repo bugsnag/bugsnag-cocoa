@@ -55,6 +55,15 @@
     XCTAssertFalse([config shouldSendReports]);
 }
 
+- (void)testDefaultReleaseStage {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+#if DEBUG
+    XCTAssertEqualObjects(@"development", config.releaseStage);
+#else
+    XCTAssertEqualObjects(@"production", config.releaseStage);
+#endif
+}
+
 - (void)testDefaultSessionConfig {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     XCTAssertTrue([config shouldAutoCaptureSessions]);
@@ -62,7 +71,11 @@
 
 - (void)testDefaultReportOOMs {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
+#if DEBUG
+    XCTAssertFalse([config reportOOMs]);
+#else
     XCTAssertTrue([config reportOOMs]);
+#endif
 }
 
 - (void)testDefaultReportBackgroundOOMs {
@@ -113,16 +126,39 @@
     XCTAssertEqualObjects([NSURL URLWithString:@"http://sessions.example.com"], config.sessionURL);
 }
 
-- (void)testSetEmptyNotifyEndpoint {
+// in debug these throw exceptions though in release are "tolerated"
+- (void)testSetNilNotifyEndpoint {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
-    XCTAssertThrowsSpecificNamed([config setEndpointsForNotify:@"" sessions:@"http://sessions.example.com"],
+    NSString *notify = @"foo";
+    notify = nil;
+#if DEBUG
+    XCTAssertThrowsSpecificNamed([config setEndpointsForNotify:notify sessions:@"http://sessions.example.com"],
             NSException, NSInternalInconsistencyException);
+#else
+    XCTAssertNoThrow([config setEndpointsForNotify:@"" sessions:@"http://sessions.example.com"]);
+#endif
 }
 
+// in debug these throw exceptions though in release are "tolerated"
+- (void)testSetEmptyNotifyEndpoint {
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+#if DEBUG
+    XCTAssertThrowsSpecificNamed([config setEndpointsForNotify:@"" sessions:@"http://sessions.example.com"],
+            NSException, NSInternalInconsistencyException);
+#else
+    XCTAssertNoThrow([config setEndpointsForNotify:@"" sessions:@"http://sessions.example.com"]);
+#endif
+}
+
+// in debug these throw exceptions though in release are "tolerated"
 - (void)testSetMalformedNotifyEndpoint {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
+#if DEBUG
     XCTAssertThrowsSpecificNamed([config setEndpointsForNotify:@"http://" sessions:@"http://sessions.example.com"],
             NSException, NSInternalInconsistencyException);
+#else
+    XCTAssertNoThrow([config setEndpointsForNotify:@"http://" sessions:@"http://sessions.example.com"]);
+#endif
 }
 
 - (void)testSetEmptySessionsEndpoint {
