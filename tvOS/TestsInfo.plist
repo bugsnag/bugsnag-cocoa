@@ -20,5 +20,27 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>bugsnag</key>
+	<dict>
+		<key>apiKey</key>
+		<string>233276324dfac2</string>
+		<key>releaseStage</key>
+		<string>beta1</string>
+		<key>notifyReleaseStages</key>
+		<array>
+			<string>beta2</string>
+			<string>prod</string>
+		</array>
+		<key>reportOOMs</key>
+		<false/>
+		<key>reportBackgroundOOMs</key>
+		<true/>
+		<key>autoNotify</key>
+		<false/>
+		<key>autoBreadcrumbs</key>
+		<false/>
+		<key>autoSessions</key>
+		<false/>
+	</dict>
 </dict>
 </plist>

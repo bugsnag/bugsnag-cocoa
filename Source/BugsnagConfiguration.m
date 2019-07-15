@@ -32,6 +32,7 @@
 #import "BugsnagUser.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagLogger.h"
+#import "BSGConfigurationBuilder.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -52,6 +53,15 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 @end
 
 @implementation BugsnagConfiguration
+
++ (instancetype _Nullable)loadConfig {
+    NSDictionary *options = [[NSBundle mainBundle] infoDictionary][@"bugsnag"];
+    return [BSGConfigurationBuilder configurationFromOptions:options];
+}
+
++ (instancetype)loadConfigFromOptions:(NSDictionary *)options {
+    return [BSGConfigurationBuilder configurationFromOptions:options];
+}
 
 - (id)init {
     if (self = [super init]) {
