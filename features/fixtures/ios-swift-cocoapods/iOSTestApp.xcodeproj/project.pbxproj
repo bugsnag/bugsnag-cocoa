@@ -18,6 +18,7 @@
 		8A98400320FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */; };
 		8AB1081923301FE600672818 /* ReleaseStageScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB1081823301FE600672818 /* ReleaseStageScenarios.swift */; };
 		8AA7C2D72327DD3D002255B2 /* ConfigChangesAfterStartScenarios.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AA7C2D52327DD3D002255B2 /* ConfigChangesAfterStartScenarios.m */; };
+		8AB65FCC22DC77CB001200AB /* LoadConfigFromFileScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB65FCB22DC77CB001200AB /* LoadConfigFromFileScenario.swift */; };
 		8AB8866420404DD30003E444 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB8866320404DD30003E444 /* AppDelegate.swift */; };
 		8AB8866620404DD30003E444 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB8866520404DD30003E444 /* ViewController.swift */; };
 		8AB8866920404DD30003E444 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8AB8866720404DD30003E444 /* Main.storyboard */; };
@@ -93,6 +94,7 @@
 		8AB1081823301FE600672818 /* ReleaseStageScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleaseStageScenarios.swift; sourceTree = "<group>"; };
 		8AA7C2D52327DD3D002255B2 /* ConfigChangesAfterStartScenarios.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigChangesAfterStartScenarios.m; sourceTree = "<group>"; };
 		8AA7C2D62327DD3D002255B2 /* ConfigChangesAfterStartScenarios.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigChangesAfterStartScenarios.h; sourceTree = "<group>"; };
+		8AB65FCB22DC77CB001200AB /* LoadConfigFromFileScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadConfigFromFileScenario.swift; sourceTree = "<group>"; };
 		8AB8866020404DD30003E444 /* iOSTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AB8866320404DD30003E444 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8AB8866520404DD30003E444 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -333,6 +335,7 @@
 				8AF6FD79225E3FA00056EF9E /* ResumeSessionOOMScenario.m */,
 				8AF8FCAB22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift */,
 				8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */,
+				8AB65FCB22DC77CB001200AB /* LoadConfigFromFileScenario.swift */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";
@@ -459,6 +462,7 @@
 				F4295968571A4118D6A4606A /* UserEnabledScenario.swift in Sources */,
 				F4295A036B228AF608641699 /* UserDisabledScenario.swift in Sources */,
 				8A14F0F62282D4AE00337B05 /* ReportOOMsDisabledScenario.m in Sources */,
+				8AB65FCC22DC77CB001200AB /* LoadConfigFromFileScenario.swift in Sources */,
 				E7767F13221C21E30006648C /* ResumedSessionScenario.swift in Sources */,
 				8AEFC73120F8D1A000A78779 /* AutoSessionWithUserScenario.m in Sources */,
 				8AB1081923301FE600672818 /* ReleaseStageScenarios.swift in Sources */,

@@ -4,6 +4,8 @@
 #import "BugsnagUser.h"
 
 #import <XCTest/XCTest.h>
+#import <objc/runtime.h>
+
 
 @interface BugsnagConfigurationTests : XCTestCase
 @end
@@ -216,5 +218,50 @@
     XCTAssertTrue([config hasValidApiKey]);
 }
 
+- (void)testLoadConfigFromInfoDictionary {
+    // Mock [NSBundle mainBundle] to load test fixture. mainBundle is not the
+    // test bundle.
+    IMP test_mainBundle = imp_implementationWithBlock(^NSBundle *(){
+        return [NSBundle bundleForClass:[BugsnagConfigurationTests class]];
+    });
+    Method method = class_getClassMethod([NSBundle class], @selector(mainBundle));
+    IMP original_mainBundle = method_setImplementation(method, test_mainBundle);
+
+    BugsnagConfiguration *config = [BugsnagConfiguration loadConfig];
+    XCTAssertNotNil(config);
+    XCTAssertEqualObjects(@"233276324dfac2", config.apiKey);
+    XCTAssertEqualObjects(@"beta1", config.releaseStage);
+    XCTAssertTrue([config.notifyReleaseStages containsObject:@"beta2"]);
+    XCTAssertTrue([config.notifyReleaseStages containsObject:@"prod"]);
+    XCTAssertFalse(config.reportOOMs);
+    XCTAssertFalse(config.autoNotify);
+    XCTAssertFalse(config.automaticallyCollectBreadcrumbs);
+    XCTAssertFalse(config.shouldAutoCaptureSessions);
+    XCTAssertTrue(config.reportBackgroundOOMs);
+
+    // Remove mock
+    method_setImplementation(method, original_mainBundle);
+}
+
+- (void)testLoadConfigFromEmptyOptions {
+    BugsnagConfiguration *config = [BugsnagConfiguration loadConfigFromOptions:@{}];
+    XCTAssertNil(config);
+}
+
+- (void)testLoadConfigFromNilOptions {
+    BugsnagConfiguration *config = [BugsnagConfiguration loadConfigFromOptions:nil];
+    XCTAssertNil(config);
+}
+
+- (void)testLoadConfigFromUnknownOptions {
+    BugsnagConfiguration *config = [BugsnagConfiguration loadConfigFromOptions:@{@"foooo": @23}];
+    XCTAssertNil(config);
+}
+
+- (void)testLoadConfigFromOptions {
+    BugsnagConfiguration *config = [BugsnagConfiguration loadConfigFromOptions:@{@"apiKey": @"dabcaaabc326cba"}];
+    XCTAssertNotNil(config);
+    XCTAssertEqualObjects(@"dabcaaabc326cba", config.apiKey);
+}
 
 @end
