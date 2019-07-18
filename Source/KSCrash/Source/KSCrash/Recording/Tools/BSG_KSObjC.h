@@ -286,53 +286,6 @@ BSG_KSObjCClassType bsg_ksobjc_objectClassType(const void *object);
 #pragma mark - Object-Specific Queries -
 //======================================================================
 
-/** Check if a number was stored as floating point.
- *
- * @param object The number to query.
- * @return true if the number is floating point.
- */
-bool bsg_ksobjc_numberIsFloat(const void *object);
-
-/** Get the contents of a number as a floating point value.
- *
- * @param object The number.
- * @return The value.
- */
-Float64 bsg_ksobjc_numberAsFloat(const void *object);
-
-/** Get the contents of a number as an integer value.
- * If the number was stored as floating point, it will be
- * truncated as per C's conversion rules.
- *
- * @param object The number.
- * @return The value.
- */
-int64_t bsg_ksobjc_numberAsInteger(const void *object);
-
-/** Copy the contents of a date object.
- *
- * @param datePtr The date to copy data from.
- *
- * @return Time interval since Jan 1 2001 00:00:00 GMT.
- */
-CFAbsoluteTime bsg_ksobjc_dateContents(const void *datePtr);
-
-/** Copy the contents of a URL object.
- *
- * dst will be null terminated unless maxLength is 0.
- * If the string doesn't fit, it will be truncated.
- *
- * @param nsurl The URL to copy data from.
- *
- * @param dst The destination to copy into.
- *
- * @param maxLength The size of the buffer.
- *
- * @return the number of bytes copied (not including null terminator).
- */
-size_t bsg_ksobjc_copyURLContents(const void *nsurl, char *dst,
-                                  size_t maxLength);
-
 /** Get the length of a string in characters.
  *
  * @param stringPtr Pointer to a string.
@@ -357,49 +310,6 @@ size_t bsg_ksobjc_stringLength(const void *const stringPtr);
 size_t bsg_ksobjc_copyStringContents(const void *string, char *dst,
                                      size_t maxLength);
 
-/** Get an NSArray's count.
- *
- * @param arrayPtr The array to get the count from.
- *
- * @return The array's count.
- */
-size_t bsg_ksobjc_arrayCount(const void *arrayPtr);
-
-/** Get an NSArray's contents.
- *
- * @param arrayPtr The array to get the contents of.
- *
- * @param contents Location to copy the array's contents into.
- *
- * @param count The number of objects to copy.
- *
- * @return The number of items copied.
- */
-size_t bsg_ksobjc_arrayContents(const void *arrayPtr, uintptr_t *contents,
-                                size_t count);
-
-//======================================================================
-#pragma mark - Broken/Unimplemented Stuff -
-//======================================================================
-
-/** Get the first entry from an NSDictionary.
- *
- * WARNING: This function is broken!
- *
- * @param dict The dictionary to copy from.
- *
- * @param key Location to copy the first key into.
- *
- * @param value Location to copy the first value into.
- *
- * @return true if the operation was successful.
- */
-bool bsg_ksobjc_dictionaryFirstEntry(const void *dict, uintptr_t *key,
-                                     uintptr_t *value);
-
-/** UNIMPLEMENTED
- */
-size_t bsg_ksobjc_dictionaryCount(const void *dict);
 
 #ifdef __cplusplus
 }
