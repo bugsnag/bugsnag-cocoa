@@ -676,12 +676,12 @@ void bsg_kscrw_i_writeMemoryContents(
             }
             break;
         case BSG_KSObjCTypeObject: {
-            writer->addStringElement(writer, BSG_KSCrashField_Type,
-                                     BSG_KSCrashMemType_Object);
             const char *className = bsg_ksobjc_objectClassName(object);
-            writer->addStringElement(writer, BSG_KSCrashField_Class, className);
             if (!bsg_kscrw_i_isRestrictedClass(className)) {
                 if (bsg_ksobjc_objectClassType(object) == BSG_KSObjCClassTypeString) {
+                    writer->addStringElement(writer, BSG_KSCrashField_Type,
+                                             BSG_KSCrashMemType_Object);
+                    writer->addStringElement(writer, BSG_KSCrashField_Class, className);
                     bsg_kscrw_i_writeNSStringContents(
                         writer, BSG_KSCrashField_Value, address, limit);
                 }
