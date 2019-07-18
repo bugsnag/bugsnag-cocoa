@@ -48,13 +48,6 @@ typedef struct {
      * along with their contents.
      */
     bool enabled;
-
-    /** List of classes that should never be introspected.
-     * Whenever a class in this list is encountered, only the class name will be
-     * recorded.
-     */
-    const char **restrictedClasses;
-    size_t restrictedClassesCount;
 } BSG_KSCrash_IntrospectionRules;
 
 typedef struct {

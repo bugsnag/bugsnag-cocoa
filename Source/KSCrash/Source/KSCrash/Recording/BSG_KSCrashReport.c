@@ -634,19 +634,6 @@ void bsg_kscrw_i_writeNSStringContents(
     }
 }
 
-bool bsg_kscrw_i_isRestrictedClass(const char *name) {
-    if (bsg_g_introspectionRules->restrictedClasses != NULL) {
-        for (size_t i = 0; i < bsg_g_introspectionRules->restrictedClassesCount;
-             i++) {
-            if (strcmp(name, bsg_g_introspectionRules->restrictedClasses[i]) ==
-                0) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 /** Write the contents of a memory location.
  * Also writes meta information about the data.
  *
@@ -677,14 +664,12 @@ void bsg_kscrw_i_writeMemoryContents(
             break;
         case BSG_KSObjCTypeObject: {
             const char *className = bsg_ksobjc_objectClassName(object);
-            if (!bsg_kscrw_i_isRestrictedClass(className)) {
-                if (bsg_ksobjc_objectClassType(object) == BSG_KSObjCClassTypeString) {
-                    writer->addStringElement(writer, BSG_KSCrashField_Type,
-                                             BSG_KSCrashMemType_Object);
-                    writer->addStringElement(writer, BSG_KSCrashField_Class, className);
-                    bsg_kscrw_i_writeNSStringContents(
-                        writer, BSG_KSCrashField_Value, address, limit);
-                }
+            if (bsg_ksobjc_objectClassType(object) == BSG_KSObjCClassTypeString) {
+                writer->addStringElement(writer, BSG_KSCrashField_Type,
+                                         BSG_KSCrashMemType_Object);
+                writer->addStringElement(writer, BSG_KSCrashField_Class, className);
+                bsg_kscrw_i_writeNSStringContents(
+                    writer, BSG_KSCrashField_Value, address, limit);
             }
             break;
         }

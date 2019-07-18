@@ -96,7 +96,6 @@
 @synthesize logFilePath = _logFilePath;
 @synthesize nextCrashID = _nextCrashID;
 @synthesize introspectMemory = _introspectMemory;
-@synthesize doNotIntrospectClasses = _doNotIntrospectClasses;
 @synthesize maxStoredReports = _maxStoredReports;
 @synthesize suspendThreadsForUserReported = _suspendThreadsForUserReported;
 @synthesize reportWhenDebuggerIsAttached = _reportWhenDebuggerIsAttached;
@@ -202,23 +201,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     _writeBinaryImagesForUserReported = writeBinaryImagesForUserReported;
     bsg_kscrash_setWriteBinaryImagesForUserReported(
         writeBinaryImagesForUserReported);
-}
-
-- (void)setDoNotIntrospectClasses:(NSArray *)doNotIntrospectClasses {
-    _doNotIntrospectClasses = doNotIntrospectClasses;
-    size_t count = [doNotIntrospectClasses count];
-    if (count == 0) {
-        bsg_kscrash_setDoNotIntrospectClasses(nil, 0);
-    } else {
-        NSMutableData *data =
-            [NSMutableData dataWithLength:count * sizeof(const char *)];
-        const char **classes = data.mutableBytes;
-        for (size_t i = 0; i < count; i++) {
-            classes[i] = [doNotIntrospectClasses[i]
-                cStringUsingEncoding:NSUTF8StringEncoding];
-        }
-        bsg_kscrash_setDoNotIntrospectClasses(classes, count);
-    }
 }
 
 - (NSString *)crashReportPath {

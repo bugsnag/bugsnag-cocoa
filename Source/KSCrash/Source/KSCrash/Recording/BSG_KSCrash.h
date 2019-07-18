@@ -79,15 +79,6 @@ typedef enum {
  */
 @property(nonatomic, readwrite, assign) bool introspectMemory;
 
-
-/** List of Objective-C classes that should never be introspected.
- * Whenever a class in this list is encountered, only the class name will be
- * recorded. This can be useful for information security concerns.
- *
- * Default: nil
- */
-@property(nonatomic, readwrite, retain) NSArray *doNotIntrospectClasses;
-
 /** Get the singleton instance of the crash reporter.
  */
 + (BSG_KSCrash *)sharedInstance;
