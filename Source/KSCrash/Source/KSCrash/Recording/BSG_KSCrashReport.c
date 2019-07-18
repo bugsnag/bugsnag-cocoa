@@ -520,10 +520,6 @@ void bsg_kscrw_i_logCrashType(
                             sigName, sigCodeName, sentryContext->faultAddress);
         break;
     }
-    case BSG_KSCrashTypeMainThreadDeadlock: {
-        BSG_KSLOGBASIC_INFO("Main thread deadlocked");
-        break;
-    }
     case BSG_KSCrashTypeUserReported: {
         BSG_KSLOG_INFO("App crashed due to user specified exception: %s",
                        sentryContext->crashReason);
@@ -1618,8 +1614,6 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
 
     // Gather common info.
     switch (crash->crashType) {
-    case BSG_KSCrashTypeMainThreadDeadlock:
-        break;
     case BSG_KSCrashTypeMachException:
         machExceptionType = crash->mach.type;
         machCode = (kern_return_t)crash->mach.code;
@@ -1680,11 +1674,6 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
 
         // Gather specific info.
         switch (crash->crashType) {
-        case BSG_KSCrashTypeMainThreadDeadlock:
-            writer->addStringElement(writer, BSG_KSCrashField_Type,
-                                     BSG_KSCrashExcType_Deadlock);
-            break;
-
         case BSG_KSCrashTypeMachException:
             writer->beginObject(writer, BSG_KSCrashField_Mach);
             {

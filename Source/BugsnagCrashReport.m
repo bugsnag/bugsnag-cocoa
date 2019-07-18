@@ -613,7 +613,7 @@ initWithErrorName:(NSString *_Nonnull)name
                         BSGDictSetSafeObject(mutableFrame, @YES, BSGKeyIsPC);
                     }
                     if (seen == 2 && !stackOverflow &&
-                        [@[ BSGKeySignal, @"deadlock", BSGKeyMach ]
+                        [@[ BSGKeySignal, BSGKeyMach ]
                             containsObject:[self errorType]]) {
                         BSGDictSetSafeObject(mutableFrame, @YES, BSGKeyIsLR);
                     }
