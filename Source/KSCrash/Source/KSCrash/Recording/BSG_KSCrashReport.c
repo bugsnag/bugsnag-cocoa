@@ -1046,7 +1046,7 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
                                        backtrace, backtraceLength,
                                        skippedEntries);
         }
-        if (machineContext != NULL) {
+        if (machineContext != NULL && isCrashedThread) {
             bsg_kscrw_i_writeRegisters(writer, BSG_KSCrashField_Registers,
                                        machineContext, isCrashedThread);
         }
@@ -1058,7 +1058,7 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
         if (isCrashedThread && machineContext != NULL) {
             bsg_kscrw_i_writeStackOverflow(writer, BSG_KSCrashField_Stack,
                                            machineContext, skippedEntries > 0);
-            if (writeNotableAddresses) {
+            if (writeNotableAddresses && isCrashedThread) {
                 bsg_kscrw_i_writeNotableAddresses(
                     writer, BSG_KSCrashField_NotableAddresses, machineContext);
             }
