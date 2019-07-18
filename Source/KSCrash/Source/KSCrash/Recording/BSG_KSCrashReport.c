@@ -73,16 +73,6 @@ typedef ucontext_t SignalUserContext;
  */
 #define BSG_kMaxStackTracePrintLines 40
 
-/** How far to search the stack (in pointer sized jumps) for notable data. */
-#define BSG_kStackNotableSearchBackDistance 20
-#define BSG_kStackNotableSearchForwardDistance 10
-
-/** How much of the stack to dump (in pointer sized jumps). */
-#define BSG_kStackContentsPushedDistance 20
-#define BSG_kStackContentsPoppedDistance 10
-#define BSG_kStackContentsTotalDistance                                        \
-    (BSG_kStackContentsPushedDistance + BSG_kStackContentsPoppedDistance)
-
 /** The minimum length for a valid string. */
 #define BSG_kMinStringLength 4
 
@@ -856,7 +846,7 @@ void bsg_kscrw_i_writeBacktrace(const BSG_KSCrashReportWriter *const writer,
 
 #pragma mark Stack
 
-/** Write a dump of the stack contents to the report.
+/** Write the stack overflow state to the report.
  *
  * @param writer The writer.
  *
@@ -866,7 +856,7 @@ void bsg_kscrw_i_writeBacktrace(const BSG_KSCrashReportWriter *const writer,
  *
  * @param isStackOverflow If true, the stack has overflowed.
  */
-void bsg_kscrw_i_writeStackContents(
+void bsg_kscrw_i_writeStackOverflow(
     const BSG_KSCrashReportWriter *const writer, const char *const key,
     const BSG_STRUCT_MCONTEXT_L *const machineContext,
     const bool isStackOverflow) {
@@ -875,83 +865,12 @@ void bsg_kscrw_i_writeStackContents(
         return;
     }
 
-    uintptr_t lowAddress =
-        sp + (uintptr_t)(BSG_kStackContentsPushedDistance * (int)sizeof(sp) *
-                         bsg_ksmachstackGrowDirection() * -1);
-    uintptr_t highAddress =
-        sp + (uintptr_t)(BSG_kStackContentsPoppedDistance * (int)sizeof(sp) *
-                         bsg_ksmachstackGrowDirection());
-    if (highAddress < lowAddress) {
-        uintptr_t tmp = lowAddress;
-        lowAddress = highAddress;
-        highAddress = tmp;
-    }
     writer->beginObject(writer, key);
     {
-        writer->addStringElement(writer, BSG_KSCrashField_GrowDirection,
-                                 bsg_ksmachstackGrowDirection() > 0 ? "+"
-                                                                    : "-");
-        writer->addUIntegerElement(writer, BSG_KSCrashField_DumpStart,
-                                   lowAddress);
-        writer->addUIntegerElement(writer, BSG_KSCrashField_DumpEnd,
-                                   highAddress);
-        writer->addUIntegerElement(writer, BSG_KSCrashField_StackPtr, sp);
         writer->addBooleanElement(writer, BSG_KSCrashField_Overflow,
                                   isStackOverflow);
-        uint8_t stackBuffer[BSG_kStackContentsTotalDistance * sizeof(sp)];
-        size_t copyLength = highAddress - lowAddress;
-        if (bsg_ksmachcopyMem((void *)lowAddress, stackBuffer, copyLength) ==
-            KERN_SUCCESS) {
-            writer->addDataElement(writer, BSG_KSCrashField_Contents,
-                                   (void *)stackBuffer, copyLength);
-        } else {
-            writer->addStringElement(writer, BSG_KSCrashField_Error,
-                                     "Stack contents not accessible");
-        }
     }
     writer->endContainer(writer);
-}
-
-/** Write any notable addresses near the stack pointer (above and below).
- *
- * @param writer The writer.
- *
- * @param machineContext The context to retrieve the stack from.
- *
- * @param backDistance The distance towards the beginning of the stack to check.
- *
- * @param forwardDistance The distance past the end of the stack to check.
- */
-void bsg_kscrw_i_writeNotableStackContents(
-    const BSG_KSCrashReportWriter *const writer,
-    const BSG_STRUCT_MCONTEXT_L *const machineContext, const int backDistance,
-    const int forwardDistance) {
-    uintptr_t sp = bsg_ksmachstackPointer(machineContext);
-    if ((void *)sp == NULL) {
-        return;
-    }
-
-    uintptr_t lowAddress =
-        sp + (uintptr_t)(backDistance * (int)sizeof(sp) *
-                         bsg_ksmachstackGrowDirection() * -1);
-    uintptr_t highAddress = sp + (uintptr_t)(forwardDistance * (int)sizeof(sp) *
-                                             bsg_ksmachstackGrowDirection());
-    if (highAddress < lowAddress) {
-        uintptr_t tmp = lowAddress;
-        lowAddress = highAddress;
-        highAddress = tmp;
-    }
-    uintptr_t contentsAsPointer;
-    char nameBuffer[40];
-    for (uintptr_t address = lowAddress; address < highAddress;
-         address += sizeof(address)) {
-        if (bsg_ksmachcopyMem((void *)address, &contentsAsPointer,
-                              sizeof(contentsAsPointer)) == KERN_SUCCESS) {
-            sprintf(nameBuffer, "stack@%p", (void *)address);
-            bsg_kscrw_i_writeMemoryContentsIfNotable(writer, nameBuffer,
-                                                     contentsAsPointer);
-        }
-    }
 }
 
 #pragma mark Registers
@@ -1084,9 +1003,6 @@ void bsg_kscrw_i_writeNotableAddresses(
     writer->beginObject(writer, key);
     {
         bsg_kscrw_i_writeNotableRegisters(writer, machineContext);
-        bsg_kscrw_i_writeNotableStackContents(
-            writer, machineContext, BSG_kStackNotableSearchBackDistance,
-            BSG_kStackNotableSearchForwardDistance);
     }
     writer->endContainer(writer);
 }
@@ -1140,7 +1056,7 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
         writer->addBooleanElement(writer, BSG_KSCrashField_CurrentThread,
                                   thread == bsg_ksmachthread_self());
         if (isCrashedThread && machineContext != NULL) {
-            bsg_kscrw_i_writeStackContents(writer, BSG_KSCrashField_Stack,
+            bsg_kscrw_i_writeStackOverflow(writer, BSG_KSCrashField_Stack,
                                            machineContext, skippedEntries > 0);
             if (writeNotableAddresses) {
                 bsg_kscrw_i_writeNotableAddresses(

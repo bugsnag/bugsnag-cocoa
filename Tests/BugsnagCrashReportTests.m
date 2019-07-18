@@ -285,36 +285,6 @@
                           payload[@"exceptions"][0][@"message"]);
 }
 
-- (void)testEnhancedErrorMessageIgnoresStackFrames {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{
-        @"crash" : @{
-            @"threads" : @[ @{
-                @"crashed" : @YES,
-                @"notable_addresses" : @{
-                    @"stack@2342387" : @{
-                        @"address" : @4511086448,
-                        @"type" : @"string",
-                        @"value" : @"some nonsense"
-                    },
-                    @"r16" : @{
-                        @"address" : @4511089532,
-                        @"type" : @"string",
-                        @"value" : @"fatal error"
-                    }
-                }
-            } ]
-        }
-    }];
-    NSDictionary *payload = [report toJson];
-    XCTAssertEqualObjects(@"fatal error",
-                          payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(report.errorClass,
-                          payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(report.errorMessage,
-                          payload[@"exceptions"][0][@"message"]);
-}
-
 - (void)testEnhancedErrorMessageIgnoresNonStrings {
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{
         @"crash" : @{
