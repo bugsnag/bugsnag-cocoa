@@ -250,27 +250,6 @@ bool bsg_ksobjc_ivarValue(const void *objectPtr, size_t ivarIndex, void *dst);
  */
 uintptr_t bsg_ksobjc_taggedPointerPayload(const void *taggedObjectPtr);
 
-/** Generate a description of an object.
- *
- * For known common object classes it will print extra information.
- * For all other objects, it will print a standard <SomeClass: 0x12345678>
- *
- * For containers, it will only print the first object in the container.
- *
- * buffer will be null terminated unless bufferLength is 0.
- * If the string doesn't fit, it will be truncated.
- *
- * @param object the object to generate a description for.
- *
- * @param buffer The buffer to copy into.
- *
- * @param bufferLength The length of the buffer.
- *
- * @return the number of bytes copied (not including null terminator).
- */
-size_t bsg_ksobjc_getDescription(void *object, char *buffer,
-                                 size_t bufferLength);
-
 /** Get the class type of an object.
  * There are a number of common class types that BSG_KSObjC understamds,
  * listed in BSG_KSObjCClassType.

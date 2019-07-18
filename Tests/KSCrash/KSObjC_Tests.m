@@ -85,25 +85,6 @@ static NSArray* g_test_strings;
     bsg_ksobjc_init();
 }
 
-- (NSArray*) componentsOfBasicDescription:(NSString*) description
-{
-    NSError* error = nil;
-    NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"^<(\\w+): [^>]+>" options:0 error:&error];
-    NSTextCheckingResult* result = [regex firstMatchInString:description options:0 range:NSMakeRange(0, [description length])];
-    NSString* className = [description substringWithRange:[result rangeAtIndex:1]];
-    return @[className];
-}
-
-- (NSArray*) componentsOfComplexDescription:(NSString*) description
-{
-    NSError* error = nil;
-    NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"^<(\\w+): [^>]+>: (.*)$" options:0 error:&error];
-    NSTextCheckingResult* result = [regex firstMatchInString:description options:0 range:NSMakeRange(0, [description length])];
-    NSString* className = [description substringWithRange:[result rangeAtIndex:1]];
-    NSString* theRest = [description substringWithRange:[result rangeAtIndex:2]];
-    return @[className, theRest];
-}
-
 - (void) testObjectTypeInvalidMemory
 {
     uintptr_t pointer = (uintptr_t)-1;
@@ -464,45 +445,11 @@ static NSArray* g_test_strings;
     }
 }
 
-- (void) testStringDescription
-{
-    for(NSUInteger i = 0; i < g_test_strings.count; i++)
-    {
-        NSString* string = g_test_strings[i];
-        void* stringPtr = (__bridge void*)string;
-        NSString* expectedClassName = [NSString stringWithCString:class_getName([string class]) encoding:NSUTF8StringEncoding];
-        NSString* expectedTheRest = [NSString stringWithFormat:@"\"%@\"", string];
-        char buffer[100];
-        size_t copied = bsg_ksobjc_getDescription(stringPtr, buffer, sizeof(buffer));
-        XCTAssertTrue(copied > 0, @"");
-        NSString* description = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
-        NSArray* components = [self componentsOfComplexDescription:description];
-        NSString* className = components[0];
-        NSString* theRest = components[1];
-        XCTAssertEqualObjects(className, expectedClassName, @"");
-        XCTAssertEqualObjects(theRest, expectedTheRest, @"");
-    }
-}
-
 - (void) testUntrackedClassIsValid
 {
     void* classPtr = (__bridge void*)[SomeObjCClass class];
     bool isValid = bsg_ksobjc_objectType(classPtr) == BSG_KSObjCTypeClass;
     XCTAssertTrue(isValid, @"Not a class");
-}
-
-- (void) testUntrackedClassDescription
-{
-    SomeObjCClass* instance = [[SomeObjCClass alloc] init];
-    void* instancePtr = (__bridge void*)instance;
-    NSString* expectedClassName = [NSString stringWithCString:class_getName([instance class]) encoding:NSUTF8StringEncoding];
-    char buffer[100];
-    size_t copied = bsg_ksobjc_getDescription(instancePtr, buffer, sizeof(buffer));
-    XCTAssertTrue(copied > 0, @"");
-    NSString* description = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
-    NSArray* components = [self componentsOfBasicDescription:description];
-    NSString* className = components[0];
-    XCTAssertEqualObjects(className, expectedClassName, @"");
 }
 
 - (void) testSuperclass

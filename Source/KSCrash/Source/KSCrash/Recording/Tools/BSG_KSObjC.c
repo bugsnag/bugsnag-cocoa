@@ -72,10 +72,7 @@ typedef struct {
     const char *name;
     BSG_KSObjCClassType type;
     ClassSubtype subtype;
-    bool isMutable;
     bool (*isValidObject)(const void *object);
-    size_t (*description)(const void *object, char *buffer,
-                          size_t bufferLength);
     const void *class;
 } ClassData;
 
@@ -89,45 +86,35 @@ static bool taggedObjectIsValid(const void *object);
 static bool stringIsValid(const void *object);
 static bool taggedStringIsValid(const void *object);
 
-static size_t objectDescription(const void *object, char *buffer,
-                                size_t bufferLength);
-static size_t taggedObjectDescription(const void *object, char *buffer,
-                                      size_t bufferLength);
-static size_t stringDescription(const void *object, char *buffer,
-                                size_t bufferLength);
-static size_t taggedStringDescription(const void *object, char *buffer,
-                                      size_t bufferLength);
-
 static ClassData bsg_g_classData[] = {
-    {"__NSCFString", BSG_KSObjCClassTypeString, ClassSubtypeNone, true,
-     stringIsValid, stringDescription},
-    {"NSCFString", BSG_KSObjCClassTypeString, ClassSubtypeNone, true,
-     stringIsValid, stringDescription},
-    {"__NSCFConstantString", BSG_KSObjCClassTypeString, ClassSubtypeNone, true,
-     stringIsValid, stringDescription},
-    {"NSCFConstantString", BSG_KSObjCClassTypeString, ClassSubtypeNone, true,
-     stringIsValid, stringDescription},
-    {NULL, BSG_KSObjCClassTypeUnknown, ClassSubtypeNone, false, objectIsValid,
-     objectDescription},
+    {"__NSCFString", BSG_KSObjCClassTypeString, ClassSubtypeNone,
+     stringIsValid},
+    {"NSCFString", BSG_KSObjCClassTypeString, ClassSubtypeNone,
+     stringIsValid},
+    {"__NSCFConstantString", BSG_KSObjCClassTypeString, ClassSubtypeNone,
+     stringIsValid},
+    {"NSCFConstantString", BSG_KSObjCClassTypeString, ClassSubtypeNone,
+     stringIsValid},
+    {NULL, BSG_KSObjCClassTypeUnknown, ClassSubtypeNone, objectIsValid},
 };
 
 static ClassData bsg_g_taggedClassData[] = {
-    {"NSAtom", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone, false,
-     taggedObjectIsValid, taggedObjectDescription},
-    {NULL, BSG_KSObjCClassTypeUnknown, ClassSubtypeNone, false,
-     taggedObjectIsValid, taggedObjectDescription},
-    {"NSString", BSG_KSObjCClassTypeString, ClassSubtypeNone, false,
-     taggedStringIsValid, taggedStringDescription},
-    {"NSNumber", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone, false,
-        taggedObjectIsValid, taggedObjectDescription},
-    {"NSIndexPath", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone, false,
-     taggedObjectIsValid, taggedObjectDescription},
-    {"NSManagedObjectID", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone, false,
-        taggedObjectIsValid, taggedObjectDescription},
-    {"NSDate", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone, false,
-        taggedObjectIsValid, taggedObjectDescription},
-    {NULL, BSG_KSObjCClassTypeUnknown, ClassSubtypeNone, false,
-     taggedObjectIsValid, taggedObjectDescription},
+    {"NSAtom", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
+     taggedObjectIsValid},
+    {NULL, BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
+     taggedObjectIsValid},
+    {"NSString", BSG_KSObjCClassTypeString, ClassSubtypeNone,
+     taggedStringIsValid},
+    {"NSNumber", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
+        taggedObjectIsValid},
+    {"NSIndexPath", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
+     taggedObjectIsValid},
+    {"NSManagedObjectID", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
+        taggedObjectIsValid},
+    {"NSDate", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
+        taggedObjectIsValid},
+    {NULL, BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
+     taggedObjectIsValid},
 };
 static size_t bsg_g_taggedClassDataCount =
     sizeof(bsg_g_taggedClassData) / sizeof(*bsg_g_taggedClassData);
@@ -373,23 +360,6 @@ static inline const ClassData *getClassDataFromObject(const void *object) {
     }
     const struct class_t *obj = object;
     return getClassData(bsg_getIsaPointer(obj));
-}
-
-static size_t stringPrintf(char *buffer, size_t bufferLength, const char *fmt,
-                           ...) {
-    unlikely_if(bufferLength == 0) { return 0; }
-
-    va_list args;
-    va_start(args, fmt);
-    int printLength = vsnprintf(buffer, bufferLength, fmt, args);
-    va_end(args);
-
-    unlikely_if(printLength < 0) {
-        *buffer = 0;
-        return 0;
-    }
-    unlikely_if((size_t)printLength > bufferLength) { return bufferLength - 1; }
-    return (size_t)printLength;
 }
 
 //======================================================================
@@ -787,26 +757,6 @@ static bool taggedObjectIsValid(const void *object) {
     return isValidTaggedPointer(object);
 }
 
-static size_t objectDescription(const void *object, char *buffer,
-                                size_t bufferLength) {
-    const void *class = bsg_getIsaPointer(object);
-    const char *name = getClassName(class);
-    uintptr_t objPointer = (uintptr_t)object;
-    const char *fmt = sizeof(uintptr_t) == sizeof(uint32_t) ? "<%s: 0x%08x>"
-                                                            : "<%s: 0x%016x>";
-    return stringPrintf(buffer, bufferLength, fmt, name, objPointer);
-}
-
-static size_t taggedObjectDescription(const void *object, char *buffer,
-                                      size_t bufferLength) {
-    const ClassData *data = getClassDataFromTaggedPointer(object);
-    const char *name = data->name;
-    uintptr_t objPointer = (uintptr_t)object;
-    const char *fmt = sizeof(uintptr_t) == sizeof(uint32_t) ? "<%s: 0x%08x>"
-                                                            : "<%s: 0x%016x>";
-    return stringPrintf(buffer, bufferLength, fmt, name, objPointer);
-}
-
 //======================================================================
 #pragma mark - NSString -
 //======================================================================
@@ -1010,38 +960,13 @@ size_t bsg_ksobjc_copyStringContents(const void *stringPtr, char *dst,
     return bsg_ksobjc_i_copy8BitString(src, dst, charCount, maxByteCount);
 }
 
-static size_t stringDescription(const void *object, char *buffer,
-                                size_t bufferLength) {
-    char *pBuffer = buffer;
-    char *pEnd = buffer + bufferLength;
-
-    pBuffer += objectDescription(object, pBuffer, (size_t)(pEnd - pBuffer));
-    pBuffer += stringPrintf(pBuffer, (size_t)(pEnd - pBuffer), ": \"");
-    pBuffer += bsg_ksobjc_copyStringContents(object, pBuffer,
-                                             (size_t)(pEnd - pBuffer));
-    pBuffer += stringPrintf(pBuffer, (size_t)(pEnd - pBuffer), "\"");
-
-    return (size_t)(pBuffer - buffer);
-}
-
 static bool taggedStringIsValid(const void *const object) {
     return isValidTaggedPointer(object) && bsg_isTaggedPointerNSString(object);
-}
-
-static size_t taggedStringDescription(const void *object, char *buffer,
-                                      __unused size_t bufferLength) {
-    return extractTaggedNSString(object, buffer, bufferLength);
 }
 
 //======================================================================
 #pragma mark - General Queries -
 //======================================================================
-
-size_t bsg_ksobjc_getDescription(void *object, char *buffer,
-                                 size_t bufferLength) {
-    const ClassData *data = getClassDataFromObject(object);
-    return data->description(object, buffer, bufferLength);
-}
 
 void *bsg_ksobjc_i_objectReferencedByString(const char *string) {
     uint64_t address = 0;
