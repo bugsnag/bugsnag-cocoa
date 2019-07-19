@@ -36,6 +36,7 @@
 #import "BSG_RFC3339DateTool.h"
 #import "BSG_KSCrashType.h"
 #import "BSG_KSCrashState.h"
+#import "BSG_KSSystemInfo.h"
 #import "BSG_KSMach.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
@@ -387,7 +388,16 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 #endif
 
     _started = YES;
-    if (self.configuration.reportOOMs && !bsg_ksmachisBeingTraced() && self.configuration.autoNotify) {
+    // autoNotify disables all unhandled event reporting
+    BOOL configuredToReportOOMs = self.configuration.reportOOMs && self.configuration.autoNotify;
+    // Disable if a debugger is enabled, since the development cycle of starting
+    // and restarting an app is also an uncatchable kill
+    BOOL noDebuggerEnabled = !bsg_ksmachisBeingTraced();
+    // Disable if in an app extension, since app extensions have a different
+    // app lifecycle and the heuristic used for finding app terminations rooted
+    // in fixable code does not apply
+    BOOL notInAppExtension = ![BSG_KSSystemInfo isRunningInAppExtension];
+    if (configuredToReportOOMs && noDebuggerEnabled && notInAppExtension) {
         [self.oomWatchdog enable];
     }
 
