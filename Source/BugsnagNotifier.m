@@ -27,6 +27,7 @@
 #import "BugsnagNotifier.h"
 #import "BSGConnectivity.h"
 #import "Bugsnag.h"
+#import "Private.h"
 #import "BugsnagCrashSentry.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagLogger.h"
