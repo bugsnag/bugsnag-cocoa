@@ -590,16 +590,29 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     static NSString *const BSGOutOfMemoryErrorClass = @"Out Of Memory";
     static NSString *const BSGOutOfMemoryMessageFormat = @"The app was likely terminated by the operating system while in the %@";
     NSMutableDictionary *lastLaunchInfo = [[self.oomWatchdog lastBootCachedFileInfo] mutableCopy];
-    BOOL wasInForeground = [[lastLaunchInfo valueForKeyPath:@"app.inForeground"] boolValue];
-    NSString *message = [NSString stringWithFormat:BSGOutOfMemoryMessageFormat, wasInForeground ? @"foreground" : @"background"];
-    BugsnagHandledState *handledState = [BugsnagHandledState
-        handledStateWithSeverityReason:LikelyOutOfMemory
-                              severity:BSGSeverityError
-                             attrValue:nil];
-    NSDictionary *crumbs = [self.configuration.breadcrumbs cachedBreadcrumbs];
+    NSArray *crumbs = [self.configuration.breadcrumbs cachedBreadcrumbs];
     if (crumbs.count > 0) {
         lastLaunchInfo[@"breadcrumbs"] = crumbs;
     }
+    for (NSDictionary *crumb in crumbs) {
+        if ([crumb isKindOfClass:[NSDictionary class]]
+            && [crumb[@"name"] isKindOfClass:[NSString class]]) {
+            NSString *name = crumb[@"name"];
+            // If the termination breadcrumb is set, the app entered a normal
+            // termination flow but expired before the watchdog sentinel could
+            // be updated. In this case, no report should be sent.
+            if ([name isEqualToString:kAppWillTerminate]) {
+                return;
+            }
+        }
+    }
+
+    BOOL wasInForeground = [[lastLaunchInfo valueForKeyPath:@"app.inForeground"] boolValue];
+    NSString *message = [NSString stringWithFormat:BSGOutOfMemoryMessageFormat, wasInForeground ? @"foreground" : @"background"];
+    BugsnagHandledState *handledState = [BugsnagHandledState
+                                         handledStateWithSeverityReason:LikelyOutOfMemory
+                                         severity:BSGSeverityError
+                                         attrValue:nil];
     NSDictionary *appState = @{@"oom": lastLaunchInfo, @"didOOM": @YES};
     [self.crashSentry reportUserException:BSGOutOfMemoryErrorClass
                                    reason:message
