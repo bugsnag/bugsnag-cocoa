@@ -21,6 +21,17 @@ Feature: Reporting out of memory events
         And the event "metaData.extra.shape" equals "line"
         And the event breadcrumbs contain "Crumb left before crash"
 
+    Scenario: The app is terminated normally
+        The application can be gracefully terminated by the OS if more
+        memory is needed for other applications or directly by calling
+        exit(0)
+
+        When I crash the app using "OOMWillTerminateScenario"
+        And I wait for 4 seconds
+        And I relaunch the app
+        And I wait for 10 seconds
+        Then I should receive 0 requests
+
     Scenario: The OS kills the application in the background
         When I run "OOMScenario"
         And I put the app in the background
