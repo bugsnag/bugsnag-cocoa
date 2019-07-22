@@ -30,19 +30,6 @@
 #include "BSG_KSMach.h"
 #include "BSG_KSString.h"
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > 70000
-#include <objc/NSObjCRuntime.h>
-#else
-#if __LP64__ || (TARGET_OS_EMBEDDED && !TARGET_OS_IPHONE) ||                   \
-    TARGET_OS_WIN32 || NS_BUILD_32_LIKE_64
-typedef long NSInteger;
-typedef unsigned long NSUInteger;
-#else
-typedef int NSInteger;
-typedef unsigned int NSUInteger;
-#endif
-#endif
-
 #include <CoreGraphics/CGBase.h>
 #include <objc/runtime.h>
 
