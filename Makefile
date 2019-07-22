@@ -13,7 +13,8 @@ else
   DESTINATION?=platform=tvOS Simulator,name=Apple TV,OS=$(OS)
  else
   SDK?=iphonesimulator
-  DESTINATION?=platform=iOS Simulator,name=iPhone 5s,OS=$(OS)
+  DEVICE?=iPhone 5s
+  DESTINATION?=platform=iOS Simulator,name=$(DEVICE),OS=$(OS)
   RELEASE_DIR=Release-iphoneos
  endif
  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "$(DESTINATION)" -configuration $(TEST_CONFIGURATION)
