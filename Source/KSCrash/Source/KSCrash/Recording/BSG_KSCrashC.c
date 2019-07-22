@@ -228,14 +228,6 @@ void bsg_kscrash_setPrintTraceToStdout(bool printTraceToStdout) {
     crashContext()->config.printTraceToStdout = printTraceToStdout;
 }
 
-void bsg_kscrash_setSearchThreadNames(bool shouldSearchThreadNames) {
-    crashContext()->config.searchThreadNames = shouldSearchThreadNames;
-}
-
-void bsg_kscrash_setSearchQueueNames(bool shouldSearchQueueNames) {
-    crashContext()->config.searchQueueNames = shouldSearchQueueNames;
-}
-
 void bsg_kscrash_setIntrospectMemory(bool introspectMemory) {
     crashContext()->config.introspectionRules.enabled = introspectMemory;
 }

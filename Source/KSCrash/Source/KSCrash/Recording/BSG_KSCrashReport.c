@@ -1367,11 +1367,8 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
                              const char *const key,
                              const BSG_KSCrash_SentryContext *const crash,
                              const thread_t thread, const int index,
-                             const bool writeNotableAddresses,
-                             const bool searchThreadNames,
-                             const bool searchQueueNames) {
+                             const bool writeNotableAddresses) {
     bool isCrashedThread = thread == crash->offendingThread;
-    char nameBuffer[128];
     BSG_STRUCT_MCONTEXT_L machineContextBuffer;
     uintptr_t backtraceBuffer[BSG_kMaxBacktraceDepth];
     int backtraceLength = sizeof(backtraceBuffer) / sizeof(*backtraceBuffer);
@@ -1396,22 +1393,6 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
                                        machineContext, isCrashedThread);
         }
         writer->addIntegerElement(writer, BSG_KSCrashField_Index, index);
-        if (searchThreadNames) {
-            if (bsg_ksmachgetThreadName(thread, nameBuffer,
-                                        sizeof(nameBuffer)) &&
-                nameBuffer[0] != 0) {
-                writer->addStringElement(writer, BSG_KSCrashField_Name,
-                                         nameBuffer);
-            }
-        }
-        if (searchQueueNames) {
-            if (bsg_ksmachgetThreadQueueName(thread, nameBuffer,
-                                             sizeof(nameBuffer)) &&
-                nameBuffer[0] != 0) {
-                writer->addStringElement(writer, BSG_KSCrashField_DispatchQueue,
-                                         nameBuffer);
-            }
-        }
         writer->addBooleanElement(writer, BSG_KSCrashField_Crashed,
                                   isCrashedThread);
         writer->addBooleanElement(writer, BSG_KSCrashField_CurrentThread,
@@ -1439,9 +1420,7 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
 void bsg_kscrw_i_writeAllThreads(const BSG_KSCrashReportWriter *const writer,
                                  const char *const key,
                                  const BSG_KSCrash_SentryContext *const crash,
-                                 bool writeNotableAddresses,
-                                 bool searchThreadNames,
-                                 bool searchQueueNames) {
+                                 bool writeNotableAddresses) {
     const task_t thisTask = mach_task_self();
     thread_act_array_t threads;
     mach_msg_type_number_t numThreads;
@@ -1457,8 +1436,7 @@ void bsg_kscrw_i_writeAllThreads(const BSG_KSCrashReportWriter *const writer,
     {
         for (mach_msg_type_number_t i = 0; i < numThreads; i++) {
             bsg_kscrw_i_writeThread(writer, NULL, crash, threads[i], (int)i,
-                                    writeNotableAddresses, searchThreadNames,
-                                    searchQueueNames);
+                                    writeNotableAddresses);
         }
     }
     writer->endContainer(writer);
@@ -1976,7 +1954,7 @@ void bsg_kscrashreport_writeMinimalReport(
                 writer, BSG_KSCrashField_CrashedThread, &crashContext->crash,
                 crashContext->crash.offendingThread,
                 bsg_kscrw_i_threadIndex(crashContext->crash.offendingThread),
-                false, false, false);
+                false);
             bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error,
                                    &crashContext->crash);
         }
@@ -2053,9 +2031,7 @@ void bsg_kscrashreport_writeStandardReport(
                 crashContext->crash.crashType != BSG_KSCrashTypeUserReported) {
                 bsg_kscrw_i_writeAllThreads(
                     writer, BSG_KSCrashField_Threads, &crashContext->crash,
-                    crashContext->config.introspectionRules.enabled,
-                    crashContext->config.searchThreadNames,
-                    crashContext->config.searchQueueNames);
+                    crashContext->config.introspectionRules.enabled);
             }
             bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error,
                     &crashContext->crash);

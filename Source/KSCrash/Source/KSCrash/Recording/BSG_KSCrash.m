@@ -96,8 +96,6 @@
 @synthesize bundleName = _bundleName;
 @synthesize logFilePath = _logFilePath;
 @synthesize nextCrashID = _nextCrashID;
-@synthesize searchThreadNames = _searchThreadNames;
-@synthesize searchQueueNames = _searchQueueNames;
 @synthesize introspectMemory = _introspectMemory;
 @synthesize doNotIntrospectClasses = _doNotIntrospectClasses;
 @synthesize maxStoredReports = _maxStoredReports;
@@ -151,8 +149,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         self.nextCrashID = [NSUUID UUID].UUIDString;
         self.crashReportStore = [BSG_KSCrashReportStore storeWithPath:storePath];
         self.deleteBehaviorAfterSendAll = BSG_KSCDeleteAlways;
-        self.searchThreadNames = NO;
-        self.searchQueueNames = NO;
         self.introspectMemory = YES;
         self.maxStoredReports = 5;
 
@@ -203,16 +199,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 - (void)setOnCrash:(BSGReportCallback)onCrash {
     _onCrash = onCrash;
     bsg_kscrash_setCrashNotifyCallback(onCrash);
-}
-
-- (void)setSearchThreadNames:(bool)searchThreadNames {
-    _searchThreadNames = searchThreadNames;
-    bsg_kscrash_setSearchThreadNames(searchThreadNames);
-}
-
-- (void)setSearchQueueNames:(bool)searchQueueNames {
-    _searchQueueNames = searchQueueNames;
-    bsg_kscrash_setSearchQueueNames(searchQueueNames);
 }
 
 - (void)setIntrospectMemory:(bool)introspectMemory {

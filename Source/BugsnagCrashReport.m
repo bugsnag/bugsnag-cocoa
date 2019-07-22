@@ -645,10 +645,6 @@ initWithErrorName:(NSString *_Nonnull)name
     BSGDictSetSafeObject(threadDict, threadStack, BSGKeyStacktrace);
     BSGDictSetSafeObject(threadDict, DEFAULT_EXCEPTION_TYPE, BSGKeyType);
 
-    // only if this is enabled in BSG_KSCrash.
-    if (thread[BSGKeyName]) {
-        BSGDictSetSafeObject(threadDict, thread[BSGKeyName], BSGKeyName);
-    }
     if (isReportingThread) {
         BSGDictSetSafeObject(threadDict, @YES, @"errorReportingThread");
     }
