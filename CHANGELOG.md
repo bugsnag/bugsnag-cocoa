@@ -1,6 +1,9 @@
 Changelog
 =========
 
+* Support adding pre-delivery metadata to out-of-memory reports
+  [#393](https://github.com/bugsnag/bugsnag-cocoa/pull/393)
+
 ## 5.22.3 (2019-07-15)
 
 This release disables reporting out-of-memory events in debug mode, to reduce
