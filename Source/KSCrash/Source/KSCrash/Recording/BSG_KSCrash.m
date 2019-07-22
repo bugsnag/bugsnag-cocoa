@@ -89,7 +89,6 @@
 @synthesize userInfo = _userInfo;
 @synthesize deleteBehaviorAfterSendAll = _deleteBehaviorAfterSendAll;
 @synthesize handlingCrashTypes = _handlingCrashTypes;
-@synthesize deadlockWatchdogInterval = _deadlockWatchdogInterval;
 @synthesize printTraceToStdout = _printTraceToStdout;
 @synthesize onCrash = _onCrash;
 @synthesize crashReportStore = _crashReportStore;
@@ -166,11 +165,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 
 - (void)setHandlingCrashTypes:(BSG_KSCrashType)handlingCrashTypes {
     _handlingCrashTypes = bsg_kscrash_setHandlingCrashTypes(handlingCrashTypes);
-}
-
-- (void)setDeadlockWatchdogInterval:(double)deadlockWatchdogInterval {
-    _deadlockWatchdogInterval = deadlockWatchdogInterval;
-    bsg_kscrash_setDeadlockWatchdogInterval(deadlockWatchdogInterval);
 }
 
 - (void)setPrintTraceToStdout:(bool)printTraceToStdout {

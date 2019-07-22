@@ -27,7 +27,6 @@
 #include "BSG_KSCrashC.h"
 
 #include "BSG_KSCrashReport.h"
-#include "BSG_KSCrashSentry_Deadlock.h"
 #include "BSG_KSCrashSentry_User.h"
 #include "BSG_KSMach.h"
 #include "BSG_KSObjC.h"
@@ -217,11 +216,6 @@ void bsg_kscrash_setUserInfoJSON(const char *const userInfoJSON) {
     BSG_KSLOG_TRACE("set userInfoJSON to %p", userInfoJSON);
     BSG_KSCrash_Context *context = crashContext();
     bsg_ksstring_replace(&context->config.userInfoJSON, userInfoJSON);
-}
-
-void bsg_kscrash_setDeadlockWatchdogInterval(double deadlockWatchdogInterval) {
-    bsg_kscrashsentry_setDeadlockHandlerWatchdogInterval(
-        deadlockWatchdogInterval);
 }
 
 void bsg_kscrash_setPrintTraceToStdout(bool printTraceToStdout) {

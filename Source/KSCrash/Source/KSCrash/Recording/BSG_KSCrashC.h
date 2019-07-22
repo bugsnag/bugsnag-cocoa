@@ -94,23 +94,6 @@ void bsg_kscrash_reinstall(const char *const crashReportFilePath,
  */
 void bsg_kscrash_setUserInfoJSON(const char *const userInfoJSON);
 
-/** Set the maximum time to allow the main thread to run without returning.
- * If a task occupies the main thread for longer than this interval, the
- * watchdog will consider the queue deadlocked and shut down the app and write a
- * crash report.
- *
- * Warning: Make SURE that nothing in your app that runs on the main thread
- * takes longer to complete than this value or it WILL get shut down! This
- * includes your app startup process, so you may need to push app initialization
- * to another thread, or perhaps set this to a higher value until your
- * application has been fully initialized.
- *
- * 0 = Disabled.
- *
- * Default: 0
- */
-void bsg_kscrash_setDeadlockWatchdogInterval(double deadlockWatchdogInterval);
-
 /** Set whether or not to print a stack trace to stdout when a crash occurs.
  *
  * Default: false
