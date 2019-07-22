@@ -60,61 +60,24 @@ typedef unsigned int NSUInteger;
 #pragma mark - Types -
 //======================================================================
 
-typedef enum {
-    ClassSubtypeNone = 0,
-    ClassSubtypeCFArray,
-    ClassSubtypeNSArrayMutable,
-    ClassSubtypeNSArrayImmutable,
-    ClassSubtypeCFString,
-} ClassSubtype;
-
 typedef struct {
     const char *name;
     BSG_KSObjCClassType type;
-    ClassSubtype subtype;
-    bool (*isValidObject)(const void *object);
-    const void *class;
 } ClassData;
 
 //======================================================================
 #pragma mark - Globals -
 //======================================================================
 
-// Forward references
-static bool objectIsValid(const void *object);
-static bool taggedObjectIsValid(const void *object);
-static bool stringIsValid(const void *object);
-static bool taggedStringIsValid(const void *object);
-
-static ClassData bsg_g_classData[] = {
-    {"__NSCFString", BSG_KSObjCClassTypeString, ClassSubtypeNone,
-     stringIsValid},
-    {"NSCFString", BSG_KSObjCClassTypeString, ClassSubtypeNone,
-     stringIsValid},
-    {"__NSCFConstantString", BSG_KSObjCClassTypeString, ClassSubtypeNone,
-     stringIsValid},
-    {"NSCFConstantString", BSG_KSObjCClassTypeString, ClassSubtypeNone,
-     stringIsValid},
-    {NULL, BSG_KSObjCClassTypeUnknown, ClassSubtypeNone, objectIsValid},
-};
-
 static ClassData bsg_g_taggedClassData[] = {
-    {"NSAtom", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
-     taggedObjectIsValid},
-    {NULL, BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
-     taggedObjectIsValid},
-    {"NSString", BSG_KSObjCClassTypeString, ClassSubtypeNone,
-     taggedStringIsValid},
-    {"NSNumber", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
-        taggedObjectIsValid},
-    {"NSIndexPath", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
-     taggedObjectIsValid},
-    {"NSManagedObjectID", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
-        taggedObjectIsValid},
-    {"NSDate", BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
-        taggedObjectIsValid},
-    {NULL, BSG_KSObjCClassTypeUnknown, ClassSubtypeNone,
-     taggedObjectIsValid},
+    {"NSAtom", BSG_KSObjCClassTypeUnknown},
+    {NULL, BSG_KSObjCClassTypeUnknown},
+    {"NSString", BSG_KSObjCClassTypeString},
+    {"NSNumber", BSG_KSObjCClassTypeUnknown},
+    {"NSIndexPath", BSG_KSObjCClassTypeUnknown},
+    {"NSManagedObjectID", BSG_KSObjCClassTypeUnknown},
+    {"NSDate", BSG_KSObjCClassTypeUnknown},
+    {NULL, BSG_KSObjCClassTypeUnknown},
 };
 static size_t bsg_g_taggedClassDataCount =
     sizeof(bsg_g_taggedClassData) / sizeof(*bsg_g_taggedClassData);
@@ -192,12 +155,6 @@ static inline bool hasValidISAPointer(const void *object) {
 }
 
 const void *bsg_getIsaPointer(const void *const objectOrClassPtr) {
-    // This is wrong. Should not get class data here.
-    //    if(ksobjc_bsg_isTaggedPointer(objectOrClassPtr))
-    //    {
-    //        return getClassDataFromTaggedPointer(objectOrClassPtr)->class;
-    //    }
-
     const struct class_t *ptr = objectOrClassPtr;
     return bsg_decodeIsaPointer(ptr->isa);
 }
@@ -212,11 +169,6 @@ getClassRO(const struct class_t *const class) {
     return getClassRW(class)->ro;
 }
 
-static inline const void *getSuperClass(const void *const classPtr) {
-    const struct class_t *class = classPtr;
-    return class->superclass;
-}
-
 static inline bool isMetaClass(const void *const classPtr) {
     return (getClassRO(classPtr)->flags & RO_META) != 0;
 }
@@ -228,138 +180,6 @@ static inline bool isRootClass(const void *const classPtr) {
 static inline const char *getClassName(const void *classPtr) {
     const struct class_ro_t *ro = getClassRO(classPtr);
     return ro->name;
-}
-
-/** Check if a tagged pointer is a number.
- *
- * @param object The object to query.
- * @return true if the tagged pointer is an NSNumber.
- */
-static bool bsg_isTaggedPointerNSNumber(const void *const object) {
-    return bsg_getTaggedSlot(object) == OBJC_TAG_NSNumber;
-}
-
-/** Check if a tagged pointer is a string.
- *
- * @param object The object to query.
- * @return true if the tagged pointer is an NSString.
- */
-static bool bsg_isTaggedPointerNSString(const void *const object) {
-    return bsg_getTaggedSlot(object) == OBJC_TAG_NSString;
-}
-
-/** Check if a tagged pointer is a date.
- *
- * @param object The object to query.
- * @return true if the tagged pointer is an NSDate.
- */
-static bool bsg_isTaggedPointerNSDate(const void *const object) {
-    return bsg_getTaggedSlot(object) == OBJC_TAG_NSDate;
-}
-
-/** Extract an integer from a tagged NSNumber.
- *
- * @param object The NSNumber object (must be a tagged pointer).
- * @return The integer value.
- */
-static int64_t extractTaggedNSNumber(const void *const object) {
-    intptr_t signedPointer = (intptr_t)object;
-#if SUPPORT_TAGGED_POINTERS
-    intptr_t value =
-        (signedPointer << TAG_PAYLOAD_LSHIFT) >> TAG_PAYLOAD_RSHIFT;
-#else
-    intptr_t value = signedPointer & 0;
-#endif
-
-    // The lower 4 bits encode type information so shift them out.
-    return (int64_t)(value >> 4);
-}
-
-static size_t getTaggedNSStringLength(const void *const object) {
-    uintptr_t payload = bsg_getTaggedPayload(object);
-    return payload & 0xf;
-}
-
-static size_t extractTaggedNSString(const void *const object, char *buffer,
-                                    size_t bufferLength) {
-    size_t length = getTaggedNSStringLength(object);
-    size_t copyLength =
-        ((length + 1) > bufferLength) ? (bufferLength - 1) : length;
-    uintptr_t payload = bsg_getTaggedPayload(object);
-    uintptr_t value = payload >> 4;
-    static char *alphabet =
-        "eilotrm.apdnsIc ufkMShjTRxgC4013bDNvwyUL2O856P-B79AFKEWV_zGJ/HYX";
-    if (length <= 7) {
-        for (size_t i = 0; i < copyLength; i++) {
-            buffer[i] = (char)(value & 0xff);
-            value >>= 8;
-        }
-    } else if (length <= 9) {
-        for (size_t i = 0; i < copyLength; i++) {
-            uintptr_t index = (value >> ((length - 1 - i) * 6)) & 0x3f;
-            buffer[i] = alphabet[index];
-        }
-    } else if (length <= 11) {
-        for (size_t i = 0; i < copyLength; i++) {
-            uintptr_t index = (value >> ((length - 1 - i) * 5)) & 0x1f;
-            buffer[i] = alphabet[index];
-        }
-    } else {
-        buffer[0] = 0;
-    }
-    buffer[length] = 0;
-
-    return length;
-}
-
-/** Extract a tagged NSDate's time value as an absolute time.
- *
- * @param object The NSDate object (must be a tagged pointer).
- * @return The date's absolute time.
- */
-static CFAbsoluteTime extractTaggedNSDate(const void *const object) {
-    uintptr_t payload = bsg_getTaggedPayload(object);
-    // Payload is a 60-bit float. Fortunately we can just cast across from
-    // an integer pointer after shifting out the upper 4 bits.
-    payload <<= 4;
-    CFAbsoluteTime value = *((CFAbsoluteTime *)&payload);
-    return value;
-}
-
-/** Get any special class metadata we have about the specified class.
- * It will return a generic metadata object if the type is not recognized.
- *
- * Note: The Objective-C runtime is free to change a class address,
- * so I can't just blindly store class pointers at application start
- * and then compare against them later. However, comparing strings is
- * slow, so I've reached a compromise. Since I'm omly using this at
- * crash time, I can assume that the Objective-C environment is frozen.
- * As such, I can keep a cache of discovered classes. If, however, this
- * library is used outside of a frozen environment, caching will be
- * unreliable.
- *
- * @param class The class to examine.
- *
- * @return The associated class data.
- */
-static ClassData *getClassData(const void *class) {
-    const char *className = getClassName(class);
-    for (ClassData *data = bsg_g_classData;; data++) {
-        unlikely_if(data->name == NULL) { return data; }
-        unlikely_if(class == data->class) { return data; }
-        unlikely_if(data->class == NULL && strcmp(className, data->name) == 0) {
-            data->class = class;
-            return data;
-        }
-    }
-}
-
-static inline const ClassData *getClassDataFromObject(const void *object) {
-    if (bsg_isTaggedPointer(object)) {
-        return getClassDataFromTaggedPointer(object);
-    }
-    const struct class_t *obj = object;
-    return getClassData(bsg_getIsaPointer(obj));
 }
 
 //======================================================================
@@ -513,68 +333,6 @@ static bool containsValidClassName(const void *const classPtr) {
 const void *bsg_ksobjc_isaPointer(const void *const objectOrClassPtr) {
     return bsg_getIsaPointer(objectOrClassPtr);
 }
-
-const void *bsg_ksobjc_superClass(const void *const classPtr) {
-    return getSuperClass(classPtr);
-}
-
-bool bsg_ksobjc_isMetaClass(const void *const classPtr) {
-    return isMetaClass(classPtr);
-}
-
-bool bsg_ksobjc_isRootClass(const void *const classPtr) {
-    return isRootClass(classPtr);
-}
-
-const char *bsg_ksobjc_className(const void *classPtr) {
-    return getClassName(classPtr);
-}
-
-const char *bsg_ksobjc_objectClassName(const void *objectPtr) {
-    if (bsg_isTaggedPointer(objectPtr)) {
-        if (isValidTaggedPointer(objectPtr)) {
-            const ClassData *class = getClassDataFromTaggedPointer(objectPtr);
-            return class->name;
-        }
-        return NULL;
-    }
-    const void *isaPtr = bsg_getIsaPointer(objectPtr);
-    return getClassName(isaPtr);
-}
-
-bool bsg_ksobjc_isClassNamed(const void *const classPtr,
-                             const char *const className) {
-    const char *name = getClassName(classPtr);
-    if (name == NULL || className == NULL) {
-        return false;
-    }
-    return strcmp(name, className) == 0;
-}
-
-bool bsg_ksobjc_isKindOfClass(const void *const classPtr,
-                              const char *const className) {
-    if (className == NULL) {
-        return false;
-    }
-
-    const struct class_t *class = (const struct class_t *)classPtr;
-
-    for (int i = 0; i < 20; i++) {
-        const char *name = getClassName(class);
-        if (name == NULL) {
-            return false;
-        }
-        if (strcmp(className, name) == 0) {
-            return true;
-        }
-        class = class->superclass;
-        if (!containsValidROData(class)) {
-            return false;
-        }
-    }
-    return false;
-}
-
 const void *bsg_ksobjc_baseClass(const void *const classPtr) {
     const struct class_t *superClass = classPtr;
     const struct class_t *subClass = classPtr;
@@ -590,102 +348,6 @@ const void *bsg_ksobjc_baseClass(const void *const classPtr) {
         }
     }
     return NULL;
-}
-
-size_t bsg_ksobjc_ivarCount(const void *const classPtr) {
-    const struct ivar_list_t *ivars = getClassRO(classPtr)->ivars;
-    if (ivars == NULL) {
-        return 0;
-    }
-    return ivars->count;
-}
-
-size_t bsg_ksobjc_ivarList(const void *const classPtr, BSG_KSObjCIvar *dstIvars,
-                           size_t ivarsCount) {
-    if (dstIvars == NULL) {
-        return 0;
-    }
-
-    size_t count = bsg_ksobjc_ivarCount(classPtr);
-    if (count == 0) {
-        return 0;
-    }
-
-    if (ivarsCount < count) {
-        count = ivarsCount;
-    }
-    const struct ivar_list_t *srcIvars = getClassRO(classPtr)->ivars;
-    uintptr_t srcPtr = (uintptr_t)&srcIvars->first;
-    const struct ivar_t *src = (void *)srcPtr;
-    for (size_t i = 0; i < count; i++) {
-        BSG_KSObjCIvar *dst = &dstIvars[i];
-        dst->name = src->name;
-        dst->type = src->type;
-        dst->index = i;
-        srcPtr += srcIvars->entsizeAndFlags;
-        src = (void *)srcPtr;
-    }
-    return count;
-}
-
-bool bsg_ksobjc_ivarNamed(const void *const classPtr, const char *name,
-                          BSG_KSObjCIvar *dst) {
-    if (name == NULL) {
-        return false;
-    }
-    const struct ivar_list_t *ivars = getClassRO(classPtr)->ivars;
-    uintptr_t ivarPtr = (uintptr_t)&ivars->first;
-    const struct ivar_t *ivar = (void *)ivarPtr;
-    for (size_t i = 0; i < ivars->count; i++) {
-        if (ivar->name != NULL && strcmp(name, ivar->name) == 0) {
-            dst->name = ivar->name;
-            dst->type = ivar->type;
-            dst->index = i;
-            return true;
-        }
-        ivarPtr += ivars->entsizeAndFlags;
-        ivar = (void *)ivarPtr;
-    }
-    return false;
-}
-
-bool bsg_ksobjc_ivarValue(const void *const objectPtr, size_t ivarIndex,
-                          void *dst) {
-    if (bsg_isTaggedPointer(objectPtr)) {
-        // Naively assume they want "value".
-        if (bsg_isTaggedPointerNSDate(objectPtr)) {
-            CFTimeInterval value = extractTaggedNSDate(objectPtr);
-            memcpy(dst, &value, sizeof(value));
-            return true;
-        }
-        if (bsg_isTaggedPointerNSNumber(objectPtr)) {
-            // TODO: Correct to assume 64-bit signed int? What does the actual
-            // ivar say?
-            int64_t value = extractTaggedNSNumber(objectPtr);
-            memcpy(dst, &value, sizeof(value));
-            return true;
-        }
-        return false;
-    }
-
-    const void *const classPtr = bsg_getIsaPointer(objectPtr);
-    const struct ivar_list_t *ivars = getClassRO(classPtr)->ivars;
-    if (ivarIndex >= ivars->count) {
-        return false;
-    }
-    uintptr_t ivarPtr = (uintptr_t)&ivars->first;
-    const struct ivar_t *ivar =
-        (void *)(ivarPtr + ivars->entsizeAndFlags * ivarIndex);
-
-    uintptr_t valuePtr = (uintptr_t)objectPtr + (uintptr_t)*ivar->offset;
-    if (bsg_ksmachcopyMem((void *)valuePtr, dst, ivar->size) != KERN_SUCCESS) {
-        return false;
-    }
-    return true;
-}
-
-uintptr_t bsg_ksobjc_taggedPointerPayload(const void *taggedObjectPtr) {
-    return bsg_getTaggedPayload(taggedObjectPtr);
 }
 
 static inline bool isBlockClass(const void *class) {
@@ -744,237 +406,8 @@ BSG_KSObjCType bsg_ksobjc_objectType(const void *objectOrClassPtr) {
 }
 
 //======================================================================
-#pragma mark - Unknown Object -
-//======================================================================
-
-static bool objectIsValid(__unused const void *object) {
-    // If it passed bsg_ksobjc_objectType, it's been validated as much as
-    // possible.
-    return true;
-}
-
-static bool taggedObjectIsValid(const void *object) {
-    return isValidTaggedPointer(object);
-}
-
-//======================================================================
-#pragma mark - NSString -
-//======================================================================
-
-static inline const char *stringStart(const struct __CFString *str) {
-    return (const char *)__CFStrContents(str) +
-           (__CFStrHasLengthByte(str) ? 1 : 0);
-}
-
-static bool stringIsValid(const void *const stringPtr) {
-    const struct __CFString *string = stringPtr;
-    struct __CFString temp;
-    uint8_t oneByte;
-    CFIndex length = -1;
-    if (bsg_ksmachcopyMem(string, &temp, sizeof(string->base)) !=
-        KERN_SUCCESS) {
-        return false;
-    }
-
-    if (__CFStrIsInline(string)) {
-        if (bsg_ksmachcopyMem(&string->variants.inline1, &temp,
-                              sizeof(string->variants.inline1)) !=
-            KERN_SUCCESS) {
-            return false;
-        }
-        length = string->variants.inline1.length;
-    } else if (__CFStrIsMutable(string)) {
-        if (bsg_ksmachcopyMem(&string->variants.notInlineMutable, &temp,
-                              sizeof(string->variants.notInlineMutable)) !=
-            KERN_SUCCESS) {
-            return false;
-        }
-        length = string->variants.notInlineMutable.length;
-    } else if (!__CFStrHasLengthByte(string)) {
-        if (bsg_ksmachcopyMem(&string->variants.notInlineImmutable1, &temp,
-                              sizeof(string->variants.notInlineImmutable1)) !=
-            KERN_SUCCESS) {
-            return false;
-        }
-        length = string->variants.notInlineImmutable1.length;
-    } else {
-        if (bsg_ksmachcopyMem(&string->variants.notInlineImmutable2, &temp,
-                              sizeof(string->variants.notInlineImmutable2)) !=
-            KERN_SUCCESS) {
-            return false;
-        }
-        if (bsg_ksmachcopyMem(__CFStrContents(string), &oneByte,
-                              sizeof(oneByte)) != KERN_SUCCESS) {
-            return false;
-        }
-        length = oneByte;
-    }
-
-    if (length < 0) {
-        return false;
-    } else if (length > 0) {
-        if (bsg_ksmachcopyMem(stringStart(string), &oneByte, sizeof(oneByte)) !=
-            KERN_SUCCESS) {
-            return false;
-        }
-    }
-    return true;
-}
-
-size_t bsg_ksobjc_stringLength(const void *const stringPtr) {
-    if (bsg_isTaggedPointer(stringPtr) &&
-        bsg_isTaggedPointerNSString(stringPtr)) {
-        return getTaggedNSStringLength(stringPtr);
-    }
-
-    const struct __CFString *string = stringPtr;
-
-    if (__CFStrHasExplicitLength(string)) {
-        if (__CFStrIsInline(string)) {
-            return (size_t)string->variants.inline1.length;
-        } else {
-            return (size_t)string->variants.notInlineImmutable1.length;
-        }
-    } else {
-        return (size_t)(*((uint8_t *)__CFStrContents(string)));
-    }
-}
-
-#define kUTF16_LeadSurrogateStart 0xd800u
-#define kUTF16_LeadSurrogateEnd 0xdbffu
-#define kUTF16_TailSurrogateStart 0xdc00u
-#define kUTF16_TailSurrogateEnd 0xdfffu
-#define kUTF16_FirstSupplementaryPlane 0x10000u
-
-size_t bsg_ksobjc_i_copyAndConvertUTF16StringToUTF8(const void *const src,
-                                                    void *const dst,
-                                                    size_t charCount,
-                                                    size_t maxByteCount) {
-    const uint16_t *pSrc = src;
-    uint8_t *pDst = dst;
-    const uint8_t *const pDstEnd =
-        pDst + maxByteCount - 1; // Leave room for null termination.
-    for (size_t charsRemaining = charCount;
-         charsRemaining > 0 && pDst < pDstEnd; charsRemaining--) {
-        // Decode UTF-16
-        uint32_t character = 0;
-        uint16_t leadSurrogate = *pSrc++;
-        likely_if(leadSurrogate < kUTF16_LeadSurrogateStart ||
-                  leadSurrogate > kUTF16_TailSurrogateEnd) {
-            character = leadSurrogate;
-        }
-        else if (leadSurrogate > kUTF16_LeadSurrogateEnd) {
-            // Inverted surrogate
-            *((uint8_t *)dst) = 0;
-            return 0;
-        }
-        else {
-            uint16_t tailSurrogate = *pSrc++;
-            if (tailSurrogate < kUTF16_TailSurrogateStart ||
-                tailSurrogate > kUTF16_TailSurrogateEnd) {
-                // Invalid tail surrogate
-                *((uint8_t *)dst) = 0;
-                return 0;
-            }
-            character = ((leadSurrogate - kUTF16_LeadSurrogateStart) << 10) +
-                        (tailSurrogate - kUTF16_TailSurrogateStart);
-            character += kUTF16_FirstSupplementaryPlane;
-            charsRemaining--;
-        }
-
-        // Encode UTF-8
-        likely_if(character <= 0x7f) { *pDst++ = (uint8_t)character; }
-        else if (character <= 0x7ff) {
-            if (pDstEnd - pDst >= 2) {
-                *pDst++ = (uint8_t)(0xc0 | (character >> 6));
-                *pDst++ = (uint8_t)(0x80 | (character & 0x3f));
-            } else {
-                break;
-            }
-        }
-        else if (character <= 0xffff) {
-            if (pDstEnd - pDst >= 3) {
-                *pDst++ = (uint8_t)(0xe0 | (character >> 12));
-                *pDst++ = (uint8_t)(0x80 | ((character >> 6) & 0x3f));
-                *pDst++ = (uint8_t)(0x80 | (character & 0x3f));
-            } else {
-                break;
-            }
-        }
-        // RFC3629 restricts UTF-8 to end at 0x10ffff.
-        else if (character <= 0x10ffff) {
-            if (pDstEnd - pDst >= 4) {
-                *pDst++ = (uint8_t)(0xf0 | (character >> 18));
-                *pDst++ = (uint8_t)(0x80 | ((character >> 12) & 0x3f));
-                *pDst++ = (uint8_t)(0x80 | ((character >> 6) & 0x3f));
-                *pDst++ = (uint8_t)(0x80 | (character & 0x3f));
-            } else {
-                break;
-            }
-        }
-        else {
-            // Invalid unicode.
-            *((uint8_t *)dst) = 0;
-            return 0;
-        }
-    }
-
-    // Null terminate and return.
-    *pDst = 0;
-    return (size_t)(pDst - (uint8_t *)dst);
-}
-
-size_t bsg_ksobjc_i_copy8BitString(const void *const src, void *const dst,
-                                   size_t charCount, size_t maxByteCount) {
-    unlikely_if(maxByteCount == 0) { return 0; }
-    unlikely_if(charCount == 0) {
-        *((uint8_t *)dst) = 0;
-        return 0;
-    }
-
-    unlikely_if(charCount >= maxByteCount) { charCount = maxByteCount - 1; }
-    unlikely_if(bsg_ksmachcopyMem(src, dst, charCount) != KERN_SUCCESS) {
-        *((uint8_t *)dst) = 0;
-        return 0;
-    }
-    uint8_t *charDst = dst;
-    charDst[charCount] = 0;
-    return charCount;
-}
-
-size_t bsg_ksobjc_copyStringContents(const void *stringPtr, char *dst,
-                                     size_t maxByteCount) {
-    if (bsg_isTaggedPointer(stringPtr) &&
-        bsg_isTaggedPointerNSString(stringPtr)) {
-        return extractTaggedNSString(stringPtr, dst, maxByteCount);
-    }
-    const struct __CFString *string = stringPtr;
-    size_t charCount = bsg_ksobjc_stringLength(string);
-
-    const char *src = stringStart(string);
-    if (__CFStrIsUnicode(string)) {
-        return bsg_ksobjc_i_copyAndConvertUTF16StringToUTF8(src, dst, charCount,
-                                                            maxByteCount);
-    }
-
-    return bsg_ksobjc_i_copy8BitString(src, dst, charCount, maxByteCount);
-}
-
-static bool taggedStringIsValid(const void *const object) {
-    return isValidTaggedPointer(object) && bsg_isTaggedPointerNSString(object);
-}
-
-//======================================================================
 #pragma mark - General Queries -
 //======================================================================
-
-void *bsg_ksobjc_i_objectReferencedByString(const char *string) {
-    uint64_t address = 0;
-    if (bsg_ksstring_extractHexValue(string, strlen(string), &address)) {
-        return (void *)address;
-    }
-    return NULL;
-}
 
 bool bsg_ksobjc_bsg_isTaggedPointer(const void *const pointer) {
     return bsg_isTaggedPointer(pointer);
@@ -982,19 +415,6 @@ bool bsg_ksobjc_bsg_isTaggedPointer(const void *const pointer) {
 
 bool bsg_ksobjc_isValidTaggedPointer(const void *const pointer) {
     return isValidTaggedPointer(pointer);
-}
-
-bool bsg_ksobjc_isValidObject(const void *object) {
-    if (!isValidObject(object)) {
-        return false;
-    }
-    const ClassData *data = getClassDataFromObject(object);
-    return data->isValidObject(object);
-}
-
-BSG_KSObjCClassType bsg_ksobjc_objectClassType(const void *object) {
-    const ClassData *data = getClassDataFromObject(object);
-    return data->type;
 }
 
 void bsg_ksobjc_init(void) {

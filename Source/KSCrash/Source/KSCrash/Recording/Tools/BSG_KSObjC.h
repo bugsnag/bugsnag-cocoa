@@ -52,12 +52,6 @@ typedef enum {
     BSG_KSObjCClassTypeException,
 } BSG_KSObjCClassType;
 
-typedef struct {
-    const char *name;
-    const char *type;
-    size_t index;
-} BSG_KSObjCIvar;
-
 //======================================================================
 #pragma mark - Initialization -
 //======================================================================
@@ -103,18 +97,6 @@ bool bsg_ksobjc_isValidTaggedPointer(const void *const pointer);
  */
 BSG_KSObjCType bsg_ksobjc_objectType(const void *objectOrClassPtr);
 
-/** Check that an object contains valid data.
- * If the object is of a recognized type (string, date, array, etc),
- * this function will verify that its internal data is intact.
- *
- * Call this function before calling any object-specific functions.
- *
- * @param object The object to verify.
- *
- * @return true if the object is valid.
- */
-bool bsg_ksobjc_isValidObject(const void *object);
-
 /** Fetch the isa pointer from an object or class.
  *
  * @param objectOrClassPtr Pointer to a valid object or class.
@@ -122,12 +104,6 @@ bool bsg_ksobjc_isValidObject(const void *object);
  * @return The isa pointer.
  */
 const void *bsg_ksobjc_isaPointer(const void *objectOrClassPtr);
-
-/** Fetch the super class pointer from a class.
- *
- * @param classPtr Pointer to a valid class.
- */
-const void *bsg_ksobjc_superClass(const void *classPtr);
 
 /** Get the base class this class is derived from.
  * It will always return the highest level non-root class in the hierarchy
@@ -139,155 +115,6 @@ const void *bsg_ksobjc_superClass(const void *classPtr);
  * @return The base class.
  */
 const void *bsg_ksobjc_baseClass(const void *const classPtr);
-
-/** Check if a class is a meta class.
- *
- * @param classPtr Pointer to a valid class.
- *
- * @return true if the class is a meta class.
- */
-bool bsg_ksobjc_isMetaClass(const void *classPtr);
-
-/** Check if a class is a root class.
- *
- * @param classPtr Pointer to a valid class.
- *
- * @return true if the class is a root class.
- */
-bool bsg_ksobjc_isRootClass(const void *classPtr);
-
-/** Get the name of a class.
- *
- * @param classPtr Pointer to a valid class.
- *
- * @return the name, or NULL if the name inaccessible.
- */
-const char *bsg_ksobjc_className(const void *classPtr);
-
-/** Get the name of an object's class.
- * This also handles tagged pointers.
- *
- * @param objectPtr Pointer to a valid object.
- *
- * @return the name, or NULL if the name is inaccessible.
- */
-const char *bsg_ksobjc_objectClassName(const void *objectPtr);
-
-/** Check if a class has a specific name.
- *
- * @param classPtr Pointer to a valid class.
- *
- * @param className The class name to compare against.
- *
- * @return true if the class has the specified name.
- */
-bool bsg_ksobjc_isClassNamed(const void *const classPtr,
-                             const char *const className);
-
-/** Check if a class is of the specified type or a subclass thereof.
- * Note: This function is considerably slower than bsg_ksobjc_baseClassName().
- *
- * @param classPtr Pointer to a valid class.
- *
- * @param className The class name to compare against.
- *
- * @return true if the class is of the specified type or a subclass of that
- * type.
- */
-bool bsg_ksobjc_isKindOfClass(const void *classPtr, const char *className);
-
-/** Get the number of ivars registered with a class.
- *
- * @param classPtr Pointer to a valid class.
- *
- * @return The number of ivars.
- */
-size_t bsg_ksobjc_ivarCount(const void *classPtr);
-
-/** Get information about ivars in a class.
- *
- * @param classPtr Pointer to a valid class.
- *
- * @param dstIvars Buffer to hold ivar data.
- *
- * @param ivarsCount The number of ivars the buffer can hold.
- *
- * @return The number of ivars copied.
- */
-size_t bsg_ksobjc_ivarList(const void *classPtr, BSG_KSObjCIvar *dstIvars,
-                           size_t ivarsCount);
-
-/** Get ivar information by name/
- *
- * @param classPtr Pointer to a valid class.
- *
- * @param name The name of the ivar to get information about.
- *
- * @param dst Buffer to hold the result.
- *
- * @return true if the operation was successful.
- */
-bool bsg_ksobjc_ivarNamed(const void *const classPtr, const char *name,
-                          BSG_KSObjCIvar *dst);
-
-/** Get the value of an ivar in an object.
- *
- * @param objectPtr Pointer to a valid object.
- *
- * @param ivarIndex The index of the ivar to fetch.
- *
- * @param dst Pointer to buffer big enough to contain the data.
- *
- * @return true if the operation was successful.
- */
-bool bsg_ksobjc_ivarValue(const void *objectPtr, size_t ivarIndex, void *dst);
-
-/* Get the payload from a tagged pointer.
- *
- * @param objectPtr Pointer to a valid object.
- *
- * @return the payload value.
- */
-uintptr_t bsg_ksobjc_taggedPointerPayload(const void *taggedObjectPtr);
-
-/** Get the class type of an object.
- * There are a number of common class types that BSG_KSObjC understamds,
- * listed in BSG_KSObjCClassType.
- *
- * @param object The object to query.
- *
- * @return The class type, or BSG_KSObjCClassTypeUnknown if it couldn't be
- * determined.
- */
-BSG_KSObjCClassType bsg_ksobjc_objectClassType(const void *object);
-
-//======================================================================
-#pragma mark - Object-Specific Queries -
-//======================================================================
-
-/** Get the length of a string in characters.
- *
- * @param stringPtr Pointer to a string.
- *
- * @return The length of the string.
- */
-size_t bsg_ksobjc_stringLength(const void *const stringPtr);
-
-/** Copy the contents of a string object.
- *
- * dst will be null terminated unless maxLength is 0.
- * If the string doesn't fit, it will be truncated.
- *
- * @param string The string to copy data from.
- *
- * @param dst The destination to copy into.
- *
- * @param maxLength The size of the buffer.
- *
- * @return the number of bytes copied (not including null terminator).
- */
-size_t bsg_ksobjc_copyStringContents(const void *string, char *dst,
-                                     size_t maxLength);
 
 
 #ifdef __cplusplus

@@ -613,27 +613,6 @@ void bsg_kscrw_i_writeMemoryContents(
     const BSG_KSCrashReportWriter *const writer, const char *const key,
     const uintptr_t address, int *limit);
 
-/** Write a string to the report.
- * This will only print the first child of the array.
- *
- * @param writer The writer.
- *
- * @param key The object key, if needed.
- *
- * @param objectAddress The object's address.
- *
- * @param limit How many more subreferenced objects to write, if any.
- */
-void bsg_kscrw_i_writeNSStringContents(
-    const BSG_KSCrashReportWriter *const writer, const char *const key,
-    const uintptr_t objectAddress, __unused int *limit) {
-    const void *object = (const void *)objectAddress;
-    char buffer[200];
-    if (bsg_ksobjc_copyStringContents(object, buffer, sizeof(buffer))) {
-        writer->addStringElement(writer, key, buffer);
-    }
-}
-
 /** Write the contents of a memory location.
  * Also writes meta information about the data.
  *
@@ -650,34 +629,17 @@ void bsg_kscrw_i_writeMemoryContents(
     const uintptr_t address, int *limit) {
     (*limit)--;
     const void *object = (const void *)address;
-    writer->beginObject(writer, key);
-    {
-        writer->addUIntegerElement(writer, BSG_KSCrashField_Address, address);
-        switch (bsg_ksobjc_objectType(object)) {
-        case BSG_KSObjCTypeUnknown:
-            if (bsg_kscrw_i_isValidString(object)) {
-                writer->addStringElement(writer, BSG_KSCrashField_Type,
-                                         BSG_KSCrashMemType_String);
-                writer->addStringElement(writer, BSG_KSCrashField_Value,
-                                         (const char *)object);
-            }
-            break;
-        case BSG_KSObjCTypeObject: {
-            const char *className = bsg_ksobjc_objectClassName(object);
-            if (bsg_ksobjc_objectClassType(object) == BSG_KSObjCClassTypeString) {
-                writer->addStringElement(writer, BSG_KSCrashField_Type,
-                                         BSG_KSCrashMemType_Object);
-                writer->addStringElement(writer, BSG_KSCrashField_Class, className);
-                bsg_kscrw_i_writeNSStringContents(
-                    writer, BSG_KSCrashField_Value, address, limit);
-            }
-            break;
+    if (bsg_kscrw_i_isValidString(object)) {
+        writer->beginObject(writer, key);
+        {
+            writer->addUIntegerElement(writer, BSG_KSCrashField_Address, address);
+            writer->addStringElement(writer, BSG_KSCrashField_Type,
+                                     BSG_KSCrashMemType_String);
+            writer->addStringElement(writer, BSG_KSCrashField_Value,
+                                     (const char *)object);
         }
-        default:
-            break;
-        }
+        writer->endContainer(writer);
     }
-    writer->endContainer(writer);
 }
 
 bool bsg_kscrw_i_isValidPointer(const uintptr_t address) {
