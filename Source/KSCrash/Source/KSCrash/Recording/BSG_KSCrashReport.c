@@ -682,14 +682,6 @@ void bsg_kscrw_i_writeMemoryContentsIfNotable(
         }
     }
 
-    const void *object = (const void *)address;
-
-    if (bsg_ksobjc_objectType(object) == BSG_KSObjCTypeUnknown &&
-        !bsg_kscrw_i_isValidString(object)) {
-        // Nothing notable about this memory location.
-        return;
-    }
-
     int limit = BSG_kDefaultMemorySearchDepth;
     bsg_kscrw_i_writeMemoryContents(writer, key, address, &limit);
 }
