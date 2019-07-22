@@ -71,52 +71,6 @@ void bsg_ksobjc_init(void);
  */
 bool bsg_ksobjc_bsg_isTaggedPointer(const void *const pointer);
 
-/** Check if a pointer is a valid tagged pointer.
- *
- * @param pointer The pointer to check.
- * @return true if it's a valid tagged pointer.
- */
-bool bsg_ksobjc_isValidTaggedPointer(const void *const pointer);
-
-/** Query a pointer to see what kind of object it points to.
- * If the pointer points to a class, this method will verify that its basic
- * class data and ivars are valid,
- * If the pointer points to an object, it will verify the object data (if
- * recognized as a common class), and the isa's basic class info (everything
- * except ivars).
- *
- * Warning: In order to ensure that an object is both valid and accessible,
- *          always call this method on an object or class pointer (including
- *          those returned by bsg_ksobjc_isaPointer() and
- * bsg_ksobjc_superclass()) BEFORE calling any other function in this module.
- *
- * @param objectOrClassPtr Pointer to something that may be an object or class.
- *
- * @return The type of object, or BSG_KSObjCTypeNone if it was not an object or
- *         was inaccessible.
- */
-BSG_KSObjCType bsg_ksobjc_objectType(const void *objectOrClassPtr);
-
-/** Fetch the isa pointer from an object or class.
- *
- * @param objectOrClassPtr Pointer to a valid object or class.
- *
- * @return The isa pointer.
- */
-const void *bsg_ksobjc_isaPointer(const void *objectOrClassPtr);
-
-/** Get the base class this class is derived from.
- * It will always return the highest level non-root class in the hierarchy
- * (one below NSObject or NSProxy), unless the passed in object or class
- * actually is a root class.
- *
- * @param classPtr Pointer to a valid class.
- *
- * @return The base class.
- */
-const void *bsg_ksobjc_baseClass(const void *const classPtr);
-
-
 #ifdef __cplusplus
 }
 #endif

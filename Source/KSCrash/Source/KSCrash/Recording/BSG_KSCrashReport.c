@@ -647,13 +647,8 @@ bool bsg_kscrw_i_isValidPointer(const uintptr_t address) {
         return false;
     }
 
-    if (bsg_ksobjc_bsg_isTaggedPointer((const void *)address)) {
-        if (!bsg_ksobjc_isValidTaggedPointer((const void *)address)) {
-            return false;
-        }
-    }
-
-    return true;
+    // We only want untagged pointers as pointers to char arrays are untagged
+    return !bsg_ksobjc_bsg_isTaggedPointer((const void *)address);
 }
 
 /**
