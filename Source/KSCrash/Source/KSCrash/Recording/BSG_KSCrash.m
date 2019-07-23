@@ -370,6 +370,8 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
                                     depth,
                                     terminateProgram);
 
+    free(callstack);
+
     // If bsg_kscrash_reportUserException() returns, we did not terminate.
     // Set up IDs and paths for the next crash.
 
