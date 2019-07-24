@@ -242,6 +242,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             _releaseStage = [report valueForKeyPath:@"user.state.oom.app.releaseStage"];
             _handledState = [BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory];
             _deviceAppHash = [report valueForKeyPath:@"user.state.oom.device.id"];
+            _metaData = [NSMutableDictionary new];
             NSDictionary *sessionData = [report valueForKeyPath:@"user.state.oom.session"];
             if (sessionData) {
                 _session = [[BugsnagSession alloc] initWithDictionary:sessionData];

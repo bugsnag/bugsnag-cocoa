@@ -18,6 +18,7 @@ Feature: Reporting out of memory events
         And the event "app.releaseStage" equals "beta"
         And the event "app.version" equals "1.0.3"
         And the event "app.bundleVersion" equals "5"
+        And the event "metaData.extra.shape" equals "line"
         And the event breadcrumbs contain "Crumb left before crash"
 
     Scenario: The OS kills the application in the background
