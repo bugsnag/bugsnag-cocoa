@@ -706,9 +706,6 @@ initWithErrorName:(NSString *_Nonnull)name
         NSString *reservedWord = nil;
 
         for (NSString *key in notableAddresses) {
-            if ([key hasPrefix:@"stack"]) { // skip stack frames, only use register values
-                continue;
-            }
             NSDictionary *data = notableAddresses[key];
             if (![@"string" isEqualToString:data[BSGKeyType]]) {
                 continue;

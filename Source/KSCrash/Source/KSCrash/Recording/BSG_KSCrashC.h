@@ -109,15 +109,6 @@ void bsg_kscrash_setPrintTraceToStdout(bool printTraceToStdout);
  */
 void bsg_kscrash_setIntrospectMemory(bool introspectMemory);
 
-/** List of Objective-C classes that should never be introspected.
- * Whenever a class in this list is encountered, only the class name will be
- * recorded. This can be useful for information security concerns.
- *
- * Default: NULL
- */
-void bsg_kscrash_setDoNotIntrospectClasses(const char **doNotIntrospectClasses,
-                                           size_t length);
-
 /** Set the callback to invoke upon a crash.
  *
  * WARNING: Only call async-safe functions from this function! DO NOT call

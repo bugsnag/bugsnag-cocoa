@@ -160,7 +160,6 @@
 		E7CE78C41FD94E77001D07E0 /* KSJSONCodec_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78961FD94E5F001D07E0 /* KSJSONCodec_Tests.m */; };
 		E7CE78C51FD94E77001D07E0 /* KSLogger_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE789E1FD94E60001D07E0 /* KSLogger_Tests.m */; };
 		E7CE78C61FD94E77001D07E0 /* KSMach_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78871FD94E5F001D07E0 /* KSMach_Tests.m */; };
-		E7CE78C71FD94E77001D07E0 /* KSObjC_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE789C1FD94E60001D07E0 /* KSObjC_Tests.m */; };
 		E7CE78C91FD94E77001D07E0 /* KSSignalInfo_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78941FD94E5F001D07E0 /* KSSignalInfo_Tests.m */; };
 		E7CE78CA1FD94E77001D07E0 /* KSString_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE78921FD94E5F001D07E0 /* KSString_Tests.m */; };
 		E7CE78CB1FD94E77001D07E0 /* KSSysCtl_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CE789D1FD94E60001D07E0 /* KSSysCtl_Tests.m */; };
@@ -348,7 +347,6 @@
 		E7CE78981FD94E60001D07E0 /* RFC3339DateTool_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFC3339DateTool_Tests.m; sourceTree = "<group>"; };
 		E7CE78991FD94E60001D07E0 /* KSCrashReportConverter_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSCrashReportConverter_Tests.m; sourceTree = "<group>"; };
 		E7CE789B1FD94E60001D07E0 /* KSDynamicLinker_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSDynamicLinker_Tests.m; sourceTree = "<group>"; };
-		E7CE789C1FD94E60001D07E0 /* KSObjC_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSObjC_Tests.m; sourceTree = "<group>"; };
 		E7CE789D1FD94E60001D07E0 /* KSSysCtl_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSSysCtl_Tests.m; sourceTree = "<group>"; };
 		E7CE789E1FD94E60001D07E0 /* KSLogger_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSLogger_Tests.m; sourceTree = "<group>"; };
 		E7CE789F1FD94E60001D07E0 /* XCTestCase+KSCrash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCTestCase+KSCrash.h"; sourceTree = "<group>"; };
@@ -655,7 +653,6 @@
 				E7CE78961FD94E5F001D07E0 /* KSJSONCodec_Tests.m */,
 				E7CE789E1FD94E60001D07E0 /* KSLogger_Tests.m */,
 				E7CE78871FD94E5F001D07E0 /* KSMach_Tests.m */,
-				E7CE789C1FD94E60001D07E0 /* KSObjC_Tests.m */,
 				E7CE78941FD94E5F001D07E0 /* KSSignalInfo_Tests.m */,
 				E7CE78921FD94E5F001D07E0 /* KSString_Tests.m */,
 				E7CE789D1FD94E60001D07E0 /* KSSysCtl_Tests.m */,
@@ -920,7 +917,6 @@
 				4B406C1822CAD96400464D1D /* BugsnagCollectionsBSGDictMergeTest.m in Sources */,
 				E7CE78CB1FD94E77001D07E0 /* KSSysCtl_Tests.m in Sources */,
 				E7CE78D01FD94E77001D07E0 /* RFC3339DateTool_Tests.m in Sources */,
-				E7CE78C71FD94E77001D07E0 /* KSObjC_Tests.m in Sources */,
 				E79148621FD82BB7003EFEBF /* BugsnagSessionTrackingPayloadTest.m in Sources */,
 				E79148631FD82BB7003EFEBF /* BugsnagUserTest.m in Sources */,
 				8A2C8FEA1C6BC38900846019 /* BugsnagBreadcrumbsTest.m in Sources */,
