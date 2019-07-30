@@ -16,6 +16,9 @@ Changelog
   normally and is issued a "will terminate" notification, but is terminated
   prior to the out-of-memory watchdog processing the notification
   [#394](https://github.com/bugsnag/bugsnag-cocoa/pull/394)
+* Fix memory leak in notify()
+  [Carolina Aguilar](https://github.com/caroaguilar)
+  [#395](https://github.com/bugsnag/bugsnag-cocoa/pull/395)
 
 ## 5.22.3 (2019-07-15)
 
