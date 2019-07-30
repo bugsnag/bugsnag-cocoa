@@ -81,6 +81,8 @@
 		8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSExceptionShiftScenario.m; sourceTree = "<group>"; };
 		8A42FD33225DEE04007AE561 /* SessionOOMScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionOOMScenario.m; sourceTree = "<group>"; };
 		8A42FD34225DEE04007AE561 /* SessionOOMScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionOOMScenario.h; sourceTree = "<group>"; };
+		8A56EE7F22E22ED80066B9DC /* OOMWillTerminateScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOMWillTerminateScenario.m; sourceTree = "<group>"; };
+		8A56EE8022E22ED80066B9DC /* OOMWillTerminateScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMWillTerminateScenario.h; sourceTree = "<group>"; };
 		8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftAssertion.swift; sourceTree = "<group>"; };
 		8A98400120FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoSessionCustomVersionScenario.h; sourceTree = "<group>"; };
 		8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoSessionCustomVersionScenario.m; sourceTree = "<group>"; };
@@ -233,6 +235,8 @@
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				8A56EE8022E22ED80066B9DC /* OOMWillTerminateScenario.h */,
+				8A56EE7F22E22ED80066B9DC /* OOMWillTerminateScenario.m */,
 				8A14F0F42282D4AE00337B05 /* ReportBackgroundOOMsEnabledScenario.h */,
 				8A14F0F02282D4AD00337B05 /* ReportBackgroundOOMsEnabledScenario.m */,
 				8A14F0EF2282D4AD00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.h */,
@@ -446,6 +450,7 @@
 				F42955E0916B8851F074D9B3 /* UserEmailScenario.swift in Sources */,
 				F4295968571A4118D6A4606A /* UserEnabledScenario.swift in Sources */,
 				F4295A036B228AF608641699 /* UserDisabledScenario.swift in Sources */,
+				8A56EE8222E22ED80066B9DC /* OOMWillTerminateScenario.m in Sources */,
 				8A14F0F62282D4AE00337B05 /* ReportOOMsDisabledScenario.m in Sources */,
 				E7767F13221C21E30006648C /* ResumedSessionScenario.swift in Sources */,
 				8AEFC73120F8D1A000A78779 /* AutoSessionWithUserScenario.m in Sources */,

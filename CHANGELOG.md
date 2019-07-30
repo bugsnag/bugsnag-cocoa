@@ -1,8 +1,21 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
 * Support adding pre-delivery metadata to out-of-memory reports
   [#393](https://github.com/bugsnag/bugsnag-cocoa/pull/393)
+* Fix erroneously reporting out-of-memory events from iOS app extensions
+  [#394](https://github.com/bugsnag/bugsnag-cocoa/pull/394)
+* Fix erroneously reporting out-of-memory events when an iOS app is in the
+  foreground but inactive
+  [#394](https://github.com/bugsnag/bugsnag-cocoa/pull/394)
+* Fix erroneously reporting out-of-memory events when the app terminates
+  normally and is issued a "will terminate" notification, but is terminated
+  prior to the out-of-memory watchdog processing the notification
+  [#394](https://github.com/bugsnag/bugsnag-cocoa/pull/394)
 
 ## 5.22.3 (2019-07-15)
 
