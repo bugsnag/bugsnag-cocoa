@@ -53,3 +53,17 @@ Scenario: Reporting a handled exception's stacktrace
     And the "method" of stack frame 1 equals "objc_exception_throw"
     And the "method" of stack frame 2 equals "-[NSExceptionShiftScenario causeAnException]"
     And the "method" of stack frame 3 equals "-[NSExceptionShiftScenario run]"
+
+Scenario: Reporting handled errors concurrently
+    When I run "ManyConcurrentNotifyScenario"
+    And I wait for a request
+    Then the request is valid for the error reporting API
+    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
+    And the payload field "events" is an array with 8 elements
+    And each event in the payload matches one of:
+        | exceptions.0.errorClass | exceptions.0.message |
+        | FooError                | Err 0   |
+        | FooError                | Err 1   |
+        | FooError                | Err 2   |
+        | FooError                | Err 3   |
