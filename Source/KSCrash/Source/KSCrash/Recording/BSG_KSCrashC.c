@@ -112,10 +112,8 @@ int bsg_create_filepath(char *base, char filepath[bsg_filepath_len], char severi
  *
  * This function gets passed as a callback to a crash handler.
  */
-void bsg_kscrash_i_onCrash(char severity, char *errorClass) {
+void bsg_kscrash_i_onCrash(char severity, char *errorClass, BSG_KSCrash_Context *context) {
     BSG_KSLOG_DEBUG("Updating application state to note crash.");
-
-    BSG_KSCrash_Context *context = crashContext();
 
     bsg_kscrashstate_notifyAppCrash(context->crash.crashType);
 
@@ -201,7 +199,7 @@ BSG_KSCrashType bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashType crashTypes) {
     if (bsg_g_installed) {
         bsg_kscrashsentry_uninstall(~crashTypes);
         crashTypes = bsg_kscrashsentry_installWithContext(
-            &context->crash, crashTypes, bsg_kscrash_i_onCrash);
+            &context->crash, crashTypes, (void(*)(char, char *, void *))bsg_kscrash_i_onCrash);
     }
 
     return crashTypes;

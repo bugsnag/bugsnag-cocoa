@@ -25,6 +25,7 @@
 #include "BSG_KSCrashSentry_User.h"
 #include "BSG_KSCrashSentry_Private.h"
 #include "BSG_KSMach.h"
+#include "BSG_KSCrashC.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
@@ -110,7 +111,7 @@ void bsg_kscrashsentry_reportUserException(const char *name,
         strncpy(errorClass, bsg_g_context->userException.name, sizeof(errorClass));
         // default to 'w'arning level severity
         char severityChar = severity != NULL && strlen(severity) > 0 ? severity[0] : 'w';
-        bsg_g_context->onCrash(severityChar, errorClass);
+        bsg_g_context->onCrash(severityChar, errorClass, crashContext());
 
         if (terminateProgram) {
             bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAll);
