@@ -65,7 +65,7 @@ static const int bsg_filepath_len = 512;
 static const int bsg_error_class_filepath_len = 21;
 static const char bsg_filepath_context_sep = '-';
 
-static inline BSG_KSCrash_Context *crashContext(void) {
+BSG_KSCrash_Context *crashContext(void) {
     return &bsg_g_crashReportContext;
 }
 
