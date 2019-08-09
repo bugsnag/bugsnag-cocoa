@@ -37,6 +37,9 @@
 /** Context to fill with crash information. */
 static BSG_KSCrash_SentryContext *bsg_g_context;
 
+/** Lock for suspending threads from reportUserException() */
+static pthread_mutex_t bsg_suspend_threads_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 bool bsg_kscrashsentry_installUserExceptionHandler(
     BSG_KSCrash_SentryContext *const context) {
     BSG_KSLOG_DEBUG("Installing user exception handler.");
@@ -99,6 +102,7 @@ void bsg_kscrashsentry_reportUserException(const char *name,
         uintptr_t callstack[callstackCount];
 
         if (localContext->suspendThreadsForUserReported) {
+            pthread_mutex_lock(&bsg_suspend_threads_mutex);
             BSG_KSLOG_DEBUG("Suspending all threads");
             bsg_kscrashsentry_suspendThreads();
         }
@@ -147,6 +151,9 @@ void bsg_kscrashsentry_reportUserException(const char *name,
             abort();
         } else {
             bsg_kscrashsentry_resumeThreads();
+        }
+        if (localContext->suspendThreadsForUserReported) {
+            pthread_mutex_unlock(&bsg_suspend_threads_mutex);
         }
     }
 }
