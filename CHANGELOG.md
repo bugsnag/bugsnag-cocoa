@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix possible crash or deadlock arising from calling Bugsnag.notify() from
+  multiple queues concurrently.
+  [#401](https://github.com/bugsnag/bugsnag-cocoa/pull/401)
+
 ## 5.22.4 (2019-07-30)
 
 ### Bug fixes
