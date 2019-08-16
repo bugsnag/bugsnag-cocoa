@@ -46,6 +46,9 @@ bootstrap: ## Install development dependencies
 build: ## Build the library
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) build $(FORMATTER)
 
+build_ios_static: ## Build the static library target
+	$(XCODEBUILD) -project iOS/Bugsnag.xcodeproj -scheme BugsnagStatic
+
 bump: ## Bump the version numbers to $VERSION
 ifeq ($(VERSION),)
 	@$(error VERSION is not defined. Run with `make VERSION=number bump`)

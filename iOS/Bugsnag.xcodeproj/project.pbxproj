@@ -44,6 +44,7 @@
 		8A70D9CA22539C81006B696F /* BSGOutOfMemoryWatchdog.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A70D9C822539C81006B696F /* BSGOutOfMemoryWatchdog.m */; };
 		8A70D9CB22539C81006B696F /* BSGOutOfMemoryWatchdog.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A70D9C822539C81006B696F /* BSGOutOfMemoryWatchdog.m */; };
 		8A70D9CD2253C484006B696F /* BSGOutOfMemoryWatchdogTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A70D9CC2253C484006B696F /* BSGOutOfMemoryWatchdogTests.m */; };
+		8AF1748E23070F0300902CC2 /* BSG_KSCrashIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A530CBF22FDC3AE00F0C108 /* BSG_KSCrashIdentifier.m */; };
 		E70E52152216E41C00A590AB /* BugsnagSessionTrackerStopTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E70E52142216E41C00A590AB /* BugsnagSessionTrackerStopTest.m */; };
 		E70EE0781FD7039E00FA745C /* RFC3339DateTool_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EE0771FD7039D00FA745C /* RFC3339DateTool_Tests.m */; };
 		E70EE07E1FD703D600FA745C /* NSError+SimpleConstructor_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EE07A1FD703D500FA745C /* NSError+SimpleConstructor_Tests.m */; };
@@ -1287,6 +1288,7 @@
 				F4295DB3B395327B82A47A78 /* BugsnagSessionFileStore.m in Sources */,
 				F42954D219B725C18DA1084F /* BugsnagSessionTrackingApiClient.m in Sources */,
 				F4295BB0741ED030D0CD002C /* BugsnagApiClient.m in Sources */,
+				8AF1748E23070F0300902CC2 /* BSG_KSCrashIdentifier.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
