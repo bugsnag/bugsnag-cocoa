@@ -7,7 +7,6 @@ cd end-to-end-tests/features/fixtures/ios-swift-cocoapods/
 pod install
 
 xcrun xcodebuild \
-  -sdk iphoneos12.2 \
   -scheme iOSTestApp \
   -workspace iOSTestApp.xcworkspace \
   -configuration Debug \
