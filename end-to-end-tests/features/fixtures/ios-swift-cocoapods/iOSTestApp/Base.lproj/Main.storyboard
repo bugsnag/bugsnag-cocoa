@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="iOSTestApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="3uW-2E-sGa">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bugsnag Cocoa - Test application" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RWZ-At-akB">
+                                <rect key="frame" x="20" y="284" width="374" height="21"/>
+                                <accessibility key="accessibilityConfiguration" identifier="CloseKeyboardItem"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Scenario Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5Cz-db-j7f">
+                                <rect key="frame" x="20" y="385" width="374" height="30"/>
+                                <accessibility key="accessibilityConfiguration" identifier="ScenarioNameField"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Scenario Meta-data" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IN4-CK-eEf">
+                                <rect key="frame" x="20" y="435" width="374" height="30"/>
+                                <accessibility key="accessibilityConfiguration" identifier="ScenarioMetaDataField"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oym-db-43x">
+                                <rect key="frame" x="20" y="505" width="374" height="30"/>
+                                <accessibility key="accessibilityConfiguration" identifier="StartScenarioButton"/>
+                                <state key="normal" title="Start Scenario"/>
+                                <connections>
+                                    <action selector="runTestScenario" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="tlB-VZ-ZdP"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2z0-6z-4u6">
+                                <rect key="frame" x="20" y="555" width="374" height="30"/>
+                                <accessibility key="accessibilityConfiguration" identifier="StartBugsnagButton"/>
+                                <state key="normal" title="Start Bugsnag"/>
+                                <connections>
+                                    <action selector="startBugsnag" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="Wv1-OW-OOt"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="RWZ-At-akB" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="1Aj-gR-NNx"/>
+                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="2z0-6z-4u6" secondAttribute="trailing" constant="20" id="Kv4-xj-g7n"/>
+                            <constraint firstItem="Oym-db-43x" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="MaA-V0-mCP"/>
+                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="5Cz-db-j7f" secondAttribute="trailing" constant="20" id="PBS-th-0dO"/>
+                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="RWZ-At-akB" secondAttribute="trailing" constant="20" id="Pg7-Cu-ugU"/>
+                            <constraint firstItem="Oym-db-43x" firstAttribute="top" secondItem="IN4-CK-eEf" secondAttribute="bottom" constant="40" id="VPw-nk-IzA"/>
+                            <constraint firstItem="5Cz-db-j7f" firstAttribute="top" secondItem="RWZ-At-akB" secondAttribute="bottom" constant="80" id="XET-Kr-TUe"/>
+                            <constraint firstItem="2z0-6z-4u6" firstAttribute="top" secondItem="Oym-db-43x" secondAttribute="bottom" constant="20" id="XrK-3j-sF7"/>
+                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="IN4-CK-eEf" secondAttribute="trailing" constant="20" id="aqn-8G-GNT"/>
+                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="Oym-db-43x" secondAttribute="trailing" constant="20" id="d1z-vb-lp7"/>
+                            <constraint firstItem="2z0-6z-4u6" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="kCa-bn-oMx"/>
+                            <constraint firstItem="IN4-CK-eEf" firstAttribute="top" secondItem="5Cz-db-j7f" secondAttribute="bottom" constant="20" id="ldb-Ut-xXp"/>
+                            <constraint firstItem="5Cz-db-j7f" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="r5d-oU-m3j"/>
+                            <constraint firstItem="IN4-CK-eEf" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="wJi-PV-dqy"/>
+                            <constraint firstItem="RWZ-At-akB" firstAttribute="top" secondItem="41A-zo-0gw" secondAttribute="top" constant="240" id="zbP-F5-B9p"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="41A-zo-0gw"/>
+                    </view>
+                    <connections>
+                        <outlet property="scenarioMetaDataField" destination="IN4-CK-eEf" id="d0Y-Er-lUg"/>
+                        <outlet property="scenarioNameField" destination="5Cz-db-j7f" id="8FL-1d-jB4"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+</document>

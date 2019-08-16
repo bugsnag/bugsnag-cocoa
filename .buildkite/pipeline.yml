@@ -1,0 +1,57 @@
+steps:
+  - label: 'Build cocoa IPA'
+    timeout_in_minutes: 20
+    agents:
+      queue: "opensource-mac"
+    artifact_paths: test-fixture/iOSTestApp.ipa
+    commands:
+      - ./end-to-end-tests/scripts/export_ios_app.sh
+
+  - label: ':docker: Build Cocoa maze runner image'
+    timeout_in_minutes: 20
+    plugins:
+      - docker-compose#v2.6.0:
+          build: cocoa-maze-runner
+
+  - wait
+
+  - label: ':ios: iOS 12 end-to-end tests'
+    timeout_in_minutes: 60
+    plugins:
+      artifacts#v1.2.0:
+        download: "test-fixture/iOSTestApp.ipa"
+      docker-compose#v2.6.0:
+        run: cocoa-maze-runner
+    env:
+      DEVICE_TYPE: "IOS_12"
+      APP_LOCATION: "/app/build/iOSTestApp.ipa"
+    concurrency: 5
+    concurrency_group: 'browserstack-app'
+
+  - block: "Trigger full test suite"
+
+  - label: ':ios: iOS 11 end-to-end tests'
+    timeout_in_minutes: 60
+    plugins:
+      artifacts#v1.2.0:
+        download: "test-fixture/iOSTestApp.ipa"
+      docker-compose#v2.6.0:
+        run: cocoa-maze-runner
+    env:
+      DEVICE_TYPE: "IOS_11"
+      APP_LOCATION: "/app/build/iOSTestApp.ipa"
+    concurrency: 5
+    concurrency_group: 'browserstack-app'
+
+  - label: ':ios: iOS 10 end-to-end tests'
+    timeout_in_minutes: 60
+    plugins:
+      artifacts#v1.2.0:
+        download: "test-fixture/iOSTestApp.ipa"
+      docker-compose#v2.6.0:
+        run: cocoa-maze-runner
+    env:
+      DEVICE_TYPE: "IOS_10"
+      APP_LOCATION: "/app/build/iOSTestApp.ipa"
+    concurrency: 5
+    concurrency_group: 'browserstack-app'
