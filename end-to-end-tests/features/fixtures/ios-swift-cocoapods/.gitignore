@@ -1,3 +1,4 @@
 output
 archive
 *.dsym.zip
+Podfile.lock
