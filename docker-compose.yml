@@ -12,6 +12,5 @@ services:
       BROWSER_STACK_LOCAL_IDENTIFIER: ${BUILDKITE_JOB_ID:-maze-runner}
       DEVICE_TYPE:
       APP_LOCATION:
-    command: features/minimal_crash.feature
     volumes:
       - ./test-fixture:/app/build
