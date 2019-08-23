@@ -1,5 +1,6 @@
 PLATFORM?=iOS
 OS?=latest
+TEST_CONFIGURATION?=Debug
 BUILD_FLAGS=-workspace $(PLATFORM).xcworkspace -scheme Bugsnag -derivedDataPath build
 
 ifeq ($(PLATFORM),OSX)
@@ -12,10 +13,11 @@ else
   DESTINATION?=platform=tvOS Simulator,name=Apple TV,OS=$(OS)
  else
   SDK?=iphonesimulator
-  DESTINATION?=platform=iOS Simulator,name=iPhone 5s,OS=$(OS)
+  DEVICE?=iPhone 5s
+  DESTINATION?=platform=iOS Simulator,name=$(DEVICE),OS=$(OS)
   RELEASE_DIR=Release-iphoneos
  endif
- BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "$(DESTINATION)" -configuration Debug
+ BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "$(DESTINATION)" -configuration $(TEST_CONFIGURATION)
 endif
 XCODEBUILD=set -o pipefail && xcodebuild
 PRESET_VERSION=$(shell cat VERSION)
@@ -43,6 +45,9 @@ bootstrap: ## Install development dependencies
 
 build: ## Build the library
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) build $(FORMATTER)
+
+build_ios_static: ## Build the static library target
+	$(XCODEBUILD) -project iOS/Bugsnag.xcodeproj -scheme BugsnagStatic
 
 bump: ## Bump the version numbers to $VERSION
 ifeq ($(VERSION),)

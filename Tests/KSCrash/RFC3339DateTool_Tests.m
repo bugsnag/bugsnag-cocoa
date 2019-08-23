@@ -77,12 +77,4 @@
     XCTAssertEqualObjects(actual, expected, @"");
 }
 
-- (void) testUnixTimestampFromString
-{
-    unsigned long long expected = (unsigned long long)[[self gmtDateWithYear:2000 month:1 day:2 hour:3 minute:4 second:5] timeIntervalSince1970];
-    unsigned long long actual = [BSG_RFC3339DateTool UNIXTimestampFromString:@"2000-01-02T03:04:05Z"];
-
-    XCTAssertEqual(actual, expected, @"");
-}
-
 @end

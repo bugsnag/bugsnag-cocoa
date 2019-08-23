@@ -1,0 +1,18 @@
+
+#import "OOMWillTerminateScenario.h"
+#import <signal.h>
+#import <UIKit/UIKit.h>
+
+@implementation OOMWillTerminateScenario
+
+- (void)startBugsnag {
+    self.config.shouldAutoCaptureSessions = NO;
+    [super startBugsnag];
+}
+
+- (void)run {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        exit(0);
+    });
+}
+@end

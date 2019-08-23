@@ -1,13 +1,45 @@
 Changelog
 =========
 
-## TBD
+## 5.22.5 (2019-08-14)
+
+### Bug fixes
+
+* Fix possible crash or deadlock arising from calling Bugsnag.notify() from
+  multiple queues concurrently.
+  [#401](https://github.com/bugsnag/bugsnag-cocoa/pull/401)
+
+## 5.22.4 (2019-07-30)
+
+### Bug fixes
+
+* Support adding pre-delivery metadata to out-of-memory reports
+  [#393](https://github.com/bugsnag/bugsnag-cocoa/pull/393)
+* Fix erroneously reporting out-of-memory events from iOS app extensions
+  [#394](https://github.com/bugsnag/bugsnag-cocoa/pull/394)
+* Fix erroneously reporting out-of-memory events when an iOS app is in the
+  foreground but inactive
+  [#394](https://github.com/bugsnag/bugsnag-cocoa/pull/394)
+* Fix erroneously reporting out-of-memory events when the app terminates
+  normally and is issued a "will terminate" notification, but is terminated
+  prior to the out-of-memory watchdog processing the notification
+  [#394](https://github.com/bugsnag/bugsnag-cocoa/pull/394)
+* Fix memory leak in notify()
+  [Carolina Aguilar](https://github.com/caroaguilar)
+  [#395](https://github.com/bugsnag/bugsnag-cocoa/pull/395)
+
+## 5.22.3 (2019-07-15)
+
+This release disables reporting out-of-memory events in debug mode, to reduce
+false positives.
 
 ### Bug fixes
 
 * Fix incrementing unhandled counts when using internal notify() API. This
   resolves discrepancies in stability scores for users of bugsnag-react-native
   after receiving unhandled JavaScript events.
+* Fix JSON parsing errors in crash reports for control characters and some 
+  other sequences
 
 ## 5.22.2 (2019-06-13)
 

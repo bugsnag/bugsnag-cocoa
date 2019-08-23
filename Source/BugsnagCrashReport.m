@@ -18,7 +18,6 @@
 #import "BugsnagHandledState.h"
 #import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
-#import "NSDictionary+BSG_Merge.h"
 #import "BugsnagKSCrashSysInfoParser.h"
 #import "BugsnagSession.h"
 #import "BSG_RFC3339DateTool.h"
@@ -243,6 +242,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             _releaseStage = [report valueForKeyPath:@"user.state.oom.app.releaseStage"];
             _handledState = [BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory];
             _deviceAppHash = [report valueForKeyPath:@"user.state.oom.device.id"];
+            _metaData = [NSMutableDictionary new];
             NSDictionary *sessionData = [report valueForKeyPath:@"user.state.oom.session"];
             if (sessionData) {
                 _session = [[BugsnagSession alloc] initWithDictionary:sessionData];
@@ -522,7 +522,7 @@ initWithErrorName:(NSString *_Nonnull)name
         BSGDictSetSafeObject(event, @YES, BSGKeyIncomplete);
     }
 
-    NSDictionary *device = [self.device bsg_mergedInto:self.deviceState];
+    NSDictionary *device = BSGDictMerge(self.device, self.deviceState);
     BSGDictSetSafeObject(event, device, BSGKeyDevice);
     
     NSMutableDictionary *appObj = [NSMutableDictionary new];
@@ -614,7 +614,7 @@ initWithErrorName:(NSString *_Nonnull)name
                         BSGDictSetSafeObject(mutableFrame, @YES, BSGKeyIsPC);
                     }
                     if (seen == 2 && !stackOverflow &&
-                        [@[ BSGKeySignal, @"deadlock", BSGKeyMach ]
+                        [@[ BSGKeySignal, BSGKeyMach ]
                             containsObject:[self errorType]]) {
                         BSGDictSetSafeObject(mutableFrame, @YES, BSGKeyIsLR);
                     }
@@ -646,10 +646,6 @@ initWithErrorName:(NSString *_Nonnull)name
     BSGDictSetSafeObject(threadDict, threadStack, BSGKeyStacktrace);
     BSGDictSetSafeObject(threadDict, DEFAULT_EXCEPTION_TYPE, BSGKeyType);
 
-    // only if this is enabled in BSG_KSCrash.
-    if (thread[BSGKeyName]) {
-        BSGDictSetSafeObject(threadDict, thread[BSGKeyName], BSGKeyName);
-    }
     if (isReportingThread) {
         BSGDictSetSafeObject(threadDict, @YES, @"errorReportingThread");
     }
@@ -710,9 +706,6 @@ initWithErrorName:(NSString *_Nonnull)name
         NSString *reservedWord = nil;
 
         for (NSString *key in notableAddresses) {
-            if ([key hasPrefix:@"stack"]) { // skip stack frames, only use register values
-                continue;
-            }
             NSDictionary *data = notableAddresses[key];
             if (![@"string" isEqualToString:data[BSGKeyType]]) {
                 continue;

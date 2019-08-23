@@ -89,6 +89,7 @@ Run the integration tests using `make e2e` (end-to-end)
   - [ ] Have the changelog and README been updated?
   - [ ] Are there pull requests for installation changes on the [dashboard](https://github.com/bugsnag/dashboard-js)?
   - [ ] Are there pull requests for new features/behavior on the [docs site](https://github.com/bugsnag/docs.bugsnag.com)?
+  - [ ] Run `./Tests/prerelease/run_prerelease_checks.sh`
   - [ ] Has all new functionality been manually tested on a release build?
   - [ ] Do the installation instructions work when creating an example app from scratch?
   - [ ] If a response is not received from the server, is the report queued for later?
