@@ -15,12 +15,6 @@ steps:
 
   - wait
 
-  - label: 'Verify artifacts'
-    plugins:
-      artifacts#v1.2.0:
-        download: ["test-fixture/iOSTestApp.ipa", "test-fixture/dSYMs.zip"]
-    command: ls test-fixture/*
-
   - label: ':ios: iOS 12 end-to-end tests'
     timeout_in_minutes: 60
     plugins:
