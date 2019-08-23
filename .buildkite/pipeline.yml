@@ -3,7 +3,7 @@ steps:
     timeout_in_minutes: 20
     agents:
       queue: "opensource-mac"
-    artifact_paths: test-fixture/iOSTestApp.ipa
+    artifact_paths: test-fixture/*
     commands:
       - ./end-to-end-tests/scripts/export_ios_app.sh
 
@@ -15,11 +15,17 @@ steps:
 
   - wait
 
+  - label: 'Verify artifacts'
+    plugins:
+      artifacts#v1.2.0:
+        download: "test-fixture/*"
+    command: ls test-fixture/*
+
   - label: ':ios: iOS 12 end-to-end tests'
     timeout_in_minutes: 60
     plugins:
       artifacts#v1.2.0:
-        download: "test-fixture/iOSTestApp.ipa"
+        download: "test-fixture/*"
       docker-compose#v2.6.0:
         run: cocoa-maze-runner
     env:
@@ -34,7 +40,7 @@ steps:
     timeout_in_minutes: 60
     plugins:
       artifacts#v1.2.0:
-        download: "test-fixture/iOSTestApp.ipa"
+        download: "test-fixture/*"
       docker-compose#v2.6.0:
         run: cocoa-maze-runner
     env:
@@ -47,7 +53,7 @@ steps:
     timeout_in_minutes: 60
     plugins:
       artifacts#v1.2.0:
-        download: "test-fixture/iOSTestApp.ipa"
+        download: "test-fixture/*"
       docker-compose#v2.6.0:
         run: cocoa-maze-runner
     env:

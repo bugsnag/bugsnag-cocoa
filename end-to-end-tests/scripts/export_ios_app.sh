@@ -4,6 +4,9 @@ rm -rf test-fixture
 
 cd end-to-end-tests/features/fixtures/ios-swift-cocoapods/
 
+rm -rf archive
+rm -rf output
+
 pod install
 
 xcrun xcodebuild \
@@ -15,7 +18,7 @@ xcrun xcodebuild \
   -quiet \
   archive
 
-xcodebuild -exportArchive \
+xcrun xcodebuild -exportArchive \
   -archivePath archive/iosTestApp.xcarchive \
   -exportPath output/ \
   -quiet \
@@ -23,6 +26,7 @@ xcodebuild -exportArchive \
 
 cd ../../../..
 
-mkdir -p test-fixture
+mkdir -p test-fixture/dSYMs
 
 cp end-to-end-tests/features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa test-fixture/iOSTestApp.ipa
+cp -r end-to-end-tests/features/fixtures/ios-swift-cocoapods/archive/iosTestApp.xcarchive/dSYMs/ test-fixture/dSYMs/
