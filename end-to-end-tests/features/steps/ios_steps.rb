@@ -7,10 +7,6 @@ When("I run {string}") do |event_type|
   }
 end
 
-When("I output the current request") do
-  pp Server.current_request[:body]
-end
-
 When("I set the app to {string} mode") do |mode|
   steps %Q{
     Given the element "ScenarioMetaDataField" is present
