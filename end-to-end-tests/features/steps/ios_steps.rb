@@ -94,3 +94,10 @@ Then("the stacktrace contains methods:") do |table|
   contains = actual.each_cons(expected.length).to_a.include? expected
   assert_true(contains, "Stacktrace methods #{actual} did not contain #{expected}")
 end
+
+Then("the payload field {string} matches the test device model") do |field|
+  expected_model = Devices::DEVICE_HASH[$driver.device_type]["device"]
+  # Remove spaces from the expected model
+  expected_model.delete!(" ")
+  step "Then the payload field \"#{field}\" starts with \"#{expected_model}\""
+end

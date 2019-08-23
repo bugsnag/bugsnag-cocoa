@@ -11,7 +11,7 @@ Scenario: Launching using the default configuration sends a single session
     And the payload field "app.releaseStage" equals "development"
     And the payload field "app.type" equals "iOS"
     And the payload field "device.osName" equals "iOS"
-    And the payload field "device.model" is not null
+    And the payload field "device.model" matches the test device model
 
     And the session "id" is not null
     And the session "startedAt" is not null
@@ -30,7 +30,7 @@ Scenario: Configuring a custom version sends it in a session request
     And the payload field "app.releaseStage" equals "development"
     And the payload field "app.type" equals "iOS"
     And the payload field "device.osName" equals "iOS"
-    And the payload field "device.model" is not null
+    And the payload field "device.model" matches the test device model
 
     And the session "id" is not null
     And the session "startedAt" is not null
