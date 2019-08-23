@@ -18,14 +18,14 @@ steps:
   - label: 'Verify artifacts'
     plugins:
       artifacts#v1.2.0:
-        download: ["test-fixture/iOSTestApp.ipa", "test-fixtures/dSYMs.zip"]
+        download: ["test-fixture/iOSTestApp.ipa", "test-fixture/dSYMs.zip"]
     command: ls test-fixture/*
 
   - label: ':ios: iOS 12 end-to-end tests'
     timeout_in_minutes: 60
     plugins:
       artifacts#v1.2.0:
-        download: ["test-fixture/iOSTestApp.ipa", "test-fixtures/dSYMs.zip"]
+        download: ["test-fixture/iOSTestApp.ipa", "test-fixture/dSYMs.zip"]
       docker-compose#v2.6.0:
         run: cocoa-maze-runner
     env:
@@ -40,7 +40,7 @@ steps:
     timeout_in_minutes: 60
     plugins:
       artifacts#v1.2.0:
-        download: ["test-fixture/iOSTestApp.ipa", "test-fixtures/dSYMs.zip"]
+        download: ["test-fixture/iOSTestApp.ipa", "test-fixture/dSYMs.zip"]
       docker-compose#v2.6.0:
         run: cocoa-maze-runner
     env:
@@ -53,7 +53,7 @@ steps:
     timeout_in_minutes: 60
     plugins:
       artifacts#v1.2.0:
-        download: ["test-fixture/iOSTestApp.ipa", "test-fixtures/dSYMs.zip"]
+        download: ["test-fixture/iOSTestApp.ipa", "test-fixture/dSYMs.zip"]
       docker-compose#v2.6.0:
         run: cocoa-maze-runner
     env:
