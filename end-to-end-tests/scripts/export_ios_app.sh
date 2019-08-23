@@ -30,3 +30,4 @@ mkdir -p test-fixture/dSYMs
 
 cp end-to-end-tests/features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa test-fixture/iOSTestApp.ipa
 cp -r end-to-end-tests/features/fixtures/ios-swift-cocoapods/archive/iosTestApp.xcarchive/dSYMs/ test-fixture/dSYMs/
+tar -cxf test-fixture/dSYMs.zip test-fixture/dSYMs
