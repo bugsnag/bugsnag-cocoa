@@ -1,3 +1,4 @@
+@wip
 Feature: Reporting crash events
 
 Scenario: Executing privileged instruction

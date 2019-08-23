@@ -12,5 +12,6 @@ services:
       BROWSER_STACK_LOCAL_IDENTIFIER: ${BUILDKITE_JOB_ID:-maze-runner}
       DEVICE_TYPE:
       APP_LOCATION:
+    command: --tags "not @wip"
     volumes:
       - ./test-fixture:/app/build
