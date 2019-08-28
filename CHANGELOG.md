@@ -7,6 +7,10 @@ Changelog
 
 * Ensure UIKit APIs are not called from background threads if
   `Bugsnag.start()` is called in the background
+* Fix bug in `notifyReleaseStages` where if the release stage of a build was
+  changed after `start()`, only the initial value was used to determine whether
+  to send a report
+  [#405](https://github.com/bugsnag/bugsnag-cocoa/issues/405)
 
 ## 5.22.5 (2019-08-14)
 
