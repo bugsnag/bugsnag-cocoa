@@ -3,11 +3,6 @@ import UIKit
 import Bugsnag
 
 @objc class HandledInternalNotifyScenario: Scenario {
-    
-    override func startBugsnag() {
-        self.config.shouldAutoCaptureSessions = true;
-        super.startBugsnag()
-    }
 
     override func run() {
         let exception = NSException(name: NSExceptionName("Handled Error!"),

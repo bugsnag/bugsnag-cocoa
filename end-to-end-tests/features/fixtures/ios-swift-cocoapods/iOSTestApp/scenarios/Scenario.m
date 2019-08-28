@@ -41,7 +41,6 @@
 }
 
 - (void)startBugsnag {
-    NSLog( @"Starting Bugsnag with config");
     [Bugsnag startBugsnagWithConfiguration:self.config];
 }
 

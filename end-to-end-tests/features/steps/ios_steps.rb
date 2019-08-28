@@ -96,8 +96,15 @@ Then("the stacktrace contains methods:") do |table|
 end
 
 Then("the payload field {string} matches the test device model") do |field|
+  internal_names = {
+    "iPhone 7" => ["iPhone9,1", "iPhone9,2", "iPhone9,3", "iPhone9,4"],
+    "iPhone 8" => ["iPhone10,1", "iPhone10,2", "iPhone10,4", "iPhone10,5"],
+    "iPhone X" => ["iPhone10,3", "iPhone10,6"],
+    "iPhone XR" => ["iPhone11,8"],
+    "iPhone XS" => ["iPhone11,2", "iPhone11,4", "iPhone11,8"]
+  }
   expected_model = Devices::DEVICE_HASH[$driver.device_type]["device"]
-  # Remove spaces from the expected model
-  expected_model.delete!(" ")
-  step "Then the payload field \"#{field}\" starts with \"#{expected_model}\""
+  valid_models = internal_names[expected_model]
+  device_model = read_key_path(Server.current_request[:body], field)
+  assert_true(valid_models.include?(device_model), "The field #{device_model} did not match any of the list of expected fields")
 end

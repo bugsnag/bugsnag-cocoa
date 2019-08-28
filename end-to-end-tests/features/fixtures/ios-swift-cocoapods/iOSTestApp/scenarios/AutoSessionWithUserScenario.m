@@ -12,7 +12,6 @@
 
 - (void)startBugsnag {
     [self.config setUser:@"123" withName:@"Joe Bloggs" andEmail:@"joe@example.com"];
-    self.config.shouldAutoCaptureSessions = YES;
     [super startBugsnag];
 }
 

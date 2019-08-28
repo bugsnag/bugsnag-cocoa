@@ -51,7 +51,6 @@ class ViewController: UIViewController {
         let config = BugsnagConfiguration()
         config.apiKey = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345"
         config.setEndpoints(notify: "http://bs-local.com:9339", sessions: "http://bs-local.com:9339")
-        config.shouldAutoCaptureSessions = false
         config.reportOOMs = false
         return config
     }

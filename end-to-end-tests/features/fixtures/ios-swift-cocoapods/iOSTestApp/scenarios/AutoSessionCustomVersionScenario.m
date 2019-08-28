@@ -12,7 +12,6 @@
 
 - (void)startBugsnag {
     self.config.appVersion = @"2.0.14";
-    self.config.shouldAutoCaptureSessions = YES;
     [super startBugsnag];
 }
 

@@ -97,7 +97,7 @@ Scenario: Encountering a handled event during a session
 
 Scenario: Encountering an unhandled event during a session
     When I run "AutoSessionUnhandledScenario" and relaunch the app
-    And I set the app to "sessionsDisabled" mode
+    And I set the app to "noevent" mode
     And I configure Bugsnag for "AutoSessionUnhandledScenario"
     And I wait to receive 2 requests
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier

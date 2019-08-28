@@ -11,11 +11,10 @@
 @implementation AutoSessionUnhandledScenario
 
 - (void)startBugsnag {
-    if ([self.eventMode isEqual:@"sessionsDisabled"]) {
+    if ([self.eventMode isEqualToString:@"noevent"])
         self.config.shouldAutoCaptureSessions = NO;
-    } else {
+    else
         self.config.shouldAutoCaptureSessions = YES;
-    }
     [super startBugsnag];
 }
 
