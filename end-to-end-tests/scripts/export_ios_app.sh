@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-rm -rf test-fixture
+rm -rf test-outputs
 
-cd end-to-end-tests/features/fixtures/ios-swift-cocoapods/
+cd test-fixture/ios-swift-cocoapods/
 
 rm -rf archive
 rm -rf output
@@ -24,10 +24,10 @@ xcrun xcodebuild -exportArchive \
   -quiet \
   -exportOptionsPlist exportOptions.plist
 
-cd ../../../..
+cd ../../
 
-mkdir -p test-fixture/dSYMs
+mkdir -p test-outputs/dSYMs
 
-cp end-to-end-tests/features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa test-fixture/iOSTestApp.ipa
-cp -r end-to-end-tests/features/fixtures/ios-swift-cocoapods/archive/iosTestApp.xcarchive/dSYMs/ test-fixture/dSYMs/
-tar -czf test-fixture/dSYMs.zip test-fixture/dSYMs
+cp test-fixture/ios-swift-cocoapods/output/iOSTestApp.ipa test-outputs/iOSTestApp.ipa
+cp -r test-fixture/ios-swift-cocoapods/archive/iosTestApp.xcarchive/dSYMs/ test-outputs/dSYMs/
+tar -czf test-outputs/dSYMs.zip test-outputs/dSYMs

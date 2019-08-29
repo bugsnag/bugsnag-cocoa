@@ -11,13 +11,13 @@ MAX_WAIT_TIME = RUNNING_CI ? 300 : 60
 ENV['MAZE_SDK'] = '12.1' unless ENV['MAZE_SDK']
 MAZE_SDK = ENV['MAZE_SDK']
 
-Dir.chdir('features/fixtures/ios-swift-cocoapods') do
+Dir.chdir('test-fixture/ios-swift-cocoapods') do
   run_required_commands([
     ['bundle', 'install'],
     ['bundle', 'exec', 'pod', 'install'],
-    ['../../scripts/build_ios_app.sh'],
-    ['../../scripts/remove_installed_simulators.sh'],
-    ['../../scripts/launch_ios_simulators.sh'],
+    ['../../features/scripts/build_ios_app.sh'],
+    ['../../features/scripts/remove_installed_simulators.sh'],
+    ['../../features/scripts/launch_ios_simulators.sh'],
   ])
 end
 

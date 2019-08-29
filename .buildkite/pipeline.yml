@@ -3,7 +3,7 @@ steps:
     timeout_in_minutes: 20
     agents:
       queue: "opensource-mac"
-    artifact_paths: test-fixture/*
+    artifact_paths: test-outputs/*
     commands:
       - ./end-to-end-tests/scripts/export_ios_app.sh
 
@@ -19,7 +19,7 @@ steps:
     timeout_in_minutes: 60
     plugins:
       artifacts#v1.2.0:
-        download: ["test-fixture/iOSTestApp.ipa", "test-fixture/dSYMs.zip"]
+        download: ["test-outputs/iOSTestApp.ipa", "test-outputs/dSYMs.zip"]
       docker-compose#v2.6.0:
         run: cocoa-maze-runner
     env:
@@ -34,7 +34,7 @@ steps:
     timeout_in_minutes: 60
     plugins:
       artifacts#v1.2.0:
-        download: ["test-fixture/iOSTestApp.ipa", "test-fixture/dSYMs.zip"]
+        download: ["test-outputs/iOSTestApp.ipa", "test-outputs/dSYMs.zip"]
       docker-compose#v2.6.0:
         run: cocoa-maze-runner
     env:
@@ -47,7 +47,7 @@ steps:
     timeout_in_minutes: 60
     plugins:
       artifacts#v1.2.0:
-        download: ["test-fixture/iOSTestApp.ipa", "test-fixture/dSYMs.zip"]
+        download: ["test-outputs/iOSTestApp.ipa", "test-outputs/dSYMs.zip"]
       docker-compose#v2.6.0:
         run: cocoa-maze-runner
     env:

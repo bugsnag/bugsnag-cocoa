@@ -14,4 +14,4 @@ services:
       APP_LOCATION:
     command: --tags "not @wip"
     volumes:
-      - ./test-fixture:/app/build
+      - ./test-outputs:/app/build
