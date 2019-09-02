@@ -31,9 +31,9 @@ class ViewController: UIViewController {
         let config = prepareConfig()
         let scenario = Scenario.createScenarioNamed(eventType, withConfig: config)
         scenario.eventMode = eventMode
-        os_log("Starting Bugsnag for scenario: %@", log: .default, type: .info, eventType)
+        NSLog("Starting Bugsnag for scenario: %@", eventType)
         scenario.startBugsnag()
-        os_log("Running scenario: %@", log: .default, type: .info, eventType)
+        NSLog("Running scenario: %@", eventType)
         scenario.run()
     }
 

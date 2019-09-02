@@ -43,6 +43,10 @@ When("I relaunch the app") do
   $driver.launch_app
 end
 
+When("I clear the request queue") do
+  Server.stored_requests.clear
+end
+
 Then("each event in the payload matches one of:") do |table|
   # Checks string equality of event fields against values
   events = read_key_path(Server.current_request[:body], "events")

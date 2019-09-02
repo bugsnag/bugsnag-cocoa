@@ -8,7 +8,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let arguments = ProcessInfo.processInfo.arguments
-        NSLog(arguments.joined(separator: "|"))
         let runMaze = arguments.contains { (argument: String) -> Bool in
             if argument.contains("MAZE_SIMULATOR") {
                 return true
@@ -23,6 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     internal func loadTestScenario(arguments: Array<String>) {
+        NSLog("Loading scenario information from environment variables")
         var delay: TimeInterval = 0
         var eventType = "none"
         var eventMode = "regular"
