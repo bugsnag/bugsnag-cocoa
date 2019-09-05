@@ -18,30 +18,14 @@ class ReportOOMsDisabledDeviceScenario: Scenario {
     }
     
     override func run() {
-        DispatchQueue.global(qos: .userInitiated).async {
-            sleep(5)
-            var output = Data.init()
-            while true {
-                let a = Data.init(repeating: 100, count: 120000000)
-                let b = Data.init(repeating: 100, count: 120000000)
-                let c = Data.init(repeating: 100, count: 120000000)
-                let d = Data.init(repeating: 100, count: 120000000)
-                let e = Data.init(repeating: 100, count: 120000000)
-                let f = Data.init(repeating: 100, count: 120000000)
-                let g = Data.init(repeating: 100, count: 120000000)
-                let h = Data.init(repeating: 100, count: 120000000)
-                output.append(a)
-                output.append(b)
-                output.append(c)
-                output.append(d)
-                output.append(e)
-                output.append(f)
-                output.append(g)
-                output.append(h)
-                let bcf = ByteCountFormatter()
-                bcf.allowedUnits = [.useMB]
-                bcf.countStyle = .memory
-                NSLog("Allocated \(bcf.string(fromByteCount: Int64(output.count)))")
+        let webview = UIWebView.init()
+        let format = NSString.init(string: "var b = document.createElement('div'); div.innerHTML = 'Hello item %d'; document.documentElement.appendChild(div);")
+        let end = 3000 * 1024
+        for i in 0...end {
+            let item = NSString.localizedStringWithFormat(format, String(i))
+            webview.stringByEvaluatingJavaScript(from: String(item))
+            if (i % 1000 == 0) {
+                NSLog("Loaded %d items", i);
             }
         }
     }
