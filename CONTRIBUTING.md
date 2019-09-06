@@ -51,20 +51,7 @@ OS. For example, to build and run `Bugsnag` for iOS, open
 
 ## Testing
 
-Run the unit tests for the `Bugsnag` library from Xcode or by running `make
-test` on the command-line. To specify a specific iOS SDK, run with the SDK name:
-
-    make SDK=iphonesimulator11.3 test
-
-Or test on macOS:
-
-    make BUILD_OSX=1 test
-
-Or to test on tvOS:
-
-    make BUILD_TV=1 appletvsimulator11.2 test
-
-Run the integration tests using `make e2e` (end-to-end)
+Full details of how to build and run tests can be found in [the testing guide](`TESTING.md`)
 
 ## Releasing
 

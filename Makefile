@@ -98,6 +98,24 @@ test: ## Run unit tests
 e2e: ## Run integration tests
 	@bundle exec maze-runner
 
+remote-e2e-build:
+	@end-to-end-tests/scripts/export_ios_app.sh
+
+remote-e2e:
+ifeq ($(BROWSER_STACK_USERNAME),)
+	@$(error BROWSER_STACK_USERNAME is not defined)
+endif
+ifeq ($(BROWSER_STACK_ACCESS_KEY),)
+	@$(error BROWSER_STACK_ACCESS_KEY is not defined)
+endif
+	@make remote-e2e-build
+	@docker-compose build cocoa-maze-runner
+ifneq ($(TEST_FEATURE),)
+	@APP_LOCATION=/app/build/iOSTestApp.ipa docker-compose run cocoa-maze-runner features/$(TEST_FEATURE)
+else
+	@APP_LOCATION=/app/build/iOSTestApp.ipa docker-compose run cocoa-maze-runner
+endif
+
 archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip
 
 doc: ## Generate html documentation
