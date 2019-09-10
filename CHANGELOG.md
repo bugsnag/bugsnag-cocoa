@@ -3,6 +3,15 @@ Changelog
 
 ## TBD
 
+### Enhancements
+
+* Support disabling crash reporting after initialization by setting
+  `Bugsnag.configuration.autoNotify`. Previously this value was ignored after
+  `Bugsnag.start()` was called, but is now used to update whether crash reports
+  will be detected and sent. This interface can be used for crash reporting
+  opt-out flows.
+  [#410](https://github.com/bugsnag/bugsnag-cocoa/issues/410)
+
 ### Bug fixes
 
 * Ensure UIKit APIs are not called from background threads if
