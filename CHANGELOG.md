@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Ensure UIKit APIs are not called from background threads if
+  `Bugsnag.start()` is called in the background
+
 ## 5.22.5 (2019-08-14)
 
 ### Bug fixes
