@@ -283,7 +283,10 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             _deviceState = BSGParseDeviceState(report);
             _device = BSGParseDevice(report);
             _app = BSGParseApp(report);
-            _appState = BSGParseAppState(report[BSGKeySystem], BSGLoadConfigValue(report, @"appVersion"));
+            _appState = BSGParseAppState(report[BSGKeySystem],
+                                         BSGLoadConfigValue(report, @"appVersion"),
+                                         _releaseStage, // Already loaded from config
+                                         BSGLoadConfigValue(report, @"codeBundleId"));
             _groupingHash = BSGParseGroupingHash(report, _metaData);
             _overrides = [report valueForKeyPath:@"user.overrides"];
             _customException = BSGParseCustomException(report, [_errorClass copy],
