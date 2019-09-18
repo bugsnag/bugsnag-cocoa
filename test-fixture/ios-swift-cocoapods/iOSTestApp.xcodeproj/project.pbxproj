@@ -36,7 +36,6 @@
 		A14979C723193634008FE46C /* SessionOOMDeviceScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14979C123193634008FE46C /* SessionOOMDeviceScenario.swift */; };
 		A14979C923196651008FE46C /* ClearOOMsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14979C823196651008FE46C /* ClearOOMsScenario.swift */; };
 		A1497A06231CE8A4008FE46C /* ReportBackgroundOOMsEnabledDeviceScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1497A05231CE8A4008FE46C /* ReportBackgroundOOMsEnabledDeviceScenario.swift */; };
-		A1497A08231CF099008FE46C /* ReportOOMsDisabledReportBackgroundOOMsEnabledDeviceScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1497A07231CF099008FE46C /* ReportOOMsDisabledReportBackgroundOOMsEnabledDeviceScenario.swift */; };
 		E7767F11221C21D90006648C /* StoppedSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7767F10221C21D90006648C /* StoppedSessionScenario.swift */; };
 		E7767F13221C21E30006648C /* ResumedSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7767F12221C21E30006648C /* ResumedSessionScenario.swift */; };
 		E7767F15221C223C0006648C /* NewSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7767F14221C223C0006648C /* NewSessionScenario.swift */; };
@@ -124,7 +123,6 @@
 		A14979C123193634008FE46C /* SessionOOMDeviceScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionOOMDeviceScenario.swift; sourceTree = "<group>"; };
 		A14979C823196651008FE46C /* ClearOOMsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearOOMsScenario.swift; sourceTree = "<group>"; };
 		A1497A05231CE8A4008FE46C /* ReportBackgroundOOMsEnabledDeviceScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportBackgroundOOMsEnabledDeviceScenario.swift; sourceTree = "<group>"; };
-		A1497A07231CF099008FE46C /* ReportOOMsDisabledReportBackgroundOOMsEnabledDeviceScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportOOMsDisabledReportBackgroundOOMsEnabledDeviceScenario.swift; sourceTree = "<group>"; };
 		E7767F10221C21D90006648C /* StoppedSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoppedSessionScenario.swift; sourceTree = "<group>"; };
 		E7767F12221C21E30006648C /* ResumedSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumedSessionScenario.swift; sourceTree = "<group>"; };
 		E7767F14221C223C0006648C /* NewSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSessionScenario.swift; sourceTree = "<group>"; };
@@ -266,7 +264,6 @@
 				8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */,
 				8AEFC79720F9132C00A78779 /* AutoSessionHandledEventsScenario.h */,
 				8AEFC79820F9132C00A78779 /* AutoSessionHandledEventsScenario.m */,
-				A1497A07231CF099008FE46C /* ReportOOMsDisabledReportBackgroundOOMsEnabledDeviceScenario.swift */,
 				8AEEBBCE20FC9E1D00C60763 /* AutoSessionMixedEventsScenario.h */,
 				8AEEBBCF20FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m */,
 				F4295F22AA1863213F4A5F51 /* AutoSessionScenario.h */,
@@ -469,7 +466,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8AB8866620404DD30003E444 /* ViewController.swift in Sources */,
-				A1497A08231CF099008FE46C /* ReportOOMsDisabledReportBackgroundOOMsEnabledDeviceScenario.swift in Sources */,
 				8AB8866420404DD30003E444 /* AppDelegate.swift in Sources */,
 				F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */,
 				8A98400320FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m in Sources */,
