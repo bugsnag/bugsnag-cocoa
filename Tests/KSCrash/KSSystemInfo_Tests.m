@@ -75,4 +75,11 @@
     XCTAssertEqualObjects(executablePath, expectedExecutablePath);
 }
 
+#if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+- (void)testCurrentAppState {
+    // Should default to active as tests aren't in an app bundle
+    XCTAssertEqual(UIApplicationStateActive, [BSG_KSSystemInfo currentAppState]);
+}
+#endif
+
 @end

@@ -244,7 +244,7 @@
     app[@"version"] = systemInfo[@BSG_KSSystemField_BundleShortVersion] ?: @"";
     app[@"bundleVersion"] = systemInfo[@BSG_KSSystemField_BundleVersion] ?: @"";
 #if BSGOOMAvailable
-    UIApplicationState state = [self currentAppState];
+    UIApplicationState state = [BSG_KSSystemInfo currentAppState];
     // The app is in the foreground if the current state is "active" or
     // "inactive". From the UIApplicationState docs:
     // > UIApplicationStateActive
@@ -284,35 +284,5 @@
 
     return cache;
 }
-
-// Only available on iOS/tvOS
-#if BSGOOMAvailable
-- (UIApplicationState)currentAppState {
-    // Only checked outside of app extensions since sharedApplication is
-    // unavailable to extension UIKit APIs
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
-        return UIApplicationStateActive;
-    }
-
-    UIApplicationState(^getState)(void) = ^() {
-        // Calling this API indirectly to avoid a compile-time check that
-        // [UIApplication sharedApplication] is not called from app extensions
-        // (which is handled above)
-        UIApplication *app = [UIApplication performSelector:@selector(sharedApplication)];
-        return [app applicationState];
-    };
-
-    if ([[NSThread currentThread] isMainThread]) {
-        return getState();
-    } else {
-        // [UIApplication sharedApplication] is a main thread-only API
-        __block UIApplicationState state;
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            state = getState();
-        });
-        return state;
-    }
-}
-#endif
 
 @end

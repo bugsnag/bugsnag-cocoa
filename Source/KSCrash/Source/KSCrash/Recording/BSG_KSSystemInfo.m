@@ -453,6 +453,35 @@
 #endif
 }
 
+#if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
++ (UIApplicationState)currentAppState {
+    // Only checked outside of app extensions since sharedApplication is
+    // unavailable to extension UIKit APIs
+    if ([self isRunningInAppExtension]) {
+        return UIApplicationStateActive;
+    }
+
+    UIApplicationState(^getState)(void) = ^() {
+        // Calling this API indirectly to avoid a compile-time check that
+        // [UIApplication sharedApplication] is not called from app extensions
+        // (which is handled above)
+        UIApplication *app = [UIApplication performSelector:@selector(sharedApplication)];
+        return [app applicationState];
+    };
+
+    if ([[NSThread currentThread] isMainThread]) {
+        return getState();
+    } else {
+        // [UIApplication sharedApplication] is a main thread-only API
+        __block UIApplicationState state;
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            state = getState();
+        });
+        return state;
+    }
+}
+#endif
+
 @end
 
 const char *bsg_kssysteminfo_toJSON(void) {
