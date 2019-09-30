@@ -83,6 +83,11 @@
 
 #if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 + (UIApplicationState)currentAppState;
+
+/**
+ * YES if the app is currently shown in the foreground
+ */
++ (BOOL)isInForeground:(UIApplicationState)state;
 #endif
 
 @end

@@ -245,18 +245,7 @@
     app[@"bundleVersion"] = systemInfo[@BSG_KSSystemField_BundleVersion] ?: @"";
 #if BSGOOMAvailable
     UIApplicationState state = [BSG_KSSystemInfo currentAppState];
-    // The app is in the foreground if the current state is "active" or
-    // "inactive". From the UIApplicationState docs:
-    // > UIApplicationStateActive
-    // >   The app is running in the foreground and currently receiving events.
-    // > UIApplicationStateInactive
-    // >   The app is running in the foreground but is not receiving events.
-    // >   This might happen as a result of an interruption or because the app
-    // >   is transitioning to or from the background.
-    // > UIApplicationStateBackground
-    // >   The app is running in the background.
-    app[@"inForeground"] = @(state == UIApplicationStateInactive
-                          || state == UIApplicationStateActive);
+    app[@"inForeground"] = @([BSG_KSSystemInfo isInForeground:state]);
     app[@"isActive"] = @(state == UIApplicationStateActive);
 #else
     app[@"inForeground"] = @YES;
