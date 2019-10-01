@@ -64,13 +64,6 @@ Scenario: Calling non-existent method
     And the "method" of stack frame 4 equals "_CF_forwarding_prep_0"
     And the "method" of stack frame 5 equals "-[NonExistentMethodScenario run]"
 
-Scenario: Heap corruption by writing garbage into data areas used by malloc to track allocations
-    When I crash the app using "CorruptMallocScenario"
-    And I relaunch the app
-    And I wait for a request
-    Then the request is valid for the error reporting API
-    And The exception reflects malloc corruption occurred
-
 Scenario: Trigger a crash after overwriting the link register
     When I crash the app using "OverwriteLinkRegisterScenario"
     And I relaunch the app
