@@ -201,9 +201,9 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 }
 
 @interface BugsnagNotifier ()
-@property(nonatomic) BugsnagCrashSentry *crashSentry;
-@property(nonatomic) BugsnagErrorReportApiClient *errorReportApiClient;
-@property(nonatomic, readwrite) BugsnagSessionTracker *sessionTracker;
+@property(nonatomic, strong) BugsnagCrashSentry *crashSentry;
+@property(nonatomic, strong) BugsnagErrorReportApiClient *errorReportApiClient;
+@property(nonatomic, strong, readwrite) BugsnagSessionTracker *sessionTracker;
 @property (nonatomic, strong) BSGOutOfMemoryWatchdog *oomWatchdog;
 @property (nonatomic) BOOL appCrashedLastLaunch;
 @end
