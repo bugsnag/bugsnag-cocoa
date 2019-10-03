@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Show correct value for `app.inForeground` when an app launches and crashes in
+  the background without ever coming to the foreground.
+  [#415](https://github.com/bugsnag/bugsnag-cocoa/pull/415)
+
 ## 5.22.6 (2019-09-18)
 
 ### Enhancements
