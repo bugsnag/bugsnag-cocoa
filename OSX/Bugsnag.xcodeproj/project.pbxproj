@@ -811,7 +811,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8A2C8F9B1C6BC1F700846019 /* Build configuration list for PBXProject "Bugsnag" */;
+			buildConfigurationList = 8A2C8F9B1C6BC1F700846019 /* Build configuration list for PBXProject "Bugsnag-OSX" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -1016,6 +1016,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1066,6 +1067,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1147,7 +1149,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8A2C8F9B1C6BC1F700846019 /* Build configuration list for PBXProject "Bugsnag" */ = {
+		8A2C8F9B1C6BC1F700846019 /* Build configuration list for PBXProject "Bugsnag-OSX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8A2C8FB31C6BC1F700846019 /* Debug */,

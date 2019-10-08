@@ -825,7 +825,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8A8D511E1D41343500D33797 /* Build configuration list for PBXProject "Bugsnag" */;
+			buildConfigurationList = 8A8D511E1D41343500D33797 /* Build configuration list for PBXProject "Bugsnag-tvOS" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -1107,6 +1107,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
 			};
 			name = Debug;
 		};
@@ -1126,6 +1127,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
 			};
 			name = Release;
 		};
@@ -1154,7 +1156,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8A8D511E1D41343500D33797 /* Build configuration list for PBXProject "Bugsnag" */ = {
+		8A8D511E1D41343500D33797 /* Build configuration list for PBXProject "Bugsnag-tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8A8D512A1D41343500D33797 /* Debug */,
