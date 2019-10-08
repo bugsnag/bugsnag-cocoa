@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix a packaging issue when using Carthage, introduced in 5.22.7
+
 ## 5.22.7 (2019-10-03)
 
 ### Bug fixes
