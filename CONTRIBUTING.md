@@ -92,6 +92,7 @@ Run the integration tests using `make e2e` (end-to-end)
   - [ ] Run `./Tests/prerelease/run_prerelease_checks.sh`
   - [ ] Has all new functionality been manually tested on a release build?
   - [ ] Do the installation instructions work when creating an example app from scratch?
+    - [ ] Does the Carthage installation instruction work?
   - [ ] If a response is not received from the server, is the report queued for later?
   - [ ] If no network connection is available, is the report queued for later?
   - [ ] On a throttled network, is the request timeout reasonable, and the main thread not blocked?
