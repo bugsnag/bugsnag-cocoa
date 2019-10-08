@@ -1,7 +1,7 @@
 PLATFORM?=iOS
 OS?=latest
 TEST_CONFIGURATION?=Debug
-BUILD_FLAGS=-workspace $(PLATFORM).xcworkspace -scheme Bugsnag -derivedDataPath build
+BUILD_FLAGS=-project $(PLATFORM)/Bugsnag.xcodeproj -scheme Bugsnag -derivedDataPath build
 
 ifeq ($(PLATFORM),OSX)
  SDK?=macosx
