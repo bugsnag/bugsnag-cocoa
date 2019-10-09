@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix use-after-free in `notify()` logic which could lead to a deadlock
+  [#420](https://github.com/bugsnag/bugsnag-cocoa/pull/420)
+
 ## 5.22.7 (2019-10-03)
 
 ### Bug fixes
