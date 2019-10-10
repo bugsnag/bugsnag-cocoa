@@ -72,3 +72,9 @@ ENABLE_BITCODE[sdk=iphonesimulator*]          = YES
 ENABLE_BITCODE[sdk=iphone*]                   = YES
 ENABLE_BITCODE[sdk=appletvsimulator*]         = YES
 ENABLE_BITCODE[sdk=appletv*]                  = YES
+
+
+// Unset this property to work around an issue where the build paths generated
+// by `xcodebuild -showBuildSettings` are wrong when building the macOS variant
+// of a universal framework. (FB7365403)
+EFFECTIVE_PLATFORM_NAME =
