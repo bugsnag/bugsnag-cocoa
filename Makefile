@@ -49,6 +49,12 @@ build: ## Build the library
 build_ios_static: ## Build the static library target
 	$(XCODEBUILD) -project iOS/Bugsnag.xcodeproj -scheme BugsnagStatic
 
+build_carthage: ## Build the latest pushed commit with Carthage
+	@mkdir -p features/fixtures/carthage-proj
+	@echo 'git "file://$(shell pwd)" "'$(shell git rev-parse HEAD)'"' > features/fixtures/carthage-proj/Cartfile
+	@cd features/fixtures/carthage-proj && carthage update --platform ios && \
+		carthage update --platform macos
+
 bump: ## Bump the version numbers to $VERSION
 ifeq ($(VERSION),)
 	@$(error VERSION is not defined. Run with `make VERSION=number bump`)

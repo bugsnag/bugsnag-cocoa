@@ -19,3 +19,4 @@ DerivedData
 Pods
 Carthage
 *.idea
+features/fixtures/carthage-proj

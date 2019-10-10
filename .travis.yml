@@ -5,6 +5,12 @@ cache:
 matrix:
     include:
         - osx_image: xcode11
+          before_script: 
+            # Xcode 11+ no longer ships with all device combinations premade
+          - xcrun simctl create "13-xs" "iPhone XS" com.apple.CoreSimulator.SimRuntime.iOS-13-0
+          - mkdir -p features/fixtures/carthage-proj
+          script: make build_carthage
+        - osx_image: xcode11
           env: PLATFORM=iOS
           # Xcode 11+ no longer ships with all device combinations premade
           before_script: xcrun simctl create "13-xs" "iPhone XS" com.apple.CoreSimulator.SimRuntime.iOS-13-0
