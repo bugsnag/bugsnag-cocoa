@@ -30,12 +30,12 @@
     @autoreleasepool {
         @try {
             [[BSG_KSCrash sharedInstance]
-                    sendAllReportsWithCompletion:^(NSUInteger sentReportCount,
+                    sendAllReportsWithCompletion:^(NSString *filename,
                             BOOL completed, NSError *error) {
                         if (error) {
-                            bsg_log_warn(@"Failed to send reports: %@", error);
-                        } else if (sentReportCount > 0) {
-                            bsg_log_info(@"Reports sent.");
+                            bsg_log_warn(@"Failed to send report: %@ %@", filename, error);
+                        } else if (filename) {
+                            bsg_log_info(@"Delivered error report '%@'", filename);
                         }
                     }];
         } @catch (NSException *e) {

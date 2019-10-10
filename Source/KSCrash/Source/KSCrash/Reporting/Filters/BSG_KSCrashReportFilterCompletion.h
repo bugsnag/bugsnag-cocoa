@@ -28,12 +28,12 @@
 
 /** Callback for filter operations.
  *
- * @param sentReportCount The number of reports successfully sent.
+ * @param filename The filename of the report sent
  * @param completed True if filtering completed.
  *                  Can be false due to a non-erroneous condition (such as a
  *                  user cancelling the operation).
  * @param error Non-nil if an error occurred.
  */
-typedef void (^BSG_KSCrashReportFilterCompletion)(NSUInteger sentReportCount,
+typedef void (^BSG_KSCrashReportFilterCompletion)(NSString *filename,
                                                   BOOL completed,
                                                   NSError *error);

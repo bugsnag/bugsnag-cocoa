@@ -34,5 +34,5 @@
  * @param error The parameter to send as "error".
  */
 void bsg_kscrash_i_callCompletion(
-    BSG_KSCrashReportFilterCompletion onCompletion, NSUInteger sentReportCount,
+    BSG_KSCrashReportFilterCompletion onCompletion, NSString *filename,
     BOOL completed, NSError *error);

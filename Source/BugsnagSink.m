@@ -58,9 +58,9 @@
 //   and it contains the current stage
 - (void)filterReports:(NSDictionary <NSString *, NSDictionary *> *)reports
          onCompletion:(BSG_KSCrashReportFilterCompletion)onCompletion {
-    NSMutableArray *bugsnagReports = [NSMutableArray new];
+    NSMutableDictionary<NSString *, BugsnagCrashReport *>* bugsnagReports = [NSMutableDictionary new];
     BugsnagConfiguration *configuration = [Bugsnag configuration];
-    
+
     for (NSString *fileKey in reports) {
         NSDictionary *report = reports[fileKey];
         BugsnagCrashReport *bugsnagReport = [[BugsnagCrashReport alloc] initWithKSReport:report
@@ -106,60 +106,57 @@
                 break;
         }
         if (shouldSend) {
-            [bugsnagReports addObject:bugsnagReport];
+            bugsnagReports[fileKey] = bugsnagReport;
         }
     }
 
     if (bugsnagReports.count == 0) {
         if (onCompletion) {
-            onCompletion(bugsnagReports.count, YES, nil);
+            onCompletion(nil, YES, nil);
         }
         return;
     }
 
-    NSDictionary *reportData = [self getBodyFromReports:bugsnagReports];
+    for (NSString *filename in bugsnagReports) {
+        BugsnagCrashReport *report = bugsnagReports[filename];
+        NSDictionary *reportData = [self getBodyFromReports:report];
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    for (BugsnagBeforeNotifyHook hook in configuration.beforeNotifyHooks) {
-        if (reportData) {
-            reportData = hook(bugsnagReports, reportData);
-        } else {
-            break;
-        }
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            for (BugsnagBeforeNotifyHook hook in configuration.beforeNotifyHooks) {
+                if (reportData) {
+                    reportData = hook(@[report], reportData);
+                } else {
+                    break;
+                }
+            }
+        #pragma clang diagnostic pop
+
+            if (reportData == nil) {
+                if (onCompletion) {
+                    onCompletion(0, YES, nil);
+                }
+                return;
+            }
+
+            [self.apiClient sendItems:1
+                          withPayload:reportData
+                                toURL:configuration.notifyURL
+                              headers:[configuration errorApiHeaders]
+                         onCompletion:^(NSUInteger reportCount, BOOL success, NSError *error) {
+                onCompletion(filename, success, error);
+        }];
+        
     }
-#pragma clang diagnostic pop
-
-    if (reportData == nil) {
-        if (onCompletion) {
-            onCompletion(0, YES, nil);
-        }
-        return;
-    }
-
-    [self.apiClient sendItems:bugsnagReports.count
-                  withPayload:reportData
-                        toURL:configuration.notifyURL
-                      headers:[configuration errorApiHeaders]
-                 onCompletion:onCompletion];
 }
 
-
 // Generates the payload for notifying Bugsnag
-- (NSDictionary *)getBodyFromReports:(NSArray *)reports {
+- (NSDictionary *)getBodyFromReports:(BugsnagCrashReport *)report {
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     BSGDictSetSafeObject(data, [Bugsnag notifier].details, BSGKeyNotifier);
     BSGDictSetSafeObject(data, [Bugsnag notifier].configuration.apiKey, BSGKeyApiKey);
     BSGDictSetSafeObject(data, @"4.0", @"payloadVersion");
-
-    NSMutableArray *formatted =
-            [[NSMutableArray alloc] initWithCapacity:[reports count]];
-
-    for (BugsnagCrashReport *report in reports) {
-        BSGArrayAddSafeObject(formatted, [report toJson]);
-    }
-
-    BSGDictSetSafeObject(data, formatted, BSGKeyEvents);
+    BSGDictSetSafeObject(data, @[[report toJson]], BSGKeyEvents);
     return data;
 }
 

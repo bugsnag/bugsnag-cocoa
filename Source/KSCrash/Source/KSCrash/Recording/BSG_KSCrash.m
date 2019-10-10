@@ -318,18 +318,16 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     BSG_KSLOG_INFO(@"Sending %d crash reports", [reports count]);
 
     [self sendReports:reports
-         onCompletion:^(NSUInteger sentReportCount, BOOL completed,
+         onCompletion:^(NSString *filename, BOOL completed,
                         NSError *error) {
            BSG_KSLOG_DEBUG(@"Process finished with completion: %d", completed);
            if (error != nil) {
                BSG_KSLOG_ERROR(@"Failed to send reports: %@", error);
            }
-           if ((self.deleteBehaviorAfterSendAll == BSG_KSCDeleteOnSucess &&
-                completed) ||
-               self.deleteBehaviorAfterSendAll == BSG_KSCDeleteAlways) {
-               [self deleteAllReports];
+           if (completed && filename) {
+               [self.crashReportStore deleteFileWithId:filename];
            }
-           bsg_kscrash_i_callCompletion(onCompletion, sentReportCount,
+           bsg_kscrash_i_callCompletion(onCompletion, filename,
                                         completed, error);
          }];
 }
@@ -426,9 +424,9 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
     }
 
     [self.sink filterReports:reports
-                onCompletion:^(NSUInteger sentReportCount, BOOL completed,
+                onCompletion:^(NSString *filename, BOOL completed,
                                NSError *error) {
-                  bsg_kscrash_i_callCompletion(onCompletion, sentReportCount,
+                  bsg_kscrash_i_callCompletion(onCompletion, filename,
                                                completed, error);
                 }];
 }
