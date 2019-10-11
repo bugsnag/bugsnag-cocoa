@@ -78,11 +78,6 @@
 #endif
 }
 
-- (void)testDefaultReportBackgroundOOMs {
-    BugsnagConfiguration *config = [BugsnagConfiguration new];
-    XCTAssertFalse([config reportBackgroundOOMs]);
-}
-
 - (void)testErrorApiHeaders {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     NSDictionary *headers = [config errorApiHeaders];
