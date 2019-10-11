@@ -29,7 +29,7 @@
 /** Conditionally call a completion method if it's not nil.
  *
  * @param onCompletion The completion block. If nil, this function does nothing.
- * @param sentReportCount The number of reports successfully handled.
+ * @param filename The filename of the report sent.
  * @param completed The parameter to send as "completed".
  * @param error The parameter to send as "error".
  */

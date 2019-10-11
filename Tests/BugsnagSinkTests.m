@@ -19,7 +19,7 @@
 @end
 
 @interface BugsnagSink ()
-- (NSDictionary *)getBodyFromReports:(NSArray *)reports;
+- (NSDictionary *)getBodyFromReports:(id)report;
 @end
 
 @implementation BugsnagSinkTests
@@ -45,7 +45,7 @@
     [Bugsnag startBugsnagWithConfiguration:config];
     BugsnagCrashReport *report =
     [[BugsnagCrashReport alloc] initWithKSReport:self.rawReportData];
-    self.processedData = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    self.processedData = [[BugsnagSink new] getBodyFromReports:report];
 }
 
 - (void)tearDown {
@@ -316,7 +316,7 @@
                                      handledState:state
                                           session:nil];
     
-    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:report];
     return [data[@"events"] firstObject];
 }
 
@@ -400,7 +400,7 @@
                                           session:nil];
     report.severity = BSGSeverityInfo;
     
-    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:report];
     NSDictionary *payload = [data[@"events"] firstObject];
     
     XCTAssertEqualObjects(@"info", payload[@"severity"]);

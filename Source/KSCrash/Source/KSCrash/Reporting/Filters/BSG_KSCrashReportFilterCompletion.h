@@ -28,7 +28,7 @@
 
 /** Callback for filter operations.
  *
- * @param filename The filename of the report sent
+ * @param filename The filename of the report sent.
  * @param completed True if filtering completed.
  *                  Can be false due to a non-erroneous condition (such as a
  *                  user cancelling the operation).
