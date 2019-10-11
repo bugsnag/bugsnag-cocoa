@@ -433,6 +433,70 @@
     return [self stringSysctl:@"kern.osversion"];
 }
 
++ (BOOL)isRunningInAppExtension {
+#if BSG_KSCRASH_HOST_IOS
+    NSBundle *mainBundle = [NSBundle mainBundle];
+    // From the App Extension Programming Guide:
+    // > When you build an extension based on an Xcode template, you get an
+    // > extension bundle that ends in .appex.
+    return [[mainBundle executablePath] containsString:@".appex"]
+        // In the case that the extension bundle was renamed or generated
+        // outside of the Xcode template, check the Bundle OS Type Code:
+        // > This key consists of a four-letter code for the bundle type. For
+        // > apps, the code is APPL, for frameworks, it's FMWK, and for bundles,
+        // > it's BNDL.
+        // If the main bundle type is not "APPL", assume this is an extension
+        // context.
+        || ![[mainBundle infoDictionary][@"CFBundlePackageType"] isEqualToString:@"APPL"];
+#else
+    return NO;
+#endif
+}
+
+#if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
++ (UIApplicationState)currentAppState {
+    // Only checked outside of app extensions since sharedApplication is
+    // unavailable to extension UIKit APIs
+    if ([self isRunningInAppExtension]) {
+        return UIApplicationStateActive;
+    }
+
+    UIApplicationState(^getState)(void) = ^() {
+        // Calling this API indirectly to avoid a compile-time check that
+        // [UIApplication sharedApplication] is not called from app extensions
+        // (which is handled above)
+        UIApplication *app = [UIApplication performSelector:@selector(sharedApplication)];
+        return [app applicationState];
+    };
+
+    if ([[NSThread currentThread] isMainThread]) {
+        return getState();
+    } else {
+        // [UIApplication sharedApplication] is a main thread-only API
+        __block UIApplicationState state;
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            state = getState();
+        });
+        return state;
+    }
+}
+
++ (BOOL)isInForeground:(UIApplicationState)state {
+    // The app is in the foreground if the current state is "active" or
+    // "inactive". From the UIApplicationState docs:
+    // > UIApplicationStateActive
+    // >   The app is running in the foreground and currently receiving events.
+    // > UIApplicationStateInactive
+    // >   The app is running in the foreground but is not receiving events.
+    // >   This might happen as a result of an interruption or because the app
+    // >   is transitioning to or from the background.
+    // > UIApplicationStateBackground
+    // >   The app is running in the background.
+    return state == UIApplicationStateInactive
+        || state == UIApplicationStateActive;
+}
+#endif
+
 @end
 
 const char *bsg_kssysteminfo_toJSON(void) {

@@ -18,7 +18,30 @@ Feature: Reporting out of memory events
         And the event "app.releaseStage" equals "beta"
         And the event "app.version" equals "1.0.3"
         And the event "app.bundleVersion" equals "5"
+        And the event "metaData.extra.shape" equals "line"
         And the event breadcrumbs contain "Crumb left before crash"
+
+    Scenario: The app is terminated normally
+        The application can be gracefully terminated by the OS if more
+        memory is needed for other applications or directly by calling
+        exit(0)
+
+        When I crash the app using "OOMWillTerminateScenario"
+        And I wait for 4 seconds
+        And I relaunch the app
+        And I wait for 10 seconds
+        Then I should receive 0 requests
+
+    Scenario: The app is terminated normally
+        The application can be gracefully terminated by the OS if more
+        memory is needed for other applications or directly by calling
+        exit(0)
+
+        When I crash the app using "OOMWillTerminateScenario"
+        And I wait for 4 seconds
+        And I relaunch the app
+        And I wait for 10 seconds
+        Then I should receive 0 requests
 
     Scenario: The OS kills the application in the background
         When I run "OOMScenario"

@@ -29,7 +29,6 @@
 #include "BSG_KSCrashSentry_Private.h"
 
 #include "BSG_KSCrashSentry_CPPException.h"
-#include "BSG_KSCrashSentry_Deadlock.h"
 #include "BSG_KSCrashSentry_NSException.h"
 #include "BSG_KSCrashSentry_MachException.h"
 #include "BSG_KSCrashSentry_Signal.h"
@@ -68,11 +67,6 @@ static BSG_CrashSentry bsg_g_sentries[] = {
         bsg_kscrashsentry_uninstallNSExceptionHandler,
     },
     {
-        BSG_KSCrashTypeMainThreadDeadlock,
-        bsg_kscrashsentry_installDeadlockHandler,
-        bsg_kscrashsentry_uninstallDeadlockHandler,
-    },
-    {
         BSG_KSCrashTypeUserReported,
         bsg_kscrashsentry_installUserExceptionHandler,
         bsg_kscrashsentry_uninstallUserExceptionHandler,
@@ -96,7 +90,7 @@ static bool bsg_g_threads_are_running = true;
 BSG_KSCrashType
 bsg_kscrashsentry_installWithContext(BSG_KSCrash_SentryContext *context,
                                      BSG_KSCrashType crashTypes,
-                                     void (*onCrash)(char, char *)) {
+                                     void (*onCrash)(char, char *, void *)) {
     if (bsg_ksmachisBeingTraced()) {
         if (context->reportWhenDebuggerIsAttached) {
             BSG_KSLOG_WARN("KSCrash: App is running in a debugger. Crash "
@@ -206,7 +200,7 @@ void bsg_kscrashsentry_resumeThreads(void) {
 }
 
 void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext *context) {
-    void (*onCrash)(char, char *) = context->onCrash;
+    void (*onCrash)(char, char *, void *) = context->onCrash;
     bool threadTracingEnabled = context->threadTracingEnabled;
     bool reportWhenDebuggerIsAttached = context->reportWhenDebuggerIsAttached;
     bool suspendThreadsForUserReported = context->suspendThreadsForUserReported;

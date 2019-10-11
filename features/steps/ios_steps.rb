@@ -29,6 +29,13 @@ end
 When('the app is unexpectedly terminated') do
   kill_test_app
 end
+When('the app is interrupted by Siri') do
+  steps %Q{
+    When I wait for 10 seconds
+    And I run the script "features/scripts/activate_siri.sh"
+    And I wait for 2 seconds
+  }
+end
 When("I crash the app using {string}") do |event|
   steps %Q{
     When I set environment variable "EVENT_TYPE" to "#{event}"

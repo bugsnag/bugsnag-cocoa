@@ -13,7 +13,7 @@
 @end
 
 @interface BugsnagApiClient()
-@property (nonatomic) NSURLSession *generatedSession;
+@property (nonatomic, strong) NSURLSession *generatedSession;
 @end
 
 @implementation BugsnagApiClient
@@ -111,7 +111,7 @@
     if (session) {
         return session;
     } else {
-        if (self.generatedSession) {
+        if (!self.generatedSession) {
             _generatedSession = [NSURLSession
                     sessionWithConfiguration:[NSURLSessionConfiguration
                             defaultSessionConfiguration]];

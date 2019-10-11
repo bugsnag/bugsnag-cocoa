@@ -4,21 +4,36 @@ cache:
   - cocoapods
 matrix:
     include:
+        - osx_image: xcode11
+          env: PLATFORM=iOS
+          # Xcode 11+ no longer ships with all device combinations premade
+          before_script: xcrun simctl create "13-xs" "iPhone XS" com.apple.CoreSimulator.SimRuntime.iOS-13-0
+          script: make test OS=13.0 DEVICE="iPhone XS"
         - osx_image: xcode10.2
           env: PLATFORM=iOS
           script:
+            - make build_ios_static
+            - make test OS=12.2
+            - make test OS=12.1
             - make test OS=11.4
             - make test OS=10.3.1
             - make test OS=9.3
+            - make test OS=9.3 TEST_CONFIGURATION=Release
           after_success:
             - bash <(curl -s 'https://codecov.io/bash') -Z -J '^Bugsnag$' -X gcov -X coveragepy -X fix -D build
-        - osx_image: xcode9.4
+        - osx_image: xcode10.2 # macos 10.14
+          env: PLATFORM=OSX
+          script:
+            - make test
+        - osx_image: xcode9.4 # macos 10.13
           env: PLATFORM=OSX
           script:
             - make test
         - osx_image: xcode10.2
           env: PLATFORM=tvOS
           script:
+            - make test OS=12.2
+            - make test OS=12.1
             - make test OS=11.4
             - make test OS=10.2
             - make test OS=9.2

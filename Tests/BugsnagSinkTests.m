@@ -38,6 +38,8 @@
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     config.autoNotify = NO;
     config.apiKey = @"apiKeyHere";
+    // This value should not appear in the assertions, as it is not equal to
+    // the release stage in the serialized report
     config.releaseStage = @"MagicalTestingTime";
 
     // set a dummy endpoint, avoid hitting production
@@ -298,7 +300,7 @@
     XCTAssertEqualObjects(app[@"version"], @"1.0");
     XCTAssertEqualObjects(app[@"name"], @"CrashProbeiOS");
     XCTAssertEqualObjects(app[@"bundleVersion"], @"1");
-    XCTAssertEqualObjects(app[@"releaseStage"], @"MagicalTestingTime");
+    XCTAssertEqualObjects(app[@"releaseStage"], @"production");
     XCTAssertEqualObjects(app[@"dsymUUIDs"], @[@"D0A41830-4FD2-3B02-A23B-0741AD4C7F52"]);
     XCTAssertEqualObjects(app[@"duration"], @4000);
     XCTAssertEqualObjects(app[@"durationInForeground"], @2000);

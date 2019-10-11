@@ -64,6 +64,14 @@
                    name:UIApplicationWillEnterForegroundNotification
                  object:nil];
     [center addObserver:self
+               selector:@selector(handleTransitionToActive:)
+                   name:UIApplicationDidBecomeActiveNotification
+                 object:nil];
+    [center addObserver:self
+               selector:@selector(handleTransitionToInactive:)
+                   name:UIApplicationWillResignActiveNotification
+                 object:nil];
+    [center addObserver:self
                selector:@selector(handleLowMemoryChange:)
                    name:UIApplicationDidReceiveMemoryWarningNotification
                  object:nil];
@@ -114,6 +122,17 @@
     self.cachedFileInfo[@"app"][@"releaseStage"] = change[NSKeyValueChangeNewKey];
     [self writeSentinelFile];
 }
+
+- (void)handleTransitionToActive:(NSNotification *)note {
+    self.cachedFileInfo[@"app"][@"isActive"] = @YES;
+    [self writeSentinelFile];
+}
+
+- (void)handleTransitionToInactive:(NSNotification *)note {
+    self.cachedFileInfo[@"app"][@"isActive"] = @NO;
+    [self writeSentinelFile];
+}
+
 - (void)handleTransitionToForeground:(NSNotification *)note {
     self.cachedFileInfo[@"app"][@"inForeground"] = @YES;
     [self writeSentinelFile];
@@ -154,6 +173,8 @@
                 [lastBootInfo valueForKeyPath:@"device.osBuild"];
             BOOL lastBootInForeground =
                 [[lastBootInfo valueForKeyPath:@"app.inForeground"] boolValue];
+            BOOL lastBootWasActive =
+                [[lastBootInfo valueForKeyPath:@"app.isActive"] boolValue];
             NSString *osVersion = [BSG_KSSystemInfo osBuildVersion];
             NSDictionary *appInfo = [[NSBundle mainBundle] infoDictionary];
             NSString *bundleVersion =
@@ -163,7 +184,8 @@
             BOOL sameVersions = [lastBootOSVersion isEqualToString:osVersion] &&
                                 [lastBootBundleVersion isEqualToString:bundleVersion] &&
                                 [lastBootAppVersion isEqualToString:appVersion];
-            BOOL shouldReport = config.reportOOMs && (config.reportBackgroundOOMs || lastBootInForeground);
+            BOOL shouldReport = config.reportOOMs
+                && (config.reportBackgroundOOMs || (lastBootInForeground && lastBootWasActive));
             [self deleteSentinelFile];
             return sameVersions && shouldReport;
         }
@@ -221,7 +243,13 @@
     app[@"releaseStage"] = config.releaseStage;
     app[@"version"] = systemInfo[@BSG_KSSystemField_BundleShortVersion] ?: @"";
     app[@"bundleVersion"] = systemInfo[@BSG_KSSystemField_BundleVersion] ?: @"";
+#if BSGOOMAvailable
+    UIApplicationState state = [BSG_KSSystemInfo currentAppState];
+    app[@"inForeground"] = @([BSG_KSSystemInfo isInForeground:state]);
+    app[@"isActive"] = @(state == UIApplicationStateActive);
+#else
     app[@"inForeground"] = @YES;
+#endif
 #if TARGET_OS_TV
     app[@"type"] = @"tvOS";
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE

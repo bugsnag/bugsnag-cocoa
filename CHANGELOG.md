@@ -1,7 +1,80 @@
 Changelog
 =========
 
-## TBD
+## 5.22.8 (2019-10-10)
+
+### Bug fixes
+
+* Fix use-after-free in `notify()` logic which could lead to a deadlock
+  [#420](https://github.com/bugsnag/bugsnag-cocoa/pull/420)
+* Reduce severity of log message about thread status from 'error' to 'debug' as
+  it does not necessarily indicate a problem and is only used for debugging.
+  [#421](https://github.com/bugsnag/bugsnag-cocoa/pull/421)
+
+## 5.22.7 (2019-10-03)
+
+### Bug fixes
+
+* Show correct value for `app.inForeground` when an app launches and crashes in
+  the background without ever coming to the foreground.
+  [#415](https://github.com/bugsnag/bugsnag-cocoa/pull/415)
+* Fix improperly retained properties which could result in a crash due to
+  premature deallocation
+  [#416](https://github.com/bugsnag/bugsnag-cocoa/pull/416)
+
+## 5.22.6 (2019-09-18)
+
+### Enhancements
+
+* Support disabling crash reporting after initialization by setting
+  `Bugsnag.configuration.autoNotify`. Previously this value was ignored after
+  `Bugsnag.start()` was called, but is now used to update whether crash reports
+  will be detected and sent. This interface can be used for crash reporting
+  opt-out flows.
+  [#410](https://github.com/bugsnag/bugsnag-cocoa/issues/410)
+
+### Bug fixes
+
+* Ensure UIKit APIs are not called from background threads if
+  `Bugsnag.start()` is called in the background
+  [#409](https://github.com/bugsnag/bugsnag-cocoa/issues/409)
+* Fix bug in `notifyReleaseStages` where if the release stage of a build was
+  changed after `start()`, only the initial value was used to determine whether
+  to send a report
+  [#405](https://github.com/bugsnag/bugsnag-cocoa/issues/405)
+  [#412](https://github.com/bugsnag/bugsnag-cocoa/issues/412)
+
+## 5.22.5 (2019-08-14)
+
+### Bug fixes
+
+* Fix possible crash or deadlock arising from calling Bugsnag.notify() from
+  multiple queues concurrently.
+  [#401](https://github.com/bugsnag/bugsnag-cocoa/pull/401)
+
+## 5.22.4 (2019-07-30)
+
+### Bug fixes
+
+* Support adding pre-delivery metadata to out-of-memory reports
+  [#393](https://github.com/bugsnag/bugsnag-cocoa/pull/393)
+* Fix erroneously reporting out-of-memory events from iOS app extensions
+  [#394](https://github.com/bugsnag/bugsnag-cocoa/pull/394)
+* Fix erroneously reporting out-of-memory events when an iOS app is in the
+  foreground but inactive
+  [#394](https://github.com/bugsnag/bugsnag-cocoa/pull/394)
+* Fix erroneously reporting out-of-memory events when the app terminates
+  normally and is issued a "will terminate" notification, but is terminated
+  prior to the out-of-memory watchdog processing the notification
+  [#394](https://github.com/bugsnag/bugsnag-cocoa/pull/394)
+* Fix memory leak in notify()
+  [Carolina Aguilar](https://github.com/caroaguilar)
+  [#395](https://github.com/bugsnag/bugsnag-cocoa/pull/395)
+
+## 5.22.3 (2019-07-15)
+
+This release disables reporting out-of-memory events in debug mode, to reduce
+false positives.
 
 * Deliver each event in a separate request to avoid exceeding payload size limit
   [#424](https://github.com/bugsnag/bugsnag-cocoa/pull/424)
@@ -11,6 +84,8 @@ Changelog
 * Fix incrementing unhandled counts when using internal notify() API. This
   resolves discrepancies in stability scores for users of bugsnag-react-native
   after receiving unhandled JavaScript events.
+* Fix JSON parsing errors in crash reports for control characters and some 
+  other sequences
 
 ## 5.22.2 (2019-06-13)
 

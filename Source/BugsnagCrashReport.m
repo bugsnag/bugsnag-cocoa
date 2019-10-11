@@ -102,6 +102,14 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error,
     return error[BSGKeyReason] ?: @"";
 }
 
+id BSGLoadConfigValue(NSDictionary *report, NSString *valueName) {
+    NSString *keypath = [NSString stringWithFormat:@"user.config.%@", valueName];
+    NSString *fallbackKeypath = [NSString stringWithFormat:@"user.config.config.%@", valueName];
+
+    return [report valueForKeyPath:keypath]
+    ?: [report valueForKeyPath:fallbackKeypath]; // some custom values are nested
+}
+
 NSString *BSGParseContext(NSDictionary *report, NSDictionary *metaData) {
     id context = [report valueForKeyPath:@"user.overrides.context"];
     if ([context isKindOfClass:[NSString class]])
@@ -109,7 +117,7 @@ NSString *BSGParseContext(NSDictionary *report, NSDictionary *metaData) {
     context = metaData[BSGKeyContext];
     if ([context isKindOfClass:[NSString class]])
         return context;
-    context = [report valueForKeyPath:@"user.config.context"];
+    context = BSGLoadConfigValue(report, @"context");
     if ([context isKindOfClass:[NSString class]])
         return context;
     return nil;
@@ -132,7 +140,7 @@ NSArray *BSGParseBreadcrumbs(NSDictionary *report) {
 
 NSString *BSGParseReleaseStage(NSDictionary *report) {
     return [report valueForKeyPath:@"user.overrides.releaseStage"]
-               ?: [report valueForKeyPath:@"user.config.releaseStage"];
+               ?: BSGLoadConfigValue(report, @"releaseStage");
 }
 
 BSGSeverity BSGParseSeverity(NSString *severity) {
@@ -242,6 +250,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             _releaseStage = [report valueForKeyPath:@"user.state.oom.app.releaseStage"];
             _handledState = [BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory];
             _deviceAppHash = [report valueForKeyPath:@"user.state.oom.device.id"];
+            _metaData = [NSMutableDictionary new];
             NSDictionary *sessionData = [report valueForKeyPath:@"user.state.oom.session"];
             if (sessionData) {
                 _session = [[BugsnagSession alloc] initWithDictionary:sessionData];
@@ -252,8 +261,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             }
         } else {
             FallbackReportData *fallback = [[FallbackReportData alloc] initWithMetadata:metadata];
-            _notifyReleaseStages =
-                [report valueForKeyPath:@"user.config.notifyReleaseStages"];
+            _notifyReleaseStages = BSGLoadConfigValue(report, @"notifyReleaseStages");
             _releaseStage = BSGParseReleaseStage(report);
             _incomplete = report.count == 0;
             _threads = [report valueForKeyPath:@"crash.threads"];
@@ -275,7 +283,10 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             _deviceState = BSGParseDeviceState(report);
             _device = BSGParseDevice(report);
             _app = BSGParseApp(report);
-            _appState = BSGParseAppState(report[BSGKeySystem], [report valueForKeyPath:@"user.config.appVersion"]);
+            _appState = BSGParseAppState(report[BSGKeySystem],
+                                         BSGLoadConfigValue(report, @"appVersion"),
+                                         _releaseStage, // Already loaded from config
+                                         BSGLoadConfigValue(report, @"codeBundleId"));
             _groupingHash = BSGParseGroupingHash(report, _metaData);
             _overrides = [report valueForKeyPath:@"user.overrides"];
             _customException = BSGParseCustomException(report, [_errorClass copy],
@@ -613,7 +624,7 @@ initWithErrorName:(NSString *_Nonnull)name
                         BSGDictSetSafeObject(mutableFrame, @YES, BSGKeyIsPC);
                     }
                     if (seen == 2 && !stackOverflow &&
-                        [@[ BSGKeySignal, @"deadlock", BSGKeyMach ]
+                        [@[ BSGKeySignal, BSGKeyMach ]
                             containsObject:[self errorType]]) {
                         BSGDictSetSafeObject(mutableFrame, @YES, BSGKeyIsLR);
                     }
@@ -645,10 +656,6 @@ initWithErrorName:(NSString *_Nonnull)name
     BSGDictSetSafeObject(threadDict, threadStack, BSGKeyStacktrace);
     BSGDictSetSafeObject(threadDict, DEFAULT_EXCEPTION_TYPE, BSGKeyType);
 
-    // only if this is enabled in BSG_KSCrash.
-    if (thread[BSGKeyName]) {
-        BSGDictSetSafeObject(threadDict, thread[BSGKeyName], BSGKeyName);
-    }
     if (isReportingThread) {
         BSGDictSetSafeObject(threadDict, @YES, @"errorReportingThread");
     }
@@ -709,9 +716,6 @@ initWithErrorName:(NSString *_Nonnull)name
         NSString *reservedWord = nil;
 
         for (NSString *key in notableAddresses) {
-            if ([key hasPrefix:@"stack"]) { // skip stack frames, only use register values
-                continue;
-            }
             NSDictionary *data = notableAddresses[key];
             if (![@"string" isEqualToString:data[BSGKeyType]]) {
                 continue;

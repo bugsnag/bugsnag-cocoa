@@ -647,7 +647,7 @@ static NSString* toString(NSData* data)
 - (void) testDeserializeUnicode
 {
     NSError* error = (NSError*)self;
-    NSString* json = @"[\"\\u00dcOne\"]";
+    NSString* json = @"[\"\u00dcOne\"]";
     NSString* expected = @"\u00dcOne";
     NSArray* result = [BSG_KSJSONCodec decode:toData(json) options:0 error:&error];
     XCTAssertNotNil(result, @"");
@@ -668,12 +668,51 @@ static NSString* toString(NSData* data)
     XCTAssertEqualObjects(value, expected, @"");
 }
 
+- (void) testDeserializeUnicodeControlChars
+{
+    NSError* error = nil;
+    NSString* json = @"[\"\\n\\u0000\\r\"]";
+    NSString* expected = @"\n\x00\r";
+    NSArray* result = [BSG_KSJSONCodec decode:toData(json) options:0 error:&error];
+    XCTAssertNotNil(result, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqual(1, result.count);
+    NSString* value = result[0];
+    XCTAssertNotNil(value);
+    XCTAssertEqualObjects(value, expected, @"");
+}
+
+- (void) testDeserializeUnicodeControlChars2
+{
+    NSError* error = nil;
+    NSString* json = @"[\"\\n\\u0008\\r\"]";
+    NSString* expected = @"\n\b\r";
+    NSArray* result = [BSG_KSJSONCodec decode:toData(json) options:0 error:&error];
+    XCTAssertNotNil(result, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqual(1, result.count);
+    NSString* value = result[0];
+    XCTAssertNotNil(value);
+    XCTAssertEqualObjects(value, expected, @"");
+}
+
 - (void) testDeserializeUnicodeExtended
 {
-    // 𐌣 = 0x10323 = 0x40,0x323 = 0xd840,0xdf23
     NSError* error = (NSError*)self;
-    NSString* json = @"[\"ABC\\ud840\\udf23DEFGHIJ\"]";
+    NSString* json = @"[\"ABC\U00010323DEFGHIJ\"]";
     NSString* expected = @"ABC𐌣DEFGHIJ";
+    NSArray* result = [BSG_KSJSONCodec decode:toData(json) options:0 error:&error];
+    XCTAssertNotNil(result, @"");
+    XCTAssertNil(error, @"");
+    NSString* value = result[0];
+    XCTAssertEqualObjects(value, expected, @"");
+}
+
+- (void) testDeserializeUnicodeExtended2
+{
+    NSError* error = nil;
+    NSString* json = @"[\"G\\uD834\\uDD1E\"]";
+    NSString* expected = @"G𝄞";
     NSArray* result = [BSG_KSJSONCodec decode:toData(json) options:0 error:&error];
     XCTAssertNotNil(result, @"");
     XCTAssertNil(error, @"");
@@ -1304,18 +1343,6 @@ static NSString* toString(NSData* data)
     XCTAssertEqualObjects(value, expected, @"");
 }
 
-- (void) testDeserializeArrayWithNullIgnoreNullInArray
-{
-    NSError* error = (NSError*)self;
-    NSString* json = @"[null]";
-    NSArray* result = [BSG_KSJSONCodec decode:toData(json)
-                                  options:BSG_KSJSONDecodeOptionIgnoreNullInArray
-                                    error:&error];
-    XCTAssertNotNil(result, @"");
-    XCTAssertNil(error, @"");
-    XCTAssertTrue([result count] == 0, @"");
-}
-
 - (void) testDeserializeArrayWithNullIgnoreNullInObject
 {
     NSError* error = (NSError*)self;
@@ -1328,18 +1355,6 @@ static NSString* toString(NSData* data)
     XCTAssertNil(error, @"");
     NSString* value = result[0];
     XCTAssertEqualObjects(value, expected, @"");
-}
-
-- (void) testDeserializeArrayWithNullIgnoreAllNulls
-{
-    NSError* error = (NSError*)self;
-    NSString* json = @"[null]";
-    NSArray* result = [BSG_KSJSONCodec decode:toData(json)
-                                  options:BSG_KSJSONDecodeOptionIgnoreAllNulls
-                                    error:&error];
-    XCTAssertNotNil(result, @"");
-    XCTAssertNil(error, @"");
-    XCTAssertTrue([result count] == 0, @"");
 }
 
 - (void) testDeserializeObjectWithNull
@@ -1370,37 +1385,13 @@ static NSString* toString(NSData* data)
     XCTAssertEqualObjects(value, expected, @"");
 }
 
-- (void) testDeserializeObjectWithNullIgnoreNullInObject
-{
-    NSError* error = (NSError*)self;
-    NSString* json = @"{\"blah\":null}";
-    NSArray* result = [BSG_KSJSONCodec decode:toData(json)
-                                  options:BSG_KSJSONDecodeOptionIgnoreNullInObject
-                                    error:&error];
-    XCTAssertNotNil(result, @"");
-    XCTAssertNil(error, @"");
-    XCTAssertTrue([result count] == 0, @"");
-}
-
-- (void) testDeserializeObjectWithNullIgnoreAllNulls
-{
-    NSError* error = (NSError*)self;
-    NSString* json = @"{\"blah\":null}";
-    NSArray* result = [BSG_KSJSONCodec decode:toData(json)
-                                  options:BSG_KSJSONDecodeOptionIgnoreAllNulls
-                                    error:&error];
-    XCTAssertNotNil(result, @"");
-    XCTAssertNil(error, @"");
-    XCTAssertTrue([result count] == 0, @"");
-}
-
 - (void) testFloatParsingDoesntOverflow
 {
     NSError *error = (NSError*)self;
 
     char * buffer = malloc(0x1000000);
     for (int i = 0; i < 0x1000000; i++) {
-        buffer[i] = ';';
+        buffer[i] = ' ';
     }
 
     memcpy(buffer, "{\"test\":1.1}", 12);
@@ -1413,6 +1404,7 @@ static NSString* toString(NSData* data)
     XCTAssertNotNil(result, @"");
     XCTAssertNil(error, @"");
     XCTAssertTrue([result count] == 1, @"");
+    XCTAssertEqualObjects(result[@"test"], @(1.1));
 
 }
 
