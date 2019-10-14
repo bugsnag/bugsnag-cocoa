@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## TBD
+
+* Deprecate reportBackgroundOOMs property
+  [#425](https://github.com/bugsnag/bugsnag-cocoa/pull/425)
+
 ## 5.22.8 (2019-10-10)
 
 ### Bug fixes
