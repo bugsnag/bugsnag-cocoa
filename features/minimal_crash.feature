@@ -8,13 +8,18 @@ Scenario: Crash within the crash handler
     When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And I crash the app using "MinimalCrashReportScenario"
     And I relaunch the app
-    And I wait for a request
-    Then the request is valid for the error reporting API
-    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And the payload field "events" is an array with 2 element
-    And the payload field "events.0.unhandled" is true
-    And the payload field "events.1.unhandled" is true
-    And each event in the payload matches one of:
+    And I wait for 2 requests
+    And the request 0 is valid for the error reporting API
+    And the request 1 is valid for the error reporting API
+    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa" for request 0
+    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa" for request 1
+    And the payload field "events.0.unhandled" is true for request 0
+    And the payload field "events.0.unhandled" is true for request 1
+    And the request 0 matches one of:
+        | exceptions.0.errorClass | severity |
+        | SIGABRT                 | error    |
+        | NSGenericException      | error    |
+    And the request 1 matches one of:
         | exceptions.0.errorClass | severity |
         | SIGABRT                 | error    |
         | NSGenericException      | error    |

@@ -124,25 +124,37 @@ Scenario: Encountering an unhandled event during a session
 Scenario: Encountering handled and unhandled events during a session
     When I crash the app using "AutoSessionMixedEventsScenario"
     And I relaunch the app
-    And I wait for 3 requests
+    And I wait for 5 requests
     Then request 0 is valid for the session tracking API
     And request 1 is valid for the session tracking API
     And request 2 is valid for the error reporting API
+    And request 3 is valid for the error reporting API
+    And request 4 is valid for the error reporting API
 
     And the payload field "sessions" is an array with 1 element
     And the session "id" is not null
     And the session "startedAt" is not null
-
     And the payload field "sessions" is an array with 1 element for request 1
-
-    And the payload field "events" is an array with 3 elements for request 2
-    And each event with a session in the payload for request 2 matches one of:
+    
+    And the payload field "events.0.session.id" of request 2 equals the payload field "sessions.0.id" of request 0
+    And the payload field "events.0.session.id" of request 3 equals the payload field "sessions.0.id" of request 0
+    And the payload field "events.0.session.id" of request 4 equals the payload field "sessions.0.id" of request 0
+    And the payload field "events.0.session.id" of request 2 does not equal the payload field "sessions.1.id" of request 0
+    And the payload field "events.0.session.id" of request 3 does not equal the payload field "sessions.1.id" of request 0
+    And the payload field "events.0.session.id" of request 4 does not equal the payload field "sessions.1.id" of request 0
+    And the request 2 matches one of:
         | class     | handled | unhandled |
         | FirstErr  | 1       | 0         |
         | SecondErr | 2       | 0         |
         | Kaboom    | 2       | 1         |
-    And the payload field "events.0.session.id" of request 2 equals the payload field "sessions.0.id" of request 0
-    And the payload field "events.1.session.id" of request 2 equals the payload field "sessions.0.id" of request 0
-    And the payload field "events.2.session.id" of request 2 equals the payload field "sessions.0.id" of request 0
-    And the payload field "events.0.session.id" of request 2 does not equal the payload field "sessions.1.id" of request 0
-
+    And the request 3 matches one of:
+        | class     | handled | unhandled |
+        | FirstErr  | 1       | 0         |
+        | SecondErr | 2       | 0         |
+        | Kaboom    | 2       | 1         |
+    And the request 4 matches one of:
+        | class     | handled | unhandled |
+        | FirstErr  | 1       | 0         |
+        | SecondErr | 2       | 0         |
+        | Kaboom    | 2       | 1         |
+    
