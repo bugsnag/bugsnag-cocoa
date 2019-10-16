@@ -1,59 +1,89 @@
 language: objective-c
 cache:
-  - bundler
-  - cocoapods
-matrix:
-    include:
-        - osx_image: xcode11
-          before_script: 
-            # Xcode 11+ no longer ships with all device combinations premade
-          - xcrun simctl create "13-xs" "iPhone XS" com.apple.CoreSimulator.SimRuntime.iOS-13-0
-          - mkdir -p features/fixtures/carthage-proj
-          script: make build_carthage
-        - osx_image: xcode11
-          env: PLATFORM=iOS
-          # Xcode 11+ no longer ships with all device combinations premade
-          before_script: xcrun simctl create "13-xs" "iPhone XS" com.apple.CoreSimulator.SimRuntime.iOS-13-0
-          script: make test OS=13.0 DEVICE="iPhone XS"
-        - osx_image: xcode10.2
-          env: PLATFORM=iOS
-          script:
-            - make build_ios_static
-            - make test OS=12.2
-            - make test OS=12.1
-            - make test OS=11.4
-            - make test OS=10.3.1
-            - make test OS=9.3
-            - make test OS=9.3 TEST_CONFIGURATION=Release
-          after_success:
-            - bash <(curl -s 'https://codecov.io/bash') -Z -J '^Bugsnag$' -X gcov -X coveragepy -X fix -D build
-        - osx_image: xcode10.2 # macos 10.14
-          env: PLATFORM=OSX
-          script:
-            - make test
-        - osx_image: xcode9.4 # macos 10.13
-          env: PLATFORM=OSX
-          script:
-            - make test
-        - osx_image: xcode10.2
-          env: PLATFORM=tvOS
-          script:
-            - make test OS=12.2
-            - make test OS=12.1
-            - make test OS=11.4
-            - make test OS=10.2
-            - make test OS=9.2
-        - osx_image: xcode10.1
-          script: travis_retry bundle exec maze-runner -c || (cat maze_output/* && exit 1)
-          env: MAZE_SDK=12.1 SDK=iphonesimulator12.1 RUBYSHELL=/bin/bash
+- bundler
+- cocoapods
+
 install: make bootstrap
 
-before_deploy: make doc
+env:
+- TEST_CONFIGURATION=Debug
 
-deploy:
-  provider: pages
-  local_dir: docs # only include the contents of the generated docs dir
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN # set in travis-ci dashboard
-  on:
-    tags: true # only deploy when tag is applied to commit
+script: make test
+
+stages:
+- build
+- macOS unit tests
+- unit tests
+- integration
+- name: deploy
+  if: branch = master AND tag IS present
+
+jobs:
+  include:
+  - osx_image: xcode11
+    name: iOS 13.x unit tests
+    stage: unit tests
+    # Xcode 11+ no longer ships with all device combinations premade
+    before_script: xcrun simctl create "13-xs" "iPhone XS" com.apple.CoreSimulator.SimRuntime.iOS-13-0
+    env: 
+    - PLATFORM=iOS
+    - OS=13.0
+    - DEVICE="iPhone XS"
+  - osx_image: xcode10.2
+    name: iOS 9-12 unit tests
+    stage: unit tests
+    env: PLATFORM=iOS
+    script:
+    - make build_ios_static
+    - make test OS=12.2
+    - make test OS=12.1
+    - make test OS=11.4
+    - make test OS=10.3.1
+    - make test OS=9.3
+    - make test OS=9.3 TEST_CONFIGURATION=Release
+    after_success:
+    - bash <(curl -s 'https://codecov.io/bash') -Z -J '^Bugsnag$' -X gcov -X coveragepy -X fix -D build
+  - osx_image: xcode10.2 # macos 10.14
+    name: macOS 10.14 unit tests
+    stage: macOS unit tests
+    env: PLATFORM=OSX
+  - osx_image: xcode9.4 # macos 10.13
+    name: macOS 10.13 unit tests
+    stage: macOS unit tests
+    env: PLATFORM=OSX
+  - osx_image: xcode10.2
+    name: tvOS 9-12 unit tests
+    stage: unit tests
+    env: PLATFORM=tvOS
+    script:
+    - make test OS=12.2
+    - make test OS=12.1
+    - make test OS=11.4
+    - make test OS=10.2
+    - make test OS=9.2
+  - osx_image: xcode10.1
+    stage: integration
+    name: End-to-end tests
+    script: bundle exec maze-runner -c || (cat maze_output/* && exit 1)
+    env: MAZE_SDK=12.1 SDK=iphonesimulator12.1 RUBYSHELL=/bin/bash
+  - osx_image: xcode11
+    name: Building static framework and Carthage integration
+    stage: integration
+    before_script: 
+      # Xcode 11+ no longer ships with all device combinations premade
+    - xcrun simctl create "13-xs" "iPhone XS" com.apple.CoreSimulator.SimRuntime.iOS-13-0
+    - mkdir -p features/fixtures/carthage-proj
+    script: 
+    - make build_carthage   # Build example carthage project
+    - make build_ios_static # Build static framework target
+  - osx_image: xcode10.2
+    stage: deploy
+    before_deploy: make doc
+    script: skip
+    deploy:
+      provider: pages
+      local_dir: docs # only include the contents of the generated docs dir
+      skip_cleanup: true
+      github_token: $GITHUB_TOKEN # set in travis-ci dashboard
+      on:
+        tags: true # only deploy when tag is applied to commit
