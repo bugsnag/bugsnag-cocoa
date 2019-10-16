@@ -5,6 +5,11 @@ Changelog
 
 ### Bug fixes
 
+* Fix a packaging issue when using Carthage, introduced in 5.22.7. **Note:**
+  There is a remaining known issue when updating/building the bugsnag-cocoa
+  dependency with Carthage, the project will build three times before completing
+  successfully. This issue will be resolved in a subsequent patch release.
+  [#423](https://github.com/bugsnag/bugsnag-cocoa/pull/423)
 * Deprecate `config.reportBackgroundOOMs` property - designating any app
   termination as a possible error condition can cause a lot of false positives,
   especially since the app can die for many genuine reasons, especially when
@@ -15,12 +20,6 @@ Changelog
 
 ### Bug fixes
 
-
-* Fix a packaging issue when using Carthage, introduced in 5.22.7. **Note:**
-  There is a remaining known issue when updating/building the bugsnag-cocoa
-  dependency with Carthage, the project will build three times before completing
-  successfully. This issue will be resolved in a subsequent patch release.
-  [#423](https://github.com/bugsnag/bugsnag-cocoa/pull/423)
 * Fix use-after-free in `notify()` logic which could lead to a deadlock
   [#420](https://github.com/bugsnag/bugsnag-cocoa/pull/420)
 * Reduce severity of log message about thread status from 'error' to 'debug' as
