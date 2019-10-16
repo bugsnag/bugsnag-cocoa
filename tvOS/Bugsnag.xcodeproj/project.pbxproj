@@ -47,7 +47,6 @@
 		8AD9A5041D42EEB0004E1CC5 /* BugsnagSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB151351D41366400C9B218 /* BugsnagSink.m */; };
 		8AD9A5051D42EEE9004E1CC5 /* BSG_KSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AB151251D41366400C9B218 /* BSG_KSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8AD9FA8D1E0863A1002859A7 /* BugsnagConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD9FA8B1E0863A1002859A7 /* BugsnagConfigurationTests.m */; };
-		8ADEC7932333A00B003CF0F5 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8ADEC7922333A00B003CF0F5 /* Config.xcconfig */; };
 		E72352BA1F55922F00436528 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E72352B91F55922F00436528 /* SystemConfiguration.framework */; };
 		E72352BD1F55923700436528 /* BSGConnectivity.h in Headers */ = {isa = PBXBuildFile; fileRef = E72352BB1F55923700436528 /* BSGConnectivity.h */; };
 		E72352BE1F55923700436528 /* BSGConnectivity.m in Sources */ = {isa = PBXBuildFile; fileRef = E72352BC1F55923700436528 /* BSGConnectivity.m */; };
@@ -232,7 +231,6 @@
 		8AB151341D41366400C9B218 /* BugsnagSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagSink.h; path = ../Source/BugsnagSink.h; sourceTree = "<group>"; };
 		8AB151351D41366400C9B218 /* BugsnagSink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSink.m; path = ../Source/BugsnagSink.m; sourceTree = "<group>"; };
 		8AD9FA8B1E0863A1002859A7 /* BugsnagConfigurationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationTests.m; path = ../Tests/BugsnagConfigurationTests.m; sourceTree = SOURCE_ROOT; };
-		8ADEC7922333A00B003CF0F5 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Config.xcconfig; path = ../Configurations/Config.xcconfig; sourceTree = "<group>"; };
 		E72352B91F55922F00436528 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E72352BB1F55923700436528 /* BSGConnectivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSGConnectivity.h; path = ../Source/BSGConnectivity.h; sourceTree = "<group>"; };
 		E72352BC1F55923700436528 /* BSGConnectivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSGConnectivity.m; path = ../Source/BSGConnectivity.m; sourceTree = "<group>"; };
@@ -392,7 +390,6 @@
 		8A8D511A1D41343500D33797 = {
 			isa = PBXGroup;
 			children = (
-				8ADEC7922333A00B003CF0F5 /* Config.xcconfig */,
 				8A8D51261D41343500D33797 /* tvOS */,
 				8AB151131D41356800C9B218 /* Tests */,
 				8A8D51251D41343500D33797 /* Products */,
@@ -849,7 +846,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8ADEC7932333A00B003CF0F5 /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1093,7 +1089,6 @@
 		};
 		8A8D512D1D41343500D33797 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8ADEC7922333A00B003CF0F5 /* Config.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				DEFINES_MODULE = YES;
@@ -1112,7 +1107,6 @@
 		};
 		8A8D512E1D41343500D33797 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8ADEC7922333A00B003CF0F5 /* Config.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				DEFINES_MODULE = YES;

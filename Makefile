@@ -1,7 +1,7 @@
 PLATFORM?=iOS
 OS?=latest
 TEST_CONFIGURATION?=Debug
-BUILD_FLAGS=-workspace $(PLATFORM).xcworkspace -scheme Bugsnag -derivedDataPath build
+BUILD_FLAGS=-project $(PLATFORM)/Bugsnag.xcodeproj -scheme Bugsnag -derivedDataPath build
 
 ifeq ($(PLATFORM),OSX)
  SDK?=macosx
@@ -48,6 +48,12 @@ build: ## Build the library
 
 build_ios_static: ## Build the static library target
 	$(XCODEBUILD) -project iOS/Bugsnag.xcodeproj -scheme BugsnagStatic
+
+build_carthage: ## Build the latest pushed commit with Carthage
+	@mkdir -p features/fixtures/carthage-proj
+	@echo 'git "file://$(shell pwd)" "'$(shell git rev-parse HEAD)'"' > features/fixtures/carthage-proj/Cartfile
+	@cd features/fixtures/carthage-proj && carthage update --platform ios && \
+		carthage update --platform macos
 
 bump: ## Bump the version numbers to $VERSION
 ifeq ($(VERSION),)

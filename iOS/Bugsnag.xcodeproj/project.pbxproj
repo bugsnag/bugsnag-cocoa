@@ -27,7 +27,6 @@
 		8A2C8F5F1C6BBE3C00846019 /* BugsnagSink.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A2C8F4D1C6BBE3C00846019 /* BugsnagSink.h */; };
 		8A2C8F601C6BBE3C00846019 /* BugsnagSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8F4E1C6BBE3C00846019 /* BugsnagSink.m */; };
 		8A2C8F6C1C6BBE9500846019 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8F6B1C6BBE9500846019 /* SystemConfiguration.framework */; };
-		8A2C8F741C6BBEAD00846019 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8F731C6BBEAD00846019 /* UIKit.framework */; };
 		8A2C8F8F1C6BBFDD00846019 /* BugsnagBreadcrumbsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8F8B1C6BBFDD00846019 /* BugsnagBreadcrumbsTest.m */; };
 		8A2C8F901C6BBFDD00846019 /* BugsnagCrashReportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8F8C1C6BBFDD00846019 /* BugsnagCrashReportTests.m */; };
 		8A2C8F911C6BBFDD00846019 /* BugsnagSinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8F8D1C6BBFDD00846019 /* BugsnagSinkTests.m */; };
@@ -44,7 +43,6 @@
 		8A70D9CB22539C81006B696F /* BSGOutOfMemoryWatchdog.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A70D9C822539C81006B696F /* BSGOutOfMemoryWatchdog.m */; };
 		8A70D9CD2253C484006B696F /* BSGOutOfMemoryWatchdogTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A70D9CC2253C484006B696F /* BSGOutOfMemoryWatchdogTests.m */; };
 		8AF1748E23070F0300902CC2 /* BSG_KSCrashIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A530CBF22FDC3AE00F0C108 /* BSG_KSCrashIdentifier.m */; };
-		8AF2894A23339CCA00E8EB27 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8AF2894923339CCA00E8EB27 /* Config.xcconfig */; };
 		E70E52152216E41C00A590AB /* BugsnagSessionTrackerStopTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E70E52142216E41C00A590AB /* BugsnagSessionTrackerStopTest.m */; };
 		E70EE0781FD7039E00FA745C /* RFC3339DateTool_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EE0771FD7039D00FA745C /* RFC3339DateTool_Tests.m */; };
 		E70EE07E1FD703D600FA745C /* NSError+SimpleConstructor_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EE07A1FD703D500FA745C /* NSError+SimpleConstructor_Tests.m */; };
@@ -593,7 +591,6 @@
 				E7433AD11F4F64D900C082D1 /* libz.tbd in Frameworks */,
 				E7433AD01F4F64D400C082D1 /* libc++.tbd in Frameworks */,
 				E7EC041A1F4CC97200C2E9D5 /* Foundation.framework in Frameworks */,
-				8A2C8F741C6BBEAD00846019 /* UIKit.framework in Frameworks */,
 				8A2C8F6C1C6BBE9500846019 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1101,7 +1098,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8AF2894A23339CCA00E8EB27 /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -32,7 +32,6 @@
 		8A2C8FEC1C6BC38900846019 /* BugsnagSinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FE21C6BC38200846019 /* BugsnagSinkTests.m */; };
 		8A2C8FEE1C6BC38900846019 /* report.json in Resources */ = {isa = PBXBuildFile; fileRef = 8A2C8FE41C6BC38200846019 /* report.json */; };
 		8A2C8FF01C6BC3A200846019 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8FEF1C6BC3A200846019 /* SystemConfiguration.framework */; };
-		8A2C90441C6C040700846019 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C90401C6C03F000846019 /* Cocoa.framework */; };
 		8A48EF271EAA805D00B70024 /* BugsnagLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A48EF261EAA805D00B70024 /* BugsnagLogger.h */; };
 		8A530CB822FDC38300F0C108 /* BSG_KSCrashIdentifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A530CB622FDC38300F0C108 /* BSG_KSCrashIdentifier.h */; };
 		8A530CB922FDC38300F0C108 /* BSG_KSCrashIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A530CB722FDC38300F0C108 /* BSG_KSCrashIdentifier.m */; };
@@ -44,7 +43,6 @@
 		8A87352C1C6D3B1600EDBD5B /* BSG_KSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A87352B1C6D3B1600EDBD5B /* BSG_KSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8ACF0F752018136200173809 /* BugsnagCrashReportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FE11C6BC38200846019 /* BugsnagCrashReportTests.m */; };
 		8AD9FA891E086351002859A7 /* BugsnagConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD9FA851E0862DC002859A7 /* BugsnagConfigurationTests.m */; };
-		8ADEC7952333A038003CF0F5 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8ADEC7942333A038003CF0F5 /* Config.xcconfig */; };
 		E72352C11F55924A00436528 /* BSGConnectivity.h in Headers */ = {isa = PBXBuildFile; fileRef = E72352BF1F55924A00436528 /* BSGConnectivity.h */; };
 		E72352C21F55924A00436528 /* BSGConnectivity.m in Sources */ = {isa = PBXBuildFile; fileRef = E72352C01F55924A00436528 /* BSGConnectivity.m */; };
 		E7433AD21F4F64EF00C082D1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8FF11C6BC3A800846019 /* libz.tbd */; };
@@ -229,7 +227,6 @@
 		8A6C6FB02257884C00E8EF24 /* BSGOutOfMemoryWatchdog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSGOutOfMemoryWatchdog.h; path = ../Source/BSGOutOfMemoryWatchdog.h; sourceTree = "<group>"; };
 		8A87352B1C6D3B1600EDBD5B /* BSG_KSCrashReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSG_KSCrashReportWriter.h; path = ../Source/BSG_KSCrashReportWriter.h; sourceTree = SOURCE_ROOT; };
 		8AD9FA851E0862DC002859A7 /* BugsnagConfigurationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagConfigurationTests.m; path = ../Tests/BugsnagConfigurationTests.m; sourceTree = SOURCE_ROOT; };
-		8ADEC7942333A038003CF0F5 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Config.xcconfig; path = ../Configurations/Config.xcconfig; sourceTree = "<group>"; };
 		E72352BF1F55924A00436528 /* BSGConnectivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSGConnectivity.h; path = ../Source/BSGConnectivity.h; sourceTree = SOURCE_ROOT; };
 		E72352C01F55924A00436528 /* BSGConnectivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSGConnectivity.m; path = ../Source/BSGConnectivity.m; sourceTree = SOURCE_ROOT; };
 		E762E9F71F73F7E900E82B43 /* BugsnagHandledStateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagHandledStateTest.m; path = ../Tests/BugsnagHandledStateTest.m; sourceTree = SOURCE_ROOT; };
@@ -368,7 +365,6 @@
 			files = (
 				E7433AD31F4F64F400C082D1 /* libc++.tbd in Frameworks */,
 				E7433AD21F4F64EF00C082D1 /* libz.tbd in Frameworks */,
-				8A2C90441C6C040700846019 /* Cocoa.framework in Frameworks */,
 				8A2C8FF01C6BC3A200846019 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -387,7 +383,6 @@
 		8A2C8F971C6BC1F700846019 = {
 			isa = PBXGroup;
 			children = (
-				8ADEC7942333A038003CF0F5 /* Config.xcconfig */,
 				8A2C8FA31C6BC1F700846019 /* Bugsnag */,
 				8A2C8FAF1C6BC1F700846019 /* Tests */,
 				8A2C8FF51C6BC3C200846019 /* Frameworks */,
@@ -837,7 +832,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8ADEC7952333A038003CF0F5 /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -968,7 +962,6 @@
 /* Begin XCBuildConfiguration section */
 		8A2C8FB31C6BC1F700846019 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8ADEC7942333A038003CF0F5 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1025,7 +1018,6 @@
 		};
 		8A2C8FB41C6BC1F700846019 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8ADEC7942333A038003CF0F5 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
