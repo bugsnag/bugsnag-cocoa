@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+* Deprecate `config.reportBackgroundOOMs` property - designating any app
+  termination as a possible error condition can cause a lot of false positives,
+  especially since the app can die for many genuine reasons, especially when
+  running only in the background.
+  [#425](https://github.com/bugsnag/bugsnag-cocoa/pull/425)
+
 ## 5.22.8 (2019-10-10)
 
 ### Bug fixes

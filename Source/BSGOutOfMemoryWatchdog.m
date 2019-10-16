@@ -185,7 +185,7 @@
                                 [lastBootBundleVersion isEqualToString:bundleVersion] &&
                                 [lastBootAppVersion isEqualToString:appVersion];
             BOOL shouldReport = config.reportOOMs
-                && (config.reportBackgroundOOMs || (lastBootInForeground && lastBootWasActive));
+                && (lastBootInForeground && lastBootWasActive);
             [self deleteSentinelFile];
             return sameVersions && shouldReport;
         }
