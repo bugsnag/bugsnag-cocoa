@@ -34,7 +34,6 @@ jobs:
     stage: unit tests
     env: PLATFORM=iOS
     script:
-    - make build_ios_static
     - make test OS=12.2
     - make test OS=12.1
     - make test OS=11.4
