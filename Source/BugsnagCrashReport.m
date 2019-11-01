@@ -373,8 +373,7 @@ initWithErrorName:(NSString *_Nonnull)name
         return;
     }
     NSMutableDictionary *allMetadata = [self.metaData mutableCopy];
-    NSMutableDictionary *allTabData =
-        allMetadata[tabName] ?: [NSMutableDictionary new];
+    NSMutableDictionary *allTabData = [self getOrCreateTab:tabName metaData:allMetadata];
     allMetadata[tabName] = [cleanedData BSG_mergedInto:allTabData];
     self.metaData = allMetadata;
 }
@@ -383,8 +382,7 @@ initWithErrorName:(NSString *_Nonnull)name
            withValue:(id)value
        toTabWithName:(NSString *)tabName {
     NSMutableDictionary *allMetadata = [self.metaData mutableCopy];
-    NSMutableDictionary *allTabData =
-        allMetadata[tabName] ?: [NSMutableDictionary new];
+    NSMutableDictionary *allTabData = [self getOrCreateTab:tabName metaData:allMetadata];
     if (value) {
         id cleanedValue = BSGSanitizeObject(value);
         if (!cleanedValue) {
@@ -399,6 +397,17 @@ initWithErrorName:(NSString *_Nonnull)name
     }
     allMetadata[tabName] = allTabData;
     self.metaData = allMetadata;
+}
+
+- (NSMutableDictionary *)getOrCreateTab:(NSString *)tab
+                               metaData:(NSMutableDictionary *)metaData {
+    NSMutableDictionary *allTabData = metaData[tab] ?: [NSMutableDictionary new];
+
+    // defensively convert to a mutable dictionary
+    if (![allTabData isKindOfClass:[NSMutableDictionary class]]) {
+        allTabData = [allTabData mutableCopy];
+    }
+    return allTabData;
 }
 
 - (BOOL)shouldBeSent {
