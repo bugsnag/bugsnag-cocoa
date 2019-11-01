@@ -460,4 +460,28 @@
     XCTAssertEqualObjects(@"1.2.3", dictionary[@"app"][@"version"]);
 }
 
+// regression test - this should not crash the app
+- (void)testReportAddAttr {
+    NSDictionary *dict = @{@"user.state.didOOM": @YES,
+                           @"user.state.oom.session": @{
+                                   @"user": @{
+                                           @"id": @"my-user-123"
+                                   }
+                           }};
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    [report addAttribute:@"foo" withValue:@"bar" toTabWithName:@"user"];
+}
+
+// regression test - this should not crash the app
+- (void)testReportAddMetadata {
+    NSDictionary *dict = @{@"user.state.didOOM": @YES,
+                           @"user.state.oom.session": @{
+                                   @"user": @{
+                                           @"id": @"my-user-123"
+                                   }
+                           }};
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    [report addMetadata:@{@"foo": @"bar"} toTabWithName:@"user"];
+}
+
 @end
