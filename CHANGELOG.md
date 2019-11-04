@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix unrecognized selector crash when adding metadata
+  [#430](https://github.com/bugsnag/bugsnag-cocoa/pull/430)
+
 ## 5.22.9 (2019-10-16)
 
 ### Bug fixes
