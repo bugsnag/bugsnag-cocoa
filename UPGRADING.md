@@ -12,6 +12,9 @@ Version 6 introduces a number of property and method renames:
   let config = BugsnagConfiguration()
 
 + config.setMaxBreadcrumbs()
+
+- config.autoNotify
++ config.autoDetectErrors
 ```
 
 ### `Bugsnag` class
