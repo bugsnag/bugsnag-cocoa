@@ -102,7 +102,7 @@ Then("the event breadcrumbs contain {string} with type {string}") do |string, ty
   crumbs = read_key_path(find_request(0)[:body], "events.0.breadcrumbs")
   assert_not_equal(0, crumbs.length, "There are no breadcrumbs on this event")
   match = crumbs.detect do |crumb|
-    crumb["name"] == string && crumb["type"] == type
+    crumb["message"] == string && crumb["type"] == type
   end
   assert_not_nil(match, "No crumb matches the provided message and type")
 end
@@ -111,7 +111,7 @@ Then("the event breadcrumbs contain {string}") do |string|
   crumbs = read_key_path(find_request(0)[:body], "events.0.breadcrumbs")
   assert_not_equal(0, crumbs.length, "There are no breadcrumbs on this event")
   match = crumbs.detect do |crumb|
-    read_key_path(crumb, "metaData.message") == string
+    crumb["message"] == string
   end
   assert_not_nil(match, "No crumb matches the provided message")
 end

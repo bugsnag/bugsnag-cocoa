@@ -215,7 +215,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 + (void)leaveBreadcrumbWithMessage:(NSString *)message {
     if ([self bugsnagStarted]) {
         [self leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumbs) {
-            crumbs.metadata = @{BSGKeyMessage: message};
+            crumbs.message = message;
         }];
     }
 }

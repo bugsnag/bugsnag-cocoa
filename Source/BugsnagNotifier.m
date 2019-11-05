@@ -415,7 +415,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
         breadcrumb.type = BSGBreadcrumbTypeState;
-        breadcrumb.name = BSGBreadcrumbLoadedMessage;
+        breadcrumb.message = BSGBreadcrumbLoadedMessage;
     }];
 
     // notification not received in time on initial startup, so trigger manually
@@ -535,7 +535,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
         if (strongSelf.configuration.automaticallyCollectBreadcrumbs) {
             [strongSelf addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
-                crumb.name = @"Connectivity change";
+                crumb.message = @"Connectivity change";
                 crumb.type = BSGBreadcrumbTypeState;
                 crumb.metadata  = @{ @"type"  :  connectionType };
             }];
@@ -700,7 +700,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
       crumb.type = BSGBreadcrumbTypeError;
-      crumb.name = reportName;
+      crumb.message = reportName;
       crumb.metadata = @{
           BSGKeyMessage : reportMessage,
           BSGKeySeverity : BSGFormatSeverity(report.severity)
@@ -813,7 +813,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     if ([self.configuration automaticallyCollectBreadcrumbs]) {
         [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
           breadcrumb.type = BSGBreadcrumbTypeState;
-          breadcrumb.name = orientationNotifName;
+          breadcrumb.message = orientationNotifName;
           breadcrumb.metadata = @{BSGKeyOrientation : orientation};
         }];
     }
@@ -985,7 +985,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (void)sendBreadcrumbForNotification:(NSNotification *)note {
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeState;
-      breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
+      breadcrumb.message = BSGBreadcrumbNameForNotificationName(note.name);
     }];
 }
 
@@ -995,7 +995,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     NSIndexPath *indexPath = [tableView indexPathForSelectedRow];
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeNavigation;
-      breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
+      breadcrumb.message = BSGBreadcrumbNameForNotificationName(note.name);
       if (indexPath) {
           breadcrumb.metadata =
               @{ @"row" : @(indexPath.row),
@@ -1006,7 +1006,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     NSTableView *tableView = [note object];
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeNavigation;
-      breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
+      breadcrumb.message = BSGBreadcrumbNameForNotificationName(note.name);
       if (tableView) {
           breadcrumb.metadata = @{
               @"selectedRow" : @(tableView.selectedRow),
@@ -1025,7 +1025,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     if ([menuItem isKindOfClass:[NSMenuItem class]]) {
         [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
           breadcrumb.type = BSGBreadcrumbTypeState;
-          breadcrumb.name = BSGBreadcrumbNameForNotificationName(notif.name);
+          breadcrumb.message = BSGBreadcrumbNameForNotificationName(notif.name);
           if (menuItem.title.length > 0)
               breadcrumb.metadata = @{BSGKeyAction : menuItem.title};
         }];
@@ -1039,7 +1039,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     UIControl *control = note.object;
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeUser;
-      breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
+      breadcrumb.message = BSGBreadcrumbNameForNotificationName(note.name);
       NSString *label = control.accessibilityLabel;
       if (label.length > 0) {
           breadcrumb.metadata = @{BSGKeyLabel : label};
@@ -1049,7 +1049,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     NSControl *control = note.object;
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeUser;
-      breadcrumb.name = BSGBreadcrumbNameForNotificationName(note.name);
+      breadcrumb.message = BSGBreadcrumbNameForNotificationName(note.name);
       if ([control respondsToSelector:@selector(accessibilityLabel)]) {
           NSString *label = control.accessibilityLabel;
           if (label.length > 0) {
