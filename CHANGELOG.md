@@ -1,14 +1,6 @@
 Changelog
 =========
 
-## TBD
-
-* Deprecate `config.reportBackgroundOOMs` property - designating any app
-  termination as a possible error condition can cause a lot of false positives,
-  especially since the app can die for many genuine reasons, especially when
-  running only in the background.
-  [#425](https://github.com/bugsnag/bugsnag-cocoa/pull/425)
-
 ## 5.22.10 (2019-11-04)
 
 ### Bug fixes
@@ -25,6 +17,11 @@ Changelog
   dependency with Carthage, the project will build three times before completing
   successfully. This issue will be resolved in a subsequent patch release.
   [#423](https://github.com/bugsnag/bugsnag-cocoa/pull/423)
+* Deprecate `config.reportBackgroundOOMs` property - designating any app
+  termination as a possible error condition can cause a lot of false positives,
+  especially since the app can die for many genuine reasons, especially when
+  running only in the background.
+  [#425](https://github.com/bugsnag/bugsnag-cocoa/pull/425)
 
 ## 5.22.8 (2019-10-10)
 
