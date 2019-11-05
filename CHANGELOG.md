@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+This release removes support for reporting 'partial' or 'minimal' crash reports
+where the crash report could not be entirely written (due to disk space or other
+issues like the device battery dying). While sometimes the reports could point
+in the right direction for debugging, they could also be confusing or not enough
+information to pursue and close the issue successfully.
+
 ## 5.22.10 (2019-11-04)
 
 ### Bug fixes

@@ -88,58 +88,6 @@
     XCTAssertEqualObjects(@1, events[@"unhandled"]);
 }
 
-- (void)testDefaultErrorMessageNil {
-    BugsnagCrashReport *report =
-        [[BugsnagCrashReport alloc] initWithKSReport:@{}];
-    NSDictionary *payload = [report toJson];
-    XCTAssertEqualObjects(@"Exception",
-                          payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(report.errorClass,
-                          payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(report.errorMessage,
-                          payload[@"exceptions"][0][@"message"]);
-}
-
-- (void)testIncomplete {
-    XCTAssertTrue([[[BugsnagCrashReport alloc] initWithKSReport:@{}] isIncomplete]);
-    XCTAssertFalse([[[BugsnagCrashReport alloc] initWithKSReport:@{@"foo": @"bar"}] isIncomplete]);
-}
-
-- (void)testFallbackValues {
-    BugsnagCrashReport *report =
-        [[BugsnagCrashReport alloc] initWithKSReport:@{} fileMetadata:@"w-h-SomeErr thing"];
-    XCTAssertTrue([report isIncomplete]);
-    NSDictionary *payload = [report toJson];
-    XCTAssertEqualObjects(@"SomeErr thing", payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(@"warning", payload[@"severity"]);
-    XCTAssertEqualObjects(@NO, payload[@"unhandled"]);
-}
-
-- (void)testUnneededFallbackValues {
-    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:UserCallbackSetSeverity
-                                                                            severity:BSGSeverityInfo
-                                                                           attrValue:nil];
-    NSDictionary *dict = @{@"user.handledState": [state toJson]};
-    BugsnagCrashReport *report =
-        [[BugsnagCrashReport alloc] initWithKSReport:dict fileMetadata:@"w-h-SomeErr thing"];
-    XCTAssertFalse([report isIncomplete]);
-    NSDictionary *payload = [report toJson];
-    XCTAssertEqualObjects(@"SomeErr thing", payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(@"info", payload[@"severity"]);
-    XCTAssertEqualObjects(@NO, payload[@"unhandled"]);
-}
-
-- (void)testUnhandledFallbackValues {
-    BugsnagCrashReport *report =
-    [[BugsnagCrashReport alloc] initWithKSReport:@{} fileMetadata:@"foofoo-e-u-SomeErr thing"];
-    XCTAssertTrue([report isIncomplete]);
-    NSDictionary *payload = [report toJson];
-    XCTAssertEqualObjects(@"SomeErr thing", payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(@"error", payload[@"severity"]);
-    XCTAssertEqualObjects(@YES, payload[@"unhandled"]);
-}
-
 - (void)testDefaultErrorMessageNilForEmptyThreads {
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{
         @"threads" : @[]
@@ -383,7 +331,7 @@
 
 - (void)testEmptyReport {
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{}];
-    XCTAssertNotNil(report);
+    XCTAssertNil(report);
 }
 
 - (void)testUnhandledReportDepth {
@@ -437,12 +385,6 @@
     XCTAssertNotNil(report.metaData);
     XCTAssertEqual(report.metaData.count, 1);
     XCTAssertEqualObjects(report.metaData[@"Custom"][@"Foo"], @"Bar");
-}
-
-- (void)testNoReportMetaData {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{}];
-    XCTAssertNotNil(report.metaData);
-    XCTAssertEqual(report.metaData.count, 0);
 }
 
 - (void)testAppVersionOverride {
