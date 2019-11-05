@@ -67,7 +67,7 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
         _notifyReleaseStages = nil;
         _breadcrumbs = [BugsnagBreadcrumbs new];
         _automaticallyCollectBreadcrumbs = YES;
-        _shouldAutoCaptureSessions = YES;
+        _autoTrackSessions = YES;
 #if !DEBUG
         _reportOOMs = YES;
 #endif
@@ -183,6 +183,14 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
                         withValue:notifyReleaseStagesCopy
                     toTabWithName:BSGKeyConfig];
     }
+}
+
+- (void)setShouldAutoCaptureSessions:(BOOL)shouldAutoCaptureSessions {
+    self.autoTrackSessions = shouldAutoCaptureSessions;
+}
+
+- (BOOL)shouldAutoCaptureSessions {
+    return self.autoTrackSessions;
 }
 
 @synthesize automaticallyCollectBreadcrumbs = _automaticallyCollectBreadcrumbs;

@@ -21,7 +21,7 @@
     [super setUp];
     self.configuration = [BugsnagConfiguration new];
     self.configuration.apiKey = @"test";
-    self.configuration.shouldAutoCaptureSessions = NO;
+    self.configuration.autoTrackSessions = NO;
     self.tracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration postRecordCallback:nil];
 }
 

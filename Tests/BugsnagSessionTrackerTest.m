@@ -86,7 +86,7 @@
 
 - (void)testStartNewAutoCapturedSessionWithAutoCaptureDisabled {
     XCTAssertNil(self.sessionTracker.runningSession);
-    self.configuration.shouldAutoCaptureSessions = NO;
+    self.configuration.autoTrackSessions = NO;
     [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
     BugsnagSession *session = self.sessionTracker.runningSession;
 

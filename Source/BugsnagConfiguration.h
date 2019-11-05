@@ -156,7 +156,7 @@ NSArray<BeforeSendSession> *beforeSendSessionBlocks;
  * If this value is updated after +[Bugsnag start] is called, only subsequent automatic sessions
  * will be captured.
  */
-@property BOOL shouldAutoCaptureSessions;
+@property BOOL autoTrackSessions;
 
 /**
  * Whether the app should report out of memory events which terminate the app
@@ -254,6 +254,13 @@ __deprecated_msg("This detection option is unreliable and should no longer be us
 
 - (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook _Nonnull)hook
     __deprecated_msg("Use addBeforeSendBlock: instead.");
+
+/**
+ * Determines whether app sessions should be tracked automatically. By default this value is true.
+ * If this value is updated after +[Bugsnag start] is called, only subsequent automatic sessions
+ * will be captured.
+ */
+@property BOOL shouldAutoCaptureSessions __deprecated_msg("Use autoTrackSessions instead");
 
 /**
  *  YES if uncaught exceptions should be reported automatically
