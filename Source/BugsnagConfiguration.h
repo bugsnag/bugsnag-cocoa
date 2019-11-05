@@ -245,6 +245,13 @@ __deprecated_msg("This detection option is unreliable and should no longer be us
  */
 - (BOOL)shouldSendReports;
 
+/**
+ * The maximum number of breadcrumbs to keep and sent to Bugsnag.
+ * By default, we'll keep and send the 25 most recent breadcrumb log
+ * messages.
+ */
+@property NSUInteger maxBreadcrumbs;
+
 - (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook _Nonnull)hook
     __deprecated_msg("Use addBeforeSendBlock: instead.");
 /**

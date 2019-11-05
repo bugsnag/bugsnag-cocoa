@@ -236,7 +236,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (void)setBreadcrumbCapacity:(NSUInteger)capacity {
     if ([self bugsnagStarted]) {
-        self.notifier.configuration.breadcrumbs.capacity = capacity;
+        [self.notifier.configuration setMaxBreadcrumbs:capacity];
     }
 }
 
