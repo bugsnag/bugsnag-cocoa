@@ -212,7 +212,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * By default, sessions are automatically started when the application enters the foreground.
  * If you wish to manually call startSession at
  * the appropriate time in your application instead, the default behaviour can be disabled via
- * shouldAutoCaptureSessions.
+ * autoTrackSessions.
  *
  * Any errors which occur in an active session count towards your application's
  * stability score. You can prevent errors from counting towards your stability
@@ -230,7 +230,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * When a session is stopped, errors will not count towards your application's
  * stability score. This can be advantageous if you do not wish these calculations to
  * include a certain type of error, for example, a crash in a background service.
- * You should disable automatic session tracking via shouldAutoCaptureSessions if you call this method.
+ * You should disable automatic session tracking via autoTrackSessions if you call this method.
  *
  * A stopped session can be resumed by calling resumeSession,
  * which will make any subsequent errors count towards your application's
@@ -246,7 +246,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *
  * If a session has already been resumed or started and has not been stopped, calling this
  * method will have no effect. You should disable automatic session tracking via
- * shouldAutoCaptureSessions if you call this method.
+ * autoTrackSessions if you call this method.
  *
  * It's important to note that sessions are stored in memory for the lifetime of the
  * application process and are not persisted on disk. Therefore calling this method on app

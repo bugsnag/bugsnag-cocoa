@@ -15,6 +15,9 @@ Version 6 introduces a number of property and method renames:
 
 - config.autoNotify
 + config.autoDetectErrors
+
+- config.autoCaptureSessions
++ config.autoTrackSessions
 ```
 
 ### `Bugsnag` class
