@@ -390,8 +390,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 #endif
 
     _started = YES;
-    // autoNotify disables all unhandled event reporting
-    BOOL configuredToReportOOMs = self.configuration.reportOOMs && self.configuration.autoNotify;
+    // autoDetectErrors disables all unhandled event reporting
+    BOOL configuredToReportOOMs = self.configuration.reportOOMs && self.configuration.autoDetectErrors;
     // Disable if a debugger is enabled, since the development cycle of starting
     // and restarting an app is also an uncatchable kill
     BOOL noDebuggerEnabled = !bsg_ksmachisBeingTraced();
@@ -806,7 +806,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 #endif
 
 - (void)updateCrashDetectionSettings {
-    if (self.configuration.autoNotify) {
+    if (self.configuration.autoDetectErrors) {
         // Enable all crash detection
         bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeAll);
         if (self.configuration.reportOOMs) {
@@ -815,7 +815,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     } else {
         // Only enable support for notify()-based reports
         bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeUserReported);
-        // autoNotify gates all unhandled report detection
+        // autoDetectErrors gates all unhandled report detection
         [self.oomWatchdog disable];
     }
 }

@@ -4,12 +4,12 @@
 
 - (void)startBugsnag {
     self.config.shouldAutoCaptureSessions = NO;
-    self.config.autoNotify = NO;
+    self.config.autoDetectErrors = NO;
     [super startBugsnag];
 }
 
 - (void)run {
-    self.config.autoNotify = YES;
+    self.config.autoDetectErrors = YES;
     __builtin_trap();
 }
 @end
@@ -23,7 +23,7 @@
 }
 
 - (void)run {
-    self.config.autoNotify = NO;
+    self.config.autoDetectErrors = NO;
     __builtin_trap();
 }
 

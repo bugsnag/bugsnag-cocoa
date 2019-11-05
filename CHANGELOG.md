@@ -10,6 +10,8 @@ names and deprecated but still supported until the next major release.
 * `Bugsnag.setBreadcrumbCapacity()` is now `setMaxBreadcrumbs()` on the
   `BugsnagConfiguration` class. In addition, the default number of breadcrumbs
   saved has been raised to 25 and limited to no more than 100.
+* `BugsnagConfiguration.autoNotify` is now named
+  `BugsnagConfiguration.autoDetectErrors`
 
 ## 5.22.10 (2019-11-04)
 

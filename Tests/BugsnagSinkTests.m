@@ -36,7 +36,7 @@
                                                          options:0
                                                            error:nil];
     BugsnagConfiguration *config = [BugsnagConfiguration new];
-    config.autoNotify = NO;
+    config.autoDetectErrors = NO;
     config.apiKey = @"apiKeyHere";
     // This value should not appear in the assertions, as it is not equal to
     // the release stage in the serialized report
