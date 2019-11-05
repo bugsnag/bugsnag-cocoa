@@ -217,7 +217,7 @@ static BugsnagNotifier *bsg_g_bugsnag_notifier = NULL;
 
 + (void)setBreadcrumbCapacity:(NSUInteger)capacity {
     if ([self bugsnagStarted]) {
-        self.notifier.configuration.breadcrumbs.capacity = capacity;
+        [self.notifier.configuration setMaxBreadcrumbs:capacity];
     }
 }
 

@@ -194,15 +194,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)leaveBreadcrumbForNotificationName:(NSString *_Nonnull)notificationName;
 
 /**
- * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.
- * By default, we'll keep and send the 20 most recent breadcrumb log
- * messages.
- *
- * @param capacity max number of breadcrumb log messages to send
- */
-+ (void)setBreadcrumbCapacity:(NSUInteger)capacity;
-
-/**
  * Clear any breadcrumbs that have been left so far.
  */
 + (void)clearBreadcrumbs;
@@ -271,5 +262,15 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * @return true if a previous session was resumed, false if a new session was started.
  */
 + (BOOL)resumeSession;
+
+/**
+ * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.
+ * By default, we'll keep and send the 20 most recent breadcrumb log
+ * messages.
+ *
+ * @param capacity max number of breadcrumb log messages to send
+ */
++ (void)setBreadcrumbCapacity:(NSUInteger)capacity
+        __deprecated_msg("Use [BugsnagConfiguration setMaxBreadcrumbs:] instead");
 
 @end

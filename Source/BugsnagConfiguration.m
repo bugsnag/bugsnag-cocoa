@@ -282,4 +282,12 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
     return [_apiKey length] > 0;
 }
 
+- (NSUInteger)maxBreadcrumbs {
+    return self.breadcrumbs.capacity;
+}
+
+- (void)setMaxBreadcrumbs:(NSUInteger)capacity {
+    self.breadcrumbs.capacity = capacity;
+}
+
 @end

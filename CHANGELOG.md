@@ -1,6 +1,16 @@
 Changelog
 =========
 
+This release renames a few configuration properties to align better with the
+intended use and other Bugsnag libraries, so people who use more than one
+platform can easily find related functionality in a different library. The old
+names and deprecated but still supported until the next major release.
+[#435](https://github.com/bugsnag/bugsnag-cocoa/pull/435)
+
+* `Bugsnag.setBreadcrumbCapacity()` is now `setMaxBreadcrumbs()` on the
+  `BugsnagConfiguration` class. In addition, the default number of breadcrumbs
+  saved has been raised to 25 and limited to no more than 100.
+
 ## 5.22.10 (2019-11-04)
 
 ### Bug fixes
