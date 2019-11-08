@@ -65,7 +65,7 @@
 	<key>bugsnag</key>
 	<dict>
 		<key>apiKey</key>
-		<string>233276324dfac2</string>
+		<string>ABCDEFGHIJKLMNOPQRSTUVWXYZ012345</string>
 		<key>releaseStage</key>
 		<string>beta2</string>
 		<key>notifyReleaseStages</key>
