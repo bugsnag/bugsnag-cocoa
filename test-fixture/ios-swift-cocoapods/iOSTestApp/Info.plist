@@ -62,5 +62,25 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>bugsnag</key>
+	<dict>
+		<key>apiKey</key>
+		<string>233276324dfac2</string>
+		<key>releaseStage</key>
+		<string>beta2</string>
+		<key>notifyReleaseStages</key>
+		<array>
+			<string>beta2</string>
+			<string>prod</string>
+		</array>
+		<key>reportOOMs</key>
+		<false/>
+		<key>autoNotify</key>
+		<false/>
+		<key>autoBreadcrumbs</key>
+		<false/>
+		<key>autoSessions</key>
+		<false/>
+	</dict>
 </dict>
 </plist>

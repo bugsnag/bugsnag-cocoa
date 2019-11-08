@@ -98,6 +98,12 @@ Changelog
 This release disables reporting out-of-memory events in debug mode, to reduce
 false positives.
 
+### Enhancements
+
+* Support loading configuration from values in `Info.plist`. See the
+  [configuration documentation](https://docs.bugsnag.com/platforms/ios/configuration-options) 
+  for supported options.
+
 ### Bug fixes
 
 * Fix incrementing unhandled counts when using internal notify() API. This

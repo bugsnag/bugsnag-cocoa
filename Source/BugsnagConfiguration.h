@@ -76,6 +76,31 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
     NSArray *_Nonnull rawEventReports, NSDictionary *_Nonnull report);
 
 @interface BugsnagConfiguration : NSObject
+
+/**
+ * Create a new configuration from the main bundle's infoDictionary, using the
+ * keys defined for +[BugsnagConfiguration loadConfigFromOptions:] nested under
+ * the "bugsnag" key.
+ *
+ * @return a BugsnagConfiguration or nil if a valid config could not be created
+ */
++ (instancetype _Nullable)loadConfig;
+
+/**
+ * Create a new configuration from supported options:
+ * * apiKey (required) - A non-empty API key
+ * * releaseStage (string)
+ * * notifyReleaseStages (array of strings)
+ * * autoNotify (bool) - YES to report unhandled events
+ * * autoBreadcrumbs (bool) - YES to collect breadcrumbs from UI events
+ * * autoSessions (bool) - YES to capture sessions at app launch and foreground events
+ * * reportOOMs (bool) - YES to report possible out of memory events
+ * * reportBackgroundOOMs (bool) - YES to report possible out of memory events while the app is in the background
+ *
+ * @return a BugsnagConfiguration or nil if a valid config could not be created
+ */
++ (instancetype _Nullable)loadConfigFromOptions:(NSDictionary *_Nullable)options;
+
 /**
  *  The API key of a Bugsnag project
  */
