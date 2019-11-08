@@ -20,3 +20,4 @@ Pods
 Carthage
 *.idea
 test-outputs/
+features/fixtures/carthage-proj

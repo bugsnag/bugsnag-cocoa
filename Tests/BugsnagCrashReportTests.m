@@ -460,4 +460,14 @@
     XCTAssertEqualObjects(@"1.2.3", dictionary[@"app"][@"version"]);
 }
 
+- (void)testReportAddAttr {
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{@"user.metaData": @{@"user": @{@"id": @"user id"}}}];
+    [report addAttribute:@"foo" withValue:@"bar" toTabWithName:@"user"];
+}
+
+- (void)testReportAddMetadata {
+    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{@"user.metaData": @{@"user": @{@"id": @"user id"}}}];
+    [report addMetadata:@{@"foo": @"bar"} toTabWithName:@"user"];
+}
+
 @end

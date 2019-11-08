@@ -32,7 +32,6 @@
 		8A2C8FEC1C6BC38900846019 /* BugsnagSinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FE21C6BC38200846019 /* BugsnagSinkTests.m */; };
 		8A2C8FEE1C6BC38900846019 /* report.json in Resources */ = {isa = PBXBuildFile; fileRef = 8A2C8FE41C6BC38200846019 /* report.json */; };
 		8A2C8FF01C6BC3A200846019 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8FEF1C6BC3A200846019 /* SystemConfiguration.framework */; };
-		8A2C90441C6C040700846019 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C90401C6C03F000846019 /* Cocoa.framework */; };
 		8A48EF271EAA805D00B70024 /* BugsnagLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A48EF261EAA805D00B70024 /* BugsnagLogger.h */; };
 		8A530CB822FDC38300F0C108 /* BSG_KSCrashIdentifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A530CB622FDC38300F0C108 /* BSG_KSCrashIdentifier.h */; };
 		8A530CB922FDC38300F0C108 /* BSG_KSCrashIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A530CB722FDC38300F0C108 /* BSG_KSCrashIdentifier.m */; };
@@ -366,7 +365,6 @@
 			files = (
 				E7433AD31F4F64F400C082D1 /* libc++.tbd in Frameworks */,
 				E7433AD21F4F64EF00C082D1 /* libz.tbd in Frameworks */,
-				8A2C90441C6C040700846019 /* Cocoa.framework in Frameworks */,
 				8A2C8FF01C6BC3A200846019 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

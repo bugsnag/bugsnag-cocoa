@@ -68,7 +68,6 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
         _breadcrumbs = [BugsnagBreadcrumbs new];
         _automaticallyCollectBreadcrumbs = YES;
         _shouldAutoCaptureSessions = YES;
-        _reportBackgroundOOMs = NO;
 #if !DEBUG
         _reportOOMs = YES;
 #endif
@@ -141,6 +140,22 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
                         withValue:newReleaseStage
                     toTabWithName:BSGKeyConfig];
     }
+}
+
+@synthesize autoNotify = _autoNotify;
+
+- (BOOL)autoNotify {
+    return _autoNotify;
+}
+
+- (void)setAutoNotify:(BOOL)shouldAutoNotify {
+    if (shouldAutoNotify == _autoNotify) {
+        return;
+    }
+    [self willChangeValueForKey:NSStringFromSelector(@selector(autoNotify))];
+    _autoNotify = shouldAutoNotify;
+    [[Bugsnag notifier] updateCrashDetectionSettings];
+    [self didChangeValueForKey:NSStringFromSelector(@selector(autoNotify))];
 }
 
 @synthesize notifyReleaseStages = _notifyReleaseStages;

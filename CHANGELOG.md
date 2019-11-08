@@ -1,6 +1,71 @@
 Changelog
 =========
 
+## 5.22.10 (2019-11-04)
+
+### Bug fixes
+
+* Fix unrecognized selector crash when adding metadata
+  [#430](https://github.com/bugsnag/bugsnag-cocoa/pull/430)
+
+## 5.22.9 (2019-10-16)
+
+### Bug fixes
+
+* Fix a packaging issue when using Carthage, introduced in 5.22.7. **Note:**
+  There is a remaining known issue when updating/building the bugsnag-cocoa
+  dependency with Carthage, the project will build three times before completing
+  successfully. This issue will be resolved in a subsequent patch release.
+  [#423](https://github.com/bugsnag/bugsnag-cocoa/pull/423)
+* Deprecate `config.reportBackgroundOOMs` property - designating any app
+  termination as a possible error condition can cause a lot of false positives,
+  especially since the app can die for many genuine reasons, especially when
+  running only in the background.
+  [#425](https://github.com/bugsnag/bugsnag-cocoa/pull/425)
+
+## 5.22.8 (2019-10-10)
+
+### Bug fixes
+
+* Fix use-after-free in `notify()` logic which could lead to a deadlock
+  [#420](https://github.com/bugsnag/bugsnag-cocoa/pull/420)
+* Reduce severity of log message about thread status from 'error' to 'debug' as
+  it does not necessarily indicate a problem and is only used for debugging.
+  [#421](https://github.com/bugsnag/bugsnag-cocoa/pull/421)
+
+## 5.22.7 (2019-10-03)
+
+### Bug fixes
+
+* Show correct value for `app.inForeground` when an app launches and crashes in
+  the background without ever coming to the foreground.
+  [#415](https://github.com/bugsnag/bugsnag-cocoa/pull/415)
+* Fix improperly retained properties which could result in a crash due to
+  premature deallocation
+  [#416](https://github.com/bugsnag/bugsnag-cocoa/pull/416)
+
+## 5.22.6 (2019-09-18)
+
+### Enhancements
+
+* Support disabling crash reporting after initialization by setting
+  `Bugsnag.configuration.autoNotify`. Previously this value was ignored after
+  `Bugsnag.start()` was called, but is now used to update whether crash reports
+  will be detected and sent. This interface can be used for crash reporting
+  opt-out flows.
+  [#410](https://github.com/bugsnag/bugsnag-cocoa/issues/410)
+
+### Bug fixes
+
+* Ensure UIKit APIs are not called from background threads if
+  `Bugsnag.start()` is called in the background
+  [#409](https://github.com/bugsnag/bugsnag-cocoa/issues/409)
+* Fix bug in `notifyReleaseStages` where if the release stage of a build was
+  changed after `start()`, only the initial value was used to determine whether
+  to send a report
+  [#405](https://github.com/bugsnag/bugsnag-cocoa/issues/405)
+  [#412](https://github.com/bugsnag/bugsnag-cocoa/issues/412)
+
 ## 5.22.5 (2019-08-14)
 
 ### Bug fixes

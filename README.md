@@ -3,7 +3,6 @@
 [![tvOS Documentation](https://img.shields.io/badge/tvos_documentation-latest-blue.svg)](http://docs.bugsnag.com/platforms/tvos/)
 [![macOS Documentation](https://img.shields.io/badge/macos_documentation-latest-blue.svg)](http://docs.bugsnag.com/platforms/macos/)
 [![Build status](https://travis-ci.com/bugsnag/bugsnag-cocoa.svg?branch=master)](https://travis-ci.com/bugsnag/bugsnag-cocoa)
-[![codecov](https://codecov.io/gh/bugsnag/bugsnag-cocoa/branch/master/graph/badge.svg)](https://codecov.io/gh/bugsnag/bugsnag-cocoa/)
 
 The Bugsnag crash reporter for Cocoa library automatically detects crashes and fatal signals in your iOS 8.0+, macOS 10.8+ and tvOS applications, collecting diagnostic information and immediately notifying your development team, helping you to understand and resolve issues as fast as possible. Learn more about [iOS crash reporting with Bugsnag](https://www.bugsnag.com/platforms/ios-crash-reporting/).
 

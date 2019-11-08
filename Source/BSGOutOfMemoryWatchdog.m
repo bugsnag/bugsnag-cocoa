@@ -185,7 +185,7 @@
                                 [lastBootBundleVersion isEqualToString:bundleVersion] &&
                                 [lastBootAppVersion isEqualToString:appVersion];
             BOOL shouldReport = config.reportOOMs
-                && (config.reportBackgroundOOMs || (lastBootInForeground && lastBootWasActive));
+                && (lastBootInForeground && lastBootWasActive);
             [self deleteSentinelFile];
             return sameVersions && shouldReport;
         }
@@ -244,19 +244,8 @@
     app[@"version"] = systemInfo[@BSG_KSSystemField_BundleShortVersion] ?: @"";
     app[@"bundleVersion"] = systemInfo[@BSG_KSSystemField_BundleVersion] ?: @"";
 #if BSGOOMAvailable
-    UIApplicationState state = [self currentAppState];
-    // The app is in the foreground if the current state is "active" or
-    // "inactive". From the UIApplicationState docs:
-    // > UIApplicationStateActive
-    // >   The app is running in the foreground and currently receiving events.
-    // > UIApplicationStateInactive
-    // >   The app is running in the foreground but is not receiving events.
-    // >   This might happen as a result of an interruption or because the app
-    // >   is transitioning to or from the background.
-    // > UIApplicationStateBackground
-    // >   The app is running in the background.
-    app[@"inForeground"] = @(state == UIApplicationStateInactive
-                          || state == UIApplicationStateActive);
+    UIApplicationState state = [BSG_KSSystemInfo currentAppState];
+    app[@"inForeground"] = @([BSG_KSSystemInfo isInForeground:state]);
     app[@"isActive"] = @(state == UIApplicationStateActive);
 #else
     app[@"inForeground"] = @YES;
@@ -284,18 +273,5 @@
 
     return cache;
 }
-
-// Only available on iOS/tvOS
-#if BSGOOMAvailable
-- (UIApplicationState)currentAppState {
-    // Only checked outside of app extensions since sharedApplication is
-    // unavailable to extension UIKit APIs
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
-        return UIApplicationStateActive;
-    }
-    UIApplication *app = [UIApplication performSelector:@selector(sharedApplication)];
-    return [app applicationState];
-}
-#endif
 
 @end

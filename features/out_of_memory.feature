@@ -56,18 +56,8 @@ Feature: Reporting out of memory events
         And I put the app in the background
         And the app is unexpectedly terminated
         And I relaunch the app
-        And I wait for a request
-        Then the request is valid for the error reporting API
-        And the payload field "events" is an array with 1 element
-        And the exception "errorClass" equals "Out Of Memory"
-        And the exception "message" equals "The app was likely terminated by the operating system while in the background"
-        And the event "unhandled" is true
-        And the event "severity" equals "error"
-        And the event "severityReason.type" equals "outOfMemory"
-        And the event "app.releaseStage" equals "beta"
-        And the event "app.version" equals "1.0.3"
-        And the event "app.bundleVersion" equals "5"
-        And the event breadcrumbs contain "Crumb left before crash"
+        And I wait for 10 seconds
+        Then I should receive 0 requests
 
     Scenario: The OS kills the application after a session is sent
         When I crash the app using "SessionOOMScenario"
