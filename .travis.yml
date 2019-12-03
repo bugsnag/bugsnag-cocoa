@@ -61,7 +61,7 @@ jobs:
   - osx_image: xcode10.1
     stage: integration
     name: End-to-end tests
-    script: bundle exec maze-runner -c || (cat maze_output/* && exit 1)
+    script: bundle exec maze-runner -c --verbose || (cat maze_output/* && exit 1)
     env: MAZE_SDK=12.1 SDK=iphonesimulator12.1 RUBYSHELL=/bin/bash
   - osx_image: xcode11
     name: Building static framework and Carthage integration
