@@ -218,11 +218,22 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
     if ((self = [super init])) {
         self.configuration = initConfiguration;
         self.state = [[BugsnagMetaData alloc] init];
+        NSString *notifierName =
+#if TARGET_OS_TV
+            @"tvOS Bugsnag Notifier";
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+            @"iOS Bugsnag Notifier";
+#elif TARGET_OS_MAC
+            @"OSX Bugsnag Notifier";
+#else
+            @"Bugsnag Objective-C";
+#endif
         self.details = [@{
-            BSGKeyName : @"Bugsnag Objective-C",
+            BSGKeyName : notifierName,
             BSGKeyVersion : NOTIFIER_VERSION,
             BSGKeyUrl : NOTIFIER_URL
         } mutableCopy];
+
 
         NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(
                                 NSCachesDirectory, NSUserDomainMask, YES) firstObject];
@@ -340,12 +351,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self watchLifecycleEvents:center];
 
 #if TARGET_OS_TV
-    [self.details setValue:@"tvOS Bugsnag Notifier" forKey:BSGKeyName];
     [self addTerminationObserver:UIApplicationWillTerminateNotification];
 
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    [self.details setValue:@"iOS Bugsnag Notifier" forKey:BSGKeyName];
-
     [center addObserver:self
                selector:@selector(batteryChanged:)
                    name:UIDeviceBatteryStateDidChangeNotification
@@ -374,8 +382,6 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self addTerminationObserver:UIApplicationWillTerminateNotification];
 
 #elif TARGET_OS_MAC
-    [self.details setValue:@"OSX Bugsnag Notifier" forKey:BSGKeyName];
-
     [center addObserver:self
                selector:@selector(willEnterForeground:)
                    name:NSApplicationDidBecomeActiveNotification

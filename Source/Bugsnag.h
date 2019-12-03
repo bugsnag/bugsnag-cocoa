@@ -27,6 +27,7 @@
 
 #import "BugsnagConfiguration.h"
 #import "BugsnagMetaData.h"
+#import "BugsnagPlugin.h"
 
 static NSString *_Nonnull const BugsnagSeverityError = @"error";
 static NSString *_Nonnull const BugsnagSeverityWarning = @"warning";
