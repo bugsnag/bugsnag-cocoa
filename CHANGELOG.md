@@ -4,7 +4,7 @@ Changelog
 This release renames a few configuration properties to align better with the
 intended use and other Bugsnag libraries, so people who use more than one
 platform can easily find related functionality in a different library. The old
-names and deprecated but still supported until the next major release.
+names are deprecated but still supported until the next major release.
 [#435](https://github.com/bugsnag/bugsnag-cocoa/pull/435)
 
 * `Bugsnag.setBreadcrumbCapacity()` is now `setMaxBreadcrumbs()` on the
