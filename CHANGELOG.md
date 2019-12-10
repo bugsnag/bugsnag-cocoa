@@ -1,7 +1,15 @@
 Changelog
 =========
 
-This release renames a few configuration properties to align better with the
+## TBD
+
+This release removes support for reporting 'partial' or 'minimal' crash reports
+where the crash report could not be entirely written (due to disk space or other
+issues like the device battery dying). While sometimes the reports could point
+in the right direction for debugging, they could also be confusing or not enough
+information to pursue and close the issue successfully.
+
+This release  also renames a few configuration properties to align better with the
 intended use and other Bugsnag libraries, so people who use more than one
 platform can easily find related functionality in a different library. The old
 names are deprecated but still supported until the next major release.
