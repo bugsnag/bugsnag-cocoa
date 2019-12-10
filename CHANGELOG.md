@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 5.23.0 (2019-12-10)
 
 This release removes support for reporting 'partial' or 'minimal' crash reports
 where the crash report could not be entirely written (due to disk space or other
