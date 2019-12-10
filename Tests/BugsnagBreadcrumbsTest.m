@@ -35,7 +35,7 @@ void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
 }
 
 - (void)testDefaultCapacity {
-    XCTAssertTrue([BugsnagBreadcrumbs new].capacity == 20);
+    XCTAssertTrue([BugsnagBreadcrumbs new].capacity == 25);
 }
 
 - (void)testDefaultCount {
@@ -61,6 +61,11 @@ void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
     XCTAssertEqualObjects(self.crumbs[2].metadata[@"message"],
                           @"Clear notifications");
     XCTAssertNil(self.crumbs[3]);
+}
+
+- (void)testMaxMaxBreadcrumbs {
+    self.crumbs.capacity = 250;
+    XCTAssertEqual(100, self.crumbs.capacity);
 }
 
 - (void)testClearBreadcrumbs {

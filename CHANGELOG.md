@@ -9,6 +9,20 @@ issues like the device battery dying). While sometimes the reports could point
 in the right direction for debugging, they could also be confusing or not enough
 information to pursue and close the issue successfully.
 
+This release  also renames a few configuration properties to align better with the
+intended use and other Bugsnag libraries, so people who use more than one
+platform can easily find related functionality in a different library. The old
+names are deprecated but still supported until the next major release.
+[#435](https://github.com/bugsnag/bugsnag-cocoa/pull/435)
+
+* `Bugsnag.setBreadcrumbCapacity()` is now `setMaxBreadcrumbs()` on the
+  `BugsnagConfiguration` class. In addition, the default number of breadcrumbs
+  saved has been raised to 25 and limited to no more than 100.
+* `BugsnagConfiguration.autoNotify` is now named
+  `BugsnagConfiguration.autoDetectErrors`
+* `BugsnagConfiguration.autoCaptureSessions` is now named
+  `BugsnagConfiguration.autoDetectSessions`
+
 ## 5.22.10 (2019-11-04)
 
 ### Bug fixes
