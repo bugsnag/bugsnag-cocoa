@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+## Bug fixes
+
+* Fix possible report corruption when using `notify()` from multiple threads
+  when configured to skip capturing/reporting background thread contents
+  (generally only Unity games).
+
 ## 5.23.0 (2019-12-10)
 
 This release removes support for reporting 'partial' or 'minimal' crash reports
