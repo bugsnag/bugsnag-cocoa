@@ -17,6 +17,7 @@
 		8A72A0382396574F00328051 /* CustomPluginNotifierDescriptionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */; };
 		8A840FBA21AF5C450041DBFA /* SwiftAssertion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */; };
 		8A98400320FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */; };
+		8AA05A2F23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AA05A2E23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m */; };
 		8AA7C2D72327DD3D002255B2 /* ConfigChangesAfterStartScenarios.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AA7C2D52327DD3D002255B2 /* ConfigChangesAfterStartScenarios.m */; };
 		8AB1081923301FE600672818 /* ReleaseStageScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB1081823301FE600672818 /* ReleaseStageScenarios.swift */; };
 		8AB8866420404DD30003E444 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB8866320404DD30003E444 /* AppDelegate.swift */; };
@@ -92,6 +93,8 @@
 		8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftAssertion.swift; sourceTree = "<group>"; };
 		8A98400120FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoSessionCustomVersionScenario.h; sourceTree = "<group>"; };
 		8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoSessionCustomVersionScenario.m; sourceTree = "<group>"; };
+		8AA05A2D23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ManyConcurrentNotifyNoBackgroundThreads.h; sourceTree = "<group>"; };
+		8AA05A2E23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ManyConcurrentNotifyNoBackgroundThreads.m; sourceTree = "<group>"; };
 		8AA7C2D52327DD3D002255B2 /* ConfigChangesAfterStartScenarios.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigChangesAfterStartScenarios.m; sourceTree = "<group>"; };
 		8AA7C2D62327DD3D002255B2 /* ConfigChangesAfterStartScenarios.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigChangesAfterStartScenarios.h; sourceTree = "<group>"; };
 		8AB1081823301FE600672818 /* ReleaseStageScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleaseStageScenarios.swift; sourceTree = "<group>"; };
@@ -333,6 +336,8 @@
 				8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */,
 				8A72A0362396574F00328051 /* CustomPluginNotifierDescriptionScenario.h */,
 				8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */,
+				8AA05A2D23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.h */,
+				8AA05A2E23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";
@@ -456,6 +461,7 @@
 				F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */,
 				8A98400320FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m in Sources */,
 				F42955E0916B8851F074D9B3 /* UserEmailScenario.swift in Sources */,
+				8AA05A2F23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m in Sources */,
 				F4295968571A4118D6A4606A /* UserEnabledScenario.swift in Sources */,
 				F4295A036B228AF608641699 /* UserDisabledScenario.swift in Sources */,
 				8A14F0F62282D4AE00337B05 /* ReportOOMsDisabledScenario.m in Sources */,

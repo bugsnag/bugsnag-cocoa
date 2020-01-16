@@ -67,3 +67,17 @@ Scenario: Reporting handled errors concurrently
         | FooError                | Err 1   |
         | FooError                | Err 2   |
         | FooError                | Err 3   |
+
+Scenario: Reporting handled errors concurrently in an environment without background thread reporting
+    When I run "ManyConcurrentNotifyNoBackgroundThreads"
+    And I wait for a request
+    Then the request is valid for the error reporting API
+    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
+    And the payload field "events" is an array with 8 elements
+    And each event in the payload matches one of:
+        | exceptions.0.errorClass | exceptions.0.message |
+        | BarError                | Err 0   |
+        | BarError                | Err 1   |
+        | BarError                | Err 2   |
+        | BarError                | Err 3   |

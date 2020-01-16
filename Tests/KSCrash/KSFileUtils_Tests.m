@@ -55,7 +55,6 @@
     XCTAssertTrue(fd >= 0, @"");
     bool result = bsg_ksfuwriteBytesToFD(fd, [expected cStringUsingEncoding:NSUTF8StringEncoding], stringLength);
     XCTAssertTrue(result, @"");
-    bsg_ksfuflushWriteBuffer(fd);
     NSString* actual = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
     XCTAssertNil(error, @"");
     XCTAssertEqualObjects(actual, expected, @"");
