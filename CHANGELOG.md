@@ -11,6 +11,7 @@ Changelog
   
 * Added several additional event fields (`codeBundleId`, `osName`, `modelNumber`, 
   `locale`) that were missing from the OOM reports.
+  [#444](https://github.com/bugsnag/bugsnag-cocoa/pull/444)
 
 ## 5.23.0 (2019-12-10)
 
