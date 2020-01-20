@@ -243,7 +243,7 @@
     app[@"releaseStage"] = config.releaseStage;
     app[@"version"] = systemInfo[@BSG_KSSystemField_BundleShortVersion] ?: @"";
     app[@"bundleVersion"] = systemInfo[@BSG_KSSystemField_BundleVersion] ?: @"";
-    // 'codeBundleId' only (optionally) exists for Unity clients and defaults otherwise to nil
+    // 'codeBundleId' only (optionally) exists for React Native clients and defaults otherwise to nil
     app[@"codeBundleId"] = [config codeBundleId];
 #if BSGOOMAvailable
     UIApplicationState state = [BSG_KSSystemInfo currentAppState];
