@@ -13,7 +13,7 @@
 #import "Bugsnag.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagSession.h"
-
+#import "BugsnagTestConstants.h"
 
 @interface BugsnagCrashReportTests : XCTestCase
 @end
@@ -21,7 +21,7 @@
 @implementation BugsnagCrashReportTests
 
 - (void)testNotifyReleaseStagesSendsFromConfig {
-    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.notifyReleaseStages = @[ @"foo" ];
     config.releaseStage = @"foo";
     BugsnagHandledState *state =
@@ -37,7 +37,7 @@
 }
 
 - (void)testNotifyReleaseStagesSkipsSendFromConfig {
-    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.notifyReleaseStages = @[ @"foo", @"bar" ];
     config.releaseStage = @"not foo or bar";
 
@@ -54,7 +54,7 @@
 }
 
 - (void)testSessionJson {
-    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
 
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];

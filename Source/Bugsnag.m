@@ -60,7 +60,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
             [self startPlugins];
             [bsg_g_bugsnag_notifier start];
         } else {
-            bsg_log_err(@"Bugsnag not initialized - a valid API key must be supplied.");
+            bsg_log_err(@"Bugsnag not initialized - a valid 32-digit hexadecimal API key must be supplied.");
         }
     }
 }

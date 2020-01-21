@@ -3,6 +3,14 @@ Changelog
 
 ## TBD
 
+### Specification compliance
+
+* Added a designated initializer to `BugsnagConfiguration` and removed functionality
+  from the default convenience `init()` to ensure that `apiKey` has a value set.
+
+  * Swift: `BugsnagConfiguration(apiKey:)`
+  * Objective C: `[[BugsnagConfiguration alloc] initWithApiKey:]`
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads
