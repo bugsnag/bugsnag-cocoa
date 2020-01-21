@@ -13,7 +13,17 @@ This is now BugsnagEvent.
 ### `BugsnagConfiguration` class
 
 ```diff
-  let config = BugsnagConfiguration()
+ObjC: 
+
+  NSError *error;
+  BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:"YOUR API KEY HERE" error:error];
+
+Swift:
+
+  let config = try BugsnagConfiguration("YOUR API KEY HERE")
+
++ BSGConfigurationErrorDomain
++ BSGConfigurationErrorCode
 
 + config.setMaxBreadcrumbs()
 

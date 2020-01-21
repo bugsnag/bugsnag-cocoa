@@ -12,6 +12,7 @@
 #import "Bugsnag.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagSink.h"
+#import "BugsnagTestConstants.h"
 
 @interface BugsnagSinkTests : XCTestCase
 @property NSDictionary *rawReportData;
@@ -35,9 +36,8 @@
     self.rawReportData = [NSJSONSerialization JSONObjectWithData:contentData
                                                          options:0
                                                            error:nil];
-    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
     config.autoDetectErrors = NO;
-    config.apiKey = @"apiKeyHere";
     // This value should not appear in the assertions, as it is not equal to
     // the release stage in the serialized report
     config.releaseStage = @"MagicalTestingTime";
@@ -313,7 +313,7 @@
     BugsnagEvent *report =
     [[BugsnagEvent alloc] initWithErrorName:@"TestError"
                                      errorMessage:@"Error for testing"
-                                    configuration:[BugsnagConfiguration new]
+                                    configuration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil]
                                          metaData:[NSDictionary new]
                                      handledState:state
                                           session:nil];
@@ -396,7 +396,7 @@
     BugsnagEvent *report =
     [[BugsnagEvent alloc] initWithErrorName:@"TestError"
                                      errorMessage:@"Error for testing"
-                                    configuration:[BugsnagConfiguration new]
+                                    configuration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil]
                                          metaData:[NSDictionary new]
                                      handledState:state
                                           session:nil];

@@ -35,6 +35,14 @@
 @class BugsnagUser;
 
 /**
+ * BugsnagConfiguration error constants
+ */
+extern NSString * _Nonnull const BSGConfigurationErrorDomain;
+typedef NS_ENUM(NSInteger, BSGConfigurationErrorCode) {
+    BSGConfigurationErrorInvalidApiKey = 0
+};
+
+/**
  *  A configuration block for modifying an error report
  *
  *  @param report The default report
@@ -79,7 +87,7 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
 /**
  *  The API key of a Bugsnag project
  */
-@property(readwrite, retain, nullable) NSString *apiKey;
+@property(readwrite, retain, nonnull) NSString *apiKey;
 /**
  *  The release stage of the application, such as production, development, beta
  *  et cetera
@@ -169,7 +177,7 @@ NSArray<BeforeSendSession> *beforeSendSessionBlocks;
  * while the app is in the background. Setting this property has no effect.
  */
 @property BOOL reportBackgroundOOMs
-__deprecated_msg("This detection option is unreliable and should no longer be used.");
+    __deprecated_msg("This detection option is unreliable and should no longer be used.");
 
 /**
  * Retrieves the endpoint used to notify Bugsnag of errors
@@ -188,6 +196,19 @@ __deprecated_msg("This detection option is unreliable and should no longer be us
  * @see setEndpointsForNotify:sessions:
  */
 @property(readonly, retain, nullable) NSURL *sessionURL;
+
+/**
+ * Required declaration to suppress a superclass designated-initializer error
+ */
+- (instancetype _Nonnull )init NS_UNAVAILABLE NS_SWIFT_UNAVAILABLE("Use initWithApiKey:");
+
+/**
+ * The designated initializer.
+ */
+- (instancetype _Nullable)initWithApiKey:(NSString *_Nonnull)apiKey
+                                   error:(NSError *_Nullable *_Nullable)error
+    NS_DESIGNATED_INITIALIZER
+    NS_SWIFT_NAME(init(_:)) __attribute__((swift_error(nonnull_error)));
 
 /**
  * Set the endpoints to send data to. By default we'll send error reports to
@@ -278,7 +299,5 @@ __deprecated_msg("This detection option is unreliable and should no longer be us
 
 @property(retain, nullable) NSString *codeBundleId;
 @property(retain, nullable) NSString *notifierType;
-
-- (BOOL)hasValidApiKey;
 
 @end

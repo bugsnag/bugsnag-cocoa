@@ -12,6 +12,7 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagSessionTrackingApiClient.h"
+#import "BugsnagTestConstants.h"
 
 @interface BugsnagSessionTrackerTest : XCTestCase
 @property BugsnagConfiguration *configuration;
@@ -23,8 +24,7 @@
 
 - (void)setUp {
     [super setUp];
-    self.configuration = [BugsnagConfiguration new];
-    self.configuration.apiKey = @"test";
+    self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
     self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
                                                      postRecordCallback:nil];
 }
