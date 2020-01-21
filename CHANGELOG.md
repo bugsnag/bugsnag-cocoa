@@ -11,6 +11,12 @@ Changelog
 * BugsnagCrashReport is now BugsnagEvent
   [#449](https://github.com/bugsnag/bugsnag-cocoa/pull/449)
 
+* Added a designated initializer to `BugsnagConfiguration` and removed functionality
+  from the default convenience `init()` to ensure that `apiKey` has a value set.
+
+  * Swift: `BugsnagConfiguration(apiKey:)`
+  * Objective C: `[[BugsnagConfiguration alloc] initWithApiKey:]`
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads

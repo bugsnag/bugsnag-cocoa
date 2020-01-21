@@ -36,6 +36,9 @@
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
 static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
+static NSString *const BSGApiKeyError = @"apiKey must be a 32-digit hexadecimal value.";
+static NSString *const BSGInitError = @"Init is unavailable.  Use [[BugsnagConfiguration alloc] initWithApiKey:] instead.";
+static const int BSGApiKeyLength = 32;
 
 @interface Bugsnag ()
 + (BugsnagNotifier *)notifier;
@@ -46,6 +49,7 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 @end
 
 @interface BugsnagConfiguration ()
+
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeNotifyHooks;
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeSendBlocks;
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeSendSessionBlocks;
@@ -53,36 +57,52 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 
 @implementation BugsnagConfiguration
 
-- (id)init {
-    if (self = [super init]) {
-        _metaData = [[BugsnagMetaData alloc] init];
-        _config = [[BugsnagMetaData alloc] init];
-        _apiKey = @"";
-        _sessionURL = [NSURL URLWithString:@"https://sessions.bugsnag.com"];
-        _autoDetectErrors = YES;
-        _notifyURL = [NSURL URLWithString:BSGDefaultNotifyUrl];
-        _beforeNotifyHooks = [NSMutableArray new];
-        _beforeSendBlocks = [NSMutableArray new];
-        _beforeSendSessionBlocks = [NSMutableArray new];
-        _notifyReleaseStages = nil;
-        _breadcrumbs = [BugsnagBreadcrumbs new];
-        _automaticallyCollectBreadcrumbs = YES;
-        _autoTrackSessions = YES;
-#if !DEBUG
-        _reportOOMs = YES;
-#endif
+/**
+ * Should not be called, but if it _is_ then fail meaningfully rather than silently
+ */
+- (instancetype)init {
+    @throw BSGInitError;
+}
 
-        if ([NSURLSession class]) {
-            _session = [NSURLSession
-                sessionWithConfiguration:[NSURLSessionConfiguration
-                                             defaultSessionConfiguration]];
-        }
-#if DEBUG
-        _releaseStage = BSGKeyDevelopment;
-#else
-        _releaseStage = BSGKeyProduction;
-#endif
+/**
+ * The designated initializer.
+ */
+-(instancetype)initWithApiKey:(NSString *)apiKey {
+    if (! [self isValidApiKey:apiKey]) {
+        @throw BSGApiKeyError;
     }
+    
+    self = [super init];
+    
+    _metaData = [[BugsnagMetaData alloc] init];
+    _config = [[BugsnagMetaData alloc] init];
+    _apiKey = apiKey;
+    _sessionURL = [NSURL URLWithString:@"https://sessions.bugsnag.com"];
+    _autoDetectErrors = YES;
+    _notifyURL = [NSURL URLWithString:BSGDefaultNotifyUrl];
+    _beforeNotifyHooks = [NSMutableArray new];
+    _beforeSendBlocks = [NSMutableArray new];
+    _beforeSendSessionBlocks = [NSMutableArray new];
+    _notifyReleaseStages = nil;
+    _breadcrumbs = [BugsnagBreadcrumbs new];
+    _automaticallyCollectBreadcrumbs = YES;
+    _autoTrackSessions = YES;
+
+    #if !DEBUG
+        _reportOOMs = YES;
+    #endif
+
+    if ([NSURLSession class]) {
+        _session = [NSURLSession
+            sessionWithConfiguration:[NSURLSessionConfiguration
+                                         defaultSessionConfiguration]];
+    }
+    #if DEBUG
+        _releaseStage = BSGKeyDevelopment;
+    #else
+        _releaseStage = BSGKeyProduction;
+    #endif
+    
     return self;
 }
 
@@ -253,12 +273,12 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 }
 
 - (void)setApiKey:(NSString *)apiKey {
-    if ([apiKey length] > 0) {
+    if ([self isValidApiKey:apiKey]) {
         [self willChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
         _apiKey = apiKey;
         [self didChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
     } else {
-        bsg_log_err(@"Attempted to override non-null API key with nil - ignoring.");
+        @throw BSGApiKeyError;
     }
 }
 
@@ -293,9 +313,19 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
     return url != nil && url.scheme != nil && url.host != nil;
 }
 
-
 - (BOOL)hasValidApiKey {
-    return [_apiKey length] > 0;
+    return [self isValidApiKey:_apiKey];
+}
+
+/**
+ * Determine the apiKey-validity of a passed-in string:
+ * Exactly 32 hexadecimal digits.
+ */
+- (BOOL)isValidApiKey:(NSString *)apiKey {
+    NSCharacterSet *chars = [[NSCharacterSet
+        characterSetWithCharactersInString:@"0123456789ABCDEF"] invertedSet];
+    BOOL isHex = (NSNotFound == [[apiKey uppercaseString] rangeOfCharacterFromSet:chars].location);
+    return isHex && [apiKey length] == BSGApiKeyLength;
 }
 
 - (NSUInteger)maxBreadcrumbs {
