@@ -3,6 +3,11 @@ Changelog
 
 ## TBD
 
+## Enhancements
+
+* Add a breadcrumb when Bugsnag first starts with the message "Bugsnag loaded"
+  [#445](https://github.com/bugsnag/bugsnag-cocoa/pull/445)
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads
