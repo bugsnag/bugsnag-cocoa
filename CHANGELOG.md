@@ -17,6 +17,8 @@ Changelog
   * Swift: `BugsnagConfiguration(apiKey:)`
   * Objective C: `[[BugsnagConfiguration alloc] initWithApiKey:]`
 
+[#446](https://github.com/bugsnag/bugsnag-cocoa/pull/446)
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads
