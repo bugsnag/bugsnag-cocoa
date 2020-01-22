@@ -192,7 +192,7 @@ NSArray<BeforeSendSession> *beforeSendSessionBlocks;
 /**
  * Required declaration to suppress a superclass designated-initializer error
  */
-- (instancetype _Nonnull )init NS_UNAVAILABLE;
+- (instancetype _Nonnull )init NS_UNAVAILABLE NS_SWIFT_UNAVAILABLE("Use initWithApiKey:");
 
 /**
  * The designated initializer.
