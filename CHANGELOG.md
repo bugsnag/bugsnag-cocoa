@@ -48,6 +48,8 @@ Bugsnag Notifiers on other platforms.
   `Bugsnag.notify()` callback.
   [#458](https://github.com/bugsnag/bugsnag-cocoa/pull/458)
 
+* Add a breadcrumb when network connectivity changes
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads

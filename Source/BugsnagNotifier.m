@@ -532,6 +532,14 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (connected)
             [strongSelf flushPendingReports];
+
+        if (strongSelf.configuration.automaticallyCollectBreadcrumbs) {
+            [strongSelf addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
+                crumb.name = @"Connectivity change";
+                crumb.type = BSGBreadcrumbTypeState;
+                crumb.metadata  = @{ @"type"  :  connectionType };
+            }];
+        }
     }];
 }
 
