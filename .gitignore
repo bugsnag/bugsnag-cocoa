@@ -20,4 +20,4 @@ Pods
 Carthage
 *.idea
 features/fixtures/carthage-proj
-examples/swift-ios/bugsnag-example.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+IDEWorkspaceChecks.plist
