@@ -79,7 +79,7 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
 /**
  *  The API key of a Bugsnag project
  */
-@property(readwrite, retain, nullable) NSString *apiKey;
+@property(readwrite, retain, nonnull) NSString *apiKey;
 /**
  *  The release stage of the application, such as production, development, beta
  *  et cetera
@@ -198,7 +198,8 @@ NSArray<BeforeSendSession> *beforeSendSessionBlocks;
  * The designated initializer.
  */
 - (instancetype _Nonnull)initWithApiKey:(NSString *_Nonnull) apiKey
-    NS_DESIGNATED_INITIALIZER;
+    NS_DESIGNATED_INITIALIZER
+    NS_SWIFT_NAME(init(_:));
 
 /**
  * Set the endpoints to send data to. By default we'll send error reports to
@@ -289,10 +290,5 @@ NSArray<BeforeSendSession> *beforeSendSessionBlocks;
 
 @property(retain, nullable) NSString *codeBundleId;
 @property(retain, nullable) NSString *notifierType;
-
-/**
- * apiKey MUST be a 32-digit hexadecimal string
- */
-- (BOOL)hasValidApiKey;
 
 @end

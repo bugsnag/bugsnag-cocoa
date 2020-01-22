@@ -230,20 +230,13 @@
 }
 
 - (void)testHasValidApiKey {
-    BugsnagConfiguration *config = nil;
-    XCTAssertFalse([config hasValidApiKey]);
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
 
-    config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    XCTAssertTrue([config hasValidApiKey]);
-
-    XCTAssertThrows(config.apiKey = @"5adf89e0aaa");
-    XCTAssertTrue([config hasValidApiKey]);
+    XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
     XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
     
     config.apiKey = DUMMY_APIKEY_32CHAR_2;
-    XCTAssertTrue([config hasValidApiKey]);
     XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_2]);
 }
-
 
 @end

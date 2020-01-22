@@ -9,7 +9,7 @@ Version 6 introduces a number of property and method renames:
 ### `BugsnagConfiguration` class
 
 ```diff
-  let config = BugsnagConfiguration()
+  let config = BugsnagConfiguration("YOUR API KEY HERE")
 
 + config.setMaxBreadcrumbs()
 

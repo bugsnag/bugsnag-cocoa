@@ -3,15 +3,23 @@ Changelog
 
 ## TBD
 
-### Specification compliance
+This release sees a number of changes across the codebase intended to align its APIs with
+Bugsnag Notifiers on other platforms.
+
+### Breaking Changes
 
 * Added a designated initializer to `BugsnagConfiguration` and removed functionality
-  from the default convenience `init()` to ensure that `apiKey` has a value set.
+  from the default convenience `init()` to ensure that `apiKey` has a value set.  The `apiKey`
+  must now be a correctly formatted one to be accepted. 
 
-  * Swift: `BugsnagConfiguration(apiKey:)`
+  * Swift: `BugsnagConfiguration(_ apiKey)`
   * Objective C: `[[BugsnagConfiguration alloc] initWithApiKey:]`
 
 [#446](https://github.com/bugsnag/bugsnag-cocoa/pull/446)
+
+### Enhancements
+
+TBD
 
 ## Bug fixes
 
