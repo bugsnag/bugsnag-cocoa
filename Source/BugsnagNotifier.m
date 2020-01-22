@@ -463,7 +463,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
  */
 - (void)unsubscribeFromNotifications:(id)sender {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self.networkReachable stopWatchingConnectivity];
+    [BSGConnectivity stopMonitoring];
 
 #if TARGET_OS_TV || TARGET_OS_MAC
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
@@ -522,13 +522,17 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (void)setupConnectivityListener {
     NSURL *url = self.configuration.notifyURL;
 
-    __weak id weakSelf = self;
-    self.networkReachable =
-        [[BSGConnectivity alloc] initWithURL:url
-                                 changeBlock:^(BSGConnectivity *connectivity) {
-                                   [weakSelf flushPendingReports];
-                                 }];
-    [self.networkReachable startWatchingConnectivity];
+    // ARC Reference - 4.2 __weak Semantics
+    // http://clang.llvm.org/docs/AutomaticReferenceCounting.html
+    // Avoid potential strong reference cycle between the notifier instance and
+    // the BSGConnectivity static storage.
+    __weak typeof(self) weakSelf = self;
+    [BSGConnectivity monitorURL:url
+                  usingCallback:^(BOOL connected, NSString *connectionType) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (connected)
+            [strongSelf flushPendingReports];
+    }];
 }
 
 
