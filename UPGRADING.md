@@ -13,7 +13,7 @@ This is now BugsnagEvent.
 ### `BugsnagConfiguration` class
 
 ```diff
-  let config = BugsnagConfiguration()
+  let config = BugsnagConfiguration("YOUR API KEY HERE")
 
 + config.setMaxBreadcrumbs()
 

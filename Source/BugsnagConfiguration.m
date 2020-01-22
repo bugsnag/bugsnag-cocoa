@@ -313,10 +313,6 @@ static const int BSGApiKeyLength = 32;
     return url != nil && url.scheme != nil && url.host != nil;
 }
 
-- (BOOL)hasValidApiKey {
-    return [self isValidApiKey:_apiKey];
-}
-
 /**
  * Determine the apiKey-validity of a passed-in string:
  * Exactly 32 hexadecimal digits.

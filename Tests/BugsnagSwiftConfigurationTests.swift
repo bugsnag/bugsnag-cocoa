@@ -16,8 +16,8 @@ class BugsnagSwiftConfigurationTests: XCTestCase {
      * we just ensure the method is available to Swift.
      */
     func testDesignatedInitializerHasCorrectNS_SWIFT_NAME() {
-        let config = BugsnagConfiguration(apiKey: DUMMY_APIKEY_32CHAR_1)
-        XCTAssertNotNil(config)
-        XCTAssertEqual(config.apiKey, DUMMY_APIKEY_32CHAR_1)
+        let config1 = BugsnagConfiguration(DUMMY_APIKEY_32CHAR_1)
+        XCTAssertNotNil(config1)
+        XCTAssertEqual(config1.apiKey, DUMMY_APIKEY_32CHAR_1)
     }
 }
