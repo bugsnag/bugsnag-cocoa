@@ -43,10 +43,10 @@
     config.releaseStage = @"MagicalTestingTime";
 
     // set a dummy endpoint, avoid hitting production
-    [config setEndpointsForNotify:@"http://localhost:1234" sessions:@"http://localhost:1234"];
+    [config setEndpointsForNotify:DUMMY_NOTIFY_ENDPOINT sessions:DUMMY_SESSION_ENDPOINT];
     [Bugsnag startBugsnagWithConfiguration:config];
     BugsnagCrashReport *report =
-    [[BugsnagCrashReport alloc] initWithKSReport:self.rawReportData];
+        [[BugsnagCrashReport alloc] initWithKSReport:self.rawReportData];
     self.processedData = [[BugsnagSink new] getBodyFromReports:@[ report ]];
 }
 
