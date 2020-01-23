@@ -239,4 +239,20 @@
     XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_2]);
 }
 
+- (void)testOnErrorBlocks {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertEqual([config.onErrorBlocks count], 0);
+    [config addOnError:^bool(NSDictionary * _Nonnull rawEventData, BugsnagCrashReport * _Nonnull reports) {
+        return YES;
+    }];
+    XCTAssertEqual([config.onErrorBlocks count], 1);
+    [config addOnError:^bool(NSDictionary * _Nonnull rawEventData, BugsnagCrashReport * _Nonnull reports) {
+        return YES;
+    }];
+    XCTAssertEqual([config.onErrorBlocks count], 2);
+    
+    [config clearOnErrorBlocks];
+    XCTAssertEqual([config.onErrorBlocks count], 0);
+}
+
 @end
