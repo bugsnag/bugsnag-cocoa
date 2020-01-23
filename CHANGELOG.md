@@ -10,12 +10,15 @@ Bugsnag Notifiers on other platforms.
 
 * Added a designated initializer to `BugsnagConfiguration` and removed functionality
   from the default convenience `init()` to ensure that `apiKey` has a value set.  The `apiKey`
-  must now be a correctly formatted one to be accepted. 
+  must now be a correctly formatted one to be accepted.
+ 
+* `Configuration.addBeforeSendBlock` has been renamed to `Configuration.addOnError`.  
+  The related callback block type `BugsnagBeforeSendBlock` is now `BugsnagOnErrorBlock`.
 
   * Swift: `BugsnagConfiguration(_ apiKey)`
   * Objective C: `[[BugsnagConfiguration alloc] initWithApiKey:]`
 
-[#446](https://github.com/bugsnag/bugsnag-cocoa/pull/446)
+  [#446](https://github.com/bugsnag/bugsnag-cocoa/pull/446)
 
 ### Enhancements
 

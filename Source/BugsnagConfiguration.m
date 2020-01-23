@@ -51,7 +51,7 @@ static const int BSGApiKeyLength = 32;
 @interface BugsnagConfiguration ()
 
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeNotifyHooks;
-@property(nonatomic, readwrite, strong) NSMutableArray *beforeSendBlocks;
+@property(nonatomic, readwrite, strong) NSMutableArray *onErrorBlocks;
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeSendSessionBlocks;
 @end
 
@@ -81,7 +81,7 @@ static const int BSGApiKeyLength = 32;
     _autoDetectErrors = YES;
     _notifyURL = [NSURL URLWithString:BSGDefaultNotifyUrl];
     _beforeNotifyHooks = [NSMutableArray new];
-    _beforeSendBlocks = [NSMutableArray new];
+    _onErrorBlocks = [NSMutableArray new];
     _beforeSendSessionBlocks = [NSMutableArray new];
     _notifyReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
@@ -126,16 +126,16 @@ static const int BSGApiKeyLength = 32;
                   toTabWithName:BSGKeyUser];
 }
 
-- (void)addBeforeSendBlock:(BugsnagBeforeSendBlock)block {
-    [(NSMutableArray *)self.beforeSendBlocks addObject:[block copy]];
+- (void)addOnError:(BugsnagOnErrorBlock)block {
+    [(NSMutableArray *)self.onErrorBlocks addObject:[block copy]];
 }
 
 - (void)addBeforeSendSession:(BeforeSendSession)block {
     [(NSMutableArray *)self.beforeSendSessionBlocks addObject:[block copy]];
 }
 
-- (void)clearBeforeSendBlocks {
-    [(NSMutableArray *)self.beforeSendBlocks removeAllObjects];
+- (void)clearOnErrorBlocks {
+    [(NSMutableArray *)self.onErrorBlocks removeAllObjects];
 }
 
 - (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook)hook {

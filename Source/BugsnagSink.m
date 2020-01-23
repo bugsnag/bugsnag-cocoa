@@ -68,13 +68,13 @@
         if (![bugsnagReport shouldBeSent])
             continue;
         BOOL shouldSend = YES;
-        for (BugsnagBeforeSendBlock block in configuration.beforeSendBlocks) {
+        for (BugsnagOnErrorBlock block in configuration.onErrorBlocks) {
             @try {
                 shouldSend = block(report, bugsnagReport);
                 if (!shouldSend)
                     break;
             } @catch (NSException *exception) {
-                bsg_log_err(@"Error from beforeSend callback: %@", exception);
+                bsg_log_err(@"Error from onError callback: %@", exception);
             }
         }
         if (shouldSend) {

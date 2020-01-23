@@ -44,8 +44,8 @@ typedef void (^BugsnagNotifyBlock)(BugsnagCrashReport *_Nonnull report);
 /**
  *  A handler for modifying data before sending it to Bugsnag.
  *
- * beforeSendBlocks will be invoked on a dedicated
- * background queue, which will be different from the queue where the block was originally added.
+ * onErrorBlock will be invoked on a dedicated background queue, which will be
+ * different from the queue where the block was originally added.
  *
  *  @param rawEventData The raw event data written at crash time. This
  *                      includes data added in onCrashHandler.
@@ -53,7 +53,7 @@ typedef void (^BugsnagNotifyBlock)(BugsnagCrashReport *_Nonnull report);
  *
  *  @return YES if the report should be sent
  */
-typedef bool (^BugsnagBeforeSendBlock)(NSDictionary *_Nonnull rawEventData,
+typedef bool (^BugsnagOnErrorBlock)(NSDictionary *_Nonnull rawEventData,
                                        BugsnagCrashReport *_Nonnull reports);
 
 /**
@@ -132,7 +132,7 @@ BugsnagBreadcrumbs *breadcrumbs;
  *  Hooks for modifying crash reports before it is sent to Bugsnag
  */
 @property(readonly, strong, nullable)
-    NSArray<BugsnagBeforeSendBlock> *beforeSendBlocks;
+    NSArray<BugsnagOnErrorBlock> *onErrorBlocks;
 
 /**
  *  Hooks for modifying sessions before they are sent to Bugsnag. Intended for internal use only by React Native/Unity.
@@ -236,7 +236,7 @@ NSArray<BeforeSendSession> *beforeSendSessionBlocks;
  *
  *  @param block A block which returns YES if the report should be sent
  */
-- (void)addBeforeSendBlock:(BugsnagBeforeSendBlock _Nonnull)block;
+- (void)addOnError:(BugsnagOnErrorBlock _Nonnull)block;
 
 /**
  *  Add a callback to be invoked before a session is sent to Bugsnag. Intended for internal usage only.
@@ -248,7 +248,7 @@ NSArray<BeforeSendSession> *beforeSendSessionBlocks;
 /**
  * Clear all callbacks
  */
-- (void)clearBeforeSendBlocks;
+- (void)clearOnErrorBlocks;
 
 /**
  *  Whether reports shoould be sent, based on release stage options
@@ -265,7 +265,7 @@ NSArray<BeforeSendSession> *beforeSendSessionBlocks;
 @property NSUInteger maxBreadcrumbs;
 
 - (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook _Nonnull)hook
-    __deprecated_msg("Use addBeforeSendBlock: instead.");
+    __deprecated_msg("Use addOnErrorBlock: instead.");
 
 /**
  * Determines whether app sessions should be tracked automatically. By default this value is true.
