@@ -21,7 +21,7 @@
 @implementation BugsnagEventTests
 
 - (void)testNotifyReleaseStagesSendsFromConfig {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
     config.notifyReleaseStages = @[ @"foo" ];
     config.releaseStage = @"foo";
     BugsnagHandledState *state =
@@ -37,7 +37,7 @@
 }
 
 - (void)testNotifyReleaseStagesSkipsSendFromConfig {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
     config.notifyReleaseStages = @[ @"foo", @"bar" ];
     config.releaseStage = @"not foo or bar";
 
@@ -54,7 +54,7 @@
 }
 
 - (void)testSessionJson {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
 
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];

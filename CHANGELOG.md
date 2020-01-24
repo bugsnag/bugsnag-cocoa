@@ -18,8 +18,8 @@ Bugsnag Notifiers on other platforms.
   from the default convenience `init()` to ensure that `apiKey` has a value set.  The `apiKey`
   must now be a correctly formatted one to be accepted.
 
-  * Swift: `BugsnagConfiguration(_ apiKey)`
-  * Objective C: `[[BugsnagConfiguration alloc] initWithApiKey:]`
+  * Swift: `try BugsnagConfiguration(_ apiKey)`
+  * Objective C: `[[BugsnagConfiguration alloc] initWithApiKey:error:]`
 
   [#446](https://github.com/bugsnag/bugsnag-cocoa/pull/446)
 

@@ -35,6 +35,14 @@
 @class BugsnagUser;
 
 /**
+ * BugsnagConfiguration error constants
+ */
+extern NSString * _Nonnull const BSGConfigurationErrorDomain;
+typedef NS_ENUM(NSInteger, BSGConfigurationErrorCode) {
+    BSGConfigurationErrorInvalidApiKey = 0
+};
+
+/**
  *  A configuration block for modifying an error report
  *
  *  @param report The default report
@@ -197,9 +205,10 @@ NSArray<BeforeSendSession> *beforeSendSessionBlocks;
 /**
  * The designated initializer.
  */
-- (instancetype _Nonnull)initWithApiKey:(NSString *_Nonnull) apiKey
+- (instancetype _Nullable)initWithApiKey:(NSString *_Nonnull)apiKey
+                                   error:(NSError *_Nullable *_Nullable)error
     NS_DESIGNATED_INITIALIZER
-    NS_SWIFT_NAME(init(_:));
+    NS_SWIFT_NAME(init(_:)) __attribute__((swift_error(nonnull_error)));
 
 /**
  * Set the endpoints to send data to. By default we'll send error reports to

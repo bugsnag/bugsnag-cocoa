@@ -24,7 +24,7 @@
 
 - (void)setUp {
     [super setUp];
-    self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
     self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
                                                      postRecordCallback:nil];
 }

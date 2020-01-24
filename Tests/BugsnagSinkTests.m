@@ -36,7 +36,7 @@
     self.rawReportData = [NSJSONSerialization JSONObjectWithData:contentData
                                                          options:0
                                                            error:nil];
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
     config.autoDetectErrors = NO;
     // This value should not appear in the assertions, as it is not equal to
     // the release stage in the serialized report
@@ -313,7 +313,7 @@
     BugsnagEvent *report =
     [[BugsnagEvent alloc] initWithErrorName:@"TestError"
                                      errorMessage:@"Error for testing"
-                                    configuration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1]
+                                    configuration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil]
                                          metaData:[NSDictionary new]
                                      handledState:state
                                           session:nil];
@@ -396,7 +396,7 @@
     BugsnagEvent *report =
     [[BugsnagEvent alloc] initWithErrorName:@"TestError"
                                      errorMessage:@"Error for testing"
-                                    configuration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1]
+                                    configuration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil]
                                          metaData:[NSDictionary new]
                                      handledState:state
                                           session:nil];

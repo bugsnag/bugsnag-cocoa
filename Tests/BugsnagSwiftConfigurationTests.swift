@@ -11,13 +11,26 @@ import XCTest
 class BugsnagSwiftConfigurationTests: XCTestCase {
 
     /**
-     * Since Objective C and Swift exception handling are completely separate
-     * there's no /simple/ way of testing the ObjC failure modes.  Practically
-     * we just ensure the method is available to Swift.
+     * Objective C trailing-NSError* initializers are translated into throwing
+     * Swift methods, allowing us to fail gracefully (at the expense of a more-explicit
+     * (read: longer) ObjC invocation).
      */
     func testDesignatedInitializerHasCorrectNS_SWIFT_NAME() {
-        let config1 = BugsnagConfiguration(DUMMY_APIKEY_32CHAR_1)
-        XCTAssertNotNil(config1)
-        XCTAssertEqual(config1.apiKey, DUMMY_APIKEY_32CHAR_1)
+        
+        do {
+            let _ = try BugsnagConfiguration(DUMMY_APIKEY_16CHAR)
+        }
+        catch let e as NSError {
+            XCTAssertEqual(e.domain, BSGConfigurationErrorDomain)
+            XCTAssertEqual(e.code, BSGConfigurationErrorCode.invalidApiKey.rawValue)
+        }
+        
+        do {
+            let config = try BugsnagConfiguration(DUMMY_APIKEY_32CHAR_1)
+            XCTAssertEqual(config?.apiKey, DUMMY_APIKEY_32CHAR_1)
+        }
+        catch let e as NSError {
+            XCTFail("Failed to initialize a BugsnagConfiguration object with a correct apiKey: \(e.domain), \(e.code)")
+        }
     }
 }

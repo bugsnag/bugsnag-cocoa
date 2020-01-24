@@ -39,6 +39,7 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 static NSString *const BSGApiKeyError = @"apiKey must be a 32-digit hexadecimal value.";
 static NSString *const BSGInitError = @"Init is unavailable.  Use [[BugsnagConfiguration alloc] initWithApiKey:] instead.";
 static const int BSGApiKeyLength = 32;
+NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Configuration";
 
 @interface Bugsnag ()
 + (BugsnagNotifier *)notifier;
@@ -49,7 +50,6 @@ static const int BSGApiKeyLength = 32;
 @end
 
 @interface BugsnagConfiguration ()
-
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeNotifyHooks;
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeSendBlocks;
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeSendSessionBlocks;
@@ -67,9 +67,15 @@ static const int BSGApiKeyLength = 32;
 /**
  * The designated initializer.
  */
--(instancetype)initWithApiKey:(NSString *)apiKey {
+-(instancetype)initWithApiKey:(NSString *)apiKey
+                        error:(NSError * _Nullable __autoreleasing * _Nullable)error
+{
     if (! [self isValidApiKey:apiKey]) {
-        @throw BSGApiKeyError;
+        *error = [NSError errorWithDomain:BSGConfigurationErrorDomain
+                                     code:BSGConfigurationErrorInvalidApiKey
+                                 userInfo:nil];
+        
+        return nil;
     }
     
     self = [super init];
