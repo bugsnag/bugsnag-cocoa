@@ -23,6 +23,8 @@ Bugsnag Notifiers on other platforms.
 
   [#446](https://github.com/bugsnag/bugsnag-cocoa/pull/446)
 
+* Add a breadcrumb when Bugsnag first starts with the message "Bugsnag loaded"
+  [#445](https://github.com/bugsnag/bugsnag-cocoa/pull/445)
 
 ## Bug fixes
 
