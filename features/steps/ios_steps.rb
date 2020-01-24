@@ -98,6 +98,15 @@ Then("the event {string} is within {int} seconds of the current timestamp") do |
   assert_true(delta.abs < threshold_secs, "Expected current timestamp, but received #{value}")
 end
 
+Then("the event breadcrumbs contain {string} with type {string}") do |string, type|
+  crumbs = read_key_path(find_request(0)[:body], "events.0.breadcrumbs")
+  assert_not_equal(0, crumbs.length, "There are no breadcrumbs on this event")
+  match = crumbs.detect do |crumb|
+    crumb["name"] == string && crumb["type"] == type
+  end
+  assert_not_nil(match, "No crumb matches the provided message and type")
+end
+
 Then("the event breadcrumbs contain {string}") do |string|
   crumbs = read_key_path(find_request(0)[:body], "events.0.breadcrumbs")
   assert_not_equal(0, crumbs.length, "There are no breadcrumbs on this event")

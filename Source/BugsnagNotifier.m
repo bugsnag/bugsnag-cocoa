@@ -280,6 +280,7 @@ NSString *const kUndoOperation = @"Undo Operation";
 NSString *const kRedoOperation = @"Redo Operation";
 NSString *const kTableViewSelectionChange = @"TableView Select Change";
 NSString *const kAppWillTerminate = @"App Will Terminate";
+NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)initializeNotificationNameMap {
     notificationNameMap = @{
@@ -410,6 +411,11 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     }
 
     [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
+
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+        breadcrumb.type = BSGBreadcrumbTypeState;
+        breadcrumb.name = BSGBreadcrumbLoadedMessage;
+    }];
 
     // notification not received in time on initial startup, so trigger manually
     [self willEnterForeground:self];
