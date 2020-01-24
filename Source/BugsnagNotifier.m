@@ -532,7 +532,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 
 - (void)notifyError:(NSError *)error
-              block:(void (^)(BugsnagCrashReport *))block {
+              block:(void (^)(BugsnagEvent *))block {
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledError
                                                    severity:BSGSeverityWarning
@@ -542,7 +542,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                                                  userInfo:error.userInfo];
     [self notify:wrapper
         handledState:state
-               block:^(BugsnagCrashReport *_Nonnull report) {
+               block:^(BugsnagEvent *_Nonnull report) {
                  NSMutableDictionary *metadata = [report.metaData mutableCopy];
                  metadata[@"nserror"] = @{
                      @"code" : @(error.code),
@@ -562,7 +562,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)notifyException:(NSException *)exception
              atSeverity:(BSGSeverity)severity
-                  block:(void (^)(BugsnagCrashReport *))block {
+                  block:(void (^)(BugsnagEvent *))block {
 
     BugsnagHandledState *state = [BugsnagHandledState
         handledStateWithSeverityReason:UserSpecifiedSeverity
@@ -572,7 +572,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)notifyException:(NSException *)exception
-                  block:(void (^)(BugsnagCrashReport *))block {
+                  block:(void (^)(BugsnagEvent *))block {
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     [self notify:exception handledState:state block:block];
@@ -640,7 +640,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)notify:(NSException *)exception
     handledState:(BugsnagHandledState *_Nonnull)handledState
-           block:(void (^)(BugsnagCrashReport *))block {
+           block:(void (^)(BugsnagEvent *))block {
     NSString *exceptionName = exception.name ?: NSStringFromClass([exception class]);
     NSString *message = exception.reason;
     if (handledState.unhandled) {
@@ -649,7 +649,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         [self.sessionTracker handleHandledErrorEvent];
     }
 
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc]
+    BugsnagEvent *report = [[BugsnagEvent alloc]
         initWithErrorName:exceptionName
              errorMessage:message
             configuration:self.configuration

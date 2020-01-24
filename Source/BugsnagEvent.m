@@ -1,5 +1,5 @@
 //
-//  BugsnagCrashReport.m
+//  BugsnagEvent.m
 //  Bugsnag
 //
 //  Created by Simon Maynard on 11/26/14.
@@ -191,7 +191,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 - (instancetype)initWithClass:(NSString *_Nonnull)errorClass message:(NSString *_Nonnull)errorMessage NS_DESIGNATED_INITIALIZER;
 @end
 
-@interface BugsnagCrashReport ()
+@interface BugsnagEvent ()
 
 /**
  *  The type of the error, such as `mach` or `user`
@@ -222,7 +222,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 @property (nonatomic, readwrite, getter=isIncomplete) BOOL incomplete;
 @end
 
-@implementation BugsnagCrashReport
+@implementation BugsnagEvent
 
 - (instancetype)initWithKSReport:(NSDictionary *)report
                     fileMetadata:(NSString *)metadata {

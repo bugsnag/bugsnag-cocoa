@@ -6,6 +6,10 @@ Guide to ease migrations between significant changes
 
 Version 6 introduces a number of property and method renames:
 
+### BugsnagCrashReport class
+
+This is now BugsnagEvent.
+
 ### `BugsnagConfiguration` class
 
 ```diff

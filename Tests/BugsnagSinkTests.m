@@ -45,8 +45,8 @@
     // set a dummy endpoint, avoid hitting production
     [config setEndpointsForNotify:@"http://localhost:1234" sessions:@"http://localhost:1234"];
     [Bugsnag startBugsnagWithConfiguration:config];
-    BugsnagCrashReport *report =
-    [[BugsnagCrashReport alloc] initWithKSReport:self.rawReportData];
+    BugsnagEvent *report =
+    [[BugsnagEvent alloc] initWithKSReport:self.rawReportData];
     self.processedData = [[BugsnagSink new] getBodyFromReports:@[ report ]];
 }
 
@@ -310,8 +310,8 @@
 #pragma mark - handled/unhandled serialisation
 
 - (NSDictionary *)reportFromHandledState:(BugsnagHandledState *)state {
-    BugsnagCrashReport *report =
-    [[BugsnagCrashReport alloc] initWithErrorName:@"TestError"
+    BugsnagEvent *report =
+    [[BugsnagEvent alloc] initWithErrorName:@"TestError"
                                      errorMessage:@"Error for testing"
                                     configuration:[BugsnagConfiguration new]
                                          metaData:[NSDictionary new]
@@ -393,8 +393,8 @@
 - (void)testCallbackSpecified {
     BugsnagHandledState *state =
     [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagCrashReport *report =
-    [[BugsnagCrashReport alloc] initWithErrorName:@"TestError"
+    BugsnagEvent *report =
+    [[BugsnagEvent alloc] initWithErrorName:@"TestError"
                                      errorMessage:@"Error for testing"
                                     configuration:[BugsnagConfiguration new]
                                          metaData:[NSDictionary new]
