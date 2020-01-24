@@ -1,5 +1,8 @@
 Feature: Discarding reports based on release stage
 
+Background:
+    Given I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+
     Scenario: Crash when release stage is not present in "notify release stages"
         When I crash the app using "CrashWhenReleaseStageNotInNotifyReleaseStages"
         And I relaunch the app

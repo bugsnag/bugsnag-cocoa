@@ -19,6 +19,7 @@ class BugsnagSwiftConfigurationTests: XCTestCase {
         
         do {
             let _ = try BugsnagConfiguration(DUMMY_APIKEY_16CHAR)
+            XCTFail("Erronoeusly initialized a BugsnagConfiguration object with an invalid apiKey")
         }
         catch let e as NSError {
             XCTAssertEqual(e.domain, BSGConfigurationErrorDomain)

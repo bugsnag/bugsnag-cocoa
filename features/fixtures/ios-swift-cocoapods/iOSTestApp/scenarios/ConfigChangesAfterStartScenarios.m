@@ -3,7 +3,7 @@
 @implementation TurnOnCrashDetectionAfterStartScenario
 
 - (void)startBugsnag {
-    self.config.shouldAutoCaptureSessions = NO;
+    self.config.autoTrackSessions = NO;
     self.config.autoDetectErrors = NO;
     [super startBugsnag];
 }
@@ -18,7 +18,7 @@
 @implementation TurnOffCrashDetectionAfterStartScenario
 
 - (void)startBugsnag {
-    self.config.shouldAutoCaptureSessions = NO;
+    self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 

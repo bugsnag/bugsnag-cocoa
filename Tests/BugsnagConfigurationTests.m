@@ -80,6 +80,9 @@
     XCTAssertNotNil(error);
     XCTAssertEqual([error domain], BSGConfigurationErrorDomain);
     XCTAssertEqual([error code], BSGConfigurationErrorInvalidApiKey);
+    
+    XCTAssertTrue([[error domain] isEqualToString:@"com.Bugsnag.CocoaNotifier.Configuration"]);
+    XCTAssertEqual([error code], 0);
 
 // As per the docs the behaviour varies by platform
 //     https://developer.apple.com/documentation/foundation/nserror/1411580-userinfo?language=objc

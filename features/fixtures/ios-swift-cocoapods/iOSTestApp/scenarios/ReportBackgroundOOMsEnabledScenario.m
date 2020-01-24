@@ -4,8 +4,7 @@
 @implementation ReportBackgroundOOMsEnabledScenario
 
 - (void)startBugsnag {
-    self.config.shouldAutoCaptureSessions = NO;
-    self.config.reportBackgroundOOMs = YES;
+    self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 
