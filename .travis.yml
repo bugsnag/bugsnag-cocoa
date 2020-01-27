@@ -33,6 +33,9 @@ jobs:
     name: iOS 9-12 unit tests
     stage: unit tests
     env: PLATFORM=iOS
+    before_script:
+    # https://stackoverflow.com/questions/55389080/xcode-10-2-failed-to-run-app-on-simulator-with-ios-10
+    - sudo mkdir -p '/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 9.3.simruntime/Contents/Resources/RuntimeRoot/usr/lib/swift'
     script:
     - make test OS=12.2
     - make test OS=12.1
