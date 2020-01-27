@@ -109,11 +109,11 @@ id BSGLoadConfigValue(NSDictionary *report, NSString *valueName) {
     ?: [report valueForKeyPath:fallbackKeypath]; // some custom values are nested
 }
 
-NSString *BSGParseContext(NSDictionary *report, NSDictionary *metaData) {
+NSString *BSGParseContext(NSDictionary *report, NSDictionary *metadata) {
     id context = [report valueForKeyPath:@"user.overrides.context"];
     if ([context isKindOfClass:[NSString class]])
         return context;
-    context = metaData[BSGKeyContext];
+    context = metadata[BSGKeyContext];
     if ([context isKindOfClass:[NSString class]])
         return context;
     context = BSGLoadConfigValue(report, @"context");
@@ -122,11 +122,11 @@ NSString *BSGParseContext(NSDictionary *report, NSDictionary *metaData) {
     return nil;
 }
 
-NSString *BSGParseGroupingHash(NSDictionary *report, NSDictionary *metaData) {
+NSString *BSGParseGroupingHash(NSDictionary *report, NSDictionary *metadata) {
     id groupingHash = [report valueForKeyPath:@"user.overrides.groupingHash"];
     if (groupingHash)
         return groupingHash;
-    groupingHash = metaData[BSGKeyGroupingHash];
+    groupingHash = metadata[BSGKeyGroupingHash];
     if ([groupingHash isKindOfClass:[NSString class]])
         return groupingHash;
     return nil;
@@ -246,13 +246,13 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             _releaseStage = [report valueForKeyPath:@"user.state.oom.app.releaseStage"];
             _handledState = [BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory];
             _deviceAppHash = [report valueForKeyPath:@"user.state.oom.device.id"];
-            _metaData = [NSMutableDictionary new];
+            _metadata = [NSMutableDictionary new];
             NSDictionary *sessionData = [report valueForKeyPath:@"user.state.oom.session"];
             if (sessionData) {
                 _session = [[BugsnagSession alloc] initWithDictionary:sessionData];
                 _session.unhandledCount += 1; // include own event
                 if (_session.user) {
-                    _metaData = @{@"user": [_session.user toJson]};
+                    _metadata = @{@"user": [_session.user toJson]};
                 }
             }
         } else {
@@ -271,9 +271,9 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             _breadcrumbs = BSGParseBreadcrumbs(report);
             _dsymUUID = [report valueForKeyPath:@"system.app_uuid"];
             _deviceAppHash = [report valueForKeyPath:@"system.device_app_hash"];
-            _metaData =
+            _metadata =
                 [report valueForKeyPath:@"user.metaData"] ?: [NSDictionary new];
-            _context = BSGParseContext(report, _metaData);
+            _context = BSGParseContext(report, _metadata);
             _deviceState = BSGParseDeviceState(report);
             _device = BSGParseDevice(report);
             _app = BSGParseApp(report);
@@ -281,7 +281,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
                                          BSGLoadConfigValue(report, @"appVersion"),
                                          _releaseStage, // Already loaded from config
                                          BSGLoadConfigValue(report, @"codeBundleId"));
-            _groupingHash = BSGParseGroupingHash(report, _metaData);
+            _groupingHash = BSGParseGroupingHash(report, _metadata);
             _overrides = [report valueForKeyPath:@"user.overrides"];
             _customException = BSGParseCustomException(report, [_errorClass copy],
                                                        [_errorMessage copy]);
@@ -320,16 +320,16 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 initWithErrorName:(NSString *_Nonnull)name
      errorMessage:(NSString *_Nonnull)message
     configuration:(BugsnagConfiguration *_Nonnull)config
-         metaData:(NSDictionary *_Nonnull)metaData
+         metadata:(NSDictionary *_Nonnull)metadata
      handledState:(BugsnagHandledState *_Nonnull)handledState
           session:(BugsnagSession *_Nullable)session {
     if (self = [super init]) {
         _errorClass = name;
         _errorMessage = message;
-        _metaData = metaData ?: [NSDictionary new];
+        _metadata = metadata ?: [NSDictionary new];
         _releaseStage = config.releaseStage;
         _notifyReleaseStages = config.notifyReleaseStages;
-        _context = BSGParseContext(nil, metaData);
+        _context = BSGParseContext(nil, metadata);
         _breadcrumbs = [config.breadcrumbs arrayValue];
         _overrides = [NSDictionary new];
 
@@ -340,17 +340,17 @@ initWithErrorName:(NSString *_Nonnull)name
     return self;
 }
 
-@synthesize metaData = _metaData;
+@synthesize metadata = _metadata;
 
-- (NSDictionary *)metaData {
+- (NSDictionary *)metadata {
     @synchronized (self) {
-        return _metaData;
+        return _metadata;
     }
 }
 
-- (void)setMetaData:(NSDictionary *)metaData {
+- (void)setMetadata:(NSDictionary *)metadata {
     @synchronized (self) {
-        _metaData = BSGSanitizeDict(metaData);
+        _metadata = BSGSanitizeDict(metadata);
     }
 }
 
@@ -361,17 +361,17 @@ initWithErrorName:(NSString *_Nonnull)name
         bsg_log_err(@"Failed to add metadata: Values not convertible to JSON");
         return;
     }
-    NSMutableDictionary *allMetadata = [self.metaData mutableCopy];
+    NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
     NSMutableDictionary *allTabData =
         allMetadata[tabName] ?: [NSMutableDictionary new];
     allMetadata[tabName] = [cleanedData BSG_mergedInto:allTabData];
-    self.metaData = allMetadata;
+    self.metadata = allMetadata;
 }
 
 - (void)addAttribute:(NSString *)attributeName
            withValue:(id)value
        toTabWithName:(NSString *)tabName {
-    NSMutableDictionary *allMetadata = [self.metaData mutableCopy];
+    NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
     NSMutableDictionary *allTabData =
         [allMetadata[tabName] mutableCopy] ?: [NSMutableDictionary new];
     if (value) {
@@ -387,7 +387,7 @@ initWithErrorName:(NSString *_Nonnull)name
         [allTabData removeObjectForKey:attributeName];
     }
     allMetadata[tabName] = allTabData;
-    self.metaData = allMetadata;
+    self.metadata = allMetadata;
 }
 
 - (BOOL)shouldBeSent {
@@ -496,7 +496,7 @@ initWithErrorName:(NSString *_Nonnull)name
 
 - (NSDictionary *)toJson {
     NSMutableDictionary *event = [NSMutableDictionary dictionary];
-    NSMutableDictionary *metaData = [[self metaData] mutableCopy];
+    NSMutableDictionary *metadata = [[self metadata] mutableCopy];
 
     if (self.customException) {
         BSGDictSetSafeObject(event, @[ self.customException ], BSGKeyExceptions);
@@ -515,7 +515,7 @@ initWithErrorName:(NSString *_Nonnull)name
     // Build Event
     BSGDictSetSafeObject(event, BSGFormatSeverity(self.severity), BSGKeySeverity);
     BSGDictSetSafeObject(event, [self breadcrumbs], BSGKeyBreadcrumbs);
-    BSGDictSetSafeObject(event, metaData, BSGKeyMetaData);
+    BSGDictSetSafeObject(event, metadata, BSGKeyMetadata);
 
     NSDictionary *device = BSGDictMerge(self.device, self.deviceState);
     BSGDictSetSafeObject(event, device, BSGKeyDevice);
@@ -553,12 +553,12 @@ initWithErrorName:(NSString *_Nonnull)name
     BSGDictSetSafeObject(event, severityReason, BSGKeySeverityReason);
 
     //  Inserted into `context` property
-    [metaData removeObjectForKey:BSGKeyContext];
+    [metadata removeObjectForKey:BSGKeyContext];
     // Build metadata
-    BSGDictSetSafeObject(metaData, [self error], BSGKeyError);
+    BSGDictSetSafeObject(metadata, [self error], BSGKeyError);
 
     // Make user mutable and set the id if the user hasn't already
-    NSMutableDictionary *user = [metaData[BSGKeyUser] mutableCopy];
+    NSMutableDictionary *user = [metadata[BSGKeyUser] mutableCopy];
     if (user == nil) {
         user = [NSMutableDictionary dictionary];
     }

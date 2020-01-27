@@ -80,8 +80,8 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
     
     self = [super init];
     
-    _metaData = [[BugsnagMetaData alloc] init];
-    _config = [[BugsnagMetaData alloc] init];
+    _metadata = [[BugsnagMetadata alloc] init];
+    _config = [[BugsnagMetadata alloc] init];
     _apiKey = apiKey;
     _sessionURL = [NSURL URLWithString:@"https://sessions.bugsnag.com"];
     _autoDetectErrors = YES;
@@ -123,11 +123,11 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
 
     self.currentUser = [[BugsnagUser alloc] initWithUserId:userId name:userName emailAddress:userEmail];
 
-    [self.metaData addAttribute:BSGKeyId withValue:userId toTabWithName:BSGKeyUser];
-    [self.metaData addAttribute:BSGKeyName
+    [self.metadata addAttribute:BSGKeyId withValue:userId toTabWithName:BSGKeyUser];
+    [self.metadata addAttribute:BSGKeyName
                       withValue:userName
                   toTabWithName:BSGKeyUser];
-    [self.metaData addAttribute:BSGKeyEmail
+    [self.metadata addAttribute:BSGKeyEmail
                       withValue:userEmail
                   toTabWithName:BSGKeyUser];
 }

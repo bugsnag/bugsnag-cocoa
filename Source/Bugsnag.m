@@ -142,21 +142,21 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
-+ (void)notify:(NSException *)exception withData:(NSDictionary *)metaData {
++ (void)notify:(NSException *)exception withData:(NSDictionary *)metadata {
     if ([self bugsnagStarted]) {
         [[self notifier]
                 notifyException:exception
                           block:^(BugsnagEvent *_Nonnull report) {
                               report.depth += 2;
-                              report.metaData = [metaData
+                              report.metadata = [metadata
                                       BSG_mergedInto:[self.notifier.configuration
-                                              .metaData toDictionary]];
+                                              .metadata toDictionary]];
                           }];
     }
 }
 
 + (void)notify:(NSException *)exception
-      withData:(NSDictionary *)metaData
+      withData:(NSDictionary *)metadata
     atSeverity:(NSString *)severity {
     if ([self bugsnagStarted]) {
         [[self notifier]
@@ -164,20 +164,20 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
                      atSeverity:BSGParseSeverity(severity)
                           block:^(BugsnagEvent *_Nonnull report) {
                               report.depth += 2;
-                              report.metaData = [metaData
+                              report.metadata = [metadata
                                       BSG_mergedInto:[self.notifier.configuration
-                                              .metaData toDictionary]];
+                                              .metadata toDictionary]];
                               report.severity = BSGParseSeverity(severity);
                           }];
     }
 }
 
 + (void)internalClientNotify:(NSException *_Nonnull)exception
-                    withData:(NSDictionary *_Nullable)metaData
+                    withData:(NSDictionary *_Nullable)metadata
                        block:(BugsnagNotifyBlock _Nullable)block {
     if ([self bugsnagStarted]) {
         [self.notifier internalClientNotify:exception
-                                   withData:metaData
+                                   withData:metadata
                                       block:block];
     }
 }
@@ -186,7 +186,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
            withValue:(id)value
        toTabWithName:(NSString *)tabName {
     if ([self bugsnagStarted]) {
-        [self.notifier.configuration.metaData addAttribute:attributeName
+        [self.notifier.configuration.metadata addAttribute:attributeName
                                                  withValue:value
                                              toTabWithName:tabName];
     }
@@ -194,7 +194,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (void)clearTabWithName:(NSString *)tabName {
     if ([self bugsnagStarted]) {
-        [self.notifier.configuration.metaData clearTab:tabName];
+        [self.notifier.configuration.metadata clearTab:tabName];
     }
 }
 

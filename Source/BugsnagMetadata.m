@@ -43,7 +43,7 @@
     if (self = [super init]) {
         self.dictionary = dict;
     }
-    [self.delegate metaDataChanged:self];
+    [self.delegate metadataChanged:self];
     return self;
 }
 
@@ -70,7 +70,7 @@
         [self.dictionary removeObjectForKey:tabName];
     }
 
-    [self.delegate metaDataChanged:self];
+    [self.delegate metadataChanged:self];
 }
 
 - (NSDictionary *)toDictionary {
@@ -97,7 +97,7 @@
             [[self getTab:tabName] removeObjectForKey:attributeName];
         }
     }
-    [self.delegate metaDataChanged:self];
+    [self.delegate metadataChanged:self];
 }
 
 @end

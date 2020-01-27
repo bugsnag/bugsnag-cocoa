@@ -120,7 +120,7 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
  *  Additional information about the state of the app or environment at the
  *  time the report was generated
  */
-@property(readwrite, retain, nullable) BugsnagMetadata *metaData;
+@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
 /**
  *  Meta-information about the state of Bugsnag
  */

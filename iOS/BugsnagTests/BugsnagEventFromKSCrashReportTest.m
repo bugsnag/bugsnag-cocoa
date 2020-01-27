@@ -54,7 +54,7 @@
 - (void)testAddMetadataAddsNewTab {
     NSDictionary *metadata = @{@"color" : @"blue", @"beverage" : @"tea"};
     [self.report addMetadata:metadata toTabWithName:@"user prefs"];
-    NSDictionary *prefs = self.report.metaData[@"user prefs"];
+    NSDictionary *prefs = self.report.metadata[@"user prefs"];
     XCTAssertEqual(@"blue", prefs[@"color"]);
     XCTAssertEqual(@"tea", prefs[@"beverage"]);
     XCTAssert([prefs count] == 2);
@@ -65,7 +65,7 @@
     [self.report addMetadata:oldMetadata toTabWithName:@"user prefs"];
     NSDictionary *metadata = @{@"color" : @"blue", @"beverage" : @"tea"};
     [self.report addMetadata:metadata toTabWithName:@"user prefs"];
-    NSDictionary *prefs = self.report.metaData[@"user prefs"];
+    NSDictionary *prefs = self.report.metadata[@"user prefs"];
     XCTAssertEqual(@"blue", prefs[@"color"]);
     XCTAssertEqual(@"tea", prefs[@"beverage"]);
     XCTAssertEqual(@"carrots", prefs[@"food"]);
@@ -76,7 +76,7 @@
     [self.report addAttribute:@"color"
                     withValue:@"blue"
                 toTabWithName:@"prefs"];
-    NSDictionary *prefs = self.report.metaData[@"prefs"];
+    NSDictionary *prefs = self.report.metadata[@"prefs"];
     XCTAssertEqual(@"blue", prefs[@"color"]);
 }
 
@@ -85,14 +85,14 @@
     [self.report addAttribute:@"color"
                     withValue:@"blue"
                 toTabWithName:@"prefs"];
-    NSDictionary *prefs = self.report.metaData[@"prefs"];
+    NSDictionary *prefs = self.report.metadata[@"prefs"];
     XCTAssertEqual(@"blue", prefs[@"color"]);
 }
 
 - (void)testAddAttributeRemovesValue {
     [self.report addAttribute:@"color" withValue:@"red" toTabWithName:@"prefs"];
     [self.report addAttribute:@"color" withValue:nil toTabWithName:@"prefs"];
-    NSDictionary *prefs = self.report.metaData[@"prefs"];
+    NSDictionary *prefs = self.report.metadata[@"prefs"];
     XCTAssertNil(prefs[@"color"]);
 }
 
