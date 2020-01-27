@@ -9,11 +9,11 @@
 @import XCTest;
 @import Bugsnag;
 
-@interface BugsnagCrashReportFromKSCrashReportTest : XCTestCase
-@property BugsnagCrashReport *report;
+@interface BugsnagEventFromKSCrashReportTest : XCTestCase
+@property BugsnagEvent *report;
 @end
 
-@implementation BugsnagCrashReportFromKSCrashReportTest
+@implementation BugsnagEventFromKSCrashReportTest
 
 - (void)setUp {
     [super setUp];
@@ -26,7 +26,7 @@
                                 JSONObjectWithData:[contents dataUsingEncoding:NSUTF8StringEncoding]
                                 options:0
                                 error:nil];
-    self.report = [[BugsnagCrashReport alloc] initWithKSReport:dictionary];
+    self.report = [[BugsnagEvent alloc] initWithKSReport:dictionary];
 }
 
 - (void)tearDown {

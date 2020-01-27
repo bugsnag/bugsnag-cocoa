@@ -64,7 +64,7 @@
     
     for (NSString *fileKey in reports) {
         NSDictionary *report = reports[fileKey];
-        BugsnagCrashReport *bugsnagReport = [[BugsnagCrashReport alloc] initWithKSReport:report];
+        BugsnagEvent *bugsnagReport = [[BugsnagEvent alloc] initWithKSReport:report];
         if (![bugsnagReport shouldBeSent])
             continue;
         BOOL shouldSend = YES;
@@ -127,7 +127,7 @@
     NSMutableArray *formatted =
             [[NSMutableArray alloc] initWithCapacity:[reports count]];
 
-    for (BugsnagCrashReport *report in reports) {
+    for (BugsnagEvent *report in reports) {
         BSGArrayAddSafeObject(formatted, [report toJson]);
     }
 

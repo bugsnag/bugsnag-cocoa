@@ -8,6 +8,9 @@ Changelog
 * Add a breadcrumb when Bugsnag first starts with the message "Bugsnag loaded"
   [#445](https://github.com/bugsnag/bugsnag-cocoa/pull/445)
 
+* BugsnagCrashReport is now BugsnagEvent
+  [#449](https://github.com/bugsnag/bugsnag-cocoa/pull/449)
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads

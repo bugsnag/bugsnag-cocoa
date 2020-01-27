@@ -1,5 +1,5 @@
 //
-//  BugsnagCrashReportTests.m
+//  BugsnagEventTests.m
 //  Bugsnag
 //
 //  Created by Simon Maynard on 12/1/14.
@@ -15,10 +15,10 @@
 #import "BugsnagSession.h"
 
 
-@interface BugsnagCrashReportTests : XCTestCase
+@interface BugsnagEventTests : XCTestCase
 @end
 
-@implementation BugsnagCrashReportTests
+@implementation BugsnagEventTests
 
 - (void)testNotifyReleaseStagesSendsFromConfig {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
@@ -26,8 +26,8 @@
     config.releaseStage = @"foo";
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagCrashReport *report =
-        [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
+    BugsnagEvent *report =
+        [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
                                          errorMessage:@"it was so bad"
                                         configuration:config
                                              metaData:@{}
@@ -43,8 +43,8 @@
 
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagCrashReport *report =
-        [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
+    BugsnagEvent *report =
+        [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
                                          errorMessage:@"it was so bad"
                                         configuration:config
                                              metaData:@{}
@@ -66,8 +66,8 @@
     bugsnagSession.handledCount = 2;
     bugsnagSession.unhandledCount = 1;
 
-    BugsnagCrashReport *report =
-        [[BugsnagCrashReport alloc] initWithErrorName:@"Bad error"
+    BugsnagEvent *report =
+        [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
                                          errorMessage:@"it was so bad"
                                         configuration:config
                                              metaData:@{}
@@ -89,7 +89,7 @@
 }
 
 - (void)testDefaultErrorMessageNilForEmptyThreads {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
         @"threads" : @[]
     }];
     NSDictionary *payload = [report toJson];
@@ -103,7 +103,7 @@
 }
 
 - (void)testEnhancedErrorMessageNilForEmptyNotableAddresses {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
         @"threads" : @[ @{@"crashed" : @YES, @"notable_addresses" : @{}} ]
     }];
     NSDictionary *payload = [report toJson];
@@ -117,7 +117,7 @@
 }
 
 - (void)testEnhancedErrorMessageForFatalErrorWithoutAdditionalMessage {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
         @"crash" : @{
             @"threads" : @[ @{
                 @"crashed" : @YES,
@@ -142,7 +142,7 @@
 }
 
 - (void)testEnhancedErrorMessageForAssertionWithoutAdditionalMessage {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
         @"crash" : @{
             @"threads" : @[ @{
                 @"crashed" : @YES,
@@ -171,8 +171,8 @@
              @"assertion failed", @"Assertion failed", @"fatal error",
              @"Fatal error"
          ]) {
-        BugsnagCrashReport *report =
-            [[BugsnagCrashReport alloc] initWithKSReport:@{
+        BugsnagEvent *report =
+            [[BugsnagEvent alloc] initWithKSReport:@{
                 @"crash" : @{
                     @"threads" : @[ @{
                         @"crashed" : @YES,
@@ -204,7 +204,7 @@
 }
 
 - (void)testEnhancedErrorMessageIgnoresFilePaths {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
         @"crash" : @{
             @"threads" : @[ @{
                 @"crashed" : @YES,
@@ -234,7 +234,7 @@
 }
 
 - (void)testEnhancedErrorMessageIgnoresNonStrings {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
         @"crash" : @{
             @"threads" : @[ @{
                 @"crashed" : @YES,
@@ -264,7 +264,7 @@
 }
 
 - (void)testEnhancedErrorMessageConcatenatesMultipleMessages {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
         @"crash" : @{
             @"threads" : @[ @{
                 @"crashed" : @YES,
@@ -300,7 +300,7 @@
 }
 
 - (void)testEnhancedErrorMessageIgnoresUnknownAssertionTypes {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
         @"crash" : @{
             @"threads" : @[ @{
                 @"crashed" : @YES,
@@ -330,14 +330,14 @@
 }
 
 - (void)testEmptyReport {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{}];
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{}];
     XCTAssertNil(report);
 }
 
 - (void)testUnhandledReportDepth {
     // unhandled reports should calculate their own depth
     NSDictionary *dict = @{@"user.depth": @2};
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
     XCTAssertEqual(report.depth, 0);
 }
 
@@ -345,14 +345,14 @@
     // handled reports should use the serialised depth
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     NSDictionary *dict = @{@"user.depth": @2, @"user.handledState": [state toJson]};
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
     XCTAssertEqual(report.depth, 2);
 }
 
 - (void)testUnhandledReportSeverity {
     // unhandled reports should calculate their own severity
     NSDictionary *dict = @{@"user.state.crash.severity": @"info"};
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
     XCTAssertEqual(report.severity, BSGSeverityError);
 }
 
@@ -360,7 +360,7 @@
     // handled reports should use the serialised depth
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     NSDictionary *dict = @{@"user.state.crash.severity": @"info", @"user.handledState": [state toJson]};
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
     XCTAssertEqual(report.severity, BSGSeverityWarning);
 }
 
@@ -370,7 +370,7 @@
     [metaData addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
     NSDictionary *dict = @{@"user.handledState": [state toJson], @"user.metaData": [metaData toDictionary]};
 
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
     XCTAssertNotNil(report.metaData);
     XCTAssertEqual(report.metaData.count, 1);
     XCTAssertEqualObjects(report.metaData[@"Custom"][@"Foo"], @"Bar");
@@ -381,14 +381,14 @@
     [metaData addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
     NSDictionary *dict = @{@"user.metaData": [metaData toDictionary]};
 
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:dict];
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
     XCTAssertNotNil(report.metaData);
     XCTAssertEqual(report.metaData.count, 1);
     XCTAssertEqualObjects(report.metaData[@"Custom"][@"Foo"], @"Bar");
 }
 
 - (void)testAppVersionOverride {
-    BugsnagCrashReport *overrideReport = [[BugsnagCrashReport alloc] initWithKSReport:@{
+    BugsnagEvent *overrideReport = [[BugsnagEvent alloc] initWithKSReport:@{
             @"system" : @{
                     @"CFBundleShortVersionString": @"1.1",
             },
@@ -403,12 +403,12 @@
 }
 
 - (void)testReportAddAttr {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{@"user.metaData": @{@"user": @{@"id": @"user id"}}}];
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{@"user.metaData": @{@"user": @{@"id": @"user id"}}}];
     [report addAttribute:@"foo" withValue:@"bar" toTabWithName:@"user"];
 }
 
 - (void)testReportAddMetadata {
-    BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithKSReport:@{@"user.metaData": @{@"user": @{@"id": @"user id"}}}];
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{@"user.metaData": @{@"user": @{@"id": @"user id"}}}];
     [report addMetadata:@{@"foo": @"bar"} toTabWithName:@"user"];
 }
 

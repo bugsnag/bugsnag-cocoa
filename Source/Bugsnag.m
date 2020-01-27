@@ -105,7 +105,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 + (void)notify:(NSException *)exception {
     if ([self bugsnagStarted]) {
         [self.notifier notifyException:exception
-                                 block:^(BugsnagCrashReport *_Nonnull report) {
+                                 block:^(BugsnagEvent *_Nonnull report) {
                                      report.depth += 2;
                                  }];
     }
@@ -114,7 +114,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 + (void)notify:(NSException *)exception block:(BugsnagNotifyBlock)block {
     if ([self bugsnagStarted]) {
         [[self notifier] notifyException:exception
-                                   block:^(BugsnagCrashReport *_Nonnull report) {
+                                   block:^(BugsnagEvent *_Nonnull report) {
                                        report.depth += 2;
 
                                        if (block) {
@@ -127,7 +127,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 + (void)notifyError:(NSError *)error {
     if ([self bugsnagStarted]) {
         [self.notifier notifyError:error
-                             block:^(BugsnagCrashReport *_Nonnull report) {
+                             block:^(BugsnagEvent *_Nonnull report) {
                                  report.depth += 2;
                              }];
     }
@@ -136,7 +136,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 + (void)notifyError:(NSError *)error block:(BugsnagNotifyBlock)block {
     if ([self bugsnagStarted]) {
         [[self notifier] notifyError:error
-                               block:^(BugsnagCrashReport *_Nonnull report) {
+                               block:^(BugsnagEvent *_Nonnull report) {
                                    report.depth += 2;
 
                                    if (block) {
@@ -150,7 +150,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     if ([self bugsnagStarted]) {
         [[self notifier]
                 notifyException:exception
-                          block:^(BugsnagCrashReport *_Nonnull report) {
+                          block:^(BugsnagEvent *_Nonnull report) {
                               report.depth += 2;
                               report.metaData = [metaData
                                       BSG_mergedInto:[self.notifier.configuration
@@ -166,7 +166,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
         [[self notifier]
                 notifyException:exception
                      atSeverity:BSGParseSeverity(severity)
-                          block:^(BugsnagCrashReport *_Nonnull report) {
+                          block:^(BugsnagEvent *_Nonnull report) {
                               report.depth += 2;
                               report.metaData = [metaData
                                       BSG_mergedInto:[self.notifier.configuration

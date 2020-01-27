@@ -28,7 +28,7 @@
 
 #import "BSG_KSCrashReportWriter.h"
 #import "BugsnagBreadcrumb.h"
-#import "BugsnagCrashReport.h"
+#import "BugsnagEvent.h"
 #import "BugsnagMetaData.h"
 
 @class BugsnagBreadcrumbs;
@@ -39,7 +39,7 @@
  *
  *  @param report The default report
  */
-typedef void (^BugsnagNotifyBlock)(BugsnagCrashReport *_Nonnull report);
+typedef void (^BugsnagNotifyBlock)(BugsnagEvent *_Nonnull report);
 
 /**
  *  A handler for modifying data before sending it to Bugsnag.
@@ -54,7 +54,7 @@ typedef void (^BugsnagNotifyBlock)(BugsnagCrashReport *_Nonnull report);
  *  @return YES if the report should be sent
  */
 typedef bool (^BugsnagBeforeSendBlock)(NSDictionary *_Nonnull rawEventData,
-                                       BugsnagCrashReport *_Nonnull reports);
+                                       BugsnagEvent *_Nonnull reports);
 
 /**
  * A configuration block for modifying a session. Intended for internal usage only.
