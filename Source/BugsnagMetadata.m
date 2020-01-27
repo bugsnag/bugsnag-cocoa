@@ -24,15 +24,15 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagMetaData.h"
+#import "BugsnagMetadata.h"
 #import "BSGSerialization.h"
 #import "BugsnagLogger.h"
 
-@interface BugsnagMetaData ()
+@interface BugsnagMetadata ()
 @property(atomic, strong) NSMutableDictionary *dictionary;
 @end
 
-@implementation BugsnagMetaData
+@implementation BugsnagMetadata
 
 - (id)init {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -50,7 +50,7 @@
 - (id)mutableCopyWithZone:(NSZone *)zone {
     @synchronized(self) {
         NSMutableDictionary *dict = [self.dictionary mutableCopy];
-        return [[BugsnagMetaData alloc] initWithDictionary:dict];
+        return [[BugsnagMetadata alloc] initWithDictionary:dict];
     }
 }
 

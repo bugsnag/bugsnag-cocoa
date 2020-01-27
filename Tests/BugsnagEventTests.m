@@ -366,7 +366,7 @@
 
 - (void)testHandledReportMetaData {
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagMetaData *metaData = [BugsnagMetaData new];
+    BugsnagMetadata *metaData = [BugsnagMetadata new];
     [metaData addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
     NSDictionary *dict = @{@"user.handledState": [state toJson], @"user.metaData": [metaData toDictionary]};
 
@@ -377,7 +377,7 @@
 }
 
 - (void)testUnhandledReportMetaData {
-    BugsnagMetaData *metaData = [BugsnagMetaData new];
+    BugsnagMetadata *metaData = [BugsnagMetadata new];
     [metaData addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
     NSDictionary *dict = @{@"user.metaData": [metaData toDictionary]};
 

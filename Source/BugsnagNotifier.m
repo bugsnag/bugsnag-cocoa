@@ -217,7 +217,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
     static NSString *const BSGCrashSentinelFileName = @"bugsnag_handled_crash.txt";
     if ((self = [super init])) {
         self.configuration = initConfiguration;
-        self.state = [[BugsnagMetaData alloc] init];
+        self.state = [[BugsnagMetadata alloc] init];
         NSString *notifierName =
 #if TARGET_OS_TV
             @"tvOS Bugsnag Notifier";
@@ -715,7 +715,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                toTabWithName:BSTabCrash];
 }
 
-- (void)metaDataChanged:(BugsnagMetaData *)metaData {
+- (void)metaDataChanged:(BugsnagMetadata *)metaData {
     @synchronized(metaData) {
         if (metaData == self.configuration.metaData) {
             if ([self.metaDataLock tryLock]) {

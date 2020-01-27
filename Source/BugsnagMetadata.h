@@ -28,7 +28,7 @@
 
 @protocol BugsnagMetaDataDelegate;
 
-@interface BugsnagMetaData : NSObject <NSMutableCopying>
+@interface BugsnagMetadata : NSObject <NSMutableCopying>
 
 - (instancetype _Nonnull)initWithDictionary:(NSMutableDictionary *_Nonnull)dict;
 
@@ -48,5 +48,5 @@
 
 @protocol BugsnagMetaDataDelegate <NSObject>
 
-- (void)metaDataChanged:(BugsnagMetaData *_Nonnull)metaData;
+- (void)metaDataChanged:(BugsnagMetadata *_Nonnull)metaData;
 @end

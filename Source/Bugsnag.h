@@ -26,7 +26,7 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagConfiguration.h"
-#import "BugsnagMetaData.h"
+#import "BugsnagMetadata.h"
 #import "BugsnagPlugin.h"
 
 static NSString *_Nonnull const BugsnagSeverityError = @"error";

@@ -27,7 +27,7 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagConfiguration.h"
-#import "BugsnagMetaData.h"
+#import "BugsnagMetadata.h"
 
 @class BSGConnectivity, BugsnagSessionTracker;
 
@@ -35,7 +35,7 @@
 
 @property(nonatomic, readwrite, retain)
     BugsnagConfiguration *_Nullable configuration;
-@property(nonatomic, readwrite, strong) BugsnagMetaData *_Nonnull state;
+@property(nonatomic, readwrite, strong) BugsnagMetadata *_Nonnull state;
 @property(nonatomic, readwrite, strong) NSDictionary *_Nonnull details;
 @property(nonatomic, readwrite, strong) NSLock *_Nonnull metaDataLock;
 @property(nonatomic, readonly, strong) BugsnagSessionTracker *_Nonnull sessionTracker;
