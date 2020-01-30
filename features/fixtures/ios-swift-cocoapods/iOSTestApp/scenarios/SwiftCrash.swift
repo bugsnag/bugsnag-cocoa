@@ -31,7 +31,7 @@ import Foundation
  */
 class SwiftCrash: Scenario {
     override func startBugsnag() {
-      self.config.shouldAutoCaptureSessions = false;
+      self.config.autoTrackSessions = false;
       super.startBugsnag()
     }
 
