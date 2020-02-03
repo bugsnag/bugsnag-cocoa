@@ -1,5 +1,8 @@
 Feature: Handled Errors and Exceptions
 
+Background:
+    Given I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+
 Scenario: Override errorClass and message from a notifyError() callback, customize report
 
     Discard 2 lines from the stacktrace, as we have single place to report and log errors, see

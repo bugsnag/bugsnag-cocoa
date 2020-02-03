@@ -94,6 +94,7 @@ Feature: Reporting out of memory events
         And the payload field "events.0.session.id" of request 1 equals the payload field "sessions.0.id" of request 0
 
     Scenario: The OS kills the application after a session is resumed
+        When I set environment variable "BUGSNAG_API_KEY" to "0192837465afbecd0192837465afbecd"
         When I crash the app using "ResumeSessionOOMScenario"
         And I wait for 2 requests
         And the app is unexpectedly terminated
