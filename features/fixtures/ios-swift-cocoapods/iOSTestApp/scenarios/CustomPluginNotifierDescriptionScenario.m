@@ -35,7 +35,7 @@
 
 - (void)startBugsnag {
     [Bugsnag registerPlugin:[DescriptionPlugin new]];
-    self.config.shouldAutoCaptureSessions = NO;
+    self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 

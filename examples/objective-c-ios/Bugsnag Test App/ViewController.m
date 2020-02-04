@@ -66,7 +66,7 @@
         NSDictionary *actuallyReallyJSON = nil;
         [NSJSONSerialization dataWithJSONObject:actuallyReallyJSON options:0 error:nil];
     } @catch (NSException *exception) {
-        [Bugsnag notify:exception block:^(BugsnagCrashReport * _Nonnull report) {
+        [Bugsnag notify:exception block:^(BugsnagEvent * _Nonnull report) {
             report.metaData = @{@"tab": @{@"user": @"Bob Loblaw"}};
         }];
     }

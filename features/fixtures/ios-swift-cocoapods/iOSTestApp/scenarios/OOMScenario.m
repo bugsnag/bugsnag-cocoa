@@ -7,7 +7,7 @@
 - (void)startBugsnag {
     self.config.shouldAutoCaptureSessions = NO;
     self.config.releaseStage = @"alpha";
-    [self.config addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagCrashReport * _Nonnull report) {
+    [self.config addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull report) {
         NSMutableDictionary *metadata = [report.metaData mutableCopy];
         metadata[@"extra"] = @{ @"shape": @"line" };
         report.metaData = metadata;

@@ -54,14 +54,10 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (void)startBugsnagWithConfiguration:(BugsnagConfiguration *)configuration {
     @synchronized(self) {
-        if ([configuration hasValidApiKey]) {
-            bsg_g_bugsnag_notifier =
-                    [[BugsnagNotifier alloc] initWithConfiguration:configuration];
-            [self startPlugins];
-            [bsg_g_bugsnag_notifier start];
-        } else {
-            bsg_log_err(@"Bugsnag not initialized - a valid API key must be supplied.");
-        }
+        bsg_g_bugsnag_notifier =
+                [[BugsnagNotifier alloc] initWithConfiguration:configuration];
+        [self startPlugins];
+        [bsg_g_bugsnag_notifier start];
     }
 }
 

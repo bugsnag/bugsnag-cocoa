@@ -8,6 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		4B47970A22A9AE1F00FF9C2E /* BugsnagEventFromKSCrashReportTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B47970922A9AE1F00FF9C2E /* BugsnagEventFromKSCrashReportTest.m */; };
+		000DF29423DB4B4900A883CE /* TestConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 000DF29323DB4B4900A883CE /* TestConstants.m */; };
+		000E6E9E23D8690F009D8194 /* BugsnagSwiftConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000E6E9D23D8690F009D8194 /* BugsnagSwiftConfigurationTests.swift */; };
+		000E6EA323D8AC8C009D8194 /* UPGRADING.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6E9F23D8AC8C009D8194 /* UPGRADING.md */; };
+		000E6EA423D8AC8C009D8194 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA023D8AC8C009D8194 /* README.md */; };
+		000E6EA523D8AC8C009D8194 /* VERSION in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA123D8AC8C009D8194 /* VERSION */; };
+		000E6EA623D8AC8C009D8194 /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA223D8AC8C009D8194 /* CHANGELOG.md */; };
+		4B47970A22A9AE1F00FF9C2E /* BugsnagCrashReportFromKSCrashReportTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B47970922A9AE1F00FF9C2E /* BugsnagCrashReportFromKSCrashReportTest.m */; };
 		4B775FCF22CBDEB4004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B775FCE22CBDEB4004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m */; };
 		4BE6C42622CAD61A0056305D /* BugsnagCollectionsBSGDictMergeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE6C42522CAD61A0056305D /* BugsnagCollectionsBSGDictMergeTest.m */; };
 		8A2C8F231C6BBD2300846019 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8F181C6BBD2300846019 /* Bugsnag.framework */; };
@@ -397,6 +404,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		000DF29323DB4B4900A883CE /* TestConstants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestConstants.m; sourceTree = "<group>"; };
+		000E6E9B23D84DB1009D8194 /* BugsnagTestConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagTestConstants.h; path = ../../Tests/BugsnagTestConstants.h; sourceTree = "<group>"; };
+		000E6E9C23D8690E009D8194 /* Tests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Bridging-Header.h"; sourceTree = "<group>"; };
+		000E6E9D23D8690F009D8194 /* BugsnagSwiftConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagSwiftConfigurationTests.swift; sourceTree = "<group>"; };
+		000E6E9F23D8AC8C009D8194 /* UPGRADING.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = UPGRADING.md; path = ../UPGRADING.md; sourceTree = "<group>"; };
+		000E6EA023D8AC8C009D8194 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		000E6EA123D8AC8C009D8194 /* VERSION */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = VERSION; path = ../VERSION; sourceTree = "<group>"; };
+		000E6EA223D8AC8C009D8194 /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
 		4B3B193422CA7B0900475354 /* BugsnagCollectionsBSGDictSetSafeObjectTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagCollectionsBSGDictSetSafeObjectTest.m; path = ../../Tests/BugsnagCollectionsBSGDictSetSafeObjectTest.m; sourceTree = "<group>"; };
 		4B47970922A9AE1F00FF9C2E /* BugsnagEventFromKSCrashReportTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagEventFromKSCrashReportTest.m; sourceTree = "<group>"; };
 		4B775FCE22CBDEB4004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagCollectionsBSGDictInsertIfNotNilTest.m; path = ../../Tests/BugsnagCollectionsBSGDictInsertIfNotNilTest.m; sourceTree = "<group>"; };
@@ -619,9 +634,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		000DF29223DB4A6B00A883CE /* Swift Tests */ = {
+			isa = PBXGroup;
+			children = (
+				000E6E9D23D8690F009D8194 /* BugsnagSwiftConfigurationTests.swift */,
+			);
+			path = "Swift Tests";
+			sourceTree = "<group>";
+		};
 		8A2C8F0E1C6BBD2300846019 = {
 			isa = PBXGroup;
 			children = (
+				000E6EA223D8AC8C009D8194 /* CHANGELOG.md */,
+				000E6EA023D8AC8C009D8194 /* README.md */,
+				000E6E9F23D8AC8C009D8194 /* UPGRADING.md */,
+				000E6EA123D8AC8C009D8194 /* VERSION */,
 				8AF2894923339CCA00E8EB27 /* Config.xcconfig */,
 				8A2C8F1A1C6BBD2300846019 /* Bugsnag */,
 				8A2C8F261C6BBD2300846019 /* Tests */,
@@ -704,6 +731,7 @@
 			isa = PBXGroup;
 			children = (
 				E70EE0891FD7047D00FA745C /* KSCrash */,
+				000DF29223DB4A6B00A883CE /* Swift Tests */,
 				8A2C8F8B1C6BBFDD00846019 /* BugsnagBreadcrumbsTest.m */,
 				4B3B193422CA7B0900475354 /* BugsnagCollectionsBSGDictSetSafeObjectTest.m */,
 				4B775FCE22CBDEB4004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m */,
@@ -724,6 +752,9 @@
 				F429551527EAE3AFE1F605FE /* BugsnagThreadTest.m */,
 				E70E52142216E41C00A590AB /* BugsnagSessionTrackerStopTest.m */,
 				8A70D9CC2253C484006B696F /* BSGOutOfMemoryWatchdogTests.m */,
+				000E6E9B23D84DB1009D8194 /* BugsnagTestConstants.h */,
+				000E6E9C23D8690E009D8194 /* Tests-Bridging-Header.h */,
+				000DF29323DB4B4900A883CE /* TestConstants.m */,
 			);
 			name = Tests;
 			path = BugsnagTests;
@@ -1069,6 +1100,7 @@
 					};
 					8A2C8F211C6BBD2300846019 = {
 						CreatedOnToolsVersion = 7.2.1;
+						LastSwiftMigration = 1130;
 					};
 					E7397DC31F83BAC50034242A = {
 						CreatedOnToolsVersion = 9.0;
@@ -1101,6 +1133,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				000E6EA523D8AC8C009D8194 /* VERSION in Resources */,
+				000E6EA423D8AC8C009D8194 /* README.md in Resources */,
+				000E6EA323D8AC8C009D8194 /* UPGRADING.md in Resources */,
+				000E6EA623D8AC8C009D8194 /* CHANGELOG.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1191,6 +1227,7 @@
 			files = (
 				8A70D9CD2253C484006B696F /* BSGOutOfMemoryWatchdogTests.m in Sources */,
 				E7B970341FD7031500590C27 /* XCTestCase+KSCrash.m in Sources */,
+				000E6E9E23D8690F009D8194 /* BugsnagSwiftConfigurationTests.swift in Sources */,
 				E70EE07E1FD703D600FA745C /* NSError+SimpleConstructor_Tests.m in Sources */,
 				E70EE0931FD706C700FA745C /* KSFileUtils_Tests.m in Sources */,
 				E70EE08E1FD705A700FA745C /* KSSignalInfo_Tests.m in Sources */,
@@ -1214,6 +1251,7 @@
 				E733A76F1FD709B7003EAA29 /* KSCrashReportStore_Tests.m in Sources */,
 				E70EE0781FD7039E00FA745C /* RFC3339DateTool_Tests.m in Sources */,
 				8A530CC422FDD51F00F0C108 /* KSCrashIdentifierTests.m in Sources */,
+				000DF29423DB4B4900A883CE /* TestConstants.m in Sources */,
 				8A4E733F1DC13281001F7CC8 /* BugsnagConfigurationTests.m in Sources */,
 				E784D25A1FD70C25004B01E1 /* KSJSONCodec_Tests.m in Sources */,
 				E70EE0881FD7047800FA745C /* KSSystemInfo_Tests.m in Sources */,
@@ -1469,24 +1507,31 @@
 		8A2C8F301C6BBD2300846019 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = TestsInfo.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "BugsnagTests/Tests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
 		8A2C8F311C6BBD2300846019 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = TestsInfo.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "BugsnagTests/Tests-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
