@@ -1,5 +1,5 @@
 //
-//  BugsnagMetaData.h
+//  BugsnagMetadata.h
 //
 //  Created by Conrad Irwin on 2014-10-01.
 //
@@ -26,9 +26,9 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol BugsnagMetaDataDelegate;
+@protocol BugsnagMetadataDelegate;
 
-@interface BugsnagMetaData : NSObject <NSMutableCopying>
+@interface BugsnagMetadata : NSObject <NSMutableCopying>
 
 - (instancetype _Nonnull)initWithDictionary:(NSMutableDictionary *_Nonnull)dict;
 
@@ -42,11 +42,31 @@
            withValue:(id _Nullable)value
        toTabWithName:(NSString *_Nonnull)tabName;
 
-@property(unsafe_unretained) id<BugsnagMetaDataDelegate> _Nullable delegate;
+/**
+ * Merge supplied and existing metadata.
+ *
+ * - Non-null values will replace existing values for identical keys.
+ 
+ * - Null values will remove the existing key/value pair if the key exists.
+ *   Where null-valued keys do not exist they will not be set.  (Since ObjC
+ *   dicts can't store 'nil' directly we assume [NSNUll null])
+ *
+ * - Tabs are only created if at least one value is valid.
+ *
+ * - Invalid values (i.e. unserializable to JSON) are logged and ignored.
+ *
+ * @param section The name of the metadata section
+ *
+ * @param values A dictionary of string -> id key/value pairs.
+ *               Values should be serializable to JSON.
+ */
+- (void)addMetadataToSection:(NSString *_Nonnull)section
+                      values:(NSDictionary *_Nullable)values;
+
+@property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
 
 @end
 
-@protocol BugsnagMetaDataDelegate <NSObject>
-
-- (void)metaDataChanged:(BugsnagMetaData *_Nonnull)metaData;
+@protocol BugsnagMetadataDelegate <NSObject>
+- (void)metadataChanged:(BugsnagMetadata *_Nonnull)metadata;
 @end

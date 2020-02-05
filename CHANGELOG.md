@@ -8,6 +8,10 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Added a method allowing merging arbitrary (JSON-encodable) dictionaries with 
+  an existing Event Metadata instance (`BugsnagMetadata.addMetadataToSection:values:`)
+  [#456](https://github.com/bugsnag/bugsnag-cocoa/pull/456)
+
 * Add a breadcrumb when Bugsnag first starts with the message "Bugsnag loaded"
   [#445](https://github.com/bugsnag/bugsnag-cocoa/pull/445)
 

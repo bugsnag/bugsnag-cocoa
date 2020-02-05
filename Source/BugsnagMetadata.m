@@ -1,5 +1,5 @@
 //
-//  BugsnagMetaData.m
+//  BugsnagMetadata.m
 //
 //  Created by Conrad Irwin on 2014-10-01.
 //
@@ -24,15 +24,15 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagMetaData.h"
+#import "BugsnagMetadata.h"
 #import "BSGSerialization.h"
 #import "BugsnagLogger.h"
 
-@interface BugsnagMetaData ()
+@interface BugsnagMetadata ()
 @property(atomic, strong) NSMutableDictionary *dictionary;
 @end
 
-@implementation BugsnagMetaData
+@implementation BugsnagMetadata
 
 - (id)init {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -43,14 +43,14 @@
     if (self = [super init]) {
         self.dictionary = dict;
     }
-    [self.delegate metaDataChanged:self];
+    [self.delegate metadataChanged:self];
     return self;
 }
 
 - (id)mutableCopyWithZone:(NSZone *)zone {
     @synchronized(self) {
         NSMutableDictionary *dict = [self.dictionary mutableCopy];
-        return [[BugsnagMetaData alloc] initWithDictionary:dict];
+        return [[BugsnagMetadata alloc] initWithDictionary:dict];
     }
 }
 
@@ -70,7 +70,7 @@
         [self.dictionary removeObjectForKey:tabName];
     }
 
-    [self.delegate metaDataChanged:self];
+    [self.delegate metadataChanged:self];
 }
 
 - (NSDictionary *)toDictionary {
@@ -79,6 +79,9 @@
     }
 }
 
+/**
+ * Add a single key/value to a metadata Tab/Section.
+ */
 - (void)addAttribute:(NSString *)attributeName
            withValue:(id)value
        toTabWithName:(NSString *)tabName {
@@ -97,7 +100,58 @@
             [[self getTab:tabName] removeObjectForKey:attributeName];
         }
     }
-    [self.delegate metaDataChanged:self];
+    [self.delegate metadataChanged:self];
+}
+
+/**
+ * Merge supplied and existing metadata.
+ */
+- (void)addMetadataToSection:(NSString *)section
+                      values:(NSDictionary *)values
+{
+    @synchronized(self) {
+        if (values) {
+            // Check each value in turn.  Remove nulls, add/replace others
+            // Fast enumeration over the (unmodified) supplied values for simplicity
+            for (id key in values) {
+                // Ensure keys are (JSON-serializable) strings
+                if ([[key class] isSubclassOfClass:[NSString class]]) {
+                    id value = [values objectForKey:key];
+                    
+                    // The common case: adding sensible values
+                    if (value && value != [NSNull null]) {
+                        id cleanedValue = BSGSanitizeObject(value);
+                        if (cleanedValue) {
+                            // We only want to create a tab if we have a valid value.
+                            NSMutableDictionary *tab = [self getTab:section];
+                            [tab setObject:cleanedValue forKey:key];
+                        }
+                        // Log the failure but carry on
+                        else {
+                            Class klass = [value class];
+                            bsg_log_err(@"Failed to add metadata: Value of class %@ is not "
+                                        @"JSON serializable.", klass);
+                        }
+                    }
+                    
+                    // Remove existing value if supplied null.
+                    // Ensure we don't inadvertently create a section.
+                    else if (value == [NSNull null]
+                             && [self.dictionary objectForKey:section]
+                             && [[self.dictionary objectForKey:section] objectForKey:key])
+                    {
+                        [[self.dictionary objectForKey:section] removeObjectForKey:key];
+                    }
+                }
+                
+                // Something went wrong...
+                else {
+                    bsg_log_err(@"Failed to update metadata: Section: %@, Values: %@", section, values);
+                }
+            }
+        }
+    }
+    [self.delegate metadataChanged:self];
 }
 
 @end

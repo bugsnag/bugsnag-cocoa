@@ -92,7 +92,7 @@ NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
                  BSGKeyName : [_name copy],
                  BSGKeyTimestamp : timestamp,
                  BSGKeyType : BSGBreadcrumbTypeValue(_type),
-                 BSGKeyMetaData : metadata
+                 BSGKeyMetadata : metadata
             };
         }
         return nil;

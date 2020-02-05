@@ -58,8 +58,8 @@ static NSInteger const BSGNotifierStackFrameCount = 5;
 struct bugsnag_data_t {
     // Contains the state of the event (handled/unhandled)
     char *handledState;
-    // Contains the user-specified metaData, including the user tab from config.
-    char *metaDataJSON;
+    // Contains the user-specified metadata, including the user tab from config.
+    char *metadataJSON;
     // Contains the Bugsnag configuration, all under the "config" tab.
     char *configJSON;
     // Contains notifier state, under "deviceState" and crash-specific
@@ -107,8 +107,9 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type
         if (bsg_g_bugsnag_data.stateJSON) {
             writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
         }
-        if (bsg_g_bugsnag_data.metaDataJSON) {
-            writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metaDataJSON);
+        if (bsg_g_bugsnag_data.metadataJSON) {
+            // The API expects "metaData", capitalised as such.  Elsewhere is is one word.
+            writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metadataJSON);
         }
         if (watchdogSentinelPath != NULL) {
             // Delete the file to indicate a handled termination
@@ -159,7 +160,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                                                          error:&error];
 
         if (!json) {
-            bsg_log_err(@"could not serialize metaData: %@", error);
+            bsg_log_err(@"could not serialize metadata: %@", error);
             return;
         }
         *destination = reallocf(*destination, [json length] + 1);
@@ -168,7 +169,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
             (*destination)[[json length]] = '\0';
         }
     } @catch (NSException *exception) {
-        bsg_log_err(@"could not serialize metaData: %@", exception);
+        bsg_log_err(@"could not serialize metadata: %@", exception);
     }
 }
 
@@ -217,7 +218,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
     static NSString *const BSGCrashSentinelFileName = @"bugsnag_handled_crash.txt";
     if ((self = [super init])) {
         self.configuration = initConfiguration;
-        self.state = [[BugsnagMetaData alloc] init];
+        self.state = [[BugsnagMetadata alloc] init];
         NSString *notifierName =
 #if TARGET_OS_TV
             @"tvOS Bugsnag Notifier";
@@ -246,8 +247,8 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
                                                                       configuration:configuration];
         }
 
-        self.metaDataLock = [[NSLock alloc] init];
-        self.configuration.metaData.delegate = self;
+        self.metadataLock = [[NSLock alloc] init];
+        self.configuration.metadata.delegate = self;
         self.configuration.config.delegate = self;
         self.state.delegate = self;
         self.crashSentry = [BugsnagCrashSentry new];
@@ -265,9 +266,9 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
                                                              BSGWriteSessionCrashData(session);
                                                          }];
 
-        [self metaDataChanged:self.configuration.metaData];
-        [self metaDataChanged:self.configuration.config];
-        [self metaDataChanged:self.state];
+        [self metadataChanged:self.configuration.metadata];
+        [self metadataChanged:self.configuration.config];
+        [self metadataChanged:self.state];
     }
     return self;
 }
@@ -543,7 +544,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self notify:wrapper
         handledState:state
                block:^(BugsnagEvent *_Nonnull report) {
-                 NSMutableDictionary *metadata = [report.metaData mutableCopy];
+                 NSMutableDictionary *metadata = [report.metadata mutableCopy];
                  metadata[@"nserror"] = @{
                      @"code" : @(error.code),
                      @"domain" : error.domain,
@@ -552,7 +553,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                    if (report.context == nil) { // set context as error domain
                        report.context = [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code];
                    }
-                 report.metaData = metadata;
+                 report.metadata = metadata;
 
                  if (block) {
                      block(report);
@@ -579,13 +580,13 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)internalClientNotify:(NSException *_Nonnull)exception
-                    withData:(NSDictionary *_Nullable)metaData
+                    withData:(NSDictionary *_Nullable)metadata
                        block:(BugsnagNotifyBlock _Nullable)block {
 
-    BSGSeverity severity = BSGParseSeverity(metaData[BSGKeySeverity]);
-    NSString *severityReason = metaData[BSGKeySeverityReason];
-    BOOL unhandled = [metaData[BSGKeyUnhandled] boolValue];
-    NSString *logLevel = metaData[BSGKeyLogLevel];
+    BSGSeverity severity = BSGParseSeverity(metadata[BSGKeySeverity]);
+    NSString *severityReason = metadata[BSGKeySeverityReason];
+    BOOL unhandled = [metadata[BSGKeyUnhandled] boolValue];
+    NSString *logLevel = metadata[BSGKeyLogLevel];
     NSParameterAssert(severityReason.length > 0);
 
     SeverityReasonType severityReasonType =
@@ -653,7 +654,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         initWithErrorName:exceptionName
              errorMessage:message
             configuration:self.configuration
-                 metaData:[self.configuration.metaData toDictionary]
+                 metadata:[self.configuration.metadata toDictionary]
              handledState:handledState
                   session:self.sessionTracker.runningSession];
     if (block) {
@@ -681,7 +682,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                              handledState:[handledState toJson]
                                  appState:[self.state toDictionary]
                         callbackOverrides:report.overrides
-                                 metadata:[report.metaData copy]
+                                 metadata:[report.metadata copy]
                                    config:[self.configuration.config toDictionary]
                              discardDepth:depth];
 
@@ -715,19 +716,19 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                toTabWithName:BSTabCrash];
 }
 
-- (void)metaDataChanged:(BugsnagMetaData *)metaData {
-    @synchronized(metaData) {
-        if (metaData == self.configuration.metaData) {
-            if ([self.metaDataLock tryLock]) {
-                BSSerializeJSONDictionary([metaData toDictionary],
-                                          &bsg_g_bugsnag_data.metaDataJSON);
-                [self.metaDataLock unlock];
+- (void)metadataChanged:(BugsnagMetadata *)metadata {
+    @synchronized(metadata) {
+        if (metadata == self.configuration.metadata) {
+            if ([self.metadataLock tryLock]) {
+                BSSerializeJSONDictionary([metadata toDictionary],
+                                          &bsg_g_bugsnag_data.metadataJSON);
+                [self.metadataLock unlock];
             }
-        } else if (metaData == self.configuration.config) {
-            BSSerializeJSONDictionary([metaData getTab:BSGKeyConfig],
+        } else if (metadata == self.configuration.config) {
+            BSSerializeJSONDictionary([metadata getTab:BSGKeyConfig],
                                       &bsg_g_bugsnag_data.configJSON);
-        } else if (metaData == self.state) {
-            BSSerializeJSONDictionary([metaData toDictionary],
+        } else if (metadata == self.state) {
+            BSSerializeJSONDictionary([metadata toDictionary],
                                       &bsg_g_bugsnag_data.stateJSON);
         } else {
             bsg_log_debug(@"Unknown metadata dictionary changed");
@@ -787,9 +788,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
     if (lastBreadcrumb &&
         [orientationNotifName isEqualToString:lastBreadcrumb[BSGKeyName]]) {
-        NSDictionary *metaData = lastBreadcrumb[BSGKeyMetaData];
+        NSDictionary *metadata = lastBreadcrumb[BSGKeyMetadata];
 
-        if ([orientation isEqualToString:metaData[BSGKeyOrientation]]) {
+        if ([orientation isEqualToString:metadata[BSGKeyOrientation]]) {
             return; // ignore duplicate orientation event
         }
     }

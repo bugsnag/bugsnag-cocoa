@@ -314,7 +314,7 @@
     [[BugsnagEvent alloc] initWithErrorName:@"TestError"
                                      errorMessage:@"Error for testing"
                                     configuration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil]
-                                         metaData:[NSDictionary new]
+                                         metadata:[NSDictionary new]
                                      handledState:state
                                           session:nil];
     
@@ -397,7 +397,7 @@
     [[BugsnagEvent alloc] initWithErrorName:@"TestError"
                                      errorMessage:@"Error for testing"
                                     configuration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil]
-                                         metaData:[NSDictionary new]
+                                         metadata:[NSDictionary new]
                                      handledState:state
                                           session:nil];
     report.severity = BSGSeverityInfo;
