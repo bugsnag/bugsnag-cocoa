@@ -153,15 +153,16 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *
  * See also [Bugsnag configuration].metaData;
  *
- * @param attributeName  The name of the data.
+ * @param key      The name of the data.
  *
- * @param value          Its value.
+ * @param value    Its value.
  *
- * @param tabName        The tab to show it on on the Bugsnag dashboard.
+ * @param section  The tab to show it on on the Bugsnag dashboard.
  */
-+ (void)addAttribute:(NSString *_Nonnull)attributeName
-           withValue:(id _Nullable)value
-       toTabWithName:(NSString *_Nonnull)tabName;
++ (void)addMetadataToSection:(NSString *_Nonnull)section
+                         key:(NSString *_Nonnull)key
+                       value:(id _Nullable)value
+    NS_SWIFT_NAME(addMetadata(_:key:value:));
 
 /** Remove custom data from Bugsnag reports.
  *

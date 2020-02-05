@@ -182,13 +182,17 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
-+ (void)addAttribute:(NSString *)attributeName
-           withValue:(id)value
-       toTabWithName:(NSString *)tabName {
+/**
+ * Add custom data to send to Bugsnag with every exception. If value is nil,
+ * delete the current value for attributeName
+ */
++ (void)addMetadataToSection:(NSString *_Nonnull)section
+                         key:(NSString *_Nonnull)key
+                       value:(id _Nullable)value {
     if ([self bugsnagStarted]) {
-        [self.notifier.configuration.metadata addAttribute:attributeName
+        [self.notifier.configuration.metadata addAttribute:key
                                                  withValue:value
-                                             toTabWithName:tabName];
+                                             toTabWithName:section];
     }
 }
 

@@ -25,6 +25,9 @@ Bugsnag Notifiers on other platforms.
 
 * Add a breadcrumb when Bugsnag first starts with the message "Bugsnag loaded"
   [#445](https://github.com/bugsnag/bugsnag-cocoa/pull/445)
+  
+* `Bugsnag.addAttribute:value:tab:` is now `Bugsnag.addMetadataToSection::key:value:`
+  [#454](https://github.com/bugsnag/bugsnag-cocoa/pull/454)
 
 ## Bug fixes
 
