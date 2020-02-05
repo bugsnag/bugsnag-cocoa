@@ -13,7 +13,12 @@ Related to #
 
 ## Changeset
 
-<!-- List what was added, removed, or changed: -->
+<!-- List what was added, removed, or changed.  Pitch this at a level 
+     appropriate to the scope of the change: new  classes, changed architecture,
+     minor typo, etc.  If appropriate include a list of changed files: 
+
+         $ git diff --name-status HEAD~1 | cat
+-->
 
 ## Tests
 
