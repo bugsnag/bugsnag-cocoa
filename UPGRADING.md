@@ -40,4 +40,15 @@ Swift:
 - Bugsnag.setBreadcrumbCapacity(40)
   let config = BugsnagConfiguration()
 + config.setMaxBreadcrumbs(40)
+  let config = try BugsnagConfiguration("VALID 32 CHARACTER API KEY")
+
+ObjC:
+
+- [Bugsnag addAttribute:WithValuetoTabWithName:]
++ [Bugsnag addMetadataToSection:key:value:]
+
+Swift:
+
+- Bugsnag.addAttribute(attributeName:withValue:toTabWithName:)
++ Bugsnag.addMetadata(_:key:value:)
 ```
