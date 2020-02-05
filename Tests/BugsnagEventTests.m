@@ -30,7 +30,7 @@
         [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
                                          errorMessage:@"it was so bad"
                                         configuration:config
-                                             metaData:@{}
+                                             metadata:@{}
                                          handledState:state
                                               session:nil];
     XCTAssertTrue([report shouldBeSent]);
@@ -47,7 +47,7 @@
         [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
                                          errorMessage:@"it was so bad"
                                         configuration:config
-                                             metaData:@{}
+                                             metadata:@{}
                                          handledState:state
                                               session:nil];
     XCTAssertFalse([report shouldBeSent]);
@@ -70,7 +70,7 @@
         [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
                                          errorMessage:@"it was so bad"
                                         configuration:config
-                                             metaData:@{}
+                                             metadata:@{}
                                          handledState:state
                                               session:bugsnagSession];
     NSDictionary *json = [report toJson];
@@ -366,25 +366,25 @@
 
 - (void)testHandledReportMetaData {
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagMetaData *metaData = [BugsnagMetaData new];
-    [metaData addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
-    NSDictionary *dict = @{@"user.handledState": [state toJson], @"user.metaData": [metaData toDictionary]};
+    BugsnagMetadata *metadata = [BugsnagMetadata new];
+    [metadata addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
+    NSDictionary *dict = @{@"user.handledState": [state toJson], @"user.metaData": [metadata toDictionary]};
 
     BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
-    XCTAssertNotNil(report.metaData);
-    XCTAssertEqual(report.metaData.count, 1);
-    XCTAssertEqualObjects(report.metaData[@"Custom"][@"Foo"], @"Bar");
+    XCTAssertNotNil(report.metadata);
+    XCTAssertEqual(report.metadata.count, 1);
+    XCTAssertEqualObjects(report.metadata[@"Custom"][@"Foo"], @"Bar");
 }
 
 - (void)testUnhandledReportMetaData {
-    BugsnagMetaData *metaData = [BugsnagMetaData new];
-    [metaData addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
-    NSDictionary *dict = @{@"user.metaData": [metaData toDictionary]};
+    BugsnagMetadata *metadata = [BugsnagMetadata new];
+    [metadata addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
+    NSDictionary *dict = @{@"user.metaData": [metadata toDictionary]};
 
     BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
-    XCTAssertNotNil(report.metaData);
-    XCTAssertEqual(report.metaData.count, 1);
-    XCTAssertEqualObjects(report.metaData[@"Custom"][@"Foo"], @"Bar");
+    XCTAssertNotNil(report.metadata);
+    XCTAssertEqual(report.metadata.count, 1);
+    XCTAssertEqualObjects(report.metadata[@"Custom"][@"Foo"], @"Bar");
 }
 
 - (void)testAppVersionOverride {

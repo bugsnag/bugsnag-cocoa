@@ -70,7 +70,7 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
  *  @param name      The name of the exception
  *  @param message   The reason or message from the exception
  *  @param config    Bugsnag configuration
- *  @param metaData  additional data to attach to the report
+ *  @param metadata  additional data to attach to the report
  *  @param handledState  the handled state of the error
  *
  *  @return a Bugsnag crash report
@@ -79,7 +79,7 @@ NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
 initWithErrorName:(NSString *_Nonnull)name
      errorMessage:(NSString *_Nonnull)message
     configuration:(BugsnagConfiguration *_Nonnull)config
-         metaData:(NSDictionary *_Nonnull)metaData
+         metadata:(NSDictionary *_Nonnull)metadata
      handledState:(BugsnagHandledState *_Nonnull)handledState
           session:(BugsnagSession *_Nullable)session;
 
@@ -171,7 +171,7 @@ __deprecated_msg("Use toJson: instead.");
  *  Further information attached to an error report, where each top level key
  *  generates a section on bugsnag, displaying key/value pairs
  */
-@property(readwrite, copy, nonnull) NSDictionary *metaData;
+@property(readwrite, copy, nonnull) NSDictionary *metadata;
 /**
  *  The event state (whether the error is handled/unhandled)
  */

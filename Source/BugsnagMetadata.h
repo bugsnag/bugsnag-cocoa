@@ -26,9 +26,9 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol BugsnagMetaDataDelegate;
+@protocol BugsnagMetadataDelegate;
 
-@interface BugsnagMetaData : NSObject <NSMutableCopying>
+@interface BugsnagMetadata : NSObject <NSMutableCopying>
 
 - (instancetype _Nonnull)initWithDictionary:(NSMutableDictionary *_Nonnull)dict;
 
@@ -42,11 +42,10 @@
            withValue:(id _Nullable)value
        toTabWithName:(NSString *_Nonnull)tabName;
 
-@property(unsafe_unretained) id<BugsnagMetaDataDelegate> _Nullable delegate;
+@property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
 
 @end
 
-@protocol BugsnagMetaDataDelegate <NSObject>
-
-- (void)metaDataChanged:(BugsnagMetaData *_Nonnull)metaData;
+@protocol BugsnagMetadataDelegate <NSObject>
+- (void)metadataChanged:(BugsnagMetadata *_Nonnull)metadata;
 @end

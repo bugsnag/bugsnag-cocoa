@@ -26,7 +26,7 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagConfiguration.h"
-#import "BugsnagMetaData.h"
+#import "BugsnagMetadata.h"
 #import "BugsnagPlugin.h"
 
 static NSString *_Nonnull const BugsnagSeverityError = @"error";
@@ -114,11 +114,11 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *
  * @param exception  The exception.
  *
- * @param metaData   Any additional information you want to send with the
+ * @param metadata   Any additional information you want to send with the
  * report.
  */
 + (void)notify:(NSException *_Nonnull)exception
-      withData:(NSDictionary *_Nullable)metaData
+      withData:(NSDictionary *_Nullable)metadata
     __deprecated_msg("Use notify:block: instead and add the metadata to the "
                      "report directly.");
 
@@ -129,13 +129,13 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *
  * @param exception  The exception.
  *
- * @param metaData   Any additional information you want to send with the
+ * @param metadata   Any additional information you want to send with the
  * report.
  *
  * @param severity   The severity level (default: BugsnagSeverityWarning)
  */
 + (void)notify:(NSException *_Nonnull)exception
-      withData:(NSDictionary *_Nullable)metaData
+      withData:(NSDictionary *_Nullable)metadata
     atSeverity:(NSString *_Nullable)severity
     __deprecated_msg("Use notify:block: instead and add the metadata and "
                      "severity to the report directly.");
@@ -145,7 +145,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * directly from iOS is not supported.
  */
 + (void)internalClientNotify:(NSException *_Nonnull)exception
-                    withData:(NSDictionary *_Nullable)metaData
+                    withData:(NSDictionary *_Nullable)metadata
                        block:(BugsnagNotifyBlock _Nullable)block;
 
 /** Add custom data to send to Bugsnag with every exception. If value is nil,

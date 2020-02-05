@@ -27,17 +27,17 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagConfiguration.h"
-#import "BugsnagMetaData.h"
+#import "BugsnagMetadata.h"
 
 @class BSGConnectivity, BugsnagSessionTracker;
 
-@interface BugsnagNotifier : NSObject <BugsnagMetaDataDelegate>
+@interface BugsnagNotifier : NSObject <BugsnagMetadataDelegate>
 
 @property(nonatomic, readwrite, retain)
     BugsnagConfiguration *_Nullable configuration;
-@property(nonatomic, readwrite, strong) BugsnagMetaData *_Nonnull state;
+@property(nonatomic, readwrite, strong) BugsnagMetadata *_Nonnull state;
 @property(nonatomic, readwrite, strong) NSDictionary *_Nonnull details;
-@property(nonatomic, readwrite, strong) NSLock *_Nonnull metaDataLock;
+@property(nonatomic, readwrite, strong) NSLock *_Nonnull metadataLock;
 @property(nonatomic, readonly, strong) BugsnagSessionTracker *_Nonnull sessionTracker;
 
 @property(nonatomic, strong) BSGConnectivity *_Nonnull networkReachable;
@@ -79,12 +79,12 @@
  *  Notify Bugsnag of an exception. Only intended for React Native/Unity use.
  *
  *  @param exception the exception
- *  @param metaData  the metadata
+ *  @param metadata  the metadata
  *  @param block     Configuration block for adding additional report
  * information
  */
 - (void)internalClientNotify:(NSException *_Nonnull)exception
-                    withData:(NSDictionary *_Nullable)metaData
+                    withData:(NSDictionary *_Nullable)metadata
                        block:(BugsnagNotifyBlock _Nullable)block;
 
 /**
