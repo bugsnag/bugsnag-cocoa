@@ -47,8 +47,30 @@ ObjC:
 - [Bugsnag addAttribute:WithValuetoTabWithName:]
 + [Bugsnag addMetadataToSection:key:value:]
 
+- [Bugsnag clearTabWithName:]
++ [Bugsnag clearMetadataInSection:]
+
 Swift:
 
 - Bugsnag.addAttribute(attributeName:withValue:toTabWithName:)
 + Bugsnag.addMetadata(_:key:value:)
+
+- Bugsnag.clearTab(name:)
++ Bugsnag.clearMetadata(_ section)
+```
+
+### `BugsnagMetadata` class
+
+```diff
+
+ObjC: 
+
+- [BugsnagMetadata clearTabWithName:]
++ [BugsnagMetadata clearMetadataInSection:]
+
+Swift:
+
+- BugsnagMetadata.clearTab(name:)
++ BugsnagMetadata.clearMetadata(_ section)
+
 ```

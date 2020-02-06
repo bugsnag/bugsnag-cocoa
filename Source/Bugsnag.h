@@ -168,7 +168,8 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *
  * @param tabName        The tab to clear.
  */
-+ (void)clearTabWithName:(NSString *_Nonnull)tabName;
++ (void)clearMetadataInSection:(NSString *_Nonnull)tabName
+    NS_SWIFT_NAME(clearMetadata(_:));
 
 /**
  * Leave a "breadcrumb" log message, representing an action that occurred

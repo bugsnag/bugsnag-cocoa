@@ -12,7 +12,7 @@ import XCTest
 class BugsnagSwiftTests: XCTestCase {
 
     /**
-     * Confirm that the method is exposed to Swift correctly
+     * Confirm that the addMetadata() method is exposed to Swift correctly
      */
     func testAddMetadataToSectionIsExposedToSwiftCorrectly() {
         do {
@@ -33,4 +33,16 @@ class BugsnagSwiftTests: XCTestCase {
             print(e)
         }
     }
+    
+    /**
+     * Confirm that the clearMetadata() method is exposed to Swift correctly
+     */
+    func testClearMetadataInSectionIsExposedToSwiftCorrectly() {
+        try! Bugsnag.start(with: BugsnagConfiguration(DUMMY_APIKEY_32CHAR_1)!)
+        // We don't need to check method's functioning, only that we can call it this way
+        Bugsnag.clearMetadata("testSection")
+        
+        let metadata = BugsnagMetadata()
+        metadata.clearMetadata("testSection2")
+   }
 }

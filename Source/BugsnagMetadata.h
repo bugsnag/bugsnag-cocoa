@@ -34,7 +34,8 @@
 
 - (NSMutableDictionary *_Nonnull)getTab:(NSString *_Nonnull)tabName;
 
-- (void)clearTab:(NSString *_Nonnull)tabName;
+- (void)clearMetadataInSection:(NSString *_Nonnull)section
+    NS_SWIFT_NAME(clearMetadata(_:));
 
 - (NSDictionary *_Nonnull)toDictionary;
 

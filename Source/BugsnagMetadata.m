@@ -65,9 +65,9 @@
     }
 }
 
-- (void)clearTab:(NSString *)tabName {
+- (void)clearMetadataInSection:(NSString *)section {
     @synchronized(self) {
-        [self.dictionary removeObjectForKey:tabName];
+        [self.dictionary removeObjectForKey:section];
     }
 
     [self.delegate metadataChanged:self];

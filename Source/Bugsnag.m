@@ -196,9 +196,9 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
-+ (void)clearTabWithName:(NSString *)tabName {
++ (void)clearMetadataInSection:(NSString *)section {
     if ([self bugsnagStarted]) {
-        [self.notifier.configuration.metadata clearTab:tabName];
+        [self.notifier.configuration.metadata clearMetadataInSection:section];
     }
 }
 

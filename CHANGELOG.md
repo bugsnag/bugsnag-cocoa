@@ -28,6 +28,10 @@ Bugsnag Notifiers on other platforms.
   
 * `Bugsnag.addAttribute:value:tab:` is now `Bugsnag.addMetadataToSection::key:value:`
   [#454](https://github.com/bugsnag/bugsnag-cocoa/pull/454)
+  
+  *  `[Bugsnag clearTab:]` is now `[Bugsnag clearMetadataInSection:]` 
+     (Swift: `Bugsnag.clearMetadata(_ section)`)
+     [#457](https://github.com/bugsnag/bugsnag-cocoa/pull/457)
 
 ## Bug fixes
 
