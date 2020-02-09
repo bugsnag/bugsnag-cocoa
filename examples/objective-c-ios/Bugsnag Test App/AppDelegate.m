@@ -13,8 +13,16 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [Bugsnag startBugsnagWithApiKey:@"YOUR-API-KEY-HERE"];
-    //[self startBugsnagWithConfiguration];
+    NSString *apiKey = @"<YOUR_APIKEY_HERE>";
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:apiKey
+                                                                                 error:&error];
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+    
+    if (error) {
+        NSLog(@"There was an error while starting Bugsnag: %@", [error localizedDescription]);
+    }
+
     return YES;
 }
 

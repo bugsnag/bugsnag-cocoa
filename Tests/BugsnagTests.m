@@ -23,8 +23,16 @@
  */
 - (void)testBugsnagMetadataAddition {
     
+    __block XCTestExpectation *expectation = [self expectationWithDescription:@"Localized metadata changes"];
     NSError *error;
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    // It's a test so failing to send is OK.
+    [configuration addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData,
+                                            BugsnagEvent * _Nonnull reports)
+    {
+        return false;
+    }];
+    
     [Bugsnag startBugsnagWithConfiguration:configuration];
     [Bugsnag addMetadataToSection:@"mySection1" key:@"aKey1" value:@"aValue1"];
     
@@ -55,10 +63,48 @@
     [Bugsnag addMetadataToSection:@"mySection1" key:@"aKey1" value:nil];
     [Bugsnag addMetadataToSection:@"mySection2" key:@"aKey2" value:nil];
     
-    [Bugsnag notify:exception1 block:^(BugsnagEvent * _Nonnull report) {
-        XCTAssertNil([[[report metadata] valueForKey:@"mySection1"] valueForKey:@"aKey1"]);
-        XCTAssertNil([[[report metadata] valueForKey:@"mySection2"] valueForKey:@"aKey2"]);
+    [Bugsnag notify:exception1 block:^(BugsnagEvent * _Nonnull event) {
+        XCTAssertNil([[[event metadata] valueForKey:@"mySection1"] valueForKey:@"aKey1"]);
+        XCTAssertNil([[[event metadata] valueForKey:@"mySection2"] valueForKey:@"aKey2"]);
     }];
+    
+    // Check that event-level metadata alteration doesn't affect configuration-level metadata
+    [Bugsnag addMetadataToSection:@"mySection1" key:@"aKey1" value:@"aValue1"];
+    [Bugsnag notify:exception1 block:^(BugsnagEvent * _Nonnull event) {
+        // NSDictionary returned; immutable, so let's replace it wholesale
+        [event setMetadata:@{@"myNewSection" : @{@"myNewKey" : @"myNewValue"}}];
+        XCTAssertNil([[[event metadata] valueForKey:@"mySection1"] valueForKey:@"aKey1"]);
+        [expectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:0.1 handler:^(NSError * _Nullable error) {
+        // Check old values still exist
+        XCTAssertEqual([[[[Bugsnag configuration] metadata] getMetadata: @"mySection1"] valueForKey:@"aKey1"], @"aValue1");
+        
+        // Check "new" values don't exist
+        XCTAssertNil([[[[Bugsnag configuration] metadata] getMetadata:@"myNewSection"] valueForKey:@"myNewKey"]);
+        XCTAssertNil([[[Bugsnag configuration] metadata] getMetadata:@"myNewSection"]);
+        expectation = nil;
+    }];
+}
+
+/**
+ * Test that the global Bugsnag metadata retrieval performs as expected:
+ * return a section when there is one, or nil otherwise.
+ */
+- (void)testGetMetadata {
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+    XCTAssertNil([Bugsnag getMetadata:@"dummySection"]);
+    [Bugsnag addMetadataToSection:@"dummySection" key:@"aKey1" value:@"aValue1"];
+    NSMutableDictionary *section = [Bugsnag getMetadata:@"dummySection"];
+    XCTAssertNotNil(section);
+    XCTAssertEqual(section[@"aKey1"], @"aValue1");
+    XCTAssertNil([Bugsnag getMetadata:@"anotherSection"]);
+    
+    XCTAssertTrue([[Bugsnag getMetadata:@"dummySection" key:@"aKey1"] isEqualToString:@"aValue1"]);
+    XCTAssertNil([Bugsnag getMetadata:@"noSection" key:@"notaKey1"]);
 }
 
 @end

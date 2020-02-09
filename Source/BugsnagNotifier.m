@@ -725,7 +725,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                 [self.metadataLock unlock];
             }
         } else if (metadata == self.configuration.config) {
-            BSSerializeJSONDictionary([metadata getTab:BSGKeyConfig],
+            BSSerializeJSONDictionary([metadata getMetadata:BSGKeyConfig],
                                       &bsg_g_bugsnag_data.configJSON);
         } else if (metadata == self.state) {
             BSSerializeJSONDictionary([metadata toDictionary],

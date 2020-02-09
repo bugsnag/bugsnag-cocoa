@@ -20,6 +20,8 @@ Related to #
 <!-- How was this change tested? What manual and automated tests were
      run/added? -->
 
+[ ] The example apps compile and run.
+
 ## Review
 
 ### Outstanding Questions

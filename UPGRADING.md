@@ -50,6 +50,8 @@ ObjC:
 - [Bugsnag clearTabWithName:]
 + [Bugsnag clearMetadataInSection:]
 
++ [Bugsnag getSection:]
+
 Swift:
 
 - Bugsnag.addAttribute(attributeName:withValue:toTabWithName:)
@@ -57,6 +59,8 @@ Swift:
 
 - Bugsnag.clearTab(name:)
 + Bugsnag.clearMetadata(_ section)
+
++ Bugsnag.getSection(_ section)
 ```
 
 ### `BugsnagMetadata` class
@@ -68,9 +72,17 @@ ObjC:
 - [BugsnagMetadata clearTabWithName:]
 + [BugsnagMetadata clearMetadataInSection:]
 
+- [BugsnagMetadata getTab:]
++ [BugsnagMetadata getSection:]
+
 Swift:
 
 - BugsnagMetadata.clearTab(name:)
 + BugsnagMetadata.clearMetadata(_ section)
 
+- BugsnagMetadata.getTab(name:)
++ BugsnagMetadata.getSection(_ section)
 ```
+
+Note that `BugsnagMetadata.getTab()` previously would create a metadata section if it
+did not exist; the new behaviour is to return `nil`. 

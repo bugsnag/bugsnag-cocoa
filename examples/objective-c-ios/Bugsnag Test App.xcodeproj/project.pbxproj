@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00C3ED5823F2D6D900757DBD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00C3ED5723F2D6D800757DBD /* README.md */; };
 		8A4882E2224BCC130035B94C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A4882E1224BCC130035B94C /* WebKit.framework */; };
 		8A4882E5224BCD5D0035B94C /* BigHonkinWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4882E4224BCD5D0035B94C /* BigHonkinWebViewController.m */; };
 		8ACFFA0C1D895D4D00357B5E /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */; };
@@ -45,6 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		00C3ED5723F2D6D800757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		89117F5055F6B6F9FA00FBEC /* Pods-Bugsnag Test App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bugsnag Test App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bugsnag Test App/Pods-Bugsnag Test App.debug.xcconfig"; sourceTree = "<group>"; };
 		8A4882E1224BCC130035B94C /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		8A4882E3224BCD5D0035B94C /* BigHonkinWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BigHonkinWebViewController.h; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 		F40B873B16AA233500676BB2 = {
 			isa = PBXGroup;
 			children = (
+				00C3ED5723F2D6D800757DBD /* README.md */,
 				F40B875016AA233500676BB2 /* Bugsnag Test App */,
 				8ACFFA0A1D895D4D00357B5E /* custom-keyboard */,
 				E77F7CCC1F2B90800017CE04 /* BugsnagUITests */,
@@ -331,6 +334,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = F40B873B16AA233500676BB2;
@@ -372,6 +376,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00C3ED5823F2D6D900757DBD /* README.md in Resources */,
 				F40B875516AA233500676BB2 /* InfoPlist.strings in Resources */,
 				F40B875D16AA233500676BB2 /* Default.png in Resources */,
 				F40B875F16AA233500676BB2 /* Default@2x.png in Resources */,

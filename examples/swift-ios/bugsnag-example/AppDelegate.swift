@@ -26,9 +26,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        Bugsnag.start(withApiKey: "YOUR-API-KEY-HERE")
+        
+        let apiKey = "<YOUR_APIKEY_HERE>"
+        do {
+            try Bugsnag.start(with: BugsnagConfiguration(apiKey)!)
+        }
+        catch let e as NSError {
+            print("There was an error while starting Bugsnag: \(e.localizedDescription)")
+        }
+
         return true
     }
-    
 }
 

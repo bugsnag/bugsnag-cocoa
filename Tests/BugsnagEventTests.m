@@ -376,6 +376,44 @@
     XCTAssertEqualObjects(report.metadata[@"Custom"][@"Foo"], @"Bar");
 }
 
+/**
+ * Test report metadata handling in OOM situations
+ */
+- (void)testHandledReportMetaDataOOM {
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
+    BugsnagMetadata *metadata = [BugsnagMetadata new];
+    [metadata addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
+    NSDictionary *dict = @{
+        @"user.state.didOOM" : @YES,
+        @"user.handledState": [state toJson],
+        @"user.metaData": [metadata toDictionary]
+    };
+
+    BugsnagEvent *report1 = [[BugsnagEvent alloc] initWithKSReport:dict];
+    XCTAssertNotNil(report1.metadata);
+    XCTAssertEqual(report1.metadata.count, 0);
+
+    // OOM metadata is set from the session user data.
+    [metadata addAttribute:@"id" withValue:@"OOMuser" toTabWithName:@"user"];
+    [metadata addAttribute:@"email" withValue:@"OOMemail" toTabWithName:@"user"];
+    [metadata addAttribute:@"name" withValue:@"OOMname" toTabWithName:@"user"];
+    
+    // Try it again with more fully formed session data
+    dict = @{
+        @"user.state.didOOM" : @YES,
+        @"user.handledState": [state toJson],
+        @"user.state.oom.session" : [metadata toDictionary]
+    };
+    
+    BugsnagEvent *report2 = [[BugsnagEvent alloc] initWithKSReport:dict];
+    
+    XCTAssertNotNil(report2.metadata);
+    XCTAssertEqual(report2.metadata.count, 1);
+    XCTAssertEqual(report2.metadata[@"user"][@"id"], @"OOMuser");
+    XCTAssertEqual(report2.metadata[@"user"][@"name"], @"OOMname");
+    XCTAssertEqual(report2.metadata[@"user"][@"email"], @"OOMemail");
+}
+
 - (void)testUnhandledReportMetaData {
     BugsnagMetadata *metadata = [BugsnagMetadata new];
     [metadata addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
