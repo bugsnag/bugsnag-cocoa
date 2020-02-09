@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00C3ED5C23F2DA4900757DBD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00C3ED5B23F2DA4900757DBD /* README.md */; };
 		B0296B46CF7321F684ECACB1 /* libPods-bugsnag-example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A8C72BF7F8211697881F641 /* libPods-bugsnag-example.a */; };
 		D175F4BE1ACDBD81009AFFB7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4BD1ACDBD81009AFFB7 /* AppDelegate.swift */; };
 		D175F4C01ACDBD81009AFFB7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		00C3ED5B23F2DA4900757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1A8C72BF7F8211697881F641 /* libPods-bugsnag-example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bugsnag-example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72198B7DFCD1FD2F92628E3 /* Pods-bugsnag-example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example.release.xcconfig"; path = "Pods/Target Support Files/Pods-bugsnag-example/Pods-bugsnag-example.release.xcconfig"; sourceTree = "<group>"; };
 		C9204A923B81A3D14457E739 /* Pods-bugsnag-example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-bugsnag-example/Pods-bugsnag-example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 		D175F4AF1ACDBD81009AFFB7 = {
 			isa = PBXGroup;
 			children = (
+				00C3ED5B23F2DA4900757DBD /* README.md */,
 				D175F4BA1ACDBD81009AFFB7 /* bugsnag-example */,
 				D175F4D01ACDBD81009AFFB7 /* bugsnag-exampleTests */,
 				D175F4B91ACDBD81009AFFB7 /* Products */,
@@ -225,6 +228,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -246,6 +250,7 @@
 			files = (
 				D175F4C31ACDBD81009AFFB7 /* Main.storyboard in Resources */,
 				D175F4C81ACDBD81009AFFB7 /* LaunchScreen.xib in Resources */,
+				00C3ED5C23F2DA4900757DBD /* README.md in Resources */,
 				D175F4C51ACDBD81009AFFB7 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

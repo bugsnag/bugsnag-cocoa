@@ -73,6 +73,8 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (BOOL)appDidCrashLastLaunch;
 
+// MARK: - Notify
+
 /** Send a custom or caught exception to Bugsnag.
  *
  * The exception will be sent to Bugsnag in the background allowing your
@@ -171,6 +173,8 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)clearMetadataInSection:(NSString *_Nonnull)tabName
     NS_SWIFT_NAME(clearMetadata(_:));
 
+// MARK: - Breadcrumbs
+
 /**
  * Leave a "breadcrumb" log message, representing an action that occurred
  * in your app, to aid with debugging.
@@ -265,6 +269,26 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * @return true if a previous session was resumed, false if a new session was started.
  */
 + (BOOL)resumeSession;
+
+/**
+* Return the metadata for a specific named section
+*
+* @param section The name of the section
+* @returns The mutable dictionary representing the metaadata section, if it
+*          exists, or nil if not.
+*/
++ (NSMutableDictionary *_Nullable)getMetadata:(NSString *_Nonnull)section
+    NS_SWIFT_NAME(getMetadata(_:));
+
+/**
+* Return the metadata for a key in a specific named section
+*
+* @param section The name of the section
+* @param key The key
+* @returns The value of the keyed value if it exists or nil.
+*/
++ (id _Nullable )getMetadata:(NSString *_Nonnull)section key:(NSString *_Nonnull)key
+    NS_SWIFT_NAME(getMetadata(_:key:));
 
 /**
  * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.

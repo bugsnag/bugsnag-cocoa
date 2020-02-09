@@ -61,4 +61,23 @@
     }];
 }
 
+/**
+ * Test that the global Bugsnag metadata retrieval performs as expected:
+ * return a section when there is one, or nil otherwise.
+ */
+- (void)testGetMetadata {
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+    XCTAssertNil([Bugsnag getMetadata:@"dummySection"]);
+    [Bugsnag addMetadataToSection:@"dummySection" key:@"aKey1" value:@"aValue1"];
+    NSMutableDictionary *section = [Bugsnag getMetadata:@"dummySection"];
+    XCTAssertNotNil(section);
+    XCTAssertEqual(section[@"aKey1"], @"aValue1");
+    XCTAssertNil([Bugsnag getMetadata:@"anotherSection"]);
+    
+    XCTAssertTrue([[Bugsnag getMetadata:@"dummySection" key:@"aKey1"] isEqualToString:@"aValue1"]);
+    XCTAssertNil([Bugsnag getMetadata:@"noSection" key:@"notaKey1"]);
+}
+
 @end

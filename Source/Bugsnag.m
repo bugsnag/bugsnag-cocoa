@@ -304,6 +304,16 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
++ (NSMutableDictionary *)getMetadata:(NSString *)section {
+    return [[[self configuration] metadata] getMetadata:section];
+}
+
++ (id _Nullable )getMetadata:(NSString *_Nonnull)section
+                         key:(NSString *_Nonnull)key
+{
+    return [[[self configuration] metadata] getMetadata:section key:key];
+}
+
 @end
 
 //

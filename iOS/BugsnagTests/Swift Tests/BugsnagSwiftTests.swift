@@ -24,13 +24,13 @@ class BugsnagSwiftTests: XCTestCase {
                 
                 Bugsnag.notify(exception1) { (event) in
                     // Arbitrary test, replicating the ObjC one
-                    let value = (event.metadata["mySection1"] as! [String : Any])["myKey1"] as! String
+                    let value = (event.metadata["mySection1"] as? [String : Any])?["myKey1"] as? String
                     XCTAssertEqual(value, "myValue1")
                 }
             }
         }
         catch let e as NSError {
-            print(e)
+            XCTFail("Failed to check method Swift exposure: \(e.debugDescription)")
         }
     }
     

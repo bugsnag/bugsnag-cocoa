@@ -54,20 +54,35 @@
     }
 }
 
-- (NSMutableDictionary *)getTab:(NSString *)tabName {
+- (NSMutableDictionary *)getMetadata:(NSString *)sectionName {
     @synchronized(self) {
-        NSMutableDictionary *tab = self.dictionary[tabName];
-        if (!tab) {
-            tab = [NSMutableDictionary dictionary];
-            self.dictionary[tabName] = tab;
-        }
-        return tab;
+        return self.dictionary[sectionName];
+    }
+}
+
+- (NSMutableDictionary *)getMetadata:(NSString *)sectionName
+                                 key:(NSString *)key
+{
+    @synchronized(self) {
+        return [self.dictionary valueForKeyPath:[NSString stringWithFormat:@"%@.%@", sectionName, key]];
     }
 }
 
 - (void)clearMetadataInSection:(NSString *)section {
     @synchronized(self) {
         [self.dictionary removeObjectForKey:section];
+    }
+
+    [self.delegate metadataChanged:self];
+}
+
+- (void)clearMetadataInSection:(NSString *)section
+                           key:(NSString *_Nonnull)key
+{
+    @synchronized(self) {
+        if ([self.dictionary objectForKey:section]) {
+            [[self.dictionary objectForKey:section] removeObjectForKey:key];
+        };
     }
 
     [self.delegate metadataChanged:self];
@@ -81,20 +96,27 @@
 
 - (void)addAttribute:(NSString *)attributeName
            withValue:(id)value
-       toTabWithName:(NSString *)tabName {
+       toTabWithName:(NSString *)sectionName {
     @synchronized(self) {
         if (value) {
             id cleanedValue = BSGSanitizeObject(value);
             if (cleanedValue) {
-                [self getTab:tabName][attributeName] = cleanedValue;
-            } else {
+                NSDictionary *section = [self getMetadata:sectionName];
+                if (!section) {
+                    [[self dictionary] setObject:[NSMutableDictionary new] forKey:sectionName];
+                    section = [self getMetadata:sectionName];
+                }
+                [section setValue:cleanedValue forKey:attributeName];
+            }
+            else {
                 Class klass = [value class];
                 bsg_log_err(@"Failed to add metadata: Value of class %@ is not "
                             @"JSON serializable",
                             klass);
             }
-        } else {
-            [[self getTab:tabName] removeObjectForKey:attributeName];
+        }
+        else {
+            [[self getMetadata:sectionName] removeObjectForKey:attributeName];
         }
     }
     [self.delegate metadataChanged:self];

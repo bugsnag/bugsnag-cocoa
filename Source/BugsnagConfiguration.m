@@ -73,7 +73,7 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
     if (! [self isValidApiKey:apiKey]) {
         *error = [NSError errorWithDomain:BSGConfigurationErrorDomain
                                      code:BSGConfigurationErrorInvalidApiKey
-                                 userInfo:nil];
+                                 userInfo:@{NSLocalizedDescriptionKey : @"Invalid API key.  Should be a 32-digit hex string."}];
         
         return nil;
     }

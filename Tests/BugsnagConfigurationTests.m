@@ -88,7 +88,7 @@
 //     https://developer.apple.com/documentation/foundation/nserror/1411580-userinfo?language=objc
 #if TARGET_OS_MAC
     XCTAssertTrue([[error userInfo] isKindOfClass:[NSDictionary class]]);
-    XCTAssertEqual([(NSDictionary *)[error userInfo] count], 0);
+    XCTAssertEqual([(NSDictionary *)[error userInfo] count], 1);
 #else
     XCTAssertNil([error userInfo]);
 #endif
