@@ -166,13 +166,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
                        value:(id _Nullable)value
     NS_SWIFT_NAME(addMetadata(_:key:value:));
 
-/** Remove custom data from Bugsnag reports.
- *
- * @param tabName        The tab to clear.
- */
-+ (void)clearMetadataInSection:(NSString *_Nonnull)tabName
-    NS_SWIFT_NAME(clearMetadata(_:));
-
 // MARK: - Breadcrumbs
 
 /**
@@ -287,7 +280,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 * @param key The key
 * @returns The value of the keyed value if it exists or nil.
 */
-+ (id _Nullable )getMetadata:(NSString *_Nonnull)section    key:(NSString *_Nonnull)key
++ (id _Nullable )getMetadata:(NSString *_Nonnull)section key:(NSString *_Nonnull)key
     NS_SWIFT_NAME(getMetadata(_:key:));
 
 /**
@@ -307,5 +300,23 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * @param context A general summary of what was happening in the application
  */
 + (void)setContext:(NSString *_Nullable)context;
+
+/** Remove custom data from Bugsnag reports.
+ *
+ * @param sectionName        The section to clear.
+ */
++ (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+    NS_SWIFT_NAME(clearMetadata(section:));
+
+/**
+ * Remove a key/value from a named matadata section.  If either the section or the
+ * key do not exist no action will occur.
+ *
+ * @param sectionName The name of the section containing the value
+ * @param key The key to remove
+ */
++ (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+                       withKey:(NSString *_Nonnull)key
+    NS_SWIFT_NAME(clearMetadata(section:key:));
 
 @end

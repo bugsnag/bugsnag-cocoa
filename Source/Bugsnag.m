@@ -304,6 +304,15 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
++ (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+                       withKey:(NSString *_Nonnull)key
+{
+    if ([self bugsnagStarted]) {
+        [self.notifier.configuration.metadata clearMetadataInSection:sectionName
+                                                                 key:key];
+    }
+}
+
 + (NSMutableDictionary *)getMetadata:(NSString *)section {
     return [[[self configuration] metadata] getMetadata:section];
 }

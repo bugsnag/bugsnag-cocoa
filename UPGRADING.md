@@ -84,10 +84,10 @@ ObjC:
 Swift:
 
 - BugsnagMetadata.clearTab(name:)
-+ BugsnagMetadata.clearMetadata(_ section)
++ BugsnagMetadata.clearMetadata(section:)
 
 - BugsnagMetadata.getTab(name:)
-+ BugsnagMetadata.getSection(_ section)
++ BugsnagMetadata.getMetadata(_ section)
 ```
 
 Note that `BugsnagMetadata.getTab()` previously would create a metadata section if it
