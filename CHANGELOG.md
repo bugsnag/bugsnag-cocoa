@@ -26,6 +26,11 @@ Bugsnag Notifiers on other platforms.
 * Add a breadcrumb when Bugsnag first starts with the message "Bugsnag loaded"
   [#445](https://github.com/bugsnag/bugsnag-cocoa/pull/445)
 
+* Add a per-Event `apiKey` property.  This defaults to the global 
+  `BugsnagConfiguration` value but can be overridden in event passed to the 
+  `Bugsnag.notify()` callback.
+  [#458](https://github.com/bugsnag/bugsnag-cocoa/pull/458)
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads

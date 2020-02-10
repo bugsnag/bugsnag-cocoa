@@ -84,6 +84,7 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
     NSArray *_Nonnull rawEventReports, NSDictionary *_Nonnull report);
 
 @interface BugsnagConfiguration : NSObject
+
 /**
  *  The API key of a Bugsnag project
  */

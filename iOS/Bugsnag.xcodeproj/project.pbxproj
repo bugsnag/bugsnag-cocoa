@@ -7,14 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4B47970A22A9AE1F00FF9C2E /* BugsnagEventFromKSCrashReportTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B47970922A9AE1F00FF9C2E /* BugsnagEventFromKSCrashReportTest.m */; };
 		000DF29423DB4B4900A883CE /* TestConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 000DF29323DB4B4900A883CE /* TestConstants.m */; };
 		000E6E9E23D8690F009D8194 /* BugsnagSwiftConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000E6E9D23D8690F009D8194 /* BugsnagSwiftConfigurationTests.swift */; };
 		000E6EA323D8AC8C009D8194 /* UPGRADING.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6E9F23D8AC8C009D8194 /* UPGRADING.md */; };
 		000E6EA423D8AC8C009D8194 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA023D8AC8C009D8194 /* README.md */; };
 		000E6EA523D8AC8C009D8194 /* VERSION in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA123D8AC8C009D8194 /* VERSION */; };
 		000E6EA623D8AC8C009D8194 /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA223D8AC8C009D8194 /* CHANGELOG.md */; };
-		4B47970A22A9AE1F00FF9C2E /* BugsnagCrashReportFromKSCrashReportTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B47970922A9AE1F00FF9C2E /* BugsnagCrashReportFromKSCrashReportTest.m */; };
+		4B47970A22A9AE1F00FF9C2E /* BugsnagEventFromKSCrashReportTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B47970922A9AE1F00FF9C2E /* BugsnagEventFromKSCrashReportTest.m */; };
 		4B775FCF22CBDEB4004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B775FCE22CBDEB4004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m */; };
 		4BE6C42622CAD61A0056305D /* BugsnagCollectionsBSGDictMergeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE6C42522CAD61A0056305D /* BugsnagCollectionsBSGDictMergeTest.m */; };
 		8A2C8F231C6BBD2300846019 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2C8F181C6BBD2300846019 /* Bugsnag.framework */; };
@@ -394,6 +393,7 @@
 				E7397EE91F83CFC20034242A /* BugsnagCollections.h in CopyFiles */,
 				E7397EEA1F83CFC20034242A /* BugsnagConfiguration.h in CopyFiles */,
 				E7397EEB1F83CFC20034242A /* BugsnagEvent.h in CopyFiles */,
+				E7397EEC1F83CFC20034242A /* BugsnagMetadata.h in CopyFiles */,
 				E7397EEC1F83CFC20034242A /* BugsnagMetadata.h in CopyFiles */,
 				E7397EED1F83CFC20034242A /* BugsnagNotifier.h in CopyFiles */,
 				E7397EEE1F83CFC20034242A /* BugsnagSink.h in CopyFiles */,
@@ -1318,6 +1318,7 @@
 				E7397E2B1F83BC2A0034242A /* BugsnagCollections.m in Sources */,
 				E7397E2C1F83BC2A0034242A /* BugsnagConfiguration.m in Sources */,
 				E7397E2D1F83BC2A0034242A /* BugsnagEvent.m in Sources */,
+				E7397E2E1F83BC2A0034242A /* BugsnagMetadata.m in Sources */,
 				E7397E2E1F83BC2A0034242A /* BugsnagMetadata.m in Sources */,
 				E7397E2F1F83BC2A0034242A /* BugsnagNotifier.m in Sources */,
 				E7397E301F83BC2A0034242A /* BugsnagSink.m in Sources */,

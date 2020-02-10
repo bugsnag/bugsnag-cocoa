@@ -178,6 +178,13 @@ __deprecated_msg("Use toJson: instead.");
 @property(readonly, nonnull) BugsnagHandledState *handledState;
 
 /**
+ * A per-event override for the apiKey.
+ * - Reads default to the BugsnagConfiguration apiKey value unless explicitly set.
+ * - Writes are not persisted to BugsnagConfiguration.
+ */
+@property(readwrite, copy, nonnull) NSString *apiKey;
+
+/**
  *  Property overrides
  */
 @property(readonly, copy, nonnull) NSDictionary *overrides;
