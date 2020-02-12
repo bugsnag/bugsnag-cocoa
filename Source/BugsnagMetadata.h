@@ -52,12 +52,10 @@
 - (id _Nullable)getMetadata:(NSString *_Nonnull)sectionName
                         key:(NSString *_Nonnull)key;
 
-- (void)clearMetadataInSection:(NSString *_Nonnull)section
-    NS_SWIFT_NAME(clearMetadata(_:));
+- (void)clearMetadataInSection:(NSString *_Nonnull)section;
 
 - (void)clearMetadataInSection:(NSString *_Nonnull)section
-                           key:(NSString *_Nonnull)key
-    NS_SWIFT_NAME(clearMetadata(_:key:));
+                           key:(NSString *_Nonnull)key;
     
 - (NSDictionary *_Nonnull)toDictionary;
 

@@ -42,7 +42,8 @@ class BugsnagSwiftTests: XCTestCase {
         // We don't need to check method's functioning, only that we can call it this way
         Bugsnag.clearMetadata("testSection")
         
+        // A double-check that the method signature is as expected
         let metadata = BugsnagMetadata()
-        metadata.clearMetadata("testSection2")
+        metadata.clear(inSection: "testSection2")
    }
 }
