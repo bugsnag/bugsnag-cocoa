@@ -40,6 +40,11 @@ Bugsnag Notifiers on other platforms.
   [#459](https://github.com/bugsnag/bugsnag-cocoa/pull/459)
   
 
+* Add a per-Event `apiKey` property.  This defaults to the global 
+  `BugsnagConfiguration` value but can be overridden in event passed to the 
+  `Bugsnag.notify()` callback.
+  [#458](https://github.com/bugsnag/bugsnag-cocoa/pull/458)
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads

@@ -191,6 +191,10 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 - (instancetype)initWithClass:(NSString *_Nonnull)errorClass message:(NSString *_Nonnull)errorMessage NS_DESIGNATED_INITIALIZER;
 @end
 
+@interface BugsnagConfiguration (BugsnagEvent)
++ (BOOL)isValidApiKey:(NSString *_Nullable)apiKey;
+@end
+
 @interface BugsnagEvent ()
 
 /**
@@ -366,6 +370,28 @@ initWithErrorName:(NSString *_Nonnull)name
         allMetadata[tabName] ?: [NSMutableDictionary new];
     allMetadata[tabName] = [cleanedData BSG_mergedInto:allTabData];
     self.metadata = allMetadata;
+}
+
+@synthesize apiKey = _apiKey;
+
+- (NSString *)apiKey {
+    if (! _apiKey) {
+        _apiKey = Bugsnag.configuration.apiKey;
+    }
+    return _apiKey;
+}
+
+
+- (void)setApiKey:(NSString *)apiKey {
+    if ([BugsnagConfiguration isValidApiKey:apiKey]) {
+        _apiKey = apiKey;
+    }
+    
+    // A malformed apiKey should not cause an error: the fallback global value
+    // in BugsnagConfiguration will do to get the event reported.
+    else {
+        bsg_log_warn(@"Attempted to set an invalid Event API key.");
+    }
 }
 
 - (void)addAttribute:(NSString *)attributeName

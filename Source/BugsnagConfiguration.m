@@ -57,6 +57,21 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
 
 @implementation BugsnagConfiguration
 
+// MARK: - Class Methods
+
+/**
+ * Determine the apiKey-validity of a passed-in string:
+ * Exactly 32 hexadecimal digits.
+ */
++ (BOOL)isValidApiKey:(NSString *)apiKey {
+    NSCharacterSet *chars = [[NSCharacterSet
+        characterSetWithCharactersInString:@"0123456789ABCDEF"] invertedSet];
+    BOOL isHex = (NSNotFound == [[apiKey uppercaseString] rangeOfCharacterFromSet:chars].location);
+    return isHex && [apiKey length] == BSGApiKeyLength;
+}
+
+// MARK: - Instance Methods
+
 /**
  * Should not be called, but if it _is_ then fail meaningfully rather than silently
  */
@@ -70,7 +85,7 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
 -(instancetype)initWithApiKey:(NSString *)apiKey
                         error:(NSError * _Nullable __autoreleasing * _Nullable)error
 {
-    if (! [self isValidApiKey:apiKey]) {
+    if (! [BugsnagConfiguration isValidApiKey:apiKey]) {
         *error = [NSError errorWithDomain:BSGConfigurationErrorDomain
                                      code:BSGConfigurationErrorInvalidApiKey
                                  userInfo:@{NSLocalizedDescriptionKey : @"Invalid API key.  Should be a 32-digit hex string."}];
@@ -279,7 +294,7 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
 }
 
 - (void)setApiKey:(NSString *)apiKey {
-    if ([self isValidApiKey:apiKey]) {
+    if ([BugsnagConfiguration isValidApiKey:apiKey]) {
         [self willChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
         _apiKey = apiKey;
         [self didChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
@@ -317,17 +332,6 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
 
 - (BOOL)isValidUrl:(NSURL *)url {
     return url != nil && url.scheme != nil && url.host != nil;
-}
-
-/**
- * Determine the apiKey-validity of a passed-in string:
- * Exactly 32 hexadecimal digits.
- */
-- (BOOL)isValidApiKey:(NSString *)apiKey {
-    NSCharacterSet *chars = [[NSCharacterSet
-        characterSetWithCharactersInString:@"0123456789ABCDEF"] invertedSet];
-    BOOL isHex = (NSNotFound == [[apiKey uppercaseString] rangeOfCharacterFromSet:chars].location);
-    return isHex && [apiKey length] == BSGApiKeyLength;
 }
 
 - (NSUInteger)maxBreadcrumbs {
