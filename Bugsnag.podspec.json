@@ -26,6 +26,6 @@
   "requires_arc": true,
   "public_header_files": [
     "Source/BSG_KSCrashReportWriter.h",
-    "Source/Bugsnag{,MetaData,Configuration,Breadcrumb,Event,Plugin}.h"
+    "Source/Bugsnag{,Metadata,Configuration,Breadcrumb,Event,Plugin}.h"
   ]
 }

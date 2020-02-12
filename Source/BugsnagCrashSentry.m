@@ -25,7 +25,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
     [BSG_KSCrash sharedInstance].sink = sink;
     [BSG_KSCrash sharedInstance].introspectMemory = YES;
     [BSG_KSCrash sharedInstance].deleteBehaviorAfterSendAll =
-        BSG_KSCDeleteOnSucess;
+        BSG_KSCDeleteOnSuccess;
     [BSG_KSCrash sharedInstance].onCrash = onCrash;
     [BSG_KSCrash sharedInstance].maxStoredReports = BSG_MAX_STORED_REPORTS;
 

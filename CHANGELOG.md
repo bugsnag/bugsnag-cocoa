@@ -3,6 +3,9 @@ Changelog
 
 ## TBD
 
+This release sees a number of changes across the codebase intended to align its APIs with
+Bugsnag Notifiers on other platforms.
+
 ## Enhancements
 
 * Add a breadcrumb when Bugsnag first starts with the message "Bugsnag loaded"
@@ -10,6 +13,23 @@ Changelog
 
 * BugsnagCrashReport is now BugsnagEvent
   [#449](https://github.com/bugsnag/bugsnag-cocoa/pull/449)
+
+* Added a designated initializer to `BugsnagConfiguration` and removed functionality
+  from the default convenience `init()` to ensure that `apiKey` has a value set.  The `apiKey`
+  must now be a correctly formatted one to be accepted.
+
+  * Swift: `try BugsnagConfiguration(_ apiKey)`
+  * Objective C: `[[BugsnagConfiguration alloc] initWithApiKey:error:]`
+
+  [#446](https://github.com/bugsnag/bugsnag-cocoa/pull/446)
+
+* Add a breadcrumb when Bugsnag first starts with the message "Bugsnag loaded"
+  [#445](https://github.com/bugsnag/bugsnag-cocoa/pull/445)
+
+* Add a per-Event `apiKey` property.  This defaults to the global 
+  `BugsnagConfiguration` value but can be overridden in event passed to the 
+  `Bugsnag.notify()` callback.
+  [#458](https://github.com/bugsnag/bugsnag-cocoa/pull/458)
 
 ## Bug fixes
 

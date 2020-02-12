@@ -13,7 +13,7 @@
 #import "Bugsnag.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagSession.h"
-
+#import "BugsnagTestConstants.h"
 
 @interface BugsnagEventTests : XCTestCase
 @end
@@ -21,40 +21,40 @@
 @implementation BugsnagEventTests
 
 - (void)testNotifyReleaseStagesSendsFromConfig {
-    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
     config.notifyReleaseStages = @[ @"foo" ];
     config.releaseStage = @"foo";
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagEvent *report =
+    BugsnagEvent *event =
         [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
                                          errorMessage:@"it was so bad"
                                         configuration:config
-                                             metaData:@{}
+                                             metadata:@{}
                                          handledState:state
                                               session:nil];
-    XCTAssertTrue([report shouldBeSent]);
+    XCTAssertTrue([event shouldBeSent]);
 }
 
 - (void)testNotifyReleaseStagesSkipsSendFromConfig {
-    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
     config.notifyReleaseStages = @[ @"foo", @"bar" ];
     config.releaseStage = @"not foo or bar";
 
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagEvent *report =
+    BugsnagEvent *event =
         [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
                                          errorMessage:@"it was so bad"
                                         configuration:config
-                                             metaData:@{}
+                                             metadata:@{}
                                          handledState:state
                                               session:nil];
-    XCTAssertFalse([report shouldBeSent]);
+    XCTAssertFalse([event shouldBeSent]);
 }
 
 - (void)testSessionJson {
-    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
 
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
@@ -66,14 +66,14 @@
     bugsnagSession.handledCount = 2;
     bugsnagSession.unhandledCount = 1;
 
-    BugsnagEvent *report =
+    BugsnagEvent *event =
         [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
                                          errorMessage:@"it was so bad"
                                         configuration:config
-                                             metaData:@{}
+                                             metadata:@{}
                                          handledState:state
                                               session:bugsnagSession];
-    NSDictionary *json = [report toJson];
+    NSDictionary *json = [event toJson];
     XCTAssertNotNil(json);
 
     NSDictionary *session = json[@"session"];
@@ -89,35 +89,35 @@
 }
 
 - (void)testDefaultErrorMessageNilForEmptyThreads {
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
         @"threads" : @[]
     }];
-    NSDictionary *payload = [report toJson];
+    NSDictionary *payload = [event toJson];
     XCTAssertEqualObjects(@"Exception",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(report.errorClass,
+    XCTAssertEqualObjects(event.errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(report.errorMessage,
+    XCTAssertEqualObjects(event.errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
 - (void)testEnhancedErrorMessageNilForEmptyNotableAddresses {
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
         @"threads" : @[ @{@"crashed" : @YES, @"notable_addresses" : @{}} ]
     }];
-    NSDictionary *payload = [report toJson];
+    NSDictionary *payload = [event toJson];
     XCTAssertEqualObjects(@"Exception",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(report.errorClass,
+    XCTAssertEqualObjects(event.errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(report.errorMessage,
+    XCTAssertEqualObjects(event.errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
 - (void)testEnhancedErrorMessageForFatalErrorWithoutAdditionalMessage {
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
         @"crash" : @{
             @"threads" : @[ @{
                 @"crashed" : @YES,
@@ -131,18 +131,18 @@
             } ]
         }
     }];
-    NSDictionary *payload = [report toJson];
+    NSDictionary *payload = [event toJson];
     XCTAssertEqualObjects(@"fatal error",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(report.errorClass,
+    XCTAssertEqualObjects(event.errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(report.errorMessage,
+    XCTAssertEqualObjects(event.errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
 - (void)testEnhancedErrorMessageForAssertionWithoutAdditionalMessage {
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
         @"crash" : @{
             @"threads" : @[ @{
                 @"crashed" : @YES,
@@ -156,13 +156,13 @@
             } ]
         }
     }];
-    NSDictionary *payload = [report toJson];
+    NSDictionary *payload = [event toJson];
     XCTAssertEqualObjects(@"assertion failed",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(report.errorClass,
+    XCTAssertEqualObjects(event.errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(report.errorMessage,
+    XCTAssertEqualObjects(event.errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
@@ -171,7 +171,7 @@
              @"assertion failed", @"Assertion failed", @"fatal error",
              @"Fatal error"
          ]) {
-        BugsnagEvent *report =
+        BugsnagEvent *event =
             [[BugsnagEvent alloc] initWithKSReport:@{
                 @"crash" : @{
                     @"threads" : @[ @{
@@ -191,20 +191,20 @@
                     } ]
                 }
             }];
-        NSDictionary *payload = [report toJson];
+        NSDictionary *payload = [event toJson];
         XCTAssertEqualObjects(assertionName,
                               payload[@"exceptions"][0][@"errorClass"]);
         XCTAssertEqualObjects(@"Something went wrong",
                               payload[@"exceptions"][0][@"message"]);
-        XCTAssertEqualObjects(report.errorClass,
+        XCTAssertEqualObjects(event.errorClass,
                               payload[@"exceptions"][0][@"errorClass"]);
-        XCTAssertEqualObjects(report.errorMessage,
+        XCTAssertEqualObjects(event.errorMessage,
                               payload[@"exceptions"][0][@"message"]);
     }
 }
 
 - (void)testEnhancedErrorMessageIgnoresFilePaths {
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
         @"crash" : @{
             @"threads" : @[ @{
                 @"crashed" : @YES,
@@ -223,18 +223,18 @@
             } ]
         }
     }];
-    NSDictionary *payload = [report toJson];
+    NSDictionary *payload = [event toJson];
     XCTAssertEqualObjects(@"fatal error",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(report.errorClass,
+    XCTAssertEqualObjects(event.errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(report.errorMessage,
+    XCTAssertEqualObjects(event.errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
 - (void)testEnhancedErrorMessageIgnoresNonStrings {
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
         @"crash" : @{
             @"threads" : @[ @{
                 @"crashed" : @YES,
@@ -253,18 +253,18 @@
             } ]
         }
     }];
-    NSDictionary *payload = [report toJson];
+    NSDictionary *payload = [event toJson];
     XCTAssertEqualObjects(@"fatal error",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(report.errorClass,
+    XCTAssertEqualObjects(event.errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(report.errorMessage,
+    XCTAssertEqualObjects(event.errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
 - (void)testEnhancedErrorMessageConcatenatesMultipleMessages {
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
         @"crash" : @{
             @"threads" : @[ @{
                 @"crashed" : @YES,
@@ -288,19 +288,19 @@
             } ]
         }
     }];
-    NSDictionary *payload = [report toJson];
+    NSDictionary *payload = [event toJson];
     XCTAssertEqualObjects(@"Fatal error",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"A message from beyond | Wo0o0o",
                           payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(report.errorClass,
+    XCTAssertEqualObjects(event.errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(report.errorMessage,
+    XCTAssertEqualObjects(event.errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
 - (void)testEnhancedErrorMessageIgnoresUnknownAssertionTypes {
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
         @"crash" : @{
             @"threads" : @[ @{
                 @"crashed" : @YES,
@@ -319,72 +319,72 @@
             } ]
         }
     }];
-    NSDictionary *payload = [report toJson];
+    NSDictionary *payload = [event toJson];
     XCTAssertEqualObjects(@"Exception",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(report.errorClass,
+    XCTAssertEqualObjects(event.errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(report.errorMessage,
+    XCTAssertEqualObjects(event.errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
 - (void)testEmptyReport {
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{}];
-    XCTAssertNil(report);
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{}];
+    XCTAssertNil(event);
 }
 
 - (void)testUnhandledReportDepth {
     // unhandled reports should calculate their own depth
     NSDictionary *dict = @{@"user.depth": @2};
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
-    XCTAssertEqual(report.depth, 0);
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:dict];
+    XCTAssertEqual(event.depth, 0);
 }
 
 - (void)testHandledReportDepth {
     // handled reports should use the serialised depth
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     NSDictionary *dict = @{@"user.depth": @2, @"user.handledState": [state toJson]};
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
-    XCTAssertEqual(report.depth, 2);
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:dict];
+    XCTAssertEqual(event.depth, 2);
 }
 
 - (void)testUnhandledReportSeverity {
     // unhandled reports should calculate their own severity
     NSDictionary *dict = @{@"user.state.crash.severity": @"info"};
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
-    XCTAssertEqual(report.severity, BSGSeverityError);
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:dict];
+    XCTAssertEqual(event.severity, BSGSeverityError);
 }
 
 - (void)testHandledReportSeverity {
     // handled reports should use the serialised depth
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     NSDictionary *dict = @{@"user.state.crash.severity": @"info", @"user.handledState": [state toJson]};
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
-    XCTAssertEqual(report.severity, BSGSeverityWarning);
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:dict];
+    XCTAssertEqual(event.severity, BSGSeverityWarning);
 }
 
 - (void)testHandledReportMetaData {
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagMetaData *metaData = [BugsnagMetaData new];
-    [metaData addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
-    NSDictionary *dict = @{@"user.handledState": [state toJson], @"user.metaData": [metaData toDictionary]};
+    BugsnagMetadata *metadata = [BugsnagMetadata new];
+    [metadata addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
+    NSDictionary *dict = @{@"user.handledState": [state toJson], @"user.metaData": [metadata toDictionary]};
 
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
-    XCTAssertNotNil(report.metaData);
-    XCTAssertEqual(report.metaData.count, 1);
-    XCTAssertEqualObjects(report.metaData[@"Custom"][@"Foo"], @"Bar");
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:dict];
+    XCTAssertNotNil(event.metadata);
+    XCTAssertEqual(event.metadata.count, 1);
+    XCTAssertEqualObjects(event.metadata[@"Custom"][@"Foo"], @"Bar");
 }
 
 - (void)testUnhandledReportMetaData {
-    BugsnagMetaData *metaData = [BugsnagMetaData new];
-    [metaData addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
-    NSDictionary *dict = @{@"user.metaData": [metaData toDictionary]};
+    BugsnagMetadata *metadata = [BugsnagMetadata new];
+    [metadata addAttribute:@"Foo" withValue:@"Bar" toTabWithName:@"Custom"];
+    NSDictionary *dict = @{@"user.metaData": [metadata toDictionary]};
 
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:dict];
-    XCTAssertNotNil(report.metaData);
-    XCTAssertEqual(report.metaData.count, 1);
-    XCTAssertEqualObjects(report.metaData[@"Custom"][@"Foo"], @"Bar");
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:dict];
+    XCTAssertNotNil(event.metadata);
+    XCTAssertEqual(event.metadata.count, 1);
+    XCTAssertEqualObjects(event.metadata[@"Custom"][@"Foo"], @"Bar");
 }
 
 - (void)testAppVersionOverride {
@@ -403,13 +403,67 @@
 }
 
 - (void)testReportAddAttr {
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{@"user.metaData": @{@"user": @{@"id": @"user id"}}}];
-    [report addAttribute:@"foo" withValue:@"bar" toTabWithName:@"user"];
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{@"user.metaData": @{@"user": @{@"id": @"user id"}}}];
+    [event addAttribute:@"foo" withValue:@"bar" toTabWithName:@"user"];
 }
 
 - (void)testReportAddMetadata {
-    BugsnagEvent *report = [[BugsnagEvent alloc] initWithKSReport:@{@"user.metaData": @{@"user": @{@"id": @"user id"}}}];
-    [report addMetadata:@{@"foo": @"bar"} toTabWithName:@"user"];
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{@"user.metaData": @{@"user": @{@"id": @"user id"}}}];
+    [event addMetadata:@{@"foo": @"bar"} toTabWithName:@"user"];
+}
+
+
+/**
+ * Test that BugsnagEvent has an apiKey value and supports non-persistent
+ * per-event changes to apiKey.
+ */
+- (void)testApiKey {
+    NSError *error;
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    [Bugsnag startBugsnagWithConfiguration:config];
+
+    NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
+    
+    // Check that the event is passed the apiKey
+    [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
+        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
+    }];
+    
+    // Check that we can change it
+    [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
+        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
+        event.apiKey = DUMMY_APIKEY_32CHAR_2;
+        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_2);
+        XCTAssertEqual(Bugsnag.configuration.apiKey, DUMMY_APIKEY_32CHAR_1);
+    }];
+
+    // Check that the global configuration is unaffected
+    [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
+        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
+        event.apiKey = DUMMY_APIKEY_32CHAR_1;
+        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
+        XCTAssertEqual(Bugsnag.configuration.apiKey, DUMMY_APIKEY_32CHAR_1);
+        event.apiKey = DUMMY_APIKEY_32CHAR_3;
+        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_3);
+    }];
+    
+    // Check that previous local and global values are not persisted erroneously
+    Bugsnag.configuration.apiKey = DUMMY_APIKEY_32CHAR_4;
+    [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
+        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_4);
+        event.apiKey = DUMMY_APIKEY_32CHAR_1;
+        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
+        XCTAssertEqual(Bugsnag.configuration.apiKey, DUMMY_APIKEY_32CHAR_4);
+        event.apiKey = DUMMY_APIKEY_32CHAR_2;
+        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_2);
+    }];
+    
+    // Check that validation is performed and that invalid API keys can't be set
+    Bugsnag.configuration.apiKey = DUMMY_APIKEY_32CHAR_1;
+    [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
+        event.apiKey = DUMMY_APIKEY_16CHAR;
+        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
+    }];
 }
 
 @end

@@ -14,7 +14,7 @@ import Bugsnag
 class HandledErrorOverrideScenario: Scenario {
 
     override func startBugsnag() {
-      self.config.shouldAutoCaptureSessions = false;
+      self.config.autoTrackSessions = false;
       super.startBugsnag()
     }
 
@@ -23,7 +23,7 @@ class HandledErrorOverrideScenario: Scenario {
             report.errorMessage = "Foo"
             report.errorClass = "Bar"
             report.depth += 2
-            report.metaData["account"] = [
+            report.metadata["account"] = [
                 "items": [400,200]
             ]
         }
