@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00C3ED5A23F2D89400757DBD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00C3ED5923F2D89400757DBD /* README.md */; };
 		93BE1CD61B62CC360016380C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 93BE1CD51B62CC360016380C /* AppDelegate.m */; };
 		93BE1CD81B62CC360016380C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 93BE1CD71B62CC360016380C /* main.m */; };
 		93BE1CDB1B62CC360016380C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 93BE1CDA1B62CC360016380C /* ViewController.m */; };
@@ -30,6 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		00C3ED5923F2D89400757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		42399E10422D1D0AC8097A88 /* Pods-objective-c-osx.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-objective-c-osx.release.xcconfig"; path = "Pods/Target Support Files/Pods-objective-c-osx/Pods-objective-c-osx.release.xcconfig"; sourceTree = "<group>"; };
 		54B9582E2984563C0F07C26D /* libPods-objective-c-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-objective-c-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		93BE1CCF1B62CC360016380C /* objective-c-osx.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "objective-c-osx.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -85,6 +87,7 @@
 		93BE1CC61B62CC360016380C = {
 			isa = PBXGroup;
 			children = (
+				00C3ED5923F2D89400757DBD /* README.md */,
 				93BE1CD11B62CC360016380C /* objective-c-osx */,
 				93BE1CE81B62CC360016380C /* objective-c-osxTests */,
 				93BE1CD01B62CC360016380C /* Products */,
@@ -216,6 +219,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -235,6 +239,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00C3ED5A23F2D89400757DBD /* README.md in Resources */,
 				93BE1CDD1B62CC360016380C /* Images.xcassets in Resources */,
 				93BE1CE01B62CC360016380C /* Main.storyboard in Resources */,
 			);

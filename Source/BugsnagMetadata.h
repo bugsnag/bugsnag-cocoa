@@ -32,15 +32,36 @@
 
 - (instancetype _Nonnull)initWithDictionary:(NSMutableDictionary *_Nonnull)dict;
 
-- (NSMutableDictionary *_Nonnull)getTab:(NSString *_Nonnull)tabName;
+/**
+ * Get a named metadata section
+ *
+ * @param sectionName The name of the section
+ * @returns The mutable dictionary representing the metadata section, if it
+ *          exists, or nil if not.
+ */
+- (NSMutableDictionary *_Nullable)getMetadata:(NSString *_Nonnull)sectionName
+    NS_SWIFT_NAME(getMetadata(_:));
 
-- (void)clearTab:(NSString *_Nonnull)tabName;
+/**
+* Get a keyed value from a named metadata section
+*
+* @param sectionName The name of the section
+* @param key The key
+* @returns The value if it exists, or nil if not.
+*/
+- (id _Nullable)getMetadata:(NSString *_Nonnull)sectionName
+                        key:(NSString *_Nonnull)key;
 
+- (void)clearMetadataInSection:(NSString *_Nonnull)section;
+
+- (void)clearMetadataInSection:(NSString *_Nonnull)section
+                           key:(NSString *_Nonnull)key;
+    
 - (NSDictionary *_Nonnull)toDictionary;
 
 - (void)addAttribute:(NSString *_Nonnull)attributeName
            withValue:(id _Nullable)value
-       toTabWithName:(NSString *_Nonnull)tabName;
+       toTabWithName:(NSString *_Nonnull)sectionName;
 
 @property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
 

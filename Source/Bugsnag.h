@@ -73,6 +73,8 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (BOOL)appDidCrashLastLaunch;
 
+// MARK: - Notify
+
 /** Send a custom or caught exception to Bugsnag.
  *
  * The exception will be sent to Bugsnag in the background allowing your
@@ -153,21 +155,25 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *
  * See also [Bugsnag configuration].metaData;
  *
- * @param attributeName  The name of the data.
+ * @param key      The name of the data.
  *
- * @param value          Its value.
+ * @param value    Its value.
  *
- * @param tabName        The tab to show it on on the Bugsnag dashboard.
+ * @param section  The tab to show it on on the Bugsnag dashboard.
  */
-+ (void)addAttribute:(NSString *_Nonnull)attributeName
-           withValue:(id _Nullable)value
-       toTabWithName:(NSString *_Nonnull)tabName;
++ (void)addMetadataToSection:(NSString *_Nonnull)section
+                         key:(NSString *_Nonnull)key
+                       value:(id _Nullable)value
+    NS_SWIFT_NAME(addMetadata(_:key:value:));
 
 /** Remove custom data from Bugsnag reports.
  *
  * @param tabName        The tab to clear.
  */
-+ (void)clearTabWithName:(NSString *_Nonnull)tabName;
++ (void)clearMetadataInSection:(NSString *_Nonnull)tabName
+    NS_SWIFT_NAME(clearMetadata(_:));
+
+// MARK: - Breadcrumbs
 
 /**
  * Leave a "breadcrumb" log message, representing an action that occurred
@@ -263,6 +269,26 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * @return true if a previous session was resumed, false if a new session was started.
  */
 + (BOOL)resumeSession;
+
+/**
+* Return the metadata for a specific named section
+*
+* @param section The name of the section
+* @returns The mutable dictionary representing the metaadata section, if it
+*          exists, or nil if not.
+*/
++ (NSMutableDictionary *_Nullable)getMetadata:(NSString *_Nonnull)section
+    NS_SWIFT_NAME(getMetadata(_:));
+
+/**
+* Return the metadata for a key in a specific named section
+*
+* @param section The name of the section
+* @param key The key
+* @returns The value of the keyed value if it exists or nil.
+*/
++ (id _Nullable )getMetadata:(NSString *_Nonnull)section key:(NSString *_Nonnull)key
+    NS_SWIFT_NAME(getMetadata(_:key:));
 
 /**
  * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.
