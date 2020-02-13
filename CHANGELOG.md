@@ -29,7 +29,7 @@ Bugsnag Notifiers on other platforms.
 * `Bugsnag.addAttribute:value:tab:` is now `Bugsnag.addMetadataToSection::key:value:`
   [#454](https://github.com/bugsnag/bugsnag-cocoa/pull/454)
   
-  *  `[Bugsnag clearTab:]` is now `[Bugsnag clearMetadataInSection:]` 
+*  `[Bugsnag clearTab:]` is now `[Bugsnag clearMetadataInSection:]` 
      (Swift: `Bugsnag.clearMetadata(_ section)`)
      [#457](https://github.com/bugsnag/bugsnag-cocoa/pull/457)
 
@@ -38,6 +38,10 @@ Bugsnag Notifiers on other platforms.
   similar functionality (e.g. `BugsnagConfiguration.getTab()` has been renamed and
   had usage aligned with this change.
   [#459](https://github.com/bugsnag/bugsnag-cocoa/pull/459)
+  
+* Added `Bugsnag.getMetadata(_ section: key:)`
+[#463](https://github.com/bugsnag/bugsnag-cocoa/pull/463)
+  
 
 * Add a per-Event `apiKey` property.  This defaults to the global 
   `BugsnagConfiguration` value but can be overridden in event passed to the 
