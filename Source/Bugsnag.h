@@ -223,10 +223,10 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *
  * Any errors which occur in an active session count towards your application's
  * stability score. You can prevent errors from counting towards your stability
- * score by calling stopSession and resumeSession at the appropriate
+ * score by calling pauseSession and resumeSession at the appropriate
  * time in your application.
  *
- * @see stopSession:
+ * @see pauseSession:
  * @see resumeSession:
  */
 + (void)startSession;
@@ -246,7 +246,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * @see startSession:
  * @see resumeSession:
  */
-+ (void)stopSession;
++ (void)pauseSession;
 
 /**
  * Resumes a session which has previously been stopped, or starts a new session if none exists.
@@ -264,7 +264,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * will be reported to Bugsnag and will count towards your application's stability score.
  *
  * @see startSession:
- * @see stopSession:
+ * @see pauseSession:
  *
  * @return true if a previous session was resumed, false if a new session was started.
  */

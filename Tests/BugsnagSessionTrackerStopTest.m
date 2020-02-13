@@ -77,7 +77,7 @@
 }
 
 /**
- * Verifies that calling stopSession multiple times only stops one session
+ * Verifies that calling pauseSession multiple times only stops one session
  */
 - (void)testMultipleStopsHaveNoEffect {
     [self.tracker startNewSession];

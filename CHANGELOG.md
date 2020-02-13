@@ -38,12 +38,14 @@ Bugsnag Notifiers on other platforms.
   similar functionality (e.g. `BugsnagConfiguration.getTab()` has been renamed and
   had usage aligned with this change.
   [#459](https://github.com/bugsnag/bugsnag-cocoa/pull/459)
-  
 
 * Add a per-Event `apiKey` property.  This defaults to the global 
   `BugsnagConfiguration` value but can be overridden in event passed to the 
   `Bugsnag.notify()` callback.
   [#458](https://github.com/bugsnag/bugsnag-cocoa/pull/458)
+
+* `Bugsnag.stopSession()` is now `Bugsnag.pauseSession()`.
+  [#464](https://github.com/bugsnag/bugsnag-cocoa/pull/464)
 
 ## Bug fixes
 
