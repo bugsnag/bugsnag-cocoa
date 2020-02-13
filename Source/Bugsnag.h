@@ -287,7 +287,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 * @param key The key
 * @returns The value of the keyed value if it exists or nil.
 */
-+ (id _Nullable )getMetadata:(NSString *_Nonnull)section key:(NSString *_Nonnull)key
++ (id _Nullable )getMetadata:(NSString *_Nonnull)section    key:(NSString *_Nonnull)key
     NS_SWIFT_NAME(getMetadata(_:key:));
 
 /**

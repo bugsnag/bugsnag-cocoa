@@ -60,11 +60,11 @@
     }
 }
 
-- (NSMutableDictionary *)getMetadata:(NSString *)sectionName
-                                 key:(NSString *)key
+- (id)getMetadata:(NSString *)sectionName
+              key:(NSString *)key
 {
     @synchronized(self) {
-        return [self.dictionary valueForKeyPath:[NSString stringWithFormat:@"%@.%@", sectionName, key]];
+        return [[self.dictionary objectForKey:sectionName] objectForKey:key];
     }
 }
 
