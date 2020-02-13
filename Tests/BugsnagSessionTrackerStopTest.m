@@ -32,7 +32,7 @@
     BugsnagSession *original = self.tracker.runningSession;
     XCTAssertNotNil(original);
 
-    [self.tracker stopSession];
+    [self.tracker pauseSession];
     XCTAssertNil(self.tracker.runningSession);
 
     XCTAssertTrue([self.tracker resumeSession]);
@@ -56,7 +56,7 @@
     [self.tracker startNewSession];
     BugsnagSession *originalSession = self.tracker.runningSession;
 
-    [self.tracker stopSession];
+    [self.tracker pauseSession];
     [self.tracker startNewSession];
     XCTAssertNotEqual(originalSession, self.tracker.runningSession);
 }
@@ -67,7 +67,7 @@
 - (void)testMultipleResumesHaveNoEffect {
     [self.tracker startNewSession];
     BugsnagSession *original = self.tracker.runningSession;
-    [self.tracker stopSession];
+    [self.tracker pauseSession];
 
     XCTAssertTrue([self.tracker resumeSession]);
     XCTAssertEqual(original, self.tracker.runningSession);
@@ -83,10 +83,10 @@
     [self.tracker startNewSession];
     XCTAssertNotNil(self.tracker.runningSession);
 
-    [self.tracker stopSession];
+    [self.tracker pauseSession];
     XCTAssertNil(self.tracker.runningSession);
 
-    [self.tracker stopSession];
+    [self.tracker pauseSession];
     XCTAssertNil(self.tracker.runningSession);
 }
 
@@ -102,7 +102,7 @@
     XCTAssertEqual(1, self.tracker.runningSession.handledCount);
     XCTAssertEqual(1, self.tracker.runningSession.unhandledCount);
 
-    [self.tracker stopSession];
+    [self.tracker pauseSession];
     self.tracker.runningSession.handledCount++;
     self.tracker.runningSession.unhandledCount++;
     [self.tracker resumeSession];

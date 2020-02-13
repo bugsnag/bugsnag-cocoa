@@ -507,8 +507,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.sessionTracker startNewSession];
 }
 
-- (void)stopSession {
-    [self.sessionTracker stopSession];
+- (void)pauseSession {
+    [self.sessionTracker pauseSession];
 }
 
 - (BOOL)resumeSession {

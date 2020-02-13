@@ -254,7 +254,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (void)pauseSession {
     if ([self bugsnagStarted]) {
-        [self.notifier stopSession];
+        [self.notifier pauseSession];
     }
 }
 
