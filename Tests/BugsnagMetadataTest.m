@@ -104,7 +104,7 @@
     [metadata addAttribute:@"bar" withValue:[DummyClass new] toTabWithName:@"FirstTab"];
     tab2 = [metadata getTab:@"FirstTab"];
     XCTAssertEqual(tab2.count, 0);
-    XCTAssertTrue(delegateCalled, "Expected the delegate's metadataChanged: method to be called.");
+    XCTAssertFalse(delegateCalled, "Expected the delegate's metadataChanged: method to be called.");
     
     // Again, add valid value
     [metadata addAttribute:@"foo" withValue:@"aValue" toTabWithName:@"FirstTab"];
@@ -123,7 +123,7 @@
     XCTAssertTrue(delegateCalled, "Missing metadataChanged: expectation.");
 }
 
--(void) test_addMetadata_values {
+- (void) test_addMetadata_values {
     // Creation
     BugsnagMetadata *metadata = [[BugsnagMetadata alloc] init];
     XCTAssertNotNil(metadata);
@@ -185,7 +185,7 @@
     metadata.delegate = self;
     [metadata addMetadataToSection:@"invalidKeyTab" values:@{dummyObj : @"someValue"}];
     XCTAssertEqual(metadata.dictionary.count, 0);
-    XCTAssertTrue(delegateCalled);
+    XCTAssertFalse(delegateCalled);
 }
 
 // MARK: - <BugsnagMetadataDelegate>
