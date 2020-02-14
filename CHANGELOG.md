@@ -75,6 +75,9 @@ Bugsnag Notifiers on other platforms.
   had usage aligned with this change.
   [#459](https://github.com/bugsnag/bugsnag-cocoa/pull/459)
 
+* Add metadata accessor methods to `BugsnagEvent`
+  [#465](https://github.com/bugsnag/bugsnag-cocoa/pull/465)
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads
