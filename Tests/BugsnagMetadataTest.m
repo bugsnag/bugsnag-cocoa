@@ -13,6 +13,7 @@
 
 @interface BugsnagMetadataTest : XCTestCase <BugsnagMetadataDelegate>
 @property BOOL delegateCalled;
+@property BugsnagMetadata *metadata;
 @end
 
 @interface BugsnagMetadata ()
@@ -40,20 +41,26 @@
 @implementation BugsnagMetadataTest
 
 @synthesize delegateCalled;
+@synthesize metadata;
 
-- (void)test_addAttribute_withName {
+-(void) setUp {
+    metadata = [[BugsnagMetadata alloc] init];
+    XCTAssertNil([metadata delegate]);
+    metadata.delegate = self;
+}
+
+- (void)test_addAttribute_withName_creation {
     
     // Creation
     delegateCalled = NO;
-    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] init];
     XCTAssertNotNil(metadata);
     XCTAssertFalse(delegateCalled, "Did not expect the delegate's metadataChanged: method to be called.");
-    XCTAssertNil([metadata delegate]);
     
-    metadata.delegate = self;
     XCTAssertNotNil([metadata delegate]);
     XCTAssertFalse(delegateCalled, "Did not expect the delegate's metadataChanged: method to be called.");
-    
+}
+
+- (void)test_addAttribute_withName_create_return {
     // Arbitrary tab name creates and returns itself
     delegateCalled = NO;
     NSMutableDictionary *tab = [metadata getTab:@"unknown"];
@@ -61,11 +68,13 @@
     XCTAssertEqual(tab.count, 0);
     XCTAssertEqual([[metadata toDictionary] count], 1);
     XCTAssertFalse(delegateCalled, "Expected the delegate's metadataChanged: method to be called.");
-    
+}
+
+- (void)test_addAttribute_withName_named_tab_set {
     // Check that the arbitrary named tab was set.
     delegateCalled = NO;
     [metadata addAttribute:@"foo" withValue:@"aValue" toTabWithName:@"SecondTab"];
-    XCTAssertEqual([[metadata toDictionary] count], 2);
+    XCTAssertEqual([[metadata toDictionary] count], 1);
     XCTAssertTrue(delegateCalled, "Expected the delegate's metadataChanged: method to be called.");
     
     [metadata addAttribute:@"foo" withValue:@"aValue" toTabWithName:@"FirstTab"];
@@ -78,14 +87,18 @@
     XCTAssertEqual(tab2.count, 2);
     
     NSDictionary *dict = [metadata toDictionary];
-    XCTAssertEqual([dict count], 3);
+    XCTAssertEqual([dict count], 2);
     
     delegateCalled = NO;
     [metadata clearTab:@"FirstTab"];
     tab2 = [metadata getTab:@"FirstTab"];
     XCTAssertEqual(tab2.count, 0);
     XCTAssertTrue(delegateCalled, "Expected the delegate's metadataChanged: method to be called.");
+}
 
+- (void)test_addAttribute_withName_invalid_values {
+    NSMutableDictionary *tab2 = [metadata getTab:@"FirstTab"];
+    
     // Adding invalid values should fail silently (and not add the value)
     delegateCalled = NO;
     [metadata addAttribute:@"bar" withValue:[DummyClass new] toTabWithName:@"FirstTab"];
