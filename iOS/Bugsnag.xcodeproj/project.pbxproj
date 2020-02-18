@@ -52,6 +52,7 @@
 		8A70D9CB22539C81006B696F /* BSGOutOfMemoryWatchdog.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A70D9C822539C81006B696F /* BSGOutOfMemoryWatchdog.m */; };
 		8A70D9CD2253C484006B696F /* BSGOutOfMemoryWatchdogTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A70D9CC2253C484006B696F /* BSGOutOfMemoryWatchdogTests.m */; };
 		8A72A0392396590300328051 /* BugsnagPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A72A0352396535000328051 /* BugsnagPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8AA661AD23D8C1F50031ECC8 /* BSGConnectivityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AA661AC23D8C1F50031ECC8 /* BSGConnectivityTest.m */; };
 		8AF1748E23070F0300902CC2 /* BSG_KSCrashIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A530CBF22FDC3AE00F0C108 /* BSG_KSCrashIdentifier.m */; };
 		E70E52152216E41C00A590AB /* BugsnagSessionTrackerStopTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E70E52142216E41C00A590AB /* BugsnagSessionTrackerStopTest.m */; };
 		E70EE0781FD7039E00FA745C /* RFC3339DateTool_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EE0771FD7039D00FA745C /* RFC3339DateTool_Tests.m */; };
@@ -463,6 +464,8 @@
 		8A70D9C822539C81006B696F /* BSGOutOfMemoryWatchdog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BSGOutOfMemoryWatchdog.m; path = ../Source/BSGOutOfMemoryWatchdog.m; sourceTree = "<group>"; };
 		8A70D9CC2253C484006B696F /* BSGOutOfMemoryWatchdogTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGOutOfMemoryWatchdogTests.m; sourceTree = "<group>"; };
 		8A72A0352396535000328051 /* BugsnagPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagPlugin.h; path = ../Source/BugsnagPlugin.h; sourceTree = "<group>"; };
+		8AA661AA23D89AE10031ECC8 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/AppKit.framework; sourceTree = DEVELOPER_DIR; };
+		8AA661AC23D8C1F50031ECC8 /* BSGConnectivityTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BSGConnectivityTest.m; path = ../../Tests/BSGConnectivityTest.m; sourceTree = "<group>"; };
 		8AF2894923339CCA00E8EB27 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Config.xcconfig; path = ../Configurations/Config.xcconfig; sourceTree = "<group>"; };
 		E70E52142216E41C00A590AB /* BugsnagSessionTrackerStopTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagSessionTrackerStopTest.m; path = ../../Tests/BugsnagSessionTrackerStopTest.m; sourceTree = "<group>"; };
 		E70EE0771FD7039D00FA745C /* RFC3339DateTool_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RFC3339DateTool_Tests.m; path = ../Tests/KSCrash/RFC3339DateTool_Tests.m; sourceTree = SOURCE_ROOT; };
@@ -764,6 +767,8 @@
 				8A2C8F951C6BC08600846019 /* report.json */,
 				000DF29223DB4A6B00A883CE /* Swift Tests */,
 				E70EE0891FD7047D00FA745C /* KSCrash */,
+				000DF29323DB4B4900A883CE /* TestConstants.m */,
+				8AA661AC23D8C1F50031ECC8 /* BSGConnectivityTest.m */,
 			);
 			name = Tests;
 			path = BugsnagTests;
@@ -1248,6 +1253,7 @@
 				4B775FCF22CBDEB4004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m in Sources */,
 				E733A7681FD7091F003EAA29 /* KSCrashSentry_NSException_Tests.m in Sources */,
 				E7B970311FD702DA00590C27 /* KSLogger_Tests.m in Sources */,
+				8AA661AD23D8C1F50031ECC8 /* BSGConnectivityTest.m in Sources */,
 				E70EE0921FD706C700FA745C /* KSDynamicLinker_Tests.m in Sources */,
 				E78C1EFC1FCC759B00B976D3 /* BugsnagSessionTest.m in Sources */,
 				E78C1EFE1FCC778700B976D3 /* BugsnagUserTest.m in Sources */,

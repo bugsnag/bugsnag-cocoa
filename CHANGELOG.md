@@ -52,6 +52,9 @@ Bugsnag Notifiers on other platforms.
    also been applied to the `BugsnagNotifier` and `BugsnagSessionTracker` classes.
   [#464](https://github.com/bugsnag/bugsnag-cocoa/pull/464)
 
+* Add a breadcrumb when network connectivity changes
+  [#448](https://github.com/bugsnag/bugsnag-cocoa/pull/448)
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads
