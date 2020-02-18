@@ -21,7 +21,7 @@ internal class ResumedSessionScenario: Scenario {
         Bugsnag.notifyError(NSError(domain: "First error", code: 101, userInfo: nil))
 
         // send 2nd exception after resuming a session
-        Bugsnag.stopSession()
+        Bugsnag.pauseSession()
         Bugsnag.resumeSession()
         Bugsnag.notifyError(NSError(domain: "Second error", code: 101, userInfo: nil))
     }

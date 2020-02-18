@@ -10,7 +10,7 @@
 - (void)run {
     [Bugsnag startSession];
     [Bugsnag notify:[NSException exceptionWithName:@"foo" reason:nil userInfo:nil]];
-    [Bugsnag stopSession];
+    [Bugsnag pauseSession];
 }
 
 @end

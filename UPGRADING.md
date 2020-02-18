@@ -52,6 +52,9 @@ ObjC:
 
 + [Bugsnag getSection:]
 
+- [Bugsnag stopSession]
++ [Bugsnag pauseSession]
+
 Swift:
 
 - Bugsnag.addAttribute(attributeName:withValue:toTabWithName:)
@@ -61,6 +64,9 @@ Swift:
 + Bugsnag.clearMetadata(_ section)
 
 + Bugsnag.getSection(_ section)
+
+- Bugsnag.stopSession()
++ Bugsnag.pauseSession()
 ```
 
 ### `BugsnagMetadata` class
