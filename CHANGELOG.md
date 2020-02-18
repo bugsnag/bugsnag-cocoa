@@ -48,7 +48,12 @@ Bugsnag Notifiers on other platforms.
   `Bugsnag.notify()` callback.
   [#458](https://github.com/bugsnag/bugsnag-cocoa/pull/458)
 
+* `Bugsnag.stopSession()` is now `Bugsnag.pauseSession()`.  This renaming has 
+   also been applied to the `BugsnagNotifier` and `BugsnagSessionTracker` classes.
+  [#464](https://github.com/bugsnag/bugsnag-cocoa/pull/464)
+
 * Add a breadcrumb when network connectivity changes
+  [#448](https://github.com/bugsnag/bugsnag-cocoa/pull/448)
 
 ## Bug fixes
 

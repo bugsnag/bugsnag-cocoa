@@ -47,7 +47,7 @@
 - (void)start;
 
 - (void)startSession;
-- (void)stopSession;
+- (void)pauseSession;
 - (BOOL)resumeSession;
 
 - (BOOL)appCrashedLastLaunch;

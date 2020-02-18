@@ -11,6 +11,8 @@
 #import "BugsnagTestConstants.h"
 #import <XCTest/XCTest.h>
 
+// MARK: - BugsnagTests
+
 @interface BugsnagTests : XCTestCase
 
 @end
@@ -105,6 +107,26 @@
     
     XCTAssertTrue([[Bugsnag getMetadata:@"dummySection" key:@"aKey1"] isEqualToString:@"aValue1"]);
     XCTAssertNil([Bugsnag getMetadata:@"noSection" key:@"notaKey1"]);
+}
+
+/**
+ * Test that pausing the session performs as expected.
+ * NOTE: For now this test is inadequate.  Some form of dependency injection
+ *       or mocking is required to isolate and test the session pausing semantics.
+ */
+-(void)testBugsnagPauseSession {
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    [configuration addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData,
+                                            BugsnagEvent * _Nonnull reports)
+    {
+        return false;
+    }];
+
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+
+    // For now only test that the method exists
+    [Bugsnag pauseSession];
 }
 
 @end
