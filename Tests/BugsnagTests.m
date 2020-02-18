@@ -129,4 +129,51 @@
     [Bugsnag pauseSession];
 }
 
+/**
+ * Test that the BugsnagConfiguration-mirroring Bugsnag.context is mutable
+ */
+- (void)testMutableContext {
+    // Allow for checks inside blocks that may (potentially) be run asynchronously
+    __block XCTestExpectation *expectation1 = [self expectationWithDescription:@"Localized metadata changes"];
+    
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    [configuration setContext:@"firstContext"];
+    [configuration addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData,
+                                            BugsnagEvent * _Nonnull reports)
+    {
+        return false;
+    }];
+    
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+
+    NSException *exception1 = [[NSException alloc] initWithName:@"exception1" reason:@"reason1" userInfo:nil];
+
+    // Check that the context is set going in to the test and that we can change it
+    [Bugsnag notify:exception1 block:^(BugsnagEvent * _Nonnull event) {
+        XCTAssertEqual([[Bugsnag configuration] context], @"firstContext");
+        
+        // Change the global context
+        [Bugsnag setContext:@"secondContext"];
+        
+        // Check that it's made it into the configuration (from the point of view of the block)
+        // and that setting it here doesn't affect the event's value.
+        XCTAssertEqual([[Bugsnag configuration] context], @"secondContext");
+        XCTAssertEqual([event context], @"firstContext");
+        
+        [expectation1 fulfill];
+    }];
+
+    // Test that the context (changed inside the notify block) remains changed
+    // And that the event picks up this value.
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError * _Nullable error) {
+        XCTAssertEqual([[Bugsnag configuration] context], @"secondContext");
+        
+        [Bugsnag notify:exception1 block:^(BugsnagEvent * _Nonnull report) {
+            XCTAssertEqual([[Bugsnag configuration] context], @"secondContext");
+            XCTAssertEqual([report context], @"secondContext");
+        }];
+    }];
+}
+
 @end

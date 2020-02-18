@@ -109,6 +109,15 @@ id BSGLoadConfigValue(NSDictionary *report, NSString *valueName) {
     ?: [report valueForKeyPath:fallbackKeypath]; // some custom values are nested
 }
 
+/**
+ * Attempt to find a context (within which the event is being reported)
+ * This can be found in user-set metadata of varying specificity or the global
+ * configuration.  Returns nil if no context can be found.
+ *
+ * @param report A dictionary of report data
+ * @param metadata Additional relevant data
+ * @returns A string context if found, or nil
+ */
 NSString *BSGParseContext(NSDictionary *report, NSDictionary *metadata) {
     id context = [report valueForKeyPath:@"user.overrides.context"];
     if ([context isKindOfClass:[NSString class]])
@@ -333,7 +342,8 @@ initWithErrorName:(NSString *_Nonnull)name
         _metadata = metadata ?: [NSDictionary new];
         _releaseStage = config.releaseStage;
         _notifyReleaseStages = config.notifyReleaseStages;
-        _context = BSGParseContext(nil, metadata);
+        // Set context based on current values.  May be nil.
+        _context = metadata[BSGKeyContext] ?: [[Bugsnag configuration] context];
         _breadcrumbs = [config.breadcrumbs arrayValue];
         _overrides = [NSDictionary new];
 

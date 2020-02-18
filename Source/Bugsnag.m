@@ -314,6 +314,10 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     return [[[self configuration] metadata] getMetadata:section key:key];
 }
 
++ (void)setContext:(NSString *_Nullable)context {
+    [self configuration].context = context;
+}
+
 @end
 
 //
