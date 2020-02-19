@@ -10,6 +10,5 @@
 
 - (void)run {
     [Bugsnag leaveBreadcrumbWithMessage:@"Crumb left before crash"];
-    [Bugsnag configuration].releaseStage = @"beta";
 }
 @end

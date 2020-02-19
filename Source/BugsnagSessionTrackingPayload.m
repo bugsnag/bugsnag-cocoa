@@ -13,6 +13,7 @@
 #import "BugsnagKeys.h"
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagKSCrashSysInfoParser.h"
+#import "Private.h"
 
 @interface Bugsnag ()
 + (BugsnagNotifier *)notifier;

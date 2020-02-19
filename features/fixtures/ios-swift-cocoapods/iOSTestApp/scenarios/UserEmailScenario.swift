@@ -16,7 +16,7 @@ internal class UserEmailScenario: Scenario {
     }
 
     override func run() {
-        Bugsnag.configuration()?.setUser(nil, withName: nil, andEmail: "user@example.com")
+        Bugsnag.setUser(nil, withName: nil, andEmail: "user@example.com")
         let error = NSError(domain: "UserEmailScenario", code: 100, userInfo: nil)
         Bugsnag.notifyError(error)
     }

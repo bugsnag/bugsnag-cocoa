@@ -299,6 +299,12 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     [self configuration].context = context;
 }
 
++ (void)setUser:(NSString *_Nullable)userId
+       withName:(NSString *_Nullable)name
+       andEmail:(NSString *_Nullable)email {
+    [[self configuration] setUser:userId withName:name andEmail:email];
+}
+
 @end
 
 //

@@ -20,6 +20,7 @@
 #import "BugsnagKeys.h"
 #import "BugsnagKSCrashSysInfoParser.h"
 #import "BugsnagSession.h"
+#import "Private.h"
 #import "BSG_RFC3339DateTool.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,

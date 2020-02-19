@@ -57,6 +57,9 @@ Swift:
 
 ObjC:
 
+- [Bugsnag configuration]
++ [Bugsnag setUser:withName:andEmail:]
+
 - [Bugsnag addAttribute:WithValuetoTabWithName:]
 + [Bugsnag addMetadataToSection:key:value:]
 
@@ -69,6 +72,9 @@ ObjC:
 + [Bugsnag pauseSession]
 
 Swift:
+
+- Bugsnag.configuration()
++ Bugsnag.setUser(_:name:email:)
 
 - Bugsnag.addAttribute(attributeName:withValue:toTabWithName:)
 + Bugsnag.addMetadata(_:key:value:)
