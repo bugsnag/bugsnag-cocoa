@@ -60,6 +60,11 @@ Bugsnag Notifiers on other platforms.
   prominently displayed and is not truncated.
   [#433](https://github.com/bugsnag/bugsnag-cocoa/pull/433)
 
+* User information is now persisted between application runs by default.  When set a users' 
+  email, id and name are set on `BugsnagConfiguration` they are stored in the Keychain and
+  restored if an application is restarted.  The values are also copied to the configuration metadata.
+  []()
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads
