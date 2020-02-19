@@ -36,7 +36,6 @@
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.sessionId);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
-    XCTAssertNil(session.user);
     XCTAssertFalse(session.autoCaptured);
 }
 
@@ -63,9 +62,6 @@
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.sessionId);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
-    XCTAssertNil(session.user.name);
-    XCTAssertNil(session.user.userId);
-    XCTAssertNil(session.user.emailAddress);
     XCTAssertTrue(session.autoCaptured);
 }
 

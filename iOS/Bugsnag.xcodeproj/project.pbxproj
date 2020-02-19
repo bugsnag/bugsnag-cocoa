@@ -13,6 +13,11 @@
 		000E6EA423D8AC8C009D8194 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA023D8AC8C009D8194 /* README.md */; };
 		000E6EA523D8AC8C009D8194 /* VERSION in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA123D8AC8C009D8194 /* VERSION */; };
 		000E6EA623D8AC8C009D8194 /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA223D8AC8C009D8194 /* CHANGELOG.md */; };
+		004A41CE23FE91070092DF97 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004A41CD23FE91070092DF97 /* Security.framework */; };
+		004A565323FEEC2400F4DEA8 /* SSKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 004A565123FEEC2300F4DEA8 /* SSKeychain.h */; };
+		004A565423FEEC2400F4DEA8 /* SSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 004A565223FEEC2400F4DEA8 /* SSKeychain.m */; };
+		004A565523FEEC2400F4DEA8 /* SSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 004A565223FEEC2400F4DEA8 /* SSKeychain.m */; };
+		004A565623FEEC2400F4DEA8 /* SSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 004A565223FEEC2400F4DEA8 /* SSKeychain.m */; };
 		009131BC23F46279000810D9 /* BugsnagMetadataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 009131BB23F46279000810D9 /* BugsnagMetadataTests.m */; };
 		009131BE23F5884E000810D9 /* BugsnagBaseUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 009131BD23F5884E000810D9 /* BugsnagBaseUnitTest.m */; };
 		00D7ACAD23E9C63000FBE4A7 /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACAC23E9C63000FBE4A7 /* BugsnagTests.m */; };
@@ -419,6 +424,9 @@
 		000E6EA023D8AC8C009D8194 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		000E6EA123D8AC8C009D8194 /* VERSION */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = VERSION; path = ../VERSION; sourceTree = "<group>"; };
 		000E6EA223D8AC8C009D8194 /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
+		004A41CD23FE91070092DF97 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
+		004A565123FEEC2300F4DEA8 /* SSKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SSKeychain.h; path = ../../Source/SSKeychain/SSKeychain.h; sourceTree = "<group>"; };
+		004A565223FEEC2400F4DEA8 /* SSKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSKeychain.m; path = ../../Source/SSKeychain/SSKeychain.m; sourceTree = "<group>"; };
 		009131BB23F46279000810D9 /* BugsnagMetadataTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagMetadataTests.m; path = ../../Tests/BugsnagMetadataTests.m; sourceTree = "<group>"; };
 		009131BD23F5884E000810D9 /* BugsnagBaseUnitTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagBaseUnitTest.m; path = ../../Tests/BugsnagBaseUnitTest.m; sourceTree = "<group>"; };
 		009131BF23F58930000810D9 /* BugsnagBaseUnitTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagBaseUnitTest.h; path = ../../Tests/BugsnagBaseUnitTest.h; sourceTree = "<group>"; };
@@ -625,6 +633,7 @@
 				E7433AD01F4F64D400C082D1 /* libc++.tbd in Frameworks */,
 				E7EC041A1F4CC97200C2E9D5 /* Foundation.framework in Frameworks */,
 				8A2C8F6C1C6BBE9500846019 /* SystemConfiguration.framework in Frameworks */,
+				004A41CE23FE91070092DF97 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -657,6 +666,15 @@
 				00D7ACAE23EABBC800FBE4A7 /* BugsnagSwiftTests.swift */,
 			);
 			path = "Swift Tests";
+			sourceTree = "<group>";
+		};
+		004A565723FEEC2D00F4DEA8 /* SSKeychain */ = {
+			isa = PBXGroup;
+			children = (
+				004A565123FEEC2300F4DEA8 /* SSKeychain.h */,
+				004A565223FEEC2400F4DEA8 /* SSKeychain.m */,
+			);
+			path = SSKeychain;
 			sourceTree = "<group>";
 		};
 		8A2C8F0E1C6BBD2300846019 = {
@@ -737,6 +755,7 @@
 				E72BF77E1FC86A7A004BE82F /* BugsnagUser.m */,
 				8A2C8F1D1C6BBD2300846019 /* Info.plist */,
 				E7107BB31F4C97F100BB3F98 /* KSCrash */,
+				004A565723FEEC2D00F4DEA8 /* SSKeychain */,
 				8A2C8F321C6BBD7200846019 /* module.modulemap */,
 				8A70D9C722539C81006B696F /* BSGOutOfMemoryWatchdog.h */,
 				8A70D9C822539C81006B696F /* BSGOutOfMemoryWatchdog.m */,
@@ -788,6 +807,7 @@
 		8A2C8F751C6BBEBB00846019 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				004A41CD23FE91070092DF97 /* Security.framework */,
 				E7EC04101F4CC82800C2E9D5 /* libstdc++.6.0.9.dylib */,
 				E7EC040C1F4CC6A000C2E9D5 /* libc++.1.dylib */,
 				E7EC040D1F4CC6A000C2E9D5 /* libz.1.dylib */,
@@ -1017,6 +1037,7 @@
 				E7107C511F4C97F100BB3F98 /* BSG_KSCrashSentry_MachException.h in Headers */,
 				8A627CD01EC2A5FD00F7C04E /* BSGSerialization.h in Headers */,
 				E7107C591F4C97F100BB3F98 /* BSG_KSArchSpecific.h in Headers */,
+				004A565323FEEC2400F4DEA8 /* SSKeychain.h in Headers */,
 				E7107C621F4C97F100BB3F98 /* BSG_KSFileUtils.h in Headers */,
 				E7107C401F4C97F100BB3F98 /* BSG_KSCrashReportVersion.h in Headers */,
 				E7107C451F4C97F100BB3F98 /* BSG_KSCrashType.h in Headers */,
@@ -1190,6 +1211,7 @@
 			files = (
 				E7107C781F4C97F100BB3F98 /* BSG_KSString.c in Sources */,
 				E7107C7A1F4C97F100BB3F98 /* BSG_KSSysCtl.c in Sources */,
+				004A565423FEEC2400F4DEA8 /* SSKeychain.m in Sources */,
 				8A2C8F561C6BBE3C00846019 /* BugsnagConfiguration.m in Sources */,
 				8A627CD21EC2A62900F7C04E /* BSGSerialization.m in Sources */,
 				E72BF7761FC867E4004BE82F /* BugsnagSessionTracker.m in Sources */,
@@ -1294,6 +1316,7 @@
 				00F9393923FC4F64008C7073 /* BugsnagTestsDummyClass.m in Sources */,
 				F4295F017754324FD52CCE46 /* RegisterErrorDataTest.m in Sources */,
 				00D7ACAF23EABBC800FBE4A7 /* BugsnagSwiftTests.swift in Sources */,
+				004A565523FEEC2400F4DEA8 /* SSKeychain.m in Sources */,
 				F42952D83435C02F8D891C40 /* BugsnagThreadTest.m in Sources */,
 				4B47970A22A9AE1F00FF9C2E /* BugsnagEventFromKSCrashReportTest.m in Sources */,
 			);
@@ -1330,6 +1353,7 @@
 				E7397E461F83BC320034242A /* BSG_KSSysCtl.c in Sources */,
 				E7397E161F83BC2A0034242A /* BSG_KSCrash.m in Sources */,
 				E7397E171F83BC2A0034242A /* BSG_KSCrashDoctor.m in Sources */,
+				004A565623FEEC2400F4DEA8 /* SSKeychain.m in Sources */,
 				E7397E181F83BC2A0034242A /* BSG_KSCrashReportStore.m in Sources */,
 				E7397E191F83BC2A0034242A /* BSG_KSSystemInfo.m in Sources */,
 				E7397E1A1F83BC2A0034242A /* BSG_KSCrashSentry_CPPException.mm in Sources */,
