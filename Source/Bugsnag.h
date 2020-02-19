@@ -200,12 +200,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 + (NSDateFormatter *_Nonnull)payloadDateFormatter;
 
-+ (void)setSuspendThreadsForUserReported:(BOOL)suspendThreadsForUserReported;
-+ (void)setReportWhenDebuggerIsAttached:(BOOL)reportWhenDebuggerIsAttached;
-+ (void)setThreadTracingEnabled:(BOOL)threadTracingEnabled;
-+ (void)setWriteBinaryImagesForUserReported:
-    (BOOL)writeBinaryImagesForUserReported;
-
 /**
  * Starts tracking a new session.
  *
