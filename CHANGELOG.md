@@ -55,6 +55,11 @@ Bugsnag Notifiers on other platforms.
 * Add a breadcrumb when network connectivity changes
   [#448](https://github.com/bugsnag/bugsnag-cocoa/pull/448)
 
+* Breadcrumb message values can now be arbitrarily long. This simplifies breadcrumb
+  creation using `Bugsnag.leaveBreadcrumb(string)` so that the value is
+  prominently displayed and is not truncated.
+  [#433](https://github.com/bugsnag/bugsnag-cocoa/pull/433)
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads

@@ -92,3 +92,12 @@ Swift:
 
 Note that `BugsnagMetadata.getTab()` previously would create a metadata section if it
 did not exist; the new behaviour is to return `nil`. 
+
+### `BugsnagBreadcrumb` class
+
+The short "name" value has been removed and replaced with an arbitrarily long "message".
+
+```diff
+- BugsnagBreadcrumb.name
++ BugsnagBreadcrumb.message
+```
