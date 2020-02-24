@@ -47,6 +47,11 @@ Bugsnag Notifiers on other platforms.
   `BugsnagConfiguration` value but can be overridden in event passed to the 
   `Bugsnag.notify()` callback.
   [#458](https://github.com/bugsnag/bugsnag-cocoa/pull/458)
+  
+  * Added `Bugsnag.context`, replicating the `BugsnagConfiguration` property.  This is
+  mutable and may be changed at any point.  Changes are propagated to the `BugsnagConfiguration`
+  property.
+  [#466](https://github.com/bugsnag/bugsnag-cocoa/pull/466)
 
 * `Bugsnag.stopSession()` is now `Bugsnag.pauseSession()`.  This renaming has 
    also been applied to the `BugsnagNotifier` and `BugsnagSessionTracker` classes.

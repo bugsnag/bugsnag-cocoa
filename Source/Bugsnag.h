@@ -300,4 +300,12 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)setBreadcrumbCapacity:(NSUInteger)capacity
         __deprecated_msg("Use [BugsnagConfiguration setMaxBreadcrumbs:] instead");
 
+
+/**
+ * Replicates BugsnagConfiguration.context
+ *
+ * @param context A general summary of what was happening in the application
+ */
++ (void)setContext:(NSString *_Nullable)context;
+
 @end
