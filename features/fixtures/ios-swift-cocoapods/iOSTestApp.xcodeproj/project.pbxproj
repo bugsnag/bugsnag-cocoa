@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0011E6672403D13100ED71CD /* UserPersistenceScenarios.m in Sources */ = {isa = PBXBuildFile; fileRef = 0011E6662403D13100ED71CD /* UserPersistenceScenarios.m */; };
 		8A14F0F52282D4AE00337B05 /* ReportBackgroundOOMsEnabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F02282D4AD00337B05 /* ReportBackgroundOOMsEnabledScenario.m */; };
 		8A14F0F62282D4AE00337B05 /* ReportOOMsDisabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F22282D4AD00337B05 /* ReportOOMsDisabledScenario.m */; };
 		8A14F0F72282D4AE00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F32282D4AE00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.m */; };
@@ -70,6 +71,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0011E6662403D13100ED71CD /* UserPersistenceScenarios.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserPersistenceScenarios.m; sourceTree = "<group>"; };
+		0011E6682403D14400ED71CD /* UserPersistenceScenarios.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserPersistenceScenarios.h; sourceTree = "<group>"; };
 		4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOSTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A14F0EF2282D4AD00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.h; sourceTree = "<group>"; };
 		8A14F0F02282D4AD00337B05 /* ReportBackgroundOOMsEnabledScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReportBackgroundOOMsEnabledScenario.m; sourceTree = "<group>"; };
@@ -338,6 +341,8 @@
 				8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */,
 				8AA05A2D23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.h */,
 				8AA05A2E23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m */,
+				0011E6662403D13100ED71CD /* UserPersistenceScenarios.m */,
+				0011E6682403D14400ED71CD /* UserPersistenceScenarios.h */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";
@@ -465,6 +470,7 @@
 				F4295968571A4118D6A4606A /* UserEnabledScenario.swift in Sources */,
 				F4295A036B228AF608641699 /* UserDisabledScenario.swift in Sources */,
 				8A14F0F62282D4AE00337B05 /* ReportOOMsDisabledScenario.m in Sources */,
+				0011E6672403D13100ED71CD /* UserPersistenceScenarios.m in Sources */,
 				E7767F13221C21E30006648C /* ResumedSessionScenario.swift in Sources */,
 				8AEFC73120F8D1A000A78779 /* AutoSessionWithUserScenario.m in Sources */,
 				8AB1081923301FE600672818 /* ReleaseStageScenarios.swift in Sources */,

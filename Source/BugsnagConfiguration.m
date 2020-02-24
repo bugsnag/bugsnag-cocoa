@@ -261,7 +261,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 /**
  * Store user data securely in the keychain.
- * 'storing' nil values involves deleting them
+ * 'storing' nil values deletes them.
  */
 - (void)persistUserData {
     @synchronized(self) {
