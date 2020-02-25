@@ -1,32 +1,32 @@
 //
-//  SSKeychain.m
+//  BSG_SSKeychain.m
 //  SSToolkit
 //
 //  Created by Sam Soffes on 5/19/10.
 //  Copyright (c) 2009-2011 Sam Soffes. All rights reserved.
 //
 
-#import "SSKeychain.h"
+#import "BSG_SSKeychain.h"
 
-NSString *const kSSKeychainErrorDomain = @"com.samsoffes.sskeychain";
+NSString *const BSG_kSSKeychainErrorDomain = @"com.samsoffes.sskeychain";
 
-NSString *const kSSKeychainAccountKey = @"acct";
-NSString *const kSSKeychainCreatedAtKey = @"cdat";
-NSString *const kSSKeychainClassKey = @"labl";
-NSString *const kSSKeychainDescriptionKey = @"desc";
-NSString *const kSSKeychainLabelKey = @"labl";
-NSString *const kSSKeychainLastModifiedKey = @"mdat";
-NSString *const kSSKeychainWhereKey = @"svce";
+NSString *const BSG_kSSKeychainAccountKey = @"acct";
+NSString *const BSG_kSSKeychainCreatedAtKey = @"cdat";
+NSString *const BSG_kSSKeychainClassKey = @"labl";
+NSString *const BSG_kSSKeychainDescriptionKey = @"desc";
+NSString *const BSG_kSSKeychainLabelKey = @"labl";
+NSString *const BSG_kSSKeychainLastModifiedKey = @"mdat";
+NSString *const BSG_kSSKeychainWhereKey = @"svce";
 
 #if __IPHONE_4_0 && TARGET_OS_IPHONE  
 CFTypeRef SSKeychainAccessibilityType = NULL;
 #endif
 
-@interface SSKeychain ()
+@interface BSG_SSKeychain ()
 + (NSMutableDictionary *)_queryForService:(NSString *)service account:(NSString *)account;
 @end
 
-@implementation SSKeychain
+@implementation BSG_SSKeychain
 
 #pragma mark - Getting Accounts
 
@@ -63,7 +63,7 @@ CFTypeRef SSKeychainAccessibilityType = NULL;
 	status = SecItemCopyMatching((CFDictionaryRef)query, &result);
 #endif
     if (status != noErr && error != NULL) {
-		*error = [NSError errorWithDomain:kSSKeychainErrorDomain code:status userInfo:nil];
+		*error = [NSError errorWithDomain:BSG_kSSKeychainErrorDomain code:status userInfo:nil];
 		return nil;
 	}
 	
@@ -105,7 +105,7 @@ CFTypeRef SSKeychainAccessibilityType = NULL;
     OSStatus status = SSKeychainErrorBadArguments;
 	if (!service || !account) {
 		if (error) {
-			*error = [NSError errorWithDomain:kSSKeychainErrorDomain code:status userInfo:nil];
+			*error = [NSError errorWithDomain:BSG_kSSKeychainErrorDomain code:status userInfo:nil];
 		}
 		return nil;
 	}
@@ -123,7 +123,7 @@ CFTypeRef SSKeychainAccessibilityType = NULL;
 #endif
 	
 	if (status != noErr && error != NULL) {
-		*error = [NSError errorWithDomain:kSSKeychainErrorDomain code:status userInfo:nil];
+		*error = [NSError errorWithDomain:BSG_kSSKeychainErrorDomain code:status userInfo:nil];
 		return nil;
 	}
 	
@@ -153,7 +153,7 @@ CFTypeRef SSKeychainAccessibilityType = NULL;
 #endif
 	}
 	if (status != noErr && error != NULL) {
-		*error = [NSError errorWithDomain:kSSKeychainErrorDomain code:status userInfo:nil];
+		*error = [NSError errorWithDomain:BSG_kSSKeychainErrorDomain code:status userInfo:nil];
 	}
 	return (status == noErr);
     
@@ -212,7 +212,7 @@ CFTypeRef SSKeychainAccessibilityType = NULL;
 #endif
 	}
 	if (status != noErr && error != NULL) {
-		*error = [NSError errorWithDomain:kSSKeychainErrorDomain code:status userInfo:nil];
+		*error = [NSError errorWithDomain:BSG_kSSKeychainErrorDomain code:status userInfo:nil];
 	}
 	return (status == noErr);
 }
