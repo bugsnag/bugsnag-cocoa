@@ -12,6 +12,8 @@
 		00D7ACA723E98A5D00FBE4A7 /* BugsnagEventTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACA623E98A5D00FBE4A7 /* BugsnagEventTests.m */; };
 		00D7ACAA23E98A9A00FBE4A7 /* TestConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACA823E98A9A00FBE4A7 /* TestConstants.m */; };
 		00D7ACAB23E98A9A00FBE4A7 /* BugsnagEventFromKSCrashReportTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACA923E98A9A00FBE4A7 /* BugsnagEventFromKSCrashReportTest.m */; };
+		00F9393623FC16DA008C7073 /* BugsnagBaseUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F9393523FC16DA008C7073 /* BugsnagBaseUnitTest.m */; };
+		00F9393F23FD2DDB008C7073 /* BugsnagTestsDummyClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F9393E23FD2DDB008C7073 /* BugsnagTestsDummyClass.m */; };
 		4B3CD2B622C5625800DBFF33 /* BugsnagKSCrashSysInfoParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3CD2B522C5625800DBFF33 /* BugsnagKSCrashSysInfoParserTest.m */; };
 		4B3CD2BB22C5676800DBFF33 /* BSGOutOfMemoryWatchdogTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3CD2B722C5676700DBFF33 /* BSGOutOfMemoryWatchdogTests.m */; };
 		4B3CD2BD22C5676800DBFF33 /* BugsnagThreadTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3CD2B922C5676700DBFF33 /* BugsnagThreadTest.m */; };
@@ -195,6 +197,10 @@
 		00D7ACA623E98A5D00FBE4A7 /* BugsnagEventTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagEventTests.m; path = ../../Tests/BugsnagEventTests.m; sourceTree = "<group>"; };
 		00D7ACA823E98A9A00FBE4A7 /* TestConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestConstants.m; path = ../../iOS/BugsnagTests/TestConstants.m; sourceTree = "<group>"; };
 		00D7ACA923E98A9A00FBE4A7 /* BugsnagEventFromKSCrashReportTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagEventFromKSCrashReportTest.m; path = ../../iOS/BugsnagTests/BugsnagEventFromKSCrashReportTest.m; sourceTree = "<group>"; };
+		00F9393423FC16DA008C7073 /* BugsnagBaseUnitTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagBaseUnitTest.h; path = ../../Tests/BugsnagBaseUnitTest.h; sourceTree = "<group>"; };
+		00F9393523FC16DA008C7073 /* BugsnagBaseUnitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagBaseUnitTest.m; path = ../../Tests/BugsnagBaseUnitTest.m; sourceTree = "<group>"; };
+		00F9393D23FD2DDB008C7073 /* BugsnagTestsDummyClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagTestsDummyClass.h; path = ../../Tests/BugsnagTestsDummyClass.h; sourceTree = "<group>"; };
+		00F9393E23FD2DDB008C7073 /* BugsnagTestsDummyClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagTestsDummyClass.m; path = ../../Tests/BugsnagTestsDummyClass.m; sourceTree = "<group>"; };
 		4B3CD2B522C5625800DBFF33 /* BugsnagKSCrashSysInfoParserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagKSCrashSysInfoParserTest.m; path = ../../iOS/BugsnagTests/BugsnagKSCrashSysInfoParserTest.m; sourceTree = "<group>"; };
 		4B3CD2B722C5676700DBFF33 /* BSGOutOfMemoryWatchdogTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSGOutOfMemoryWatchdogTests.m; path = ../../iOS/BugsnagTests/BSGOutOfMemoryWatchdogTests.m; sourceTree = "<group>"; };
 		4B3CD2B922C5676700DBFF33 /* BugsnagThreadTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagThreadTest.m; path = ../../iOS/BugsnagTests/BugsnagThreadTest.m; sourceTree = "<group>"; };
@@ -472,6 +478,10 @@
 		8AB151131D41356800C9B218 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				00F9393D23FD2DDB008C7073 /* BugsnagTestsDummyClass.h */,
+				00F9393E23FD2DDB008C7073 /* BugsnagTestsDummyClass.m */,
+				00F9393423FC16DA008C7073 /* BugsnagBaseUnitTest.h */,
+				00F9393523FC16DA008C7073 /* BugsnagBaseUnitTest.m */,
 				00D7ACA923E98A9A00FBE4A7 /* BugsnagEventFromKSCrashReportTest.m */,
 				00D7ACA823E98A9A00FBE4A7 /* TestConstants.m */,
 				00D7ACA623E98A5D00FBE4A7 /* BugsnagEventTests.m */,
@@ -961,6 +971,7 @@
 				E7CE79091FD94F1B001D07E0 /* KSCrashState_Tests.m in Sources */,
 				E7CE78FF1FD94F1B001D07E0 /* KSCrashReportStore_Tests.m in Sources */,
 				E7CE78FD1FD94F1B001D07E0 /* KSString_Tests.m in Sources */,
+				00F9393623FC16DA008C7073 /* BugsnagBaseUnitTest.m in Sources */,
 				E762E9F01F73F6CF00E82B43 /* BugsnagHandledStateTest.m in Sources */,
 				E791488F1FD82E77003EFEBF /* BugsnagSessionTrackingPayloadTest.m in Sources */,
 				8AD9FA8D1E0863A1002859A7 /* BugsnagConfigurationTests.m in Sources */,
@@ -971,6 +982,7 @@
 				00D7ACAA23E98A9A00FBE4A7 /* TestConstants.m in Sources */,
 				4B3CD2BB22C5676800DBFF33 /* BSGOutOfMemoryWatchdogTests.m in Sources */,
 				E7CE78F41FD94F1B001D07E0 /* KSFileUtils_Tests.m in Sources */,
+				00F9393F23FD2DDB008C7073 /* BugsnagTestsDummyClass.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
