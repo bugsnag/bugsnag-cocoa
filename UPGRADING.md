@@ -94,6 +94,8 @@ ObjC:
 - [BugsnagMetadata getTab:]
 + [BugsnagMetadata getSection:]
 
++ [BugsnagMetadata addMetadataToSection:values:]
+
 Swift:
 
 - BugsnagMetadata.clearTab(name:)

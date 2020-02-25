@@ -49,9 +49,8 @@ Bugsnag Notifiers on other platforms.
   [#459](https://github.com/bugsnag/bugsnag-cocoa/pull/459)
   
 * Added `Bugsnag.getMetadata(_ section: key:)`
-[#463](https://github.com/bugsnag/bugsnag-cocoa/pull/463)
+  [#463](https://github.com/bugsnag/bugsnag-cocoa/pull/463)
   
-
 * Add a per-Event `apiKey` property.  This defaults to the global 
   `BugsnagConfiguration` value but can be overridden in event passed to the 
   `Bugsnag.notify()` callback.
@@ -90,6 +89,17 @@ Bugsnag Notifiers on other platforms.
   the `BugsnagLogger.h` header.
   [#472](https://github.com/bugsnag/bugsnag-cocoa/pull/472)
   
+* Added a method to allow merging supplied and existing Event metadata.
+  `BugsnagMetadata.addMetadataToSection:values:` allows Event 
+  callbacks to modify Event metadata en-mass.  Supplied metadata should 
+  be a JSON-serializable dictionary.  The resulting Event metadata is the 
+  result of applying the following rules to the existing metadata for each supplied
+  value:
+  - Non-null values replace any existing key/value pair. 
+  - Null values remove a key/value pair.  
+  - Invalid values are logged and ignored.
+  [#470](https://github.com/bugsnag/bugsnag-cocoa/pull/470)
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads
