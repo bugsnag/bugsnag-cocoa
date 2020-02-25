@@ -6,7 +6,7 @@
 #import "BugsnagTestConstants.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagKeys.h"
-#import "SSKeychain.h"
+#import "BSG_SSKeychain.h"
 
 @interface BugsnagConfigurationTests : XCTestCase
 @end
@@ -305,17 +305,17 @@
     
     // Start with no persisted user data
     [config deletePersistedUserData];
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
     
     // user should be persisted by default
     [config setUser:userId withName:name andEmail:email];
     
     // Check values manually
-//    XCTAssertEqualObjects([SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount], email);
-//    XCTAssertEqualObjects([SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount], name);
-//    XCTAssertEqualObjects([SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount], userId);
+//    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount], email);
+//    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount], name);
+//    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount], userId);
     
     // Check persistence between invocations (when values have been set)
     BugsnagConfiguration *config2 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
@@ -326,9 +326,9 @@
     
     // Check that values we know to have been persisted are actuallty deleted.
     [config2 deletePersistedUserData];
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
 }
 
 /**
@@ -340,9 +340,9 @@
     [config deletePersistedUserData];
     
     // Should be no persisted data, and should not persist between invocations
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
 
     BugsnagConfiguration *config2 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
     XCTAssertNil(config2.currentUser);
@@ -361,23 +361,23 @@
     [config deletePersistedUserData];
 
     // Should be no persisted data
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
 
     [config setUser:userId withName:nil andEmail:nil];
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
-//    XCTAssertEqualObjects([SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount], userId);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount], userId);
     [config setUser:nil withName:name andEmail:nil];
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
-//    XCTAssertEqualObjects([SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount], name);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount], name);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
 
     [config setUser:nil withName:nil andEmail:email];
-//    XCTAssertEqualObjects([SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount], email);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+//    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount], email);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
 }
 
 /**
@@ -394,9 +394,9 @@
     XCTAssertNotNil(config.currentUser);
 
     // But there hould be no persisted data
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
 }
 
 /**
@@ -412,9 +412,9 @@
     [config deletePersistedUserData];
 
     // Should be no persisted data
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
-//    XCTAssertNil([SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
     
     // Persist user data
     [config setUser:userId withName:name andEmail:email];

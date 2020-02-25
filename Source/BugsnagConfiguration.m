@@ -32,7 +32,7 @@
 #import "BugsnagUser.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagLogger.h"
-#import "SSKeychain.h"
+#import "BSG_SSKeychain.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -248,9 +248,9 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 - (BugsnagUser *)getPersistedUserData {
     @synchronized(self) {
-        NSString *email = [SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount];
-        NSString *name = [SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount];
-        NSString *userId = [SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount];
+        NSString *email = [BSG_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount];
+        NSString *name = [BSG_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount];
+        NSString *userId = [BSG_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount];
 
         if (email || name || userId)
             return [[BugsnagUser alloc] initWithUserId:userId name:name emailAddress:email];
@@ -268,34 +268,34 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
         if (_currentUser) {
             // Email
             if (_currentUser.emailAddress) {
-                [SSKeychain setPassword:_currentUser.emailAddress
+                [BSG_SSKeychain setPassword:_currentUser.emailAddress
                              forService:kBugsnagUserEmailAddress
                                 account:kBugsnagUserKeychainAccount];
             }
             else {
-                [SSKeychain deletePasswordForService:kBugsnagUserEmailAddress
+                [BSG_SSKeychain deletePasswordForService:kBugsnagUserEmailAddress
                                              account:kBugsnagUserKeychainAccount];
             }
 
             // Name
             if (_currentUser.name) {
-                [SSKeychain setPassword:_currentUser.name
+                [BSG_SSKeychain setPassword:_currentUser.name
                              forService:kBugsnagUserName
                                 account:kBugsnagUserKeychainAccount];
             }
             else {
-                [SSKeychain deletePasswordForService:kBugsnagUserName
+                [BSG_SSKeychain deletePasswordForService:kBugsnagUserName
                                              account:kBugsnagUserKeychainAccount];
             }
             
             // UserId
             if (_currentUser.userId) {
-                [SSKeychain setPassword:_currentUser.userId
+                [BSG_SSKeychain setPassword:_currentUser.userId
                              forService:kBugsnagUserUserId
                                 account:kBugsnagUserKeychainAccount];
             }
             else {
-                [SSKeychain deletePasswordForService:kBugsnagUserUserId
+                [BSG_SSKeychain deletePasswordForService:kBugsnagUserUserId
                                              account:kBugsnagUserKeychainAccount];
             }
         }
@@ -307,9 +307,9 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 -(void)deletePersistedUserData {
     @synchronized(self) {
-        [SSKeychain deletePasswordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount];
-        [SSKeychain deletePasswordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount];
-        [SSKeychain deletePasswordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount];
+        [BSG_SSKeychain deletePasswordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount];
+        [BSG_SSKeychain deletePasswordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount];
+        [BSG_SSKeychain deletePasswordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount];
     }
 }
 
