@@ -68,13 +68,13 @@
         if (![bugsnagReport shouldBeSent])
             continue;
         BOOL shouldSend = YES;
-        for (BugsnagBeforeSendBlock block in configuration.beforeSendBlocks) {
+        for (BugsnagOnSendBlock block in configuration.onSendBlocks) {
             @try {
                 shouldSend = block(report, bugsnagReport);
                 if (!shouldSend)
                     break;
             } @catch (NSException *exception) {
-                bsg_log_err(@"Error from beforeSend callback: %@", exception);
+                bsg_log_err(@"Error from onSend callback: %@", exception);
             }
         }
         if (shouldSend) {
@@ -90,17 +90,6 @@
     }
 
     NSDictionary *reportData = [self getBodyFromReports:bugsnagReports];
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    for (BugsnagBeforeNotifyHook hook in configuration.beforeNotifyHooks) {
-        if (reportData) {
-            reportData = hook(bugsnagReports, reportData);
-        } else {
-            break;
-        }
-    }
-#pragma clang diagnostic pop
 
     if (reportData == nil) {
         if (onCompletion) {

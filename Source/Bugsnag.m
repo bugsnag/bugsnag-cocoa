@@ -107,7 +107,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
-+ (void)notify:(NSException *)exception block:(BugsnagNotifyBlock)block {
++ (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagStarted]) {
         [[self notifier] notifyException:exception
                                    block:^(BugsnagEvent *_Nonnull report) {
@@ -129,7 +129,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
-+ (void)notifyError:(NSError *)error block:(BugsnagNotifyBlock)block {
++ (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagStarted]) {
         [[self notifier] notifyError:error
                                block:^(BugsnagEvent *_Nonnull report) {
@@ -174,7 +174,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagNotifyBlock _Nullable)block {
+                       block:(BugsnagOnErrorBlock _Nullable)block {
     if ([self bugsnagStarted]) {
         [self.notifier internalClientNotify:exception
                                    withData:metadata

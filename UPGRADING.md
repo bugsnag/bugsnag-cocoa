@@ -32,6 +32,19 @@ Swift:
 
 - config.autoCaptureSessions
 + config.autoTrackSessions
+
+- config.onCrashHandler
++ config.onError
+
+- config.beforeSendBlocks
+- config.add(beforeSend:)
++ config.onSendBlocks
++ config.add(onSend:)
+
+- config.beforeSessionBlocks
+- config.add(beforeSession:)
++ config.onSessionBlocks
++ config.add(onSession:)
 ```
 
 ### `Bugsnag` class
