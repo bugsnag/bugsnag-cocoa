@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		004A41E323FEDF2B0092DF97 /* SSKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 004A41DF23FEDF2B0092DF97 /* SSKeychain.h */; };
-		004A41E423FEDF2B0092DF97 /* SSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 004A41E023FEDF2B0092DF97 /* SSKeychain.m */; };
-		004A41E523FEDF2B0092DF97 /* SSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 004A41E023FEDF2B0092DF97 /* SSKeychain.m */; };
 		004A41F223FEE08E0092DF97 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004A41F123FEE08E0092DF97 /* Security.framework */; };
+		0061D83A2405B23A0041C068 /* BSG_SSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 0061D8372405B23A0041C068 /* BSG_SSKeychain.m */; };
+		0061D83B2405B23A0041C068 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 0061D8382405B23A0041C068 /* LICENSE */; };
+		0061D83C2405B23A0041C068 /* BSG_SSKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 0061D8392405B23A0041C068 /* BSG_SSKeychain.h */; };
 		00D7AC9C23E97F8100FBE4A7 /* BugsnagEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7AC9A23E97F8100FBE4A7 /* BugsnagEvent.m */; };
 		00D7AC9D23E97F8100FBE4A7 /* BugsnagEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 00D7AC9B23E97F8100FBE4A7 /* BugsnagEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00D7ACA423E9854C00FBE4A7 /* BugsnagEventTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACA223E984B300FBE4A7 /* BugsnagEventTests.m */; };
@@ -190,9 +190,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		004A41DF23FEDF2B0092DF97 /* SSKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSKeychain.h; sourceTree = "<group>"; };
-		004A41E023FEDF2B0092DF97 /* SSKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSKeychain.m; sourceTree = "<group>"; };
 		004A41F123FEE08E0092DF97 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		0061D8372405B23A0041C068 /* BSG_SSKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSG_SSKeychain.m; sourceTree = "<group>"; };
+		0061D8382405B23A0041C068 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		0061D8392405B23A0041C068 /* BSG_SSKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSG_SSKeychain.h; sourceTree = "<group>"; };
 		00D7AC9A23E97F8100FBE4A7 /* BugsnagEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagEvent.m; path = ../Source/BugsnagEvent.m; sourceTree = "<group>"; };
 		00D7AC9B23E97F8100FBE4A7 /* BugsnagEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagEvent.h; path = ../Source/BugsnagEvent.h; sourceTree = "<group>"; };
 		00D7ACA223E984B300FBE4A7 /* BugsnagEventTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagEventTests.m; sourceTree = "<group>"; };
@@ -399,8 +400,9 @@
 		004A41DD23FEDF2B0092DF97 /* SSKeychain */ = {
 			isa = PBXGroup;
 			children = (
-				004A41DF23FEDF2B0092DF97 /* SSKeychain.h */,
-				004A41E023FEDF2B0092DF97 /* SSKeychain.m */,
+				0061D8392405B23A0041C068 /* BSG_SSKeychain.h */,
+				0061D8372405B23A0041C068 /* BSG_SSKeychain.m */,
+				0061D8382405B23A0041C068 /* LICENSE */,
 			);
 			name = SSKeychain;
 			path = ../Source/SSKeychain;
@@ -748,7 +750,6 @@
 				E79E6BAE1F4E3850002B35F9 /* BSG_KSArchSpecific.h in Headers */,
 				E79E6BB71F4E3850002B35F9 /* BSG_KSFileUtils.h in Headers */,
 				E79E6B951F4E3850002B35F9 /* BSG_KSCrashReportVersion.h in Headers */,
-				004A41E323FEDF2B0092DF97 /* SSKeychain.h in Headers */,
 				E79E6B9A1F4E3850002B35F9 /* BSG_KSCrashType.h in Headers */,
 				E79E6B981F4E3850002B35F9 /* BSG_KSCrashState.h in Headers */,
 				E79148541FD82B36003EFEBF /* BugsnagSessionTrackingApiClient.h in Headers */,
@@ -769,6 +770,7 @@
 				E79E6B8C1F4E3850002B35F9 /* BSG_KSCrashC.h in Headers */,
 				E79E6BDC1F4E3850002B35F9 /* BSG_KSCrashReportFilterCompletion.h in Headers */,
 				E79E6BC41F4E3850002B35F9 /* BSG_KSMachApple.h in Headers */,
+				0061D83C2405B23A0041C068 /* BSG_SSKeychain.h in Headers */,
 				E79E6BAD1F4E3850002B35F9 /* BSG_KSCrashSentry_User.h in Headers */,
 				E79E6BA01F4E3850002B35F9 /* BSG_KSCrashSentry.h in Headers */,
 				E79E6BA91F4E3850002B35F9 /* BSG_KSCrashSentry_Private.h in Headers */,
@@ -867,6 +869,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0061D83B2405B23A0041C068 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -887,7 +890,6 @@
 			files = (
 				E79E6BCD1F4E3850002B35F9 /* BSG_KSString.c in Sources */,
 				E79E6BCF1F4E3850002B35F9 /* BSG_KSSysCtl.c in Sources */,
-				004A41E423FEDF2B0092DF97 /* SSKeychain.m in Sources */,
 				8A2C8FD41C6BC2C800846019 /* BugsnagConfiguration.m in Sources */,
 				8A627CDA1EC3B75200F7C04E /* BSGSerialization.m in Sources */,
 				E79E6BAA1F4E3850002B35F9 /* BSG_KSCrashSentry_Signal.c in Sources */,
@@ -938,6 +940,7 @@
 				E79148521FD82B36003EFEBF /* BugsnagUser.m in Sources */,
 				E79E6B891F4E3850002B35F9 /* BSG_KSCrash.m in Sources */,
 				E79E6BAC1F4E3850002B35F9 /* BSG_KSCrashSentry_User.c in Sources */,
+				0061D83A2405B23A0041C068 /* BSG_SSKeychain.m in Sources */,
 				E79148581FD82B36003EFEBF /* BugsnagFileStore.m in Sources */,
 				E79E6BDA1F4E3850002B35F9 /* BSG_RFC3339DateTool.m in Sources */,
 				E72352C21F55924A00436528 /* BSGConnectivity.m in Sources */,
@@ -982,7 +985,6 @@
 				E7CE78C11FD94E77001D07E0 /* KSCrashState_Tests.m in Sources */,
 				E7CE78C31FD94E77001D07E0 /* KSFileUtils_Tests.m in Sources */,
 				E7CE78BC1FD94E77001D07E0 /* KSCrashReportStore_Tests.m in Sources */,
-				004A41E523FEDF2B0092DF97 /* SSKeychain.m in Sources */,
 				E79148611FD82BB7003EFEBF /* BugsnagSessionTrackerTest.m in Sources */,
 				E79148591FD82BAE003EFEBF /* BugsnagSessionTest.m in Sources */,
 			);
