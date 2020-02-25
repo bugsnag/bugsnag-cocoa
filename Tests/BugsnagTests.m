@@ -20,22 +20,28 @@
 @implementation BugsnagTests
 
 /**
+ * A boilerplate helper method to setup Bugsnag
+ */
+-(void)setUpBugsnagWillCallNotify:(bool)willNotify {
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    if (willNotify) {
+        [configuration addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
+            return false;
+        }];
+    }
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+}
+
+/**
  * Test that global metadata is added correctly, applied to each event, and
  * deleted appropriately.
  */
 - (void)testBugsnagMetadataAddition {
-    
-    __block XCTestExpectation *expectation = [self expectationWithDescription:@"Localized metadata changes"];
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
-    // It's a test so failing to send is OK.
-    [configuration addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData,
-                                            BugsnagEvent * _Nonnull reports)
-    {
-        return false;
-    }];
-    
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+
+	__block XCTestExpectation *expectation = [self expectationWithDescription:@"Localized metadata changes"];
+
+    [self setUpBugsnagWillCallNotify:true];
     [Bugsnag addMetadataToSection:@"mySection1" key:@"aKey1" value:@"aValue1"];
     
     // We should see our added metadata in every request.  Let's try a couple:
@@ -95,9 +101,8 @@
  * return a section when there is one, or nil otherwise.
  */
 - (void)testGetMetadata {
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+    [self setUpBugsnagWillCallNotify:false];
+    
     XCTAssertNil([Bugsnag getMetadata:@"dummySection"]);
     [Bugsnag addMetadataToSection:@"dummySection" key:@"aKey1" value:@"aValue1"];
     NSMutableDictionary *section = [Bugsnag getMetadata:@"dummySection"];
@@ -174,6 +179,42 @@
             XCTAssertEqual([report context], @"secondContext");
         }];
     }];
+}
+
+-(void)testClearMetadataInSectionWithKey {
+    [self setUpBugsnagWillCallNotify:false];
+
+    [Bugsnag addMetadataToSection:@"section1" key:@"myKey1" value:@"myValue1"];
+    [Bugsnag addMetadataToSection:@"section1" key:@"myKey2" value:@"myValue2"];
+    [Bugsnag addMetadataToSection:@"section2" key:@"myKey3" value:@"myValue3"];
+    
+    XCTAssertEqual([[Bugsnag getMetadata:@"section1"] count], 2);
+    XCTAssertEqual([[Bugsnag getMetadata:@"section2"] count], 1);
+    
+    [Bugsnag clearMetadataInSection:@"section1" withKey:@"myKey1"];
+    XCTAssertEqual([[Bugsnag getMetadata:@"section1"] count], 1);
+    XCTAssertNil([[Bugsnag getMetadata:@"section1"] valueForKey:@"myKey1"]);
+    XCTAssertEqual([[Bugsnag getMetadata:@"section1"] valueForKey:@"myKey2"], @"myValue2");
+}
+
+-(void)testClearMetadataInSection {
+    [self setUpBugsnagWillCallNotify:false];
+
+    [Bugsnag addMetadataToSection:@"section1" key:@"myKey1" value:@"myValue1"];
+    [Bugsnag addMetadataToSection:@"section1" key:@"myKey2" value:@"myValue2"];
+    [Bugsnag addMetadataToSection:@"section2" key:@"myKey3" value:@"myValue3"];
+
+    // Existing section
+    [Bugsnag clearMetadataInSection:@"section2"];
+    XCTAssertNil([Bugsnag getMetadata:@"section2"]);
+    XCTAssertEqual([[Bugsnag getMetadata:@"section1"] valueForKey:@"myKey1"], @"myValue1");
+    
+    // nonexistent sections
+    [Bugsnag clearMetadataInSection:@"section3"];
+    
+    // Add it back in, but different
+    [Bugsnag addMetadataToSection:@"section2" key:@"myKey4" value:@"myValue4"];
+    XCTAssertEqual([[Bugsnag getMetadata:@"section2"] valueForKey:@"myKey4"], @"myValue4");
 }
 
 @end

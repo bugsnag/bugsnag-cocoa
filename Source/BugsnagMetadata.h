@@ -52,11 +52,25 @@
 - (id _Nullable)getMetadata:(NSString *_Nonnull)sectionName
                         key:(NSString *_Nonnull)key;
 
-- (void)clearMetadataInSection:(NSString *_Nonnull)section;
+/**
+* Remove a named metadata section, if it exists.
+*
+* @param sectionName The section name
+*/
+- (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+    NS_SWIFT_NAME(clearMetadata(section:));
 
+/**
+ * Remove a specific value for a specific key in a specific metadata section.
+ * If either section or key do not exist no action is taken.
+ *
+ * @param section The section name
+ * @param key the metadata key
+ */
 - (void)clearMetadataInSection:(NSString *_Nonnull)section
-                           key:(NSString *_Nonnull)key;
-    
+                           key:(NSString *_Nonnull)key
+    NS_SWIFT_NAME(clearMetadata(section:key:));
+
 - (NSDictionary *_Nonnull)toDictionary;
 
 - (void)addAttribute:(NSString *_Nonnull)attributeName
