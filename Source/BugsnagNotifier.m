@@ -68,8 +68,8 @@ struct bugsnag_data_t {
     // Contains properties in the Bugsnag payload overridden by the user before
     // it was sent
     char *userOverridesJSON;
-    // User onCrash handler
-    void (*onCrash)(const BSG_KSCrashReportWriter *writer);
+    // User onError handler
+    void (*onError)(const BSG_KSCrashReportWriter *writer);
 };
 
 static struct bugsnag_data_t bsg_g_bugsnag_data;
@@ -117,7 +117,7 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type
         }
         if (crashSentinelPath != NULL) {
             // Create a file to indicate that the crash has been handled by
-            // the library. This exists in case the subsequent `onCrash` handler
+            // the library. This exists in case the subsequent `onError` handler
             // crashes or otherwise corrupts the crash report file.
             int fd = open(crashSentinelPath, O_RDWR | O_CREAT, 0644);
             if (fd > -1) {
@@ -126,8 +126,8 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type
         }
     }
 
-    if (bsg_g_bugsnag_data.onCrash) {
-        bsg_g_bugsnag_data.onCrash(writer);
+    if (bsg_g_bugsnag_data.onError) {
+        bsg_g_bugsnag_data.onError(writer);
     }
 }
 
@@ -254,7 +254,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
         self.crashSentry = [BugsnagCrashSentry new];
         self.errorReportApiClient = [[BugsnagErrorReportApiClient alloc] initWithConfig:configuration
                                                                               queueName:@"Error API queue"];
-        bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
+        bsg_g_bugsnag_data.onError = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onError;
 
         static dispatch_once_t once_t;
         dispatch_once(&once_t, ^{
@@ -593,7 +593,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagNotifyBlock _Nullable)block {
+                       block:(BugsnagOnErrorBlock _Nullable)block {
 
     BSGSeverity severity = BSGParseSeverity(metadata[BSGKeySeverity]);
     NSString *severityReason = metadata[BSGKeySeverityReason];

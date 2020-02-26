@@ -33,6 +33,11 @@ Bugsnag Notifiers on other platforms.
   (Swift: `Bugsnag.clearMetadata(section:)`)
   [#457](https://github.com/bugsnag/bugsnag-cocoa/pull/457)
      
+* Renamed callback functions in the Configuration class:
+  * `onCrashHandler` is now `onError`
+  * `beforeSendBlocks` is now `onSendBlocks` (add using `config.add(onSend: { ... })`)
+  * `beforeSendSessionBlocks` is now `onSessionBlocks` (add using `config.add(onSession: { ... })`)
+
 * Added `[Bugsnag clearMetadataInSection:withKey:]`
   (Swift: `Bugsnag.clearMetadata(section:key:)`)
   [#462](https://github.com/bugsnag/bugsnag-cocoa/pull/462)

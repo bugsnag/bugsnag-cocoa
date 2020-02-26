@@ -91,7 +91,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *  @param block     A block for optionally configuring the error report
  */
 + (void)notify:(NSException *_Nonnull)exception
-         block:(BugsnagNotifyBlock _Nullable)block;
+         block:(BugsnagOnErrorBlock _Nullable)block;
 
 /**
  *  Send an error to Bugsnag
@@ -107,7 +107,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *  @param block A block for optionally configuring the error report
  */
 + (void)notifyError:(NSError *_Nonnull)error
-              block:(BugsnagNotifyBlock _Nullable)block;
+              block:(BugsnagOnErrorBlock _Nullable)block;
 
 /** Send a custom or caught exception to Bugsnag.
  *
@@ -148,7 +148,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagNotifyBlock _Nullable)block;
+                       block:(BugsnagOnErrorBlock _Nullable)block;
 
 /** Add custom data to send to Bugsnag with every exception. If value is nil,
  *  delete the current value for attributeName

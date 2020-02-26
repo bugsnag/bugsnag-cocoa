@@ -30,7 +30,7 @@
     NSError *error;
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
     if (willNotify) {
-        [configuration addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData,
+        [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData,
                                                 BugsnagEvent * _Nonnull reports)
         {
             return false;
