@@ -276,34 +276,6 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     return formatter;
 }
 
-+ (void)setSuspendThreadsForUserReported:(BOOL)suspendThreadsForUserReported {
-    if ([self bugsnagStarted]) {
-        [[BSG_KSCrash sharedInstance]
-                setSuspendThreadsForUserReported:suspendThreadsForUserReported];
-    }
-}
-
-+ (void)setReportWhenDebuggerIsAttached:(BOOL)reportWhenDebuggerIsAttached {
-    if ([self bugsnagStarted]) {
-        [[BSG_KSCrash sharedInstance]
-                setReportWhenDebuggerIsAttached:reportWhenDebuggerIsAttached];
-    }
-}
-
-+ (void)setThreadTracingEnabled:(BOOL)threadTracingEnabled {
-    if ([self bugsnagStarted]) {
-        [[BSG_KSCrash sharedInstance] setThreadTracingEnabled:threadTracingEnabled];
-    }
-}
-
-+ (void)setWriteBinaryImagesForUserReported:
-    (BOOL)writeBinaryImagesForUserReported {
-    if ([self bugsnagStarted]) {
-        [[BSG_KSCrash sharedInstance]
-                setWriteBinaryImagesForUserReported:writeBinaryImagesForUserReported];
-    }
-}
-
 + (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
                        withKey:(NSString *_Nonnull)key
 {
