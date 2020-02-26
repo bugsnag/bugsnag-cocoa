@@ -44,7 +44,7 @@ Bugsnag Notifiers on other platforms.
   [#459](https://github.com/bugsnag/bugsnag-cocoa/pull/459)
   
 * Added `Bugsnag.getMetadata(_ section: key:)`
-[#463](https://github.com/bugsnag/bugsnag-cocoa/pull/463)
+  [#463](https://github.com/bugsnag/bugsnag-cocoa/pull/463)
   
 
 * Add a per-Event `apiKey` property.  This defaults to the global 
