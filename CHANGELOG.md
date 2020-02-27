@@ -82,6 +82,11 @@ Bugsnag Notifiers on other platforms.
 
 * Add metadata accessor methods to `BugsnagEvent`
   [#465](https://github.com/bugsnag/bugsnag-cocoa/pull/465)
+  
+* Added a user-configurable `enabledErrorTypes` bitfield property to `BugsnagConfiguration`.
+  This allows users to choose which types of events are reported.  If automatic crash detection
+  is disabled this value is ignored.  User-generated `notify()` events are reported in all cases.
+  [#477](https://github.com/bugsnag/bugsnag-cocoa/pull/477)
 
 ## Bug fixes
 

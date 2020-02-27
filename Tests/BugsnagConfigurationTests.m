@@ -5,8 +5,14 @@
 #import <XCTest/XCTest.h>
 #import "BugsnagTestConstants.h"
 #import "BugsnagConfiguration.h"
+#import "BugsnagCrashSentry.h"
+#import "BSG_KSCrashType.h"
 
 @interface BugsnagConfigurationTests : XCTestCase
+@end
+
+@interface BugsnagCrashSentry ()
+- (BSG_KSCrashType)mapKSToBSGCrashTypes:(BSGErrorType)bsgCrashMask;
 @end
 
 @implementation BugsnagConfigurationTests
@@ -270,6 +276,48 @@
     
     config.apiKey = DUMMY_APIKEY_32CHAR_2;
     XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_2]);
+}
+
+-(void)testBSGErrorTypes {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    
+    // Test all are set by default
+    XCTAssertEqual([config enabledErrorTypes], BSGErrorTypesOOMs | BSGErrorTypesNSExceptions | BSGErrorTypesSignals | BSGErrorTypesMach | BSGErrorTypesCPP);
+    
+    // Test that we can set it
+    config.enabledErrorTypes = BSGErrorTypesOOMs | BSGErrorTypesNSExceptions;
+    XCTAssertEqual([config enabledErrorTypes], BSGErrorTypesOOMs | BSGErrorTypesNSExceptions);
+}
+
+/**
+ * Test the mapping between BSGErrorTypes and KSCrashTypes
+ */
+-(void)testCrashTypeMapping {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    BugsnagCrashSentry *sentry = [BugsnagCrashSentry new];
+    BSG_KSCrashType crashTypes = BSG_KSCrashTypeNSException
+                               | BSG_KSCrashTypeMachException
+                               | BSG_KSCrashTypeSignal
+                               | BSG_KSCrashTypeCPPException;
+    
+    XCTAssertEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
+    
+    crashTypes = crashTypes | BSG_KSCrashTypeUserReported;
+
+    XCTAssertNotEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
+    
+    // Check partial sets
+    BSGErrorType partialErrors = BSGErrorTypesNSExceptions | BSGErrorTypesCPP;
+    crashTypes = BSG_KSCrashTypeNSException | BSG_KSCrashTypeCPPException;
+    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
+    
+    partialErrors = BSGErrorTypesNSExceptions | BSGErrorTypesSignals;
+    crashTypes = BSG_KSCrashTypeNSException | BSG_KSCrashTypeSignal;
+    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
+
+    partialErrors = BSGErrorTypesCPP | BSGErrorTypesSignals;
+    crashTypes = BSG_KSCrashTypeCPPException | BSG_KSCrashTypeSignal;
+    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
 }
 
 @end

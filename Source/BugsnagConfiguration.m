@@ -106,6 +106,12 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
     _breadcrumbs = [BugsnagBreadcrumbs new];
     _automaticallyCollectBreadcrumbs = YES;
     _autoTrackSessions = YES;
+    // Default to recording all error types
+    _enabledErrorTypes = BSGErrorTypesOOMs
+                       | BSGErrorTypesCPP
+                       | BSGErrorTypesMach
+                       | BSGErrorTypesSignals
+                       | BSGErrorTypesNSExceptions;
 
     #if !DEBUG
         _reportOOMs = YES;
@@ -335,5 +341,7 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
 - (void)setMaxBreadcrumbs:(NSUInteger)capacity {
     self.breadcrumbs.capacity = capacity;
 }
+
+@synthesize enabledErrorTypes = _enabledErrorTypes;
 
 @end

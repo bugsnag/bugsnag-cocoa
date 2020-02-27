@@ -45,6 +45,8 @@ Swift:
 - config.add(beforeSession:)
 + config.onSessionBlocks
 + config.add(onSession:)
+
++ config.enabledErrorTypes
 ```
 
 ### `Bugsnag` class

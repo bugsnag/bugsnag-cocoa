@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00432CC4240912A100826D05 /* EnabledErrorTypesCxxScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 00432CC2240912A000826D05 /* EnabledErrorTypesCxxScenario.mm */; };
+		00CEB60D24080C690004793D /* EnabledErrorTypesScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEB60C24080C690004793D /* EnabledErrorTypesScenario.m */; };
 		8A14F0F52282D4AE00337B05 /* ReportBackgroundOOMsEnabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F02282D4AD00337B05 /* ReportBackgroundOOMsEnabledScenario.m */; };
 		8A14F0F62282D4AE00337B05 /* ReportOOMsDisabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F22282D4AD00337B05 /* ReportOOMsDisabledScenario.m */; };
 		8A14F0F72282D4AE00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F32282D4AE00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.m */; };
@@ -70,6 +72,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		00432CC2240912A000826D05 /* EnabledErrorTypesCxxScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EnabledErrorTypesCxxScenario.mm; sourceTree = "<group>"; };
+		00432CC3240912A100826D05 /* EnabledErrorTypesCxxScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnabledErrorTypesCxxScenario.h; sourceTree = "<group>"; };
+		00CEB60B24080C690004793D /* EnabledErrorTypesScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EnabledErrorTypesScenario.h; sourceTree = "<group>"; };
+		00CEB60C24080C690004793D /* EnabledErrorTypesScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EnabledErrorTypesScenario.m; sourceTree = "<group>"; };
 		4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOSTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A14F0EF2282D4AD00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.h; sourceTree = "<group>"; };
 		8A14F0F02282D4AD00337B05 /* ReportBackgroundOOMsEnabledScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReportBackgroundOOMsEnabledScenario.m; sourceTree = "<group>"; };
@@ -338,6 +344,10 @@
 				8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */,
 				8AA05A2D23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.h */,
 				8AA05A2E23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m */,
+				00CEB60B24080C690004793D /* EnabledErrorTypesScenario.h */,
+				00CEB60C24080C690004793D /* EnabledErrorTypesScenario.m */,
+				00432CC3240912A100826D05 /* EnabledErrorTypesCxxScenario.h */,
+				00432CC2240912A000826D05 /* EnabledErrorTypesCxxScenario.mm */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";
@@ -469,6 +479,7 @@
 				8AEFC73120F8D1A000A78779 /* AutoSessionWithUserScenario.m in Sources */,
 				8AB1081923301FE600672818 /* ReleaseStageScenarios.swift in Sources */,
 				8AF6FD7A225E3FA00056EF9E /* ResumeSessionOOMScenario.m in Sources */,
+				00CEB60D24080C690004793D /* EnabledErrorTypesScenario.m in Sources */,
 				F429565A951303E2C3136D0D /* UserIdScenario.swift in Sources */,
 				8AEEBBD020FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m in Sources */,
 				8AF8FCAC22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift in Sources */,
@@ -501,6 +512,7 @@
 				F42959124DB949EEF1420957 /* ReadOnlyPageScenario.m in Sources */,
 				F4295B75B2244F442D84D9CA /* StackOverflowScenario.m in Sources */,
 				F42951A9FD696D9047149DA8 /* UndefinedInstructionScenario.m in Sources */,
+				00432CC4240912A100826D05 /* EnabledErrorTypesCxxScenario.mm in Sources */,
 				E7767F15221C223C0006648C /* NewSessionScenario.swift in Sources */,
 				F42951BEB2518C610A85FE0D /* BuiltinTrapScenario.m in Sources */,
 				8AEFC79C20F92E2200A78779 /* AutoSessionUnhandledScenario.m in Sources */,
