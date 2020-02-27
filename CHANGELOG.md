@@ -83,6 +83,13 @@ Bugsnag Notifiers on other platforms.
 * Add metadata accessor methods to `BugsnagEvent`
   [#465](https://github.com/bugsnag/bugsnag-cocoa/pull/465)
 
+* Internal logging has been unified.  Where before two preprocessor macros were
+  required to configure both `Bugsnag` and `KSCrash` portions, now the Bugsnag
+  `BSG_LOG_LEVEL` macro is sufficient to configure both.  This should be set on the
+  Bugsnag framework build target.  Further configuration instructions can be found in 
+  the `BugsnagLogger.h` header.
+  [#472](https://github.com/bugsnag/bugsnag-cocoa/pull/472)
+  
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads
