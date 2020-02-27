@@ -1,3 +1,7 @@
+/**
+ * Exposes non-public interfaces between the components of the library for
+ * internal use
+ */
 #ifndef BUGSNAG_PRIVATE_H
 #define BUGSNAG_PRIVATE_H
 
