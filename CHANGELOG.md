@@ -26,12 +26,21 @@ Bugsnag Notifiers on other platforms.
 * Add a breadcrumb when Bugsnag first starts with the message "Bugsnag loaded"
   [#445](https://github.com/bugsnag/bugsnag-cocoa/pull/445)
   
-* `Bugsnag.addAttribute:value:tab:` is now `Bugsnag.addMetadataToSection::key:value:`
+* `Bugsnag.addAttribute:value:tab:` is now `Bugsnag.addMetadataToSection:key:value:`
   [#454](https://github.com/bugsnag/bugsnag-cocoa/pull/454)
   
-*  `[Bugsnag clearTab:]` is now `[Bugsnag clearMetadataInSection:]` 
-     (Swift: `Bugsnag.clearMetadata(_ section)`)
-     [#457](https://github.com/bugsnag/bugsnag-cocoa/pull/457)
+* `[Bugsnag clearTab:]` is now `[Bugsnag clearMetadataInSection:]`
+  (Swift: `Bugsnag.clearMetadata(section:)`)
+  [#457](https://github.com/bugsnag/bugsnag-cocoa/pull/457)
+     
+* Renamed callback functions in the Configuration class:
+  * `onCrashHandler` is now `onError`
+  * `beforeSendBlocks` is now `onSendBlocks` (add using `config.add(onSend: { ... })`)
+  * `beforeSendSessionBlocks` is now `onSessionBlocks` (add using `config.add(onSession: { ... })`)
+
+* Added `[Bugsnag clearMetadataInSection:withKey:]`
+  (Swift: `Bugsnag.clearMetadata(section:key:)`)
+  [#462](https://github.com/bugsnag/bugsnag-cocoa/pull/462)
 
 * Added `Bugsnag.getMetadata(_ section)`.  The behaviour is: calling with a valid section
   name will return the metadata for that section if it exists, or `nil` if it does not exist.  Other,
@@ -64,6 +73,15 @@ Bugsnag Notifiers on other platforms.
   creation using `Bugsnag.leaveBreadcrumb(string)` so that the value is
   prominently displayed and is not truncated.
   [#433](https://github.com/bugsnag/bugsnag-cocoa/pull/433)
+
+* Added `Bugsnag.getMetadata(_ section)`.  The behaviour is: calling with a valid section
+  name will return the metadata for that section if it exists, or `nil` if it does not exist.  Other,
+  similar functionality (e.g. `BugsnagConfiguration.getTab()` has been renamed and
+  had usage aligned with this change.
+  [#459](https://github.com/bugsnag/bugsnag-cocoa/pull/459)
+
+* Add metadata accessor methods to `BugsnagEvent`
+  [#465](https://github.com/bugsnag/bugsnag-cocoa/pull/465)
 
 * Internal logging has been unified.  Where before two preprocessor macros were
   required to configure both `Bugsnag` and `KSCrash` portions, now the Bugsnag

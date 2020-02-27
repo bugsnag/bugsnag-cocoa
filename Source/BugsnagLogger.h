@@ -1,5 +1,5 @@
 /**
- * Higher-level user-accessible BugsnaglLogging configuration.  Controls how
+ * Higher-level user-accessible Bugsnag logging configuration.  Controls how
  * verbose the internal Bugsnag logging is.  Not related to logging Events or
  * other errors with the Bugsnag server.
  *

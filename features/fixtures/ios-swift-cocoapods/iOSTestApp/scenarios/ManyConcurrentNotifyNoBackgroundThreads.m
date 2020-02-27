@@ -1,5 +1,10 @@
 #import "ManyConcurrentNotifyNoBackgroundThreads.h"
 
+@interface BSG_KSCrash
++ (instancetype)sharedInstance;
+- (void)setSuspendThreadsForUserReported:(BOOL)suspend;
+@end
+
 @interface ManyConcurrentNotifyNoBackgroundThreads ()
 @property (nonatomic) dispatch_queue_t queue1;
 @property (nonatomic) dispatch_queue_t queue2;
@@ -41,6 +46,6 @@
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;
     [super startBugsnag];
-    [Bugsnag setSuspendThreadsForUserReported:NO];
+    [[BSG_KSCrash sharedInstance] setSuspendThreadsForUserReported:NO];
 }
 @end
