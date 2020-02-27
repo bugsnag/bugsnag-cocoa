@@ -33,6 +33,11 @@ Bugsnag Notifiers on other platforms.
   (Swift: `Bugsnag.clearMetadata(section:)`)
   [#457](https://github.com/bugsnag/bugsnag-cocoa/pull/457)
      
+* Renamed callback functions in the Configuration class:
+  * `onCrashHandler` is now `onError`
+  * `beforeSendBlocks` is now `onSendBlocks` (add using `config.add(onSend: { ... })`)
+  * `beforeSendSessionBlocks` is now `onSessionBlocks` (add using `config.add(onSession: { ... })`)
+
 * Added `[Bugsnag clearMetadataInSection:withKey:]`
   (Swift: `Bugsnag.clearMetadata(section:key:)`)
   [#462](https://github.com/bugsnag/bugsnag-cocoa/pull/462)
@@ -46,7 +51,6 @@ Bugsnag Notifiers on other platforms.
 * Added `Bugsnag.getMetadata(_ section: key:)`
   [#463](https://github.com/bugsnag/bugsnag-cocoa/pull/463)
   
-
 * Add a per-Event `apiKey` property.  This defaults to the global 
   `BugsnagConfiguration` value but can be overridden in event passed to the 
   `Bugsnag.notify()` callback.
@@ -82,6 +86,24 @@ Bugsnag Notifiers on other platforms.
 
 * Add metadata accessor methods to `BugsnagEvent`
   [#465](https://github.com/bugsnag/bugsnag-cocoa/pull/465)
+
+* Internal logging has been unified.  Where before two preprocessor macros were
+  required to configure both `Bugsnag` and `KSCrash` portions, now the Bugsnag
+  `BSG_LOG_LEVEL` macro is sufficient to configure both.  This should be set on the
+  Bugsnag framework build target.  Further configuration instructions can be found in 
+  the `BugsnagLogger.h` header.
+  [#472](https://github.com/bugsnag/bugsnag-cocoa/pull/472)
+  
+* Added a method to allow merging supplied and existing Event metadata.
+  `BugsnagMetadata.addMetadataToSection:values:` allows Event 
+  callbacks to modify Event metadata en-mass.  Supplied metadata should 
+  be a JSON-serializable dictionary.  The resulting Event metadata is the 
+  result of applying the following rules to the existing metadata for each supplied
+  value:
+  - Non-null values replace any existing key/value pair. 
+  - Null values remove a key/value pair.  
+  - Invalid values are logged and ignored.
+  [#470](https://github.com/bugsnag/bugsnag-cocoa/pull/470)
 
 ## Bug fixes
 

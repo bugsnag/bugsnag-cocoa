@@ -57,9 +57,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 @end
 
 @interface BugsnagConfiguration ()
-@property(nonatomic, readwrite, strong) NSMutableArray *beforeNotifyHooks;
-@property(nonatomic, readwrite, strong) NSMutableArray *beforeSendBlocks;
-@property(nonatomic, readwrite, strong) NSMutableArray *beforeSendSessionBlocks;
+@property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
+@property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
 @end
 
 @implementation BugsnagConfiguration
@@ -115,9 +114,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _sessionURL = [NSURL URLWithString:@"https://sessions.bugsnag.com"];
     _autoDetectErrors = YES;
     _notifyURL = [NSURL URLWithString:BSGDefaultNotifyUrl];
-    _beforeNotifyHooks = [NSMutableArray new];
-    _beforeSendBlocks = [NSMutableArray new];
-    _beforeSendSessionBlocks = [NSMutableArray new];
+    _onSendBlocks = [NSMutableArray new];
+    _onSessionBlocks = [NSMutableArray new];
     _notifyReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
     _automaticallyCollectBreadcrumbs = YES;
@@ -180,20 +178,16 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [self.metadata addAttribute:BSGKeyEmail withValue:user.emailAddress toTabWithName:BSGKeyUser];
 }
 
-- (void)addBeforeSendBlock:(BugsnagBeforeSendBlock)block {
-    [(NSMutableArray *)self.beforeSendBlocks addObject:[block copy]];
+- (void)addOnSendBlock:(BugsnagOnSendBlock)block {
+    [(NSMutableArray *)self.onSendBlocks addObject:[block copy]];
 }
 
-- (void)addBeforeSendSession:(BeforeSendSession)block {
-    [(NSMutableArray *)self.beforeSendSessionBlocks addObject:[block copy]];
+- (void)addOnSessionBlock:(BugsnagOnSessionBlock)block {
+    [(NSMutableArray *)self.onSessionBlocks addObject:[block copy]];
 }
 
-- (void)clearBeforeSendBlocks {
-    [(NSMutableArray *)self.beforeSendBlocks removeAllObjects];
-}
-
-- (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook)hook {
-    [(NSMutableArray *)self.beforeNotifyHooks addObject:[hook copy]];
+- (void)clearOnSendBlocks {
+    [(NSMutableArray *)self.onSendBlocks removeAllObjects];
 }
 
 - (NSDictionary *)errorApiHeaders {

@@ -79,6 +79,27 @@
 
 @property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
 
+/**
+ * Merge supplied and existing metadata.
+ *
+ * - Non-null values will replace existing values for identical keys.
+ 
+ * - Null values will remove the existing key/value pair if the key exists.
+ *   Where null-valued keys do not exist they will not be set.  (Since ObjC
+ *   dicts can't store 'nil' directly we assume [NSNUll null])
+ *
+ * - Tabs are only created if at least one value is valid.
+ *
+ * - Invalid values (i.e. unserializable to JSON) are logged and ignored.
+ *
+ * @param section The name of the metadata section
+ *
+ * @param values A dictionary of string -> id key/value pairs.
+ *               Values should be serializable to JSON.
+ */
+- (void)addMetadataToSection:(NSString *_Nonnull)section
+                      values:(NSDictionary *_Nullable)values;
+
 @end
 
 @protocol BugsnagMetadataDelegate <NSObject>

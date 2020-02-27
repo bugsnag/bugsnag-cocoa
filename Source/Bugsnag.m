@@ -107,7 +107,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
-+ (void)notify:(NSException *)exception block:(BugsnagNotifyBlock)block {
++ (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagStarted]) {
         [[self notifier] notifyException:exception
                                    block:^(BugsnagEvent *_Nonnull report) {
@@ -129,7 +129,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
-+ (void)notifyError:(NSError *)error block:(BugsnagNotifyBlock)block {
++ (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagStarted]) {
         [[self notifier] notifyError:error
                                block:^(BugsnagEvent *_Nonnull report) {
@@ -174,7 +174,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagNotifyBlock _Nullable)block {
+                       block:(BugsnagOnErrorBlock _Nullable)block {
     if ([self bugsnagStarted]) {
         [self.notifier internalClientNotify:exception
                                    withData:metadata
@@ -274,34 +274,6 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
       formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
     });
     return formatter;
-}
-
-+ (void)setSuspendThreadsForUserReported:(BOOL)suspendThreadsForUserReported {
-    if ([self bugsnagStarted]) {
-        [[BSG_KSCrash sharedInstance]
-                setSuspendThreadsForUserReported:suspendThreadsForUserReported];
-    }
-}
-
-+ (void)setReportWhenDebuggerIsAttached:(BOOL)reportWhenDebuggerIsAttached {
-    if ([self bugsnagStarted]) {
-        [[BSG_KSCrash sharedInstance]
-                setReportWhenDebuggerIsAttached:reportWhenDebuggerIsAttached];
-    }
-}
-
-+ (void)setThreadTracingEnabled:(BOOL)threadTracingEnabled {
-    if ([self bugsnagStarted]) {
-        [[BSG_KSCrash sharedInstance] setThreadTracingEnabled:threadTracingEnabled];
-    }
-}
-
-+ (void)setWriteBinaryImagesForUserReported:
-    (BOOL)writeBinaryImagesForUserReported {
-    if ([self bugsnagStarted]) {
-        [[BSG_KSCrash sharedInstance]
-                setWriteBinaryImagesForUserReported:writeBinaryImagesForUserReported];
-    }
 }
 
 + (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
