@@ -13,6 +13,7 @@
 #import "Bugsnag.h"
 #import "BugsnagKSCrashSysInfoParser.h"
 #import "BugsnagSessionTracker.h"
+#import "Private.h"
 
 @interface BSGOutOfMemoryWatchdog ()
 @property(nonatomic, getter=isWatching) BOOL watching;

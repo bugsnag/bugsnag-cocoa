@@ -17,6 +17,10 @@
 #import "BugsnagTestConstants.h"
 #import "BugsnagTestsDummyClass.h"
 
+@interface Bugsnag ()
++ (BugsnagConfiguration *)configuration;
+@end
+
 @interface BugsnagEventTests : BugsnagBaseUnitTest
 @end
 

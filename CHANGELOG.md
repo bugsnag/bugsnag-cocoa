@@ -100,6 +100,9 @@ Bugsnag Notifiers on other platforms.
   - Invalid values are logged and ignored.
   [#470](https://github.com/bugsnag/bugsnag-cocoa/pull/470)
 
+* Remove `Bugsnag.configuration()?`. All access to the configuration object
+  should be performed prior to calling `Bugsnag.start()`.
+
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads

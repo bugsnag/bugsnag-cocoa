@@ -35,16 +35,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 @interface Bugsnag : NSObject
 
-/** Get the current Bugsnag configuration.
- *
- * This method returns nil if called before +startBugsnagWithApiKey: or
- * +startBugsnagWithConfiguration:, and otherwise returns the current
- * configuration for Bugsnag.
- *
- * @return The configuration, or nil.
- */
-+ (BugsnagConfiguration *_Nullable)configuration;
-
 /** Start listening for crashes.
  *
  * This method initializes Bugsnag with the default configuration. Any uncaught
@@ -287,7 +277,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)setBreadcrumbCapacity:(NSUInteger)capacity
         __deprecated_msg("Use [BugsnagConfiguration setMaxBreadcrumbs:] instead");
 
-
 /**
  * Replicates BugsnagConfiguration.context
  *
@@ -312,5 +301,16 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
                        withKey:(NSString *_Nonnull)key
     NS_SWIFT_NAME(clearMetadata(section:key:));
+
+/**
+ *  Set user metadata
+ *
+ *  @param userId ID of the user
+ *  @param name   Name of the user
+ *  @param email  Email address of the user
+ */
++ (void)setUser:(NSString *_Nullable)userId
+       withName:(NSString *_Nullable)name
+       andEmail:(NSString *_Nullable)email;
 
 @end
