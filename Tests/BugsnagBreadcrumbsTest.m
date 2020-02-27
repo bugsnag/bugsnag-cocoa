@@ -23,6 +23,8 @@ void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
     });
 }
 
+BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
+
 @implementation BugsnagBreadcrumbsTest
 
 - (void)setUp {
@@ -153,6 +155,59 @@ void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
     XCTAssertEqualObjects(value[3][@"message"], @"Initiate sequence");
     XCTAssertEqualObjects(value[3][@"metaData"][@"captain"], @"Bob");
     XCTAssertNotNil(value[3][@"timestamp"]);
+}
+
+- (void)testConvertBreadcrumbTypeFromString {
+    XCTAssertEqual(BSGBreadcrumbTypeState, BSGBreadcrumbTypeFromString(@"state"));
+    XCTAssertEqual(BSGBreadcrumbTypeUser, BSGBreadcrumbTypeFromString(@"user"));
+    XCTAssertEqual(BSGBreadcrumbTypeManual, BSGBreadcrumbTypeFromString(@"manual"));
+    XCTAssertEqual(BSGBreadcrumbTypeNavigation, BSGBreadcrumbTypeFromString(@"navigation"));
+    XCTAssertEqual(BSGBreadcrumbTypeProcess, BSGBreadcrumbTypeFromString(@"process"));
+    XCTAssertEqual(BSGBreadcrumbTypeLog, BSGBreadcrumbTypeFromString(@"log"));
+    XCTAssertEqual(BSGBreadcrumbTypeRequest, BSGBreadcrumbTypeFromString(@"request"));
+    XCTAssertEqual(BSGBreadcrumbTypeError, BSGBreadcrumbTypeFromString(@"error"));
+
+    XCTAssertEqual(BSGBreadcrumbTypeManual, BSGBreadcrumbTypeFromString(@"random"));
+    XCTAssertEqual(BSGBreadcrumbTypeManual, BSGBreadcrumbTypeFromString(@"4"));
+}
+
+- (void)testBreadcrumbFromDict {
+    XCTAssertNil([BugsnagBreadcrumb breadcrumbFromDict:@{}]);
+    XCTAssertNil([BugsnagBreadcrumb breadcrumbFromDict:@{@"metadata": @{}}]);
+    XCTAssertNil([BugsnagBreadcrumb breadcrumbFromDict:@{@"timestamp": @""}]);
+    BugsnagBreadcrumb *crumb = [BugsnagBreadcrumb breadcrumbFromDict:@{
+        @"timestamp": @"0",
+        @"metaData": @{},
+        @"message":@"cache break",
+        @"type":@"process"}];
+    XCTAssertNil(crumb);
+
+    crumb = [BugsnagBreadcrumb breadcrumbFromDict:@{
+        @"timestamp": @"2020-02-14T16:12:22+001",
+        @"metaData": @{},
+        @"message":@"",
+        @"type":@"process"}];
+    XCTAssertNil(crumb);
+
+    crumb = [BugsnagBreadcrumb breadcrumbFromDict:@{
+        @"timestamp": @"2020-02-14T16:12:23+001",
+        @"metaData": @{},
+        @"message":@"cache break",
+        @"type":@"process"}];
+    XCTAssertNotNil(crumb);
+    XCTAssertEqualObjects(@{}, crumb.metadata);
+    XCTAssertEqualObjects(@"cache break", crumb.message);
+    XCTAssertEqual(BSGBreadcrumbTypeProcess, crumb.type);
+
+    crumb = [BugsnagBreadcrumb breadcrumbFromDict:@{
+        @"timestamp": @"2020-02-14T16:14:23+001",
+        @"metaData": @{@"foo": @"bar"},
+        @"message":@"cache break",
+        @"type":@"log"}];
+    XCTAssertNotNil(crumb);
+    XCTAssertEqualObjects(@"cache break", crumb.message);
+    XCTAssertEqualObjects(@{@"foo": @"bar"}, crumb.metadata);
+    XCTAssertEqual(BSGBreadcrumbTypeLog, crumb.type);
 }
 
 @end

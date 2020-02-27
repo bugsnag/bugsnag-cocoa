@@ -16,3 +16,13 @@ Background:
         And I relaunch the app
         And I wait for a request
         Then the event breadcrumbs contain "Bugsnag loaded" with type "state"
+
+    Scenario: Modifying a breadcrumb name
+        When I run "ModifyBreadcrumbScenario"
+        And I wait for a request
+        Then the event breadcrumbs contain "Cache locked"
+
+    Scenario: Modifying a breadcrumb name in callback
+        When I run "ModifyBreadcrumbInNotify"
+        And I wait for a request
+        Then the event breadcrumbs contain "Cache locked"
