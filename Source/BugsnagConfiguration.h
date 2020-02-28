@@ -43,14 +43,6 @@ typedef NS_ENUM(NSInteger, BSGConfigurationErrorCode) {
 };
 
 /**
- * User info persistence keys
- */
-extern NSString * _Nonnull const kBugsnagUserKeychainAccount;
-extern NSString * _Nonnull const kBugsnagUserEmailAddress;
-extern NSString * _Nonnull const kBugsnagUserName;
-extern NSString * _Nonnull const kBugsnagUserUserId;
-
-/**
  *  A configuration block for modifying an error report
  *
  *  @param report The default report
@@ -313,15 +305,5 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
 
 - (NSDictionary *_Nonnull)errorApiHeaders;
 - (NSDictionary *_Nonnull)sessionApiHeaders;
-
-/**
- * Store user data in a secure location that persists between application runs
- */
-- (void)persistUserData;
-
-/**
- * Delete persisted user data
- */
-- (void)deletePersistedUserData;
 
 @end
