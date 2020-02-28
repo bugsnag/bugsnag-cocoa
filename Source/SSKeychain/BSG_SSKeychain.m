@@ -19,7 +19,7 @@ NSString *const BSG_kSSKeychainLastModifiedKey = @"mdat";
 NSString *const BSG_kSSKeychainWhereKey = @"svce";
 
 #if __IPHONE_4_0 && TARGET_OS_IPHONE  
-CFTypeRef SSKeychainAccessibilityType = NULL;
+CFTypeRef BSG_SSKeychainAccessibilityType = NULL;
 #endif
 
 @interface BSG_SSKeychain ()
@@ -46,7 +46,7 @@ CFTypeRef SSKeychainAccessibilityType = NULL;
 
 
 + (NSArray *)accountsForService:(NSString *)service error:(NSError **)error {
-    OSStatus status = SSKeychainErrorBadArguments;
+    OSStatus status = BSG_SSKeychainErrorBadArguments;
     NSMutableDictionary *query = [self _queryForService:service account:nil];
 #if __has_feature(objc_arc)
 	[query setObject:(__bridge id)kCFBooleanTrue forKey:(__bridge id)kSecReturnAttributes];
@@ -102,7 +102,7 @@ CFTypeRef SSKeychainAccessibilityType = NULL;
 
 
 + (NSData *)passwordDataForService:(NSString *)service account:(NSString *)account error:(NSError **)error {
-    OSStatus status = SSKeychainErrorBadArguments;
+    OSStatus status = BSG_SSKeychainErrorBadArguments;
 	if (!service || !account) {
 		if (error) {
 			*error = [NSError errorWithDomain:BSG_kSSKeychainErrorDomain code:status userInfo:nil];
@@ -143,7 +143,7 @@ CFTypeRef SSKeychainAccessibilityType = NULL;
 
 
 + (BOOL)deletePasswordForService:(NSString *)service account:(NSString *)account error:(NSError **)error {
-	OSStatus status = SSKeychainErrorBadArguments;
+	OSStatus status = BSG_SSKeychainErrorBadArguments;
 	if (service && account) {
 		NSMutableDictionary *query = [self _queryForService:service account:account];
 #if __has_feature(objc_arc)
@@ -179,7 +179,7 @@ CFTypeRef SSKeychainAccessibilityType = NULL;
 
 
 + (BOOL)setPasswordData:(NSData *)password forService:(NSString *)service account:(NSString *)account error:(NSError **)error {
-    OSStatus status = SSKeychainErrorBadArguments;
+    OSStatus status = BSG_SSKeychainErrorBadArguments;
 	if (password && service && account) {
         [self deletePasswordForService:service account:account];
         NSMutableDictionary *query = [self _queryForService:service account:account];

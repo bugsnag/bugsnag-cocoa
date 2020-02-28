@@ -260,7 +260,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 }
 
 /**
- * Store user data securely in the keychain.
+ * Store user data in a secure location (i.e. the keychain) that persists between application runs
  * 'storing' nil values deletes them.
  */
 - (void)persistUserData {

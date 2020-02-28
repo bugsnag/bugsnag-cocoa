@@ -8,6 +8,10 @@
 #import "BugsnagKeys.h"
 #import "BSG_SSKeychain.h"
 
+@interface BugsnagConfiguration ()
+- (void)deletePersistedUserData;
+@end
+
 @interface BugsnagConfigurationTests : XCTestCase
 @end
 

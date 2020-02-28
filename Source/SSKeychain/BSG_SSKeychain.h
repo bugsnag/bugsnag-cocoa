@@ -12,37 +12,37 @@
 /** Error codes that can be returned in NSError objects. */
 typedef enum {
 	/** No error. */
-	SSKeychainErrorNone = noErr,
+	BSG_SSKeychainErrorNone = noErr,
 	
 	/** Some of the arguments were invalid. */
-	SSKeychainErrorBadArguments = -1001,
+	BSG_SSKeychainErrorBadArguments = -1001,
 	
 	/** There was no password. */
-	SSKeychainErrorNoPassword = -1002,
+	BSG_SSKeychainErrorNoPassword = -1002,
 	
 	/** One or more parameters passed internally were not valid. */
-	SSKeychainErrorInvalidParameter = errSecParam,
+	BSG_SSKeychainErrorInvalidParameter = errSecParam,
 	
 	/** Failed to allocate memory. */
-	SSKeychainErrorFailedToAllocated = errSecAllocate,
+	BSG_SSKeychainErrorFailedToAllocated = errSecAllocate,
 	
 	/** No trust results are available. */
-	SSKeychainErrorNotAvailable = errSecNotAvailable,
+	BSG_SSKeychainErrorNotAvailable = errSecNotAvailable,
 	
 	/** Authorization/Authentication failed. */
-	SSKeychainErrorAuthorizationFailed = errSecAuthFailed,
+	BSG_SSKeychainErrorAuthorizationFailed = errSecAuthFailed,
 	
 	/** The item already exists. */
-	SSKeychainErrorDuplicatedItem = errSecDuplicateItem,
+	BSG_SSKeychainErrorDuplicatedItem = errSecDuplicateItem,
 	
 	/** The item cannot be found.*/
-	SSKeychainErrorNotFound = errSecItemNotFound,
+	BSG_SSKeychainErrorNotFound = errSecItemNotFound,
 	
 	/** Interaction with the Security Server is not allowed. */
-	SSKeychainErrorInteractionNotAllowed = errSecInteractionNotAllowed,
+	BSG_SSKeychainErrorInteractionNotAllowed = errSecInteractionNotAllowed,
 	
 	/** Unable to decode the provided data. */
-	SSKeychainErrorFailedToDecode = errSecDecode
+	BSG_SSKeychainErrorFailedToDecode = errSecDecode
 } BSG_SSKeychainErrorCode;
 
 extern NSString *const BSG_kSSKeychainErrorDomain;
