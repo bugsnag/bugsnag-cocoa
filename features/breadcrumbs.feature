@@ -6,6 +6,12 @@ Feature: Attaching a series of notable events leading up to errors
 Background:
     Given I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
 
+    Scenario: Leaving a breadcrumb of a discarded type
+        When I run "DiscardedBreadcrumbTypeScenario"
+        And I wait for a request
+        Then the event breadcrumbs do not contain "Noisy event"
+        And the event breadcrumbs contain "Important event"
+
     Scenario: An app lauches and subsequently sends a manual event using notify()
         And I run "HandledErrorScenario"
         And I wait for a request

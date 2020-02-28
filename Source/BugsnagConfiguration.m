@@ -104,7 +104,6 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
     _onSessionBlocks = [NSMutableArray new];
     _notifyReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
-    _automaticallyCollectBreadcrumbs = YES;
     _autoTrackSessions = YES;
 
     #if !DEBUG
@@ -228,23 +227,12 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
     return self.autoTrackSessions;
 }
 
-@synthesize automaticallyCollectBreadcrumbs = _automaticallyCollectBreadcrumbs;
-
-- (BOOL)automaticallyCollectBreadcrumbs {
-    @synchronized (self) {
-        return _automaticallyCollectBreadcrumbs;
-    }
+- (BSGEnabledBreadcrumbType)enabledBreadcrumbTypes {
+    return self.breadcrumbs.enabledBreadcrumbTypes;
 }
 
-- (void)setAutomaticallyCollectBreadcrumbs:
-    (BOOL)automaticallyCollectBreadcrumbs {
-    @synchronized (self) {
-        if (automaticallyCollectBreadcrumbs == _automaticallyCollectBreadcrumbs)
-            return;
-
-        _automaticallyCollectBreadcrumbs = automaticallyCollectBreadcrumbs;
-        [[Bugsnag notifier] updateAutomaticBreadcrumbDetectionSettings];
-    }
+- (void)setEnabledBreadcrumbTypes:(BSGEnabledBreadcrumbType)enabledBreadcrumbTypes {
+    self.breadcrumbs.enabledBreadcrumbTypes = enabledBreadcrumbTypes;
 }
 
 @synthesize context = _context;

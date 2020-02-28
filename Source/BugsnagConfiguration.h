@@ -133,11 +133,6 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
 BugsnagBreadcrumbs *breadcrumbs;
 
 /**
- *  Whether to allow collection of automatic breadcrumbs for notable events
- */
-@property(readwrite) BOOL automaticallyCollectBreadcrumbs;
-
-/**
  *  Hooks for modifying crash reports before it is sent to Bugsnag
  */
 @property(readonly, strong, nullable)
@@ -179,6 +174,11 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
  */
 @property BOOL reportBackgroundOOMs
     __deprecated_msg("This detection option is unreliable and should no longer be used.");
+
+/**
+ * The types of breadcrumbs which will be captured. By default, this is all types.
+ */
+@property BSGEnabledBreadcrumbType enabledBreadcrumbTypes;
 
 /**
  * Retrieves the endpoint used to notify Bugsnag of errors

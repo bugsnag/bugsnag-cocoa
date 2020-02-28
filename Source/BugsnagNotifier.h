@@ -116,11 +116,6 @@
 - (void)crumbleNotification:(NSString *_Nonnull)notificationName;
 
 /**
- *  Enable or disable automatic breadcrumb collection based on configuration
- */
-- (void)updateAutomaticBreadcrumbDetectionSettings;
-
-/**
  * Enable or disable crash reporting based on configuration state
  */
 - (void)updateCrashDetectionSettings;

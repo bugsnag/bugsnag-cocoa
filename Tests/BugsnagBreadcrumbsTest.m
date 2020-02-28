@@ -155,4 +155,76 @@ void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
     XCTAssertNotNil(value[3][@"timestamp"]);
 }
 
+- (void)testDefaultDiscardByType {
+    [self.crumbs clearBreadcrumbs];
+    awaitBreadcrumbSync(self.crumbs);
+    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+        crumb.type = BSGBreadcrumbTypeState;
+        crumb.message = @"state";
+    }];
+    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+        crumb.type = BSGBreadcrumbTypeUser;
+        crumb.message = @"user";
+    }];
+    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+        crumb.type = BSGBreadcrumbTypeLog;
+        crumb.message = @"log";
+    }];
+    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+        crumb.type = BSGBreadcrumbTypeError;
+        crumb.message = @"error";
+    }];
+    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+        crumb.type = BSGBreadcrumbTypeProcess;
+        crumb.message = @"process";
+    }];
+    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+        crumb.type = BSGBreadcrumbTypeRequest;
+        crumb.message = @"request";
+    }];
+    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+        crumb.type = BSGBreadcrumbTypeNavigation;
+        crumb.message = @"navigation";
+    }];
+    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+        crumb.message = @"manual";
+    }];
+    awaitBreadcrumbSync(self.crumbs);
+    NSArray *value = [self.crumbs arrayValue];
+    XCTAssertEqual(8, value.count);
+    XCTAssertEqualObjects(value[0][@"type"], @"state");
+    XCTAssertEqualObjects(value[1][@"type"], @"user");
+    XCTAssertEqualObjects(value[2][@"type"], @"log");
+    XCTAssertEqualObjects(value[3][@"type"], @"error");
+    XCTAssertEqualObjects(value[4][@"type"], @"process");
+    XCTAssertEqualObjects(value[5][@"type"], @"request");
+    XCTAssertEqualObjects(value[6][@"type"], @"navigation");
+    XCTAssertEqualObjects(value[7][@"type"], @"manual");
+}
+
+- (void)testAlwaysAllowManual {
+    [self.crumbs clearBreadcrumbs];
+    awaitBreadcrumbSync(self.crumbs);
+    self.crumbs.enabledBreadcrumbTypes = 0;
+    [self.crumbs addBreadcrumb:@"this is a test"];
+    awaitBreadcrumbSync(self.crumbs);
+    NSArray *value = [self.crumbs arrayValue];
+    XCTAssertEqual(1, value.count);
+    XCTAssertEqualObjects(value[0][@"type"], @"manual");
+    XCTAssertEqualObjects(value[0][@"message"], @"this is a test");
+}
+
+- (void)testDiscardByType {
+    [self.crumbs clearBreadcrumbs];
+    awaitBreadcrumbSync(self.crumbs);
+    self.crumbs.enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeProcess;
+    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+        crumb.type = BSGBreadcrumbTypeState;
+        crumb.message = @"state";
+    }];
+    awaitBreadcrumbSync(self.crumbs);
+    NSArray *value = [self.crumbs arrayValue];
+    XCTAssertEqual(0, value.count);
+}
+
 @end

@@ -45,6 +45,9 @@ Swift:
 - config.add(beforeSession:)
 + config.onSessionBlocks
 + config.add(onSession:)
+
+- config.automaticallyCollectBreadcrumbs
++ config.enabledBreadcrumbTypes
 ```
 
 ### `Bugsnag` class

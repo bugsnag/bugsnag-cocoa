@@ -181,6 +181,7 @@ NSUInteger BreadcrumbsDefaultCapacity = 25;
     if (self = [super init]) {
         _breadcrumbs = [NSMutableArray new];
         _capacity = BreadcrumbsDefaultCapacity;
+        _enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeAll;
         _readWriteQueue = dispatch_queue_create("com.bugsnag.BreadcrumbRead",
                                                 DISPATCH_QUEUE_SERIAL);
         NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(
@@ -205,7 +206,7 @@ NSUInteger BreadcrumbsDefaultCapacity = 25;
         return;
     }
     BugsnagBreadcrumb *crumb = [BugsnagBreadcrumb breadcrumbWithBlock:block];
-    if (crumb) {
+    if (crumb && [self shouldSaveType:crumb.type]) {
         [self resizeToFitCapacity:self.capacity - 1];
         dispatch_barrier_sync(self.readWriteQueue, ^{
             [self.breadcrumbs addObject:crumb];
@@ -242,6 +243,27 @@ NSUInteger BreadcrumbsDefaultCapacity = 25;
         }
     });
     return [cache isKindOfClass:[NSArray class]] ? cache : nil;
+}
+
+- (BOOL)shouldSaveType:(BSGBreadcrumbType)type {
+    switch (type) {
+        case BSGBreadcrumbTypeManual:
+            return YES;
+        case BSGBreadcrumbTypeError:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeError;
+        case BSGBreadcrumbTypeLog:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeLog;
+        case BSGBreadcrumbTypeNavigation:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeNavigation;
+        case BSGBreadcrumbTypeProcess:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeProcess;
+        case BSGBreadcrumbTypeRequest:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeRequest;
+        case BSGBreadcrumbTypeState:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeState;
+        case BSGBreadcrumbTypeUser:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeUser;
+    }
 }
 
 @synthesize capacity = _capacity;

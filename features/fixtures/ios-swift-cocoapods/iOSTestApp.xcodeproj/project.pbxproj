@@ -12,6 +12,7 @@
 		8A14F0F72282D4AE00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F32282D4AE00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.m */; };
 		8A22FC66225B598500CA8895 /* OOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A22FC65225B598500CA8895 /* OOMScenario.m */; };
 		8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */; };
+		8A38C5D124094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */; };
 		8A42FD35225DEE04007AE561 /* SessionOOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A42FD33225DEE04007AE561 /* SessionOOMScenario.m */; };
 		8A530CCC22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A530CCB22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.m */; };
 		8A72A0382396574F00328051 /* CustomPluginNotifierDescriptionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */; };
@@ -82,6 +83,7 @@
 		8A22FC65225B598500CA8895 /* OOMScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OOMScenario.m; sourceTree = "<group>"; };
 		8A32DB8022424E3000EDD92F /* NSExceptionShiftScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSExceptionShiftScenario.h; sourceTree = "<group>"; };
 		8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSExceptionShiftScenario.m; sourceTree = "<group>"; };
+		8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardedBreadcrumbTypeScenario.swift; sourceTree = "<group>"; };
 		8A42FD33225DEE04007AE561 /* SessionOOMScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionOOMScenario.m; sourceTree = "<group>"; };
 		8A42FD34225DEE04007AE561 /* SessionOOMScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionOOMScenario.h; sourceTree = "<group>"; };
 		8A530CCA22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ManyConcurrentNotifyScenario.h; sourceTree = "<group>"; };
@@ -247,6 +249,7 @@
 				8AA7C2D62327DD3D002255B2 /* ConfigChangesAfterStartScenarios.h */,
 				8AA7C2D52327DD3D002255B2 /* ConfigChangesAfterStartScenarios.m */,
 				8A56EE8022E22ED80066B9DC /* OOMWillTerminateScenario.h */,
+				8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */,
 				8A56EE7F22E22ED80066B9DC /* OOMWillTerminateScenario.m */,
 				8A14F0F42282D4AE00337B05 /* ReportBackgroundOOMsEnabledScenario.h */,
 				8A14F0F02282D4AD00337B05 /* ReportBackgroundOOMsEnabledScenario.m */,
@@ -470,6 +473,7 @@
 				8AB1081923301FE600672818 /* ReleaseStageScenarios.swift in Sources */,
 				8AF6FD7A225E3FA00056EF9E /* ResumeSessionOOMScenario.m in Sources */,
 				F429565A951303E2C3136D0D /* UserIdScenario.swift in Sources */,
+				8A38C5D124094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift in Sources */,
 				8AEEBBD020FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m in Sources */,
 				8AF8FCAC22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift in Sources */,
 				F4295A94DD2D131A594A212C /* HandledErrorScenario.swift in Sources */,
