@@ -4,29 +4,39 @@ Guide to ease migrations between significant changes
 
 ## v5 -> v6
 
-Version 6 introduces a number of property and method renames:
-
-### BugsnagCrashReport class
-
-This is now BugsnagEvent.
-
 ### `BugsnagConfiguration` class
 
-```diff
-ObjC: 
+#### Instantiation
 
-  NSError *error;
-  BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:"YOUR API KEY HERE" error:error];
+Initializing a configuration now requires a valid API key, setting an error
+parameter if initialization fails. In Swift, creating a configuration is now
+handled via the `try` mechanism.
 
-Swift:
-
+```objc
+NSError *error;
+BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:@"YOUR API KEY HERE"
+                                                                      error:&error];
+```
+```swift
   let config = try BugsnagConfiguration("YOUR API KEY HERE")
+```
 
-+ BSGConfigurationErrorDomain
-+ BSGConfigurationErrorCode
+The exact error is available using the `BSGConfigurationErrorDomain` and
+`BSGConfigurationErrorCode` enumeration.
 
-+ config.setMaxBreadcrumbs()
+#### Additions
 
+* `Bugsnag.setBreadcrumbCapacity()` is now `config.setMaxBreadcrumbs()`
+
+```diff
+- Bugsnag.setBreadcrumbCapacity(40)
+  let config = try BugsnagConfiguration("YOUR API KEY HERE")
++ config.setMaxBreadcrumbs(40)
+```
+
+#### Renames
+
+```diff
 - config.autoNotify
 + config.autoDetectErrors
 
@@ -49,12 +59,32 @@ Swift:
 
 ### `Bugsnag` class
 
+#### Removals
+
+* `Bugsnag.setBreadcrumbCapacity()` is now `config.setMaxBreadcrumbs()`
+
 ```diff
 - Bugsnag.setBreadcrumbCapacity(40)
-  let config = BugsnagConfiguration()
+  let config = try BugsnagConfiguration("YOUR API KEY HERE")
 + config.setMaxBreadcrumbs(40)
-  let config = try BugsnagConfiguration("VALID 32 CHARACTER API KEY")
+```
 
+#### Additions
+
+Retrieve previously set metadata using `getMetadata`:
+
+```swift
+Bugsnag.getMetadata("section")
+Bugsnag.getMetadata("section" key:"key")
+```
+```objc
+[Bugsnag getMetadata:@"section"];
+[Bugsnag getMetadata:@"section" key:@"key"];
+```
+
+#### Renames
+
+```diff
 ObjC:
 
 - [Bugsnag configuration]
@@ -65,8 +95,6 @@ ObjC:
 
 - [Bugsnag clearTabWithName:]
 + [Bugsnag clearMetadataInSection:]
-
-+ [Bugsnag getSection:]
 
 - [Bugsnag stopSession]
 + [Bugsnag pauseSession]
@@ -82,23 +110,22 @@ Swift:
 - Bugsnag.clearTab(name:)
 + Bugsnag.clearMetadata(_ section)
 
-+ Bugsnag.getSection(_ section)
-
 - Bugsnag.stopSession()
 + Bugsnag.pauseSession()
 ```
 
 ### `BugsnagMetadata` class
 
-```diff
+#### Renames
 
+```diff
 ObjC: 
 
 - [BugsnagMetadata clearTabWithName:]
 + [BugsnagMetadata clearMetadataInSection:]
 
 - [BugsnagMetadata getTab:]
-+ [BugsnagMetadata getSection:]
++ [BugsnagMetadata getMetadata:]
 
 + [BugsnagMetadata addMetadataToSection:values:]
 
@@ -112,7 +139,7 @@ Swift:
 ```
 
 Note that `BugsnagMetadata.getTab()` previously would create a metadata section if it
-did not exist; the new behaviour is to return `nil`. 
+did not exist; the new behaviour in `getMetadata` is to return `nil`. 
 
 ### `BugsnagBreadcrumb` class
 
@@ -121,4 +148,18 @@ The short "name" value has been removed and replaced with an arbitrarily long "m
 ```diff
 - BugsnagBreadcrumb.name
 + BugsnagBreadcrumb.message
+```
+
+### `BugsnagCrashReport` class
+
+This is now BugsnagEvent.
+
+#### Renames
+
+To add metadata to an individual report in a callback, use `addMetadata` instead
+of the removed `addAttribute`:
+
+```diff
+- BugsnagCrashReport.addAttribute(_:withValue:toTabWithName:)
++ BugsnagEvent.addMetadata(sectionName:key:value:)
 ```
