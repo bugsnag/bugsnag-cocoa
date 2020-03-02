@@ -107,14 +107,15 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
     _automaticallyCollectBreadcrumbs = YES;
     _autoTrackSessions = YES;
     // Default to recording all error types
-    _enabledErrorTypes = BSGErrorTypesOOMs
-                       | BSGErrorTypesCPP
+    _enabledErrorTypes = BSGErrorTypesCPP
                        | BSGErrorTypesMach
                        | BSGErrorTypesSignals
                        | BSGErrorTypesNSExceptions;
 
+    // Enabling OOM detection only happens in release builds, to avoid triggering
+    // the heuristic when killing/restarting an app in Xcode or similar.
     #if !DEBUG
-        _reportOOMs = YES;
+        _enabledErrorTypes |= BSGErrorTypesOOMs
     #endif
 
     if ([NSURLSession class]) {
@@ -341,7 +342,5 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
 - (void)setMaxBreadcrumbs:(NSUInteger)capacity {
     self.breadcrumbs.capacity = capacity;
 }
-
-@synthesize enabledErrorTypes = _enabledErrorTypes;
 
 @end
