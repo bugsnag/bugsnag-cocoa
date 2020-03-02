@@ -190,7 +190,7 @@ CFTypeRef BSG_SSKeychainAccessibilityType = NULL;
 #endif
 		
 #if __IPHONE_4_0 && TARGET_OS_IPHONE
-		if (SSKeychainAccessibilityType) {
+		if (BSG_SSKeychainAccessibilityType) {
 #if __has_feature(objc_arc)
 			[query setObject:(id)[self accessibilityType] forKey:(__bridge id)kSecAttrAccessible];
 #else
@@ -222,16 +222,16 @@ CFTypeRef BSG_SSKeychainAccessibilityType = NULL;
 
 #if __IPHONE_4_0 && TARGET_OS_IPHONE 
 + (CFTypeRef)accessibilityType {
-	return SSKeychainAccessibilityType;
+	return BSG_SSKeychainAccessibilityType;
 }
 
 
 + (void)setAccessibilityType:(CFTypeRef)accessibilityType {
 	CFRetain(accessibilityType);
-	if (SSKeychainAccessibilityType) {
-		CFRelease(SSKeychainAccessibilityType);
+	if (BSG_SSKeychainAccessibilityType) {
+		CFRelease(BSG_SSKeychainAccessibilityType);
 	}
-	SSKeychainAccessibilityType = accessibilityType;
+	BSG_SSKeychainAccessibilityType = accessibilityType;
 }
 #endif
 
