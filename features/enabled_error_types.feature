@@ -19,11 +19,10 @@ Scenario: All Crash reporting is disabled but manual notification works
     When I crash the app using "DisableAllExceptManualExceptionsSendManualAndCrashScenario"
     And I relaunch the app
 
-    # 1 (session) from the first crash, 2 from the restart
-    And I wait for 3 requests
+    # 2 sessions, 1 error
+    And I wait for 2 requests
     Then the request 0 is valid for the session tracking API
-    And the request 1 is valid for the session tracking API
-    And the request 2 is valid for the error reporting API
+    And the request 1 is valid for the error reporting API
     
 Scenario: NSException Crash Reporting is disabled
     When I crash the app using "DisableNSExceptionScenario"

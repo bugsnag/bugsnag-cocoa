@@ -115,7 +115,7 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
     // Enabling OOM detection only happens in release builds, to avoid triggering
     // the heuristic when killing/restarting an app in Xcode or similar.
     #if !DEBUG
-        _enabledErrorTypes |= BSGErrorTypesOOMs
+        _enabledErrorTypes |= BSGErrorTypesOOMs;
     #endif
 
     if ([NSURLSession class]) {

@@ -84,12 +84,12 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
     NSArray *_Nonnull rawEventReports, NSDictionary *_Nonnull report);
 
 typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
-    BSGErrorTypesNone         = 0,
-    BSGErrorTypesOOMs         = 1 << 0,
-    BSGErrorTypesNSExceptions = 1 << 1,
-    BSGErrorTypesSignals      = 1 << 2,
-    BSGErrorTypesCPP          = 1 << 3,
-    BSGErrorTypesMach         = 1 << 4
+    BSGErrorTypesNone         NS_SWIFT_NAME(None)         = 0,
+    BSGErrorTypesOOMs         NS_SWIFT_NAME(OOMs)         = 1 << 0,
+    BSGErrorTypesNSExceptions NS_SWIFT_NAME(NSExceptions) = 1 << 1,
+    BSGErrorTypesSignals      NS_SWIFT_NAME(Signals)      = 1 << 2,
+    BSGErrorTypesCPP          NS_SWIFT_NAME(CPP)          = 1 << 3,
+    BSGErrorTypesMach         NS_SWIFT_NAME(Mach)         = 1 << 4
 };
 
 @interface BugsnagConfiguration : NSObject
