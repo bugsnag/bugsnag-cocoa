@@ -46,6 +46,7 @@ Swift:
 + config.onSessionBlocks
 + config.add(onSession:)
 
+- config.reportOOMs
 + config.enabledErrorTypes
 ```
 
