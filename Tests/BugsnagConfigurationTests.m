@@ -134,9 +134,9 @@
 - (void)testDefaultReportOOMs {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
 #if DEBUG
-    XCTAssertFalse([config reportOOMs]);
+    XCTAssertFalse([config enabledErrorTypes] & BSGErrorTypesOOMs);
 #else
-    XCTAssertTrue([config reportOOMs]);
+    XCTAssertTrue([config enabledErrorTypes] & BSGErrorTypesOOMs);
 #endif
 }
 
@@ -282,7 +282,16 @@
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
     
     // Test all are set by default
-    XCTAssertEqual([config enabledErrorTypes], BSGErrorTypesOOMs | BSGErrorTypesNSExceptions | BSGErrorTypesSignals | BSGErrorTypesMach | BSGErrorTypesCPP);
+    BSGErrorType enabledErrors = BSGErrorTypesNSExceptions
+                               | BSGErrorTypesSignals
+                               | BSGErrorTypesMach
+                               | BSGErrorTypesCPP;
+// See config init for details.  OOMs are disabled in debug.
+#if !DEBUG
+    enabledErrors |= BSGErrorTypesOOMs;
+#endif
+    
+    XCTAssertEqual([config enabledErrorTypes], enabledErrors);
     
     // Test that we can set it
     config.enabledErrorTypes = BSGErrorTypesOOMs | BSGErrorTypesNSExceptions;

@@ -178,12 +178,6 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
 
 /**
  * Whether the app should report out of memory events which terminate the app
- * When NO, this setting overrides reportBackgroundOOMs.
- */
-@property BOOL reportOOMs;
-
-/**
- * Whether the app should report out of memory events which terminate the app
  * while the app is in the background. Setting this property has no effect.
  */
 @property BOOL reportBackgroundOOMs
