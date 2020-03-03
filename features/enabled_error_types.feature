@@ -8,11 +8,13 @@ Scenario: All Crash reporting is disabled
     And I relaunch the app
     And I crash the app using "NullPointerScenario"
     And I relaunch the app
-    And I wait for a request
-    # Shpould not see a crash reported
+    And I wait for 2 requests
     And the request 0 is valid for the session tracking API
+    And the request 1 is valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
+    # We only see the Null pointer exception
+    And the payload field "events.0.exceptions.0.errorClass" equals "EXC_BAD_ACCESS" for request 1
 
 Scenario: All Crash reporting is disabled but manual notification works
     # enabledErrorTypes = None, Generate a manual notification, crash
