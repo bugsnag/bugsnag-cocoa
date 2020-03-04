@@ -11,6 +11,7 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
                                     void *info);
 
 @interface BSGConnectivity ()
+
 + (BOOL)isValidHostname:(NSString *)host;
 @end
 
@@ -138,7 +139,7 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
 }
 
 - (void)simulateConnectivityChangeTo:(SCNetworkReachabilityFlags) flags {
-    BSGConnectivityCallback(nil, flags, nil);
+    BSGConnectivityCallback(nil, flags, "Unit Test");
 }
 
 @end
