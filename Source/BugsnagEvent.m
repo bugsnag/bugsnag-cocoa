@@ -20,6 +20,7 @@
 #import "BugsnagKeys.h"
 #import "BugsnagKSCrashSysInfoParser.h"
 #import "BugsnagSession.h"
+#import "Private.h"
 #import "BSG_RFC3339DateTool.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
@@ -109,6 +110,15 @@ id BSGLoadConfigValue(NSDictionary *report, NSString *valueName) {
     ?: [report valueForKeyPath:fallbackKeypath]; // some custom values are nested
 }
 
+/**
+ * Attempt to find a context (within which the event is being reported)
+ * This can be found in user-set metadata of varying specificity or the global
+ * configuration.  Returns nil if no context can be found.
+ *
+ * @param report A dictionary of report data
+ * @param metadata Additional relevant data
+ * @returns A string context if found, or nil
+ */
 NSString *BSGParseContext(NSDictionary *report, NSDictionary *metadata) {
     id context = [report valueForKeyPath:@"user.overrides.context"];
     if ([context isKindOfClass:[NSString class]])
@@ -333,7 +343,8 @@ initWithErrorName:(NSString *_Nonnull)name
         _metadata = metadata ?: [NSDictionary new];
         _releaseStage = config.releaseStage;
         _notifyReleaseStages = config.notifyReleaseStages;
-        _context = BSGParseContext(nil, metadata);
+        // Set context based on current values.  May be nil.
+        _context = metadata[BSGKeyContext] ?: [[Bugsnag configuration] context];
         _breadcrumbs = [config.breadcrumbs arrayValue];
         _overrides = [NSDictionary new];
 
@@ -343,6 +354,8 @@ initWithErrorName:(NSString *_Nonnull)name
     }
     return self;
 }
+
+// MARK: - Metadata
 
 @synthesize metadata = _metadata;
 
@@ -358,19 +371,81 @@ initWithErrorName:(NSString *_Nonnull)name
     }
 }
 
-- (void)addMetadata:(NSDictionary *_Nonnull)tabData
-      toTabWithName:(NSString *_Nonnull)tabName {
-    NSDictionary *cleanedData = BSGSanitizeDict(tabData);
-    if ([cleanedData count] == 0) {
-        bsg_log_err(@"Failed to add metadata: Values not convertible to JSON");
-        return;
+- (void)addMetadata:(NSDictionary *_Nonnull)metadata
+     toSectionNamed:(NSString *_Nonnull)sectionName
+{
+    @synchronized (self) {
+        NSDictionary *cleanedData = BSGSanitizeDict(metadata);
+        if ([cleanedData count] == 0) {
+            bsg_log_err(@"Failed to add metadata: Values not convertible to JSON");
+            return;
+        }
+        NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
+        NSMutableDictionary *allTabData =
+            allMetadata[sectionName] ?: [NSMutableDictionary new];
+        allMetadata[sectionName] = [cleanedData BSG_mergedInto:allTabData];
+        self.metadata = allMetadata;
     }
-    NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
-    NSMutableDictionary *allTabData =
-        allMetadata[tabName] ?: [NSMutableDictionary new];
-    allMetadata[tabName] = [cleanedData BSG_mergedInto:allTabData];
-    self.metadata = allMetadata;
 }
+
+- (void)addMetadataToSectionNamed:(NSString *_Nonnull)sectionName
+                              key:(NSString *_Nonnull)key
+                            value:(id _Nullable)value
+{
+    @synchronized (self) {
+        NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
+        NSMutableDictionary *allTabData =
+            [allMetadata[sectionName] mutableCopy] ?: [NSMutableDictionary new];
+        if (value) {
+            id cleanedValue = BSGSanitizeObject(value);
+            if (!cleanedValue) {
+                bsg_log_err(@"Failed to add metadata: Value of type %@ is not "
+                            @"convertible to JSON",
+                            [value class]);
+                return;
+            }
+            allTabData[key] = cleanedValue;
+        } else {
+            [allTabData removeObjectForKey:key];
+        }
+        allMetadata[sectionName] = allTabData;
+        self.metadata = allMetadata;
+    }
+}
+
+- (id _Nullable)getMetadataInSection:(NSString *_Nonnull)sectionName
+                             withKey:(NSString *_Nullable)key
+{
+    @synchronized (self) {
+        return [[[self metadata] objectForKey:sectionName] objectForKey:key];
+    }
+}
+
+- (NSDictionary *_Nullable)getMetadataInSection:(NSString *_Nonnull)sectionName
+{
+    @synchronized (self) {
+        return [[self metadata] objectForKey:sectionName];
+    }
+}
+
+- (void)clearMetadataSection:(NSString *_Nonnull)sectionName
+{
+    @synchronized (self) {
+        NSMutableDictionary *copy = [[self metadata] mutableCopy];
+        [copy removeObjectForKey:sectionName];
+        _metadata = copy;
+    }
+}
+
+- (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+                       withKey:(NSString *_Nonnull)key
+{
+    @synchronized (self) {
+        [[[self metadata] objectForKey:sectionName] removeObjectForKey:key];
+    }
+}
+
+// MARK: - apiKey
 
 @synthesize apiKey = _apiKey;
 
@@ -392,28 +467,6 @@ initWithErrorName:(NSString *_Nonnull)name
     else {
         bsg_log_warn(@"Attempted to set an invalid Event API key.");
     }
-}
-
-- (void)addAttribute:(NSString *)attributeName
-           withValue:(id)value
-       toTabWithName:(NSString *)tabName {
-    NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
-    NSMutableDictionary *allTabData =
-        [allMetadata[tabName] mutableCopy] ?: [NSMutableDictionary new];
-    if (value) {
-        id cleanedValue = BSGSanitizeObject(value);
-        if (!cleanedValue) {
-            bsg_log_err(@"Failed to add metadata: Value of type %@ is not "
-                        @"convertible to JSON",
-                        [value class]);
-            return;
-        }
-        allTabData[attributeName] = cleanedValue;
-    } else {
-        [allTabData removeObjectForKey:attributeName];
-    }
-    allMetadata[tabName] = allTabData;
-    self.metadata = allMetadata;
 }
 
 - (BOOL)shouldBeSent {

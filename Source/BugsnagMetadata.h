@@ -52,11 +52,25 @@
 - (id _Nullable)getMetadata:(NSString *_Nonnull)sectionName
                         key:(NSString *_Nonnull)key;
 
-- (void)clearMetadataInSection:(NSString *_Nonnull)section;
+/**
+* Remove a named metadata section, if it exists.
+*
+* @param sectionName The section name
+*/
+- (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+    NS_SWIFT_NAME(clearMetadata(section:));
 
+/**
+ * Remove a specific value for a specific key in a specific metadata section.
+ * If either section or key do not exist no action is taken.
+ *
+ * @param section The section name
+ * @param key the metadata key
+ */
 - (void)clearMetadataInSection:(NSString *_Nonnull)section
-                           key:(NSString *_Nonnull)key;
-    
+                           key:(NSString *_Nonnull)key
+    NS_SWIFT_NAME(clearMetadata(section:key:));
+
 - (NSDictionary *_Nonnull)toDictionary;
 
 - (void)addAttribute:(NSString *_Nonnull)attributeName
@@ -64,6 +78,27 @@
        toTabWithName:(NSString *_Nonnull)sectionName;
 
 @property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
+
+/**
+ * Merge supplied and existing metadata.
+ *
+ * - Non-null values will replace existing values for identical keys.
+ 
+ * - Null values will remove the existing key/value pair if the key exists.
+ *   Where null-valued keys do not exist they will not be set.  (Since ObjC
+ *   dicts can't store 'nil' directly we assume [NSNUll null])
+ *
+ * - Tabs are only created if at least one value is valid.
+ *
+ * - Invalid values (i.e. unserializable to JSON) are logged and ignored.
+ *
+ * @param section The name of the metadata section
+ *
+ * @param values A dictionary of string -> id key/value pairs.
+ *               Values should be serializable to JSON.
+ */
+- (void)addMetadataToSection:(NSString *_Nonnull)section
+                      values:(NSDictionary *_Nullable)values;
 
 @end
 

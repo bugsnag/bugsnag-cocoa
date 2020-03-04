@@ -32,6 +32,19 @@ Swift:
 
 - config.autoCaptureSessions
 + config.autoTrackSessions
+
+- config.onCrashHandler
++ config.onError
+
+- config.beforeSendBlocks
+- config.add(beforeSend:)
++ config.onSendBlocks
++ config.add(onSend:)
+
+- config.beforeSessionBlocks
+- config.add(beforeSession:)
++ config.onSessionBlocks
++ config.add(onSession:)
 ```
 
 ### `Bugsnag` class
@@ -44,6 +57,9 @@ Swift:
 
 ObjC:
 
+- [Bugsnag configuration]
++ [Bugsnag setUser:withName:andEmail:]
+
 - [Bugsnag addAttribute:WithValuetoTabWithName:]
 + [Bugsnag addMetadataToSection:key:value:]
 
@@ -52,7 +68,13 @@ ObjC:
 
 + [Bugsnag getSection:]
 
+- [Bugsnag stopSession]
++ [Bugsnag pauseSession]
+
 Swift:
+
+- Bugsnag.configuration()
++ Bugsnag.setUser(_:name:email:)
 
 - Bugsnag.addAttribute(attributeName:withValue:toTabWithName:)
 + Bugsnag.addMetadata(_:key:value:)
@@ -61,6 +83,9 @@ Swift:
 + Bugsnag.clearMetadata(_ section)
 
 + Bugsnag.getSection(_ section)
+
+- Bugsnag.stopSession()
++ Bugsnag.pauseSession()
 ```
 
 ### `BugsnagMetadata` class
@@ -75,14 +100,25 @@ ObjC:
 - [BugsnagMetadata getTab:]
 + [BugsnagMetadata getSection:]
 
++ [BugsnagMetadata addMetadataToSection:values:]
+
 Swift:
 
 - BugsnagMetadata.clearTab(name:)
-+ BugsnagMetadata.clearMetadata(_ section)
++ BugsnagMetadata.clearMetadata(section:)
 
 - BugsnagMetadata.getTab(name:)
-+ BugsnagMetadata.getSection(_ section)
++ BugsnagMetadata.getMetadata(_ section)
 ```
 
 Note that `BugsnagMetadata.getTab()` previously would create a metadata section if it
 did not exist; the new behaviour is to return `nil`. 
+
+### `BugsnagBreadcrumb` class
+
+The short "name" value has been removed and replaced with an arbitrarily long "message".
+
+```diff
+- BugsnagBreadcrumb.name
++ BugsnagBreadcrumb.message
+```

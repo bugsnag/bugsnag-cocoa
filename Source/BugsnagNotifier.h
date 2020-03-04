@@ -47,7 +47,7 @@
 - (void)start;
 
 - (void)startSession;
-- (void)stopSession;
+- (void)pauseSession;
 - (BOOL)resumeSession;
 
 - (BOOL)appCrashedLastLaunch;
@@ -60,7 +60,7 @@
  * information
  */
 - (void)notifyException:(NSException *_Nonnull)exception
-                  block:(BugsnagNotifyBlock _Nullable)block;
+                  block:(BugsnagOnErrorBlock _Nullable)block;
 
 /**
  *  Notify Bugsnag of an exception
@@ -72,7 +72,7 @@
  */
 - (void)notifyException:(NSException *_Nonnull)exception
              atSeverity:(BSGSeverity)severity
-                  block:(BugsnagNotifyBlock _Nullable)block;
+                  block:(BugsnagOnErrorBlock _Nullable)block;
 
 /**
  *  Notify Bugsnag of an exception. Only intended for React Native/Unity use.
@@ -84,7 +84,7 @@
  */
 - (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagNotifyBlock _Nullable)block;
+                       block:(BugsnagOnErrorBlock _Nullable)block;
 
 /**
  *  Notify Bugsnag of an error
@@ -93,7 +93,7 @@
  *  @param block Configuration block for adding additional report information
  */
 - (void)notifyError:(NSError *_Nonnull)error
-              block:(BugsnagNotifyBlock _Nullable)block;
+              block:(BugsnagOnErrorBlock _Nullable)block;
 
 /**
  *  Add a breadcrumb

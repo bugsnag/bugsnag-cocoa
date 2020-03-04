@@ -77,7 +77,7 @@ typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 
 @property(readonly, nullable) NSDate *timestamp;
 @property(readwrite) BSGBreadcrumbType type;
-@property(readwrite, copy, nonnull) NSString *name;
+@property(readwrite, copy, nonnull) NSString *message;
 @property(readwrite, copy, nonnull) NSDictionary *metadata;
 
 + (instancetype _Nullable)breadcrumbWithBlock:

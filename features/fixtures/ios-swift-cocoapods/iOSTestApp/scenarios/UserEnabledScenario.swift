@@ -17,7 +17,7 @@ internal class UserEnabledScenario: Scenario {
     }
 
     override func run() {
-        Bugsnag.configuration()?.setUser("123", withName: "Joe Bloggs", andEmail: "user@example.com")
+        Bugsnag.setUser("123", withName: "Joe Bloggs", andEmail: "user@example.com")
         let error = NSError(domain: "UserEnabledScenario", code: 100, userInfo: nil)
         Bugsnag.notifyError(error)
     }

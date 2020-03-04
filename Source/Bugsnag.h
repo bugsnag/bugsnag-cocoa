@@ -35,16 +35,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 @interface Bugsnag : NSObject
 
-/** Get the current Bugsnag configuration.
- *
- * This method returns nil if called before +startBugsnagWithApiKey: or
- * +startBugsnagWithConfiguration:, and otherwise returns the current
- * configuration for Bugsnag.
- *
- * @return The configuration, or nil.
- */
-+ (BugsnagConfiguration *_Nullable)configuration;
-
 /** Start listening for crashes.
  *
  * This method initializes Bugsnag with the default configuration. Any uncaught
@@ -91,7 +81,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *  @param block     A block for optionally configuring the error report
  */
 + (void)notify:(NSException *_Nonnull)exception
-         block:(BugsnagNotifyBlock _Nullable)block;
+         block:(BugsnagOnErrorBlock _Nullable)block;
 
 /**
  *  Send an error to Bugsnag
@@ -107,7 +97,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *  @param block A block for optionally configuring the error report
  */
 + (void)notifyError:(NSError *_Nonnull)error
-              block:(BugsnagNotifyBlock _Nullable)block;
+              block:(BugsnagOnErrorBlock _Nullable)block;
 
 /** Send a custom or caught exception to Bugsnag.
  *
@@ -148,7 +138,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagNotifyBlock _Nullable)block;
+                       block:(BugsnagOnErrorBlock _Nullable)block;
 
 /** Add custom data to send to Bugsnag with every exception. If value is nil,
  *  delete the current value for attributeName
@@ -165,13 +155,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
                          key:(NSString *_Nonnull)key
                        value:(id _Nullable)value
     NS_SWIFT_NAME(addMetadata(_:key:value:));
-
-/** Remove custom data from Bugsnag reports.
- *
- * @param tabName        The tab to clear.
- */
-+ (void)clearMetadataInSection:(NSString *_Nonnull)tabName
-    NS_SWIFT_NAME(clearMetadata(_:));
 
 // MARK: - Breadcrumbs
 
@@ -207,12 +190,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 + (NSDateFormatter *_Nonnull)payloadDateFormatter;
 
-+ (void)setSuspendThreadsForUserReported:(BOOL)suspendThreadsForUserReported;
-+ (void)setReportWhenDebuggerIsAttached:(BOOL)reportWhenDebuggerIsAttached;
-+ (void)setThreadTracingEnabled:(BOOL)threadTracingEnabled;
-+ (void)setWriteBinaryImagesForUserReported:
-    (BOOL)writeBinaryImagesForUserReported;
-
 /**
  * Starts tracking a new session.
  *
@@ -223,10 +200,10 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *
  * Any errors which occur in an active session count towards your application's
  * stability score. You can prevent errors from counting towards your stability
- * score by calling stopSession and resumeSession at the appropriate
+ * score by calling pauseSession and resumeSession at the appropriate
  * time in your application.
  *
- * @see stopSession:
+ * @see pauseSession:
  * @see resumeSession:
  */
 + (void)startSession;
@@ -246,7 +223,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * @see startSession:
  * @see resumeSession:
  */
-+ (void)stopSession;
++ (void)pauseSession;
 
 /**
  * Resumes a session which has previously been stopped, or starts a new session if none exists.
@@ -264,7 +241,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * will be reported to Bugsnag and will count towards your application's stability score.
  *
  * @see startSession:
- * @see stopSession:
+ * @see pauseSession:
  *
  * @return true if a previous session was resumed, false if a new session was started.
  */
@@ -287,7 +264,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 * @param key The key
 * @returns The value of the keyed value if it exists or nil.
 */
-+ (id _Nullable )getMetadata:(NSString *_Nonnull)section    key:(NSString *_Nonnull)key
++ (id _Nullable )getMetadata:(NSString *_Nonnull)section key:(NSString *_Nonnull)key
     NS_SWIFT_NAME(getMetadata(_:key:));
 
 /**
@@ -299,5 +276,41 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (void)setBreadcrumbCapacity:(NSUInteger)capacity
         __deprecated_msg("Use [BugsnagConfiguration setMaxBreadcrumbs:] instead");
+
+/**
+ * Replicates BugsnagConfiguration.context
+ *
+ * @param context A general summary of what was happening in the application
+ */
++ (void)setContext:(NSString *_Nullable)context;
+
+/** Remove custom data from Bugsnag reports.
+ *
+ * @param sectionName        The section to clear.
+ */
++ (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+    NS_SWIFT_NAME(clearMetadata(section:));
+
+/**
+ * Remove a key/value from a named matadata section.  If either the section or the
+ * key do not exist no action will occur.
+ *
+ * @param sectionName The name of the section containing the value
+ * @param key The key to remove
+ */
++ (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+                       withKey:(NSString *_Nonnull)key
+    NS_SWIFT_NAME(clearMetadata(section:key:));
+
+/**
+ *  Set user metadata
+ *
+ *  @param userId ID of the user
+ *  @param name   Name of the user
+ *  @param email  Email address of the user
+ */
++ (void)setUser:(NSString *_Nullable)userId
+       withName:(NSString *_Nullable)name
+       andEmail:(NSString *_Nullable)email;
 
 @end

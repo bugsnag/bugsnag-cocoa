@@ -107,7 +107,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
-+ (void)notify:(NSException *)exception block:(BugsnagNotifyBlock)block {
++ (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagStarted]) {
         [[self notifier] notifyException:exception
                                    block:^(BugsnagEvent *_Nonnull report) {
@@ -129,7 +129,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
-+ (void)notifyError:(NSError *)error block:(BugsnagNotifyBlock)block {
++ (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagStarted]) {
         [[self notifier] notifyError:error
                                block:^(BugsnagEvent *_Nonnull report) {
@@ -174,7 +174,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagNotifyBlock _Nullable)block {
+                       block:(BugsnagOnErrorBlock _Nullable)block {
     if ([self bugsnagStarted]) {
         [self.notifier internalClientNotify:exception
                                    withData:metadata
@@ -215,7 +215,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 + (void)leaveBreadcrumbWithMessage:(NSString *)message {
     if ([self bugsnagStarted]) {
         [self leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumbs) {
-            crumbs.metadata = @{BSGKeyMessage: message};
+            crumbs.message = message;
         }];
     }
 }
@@ -252,9 +252,9 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
-+ (void)stopSession {
++ (void)pauseSession {
     if ([self bugsnagStarted]) {
-        [self.notifier stopSession];
+        [self.notifier pauseSession];
     }
 }
 
@@ -276,31 +276,12 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     return formatter;
 }
 
-+ (void)setSuspendThreadsForUserReported:(BOOL)suspendThreadsForUserReported {
++ (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+                       withKey:(NSString *_Nonnull)key
+{
     if ([self bugsnagStarted]) {
-        [[BSG_KSCrash sharedInstance]
-                setSuspendThreadsForUserReported:suspendThreadsForUserReported];
-    }
-}
-
-+ (void)setReportWhenDebuggerIsAttached:(BOOL)reportWhenDebuggerIsAttached {
-    if ([self bugsnagStarted]) {
-        [[BSG_KSCrash sharedInstance]
-                setReportWhenDebuggerIsAttached:reportWhenDebuggerIsAttached];
-    }
-}
-
-+ (void)setThreadTracingEnabled:(BOOL)threadTracingEnabled {
-    if ([self bugsnagStarted]) {
-        [[BSG_KSCrash sharedInstance] setThreadTracingEnabled:threadTracingEnabled];
-    }
-}
-
-+ (void)setWriteBinaryImagesForUserReported:
-    (BOOL)writeBinaryImagesForUserReported {
-    if ([self bugsnagStarted]) {
-        [[BSG_KSCrash sharedInstance]
-                setWriteBinaryImagesForUserReported:writeBinaryImagesForUserReported];
+        [self.notifier.configuration.metadata clearMetadataInSection:sectionName
+                                                                 key:key];
     }
 }
 
@@ -312,6 +293,16 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
                          key:(NSString *_Nonnull)key
 {
     return [[[self configuration] metadata] getMetadata:section key:key];
+}
+
++ (void)setContext:(NSString *_Nullable)context {
+    [self configuration].context = context;
+}
+
++ (void)setUser:(NSString *_Nullable)userId
+       withName:(NSString *_Nullable)name
+       andEmail:(NSString *_Nullable)email {
+    [[self configuration] setUser:userId withName:name andEmail:email];
 }
 
 @end

@@ -28,9 +28,6 @@
 #import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
 
-static NSString *const BSGBreadcrumbDefaultName = @"manual";
-static NSUInteger const BSGBreadcrumbMaxByteSize = 4096;
-
 NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
     switch (type) {
     case BSGBreadcrumbTypeLog:
@@ -68,7 +65,6 @@ NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
 - (instancetype)init {
     if (self = [super init]) {
         _timestamp = [NSDate date];
-        _name = BSGBreadcrumbDefaultName;
         _type = BSGBreadcrumbTypeManual;
         _metadata = @{};
     }
@@ -76,20 +72,20 @@ NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
 }
 
 - (BOOL)isValid {
-    return self.name.length > 0 && self.timestamp != nil;
+    return self.message.length > 0 && self.timestamp != nil;
 }
 
 - (NSDictionary *)objectValue {
     @synchronized (self) {
         NSString *timestamp =
         [[Bugsnag payloadDateFormatter] stringFromDate:_timestamp];
-        if (timestamp && _name.length > 0) {
+        if (timestamp && _message.length > 0) {
             NSMutableDictionary *metadata = [NSMutableDictionary new];
             for (NSString *key in _metadata) {
                 metadata[[key copy]] = [_metadata[key] copy];
             }
             return @{
-                 BSGKeyName : [_name copy],
+                 BSGKeyMessage : [_message copy],
                  BSGKeyTimestamp : timestamp,
                  BSGKeyType : BSGBreadcrumbTypeValue(_type),
                  BSGKeyMetadata : metadata
@@ -115,11 +111,11 @@ NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
     }
 }
 
-@synthesize name = _name;
+@synthesize message = _message;
 
-- (NSString *)name {
+- (NSString *)message {
     @synchronized (self) {
-        return _name;
+        return _message;
     }
 }
 
@@ -139,11 +135,11 @@ NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
     }
 }
 
-- (void)setName:(NSString *)name {
+- (void)setMessage:(NSString *)message {
     @synchronized (self) {
-        [self willChangeValueForKey:NSStringFromSelector(@selector(name))];
-        _name = name;
-        [self didChangeValueForKey:NSStringFromSelector(@selector(name))];
+        [self willChangeValueForKey:NSStringFromSelector(@selector(message))];
+        _message = message;
+        [self didChangeValueForKey:NSStringFromSelector(@selector(message))];
     }
 }
 
@@ -199,7 +195,7 @@ NSUInteger BreadcrumbsDefaultCapacity = 25;
 
 - (void)addBreadcrumb:(NSString *)breadcrumbMessage {
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
-      crumb.metadata = @{BSGKeyMessage : breadcrumbMessage};
+        crumb.message = breadcrumbMessage;
     }];
 }
 
@@ -305,15 +301,7 @@ NSUInteger BreadcrumbsDefaultCapacity = 25;
                               @"JSON object");
                   continue;
               }
-              NSData *data = [NSJSONSerialization dataWithJSONObject:objectValue
-                                                             options:0
-                                                               error:&error];
-              if (data.length <= BSGBreadcrumbMaxByteSize)
-                  [contents addObject:objectValue];
-              else
-                  bsg_log_warn(
-                      @"Dropping breadcrumb (%@) exceeding %lu byte size limit",
-                      crumb.name, (unsigned long)BSGBreadcrumbMaxByteSize);
+              [contents addObject:objectValue];
           } @catch (NSException *exception) {
               bsg_log_err(@"Unable to serialize breadcrumb: %@", error);
           }
