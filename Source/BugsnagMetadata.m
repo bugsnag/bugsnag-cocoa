@@ -94,33 +94,108 @@
     }
 }
 
+/**
+ * Add a single key/value to a metadata Tab/Section.
+ */
 - (void)addAttribute:(NSString *)attributeName
            withValue:(id)value
-       toTabWithName:(NSString *)sectionName
-{
+       toTabWithName:(NSString *)tabName {
+    
+    bool metadataChanged = false;
     @synchronized(self) {
-        if (value) {
+        if (value && value != [NSNull null]) {
             id cleanedValue = BSGSanitizeObject(value);
             if (cleanedValue) {
-                NSDictionary *section = [self getMetadata:sectionName];
+                // Value is OK, try and set it
+                NSMutableDictionary *section = [self getMetadata:tabName];
                 if (!section) {
                     section = [NSMutableDictionary new];
-                    [[self dictionary] setObject:section forKey:sectionName];
+                    [[self dictionary] setObject:section forKey:tabName];
                 }
-                [section setValue:cleanedValue forKey:attributeName];
-            }
-            else {
+                section[attributeName] = cleanedValue;
+                metadataChanged = true;
+            } else {
                 Class klass = [value class];
                 bsg_log_err(@"Failed to add metadata: Value of class %@ is not "
                             @"JSON serializable",
                             klass);
             }
         }
+        
+        // It's some form of nil/null
         else {
-            [[self getMetadata:sectionName] removeObjectForKey:attributeName];
+            [[self getMetadata:tabName] removeObjectForKey:attributeName];
+            metadataChanged = true;
         }
     }
-    [self.delegate metadataChanged:self];
+    
+    // Call the delegate if we've materially changed it
+    if (metadataChanged) {
+        [self.delegate metadataChanged:self];
+    }
 }
+
+/**
+ * Merge supplied and existing metadata.
+ */
+- (void)addMetadataToSection:(NSString *)section
+                      values:(NSDictionary *)values
+{
+    @synchronized(self) {
+        if (values) {
+            // Check each value in turn.  Remove nulls, add/replace others
+            // Fast enumeration over the (unmodified) supplied values for simplicity
+            bool metadataChanged = false;
+            for (id key in values) {
+                // Ensure keys are (JSON-serializable) strings
+                if ([[key class] isSubclassOfClass:[NSString class]]) {
+                    id value = [values objectForKey:key];
+                    
+                    // The common case: adding sensible values
+                    if (value && value != [NSNull null]) {
+                        id cleanedValue = BSGSanitizeObject(value);
+                        if (cleanedValue) {
+                            // We only want to create a tab if we have a valid value.
+                            NSMutableDictionary *metadata = [self getMetadata:section];
+                            if (!metadata) {
+                                metadata = [NSMutableDictionary new];
+                                [[self dictionary] setObject:metadata forKey:section];
+                            }
+                            [metadata setObject:cleanedValue forKey:key];
+                            metadataChanged = true;
+                        }
+                        // Log the failure but carry on
+                        else {
+                            Class klass = [value class];
+                            bsg_log_err(@"Failed to add metadata: Value of class %@ is not "
+                                        @"JSON serializable.", klass);
+                        }
+                    }
+                    
+                    // Remove existing value if supplied null.
+                    // Ensure we don't inadvertently create a section.
+                    else if (value == [NSNull null]
+                             && [self.dictionary objectForKey:section]
+                             && [[self.dictionary objectForKey:section] objectForKey:key])
+                    {
+                        [[self.dictionary objectForKey:section] removeObjectForKey:key];
+                        metadataChanged = true;
+                    }
+                }
+                
+                // Something went wrong...
+                else {
+                    bsg_log_err(@"Failed to update metadata: Section: %@, Values: %@", section, values);
+                }
+            }
+            
+            // Call the delegate if we've materially changed it
+            if (metadataChanged) {
+                [self.delegate metadataChanged:self];
+            }
+        }
+    }
+}
+
 
 @end

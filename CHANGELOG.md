@@ -49,9 +49,8 @@ Bugsnag Notifiers on other platforms.
   [#459](https://github.com/bugsnag/bugsnag-cocoa/pull/459)
   
 * Added `Bugsnag.getMetadata(_ section: key:)`
-[#463](https://github.com/bugsnag/bugsnag-cocoa/pull/463)
+  [#463](https://github.com/bugsnag/bugsnag-cocoa/pull/463)
   
-
 * Add a per-Event `apiKey` property.  This defaults to the global 
   `BugsnagConfiguration` value but can be overridden in event passed to the 
   `Bugsnag.notify()` callback.
@@ -87,6 +86,27 @@ Bugsnag Notifiers on other platforms.
   This allows users to choose which types of events are reported.  If automatic crash detection
   is disabled this value is ignored.  User-generated `notify()` events are reported in all cases.
   [#477](https://github.com/bugsnag/bugsnag-cocoa/pull/477)
+
+* Internal logging has been unified.  Where before two preprocessor macros were
+  required to configure both `Bugsnag` and `KSCrash` portions, now the Bugsnag
+  `BSG_LOG_LEVEL` macro is sufficient to configure both.  This should be set on the
+  Bugsnag framework build target.  Further configuration instructions can be found in 
+  the `BugsnagLogger.h` header.
+  [#472](https://github.com/bugsnag/bugsnag-cocoa/pull/472)
+  
+* Added a method to allow merging supplied and existing Event metadata.
+  `BugsnagMetadata.addMetadataToSection:values:` allows Event 
+  callbacks to modify Event metadata en-mass.  Supplied metadata should 
+  be a JSON-serializable dictionary.  The resulting Event metadata is the 
+  result of applying the following rules to the existing metadata for each supplied
+  value:
+  - Non-null values replace any existing key/value pair. 
+  - Null values remove a key/value pair.  
+  - Invalid values are logged and ignored.
+  [#470](https://github.com/bugsnag/bugsnag-cocoa/pull/470)
+
+* Remove `Bugsnag.configuration()?`. All access to the configuration object
+  should be performed prior to calling `Bugsnag.start()`.
 
 ## Bug fixes
 
