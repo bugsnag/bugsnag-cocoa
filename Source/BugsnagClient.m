@@ -62,7 +62,7 @@ struct bugsnag_data_t {
     char *metadataJSON;
     // Contains the Bugsnag configuration, all under the "config" tab.
     char *configJSON;
-    // Contains Notifier state, under "deviceState" and crash-specific
+    // Contains notifier state, under "deviceState" and crash-specific
     // information under "crash".
     char *stateJSON;
     // Contains properties in the Bugsnag payload overridden by the user before

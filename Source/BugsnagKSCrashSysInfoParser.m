@@ -112,8 +112,8 @@ NSDictionary *BSGParseAppState(NSDictionary *report, NSString *preferredVersion,
     clientType = @"macOS";
 #endif
     
-    if ([Bugsnag configuration].clientType) {
-        clientType = [Bugsnag configuration].clientType;
+    if ([Bugsnag configuration].notifierType) {
+        clientType = [Bugsnag configuration].notifierType;
     }
     BSGDictSetSafeObject(app, clientType, @"type");
     return app;

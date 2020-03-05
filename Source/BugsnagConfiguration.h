@@ -206,7 +206,7 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
 @property(readonly, retain, nullable) NSURL *sessionURL;
 
 @property(retain, nullable) NSString *codeBundleId;
-@property(retain, nullable) NSString *clientType;
+@property(retain, nullable) NSString *notifierType;
 
 /**
  * The maximum number of breadcrumbs to keep and sent to Bugsnag.
