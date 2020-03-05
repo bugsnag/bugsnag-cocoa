@@ -399,14 +399,18 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
     _started = YES;
     // autoDetectErrors disables all unhandled event reporting
-    BOOL configuredToReportOOMs = self.configuration.reportOOMs && self.configuration.autoDetectErrors;
+    BOOL configuredToReportOOMs = self.configuration.autoDetectErrors
+        && ([[Bugsnag configuration] enabledErrorTypes] & BSGErrorTypesOOMs);
+    
     // Disable if a debugger is enabled, since the development cycle of starting
     // and restarting an app is also an uncatchable kill
     BOOL noDebuggerEnabled = !bsg_ksmachisBeingTraced();
+
     // Disable if in an app extension, since app extensions have a different
     // app lifecycle and the heuristic used for finding app terminations rooted
     // in fixable code does not apply
     BOOL notInAppExtension = ![BSG_KSSystemInfo isRunningInAppExtension];
+
     if (configuredToReportOOMs && noDebuggerEnabled && notInAppExtension) {
         [self.oomWatchdog enable];
     }
@@ -834,7 +838,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     if (self.configuration.autoDetectErrors) {
         // Enable all crash detection
         bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeAll);
-        if (self.configuration.reportOOMs) {
+        if (self.configuration.enabledErrorTypes & BSGErrorTypesOOMs) {
             [self.oomWatchdog enable];
         }
     } else {

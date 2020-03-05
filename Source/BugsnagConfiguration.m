@@ -120,6 +120,14 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _breadcrumbs = [BugsnagBreadcrumbs new];
     _automaticallyCollectBreadcrumbs = YES;
     _autoTrackSessions = YES;
+    // Default to recording all error types
+    _enabledErrorTypes = BSGErrorTypesCPP
+                       | BSGErrorTypesMach
+                       | BSGErrorTypesSignals
+                       | BSGErrorTypesNSExceptions;
+
+    // Enabling OOM detection only happens in release builds, to avoid triggering
+    // the heuristic when killing/restarting an app in Xcode or similar.
     _persistUser = YES;
     // Only gets persisted user data if there is any, otherwise nil
     // persistUser isn't settable until post-init.
@@ -127,7 +135,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [self setUserMetadataFromUser:_currentUser];
     
     #if !DEBUG
-        _reportOOMs = YES;
+        _enabledErrorTypes |= BSGErrorTypesOOMs;
     #endif
 
     if ([NSURLSession class]) {
