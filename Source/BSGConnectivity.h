@@ -33,7 +33,7 @@
  * @param connected YES if the monitored URL is reachable
  * @param typeDescription a textual representation of the connection type
  */
-typedef void (^BSGConnectivityChangeBlock)(BOOL connected, NSString *_Nonnull typeDescription);
+typedef void (^BSGConnectivityChangeBlock)(BOOL connected, NSString *_Nonnull typeDescription, void *_Nullable info);
 
 /**
  * Monitors network connectivity using SCNetworkReachability callbacks,

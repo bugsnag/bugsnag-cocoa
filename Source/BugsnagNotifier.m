@@ -532,7 +532,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     // the BSGConnectivity static storage.
     __weak typeof(self) weakSelf = self;
     [BSGConnectivity monitorURL:url
-                  usingCallback:^(BOOL connected, NSString *connectionType) {
+                  usingCallback:^(BOOL connected, NSString *connectionType, void * info) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (connected)
             [strongSelf flushPendingReports];
