@@ -83,6 +83,7 @@ typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 + (instancetype _Nullable)breadcrumbWithBlock:
     (BSGBreadcrumbConfiguration _Nonnull)block;
 
++ (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
 @end
 
 @interface BugsnagBreadcrumbs : NSObject

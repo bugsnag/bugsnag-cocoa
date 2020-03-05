@@ -15,6 +15,8 @@
 		8A14F0F72282D4AE00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F32282D4AE00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.m */; };
 		8A22FC66225B598500CA8895 /* OOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A22FC65225B598500CA8895 /* OOMScenario.m */; };
 		8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */; };
+		8A3B5F292407F66700CE4A3A /* ModifyBreadcrumbScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3B5F282407F66700CE4A3A /* ModifyBreadcrumbScenario.swift */; };
+		8A3B5F2B240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift */; };
 		8A42FD35225DEE04007AE561 /* SessionOOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A42FD33225DEE04007AE561 /* SessionOOMScenario.m */; };
 		8A530CCC22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A530CCB22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.m */; };
 		8A72A0382396574F00328051 /* CustomPluginNotifierDescriptionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */; };
@@ -105,6 +107,8 @@
 		8A22FC65225B598500CA8895 /* OOMScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OOMScenario.m; sourceTree = "<group>"; };
 		8A32DB8022424E3000EDD92F /* NSExceptionShiftScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSExceptionShiftScenario.h; sourceTree = "<group>"; };
 		8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSExceptionShiftScenario.m; sourceTree = "<group>"; };
+		8A3B5F282407F66700CE4A3A /* ModifyBreadcrumbScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyBreadcrumbScenario.swift; sourceTree = "<group>"; };
+		8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyBreadcrumbInNotify.swift; sourceTree = "<group>"; };
 		8A42FD33225DEE04007AE561 /* SessionOOMScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionOOMScenario.m; sourceTree = "<group>"; };
 		8A42FD34225DEE04007AE561 /* SessionOOMScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionOOMScenario.h; sourceTree = "<group>"; };
 		8A530CCA22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ManyConcurrentNotifyScenario.h; sourceTree = "<group>"; };
@@ -302,6 +306,8 @@
 				8A14F0F12282D4AD00337B05 /* ReportOOMsDisabledScenario.h */,
 				8A14F0F22282D4AD00337B05 /* ReportOOMsDisabledScenario.m */,
 				8A32DB8022424E3000EDD92F /* NSExceptionShiftScenario.h */,
+				8A3B5F282407F66700CE4A3A /* ModifyBreadcrumbScenario.swift */,
+				8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift */,
 				8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */,
 				8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */,
 				F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */,
@@ -512,6 +518,7 @@
 				F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */,
 				8A98400320FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m in Sources */,
 				F42955E0916B8851F074D9B3 /* UserEmailScenario.swift in Sources */,
+				8A3B5F292407F66700CE4A3A /* ModifyBreadcrumbScenario.swift in Sources */,
 				8AA05A2F23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m in Sources */,
 				F4295968571A4118D6A4606A /* UserEnabledScenario.swift in Sources */,
 				F4295A036B228AF608641699 /* UserDisabledScenario.swift in Sources */,
@@ -536,6 +543,7 @@
 				8A530CCC22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.m in Sources */,
 				F42958881D3F34A76CADE4EC /* SwiftCrash.swift in Sources */,
 				F42955DB6D08642528917FAB /* CxxExceptionScenario.mm in Sources */,
+				8A3B5F2B240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift in Sources */,
 				8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */,
 				F42954B7318A02824C65C514 /* ObjCMsgSendScenario.m in Sources */,
 				8A22FC66225B598500CA8895 /* OOMScenario.m in Sources */,

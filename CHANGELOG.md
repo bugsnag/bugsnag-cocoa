@@ -23,6 +23,20 @@ Bugsnag Notifiers on other platforms.
 
   [#446](https://github.com/bugsnag/bugsnag-cocoa/pull/446)
 
+* Support editing breadcrumbs within an Event as objects. Breadcrumbs can now be
+  inspected and modified from callbacks, for example:
+
+  ```swift
+  Bugsnag.notifyError(error) { event in
+      event.breadcrumbs?.forEach({ crumb in
+          if crumb.message == "something specific" {
+              crumb.message = "[redacted]"
+          }
+      })
+  }
+  ```
+  [#474](https://github.com/bugsnag/bugsnag-cocoa/pull/474)
+
 * Add a breadcrumb when Bugsnag first starts with the message "Bugsnag loaded"
   [#445](https://github.com/bugsnag/bugsnag-cocoa/pull/445)
   

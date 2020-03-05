@@ -2102,7 +2102,10 @@
             "crash": {
                 "depth": 4,
                 "severity": "warning",
-                "breadcrumbs": [["1442466386","App launched"],["1442466386","Tapped button"]]
+                "breadcrumbs": [
+                    {"message": "App launched", "timestamp": "2020-02-14T16:12:22+0000", "type": "manual", "metaData":{}},
+                    {"message": "Tapped button", "timestamp": "2020-02-14T16:12:24+0000", "type": "manual", "metaData":{}}
+                ]
             }
         }
     }
