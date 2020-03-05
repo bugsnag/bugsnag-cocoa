@@ -332,6 +332,8 @@
     partialErrors = BSGErrorTypesCPP | BSGErrorTypesSignals;
     crashTypes = BSG_KSCrashTypeCPPException | BSG_KSCrashTypeSignal;
     XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
+}
+    
 // MARK: - BEGIN User persistence tests
 
 /**
