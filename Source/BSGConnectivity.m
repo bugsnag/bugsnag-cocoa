@@ -87,8 +87,6 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
                                     SCNetworkReachabilityFlags flags,
                                     void *info)
 {
-    bsg_log_debug(@"Reachability flags: %u, info: %s", flags, (char *)(info ?: "NO INFO"));
-    
     if (bsg_reachability_change_block && BSGConnectivityShouldReportChange(flags)) {
         BOOL connected = (flags & kSCNetworkReachabilityFlagsReachable);
         bsg_reachability_change_block(connected, BSGConnectivityFlagRepresentation(flags), info);
@@ -109,31 +107,12 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
         return;
     }
 
-#ifdef TESTING
-    bsg_log_info(@">>>>>>>>>>>>>>>> TESTING IS ENABLED <<<<<<<<<<<<<<<<");
-#endif
-    
-
-#ifndef TESTING
-    bsg_log_info(@">>>>>>>>>>>>>>>> TESTING IS NOT ENABLED <<<<<<<<<<<<<<<<");
-#endif
-
-    
-    // The CI environment synthesizes incorrect reachability changes.  Mocking SCNetworkReachability
-    // is the correct way to get round this for testing but until then we explicitly check whether
-    // we're being run under test conditions.
-#ifndef TESTING
     bsg_reachability_ref = SCNetworkReachabilityCreateWithName(NULL, [host UTF8String]);
     if (bsg_reachability_ref) { // Can be null if a bad hostname was specified
-#endif
-            
         bsg_reachability_change_block = block;
-            
-#ifndef TESTING
         SCNetworkReachabilitySetCallback(bsg_reachability_ref, BSGConnectivityCallback, NULL);
         SCNetworkReachabilitySetDispatchQueue(bsg_reachability_ref, reachabilityQueue);
     }
-#endif
 }
 
 /**

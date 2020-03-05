@@ -22,7 +22,7 @@ endif
 XCODEBUILD=set -o pipefail && xcodebuild
 PRESET_VERSION=$(shell cat VERSION)
 ifneq ($(strip $(shell which xcpretty)),)
-# FORMATTER = | tee xcodebuild.log | xcpretty -c
+FORMATTER = | tee xcodebuild.log | xcpretty -c
 endif
 
 all: build

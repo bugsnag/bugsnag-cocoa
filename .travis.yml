@@ -35,7 +35,7 @@ jobs:
     env: PLATFORM=iOS
     before_script:
     # https://stackoverflow.com/questions/55389080/xcode-10-2-failed-to-run-app-on-simulator-with-ios-10
-    - sudo mkdir -p '/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 9.3.simruntime/Contents/Resources/RuntimeRoot/usr/lib/swift' && echo "TESTING=YES" > ../.xcconfig
+    - sudo mkdir -p '/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 9.3.simruntime/Contents/Resources/RuntimeRoot/usr/lib/swift'
     script:
     - make test OS=9.3
     - make test OS=9.3 TEST_CONFIGURATION=Release
