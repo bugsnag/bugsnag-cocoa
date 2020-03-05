@@ -69,6 +69,27 @@ typedef NS_ENUM(NSUInteger, BSGBreadcrumbType) {
     BSGBreadcrumbTypeUser,
 };
 
+/**
+ * Types of breadcrumbs which can be reported
+ */
+typedef NS_OPTIONS(NSUInteger, BSGEnabledBreadcrumbType) {
+    BSGEnabledBreadcrumbTypeNone       = 0,
+    BSGEnabledBreadcrumbTypeState      = 1 << 1,
+    BSGEnabledBreadcrumbTypeUser       = 1 << 2,
+    BSGEnabledBreadcrumbTypeLog        = 1 << 3,
+    BSGEnabledBreadcrumbTypeNavigation = 1 << 4,
+    BSGEnabledBreadcrumbTypeRequest    = 1 << 5,
+    BSGEnabledBreadcrumbTypeProcess    = 1 << 6,
+    BSGEnabledBreadcrumbTypeError      = 1 << 7,
+    BSGEnabledBreadcrumbTypeAll = BSGEnabledBreadcrumbTypeState
+        | BSGEnabledBreadcrumbTypeUser
+        | BSGEnabledBreadcrumbTypeLog
+        | BSGEnabledBreadcrumbTypeNavigation
+        | BSGEnabledBreadcrumbTypeRequest
+        | BSGEnabledBreadcrumbTypeProcess
+        | BSGEnabledBreadcrumbTypeError,
+};
+
 @class BugsnagBreadcrumb;
 
 typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
@@ -130,4 +151,8 @@ typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
  */
 - (NSArray *_Nullable)arrayValue;
 
+/**
+ * The types of breadcrumbs which will be captured. By default, this is all types.
+ */
+@property BSGEnabledBreadcrumbType enabledBreadcrumbTypes;
 @end

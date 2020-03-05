@@ -118,7 +118,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _onSessionBlocks = [NSMutableArray new];
     _notifyReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
-    _automaticallyCollectBreadcrumbs = YES;
     _autoTrackSessions = YES;
     // Default to recording all error types
     _enabledErrorTypes = BSGErrorTypesCPP
@@ -414,23 +413,12 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 // MARK: -
 
-@synthesize automaticallyCollectBreadcrumbs = _automaticallyCollectBreadcrumbs;
-
-- (BOOL)automaticallyCollectBreadcrumbs {
-    @synchronized (self) {
-        return _automaticallyCollectBreadcrumbs;
-    }
+- (BSGEnabledBreadcrumbType)enabledBreadcrumbTypes {
+    return self.breadcrumbs.enabledBreadcrumbTypes;
 }
 
-- (void)setAutomaticallyCollectBreadcrumbs:
-    (BOOL)automaticallyCollectBreadcrumbs {
-    @synchronized (self) {
-        if (automaticallyCollectBreadcrumbs == _automaticallyCollectBreadcrumbs)
-            return;
-
-        _automaticallyCollectBreadcrumbs = automaticallyCollectBreadcrumbs;
-        [[Bugsnag notifier] updateAutomaticBreadcrumbDetectionSettings];
-    }
+- (void)setEnabledBreadcrumbTypes:(BSGEnabledBreadcrumbType)enabledBreadcrumbTypes {
+    self.breadcrumbs.enabledBreadcrumbTypes = enabledBreadcrumbTypes;
 }
 
 // MARK: -

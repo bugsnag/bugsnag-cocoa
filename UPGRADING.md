@@ -49,6 +49,9 @@ Swift:
 + config.onSessionBlocks
 + config.add(onSession:)
 
+- config.automaticallyCollectBreadcrumbs
++ config.enabledBreadcrumbTypes
+
 - config.reportOOMs
 + config.enabledErrorTypes
 ```
