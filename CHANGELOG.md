@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* `BugsnagNotifier` is now `BugsnagClient`.
+  [#480](https://github.com/bugsnag/bugsnag-cocoa/pull/480)
+
 * Add a breadcrumb when Bugsnag first starts with the message "Bugsnag loaded"
   [#445](https://github.com/bugsnag/bugsnag-cocoa/pull/445)
 

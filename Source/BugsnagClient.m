@@ -1,5 +1,5 @@
 //
-//  BugsnagNotifier.m
+//  BugsnagClient.m
 //
 //  Created by Conrad Irwin on 2014-10-01.
 //
@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagNotifier.h"
+#import "BugsnagClient.h"
 #import "BSGConnectivity.h"
 #import "Bugsnag.h"
 #import "Private.h"
@@ -62,7 +62,7 @@ struct bugsnag_data_t {
     char *metadataJSON;
     // Contains the Bugsnag configuration, all under the "config" tab.
     char *configJSON;
-    // Contains notifier state, under "deviceState" and crash-specific
+    // Contains Notifier state, under "deviceState" and crash-specific
     // information under "crash".
     char *stateJSON;
     // Contains properties in the Bugsnag payload overridden by the user before
@@ -201,7 +201,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
     hasRecordedSessions = true;
 }
 
-@interface BugsnagNotifier ()
+@interface BugsnagClient ()
 @property(nonatomic, strong) BugsnagCrashSentry *crashSentry;
 @property(nonatomic, strong) BugsnagErrorReportApiClient *errorReportApiClient;
 @property(nonatomic, strong, readwrite) BugsnagSessionTracker *sessionTracker;
@@ -209,7 +209,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic) BOOL appCrashedLastLaunch;
 @end
 
-@implementation BugsnagNotifier
+@implementation BugsnagClient
 
 @synthesize configuration;
 
@@ -527,7 +527,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
     // ARC Reference - 4.2 __weak Semantics
     // http://clang.llvm.org/docs/AutomaticReferenceCounting.html
-    // Avoid potential strong reference cycle between the notifier instance and
+    // Avoid potential strong reference cycle between the 'client' instance and
     // the BSGConnectivity static storage.
     __weak typeof(self) weakSelf = self;
     [BSGConnectivity monitorURL:url
@@ -681,7 +681,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     //    2 -[BSG_KSCrash
     //    reportUserException:reason:language:lineOfCode:stackTrace:terminateProgram:]
     //    3 -[BugsnagCrashSentry reportUserException:reason:]
-    //    4 -[BugsnagNotifier notify:message:block:]
+    //    4 -[BugsnagClient notify:message:block:]
 
     int depth = (int)(BSGNotifierStackFrameCount + report.depth);
 

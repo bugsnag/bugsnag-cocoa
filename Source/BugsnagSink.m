@@ -28,7 +28,7 @@
 #import "Bugsnag.h"
 #import "BugsnagLogger.h"
 #import "BugsnagCollections.h"
-#import "BugsnagNotifier.h"
+#import "BugsnagClient.h"
 #import "BugsnagKeys.h"
 #import "BSG_KSSystemInfo.h"
 #import "Private.h"
@@ -36,7 +36,7 @@
 // This is private in Bugsnag, but really we want package private so define
 // it here.
 @interface Bugsnag ()
-+ (BugsnagNotifier *)notifier;
++ (BugsnagClient *)client;
 @end
 
 @implementation BugsnagSink
@@ -110,8 +110,8 @@
 // Generates the payload for notifying Bugsnag
 - (NSDictionary *)getBodyFromReports:(NSArray *)reports {
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-    BSGDictSetSafeObject(data, [Bugsnag notifier].details, BSGKeyNotifier);
-    BSGDictSetSafeObject(data, [Bugsnag notifier].configuration.apiKey, BSGKeyApiKey);
+    BSGDictSetSafeObject(data, [Bugsnag client].details, BSGKeyNotifier);
+    BSGDictSetSafeObject(data, [Bugsnag client].configuration.apiKey, BSGKeyApiKey);
     BSGDictSetSafeObject(data, @"4.0", @"payloadVersion");
 
     NSMutableArray *formatted =

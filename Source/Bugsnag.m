@@ -27,15 +27,15 @@
 #import "Bugsnag.h"
 #import "BSG_KSCrash.h"
 #import "BugsnagLogger.h"
-#import "BugsnagNotifier.h"
+#import "BugsnagClient.h"
 #import "BugsnagKeys.h"
 #import "BugsnagPlugin.h"
 
-static BugsnagNotifier *bsg_g_bugsnag_notifier = NULL;
+static BugsnagClient *bsg_g_bugsnag_client = NULL;
 static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 @interface Bugsnag ()
-+ (BugsnagNotifier *)notifier;
++ (BugsnagClient *)client;
 + (BOOL)bugsnagStarted;
 + (void)registerPlugin:(id<BugsnagPlugin>)plugin;
 @end
@@ -54,16 +54,16 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (void)startBugsnagWithConfiguration:(BugsnagConfiguration *)configuration {
     @synchronized(self) {
-        bsg_g_bugsnag_notifier =
-                [[BugsnagNotifier alloc] initWithConfiguration:configuration];
+        bsg_g_bugsnag_client =
+                [[BugsnagClient alloc] initWithConfiguration:configuration];
         [self startPlugins];
-        [bsg_g_bugsnag_notifier start];
+        [bsg_g_bugsnag_client start];
     }
 }
 
 + (BugsnagConfiguration *)configuration {
     if ([self bugsnagStarted]) {
-        return self.notifier.configuration;
+        return self.client.configuration;
     }
     return nil;
 }
@@ -72,8 +72,8 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     return [self configuration];
 }
 
-+ (BugsnagNotifier *)notifier {
-    return bsg_g_bugsnag_notifier;
++ (BugsnagClient *)client {
+    return bsg_g_bugsnag_client;
 }
 
 + (void)registerPlugin:(id<BugsnagPlugin>)plugin {
@@ -93,14 +93,14 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (BOOL)appDidCrashLastLaunch {
     if ([self bugsnagStarted]) {
-        return [self.notifier appCrashedLastLaunch];
+        return [self.client appCrashedLastLaunch];
     }
     return NO;
 }
 
 + (void)notify:(NSException *)exception {
     if ([self bugsnagStarted]) {
-        [self.notifier notifyException:exception
+        [self.client notifyException:exception
                                  block:^(BugsnagEvent *_Nonnull report) {
                                      report.depth += 2;
                                  }];
@@ -109,7 +109,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagStarted]) {
-        [[self notifier] notifyException:exception
+        [[self client] notifyException:exception
                                    block:^(BugsnagEvent *_Nonnull report) {
                                        report.depth += 2;
 
@@ -122,7 +122,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (void)notifyError:(NSError *)error {
     if ([self bugsnagStarted]) {
-        [self.notifier notifyError:error
+        [self.client notifyError:error
                              block:^(BugsnagEvent *_Nonnull report) {
                                  report.depth += 2;
                              }];
@@ -131,7 +131,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagStarted]) {
-        [[self notifier] notifyError:error
+        [[self client] notifyError:error
                                block:^(BugsnagEvent *_Nonnull report) {
                                    report.depth += 2;
 
@@ -144,12 +144,12 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (void)notify:(NSException *)exception withData:(NSDictionary *)metadata {
     if ([self bugsnagStarted]) {
-        [[self notifier]
+        [[self client]
                 notifyException:exception
                           block:^(BugsnagEvent *_Nonnull report) {
                               report.depth += 2;
                               report.metadata = [metadata
-                                      BSG_mergedInto:[self.notifier.configuration
+                                      BSG_mergedInto:[self.client.configuration
                                               .metadata toDictionary]];
                           }];
     }
@@ -159,13 +159,13 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
       withData:(NSDictionary *)metadata
     atSeverity:(NSString *)severity {
     if ([self bugsnagStarted]) {
-        [[self notifier]
+        [[self client]
                 notifyException:exception
                      atSeverity:BSGParseSeverity(severity)
                           block:^(BugsnagEvent *_Nonnull report) {
                               report.depth += 2;
                               report.metadata = [metadata
-                                      BSG_mergedInto:[self.notifier.configuration
+                                      BSG_mergedInto:[self.client.configuration
                                               .metadata toDictionary]];
                               report.severity = BSGParseSeverity(severity);
                           }];
@@ -176,7 +176,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
                     withData:(NSDictionary *_Nullable)metadata
                        block:(BugsnagOnErrorBlock _Nullable)block {
     if ([self bugsnagStarted]) {
-        [self.notifier internalClientNotify:exception
+        [self.client internalClientNotify:exception
                                    withData:metadata
                                       block:block];
     }
@@ -190,7 +190,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
                          key:(NSString *_Nonnull)key
                        value:(id _Nullable)value {
     if ([self bugsnagStarted]) {
-        [self.notifier.configuration.metadata addAttribute:key
+        [self.client.configuration.metadata addAttribute:key
                                                  withValue:value
                                              toTabWithName:section];
     }
@@ -198,12 +198,12 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (void)clearMetadataInSection:(NSString *)section {
     if ([self bugsnagStarted]) {
-        [self.notifier.configuration.metadata clearMetadataInSection:section];
+        [self.client.configuration.metadata clearMetadataInSection:section];
     }
 }
 
 + (BOOL)bugsnagStarted {
-    if (!self.notifier.started) {
+    if (!self.client.started) {
         bsg_log_err(@"Ensure you have started Bugsnag with startWithApiKey: "
                     @"before calling any other Bugsnag functions.");
 
@@ -223,44 +223,44 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 + (void)leaveBreadcrumbWithBlock:
     (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
     if ([self bugsnagStarted]) {
-        [self.notifier addBreadcrumbWithBlock:block];
+        [self.client addBreadcrumbWithBlock:block];
     }
 }
 
 + (void)leaveBreadcrumbForNotificationName:
     (NSString *_Nonnull)notificationName {
     if ([self bugsnagStarted]) {
-        [self.notifier crumbleNotification:notificationName];
+        [self.client crumbleNotification:notificationName];
     }
 }
 
 + (void)setBreadcrumbCapacity:(NSUInteger)capacity {
     if ([self bugsnagStarted]) {
-        [self.notifier.configuration setMaxBreadcrumbs:capacity];
+        [self.client.configuration setMaxBreadcrumbs:capacity];
     }
 }
 
 + (void)clearBreadcrumbs {
     if ([self bugsnagStarted]) {
-        [self.notifier clearBreadcrumbs];
+        [self.client clearBreadcrumbs];
     }
 }
 
 + (void)startSession {
     if ([self bugsnagStarted]) {
-        [self.notifier startSession];
+        [self.client startSession];
     }
 }
 
 + (void)pauseSession {
     if ([self bugsnagStarted]) {
-        [self.notifier pauseSession];
+        [self.client pauseSession];
     }
 }
 
 + (BOOL)resumeSession {
     if ([self bugsnagStarted]) {
-        return [self.notifier resumeSession];
+        return [self.client resumeSession];
     } else {
         return false;
     }
@@ -280,7 +280,7 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
                        withKey:(NSString *_Nonnull)key
 {
     if ([self bugsnagStarted]) {
-        [self.notifier.configuration.metadata clearMetadataInSection:sectionName
+        [self.client.configuration.metadata clearMetadataInSection:sectionName
                                                                  key:key];
     }
 }
