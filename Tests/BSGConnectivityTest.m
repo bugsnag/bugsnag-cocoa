@@ -132,7 +132,6 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
 #endif
 
 - (void)mockMonitorURLWithCallback:(BSGConnectivityChangeBlock)block {
-//    [BSGConnectivity monitorURL:[NSURL URLWithString:@"cw://definitely.fake.url.seriously"]
     [BSGConnectivity monitorURL:[NSURL URLWithString:@""]
                   usingCallback:block];
 }
