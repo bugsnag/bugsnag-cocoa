@@ -32,6 +32,7 @@
 #import "BugsnagUser.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagLogger.h"
+#import "BSG_SSKeychain.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -40,6 +41,12 @@ static NSString *const BSGApiKeyError = @"apiKey must be a 32-digit hexadecimal 
 static NSString *const BSGInitError = @"Init is unavailable.  Use [[BugsnagConfiguration alloc] initWithApiKey:] instead.";
 static const int BSGApiKeyLength = 32;
 NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Configuration";
+
+// User info persistence keys
+NSString * const kBugsnagUserKeychainAccount = @"BugsnagUserKeychainAccount";
+NSString * const kBugsnagUserEmailAddress = @"BugsnagUserEmailAddress";
+NSString * const kBugsnagUserName = @"BugsnagUserName";
+NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 @interface Bugsnag ()
 + (BugsnagNotifier *)notifier;
@@ -56,11 +63,16 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
 
 @implementation BugsnagConfiguration
 
+// -----------------------------------------------------------------------------
 // MARK: - Class Methods
+// -----------------------------------------------------------------------------
 
 /**
  * Determine the apiKey-validity of a passed-in string:
  * Exactly 32 hexadecimal digits.
+ *
+ * @param apiKey The API key.
+ * @returns A boolean representing whether the apiKey is valid.
  */
 + (BOOL)isValidApiKey:(NSString *)apiKey {
     NSCharacterSet *chars = [[NSCharacterSet
@@ -69,7 +81,9 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
     return isHex && [apiKey length] == BSGApiKeyLength;
 }
 
-// MARK: - Instance Methods
+// -----------------------------------------------------------------------------
+// MARK: - Initializers
+// -----------------------------------------------------------------------------
 
 /**
  * Should not be called, but if it _is_ then fail meaningfully rather than silently
@@ -114,6 +128,12 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
 
     // Enabling OOM detection only happens in release builds, to avoid triggering
     // the heuristic when killing/restarting an app in Xcode or similar.
+    _persistUser = YES;
+    // Only gets persisted user data if there is any, otherwise nil
+    // persistUser isn't settable until post-init.
+    _currentUser = [self getPersistedUserData];
+    [self setUserMetadataFromUser:_currentUser];
+    
     #if !DEBUG
         _enabledErrorTypes |= BSGErrorTypesOOMs;
     #endif
@@ -132,6 +152,10 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
     return self;
 }
 
+// -----------------------------------------------------------------------------
+// MARK: - Instance Methods
+// -----------------------------------------------------------------------------
+
 - (BOOL)shouldSendReports {
     return self.notifyReleaseStages.count == 0 ||
            [self.notifyReleaseStages containsObject:self.releaseStage];
@@ -139,17 +163,27 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
 
 - (void)setUser:(NSString *)userId
        withName:(NSString *)userName
-       andEmail:(NSString *)userEmail {
-
+       andEmail:(NSString *)userEmail
+{
     self.currentUser = [[BugsnagUser alloc] initWithUserId:userId name:userName emailAddress:userEmail];
 
-    [self.metadata addAttribute:BSGKeyId withValue:userId toTabWithName:BSGKeyUser];
-    [self.metadata addAttribute:BSGKeyName
-                      withValue:userName
-                  toTabWithName:BSGKeyUser];
-    [self.metadata addAttribute:BSGKeyEmail
-                      withValue:userEmail
-                  toTabWithName:BSGKeyUser];
+    // Persist the user
+    if (_persistUser)
+        [self persistUserData];
+    
+    // Add user info to the metadata
+    [self setUserMetadataFromUser:self.currentUser];
+}
+
+/**
+ * Add user data to the Configuration metadata
+ *
+ * @param user A BugsnagUser object containing data to be added to the configuration metadata.
+ */
+- (void)setUserMetadataFromUser:(BugsnagUser *)user {
+    [self.metadata addAttribute:BSGKeyId    withValue:user.userId    toTabWithName:BSGKeyUser];
+    [self.metadata addAttribute:BSGKeyName  withValue:user.name  toTabWithName:BSGKeyUser];
+    [self.metadata addAttribute:BSGKeyEmail withValue:user.emailAddress toTabWithName:BSGKeyUser];
 }
 
 - (void)addOnSendBlock:(BugsnagOnSendBlock)block {
@@ -162,146 +196,6 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
 
 - (void)clearOnSendBlocks {
     [(NSMutableArray *)self.onSendBlocks removeAllObjects];
-}
-
-@synthesize releaseStage = _releaseStage;
-
-- (NSString *)releaseStage {
-    @synchronized (self) {
-        return _releaseStage;
-    }
-}
-
-- (void)setReleaseStage:(NSString *)newReleaseStage {
-    @synchronized (self) {
-        NSString *key = NSStringFromSelector(@selector(releaseStage));
-        [self willChangeValueForKey:key];
-        _releaseStage = newReleaseStage;
-        [self didChangeValueForKey:key];
-        [self.config addAttribute:BSGKeyReleaseStage
-                        withValue:newReleaseStage
-                    toTabWithName:BSGKeyConfig];
-    }
-}
-
-@synthesize autoDetectErrors = _autoDetectErrors;
-
-- (BOOL)autoDetectErrors {
-    return _autoDetectErrors;
-}
-
-- (void)setAutoDetectErrors:(BOOL)autoDetectErrors {
-    if (autoDetectErrors == _autoDetectErrors) {
-        return;
-    }
-    [self willChangeValueForKey:NSStringFromSelector(@selector(autoDetectErrors))];
-    _autoDetectErrors = autoDetectErrors;
-    [[Bugsnag notifier] updateCrashDetectionSettings];
-    [self didChangeValueForKey:NSStringFromSelector(@selector(autoDetectErrors))];
-}
-
-- (BOOL)autoNotify {
-    return self.autoDetectErrors;
-}
-
-- (void)setAutoNotify:(BOOL)autoNotify {
-    self.autoDetectErrors = autoNotify;
-}
-
-@synthesize notifyReleaseStages = _notifyReleaseStages;
-
-- (NSArray *)notifyReleaseStages {
-    @synchronized (self) {
-        return _notifyReleaseStages;
-    }
-}
-
-- (void)setNotifyReleaseStages:(NSArray *)newNotifyReleaseStages;
-{
-    @synchronized (self) {
-        NSArray *notifyReleaseStagesCopy = [newNotifyReleaseStages copy];
-        _notifyReleaseStages = notifyReleaseStagesCopy;
-        [self.config addAttribute:BSGKeyNotifyReleaseStages
-                        withValue:notifyReleaseStagesCopy
-                    toTabWithName:BSGKeyConfig];
-    }
-}
-
-- (void)setShouldAutoCaptureSessions:(BOOL)shouldAutoCaptureSessions {
-    self.autoTrackSessions = shouldAutoCaptureSessions;
-}
-
-- (BOOL)shouldAutoCaptureSessions {
-    return self.autoTrackSessions;
-}
-
-@synthesize automaticallyCollectBreadcrumbs = _automaticallyCollectBreadcrumbs;
-
-- (BOOL)automaticallyCollectBreadcrumbs {
-    @synchronized (self) {
-        return _automaticallyCollectBreadcrumbs;
-    }
-}
-
-- (void)setAutomaticallyCollectBreadcrumbs:
-    (BOOL)automaticallyCollectBreadcrumbs {
-    @synchronized (self) {
-        if (automaticallyCollectBreadcrumbs == _automaticallyCollectBreadcrumbs)
-            return;
-
-        _automaticallyCollectBreadcrumbs = automaticallyCollectBreadcrumbs;
-        [[Bugsnag notifier] updateAutomaticBreadcrumbDetectionSettings];
-    }
-}
-
-@synthesize context = _context;
-
-- (NSString *)context {
-    @synchronized (self) {
-        return _context;
-    }
-}
-
-- (void)setContext:(NSString *)newContext {
-    @synchronized (self) {
-        _context = newContext;
-        [self.config addAttribute:BSGKeyContext
-                        withValue:newContext
-                    toTabWithName:BSGKeyConfig];
-    }
-}
-
-@synthesize appVersion = _appVersion;
-
-- (NSString *)appVersion {
-    @synchronized (self) {
-        return _appVersion;
-    }
-}
-
-- (void)setAppVersion:(NSString *)newVersion {
-    @synchronized (self) {
-        _appVersion = newVersion;
-        [self.config addAttribute:BSGKeyAppVersion
-                        withValue:newVersion
-                    toTabWithName:BSGKeyConfig];
-    }
-}
-
-@synthesize apiKey = _apiKey;
-
-- (NSString *)apiKey {
-    return _apiKey;
-}
-
-- (void)setApiKey:(NSString *)apiKey {
-    if ([BugsnagConfiguration isValidApiKey:apiKey]) {
-        [self willChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
-        _apiKey = apiKey;
-        [self didChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
-    } else {
-        @throw BSGApiKeyError;
-    }
 }
 
 - (NSDictionary *)errorApiHeaders {
@@ -335,12 +229,264 @@ NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Confi
     return url != nil && url.scheme != nil && url.host != nil;
 }
 
+// MARK: - User Persistence
+
+@synthesize persistUser = _persistUser;
+
+- (BOOL)persistUser {
+    @synchronized (self) {
+        return _persistUser;
+    }
+}
+
+- (void)setPersistUser:(BOOL)persistUser {
+    @synchronized (self) {
+        _persistUser = persistUser;
+        if (persistUser) {
+            [self persistUserData];
+        }
+        else {
+            [self deletePersistedUserData];
+        }
+    }
+}
+
+/**
+ * Retrieve a persisted user, if we have any valid, persisted fields, or nil otherwise
+ */
+- (BugsnagUser *)getPersistedUserData {
+    @synchronized(self) {
+        NSString *email = [BSG_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount];
+        NSString *name = [BSG_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount];
+        NSString *userId = [BSG_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount];
+
+        if (email || name || userId)
+            return [[BugsnagUser alloc] initWithUserId:userId name:name emailAddress:email];
+        
+        return nil;
+    }
+}
+
+/**
+ * Store user data in a secure location (i.e. the keychain) that persists between application runs
+ * 'storing' nil values deletes them.
+ */
+- (void)persistUserData {
+    @synchronized(self) {
+        if (_currentUser) {
+            // Email
+            if (_currentUser.emailAddress) {
+                [BSG_SSKeychain setPassword:_currentUser.emailAddress
+                             forService:kBugsnagUserEmailAddress
+                                account:kBugsnagUserKeychainAccount];
+            }
+            else {
+                [BSG_SSKeychain deletePasswordForService:kBugsnagUserEmailAddress
+                                             account:kBugsnagUserKeychainAccount];
+            }
+
+            // Name
+            if (_currentUser.name) {
+                [BSG_SSKeychain setPassword:_currentUser.name
+                             forService:kBugsnagUserName
+                                account:kBugsnagUserKeychainAccount];
+            }
+            else {
+                [BSG_SSKeychain deletePasswordForService:kBugsnagUserName
+                                             account:kBugsnagUserKeychainAccount];
+            }
+            
+            // UserId
+            if (_currentUser.userId) {
+                [BSG_SSKeychain setPassword:_currentUser.userId
+                             forService:kBugsnagUserUserId
+                                account:kBugsnagUserKeychainAccount];
+            }
+            else {
+                [BSG_SSKeychain deletePasswordForService:kBugsnagUserUserId
+                                             account:kBugsnagUserKeychainAccount];
+            }
+        }
+    }
+}
+
+/**
+ * Delete any persisted user data
+ */
+-(void)deletePersistedUserData {
+    @synchronized(self) {
+        [BSG_SSKeychain deletePasswordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount];
+        [BSG_SSKeychain deletePasswordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount];
+        [BSG_SSKeychain deletePasswordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount];
+    }
+}
+
+// -----------------------------------------------------------------------------
+// MARK: - Properties: Getters and Setters
+// -----------------------------------------------------------------------------
+
 - (NSUInteger)maxBreadcrumbs {
     return self.breadcrumbs.capacity;
 }
 
 - (void)setMaxBreadcrumbs:(NSUInteger)capacity {
     self.breadcrumbs.capacity = capacity;
+}
+
+// MARK: -
+
+@synthesize releaseStage = _releaseStage;
+
+- (NSString *)releaseStage {
+    @synchronized (self) {
+        return _releaseStage;
+    }
+}
+
+- (void)setReleaseStage:(NSString *)newReleaseStage {
+    @synchronized (self) {
+        NSString *key = NSStringFromSelector(@selector(releaseStage));
+        [self willChangeValueForKey:key];
+        _releaseStage = newReleaseStage;
+        [self didChangeValueForKey:key];
+        [self.config addAttribute:BSGKeyReleaseStage
+                        withValue:newReleaseStage
+                    toTabWithName:BSGKeyConfig];
+    }
+}
+
+// MARK: -
+
+@synthesize autoDetectErrors = _autoDetectErrors;
+
+- (BOOL)autoDetectErrors {
+    return _autoDetectErrors;
+}
+
+- (void)setAutoDetectErrors:(BOOL)autoDetectErrors {
+    if (autoDetectErrors == _autoDetectErrors) {
+        return;
+    }
+    [self willChangeValueForKey:NSStringFromSelector(@selector(autoDetectErrors))];
+    _autoDetectErrors = autoDetectErrors;
+    [[Bugsnag notifier] updateCrashDetectionSettings];
+    [self didChangeValueForKey:NSStringFromSelector(@selector(autoDetectErrors))];
+}
+
+- (BOOL)autoNotify {
+    return self.autoDetectErrors;
+}
+
+- (void)setAutoNotify:(BOOL)autoNotify {
+    self.autoDetectErrors = autoNotify;
+}
+
+// MARK: -
+
+@synthesize notifyReleaseStages = _notifyReleaseStages;
+
+- (NSArray *)notifyReleaseStages {
+    @synchronized (self) {
+        return _notifyReleaseStages;
+    }
+}
+
+- (void)setNotifyReleaseStages:(NSArray *)newNotifyReleaseStages;
+{
+    @synchronized (self) {
+        NSArray *notifyReleaseStagesCopy = [newNotifyReleaseStages copy];
+        _notifyReleaseStages = notifyReleaseStagesCopy;
+        [self.config addAttribute:BSGKeyNotifyReleaseStages
+                        withValue:notifyReleaseStagesCopy
+                    toTabWithName:BSGKeyConfig];
+    }
+}
+
+// MARK: -
+
+- (void)setShouldAutoCaptureSessions:(BOOL)shouldAutoCaptureSessions {
+    self.autoTrackSessions = shouldAutoCaptureSessions;
+}
+
+- (BOOL)shouldAutoCaptureSessions {
+    return self.autoTrackSessions;
+}
+
+// MARK: -
+
+@synthesize automaticallyCollectBreadcrumbs = _automaticallyCollectBreadcrumbs;
+
+- (BOOL)automaticallyCollectBreadcrumbs {
+    @synchronized (self) {
+        return _automaticallyCollectBreadcrumbs;
+    }
+}
+
+- (void)setAutomaticallyCollectBreadcrumbs:
+    (BOOL)automaticallyCollectBreadcrumbs {
+    @synchronized (self) {
+        if (automaticallyCollectBreadcrumbs == _automaticallyCollectBreadcrumbs)
+            return;
+
+        _automaticallyCollectBreadcrumbs = automaticallyCollectBreadcrumbs;
+        [[Bugsnag notifier] updateAutomaticBreadcrumbDetectionSettings];
+    }
+}
+
+// MARK: -
+
+@synthesize context = _context;
+
+- (NSString *)context {
+    @synchronized (self) {
+        return _context;
+    }
+}
+
+- (void)setContext:(NSString *)newContext {
+    @synchronized (self) {
+        _context = newContext;
+        [self.config addAttribute:BSGKeyContext
+                        withValue:newContext
+                    toTabWithName:BSGKeyConfig];
+    }
+}
+
+// MARK: -
+
+@synthesize appVersion = _appVersion;
+
+- (NSString *)appVersion {
+    @synchronized (self) {
+        return _appVersion;
+    }
+}
+
+- (void)setAppVersion:(NSString *)newVersion {
+    @synchronized (self) {
+        _appVersion = newVersion;
+        [self.config addAttribute:BSGKeyAppVersion
+                        withValue:newVersion
+                    toTabWithName:BSGKeyConfig];
+    }
+}
+
+// MARK: -
+
+@synthesize apiKey = _apiKey;
+
+- (NSString *)apiKey {
+    return _apiKey;
+}
+
+- (void)setApiKey:(NSString *)apiKey {
+    if ([BugsnagConfiguration isValidApiKey:apiKey]) {
+        [self willChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
+        _apiKey = apiKey;
+        [self didChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
+    } else {
+        @throw BSGApiKeyError;
+    }
 }
 
 @end

@@ -94,6 +94,10 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
 
 @interface BugsnagConfiguration : NSObject
 
+// -----------------------------------------------------------------------------
+// MARK: - Properties
+// -----------------------------------------------------------------------------
+
 /**
  *  The API key of a Bugsnag project
  */
@@ -201,6 +205,38 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
  */
 @property(readonly, retain, nullable) NSURL *sessionURL;
 
+@property(retain, nullable) NSString *codeBundleId;
+@property(retain, nullable) NSString *notifierType;
+
+/**
+ * The maximum number of breadcrumbs to keep and sent to Bugsnag.
+ * By default, we'll keep and send the 25 most recent breadcrumb log
+ * messages.
+ */
+@property NSUInteger maxBreadcrumbs;
+
+/**
+ * Determines whether app sessions should be tracked automatically. By default this value is true.
+ * If this value is updated after +[Bugsnag start] is called, only subsequent automatic sessions
+ * will be captured.
+ */
+@property BOOL shouldAutoCaptureSessions __deprecated_msg("Use autoTrackSessions instead");
+
+/**
+ *  YES if uncaught exceptions should be reported automatically
+ */
+@property BOOL autoNotify __deprecated_msg("Use autoDetectErrors instead");
+
+/**
+ * Whether User information should be persisted to disk between application runs.
+ * Defaults to True.
+ */
+@property BOOL persistUser;
+
+// -----------------------------------------------------------------------------
+// MARK: - Methods
+// -----------------------------------------------------------------------------
+
 /**
  * A bitfield defining the types of error that are reported.
  * Passed down to KSCrash in BugsnagCrashSentry.
@@ -277,29 +313,7 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
  */
 - (BOOL)shouldSendReports;
 
-/**
- * The maximum number of breadcrumbs to keep and sent to Bugsnag.
- * By default, we'll keep and send the 25 most recent breadcrumb log
- * messages.
- */
-@property NSUInteger maxBreadcrumbs;
-
-/**
- * Determines whether app sessions should be tracked automatically. By default this value is true.
- * If this value is updated after +[Bugsnag start] is called, only subsequent automatic sessions
- * will be captured.
- */
-@property BOOL shouldAutoCaptureSessions __deprecated_msg("Use autoTrackSessions instead");
-
-/**
- *  YES if uncaught exceptions should be reported automatically
- */
-@property BOOL autoNotify __deprecated_msg("Use autoDetectErrors instead");
-
 - (NSDictionary *_Nonnull)errorApiHeaders;
 - (NSDictionary *_Nonnull)sessionApiHeaders;
-
-@property(retain, nullable) NSString *codeBundleId;
-@property(retain, nullable) NSString *notifierType;
 
 @end
