@@ -8,6 +8,11 @@
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumb.h"
 
+@interface BugsnagBreadcrumb ()
+
+- (NSDictionary *_Nullable)objectValue;
+@end
+
 @interface BugsnagBreadcrumbs ()
 /**
  * Reads and return breadcrumb data currently stored on disk

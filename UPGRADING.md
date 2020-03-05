@@ -24,6 +24,9 @@ Swift:
 
 + BSGConfigurationErrorDomain
 + BSGConfigurationErrorCode
++ config.persistUser
++ [config persistUserData]
++ [config deletePersistedUserData]
 
 + config.setMaxBreadcrumbs()
 
@@ -48,6 +51,9 @@ Swift:
 
 - config.automaticallyCollectBreadcrumbs
 + config.enabledBreadcrumbTypes
+
+- config.reportOOMs
++ config.enabledErrorTypes
 ```
 
 ### `Bugsnag` class

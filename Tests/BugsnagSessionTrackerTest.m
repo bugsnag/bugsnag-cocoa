@@ -14,6 +14,10 @@
 #import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagTestConstants.h"
 
+@interface BugsnagConfiguration ()
+- (void)deletePersistedUserData;
+@end
+
 @interface BugsnagSessionTrackerTest : XCTestCase
 @property BugsnagConfiguration *configuration;
 @property BugsnagSessionTracker *sessionTracker;
@@ -25,6 +29,7 @@
 - (void)setUp {
     [super setUp];
     self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    [self.configuration deletePersistedUserData];
     self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
                                                      postRecordCallback:nil];
 }
@@ -36,7 +41,6 @@
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.sessionId);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
-    XCTAssertNil(session.user);
     XCTAssertFalse(session.autoCaptured);
 }
 
@@ -63,10 +67,10 @@
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.sessionId);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
+    XCTAssertTrue(session.autoCaptured);
     XCTAssertNil(session.user.name);
     XCTAssertNil(session.user.userId);
     XCTAssertNil(session.user.emailAddress);
-    XCTAssertTrue(session.autoCaptured);
 }
 
 - (void)testStartNewAutoCapturedSessionWithUser {

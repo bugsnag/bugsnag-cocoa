@@ -13,6 +13,7 @@
 @interface BugsnagBaseUnitTest : XCTestCase
 
 -(void)setUpBugsnagWillCallNotify:(bool)willNotify;
+-(void)setUpBugsnagWillCallNotify:(bool)willNotify andPersistUser:(bool)willPersistUser;
 
 @end
 

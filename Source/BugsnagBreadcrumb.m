@@ -49,15 +49,30 @@ NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
     }
 }
 
+BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value) {
+    if ([value isEqual:@"log"]) {
+        return BSGBreadcrumbTypeLog;
+    } else if ([value isEqual:@"user"]) {
+        return BSGBreadcrumbTypeUser;
+    } else if ([value isEqual:@"error"]) {
+        return BSGBreadcrumbTypeError;
+    } else if ([value isEqual:@"state"]) {
+        return BSGBreadcrumbTypeState;
+    } else if ([value isEqual:@"process"]) {
+        return BSGBreadcrumbTypeProcess;
+    } else if ([value isEqual:@"request"]) {
+        return BSGBreadcrumbTypeRequest;
+    } else if ([value isEqual:@"navigation"]) {
+        return BSGBreadcrumbTypeNavigation;
+    } else {
+        return BSGBreadcrumbTypeManual;
+    }
+}
+
 @interface BugsnagBreadcrumbs ()
 
 @property(nonatomic, readwrite, strong) NSMutableArray *breadcrumbs;
 @property(nonatomic, readonly, strong) dispatch_queue_t readWriteQueue;
-@end
-
-@interface BugsnagBreadcrumb ()
-
-- (NSDictionary *_Nullable)objectValue;
 @end
 
 @implementation BugsnagBreadcrumb
@@ -166,6 +181,24 @@ NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
     }
     if ([crumb isValid]) {
         return crumb;
+    }
+    return nil;
+}
+
++ (instancetype)breadcrumbFromDict:(NSDictionary *)dict {
+    BOOL isValidCrumb = [dict[BSGKeyType] isKindOfClass:[NSString class]]
+        && [dict[BSGKeyTimestamp] isKindOfClass:[NSString class]]
+        && [dict[BSGKeyMetadata] isKindOfClass:[NSDictionary class]]
+        // Accept legacy 'name' value if provided.
+        && ([dict[BSGKeyMessage] isKindOfClass:[NSString class]]
+            || [dict[BSGKeyName] isKindOfClass:[NSString class]]);
+    if (isValidCrumb) {
+        return [self breadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
+            crumb.message = dict[BSGKeyMessage] ?: dict[BSGKeyName];
+            crumb.metadata = dict[BSGKeyMetadata];
+            crumb.timestamp = [[Bugsnag payloadDateFormatter] dateFromString:dict[BSGKeyTimestamp]];
+            crumb.type = BSGBreadcrumbTypeFromString(dict[BSGKeyType]);
+        }];
     }
     return nil;
 }

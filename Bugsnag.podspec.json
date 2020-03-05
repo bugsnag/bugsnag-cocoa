@@ -11,7 +11,11 @@
     "git": "https://github.com/bugsnag/bugsnag-cocoa.git",
     "tag": "v5.23.0"
   },
-  "frameworks": ["Foundation", "SystemConfiguration"],
+  "frameworks": [
+    "Foundation", 
+    "SystemConfiguration", 
+    "Security"
+  ],
   "libraries": [
     "c++", "z"
   ],

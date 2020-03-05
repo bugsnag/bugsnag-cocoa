@@ -18,10 +18,12 @@
 #import "BugsnagHandledState.h"
 #import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
+#import "BugsnagBreadcrumb.h"
 #import "BugsnagKSCrashSysInfoParser.h"
 #import "BugsnagSession.h"
 #import "Private.h"
 #import "BSG_RFC3339DateTool.h"
+#import "Private.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {
@@ -142,9 +144,33 @@ NSString *BSGParseGroupingHash(NSDictionary *report, NSDictionary *metadata) {
     return nil;
 }
 
-NSArray *BSGParseBreadcrumbs(NSDictionary *report) {
-    return [report valueForKeyPath:@"user.overrides.breadcrumbs"]
-               ?: [report valueForKeyPath:@"user.state.crash.breadcrumbs"];
+/** 
+ * Find the breadcrumb cache for the event within the report object.
+ *
+ * By default, crumbs are present in the `user.state.crash` object, which is
+ * the location of user data within crash and notify reports. However, this
+ * location can be overridden in the case that a callback modifies breadcrumbs
+ * or that breadcrumbs are persisted separately (such as in an out-of-memory
+ * event).
+ */
+NSArray <BugsnagBreadcrumb *> *BSGParseBreadcrumbs(NSDictionary *report) {
+    // default to overwritten breadcrumbs from callback
+    NSArray *cache = [report valueForKeyPath:@"user.overrides.breadcrumbs"]
+        // then cached breadcrumbs from an OOM event
+        ?: [report valueForKeyPath:@"user.state.oom.breadcrumbs"]
+        // then cached breadcrumbs from a regular event
+        ?: [report valueForKeyPath:@"user.state.crash.breadcrumbs"];
+    NSMutableArray *breadcrumbs = [NSMutableArray arrayWithCapacity:cache.count];
+    for (NSDictionary *data in cache) {
+        if (![data isKindOfClass:[NSDictionary class]]) {
+            continue;
+        }
+        BugsnagBreadcrumb *crumb = [BugsnagBreadcrumb breadcrumbFromDict:data];
+        if (crumb) {
+            [breadcrumbs addObject:crumb];
+        }
+    }
+    return breadcrumbs;
 }
 
 NSString *BSGParseReleaseStage(NSDictionary *report) {
@@ -254,7 +280,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
         if ([[report valueForKeyPath:@"user.state.didOOM"] boolValue]) {
             _errorClass = BSGParseErrorClass(_error, _errorType);
             _errorMessage = BSGParseErrorMessage(report, _error, _errorType);
-            _breadcrumbs = [report valueForKeyPath:@"user.state.oom.breadcrumbs"];
+            _breadcrumbs = BSGParseBreadcrumbs(report);
             _app = [report valueForKeyPath:@"user.state.oom.app"];
             _device = [report valueForKeyPath:@"user.state.oom.device"];
             _releaseStage = [report valueForKeyPath:@"user.state.oom.app.releaseStage"];
@@ -340,13 +366,18 @@ initWithErrorName:(NSString *_Nonnull)name
     if (self = [super init]) {
         _errorClass = name;
         _errorMessage = message;
+        _overrides = [NSDictionary new];
         _metadata = metadata ?: [NSDictionary new];
         _releaseStage = config.releaseStage;
         _notifyReleaseStages = config.notifyReleaseStages;
         // Set context based on current values.  May be nil.
         _context = metadata[BSGKeyContext] ?: [[Bugsnag configuration] context];
-        _breadcrumbs = [config.breadcrumbs arrayValue];
-        _overrides = [NSDictionary new];
+        NSMutableArray *crumbs = [NSMutableArray new];
+        NSUInteger count = config.breadcrumbs.count;
+        for (NSUInteger i = 0; i < count; i++) {
+            [crumbs addObject:config.breadcrumbs[i]];
+        }
+        self.breadcrumbs = [crumbs copy];
 
         _handledState = handledState;
         _severity = handledState.currentSeverity;
@@ -505,19 +536,8 @@ initWithErrorName:(NSString *_Nonnull)name
     }
 }
 
-@synthesize breadcrumbs = _breadcrumbs;
-
-- (NSArray *)breadcrumbs {
-    @synchronized (self) {
-        return _breadcrumbs;
-    }
-}
-
-- (void)setBreadcrumbs:(NSArray *)breadcrumbs {
-    [self setOverrideProperty:BSGKeyBreadcrumbs value:breadcrumbs];
-    @synchronized (self) {
-        _breadcrumbs = breadcrumbs;
-    }
+- (NSArray *)serializeBreadcrumbs {
+    return [[self breadcrumbs] valueForKeyPath:NSStringFromSelector(@selector(objectValue))];;
 }
 
 @synthesize releaseStage = _releaseStage;
@@ -553,6 +573,20 @@ initWithErrorName:(NSString *_Nonnull)name
         _severity = severity;
         _handledState.currentSeverity = severity;
     }
+}
+
+// MARK: - Callback overrides
+
+@synthesize overrides = _overrides;
+
+- (NSDictionary *)overrides {
+    NSMutableDictionary *values = [_overrides mutableCopy] ?: [NSMutableDictionary new];
+    values[BSGKeyBreadcrumbs] = [self serializeBreadcrumbs];
+    return values;
+}
+
+- (void)setOverrides:(NSDictionary * _Nonnull)overrides {
+    _overrides = overrides;
 }
 
 - (void)setOverrideProperty:(NSString *)key value:(id)value {
@@ -593,7 +627,7 @@ initWithErrorName:(NSString *_Nonnull)name
     }
     // Build Event
     BSGDictSetSafeObject(event, BSGFormatSeverity(self.severity), BSGKeySeverity);
-    BSGDictSetSafeObject(event, [self breadcrumbs], BSGKeyBreadcrumbs);
+    BSGDictSetSafeObject(event, [self serializeBreadcrumbs], BSGKeyBreadcrumbs);
     BSGDictSetSafeObject(event, metadata, BSGKeyMetadata);
 
     NSDictionary *device = BSGDictMerge(self.device, self.deviceState);

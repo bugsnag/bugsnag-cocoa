@@ -5,8 +5,20 @@
 #import <XCTest/XCTest.h>
 #import "BugsnagTestConstants.h"
 #import "BugsnagConfiguration.h"
+#import "BugsnagCrashSentry.h"
+#import "BSG_KSCrashType.h"
+#import "BugsnagKeys.h"
+#import "BSG_SSKeychain.h"
+
+@interface BugsnagConfiguration ()
+- (void)deletePersistedUserData;
+@end
 
 @interface BugsnagConfigurationTests : XCTestCase
+@end
+
+@interface BugsnagCrashSentry ()
+- (BSG_KSCrashType)mapKSToBSGCrashTypes:(BSGErrorType)bsgCrashMask;
 @end
 
 @implementation BugsnagConfigurationTests
@@ -128,9 +140,9 @@
 - (void)testDefaultReportOOMs {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
 #if DEBUG
-    XCTAssertFalse([config reportOOMs]);
+    XCTAssertFalse([config enabledErrorTypes] & BSGErrorTypesOOMs);
 #else
-    XCTAssertTrue([config reportOOMs]);
+    XCTAssertTrue([config enabledErrorTypes] & BSGErrorTypesOOMs);
 #endif
 }
 
@@ -236,7 +248,6 @@
 
 - (void)testUser {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
-    XCTAssertNil(config.currentUser);
     
     [config setUser:@"123" withName:@"foo" andEmail:@"test@example.com"];
     
@@ -270,6 +281,249 @@
     
     config.apiKey = DUMMY_APIKEY_32CHAR_2;
     XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_2]);
+}
+
+-(void)testBSGErrorTypes {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    
+    // Test all are set by default
+    BSGErrorType enabledErrors = BSGErrorTypesNSExceptions
+                               | BSGErrorTypesSignals
+                               | BSGErrorTypesMach
+                               | BSGErrorTypesCPP;
+// See config init for details.  OOMs are disabled in debug.
+#if !DEBUG
+    enabledErrors |= BSGErrorTypesOOMs;
+#endif
+    
+    XCTAssertEqual([config enabledErrorTypes], enabledErrors);
+    
+    // Test that we can set it
+    config.enabledErrorTypes = BSGErrorTypesOOMs | BSGErrorTypesNSExceptions;
+    XCTAssertEqual([config enabledErrorTypes], BSGErrorTypesOOMs | BSGErrorTypesNSExceptions);
+}
+
+/**
+ * Test the mapping between BSGErrorTypes and KSCrashTypes
+ */
+-(void)testCrashTypeMapping {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    BugsnagCrashSentry *sentry = [BugsnagCrashSentry new];
+    BSG_KSCrashType crashTypes = BSG_KSCrashTypeNSException
+                               | BSG_KSCrashTypeMachException
+                               | BSG_KSCrashTypeSignal
+                               | BSG_KSCrashTypeCPPException;
+    
+    XCTAssertEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
+    
+    crashTypes = crashTypes | BSG_KSCrashTypeUserReported;
+
+    XCTAssertNotEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
+    
+    // Check partial sets
+    BSGErrorType partialErrors = BSGErrorTypesNSExceptions | BSGErrorTypesCPP;
+    crashTypes = BSG_KSCrashTypeNSException | BSG_KSCrashTypeCPPException;
+    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
+    
+    partialErrors = BSGErrorTypesNSExceptions | BSGErrorTypesSignals;
+    crashTypes = BSG_KSCrashTypeNSException | BSG_KSCrashTypeSignal;
+    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
+
+    partialErrors = BSGErrorTypesCPP | BSGErrorTypesSignals;
+    crashTypes = BSG_KSCrashTypeCPPException | BSG_KSCrashTypeSignal;
+    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
+}
+    
+// MARK: - BEGIN User persistence tests
+
+/**
+ * We'd like to test user persistence here but we're not able to.  Keychain access requires correct
+ * entitlements, and these can only be associated with an application, not a framework.  Creating a
+ * dummy app and associating it with the test target is possible but raises issues around signing
+ * as well as breaking preexisting tests.
+ *
+ * See e.g. https://forums.developer.apple.com/thread/60617 for some background.
+ *    also: https://forums.developer.apple.com/message/179846
+ *     and: https://github.com/samsoffes/sskeychain
+ *
+ * The solution is to shift the testing of the user persistence feature to the end-to-end integration
+ * tests, located in <project>/features/user_persistence.feature.  These do have an associated test app,
+ * but require the bugsnag-mazerunner project (available on github) to run locally.
+ *
+ * For the purposes of contributing to coverage and in case the Entitlement situation is mitigated in the
+ * future the tests are left in place, but have had failing assertions commented out.
+ */
+
+- (void)testUserPersistence {
+    NSString *email  = @"test@example.com";
+    NSString *name   = @"foo";
+    NSString *userId = @"123";
+    
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    
+    // Check property defaults to True
+    XCTAssertTrue(config.persistUser);
+    
+    // Start with no persisted user data
+    [config deletePersistedUserData];
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+    
+    // user should be persisted by default
+    [config setUser:userId withName:name andEmail:email];
+    
+    // Check values manually
+//    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount], email);
+//    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount], name);
+//    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount], userId);
+    
+    // Check persistence between invocations (when values have been set)
+    BugsnagConfiguration *config2 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    
+//    XCTAssertEqualObjects(config2.currentUser.emailAddress, email);
+//    XCTAssertTrue([config2.currentUser.name isEqualToString:name]);
+//    XCTAssertTrue([config2.currentUser.userId isEqualToString:userId]);
+    
+    // Check that values we know to have been persisted are actuallty deleted.
+    [config2 deletePersistedUserData];
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+}
+
+/**
+ * Test that user data is (as far as we can tell) not persisted
+ */
+- (void)testUserNonPesistence {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    config.persistUser = false;
+    [config deletePersistedUserData];
+    
+    // Should be no persisted data, and should not persist between invocations
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+
+    BugsnagConfiguration *config2 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    XCTAssertNil(config2.currentUser);
+}
+
+/**
+ * Test partial parsistence
+ */
+- (void)testPartialPesistence {
+    NSString *email  = @"test@example.com";
+    NSString *name   = @"foo";
+    NSString *userId = @"123";
+    
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    XCTAssertTrue(config.persistUser);
+    [config deletePersistedUserData];
+
+    // Should be no persisted data
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+
+    [config setUser:userId withName:nil andEmail:nil];
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount], userId);
+    [config setUser:nil withName:name andEmail:nil];
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount], name);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+
+    [config setUser:nil withName:nil andEmail:email];
+//    XCTAssertEqualObjects([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount], email);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+}
+
+/**
+ * Test that persisting a BugsnagUser with all nil fields behaves as expected
+ */
+- (void)testAllUserDataNilPersistence {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    XCTAssertTrue(config.persistUser);
+    [config deletePersistedUserData];
+
+    [config setUser:nil withName:nil andEmail:nil];
+
+    // currentUser should have been set
+    XCTAssertNotNil(config.currentUser);
+
+    // But there hould be no persisted data
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+}
+
+/**
+ * Test that the configuration metadata is set correctly.
+ */
+- (void)testUserPersistenceAndMetadata {
+    NSString *email  = @"test@example.com";
+    NSString *name   = @"foo";
+    NSString *userId = @"123";
+    
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    XCTAssertTrue(config.persistUser);
+    [config deletePersistedUserData];
+
+    // Should be no persisted data
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount]);
+//    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
+    
+    // Persist user data
+    [config setUser:userId withName:name andEmail:email];
+
+    // Check that retrieving persisted user data also sets configuration metadata
+    // Check persistence between invocations (when values have been set)
+//    BugsnagConfiguration *config2 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+//    XCTAssertTrue([config2.currentUser.emailAddress isEqualToString:email]);
+//    XCTAssertTrue([config2.currentUser.name isEqualToString:name]);
+//    XCTAssertTrue([config2.currentUser.userId isEqualToString:userId]);
+
+//    XCTAssertEqualObjects([config2.metadata getMetadata:BSGKeyUser key:BSGKeyEmail], email);
+//    XCTAssertEqualObjects([config2.metadata getMetadata:BSGKeyUser key:BSGKeyName], name);
+//    XCTAssertEqualObjects([config2.metadata getMetadata:BSGKeyUser key:BSGKeyId], userId);
+}
+
+/**
+ * Test that non-persisted user data interacts correctly with the configuration metadata
+ */
+- (void)testNonPersistenceAndMetadata {
+    
+    NSString *email  = @"test@example.com";
+    NSString *name   = @"foo";
+    NSString *userId = @"123";
+    
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    XCTAssertTrue(config.persistUser);
+    [config setPersistUser:false];
+    [config deletePersistedUserData];
+    
+    BugsnagConfiguration *config2 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+//    XCTAssertNil([[config2 metadata] getMetadata:BSGKeyUser key:BSGKeyId]);
+//    XCTAssertNil([[config2 metadata] getMetadata:BSGKeyUser key:BSGKeyName]);
+//    XCTAssertNil([[config2 metadata] getMetadata:BSGKeyUser key:BSGKeyEmail]);
+    
+    [config2 setUser:userId withName:name andEmail:email];
+//    XCTAssertEqualObjects([config2.metadata getMetadata:BSGKeyUser key:BSGKeyEmail], email);
+//    XCTAssertEqualObjects([config2.metadata getMetadata:BSGKeyUser key:BSGKeyName], name);
+//    XCTAssertEqualObjects([config2.metadata getMetadata:BSGKeyUser key:BSGKeyId], userId);
+}
+
+- (void)testSettingPersistUser {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    XCTAssertTrue(config.persistUser);
+    [config setPersistUser:false];
+    XCTAssertFalse(config.persistUser);
+    [config setPersistUser:true];
+    XCTAssertTrue(config.persistUser);
 }
 
 @end
