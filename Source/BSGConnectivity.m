@@ -109,6 +109,16 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
         return;
     }
 
+#ifdef TESTING
+    bsg_log_info(@">>>>>>>>>>>>>>>> TESTING IS ENABLED <<<<<<<<<<<<<<<<");
+#endif
+    
+
+#ifndef TESTING
+    bsg_log_info(@">>>>>>>>>>>>>>>> TESTING IS NOT ENABLED <<<<<<<<<<<<<<<<");
+#endif
+
+    
     // The CI environment synthesizes incorrect reachability changes.  Mocking SCNetworkReachability
     // is the correct way to get round this for testing but until then we explicitly check whether
     // we're being run under test conditions.
