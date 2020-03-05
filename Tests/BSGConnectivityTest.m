@@ -67,9 +67,11 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
 - (void)testCallbackInvokedForSignificantChange {
     __block NSUInteger timesCalled = 0;
     __block NSString *description = nil;
-    [self mockMonitorURLWithCallback:^(BOOL connected, NSString * typeDescription) {
-        timesCalled++;
-        description = typeDescription;
+    [self mockMonitorURLWithCallback:^(BOOL connected, NSString * typeDescription, void * info) {
+        if (info) {
+            timesCalled++;
+            description = typeDescription;
+        }
     }];
     // Changes should not be immediately reported
     XCTAssertEqual(0, timesCalled);

@@ -91,7 +91,7 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
     
     if (bsg_reachability_change_block && BSGConnectivityShouldReportChange(flags)) {
         BOOL connected = (flags & kSCNetworkReachabilityFlagsReachable);
-        bsg_reachability_change_block(connected, BSGConnectivityFlagRepresentation(flags));
+        bsg_reachability_change_block(connected, BSGConnectivityFlagRepresentation(flags), info);
     }
 }
 
