@@ -102,6 +102,11 @@ Bugsnag Notifiers on other platforms.
 
 * Remove `Bugsnag.configuration()?`. All access to the configuration object
   should be performed prior to calling `Bugsnag.start()`.
+  
+* User information is now persisted between application runs by default.  When set a users' 
+  email, id and name are set on `BugsnagConfiguration` they are stored in the Keychain and
+  restored if an application is restarted.  The values are also copied to the configuration metadata.
+  [#469](https://github.com/bugsnag/bugsnag-cocoa/pull/469)
 
 ## Bug fixes
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0011E6672403D13100ED71CD /* UserPersistenceScenarios.m in Sources */ = {isa = PBXBuildFile; fileRef = 0011E6662403D13100ED71CD /* UserPersistenceScenarios.m */; };
 		8A14F0F52282D4AE00337B05 /* ReportBackgroundOOMsEnabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F02282D4AD00337B05 /* ReportBackgroundOOMsEnabledScenario.m */; };
 		8A14F0F62282D4AE00337B05 /* ReportOOMsDisabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F22282D4AD00337B05 /* ReportOOMsDisabledScenario.m */; };
 		8A14F0F72282D4AE00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F32282D4AE00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.m */; };
@@ -70,6 +71,22 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0011E6662403D13100ED71CD /* UserPersistenceScenarios.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserPersistenceScenarios.m; sourceTree = "<group>"; };
+		0011E6682403D14400ED71CD /* UserPersistenceScenarios.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserPersistenceScenarios.h; sourceTree = "<group>"; };
+		00A98308240DBB790016A57E /* plugin_interface.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = plugin_interface.feature; path = ../../../plugin_interface.feature; sourceTree = "<group>"; };
+		00A98309240DBB790016A57E /* session_stopping.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = session_stopping.feature; path = ../../../session_stopping.feature; sourceTree = "<group>"; };
+		00A9830A240DBB790016A57E /* breadcrumbs.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = breadcrumbs.feature; path = ../../../breadcrumbs.feature; sourceTree = "<group>"; };
+		00A9830B240DBB790016A57E /* release_stages.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = release_stages.feature; path = ../../../release_stages.feature; sourceTree = "<group>"; };
+		00A9830C240DBB790016A57E /* config_changes_after_start.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = config_changes_after_start.feature; path = ../../../config_changes_after_start.feature; sourceTree = "<group>"; };
+		00A9830D240DBB790016A57E /* user_persistence.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = user_persistence.feature; path = ../../../user_persistence.feature; sourceTree = "<group>"; };
+		00A9830E240DBB790016A57E /* handled_errors.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = handled_errors.feature; path = ../../../handled_errors.feature; sourceTree = "<group>"; };
+		00A9830F240DBB790016A57E /* runtime_versions.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = runtime_versions.feature; path = ../../../runtime_versions.feature; sourceTree = "<group>"; };
+		00A98310240DBB7A0016A57E /* cross_notifier_notify.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cross_notifier_notify.feature; path = ../../../cross_notifier_notify.feature; sourceTree = "<group>"; };
+		00A98311240DBB7A0016A57E /* error_reporting_thread.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = error_reporting_thread.feature; path = ../../../error_reporting_thread.feature; sourceTree = "<group>"; };
+		00A98312240DBB7A0016A57E /* user.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = user.feature; path = ../../../user.feature; sourceTree = "<group>"; };
+		00A98313240DBB7A0016A57E /* session_tracking.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = session_tracking.feature; path = ../../../session_tracking.feature; sourceTree = "<group>"; };
+		00A98314240DBB7A0016A57E /* crashprobe.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = crashprobe.feature; path = ../../../crashprobe.feature; sourceTree = "<group>"; };
+		00A98315240DBB7A0016A57E /* out_of_memory.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = out_of_memory.feature; path = ../../../out_of_memory.feature; sourceTree = "<group>"; };
 		4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOSTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A14F0EF2282D4AD00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.h; sourceTree = "<group>"; };
 		8A14F0F02282D4AD00337B05 /* ReportBackgroundOOMsEnabledScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReportBackgroundOOMsEnabledScenario.m; sourceTree = "<group>"; };
@@ -190,6 +207,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		00A98324240DBB930016A57E /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				00A9830A240DBB790016A57E /* breadcrumbs.feature */,
+				00A9830C240DBB790016A57E /* config_changes_after_start.feature */,
+				00A98314240DBB7A0016A57E /* crashprobe.feature */,
+				00A98310240DBB7A0016A57E /* cross_notifier_notify.feature */,
+				00A98311240DBB7A0016A57E /* error_reporting_thread.feature */,
+				00A9830E240DBB790016A57E /* handled_errors.feature */,
+				00A98315240DBB7A0016A57E /* out_of_memory.feature */,
+				00A98308240DBB790016A57E /* plugin_interface.feature */,
+				00A9830B240DBB790016A57E /* release_stages.feature */,
+				00A9830F240DBB790016A57E /* runtime_versions.feature */,
+				00A98309240DBB790016A57E /* session_stopping.feature */,
+				00A98313240DBB7A0016A57E /* session_tracking.feature */,
+				00A9830D240DBB790016A57E /* user_persistence.feature */,
+				00A98312240DBB7A0016A57E /* user.feature */,
+			);
+			name = Features;
+			sourceTree = "<group>";
+		};
 		766544C7A8D300F9E8DB17A5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -227,6 +265,7 @@
 				8AB8866C20404DD30003E444 /* LaunchScreen.storyboard */,
 				8AB8866F20404DD30003E444 /* Info.plist */,
 				8AB88675204052990003E444 /* iOSTestApp-Bridging-Header.h */,
+				00A98324240DBB930016A57E /* Features */,
 				F42953DE2BB41023C0B07F41 /* scenarios */,
 			);
 			path = iOSTestApp;
@@ -338,6 +377,8 @@
 				8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */,
 				8AA05A2D23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.h */,
 				8AA05A2E23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m */,
+				0011E6662403D13100ED71CD /* UserPersistenceScenarios.m */,
+				0011E6682403D14400ED71CD /* UserPersistenceScenarios.h */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";
@@ -465,6 +506,7 @@
 				F4295968571A4118D6A4606A /* UserEnabledScenario.swift in Sources */,
 				F4295A036B228AF608641699 /* UserDisabledScenario.swift in Sources */,
 				8A14F0F62282D4AE00337B05 /* ReportOOMsDisabledScenario.m in Sources */,
+				0011E6672403D13100ED71CD /* UserPersistenceScenarios.m in Sources */,
 				E7767F13221C21E30006648C /* ResumedSessionScenario.swift in Sources */,
 				8AEFC73120F8D1A000A78779 /* AutoSessionWithUserScenario.m in Sources */,
 				8AB1081923301FE600672818 /* ReleaseStageScenarios.swift in Sources */,
