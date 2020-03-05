@@ -26,7 +26,6 @@
 
 #import "BSGConnectivity.h"
 #import "Bugsnag.h"
-#import "BugsnagLogger.h"
 
 static SCNetworkReachabilityRef bsg_reachability_ref;
 BSGConnectivityChangeBlock bsg_reachability_change_block;
@@ -84,12 +83,12 @@ NSString *BSGConnectivityFlagRepresentation(SCNetworkReachabilityFlags flags) {
  * that handles the connection change.
  */
 void BSGConnectivityCallback(SCNetworkReachabilityRef target,
-                                    SCNetworkReachabilityFlags flags,
-                                    void *info)
+                             SCNetworkReachabilityFlags flags,
+                             void *info)
 {
     if (bsg_reachability_change_block && BSGConnectivityShouldReportChange(flags)) {
         BOOL connected = (flags & kSCNetworkReachabilityFlagsReachable);
-        bsg_reachability_change_block(connected, BSGConnectivityFlagRepresentation(flags), info);
+        bsg_reachability_change_block(connected, BSGConnectivityFlagRepresentation(flags));
     }
 }
 
@@ -102,6 +101,8 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
         reachabilityQueue = dispatch_queue_create("com.bugsnag.cocoa.connectivity", DISPATCH_QUEUE_SERIAL);
     });
 
+    bsg_reachability_change_block = block;
+
     NSString *host = [URL host];
     if (![self isValidHostname:host]) {
         return;
@@ -109,7 +110,6 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
 
     bsg_reachability_ref = SCNetworkReachabilityCreateWithName(NULL, [host UTF8String]);
     if (bsg_reachability_ref) { // Can be null if a bad hostname was specified
-        bsg_reachability_change_block = block;
         SCNetworkReachabilitySetCallback(bsg_reachability_ref, BSGConnectivityCallback, NULL);
         SCNetworkReachabilitySetDispatchQueue(bsg_reachability_ref, reachabilityQueue);
     }
