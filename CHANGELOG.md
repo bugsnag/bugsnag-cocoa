@@ -17,6 +17,7 @@ Bugsnag Notifiers on other platforms.
 * Add a configuration option to filter breadcrumbs by type. Use
   `config.enabledBreadcrumbTypes` to enable or disable particular types of
   breadcrumbs from being captured.
+  [#476](https://github.com/bugsnag/bugsnag-cocoa/pull/476)
 
 * Added a designated initializer to `BugsnagConfiguration` and removed functionality
   from the default convenience `init()` to ensure that `apiKey` has a value set.  The `apiKey`
