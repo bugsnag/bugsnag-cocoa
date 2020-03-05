@@ -116,6 +116,14 @@ Then("the event breadcrumbs contain {string}") do |string|
   assert_not_nil(match, "No crumb matches the provided message")
 end
 
+Then("the event breadcrumbs do not contain {string}") do |string|
+  crumbs = read_key_path(find_request(0)[:body], "events.0.breadcrumbs")
+  match = crumbs.detect do |crumb|
+    crumb["message"] == string
+  end
+  assert_nil(match, "A breadcrumb was found matching the provided message")
+end
+
 Then("the {string} of stack frame {int} demangles to {string}") do |field, frame_index, expected_value|
   value = read_key_path(find_request(0)[:body], "events.0.exceptions.0.stacktrace.#{frame_index}.#{field}")
   demangled_value = `xcrun swift-demangle -compact '#{value}'`.chomp

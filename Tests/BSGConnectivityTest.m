@@ -1,5 +1,4 @@
 #import <XCTest/XCTest.h>
-
 #import "BSGConnectivity.h"
 
 BOOL BSGConnectivityShouldReportChange(SCNetworkReachabilityFlags flags);
@@ -7,10 +6,10 @@ BOOL BSGConnectivityShouldReportChange(SCNetworkReachabilityFlags flags);
 NSString *BSGConnectivityFlagRepresentation(SCNetworkReachabilityFlags flags);
 
 void BSGConnectivityCallback(SCNetworkReachabilityRef target,
-                                    SCNetworkReachabilityFlags flags,
-                                    void *info);
+                                    SCNetworkReachabilityFlags flags);
 
 @interface BSGConnectivity ()
+
 + (BOOL)isValidHostname:(NSString *)host;
 @end
 
@@ -67,8 +66,8 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
     __block NSUInteger timesCalled = 0;
     __block NSString *description = nil;
     [self mockMonitorURLWithCallback:^(BOOL connected, NSString * typeDescription) {
-        timesCalled++;
-        description = typeDescription;
+         timesCalled++;
+         description = typeDescription;
     }];
     // Changes should not be immediately reported
     XCTAssertEqual(0, timesCalled);
@@ -133,12 +132,12 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
 #endif
 
 - (void)mockMonitorURLWithCallback:(BSGConnectivityChangeBlock)block {
-    [BSGConnectivity monitorURL:[NSURL URLWithString:@"cw://definitely.fake.url.seriously"]
+    [BSGConnectivity monitorURL:[NSURL URLWithString:@""]
                   usingCallback:block];
 }
 
 - (void)simulateConnectivityChangeTo:(SCNetworkReachabilityFlags) flags {
-    BSGConnectivityCallback(nil, flags, nil);
+    BSGConnectivityCallback(nil, flags);
 }
 
 @end

@@ -14,6 +14,11 @@ Bugsnag Notifiers on other platforms.
 * BugsnagCrashReport is now BugsnagEvent
   [#449](https://github.com/bugsnag/bugsnag-cocoa/pull/449)
 
+* Add a configuration option to filter breadcrumbs by type. Use
+  `config.enabledBreadcrumbTypes` to enable or disable particular types of
+  breadcrumbs from being captured.
+  [#476](https://github.com/bugsnag/bugsnag-cocoa/pull/476)
+
 * Added a designated initializer to `BugsnagConfiguration` and removed functionality
   from the default convenience `init()` to ensure that `apiKey` has a value set.  The `apiKey`
   must now be a correctly formatted one to be accepted.
@@ -22,6 +27,20 @@ Bugsnag Notifiers on other platforms.
   * Objective C: `[[BugsnagConfiguration alloc] initWithApiKey:error:]`
 
   [#446](https://github.com/bugsnag/bugsnag-cocoa/pull/446)
+
+* Support editing breadcrumbs within an Event as objects. Breadcrumbs can now be
+  inspected and modified from callbacks, for example:
+
+  ```swift
+  Bugsnag.notifyError(error) { event in
+      event.breadcrumbs?.forEach({ crumb in
+          if crumb.message == "something specific" {
+              crumb.message = "[redacted]"
+          }
+      })
+  }
+  ```
+  [#474](https://github.com/bugsnag/bugsnag-cocoa/pull/474)
 
 * Add a breadcrumb when Bugsnag first starts with the message "Bugsnag loaded"
   [#445](https://github.com/bugsnag/bugsnag-cocoa/pull/445)
@@ -81,6 +100,11 @@ Bugsnag Notifiers on other platforms.
 
 * Add metadata accessor methods to `BugsnagEvent`
   [#465](https://github.com/bugsnag/bugsnag-cocoa/pull/465)
+  
+* Added a user-configurable `enabledErrorTypes` bitfield property to `BugsnagConfiguration`.
+  This allows users to choose which types of events are reported.  If automatic crash detection
+  is disabled this value is ignored.  User-generated `notify()` events are reported in all cases.
+  [#477](https://github.com/bugsnag/bugsnag-cocoa/pull/477)
 
 * Internal logging has been unified.  Where before two preprocessor macros were
   required to configure both `Bugsnag` and `KSCrash` portions, now the Bugsnag
@@ -102,6 +126,11 @@ Bugsnag Notifiers on other platforms.
 
 * Remove `Bugsnag.configuration()?`. All access to the configuration object
   should be performed prior to calling `Bugsnag.start()`.
+  
+* User information is now persisted between application runs by default.  When set a users' 
+  email, id and name are set on `BugsnagConfiguration` they are stored in the Keychain and
+  restored if an application is restarted.  The values are also copied to the configuration metadata.
+  [#469](https://github.com/bugsnag/bugsnag-cocoa/pull/469)
 
 ## Bug fixes
 

@@ -83,7 +83,20 @@ typedef void(^BugsnagOnSessionBlock)(NSMutableDictionary *_Nonnull sessionPayloa
 typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
     NSArray *_Nonnull rawEventReports, NSDictionary *_Nonnull report);
 
+typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
+    BSGErrorTypesNone         NS_SWIFT_NAME(None)         = 0,
+    BSGErrorTypesOOMs         NS_SWIFT_NAME(OOMs)         = 1 << 0,
+    BSGErrorTypesNSExceptions NS_SWIFT_NAME(NSExceptions) = 1 << 1,
+    BSGErrorTypesSignals      NS_SWIFT_NAME(Signals)      = 1 << 2,
+    BSGErrorTypesCPP          NS_SWIFT_NAME(CPP)          = 1 << 3,
+    BSGErrorTypesMach         NS_SWIFT_NAME(Mach)         = 1 << 4
+};
+
 @interface BugsnagConfiguration : NSObject
+
+// -----------------------------------------------------------------------------
+// MARK: - Properties
+// -----------------------------------------------------------------------------
 
 /**
  *  The API key of a Bugsnag project
@@ -133,11 +146,6 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
 BugsnagBreadcrumbs *breadcrumbs;
 
 /**
- *  Whether to allow collection of automatic breadcrumbs for notable events
- */
-@property(readwrite) BOOL automaticallyCollectBreadcrumbs;
-
-/**
  *  Hooks for modifying crash reports before it is sent to Bugsnag
  */
 @property(readonly, strong, nullable)
@@ -169,16 +177,15 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
 
 /**
  * Whether the app should report out of memory events which terminate the app
- * When NO, this setting overrides reportBackgroundOOMs.
- */
-@property BOOL reportOOMs;
-
-/**
- * Whether the app should report out of memory events which terminate the app
  * while the app is in the background. Setting this property has no effect.
  */
 @property BOOL reportBackgroundOOMs
     __deprecated_msg("This detection option is unreliable and should no longer be used.");
+
+/**
+ * The types of breadcrumbs which will be captured. By default, this is all types.
+ */
+@property BSGEnabledBreadcrumbType enabledBreadcrumbTypes;
 
 /**
  * Retrieves the endpoint used to notify Bugsnag of errors
@@ -197,6 +204,45 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
  * @see setEndpointsForNotify:sessions:
  */
 @property(readonly, retain, nullable) NSURL *sessionURL;
+
+@property(retain, nullable) NSString *codeBundleId;
+@property(retain, nullable) NSString *notifierType;
+
+/**
+ * The maximum number of breadcrumbs to keep and sent to Bugsnag.
+ * By default, we'll keep and send the 25 most recent breadcrumb log
+ * messages.
+ */
+@property NSUInteger maxBreadcrumbs;
+
+/**
+ * Determines whether app sessions should be tracked automatically. By default this value is true.
+ * If this value is updated after +[Bugsnag start] is called, only subsequent automatic sessions
+ * will be captured.
+ */
+@property BOOL shouldAutoCaptureSessions __deprecated_msg("Use autoTrackSessions instead");
+
+/**
+ *  YES if uncaught exceptions should be reported automatically
+ */
+@property BOOL autoNotify __deprecated_msg("Use autoDetectErrors instead");
+
+/**
+ * Whether User information should be persisted to disk between application runs.
+ * Defaults to True.
+ */
+@property BOOL persistUser;
+
+// -----------------------------------------------------------------------------
+// MARK: - Methods
+// -----------------------------------------------------------------------------
+
+/**
+ * A bitfield defining the types of error that are reported.
+ * Passed down to KSCrash in BugsnagCrashSentry.
+ * Defaults to all-true
+ */
+@property BSGErrorType enabledErrorTypes;
 
 /**
  * Required declaration to suppress a superclass designated-initializer error
@@ -267,29 +313,7 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
  */
 - (BOOL)shouldSendReports;
 
-/**
- * The maximum number of breadcrumbs to keep and sent to Bugsnag.
- * By default, we'll keep and send the 25 most recent breadcrumb log
- * messages.
- */
-@property NSUInteger maxBreadcrumbs;
-
-/**
- * Determines whether app sessions should be tracked automatically. By default this value is true.
- * If this value is updated after +[Bugsnag start] is called, only subsequent automatic sessions
- * will be captured.
- */
-@property BOOL shouldAutoCaptureSessions __deprecated_msg("Use autoTrackSessions instead");
-
-/**
- *  YES if uncaught exceptions should be reported automatically
- */
-@property BOOL autoNotify __deprecated_msg("Use autoDetectErrors instead");
-
 - (NSDictionary *_Nonnull)errorApiHeaders;
 - (NSDictionary *_Nonnull)sessionApiHeaders;
-
-@property(retain, nullable) NSString *codeBundleId;
-@property(retain, nullable) NSString *notifierType;
 
 @end

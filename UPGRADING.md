@@ -32,6 +32,10 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 - Bugsnag.setBreadcrumbCapacity(40)
   let config = try BugsnagConfiguration("YOUR API KEY HERE")
 + config.setMaxBreadcrumbs(40)
++ config.persistUser
+
++ config.persistUserData()
++ config.deletePersistedUserData()
 ```
 
 #### Renames
@@ -55,6 +59,12 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 - config.add(beforeSession:)
 + config.onSessionBlocks
 + config.add(onSession:)
+
+- config.automaticallyCollectBreadcrumbs
++ config.enabledBreadcrumbTypes
+
+- config.reportOOMs
++ config.enabledErrorTypes
 ```
 
 ### `Bugsnag` class

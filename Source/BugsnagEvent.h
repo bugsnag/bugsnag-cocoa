@@ -11,6 +11,7 @@
 @class BugsnagConfiguration;
 @class BugsnagHandledState;
 @class BugsnagSession;
+@class BugsnagBreadcrumb;
 
 typedef NS_ENUM(NSUInteger, BSGSeverity) {
     BSGSeverityError,
@@ -220,7 +221,7 @@ __deprecated_msg("Use toJson: instead.");
 /**
  *  Breadcrumbs from user events leading up to the error
  */
-@property(readwrite, copy, nullable) NSArray *breadcrumbs;
+@property(readwrite, copy, nullable) NSArray <BugsnagBreadcrumb *>*breadcrumbs;
 /**
  *  Further information attached to an error report, where each top level key
  *  generates a section on bugsnag, displaying key/value pairs
