@@ -162,7 +162,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * Leave a "breadcrumb" log message, representing an action that occurred
  * in your app, to aid with debugging.
  *
- * @param message  the log message to leave (max 140 chars)
+ * @param message  the log message to leave
  */
 + (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message;
 
@@ -182,6 +182,33 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *  @param notificationName name of the notification to capture
  */
 + (void)leaveBreadcrumbForNotificationName:(NSString *_Nonnull)notificationName;
+
+/**
+ * Leave a "breadcrumb" log message, representing an action that occurred
+ * in your app.
+ *
+ * @param message The log message to leave
+ * @param metadata Additional metadata included with the breadcrumb
+ *
+ * , to aid with debugging, along with additional metadata.
+ */
++ (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message
+                       andMetadata:(NSDictionary *_Nullable)metadata
+    NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:));
+
+/**
+ * Leave a "breadcrumb" log message, representing an action that occurred
+ * in your app, to aid with debugging, along with additional metadata and
+ * a type.
+ *
+ * @param message The log message to leave.
+ * @param metadata Additional metadata included with the breadcrumb.
+ * @param type A BSGBreadcrumbTypeValue denoting the type of breadcrumb.
+ */
++ (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message
+                          metadata:(NSDictionary *_Nullable)metadata
+                           andType:(BSGBreadcrumbType)type
+    NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
 
 /**
  * Clear any breadcrumbs that have been left so far.

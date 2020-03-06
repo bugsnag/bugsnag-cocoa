@@ -17,7 +17,7 @@ Background:
         And I wait for a request
         Then the event breadcrumbs contain "Bugsnag loaded" with type "state"
 
-    Scenario: An app lauches and subsequently crahes
+    Scenario: An app lauches and subsequently crashes
         And I crash the app using "BuiltinTrapScenario"
         And I relaunch the app
         And I wait for a request

@@ -6,7 +6,10 @@
 //
 //
 
+#import "Bugsnag.h"
+#import "BugsnagClient.h"
 #import "BugsnagBreadcrumb.h"
+#import "BugsnagTestConstants.h"
 #import <XCTest/XCTest.h>
 
 @interface BugsnagBreadcrumbsTest : XCTestCase
@@ -15,6 +18,10 @@
 
 @interface BugsnagBreadcrumbs ()
 @property(nonatomic, readonly, strong) dispatch_queue_t readWriteQueue;
+@end
+
+@interface Bugsnag ()
++ (BugsnagClient *)client;
 @end
 
 void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
@@ -280,6 +287,141 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqualObjects(@"cache break", crumb.message);
     XCTAssertEqualObjects(@{@"foo": @"bar"}, crumb.metadata);
     XCTAssertEqual(BSGBreadcrumbTypeLog, crumb.type);
+}
+
+/**
+ * Test that breadcrumb operations with no callback block work as expected.  1 of 3
+ */
+- (void)testCallbackFreeConstructors1 {
+    // Prevent sending events
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+        [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
+            return false;
+        }];
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+    
+    NSDictionary *md1 = @{ @"x" : @"y"};
+    NSDictionary *md2 = @{ @"a" : @"b",
+                           @"c" : @42};
+    
+    [Bugsnag leaveBreadcrumbWithMessage:@"test message1" andMetadata:md1];
+    [Bugsnag leaveBreadcrumbWithMessage:@"test message2" andMetadata:md2];
+    
+    NSDictionary *bc0 = [Bugsnag.client.configuration.breadcrumbs arrayValue][0];
+    NSDictionary *bc1 = [Bugsnag.client.configuration.breadcrumbs arrayValue][1];
+    NSDictionary *bc2 = [Bugsnag.client.configuration.breadcrumbs arrayValue][2];
+    XCTAssertEqual(Bugsnag.client.configuration.breadcrumbs.count, 3);
+    
+    XCTAssertEqualObjects(bc0[@"type"], @"state");
+    XCTAssertEqualObjects(bc0[@"message"], @"Bugsnag loaded");
+    XCTAssertEqual([bc0[@"metaData"] count], 0);
+    
+    XCTAssertEqual([bc1[@"metaData"] count], 1);
+    XCTAssertEqualObjects(bc1[@"message"], @"test message1");
+    XCTAssertEqualObjects(bc1[@"metaData"][@"x"], @"y");
+    XCTAssertEqualObjects(bc1[@"type"], @"manual");
+    
+    XCTAssertEqual([bc2[@"metaData"] count], 2);
+    XCTAssertEqualObjects(bc2[@"message"], @"test message2");
+    XCTAssertEqualObjects(bc2[@"metaData"][@"a"], @"b");
+    XCTAssertEqualObjects(bc2[@"metaData"][@"c"], @42);
+    XCTAssertEqualObjects(bc2[@"type"], @"manual");
+}
+
+/**
+ * Test that breadcrumb operations with no callback block work as expected.  2 of 3
+ */
+- (void)testCallbackFreeConstructors2 {
+    // Prevent sending events
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+        [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
+            return false;
+        }];
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+
+    NSDictionary *md1 = @{ @"x" : @"y"};
+    NSDictionary *md2 = @{ @"a" : @"b",
+                           @"c" : @42};
+
+    [Bugsnag leaveBreadcrumbWithMessage:@"manual message" metadata:md1 andType:BSGBreadcrumbTypeManual];
+    [Bugsnag leaveBreadcrumbWithMessage:@"log message" metadata:md2 andType:BSGBreadcrumbTypeLog];
+    [Bugsnag leaveBreadcrumbWithMessage:@"navigation message" metadata:md1 andType:BSGBreadcrumbTypeNavigation];
+    [Bugsnag leaveBreadcrumbWithMessage:@"process message" metadata:md2 andType:BSGBreadcrumbTypeProcess];
+    [Bugsnag leaveBreadcrumbWithMessage:@"request message" metadata:md1 andType:BSGBreadcrumbTypeRequest];
+    [Bugsnag leaveBreadcrumbWithMessage:@"state message" metadata:md2 andType:BSGBreadcrumbTypeState];
+    [Bugsnag leaveBreadcrumbWithMessage:@"user message" metadata:md1 andType:BSGBreadcrumbTypeUser];
+
+    NSDictionary *bc0 = [Bugsnag.client.configuration.breadcrumbs arrayValue][0];
+    NSDictionary *bc1 = [Bugsnag.client.configuration.breadcrumbs arrayValue][1];
+    NSDictionary *bc2 = [Bugsnag.client.configuration.breadcrumbs arrayValue][2];
+    NSDictionary *bc3 = [Bugsnag.client.configuration.breadcrumbs arrayValue][3];
+    NSDictionary *bc4 = [Bugsnag.client.configuration.breadcrumbs arrayValue][4];
+    NSDictionary *bc5 = [Bugsnag.client.configuration.breadcrumbs arrayValue][5];
+    NSDictionary *bc6 = [Bugsnag.client.configuration.breadcrumbs arrayValue][6];
+    NSDictionary *bc7 = [Bugsnag.client.configuration.breadcrumbs arrayValue][7];
+
+    XCTAssertEqual(Bugsnag.client.configuration.breadcrumbs.count, 8);
+
+    XCTAssertEqualObjects(bc0[@"type"], @"state");
+    XCTAssertEqualObjects(bc0[@"message"], @"Bugsnag loaded");
+    XCTAssertEqual([bc0[@"metaData"] count], 0);
+
+    XCTAssertEqual([bc1[@"metaData"] count], 1);
+    XCTAssertEqual([bc3[@"metaData"] count], 1);
+    XCTAssertEqual([bc5[@"metaData"] count], 1);
+    XCTAssertEqual([bc7[@"metaData"] count], 1);
+
+    XCTAssertEqual([bc2[@"metaData"] count], 2);
+    XCTAssertEqual([bc4[@"metaData"] count], 2);
+    XCTAssertEqual([bc6[@"metaData"] count], 2);
+    
+    XCTAssertEqualObjects(bc1[@"message"], @"manual message");
+    XCTAssertEqualObjects(bc1[@"type"], @"manual");
+
+    XCTAssertEqualObjects(bc2[@"message"], @"log message");
+    XCTAssertEqualObjects(bc2[@"type"], @"log");
+
+    XCTAssertEqualObjects(bc3[@"message"], @"navigation message");
+    XCTAssertEqualObjects(bc3[@"type"], @"navigation");
+
+    XCTAssertEqualObjects(bc4[@"message"], @"process message");
+    XCTAssertEqualObjects(bc4[@"type"], @"process");
+
+    XCTAssertEqualObjects(bc5[@"message"], @"request message");
+    XCTAssertEqualObjects(bc5[@"type"], @"request");
+
+    XCTAssertEqualObjects(bc6[@"message"], @"state message");
+    XCTAssertEqualObjects(bc6[@"type"], @"state");
+
+    XCTAssertEqualObjects(bc7[@"message"], @"user message");
+    XCTAssertEqualObjects(bc7[@"type"], @"user");
+}
+
+/**
+ * Test that breadcrumb operations with no callback block work as expected.  3 of 3
+ */
+- (void)testCallbackFreeConstructors3 {
+    // Prevent sending events
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+        [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
+            return false;
+        }];
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+    
+    [Bugsnag leaveBreadcrumbWithMessage:@"message1" metadata:nil andType:BSGBreadcrumbTypeUser];
+    [Bugsnag leaveBreadcrumbWithMessage:@"message2" andMetadata:nil];
+    
+    NSDictionary *bc1 = [Bugsnag.client.configuration.breadcrumbs arrayValue][1];
+    NSDictionary *bc2 = [Bugsnag.client.configuration.breadcrumbs arrayValue][2];
+
+    XCTAssertEqualObjects(bc1[@"message"], @"message1");
+    XCTAssertEqualObjects(bc2[@"message"], @"message2");
+    
+    XCTAssertEqual([bc1[@"metaData"] count], 0);
+    XCTAssertEqual([bc2[@"metaData"] count], 0);
 }
 
 @end

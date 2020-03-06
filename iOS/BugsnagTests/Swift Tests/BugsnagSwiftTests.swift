@@ -42,4 +42,12 @@ class BugsnagSwiftTests: XCTestCase {
         // We don't need to check method's functioning, only that we can call it this way
         Bugsnag.clearMetadata(section: "testSection")
    }
+    
+    /**
+     * Confirm that the callback-free methods for leaving metadata are exposed to Swift correctly
+     */
+    func testCallbackFreeMetadataMethods() {
+        Bugsnag.leaveBreadcrumb("test1", metadata: nil)
+        Bugsnag.leaveBreadcrumb("test2", metadata: nil, type: .user)
+    }
 }

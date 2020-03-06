@@ -36,6 +36,11 @@
 
 // MARK: -
 
+
+/**
+ * Disable all crash reporting (except, implicitly, manual), send a manual report 
+ * and crash the app (one session request with 2 sessions and 1 report should be sent)
+ */
 @implementation DisableAllExceptManualExceptionsSendManualAndCrashScenario
 
 - (void)startBugsnag {
