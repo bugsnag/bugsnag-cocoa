@@ -4,6 +4,7 @@
 #import "BugsnagConfiguration.h"
 #import "Bugsnag.h"
 #import "BugsnagNotifier.h"
+#import "BugsnagTestConstants.h"
 
 // Expose private identifiers for testing
 
@@ -27,9 +28,8 @@
 
 - (void)setUp {
     [super setUp];
-    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error: nil];
     config.autoDetectErrors = NO;
-    config.apiKey = @"apiKeyHere";
     config.codeBundleId = @"codeBundleIdHere";
     config.releaseStage = @"MagicalTestingTime";
 
