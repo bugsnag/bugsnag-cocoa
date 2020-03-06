@@ -20,6 +20,11 @@ stages:
 
 jobs:
   include:
+  
+  # ----------------------------------------------------------------------------
+  # Unit Tests - iOS & tvOS
+  # ----------------------------------------------------------------------------
+
   - osx_image: xcode11
     name: iOS 13.x unit tests
     stage: unit tests
@@ -29,6 +34,7 @@ jobs:
     - PLATFORM=iOS
     - OS=13.0
     - DEVICE="iPhone XS"
+
   - osx_image: xcode10.2
     name: iOS 9-12 unit tests
     stage: unit tests
@@ -43,14 +49,7 @@ jobs:
     - make test OS=12.1
     - make test OS=11.4
     - make test OS=10.3.1
-  - osx_image: xcode10.2 # macos 10.14
-    name: macOS 10.14 unit tests
-    stage: macOS unit tests
-    env: PLATFORM=OSX
-  - osx_image: xcode9.4 # macos 10.13
-    name: macOS 10.13 unit tests
-    stage: macOS unit tests
-    env: PLATFORM=OSX
+
   - osx_image: xcode10.2
     name: tvOS 9-12 unit tests
     stage: unit tests
@@ -61,11 +60,35 @@ jobs:
     - make test OS=11.4
     - make test OS=10.2
     - make test OS=9.2
+
+  # ----------------------------------------------------------------------------
+  # Unit Tests - Mac
+  # ----------------------------------------------------------------------------
+
+  - osx_image: xcode10.2 # macos 10.14
+    name: macOS 10.14 unit tests
+    stage: macOS unit tests
+    env: PLATFORM=OSX
+
+  - osx_image: xcode9.4 # macos 10.13
+    name: macOS 10.13 unit tests
+    stage: macOS unit tests
+    env: PLATFORM=OSX
+
+  # ----------------------------------------------------------------------------
+  # End to End Tests
+  # ----------------------------------------------------------------------------
+
   - osx_image: xcode10.1
     stage: integration
     name: End-to-end tests
     script: bundle exec maze-runner -c --verbose || (cat maze_output/* && exit 1)
     env: MAZE_SDK=12.1 SDK=iphonesimulator12.1 RUBYSHELL=/bin/bash
+
+  # ----------------------------------------------------------------------------
+  # Static framework, Carthage  Tests
+  # ----------------------------------------------------------------------------
+
   - osx_image: xcode11
     name: Building static framework and Carthage integration
     stage: integration
@@ -76,6 +99,11 @@ jobs:
     script: 
     - make build_carthage   # Build example carthage project
     - make build_ios_static # Build static framework target
+
+  # ----------------------------------------------------------------------------
+  # Doc Generation
+  # ----------------------------------------------------------------------------
+
   - osx_image: xcode10.2
     stage: deploy
     before_deploy: make doc

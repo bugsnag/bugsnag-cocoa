@@ -37,6 +37,7 @@
 
 - (void)startBugsnag {
     self.config.enabledErrorTypes = BSGErrorTypesNone;
+    self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 
