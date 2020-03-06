@@ -21,3 +21,4 @@ Carthage
 *.idea
 features/fixtures/carthage-proj
 IDEWorkspaceChecks.plist
+Podfile.lock
