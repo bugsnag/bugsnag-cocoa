@@ -4,17 +4,20 @@ Background:
     Given I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
 
 Scenario: All Crash reporting is disabled
+    # Sessions: on, unhandled crashes: off
     When I crash the app using "DisableAllExceptManualExceptionsAndCrashScenario"
     And I relaunch the app
+    # Sessions on, unhandled on
     And I crash the app using "NullPointerScenario"
     And I relaunch the app
-    And I wait for 2 requests
+    And I wait for 3 requests
     And the request 0 is valid for the session tracking API
-    And the request 1 is valid for the error reporting API
+    And the request 1 is valid for the session tracking API
+    And the request 2 is valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     # We only see the Null pointer exception
-    And the payload field "events.0.exceptions.0.errorClass" equals "EXC_BAD_ACCESS" for request 1
+    And the payload field "events.0.exceptions.0.errorClass" equals "EXC_BAD_ACCESS" for request 2
 
 Scenario: All Crash reporting is disabled but manual notification works
     # enabledErrorTypes = None, Generate a manual notification, crash
@@ -139,7 +142,10 @@ Scenario: Mach Crash Reporting is disabled
     And the payload field "events.0.metaData.error.type" equals "signal" for request 2
 
 Scenario: Signals Crash Reporting is disabled
+    # 1 session
     When I crash the app using "DisableSignalsExceptionScenario"
+    # 1 session
     And I relaunch the app
-    And I wait for 1 requests
+    And I wait for 2 requests
     Then the request 0 is valid for the session tracking API
+    Then the request 1 is valid for the session tracking API
