@@ -20,13 +20,16 @@
 
 - (void)startBugsnag {
     self.config.enabledErrorTypes = BSGErrorTypesNone;
+    self.config.autoTrackSessions = YES;
     [super startBugsnag];
 }
 
 - (void)run {
     // From null prt scenario
-    volatile char *ptr = NULL;
-    (void) *ptr;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        volatile char *ptr = NULL;
+        (void) *ptr;
+    });
 }
 
 @end
@@ -37,6 +40,7 @@
 
 - (void)startBugsnag {
     self.config.enabledErrorTypes = BSGErrorTypesNone;
+    self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 
@@ -45,8 +49,10 @@
     [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
 
     // From null prt scenario
-    volatile char *ptr = NULL;
-    (void) *ptr;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        volatile char *ptr = NULL;
+        (void) *ptr;
+    });
 }
 
 @end
@@ -62,6 +68,7 @@
                                   | BSGErrorTypesSignals
                                   | BSGErrorTypesCPP
                                   | BSGErrorTypesOOMs;
+    self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 
@@ -90,6 +97,7 @@
                                   | BSGErrorTypesSignals
                                   | BSGErrorTypesCPP
                                   | BSGErrorTypesOOMs;
+    self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 
@@ -116,13 +124,16 @@
                                   | BSGErrorTypesCPP
                                // OOMs are disabled since they raise a false positive 
                                /* | BSGErrorTypesOOMs */ ;
+    self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-noreturn"
 - (void)run  __attribute__((noreturn)) {
-    raise(SIGINT);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        raise(SIGINT);
+    });
 }
 #pragma  clang pop
 
