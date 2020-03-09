@@ -68,6 +68,7 @@
                                   | BSGErrorTypesSignals
                                   | BSGErrorTypesCPP
                                   | BSGErrorTypesOOMs;
+    self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 
@@ -96,6 +97,7 @@
                                   | BSGErrorTypesSignals
                                   | BSGErrorTypesCPP
                                   | BSGErrorTypesOOMs;
+    self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 
@@ -122,6 +124,7 @@
                                   | BSGErrorTypesCPP
                                // OOMs are disabled since they raise a false positive 
                                /* | BSGErrorTypesOOMs */ ;
+    self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 

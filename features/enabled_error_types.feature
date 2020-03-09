@@ -26,11 +26,11 @@ Scenario: All Crash reporting is disabled but manual notification works
 
     # 2 sessions, 1 error
     And I wait for 1 requests
-    # Then the request 0 is valid for the session tracking API
     And the request 0 is valid for the error reporting API
     
 Scenario: NSException Crash Reporting is disabled
     When I crash the app using "DisableNSExceptionScenario"
+    And I wait for 5 seconds
     And I relaunch the app
 
     # The third request is the error from the test finishing.  Ordinarily this is an NSGenericException.
@@ -57,51 +57,49 @@ Scenario: NSException Crash Reporting is disabled
     #           "errorClass": "NSGenericException",
     #           "stacktrace": ...
     
-    And I wait for 3 requests
-    Then the request 0 is valid for the session tracking API
-    And the request 1 is valid for the session tracking API
-    And the request 2 is valid for the error reporting API
-    And the payload field "events.0.exceptions.0.errorClass" equals "SIGABRT" for request 2
+    And I wait for 1 requests
+    And the request 0 is valid for the error reporting API
+    And the payload field "events.0.exceptions.0.errorClass" equals "SIGABRT" for request 0
     # TODO: Awaiting a maze-runner empty string assertion
     # And the payload field "events.0.exceptions.0.message" equals "" for request 2
-    And the payload field "events.0.metaData.error.type" equals "signal" for request 2
-
-# A valid CPP crash looks something like:
-#
-# {
-#   "apiKey": "a35a2a72bd230ac0aa0f52715bbdc6aa",
-#   "payloadVersion": "4.0",
-#   "events": [
-#     {
-#       "metaData": {
-#         "error": {
-#           "address": 0,
-#           "type": "cpp_exception",
-#           "cpp_exception": {
-#             "name": "P39disabled_cxx_reporting_kaboom_exception"
-#           }
-#         }
-#       },
-#       "exceptions": [
-#         {
-#           "message": "",
-#           "errorClass": "P39disabled_cxx_reporting_kaboom_exception",
-#           "stacktrace": [
-
-#           ],
-#           "type": "cocoa"
-#         }
-#       ],
+    # And the payload field "events.0.metaData.error.type" equals "signal" for request 2
 
 Scenario: CPP Crash Reporting is disabled
+
+    # A valid CPP crash looks something like:
+    #
+    # {
+    #   "apiKey": "a35a2a72bd230ac0aa0f52715bbdc6aa",
+    #   "payloadVersion": "4.0",
+    #   "events": [
+    #     {
+    #       "metaData": {
+    #         "error": {
+    #           "address": 0,
+    #           "type": "cpp_exception",
+    #           "cpp_exception": {
+    #             "name": "P39disabled_cxx_reporting_kaboom_exception"
+    #           }
+    #         }
+    #       },
+    #       "exceptions": [
+    #         {
+    #           "message": "",
+    #           "errorClass": "P39disabled_cxx_reporting_kaboom_exception",
+    #           "stacktrace": [
+    #           ],
+    #           "type": "cocoa"
+    #         }
+    #       ],
+
     When I crash the app using "EnabledErrorTypesCxxScenario"
     And I relaunch the app
-    And I wait for 2 requests
-    Then the request 0 is valid for the session tracking API
-    And the request 1 is valid for the error reporting API
+    And I wait for 5 seconds
+    And I wait for 1 requests
+    And the request 0 is valid for the error reporting API
     # Not a c++ exception
-    And the payload field "events.0.exceptions.0.errorClass" equals "SIGABRT" for request 1
-    And the payload field "events.0.metaData.error.type" equals "signal" for request 1
+    And the payload field "events.0.exceptions.0.errorClass" equals "SIGABRT" for request 0
+    And the payload field "events.0.metaData.error.type" equals "signal" for request 0
 
 # Typical Mach event:
 #
@@ -131,21 +129,16 @@ Scenario: CPP Crash Reporting is disabled
 Scenario: Mach Crash Reporting is disabled
     When I crash the app using "DisableMachExceptionScenario"
     And I relaunch the app
-    And I wait for 3 requests
-    Then the request 0 is valid for the session tracking API
-    Then the request 1 is valid for the session tracking API
-    And the request 2 is valid for the error reporting API
+    And I wait for 1 requests
+    And the request 0 is valid for the error reporting API
 
-    # # Not a Mach exception
+    # Not a Mach exception
     # The Mach exception gets trampolined to a SEGV signal?
-    And the payload field "events.0.exceptions.0.errorClass" equals "SIGSEGV" for request 2
-    And the payload field "events.0.metaData.error.type" equals "signal" for request 2
+    And the payload field "events.0.exceptions.0.errorClass" equals "SIGSEGV" for request 0
+    And the payload field "events.0.metaData.error.type" equals "signal" for request 0
 
 Scenario: Signals Crash Reporting is disabled
-    # 1 session
     When I crash the app using "DisableSignalsExceptionScenario"
-    # 1 session
     And I relaunch the app
-    And I wait for 2 requests
-    Then the request 0 is valid for the session tracking API
-    Then the request 1 is valid for the session tracking API
+    And I wait for 5 seconds
+    And I wait for 0 request

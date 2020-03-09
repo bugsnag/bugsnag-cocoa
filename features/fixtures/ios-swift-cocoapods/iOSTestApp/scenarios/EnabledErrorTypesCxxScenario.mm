@@ -16,7 +16,12 @@ const char *disabled_cxx_reporting_kaboom_exception::what() const throw() {
 @implementation EnabledErrorTypesCxxScenario
 
 - (void)startBugsnag {
-    self.config.enabledErrorTypes = BSGErrorTypesMach | BSGErrorTypesNSExceptions | BSGErrorTypesSignals /*| BSGErrorTypesCPP*/ | BSGErrorTypesOOMs;
+    self.config.enabledErrorTypes = BSGErrorTypesMach 
+                                  | BSGErrorTypesNSExceptions 
+                                  | BSGErrorTypesSignals 
+                                /*| BSGErrorTypesCPP*/ 
+                                  | BSGErrorTypesOOMs;
+    self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 
