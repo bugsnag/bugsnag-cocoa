@@ -234,6 +234,19 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
++ (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message
+                          metadata:(NSDictionary *_Nullable)metadata
+                           andType:(BSGBreadcrumbType)type
+{
+    if ([self bugsnagStarted]) {
+        [self leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumbs) {
+            crumbs.message = message;
+            crumbs.metadata = metadata;
+            crumbs.type = type;
+        }];
+    }
+}
+
 + (void)setBreadcrumbCapacity:(NSUInteger)capacity {
     if ([self bugsnagStarted]) {
         [self.client.configuration setMaxBreadcrumbs:capacity];

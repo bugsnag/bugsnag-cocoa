@@ -47,8 +47,7 @@ typedef NS_ENUM(NSUInteger, BSGBreadcrumbType) {
      */
     BSGBreadcrumbTypeLog,
     /**
-     *  A navigation action, such as pushing a view controller or dismissing an
-     *  alert
+     *  A navigation action, such as pushing a view controller or dismissing an alert
      */
     BSGBreadcrumbTypeNavigation,
     /**
