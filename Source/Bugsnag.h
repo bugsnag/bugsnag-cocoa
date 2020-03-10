@@ -185,19 +185,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 /**
  * Leave a "breadcrumb" log message, representing an action that occurred
- * in your app.
- *
- * @param message The log message to leave
- * @param metadata Additional metadata included with the breadcrumb
- *
- * , to aid with debugging, along with additional metadata.
- */
-+ (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message
-                       andMetadata:(NSDictionary *_Nullable)metadata
-    NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:));
-
-/**
- * Leave a "breadcrumb" log message, representing an action that occurred
  * in your app, to aid with debugging, along with additional metadata and
  * a type.
  *

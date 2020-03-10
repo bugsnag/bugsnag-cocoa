@@ -220,17 +220,6 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
-+ (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message
-                       andMetadata:(NSDictionary *_Nullable)metadata
-{
-    if ([self bugsnagStarted]) {
-        [self leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumbs) {
-            crumbs.message = message;
-            crumbs.metadata = metadata;
-        }];
-    }
-}
-
 + (void)leaveBreadcrumbWithBlock:
     (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
     if ([self bugsnagStarted]) {

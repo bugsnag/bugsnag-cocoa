@@ -47,7 +47,6 @@ class BugsnagSwiftTests: XCTestCase {
      * Confirm that the callback-free methods for leaving metadata are exposed to Swift correctly
      */
     func testCallbackFreeMetadataMethods() {
-        Bugsnag.leaveBreadcrumb("test1", metadata: nil)
-        Bugsnag.leaveBreadcrumb("test2", metadata: nil, type: .user)
+        Bugsnag.leaveBreadcrumb("test2", metadata: nil, type: .manual)
     }
 }
