@@ -135,9 +135,8 @@ Bugsnag Notifiers on other platforms.
   restored if an application is restarted.  The values are also copied to the configuration metadata.
   [#469](https://github.com/bugsnag/bugsnag-cocoa/pull/469)
   
-  * Added callback-free methods to leave breadcrumbs: 
-    - `[Bugsnag leaveBreadcrumbWithMessage:andMetadata:]` (Swift: `Bugsnag.leaveBreadcrumb(_, metadata:)`) 
-    - `[Bugsnag leaveBreadcrumbWithMessage:metadata:andType]` (Swift: `Bugsnag.leaveBreadcrumb(_, metadata:, type:)`)
+  * Added callback-free method to leave breadcrumbs: `[Bugsnag leaveBreadcrumbWithMessage:metadata:andType]`
+    (Swift: `Bugsnag.leaveBreadcrumb(_, metadata:, type:)`)
     [#482](https://github.com/bugsnag/bugsnag-cocoa/pull/482)
 
 ## Bug fixes
