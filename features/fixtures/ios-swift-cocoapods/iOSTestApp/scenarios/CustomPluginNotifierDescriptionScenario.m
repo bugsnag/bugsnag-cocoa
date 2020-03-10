@@ -2,7 +2,7 @@
 #import <Bugsnag/BugsnagPlugin.h>
 
 @interface Bugsnag()
-+ (id)notifier;
++ (id)client;
 + (void)registerPlugin:(id<BugsnagPlugin>)plugin;
 @end
 
@@ -18,7 +18,7 @@
 }
 
 - (void)start {
-    id notifier = [Bugsnag notifier];
+    id notifier = [Bugsnag client];
     NSDictionary *newDetails = @{
         @"version": @"2.1.0",
         @"name": @"Foo Handler Library",
