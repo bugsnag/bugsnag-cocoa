@@ -302,6 +302,13 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
 - (void)addOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block;
 
 /**
+ * Remove a callback that would be invoked before a session is sent to Bugsnag.  Intended for internal use only.
+ *
+ * @param block The block to be removed.
+ */
+- (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull )block;
+
+/**
  * Clear all callbacks
  */
 - (void)clearOnSendBlocks;

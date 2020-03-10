@@ -526,4 +526,135 @@
     XCTAssertTrue(config.persistUser);
 }
 
+/**
+ * Test that onSession blocks get called once added
+ */
+- (void)testAddOnSessionBlock {
+    
+    // Setup
+    __block XCTestExpectation *expectation = [self expectationWithDescription:@"Remove On Session Block"];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+        // We expect the session block to be called
+        [expectation fulfill];
+    };
+    [config addOnSessionBlock:sessionBlock];
+    XCTAssertEqual([[config onSessionBlocks] count], 1);
+    
+    // Call onSession blocks
+    [Bugsnag startBugsnagWithConfiguration:config];
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+}
+
+/**
+ * Test that onSession blocks do not get called once they've been removed
+ */
+- (void)testRemoveOnSessionBlock {
+    // Setup
+    // We expect NOT to be called
+    __block XCTestExpectation *calledExpectation = [self expectationWithDescription:@"Remove On Session Block"];
+    calledExpectation.inverted = YES;
+
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+        [calledExpectation fulfill];
+    };
+    
+    // It's there (and from other tests we know it gets called) and then it's not there
+    [config addOnSessionBlock:sessionBlock];
+    XCTAssertEqual([[config onSessionBlocks] count], 1);
+    [config removeOnSessionBlock:sessionBlock];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+
+    [Bugsnag startBugsnagWithConfiguration:config];
+
+    // Wait a second NOT to be called
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+}
+/**
+ * Test that an onSession block is called after being added, then NOT called after being removed.
+ * This test could be expanded to verify the behaviour when multiple blocks are added.
+ */
+- (void)testAddOnSessionBlockThenRemove {
+    
+    __block int called = 0; // A counter
+    
+    // Setup
+    __block XCTestExpectation *expectation1 = [self expectationWithDescription:@"Remove On Session Block 1"];
+    __block XCTestExpectation *expectation2 = [self expectationWithDescription:@"Remove On Session Block 2"];
+    __block XCTestExpectation *expectation3 = [self expectationWithDescription:@"Remove On Session Block 3"];
+    expectation3.inverted = YES;
+    
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+    
+    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+        switch (called) {
+        case 0:
+            [expectation1 fulfill];
+            break;
+        case 1:
+            [expectation2 fulfill];
+            break;
+        case 2:
+            // Should NOT be called
+            [expectation3 fulfill];
+            break;
+        }
+    };
+    
+    [config addOnSessionBlock:sessionBlock];
+    XCTAssertEqual([[config onSessionBlocks] count], 1);
+    
+    // Call onSession blocks
+    [Bugsnag startBugsnagWithConfiguration:config];
+    [self waitForExpectations:@[expectation1] timeout:1.0];
+    
+    // Check it's called on session restart
+    [Bugsnag pauseSession];
+    called++;
+    [Bugsnag startSession];
+    [self waitForExpectations:@[expectation2] timeout:1.0];
+
+    // Check it's NOT called once the block's deleted
+    [Bugsnag pauseSession];
+    called++;
+    [config removeOnSessionBlock:sessionBlock];
+    [Bugsnag startSession];
+    [self waitForExpectations:@[expectation3] timeout:1.0];
+}
+
+/**
+ * Make sure slightly invalid removals and duplicate additions don't break things
+ */
+- (void)testRemoveNonexistentOnSessionBlocks {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+    BugsnagOnSessionBlock sessionBlock1 = ^(NSMutableDictionary * _Nonnull sessionPayload) {};
+    BugsnagOnSessionBlock sessionBlock2 = ^(NSMutableDictionary * _Nonnull sessionPayload) {};
+    
+    [config addOnSessionBlock:sessionBlock1];
+    XCTAssertEqual([[config onSessionBlocks] count], 1);
+    [config removeOnSessionBlock:sessionBlock2];
+    XCTAssertEqual([[config onSessionBlocks] count], 1);
+    [config removeOnSessionBlock:sessionBlock1];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+    [config removeOnSessionBlock:sessionBlock2];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+    [config removeOnSessionBlock:sessionBlock1];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+
+    [config addOnSessionBlock:sessionBlock1];
+    XCTAssertEqual([[config onSessionBlocks] count], 1);
+    [config addOnSessionBlock:sessionBlock1];
+    XCTAssertEqual([[config onSessionBlocks] count], 2);
+    [config addOnSessionBlock:sessionBlock1];
+    XCTAssertEqual([[config onSessionBlocks] count], 3);
+}
+
 @end

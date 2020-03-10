@@ -193,6 +193,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [(NSMutableArray *)self.onSessionBlocks addObject:[block copy]];
 }
 
+- (void)removeOnSessionBlock:(BugsnagOnSessionBlock)block {
+    [(NSMutableArray *)self.onSessionBlocks removeObject:block];
+}
+
 - (void)clearOnSendBlocks {
     [(NSMutableArray *)self.onSendBlocks removeAllObjects];
 }
