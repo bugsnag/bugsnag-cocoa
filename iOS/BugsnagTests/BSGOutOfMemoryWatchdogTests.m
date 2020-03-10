@@ -3,16 +3,16 @@
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagConfiguration.h"
 #import "Bugsnag.h"
-#import "BugsnagNotifier.h"
+#import "BugsnagClient.h"
 #import "BugsnagTestConstants.h"
 
 // Expose private identifiers for testing
 
 @interface Bugsnag (Testing)
-+ (BugsnagNotifier *)notifier;
++ (BugsnagClient *)client;
 @end
 
-@interface BugsnagNotifier (Testing)
+@interface BugsnagClient (Testing)
 @property (nonatomic, strong) BSGOutOfMemoryWatchdog *oomWatchdog;
 @end
 
@@ -46,7 +46,7 @@
  * Test that the generated OOM report values exist and are correct (where that can be tested)
  */
 - (void)testOOMFieldsSetCorrectly {
-    NSMutableDictionary *cachedFileInfo = [[[Bugsnag notifier] oomWatchdog] cachedFileInfo];
+    NSMutableDictionary *cachedFileInfo = [[[Bugsnag client] oomWatchdog] cachedFileInfo];
     XCTAssertNotNil([cachedFileInfo objectForKey:@"app"]);
     XCTAssertNotNil([cachedFileInfo objectForKey:@"device"]);
     

@@ -26,7 +26,7 @@
 
 #import "BugsnagConfiguration.h"
 #import "Bugsnag.h"
-#import "BugsnagNotifier.h"
+#import "BugsnagClient.h"
 #import "BugsnagKeys.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagUser.h"
@@ -49,10 +49,10 @@ NSString * const kBugsnagUserName = @"BugsnagUserName";
 NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 @interface Bugsnag ()
-+ (BugsnagNotifier *)notifier;
++ (BugsnagClient *)client;
 @end
 
-@interface BugsnagNotifier ()
+@interface BugsnagClient ()
 @property BugsnagSessionTracker *sessionTracker;
 @end
 
@@ -368,7 +368,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     }
     [self willChangeValueForKey:NSStringFromSelector(@selector(autoDetectErrors))];
     _autoDetectErrors = autoDetectErrors;
-    [[Bugsnag notifier] updateCrashDetectionSettings];
+    [[Bugsnag client] updateCrashDetectionSettings];
     [self didChangeValueForKey:NSStringFromSelector(@selector(autoDetectErrors))];
 }
 

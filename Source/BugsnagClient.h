@@ -31,7 +31,7 @@
 
 @class BugsnagSessionTracker;
 
-@interface BugsnagNotifier : NSObject <BugsnagMetadataDelegate>
+@interface BugsnagClient : NSObject <BugsnagMetadataDelegate>
 
 @property(nonatomic, readwrite, retain)
     BugsnagConfiguration *_Nullable configuration;
