@@ -328,6 +328,25 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     [[self configuration] removeOnSessionBlock:block];
 }
 
+// =============================================================================
+// MARK: - onSend
+// =============================================================================
+
++ (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
+{
+    [[self configuration] addOnSendBlock:block];
+}
+
++ (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
+{
+    [[self configuration] removeOnSendBlock:block];
+}
+
++ (void)clearOnSendBlocks
+{
+    [[self configuration] clearOnSendBlocks];
+}
+
 @end
 
 //

@@ -185,9 +185,26 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [self.metadata addAttribute:BSGKeyEmail withValue:user.emailAddress toTabWithName:BSGKeyUser];
 }
 
+// =============================================================================
+// MARK: - onSendBlock
+// =============================================================================
+
 - (void)addOnSendBlock:(BugsnagOnSendBlock)block {
     [(NSMutableArray *)self.onSendBlocks addObject:[block copy]];
 }
+
+- (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull )block
+{
+    [(NSMutableArray *)self.onSendBlocks removeObject:block];
+}
+
+- (void)clearOnSendBlocks {
+    [(NSMutableArray *)self.onSendBlocks removeAllObjects];
+}
+
+// =============================================================================
+// MARK: - onSessionBlock
+// =============================================================================
 
 - (void)addOnSessionBlock:(BugsnagOnSessionBlock)block {
     [(NSMutableArray *)self.onSessionBlocks addObject:[block copy]];
@@ -195,10 +212,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 - (void)removeOnSessionBlock:(BugsnagOnSessionBlock)block {
     [(NSMutableArray *)self.onSessionBlocks removeObject:block];
-}
-
-- (void)clearOnSendBlocks {
-    [(NSMutableArray *)self.onSendBlocks removeAllObjects];
 }
 
 - (NSDictionary *)errorApiHeaders {

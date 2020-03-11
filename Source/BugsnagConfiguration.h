@@ -61,8 +61,7 @@ typedef void (^BugsnagOnErrorBlock)(BugsnagEvent *_Nonnull report);
  *
  *  @return YES if the report should be sent
  */
-typedef bool (^BugsnagOnSendBlock)(NSDictionary *_Nonnull rawEventData,
-                                       BugsnagEvent *_Nonnull reports);
+typedef bool (^BugsnagOnSendBlock)(NSDictionary *_Nonnull rawEventData, BugsnagEvent *_Nonnull reports);
 
 /**
  * A configuration block for modifying a session. Intended for internal usage only.
@@ -286,13 +285,9 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
        withName:(NSString *_Nullable)name
        andEmail:(NSString *_Nullable)email;
 
-/**
- *  Add a callback to be invoked before a report is sent to Bugsnag, to
- *  change the report contents as needed
- *
- *  @param block A block which returns YES if the report should be sent
- */
-- (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block;
+// =============================================================================
+// MARK: - onSession
+// =============================================================================
 
 /**
  *  Add a callback to be invoked before a session is sent to Bugsnag.
@@ -307,6 +302,25 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
  * @param block The block to be removed.
  */
 - (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull )block;
+
+// =============================================================================
+// MARK: - onSend
+// =============================================================================
+
+/**
+ *  Add a callback to be invoked before a report is sent to Bugsnag, to
+ *  change the report contents as needed
+ *
+ *  @param block A block which returns YES if the report should be sent
+ */
+- (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block;
+
+/**
+ * Remove the callback that would be invoked before an event is sent.
+ *
+ * @param block The block to be removed.
+ */
+- (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull )block;
 
 /**
  * Clear all callbacks
