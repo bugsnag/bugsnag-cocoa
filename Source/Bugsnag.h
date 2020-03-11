@@ -327,4 +327,12 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
        withName:(NSString *_Nullable)name
        andEmail:(NSString *_Nullable)email;
 
+
+/**
+ * Remove a callback that would be invoked before a session is sent to Bugsnag.
+ *
+ * @param block The block to be removed.
+ */
++ (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull )block;
+
 @end

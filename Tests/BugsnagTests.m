@@ -221,4 +221,46 @@
     XCTAssertEqual([[Bugsnag getMetadata:@"section2"] valueForKey:@"myKey4"], @"myValue4");
 }
 
+/**
+ * Test that removing an onSession block via the Bugsnag object works as expected
+ */
+- (void)testRemoveOnSessionBlock {
+    
+    __block int called = 0; // A counter
+
+    __block XCTestExpectation *expectation1 = [self expectationWithDescription:@"Remove On Session Block 1"];
+    __block XCTestExpectation *expectation2 = [self expectationWithDescription:@"Remove On Session Block 2"];
+    expectation2.inverted = YES;
+    
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+
+    // non-sending bugsnag
+    [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
+        return false;
+    }];
+
+    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+        switch (called) {
+        case 0:
+            [expectation1 fulfill];
+            break;
+        case 1:
+            [expectation2 fulfill];
+            break;
+        }
+    };
+    
+    [configuration addOnSessionBlock:sessionBlock];
+
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+    [self waitForExpectations:@[expectation1] timeout:1.0];
+    
+    [Bugsnag pauseSession];
+    called++;
+    [Bugsnag removeOnSessionBlock:sessionBlock];
+    [Bugsnag startSession];
+    [self waitForExpectations:@[expectation2] timeout:1.0];
+}
+
 @end

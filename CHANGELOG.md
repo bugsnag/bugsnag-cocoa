@@ -139,7 +139,7 @@ Bugsnag Notifiers on other platforms.
   (Swift: `Bugsnag.leaveBreadcrumb(_, metadata:, type:)`)
   [#482](https://github.com/bugsnag/bugsnag-cocoa/pull/482)
 
-* Added the internal `BugsnagConfiguration.removeOnSessionBlock` methods to allow removal
+* Added `removeOnSessionBlock()` methods to both `Bugsnag` and `BugsnagConfiguration` to allow removal
   of callbacks run when a session starts.
   [#483](https://github.com/bugsnag/bugsnag-cocoa/pull/483)
 
