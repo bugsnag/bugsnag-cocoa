@@ -153,7 +153,9 @@
     __block XCTestExpectation *expectation2 = [self expectationWithDescription:@"Remove On Session Block 2"];
     __block XCTestExpectation *expectation3 = [self expectationWithDescription:@"Remove On Session Block 3"];
     expectation3.inverted = YES;
-    
+    __block XCTestExpectation *expectation4 = [self expectationWithDescription:@"Remove On Session Block 4"];
+    expectation4.inverted = YES;
+
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
     [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
@@ -170,6 +172,11 @@
             // Should NOT be called
             [expectation3 fulfill];
             break;
+        case 3:
+            // Should NOT be called
+            [expectation4 fulfill];
+            break;
+
         }
     };
     
@@ -180,7 +187,7 @@
     [Bugsnag startBugsnagWithConfiguration:config];
     [self waitForExpectations:@[expectation1] timeout:1.0];
     
-    // Check it's called on session restart
+    // Check it's called on new session start
     [Bugsnag pauseSession];
     called++;
     [Bugsnag startSession];
@@ -192,6 +199,13 @@
     [config removeOnSessionBlock:sessionBlock];
     [Bugsnag startSession];
     [self waitForExpectations:@[expectation3] timeout:1.0];
+    
+    // Check it's NOT called on session resume
+    [Bugsnag pauseSession];
+    called++;
+    [config addOnSessionBlock:sessionBlock];
+    [Bugsnag resumeSession];
+    [self waitForExpectations:@[expectation4] timeout:1.0];
 }
 
 /**

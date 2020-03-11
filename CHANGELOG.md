@@ -141,7 +141,7 @@ Bugsnag Notifiers on other platforms.
 
 * Added the internal `BugsnagConfiguration.removeOnSessionBlock` methods to allow removal
   of callbacks run when a session starts.
-  []()
+  [#483](https://github.com/bugsnag/bugsnag-cocoa/pull/483)
 
 ## Bug fixes
 
