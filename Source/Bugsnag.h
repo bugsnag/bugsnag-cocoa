@@ -63,7 +63,9 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (BOOL)appDidCrashLastLaunch;
 
+// =============================================================================
 // MARK: - Notify
+// =============================================================================
 
 /** Send a custom or caught exception to Bugsnag.
  *
@@ -156,7 +158,9 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
                        value:(id _Nullable)value
     NS_SWIFT_NAME(addMetadata(_:key:value:));
 
+// =============================================================================
 // MARK: - Breadcrumbs
+// =============================================================================
 
 /**
  * Leave a "breadcrumb" log message, representing an action that occurred
@@ -212,7 +216,9 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)setBreadcrumbCapacity:(NSUInteger)capacity
         __deprecated_msg("Use [BugsnagConfiguration setMaxBreadcrumbs:] instead");
 
+// =============================================================================
 // MARK: - Session
+// =============================================================================
 
 /**
  * Starts tracking a new session.
@@ -291,6 +297,9 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (id _Nullable )getMetadata:(NSString *_Nonnull)section key:(NSString *_Nonnull)key
     NS_SWIFT_NAME(getMetadata(_:key:));
 
+// =============================================================================
+// MARK: - Other methods
+// =============================================================================
 /**
  * Remove a key/value from a named matadata section.  If either the section or the
  * key do not exist no action will occur.
@@ -344,5 +353,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)setUser:(NSString *_Nullable)userId
        withName:(NSString *_Nullable)name
        andEmail:(NSString *_Nullable)email;
+
++ (NSDateFormatter *_Nonnull)payloadDateFormatter;
 
 @end
