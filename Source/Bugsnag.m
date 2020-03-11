@@ -318,6 +318,11 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     [[self configuration] setUser:userId withName:name andEmail:email];
 }
 
++ (void)addOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block
+{
+    [[self configuration] addOnSessionBlock:block];
+}
+
 + (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull )block
 {
     [[self configuration] removeOnSessionBlock:block];

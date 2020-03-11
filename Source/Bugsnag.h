@@ -329,6 +329,13 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 
 /**
+* Add a callback that would be invoked before a session is sent to Bugsnag.
+*
+* @param block The block to be added.
+*/
++ (void)addOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block;
+
+/**
  * Remove a callback that would be invoked before a session is sent to Bugsnag.
  *
  * @param block The block to be removed.

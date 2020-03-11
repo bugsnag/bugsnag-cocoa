@@ -15,6 +15,7 @@
 
 @interface Bugsnag ()
 + (BugsnagConfiguration *)configuration;
+
 @end
 
 @interface BugsnagTests : XCTestCase
@@ -250,7 +251,7 @@
             break;
         }
     };
-    
+
     [configuration addOnSessionBlock:sessionBlock];
 
     [Bugsnag startBugsnagWithConfiguration:configuration];
