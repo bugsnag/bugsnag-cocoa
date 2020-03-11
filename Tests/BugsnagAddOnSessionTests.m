@@ -58,7 +58,7 @@
     [Bugsnag startBugsnagWithConfiguration:configuration];
 
     // We should NOT have this expectation met
-    [self waitForExpectations:@[expectation1] timeout:1.0];
+    [self waitForExpectations:@[expectation1] timeout:5.0];
     
     [Bugsnag pauseSession];
     called++;
@@ -66,7 +66,7 @@
     // Should be able to add it this time
     [Bugsnag addOnSessionBlock:sessionBlock];
     [Bugsnag startSession];
-    [self waitForExpectations:@[expectation2] timeout:1.0];
+    [self waitForExpectations:@[expectation2] timeout:5.0];
 
     [Bugsnag pauseSession];
     called++;
@@ -74,7 +74,7 @@
     [Bugsnag removeOnSessionBlock:sessionBlock];
     [Bugsnag startSession];
     // This expectation should also NOT be met
-    [self waitForExpectations:@[expectation3] timeout:1.0];
+    [self waitForExpectations:@[expectation3] timeout:5.0];
 }
 
 @end

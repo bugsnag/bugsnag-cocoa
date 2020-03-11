@@ -176,7 +176,6 @@
             // Should NOT be called
             [expectation4 fulfill];
             break;
-
         }
     };
     
