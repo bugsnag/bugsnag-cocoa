@@ -3,11 +3,10 @@
 
 @interface Bugsnag()
 + (id)client;
-+ (void)registerPlugin:(id<BugsnagPlugin>)plugin;
 @end
 
 @interface DescriptionPlugin : NSObject<BugsnagPlugin>
-@property (nonatomic, getter=isStarted) BOOL started;
+
 @end
 
 @implementation DescriptionPlugin
@@ -17,7 +16,7 @@
     return self;
 }
 
-- (void)start {
+- (void)load {
     id notifier = [Bugsnag client];
     NSDictionary *newDetails = @{
         @"version": @"2.1.0",
@@ -25,16 +24,15 @@
         @"url": @"https://example.com"
     };
     [notifier setValue:newDetails forKey:@"details"];
-    self.started = YES;
 }
 
-
+- (void)unload {}
 @end
 
 @implementation CustomPluginNotifierDescriptionScenario
 
 - (void)startBugsnag {
-    [Bugsnag registerPlugin:[DescriptionPlugin new]];
+    [self.config addPlugin:[DescriptionPlugin new]];
     self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }

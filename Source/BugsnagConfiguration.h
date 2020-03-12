@@ -30,6 +30,7 @@
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagEvent.h"
 #import "BugsnagMetadata.h"
+#import "BugsnagPlugin.h"
 
 @class BugsnagBreadcrumbs;
 @class BugsnagUser;
@@ -322,5 +323,7 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
 
 - (NSDictionary *_Nonnull)errorApiHeaders;
 - (NSDictionary *_Nonnull)sessionApiHeaders;
+
+- (void)addPlugin:(id<BugsnagPlugin> _Nonnull)plugin;
 
 @end

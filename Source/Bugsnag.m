@@ -32,12 +32,10 @@
 #import "BugsnagPlugin.h"
 
 static BugsnagClient *bsg_g_bugsnag_client = NULL;
-static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 @interface Bugsnag ()
 + (BugsnagClient *)client;
 + (BOOL)bugsnagStarted;
-+ (void)registerPlugin:(id<BugsnagPlugin>)plugin;
 @end
 
 @interface NSDictionary (BSGKSMerge)
@@ -56,7 +54,6 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     @synchronized(self) {
         bsg_g_bugsnag_client =
                 [[BugsnagClient alloc] initWithConfiguration:configuration];
-        [self startPlugins];
         [bsg_g_bugsnag_client start];
     }
 }
@@ -74,21 +71,6 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
 
 + (BugsnagClient *)client {
     return bsg_g_bugsnag_client;
-}
-
-+ (void)registerPlugin:(id<BugsnagPlugin>)plugin {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        registeredPlugins = [NSMutableArray new];
-    });
-    [registeredPlugins addObject:plugin];
-}
-
-+ (void)startPlugins {
-    for (id<BugsnagPlugin> plugin in registeredPlugins) {
-        if (![plugin isStarted])
-            [plugin start];
-    }
 }
 
 + (BOOL)appDidCrashLastLaunch {

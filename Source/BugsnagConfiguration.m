@@ -59,6 +59,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
+@property(nonatomic, readwrite, strong) NSMutableSet *plugins;
 @end
 
 @implementation BugsnagConfiguration
@@ -116,6 +117,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _notifyURL = [NSURL URLWithString:BSGDefaultNotifyUrl];
     _onSendBlocks = [NSMutableArray new];
     _onSessionBlocks = [NSMutableArray new];
+    _plugins = [NSMutableSet new];
     _notifyReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
     _autoTrackSessions = YES;
@@ -479,6 +481,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     } else {
         @throw BSGApiKeyError;
     }
+}
+
+- (void)addPlugin:(id<BugsnagPlugin> _Nonnull)plugin {
+    [_plugins addObject:plugin];
 }
 
 @end

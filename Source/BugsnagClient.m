@@ -33,6 +33,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
 #import "BugsnagSessionTracker.h"
+#import "BugsnagPluginClient.h"
 #import "BSGOutOfMemoryWatchdog.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BSG_KSCrashC.h"
@@ -206,7 +207,12 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property(nonatomic, strong) BugsnagErrorReportApiClient *errorReportApiClient;
 @property(nonatomic, strong, readwrite) BugsnagSessionTracker *sessionTracker;
 @property (nonatomic, strong) BSGOutOfMemoryWatchdog *oomWatchdog;
+@property (nonatomic, strong) BugsnagPluginClient *pluginClient;
 @property (nonatomic) BOOL appCrashedLastLaunch;
+@end
+
+@interface BugsnagConfiguration ()
+@property(nonatomic, readwrite, strong) NSMutableSet *plugins;
 @end
 
 @implementation BugsnagClient
@@ -269,6 +275,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
         [self metadataChanged:self.configuration.metadata];
         [self metadataChanged:self.configuration.config];
         [self metadataChanged:self.state];
+        _pluginClient = [[BugsnagPluginClient alloc] initWithPlugins:self.configuration.plugins];
     }
     return self;
 }
@@ -342,6 +349,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)start {
+    [self.pluginClient loadPlugins];
     [self.crashSentry install:self.configuration
                     apiClient:self.errorReportApiClient
                       onCrash:&BSSerializeDataCrashHandler];
