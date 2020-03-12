@@ -19,7 +19,6 @@
 		0061D84924067AF80041C068 /* BSG_SSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 0061D84524067AF70041C068 /* BSG_SSKeychain.m */; };
 		0061D84A24067AF80041C068 /* BSG_SSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 0061D84524067AF70041C068 /* BSG_SSKeychain.m */; };
 		0061D84B24067AF80041C068 /* BSG_SSKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 0061D84624067AF80041C068 /* BSG_SSKeychain.h */; };
-		0089B7012419479900D5A7F2 /* BugsnagAddOnSessionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0089B7002419479900D5A7F2 /* BugsnagAddOnSessionTests.m */; };
 		009131BC23F46279000810D9 /* BugsnagMetadataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 009131BB23F46279000810D9 /* BugsnagMetadataTests.m */; };
 		009131BE23F5884E000810D9 /* BugsnagBaseUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 009131BD23F5884E000810D9 /* BugsnagBaseUnitTest.m */; };
 		00D7ACAD23E9C63000FBE4A7 /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACAC23E9C63000FBE4A7 /* BugsnagTests.m */; };
@@ -430,7 +429,6 @@
 		0061D84424067AF70041C068 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		0061D84524067AF70041C068 /* BSG_SSKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSG_SSKeychain.m; sourceTree = "<group>"; };
 		0061D84624067AF80041C068 /* BSG_SSKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSG_SSKeychain.h; sourceTree = "<group>"; };
-		0089B7002419479900D5A7F2 /* BugsnagAddOnSessionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagAddOnSessionTests.m; path = ../../Tests/BugsnagAddOnSessionTests.m; sourceTree = "<group>"; };
 		009131BB23F46279000810D9 /* BugsnagMetadataTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagMetadataTests.m; path = ../../Tests/BugsnagMetadataTests.m; sourceTree = "<group>"; };
 		009131BD23F5884E000810D9 /* BugsnagBaseUnitTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagBaseUnitTest.m; path = ../../Tests/BugsnagBaseUnitTest.m; sourceTree = "<group>"; };
 		009131BF23F58930000810D9 /* BugsnagBaseUnitTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagBaseUnitTest.h; path = ../../Tests/BugsnagBaseUnitTest.h; sourceTree = "<group>"; };
@@ -805,7 +803,6 @@
 				00D7ACAC23E9C63000FBE4A7 /* BugsnagTests.m */,
 				00F9393723FC4F63008C7073 /* BugsnagTestsDummyClass.h */,
 				00F9393823FC4F64008C7073 /* BugsnagTestsDummyClass.m */,
-				0089B7002419479900D5A7F2 /* BugsnagAddOnSessionTests.m */,
 			);
 			name = Tests;
 			path = BugsnagTests;
@@ -1307,7 +1304,6 @@
 				E77316E31F73E89E00A14F06 /* BugsnagHandledStateTest.m in Sources */,
 				009131BE23F5884E000810D9 /* BugsnagBaseUnitTest.m in Sources */,
 				E70EE0961FD7071F00FA745C /* FileBasedTestCase.m in Sources */,
-				0089B7012419479900D5A7F2 /* BugsnagAddOnSessionTests.m in Sources */,
 				E7B3291A1FD707EC0098FC47 /* KSCrashReportConverter_Tests.m in Sources */,
 				E733A76F1FD709B7003EAA29 /* KSCrashReportStore_Tests.m in Sources */,
 				E70EE0781FD7039E00FA745C /* RFC3339DateTool_Tests.m in Sources */,

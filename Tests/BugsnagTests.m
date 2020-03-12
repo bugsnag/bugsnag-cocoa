@@ -264,4 +264,52 @@
     [self waitForExpectations:@[expectation2] timeout:1.0];
 }
 
+- (void)testAddOnSessionBlock {
+    
+    __block int called = 0; // A counter
+
+    __block XCTestExpectation *expectation1 = [self expectationWithDescription:@"Remove On Session Block 2X"];
+    __block XCTestExpectation *expectation2 = [self expectationWithDescription:@"Remove On Session Block 3X"];
+    expectation2.inverted = YES;
+    
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    configuration.autoTrackSessions = NO;
+    
+    // non-sending bugsnag
+    [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
+        return false;
+    }];
+
+    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+        switch (called) {
+        case 0:
+            [expectation1 fulfill];
+            break;
+        case 1:
+            [expectation2 fulfill];
+            break;
+        }
+    };
+
+    // NOTE: Due to test conditions the state of the Bugsnag/client class is indeterminate.
+    //       We *should* be able to test that pre-start() calls to add/removeOnSessionBlock()
+    //       do nothing, but actually we can't guarantee this.  For now we don't test this.
+    
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+    [Bugsnag pauseSession];
+
+    [Bugsnag addOnSessionBlock:sessionBlock];
+    [Bugsnag startSession];
+    [self waitForExpectations:@[expectation1] timeout:1.0];
+
+    [Bugsnag pauseSession];
+    called++;
+
+    [Bugsnag removeOnSessionBlock:sessionBlock];
+    [Bugsnag startSession];
+    // This expectation should also NOT be met
+    [self waitForExpectations:@[expectation2] timeout:1.0];
+}
+
 @end
