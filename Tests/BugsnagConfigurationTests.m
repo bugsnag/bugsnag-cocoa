@@ -1,32 +1,243 @@
-#import "Bugsnag.h"
-#import "BugsnagSessionTracker.h"
-#import "BugsnagUser.h"
+/**
+ * Unit test the BugsnagConfiguration class
+ */
 
 #import <XCTest/XCTest.h>
 #import "BugsnagTestConstants.h"
+
+#import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagCrashSentry.h"
-#import "BSG_KSCrashType.h"
 #import "BugsnagKeys.h"
+#import "BugsnagSessionTracker.h"
+#import "BugsnagUser.h"
+#import "BSG_KSCrashType.h"
 #import "BSG_SSKeychain.h"
+
+
+// =============================================================================
+// MARK: - Required private methods
+// =============================================================================
 
 @interface BugsnagConfiguration ()
 - (void)deletePersistedUserData;
-@end
-
-@interface BugsnagConfigurationTests : XCTestCase
 @end
 
 @interface BugsnagCrashSentry ()
 - (BSG_KSCrashType)mapKSToBSGCrashTypes:(BSGErrorType)bsgCrashMask;
 @end
 
+// =============================================================================
+// MARK: - Tests
+// =============================================================================
+
+@interface BugsnagConfigurationTests : XCTestCase
+@end
+
 @implementation BugsnagConfigurationTests
+
+// =============================================================================
+// MARK: - Session-related
+// =============================================================================
 
 - (void)testDefaultSessionNotNil {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
     XCTAssertNotNil(config.session);
 }
+
+- (void)testDefaultSessionConfig {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    XCTAssertTrue([config autoTrackSessions]);
+}
+
+- (void)testSessionApiHeaders {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    NSDictionary *headers = [config sessionApiHeaders];
+    XCTAssertEqualObjects(config.apiKey, headers[@"Bugsnag-Api-Key"]);
+    XCTAssertNotNil(headers[@"Bugsnag-Sent-At"]);
+    XCTAssertNotNil(headers[@"Bugsnag-Payload-Version"]);
+}
+
+- (void)testSessionEndpoints {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    
+    // Default endpoints
+    XCTAssertEqualObjects([NSURL URLWithString:@"https://sessions.bugsnag.com"], config.sessionURL);
+    
+    // Test overriding the session endpoint (use dummy endpoints to avoid hitting production)
+    [config setEndpointsForNotify:@"http://localhost:1234" sessions:@"http://localhost:8000"];
+    XCTAssertEqualObjects([NSURL URLWithString:@"http://localhost:8000"], config.sessionURL);
+}
+
+- (void)testSetEmptySessionsEndpoint {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    [config setEndpointsForNotify:@"http://notify.example.com" sessions:@""];
+    BugsnagSessionTracker *sessionTracker
+            = [[BugsnagSessionTracker alloc] initWithConfig:config postRecordCallback:nil];
+
+    XCTAssertNil(sessionTracker.runningSession);
+    [sessionTracker startNewSession];
+    XCTAssertNil(sessionTracker.runningSession);
+}
+
+- (void)testSetMalformedSessionsEndpoint {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    [config setEndpointsForNotify:@"http://notify.example.com" sessions:@"f"];
+    BugsnagSessionTracker *sessionTracker
+            = [[BugsnagSessionTracker alloc] initWithConfig:config postRecordCallback:nil];
+
+    XCTAssertNil(sessionTracker.runningSession);
+    [sessionTracker startNewSession];
+    XCTAssertNil(sessionTracker.runningSession);
+}
+
+/**
+ * Test that onSession blocks get called once added
+ */
+- (void)testAddOnSessionBlock {
+    
+    // Setup
+    __block XCTestExpectation *expectation = [self expectationWithDescription:@"Remove On Session Block"];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+        // We expect the session block to be called
+        [expectation fulfill];
+    };
+    [config addOnSessionBlock:sessionBlock];
+    XCTAssertEqual([[config onSessionBlocks] count], 1);
+    
+    // Call onSession blocks
+    [Bugsnag startBugsnagWithConfiguration:config];
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+}
+
+/**
+ * Test that onSession blocks do not get called once they've been removed
+ */
+- (void)testRemoveOnSessionBlock {
+    // Setup
+    // We expect NOT to be called
+    __block XCTestExpectation *calledExpectation = [self expectationWithDescription:@"Remove On Session Block"];
+    calledExpectation.inverted = YES;
+
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+        [calledExpectation fulfill];
+    };
+    
+    // It's there (and from other tests we know it gets called) and then it's not there
+    [config addOnSessionBlock:sessionBlock];
+    XCTAssertEqual([[config onSessionBlocks] count], 1);
+    [config removeOnSessionBlock:sessionBlock];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+
+    [Bugsnag startBugsnagWithConfiguration:config];
+
+    // Wait a second NOT to be called
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+}
+/**
+ * Test that an onSession block is called after being added, then NOT called after being removed.
+ * This test could be expanded to verify the behaviour when multiple blocks are added.
+ */
+- (void)testAddOnSessionBlockThenRemove {
+    
+    __block int called = 0; // A counter
+    
+    // Setup
+    __block XCTestExpectation *expectation1 = [self expectationWithDescription:@"Remove On Session Block 1"];
+    __block XCTestExpectation *expectation2 = [self expectationWithDescription:@"Remove On Session Block 2"];
+    __block XCTestExpectation *expectation3 = [self expectationWithDescription:@"Remove On Session Block 3"];
+    expectation3.inverted = YES;
+    __block XCTestExpectation *expectation4 = [self expectationWithDescription:@"Remove On Session Block 4"];
+    expectation4.inverted = YES;
+
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+    
+    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+        switch (called) {
+        case 0:
+            [expectation1 fulfill];
+            break;
+        case 1:
+            [expectation2 fulfill];
+            break;
+        case 2:
+            // Should NOT be called
+            [expectation3 fulfill];
+            break;
+        case 3:
+            // Should NOT be called
+            [expectation4 fulfill];
+            break;
+        }
+    };
+    
+    [config addOnSessionBlock:sessionBlock];
+    XCTAssertEqual([[config onSessionBlocks] count], 1);
+    
+    // Call onSession blocks
+    [Bugsnag startBugsnagWithConfiguration:config];
+    [self waitForExpectations:@[expectation1] timeout:1.0];
+    
+    // Check it's called on new session start
+    [Bugsnag pauseSession];
+    called++;
+    [Bugsnag startSession];
+    [self waitForExpectations:@[expectation2] timeout:1.0];
+
+    // Check it's NOT called once the block's deleted
+    [Bugsnag pauseSession];
+    called++;
+    [config removeOnSessionBlock:sessionBlock];
+    [Bugsnag startSession];
+    [self waitForExpectations:@[expectation3] timeout:1.0];
+    
+    // Check it's NOT called on session resume
+    [Bugsnag pauseSession];
+    called++;
+    [config addOnSessionBlock:sessionBlock];
+    [Bugsnag resumeSession];
+    [self waitForExpectations:@[expectation4] timeout:1.0];
+}
+
+/**
+ * Make sure slightly invalid removals and duplicate additions don't break things
+ */
+- (void)testRemoveNonexistentOnSessionBlocks {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+    BugsnagOnSessionBlock sessionBlock1 = ^(NSMutableDictionary * _Nonnull sessionPayload) {};
+    BugsnagOnSessionBlock sessionBlock2 = ^(NSMutableDictionary * _Nonnull sessionPayload) {};
+    
+    [config addOnSessionBlock:sessionBlock1];
+    XCTAssertEqual([[config onSessionBlocks] count], 1);
+    [config removeOnSessionBlock:sessionBlock2];
+    XCTAssertEqual([[config onSessionBlocks] count], 1);
+    [config removeOnSessionBlock:sessionBlock1];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+    [config removeOnSessionBlock:sessionBlock2];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+    [config removeOnSessionBlock:sessionBlock1];
+    XCTAssertEqual([[config onSessionBlocks] count], 0);
+
+    [config addOnSessionBlock:sessionBlock1];
+    XCTAssertEqual([[config onSessionBlocks] count], 1);
+    [config addOnSessionBlock:sessionBlock1];
+    XCTAssertEqual([[config onSessionBlocks] count], 2);
+    [config addOnSessionBlock:sessionBlock1];
+    XCTAssertEqual([[config onSessionBlocks] count], 3);
+}
+
+// =============================================================================
+// MARK: - Release stage-related
+// =============================================================================
 
 - (void)testNotifyReleaseStagesDefaultSends {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
@@ -77,101 +288,9 @@
 #endif
 }
 
-- (void)testDefaultSessionConfig {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
-    XCTAssertTrue([config autoTrackSessions]);
-}
-
-/**
- * Test correct population of an NSError in the case of an invalid apiKey
- */
--(void)testDesignatedInitializerInvalidApiKey {
-    NSError *error;
-    BugsnagConfiguration *invalidApiConfig = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_16CHAR error:&error];
-    XCTAssertNil(invalidApiConfig);
-    XCTAssertNotNil(error);
-    XCTAssertEqual([error domain], BSGConfigurationErrorDomain);
-    XCTAssertEqual([error code], BSGConfigurationErrorInvalidApiKey);
-    
-    XCTAssertTrue([[error domain] isEqualToString:@"com.Bugsnag.CocoaNotifier.Configuration"]);
-    XCTAssertEqual([error code], 0);
-
-// As per the docs the behaviour varies by platform
-//     https://developer.apple.com/documentation/foundation/nserror/1411580-userinfo?language=objc
-#if TARGET_OS_MAC
-    XCTAssertTrue([[error userInfo] isKindOfClass:[NSDictionary class]]);
-    XCTAssertEqual([(NSDictionary *)[error userInfo] count], 1);
-#else
-    XCTAssertNil([error userInfo]);
-#endif
-}
-
-/**
-* Test NSError is not populated in the case of a valid apiKey
-*/
--(void)testDesignatedInitializerValidApiKey {
-    NSError *error;
-    BugsnagConfiguration *validApiConfig1 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
-    XCTAssertNotNil(validApiConfig1);
-    XCTAssertNil(error);
-    XCTAssertEqual([validApiConfig1 apiKey], DUMMY_APIKEY_32CHAR_1);
-    
-    BugsnagConfiguration *validApiConfig2 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_2 error:nil];
-    XCTAssertNotNil(validApiConfig2);
-    XCTAssertNil(error);
-    XCTAssertEqual([validApiConfig2 apiKey], DUMMY_APIKEY_32CHAR_2);
-}
-
-/**
- * [BugsnagConfiguration init] is explicitly made unavailable.
- * Test that it throws if it *is* called.  An explanation of the reason for
- * the slightly involved code to call the method is given here (hint: ARC):
- *
- *     https://stackoverflow.com/a/20058585/2431627
- */
--(void)testUnavailableConvenienceInitializer {
-    BugsnagConfiguration *config = [BugsnagConfiguration alloc];
-    SEL selector = NSSelectorFromString(@"init");
-    IMP imp = [config methodForSelector:selector];
-    void (*func)(id, SEL) = (void *)imp;
-    XCTAssertThrows(func(config, selector));
-}
-
-- (void)testDefaultReportOOMs {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
-#if DEBUG
-    XCTAssertFalse([config enabledErrorTypes] & BSGErrorTypesOOMs);
-#else
-    XCTAssertTrue([config enabledErrorTypes] & BSGErrorTypesOOMs);
-#endif
-}
-
-- (void)testErrorApiHeaders {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
-    NSDictionary *headers = [config errorApiHeaders];
-    XCTAssertEqualObjects(config.apiKey, headers[@"Bugsnag-Api-Key"]);
-    XCTAssertNotNil(headers[@"Bugsnag-Sent-At"]);
-    XCTAssertNotNil(headers[@"Bugsnag-Payload-Version"]);
-}
-
-- (void)testSessionApiHeaders {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
-    NSDictionary *headers = [config sessionApiHeaders];
-    XCTAssertEqualObjects(config.apiKey, headers[@"Bugsnag-Api-Key"]);
-    XCTAssertNotNil(headers[@"Bugsnag-Sent-At"]);
-    XCTAssertNotNil(headers[@"Bugsnag-Payload-Version"]);
-}
-
-- (void)testSessionEndpoints {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
-    
-    // Default endpoints
-    XCTAssertEqualObjects([NSURL URLWithString:@"https://sessions.bugsnag.com"], config.sessionURL);
-    
-    // Test overriding the session endpoint (use dummy endpoints to avoid hitting production)
-    [config setEndpointsForNotify:@"http://localhost:1234" sessions:@"http://localhost:8000"];
-    XCTAssertEqualObjects([NSURL URLWithString:@"http://localhost:8000"], config.sessionURL);
-}
+// =============================================================================
+// MARK: - Endpoint-related
+// =============================================================================
 
 - (void)testNotifyEndpoint {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
@@ -224,118 +343,9 @@
 #endif
 }
 
-- (void)testSetEmptySessionsEndpoint {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
-    [config setEndpointsForNotify:@"http://notify.example.com" sessions:@""];
-    BugsnagSessionTracker *sessionTracker
-            = [[BugsnagSessionTracker alloc] initWithConfig:config postRecordCallback:nil];
-
-    XCTAssertNil(sessionTracker.runningSession);
-    [sessionTracker startNewSession];
-    XCTAssertNil(sessionTracker.runningSession);
-}
-
-- (void)testSetMalformedSessionsEndpoint {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
-    [config setEndpointsForNotify:@"http://notify.example.com" sessions:@"f"];
-    BugsnagSessionTracker *sessionTracker
-            = [[BugsnagSessionTracker alloc] initWithConfig:config postRecordCallback:nil];
-
-    XCTAssertNil(sessionTracker.runningSession);
-    [sessionTracker startNewSession];
-    XCTAssertNil(sessionTracker.runningSession);
-}
-
-- (void)testUser {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
-    
-    [config setUser:@"123" withName:@"foo" andEmail:@"test@example.com"];
-    
-    XCTAssertEqualObjects(@"123", config.currentUser.userId);
-    XCTAssertEqualObjects(@"foo", config.currentUser.name);
-    XCTAssertEqualObjects(@"test@example.com", config.currentUser.emailAddress);
-}
-
-- (void)testApiKeySetter {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
-    XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
-    config.apiKey = DUMMY_APIKEY_32CHAR_1;
-    XCTAssertEqual(DUMMY_APIKEY_32CHAR_1, config.apiKey);
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnonnull"
-    XCTAssertThrows(config.apiKey = nil);
-#pragma clang diagnostic pop
-
-    XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
-    
-    XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
-    XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
-}
-
-- (void)testHasValidApiKey {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
-
-    XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
-    XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
-    
-    config.apiKey = DUMMY_APIKEY_32CHAR_2;
-    XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_2]);
-}
-
--(void)testBSGErrorTypes {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
-    
-    // Test all are set by default
-    BSGErrorType enabledErrors = BSGErrorTypesNSExceptions
-                               | BSGErrorTypesSignals
-                               | BSGErrorTypesMach
-                               | BSGErrorTypesCPP;
-// See config init for details.  OOMs are disabled in debug.
-#if !DEBUG
-    enabledErrors |= BSGErrorTypesOOMs;
-#endif
-    
-    XCTAssertEqual([config enabledErrorTypes], enabledErrors);
-    
-    // Test that we can set it
-    config.enabledErrorTypes = BSGErrorTypesOOMs | BSGErrorTypesNSExceptions;
-    XCTAssertEqual([config enabledErrorTypes], BSGErrorTypesOOMs | BSGErrorTypesNSExceptions);
-}
-
-/**
- * Test the mapping between BSGErrorTypes and KSCrashTypes
- */
--(void)testCrashTypeMapping {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
-    BugsnagCrashSentry *sentry = [BugsnagCrashSentry new];
-    BSG_KSCrashType crashTypes = BSG_KSCrashTypeNSException
-                               | BSG_KSCrashTypeMachException
-                               | BSG_KSCrashTypeSignal
-                               | BSG_KSCrashTypeCPPException;
-    
-    XCTAssertEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
-    
-    crashTypes = crashTypes | BSG_KSCrashTypeUserReported;
-
-    XCTAssertNotEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
-    
-    // Check partial sets
-    BSGErrorType partialErrors = BSGErrorTypesNSExceptions | BSGErrorTypesCPP;
-    crashTypes = BSG_KSCrashTypeNSException | BSG_KSCrashTypeCPPException;
-    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
-    
-    partialErrors = BSGErrorTypesNSExceptions | BSGErrorTypesSignals;
-    crashTypes = BSG_KSCrashTypeNSException | BSG_KSCrashTypeSignal;
-    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
-
-    partialErrors = BSGErrorTypesCPP | BSGErrorTypesSignals;
-    crashTypes = BSG_KSCrashTypeCPPException | BSG_KSCrashTypeSignal;
-    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
-}
-    
-// MARK: - BEGIN User persistence tests
-
+// =============================================================================
+// MARK: - User persistence tests
+// =============================================================================
 /**
  * We'd like to test user persistence here but we're not able to.  Keychain access requires correct
  * entitlements, and these can only be associated with an application, not a framework.  Creating a
@@ -524,6 +534,170 @@
     XCTAssertFalse(config.persistUser);
     [config setPersistUser:true];
     XCTAssertTrue(config.persistUser);
+}
+
+// =============================================================================
+// MARK: - Other tests
+// =============================================================================
+
+/**
+ * Test correct population of an NSError in the case of an invalid apiKey
+ */
+-(void)testDesignatedInitializerInvalidApiKey {
+    NSError *error;
+    BugsnagConfiguration *invalidApiConfig = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_16CHAR error:&error];
+    XCTAssertNil(invalidApiConfig);
+    XCTAssertNotNil(error);
+    XCTAssertEqual([error domain], BSGConfigurationErrorDomain);
+    XCTAssertEqual([error code], BSGConfigurationErrorInvalidApiKey);
+    
+    XCTAssertTrue([[error domain] isEqualToString:@"com.Bugsnag.CocoaNotifier.Configuration"]);
+    XCTAssertEqual([error code], 0);
+
+// As per the docs the behaviour varies by platform
+//     https://developer.apple.com/documentation/foundation/nserror/1411580-userinfo?language=objc
+#if TARGET_OS_MAC
+    XCTAssertTrue([[error userInfo] isKindOfClass:[NSDictionary class]]);
+    XCTAssertEqual([(NSDictionary *)[error userInfo] count], 1);
+#else
+    XCTAssertNil([error userInfo]);
+#endif
+}
+
+/**
+* Test NSError is not populated in the case of a valid apiKey
+*/
+-(void)testDesignatedInitializerValidApiKey {
+    NSError *error;
+    BugsnagConfiguration *validApiConfig1 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    XCTAssertNotNil(validApiConfig1);
+    XCTAssertNil(error);
+    XCTAssertEqual([validApiConfig1 apiKey], DUMMY_APIKEY_32CHAR_1);
+    
+    BugsnagConfiguration *validApiConfig2 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_2 error:nil];
+    XCTAssertNotNil(validApiConfig2);
+    XCTAssertNil(error);
+    XCTAssertEqual([validApiConfig2 apiKey], DUMMY_APIKEY_32CHAR_2);
+}
+
+/**
+ * [BugsnagConfiguration init] is explicitly made unavailable.
+ * Test that it throws if it *is* called.  An explanation of the reason for
+ * the slightly involved code to call the method is given here (hint: ARC):
+ *
+ *     https://stackoverflow.com/a/20058585/2431627
+ */
+-(void)testUnavailableConvenienceInitializer {
+    BugsnagConfiguration *config = [BugsnagConfiguration alloc];
+    SEL selector = NSSelectorFromString(@"init");
+    IMP imp = [config methodForSelector:selector];
+    void (*func)(id, SEL) = (void *)imp;
+    XCTAssertThrows(func(config, selector));
+}
+
+- (void)testDefaultReportOOMs {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+#if DEBUG
+    XCTAssertFalse([config enabledErrorTypes] & BSGErrorTypesOOMs);
+#else
+    XCTAssertTrue([config enabledErrorTypes] & BSGErrorTypesOOMs);
+#endif
+}
+
+- (void)testErrorApiHeaders {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    NSDictionary *headers = [config errorApiHeaders];
+    XCTAssertEqualObjects(config.apiKey, headers[@"Bugsnag-Api-Key"]);
+    XCTAssertNotNil(headers[@"Bugsnag-Sent-At"]);
+    XCTAssertNotNil(headers[@"Bugsnag-Payload-Version"]);
+}
+
+- (void)testUser {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    
+    [config setUser:@"123" withName:@"foo" andEmail:@"test@example.com"];
+    
+    XCTAssertEqualObjects(@"123", config.currentUser.userId);
+    XCTAssertEqualObjects(@"foo", config.currentUser.name);
+    XCTAssertEqualObjects(@"test@example.com", config.currentUser.emailAddress);
+}
+
+- (void)testApiKeySetter {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
+    config.apiKey = DUMMY_APIKEY_32CHAR_1;
+    XCTAssertEqual(DUMMY_APIKEY_32CHAR_1, config.apiKey);
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    XCTAssertThrows(config.apiKey = nil);
+#pragma clang diagnostic pop
+
+    XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
+    
+    XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
+    XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
+}
+
+- (void)testHasValidApiKey {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+
+    XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
+    XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
+    
+    config.apiKey = DUMMY_APIKEY_32CHAR_2;
+    XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_2]);
+}
+
+-(void)testBSGErrorTypes {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    
+    // Test all are set by default
+    BSGErrorType enabledErrors = BSGErrorTypesNSExceptions
+                               | BSGErrorTypesSignals
+                               | BSGErrorTypesMach
+                               | BSGErrorTypesCPP;
+// See config init for details.  OOMs are disabled in debug.
+#if !DEBUG
+    enabledErrors |= BSGErrorTypesOOMs;
+#endif
+    
+    XCTAssertEqual([config enabledErrorTypes], enabledErrors);
+    
+    // Test that we can set it
+    config.enabledErrorTypes = BSGErrorTypesOOMs | BSGErrorTypesNSExceptions;
+    XCTAssertEqual([config enabledErrorTypes], BSGErrorTypesOOMs | BSGErrorTypesNSExceptions);
+}
+
+/**
+ * Test the mapping between BSGErrorTypes and KSCrashTypes
+ */
+-(void)testCrashTypeMapping {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    BugsnagCrashSentry *sentry = [BugsnagCrashSentry new];
+    BSG_KSCrashType crashTypes = BSG_KSCrashTypeNSException
+                               | BSG_KSCrashTypeMachException
+                               | BSG_KSCrashTypeSignal
+                               | BSG_KSCrashTypeCPPException;
+    
+    XCTAssertEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
+    
+    crashTypes = crashTypes | BSG_KSCrashTypeUserReported;
+
+    XCTAssertNotEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
+    
+    // Check partial sets
+    BSGErrorType partialErrors = BSGErrorTypesNSExceptions | BSGErrorTypesCPP;
+    crashTypes = BSG_KSCrashTypeNSException | BSG_KSCrashTypeCPPException;
+    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
+    
+    partialErrors = BSGErrorTypesNSExceptions | BSGErrorTypesSignals;
+    crashTypes = BSG_KSCrashTypeNSException | BSG_KSCrashTypeSignal;
+    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
+
+    partialErrors = BSGErrorTypesCPP | BSGErrorTypesSignals;
+    crashTypes = BSG_KSCrashTypeCPPException | BSG_KSCrashTypeSignal;
+    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
 }
 
 @end

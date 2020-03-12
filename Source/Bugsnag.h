@@ -202,7 +202,17 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (void)clearBreadcrumbs;
 
-+ (NSDateFormatter *_Nonnull)payloadDateFormatter;
+/**
+ * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.
+ * By default, we'll keep and send the 20 most recent breadcrumb log
+ * messages.
+ *
+ * @param capacity max number of breadcrumb log messages to send
+ */
++ (void)setBreadcrumbCapacity:(NSUInteger)capacity
+        __deprecated_msg("Use [BugsnagConfiguration setMaxBreadcrumbs:] instead");
+
+// MARK: - Session
 
 /**
  * Starts tracking a new session.
@@ -282,14 +292,33 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
     NS_SWIFT_NAME(getMetadata(_:key:));
 
 /**
- * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.
- * By default, we'll keep and send the 20 most recent breadcrumb log
- * messages.
+ * Remove a key/value from a named matadata section.  If either the section or the
+ * key do not exist no action will occur.
  *
- * @param capacity max number of breadcrumb log messages to send
+ * @param sectionName The name of the section containing the value
+ * @param key The key to remove
  */
-+ (void)setBreadcrumbCapacity:(NSUInteger)capacity
-        __deprecated_msg("Use [BugsnagConfiguration setMaxBreadcrumbs:] instead");
++ (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+                       withKey:(NSString *_Nonnull)key
+    NS_SWIFT_NAME(clearMetadata(section:key:));
+
+/**
+* Add a callback that would be invoked before a session is sent to Bugsnag.
+*
+* @param block The block to be added.
+*/
++ (void)addOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block;
+
+/**
+ * Remove a callback that would be invoked before a session is sent to Bugsnag.
+ *
+ * @param block The block to be removed.
+ */
++ (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull )block;
+
+// MARK: - Other methods
+
++ (NSDateFormatter *_Nonnull)payloadDateFormatter;
 
 /**
  * Replicates BugsnagConfiguration.context
@@ -304,17 +333,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
     NS_SWIFT_NAME(clearMetadata(section:));
-
-/**
- * Remove a key/value from a named matadata section.  If either the section or the
- * key do not exist no action will occur.
- *
- * @param sectionName The name of the section containing the value
- * @param key The key to remove
- */
-+ (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
-                       withKey:(NSString *_Nonnull)key
-    NS_SWIFT_NAME(clearMetadata(section:key:));
 
 /**
  *  Set user metadata
