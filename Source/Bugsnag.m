@@ -342,11 +342,6 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     [[self configuration] removeOnSendBlock:block];
 }
 
-+ (void)clearOnSendBlocks
-{
-    [[self configuration] clearOnSendBlocks];
-}
-
 @end
 
 //

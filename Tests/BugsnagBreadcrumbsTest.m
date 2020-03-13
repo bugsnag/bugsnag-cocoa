@@ -296,9 +296,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     // Prevent sending events
     NSError *error;
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
-        [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
-            return false;
-        }];
+    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
     [Bugsnag startBugsnagWithConfiguration:configuration];
 
     NSDictionary *md1 = @{ @"x" : @"y"};
@@ -366,9 +364,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     // Prevent sending events
     NSError *error;
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
-        [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
-            return false;
-        }];
+    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
     [Bugsnag startBugsnagWithConfiguration:configuration];
 
     [Bugsnag leaveBreadcrumbWithMessage:@"message1"];

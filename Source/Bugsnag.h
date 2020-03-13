@@ -371,9 +371,4 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block;
 
-/**
- * Clear all onSend callbacks
- */
-+ (void)clearOnSendBlocks;
-
 @end

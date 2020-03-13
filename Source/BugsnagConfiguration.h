@@ -55,13 +55,11 @@ typedef void (^BugsnagOnErrorBlock)(BugsnagEvent *_Nonnull report);
  * onSendBlocks will be invoked on a dedicated
  * background queue, which will be different from the queue where the block was originally added.
  *
- *  @param rawEventData The raw event data written at crash time. This
- *                      includes data added in onError.
- *  @param reports      The report generated from the rawEventData
+ *  @param event The event report.
  *
- *  @return YES if the report should be sent
+ *  @return YES if the event should be sent
  */
-typedef bool (^BugsnagOnSendBlock)(NSDictionary *_Nonnull rawEventData, BugsnagEvent *_Nonnull reports);
+typedef bool (^BugsnagOnSendBlock)(BugsnagEvent *_Nonnull event);
 
 /**
  * A configuration block for modifying a session. Intended for internal usage only.
@@ -143,18 +141,6 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
  */
 @property(readonly, strong, nullable)
 BugsnagBreadcrumbs *breadcrumbs;
-
-/**
- *  Hooks for modifying crash reports before it is sent to Bugsnag
- */
-@property(readonly, strong, nullable)
-    NSArray<BugsnagOnSendBlock> *onSendBlocks;
-
-/**
- *  Hooks for modifying sessions before they are sent to Bugsnag. Intended for internal use only by React Native/Unity.
- */
-@property(readonly, strong, nullable)
-NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
 
 /**
  *  Optional handler invoked when an error or crash occurs
@@ -321,11 +307,6 @@ NSArray<BugsnagOnSessionBlock> *onSessionBlocks;
  * @param block The block to be removed.
  */
 - (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull )block;
-
-/**
- * Clear all callbacks
- */
-- (void)clearOnSendBlocks;
 
 /**
  *  Whether reports shoould be sent, based on release stage options

@@ -57,7 +57,15 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 @end
 
 @interface BugsnagConfiguration ()
+
+/**
+ *  Hooks for modifying crash reports before it is sent to Bugsnag
+ */
 @property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
+
+/**
+ *  Hooks for modifying sessions before they are sent to Bugsnag. Intended for internal use only by React Native/Unity.
+ */
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
 @end
 
@@ -196,10 +204,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 - (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull )block
 {
     [(NSMutableArray *)self.onSendBlocks removeObject:block];
-}
-
-- (void)clearOnSendBlocks {
-    [(NSMutableArray *)self.onSendBlocks removeAllObjects];
 }
 
 // =============================================================================

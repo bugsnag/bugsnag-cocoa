@@ -20,6 +20,8 @@
 // =============================================================================
 
 @interface BugsnagConfiguration ()
+@property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
+@property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
 - (void)deletePersistedUserData;
 @end
 
@@ -711,7 +713,7 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
     
-    BugsnagOnSendBlock block = ^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) { return false; };
+    BugsnagOnSendBlock block = ^bool(BugsnagEvent * _Nonnull event) { return false; };
     
     [configuration addOnSendBlock:block];
     [Bugsnag startBugsnagWithConfiguration:configuration];
@@ -731,8 +733,8 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
     
-    BugsnagOnSendBlock block1 = ^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) { return false; };
-    BugsnagOnSendBlock block2 = ^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) { return false; };
+    BugsnagOnSendBlock block1 = ^bool(BugsnagEvent * _Nonnull event) { return false; };
+    BugsnagOnSendBlock block2 = ^bool(BugsnagEvent * _Nonnull event) { return false; };
     
     // Add more than one
     [configuration addOnSendBlock:block1];
@@ -741,10 +743,6 @@
     [Bugsnag startBugsnagWithConfiguration:configuration];
     
     XCTAssertEqual([[configuration onSendBlocks] count], 2);
-    
-    // Remove both
-    [configuration clearOnSendBlocks];
-    XCTAssertEqual([[configuration onSendBlocks] count], 0);
 }
 
 @end

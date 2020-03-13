@@ -17,6 +17,10 @@
 + (BugsnagConfiguration *)configuration;
 @end
 
+@interface BugsnagConfiguration ()
+@property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
+@end
+
 @interface BugsnagTests : XCTestCase
 @end
 
@@ -29,9 +33,7 @@
     NSError *error;
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
     if (willNotify) {
-        [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
-            return false;
-        }];
+        [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
     }
     [Bugsnag startBugsnagWithConfiguration:configuration];
 }
@@ -125,11 +127,7 @@
 -(void)testBugsnagPauseSession {
     NSError *error;
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
-    [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData,
-                                            BugsnagEvent * _Nonnull reports)
-    {
-        return false;
-    }];
+    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
 
     [Bugsnag startBugsnagWithConfiguration:configuration];
 
@@ -147,11 +145,7 @@
     NSError *error;
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
     [configuration setContext:@"firstContext"];
-    [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData,
-                                            BugsnagEvent * _Nonnull reports)
-    {
-        return false;
-    }];
+    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
     
     [Bugsnag startBugsnagWithConfiguration:configuration];
 
@@ -235,9 +229,7 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
 
     // non-sending bugsnag
-    [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
-        return false;
-    }];
+    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
 
     BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
         switch (called) {
@@ -275,9 +267,7 @@
     configuration.autoTrackSessions = NO;
     
     // non-sending bugsnag
-    [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
-        return false;
-    }];
+    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
 
     BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
         switch (called) {
@@ -339,7 +329,8 @@
     expectation6.inverted = YES;
 
     // Two blocks that will get called (or not) when we notify()
-    BugsnagOnSendBlock block1 = ^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
+    BugsnagOnSendBlock block1 = ^bool(BugsnagEvent * _Nonnull event)
+    {
         switch (called) {
             case 0:
                 [expectation1 fulfill];
@@ -362,7 +353,8 @@
         return false;
     };
 
-    BugsnagOnSendBlock block2 = ^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
+    BugsnagOnSendBlock block2 = ^bool(BugsnagEvent * _Nonnull event)
+    {
         switch (called) {
             case 0:
                 [expectation2 fulfill];
@@ -409,18 +401,9 @@
     NSException *exception2 = [[NSException alloc] initWithName:@"exception1" reason:@"reason1" userInfo:nil];
     [Bugsnag notify:exception2];
     // One removed, should only call one
-    [self waitForExpectations:@[expectation3, expectation4] timeout:3.0];
+    [self waitForExpectations:@[expectation3, expectation4] timeout:1.0];
 
-    [Bugsnag clearOnSendBlocks];
-    called++;
-    
-    XCTAssertEqual(called, 2);
-    XCTAssertEqual([[[Bugsnag configuration] onSendBlocks] count], 0);
-    
-    NSException *exception3 = [[NSException alloc] initWithName:@"exception1" reason:@"reason1" userInfo:nil];
-    [Bugsnag notify:exception3];
-    // All removed, none called
-    [self waitForExpectations:@[expectation5, expectation6] timeout:3.0];
+    [self waitForExpectations:@[expectation5, expectation6] timeout:1.0];
 }
 
 @end
