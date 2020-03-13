@@ -349,7 +349,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)start {
-    [self.pluginClient loadPlugins];
     [self.crashSentry install:self.configuration
                     apiClient:self.errorReportApiClient
                       onCrash:&BSSerializeDataCrashHandler];
@@ -431,6 +430,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
     // notification not received in time on initial startup, so trigger manually
     [self willEnterForeground:self];
+    [self.pluginClient loadPlugins];
 }
 
 - (void)addTerminationObserver:(NSString *)name {
