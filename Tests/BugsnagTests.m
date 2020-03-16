@@ -401,7 +401,7 @@
     NSException *exception2 = [[NSException alloc] initWithName:@"exception1" reason:@"reason1" userInfo:nil];
     [Bugsnag notify:exception2];
     // One removed, should only call one
-    [self waitForExpectations:@[expectation3, expectation4] timeout:1.0];
+    [self waitForExpectations:@[expectation3, expectation4] timeout:5.0];
 
     [self waitForExpectations:@[expectation5, expectation6] timeout:1.0];
 }
