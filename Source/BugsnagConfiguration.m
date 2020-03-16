@@ -57,7 +57,15 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 @end
 
 @interface BugsnagConfiguration ()
+
+/**
+ *  Hooks for modifying crash reports before it is sent to Bugsnag
+ */
 @property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
+
+/**
+ *  Hooks for modifying sessions before they are sent to Bugsnag. Intended for internal use only by React Native/Unity.
+ */
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
 @property(nonatomic, readwrite, strong) NSMutableSet *plugins;
 @end
@@ -187,9 +195,22 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [self.metadata addAttribute:BSGKeyEmail withValue:user.emailAddress toTabWithName:BSGKeyUser];
 }
 
+// =============================================================================
+// MARK: - onSendBlock
+// =============================================================================
+
 - (void)addOnSendBlock:(BugsnagOnSendBlock)block {
     [(NSMutableArray *)self.onSendBlocks addObject:[block copy]];
 }
+
+- (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull )block
+{
+    [(NSMutableArray *)self.onSendBlocks removeObject:block];
+}
+
+// =============================================================================
+// MARK: - onSessionBlock
+// =============================================================================
 
 - (void)addOnSessionBlock:(BugsnagOnSessionBlock)block {
     [(NSMutableArray *)self.onSessionBlocks addObject:[block copy]];
@@ -197,10 +218,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 - (void)removeOnSessionBlock:(BugsnagOnSessionBlock)block {
     [(NSMutableArray *)self.onSessionBlocks removeObject:block];
-}
-
-- (void)clearOnSendBlocks {
-    [(NSMutableArray *)self.onSendBlocks removeAllObjects];
 }
 
 - (NSDictionary *)errorApiHeaders {

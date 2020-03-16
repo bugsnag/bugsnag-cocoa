@@ -63,7 +63,9 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (BOOL)appDidCrashLastLaunch;
 
+// =============================================================================
 // MARK: - Notify
+// =============================================================================
 
 /** Send a custom or caught exception to Bugsnag.
  *
@@ -156,7 +158,9 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
                        value:(id _Nullable)value
     NS_SWIFT_NAME(addMetadata(_:key:value:));
 
+// =============================================================================
 // MARK: - Breadcrumbs
+// =============================================================================
 
 /**
  * Leave a "breadcrumb" log message, representing an action that occurred
@@ -212,7 +216,9 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)setBreadcrumbCapacity:(NSUInteger)capacity
         __deprecated_msg("Use [BugsnagConfiguration setMaxBreadcrumbs:] instead");
 
+// =============================================================================
 // MARK: - Session
+// =============================================================================
 
 /**
  * Starts tracking a new session.
@@ -292,17 +298,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
     NS_SWIFT_NAME(getMetadata(_:key:));
 
 /**
- * Remove a key/value from a named matadata section.  If either the section or the
- * key do not exist no action will occur.
- *
- * @param sectionName The name of the section containing the value
- * @param key The key to remove
- */
-+ (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
-                       withKey:(NSString *_Nonnull)key
-    NS_SWIFT_NAME(clearMetadata(section:key:));
-
-/**
 * Add a callback that would be invoked before a session is sent to Bugsnag.
 *
 * @param block The block to be added.
@@ -316,7 +311,19 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull )block;
 
+// =============================================================================
 // MARK: - Other methods
+// =============================================================================
+/**
+ * Remove a key/value from a named matadata section.  If either the section or the
+ * key do not exist no action will occur.
+ *
+ * @param sectionName The name of the section containing the value
+ * @param key The key to remove
+ */
++ (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+                       withKey:(NSString *_Nonnull)key
+    NS_SWIFT_NAME(clearMetadata(section:key:));
 
 + (NSDateFormatter *_Nonnull)payloadDateFormatter;
 
@@ -344,5 +351,24 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)setUser:(NSString *_Nullable)userId
        withName:(NSString *_Nullable)name
        andEmail:(NSString *_Nullable)email;
+
+// =============================================================================
+// MARK: - onSend
+// =============================================================================
+
+/**
+ *  Add a callback to be invoked before a report is sent to Bugsnag, to
+ *  change the report contents as needed
+ *
+ *  @param block A block which returns YES if the report should be sent
+ */
++ (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block;
+
+/**
+ * Remove an onSend callback, if it exists
+ *
+ * @param block The block to remove
+ */
++ (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block;
 
 @end

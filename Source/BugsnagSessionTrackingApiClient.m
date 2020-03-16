@@ -11,6 +11,10 @@
 #import "BugsnagSession.h"
 #import "BSG_RFC3339DateTool.h"
 
+@interface BugsnagConfiguration ()
+@property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
+@end
+
 
 @implementation BugsnagSessionTrackingApiClient
 

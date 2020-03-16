@@ -310,6 +310,20 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     [[self configuration] removeOnSessionBlock:block];
 }
 
+// =============================================================================
+// MARK: - onSend
+// =============================================================================
+
++ (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
+{
+    [[self configuration] addOnSendBlock:block];
+}
+
++ (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
+{
+    [[self configuration] removeOnSendBlock:block];
+}
+
 @end
 
 //

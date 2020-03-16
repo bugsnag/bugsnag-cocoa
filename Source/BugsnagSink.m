@@ -39,6 +39,10 @@
 + (BugsnagClient *)client;
 @end
 
+@interface BugsnagConfiguration ()
+@property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
+@end
+
 @implementation BugsnagSink
 
 - (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient {
@@ -71,7 +75,7 @@
         BOOL shouldSend = YES;
         for (BugsnagOnSendBlock block in configuration.onSendBlocks) {
             @try {
-                shouldSend = block(report, bugsnagReport);
+                shouldSend = block(bugsnagReport);
                 if (!shouldSend)
                     break;
             } @catch (NSException *exception) {

@@ -20,6 +20,8 @@
 // =============================================================================
 
 @interface BugsnagConfiguration ()
+@property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
+@property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
 - (void)deletePersistedUserData;
 @end
 
@@ -698,6 +700,49 @@
     partialErrors = BSGErrorTypesCPP | BSGErrorTypesSignals;
     crashTypes = BSG_KSCrashTypeCPPException | BSG_KSCrashTypeSignal;
     XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
+}
+
+/**
+ * Test that removeOnSendBlock() performs as expected.
+ * Note: We don't test that set blocks are executed since this is tested elsewhere
+ * (e.g. in BugsnagBreadcrumbsTest)
+ */
+- (void) testRemoveOnSendBlock {
+    // Prevent sending events
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    XCTAssertEqual([[configuration onSendBlocks] count], 0);
+    
+    BugsnagOnSendBlock block = ^bool(BugsnagEvent * _Nonnull event) { return false; };
+    
+    [configuration addOnSendBlock:block];
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+    
+    XCTAssertEqual([[configuration onSendBlocks] count], 1);
+    
+    [configuration removeOnSendBlock:block];
+    XCTAssertEqual([[configuration onSendBlocks] count], 0);
+}
+
+/**
+ * Test that clearOnSendBlock() performs as expected.
+ */
+- (void) testClearOnSendBlock {
+    // Prevent sending events
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    XCTAssertEqual([[configuration onSendBlocks] count], 0);
+    
+    BugsnagOnSendBlock block1 = ^bool(BugsnagEvent * _Nonnull event) { return false; };
+    BugsnagOnSendBlock block2 = ^bool(BugsnagEvent * _Nonnull event) { return false; };
+    
+    // Add more than one
+    [configuration addOnSendBlock:block1];
+    [configuration addOnSendBlock:block2];
+    
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+    
+    XCTAssertEqual([[configuration onSendBlocks] count], 2);
 }
 
 @end

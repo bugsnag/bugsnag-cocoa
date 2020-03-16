@@ -15,11 +15,13 @@
 
 @interface Bugsnag ()
 + (BugsnagConfiguration *)configuration;
+@end
 
+@interface BugsnagConfiguration ()
+@property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
 @end
 
 @interface BugsnagTests : XCTestCase
-
 @end
 
 @implementation BugsnagTests
@@ -31,9 +33,7 @@
     NSError *error;
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
     if (willNotify) {
-        [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
-            return false;
-        }];
+        [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
     }
     [Bugsnag startBugsnagWithConfiguration:configuration];
 }
@@ -127,11 +127,7 @@
 -(void)testBugsnagPauseSession {
     NSError *error;
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
-    [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData,
-                                            BugsnagEvent * _Nonnull reports)
-    {
-        return false;
-    }];
+    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
 
     [Bugsnag startBugsnagWithConfiguration:configuration];
 
@@ -149,11 +145,7 @@
     NSError *error;
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
     [configuration setContext:@"firstContext"];
-    [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData,
-                                            BugsnagEvent * _Nonnull reports)
-    {
-        return false;
-    }];
+    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
     
     [Bugsnag startBugsnagWithConfiguration:configuration];
 
@@ -237,9 +229,7 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
 
     // non-sending bugsnag
-    [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
-        return false;
-    }];
+    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
 
     BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
         switch (called) {
@@ -277,9 +267,7 @@
     configuration.autoTrackSessions = NO;
     
     // non-sending bugsnag
-    [configuration addOnSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagEvent * _Nonnull reports) {
-        return false;
-    }];
+    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
 
     BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
         switch (called) {
@@ -310,6 +298,112 @@
     [Bugsnag startSession];
     // This expectation should also NOT be met
     [self waitForExpectations:@[expectation2] timeout:1.0];
+}
+
+/**
+ * Test all onSendBlock functionality at the Bugsnag level - add, remove and clear, along with
+ * expected execution of blocks.
+ */
+- (void) testOnSendBlocks {
+    __block int called = 0; // A counter
+    
+    // Prevent sending events
+    NSError *error;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    // We'll not be able to use the onSend -> false route to fail calls to notify()
+    [configuration setEndpointsForNotify:@"http://not.valid.bugsnag/not/an/endpoint"
+                                sessions:@"http://not.valid.bugsnag/not/an/endpoint"];
+    
+    // Ensure there's nothing from another test
+    XCTAssertEqual([[configuration onSendBlocks] count], 0);
+    
+    // We expect our onSend blocks to get/not get called a bunch of times
+    __block XCTestExpectation *expectation1 = [self expectationWithDescription:@"Remove On Session Block 1"];
+    __block XCTestExpectation *expectation2 = [self expectationWithDescription:@"Remove On Session Block 2"];
+    __block XCTestExpectation *expectation3 = [self expectationWithDescription:@"Remove On Session Block 3"];
+    __block XCTestExpectation *expectation4 = [self expectationWithDescription:@"Remove On Session Block 4"];
+    expectation4.inverted = YES;
+    __block XCTestExpectation *expectation5 = [self expectationWithDescription:@"Remove On Session Block 5"];
+    expectation5.inverted = YES;
+    __block XCTestExpectation *expectation6 = [self expectationWithDescription:@"Remove On Session Block 6"];
+    expectation6.inverted = YES;
+
+    // Two blocks that will get called (or not) when we notify()
+    BugsnagOnSendBlock block1 = ^bool(BugsnagEvent * _Nonnull event)
+    {
+        switch (called) {
+            case 0:
+                [expectation1 fulfill];
+                return true;
+                break;
+            case 1:
+                [expectation3 fulfill];
+                // Must return true to check block2/case 1
+                return true;
+                break;
+            case 2:
+                // Should never get here (clear() called)
+                XCTFail();
+                break;
+        }
+
+        // Should never get here (have returned or not been called)
+        [expectation5 fulfill];
+        XCTFail();
+        return false;
+    };
+
+    BugsnagOnSendBlock block2 = ^bool(BugsnagEvent * _Nonnull event)
+    {
+        switch (called) {
+            case 0:
+                [expectation2 fulfill];
+                return false;
+                break;
+            case 1:
+                // Should not reach here; will not be fulfilled.
+                [expectation4 fulfill];
+                XCTFail();
+                break;
+            case 2:
+                // Should not reach here; will not be fulfilled.
+                XCTFail();
+                break;
+        }
+        
+        // Should not ever reach here
+        [expectation6 fulfill];
+        XCTFail();
+        return false;
+    };
+
+    // Can't check for block behaviour before start(), so we don't
+    
+    [Bugsnag startBugsnagWithConfiguration:configuration];
+    
+    [Bugsnag addOnSendBlock:block1];
+    [Bugsnag addOnSendBlock:block2];
+
+    // Both added?
+    XCTAssertEqual([[[Bugsnag configuration] onSendBlocks] count], 2);
+    
+    NSException *exception1 = [[NSException alloc] initWithName:@"exception1" reason:@"reason1" userInfo:nil];
+    [Bugsnag notify:exception1];
+    
+    // Both called?
+    [self waitForExpectations:@[expectation1, expectation2] timeout:5.0];
+    
+    [Bugsnag removeOnSendBlock:block2];
+    XCTAssertEqual([[[Bugsnag configuration] onSendBlocks] count], 1);
+    called++;
+    XCTAssertEqual(called, 1);  
+    
+    NSException *exception2 = [[NSException alloc] initWithName:@"exception1" reason:@"reason1" userInfo:nil];
+    [Bugsnag notify:exception2];
+    // One removed, should only call one
+    [self waitForExpectations:@[expectation3, expectation4] timeout:5.0];
+
+    [self waitForExpectations:@[expectation5, expectation6] timeout:1.0];
 }
 
 @end
