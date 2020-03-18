@@ -40,6 +40,9 @@
 #import "BSGSerialization.h"
 #import "BugsnagEndpointConfiguration.h"
 #import "BugsnagErrorTypes.h"
+#import "BugsnagStateEvent.h"
+#import "BugsnagCollections.h"
+#import "BugsnagMetadataInternal.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -54,12 +57,10 @@ NSString * const kBugsnagUserEmailAddress = @"BugsnagUserEmailAddress";
 NSString * const kBugsnagUserName = @"BugsnagUserName";
 NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
+typedef void (^BugsnagObserverBlock)(BugsnagStateEvent *_Nonnull event);
+
 @interface Bugsnag ()
 + (BugsnagClient *)client;
-@end
-
-@interface BugsnagMetadata ()
-- (NSDictionary *_Nonnull)toDictionary;
 @end
 
 @interface BugsnagUser ()
@@ -80,6 +81,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
 @property(nonatomic, readwrite, strong) NSMutableArray *onBreadcrumbBlocks;
+@property(nonatomic, readwrite, strong) BugsnagObserverBlock block;
 @property(nonatomic, readwrite, strong) NSMutableSet *plugins;
 @property(readonly, retain, nullable) NSURL *notifyURL;
 @property(readonly, retain, nullable) NSURL *sessionURL;
@@ -155,7 +157,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setUser:self.user.id
         withEmail:self.user.email
           andName:self.user.name];
-
+    [copy setBlock:self.block];
     return copy;
 }
 
@@ -251,7 +253,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 #elif TARGET_OS_MAC
     _appType = @"macOS";
 #endif
-
     return self;
 }
 
@@ -280,6 +281,12 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
     // Add user info to the metadata
     [self setUserMetadataFromUser:self.user];
+
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+    BSGDictInsertIfNotNil(dict, self.user.id, @"id");
+    BSGDictInsertIfNotNil(dict, self.user.email, @"email");
+    BSGDictInsertIfNotNil(dict, self.user.name, @"name");
+    [self notifyObserver:[[BugsnagStateEvent alloc] initWithName:kStateEventUser data:dict]];
 }
 
 /**
@@ -585,6 +592,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
         [self.config addMetadata:newContext
                          withKey:BSGKeyContext
                        toSection:BSGKeyConfig];
+        [self notifyObserver:[[BugsnagStateEvent alloc] initWithName:kStateEventContext data:newContext]];
     }
 }
 
@@ -646,6 +654,16 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 - (void)addPlugin:(id<BugsnagPlugin> _Nonnull)plugin {
     [_plugins addObject:plugin];
+}
+
+- (void)notifyObserver:(BugsnagStateEvent *)event {
+    if (self.block != nil) {
+        self.block(event);
+    }
+}
+
+- (void)registerStateObserverWithBlock:(BugsnagObserverBlock _Nonnull)block {
+    self.block = block;
 }
 
 // MARK: - <MetadataStore>

@@ -8,19 +8,13 @@
 
 #import <XCTest/XCTest.h>
 #import "BugsnagMetadata.h"
+#import "BugsnagMetadataInternal.h"
 
 // MARK: - Expose tested-class internals
 
-@interface BugsnagMetadataTests : XCTestCase <BugsnagMetadataDelegate>
+@interface BugsnagMetadataTests : XCTestCase
 @property BOOL delegateCalled;
 @property BugsnagMetadata *metadata;
-@end
-
-@interface BugsnagMetadata ()
-@property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
-@property(atomic, strong) NSMutableDictionary *dictionary;
-- (NSDictionary *_Nonnull)toDictionary;
-- (id)deepCopy;
 @end
 
 // MARK: - DummyClass
@@ -48,18 +42,17 @@
 
 -(void) setUp {
     metadata = [[BugsnagMetadata alloc] init];
-    XCTAssertNil([metadata delegate]);
-    metadata.delegate = self;
+
+    __weak __typeof__(self) weakSelf = self;
+    [metadata addObserver:^(BugsnagMetadata *data) {
+        weakSelf.delegateCalled = YES;
+    }];
 }
 
 - (void)test_addMetadata_withName_creation {
-    
     // Creation
     delegateCalled = NO;
     XCTAssertNotNil(metadata);
-    XCTAssertFalse(delegateCalled, "Did not expect the delegate's metadataChanged: method to be called.");
-    
-    XCTAssertNotNil([metadata delegate]);
     XCTAssertFalse(delegateCalled, "Did not expect the delegate's metadataChanged: method to be called.");
 }
 
@@ -141,10 +134,10 @@
     XCTAssertEqual([[metadata dictionary] count], 1);
     NSMutableDictionary *tab = [[metadata getMetadataFromSection:@"NewTab"] mutableCopy];
     XCTAssertEqual([tab count], 1);
-    
+
     [metadata addMetadata:@{ @"thirdKey" : @"FooBarBaz" }
                 toSection:@"NewTab"];
-    
+
     tab = [[metadata getMetadataFromSection:@"NewTab"] mutableCopy];
     XCTAssertEqual([tab count], 2);
     XCTAssertEqual([[metadata dictionary] count], 1);
@@ -163,7 +156,10 @@
     
     // Check delegate method gets called
     delegateCalled = NO;
-    metadata.delegate = self;
+    __weak __typeof__(self) weakSelf = self;
+    [metadata addObserver:^(BugsnagMetadata *data) {
+        weakSelf.delegateCalled = YES;
+    }];
     [metadata addMetadata:@{@"key" : @"value"} toSection:@"OtherTab"];
     XCTAssertTrue(delegateCalled, "Expected the delegate's metadataChanged: method to be called.");
     delegateCalled = NO;
@@ -187,7 +183,10 @@
     
     // Once more with a delegate
     delegateCalled = NO;
-    metadata.delegate = self;
+    __weak __typeof__(self) weakSelf = self;
+    [metadata addObserver:^(BugsnagMetadata *data) {
+        weakSelf.delegateCalled = YES;
+    }];
     [metadata addMetadata:@{dummyObj : @"someValue"} toSection:@"invalidKeyTab"];
     XCTAssertEqual(metadata.dictionary.count, 0);
     XCTAssertFalse(delegateCalled);
@@ -249,19 +248,14 @@
 }
 
 // MARK: - <BugsnagMetadataDelegate>
-
-- (void)metadataChanged:(BugsnagMetadata * _Nonnull)metadata {
-    delegateCalled = YES;
-}
-
 - (void)testMetadataMutability {
     BugsnagMetadata *metadata = [BugsnagMetadata new];
-    
+
     // Immutable in, mutable out
     [metadata addMetadata:@{@"foo" : @"bar"} toSection:@"section1"];
     NSObject *metadata1 = [metadata getMetadataFromSection:@"section1"];
     XCTAssertTrue([metadata1 isKindOfClass:[NSMutableDictionary class]]);
-    
+
     // Mutable in, mutable out
     [metadata addMetadata:[@{@"foo" : @"bar"} mutableCopy] toSection:@"section2"];
     NSObject *metadata2 = [metadata getMetadataFromSection:@"section2"];
