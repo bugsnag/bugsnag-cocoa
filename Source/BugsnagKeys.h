@@ -43,6 +43,7 @@ static NSString *const BSGKeyLabel = @"label";
 static NSString *const BSGKeySeverityReason = @"severityReason";
 static NSString *const BSGKeyLogLevel = @"logLevel";
 static NSString *const BSGKeyOrientation = @"orientation";
+static NSString *const BSGKeyOrientationChange = @"Orientation change";
 static NSString *const BSGKeySimulatorModelId = @"SIMULATOR_MODEL_IDENTIFIER";
 static NSString *const BSGKeyFrameAddrFormat = @"0x%lx";
 static NSString *const BSGKeySymbolAddr = @"symbolAddress";

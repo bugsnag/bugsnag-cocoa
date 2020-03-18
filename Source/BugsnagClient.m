@@ -84,6 +84,10 @@ static char *crashSentinelPath = NULL;
 static NSUInteger handledCount;
 static NSUInteger unhandledCount;
 static bool hasRecordedSessions;
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+// The previous device orientation - iOS only
+static NSString *lastOrientation = NULL;
+#endif
 
 /**
  *  Handler executed when the application crashes. Writes information about the
@@ -376,7 +380,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                selector:@selector(orientationChanged:)
                    name:UIDeviceOrientationDidChangeNotification
                  object:nil];
-
+    
     [center addObserver:self
                selector:@selector(lowMemoryWarning:)
                    name:UIApplicationDidReceiveMemoryWarningNotification
@@ -776,10 +780,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)orientationChanged:(NSNotification *)notif {
     NSString *orientation;
-    UIDeviceOrientation deviceOrientation =
-        [UIDevice currentDevice].orientation;
+    
+    UIDeviceOrientation currentDeviceOrientation = [UIDevice currentDevice].orientation;
 
-    switch (deviceOrientation) {
+    switch (currentDeviceOrientation) {
     case UIDeviceOrientationPortraitUpsideDown:
         orientation = @"portraitupsidedown";
         break;
@@ -811,14 +815,26 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         [orientationNotifName isEqualToString:lastBreadcrumb[BSGKeyName]]) {
         NSDictionary *metadata = lastBreadcrumb[BSGKeyMetadata];
 
-        if ([orientation isEqualToString:metadata[BSGKeyOrientation]]) {
+        if ([orientation isEqualToString:metadata[BSGKeyOrientation]])
             return; // ignore duplicate orientation event
-        }
     }
 
-    [[self state] addAttribute:BSGKeyOrientation
-                     withValue:orientation
-                 toTabWithName:BSGKeyDeviceState];
+    // It's not a change
+    if ([orientation isEqualToString:lastOrientation])
+        return;
+
+    // We previously had an orientation
+    if (lastOrientation) {
+        [[self state] addAttribute:BSGKeyOrientationChange
+                         withValue:@{@"from" : lastOrientation,
+                                     @"to" : orientation}
+                     toTabWithName:BSGKeyDeviceState];
+    }
+    
+    // We shouldn't get here without orientation being set, but to be on the safe side:
+    if (orientation)
+        // Preserve the orientation
+        lastOrientation = orientation;
 }
 
 - (void)lowMemoryWarning:(NSNotification *)notif {
