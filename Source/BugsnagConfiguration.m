@@ -108,10 +108,11 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
                         error:(NSError * _Nullable __autoreleasing * _Nullable)error
 {
     if (! [BugsnagConfiguration isValidApiKey:apiKey]) {
-        *error = [NSError errorWithDomain:BSGConfigurationErrorDomain
-                                     code:BSGConfigurationErrorInvalidApiKey
-                                 userInfo:@{NSLocalizedDescriptionKey : @"Invalid API key.  Should be a 32-digit hex string."}];
-        
+        if (error != nil) {
+            *error = [NSError errorWithDomain:BSGConfigurationErrorDomain
+                code:BSGConfigurationErrorInvalidApiKey
+            userInfo:@{NSLocalizedDescriptionKey : @"Invalid API key.  Should be a 32-digit hex string."}];
+        }
         return nil;
     }
     
