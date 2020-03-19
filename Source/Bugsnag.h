@@ -171,15 +171,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message;
 
 /**
- *  Leave a "breadcrumb" log message with additional information about the
- *  environment at the time the breadcrumb was captured.
- *
- *  @param block configuration block
- */
-+ (void)leaveBreadcrumbWithBlock:
-    (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
-
-/**
  *  Leave a "breadcrumb" log message each time a notification with a provided
  *  name is received by the application
  *

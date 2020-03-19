@@ -9,14 +9,9 @@ class DiscardedBreadcrumbTypeScenario : Scenario {
     }
 
     override func run() {
-        Bugsnag.leaveBreadcrumb { crumb in
-            crumb.type = .log
-            crumb.message = "Noisy event"
-        }
-        Bugsnag.leaveBreadcrumb { crumb in
-            crumb.type = .process
-            crumb.message = "Important event"
-        }
+        Bugsnag.leaveBreadcrumb("Noisy event", metadata: nil, type: .log)
+        Bugsnag.leaveBreadcrumb("Important event", metadata: nil, type: .process)
+
         Bugsnag.notifyError(MagicError(domain: "com.example",
                                        code: 43,
                                        userInfo: [NSLocalizedDescriptionKey: "incoming!"]))
