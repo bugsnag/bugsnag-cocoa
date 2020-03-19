@@ -28,4 +28,11 @@ class InterfaceController: WKInterfaceController {
         super.didDeactivate()
     }
 
+    @IBAction func errorEventTapped() {
+
+    }
+
+    @IBAction func crashTapped() {
+
+    }
 }

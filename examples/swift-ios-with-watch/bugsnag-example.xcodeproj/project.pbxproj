@@ -21,7 +21,7 @@
 		18761B6C2422D0550017EA2B /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18761B6B2422D0550017EA2B /* ExtensionDelegate.swift */; };
 		18761B6E2422D0550017EA2B /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18761B6D2422D0550017EA2B /* NotificationController.swift */; };
 		18761B702422D0560017EA2B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18761B6F2422D0560017EA2B /* Assets.xcassets */; };
-		53C5CC9A1D78F5CA89E0617C /* libPods-bugsnag-example WatchKit Extension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C0A04FE454CCA20C707E7A0A /* libPods-bugsnag-example WatchKit Extension.a */; };
+		ECF926108AA0524C6AE70537 /* Pods_bugsnag_example_WatchKit_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21CB655ECF9D158B47C1BCC7 /* Pods_bugsnag_example_WatchKit_Extension.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,7 +87,7 @@
 		18761B712422D0560017EA2B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		18761B722422D0560017EA2B /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
 		21AAA0247E8226B2837A9857 /* Pods-bugsnag-example WatchKit Extension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example WatchKit Extension.release.xcconfig"; path = "Target Support Files/Pods-bugsnag-example WatchKit Extension/Pods-bugsnag-example WatchKit Extension.release.xcconfig"; sourceTree = "<group>"; };
-		C0A04FE454CCA20C707E7A0A /* libPods-bugsnag-example WatchKit Extension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bugsnag-example WatchKit Extension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		21CB655ECF9D158B47C1BCC7 /* Pods_bugsnag_example_WatchKit_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bugsnag_example_WatchKit_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC45B50F9B468911FA843E3E /* Pods-bugsnag-example WatchKit Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example WatchKit Extension.debug.xcconfig"; path = "Target Support Files/Pods-bugsnag-example WatchKit Extension/Pods-bugsnag-example WatchKit Extension.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -103,7 +103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				53C5CC9A1D78F5CA89E0617C /* libPods-bugsnag-example WatchKit Extension.a in Frameworks */,
+				ECF926108AA0524C6AE70537 /* Pods_bugsnag_example_WatchKit_Extension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,7 +179,7 @@
 		83B5C63AC503DBE327C76E7E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C0A04FE454CCA20C707E7A0A /* libPods-bugsnag-example WatchKit Extension.a */,
+				21CB655ECF9D158B47C1BCC7 /* Pods_bugsnag_example_WatchKit_Extension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -242,6 +242,7 @@
 				18761B602422D0550017EA2B /* Sources */,
 				18761B612422D0550017EA2B /* Frameworks */,
 				18761B622422D0550017EA2B /* Resources */,
+				45DB1CE0B6A63E6D0D2F9160 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -324,6 +325,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		45DB1CE0B6A63E6D0D2F9160 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-bugsnag-example WatchKit Extension/Pods-bugsnag-example WatchKit Extension-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-bugsnag-example WatchKit Extension/Pods-bugsnag-example WatchKit Extension-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-bugsnag-example WatchKit Extension/Pods-bugsnag-example WatchKit Extension-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		DB39CE55C3A3F0A7AD758AD0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

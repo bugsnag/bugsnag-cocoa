@@ -7,11 +7,13 @@
 //
 
 import WatchKit
+import Bugsnag
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
+        //Bugsnag.start(withApiKey: "your-api-key-goes-here")
     }
 
     func applicationDidBecomeActive() {
