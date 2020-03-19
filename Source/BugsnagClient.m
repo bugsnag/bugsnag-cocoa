@@ -552,6 +552,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     }];
 }
 
+// MARK: - Notify
 
 - (void)notifyError:(NSError *)error
               block:(void (^)(BugsnagEvent *))block {
@@ -661,8 +662,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)notify:(NSException *)exception
-    handledState:(BugsnagHandledState *_Nonnull)handledState
-           block:(void (^)(BugsnagEvent *))block {
+  handledState:(BugsnagHandledState *_Nonnull)handledState
+         block:(void (^)(BugsnagEvent *))block
+{
     NSString *exceptionName = exception.name ?: NSStringFromClass([exception class]);
     NSString *message = exception.reason;
     if (handledState.unhandled) {
@@ -671,16 +673,18 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         [self.sessionTracker handleHandledErrorEvent];
     }
 
-    BugsnagEvent *report = [[BugsnagEvent alloc]
+    BugsnagEvent *event = [[BugsnagEvent alloc]
         initWithErrorName:exceptionName
              errorMessage:message
             configuration:self.configuration
                  metadata:[self.configuration.metadata toDictionary]
              handledState:handledState
                   session:self.sessionTracker.runningSession];
+    
     if (block) {
-        block(report);
+        block(event);
     }
+    
     //    We discard 5 stack frames (including this one) by default,
     //    and sum that with the number specified by report.depth:
     //
@@ -691,35 +695,36 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     //    3 -[BugsnagCrashSentry reportUserException:reason:]
     //    4 -[BugsnagClient notify:message:block:]
 
-    int depth = (int)(BSGNotifierStackFrameCount + report.depth);
+    int depth = (int)(BSGNotifierStackFrameCount + event.depth);
 
-    NSString *reportName =
-        report.errorClass ?: NSStringFromClass([NSException class]);
-    NSString *reportMessage = report.errorMessage ?: @"";
+    NSString *eventErrorClass = event.errorClass ?: NSStringFromClass([NSException class]);
+    NSString *eventMessage = event.errorMessage ?: @"";
 
-    [self.crashSentry reportUserException:reportName
-                                   reason:reportMessage
+    [self.crashSentry reportUserException:eventErrorClass
+                                   reason:eventMessage
                         originalException:exception
                              handledState:[handledState toJson]
                                  appState:[self.state toDictionary]
-                        callbackOverrides:report.overrides
-                                 metadata:[report.metadata copy]
+                        callbackOverrides:event.overrides
+                                 metadata:[event.metadata copy]
                                    config:[self.configuration.config toDictionary]
                              discardDepth:depth];
 
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
-      crumb.type = BSGBreadcrumbTypeError;
-      crumb.message = reportName;
-      crumb.metadata = @{
-          BSGKeyMessage : reportMessage,
-          BSGKeySeverity : BSGFormatSeverity(report.severity)
-      };
+        crumb.type = BSGBreadcrumbTypeError;
+        crumb.message = eventErrorClass;
+        crumb.metadata = @{
+            BSGKeyMessage : eventMessage,
+            BSGKeyErrorClass : eventErrorClass,
+            BSGKeyUnhandled : [[event handledState] unhandled] ? @YES : @NO,
+            BSGKeySeverity : BSGFormatSeverity(event.severity)
+        };
     }];
     [self flushPendingReports];
 }
 
-- (void)addBreadcrumbWithBlock:
-    (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
+- (void)addBreadcrumbWithBlock:(void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block
+{
     [self.configuration.breadcrumbs addBreadcrumbWithBlock:block];
     [self serializeBreadcrumbs];
 }
