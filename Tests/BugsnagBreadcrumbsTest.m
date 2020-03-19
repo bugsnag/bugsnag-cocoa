@@ -294,8 +294,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
  */
 - (void)testCallbackFreeConstructors2 {
     // Prevent sending events
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
     [Bugsnag startBugsnagWithConfiguration:configuration];
 
@@ -362,8 +361,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
  */
 - (void)testCallbackFreeConstructors3 {
     // Prevent sending events
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
     [Bugsnag startBugsnagWithConfiguration:configuration];
 

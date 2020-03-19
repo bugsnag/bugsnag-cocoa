@@ -8,17 +8,14 @@ Guide to ease migrations between significant changes
 
 #### Instantiation
 
-Initializing a configuration now requires a valid API key, setting an error
-parameter if initialization fails. In Swift, creating a configuration is now
-handled via the `try` mechanism.
+Initializing a configuration requires a valid API key.
 
 ```objc
 NSError *error;
-BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:@"YOUR API KEY HERE"
-                                                                      error:&error];
+BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:@"YOUR API KEY HERE"];
 ```
 ```swift
-  let config = try BugsnagConfiguration("YOUR API KEY HERE")
+  let config = BugsnagConfiguration("YOUR API KEY HERE")
 ```
 
 The exact error is available using the `BSGConfigurationErrorDomain` and
