@@ -368,6 +368,9 @@
 #if BSG_KSCRASH_HAS_UIDEVICE
     BSGDictSetSafeObject(sysInfo, [UIDevice currentDevice].systemName, @BSG_KSSystemField_SystemName);
     BSGDictSetSafeObject(sysInfo, [UIDevice currentDevice].systemVersion, @BSG_KSSystemField_SystemVersion);
+#elif BSG_KSCRASH_HOST_WATCH
+    BSGDictSetSafeObject(sysInfo, [WKInterfaceDevice currentDevice].systemName, @BSG_KSSystemField_SystemName);
+    BSGDictSetSafeObject(sysInfo, [WKInterfaceDevice currentDevice].systemVersion, @BSG_KSSystemField_SystemVersion);
 #else
     BSGDictSetSafeObject(sysInfo, @"Mac OS", @BSG_KSSystemField_SystemName);
     NSOperatingSystemVersion version =
