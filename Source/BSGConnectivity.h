@@ -25,6 +25,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#if !TARGET_OS_WATCH
 #import <SystemConfiguration/SystemConfiguration.h>
 
 @class BSGConnectivity;
@@ -41,3 +42,4 @@ typedef void (^ConnectivityChange)(BSGConnectivity *connectivity);
 - (void)stopWatchingConnectivity;
 
 @end
+#endif

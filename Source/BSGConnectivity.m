@@ -25,7 +25,7 @@
 //
 
 #import "BSGConnectivity.h"
-
+#if !TARGET_OS_WATCH
 typedef void (^CallbackBlock)(SCNetworkReachabilityFlags flags);
 
 /**
@@ -118,3 +118,4 @@ static void BSGConnectivityCallback(SCNetworkReachabilityRef target,
 }
 
 @end
+#endif

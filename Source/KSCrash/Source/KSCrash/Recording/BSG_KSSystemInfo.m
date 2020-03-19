@@ -434,7 +434,7 @@
 }
 
 + (BOOL)isRunningInAppExtension {
-#if BSG_KSCRASH_HOST_IOS
+#if BSG_KSCRASH_HOST_IOS || BSG_KSCRASH_HOST_WATCH
     NSBundle *mainBundle = [NSBundle mainBundle];
     // From the App Extension Programming Guide:
     // > When you build an extension based on an Xcode template, you get an
@@ -453,7 +453,7 @@
 #endif
 }
 
-#if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV || TARGET_OS_IOS
 + (UIApplicationState)currentAppState {
     // Only checked outside of app extensions since sharedApplication is
     // unavailable to extension UIKit APIs
@@ -494,6 +494,16 @@
     // >   The app is running in the background.
     return state == UIApplicationStateInactive
         || state == UIApplicationStateActive;
+}
+
+#elif TARGET_OS_WATCH
+
++ (WKApplicationState)currentAppState {
+    return [[WKExtension sharedExtension] applicationState];
+}
+
++ (BOOL)isInForeground:(WKApplicationState)state {
+    return state == WKApplicationStateInactive || state == WKApplicationStateActive;
 }
 #endif
 
