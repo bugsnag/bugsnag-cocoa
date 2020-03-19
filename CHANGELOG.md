@@ -30,6 +30,7 @@ Bugsnag Notifiers on other platforms.
   * Objective C: `[[BugsnagConfiguration alloc] initWithApiKey:]`
 
   [#446](https://github.com/bugsnag/bugsnag-cocoa/pull/446)
+  [#492](https://github.com/bugsnag/bugsnag-cocoa/pull/492)
 
 * Support editing breadcrumbs within an Event as objects. Breadcrumbs can now be
   inspected and modified from callbacks, for example:
