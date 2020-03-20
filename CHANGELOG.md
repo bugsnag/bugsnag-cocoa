@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Remove `leaveBreadcrumbWithBlock` from public api on `Bugsnag`
+  [#491](https://github.com/bugsnag/bugsnag-cocoa/pull/491)
+
 * `BugsnagNotifier` is now `BugsnagClient`.
   [#480](https://github.com/bugsnag/bugsnag-cocoa/pull/480)
 
