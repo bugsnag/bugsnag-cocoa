@@ -8,12 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		00C3ED5C23F2DA4900757DBD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00C3ED5B23F2DA4900757DBD /* README.md */; };
+		378BA2CD24229CBB00123123 /* BigHonkinWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 378BA2CC24229CBB00123123 /* BigHonkinWebViewController.m */; };
+		379D203A242B697600C11EFE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 379D2038242B697600C11EFE /* LaunchScreen.storyboard */; };
 		B0296B46CF7321F684ECACB1 /* libPods-bugsnag-example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A8C72BF7F8211697881F641 /* libPods-bugsnag-example.a */; };
 		D175F4BE1ACDBD81009AFFB7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4BD1ACDBD81009AFFB7 /* AppDelegate.swift */; };
 		D175F4C01ACDBD81009AFFB7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */; };
 		D175F4C31ACDBD81009AFFB7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C11ACDBD81009AFFB7 /* Main.storyboard */; };
 		D175F4C51ACDBD81009AFFB7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C41ACDBD81009AFFB7 /* Images.xcassets */; };
-		D175F4C81ACDBD81009AFFB7 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C61ACDBD81009AFFB7 /* LaunchScreen.xib */; };
 		D175F4D41ACDBD81009AFFB7 /* bugsnag_exampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4D31ACDBD81009AFFB7 /* bugsnag_exampleTests.swift */; };
 		D175F4DF1ACDBEFA009AFFB7 /* AnotherClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4DE1ACDBEFA009AFFB7 /* AnotherClass.swift */; };
 		D175F4E21ACDBFD9009AFFB7 /* AnObjCClass.m in Sources */ = {isa = PBXBuildFile; fileRef = D175F4E11ACDBFD9009AFFB7 /* AnObjCClass.m */; };
@@ -36,6 +37,9 @@
 /* Begin PBXFileReference section */
 		00C3ED5B23F2DA4900757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1A8C72BF7F8211697881F641 /* libPods-bugsnag-example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bugsnag-example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		378BA2CB24229CBB00123123 /* BigHonkinWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BigHonkinWebViewController.h; sourceTree = "<group>"; };
+		378BA2CC24229CBB00123123 /* BigHonkinWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BigHonkinWebViewController.m; sourceTree = "<group>"; };
+		379D2039242B697600C11EFE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C72198B7DFCD1FD2F92628E3 /* Pods-bugsnag-example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example.release.xcconfig"; path = "Pods/Target Support Files/Pods-bugsnag-example/Pods-bugsnag-example.release.xcconfig"; sourceTree = "<group>"; };
 		C9204A923B81A3D14457E739 /* Pods-bugsnag-example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-bugsnag-example/Pods-bugsnag-example.debug.xcconfig"; sourceTree = "<group>"; };
 		D175F4B81ACDBD81009AFFB7 /* bugsnag-example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "bugsnag-example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -44,7 +48,6 @@
 		D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		D175F4C21ACDBD81009AFFB7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D175F4C41ACDBD81009AFFB7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		D175F4C71ACDBD81009AFFB7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		D175F4CD1ACDBD81009AFFB7 /* bugsnag-exampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "bugsnag-exampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D175F4D21ACDBD81009AFFB7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D175F4D31ACDBD81009AFFB7 /* bugsnag_exampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bugsnag_exampleTests.swift; sourceTree = "<group>"; };
@@ -112,16 +115,18 @@
 		D175F4BA1ACDBD81009AFFB7 /* bugsnag-example */ = {
 			isa = PBXGroup;
 			children = (
+				379D2038242B697600C11EFE /* LaunchScreen.storyboard */,
 				D175F4BD1ACDBD81009AFFB7 /* AppDelegate.swift */,
 				D175F4DD1ACDBE24009AFFB7 /* bugsnag-example-Bridging-Header.h */,
 				D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */,
+				378BA2CB24229CBB00123123 /* BigHonkinWebViewController.h */,
+				378BA2CC24229CBB00123123 /* BigHonkinWebViewController.m */,
 				D175F4C11ACDBD81009AFFB7 /* Main.storyboard */,
-				D175F4C41ACDBD81009AFFB7 /* Images.xcassets */,
-				D175F4C61ACDBD81009AFFB7 /* LaunchScreen.xib */,
 				D175F4BB1ACDBD81009AFFB7 /* Supporting Files */,
 				D175F4DE1ACDBEFA009AFFB7 /* AnotherClass.swift */,
 				D175F4E01ACDBFD9009AFFB7 /* AnObjCClass.h */,
 				D175F4E11ACDBFD9009AFFB7 /* AnObjCClass.m */,
+				D175F4C41ACDBD81009AFFB7 /* Images.xcassets */,
 			);
 			path = "bugsnag-example";
 			sourceTree = "<group>";
@@ -251,6 +256,7 @@
 				D175F4C31ACDBD81009AFFB7 /* Main.storyboard in Resources */,
 				D175F4C81ACDBD81009AFFB7 /* LaunchScreen.xib in Resources */,
 				00C3ED5C23F2DA4900757DBD /* README.md in Resources */,
+				379D203A242B697600C11EFE /* LaunchScreen.storyboard in Resources */,
 				D175F4C51ACDBD81009AFFB7 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -305,6 +311,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				378BA2CD24229CBB00123123 /* BigHonkinWebViewController.m in Sources */,
 				D175F4C01ACDBD81009AFFB7 /* ViewController.swift in Sources */,
 				D175F4BE1ACDBD81009AFFB7 /* AppDelegate.swift in Sources */,
 				D175F4DF1ACDBEFA009AFFB7 /* AnotherClass.swift in Sources */,
@@ -331,20 +338,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		379D2038242B697600C11EFE /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				379D2039242B697600C11EFE /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
 		D175F4C11ACDBD81009AFFB7 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				D175F4C21ACDBD81009AFFB7 /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		D175F4C61ACDBD81009AFFB7 /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				D175F4C71ACDBD81009AFFB7 /* Base */,
-			);
-			name = LaunchScreen.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -463,7 +470,9 @@
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				INFOPLIST_FILE = "bugsnag-example/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.bugsnag-example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -482,7 +491,9 @@
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				INFOPLIST_FILE = "bugsnag-example/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.bugsnag-example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

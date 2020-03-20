@@ -21,8 +21,52 @@
 import UIKit
 
 class ViewController: UITableViewController {
-
-    @IBAction func generateUncaughtException(_ sender: AnyObject) {
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // we're not showing a new UIView so deselect this row
+        self.tableView.deselectRow(at: indexPath, animated: true)
+        // switch through the UITableView sections
+        switch indexPath.section {
+        case 0:
+            // switch through the rows in 'Crashes'
+            switch indexPath.row {
+            case 0:
+                // Uncaught exception
+                generateUncaughtException();
+            case 1:
+                // POSIX Signal
+                generatePOSIXSignal();
+            case 2:
+                // Memory corruption
+                generateMemoryCorruption();
+            case 3:
+                // Stack overflow
+                generateStackOverflow();
+            case 4:
+                // Assertion failure
+                generateAssertionFailure();
+            case 5:
+                // Out of Memory
+                generateOutOfMemoryError();
+            default:
+                break;
+            }
+        case 1:
+            // switch through the rows in 'Handled Errors'
+            switch indexPath.row {
+            case 0:
+                // Send error with notifyError()
+                sendAnError()
+            default:
+                break;
+            }
+        default:
+            break;
+        }
+            
+    }
+    
+    func generateUncaughtException() {
         let someJson : Dictionary = ["foo":self]
         do {
             let data = try JSONSerialization.data(withJSONObject: someJson, options: .prettyPrinted)
@@ -32,31 +76,34 @@ class ViewController: UITableViewController {
         }
     }
 
-    @IBAction func generatePOSIXSignal(_ sender: Any) {
+    func generatePOSIXSignal() {
         AnObjCClass().trap()
     }
 
-    @IBAction func generateStackOverflow(_ sender: Any) {
+    func generateStackOverflow() {
         let items = ["Something!"]
-
-        if sender is ViewController || sender is UIButton {
-            generateStackOverflow(self)
+        // Use if statement to remove warning about calling self through any path
+        if (items[0] == "Something!") {
+            generateStackOverflow()
         }
-
         print("items: %@", items)
     }
 
-    @IBAction func generateMemoryCorruption(_ sender: Any) {
+    func generateMemoryCorruption() {
         AnObjCClass().corruptSomeMemory()
     }
 
-    @IBAction func generateAssertionFailure(_ sender: Any) {
+    func generateAssertionFailure() {
         AnotherClass.crash3()
     }
+    
+    func generateOutOfMemoryError() {
+        Bugsnag.leaveBreadcrumb(withMessage: "Starting a BigHonkinWebViewController for an OOM")
+        let controller = BigHonkinWebViewController();
+        navigationController?.pushViewController(controller, animated: true)
+    }
 
-    @IBAction func sendAnError(_ sender: Any) {
-
-
+    func sendAnError() {
         do {
             try FileManager.default.removeItem(atPath:"//invalid/file")
         } catch {
