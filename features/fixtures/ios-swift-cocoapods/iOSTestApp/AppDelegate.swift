@@ -47,20 +47,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     internal func prepareConfig(apiKey: String, mockAPIPath: String) -> BugsnagConfiguration {
-        do {
-            if let config = try BugsnagConfiguration(apiKey) {
-                // Enabling by default to check not only the OOM reporting tests but
-                // also that extra reports aren't erroneously sent in other conditions
-                // when OOM reporting is enabled
-                config.enabledErrorTypes.insert(.OOMs)
-                config.setEndpoints(notify: mockAPIPath, sessions: mockAPIPath)
-                return config
-            }
-        }
-        catch {
-            assert(false)
-        }
-        fatalError("Unable to create BugsnagConfiguration")
+        let config = BugsnagConfiguration(apiKey)
+        // Enabling by default to check not only the OOM reporting tests but
+        // also that extra reports aren't erroneously sent in other conditions
+        // when OOM reporting is enabled
+        config.enabledErrorTypes.insert(.OOMs)
+        config.setEndpoints(notify: mockAPIPath, sessions: mockAPIPath)
+        return config
     }
 
     func triggerEvent(scenario: Scenario, delay: TimeInterval, mode: String) {
