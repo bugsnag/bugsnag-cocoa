@@ -8,6 +8,7 @@
 // Unit tests of global Bugsnag behaviour
 
 #import "Bugsnag.h"
+#import "BugsnagClient.h"
 #import "BugsnagTestConstants.h"
 #import <XCTest/XCTest.h>
 
@@ -19,6 +20,11 @@
 
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
+@end
+
+@interface BugsnagClient ()
++ (NSString *)lastOrientation;
++ (void)setLastOrientation:(NSString *)lastOrientation;
 @end
 
 @interface BugsnagTests : XCTestCase
@@ -391,7 +397,7 @@
     [Bugsnag notify:exception1];
     
     // Both called?
-    [self waitForExpectations:@[expectation1, expectation2] timeout:5.0];
+    [self waitForExpectations:@[expectation1, expectation2] timeout:10.0];
     
     [Bugsnag removeOnSendBlock:block2];
     XCTAssertEqual([[[Bugsnag configuration] onSendBlocks] count], 1);
@@ -401,9 +407,31 @@
     NSException *exception2 = [[NSException alloc] initWithName:@"exception1" reason:@"reason1" userInfo:nil];
     [Bugsnag notify:exception2];
     // One removed, should only call one
-    [self waitForExpectations:@[expectation3, expectation4] timeout:5.0];
+    [self waitForExpectations:@[expectation3, expectation4] timeout:10.0];
 
     [self waitForExpectations:@[expectation5, expectation6] timeout:1.0];
 }
+
+/**
+ * Test that the Orientation -> string mapping is as expected
+ * NOTE: should be moved to BugsnagClientTests when that file exists
+ */
+#if TARGET_OS_IOS
+NSString *BSGOrientationNameFromEnum(UIDeviceOrientation deviceOrientation);
+- (void)testBSGOrientationNameFromEnum {
+    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationPortraitUpsideDown), @"portraitupsidedown");
+    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationPortrait), @"portrait");
+    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationLandscapeRight), @"landscaperight");
+    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationLandscapeLeft), @"landscapeleft");
+    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationFaceUp), @"faceup");
+    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationFaceDown), @"facedown");
+    
+    XCTAssertNil(BSGOrientationNameFromEnum(-1));
+    XCTAssertNil(BSGOrientationNameFromEnum(99));
+    
+    [BugsnagClient setLastOrientation:@"testOrientation"];
+    XCTAssertEqualObjects([BugsnagClient lastOrientation], @"testOrientation");
+}
+#endif
 
 @end

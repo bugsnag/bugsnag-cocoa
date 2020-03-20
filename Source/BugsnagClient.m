@@ -42,12 +42,6 @@
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSMach.h"
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#elif TARGET_OS_MAC
-#import <AppKit/AppKit.h>
-#endif
-
 NSString *const NOTIFIER_VERSION = @"5.23.0";
 NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 NSString *const BSTabCrash = @"crash";
@@ -84,10 +78,6 @@ static char *crashSentinelPath = NULL;
 static NSUInteger handledCount;
 static NSUInteger unhandledCount;
 static bool hasRecordedSessions;
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-// The previous device orientation - iOS only
-static NSString *lastOrientation = NULL;
-#endif
 
 /**
  *  Handler executed when the application crashes. Writes information about the
@@ -146,6 +136,43 @@ NSString *BSGBreadcrumbNameForNotificationName(NSString *name) {
                                                withString:@""];
     }
 }
+
+/**
+ * Convert a device orientation into its Bugsnag string representation
+ *
+ * @param deviceOrientation The platform device orientation
+ *
+ * @returns A string representing the device orientation or nil if there's no equivalent
+ */
+#if TARGET_OS_IOS
+NSString *BSGOrientationNameFromEnum(UIDeviceOrientation deviceOrientation)
+{
+    NSString *orientation;
+    switch (deviceOrientation) {
+    case UIDeviceOrientationPortraitUpsideDown:
+        orientation = @"portraitupsidedown";
+        break;
+    case UIDeviceOrientationPortrait:
+        orientation = @"portrait";
+        break;
+    case UIDeviceOrientationLandscapeRight:
+        orientation = @"landscaperight";
+        break;
+    case UIDeviceOrientationLandscapeLeft:
+        orientation = @"landscapeleft";
+        break;
+    case UIDeviceOrientationFaceUp:
+        orientation = @"faceup";
+        break;
+    case UIDeviceOrientationFaceDown:
+        orientation = @"facedown";
+        break;
+    default:
+        return nil; // always ignore unknown breadcrumbs
+    }
+    return orientation;
+}
+#endif
 
 /**
  *  Writes a dictionary to a destination using the BSG_KSCrash JSON encoding
@@ -213,6 +240,10 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic, strong) BSGOutOfMemoryWatchdog *oomWatchdog;
 @property (nonatomic, strong) BugsnagPluginClient *pluginClient;
 @property (nonatomic) BOOL appCrashedLastLaunch;
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+// The previous device orientation - iOS only
+@property (class, nonatomic, strong) NSString *lastOrientation;
+#endif
 @end
 
 @interface BugsnagConfiguration ()
@@ -220,6 +251,23 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @end
 
 @implementation BugsnagClient
+
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+/**
+ * Storage for the device orientation.  It is "last" whenever an orientation change is received
+ */
+static NSString *_lastOrientation = nil;
+
++ (NSString *)lastOrientation
+{
+    return _lastOrientation;
+}
+
++ (void)setLastOrientation:(NSString *)lastOrientation
+{
+    _lastOrientation = lastOrientation;
+}
+#endif
 
 @synthesize configuration;
 
@@ -280,6 +328,10 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
         [self metadataChanged:self.configuration.config];
         [self metadataChanged:self.state];
         self.pluginClient = [[BugsnagPluginClient alloc] initWithPlugins:self.configuration.plugins];
+
+#if TARGET_OS_IOS
+        _lastOrientation = BSGOrientationNameFromEnum([UIDevice currentDevice].orientation);
+#endif
     }
     return self;
 }
@@ -390,7 +442,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 
     [self batteryChanged:nil];
-    [self orientationChanged:nil];
     [self addTerminationObserver:UIApplicationWillTerminateNotification];
 
 #elif TARGET_OS_MAC
@@ -778,63 +829,46 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                  toTabWithName:BSGKeyDeviceState];
 }
 
-- (void)orientationChanged:(NSNotification *)notif {
-    NSString *orientation;
-    
+/**
+ * Called when an orientation change notification is received to record an
+ * equivalent breadcrumb.
+ *
+ * @param notification The orientation-change notification
+ */
+- (void)orientationChanged:(NSNotification *)notification {
     UIDeviceOrientation currentDeviceOrientation = [UIDevice currentDevice].orientation;
-
-    switch (currentDeviceOrientation) {
-    case UIDeviceOrientationPortraitUpsideDown:
-        orientation = @"portraitupsidedown";
-        break;
-    case UIDeviceOrientationPortrait:
-        orientation = @"portrait";
-        break;
-    case UIDeviceOrientationLandscapeRight:
-        orientation = @"landscaperight";
-        break;
-    case UIDeviceOrientationLandscapeLeft:
-        orientation = @"landscapeleft";
-        break;
-    case UIDeviceOrientationFaceUp:
-        orientation = @"faceup";
-        break;
-    case UIDeviceOrientationFaceDown:
-        orientation = @"facedown";
-        break;
-    default:
-        return; // always ignore unknown breadcrumbs
+    NSString *orientation = BSGOrientationNameFromEnum(currentDeviceOrientation);
+    
+    // Short-circuit the exit if we don't have enough info to record a full breadcrumb
+    // or the orientation hasn't changed (false positive).
+    if (!orientation) {
+        return;
+    }
+    else if (!_lastOrientation || [orientation isEqualToString:_lastOrientation]) {
+        _lastOrientation = orientation;
+        return;
     }
 
-    NSDictionary *lastBreadcrumb =
-        [[self.configuration.breadcrumbs arrayValue] lastObject];
-    NSString *orientationNotifName =
-        BSGBreadcrumbNameForNotificationName(notif.name);
+    NSDictionary *lastBreadcrumb = [[self.configuration.breadcrumbs arrayValue] lastObject];
+    NSString *orientationNotifName = BSGBreadcrumbNameForNotificationName(notification.name);
 
-    if (lastBreadcrumb &&
-        [orientationNotifName isEqualToString:lastBreadcrumb[BSGKeyName]]) {
+    if (lastBreadcrumb && [orientationNotifName isEqualToString:lastBreadcrumb[BSGKeyName]])
+    {
         NSDictionary *metadata = lastBreadcrumb[BSGKeyMetadata];
 
-        if ([orientation isEqualToString:metadata[BSGKeyOrientation]])
+        if ([orientation isEqualToString:metadata[BSGKeyOrientation]]) {
             return; // ignore duplicate orientation event
-    }
-
-    // It's not a change
-    if ([orientation isEqualToString:lastOrientation])
-        return;
-
-    // We previously had an orientation
-    if (lastOrientation) {
-        [[self state] addAttribute:BSGKeyOrientationChange
-                         withValue:@{@"from" : lastOrientation,
-                                     @"to" : orientation}
-                     toTabWithName:BSGKeyDeviceState];
+        }
     }
     
-    // We shouldn't get here without orientation being set, but to be on the safe side:
-    if (orientation)
-        // Preserve the orientation
-        lastOrientation = orientation;
+    // Record the breadcrumb
+    [[self state] addAttribute:BSGKeyOrientationChange
+                     withValue:@{@"from" : _lastOrientation,
+                                 @"to" : orientation}
+                 toTabWithName:BSGKeyDeviceState];
+    
+    // Preserve the orientation
+    _lastOrientation = orientation;
 }
 
 - (void)lowMemoryWarning:(NSNotification *)notif {
