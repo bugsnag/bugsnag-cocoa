@@ -45,7 +45,7 @@
  * Handled events leave a breadcrumb when notify() is called.  Test that values are inserted
  * correctly.
  */
-- (void)testBreadcrumbEnhancedValues {
+- (void)testAutomaticNotifyBreadcrumbData {
     
     [self setUpBugsnagWillCallNotify:false];
 
