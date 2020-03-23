@@ -525,8 +525,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)setupConnectivityListener {
-    NSURL *url = self.configuration.notifyURL;
 #if BSG_KSCRASH_HAS_REACHABILITY
+    NSURL *url = self.configuration.notifyURL;
     __weak id weakSelf = self;
     self.networkReachable =
         [[BSGConnectivity alloc] initWithURL:url
