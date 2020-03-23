@@ -42,7 +42,7 @@
 }
 
 /**
- * Handled events leave a breadcrumb when norify() is called.  Test that values are inserted
+ * Handled events leave a breadcrumb when notify() is called.  Test that values are inserted
  * correctly.
  */
 - (void)testBreadcrumbEnhancedValues {
