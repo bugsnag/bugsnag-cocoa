@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		000DF29423DB4B4900A883CE /* TestConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 000DF29323DB4B4900A883CE /* TestConstants.m */; };
 		000E6E9E23D8690F009D8194 /* BugsnagSwiftConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000E6E9D23D8690F009D8194 /* BugsnagSwiftConfigurationTests.swift */; };
 		000E6EA323D8AC8C009D8194 /* UPGRADING.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6E9F23D8AC8C009D8194 /* UPGRADING.md */; };
 		000E6EA423D8AC8C009D8194 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA023D8AC8C009D8194 /* README.md */; };
@@ -420,7 +419,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		000DF29323DB4B4900A883CE /* TestConstants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestConstants.m; sourceTree = "<group>"; };
 		000E6E9B23D84DB1009D8194 /* BugsnagTestConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagTestConstants.h; path = ../../Tests/BugsnagTestConstants.h; sourceTree = "<group>"; };
 		000E6E9C23D8690E009D8194 /* Tests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Bridging-Header.h"; sourceTree = "<group>"; };
 		000E6E9D23D8690F009D8194 /* BugsnagSwiftConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagSwiftConfigurationTests.swift; sourceTree = "<group>"; };
@@ -807,7 +805,6 @@
 				8A2C8F951C6BC08600846019 /* report.json */,
 				000DF29223DB4A6B00A883CE /* Swift Tests */,
 				E70EE0891FD7047D00FA745C /* KSCrash */,
-				000DF29323DB4B4900A883CE /* TestConstants.m */,
 				00D7ACAC23E9C63000FBE4A7 /* BugsnagTests.m */,
 				00F9393723FC4F63008C7073 /* BugsnagTestsDummyClass.h */,
 				00F9393823FC4F64008C7073 /* BugsnagTestsDummyClass.m */,
@@ -1320,7 +1317,6 @@
 				E733A76F1FD709B7003EAA29 /* KSCrashReportStore_Tests.m in Sources */,
 				E70EE0781FD7039E00FA745C /* RFC3339DateTool_Tests.m in Sources */,
 				8A530CC422FDD51F00F0C108 /* KSCrashIdentifierTests.m in Sources */,
-				000DF29423DB4B4900A883CE /* TestConstants.m in Sources */,
 				8A4E733F1DC13281001F7CC8 /* BugsnagConfigurationTests.m in Sources */,
 				E784D25A1FD70C25004B01E1 /* KSJSONCodec_Tests.m in Sources */,
 				009131BC23F46279000810D9 /* BugsnagMetadataTests.m in Sources */,

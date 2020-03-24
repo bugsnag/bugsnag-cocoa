@@ -16,7 +16,6 @@
 		00D7ACA023E97FBD00FBE4A7 /* BugsnagEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7AC9E23E97FBD00FBE4A7 /* BugsnagEvent.m */; };
 		00D7ACA123E97FBD00FBE4A7 /* BugsnagEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 00D7AC9F23E97FBD00FBE4A7 /* BugsnagEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00D7ACA723E98A5D00FBE4A7 /* BugsnagEventTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACA623E98A5D00FBE4A7 /* BugsnagEventTests.m */; };
-		00D7ACAA23E98A9A00FBE4A7 /* TestConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACA823E98A9A00FBE4A7 /* TestConstants.m */; };
 		00D7ACAB23E98A9A00FBE4A7 /* BugsnagEventFromKSCrashReportTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACA923E98A9A00FBE4A7 /* BugsnagEventFromKSCrashReportTest.m */; };
 		00F9393623FC16DA008C7073 /* BugsnagBaseUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F9393523FC16DA008C7073 /* BugsnagBaseUnitTest.m */; };
 		00F9393F23FD2DDB008C7073 /* BugsnagTestsDummyClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F9393E23FD2DDB008C7073 /* BugsnagTestsDummyClass.m */; };
@@ -1012,7 +1011,6 @@
 				E7CE79021FD94F1B001D07E0 /* RFC3339DateTool_Tests.m in Sources */,
 				4B3CD2BE22C5676800DBFF33 /* RegisterErrorDataTest.m in Sources */,
 				E7CE78F91FD94F1B001D07E0 /* KSSystemInfo_Tests.m in Sources */,
-				00D7ACAA23E98A9A00FBE4A7 /* TestConstants.m in Sources */,
 				4B3CD2BB22C5676800DBFF33 /* BSGOutOfMemoryWatchdogTests.m in Sources */,
 				E7CE78F41FD94F1B001D07E0 /* KSFileUtils_Tests.m in Sources */,
 				00F9393F23FD2DDB008C7073 /* BugsnagTestsDummyClass.m in Sources */,
