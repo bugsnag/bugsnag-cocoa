@@ -42,6 +42,12 @@
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSMach.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#elif TARGET_OS_MAC
+#import <AppKit/AppKit.h>
+#endif
+
 NSString *const NOTIFIER_VERSION = @"5.23.0";
 NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 NSString *const BSTabCrash = @"crash";
@@ -126,6 +132,13 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type
     }
 }
 
+/**
+ * Maps an NSNotificationName to its standard (Bugsnag) name
+ *
+ * @param name The NSNotificationName (type aliased to NSString)
+ *
+ * @returns The Bugsnag-standard name, or the notification name minus the "Notification" portion.
+ */
 NSString *BSGBreadcrumbNameForNotificationName(NSString *name) {
     NSString *readableName = notificationNameMap[name];
 
@@ -346,6 +359,9 @@ NSString *const kTableViewSelectionChange = @"TableView Select Change";
 NSString *const kAppWillTerminate = @"App Will Terminate";
 NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
+/**
+ * A map of notification names to human-readable strings
+ */
 - (void)initializeNotificationNameMap {
     notificationNameMap = @{
 #if TARGET_OS_TV
@@ -362,10 +378,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         UIWindowDidBecomeVisibleNotification : kWindowVisible,
         UIWindowDidBecomeHiddenNotification : kWindowHidden,
         UIApplicationWillTerminateNotification : kAppWillTerminate,
-        UIApplicationWillEnterForegroundNotification :
-            @"App Will Enter Foreground",
-        UIApplicationDidEnterBackgroundNotification :
-            @"App Did Enter Background",
+        UIApplicationWillEnterForegroundNotification : @"App Will Enter Foreground",
+        UIApplicationDidEnterBackgroundNotification : @"App Did Enter Background",
         UIKeyboardDidShowNotification : @"Keyboard Became Visible",
         UIKeyboardDidHideNotification : @"Keyboard Became Hidden",
         UIMenuControllerDidShowMenuNotification : @"Did Show Menu",
@@ -380,7 +394,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         UITableViewSelectionDidChangeNotification : kTableViewSelectionChange,
         UIDeviceBatteryStateDidChangeNotification : @"Battery State Changed",
         UIDeviceBatteryLevelDidChangeNotification : @"Battery Level Changed",
-        UIDeviceOrientationDidChangeNotification : @"Orientation Changed",
+        UIDeviceOrientationDidChangeNotification : @"Orientation Change",
         UIApplicationDidReceiveMemoryWarningNotification : @"Memory Warning",
 
 #elif TARGET_OS_MAC
@@ -849,23 +863,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         return;
     }
 
-    NSDictionary *lastBreadcrumb = [[self.configuration.breadcrumbs arrayValue] lastObject];
-    NSString *orientationNotifName = BSGBreadcrumbNameForNotificationName(notification.name);
-
-    if (lastBreadcrumb && [orientationNotifName isEqualToString:lastBreadcrumb[BSGKeyName]])
-    {
-        NSDictionary *metadata = lastBreadcrumb[BSGKeyMetadata];
-
-        if ([orientation isEqualToString:metadata[BSGKeyOrientation]]) {
-            return; // ignore duplicate orientation event
-        }
-    }
-    
-    // Record the breadcrumb
-    [[self state] addAttribute:BSGKeyOrientationChange
-                     withValue:@{@"from" : _lastOrientation,
-                                 @"to" : orientation}
-                 toTabWithName:BSGKeyDeviceState];
+    [self sendBreadcrumbForOrientationChangeNotification:notification withOrientation:orientation];
     
     // Preserve the orientation
     _lastOrientation = orientation;
@@ -990,8 +988,29 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)sendBreadcrumbForNotification:(NSNotification *)note {
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-      breadcrumb.type = BSGBreadcrumbTypeState;
-      breadcrumb.message = BSGBreadcrumbNameForNotificationName(note.name);
+        breadcrumb.type = BSGBreadcrumbTypeState;
+        breadcrumb.message = BSGBreadcrumbNameForNotificationName(note.name);
+    }];
+}
+
+/**
+ * Add a breadcrumb with a device orientation change.  Should only called when we have
+ * a previous orientation to transition from.
+ *
+ * @param notification The orientation change notification
+ * @param orientation The current orientation
+ */
+- (void)sendBreadcrumbForOrientationChangeNotification:(NSNotification *)notification
+                                       withOrientation:(NSString*)orientation
+{
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+        breadcrumb.metadata = @{
+            @"from" : _lastOrientation,
+            @"to" : orientation
+        };
+        
+        breadcrumb.type = BSGBreadcrumbTypeState;
+        breadcrumb.message = BSGBreadcrumbNameForNotificationName(notification.name);
     }];
 }
 
