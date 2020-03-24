@@ -852,20 +852,28 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (void)orientationChanged:(NSNotification *)notification {
     UIDeviceOrientation currentDeviceOrientation = [UIDevice currentDevice].orientation;
     NSString *orientation = BSGOrientationNameFromEnum(currentDeviceOrientation);
-    
-    // Short-circuit the exit if we don't have enough info to record a full breadcrumb
-    // or the orientation hasn't changed (false positive).
+
+    // No orientation, nothing  to be done
     if (!orientation) {
         return;
     }
-    else if (!_lastOrientation || [orientation isEqualToString:_lastOrientation]) {
+    
+    // Update the device orientation in metadata
+    [[self state] addAttribute:BSGKeyOrientation
+                     withValue:orientation
+                 toTabWithName:BSGKeyDeviceState];
+    
+    // Short-circuit the exit if we don't have enough info to record a full breadcrumb
+    // or the orientation hasn't changed (false positive).
+    if (!_lastOrientation || [orientation isEqualToString:_lastOrientation]) {
         _lastOrientation = orientation;
         return;
     }
-
-    [self sendBreadcrumbForOrientationChangeNotification:notification withOrientation:orientation];
     
-    // Preserve the orientation
+    // We have an orientation, it's not a dupe and we have a lastOrientation.
+    // Send a breadcrumb and preserve the orientation.
+    [self sendBreadcrumbForOrientationChangeNotification:notification
+                                         withOrientation:orientation];
     _lastOrientation = orientation;
 }
 
@@ -1000,6 +1008,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
  * @param notification The orientation change notification
  * @param orientation The current orientation
  */
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 - (void)sendBreadcrumbForOrientationChangeNotification:(NSNotification *)notification
                                        withOrientation:(NSString*)orientation
 {
@@ -1013,6 +1022,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         breadcrumb.message = BSGBreadcrumbNameForNotificationName(notification.name);
     }];
 }
+#endif
 
 - (void)sendBreadcrumbForTableViewNotification:(NSNotification *)note {
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE || TARGET_OS_TV
