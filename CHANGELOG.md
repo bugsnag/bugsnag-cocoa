@@ -60,7 +60,6 @@ Bugsnag Notifiers on other platforms.
   [#457](https://github.com/bugsnag/bugsnag-cocoa/pull/457)
      
 * Renamed callback functions in the Configuration class:
-  * `onCrashHandler` is now `onError`
   * `beforeSendBlocks` is now `onSendBlocks` (add using `config.add(onSend: { ... })`)
   * `beforeSendSessionBlocks` is now `onSessionBlocks` (add using `config.add(onSession: { ... })`)
 
