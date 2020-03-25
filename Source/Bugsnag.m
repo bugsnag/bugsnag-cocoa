@@ -124,36 +124,6 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     }
 }
 
-+ (void)notify:(NSException *)exception withData:(NSDictionary *)metadata {
-    if ([self bugsnagStarted]) {
-        [[self client]
-                notifyException:exception
-                          block:^(BugsnagEvent *_Nonnull report) {
-                              report.depth += 2;
-                              report.metadata = [metadata
-                                      BSG_mergedInto:[self.client.configuration
-                                              .metadata toDictionary]];
-                          }];
-    }
-}
-
-+ (void)notify:(NSException *)exception
-      withData:(NSDictionary *)metadata
-    atSeverity:(NSString *)severity {
-    if ([self bugsnagStarted]) {
-        [[self client]
-                notifyException:exception
-                     atSeverity:BSGParseSeverity(severity)
-                          block:^(BugsnagEvent *_Nonnull report) {
-                              report.depth += 2;
-                              report.metadata = [metadata
-                                      BSG_mergedInto:[self.client.configuration
-                                              .metadata toDictionary]];
-                              report.severity = BSGParseSeverity(severity);
-                          }];
-    }
-}
-
 + (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
                        block:(BugsnagOnErrorBlock _Nullable)block {
