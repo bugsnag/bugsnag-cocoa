@@ -19,7 +19,6 @@ import Bugsnag
                 ["method":"bar()", "file":"parser.js"],
                 ["method":"yes()"]
             ]
-            report.attachCustomStacktrace(frames, withType: "unreal")
         }
     }
 }

@@ -215,6 +215,11 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property(nonatomic, readwrite, strong) NSMutableSet *plugins;
 @end
 
+@interface BugsnagEvent ()
+@property(readonly, copy, nonnull) NSDictionary *overrides;
+@property(readwrite) NSUInteger depth;
+@end
+
 @implementation BugsnagClient
 
 @synthesize configuration;

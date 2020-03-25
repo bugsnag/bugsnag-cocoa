@@ -19,25 +19,6 @@ typedef NS_ENUM(NSUInteger, BSGSeverity) {
     BSGSeverityInfo,
 };
 
-/**
- *  Convert a string to a severity value
- *
- *  @param severity Intended severity value, such as info, warning, or error
- *
- *  @return converted severity level or BSGSeverityError if no conversion is
- * found
- */
-BSGSeverity BSGParseSeverity(NSString *_Nonnull severity);
-
-/**
- *  Serialize a severity for JSON payloads
- *
- *  @param severity a severity
- *
- *  @return the equivalent string value
- */
-NSString *_Nonnull BSGFormatSeverity(BSGSeverity severity);
-
 @interface BugsnagEvent : NSObject
 
 // -----------------------------------------------------------------------------
@@ -87,43 +68,6 @@ initWithErrorName:(NSString *_Nonnull)name
          metadata:(NSDictionary *_Nonnull)metadata
      handledState:(BugsnagHandledState *_Nonnull)handledState
           session:(BugsnagSession *_Nullable)session;
-
-// -----------------------------------------------------------------------------
-// MARK: - Misc. Methods
-// -----------------------------------------------------------------------------
-
-/**
- *  Serialize a crash report as a JSON payload
- *
- *  @param data top level report data, may need to be modified based on
- * environment
- *
- *  @return a crash report
- */
-- (NSDictionary *_Nonnull)serializableValueWithTopLevelData:
-    (NSMutableDictionary *_Nonnull)data
-__deprecated_msg("Use toJson: instead.");
-
-- (NSDictionary *_Nonnull)toJson;
-
-/**
- *  Whether this report should be sent, based on release stage information
- *  cached at crash time and within the application currently
- *
- *  @return YES if the report should be sent
- */
-- (BOOL)shouldBeSent;
-
-/**
- *  Prepend a custom stacktrace with a provided type to the crash report
- */
-- (void)attachCustomStacktrace:(NSArray *_Nonnull)frames
-                      withType:(NSString *_Nonnull)type;
-
-/**
- * Returns the enhanced error message for the thread, or nil if none exists.
- */
-- (NSString *_Nullable)enhancedErrorMessageForThread:(NSDictionary *_Nullable)thread __deprecated;
 
 // -----------------------------------------------------------------------------
 // MARK: - Metadata
@@ -190,10 +134,6 @@ __deprecated_msg("Use toJson: instead.");
 // -----------------------------------------------------------------------------
 
 /**
- *  The release stages used to notify at the time this report is captured
- */
-@property(readwrite, copy, nullable) NSArray *notifyReleaseStages;
-/**
  *  A loose representation of what was happening in the application at the time
  *  of the event
  */
@@ -227,10 +167,6 @@ __deprecated_msg("Use toJson: instead.");
  *  generates a section on bugsnag, displaying key/value pairs
  */
 @property(readwrite, copy, nonnull) NSDictionary *metadata;
-/**
- *  The event state (whether the error is handled/unhandled)
- */
-@property(readonly, nonnull) BugsnagHandledState *handledState;
 
 /**
  * A per-event override for the apiKey.
@@ -238,20 +174,6 @@ __deprecated_msg("Use toJson: instead.");
  * - Writes are not persisted to BugsnagConfiguration.
  */
 @property(readwrite, copy, nonnull) NSString *apiKey;
-
-/**
- *  Property overrides
- */
-@property(readonly, copy, nonnull) NSDictionary *overrides;
-/**
- *  Number of frames to discard at the top of the generated stacktrace.
- *  Stacktraces from raised exceptions are unaffected.
- */
-@property(readwrite) NSUInteger depth;
-/**
- *  Raw error data
- */
-@property(readwrite, copy, nullable) NSDictionary *error;
 /**
  *  Device information such as OS name and version
  */
@@ -268,10 +190,5 @@ __deprecated_msg("Use toJson: instead.");
  *  Device state such as oreground status and run duration
  */
 @property(readwrite, copy, nullable) NSDictionary *appState;
-
-/**
- * If YES, a complete report was not able to be obtained at generation time
- */
-@property (readonly, nonatomic, getter=isIncomplete) BOOL incomplete;
 
 @end
