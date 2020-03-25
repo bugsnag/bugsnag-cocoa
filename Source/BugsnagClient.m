@@ -354,6 +354,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                       onCrash:&BSSerializeDataCrashHandler];
     [self computeDidCrashLastLaunch];
     [self setupConnectivityListener];
+    [self updateAutomaticBreadcrumbDetectionSettings];
 
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [self watchLifecycleEvents:center];
@@ -530,6 +531,11 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.errorReportApiClient flushPendingData];
 }
 
+/**
+ * Monitor the Bugsnag endpoint to detect changes in connectivity,
+ * flush pending events when (re)connected and report connectivity
+ * changes as breadcrumbs, if configured to do so.
+ */
 - (void)setupConnectivityListener {
     NSURL *url = self.configuration.notifyURL;
 
@@ -544,14 +550,15 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         if (connected)
             [strongSelf flushPendingReports];
 
-        [strongSelf addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
-            crumb.message = @"Connectivity change";
-            crumb.type = BSGBreadcrumbTypeState;
-            crumb.metadata  = @{ @"type"  :  connectionType };
-        }];
+        if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
+            [strongSelf addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
+                crumb.message = @"Connectivity change";
+                crumb.type = BSGBreadcrumbTypeState;
+                crumb.metadata  = @{ @"type"  :  connectionType };
+            }];
+        }
     }];
 }
-
 
 - (void)notifyError:(NSError *)error
               block:(void (^)(BugsnagEvent *))block {
@@ -718,6 +725,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self flushPendingReports];
 }
 
+// MARK: - Breadcrumbs
+
 - (void)addBreadcrumbWithBlock:
     (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
     [self.configuration.breadcrumbs addBreadcrumbWithBlock:block];
@@ -757,18 +766,21 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     }
 }
 
+/**
+ * Update the device status in response to a battery change notification
+ *
+ * @param notification The change notification
+ */
 #if TARGET_OS_TV
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-- (void)batteryChanged:(NSNotification *)notif {
-    NSNumber *batteryLevel =
-            @([UIDevice currentDevice].batteryLevel);
-    NSNumber *charging =
-            @([UIDevice currentDevice].batteryState ==
-                    UIDeviceBatteryStateCharging);
+- (void)batteryChanged:(NSNotification *)notification {
+    NSNumber *batteryLevel = @([UIDevice currentDevice].batteryLevel);
+    NSNumber *charging = @([UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging);
 
     [[self state] addAttribute:BSGKeyBatteryLevel
                      withValue:batteryLevel
                  toTabWithName:BSGKeyDeviceState];
+    
     [[self state] addAttribute:BSGKeyCharging
                      withValue:charging
                  toTabWithName:BSGKeyDeviceState];
@@ -816,6 +828,14 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         }
     }
 
+    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
+        [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+            breadcrumb.type = BSGBreadcrumbTypeState;
+            breadcrumb.message = orientationNotifName;
+            breadcrumb.metadata = @{BSGKeyOrientation : orientation};
+        }];
+    }
+
     [[self state] addAttribute:BSGKeyOrientation
                      withValue:orientation
                  toTabWithName:BSGKeyDeviceState];
@@ -826,6 +846,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                      withValue:[[Bugsnag payloadDateFormatter]
                                    stringFromDate:[NSDate date]]
                  toTabWithName:BSGKeyDeviceState];
+     
+    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
+        [self sendBreadcrumbForNotification:notif];
+    }
 }
 #endif
 
@@ -843,6 +867,68 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         [self.oomWatchdog disable];
     }
 }
+
+/**
+ * Configure event listeners for automatic breadcrumbs.
+ */
+- (void)updateAutomaticBreadcrumbDetectionSettings {
+
+    // No automatic breadcrumbs are enabled; remove notifications for them all and return.
+    if (![[self configuration] enabledBreadcrumbTypes]) {
+        NSArray *allEventNames = [[[[self automaticBreadcrumbStateEvents]
+            arrayByAddingObjectsFromArray:[self automaticBreadcrumbControlEvents]]
+            arrayByAddingObjectsFromArray:[self automaticBreadcrumbMenuItemEvents]]
+            arrayByAddingObjectsFromArray:[self automaticBreadcrumbTableItemEvents]];
+        
+        for (NSString *eventName in allEventNames) {
+            [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                            name:eventName
+                                                          object:nil];
+        }
+        return;
+    }
+    
+    // Register for the enabled automatic breadcrumbs
+
+    // 'State' events
+    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
+        for (NSString *name in [self automaticBreadcrumbStateEvents]) {
+            [self crumbleNotification:name];
+        }
+    }
+    
+    // 'User' events
+    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeUser]) {
+        
+        // UI/NSTableView events
+        for (NSString *name in [self automaticBreadcrumbTableItemEvents]) {
+            [[NSNotificationCenter defaultCenter]
+                addObserver:self
+                   selector:@selector(sendBreadcrumbForTableViewNotification:)
+                       name:name
+                     object:nil];
+        }
+        
+        // UITextField/NSControl events (text editing)
+        for (NSString *name in [self automaticBreadcrumbControlEvents]) {
+            [[NSNotificationCenter defaultCenter]
+                addObserver:self
+                   selector:@selector(sendBreadcrumbForControlNotification:)
+                       name:name
+                     object:nil];
+        }
+        
+        // NSMenu events (Mac only)
+        for (NSString *name in [self automaticBreadcrumbMenuItemEvents]) {
+            [[NSNotificationCenter defaultCenter]
+                addObserver:self
+                   selector:@selector(sendBreadcrumbForMenuItemNotification:)
+                       name:name
+                     object:nil];
+        }
+    }
+}
+
 - (NSArray<NSString *> *)automaticBreadcrumbStateEvents {
 #if TARGET_OS_TV
     return @[

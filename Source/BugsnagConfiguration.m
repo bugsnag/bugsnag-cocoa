@@ -349,6 +349,27 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     self.breadcrumbs.capacity = capacity;
 }
 
+- (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)type {
+    switch (type) {
+        case BSGBreadcrumbTypeManual:
+            return YES;
+        case BSGBreadcrumbTypeError :
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeError;
+        case BSGBreadcrumbTypeLog:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeLog;
+        case BSGBreadcrumbTypeNavigation:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeNavigation;
+        case BSGBreadcrumbTypeProcess:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeProcess;
+        case BSGBreadcrumbTypeRequest:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeRequest;
+        case BSGBreadcrumbTypeState:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeState;
+        case BSGBreadcrumbTypeUser:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeUser;
+    }
+}
+
 // MARK: -
 
 @synthesize releaseStage = _releaseStage;
