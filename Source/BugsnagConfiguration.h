@@ -320,7 +320,7 @@ BugsnagBreadcrumbs *breadcrumbs;
 - (void)addPlugin:(id<BugsnagPlugin> _Nonnull)plugin;
 
 /**
- * Should the specified type of breadcrumb be recorded.
+ * Should the specified type of breadcrumb be recorded?
  *
  * @param type The type of breadcrumb
  *

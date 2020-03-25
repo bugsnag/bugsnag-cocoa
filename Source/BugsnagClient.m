@@ -424,10 +424,12 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
     [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
 
-    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-        breadcrumb.type = BSGBreadcrumbTypeState;
-        breadcrumb.message = BSGBreadcrumbLoadedMessage;
-    }];
+    if ([self.configuration shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
+        [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+            breadcrumb.type = BSGBreadcrumbTypeState;
+            breadcrumb.message = BSGBreadcrumbLoadedMessage;
+        }];
+    }
 
     // notification not received in time on initial startup, so trigger manually
     [self willEnterForeground:self];
@@ -668,8 +670,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)notify:(NSException *)exception
-    handledState:(BugsnagHandledState *_Nonnull)handledState
-           block:(void (^)(BugsnagEvent *))block {
+  handledState:(BugsnagHandledState *_Nonnull)handledState
+         block:(void (^)(BugsnagEvent *))block
+{
     NSString *exceptionName = exception.name ?: NSStringFromClass([exception class]);
     NSString *message = exception.reason;
     if (handledState.unhandled) {
@@ -714,14 +717,16 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                                    config:[self.configuration.config toDictionary]
                              discardDepth:depth];
 
-    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
-      crumb.type = BSGBreadcrumbTypeError;
-      crumb.message = reportName;
-      crumb.metadata = @{
-          BSGKeyMessage : reportMessage,
-          BSGKeySeverity : BSGFormatSeverity(report.severity)
-      };
-    }];
+    if ([self.configuration shouldRecordBreadcrumbType:BSGBreadcrumbTypeError]) {
+        [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+          crumb.type = BSGBreadcrumbTypeError;
+          crumb.message = reportName;
+          crumb.metadata = @{
+              BSGKeyMessage : reportMessage,
+              BSGKeySeverity : BSGFormatSeverity(report.severity)
+          };
+        }];
+    }
     [self flushPendingReports];
 }
 
@@ -836,6 +841,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         }];
     }
 
+    // Update the Device orientation
     [[self state] addAttribute:BSGKeyOrientation
                      withValue:orientation
                  toTabWithName:BSGKeyDeviceState];
