@@ -16,6 +16,10 @@
 @property(nonatomic, strong) BugsnagBreadcrumbs *crumbs;
 @end
 
+@interface BugsnagConfiguration ()
+@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
+@end
+
 @interface BugsnagBreadcrumbs ()
 @property(nonatomic, readonly, strong) dispatch_queue_t readWriteQueue;
 @end

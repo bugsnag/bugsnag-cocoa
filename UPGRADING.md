@@ -64,6 +64,23 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 + config.enabledErrorTypes
 ```
 
+#### Removals
+
+```diff
+- BugsnagBeforeNotifyHook
+- config.metadata
+- config.config
+- config.breadcrumbs
+- config.reportBackgroundOOMs
+- config.notifyURL
+- config.sessionURL
+- config.shouldAutoCaptureSessions
+- config.autoNotify
+- config.shouldSendReports
+- config.errorApiHeaders
+- config.sessionApiHeaders
+```
+
 ### `Bugsnag` class
 
 #### Removals
