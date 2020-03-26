@@ -47,11 +47,14 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
 @end
 
+@interface BugsnagClient ()
+- (void)startListeningForStateChangeNotification:(NSString *_Nonnull)notificationName;
+@end
+
 @implementation Bugsnag
 
 + (void)startBugsnagWithApiKey:(NSString *)apiKey {
-    BugsnagConfiguration *configuration = [BugsnagConfiguration new];
-    configuration.apiKey = apiKey;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
     [self startBugsnagWithConfiguration:configuration];
 }
 
@@ -129,36 +132,6 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     }
 }
 
-+ (void)notify:(NSException *)exception withData:(NSDictionary *)metadata {
-    if ([self bugsnagStarted]) {
-        [[self client]
-                notifyException:exception
-                          block:^(BugsnagEvent *_Nonnull report) {
-                              report.depth += 2;
-                              report.metadata = [metadata
-                                      BSG_mergedInto:[self.client.configuration
-                                              .metadata toDictionary]];
-                          }];
-    }
-}
-
-+ (void)notify:(NSException *)exception
-      withData:(NSDictionary *)metadata
-    atSeverity:(NSString *)severity {
-    if ([self bugsnagStarted]) {
-        [[self client]
-                notifyException:exception
-                     atSeverity:BSGParseSeverity(severity)
-                          block:^(BugsnagEvent *_Nonnull report) {
-                              report.depth += 2;
-                              report.metadata = [metadata
-                                      BSG_mergedInto:[self.client.configuration
-                                              .metadata toDictionary]];
-                              report.severity = BSGParseSeverity(severity);
-                          }];
-    }
-}
-
 + (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
                        block:(BugsnagOnErrorBlock _Nullable)block {
@@ -217,7 +190,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 + (void)leaveBreadcrumbForNotificationName:
     (NSString *_Nonnull)notificationName {
     if ([self bugsnagStarted]) {
-        [self.client crumbleNotification:notificationName];
+        [self.client startListeningForStateChangeNotification:notificationName];
     }
 }
 
@@ -272,6 +245,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     dispatch_once(&onceToken, ^{
       formatter = [NSDateFormatter new];
       formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
+      formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
     });
     return formatter;
 }
@@ -313,6 +287,13 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 + (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull )block
 {
     [[self configuration] removeOnSessionBlock:block];
+}
+
+/**
+ * Intended for internal use only - sets the code bundle id for React Native
+ */
++ (void)updateCodeBundleId:(NSString *)codeBundleId {
+    [self configuration].codeBundleId = codeBundleId;
 }
 
 // =============================================================================

@@ -1,15 +1,21 @@
+//
+//  EnabledBreadcrumbTypesIsNilScenario.swift
+//  iOSTestApp
+//
+//  Created by Robin Macharg on 25/03/2020.
+//  Copyright © 2020 Bugsnag. All rights reserved.
+//
+
 import UIKit
 
-class DiscardedBreadcrumbTypeScenario : Scenario {
-
+class EnabledBreadcrumbTypesIsNilScenario : Scenario {
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
-        self.config.enabledBreadcrumbTypes = [.error, .process];
+        self.config.enabledBreadcrumbTypes = []; // aka .none
         super.startBugsnag()
     }
-
+ 
     override func run() {
-        // Both are left, despite .log not being enabled.  .state breadcrumbs on the other hand are not left
         Bugsnag.leaveBreadcrumb("Noisy event", metadata: nil, type: .log)
         Bugsnag.leaveBreadcrumb("Important event", metadata: nil, type: .process)
 
