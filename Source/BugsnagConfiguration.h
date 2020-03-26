@@ -145,7 +145,7 @@ BugsnagBreadcrumbs *breadcrumbs;
 /**
  *  Optional handler invoked when an error or crash occurs
  */
-@property void (*_Nullable onError)
+@property void (*_Nullable onCrashHandler)
     (const BSG_KSCrashReportWriter *_Nonnull writer);
 
 /**
