@@ -21,7 +21,7 @@
 		18761D8A242936470017EA2B /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = 18761D01242936470017EA2B /* Bugsnag.m */; };
 		18761D8B242936470017EA2B /* BugsnagSessionFileStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D02242936470017EA2B /* BugsnagSessionFileStore.h */; };
 		18761D8C242936470017EA2B /* BugsnagSessionTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D03242936470017EA2B /* BugsnagSessionTracker.h */; };
-		18761D8D242936470017EA2B /* BugsnagCrashReport.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D04242936470017EA2B /* BugsnagCrashReport.h */; };
+		18761D8D242936470017EA2B /* BugsnagCrashReport.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D04242936470017EA2B /* BugsnagCrashReport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18761D8E242936470017EA2B /* BugsnagApiClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 18761D05242936470017EA2B /* BugsnagApiClient.m */; };
 		18761D8F242936470017EA2B /* BugsnagSessionTrackingPayload.m in Sources */ = {isa = PBXBuildFile; fileRef = 18761D06242936470017EA2B /* BugsnagSessionTrackingPayload.m */; };
 		18761D90242936470017EA2B /* BSGOutOfMemoryWatchdog.m in Sources */ = {isa = PBXBuildFile; fileRef = 18761D07242936470017EA2B /* BSGOutOfMemoryWatchdog.m */; };
@@ -29,9 +29,9 @@
 		18761D92242936470017EA2B /* BugsnagMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 18761D09242936470017EA2B /* BugsnagMetaData.m */; };
 		18761D93242936470017EA2B /* BugsnagFileStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D0A242936470017EA2B /* BugsnagFileStore.h */; };
 		18761D94242936470017EA2B /* BSGSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D0B242936470017EA2B /* BSGSerialization.h */; };
-		18761D95242936470017EA2B /* BugsnagBreadcrumb.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D0C242936470017EA2B /* BugsnagBreadcrumb.h */; };
+		18761D95242936470017EA2B /* BugsnagBreadcrumb.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D0C242936470017EA2B /* BugsnagBreadcrumb.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18761D96242936470017EA2B /* BugsnagHandledState.m in Sources */ = {isa = PBXBuildFile; fileRef = 18761D0D242936470017EA2B /* BugsnagHandledState.m */; };
-		18761D97242936470017EA2B /* BSG_KSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D0E242936470017EA2B /* BSG_KSCrashReportWriter.h */; };
+		18761D97242936470017EA2B /* BSG_KSCrashReportWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D0E242936470017EA2B /* BSG_KSCrashReportWriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18761D98242936470017EA2B /* Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D0F242936470017EA2B /* Private.h */; };
 		18761D99242936470017EA2B /* BSGConnectivity.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D10242936470017EA2B /* BSGConnectivity.h */; };
 		18761D9A242936470017EA2B /* BugsnagSessionTrackingApiClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D11242936470017EA2B /* BugsnagSessionTrackingApiClient.h */; };
@@ -119,15 +119,15 @@
 		18761DEC242936470017EA2B /* BugsnagCrashSentry.m in Sources */ = {isa = PBXBuildFile; fileRef = 18761D6B242936470017EA2B /* BugsnagCrashSentry.m */; };
 		18761DED242936470017EA2B /* BugsnagErrorReportApiClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 18761D6C242936470017EA2B /* BugsnagErrorReportApiClient.m */; };
 		18761DEE242936470017EA2B /* BugsnagSessionFileStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 18761D6D242936470017EA2B /* BugsnagSessionFileStore.m */; };
-		18761DEF242936470017EA2B /* Bugsnag.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D6E242936470017EA2B /* Bugsnag.h */; };
-		18761DF0242936470017EA2B /* BugsnagConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D6F242936470017EA2B /* BugsnagConfiguration.h */; };
-		18761DF1242936470017EA2B /* BugsnagPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D70242936470017EA2B /* BugsnagPlugin.h */; };
+		18761DEF242936470017EA2B /* Bugsnag.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D6E242936470017EA2B /* Bugsnag.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18761DF0242936470017EA2B /* BugsnagConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D6F242936470017EA2B /* BugsnagConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18761DF1242936470017EA2B /* BugsnagPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D70242936470017EA2B /* BugsnagPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18761DF2242936470017EA2B /* BugsnagNotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D71242936470017EA2B /* BugsnagNotifier.h */; };
 		18761DF3242936470017EA2B /* BugsnagCollections.m in Sources */ = {isa = PBXBuildFile; fileRef = 18761D72242936470017EA2B /* BugsnagCollections.m */; };
 		18761DF4242936470017EA2B /* BugsnagSink.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D73242936470017EA2B /* BugsnagSink.h */; };
 		18761DF5242936470017EA2B /* BSGSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 18761D74242936470017EA2B /* BSGSerialization.m */; };
 		18761DF6242936470017EA2B /* BugsnagFileStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 18761D75242936470017EA2B /* BugsnagFileStore.m */; };
-		18761DF7242936470017EA2B /* BugsnagMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D76242936470017EA2B /* BugsnagMetaData.h */; };
+		18761DF7242936470017EA2B /* BugsnagMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D76242936470017EA2B /* BugsnagMetaData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18761DF8242936470017EA2B /* BugsnagSessionTrackingPayload.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D77242936470017EA2B /* BugsnagSessionTrackingPayload.h */; };
 		18761DF9242936470017EA2B /* BSGOutOfMemoryWatchdog.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D78242936470017EA2B /* BSGOutOfMemoryWatchdog.h */; };
 		18761DFA242936470017EA2B /* BugsnagApiClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 18761D79242936470017EA2B /* BugsnagApiClient.h */; };
@@ -301,58 +301,58 @@
 		18761CF5242936470017EA2B /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				18761CF6242936470017EA2B /* BugsnagErrorReportApiClient.h */,
-				18761CF7242936470017EA2B /* BugsnagCrashSentry.h */,
-				18761CF8242936470017EA2B /* BugsnagSession.h */,
-				18761CF9242936470017EA2B /* BugsnagUser.m */,
-				18761CFA242936470017EA2B /* BugsnagKSCrashSysInfoParser.m */,
-				18761CFB242936470017EA2B /* BugsnagSessionTrackingApiClient.m */,
-				18761CFC242936470017EA2B /* BugsnagSink.m */,
-				18761CFD242936470017EA2B /* BugsnagCollections.h */,
-				18761CFE242936470017EA2B /* BugsnagNotifier.m */,
-				18761CFF242936470017EA2B /* BugsnagKeys.h */,
-				18761D00242936470017EA2B /* BugsnagConfiguration.m */,
-				18761D01242936470017EA2B /* Bugsnag.m */,
-				18761D02242936470017EA2B /* BugsnagSessionFileStore.h */,
-				18761D03242936470017EA2B /* BugsnagSessionTracker.h */,
-				18761D04242936470017EA2B /* BugsnagCrashReport.h */,
-				18761D05242936470017EA2B /* BugsnagApiClient.m */,
-				18761D06242936470017EA2B /* BugsnagSessionTrackingPayload.m */,
-				18761D07242936470017EA2B /* BSGOutOfMemoryWatchdog.m */,
-				18761D08242936470017EA2B /* BugsnagLogger.h */,
-				18761D09242936470017EA2B /* BugsnagMetaData.m */,
-				18761D0A242936470017EA2B /* BugsnagFileStore.h */,
-				18761D0B242936470017EA2B /* BSGSerialization.h */,
-				18761D0C242936470017EA2B /* BugsnagBreadcrumb.h */,
-				18761D0D242936470017EA2B /* BugsnagHandledState.m */,
 				18761D0E242936470017EA2B /* BSG_KSCrashReportWriter.h */,
-				18761D0F242936470017EA2B /* Private.h */,
 				18761D10242936470017EA2B /* BSGConnectivity.h */,
-				18761D11242936470017EA2B /* BugsnagSessionTrackingApiClient.h */,
-				18761D12242936470017EA2B /* KSCrash */,
-				18761D68242936470017EA2B /* BugsnagKSCrashSysInfoParser.h */,
-				18761D69242936470017EA2B /* BugsnagSession.m */,
-				18761D6A242936470017EA2B /* BugsnagUser.h */,
-				18761D6B242936470017EA2B /* BugsnagCrashSentry.m */,
-				18761D6C242936470017EA2B /* BugsnagErrorReportApiClient.m */,
-				18761D6D242936470017EA2B /* BugsnagSessionFileStore.m */,
-				18761D6E242936470017EA2B /* Bugsnag.h */,
-				18761D6F242936470017EA2B /* BugsnagConfiguration.h */,
-				18761D70242936470017EA2B /* BugsnagPlugin.h */,
-				18761D71242936470017EA2B /* BugsnagNotifier.h */,
-				18761D72242936470017EA2B /* BugsnagCollections.m */,
-				18761D73242936470017EA2B /* BugsnagSink.h */,
-				18761D74242936470017EA2B /* BSGSerialization.m */,
-				18761D75242936470017EA2B /* BugsnagFileStore.m */,
-				18761D76242936470017EA2B /* BugsnagMetaData.h */,
-				18761D77242936470017EA2B /* BugsnagSessionTrackingPayload.h */,
-				18761D78242936470017EA2B /* BSGOutOfMemoryWatchdog.h */,
-				18761D79242936470017EA2B /* BugsnagApiClient.h */,
-				18761D7A242936470017EA2B /* BugsnagCrashReport.m */,
-				18761D7B242936470017EA2B /* BugsnagSessionTracker.m */,
 				18761D7C242936470017EA2B /* BSGConnectivity.m */,
-				18761D7D242936470017EA2B /* BugsnagHandledState.h */,
+				18761D78242936470017EA2B /* BSGOutOfMemoryWatchdog.h */,
+				18761D07242936470017EA2B /* BSGOutOfMemoryWatchdog.m */,
+				18761D0B242936470017EA2B /* BSGSerialization.h */,
+				18761D74242936470017EA2B /* BSGSerialization.m */,
+				18761D6E242936470017EA2B /* Bugsnag.h */,
+				18761D01242936470017EA2B /* Bugsnag.m */,
+				18761D79242936470017EA2B /* BugsnagApiClient.h */,
+				18761D05242936470017EA2B /* BugsnagApiClient.m */,
+				18761D0C242936470017EA2B /* BugsnagBreadcrumb.h */,
 				18761D7E242936470017EA2B /* BugsnagBreadcrumb.m */,
+				18761CFD242936470017EA2B /* BugsnagCollections.h */,
+				18761D72242936470017EA2B /* BugsnagCollections.m */,
+				18761D6F242936470017EA2B /* BugsnagConfiguration.h */,
+				18761D00242936470017EA2B /* BugsnagConfiguration.m */,
+				18761D04242936470017EA2B /* BugsnagCrashReport.h */,
+				18761D7A242936470017EA2B /* BugsnagCrashReport.m */,
+				18761CF7242936470017EA2B /* BugsnagCrashSentry.h */,
+				18761D6B242936470017EA2B /* BugsnagCrashSentry.m */,
+				18761CF6242936470017EA2B /* BugsnagErrorReportApiClient.h */,
+				18761D6C242936470017EA2B /* BugsnagErrorReportApiClient.m */,
+				18761D0A242936470017EA2B /* BugsnagFileStore.h */,
+				18761D75242936470017EA2B /* BugsnagFileStore.m */,
+				18761D7D242936470017EA2B /* BugsnagHandledState.h */,
+				18761D0D242936470017EA2B /* BugsnagHandledState.m */,
+				18761CFF242936470017EA2B /* BugsnagKeys.h */,
+				18761D68242936470017EA2B /* BugsnagKSCrashSysInfoParser.h */,
+				18761CFA242936470017EA2B /* BugsnagKSCrashSysInfoParser.m */,
+				18761D08242936470017EA2B /* BugsnagLogger.h */,
+				18761D76242936470017EA2B /* BugsnagMetaData.h */,
+				18761D09242936470017EA2B /* BugsnagMetaData.m */,
+				18761D71242936470017EA2B /* BugsnagNotifier.h */,
+				18761CFE242936470017EA2B /* BugsnagNotifier.m */,
+				18761D70242936470017EA2B /* BugsnagPlugin.h */,
+				18761CF8242936470017EA2B /* BugsnagSession.h */,
+				18761D69242936470017EA2B /* BugsnagSession.m */,
+				18761D02242936470017EA2B /* BugsnagSessionFileStore.h */,
+				18761D6D242936470017EA2B /* BugsnagSessionFileStore.m */,
+				18761D03242936470017EA2B /* BugsnagSessionTracker.h */,
+				18761D7B242936470017EA2B /* BugsnagSessionTracker.m */,
+				18761D11242936470017EA2B /* BugsnagSessionTrackingApiClient.h */,
+				18761CFB242936470017EA2B /* BugsnagSessionTrackingApiClient.m */,
+				18761D77242936470017EA2B /* BugsnagSessionTrackingPayload.h */,
+				18761D06242936470017EA2B /* BugsnagSessionTrackingPayload.m */,
+				18761D73242936470017EA2B /* BugsnagSink.h */,
+				18761CFC242936470017EA2B /* BugsnagSink.m */,
+				18761D6A242936470017EA2B /* BugsnagUser.h */,
+				18761CF9242936470017EA2B /* BugsnagUser.m */,
+				18761D12242936470017EA2B /* KSCrash */,
+				18761D0F242936470017EA2B /* Private.h */,
 			);
 			name = Source;
 			path = ../Source;
