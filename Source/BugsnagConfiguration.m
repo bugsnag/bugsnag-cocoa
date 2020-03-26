@@ -178,7 +178,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 // -----------------------------------------------------------------------------
 
 /**
- *  Whether reports shoould be sent, based on release stage options
+ *  Whether reports should be sent, based on release stage options
  *
  *  @return YES if reports should be sent based on this configuration
  */
