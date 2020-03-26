@@ -143,7 +143,14 @@ Swift:
 ```
 
 Note that `BugsnagMetadata.getTab()` previously would create a metadata section if it
-did not exist; the new behaviour in `getMetadata` is to return `nil`. 
+did not exist; the new behaviour in `getMetadata` is to return `nil`.
+
+#### Removals
+
+```diff
+- toDictionary
+- delegate
+```
 
 ### `BugsnagBreadcrumb` class
 

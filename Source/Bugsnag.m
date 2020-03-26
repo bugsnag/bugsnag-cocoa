@@ -46,6 +46,10 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 - (void)startListeningForStateChangeNotification:(NSString *_Nonnull)notificationName;
 @end
 
+@interface BugsnagMetadata ()
+- (NSDictionary *_Nonnull)toDictionary;
+@end
+
 @implementation Bugsnag
 
 + (void)startBugsnagWithApiKey:(NSString *)apiKey {

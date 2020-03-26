@@ -21,6 +21,10 @@
 + (BugsnagConfiguration *)configuration;
 @end
 
+@interface BugsnagMetadata ()
+- (NSDictionary *_Nonnull)toDictionary;
+@end
+
 @interface BugsnagEventTests : BugsnagBaseUnitTest
 @end
 
