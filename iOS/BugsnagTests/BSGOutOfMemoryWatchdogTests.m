@@ -28,7 +28,7 @@
 
 - (void)setUp {
     [super setUp];
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error: nil];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.autoDetectErrors = NO;
     config.codeBundleId = @"codeBundleIdHere";
     config.releaseStage = @"MagicalTestingTime";

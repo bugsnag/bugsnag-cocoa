@@ -45,7 +45,7 @@
 
 - (void)testAddPlugin {
     id<BugsnagPlugin> plugin = [FakePlugin new];
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [config addPlugin:plugin];
     XCTAssertEqual([config.plugins anyObject], plugin);
 }
@@ -55,7 +55,7 @@
     __block XCTestExpectation *expectation = [self expectationWithDescription:@"Plugin Loaded by Bugsnag"];
     plugin.expectation = expectation;
 
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [config addPlugin:plugin];
     [Bugsnag startBugsnagWithConfiguration:config];
     [self waitForExpectations:@[expectation] timeout:3.0];
@@ -67,7 +67,7 @@
     CrashyPlugin *plugin = [CrashyPlugin new];
     plugin.expectation = expectation;
 
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:nil];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [config addPlugin:plugin];
     [Bugsnag startBugsnagWithConfiguration:config];
     [self waitForExpectations:@[expectation] timeout:3.0];

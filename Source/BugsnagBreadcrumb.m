@@ -239,7 +239,7 @@ NSUInteger BreadcrumbsDefaultCapacity = 25;
         return;
     }
     BugsnagBreadcrumb *crumb = [BugsnagBreadcrumb breadcrumbWithBlock:block];
-    if (crumb && [self shouldSaveType:crumb.type]) {
+    if (crumb) {
         [self resizeToFitCapacity:self.capacity - 1];
         dispatch_barrier_sync(self.readWriteQueue, ^{
             [self.breadcrumbs addObject:crumb];
@@ -276,27 +276,6 @@ NSUInteger BreadcrumbsDefaultCapacity = 25;
         }
     });
     return [cache isKindOfClass:[NSArray class]] ? cache : nil;
-}
-
-- (BOOL)shouldSaveType:(BSGBreadcrumbType)type {
-    switch (type) {
-        case BSGBreadcrumbTypeManual:
-            return YES;
-        case BSGBreadcrumbTypeError:
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeError;
-        case BSGBreadcrumbTypeLog:
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeLog;
-        case BSGBreadcrumbTypeNavigation:
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeNavigation;
-        case BSGBreadcrumbTypeProcess:
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeProcess;
-        case BSGBreadcrumbTypeRequest:
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeRequest;
-        case BSGBreadcrumbTypeState:
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeState;
-        case BSGBreadcrumbTypeUser:
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeUser;
-    }
 }
 
 @synthesize capacity = _capacity;

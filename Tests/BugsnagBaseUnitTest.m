@@ -40,8 +40,7 @@
 -(void)setUpBugsnagWillCallNotify:(bool)willNotify
                    andPersistUser:(bool)willPersistUser
 {
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [configuration setPersistUser:willPersistUser];
     
     if (willNotify) {

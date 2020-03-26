@@ -25,8 +25,6 @@ Related to #
 <!-- How was this change tested? What manual and automated tests were
      run/added? -->
 
-[ ] The example apps compile and run.
-
 ## Review
 
 ### Outstanding Questions
@@ -49,7 +47,9 @@ Related to #
 
 <!-- What do you need from a reviewer to get this changeset
      ready for release -->
-
+     
+- [ ] The example apps compile and run.
+- [ ] The library has been unit tested on iOS, MacOS and tvOS
 - [ ] The correct target branch has been selected (`master` for fixes, `next` for
   features)
 - [ ] Consistency across platforms for structures or concepts added or modified
