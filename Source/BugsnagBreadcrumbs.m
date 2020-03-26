@@ -12,6 +12,12 @@
 #import "BugsnagLogger.h"
 #import "Private.h"
 
+@interface BugsnagBreadcrumb ()
++ (instancetype _Nullable)breadcrumbWithBlock:
+    (BSGBreadcrumbConfiguration _Nonnull)block;
++ (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
+@end
+
 @interface BugsnagBreadcrumbs ()
 
 @property(nonatomic, readwrite, strong) NSMutableArray *breadcrumbs;

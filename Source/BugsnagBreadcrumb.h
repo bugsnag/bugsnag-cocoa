@@ -99,11 +99,6 @@ typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 @property(readwrite) BSGBreadcrumbType type;
 @property(readwrite, copy, nonnull) NSString *message;
 @property(readwrite, copy, nonnull) NSDictionary *metadata;
-
-+ (instancetype _Nullable)breadcrumbWithBlock:
-    (BSGBreadcrumbConfiguration _Nonnull)block;
-
-+ (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
 @end
 
 

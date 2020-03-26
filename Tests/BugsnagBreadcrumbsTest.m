@@ -17,6 +17,12 @@
 @property(nonatomic, strong) BugsnagBreadcrumbs *crumbs;
 @end
 
+@interface BugsnagBreadcrumb ()
++ (instancetype _Nullable)breadcrumbWithBlock:
+    (BSGBreadcrumbConfiguration _Nonnull)block;
++ (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
+@end
+
 @interface BugsnagBreadcrumbs ()
 @property(nonatomic, readonly, strong) dispatch_queue_t readWriteQueue;
 @end

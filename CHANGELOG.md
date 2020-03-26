@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Remove unused APIs from `BugsnagBreadcrumb` interface
+  [#502](https://github.com/bugsnag/bugsnag-cocoa/pull/502)
+
 * Remove `leaveBreadcrumbWithBlock` from public api on `Bugsnag`
   [#491](https://github.com/bugsnag/bugsnag-cocoa/pull/491)
 
