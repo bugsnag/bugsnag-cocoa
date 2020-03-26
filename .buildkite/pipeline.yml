@@ -2,13 +2,15 @@ steps:
   - label: 'Build cocoa IPA'
     timeout_in_minutes: 20
     agents:
-      queue: "opensource-mac"
+      queue: opensource-mac
     artifact_paths: test-outputs/*
     commands:
       - ./end-to-end-tests/scripts/export_ios_app.sh
 
   - label: ':docker: Build Cocoa maze runner image'
     timeout_in_minutes: 20
+    agents:
+      queue: opensource
     plugins:
       - docker-compose#v2.6.0:
           build: cocoa-maze-runner
@@ -17,6 +19,8 @@ steps:
 
   - label: ':ios: iOS 12 end-to-end tests'
     timeout_in_minutes: 60
+    agents:
+      queue: opensource
     plugins:
       artifacts#v1.2.0:
         download: ["test-outputs/iOSTestApp.ipa", "test-outputs/dSYMs.zip"]
@@ -32,6 +36,8 @@ steps:
 
   - label: ':ios: iOS 11 end-to-end tests'
     timeout_in_minutes: 60
+    agents:
+      queue: opensource
     plugins:
       artifacts#v1.2.0:
         download: ["test-outputs/iOSTestApp.ipa", "test-outputs/dSYMs.zip"]
@@ -45,6 +51,8 @@ steps:
 
   - label: ':ios: iOS 10 end-to-end tests'
     timeout_in_minutes: 60
+    agents:
+      queue: opensource
     plugins:
       artifacts#v1.2.0:
         download: ["test-outputs/iOSTestApp.ipa", "test-outputs/dSYMs.zip"]
