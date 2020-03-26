@@ -11,14 +11,26 @@
     "git": "https://github.com/bugsnag/bugsnag-cocoa.git",
     "tag": "v5.23.0"
   },
-  "frameworks": ["Foundation", "SystemConfiguration"],
+  "ios": {
+    "frameworks": ["Foundation", "SystemConfiguration"]
+  },
+  "tvos": {
+    "frameworks": ["Foundation", "SystemConfiguration"]
+  },
+  "osx": {
+    "frameworks": ["Foundation", "SystemConfiguration"]
+  },
+  "watchos": {
+    "frameworks": ["Foundation"]
+  },
   "libraries": [
     "c++", "z"
   ],
   "platforms": {
     "ios": "8.0",
     "osx": "10.8",
-    "tvos": "9.0"
+    "tvos": "9.0",
+    "watchos": "4.0"
   },
   "source_files": [
     "Source/{**/,}*.{m,h,mm,c,cpp}"

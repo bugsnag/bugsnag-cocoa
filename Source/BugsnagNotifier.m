@@ -293,7 +293,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
         UIScreenBrightnessDidChangeNotification : @"Screen Brightness Changed",
         UITableViewSelectionDidChangeNotification : kTableViewSelectionChange,
 
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif TARGET_OS_IOS
         UIWindowDidBecomeVisibleNotification : kWindowVisible,
         UIWindowDidBecomeHiddenNotification : kWindowHidden,
         UIApplicationWillTerminateNotification : kAppWillTerminate,
@@ -318,7 +318,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
         UIDeviceOrientationDidChangeNotification : @"Orientation Changed",
         UIApplicationDidReceiveMemoryWarningNotification : @"Memory Warning",
 
-#elif TARGET_OS_MAC
+#elif TARGET_OS_OSX
         NSApplicationDidBecomeActiveNotification : @"App Became Active",
         NSApplicationDidResignActiveNotification : @"App Resigned Active",
         NSApplicationDidHideNotification : @"App Did Hide",
@@ -353,7 +353,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 #if TARGET_OS_TV
     [self addTerminationObserver:UIApplicationWillTerminateNotification];
 
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif TARGET_OS_IOS
     [center addObserver:self
                selector:@selector(batteryChanged:)
                    name:UIDeviceBatteryStateDidChangeNotification
@@ -381,7 +381,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [self orientationChanged:nil];
     [self addTerminationObserver:UIApplicationWillTerminateNotification];
 
-#elif TARGET_OS_MAC
+#elif TARGET_OS_OSX
     [center addObserver:self
                selector:@selector(willEnterForeground:)
                    name:NSApplicationDidBecomeActiveNotification
@@ -393,6 +393,11 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                  object:nil];
 
     [self addTerminationObserver:NSApplicationWillTerminateNotification];
+
+#elif TARGET_OS_WATCH
+    // There isn't a notification for battery state monitoring so just get the initial value
+    [WKInterfaceDevice currentDevice].batteryMonitoringEnabled = YES;
+    [self batteryChanged:nil];
 #endif
 
     _started = YES;
@@ -456,10 +461,14 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
  */
 - (void)unsubscribeFromNotifications:(id)sender {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+#if BSG_KSCRASH_HAS_REACHABILITY
     [self.networkReachable stopWatchingConnectivity];
+#endif
 
-#if TARGET_OS_TV || TARGET_OS_MAC
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV || TARGET_OS_OSX
+#elif TARGET_OS_WATCH
+    [WKInterfaceDevice currentDevice].batteryMonitoringEnabled = NO;
+#elif TARGET_OS_IOS
     [UIDevice currentDevice].batteryMonitoringEnabled = NO;
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 #endif
@@ -469,12 +478,15 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     NSString *foregroundName;
     NSString *backgroundName;
 
-    #if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    #if TARGET_OS_TV || TARGET_OS_IOS
     foregroundName = UIApplicationWillEnterForegroundNotification;
     backgroundName = UIApplicationWillEnterForegroundNotification;
-    #elif TARGET_OS_MAC
+    #elif TARGET_OS_OSX
     foregroundName = NSApplicationWillBecomeActiveNotification;
     backgroundName = NSApplicationDidFinishLaunchingNotification;
+    #elif TARGET_OS_WATCH
+    foregroundName = NSExtensionHostWillEnterForegroundNotification;
+    backgroundName = NSExtensionHostDidEnterBackgroundNotification;
     #endif
 
     [center addObserver:self
@@ -513,8 +525,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)setupConnectivityListener {
+#if BSG_KSCRASH_HAS_REACHABILITY
     NSURL *url = self.configuration.notifyURL;
-
     __weak id weakSelf = self;
     self.networkReachable =
         [[BSGConnectivity alloc] initWithURL:url
@@ -522,6 +534,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                                    [weakSelf flushPendingReports];
                                  }];
     [self.networkReachable startWatchingConnectivity];
+#endif
 }
 
 
@@ -730,7 +743,22 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 #if TARGET_OS_TV
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif TARGET_OS_WATCH
+- (void)batteryChanged:(NSNotification *)notif {
+    NSNumber *batteryLevel =
+            @([WKInterfaceDevice currentDevice].batteryLevel);
+    NSNumber *charging =
+            @([WKInterfaceDevice currentDevice].batteryState ==
+                    WKInterfaceDeviceBatteryStateCharging);
+
+    [[self state] addAttribute:BSGKeyBatteryLevel
+                     withValue:batteryLevel
+                 toTabWithName:BSGKeyDeviceState];
+    [[self state] addAttribute:BSGKeyCharging
+                     withValue:charging
+                 toTabWithName:BSGKeyDeviceState];
+}
+#elif TARGET_OS_IOS
 - (void)batteryChanged:(NSNotification *)notif {
     NSNumber *batteryLevel =
             @([UIDevice currentDevice].batteryLevel);
@@ -878,7 +906,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
         UIWindowDidResignKeyNotification,
         UIScreenBrightnessDidChangeNotification
     ];
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif TARGET_OS_IOS
     return @[
         UIWindowDidBecomeHiddenNotification,
         UIWindowDidBecomeVisibleNotification,
@@ -894,7 +922,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
         UIApplicationUserDidTakeScreenshotNotification
 #endif
     ];
-#elif TARGET_OS_MAC
+#elif TARGET_OS_OSX
     return @[
         NSApplicationDidBecomeActiveNotification,
         NSApplicationDidResignActiveNotification,
@@ -912,14 +940,14 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (NSArray<NSString *> *)automaticBreadcrumbControlEvents {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_IOS
     return @[
         UITextFieldTextDidBeginEditingNotification,
         UITextViewTextDidBeginEditingNotification,
         UITextFieldTextDidEndEditingNotification,
         UITextViewTextDidEndEditingNotification
     ];
-#elif TARGET_OS_MAC
+#elif TARGET_OS_OSX
     return @[
         NSControlTextDidBeginEditingNotification,
         NSControlTextDidEndEditingNotification
@@ -930,9 +958,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (NSArray<NSString *> *)automaticBreadcrumbTableItemEvents {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE || TARGET_OS_TV
+#if TARGET_OS_IOS || TARGET_OS_TV
     return @[ UITableViewSelectionDidChangeNotification ];
-#elif TARGET_OS_MAC
+#elif TARGET_OS_OSX
     return @[ NSTableViewSelectionDidChangeNotification ];
 #else
     return nil;
@@ -942,9 +970,9 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 - (NSArray<NSString *> *)automaticBreadcrumbMenuItemEvents {
 #if TARGET_OS_TV
     return @[];
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif TARGET_OS_IOS
     return nil;
-#elif TARGET_OS_MAC
+#elif TARGET_OS_OSX
     return @[ NSMenuWillSendActionNotification ];
 #else
     return nil;
@@ -971,7 +999,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 }
 
 - (void)sendBreadcrumbForTableViewNotification:(NSNotification *)note {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE || TARGET_OS_TV
+#if TARGET_OS_IOS || TARGET_OS_TV
     UITableView *tableView = [note object];
     NSIndexPath *indexPath = [tableView indexPathForSelectedRow];
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
@@ -983,7 +1011,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
                  @"section" : @(indexPath.section) };
       }
     }];
-#elif TARGET_OS_MAC
+#elif TARGET_OS_OSX
     NSTableView *tableView = [note object];
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeNavigation;
@@ -1000,8 +1028,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
 - (void)sendBreadcrumbForMenuItemNotification:(NSNotification *)notif {
 #if TARGET_OS_TV
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-#elif TARGET_OS_MAC
+#elif TARGET_OS_IOS
+#elif TARGET_OS_OSX
     NSMenuItem *menuItem = [[notif userInfo] valueForKey:@"MenuItem"];
     if ([menuItem isKindOfClass:[NSMenuItem class]]) {
         [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
@@ -1016,7 +1044,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
 - (void)sendBreadcrumbForControlNotification:(NSNotification *)note {
 #if TARGET_OS_TV
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif TARGET_OS_IOS
     UIControl *control = note.object;
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeUser;
@@ -1026,7 +1054,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
           breadcrumb.metadata = @{BSGKeyLabel : label};
       }
     }];
-#elif TARGET_OS_MAC
+#elif TARGET_OS_OSX
     NSControl *control = note.object;
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeUser;
