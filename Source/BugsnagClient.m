@@ -875,37 +875,28 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 /**
- * Configure event listeners for automatic breadcrumbs.
+ * Configure event listeners (i.e. observers) for enabled automatic breadcrumbs.
  */
 - (void)updateAutomaticBreadcrumbDetectionSettings {
-
-    // No automatic breadcrumbs are enabled; remove notifications for them all and return.
-    if (![[self configuration] enabledBreadcrumbTypes]) {
-        NSArray *allEventNames = [[[[self automaticBreadcrumbStateEvents]
-            arrayByAddingObjectsFromArray:[self automaticBreadcrumbControlEvents]]
-            arrayByAddingObjectsFromArray:[self automaticBreadcrumbMenuItemEvents]]
-            arrayByAddingObjectsFromArray:[self automaticBreadcrumbTableItemEvents]];
-        
-        for (NSString *eventName in allEventNames) {
-            [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                            name:eventName
-                                                          object:nil];
-        }
-        return;
-    }
-    
-    // Register for the enabled automatic breadcrumbs
-
-    // 'State' events
+   // State events
     if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
+        // Generic state events
         for (NSString *name in [self automaticBreadcrumbStateEvents]) {
-            [self crumbleNotification:name];
+            [self startListeningForStateChangeNotification:name];
+        }
+        
+        // NSMenu events (Mac only)
+        for (NSString *name in [self automaticBreadcrumbMenuItemEvents]) {
+            [[NSNotificationCenter defaultCenter]
+                addObserver:self
+                   selector:@selector(sendBreadcrumbForMenuItemNotification:)
+                       name:name
+                     object:nil];
         }
     }
     
-    // 'User' events
-    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeUser]) {
-        
+    // Navigation events
+    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeNavigation]) {
         // UI/NSTableView events
         for (NSString *name in [self automaticBreadcrumbTableItemEvents]) {
             [[NSNotificationCenter defaultCenter]
@@ -914,21 +905,15 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                        name:name
                      object:nil];
         }
-        
+    }
+
+    // User events
+    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeUser]) {
         // UITextField/NSControl events (text editing)
         for (NSString *name in [self automaticBreadcrumbControlEvents]) {
             [[NSNotificationCenter defaultCenter]
                 addObserver:self
                    selector:@selector(sendBreadcrumbForControlNotification:)
-                       name:name
-                     object:nil];
-        }
-        
-        // NSMenu events (Mac only)
-        for (NSString *name in [self automaticBreadcrumbMenuItemEvents]) {
-            [[NSNotificationCenter defaultCenter]
-                addObserver:self
-                   selector:@selector(sendBreadcrumbForMenuItemNotification:)
                        name:name
                      object:nil];
         }
@@ -1018,7 +1003,12 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 #endif
 }
 
-- (void)crumbleNotification:(NSString *)notificationName {
+/**
+ * Configure a generic state change breadcrumb listener
+ *
+ * @param notificationName The name of the notification.
+ */
+- (void)startListeningForStateChangeNotification:(NSString *)notificationName {
     [[NSNotificationCenter defaultCenter]
         addObserver:self
            selector:@selector(sendBreadcrumbForNotification:)
@@ -1037,13 +1027,18 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     }];
 }
 
-- (void)sendBreadcrumbForTableViewNotification:(NSNotification *)note {
+/**
+ * Leave a navigation breadcrumb whenever a tableView selection changes
+ *
+ * @param notification The UI/NSTableViewSelectionDidChangeNotification
+ */
+- (void)sendBreadcrumbForTableViewNotification:(NSNotification *)notification {
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE || TARGET_OS_TV
-    UITableView *tableView = [note object];
+    UITableView *tableView = [notification object];
     NSIndexPath *indexPath = [tableView indexPathForSelectedRow];
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeNavigation;
-      breadcrumb.message = BSGBreadcrumbNameForNotificationName(note.name);
+      breadcrumb.message = BSGBreadcrumbNameForNotificationName(notification.name);
       if (indexPath) {
           breadcrumb.metadata =
               @{ @"row" : @(indexPath.row),
@@ -1065,11 +1060,16 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 #endif
 }
 
-- (void)sendBreadcrumbForMenuItemNotification:(NSNotification *)notif {
+/**
+* Leave a state breadcrumb whenever a tableView selection changes
+*
+* @param notification The UI/NSTableViewSelectionDidChangeNotification
+*/
+- (void)sendBreadcrumbForMenuItemNotification:(NSNotification *)notification {
 #if TARGET_OS_TV
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #elif TARGET_OS_MAC
-    NSMenuItem *menuItem = [[notif userInfo] valueForKey:@"MenuItem"];
+    NSMenuItem *menuItem = [[notification userInfo] valueForKey:@"MenuItem"];
     if ([menuItem isKindOfClass:[NSMenuItem class]]) {
         [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
           breadcrumb.type = BSGBreadcrumbTypeState;
