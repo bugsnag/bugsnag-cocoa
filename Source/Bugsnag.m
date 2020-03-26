@@ -314,6 +314,13 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     [[self configuration] removeOnSessionBlock:block];
 }
 
+/**
+ * Intended for internal use only - sets the code bundle id for React Native
+ */
++ (void)updateCodeBundleId:(NSString *)codeBundleId {
+    [self configuration].codeBundleId = codeBundleId;
+}
+
 // =============================================================================
 // MARK: - onSend
 // =============================================================================
