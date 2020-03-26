@@ -1,5 +1,5 @@
 steps:
-  - label: 'Build cocoa IPA'
+  - label: Build cocoa IPA
     timeout_in_minutes: 20
     agents:
       queue: opensource-mac
@@ -27,12 +27,12 @@ steps:
       docker-compose#v2.6.0:
         run: cocoa-maze-runner
     env:
-      DEVICE_TYPE: "IOS_12"
-      APP_LOCATION: "/app/build/iOSTestApp.ipa"
+      DEVICE_TYPE: IOS_12
+      APP_LOCATION: /app/build/iOSTestApp.ipa
     concurrency: 5
-    concurrency_group: 'browserstack-app'
+    concurrency_group: browserstack-app
 
-  - block: "Trigger full test suite"
+  - block: Trigger full test suite
 
   - label: ':ios: iOS 11 end-to-end tests'
     timeout_in_minutes: 60
@@ -44,10 +44,10 @@ steps:
       docker-compose#v2.6.0:
         run: cocoa-maze-runner
     env:
-      DEVICE_TYPE: "IOS_11"
-      APP_LOCATION: "/app/build/iOSTestApp.ipa"
+      DEVICE_TYPE: IOS_11
+      APP_LOCATION: /app/build/iOSTestApp.ipa
     concurrency: 5
-    concurrency_group: 'browserstack-app'
+    concurrency_group: browserstack-app
 
   - label: ':ios: iOS 10 end-to-end tests'
     timeout_in_minutes: 60
@@ -59,7 +59,7 @@ steps:
       docker-compose#v2.6.0:
         run: cocoa-maze-runner
     env:
-      DEVICE_TYPE: "IOS_10"
-      APP_LOCATION: "/app/build/iOSTestApp.ipa"
+      DEVICE_TYPE: IOS_10
+      APP_LOCATION: /app/build/iOSTestApp.ipa
     concurrency: 5
-    concurrency_group: 'browserstack-app'
+    concurrency_group: browserstack-app

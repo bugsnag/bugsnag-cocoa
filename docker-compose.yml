@@ -14,4 +14,7 @@ services:
       APP_LOCATION:
     command: --tags "not @wip"
     volumes:
-      - ./test-outputs:/app/build
+      - ./test-fixture/ios-swift-cocoapods/output:/app/build
+    # entrypoint: /bin/sh
+    # stdin_open: true
+    # tty: true

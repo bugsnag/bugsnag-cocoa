@@ -9,7 +9,7 @@ app_location = ENV['APP_LOCATION']
 $api_key = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345"
 
 After do |scenario|
-  $driver.reset
+  $driver.reset if $driver
 end
 
 AfterConfiguration do |config|
@@ -18,6 +18,8 @@ AfterConfiguration do |config|
 end
 
 at_exit do
-  $driver.close_app
-  $driver.driver_quit
+  if $driver
+    $driver.close_app
+    $driver.driver_quit
+  end
 end
