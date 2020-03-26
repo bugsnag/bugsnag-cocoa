@@ -349,6 +349,40 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     self.breadcrumbs.capacity = capacity;
 }
 
+/**
+ * Specific types of breadcrumb should be recorded if either enabledBreadcrumbTypes
+ * is None, or contains the type.
+ *
+ * @param type The breadcrumb type to test
+ * @returns Whether to record the breadcrumb
+ */
+- (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)type {
+    // enabledBreadcrumbTypes is BSGEnabledBreadcrumbTypeNone
+    if (!self.enabledBreadcrumbTypes) {
+        return YES;
+    }
+    
+    switch (type) {
+        case BSGBreadcrumbTypeManual:
+            return YES;
+        case BSGBreadcrumbTypeError :
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeError;
+        case BSGBreadcrumbTypeLog:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeLog;
+        case BSGBreadcrumbTypeNavigation:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeNavigation;
+        case BSGBreadcrumbTypeProcess:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeProcess;
+        case BSGBreadcrumbTypeRequest:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeRequest;
+        case BSGBreadcrumbTypeState:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeState;
+        case BSGBreadcrumbTypeUser:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeUser;
+    }
+    return NO;
+}
+
 // MARK: -
 
 @synthesize releaseStage = _releaseStage;
@@ -428,7 +462,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     return self.autoTrackSessions;
 }
 
-// MARK: -
+// MARK: - enabledBreadcrumbTypes
 
 - (BSGEnabledBreadcrumbType)enabledBreadcrumbTypes {
     return self.breadcrumbs.enabledBreadcrumbTypes;

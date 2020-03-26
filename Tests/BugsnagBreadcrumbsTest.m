@@ -223,17 +223,22 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqualObjects(value[0][@"message"], @"this is a test");
 }
 
-- (void)testDiscardByType {
+/**
+ * enabledBreadcrumbTypes filtering only happens on the client.  The BugsnagBreadcrumbs container is
+ * private and assumes filtering is already configured.
+ */
+- (void)testDiscardByTypeDoesNotApply {
     [self.crumbs clearBreadcrumbs];
     awaitBreadcrumbSync(self.crumbs);
     self.crumbs.enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeProcess;
+    // Don't discard this
     [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeState;
         crumb.message = @"state";
     }];
     awaitBreadcrumbSync(self.crumbs);
     NSArray *value = [self.crumbs arrayValue];
-    XCTAssertEqual(0, value.count);
+    XCTAssertEqual(1, value.count);
 }
 
 - (void)testConvertBreadcrumbTypeFromString {

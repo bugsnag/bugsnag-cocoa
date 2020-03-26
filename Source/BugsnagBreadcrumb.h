@@ -151,7 +151,8 @@ typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 - (NSArray *_Nullable)arrayValue;
 
 /**
- * The types of breadcrumbs which will be captured. By default, this is all types.
+ * The types of breadcrumbs which will be automatically captured.
+ * By default, this is all types.
  */
 @property BSGEnabledBreadcrumbType enabledBreadcrumbTypes;
 @end

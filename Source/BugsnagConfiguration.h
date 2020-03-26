@@ -145,7 +145,7 @@ BugsnagBreadcrumbs *breadcrumbs;
 /**
  *  Optional handler invoked when an error or crash occurs
  */
-@property void (*_Nullable onError)
+@property void (*_Nullable onCrashHandler)
     (const BSG_KSCrashReportWriter *_Nonnull writer);
 
 /**
@@ -319,4 +319,12 @@ BugsnagBreadcrumbs *breadcrumbs;
 
 - (void)addPlugin:(id<BugsnagPlugin> _Nonnull)plugin;
 
+/**
+ * Should the specified type of breadcrumb be recorded?
+ *
+ * @param type The type of breadcrumb
+ *
+ * @returns A boolean indicating whether the specified breadcrumb type should be recorded
+ */
+- (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)type;
 @end
