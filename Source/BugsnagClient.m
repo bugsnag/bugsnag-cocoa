@@ -592,17 +592,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)notifyException:(NSException *)exception
-             atSeverity:(BSGSeverity)severity
-                  block:(void (^)(BugsnagEvent *))block {
-
-    BugsnagHandledState *state = [BugsnagHandledState
-        handledStateWithSeverityReason:UserSpecifiedSeverity
-                              severity:severity
-                             attrValue:nil];
-    [self notify:exception handledState:state block:block];
-}
-
-- (void)notifyException:(NSException *)exception
                   block:(void (^)(BugsnagEvent *))block {
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
