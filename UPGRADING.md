@@ -103,6 +103,12 @@ ObjC:
 - [Bugsnag stopSession]
 + [Bugsnag pauseSession]
 
+- [Bugsnag notify:withData:]
++ [Bugsnag notify:block:]
+
+- [Bugsnag notify:withData:severity:]
++ [Bugsnag notify:block:]
+
 Swift:
 
 - Bugsnag.configuration()
@@ -116,6 +122,12 @@ Swift:
 
 - Bugsnag.stopSession()
 + Bugsnag.pauseSession()
+
+- Bugsnag.notify(exception:metadata:)
++ Bugsnag.notify(exception:block:)
+
+- Bugsnag.notify(exception:metadata:severity:)
++ Bugsnag.notify(exception:block:)
 ```
 
 ### `BugsnagMetadata` class
