@@ -42,6 +42,10 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
 @end
 
+@interface BugsnagClient ()
+- (void)startListeningForStateChangeNotification:(NSString *_Nonnull)notificationName;
+@end
+
 @implementation Bugsnag
 
 + (void)startBugsnagWithApiKey:(NSString *)apiKey {
@@ -212,7 +216,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 + (void)leaveBreadcrumbForNotificationName:
     (NSString *_Nonnull)notificationName {
     if ([self bugsnagStarted]) {
-        [self.client crumbleNotification:notificationName];
+        [self.client startListeningForStateChangeNotification:notificationName];
     }
 }
 
