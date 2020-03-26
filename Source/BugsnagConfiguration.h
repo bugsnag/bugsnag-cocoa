@@ -38,7 +38,6 @@
 /**
  * BugsnagConfiguration error constants
  */
-extern NSString * _Nonnull const BSGConfigurationErrorDomain;
 typedef NS_ENUM(NSInteger, BSGConfigurationErrorCode) {
     BSGConfigurationErrorInvalidApiKey = 0
 };
@@ -146,7 +145,7 @@ BugsnagBreadcrumbs *breadcrumbs;
 /**
  *  Optional handler invoked when an error or crash occurs
  */
-@property void (*_Nullable onError)
+@property void (*_Nullable onCrashHandler)
     (const BSG_KSCrashReportWriter *_Nonnull writer);
 
 /**
@@ -238,10 +237,9 @@ BugsnagBreadcrumbs *breadcrumbs;
 /**
  * The designated initializer.
  */
-- (instancetype _Nullable)initWithApiKey:(NSString *_Nonnull)apiKey
-                                   error:(NSError *_Nullable *_Nullable)error
+- (instancetype _Nonnull)initWithApiKey:(NSString *_Nonnull)apiKey
     NS_DESIGNATED_INITIALIZER
-    NS_SWIFT_NAME(init(_:)) __attribute__((swift_error(nonnull_error)));
+    NS_SWIFT_NAME(init(_:));
 
 /**
  * Set the endpoints to send data to. By default we'll send error reports to
