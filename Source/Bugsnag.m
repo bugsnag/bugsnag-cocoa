@@ -49,8 +49,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 @implementation Bugsnag
 
 + (void)startBugsnagWithApiKey:(NSString *)apiKey {
-    BugsnagConfiguration *configuration = [BugsnagConfiguration new];
-    configuration.apiKey = apiKey;
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
     [self startBugsnagWithConfiguration:configuration];
 }
 
