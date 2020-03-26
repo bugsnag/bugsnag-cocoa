@@ -270,6 +270,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     dispatch_once(&onceToken, ^{
       formatter = [NSDateFormatter new];
       formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
+      formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
     });
     return formatter;
 }
