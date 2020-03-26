@@ -33,6 +33,7 @@
 #import "BugsnagSessionTracker.h"
 #import "BugsnagLogger.h"
 #import "BSG_SSKeychain.h"
+#import "BugsnagBreadcrumbs.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
