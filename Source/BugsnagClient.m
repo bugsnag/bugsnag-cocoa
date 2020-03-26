@@ -1046,10 +1046,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
       }
     }];
 #elif TARGET_OS_MAC
-    NSTableView *tableView = [note object];
+    NSTableView *tableView = [notification object];
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeNavigation;
-      breadcrumb.message = BSGBreadcrumbNameForNotificationName(note.name);
+      breadcrumb.message = BSGBreadcrumbNameForNotificationName(notification.name);
       if (tableView) {
           breadcrumb.metadata = @{
               @"selectedRow" : @(tableView.selectedRow),
@@ -1073,7 +1073,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     if ([menuItem isKindOfClass:[NSMenuItem class]]) {
         [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
           breadcrumb.type = BSGBreadcrumbTypeState;
-          breadcrumb.message = BSGBreadcrumbNameForNotificationName(notif.name);
+          breadcrumb.message = BSGBreadcrumbNameForNotificationName(notification.name);
           if (menuItem.title.length > 0)
               breadcrumb.metadata = @{BSGKeyAction : menuItem.title};
         }];
