@@ -138,7 +138,7 @@
     [self.processedData[@"events"] firstObject][@"breadcrumbs"];
     XCTAssertEqual(2, breadcrumbs.count);
     for (int i = 0; i < breadcrumbs.count; i++) {
-        XCTAssertEqualObjects(expected[i][@"message"], breadcrumbs[i][@"message"]);
+        XCTAssertEqualObjects(expected[i][@"name"], breadcrumbs[i][@"message"]);
         XCTAssertEqualObjects(expected[i][@"type"], breadcrumbs[i][@"type"]);
         XCTAssertEqualObjects(expected[i][@"timestamp"], breadcrumbs[i][@"timestamp"]);
         XCTAssertEqualObjects(expected[i][@"metadata"], breadcrumbs[i][@"metadata"]);

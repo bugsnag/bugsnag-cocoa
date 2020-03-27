@@ -8,6 +8,12 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Remove unused APIs on `BugsnagEvent` interface
+  [#498](https://github.com/bugsnag/bugsnag-cocoa/pull/498)
+
+* Remove unused APIs from `BugsnagMetadata` interface
+[#501](https://github.com/bugsnag/bugsnag-cocoa/pull/501)
+
 * Remove unused APIs from `BugsnagConfiguration` interface
   [#496](https://github.com/bugsnag/bugsnag-cocoa/pull/496)
 

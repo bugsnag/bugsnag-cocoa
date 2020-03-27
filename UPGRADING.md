@@ -172,7 +172,14 @@ Swift:
 ```
 
 Note that `BugsnagMetadata.getTab()` previously would create a metadata section if it
-did not exist; the new behaviour in `getMetadata` is to return `nil`. 
+did not exist; the new behaviour in `getMetadata` is to return `nil`.
+
+#### Removals
+
+```diff
+- toDictionary
+- delegate
+```
 
 ### `BugsnagBreadcrumb` class
 
@@ -197,4 +204,21 @@ of the removed `addAttribute`:
 ```diff
 - BugsnagCrashReport.addAttribute(_:withValue:toTabWithName:)
 + BugsnagEvent.addMetadata(sectionName:key:value:)
+```
+
+#### Removals
+
+```diff
+- BSGParseSeverity
+- BSGFormatSeverity
+- [event serializableValueWithTopLevelData:]
+- [event shouldBeSent:]
+- [event toJson:]
+- [event enhancedErrorMessageForThread:]
+- event.notifyReleaseStages
+- event.handledState
+- event.overrides
+- event.depth
+- event.error
+- event.isIncomplete
 ```

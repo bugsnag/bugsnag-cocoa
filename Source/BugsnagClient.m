@@ -267,6 +267,16 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 @end
 
+@interface BugsnagEvent ()
+@property(readonly, copy, nonnull) NSDictionary *overrides;
+@property(readwrite) NSUInteger depth;
+@end
+
+@interface BugsnagMetadata ()
+- (NSDictionary *_Nonnull)toDictionary;
+@property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
+@end
+
 @implementation BugsnagClient
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE

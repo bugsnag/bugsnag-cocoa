@@ -30,6 +30,8 @@
 
 @interface BugsnagMetadata ()
 @property(atomic, strong) NSMutableDictionary *dictionary;
+- (NSDictionary *_Nonnull)toDictionary;
+@property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
 @end
 
 @implementation BugsnagMetadata

@@ -95,10 +95,12 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value) {
                 metadata[[key copy]] = [_metadata[key] copy];
             }
             return @{
-                 BSGKeyMessage : [_message copy],
-                 BSGKeyTimestamp : timestamp,
-                 BSGKeyType : BSGBreadcrumbTypeValue(_type),
-                 BSGKeyMetadata : metadata
+                // Note: The Bugsnag Error Reporting API specifies that the breadcrumb "message"
+                // field should be delivered in as a "name" field.  This comment notes that variance.
+                BSGKeyName : [_message copy],
+                BSGKeyTimestamp : timestamp,
+                BSGKeyType : BSGBreadcrumbTypeValue(_type),
+                BSGKeyMetadata : metadata
             };
         }
         return nil;
