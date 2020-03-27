@@ -206,8 +206,8 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
  *  @param email  Email address of the user
  */
 - (void)setUser:(NSString *_Nullable)userId
-       withName:(NSString *_Nullable)name
-       andEmail:(NSString *_Nullable)email;
+      withEmail:(NSString *_Nullable)email
+        andName:(NSString *_Nullable)name;
 
 // =============================================================================
 // MARK: - onSession

@@ -188,11 +188,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
            [self.notifyReleaseStages containsObject:self.releaseStage];
 }
 
-- (void)setUser:(NSString *)userId
-       withName:(NSString *)userName
-       andEmail:(NSString *)userEmail
-{
-    _user = [[BugsnagUser alloc] initWithUserId:userId name:userName emailAddress:userEmail];
+- (void)setUser:(NSString *_Nullable)userId
+      withEmail:(NSString *_Nullable)email
+        andName:(NSString *_Nullable)name {
+    _user = [[BugsnagUser alloc] initWithUserId:userId name:name emailAddress:email];
 
     // Persist the user
     if (_persistUser)
