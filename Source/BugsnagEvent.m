@@ -25,6 +25,12 @@
 #import "BSG_RFC3339DateTool.h"
 #import "Private.h"
 
+@interface BugsnagBreadcrumb ()
++ (instancetype _Nullable)breadcrumbWithBlock:
+    (BSGBreadcrumbConfiguration _Nonnull)block;
++ (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
+@end
+
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {
     NSMutableDictionary *formatted = [NSMutableDictionary dictionary];

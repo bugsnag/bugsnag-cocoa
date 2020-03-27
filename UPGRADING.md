@@ -183,6 +183,8 @@ The short "name" value has been removed and replaced with an arbitrarily long "m
 + BugsnagBreadcrumb.message
 ```
 
+`BugsnagBreadcrumbs` is no longer publicly accessible, along with `BugsnagBreadcrumb` constructors.
+
 ### `BugsnagCrashReport` class
 
 This is now BugsnagEvent.
