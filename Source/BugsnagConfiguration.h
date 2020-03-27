@@ -44,9 +44,9 @@ typedef NS_ENUM(NSInteger, BSGConfigurationErrorCode) {
 /**
  *  A configuration block for modifying an error report
  *
- *  @param report The default report
+ *  @param event the error report to be modified
  */
-typedef void (^BugsnagOnErrorBlock)(BugsnagEvent *_Nonnull report);
+typedef void (^BugsnagOnErrorBlock)(BugsnagEvent *_Nonnull event);
 
 /**
  *  A handler for modifying data before sending it to Bugsnag.
