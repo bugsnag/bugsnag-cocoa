@@ -83,7 +83,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     XCTAssertEqualObjects([breadcrumb valueForKey:@"type"], @"error");
     XCTAssertEqualObjects([breadcrumb valueForKey:@"name"], eventErrorClass);
     XCTAssertEqualObjects([metadata valueForKey:@"errorClass"], eventErrorClass);
-    XCTAssertEqualObjects([metadata valueForKey:@"message"], eventErrorMessage);
+    XCTAssertEqualObjects([metadata valueForKey:@"name"], eventErrorMessage);
     XCTAssertEqual((bool)[metadata valueForKey:@"unhandled"], eventUnhandled);
     XCTAssertEqualObjects([metadata valueForKey:@"severity"], eventSeverity);
 }
