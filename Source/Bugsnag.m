@@ -30,6 +30,7 @@
 #import "BugsnagClient.h"
 #import "BugsnagKeys.h"
 #import "BugsnagPlugin.h"
+#import "BugsnagHandledState.h"
 
 static BugsnagClient *bsg_g_bugsnag_client = NULL;
 
@@ -45,6 +46,10 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 
 @interface NSDictionary (BSGKSMerge)
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
+@end
+
+@interface BugsnagEvent ()
+@property(readwrite) NSUInteger depth;
 @end
 
 @interface BugsnagClient ()

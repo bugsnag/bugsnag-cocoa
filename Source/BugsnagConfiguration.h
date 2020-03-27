@@ -133,7 +133,7 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
 @property BSGEnabledBreadcrumbType enabledBreadcrumbTypes;
 
 @property(retain, nullable) NSString *codeBundleId;
-@property(retain, nullable) NSString *notifierType;
+@property(retain, nullable) NSString *appType;
 
 /**
  * The maximum number of breadcrumbs to keep and sent to Bugsnag.

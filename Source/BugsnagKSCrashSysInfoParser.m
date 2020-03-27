@@ -103,19 +103,19 @@ NSDictionary *BSGParseAppState(NSDictionary *report, NSString *preferredVersion,
     
     BSGDictSetSafeObject(app, codeBundleId, @"codeBundleId");
     
-    NSString *notifierType;
+    NSString *appType;
 #if TARGET_OS_TV
-    notifierType = @"tvOS";
+    appType = @"tvOS";
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    notifierType = @"iOS";
+    appType = @"iOS";
 #elif TARGET_OS_MAC
-    notifierType = @"macOS";
+    appType = @"macOS";
 #endif
     
-    if ([Bugsnag configuration].notifierType) {
-        notifierType = [Bugsnag configuration].notifierType;
+    if ([Bugsnag configuration].appType) {
+        appType = [Bugsnag configuration].appType;
     }
-    BSGDictSetSafeObject(app, notifierType, @"type");
+    BSGDictSetSafeObject(app, appType, @"type");
     return app;
 }
 

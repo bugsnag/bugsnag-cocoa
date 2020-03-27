@@ -62,6 +62,9 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 - config.currentUser
 + config.user
+
+- config.notifierType
++ config.appType
 ```
 
 #### Removals
@@ -207,4 +210,21 @@ of the removed `addAttribute`:
 ```diff
 - BugsnagCrashReport.addAttribute(_:withValue:toTabWithName:)
 + BugsnagEvent.addMetadata(sectionName:key:value:)
+```
+
+#### Removals
+
+```diff
+- BSGParseSeverity
+- BSGFormatSeverity
+- [event serializableValueWithTopLevelData:]
+- [event shouldBeSent:]
+- [event toJson:]
+- [event enhancedErrorMessageForThread:]
+- event.notifyReleaseStages
+- event.handledState
+- event.overrides
+- event.depth
+- event.error
+- event.isIncomplete
 ```

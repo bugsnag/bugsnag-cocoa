@@ -21,6 +21,12 @@
 + (BugsnagConfiguration *)configuration;
 @end
 
+@interface BugsnagEvent ()
+- (NSDictionary *_Nonnull)toJson;
+- (BOOL)shouldBeSent;
+@property(readwrite) NSUInteger depth;
+@end
+
 @interface BugsnagMetadata ()
 - (NSDictionary *_Nonnull)toDictionary;
 @end
