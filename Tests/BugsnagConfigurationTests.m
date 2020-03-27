@@ -23,6 +23,11 @@
 @property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
 - (void)deletePersistedUserData;
+- (BOOL)shouldSendReports;
+- (NSDictionary *_Nonnull)errorApiHeaders;
+- (NSDictionary *_Nonnull)sessionApiHeaders;
+@property(readonly, retain, nullable) NSURL *sessionURL;
+@property(readonly, retain, nullable) NSURL *notifyURL;
 @end
 
 @interface BugsnagCrashSentry ()

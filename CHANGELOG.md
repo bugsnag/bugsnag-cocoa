@@ -8,6 +8,15 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Remove unused APIs from `BugsnagConfiguration` interface
+  [#496](https://github.com/bugsnag/bugsnag-cocoa/pull/496)
+
+* Remove unused APIs from `BugsnagBreadcrumb` interface
+  [#502](https://github.com/bugsnag/bugsnag-cocoa/pull/502)
+
+* Remove notify method variants from public api on `Bugsnag`
+  [#497](https://github.com/bugsnag/bugsnag-cocoa/pull/497)
+
 * Remove `leaveBreadcrumbWithBlock` from public api on `Bugsnag`
   [#491](https://github.com/bugsnag/bugsnag-cocoa/pull/491)
 
@@ -60,7 +69,6 @@ Bugsnag Notifiers on other platforms.
   [#457](https://github.com/bugsnag/bugsnag-cocoa/pull/457)
      
 * Renamed callback functions in the Configuration class:
-  * `onCrashHandler` is now `onError`
   * `beforeSendBlocks` is now `onSendBlocks` (add using `config.add(onSend: { ... })`)
   * `beforeSendSessionBlocks` is now `onSessionBlocks` (add using `config.add(onSession: { ... })`)
 

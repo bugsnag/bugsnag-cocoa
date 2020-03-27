@@ -44,9 +44,6 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 - config.autoCaptureSessions
 + config.autoTrackSessions
 
-- config.onCrashHandler
-+ config.onError
-
 - config.beforeSendBlocks
 - config.add(beforeSend:)
 + config.onSendBlocks
@@ -62,6 +59,23 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 - config.reportOOMs
 + config.enabledErrorTypes
+```
+
+#### Removals
+
+```diff
+- BugsnagBeforeNotifyHook
+- config.metadata
+- config.config
+- config.breadcrumbs
+- config.reportBackgroundOOMs
+- config.notifyURL
+- config.sessionURL
+- config.shouldAutoCaptureSessions
+- config.autoNotify
+- config.shouldSendReports
+- config.errorApiHeaders
+- config.sessionApiHeaders
 ```
 
 ### `Bugsnag` class
@@ -106,6 +120,12 @@ ObjC:
 - [Bugsnag stopSession]
 + [Bugsnag pauseSession]
 
+- [Bugsnag notify:withData:]
++ [Bugsnag notify:block:]
+
+- [Bugsnag notify:withData:severity:]
++ [Bugsnag notify:block:]
+
 Swift:
 
 - Bugsnag.configuration()
@@ -119,6 +139,12 @@ Swift:
 
 - Bugsnag.stopSession()
 + Bugsnag.pauseSession()
+
+- Bugsnag.notify(exception:metadata:)
++ Bugsnag.notify(exception:block:)
+
+- Bugsnag.notify(exception:metadata:severity:)
++ Bugsnag.notify(exception:block:)
 ```
 
 ### `BugsnagMetadata` class
@@ -156,6 +182,8 @@ The short "name" value has been removed and replaced with an arbitrarily long "m
 - BugsnagBreadcrumb.name
 + BugsnagBreadcrumb.message
 ```
+
+`BugsnagBreadcrumbs` is no longer publicly accessible, along with `BugsnagBreadcrumb` constructors.
 
 ### `BugsnagCrashReport` class
 
