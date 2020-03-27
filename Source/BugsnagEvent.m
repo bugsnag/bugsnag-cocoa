@@ -25,6 +25,12 @@
 #import "BSG_RFC3339DateTool.h"
 #import "Private.h"
 
+@interface BugsnagBreadcrumb ()
++ (instancetype _Nullable)breadcrumbWithBlock:
+    (BSGBreadcrumbConfiguration _Nonnull)block;
++ (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
+@end
+
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {
     NSMutableDictionary *formatted = [NSMutableDictionary dictionary];
@@ -229,6 +235,8 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
 @interface BugsnagConfiguration (BugsnagEvent)
 + (BOOL)isValidApiKey:(NSString *_Nullable)apiKey;
+- (BOOL)shouldSendReports;
+@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 @end
 
 @interface BugsnagEvent ()

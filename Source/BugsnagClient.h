@@ -63,18 +63,6 @@
                   block:(BugsnagOnErrorBlock _Nullable)block;
 
 /**
- *  Notify Bugsnag of an exception
- *
- *  @param exception the exception
- *  @param severity  the severity
- *  @param block     Configuration block for adding additional report
- * information
- */
-- (void)notifyException:(NSException *_Nonnull)exception
-             atSeverity:(BSGSeverity)severity
-                  block:(BugsnagOnErrorBlock _Nullable)block;
-
-/**
  *  Notify Bugsnag of an exception. Only intended for React Native/Unity use.
  *
  *  @param exception the exception
@@ -107,13 +95,6 @@
  * Clear all stored breadcrumbs.
  */
 - (void)clearBreadcrumbs;
-
-/**
- *  Listen for notifications and attach breadcrumbs when received
- *
- *  @param notificationName name of the notification
- */
-- (void)crumbleNotification:(NSString *_Nonnull)notificationName;
 
 /**
  * Enable or disable crash reporting based on configuration state

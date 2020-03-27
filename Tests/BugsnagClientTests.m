@@ -7,6 +7,7 @@
 //
 
 #import "Bugsnag.h"
+#import "BugsnagBreadcrumbs.h"
 #import "BugsnagClient.h"
 #import "BugsnagTestConstants.h"
 #import <XCTest/XCTest.h>
@@ -27,14 +28,17 @@
 - (NSDictionary *)objectValue;
 @end
 
+@interface BugsnagConfiguration ()
+@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
+@end
+
 @implementation BugsnagClientTests
 
 /**
  * A boilerplate helper method to setup Bugsnag
  */
 -(void)setUpBugsnagWillCallNotify:(bool)willNotify {
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     if (willNotify) {
         [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
     }

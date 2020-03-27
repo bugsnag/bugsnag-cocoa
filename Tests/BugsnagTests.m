@@ -8,6 +8,7 @@
 // Unit tests of global Bugsnag behaviour
 
 #import "Bugsnag.h"
+#import "BugsnagClient.h"
 #import "BugsnagTestConstants.h"
 #import <XCTest/XCTest.h>
 
@@ -19,6 +20,11 @@
 
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
+@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
+@end
+
+@interface BugsnagClient ()
+@property (nonatomic, strong) NSString *lastOrientation;
 @end
 
 @interface BugsnagTests : XCTestCase
@@ -30,8 +36,7 @@
  * A boilerplate helper method to setup Bugsnag
  */
 -(void)setUpBugsnagWillCallNotify:(bool)willNotify {
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     if (willNotify) {
         [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
     }
@@ -125,8 +130,7 @@
  *       or mocking is required to isolate and test the session pausing semantics.
  */
 -(void)testBugsnagPauseSession {
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
 
     [Bugsnag startBugsnagWithConfiguration:configuration];
@@ -142,8 +146,7 @@
     // Allow for checks inside blocks that may (potentially) be run asynchronously
     __block XCTestExpectation *expectation1 = [self expectationWithDescription:@"Localized metadata changes"];
     
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [configuration setContext:@"firstContext"];
     [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
     
@@ -225,8 +228,7 @@
     __block XCTestExpectation *expectation2 = [self expectationWithDescription:@"Remove On Session Block 2"];
     expectation2.inverted = YES;
     
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
 
     // non-sending bugsnag
     [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
@@ -262,8 +264,7 @@
     __block XCTestExpectation *expectation2 = [self expectationWithDescription:@"Remove On Session Block 3X"];
     expectation2.inverted = YES;
     
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     configuration.autoTrackSessions = NO;
     
     // non-sending bugsnag
@@ -308,8 +309,7 @@
     __block int called = 0; // A counter
     
     // Prevent sending events
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     // We'll not be able to use the onSend -> false route to fail calls to notify()
     [configuration setEndpointsForNotify:@"http://not.valid.bugsnag/not/an/endpoint"
                                 sessions:@"http://not.valid.bugsnag/not/an/endpoint"];
@@ -391,7 +391,7 @@
     [Bugsnag notify:exception1];
     
     // Both called?
-    [self waitForExpectations:@[expectation1, expectation2] timeout:5.0];
+    [self waitForExpectations:@[expectation1, expectation2] timeout:10.0];
     
     [Bugsnag removeOnSendBlock:block2];
     XCTAssertEqual([[[Bugsnag configuration] onSendBlocks] count], 1);
@@ -401,9 +401,32 @@
     NSException *exception2 = [[NSException alloc] initWithName:@"exception1" reason:@"reason1" userInfo:nil];
     [Bugsnag notify:exception2];
     // One removed, should only call one
-    [self waitForExpectations:@[expectation3, expectation4] timeout:5.0];
+    [self waitForExpectations:@[expectation3, expectation4] timeout:10.0];
 
     [self waitForExpectations:@[expectation5, expectation6] timeout:1.0];
 }
+
+/**
+ * Test that the Orientation -> string mapping is as expected
+ * NOTE: should be moved to BugsnagClientTests when that file exists
+ */
+#if TARGET_OS_IOS
+NSString *BSGOrientationNameFromEnum(UIDeviceOrientation deviceOrientation);
+- (void)testBSGOrientationNameFromEnum {
+    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationPortraitUpsideDown), @"portraitupsidedown");
+    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationPortrait), @"portrait");
+    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationLandscapeRight), @"landscaperight");
+    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationLandscapeLeft), @"landscapeleft");
+    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationFaceUp), @"faceup");
+    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationFaceDown), @"facedown");
+    
+    XCTAssertNil(BSGOrientationNameFromEnum(-1));
+    XCTAssertNil(BSGOrientationNameFromEnum(99));
+    
+    BugsnagClient *client = [BugsnagClient new];
+    [client setLastOrientation:@"testOrientation"];
+    XCTAssertEqualObjects([client lastOrientation], @"testOrientation");
+}
+#endif
 
 @end

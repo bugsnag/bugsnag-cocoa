@@ -33,6 +33,7 @@
 #import "BugsnagSessionTracker.h"
 #import "BugsnagLogger.h"
 #import "BSG_SSKeychain.h"
+#import "BugsnagBreadcrumbs.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -40,7 +41,6 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
 static NSString *const BSGApiKeyError = @"apiKey must be a 32-digit hexadecimal value.";
 static NSString *const BSGInitError = @"Init is unavailable.  Use [[BugsnagConfiguration alloc] initWithApiKey:] instead.";
 static const int BSGApiKeyLength = 32;
-NSString * const BSGConfigurationErrorDomain = @"com.Bugsnag.CocoaNotifier.Configuration";
 
 // User info persistence keys
 NSString * const kBugsnagUserKeychainAccount = @"BugsnagUserKeychainAccount";
@@ -68,6 +68,24 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
 @property(nonatomic, readwrite, strong) NSMutableSet *plugins;
+@property(readonly, retain, nullable) NSURL *notifyURL;
+@property(readonly, retain, nullable) NSURL *sessionURL;
+
+/**
+ *  Additional information about the state of the app or environment at the
+ *  time the report was generated
+ */
+@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
+
+/**
+ *  Meta-information about the state of Bugsnag
+ */
+@property(readwrite, retain, nullable) BugsnagMetadata *config;
+
+/**
+ *  Rolling snapshots of user actions leading up to a crash report
+ */
+@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 @end
 
 @implementation BugsnagConfiguration
@@ -104,15 +122,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 /**
  * The designated initializer.
  */
--(instancetype)initWithApiKey:(NSString *)apiKey
-                        error:(NSError * _Nullable __autoreleasing * _Nullable)error
+- (instancetype _Nonnull)initWithApiKey:(NSString *_Nonnull)apiKey
 {
-    if (! [BugsnagConfiguration isValidApiKey:apiKey]) {
-        *error = [NSError errorWithDomain:BSGConfigurationErrorDomain
-                                     code:BSGConfigurationErrorInvalidApiKey
-                                 userInfo:@{NSLocalizedDescriptionKey : @"Invalid API key.  Should be a 32-digit hex string."}];
-        
-        return nil;
+    if (![BugsnagConfiguration isValidApiKey:apiKey]) {
+        bsg_log_err(@"Invalid configuration. apiKey should be a 32-character hexademical string, got \"%@\"", apiKey);
     }
     
     self = [super init];
@@ -165,6 +178,11 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 // MARK: - Instance Methods
 // -----------------------------------------------------------------------------
 
+/**
+ *  Whether reports should be sent, based on release stage options
+ *
+ *  @return YES if reports should be sent based on this configuration
+ */
 - (BOOL)shouldSendReports {
     return self.notifyReleaseStages.count == 0 ||
            [self.notifyReleaseStages containsObject:self.releaseStage];
@@ -355,6 +373,40 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     self.breadcrumbs.capacity = capacity;
 }
 
+/**
+ * Specific types of breadcrumb should be recorded if either enabledBreadcrumbTypes
+ * is None, or contains the type.
+ *
+ * @param type The breadcrumb type to test
+ * @returns Whether to record the breadcrumb
+ */
+- (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)type {
+    // enabledBreadcrumbTypes is BSGEnabledBreadcrumbTypeNone
+    if (!self.enabledBreadcrumbTypes) {
+        return YES;
+    }
+    
+    switch (type) {
+        case BSGBreadcrumbTypeManual:
+            return YES;
+        case BSGBreadcrumbTypeError :
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeError;
+        case BSGBreadcrumbTypeLog:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeLog;
+        case BSGBreadcrumbTypeNavigation:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeNavigation;
+        case BSGBreadcrumbTypeProcess:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeProcess;
+        case BSGBreadcrumbTypeRequest:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeRequest;
+        case BSGBreadcrumbTypeState:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeState;
+        case BSGBreadcrumbTypeUser:
+            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeUser;
+    }
+    return NO;
+}
+
 // MARK: -
 
 @synthesize releaseStage = _releaseStage;
@@ -434,7 +486,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     return self.autoTrackSessions;
 }
 
-// MARK: -
+// MARK: - enabledBreadcrumbTypes
 
 - (BSGEnabledBreadcrumbType)enabledBreadcrumbTypes {
     return self.breadcrumbs.enabledBreadcrumbTypes;

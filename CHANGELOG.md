@@ -8,6 +8,18 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Remove unused APIs from `BugsnagConfiguration` interface
+  [#496](https://github.com/bugsnag/bugsnag-cocoa/pull/496)
+
+* Remove unused APIs from `BugsnagBreadcrumb` interface
+  [#502](https://github.com/bugsnag/bugsnag-cocoa/pull/502)
+
+* Remove notify method variants from public api on `Bugsnag`
+  [#497](https://github.com/bugsnag/bugsnag-cocoa/pull/497)
+
+* Remove `leaveBreadcrumbWithBlock` from public api on `Bugsnag`
+  [#491](https://github.com/bugsnag/bugsnag-cocoa/pull/491)
+
 * `BugsnagNotifier` is now `BugsnagClient`.
   [#480](https://github.com/bugsnag/bugsnag-cocoa/pull/480)
 
@@ -26,10 +38,11 @@ Bugsnag Notifiers on other platforms.
   from the default convenience `init()` to ensure that `apiKey` has a value set.  The `apiKey`
   must now be a correctly formatted one to be accepted.
 
-  * Swift: `try BugsnagConfiguration(_ apiKey)`
-  * Objective C: `[[BugsnagConfiguration alloc] initWithApiKey:error:]`
+  * Swift: `BugsnagConfiguration(_ apiKey)`
+  * Objective C: `[[BugsnagConfiguration alloc] initWithApiKey:]`
 
   [#446](https://github.com/bugsnag/bugsnag-cocoa/pull/446)
+  [#492](https://github.com/bugsnag/bugsnag-cocoa/pull/492)
 
 * Support editing breadcrumbs within an Event as objects. Breadcrumbs can now be
   inspected and modified from callbacks, for example:
@@ -56,7 +69,6 @@ Bugsnag Notifiers on other platforms.
   [#457](https://github.com/bugsnag/bugsnag-cocoa/pull/457)
      
 * Renamed callback functions in the Configuration class:
-  * `onCrashHandler` is now `onError`
   * `beforeSendBlocks` is now `onSendBlocks` (add using `config.add(onSend: { ... })`)
   * `beforeSendSessionBlocks` is now `onSessionBlocks` (add using `config.add(onSession: { ... })`)
 
@@ -146,6 +158,10 @@ Bugsnag Notifiers on other platforms.
 * Added `addOnSendBlock:`, `removeOnSendBlock:` and `clearOnSendBlocks` methods to `Bugsnag` 
   and `BugsnagConfiguration`.
   (#485)[https://github.com/bugsnag/bugsnag-cocoa/pull/485]
+  
+* Enhanced device orientation change breadcrumbs.  These are now reported with "from" and "to" values
+  in a form consistent with the Android notifier.
+  (#486)[https://github.com/bugsnag/bugsnag-cocoa/pull/486]
 
 ## Bug fixes
 

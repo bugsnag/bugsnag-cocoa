@@ -101,39 +101,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)notifyError:(NSError *_Nonnull)error
               block:(BugsnagOnErrorBlock _Nullable)block;
 
-/** Send a custom or caught exception to Bugsnag.
- *
- * The exception will be sent to Bugsnag in the background allowing your
- * app to continue running.
- *
- * @param exception  The exception.
- *
- * @param metadata   Any additional information you want to send with the
- * report.
- */
-+ (void)notify:(NSException *_Nonnull)exception
-      withData:(NSDictionary *_Nullable)metadata
-    __deprecated_msg("Use notify:block: instead and add the metadata to the "
-                     "report directly.");
-
-/** Send a custom or caught exception to Bugsnag.
- *
- * The exception will be sent to Bugsnag in the background allowing your
- * app to continue running.
- *
- * @param exception  The exception.
- *
- * @param metadata   Any additional information you want to send with the
- * report.
- *
- * @param severity   The severity level (default: BugsnagSeverityWarning)
- */
-+ (void)notify:(NSException *_Nonnull)exception
-      withData:(NSDictionary *_Nullable)metadata
-    atSeverity:(NSString *_Nullable)severity
-    __deprecated_msg("Use notify:block: instead and add the metadata and "
-                     "severity to the report directly.");
-
 /**
  * Intended for use by other clients (React Native/Unity). Calling this method
  * directly from iOS is not supported.
@@ -169,15 +136,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * @param message  the log message to leave
  */
 + (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message;
-
-/**
- *  Leave a "breadcrumb" log message with additional information about the
- *  environment at the time the breadcrumb was captured.
- *
- *  @param block configuration block
- */
-+ (void)leaveBreadcrumbWithBlock:
-    (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
 
 /**
  *  Leave a "breadcrumb" log message each time a notification with a provided

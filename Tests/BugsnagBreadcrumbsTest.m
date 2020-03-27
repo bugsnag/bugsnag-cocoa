@@ -9,11 +9,22 @@
 #import "Bugsnag.h"
 #import "BugsnagClient.h"
 #import "BugsnagBreadcrumb.h"
+#import "BugsnagBreadcrumbs.h"
 #import "BugsnagTestConstants.h"
 #import <XCTest/XCTest.h>
 
 @interface BugsnagBreadcrumbsTest : XCTestCase
 @property(nonatomic, strong) BugsnagBreadcrumbs *crumbs;
+@end
+
+@interface BugsnagConfiguration ()
+@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
+@end
+
+@interface BugsnagBreadcrumb ()
++ (instancetype _Nullable)breadcrumbWithBlock:
+    (BSGBreadcrumbConfiguration _Nonnull)block;
++ (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
 @end
 
 @interface BugsnagBreadcrumbs ()
@@ -223,17 +234,22 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqualObjects(value[0][@"message"], @"this is a test");
 }
 
-- (void)testDiscardByType {
+/**
+ * enabledBreadcrumbTypes filtering only happens on the client.  The BugsnagBreadcrumbs container is
+ * private and assumes filtering is already configured.
+ */
+- (void)testDiscardByTypeDoesNotApply {
     [self.crumbs clearBreadcrumbs];
     awaitBreadcrumbSync(self.crumbs);
     self.crumbs.enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeProcess;
+    // Don't discard this
     [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeState;
         crumb.message = @"state";
     }];
     awaitBreadcrumbSync(self.crumbs);
     NSArray *value = [self.crumbs arrayValue];
-    XCTAssertEqual(0, value.count);
+    XCTAssertEqual(1, value.count);
 }
 
 - (void)testConvertBreadcrumbTypeFromString {
@@ -294,8 +310,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
  */
 - (void)testCallbackFreeConstructors2 {
     // Prevent sending events
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
     [Bugsnag startBugsnagWithConfiguration:configuration];
 
@@ -362,8 +377,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
  */
 - (void)testCallbackFreeConstructors3 {
     // Prevent sending events
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1 error:&error];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
     [Bugsnag startBugsnagWithConfiguration:configuration];
 

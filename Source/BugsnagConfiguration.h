@@ -32,13 +32,11 @@
 #import "BugsnagMetadata.h"
 #import "BugsnagPlugin.h"
 
-@class BugsnagBreadcrumbs;
 @class BugsnagUser;
 
 /**
  * BugsnagConfiguration error constants
  */
-extern NSString * _Nonnull const BSGConfigurationErrorDomain;
 typedef NS_ENUM(NSInteger, BSGConfigurationErrorCode) {
     BSGConfigurationErrorInvalidApiKey = 0
 };
@@ -46,9 +44,9 @@ typedef NS_ENUM(NSInteger, BSGConfigurationErrorCode) {
 /**
  *  A configuration block for modifying an error report
  *
- *  @param report The default report
+ *  @param event the error report to be modified
  */
-typedef void (^BugsnagOnErrorBlock)(BugsnagEvent *_Nonnull report);
+typedef void (^BugsnagOnErrorBlock)(BugsnagEvent *_Nonnull event);
 
 /**
  *  A handler for modifying data before sending it to Bugsnag.
@@ -68,18 +66,6 @@ typedef bool (^BugsnagOnSendBlock)(BugsnagEvent *_Nonnull event);
  * @param sessionPayload The session about to be delivered
  */
 typedef void(^BugsnagOnSessionBlock)(NSMutableDictionary *_Nonnull sessionPayload);
-
-/**
- *  A handler for modifying data before sending it to Bugsnag
- *
- *  @param rawEventReports The raw event data written at crash time. This
- *                         includes data added in onError.
- *  @param report          The default report payload
- *
- *  @return the report payload intended to be sent or nil to cancel sending
- */
-typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
-    NSArray *_Nonnull rawEventReports, NSDictionary *_Nonnull report);
 
 typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
     BSGErrorTypesNone         NS_SWIFT_NAME(None)         = 0,
@@ -129,24 +115,9 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
 @property(retain, nullable) BugsnagUser *currentUser;
 
 /**
- *  Additional information about the state of the app or environment at the
- *  time the report was generated
- */
-@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
-/**
- *  Meta-information about the state of Bugsnag
- */
-@property(readwrite, retain, nullable) BugsnagMetadata *config;
-/**
- *  Rolling snapshots of user actions leading up to a crash report
- */
-@property(readonly, strong, nullable)
-BugsnagBreadcrumbs *breadcrumbs;
-
-/**
  *  Optional handler invoked when an error or crash occurs
  */
-@property void (*_Nullable onError)
+@property void (*_Nullable onCrashHandler)
     (const BSG_KSCrashReportWriter *_Nonnull writer);
 
 /**
@@ -162,34 +133,9 @@ BugsnagBreadcrumbs *breadcrumbs;
 @property BOOL autoTrackSessions;
 
 /**
- * Whether the app should report out of memory events which terminate the app
- * while the app is in the background. Setting this property has no effect.
- */
-@property BOOL reportBackgroundOOMs
-    __deprecated_msg("This detection option is unreliable and should no longer be used.");
-
-/**
  * The types of breadcrumbs which will be captured. By default, this is all types.
  */
 @property BSGEnabledBreadcrumbType enabledBreadcrumbTypes;
-
-/**
- * Retrieves the endpoint used to notify Bugsnag of errors
- *
- * NOTE: If you want to set this value, you should do so via setEndpointsForNotify:sessions: instead.
- *
- * @see setEndpointsForNotify:sessions:
- */
-@property(readonly, retain, nullable) NSURL *notifyURL;
-
-/**
- * Retrieves the endpoint used to send tracked sessions to Bugsnag
- *
- * NOTE: If you want to set this value, you should do so via setEndpointsForNotify:sessions: instead.
- *
- * @see setEndpointsForNotify:sessions:
- */
-@property(readonly, retain, nullable) NSURL *sessionURL;
 
 @property(retain, nullable) NSString *codeBundleId;
 @property(retain, nullable) NSString *notifierType;
@@ -200,18 +146,6 @@ BugsnagBreadcrumbs *breadcrumbs;
  * messages.
  */
 @property NSUInteger maxBreadcrumbs;
-
-/**
- * Determines whether app sessions should be tracked automatically. By default this value is true.
- * If this value is updated after +[Bugsnag start] is called, only subsequent automatic sessions
- * will be captured.
- */
-@property BOOL shouldAutoCaptureSessions __deprecated_msg("Use autoTrackSessions instead");
-
-/**
- *  YES if uncaught exceptions should be reported automatically
- */
-@property BOOL autoNotify __deprecated_msg("Use autoDetectErrors instead");
 
 /**
  * Whether User information should be persisted to disk between application runs.
@@ -238,10 +172,9 @@ BugsnagBreadcrumbs *breadcrumbs;
 /**
  * The designated initializer.
  */
-- (instancetype _Nullable)initWithApiKey:(NSString *_Nonnull)apiKey
-                                   error:(NSError *_Nullable *_Nullable)error
+- (instancetype _Nonnull)initWithApiKey:(NSString *_Nonnull)apiKey
     NS_DESIGNATED_INITIALIZER
-    NS_SWIFT_NAME(init(_:)) __attribute__((swift_error(nonnull_error)));
+    NS_SWIFT_NAME(init(_:));
 
 /**
  * Set the endpoints to send data to. By default we'll send error reports to
@@ -309,16 +242,14 @@ BugsnagBreadcrumbs *breadcrumbs;
  */
 - (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull )block;
 
-/**
- *  Whether reports shoould be sent, based on release stage options
- *
- *  @return YES if reports should be sent based on this configuration
- */
-- (BOOL)shouldSendReports;
-
-- (NSDictionary *_Nonnull)errorApiHeaders;
-- (NSDictionary *_Nonnull)sessionApiHeaders;
-
 - (void)addPlugin:(id<BugsnagPlugin> _Nonnull)plugin;
 
+/**
+ * Should the specified type of breadcrumb be recorded?
+ *
+ * @param type The type of breadcrumb
+ *
+ * @returns A boolean indicating whether the specified breadcrumb type should be recorded
+ */
+- (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)type;
 @end
