@@ -26,8 +26,6 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol BugsnagMetadataDelegate;
-
 @interface BugsnagMetadata : NSObject <NSMutableCopying>
 
 - (instancetype _Nonnull)initWithDictionary:(NSMutableDictionary *_Nonnull)dict;
@@ -71,13 +69,9 @@
                            key:(NSString *_Nonnull)key
     NS_SWIFT_NAME(clearMetadata(section:key:));
 
-- (NSDictionary *_Nonnull)toDictionary;
-
 - (void)addAttribute:(NSString *_Nonnull)attributeName
            withValue:(id _Nullable)value
        toTabWithName:(NSString *_Nonnull)sectionName;
-
-@property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
 
 /**
  * Merge supplied and existing metadata.
