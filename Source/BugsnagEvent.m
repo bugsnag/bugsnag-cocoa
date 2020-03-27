@@ -184,25 +184,6 @@ NSString *BSGParseReleaseStage(NSDictionary *report) {
                ?: BSGLoadConfigValue(report, @"releaseStage");
 }
 
-BSGSeverity BSGParseSeverity(NSString *severity) {
-    if ([severity isEqualToString:BSGKeyInfo])
-        return BSGSeverityInfo;
-    else if ([severity isEqualToString:BSGKeyWarning])
-        return BSGSeverityWarning;
-    return BSGSeverityError;
-}
-
-NSString *BSGFormatSeverity(BSGSeverity severity) {
-    switch (severity) {
-    case BSGSeverityInfo:
-        return BSGKeyInfo;
-    case BSGSeverityError:
-        return BSGKeyError;
-    case BSGSeverityWarning:
-        return BSGKeyWarning;
-    }
-}
-
 NSDictionary *BSGParseCustomException(NSDictionary *report,
                                       NSString *errorClass, NSString *message) {
     id frames =
@@ -267,7 +248,41 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 @property(nonatomic, readwrite, copy, nullable) NSDictionary *customException;
 @property(nonatomic, strong) BugsnagSession *session;
 
-@property (nonatomic, readwrite, getter=isIncomplete) BOOL incomplete;
+/**
+ *  The event state (whether the error is handled/unhandled)
+ */
+@property(readonly, nonnull) BugsnagHandledState *handledState;
+
+- (NSDictionary *_Nonnull)toJson;
+
+/**
+ *  Whether this report should be sent, based on release stage information
+ *  cached at crash time and within the application currently
+ *
+ *  @return YES if the report should be sent
+ */
+- (BOOL)shouldBeSent;
+
+/**
+ *  The release stages used to notify at the time this report is captured
+ */
+@property(readwrite, copy, nullable) NSArray *notifyReleaseStages;
+
+/**
+ *  Property overrides
+ */
+@property(readonly, copy, nonnull) NSDictionary *overrides;
+
+/**
+ *  Number of frames to discard at the top of the generated stacktrace.
+ *  Stacktraces from raised exceptions are unaffected.
+ */
+@property(readwrite) NSUInteger depth;
+
+/**
+ *  Raw error data
+ */
+@property(readwrite, copy, nullable) NSDictionary *error;
 @end
 
 @implementation BugsnagEvent
@@ -610,11 +625,6 @@ initWithErrorName:(NSString *_Nonnull)name
     
 }
 
-- (NSDictionary *)serializableValueWithTopLevelData:
-    (NSMutableDictionary *)data {
-    return [self toJson];
-}
-
 - (NSDictionary *)toJson {
     NSMutableDictionary *event = [NSMutableDictionary dictionary];
     NSMutableDictionary *metadata = [[self metadata] mutableCopy];
@@ -767,10 +777,6 @@ initWithErrorName:(NSString *_Nonnull)name
     }
 
     BSGArrayAddSafeObject(bugsnagThreads, threadDict);
-}
-
-- (NSString *_Nullable)enhancedErrorMessageForThread:(NSDictionary *_Nullable)thread {
-    return [self errorMessage];
 }
 
 @end

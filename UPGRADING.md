@@ -205,3 +205,20 @@ of the removed `addAttribute`:
 - BugsnagCrashReport.addAttribute(_:withValue:toTabWithName:)
 + BugsnagEvent.addMetadata(sectionName:key:value:)
 ```
+
+#### Removals
+
+```diff
+- BSGParseSeverity
+- BSGFormatSeverity
+- [event serializableValueWithTopLevelData:]
+- [event shouldBeSent:]
+- [event toJson:]
+- [event enhancedErrorMessageForThread:]
+- event.notifyReleaseStages
+- event.handledState
+- event.overrides
+- event.depth
+- event.error
+- event.isIncomplete
+```
