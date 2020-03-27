@@ -11,6 +11,9 @@ Bugsnag Notifiers on other platforms.
 * Rename `config.notifierType` to `config.appType`
 [#504](https://github.com/bugsnag/bugsnag-cocoa/pull/504)
 
+* Remove unused APIs on `BugsnagEvent` interface
+  [#498](https://github.com/bugsnag/bugsnag-cocoa/pull/498)
+
 * Remove unused APIs from `BugsnagMetadata` interface
 [#501](https://github.com/bugsnag/bugsnag-cocoa/pull/501)
 

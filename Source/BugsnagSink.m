@@ -39,6 +39,11 @@
 + (BugsnagClient *)client;
 @end
 
+@interface BugsnagEvent ()
+- (NSDictionary *_Nonnull)toJson;
+- (BOOL)shouldBeSent;
+@end
+
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
 - (NSDictionary *_Nonnull)errorApiHeaders;
