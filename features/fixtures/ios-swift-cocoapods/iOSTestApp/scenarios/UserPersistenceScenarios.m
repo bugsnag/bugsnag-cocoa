@@ -16,7 +16,7 @@
 
 - (void)startBugsnag {
     self.config.persistUser = YES;
-    [self.config setUser:@"foo" withName:@"bar" andEmail:@"baz@grok.com"];
+    [self.config setUser:@"foo" withEmail:@"baz@grok.com" andName:@"bar"];
     [super startBugsnag];
 }
 
@@ -35,7 +35,7 @@
 
 - (void)startBugsnag {
     self.config.persistUser = NO;
-    [self.config setUser:@"john" withName:@"paul" andEmail:@"george@ringo.com"];
+    [self.config setUser:@"john" withEmail:@"george@ringo.com" andName:@"paul"];
     [super startBugsnag];
 }
 

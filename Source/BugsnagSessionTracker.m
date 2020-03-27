@@ -108,7 +108,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 
     self.currentSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                    startDate:[NSDate date]
-                                                        user:self.config.currentUser
+                                                        user:self.config.user
                                                 autoCaptured:isAutoCaptured];
 
     [self.sessionStore write:self.currentSession];

@@ -16,7 +16,7 @@
     self.config.autoTrackSessions = NO;
     self.config.persistUser = NO;
     [self.config deletePersistedUserData];
-    [self.config setCurrentUser:nil];
+    [self.config setUser:nil withEmail:nil andName:nil];
     [super startBugsnag];
 }
 

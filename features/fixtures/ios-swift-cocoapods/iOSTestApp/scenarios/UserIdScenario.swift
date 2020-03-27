@@ -17,7 +17,7 @@ internal class UserIdScenario: Scenario {
     }
 
     override func run() {
-        Bugsnag.setUser("abc", withName: nil, andEmail: nil)
+        Bugsnag.setUser("abc", withEmail: nil, andName: nil)
         let error = NSError(domain: "UserIdScenario", code: 100, userInfo: nil)
         Bugsnag.notifyError(error)
     }
