@@ -19,6 +19,7 @@ import Bugsnag
                 ["method":"baz()", "file":"[native code]"],
                 ["method":"is_done()"]
             ]
+            report.attachCustomStacktrace(frames, withType: "fake")
         }
     }
 }

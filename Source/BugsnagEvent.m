@@ -570,6 +570,11 @@ initWithErrorName:(NSString *_Nonnull)name
     }
 }
 
+- (void)attachCustomStacktrace:(NSArray *)frames withType:(NSString *)type {
+    [self setOverrideProperty:@"customStacktraceFrames" value:frames];
+    [self setOverrideProperty:@"customStacktraceType" value:type];
+}
+
 @synthesize severity = _severity;
 
 - (BSGSeverity)severity {

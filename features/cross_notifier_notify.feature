@@ -6,7 +6,7 @@ Feature: Communicating events between notifiers
     using bugsnag-cocoa as the delivery layer.
 
     Scenario: Report a handled event through internalNotify()
-        Report a handled exception, including a custom severity.
+        Report a handled exception, including a custom stacktrace and severity.
         Event counts in the report's session should match the handled-ness.
 
         When I run "HandledInternalNotifyScenario"
@@ -15,8 +15,19 @@ Feature: Communicating events between notifiers
         And request 1 is valid for the error reporting API
         And the exception "errorClass" equals "Handled Error!" for request 1
         And the exception "message" equals "Internally reported a handled event" for request 1
+        And the exception "type" equals "unreal" for request 1
         And the event "severity" equals "warning" for request 1
         And the event "severityReason.type" equals "handledException" for request 1
+
+        And the "method" of stack frame 0 equals "foo()" for request 1
+        And the "file" of stack frame 0 equals "src/Giraffe.mm" for request 1
+        And the "lineNumber" of stack frame 0 equals 200 for request 1
+        And the "method" of stack frame 1 equals "bar()" for request 1
+        And the "file" of stack frame 1 equals "parser.js" for request 1
+        And the "lineNumber" of stack frame 1 is null for request 1
+        And the "method" of stack frame 2 equals "yes()" for request 1
+        And the "file" of stack frame 2 is null for request 1
+        And the "lineNumber" of stack frame 2 is null for request 1
         And the event "unhandled" is false for request 1
 
         And the payload field "events" is an array with 1 element for request 1
@@ -25,7 +36,7 @@ Feature: Communicating events between notifiers
         And the payload field "events.0.session.id" of request 1 equals the payload field "sessions.0.id" of request 0
 
     Scenario: Report an unhandled event through internalNotify()
-        Report an unhandled exception, including a custom severity.
+        Report an unhandled exception, including a custom stacktrace and severity.
         Event counts in the report's session should match the handled-ness.
 
         When I run "UnhandledInternalNotifyScenario"
@@ -34,8 +45,19 @@ Feature: Communicating events between notifiers
         And request 1 is valid for the error reporting API
         And the exception "errorClass" equals "Unhandled Error?!" for request 1
         And the exception "message" equals "Internally reported an unhandled event" for request 1
+        And the exception "type" equals "fake" for request 1
         And the event "severity" equals "info" for request 1
         And the event "severityReason.type" equals "userCallbackSetSeverity" for request 1
+
+        And the "method" of stack frame 0 equals "bar()" for request 1
+        And the "file" of stack frame 0 equals "foo.js" for request 1
+        And the "lineNumber" of stack frame 0 equals 43 for request 1
+        And the "method" of stack frame 1 equals "baz()" for request 1
+        And the "file" of stack frame 1 equals "[native code]" for request 1
+        And the "lineNumber" of stack frame 1 is null for request 1
+        And the "method" of stack frame 2 equals "is_done()" for request 1
+        And the "file" of stack frame 2 is null for request 1
+        And the "lineNumber" of stack frame 2 is null for request 1
         And the event "unhandled" is true for request 1
 
         And the payload field "events" is an array with 1 element for request 1

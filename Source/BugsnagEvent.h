@@ -69,6 +69,12 @@ initWithErrorName:(NSString *_Nonnull)name
      handledState:(BugsnagHandledState *_Nonnull)handledState
           session:(BugsnagSession *_Nullable)session;
 
+/**
+ *  Prepend a custom stacktrace with a provided type to the crash report
+ */
+- (void)attachCustomStacktrace:(NSArray *_Nonnull)frames
+                      withType:(NSString *_Nonnull)type;
+
 // -----------------------------------------------------------------------------
 // MARK: - Metadata
 // -----------------------------------------------------------------------------
