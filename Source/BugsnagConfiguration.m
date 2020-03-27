@@ -33,6 +33,7 @@
 #import "BugsnagSessionTracker.h"
 #import "BugsnagLogger.h"
 #import "BSG_SSKeychain.h"
+#import "BugsnagBreadcrumbs.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -67,6 +68,24 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
 @property(nonatomic, readwrite, strong) NSMutableSet *plugins;
+@property(readonly, retain, nullable) NSURL *notifyURL;
+@property(readonly, retain, nullable) NSURL *sessionURL;
+
+/**
+ *  Additional information about the state of the app or environment at the
+ *  time the report was generated
+ */
+@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
+
+/**
+ *  Meta-information about the state of Bugsnag
+ */
+@property(readwrite, retain, nullable) BugsnagMetadata *config;
+
+/**
+ *  Rolling snapshots of user actions leading up to a crash report
+ */
+@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 @end
 
 @implementation BugsnagConfiguration
@@ -159,6 +178,11 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 // MARK: - Instance Methods
 // -----------------------------------------------------------------------------
 
+/**
+ *  Whether reports should be sent, based on release stage options
+ *
+ *  @return YES if reports should be sent based on this configuration
+ */
 - (BOOL)shouldSendReports {
     return self.notifyReleaseStages.count == 0 ||
            [self.notifyReleaseStages containsObject:self.releaseStage];

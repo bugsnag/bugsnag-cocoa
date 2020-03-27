@@ -13,6 +13,7 @@
 
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
+@property(readonly, retain, nullable) NSURL *sessionURL;
 @end
 
 

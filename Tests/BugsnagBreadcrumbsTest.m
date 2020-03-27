@@ -9,11 +9,22 @@
 #import "Bugsnag.h"
 #import "BugsnagClient.h"
 #import "BugsnagBreadcrumb.h"
+#import "BugsnagBreadcrumbs.h"
 #import "BugsnagTestConstants.h"
 #import <XCTest/XCTest.h>
 
 @interface BugsnagBreadcrumbsTest : XCTestCase
 @property(nonatomic, strong) BugsnagBreadcrumbs *crumbs;
+@end
+
+@interface BugsnagConfiguration ()
+@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
+@end
+
+@interface BugsnagBreadcrumb ()
++ (instancetype _Nullable)breadcrumbWithBlock:
+    (BSGBreadcrumbConfiguration _Nonnull)block;
++ (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
 @end
 
 @interface BugsnagBreadcrumbs ()
