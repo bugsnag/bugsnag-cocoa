@@ -876,6 +876,18 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     _lastOrientation = orientation;
 }
 
+- (void)lowMemoryWarning:(NSNotification *)notif {
+    [[self state] addAttribute:BSEventLowMemoryWarning
+                     withValue:[[Bugsnag payloadDateFormatter]
+                                   stringFromDate:[NSDate date]]
+                 toTabWithName:BSGKeyDeviceState];
+     
+    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
+        [self sendBreadcrumbForNotification:notif];
+    }
+}
+#endif
+
 /**
  * A convenience safe-wrapper for conditionally recording automatic breadcrumbs
  * based on the configuration.
@@ -896,18 +908,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         }];
     }
 }
-
-- (void)lowMemoryWarning:(NSNotification *)notif {
-    [[self state] addAttribute:BSEventLowMemoryWarning
-                     withValue:[[Bugsnag payloadDateFormatter]
-                                   stringFromDate:[NSDate date]]
-                 toTabWithName:BSGKeyDeviceState];
-     
-    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
-        [self sendBreadcrumbForNotification:notif];
-    }
-}
-#endif
 
 - (void)updateCrashDetectionSettings {
     if (self.configuration.autoDetectErrors) {
