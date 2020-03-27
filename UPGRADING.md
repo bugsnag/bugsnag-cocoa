@@ -59,6 +59,9 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 - config.reportOOMs
 + config.enabledErrorTypes
+
+- config.notifierType
++ config.appType
 ```
 
 #### Removals
