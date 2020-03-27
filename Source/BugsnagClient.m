@@ -778,15 +778,22 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                                  metadata:[event.metadata copy]
                                    config:[self.configuration.config toDictionary]
                              discardDepth:depth];
-
+    
+    // A basic set of event metadata
+    NSMutableDictionary *metadata = [@{
+        BSGKeyErrorClass : eventErrorClass,
+        BSGKeyUnhandled : [[event handledState] unhandled] ? @YES : @NO,
+        BSGKeySeverity : BSGFormatSeverity(event.severity)
+    } mutableCopy];
+    
+    // Only include the eventMessage if it contains something
+    if (eventMessage && [eventMessage length] > 0) {
+        [metadata setValue:eventMessage forKey:BSGKeyName];
+    }
+    
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeError
                       withMessage:eventErrorClass
-                      andMetadata:@{
-                          BSGKeyMessage : eventMessage,
-                          BSGKeyErrorClass : eventErrorClass,
-                          BSGKeyUnhandled : [[event handledState] unhandled] ? @YES : @NO,
-                          BSGKeySeverity : BSGFormatSeverity(event.severity)
-                      }];
+                      andMetadata:metadata];
 
     [self flushPendingReports];
 }
