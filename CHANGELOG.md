@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Rename `config.notifierType` to `config.appType`
+[#504](https://github.com/bugsnag/bugsnag-cocoa/pull/504)
+
 * Remove unused APIs from `BugsnagMetadata` interface
 [#501](https://github.com/bugsnag/bugsnag-cocoa/pull/501)
 
