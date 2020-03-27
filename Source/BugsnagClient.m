@@ -213,6 +213,10 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableSet *plugins;
+@property(readonly, retain, nullable) NSURL *notifyURL;
+@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
+@property(readwrite, retain, nullable) BugsnagMetadata *config;
+@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 @end
 
 @interface BugsnagMetadata ()

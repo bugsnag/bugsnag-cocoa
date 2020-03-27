@@ -19,6 +19,7 @@
 
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
+@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
 @end
 
 @interface BugsnagTests : XCTestCase

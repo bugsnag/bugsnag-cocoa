@@ -8,9 +8,14 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
-
 * Remove unused APIs from `BugsnagMetadata` interface
 [#501](https://github.com/bugsnag/bugsnag-cocoa/pull/501)
+
+* Remove unused APIs from `BugsnagConfiguration` interface
+  [#496](https://github.com/bugsnag/bugsnag-cocoa/pull/496)
+
+* Remove unused APIs from `BugsnagBreadcrumb` interface
+  [#502](https://github.com/bugsnag/bugsnag-cocoa/pull/502)
 
 * Remove notify method variants from public api on `Bugsnag`
   [#497](https://github.com/bugsnag/bugsnag-cocoa/pull/497)
