@@ -36,9 +36,9 @@
 
 @implementation BugsnagEventTests
 
-- (void)testNotifyReleaseStagesSendsFromConfig {
+- (void)testEnabledReleaseStagesSendsFromConfig {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    config.notifyReleaseStages = @[ @"foo" ];
+    config.enabledReleaseStages = @[ @"foo" ];
     config.releaseStage = @"foo";
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
@@ -52,9 +52,9 @@
     XCTAssertTrue([event shouldBeSent]);
 }
 
-- (void)testNotifyReleaseStagesSkipsSendFromConfig {
+- (void)testEnabledReleaseStagesSkipsSendFromConfig {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    config.notifyReleaseStages = @[ @"foo", @"bar" ];
+    config.enabledReleaseStages = @[ @"foo", @"bar" ];
     config.releaseStage = @"not foo or bar";
 
     BugsnagHandledState *state =

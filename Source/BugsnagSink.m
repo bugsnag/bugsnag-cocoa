@@ -63,13 +63,13 @@
 
 // Entry point called by BSG_KSCrash when a report needs to be sent. Handles
 // report filtering based on the configuration options for
-// `notifyReleaseStages`. Removes all reports not meeting at least one of the
+// `enabledReleaseStages`. Removes all reports not meeting at least one of the
 // following conditions:
-// - the report-specific config specifies the `notifyReleaseStages` property and
+// - the report-specific config specifies the `enabledReleaseStages` property and
 // it contains the current stage
-// - the report-specific and global `notifyReleaseStages` properties are unset
-// - the report-specific `notifyReleaseStages` property is unset and the global
-// `notifyReleaseStages` property
+// - the report-specific and global `enabledReleaseStages` properties are unset
+// - the report-specific `enabledReleaseStages` property is unset and the global
+// `enabledReleaseStages` property
 //   and it contains the current stage
 - (void)filterReports:(NSDictionary <NSString *, NSDictionary *> *)reports
          onCompletion:(BSG_KSCrashReportFilterCompletion)onCompletion {

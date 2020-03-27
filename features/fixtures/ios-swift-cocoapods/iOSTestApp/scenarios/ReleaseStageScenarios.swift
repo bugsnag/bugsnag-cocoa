@@ -7,7 +7,7 @@ class NotifyWhenReleaseStageInNotifyReleaseStages : Scenario {
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
         self.config.releaseStage = "prod"
-        self.config.notifyReleaseStages = ["dev", "prod"]
+        self.config.enabledReleaseStages = ["dev", "prod"]
         super.startBugsnag()
     }
 
@@ -23,7 +23,7 @@ class CrashWhenReleaseStageInNotifyReleaseStages : Scenario {
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
         self.config.releaseStage = "prod"
-        self.config.notifyReleaseStages = ["dev", "prod"]
+        self.config.enabledReleaseStages = ["dev", "prod"]
         super.startBugsnag()
     }
 
@@ -43,7 +43,7 @@ class CrashWhenReleaseStageInNotifyReleaseStagesChanges : Scenario {
           // A crash will occur
           self.config.releaseStage = "prod"
         }
-        self.config.notifyReleaseStages = ["dev", "prod"]
+        self.config.enabledReleaseStages = ["dev", "prod"]
         super.startBugsnag()
     }
 
@@ -63,7 +63,7 @@ class CrashWhenReleaseStageNotInNotifyReleaseStagesChanges : Scenario {
           // A crash will occur
           self.config.releaseStage = "test"
         }
-        self.config.notifyReleaseStages = ["dev", "prod"]
+        self.config.enabledReleaseStages = ["dev", "prod"]
         super.startBugsnag()
     }
 
@@ -77,7 +77,7 @@ class NotifyWhenReleaseStageNotInNotifyReleaseStages : Scenario {
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
         self.config.releaseStage = "dev"
-        self.config.notifyReleaseStages = ["prod"]
+        self.config.enabledReleaseStages = ["prod"]
         super.startBugsnag()
     }
 
@@ -93,7 +93,7 @@ class CrashWhenReleaseStageNotInNotifyReleaseStages : Scenario {
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
         self.config.releaseStage = "dev"
-        self.config.notifyReleaseStages = ["prod"]
+        self.config.enabledReleaseStages = ["prod"]
         super.startBugsnag()
     }
 

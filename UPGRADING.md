@@ -65,6 +65,9 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 - config.notifierType
 + config.appType
+
+- config.notifyReleaseStages
++ config.enabledReleaseStages
 ```
 
 #### Removals
@@ -221,7 +224,7 @@ of the removed `addAttribute`:
 - [event shouldBeSent:]
 - [event toJson:]
 - [event enhancedErrorMessageForThread:]
-- event.notifyReleaseStages
+- event.enabledReleaseStages
 - event.handledState
 - event.overrides
 - event.depth

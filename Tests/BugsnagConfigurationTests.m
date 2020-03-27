@@ -246,43 +246,43 @@
 // MARK: - Release stage-related
 // =============================================================================
 
-- (void)testNotifyReleaseStagesDefaultSends {
+- (void)testEnabledReleaseStagesDefaultSends {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertTrue([config shouldSendReports]);
 }
 
-- (void)testNotifyReleaseStagesNilSends {
+- (void)testEnabledReleaseStagesNilSends {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    config.notifyReleaseStages = nil;
+    config.enabledReleaseStages = nil;
     XCTAssertTrue([config shouldSendReports]);
 }
 
-- (void)testNotifyReleaseStagesEmptySends {
+- (void)testEnabledReleaseStagesEmptySends {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    config.notifyReleaseStages = @[];
+    config.enabledReleaseStages = @[];
     XCTAssertTrue([config shouldSendReports]);
 }
 
-- (void)testNotifyReleaseStagesIncludedSends {
+- (void)testEnabledReleaseStagesIncludedSends {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    config.notifyReleaseStages = @[ @"beta" ];
+    config.enabledReleaseStages = @[ @"beta" ];
     XCTAssertTrue([config shouldSendReports]);
 }
 
-- (void)testNotifyReleaseStagesIncludedInManySends {
+- (void)testEnabledReleaseStagesIncludedInManySends {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    config.notifyReleaseStages = @[ @"beta", @"production" ];
+    config.enabledReleaseStages = @[ @"beta", @"production" ];
     XCTAssertTrue([config shouldSendReports]);
 }
 
-- (void)testNotifyReleaseStagesExcludedSkipsSending {
+- (void)testEnabledReleaseStagesExcludedSkipsSending {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    config.notifyReleaseStages = @[ @"production" ];
+    config.enabledReleaseStages = @[ @"production" ];
     XCTAssertFalse([config shouldSendReports]);
 }
 

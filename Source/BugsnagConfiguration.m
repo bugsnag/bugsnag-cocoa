@@ -139,7 +139,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _onSendBlocks = [NSMutableArray new];
     _onSessionBlocks = [NSMutableArray new];
     _plugins = [NSMutableSet new];
-    _notifyReleaseStages = nil;
+    _enabledReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
     _autoTrackSessions = YES;
     // Default to recording all error types
@@ -184,8 +184,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  *  @return YES if reports should be sent based on this configuration
  */
 - (BOOL)shouldSendReports {
-    return self.notifyReleaseStages.count == 0 ||
-           [self.notifyReleaseStages containsObject:self.releaseStage];
+    return self.enabledReleaseStages.count == 0 ||
+           [self.enabledReleaseStages containsObject:self.releaseStage];
 }
 
 - (void)setUser:(NSString *_Nullable)userId
@@ -457,21 +457,21 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 // MARK: -
 
-@synthesize notifyReleaseStages = _notifyReleaseStages;
+@synthesize enabledReleaseStages = _enabledReleaseStages;
 
-- (NSArray *)notifyReleaseStages {
+- (NSArray *)enabledReleaseStages {
     @synchronized (self) {
-        return _notifyReleaseStages;
+        return _enabledReleaseStages;
     }
 }
 
-- (void)setNotifyReleaseStages:(NSArray *)newNotifyReleaseStages;
+- (void)setEnabledReleaseStages:(NSArray *)newReleaseStages;
 {
     @synchronized (self) {
-        NSArray *notifyReleaseStagesCopy = [newNotifyReleaseStages copy];
-        _notifyReleaseStages = notifyReleaseStagesCopy;
-        [self.config addAttribute:BSGKeyNotifyReleaseStages
-                        withValue:notifyReleaseStagesCopy
+        NSArray *releaseStagesCopy = [newReleaseStages copy];
+        _enabledReleaseStages = releaseStagesCopy;
+        [self.config addAttribute:BSGKeyEnabledReleaseStages
+                        withValue:releaseStagesCopy
                     toTabWithName:BSGKeyConfig];
     }
 }

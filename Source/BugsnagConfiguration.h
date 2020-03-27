@@ -94,7 +94,7 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
 /**
  *  Release stages which are allowed to notify Bugsnag
  */
-@property(readwrite, retain, nullable) NSArray *notifyReleaseStages;
+@property(readwrite, retain, nullable) NSArray *enabledReleaseStages;
 /**
  *  A general summary of what was occuring in the application
  */

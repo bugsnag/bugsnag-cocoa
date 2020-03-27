@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Rename `notifyReleaseStages` to `enabledReleaseStages`
+  [#509](https://github.com/bugsnag/bugsnag-cocoa/pull/509)
+
 * Rename setUser/user interface on `Bugsnag` and `BugsnagConfiguration`
 [#505](https://github.com/bugsnag/bugsnag-cocoa/pull/505)
 

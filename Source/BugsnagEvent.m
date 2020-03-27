@@ -266,7 +266,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 /**
  *  The release stages used to notify at the time this report is captured
  */
-@property(readwrite, copy, nullable) NSArray *notifyReleaseStages;
+@property(readwrite, copy, nullable) NSArray *enabledReleaseStages;
 
 /**
  *  Property overrides
@@ -319,7 +319,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
                 }
             }
         } else {
-            _notifyReleaseStages = BSGLoadConfigValue(report, @"notifyReleaseStages");
+            _enabledReleaseStages = BSGLoadConfigValue(report, @"notifyReleaseStages");
             _releaseStage = BSGParseReleaseStage(report);
             _threads = [report valueForKeyPath:@"crash.threads"];
             RegisterErrorData *data = [RegisterErrorData errorDataFromThreads:_threads];
@@ -392,7 +392,7 @@ initWithErrorName:(NSString *_Nonnull)name
         _overrides = [NSDictionary new];
         _metadata = metadata ?: [NSDictionary new];
         _releaseStage = config.releaseStage;
-        _notifyReleaseStages = config.notifyReleaseStages;
+        _enabledReleaseStages = config.enabledReleaseStages;
         // Set context based on current values.  May be nil.
         _context = metadata[BSGKeyContext] ?: [[Bugsnag configuration] context];
         NSMutableArray *crumbs = [NSMutableArray new];
@@ -524,8 +524,8 @@ initWithErrorName:(NSString *_Nonnull)name
 }
 
 - (BOOL)shouldBeSent {
-    return [self.notifyReleaseStages containsObject:self.releaseStage] ||
-           (self.notifyReleaseStages.count == 0 &&
+    return [self.enabledReleaseStages containsObject:self.releaseStage] ||
+           (self.enabledReleaseStages.count == 0 &&
             [[Bugsnag configuration] shouldSendReports]);
 }
 
