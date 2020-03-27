@@ -299,6 +299,15 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
     NS_SWIFT_NAME(clearMetadata(section:));
 
+// =============================================================================
+// MARK: - User
+// =============================================================================
+
+/**
+ * The current user
+ */
++ (BugsnagUser *_Nonnull)user;
+
 /**
  *  Set user metadata
  *

@@ -423,7 +423,10 @@
 //    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount]);
 
     BugsnagConfiguration *config2 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    XCTAssertNil(config2.currentUser);
+    XCTAssertNotNil(config2.user);
+    XCTAssertNil(config2.user.userId);
+    XCTAssertNil(config2.user.name);
+    XCTAssertNil(config2.user.emailAddress);
 }
 
 /**
@@ -469,7 +472,7 @@
     [config setUser:nil withName:nil andEmail:nil];
 
     // currentUser should have been set
-    XCTAssertNotNil(config.currentUser);
+    XCTAssertNotNil(config.user);
 
     // But there hould be no persisted data
 //    XCTAssertNil([bsg_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount]);
@@ -606,9 +609,9 @@
     
     [config setUser:@"123" withName:@"foo" andEmail:@"test@example.com"];
     
-    XCTAssertEqualObjects(@"123", config.currentUser.userId);
-    XCTAssertEqualObjects(@"foo", config.currentUser.name);
-    XCTAssertEqualObjects(@"test@example.com", config.currentUser.emailAddress);
+    XCTAssertEqualObjects(@"123", config.user.userId);
+    XCTAssertEqualObjects(@"foo", config.user.name);
+    XCTAssertEqualObjects(@"test@example.com", config.user.emailAddress);
 }
 
 - (void)testApiKeySetter {

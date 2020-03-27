@@ -153,8 +153,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _persistUser = YES;
     // Only gets persisted user data if there is any, otherwise nil
     // persistUser isn't settable until post-init.
-    _currentUser = [self getPersistedUserData];
-    [self setUserMetadataFromUser:_currentUser];
+    _user = [self getPersistedUserData];
+    [self setUserMetadataFromUser:_user];
     
     #if !DEBUG
         _enabledErrorTypes |= BSGErrorTypesOOMs;
@@ -192,14 +192,14 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
        withName:(NSString *)userName
        andEmail:(NSString *)userEmail
 {
-    self.currentUser = [[BugsnagUser alloc] initWithUserId:userId name:userName emailAddress:userEmail];
+    _user = [[BugsnagUser alloc] initWithUserId:userId name:userName emailAddress:userEmail];
 
     // Persist the user
     if (_persistUser)
         [self persistUserData];
     
     // Add user info to the metadata
-    [self setUserMetadataFromUser:self.currentUser];
+    [self setUserMetadataFromUser:self.user];
 }
 
 /**
@@ -300,10 +300,11 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
         NSString *name = [BSG_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount];
         NSString *userId = [BSG_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount];
 
-        if (email || name || userId)
+        if (email || name || userId) {
             return [[BugsnagUser alloc] initWithUserId:userId name:name emailAddress:email];
-        
-        return nil;
+        } else {
+            return [[BugsnagUser alloc] initWithUserId:nil name:nil emailAddress:nil];
+        }
     }
 }
 
@@ -313,10 +314,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 - (void)persistUserData {
     @synchronized(self) {
-        if (_currentUser) {
+        if (_user) {
             // Email
-            if (_currentUser.emailAddress) {
-                [BSG_SSKeychain setPassword:_currentUser.emailAddress
+            if (_user.emailAddress) {
+                [BSG_SSKeychain setPassword:_user.emailAddress
                              forService:kBugsnagUserEmailAddress
                                 account:kBugsnagUserKeychainAccount];
             }
@@ -326,8 +327,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
             }
 
             // Name
-            if (_currentUser.name) {
-                [BSG_SSKeychain setPassword:_currentUser.name
+            if (_user.name) {
+                [BSG_SSKeychain setPassword:_user.name
                              forService:kBugsnagUserName
                                 account:kBugsnagUserKeychainAccount];
             }
@@ -337,8 +338,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
             }
             
             // UserId
-            if (_currentUser.userId) {
-                [BSG_SSKeychain setPassword:_currentUser.userId
+            if (_user.userId) {
+                [BSG_SSKeychain setPassword:_user.userId
                              forService:kBugsnagUserUserId
                                 account:kBugsnagUserKeychainAccount];
             }
