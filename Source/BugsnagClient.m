@@ -255,7 +255,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic) BOOL appCrashedLastLaunch;
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 // The previous device orientation - iOS only
-@property (class, nonatomic, strong) NSString *lastOrientation;
+@property (nonatomic, strong) NSString *lastOrientation;
 #endif
 @end
 
@@ -269,17 +269,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 /**
  * Storage for the device orientation.  It is "last" whenever an orientation change is received
  */
-static NSString *_lastOrientation = nil;
-
-+ (NSString *)lastOrientation
-{
-    return _lastOrientation;
-}
-
-+ (void)setLastOrientation:(NSString *)lastOrientation
-{
-    _lastOrientation = lastOrientation;
-}
+NSString *_lastOrientation = nil;
 #endif
 
 @synthesize configuration;
@@ -305,7 +295,6 @@ static NSString *_lastOrientation = nil;
             BSGKeyVersion : NOTIFIER_VERSION,
             BSGKeyUrl : NOTIFIER_URL
         } mutableCopy];
-
 
         NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(
                                 NSCachesDirectory, NSUserDomainMask, YES) firstObject];
@@ -394,7 +383,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         UITableViewSelectionDidChangeNotification : kTableViewSelectionChange,
         UIDeviceBatteryStateDidChangeNotification : @"Battery State Changed",
         UIDeviceBatteryLevelDidChangeNotification : @"Battery Level Changed",
-        UIDeviceOrientationDidChangeNotification : @"Orientation Change",
+        UIDeviceOrientationDidChangeNotification : @"Orientation Changed",
         UIApplicationDidReceiveMemoryWarningNotification : @"Memory Warning",
 
 #elif TARGET_OS_MAC
@@ -493,12 +482,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
     [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
 
-    if ([self.configuration shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
-        [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-            breadcrumb.type = BSGBreadcrumbTypeState;
-            breadcrumb.message = BSGBreadcrumbLoadedMessage;
-        }];
-    }
+    // Record a "Bugsnag Loaded" message
+    [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
+                      withMessage:BSGBreadcrumbLoadedMessage
+                      andMetadata:nil];
 
     // notification not received in time on initial startup, so trigger manually
     [self willEnterForeground:self];
@@ -618,16 +605,15 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [BSGConnectivity monitorURL:url
                   usingCallback:^(BOOL connected, NSString *connectionType) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
-        if (connected)
+        if (connected) {
             [strongSelf flushPendingReports];
-
-        if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
-            [strongSelf addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
-                crumb.message = @"Connectivity change";
-                crumb.type = BSGBreadcrumbTypeState;
-                crumb.metadata  = @{ @"type"  :  connectionType };
-            }];
         }
+        
+        [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
+                          withMessage:@"Connectivity changed"
+                          andMetadata:@{
+                              @"type"  :  connectionType
+                          }];
     }];
 }
 
@@ -786,16 +772,13 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                                    config:[self.configuration.config toDictionary]
                              discardDepth:depth];
 
-    if ([self.configuration shouldRecordBreadcrumbType:BSGBreadcrumbTypeError]) {
-        [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
-          crumb.type = BSGBreadcrumbTypeError;
-          crumb.message = reportName;
-          crumb.metadata = @{
-              BSGKeyMessage : reportMessage,
-              BSGKeySeverity : BSGFormatSeverity(report.severity)
-          };
-        }];
-    }
+    [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeError
+                      withMessage:reportName
+                      andMetadata:@{
+                          BSGKeyMessage : reportMessage,
+                          BSGKeySeverity : BSGFormatSeverity(report.severity)
+                      }];
+
     [self flushPendingReports];
 }
 
@@ -875,16 +858,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         return;
     }
 
-    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
-        [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-            breadcrumb.type = BSGBreadcrumbTypeState;
-            breadcrumb.message = orientationNotifName;
-            breadcrumb.metadata = @{BSGKeyOrientation : orientation};
-        }];
-    }
-
-    // Update the Device orientation
-    
     // Update the device orientation in metadata
     [[self state] addAttribute:BSGKeyOrientation
                      withValue:orientation
@@ -899,9 +872,36 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     
     // We have an orientation, it's not a dupe and we have a lastOrientation.
     // Send a breadcrumb and preserve the orientation.
-    [self sendBreadcrumbForOrientationChangeNotification:notification
-                                         withOrientation:orientation];
+    
+    [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
+                      withMessage:BSGBreadcrumbNameForNotificationName(notification.name)
+                      andMetadata:@{
+                          @"from" : _lastOrientation,
+                          @"to" : orientation
+                      }];
+    
     _lastOrientation = orientation;
+}
+
+/**
+ * A convenience safe-wrapper for conditionally recording automatic breadcrumbs
+ * based on the configuration.
+ *
+ * @param breadcrumbType The type of breadcrumb
+ * @param message The breadcrumb message
+ * @param metadata The breadcrumb metadata.  If nil this is substituted by an empty dictionary.
+ */
+- (void)addAutoBreadcrumbOfType:(BSGBreadcrumbType)breadcrumbType
+                    withMessage:(NSString * _Nonnull)message
+                    andMetadata:(NSDictionary *)metadata
+{
+    if ([[self configuration] shouldRecordBreadcrumbType:breadcrumbType]) {
+        [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
+            breadcrumb.metadata = metadata ?: @{};
+            breadcrumb.type = breadcrumbType;
+            breadcrumb.message = message;
+        }];
+    }
 }
 
 - (void)lowMemoryWarning:(NSNotification *)notif {
@@ -1083,29 +1083,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         breadcrumb.message = BSGBreadcrumbNameForNotificationName(note.name);
     }];
 }
-
-/**
- * Add a breadcrumb with a device orientation change.  Should only called when we have
- * a previous orientation to transition from.
- *
- * @param notification The orientation change notification
- * @param orientation The current orientation
- */
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-- (void)sendBreadcrumbForOrientationChangeNotification:(NSNotification *)notification
-                                       withOrientation:(NSString*)orientation
-{
-    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-        breadcrumb.metadata = @{
-            @"from" : _lastOrientation,
-            @"to" : orientation
-        };
-        
-        breadcrumb.type = BSGBreadcrumbTypeState;
-        breadcrumb.message = BSGBreadcrumbNameForNotificationName(notification.name);
-    }];
-}
-#endif
 
 /**
  * Leave a navigation breadcrumb whenever a tableView selection changes

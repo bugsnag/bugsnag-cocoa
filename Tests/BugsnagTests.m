@@ -23,8 +23,7 @@
 @end
 
 @interface BugsnagClient ()
-+ (NSString *)lastOrientation;
-+ (void)setLastOrientation:(NSString *)lastOrientation;
+@property (nonatomic, strong) NSString *lastOrientation;
 @end
 
 @interface BugsnagTests : XCTestCase
@@ -423,8 +422,9 @@ NSString *BSGOrientationNameFromEnum(UIDeviceOrientation deviceOrientation);
     XCTAssertNil(BSGOrientationNameFromEnum(-1));
     XCTAssertNil(BSGOrientationNameFromEnum(99));
     
-    [BugsnagClient setLastOrientation:@"testOrientation"];
-    XCTAssertEqualObjects([BugsnagClient lastOrientation], @"testOrientation");
+    BugsnagClient *client = [BugsnagClient new];
+    [client setLastOrientation:@"testOrientation"];
+    XCTAssertEqualObjects([client lastOrientation], @"testOrientation");
 }
 #endif
 
