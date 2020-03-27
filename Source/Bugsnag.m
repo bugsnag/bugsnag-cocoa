@@ -282,10 +282,14 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     [self configuration].context = context;
 }
 
++ (BugsnagUser *)user {
+    return [[self configuration] user];
+}
+
 + (void)setUser:(NSString *_Nullable)userId
-       withName:(NSString *_Nullable)name
-       andEmail:(NSString *_Nullable)email {
-    [[self configuration] setUser:userId withName:name andEmail:email];
+      withEmail:(NSString *_Nullable)email
+        andName:(NSString *_Nullable)name {
+    [[self configuration] setUser:userId withEmail:email andName:name];
 }
 
 + (void)addOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block
