@@ -18,6 +18,22 @@ static NSString *const kBugsnagUser = @"user";
 
 @interface BugsnagSession ()
 @property(readwrite, getter=isStopped) BOOL stopped;
+@property(readonly) BOOL autoCaptured;
+@property NSUInteger unhandledCount;
+@property NSUInteger handledCount;
+
+/**
+ * Representation used in report payloads
+ */
+- (NSDictionary *_Nonnull)toJson;
+
+/**
+ * Full representation of a session suitable for creating an identical session
+ * using initWithDictionary
+ */
+- (NSDictionary *_Nonnull)toDictionary;
+- (void)stop;
+- (void)resume;
 @end
 
 @implementation BugsnagSession

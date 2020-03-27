@@ -14,6 +14,12 @@
 #import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagTestConstants.h"
 
+@interface BugsnagSession ()
+@property NSUInteger unhandledCount;
+@property NSUInteger handledCount;
+@property(readonly) BOOL autoCaptured;
+@end
+
 @interface BugsnagConfiguration ()
 - (void)deletePersistedUserData;
 @end

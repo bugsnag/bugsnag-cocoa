@@ -17,6 +17,11 @@
 #import "BugsnagTestConstants.h"
 #import "BugsnagTestsDummyClass.h"
 
+@interface BugsnagSession ()
+@property NSUInteger unhandledCount;
+@property NSUInteger handledCount;
+@end
+
 @interface Bugsnag ()
 + (BugsnagConfiguration *)configuration;
 @end

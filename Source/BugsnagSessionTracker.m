@@ -20,6 +20,16 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 60;
 
 NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 
+@interface BugsnagSession ()
+
+@property(readwrite, getter=isStopped) BOOL stopped;
+@property NSUInteger unhandledCount;
+@property NSUInteger handledCount;
+- (NSDictionary *_Nonnull)toDictionary;
+- (void)stop;
+- (void)resume;
+@end
+
 @interface BugsnagConfiguration ()
 @property(readonly, retain, nullable) NSURL *sessionURL;
 @end
