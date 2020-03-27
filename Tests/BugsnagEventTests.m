@@ -27,6 +27,10 @@
 @property(readwrite) NSUInteger depth;
 @end
 
+@interface BugsnagMetadata ()
+- (NSDictionary *_Nonnull)toDictionary;
+@end
+
 @interface BugsnagEventTests : BugsnagBaseUnitTest
 @end
 
