@@ -17,6 +17,10 @@
 @property(nonatomic, strong) BugsnagBreadcrumbs *crumbs;
 @end
 
+@interface BugsnagConfiguration ()
+@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
+@end
+
 @interface BugsnagBreadcrumb ()
 + (instancetype _Nullable)breadcrumbWithBlock:
     (BSGBreadcrumbConfiguration _Nonnull)block;

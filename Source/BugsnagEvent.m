@@ -235,6 +235,8 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
 @interface BugsnagConfiguration (BugsnagEvent)
 + (BOOL)isValidApiKey:(NSString *_Nullable)apiKey;
+- (BOOL)shouldSendReports;
+@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 @end
 
 @interface BugsnagEvent ()
