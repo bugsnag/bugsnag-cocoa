@@ -59,6 +59,9 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 - config.reportOOMs
 + config.enabledErrorTypes
+
+- config.currentUser
++ config.user
 ```
 
 #### Removals
@@ -109,7 +112,7 @@ Bugsnag.getMetadata("section" key:"key")
 ObjC:
 
 - [Bugsnag configuration]
-+ [Bugsnag setUser:withName:andEmail:]
++ [Bugsnag setUser:withEmail:andName:]
 
 - [Bugsnag addAttribute:WithValuetoTabWithName:]
 + [Bugsnag addMetadataToSection:key:value:]
@@ -129,7 +132,7 @@ ObjC:
 Swift:
 
 - Bugsnag.configuration()
-+ Bugsnag.setUser(_:name:email:)
++ Bugsnag.setUser(_:email:name:)
 
 - Bugsnag.addAttribute(attributeName:withValue:toTabWithName:)
 + Bugsnag.addMetadata(_:key:value:)
