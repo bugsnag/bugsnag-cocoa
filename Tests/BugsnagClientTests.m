@@ -10,6 +10,7 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagClient.h"
 #import "BugsnagTestConstants.h"
+#import "BugsnagKeys.h"
 #import <XCTest/XCTest.h>
 
 @interface BugsnagClientTests : XCTestCase
@@ -31,6 +32,8 @@
 @interface BugsnagConfiguration ()
 @property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 @end
+
+NSString *BSGFormatSeverity(BSGSeverity severity);
 
 @implementation BugsnagClientTests
 
@@ -78,7 +81,7 @@
     NSDictionary *metadata = [breadcrumb valueForKey:@"metaData"];
     
     XCTAssertEqualObjects([breadcrumb valueForKey:@"type"], @"error");
-    XCTAssertEqualObjects([breadcrumb valueForKey:@"message"], eventErrorClass);
+    XCTAssertEqualObjects([breadcrumb valueForKey:@"name"], eventErrorClass);
     XCTAssertEqualObjects([metadata valueForKey:@"errorClass"], eventErrorClass);
     XCTAssertEqualObjects([metadata valueForKey:@"message"], eventErrorMessage);
     XCTAssertEqual((bool)[metadata valueForKey:@"unhandled"], eventUnhandled);

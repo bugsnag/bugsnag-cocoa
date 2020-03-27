@@ -270,6 +270,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @interface BugsnagEvent ()
 @property(readonly, copy, nonnull) NSDictionary *overrides;
 @property(readwrite) NSUInteger depth;
+@property(readonly, nonnull) BugsnagHandledState *handledState;
 @end
 
 @interface BugsnagMetadata ()
