@@ -24,6 +24,7 @@
 #import "Private.h"
 #import "BSG_RFC3339DateTool.h"
 #import "Private.h"
+#import "BugsnagKeys.h"
 
 @interface BugsnagBreadcrumb ()
 + (instancetype _Nullable)breadcrumbWithBlock:
@@ -319,7 +320,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
                 }
             }
         } else {
-            _enabledReleaseStages = BSGLoadConfigValue(report, @"notifyReleaseStages");
+            _enabledReleaseStages = BSGLoadConfigValue(report, BSGKeyEnabledReleaseStages);
             _releaseStage = BSGParseReleaseStage(report);
             _threads = [report valueForKeyPath:@"crash.threads"];
             RegisterErrorData *data = [RegisterErrorData errorDataFromThreads:_threads];
