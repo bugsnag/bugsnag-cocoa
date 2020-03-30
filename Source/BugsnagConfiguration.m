@@ -374,7 +374,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
         self.breadcrumbs.capacity = capacity;
     } else {
         bsg_log_err(@"Invalid configuration value detected. Option maxBreadcrumbs "
-                    "should be an integer between 0-100. Supplied value is %lu", capacity);
+                    "should be an integer between 0-100. Supplied value is %lu", (unsigned long) capacity);
     }
 }
 
