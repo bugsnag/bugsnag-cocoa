@@ -5,14 +5,15 @@ class ModifyBreadcrumbScenario: Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
-        self.config.add { (event) -> Bool in
+
+        self.config.add(onSend: { event in
             event.breadcrumbs?.forEach({ crumb in
                 if crumb.message == "Cache cleared" {
                     crumb.message = "Cache locked"
                 }
             })
-            return true;
-        }
+            return true
+        })
         super.startBugsnag()
     }
 

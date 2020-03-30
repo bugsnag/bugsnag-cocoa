@@ -22,7 +22,7 @@ class HandledErrorOverrideScenario: Scenario {
         Bugsnag.notifyError(error) { report in
             report.errorMessage = "Foo"
             report.errorClass = "Bar"
-            var depth: Int = report.value(forKey: "depth") as! Int
+            let depth: Int = report.value(forKey: "depth") as! Int
             report.setValue(depth + 2, forKey: "depth")
             report.metadata["account"] = [
                 "items": [400,200]

@@ -33,6 +33,9 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 + config.persistUserData()
 + config.deletePersistedUserData()
+
++ config.add(onBreadcrumb:)
++ config.remove(onBreadcrumb:)
 ```
 
 #### Renames

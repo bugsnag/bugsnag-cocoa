@@ -67,6 +67,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  *  Hooks for modifying sessions before they are sent to Bugsnag. Intended for internal use only by React Native/Unity.
  */
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
+@property(nonatomic, readwrite, strong) NSMutableArray *onBreadcrumbBlocks;
 @property(nonatomic, readwrite, strong) NSMutableSet *plugins;
 @property(readonly, retain, nullable) NSURL *notifyURL;
 @property(readonly, retain, nullable) NSURL *sessionURL;
@@ -138,6 +139,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _notifyURL = [NSURL URLWithString:BSGDefaultNotifyUrl];
     _onSendBlocks = [NSMutableArray new];
     _onSessionBlocks = [NSMutableArray new];
+    _onBreadcrumbBlocks = [NSMutableArray new];
     _plugins = [NSMutableSet new];
     _notifyReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
@@ -235,6 +237,18 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 - (void)removeOnSessionBlock:(BugsnagOnSessionBlock)block {
     [(NSMutableArray *)self.onSessionBlocks removeObject:block];
+}
+
+// =============================================================================
+// MARK: - onBreadcrumbBlock
+// =============================================================================
+
+- (void)addOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block {
+    [(NSMutableArray *)self.onBreadcrumbBlocks addObject:[block copy]];
+}
+
+- (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block {
+    [(NSMutableArray *)self.onBreadcrumbBlocks removeObject:block];
 }
 
 - (NSDictionary *)errorApiHeaders {
