@@ -338,4 +338,23 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  */
 + (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block;
 
+// =============================================================================
+// MARK: - onBreadcrumb
+// =============================================================================
+
+/**
+ *  Add a callback to be invoked when a breadcrumb is captured by Bugsnag, to
+ *  change the breadcrumb contents as needed
+ *
+ *  @param block A block which returns YES if the breadcrumb should be captured
+ */
++ (void)addOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block;
+
+/**
+ * Remove the callback that would be invoked when a breadcrumb is captured.
+ *
+ * @param block The block to be removed.
+ */
++ (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block;
+
 @end

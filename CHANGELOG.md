@@ -11,6 +11,12 @@ Bugsnag Notifiers on other platforms.
 * Enforce that `config.maxBreadcrumbs` must be between 0-100
 [#511](https://github.com/bugsnag/bugsnag-cocoa/pull/511)
 
+* Add unhandled property to `BugsnagEvent`
+[#512](https://github.com/bugsnag/bugsnag-cocoa/pull/512)
+
+* Rename `notifyReleaseStages` to `enabledReleaseStages`
+  [#509](https://github.com/bugsnag/bugsnag-cocoa/pull/509)
+
 * Remove unused APIs from `BugsnagSession` interface
 [#506](https://github.com/bugsnag/bugsnag-cocoa/pull/506)
 
@@ -22,6 +28,9 @@ Bugsnag Notifiers on other platforms.
 
 * Remove unused APIs on `BugsnagEvent` interface
   [#498](https://github.com/bugsnag/bugsnag-cocoa/pull/498)
+
+* Allow addition/removal of `OnBreadcrumb` callbacks
+[#508](https://github.com/bugsnag/bugsnag-cocoa/pull/508)
 
 * Remove unused APIs from `BugsnagMetadata` interface
 [#501](https://github.com/bugsnag/bugsnag-cocoa/pull/501)

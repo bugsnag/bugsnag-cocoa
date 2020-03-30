@@ -67,6 +67,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  *  Hooks for modifying sessions before they are sent to Bugsnag. Intended for internal use only by React Native/Unity.
  */
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
+@property(nonatomic, readwrite, strong) NSMutableArray *onBreadcrumbBlocks;
 @property(nonatomic, readwrite, strong) NSMutableSet *plugins;
 @property(readonly, retain, nullable) NSURL *notifyURL;
 @property(readonly, retain, nullable) NSURL *sessionURL;
@@ -138,8 +139,9 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _notifyURL = [NSURL URLWithString:BSGDefaultNotifyUrl];
     _onSendBlocks = [NSMutableArray new];
     _onSessionBlocks = [NSMutableArray new];
+    _onBreadcrumbBlocks = [NSMutableArray new];
     _plugins = [NSMutableSet new];
-    _notifyReleaseStages = nil;
+    _enabledReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
     _autoTrackSessions = YES;
     // Default to recording all error types
@@ -184,8 +186,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  *  @return YES if reports should be sent based on this configuration
  */
 - (BOOL)shouldSendReports {
-    return self.notifyReleaseStages.count == 0 ||
-           [self.notifyReleaseStages containsObject:self.releaseStage];
+    return self.enabledReleaseStages.count == 0 ||
+           [self.enabledReleaseStages containsObject:self.releaseStage];
 }
 
 - (void)setUser:(NSString *_Nullable)userId
@@ -235,6 +237,18 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 - (void)removeOnSessionBlock:(BugsnagOnSessionBlock)block {
     [(NSMutableArray *)self.onSessionBlocks removeObject:block];
+}
+
+// =============================================================================
+// MARK: - onBreadcrumbBlock
+// =============================================================================
+
+- (void)addOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block {
+    [(NSMutableArray *)self.onBreadcrumbBlocks addObject:[block copy]];
+}
+
+- (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block {
+    [(NSMutableArray *)self.onBreadcrumbBlocks removeObject:block];
 }
 
 - (NSDictionary *)errorApiHeaders {
@@ -462,21 +476,21 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 // MARK: -
 
-@synthesize notifyReleaseStages = _notifyReleaseStages;
+@synthesize enabledReleaseStages = _enabledReleaseStages;
 
-- (NSArray *)notifyReleaseStages {
+- (NSArray *)enabledReleaseStages {
     @synchronized (self) {
-        return _notifyReleaseStages;
+        return _enabledReleaseStages;
     }
 }
 
-- (void)setNotifyReleaseStages:(NSArray *)newNotifyReleaseStages;
+- (void)setEnabledReleaseStages:(NSArray *)newReleaseStages;
 {
     @synchronized (self) {
-        NSArray *notifyReleaseStagesCopy = [newNotifyReleaseStages copy];
-        _notifyReleaseStages = notifyReleaseStagesCopy;
-        [self.config addAttribute:BSGKeyNotifyReleaseStages
-                        withValue:notifyReleaseStagesCopy
+        NSArray *releaseStagesCopy = [newReleaseStages copy];
+        _enabledReleaseStages = releaseStagesCopy;
+        [self.config addAttribute:BSGKeyEnabledReleaseStages
+                        withValue:releaseStagesCopy
                     toTabWithName:BSGKeyConfig];
     }
 }

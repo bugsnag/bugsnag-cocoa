@@ -33,6 +33,9 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 + config.persistUserData()
 + config.deletePersistedUserData()
+
++ config.add(onBreadcrumb:)
++ config.remove(onBreadcrumb:)
 ```
 
 #### Renames
@@ -65,6 +68,9 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 - config.notifierType
 + config.appType
+
+- config.notifyReleaseStages
++ config.enabledReleaseStages
 ```
 
 #### Removals
@@ -202,6 +208,12 @@ The short "name" value has been removed and replaced with an arbitrarily long "m
 
 This is now BugsnagEvent.
 
+#### Additions
+
+```diff
++ event.unhandled
+```
+
 #### Renames
 
 To add metadata to an individual report in a callback, use `addMetadata` instead
@@ -221,7 +233,7 @@ of the removed `addAttribute`:
 - [event shouldBeSent:]
 - [event toJson:]
 - [event enhancedErrorMessageForThread:]
-- event.notifyReleaseStages
+- event.enabledReleaseStages
 - event.handledState
 - event.overrides
 - event.depth
