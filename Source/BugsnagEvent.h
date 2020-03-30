@@ -20,7 +20,7 @@ typedef NS_ENUM(NSUInteger, BSGSeverity) {
     BSGSeverityInfo,
 };
 
-@interface BugsnagEvent : NSObject
+@interface BugsnagEvent : NSObject <BugsnagMetadataStore>
 
 // -----------------------------------------------------------------------------
 // MARK: - Initialisation
@@ -146,7 +146,3 @@ initWithErrorName:(NSString *_Nonnull)name
 
 @end
 
-// MARK: - <BugsnagMetadataStore>
-
-@interface BugsnagEvent (MetadataStore) <BugsnagMetadataStore>
-@end
