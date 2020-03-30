@@ -299,6 +299,15 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
     NS_SWIFT_NAME(clearMetadata(section:));
 
+// =============================================================================
+// MARK: - User
+// =============================================================================
+
+/**
+ * The current user
+ */
++ (BugsnagUser *_Nonnull)user;
+
 /**
  *  Set user metadata
  *
@@ -307,8 +316,8 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *  @param email  Email address of the user
  */
 + (void)setUser:(NSString *_Nullable)userId
-       withName:(NSString *_Nullable)name
-       andEmail:(NSString *_Nullable)email;
+       withEmail:(NSString *_Nullable)email
+       andName:(NSString *_Nullable)name;
 
 // =============================================================================
 // MARK: - onSend

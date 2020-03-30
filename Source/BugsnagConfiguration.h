@@ -110,11 +110,6 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
 @property(readwrite, strong, nonnull) NSURLSession *session;
 
 /**
- * The current user
- */
-@property(retain, nullable) BugsnagUser *currentUser;
-
-/**
  *  Optional handler invoked when an error or crash occurs
  */
 @property void (*_Nullable onCrashHandler)
@@ -138,7 +133,7 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
 @property BSGEnabledBreadcrumbType enabledBreadcrumbTypes;
 
 @property(retain, nullable) NSString *codeBundleId;
-@property(retain, nullable) NSString *notifierType;
+@property(retain, nullable) NSString *appType;
 
 /**
  * The maximum number of breadcrumbs to keep and sent to Bugsnag.
@@ -194,6 +189,15 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
 - (void)setEndpointsForNotify:(NSString *_Nonnull)notify
                      sessions:(NSString *_Nonnull)sessions NS_SWIFT_NAME(setEndpoints(notify:sessions:));
 
+// =============================================================================
+// MARK: - User
+// =============================================================================
+
+/**
+ * The current user
+ */
+@property(readonly, retain, nonnull) BugsnagUser *user;
+
 /**
  *  Set user metadata
  *
@@ -202,8 +206,8 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
  *  @param email  Email address of the user
  */
 - (void)setUser:(NSString *_Nullable)userId
-       withName:(NSString *_Nullable)name
-       andEmail:(NSString *_Nullable)email;
+      withEmail:(NSString *_Nullable)email
+        andName:(NSString *_Nullable)name;
 
 // =============================================================================
 // MARK: - onSession

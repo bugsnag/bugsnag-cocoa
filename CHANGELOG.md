@@ -11,6 +11,15 @@ Bugsnag Notifiers on other platforms.
 * Remove unused APIs from `BugsnagSession` interface
 [#506](https://github.com/bugsnag/bugsnag-cocoa/pull/506)
 
+* Rename setUser/user interface on `Bugsnag` and `BugsnagConfiguration`
+[#505](https://github.com/bugsnag/bugsnag-cocoa/pull/505)
+
+* Rename `config.notifierType` to `config.appType`
+[#504](https://github.com/bugsnag/bugsnag-cocoa/pull/504)
+
+* Remove unused APIs on `BugsnagEvent` interface
+  [#498](https://github.com/bugsnag/bugsnag-cocoa/pull/498)
+
 * Remove unused APIs from `BugsnagMetadata` interface
 [#501](https://github.com/bugsnag/bugsnag-cocoa/pull/501)
 
@@ -164,6 +173,10 @@ Bugsnag Notifiers on other platforms.
 * Added `addOnSendBlock:`, `removeOnSendBlock:` and `clearOnSendBlocks` methods to `Bugsnag` 
   and `BugsnagConfiguration`.
   (#485)[https://github.com/bugsnag/bugsnag-cocoa/pull/485]
+  
+* Enhanced device orientation change breadcrumbs.  These are now reported with "from" and "to" values
+  in a form consistent with the Android notifier.
+  (#486)[https://github.com/bugsnag/bugsnag-cocoa/pull/486]
 
 ## Bug fixes
 

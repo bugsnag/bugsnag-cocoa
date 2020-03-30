@@ -13,6 +13,13 @@
 @property BugsnagEvent *report;
 @end
 
+@interface BugsnagEvent ()
+- (NSDictionary *_Nonnull)toJson;
+- (BOOL)shouldBeSent;
+@property(readwrite, copy, nullable) NSArray *notifyReleaseStages;
+@property(readwrite) NSUInteger depth;
+@end
+
 @implementation BugsnagEventFromKSCrashReportTest
 
 - (void)setUp {

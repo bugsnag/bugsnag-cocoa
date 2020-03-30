@@ -51,7 +51,7 @@
 }
 
 - (void)testStartNewSessionWithUser {
-    [self.configuration setUser:@"123" withName:@"Bill" andEmail:nil];
+    [self.configuration setUser:@"123" withEmail:nil andName:@"Bill"];
     XCTAssertNil(self.sessionTracker.runningSession);
     [self.sessionTracker startNewSession];
     BugsnagSession *session = self.sessionTracker.runningSession;
@@ -80,7 +80,7 @@
 }
 
 - (void)testStartNewAutoCapturedSessionWithUser {
-    [self.configuration setUser:@"123" withName:@"Bill" andEmail:@"bill@example.com"];
+    [self.configuration setUser:@"123" withEmail:@"bill@example.com" andName:@"Bill"];
     XCTAssertNil(self.sessionTracker.runningSession);
     [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
     BugsnagSession *session = self.sessionTracker.runningSession;

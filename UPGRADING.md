@@ -59,6 +59,12 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 - config.reportOOMs
 + config.enabledErrorTypes
+
+- config.currentUser
++ config.user
+
+- config.notifierType
++ config.appType
 ```
 
 #### Removals
@@ -109,7 +115,7 @@ Bugsnag.getMetadata("section" key:"key")
 ObjC:
 
 - [Bugsnag configuration]
-+ [Bugsnag setUser:withName:andEmail:]
++ [Bugsnag setUser:withEmail:andName:]
 
 - [Bugsnag addAttribute:WithValuetoTabWithName:]
 + [Bugsnag addMetadataToSection:key:value:]
@@ -129,7 +135,7 @@ ObjC:
 Swift:
 
 - Bugsnag.configuration()
-+ Bugsnag.setUser(_:name:email:)
++ Bugsnag.setUser(_:email:name:)
 
 - Bugsnag.addAttribute(attributeName:withValue:toTabWithName:)
 + Bugsnag.addMetadata(_:key:value:)
@@ -205,6 +211,22 @@ of the removed `addAttribute`:
 - BugsnagCrashReport.addAttribute(_:withValue:toTabWithName:)
 + BugsnagEvent.addMetadata(sectionName:key:value:)
 ```
+
+#### Removals
+
+```diff
+- BSGParseSeverity
+- BSGFormatSeverity
+- [event serializableValueWithTopLevelData:]
+- [event shouldBeSent:]
+- [event toJson:]
+- [event enhancedErrorMessageForThread:]
+- event.notifyReleaseStages
+- event.handledState
+- event.overrides
+- event.depth
+- event.error
+- event.isIncomplete
 
 ### `BugsnagSession` class
 
