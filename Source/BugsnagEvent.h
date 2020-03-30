@@ -197,4 +197,10 @@ initWithErrorName:(NSString *_Nonnull)name
  */
 @property(readwrite, copy, nullable) NSDictionary *appState;
 
+/**
+ * Whether the event was a crash (i.e. unhandled) or handled error in which the system
+ * continued running.
+ */
+@property(readonly) BOOL unhandled;
+
 @end
