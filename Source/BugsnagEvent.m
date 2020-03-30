@@ -431,80 +431,6 @@ initWithErrorName:(NSString *_Nonnull)name
     }
 }
 
-- (void)addMetadata:(NSDictionary *_Nonnull)metadata
-     toSection:(NSString *_Nonnull)sectionName
-{
-    @synchronized (self) {
-        NSDictionary *cleanedData = BSGSanitizeDict(metadata);
-        if ([cleanedData count] == 0) {
-            bsg_log_err(@"Failed to add metadata: Values not convertible to JSON");
-            return;
-        }
-        NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
-        NSMutableDictionary *allTabData =
-            allMetadata[sectionName] ?: [NSMutableDictionary new];
-        allMetadata[sectionName] = [cleanedData BSG_mergedInto:allTabData];
-        self.metadata = allMetadata;
-    }
-}
-
-- (void)addMetadata:(id _Nullable)value
-            withKey:(NSString *_Nonnull)key
-          toSection:(NSString *_Nonnull)sectionName
-{
-    @synchronized (self) {
-        NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
-        NSMutableDictionary *allTabData =
-            [allMetadata[sectionName] mutableCopy] ?: [NSMutableDictionary new];
-        if (value) {
-            id cleanedValue = BSGSanitizeObject(value);
-            if (!cleanedValue) {
-                bsg_log_err(@"Failed to add metadata: Value of type %@ is not "
-                            @"convertible to JSON",
-                            [value class]);
-                return;
-            }
-            allTabData[key] = cleanedValue;
-        } else {
-            [allTabData removeObjectForKey:key];
-        }
-        allMetadata[sectionName] = allTabData;
-        self.metadata = allMetadata;
-    }
-}
-
-- (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
-                             withKey:(NSString *_Nullable)key
-{
-    @synchronized (self) {
-        return [[[self metadata] objectForKey:sectionName] objectForKey:key];
-    }
-}
-
-- (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
-{
-    @synchronized (self) {
-        return [[self metadata] objectForKey:sectionName];
-    }
-}
-
-- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
-{
-    @synchronized (self) {
-        NSMutableDictionary *copy = [[self metadata] mutableCopy];
-        [copy removeObjectForKey:sectionName];
-        _metadata = copy;
-    }
-}
-
-- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
-                       withKey:(NSString *_Nonnull)key
-{
-    @synchronized (self) {
-        [[[self metadata] objectForKey:sectionName] removeObjectForKey:key];
-    }
-}
-
 // MARK: - apiKey
 
 @synthesize apiKey = _apiKey;
@@ -858,4 +784,84 @@ initWithErrorName:(NSString *_Nonnull)name
     }
     return self;
 }
+@end
+
+// MARK: - <BugsnagMetadataStore>
+
+@implementation BugsnagEvent (MetadataStore)
+
+- (void)addMetadata:(NSDictionary *_Nonnull)metadata
+          toSection:(NSString *_Nonnull)sectionName
+{
+    @synchronized (self) {
+        NSDictionary *cleanedData = BSGSanitizeDict(metadata);
+        if ([cleanedData count] == 0) {
+            bsg_log_err(@"Failed to add metadata: Values not convertible to JSON");
+            return;
+        }
+        NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
+        NSMutableDictionary *allTabData =
+            allMetadata[sectionName] ?: [NSMutableDictionary new];
+        allMetadata[sectionName] = [cleanedData BSG_mergedInto:allTabData];
+        self.metadata = allMetadata;
+    }
+}
+
+- (void)addMetadata:(id _Nullable)value
+            withKey:(NSString *_Nonnull)key
+          toSection:(NSString *_Nonnull)sectionName
+{
+    @synchronized (self) {
+        NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
+        NSMutableDictionary *allTabData =
+            [allMetadata[sectionName] mutableCopy] ?: [NSMutableDictionary new];
+        if (value) {
+            id cleanedValue = BSGSanitizeObject(value);
+            if (!cleanedValue) {
+                bsg_log_err(@"Failed to add metadata: Value of type %@ is not "
+                            @"convertible to JSON",
+                            [value class]);
+                return;
+            }
+            allTabData[key] = cleanedValue;
+        } else {
+            [allTabData removeObjectForKey:key];
+        }
+        allMetadata[sectionName] = allTabData;
+        self.metadata = allMetadata;
+    }
+}
+
+- (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+                               withKey:(NSString *_Nullable)key
+{
+    @synchronized (self) {
+        return [[[self metadata] objectForKey:sectionName] objectForKey:key];
+    }
+}
+
+- (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+{
+    @synchronized (self) {
+        return [[self metadata] objectForKey:sectionName];
+    }
+}
+
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
+{
+    @synchronized (self) {
+        NSMutableDictionary *copy = [[self metadata] mutableCopy];
+        [copy removeObjectForKey:sectionName];
+        _metadata = copy;
+    }
+}
+
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
+                       withKey:(NSString *_Nonnull)key
+{
+    @synchronized (self) {
+        [[[self metadata] objectForKey:sectionName] removeObjectForKey:key];
+    }
+}
+
 @end
