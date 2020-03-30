@@ -784,6 +784,10 @@ initWithErrorName:(NSString *_Nonnull)name
     BSGArrayAddSafeObject(bugsnagThreads, threadDict);
 }
 
+- (BOOL)unhandled {
+    return self.handledState.unhandled;
+}
+
 @end
 
 @implementation RegisterErrorData

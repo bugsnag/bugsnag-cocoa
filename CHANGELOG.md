@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Add unhandled property to `BugsnagEvent`
+[#512](https://github.com/bugsnag/bugsnag-cocoa/pull/512)
+
 * Rename `notifyReleaseStages` to `enabledReleaseStages`
   [#509](https://github.com/bugsnag/bugsnag-cocoa/pull/509)
 

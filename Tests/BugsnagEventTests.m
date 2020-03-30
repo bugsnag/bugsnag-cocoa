@@ -683,4 +683,26 @@
     XCTAssertEqual([((NSDictionary *)[[event metadata] objectForKey:@"section1"]) count], 1);
     XCTAssertEqual([((NSDictionary *)[[event metadata] objectForKey:@"section2"]) count], 1);
 }
+
+- (void)testUnhandled {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
+                                                     errorMessage:@"it was so bad"
+                                                    configuration:config
+                                                         metadata:@{}
+                                                     handledState:state
+                                                          session:nil];
+    XCTAssertFalse(event.unhandled);
+
+    state = [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
+    event = [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
+                                                     errorMessage:@"it was so bad"
+                                                    configuration:config
+                                                         metadata:@{}
+                                                     handledState:state
+                                                          session:nil];
+    XCTAssertTrue(event.unhandled);
+}
+
 @end

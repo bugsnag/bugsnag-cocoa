@@ -208,6 +208,12 @@ The short "name" value has been removed and replaced with an arbitrarily long "m
 
 This is now BugsnagEvent.
 
+#### Additions
+
+```diff
++ event.unhandled
+```
+
 #### Renames
 
 To add metadata to an individual report in a callback, use `addMetadata` instead
