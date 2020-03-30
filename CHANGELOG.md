@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Enforce that `config.maxBreadcrumbs` must be between 0-100
+[#511](https://github.com/bugsnag/bugsnag-cocoa/pull/511)
+
 * Remove unused APIs from `BugsnagSession` interface
 [#506](https://github.com/bugsnag/bugsnag-cocoa/pull/506)
 
