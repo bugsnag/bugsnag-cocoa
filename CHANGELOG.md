@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Make `BugsnagClient` a public interface
+[#517](https://github.com/bugsnag/bugsnag-cocoa/pull/517)
+
 * Remove unused APIs from `Bugsnag` interface
 [#514](https://github.com/bugsnag/bugsnag-cocoa/pull/514)
 

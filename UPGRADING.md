@@ -122,6 +122,8 @@ Bugsnag.getMetadata("section" key:"key")
 [Bugsnag getMetadata:@"section" key:@"key"];
 ```
 
+`startBugsnagWithApiKey` and `startBugsnagWithConfiguration` now return a `BugsnagClient`.
+
 #### Renames
 
 ```diff
