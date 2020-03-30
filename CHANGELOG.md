@@ -188,6 +188,9 @@ Bugsnag Notifiers on other platforms.
   `locale`) that were missing from the OOM reports.
   [#444](https://github.com/bugsnag/bugsnag-cocoa/pull/444)
 
+* Increased the detail in handled event breadcrumbs
+  [#493](https://github.com/bugsnag/bugsnag-cocoa/pull/493)
+  
 ## 5.23.0 (2019-12-10)
 
 This release removes support for reporting 'partial' or 'minimal' crash reports

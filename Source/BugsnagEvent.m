@@ -627,7 +627,6 @@ initWithErrorName:(NSString *_Nonnull)name
         }
         _overrides = metadata;
     }
-    
 }
 
 - (NSDictionary *)toJson {

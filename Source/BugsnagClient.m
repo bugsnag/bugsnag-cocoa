@@ -275,6 +275,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @interface BugsnagEvent ()
 @property(readonly, copy, nonnull) NSDictionary *overrides;
 @property(readwrite) NSUInteger depth;
+@property(readonly, nonnull) BugsnagHandledState *handledState;
 @end
 
 @interface BugsnagMetadata ()
@@ -636,6 +637,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     }];
 }
 
+// MARK: - Notify
+
 - (void)notifyError:(NSError *)error
               block:(void (^)(BugsnagEvent *))block {
     BugsnagHandledState *state =
@@ -744,16 +747,18 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         [self.sessionTracker handleHandledErrorEvent];
     }
 
-    BugsnagEvent *report = [[BugsnagEvent alloc]
+    BugsnagEvent *event = [[BugsnagEvent alloc]
         initWithErrorName:exceptionName
              errorMessage:message
             configuration:self.configuration
                  metadata:[self.configuration.metadata toDictionary]
              handledState:handledState
                   session:self.sessionTracker.runningSession];
+    
     if (block) {
-        block(report);
+        block(event);
     }
+    
     //    We discard 5 stack frames (including this one) by default,
     //    and sum that with the number specified by report.depth:
     //
@@ -764,28 +769,36 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     //    3 -[BugsnagCrashSentry reportUserException:reason:]
     //    4 -[BugsnagClient notify:message:block:]
 
-    int depth = (int)(BSGNotifierStackFrameCount + report.depth);
+    int depth = (int)(BSGNotifierStackFrameCount + event.depth);
 
-    NSString *reportName =
-        report.errorClass ?: NSStringFromClass([NSException class]);
-    NSString *reportMessage = report.errorMessage ?: @"";
+    NSString *eventErrorClass = event.errorClass ?: NSStringFromClass([NSException class]);
+    NSString *eventMessage = event.errorMessage ?: @"";
 
-    [self.crashSentry reportUserException:reportName
-                                   reason:reportMessage
+    [self.crashSentry reportUserException:eventErrorClass
+                                   reason:eventMessage
                         originalException:exception
                              handledState:[handledState toJson]
                                  appState:[self.state toDictionary]
-                        callbackOverrides:report.overrides
-                                 metadata:[report.metadata copy]
+                        callbackOverrides:event.overrides
+                                 metadata:[event.metadata copy]
                                    config:[self.configuration.config toDictionary]
                              discardDepth:depth];
-
+    
+    // A basic set of event metadata
+    NSMutableDictionary *metadata = [@{
+        BSGKeyErrorClass : eventErrorClass,
+        BSGKeyUnhandled : [[event handledState] unhandled] ? @YES : @NO,
+        BSGKeySeverity : BSGFormatSeverity(event.severity)
+    } mutableCopy];
+    
+    // Only include the eventMessage if it contains something
+    if (eventMessage && [eventMessage length] > 0) {
+        [metadata setValue:eventMessage forKey:BSGKeyName];
+    }
+    
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeError
-                      withMessage:reportName
-                      andMetadata:@{
-                          BSGKeyMessage : reportMessage,
-                          BSGKeySeverity : BSGFormatSeverity(report.severity)
-                      }];
+                      withMessage:eventErrorClass
+                      andMetadata:metadata];
 
     [self flushPendingReports];
 }

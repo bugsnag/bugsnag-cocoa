@@ -19,10 +19,10 @@ BSGSeverity BSGParseSeverity(NSString *severity) {
 
 NSString *BSGFormatSeverity(BSGSeverity severity) {
     switch (severity) {
-    case BSGSeverityInfo:
-        return BSGKeyInfo;
     case BSGSeverityError:
         return BSGKeyError;
+    case BSGSeverityInfo:
+        return BSGKeyInfo;
     case BSGSeverityWarning:
         return BSGKeyWarning;
     }
