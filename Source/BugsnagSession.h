@@ -25,26 +25,8 @@
                        handledCount:(NSUInteger)handledCount
                      unhandledCount:(NSUInteger)unhandledCount;
 
-/**
- * Representation used in report payloads
- */
-- (NSDictionary *_Nonnull)toJson;
-
-/**
- * Full representation of a session suitable for creating an identical session
- * using initWithDictionary
- */
-- (NSDictionary *_Nonnull)toDictionary;
-- (void)stop;
-- (void)resume;
-
 @property(readonly) NSString *_Nonnull sessionId;
 @property(readonly) NSDate *_Nonnull startedAt;
 @property(readonly) BugsnagUser *_Nullable user;
-@property(readonly) BOOL autoCaptured;
-@property(readonly, getter=isStopped) BOOL stopped;
-
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
 
 @end

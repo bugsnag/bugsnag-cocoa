@@ -12,6 +12,10 @@
 #import "BugsnagLogger.h"
 #import "Private.h"
 
+@interface BugsnagConfiguration ()
+@property(nonatomic) NSMutableArray *onBreadcrumbBlocks;
+@end
+
 @interface BugsnagBreadcrumb ()
 + (instancetype _Nullable)breadcrumbWithBlock:
     (BSGBreadcrumbConfiguration _Nonnull)block;
@@ -58,7 +62,8 @@ NSUInteger BreadcrumbsDefaultCapacity = 25;
         return;
     }
     BugsnagBreadcrumb *crumb = [BugsnagBreadcrumb breadcrumbWithBlock:block];
-    if (crumb) {
+
+    if (crumb != nil && [self shouldSendBreadcrumb:crumb]) {
         [self resizeToFitCapacity:self.capacity - 1];
         dispatch_barrier_sync(self.readWriteQueue, ^{
             [self.breadcrumbs addObject:crumb];
@@ -80,6 +85,20 @@ NSUInteger BreadcrumbsDefaultCapacity = 25;
             }
         });
     }
+}
+
+- (BOOL)shouldSendBreadcrumb:(BugsnagBreadcrumb *)crumb {
+    BugsnagConfiguration *configuration = [Bugsnag configuration];
+    for (BugsnagOnBreadcrumbBlock block in configuration.onBreadcrumbBlocks) {
+        @try {
+            if (!block(crumb)) {
+                return NO;
+            }
+        } @catch (NSException *exception) {
+            bsg_log_err(@"Error from onBreadcrumb callback: %@", exception);
+        }
+    }
+    return YES;
 }
 
 - (NSArray *)cachedBreadcrumbs {

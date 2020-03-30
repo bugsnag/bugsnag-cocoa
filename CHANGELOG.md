@@ -11,6 +11,9 @@ Bugsnag Notifiers on other platforms.
 * Rename `notifyReleaseStages` to `enabledReleaseStages`
   [#509](https://github.com/bugsnag/bugsnag-cocoa/pull/509)
 
+* Remove unused APIs from `BugsnagSession` interface
+[#506](https://github.com/bugsnag/bugsnag-cocoa/pull/506)
+
 * Rename setUser/user interface on `Bugsnag` and `BugsnagConfiguration`
 [#505](https://github.com/bugsnag/bugsnag-cocoa/pull/505)
 
@@ -19,6 +22,9 @@ Bugsnag Notifiers on other platforms.
 
 * Remove unused APIs on `BugsnagEvent` interface
   [#498](https://github.com/bugsnag/bugsnag-cocoa/pull/498)
+
+* Allow addition/removal of `OnBreadcrumb` callbacks
+[#508](https://github.com/bugsnag/bugsnag-cocoa/pull/508)
 
 * Remove unused APIs from `BugsnagMetadata` interface
 [#501](https://github.com/bugsnag/bugsnag-cocoa/pull/501)
@@ -173,6 +179,10 @@ Bugsnag Notifiers on other platforms.
 * Added `addOnSendBlock:`, `removeOnSendBlock:` and `clearOnSendBlocks` methods to `Bugsnag` 
   and `BugsnagConfiguration`.
   (#485)[https://github.com/bugsnag/bugsnag-cocoa/pull/485]
+  
+* Enhanced device orientation change breadcrumbs.  These are now reported with "from" and "to" values
+  in a form consistent with the Android notifier.
+  (#486)[https://github.com/bugsnag/bugsnag-cocoa/pull/486]
 
 ## Bug fixes
 
@@ -184,6 +194,9 @@ Bugsnag Notifiers on other platforms.
   `locale`) that were missing from the OOM reports.
   [#444](https://github.com/bugsnag/bugsnag-cocoa/pull/444)
 
+* Increased the detail in handled event breadcrumbs
+  [#493](https://github.com/bugsnag/bugsnag-cocoa/pull/493)
+  
 ## 5.23.0 (2019-12-10)
 
 This release removes support for reporting 'partial' or 'minimal' crash reports

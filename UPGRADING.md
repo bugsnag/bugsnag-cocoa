@@ -33,6 +33,9 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 + config.persistUserData()
 + config.deletePersistedUserData()
+
++ config.add(onBreadcrumb:)
++ config.remove(onBreadcrumb:)
 ```
 
 #### Renames
@@ -230,4 +233,18 @@ of the removed `addAttribute`:
 - event.depth
 - event.error
 - event.isIncomplete
+
+### `BugsnagSession` class
+
+#### Removals
+
+```diff
+- toJson
+- toDictionary
+- stop
+- resume
+- autoCaptured
+- handledCount
+- unhandledCount
+- stopped
 ```

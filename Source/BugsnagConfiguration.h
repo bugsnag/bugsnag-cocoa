@@ -61,6 +61,13 @@ typedef void (^BugsnagOnErrorBlock)(BugsnagEvent *_Nonnull event);
 typedef bool (^BugsnagOnSendBlock)(BugsnagEvent *_Nonnull event);
 
 /**
+ *  A configuration block for modifying a captured breadcrumb
+ *
+ *  @param breadcrumb The breadcrumb
+ */
+typedef BOOL (^BugsnagOnBreadcrumbBlock)(BugsnagBreadcrumb *_Nonnull breadcrumb);
+
+/**
  * A configuration block for modifying a session. Intended for internal usage only.
  *
  * @param sessionPayload The session about to be delivered
@@ -247,6 +254,25 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
 - (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull )block;
 
 - (void)addPlugin:(id<BugsnagPlugin> _Nonnull)plugin;
+
+// =============================================================================
+// MARK: - onBreadcrumb
+// =============================================================================
+
+/**
+ *  Add a callback to be invoked when a breadcrumb is captured by Bugsnag, to
+ *  change the breadcrumb contents as needed
+ *
+ *  @param block A block which returns YES if the breadcrumb should be captured
+ */
+- (void)addOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block;
+
+/**
+ * Remove the callback that would be invoked when a breadcrumb is captured.
+ *
+ * @param block The block to be removed.
+ */
+- (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block;
 
 /**
  * Should the specified type of breadcrumb be recorded?
