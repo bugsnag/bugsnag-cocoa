@@ -15,6 +15,10 @@
 #import "BugsnagKSCrashSysInfoParser.h"
 #import "Private.h"
 
+@interface BugsnagSession ()
+- (NSDictionary *)toJson;
+@end
+
 @interface Bugsnag ()
 + (BugsnagClient *)client;
 @end

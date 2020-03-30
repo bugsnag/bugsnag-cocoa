@@ -8,6 +8,10 @@
 
 static NSString *const kSessionStoreSuffix = @"-Session-";
 
+@interface BugsnagSession ()
+- (NSDictionary *)toJson;
+@end
+
 @implementation BugsnagSessionFileStore
 
 + (BugsnagSessionFileStore *)storeWithPath:(NSString *)path {

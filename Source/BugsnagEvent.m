@@ -220,6 +220,11 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 @property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 @end
 
+@interface BugsnagSession ()
+@property NSUInteger unhandledCount;
+@property NSUInteger handledCount;
+@end
+
 @interface BugsnagEvent ()
 
 /**

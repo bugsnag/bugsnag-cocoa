@@ -85,6 +85,11 @@ static NSUInteger handledCount;
 static NSUInteger unhandledCount;
 static bool hasRecordedSessions;
 
+@interface BugsnagSession ()
+@property NSUInteger unhandledCount;
+@property NSUInteger handledCount;
+@end
+
 /**
  *  Handler executed when the application crashes. Writes information about the
  *  current application state using the crash report writer.

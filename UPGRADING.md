@@ -227,4 +227,18 @@ of the removed `addAttribute`:
 - event.depth
 - event.error
 - event.isIncomplete
+
+### `BugsnagSession` class
+
+#### Removals
+
+```diff
+- toJson
+- toDictionary
+- stop
+- resume
+- autoCaptured
+- handledCount
+- unhandledCount
+- stopped
 ```

@@ -11,6 +11,13 @@
 #import "BugsnagSession.h"
 #import "BSG_RFC3339DateTool.h"
 
+@interface BugsnagSession ()
+@property NSUInteger unhandledCount;
+@property NSUInteger handledCount;
+- (NSDictionary *_Nonnull)toJson;
+- (NSDictionary *_Nonnull)toDictionary;
+@end
+
 @interface BugsnagSessionTest : XCTestCase
 @end
 

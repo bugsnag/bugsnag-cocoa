@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Remove unused APIs from `BugsnagSession` interface
+[#506](https://github.com/bugsnag/bugsnag-cocoa/pull/506)
+
 * Rename setUser/user interface on `Bugsnag` and `BugsnagConfiguration`
 [#505](https://github.com/bugsnag/bugsnag-cocoa/pull/505)
 
