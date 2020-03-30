@@ -58,29 +58,29 @@
     }
 }
 
-- (NSMutableDictionary *)getMetadata:(NSString *)sectionName {
+- (NSMutableDictionary *)getMetadataFromSection:(NSString *)sectionName {
     @synchronized(self) {
         return self.dictionary[sectionName];
     }
 }
 
-- (NSMutableDictionary *)getMetadata:(NSString *)sectionName
-                                 key:(NSString *)key
+- (NSMutableDictionary *)getMetadataFromSection:(NSString *)sectionName
+                                        withKey:(NSString *)key
 {
     @synchronized(self) {
         return [self.dictionary valueForKeyPath:[NSString stringWithFormat:@"%@.%@", sectionName, key]];
     }
 }
 
-- (void)clearMetadataInSection:(NSString *)sectionName {
+- (void)clearMetadataFromSection:(NSString *)sectionName {
     @synchronized(self) {
         [self.dictionary removeObjectForKey:sectionName];
     }
     [self.delegate metadataChanged:self];
 }
 
-- (void)clearMetadataInSection:(NSString *)section
-                           key:(NSString *)key
+- (void)clearMetadataFromSection:(NSString *)section
+                         withKey:(NSString *)key
 {
     @synchronized(self) {
         if ([[[self dictionary] objectForKey:section] objectForKey:key]) {
@@ -99,25 +99,25 @@
 /**
  * Add a single key/value to a metadata Tab/Section.
  */
-- (void)addAttribute:(NSString *)attributeName
-           withValue:(id)value
-       toTabWithName:(NSString *)tabName {
-    
+- (void)addMetadata:(id)metadata
+            withKey:(NSString *)key
+          toSection:(NSString *)sectionName
+{
     bool metadataChanged = false;
     @synchronized(self) {
-        if (value && value != [NSNull null]) {
-            id cleanedValue = BSGSanitizeObject(value);
+        if (metadata && metadata != [NSNull null]) {
+            id cleanedValue = BSGSanitizeObject(metadata);
             if (cleanedValue) {
                 // Value is OK, try and set it
-                NSMutableDictionary *section = [self getMetadata:tabName];
+                NSMutableDictionary *section = [self getMetadataFromSection:sectionName];
                 if (!section) {
                     section = [NSMutableDictionary new];
-                    [[self dictionary] setObject:section forKey:tabName];
+                    [[self dictionary] setObject:section forKey:sectionName];
                 }
-                section[attributeName] = cleanedValue;
+                section[key] = cleanedValue;
                 metadataChanged = true;
             } else {
-                Class klass = [value class];
+                Class klass = [metadata class];
                 bsg_log_err(@"Failed to add metadata: Value of class %@ is not "
                             @"JSON serializable",
                             klass);
@@ -126,7 +126,7 @@
         
         // It's some form of nil/null
         else {
-            [[self getMetadata:tabName] removeObjectForKey:attributeName];
+            [[self getMetadataFromSection:sectionName] removeObjectForKey:key];
             metadataChanged = true;
         }
     }
@@ -140,8 +140,8 @@
 /**
  * Merge supplied and existing metadata.
  */
-- (void)addMetadataToSection:(NSString *)section
-                      values:(NSDictionary *)values
+- (void)addMetadata:(NSDictionary *)values
+          toSection:(NSString *)section
 {
     @synchronized(self) {
         if (values) {
@@ -158,7 +158,7 @@
                         id cleanedValue = BSGSanitizeObject(value);
                         if (cleanedValue) {
                             // We only want to create a tab if we have a valid value.
-                            NSMutableDictionary *metadata = [self getMetadata:section];
+                            NSMutableDictionary *metadata = [self getMetadataFromSection:section];
                             if (!metadata) {
                                 metadata = [NSMutableDictionary new];
                                 [[self dictionary] setObject:metadata forKey:section];

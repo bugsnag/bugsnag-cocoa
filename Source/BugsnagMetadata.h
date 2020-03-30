@@ -30,48 +30,7 @@
 
 - (instancetype _Nonnull)initWithDictionary:(NSMutableDictionary *_Nonnull)dict;
 
-/**
- * Get a named metadata section
- *
- * @param sectionName The name of the section
- * @returns The mutable dictionary representing the metadata section, if it
- *          exists, or nil if not.
- */
-- (NSMutableDictionary *_Nullable)getMetadata:(NSString *_Nonnull)sectionName
-    NS_SWIFT_NAME(getMetadata(_:));
-
-/**
-* Get a keyed value from a named metadata section
-*
-* @param sectionName The name of the section
-* @param key The key
-* @returns The value if it exists, or nil if not.
-*/
-- (id _Nullable)getMetadata:(NSString *_Nonnull)sectionName
-                        key:(NSString *_Nonnull)key;
-
-/**
-* Remove a named metadata section, if it exists.
-*
-* @param sectionName The section name
-*/
-- (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
-    NS_SWIFT_NAME(clearMetadata(section:));
-
-/**
- * Remove a specific value for a specific key in a specific metadata section.
- * If either section or key do not exist no action is taken.
- *
- * @param section The section name
- * @param key the metadata key
- */
-- (void)clearMetadataInSection:(NSString *_Nonnull)section
-                           key:(NSString *_Nonnull)key
-    NS_SWIFT_NAME(clearMetadata(section:key:));
-
-- (void)addAttribute:(NSString *_Nonnull)attributeName
-           withValue:(id _Nullable)value
-       toTabWithName:(NSString *_Nonnull)sectionName;
+// MARK: - Metadata
 
 /**
  * Merge supplied and existing metadata.
@@ -91,8 +50,51 @@
  * @param values A dictionary of string -> id key/value pairs.
  *               Values should be serializable to JSON.
  */
-- (void)addMetadataToSection:(NSString *_Nonnull)section
-                      values:(NSDictionary *_Nullable)values;
+- (void)addMetadata:(NSDictionary *_Nullable)values
+          toSection:(NSString *_Nonnull)section;
+
+- (void)addMetadata:(id _Nullable)metadata
+            withKey:(NSString *_Nonnull)key
+          toSection:(NSString *_Nonnull)section;
+
+/**
+ * Get a named metadata section
+ *
+ * @param sectionName The name of the section
+ * @returns The mutable dictionary representing the metadata section, if it
+ *          exists, or nil if not.
+ */
+- (NSMutableDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+    NS_SWIFT_NAME(getMetadata(_:));
+
+/**
+* Get a keyed value from a named metadata section
+*
+* @param sectionName The name of the section
+* @param key The key
+* @returns The value if it exists, or nil if not.
+*/
+- (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+                               withKey:(NSString *_Nonnull)key;
+
+/**
+* Remove a named metadata section, if it exists.
+*
+* @param sectionName The section name
+*/
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
+    NS_SWIFT_NAME(clearMetadata(section:));
+
+/**
+ * Remove a specific value for a specific key in a specific metadata section.
+ * If either section or key do not exist no action is taken.
+ *
+ * @param section The section name
+ * @param key the metadata key
+ */
+- (void)clearMetadataFromSection:(NSString *_Nonnull)section
+                         withKey:(NSString *_Nonnull)key
+    NS_SWIFT_NAME(clearMetadata(section:key:));
 
 @end
 

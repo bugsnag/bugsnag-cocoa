@@ -151,26 +151,6 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     }
 }
 
-/**
- * Add custom data to send to Bugsnag with every exception. If value is nil,
- * delete the current value for attributeName
- */
-+ (void)addMetadataToSection:(NSString *_Nonnull)section
-                         key:(NSString *_Nonnull)key
-                       value:(id _Nullable)value {
-    if ([self bugsnagStarted]) {
-        [self.client.configuration.metadata addAttribute:key
-                                                 withValue:value
-                                             toTabWithName:section];
-    }
-}
-
-+ (void)clearMetadataInSection:(NSString *)section {
-    if ([self bugsnagStarted]) {
-        [self.client.configuration.metadata clearMetadataInSection:section];
-    }
-}
-
 + (BOOL)bugsnagStarted {
     if (!self.client.started) {
         bsg_log_err(@"Ensure you have started Bugsnag with startWithApiKey: "
@@ -259,23 +239,52 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     return formatter;
 }
 
-+ (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
-                       withKey:(NSString *_Nonnull)key
+// MARK: - Metadata
+
+/**
+ * Add custom data to send to Bugsnag with every exception. If value is nil,
+ * delete the current value for attributeName
+ *
+ * @param value The metadata to add
+ * @param key The key for the metadata
+ * @param section The top-level section to add the keyed metadata to
+ */
++ (void)addMetadata:(id _Nullable)value
+            withKey:(NSString *_Nonnull)key
+          toSection:(NSString *_Nonnull)section
 {
     if ([self bugsnagStarted]) {
-        [self.client.configuration.metadata clearMetadataInSection:sectionName
-                                                                 key:key];
+        [self.client.configuration.metadata addMetadata:value
+                                                withKey:key
+                                              toSection:section];
     }
 }
 
-+ (NSMutableDictionary *)getMetadata:(NSString *)section {
-    return [[[self configuration] metadata] getMetadata:section];
++ (NSMutableDictionary *)getMetadataFromSection:(NSString *)section
+{
+    return [[[self configuration] metadata] getMetadataFromSection:section];
 }
 
-+ (id _Nullable )getMetadata:(NSString *_Nonnull)section
-                         key:(NSString *_Nonnull)key
++ (id _Nullable )getMetadataFromSection:(NSString *_Nonnull)section
+                                withKey:(NSString *_Nonnull)key
 {
-    return [[[self configuration] metadata] getMetadata:section key:key];
+    return [[[self configuration] metadata] getMetadataFromSection:section withKey:key];
+}
+
++ (void)clearMetadataFromSection:(NSString *)section
+{
+    if ([self bugsnagStarted]) {
+        [self.client.configuration.metadata clearMetadataFromSection:section];
+    }
+}
+
++ (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
+                         withKey:(NSString *_Nonnull)key
+{
+    if ([self bugsnagStarted]) {
+        [self.client.configuration.metadata clearMetadataFromSection:sectionName
+                                                                 withKey:key];
+    }
 }
 
 + (void)setContext:(NSString *_Nullable)context {

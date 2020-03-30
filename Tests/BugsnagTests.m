@@ -52,7 +52,7 @@
 	__block XCTestExpectation *expectation = [self expectationWithDescription:@"Localized metadata changes"];
 
     [self setUpBugsnagWillCallNotify:true];
-    [Bugsnag addMetadataToSection:@"mySection1" key:@"aKey1" value:@"aValue1"];
+    [Bugsnag addMetadata:@"aValue1" withKey:@"aKey1" toSection:@"mySection1"];
     
     // We should see our added metadata in every request.  Let's try a couple:
     
@@ -66,7 +66,7 @@
         XCTAssertNil([[report metadata] valueForKey:@"mySection2"]);
         
         // Add some additional metadata once we're sure it's not already there
-        [Bugsnag addMetadataToSection:@"mySection2" key:@"aKey2" value:@"aValue2"];
+        [Bugsnag addMetadata:@"aValue2" withKey:@"aKey2" toSection:@"mySection2"];
     }];
     
     [Bugsnag notify:exception2 block:^(BugsnagEvent * _Nonnull report) {
@@ -78,8 +78,8 @@
 
     // Check nil value causes deletions
     
-    [Bugsnag addMetadataToSection:@"mySection1" key:@"aKey1" value:nil];
-    [Bugsnag addMetadataToSection:@"mySection2" key:@"aKey2" value:nil];
+    [Bugsnag addMetadata:nil withKey:@"aKey1" toSection:@"mySection1"];
+    [Bugsnag addMetadata:nil withKey:@"aKey2" toSection:@"mySection2"];
     
     [Bugsnag notify:exception1 block:^(BugsnagEvent * _Nonnull event) {
         XCTAssertNil([[[event metadata] valueForKey:@"mySection1"] valueForKey:@"aKey1"]);
@@ -87,7 +87,7 @@
     }];
     
     // Check that event-level metadata alteration doesn't affect configuration-level metadata
-    [Bugsnag addMetadataToSection:@"mySection1" key:@"aKey1" value:@"aValue1"];
+    [Bugsnag addMetadata:@"aValue1" withKey:@"aKey1" toSection:@"mySection1"];
     [Bugsnag notify:exception1 block:^(BugsnagEvent * _Nonnull event) {
         // NSDictionary returned; immutable, so let's replace it wholesale
         [event setMetadata:@{@"myNewSection" : @{@"myNewKey" : @"myNewValue"}}];
@@ -97,11 +97,11 @@
 
     [self waitForExpectationsWithTimeout:0.1 handler:^(NSError * _Nullable error) {
         // Check old values still exist
-        XCTAssertEqual([[[[Bugsnag configuration] metadata] getMetadata: @"mySection1"] valueForKey:@"aKey1"], @"aValue1");
+        XCTAssertEqual([[[[Bugsnag configuration] metadata] getMetadataFromSection: @"mySection1"] valueForKey:@"aKey1"], @"aValue1");
         
         // Check "new" values don't exist
-        XCTAssertNil([[[[Bugsnag configuration] metadata] getMetadata:@"myNewSection"] valueForKey:@"myNewKey"]);
-        XCTAssertNil([[[Bugsnag configuration] metadata] getMetadata:@"myNewSection"]);
+        XCTAssertNil([[[[Bugsnag configuration] metadata] getMetadataFromSection:@"myNewSection"] valueForKey:@"myNewKey"]);
+        XCTAssertNil([[[Bugsnag configuration] metadata] getMetadataFromSection:@"myNewSection"]);
         expectation = nil;
     }];
 }
@@ -113,15 +113,15 @@
 - (void)testGetMetadata {
     [self setUpBugsnagWillCallNotify:false];
     
-    XCTAssertNil([Bugsnag getMetadata:@"dummySection"]);
-    [Bugsnag addMetadataToSection:@"dummySection" key:@"aKey1" value:@"aValue1"];
-    NSMutableDictionary *section = [Bugsnag getMetadata:@"dummySection"];
+    XCTAssertNil([Bugsnag getMetadataFromSection:@"dummySection"]);
+    [Bugsnag addMetadata:@"aValue1" withKey:@"aKey1" toSection:@"dummySection"];
+    NSMutableDictionary *section = [Bugsnag getMetadataFromSection:@"dummySection"];
     XCTAssertNotNil(section);
     XCTAssertEqual(section[@"aKey1"], @"aValue1");
-    XCTAssertNil([Bugsnag getMetadata:@"anotherSection"]);
+    XCTAssertNil([Bugsnag getMetadataFromSection:@"anotherSection"]);
     
-    XCTAssertTrue([[Bugsnag getMetadata:@"dummySection" key:@"aKey1"] isEqualToString:@"aValue1"]);
-    XCTAssertNil([Bugsnag getMetadata:@"noSection" key:@"notaKey1"]);
+    XCTAssertTrue([[Bugsnag getMetadataFromSection:@"dummySection" withKey:@"aKey1"] isEqualToString:@"aValue1"]);
+    XCTAssertNil([Bugsnag getMetadataFromSection:@"noSection" withKey:@"notaKey1"]);
 }
 
 /**
@@ -184,37 +184,37 @@
 -(void)testClearMetadataInSectionWithKey {
     [self setUpBugsnagWillCallNotify:false];
 
-    [Bugsnag addMetadataToSection:@"section1" key:@"myKey1" value:@"myValue1"];
-    [Bugsnag addMetadataToSection:@"section1" key:@"myKey2" value:@"myValue2"];
-    [Bugsnag addMetadataToSection:@"section2" key:@"myKey3" value:@"myValue3"];
+    [Bugsnag addMetadata:@"myValue1" withKey:@"myKey1" toSection:@"section1"];
+    [Bugsnag addMetadata:@"myValue2" withKey:@"myKey2" toSection:@"section1"];
+    [Bugsnag addMetadata:@"myValue3" withKey:@"myKey3" toSection:@"section2"];
     
-    XCTAssertEqual([[Bugsnag getMetadata:@"section1"] count], 2);
-    XCTAssertEqual([[Bugsnag getMetadata:@"section2"] count], 1);
+    XCTAssertEqual([[Bugsnag getMetadataFromSection:@"section1"] count], 2);
+    XCTAssertEqual([[Bugsnag getMetadataFromSection:@"section2"] count], 1);
     
-    [Bugsnag clearMetadataInSection:@"section1" withKey:@"myKey1"];
-    XCTAssertEqual([[Bugsnag getMetadata:@"section1"] count], 1);
-    XCTAssertNil([[Bugsnag getMetadata:@"section1"] valueForKey:@"myKey1"]);
-    XCTAssertEqual([[Bugsnag getMetadata:@"section1"] valueForKey:@"myKey2"], @"myValue2");
+    [Bugsnag clearMetadataFromSection:@"section1" withKey:@"myKey1"];
+    XCTAssertEqual([[Bugsnag getMetadataFromSection:@"section1"] count], 1);
+    XCTAssertNil([[Bugsnag getMetadataFromSection:@"section1"] valueForKey:@"myKey1"]);
+    XCTAssertEqual([[Bugsnag getMetadataFromSection:@"section1"] valueForKey:@"myKey2"], @"myValue2");
 }
 
 -(void)testClearMetadataInSection {
     [self setUpBugsnagWillCallNotify:false];
 
-    [Bugsnag addMetadataToSection:@"section1" key:@"myKey1" value:@"myValue1"];
-    [Bugsnag addMetadataToSection:@"section1" key:@"myKey2" value:@"myValue2"];
-    [Bugsnag addMetadataToSection:@"section2" key:@"myKey3" value:@"myValue3"];
+    [Bugsnag addMetadata:@"myValue1" withKey:@"myKey1" toSection:@"section1"];
+    [Bugsnag addMetadata:@"myValue2" withKey:@"myKey2" toSection:@"section1"];
+    [Bugsnag addMetadata:@"myValue3" withKey:@"myKey3" toSection:@"section2"];
 
     // Existing section
-    [Bugsnag clearMetadataInSection:@"section2"];
-    XCTAssertNil([Bugsnag getMetadata:@"section2"]);
-    XCTAssertEqual([[Bugsnag getMetadata:@"section1"] valueForKey:@"myKey1"], @"myValue1");
+    [Bugsnag clearMetadataFromSection:@"section2"];
+    XCTAssertNil([Bugsnag getMetadataFromSection:@"section2"]);
+    XCTAssertEqual([[Bugsnag getMetadataFromSection:@"section1"] valueForKey:@"myKey1"], @"myValue1");
     
     // nonexistent sections
-    [Bugsnag clearMetadataInSection:@"section3"];
+    [Bugsnag clearMetadataFromSection:@"section3"];
     
     // Add it back in, but different
-    [Bugsnag addMetadataToSection:@"section2" key:@"myKey4" value:@"myValue4"];
-    XCTAssertEqual([[Bugsnag getMetadata:@"section2"] valueForKey:@"myKey4"], @"myValue4");
+    [Bugsnag addMetadata:@"myValue4" withKey:@"myKey4" toSection:@"section2"];
+    XCTAssertEqual([[Bugsnag getMetadataFromSection:@"section2"] valueForKey:@"myKey4"], @"myValue4");
 }
 
 /**

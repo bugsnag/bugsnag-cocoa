@@ -87,7 +87,7 @@ initWithErrorName:(NSString *_Nonnull)name
  * @param sectionName The name of the report section
  */
 - (void)addMetadata:(NSDictionary *_Nonnull)metadata
-     toSectionNamed:(NSString *_Nonnull)sectionName;
+          toSection:(NSString *_Nonnull)sectionName;
 
 /**
  * Add or remove a value from report metadata. If value is nil, the existing value
@@ -97,9 +97,9 @@ initWithErrorName:(NSString *_Nonnull)name
  * @param value The value to set
  * @param sectionName The name of the metadata section
  */
-- (void)addMetadataToSectionNamed:(NSString *_Nonnull)sectionName
-                              key:(NSString *_Nonnull)key
-                            value:(id _Nullable)value;
+- (void)addMetadata:(id _Nullable)value
+            withKey:(NSString *_Nonnull)key
+          toSection:(NSString *_Nonnull)sectionName;
 
 /**
  * Return a piece of metadata in a named section if it exists, or nil.
@@ -108,8 +108,8 @@ initWithErrorName:(NSString *_Nonnull)name
  * @param key The key
  * @returns An arbitrary object if it exists for the key or nil.
  */
-- (id _Nullable)getMetadataInSection:(NSString *_Nonnull)sectionName
-                             withKey:(NSString *_Nullable)key;
+- (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+                               withKey:(NSString *_Nullable)key;
 
 /**
  * Return a named metadata section if it exists, or nil.
@@ -117,14 +117,14 @@ initWithErrorName:(NSString *_Nonnull)name
  * @param sectionName The name of the metadata section
  * @returns A dictionary of metadata if the section exists, or nil.
  */
-- (NSDictionary *_Nullable)getMetadataInSection:(NSString *_Nonnull)sectionName;
+- (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName;
 
 /**
  * Remove a named metadata section, if it exists.
  *
  * @param sectionName The name of the section to remove
  */
-- (void)clearMetadataSection:(NSString *_Nonnull)sectionName;
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName;
 
 /**
  * Remove a named metadata value if the key exists in the named section.
@@ -132,7 +132,7 @@ initWithErrorName:(NSString *_Nonnull)name
  * @param sectionName The name of the section to remove
  * @param key The key to remove
  */
-- (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
                        withKey:(NSString *_Nonnull)key;
 
 // -----------------------------------------------------------------------------

@@ -432,7 +432,7 @@ initWithErrorName:(NSString *_Nonnull)name
 }
 
 - (void)addMetadata:(NSDictionary *_Nonnull)metadata
-     toSectionNamed:(NSString *_Nonnull)sectionName
+     toSection:(NSString *_Nonnull)sectionName
 {
     @synchronized (self) {
         NSDictionary *cleanedData = BSGSanitizeDict(metadata);
@@ -448,9 +448,9 @@ initWithErrorName:(NSString *_Nonnull)name
     }
 }
 
-- (void)addMetadataToSectionNamed:(NSString *_Nonnull)sectionName
-                              key:(NSString *_Nonnull)key
-                            value:(id _Nullable)value
+- (void)addMetadata:(id _Nullable)value
+            withKey:(NSString *_Nonnull)key
+          toSection:(NSString *_Nonnull)sectionName
 {
     @synchronized (self) {
         NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
@@ -473,7 +473,7 @@ initWithErrorName:(NSString *_Nonnull)name
     }
 }
 
-- (id _Nullable)getMetadataInSection:(NSString *_Nonnull)sectionName
+- (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
                              withKey:(NSString *_Nullable)key
 {
     @synchronized (self) {
@@ -481,14 +481,14 @@ initWithErrorName:(NSString *_Nonnull)name
     }
 }
 
-- (NSDictionary *_Nullable)getMetadataInSection:(NSString *_Nonnull)sectionName
+- (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
 {
     @synchronized (self) {
         return [[self metadata] objectForKey:sectionName];
     }
 }
 
-- (void)clearMetadataSection:(NSString *_Nonnull)sectionName
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
 {
     @synchronized (self) {
         NSMutableDictionary *copy = [[self metadata] mutableCopy];
@@ -497,7 +497,7 @@ initWithErrorName:(NSString *_Nonnull)name
     }
 }
 
-- (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
                        withKey:(NSString *_Nonnull)key
 {
     @synchronized (self) {

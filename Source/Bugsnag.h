@@ -120,10 +120,10 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *
  * @param section  The tab to show it on on the Bugsnag dashboard.
  */
-+ (void)addMetadataToSection:(NSString *_Nonnull)section
-                         key:(NSString *_Nonnull)key
-                       value:(id _Nullable)value
-    NS_SWIFT_NAME(addMetadata(_:key:value:));
++ (void)addMetadata:(id _Nullable)value
+            withKey:(NSString *_Nonnull)key
+          toSection:(NSString *_Nonnull)section
+    NS_SWIFT_NAME(addMetadata(_:key:section:));
 
 // =============================================================================
 // MARK: - Breadcrumbs
@@ -242,7 +242,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 * @returns The mutable dictionary representing the metaadata section, if it
 *          exists, or nil if not.
 */
-+ (NSMutableDictionary *_Nullable)getMetadata:(NSString *_Nonnull)section
++ (NSMutableDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)section
     NS_SWIFT_NAME(getMetadata(_:));
 
 /**
@@ -252,7 +252,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 * @param key The key
 * @returns The value of the keyed value if it exists or nil.
 */
-+ (id _Nullable )getMetadata:(NSString *_Nonnull)section key:(NSString *_Nonnull)key
++ (id _Nullable )getMetadataFromSection:(NSString *_Nonnull)section withKey:(NSString *_Nonnull)key
     NS_SWIFT_NAME(getMetadata(_:key:));
 
 /**
@@ -279,7 +279,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * @param sectionName The name of the section containing the value
  * @param key The key to remove
  */
-+ (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
++ (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
                        withKey:(NSString *_Nonnull)key
     NS_SWIFT_NAME(clearMetadata(section:key:));
 
@@ -296,7 +296,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *
  * @param sectionName        The section to clear.
  */
-+ (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
++ (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
     NS_SWIFT_NAME(clearMetadata(section:));
 
 // =============================================================================
