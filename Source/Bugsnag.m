@@ -323,6 +323,19 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     [[self configuration] removeOnSendBlock:block];
 }
 
+// =============================================================================
+// MARK: - OnBreadcrumb
+// =============================================================================
+
++ (void)addOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block {
+    [[self configuration] addOnBreadcrumbBlock:block];
+}
+
+
++ (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block {
+    [[self configuration] removeOnBreadcrumbBlock:block];
+}
+
 @end
 
 //

@@ -16,7 +16,7 @@
 @interface BugsnagEvent ()
 - (NSDictionary *_Nonnull)toJson;
 - (BOOL)shouldBeSent;
-@property(readwrite, copy, nullable) NSArray *notifyReleaseStages;
+@property(readwrite, copy, nullable) NSArray *enabledReleaseStages;
 @property(readwrite) NSUInteger depth;
 @end
 
@@ -49,12 +49,12 @@
     XCTAssertEqualObjects(self.report.releaseStage, @"production");
 }
 
-- (void)testReadNotifyReleaseStages {
-    XCTAssertEqualObjects(self.report.notifyReleaseStages,
+- (void)testReadEnabledReleaseStages {
+    XCTAssertEqualObjects(self.report.enabledReleaseStages,
                           (@[ @"production", @"development" ]));
 }
 
-- (void)testReadNotifyReleaseStagesSends {
+- (void)testReadEnabledReleaseStagesSends {
     XCTAssertTrue([self.report shouldBeSent]);
 }
 
