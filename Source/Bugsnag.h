@@ -264,8 +264,6 @@
                        withKey:(NSString *_Nonnull)key
     NS_SWIFT_NAME(clearMetadata(section:key:));
 
-+ (NSDateFormatter *_Nonnull)payloadDateFormatter;
-
 /**
  * Replicates BugsnagConfiguration.context
  *

@@ -283,6 +283,10 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
 @end
 
+@interface Bugsnag ()
++ (NSDateFormatter *_Nonnull)payloadDateFormatter;
+@end
+
 @implementation BugsnagClient
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
