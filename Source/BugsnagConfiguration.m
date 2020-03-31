@@ -34,6 +34,8 @@
 #import "BugsnagLogger.h"
 #import "BSG_SSKeychain.h"
 #import "BugsnagBreadcrumbs.h"
+#import "BugsnagMetadataStore.h"
+#import "BSGSerialization.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -87,6 +89,25 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  *  Rolling snapshots of user actions leading up to a crash report
  */
 @property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
+@end
+
+@interface BugsnagMetadata ()
+- (void)addMetadata:(NSDictionary *_Nonnull)metadata
+          toSection:(NSString *_Nonnull)sectionName;
+
+- (void)addMetadata:(id _Nullable)value
+            withKey:(NSString *_Nonnull)key
+          toSection:(NSString *_Nonnull)sectionName;
+
+- (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName;
+
+- (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+                               withKey:(NSString *_Nullable)key;
+
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName;
+
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
+                         withKey:(NSString *_Nonnull)key;
 @end
 
 @implementation BugsnagConfiguration
@@ -568,6 +589,43 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 - (void)addPlugin:(id<BugsnagPlugin> _Nonnull)plugin {
     [_plugins addObject:plugin];
+}
+
+// MARK: - <MetadataStore>
+
+- (void)addMetadata:(NSDictionary *_Nonnull)metadata
+          toSection:(NSString *_Nonnull)sectionName
+{
+    [self.metadata addMetadata:metadata toSection:sectionName];
+}
+
+- (void)addMetadata:(id _Nullable)value
+            withKey:(NSString *_Nonnull)key
+          toSection:(NSString *_Nonnull)sectionName
+{
+    [self.metadata addMetadata:value withKey:key toSection:sectionName];
+}
+
+- (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+                               withKey:(NSString *_Nullable)key
+{
+    return [self.metadata getMetadataFromSection:sectionName withKey:key];
+}
+
+- (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+{
+    return [self.metadata getMetadataFromSection:sectionName];
+}
+
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
+{
+    [self.metadata clearMetadataFromSection:sectionName];
+}
+
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
+                       withKey:(NSString *_Nonnull)key
+{
+    [self.metadata clearMetadataFromSection:sectionName withKey:key];
 }
 
 @end
