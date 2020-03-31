@@ -49,6 +49,13 @@
     return self;
 }
 
+- (NSDictionary *)toDictionary
+{
+    @synchronized(self) {
+        return [NSDictionary dictionaryWithDictionary:self.dictionary];
+    }
+}
+
 // MARK: - <NSMutableCopying>
 
 - (id)mutableCopyWithZone:(NSZone *)zone {
@@ -58,43 +65,7 @@
     }
 }
 
-- (NSMutableDictionary *)getMetadataFromSection:(NSString *)sectionName {
-    @synchronized(self) {
-        return self.dictionary[sectionName];
-    }
-}
-
-- (NSMutableDictionary *)getMetadataFromSection:(NSString *)sectionName
-                                        withKey:(NSString *)key
-{
-    @synchronized(self) {
-        return [self.dictionary valueForKeyPath:[NSString stringWithFormat:@"%@.%@", sectionName, key]];
-    }
-}
-
-- (void)clearMetadataFromSection:(NSString *)sectionName {
-    @synchronized(self) {
-        [self.dictionary removeObjectForKey:sectionName];
-    }
-    [self.delegate metadataChanged:self];
-}
-
-- (void)clearMetadataFromSection:(NSString *)section
-                         withKey:(NSString *)key
-{
-    @synchronized(self) {
-        if ([[[self dictionary] objectForKey:section] objectForKey:key]) {
-            [[[self dictionary] objectForKey:section] removeObjectForKey:key];
-        }
-    }
-    [self.delegate metadataChanged:self];
-}
-
-- (NSDictionary *)toDictionary {
-    @synchronized(self) {
-        return [NSDictionary dictionaryWithDictionary:self.dictionary];
-    }
-}
+// MARK: - <BugsnagMetadataStore>
 
 /**
  * Add a single key/value to a metadata Tab/Section.
@@ -201,5 +172,38 @@
     }
 }
 
+- (NSMutableDictionary *)getMetadataFromSection:(NSString *)sectionName
+{
+    @synchronized(self) {
+        return self.dictionary[sectionName];
+    }
+}
+
+- (NSMutableDictionary *)getMetadataFromSection:(NSString *)sectionName
+                                        withKey:(NSString *)key
+{
+    @synchronized(self) {
+        return [self.dictionary valueForKeyPath:[NSString stringWithFormat:@"%@.%@", sectionName, key]];
+    }
+}
+
+- (void)clearMetadataFromSection:(NSString *)sectionName
+{
+    @synchronized(self) {
+        [self.dictionary removeObjectForKey:sectionName];
+    }
+    [self.delegate metadataChanged:self];
+}
+
+- (void)clearMetadataFromSection:(NSString *)section
+                         withKey:(NSString *)key
+{
+    @synchronized(self) {
+        if ([[[self dictionary] objectForKey:section] objectForKey:key]) {
+            [[[self dictionary] objectForKey:section] removeObjectForKey:key];
+        }
+    }
+    [self.delegate metadataChanged:self];
+}
 
 @end
