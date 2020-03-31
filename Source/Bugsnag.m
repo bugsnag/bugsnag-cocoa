@@ -260,15 +260,24 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     }
 }
 
++ (void)addMetadata:(id _Nonnull)value
+          toSection:(NSString *_Nonnull)section
+{
+    if ([self bugsnagStarted]) {
+        [self.client.configuration.metadata addMetadata:value
+                                              toSection:section];
+    }
+}
+
 + (NSMutableDictionary *)getMetadataFromSection:(NSString *)section
 {
-    return [[[self configuration] metadata] getMetadataFromSection:section];
+    return [[self.client.configuration.metadata getMetadataFromSection:section] mutableCopy];
 }
 
 + (id _Nullable )getMetadataFromSection:(NSString *_Nonnull)section
                                 withKey:(NSString *_Nonnull)key
 {
-    return [[[self configuration] metadata] getMetadataFromSection:section withKey:key];
+    return [[self.client.configuration.metadata getMetadataFromSection:section withKey:key] mutableCopy];
 }
 
 + (void)clearMetadataFromSection:(NSString *)section
@@ -283,7 +292,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 {
     if ([self bugsnagStarted]) {
         [self.client.configuration.metadata clearMetadataFromSection:sectionName
-                                                                 withKey:key];
+                                                             withKey:key];
     }
 }
 

@@ -115,7 +115,7 @@
     
     XCTAssertNil([Bugsnag getMetadataFromSection:@"dummySection"]);
     [Bugsnag addMetadata:@"aValue1" withKey:@"aKey1" toSection:@"dummySection"];
-    NSMutableDictionary *section = [Bugsnag getMetadataFromSection:@"dummySection"];
+    NSMutableDictionary *section = [[Bugsnag getMetadataFromSection:@"dummySection"] mutableCopy];
     XCTAssertNotNil(section);
     XCTAssertEqual(section[@"aKey1"], @"aValue1");
     XCTAssertNil([Bugsnag getMetadataFromSection:@"anotherSection"]);

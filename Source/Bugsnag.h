@@ -33,7 +33,7 @@ static NSString *_Nonnull const BugsnagSeverityError = @"error";
 static NSString *_Nonnull const BugsnagSeverityWarning = @"warning";
 static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
-@interface Bugsnag : NSObject
+@interface Bugsnag : NSObject <BugsnagClassLevelMetadataStore>
 
 /** Start listening for crashes.
  *
@@ -108,22 +108,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
                        block:(BugsnagOnErrorBlock _Nullable)block;
-
-/** Add custom data to send to Bugsnag with every exception. If value is nil,
- *  delete the current value for attributeName
- *
- * See also [Bugsnag configuration].metaData;
- *
- * @param key      The name of the data.
- *
- * @param value    Its value.
- *
- * @param section  The tab to show it on on the Bugsnag dashboard.
- */
-+ (void)addMetadata:(id _Nullable)value
-            withKey:(NSString *_Nonnull)key
-          toSection:(NSString *_Nonnull)section
-    NS_SWIFT_NAME(addMetadata(_:key:section:));
 
 // =============================================================================
 // MARK: - Breadcrumbs
@@ -236,26 +220,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 + (BOOL)resumeSession;
 
 /**
-* Return the metadata for a specific named section
-*
-* @param section The name of the section
-* @returns The mutable dictionary representing the metaadata section, if it
-*          exists, or nil if not.
-*/
-+ (NSMutableDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)section
-    NS_SWIFT_NAME(getMetadata(_:));
-
-/**
-* Return the metadata for a key in a specific named section
-*
-* @param section The name of the section
-* @param key The key
-* @returns The value of the keyed value if it exists or nil.
-*/
-+ (id _Nullable )getMetadataFromSection:(NSString *_Nonnull)section withKey:(NSString *_Nonnull)key
-    NS_SWIFT_NAME(getMetadata(_:key:));
-
-/**
 * Add a callback that would be invoked before a session is sent to Bugsnag.
 *
 * @param block The block to be added.
@@ -272,16 +236,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 // =============================================================================
 // MARK: - Other methods
 // =============================================================================
-/**
- * Remove a key/value from a named matadata section.  If either the section or the
- * key do not exist no action will occur.
- *
- * @param sectionName The name of the section containing the value
- * @param key The key to remove
- */
-+ (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
-                       withKey:(NSString *_Nonnull)key
-    NS_SWIFT_NAME(clearMetadata(section:key:));
 
 + (NSDateFormatter *_Nonnull)payloadDateFormatter;
 
@@ -291,13 +245,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * @param context A general summary of what was happening in the application
  */
 + (void)setContext:(NSString *_Nullable)context;
-
-/** Remove custom data from Bugsnag reports.
- *
- * @param sectionName        The section to clear.
- */
-+ (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
-    NS_SWIFT_NAME(clearMetadata(section:));
 
 // =============================================================================
 // MARK: - User

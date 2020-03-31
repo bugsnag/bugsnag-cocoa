@@ -65,7 +65,7 @@
 - (void)test_addMetadata_withName_create_return {
     // Arbitrary tab name creates and returns itself
     delegateCalled = NO;
-    NSMutableDictionary *tab = [metadata getMetadataFromSection:@"unknown"];
+    NSMutableDictionary *tab = [[metadata getMetadataFromSection:@"unknown"] mutableCopy];
     XCTAssertNil(tab);
     XCTAssertEqual([[metadata toDictionary] count], 0);
     XCTAssertFalse(delegateCalled, "Didn't expect the delegate's metadataChanged: method to be called.");
@@ -79,12 +79,12 @@
     XCTAssertTrue(delegateCalled, "Expected the delegate's metadataChanged: method to be called.");
     
     [metadata addMetadata:@"aValue" withKey:@"foo" toSection:@"FirstTab"];
-    NSMutableDictionary *tab2 = [metadata getMetadataFromSection:@"FirstTab"];
+    NSMutableDictionary *tab2 = [[metadata getMetadataFromSection:@"FirstTab"] mutableCopy];
     XCTAssertNotNil(tab2);
     XCTAssertEqual(tab2.count, 1);
     
     [metadata addMetadata:@"anotherValue" withKey:@"bar" toSection:@"FirstTab"];
-    tab2 = [metadata getMetadataFromSection:@"FirstTab"];
+    tab2 = [[metadata getMetadataFromSection:@"FirstTab"] mutableCopy];
     XCTAssertEqual(tab2.count, 2);
     
     NSDictionary *dict = [metadata toDictionary];
@@ -92,38 +92,38 @@
     
     delegateCalled = NO;
     [metadata clearMetadataFromSection:@"FirstTab"];
-    tab2 = [metadata getMetadataFromSection:@"FirstTab"];
+    tab2 = [[metadata getMetadataFromSection:@"FirstTab"] mutableCopy];
     XCTAssertEqual(tab2.count, 0);
     XCTAssertTrue(delegateCalled, "Expected the delegate's metadataChanged: method to be called.");
 }
 
 - (void)test_addMetadata_withName_invalid_values {
-    NSMutableDictionary *tab2 = [metadata getMetadataFromSection:@"FirstTab"];
+    NSMutableDictionary *tab2 = [[metadata getMetadataFromSection:@"FirstTab"] mutableCopy];
     
     // Adding invalid values should fail silently (and not add the value)
     delegateCalled = NO;
     [metadata addMetadata:[DummyClass new] withKey:@"bar" toSection:@"FirstTab"];
-    tab2 = [metadata getMetadataFromSection:@"FirstTab"];
+    tab2 = [[metadata getMetadataFromSection:@"FirstTab"] mutableCopy];
     XCTAssertEqual(tab2.count, 0);
     XCTAssertFalse(delegateCalled, "Did not expect the delegate's metadataChanged: method to be called.");
     
     // Again, add valid value
     [metadata addMetadata:@"aValue" withKey:@"foo" toSection:@"FirstTab"];
-    tab2 = [metadata getMetadataFromSection:@"FirstTab"];
+    tab2 = [[metadata getMetadataFromSection:@"FirstTab"] mutableCopy];
     XCTAssertNotNil(tab2);
     XCTAssertEqual(tab2.count, 1);
 
     // Adding null - should remove the key
     delegateCalled = NO;
     [metadata addMetadata:nil withKey:@"bar" toSection:@"FirstTab"];
-    tab2 = [metadata getMetadataFromSection:@"FirstTab"];
+    tab2 = [[metadata getMetadataFromSection:@"FirstTab"] mutableCopy];
     XCTAssertEqual(tab2.count, 1);
     XCTAssertTrue(delegateCalled, "Expected the delegate's metadataChanged: method to be called.");
 }
 
 - (void) test_addMetadata_values {
     // Creation
-    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] init];
+    BugsnagMetadata *metadata = [BugsnagMetadata new];
     XCTAssertNotNil(metadata);
     
     // Don't want to create a tab if none of the values are not valid
@@ -133,24 +133,30 @@
     XCTAssertEqual([[metadata dictionary] count], 0);
 
     // Tab created if at least one value is valid
-    [metadata addMetadata:@{@"aKey" : [DummyClass new], @"secondKey" : @12345} toSection:@"NewTab"];
+    [metadata addMetadata:@{
+        @"aKey" : [DummyClass new],
+        @"secondKey" : @12345}
+                toSection:@"NewTab"];
     XCTAssertEqual([[metadata dictionary] count], 1);
-    NSMutableDictionary *tab = [metadata getMetadataFromSection:@"NewTab"];
+    NSMutableDictionary *tab = [[metadata getMetadataFromSection:@"NewTab"] mutableCopy];
     XCTAssertEqual([tab count], 1);
-    [metadata addMetadata:@{@"thirdKey" : @"FooBarBaz"} toSection:@"NewTab"];
-    tab = [metadata getMetadataFromSection:@"NewTab"];
+    
+    [metadata addMetadata:@{ @"thirdKey" : @"FooBarBaz" }
+                toSection:@"NewTab"];
+    
+    tab = [[metadata getMetadataFromSection:@"NewTab"] mutableCopy];
     XCTAssertEqual([tab count], 2);
     XCTAssertEqual([[metadata dictionary] count], 1);
     
     // Remove [NSNull null] values
     [metadata addMetadata:@{@"thirdKey" : [NSNull null]} toSection:@"NewTab"];
-    tab = [metadata getMetadataFromSection:@"NewTab"];
+    tab = [[metadata getMetadataFromSection:@"NewTab"] mutableCopy];
     XCTAssertEqual([tab count], 1);
     XCTAssertEqual([[metadata dictionary] count], 1);
 
     // Addition *AND* removal are possible in a single call
     [metadata addMetadata:@{@"secondKey" : [NSNull null], @"sixthKey" : @"mother"} toSection:@"NewTab"];
-    tab = [metadata getMetadataFromSection:@"NewTab"];
+    tab = [[metadata getMetadataFromSection:@"NewTab"] mutableCopy];
     XCTAssertEqual([tab count], 1);
     XCTAssertEqual([[metadata dictionary] count], 1);
     

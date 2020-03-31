@@ -91,25 +91,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 @property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 @end
 
-@interface BugsnagMetadata ()
-- (void)addMetadata:(NSDictionary *_Nonnull)metadata
-          toSection:(NSString *_Nonnull)sectionName;
-
-- (void)addMetadata:(id _Nullable)value
-            withKey:(NSString *_Nonnull)key
-          toSection:(NSString *_Nonnull)sectionName;
-
-- (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName;
-
-- (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
-                               withKey:(NSString *_Nullable)key;
-
-- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName;
-
-- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
-                         withKey:(NSString *_Nonnull)key;
-@end
-
 @implementation BugsnagConfiguration
 
 // -----------------------------------------------------------------------------

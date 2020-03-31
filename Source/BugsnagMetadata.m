@@ -109,12 +109,13 @@
             id cleanedValue = BSGSanitizeObject(metadata);
             if (cleanedValue) {
                 // Value is OK, try and set it
-                NSMutableDictionary *section = [self getMetadataFromSection:sectionName];
+                NSMutableDictionary *section = [[self getMetadataFromSection:sectionName] mutableCopy];
                 if (!section) {
                     section = [NSMutableDictionary new];
                     [[self dictionary] setObject:section forKey:sectionName];
                 }
                 section[key] = cleanedValue;
+                [self dictionary][sectionName] = section;
                 metadataChanged = true;
             } else {
                 Class klass = [metadata class];
@@ -126,7 +127,7 @@
         
         // It's some form of nil/null
         else {
-            [[self getMetadataFromSection:sectionName] removeObjectForKey:key];
+            [self clearMetadataFromSection:sectionName withKey:key];
             metadataChanged = true;
         }
     }
@@ -141,7 +142,7 @@
  * Merge supplied and existing metadata.
  */
 - (void)addMetadata:(NSDictionary *)values
-          toSection:(NSString *)section
+          toSection:(NSString *)sectionName
 {
     @synchronized(self) {
         if (values) {
@@ -158,12 +159,13 @@
                         id cleanedValue = BSGSanitizeObject(value);
                         if (cleanedValue) {
                             // We only want to create a tab if we have a valid value.
-                            NSMutableDictionary *metadata = [self getMetadataFromSection:section];
+                            NSMutableDictionary *metadata = [[self getMetadataFromSection:sectionName] mutableCopy];
                             if (!metadata) {
                                 metadata = [NSMutableDictionary new];
-                                [[self dictionary] setObject:metadata forKey:section];
+                                [[self dictionary] setObject:metadata forKey:sectionName];
                             }
                             [metadata setObject:cleanedValue forKey:key];
+                            [self.dictionary setObject:metadata forKey:sectionName];
                             metadataChanged = true;
                         }
                         // Log the failure but carry on
@@ -177,17 +179,17 @@
                     // Remove existing value if supplied null.
                     // Ensure we don't inadvertently create a section.
                     else if (value == [NSNull null]
-                             && [self.dictionary objectForKey:section]
-                             && [[self.dictionary objectForKey:section] objectForKey:key])
+                             && [self.dictionary objectForKey:sectionName]
+                             && [[self.dictionary objectForKey:sectionName] objectForKey:key])
                     {
-                        [[self.dictionary objectForKey:section] removeObjectForKey:key];
+                        [[self.dictionary objectForKey:sectionName] removeObjectForKey:key];
                         metadataChanged = true;
                     }
                 }
                 
                 // Something went wrong...
                 else {
-                    bsg_log_err(@"Failed to update metadata: Section: %@, Values: %@", section, values);
+                    bsg_log_err(@"Failed to update metadata: Section: %@, Values: %@", sectionName, values);
                 }
             }
             
