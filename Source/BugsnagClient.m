@@ -263,7 +263,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic, strong) BSGOutOfMemoryWatchdog *oomWatchdog;
 @property (nonatomic, strong) BugsnagPluginClient *pluginClient;
 @property (nonatomic) BOOL appCrashedLastLaunch;
-@property(readwrite, copy, nonnull) NSDictionary *metadata;
+@property (nonatomic, strong) BugsnagMetadata *metadata;
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 // The previous device orientation - iOS only
 @property (nonatomic, strong) NSString *lastOrientation;
@@ -285,8 +285,9 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @end
 
 @interface BugsnagMetadata ()
-- (NSDictionary *_Nonnull)toDictionary;
 @property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
+- (NSDictionary *_Nonnull)toDictionary;
+- (id)deepCopy;
 @end
 
 @implementation BugsnagClient
@@ -299,20 +300,6 @@ NSString *_lastOrientation = nil;
 #endif
 
 @synthesize configuration;
-
-@synthesize metadata = _metadata;
-
-- (NSDictionary *)metadata {
-    @synchronized (self) {
-        return _metadata;
-    }
-}
-
-- (void)setMetadata:(NSDictionary *)metadata {
-    @synchronized (self) {
-        _metadata = BSGSanitizeDict(metadata);
-    }
-}
 
 - (id)initWithConfiguration:(BugsnagConfiguration *)initConfiguration {
     static NSString *const BSGWatchdogSentinelFileName = @"bugsnag_oom_watchdog.json";
@@ -366,6 +353,8 @@ NSString *_lastOrientation = nil;
                                                              BSGWriteSessionCrashData(session);
                                                          }];
 
+        // Start with a copy of the configuration metadata
+        self.metadata = [[configuration metadata] deepCopy];
         [self metadataChanged:self.configuration.metadata];
         [self metadataChanged:self.configuration.config];
         [self metadataChanged:self.state];
@@ -1210,77 +1199,36 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (void)addMetadata:(NSDictionary *_Nonnull)metadata
           toSection:(NSString *_Nonnull)sectionName
 {
-    @synchronized (self) {
-        NSDictionary *cleanedData = BSGSanitizeDict(metadata);
-        if ([cleanedData count] == 0) {
-            bsg_log_err(@"Failed to add metadata: Values not convertible to JSON");
-            return;
-        }
-        NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
-        NSMutableDictionary *allTabData =
-            allMetadata[sectionName] ?: [NSMutableDictionary new];
-        allMetadata[sectionName] = [cleanedData BSG_mergedInto:allTabData];
-        self.metadata = allMetadata;
-    }
+    [self.metadata addMetadata:metadata toSection:sectionName];
 }
 
 - (void)addMetadata:(id _Nullable)value
             withKey:(NSString *_Nonnull)key
           toSection:(NSString *_Nonnull)sectionName
 {
-    @synchronized (self) {
-        NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
-        NSMutableDictionary *allTabData =
-            [allMetadata[sectionName] mutableCopy] ?: [NSMutableDictionary new];
-        if (value) {
-            id cleanedValue = BSGSanitizeObject(value);
-            if (!cleanedValue) {
-                bsg_log_err(@"Failed to add metadata: Value of type %@ is not "
-                            @"convertible to JSON",
-                            [value class]);
-                return;
-            }
-            allTabData[key] = cleanedValue;
-        } else {
-            [allTabData removeObjectForKey:key];
-        }
-        allMetadata[sectionName] = allTabData;
-        self.metadata = allMetadata;
-    }
+    [self.metadata addMetadata:value withKey:key toSection:sectionName];
 }
 
 - (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
                                withKey:(NSString *_Nonnull)key
 {
-    @synchronized (self) {
-        return [[[self metadata] objectForKey:sectionName] objectForKey:key];
-    }
-    return nil;
+    return [self.metadata getMetadataFromSection:sectionName withKey:key];
 }
 
 - (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
 {
-    @synchronized (self) {
-        return [[self metadata] objectForKey:sectionName];
-    }
-    return nil;
+    return [self.metadata getMetadataFromSection:sectionName];
 }
 
 - (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
 {
-    @synchronized (self) {
-        NSMutableDictionary *copy = [[self metadata] mutableCopy];
-        [copy removeObjectForKey:sectionName];
-        _metadata = copy;
-    }
+    [self.metadata clearMetadataFromSection:sectionName];
 }
 
 - (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
                        withKey:(NSString *_Nonnull)key
 {
-    @synchronized (self) {
-        [[[self metadata] objectForKey:sectionName] removeObjectForKey:key];
-    }
+    [self.metadata clearMetadataFromSection:sectionName withKey:key];
 }
 
 @end

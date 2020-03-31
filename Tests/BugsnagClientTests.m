@@ -23,6 +23,7 @@
 
 @interface BugsnagClient ()
 - (void)orientationChanged:(NSNotification *)notif;
+@property (nonatomic, strong) BugsnagMetadata *metadata;
 @end
 
 @interface BugsnagBreadcrumb ()
@@ -31,6 +32,7 @@
 
 @interface BugsnagConfiguration ()
 @property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
+@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
 @end
 
 NSString *BSGFormatSeverity(BSGSeverity severity);
@@ -86,6 +88,30 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     XCTAssertEqualObjects([metadata valueForKey:@"name"], eventErrorMessage);
     XCTAssertEqual((bool)[metadata valueForKey:@"unhandled"], eventUnhandled);
     XCTAssertEqualObjects([metadata valueForKey:@"severity"], eventSeverity);
+}
+
+- (void) testMetadataFunctionality {
+    [self setUpBugsnagWillCallNotify:false];
+    
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    [configuration addMetadata:@{@"exampleKey" : @"exampleValue"} toSection:@"exampleSection"];
+    
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    
+    // We expect that the client metadata is the same as the configuration's to start with
+    XCTAssertEqualObjects([client getMetadataFromSection:@"exampleSection" withKey:@"exampleKey"],
+                          [configuration getMetadataFromSection:@"exampleSection" withKey:@"exampleKey"]);
+    XCTAssertNil([client getMetadataFromSection:@"aSection" withKey:@"foo"]);
+    [client addMetadata:@{@"foo" : @"bar"} withKey:@"aDict" toSection:@"aSection"];
+    XCTAssertNotNil([client getMetadataFromSection:@"aSection" withKey:@"aDict"]);
+    
+    // Updates to Configuration should not affect Client
+    [configuration addMetadata:@{@"exampleKey2" : @"exampleValue2"} toSection:@"exampleSection2"];
+    XCTAssertNil([client getMetadataFromSection:@"exampleSection2" withKey:@"exampleKey2"]);
+    
+    // Updates to Client should not affect Configuration
+    [client addMetadata:@{@"exampleKey3" : @"exampleValue3"} toSection:@"exampleSection3"];
+    XCTAssertNil([configuration getMetadataFromSection:@"exampleSection3" withKey:@"exampleKey3"]);
 }
 
 @end

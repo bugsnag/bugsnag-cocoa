@@ -27,6 +27,7 @@
 #import "BugsnagMetadata.h"
 #import "BSGSerialization.h"
 #import "BugsnagLogger.h"
+#import "BSG_MutableDeepCopy.h"
 
 @interface BugsnagMetadata ()
 @property(atomic, strong) NSMutableDictionary *dictionary;
@@ -63,6 +64,10 @@
         NSMutableDictionary *dict = [self.dictionary mutableCopy];
         return [[BugsnagMetadata alloc] initWithDictionary:dict];
     }
+}
+
+- (id)deepCopy {
+    return [[BugsnagMetadata alloc] initWithDictionary:[[self dictionary] mutableDeepCopy]];
 }
 
 // MARK: - <BugsnagMetadataStore>

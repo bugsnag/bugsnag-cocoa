@@ -22,6 +22,8 @@
 		009131BC23F46279000810D9 /* BugsnagMetadataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 009131BB23F46279000810D9 /* BugsnagMetadataTests.m */; };
 		009131BE23F5884E000810D9 /* BugsnagBaseUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 009131BD23F5884E000810D9 /* BugsnagBaseUnitTest.m */; };
 		009DF96924327FA2000A8363 /* BugsnagMetadataStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 009DF96824327FA2000A8363 /* BugsnagMetadataStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		00C810F124337C3C003D3849 /* BSG_MutableDeepCopy.h in Headers */ = {isa = PBXBuildFile; fileRef = 00C810EF24337C3C003D3849 /* BSG_MutableDeepCopy.h */; };
+		00C810F224337C3C003D3849 /* BSG_MutableDeepCopy.m in Sources */ = {isa = PBXBuildFile; fileRef = 00C810F024337C3C003D3849 /* BSG_MutableDeepCopy.m */; };
 		00D7ACAD23E9C63000FBE4A7 /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACAC23E9C63000FBE4A7 /* BugsnagTests.m */; };
 		00D7ACAF23EABBC800FBE4A7 /* BugsnagSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACAE23EABBC800FBE4A7 /* BugsnagSwiftTests.swift */; };
 		00F9393923FC4F64008C7073 /* BugsnagTestsDummyClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F9393823FC4F64008C7073 /* BugsnagTestsDummyClass.m */; };
@@ -443,6 +445,8 @@
 		009131BD23F5884E000810D9 /* BugsnagBaseUnitTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagBaseUnitTest.m; path = ../../Tests/BugsnagBaseUnitTest.m; sourceTree = "<group>"; };
 		009131BF23F58930000810D9 /* BugsnagBaseUnitTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagBaseUnitTest.h; path = ../../Tests/BugsnagBaseUnitTest.h; sourceTree = "<group>"; };
 		009DF96824327FA2000A8363 /* BugsnagMetadataStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagMetadataStore.h; path = ../Source/BugsnagMetadataStore.h; sourceTree = "<group>"; };
+		00C810EF24337C3C003D3849 /* BSG_MutableDeepCopy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BSG_MutableDeepCopy.h; path = ../Source/BSG_MutableDeepCopy.h; sourceTree = "<group>"; };
+		00C810F024337C3C003D3849 /* BSG_MutableDeepCopy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BSG_MutableDeepCopy.m; path = ../Source/BSG_MutableDeepCopy.m; sourceTree = "<group>"; };
 		00D7ACAC23E9C63000FBE4A7 /* BugsnagTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagTests.m; path = ../../Tests/BugsnagTests.m; sourceTree = "<group>"; };
 		00D7ACAE23EABBC800FBE4A7 /* BugsnagSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagSwiftTests.swift; sourceTree = "<group>"; };
 		00F9393723FC4F63008C7073 /* BugsnagTestsDummyClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagTestsDummyClass.h; path = ../../Tests/BugsnagTestsDummyClass.h; sourceTree = "<group>"; };
@@ -786,6 +790,8 @@
 				8A70D9C822539C81006B696F /* BSGOutOfMemoryWatchdog.m */,
 				8A72A0352396535000328051 /* BugsnagPlugin.h */,
 				009DF96824327FA2000A8363 /* BugsnagMetadataStore.h */,
+				00C810EF24337C3C003D3849 /* BSG_MutableDeepCopy.h */,
+				00C810F024337C3C003D3849 /* BSG_MutableDeepCopy.m */,
 			);
 			name = Bugsnag;
 			sourceTree = SOURCE_ROOT;
@@ -1050,6 +1056,7 @@
 				E7107C601F4C97F100BB3F98 /* BSG_KSDynamicLinker.h in Headers */,
 				E7107C6A1F4C97F100BB3F98 /* BSG_KSMach.h in Headers */,
 				E72BF77A1FC869F7004BE82F /* BugsnagSession.h in Headers */,
+				00C810F124337C3C003D3849 /* BSG_MutableDeepCopy.h in Headers */,
 				009DF96924327FA2000A8363 /* BugsnagMetadataStore.h in Headers */,
 				E7107C651F4C97F100BB3F98 /* BSG_KSJSONCodecObjC.h in Headers */,
 				E7107C671F4C97F100BB3F98 /* BSG_KSLogger.h in Headers */,
@@ -1284,6 +1291,7 @@
 				E72962D91F4BBA8B00CEA15D /* BugsnagErrorReportApiClient.m in Sources */,
 				E7107C631F4C97F100BB3F98 /* BSG_KSJSONCodec.c in Sources */,
 				E7107C531F4C97F100BB3F98 /* BSG_KSCrashSentry_NSException.m in Sources */,
+				00C810F224337C3C003D3849 /* BSG_MutableDeepCopy.m in Sources */,
 				E7107C3B1F4C97F100BB3F98 /* BSG_KSCrashReport.c in Sources */,
 				E72BF7801FC86A7A004BE82F /* BugsnagUser.m in Sources */,
 				8A2C8F541C6BBE3C00846019 /* BugsnagCollections.m in Sources */,
