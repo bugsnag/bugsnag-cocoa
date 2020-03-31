@@ -25,6 +25,7 @@
 //
 
 #import "BugsnagClient.h"
+#import "BugsnagClientInternal.h"
 #import "BSGConnectivity.h"
 #import "Bugsnag.h"
 #import "Private.h"
@@ -254,10 +255,9 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @interface BugsnagClient ()
 @property(nonatomic, strong) BugsnagCrashSentry *crashSentry;
 @property(nonatomic, strong) BugsnagErrorReportApiClient *errorReportApiClient;
-@property(nonatomic, strong, readwrite) BugsnagSessionTracker *sessionTracker;
 @property (nonatomic, strong) BSGOutOfMemoryWatchdog *oomWatchdog;
 @property (nonatomic, strong) BugsnagPluginClient *pluginClient;
-@property (nonatomic) BOOL appCrashedLastLaunch;
+@property (nonatomic) BOOL appDidCrashLastLaunch;
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 // The previous device orientation - iOS only
 @property (nonatomic, strong) NSString *lastOrientation;
@@ -538,7 +538,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
             unlink(crashSentinelPath);
         }
     }
-    self.appCrashedLastLaunch = handledCrashLastLaunch || [self.oomWatchdog didOOMLastLaunch];
+    self.appDidCrashLastLaunch = handledCrashLastLaunch || [self.oomWatchdog didOOMLastLaunch];
     // Ignore potential false positive OOM if previous session crashed and was
     // reported. There are two checks in place:
     // 1. crashState->crashedLastLaunch: Accurate unless the crash callback crashes
@@ -548,7 +548,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         [self notifyOutOfMemoryEvent];
     }
 #else
-    self.appCrashedLastLaunch = crashState->crashedLastLaunch;
+    self.appDidCrashLastLaunch = crashState->crashedLastLaunch;
 #endif
 }
 

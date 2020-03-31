@@ -27,6 +27,7 @@
 #import "BugsnagConfiguration.h"
 #import "Bugsnag.h"
 #import "BugsnagClient.h"
+#import "BugsnagClientInternal.h"
 #import "BugsnagKeys.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagUser.h"
@@ -50,10 +51,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 @interface Bugsnag ()
 + (BugsnagClient *)client;
-@end
-
-@interface BugsnagClient ()
-@property BugsnagSessionTracker *sessionTracker;
 @end
 
 @interface BugsnagConfiguration ()

@@ -29,6 +29,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagCollections.h"
 #import "BugsnagClient.h"
+#import "BugsnagClientInternal.h"
 #import "BugsnagKeys.h"
 #import "BSG_KSSystemInfo.h"
 #import "Private.h"
