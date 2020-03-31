@@ -5,7 +5,7 @@ steps:
       queue: opensource-mac
     artifact_paths: test-outputs/*
     commands:
-      - ./end-to-end-tests/scripts/export_ios_app.sh
+      - ./features/scripts/export_ios_app.sh
 
   - label: ':docker: Build Cocoa maze runner image'
     timeout_in_minutes: 20

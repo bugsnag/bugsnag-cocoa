@@ -7,6 +7,6 @@ target 'iOSTestApp' do
   use_frameworks!
 
   # Pods for iOSTestApp
-  pod 'Bugsnag', path: '../..'
+  pod 'Bugsnag', path: '../../..'
 
 end

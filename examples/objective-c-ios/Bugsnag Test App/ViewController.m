@@ -35,6 +35,7 @@
 }
 
 - (IBAction)generateNSError:(id)sender {
+    __builtin_trap();
     NSError *error = nil;
     [[NSFileManager defaultManager] removeItemAtPath:@"//invalid/path/somewhere" error:&error];
     if (error) {

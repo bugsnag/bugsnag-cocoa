@@ -1,20 +1,18 @@
 version: '3.6'
 services:
   cocoa-maze-runner:
-    build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile.cocoa
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:v2-bundle-update-cli
     environment:
-      VERBOSE:
-      DEBUG:
+      APP_LOCATION: /app/build/iOSTestApp.ipa
       BROWSER_STACK_USERNAME:
       BROWSER_STACK_ACCESS_KEY:
       BROWSER_STACK_LOCAL_IDENTIFIER: ${BUILDKITE_JOB_ID:-maze-runner}
-      DEVICE_TYPE:
-      APP_LOCATION:
-    command: --tags "not @wip"
+      DEBUG:
+      DEVICE_TYPE: ${DEVICE_TYPE:-IOS_12}
+      VERBOSE:
     volumes:
-      - ./test-fixture/ios-swift-cocoapods/output:/app/build
+      - ./features/fixtures/ios-swift-cocoapods/output:/app/build
+      - ./features/:/app/features/
     # entrypoint: /bin/sh
     # stdin_open: true
     # tty: true

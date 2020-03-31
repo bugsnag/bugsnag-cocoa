@@ -10,57 +10,62 @@ Feature: Communicating events between notifiers
         Event counts in the report's session should match the handled-ness.
 
         When I run "HandledInternalNotifyScenario"
-        And I wait for 2 requests
-        Then request 0 is valid for the session tracking API
-        And request 1 is valid for the error reporting API
-        And the exception "errorClass" equals "Handled Error!" for request 1
-        And the exception "message" equals "Internally reported a handled event" for request 1
-        And the exception "type" equals "unreal" for request 1
-        And the event "severity" equals "warning" for request 1
-        And the event "severityReason.type" equals "handledException" for request 1
+        And I wait to receive 2 requests
+        Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+        And the payload field "sessions.0.id" is stored as the value "session_id"
+        And I discard the oldest request
+        Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+        And the exception "errorClass" equals "Handled Error!"
+        And the exception "message" equals "Internally reported a handled event"
+        And the exception "type" equals "unreal"
+        And the event "severity" equals "warning"
+        And the event "severityReason.type" equals "handledException"
 
-        And the "method" of stack frame 0 equals "foo()" for request 1
-        And the "file" of stack frame 0 equals "src/Giraffe.mm" for request 1
-        And the "lineNumber" of stack frame 0 equals 200 for request 1
-        And the "method" of stack frame 1 equals "bar()" for request 1
-        And the "file" of stack frame 1 equals "parser.js" for request 1
-        And the "lineNumber" of stack frame 1 is null for request 1
-        And the "method" of stack frame 2 equals "yes()" for request 1
-        And the "file" of stack frame 2 is null for request 1
-        And the "lineNumber" of stack frame 2 is null for request 1
-        And the event "unhandled" is false for request 1
+        And the "method" of stack frame 0 equals "foo()"
+        And the "file" of stack frame 0 equals "src/Giraffe.mm"
+        And the "lineNumber" of stack frame 0 equals 200
+        And the "method" of stack frame 1 equals "bar()"
+        And the "file" of stack frame 1 equals "parser.js"
+        And the "lineNumber" of stack frame 1 is null
+        And the "method" of stack frame 2 equals "yes()"
+        And the "file" of stack frame 2 is null
+        And the "lineNumber" of stack frame 2 is null
+        And the event "unhandled" is false
 
-        And the payload field "events" is an array with 1 element for request 1
-        And the payload field "events.0.session.events.handled" equals 1 for request 1
-        And the payload field "events.0.session.events.unhandled" equals 0 for request 1
-        And the payload field "events.0.session.id" of request 1 equals the payload field "sessions.0.id" of request 0
+        And the payload field "events" is an array with 1 elements
+        And the payload field "events.0.session.events.handled" equals 1
+        And the payload field "events.0.session.events.unhandled" equals 0
+        And the payload field "events.0.session.id" equals the stored value "session_id"
 
     Scenario: Report an unhandled event through internalNotify()
         Report an unhandled exception, including a custom stacktrace and severity.
         Event counts in the report's session should match the handled-ness.
 
-        When I run "UnhandledInternalNotifyScenario"
-        And I wait for 2 requests
-        Then request 0 is valid for the session tracking API
-        And request 1 is valid for the error reporting API
-        And the exception "errorClass" equals "Unhandled Error?!" for request 1
-        And the exception "message" equals "Internally reported an unhandled event" for request 1
-        And the exception "type" equals "fake" for request 1
-        And the event "severity" equals "info" for request 1
-        And the event "severityReason.type" equals "userCallbackSetSeverity" for request 1
+        When I run "UnhandledInternalNotifyScenario" and relaunch the app
+        And I configure Bugsnag for "UnhandledInternalNotifyScenario"
+        And I wait to receive 3 requests
+        Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+        And the payload field "sessions.0.id" is stored as the value "session_id"
+        And I discard the oldest request
+        Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+        And the exception "errorClass" equals "Unhandled Error?!"
+        And the exception "message" equals "Internally reported an unhandled event"
+        And the exception "type" equals "fake"
+        And the event "severity" equals "info"
+        And the event "severityReason.type" equals "userCallbackSetSeverity"
 
-        And the "method" of stack frame 0 equals "bar()" for request 1
-        And the "file" of stack frame 0 equals "foo.js" for request 1
-        And the "lineNumber" of stack frame 0 equals 43 for request 1
-        And the "method" of stack frame 1 equals "baz()" for request 1
-        And the "file" of stack frame 1 equals "[native code]" for request 1
-        And the "lineNumber" of stack frame 1 is null for request 1
-        And the "method" of stack frame 2 equals "is_done()" for request 1
-        And the "file" of stack frame 2 is null for request 1
-        And the "lineNumber" of stack frame 2 is null for request 1
-        And the event "unhandled" is true for request 1
+        And the "method" of stack frame 0 equals "bar()"
+        And the "file" of stack frame 0 equals "foo.js"
+        And the "lineNumber" of stack frame 0 equals 43
+        And the "method" of stack frame 1 equals "baz()"
+        And the "file" of stack frame 1 equals "[native code]"
+        And the "lineNumber" of stack frame 1 is null
+        And the "method" of stack frame 2 equals "is_done()"
+        And the "file" of stack frame 2 is null
+        And the "lineNumber" of stack frame 2 is null
+        And the event "unhandled" is true
 
-        And the payload field "events" is an array with 1 element for request 1
-        And the payload field "events.0.session.events.handled" equals 0 for request 1
-        And the payload field "events.0.session.events.unhandled" equals 1 for request 1
-        And the payload field "events.0.session.id" of request 1 equals the payload field "sessions.0.id" of request 0
+        And the payload field "events" is an array with 1 elements
+        And the payload field "events.0.session.events.handled" equals 0
+        And the payload field "events.0.session.events.unhandled" equals 1
+        And the payload field "events.0.session.id" equals the stored value "session_id"

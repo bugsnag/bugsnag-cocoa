@@ -13,7 +13,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [Bugsnag startBugsnagWithApiKey:@"YOUR-API-KEY-HERE"];
+    [Bugsnag startBugsnagWithApiKey:@"33b6f0317a8c802940da6dbeabd6fed3"];
     //[self startBugsnagWithConfiguration];
     return YES;
 }

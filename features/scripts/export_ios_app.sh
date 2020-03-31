@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 
-rm -rf test-outputs
-
-cd test-fixture/ios-swift-cocoapods/
-
-rm -rf archive
-rm -rf output
+cd features/fixtures/ios-swift-cocoapods/
 
 pod install
 
@@ -40,11 +35,3 @@ if [ $? -ne 0 ]; then
   echo "Archive could not be created"
   exit 1
 fi
-
-cd ../../
-
-mkdir -p test-outputs/dSYMs
-
-cp test-fixture/ios-swift-cocoapods/output/iOSTestApp.ipa test-outputs/iOSTestApp.ipa
-cp -r test-fixture/ios-swift-cocoapods/archive/iosTestApp.xcarchive/dSYMs/ test-outputs/dSYMs/
-tar -czf test-outputs/dSYMs.zip test-outputs/dSYMs
