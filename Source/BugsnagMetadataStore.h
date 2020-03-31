@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName;
 
 - (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
-                               withKey:(NSString *_Nullable)key;
+                               withKey:(NSString *_Nonnull)key;
 
 - (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName;
 

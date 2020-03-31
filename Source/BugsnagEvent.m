@@ -758,7 +758,7 @@ initWithErrorName:(NSString *_Nonnull)name
 }
 
 - (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
-                               withKey:(NSString *_Nullable)key
+                               withKey:(NSString *_Nonnull)key
 {
     @synchronized (self) {
         return [[[self metadata] objectForKey:sectionName] objectForKey:key];
