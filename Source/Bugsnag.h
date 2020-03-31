@@ -155,16 +155,6 @@
                            andType:(BSGBreadcrumbType)type
     NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
 
-/**
- * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.
- * By default, we'll keep and send the 20 most recent breadcrumb log
- * messages.
- *
- * @param capacity max number of breadcrumb log messages to send
- */
-+ (void)setBreadcrumbCapacity:(NSUInteger)capacity
-        __deprecated_msg("Use [BugsnagConfiguration setMaxBreadcrumbs:] instead");
-
 // =============================================================================
 // MARK: - Session
 // =============================================================================
