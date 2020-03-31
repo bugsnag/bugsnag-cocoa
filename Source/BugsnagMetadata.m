@@ -44,7 +44,9 @@
 
 - (id)initWithDictionary:(NSMutableDictionary *)dict {
     if (self = [super init]) {
-        self.dictionary = dict;
+        // Ensure that the instantiating dictionary is mutable.
+        // Saves checks later.
+        self.dictionary = [dict mutableDeepCopy];
     }
     [self.delegate metadataChanged:self];
     return self;
@@ -57,17 +59,10 @@
     }
 }
 
-// MARK: - <NSMutableCopying>
-
-- (id)mutableCopyWithZone:(NSZone *)zone {
-    @synchronized(self) {
-        NSMutableDictionary *dict = [self.dictionary mutableCopy];
-        return [[BugsnagMetadata alloc] initWithDictionary:dict];
-    }
-}
-
 - (id)deepCopy {
-    return [[BugsnagMetadata alloc] initWithDictionary:[[self dictionary] mutableDeepCopy]];
+    @synchronized(self) {
+        return [[BugsnagMetadata alloc] initWithDictionary:[[self dictionary] mutableDeepCopy]];
+    }
 }
 
 // MARK: - <BugsnagMetadataStore>
@@ -138,7 +133,7 @@
                             NSMutableDictionary *metadata = [[self getMetadataFromSection:sectionName] mutableCopy];
                             if (!metadata) {
                                 metadata = [NSMutableDictionary new];
-                                [[self dictionary] setObject:metadata forKey:sectionName];
+                                [self dictionary][sectionName] = metadata;
                             }
                             [metadata setObject:cleanedValue forKey:key];
                             [self.dictionary setObject:metadata forKey:sectionName];

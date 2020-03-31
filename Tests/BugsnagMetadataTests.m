@@ -17,9 +17,10 @@
 @end
 
 @interface BugsnagMetadata ()
+@property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
 @property(atomic, strong) NSMutableDictionary *dictionary;
 - (NSDictionary *_Nonnull)toDictionary;
-@property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
+- (id)deepCopy;
 @end
 
 // MARK: - DummyClass
@@ -192,16 +193,16 @@
     XCTAssertFalse(delegateCalled);
 }
 
-- (void)testMutableCopyWithZone {
+- (void)testDeepCopyWithZone {
     
     BugsnagMetadata *metadata = [BugsnagMetadata new];
     [metadata addMetadata:@"myKey" withKey:@"myValue" toSection:@"section1"];
     
-    BugsnagMetadata *copy = [metadata mutableCopyWithZone:nil];
-    XCTAssertNotEqual(metadata, copy);
+    BugsnagMetadata *clone = [metadata deepCopy];
+    XCTAssertNotEqual(metadata, clone);
     
     // Until/unless it's decided otherwise the copy is a shallow one.
-    XCTAssertEqual([metadata getMetadataFromSection:@"section1"], [copy getMetadataFromSection:@"section1"]);
+    XCTAssertEqualObjects([metadata getMetadataFromSection:@"section1"], [clone getMetadataFromSection:@"section1"]);
 }
 
 -(void)testClearMetadataInSectionWithKey {

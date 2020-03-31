@@ -24,6 +24,7 @@
 #import "Private.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagKeys.h"
+#import "BugsnagClient.h"
 
 @interface BugsnagBreadcrumb ()
 + (instancetype _Nullable)breadcrumbWithBlock:
@@ -124,28 +125,23 @@ id BSGLoadConfigValue(NSDictionary *report, NSString *valueName) {
  * configuration.  Returns nil if no context can be found.
  *
  * @param report A dictionary of report data
- * @param metadata Additional relevant data
  * @returns A string context if found, or nil
  */
-NSString *BSGParseContext(NSDictionary *report, NSDictionary *metadata) {
+NSString *BSGParseContext(NSDictionary *report) {
     id context = [report valueForKeyPath:@"user.overrides.context"];
-    if ([context isKindOfClass:[NSString class]])
+    if ([context isKindOfClass:[NSString class]]) {
         return context;
-    context = metadata[BSGKeyContext];
-    if ([context isKindOfClass:[NSString class]])
-        return context;
+    }
     context = BSGLoadConfigValue(report, @"context");
-    if ([context isKindOfClass:[NSString class]])
+    if ([context isKindOfClass:[NSString class]]) {
         return context;
+    }
     return nil;
 }
 
-NSString *BSGParseGroupingHash(NSDictionary *report, NSDictionary *metadata) {
+NSString *BSGParseGroupingHash(NSDictionary *report) {
     id groupingHash = [report valueForKeyPath:@"user.overrides.groupingHash"];
     if (groupingHash)
-        return groupingHash;
-    groupingHash = metadata[BSGKeyGroupingHash];
-    if ([groupingHash isKindOfClass:[NSString class]])
         return groupingHash;
     return nil;
 }
@@ -225,6 +221,14 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 @property NSUInteger handledCount;
 @end
 
+@interface Bugsnag ()
++ (BugsnagClient *)client;
+@end
+
+@interface BugsnagMetadata ()
+- (NSDictionary *)toDictionary;
+@end
+
 @interface BugsnagEvent ()
 
 /**
@@ -284,6 +288,8 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
  */
 @property(readwrite) NSUInteger depth;
 
+@property (nonatomic, strong) BugsnagMetadata *metadata;
+
 /**
  *  Raw error data
  */
@@ -314,13 +320,14 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             _releaseStage = [report valueForKeyPath:@"user.state.oom.app.releaseStage"];
             _handledState = [BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory];
             _deviceAppHash = [report valueForKeyPath:@"user.state.oom.device.id"];
-            _metadata = [NSMutableDictionary new];
+            self.metadata = [BugsnagMetadata new];
+            
             NSDictionary *sessionData = [report valueForKeyPath:@"user.state.oom.session"];
             if (sessionData) {
                 _session = [[BugsnagSession alloc] initWithDictionary:sessionData];
                 _session.unhandledCount += 1; // include own event
                 if (_session.user) {
-                    _metadata = @{@"user": [_session.user toJson]};
+                    self.metadata = [[BugsnagMetadata alloc] initWithDictionary:[@{@"user": [_session.user toJson]} mutableCopy]];
                 }
             }
         } else {
@@ -339,9 +346,16 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             _breadcrumbs = BSGParseBreadcrumbs(report);
             _dsymUUID = [report valueForKeyPath:@"system.app_uuid"];
             _deviceAppHash = [report valueForKeyPath:@"system.device_app_hash"];
-            _metadata =
-                [report valueForKeyPath:@"user.metaData"] ?: [NSDictionary new];
-            _context = BSGParseContext(report, _metadata);
+
+            id userMetadata = [report valueForKeyPath:@"user.metaData"];
+            if ([userMetadata isKindOfClass:[NSDictionary class]]) {
+                self.metadata = [[BugsnagMetadata alloc] initWithDictionary:userMetadata];
+            }
+            else {
+                self.metadata = [BugsnagMetadata new];
+            }
+             
+            _context = BSGParseContext(report);
             _deviceState = BSGParseDeviceState(report);
             _device = BSGParseDevice(report);
             _app = BSGParseApp(report);
@@ -349,13 +363,11 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
                                          BSGLoadConfigValue(report, @"appVersion"),
                                          _releaseStage, // Already loaded from config
                                          BSGLoadConfigValue(report, @"codeBundleId"));
-            _groupingHash = BSGParseGroupingHash(report, _metadata);
+            _groupingHash = BSGParseGroupingHash(report);
             _overrides = [report valueForKeyPath:@"user.overrides"];
-            _customException = BSGParseCustomException(report, [_errorClass copy],
-                                                       [_errorMessage copy]);
+            _customException = BSGParseCustomException(report, [_errorClass copy], [_errorMessage copy]);
 
-            NSDictionary *recordedState =
-                [report valueForKeyPath:@"user.handledState"];
+            NSDictionary *recordedState = [report valueForKeyPath:@"user.handledState"];
 
             if (recordedState) {
                 _handledState =
@@ -364,10 +376,12 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
                 // only makes sense to use serialised value for handled exceptions
                 _depth = [[report valueForKeyPath:@"user.depth"]
                         unsignedIntegerValue];
-            } else { // the event was unhandled.
+            }
+            
+            // the event was unhandled.
+            else {
                 BOOL isSignal = [BSGKeySignal isEqualToString:_errorType];
-                SeverityReasonType severityReason =
-                    isSignal ? Signal : UnhandledException;
+                SeverityReasonType severityReason = isSignal ? Signal : UnhandledException;
                 _handledState = [BugsnagHandledState
                     handledStateWithSeverityReason:severityReason
                                           severity:BSGSeverityError
@@ -384,22 +398,22 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
     return self;
 }
 
-- (instancetype _Nonnull)
-initWithErrorName:(NSString *_Nonnull)name
-     errorMessage:(NSString *_Nonnull)message
-    configuration:(BugsnagConfiguration *_Nonnull)config
-         metadata:(NSDictionary *_Nonnull)metadata
-     handledState:(BugsnagHandledState *_Nonnull)handledState
-          session:(BugsnagSession *_Nullable)session {
+- (instancetype _Nonnull)initWithErrorName:(NSString *_Nonnull)name
+                              errorMessage:(NSString *_Nonnull)message
+                             configuration:(BugsnagConfiguration *_Nonnull)config
+                                  metadata:(BugsnagMetadata *_Nullable)metadata
+                              handledState:(BugsnagHandledState *_Nonnull)handledState
+                                   session:(BugsnagSession *_Nullable)session
+{
     if (self = [super init]) {
         _errorClass = name;
         _errorMessage = message;
         _overrides = [NSDictionary new];
-        _metadata = metadata ?: [NSDictionary new];
+        self.metadata = metadata ?: [BugsnagMetadata new];
         _releaseStage = config.releaseStage;
         _enabledReleaseStages = config.enabledReleaseStages;
         // Set context based on current values.  May be nil.
-        _context = metadata[BSGKeyContext] ?: [[Bugsnag configuration] context];
+        _context = [[Bugsnag configuration] context];
         NSMutableArray *crumbs = [NSMutableArray new];
         NSUInteger count = config.breadcrumbs.count;
         for (NSUInteger i = 0; i < count; i++) {
@@ -412,22 +426,6 @@ initWithErrorName:(NSString *_Nonnull)name
         _session = session;
     }
     return self;
-}
-
-// MARK: - Metadata
-
-@synthesize metadata = _metadata;
-
-- (NSDictionary *)metadata {
-    @synchronized (self) {
-        return _metadata;
-    }
-}
-
-- (void)setMetadata:(NSDictionary *)metadata {
-    @synchronized (self) {
-        _metadata = BSGSanitizeDict(metadata);
-    }
 }
 
 // MARK: - apiKey
@@ -557,7 +555,7 @@ initWithErrorName:(NSString *_Nonnull)name
 
 - (NSDictionary *)toJson {
     NSMutableDictionary *event = [NSMutableDictionary dictionary];
-    NSMutableDictionary *metadata = [[self metadata] mutableCopy];
+    NSMutableDictionary *metadata = [[[self metadata] toDictionary] mutableCopy];
 
     if (self.customException) {
         BSGDictSetSafeObject(event, @[ self.customException ], BSGKeyExceptions);
@@ -718,75 +716,36 @@ initWithErrorName:(NSString *_Nonnull)name
 - (void)addMetadata:(NSDictionary *_Nonnull)metadata
           toSection:(NSString *_Nonnull)sectionName
 {
-    @synchronized (self) {
-        NSDictionary *cleanedData = BSGSanitizeDict(metadata);
-        if ([cleanedData count] == 0) {
-            bsg_log_err(@"Failed to add metadata: Values not convertible to JSON");
-            return;
-        }
-        NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
-        NSMutableDictionary *allTabData =
-            allMetadata[sectionName] ?: [NSMutableDictionary new];
-        allMetadata[sectionName] = [cleanedData BSG_mergedInto:allTabData];
-        self.metadata = allMetadata;
-    }
+    [self.metadata addMetadata:metadata toSection:sectionName];
 }
 
 - (void)addMetadata:(id _Nullable)value
             withKey:(NSString *_Nonnull)key
           toSection:(NSString *_Nonnull)sectionName
 {
-    @synchronized (self) {
-        NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
-        NSMutableDictionary *allTabData =
-            [allMetadata[sectionName] mutableCopy] ?: [NSMutableDictionary new];
-        if (value) {
-            id cleanedValue = BSGSanitizeObject(value);
-            if (!cleanedValue) {
-                bsg_log_err(@"Failed to add metadata: Value of type %@ is not "
-                            @"convertible to JSON",
-                            [value class]);
-                return;
-            }
-            allTabData[key] = cleanedValue;
-        } else {
-            [allTabData removeObjectForKey:key];
-        }
-        allMetadata[sectionName] = allTabData;
-        self.metadata = allMetadata;
-    }
+    [self.metadata addMetadata:value withKey:key toSection:sectionName];
 }
 
 - (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
                                withKey:(NSString *_Nonnull)key
 {
-    @synchronized (self) {
-        return [[[self metadata] objectForKey:sectionName] objectForKey:key];
-    }
+    return [self.metadata getMetadataFromSection:sectionName withKey:key];
 }
 
 - (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
 {
-    @synchronized (self) {
-        return [[self metadata] objectForKey:sectionName];
-    }
+    return [self.metadata getMetadataFromSection:sectionName];
 }
 
 - (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
 {
-    @synchronized (self) {
-        NSMutableDictionary *copy = [[self metadata] mutableCopy];
-        [copy removeObjectForKey:sectionName];
-        _metadata = copy;
-    }
+    [self.metadata clearMetadataFromSection:sectionName];
 }
 
 - (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
                        withKey:(NSString *_Nonnull)key
 {
-    @synchronized (self) {
-        [[[self metadata] objectForKey:sectionName] removeObjectForKey:key];
-    }
+    [self.metadata clearMetadataFromSection:sectionName withKey:key];
 }
 
 @end

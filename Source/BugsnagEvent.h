@@ -13,6 +13,7 @@
 @class BugsnagHandledState;
 @class BugsnagSession;
 @class BugsnagBreadcrumb;
+@class BugsnagMetadata;
 
 typedef NS_ENUM(NSUInteger, BSGSeverity) {
     BSGSeverityError,
@@ -66,7 +67,7 @@ typedef NS_ENUM(NSUInteger, BSGSeverity) {
 initWithErrorName:(NSString *_Nonnull)name
      errorMessage:(NSString *_Nonnull)message
     configuration:(BugsnagConfiguration *_Nonnull)config
-         metadata:(NSDictionary *_Nonnull)metadata
+         metadata:(BugsnagMetadata *_Nullable)metadata
      handledState:(BugsnagHandledState *_Nonnull)handledState
           session:(BugsnagSession *_Nullable)session;
 
@@ -109,11 +110,6 @@ initWithErrorName:(NSString *_Nonnull)name
  *  Breadcrumbs from user events leading up to the error
  */
 @property(readwrite, copy, nullable) NSArray <BugsnagBreadcrumb *>*breadcrumbs;
-/**
- *  Further information attached to an error report, where each top level key
- *  generates a section on bugsnag, displaying key/value pairs
- */
-@property(readwrite, copy, nonnull) NSDictionary *metadata;
 
 /**
  * A per-event override for the apiKey.

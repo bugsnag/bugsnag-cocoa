@@ -27,7 +27,7 @@
 #import <Foundation/Foundation.h>
 #import "BugsnagMetadataStore.h"
 
-@interface BugsnagMetadata : NSObject <NSMutableCopying, BugsnagMetadataStore>
+@interface BugsnagMetadata : NSObject <BugsnagMetadataStore>
 - (instancetype _Nonnull)initWithDictionary:(NSMutableDictionary *_Nonnull)dict;
 @end
 

@@ -42,6 +42,7 @@
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSMach.h"
 #import "BSGSerialization.h"
+#import "Bugsnag.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -88,6 +89,10 @@ static bool hasRecordedSessions;
 
 @interface NSDictionary (BSGKSMerge)
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
+@end
+
+@interface Bugsnag ()
++ (BugsnagClient *)client;
 @end
 
 @interface BugsnagSession ()
@@ -282,6 +287,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property(readonly, copy, nonnull) NSDictionary *overrides;
 @property(readwrite) NSUInteger depth;
 @property(readonly, nonnull) BugsnagHandledState *handledState;
+@property (nonatomic, strong) BugsnagMetadata *metadata;
 @end
 
 @interface BugsnagMetadata ()
@@ -649,36 +655,36 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 // MARK: - Notify
 
 - (void)notifyError:(NSError *)error
-              block:(void (^)(BugsnagEvent *))block {
-    BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:HandledError
-                                                   severity:BSGSeverityWarning
-                                                  attrValue:error.domain];
+              block:(void (^)(BugsnagEvent *))block
+{
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError
+                                                                            severity:BSGSeverityWarning
+                                                                           attrValue:error.domain];
     NSException *wrapper = [NSException exceptionWithName:NSStringFromClass([error class])
                                                    reason:error.localizedDescription
                                                  userInfo:error.userInfo];
     [self notify:wrapper
     handledState:state
-           block:^(BugsnagEvent *_Nonnull report) {
-               NSMutableDictionary *metadata = [report.metadata mutableCopy];
-               metadata[@"nserror"] = @{
-                   @"code" : @(error.code),
-                   @"domain" : error.domain,
-                   BSGKeyReason : error.localizedFailureReason ?: @""
-               };
-               if (report.context == nil) { // set context as error domain
-                    report.context = [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code];
+           block:^(BugsnagEvent *_Nonnull event) {
+                [event addMetadata:@{
+                                        @"code" : @(error.code),
+                                        @"domain" : error.domain,
+                                        BSGKeyReason : error.localizedFailureReason ?: @""
+                                    }
+                         toSection:@"nserror"];
+               if (event.context == nil) { // set context as error domain
+                    event.context = [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code];
                }
-               report.metadata = metadata;
 
                if (block) {
-                   block(report);
+                   block(event);
                }
            }];
 }
 
 - (void)notifyException:(NSException *)exception
-                  block:(void (^)(BugsnagEvent *))block {
+                  block:(void (^)(BugsnagEvent *))block
+{
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     [self notify:exception handledState:state block:block];
@@ -686,8 +692,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagOnErrorBlock _Nullable)block {
-
+                       block:(BugsnagOnErrorBlock _Nullable)block
+{
     BSGSeverity severity = BSGParseSeverity(metadata[BSGKeySeverity]);
     NSString *severityReason = metadata[BSGKeySeverityReason];
     BOOL unhandled = [metadata[BSGKeyUnhandled] boolValue];
@@ -756,13 +762,12 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         [self.sessionTracker handleHandledErrorEvent];
     }
 
-    BugsnagEvent *event = [[BugsnagEvent alloc]
-        initWithErrorName:exceptionName
-             errorMessage:message
-            configuration:self.configuration
-                 metadata:[self.configuration.metadata toDictionary]
-             handledState:handledState
-                  session:self.sessionTracker.runningSession];
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithErrorName:exceptionName
+                                                     errorMessage:message
+                                                    configuration:self.configuration
+                                                         metadata:[[[Bugsnag client] metadata] deepCopy] //[self.configuration.metadata toDictionary]
+                                                     handledState:handledState
+                                                          session:self.sessionTracker.runningSession];
     
     if (block) {
         block(event);
@@ -789,7 +794,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                              handledState:[handledState toJson]
                                  appState:[self.state toDictionary]
                         callbackOverrides:event.overrides
-                                 metadata:[event.metadata copy]
+                                 metadata:[event.metadata deepCopy]
                                    config:[self.configuration.config toDictionary]
                              discardDepth:depth];
     
