@@ -8,6 +8,7 @@
 
 #import "Bugsnag.h"
 #import "BugsnagClient.h"
+#import "BugsnagClientInternal.h"
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagTestConstants.h"

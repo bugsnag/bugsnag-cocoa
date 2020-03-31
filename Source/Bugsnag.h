@@ -160,11 +160,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
     NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
 
 /**
- * Clear any breadcrumbs that have been left so far.
- */
-+ (void)clearBreadcrumbs;
-
-/**
  * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.
  * By default, we'll keep and send the 20 most recent breadcrumb log
  * messages.

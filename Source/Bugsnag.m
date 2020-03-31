@@ -28,6 +28,7 @@
 #import "BSG_KSCrash.h"
 #import "BugsnagLogger.h"
 #import "BugsnagClient.h"
+#import "BugsnagClientInternal.h"
 #import "BugsnagKeys.h"
 #import "BugsnagPlugin.h"
 #import "BugsnagHandledState.h"
@@ -92,7 +93,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 
 + (BOOL)appDidCrashLastLaunch {
     if ([self bugsnagStarted]) {
-        return [self.client appCrashedLastLaunch];
+        return [self.client appDidCrashLastLaunch];
     }
     return NO;
 }
@@ -219,12 +220,6 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 + (void)setBreadcrumbCapacity:(NSUInteger)capacity {
     if ([self bugsnagStarted]) {
         [self.client.configuration setMaxBreadcrumbs:capacity];
-    }
-}
-
-+ (void)clearBreadcrumbs {
-    if ([self bugsnagStarted]) {
-        [self.client clearBreadcrumbs];
     }
 }
 

@@ -29,28 +29,20 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagMetadata.h"
 
-@class BugsnagSessionTracker;
-
 @interface BugsnagClient : NSObject <BugsnagMetadataDelegate>
 
-@property(nonatomic, readwrite, retain)
-    BugsnagConfiguration *_Nullable configuration;
-@property(nonatomic, readwrite, strong) BugsnagMetadata *_Nonnull state;
-@property(nonatomic, readwrite, strong) NSDictionary *_Nonnull details;
-@property(nonatomic, readwrite, strong) NSLock *_Nonnull metadataLock;
-@property(nonatomic, readonly, strong) BugsnagSessionTracker *_Nonnull sessionTracker;
-
-@property(readonly) BOOL started;
-
-- (instancetype _Nonnull)initWithConfiguration:
-    (BugsnagConfiguration *_Nonnull)configuration;
-- (void)start;
+- (instancetype _Nonnull)initWithConfiguration:(BugsnagConfiguration *_Nonnull)configuration;
 
 - (void)startSession;
+
 - (void)pauseSession;
+
 - (BOOL)resumeSession;
 
-- (BOOL)appCrashedLastLaunch;
+/**
+ * @return YES if Bugsnag has been started and the previous launch crashed
+ */
+- (BOOL)appDidCrashLastLaunch;
 
 /**
  *  Notify Bugsnag of an exception
@@ -89,15 +81,6 @@
  *  @param block configuration block
  */
 - (void)addBreadcrumbWithBlock:
-    (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
+        (void (^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
 
-/**
- * Clear all stored breadcrumbs.
- */
-- (void)clearBreadcrumbs;
-
-/**
- * Enable or disable crash reporting based on configuration state
- */
-- (void)updateCrashDetectionSettings;
 @end
