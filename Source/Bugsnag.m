@@ -217,12 +217,6 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     }
 }
 
-+ (void)setBreadcrumbCapacity:(NSUInteger)capacity {
-    if ([self bugsnagStarted]) {
-        [self.client.configuration setMaxBreadcrumbs:capacity];
-    }
-}
-
 + (void)startSession {
     if ([self bugsnagStarted]) {
         [self.client startSession];

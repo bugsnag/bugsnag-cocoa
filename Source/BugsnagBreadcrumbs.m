@@ -136,12 +136,6 @@ NSUInteger BreadcrumbsDefaultCapacity = 25;
     }
 }
 
-- (void)clearBreadcrumbs {
-    dispatch_barrier_sync(self.readWriteQueue, ^{
-      [self.breadcrumbs removeAllObjects];
-    });
-}
-
 - (NSUInteger)count {
     return self.breadcrumbs.count;
 }
@@ -183,9 +177,7 @@ NSUInteger BreadcrumbsDefaultCapacity = 25;
 }
 
 - (void)resizeToFitCapacity:(NSUInteger)capacity {
-    if (capacity == 0) {
-        [self clearBreadcrumbs];
-    } else if ([self count] > capacity) {
+    if ([self count] > capacity) {
         dispatch_barrier_sync(self.readWriteQueue, ^{
           [self.breadcrumbs
               removeObjectsInRange:NSMakeRange(0, self.count - capacity)];

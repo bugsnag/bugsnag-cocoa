@@ -81,6 +81,6 @@
  *  @param block configuration block
  */
 - (void)addBreadcrumbWithBlock:
-        (void (^ _Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
+    (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
 
 @end
