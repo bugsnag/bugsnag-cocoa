@@ -29,10 +29,6 @@
 #import "BugsnagMetadata.h"
 #import "BugsnagPlugin.h"
 
-static NSString *_Nonnull const BugsnagSeverityError = @"error";
-static NSString *_Nonnull const BugsnagSeverityWarning = @"warning";
-static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
-
 @interface Bugsnag : NSObject
 
 /** Start listening for crashes.
@@ -158,11 +154,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
                           metadata:(NSDictionary *_Nullable)metadata
                            andType:(BSGBreadcrumbType)type
     NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
-
-/**
- * Clear any breadcrumbs that have been left so far.
- */
-+ (void)clearBreadcrumbs;
 
 /**
  * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.

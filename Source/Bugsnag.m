@@ -222,12 +222,6 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     }
 }
 
-+ (void)clearBreadcrumbs {
-    if ([self bugsnagStarted]) {
-        [self.client clearBreadcrumbs];
-    }
-}
-
 + (void)startSession {
     if ([self bugsnagStarted]) {
         [self.client startSession];

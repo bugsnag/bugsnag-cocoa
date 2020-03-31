@@ -811,11 +811,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self serializeBreadcrumbs];
 }
 
-- (void)clearBreadcrumbs {
-    [self.configuration.breadcrumbs clearBreadcrumbs];
-    [self serializeBreadcrumbs];
-}
-
 - (void)serializeBreadcrumbs {
     BugsnagBreadcrumbs *crumbs = self.configuration.breadcrumbs;
     NSArray *arrayValue = crumbs.count == 0 ? nil : [crumbs arrayValue];

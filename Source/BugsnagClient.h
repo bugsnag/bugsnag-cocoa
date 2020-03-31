@@ -92,11 +92,6 @@
     (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
 
 /**
- * Clear all stored breadcrumbs.
- */
-- (void)clearBreadcrumbs;
-
-/**
  * Enable or disable crash reporting based on configuration state
  */
 - (void)updateCrashDetectionSettings;

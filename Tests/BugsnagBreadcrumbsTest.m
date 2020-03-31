@@ -88,13 +88,6 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqual(100, self.crumbs.capacity);
 }
 
-- (void)testClearBreadcrumbs {
-    [self.crumbs clearBreadcrumbs];
-    awaitBreadcrumbSync(self.crumbs);
-    XCTAssertTrue(self.crumbs.count == 0);
-    XCTAssertNil(self.crumbs[0]);
-}
-
 - (void)testEmptyCapacity {
     self.crumbs.capacity = 0;
     [self.crumbs addBreadcrumb:@"Clear notifications"];
@@ -176,8 +169,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 }
 
 - (void)testDefaultDiscardByType {
-    [self.crumbs clearBreadcrumbs];
-    awaitBreadcrumbSync(self.crumbs);
+    self.crumbs = [BugsnagBreadcrumbs new];
     [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeState;
         crumb.message = @"state";
@@ -223,8 +215,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 }
 
 - (void)testAlwaysAllowManual {
-    [self.crumbs clearBreadcrumbs];
-    awaitBreadcrumbSync(self.crumbs);
+    self.crumbs = [BugsnagBreadcrumbs new];
     self.crumbs.enabledBreadcrumbTypes = 0;
     [self.crumbs addBreadcrumb:@"this is a test"];
     awaitBreadcrumbSync(self.crumbs);
@@ -239,8 +230,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
  * private and assumes filtering is already configured.
  */
 - (void)testDiscardByTypeDoesNotApply {
-    [self.crumbs clearBreadcrumbs];
-    awaitBreadcrumbSync(self.crumbs);
+    self.crumbs = [BugsnagBreadcrumbs new];
     self.crumbs.enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeProcess;
     // Don't discard this
     [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
