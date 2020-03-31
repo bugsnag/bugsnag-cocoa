@@ -28,10 +28,11 @@
 
 #import "BugsnagConfiguration.h"
 #import "BugsnagMetadata.h"
+#import "BugsnagMetadataStore.h"
 
 @class BugsnagSessionTracker;
 
-@interface BugsnagClient : NSObject <BugsnagMetadataDelegate>
+@interface BugsnagClient : NSObject <BugsnagMetadataDelegate, BugsnagMetadataStore>
 
 @property(nonatomic, readwrite, retain)
     BugsnagConfiguration *_Nullable configuration;

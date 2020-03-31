@@ -41,6 +41,7 @@
 #import "BSG_KSCrashState.h"
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSMach.h"
+#import "BSGSerialization.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -84,6 +85,10 @@ static char *crashSentinelPath = NULL;
 static NSUInteger handledCount;
 static NSUInteger unhandledCount;
 static bool hasRecordedSessions;
+
+@interface NSDictionary (BSGKSMerge)
+- (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
+@end
 
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;
@@ -258,6 +263,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic, strong) BSGOutOfMemoryWatchdog *oomWatchdog;
 @property (nonatomic, strong) BugsnagPluginClient *pluginClient;
 @property (nonatomic) BOOL appCrashedLastLaunch;
+@property(readwrite, copy, nonnull) NSDictionary *metadata;
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 // The previous device orientation - iOS only
 @property (nonatomic, strong) NSString *lastOrientation;
@@ -293,6 +299,20 @@ NSString *_lastOrientation = nil;
 #endif
 
 @synthesize configuration;
+
+@synthesize metadata = _metadata;
+
+- (NSDictionary *)metadata {
+    @synchronized (self) {
+        return _metadata;
+    }
+}
+
+- (void)setMetadata:(NSDictionary *)metadata {
+    @synchronized (self) {
+        _metadata = BSGSanitizeDict(metadata);
+    }
+}
 
 - (id)initWithConfiguration:(BugsnagConfiguration *)initConfiguration {
     static NSString *const BSGWatchdogSentinelFileName = @"bugsnag_oom_watchdog.json";
@@ -649,23 +669,23 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                                                    reason:error.localizedDescription
                                                  userInfo:error.userInfo];
     [self notify:wrapper
-        handledState:state
-               block:^(BugsnagEvent *_Nonnull report) {
-                 NSMutableDictionary *metadata = [report.metadata mutableCopy];
-                 metadata[@"nserror"] = @{
-                     @"code" : @(error.code),
-                     @"domain" : error.domain,
-                     BSGKeyReason : error.localizedFailureReason ?: @""
-                 };
-                   if (report.context == nil) { // set context as error domain
-                       report.context = [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code];
-                   }
-                 report.metadata = metadata;
+    handledState:state
+           block:^(BugsnagEvent *_Nonnull report) {
+               NSMutableDictionary *metadata = [report.metadata mutableCopy];
+               metadata[@"nserror"] = @{
+                   @"code" : @(error.code),
+                   @"domain" : error.domain,
+                   BSGKeyReason : error.localizedFailureReason ?: @""
+               };
+               if (report.context == nil) { // set context as error domain
+                    report.context = [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code];
+               }
+               report.metadata = metadata;
 
-                 if (block) {
-                     block(report);
-                 }
-               }];
+               if (block) {
+                   block(report);
+               }
+           }];
 }
 
 - (void)notifyException:(NSException *)exception
@@ -1183,6 +1203,84 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
       }
     }];
 #endif
+}
+
+// MARK: - <BugsnagMetadataStore>
+
+- (void)addMetadata:(NSDictionary *_Nonnull)metadata
+          toSection:(NSString *_Nonnull)sectionName
+{
+    @synchronized (self) {
+        NSDictionary *cleanedData = BSGSanitizeDict(metadata);
+        if ([cleanedData count] == 0) {
+            bsg_log_err(@"Failed to add metadata: Values not convertible to JSON");
+            return;
+        }
+        NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
+        NSMutableDictionary *allTabData =
+            allMetadata[sectionName] ?: [NSMutableDictionary new];
+        allMetadata[sectionName] = [cleanedData BSG_mergedInto:allTabData];
+        self.metadata = allMetadata;
+    }
+}
+
+- (void)addMetadata:(id _Nullable)value
+            withKey:(NSString *_Nonnull)key
+          toSection:(NSString *_Nonnull)sectionName
+{
+    @synchronized (self) {
+        NSMutableDictionary *allMetadata = [self.metadata mutableCopy];
+        NSMutableDictionary *allTabData =
+            [allMetadata[sectionName] mutableCopy] ?: [NSMutableDictionary new];
+        if (value) {
+            id cleanedValue = BSGSanitizeObject(value);
+            if (!cleanedValue) {
+                bsg_log_err(@"Failed to add metadata: Value of type %@ is not "
+                            @"convertible to JSON",
+                            [value class]);
+                return;
+            }
+            allTabData[key] = cleanedValue;
+        } else {
+            [allTabData removeObjectForKey:key];
+        }
+        allMetadata[sectionName] = allTabData;
+        self.metadata = allMetadata;
+    }
+}
+
+- (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+                               withKey:(NSString *_Nullable)key
+{
+    @synchronized (self) {
+        return [[[self metadata] objectForKey:sectionName] objectForKey:key];
+    }
+    return nil;
+}
+
+- (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+{
+    @synchronized (self) {
+        return [[self metadata] objectForKey:sectionName];
+    }
+    return nil;
+}
+
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
+{
+    @synchronized (self) {
+        NSMutableDictionary *copy = [[self metadata] mutableCopy];
+        [copy removeObjectForKey:sectionName];
+        _metadata = copy;
+    }
+}
+
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
+                       withKey:(NSString *_Nonnull)key
+{
+    @synchronized (self) {
+        [[[self metadata] objectForKey:sectionName] removeObjectForKey:key];
+    }
 }
 
 @end

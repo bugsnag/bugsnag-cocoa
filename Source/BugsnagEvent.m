@@ -23,7 +23,6 @@
 #import "BugsnagSession.h"
 #import "Private.h"
 #import "BSG_RFC3339DateTool.h"
-#import "Private.h"
 #import "BugsnagKeys.h"
 
 @interface BugsnagBreadcrumb ()
