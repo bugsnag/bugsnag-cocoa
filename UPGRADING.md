@@ -103,6 +103,10 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 - Bugsnag.payloadDateFormatter()
 - Bugsnag.clearBreadcrumbs()
+
+- BugsnagSeverityError
+- BugsnagSeverityWarning
+- BugsnagSeverityInfo
 ```
 
 #### Additions
