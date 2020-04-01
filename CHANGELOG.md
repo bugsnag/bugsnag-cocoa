@@ -195,6 +195,10 @@ Bugsnag Notifiers on other platforms.
 * Enhanced device orientation change breadcrumbs.  These are now reported with "from" and "to" values
   in a form consistent with the Android notifier.
   (#486)[https://github.com/bugsnag/bugsnag-cocoa/pull/486]
+  
+* The metadata interface is now consistent across the `BugsnagConfig`, `BugsnagClient` and `BugsnagEvent` 
+  classes.
+  (#513)[https://github.com/bugsnag/bugsnag-cocoa/pull/513]
 
 ## Bug fixes
 
