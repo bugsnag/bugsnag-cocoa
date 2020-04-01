@@ -13,6 +13,7 @@
 @class BugsnagHandledState;
 @class BugsnagSession;
 @class BugsnagBreadcrumb;
+@class BugsnagAppWithState;
 @class BugsnagMetadata;
 
 typedef NS_ENUM(NSUInteger, BSGSeverity) {
@@ -91,10 +92,6 @@ initWithErrorName:(NSString *_Nonnull)name
  */
 @property(readwrite) BSGSeverity severity;
 /**
- *  The release stage of the application
- */
-@property(readwrite, copy, nullable) NSString *releaseStage;
-/**
  *  The class of the error generating the report
  */
 @property(readwrite, copy, nonnull) NSString *errorClass;
@@ -120,19 +117,16 @@ initWithErrorName:(NSString *_Nonnull)name
 /**
  *  Device information such as OS name and version
  */
-@property(readwrite, copy, nullable) NSDictionary *device;
+@property(readonly, nonnull) NSDictionary *device;
 /**
  *  Device state such as memory allocation at crash time
  */
 @property(readwrite, copy, nullable) NSDictionary *deviceState;
+
 /**
  *  App information such as the name, version, and bundle ID
  */
-@property(readwrite, copy, nullable) NSDictionary *app;
-/**
- *  Device state such as oreground status and run duration
- */
-@property(readwrite, copy, nullable) NSDictionary *appState;
+@property(readonly, nonnull) BugsnagAppWithState *app;
 
 /**
  * Whether the event was a crash (i.e. unhandled) or handled error in which the system

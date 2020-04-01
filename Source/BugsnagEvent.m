@@ -26,6 +26,12 @@
 #import "BugsnagKeys.h"
 #import "BugsnagClient.h"
 
+@interface BugsnagAppWithState ()
++ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event config:(BugsnagConfiguration *)config;
+- (NSDictionary *)toDict;
++ (BugsnagAppWithState *)appWithOomData:(NSDictionary *)event;
+@end
+
 @interface BugsnagBreadcrumb ()
 + (instancetype _Nullable)breadcrumbWithBlock:
     (BSGBreadcrumbConfiguration _Nonnull)block;
@@ -237,10 +243,6 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
  */
 @property(nonatomic, readwrite, copy, nullable) NSString *errorType;
 /**
- *  The UUID of the dSYM file
- */
-@property(nonatomic, readonly, copy, nullable) NSString *dsymUUID;
-/**
  *  A unique hash identifying this device for the application or vendor
  */
 @property(nonatomic, readonly, copy, nullable) NSString *deviceAppHash;
@@ -295,6 +297,11 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
  *  Raw error data
  */
 @property(readwrite, copy, nullable) NSDictionary *error;
+
+/**
+ *  The release stage of the application
+ */
+@property(readwrite, copy, nullable) NSString *releaseStage;
 @end
 
 @implementation BugsnagEvent
@@ -310,19 +317,21 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
     }
 
     if (self = [super init]) {
+        BugsnagConfiguration *config = [Bugsnag configuration];
+
         _error = [report valueForKeyPath:@"crash.error"];
         _errorType = _error[BSGKeyType];
         if ([[report valueForKeyPath:@"user.state.didOOM"] boolValue]) {
             _errorClass = BSGParseErrorClass(_error, _errorType);
             _errorMessage = BSGParseErrorMessage(report, _error, _errorType);
             _breadcrumbs = BSGParseBreadcrumbs(report);
-            _app = [report valueForKeyPath:@"user.state.oom.app"];
+            _app = [BugsnagAppWithState appWithOomData:[report valueForKeyPath:@"user.state.oom.app"]];
             _device = [report valueForKeyPath:@"user.state.oom.device"];
             _releaseStage = [report valueForKeyPath:@"user.state.oom.app.releaseStage"];
             _handledState = [BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory];
             _deviceAppHash = [report valueForKeyPath:@"user.state.oom.device.id"];
             self.metadata = [BugsnagMetadata new];
-            
+
             NSDictionary *sessionData = [report valueForKeyPath:@"user.state.oom.session"];
             if (sessionData) {
                 _session = [[BugsnagSession alloc] initWithDictionary:sessionData];
@@ -345,7 +354,6 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             }
             _binaryImages = report[@"binary_images"];
             _breadcrumbs = BSGParseBreadcrumbs(report);
-            _dsymUUID = [report valueForKeyPath:@"system.app_uuid"];
             _deviceAppHash = [report valueForKeyPath:@"system.device_app_hash"];
 
             id userMetadata = [report valueForKeyPath:@"user.metaData"];
@@ -355,15 +363,11 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             else {
                 self.metadata = [BugsnagMetadata new];
             }
-             
+
             _context = BSGParseContext(report);
             _deviceState = BSGParseDeviceState(report);
             _device = BSGParseDevice(report);
-            _app = BSGParseApp(report);
-            _appState = BSGParseAppState(report[BSGKeySystem],
-                                         BSGLoadConfigValue(report, @"appVersion"),
-                                         _releaseStage, // Already loaded from config
-                                         BSGLoadConfigValue(report, @"codeBundleId"));
+            _app = [BugsnagAppWithState appWithDictionary:report config:config];
             _groupingHash = BSGParseGroupingHash(report);
             _overrides = [report valueForKeyPath:@"user.overrides"];
             _customException = BSGParseCustomException(report, [_errorClass copy], [_errorMessage copy]);
@@ -378,7 +382,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
                 _depth = [[report valueForKeyPath:@"user.depth"]
                         unsignedIntegerValue];
             }
-            
+
             // the event was unhandled.
             else {
                 BOOL isSignal = [BSGKeySignal isEqualToString:_errorType];
@@ -411,7 +415,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
         _errorMessage = message;
         _overrides = [NSDictionary new];
         self.metadata = [metadata deepCopy] ?: [BugsnagMetadata new];
-        _releaseStage = config.releaseStage;
+        self.releaseStage = config.releaseStage;
         _enabledReleaseStages = config.enabledReleaseStages;
         // Set context based on current values.  May be nil.
         _context = [[Bugsnag configuration] context];
@@ -579,19 +583,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
     NSDictionary *device = BSGDictMerge(self.device, self.deviceState);
     BSGDictSetSafeObject(event, device, BSGKeyDevice);
-    
-    NSMutableDictionary *appObj = [NSMutableDictionary new];
-    [appObj addEntriesFromDictionary:self.app];
-    
-    for (NSString *key in self.appState) {
-        BSGDictInsertIfNotNil(appObj, self.appState[key], key);
-    }
-    
-    if (self.dsymUUID) {
-        BSGDictInsertIfNotNil(appObj, @[self.dsymUUID], @"dsymUUIDs");
-    }
-    
-    BSGDictSetSafeObject(event, appObj, BSGKeyApp);
+    BSGDictSetSafeObject(event, [self.app toDict], BSGKeyApp);
     
     BSGDictSetSafeObject(event, [self context], BSGKeyContext);
     BSGDictInsertIfNotNil(event, self.groupingHash, BSGKeyGroupingHash);

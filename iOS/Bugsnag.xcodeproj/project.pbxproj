@@ -331,6 +331,7 @@
 		E790C45F24349A70006FFB26 /* BugsnagError.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E790C44C24349898006FFB26 /* BugsnagError.h */; };
 		E790C46024349A70006FFB26 /* BugsnagStackframe.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E790C451243498BB006FFB26 /* BugsnagStackframe.h */; };
 		E790C46124349A70006FFB26 /* BugsnagThread.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E790C45624349A28006FFB26 /* BugsnagThread.h */; };
+		E790C49B2434C8C8006FFB26 /* BugsnagAppTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E790C49A2434C8C8006FFB26 /* BugsnagAppTest.m */; };
 		E79148251FD828E6003EFEBF /* BugsnagKeys.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E794E8021F9F743D00A67EE7 /* BugsnagKeys.h */; };
 		E79148261FD828E6003EFEBF /* BugsnagSessionTracker.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E72BF7731FC867E4004BE82F /* BugsnagSessionTracker.h */; };
 		E79148271FD828E6003EFEBF /* BugsnagSession.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E72BF7781FC869F7004BE82F /* BugsnagSession.h */; };
@@ -357,7 +358,6 @@
 		F42954D2337A7CAE1FE9B308 /* BugsnagFileStore.m in Sources */ = {isa = PBXBuildFile; fileRef = F42958B2E67C338E3086EAC2 /* BugsnagFileStore.m */; };
 		F429561943952286B690CFB1 /* BugsnagSessionTrackingApiClient.h in Headers */ = {isa = PBXBuildFile; fileRef = F429517A5571A61A897E963D /* BugsnagSessionTrackingApiClient.h */; };
 		F4295932E7EC58D1CB806EC9 /* BugsnagFileStore.h in Headers */ = {isa = PBXBuildFile; fileRef = F42953E7E61199381E0405CC /* BugsnagFileStore.h */; };
-		F4295995C3259BF7D9730BC4 /* BugsnagKSCrashSysInfoParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F429554A50F3ABE60537F70E /* BugsnagKSCrashSysInfoParserTest.m */; };
 		F4295B2AC95281CBA3A42DCA /* BugsnagSessionFileStore.m in Sources */ = {isa = PBXBuildFile; fileRef = F42954ACC6FFDDE3C8471495 /* BugsnagSessionFileStore.m */; };
 		F4295BB0741ED030D0CD002C /* BugsnagApiClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295E2778677786239F2B28 /* BugsnagApiClient.m */; };
 		F4295C14DCDDF541188CDE66 /* BugsnagSessionFileStore.h in Headers */ = {isa = PBXBuildFile; fileRef = F42955025DBE1DCEFD928CAA /* BugsnagSessionFileStore.h */; };
@@ -674,6 +674,7 @@
 		E790C452243498BB006FFB26 /* BugsnagStackframe.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagStackframe.m; path = ../Source/BugsnagStackframe.m; sourceTree = "<group>"; };
 		E790C45624349A28006FFB26 /* BugsnagThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagThread.h; path = ../Source/BugsnagThread.h; sourceTree = "<group>"; };
 		E790C45724349A28006FFB26 /* BugsnagThread.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagThread.m; path = ../Source/BugsnagThread.m; sourceTree = "<group>"; };
+		E790C49A2434C8C8006FFB26 /* BugsnagAppTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagAppTest.m; path = ../../Tests/BugsnagAppTest.m; sourceTree = "<group>"; };
 		E794E8021F9F743D00A67EE7 /* BugsnagKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagKeys.h; path = ../Source/BugsnagKeys.h; sourceTree = SOURCE_ROOT; };
 		E79FEBE61F4CB1320048FAD6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E7AB4B9B2423E16C004F015A /* BugsnagOnBreadcrumbTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagOnBreadcrumbTest.m; path = ../../Tests/BugsnagOnBreadcrumbTest.m; sourceTree = "<group>"; };
@@ -693,7 +694,6 @@
 		F42954B7D892334E7551F0F3 /* RegisterErrorDataTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisterErrorDataTest.m; sourceTree = "<group>"; };
 		F42955025DBE1DCEFD928CAA /* BugsnagSessionFileStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagSessionFileStore.h; path = ../Source/BugsnagSessionFileStore.h; sourceTree = SOURCE_ROOT; };
 		F429551527EAE3AFE1F605FE /* BugsnagThreadTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagThreadTest.m; sourceTree = "<group>"; };
-		F429554A50F3ABE60537F70E /* BugsnagKSCrashSysInfoParserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagKSCrashSysInfoParserTest.m; sourceTree = "<group>"; };
 		F42958B2E67C338E3086EAC2 /* BugsnagFileStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagFileStore.m; path = ../Source/BugsnagFileStore.m; sourceTree = SOURCE_ROOT; };
 		F4295E2778677786239F2B28 /* BugsnagApiClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagApiClient.m; path = ../Source/BugsnagApiClient.m; sourceTree = SOURCE_ROOT; };
 		F4295FBD23F478FC6216A006 /* BugsnagSessionTrackingApiClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagSessionTrackingApiClient.m; path = ../Source/BugsnagSessionTrackingApiClient.m; sourceTree = SOURCE_ROOT; };
@@ -875,7 +875,6 @@
 				8A2C8F8C1C6BBFDD00846019 /* BugsnagEventTests.m */,
 				4B47970922A9AE1F00FF9C2E /* BugsnagEventFromKSCrashReportTest.m */,
 				E77316E11F73B46600A14F06 /* BugsnagHandledStateTest.m */,
-				F429554A50F3ABE60537F70E /* BugsnagKSCrashSysInfoParserTest.m */,
 				009131BB23F46279000810D9 /* BugsnagMetadataTests.m */,
 				E78C1EFB1FCC759B00B976D3 /* BugsnagSessionTest.m */,
 				E78C1EF01FCC2F1700B976D3 /* BugsnagSessionTrackerTest.m */,
@@ -899,6 +898,7 @@
 				E72AE1FF241A57B100ED8972 /* BugsnagPluginTest.m */,
 				E7AB4B9B2423E16C004F015A /* BugsnagOnBreadcrumbTest.m */,
 				E790C41D24323102006FFB26 /* BugsnagClientMirrorTest.m */,
+				E790C49A2434C8C8006FFB26 /* BugsnagAppTest.m */,
 			);
 			name = Tests;
 			path = BugsnagTests;
@@ -1410,6 +1410,7 @@
 				4B775FCF22CBDEB4004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m in Sources */,
 				E72AE200241A57B100ED8972 /* BugsnagPluginTest.m in Sources */,
 				E733A7681FD7091F003EAA29 /* KSCrashSentry_NSException_Tests.m in Sources */,
+				E790C49B2434C8C8006FFB26 /* BugsnagAppTest.m in Sources */,
 				E7B970311FD702DA00590C27 /* KSLogger_Tests.m in Sources */,
 				8AA661AD23D8C1F50031ECC8 /* BSGConnectivityTest.m in Sources */,
 				E70EE0921FD706C700FA745C /* KSDynamicLinker_Tests.m in Sources */,
@@ -1436,7 +1437,6 @@
 				E70EE0871FD7047800FA745C /* KSSysCtl_Tests.m in Sources */,
 				E78C1EF31FCC615400B976D3 /* BugsnagSessionTrackingPayloadTest.m in Sources */,
 				E78C1EF11FCC2F1700B976D3 /* BugsnagSessionTrackerTest.m in Sources */,
-				F4295995C3259BF7D9730BC4 /* BugsnagKSCrashSysInfoParserTest.m in Sources */,
 				E70E52152216E41C00A590AB /* BugsnagSessionTrackerStopTest.m in Sources */,
 				00F9393923FC4F64008C7073 /* BugsnagTestsDummyClass.m in Sources */,
 				F4295F017754324FD52CCE46 /* RegisterErrorDataTest.m in Sources */,

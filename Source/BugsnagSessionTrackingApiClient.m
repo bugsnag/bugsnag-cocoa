@@ -10,6 +10,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagSession.h"
 #import "BSG_RFC3339DateTool.h"
+#import "Private.h"
 
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
@@ -44,7 +45,7 @@
         for (NSDictionary *dict in [store allFiles]) {
             [sessions addObject:[[BugsnagSession alloc] initWithDictionary:dict]];
         }
-        BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc] initWithSessions:sessions];
+        BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc] initWithSessions:sessions config:[Bugsnag configuration]];
         NSUInteger sessionCount = payload.sessions.count;
         NSMutableDictionary *data = [payload toJson];
 

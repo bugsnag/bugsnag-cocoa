@@ -223,6 +223,8 @@ This is now BugsnagEvent.
 + event.unhandled
 ```
 
+`event.app` is now a structured class with properties for each value, rather than an `NSDictionary`.
+
 #### Renames
 
 To add metadata to an individual report in a callback, use `addMetadata` instead

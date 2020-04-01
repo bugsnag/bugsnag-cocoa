@@ -66,59 +66,6 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
     return device;
 }
 
-NSDictionary *BSGParseApp(NSDictionary *report) {
-    NSDictionary *system = report[BSGKeySystem];
-
-    NSMutableDictionary *appState = [NSMutableDictionary dictionary];
-    
-    NSDictionary *stats = system[@"application_stats"];
-    
-    NSInteger activeTimeSinceLaunch =
-    [stats[@"active_time_since_launch"] doubleValue] * 1000.0;
-    NSInteger backgroundTimeSinceLaunch =
-    [stats[@"background_time_since_launch"] doubleValue] * 1000.0;
-    
-    BSGDictSetSafeObject(appState, @(activeTimeSinceLaunch),
-                         @"durationInForeground");
-
-    BSGDictSetSafeObject(appState, system[BSGKeyExecutableName], BSGKeyName);
-    BSGDictSetSafeObject(appState,
-                         @(activeTimeSinceLaunch + backgroundTimeSinceLaunch),
-                         @"duration");
-    BSGDictSetSafeObject(appState, stats[@"application_in_foreground"],
-                         @"inForeground");
-    BSGDictSetSafeObject(appState, system[@"CFBundleIdentifier"], BSGKeyId);
-    return appState;
-}
-
-NSDictionary *BSGParseAppState(NSDictionary *report, NSString *preferredVersion, NSString *releaseStage, NSString *codeBundleId) {
-    NSMutableDictionary *app = [NSMutableDictionary dictionary];
-
-    NSString *version = preferredVersion ?: report[@"CFBundleShortVersionString"];
-
-    BSGDictSetSafeObject(app, report[@"CFBundleVersion"], @"bundleVersion");
-    BSGDictSetSafeObject(app, releaseStage,
-                         BSGKeyReleaseStage);
-    BSGDictSetSafeObject(app, version, BSGKeyVersion);
-    
-    BSGDictSetSafeObject(app, codeBundleId, @"codeBundleId");
-    
-    NSString *appType;
-#if TARGET_OS_TV
-    appType = @"tvOS";
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    appType = @"iOS";
-#elif TARGET_OS_MAC
-    appType = @"macOS";
-#endif
-    
-    if ([Bugsnag configuration].appType) {
-        appType = [Bugsnag configuration].appType;
-    }
-    BSGDictSetSafeObject(app, appType, @"type");
-    return app;
-}
-
 NSDictionary *BSGParseDeviceState(NSDictionary *report) {
     NSMutableDictionary *deviceState = [NSMutableDictionary new];
     BSGDictSetSafeObject(deviceState, report[@"model"], @"modelNumber");
