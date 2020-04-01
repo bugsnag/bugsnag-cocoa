@@ -92,7 +92,10 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     XCTAssertEqualObjects([metadata valueForKey:@"severity"], eventSeverity);
 }
 
-- (void) testMetadataFunctionality {
+/**
+ * Test that Client inherits metadata from Configuration on init()
+ */
+- (void) testClientConfigurationHaveSeparateMetadata {
     [self setUpBugsnagWillCallNotify:false];
     
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];

@@ -84,7 +84,11 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
     BSGErrorTypesMach         NS_SWIFT_NAME(Mach)         = 1 << 4
 };
 
-@interface BugsnagConfiguration : NSObject <BugsnagMetadataStore>
+// =============================================================================
+// MARK: - BugsnagConfiguration
+// =============================================================================
+
+@interface BugsnagConfiguration : NSObject <NSCopying, BugsnagMetadataStore>
 
 // -----------------------------------------------------------------------------
 // MARK: - Properties

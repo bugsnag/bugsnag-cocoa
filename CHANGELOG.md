@@ -196,7 +196,7 @@ Bugsnag Notifiers on other platforms.
   in a form consistent with the Android notifier.
   (#486)[https://github.com/bugsnag/bugsnag-cocoa/pull/486]
   
-* The metadata interface is now consistent across the `BugsnagConfig`, `BugsnagClient` and `BugsnagEvent` 
+* The metadata interface is now consistent across the `Bugsnag`,  `BugsnagMetadata`, `BugsnagConfig`, `BugsnagClient` and `BugsnagEvent` 
   classes.
   (#513)[https://github.com/bugsnag/bugsnag-cocoa/pull/513]
 

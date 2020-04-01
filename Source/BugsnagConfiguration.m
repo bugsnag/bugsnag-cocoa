@@ -582,11 +582,11 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [self.metadata addMetadata:metadata toSection:sectionName];
 }
 
-- (void)addMetadata:(id _Nullable)value
+- (void)addMetadata:(id _Nullable)metadata
             withKey:(NSString *_Nonnull)key
           toSection:(NSString *_Nonnull)sectionName
 {
-    [self.metadata addMetadata:value withKey:key toSection:sectionName];
+    [self.metadata addMetadata:metadata withKey:key toSection:sectionName];
 }
 
 - (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName

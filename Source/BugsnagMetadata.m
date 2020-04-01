@@ -61,7 +61,7 @@
 
 - (id)deepCopy {
     @synchronized(self) {
-        return [[BugsnagMetadata alloc] initWithDictionary:[[self dictionary] mutableDeepCopy]];
+        return [[BugsnagMetadata alloc] initWithDictionary:self.dictionary];
     }
 }
 
@@ -80,7 +80,7 @@
             id cleanedValue = BSGSanitizeObject(metadata);
             if (cleanedValue) {
                 // Value is OK, try and set it
-                NSMutableDictionary *section = [[self getMetadataFromSection:sectionName] mutableCopy];
+                NSMutableDictionary *section = [self getMetadataFromSection:sectionName];
                 if (!section) {
                     section = [NSMutableDictionary new];
                     [[self dictionary] setObject:section forKey:sectionName];
@@ -112,25 +112,25 @@
 /**
  * Merge supplied and existing metadata.
  */
-- (void)addMetadata:(NSDictionary *)values
+- (void)addMetadata:(NSDictionary *)metadataValues
           toSection:(NSString *)sectionName
 {
     @synchronized(self) {
-        if (values) {
+        if (metadataValues) {
             // Check each value in turn.  Remove nulls, add/replace others
             // Fast enumeration over the (unmodified) supplied values for simplicity
             bool metadataChanged = false;
-            for (id key in values) {
+            for (id key in metadataValues) {
                 // Ensure keys are (JSON-serializable) strings
                 if ([[key class] isSubclassOfClass:[NSString class]]) {
-                    id value = [values objectForKey:key];
+                    id value = [metadataValues objectForKey:key];
                     
                     // The common case: adding sensible values
                     if (value && value != [NSNull null]) {
                         id cleanedValue = BSGSanitizeObject(value);
                         if (cleanedValue) {
                             // We only want to create a tab if we have a valid value.
-                            NSMutableDictionary *metadata = [[self getMetadataFromSection:sectionName] mutableCopy];
+                            NSMutableDictionary *metadata = [self getMetadataFromSection:sectionName];
                             if (!metadata) {
                                 metadata = [NSMutableDictionary new];
                                 [self dictionary][sectionName] = metadata;
@@ -160,7 +160,7 @@
                 
                 // Something went wrong...
                 else {
-                    bsg_log_err(@"Failed to update metadata: Section: %@, Values: %@", sectionName, values);
+                    bsg_log_err(@"Failed to update metadata: Section: %@, Values: %@", sectionName, metadataValues);
                 }
             }
             

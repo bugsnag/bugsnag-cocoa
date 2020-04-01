@@ -300,6 +300,10 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 + (NSDateFormatter *_Nonnull)payloadDateFormatter;
 @end
 
+// =============================================================================
+// MARK: - BugsnagClient
+// =============================================================================
+
 @implementation BugsnagClient
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
@@ -864,7 +868,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithErrorName:exceptionName
                                                      errorMessage:message
                                                     configuration:self.configuration
-                                                         metadata:[[[Bugsnag client] metadata] deepCopy] //[self.configuration.metadata toDictionary]
+                                                         metadata:[[Bugsnag client] metadata]
                                                      handledState:handledState
                                                           session:self.sessionTracker.runningSession];
     
@@ -928,8 +932,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     BugsnagBreadcrumbs *crumbs = self.configuration.breadcrumbs;
     NSArray *arrayValue = crumbs.count == 0 ? nil : [crumbs arrayValue];
     [self.state addMetadata:arrayValue
-                   withKey:BSGKeyBreadcrumbs
-               toSection:BSTabCrash];
+                    withKey:BSGKeyBreadcrumbs
+                  toSection:BSTabCrash];
 }
 
 - (void)metadataChanged:(BugsnagMetadata *)metadata {
@@ -1301,11 +1305,11 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.metadata addMetadata:metadata toSection:sectionName];
 }
 
-- (void)addMetadata:(id _Nullable)value
+- (void)addMetadata:(id _Nullable)metadata
             withKey:(NSString *_Nonnull)key
           toSection:(NSString *_Nonnull)sectionName
 {
-    [self.metadata addMetadata:value withKey:key toSection:sectionName];
+    [self.metadata addMetadata:metadata withKey:key toSection:sectionName];
 }
 
 - (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName

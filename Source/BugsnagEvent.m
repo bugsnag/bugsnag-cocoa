@@ -227,6 +227,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
 @interface BugsnagMetadata ()
 - (NSDictionary *)toDictionary;
+- (id)deepCopy;
 @end
 
 @interface BugsnagEvent ()
@@ -409,7 +410,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
         _errorClass = name;
         _errorMessage = message;
         _overrides = [NSDictionary new];
-        self.metadata = metadata ?: [BugsnagMetadata new];
+        self.metadata = [metadata deepCopy] ?: [BugsnagMetadata new];
         _releaseStage = config.releaseStage;
         _enabledReleaseStages = config.enabledReleaseStages;
         // Set context based on current values.  May be nil.
@@ -719,11 +720,11 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
     [self.metadata addMetadata:metadata toSection:sectionName];
 }
 
-- (void)addMetadata:(id _Nullable)value
+- (void)addMetadata:(id _Nullable)metadata
             withKey:(NSString *_Nonnull)key
           toSection:(NSString *_Nonnull)sectionName
 {
-    [self.metadata addMetadata:value withKey:key toSection:sectionName];
+    [self.metadata addMetadata:metadata withKey:key toSection:sectionName];
 }
 
 - (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName

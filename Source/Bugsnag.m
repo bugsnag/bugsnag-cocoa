@@ -233,26 +233,26 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
  * Add custom data to send to Bugsnag with every exception. If value is nil,
  * delete the current value for attributeName
  *
- * @param value The metadata to add
+ * @param metadata The metadata to add
  * @param key The key for the metadata
  * @param section The top-level section to add the keyed metadata to
  */
-+ (void)addMetadata:(id _Nullable)value
++ (void)addMetadata:(id _Nullable)metadata
             withKey:(NSString *_Nonnull)key
           toSection:(NSString *_Nonnull)section
 {
     if ([self bugsnagStarted]) {
-        [self.client.metadata addMetadata:value
+        [self.client.metadata addMetadata:metadata
                                   withKey:key
                                 toSection:section];
     }
 }
 
-+ (void)addMetadata:(id _Nonnull)value
++ (void)addMetadata:(id _Nonnull)metadata
           toSection:(NSString *_Nonnull)section
 {
     if ([self bugsnagStarted]) {
-        [self.client.metadata addMetadata:value
+        [self.client.metadata addMetadata:metadata
                                 toSection:section];
     }
 }
