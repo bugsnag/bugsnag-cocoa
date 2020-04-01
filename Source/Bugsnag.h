@@ -28,6 +28,7 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagMetadata.h"
 #import "BugsnagPlugin.h"
+#import "BugsnagClient.h"
 
 @interface Bugsnag : NSObject
 
@@ -40,7 +41,7 @@
  *
  * @param apiKey  The API key from your Bugsnag dashboard.
  */
-+ (void)startBugsnagWithApiKey:(NSString *_Nonnull)apiKey;
++ (BugsnagClient *_Nonnull)startBugsnagWithApiKey:(NSString *_Nonnull)apiKey;
 
 /** Start listening for crashes.
  *
@@ -51,8 +52,7 @@
  *
  * @param configuration  The configuration to use.
  */
-+ (void)startBugsnagWithConfiguration:
-    (BugsnagConfiguration *_Nonnull)configuration;
++ (BugsnagClient *_Nonnull)startBugsnagWithConfiguration:(BugsnagConfiguration *_Nonnull)configuration;
 
 /**
  * @return YES if Bugsnag has been started and the previous launch crashed
