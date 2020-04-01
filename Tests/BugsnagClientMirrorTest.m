@@ -85,7 +85,9 @@
             @"sendBreadcrumbForNotification: v24@0:8@16",
             @"batteryChanged: v24@0:8@16",
             @"started c16@0:8",
-            @"setAppDidCrashLastLaunch: v20@0:8c16"
+            @"setAppDidCrashLastLaunch: v20@0:8c16",
+            @"setMetadata: v24@0:8@16",
+            @"metadata @16@0:8"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to
