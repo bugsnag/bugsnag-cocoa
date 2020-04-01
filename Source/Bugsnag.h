@@ -236,20 +236,6 @@
 + (id _Nullable )getMetadata:(NSString *_Nonnull)section key:(NSString *_Nonnull)key
     NS_SWIFT_NAME(getMetadata(_:key:));
 
-/**
-* Add a callback that would be invoked before a session is sent to Bugsnag.
-*
-* @param block The block to be added.
-*/
-+ (void)addOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block;
-
-/**
- * Remove a callback that would be invoked before a session is sent to Bugsnag.
- *
- * @param block The block to be removed.
- */
-+ (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull )block;
-
 // =============================================================================
 // MARK: - Other methods
 // =============================================================================
@@ -299,6 +285,26 @@
        andName:(NSString *_Nullable)name;
 
 // =============================================================================
+// MARK: - onSession
+// =============================================================================
+
+/**
+ *  Add a callback to be invoked before a session is sent to Bugsnag.
+ *
+ *  @param block A block which can modify the session
+ */
++ (void)addOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block
+    NS_SWIFT_NAME(addOnSession(block:));
+
+/**
+ * Remove a callback that would be invoked before a session is sent to Bugsnag.
+ *
+ * @param block The block to be removed.
+ */
++ (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block
+    NS_SWIFT_NAME(removeOnSession(block:));;
+
+// =============================================================================
 // MARK: - onSend
 // =============================================================================
 
@@ -308,14 +314,16 @@
  *
  *  @param block A block which returns YES if the report should be sent
  */
-+ (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block;
++ (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
+    NS_SWIFT_NAME(addOnSend(block:));
 
 /**
- * Remove an onSend callback, if it exists
+ * Remove the callback that would be invoked before an event is sent.
  *
- * @param block The block to remove
+ * @param block The block to be removed.
  */
-+ (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block;
++ (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
+    NS_SWIFT_NAME(removeOnSend(block:));
 
 // =============================================================================
 // MARK: - onBreadcrumb
@@ -327,13 +335,15 @@
  *
  *  @param block A block which returns YES if the breadcrumb should be captured
  */
-+ (void)addOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block;
++ (void)addOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block
+    NS_SWIFT_NAME(addOnBreadcrumb(block:));
 
 /**
  * Remove the callback that would be invoked when a breadcrumb is captured.
  *
  * @param block The block to be removed.
  */
-+ (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block;
++ (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block
+    NS_SWIFT_NAME(removeOnBreadcrumb(block:));
 
 @end

@@ -34,8 +34,8 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 + config.persistUserData()
 + config.deletePersistedUserData()
 
-+ config.add(onBreadcrumb:)
-+ config.remove(onBreadcrumb:)
++ config.addOnBreadcrumb(block:)
++ config.removeOnBreadcrumb(block:)
 ```
 
 #### Renames
@@ -50,12 +50,12 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 - config.beforeSendBlocks
 - config.add(beforeSend:)
 + config.onSendBlocks
-+ config.add(onSend:)
++ config.addOnSend(block:)
 
 - config.beforeSessionBlocks
 - config.add(beforeSession:)
 + config.onSessionBlocks
-+ config.add(onSession:)
++ config.addOnSession(block:)
 
 - config.automaticallyCollectBreadcrumbs
 + config.enabledBreadcrumbTypes

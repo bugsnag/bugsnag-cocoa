@@ -226,14 +226,16 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
  *
  *  @param block A block which can modify the session
  */
-- (void)addOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block;
+- (void)addOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block
+    NS_SWIFT_NAME(addOnSession(block:));
 
 /**
  * Remove a callback that would be invoked before a session is sent to Bugsnag.
  *
  * @param block The block to be removed.
  */
-- (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull )block;
+- (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block
+    NS_SWIFT_NAME(removeOnSession(block:));;
 
 // =============================================================================
 // MARK: - onSend
@@ -245,16 +247,16 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
  *
  *  @param block A block which returns YES if the report should be sent
  */
-- (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block;
+- (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
+    NS_SWIFT_NAME(addOnSend(block:));
 
 /**
  * Remove the callback that would be invoked before an event is sent.
  *
  * @param block The block to be removed.
  */
-- (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull )block;
-
-- (void)addPlugin:(id<BugsnagPlugin> _Nonnull)plugin;
+- (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
+    NS_SWIFT_NAME(removeOnSend(block:));
 
 // =============================================================================
 // MARK: - onBreadcrumb
@@ -266,14 +268,18 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
  *
  *  @param block A block which returns YES if the breadcrumb should be captured
  */
-- (void)addOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block;
+- (void)addOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block
+    NS_SWIFT_NAME(addOnBreadcrumb(block:));
 
 /**
  * Remove the callback that would be invoked when a breadcrumb is captured.
  *
  * @param block The block to be removed.
  */
-- (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block;
+- (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block
+    NS_SWIFT_NAME(removeOnBreadcrumb(block:));
+
+- (void)addPlugin:(id<BugsnagPlugin> _Nonnull)plugin;
 
 /**
  * Should the specified type of breadcrumb be recorded?
