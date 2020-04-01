@@ -100,6 +100,13 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 - Bugsnag.setBreadcrumbCapacity(40)
   let config = try BugsnagConfiguration("YOUR API KEY HERE")
 + config.setMaxBreadcrumbs(40)
+
+- Bugsnag.payloadDateFormatter()
+- Bugsnag.clearBreadcrumbs()
+
+- BugsnagSeverityError
+- BugsnagSeverityWarning
+- BugsnagSeverityInfo
 ```
 
 #### Additions
@@ -114,6 +121,8 @@ Bugsnag.getMetadata("section" key:"key")
 [Bugsnag getMetadata:@"section"];
 [Bugsnag getMetadata:@"section" key:@"key"];
 ```
+
+`startBugsnagWithApiKey` and `startBugsnagWithConfiguration` now return a `BugsnagClient`.
 
 #### Renames
 

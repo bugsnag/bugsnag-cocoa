@@ -547,6 +547,36 @@
 }
 
 // =============================================================================
+// MARK: - Max Breadcrumb
+// =============================================================================
+
+- (void)testMaxBreadcrumb {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertEqual(25, config.maxBreadcrumbs);
+
+    // alter to valid value
+    config.maxBreadcrumbs = 10;
+    XCTAssertEqual(10, config.maxBreadcrumbs);
+
+    // alter to max value
+    config.maxBreadcrumbs = 100;
+    XCTAssertEqual(100, config.maxBreadcrumbs);
+
+    // alter to min value
+    config.maxBreadcrumbs = 0;
+    XCTAssertEqual(0, config.maxBreadcrumbs);
+
+    // alter to negative value
+    config.maxBreadcrumbs = -1;
+    XCTAssertEqual(0, config.maxBreadcrumbs);
+
+    // alter to negative value (overflows)
+    config.maxBreadcrumbs = 500;
+    XCTAssertEqual(0, config.maxBreadcrumbs);
+}
+
+
+// =============================================================================
 // MARK: - Other tests
 // =============================================================================
 

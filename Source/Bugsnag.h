@@ -28,10 +28,7 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagMetadata.h"
 #import "BugsnagPlugin.h"
-
-static NSString *_Nonnull const BugsnagSeverityError = @"error";
-static NSString *_Nonnull const BugsnagSeverityWarning = @"warning";
-static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
+#import "BugsnagClient.h"
 
 @interface Bugsnag : NSObject <BugsnagClassLevelMetadataStore>
 
@@ -44,7 +41,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *
  * @param apiKey  The API key from your Bugsnag dashboard.
  */
-+ (void)startBugsnagWithApiKey:(NSString *_Nonnull)apiKey;
++ (BugsnagClient *_Nonnull)startBugsnagWithApiKey:(NSString *_Nonnull)apiKey;
 
 /** Start listening for crashes.
  *
@@ -55,8 +52,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  *
  * @param configuration  The configuration to use.
  */
-+ (void)startBugsnagWithConfiguration:
-    (BugsnagConfiguration *_Nonnull)configuration;
++ (BugsnagClient *_Nonnull)startBugsnagWithConfiguration:(BugsnagConfiguration *_Nonnull)configuration;
 
 /**
  * @return YES if Bugsnag has been started and the previous launch crashed
@@ -143,21 +139,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
                            andType:(BSGBreadcrumbType)type
     NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
 
-/**
- * Clear any breadcrumbs that have been left so far.
- */
-+ (void)clearBreadcrumbs;
-
-/**
- * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.
- * By default, we'll keep and send the 20 most recent breadcrumb log
- * messages.
- *
- * @param capacity max number of breadcrumb log messages to send
- */
-+ (void)setBreadcrumbCapacity:(NSUInteger)capacity
-        __deprecated_msg("Use [BugsnagConfiguration setMaxBreadcrumbs:] instead");
-
 // =============================================================================
 // MARK: - Session
 // =============================================================================
@@ -236,8 +217,6 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 // =============================================================================
 // MARK: - Other methods
 // =============================================================================
-
-+ (NSDateFormatter *_Nonnull)payloadDateFormatter;
 
 /**
  * Replicates BugsnagConfiguration.context

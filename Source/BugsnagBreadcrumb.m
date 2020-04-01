@@ -70,6 +70,10 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value) {
     }
 }
 
+@interface Bugsnag ()
++ (NSDateFormatter *_Nonnull)payloadDateFormatter;
+@end
+
 @implementation BugsnagBreadcrumb
 
 - (instancetype)init {

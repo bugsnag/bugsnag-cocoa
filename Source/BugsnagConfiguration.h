@@ -144,9 +144,10 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
 @property(retain, nullable) NSString *appType;
 
 /**
- * The maximum number of breadcrumbs to keep and sent to Bugsnag.
- * By default, we'll keep and send the 25 most recent breadcrumb log
- * messages.
+ * Sets the maximum number of breadcrumbs which will be stored. Once the threshold is reached,
+ * the oldest breadcrumbs will be deleted.
+ *
+ * By default, 25 breadcrumbs are stored: this can be amended up to a maximum of 100.
  */
 @property NSUInteger maxBreadcrumbs;
 

@@ -23,6 +23,10 @@
 @property(nonatomic, strong, readwrite) NSDictionary *lastBootCachedFileInfo;
 @end
 
+@interface Bugsnag ()
++ (NSDateFormatter *_Nonnull)payloadDateFormatter;
+@end
+
 @implementation BSGOutOfMemoryWatchdog
 
 - (instancetype)init {

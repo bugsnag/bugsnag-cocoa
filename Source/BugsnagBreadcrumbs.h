@@ -37,11 +37,6 @@
 - (void)addBreadcrumbWithBlock:
     (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
 
-/**
- * Clear all stored breadcrumbs.
- */
-- (void)clearBreadcrumbs;
-
 /** Breadcrumb object for a particular index or nil */
 - (BugsnagBreadcrumb *_Nullable)objectAtIndexedSubscript:(NSUInteger)index;
 

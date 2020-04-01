@@ -9,6 +9,7 @@
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagClient.h"
+#import "BugsnagClientInternal.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagKeys.h"
 #import <XCTest/XCTest.h>

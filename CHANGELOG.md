@@ -8,6 +8,15 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Make `BugsnagClient` a public interface
+[#517](https://github.com/bugsnag/bugsnag-cocoa/pull/517)
+
+* Remove unused APIs from `Bugsnag` interface
+[#514](https://github.com/bugsnag/bugsnag-cocoa/pull/514)
+
+* Enforce that `config.maxBreadcrumbs` must be between 0-100
+[#511](https://github.com/bugsnag/bugsnag-cocoa/pull/511)
+
 * Add unhandled property to `BugsnagEvent`
 [#512](https://github.com/bugsnag/bugsnag-cocoa/pull/512)
 

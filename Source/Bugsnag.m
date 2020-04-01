@@ -28,6 +28,7 @@
 #import "BSG_KSCrash.h"
 #import "BugsnagLogger.h"
 #import "BugsnagClient.h"
+#import "BugsnagClientInternal.h"
 #import "BugsnagKeys.h"
 #import "BugsnagPlugin.h"
 #import "BugsnagHandledState.h"
@@ -55,6 +56,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 @interface BugsnagClient ()
 @property(readwrite, retain, nullable) BugsnagMetadata *metadata;
 - (void)startListeningForStateChangeNotification:(NSString *_Nonnull)notificationName;
+- (void)addBreadcrumbWithBlock:(void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
 @end
 
 @interface BugsnagMetadata ()
@@ -63,16 +65,17 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 
 @implementation Bugsnag
 
-+ (void)startBugsnagWithApiKey:(NSString *)apiKey {
++ (BugsnagClient *_Nonnull)startBugsnagWithApiKey:(NSString *)apiKey {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
-    [self startBugsnagWithConfiguration:configuration];
+    return [self startBugsnagWithConfiguration:configuration];
 }
 
-+ (void)startBugsnagWithConfiguration:(BugsnagConfiguration *)configuration {
++ (BugsnagClient *_Nonnull)startBugsnagWithConfiguration:(BugsnagConfiguration *)configuration {
     @synchronized(self) {
         bsg_g_bugsnag_client =
                 [[BugsnagClient alloc] initWithConfiguration:configuration];
         [bsg_g_bugsnag_client start];
+        return bsg_g_bugsnag_client;
     }
 }
 
@@ -93,30 +96,30 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 
 + (BOOL)appDidCrashLastLaunch {
     if ([self bugsnagStarted]) {
-        return [self.client appCrashedLastLaunch];
+        return [self.client appDidCrashLastLaunch];
     }
     return NO;
 }
 
 + (void)notify:(NSException *)exception {
     if ([self bugsnagStarted]) {
-        [self.client notifyException:exception
-                                 block:^(BugsnagEvent *_Nonnull report) {
-                                     report.depth += 2;
-                                 }];
+        [self.client notify:exception
+                      block:^(BugsnagEvent *_Nonnull report) {
+                          report.depth += 2;
+                      }];
     }
 }
 
 + (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagStarted]) {
-        [[self client] notifyException:exception
-                                   block:^(BugsnagEvent *_Nonnull report) {
-                                       report.depth += 2;
+        [[self client] notify:exception
+                        block:^(BugsnagEvent *_Nonnull report) {
+                            report.depth += 2;
 
-                                       if (block) {
-                                           block(report);
-                                       }
-                                   }];
+                            if (block) {
+                                block(report);
+                            }
+                        }];
     }
 }
 
@@ -164,9 +167,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 
 + (void)leaveBreadcrumbWithMessage:(NSString *)message {
     if ([self bugsnagStarted]) {
-        [self leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumbs) {
-            crumbs.message = message;
-        }];
+        [self.client leaveBreadcrumbWithMessage:message];
     }
 }
 
@@ -180,7 +181,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 + (void)leaveBreadcrumbForNotificationName:
     (NSString *_Nonnull)notificationName {
     if ([self bugsnagStarted]) {
-        [self.client startListeningForStateChangeNotification:notificationName];
+        [self.client leaveBreadcrumbForNotificationName:notificationName];
     }
 }
 
@@ -189,23 +190,9 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
                            andType:(BSGBreadcrumbType)type
 {
     if ([self bugsnagStarted]) {
-        [self leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumbs) {
-            crumbs.message = message;
-            crumbs.metadata = metadata;
-            crumbs.type = type;
-        }];
-    }
-}
-
-+ (void)setBreadcrumbCapacity:(NSUInteger)capacity {
-    if ([self bugsnagStarted]) {
-        [self.client.configuration setMaxBreadcrumbs:capacity];
-    }
-}
-
-+ (void)clearBreadcrumbs {
-    if ([self bugsnagStarted]) {
-        [self.client clearBreadcrumbs];
+        [self.client leaveBreadcrumbWithMessage:message
+                                       metadata:metadata
+                                        andType:type];
     }
 }
 
@@ -256,8 +243,8 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 {
     if ([self bugsnagStarted]) {
         [self.client.metadata addMetadata:value
-                                                withKey:key
-                                              toSection:section];
+                                  withKey:key
+                                toSection:section];
     }
 }
 
@@ -266,7 +253,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 {
     if ([self bugsnagStarted]) {
         [self.client.metadata addMetadata:value
-                                              toSection:section];
+                                toSection:section];
     }
 }
 
@@ -300,34 +287,42 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 // MARK: -
 
 + (void)setContext:(NSString *_Nullable)context {
-    [self configuration].context = context;
+    if ([self bugsnagStarted]) {
+        [self.client setContext:context];
+    }
 }
 
 + (BugsnagUser *)user {
-    return [[self configuration] user];
+    return self.client.user;
 }
 
 + (void)setUser:(NSString *_Nullable)userId
       withEmail:(NSString *_Nullable)email
         andName:(NSString *_Nullable)name {
-    [[self configuration] setUser:userId withEmail:email andName:name];
+    if ([self bugsnagStarted]) {
+        [self.client setUser:userId withEmail:email andName:name];
+    }
 }
 
 + (void)addOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block
 {
-    [[self configuration] addOnSessionBlock:block];
+    if ([self bugsnagStarted]) {
+        [self.client addOnSessionBlock:block];
+    }
 }
 
 + (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull )block
 {
-    [[self configuration] removeOnSessionBlock:block];
+    if ([self bugsnagStarted]) {
+        [self.client removeOnSessionBlock:block];
+    }
 }
 
 /**
  * Intended for internal use only - sets the code bundle id for React Native
  */
 + (void)updateCodeBundleId:(NSString *)codeBundleId {
-    [self configuration].codeBundleId = codeBundleId;
+    self.configuration.codeBundleId = codeBundleId;
 }
 
 // =============================================================================
@@ -336,12 +331,16 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 
 + (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
 {
-    [[self configuration] addOnSendBlock:block];
+    if ([self bugsnagStarted]) {
+        [self.client addOnSendBlock:block];
+    }
 }
 
 + (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
 {
-    [[self configuration] removeOnSendBlock:block];
+    if ([self bugsnagStarted]) {
+        [self.client removeOnSendBlock:block];
+    }
 }
 
 // =============================================================================
@@ -349,12 +348,15 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 // =============================================================================
 
 + (void)addOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block {
-    [[self configuration] addOnBreadcrumbBlock:block];
+    if ([self bugsnagStarted]) {
+        [self.client addOnBreadcrumbBlock:block];
+    }
 }
 
-
 + (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block {
-    [[self configuration] removeOnBreadcrumbBlock:block];
+    if ([self bugsnagStarted]) {
+        [self.client removeOnBreadcrumbBlock:block];
+    }
 }
 
 @end

@@ -27,6 +27,7 @@
 #import "BugsnagConfiguration.h"
 #import "Bugsnag.h"
 #import "BugsnagClient.h"
+#import "BugsnagClientInternal.h"
 #import "BugsnagKeys.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagUser.h"
@@ -52,10 +53,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 @interface Bugsnag ()
 + (BugsnagClient *)client;
-@end
-
-@interface BugsnagClient ()
-@property BugsnagSessionTracker *sessionTracker;
 @end
 
 @interface BugsnagConfiguration ()
@@ -386,7 +383,12 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 }
 
 - (void)setMaxBreadcrumbs:(NSUInteger)capacity {
-    self.breadcrumbs.capacity = capacity;
+    if (capacity <= 100) {
+        self.breadcrumbs.capacity = capacity;
+    } else {
+        bsg_log_err(@"Invalid configuration value detected. Option maxBreadcrumbs "
+                    "should be an integer between 0-100. Supplied value is %lu", (unsigned long) capacity);
+    }
 }
 
 /**

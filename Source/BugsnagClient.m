@@ -25,6 +25,7 @@
 //
 
 #import "BugsnagClient.h"
+#import "BugsnagClientInternal.h"
 #import "BSGConnectivity.h"
 #import "Bugsnag.h"
 #import "Private.h"
@@ -264,10 +265,9 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @interface BugsnagClient ()
 @property(nonatomic, strong) BugsnagCrashSentry *crashSentry;
 @property(nonatomic, strong) BugsnagErrorReportApiClient *errorReportApiClient;
-@property(nonatomic, strong, readwrite) BugsnagSessionTracker *sessionTracker;
 @property (nonatomic, strong) BSGOutOfMemoryWatchdog *oomWatchdog;
 @property (nonatomic, strong) BugsnagPluginClient *pluginClient;
-@property (nonatomic) BOOL appCrashedLastLaunch;
+@property (nonatomic) BOOL appDidCrashLastLaunch;
 @property (nonatomic, strong) BugsnagMetadata *metadata;
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 // The previous device orientation - iOS only
@@ -294,6 +294,10 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
 - (NSDictionary *_Nonnull)toDictionary;
 - (id)deepCopy;
+@end
+
+@interface Bugsnag ()
++ (NSDateFormatter *_Nonnull)payloadDateFormatter;
 @end
 
 @implementation BugsnagClient
@@ -549,7 +553,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
             unlink(crashSentinelPath);
         }
     }
-    self.appCrashedLastLaunch = handledCrashLastLaunch || [self.oomWatchdog didOOMLastLaunch];
+    self.appDidCrashLastLaunch = handledCrashLastLaunch || [self.oomWatchdog didOOMLastLaunch];
     // Ignore potential false positive OOM if previous session crashed and was
     // reported. There are two checks in place:
     // 1. crashState->crashedLastLaunch: Accurate unless the crash callback crashes
@@ -559,7 +563,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         [self notifyOutOfMemoryEvent];
     }
 #else
-    self.appCrashedLastLaunch = crashState->crashedLastLaunch;
+    self.appDidCrashLastLaunch = crashState->crashedLastLaunch;
 #endif
 }
 
@@ -652,7 +656,119 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     }];
 }
 
+// =============================================================================
+// MARK: - Breadcrumbs
+// =============================================================================
+
+- (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message {
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *breadcrumb) {
+        breadcrumb.message = message;
+    }];
+}
+
+- (void)leaveBreadcrumbForNotificationName:(NSString *_Nonnull)notificationName {
+    [self startListeningForStateChangeNotification:notificationName];
+}
+
+- (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message
+                          metadata:(NSDictionary *_Nullable)metadata
+                           andType:(BSGBreadcrumbType)type {
+    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumbs) {
+        crumbs.message = message;
+        crumbs.metadata = metadata;
+        crumbs.type = type;
+    }];
+}
+
+// =============================================================================
+// MARK: - User
+// =============================================================================
+
+- (BugsnagUser *_Nonnull)user {
+    return [self.configuration user];
+}
+
+- (void)setUser:(NSString *_Nullable)userId
+      withEmail:(NSString *_Nullable)email
+        andName:(NSString *_Nullable)name {
+    [self.configuration setUser:userId withEmail:email andName:name];
+}
+
+// =============================================================================
+// MARK: - onSession
+// =============================================================================
+
+- (void)addOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block {
+    [self.configuration addOnSessionBlock:block];
+}
+
+- (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull )block {
+    [self.configuration removeOnSessionBlock:block];
+}
+
+// =============================================================================
+// MARK: - onSend
+// =============================================================================
+
+- (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block {
+    [self.configuration addOnSendBlock:block];
+}
+
+- (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block {
+    [self.configuration removeOnSendBlock:block];
+}
+
+// =============================================================================
+// MARK: - onBreadcrumb
+// =============================================================================
+
+- (void)addOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block {
+    [self.configuration addOnBreadcrumbBlock:block];
+}
+
+- (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block {
+    [self.configuration removeOnBreadcrumbBlock:block];
+}
+
+// =============================================================================
+// MARK: - Other methods
+// =============================================================================
+
+- (NSMutableDictionary *_Nullable)getMetadata:(NSString *_Nonnull)section {
+    return [[self.configuration metadata] getMetadata:section];
+}
+
+- (id _Nullable )getMetadata:(NSString *_Nonnull)section key:(NSString *_Nonnull)key {
+    return [[self.configuration metadata] getMetadata:section key:key];
+}
+
+- (void)addMetadataToSection:(NSString *_Nonnull)section
+                         key:(NSString *_Nonnull)key
+                       value:(id _Nullable)value {
+    [self.configuration.metadata addAttribute:key
+                                    withValue:value
+                                toTabWithName:section];
+}
+
+- (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
+                       withKey:(NSString *_Nonnull)key {
+    [self.configuration.metadata clearMetadataInSection:sectionName
+                                                    key:key];
+}
+
+- (void)setContext:(NSString *_Nullable)context {
+    self.configuration.context = context;
+}
+
+- (void)clearMetadataInSection:(NSString *_Nonnull)section {
+    [self.configuration.metadata clearMetadataInSection:section];
+}
+
 // MARK: - Notify
+
+- (void)notifyError:(NSError *_Nonnull)error {
+    [self notifyError:error block:nil];
+}
 
 - (void)notifyError:(NSError *)error
               block:(void (^)(BugsnagEvent *))block
@@ -682,8 +798,12 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
            }];
 }
 
-- (void)notifyException:(NSException *)exception
-                  block:(void (^)(BugsnagEvent *))block
+- (void)notify:(NSException *_Nonnull)exception {
+    [self notify:exception block:nil];
+}
+
+- (void)notify:(NSException *)exception 
+         block:(void (^)(BugsnagEvent *))block 
 {
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
@@ -822,11 +942,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (void)addBreadcrumbWithBlock:
     (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
     [self.configuration.breadcrumbs addBreadcrumbWithBlock:block];
-    [self serializeBreadcrumbs];
-}
-
-- (void)clearBreadcrumbs {
-    [self.configuration.breadcrumbs clearBreadcrumbs];
     [self serializeBreadcrumbs];
 }
 
