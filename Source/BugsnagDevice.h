@@ -10,6 +10,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * Stateless information set by the notifier about the device on which the event occurred can be
+ * found on this class. These values can be accessed and amended if necessary.
+ */
 @interface BugsnagDevice : NSObject
 
 @end

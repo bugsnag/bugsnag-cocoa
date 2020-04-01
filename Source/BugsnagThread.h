@@ -10,6 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * A representation of thread information recorded as part of a BugsnagEvent.
+ */
 @interface BugsnagThread : NSObject
 
 @end

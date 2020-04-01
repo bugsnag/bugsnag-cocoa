@@ -10,6 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * Represents a single stackframe from a stacktrace.
+ */
 @interface BugsnagStackframe : NSObject
 
 @end

@@ -12,6 +12,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * Stateful information set by the notifier about your app can be found on this class. These values
+ * can be accessed and amended if necessary.
+ */
 @interface BugsnagAppWithState : BugsnagApp
 
 @end
