@@ -181,26 +181,6 @@ NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
  */
 - (BOOL)resumeSession;
 
-/**
-* Return the metadata for a specific named section
-*
-* @param section The name of the section
-* @returns The mutable dictionary representing the metaadata section, if it
-*          exists, or nil if not.
-*/
-- (NSMutableDictionary *_Nullable)getMetadata:(NSString *_Nonnull)section
-NS_SWIFT_NAME(getMetadata(_:));
-
-/**
-* Return the metadata for a key in a specific named section
-*
-* @param section The name of the section
-* @param key The key
-* @returns The value of the keyed value if it exists or nil.
-*/
-- (id _Nullable )getMetadata:(NSString *_Nonnull)section key:(NSString *_Nonnull)key
-NS_SWIFT_NAME(getMetadata(_:key:));
-
 // =============================================================================
 // MARK: - onSession
 // =============================================================================
@@ -223,46 +203,12 @@ NS_SWIFT_NAME(getMetadata(_:key:));
 // MARK: - Other methods
 // =============================================================================
 
-/** Add custom data to send to Bugsnag with every exception. If value is nil,
- *  delete the current value for attributeName
- *
- * See also [Bugsnag configuration].metaData;
- *
- * @param key      The name of the data.
- *
- * @param value    Its value.
- *
- * @param section  The tab to show it on on the Bugsnag dashboard.
- */
-- (void)addMetadataToSection:(NSString *_Nonnull)section
-                         key:(NSString *_Nonnull)key
-                       value:(id _Nullable)value
-NS_SWIFT_NAME(addMetadata(_:key:value:));
-
-/**
- * Remove a key/value from a named matadata section.  If either the section or the
- * key do not exist no action will occur.
- *
- * @param sectionName The name of the section containing the value
- * @param key The key to remove
- */
-- (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
-                       withKey:(NSString *_Nonnull)key
-NS_SWIFT_NAME(clearMetadata(section:key:));
-
 /**
  * Replicates BugsnagConfiguration.context
  *
  * @param context A general summary of what was happening in the application
  */
 - (void)setContext:(NSString *_Nullable)context;
-
-/** Remove custom data from Bugsnag reports.
- *
- * @param sectionName        The section to clear.
- */
-- (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
-NS_SWIFT_NAME(clearMetadata(section:));
 
 /**
  * @return YES if Bugsnag has been started and the previous launch crashed

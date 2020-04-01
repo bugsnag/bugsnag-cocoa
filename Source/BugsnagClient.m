@@ -734,34 +734,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 // MARK: - Other methods
 // =============================================================================
 
-- (NSMutableDictionary *_Nullable)getMetadata:(NSString *_Nonnull)section {
-    return [[self.configuration metadata] getMetadata:section];
-}
-
-- (id _Nullable )getMetadata:(NSString *_Nonnull)section key:(NSString *_Nonnull)key {
-    return [[self.configuration metadata] getMetadata:section key:key];
-}
-
-- (void)addMetadataToSection:(NSString *_Nonnull)section
-                         key:(NSString *_Nonnull)key
-                       value:(id _Nullable)value {
-    [self.configuration.metadata addAttribute:key
-                                    withValue:value
-                                toTabWithName:section];
-}
-
-- (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
-                       withKey:(NSString *_Nonnull)key {
-    [self.configuration.metadata clearMetadataInSection:sectionName
-                                                    key:key];
-}
-
 - (void)setContext:(NSString *_Nullable)context {
     self.configuration.context = context;
-}
-
-- (void)clearMetadataInSection:(NSString *_Nonnull)section {
-    [self.configuration.metadata clearMetadataInSection:section];
 }
 
 // MARK: - Notify
