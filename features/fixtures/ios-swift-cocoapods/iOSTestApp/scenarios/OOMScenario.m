@@ -1,4 +1,3 @@
-
 #import "OOMScenario.h"
 #import <signal.h>
 
@@ -7,10 +6,8 @@
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;
     self.config.releaseStage = @"alpha";
-    [self.config addOnSendBlock:^bool(BugsnagEvent * _Nonnull report) {
-        NSMutableDictionary *metadata = [report.metadata mutableCopy];
-        metadata[@"extra"] = @{ @"shape": @"line" };
-        report.metadata = metadata;
+    [self.config addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) {
+        [event addMetadata:@{ @"shape": @"line" } toSection:@"extra"];
         return YES;
     }];
     [super startBugsnag];
