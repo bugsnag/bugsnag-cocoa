@@ -12,6 +12,7 @@
 #import "BugsnagClientInternal.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagKeys.h"
+#import "BugsnagUser.h"
 #import <XCTest/XCTest.h>
 
 @interface BugsnagClientTests : XCTestCase
@@ -113,6 +114,31 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     // Updates to Client should not affect Configuration
     [client addMetadata:@{@"exampleKey3" : @"exampleValue3"} toSection:@"exampleSection3"];
     XCTAssertNil([configuration getMetadataFromSection:@"exampleSection3" withKey:@"exampleKey3"]);
+}
+
+/**
+ * Test that user info is stored and retreived correctly
+ */
+- (void) testUserInfoStorageRetrieval {
+    [self setUpBugsnagWillCallNotify:false];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+
+    [client setUser:@"Jiminy" withEmail:@"jiminy@bugsnag.com" andName:@"Jiminy Cricket"];
+    
+    XCTAssertEqualObjects([client.metadata getMetadataFromSection:BSGKeyUser withKey:BSGKeyId], @"Jiminy");
+    XCTAssertEqualObjects([client.metadata getMetadataFromSection:BSGKeyUser withKey:BSGKeyName], @"Jiminy Cricket");
+    XCTAssertEqualObjects([client.metadata getMetadataFromSection:BSGKeyUser withKey:BSGKeyEmail], @"jiminy@bugsnag.com");
+
+    XCTAssertEqualObjects([client user].userId, @"Jiminy");
+    XCTAssertEqualObjects([client user].name, @"Jiminy Cricket");
+    XCTAssertEqualObjects([client user].emailAddress, @"jiminy@bugsnag.com");
+    
+    [client setUser:nil withEmail:nil andName:@"Jiminy Cricket"];
+    
+    XCTAssertNil([client user].userId);
+    XCTAssertEqualObjects([client user].name, @"Jiminy Cricket");
+    XCTAssertNil([client user].emailAddress);
 }
 
 @end

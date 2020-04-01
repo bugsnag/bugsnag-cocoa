@@ -684,14 +684,19 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 // MARK: - User
 // =============================================================================
 
-- (BugsnagUser *_Nonnull)user {
-    return [self.configuration user];
+- (BugsnagUser *_Nonnull)user
+{
+    NSDictionary *userInfo = [self.metadata getMetadataFromSection:BSGKeyUser];
+    return [[BugsnagUser alloc] initWithDictionary:userInfo ?: @{}];
 }
 
 - (void)setUser:(NSString *_Nullable)userId
       withEmail:(NSString *_Nullable)email
-        andName:(NSString *_Nullable)name {
-    [self.configuration setUser:userId withEmail:email andName:name];
+        andName:(NSString *_Nullable)name
+{
+    [self.metadata addMetadata:userId withKey:BSGKeyId    toSection:BSGKeyUser];
+    [self.metadata addMetadata:name   withKey:BSGKeyName  toSection:BSGKeyUser];
+    [self.metadata addMetadata:email  withKey:BSGKeyEmail toSection:BSGKeyUser];
 }
 
 // =============================================================================
