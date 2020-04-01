@@ -888,7 +888,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                              handledState:[handledState toJson]
                                  appState:[self.state toDictionary]
                         callbackOverrides:event.overrides
-                                 metadata:[event.metadata deepCopy]
+                                 metadata:[event.metadata toDictionary]
                                    config:[self.configuration.config toDictionary]
                              discardDepth:depth];
     
