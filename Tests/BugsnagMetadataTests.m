@@ -254,4 +254,18 @@
     delegateCalled = YES;
 }
 
+- (void)testMetadataMutability {
+    BugsnagMetadata *metadata = [BugsnagMetadata new];
+    
+    // Immutable in, mutable out
+    [metadata addMetadata:@{@"foo" : @"bar"} toSection:@"section1"];
+    NSObject *metadata1 = [metadata getMetadataFromSection:@"section1"];
+    XCTAssertTrue([metadata1 isKindOfClass:[NSMutableDictionary class]]);
+    
+    // Mutable in, mutable out
+    [metadata addMetadata:[@{@"foo" : @"bar"} mutableCopy] toSection:@"section2"];
+    NSObject *metadata2 = [metadata getMetadataFromSection:@"section2"];
+    XCTAssertTrue([metadata2 isKindOfClass:[NSMutableDictionary class]]);
+}
+
 @end

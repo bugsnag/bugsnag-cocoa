@@ -42,7 +42,7 @@
     return [self initWithDictionary:dict];
 }
 
-- (id)initWithDictionary:(NSMutableDictionary *)dict {
+- (id)initWithDictionary:(NSDictionary *)dict {
     if (self = [super init]) {
         // Ensure that the instantiating dictionary is mutable.
         // Saves checks later.
@@ -175,11 +175,11 @@
 - (NSMutableDictionary *)getMetadataFromSection:(NSString *)sectionName
 {
     @synchronized(self) {
-        return self.dictionary[sectionName];
+        return [self.dictionary[sectionName] mutableCopy];
     }
 }
 
-- (NSMutableDictionary *)getMetadataFromSection:(NSString *)sectionName
+- (id _Nullable)getMetadataFromSection:(NSString *)sectionName
                                         withKey:(NSString *)key
 {
     @synchronized(self) {

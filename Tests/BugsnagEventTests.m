@@ -596,7 +596,6 @@
         [event addMetadata:@"realValue" withKey:@"myNewKey" toSection:@"mySection"];
         XCTAssertEqual([[event.metadata toDictionary] count], 1);
         XCTAssertNotNil([event.metadata getMetadataFromSection:@"mySection" withKey:@"myNewKey"]);
-//        XCTAssertNotNil([[[event metadata] objectForKey:@"mySection"] objectForKey:@"myNewKey"]);
     }];
 }
 
@@ -705,6 +704,21 @@
                                                      handledState:state
                                                           session:nil];
     XCTAssertTrue(event.unhandled);
+}
+
+- (void)testMetadataMutability {
+    [self setUpBugsnagWillCallNotify:false];
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{@"dummy" : @"value"}];
+    
+    // Immutable in, mutable out
+    [event addMetadata:@{@"foo" : @"bar"} toSection:@"section1"];
+    NSObject *metadata1 = [event getMetadataFromSection:@"section1"];
+    XCTAssertTrue([metadata1 isKindOfClass:[NSMutableDictionary class]]);
+    
+    // Mutable in, mutable out
+    [event addMetadata:[@{@"foo" : @"bar"} mutableCopy] toSection:@"section2"];
+    NSObject *metadata2 = [event getMetadataFromSection:@"section2"];
+    XCTAssertTrue([metadata2 isKindOfClass:[NSMutableDictionary class]]);
 }
 
 @end

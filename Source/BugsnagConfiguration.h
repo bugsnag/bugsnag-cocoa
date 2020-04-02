@@ -88,7 +88,7 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
 // MARK: - BugsnagConfiguration
 // =============================================================================
 
-@interface BugsnagConfiguration : NSObject <NSCopying, BugsnagMetadataStore>
+@interface BugsnagConfiguration : NSObject <BugsnagMetadataStore>
 
 // -----------------------------------------------------------------------------
 // MARK: - Properties

@@ -328,7 +328,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
                 _session = [[BugsnagSession alloc] initWithDictionary:sessionData];
                 _session.unhandledCount += 1; // include own event
                 if (_session.user) {
-                    self.metadata = [[BugsnagMetadata alloc] initWithDictionary:[@{@"user": [_session.user toJson]} mutableCopy]];
+                    self.metadata = [[BugsnagMetadata alloc] initWithDictionary:@{@"user": [_session.user toJson]}];
                 }
             }
         } else {
@@ -733,7 +733,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
     return [self.metadata getMetadataFromSection:sectionName withKey:key];
 }
 
-- (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+- (NSMutableDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
 {
     return [self.metadata getMetadataFromSection:sectionName];
 }

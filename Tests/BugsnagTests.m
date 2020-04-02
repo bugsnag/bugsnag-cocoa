@@ -445,4 +445,18 @@ NSString *BSGOrientationNameFromEnum(UIDeviceOrientation deviceOrientation);
 }
 #endif
 
+- (void)testMetadataMutability {
+    [self setUpBugsnagWillCallNotify:false];
+    
+    // Immutable in, mutable out
+    [Bugsnag addMetadata:@{@"foo" : @"bar"} toSection:@"section1"];
+    NSObject *metadata1 = [Bugsnag getMetadataFromSection:@"section1"];
+    XCTAssertTrue([metadata1 isKindOfClass:[NSMutableDictionary class]]);
+    
+    // Mutable in, mutable out
+    [Bugsnag addMetadata:[@{@"foo" : @"bar"} mutableCopy] toSection:@"section2"];
+    NSObject *metadata2 = [Bugsnag getMetadataFromSection:@"section2"];
+    XCTAssertTrue([metadata2 isKindOfClass:[NSMutableDictionary class]]);
+}
+
 @end

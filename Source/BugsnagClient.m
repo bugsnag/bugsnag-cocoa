@@ -868,7 +868,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithErrorName:exceptionName
                                                      errorMessage:message
                                                     configuration:self.configuration
-                                                         metadata:[[Bugsnag client] metadata]
+                                                         metadata:self.metadata
                                                      handledState:handledState
                                                           session:self.sessionTracker.runningSession];
     
@@ -1318,7 +1318,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     return [self.metadata getMetadataFromSection:sectionName withKey:key];
 }
 
-- (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+- (NSMutableDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
 {
     return [self.metadata getMetadataFromSection:sectionName];
 }

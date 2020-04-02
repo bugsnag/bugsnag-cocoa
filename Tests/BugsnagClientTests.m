@@ -144,4 +144,20 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     XCTAssertNil([client user].emailAddress);
 }
 
+- (void)testMetadataMutability {
+    [self setUpBugsnagWillCallNotify:false];
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    
+    // Immutable in, mutable out
+    [client addMetadata:@{@"foo" : @"bar"} toSection:@"section1"];
+    NSObject *metadata1 = [client getMetadataFromSection:@"section1"];
+    XCTAssertTrue([metadata1 isKindOfClass:[NSMutableDictionary class]]);
+    
+    // Mutable in, mutable out
+    [client addMetadata:[@{@"foo" : @"bar"} mutableCopy] toSection:@"section2"];
+    NSObject *metadata2 = [client getMetadataFromSection:@"section2"];
+    XCTAssertTrue([metadata2 isKindOfClass:[NSMutableDictionary class]]);
+}
+
 @end

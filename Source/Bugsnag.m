@@ -54,7 +54,6 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 @end
 
 @interface BugsnagClient ()
-@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
 - (void)startListeningForStateChangeNotification:(NSString *_Nonnull)notificationName;
 - (void)addBreadcrumbWithBlock:(void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
 @end
@@ -227,7 +226,9 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     return formatter;
 }
 
+// =============================================================================
 // MARK: - <BugsnagClassLevelMetadataStore>
+// =============================================================================
 
 /**
  * Add custom data to send to Bugsnag with every exception. If value is nil,
@@ -242,7 +243,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
           toSection:(NSString *_Nonnull)section
 {
     if ([self bugsnagStarted]) {
-        [self.client.metadata addMetadata:metadata
+        [self.client addMetadata:metadata
                                   withKey:key
                                 toSection:section];
     }
@@ -252,26 +253,32 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
           toSection:(NSString *_Nonnull)section
 {
     if ([self bugsnagStarted]) {
-        [self.client.metadata addMetadata:metadata
-                                toSection:section];
+        [self.client addMetadata:metadata
+                       toSection:section];
     }
 }
 
 + (NSMutableDictionary *)getMetadataFromSection:(NSString *)section
 {
-    return [[self.client.metadata getMetadataFromSection:section] mutableCopy];
+    if ([self bugsnagStarted]) {
+        return [[self.client getMetadataFromSection:section] mutableCopy];
+    }
+    return nil;
 }
 
 + (id _Nullable )getMetadataFromSection:(NSString *_Nonnull)section
                                 withKey:(NSString *_Nonnull)key
 {
-    return [[self.client.metadata getMetadataFromSection:section withKey:key] mutableCopy];
+    if ([self bugsnagStarted]) {
+        return [[self.client getMetadataFromSection:section withKey:key] mutableCopy];
+    }
+    return nil;
 }
 
 + (void)clearMetadataFromSection:(NSString *)section
 {
     if ([self bugsnagStarted]) {
-        [self.client.metadata clearMetadataFromSection:section];
+        [self.client clearMetadataFromSection:section];
     }
 }
 
@@ -279,8 +286,8 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
                          withKey:(NSString *_Nonnull)key
 {
     if ([self bugsnagStarted]) {
-        [self.client.metadata clearMetadataFromSection:sectionName
-                                                             withKey:key];
+        [self.client clearMetadataFromSection:sectionName
+                                      withKey:key];
     }
 }
 
