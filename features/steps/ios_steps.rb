@@ -1,59 +1,54 @@
 When("I run {string}") do |event_type|
   steps %Q{
-    When I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And I set environment variable "EVENT_TYPE" to "#{event_type}"
-    And I launch the app
+    Given the element "ScenarioNameField" is present
+    When I send the keys "#{event_type}" to the element "ScenarioNameField"
+    And I close the keyboard
+    And I click the element "StartScenarioButton"
   }
 end
 
-When("I launch the app") do
+When("I set the app to {string} mode") do |mode|
   steps %Q{
-    When I run the script "features/scripts/launch_ios_app.sh"
+    Given the element "ScenarioMetaDataField" is present
+    When I send the keys "#{mode}" to the element "ScenarioMetaDataField"
+    And I close the keyboard
   }
-  start = Time.now
-  until test_app_is_running?
-    raise "Never launched! Waited #{MAX_WAIT_TIME}s." if Time.now - start > MAX_WAIT_TIME
-
-    sleep 0.2
-  end
 end
+
+When("I run {string} and relaunch the app") do |event_type|
+  steps %Q{
+    When I run "#{event_type}"
+    And I relaunch the app
+  }
+end
+
+When("I close the keyboard") do
+  steps %Q{
+    Given the element "CloseKeyboardItem" is present
+    And I click the element "CloseKeyboardItem"
+  }
+end
+
+When("I configure Bugsnag for {string}") do |event_type|
+  steps %Q{
+    Given the element "ScenarioNameField" is present
+    When I send the keys "#{event_type}" to the element "ScenarioNameField"
+    And I close the keyboard
+    And I click the element "StartBugsnagButton"
+  }
+end
+
 When("I relaunch the app") do
-  start = Time.now
-  while test_app_is_running?
-    raise "Never crashed! Waited #{MAX_WAIT_TIME}s." if Time.now - start > MAX_WAIT_TIME
-
-    sleep 0.2
-  end
-  step('I launch the app')
-end
-When('the app is unexpectedly terminated') do
-  kill_test_app
-end
-When('the app is interrupted by Siri') do
-  steps %Q{
-    When I wait for 10 seconds
-    And I run the script "features/scripts/activate_siri.sh"
-    And I wait for 2 seconds
-  }
-end
-When("I crash the app using {string}") do |event|
-  steps %Q{
-    When I set environment variable "EVENT_TYPE" to "#{event}"
-    And I set environment variable "EVENT_MODE" to "normal"
-    And I launch the app
-    And I set environment variable "EVENT_MODE" to "noevent"
-  }
-end
-When("I put the app in the background") do
-  steps %Q{
-    When I run the script "features/scripts/launch_ios_safari.sh" synchronously
-    And I wait for 2 seconds
-  }
+  $driver.launch_app
 end
 
-Then("each event in the payload for request {int} matches one of:") do |request_index, table|
+When("I clear the request queue") do
+  Server.stored_requests.clear
+end
+
+Then("each event in the payload matches one of:") do |table|
   # Checks string equality of event fields against values
-  events = read_key_path(find_request(request_index)[:body], "events")
+  events = read_key_path(Server.current_request[:body], "events")
   table.hashes.each do |values|
     assert_not_nil(events.detect do |event|
       values.all? do |k, v|
@@ -65,32 +60,15 @@ Then("each event in the payload for request {int} matches one of:") do |request_
             event_value.nil?
           end
         else
-          v == read_key_path(event, k) || (v.to_i > 0 && v.to_i == read_key_path(event, k).to_i)
+          v == read_key_path(event, k) || (v.to_i == read_key_path(event, k).to_i)
         end
       end
     end, "No event matches the following values: #{values}")
   end
 end
-Then("each event in the payload matches one of:") do |table|
-  step("each event in the payload for request 0 matches one of:", table)
-end
-
-Then("each event with a session in the payload for request {int} matches one of:") do |request_index, table|
-  events = read_key_path(find_request(request_index)[:body], "events")
-  table.hashes.each do |values|
-    assert_not_nil(events.detect do |event|
-      handled_count = read_key_path(event, "session.events.handled")
-      unhandled_count = read_key_path(event, "session.events.unhandled")
-      error_class = read_key_path(event, "exceptions.0.errorClass")
-      handled_count == values["handled"].to_i &&
-        unhandled_count == values["unhandled"].to_i &&
-        error_class == values["class"]
-    end, "No event matches the following values: #{values}")
-  end
-end
 
 Then("the event {string} is within {int} seconds of the current timestamp") do |field, threshold_secs|
-  value = read_key_path(find_request(0)[:body], "events.0.#{field}")
+  value = read_key_path(Server.current_request[:body], "events.0.#{field}")
   assert_not_nil(value, "Expected a timestamp")
   nowSecs = Time.now.to_i
   thenSecs = Time.parse(value).to_i
@@ -99,7 +77,7 @@ Then("the event {string} is within {int} seconds of the current timestamp") do |
 end
 
 Then("the event breadcrumbs contain {string}") do |string|
-  crumbs = read_key_path(find_request(0)[:body], "events.0.breadcrumbs")
+  crumbs = read_key_path(Server.current_request[:body], "events.0.breadcrumbs")
   assert_not_equal(0, crumbs.length, "There are no breadcrumbs on this event")
   match = crumbs.detect do |crumb|
     read_key_path(crumb, "metaData.message") == string
@@ -107,25 +85,29 @@ Then("the event breadcrumbs contain {string}") do |string|
   assert_not_nil(match, "No crumb matches the provided message")
 end
 
-Then("the {string} of stack frame {int} demangles to {string}") do |field, frame_index, expected_value|
-  value = read_key_path(find_request(0)[:body], "events.0.exceptions.0.stacktrace.#{frame_index}.#{field}")
-  demangled_value = `xcrun swift-demangle -compact '#{value}'`.chomp
-  assert_equal(expected_value, demangled_value)
-end
-
 Then("the stack trace is an array with {int} stack frames") do |expected_length|
-  stack_trace = read_key_path(find_request(0)[:body], "events.0.exceptions.0.stacktrace")
+  stack_trace = read_key_path(Server.current_request[:body], "events.0.exceptions.0.stacktrace")
   assert_equal(expected_length,  stack_trace.length)
-end
-Then("the payload field {string} equals the device version") do |field|
-  value = read_key_path(find_request(0)[:body], field)
-  assert_equal(MAZE_SDK, value)
 end
 
 Then("the stacktrace contains methods:") do |table|
-  stack_trace = read_key_path(find_request(0)[:body], "events.0.exceptions.0.stacktrace")
+  stack_trace = read_key_path(Server.current_request[:body], "events.0.exceptions.0.stacktrace")
   expected = table.raw.flatten
   actual = stack_trace.map{|s| s["method"]}
   contains = actual.each_cons(expected.length).to_a.include? expected
   assert_true(contains, "Stacktrace methods #{actual} did not contain #{expected}")
+end
+
+Then("the payload field {string} matches the test device model") do |field|
+  internal_names = {
+    "iPhone 7" => ["iPhone9,1", "iPhone9,2", "iPhone9,3", "iPhone9,4"],
+    "iPhone 8" => ["iPhone10,1", "iPhone10,2", "iPhone10,4", "iPhone10,5"],
+    "iPhone X" => ["iPhone10,3", "iPhone10,6"],
+    "iPhone XR" => ["iPhone11,8"],
+    "iPhone XS" => ["iPhone11,2", "iPhone11,4", "iPhone11,8"]
+  }
+  expected_model = Devices::DEVICE_HASH[$driver.device_type]["device"]
+  valid_models = internal_names[expected_model]
+  device_model = read_key_path(Server.current_request[:body], field)
+  assert_true(valid_models.include?(device_model), "The field #{device_model} did not match any of the list of expected fields")
 end

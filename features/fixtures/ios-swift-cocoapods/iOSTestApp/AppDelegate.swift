@@ -7,12 +7,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        loadTestScenario()
+        let arguments = ProcessInfo.processInfo.arguments
+        let runMaze = arguments.contains { (argument: String) -> Bool in
+            if argument.contains("MAZE_SIMULATOR") {
+                return true
+            } else {
+                return false
+            }
+        }
+        if runMaze {
+            loadTestScenario(arguments: arguments)
+        }
         return true
     }
 
-    internal func loadTestScenario() {
-        let arguments = ProcessInfo.processInfo.arguments
+    internal func loadTestScenario(arguments: Array<String>) {
+        NSLog("Loading scenario information from environment variables")
         var delay: TimeInterval = 0
         var eventType = "none"
         var eventMode = "regular"
@@ -37,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         assert(mockAPIPath.count > 0, "The mock API path must be set prior to triggering events. Event Type: '" + eventType + "'")
         if eventType == "preheat" {
-          assert(false)
+            assert(false)
         }
 
         let config = prepareConfig(apiKey: bugsnagAPIKey, mockAPIPath: mockAPIPath)
@@ -49,7 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     internal func prepareConfig(apiKey: String, mockAPIPath: String) -> BugsnagConfiguration {
         let config = BugsnagConfiguration()
         config.apiKey = apiKey
-        // Enabling by default to check not only the OOM reporting tests but 
+        // Enabling by default to check not only the OOM reporting tests but
         // also that extra reports aren't erroneously sent in other conditions
         // when OOM reporting is enabled
         config.reportOOMs = true
