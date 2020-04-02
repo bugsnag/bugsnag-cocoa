@@ -393,6 +393,7 @@
     NSDictionary *dict = @{@"user.handledState": [state toJson], @"user.metaData": [metadata toDictionary]};
 
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:dict];
+    [event clearMetadataFromSection:@"device"];
     XCTAssertNotNil(event.metadata);
     XCTAssertEqual([[event.metadata toDictionary] count], 1);
     XCTAssertEqualObjects([event.metadata getMetadataFromSection:@"Custom" withKey:@"Foo"], @"Bar");
@@ -442,6 +443,7 @@
     NSDictionary *dict = @{@"user.metaData": [metadata toDictionary]};
 
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:dict];
+    [event clearMetadataFromSection:@"device"];
     XCTAssertNotNil(event.metadata);
     XCTAssertEqual([[event.metadata toDictionary] count], 1);
     XCTAssertEqualObjects([event.metadata getMetadataFromSection:@"Custom" withKey:@"Foo"], @"Bar");
@@ -605,6 +607,7 @@
         @"user.metaData": @{
                 @"user": @{@"id": @"user id"}
         }}];
+    [event clearMetadataFromSection:@"device"];
     [event addMetadata:@{@"foo": @"bar"} toSection:@"section1"];
     [event addMetadata:@{@"baz": @"bill"} toSection:@"section1"];
     [event addMetadata:@{@"alice": @"bob"} toSection:@"section2"];
@@ -644,6 +647,7 @@
         @"user.metaData": @{
                 @"user": @{@"id": @"user id"}
         }}];
+    [event clearMetadataFromSection:@"device"];
     [event addMetadata:@{@"foo": @"bar"} toSection:@"section1"];
     [event addMetadata:@{@"baz": @"bill"} toSection:@"section1"];
     [event addMetadata:@{@"alice": @"bob"} toSection:@"section2"];
@@ -666,6 +670,7 @@
         @"user.metaData": @{
                 @"user": @{@"id": @"user id"}
         }}];
+    [event clearMetadataFromSection:@"device"];
     [event addMetadata:@{@"foo": @"bar"} toSection:@"section1"];
     [event addMetadata:@{@"baz": @"bill"} toSection:@"section1"];
     [event addMetadata:@{@"alice": @"bob"} toSection:@"section2"];

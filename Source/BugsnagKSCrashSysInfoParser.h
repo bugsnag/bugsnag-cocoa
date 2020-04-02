@@ -10,5 +10,4 @@
 
 #define PLATFORM_WORD_SIZE sizeof(void*)*8
 
-NSDictionary *_Nonnull BSGParseDevice(NSDictionary *_Nonnull report);
-NSDictionary *_Nonnull BSGParseDeviceState(NSDictionary *_Nonnull report);
+NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);

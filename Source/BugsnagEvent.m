@@ -24,6 +24,7 @@
 #import "Private.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagKeys.h"
+#import "BugsnagDeviceWithState.h"
 #import "BugsnagClient.h"
 
 static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
@@ -245,6 +246,12 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 @end
 
 
+@interface BugsnagDeviceWithState ()
+- (NSDictionary *)toDict;
++ (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event;
++ (BugsnagDeviceWithState *)deviceWithOomData:(NSDictionary *)data;
+@end
+
 @interface BugsnagEvent ()
 
 /**
@@ -335,7 +342,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             _errorMessage = BSGParseErrorMessage(report, _error, _errorType);
             _breadcrumbs = BSGParseBreadcrumbs(report);
             _app = [BugsnagAppWithState appWithOomData:[report valueForKeyPath:@"user.state.oom.app"]];
-            _device = [report valueForKeyPath:@"user.state.oom.device"];
+            _device = [BugsnagDeviceWithState deviceWithOomData:[report valueForKeyPath:@"user.state.oom.device"]];
             _releaseStage = [report valueForKeyPath:@"user.state.oom.app.releaseStage"];
             _handledState = [BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory];
             _deviceAppHash = [report valueForKeyPath:@"user.state.oom.device.id"];
@@ -373,9 +380,11 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
                 self.metadata = [BugsnagMetadata new];
             }
 
+            NSDictionary *deviceMetadata = BSGParseDeviceMetadata(report);
+            [self.metadata addMetadata:deviceMetadata toSection:@"device"];
+
             _context = BSGParseContext(report);
-            _deviceState = BSGParseDeviceState(report);
-            _device = BSGParseDevice(report);
+            _device = [BugsnagDeviceWithState deviceWithDictionary:report];
             _app = [BugsnagAppWithState appWithDictionary:report config:config];
             _groupingHash = BSGParseGroupingHash(report);
             _overrides = [report valueForKeyPath:@"user.overrides"];
@@ -423,6 +432,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         _errorClass = name;
         _errorMessage = message;
         _overrides = [NSDictionary new];
+        _device = [BugsnagDeviceWithState new];
         self.metadata = [metadata deepCopy] ?: [BugsnagMetadata new];
 
         // calling self sets the override property for releaseStage so it is persisted in KSCrash reports
@@ -592,8 +602,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     BSGDictSetSafeObject(event, [self serializeBreadcrumbs], BSGKeyBreadcrumbs);
     BSGDictSetSafeObject(event, metadata, BSGKeyMetadata);
 
-    NSDictionary *device = BSGDictMerge(self.device, self.deviceState);
-    BSGDictSetSafeObject(event, device, BSGKeyDevice);
+    BSGDictSetSafeObject(event, [self.device toDict], BSGKeyDevice);
     BSGDictSetSafeObject(event, [self.app toDict], BSGKeyApp);
     
     BSGDictSetSafeObject(event, [self context], BSGKeyContext);
@@ -627,7 +636,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     }
     BSGDictInsertIfNotNil(event, user, BSGKeyUser);
 
-    if (!user[BSGKeyId] && self.device[BSGKeyId]) { // if device id is null, don't set user id to default
+    if (!user[BSGKeyId] && self.device.id) { // if device id is null, don't set user id to default
         BSGDictSetSafeObject(user, [self deviceAppHash], BSGKeyId);
     }
 

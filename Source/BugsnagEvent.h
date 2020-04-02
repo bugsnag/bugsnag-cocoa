@@ -14,6 +14,7 @@
 @class BugsnagSession;
 @class BugsnagBreadcrumb;
 @class BugsnagAppWithState;
+@class BugsnagDeviceWithState;
 @class BugsnagMetadata;
 
 typedef NS_ENUM(NSUInteger, BSGSeverity) {
@@ -114,14 +115,11 @@ initWithErrorName:(NSString *_Nonnull)name
  * - Writes are not persisted to BugsnagConfiguration.
  */
 @property(readwrite, copy, nonnull) NSString *apiKey;
+
 /**
  *  Device information such as OS name and version
  */
-@property(readonly, nonnull) NSDictionary *device;
-/**
- *  Device state such as memory allocation at crash time
- */
-@property(readwrite, copy, nullable) NSDictionary *deviceState;
+@property(readonly, nonnull) BugsnagDeviceWithState *device;
 
 /**
  *  App information such as the name, version, and bundle ID

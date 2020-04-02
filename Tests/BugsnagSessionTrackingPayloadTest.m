@@ -45,19 +45,14 @@
 - (void)testDeviceSerialisation {
     NSDictionary *device = self.payload[@"device"];
     XCTAssertNotNil(device);
-    XCTAssertEqual(8, device.count);
-    
     XCTAssertEqualObjects(device[@"manufacturer"], @"Apple");
     XCTAssertNotNil(device[@"model"]);
-    XCTAssertNotNil(device[@"modelNumber"]);
     XCTAssertNotNil(device[@"osName"]);
     XCTAssertNotNil(device[@"osVersion"]);
-    XCTAssertEqualObjects(device[@"jailbroken"], @NO);
-#if defined(__LP64__)
-    XCTAssertEqualObjects(device[@"wordSize"], @64);
-#else
-    XCTAssertEqualObjects(device[@"wordSize"], @32);
-#endif
+    XCTAssertFalse([device[@"jailbroken"] boolValue]);
+    XCTAssertNotNil(device[@"id"]);
+    XCTAssertNotNil(device[@"locale"]);
+    XCTAssertNotNil(device[@"runtimeVersions"]);
 }
 
 - (void)testAppSerialisation {

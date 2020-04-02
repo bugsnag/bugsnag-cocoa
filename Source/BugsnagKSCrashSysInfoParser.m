@@ -10,52 +10,13 @@
 #import "Bugsnag.h"
 #import "BugsnagCollections.h"
 #import "BugsnagKeys.h"
-#import "BugsnagConfiguration.h"
 #import "Private.h"
-#import "BugsnagLogger.h"
 
-NSNumber *BSGDeviceFreeSpace(NSSearchPathDirectory directory) {
-    NSNumber *freeBytes = nil;
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(directory, NSUserDomainMask, true);
-    NSString *path = [searchPaths lastObject];
-    
-    NSError *error;
-    NSDictionary *fileSystemAttrs =
-    [fileManager attributesOfFileSystemForPath:path error:&error];
-    
-    if (error) {
-        bsg_log_warn(@"Failed to read free disk space: %@", error);
-    } else {
-        freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
-    }
-    return freeBytes;
-}
-
-NSDictionary *BSGParseDevice(NSDictionary *report) {
+NSDictionary *BSGParseDeviceMetadata(NSDictionary *event) {
     NSMutableDictionary *device = [NSMutableDictionary new];
-    NSDictionary *state = [report valueForKeyPath:@"user.state.deviceState"];
+    NSDictionary *state = [event valueForKeyPath:@"user.state.deviceState"];
     [device addEntriesFromDictionary:state];
-
-    [device addEntriesFromDictionary:BSGParseDeviceState(report[@"system"])];
-    
-    BSGDictSetSafeObject(device, [[NSLocale currentLocale] localeIdentifier],
-                         @"locale");
-    
-    BSGDictSetSafeObject(device, [report valueForKeyPath:@"system.time_zone"], @"timezone");
-    BSGDictSetSafeObject(device, [report valueForKeyPath:@"system.memory.usable"],
-                         @"totalMemory");
-    
-    BSGDictSetSafeObject(device,
-                         [report valueForKeyPath:@"system.memory.free"],
-                         @"freeMemory");
-    
-    BSGDictSetSafeObject(device, [report valueForKeyPath:@"report.timestamp"], @"time");
-    
-    BSGDictSetSafeObject(device, BSGDeviceFreeSpace(NSCachesDirectory), @"freeDisk");
-
-    
-    BSGDictSetSafeObject(device, report[@"system"][@"device_app_hash"], @"id");
+    BSGDictSetSafeObject(device, [event valueForKeyPath:@"system.time_zone"], @"timezone");
 
 #if TARGET_OS_SIMULATOR
     BSGDictSetSafeObject(device, @YES, @"simulator");
@@ -63,24 +24,6 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
     BSGDictSetSafeObject(device, @NO, @"simulator");
 #endif
 
+    BSGDictSetSafeObject(device, @(PLATFORM_WORD_SIZE), @"wordSize");
     return device;
 }
-
-NSDictionary *BSGParseDeviceState(NSDictionary *report) {
-    NSMutableDictionary *deviceState = [NSMutableDictionary new];
-    BSGDictSetSafeObject(deviceState, report[@"model"], @"modelNumber");
-    BSGDictSetSafeObject(deviceState, report[@"machine"], @"model");
-    BSGDictSetSafeObject(deviceState, report[@"system_name"], @"osName");
-    BSGDictSetSafeObject(deviceState, report[@"system_version"], @"osVersion");
-
-    NSMutableDictionary *runtimeVersions = [NSMutableDictionary new];
-    BSGDictSetSafeObject(runtimeVersions, report[@"os_version"], @"osBuild");
-    BSGDictSetSafeObject(runtimeVersions, report[@"clang_version"], @"clangVersion");
-    BSGDictSetSafeObject(deviceState, runtimeVersions, @"runtimeVersions");
-
-    BSGDictSetSafeObject(deviceState, @(PLATFORM_WORD_SIZE), @"wordSize");
-    BSGDictSetSafeObject(deviceState, @"Apple", @"manufacturer");
-    BSGDictSetSafeObject(deviceState, report[@"jailbroken"], @"jailbroken");
-    return deviceState;
-}
-
