@@ -30,6 +30,20 @@
   "requires_arc": true,
   "public_header_files": [
     "Source/BSG_KSCrashReportWriter.h",
-    "Source/Bugsnag{,Metadata,Configuration,Breadcrumb,Event,Plugin,Client,MetadataStore}.h"
+    "Source/Bugsnag.h",
+    "Source/BugsnagApp.h",
+    "Source/BugsnagAppWithState.h",
+    "Source/BugsnagBreadcrumb.h",
+    "Source/BugsnagClient.h",
+    "Source/BugsnagConfiguration.h",
+    "Source/BugsnagDevice.h",
+    "Source/BugsnagDeviceWithState.h",
+    "Source/BugsnagError.h",
+    "Source/BugsnagEvent.h",
+    "Source/BugsnagMetadata.h",
+    "Source/BugsnagMetadataStore.h",
+    "Source/BugsnagPlugin.h",
+    "Source/BugsnagStackframe.h",
+    "Source/BugsnagThread.h"
   ]
 }
