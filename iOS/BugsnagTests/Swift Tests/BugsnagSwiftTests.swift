@@ -17,13 +17,13 @@ class BugsnagSwiftTests: XCTestCase {
     func testAddMetadataToSectionIsExposedToSwiftCorrectly() {
         let configuration = BugsnagConfiguration(DUMMY_APIKEY_32CHAR_1)
         Bugsnag.start(with: configuration)
-        Bugsnag.addMetadata("mySection1", key: "myKey1", value: "myValue1")
+        Bugsnag.addMetadata("myValue1", key: "myKey1", section: "mySection1")
         
         let exception1 = NSException(name: NSExceptionName(rawValue: "exception1"), reason: "reason1", userInfo: nil)
         
         Bugsnag.notify(exception1) { (event) in
             // Arbitrary test, replicating the ObjC one
-            let value = (event.metadata["mySection1"] as? [String : Any])?["myKey1"] as? String
+            let value = event.getMetadata(section: "mySection1", key: "myKey1") as? String
             XCTAssertEqual(value, "myValue1")
         }
     }

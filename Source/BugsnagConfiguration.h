@@ -31,6 +31,7 @@
 #import "BugsnagEvent.h"
 #import "BugsnagMetadata.h"
 #import "BugsnagPlugin.h"
+#import "BugsnagMetadataStore.h"
 
 @class BugsnagUser;
 
@@ -83,7 +84,11 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
     BSGErrorTypesMach         NS_SWIFT_NAME(Mach)         = 1 << 4
 };
 
-@interface BugsnagConfiguration : NSObject
+// =============================================================================
+// MARK: - BugsnagConfiguration
+// =============================================================================
+
+@interface BugsnagConfiguration : NSObject <BugsnagMetadataStore>
 
 // -----------------------------------------------------------------------------
 // MARK: - Properties

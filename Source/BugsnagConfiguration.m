@@ -35,6 +35,8 @@
 #import "BugsnagLogger.h"
 #import "BSG_SSKeychain.h"
 #import "BugsnagBreadcrumbs.h"
+#import "BugsnagMetadataStore.h"
+#import "BSGSerialization.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -206,9 +208,9 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  * @param user A BugsnagUser object containing data to be added to the configuration metadata.
  */
 - (void)setUserMetadataFromUser:(BugsnagUser *)user {
-    [self.metadata addAttribute:BSGKeyId    withValue:user.userId    toTabWithName:BSGKeyUser];
-    [self.metadata addAttribute:BSGKeyName  withValue:user.name  toTabWithName:BSGKeyUser];
-    [self.metadata addAttribute:BSGKeyEmail withValue:user.emailAddress toTabWithName:BSGKeyUser];
+    [self.metadata addMetadata:user.userId       withKey:BSGKeyId    toSection:BSGKeyUser];
+    [self.metadata addMetadata:user.name         withKey:BSGKeyName  toSection:BSGKeyUser];
+    [self.metadata addMetadata:user.emailAddress withKey:BSGKeyEmail toSection:BSGKeyUser];
 }
 
 // =============================================================================
@@ -439,9 +441,9 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
         [self willChangeValueForKey:key];
         _releaseStage = newReleaseStage;
         [self didChangeValueForKey:key];
-        [self.config addAttribute:BSGKeyReleaseStage
-                        withValue:newReleaseStage
-                    toTabWithName:BSGKeyConfig];
+        [self.config addMetadata:newReleaseStage
+                         withKey:BSGKeyReleaseStage
+                       toSection:BSGKeyConfig];
     }
 }
 
@@ -486,9 +488,9 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     @synchronized (self) {
         NSArray *releaseStagesCopy = [newReleaseStages copy];
         _enabledReleaseStages = releaseStagesCopy;
-        [self.config addAttribute:BSGKeyEnabledReleaseStages
-                        withValue:releaseStagesCopy
-                    toTabWithName:BSGKeyConfig];
+        [self.config addMetadata:releaseStagesCopy
+                         withKey:BSGKeyEnabledReleaseStages
+                       toSection:BSGKeyConfig];
     }
 }
 
@@ -525,9 +527,9 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 - (void)setContext:(NSString *)newContext {
     @synchronized (self) {
         _context = newContext;
-        [self.config addAttribute:BSGKeyContext
-                        withValue:newContext
-                    toTabWithName:BSGKeyConfig];
+        [self.config addMetadata:newContext
+                         withKey:BSGKeyContext
+                       toSection:BSGKeyConfig];
     }
 }
 
@@ -544,9 +546,9 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 - (void)setAppVersion:(NSString *)newVersion {
     @synchronized (self) {
         _appVersion = newVersion;
-        [self.config addAttribute:BSGKeyAppVersion
-                        withValue:newVersion
-                    toTabWithName:BSGKeyConfig];
+        [self.config addMetadata:newVersion
+                         withKey:BSGKeyAppVersion
+                       toSection:BSGKeyConfig];
     }
 }
 
@@ -570,6 +572,43 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 - (void)addPlugin:(id<BugsnagPlugin> _Nonnull)plugin {
     [_plugins addObject:plugin];
+}
+
+// MARK: - <MetadataStore>
+
+- (void)addMetadata:(NSDictionary *_Nonnull)metadata
+          toSection:(NSString *_Nonnull)sectionName
+{
+    [self.metadata addMetadata:metadata toSection:sectionName];
+}
+
+- (void)addMetadata:(id _Nullable)metadata
+            withKey:(NSString *_Nonnull)key
+          toSection:(NSString *_Nonnull)sectionName
+{
+    [self.metadata addMetadata:metadata withKey:key toSection:sectionName];
+}
+
+- (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+                               withKey:(NSString *_Nonnull)key
+{
+    return [self.metadata getMetadataFromSection:sectionName withKey:key];
+}
+
+- (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+{
+    return [self.metadata getMetadataFromSection:sectionName];
+}
+
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
+{
+    [self.metadata clearMetadataFromSection:sectionName];
+}
+
+- (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
+                       withKey:(NSString *_Nonnull)key
+{
+    [self.metadata clearMetadataFromSection:sectionName withKey:key];
 }
 
 @end

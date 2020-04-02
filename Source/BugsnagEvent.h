@@ -7,11 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BugsnagMetadataStore.h"
 
 @class BugsnagConfiguration;
 @class BugsnagHandledState;
 @class BugsnagSession;
 @class BugsnagBreadcrumb;
+@class BugsnagMetadata;
 
 typedef NS_ENUM(NSUInteger, BSGSeverity) {
     BSGSeverityError,
@@ -19,7 +21,7 @@ typedef NS_ENUM(NSUInteger, BSGSeverity) {
     BSGSeverityInfo,
 };
 
-@interface BugsnagEvent : NSObject
+@interface BugsnagEvent : NSObject <BugsnagMetadataStore>
 
 // -----------------------------------------------------------------------------
 // MARK: - Initialisation
@@ -65,7 +67,7 @@ typedef NS_ENUM(NSUInteger, BSGSeverity) {
 initWithErrorName:(NSString *_Nonnull)name
      errorMessage:(NSString *_Nonnull)message
     configuration:(BugsnagConfiguration *_Nonnull)config
-         metadata:(NSDictionary *_Nonnull)metadata
+         metadata:(BugsnagMetadata *_Nullable)metadata
      handledState:(BugsnagHandledState *_Nonnull)handledState
           session:(BugsnagSession *_Nullable)session;
 
@@ -74,66 +76,6 @@ initWithErrorName:(NSString *_Nonnull)name
  */
 - (void)attachCustomStacktrace:(NSArray *_Nonnull)frames
                       withType:(NSString *_Nonnull)type;
-
-// -----------------------------------------------------------------------------
-// MARK: - Metadata
-// -----------------------------------------------------------------------------
-
-/**
- * Add metadata to a report to a tab. If the tab does not exist, it will be
- * added.
- *
- * @param metadata The key/value pairs to add
- * @param sectionName The name of the report section
- */
-- (void)addMetadata:(NSDictionary *_Nonnull)metadata
-     toSectionNamed:(NSString *_Nonnull)sectionName;
-
-/**
- * Add or remove a value from report metadata. If value is nil, the existing value
- * will be removed.
- *
- * @param key The key name
- * @param value The value to set
- * @param sectionName The name of the metadata section
- */
-- (void)addMetadataToSectionNamed:(NSString *_Nonnull)sectionName
-                              key:(NSString *_Nonnull)key
-                            value:(id _Nullable)value;
-
-/**
- * Return a piece of metadata in a named section if it exists, or nil.
- *
- * @param sectionName The name of the metadata section
- * @param key The key
- * @returns An arbitrary object if it exists for the key or nil.
- */
-- (id _Nullable)getMetadataInSection:(NSString *_Nonnull)sectionName
-                             withKey:(NSString *_Nullable)key;
-
-/**
- * Return a named metadata section if it exists, or nil.
- *
- * @param sectionName The name of the metadata section
- * @returns A dictionary of metadata if the section exists, or nil.
- */
-- (NSDictionary *_Nullable)getMetadataInSection:(NSString *_Nonnull)sectionName;
-
-/**
- * Remove a named metadata section, if it exists.
- *
- * @param sectionName The name of the section to remove
- */
-- (void)clearMetadataSection:(NSString *_Nonnull)sectionName;
-
-/**
- * Remove a named metadata value if the key exists in the named section.
- *
- * @param sectionName The name of the section to remove
- * @param key The key to remove
- */
-- (void)clearMetadataInSection:(NSString *_Nonnull)sectionName
-                       withKey:(NSString *_Nonnull)key;
 
 // -----------------------------------------------------------------------------
 // MARK: - Properties
@@ -168,11 +110,6 @@ initWithErrorName:(NSString *_Nonnull)name
  *  Breadcrumbs from user events leading up to the error
  */
 @property(readwrite, copy, nullable) NSArray <BugsnagBreadcrumb *>*breadcrumbs;
-/**
- *  Further information attached to an error report, where each top level key
- *  generates a section on bugsnag, displaying key/value pairs
- */
-@property(readwrite, copy, nonnull) NSDictionary *metadata;
 
 /**
  * A per-event override for the apiKey.
@@ -204,3 +141,4 @@ initWithErrorName:(NSString *_Nonnull)name
 @property(readonly) BOOL unhandled;
 
 @end
+

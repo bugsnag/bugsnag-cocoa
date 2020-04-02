@@ -21,6 +21,7 @@
 		0089B70324221EDE00D5A7F2 /* BugsnagClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0089B70224221EDE00D5A7F2 /* BugsnagClientTests.m */; };
 		009131BC23F46279000810D9 /* BugsnagMetadataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 009131BB23F46279000810D9 /* BugsnagMetadataTests.m */; };
 		009131BE23F5884E000810D9 /* BugsnagBaseUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 009131BD23F5884E000810D9 /* BugsnagBaseUnitTest.m */; };
+		009DF96924327FA2000A8363 /* BugsnagMetadataStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 009DF96824327FA2000A8363 /* BugsnagMetadataStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00D7ACAD23E9C63000FBE4A7 /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACAC23E9C63000FBE4A7 /* BugsnagTests.m */; };
 		00D7ACAF23EABBC800FBE4A7 /* BugsnagSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACAE23EABBC800FBE4A7 /* BugsnagSwiftTests.swift */; };
 		00F9393923FC4F64008C7073 /* BugsnagTestsDummyClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F9393823FC4F64008C7073 /* BugsnagTestsDummyClass.m */; };
@@ -481,6 +482,7 @@
 		009131BB23F46279000810D9 /* BugsnagMetadataTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagMetadataTests.m; path = ../../Tests/BugsnagMetadataTests.m; sourceTree = "<group>"; };
 		009131BD23F5884E000810D9 /* BugsnagBaseUnitTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagBaseUnitTest.m; path = ../../Tests/BugsnagBaseUnitTest.m; sourceTree = "<group>"; };
 		009131BF23F58930000810D9 /* BugsnagBaseUnitTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagBaseUnitTest.h; path = ../../Tests/BugsnagBaseUnitTest.h; sourceTree = "<group>"; };
+		009DF96824327FA2000A8363 /* BugsnagMetadataStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagMetadataStore.h; path = ../Source/BugsnagMetadataStore.h; sourceTree = "<group>"; };
 		00D7ACAC23E9C63000FBE4A7 /* BugsnagTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagTests.m; path = ../../Tests/BugsnagTests.m; sourceTree = "<group>"; };
 		00D7ACAE23EABBC800FBE4A7 /* BugsnagSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagSwiftTests.swift; sourceTree = "<group>"; };
 		00F9393723FC4F63008C7073 /* BugsnagTestsDummyClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagTestsDummyClass.h; path = ../../Tests/BugsnagTestsDummyClass.h; sourceTree = "<group>"; };
@@ -831,6 +833,8 @@
 				8A381D491EAA49A700AF8429 /* BugsnagLogger.h */,
 				8A2C8F491C6BBE3C00846019 /* BugsnagMetadata.h */,
 				8A2C8F4A1C6BBE3C00846019 /* BugsnagMetadata.m */,
+				009DF96824327FA2000A8363 /* BugsnagMetadataStore.h */,
+				8A72A0352396535000328051 /* BugsnagPlugin.h */,
 				E72AE1F3241A4E4400ED8972 /* BugsnagPluginClient.h */,
 				E72AE1F4241A4E4400ED8972 /* BugsnagPluginClient.m */,
 				E72BF7781FC869F7004BE82F /* BugsnagSession.h */,
@@ -853,7 +857,6 @@
 				8A2C8F321C6BBD7200846019 /* module.modulemap */,
 				8A70D9C722539C81006B696F /* BSGOutOfMemoryWatchdog.h */,
 				8A70D9C822539C81006B696F /* BSGOutOfMemoryWatchdog.m */,
-				8A72A0352396535000328051 /* BugsnagPlugin.h */,
 			);
 			name = Bugsnag;
 			sourceTree = SOURCE_ROOT;
@@ -1128,6 +1131,7 @@
 				E7107C601F4C97F100BB3F98 /* BSG_KSDynamicLinker.h in Headers */,
 				E7107C6A1F4C97F100BB3F98 /* BSG_KSMach.h in Headers */,
 				E72BF77A1FC869F7004BE82F /* BugsnagSession.h in Headers */,
+				009DF96924327FA2000A8363 /* BugsnagMetadataStore.h in Headers */,
 				E7107C651F4C97F100BB3F98 /* BSG_KSJSONCodecObjC.h in Headers */,
 				E7107C671F4C97F100BB3F98 /* BSG_KSLogger.h in Headers */,
 				E7107C391F4C97F100BB3F98 /* BSG_KSCrashDoctor.h in Headers */,

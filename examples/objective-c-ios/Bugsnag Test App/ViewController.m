@@ -65,12 +65,12 @@
         // Code that can potentially throw an Exception:
         NSDictionary *actuallyReallyJSON = nil;
         [NSJSONSerialization dataWithJSONObject:actuallyReallyJSON options:0 error:nil];
-    } @catch (NSException *exception) {
+    }
+    @catch (NSException *exception) {
         [Bugsnag notify:exception block:^(BugsnagEvent * _Nonnull report) {
-            report.metadata = @{@"tab": @{@"user": @"Bob Loblaw"}};
+            [report addMetadata:@{@"user": @"Bob Loblaw"} toSection:@"tab"];
         }];
     }
-
 }
 
 - (IBAction)objectiveCLockSignal:(id)sender {

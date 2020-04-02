@@ -41,6 +41,7 @@
     "Source/BugsnagError.h",
     "Source/BugsnagEvent.h",
     "Source/BugsnagMetadata.h",
+    "Source/BugsnagMetadataStore.h",
     "Source/BugsnagPlugin.h",
     "Source/BugsnagStackframe.h",
     "Source/BugsnagThread.h"

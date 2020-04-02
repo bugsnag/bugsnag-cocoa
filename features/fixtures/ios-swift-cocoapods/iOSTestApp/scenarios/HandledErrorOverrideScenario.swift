@@ -24,9 +24,7 @@ class HandledErrorOverrideScenario: Scenario {
             report.errorClass = "Bar"
             let depth: Int = report.value(forKey: "depth") as! Int
             report.setValue(depth + 2, forKey: "depth")
-            report.metadata["account"] = [
-                "items": [400,200]
-            ]
+            report.addMetadata(["items": [400,200]], section: "account")
         }
     }
 
