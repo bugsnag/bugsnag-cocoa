@@ -27,7 +27,6 @@
 #import "BugsnagMetadata.h"
 #import "BSGSerialization.h"
 #import "BugsnagLogger.h"
-#import "BSG_MutableDeepCopy.h"
 
 @interface BugsnagMetadata ()
 @property(atomic, strong) NSMutableDictionary *dictionary;
@@ -46,7 +45,7 @@
     if (self = [super init]) {
         // Ensure that the instantiating dictionary is mutable.
         // Saves checks later.
-        self.dictionary = [dict mutableDeepCopy];
+        self.dictionary = [dict mutableCopy];
     }
     [self.delegate metadataChanged:self];
     return self;
