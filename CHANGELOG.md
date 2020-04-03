@@ -213,6 +213,9 @@ Bugsnag Notifiers on other platforms.
 * Increased the detail in handled event breadcrumbs
   [#493](https://github.com/bugsnag/bugsnag-cocoa/pull/493)
   
+* NSWorkspaceScreenSleep/Wake notifications now use the correct notification center.
+  (#525)[https://github.com/bugsnag/bugsnag-cocoa/pull/525]
+  
 ## 5.23.0 (2019-12-10)
 
 This release removes support for reporting 'partial' or 'minimal' crash reports

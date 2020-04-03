@@ -1073,7 +1073,16 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         for (NSString *name in [self automaticBreadcrumbStateEvents]) {
             [self startListeningForStateChangeNotification:name];
         }
-        
+
+#if TARGET_OS_TV
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif TARGET_OS_MAC
+        // Workspace-specific events - MacOS only
+        for (NSString *name in [self workspaceBreadcrumbStateEvents]) {
+            [self startListeningForWorkspaceStateChangeNotifications:name];
+        }
+#endif
+
         // NSMenu events (Mac only)
         for (NSString *name in [self automaticBreadcrumbMenuItemEvents]) {
             [[NSNotificationCenter defaultCenter]
@@ -1109,6 +1118,23 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     }
 }
 
+/**
+ * NSWorkspace-specific automatic breadcrumb events
+ */
+- (NSArray<NSString *> *)workspaceBreadcrumbStateEvents {
+#if TARGET_OS_TV
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif TARGET_OS_MAC
+    return @[
+        NSWorkspaceScreensDidSleepNotification,
+        NSWorkspaceScreensDidWakeNotification
+    ];
+#endif
+
+    // Fall-through
+    return nil;
+}
+
 - (NSArray<NSString *> *)automaticBreadcrumbStateEvents {
 #if TARGET_OS_TV
     return @[
@@ -1139,17 +1165,20 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     return @[
         NSApplicationDidBecomeActiveNotification,
         NSApplicationDidResignActiveNotification,
-        NSApplicationDidHideNotification, NSApplicationDidUnhideNotification,
+        NSApplicationDidHideNotification,
+        NSApplicationDidUnhideNotification,
         NSApplicationWillTerminateNotification,
-        NSWorkspaceScreensDidSleepNotification,
-        NSWorkspaceScreensDidWakeNotification, NSWindowWillCloseNotification,
-        NSWindowDidBecomeKeyNotification, NSWindowWillMiniaturizeNotification,
+
+        NSWindowWillCloseNotification,
+        NSWindowDidBecomeKeyNotification,
+        NSWindowWillMiniaturizeNotification,
         NSWindowDidEnterFullScreenNotification,
         NSWindowDidExitFullScreenNotification
     ];
-#else
-    return nil;
 #endif
+    
+    // Fall-through
+    return nil;
 }
 
 - (NSArray<NSString *> *)automaticBreadcrumbControlEvents {
@@ -1165,9 +1194,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         NSControlTextDidBeginEditingNotification,
         NSControlTextDidEndEditingNotification
     ];
-#else
-    return nil;
 #endif
+    
+    // Fall-through
+    return nil;
 }
 
 - (NSArray<NSString *> *)automaticBreadcrumbTableItemEvents {
@@ -1175,9 +1205,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     return @[ UITableViewSelectionDidChangeNotification ];
 #elif TARGET_OS_MAC
     return @[ NSTableViewSelectionDidChangeNotification ];
-#else
-    return nil;
 #endif
+
+    // Fall-through
+    return nil;
 }
 
 - (NSArray<NSString *> *)automaticBreadcrumbMenuItemEvents {
@@ -1187,9 +1218,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     return nil;
 #elif TARGET_OS_MAC
     return @[ NSMenuWillSendActionNotification ];
-#else
-    return nil;
 #endif
+
+    // Fall-through
+    return nil;
 }
 
 /**
@@ -1204,6 +1236,23 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                name:notificationName
              object:nil];
 }
+
+/**
+ * Configure an NSWorkspace-specific state change breadcrumb listener.  MacOS only.
+ *
+ * @param notificationName The name of the notification.
+ */
+#if TARGET_OS_TV
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif TARGET_OS_MAC
+- (void)startListeningForWorkspaceStateChangeNotifications:(NSString *)notificationName {
+    [NSWorkspace.sharedWorkspace.notificationCenter
+        addObserver:self
+           selector:@selector(sendBreadcrumbForNotification:)
+               name:notificationName
+             object:nil];
+    }
+#endif
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
