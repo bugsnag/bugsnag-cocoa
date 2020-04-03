@@ -55,6 +55,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 + (BugsnagClient *)client;
 @end
 
+@interface BugsnagMetadata ()
+- (NSDictionary *_Nonnull)toDictionary;
+@end
+
 @interface BugsnagConfiguration ()
 
 /**
@@ -88,7 +92,53 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 @property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 @end
 
+// =============================================================================
+// MARK: - BugsnagConfiguration
+// =============================================================================
+
 @implementation BugsnagConfiguration
+
+// -----------------------------------------------------------------------------
+// MARK: - <NSCopying>
+// -----------------------------------------------------------------------------
+
+/**
+ * Produce a shallow copy of the BugsnagConfiguration object.
+ *
+ * @param zone This parameter is ignored. Memory zones are no longer used by Objective-C.
+ */
+- (nonnull id)copyWithZone:(nullable NSZone *)zone {
+    BugsnagConfiguration *copy = [[BugsnagConfiguration alloc] initWithApiKey:[NSMutableString stringWithString:self.apiKey]];
+    // Omit apiKey - it's set explicitly in the line above
+    [copy setAppType:self.appType];
+    [copy setAppVersion:self.appVersion];
+    [copy setAutoDetectErrors:self.autoDetectErrors];
+    [copy setAutoTrackSessions:self.autoTrackSessions];
+    // Skip breadcrumbs - none should have been set
+    [copy setCodeBundleId:self.codeBundleId];
+    [copy setConfig:[[BugsnagMetadata alloc] initWithDictionary:[[self.config toDictionary] mutableCopy]]];
+    [copy setContext:self.context];
+    [copy setEnabledBreadcrumbTypes:self.enabledBreadcrumbTypes];
+    [copy setEnabledErrorTypes:self.enabledErrorTypes];
+    [copy setEnabledReleaseStages:self.enabledReleaseStages];
+    [copy setMaxBreadcrumbs:self.maxBreadcrumbs];
+    [copy setMetadata: [[BugsnagMetadata alloc] initWithDictionary:[[self.metadata toDictionary] mutableCopy]]];
+    [copy setEndpointsForNotify:self.notifyURL.absoluteString
+                       sessions:self.sessionURL.absoluteString];
+    [copy setOnBreadcrumbBlocks:[self.onBreadcrumbBlocks mutableCopy]];
+    [copy setOnCrashHandler:self.onCrashHandler];
+    [copy setOnSendBlocks:[self.onSendBlocks mutableCopy]];
+    [copy setOnSessionBlocks:[self.onSessionBlocks mutableCopy]];
+    [copy setPersistUser:self.persistUser];
+    [copy setPlugins:[self.plugins copy]];
+    [copy setReleaseStage:self.releaseStage];
+    [copy setSession:[self.session copy]];
+    [copy setUser:self.user.userId
+        withEmail:self.user.emailAddress
+          andName:self.user.name];
+    
+    return copy;
+}
 
 // -----------------------------------------------------------------------------
 // MARK: - Class Methods

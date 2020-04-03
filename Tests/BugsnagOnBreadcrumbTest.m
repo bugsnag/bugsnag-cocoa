@@ -13,6 +13,15 @@
 #import "BugsnagTestConstants.h"
 #import "BugsnagBreadcrumbs.h"
 
+@interface BugsnagClient ()
+@property(nonatomic, readwrite, retain) BugsnagConfiguration *_Nullable configuration;
+@end
+
+@interface Bugsnag ()
++ (BugsnagClient *)client;
++ (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block;
+@end
+
 @interface BugsnagConfiguration ()
 @property NSMutableArray *onBreadcrumbBlocks;
 @property BugsnagBreadcrumbs *breadcrumbs;
@@ -120,7 +129,8 @@
 
     // Check it's NOT called once the block's deleted
     called++;
-    [config removeOnBreadcrumbBlock:crumbBlock];
+    [Bugsnag removeOnBreadcrumbBlock:crumbBlock];
+    
     [Bugsnag leaveBreadcrumbWithMessage:@"Hello"];
     [self waitForExpectations:@[expectation2] timeout:1.0];
 }
@@ -171,8 +181,8 @@
     // Call onbreadcrumb blocks
     [Bugsnag startBugsnagWithConfiguration:config];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 1);
-    BugsnagBreadcrumb *crumb = [[config breadcrumbs].breadcrumbs firstObject];
-    XCTAssertEqualObjects(@"Foo", crumb.message);
+    NSDictionary *crumb = [[[[[Bugsnag client] configuration] breadcrumbs] arrayValue] firstObject];
+    XCTAssertEqualObjects(@"Foo", crumb[@"name"]);
 }
 
 /**

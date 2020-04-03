@@ -22,12 +22,12 @@
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
+@property(readonly, retain, nullable) NSURL *sessionURL;
+@property(readonly, retain, nullable) NSURL *notifyURL;
 - (void)deletePersistedUserData;
 - (BOOL)shouldSendReports;
 - (NSDictionary *_Nonnull)errorApiHeaders;
 - (NSDictionary *_Nonnull)sessionApiHeaders;
-@property(readonly, retain, nullable) NSURL *sessionURL;
-@property(readonly, retain, nullable) NSURL *notifyURL;
 @end
 
 @interface BugsnagCrashSentry ()
@@ -159,7 +159,6 @@
     __block XCTestExpectation *expectation1 = [self expectationWithDescription:@"Remove On Session Block 1"];
     __block XCTestExpectation *expectation2 = [self expectationWithDescription:@"Remove On Session Block 2"];
     __block XCTestExpectation *expectation3 = [self expectationWithDescription:@"Remove On Session Block 3"];
-    expectation3.inverted = YES;
     __block XCTestExpectation *expectation4 = [self expectationWithDescription:@"Remove On Session Block 4"];
     expectation4.inverted = YES;
 
@@ -199,7 +198,7 @@
     [Bugsnag startSession];
     [self waitForExpectations:@[expectation2] timeout:1.0];
 
-    // Check it's NOT called once the block's deleted
+    // Check it's still called once the block's deleted (block has been copied in client init)
     [Bugsnag pauseSession];
     called++;
     [config removeOnSessionBlock:sessionBlock];
@@ -763,6 +762,55 @@
     XCTAssertEqual([[configuration onSendBlocks] count], 2);
 }
 
+- (void)testNSCopying {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    
+    // Set some arbirtary values:
+    [config setUser:@"foo" withEmail:@"bar@baz.com" andName:@"Bill"];
+    [config setApiKey:DUMMY_APIKEY_32CHAR_1];
+    [config setAutoDetectErrors:YES];
+    [config setContext:@"context1"];
+    [config setAppType:@"The most amazing app, a brilliant app, the app to end all apps"];
+    [config setPersistUser:YES];
+    BugsnagOnSendBlock onSendBlock1 = ^bool(BugsnagEvent * _Nonnull event) { return true; };
+    BugsnagOnSendBlock onSendBlock2 = ^bool(BugsnagEvent * _Nonnull event) { return true; };
+
+    NSArray *sendBlocks = @[ onSendBlock1, onSendBlock2 ];
+    [config setOnSendBlocks:[sendBlocks mutableCopy]]; // Mutable arg required
+    
+    // Clone
+    BugsnagConfiguration *clone = [config copy];
+    XCTAssertNotEqual(config, clone);
+    
+    // Change values
+    
+    // Object
+    [clone setUser:@"Cthulu" withEmail:@"hp@lovecraft.com" andName:@"Howard"];
+    XCTAssertEqualObjects(config.user.userId, @"foo");
+    XCTAssertEqualObjects(clone.user.userId, @"Cthulu");
+    
+    // String
+    [clone setApiKey:DUMMY_APIKEY_32CHAR_2];
+    XCTAssertEqualObjects(config.apiKey, DUMMY_APIKEY_32CHAR_1);
+    XCTAssertEqualObjects(clone.apiKey, DUMMY_APIKEY_32CHAR_2);
+
+    // Bool
+    [clone setAutoDetectErrors:NO];
+    XCTAssertTrue(config.autoDetectErrors);
+    XCTAssertFalse(clone.autoDetectErrors);
+
+    // Block
+    [clone setOnCrashHandler:config.onCrashHandler];
+    XCTAssertEqual(config.onCrashHandler, clone.onCrashHandler);
+    [clone setOnCrashHandler:(void *)^(const BSG_KSCrashReportWriter *_Nonnull writer){}];
+    XCTAssertNotEqual(config.onCrashHandler, clone.onCrashHandler);
+
+    // Array (of blocks)
+    XCTAssertNotEqual(config.onSendBlocks, clone.onSendBlocks);
+    XCTAssertEqual(config.onSendBlocks[0], clone.onSendBlocks[0]);
+    [clone setOnSendBlocks:[@[ onSendBlock2 ] mutableCopy]];
+    XCTAssertNotEqual(config.onSendBlocks[0], clone.onSendBlocks[0]);
+}
 
 - (void)testMetadataMutability {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];

@@ -69,7 +69,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     
     // Check that the event is passed the apiKey
     [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
-        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
+        XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         
         // Grab the values that end up in the event for later comparison
         eventErrorClass = [event errorClass];

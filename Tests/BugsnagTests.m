@@ -272,6 +272,9 @@
     [self waitForExpectations:@[expectation2] timeout:1.0];
 }
 
+/**
+ * Test that we can add an onSession block, and that it's called correctly when a session starts
+ */
 - (void)testAddOnSessionBlock {
     
     __block int called = 0; // A counter
