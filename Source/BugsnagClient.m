@@ -319,7 +319,8 @@ NSString *_lastOrientation = nil;
     static NSString *const BSGWatchdogSentinelFileName = @"bugsnag_oom_watchdog.json";
     static NSString *const BSGCrashSentinelFileName = @"bugsnag_handled_crash.txt";
     if ((self = [super init])) {
-        self.configuration = initConfiguration;
+        // Take a shallow copy of the configuration
+        self.configuration = [initConfiguration copy];
         self.state = [[BugsnagMetadata alloc] init];
         NSString *notifierName =
 #if TARGET_OS_TV
@@ -362,7 +363,7 @@ NSString *_lastOrientation = nil;
             [self initializeNotificationNameMap];
         });
 
-        self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:initConfiguration
+        self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
                                                          postRecordCallback:^(BugsnagSession *session) {
                                                              BSGWriteSessionCrashData(session);
                                                          }];

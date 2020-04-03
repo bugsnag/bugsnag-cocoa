@@ -199,6 +199,9 @@ Bugsnag Notifiers on other platforms.
 * The metadata interface is now consistent across the `Bugsnag`,  `BugsnagMetadata`, `BugsnagConfig`, `BugsnagClient` and `BugsnagEvent` 
   classes.
   (#513)[https://github.com/bugsnag/bugsnag-cocoa/pull/513]
+  
+* `BugsnagClient` now takes a shallow copy of the configuration passed in on initialisation.
+(#524)[https://github.com/bugsnag/bugsnag-cocoa/pull/524]
 
 ## Bug fixes
 
