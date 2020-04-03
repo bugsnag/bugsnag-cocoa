@@ -28,7 +28,6 @@
 - (BOOL)shouldSendReports;
 - (NSDictionary *_Nonnull)errorApiHeaders;
 - (NSDictionary *_Nonnull)sessionApiHeaders;
-//- (void)addOnSendBlock:(BugsnagOnSendBlock)block;
 @end
 
 @interface BugsnagCrashSentry ()
