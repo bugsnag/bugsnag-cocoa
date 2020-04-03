@@ -485,23 +485,23 @@
     
     // Check that the event is passed the apiKey
     [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
-        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
+        XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
     }];
     
     // Check that we can change it
     [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
-        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
+        XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         event.apiKey = DUMMY_APIKEY_32CHAR_2;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_2);
-        XCTAssertEqual(Bugsnag.configuration.apiKey, DUMMY_APIKEY_32CHAR_1);
+        XCTAssertEqualObjects(Bugsnag.configuration.apiKey, DUMMY_APIKEY_32CHAR_1);
     }];
 
     // Check that the global configuration is unaffected
     [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
-        XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
+        XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         event.apiKey = DUMMY_APIKEY_32CHAR_1;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
-        XCTAssertEqual(Bugsnag.configuration.apiKey, DUMMY_APIKEY_32CHAR_1);
+        XCTAssertEqualObjects(Bugsnag.configuration.apiKey, DUMMY_APIKEY_32CHAR_1);
         event.apiKey = DUMMY_APIKEY_32CHAR_3;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_3);
     }];

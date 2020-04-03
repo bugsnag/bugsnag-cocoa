@@ -109,7 +109,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 - (nonnull id)copyWithZone:(nullable NSZone *)zone {
     BugsnagConfiguration *copy = [[BugsnagConfiguration alloc] initWithApiKey:[NSMutableString stringWithString:self.apiKey]];
-    [copy setApiKey:self.apiKey];
+    // Omit apiKey - it's set explicitly in the line above
     [copy setAppType:self.appType];
     [copy setAppVersion:self.appVersion];
     [copy setAutoDetectErrors:self.autoDetectErrors];
