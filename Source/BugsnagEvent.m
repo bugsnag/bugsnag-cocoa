@@ -26,17 +26,52 @@
 #import "BugsnagKeys.h"
 #import "BugsnagClient.h"
 
+static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
+
+// MARK: - Accessing hidden methods/properties
+
 @interface BugsnagAppWithState ()
-+ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event config:(BugsnagConfiguration *)config;
++ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
+                                    config:(BugsnagConfiguration *)config;
 - (NSDictionary *)toDict;
 + (BugsnagAppWithState *)appWithOomData:(NSDictionary *)event;
 @end
 
 @interface BugsnagBreadcrumb ()
 + (instancetype _Nullable)breadcrumbWithBlock:
-    (BSGBreadcrumbConfiguration _Nonnull)block;
+        (BSGBreadcrumbConfiguration _Nonnull)block;
 + (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
 @end
+
+@interface RegisterErrorData : NSObject
+@property (nonatomic, strong) NSString *errorClass;
+@property (nonatomic, strong) NSString *errorMessage;
++ (instancetype)errorDataFromThreads:(NSArray *)threads;
+- (instancetype)initWithClass:(NSString *_Nonnull)errorClass
+                      message:(NSString *_Nonnull)errorMessage NS_DESIGNATED_INITIALIZER;
+@end
+
+@interface BugsnagConfiguration (BugsnagEvent)
++ (BOOL)isValidApiKey:(NSString *_Nullable)apiKey;
+- (BOOL)shouldSendReports;
+@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
+@end
+
+@interface BugsnagSession ()
+@property NSUInteger unhandledCount;
+@property NSUInteger handledCount;
+@end
+
+@interface Bugsnag ()
++ (BugsnagClient *)client;
+@end
+
+@interface BugsnagMetadata ()
+- (NSDictionary *)toDictionary;
+- (id)deepCopy;
+@end
+
+// MARK: - KSCrashReport parsing
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {
@@ -203,38 +238,12 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     return nil;
 }
 
-static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
+// MARK: - BugsnagEvent implementation
 
 @interface NSDictionary (BSGKSMerge)
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
 @end
 
-@interface RegisterErrorData : NSObject
-@property (nonatomic, strong) NSString *errorClass;
-@property (nonatomic, strong) NSString *errorMessage;
-+ (instancetype)errorDataFromThreads:(NSArray *)threads;
-- (instancetype)initWithClass:(NSString *_Nonnull)errorClass message:(NSString *_Nonnull)errorMessage NS_DESIGNATED_INITIALIZER;
-@end
-
-@interface BugsnagConfiguration (BugsnagEvent)
-+ (BOOL)isValidApiKey:(NSString *_Nullable)apiKey;
-- (BOOL)shouldSendReports;
-@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
-@end
-
-@interface BugsnagSession ()
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
-@end
-
-@interface Bugsnag ()
-+ (BugsnagClient *)client;
-@end
-
-@interface BugsnagMetadata ()
-- (NSDictionary *)toDictionary;
-- (id)deepCopy;
-@end
 
 @interface BugsnagEvent ()
 
@@ -415,6 +424,8 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
         _errorMessage = message;
         _overrides = [NSDictionary new];
         self.metadata = [metadata deepCopy] ?: [BugsnagMetadata new];
+
+        // calling self sets the override property for releaseStage so it is persisted in KSCrash reports
         self.releaseStage = config.releaseStage;
         _enabledReleaseStages = config.enabledReleaseStages;
         // Set context based on current values.  May be nil.

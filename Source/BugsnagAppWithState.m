@@ -12,14 +12,17 @@
 #import "BugsnagCollections.h"
 
 @interface BugsnagApp ()
-+ (void)populateFields:(BugsnagApp *)app dictionary:(NSDictionary *)event config:(BugsnagConfiguration *)config;
++ (void)populateFields:(BugsnagApp *)app
+            dictionary:(NSDictionary *)event
+                config:(BugsnagConfiguration *)config;
 
 - (NSDictionary *)toDict;
 @end
 
 @implementation BugsnagAppWithState
 
-+ (BugsnagAppWithState *)appWithOomData:(NSDictionary *)event {
++ (BugsnagAppWithState *)appWithOomData:(NSDictionary *)event
+{
     BugsnagAppWithState *app = [BugsnagAppWithState new];
     app.id = event[@"id"];
     app.releaseStage = event[@"releaseStage"];
@@ -31,7 +34,9 @@
     return app;
 }
 
-+ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event config:(BugsnagConfiguration *)config {
++ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
+                                    config:(BugsnagConfiguration *)config
+{
     BugsnagAppWithState *app = [BugsnagAppWithState new];
     NSDictionary *system = event[BSGKeySystem];
     NSDictionary *stats = system[@"application_stats"];
@@ -47,7 +52,8 @@
     return app;
 }
 
-- (NSDictionary *)toDict {
+- (NSDictionary *)toDict
+{
     NSMutableDictionary *dict = (NSMutableDictionary *) [super toDict];
     BSGDictInsertIfNotNil(dict, @(self.duration), @"duration");
     BSGDictInsertIfNotNil(dict, @(self.durationInForeground), @"durationInForeground");

@@ -13,13 +13,18 @@
 
 @implementation BugsnagApp
 
-+ (BugsnagApp *)appWithDictionary:(NSDictionary *)event config:(BugsnagConfiguration *)config {
++ (BugsnagApp *)appWithDictionary:(NSDictionary *)event
+                           config:(BugsnagConfiguration *)config
+{
     BugsnagApp *app = [BugsnagApp new];
     [self populateFields:app dictionary:event config:config];
     return app;
 }
 
-+ (void)populateFields:(BugsnagApp *)app dictionary:(NSDictionary *)event config:(BugsnagConfiguration *)config {
++ (void)populateFields:(BugsnagApp *)app
+            dictionary:(NSDictionary *)event
+                config:(BugsnagConfiguration *)config
+{
     NSDictionary *system = event[BSGKeySystem];
     app.id = system[@"CFBundleIdentifier"];
     app.bundleVersion = system[@"CFBundleVersion"];
@@ -30,7 +35,8 @@
     app.type = config.appType;
 }
 
-- (NSDictionary *)toDict {
+- (NSDictionary *)toDict
+{
     NSMutableDictionary *dict = [NSMutableDictionary new];
     BSGDictInsertIfNotNil(dict, self.bundleVersion, @"bundleVersion");
     BSGDictInsertIfNotNil(dict, self.codeBundleId, @"codeBundleId");

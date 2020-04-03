@@ -14,7 +14,6 @@
 
 @interface BugsnagApp ()
 + (BugsnagApp *)appWithDictionary:(NSDictionary *)event config:(BugsnagConfiguration *)config;
-
 - (NSDictionary *)toDict;
 @end
 
@@ -33,6 +32,8 @@
 
 - (void)setUp {
     [super setUp];
+    // this mocks the structure of a KSCrashReport which is persisted to disk
+    // and used to populate the contents of BugsnagApp/BugsnagAppWithState
     self.data = @{
             @"system": @{
                     @"application_stats": @{

@@ -27,7 +27,8 @@
 @end
 
 @interface BugsnagApp ()
-+ (BugsnagApp *)appWithDictionary:(NSDictionary *)event config:(BugsnagConfiguration *)config;
++ (BugsnagApp *)appWithDictionary:(NSDictionary *)event
+                           config:(BugsnagConfiguration *)config;
 
 - (NSDictionary *)toDict;
 @end
@@ -38,7 +39,9 @@
 
 @implementation BugsnagSessionTrackingPayload
 
-- (instancetype)initWithSessions:(NSArray<BugsnagSession *> *)sessions config:(BugsnagConfiguration *)config {
+- (instancetype)initWithSessions:(NSArray<BugsnagSession *> *)sessions
+                          config:(BugsnagConfiguration *)config
+{
     if (self = [super init]) {
         _sessions = sessions;
         _config = config;
@@ -46,7 +49,8 @@
     return self;
 }
 
-- (NSMutableDictionary *)toJson {
+- (NSMutableDictionary *)toJson
+{
     NSMutableDictionary *dict = [NSMutableDictionary new];
     NSMutableArray *sessionData = [NSMutableArray new];
 
@@ -56,7 +60,7 @@
     BSGDictInsertIfNotNil(dict, sessionData, @"sessions");
     BSGDictSetSafeObject(dict, [Bugsnag client].details, BSGKeyNotifier);
 
-    // app/device data collection currently relies on KSCrash reports,
+    // app/device data collection relies on KSCrash reports,
     // need to mimic the JSON structure here
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     NSDictionary *event = [self appInfo:systemInfo config:self.config];
@@ -66,7 +70,9 @@
     return dict;
 }
 
-- (NSDictionary *)appInfo:(NSDictionary *)systemInfo config:(BugsnagConfiguration *)config {
+- (NSDictionary *)appInfo:(NSDictionary *)systemInfo
+                   config:(BugsnagConfiguration *)config
+{
     NSMutableDictionary *data = [NSMutableDictionary new];
     BSGDictInsertIfNotNil(data, config.releaseStage, @"releaseStage");
     BSGDictInsertIfNotNil(data, config.appVersion, @"appVersion");

@@ -14,7 +14,8 @@
 
 @interface BugsnagSessionTrackingPayload : NSObject
 
-- (instancetype)initWithSessions:(NSArray<BugsnagSession *> *)sessions config:(BugsnagConfiguration *)config;
+- (instancetype)initWithSessions:(NSArray<BugsnagSession *> *)sessions
+                          config:(BugsnagConfiguration *)config;
 
 - (NSMutableDictionary *)toJson;
 
