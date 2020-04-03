@@ -87,7 +87,9 @@
             @"started c16@0:8",
             @"setAppDidCrashLastLaunch: v20@0:8c16",
             @"setMetadata: v24@0:8@16",
-            @"metadata @16@0:8"
+            @"metadata @16@0:8",
+            @"workspaceBreadcrumbStateEvents @16@0:8",
+            @"startListeningForWorkspaceStateChangeNotifications: v24@0:8@16"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to
