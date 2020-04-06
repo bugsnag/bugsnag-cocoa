@@ -8,13 +8,54 @@
 
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 /**
  * Represents a single stackframe from a stacktrace.
  */
 @interface BugsnagStackframe : NSObject
 
-@end
+/**
+ * The method name of the stackframe
+ */
+@property(nullable) NSString *method;
 
-NS_ASSUME_NONNULL_END
+/**
+ * The Mach-O file used by the stackframe
+ */
+@property(nullable) NSString *machoFile;
+
+/**
+ * A UUID identifying the Mach-O file used by the stackframe
+ */
+@property(nullable) NSString *machoUuid;
+
+/**
+ * The stack frame address
+ */
+@property unsigned long frameAddress;
+
+/**
+ * The VM address of the Mach-O file
+ */
+@property unsigned long machoVmAddress;
+
+/**
+ * The address of the stackframe symbol
+ */
+@property unsigned long symbolAddress;
+
+/**
+ * The load address of the Mach-O file
+ */
+@property unsigned long machoLoadAddress;
+
+/**
+ * Whether the frame was within the program counter
+ */
+@property BOOL isPc;
+
+/**
+ * Whether the frame was within the link register
+ */
+@property BOOL isLr;
+
+@end

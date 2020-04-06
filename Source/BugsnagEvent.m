@@ -25,6 +25,7 @@
 #import "BugsnagKeys.h"
 #import "BugsnagDeviceWithState.h"
 #import "BugsnagClient.h"
+#import "BugsnagStacktrace.h"
 #import "RegisterErrorData.h"
 
 static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
@@ -66,53 +67,12 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
 - (id)deepCopy;
 @end
 
+@interface BugsnagStackframe ()
++ (BugsnagStackframe *)frameFromDict:(NSDictionary *)dict
+                          withImages:(NSArray *)binaryImages;
+@end
+
 // MARK: - KSCrashReport parsing
-
-NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
-                                    NSArray *binaryImages) {
-    NSMutableDictionary *formatted = [NSMutableDictionary dictionary];
-
-    unsigned long instructionAddress =
-        [frame[@"instruction_addr"] unsignedLongValue];
-    unsigned long symbolAddress = [frame[@"symbol_addr"] unsignedLongValue];
-    unsigned long imageAddress = [frame[@"object_addr"] unsignedLongValue];
-
-    BSGDictSetSafeObject(
-        formatted, [NSString stringWithFormat:BSGKeyFrameAddrFormat, instructionAddress],
-        @"frameAddress");
-    BSGDictSetSafeObject(formatted,
-                         [NSString stringWithFormat:BSGKeyFrameAddrFormat, symbolAddress],
-                         BSGKeySymbolAddr);
-    BSGDictSetSafeObject(formatted,
-                         [NSString stringWithFormat:BSGKeyFrameAddrFormat, imageAddress],
-                         BSGKeyMachoLoadAddr);
-    BSGDictInsertIfNotNil(formatted, frame[BSGKeyIsPC], BSGKeyIsPC);
-    BSGDictInsertIfNotNil(formatted, frame[BSGKeyIsLR], BSGKeyIsLR);
-
-    NSString *file = frame[@"object_name"];
-    NSString *method = frame[@"symbol_name"];
-
-    BSGDictInsertIfNotNil(formatted, file, BSGKeyMachoFile);
-    BSGDictInsertIfNotNil(formatted, method, @"method");
-
-    for (NSDictionary *image in binaryImages) {
-        if ([(NSNumber *)image[@"image_addr"] unsignedLongValue] ==
-            imageAddress) {
-            unsigned long imageSlide =
-                [image[@"image_vmaddr"] unsignedLongValue];
-
-            BSGDictInsertIfNotNil(formatted, image[@"uuid"], BSGKeyMachoUUID);
-            BSGDictInsertIfNotNil(formatted, image[BSGKeyName], BSGKeyMachoFile);
-            BSGDictSetSafeObject(
-                formatted, [NSString stringWithFormat:BSGKeyFrameAddrFormat, imageSlide],
-                BSGKeyMachoVMAddress);
-
-            return formatted;
-        }
-    }
-
-    return nil;
-}
 
 NSString *_Nonnull BSGParseErrorClass(NSDictionary *error,
                                       NSString *errorType) {
@@ -580,7 +540,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     if (self.customException) {
         BSGDictSetSafeObject(event, @[ self.customException ], BSGKeyExceptions);
         BSGDictSetSafeObject(event, [self serializeThreadsWithException:nil],
-                             BSGKeyThreads);
+                BSGKeyThreads);
     } else {
         NSMutableDictionary *exception = [NSMutableDictionary dictionary];
         BSGDictSetSafeObject(exception, [self errorClass], BSGKeyErrorClass);
@@ -679,12 +639,11 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
                             containsObject:[self errorType]]) {
                         BSGDictSetSafeObject(mutableFrame, @YES, BSGKeyIsLR);
                     }
-                    BSGArrayInsertIfNotNil(
-                        stacktrace,
-                        BSGFormatFrame(mutableFrame, [self binaryImages]));
+                    BSGArrayInsertIfNotNil(stacktrace, mutableFrame);
                 }
             }
-            BSGDictSetSafeObject(exception, stacktrace, BSGKeyStacktrace);
+            BugsnagStacktrace *trace = [[BugsnagStacktrace alloc] initWithTrace:stacktrace binaryImages:self.binaryImages];
+            BSGDictSetSafeObject(exception, [trace toArray], BSGKeyStacktrace);
         }
         [self serialiseThread:bugsnagThreads thread:thread backtrace:backtrace reportingThread:isReportingThread];
     }
@@ -695,16 +654,10 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
                  thread:(NSDictionary *)thread
               backtrace:(NSArray *)backtrace
           reportingThread:(BOOL)isReportingThread {
-    NSMutableArray *threadStack = [NSMutableArray array];
-
-    for (NSDictionary *frame in backtrace) {
-                BSGArrayInsertIfNotNil(
-                    threadStack, BSGFormatFrame(frame, [self binaryImages]));
-            }
-
+    BugsnagStacktrace *stacktrace = [[BugsnagStacktrace alloc] initWithTrace:backtrace binaryImages:self.binaryImages];
     NSMutableDictionary *threadDict = [NSMutableDictionary dictionary];
     BSGDictSetSafeObject(threadDict, thread[@"index"], BSGKeyId);
-    BSGDictSetSafeObject(threadDict, threadStack, BSGKeyStacktrace);
+    BSGDictSetSafeObject(threadDict, [stacktrace toArray], BSGKeyStacktrace);
     BSGDictSetSafeObject(threadDict, DEFAULT_EXCEPTION_TYPE, BSGKeyType);
 
     if (isReportingThread) {

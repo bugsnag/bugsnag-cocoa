@@ -11,6 +11,9 @@ Bugsnag Notifiers on other platforms.
 * Convert `event.device` from `NSDictionary` to a structured class
   [#526](https://github.com/bugsnag/bugsnag-cocoa/pull/526)
 
+* Create structured `BugsnagStackframe` class
+  [#528](https://github.com/bugsnag/bugsnag-cocoa/pull/528)
+
 * Convert `event.app` from `NSDictionary` to a structured class
   [#520](https://github.com/bugsnag/bugsnag-cocoa/pull/520)
 
