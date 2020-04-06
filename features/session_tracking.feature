@@ -146,3 +146,20 @@ Scenario: Encountering handled and unhandled events during a session
     And the payload field "events.2.session.id" of request 2 equals the payload field "sessions.0.id" of request 0
     And the payload field "events.0.session.id" of request 2 does not equal the payload field "sessions.1.id" of request 0
 
+Scenario: Backgrounding an app for more than a minute causes a new session to start on re-foregrounding it
+    Given I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
+    When I run "AutoCaptureRunScenario"
+    And I wait for 1 request
+    Then request 0 is valid for the session tracking API
+    And the payload field "sessions" is an array with 1 element for request 0
+    
+    Then I put the app in the background
+    And I wait for 70 seconds
+    
+    Then I bring the app to the foreground
+    # cummulative
+    And I wait for 2 requests
+    Then request 1 is valid for the session tracking API
+    And the payload field "sessions" is an array with 1 element for request 1
+    And the payload field "sessions.0.id" of request 0 does not equal the payload field "sessions.0.id" of request 1
+    
