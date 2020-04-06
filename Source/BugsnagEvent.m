@@ -73,6 +73,11 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
                           withImages:(NSArray *)binaryImages;
 @end
 
+@interface BugsnagStackframe ()
++ (BugsnagStackframe *)frameFromDict:(NSDictionary *)dict
+                          withImages:(NSArray *)binaryImages;
+@end
+
 @interface BugsnagThread ()
 @property BugsnagStacktrace *trace;
 - (NSDictionary *)toDictionary;
