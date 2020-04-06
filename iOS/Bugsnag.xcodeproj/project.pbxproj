@@ -882,6 +882,7 @@
 				00F9393823FC4F64008C7073 /* BugsnagTestsDummyClass.m */,
 				E7529F9B243CAE02006B4932 /* BugsnagThreadSerializationTest.m */,
 				E7529F9D243CAE0D006B4932 /* BugsnagThreadTest.m */,
+				F429551527EAE3AFE1F605FE /* BugsnagThreadTest.m */,
 				E78C1EFD1FCC778700B976D3 /* BugsnagUserTest.m */,
 				F42954B7D892334E7551F0F3 /* RegisterErrorDataTest.m */,
 				000E6E9C23D8690E009D8194 /* Tests-Bridging-Header.h */,
