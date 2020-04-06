@@ -41,9 +41,9 @@ Feature: Communicating events between notifiers
         Report an unhandled exception, including a custom stacktrace and severity.
         Event counts in the report's session should match the handled-ness.
 
-        When I run "UnhandledInternalNotifyScenario" and relaunch the app
+        When I run "UnhandledInternalNotifyScenario"
         And I configure Bugsnag for "UnhandledInternalNotifyScenario"
-        And I wait to receive 3 requests
+        And I wait to receive 2 requests
         Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
         And the payload field "sessions.0.id" is stored as the value "session_id"
         And I discard the oldest request

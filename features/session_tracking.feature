@@ -96,7 +96,9 @@ Scenario: Encountering a handled event during a session
     And the payload field "events.0.session.id" equals the stored value "session_id"
 
 Scenario: Encountering an unhandled event during a session
-    When I run "AutoSessionUnhandledScenario" and relaunch the app
+    When I run "AutoSessionUnhandledScenario"
+    And I wait for 2 seconds
+    And I relaunch the app
     And I set the app to "noevent" mode
     And I configure Bugsnag for "AutoSessionUnhandledScenario"
     And I wait to receive 2 requests
@@ -114,7 +116,9 @@ Scenario: Encountering an unhandled event during a session
     And the payload field "events.0.session.id" equals the stored value "session_id"
 
 Scenario: Encountering handled and unhandled events during a session
-    When I run "AutoSessionMixedEventsScenario" and relaunch the app
+    When I run "AutoSessionMixedEventsScenario"
+    And I wait for 5 seconds
+    And I relaunch the app
     And I configure Bugsnag for "AutoSessionMixedEventsScenario"
     And I wait to receive 3 requests
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
