@@ -43,6 +43,8 @@ Here’s a bit about our process designing and building the Bugsnag libraries:
 * Our open source libraries span many languages and frameworks so we strive to ensure they are idiomatic on the given platform, but also consistent in terminology between platforms. That way the core concepts are familiar whether you adopt Bugsnag for one platform or many.
 * Finally, one of our goals is to ensure our libraries work reliably, even in crashy, multi-threaded environments. Oftentimes, this requires an intensive engineering design and code review process that adheres to our style and linting guidelines.
 
+For an overview of source code organisation, see [ORGANIZATION.md](ORGANIZATION.md).
+
 ## Building
 
 Each OS version of `Bugsnag` has an Xcode project in a directory named for the
