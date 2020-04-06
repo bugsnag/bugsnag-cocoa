@@ -699,6 +699,8 @@
 		E7D2E669243B8F48005A3041 /* BugsnagStacktrace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagStacktrace.h; path = ../Source/BugsnagStacktrace.h; sourceTree = "<group>"; };
 		E7D2E66A243B8F48005A3041 /* BugsnagStacktrace.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagStacktrace.m; path = ../Source/BugsnagStacktrace.m; sourceTree = "<group>"; };
 		E7D2E66F243B8F8D005A3041 /* BugsnagStacktraceTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagStacktraceTest.m; path = ../../Tests/BugsnagStacktraceTest.m; sourceTree = "<group>"; };
+		E7EB06721FCDAF2000C076A6 /* BugsnagKSCrashSysInfoParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagKSCrashSysInfoParser.h; path = ../Source/BugsnagKSCrashSysInfoParser.h; sourceTree = "<group>"; };
+		E7EB06731FCDAF2000C076A6 /* BugsnagKSCrashSysInfoParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagKSCrashSysInfoParser.m; path = ../Source/BugsnagKSCrashSysInfoParser.m; sourceTree = "<group>"; };
 		E7EC040C1F4CC6A000C2E9D5 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
 		E7EC040D1F4CC6A000C2E9D5 /* libz.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.dylib; path = ../../../../../usr/lib/libz.1.dylib; sourceTree = "<group>"; };
 		E7EC04101F4CC82800C2E9D5 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "../../../../../usr/lib/libstdc++.6.0.9.dylib"; sourceTree = "<group>"; };
@@ -831,6 +833,8 @@
 				E78C1EF51FCC61EA00B976D3 /* BugsnagSessionTrackingPayload.m */,
 				E7D2E669243B8F48005A3041 /* BugsnagStacktrace.h */,
 				E7D2E66A243B8F48005A3041 /* BugsnagStacktrace.m */,
+				8A2C8F4D1C6BBE3C00846019 /* BugsnagSink.h */,
+				8A2C8F4E1C6BBE3C00846019 /* BugsnagSink.m */,
 				E72BF77D1FC86A7A004BE82F /* BugsnagUser.h */,
 				E72BF77E1FC86A7A004BE82F /* BugsnagUser.m */,
 				8A2C8F1D1C6BBD2300846019 /* Info.plist */,
