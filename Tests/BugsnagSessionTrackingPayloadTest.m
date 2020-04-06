@@ -9,6 +9,8 @@
 #import <XCTest/XCTest.h>
 
 #import "BugsnagSessionTrackingPayload.h"
+#import "BugsnagConfiguration.h"
+#import "BugsnagTestConstants.h"
 
 @interface BugsnagSessionTrackingPayloadTest : XCTestCase
 @property NSDictionary *payload;
@@ -18,7 +20,9 @@
 
 - (void)setUp {
     [super setUp];
-    BugsnagSessionTrackingPayload *data = [BugsnagSessionTrackingPayload new];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    config.releaseStage = @"beta";
+    BugsnagSessionTrackingPayload *data = [[BugsnagSessionTrackingPayload alloc] initWithSessions:@[] config:config];
     BugsnagSession *session = [[BugsnagSession alloc] initWithId:@"test"
                                                        startDate:[NSDate date]
                                                             user:nil
@@ -59,7 +63,7 @@
 - (void)testAppSerialisation {
     NSDictionary *app = self.payload[@"app"];
     XCTAssertNotNil(app);
-    XCTAssertEqual(5, app.count);
+    XCTAssertEqual(6, app.count);
     
     XCTAssertNotNil(app[@"type"]);
     XCTAssertNotNil(app[@"version"]);

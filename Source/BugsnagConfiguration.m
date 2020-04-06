@@ -221,6 +221,14 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     #else
         _releaseStage = BSGKeyProduction;
     #endif
+
+#if TARGET_OS_TV
+    _appType = @"tvOS";
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    _appType = @"iOS";
+#elif TARGET_OS_MAC
+    _appType = @"macOS";
+#endif
     
     return self;
 }

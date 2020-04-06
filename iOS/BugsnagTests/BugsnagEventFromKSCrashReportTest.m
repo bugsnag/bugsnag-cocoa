@@ -46,7 +46,7 @@
 }
 
 - (void)testReadReleaseStage {
-    XCTAssertEqualObjects(self.report.releaseStage, @"production");
+    XCTAssertEqualObjects(self.report.app.releaseStage, @"production");
 }
 
 - (void)testReadEnabledReleaseStages {
