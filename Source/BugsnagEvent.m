@@ -97,6 +97,26 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
 - (NSArray *)toArray;
 @end
 
+@interface BugsnagThread ()
+@property BugsnagStacktrace *trace;
+- (NSDictionary *)toDict;
+
+- (instancetype)initWithThread:(NSDictionary *)thread
+                  binaryImages:(NSArray *)binaryImages;
+
++ (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads
+                                         binaryImages:(NSArray *)binaryImages
+                                                depth:(NSUInteger)depth
+                                            errorType:(NSString *)errorType;
+
++ (NSMutableArray *)serializeThreads:(NSMutableDictionary *)event
+                             threads:(NSArray<BugsnagThread *> *)threads;
+@end
+
+@interface BugsnagStacktrace ()
+- (NSArray *)toArray;
+@end
+
 // MARK: - KSCrashReport parsing
 
 NSString *_Nonnull BSGParseErrorClass(NSDictionary *error,
