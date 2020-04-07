@@ -7,10 +7,10 @@
 //
 
 @import XCTest;
-@import Bugsnag;
+#import "Bugsnag.h"
 
 @interface BugsnagEventFromKSCrashReportTest : XCTestCase
-@property BugsnagEvent *report;
+@property BugsnagEvent *event;
 @end
 
 @interface BugsnagEvent ()
@@ -33,35 +33,35 @@
                                 JSONObjectWithData:[contents dataUsingEncoding:NSUTF8StringEncoding]
                                 options:0
                                 error:nil];
-    self.report = [[BugsnagEvent alloc] initWithKSReport:dictionary];
+    self.event = [[BugsnagEvent alloc] initWithKSReport:dictionary];
 }
 
 - (void)tearDown {
     [super tearDown];
-    self.report = nil;
+    self.event = nil;
 }
 
 - (void)testReportDepth {
-    XCTAssertEqual(7, self.report.depth);
+    XCTAssertEqual(7, self.event.depth);
 }
 
 - (void)testReadReleaseStage {
-    XCTAssertEqualObjects(self.report.app.releaseStage, @"production");
+    XCTAssertEqualObjects(self.event.app.releaseStage, @"production");
 }
 
 - (void)testReadEnabledReleaseStages {
-    XCTAssertEqualObjects(self.report.enabledReleaseStages,
+    XCTAssertEqualObjects(self.event.enabledReleaseStages,
                           (@[ @"production", @"development" ]));
 }
 
 - (void)testReadEnabledReleaseStagesSends {
-    XCTAssertTrue([self.report shouldBeSent]);
+    XCTAssertTrue([self.event shouldBeSent]);
 }
 
 - (void)testAddMetadataAddsNewTab {
     NSDictionary *metadata = @{@"color" : @"blue", @"beverage" : @"tea"};
-    [self.report addMetadata:metadata toSection:@"user prefs"];
-    NSDictionary *prefs = [self.report getMetadataFromSection:@"user prefs"];
+    [self.event addMetadata:metadata toSection:@"user prefs"];
+    NSDictionary *prefs = [self.event getMetadataFromSection:@"user prefs"];
     XCTAssertEqual(@"blue", prefs[@"color"]);
     XCTAssertEqual(@"tea", prefs[@"beverage"]);
     XCTAssert([prefs count] == 2);
@@ -69,10 +69,10 @@
 
 - (void)testAddMetadataMergesExistingTab {
     NSDictionary *oldMetadata = @{@"color" : @"red", @"food" : @"carrots"};
-    [self.report addMetadata:oldMetadata toSection:@"user prefs"];
+    [self.event addMetadata:oldMetadata toSection:@"user prefs"];
     NSDictionary *metadata = @{@"color" : @"blue", @"beverage" : @"tea"};
-    [self.report addMetadata:metadata toSection:@"user prefs"];
-    NSDictionary *prefs = [self.report getMetadataFromSection:@"user prefs"];
+    [self.event addMetadata:metadata toSection:@"user prefs"];
+    NSDictionary *prefs = [self.event getMetadataFromSection:@"user prefs"];
     XCTAssertEqual(@"blue", prefs[@"color"]);
     XCTAssertEqual(@"tea", prefs[@"beverage"]);
     XCTAssertEqual(@"carrots", prefs[@"food"]);
@@ -80,39 +80,45 @@
 }
 
 - (void)testAddMetadataAddsNewSection {
-    [self.report addMetadata:@"blue"
-                     withKey:@"color"
-                   toSection:@"prefs"];
-    NSDictionary *prefs = [self.report getMetadataFromSection:@"prefs"];
+    [self.event addMetadata:@"blue"
+                    withKey:@"color"
+                  toSection:@"prefs"];
+    NSDictionary *prefs = [self.event getMetadataFromSection:@"prefs"];
     XCTAssertEqual(@"blue", prefs[@"color"]);
 }
 
 - (void)testAddMetadataOverridesExistingValue {
-    [self.report addMetadata:@"red"
-                     withKey:@"color"
-                   toSection:@"prefs"];
-    [self.report addMetadata:@"blue"
-                     withKey:@"color"
-                   toSection:@"prefs"];
-    NSDictionary *prefs = [self.report getMetadataFromSection:@"prefs"];
+    [self.event addMetadata:@"red"
+                    withKey:@"color"
+                  toSection:@"prefs"];
+    [self.event addMetadata:@"blue"
+                    withKey:@"color"
+                  toSection:@"prefs"];
+    NSDictionary *prefs = [self.event getMetadataFromSection:@"prefs"];
     XCTAssertEqual(@"blue", prefs[@"color"]);
 }
 
 - (void)testAddMetadataRemovesValue {
-    [self.report addMetadata:@"prefs"
-                     withKey:@"color"
-                   toSection:@"red"];
-    [self.report addMetadata:nil
-                     withKey:@"color"
-                   toSection:@"prefs"];
-    NSDictionary *prefs = [self.report getMetadataFromSection:@"prefs"];
+    [self.event addMetadata:@"prefs"
+                    withKey:@"color"
+                  toSection:@"red"];
+    [self.event addMetadata:nil
+                    withKey:@"color"
+                  toSection:@"prefs"];
+    NSDictionary *prefs = [self.event getMetadataFromSection:@"prefs"];
     XCTAssertNil(prefs[@"color"]);
 }
 
 - (void)testAppVersion {
-    NSDictionary *dictionary = [self.report toJson];
+    NSDictionary *dictionary = [self.event toJson];
     XCTAssertEqualObjects(@"1.0", dictionary[@"app"][@"version"]);
     XCTAssertEqualObjects(@"1", dictionary[@"app"][@"bundleVersion"]);
+}
+
+- (void)testThreadsPopulated {
+    XCTAssertEqual(9, [self.event.threads count]);
+    BugsnagThread *thread = self.event.threads[0];
+    XCTAssertEqualObjects(@"0", thread.id);
 }
 
 @end

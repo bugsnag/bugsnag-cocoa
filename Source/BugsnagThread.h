@@ -8,13 +8,42 @@
 
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
+typedef NS_OPTIONS(NSUInteger, BSGThreadType) {
+    BSGThreadTypeCocoa = 0,
+    BSGThreadTypeReactNativeJs = 1 << 1
+};
+
+@class BugsnagStackframe;
 
 /**
  * A representation of thread information recorded as part of a BugsnagEvent.
  */
 @interface BugsnagThread : NSObject
 
-@end
+/**
+ * A unique ID which identifies this thread
+ */
+@property(nullable) NSString *id;
 
-NS_ASSUME_NONNULL_END
+/**
+ * The name which identifies this thread
+ */
+@property(nullable) NSString *name;
+
+/**
+ * Whether this thread was the thread that triggered the captured error
+ */
+@property BOOL errorReportingThread;
+
+/**
+ * Sets a representation of this thread's stacktrace
+ */
+@property(readonly, nonnull) NSArray<BugsnagStackframe *> *stacktrace;
+
+/**
+ * Determines the type of thread based on the originating platform
+ * (intended for internal use only)
+ */
+@property BSGThreadType type;
+
+@end

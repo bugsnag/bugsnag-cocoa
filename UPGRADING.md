@@ -226,6 +226,7 @@ This is now BugsnagEvent.
 `event.device` is now a structured class with properties for each value, rather than an `NSDictionary`.
 
 `event.app` is now a structured class with properties for each value, rather than an `NSDictionary`.
+`event.threads` is now an array containing a structured class with properties for each `BugsnagThread` value.
 
 #### Renames
 

@@ -16,6 +16,7 @@
 @class BugsnagAppWithState;
 @class BugsnagDeviceWithState;
 @class BugsnagMetadata;
+@class BugsnagThread;
 
 typedef NS_ENUM(NSUInteger, BSGSeverity) {
     BSGSeverityError,
@@ -131,6 +132,11 @@ initWithErrorName:(NSString *_Nonnull)name
  * continued running.
  */
 @property(readonly) BOOL unhandled;
+
+/**
+ * Thread traces for the error that occurred, if collection was enabled.
+ */
+@property(readonly, nonnull) NSMutableArray<BugsnagThread *> *threads;
 
 @end
 
