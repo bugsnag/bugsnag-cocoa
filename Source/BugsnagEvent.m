@@ -98,7 +98,6 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
 @end
 
 @interface BugsnagThread ()
-@property BugsnagStacktrace *trace;
 - (NSDictionary *)toDict;
 
 - (instancetype)initWithThread:(NSDictionary *)thread
