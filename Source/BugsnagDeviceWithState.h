@@ -10,14 +10,30 @@
 
 #import "BugsnagDevice.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
 /**
  * Stateful information set by the notifier about the device on which the event occurred can be
  * found on this class. These values can be accessed and amended if necessary.
  */
 @interface BugsnagDeviceWithState : BugsnagDevice
 
-@end
+/**
+ * The number of free bytes of storage available on the device
+ */
+@property(nonatomic, nullable) NSNumber *freeDisk;
 
-NS_ASSUME_NONNULL_END
+/**
+ * The number of free bytes of memory available on the device
+ */
+@property(nonatomic, nullable) NSNumber *freeMemory;
+
+/**
+ * The orientation of the device when the event occurred
+ */
+@property(nonatomic, nullable) NSString *orientation;
+
+/**
+ * The timestamp on the device when the event occurred
+ */
+@property(nonatomic, nullable) NSDate *time;
+
+@end

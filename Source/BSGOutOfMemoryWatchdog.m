@@ -11,7 +11,6 @@
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagLogger.h"
 #import "Bugsnag.h"
-#import "BugsnagKSCrashSysInfoParser.h"
 #import "BugsnagSessionTracker.h"
 #import "Private.h"
 

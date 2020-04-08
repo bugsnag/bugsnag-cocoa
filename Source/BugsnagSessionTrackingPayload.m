@@ -14,7 +14,6 @@
 #import "BugsnagKeys.h"
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagConfiguration.h"
-#import "BugsnagKSCrashSysInfoParser.h"
 #import "Private.h"
 #import "BugsnagApp.h"
 
@@ -24,6 +23,11 @@
 
 @interface Bugsnag ()
 + (BugsnagClient *)client;
+@end
+
+@interface BugsnagDevice ()
++ (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)event;
+- (NSDictionary *)toDictionary;
 @end
 
 @interface BugsnagApp ()
@@ -66,7 +70,9 @@
     NSDictionary *event = [self appInfo:systemInfo config:self.config];
     BugsnagApp *app = [BugsnagApp appWithDictionary:event config:self.config];
     BSGDictSetSafeObject(dict, [app toDict], @"app");
-    BSGDictSetSafeObject(dict, BSGParseDeviceState(systemInfo), @"device");
+
+    BugsnagDevice *device = [BugsnagDevice deviceWithDictionary:@{@"system": systemInfo}];
+    BSGDictSetSafeObject(dict, [device toDictionary], @"device");
     return dict;
 }
 

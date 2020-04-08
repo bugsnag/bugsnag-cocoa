@@ -266,11 +266,7 @@
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     NSDictionary *device = event[@"device"];
     XCTAssertNotNil(device);
-#if TARGET_OS_IPHONE || TARGET_OS_TV || TARGET_IPHONE_SIMULATOR
-    XCTAssertEqual(19, device.count);
-#else
-    XCTAssertEqual(18, device.count);
-#endif
+    XCTAssertEqual(14, device.count);
 
     XCTAssertEqualObjects(device[@"id"], @"f6d519a74213a57f8d052c53febfeee6f856d062");
     XCTAssertEqualObjects(device[@"manufacturer"], @"Apple");
@@ -282,17 +278,10 @@
     XCTAssertEqualObjects(device[@"runtimeVersions"][@"clangVersion"], @"10.0.0 (clang-1000.11.45.5)");
     XCTAssertEqualObjects(device[@"totalMemory"], @15065522176);
     XCTAssertNotNil(device[@"freeDisk"]);
-    XCTAssertEqualObjects(device[@"timezone"], @"PST");
     XCTAssertEqualObjects(device[@"jailbroken"], @YES);
     XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
     XCTAssertEqualObjects(device[@"orientation"], @"unknown");
-    XCTAssertEqualObjects(device[@"time"], @"2014-12-02T01:56:13Z");
-
-#if defined(__LP64__)
-    XCTAssertEqualObjects(device[@"wordSize"], @64);
-#else
-    XCTAssertEqualObjects(device[@"wordSize"], @32);
-#endif
+    XCTAssertEqualObjects(device[@"time"], @"2014-12-02T01:56:13+0000");
 }
 
 - (void)testEventApp {

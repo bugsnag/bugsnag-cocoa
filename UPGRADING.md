@@ -223,6 +223,8 @@ This is now BugsnagEvent.
 + event.unhandled
 ```
 
+`event.device` is now a structured class with properties for each value, rather than an `NSDictionary`.
+
 `event.app` is now a structured class with properties for each value, rather than an `NSDictionary`.
 
 #### Renames
