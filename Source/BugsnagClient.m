@@ -889,8 +889,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
     int depth = (int)(BSGNotifierStackFrameCount + event.depth);
 
-    NSString *eventErrorClass = event.errorClass ?: NSStringFromClass([NSException class]);
-    NSString *eventMessage = event.errorMessage ?: @"";
+    NSString *eventErrorClass = event.errors[0].errorClass ?: NSStringFromClass([NSException class]);
+    NSString *eventMessage = event.errors[0].errorMessage ?: @"";
 
     [self.crashSentry reportUserException:eventErrorClass
                                    reason:eventMessage

@@ -8,14 +8,14 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Create structured `BugsnagError` class
+  [#533](https://github.com/bugsnag/bugsnag-cocoa/pull/533)
+
 * Create structured `BugsnagThread` class
   [#532](https://github.com/bugsnag/bugsnag-cocoa/pull/532)
 
 * Convert `event.device` from `NSDictionary` to a structured class
   [#526](https://github.com/bugsnag/bugsnag-cocoa/pull/526)
-
-* Create structured `BugsnagStackframe` class
-  [#528](https://github.com/bugsnag/bugsnag-cocoa/pull/528)
 
 * Create structured `BugsnagStackframe` class
   [#528](https://github.com/bugsnag/bugsnag-cocoa/pull/528)

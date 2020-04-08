@@ -37,7 +37,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
     // If Bugsnag is autodetecting errors then the types of event detected is configurable
     // (otherwise it's just the user reported events)
     if (config.autoDetectErrors) {
-        BSGErrorType errorTypes = [config enabledErrorTypes];
+        BSGEnabledErrorType errorTypes = [config enabledErrorTypes];
         // Translate the relevant BSGErrorTypes bitfield into the equivalent BSG_KSCrashType one
         crashTypes = crashTypes | [self mapKSToBSGCrashTypes:errorTypes];
     }
@@ -58,7 +58,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
  * @param bsgCrashMask The BSGErrorType bitfield
  * @returns A BSG_KSCrashType equivalent (with the above caveats) to the input
  */
-- (BSG_KSCrashType)mapKSToBSGCrashTypes:(BSGErrorType)bsgCrashMask
+- (BSG_KSCrashType)mapKSToBSGCrashTypes:(BSGEnabledErrorType)bsgCrashMask
 {
     BSG_KSCrashType crashType;
     crashType = (bsgCrashMask & BSGErrorTypesNSExceptions ? BSG_KSCrashTypeNSException   : 0)

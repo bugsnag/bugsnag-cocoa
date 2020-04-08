@@ -31,7 +31,7 @@
 @end
 
 @interface BugsnagCrashSentry ()
-- (BSG_KSCrashType)mapKSToBSGCrashTypes:(BSGErrorType)bsgCrashMask;
+- (BSG_KSCrashType)mapKSToBSGCrashTypes:(BSGEnabledErrorType)bsgCrashMask;
 @end
 
 // =============================================================================
@@ -674,7 +674,7 @@
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     
     // Test all are set by default
-    BSGErrorType enabledErrors = BSGErrorTypesNSExceptions
+    BSGEnabledErrorType enabledErrors = BSGErrorTypesNSExceptions
                                | BSGErrorTypesSignals
                                | BSGErrorTypesMach
                                | BSGErrorTypesCPP;
@@ -700,15 +700,15 @@
                                | BSG_KSCrashTypeMachException
                                | BSG_KSCrashTypeSignal
                                | BSG_KSCrashTypeCPPException;
-    
+
     XCTAssertEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
-    
+
     crashTypes = crashTypes | BSG_KSCrashTypeUserReported;
 
     XCTAssertNotEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
     
     // Check partial sets
-    BSGErrorType partialErrors = BSGErrorTypesNSExceptions | BSGErrorTypesCPP;
+    BSGEnabledErrorType partialErrors = BSGErrorTypesNSExceptions | BSGErrorTypesCPP;
     crashTypes = BSG_KSCrashTypeNSException | BSG_KSCrashTypeCPPException;
     XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:(NSUInteger)partialErrors]);
     

@@ -59,6 +59,7 @@
 		E72352BE1F55923700436528 /* BSGConnectivity.m in Sources */ = {isa = PBXBuildFile; fileRef = E72352BC1F55923700436528 /* BSGConnectivity.m */; };
 		E72AE1FD241A4ED600ED8972 /* BugsnagPluginClient.h in Headers */ = {isa = PBXBuildFile; fileRef = E72AE1FB241A4ED600ED8972 /* BugsnagPluginClient.h */; };
 		E72AE1FE241A4ED600ED8972 /* BugsnagPluginClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E72AE1FC241A4ED600ED8972 /* BugsnagPluginClient.m */; };
+		E73D443E243E1945001686F5 /* BugsnagErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E73D443D243E1945001686F5 /* BugsnagErrorTest.m */; };
 		E742DB22243C8129002C4621 /* BugsnagStacktrace.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D2E679243B8FD2005A3041 /* BugsnagStacktrace.h */; };
 		E742DB23243C812E002C4621 /* BugsnagStacktrace.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D2E67A243B8FD2005A3041 /* BugsnagStacktrace.m */; };
 		E7433AD61F4F650C00C082D1 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E7433AD51F4F650C00C082D1 /* libc++.tbd */; };
@@ -281,6 +282,7 @@
 		E72352BC1F55923700436528 /* BSGConnectivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSGConnectivity.m; path = ../Source/BSGConnectivity.m; sourceTree = "<group>"; };
 		E72AE1FB241A4ED600ED8972 /* BugsnagPluginClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagPluginClient.h; path = ../Source/BugsnagPluginClient.h; sourceTree = "<group>"; };
 		E72AE1FC241A4ED600ED8972 /* BugsnagPluginClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagPluginClient.m; path = ../Source/BugsnagPluginClient.m; sourceTree = "<group>"; };
+		E73D443D243E1945001686F5 /* BugsnagErrorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagErrorTest.m; path = ../../Tests/BugsnagErrorTest.m; sourceTree = "<group>"; };
 		E7433AD51F4F650C00C082D1 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		E7433AD71F4F651200C082D1 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		E7529F90243C8ED4006B4932 /* RegisterErrorData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RegisterErrorData.m; path = ../Source/RegisterErrorData.m; sourceTree = "<group>"; };
@@ -546,6 +548,7 @@
 				4B406C1222CAD94100464D1D /* BugsnagCollectionsBSGDictSetSafeObjectTest.m */,
 				4B775FD022CBE01F004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m */,
 				8AD9FA8B1E0863A1002859A7 /* BugsnagConfigurationTests.m */,
+				E73D443D243E1945001686F5 /* BugsnagErrorTest.m */,
 				00D7ACA623E98A5D00FBE4A7 /* BugsnagEventTests.m */,
 				00D7ACA923E98A9A00FBE4A7 /* BugsnagEventFromKSCrashReportTest.m */,
 				E762E9EE1F73F6CF00E82B43 /* BugsnagHandledStateTest.m */,
@@ -1178,6 +1181,7 @@
 				E7CE78F91FD94F1B001D07E0 /* KSSystemInfo_Tests.m in Sources */,
 				4B3CD2BB22C5676800DBFF33 /* BSGOutOfMemoryWatchdogTests.m in Sources */,
 				E7CE78F41FD94F1B001D07E0 /* KSFileUtils_Tests.m in Sources */,
+				E73D443E243E1945001686F5 /* BugsnagErrorTest.m in Sources */,
 				00F9393F23FD2DDB008C7073 /* BugsnagTestsDummyClass.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

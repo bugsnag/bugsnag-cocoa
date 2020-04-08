@@ -20,8 +20,9 @@ class HandledErrorOverrideScenario: Scenario {
 
     fileprivate func logError(_ error: Error)  {
         Bugsnag.notifyError(error) { report in
-            report.errorMessage = "Foo"
-            report.errorClass = "Bar"
+            let error = report.errors[0] as! BugsnagError
+            error.errorMessage = "Foo"
+            error.errorClass = "Bar"
             let depth: Int = report.value(forKey: "depth") as! Int
             report.setValue(depth + 2, forKey: "depth")
             report.addMetadata(["items": [400,200]], section: "account")
