@@ -91,7 +91,12 @@ Run the integration tests using `make e2e` (end-to-end)
   - [ ] Are there pull requests for new features/behavior on the [docs site](https://github.com/bugsnag/docs.bugsnag.com)?
   - [ ] Run `./Tests/prerelease/run_prerelease_checks.sh`
   - [ ] Has all new functionality been manually tested on a release build?
-  - [ ] Do the installation instructions work when creating an example app from scratch?
+  - [ ] Do the [installation instructions](https://docs.bugsnag.com/platforms/ios/#installation) work when 
+        creating an example app from scratch?  If using Cocoapods remember to point at the pre-release 
+        branch in the `Podfile`, e.g.
+        
+        pod 'Bugsnag', :git => 'https://github.com/bugsnag/bugsnag-cocoa', :branch => '<prerelease-branch-name>'
+        
     - [ ] Does the Carthage installation instruction work?
   - [ ] If a response is not received from the server, is the report queued for later?
   - [ ] If no network connection is available, is the report queued for later?
