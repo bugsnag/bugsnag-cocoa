@@ -8,13 +8,15 @@
 
 #import "BugsnagStacktrace.h"
 #import "BugsnagStackframe.h"
-#import "BugsnagCollections.h"
-#import "BugsnagKeys.h"
 
 @interface BugsnagStackframe ()
 + (BugsnagStackframe *)frameFromDict:(NSDictionary *)dict
                           withImages:(NSArray *)binaryImages;
-- (NSDictionary *)toDict;
+- (NSDictionary *)toDictionary;
+@end
+
+@interface BugsnagStacktrace ()
+@property NSMutableArray<BugsnagStackframe *> *trace;
 @end
 
 @implementation BugsnagStacktrace
@@ -38,7 +40,7 @@
 - (NSArray *)toArray {
     NSMutableArray *array = [NSMutableArray new];
     for (BugsnagStackframe *frame in self.trace) {
-        [array addObject:[frame toDict]];
+        [array addObject:[frame toDictionary]];
     }
     return array;
 }

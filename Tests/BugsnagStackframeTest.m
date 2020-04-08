@@ -10,7 +10,7 @@
 #import "BugsnagStackframe.h"
 
 @interface BugsnagStackframe ()
-- (NSDictionary *)toDict;
+- (NSDictionary *)toDictionary;
 + (BugsnagStackframe *)frameFromDict:(NSDictionary *)dict withImages:(NSArray *)binaryImages;
 @end
 
@@ -52,7 +52,7 @@
 
 - (void)testStackframeToDict {
     BugsnagStackframe *frame = [BugsnagStackframe frameFromDict:self.frameDict withImages:self.binaryImages];
-    NSDictionary *dict = [frame toDict];
+    NSDictionary *dict = [frame toDictionary];
     XCTAssertEqualObjects(@"-[BugsnagClient notify:handledState:block:]", dict[@"method"]);
     XCTAssertEqualObjects(@"/Users/foo/Bugsnag.h", dict[@"machoFile"]);
     XCTAssertEqualObjects(@"B6D80CB5-A772-3D2F-B5A1-A3A137B8B58F", dict[@"machoUUID"]);

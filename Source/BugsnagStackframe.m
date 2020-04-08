@@ -14,7 +14,7 @@
 
 + (NSDictionary *_Nullable)findImageAddr:(unsigned long)addr inImages:(NSArray *)images {
     for (NSDictionary *image in images) {
-        if ([(NSNumber *)image[@"image_addr"] unsignedLongValue] == addr) {
+        if ([(NSNumber *)image[BSGKeyImageAddress] unsignedLongValue] == addr) {
             return image;
         }
     }
@@ -24,33 +24,33 @@
 + (BugsnagStackframe *)frameFromDict:(NSDictionary *)dict
                           withImages:(NSArray *)binaryImages {
     BugsnagStackframe *frame = [BugsnagStackframe new];
-    frame.frameAddress = [dict[@"instruction_addr"] unsignedLongValue];
-    frame.symbolAddress = [dict[@"symbol_addr"] unsignedLongValue];
-    frame.machoLoadAddress = [dict[@"object_addr"] unsignedLongValue];
-    frame.machoFile = dict[@"object_name"];
-    frame.method = dict[@"symbol_name"];
+    frame.frameAddress = [dict[BSGKeyInstructionAddress] unsignedLongValue];
+    frame.symbolAddress = [dict[BSGKeySymbolAddress] unsignedLongValue];
+    frame.machoLoadAddress = [dict[BSGKeyObjectAddress] unsignedLongValue];
+    frame.machoFile = dict[BSGKeyObjectName];
+    frame.method = dict[BSGKeySymbolName];
     frame.isPc = [dict[BSGKeyIsPC] boolValue];
     frame.isLr = [dict[BSGKeyIsLR] boolValue];
 
     NSDictionary *image = [self findImageAddr:frame.machoLoadAddress inImages:binaryImages];
 
     if (image != nil) {
-        frame.machoUuid = image[@"uuid"];
-        frame.machoVmAddress = [image[@"image_vmaddr"] unsignedLongValue];
+        frame.machoUuid = image[BSGKeyUuid];
+        frame.machoVmAddress = [image[BSGKeyImageVmAddress] unsignedLongValue];
         return frame;
     } else { // invalid frame, skip
         return nil;
     }
 }
 
-- (NSDictionary *)toDict {
+- (NSDictionary *)toDictionary {
     NSMutableDictionary *dict = [NSMutableDictionary new];
     BSGDictInsertIfNotNil(dict, self.machoFile, BSGKeyMachoFile);
-    BSGDictInsertIfNotNil(dict, self.method, @"method");
+    BSGDictInsertIfNotNil(dict, self.method, BSGKeyMethod);
     BSGDictInsertIfNotNil(dict, self.machoUuid, BSGKeyMachoUUID);
 
     NSString *frameAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, self.frameAddress];
-    BSGDictSetSafeObject(dict, frameAddr, @"frameAddress");
+    BSGDictSetSafeObject(dict, frameAddr, BSGKeyFrameAddress);
 
     NSString *symbolAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, self.symbolAddress];
     BSGDictSetSafeObject(dict, symbolAddr, BSGKeySymbolAddr);

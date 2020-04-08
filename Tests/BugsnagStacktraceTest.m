@@ -15,6 +15,10 @@
 @property NSArray *binaryImages;
 @end
 
+@interface BugsnagStacktrace ()
+@property NSMutableArray<BugsnagStackframe *> *trace;
+@end
+
 @implementation BugsnagStacktraceTest
 
 - (void)setUp {

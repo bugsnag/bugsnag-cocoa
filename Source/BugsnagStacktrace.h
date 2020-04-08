@@ -20,6 +20,4 @@
 
 - (NSArray *)toArray;
 
-@property NSMutableArray<BugsnagStackframe *> *trace;
-
 @end
