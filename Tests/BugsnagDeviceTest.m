@@ -12,10 +12,12 @@
 #import "BugsnagDevice.h"
 #import "BugsnagTestConstants.h"
 
+NSNumber *BSGDeviceFreeSpace(NSSearchPathDirectory directory);
+
 @interface BugsnagDevice ()
 + (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)event;
 
-- (NSDictionary *)toDict;
+- (NSDictionary *)toDictionary;
 @end
 
 @interface BugsnagDeviceWithState ()
@@ -23,7 +25,7 @@
 
 + (BugsnagDeviceWithState *)deviceWithOomData:(NSDictionary *)data;
 
-- (NSDictionary *)toDict;
+- (NSDictionary *)toDictionary;
 @end
 
 @interface BugsnagDeviceTest : XCTestCase
@@ -36,7 +38,7 @@
     [super setUp];
     self.data = @{
             @"system": @{
-                    @"model": @"MacBookPro11,3",
+                    @"model": @"iPhone 6",
                     @"machine": @"x86_64",
                     @"system_name": @"iPhone OS",
                     @"system_version": @"8.1",
@@ -71,7 +73,7 @@
     XCTAssertNotNil(device.locale);
     XCTAssertEqualObjects(@"Apple", device.manufacturer);
     XCTAssertEqualObjects(@"x86_64", device.model);
-    XCTAssertEqualObjects(@"MacBookPro11,3", device.modelNumber);
+    XCTAssertEqualObjects(@"iPhone 6", device.modelNumber);
     XCTAssertEqualObjects(@"iPhone OS", device.osName);
     XCTAssertEqualObjects(@"8.1", device.osVersion);
     XCTAssertEqualObjects(@15065522176, device.totalMemory);
@@ -91,7 +93,7 @@
     XCTAssertNotNil(device.locale);
     XCTAssertEqualObjects(@"Apple", device.manufacturer);
     XCTAssertEqualObjects(@"x86_64", device.model);
-    XCTAssertEqualObjects(@"MacBookPro11,3", device.modelNumber);
+    XCTAssertEqualObjects(@"iPhone 6", device.modelNumber);
     XCTAssertEqualObjects(@"iPhone OS", device.osName);
     XCTAssertEqualObjects(@"8.1", device.osVersion);
     XCTAssertEqualObjects(@15065522176, device.totalMemory);
@@ -115,7 +117,7 @@
 - (void)testDeviceToDict {
     BugsnagDevice *device = [BugsnagDevice deviceWithDictionary:self.data];
     device.locale = @"en-US";
-    NSDictionary *dict = [device toDict];
+    NSDictionary *dict = [device toDictionary];
 
     // verify stateless fields
     XCTAssertTrue(dict[@"jailbroken"]);
@@ -123,7 +125,7 @@
     XCTAssertEqualObjects(@"en-US", dict[@"locale"]);
     XCTAssertEqualObjects(@"Apple", dict[@"manufacturer"]);
     XCTAssertEqualObjects(@"x86_64", dict[@"model"]);
-    XCTAssertEqualObjects(@"MacBookPro11,3", dict[@"modelNumber"]);
+    XCTAssertEqualObjects(@"iPhone 6", dict[@"modelNumber"]);
     XCTAssertEqualObjects(@"iPhone OS", dict[@"osName"]);
     XCTAssertEqualObjects(@"8.1", dict[@"osVersion"]);
     XCTAssertEqualObjects(@15065522176, dict[@"totalMemory"]);
@@ -138,14 +140,14 @@
 - (void)testDeviceWithStateToDict {
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithDictionary:self.data];
     device.locale = @"en-US";
-    NSDictionary *dict = [device toDict];
+    NSDictionary *dict = [device toDictionary];
 
     XCTAssertTrue(dict[@"jailbroken"]);
     XCTAssertEqualObjects(@"123", dict[@"id"]);
     XCTAssertEqualObjects(@"en-US", dict[@"locale"]);
     XCTAssertEqualObjects(@"Apple", dict[@"manufacturer"]);
     XCTAssertEqualObjects(@"x86_64", dict[@"model"]);
-    XCTAssertEqualObjects(@"MacBookPro11,3", dict[@"modelNumber"]);
+    XCTAssertEqualObjects(@"iPhone 6", dict[@"modelNumber"]);
     XCTAssertEqualObjects(@"iPhone OS", dict[@"osName"]);
     XCTAssertEqualObjects(@"8.1", dict[@"osVersion"]);
     XCTAssertEqualObjects(@15065522176, dict[@"totalMemory"]);
@@ -184,6 +186,18 @@
     XCTAssertEqualObjects(@"iPhone 6", device.model);
     XCTAssertEqualObjects(@"iPhone X", device.modelNumber);
     XCTAssertEqualObjects(@"yue", device.locale);
+}
+
+- (void)testDeviceFreeSpaceShouldBeLargeNumber {
+    NSNumber *freeBytes = BSGDeviceFreeSpace(NSCachesDirectory);
+    XCTAssertNotNil(freeBytes, @"expect a valid number for successful call to retrieve free space");
+    XCTAssertGreaterThan([freeBytes integerValue], 1000, @"expect at least 1k of free space on test device");
+}
+
+- (void)testDeviceFreeSpaceShouldBeNilWhenFailsToRetrieveIt {
+    NSSearchPathDirectory notAccessibleDirectory = NSAdminApplicationDirectory;
+    NSNumber *freeBytes = BSGDeviceFreeSpace(notAccessibleDirectory);
+    XCTAssertNil(freeBytes, @"expect nil when fails to retrieve free space for the directory");
 }
 
 @end

@@ -37,7 +37,7 @@
     device.runtimeVersions = runtimeVersions;
 }
 
-- (NSDictionary *)toDict {
+- (NSDictionary *)toDictionary {
     NSMutableDictionary *dict = [NSMutableDictionary new];
     BSGDictInsertIfNotNil(dict, @(self.jailbroken), @"jailbroken");
     BSGDictInsertIfNotNil(dict, self.id, @"id");

@@ -19,7 +19,6 @@
 #import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
 #import "BugsnagBreadcrumb.h"
-#import "BugsnagKSCrashSysInfoParser.h"
 #import "BugsnagSession.h"
 #import "Private.h"
 #import "BSG_RFC3339DateTool.h"
@@ -30,6 +29,8 @@
 static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
 // MARK: - Accessing hidden methods/properties
+
+NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
 
 @interface BugsnagAppWithState ()
 + (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
@@ -247,7 +248,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 
 @interface BugsnagDeviceWithState ()
-- (NSDictionary *)toDict;
+- (NSDictionary *)toDictionary;
 + (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event;
 + (BugsnagDeviceWithState *)deviceWithOomData:(NSDictionary *)data;
 @end
@@ -602,7 +603,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     BSGDictSetSafeObject(event, [self serializeBreadcrumbs], BSGKeyBreadcrumbs);
     BSGDictSetSafeObject(event, metadata, BSGKeyMetadata);
 
-    BSGDictSetSafeObject(event, [self.device toDict], BSGKeyDevice);
+    BSGDictSetSafeObject(event, [self.device toDictionary], BSGKeyDevice);
     BSGDictSetSafeObject(event, [self.app toDict], BSGKeyApp);
     
     BSGDictSetSafeObject(event, [self context], BSGKeyContext);
