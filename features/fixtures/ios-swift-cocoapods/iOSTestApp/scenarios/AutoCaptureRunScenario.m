@@ -11,7 +11,7 @@
 @implementation AutoCaptureRunScenario
 
 - (void)startBugsnag {
-    self.config.shouldAutoCaptureSessions = YES;
+    self.config.autoTrackSessions = YES;
     [super startBugsnag];
 }
 
