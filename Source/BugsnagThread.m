@@ -41,7 +41,7 @@
     return self.trace.trace;
 }
 
-- (NSDictionary *)toDict {
+- (NSDictionary *)toDictionary {
     NSMutableDictionary *dict = [NSMutableDictionary new];
     BSGDictInsertIfNotNil(dict, self.id, @"id");
     BSGDictInsertIfNotNil(dict, self.name, @"name");
@@ -52,14 +52,20 @@
     return dict;
 }
 
-+ (NSMutableArray *)serializeThreads:(NSMutableDictionary *)event threads:(NSArray<BugsnagThread *> *)threads {
+/**
+ * Converts bugsnag threads to JSON
+ */
++ (NSMutableArray *)serializeThreads:(NSArray<BugsnagThread *> *)threads {
     NSMutableArray *threadArray = [NSMutableArray new];
     for (BugsnagThread *thread in threads) {
-        [threadArray addObject:[thread toDict]];
+        [threadArray addObject:[thread toDictionary]];
     }
     return threadArray;
 }
 
+/**
+ * Deerializes Bugsnag Threads from a KSCrash report
+ */
 + (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads
                                          binaryImages:(NSArray *)binaryImages
                                                 depth:(NSUInteger)depth
@@ -74,6 +80,20 @@
     return bugsnagThreads;
 }
 
+/**
+ * Enhances the thread information recorded by KSCrash. Specifically, this will trim the error reporting thread frames
+ * by the `depth` configured, and add information to each frame indicating whether they
+ * are within the program counter/link register.
+ *
+ * The error reporting thread is the thread on which the error occurred, and is given more
+ * prominence in the Bugsnag Dashboard - therefore we enhance it with extra info.
+ *
+ * @param thread the captured thread
+ * @param depth the 'depth'. This is equivalent to the number of frames which should be discarded from a report,
+ * and is configurable by the user.
+ * @param errorType the type of error as recorded by KSCrash (e.g. mach, signal)
+ * @return the enhanced thread information
+ */
 + (NSDictionary *)enhanceThreadInfo:(NSDictionary *)thread
                               depth:(NSUInteger)depth
                           errorType:(NSString *)errorType {

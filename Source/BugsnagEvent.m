@@ -75,7 +75,7 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
 
 @interface BugsnagThread ()
 @property BugsnagStacktrace *trace;
-- (NSDictionary *)toDict;
+- (NSDictionary *)toDictionary;
 
 - (instancetype)initWithThread:(NSDictionary *)thread
                   binaryImages:(NSArray *)binaryImages;
@@ -85,8 +85,7 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
                                                 depth:(NSUInteger)depth
                                             errorType:(NSString *)errorType;
 
-+ (NSMutableArray *)serializeThreads:(NSMutableDictionary *)event
-                             threads:(NSArray<BugsnagThread *> *)threads;
++ (NSMutableArray *)serializeThreads:(NSArray<BugsnagThread *> *)threads;
 @end
 
 @interface BugsnagStacktrace ()
@@ -578,7 +577,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         }
     }
 
-    BSGDictSetSafeObject(event, [BugsnagThread serializeThreads:event threads:self.threads], BSGKeyThreads);
+    BSGDictSetSafeObject(event, [BugsnagThread serializeThreads:self.threads], BSGKeyThreads);
 
     // Build Event
     BSGDictSetSafeObject(event, BSGFormatSeverity(self.severity), BSGKeySeverity);

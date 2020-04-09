@@ -12,7 +12,7 @@
 #import "BugsnagThread.h"
 
 @interface BugsnagThread ()
-- (NSDictionary *)toDict;
+- (NSDictionary *)toDictionary;
 
 - (instancetype)initWithThread:(NSDictionary *)thread binaryImages:(NSArray *)binaryImages;
 
@@ -76,7 +76,7 @@
     BugsnagThread *thread = [[BugsnagThread alloc] initWithThread:self.thread binaryImages:self.binaryImages];
     thread.name = @"bugsnag-thread-1";
 
-    NSDictionary *dict = [thread toDict];
+    NSDictionary *dict = [thread toDictionary];
     XCTAssertEqualObjects(@"4", dict[@"id"]);
     XCTAssertEqualObjects(@"bugsnag-thread-1", dict[@"name"]);
     XCTAssertEqualObjects(@"cocoa", dict[@"type"]);
