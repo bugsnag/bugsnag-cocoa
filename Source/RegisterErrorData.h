@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ * Inspects data from the register captured by the KSCrash report for
+ * useful information that can be added to the error class/message. For
+ * example, this can enhance the error message set for Swift's fatalError().
+ */
 @interface RegisterErrorData : NSObject
 @property (nonatomic, strong) NSString *_Nullable errorClass;
 @property (nonatomic, strong) NSString *_Nullable errorMessage;
