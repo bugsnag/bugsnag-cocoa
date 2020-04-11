@@ -13,47 +13,44 @@ class ViewController: UIViewController {
 
     @IBOutlet var scenarioNameField : UITextField!
     @IBOutlet var scenarioMetaDataField : UITextField!
+    var scenario : Scenario?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:))))
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundNotification), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
 
     @IBAction func runTestScenario() {
-        let eventType : String! = scenarioNameField.text
-        let eventMode : String! = scenarioMetaDataField.text
-        let config = prepareConfig()
-        let scenario = Scenario.createScenarioNamed(eventType, withConfig: config)
-        scenario.eventMode = eventMode
-        NSLog("Starting Bugsnag for scenario: %@", eventType)
-        scenario.startBugsnag()
-        NSLog("Running scenario: %@", eventType)
-        scenario.run()
+        scenario = prepareScenario()
+        
+        NSLog("Starting Bugsnag for scenario: %@", String(describing: scenario))
+        scenario?.startBugsnag()
+        NSLog("Running scenario: %@", String(describing: scenario))
+        scenario?.run()
     }
 
     @IBAction func startBugsnag() {
+        scenario = prepareScenario()
+        NSLog("Starting Bugsnag for scenario: %@", String(describing: scenario))
+        scenario?.startBugsnag()
+    }
+    
+    internal func prepareScenario() -> Scenario {
         let eventType : String! = scenarioNameField.text
         let eventMode : String! = scenarioMetaDataField.text
-        let config = prepareConfig()
-        let scenario = Scenario.createScenarioNamed(eventType, withConfig: config)
-        scenario.eventMode = eventMode
-        os_log("Starting Bugsnag for scenario: %@", log: .default, type: .info, eventType)
-        scenario.startBugsnag()
-    }
-
-    internal func prepareConfig() -> BugsnagConfiguration {
+        
         let config = BugsnagConfiguration()
         config.apiKey = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345"
         config.setEndpoints(notify: "http://bs-local.com:9339", sessions: "http://bs-local.com:9339")
-        config.reportOOMs = false
-        return config
+        
+        let scenario = Scenario.createScenarioNamed(eventType, withConfig: config)
+        scenario.eventMode = eventMode
+        return scenario
     }
-
+    
+    @objc func didEnterBackgroundNotification() {
+        scenario?.didEnterBackgroundNotification()
+    }
 }
 

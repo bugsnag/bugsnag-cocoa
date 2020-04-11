@@ -44,4 +44,7 @@
     [Bugsnag startBugsnagWithConfiguration:self.config];
 }
 
+- (void)didEnterBackgroundNotification {
+}
+
 @end

@@ -10,11 +10,26 @@ $api_key = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345"
 
 
 After do |scenario|
-  $driver.reset if $driver
+  if $driver
+    # [:syslog, :crashlog, :performance, :server, :safariConsole, :safariNetwork]
+    # puts $driver.driver.logs.get(:crashlog)
+    $driver.reset
+  end
 end
 
 AfterConfiguration do |config|
-  AppAutomateDriver.new(bs_username, bs_access_key, bs_local_id, bs_device, app_location, :accessibility_id)
+  AppAutomateDriver.new(
+    bs_username,
+    bs_access_key,
+    bs_local_id,
+    bs_device,
+    app_location,
+    :accessibility_id,
+    {
+      'browserstack.deviceLogs' => true,
+      'browserstack.appium_version' => '1.16.0'
+    }
+  )
   $driver.start_driver
 end
 

@@ -38,12 +38,46 @@ When("I configure Bugsnag for {string}") do |event_type|
   }
 end
 
+When("I send the app to the background") do
+  $driver.background_app(-1)
+end
+
 When("I relaunch the app") do
   $driver.launch_app
 end
 
 When("I clear the request queue") do
   Server.stored_requests.clear
+end
+
+When("derp {string}") do |value|
+  send_keys_to_element("ScenarioNameField", value)
+end
+
+# 0: The current application state cannot be determined/is unknown
+# 1: The application is not running
+# 2: The application is running in the background and is suspended
+# 3: The application is running in the background and is not suspended
+# 4: The application is running in the foreground
+Then("The app is running in the foreground") do
+  wait_for_true do
+    status = $driver.execute_script('mobile: queryAppState',{bundleId: "com.bugsnag.iOSTestApp"})
+    status == 4
+  end
+end
+
+Then("The app is running in the background") do
+  wait_for_true do
+    status = $driver.execute_script('mobile: queryAppState',{bundleId: "com.bugsnag.iOSTestApp"})
+    status == 3
+  end
+end
+
+Then("The app is not running") do
+  wait_for_true do
+    status = $driver.execute_script('mobile: queryAppState',{bundleId: "com.bugsnag.iOSTestApp"})
+    status == 1
+  end
 end
 
 Then("each event in the payload matches one of:") do |table|
@@ -110,4 +144,22 @@ Then("the payload field {string} matches the test device model") do |field|
   valid_models = internal_names[expected_model]
   device_model = read_key_path(Server.current_request[:body], field)
   assert_true(valid_models.include?(device_model), "The field #{device_model} did not match any of the list of expected fields")
+end
+
+def wait_for_true
+  max_attempts = 300
+  attempts = 0
+  assertion_passed = false
+  until (attempts >= max_attempts) || assertion_passed
+    attempts += 1
+    assertion_passed = yield
+    sleep 0.1
+  end
+  raise "Assertion not passed in 30s" unless assertion_passed
+end
+
+def send_keys_to_element(element_id, text)
+  element = find_element(@element_locator, element_id)
+  element.clear()
+  element.set_value(text)
 end
