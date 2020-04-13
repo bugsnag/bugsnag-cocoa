@@ -5,7 +5,7 @@ class MagicError : NSError {}
 class NotifyWhenReleaseStageInNotifyReleaseStages : Scenario {
 
     override func startBugsnag() {
-        self.config.shouldAutoCaptureSessions = false;
+        self.config.autoTrackSessions = false;
         self.config.releaseStage = "prod"
         self.config.notifyReleaseStages = ["dev", "prod"]
         super.startBugsnag()
@@ -21,7 +21,7 @@ class NotifyWhenReleaseStageInNotifyReleaseStages : Scenario {
 class CrashWhenReleaseStageInNotifyReleaseStages : Scenario {
 
     override func startBugsnag() {
-        self.config.shouldAutoCaptureSessions = false;
+        self.config.autoTrackSessions = false;
         self.config.releaseStage = "prod"
         self.config.notifyReleaseStages = ["dev", "prod"]
         super.startBugsnag()
@@ -35,7 +35,7 @@ class CrashWhenReleaseStageInNotifyReleaseStages : Scenario {
 class CrashWhenReleaseStageInNotifyReleaseStagesChanges : Scenario {
 
     override func startBugsnag() {
-        self.config.shouldAutoCaptureSessions = false;
+        self.config.autoTrackSessions = false;
         if (self.eventMode == "noevent") {
           // The event is evaluated whether to be sent
           self.config.releaseStage = "test"
@@ -55,7 +55,7 @@ class CrashWhenReleaseStageInNotifyReleaseStagesChanges : Scenario {
 class CrashWhenReleaseStageNotInNotifyReleaseStagesChanges : Scenario {
 
     override func startBugsnag() {
-        self.config.shouldAutoCaptureSessions = false;
+        self.config.autoTrackSessions = false;
         if (self.eventMode == "noevent") {
           // The event is evaluated whether to be sent
           self.config.releaseStage = "prod"
@@ -75,7 +75,7 @@ class CrashWhenReleaseStageNotInNotifyReleaseStagesChanges : Scenario {
 class NotifyWhenReleaseStageNotInNotifyReleaseStages : Scenario {
 
     override func startBugsnag() {
-        self.config.shouldAutoCaptureSessions = false;
+        self.config.autoTrackSessions = false;
         self.config.releaseStage = "dev"
         self.config.notifyReleaseStages = ["prod"]
         super.startBugsnag()
@@ -91,7 +91,7 @@ class NotifyWhenReleaseStageNotInNotifyReleaseStages : Scenario {
 class CrashWhenReleaseStageNotInNotifyReleaseStages : Scenario {
 
     override func startBugsnag() {
-        self.config.shouldAutoCaptureSessions = false;
+        self.config.autoTrackSessions = false;
         self.config.releaseStage = "dev"
         self.config.notifyReleaseStages = ["prod"]
         super.startBugsnag()
