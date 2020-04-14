@@ -5,7 +5,7 @@ import Bugsnag
 @objc class ReportDidCrashScenario: Scenario {
 
     override func startBugsnag() {
-        self.config.shouldAutoCaptureSessions = false;
+        self.config.autoTrackSessions = false;
         super.startBugsnag()
     }
     

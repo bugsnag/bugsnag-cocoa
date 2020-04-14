@@ -44,12 +44,14 @@ Related to #
   - [ ] Initial review of the intended approach, not yet feature complete
   - [ ] Structural review of the classes, functions, and properties modified
   - [ ] Final review
+  - [ ] Release
 
 <!-- What do you need from a reviewer to get this changeset
      ready for release -->
 
 - [ ] The correct target branch has been selected (`master` for fixes, `next` for
   features)
+- [ ] If this is intended for release have all of the [pre-release checks](CONTRIBUTING.md) been considered?
 - [ ] Consistency across platforms for structures or concepts added or modified
 - [ ] Consistency between the changeset and the goal stated above
 - [ ] Internal consistency with the rest of the library - is there any overlap between existing interfaces and any which have been added?

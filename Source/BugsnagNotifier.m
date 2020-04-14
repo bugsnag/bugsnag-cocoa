@@ -47,7 +47,7 @@
 #import <AppKit/AppKit.h>
 #endif
 
-NSString *const NOTIFIER_VERSION = @"5.23.0";
+NSString *const NOTIFIER_VERSION = @"5.23.1";
 NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 NSString *const BSTabCrash = @"crash";
 NSString *const BSAttributeDepth = @"depth";
@@ -480,7 +480,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
     #if TARGET_OS_TV || TARGET_OS_IOS
     foregroundName = UIApplicationWillEnterForegroundNotification;
-    backgroundName = UIApplicationWillEnterForegroundNotification;
+    backgroundName = UIApplicationDidEnterBackgroundNotification;
     #elif TARGET_OS_OSX
     foregroundName = NSApplicationWillBecomeActiveNotification;
     backgroundName = NSApplicationDidFinishLaunchingNotification;
