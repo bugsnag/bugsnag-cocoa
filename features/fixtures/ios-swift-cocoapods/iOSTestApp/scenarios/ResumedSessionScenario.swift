@@ -11,7 +11,7 @@ import Bugsnag
 
 internal class ResumedSessionScenario: Scenario {
     override func startBugsnag() {
-        self.config.shouldAutoCaptureSessions = false;
+        self.config.autoTrackSessions = false;
         super.startBugsnag()
     }
 

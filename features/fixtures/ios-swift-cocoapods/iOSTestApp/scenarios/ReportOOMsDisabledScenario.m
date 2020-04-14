@@ -5,7 +5,7 @@
 @implementation ReportOOMsDisabledScenario
 
 - (void)startBugsnag {
-    self.config.shouldAutoCaptureSessions = NO;
+    self.config.autoTrackSessions = NO;
     self.config.reportOOMs = NO;
     [super startBugsnag];
 }
