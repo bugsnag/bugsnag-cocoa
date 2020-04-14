@@ -47,13 +47,14 @@ build: ## Build the library
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) build $(FORMATTER)
 
 build_ios_static: ## Build the static library target
+	@sed -i '' "s/SUPPORTS_MACCATALYST = YES;/SUPPORTS_MACCATALYST = NO;/" iOS/Bugsnag.xcodeproj/project.pbxproj 
 	$(XCODEBUILD) -project iOS/Bugsnag.xcodeproj -scheme BugsnagStatic
 
 build_carthage: ## Build the latest pushed commit with Carthage
 	@mkdir -p features/fixtures/carthage-proj
 	@echo 'git "file://$(shell pwd)" "'$(shell git rev-parse HEAD)'"' > features/fixtures/carthage-proj/Cartfile
 	@cd features/fixtures/carthage-proj && carthage update --platform ios && \
-		carthage update --platform macos
+		carthage update --platform macos && carthage update --platform tvos
 
 bump: ## Bump the version numbers to $VERSION
 ifeq ($(VERSION),)
