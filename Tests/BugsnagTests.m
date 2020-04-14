@@ -249,7 +249,7 @@
     // non-sending bugsnag
     [configuration addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) { return false; }];
 
-    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+    BugsnagOnSessionBlock sessionBlock = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) {
         switch (called) {
         case 0:
             [expectation1 fulfill];
@@ -258,6 +258,7 @@
             [expectation2 fulfill];
             break;
         }
+        return true;
     };
 
     [configuration addOnSessionBlock:sessionBlock];
@@ -289,7 +290,7 @@
     // non-sending bugsnag
     [configuration addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) { return false; }];
 
-    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+    BugsnagOnSessionBlock sessionBlock = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) {
         switch (called) {
         case 0:
             [expectation1 fulfill];
@@ -298,6 +299,7 @@
             [expectation2 fulfill];
             break;
         }
+        return true;
     };
 
     // NOTE: Due to test conditions the state of the Bugsnag/client class is indeterminate.

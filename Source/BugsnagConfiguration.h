@@ -73,7 +73,7 @@ typedef BOOL (^BugsnagOnBreadcrumbBlock)(BugsnagBreadcrumb *_Nonnull breadcrumb)
  *
  * @param sessionPayload The session about to be delivered
  */
-typedef void (^BugsnagOnSessionBlock)(NSMutableDictionary *_Nonnull sessionPayload);
+typedef BOOL (^BugsnagOnSessionBlock)(NSMutableDictionary *_Nonnull sessionPayload);
 
 typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
     BSGErrorTypesNone         NS_SWIFT_NAME(None)         = 0,

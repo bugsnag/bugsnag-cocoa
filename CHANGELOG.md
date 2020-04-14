@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Make all callbacks return boolean values
+  [#534](https://github.com/bugsnag/bugsnag-cocoa/pull/534)
+
 * Create structured `BugsnagThread` class
   [#532](https://github.com/bugsnag/bugsnag-cocoa/pull/532)
 
