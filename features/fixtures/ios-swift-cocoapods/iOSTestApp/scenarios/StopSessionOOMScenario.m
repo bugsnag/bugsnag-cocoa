@@ -11,6 +11,7 @@
     [Bugsnag startSession];
     [Bugsnag notify:[NSException exceptionWithName:@"foo" reason:nil userInfo:nil]];
     [Bugsnag stopSession];
+    kill(getpid(), SIGKILL);
 }
 
 @end
