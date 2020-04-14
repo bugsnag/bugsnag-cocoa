@@ -49,7 +49,6 @@
 		F42955869D33EE0E510B9651 /* ReadGarbagePointerScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295B7431F98954DA62E47F /* ReadGarbagePointerScenario.m */; };
 		F42955DB6D08642528917FAB /* CxxExceptionScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = F429550B682F8F9677305881 /* CxxExceptionScenario.mm */; };
 		F42955E0916B8851F074D9B3 /* UserEmailScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */; };
-		F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */; };
 		F429565A951303E2C3136D0D /* UserIdScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */; };
 		F4295836C8AF75547C675E8D /* ReleasedObjectScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */; };
 		F42958881D3F34A76CADE4EC /* SwiftCrash.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */; };
@@ -69,7 +68,6 @@
 
 /* Begin PBXFileReference section */
 		4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOSTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8A22FC62225B3E4800CA8895 /* ReportDidCrashScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportDidCrashScenario.swift; sourceTree = "<group>"; };
 		8A22FC64225B598500CA8895 /* OOMForegroundScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OOMForegroundScenario.h; sourceTree = "<group>"; };
 		8A22FC65225B598500CA8895 /* OOMForegroundScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OOMForegroundScenario.m; sourceTree = "<group>"; };
 		8A32DB8022424E3000EDD92F /* NSExceptionShiftScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSExceptionShiftScenario.h; sourceTree = "<group>"; };
@@ -144,7 +142,6 @@
 		F429570EE7A751B53D011481 /* ManualSessionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManualSessionScenario.m; sourceTree = "<group>"; };
 		F42957A23DB8145B4B702F15 /* PrivilegedInstructionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrivilegedInstructionScenario.h; sourceTree = "<group>"; };
 		F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserIdScenario.swift; sourceTree = "<group>"; };
-		F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSExceptionScenario.swift; sourceTree = "<group>"; };
 		F4295871D1BCF211398CAEBA /* ReadOnlyPageScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadOnlyPageScenario.m; sourceTree = "<group>"; };
 		F4295A20DE438C2B28167714 /* AccessNonObjectScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccessNonObjectScenario.m; sourceTree = "<group>"; };
 		F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorScenario.swift; sourceTree = "<group>"; };
@@ -237,86 +234,19 @@
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
-				F49695A3243EF7B600105DA9 /* OOMs */,
-				F4295ABA693D273D52AA9F6B /* Scenario.h */,
-				F42954E8B66F3FB7F5333CF7 /* Scenario.m */,
-				F4295196419C0F6AAA7E89A5 /* AbortScenario.h */,
-				F429534164257A2BE23ED72D /* AbortScenario.m */,
-				F42956707AEC06754D9C2208 /* AccessNonObjectScenario.h */,
-				F4295A20DE438C2B28167714 /* AccessNonObjectScenario.m */,
-				F429556E677F030F72C4C5D0 /* AsyncSafeThreadScenario.h */,
-				F4295CA6B6792DECA15C450B /* AsyncSafeThreadScenario.m */,
-				8A98400120FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.h */,
-				8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */,
-				8AEFC79720F9132C00A78779 /* AutoSessionHandledEventsScenario.h */,
-				8AEFC79820F9132C00A78779 /* AutoSessionHandledEventsScenario.m */,
-				8AEEBBCE20FC9E1D00C60763 /* AutoSessionMixedEventsScenario.h */,
-				8AEEBBCF20FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m */,
-				F4295F22AA1863213F4A5F51 /* AutoSessionScenario.h */,
-				F4295EE3B0BD05E5FE513B20 /* AutoSessionScenario.m */,
-				8AEFC79A20F92E2200A78779 /* AutoSessionUnhandledScenario.h */,
-				8AEFC79B20F92E2200A78779 /* AutoSessionUnhandledScenario.m */,
-				8AEFC72F20F8D1A000A78779 /* AutoSessionWithUserScenario.h */,
-				8AEFC73020F8D1A000A78779 /* AutoSessionWithUserScenario.m */,
-				F4295E2979ED53A2E82017CF /* BuiltinTrapScenario.h */,
-				F42956D34274D4ED16B4D491 /* BuiltinTrapScenario.m */,
 				8AA7C2D62327DD3D002255B2 /* ConfigChangesAfterStartScenarios.h */,
 				8AA7C2D52327DD3D002255B2 /* ConfigChangesAfterStartScenarios.m */,
-				8A72A0362396574F00328051 /* CustomPluginNotifierDescriptionScenario.h */,
-				8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */,
-				F42951B01B327C380EC2D8A6 /* CxxExceptionScenario.h */,
-				F429550B682F8F9677305881 /* CxxExceptionScenario.mm */,
-				F4295E6960503E5BD75A2C35 /* DisabledSessionTrackingScenario.h */,
-				F429563584D9BC3A5B86BECF /* DisabledSessionTrackingScenario.m */,
-				F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */,
-				F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */,
-				F429526319377A8848136413 /* HandledExceptionScenario.swift */,
-				8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */,
-				F4295CF00D2B7AE6DE5BBFC5 /* ManualSessionScenario.h */,
-				F429570EE7A751B53D011481 /* ManualSessionScenario.m */,
-				8AEFC73220F8D1BB00A78779 /* ManualSessionWithUserScenario.h */,
-				8AEFC73320F8D1BB00A78779 /* ManualSessionWithUserScenario.m */,
-				8AA05A2D23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.h */,
-				8AA05A2E23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m */,
-				8A530CCA22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.h */,
-				8A530CCB22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.m */,
-				E7767F14221C223C0006648C /* NewSessionScenario.swift */,
-				F42950D49A5F24FF7155EEE1 /* NonExistentMethodScenario.h */,
-				F4295F13EBCAC9CB0ABC4008 /* NonExistentMethodScenario.m */,
-				F42957FA1A3724BFBDC22E14 /* NSExceptionScenario.swift */,
-				8A32DB8022424E3000EDD92F /* NSExceptionShiftScenario.h */,
-				8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */,
-				F4295C1C7C54101194B61E93 /* NullPointerScenario.h */,
-				F4295E86DC0BE9DC731B0D1C /* NullPointerScenario.m */,
-				F42950588CE34967588DF438 /* ObjCExceptionScenario.h */,
-				F429521A8EEB435DCB6EACE1 /* ObjCExceptionScenario.m */,
-				F4295C6D7F0D52A2A906B33B /* ObjCMsgSendScenario.h */,
-				F429511ED32FC9FB46649CAE /* ObjCMsgSendScenario.m */,
-				F429534E2FC03ED1AD8F4F28 /* OverwriteLinkRegisterScenario.h */,
-				F4295B041F9CC494473DD226 /* OverwriteLinkRegisterScenario.m */,
-				F42957A23DB8145B4B702F15 /* PrivilegedInstructionScenario.h */,
-				F429566550603ECAC2875333 /* PrivilegedInstructionScenario.m */,
-				F4295CD1B5437B73A7C254F7 /* ReadGarbagePointerScenario.h */,
-				F4295B7431F98954DA62E47F /* ReadGarbagePointerScenario.m */,
-				F429539C447B6BFA17C102D7 /* ReadOnlyPageScenario.h */,
-				F4295871D1BCF211398CAEBA /* ReadOnlyPageScenario.m */,
-				F4295B7FE972945A50B3CA31 /* ReleasedObjectScenario.h */,
-				F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */,
+				F49695A9244545EC00105DA9 /* Crashprobe */,
+				F49695B0244547CB00105DA9 /* Cross notifier notify */,
+				F49695AF2445477E00105DA9 /* Handled errors */,
+				F49695A3243EF7B600105DA9 /* OOMs */,
+				F49695AE2445476700105DA9 /* Plugin */,
 				8AB1081823301FE600672818 /* ReleaseStageScenarios.swift */,
-				8A22FC62225B3E4800CA8895 /* ReportDidCrashScenario.swift */,
-				E7767F12221C21E30006648C /* ResumedSessionScenario.swift */,
-				F42952BCC8A05EFAAE503E3D /* StackOverflowScenario.h */,
-				F4295493796EA93321E5CDDB /* StackOverflowScenario.m */,
-				E7767F10221C21D90006648C /* StoppedSessionScenario.swift */,
-				8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */,
-				F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */,
-				F4295A4EF5288C60F978676F /* UndefinedInstructionScenario.h */,
-				F429538D19421F28D8EB0446 /* UndefinedInstructionScenario.m */,
-				8AF8FCAB22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift */,
-				F42951F865D328A43250640B /* UserDisabledScenario.swift */,
-				F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */,
-				F42954E2B3FF0C5C0474DA74 /* UserEnabledScenario.swift */,
-				F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */,
+				F4295ABA693D273D52AA9F6B /* Scenario.h */,
+				F42954E8B66F3FB7F5333CF7 /* Scenario.m */,
+				F49695AC2445471400105DA9 /* Session stopping */,
+				F49695AB244546CA00105DA9 /* Session tracking */,
+				F49695AA244546B000105DA9 /* User */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";
@@ -338,6 +268,127 @@
 				F49695A52441098600105DA9 /* OOMBackgroundScenario.m */,
 			);
 			name = OOMs;
+			sourceTree = "<group>";
+		};
+		F49695A9244545EC00105DA9 /* Crashprobe */ = {
+			isa = PBXGroup;
+			children = (
+				F4295196419C0F6AAA7E89A5 /* AbortScenario.h */,
+				F429534164257A2BE23ED72D /* AbortScenario.m */,
+				F42956707AEC06754D9C2208 /* AccessNonObjectScenario.h */,
+				F4295A20DE438C2B28167714 /* AccessNonObjectScenario.m */,
+				F429556E677F030F72C4C5D0 /* AsyncSafeThreadScenario.h */,
+				F4295CA6B6792DECA15C450B /* AsyncSafeThreadScenario.m */,
+				F4295E2979ED53A2E82017CF /* BuiltinTrapScenario.h */,
+				F42956D34274D4ED16B4D491 /* BuiltinTrapScenario.m */,
+				F42951B01B327C380EC2D8A6 /* CxxExceptionScenario.h */,
+				F429550B682F8F9677305881 /* CxxExceptionScenario.mm */,
+				F42950D49A5F24FF7155EEE1 /* NonExistentMethodScenario.h */,
+				F4295F13EBCAC9CB0ABC4008 /* NonExistentMethodScenario.m */,
+				F4295C1C7C54101194B61E93 /* NullPointerScenario.h */,
+				F4295E86DC0BE9DC731B0D1C /* NullPointerScenario.m */,
+				F42950588CE34967588DF438 /* ObjCExceptionScenario.h */,
+				F429521A8EEB435DCB6EACE1 /* ObjCExceptionScenario.m */,
+				F4295C6D7F0D52A2A906B33B /* ObjCMsgSendScenario.h */,
+				F429511ED32FC9FB46649CAE /* ObjCMsgSendScenario.m */,
+				F429534E2FC03ED1AD8F4F28 /* OverwriteLinkRegisterScenario.h */,
+				F4295B041F9CC494473DD226 /* OverwriteLinkRegisterScenario.m */,
+				F42957A23DB8145B4B702F15 /* PrivilegedInstructionScenario.h */,
+				F429566550603ECAC2875333 /* PrivilegedInstructionScenario.m */,
+				F4295CD1B5437B73A7C254F7 /* ReadGarbagePointerScenario.h */,
+				F4295B7431F98954DA62E47F /* ReadGarbagePointerScenario.m */,
+				F429539C447B6BFA17C102D7 /* ReadOnlyPageScenario.h */,
+				F4295871D1BCF211398CAEBA /* ReadOnlyPageScenario.m */,
+				F4295B7FE972945A50B3CA31 /* ReleasedObjectScenario.h */,
+				F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */,
+				F42952BCC8A05EFAAE503E3D /* StackOverflowScenario.h */,
+				F4295493796EA93321E5CDDB /* StackOverflowScenario.m */,
+				8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */,
+				F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */,
+				F4295A4EF5288C60F978676F /* UndefinedInstructionScenario.h */,
+				F429538D19421F28D8EB0446 /* UndefinedInstructionScenario.m */,
+			);
+			name = Crashprobe;
+			sourceTree = "<group>";
+		};
+		F49695AA244546B000105DA9 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				F42951F865D328A43250640B /* UserDisabledScenario.swift */,
+				F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */,
+				F42954E2B3FF0C5C0474DA74 /* UserEnabledScenario.swift */,
+				F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */,
+			);
+			name = User;
+			sourceTree = "<group>";
+		};
+		F49695AB244546CA00105DA9 /* Session tracking */ = {
+			isa = PBXGroup;
+			children = (
+				8A98400120FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.h */,
+				8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */,
+				8AEFC79720F9132C00A78779 /* AutoSessionHandledEventsScenario.h */,
+				8AEFC79820F9132C00A78779 /* AutoSessionHandledEventsScenario.m */,
+				8AEEBBCE20FC9E1D00C60763 /* AutoSessionMixedEventsScenario.h */,
+				8AEEBBCF20FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m */,
+				F4295F22AA1863213F4A5F51 /* AutoSessionScenario.h */,
+				F4295EE3B0BD05E5FE513B20 /* AutoSessionScenario.m */,
+				8AEFC79A20F92E2200A78779 /* AutoSessionUnhandledScenario.h */,
+				8AEFC79B20F92E2200A78779 /* AutoSessionUnhandledScenario.m */,
+				8AEFC72F20F8D1A000A78779 /* AutoSessionWithUserScenario.h */,
+				8AEFC73020F8D1A000A78779 /* AutoSessionWithUserScenario.m */,
+				F4295E6960503E5BD75A2C35 /* DisabledSessionTrackingScenario.h */,
+				F429563584D9BC3A5B86BECF /* DisabledSessionTrackingScenario.m */,
+				F4295CF00D2B7AE6DE5BBFC5 /* ManualSessionScenario.h */,
+				F429570EE7A751B53D011481 /* ManualSessionScenario.m */,
+				8AEFC73220F8D1BB00A78779 /* ManualSessionWithUserScenario.h */,
+				8AEFC73320F8D1BB00A78779 /* ManualSessionWithUserScenario.m */,
+			);
+			name = "Session tracking";
+			sourceTree = "<group>";
+		};
+		F49695AC2445471400105DA9 /* Session stopping */ = {
+			isa = PBXGroup;
+			children = (
+				E7767F14221C223C0006648C /* NewSessionScenario.swift */,
+				E7767F12221C21E30006648C /* ResumedSessionScenario.swift */,
+				E7767F10221C21D90006648C /* StoppedSessionScenario.swift */,
+			);
+			name = "Session stopping";
+			sourceTree = "<group>";
+		};
+		F49695AE2445476700105DA9 /* Plugin */ = {
+			isa = PBXGroup;
+			children = (
+				8A72A0362396574F00328051 /* CustomPluginNotifierDescriptionScenario.h */,
+				8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */,
+			);
+			name = Plugin;
+			sourceTree = "<group>";
+		};
+		F49695AF2445477E00105DA9 /* Handled errors */ = {
+			isa = PBXGroup;
+			children = (
+				F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */,
+				F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */,
+				F429526319377A8848136413 /* HandledExceptionScenario.swift */,
+				8AA05A2D23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.h */,
+				8AA05A2E23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m */,
+				8A530CCA22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.h */,
+				8A530CCB22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.m */,
+				8A32DB8022424E3000EDD92F /* NSExceptionShiftScenario.h */,
+				8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */,
+			);
+			name = "Handled errors";
+			sourceTree = "<group>";
+		};
+		F49695B0244547CB00105DA9 /* Cross notifier notify */ = {
+			isa = PBXGroup;
+			children = (
+				8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */,
+				8AF8FCAB22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift */,
+			);
+			name = "Cross notifier notify";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -456,7 +507,6 @@
 			files = (
 				8AB8866620404DD30003E444 /* ViewController.swift in Sources */,
 				8AB8866420404DD30003E444 /* AppDelegate.swift in Sources */,
-				F429561C9CFE8750B030F369 /* NSExceptionScenario.swift in Sources */,
 				8A98400320FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m in Sources */,
 				F42955E0916B8851F074D9B3 /* UserEmailScenario.swift in Sources */,
 				8AA05A2F23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m in Sources */,
