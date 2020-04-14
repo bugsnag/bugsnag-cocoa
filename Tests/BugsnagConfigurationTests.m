@@ -731,7 +731,7 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
     
-    BugsnagOnSendBlock block = ^bool(BugsnagEvent * _Nonnull event) { return false; };
+    BugsnagOnSendBlock block = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
     
     [configuration addOnSendBlock:block];
     [Bugsnag startBugsnagWithConfiguration:configuration];
@@ -750,8 +750,8 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
     
-    BugsnagOnSendBlock block1 = ^bool(BugsnagEvent * _Nonnull event) { return false; };
-    BugsnagOnSendBlock block2 = ^bool(BugsnagEvent * _Nonnull event) { return false; };
+    BugsnagOnSendBlock block1 = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
+    BugsnagOnSendBlock block2 = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
     
     // Add more than one
     [configuration addOnSendBlock:block1];
@@ -772,8 +772,8 @@
     [config setContext:@"context1"];
     [config setAppType:@"The most amazing app, a brilliant app, the app to end all apps"];
     [config setPersistUser:YES];
-    BugsnagOnSendBlock onSendBlock1 = ^bool(BugsnagEvent * _Nonnull event) { return true; };
-    BugsnagOnSendBlock onSendBlock2 = ^bool(BugsnagEvent * _Nonnull event) { return true; };
+    BugsnagOnSendBlock onSendBlock1 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
+    BugsnagOnSendBlock onSendBlock2 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
 
     NSArray *sendBlocks = @[ onSendBlock1, onSendBlock2 ];
     [config setOnSendBlocks:[sendBlocks mutableCopy]]; // Mutable arg required
