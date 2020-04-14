@@ -33,7 +33,7 @@
 @implementation ReadGarbagePointerScenario
 
 - (void)startBugsnag {
-    self.config.shouldAutoCaptureSessions = NO;
+    self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 

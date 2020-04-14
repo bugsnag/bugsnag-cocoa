@@ -1,13 +1,14 @@
 Changelog
 =========
 
-## TBD
+## 5.23.1 (2020-04-08)
 
 ## Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads
   when configured to skip capturing/reporting background thread contents
   (generally only Unity games).
+  [#442](https://github.com/bugsnag/bugsnag-cocoa/pull/442)
   
 * Added several additional event fields (`codeBundleId`, `osName`, `modelNumber`, 
   `locale`) that were missing from the OOM reports.
