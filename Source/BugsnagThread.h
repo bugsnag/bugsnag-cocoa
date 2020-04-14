@@ -33,7 +33,7 @@ typedef NS_OPTIONS(NSUInteger, BSGThreadType) {
 /**
  * Whether this thread was the thread that triggered the captured error
  */
-@property BOOL errorReportingThread;
+@property(readonly) BOOL errorReportingThread;
 
 /**
  * Sets a representation of this thread's stacktrace
