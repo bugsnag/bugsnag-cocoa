@@ -43,6 +43,7 @@
 @interface BugsnagEvent ()
 - (NSDictionary *_Nonnull)toJson;
 - (BOOL)shouldBeSent;
+@property NSArray *redactedKeys;
 @end
 
 @interface BugsnagConfiguration ()
@@ -120,19 +121,19 @@
                  onCompletion:onCompletion];
 }
 
-
 // Generates the payload for notifying Bugsnag
-- (NSDictionary *)getBodyFromReports:(NSArray *)reports {
+- (NSDictionary *)getBodyFromReports:(NSArray *)events {
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     BSGDictSetSafeObject(data, [Bugsnag client].details, BSGKeyNotifier);
     BSGDictSetSafeObject(data, [Bugsnag client].configuration.apiKey, BSGKeyApiKey);
     BSGDictSetSafeObject(data, @"4.0", @"payloadVersion");
 
     NSMutableArray *formatted =
-            [[NSMutableArray alloc] initWithCapacity:[reports count]];
+            [[NSMutableArray alloc] initWithCapacity:[events count]];
 
-    for (BugsnagEvent *report in reports) {
-        BSGArrayAddSafeObject(formatted, [report toJson]);
+    for (BugsnagEvent *event in events) {
+        event.redactedKeys = [Bugsnag configuration].redactedKeys;
+        BSGArrayAddSafeObject(formatted, [event toJson]);
     }
 
     BSGDictSetSafeObject(data, formatted, BSGKeyEvents);

@@ -643,6 +643,12 @@
     XCTAssertEqualObjects(@"test@example.com", config.user.emailAddress);
 }
 
+- (void)testDefaultRedactedKeys {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertEqual(1, [config.redactedKeys count]);
+    XCTAssertEqualObjects(@"password", config.redactedKeys[0]);
+}
+
 - (void)testApiKeySetter {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
@@ -783,6 +789,9 @@
     XCTAssertNotEqual(config, clone);
     
     // Change values
+
+    // Redacted keys
+    XCTAssertEqualObjects(config.redactedKeys, clone.redactedKeys);
     
     // Object
     [clone setUser:@"Cthulu" withEmail:@"hp@lovecraft.com" andName:@"Howard"];

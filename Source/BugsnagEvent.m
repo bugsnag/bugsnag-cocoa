@@ -308,6 +308,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
  *  The release stage of the application
  */
 @property(readwrite, copy, nullable) NSString *releaseStage;
+
+@property NSArray *redactedKeys;
 @end
 
 @implementation BugsnagEvent
@@ -471,7 +473,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     if ([BugsnagConfiguration isValidApiKey:apiKey]) {
         _apiKey = apiKey;
     }
-    
+
     // A malformed apiKey should not cause an error: the fallback global value
     // in BugsnagConfiguration will do to get the event reported.
     else {
@@ -582,7 +584,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 - (NSDictionary *)toJson {
     NSMutableDictionary *event = [NSMutableDictionary dictionary];
-    NSMutableDictionary *metadata = [[[self metadata] toDictionary] mutableCopy];
 
     if (self.customException) {
         BSGDictSetSafeObject(event, @[ self.customException ], BSGKeyExceptions);
@@ -606,14 +607,17 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     // Build Event
     BSGDictSetSafeObject(event, BSGFormatSeverity(self.severity), BSGKeySeverity);
     BSGDictSetSafeObject(event, [self serializeBreadcrumbs], BSGKeyBreadcrumbs);
-    BSGDictSetSafeObject(event, metadata, BSGKeyMetadata);
+
+    // add metadata
+    NSMutableDictionary *metadata = [[[self metadata] toDictionary] mutableCopy];
+    BSGDictSetSafeObject(event, [self sanitiseMetadata:metadata], BSGKeyMetadata);
 
     BSGDictSetSafeObject(event, [self.device toDictionary], BSGKeyDevice);
     BSGDictSetSafeObject(event, [self.app toDict], BSGKeyApp);
-    
+
     BSGDictSetSafeObject(event, [self context], BSGKeyContext);
     BSGDictInsertIfNotNil(event, self.groupingHash, BSGKeyGroupingHash);
-    
+
 
     BSGDictSetSafeObject(event, @(self.handledState.unhandled), BSGKeyUnhandled);
 
@@ -650,6 +654,35 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         BSGDictSetSafeObject(event, [self generateSessionDict], BSGKeySession);
     }
     return event;
+}
+
+- (NSMutableDictionary *)sanitiseMetadata:(NSMutableDictionary *)metadata {
+    for (NSString *sectionKey in [metadata allKeys]) {
+        metadata[sectionKey] = [metadata[sectionKey] mutableCopy];
+        NSMutableDictionary *section = metadata[sectionKey];
+
+        if (section != nil) { // redact sensitive metadata values
+            for (NSString *objKey in [section allKeys]) {
+                section[objKey] = [self sanitiseMetadataValue:section[objKey] key:objKey];
+            }
+        }
+    }
+    return metadata;
+}
+
+- (id)sanitiseMetadataValue:(id)value key:(NSString *)key {
+    if ([self.redactedKeys containsObject:key]) {
+        return BSGKeyRedaction;
+    } else if ([value isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary *nestedDict = [(NSDictionary *)value mutableCopy];
+
+        for (NSString *nestedKey in [nestedDict allKeys]) {
+            nestedDict[nestedKey] = [self sanitiseMetadataValue:nestedDict[nestedKey] key:nestedKey];
+        }
+        return nestedDict;
+    } else {
+        return value;
+    }
 }
 
 - (NSDictionary *)generateSessionDict {

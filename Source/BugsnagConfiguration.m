@@ -121,6 +121,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setEnabledBreadcrumbTypes:self.enabledBreadcrumbTypes];
     [copy setEnabledErrorTypes:self.enabledErrorTypes];
     [copy setEnabledReleaseStages:self.enabledReleaseStages];
+    [copy setRedactedKeys:self.redactedKeys];
     [copy setMaxBreadcrumbs:self.maxBreadcrumbs];
     [copy setMetadata: [[BugsnagMetadata alloc] initWithDictionary:[[self.metadata toDictionary] mutableCopy]]];
     [copy setEndpointsForNotify:self.notifyURL.absoluteString
@@ -191,6 +192,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _onBreadcrumbBlocks = [NSMutableArray new];
     _plugins = [NSMutableSet new];
     _enabledReleaseStages = nil;
+    _redactedKeys = @[@"password"];
     _breadcrumbs = [BugsnagBreadcrumbs new];
     _autoTrackSessions = YES;
     // Default to recording all error types

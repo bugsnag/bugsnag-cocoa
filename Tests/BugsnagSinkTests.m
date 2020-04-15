@@ -20,7 +20,7 @@
 @end
 
 @interface BugsnagSink ()
-- (NSDictionary *)getBodyFromReports:(NSArray *)reports;
+- (NSDictionary *)getBodyFromReports:(NSArray *)events;
 @end
 
 @implementation BugsnagSinkTests
