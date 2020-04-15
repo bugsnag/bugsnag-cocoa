@@ -117,21 +117,20 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
         return;
     }
 
-    BugsnagSession *newSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
-                                                          startDate:[NSDate date]
-                                                               user:self.config.user
-                                                       autoCaptured:isAutoCaptured];
     // TODO JL: refactor to pass as structured data into callback
-    BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc] initWithSessions:@[]
-                                                                                              config:self.config];
-    NSMutableDictionary *data = [payload toJson];
-    for (BugsnagOnSessionBlock cb in self.config.onSessionBlocks) {
-        if (!cb(data)) {
+    BugsnagSessionTrackingPayload *sessions = [[BugsnagSessionTrackingPayload alloc] initWithSessions:@[]
+                                                                                               config:self.config];
+    NSMutableDictionary *sessionsJson = [sessions toJson];
+    for (BugsnagOnSessionBlock onSessionBlock in self.config.onSessionBlocks) {
+        if (!onSessionBlock(sessionsJson)) {
             return;
         }
     }
 
-    self.currentSession = newSession;
+    self.currentSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
+                                                   startDate:[NSDate date]
+                                                        user:self.config.user
+                                                autoCaptured:isAutoCaptured];
     [self.sessionStore write:self.currentSession];
 
     if (self.callback) {
