@@ -138,5 +138,15 @@ initWithErrorName:(NSString *_Nonnull)name
  */
 @property(readonly, nonnull) NSMutableArray<BugsnagThread *> *threads;
 
+/**
+ * The original object that caused the error in your application. This value will only be populated for
+ * non-fatal errors which did not terminate the process, and will contain an NSError or NSException.
+ *
+ * Manipulating this field does not affect the error information reported to the
+ * Bugsnag dashboard. Use event.errors to access and amend the representation of
+ * the error that will be sent.
+ */
+@property(nullable) id originalError;
+
 @end
 
