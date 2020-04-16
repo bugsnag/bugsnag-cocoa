@@ -27,7 +27,7 @@
 
 - (instancetype)initWithThread:(NSDictionary *)thread binaryImages:(NSArray *)binaryImages {
     if (self = [super init]) {
-        self.errorReportingThread = [thread[@"crashed"] boolValue];
+        _errorReportingThread = [thread[@"crashed"] boolValue];
         self.id = [thread[@"index"] stringValue];
         self.type = BSGThreadTypeCocoa;
 

@@ -59,7 +59,7 @@ typedef void (^BugsnagOnErrorBlock)(BugsnagEvent *_Nonnull event);
  *
  *  @return YES if the event should be sent
  */
-typedef bool (^BugsnagOnSendBlock)(BugsnagEvent *_Nonnull event);
+typedef BOOL (^BugsnagOnSendBlock)(BugsnagEvent *_Nonnull event);
 
 /**
  *  A configuration block for modifying a captured breadcrumb
@@ -73,7 +73,7 @@ typedef BOOL (^BugsnagOnBreadcrumbBlock)(BugsnagBreadcrumb *_Nonnull breadcrumb)
  *
  * @param sessionPayload The session about to be delivered
  */
-typedef void(^BugsnagOnSessionBlock)(NSMutableDictionary *_Nonnull sessionPayload);
+typedef BOOL (^BugsnagOnSessionBlock)(NSMutableDictionary *_Nonnull sessionPayload);
 
 typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
     BSGErrorTypesNone         NS_SWIFT_NAME(None)         = 0,

@@ -223,6 +223,7 @@ This is now BugsnagEvent.
 
 ```diff
 + event.unhandled
++ event.originalError
 ```
 
 `event.device` is now a structured class with properties for each value, rather than an `NSDictionary`.

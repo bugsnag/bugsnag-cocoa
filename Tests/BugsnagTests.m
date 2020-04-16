@@ -44,7 +44,7 @@
 -(void)setUpBugsnagWillCallNotify:(bool)willNotify {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     if (willNotify) {
-        [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
+        [configuration addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) { return false; }];
     }
     [Bugsnag startBugsnagWithConfiguration:configuration];
 }
@@ -147,7 +147,7 @@
  */
 -(void)testBugsnagPauseSession {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
+    [configuration addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) { return false; }];
 
     [Bugsnag startBugsnagWithConfiguration:configuration];
 
@@ -164,7 +164,7 @@
     
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [configuration setContext:@"firstContext"];
-    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
+    [configuration addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) { return false; }];
     
     [Bugsnag startBugsnagWithConfiguration:configuration];
 
@@ -247,9 +247,9 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
 
     // non-sending bugsnag
-    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
+    [configuration addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) { return false; }];
 
-    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+    BugsnagOnSessionBlock sessionBlock = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) {
         switch (called) {
         case 0:
             [expectation1 fulfill];
@@ -258,6 +258,7 @@
             [expectation2 fulfill];
             break;
         }
+        return true;
     };
 
     [configuration addOnSessionBlock:sessionBlock];
@@ -287,9 +288,9 @@
     configuration.autoTrackSessions = NO;
     
     // non-sending bugsnag
-    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
+    [configuration addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) { return false; }];
 
-    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+    BugsnagOnSessionBlock sessionBlock = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) {
         switch (called) {
         case 0:
             [expectation1 fulfill];
@@ -298,6 +299,7 @@
             [expectation2 fulfill];
             break;
         }
+        return true;
     };
 
     // NOTE: Due to test conditions the state of the Bugsnag/client class is indeterminate.
@@ -348,7 +350,7 @@
     expectation6.inverted = YES;
 
     // Two blocks that will get called (or not) when we notify()
-    BugsnagOnSendBlock block1 = ^bool(BugsnagEvent * _Nonnull event)
+    BugsnagOnSendBlock block1 = ^BOOL(BugsnagEvent * _Nonnull event)
     {
         switch (called) {
             case 0:
@@ -372,7 +374,7 @@
         return false;
     };
 
-    BugsnagOnSendBlock block2 = ^bool(BugsnagEvent * _Nonnull event)
+    BugsnagOnSendBlock block2 = ^BOOL(BugsnagEvent * _Nonnull event)
     {
         switch (called) {
             case 0:

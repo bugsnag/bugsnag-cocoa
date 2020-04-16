@@ -6,7 +6,7 @@
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;
     self.config.releaseStage = @"alpha";
-    [self.config addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) {
+    [self.config addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) {
         [event addMetadata:@{ @"shape": @"line" } toSection:@"extra"];
         return YES;
     }];
