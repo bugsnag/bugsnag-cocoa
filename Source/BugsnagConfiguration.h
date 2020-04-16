@@ -117,7 +117,7 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
  * By default, redactedKeys is set to ["password"]. Both string literals and regex
  * values can be supplied to this property.
  */
-@property(readwrite, retain, nullable) NSArray<NSString *> *redactedKeys;
+@property(readwrite, retain, nullable) NSArray<id> *redactedKeys;
 
 /**
  *  A general summary of what was occuring in the application

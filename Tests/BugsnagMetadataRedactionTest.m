@@ -99,4 +99,23 @@
     }];
 }
 
+- (void)testRegexRedaction {
+    BugsnagEvent *event = [self generateEventWithMetadata:@{
+            @"password": @"hunter2",
+            @"somekey9": @"2fa0",
+            @"somekey": @"ba09"
+    }];
+    // disallow any numeric characters
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[0-9]" options:0 error:nil];
+    event.redactedKeys = @[@"password", regex];
+
+    NSDictionary *payload = [event toJson];
+    NSDictionary *section = payload[@"metaData"][@"custom"];
+    XCTAssertNotNil(section);
+    XCTAssertEqualObjects(@"[REDACTED]", section[@"password"]);
+    XCTAssertEqualObjects(@"[REDACTED]", section[@"somekey9"]);
+    XCTAssertEqualObjects(@"ba09", section[@"somekey"]);
+}
+
+
 @end

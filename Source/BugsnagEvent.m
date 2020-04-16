@@ -12,6 +12,7 @@
 #include <sys/utsname.h>
 #endif
 
+#import <Foundation/Foundation.h>
 #import "BSGSerialization.h"
 #import "Bugsnag.h"
 #import "BugsnagCollections.h"
@@ -671,7 +672,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 }
 
 - (id)sanitiseMetadataValue:(id)value key:(NSString *)key {
-    if ([self.redactedKeys containsObject:key]) {
+    if ([self isRedactedKey:key]) {
         return BSGKeyRedaction;
     } else if ([value isKindOfClass:[NSDictionary class]]) {
         NSMutableDictionary *nestedDict = [(NSDictionary *)value mutableCopy];
@@ -683,6 +684,23 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     } else {
         return value;
     }
+}
+
+- (BOOL)isRedactedKey:(NSString *)key {
+    for (id obj in self.redactedKeys) {
+        if ([obj isKindOfClass:[NSString class]]) {
+            if ([key isEqualToString:obj]) {
+                return true;
+            }
+        } else if ([obj isKindOfClass:[NSRegularExpression class]]) {
+            NSRegularExpression *regex = obj;
+            NSRange range = NSMakeRange(0, [key length]);
+            if ([[regex matchesInString:key options:0 range:range] count] > 0) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 - (NSDictionary *)generateSessionDict {
