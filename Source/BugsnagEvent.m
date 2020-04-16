@@ -29,6 +29,7 @@
 #import "BugsnagStacktrace.h"
 #import "BugsnagThread.h"
 #import "RegisterErrorData.h"
+#import "BugsnagSessionInternal.h"
 
 static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
@@ -710,7 +711,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     };
 
     NSDictionary *sessionJson = @{
-            BSGKeyId: self.session.sessionId,
+            BSGKeyId: self.session.id,
             @"startedAt": [BSG_RFC3339DateTool stringFromDate:self.session.startedAt],
             @"events": events
     };

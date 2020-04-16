@@ -8,10 +8,17 @@
 
 #import "AutoSessionCustomVersionScenario.h"
 
+#import <Bugsnag/Bugsnag.h>
+
+#import "BugsnagSession.h"
+
 @implementation AutoSessionCustomVersionScenario
 
 - (void)startBugsnag {
-    self.config.appVersion = @"2.0.14";
+    [self.config addOnSessionBlock:^BOOL(BugsnagSession * _Nonnull session) {
+        session.app.version = @"2.0.14";
+        return true;
+    }];
     [super startBugsnag];
 }
 

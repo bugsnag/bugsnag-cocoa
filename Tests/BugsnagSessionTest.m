@@ -8,8 +8,23 @@
 
 #import <XCTest/XCTest.h>
 
+#import "BugsnagApp.h"
+#import "BugsnagDevice.h"
 #import "BugsnagSession.h"
+#import "BugsnagSessionInternal.h"
 #import "BSG_RFC3339DateTool.h"
+#import "BugsnagConfiguration.h"
+#import "BugsnagTestConstants.h"
+
+@interface BugsnagApp ()
++ (BugsnagApp *)appWithDictionary:(NSDictionary *)data config:(BugsnagConfiguration *)config;
+- (NSDictionary *)toDict;
+@end
+
+@interface BugsnagDevice ()
++ (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)data;
+- (NSDictionary *)toDictionary;
+@end
 
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;
@@ -19,72 +34,212 @@
 @end
 
 @interface BugsnagSessionTest : XCTestCase
+@property BugsnagApp *app;
+@property BugsnagDevice *device;
+@property NSDictionary *serializedSession;
 @end
 
 @implementation BugsnagSessionTest
 
-- (void)testDictDeserialise {
-    NSDate *now = [NSDate date];
+- (void)setUp {
+    self.app = [self generateApp];
+    self.device = [self generateDevice];
+    self.serializedSession = [self generateSerializedSession];
+}
 
-    NSDictionary *dict = @{
-            @"id": @"test",
-            @"startedAt": [BSG_RFC3339DateTool stringFromDate:now],
-            @"unhandledCount": @1,
-            @"handledCount": @2,
+- (BugsnagApp *)generateApp {
+    NSDictionary *appData = @{
+            @"system": @{
+                    @"application_stats": @{
+                            @"active_time_since_launch": @2,
+                            @"background_time_since_launch": @5,
+                            @"application_in_foreground": @YES,
+                    },
+                    @"CFBundleExecutable": @"MyIosApp",
+                    @"CFBundleIdentifier": @"com.example.foo.MyIosApp",
+                    @"CFBundleShortVersionString": @"5.6.3",
+                    @"CFBundleVersion": @"1",
+                    @"app_uuid": @"dsym-uuid-123"
+            },
             @"user": @{
-                    @"name": @"Joe Bloggs"
+                    @"config": @{
+                            @"releaseStage": @"beta"
+                    }
             }
     };
 
-    BugsnagSession *session = [[BugsnagSession alloc] initWithDictionary:dict];
-    XCTAssertNotNil(session);
-
-    XCTAssertEqualObjects(@"test", session.sessionId);
-    XCTAssertNotNil(session.startedAt);
-    XCTAssertEqual(2, session.handledCount);
-    XCTAssertEqual(1, session.unhandledCount);
-    XCTAssertNotNil(session.user);
-    XCTAssertEqualObjects(@"Joe Bloggs", session.user.name);
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    config.appType = @"iOS";
+    config.codeBundleId = @"bundle-123";
+    return [BugsnagApp appWithDictionary:appData config:config];
 }
 
-- (void)testPayloadSerialisation {
+- (BugsnagDevice *)generateDevice {
+    NSDictionary *deviceData = @{
+            @"system": @{
+                    @"model": @"iPhone 6",
+                    @"machine": @"x86_64",
+                    @"system_name": @"iPhone OS",
+                    @"system_version": @"8.1",
+                    @"os_version": @"14B25",
+                    @"clang_version": @"10.0.0 (clang-1000.11.45.5)",
+                    @"jailbroken": @YES,
+                    @"memory": @{
+                            @"usable": @15065522176,
+                            @"free": @742920192
+                    },
+                    @"device_app_hash": @"123"
+            },
+            @"report": @{
+                    @"timestamp": @"2014-12-02T01:56:13Z"
+            },
+            @"user": @{
+                    @"state": @{
+                            @"deviceState": @{
+                                    @"orientation": @"portrait"
+                            }
+                    }
+            }
+    };
+    BugsnagDevice *device = [BugsnagDevice deviceWithDictionary:deviceData];
+    device.locale = @"en-US";
+    return device;
+}
+
+- (NSDictionary *)generateSerializedSession {
+    NSDictionary *dict = @{
+            @"id": @"test",
+            @"startedAt": [BSG_RFC3339DateTool stringFromDate:[NSDate dateWithTimeIntervalSince1970:0]],
+            @"unhandledCount": @1,
+            @"handledCount": @2,
+            @"user": @{
+                    @"id": @"123",
+                    @"name": @"Joe Bloggs",
+                    @"email": @"joe@example.com"
+            },
+            @"app": [self.app toDict],
+            @"device": [self.device toDictionary],
+    };
+    return dict;
+}
+
+- (void)testPayloadSerialization {
     NSDate *now = [NSDate date];
+    BugsnagUser *user = [BugsnagUser new];
+    user.userId = @"123";
+    user.name = @"Joe Bloggs";
+    user.emailAddress = @"joe@example.com";
     BugsnagSession *payload = [[BugsnagSession alloc] initWithId:@"test"
                                                        startDate:now
-                                                            user:[BugsnagUser new]
-                                                    autoCaptured:NO];
+                                                            user:user
+                                                    autoCaptured:NO
+                                                             app:self.app
+                                                          device:self.device];
     payload.unhandledCount = 1;
     payload.handledCount = 2;
 
     NSDictionary *rootNode = [payload toJson];
     XCTAssertNotNil(rootNode);
-    XCTAssertEqual(3, [rootNode count]);
-    
     XCTAssertEqualObjects(@"test", rootNode[@"id"]);
     XCTAssertEqualObjects([BSG_RFC3339DateTool stringFromDate:now], rootNode[@"startedAt"]);
-    XCTAssertNotNil(rootNode[@"user"]);
+
+    // user
+    XCTAssertEqualObjects(@"123", rootNode[@"user"][@"id"]);
+    XCTAssertEqualObjects(@"Joe Bloggs", rootNode[@"user"][@"name"]);
+    XCTAssertEqualObjects(@"joe@example.com", rootNode[@"user"][@"email"]);
+
+    // app
+    NSDictionary *app = rootNode[@"app"];
+    XCTAssertNotNil(app);
+    XCTAssertEqualObjects(@"1", app[@"bundleVersion"]);
+    XCTAssertEqualObjects(@"bundle-123", app[@"codeBundleId"]);
+    XCTAssertEqualObjects(@[@"dsym-uuid-123"], app[@"dsymUUIDs"]);
+    XCTAssertEqualObjects(@"com.example.foo.MyIosApp", app[@"id"]);
+    XCTAssertEqualObjects(@"beta", app[@"releaseStage"]);
+    XCTAssertEqualObjects(@"iOS", app[@"type"]);
+    XCTAssertEqualObjects(@"5.6.3", app[@"version"]);
+
+    // device
+    NSDictionary *device = rootNode[@"device"];
+    XCTAssertNotNil(device);
+    XCTAssertTrue(device[@"jailbroken"]);
+    XCTAssertEqualObjects(@"123", device[@"id"]);
+    XCTAssertEqualObjects(@"en-US", device[@"locale"]);
+    XCTAssertEqualObjects(@"Apple", device[@"manufacturer"]);
+    XCTAssertEqualObjects(@"x86_64", device[@"model"]);
+    XCTAssertEqualObjects(@"iPhone 6", device[@"modelNumber"]);
+    XCTAssertEqualObjects(@"iPhone OS", device[@"osName"]);
+    XCTAssertEqualObjects(@"8.1", device[@"osVersion"]);
+    XCTAssertEqualObjects(@15065522176, device[@"totalMemory"]);
+
+    NSDictionary *runtimeVersions = @{
+            @"osBuild": @"14B25",
+            @"clangVersion": @"10.0.0 (clang-1000.11.45.5)"
+    };
+    XCTAssertEqualObjects(runtimeVersions, device[@"runtimeVersions"]);
 }
 
-- (void)testFullSerialization {
-    NSDate *startDate = [NSDate date];
-    NSDictionary *dict = @{
-                           @"id": @"test",
-                           @"startedAt": [BSG_RFC3339DateTool stringFromDate:[NSDate date]],
-                           @"unhandledCount": @1,
-                           @"handledCount": @2,
-                           @"user": @{
-                                   @"name": @"Joe Bloggs"
-                                   }
-                           };
+- (void)testPayloadDeserialization {
+    BugsnagSession *session = [[BugsnagSession alloc] initWithDictionary:self.serializedSession];
+    XCTAssertNotNil(session);
 
+    XCTAssertEqualObjects(@"test", session.id);
+    XCTAssertNotNil(session.startedAt);
+    XCTAssertEqual(2, session.handledCount);
+    XCTAssertEqual(1, session.unhandledCount);
+
+    // user
+    XCTAssertNotNil(session.user);
+    XCTAssertEqualObjects(@"123", session.user.userId);
+    XCTAssertEqualObjects(@"Joe Bloggs", session.user.name);
+    XCTAssertEqualObjects(@"joe@example.com", session.user.emailAddress);
+
+    // app
+    BugsnagApp *app = session.app;
+    XCTAssertNotNil(app);
+    XCTAssertEqualObjects(@"1", app.bundleVersion);
+    XCTAssertEqualObjects(@"bundle-123", app.codeBundleId);
+    XCTAssertEqualObjects(@"dsym-uuid-123", app.dsymUuid);
+    XCTAssertEqualObjects(@"com.example.foo.MyIosApp", app.id);
+    XCTAssertEqualObjects(@"beta", app.releaseStage);
+    XCTAssertEqualObjects(@"iOS", app.type);
+    XCTAssertEqualObjects(@"5.6.3", app.version);
+
+    // device
+    BugsnagDevice *device = session.device;
+    XCTAssertNotNil(device);
+    XCTAssertTrue(device.jailbroken);
+    XCTAssertEqualObjects(@"123", device.id);
+    XCTAssertEqualObjects(@"en-US", device.locale);
+    XCTAssertEqualObjects(@"Apple", device.manufacturer);
+    XCTAssertEqualObjects(@"x86_64", device.model);
+    XCTAssertEqualObjects(@"iPhone 6", device.modelNumber);
+    XCTAssertEqualObjects(@"iPhone OS", device.osName);
+    XCTAssertEqualObjects(@"8.1", device.osVersion);
+    XCTAssertEqualObjects(@15065522176, device.totalMemory);
+
+    NSDictionary *runtimeVersions = @{
+            @"osBuild": @"14B25",
+            @"clangVersion": @"10.0.0 (clang-1000.11.45.5)"
+    };
+    XCTAssertEqualObjects(runtimeVersions, device.runtimeVersions);
+}
+
+- (void)testDeserializingEmptyPayload {
+    NSDictionary *dict = @{
+            @"id": @"test",
+            @"startedAt": [BSG_RFC3339DateTool stringFromDate:[NSDate dateWithTimeIntervalSince1970:0]],
+            @"unhandledCount": @1,
+            @"handledCount": @2
+    };
     BugsnagSession *session = [[BugsnagSession alloc] initWithDictionary:dict];
-    NSDictionary *newDict = [session toDictionary];
-    XCTAssertEqualObjects(@"test", newDict[@"id"]);
-    XCTAssertEqualObjects(@1, newDict[@"unhandledCount"]);
-    XCTAssertEqualObjects(@2, newDict[@"handledCount"]);
-    XCTAssertEqualObjects(@"Joe Bloggs", newDict[@"user"][@"name"]);
-    // same date within a reasonable delta
-    XCTAssert([startDate timeIntervalSince1970] - [[BSG_RFC3339DateTool dateFromString:newDict[@"startedAt"]] timeIntervalSince1970] < 1);
+    XCTAssertNotNil(session);
+    XCTAssertEqualObjects(@"test", session.id);
+    XCTAssertNotNil(session.startedAt);
+    XCTAssertEqual(2, session.handledCount);
+    XCTAssertEqual(1, session.unhandledCount);
+    XCTAssertNotNil(session.app);
+    XCTAssertNotNil(session.device);
 }
 
 @end

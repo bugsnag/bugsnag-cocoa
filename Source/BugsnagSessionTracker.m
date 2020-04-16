@@ -12,6 +12,8 @@
 #import "BugsnagSessionTrackingPayload.h"
 #import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagLogger.h"
+#import "BugsnagSessionInternal.h"
+#import "BSG_KSSystemInfo.h"
 
 /**
  Number of seconds in background required to make a new session
@@ -33,6 +35,15 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 @interface BugsnagConfiguration ()
 @property(readonly, retain, nullable) NSURL *sessionURL;
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
+@end
+
+@interface BugsnagApp ()
++ (BugsnagApp *)appWithDictionary:(NSDictionary *)event
+                           config:(BugsnagConfiguration *)config;
+@end
+
+@interface BugsnagDevice ()
++ (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)event;
 @end
 
 @interface BugsnagSessionTracker ()
@@ -117,20 +128,22 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
         return;
     }
 
-    // TODO JL: refactor to pass as structured data into callback
-    BugsnagSessionTrackingPayload *sessions = [[BugsnagSessionTrackingPayload alloc] initWithSessions:@[]
-                                                                                               config:self.config];
-    NSMutableDictionary *sessionsJson = [sessions toJson];
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    BugsnagApp *app = [BugsnagApp appWithDictionary:@{@"system": systemInfo} config:self.config];
+    BugsnagDevice *device = [BugsnagDevice deviceWithDictionary:@{@"system": systemInfo}];
+    BugsnagSession *newSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
+                                                          startDate:[NSDate date]
+                                                               user:self.config.user
+                                                       autoCaptured:isAutoCaptured
+                                                                app:app
+                                                             device:device];
+
     for (BugsnagOnSessionBlock onSessionBlock in self.config.onSessionBlocks) {
-        if (!onSessionBlock(sessionsJson)) {
+        if (!onSessionBlock(newSession)) {
             return;
         }
     }
-
-    self.currentSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
-                                                   startDate:[NSDate date]
-                                                        user:self.config.user
-                                                autoCaptured:isAutoCaptured];
+    self.currentSession = newSession;
     [self.sessionStore write:self.currentSession];
 
     if (self.callback) {
@@ -153,7 +166,9 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
                                                        startDate:startedAt
                                                             user:user
                                                     handledCount:handledCount
-                                                  unhandledCount:unhandledCount];
+                                                  unhandledCount:unhandledCount
+                                                             app:[BugsnagApp new]
+                                                          device:[BugsnagDevice new]];
     }
     if (self.callback) {
         self.callback(self.currentSession);

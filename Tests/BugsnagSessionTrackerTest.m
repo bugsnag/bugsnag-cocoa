@@ -49,7 +49,7 @@
     [self.sessionTracker startNewSession];
     BugsnagSession *session = self.sessionTracker.runningSession;
     XCTAssertNotNil(session);
-    XCTAssertNotNil(session.sessionId);
+    XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
     XCTAssertFalse(session.autoCaptured);
 }
@@ -61,7 +61,7 @@
     BugsnagSession *session = self.sessionTracker.runningSession;
 
     XCTAssertNotNil(session);
-    XCTAssertNotNil(session.sessionId);
+    XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
     XCTAssertEqual(session.user.name, @"Bill");
     XCTAssertEqual(session.user.userId, @"123");
@@ -75,7 +75,7 @@
     BugsnagSession *session = self.sessionTracker.runningSession;
 
     XCTAssertNotNil(session);
-    XCTAssertNotNil(session.sessionId);
+    XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
     XCTAssertTrue(session.autoCaptured);
     XCTAssertNil(session.user.name);
@@ -90,7 +90,7 @@
     BugsnagSession *session = self.sessionTracker.runningSession;
 
     XCTAssertNotNil(session);
-    XCTAssertNotNil(session.sessionId);
+    XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
     XCTAssertEqual(session.user.name, @"Bill");
     XCTAssertEqual(session.user.userId, @"123");
@@ -114,7 +114,7 @@
     [self.sessionTracker startNewSession];
 
     BugsnagSession *secondSession = self.sessionTracker.runningSession;
-    XCTAssertNotEqualObjects(firstSession.sessionId, secondSession.sessionId);
+    XCTAssertNotEqualObjects(firstSession.id, secondSession.id);
 }
 
 - (void)testIncrementCounts {
@@ -145,7 +145,7 @@
 
 - (void)testOnSendBlockFalse {
     self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [self.configuration addOnSessionBlock:^BOOL(NSMutableDictionary *sessionPayload) {
+    [self.configuration addOnSessionBlock:^BOOL(BugsnagSession *sessionPayload) {
         return NO;
     }];
     self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
@@ -158,7 +158,7 @@
     __block XCTestExpectation *expectation = [self expectationWithDescription:@"Session block is invoked"];
 
     self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [self.configuration addOnSessionBlock:^BOOL(NSMutableDictionary *sessionPayload) {
+    [self.configuration addOnSessionBlock:^BOOL(BugsnagSession *sessionPayload) {
         [expectation fulfill];
         return YES;
     }];

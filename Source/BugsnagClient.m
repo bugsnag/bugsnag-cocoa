@@ -246,7 +246,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
         return;
     }
     // copy session id
-    const char *newSessionId = [session.sessionId UTF8String];
+    const char *newSessionId = [session.id UTF8String];
     size_t idSize = strlen(newSessionId);
     strncpy((char *)sessionId, newSessionId, idSize);
     sessionId[idSize - 1] = NULL;

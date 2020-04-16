@@ -9,6 +9,7 @@
 #import "BugsnagSessionFileStore.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSession.h"
+#import "BugsnagSessionInternal.h"
 #import "BSG_RFC3339DateTool.h"
 #import "Private.h"
 
@@ -28,50 +29,46 @@
     NSString *apiKey = [self.config.apiKey copy];
     NSURL *sessionURL = [self.config.sessionURL copy];
 
-    [self.sendQueue addOperationWithBlock:^{
-        if (!apiKey) {
-            bsg_log_err(@"No API key set. Refusing to send sessions.");
-            return;
-        }
+    if (!apiKey) {
+        bsg_log_err(@"No API key set. Refusing to send sessions.");
+        return;
+    }
 
-        NSArray *fileIds = [store fileIds];
+    NSDictionary<NSString *, NSDictionary *> *filesWithIds = [store allFilesByName];
 
-        if (fileIds.count <= 0) {
-            return;
-        }
+    if (filesWithIds.count <= 0) {
+        return;
+    }
 
-        NSMutableArray *sessions = [NSMutableArray new];
+    for (NSString *fileId in [filesWithIds allKeys]) {
+        BugsnagSession *session = [[BugsnagSession alloc] initWithDictionary:filesWithIds[fileId]];
 
-        for (NSDictionary *dict in [store allFiles]) {
-            [sessions addObject:[[BugsnagSession alloc] initWithDictionary:dict]];
-        }
-        BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc] initWithSessions:sessions config:[Bugsnag configuration]];
-        NSUInteger sessionCount = payload.sessions.count;
-        NSMutableDictionary *data = [payload toJson];
+        [self.sendQueue addOperationWithBlock:^{
+            BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc] initWithSessions:@[session] config:[Bugsnag configuration]];
+            NSUInteger sessionCount = payload.sessions.count;
+            NSMutableDictionary *data = [payload toJson];
 
-        if (sessionCount > 0) {
-            NSDictionary *HTTPHeaders = @{
-                                          @"Bugsnag-Payload-Version": @"1.0",
-                                          @"Bugsnag-API-Key": apiKey,
-                                          @"Bugsnag-Sent-At": [BSG_RFC3339DateTool stringFromDate:[NSDate new]]
-                                          };
-            [self sendItems:sessions.count
-                withPayload:data
-                      toURL:sessionURL
-                    headers:HTTPHeaders
-               onCompletion:^(NSUInteger sentCount, BOOL success, NSError *error) {
-                  if (success && error == nil) {
-                      bsg_log_info(@"Sent %lu sessions to Bugsnag", (unsigned long) sessionCount);
-
-                      for (NSString *fileId in fileIds) {
-                          [store deleteFileWithId:fileId];
-                      }
-                  } else {
-                      bsg_log_warn(@"Failed to send sessions to Bugsnag: %@", error);
-                  }
-              }];
-        }
-    }];
+            if (sessionCount > 0) {
+                NSDictionary *HTTPHeaders = @{
+                        @"Bugsnag-Payload-Version": @"1.0",
+                        @"Bugsnag-API-Key": apiKey,
+                        @"Bugsnag-Sent-At": [BSG_RFC3339DateTool stringFromDate:[NSDate new]]
+                };
+                [self sendItems:1
+                    withPayload:data
+                          toURL:sessionURL
+                        headers:HTTPHeaders
+                   onCompletion:^(NSUInteger sentCount, BOOL success, NSError *error) {
+                       if (success && error == nil) {
+                           bsg_log_info(@"Sent %lu sessions to Bugsnag", (unsigned long) sessionCount);
+                           [store deleteFileWithId:fileId];
+                       } else {
+                           bsg_log_warn(@"Failed to send sessions to Bugsnag: %@", error);
+                       }
+                   }];
+            }
+        }];
+    }
 }
 
 @end
