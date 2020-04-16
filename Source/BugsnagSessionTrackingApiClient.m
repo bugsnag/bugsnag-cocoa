@@ -49,10 +49,6 @@
         NSUInteger sessionCount = payload.sessions.count;
         NSMutableDictionary *data = [payload toJson];
 
-        for (BugsnagOnSessionBlock cb in self.config.onSessionBlocks) {
-            cb(data);
-        }
-
         if (sessionCount > 0) {
             NSDictionary *HTTPHeaders = @{
                                           @"Bugsnag-Payload-Version": @"1.0",

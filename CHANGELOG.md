@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Make all callbacks return boolean values
+  [#534](https://github.com/bugsnag/bugsnag-cocoa/pull/534)
+
 * Add `originalError` property to `BugsnagEvent`
   [#541](https://github.com/bugsnag/bugsnag-cocoa/pull/541)
 

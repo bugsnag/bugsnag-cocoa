@@ -108,9 +108,10 @@
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
-    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+    BugsnagOnSessionBlock sessionBlock = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) {
         // We expect the session block to be called
         [expectation fulfill];
+        return true;
     };
     [config addOnSessionBlock:sessionBlock];
     XCTAssertEqual([[config onSessionBlocks] count], 1);
@@ -132,8 +133,9 @@
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
-    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+    BugsnagOnSessionBlock sessionBlock = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) {
         [calledExpectation fulfill];
+        return true;
     };
     
     // It's there (and from other tests we know it gets called) and then it's not there
@@ -166,7 +168,7 @@
     [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
     
-    BugsnagOnSessionBlock sessionBlock = ^(NSMutableDictionary * _Nonnull sessionPayload) {
+    BugsnagOnSessionBlock sessionBlock = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) {
         switch (called) {
         case 0:
             [expectation1 fulfill];
@@ -183,6 +185,7 @@
             [expectation4 fulfill];
             break;
         }
+        return true;
     };
     
     [config addOnSessionBlock:sessionBlock];
@@ -219,8 +222,8 @@
 - (void)testRemoveNonexistentOnSessionBlocks {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
-    BugsnagOnSessionBlock sessionBlock1 = ^(NSMutableDictionary * _Nonnull sessionPayload) {};
-    BugsnagOnSessionBlock sessionBlock2 = ^(NSMutableDictionary * _Nonnull sessionPayload) {};
+    BugsnagOnSessionBlock sessionBlock1 = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) { return true; };
+    BugsnagOnSessionBlock sessionBlock2 = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) { return true; };
     
     [config addOnSessionBlock:sessionBlock1];
     XCTAssertEqual([[config onSessionBlocks] count], 1);
@@ -731,7 +734,7 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
     
-    BugsnagOnSendBlock block = ^bool(BugsnagEvent * _Nonnull event) { return false; };
+    BugsnagOnSendBlock block = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
     
     [configuration addOnSendBlock:block];
     [Bugsnag startBugsnagWithConfiguration:configuration];
@@ -750,8 +753,8 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
     
-    BugsnagOnSendBlock block1 = ^bool(BugsnagEvent * _Nonnull event) { return false; };
-    BugsnagOnSendBlock block2 = ^bool(BugsnagEvent * _Nonnull event) { return false; };
+    BugsnagOnSendBlock block1 = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
+    BugsnagOnSendBlock block2 = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
     
     // Add more than one
     [configuration addOnSendBlock:block1];
@@ -772,8 +775,8 @@
     [config setContext:@"context1"];
     [config setAppType:@"The most amazing app, a brilliant app, the app to end all apps"];
     [config setPersistUser:YES];
-    BugsnagOnSendBlock onSendBlock1 = ^bool(BugsnagEvent * _Nonnull event) { return true; };
-    BugsnagOnSendBlock onSendBlock2 = ^bool(BugsnagEvent * _Nonnull event) { return true; };
+    BugsnagOnSendBlock onSendBlock1 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
+    BugsnagOnSendBlock onSendBlock2 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
 
     NSArray *sendBlocks = @[ onSendBlock1, onSendBlock2 ];
     [config setOnSendBlocks:[sendBlocks mutableCopy]]; // Mutable arg required
