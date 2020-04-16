@@ -11,6 +11,9 @@ Bugsnag Notifiers on other platforms.
 * Make all callbacks return boolean values
   [#534](https://github.com/bugsnag/bugsnag-cocoa/pull/534)
 
+* Add `originalError` property to `BugsnagEvent`
+  [#541](https://github.com/bugsnag/bugsnag-cocoa/pull/541)
+
 * Create structured `BugsnagThread` class
   [#532](https://github.com/bugsnag/bugsnag-cocoa/pull/532)
 
