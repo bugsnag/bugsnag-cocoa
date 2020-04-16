@@ -107,6 +107,18 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
  *  Release stages which are allowed to notify Bugsnag
  */
 @property(readwrite, retain, nullable) NSArray *enabledReleaseStages;
+
+/**
+ * Sets which values should be removed from any Metadata objects before
+ * sending them to Bugsnag. Use this if you want to ensure you don't send
+ * sensitive data such as passwords, and credit card numbers to our
+ * servers. Any keys which contain a match will be filtered.
+ *
+ * By default, redactedKeys is set to ["password"]. Both string literals and regex
+ * values can be supplied to this property.
+ */
+@property(readwrite, retain, nullable) NSArray<id> *redactedKeys;
+
 /**
  *  A general summary of what was occuring in the application
  */

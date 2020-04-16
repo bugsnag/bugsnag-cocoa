@@ -36,6 +36,8 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 + config.addOnBreadcrumb(block:)
 + config.removeOnBreadcrumb(block:)
+
++ config.redactedKeys
 ```
 
 #### Renames
