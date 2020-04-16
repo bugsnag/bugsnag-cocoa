@@ -105,7 +105,7 @@
         return;
     }
 
-    NSDictionary *reportData = [self getBodyFromReports:bugsnagReports];
+    NSDictionary *reportData = [self getBodyFromEvents:bugsnagReports];
 
     if (reportData == nil) {
         if (onCompletion) {
@@ -122,7 +122,7 @@
 }
 
 // Generates the payload for notifying Bugsnag
-- (NSDictionary *)getBodyFromReports:(NSArray *)events {
+- (NSDictionary *)getBodyFromEvents:(NSArray *)events {
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     BSGDictSetSafeObject(data, [Bugsnag client].details, BSGKeyNotifier);
     BSGDictSetSafeObject(data, [Bugsnag client].configuration.apiKey, BSGKeyApiKey);
