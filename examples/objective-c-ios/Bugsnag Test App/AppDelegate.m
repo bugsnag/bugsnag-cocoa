@@ -11,11 +11,10 @@
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
     NSString *apiKey = @"<YOUR_APIKEY_HERE>";
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
-
     [Bugsnag startBugsnagWithConfiguration:configuration];
     
     return YES;
