@@ -253,6 +253,7 @@ of the removed `addAttribute`:
 - event.depth
 - event.error
 - event.isIncomplete
+- [event attachCustomStacktrace:type:]
 
 ### `BugsnagSession` class
 
