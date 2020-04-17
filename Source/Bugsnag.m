@@ -59,6 +59,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 - (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
                        block:(BugsnagOnErrorBlock _Nullable)block;
+@property (nonatomic) NSString *codeBundleId;
 @end
 
 @interface BugsnagMetadata ()
@@ -343,7 +344,9 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
  * Intended for internal use only - sets the code bundle id for React Native
  */
 + (void)updateCodeBundleId:(NSString *)codeBundleId {
-    self.configuration.codeBundleId = codeBundleId;
+    if ([self bugsnagStarted]) {
+        self.client.codeBundleId = codeBundleId;
+    }
 }
 
 // =============================================================================

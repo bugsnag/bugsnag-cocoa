@@ -40,11 +40,16 @@
 + (BugsnagClient *)client;
 @end
 
+@interface BugsnagClient ()
+@property (nonatomic) NSString *codeBundleId;
+@end
+
 @interface BugsnagEvent ()
 - (NSDictionary *_Nonnull)toJson;
 - (BOOL)shouldBeSent;
 - (instancetype _Nonnull)initWithKSReport:(NSDictionary *_Nonnull)report;
 @property NSArray *redactedKeys;
+@property (nonatomic) NSString *codeBundleId;
 @end
 
 @interface BugsnagConfiguration ()
@@ -82,6 +87,8 @@
     for (NSString *fileKey in reports) {
         NSDictionary *report = reports[fileKey];
         BugsnagEvent *bugsnagReport = [[BugsnagEvent alloc] initWithKSReport:report];
+        bugsnagReport.codeBundleId = [Bugsnag client].codeBundleId;
+
         if (![bugsnagReport shouldBeSent])
             continue;
         BOOL shouldSend = YES;

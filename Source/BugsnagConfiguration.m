@@ -123,7 +123,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setAutoTrackSessions:self.autoTrackSessions];
     [copy setBundleVersion:self.bundleVersion];
     // Skip breadcrumbs - none should have been set
-    [copy setCodeBundleId:self.codeBundleId];
     [copy setConfig:[[BugsnagMetadata alloc] initWithDictionary:[[self.config toDictionary] mutableCopy]]];
     [copy setContext:self.context];
     [copy setEnabledBreadcrumbTypes:self.enabledBreadcrumbTypes];

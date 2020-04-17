@@ -36,7 +36,8 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
 
 @interface BugsnagAppWithState ()
 + (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
-                                    config:(BugsnagConfiguration *)config;
+                                    config:(BugsnagConfiguration *)config
+                              codeBundleId:(NSString *)codeBundleId;
 - (NSDictionary *)toDict;
 + (BugsnagAppWithState *)appWithOomData:(NSDictionary *)event;
 @end
@@ -49,6 +50,8 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
 
 @interface BugsnagUser ()
 - (NSDictionary *)toJson;
+- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
 @end
 
 @interface BugsnagConfiguration (BugsnagEvent)
@@ -283,6 +286,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 @property NSArray *redactedKeys;
 
+@property(nonatomic) NSString *codeBundleId;
 @end
 
 @implementation BugsnagEvent
@@ -348,7 +352,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
             _context = BSGParseContext(report);
             _device = [BugsnagDeviceWithState deviceWithDictionary:report];
-            _app = [BugsnagAppWithState appWithDictionary:report config:config];
+            _app = [BugsnagAppWithState appWithDictionary:report config:config codeBundleId:self.codeBundleId];
             _groupingHash = BSGParseGroupingHash(report);
             _overrides = [report valueForKeyPath:@"user.overrides"];
 

@@ -20,7 +20,9 @@
 
 @interface BugsnagSessionTrackingApiClient ()
 @property NSMutableSet *activeIds;
+@property(nonatomic) NSString *codeBundleId;
 @end
+
 
 @implementation BugsnagSessionTrackingApiClient
 
@@ -58,7 +60,10 @@
         BugsnagSession *session = [[BugsnagSession alloc] initWithDictionary:filesWithIds[fileId]];
 
         [self.sendQueue addOperationWithBlock:^{
-            BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc] initWithSessions:@[session] config:[Bugsnag configuration]];
+            BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc]
+                initWithSessions:@[session]
+                          config:[Bugsnag configuration]
+                    codeBundleId:self.codeBundleId];
             NSUInteger sessionCount = payload.sessions.count;
             NSMutableDictionary *data = [payload toJson];
             NSDictionary *HTTPHeaders = @{

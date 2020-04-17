@@ -20,6 +20,7 @@
 @property(nonatomic, getter=didOOMLastLaunch) BOOL oomLastLaunch;
 @property(nonatomic, strong, readwrite) NSMutableDictionary *cachedFileInfo;
 @property(nonatomic, strong, readwrite) NSDictionary *lastBootCachedFileInfo;
+@property(nonatomic) NSString *codeBundleId;
 @end
 
 @interface Bugsnag ()
@@ -164,6 +165,16 @@
     [self writeSentinelFile];
 }
 
+- (void)setCodeBundleId:(NSString *)codeBundleId {
+    _codeBundleId = codeBundleId;
+    self.cachedFileInfo[@"app"][@"codeBundleId"] = codeBundleId;
+
+    if ([self isWatching]) {
+        [self writeSentinelFile];
+    }
+}
+
+
 - (BOOL)computeDidOOMLastLaunchWithConfig:(BugsnagConfiguration *)config {
     if ([[NSFileManager defaultManager] fileExistsAtPath:self.sentinelFilePath]) {
         NSDictionary *lastBootInfo = [self readSentinelFile];
@@ -248,7 +259,7 @@
     app[@"version"] = systemInfo[@BSG_KSSystemField_BundleShortVersion] ?: @"";
     app[@"bundleVersion"] = systemInfo[@BSG_KSSystemField_BundleVersion] ?: @"";
     // 'codeBundleId' only (optionally) exists for React Native clients and defaults otherwise to nil
-    app[@"codeBundleId"] = [config codeBundleId];
+    app[@"codeBundleId"] = self.codeBundleId;
 #if BSGOOMAvailable
     UIApplicationState state = [BSG_KSSystemInfo currentAppState];
     app[@"inForeground"] = @([BSG_KSSystemInfo isInForeground:state]);

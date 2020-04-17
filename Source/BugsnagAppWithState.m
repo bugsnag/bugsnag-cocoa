@@ -14,7 +14,8 @@
 @interface BugsnagApp ()
 + (void)populateFields:(BugsnagApp *)app
             dictionary:(NSDictionary *)event
-                config:(BugsnagConfiguration *)config;
+                config:(BugsnagConfiguration *)config
+          codeBundleId:(NSString *)codeBundleId;
 
 - (NSDictionary *)toDict;
 @end
@@ -36,6 +37,7 @@
 
 + (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
                                     config:(BugsnagConfiguration *)config
+                              codeBundleId:(NSString *)codeBundleId
 {
     BugsnagAppWithState *app = [BugsnagAppWithState new];
     NSDictionary *system = event[BSGKeySystem];
@@ -48,7 +50,7 @@
     app.durationInForeground = activeTimeSinceLaunch;
     app.duration = activeTimeSinceLaunch + backgroundTimeSinceLaunch;
     app.inForeground = [stats[@"application_in_foreground"] boolValue];
-    [BugsnagApp populateFields:app dictionary:event config:config];
+    [BugsnagApp populateFields:app dictionary:event config:config codeBundleId:codeBundleId];
     return app;
 }
 

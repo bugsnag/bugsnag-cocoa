@@ -34,6 +34,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
 #import "BugsnagSessionTracker.h"
+#import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagPluginClient.h"
 #import "BSGOutOfMemoryWatchdog.h"
 #import "BSG_RFC3339DateTool.h"
@@ -269,6 +270,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic, strong) BugsnagPluginClient *pluginClient;
 @property (nonatomic) BOOL appDidCrashLastLaunch;
 @property (nonatomic, strong) BugsnagMetadata *metadata;
+@property (nonatomic) NSString *codeBundleId;
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 // The previous device orientation - iOS only
 @property (nonatomic, strong) NSString *lastOrientation;
@@ -302,6 +304,14 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
 - (NSDictionary *_Nonnull)toDictionary;
 - (id)deepCopy;
+@end
+
+@interface BSGOutOfMemoryWatchdog ()
+@property(nonatomic) NSString *codeBundleId;
+@end
+
+@interface BugsnagSessionTracker ()
+@property(nonatomic) NSString *codeBundleId;
 @end
 
 @interface BugsnagUser ()
@@ -582,6 +592,12 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 #else
     self.appDidCrashLastLaunch = crashState->crashedLastLaunch;
 #endif
+}
+
+- (void)setCodeBundleId:(NSString *)codeBundleId {
+    _codeBundleId = codeBundleId;
+    self.oomWatchdog.codeBundleId = codeBundleId;
+    self.sessionTracker.codeBundleId = codeBundleId;
 }
 
 /**

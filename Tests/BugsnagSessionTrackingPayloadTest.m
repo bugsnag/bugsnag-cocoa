@@ -16,7 +16,9 @@
 #import "BugsnagSessionInternal.h"
 
 @interface BugsnagApp ()
-+ (BugsnagApp *)appWithDictionary:(NSDictionary *)data config:(BugsnagConfiguration *)config;
++ (BugsnagApp *)appWithDictionary:(NSDictionary *)data
+                           config:(BugsnagConfiguration *)config
+                     codeBundleId:(NSString *)codeBundleId;
 @end
 
 @interface BugsnagDevice ()
@@ -37,7 +39,7 @@
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    BugsnagSessionTrackingPayload *data = [[BugsnagSessionTrackingPayload alloc] initWithSessions:@[] config:config];
+    BugsnagSessionTrackingPayload *data = [[BugsnagSessionTrackingPayload alloc] initWithSessions:@[] config:config codeBundleId:nil];
     BugsnagSession *session = [[BugsnagSession alloc] initWithId:@"test"
                                                        startDate:[NSDate date]
                                                             user:nil
@@ -71,8 +73,7 @@
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.appType = @"iOS";
-    config.codeBundleId = @"bundle-123";
-    return [BugsnagApp appWithDictionary:appData config:config];
+    return [BugsnagApp appWithDictionary:appData config:config codeBundleId:@"bundle-123"];
 }
 
 - (BugsnagDevice *)generateDevice {

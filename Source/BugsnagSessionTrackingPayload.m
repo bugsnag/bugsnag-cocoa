@@ -32,23 +32,27 @@
 
 @interface BugsnagApp ()
 + (BugsnagApp *)appWithDictionary:(NSDictionary *)event
-                           config:(BugsnagConfiguration *)config;
+                           config:(BugsnagConfiguration *)config
+                     codeBundleId:(NSString *)codeBundleId;
 
 - (NSDictionary *)toDict;
 @end
 
 @interface BugsnagSessionTrackingPayload ()
 @property (nonatomic) BugsnagConfiguration *config;
+@property(nonatomic, copy) NSString *codeBundleId;
 @end
 
 @implementation BugsnagSessionTrackingPayload
 
 - (instancetype)initWithSessions:(NSArray<BugsnagSession *> *)sessions
                           config:(BugsnagConfiguration *)config
+                    codeBundleId:(NSString *)codeBundleId
 {
     if (self = [super init]) {
         _sessions = sessions;
         _config = config;
+        _codeBundleId = codeBundleId;
     }
     return self;
 }
