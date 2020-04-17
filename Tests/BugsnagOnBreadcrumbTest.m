@@ -45,7 +45,8 @@
     // Setup
     __block XCTestExpectation *expectation = [self expectationWithDescription:@"Remove On Breadcrumb Block"];
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notreal.bugsnag.com"
+                                                                   sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 0);
     BugsnagOnBreadcrumbBlock crumbBlock = ^(BugsnagBreadcrumb * _Nonnull crumb) {
         // We expect the breadcrumb block to be called
@@ -71,7 +72,8 @@
     calledExpectation.inverted = YES;
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notreal.bugsnag.com"
+                                                                   sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 0);
     BugsnagOnBreadcrumbBlock crumbBlock = ^(BugsnagBreadcrumb * _Nonnull crumb) {
         [calledExpectation fulfill];
@@ -104,7 +106,8 @@
     expectation2.inverted = YES;
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notreal.bugsnag.com"
+                                                                   sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 0);
 
     BugsnagOnBreadcrumbBlock crumbBlock = ^(BugsnagBreadcrumb * _Nonnull crumb) {
@@ -172,7 +175,8 @@
  */
 - (void)testAddOnBreadcrumbMutation {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notreal.bugsnag.com"
+                                                                   sessions:@"http://notreal.bugsnag.com"];
     [config addOnBreadcrumbBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
         crumb.message = @"Foo";
         return YES;
@@ -190,7 +194,8 @@
  */
 - (void)testAddOnBreadcrumbRejection {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notreal.bugsnag.com"
+                                                                   sessions:@"http://notreal.bugsnag.com"];
     [config addOnBreadcrumbBlock:^(BugsnagBreadcrumb * _Nonnull crumb) {
         return NO;
     }];

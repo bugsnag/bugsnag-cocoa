@@ -332,9 +332,9 @@
     // Prevent sending events
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     // We'll not be able to use the onSend -> false route to fail calls to notify()
-    [configuration setEndpointsForNotify:@"http://not.valid.bugsnag/not/an/endpoint"
-                                sessions:@"http://not.valid.bugsnag/not/an/endpoint"];
-    
+    configuration.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://not.valid.bugsnag/not/an/endpoint"
+                                                                          sessions:@"http://not.valid.bugsnag/not/an/endpoint"];
+
     // Ensure there's nothing from another test
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
     
