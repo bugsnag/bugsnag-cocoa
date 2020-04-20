@@ -262,6 +262,16 @@ of the removed `addAttribute`:
 
 ### `BugsnagSession` class
 
+#### Additions
+
+```diff
++ session.id
++ session.setUser(id:name:email:)
++ session.user
++ session.app
++ session.device
+```
+
 #### Removals
 
 ```diff
@@ -273,4 +283,6 @@ of the removed `addAttribute`:
 - handledCount
 - unhandledCount
 - stopped
+- user
+- sessionId
 ```

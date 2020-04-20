@@ -13,6 +13,7 @@
 #import "Bugsnag.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagSession.h"
+#import "BugsnagSessionInternal.h"
 #import "BugsnagBaseUnitTest.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagTestsDummyClass.h"
@@ -81,10 +82,15 @@
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     NSDate *now = [NSDate date];
+
+    BugsnagApp *app;
+    BugsnagDevice *device;
     BugsnagSession *bugsnagSession = [[BugsnagSession alloc] initWithId:@"123"
                                                               startDate:now
                                                                    user:nil
-                                                           autoCaptured:NO];
+                                                           autoCaptured:NO
+                                                                    app:app
+                                                                 device:device];
     bugsnagSession.handledCount = 2;
     bugsnagSession.unhandledCount = 1;
 

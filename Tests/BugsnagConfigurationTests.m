@@ -113,7 +113,7 @@
     config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notreal.bugsnag.com"
                                                                    sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
-    BugsnagOnSessionBlock sessionBlock = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) {
+    BugsnagOnSessionBlock sessionBlock = ^BOOL(BugsnagSession * _Nonnull sessionPayload) {
         // We expect the session block to be called
         [expectation fulfill];
         return true;
@@ -139,7 +139,7 @@
     config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notreal.bugsnag.com"
                                                                    sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
-    BugsnagOnSessionBlock sessionBlock = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) {
+    BugsnagOnSessionBlock sessionBlock = ^BOOL(BugsnagSession * _Nonnull sessionPayload) {
         [calledExpectation fulfill];
         return true;
     };
@@ -175,7 +175,7 @@
                                                                    sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
     
-    BugsnagOnSessionBlock sessionBlock = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) {
+    BugsnagOnSessionBlock sessionBlock = ^BOOL(BugsnagSession * _Nonnull sessionPayload) {
         switch (called) {
         case 0:
             [expectation1 fulfill];
@@ -229,8 +229,8 @@
 - (void)testRemoveNonexistentOnSessionBlocks {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
-    BugsnagOnSessionBlock sessionBlock1 = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) { return true; };
-    BugsnagOnSessionBlock sessionBlock2 = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) { return true; };
+    BugsnagOnSessionBlock sessionBlock1 = ^BOOL(BugsnagSession * _Nonnull sessionPayload) { return true; };
+    BugsnagOnSessionBlock sessionBlock2 = ^BOOL(BugsnagSession * _Nonnull sessionPayload) { return true; };
     
     [config addOnSessionBlock:sessionBlock1];
     XCTAssertEqual([[config onSessionBlocks] count], 1);

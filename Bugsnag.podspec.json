@@ -44,7 +44,9 @@
     "Source/BugsnagMetadata.h",
     "Source/BugsnagMetadataStore.h",
     "Source/BugsnagPlugin.h",
+    "Source/BugsnagSession.h",
     "Source/BugsnagStackframe.h",
-    "Source/BugsnagThread.h"
+    "Source/BugsnagThread.h",
+    "Source/BugsnagUser.h"
   ]
 }

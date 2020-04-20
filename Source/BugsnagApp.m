@@ -13,6 +13,20 @@
 
 @implementation BugsnagApp
 
++ (BugsnagApp *)deserializeFromJson:(NSDictionary *)json {
+    BugsnagApp *app = [BugsnagApp new];
+    if (json != nil) {
+        app.bundleVersion = json[@"bundleVersion"];
+        app.codeBundleId = json[@"codeBundleId"];
+        app.id = json[@"id"];
+        app.releaseStage = json[@"releaseStage"];
+        app.type = json[@"type"];
+        app.version = json[@"version"];
+        app.dsymUuid = json[@"dsymUUIDs"][0];
+    }
+    return app;
+}
+
 + (BugsnagApp *)appWithDictionary:(NSDictionary *)event
                            config:(BugsnagConfiguration *)config
 {

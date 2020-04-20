@@ -72,9 +72,9 @@ typedef BOOL (^BugsnagOnBreadcrumbBlock)(BugsnagBreadcrumb *_Nonnull breadcrumb)
 /**
  * A configuration block for modifying a session. Intended for internal usage only.
  *
- * @param sessionPayload The session about to be delivered
+ * @param session The session about to be delivered
  */
-typedef BOOL (^BugsnagOnSessionBlock)(NSMutableDictionary *_Nonnull sessionPayload);
+typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
 
 typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
     BSGErrorTypesNone         NS_SWIFT_NAME(None)         = 0,

@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Add structured app/device fields to `BugsnagSession`
+  [#546](https://github.com/bugsnag/bugsnag-cocoa/pull/546)
+
 * Add `redactedKeys` for removing sensitive values from metadata
   [#540](https://github.com/bugsnag/bugsnag-cocoa/pull/540)
 
