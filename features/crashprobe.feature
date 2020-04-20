@@ -132,7 +132,7 @@ Scenario: Assertion failure in Swift code
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the exception "errorClass" equals "Fatal error"
-    And the exception "message" equals "several unfortunate things just happened"
+    # And the exception "message" equals "several unfortunate things just happened"
 
 Scenario: Dereference a null pointer
     When I run "NullPointerScenario" and relaunch the app
