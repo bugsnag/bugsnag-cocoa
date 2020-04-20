@@ -25,7 +25,7 @@ jobs:
     stage: unit tests
     # Xcode 11+ no longer ships with all device combinations premade
     before_script: xcrun simctl create "13-xs" "iPhone XS" com.apple.CoreSimulator.SimRuntime.iOS-13-0
-    env: 
+    env:
     - PLATFORM=iOS
     - OS=13.0
     - DEVICE="iPhone XS"
@@ -58,19 +58,14 @@ jobs:
     - make test OS=11.4
     - make test OS=10.2
     - make test OS=9.2
-  - osx_image: xcode10.1
-    stage: integration
-    name: End-to-end tests
-    script: bundle exec maze-runner -c --verbose || (cat maze_output/* && exit 1)
-    env: MAZE_SDK=12.1 SDK=iphonesimulator12.1 RUBYSHELL=/bin/bash
   - osx_image: xcode11
     name: Building static framework and Carthage integration
     stage: integration
-    before_script: 
+    before_script:
       # Xcode 11+ no longer ships with all device combinations premade
     - xcrun simctl create "13-xs" "iPhone XS" com.apple.CoreSimulator.SimRuntime.iOS-13-0
     - mkdir -p features/fixtures/carthage-proj
-    script: 
+    script:
     - make build_carthage   # Build example carthage project
     - make build_ios_static # Build static framework target
   - osx_image: xcode10.2
