@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Remove attachCustomStacktrace from public API
+  [#547](https://github.com/bugsnag/bugsnag-cocoa/pull/547)
+
 * Create structured `BugsnagError` class
   [#533](https://github.com/bugsnag/bugsnag-cocoa/pull/533)
 
