@@ -34,6 +34,7 @@
 #import "BugsnagMetadataStore.h"
 
 @class BugsnagUser;
+@class BugsnagEndpointConfiguration;
 
 /**
  * BugsnagConfiguration error constants
@@ -204,15 +205,8 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
  * Please note that it is recommended that you set both endpoints. If the notify endpoint is
  * missing, an assertion will be thrown. If the session endpoint is missing, a warning will be
  * logged and sessions will not be sent automatically.
- *
- * @param notify the notify endpoint
- * @param sessions the sessions endpoint
- *
- * @throws an assertion if the notify endpoint is not a valid URL
  */
-
-- (void)setEndpointsForNotify:(NSString *_Nonnull)notify
-                     sessions:(NSString *_Nonnull)sessions NS_SWIFT_NAME(setEndpoints(notify:sessions:));
+@property(nonnull, nonatomic) BugsnagEndpointConfiguration *endpoints;
 
 // =============================================================================
 // MARK: - User

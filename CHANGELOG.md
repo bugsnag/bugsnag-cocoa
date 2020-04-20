@@ -14,6 +14,9 @@ Bugsnag Notifiers on other platforms.
 * Add `redactedKeys` for removing sensitive values from metadata
   [#540](https://github.com/bugsnag/bugsnag-cocoa/pull/540)
 
+* Move endpoint configuration to class
+  [#542](https://github.com/bugsnag/bugsnag-cocoa/pull/542)
+
 * Make all callbacks return boolean values
   [#534](https://github.com/bugsnag/bugsnag-cocoa/pull/534)
 

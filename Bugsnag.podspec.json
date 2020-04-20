@@ -38,6 +38,7 @@
     "Source/BugsnagConfiguration.h",
     "Source/BugsnagDevice.h",
     "Source/BugsnagDeviceWithState.h",
+    "Source/BugsnagEndpointConfiguration.h",
     "Source/BugsnagError.h",
     "Source/BugsnagEvent.h",
     "Source/BugsnagMetadata.h",
