@@ -72,13 +72,16 @@
     XCTAssertEqualObjects([NSURL URLWithString:@"https://sessions.bugsnag.com"], config.sessionURL);
     
     // Test overriding the session endpoint (use dummy endpoints to avoid hitting production)
-    [config setEndpointsForNotify:@"http://localhost:1234" sessions:@"http://localhost:8000"];
+
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://localhost:1234"
+                                                                   sessions:@"http://localhost:8000"];
     XCTAssertEqualObjects([NSURL URLWithString:@"http://localhost:8000"], config.sessionURL);
 }
 
 - (void)testSetEmptySessionsEndpoint {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [config setEndpointsForNotify:@"http://notify.example.com" sessions:@""];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notify.example.com"
+                                                                   sessions:@""];
     BugsnagSessionTracker *sessionTracker
             = [[BugsnagSessionTracker alloc] initWithConfig:config postRecordCallback:nil];
 
@@ -89,7 +92,8 @@
 
 - (void)testSetMalformedSessionsEndpoint {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [config setEndpointsForNotify:@"http://notify.example.com" sessions:@"f"];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notify.example.com"
+                                                                   sessions:@"f"];
     BugsnagSessionTracker *sessionTracker
             = [[BugsnagSessionTracker alloc] initWithConfig:config postRecordCallback:nil];
 
@@ -106,7 +110,8 @@
     // Setup
     __block XCTestExpectation *expectation = [self expectationWithDescription:@"Remove On Session Block"];
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notreal.bugsnag.com"
+                                                                   sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
     BugsnagOnSessionBlock sessionBlock = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) {
         // We expect the session block to be called
@@ -131,7 +136,8 @@
     calledExpectation.inverted = YES;
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notreal.bugsnag.com"
+                                                                   sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
     BugsnagOnSessionBlock sessionBlock = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) {
         [calledExpectation fulfill];
@@ -165,7 +171,8 @@
     expectation4.inverted = YES;
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [config setEndpointsForNotify:@"http://notreal.bugsnag.com" sessions:@"http://notreal.bugsnag.com"];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notreal.bugsnag.com"
+                                                                   sessions:@"http://notreal.bugsnag.com"];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
     
     BugsnagOnSessionBlock sessionBlock = ^BOOL(NSMutableDictionary * _Nonnull sessionPayload) {
@@ -306,13 +313,15 @@
     XCTAssertEqualObjects([NSURL URLWithString:@"https://notify.bugsnag.com/"], config.notifyURL);
 
     // Test overriding the notify endpoint (use dummy endpoints to avoid hitting production)
-    [config setEndpointsForNotify:@"http://localhost:1234" sessions:@"http://localhost:8000"];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://localhost:1234"
+                                                                   sessions:@"http://localhost:8000"];
     XCTAssertEqualObjects([NSURL URLWithString:@"http://localhost:1234"], config.notifyURL);
 }
 
 - (void)testSetEndpoints {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [config setEndpointsForNotify:@"http://notify.example.com" sessions:@"http://sessions.example.com"];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notify.example.com"
+                                                                   sessions:@"http://sessions.example.com"];
     XCTAssertEqualObjects([NSURL URLWithString:@"http://notify.example.com"], config.notifyURL);
     XCTAssertEqualObjects([NSURL URLWithString:@"http://sessions.example.com"], config.sessionURL);
 }
@@ -323,10 +332,12 @@
     NSString *notify = @"foo";
     notify = nil;
 #if DEBUG
-    XCTAssertThrowsSpecificNamed([config setEndpointsForNotify:notify sessions:@"http://sessions.example.com"],
+    XCTAssertThrowsSpecificNamed([config setEndpoints:[[BugsnagEndpointConfiguration alloc] initWithNotify:notify
+                                                                                                  sessions:@"http://sessions.example.com"]],
             NSException, NSInternalInconsistencyException);
 #else
-    XCTAssertNoThrow([config setEndpointsForNotify:@"" sessions:@"http://sessions.example.com"]);
+    XCTAssertNoThrow([config setEndpoints:[[BugsnagEndpointConfiguration alloc] initWithNotify:@""
+                                                                                                  sessions:@"http://sessions.example.com"]]);
 #endif
 }
 
@@ -334,10 +345,12 @@
 - (void)testSetEmptyNotifyEndpoint {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
 #if DEBUG
-    XCTAssertThrowsSpecificNamed([config setEndpointsForNotify:@"" sessions:@"http://sessions.example.com"],
+    XCTAssertThrowsSpecificNamed([config setEndpoints:[[BugsnagEndpointConfiguration alloc] initWithNotify:@""
+            sessions:@"http://sessions.example.com"]],
             NSException, NSInternalInconsistencyException);
 #else
-    XCTAssertNoThrow([config setEndpointsForNotify:@"" sessions:@"http://sessions.example.com"]);
+    XCTAssertNoThrow([config setEndpoints:[[BugsnagEndpointConfiguration alloc] initWithNotify:@""
+            sessions:@"http://sessions.example.com"]]);
 #endif
 }
 
@@ -345,10 +358,12 @@
 - (void)testSetMalformedNotifyEndpoint {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
 #if DEBUG
-    XCTAssertThrowsSpecificNamed([config setEndpointsForNotify:@"http://" sessions:@"http://sessions.example.com"],
+    XCTAssertThrowsSpecificNamed([config setEndpoints:[[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://"
+                                                                                                  sessions:@"http://sessions.example.com"]],
             NSException, NSInternalInconsistencyException);
 #else
-    XCTAssertNoThrow([config setEndpointsForNotify:@"http://" sessions:@"http://sessions.example.com"]);
+    XCTAssertNoThrow([config setEndpoints:[[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://"
+            sessions:@"http://sessions.example.com"]]);
 #endif
 }
 

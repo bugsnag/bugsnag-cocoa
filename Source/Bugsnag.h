@@ -34,6 +34,7 @@
 #import "BugsnagAppWithState.h"
 #import "BugsnagDevice.h"
 #import "BugsnagDeviceWithState.h"
+#import "BugsnagEndpointConfiguration.h"
 #import "BugsnagError.h"
 #import "BugsnagStackframe.h"
 #import "BugsnagThread.h"

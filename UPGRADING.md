@@ -73,6 +73,9 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 - config.notifyReleaseStages
 + config.enabledReleaseStages
+
+- config.setEndpoints(notify: sessions)
++ config.setEndpoints(BugsnagEndpointConfiguration(notify: sessions))
 ```
 
 #### Removals

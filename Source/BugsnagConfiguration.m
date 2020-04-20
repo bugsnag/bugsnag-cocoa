@@ -37,6 +37,7 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagMetadataStore.h"
 #import "BSGSerialization.h"
+#import "BugsnagEndpointConfiguration.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -124,8 +125,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setRedactedKeys:self.redactedKeys];
     [copy setMaxBreadcrumbs:self.maxBreadcrumbs];
     [copy setMetadata: [[BugsnagMetadata alloc] initWithDictionary:[[self.metadata toDictionary] mutableCopy]]];
-    [copy setEndpointsForNotify:self.notifyURL.absoluteString
-                       sessions:self.sessionURL.absoluteString];
+    [copy setEndpoints:self.endpoints];
     [copy setOnBreadcrumbBlocks:[self.onBreadcrumbBlocks mutableCopy]];
     [copy setOnCrashHandler:self.onCrashHandler];
     [copy setOnSendBlocks:[self.onSendBlocks mutableCopy]];
@@ -184,6 +184,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _metadata = [[BugsnagMetadata alloc] init];
     _config = [[BugsnagMetadata alloc] init];
     _apiKey = apiKey;
+    _endpoints = [BugsnagEndpointConfiguration new];
     _sessionURL = [NSURL URLWithString:@"https://sessions.bugsnag.com"];
     _autoDetectErrors = YES;
     _notifyURL = [NSURL URLWithString:BSGDefaultNotifyUrl];
@@ -326,9 +327,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
              };
 }
 
-- (void)setEndpointsForNotify:(NSString *_Nonnull)notify sessions:(NSString *_Nonnull)sessions {
-    _notifyURL = [NSURL URLWithString:notify];
-    _sessionURL = [NSURL URLWithString:sessions];
+- (void)setEndpoints:(BugsnagEndpointConfiguration *)endpoints {
+    _endpoints = endpoints;
+    _notifyURL = [NSURL URLWithString:endpoints.notify];
+    _sessionURL = [NSURL URLWithString:endpoints.sessions];
 
     NSAssert([self isValidUrl:_notifyURL], @"Invalid URL supplied for notify endpoint");
 
