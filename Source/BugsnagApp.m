@@ -41,7 +41,7 @@
 {
     NSDictionary *system = event[BSGKeySystem];
     app.id = system[@"CFBundleIdentifier"];
-    app.bundleVersion = system[@"CFBundleVersion"];
+    app.bundleVersion = [event valueForKeyPath:@"user.config.bundleVersion"] ?: system[@"CFBundleVersion"];
     app.dsymUuid = system[@"app_uuid"];
     app.version = [event valueForKeyPath:@"user.config.appVersion"] ?: system[@"CFBundleShortVersionString"];
     app.releaseStage = [event valueForKeyPath:@"user.config.releaseStage"] ?: config.releaseStage;
