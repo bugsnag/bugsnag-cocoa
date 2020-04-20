@@ -60,7 +60,7 @@ typedef struct BSG_KSCrash_SentryContext {
     bool reportWhenDebuggerIsAttached;
 
     /** If true, will trace threads and report binary images. */
-    bool threadTracingEnabled;
+    int threadTracingEnabled;
 
     /** If true, will record binary images. */
     bool writeBinaryImagesForUserReported;

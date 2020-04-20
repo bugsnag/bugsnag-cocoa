@@ -24,12 +24,14 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
         onCrash:(BSGReportCallback)onCrash
 {
     BugsnagSink *sink = [[BugsnagSink alloc] initWithApiClient:apiClient];
-    [BSG_KSCrash sharedInstance].sink = sink;
-    [BSG_KSCrash sharedInstance].introspectMemory = YES;
-    [BSG_KSCrash sharedInstance].deleteBehaviorAfterSendAll =
+    BSG_KSCrash *ksCrash = [BSG_KSCrash sharedInstance];
+    ksCrash.sink = sink;
+    ksCrash.introspectMemory = YES;
+    ksCrash.deleteBehaviorAfterSendAll =
         BSG_KSCDeleteOnSuccess;
-    [BSG_KSCrash sharedInstance].onCrash = onCrash;
-    [BSG_KSCrash sharedInstance].maxStoredReports = BSG_MAX_STORED_REPORTS;
+    ksCrash.onCrash = onCrash;
+    ksCrash.maxStoredReports = BSG_MAX_STORED_REPORTS;
+    ksCrash.threadTracingEnabled = (int) config.sendThreads;
     
     // User reported events are *always* handled
     BSG_KSCrashType crashTypes = BSG_KSCrashTypeUserReported;
@@ -44,7 +46,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
     
     bsg_kscrash_setHandlingCrashTypes(crashTypes);
     
-    if (![[BSG_KSCrash sharedInstance] install])
+    if (![ksCrash install])
         bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");
 
     [sink.apiClient flushPendingData];
