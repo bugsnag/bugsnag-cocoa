@@ -20,6 +20,7 @@ import Bugsnag
                 ["method":"yes()"]
             ]
             report.attachCustomStacktrace(frames, withType: "unreal")
+            return true
         }
     }
 }

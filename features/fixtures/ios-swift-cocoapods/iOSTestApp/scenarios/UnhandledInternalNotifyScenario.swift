@@ -20,6 +20,7 @@ import Bugsnag
                 ["method":"is_done()"]
             ]
             report.attachCustomStacktrace(frames, withType: "fake")
+            return true
         }
     }
 }

@@ -17,6 +17,7 @@ class ModifyBreadcrumbInNotify: Scenario {
                     crumb.message = "Cache locked"
                 }
             })
+            return true
         }
     }
 

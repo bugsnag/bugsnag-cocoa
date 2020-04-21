@@ -103,8 +103,9 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 + (void)notify:(NSException *)exception {
     if ([self bugsnagStarted]) {
         [self.client notify:exception
-                      block:^(BugsnagEvent *_Nonnull report) {
+                      block:^BOOL(BugsnagEvent *_Nonnull report) {
                           report.depth += 2;
+                          return true;
                       }];
     }
 }
@@ -112,12 +113,13 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 + (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagStarted]) {
         [[self client] notify:exception
-                        block:^(BugsnagEvent *_Nonnull report) {
+                        block:^BOOL(BugsnagEvent *_Nonnull report) {
                             report.depth += 2;
 
                             if (block) {
-                                block(report);
+                                return block(report);
                             }
+                            return true;
                         }];
     }
 }
@@ -125,8 +127,9 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 + (void)notifyError:(NSError *)error {
     if ([self bugsnagStarted]) {
         [self.client notifyError:error
-                             block:^(BugsnagEvent *_Nonnull report) {
+                             block:^BOOL(BugsnagEvent *_Nonnull report) {
                                  report.depth += 2;
+                                 return true;
                              }];
     }
 }
@@ -134,12 +137,13 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 + (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagStarted]) {
         [[self client] notifyError:error
-                               block:^(BugsnagEvent *_Nonnull report) {
+                               block:^BOOL(BugsnagEvent *_Nonnull report) {
                                    report.depth += 2;
 
                                    if (block) {
-                                       block(report);
+                                       return block(report);
                                    }
+                                   return true;
                                }];
     }
 }

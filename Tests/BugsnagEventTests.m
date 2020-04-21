@@ -507,44 +507,49 @@
     NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
     
     // Check that the event is passed the apiKey
-    [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
+    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
+        return true;
     }];
     
     // Check that we can change it
-    [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
+    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         event.apiKey = DUMMY_APIKEY_32CHAR_2;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_2);
         XCTAssertEqualObjects(Bugsnag.configuration.apiKey, DUMMY_APIKEY_32CHAR_1);
+        return true;
     }];
 
     // Check that the global configuration is unaffected
-    [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
+    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         event.apiKey = DUMMY_APIKEY_32CHAR_1;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         XCTAssertEqualObjects(Bugsnag.configuration.apiKey, DUMMY_APIKEY_32CHAR_1);
         event.apiKey = DUMMY_APIKEY_32CHAR_3;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_3);
+        return true;
     }];
     
     // Check that previous local and global values are not persisted erroneously
     Bugsnag.configuration.apiKey = DUMMY_APIKEY_32CHAR_4;
-    [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
+    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_4);
         event.apiKey = DUMMY_APIKEY_32CHAR_1;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         XCTAssertEqual(Bugsnag.configuration.apiKey, DUMMY_APIKEY_32CHAR_4);
         event.apiKey = DUMMY_APIKEY_32CHAR_2;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_2);
+        return true;
     }];
     
     // Check that validation is performed and that invalid API keys can't be set
     Bugsnag.configuration.apiKey = DUMMY_APIKEY_32CHAR_1;
-    [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
+    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         event.apiKey = DUMMY_APIKEY_16CHAR;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
+        return true;
     }];
 }
 
@@ -585,13 +590,14 @@
     
     NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
     
-    [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
+    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         NSDictionary *invalidDict = @{};
         NSDictionary *validDict = @{@"myKey" : @"myValue"};
         [event addMetadata:invalidDict toSection:@"mySection"];
         XCTAssertEqual([[event.metadata toDictionary] count], 0);
         [event addMetadata:validDict toSection:@"mySection"];
         XCTAssertEqual([[event.metadata toDictionary] count], 1);
+        return true;
     }];
 }
 
@@ -600,7 +606,7 @@
     
     NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
     
-    [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
+    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         [event addMetadata:[NSNull null] withKey:@"myKey" toSection:@"mySection"];
 
         // Invalid value for a non-existant section doesn't cause the section to be created
@@ -619,6 +625,7 @@
         [event addMetadata:@"realValue" withKey:@"myNewKey" toSection:@"mySection"];
         XCTAssertEqual([[event.metadata toDictionary] count], 1);
         XCTAssertNotNil([event.metadata getMetadataFromSection:@"mySection" withKey:@"myNewKey"]);
+        return true;
     }];
 }
 
