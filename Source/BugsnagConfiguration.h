@@ -124,6 +124,7 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
  *  A general summary of what was occuring in the application
  */
 @property(readwrite, retain, nullable) NSString *context;
+
 /**
  *  The version of the application
  */
@@ -156,6 +157,11 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
  * The types of breadcrumbs which will be captured. By default, this is all types.
  */
 @property BSGEnabledBreadcrumbType enabledBreadcrumbTypes;
+
+/**
+ * The app's bundleVersion, set from the CFBundleVersion.  Equivalent to `versionCode` on Android.
+ */
+@property (readwrite, retain, nullable) NSString *bundleVersion;
 
 @property(retain, nullable) NSString *codeBundleId;
 @property(retain, nullable) NSString *appType;

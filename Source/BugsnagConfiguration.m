@@ -115,6 +115,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setAppVersion:self.appVersion];
     [copy setAutoDetectErrors:self.autoDetectErrors];
     [copy setAutoTrackSessions:self.autoTrackSessions];
+    [copy setBundleVersion:self.bundleVersion];
     // Skip breadcrumbs - none should have been set
     [copy setCodeBundleId:self.codeBundleId];
     [copy setConfig:[[BugsnagMetadata alloc] initWithDictionary:[[self.config toDictionary] mutableCopy]]];
@@ -184,6 +185,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _metadata = [[BugsnagMetadata alloc] init];
     _config = [[BugsnagMetadata alloc] init];
     _apiKey = apiKey;
+    _bundleVersion = NSBundle.mainBundle.infoDictionary[@"CFBundleVersion"];
     _endpoints = [BugsnagEndpointConfiguration new];
     _sessionURL = [NSURL URLWithString:@"https://sessions.bugsnag.com"];
     _autoDetectErrors = YES;
@@ -610,6 +612,25 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
         _appVersion = newVersion;
         [self.config addMetadata:newVersion
                          withKey:BSGKeyAppVersion
+                       toSection:BSGKeyConfig];
+    }
+}
+
+// MARK: -
+
+@synthesize bundleVersion = _bundleVersion;
+
+- (NSString *)bundleVersion {
+    @synchronized (self) {
+        return _bundleVersion;
+    }
+}
+
+- (void)setBundleVersion:(NSString *)newVersion {
+    @synchronized (self) {
+        _bundleVersion = newVersion;
+        [self.config addMetadata:newVersion
+                         withKey:BSGKeyBundleVersion
                        toSection:BSGKeyConfig];
     }
 }

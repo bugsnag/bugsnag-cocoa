@@ -231,7 +231,10 @@ Bugsnag Notifiers on other platforms.
   (#513)[https://github.com/bugsnag/bugsnag-cocoa/pull/513]
   
 * `BugsnagClient` now takes a shallow copy of the configuration passed in on initialisation.
-(#524)[https://github.com/bugsnag/bugsnag-cocoa/pull/524]
+  (#524)[https://github.com/bugsnag/bugsnag-cocoa/pull/524]
+
+* The `bundleVersion` property is available on `BugsnagConfiguration` allowing overriding the default plist value.
+  (#550)[https://github.com/bugsnag/bugsnag-cocoa/pull/550]
 
 ## Bug fixes
 

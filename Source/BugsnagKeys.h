@@ -29,6 +29,7 @@ static NSString *const BSGKeyReleaseStage = @"releaseStage";
 static NSString *const BSGKeyConfig = @"config";
 static NSString *const BSGKeyContext = @"context";
 static NSString *const BSGKeyAppVersion = @"appVersion";
+static NSString *const BSGKeyBundleVersion = @"bundleVersion";
 static NSString *const BSGKeyEnabledReleaseStages = @"notifyReleaseStages";
 static NSString *const BSGKeyApiKey = @"apiKey";
 static NSString *const BSGKeyNotifier = @"notifier";

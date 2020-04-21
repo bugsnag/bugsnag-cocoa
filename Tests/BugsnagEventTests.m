@@ -470,6 +470,21 @@
     XCTAssertEqualObjects(@"1.2.3", dictionary[@"app"][@"version"]);
 }
 
+- (void)testBundleVersionOverride {
+    BugsnagEvent *overrideReport = [[BugsnagEvent alloc] initWithKSReport:@{
+            @"system" : @{
+                    @"CFBundleVersion": @"1.1",
+            },
+            @"user": @{
+                    @"config": @{
+                            @"bundleVersion": @"1.2.3"
+                    }
+            }
+    }];
+    NSDictionary *dictionary = [overrideReport toJson];
+    XCTAssertEqualObjects(@"1.2.3", dictionary[@"app"][@"bundleVersion"]);
+}
+
 - (void)testReportAddAttr {
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{@"user.metaData": @{@"user": @{@"id": @"user id"}}}];
     [event addMetadata:@"user" withKey:@"foo" toSection:@"bar"];
