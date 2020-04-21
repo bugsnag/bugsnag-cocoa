@@ -72,8 +72,8 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
         XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         
         // Grab the values that end up in the event for later comparison
-        eventErrorClass = [event errorClass];
-        eventErrorMessage = [event errorMessage];
+        eventErrorClass = event.errors[0].errorClass;
+        eventErrorMessage = event.errors[0].errorMessage;
         eventUnhandled = [event valueForKeyPath:@"handledState.unhandled"] ? YES : NO;
         eventSeverity = BSGFormatSeverity([event severity]);
     }];

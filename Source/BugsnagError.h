@@ -8,13 +8,37 @@
 
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
+@class BugsnagStackframe;
+
+typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
+    BSGErrorTypeCocoa,
+    BSGErrorTypeC,
+    BSGErrorTypeReactNativeJs
+};
 
 /**
  * An Error represents information extracted from an NSError, NSException, or other error source.
  */
 @interface BugsnagError : NSObject
 
-@end
+/**
+ * The class of the error generating the report
+ */
+@property(nullable) NSString *errorClass;
 
-NS_ASSUME_NONNULL_END
+/**
+ * The message of or reason for the error generating the report
+ */
+@property(nullable) NSString *errorMessage;
+
+/**
+ * Sets a representation of this error's stacktrace
+ */
+@property(readonly, nonnull) NSArray<BugsnagStackframe *> *stacktrace;
+
+/**
+ * The type of the captured error
+ */
+@property BSGErrorType type;
+
+@end

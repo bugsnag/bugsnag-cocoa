@@ -98,7 +98,7 @@ typedef BOOL (^BugsnagOnBreadcrumbBlock)(BugsnagBreadcrumb *_Nonnull breadcrumb)
  */
 typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
 
-typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
+typedef NS_OPTIONS(NSUInteger, BSGEnabledErrorType) {
     BSGErrorTypesNone         NS_SWIFT_NAME(None)         = 0,
     BSGErrorTypesOOMs         NS_SWIFT_NAME(OOMs)         = 1 << 0,
     BSGErrorTypesNSExceptions NS_SWIFT_NAME(NSExceptions) = 1 << 1,
@@ -221,7 +221,7 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
  * Passed down to KSCrash in BugsnagCrashSentry.
  * Defaults to all-true
  */
-@property BSGErrorType enabledErrorTypes;
+@property BSGEnabledErrorType enabledErrorTypes;
 
 /**
  * Required declaration to suppress a superclass designated-initializer error

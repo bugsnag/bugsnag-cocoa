@@ -157,6 +157,7 @@
 		E7767F10221C21D90006648C /* StoppedSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoppedSessionScenario.swift; sourceTree = "<group>"; };
 		E7767F12221C21E30006648C /* ResumedSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumedSessionScenario.swift; sourceTree = "<group>"; };
 		E7767F14221C223C0006648C /* NewSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSessionScenario.swift; sourceTree = "<group>"; };
+		E77AFEF72449C6460082B8BB /* AttachCustomStacktraceHook.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AttachCustomStacktraceHook.h; sourceTree = "<group>"; };
 		EE18B3777C62D7BCA8DDBE30 /* Pods-iOSTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.debug.xcconfig"; sourceTree = "<group>"; };
 		F42950588CE34967588DF438 /* ObjCExceptionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCExceptionScenario.h; sourceTree = "<group>"; };
 		F42950D49A5F24FF7155EEE1 /* NonExistentMethodScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NonExistentMethodScenario.h; sourceTree = "<group>"; };
@@ -401,6 +402,7 @@
 				0011E6662403D13100ED71CD /* UserPersistenceScenarios.m */,
 				0011E6682403D14400ED71CD /* UserPersistenceScenarios.h */,
 				00507A63242BFE5600EF1B87 /* EnabledBreadcrumbTypesIsNilScenario.swift */,
+				E77AFEF72449C6460082B8BB /* AttachCustomStacktraceHook.h */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";

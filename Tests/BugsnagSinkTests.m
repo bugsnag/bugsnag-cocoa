@@ -246,7 +246,7 @@
     NSArray *exceptions =
     [self.processedData[@"events"] firstObject][@"exceptions"];
     NSArray *stacktrace = [exceptions firstObject][@"stacktrace"];
-    XCTAssert([stacktrace count] != 0);
+    XCTAssertNotEqual(0, [stacktrace count]);
     XCTAssertNotNil(stacktrace);
     for (NSDictionary *frame in stacktrace) {
         XCTAssertNotNil([frame valueForKey:@"machoUUID"]);

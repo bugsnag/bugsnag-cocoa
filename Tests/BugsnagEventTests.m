@@ -124,9 +124,9 @@
     XCTAssertEqualObjects(@"Exception",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(event.errorClass,
+    XCTAssertEqualObjects(event.errors[0].errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(event.errorMessage,
+    XCTAssertEqualObjects(event.errors[0].errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
@@ -138,9 +138,9 @@
     XCTAssertEqualObjects(@"Exception",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(event.errorClass,
+    XCTAssertEqualObjects(event.errors[0].errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(event.errorMessage,
+    XCTAssertEqualObjects(event.errors[0].errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
@@ -163,9 +163,9 @@
     XCTAssertEqualObjects(@"fatal error",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(event.errorClass,
+    XCTAssertEqualObjects(event.errors[0].errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(event.errorMessage,
+    XCTAssertEqualObjects(event.errors[0].errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
@@ -188,9 +188,9 @@
     XCTAssertEqualObjects(@"assertion failed",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(event.errorClass,
+    XCTAssertEqualObjects(event.errors[0].errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(event.errorMessage,
+    XCTAssertEqualObjects(event.errors[0].errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
@@ -224,9 +224,9 @@
                               payload[@"exceptions"][0][@"errorClass"]);
         XCTAssertEqualObjects(@"Something went wrong",
                               payload[@"exceptions"][0][@"message"]);
-        XCTAssertEqualObjects(event.errorClass,
+        XCTAssertEqualObjects(event.errors[0].errorClass,
                               payload[@"exceptions"][0][@"errorClass"]);
-        XCTAssertEqualObjects(event.errorMessage,
+        XCTAssertEqualObjects(event.errors[0].errorMessage,
                               payload[@"exceptions"][0][@"message"]);
     }
 }
@@ -255,9 +255,9 @@
     XCTAssertEqualObjects(@"fatal error",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(event.errorClass,
+    XCTAssertEqualObjects(event.errors[0].errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(event.errorMessage,
+    XCTAssertEqualObjects(event.errors[0].errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
@@ -285,9 +285,9 @@
     XCTAssertEqualObjects(@"fatal error",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(event.errorClass,
+    XCTAssertEqualObjects(event.errors[0].errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(event.errorMessage,
+    XCTAssertEqualObjects(event.errors[0].errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
@@ -321,9 +321,9 @@
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"A message from beyond | Wo0o0o",
                           payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(event.errorClass,
+    XCTAssertEqualObjects(event.errors[0].errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(event.errorMessage,
+    XCTAssertEqualObjects(event.errors[0].errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 
@@ -351,9 +351,9 @@
     XCTAssertEqualObjects(@"Exception",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
-    XCTAssertEqualObjects(event.errorClass,
+    XCTAssertEqualObjects(event.errors[0].errorClass,
                           payload[@"exceptions"][0][@"errorClass"]);
-    XCTAssertEqualObjects(event.errorMessage,
+    XCTAssertEqualObjects(event.errors[0].errorMessage,
                           payload[@"exceptions"][0][@"message"]);
 }
 

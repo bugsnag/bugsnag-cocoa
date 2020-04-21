@@ -67,8 +67,8 @@
 
     [Bugsnag notify:exception1 block:^(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects([event getMetadataFromSection:@"mySection1" withKey:@"aKey1"], @"aValue1");
-        XCTAssertEqual([event errorClass], @"exception1");
-        XCTAssertEqual([event errorMessage], @"reason1");
+        XCTAssertEqual(event.errors[0].errorClass, @"exception1");
+        XCTAssertEqual(event.errors[0].errorMessage, @"reason1");
         XCTAssertNil([event getMetadataFromSection:@"mySection2"]);
         
         // Add some additional metadata once we're sure it's not already there
@@ -78,8 +78,8 @@
     [Bugsnag notify:exception2 block:^(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects([event getMetadataFromSection:@"mySection1" withKey:@"aKey1"], @"aValue1");
         XCTAssertEqualObjects([event getMetadataFromSection:@"mySection2" withKey:@"aKey2"], @"aValue2");
-        XCTAssertEqual([event errorClass], @"exception2");
-        XCTAssertEqual([event errorMessage], @"reason2");
+        XCTAssertEqual(event.errors[0].errorClass, @"exception2");
+        XCTAssertEqual(event.errors[0].errorMessage, @"reason2");
     }];
 
     // Check nil value causes deletions
