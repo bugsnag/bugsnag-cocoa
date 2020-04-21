@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 
 #import "BugsnagUser.h"
+#import "BugsnagEvent.h"
 
 @interface BugsnagUserTest : XCTestCase
 @end
@@ -43,6 +44,21 @@
     XCTAssertEqualObjects(@"test", rootNode[@"id"]);
     XCTAssertEqualObjects(@"fake@example.com", rootNode[@"email"]);
     XCTAssertEqualObjects(@"Tom Bombadil", rootNode[@"name"]);
+}
+
+- (void)testUserEvent {
+    // Setup
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
+            @"user.metaData": @{
+                    @"user": @{
+                            @"id": @"123",
+                            @"name": @"Jane Smith",
+                            @"email": @"jane@example.com",
+                    }
+            }}];
+    XCTAssertEqualObjects(@"123", event.user.userId);
+    XCTAssertEqualObjects(@"Jane Smith", event.user.name);
+    XCTAssertEqualObjects(@"jane@example.com", event.user.emailAddress);
 }
 
 @end
