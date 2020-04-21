@@ -968,13 +968,14 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 - (void)batteryChanged:(NSNotification *)notification {
     NSNumber *batteryLevel = @([UIDevice currentDevice].batteryLevel);
-    NSNumber *charging = @([UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging);
+    BOOL charging = [UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging ||
+                    [UIDevice currentDevice].batteryState == UIDeviceBatteryStateFull;
 
     [[self state] addMetadata:batteryLevel
                      withKey:BSGKeyBatteryLevel
                  toSection:BSGKeyDeviceState];
     
-    [[self state] addMetadata:charging
+    [[self state] addMetadata:charging ? @YES : @NO
                      withKey:BSGKeyCharging
                  toSection:BSGKeyDeviceState];
 }

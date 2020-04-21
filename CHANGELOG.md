@@ -252,6 +252,11 @@ Bugsnag Notifiers on other platforms.
 * NSWorkspaceScreenSleep/Wake notifications now use the correct notification center.
   (#525)[https://github.com/bugsnag/bugsnag-cocoa/pull/525]
   
+* Device Charging status was being incorrectly reported as a number rather than a boolean.
+  Device charging status is represented as a four-valued enum.  If the device is plugged in it reports 
+  as charging, even if it is at 100%.  Any other values are reported as not charging.
+  (#551)[https://github.com/bugsnag/bugsnag-cocoa/pull/551]
+  
 ## 5.23.0 (2019-12-10)
 
 This release removes support for reporting 'partial' or 'minimal' crash reports
