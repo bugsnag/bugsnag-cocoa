@@ -23,7 +23,7 @@ Bugsnag Notifiers on other platforms.
 * Add `originalError` property to `BugsnagEvent`
   [#541](https://github.com/bugsnag/bugsnag-cocoa/pull/541)
 
-* Remove attachCustomStacktrace from public API
+* Remove `attachCustomStacktrace` from public API
   [#547](https://github.com/bugsnag/bugsnag-cocoa/pull/547)
 
 * Create structured `BugsnagError` class
