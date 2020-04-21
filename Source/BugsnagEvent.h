@@ -115,7 +115,7 @@ initWithErrorName:(NSString *_Nonnull)name
  * - Reads default to the BugsnagConfiguration apiKey value unless explicitly set.
  * - Writes are not persisted to BugsnagConfiguration.
  */
-@property(readwrite, copy, nonnull) NSString *apiKey;
+@property(readwrite, copy, nullable) NSString *apiKey;
 
 /**
  *  Device information such as OS name and version
