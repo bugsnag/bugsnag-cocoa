@@ -46,8 +46,9 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
     
     bsg_kscrash_setHandlingCrashTypes(crashTypes);
     
-    if (![ksCrash install])
+    if ((![ksCrash install])) {
         bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");
+    }
 
     [sink.apiClient flushPendingData];
 }
