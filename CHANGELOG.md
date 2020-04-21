@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Make `BugsnagPlugin` take `BugsnagClient` as param
+  [#558](https://github.com/bugsnag/bugsnag-cocoa/pull/558)
+
 * Add `sendThreads` property to `BugsnagConfiguration`
   [#549](https://github.com/bugsnag/bugsnag-cocoa/pull/549)
 

@@ -24,7 +24,7 @@
 @property XCTestExpectation *expectation;
 @end
 @implementation FakePlugin
-    - (void)load {
+    - (void)load:(BugsnagClient *)client {
         [self.expectation fulfill];
     }
     - (void)unload {}
@@ -34,7 +34,7 @@
 @property XCTestExpectation *expectation;
 @end
 @implementation CrashyPlugin
-    - (void)load {
+    - (void)load:(BugsnagClient *)client {
         [NSException raise:@"WhoopsException" format:@"something went wrong"];
         [self.expectation fulfill];
     }
