@@ -217,11 +217,11 @@
 // =============================================================================
 
 /**
- * Replicates BugsnagConfiguration.context
- *
- * @param context A general summary of what was happening in the application
+ * Retrieves the context - a general summary of what was happening in the application
  */
 + (void)setContext:(NSString *_Nullable)context;
+
++ (NSString *_Nullable)getContext;
 
 // =============================================================================
 // MARK: - User
