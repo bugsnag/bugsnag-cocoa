@@ -11,6 +11,9 @@ Bugsnag Notifiers on other platforms.
 * Add `sendThreads` property to `BugsnagConfiguration`
   [#549](https://github.com/bugsnag/bugsnag-cocoa/pull/549)
 
+* Hide additional methods from public API
+  [#552](https://github.com/bugsnag/bugsnag-cocoa/pull/552)
+
 * Add structured app/device fields to `BugsnagSession`
   [#546](https://github.com/bugsnag/bugsnag-cocoa/pull/546)
 

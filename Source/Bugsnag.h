@@ -107,14 +107,6 @@
 + (void)notifyError:(NSError *_Nonnull)error
               block:(BugsnagOnErrorBlock _Nullable)block;
 
-/**
- * Intended for use by other clients (React Native/Unity). Calling this method
- * directly from iOS is not supported.
- */
-+ (void)internalClientNotify:(NSException *_Nonnull)exception
-                    withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagOnErrorBlock _Nullable)block;
-
 // =============================================================================
 // MARK: - Breadcrumbs
 // =============================================================================

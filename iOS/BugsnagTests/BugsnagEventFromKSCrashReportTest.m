@@ -16,6 +16,7 @@
 @interface BugsnagEvent ()
 - (NSDictionary *_Nonnull)toJson;
 - (BOOL)shouldBeSent;
+- (instancetype)initWithKSReport:(NSDictionary *)report;
 @property(readwrite, copy, nullable) NSArray *enabledReleaseStages;
 @property(readwrite) NSUInteger depth;
 @end

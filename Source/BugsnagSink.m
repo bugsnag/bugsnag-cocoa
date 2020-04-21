@@ -43,6 +43,7 @@
 @interface BugsnagEvent ()
 - (NSDictionary *_Nonnull)toJson;
 - (BOOL)shouldBeSent;
+- (instancetype _Nonnull)initWithKSReport:(NSDictionary *_Nonnull)report;
 @property NSArray *redactedKeys;
 @end
 

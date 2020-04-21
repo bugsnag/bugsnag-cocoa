@@ -281,6 +281,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property(readwrite, retain, nullable) BugsnagMetadata *metadata;
 @property(readwrite, retain, nullable) BugsnagMetadata *config;
 @property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
+- (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)type;
 @end
 
 @interface BugsnagEvent ()
@@ -288,12 +289,23 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property(readwrite) NSUInteger depth;
 @property(readonly, nonnull) BugsnagHandledState *handledState;
 @property (nonatomic, strong) BugsnagMetadata *metadata;
+
+- (instancetype _Nonnull)initWithErrorName:(NSString *_Nonnull)name
+                              errorMessage:(NSString *_Nonnull)message
+                             configuration:(BugsnagConfiguration *_Nonnull)config
+                                  metadata:(BugsnagMetadata *_Nullable)metadata
+                              handledState:(BugsnagHandledState *_Nonnull)handledState
+                                   session:(BugsnagSession *_Nullable)session;
 @end
 
 @interface BugsnagMetadata ()
 @property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
 - (NSDictionary *_Nonnull)toDictionary;
 - (id)deepCopy;
+@end
+
+@interface BugsnagUser ()
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
 @end
 
 @interface Bugsnag ()
@@ -795,6 +807,14 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self notify:exception handledState:state block:block];
 }
 
+/**
+ *  Notify Bugsnag of an exception. Only intended for React Native/Unity use.
+ *
+ *  @param exception the exception
+ *  @param metadata  the metadata
+ *  @param block     Configuration block for adding additional report
+ * information
+ */
 - (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
                        block:(BugsnagOnErrorBlock _Nullable)block

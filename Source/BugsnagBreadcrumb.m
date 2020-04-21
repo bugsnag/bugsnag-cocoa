@@ -29,6 +29,8 @@
 #import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
 
+typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
+
 NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
     switch (type) {
     case BSGBreadcrumbTypeLog:
