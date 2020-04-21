@@ -123,7 +123,7 @@ Scenario: Crash within Swift code
     And I configure Bugsnag for "SwiftCrash"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the exception "message" equals "Unexpectedly found nil while unwrapping an Optional value"
+    # And the exception "message" equals "Unexpectedly found nil while unwrapping an Optional value"
     And the exception "errorClass" equals "Fatal error"
 
 Scenario: Assertion failure in Swift code
