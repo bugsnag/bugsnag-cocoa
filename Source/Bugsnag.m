@@ -299,7 +299,7 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     }
 }
 
-+ (NSString *_Nullable)getContext {
++ (NSString *_Nullable)context {
     if ([self bugsnagStarted]) {
         return self.client.context;
     }

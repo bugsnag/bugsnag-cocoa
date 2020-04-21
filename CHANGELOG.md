@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Add getter for `Bugsnag.context`
+  [#554](https://github.com/bugsnag/bugsnag-cocoa/pull/554)
+
 * Add `sendThreads` property to `BugsnagConfiguration`
   [#549](https://github.com/bugsnag/bugsnag-cocoa/pull/549)
 

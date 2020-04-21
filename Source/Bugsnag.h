@@ -221,7 +221,10 @@
  */
 + (void)setContext:(NSString *_Nullable)context;
 
-+ (NSString *_Nullable)getContext;
+/**
+ * Retrieves the context - a general summary of what was happening in the application
+ */
++ (NSString *_Nullable)context;
 
 // =============================================================================
 // MARK: - User
