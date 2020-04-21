@@ -135,6 +135,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setPlugins:[self.plugins copy]];
     [copy setReleaseStage:self.releaseStage];
     [copy setSession:[self.session copy]];
+    [copy setSendThreads:self.sendThreads];
     [copy setUser:self.user.userId
         withEmail:self.user.emailAddress
           andName:self.user.name];
@@ -198,6 +199,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _redactedKeys = @[@"password"];
     _breadcrumbs = [BugsnagBreadcrumbs new];
     _autoTrackSessions = YES;
+    _sendThreads = BSGThreadSendPolicyAlways;
     // Default to recording all error types
     _enabledErrorTypes = BSGErrorTypesCPP
                        | BSGErrorTypesMach

@@ -37,6 +37,28 @@
 @class BugsnagEndpointConfiguration;
 
 /**
+ * Controls whether Bugsnag should capture and serialize the state of all threads at the time
+ * of an error.
+ */
+typedef NS_ENUM(NSInteger, BSGThreadSendPolicy) {
+
+    /**
+     * Threads should be captured for all events.
+     */
+    BSGThreadSendPolicyAlways = 0,
+
+    /**
+     * Threads should be captured for unhandled events only.
+     */
+    BSGThreadSendPolicyUnhandledOnly = 1,
+
+    /**
+     * Threads should never be captured.
+     */
+    BSGThreadSendPolicyNever = 2
+};
+
+/**
  * BugsnagConfiguration error constants
  */
 typedef NS_ENUM(NSInteger, BSGConfigurationErrorCode) {
@@ -134,6 +156,16 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
  *  The URL session used to send requests to Bugsnag.
  */
 @property(readwrite, strong, nonnull) NSURLSession *session;
+
+/**
+ * Controls whether Bugsnag should capture and serialize the state of all threads at the time
+ * of an error.
+ *
+ * By default sendThreads is set to BSGThreadSendPolicyAlways. This can be set to
+ * BSGThreadSendPolicyNever to disable or BSGThreadSendPolicyUnhandledOnly
+ * to only do so for unhandled errors.
+ */
+@property BSGThreadSendPolicy sendThreads;
 
 /**
  *  Optional handler invoked when an error or crash occurs

@@ -38,6 +38,7 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 + config.removeOnBreadcrumb(block:)
 
 + config.redactedKeys
++ config.sendThreads
 ```
 
 #### Renames

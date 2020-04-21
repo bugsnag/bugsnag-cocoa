@@ -786,6 +786,11 @@
     XCTAssertEqual([[configuration onSendBlocks] count], 2);
 }
 
+- (void)testSendThreadsDefault {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);
+}
+
 - (void)testNSCopying {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     
@@ -796,6 +801,7 @@
     [config setContext:@"context1"];
     [config setAppType:@"The most amazing app, a brilliant app, the app to end all apps"];
     [config setPersistUser:YES];
+    [config setSendThreads:BSGThreadSendPolicyUnhandledOnly];
     BugsnagOnSendBlock onSendBlock1 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
     BugsnagOnSendBlock onSendBlock2 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
 
@@ -810,7 +816,10 @@
 
     // Redacted keys
     XCTAssertEqualObjects(config.redactedKeys, clone.redactedKeys);
-    
+
+    // sendThreads
+    XCTAssertEqual(config.sendThreads, clone.sendThreads);
+
     // Object
     [clone setUser:@"Cthulu" withEmail:@"hp@lovecraft.com" andName:@"Howard"];
     XCTAssertEqualObjects(config.user.userId, @"foo");
