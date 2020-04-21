@@ -20,7 +20,7 @@
 @end
 
 @interface BugsnagSink ()
-- (NSDictionary *)getBodyFromReports:(NSArray *)reports;
+- (NSDictionary *)getBodyFromEvents:(NSArray *)events;
 @end
 
 @implementation BugsnagSinkTests
@@ -43,11 +43,12 @@
     config.releaseStage = @"MagicalTestingTime";
 
     // set a dummy endpoint, avoid hitting production
-    [config setEndpointsForNotify:@"http://localhost:1234" sessions:@"http://localhost:1234"];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://localhost:1234"
+                                                                   sessions:@"http://localhost:1234"];
     [Bugsnag startBugsnagWithConfiguration:config];
     BugsnagEvent *report =
     [[BugsnagEvent alloc] initWithKSReport:self.rawReportData];
-    self.processedData = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    self.processedData = [[BugsnagSink new] getBodyFromEvents:@[report]];
 }
 
 - (void)tearDown {
@@ -312,7 +313,7 @@
                                      handledState:state
                                           session:nil];
     
-    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    NSDictionary *data = [[BugsnagSink new] getBodyFromEvents:@[report]];
     return [data[@"events"] firstObject];
 }
 
@@ -396,7 +397,7 @@
                                           session:nil];
     report.severity = BSGSeverityInfo;
     
-    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    NSDictionary *data = [[BugsnagSink new] getBodyFromEvents:@[report]];
     NSDictionary *payload = [data[@"events"] firstObject];
     
     XCTAssertEqualObjects(@"info", payload[@"severity"]);

@@ -86,7 +86,7 @@ static NSString *const BSGKeyUnhandled = @"unhandled";
 static NSString *const BSGKeyAttributes = @"attributes";
 static NSString *const BSGKeyAction = @"action";
 static NSString *const BSGKeySession = @"session";
-
+static NSString *const BSGKeyRedaction = @"[REDACTED]";
 
 static NSString *const BSGKeyExecutableName = @"CFBundleExecutable";
 static NSString *const BSGKeyHwModel = @"hw.model";

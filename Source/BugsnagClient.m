@@ -246,7 +246,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
         return;
     }
     // copy session id
-    const char *newSessionId = [session.sessionId UTF8String];
+    const char *newSessionId = [session.id UTF8String];
     size_t idSize = strlen(newSessionId);
     strncpy((char *)sessionId, newSessionId, idSize);
     sessionId[idSize - 1] = NULL;
@@ -766,6 +766,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self notify:wrapper
     handledState:state
            block:^(BugsnagEvent *_Nonnull event) {
+                event.originalError = error;
                 [event addMetadata:@{
                                         @"code" : @(error.code),
                                         @"domain" : error.domain,
@@ -872,6 +873,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                                                          metadata:self.metadata
                                                      handledState:handledState
                                                           session:self.sessionTracker.runningSession];
+    event.originalError = exception;
     
     if (block) {
         block(event);

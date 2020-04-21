@@ -18,7 +18,7 @@
 #import "BugsnagApp.h"
 
 @interface BugsnagSession ()
-- (NSDictionary *)toJson;
+- (NSDictionary *)toDictionary;
 @end
 
 @interface Bugsnag ()
@@ -59,36 +59,19 @@
     NSMutableArray *sessionData = [NSMutableArray new];
 
     for (BugsnagSession *session in self.sessions) {
-        [sessionData addObject:[session toJson]];
+        [sessionData addObject:[session toDictionary]];
     }
     BSGDictInsertIfNotNil(dict, sessionData, @"sessions");
     BSGDictSetSafeObject(dict, [Bugsnag client].details, BSGKeyNotifier);
 
     // app/device data collection relies on KSCrash reports,
     // need to mimic the JSON structure here
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
-    NSDictionary *event = [self appInfo:systemInfo config:self.config];
-    BugsnagApp *app = [BugsnagApp appWithDictionary:event config:self.config];
+    BugsnagApp *app = self.sessions[0].app;
     BSGDictSetSafeObject(dict, [app toDict], @"app");
 
-    BugsnagDevice *device = [BugsnagDevice deviceWithDictionary:@{@"system": systemInfo}];
+    BugsnagDevice *device = self.sessions[0].device;
     BSGDictSetSafeObject(dict, [device toDictionary], @"device");
     return dict;
-}
-
-- (NSDictionary *)appInfo:(NSDictionary *)systemInfo
-                   config:(BugsnagConfiguration *)config
-{
-    NSMutableDictionary *data = [NSMutableDictionary new];
-    BSGDictInsertIfNotNil(data, config.releaseStage, @"releaseStage");
-    BSGDictInsertIfNotNil(data, config.appVersion, @"appVersion");
-
-    return @{
-            @"system": systemInfo,
-            @"user": @{
-                    @"config": data
-            }
-    };
 }
 
 @end

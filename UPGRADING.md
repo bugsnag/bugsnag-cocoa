@@ -36,6 +36,8 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 + config.addOnBreadcrumb(block:)
 + config.removeOnBreadcrumb(block:)
+
++ config.redactedKeys
 ```
 
 #### Renames
@@ -71,6 +73,9 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 
 - config.notifyReleaseStages
 + config.enabledReleaseStages
+
+- config.setEndpoints(notify: sessions)
++ config.setEndpoints(BugsnagEndpointConfiguration(notify: sessions))
 ```
 
 #### Removals
@@ -221,6 +226,7 @@ This is now BugsnagEvent.
 
 ```diff
 + event.unhandled
++ event.originalError
 ```
 
 `event.device` is now a structured class with properties for each value, rather than an `NSDictionary`.
@@ -257,6 +263,16 @@ of the removed `addAttribute`:
 
 ### `BugsnagSession` class
 
+#### Additions
+
+```diff
++ session.id
++ session.setUser(id:name:email:)
++ session.user
++ session.app
++ session.device
+```
+
 #### Removals
 
 ```diff
@@ -268,4 +284,6 @@ of the removed `addAttribute`:
 - handledCount
 - unhandledCount
 - stopped
+- user
+- sessionId
 ```

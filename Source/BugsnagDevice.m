@@ -12,6 +12,23 @@
 
 @implementation BugsnagDevice
 
++ (BugsnagDevice *)deserializeFromJson:(NSDictionary *)json {
+    BugsnagDevice *device = [BugsnagDevice new];
+    if (json != nil) {
+        device.jailbroken = [json[@"jailbroken"] boolValue];
+        device.id = json[@"id"];
+        device.locale = json[@"locale"];
+        device.manufacturer = json[@"manufacturer"];
+        device.model = json[@"model"];
+        device.modelNumber = json[@"modelNumber"];
+        device.osName = json[@"osName"];
+        device.osVersion = json[@"osVersion"];
+        device.runtimeVersions = json[@"runtimeVersions"];
+        device.totalMemory = json[@"totalMemory"];
+    }
+    return device;
+}
+
 + (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)event {
     BugsnagDevice *device = [BugsnagDevice new];
     [self populateFields:device dictionary:event];

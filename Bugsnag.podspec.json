@@ -38,12 +38,15 @@
     "Source/BugsnagConfiguration.h",
     "Source/BugsnagDevice.h",
     "Source/BugsnagDeviceWithState.h",
+    "Source/BugsnagEndpointConfiguration.h",
     "Source/BugsnagError.h",
     "Source/BugsnagEvent.h",
     "Source/BugsnagMetadata.h",
     "Source/BugsnagMetadataStore.h",
     "Source/BugsnagPlugin.h",
+    "Source/BugsnagSession.h",
     "Source/BugsnagStackframe.h",
-    "Source/BugsnagThread.h"
+    "Source/BugsnagThread.h",
+    "Source/BugsnagUser.h"
   ]
 }

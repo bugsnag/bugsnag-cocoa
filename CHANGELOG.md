@@ -8,6 +8,21 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Add structured app/device fields to `BugsnagSession`
+  [#546](https://github.com/bugsnag/bugsnag-cocoa/pull/546)
+
+* Add `redactedKeys` for removing sensitive values from metadata
+  [#540](https://github.com/bugsnag/bugsnag-cocoa/pull/540)
+
+* Move endpoint configuration to class
+  [#542](https://github.com/bugsnag/bugsnag-cocoa/pull/542)
+
+* Make all callbacks return boolean values
+  [#534](https://github.com/bugsnag/bugsnag-cocoa/pull/534)
+
+* Add `originalError` property to `BugsnagEvent`
+  [#541](https://github.com/bugsnag/bugsnag-cocoa/pull/541)
+
 * Remove attachCustomStacktrace from public API
   [#547](https://github.com/bugsnag/bugsnag-cocoa/pull/547)
 

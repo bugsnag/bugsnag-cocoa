@@ -34,6 +34,7 @@
 #import "BugsnagMetadataStore.h"
 
 @class BugsnagUser;
+@class BugsnagEndpointConfiguration;
 
 /**
  * BugsnagConfiguration error constants
@@ -59,7 +60,7 @@ typedef void (^BugsnagOnErrorBlock)(BugsnagEvent *_Nonnull event);
  *
  *  @return YES if the event should be sent
  */
-typedef bool (^BugsnagOnSendBlock)(BugsnagEvent *_Nonnull event);
+typedef BOOL (^BugsnagOnSendBlock)(BugsnagEvent *_Nonnull event);
 
 /**
  *  A configuration block for modifying a captured breadcrumb
@@ -71,9 +72,9 @@ typedef BOOL (^BugsnagOnBreadcrumbBlock)(BugsnagBreadcrumb *_Nonnull breadcrumb)
 /**
  * A configuration block for modifying a session. Intended for internal usage only.
  *
- * @param sessionPayload The session about to be delivered
+ * @param session The session about to be delivered
  */
-typedef void(^BugsnagOnSessionBlock)(NSMutableDictionary *_Nonnull sessionPayload);
+typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
 
 typedef NS_OPTIONS(NSUInteger, BSGEnabledErrorType) {
     BSGErrorTypesNone         NS_SWIFT_NAME(None)         = 0,
@@ -107,6 +108,18 @@ typedef NS_OPTIONS(NSUInteger, BSGEnabledErrorType) {
  *  Release stages which are allowed to notify Bugsnag
  */
 @property(readwrite, retain, nullable) NSArray *enabledReleaseStages;
+
+/**
+ * Sets which values should be removed from any Metadata objects before
+ * sending them to Bugsnag. Use this if you want to ensure you don't send
+ * sensitive data such as passwords, and credit card numbers to our
+ * servers. Any keys which contain a match will be filtered.
+ *
+ * By default, redactedKeys is set to ["password"]. Both string literals and regex
+ * values can be supplied to this property.
+ */
+@property(readwrite, retain, nullable) NSArray<id> *redactedKeys;
+
 /**
  *  A general summary of what was occuring in the application
  */
@@ -192,15 +205,8 @@ typedef NS_OPTIONS(NSUInteger, BSGEnabledErrorType) {
  * Please note that it is recommended that you set both endpoints. If the notify endpoint is
  * missing, an assertion will be thrown. If the session endpoint is missing, a warning will be
  * logged and sessions will not be sent automatically.
- *
- * @param notify the notify endpoint
- * @param sessions the sessions endpoint
- *
- * @throws an assertion if the notify endpoint is not a valid URL
  */
-
-- (void)setEndpointsForNotify:(NSString *_Nonnull)notify
-                     sessions:(NSString *_Nonnull)sessions NS_SWIFT_NAME(setEndpoints(notify:sessions:));
+@property(nonnull, nonatomic) BugsnagEndpointConfiguration *endpoints;
 
 // =============================================================================
 // MARK: - User

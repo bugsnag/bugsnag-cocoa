@@ -9,24 +9,34 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagUser.h"
+#import "BugsnagApp.h"
+#import "BugsnagDevice.h"
 
 @interface BugsnagSession : NSObject
 
-- (_Nonnull instancetype)initWithId:(NSString *_Nonnull)sessionId
-                 startDate:(NSDate *_Nonnull)startDate
-                      user:(BugsnagUser *_Nullable)user
-              autoCaptured:(BOOL)autoCaptured;
+@property NSString *_Nonnull id;
+@property NSDate *_Nonnull startedAt;
+@property(readonly) BugsnagApp *_Nonnull app;
+@property(readonly) BugsnagDevice *_Nonnull device;
 
-- (_Nonnull instancetype)initWithDictionary:(NSDictionary *_Nonnull)dict;
+// =============================================================================
+// MARK: - User
+// =============================================================================
 
-- (_Nonnull instancetype)initWithId:(NSString *_Nonnull)sessionId
-                          startDate:(NSDate *_Nonnull)startDate
-                               user:(BugsnagUser *_Nullable)user
-                       handledCount:(NSUInteger)handledCount
-                     unhandledCount:(NSUInteger)unhandledCount;
+/**
+ * The current user
+ */
+@property(readonly, retain, nonnull) BugsnagUser *user;
 
-@property(readonly) NSString *_Nonnull sessionId;
-@property(readonly) NSDate *_Nonnull startedAt;
-@property(readonly) BugsnagUser *_Nullable user;
+/**
+ *  Set user metadata
+ *
+ *  @param userId ID of the user
+ *  @param name   Name of the user
+ *  @param email  Email address of the user
+ */
+- (void)setUser:(NSString *_Nullable)userId
+      withEmail:(NSString *_Nullable)email
+        andName:(NSString *_Nullable)name;
 
 @end
