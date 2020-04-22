@@ -90,6 +90,8 @@
             @"metadata @16@0:8",
             @"workspaceBreadcrumbStateEvents @16@0:8",
             @"startListeningForWorkspaceStateChangeNotifications: v24@0:8@16",
+            @"codeBundleId @16@0:8",
+            @"setCodeBundleId: v24@0:8@16",
             @"context @16@0:8"
     ]];
 

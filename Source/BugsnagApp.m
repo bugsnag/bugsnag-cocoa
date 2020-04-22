@@ -29,15 +29,17 @@
 
 + (BugsnagApp *)appWithDictionary:(NSDictionary *)event
                            config:(BugsnagConfiguration *)config
+                     codeBundleId:(NSString *)codeBundleId
 {
     BugsnagApp *app = [BugsnagApp new];
-    [self populateFields:app dictionary:event config:config];
+    [self populateFields:app dictionary:event config:config codeBundleId:codeBundleId];
     return app;
 }
 
 + (void)populateFields:(BugsnagApp *)app
             dictionary:(NSDictionary *)event
                 config:(BugsnagConfiguration *)config
+          codeBundleId:(NSString *)codeBundleId
 {
     NSDictionary *system = event[BSGKeySystem];
     app.id = system[@"CFBundleIdentifier"];
@@ -45,7 +47,7 @@
     app.dsymUuid = system[@"app_uuid"];
     app.version = [event valueForKeyPath:@"user.config.appVersion"] ?: system[@"CFBundleShortVersionString"];
     app.releaseStage = [event valueForKeyPath:@"user.config.releaseStage"] ?: config.releaseStage;
-    app.codeBundleId = config.codeBundleId;
+    app.codeBundleId = codeBundleId;
     app.type = config.appType;
 }
 

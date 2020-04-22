@@ -17,7 +17,9 @@
 #import "BugsnagTestConstants.h"
 
 @interface BugsnagApp ()
-+ (BugsnagApp *)appWithDictionary:(NSDictionary *)data config:(BugsnagConfiguration *)config;
++ (BugsnagApp *)appWithDictionary:(NSDictionary *)data
+                           config:(BugsnagConfiguration *)config
+                     codeBundleId:(NSString *)codeBundleId;
 - (NSDictionary *)toDict;
 @end
 
@@ -41,6 +43,10 @@
 @property BugsnagApp *app;
 @property BugsnagDevice *device;
 @property NSDictionary *serializedSession;
+@end
+
+@interface BugsnagUser ()
+- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
 @end
 
 @implementation BugsnagSessionTest
@@ -74,8 +80,7 @@
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.appType = @"iOS";
-    config.codeBundleId = @"bundle-123";
-    return [BugsnagApp appWithDictionary:appData config:config];
+    return [BugsnagApp appWithDictionary:appData config:config codeBundleId:@"bundle-123"];
 }
 
 - (BugsnagDevice *)generateDevice {

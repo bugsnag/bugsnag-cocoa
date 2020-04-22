@@ -11,10 +11,15 @@
 #import "BugsnagUser.h"
 #import "BugsnagEvent.h"
 
+@interface BugsnagEvent ()
+- (instancetype)initWithKSReport:(NSDictionary *)report;
+@end
+
 @interface BugsnagUser ()
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
 - (NSDictionary *)toJson;
+- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
 @end
 
 @interface BugsnagEvent ()

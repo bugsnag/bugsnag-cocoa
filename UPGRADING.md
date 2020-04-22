@@ -94,6 +94,7 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 - config.shouldSendReports
 - config.errorApiHeaders
 - config.sessionApiHeaders
+- config.codeBundleId
 ```
 
 ### `Bugsnag` class

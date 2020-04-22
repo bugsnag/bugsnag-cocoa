@@ -195,7 +195,6 @@ typedef NS_OPTIONS(NSUInteger, BSGEnabledErrorType) {
  */
 @property (readwrite, retain, nullable) NSString *bundleVersion;
 
-@property(retain, nullable) NSString *codeBundleId;
 @property(retain, nullable) NSString *appType;
 
 /**

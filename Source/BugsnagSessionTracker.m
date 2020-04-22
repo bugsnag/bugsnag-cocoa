@@ -39,11 +39,16 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 
 @interface BugsnagApp ()
 + (BugsnagApp *)appWithDictionary:(NSDictionary *)event
-                           config:(BugsnagConfiguration *)config;
+                           config:(BugsnagConfiguration *)config
+                     codeBundleId:(NSString *)codeBundleId;
 @end
 
 @interface BugsnagDevice ()
 + (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)event;
+@end
+
+@interface BugsnagSessionTrackingApiClient ()
+@property (nonatomic) NSString *codeBundleId;
 @end
 
 @interface BugsnagSessionTracker ()
@@ -51,7 +56,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 @property (strong, nonatomic) BugsnagSessionFileStore *sessionStore;
 @property (strong, nonatomic) BugsnagSessionTrackingApiClient *apiClient;
 @property (strong, nonatomic) NSDate *backgroundStartTime;
-
+@property (nonatomic) NSString *codeBundleId;
 @property (strong, readwrite) BugsnagSession *currentSession;
 
 /**
@@ -76,6 +81,11 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
         _sessionStore = [BugsnagSessionFileStore storeWithPath:storePath];
     }
     return self;
+}
+
+- (void)setCodeBundleId:(NSString *)codeBundleId {
+    _codeBundleId = codeBundleId;
+    _apiClient.codeBundleId = codeBundleId;
 }
 
 #pragma mark - Creating and sending a new session
@@ -129,7 +139,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
     }
 
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
-    BugsnagApp *app = [BugsnagApp appWithDictionary:@{@"system": systemInfo} config:self.config];
+    BugsnagApp *app = [BugsnagApp appWithDictionary:@{@"system": systemInfo} config:self.config codeBundleId:self.codeBundleId];
     BugsnagDevice *device = [BugsnagDevice deviceWithDictionary:@{@"system": systemInfo}];
     BugsnagSession *newSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                           startDate:[NSDate date]

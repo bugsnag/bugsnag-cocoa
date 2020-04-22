@@ -13,12 +13,16 @@
 #import "BugsnagTestConstants.h"
 
 @interface BugsnagApp ()
-+ (BugsnagApp *)appWithDictionary:(NSDictionary *)event config:(BugsnagConfiguration *)config;
++ (BugsnagApp *)appWithDictionary:(NSDictionary *)event
+                           config:(BugsnagConfiguration *)config
+                     codeBundleId:(NSString *)codeBundleId;
 - (NSDictionary *)toDict;
 @end
 
 @interface BugsnagAppWithState ()
-+ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event config:(BugsnagConfiguration *)config;
++ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
+                                    config:(BugsnagConfiguration *)config
+                              codeBundleId:(NSString *)codeBundleId;
 + (BugsnagAppWithState *)appWithOomData:(NSDictionary *)event;
 - (NSDictionary *)toDict;
 @end
@@ -26,6 +30,7 @@
 @interface BugsnagAppTest : XCTestCase
 @property NSDictionary *data;
 @property BugsnagConfiguration *config;
+@property NSString *codeBundleId;
 @end
 
 @implementation BugsnagAppTest
@@ -56,11 +61,11 @@
 
     self.config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     self.config.appType = @"iOS";
-    self.config.codeBundleId = @"bundle-123";
+    self.codeBundleId = @"bundle-123";
 }
 
 - (void)testApp {
-    BugsnagApp *app = [BugsnagApp appWithDictionary:self.data config:self.config];
+    BugsnagApp *app = [BugsnagApp appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
 
     // verify stateless fields
     XCTAssertEqualObjects(@"1", app.bundleVersion);
@@ -73,7 +78,7 @@
 }
 
 - (void)testAppWithState {
-    BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:self.data config:self.config];
+    BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
 
     // verify stateful fields
     XCTAssertEqual(7000, app.duration);
@@ -91,7 +96,7 @@
 }
 
 - (void)testAppToDict {
-    BugsnagApp *app = [BugsnagApp appWithDictionary:self.data config:self.config];
+    BugsnagApp *app = [BugsnagApp appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
     NSDictionary *dict = [app toDict];
 
     // verify stateless fields
@@ -105,7 +110,7 @@
 }
 
 - (void)testAppWithStateToDict {
-    BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:self.data config:self.config];
+    BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
     NSDictionary *dict = [app toDict];
 
     // verify stateful fields
