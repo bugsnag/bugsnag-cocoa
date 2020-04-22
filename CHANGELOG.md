@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Add getter for `Bugsnag.context`
+  [#554](https://github.com/bugsnag/bugsnag-cocoa/pull/554)
+
 * Make `BugsnagUser` properties readonly
   [#556](https://github.com/bugsnag/bugsnag-cocoa/pull/556)
 
