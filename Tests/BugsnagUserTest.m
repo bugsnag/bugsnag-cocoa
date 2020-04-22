@@ -32,11 +32,7 @@
 }
 
 - (void)testPayloadSerialisation {
-    BugsnagUser *payload = [BugsnagUser new];
-    payload.userId = @"test";
-    payload.emailAddress = @"fake@example.com";
-    payload.name = @"Tom Bombadil";
-    
+    BugsnagUser *payload = [[BugsnagUser alloc] initWithUserId:@"test" name:@"Tom Bombadil" emailAddress:@"fake@example.com"];
     NSDictionary *rootNode = [payload toJson];
     XCTAssertNotNil(rootNode);
     XCTAssertEqual(3, [rootNode count]);
