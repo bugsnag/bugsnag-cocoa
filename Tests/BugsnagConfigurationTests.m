@@ -441,9 +441,9 @@
 
     BugsnagConfiguration *config2 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertNotNil(config2.user);
-    XCTAssertNil(config2.user.userId);
+    XCTAssertNil(config2.user.id);
     XCTAssertNil(config2.user.name);
-    XCTAssertNil(config2.user.emailAddress);
+    XCTAssertNil(config2.user.email);
 }
 
 /**
@@ -656,9 +656,9 @@
     
     [config setUser:@"123" withEmail:@"test@example.com" andName:@"foo"];
     
-    XCTAssertEqualObjects(@"123", config.user.userId);
+    XCTAssertEqualObjects(@"123", config.user.id);
     XCTAssertEqualObjects(@"foo", config.user.name);
-    XCTAssertEqualObjects(@"test@example.com", config.user.emailAddress);
+    XCTAssertEqualObjects(@"test@example.com", config.user.email);
 }
 
 - (void)testDefaultRedactedKeys {
@@ -822,8 +822,8 @@
 
     // Object
     [clone setUser:@"Cthulu" withEmail:@"hp@lovecraft.com" andName:@"Howard"];
-    XCTAssertEqualObjects(config.user.userId, @"foo");
-    XCTAssertEqualObjects(clone.user.userId, @"Cthulu");
+    XCTAssertEqualObjects(config.user.id, @"foo");
+    XCTAssertEqualObjects(clone.user.id, @"Cthulu");
     
     // String
     [clone setApiKey:DUMMY_APIKEY_32CHAR_2];

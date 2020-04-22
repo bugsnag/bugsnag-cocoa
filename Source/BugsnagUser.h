@@ -10,8 +10,8 @@
 
 @interface BugsnagUser : NSObject
 
-@property(readonly) NSString *userId;
+@property(readonly) NSString *id;
 @property(readonly) NSString *name;
-@property(readonly) NSString *emailAddress;
+@property(readonly) NSString *email;
 
 @end

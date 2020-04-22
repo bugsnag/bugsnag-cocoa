@@ -141,8 +141,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setReleaseStage:self.releaseStage];
     [copy setSession:[self.session copy]];
     [copy setSendThreads:self.sendThreads];
-    [copy setUser:self.user.userId
-        withEmail:self.user.emailAddress
+    [copy setUser:self.user.id
+        withEmail:self.user.email
           andName:self.user.name];
     
     return copy;
@@ -278,9 +278,9 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  * @param user A BugsnagUser object containing data to be added to the configuration metadata.
  */
 - (void)setUserMetadataFromUser:(BugsnagUser *)user {
-    [self.metadata addMetadata:user.userId       withKey:BSGKeyId    toSection:BSGKeyUser];
+    [self.metadata addMetadata:user.id withKey:BSGKeyId toSection:BSGKeyUser];
     [self.metadata addMetadata:user.name         withKey:BSGKeyName  toSection:BSGKeyUser];
-    [self.metadata addMetadata:user.emailAddress withKey:BSGKeyEmail toSection:BSGKeyUser];
+    [self.metadata addMetadata:user.email withKey:BSGKeyEmail toSection:BSGKeyUser];
 }
 
 // =============================================================================
@@ -399,8 +399,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     @synchronized(self) {
         if (_user) {
             // Email
-            if (_user.emailAddress) {
-                [BSG_SSKeychain setPassword:_user.emailAddress
+            if (_user.email) {
+                [BSG_SSKeychain setPassword:_user.email
                              forService:kBugsnagUserEmailAddress
                                 account:kBugsnagUserKeychainAccount];
             }
@@ -421,8 +421,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
             }
             
             // UserId
-            if (_user.userId) {
-                [BSG_SSKeychain setPassword:_user.userId
+            if (_user.id) {
+                [BSG_SSKeychain setPassword:_user.id
                              forService:kBugsnagUserUserId
                                 account:kBugsnagUserKeychainAccount];
             }

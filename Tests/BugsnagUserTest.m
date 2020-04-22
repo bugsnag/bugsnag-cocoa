@@ -40,8 +40,8 @@
     BugsnagUser *user = [[BugsnagUser alloc] initWithDictionary:dict];
 
     XCTAssertNotNil(user);
-    XCTAssertEqualObjects(user.userId, @"test");
-    XCTAssertEqualObjects(user.emailAddress, @"fake@example.com");
+    XCTAssertEqualObjects(user.id, @"test");
+    XCTAssertEqualObjects(user.email, @"fake@example.com");
     XCTAssertEqualObjects(user.name, @"Tom Bombadil");
 }
 
@@ -66,9 +66,9 @@
                             @"email": @"jane@example.com",
                     }
             }}];
-    XCTAssertEqualObjects(@"123", event.user.userId);
+    XCTAssertEqualObjects(@"123", event.user.id);
     XCTAssertEqualObjects(@"Jane Smith", event.user.name);
-    XCTAssertEqualObjects(@"jane@example.com", event.user.emailAddress);
+    XCTAssertEqualObjects(@"jane@example.com", event.user.email);
 }
 
 @end
