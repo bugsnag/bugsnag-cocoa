@@ -22,8 +22,8 @@ void exceptionHandler(NSException *ex) {
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     
     NSString *apiKey = @"<YOUR_APIKEY_HERE>";
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
+    [Bugsnag startBugsnagWithConfiguration:config];
     
 }
 

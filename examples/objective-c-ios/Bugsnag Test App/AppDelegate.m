@@ -14,9 +14,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     NSString *apiKey = @"<YOUR_APIKEY_HERE>";
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
-    configuration.sendThreads = BSGThreadSendPolicyAlways;
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
+    [Bugsnag startBugsnagWithConfiguration:config];
     
     return YES;
 }
