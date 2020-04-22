@@ -92,7 +92,7 @@
         if (![bugsnagReport shouldBeSent])
             continue;
         BOOL shouldSend = YES;
-        for (BugsnagOnSendBlock block in configuration.onSendBlocks) {
+        for (BugsnagOnSendErrorBlock block in configuration.onSendBlocks) {
             @try {
                 shouldSend = block(bugsnagReport);
                 if (!shouldSend)

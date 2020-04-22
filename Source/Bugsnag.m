@@ -357,17 +357,17 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 // MARK: - onSend
 // =============================================================================
 
-+ (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
++ (void)addOnSendErrorBlock:(BugsnagOnSendErrorBlock _Nonnull)block
 {
     if ([self bugsnagStarted]) {
-        [self.client addOnSendBlock:block];
+        [self.client addOnSendErrorBlock:block];
     }
 }
 
-+ (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
++ (void)removeOnSendErrorBlock:(BugsnagOnSendErrorBlock _Nonnull)block
 {
     if ([self bugsnagStarted]) {
-        [self.client removeOnSendBlock:block];
+        [self.client removeOnSendErrorBlock:block];
     }
 }
 

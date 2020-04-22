@@ -755,14 +755,14 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
     
-    BugsnagOnSendBlock block = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
-    
-    [configuration addOnSendBlock:block];
+    BugsnagOnSendErrorBlock block = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
+
+    [configuration addOnSendErrorBlock:block];
     [Bugsnag startBugsnagWithConfiguration:configuration];
     
     XCTAssertEqual([[configuration onSendBlocks] count], 1);
-    
-    [configuration removeOnSendBlock:block];
+
+    [configuration removeOnSendErrorBlock:block];
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
 }
 
@@ -774,12 +774,12 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
     
-    BugsnagOnSendBlock block1 = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
-    BugsnagOnSendBlock block2 = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
+    BugsnagOnSendErrorBlock block1 = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
+    BugsnagOnSendErrorBlock block2 = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
     
     // Add more than one
-    [configuration addOnSendBlock:block1];
-    [configuration addOnSendBlock:block2];
+    [configuration addOnSendErrorBlock:block1];
+    [configuration addOnSendErrorBlock:block2];
     
     [Bugsnag startBugsnagWithConfiguration:configuration];
     
@@ -802,8 +802,8 @@
     [config setAppType:@"The most amazing app, a brilliant app, the app to end all apps"];
     [config setPersistUser:YES];
     [config setSendThreads:BSGThreadSendPolicyUnhandledOnly];
-    BugsnagOnSendBlock onSendBlock1 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
-    BugsnagOnSendBlock onSendBlock2 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
+    BugsnagOnSendErrorBlock onSendBlock1 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
+    BugsnagOnSendErrorBlock onSendBlock2 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
 
     NSArray *sendBlocks = @[ onSendBlock1, onSendBlock2 ];
     [config setOnSendBlocks:[sendBlocks mutableCopy]]; // Mutable arg required

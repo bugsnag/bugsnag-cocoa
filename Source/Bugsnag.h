@@ -256,7 +256,7 @@
  * @param block The block to be removed.
  */
 + (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block
-    NS_SWIFT_NAME(removeOnSession(block:));;
+    NS_SWIFT_NAME(removeOnSession(block:));
 
 // =============================================================================
 // MARK: - onSend
@@ -268,16 +268,16 @@
  *
  *  @param block A block which returns YES if the report should be sent
  */
-+ (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
-    NS_SWIFT_NAME(addOnSend(block:));
++ (void)addOnSendErrorBlock:(BugsnagOnSendErrorBlock _Nonnull)block
+    NS_SWIFT_NAME(addOnSendError(block:));
 
 /**
  * Remove the callback that would be invoked before an event is sent.
  *
  * @param block The block to be removed.
  */
-+ (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
-    NS_SWIFT_NAME(removeOnSend(block:));
++ (void)removeOnSendErrorBlock:(BugsnagOnSendErrorBlock _Nonnull)block
+    NS_SWIFT_NAME(removeOnSendError(block:));
 
 // =============================================================================
 // MARK: - onBreadcrumb

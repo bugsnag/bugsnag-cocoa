@@ -287,11 +287,11 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 // MARK: - onSendBlock
 // =============================================================================
 
-- (void)addOnSendBlock:(BugsnagOnSendBlock)block {
+- (void)addOnSendErrorBlock:(BugsnagOnSendErrorBlock _Nonnull)block {
     [(NSMutableArray *)self.onSendBlocks addObject:[block copy]];
 }
 
-- (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull )block
+- (void)removeOnSendErrorBlock:(BugsnagOnSendErrorBlock _Nonnull )block
 {
     [(NSMutableArray *)self.onSendBlocks removeObject:block];
 }

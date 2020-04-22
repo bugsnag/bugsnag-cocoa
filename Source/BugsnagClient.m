@@ -748,12 +748,12 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 // MARK: - onSend
 // =============================================================================
 
-- (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block {
-    [self.configuration addOnSendBlock:block];
+- (void)addOnSendErrorBlock:(BugsnagOnSendErrorBlock _Nonnull)block {
+    [self.configuration addOnSendErrorBlock:block];
 }
 
-- (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block {
-    [self.configuration removeOnSendBlock:block];
+- (void)removeOnSendErrorBlock:(BugsnagOnSendErrorBlock _Nonnull)block {
+    [self.configuration removeOnSendErrorBlock:block];
 }
 
 // =============================================================================
