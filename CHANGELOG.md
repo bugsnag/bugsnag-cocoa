@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Make `BugsnagUser` properties readonly
+  [#556](https://github.com/bugsnag/bugsnag-cocoa/pull/556)
+
 * Add `sendThreads` property to `BugsnagConfiguration`
   [#549](https://github.com/bugsnag/bugsnag-cocoa/pull/549)
 
