@@ -26,6 +26,7 @@ class HandledErrorOverrideScenario: Scenario {
             let depth: Int = report.value(forKey: "depth") as! Int
             report.setValue(depth + 2, forKey: "depth")
             report.addMetadata(["items": [400,200]], section: "account")
+            return true
         }
     }
 

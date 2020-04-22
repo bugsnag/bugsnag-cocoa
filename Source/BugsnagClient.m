@@ -771,7 +771,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)notifyError:(NSError *)error
-              block:(void (^)(BugsnagEvent *))block
+              block:(BugsnagOnErrorBlock)block
 {
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError
                                                                             severity:BSGSeverityWarning
@@ -781,7 +781,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                                                  userInfo:error.userInfo];
     [self notify:wrapper
     handledState:state
-           block:^(BugsnagEvent *_Nonnull event) {
+           block:^BOOL(BugsnagEvent *_Nonnull event) {
                 event.originalError = error;
                 [event addMetadata:@{
                                         @"code" : @(error.code),
@@ -794,8 +794,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                }
 
                if (block) {
-                   block(event);
+                   return block(event);
                }
+               return true;
            }];
 }
 
@@ -804,7 +805,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)notify:(NSException *)exception 
-         block:(void (^)(BugsnagEvent *))block 
+         block:(BugsnagOnErrorBlock)block
 {
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
@@ -881,7 +882,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)notify:(NSException *)exception
   handledState:(BugsnagHandledState *_Nonnull)handledState
-         block:(void (^)(BugsnagEvent *))block
+         block:(BugsnagOnErrorBlock)block
 {
     NSString *exceptionName = exception.name ?: NSStringFromClass([exception class]);
     NSString *message = exception.reason;
@@ -899,8 +900,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                                                           session:self.sessionTracker.runningSession];
     event.originalError = exception;
     
-    if (block) {
-        block(event);
+    if (block != nil && !block(event)) { // skip notifying if callback false
+        return;
     }
     
     //    We discard 5 stack frames (including this one) by default,

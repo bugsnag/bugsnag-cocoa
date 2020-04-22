@@ -65,7 +65,7 @@
     NSException *exception1 = [[NSException alloc] initWithName:@"exception1" reason:@"reason1" userInfo:nil];
     NSException *exception2 = [[NSException alloc] initWithName:@"exception2" reason:@"reason2" userInfo:nil];
 
-    [Bugsnag notify:exception1 block:^(BugsnagEvent * _Nonnull event) {
+    [Bugsnag notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects([event getMetadataFromSection:@"mySection1" withKey:@"aKey1"], @"aValue1");
         XCTAssertEqual(event.errors[0].errorClass, @"exception1");
         XCTAssertEqual(event.errors[0].errorMessage, @"reason1");
@@ -75,7 +75,7 @@
         [Bugsnag addMetadata:@"aValue2" withKey:@"aKey2" toSection:@"mySection2"];
     }];
     
-    [Bugsnag notify:exception2 block:^(BugsnagEvent * _Nonnull event) {
+    [Bugsnag notify:exception2 block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects([event getMetadataFromSection:@"mySection1" withKey:@"aKey1"], @"aValue1");
         XCTAssertEqualObjects([event getMetadataFromSection:@"mySection2" withKey:@"aKey2"], @"aValue2");
         XCTAssertEqual(event.errors[0].errorClass, @"exception2");
@@ -87,7 +87,7 @@
     [Bugsnag addMetadata:nil withKey:@"aKey1" toSection:@"mySection1"];
     [Bugsnag addMetadata:nil withKey:@"aKey2" toSection:@"mySection2"];
     
-    [Bugsnag notify:exception1 block:^(BugsnagEvent * _Nonnull event) {
+    [Bugsnag notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertNil([event getMetadataFromSection:@"mySection1" withKey:@"aKey1"]);
         XCTAssertNil([event getMetadataFromSection:@"mySection2" withKey:@"aKey2"]);
     }];
@@ -96,7 +96,7 @@
     
     // This goes to Client
     [Bugsnag addMetadata:@"aValue1" withKey:@"aKey1" toSection:@"mySection1"];
-    [Bugsnag notify:exception1 block:^(BugsnagEvent * _Nonnull event) {
+    [Bugsnag notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull event) {
         // event should have a copy of Client metadata
         
         XCTAssertEqualObjects([[[Bugsnag client] metadata] getMetadataFromSection:@"mySection1" withKey:@"aKey1"],
@@ -171,7 +171,7 @@
     NSException *exception1 = [[NSException alloc] initWithName:@"exception1" reason:@"reason1" userInfo:nil];
 
     // Check that the context is set going in to the test and that we can change it
-    [Bugsnag notify:exception1 block:^(BugsnagEvent * _Nonnull event) {
+    [Bugsnag notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqual([[Bugsnag configuration] context], @"firstContext");
         
         // Change the global context
@@ -183,6 +183,7 @@
         XCTAssertEqual([event context], @"firstContext");
         
         [expectation1 fulfill];
+        return true;
     }];
 
     // Test that the context (changed inside the notify block) remains changed
@@ -190,9 +191,10 @@
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError * _Nullable error) {
         XCTAssertEqual([[Bugsnag configuration] context], @"secondContext");
         
-        [Bugsnag notify:exception1 block:^(BugsnagEvent * _Nonnull report) {
+        [Bugsnag notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull report) {
             XCTAssertEqual([[Bugsnag configuration] context], @"secondContext");
             XCTAssertEqual([report context], @"secondContext");
+            return true;
         }];
     }];
 }

@@ -25,6 +25,7 @@ class BugsnagSwiftTests: XCTestCase {
             // Arbitrary test, replicating the ObjC one
             let value = event.getMetadata(section: "mySection1", key: "myKey1") as? String
             XCTAssertEqual(value, "myValue1")
+            return true
         }
     }
     

@@ -68,7 +68,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     __block NSString *eventSeverity;
     
     // Check that the event is passed the apiKey
-    [Bugsnag notify:ex block:^(BugsnagEvent * _Nonnull event) {
+    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         
         // Grab the values that end up in the event for later comparison
@@ -76,6 +76,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
         eventErrorMessage = event.errors[0].errorMessage;
         eventUnhandled = [event valueForKeyPath:@"handledState.unhandled"] ? YES : NO;
         eventSeverity = BSGFormatSeverity([event severity]);
+        return true;
     }];
     
     // Check that we can change it

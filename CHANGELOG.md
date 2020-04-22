@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Make `BugsnagOnErrorBlock` return `BOOL` rather than `void`
+  [#555](https://github.com/bugsnag/bugsnag-cocoa/pull/555)
+
 * Make `BugsnagPlugin` take `BugsnagClient` as param
   [#558](https://github.com/bugsnag/bugsnag-cocoa/pull/558)
 

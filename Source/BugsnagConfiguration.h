@@ -70,7 +70,7 @@ typedef NS_ENUM(NSInteger, BSGConfigurationErrorCode) {
  *
  *  @param event the error report to be modified
  */
-typedef void (^BugsnagOnErrorBlock)(BugsnagEvent *_Nonnull event);
+typedef BOOL (^BugsnagOnErrorBlock)(BugsnagEvent *_Nonnull event);
 
 /**
  *  A handler for modifying data before sending it to Bugsnag.
