@@ -23,9 +23,9 @@
 - (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress {
     self = [super init];
     if (self) {
-        self.userId = userId;
-        self.name = name;
-        self.emailAddress = emailAddress;
+        _userId = userId;
+        _name = name;
+        _emailAddress = emailAddress;
     }
     return self;
 }

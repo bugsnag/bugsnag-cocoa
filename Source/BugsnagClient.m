@@ -760,6 +760,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     self.configuration.context = context;
 }
 
+- (NSString *)context {
+    return self.configuration.context;
+}
+
 // MARK: - Notify
 
 - (void)notifyError:(NSError *_Nonnull)error {

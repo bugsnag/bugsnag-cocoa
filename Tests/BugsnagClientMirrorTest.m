@@ -89,7 +89,8 @@
             @"setMetadata: v24@0:8@16",
             @"metadata @16@0:8",
             @"workspaceBreadcrumbStateEvents @16@0:8",
-            @"startListeningForWorkspaceStateChangeNotifications: v24@0:8@16"
+            @"startListeningForWorkspaceStateChangeNotifications: v24@0:8@16",
+            @"context @16@0:8"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to
@@ -103,7 +104,8 @@
             @"client @16@0:8",
             @"bugsnagStarted B16@0:8",
             @"bugsnagStarted c16@0:8",
-            @"leaveBreadcrumbWithBlock: v24@0:8@?16"
+            @"leaveBreadcrumbWithBlock: v24@0:8@?16",
+            @"getContext @16@0:8"
     ]];
 }
 
