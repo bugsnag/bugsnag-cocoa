@@ -10,6 +10,8 @@
 
 #import "BugsnagBreadcrumb.h"
 
+typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
+
 @interface BugsnagBreadcrumbs : NSObject
 
 /**

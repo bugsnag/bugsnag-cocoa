@@ -30,6 +30,13 @@
 @interface BugsnagEvent ()
 - (NSDictionary *_Nonnull)toJson;
 - (BOOL)shouldBeSent;
+- (instancetype)initWithKSReport:(NSDictionary *)report;
+- (instancetype _Nonnull)initWithErrorName:(NSString *_Nonnull)name
+                              errorMessage:(NSString *_Nonnull)message
+                             configuration:(BugsnagConfiguration *_Nonnull)config
+                                  metadata:(BugsnagMetadata *_Nullable)metadata
+                              handledState:(BugsnagHandledState *_Nonnull)handledState
+                                   session:(BugsnagSession *_Nullable)session;
 @property (nonatomic, strong) BugsnagMetadata *metadata;
 @property(readwrite) NSUInteger depth;
 @end

@@ -107,14 +107,6 @@
 + (void)notifyError:(NSError *_Nonnull)error
               block:(BugsnagOnErrorBlock _Nullable)block;
 
-/**
- * Intended for use by other clients (React Native/Unity). Calling this method
- * directly from iOS is not supported.
- */
-+ (void)internalClientNotify:(NSException *_Nonnull)exception
-                    withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagOnErrorBlock _Nullable)block;
-
 // =============================================================================
 // MARK: - Breadcrumbs
 // =============================================================================
@@ -217,11 +209,14 @@
 // =============================================================================
 
 /**
- * Replicates BugsnagConfiguration.context
- *
- * @param context A general summary of what was happening in the application
+ * Retrieves the context - a general summary of what was happening in the application
  */
 + (void)setContext:(NSString *_Nullable)context;
+
+/**
+ * Retrieves the context - a general summary of what was happening in the application
+ */
++ (NSString *_Nullable)context;
 
 // =============================================================================
 // MARK: - User

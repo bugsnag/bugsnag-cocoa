@@ -9,6 +9,12 @@
 #import <XCTest/XCTest.h>
 
 #import "BugsnagUser.h"
+#import "BugsnagEvent.h"
+
+@interface BugsnagUser ()
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (NSDictionary *)toJson;
+@end
 
 @interface BugsnagUserTest : XCTestCase
 @end
@@ -31,11 +37,7 @@
 }
 
 - (void)testPayloadSerialisation {
-    BugsnagUser *payload = [BugsnagUser new];
-    payload.userId = @"test";
-    payload.emailAddress = @"fake@example.com";
-    payload.name = @"Tom Bombadil";
-    
+    BugsnagUser *payload = [[BugsnagUser alloc] initWithUserId:@"test" name:@"Tom Bombadil" emailAddress:@"fake@example.com"];
     NSDictionary *rootNode = [payload toJson];
     XCTAssertNotNil(rootNode);
     XCTAssertEqual(3, [rootNode count]);
@@ -43,6 +45,21 @@
     XCTAssertEqualObjects(@"test", rootNode[@"id"]);
     XCTAssertEqualObjects(@"fake@example.com", rootNode[@"email"]);
     XCTAssertEqualObjects(@"Tom Bombadil", rootNode[@"name"]);
+}
+
+- (void)testUserEvent {
+    // Setup
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
+            @"user.metaData": @{
+                    @"user": @{
+                            @"id": @"123",
+                            @"name": @"Jane Smith",
+                            @"email": @"jane@example.com",
+                    }
+            }}];
+    XCTAssertEqualObjects(@"123", event.user.userId);
+    XCTAssertEqualObjects(@"Jane Smith", event.user.name);
+    XCTAssertEqualObjects(@"jane@example.com", event.user.emailAddress);
 }
 
 @end

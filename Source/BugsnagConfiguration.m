@@ -60,6 +60,12 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 - (NSDictionary *_Nonnull)toDictionary;
 @end
 
+@interface BugsnagUser ()
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
+- (NSDictionary *)toJson;
+@end
+
 @interface BugsnagConfiguration ()
 
 /**

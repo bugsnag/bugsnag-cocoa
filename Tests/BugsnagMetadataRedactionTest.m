@@ -11,7 +11,7 @@
 
 @interface BugsnagEvent ()
 - (NSDictionary *)toJson;
-
+- (instancetype)initWithKSReport:(NSDictionary *)report;
 @property NSArray *redactedKeys;
 @end
 

@@ -13,6 +13,7 @@
 
 @interface BugsnagEvent ()
 - (NSDictionary *)toJson;
+- (instancetype)initWithKSReport:(NSDictionary *)report;
 @end
 
 @implementation BugsnagThreadSerializationTest

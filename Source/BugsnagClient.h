@@ -74,18 +74,6 @@
 - (void)notifyError:(NSError *_Nonnull)error
               block:(BugsnagOnErrorBlock _Nullable)block;
 
-/**
- *  Notify Bugsnag of an exception. Only intended for React Native/Unity use.
- *
- *  @param exception the exception
- *  @param metadata  the metadata
- *  @param block     Configuration block for adding additional report
- * information
- */
-- (void)internalClientNotify:(NSException *_Nonnull)exception
-                    withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagOnErrorBlock _Nullable)block;
-
 // =============================================================================
 // MARK: - Breadcrumbs
 // =============================================================================
@@ -204,11 +192,9 @@ NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
 // =============================================================================
 
 /**
- * Replicates BugsnagConfiguration.context
- *
- * @param context A general summary of what was happening in the application
+ * Retrieves the context - a general summary of what was happening in the application
  */
-- (void)setContext:(NSString *_Nullable)context;
+ @property NSString *_Nullable context;
 
 /**
  * @return YES if Bugsnag has been started and the previous launch crashed

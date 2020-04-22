@@ -91,8 +91,6 @@ typedef NS_OPTIONS(NSUInteger, BSGEnabledBreadcrumbType) {
 
 @class BugsnagBreadcrumb;
 
-typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
-
 @interface BugsnagBreadcrumb : NSObject
 
 @property(readonly, nullable) NSDate *timestamp;
