@@ -134,15 +134,15 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     XCTAssertEqualObjects([client.metadata getMetadataFromSection:BSGKeyUser withKey:BSGKeyName], @"Jiminy Cricket");
     XCTAssertEqualObjects([client.metadata getMetadataFromSection:BSGKeyUser withKey:BSGKeyEmail], @"jiminy@bugsnag.com");
 
-    XCTAssertEqualObjects([client user].userId, @"Jiminy");
+    XCTAssertEqualObjects([client user].id, @"Jiminy");
     XCTAssertEqualObjects([client user].name, @"Jiminy Cricket");
-    XCTAssertEqualObjects([client user].emailAddress, @"jiminy@bugsnag.com");
+    XCTAssertEqualObjects([client user].email, @"jiminy@bugsnag.com");
     
     [client setUser:nil withEmail:nil andName:@"Jiminy Cricket"];
     
-    XCTAssertNil([client user].userId);
+    XCTAssertNil([client user].id);
     XCTAssertEqualObjects([client user].name, @"Jiminy Cricket");
-    XCTAssertNil([client user].emailAddress);
+    XCTAssertNil([client user].email);
 }
 
 - (void)testMetadataMutability {

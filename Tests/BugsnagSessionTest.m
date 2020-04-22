@@ -196,9 +196,9 @@
 
     // user
     XCTAssertNotNil(session.user);
-    XCTAssertEqualObjects(@"123", session.user.userId);
+    XCTAssertEqualObjects(@"123", session.user.id);
     XCTAssertEqualObjects(@"Joe Bloggs", session.user.name);
-    XCTAssertEqualObjects(@"joe@example.com", session.user.emailAddress);
+    XCTAssertEqualObjects(@"joe@example.com", session.user.email);
 
     // app
     BugsnagApp *app = session.app;

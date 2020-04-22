@@ -291,3 +291,15 @@ of the removed `addAttribute`:
 - user
 - sessionId
 ```
+
+### `BugsnagUser` class
+
+#### Renames
+
+```diff
+- userId
++ id
+
+- emailAddress
++ email
+```

@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Rename `BugsnagUser` properties
+  [#560](https://github.com/bugsnag/bugsnag-cocoa/pull/560)
+
 * Make `BugsnagOnErrorBlock` return `BOOL` rather than `void`
   [#555](https://github.com/bugsnag/bugsnag-cocoa/pull/555)
 
