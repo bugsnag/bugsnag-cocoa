@@ -13,7 +13,12 @@
 
 @interface BugsnagUser ()
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
 - (NSDictionary *)toJson;
+@end
+
+@interface BugsnagEvent ()
+- (instancetype)initWithKSReport:(NSDictionary *)report;
 @end
 
 @interface BugsnagUserTest : XCTestCase

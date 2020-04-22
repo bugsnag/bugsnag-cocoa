@@ -33,6 +33,10 @@
 - (NSDictionary *_Nonnull)toDictionary;
 @end
 
+@interface BugsnagUser ()
+- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
+@end
+
 @interface BugsnagSessionTest : XCTestCase
 @property BugsnagApp *app;
 @property BugsnagDevice *device;

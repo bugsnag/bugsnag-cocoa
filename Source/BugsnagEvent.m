@@ -222,6 +222,11 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 + (BugsnagDeviceWithState *)deviceWithOomData:(NSDictionary *)data;
 @end
 
+@interface BugsnagUser ()
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
+@end
+
 @interface BugsnagEvent ()
 
 /**
