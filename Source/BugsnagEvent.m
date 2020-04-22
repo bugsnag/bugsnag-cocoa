@@ -26,6 +26,7 @@
 #import "BugsnagThread.h"
 #import "RegisterErrorData.h"
 #import "BugsnagSessionInternal.h"
+#import "BugsnagUser.h"
 
 static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
@@ -277,6 +278,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 @property(readwrite, copy, nullable) NSString *releaseStage;
 
 @property NSArray *redactedKeys;
+
 @end
 
 @implementation BugsnagEvent
@@ -383,6 +385,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             }
             _severity = _handledState.currentSeverity;
         }
+        _user = [self parseUser:[_metadata toDictionary]];
     }
     return self;
 }
@@ -525,6 +528,48 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     }
 }
 
+// =============================================================================
+// MARK: - User
+// =============================================================================
+
+/**
+ * The current user
+ */
+@synthesize user = _user;
+- (BugsnagUser *_Nonnull)user {
+    return _user;
+}
+
+/**
+ *  Set user metadata
+ *
+ *  @param userId ID of the user
+ *  @param name   Name of the user
+ *  @param email  Email address of the user
+ */
+- (void)setUser:(NSString *_Nullable)userId
+      withEmail:(NSString *_Nullable)email
+        andName:(NSString *_Nullable)name {
+    _user = [[BugsnagUser alloc] initWithUserId:userId name:name emailAddress:email];
+}
+
+/**
+ * Read the user from a persisted KSCrash report
+ * @param metadata the KSCrash report metadata
+ * @return the user, or nil if not available
+ */
+- (BugsnagUser *)parseUser:(NSDictionary *)metadata {
+    NSMutableDictionary *user = [metadata[BSGKeyUser] mutableCopy];
+    if (user == nil) {
+        user = [NSMutableDictionary dictionary];
+    }
+
+    if (!user[BSGKeyId] && self.device.id) { // if device id is null, don't set user id to default
+        BSGDictSetSafeObject(user, self.deviceAppHash, BSGKeyId);
+    }
+    return [[BugsnagUser alloc] initWithDictionary:user];
+}
+
 // MARK: - Callback overrides
 
 @synthesize overrides = _overrides;
@@ -601,16 +646,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     // Build metadata
     BSGDictSetSafeObject(metadata, [self error], BSGKeyError);
 
-    // Make user mutable and set the id if the user hasn't already
-    NSMutableDictionary *user = [metadata[BSGKeyUser] mutableCopy];
-    if (user == nil) {
-        user = [NSMutableDictionary dictionary];
-    }
-    BSGDictInsertIfNotNil(event, user, BSGKeyUser);
-
-    if (!user[BSGKeyId] && self.device.id) { // if device id is null, don't set user id to default
-        BSGDictSetSafeObject(user, [self deviceAppHash], BSGKeyId);
-    }
+    // add user
+    BSGDictInsertIfNotNil(event, [self.user toJson], BSGKeyUser);
 
     if (self.session) {
         BSGDictSetSafeObject(event, [self generateSessionDict], BSGKeySession);

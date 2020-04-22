@@ -18,6 +18,7 @@
 @class BugsnagMetadata;
 @class BugsnagThread;
 @class BugsnagError;
+@class BugsnagUser;
 
 typedef NS_ENUM(NSUInteger, BSGSeverity) {
     BSGSeverityError,
@@ -129,6 +130,27 @@ initWithErrorName:(NSString *_Nonnull)name
  * the error that will be sent.
  */
 @property(nullable) id originalError;
+
+
+// =============================================================================
+// MARK: - User
+// =============================================================================
+
+/**
+ * The current user
+ */
+@property(readonly, nonatomic, nonnull) BugsnagUser *user;
+
+/**
+ *  Set user metadata
+ *
+ *  @param userId ID of the user
+ *  @param name   Name of the user
+ *  @param email  Email address of the user
+ */
+- (void)setUser:(NSString *_Nullable)userId
+      withEmail:(NSString *_Nullable)email
+        andName:(NSString *_Nullable)name;
 
 @end
 

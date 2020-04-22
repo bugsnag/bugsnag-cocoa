@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Make user editable on `BugsnagEvent`
+  [#557](https://github.com/bugsnag/bugsnag-cocoa/pull/557)
+
 * Add getter for `Bugsnag.context`
   [#554](https://github.com/bugsnag/bugsnag-cocoa/pull/554)
 
