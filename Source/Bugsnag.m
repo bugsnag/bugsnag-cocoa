@@ -56,6 +56,9 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 @interface BugsnagClient ()
 - (void)startListeningForStateChangeNotification:(NSString *_Nonnull)notificationName;
 - (void)addBreadcrumbWithBlock:(void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
+- (void)internalClientNotify:(NSException *_Nonnull)exception
+                    withData:(NSDictionary *_Nullable)metadata
+                       block:(BugsnagOnErrorBlock _Nullable)block;
 @end
 
 @interface BugsnagMetadata ()
@@ -144,6 +147,10 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     }
 }
 
+/**
+ * Intended for use by other clients (React Native/Unity). Calling this method
+ * directly from iOS is not supported.
+ */
 + (void)internalClientNotify:(NSException *_Nonnull)exception
                     withData:(NSDictionary *_Nullable)metadata
                        block:(BugsnagOnErrorBlock _Nullable)block {

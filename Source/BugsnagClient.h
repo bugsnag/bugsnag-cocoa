@@ -74,18 +74,6 @@
 - (void)notifyError:(NSError *_Nonnull)error
               block:(BugsnagOnErrorBlock _Nullable)block;
 
-/**
- *  Notify Bugsnag of an exception. Only intended for React Native/Unity use.
- *
- *  @param exception the exception
- *  @param metadata  the metadata
- *  @param block     Configuration block for adding additional report
- * information
- */
-- (void)internalClientNotify:(NSException *_Nonnull)exception
-                    withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagOnErrorBlock _Nullable)block;
-
 // =============================================================================
 // MARK: - Breadcrumbs
 // =============================================================================

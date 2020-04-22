@@ -11,6 +11,11 @@
 #import "BugsnagUser.h"
 #import "BugsnagEvent.h"
 
+@interface BugsnagUser ()
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (NSDictionary *)toJson;
+@end
+
 @interface BugsnagUserTest : XCTestCase
 @end
 

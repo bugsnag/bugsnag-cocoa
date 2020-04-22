@@ -19,6 +19,16 @@
 @property NSDictionary *processedData;
 @end
 
+@interface BugsnagEvent ()
+- (instancetype)initWithKSReport:(NSDictionary *)report;
+- (instancetype _Nonnull)initWithErrorName:(NSString *_Nonnull)name
+                              errorMessage:(NSString *_Nonnull)message
+                             configuration:(BugsnagConfiguration *_Nonnull)config
+                                  metadata:(BugsnagMetadata *_Nullable)metadata
+                              handledState:(BugsnagHandledState *_Nonnull)handledState
+                                   session:(BugsnagSession *_Nullable)session;
+@end
+
 @interface BugsnagSink ()
 - (NSDictionary *)getBodyFromEvents:(NSArray *)events;
 @end
