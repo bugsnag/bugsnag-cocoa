@@ -19,7 +19,6 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
 - (NSDictionary *)toJson;
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
 @end
 
 @interface BugsnagEvent ()
