@@ -38,6 +38,7 @@
 #import "BugsnagMetadataStore.h"
 #import "BSGSerialization.h"
 #import "BugsnagEndpointConfiguration.h"
+#import "BugsnagErrorTypes.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -206,10 +207,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _autoTrackSessions = YES;
     _sendThreads = BSGThreadSendPolicyAlways;
     // Default to recording all error types
-    _enabledErrorTypes = BSGErrorTypesCPP
-                       | BSGErrorTypesMach
-                       | BSGErrorTypesSignals
-                       | BSGErrorTypesNSExceptions;
+    _enabledErrorTypes = [BugsnagErrorTypes new];
 
     // Enabling OOM detection only happens in release builds, to avoid triggering
     // the heuristic when killing/restarting an app in Xcode or similar.
@@ -218,9 +216,9 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     // persistUser isn't settable until post-init.
     _user = [self getPersistedUserData];
     [self setUserMetadataFromUser:_user];
-    
+
     #if !DEBUG
-        _enabledErrorTypes |= BSGErrorTypesOOMs;
+        _enabledErrorTypes.OOMs = true;
     #endif
 
     if ([NSURLSession class]) {

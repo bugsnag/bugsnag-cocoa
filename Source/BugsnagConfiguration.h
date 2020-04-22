@@ -35,6 +35,7 @@
 
 @class BugsnagUser;
 @class BugsnagEndpointConfiguration;
+@class BugsnagErrorTypes;
 
 /**
  * Controls whether Bugsnag should capture and serialize the state of all threads at the time
@@ -97,15 +98,6 @@ typedef BOOL (^BugsnagOnBreadcrumbBlock)(BugsnagBreadcrumb *_Nonnull breadcrumb)
  * @param session The session about to be delivered
  */
 typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
-
-typedef NS_OPTIONS(NSUInteger, BSGEnabledErrorType) {
-    BSGErrorTypesNone         NS_SWIFT_NAME(None)         = 0,
-    BSGErrorTypesOOMs         NS_SWIFT_NAME(OOMs)         = 1 << 0,
-    BSGErrorTypesNSExceptions NS_SWIFT_NAME(NSExceptions) = 1 << 1,
-    BSGErrorTypesSignals      NS_SWIFT_NAME(Signals)      = 1 << 2,
-    BSGErrorTypesCPP          NS_SWIFT_NAME(CPP)          = 1 << 3,
-    BSGErrorTypesMach         NS_SWIFT_NAME(Mach)         = 1 << 4
-};
 
 // =============================================================================
 // MARK: - BugsnagConfiguration
@@ -216,11 +208,10 @@ typedef NS_OPTIONS(NSUInteger, BSGEnabledErrorType) {
 // -----------------------------------------------------------------------------
 
 /**
- * A bitfield defining the types of error that are reported.
- * Passed down to KSCrash in BugsnagCrashSentry.
- * Defaults to all-true
+ * A class defining the types of error that are reported. By default,
+ * all properties are true.
  */
-@property BSGEnabledErrorType enabledErrorTypes;
+@property BugsnagErrorTypes *_Nonnull enabledErrorTypes;
 
 /**
  * Required declaration to suppress a superclass designated-initializer error

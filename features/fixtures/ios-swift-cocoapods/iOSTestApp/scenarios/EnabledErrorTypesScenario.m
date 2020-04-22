@@ -19,7 +19,13 @@
 @implementation DisableAllExceptManualExceptionsAndCrashScenario
 
 - (void)startBugsnag {
-    self.config.enabledErrorTypes = BSGErrorTypesNone;
+    BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
+    errorTypes.C = false;
+    errorTypes.mach = false;
+    errorTypes.NSExceptions = false;
+    errorTypes.signals = false;
+    errorTypes.OOMs = false;
+    self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = YES;
     [super startBugsnag];
 }
@@ -44,7 +50,13 @@
 @implementation DisableAllExceptManualExceptionsSendManualAndCrashScenario
 
 - (void)startBugsnag {
-    self.config.enabledErrorTypes = BSGErrorTypesNone;
+    BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
+    errorTypes.C = false;
+    errorTypes.mach = false;
+    errorTypes.NSExceptions = false;
+    errorTypes.signals = false;
+    errorTypes.OOMs = false;
+    self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
@@ -67,12 +79,9 @@
 @implementation DisableNSExceptionScenario
 
 - (void)startBugsnag {
-    self.config.enabledErrorTypes = BSGErrorTypesNone
-                                  | BSGErrorTypesMach
-                               /* | BSGErrorTypesNSExceptions */
-                                  | BSGErrorTypesSignals
-                                  | BSGErrorTypesCPP
-                                  | BSGErrorTypesOOMs;
+    BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
+    errorTypes.NSExceptions = false;
+    self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
@@ -96,12 +105,9 @@
 @implementation DisableMachExceptionScenario
 
 - (void)startBugsnag {
-    self.config.enabledErrorTypes = BSGErrorTypesNone
-                               /* | BSGErrorTypesMach */
-                                  | BSGErrorTypesNSExceptions
-                                  | BSGErrorTypesSignals
-                                  | BSGErrorTypesCPP
-                                  | BSGErrorTypesOOMs;
+    BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
+    errorTypes.mach = false;
+    self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
@@ -122,13 +128,9 @@
 @implementation DisableSignalsExceptionScenario
 
 - (void)startBugsnag {
-    self.config.enabledErrorTypes = BSGErrorTypesNone
-                                  | BSGErrorTypesMach
-                                  | BSGErrorTypesNSExceptions
-                               /* | BSGErrorTypesSignals */
-                                  | BSGErrorTypesCPP
-                               // OOMs are disabled since they raise a false positive 
-                               /* | BSGErrorTypesOOMs */ ;
+    BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
+    errorTypes.signals = false;
+    self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }

@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Add `BugsnagErrorTypes` for controlling captured errors
+  [#561](https://github.com/bugsnag/bugsnag-cocoa/pull/561)
+
 * Rename `BugsnagUser` properties
   [#560](https://github.com/bugsnag/bugsnag-cocoa/pull/560)
 

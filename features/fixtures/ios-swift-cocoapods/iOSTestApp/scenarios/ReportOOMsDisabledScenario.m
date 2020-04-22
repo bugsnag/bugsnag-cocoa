@@ -6,7 +6,7 @@
 
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;
-    self.config.enabledErrorTypes &= ~BSGErrorTypesOOMs; // OOM == 0
+    self.config.enabledErrorTypes.OOMs = false;
     [super startBugsnag];
 }
 
