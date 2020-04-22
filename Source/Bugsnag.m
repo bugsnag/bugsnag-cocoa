@@ -299,6 +299,13 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     }
 }
 
++ (NSString *_Nullable)context {
+    if ([self bugsnagStarted]) {
+        return self.client.context;
+    }
+    return nil;
+}
+
 + (BugsnagUser *)user {
     return self.client.user;
 }

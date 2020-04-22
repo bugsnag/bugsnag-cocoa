@@ -11,6 +11,15 @@ Bugsnag Notifiers on other platforms.
 * Make `BugsnagPlugin` take `BugsnagClient` as param
   [#558](https://github.com/bugsnag/bugsnag-cocoa/pull/558)
 
+* Make user editable on `BugsnagEvent`
+  [#557](https://github.com/bugsnag/bugsnag-cocoa/pull/557)
+
+* Add getter for `Bugsnag.context`
+  [#554](https://github.com/bugsnag/bugsnag-cocoa/pull/554)
+
+* Make `BugsnagUser` properties readonly
+  [#556](https://github.com/bugsnag/bugsnag-cocoa/pull/556)
+
 * Add `sendThreads` property to `BugsnagConfiguration`
   [#549](https://github.com/bugsnag/bugsnag-cocoa/pull/549)
 
