@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Rename `OnSend` to `OnSendError`
+  [#562](https://github.com/bugsnag/bugsnag-cocoa/pull/562)
+
 * Add `onCrashHandler` data to `BugsnagEvent` metadata
   [#564](https://github.com/bugsnag/bugsnag-cocoa/pull/564)
 

@@ -47,7 +47,9 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
 -(void)setUpBugsnagWillCallNotify:(bool)willNotify {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     if (willNotify) {
-        [configuration addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) { return false; }];
+        [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
+            return false;
+        }];
     }
     [Bugsnag startBugsnagWithConfiguration:configuration];
 }

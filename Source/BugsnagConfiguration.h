@@ -75,14 +75,14 @@ typedef BOOL (^BugsnagOnErrorBlock)(BugsnagEvent *_Nonnull event);
 /**
  *  A handler for modifying data before sending it to Bugsnag.
  *
- * onSendBlocks will be invoked on a dedicated
+ * onSendErrorBlocks will be invoked on a dedicated
  * background queue, which will be different from the queue where the block was originally added.
  *
  *  @param event The event report.
  *
  *  @return YES if the event should be sent
  */
-typedef BOOL (^BugsnagOnSendBlock)(BugsnagEvent *_Nonnull event);
+typedef BOOL (^BugsnagOnSendErrorBlock)(BugsnagEvent *_Nonnull event);
 
 /**
  *  A configuration block for modifying a captured breadcrumb
@@ -283,7 +283,7 @@ typedef NS_OPTIONS(NSUInteger, BSGEnabledErrorType) {
  * @param block The block to be removed.
  */
 - (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull)block
-    NS_SWIFT_NAME(removeOnSession(block:));;
+    NS_SWIFT_NAME(removeOnSession(block:));
 
 // =============================================================================
 // MARK: - onSend
@@ -295,16 +295,16 @@ typedef NS_OPTIONS(NSUInteger, BSGEnabledErrorType) {
  *
  *  @param block A block which returns YES if the report should be sent
  */
-- (void)addOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
-    NS_SWIFT_NAME(addOnSend(block:));
+- (void)addOnSendErrorBlock:(BugsnagOnSendErrorBlock _Nonnull)block
+    NS_SWIFT_NAME(addOnSendError(block:));
 
 /**
  * Remove the callback that would be invoked before an event is sent.
  *
  * @param block The block to be removed.
  */
-- (void)removeOnSendBlock:(BugsnagOnSendBlock _Nonnull)block
-    NS_SWIFT_NAME(removeOnSend(block:));
+- (void)removeOnSendErrorBlock:(BugsnagOnSendErrorBlock _Nonnull)block
+    NS_SWIFT_NAME(removeOnSendError(block:));
 
 // =============================================================================
 // MARK: - onBreadcrumb

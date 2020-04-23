@@ -53,7 +53,7 @@ The exact error is available using the `BSGConfigurationErrorDomain` and
 - config.beforeSendBlocks
 - config.add(beforeSend:)
 + config.onSendBlocks
-+ config.addOnSend(block:)
++ config.addOnSendError(block:)
 
 - config.beforeSessionBlocks
 - config.add(beforeSession:)

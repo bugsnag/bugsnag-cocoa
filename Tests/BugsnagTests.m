@@ -44,7 +44,9 @@
 -(void)setUpBugsnagWillCallNotify:(bool)willNotify {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     if (willNotify) {
-        [configuration addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) { return false; }];
+        [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
+            return false;
+        }];
     }
     [Bugsnag startBugsnagWithConfiguration:configuration];
 }
@@ -147,7 +149,9 @@
  */
 -(void)testBugsnagPauseSession {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [configuration addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) { return false; }];
+    [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
+        return false;
+    }];
 
     [Bugsnag startBugsnagWithConfiguration:configuration];
 
@@ -164,7 +168,9 @@
     
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [configuration setContext:@"firstContext"];
-    [configuration addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) { return false; }];
+    [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
+        return false;
+    }];
     
     [Bugsnag startBugsnagWithConfiguration:configuration];
 
@@ -249,7 +255,9 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
 
     // non-sending bugsnag
-    [configuration addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) { return false; }];
+    [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
+        return false;
+    }];
 
     BugsnagOnSessionBlock sessionBlock = ^BOOL(BugsnagSession * _Nonnull sessionPayload) {
         switch (called) {
@@ -290,7 +298,9 @@
     configuration.autoTrackSessions = NO;
     
     // non-sending bugsnag
-    [configuration addOnSendBlock:^BOOL(BugsnagEvent * _Nonnull event) { return false; }];
+    [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
+        return false;
+    }];
 
     BugsnagOnSessionBlock sessionBlock = ^BOOL(BugsnagSession * _Nonnull sessionPayload) {
         switch (called) {
@@ -352,7 +362,7 @@
     expectation6.inverted = YES;
 
     // Two blocks that will get called (or not) when we notify()
-    BugsnagOnSendBlock block1 = ^BOOL(BugsnagEvent * _Nonnull event)
+    BugsnagOnSendErrorBlock block1 = ^BOOL(BugsnagEvent * _Nonnull event)
     {
         switch (called) {
             case 0:
@@ -376,7 +386,7 @@
         return false;
     };
 
-    BugsnagOnSendBlock block2 = ^BOOL(BugsnagEvent * _Nonnull event)
+    BugsnagOnSendErrorBlock block2 = ^BOOL(BugsnagEvent * _Nonnull event)
     {
         switch (called) {
             case 0:
@@ -403,9 +413,9 @@
     // Can't check for block behaviour before start(), so we don't
     
     [Bugsnag startBugsnagWithConfiguration:configuration];
-    
-    [Bugsnag addOnSendBlock:block1];
-    [Bugsnag addOnSendBlock:block2];
+
+    [Bugsnag addOnSendErrorBlock:block1];
+    [Bugsnag addOnSendErrorBlock:block2];
 
     // Both added?
     XCTAssertEqual([[[Bugsnag configuration] onSendBlocks] count], 2);
@@ -415,8 +425,8 @@
     
     // Both called?
     [self waitForExpectations:@[expectation1, expectation2] timeout:10.0];
-    
-    [Bugsnag removeOnSendBlock:block2];
+
+    [Bugsnag removeOnSendErrorBlock:block2];
     XCTAssertEqual([[[Bugsnag configuration] onSendBlocks] count], 1);
     called++;
     XCTAssertEqual(called, 1);  
