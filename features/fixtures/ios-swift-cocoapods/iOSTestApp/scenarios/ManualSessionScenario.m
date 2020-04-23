@@ -14,9 +14,12 @@
 
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;
+<<<<<<< HEAD
     self.config.persistUser = NO;
     [self.config deletePersistedUserData];
     [self.config setUser:nil withEmail:nil andName:nil];
+=======
+>>>>>>> buildkite
     [super startBugsnag];
 }
 
