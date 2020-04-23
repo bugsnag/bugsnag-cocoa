@@ -409,7 +409,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
             NSMutableDictionary *userAtCrash = [self parseOnCrashData:report];
             if (userAtCrash != nil) {
-                [_metadata addMetadata:userAtCrash toSection:@BSG_KSCrashField_OnCrash];
+                [_metadata addMetadata:userAtCrash toSection:@BSG_KSCrashField_OnCrashMetadataSectionName];
             }
         }
         _user = [self parseUser:[_metadata toDictionary]];
