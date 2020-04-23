@@ -1628,6 +1628,10 @@ void bsg_kscrashreport_writeStandardReport(
         writer->endContainer(writer);
 
         if (crashContext->config.onCrashNotify != NULL) {
+
+            // NOTE: The blacklist for BSG_KSCrashField_UserAtCrash children in BugsnagEvent.m
+            // should be updated when adding new fields here
+
             // Write handled exception report info
             writer->beginObject(writer, BSG_KSCrashField_UserAtCrash);
             if (crashContext->crash.crashType == BSG_KSCrashTypeUserReported) {

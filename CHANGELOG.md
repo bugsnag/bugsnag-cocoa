@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Add `onCrashHandler` data to `BugsnagEvent` metadata
+  [#564](https://github.com/bugsnag/bugsnag-cocoa/pull/564)
+
 * Rename `BugsnagUser` properties
   [#560](https://github.com/bugsnag/bugsnag-cocoa/pull/560)
 
