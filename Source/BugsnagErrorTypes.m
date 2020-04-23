@@ -20,7 +20,7 @@
 #if DEBUG
         _ooms = false;
 #else
-        _OOMs = true;
+        _ooms = true;
 #endif
     }
     return self;
