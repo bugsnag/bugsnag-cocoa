@@ -639,7 +639,7 @@
 #if DEBUG
     XCTAssertFalse(config.enabledErrorTypes.ooms);
 #else
-    XCTAssertTrue(config.enabledErrorTypes.OOMs);
+    XCTAssertTrue(config.enabledErrorTypes.ooms);
 #endif
 }
 

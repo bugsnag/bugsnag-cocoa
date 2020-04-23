@@ -514,16 +514,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 // MARK: -
 
-- (BOOL)autoNotify {
-    return self.autoDetectErrors;
-}
-
-- (void)setAutoNotify:(BOOL)autoNotify {
-    self.autoDetectErrors = autoNotify;
-}
-
-// MARK: -
-
 @synthesize enabledReleaseStages = _enabledReleaseStages;
 
 - (NSArray *)enabledReleaseStages {
