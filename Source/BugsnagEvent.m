@@ -27,6 +27,7 @@
 #import "RegisterErrorData.h"
 #import "BugsnagSessionInternal.h"
 #import "BugsnagUser.h"
+#import "BSG_KSCrashReportFields.h"
 
 static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
@@ -405,10 +406,34 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
                                              attrValue:_errors[0].errorClass];
             }
             _severity = _handledState.currentSeverity;
+
+            NSMutableDictionary *userAtCrash = [self parseOnCrashData:report];
+            if (userAtCrash != nil) {
+                [_metadata addMetadata:userAtCrash toSection:@BSG_KSCrashField_OnCrashMetadataSectionName];
+            }
         }
         _user = [self parseUser:[_metadata toDictionary]];
     }
     return self;
+}
+
+- (NSMutableDictionary *)parseOnCrashData:(NSDictionary *)report {
+    NSMutableDictionary *userAtCrash = [report[@"user"] mutableCopy];
+    // avoid adding internal information to user-defined metadata
+    NSArray *blacklistedKeys = @[
+            @BSG_KSCrashField_Overrides,
+            @BSG_KSCrashField_HandledState,
+            @BSG_KSCrashField_Metadata,
+            @BSG_KSCrashField_State,
+            @BSG_KSCrashField_Config,
+            @BSG_KSCrashField_DiscardDepth,
+            @"startedAt",
+            @"unhandledCount",
+            @"handledCount",
+            @"id",
+    ];
+    [userAtCrash removeObjectsForKeys:blacklistedKeys];
+    return userAtCrash;
 }
 
 /**
