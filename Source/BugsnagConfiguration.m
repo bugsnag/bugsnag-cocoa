@@ -217,10 +217,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _user = [self getPersistedUserData];
     [self setUserMetadataFromUser:_user];
 
-    #if !DEBUG
-        _enabledErrorTypes.OOMs = true;
-    #endif
-
     if ([NSURLSession class]) {
         _session = [NSURLSession
             sessionWithConfiguration:[NSURLSessionConfiguration
@@ -517,22 +513,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 }
 
 // MARK: -
-
-@synthesize autoDetectErrors = _autoDetectErrors;
-
-- (BOOL)autoDetectErrors {
-    return _autoDetectErrors;
-}
-
-- (void)setAutoDetectErrors:(BOOL)autoDetectErrors {
-    if (autoDetectErrors == _autoDetectErrors) {
-        return;
-    }
-    [self willChangeValueForKey:NSStringFromSelector(@selector(autoDetectErrors))];
-    _autoDetectErrors = autoDetectErrors;
-    [[Bugsnag client] updateCrashDetectionSettings];
-    [self didChangeValueForKey:NSStringFromSelector(@selector(autoDetectErrors))];
-}
 
 - (BOOL)autoNotify {
     return self.autoDetectErrors;

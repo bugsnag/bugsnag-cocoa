@@ -5,7 +5,7 @@
 
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;
-    self.config.enabledErrorTypes.OOMs = false;
+    self.config.enabledErrorTypes.ooms = false;
     [super startBugsnag];
 }
 

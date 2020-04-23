@@ -63,10 +63,10 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
  */
 - (BSG_KSCrashType)mapKSToBSGCrashTypes:(BugsnagErrorTypes *)errorTypes
 {
-    return (BSG_KSCrashType) ((errorTypes.NSExceptions ? BSG_KSCrashTypeNSException : 0)
-                    | (errorTypes.C ? BSG_KSCrashTypeCPPException : 0)
+    return (BSG_KSCrashType) ((errorTypes.unhandledExceptions ? BSG_KSCrashTypeNSException : 0)
+                    | (errorTypes.cppExceptions ? BSG_KSCrashTypeCPPException : 0)
                     | (errorTypes.signals ? BSG_KSCrashTypeSignal : 0)
-                    | (errorTypes.mach ? BSG_KSCrashTypeMachException : 0));
+                    | (errorTypes.machExceptions ? BSG_KSCrashTypeMachException : 0));
 }
 
 - (void)reportUserException:(NSString *)reportName

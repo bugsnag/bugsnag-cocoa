@@ -20,11 +20,11 @@
 
 - (void)startBugsnag {
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
-    errorTypes.C = false;
-    errorTypes.mach = false;
-    errorTypes.NSExceptions = false;
+    errorTypes.cppExceptions = false;
+    errorTypes.machExceptions = false;
+    errorTypes.unhandledExceptions = false;
     errorTypes.signals = false;
-    errorTypes.OOMs = false;
+    errorTypes.ooms = false;
     self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = YES;
     [super startBugsnag];
@@ -51,11 +51,11 @@
 
 - (void)startBugsnag {
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
-    errorTypes.C = false;
-    errorTypes.mach = false;
-    errorTypes.NSExceptions = false;
+    errorTypes.cppExceptions = false;
+    errorTypes.machExceptions = false;
+    errorTypes.unhandledExceptions = false;
     errorTypes.signals = false;
-    errorTypes.OOMs = false;
+    errorTypes.ooms = false;
     self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = NO;
     [super startBugsnag];
@@ -80,7 +80,7 @@
 
 - (void)startBugsnag {
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
-    errorTypes.NSExceptions = false;
+    errorTypes.unhandledExceptions = false;
     self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = NO;
     [super startBugsnag];
@@ -106,7 +106,7 @@
 
 - (void)startBugsnag {
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
-    errorTypes.mach = false;
+    errorTypes.machExceptions = false;
     self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = NO;
     [super startBugsnag];

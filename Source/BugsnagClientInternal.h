@@ -25,7 +25,5 @@
 @property(readonly) BOOL started;
 
 - (void)start;
-
-- (void)updateCrashDetectionSettings;
 @end
 

@@ -200,8 +200,7 @@
             BOOL sameVersions = [lastBootOSVersion isEqualToString:osVersion] &&
                                 [lastBootBundleVersion isEqualToString:bundleVersion] &&
                                 [lastBootAppVersion isEqualToString:appVersion];
-            BOOL shouldReport = (config.enabledErrorTypes.OOMs)
-                && (lastBootInForeground && lastBootWasActive);
+            BOOL shouldReport = (lastBootInForeground && lastBootWasActive);
             [self deleteSentinelFile];
             return sameVersions && shouldReport;
         }

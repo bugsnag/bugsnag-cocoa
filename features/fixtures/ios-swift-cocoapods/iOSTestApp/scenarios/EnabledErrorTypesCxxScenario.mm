@@ -17,7 +17,7 @@ const char *disabled_cxx_reporting_kaboom_exception::what() const throw() {
 
 - (void)startBugsnag {
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
-    errorTypes.C = false;
+    errorTypes.cppExceptions = false;
     self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = NO;
     [super startBugsnag];

@@ -637,7 +637,7 @@
 - (void)testDefaultReportOOMs {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
 #if DEBUG
-    XCTAssertFalse(config.enabledErrorTypes.OOMs);
+    XCTAssertFalse(config.enabledErrorTypes.ooms);
 #else
     XCTAssertTrue(config.enabledErrorTypes.OOMs);
 #endif
@@ -699,25 +699,25 @@
     
     // Test all are set by default
     // See config init for details.  OOMs are disabled in debug.
-    config.enabledErrorTypes.OOMs = true;
+    config.enabledErrorTypes.ooms = true;
 
-    XCTAssertTrue(config.enabledErrorTypes.OOMs);
+    XCTAssertTrue(config.enabledErrorTypes.ooms);
     XCTAssertTrue(config.enabledErrorTypes.signals);
-    XCTAssertTrue(config.enabledErrorTypes.C);
-    XCTAssertTrue(config.enabledErrorTypes.NSExceptions);
-    XCTAssertTrue(config.enabledErrorTypes.mach);
+    XCTAssertTrue(config.enabledErrorTypes.cppExceptions);
+    XCTAssertTrue(config.enabledErrorTypes.unhandledExceptions);
+    XCTAssertTrue(config.enabledErrorTypes.machExceptions);
     
     // Test that we can set it
-    config.enabledErrorTypes.OOMs = false;
+    config.enabledErrorTypes.ooms = false;
     config.enabledErrorTypes.signals = false;
-    config.enabledErrorTypes.C = false;
-    config.enabledErrorTypes.NSExceptions = false;
-    config.enabledErrorTypes.mach = false;
-    XCTAssertFalse(config.enabledErrorTypes.OOMs);
+    config.enabledErrorTypes.cppExceptions = false;
+    config.enabledErrorTypes.unhandledExceptions = false;
+    config.enabledErrorTypes.machExceptions = false;
+    XCTAssertFalse(config.enabledErrorTypes.ooms);
     XCTAssertFalse(config.enabledErrorTypes.signals);
-    XCTAssertFalse(config.enabledErrorTypes.C);
-    XCTAssertFalse(config.enabledErrorTypes.NSExceptions);
-    XCTAssertFalse(config.enabledErrorTypes.mach);
+    XCTAssertFalse(config.enabledErrorTypes.cppExceptions);
+    XCTAssertFalse(config.enabledErrorTypes.unhandledExceptions);
+    XCTAssertFalse(config.enabledErrorTypes.machExceptions);
 }
 
 /**
@@ -739,19 +739,19 @@
     
     // Check partial sets
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
-    errorTypes.OOMs = false;
+    errorTypes.ooms = false;
     errorTypes.signals = false;
-    errorTypes.mach = false;
+    errorTypes.machExceptions = false;
     crashTypes = BSG_KSCrashTypeNSException | BSG_KSCrashTypeCPPException;
     XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:errorTypes]);
 
     errorTypes.signals = true;
-    errorTypes.C = false;
+    errorTypes.cppExceptions = false;
     crashTypes = BSG_KSCrashTypeNSException | BSG_KSCrashTypeSignal;
     XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:errorTypes]);
 
-    errorTypes.C = true;
-    errorTypes.NSExceptions = false;
+    errorTypes.cppExceptions = true;
+    errorTypes.unhandledExceptions = false;
     crashTypes = BSG_KSCrashTypeCPPException | BSG_KSCrashTypeSignal;
     XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:errorTypes]);
 }

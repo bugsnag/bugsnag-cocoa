@@ -15,14 +15,14 @@
  *
  * This flag is true by default.
  */
-@property BOOL OOMs;
+@property BOOL ooms;
 
 /**
  * Determines whether NSExceptions should be reported to bugsnag.
  *
  * This flag is true by default.
  */
-@property BOOL NSExceptions;
+@property BOOL unhandledExceptions;
 
 /**
  * Determines whether signals should be reported to bugsnag.
@@ -36,14 +36,14 @@
  *
  * This flag is true by default.
  */
-@property BOOL C;
+@property BOOL cppExceptions;
 
 /**
  * Determines whether Mach Exceptions should be reported to bugsnag.
  *
  * This flag is true by default.
  */
-@property BOOL mach;
+@property BOOL machExceptions;
 
 @end
 
