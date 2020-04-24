@@ -13,6 +13,7 @@
 #import "Bugsnag.h"
 #import "BugsnagSessionTracker.h"
 #import "Private.h"
+#import "BugsnagErrorTypes.h"
 
 @interface BSGOutOfMemoryWatchdog ()
 @property(nonatomic, getter=isWatching) BOOL watching;
@@ -199,8 +200,7 @@
             BOOL sameVersions = [lastBootOSVersion isEqualToString:osVersion] &&
                                 [lastBootBundleVersion isEqualToString:bundleVersion] &&
                                 [lastBootAppVersion isEqualToString:appVersion];
-            BOOL shouldReport = (config.enabledErrorTypes & BSGErrorTypesOOMs)
-                && (lastBootInForeground && lastBootWasActive);
+            BOOL shouldReport = (lastBootInForeground && lastBootWasActive);
             [self deleteSentinelFile];
             return sameVersions && shouldReport;
         }

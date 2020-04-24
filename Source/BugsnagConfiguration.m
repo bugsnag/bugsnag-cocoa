@@ -38,6 +38,7 @@
 #import "BugsnagMetadataStore.h"
 #import "BSGSerialization.h"
 #import "BugsnagEndpointConfiguration.h"
+#import "BugsnagErrorTypes.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -206,10 +207,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _autoTrackSessions = YES;
     _sendThreads = BSGThreadSendPolicyAlways;
     // Default to recording all error types
-    _enabledErrorTypes = BSGErrorTypesCPP
-                       | BSGErrorTypesMach
-                       | BSGErrorTypesSignals
-                       | BSGErrorTypesNSExceptions;
+    _enabledErrorTypes = [BugsnagErrorTypes new];
 
     // Enabling OOM detection only happens in release builds, to avoid triggering
     // the heuristic when killing/restarting an app in Xcode or similar.
@@ -218,10 +216,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     // persistUser isn't settable until post-init.
     _user = [self getPersistedUserData];
     [self setUserMetadataFromUser:_user];
-    
-    #if !DEBUG
-        _enabledErrorTypes |= BSGErrorTypesOOMs;
-    #endif
 
     if ([NSURLSession class]) {
         _session = [NSURLSession
@@ -516,32 +510,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
                          withKey:BSGKeyReleaseStage
                        toSection:BSGKeyConfig];
     }
-}
-
-// MARK: -
-
-@synthesize autoDetectErrors = _autoDetectErrors;
-
-- (BOOL)autoDetectErrors {
-    return _autoDetectErrors;
-}
-
-- (void)setAutoDetectErrors:(BOOL)autoDetectErrors {
-    if (autoDetectErrors == _autoDetectErrors) {
-        return;
-    }
-    [self willChangeValueForKey:NSStringFromSelector(@selector(autoDetectErrors))];
-    _autoDetectErrors = autoDetectErrors;
-    [[Bugsnag client] updateCrashDetectionSettings];
-    [self didChangeValueForKey:NSStringFromSelector(@selector(autoDetectErrors))];
-}
-
-- (BOOL)autoNotify {
-    return self.autoDetectErrors;
-}
-
-- (void)setAutoNotify:(BOOL)autoNotify {
-    self.autoDetectErrors = autoNotify;
 }
 
 // MARK: -

@@ -51,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Enabling by default to check not only the OOM reporting tests but
         // also that extra reports aren't erroneously sent in other conditions
         // when OOM reporting is enabled
-        config.enabledErrorTypes.insert(.OOMs)
+        config.enabledErrorTypes.ooms = true
         config.endpoints = BugsnagEndpointConfiguration(notify: mockAPIPath, sessions: mockAPIPath)
         return config
     }

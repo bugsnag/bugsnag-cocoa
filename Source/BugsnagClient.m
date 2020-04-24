@@ -45,6 +45,7 @@
 #import "BSG_KSMach.h"
 #import "BSGSerialization.h"
 #import "Bugsnag.h"
+#import "BugsnagErrorTypes.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -530,8 +531,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
     _started = YES;
     // autoDetectErrors disables all unhandled event reporting
-    BOOL configuredToReportOOMs = self.configuration.autoDetectErrors
-        && ([[Bugsnag configuration] enabledErrorTypes] & BSGErrorTypesOOMs);
+    BOOL configuredToReportOOMs = self.configuration.autoDetectErrors && self.configuration.enabledErrorTypes.ooms;
     
     // Disable if a debugger is enabled, since the development cycle of starting
     // and restarting an app is also an uncatchable kill
@@ -1090,21 +1090,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
             breadcrumb.type = breadcrumbType;
             breadcrumb.message = message;
         }];
-    }
-}
-
-- (void)updateCrashDetectionSettings {
-    if (self.configuration.autoDetectErrors) {
-        // Enable all crash detection
-        bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeAll);
-        if (self.configuration.enabledErrorTypes & BSGErrorTypesOOMs) {
-            [self.oomWatchdog enable];
-        }
-    } else {
-        // Only enable support for notify()-based reports
-        bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeUserReported);
-        // autoDetectErrors gates all unhandled report detection
-        [self.oomWatchdog disable];
     }
 }
 
