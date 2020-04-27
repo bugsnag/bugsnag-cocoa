@@ -298,6 +298,7 @@
 		E7565F7924507F640041768E /* BugsnagErrorTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = E7565F7724507F640041768E /* BugsnagErrorTypes.m */; };
 		E7565F7A24507F640041768E /* BugsnagErrorTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = E7565F7724507F640041768E /* BugsnagErrorTypes.m */; };
 		E7565F7C245082580041768E /* BugsnagErrorTypes.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E7565F7624507F640041768E /* BugsnagErrorTypes.h */; };
+		E772E4DB24533AF8007C92A4 /* BugsnagPluginClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E72AE1F4241A4E4400ED8972 /* BugsnagPluginClient.m */; };
 		E77316E31F73E89E00A14F06 /* BugsnagHandledStateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E77316E11F73B46600A14F06 /* BugsnagHandledStateTest.m */; };
 		E77526BA242D0AE50077A42F /* BugsnagBreadcrumbs.h in Headers */ = {isa = PBXBuildFile; fileRef = E77526B8242D0AE50077A42F /* BugsnagBreadcrumbs.h */; };
 		E77526BB242D0AE50077A42F /* BugsnagBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = E77526B9242D0AE50077A42F /* BugsnagBreadcrumbs.m */; };
@@ -1585,6 +1586,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E772E4DB24533AF8007C92A4 /* BugsnagPluginClient.m in Sources */,
 				E7397E321F83BC320034242A /* BSG_KSCrashC.c in Sources */,
 				E7397E331F83BC320034242A /* BSG_KSCrashReport.c in Sources */,
 				E7397E341F83BC320034242A /* BSG_KSCrashState.m in Sources */,
