@@ -5,7 +5,11 @@
 
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;
-    self.config.reportOOMs = YES;
+    self.config.enabledErrorTypes = BSGErrorTypesCPP
+        | BSGErrorTypesMach
+        | BSGErrorTypesNSExceptions
+        | BSGErrorTypesOOMs
+        | BSGErrorTypesSignals;
     [super startBugsnag];
 }
 

@@ -12,7 +12,11 @@
     }];
     
     if(![self.eventMode isEqualToString:@"reportOOMsFalse"]) {
-        self.config.reportOOMs = true;
+        self.config.enabledErrorTypes = BSGErrorTypesCPP
+        | BSGErrorTypesMach
+        | BSGErrorTypesNSExceptions
+        | BSGErrorTypesOOMs
+        | BSGErrorTypesSignals;
     }
     
     [super startBugsnag];

@@ -5,6 +5,7 @@ Feature: Add custom behavior through a plugin interface
     interface allows for installing that behavior before calling the regular
     initialization process.
 
+    @skip Not currently implemented
     Scenario: Changing payload notifier description
         When I run "CustomPluginNotifierDescriptionScenario" and relaunch the app
         And I configure Bugsnag for "CustomPluginNotifierDescriptionScenario"

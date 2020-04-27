@@ -19,24 +19,7 @@ Or to test on tvOS:
 
 These tests are implemented with our notifier testing tool [Maze runner](https://github.com/bugsnag/maze-runner).
 
-End to end tests are written in cucumber-style `.feature` files, and need Ruby-backed "steps" in order to know what to run. The tests are located in the top level [`end-to-end-tests`](/end-to-end-tests/) directory for real-device tests, and the ['features'](/features/) directory for simulator tests.
-
-### Testing on the simulator
-
-#### Requirements
-
-- XCode
-- Ruby
-- Bundler
-- Make
-
-#### Steps
-
-- Install the maze-runner package by running `bundle install` in the root of this project.
-- Set the `MAZE_SDK` environment variable to the SDK you wish to test against. This is '12.1' by default.
-- Run the tests using `make e2e` (end-to-end)
-
-### Testing on a real device
+End to end tests are written in cucumber-style `.feature` files, and need Ruby-backed "steps" in order to know what to run. The tests are located in the ['features'](/features/) directory.
 
 For testing against a real device, maze-runner's CLI and the test fixtures are containerised so you'll need Docker (and Docker Compose) to run them.
 
@@ -73,11 +56,13 @@ Ensure the following environment variables are set:
 
 - `BROWSER_STACK_USERNAME`: The BrowserStack App Automate Username
 - `BROWSER_STACK_ACCESS_KEY`: The BrowserStack App Automate Access Key
-- `DEVICE_TYPE` : The iOS version to run the tests against, one of: IOS_10, IOS_11, IOS_12
+- `DEVICE_TYPE` : The iOS version to run the tests against, one of: IOS_10, IOS_11, IOS_12, IOS_13
 
-Run `make remote-e2e`
+If you wish to test a single feature, set the `TEST_FEATURE` environment variable to the name of the feature file.  For example"
+`export TEST_FEATURE=features/handled_error.feature`
 
-If you wish to test a single feature, set the `TEST_FEATURE` environment variable to the name of the feature file.
-For example, to test the `crashprobe` feature use the following command:
+There are several `make` commands that will run various parts of the testing process:
 
-`TEST_FEATURE=crashprobe.feature make remote-e2e`
+- `make e2e` will build and run the test fixture against the remote device, repeating the build process every run.
+- `make e2e_build` will build the test fixture, exporting it to the `features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa` application file.
+- `make e2e_run` will consume the built fixture and attempt to run either all the tests, or only those defined by `TEST_FEATURE`, against the remote device.

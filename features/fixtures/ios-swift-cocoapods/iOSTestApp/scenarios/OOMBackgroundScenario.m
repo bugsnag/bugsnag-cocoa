@@ -14,14 +14,17 @@
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;
     self.config.releaseStage = @"alpha";
-    [self.config addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagCrashReport * _Nonnull report) {
-        NSMutableDictionary *metadata = [report.metaData mutableCopy];
-        metadata[@"extra"] = @{ @"shape": @"line" };
-        report.metaData = metadata;
+    [self.config addOnSendErrorBlock:^(BugsnagEvent *event) {
+        [event addMetadata:@{ @"shape": @"line" } toSection: @"extra"];
+        
         return YES;
     }];
     
-    self.config.reportOOMs = true;
+    self.config.enabledErrorTypes = BSGErrorTypesCPP
+        | BSGErrorTypesMach
+        | BSGErrorTypesNSExceptions
+        | BSGErrorTypesOOMs
+        | BSGErrorTypesSignals;
     
     [super startBugsnag];
 }

@@ -5,12 +5,11 @@ Background:
 
 Scenario: All Crash reporting is disabled
     # Sessions: on, unhandled crashes: off
-    When I crash the app using "DisableAllExceptManualExceptionsAndCrashScenario"
-    And I relaunch the app
+    When I run "DisableAllExceptManualExceptionsAndCrashScenario" and I relaunch the app
     # Sessions on, unhandled on
-    And I crash the app using "NullPointerScenario"
-    And I relaunch the app
-    And I wait for 3 requests
+    And I run "NullPointerScenario" and I relaunch the app
+    And I configure Bugsnag for "NullPointerScenario"
+    And I wait to receive 3 requests
     And the request 0 is valid for the session tracking API
     And the request 1 is valid for the session tracking API
     And the request 2 is valid for the error reporting API

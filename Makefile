@@ -101,8 +101,21 @@ clean: ## Clean build artifacts
 test: ## Run unit tests
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
 
-e2e: ## Run integration tests
-	@bundle exec maze-runner
+e2e_build: ## Build the end-to-end test fixture
+	@./features/scripts/export_ios_app.sh
+
+e2e_run: ## Run integration tests
+ifeq ($(BROWSER_STACK_USERNAME),)
+	@$(error BROWSER_STACK_USERNAME is not defined)
+endif
+ifeq ($(BROWSER_STACK_ACCESS_KEY),)
+	@$(error BROWSER_STACK_ACCESS_KEY is not defined)
+endif
+	@docker-compose run cocoa-maze-runner $(TEST_FEATURE)
+
+e2e:
+	@make e2e_build
+	@make e2e_run
 
 archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip
 

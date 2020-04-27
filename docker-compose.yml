@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   cocoa-maze-runner:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:v2-bundle-update-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:latest-cli
     environment:
       APP_LOCATION: /app/build/iOSTestApp.ipa
       BROWSER_STACK_USERNAME:

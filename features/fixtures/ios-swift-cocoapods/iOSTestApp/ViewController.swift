@@ -40,9 +40,9 @@ class ViewController: UIViewController {
         let eventType : String! = scenarioNameField.text
         let eventMode : String! = scenarioMetaDataField.text
         
-        let config = BugsnagConfiguration()
-        config.apiKey = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345"
-        config.setEndpoints(notify: "http://bs-local.com:9339", sessions: "http://bs-local.com:9339")
+        let config = BugsnagConfiguration("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345")
+        config.endpoints = BugsnagEndpointConfiguration(notify: "http://bs-local.com:9339", sessions: "http://bs-local.com:9339")
+        config.enabledErrorTypes = [.CPP, .Mach, .NSExceptions, .Signals]
         
         let scenario = Scenario.createScenarioNamed(eventType, withConfig: config)
         scenario.eventMode = eventMode
