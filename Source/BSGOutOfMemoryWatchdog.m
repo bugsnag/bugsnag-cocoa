@@ -1,3 +1,5 @@
+#import "BSGOutOfMemoryWatchdog.h"
+
 #if (TARGET_OS_TV || TARGET_OS_IPHONE)
 #define BSGOOMAvailable 1
 #else
@@ -7,7 +9,6 @@
 #if BSGOOMAvailable
 #import <UIKit/UIKit.h>
 #endif
-#import "BSGOutOfMemoryWatchdog.h"
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagLogger.h"
 #import "Bugsnag.h"
