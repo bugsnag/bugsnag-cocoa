@@ -55,7 +55,7 @@
     // set a dummy endpoint, avoid hitting production
     config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://localhost:1234"
                                                                    sessions:@"http://localhost:1234"];
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
     BugsnagEvent *report =
     [[BugsnagEvent alloc] initWithKSReport:self.rawReportData];
     self.processedData = [[BugsnagSink new] getBodyFromEvents:@[report]];
