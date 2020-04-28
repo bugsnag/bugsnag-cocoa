@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Add `unhandledRejections` to `BugsnagErrorTypes`
+  [#567](https://github.com/bugsnag/bugsnag-cocoa/pull/567)
+
 * Rename `OnSend` to `OnSendError`
   [#562](https://github.com/bugsnag/bugsnag-cocoa/pull/562)
 

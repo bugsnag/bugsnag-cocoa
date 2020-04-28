@@ -706,17 +706,20 @@
     XCTAssertTrue(config.enabledErrorTypes.cppExceptions);
     XCTAssertTrue(config.enabledErrorTypes.unhandledExceptions);
     XCTAssertTrue(config.enabledErrorTypes.machExceptions);
-    
+    XCTAssertTrue(config.enabledErrorTypes.unhandledRejections);
+
     // Test that we can set it
     config.enabledErrorTypes.ooms = false;
     config.enabledErrorTypes.signals = false;
     config.enabledErrorTypes.cppExceptions = false;
     config.enabledErrorTypes.unhandledExceptions = false;
+    config.enabledErrorTypes.unhandledRejections = false;
     config.enabledErrorTypes.machExceptions = false;
     XCTAssertFalse(config.enabledErrorTypes.ooms);
     XCTAssertFalse(config.enabledErrorTypes.signals);
     XCTAssertFalse(config.enabledErrorTypes.cppExceptions);
     XCTAssertFalse(config.enabledErrorTypes.unhandledExceptions);
+    XCTAssertFalse(config.enabledErrorTypes.unhandledRejections);
     XCTAssertFalse(config.enabledErrorTypes.machExceptions);
 }
 
