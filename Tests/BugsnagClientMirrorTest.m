@@ -98,8 +98,8 @@
     // the following methods are implemented on Bugsnag but do not need to
     // be mirrored on BugsnagClient
     self.clientWhitelist = [NSSet setWithArray:@[
-            @"startBugsnagWithApiKey: @24@0:8@16",
-            @"startBugsnagWithConfiguration: @24@0:8@16",
+            @"startWithApiKey: @24@0:8@16",
+            @"startWithConfiguration: @24@0:8@16",
             @"payloadDateFormatter @16@0:8",
             @"updateCodeBundleId: v24@0:8@16",
             @"instance @16@0:8",

@@ -51,7 +51,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
             return false;
         }];
     }
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+    [Bugsnag startWithConfiguration:configuration];
 }
 
 /**
