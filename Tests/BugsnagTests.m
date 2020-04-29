@@ -48,7 +48,7 @@
             return false;
         }];
     }
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+    [Bugsnag startWithConfiguration:configuration];
 }
 
 /**
@@ -153,7 +153,7 @@
         return false;
     }];
 
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+    [Bugsnag startWithConfiguration:configuration];
 
     // For now only test that the method exists
     [Bugsnag pauseSession];
@@ -171,8 +171,8 @@
     [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
         return false;
     }];
-    
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+
+    [Bugsnag startWithConfiguration:configuration];
 
     NSException *exception1 = [[NSException alloc] initWithName:@"exception1" reason:@"reason1" userInfo:nil];
 
@@ -273,7 +273,7 @@
 
     [configuration addOnSessionBlock:sessionBlock];
 
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+    [Bugsnag startWithConfiguration:configuration];
     [self waitForExpectations:@[expectation1] timeout:1.0];
     
     [Bugsnag pauseSession];
@@ -317,8 +317,8 @@
     // NOTE: Due to test conditions the state of the Bugsnag/client class is indeterminate.
     //       We *should* be able to test that pre-start() calls to add/removeOnSessionBlock()
     //       do nothing, but actually we can't guarantee this.  For now we don't test this.
-    
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+
+    [Bugsnag startWithConfiguration:configuration];
     [Bugsnag pauseSession];
 
     [Bugsnag addOnSessionBlock:sessionBlock];
@@ -411,8 +411,8 @@
     };
 
     // Can't check for block behaviour before start(), so we don't
-    
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+
+    [Bugsnag startWithConfiguration:configuration];
 
     [Bugsnag addOnSendErrorBlock:block1];
     [Bugsnag addOnSendErrorBlock:block2];

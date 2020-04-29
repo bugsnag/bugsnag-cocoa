@@ -67,8 +67,9 @@
         [NSJSONSerialization dataWithJSONObject:actuallyReallyJSON options:0 error:nil];
     }
     @catch (NSException *exception) {
-        [Bugsnag notify:exception block:^(BugsnagEvent * _Nonnull report) {
+        [Bugsnag notify:exception block:^BOOL(BugsnagEvent * _Nonnull report) {
             [report addMetadata:@{@"user": @"Bob Loblaw"} toSection:@"tab"];
+            return true;
         }];
     }
 }

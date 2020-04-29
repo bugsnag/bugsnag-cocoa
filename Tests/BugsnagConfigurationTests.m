@@ -122,7 +122,7 @@
     XCTAssertEqual([[config onSessionBlocks] count], 1);
     
     // Call onSession blocks
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
 
@@ -150,7 +150,7 @@
     [config removeOnSessionBlock:sessionBlock];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
 
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
 
     // Wait a second NOT to be called
     [self waitForExpectationsWithTimeout:1.0 handler:nil];
@@ -199,7 +199,7 @@
     XCTAssertEqual([[config onSessionBlocks] count], 1);
     
     // Call onSession blocks
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
     [self waitForExpectations:@[expectation1] timeout:1.0];
     
     // Check it's called on new session start
@@ -769,7 +769,7 @@
     BugsnagOnSendErrorBlock block = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
 
     [configuration addOnSendErrorBlock:block];
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+    [Bugsnag startWithConfiguration:configuration];
     
     XCTAssertEqual([[configuration onSendBlocks] count], 1);
 
@@ -791,8 +791,8 @@
     // Add more than one
     [configuration addOnSendErrorBlock:block1];
     [configuration addOnSendErrorBlock:block2];
-    
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+
+    [Bugsnag startWithConfiguration:configuration];
     
     XCTAssertEqual([[configuration onSendBlocks] count], 2);
 }
