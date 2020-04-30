@@ -458,7 +458,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.networkReachable stopWatchingConnectivity];
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     [UIDevice currentDevice].batteryMonitoringEnabled = NO;
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 #endif
