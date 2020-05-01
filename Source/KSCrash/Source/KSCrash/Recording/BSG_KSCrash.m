@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 //
 
+#import <mach-o/dyld.h>
 #import "BSG_KSCrashAdvanced.h"
 
 #import "BSG_KSCrashC.h"
@@ -31,6 +32,7 @@
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSSingleton.h"
 #import "BSG_KSSystemCapabilities.h"
+#import "BSG_KSMachHeaders.h"
 #import "NSError+BSG_SimpleConstructor.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
@@ -226,6 +228,9 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         return false;
     }
 
+    // Maintain a cache of info about dynamically loaded binary images
+    [self listenForLoadedBinaries];
+    
 #if BSG_KSCRASH_HAS_UIKIT
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
     [nCenter addObserver:self
@@ -251,6 +256,88 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 #endif
 
     return true;
+}
+
+/**
+ * Set up listeners for un/loaded frameworks.  Maintaining our own list of framework mach
+ * headers means that we avoid potential deadlock situations where we try and suspend
+ * lock-holding threads prior to loading mach headers as part of our normal event handling
+ * behaviour.
+ */
+- (void)listenForLoadedBinaries {
+    bsg_initialise_mach_binary_headers();
+//    [self dump_headers];
+    _dyld_register_func_for_add_image(&bsg_mach_binary_image_added);
+    _dyld_register_func_for_remove_image(&bsg_mach_binary_image_removed);
+}
+
+uintptr_t bsg_ksdlfirstCmdAfterHeader(const struct mach_header *const header);
+
+- (void)dump_headers {
+    const uint32_t imageCount = _dyld_image_count();
+    
+    for (uint32_t iImg = 0; iImg < imageCount; iImg++) {
+        const struct mach_header *header = _dyld_get_image_header(iImg);
+        
+        
+        if (header == NULL) {
+            return;
+        }
+
+        uintptr_t cmdPtr = bsg_ksdlfirstCmdAfterHeader(header);
+        if (cmdPtr == 0) {
+            return;
+        }
+
+        const char *name = _dyld_get_image_name(iImg);
+        
+        
+        // Look for the TEXT segment to get the image size.
+        // Also look for a UUID command.
+        uint64_t imageSize = 0;
+        uint64_t imageVmAddr = 0;
+        uint8_t *uuid = NULL;
+
+        for (uint32_t iCmd = 0; iCmd < header->ncmds; iCmd++) {
+            struct load_command *loadCmd = (struct load_command *)cmdPtr;
+            switch (loadCmd->cmd) {
+            case LC_SEGMENT: {
+                struct segment_command *segCmd = (struct segment_command *)cmdPtr;
+                if (strcmp(segCmd->segname, SEG_TEXT) == 0) {
+                    imageSize = segCmd->vmsize;
+                    imageVmAddr = segCmd->vmaddr;
+                }
+                break;
+            }
+            case LC_SEGMENT_64: {
+                struct segment_command_64 *segCmd =
+                    (struct segment_command_64 *)cmdPtr;
+                if (strcmp(segCmd->segname, SEG_TEXT) == 0) {
+                    imageSize = segCmd->vmsize;
+                    imageVmAddr = segCmd->vmaddr;
+                }
+                break;
+            }
+            case LC_UUID: {
+                struct uuid_command *uuidCmd = (struct uuid_command *)cmdPtr;
+                uuid = uuidCmd->uuid;
+                break;
+            }
+            }
+            cmdPtr += loadCmd->cmdsize;
+        }
+        
+        BSG_Mach_Binary_Image_Info info;
+        info.cpusubtype = header->cpusubtype;
+        info.cputype = header->cputype;
+        info.imageSize = imageSize;
+        info.imageVmAddr = imageVmAddr;
+        info.mh = header;
+        info.name = name;
+        info.uuid = uuid;
+        
+        NSLog(@"image: %i, vmaddr: %i", iImg, imageVmAddr);
+    }
 }
 
 - (void)sendAllReportsWithCompletion:
