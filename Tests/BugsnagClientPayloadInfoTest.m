@@ -46,4 +46,20 @@
     XCTAssertEqualObjects(observedKeys, expectedKeys);
 }
 
+- (void)testDeviceInfo {
+    BugsnagClient *client = [Bugsnag client];
+    NSDictionary *device = [client collectDeviceWithState];
+    XCTAssertNotNil(device);
+
+    NSArray *observedKeys = [[device allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    NSMutableArray *expectedKeys = [@[@"freeDisk", @"freeMemory", @"id", @"jailbroken", @"locale", @"manufacturer",
+            @"model", @"osName", @"osVersion", @"runtimeVersions", @"totalMemory"] mutableCopy];
+
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    [expectedKeys addObject:@"modelNumber"];
+#endif
+
+    XCTAssertEqualObjects(observedKeys, [expectedKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]);
+}
+
 @end

@@ -111,6 +111,11 @@ static bool hasRecordedSessions;
 - (NSDictionary *)toDict;
 @end
 
+@interface BugsnagDeviceWithState ()
++ (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event;
+- (NSDictionary *)toDictionary;
+@end
+
 /**
  *  Handler executed when the application crashes. Writes information about the
  *  current application state using the crash report writer.
@@ -1432,9 +1437,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (NSDictionary *)collectDeviceWithState {
-    return @{
-        // TODO implement
-    };
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithDictionary:@{@"system": systemInfo}];
+    return [device toDictionary];
 }
 
 - (NSArray *)collectBreadcrumbs {
