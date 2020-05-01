@@ -103,6 +103,19 @@ static bool hasRecordedSessions;
 @property NSUInteger handledCount;
 @end
 
+
+@interface BugsnagAppWithState ()
++ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
+                                    config:(BugsnagConfiguration *)config
+                              codeBundleId:(NSString *)codeBundleId;
+- (NSDictionary *)toDict;
+@end
+
+@interface BugsnagDeviceWithState ()
++ (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event;
+- (NSDictionary *)toDictionary;
+@end
+
 /**
  *  Handler executed when the application crashes. Writes information about the
  *  current application state using the crash report writer.
@@ -1411,6 +1424,34 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                        withKey:(NSString *_Nonnull)key
 {
     [self.metadata clearMetadataFromSection:sectionName withKey:key];
+}
+
+// MARK: - methods used by React Native for collecting payload data
+
+- (NSDictionary *)collectAppWithState {
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:@{@"system": systemInfo}
+                                                               config:self.configuration
+                                                         codeBundleId:self.codeBundleId];
+    return [app toDict];
+}
+
+- (NSDictionary *)collectDeviceWithState {
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithDictionary:@{@"system": systemInfo}];
+    return [device toDictionary];
+}
+
+- (NSArray *)collectBreadcrumbs {
+    return @[
+        // TODO implement
+    ];
+}
+
+- (NSArray *)collectThreads {
+    return @[
+        // TODO implement
+    ];
 }
 
 @end
