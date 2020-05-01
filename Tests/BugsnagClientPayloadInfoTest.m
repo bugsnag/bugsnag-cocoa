@@ -62,4 +62,18 @@
     XCTAssertEqualObjects(observedKeys, [expectedKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]);
 }
 
+- (void)testBreadcrumbInfo {
+    BugsnagClient *client = [Bugsnag client];
+    [client leaveBreadcrumbWithMessage:@"Hello World"];
+    NSArray *breadcrumbs = [client collectBreadcrumbs];
+    XCTAssertNotNil(breadcrumbs);
+    XCTAssertTrue([breadcrumbs count] > 0);
+
+    for (NSDictionary *crumb in breadcrumbs) {
+        XCTAssertNotNil(crumb[@"message"]);
+        XCTAssertNotNil(crumb[@"type"]);
+        XCTAssertNotNil(crumb[@"timestamp"]);
+    }
+}
+
 @end
