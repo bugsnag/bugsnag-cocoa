@@ -34,7 +34,7 @@ uintptr_t bsg_ksdlfirstCmdAfterHeader(const struct mach_header *const header);
  *
  * @returns a boolean indicating success
  */
-bool populate_info(const struct mach_header *header, intptr_t slide, BSG_Mach_Binary_Image_Info *info) {
+bool populate_info(const struct mach_header *header, BSG_Mach_Binary_Image_Info *info) {
     
     // Early exit conditions; this is not a valid/useful binary image
     // 1. We can't find a sensible Mach command
@@ -45,13 +45,11 @@ bool populate_info(const struct mach_header *header, intptr_t slide, BSG_Mach_Bi
 
     // 2. The image doesn't have a name.  Note: running with a debugger attached causes this condition to match.
     Dl_info DlInfo = (const Dl_info) { 0 };
-    dladdr((const void*)slide, &DlInfo);
+    dladdr(header, &DlInfo);
     const char *image_name = DlInfo.dli_fname;
     if (!image_name) {
         return false;
     }
-    
-    info->name = image_name;
     
     // Look for the TEXT segment to get the image size.
     // Also look for a UUID command.
@@ -95,6 +93,7 @@ bool populate_info(const struct mach_header *header, intptr_t slide, BSG_Mach_Bi
     info->imageSize = imageSize;
     info->imageVmAddr = imageVmAddr;
     info->uuid = uuid;
+    info->name = image_name;
     
     return true;
 }
@@ -104,12 +103,13 @@ bool populate_info(const struct mach_header *header, intptr_t slide, BSG_Mach_Bi
  * image to populate a crash report later.
  *
  * @param header A mach_header structure
+ *
  * @param slide The VM offset of the binary image
  */
 void bsg_mach_binary_image_added(const struct mach_header *header, intptr_t slide)
 {
-    BSG_Mach_Binary_Image_Info info;
-    if (populate_info(header, slide, &info)) {
+    BSG_Mach_Binary_Image_Info info = { 0 };
+    if (populate_info(header, &info)) {
         [bsg_mach_binary_images_info addObject:[NSValue valueWithBytes:&info
                                                           objCType:@encode(BSG_Mach_Binary_Image_Info)]];
     }
@@ -139,7 +139,7 @@ void bsg_mach_binary_image_removed(const struct mach_header *header, intptr_t sl
 {
     // Convert header and slide into an info struct
     BSG_Mach_Binary_Image_Info info;
-    if (populate_info(header, slide, &info)) {
+    if (populate_info(header, &info)) {
         
         // We need to search the array manually.  This should be an infrequent operation.
         for (int i=0;i<[bsg_mach_binary_images_info count];++i) {
