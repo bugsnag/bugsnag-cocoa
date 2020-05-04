@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 //
 
+#import <mach-o/dyld.h>
 #import "BSG_KSCrashAdvanced.h"
 
 #import "BSG_KSCrashC.h"
@@ -31,6 +32,7 @@
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSSingleton.h"
 #import "BSG_KSSystemCapabilities.h"
+#import "BSG_KSMachHeaders.h"
 #import "NSError+BSG_SimpleConstructor.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
@@ -226,6 +228,9 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         return false;
     }
 
+    // Maintain a cache of info about dynamically loaded binary images
+    [self listenForLoadedBinaries];
+    
 #if BSG_KSCRASH_HAS_UIKIT
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
     [nCenter addObserver:self
@@ -251,6 +256,18 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 #endif
 
     return true;
+}
+
+/**
+ * Set up listeners for un/loaded frameworks.  Maintaining our own list of framework Mach
+ * headers means that we avoid potential deadlock situations where we try and suspend
+ * lock-holding threads prior to loading mach headers as part of our normal event handling
+ * behaviour.
+ */
+- (void)listenForLoadedBinaries {
+    bsg_initialise_mach_binary_headers();
+    _dyld_register_func_for_remove_image(&bsg_mach_binary_image_removed);
+    _dyld_register_func_for_add_image(&bsg_mach_binary_image_added);
 }
 
 - (void)sendAllReportsWithCompletion:
