@@ -20,7 +20,7 @@ class HandledErrorOverrideScenario: Scenario {
 
     fileprivate func logError(_ error: Error)  {
         Bugsnag.notifyError(error) { report in
-            let error = report.errors[0] as! BugsnagError
+            let error = report.errors[0]
             error.errorMessage = "Foo"
             error.errorClass = "Bar"
             let depth: Int = report.value(forKey: "depth") as! Int
