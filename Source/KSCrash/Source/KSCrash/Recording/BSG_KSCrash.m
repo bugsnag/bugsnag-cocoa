@@ -221,15 +221,15 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 }
 
 - (BOOL)install {
+    // Maintain a cache of info about dynamically loaded binary images
+    [self listenForLoadedBinaries];
+
     _handlingCrashTypes = bsg_kscrash_install(
         [self.crashReportPath UTF8String], [self.recrashReportPath UTF8String],
         [self.stateFilePath UTF8String], [self.nextCrashID UTF8String]);
     if (self.handlingCrashTypes == 0) {
         return false;
     }
-
-    // Maintain a cache of info about dynamically loaded binary images
-    [self listenForLoadedBinaries];
     
 #if BSG_KSCRASH_HAS_UIKIT
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
@@ -266,6 +266,9 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
  */
 - (void)listenForLoadedBinaries {
     bsg_initialise_mach_binary_headers();
+
+    // Note: Internally, access to DYLD's binary image store is guarded by an OSSpinLock.  We therefore don't need to
+    // add additional guards around our access.
     _dyld_register_func_for_remove_image(&bsg_mach_binary_image_removed);
     _dyld_register_func_for_add_image(&bsg_mach_binary_image_added);
 }

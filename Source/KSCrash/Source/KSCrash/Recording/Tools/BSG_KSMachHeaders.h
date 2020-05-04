@@ -9,13 +9,14 @@
 #ifndef BSG_KSMachHeaders_h
 #define BSG_KSMachHeaders_h
 
+#import <mach/machine.h>
+#import <os/lock.h>
+
 /**
  * An encapsulation of the Mach header - either 64 or 32 bit, along with some additional information required for
  * detailing a crash report's binary images.
  */
 typedef struct {
-    // Removal of loaded binary images is a relative rarity.  It's simpler to mark an entry than reallocate the array
-    bool deleted;
     const struct mach_header *mh;      /* The mach_header - 32 or 64 bit */
     uint64_t imageVmAddr;
     uint64_t imageSize;
@@ -30,25 +31,20 @@ typedef struct {
  * See: https://stackoverflow.com/a/3536261/2431627
  */
 typedef struct {
-  BSG_Mach_Binary_Image_Info *contents;
-  size_t used;
-  size_t size;
+    size_t used;
+    size_t size;
+    BSG_Mach_Binary_Image_Info *contents;
 } BSG_Mach_Binary_Images;
 
-void initializeBinaryImages(BSG_Mach_Binary_Images *array, size_t initialSize);
-void addBinaryImage(BSG_Mach_Binary_Images *array, BSG_Mach_Binary_Image_Info element);
-bool deleteBinaryImage(BSG_Mach_Binary_Images *array, const char *element_name);
-void freeBinaryImages(BSG_Mach_Binary_Images *array);
+static BSG_Mach_Binary_Images bsg_mach_binary_images;
 
-/**
- * Returns a C array of structs describing the loaded Mach binaries
- *
- * @param count A reference to the length of the array
- *
- * @returns A reference to an array of BSG_Mach_Binary_Image_Info structs containing info
- *          about a loaded Mach binary.
- */
-BSG_Mach_Binary_Image_Info* bsg_mach_header_array(size_t *count);
+static os_unfair_lock bsg_mach_binary_images_access_lock = OS_UNFAIR_LOCK_INIT;
+
+void bsg_initialize_binary_images_array(BSG_Mach_Binary_Images *array, size_t initialSize);
+void bsg_add_mach_binary_image(BSG_Mach_Binary_Images *array, BSG_Mach_Binary_Image_Info element);
+void bsg_remove_mach_binary_image(BSG_Mach_Binary_Images *array, const char *element_name);
+void bsg_free_binary_images_array(BSG_Mach_Binary_Images *array);
+BSG_Mach_Binary_Images *bsg_get_mach_binary_images(void);
 
 /**
  * Called when a binary image is loaded.

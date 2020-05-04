@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+## Bug Fixes
+
+* Fixed an issue where an app could deadlock during a crash if unfavourable 
+  timing caused DYLD lock contention.
+  [#580](https://github.com/bugsnag/bugsnag-cocoa/pull/580)
+
 ## 5.23.1 (2020-04-08)
 
 ## Bug fixes

@@ -9,29 +9,37 @@
 #import <mach-o/dyld.h>
 #import <dlfcn.h>
 #import <Foundation/Foundation.h>
-#import "BSG_KSCrash.h"
 #import "BSG_KSMachHeaders.h"
 
-static NSMutableDictionary<NSString *, NSValue*> *bsg_mach_binary_images_info;
-static BSG_Mach_Binary_Images bsg_binary_images;
-
-@interface BSG_KSCrash ()
-@end
-
-void initializeBinaryImages(BSG_Mach_Binary_Images *array, size_t initialSize) {
-  array->contents = (BSG_Mach_Binary_Image_Info *)malloc(initialSize * sizeof(BSG_Mach_Binary_Image_Info));
-  array->used = 0;
-  array->size = initialSize;
+void bsg_initialize_binary_images_array(BSG_Mach_Binary_Images *array, size_t initialSize) {
+    array->contents = (BSG_Mach_Binary_Image_Info *)malloc(initialSize * sizeof(BSG_Mach_Binary_Image_Info));
+    array->used = 0;
+    array->size = initialSize;
 }
 
-void addBinaryImage(BSG_Mach_Binary_Images *array, BSG_Mach_Binary_Image_Info element) {
-  // a->used is the number of used entries, because a->array[a->used++] updates a->used only *after* the array has been accessed.
-  // Therefore a->used can go up to a->size
-  if (array->used == array->size) {
-    array->size *= 2;
-    array->contents = (BSG_Mach_Binary_Image_Info *)realloc(array->contents, array->size * sizeof(BSG_Mach_Binary_Image_Info));
-  }
-  array->contents[array->used++] = element;
+BSG_Mach_Binary_Images *bsg_get_mach_binary_images() {
+    return &bsg_mach_binary_images;
+}
+
+/**
+ * Store a Mach binary image-excapsulating struct in a dynamic array.
+ * The array doubles on filling-up.  Typical sizes is expected to be in < 1000 (i.e. 2-3 doublings, at app start-up)
+ * This should be called in a threadsafe-way; we lock against a simultaneous add and remove.
+ */
+void bsg_add_mach_binary_image(BSG_Mach_Binary_Images *array, BSG_Mach_Binary_Image_Info element) {
+    
+    os_unfair_lock_lock(&bsg_mach_binary_images_access_lock);
+    
+    // Expand array if necessary
+    if (array->used == array->size) {
+        array->size *= 2;
+        array->contents = (BSG_Mach_Binary_Image_Info *)realloc(array->contents, array->size * sizeof(BSG_Mach_Binary_Image_Info));
+    }
+    
+    // Store the value, increment the number of used elements
+    array->contents[array->used++] = element;
+    
+    os_unfair_lock_unlock(&bsg_mach_binary_images_access_lock);
 }
 
 /**
@@ -39,30 +47,34 @@ void addBinaryImage(BSG_Mach_Binary_Images *array, BSG_Mach_Binary_Image_Info el
  * other fields.  Element order is not important; deletion is accomplished by copying the last item into the deleted
  * position.
  */
-bool deleteBinaryImage(BSG_Mach_Binary_Images *array, const char *element_name) {
+void bsg_remove_mach_binary_image(BSG_Mach_Binary_Images *array, const char *element_name) {
+    
+    os_unfair_lock_lock(&bsg_mach_binary_images_access_lock);
+    
     for (size_t i=0; i<array->used; i++) {
         BSG_Mach_Binary_Image_Info item = array->contents[i];
         if (strcmp(element_name, item.name) == 0) {
-            
-            // !!!!!
-            array->contents[i] = array->contents[array->used--];
-            
-            break;
+            if (array->used >= 2) {
+                array->contents[i] = array->contents[--array->used];
+            }
+            else {
+                array->used = 0;
+            }
+            break; // an image can only be loaded singularly
         }
     }
     
-    return false;
+    os_unfair_lock_unlock(&bsg_mach_binary_images_access_lock);
 }
 
-void freeBinaryImages(BSG_Mach_Binary_Images *array) {
+void bsg_free_binary_images_array(BSG_Mach_Binary_Images *array) {
   free(array->contents);
   array->contents = NULL;
   array->used = array->size = 0;
 }
 
 void bsg_initialise_mach_binary_headers() {
-    bsg_mach_binary_images_info = [NSMutableDictionary<NSString *, NSValue*> new];
-    initializeBinaryImages(&bsg_binary_images, 100);
+    bsg_initialize_binary_images_array(&bsg_mach_binary_images, 100);
 }
 
 uintptr_t bsg_ksdlfirstCmdAfterHeader(const struct mach_header *const header);
@@ -146,17 +158,14 @@ bool populate_info(const struct mach_header *header, BSG_Mach_Binary_Image_Info 
  *
  * @param header A mach_header structure
  *
- * @param slide The VM offset of the binary image
+ * @param slide A virtual memory slide amount. The virtual memory slide amount specifies the difference between the
+ *              address at which the image was linked and the address at which the image is loaded.  Unused.
  */
 void bsg_mach_binary_image_added(const struct mach_header *header, intptr_t slide)
 {
     BSG_Mach_Binary_Image_Info info = { 0 };
     if (populate_info(header, &info)) {
-        NSString *key = [NSString stringWithUTF8String:info.name];
-        NSValue *value = [NSValue valueWithBytes:&info
-                                        objCType:@encode(BSG_Mach_Binary_Image_Info)];
-        
-        [bsg_mach_binary_images_info setValue:value forKey:key];
+        bsg_add_mach_binary_image(&bsg_mach_binary_images, info);
     }
 }
 
@@ -168,44 +177,6 @@ void bsg_mach_binary_image_removed(const struct mach_header *header, intptr_t sl
     // Convert header and slide into an info struct
     BSG_Mach_Binary_Image_Info info;
     if (populate_info(header, &info)) {
-        NSString *key = [NSString stringWithUTF8String:info.name];
-        [bsg_mach_binary_images_info removeObjectForKey:key];
+        bsg_remove_mach_binary_image(&bsg_mach_binary_images, info.name);
     }
 }
-
-/**
- * Returns a C array of structs describing the loaded Mach binaries
- */
-BSG_Mach_Binary_Image_Info* bsg_mach_header_array(size_t *count) {
-    @synchronized (@"bsg_mach_header_array") {
-    
-        // Pass out the number of binary images
-        *count = [bsg_mach_binary_images_info count] ;
-        
-        // How big is our struct?
-        const size_t mach_header_size = sizeof(BSG_Mach_Binary_Image_Info);
-        
-        // Heap allocate the array of binary image info structs
-        BSG_Mach_Binary_Image_Info *headers = (BSG_Mach_Binary_Image_Info *)calloc(*count, mach_header_size);
-        
-        // Copy the info into an array
-        for (size_t i=0; i<*count; ++i) {
-            
-            // Reconstitute struct from NSValue
-            BSG_Mach_Binary_Image_Info info;
-            
-            [[[bsg_mach_binary_images_info allValues] objectAtIndex:i] getValue:&info];
-
-            headers[i].cpusubtype = info.cpusubtype;
-            headers[i].cputype = info.cputype;
-            headers[i].imageSize = info.imageSize;
-            headers[i].imageVmAddr = info.imageVmAddr;
-            headers[i].uuid = info.uuid;
-            headers[i].mh = info.mh;
-            headers[i].name = info.name;
-        }
-        
-        return headers;
-    }
-}
-
