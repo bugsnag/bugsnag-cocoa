@@ -9,12 +9,16 @@
 #import <mach-o/dyld.h>
 #import <dlfcn.h>
 #import <Foundation/Foundation.h>
+#import "BSG_KSDynamicLinker.h"
 #import "BSG_KSMachHeaders.h"
 
-void bsg_initialize_binary_images_array(BSG_Mach_Binary_Images *array, size_t initialSize) {
-    array->contents = (BSG_Mach_Binary_Image_Info *)malloc(initialSize * sizeof(BSG_Mach_Binary_Image_Info));
-    array->used = 0;
-    array->size = initialSize;
+// We expect <1000 items
+static const int BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE = 100;
+
+void bsg_initialize_binary_images_array(size_t initialSize) {
+    bsg_mach_binary_images.contents = (BSG_Mach_Binary_Image_Info *)malloc(initialSize * sizeof(BSG_Mach_Binary_Image_Info));
+    bsg_mach_binary_images.used = 0;
+    bsg_mach_binary_images.size = initialSize;
 }
 
 BSG_Mach_Binary_Images *bsg_get_mach_binary_images() {
@@ -24,20 +28,20 @@ BSG_Mach_Binary_Images *bsg_get_mach_binary_images() {
 /**
  * Store a Mach binary image-excapsulating struct in a dynamic array.
  * The array doubles on filling-up.  Typical sizes is expected to be in < 1000 (i.e. 2-3 doublings, at app start-up)
- * This should be called in a threadsafe-way; we lock against a simultaneous add and remove.
+ * This should be called in a threadsafe way; we lock against a simultaneous add and remove.
  */
-void bsg_add_mach_binary_image(BSG_Mach_Binary_Images *array, BSG_Mach_Binary_Image_Info element) {
+void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
     
     os_unfair_lock_lock(&bsg_mach_binary_images_access_lock);
     
     // Expand array if necessary
-    if (array->used == array->size) {
-        array->size *= 2;
-        array->contents = (BSG_Mach_Binary_Image_Info *)realloc(array->contents, array->size * sizeof(BSG_Mach_Binary_Image_Info));
+    if (bsg_mach_binary_images.used == bsg_mach_binary_images.size) {
+        bsg_mach_binary_images.size *= 2;
+        bsg_mach_binary_images.contents = (BSG_Mach_Binary_Image_Info *)realloc(bsg_mach_binary_images.contents, bsg_mach_binary_images.size * sizeof(BSG_Mach_Binary_Image_Info));
     }
     
     // Store the value, increment the number of used elements
-    array->contents[array->used++] = element;
+    bsg_mach_binary_images.contents[bsg_mach_binary_images.used++] = element;
     
     os_unfair_lock_unlock(&bsg_mach_binary_images_access_lock);
 }
@@ -47,37 +51,31 @@ void bsg_add_mach_binary_image(BSG_Mach_Binary_Images *array, BSG_Mach_Binary_Im
  * other fields.  Element order is not important; deletion is accomplished by copying the last item into the deleted
  * position.
  */
-void bsg_remove_mach_binary_image(BSG_Mach_Binary_Images *array, const char *element_name) {
+void bsg_remove_mach_binary_image(const char *element_name) {
     
     os_unfair_lock_lock(&bsg_mach_binary_images_access_lock);
     
-    for (size_t i=0; i<array->used; i++) {
-        BSG_Mach_Binary_Image_Info item = array->contents[i];
+    for (size_t i=0; i<bsg_mach_binary_images.used; i++) {
+        BSG_Mach_Binary_Image_Info item = bsg_mach_binary_images.contents[i];
+        
         if (strcmp(element_name, item.name) == 0) {
-            if (array->used >= 2) {
-                array->contents[i] = array->contents[--array->used];
+            // Note: removal of the last (ith) item involves a redundant copy from last->last.
+            if (bsg_mach_binary_images.used >= 2) {
+                bsg_mach_binary_images.contents[i] = bsg_mach_binary_images.contents[--bsg_mach_binary_images.used];
             }
             else {
-                array->used = 0;
+                bsg_mach_binary_images.used = 0;
             }
-            break; // an image can only be loaded singularly
+            break; // an image can only be loaded singularly; exit loop once found
         }
     }
     
     os_unfair_lock_unlock(&bsg_mach_binary_images_access_lock);
 }
 
-void bsg_free_binary_images_array(BSG_Mach_Binary_Images *array) {
-  free(array->contents);
-  array->contents = NULL;
-  array->used = array->size = 0;
-}
-
 void bsg_initialise_mach_binary_headers() {
-    bsg_initialize_binary_images_array(&bsg_mach_binary_images, 100);
+    bsg_initialize_binary_images_array(BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE);
 }
-
-uintptr_t bsg_ksdlfirstCmdAfterHeader(const struct mach_header *const header);
 
 /**
  * Populate a Mach binary image info structure
@@ -88,7 +86,7 @@ uintptr_t bsg_ksdlfirstCmdAfterHeader(const struct mach_header *const header);
  *
  * @returns a boolean indicating success
  */
-bool populate_info(const struct mach_header *header, BSG_Mach_Binary_Image_Info *info) {
+bool bsg_populate_mach_image_info(const struct mach_header *header, BSG_Mach_Binary_Image_Info *info) {
     
     // Early exit conditions; this is not a valid/useful binary image
     // 1. We can't find a sensible Mach command
@@ -100,8 +98,8 @@ bool populate_info(const struct mach_header *header, BSG_Mach_Binary_Image_Info 
     // 2. The image doesn't have a name.  Note: running with a debugger attached causes this condition to match.
     Dl_info DlInfo = (const Dl_info) { 0 };
     dladdr(header, &DlInfo);
-    const char *image_name = DlInfo.dli_fname;
-    if (!image_name) {
+    const char *imageName = DlInfo.dli_fname;
+    if (!imageName) {
         return false;
     }
     
@@ -147,7 +145,7 @@ bool populate_info(const struct mach_header *header, BSG_Mach_Binary_Image_Info 
     info->imageSize = imageSize;
     info->imageVmAddr = imageVmAddr;
     info->uuid = uuid;
-    info->name = image_name;
+    info->name = imageName;
     
     return true;
 }
@@ -164,8 +162,8 @@ bool populate_info(const struct mach_header *header, BSG_Mach_Binary_Image_Info 
 void bsg_mach_binary_image_added(const struct mach_header *header, intptr_t slide)
 {
     BSG_Mach_Binary_Image_Info info = { 0 };
-    if (populate_info(header, &info)) {
-        bsg_add_mach_binary_image(&bsg_mach_binary_images, info);
+    if (bsg_populate_mach_image_info(header, &info)) {
+        bsg_add_mach_binary_image(info);
     }
 }
 
@@ -176,7 +174,7 @@ void bsg_mach_binary_image_removed(const struct mach_header *header, intptr_t sl
 {
     // Convert header and slide into an info struct
     BSG_Mach_Binary_Image_Info info;
-    if (populate_info(header, &info)) {
-        bsg_remove_mach_binary_image(&bsg_mach_binary_images, info.name);
+    if (bsg_populate_mach_image_info(header, &info)) {
+        bsg_remove_mach_binary_image(info.name);
     }
 }

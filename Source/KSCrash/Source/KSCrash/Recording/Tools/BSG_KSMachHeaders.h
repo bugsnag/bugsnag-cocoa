@@ -38,12 +38,14 @@ typedef struct {
 
 static BSG_Mach_Binary_Images bsg_mach_binary_images;
 
+/**
+ * A lock, used to synchronise access to the array of binary image info.
+ */
 static os_unfair_lock bsg_mach_binary_images_access_lock = OS_UNFAIR_LOCK_INIT;
 
-void bsg_initialize_binary_images_array(BSG_Mach_Binary_Images *array, size_t initialSize);
-void bsg_add_mach_binary_image(BSG_Mach_Binary_Images *array, BSG_Mach_Binary_Image_Info element);
-void bsg_remove_mach_binary_image(BSG_Mach_Binary_Images *array, const char *element_name);
-void bsg_free_binary_images_array(BSG_Mach_Binary_Images *array);
+/**
+ * Provide external access to the array of binary image info
+ */
 BSG_Mach_Binary_Images *bsg_get_mach_binary_images(void);
 
 /**
