@@ -7,7 +7,7 @@ class ModifyBreadcrumbScenario: Scenario {
         self.config.autoTrackSessions = false;
 
         self.config.addOnSendError(block: { event in
-            event.breadcrumbs?.forEach({ crumb in
+            event.breadcrumbs.forEach({ crumb in
                 if crumb.message == "Cache cleared" {
                     crumb.message = "Cache locked"
                 }
