@@ -10,7 +10,6 @@
 #import <Bugsnag/Bugsnag.h>
 
 @interface Bugsnag ()
-+ (void)internalClientNotify:(NSException *_Nonnull)exception
-                    withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagOnErrorBlock _Nullable)block;
++ (void)notifyInternal:(BugsnagEvent *_Nonnull)event
+                 block:(BugsnagOnErrorBlock _Nonnull)block;
 @end

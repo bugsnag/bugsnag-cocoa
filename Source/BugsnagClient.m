@@ -59,7 +59,7 @@ NSString *const BSTabCrash = @"crash";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
-static NSInteger const BSGNotifierStackFrameCount = 5;
+static NSInteger const BSGNotifierStackFrameCount = 6;
 
 struct bugsnag_data_t {
     // Contains the state of the event (handled/unhandled)
@@ -845,35 +845,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self notify:exception handledState:state block:block];
 }
 
-/**
- *  Notify Bugsnag of an exception. Only intended for React Native/Unity use.
- *
- *  @param exception the exception
- *  @param metadata  the metadata
- *  @param block     Configuration block for adding additional report
- * information
- */
-- (void)internalClientNotify:(NSException *_Nonnull)exception
-                    withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagOnErrorBlock _Nullable)block
-{
-    BSGSeverity severity = BSGParseSeverity(metadata[BSGKeySeverity]);
-    NSString *severityReason = metadata[BSGKeySeverityReason];
-    BOOL unhandled = [metadata[BSGKeyUnhandled] boolValue];
-    NSString *logLevel = metadata[BSGKeyLogLevel];
-    NSParameterAssert(severityReason.length > 0);
-
-    SeverityReasonType severityReasonType =
-        [BugsnagHandledState severityReasonFromString:severityReason];
-
-    BugsnagHandledState *state = [[BugsnagHandledState alloc] initWithSeverityReason:severityReasonType
-                                                                            severity:severity
-                                                                           unhandled:unhandled
-                                                                           attrValue:logLevel];
-
-    [self notify:exception handledState:state block:block];
-}
-
 - (void)notifyOutOfMemoryEvent {
     static NSString *const BSGOutOfMemoryErrorClass = @"Out Of Memory";
     static NSString *const BSGOutOfMemoryMessageFormat = @"The app was likely terminated by the operating system while in the %@";
@@ -919,11 +890,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 {
     NSString *exceptionName = exception.name ?: NSStringFromClass([exception class]);
     NSString *message = exception.reason;
-    if (handledState.unhandled) {
-        [self.sessionTracker handleUnhandledErrorEvent];
-    } else {
-        [self.sessionTracker handleHandledErrorEvent];
-    }
 
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithErrorName:exceptionName
                                                      errorMessage:message
@@ -932,12 +898,29 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                                                      handledState:handledState
                                                           session:self.sessionTracker.runningSession];
     event.originalError = exception;
-    
+    [self notifyInternal:event block:block];
+}
+
+/**
+ *  Notify Bugsnag of an exception. Only intended for React Native/Unity use.
+ *
+ *  @param event    the event
+ *  @param block     Configuration block for adding additional report information
+ */
+- (void)notifyInternal:(BugsnagEvent *_Nonnull)event
+                 block:(BugsnagOnErrorBlock)block
+{
     if (block != nil && !block(event)) { // skip notifying if callback false
         return;
     }
-    
-    //    We discard 5 stack frames (including this one) by default,
+
+    if (event.handledState.unhandled) {
+        [self.sessionTracker handleUnhandledErrorEvent];
+    } else {
+        [self.sessionTracker handleHandledErrorEvent];
+    }
+
+    //    We discard 6 stack frames (including this one) by default,
     //    and sum that with the number specified by report.depth:
     //
     //    0 bsg_kscrashsentry_reportUserException
@@ -945,35 +928,42 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     //    2 -[BSG_KSCrash
     //    reportUserException:reason:language:lineOfCode:stackTrace:terminateProgram:]
     //    3 -[BugsnagCrashSentry reportUserException:reason:]
-    //    4 -[BugsnagClient notify:message:block:]
+    //    4 -[BugsnagClient notifyInternal:block:]
+    //    5 -[BugsnagClient notify:message:block:]
 
     int depth = (int)(BSGNotifierStackFrameCount + event.depth);
 
     NSString *eventErrorClass = event.errors[0].errorClass ?: NSStringFromClass([NSException class]);
     NSString *eventMessage = event.errors[0].errorMessage ?: @"";
 
+    NSException *exc = nil;
+
+    if ([event.originalError isKindOfClass:[NSException class]]) {
+        exc = event.originalError;
+    }
+
     [self.crashSentry reportUserException:eventErrorClass
                                    reason:eventMessage
-                        originalException:exception
-                             handledState:[handledState toJson]
+                        originalException:exc
+                             handledState:[event.handledState toJson]
                                  appState:[self.state toDictionary]
                         callbackOverrides:event.overrides
                                  metadata:[event.metadata toDictionary]
                                    config:[self.configuration.config toDictionary]
                              discardDepth:depth];
-    
+
     // A basic set of event metadata
     NSMutableDictionary *metadata = [@{
-        BSGKeyErrorClass : eventErrorClass,
-        BSGKeyUnhandled : [[event handledState] unhandled] ? @YES : @NO,
-        BSGKeySeverity : BSGFormatSeverity(event.severity)
+            BSGKeyErrorClass : eventErrorClass,
+            BSGKeyUnhandled : [[event handledState] unhandled] ? @YES : @NO,
+            BSGKeySeverity : BSGFormatSeverity(event.severity)
     } mutableCopy];
-    
+
     // Only include the eventMessage if it contains something
     if (eventMessage && [eventMessage length] > 0) {
         [metadata setValue:eventMessage forKey:BSGKeyName];
     }
-    
+
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeError
                       withMessage:eventErrorClass
                       andMetadata:metadata];

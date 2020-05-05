@@ -479,7 +479,13 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         }
         self.breadcrumbs = [crumbs copy];
 
-        _handledState = handledState;
+        if (handledState == nil) { // initialise a sensible default to avoid crashing
+            _handledState = [BugsnagHandledState handledStateWithSeverityReason:HandledException
+                                                                       severity:BSGSeverityWarning
+                                                                      attrValue:nil];
+        } else {
+            _handledState = handledState;
+        }
         _severity = handledState.currentSeverity;
         _session = session;
         _threads = @[];
@@ -812,6 +818,10 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
                        withKey:(NSString *_Nonnull)key
 {
     [self.metadata clearMetadataFromSection:sectionName withKey:key];
+}
+
+- (void)updateUnhandled:(BOOL)val {
+    self.handledState.unhandled = val;
 }
 
 @end
