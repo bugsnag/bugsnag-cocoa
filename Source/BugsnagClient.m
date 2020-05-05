@@ -336,6 +336,10 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 + (NSDateFormatter *_Nonnull)payloadDateFormatter;
 @end
 
+@interface BugsnagBreadcrumbs ()
+@property(nonatomic, readwrite, strong) NSMutableArray *breadcrumbs;
+@end
+
 // =============================================================================
 // MARK: - BugsnagClient
 // =============================================================================
@@ -1443,9 +1447,19 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (NSArray *)collectBreadcrumbs {
-    return @[
-        // TODO implement
-    ];
+    NSMutableArray *crumbs = self.configuration.breadcrumbs.breadcrumbs;
+    NSMutableArray *data = [NSMutableArray new];
+
+    for (BugsnagBreadcrumb *crumb in crumbs) {
+        NSMutableDictionary *crumbData = [[crumb objectValue] mutableCopy];
+        // JSON is serialized as 'name', we want as 'message' when passing to RN
+        crumbData[@"message"] = crumbData[@"name"];
+        crumbData[@"name"] = nil;
+        crumbData[@"metadata"] = crumbData[@"metaData"];
+        crumbData[@"metaData"] = nil;
+        [data addObject: crumbData];
+    }
+    return data;
 }
 
 - (NSArray *)collectThreads {
