@@ -51,6 +51,10 @@
 #define BSG_KSCRASH_DefaultReportFilesDirectory @"KSCrashReports"
 #endif
 
+#ifndef BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE
+#define BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE 100
+#endif
+
 // ============================================================================
 #pragma mark - Constants -
 // ============================================================================
@@ -265,7 +269,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
  * behaviour.
  */
 - (void)listenForLoadedBinaries {
-    bsg_initialise_mach_binary_headers();
+    bsg_initialise_mach_binary_headers(BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE);
 
     // Note: Internally, access to DYLD's binary image store is guarded by an OSSpinLock.  We therefore don't need to
     // add additional guards around our access.

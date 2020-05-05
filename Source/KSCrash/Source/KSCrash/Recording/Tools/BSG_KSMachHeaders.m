@@ -12,15 +12,6 @@
 #import "BSG_KSDynamicLinker.h"
 #import "BSG_KSMachHeaders.h"
 
-// We expect <1000 items
-static const int BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE = 100;
-
-void bsg_initialize_binary_images_array(size_t initialSize) {
-    bsg_mach_binary_images.contents = (BSG_Mach_Binary_Image_Info *)malloc(initialSize * sizeof(BSG_Mach_Binary_Image_Info));
-    bsg_mach_binary_images.used = 0;
-    bsg_mach_binary_images.size = initialSize;
-}
-
 BSG_Mach_Binary_Images *bsg_get_mach_binary_images() {
     return &bsg_mach_binary_images;
 }
@@ -73,8 +64,10 @@ void bsg_remove_mach_binary_image(const char *element_name) {
     os_unfair_lock_unlock(&bsg_mach_binary_images_access_lock);
 }
 
-void bsg_initialise_mach_binary_headers() {
-    bsg_initialize_binary_images_array(BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE);
+void bsg_initialise_mach_binary_headers(size_t initialSize) {
+    bsg_mach_binary_images.contents = (BSG_Mach_Binary_Image_Info *)malloc(initialSize * sizeof(BSG_Mach_Binary_Image_Info));
+    bsg_mach_binary_images.used = 0;
+    bsg_mach_binary_images.size = initialSize;
 }
 
 /**

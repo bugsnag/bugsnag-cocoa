@@ -38,7 +38,7 @@ const BSG_Mach_Binary_Image_Info info4 = {.mh = &mh, .imageVmAddr = 12345, .imag
 
 - (void)testDynamicArray {
 
-    bsg_initialize_binary_images_array(2);
+    bsg_initialise_mach_binary_headers(2);
     BSG_Mach_Binary_Images *headers = bsg_get_mach_binary_images();
     XCTAssertEqual(headers->size, 2);
     XCTAssertEqual(headers->used, 0);
@@ -91,7 +91,7 @@ const BSG_Mach_Binary_Image_Info info4 = {.mh = &mh, .imageVmAddr = 12345, .imag
 }
 
 - (void)testRemoveLast1 {
-    bsg_initialize_binary_images_array(2);
+    bsg_initialise_mach_binary_headers(2);
     BSG_Mach_Binary_Images *headers = bsg_get_mach_binary_images();
     bsg_add_mach_binary_image(info1);
     XCTAssertEqual(headers->size, 2);
@@ -103,7 +103,7 @@ const BSG_Mach_Binary_Image_Info info4 = {.mh = &mh, .imageVmAddr = 12345, .imag
 }
 
 - (void)testRemoveLast2 {
-    bsg_initialize_binary_images_array(2);
+    bsg_initialise_mach_binary_headers(2);
     BSG_Mach_Binary_Images *headers = bsg_get_mach_binary_images();
     bsg_add_mach_binary_image(info1);
     bsg_add_mach_binary_image(info2);
@@ -120,7 +120,7 @@ const BSG_Mach_Binary_Image_Info info4 = {.mh = &mh, .imageVmAddr = 12345, .imag
 }
 
 - (void)testRemoveLast3 {
-    bsg_initialize_binary_images_array(2);
+    bsg_initialise_mach_binary_headers(2);
     BSG_Mach_Binary_Images *headers = bsg_get_mach_binary_images();
     
     bsg_add_mach_binary_image(info1);

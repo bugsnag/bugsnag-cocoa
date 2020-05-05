@@ -1,4 +1,4 @@
-    //
+//
 //  BSG_KSMachHeaders.h
 //  Bugsnag
 //
@@ -61,6 +61,6 @@ void bsg_mach_binary_image_removed(const struct mach_header *mh, intptr_t slide)
 /**
  * Create an empty, mutable NSArray to hold Mach header info
  */
-void bsg_initialise_mach_binary_headers(void);
+void bsg_initialise_mach_binary_headers(size_t initialSize);
 
 #endif /* BSG_KSMachHeaders_h */
