@@ -3,21 +3,18 @@ Feature: Attaching a series of notable events leading up to errors
     events. Breadcrumbs are intended to be pieces of information which can
     lead the developer to the cause of the event being reported.
 
-Background:
-    Given I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-
     Scenario: Manually leaving a breadcrumb of a discarded type and discarding automatic
         When I run "DiscardedBreadcrumbTypeScenario"
         And I wait to receive a request
-        Then the event has a "manual" breadcrumb named "Noisy event"
-        And the event has a "manual" breadcrumb named "Important event"
+        Then the event has a "log" breadcrumb named "Noisy event"
+        And the event has a "process" breadcrumb named "Important event"
         And the event does not have a "event" breadcrumb
 
     Scenario: Leaving breadcrumbs when enabledBreadcrumbTypes is empty
         When I run "EnabledBreadcrumbTypesIsNilScenario"
         And I wait to receive a request
-        Then the event has a "manual" breadcrumb named "Noisy event"
-        And the event has a "manual" breadcrumb named "Important event"
+        Then the event has a "log" breadcrumb named "Noisy event"
+        And the event has a "process" breadcrumb named "Important event"
         Then the event has a "state" breadcrumb named "Bugsnag loaded"
 
     Scenario: An app lauches and subsequently sends a manual event using notify()
@@ -26,7 +23,7 @@ Background:
         Then the event has a "state" breadcrumb named "Bugsnag loaded"
 
     Scenario: An app lauches and subsequently crashes
-        When I run "BuiltinTrapScenario" and I relaunch the app
+        When I run "BuiltinTrapScenario" and relaunch the app
         And I configure Bugsnag for "BuiltinTrapScenario"
         And I wait to receive a request
         Then the event has a "state" breadcrumb named "Bugsnag loaded"

@@ -40,7 +40,7 @@ class ViewController: UIViewController {
         let eventType : String! = scenarioNameField.text
         let eventMode : String! = scenarioMetaDataField.text
         
-        let config = BugsnagConfiguration("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345")
+        let config = BugsnagConfiguration("12312312312312312312312312312312")
         config.endpoints = BugsnagEndpointConfiguration(notify: "http://bs-local.com:9339", sessions: "http://bs-local.com:9339")
         config.enabledErrorTypes = [.CPP, .Mach, .NSExceptions, .Signals]
         

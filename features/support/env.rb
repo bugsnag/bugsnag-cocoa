@@ -6,7 +6,7 @@ bs_device = ENV['DEVICE_TYPE']
 app_location = ENV['APP_LOCATION']
 
 # Set this explicitly
-$api_key = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345"
+$api_key = "12312312312312312312312312312312"
 
 
 After do |scenario|
