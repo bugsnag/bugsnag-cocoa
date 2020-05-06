@@ -1,8 +1,5 @@
 Feature: Session Tracking
 
-Background:
-    Given I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-
 Scenario: Launching using the default configuration sends a single session
     When I run "AutoSessionScenario"
     And I wait to receive a request
@@ -71,9 +68,10 @@ Scenario: Disabling auto-capture and calling startSession() manually sends a sin
     And the payload field "sessions" is an array with 1 elements
     And the session "id" is not null
     And the session "startedAt" is not null
-    And the session "user.id" is null
-    And the session "user.email" is null
-    And the session "user.name" is null
+    # This behaviour isn't established yet
+    # And the session "user.id" is null
+    # And the session "user.email" is null
+    # And the session "user.name" is null
 
 Scenario: Disabling auto-capture sends no sessions
     When I run "DisabledSessionTrackingScenario"
