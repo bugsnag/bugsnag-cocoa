@@ -18,14 +18,18 @@ const char *disabled_cxx_reporting_kaboom_exception::what() const throw() {
 - (void)startBugsnag {
     self.config.enabledErrorTypes = BSGErrorTypesMach 
                                   | BSGErrorTypesNSExceptions 
-                                  | BSGErrorTypesSignals 
+                                  | BSGErrorTypesSignals;
                                 /*| BSGErrorTypesCPP*/ 
-                                  | BSGErrorTypesOOMs;
+                                /*| BSGErrorTypesOOMs;*/
     self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 
 - (void)run {
+    // Send a handled exception to confirm the scenario is running.
+    [Bugsnag notify:[NSException exceptionWithName:NSGenericException reason:@"EnabledErrorTypesCxxScenario - Handled"
+                                          userInfo:@{NSLocalizedDescriptionKey: @""}]];
+    
     [self crash];
 }
 
