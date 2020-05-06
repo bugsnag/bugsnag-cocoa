@@ -40,14 +40,23 @@ static BSG_Mach_Binary_Images bsg_mach_binary_images;
 
 /**
  * An OS-version-specific lock, used to synchronise access to the array of binary image info.
+ *
+ * os_unfair_lock is available from specific OS versions onwards:
+ *     https://developer.apple.com/documentation/os/os_unfair_lock
+ *
+ * It deprecates OSSpinLock:
+ *     https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/spinlock.3.html
  */
 #if defined(__IPHONE_10_0) || defined(__MAC_10_12) || defined(__TVOS_10_0) || defined(__WATCHOS_3_0)
     #import <os/lock.h>
     static os_unfair_lock bsg_mach_binary_images_access_lock = OS_UNFAIR_LOCK_INIT;
+    #define bsg_lock_mach_binary_image_access os_unfair_lock_lock
+    #define bsg_unlock_mach_binary_image_access os_unfair_lock_unlock
 #else
     #import <libkern/OSAtomic.h>
-    #define OS_SPINLOCK_INIT 0
     static OSSpinLock bsg_mach_binary_images_access_lock = OS_SPINLOCK_INIT;
+    #define bsg_lock_mach_binary_image_access OSSpinLockLock
+    #define bsg_unlock_mach_binary_image_access OSSpinLockUnlock
 #endif
 
 /**

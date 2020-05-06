@@ -16,30 +16,6 @@ BSG_Mach_Binary_Images *bsg_get_mach_binary_images() {
     return &bsg_mach_binary_images;
 }
 
-// MARK: - Code synchronisation wrappers
-
-// os_unfair_lock is available from specific OS versions onwards:
-//     https://developer.apple.com/documentation/os/os_unfair_lock
-//
-// It deprecates OSSpinLock:
-//     https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/spinlock.3.html
-
-void lock() {
-#if defined(__IPHONE_10_0) || defined(__MAC_10_12) || defined(__TVOS_10_0) || defined(__WATCHOS_3_0)
-    os_unfair_lock_lock(&bsg_mach_binary_images_access_lock);
-#else
-    OSSpinLockLock(&bsg_mach_binary_images_access_lock);
-#endif
-}
-
-void unlock() {
-#if defined(__IPHONE_10_0) || defined(__MAC_10_12) || defined(__TVOS_10_0) || defined(__WATCHOS_3_0)
-    os_unfair_lock_unlock(&bsg_mach_binary_images_access_lock);
-#else
-    OSSpinLockUnlock(&bsg_mach_binary_images_access_lock);
-#endif
-}
-
 /**
  * Store a Mach binary image-excapsulating struct in a dynamic array.
  * The array doubles on filling-up.  Typical sizes is expected to be in < 1000 (i.e. 2-3 doublings, at app start-up)
@@ -47,27 +23,31 @@ void unlock() {
  */
 void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
     
-    lock();
+    bsg_lock_mach_binary_image_access(&bsg_mach_binary_images_access_lock);
     
     // Expand array if necessary.  We're slightly paranoid here.  An OOM is likely to be indicative of bigger problems
     // but we should still do *our* best not to crash the app.
     if (bsg_mach_binary_images.used == bsg_mach_binary_images.size) {
-        bsg_mach_binary_images.size *= 2;
-        size_t newSize = bsg_mach_binary_images.size * sizeof(BSG_Mach_Binary_Image_Info);
-        void **newData = realloc(bsg_mach_binary_images.contents, newSize);
+        size_t newSize = bsg_mach_binary_images.size *= 2;
+        size_t newAllocationSize = newSize * sizeof(BSG_Mach_Binary_Image_Info);
+        errno = 0;
+        BSG_Mach_Binary_Image_Info *newAllocation = (BSG_Mach_Binary_Image_Info *)realloc(bsg_mach_binary_images.contents, newAllocationSize);
         
-        // Exit early if we can't allocate memory
-        if (newData == NULL) {
+        if (newAllocation != NULL && errno != ENOMEM) {
+            bsg_mach_binary_images.size = newSize;
+            bsg_mach_binary_images.contents = newAllocation;
+        }
+        else {
+            // Exit early, don't expand the array, don't store the header info and unlock
+            bsg_unlock_mach_binary_image_access(&bsg_mach_binary_images_access_lock);
             return;
         }
-        
-        bsg_mach_binary_images.contents = (BSG_Mach_Binary_Image_Info *)newData;
     }
     
     // Store the value, increment the number of used elements
     bsg_mach_binary_images.contents[bsg_mach_binary_images.used++] = element;
     
-    unlock();
+    bsg_unlock_mach_binary_image_access(&bsg_mach_binary_images_access_lock);
 }
 
 /**
@@ -77,7 +57,7 @@ void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
  */
 void bsg_remove_mach_binary_image(uint64_t imageVmAddr) {
     
-    lock();
+    bsg_lock_mach_binary_image_access(&bsg_mach_binary_images_access_lock);
     
     for (size_t i=0; i<bsg_mach_binary_images.used; i++) {
         BSG_Mach_Binary_Image_Info item = bsg_mach_binary_images.contents[i];
@@ -94,7 +74,7 @@ void bsg_remove_mach_binary_image(uint64_t imageVmAddr) {
         }
     }
     
-    unlock();
+    bsg_unlock_mach_binary_image_access(&bsg_mach_binary_images_access_lock);
 }
 
 void bsg_initialise_mach_binary_headers(size_t initialSize) {
