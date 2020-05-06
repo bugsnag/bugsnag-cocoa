@@ -16,6 +16,30 @@ BSG_Mach_Binary_Images *bsg_get_mach_binary_images() {
     return &bsg_mach_binary_images;
 }
 
+// MARK: - Code synchronisation wrappers
+
+// os_unfair_lock is available from specific OS versions onwards:
+//     https://developer.apple.com/documentation/os/os_unfair_lock
+//
+// It deprecates OSSpinLock:
+//     https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/spinlock.3.html
+
+void lock() {
+#if defined(__IPHONE_10_0) || defined(__MAC_10_12) || defined(__TVOS_10_0) || defined(__WATCHOS_3_0)
+    os_unfair_lock_lock(&bsg_mach_binary_images_access_lock);
+#else
+    OSSpinLockLock(&bsg_mach_binary_images_access_lock);
+#endif
+}
+
+void unlock() {
+#if defined(__IPHONE_10_0) || defined(__MAC_10_12) || defined(__TVOS_10_0) || defined(__WATCHOS_3_0)
+    os_unfair_lock_unlock(&bsg_mach_binary_images_access_lock);
+#else
+    OSSpinLockUnlock(&bsg_mach_binary_images_access_lock);
+#endif
+}
+
 /**
  * Store a Mach binary image-excapsulating struct in a dynamic array.
  * The array doubles on filling-up.  Typical sizes is expected to be in < 1000 (i.e. 2-3 doublings, at app start-up)
@@ -23,18 +47,27 @@ BSG_Mach_Binary_Images *bsg_get_mach_binary_images() {
  */
 void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
     
-    os_unfair_lock_lock(&bsg_mach_binary_images_access_lock);
+    lock();
     
-    // Expand array if necessary
+    // Expand array if necessary.  We're slightly paranoid here.  An OOM is likely to be indicative of bigger problems
+    // but we should still do *our* best not to crash the app.
     if (bsg_mach_binary_images.used == bsg_mach_binary_images.size) {
         bsg_mach_binary_images.size *= 2;
-        bsg_mach_binary_images.contents = (BSG_Mach_Binary_Image_Info *)realloc(bsg_mach_binary_images.contents, bsg_mach_binary_images.size * sizeof(BSG_Mach_Binary_Image_Info));
+        size_t newSize = bsg_mach_binary_images.size * sizeof(BSG_Mach_Binary_Image_Info);
+        void **newData = realloc(bsg_mach_binary_images.contents, newSize);
+        
+        // Exit early if we can't allocate memory
+        if (newData == NULL) {
+            return;
+        }
+        
+        bsg_mach_binary_images.contents = (BSG_Mach_Binary_Image_Info *)newData;
     }
     
     // Store the value, increment the number of used elements
     bsg_mach_binary_images.contents[bsg_mach_binary_images.used++] = element;
     
-    os_unfair_lock_unlock(&bsg_mach_binary_images_access_lock);
+    unlock();
 }
 
 /**
@@ -42,14 +75,14 @@ void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
  * other fields.  Element order is not important; deletion is accomplished by copying the last item into the deleted
  * position.
  */
-void bsg_remove_mach_binary_image(const char *element_name) {
+void bsg_remove_mach_binary_image(uint64_t imageVmAddr) {
     
-    os_unfair_lock_lock(&bsg_mach_binary_images_access_lock);
+    lock();
     
     for (size_t i=0; i<bsg_mach_binary_images.used; i++) {
         BSG_Mach_Binary_Image_Info item = bsg_mach_binary_images.contents[i];
         
-        if (strcmp(element_name, item.name) == 0) {
+        if (imageVmAddr == item.imageVmAddr) {
             // Note: removal of the last (ith) item involves a redundant copy from last->last.
             if (bsg_mach_binary_images.used >= 2) {
                 bsg_mach_binary_images.contents[i] = bsg_mach_binary_images.contents[--bsg_mach_binary_images.used];
@@ -61,7 +94,7 @@ void bsg_remove_mach_binary_image(const char *element_name) {
         }
     }
     
-    os_unfair_lock_unlock(&bsg_mach_binary_images_access_lock);
+    unlock();
 }
 
 void bsg_initialise_mach_binary_headers(size_t initialSize) {
@@ -165,9 +198,9 @@ void bsg_mach_binary_image_added(const struct mach_header *header, intptr_t slid
  */
 void bsg_mach_binary_image_removed(const struct mach_header *header, intptr_t slide)
 {
-    // Convert header and slide into an info struct
-    BSG_Mach_Binary_Image_Info info;
+    // Convert header into an info struct
+    BSG_Mach_Binary_Image_Info info = { 0 };
     if (bsg_populate_mach_image_info(header, &info)) {
-        bsg_remove_mach_binary_image(info.name);
+        bsg_remove_mach_binary_image(info.imageVmAddr);
     }
 }

@@ -37,6 +37,7 @@ Related to #
 
 * Added a changelog entry?
 * Checked the scope to ensure the commits are only related to the goal above?
+* Added any new headers to the "Copy Files" stage of the static iOS target?
 
 -->
 

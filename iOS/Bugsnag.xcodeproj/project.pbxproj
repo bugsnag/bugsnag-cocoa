@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0003F3C52461B29A00AE0C93 /* BSG_KSMachHeaders.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0071CB4D2460216200F562B1 /* BSG_KSMachHeaders.h */; };
 		0071CB4B2460213200F562B1 /* BSG_KSMachHeaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 0071CB4A2460213200F562B1 /* BSG_KSMachHeaders.m */; };
 		0071CB4C2460213200F562B1 /* BSG_KSMachHeaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 0071CB4A2460213200F562B1 /* BSG_KSMachHeaders.m */; };
 		0071CB4F246025AF00F562B1 /* KSMachHeader_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0071CB4E246025AF00F562B1 /* KSMachHeader_Tests.m */; };
@@ -327,6 +328,7 @@
 			dstPath = "include/${PRODUCT_NAME}";
 			dstSubfolderSpec = 16;
 			files = (
+				0003F3C52461B29A00AE0C93 /* BSG_KSMachHeaders.h in CopyFiles */,
 				8A3C590923965D9400B344AA /* BugsnagPlugin.h in CopyFiles */,
 				E79148251FD828E6003EFEBF /* BugsnagKeys.h in CopyFiles */,
 				E79148261FD828E6003EFEBF /* BugsnagSessionTracker.h in CopyFiles */,

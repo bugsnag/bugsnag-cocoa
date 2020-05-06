@@ -10,7 +10,7 @@
 #define BSG_KSMachHeaders_h
 
 #import <mach/machine.h>
-#import <os/lock.h>
+
 
 /**
  * An encapsulation of the Mach header - either 64 or 32 bit, along with some additional information required for
@@ -39,9 +39,16 @@ typedef struct {
 static BSG_Mach_Binary_Images bsg_mach_binary_images;
 
 /**
- * A lock, used to synchronise access to the array of binary image info.
+ * An OS-version-specific lock, used to synchronise access to the array of binary image info.
  */
-static os_unfair_lock bsg_mach_binary_images_access_lock = OS_UNFAIR_LOCK_INIT;
+#if defined(__IPHONE_10_0) || defined(__MAC_10_12) || defined(__TVOS_10_0) || defined(__WATCHOS_3_0)
+    #import <os/lock.h>
+    static os_unfair_lock bsg_mach_binary_images_access_lock = OS_UNFAIR_LOCK_INIT;
+#else
+    #import <libkern/OSAtomic.h>
+    #define OS_SPINLOCK_INIT 0
+    static OSSpinLock bsg_mach_binary_images_access_lock = OS_SPINLOCK_INIT;
+#endif
 
 /**
  * Provide external access to the array of binary image info
@@ -59,7 +66,7 @@ void bsg_mach_binary_image_added(const struct mach_header *mh, intptr_t slide);
 void bsg_mach_binary_image_removed(const struct mach_header *mh, intptr_t slide);
 
 /**
- * Create an empty, mutable NSArray to hold Mach header info
+ * Create an empty array with initial capacity to hold Mach header info.
  */
 void bsg_initialise_mach_binary_headers(size_t initialSize);
 

@@ -52,7 +52,7 @@
 #endif
 
 #ifndef BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE
-#define BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE 100
+#define BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE 400
 #endif
 
 // ============================================================================

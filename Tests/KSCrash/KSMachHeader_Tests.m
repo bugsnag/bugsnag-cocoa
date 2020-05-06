@@ -13,7 +13,7 @@
 // Private methods
 void bsg_initialize_binary_images_array(size_t initialSize);
 void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element);
-void bsg_remove_mach_binary_image(const char *element_name);
+void bsg_remove_mach_binary_image(uint64_t imageVmAddr);
 BSG_Mach_Binary_Images *bsg_get_mach_binary_images(void);
 
 const struct mach_header mh = {
@@ -27,9 +27,9 @@ const struct mach_header mh = {
 };
 
 const BSG_Mach_Binary_Image_Info info1 = {.mh = &mh, .imageVmAddr = 12345, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the first", .cputype = 42, .cpusubtype = 27 };
-const BSG_Mach_Binary_Image_Info info2 = {.mh = &mh, .imageVmAddr = 12345, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the second", .cputype = 42, .cpusubtype = 27 };
-const BSG_Mach_Binary_Image_Info info3 = {.mh = &mh, .imageVmAddr = 12345, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the third", .cputype = 42, .cpusubtype = 27 };
-const BSG_Mach_Binary_Image_Info info4 = {.mh = &mh, .imageVmAddr = 12345, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the fourth", .cputype = 42, .cpusubtype = 27 };
+const BSG_Mach_Binary_Image_Info info2 = {.mh = &mh, .imageVmAddr = 23456, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the second", .cputype = 42, .cpusubtype = 27 };
+const BSG_Mach_Binary_Image_Info info3 = {.mh = &mh, .imageVmAddr = 34567, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the third", .cputype = 42, .cpusubtype = 27 };
+const BSG_Mach_Binary_Image_Info info4 = {.mh = &mh, .imageVmAddr = 45678, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the fourth", .cputype = 42, .cpusubtype = 27 };
 
 @interface KSMachHeader_Tests : XCTestCase
 @end
@@ -58,7 +58,7 @@ const BSG_Mach_Binary_Image_Info info4 = {.mh = &mh, .imageVmAddr = 12345, .imag
     XCTAssertEqual(headers->used, 3);
     
     // Delete - third will be copied
-    bsg_remove_mach_binary_image("header the first");
+    bsg_remove_mach_binary_image(12345);
     XCTAssertEqual(headers->size, 4);
     XCTAssertEqual(headers->used, 2);
 
@@ -67,20 +67,20 @@ const BSG_Mach_Binary_Image_Info info4 = {.mh = &mh, .imageVmAddr = 12345, .imag
     XCTAssertEqual(headers->size, 4);
     
     // Nothing happens
-    bsg_remove_mach_binary_image("header the first");
+    bsg_remove_mach_binary_image(12345);
     XCTAssertEqual(headers->size, 4);
     XCTAssertEqual(headers->used, 2);
 
-    bsg_remove_mach_binary_image("header the second");
+    bsg_remove_mach_binary_image(23456);
     XCTAssertEqual(headers->size, 4);
     XCTAssertEqual(headers->used, 1);
     XCTAssertEqual(strcmp(headers->contents[0].name, "header the third"), 0);
     
-    bsg_remove_mach_binary_image("header the third");
+    bsg_remove_mach_binary_image(34567);
     XCTAssertEqual(headers->size, 4);
     XCTAssertEqual(headers->used, 0);
     
-    bsg_remove_mach_binary_image("header the third");
+    bsg_remove_mach_binary_image(34567);
     XCTAssertEqual(headers->size, 4);
     XCTAssertEqual(headers->used, 0);
     
@@ -97,7 +97,7 @@ const BSG_Mach_Binary_Image_Info info4 = {.mh = &mh, .imageVmAddr = 12345, .imag
     XCTAssertEqual(headers->size, 2);
     XCTAssertEqual(headers->used, 1);
 
-    bsg_remove_mach_binary_image("header the first");
+    bsg_remove_mach_binary_image(12345);
     XCTAssertEqual(headers->size, 2);
     XCTAssertEqual(headers->used, 0);
 }
@@ -110,11 +110,11 @@ const BSG_Mach_Binary_Image_Info info4 = {.mh = &mh, .imageVmAddr = 12345, .imag
     XCTAssertEqual(headers->size, 2);
     XCTAssertEqual(headers->used, 2);
 
-    bsg_remove_mach_binary_image("header the second");
+    bsg_remove_mach_binary_image(23456);
     XCTAssertEqual(headers->size, 2);
     XCTAssertEqual(headers->used, 1);
 
-    bsg_remove_mach_binary_image("header the first");
+    bsg_remove_mach_binary_image(12345);
     XCTAssertEqual(headers->size, 2);
     XCTAssertEqual(headers->used, 0);
 }
@@ -130,19 +130,19 @@ const BSG_Mach_Binary_Image_Info info4 = {.mh = &mh, .imageVmAddr = 12345, .imag
     XCTAssertEqual(headers->size, 4);
     XCTAssertEqual(headers->used, 4);
 
-    bsg_remove_mach_binary_image("header the fourth");
+    bsg_remove_mach_binary_image(45678);
     XCTAssertEqual(headers->size, 4);
     XCTAssertEqual(headers->used, 3);
 
-    bsg_remove_mach_binary_image("header the first");
+    bsg_remove_mach_binary_image(12345);
     XCTAssertEqual(headers->size, 4);
     XCTAssertEqual(headers->used, 2);
 
-    bsg_remove_mach_binary_image("header the first");
+    bsg_remove_mach_binary_image(12345);
     XCTAssertEqual(headers->size, 4);
     XCTAssertEqual(headers->used, 2);
 
-    bsg_remove_mach_binary_image("header the third");
+    bsg_remove_mach_binary_image(34567);
     XCTAssertEqual(headers->size, 4);
     XCTAssertEqual(headers->used, 1);
 }
