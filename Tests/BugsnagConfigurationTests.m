@@ -3,7 +3,6 @@
  */
 
 #import <XCTest/XCTest.h>
-#import <objc/runtime.h>
 
 #import "BugsnagTestConstants.h"
 #import "Bugsnag.h"
@@ -14,7 +13,6 @@
 #import "BugsnagUser.h"
 #import "BSG_KSCrashType.h"
 #import "BSG_SSKeychain.h"
-
 
 // =============================================================================
 // MARK: - Required private methods
