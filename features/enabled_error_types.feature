@@ -27,7 +27,7 @@ Scenario: NSException Crash Reporting is disabled
     And the event "unhandled" is false
     And the payload field "events.0.exceptions.0.message" equals "DisableNSExceptionScenario - Handled"
 
-# Currently flakey, bubbling up SIGABRT
+@skip Currently flakey, bubbling up SIGABRT
 Scenario: CPP Crash Reporting is disabled
     When I run "EnabledErrorTypesCxxScenario" and relaunch the app
     And I configure Bugsnag for "EnabledErrorTypesCxxScenario"
