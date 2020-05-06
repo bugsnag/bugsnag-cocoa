@@ -10,6 +10,7 @@
 #import "Bugsnag.h"
 #import "BugsnagClient.h"
 #import "BugsnagTestConstants.h"
+#import "BugsnagNotifier.h"
 #import <XCTest/XCTest.h>
 
 // MARK: - BugsnagTests
