@@ -6,7 +6,7 @@
 
 /**
  * Creates a configuration, applying supported options before returning the new
- * config object. Unsupported options warn.
+ * config object.
  *
  * @return a new BugsnagConfiguration object or nil if the a valid object could
  * not be created (including a non-empty API key)
