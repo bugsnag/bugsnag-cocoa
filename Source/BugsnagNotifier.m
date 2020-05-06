@@ -15,13 +15,13 @@
 
         self.name =
 #if TARGET_OS_TV
-                @"tvOS Bugsnag Notifier";
+        @"tvOS Bugsnag Notifier";
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-                @"iOS Bugsnag Notifier";
+        @"iOS Bugsnag Notifier";
 #elif TARGET_OS_MAC
         @"OSX Bugsnag Notifier";
 #else
-            @"Bugsnag Objective-C";
+        @"Bugsnag Objective-C";
 #endif
         self.version = @"5.23.0";
         self.url = @"https://github.com/bugsnag/bugsnag-cocoa";
