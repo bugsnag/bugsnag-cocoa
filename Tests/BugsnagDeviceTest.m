@@ -18,6 +18,8 @@ NSNumber *BSGDeviceFreeSpace(NSSearchPathDirectory directory);
 + (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)event;
 
 - (NSDictionary *)toDictionary;
+
+- (void)appendRuntimeInfo:(NSDictionary *)info;
 @end
 
 @interface BugsnagDeviceWithState ()
@@ -198,6 +200,19 @@ NSNumber *BSGDeviceFreeSpace(NSSearchPathDirectory directory);
     NSSearchPathDirectory notAccessibleDirectory = NSAdminApplicationDirectory;
     NSNumber *freeBytes = BSGDeviceFreeSpace(notAccessibleDirectory);
     XCTAssertNil(freeBytes, @"expect nil when fails to retrieve free space for the directory");
+}
+
+- (void)testDeviceRuntimeInfoAppended {
+    BugsnagDevice *device = [BugsnagDevice deviceWithDictionary:self.data];
+    XCTAssertEqual(2, [device.runtimeVersions count]);
+    XCTAssertEqualObjects(@"14B25", device.runtimeVersions[@"osBuild"]);
+    XCTAssertEqualObjects(@"10.0.0 (clang-1000.11.45.5)", device.runtimeVersions[@"clangVersion"]);
+
+    [device appendRuntimeInfo:@{@"foo": @"bar"}];
+    XCTAssertEqual(3, [device.runtimeVersions count]);
+    XCTAssertEqualObjects(@"14B25", device.runtimeVersions[@"osBuild"]);
+    XCTAssertEqualObjects(@"10.0.0 (clang-1000.11.45.5)", device.runtimeVersions[@"clangVersion"]);
+    XCTAssertEqualObjects(@"bar", device.runtimeVersions[@"foo"]);
 }
 
 @end

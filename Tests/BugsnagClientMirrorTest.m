@@ -96,7 +96,9 @@
             @"collectAppWithState @16@0:8",
             @"collectBreadcrumbs @16@0:8",
             @"collectThreads @16@0:8",
-            @"collectDeviceWithState @16@0:8"
+            @"collectDeviceWithState @16@0:8",
+            @"extraRuntimeInfo @16@0:8",
+            @"setExtraRuntimeInfo: v24@0:8@16"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to
