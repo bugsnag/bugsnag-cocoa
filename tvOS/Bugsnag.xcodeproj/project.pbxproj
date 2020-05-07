@@ -173,6 +173,7 @@
 		E7819BBB245979E900A7EBDD /* BugsnagNotifierTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E7819BBA245979E900A7EBDD /* BugsnagNotifierTest.m */; };
 		E786059824229A6E00CC2D28 /* BugsnagStateEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = E786059624229A6E00CC2D28 /* BugsnagStateEvent.m */; };
 		E786059924229A6E00CC2D28 /* BugsnagStateEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = E786059724229A6E00CC2D28 /* BugsnagStateEvent.h */; };
+		E78E8CB124694C020017A314 /* BugsnagStateEventTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E78E8CB024694C020017A314 /* BugsnagStateEventTest.m */; };
 		E790C422243231EA006FFB26 /* BugsnagClientMirrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E790C421243231EA006FFB26 /* BugsnagClientMirrorTest.m */; };
 		E790C4292433551D006FFB26 /* BugsnagClientInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = E790C4282433551D006FFB26 /* BugsnagClientInternal.h */; };
 		E790C48C24349D35006FFB26 /* BugsnagApp.h in Headers */ = {isa = PBXBuildFile; fileRef = E790C47E24349D33006FFB26 /* BugsnagApp.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -419,6 +420,7 @@
 		E7819BBA245979E900A7EBDD /* BugsnagNotifierTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagNotifierTest.m; path = ../../Tests/BugsnagNotifierTest.m; sourceTree = "<group>"; };
 		E786059624229A6E00CC2D28 /* BugsnagStateEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagStateEvent.m; path = ../Source/BugsnagStateEvent.m; sourceTree = "<group>"; };
 		E786059724229A6E00CC2D28 /* BugsnagStateEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagStateEvent.h; path = ../Source/BugsnagStateEvent.h; sourceTree = "<group>"; };
+		E78E8CB024694C020017A314 /* BugsnagStateEventTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagStateEventTest.m; path = ../../Tests/BugsnagStateEventTest.m; sourceTree = "<group>"; };
 		E790C421243231EA006FFB26 /* BugsnagClientMirrorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BugsnagClientMirrorTest.m; path = ../../Tests/BugsnagClientMirrorTest.m; sourceTree = "<group>"; };
 		E790C4282433551D006FFB26 /* BugsnagClientInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagClientInternal.h; path = ../Source/BugsnagClientInternal.h; sourceTree = "<group>"; };
 		E790C47E24349D33006FFB26 /* BugsnagApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BugsnagApp.h; path = ../Source/BugsnagApp.h; sourceTree = "<group>"; };
@@ -620,6 +622,7 @@
 				E791488B1FD82E77003EFEBF /* BugsnagSessionTrackingPayloadTest.m */,
 				E71DB9E22447105E00D0161E /* BugsnagSessionTrackerStopTest.m */,
 				8AB1511F1D41361700C9B218 /* BugsnagSinkTests.m */,
+				E78E8CB024694C020017A314 /* BugsnagStateEventTest.m */,
 				E71DB9E02447105D00D0161E /* BugsnagTests.m */,
 				00D7ACA523E98A5D00FBE4A7 /* BugsnagTestConstants.h */,
 				E722105F243B6A220083CF15 /* BugsnagStackframeTest.m */,
@@ -675,8 +678,6 @@
 				E790C48624349D34006FFB26 /* BugsnagDeviceWithState.m */,
 				E790C47F24349D33006FFB26 /* BugsnagError.h */,
 				E790C48724349D34006FFB26 /* BugsnagError.m */,
-				00D7AC9F23E97FBD00FBE4A7 /* BugsnagEvent.h */,
-				00D7AC9E23E97FBD00FBE4A7 /* BugsnagEvent.m */,
 				E7819BB3245975BF00A7EBDD /* BugsnagNotifier.h */,
 				E7819BB2245975BF00A7EBDD /* BugsnagNotifier.m */,
 				E79148641FD82E6A003EFEBF /* BugsnagSession.h */,
@@ -1251,6 +1252,7 @@
 				4B775FD122CBE01F004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m in Sources */,
 				E71DB9EA2447105E00D0161E /* BSGConnectivityTest.m in Sources */,
 				E7A9E56F2436366800D99F8A /* BugsnagDeviceTest.m in Sources */,
+				E78E8CB124694C020017A314 /* BugsnagStateEventTest.m in Sources */,
 				E7CE79001FD94F1B001D07E0 /* KSJSONCodec_Tests.m in Sources */,
 				E7CE79051FD94F1B001D07E0 /* KSDynamicLinker_Tests.m in Sources */,
 				E71DB9E92447105E00D0161E /* BugsnagSessionTrackerStopTest.m in Sources */,

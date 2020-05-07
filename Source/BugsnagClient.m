@@ -49,6 +49,7 @@
 #import "BugsnagNotifier.h"
 #import "BugsnagMetadataInternal.h"
 #import "BugsnagStateEvent.h"
+#import "BugsnagCollections.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -287,6 +288,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic) BOOL appDidCrashLastLaunch;
 @property (nonatomic, strong) BugsnagMetadata *metadata;
 @property (nonatomic) NSString *codeBundleId;
+@property(nonatomic, readwrite, strong) NSMutableArray *stateEventBlocks;
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 // The previous device orientation - iOS only
 @property (nonatomic, strong) NSString *lastOrientation;
@@ -301,7 +303,6 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property(readwrite, retain, nullable) BugsnagMetadata *config;
 @property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 - (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)type;
-- (void)notifyObserver:(BugsnagStateEvent *)event;
 @end
 
 @interface BugsnagEvent ()
@@ -373,6 +374,7 @@ NSString *_lastOrientation = nil;
                                                                       configuration:configuration];
         }
 
+        self.stateEventBlocks = [NSMutableArray new];
         self.extraRuntimeInfo = [NSMutableDictionary new];
         self.metadataLock = [[NSLock alloc] init];
         self.crashSentry = [BugsnagCrashSentry new];
@@ -398,13 +400,9 @@ NSString *_lastOrientation = nil;
         [self metadataChanged:self.state];
 
         // add observers for future metadata changes
-        void (^observer)(BugsnagMetadata *) = ^(BugsnagMetadata *metadata) {
-            [self metadataChanged:metadata];
-        };
-        [self.metadata addObserver:observer];
-        [self.configuration.metadata addObserver:observer];
-        [self.configuration.config addObserver:observer];
-        [self.state addObserver:observer];
+        [self registerStateObserverWithBlock:^(BugsnagStateEvent *event) {
+            [self metadataChanged:event.data];
+        }];
 
         self.pluginClient = [[BugsnagPluginClient alloc] initWithPlugins:self.configuration.plugins];
 
@@ -413,6 +411,22 @@ NSString *_lastOrientation = nil;
 #endif
     }
     return self;
+}
+
+- (void)registerStateObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer {
+    [self.stateEventBlocks addObject:[observer copy]];
+
+    // additionally listen for metadata updates
+    [self.metadata registerStateObserverWithBlock:observer];
+    [self.configuration.metadata registerStateObserverWithBlock:observer];
+    [self.configuration.config registerStateObserverWithBlock:observer];
+    [self.state registerStateObserverWithBlock:observer];
+}
+
+- (void)notifyObservers:(BugsnagStateEvent *)event {
+    for (BugsnagObserverBlock callback in self.stateEventBlocks) {
+        callback(event);
+    }
 }
 
 NSString *const kWindowVisible = @"Window Became Visible";
@@ -740,6 +754,12 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.metadata addMetadata:userId withKey:BSGKeyId    toSection:BSGKeyUser];
     [self.metadata addMetadata:name   withKey:BSGKeyName  toSection:BSGKeyUser];
     [self.metadata addMetadata:email  withKey:BSGKeyEmail toSection:BSGKeyUser];
+
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+    BSGDictInsertIfNotNil(dict, self.user.id, @"id");
+    BSGDictInsertIfNotNil(dict, self.user.email, @"email");
+    BSGDictInsertIfNotNil(dict, self.user.name, @"name");
+    [self notifyObservers:[[BugsnagStateEvent alloc] initWithName:kStateEventUser data:dict]];
 }
 
 // =============================================================================
@@ -784,6 +804,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)setContext:(NSString *_Nullable)context {
     self.configuration.context = context;
+    [self notifyObservers:[[BugsnagStateEvent alloc] initWithName:kStateEventContext data:context]];
 }
 
 - (NSString *)context {
@@ -998,9 +1019,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         } else {
             bsg_log_debug(@"Unknown metadata dictionary changed");
         }
-
-        BugsnagStateEvent *event = [[BugsnagStateEvent alloc] initWithName:kStateEventMetadata data:metadata];
-        [self.configuration notifyObserver:event];
     }
 }
 

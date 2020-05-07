@@ -57,8 +57,6 @@ NSString * const kBugsnagUserEmailAddress = @"BugsnagUserEmailAddress";
 NSString * const kBugsnagUserName = @"BugsnagUserName";
 NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
-typedef void (^BugsnagObserverBlock)(BugsnagStateEvent *_Nonnull event);
-
 @interface Bugsnag ()
 + (BugsnagClient *)client;
 @end
@@ -81,7 +79,6 @@ typedef void (^BugsnagObserverBlock)(BugsnagStateEvent *_Nonnull event);
  */
 @property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
 @property(nonatomic, readwrite, strong) NSMutableArray *onBreadcrumbBlocks;
-@property(nonatomic, readwrite, strong) BugsnagObserverBlock block;
 @property(nonatomic, readwrite, strong) NSMutableSet *plugins;
 @property(readonly, retain, nullable) NSURL *notifyURL;
 @property(readonly, retain, nullable) NSURL *sessionURL;
@@ -157,7 +154,6 @@ typedef void (^BugsnagObserverBlock)(BugsnagStateEvent *_Nonnull event);
     [copy setUser:self.user.id
         withEmail:self.user.email
           andName:self.user.name];
-    [copy setBlock:self.block];
     return copy;
 }
 
@@ -281,12 +277,6 @@ typedef void (^BugsnagObserverBlock)(BugsnagStateEvent *_Nonnull event);
 
     // Add user info to the metadata
     [self setUserMetadataFromUser:self.user];
-
-    NSMutableDictionary *dict = [NSMutableDictionary new];
-    BSGDictInsertIfNotNil(dict, self.user.id, @"id");
-    BSGDictInsertIfNotNil(dict, self.user.email, @"email");
-    BSGDictInsertIfNotNil(dict, self.user.name, @"name");
-    [self notifyObserver:[[BugsnagStateEvent alloc] initWithName:kStateEventUser data:dict]];
 }
 
 /**
@@ -592,7 +582,6 @@ typedef void (^BugsnagObserverBlock)(BugsnagStateEvent *_Nonnull event);
         [self.config addMetadata:newContext
                          withKey:BSGKeyContext
                        toSection:BSGKeyConfig];
-        [self notifyObserver:[[BugsnagStateEvent alloc] initWithName:kStateEventContext data:newContext]];
     }
 }
 
@@ -654,16 +643,6 @@ typedef void (^BugsnagObserverBlock)(BugsnagStateEvent *_Nonnull event);
 
 - (void)addPlugin:(id<BugsnagPlugin> _Nonnull)plugin {
     [_plugins addObject:plugin];
-}
-
-- (void)notifyObserver:(BugsnagStateEvent *)event {
-    if (self.block != nil) {
-        self.block(event);
-    }
-}
-
-- (void)registerStateObserverWithBlock:(BugsnagObserverBlock _Nonnull)block {
-    self.block = block;
 }
 
 // MARK: - <MetadataStore>

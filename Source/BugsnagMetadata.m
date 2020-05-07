@@ -30,6 +30,10 @@
 #import "BugsnagLogger.h"
 #import "BugsnagStateEvent.h"
 
+@interface BugsnagMetadata ()
+@property(nonatomic, readwrite, strong) NSMutableArray *stateEventBlocks;
+@end
+
 @implementation BugsnagMetadata
 
 - (id)init {
@@ -42,9 +46,9 @@
         // Ensure that the instantiating dictionary is mutable.
         // Saves checks later.
         self.dictionary = [dict mutableCopy];
+        self.stateEventBlocks = [NSMutableArray new];
     }
-    self.observers = [NSMutableSet new];
-    [self informDelegates];
+    [self notifyObservers];
     return self;
 }
 
@@ -52,14 +56,15 @@
     return [self.dictionary mutableCopy];
 }
 
-- (void)addObserver:(BugsnagMetadataCallback)block {
-    [self.observers addObject:[block copy]];
+- (void)notifyObservers {
+    for (BugsnagObserverBlock callback in self.stateEventBlocks) {
+        BugsnagStateEvent *event = [[BugsnagStateEvent alloc] initWithName:kStateEventMetadata data:self];
+        callback(event);
+    }
 }
 
-- (void)informDelegates {
-    for (BugsnagMetadataCallback observer in self.observers) {
-        observer(self);
-    }
+- (void)registerStateObserverWithBlock:(BugsnagObserverBlock _Nonnull)block {
+    [self.stateEventBlocks addObject:[block copy]];
 }
 
 // MARK: - <NSMutableCopying>
@@ -131,7 +136,7 @@
     
     // Call the delegate if we've materially changed it
     if (metadataChanged) {
-        [self informDelegates];
+        [self notifyObservers];
     }
 }
 
@@ -192,7 +197,7 @@
             
             // Call the delegate if we've materially changed it
             if (metadataChanged) {
-                [self informDelegates];
+                [self notifyObservers];
             }
         }
     }
@@ -218,7 +223,7 @@
     @synchronized(self) {
         [self.dictionary removeObjectForKey:sectionName];
     }
-    [self informDelegates];
+    [self notifyObservers];
 }
 
 - (void)clearMetadataFromSection:(NSString *)section
@@ -229,7 +234,7 @@
             [[[self dictionary] objectForKey:section] removeObjectForKey:key];
         }
     }
-    [self informDelegates];
+    [self notifyObservers];
 }
 
 @end

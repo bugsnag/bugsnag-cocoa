@@ -98,7 +98,12 @@
             @"collectThreads @16@0:8",
             @"collectDeviceWithState @16@0:8",
             @"extraRuntimeInfo @16@0:8",
-            @"setExtraRuntimeInfo: v24@0:8@16"
+            @"setExtraRuntimeInfo: v24@0:8@16",
+            @"collectDeviceWithState @16@0:8",
+            @"setStateEventBlocks: v24@0:8@16",
+            @"registerStateObserverWithBlock: v24@0:8@?16",
+            @"notifyObservers: v24@0:8@16",
+            @"stateEventBlocks @16@0:8"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to

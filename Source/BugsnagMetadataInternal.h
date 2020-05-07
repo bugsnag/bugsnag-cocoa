@@ -11,17 +11,18 @@
 
 #import "BugsnagMetadata.h"
 
+@class BugsnagStateEvent;
+
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void (^BugsnagMetadataCallback)(BugsnagMetadata *metadata);
+typedef void (^BugsnagObserverBlock)(BugsnagStateEvent *_Nonnull event);
 
 @interface BugsnagMetadata ()
 @property(atomic, strong) NSMutableDictionary *dictionary;
-@property NSMutableSet *_Nullable observers;
 
 - (NSDictionary *)toDictionary;
 - (id)deepCopy;
-- (void)addObserver:(BugsnagMetadataCallback)block;
+- (void)registerStateObserverWithBlock:(BugsnagObserverBlock _Nonnull)block;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -44,7 +44,7 @@
     metadata = [[BugsnagMetadata alloc] init];
 
     __weak __typeof__(self) weakSelf = self;
-    [metadata addObserver:^(BugsnagMetadata *data) {
+    [metadata registerStateObserverWithBlock:^(BugsnagStateEvent *event) {
         weakSelf.delegateCalled = YES;
     }];
 }
@@ -157,7 +157,7 @@
     // Check delegate method gets called
     delegateCalled = NO;
     __weak __typeof__(self) weakSelf = self;
-    [metadata addObserver:^(BugsnagMetadata *data) {
+    [metadata registerStateObserverWithBlock:^(BugsnagStateEvent *event) {
         weakSelf.delegateCalled = YES;
     }];
     [metadata addMetadata:@{@"key" : @"value"} toSection:@"OtherTab"];
@@ -184,7 +184,7 @@
     // Once more with a delegate
     delegateCalled = NO;
     __weak __typeof__(self) weakSelf = self;
-    [metadata addObserver:^(BugsnagMetadata *data) {
+    [metadata registerStateObserverWithBlock:^(BugsnagStateEvent *event) {
         weakSelf.delegateCalled = YES;
     }];
     [metadata addMetadata:@{dummyObj : @"someValue"} toSection:@"invalidKeyTab"];

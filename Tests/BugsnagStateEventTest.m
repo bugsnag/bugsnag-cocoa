@@ -14,34 +14,29 @@
 #import "BugsnagStateEvent.h"
 #import "BugsnagMetadataInternal.h"
 
-@interface BugsnagConfiguration()
+@interface BugsnagClient()
 @property BugsnagMetadata *metadata;
 - (void)registerStateObserverWithBlock:(void (^_Nonnull)(BugsnagStateEvent *_Nonnull))event;
 @end
 
 @interface BugsnagStateEventTest : XCTestCase
-@property BugsnagConfiguration *config;
+@property BugsnagClient *client;
 @property BugsnagStateEvent *event;
-@property BugsnagMetadata *observedMetadata;
 @end
 
 @implementation BugsnagStateEventTest
 
 - (void)setUp {
-    self.config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    self.client = [Bugsnag startWithConfiguration:config];
 
-    [self.config registerStateObserverWithBlock:^(BugsnagStateEvent *event) {
+    [self.client registerStateObserverWithBlock:^(BugsnagStateEvent *event) {
         self.event = event;
-    }];
-
-    __weak __typeof__(self) weakSelf = self;
-    [self.config.metadata addObserver:^(BugsnagMetadata *metadata) {
-        weakSelf.observedMetadata = metadata;
     }];
 }
 
 - (void)testUserUpdate {
-    [self.config setUser:@"123" withEmail:@"test@example.com" andName:@"Jamie"];
+    [self.client setUser:@"123" withEmail:@"test@example.com" andName:@"Jamie"];
 
     BugsnagStateEvent* obj = self.event;
     XCTAssertEqualObjects(@"UserUpdate", obj.name);
@@ -53,16 +48,16 @@
 }
 
 - (void)testContextUpdate {
-    [self.config setContext:@"Foo"];
+    [self.client setContext:@"Foo"];
     BugsnagStateEvent* obj = self.event;
     XCTAssertEqualObjects(@"ContextUpdate", obj.name);
     XCTAssertEqualObjects(@"Foo", obj.data);
 }
 
 - (void)testMetadataUpdate {
-    XCTAssertNil(self.observedMetadata);
-    [self.config addMetadata:@"Bar" withKey:@"Foo" toSection:@"test"];
-    XCTAssertEqualObjects(self.config.metadata, self.observedMetadata);
+    XCTAssertNil(self.event);
+    [self.client addMetadata:@"Bar" withKey:@"Foo" toSection:@"test"];
+    XCTAssertEqualObjects(self.client.metadata, self.event.data);
 }
 
 @end
