@@ -12,7 +12,7 @@
 
 - (instancetype)initWithName:(NSString *)name data:(id)data {
     if (self = [super init]) {
-        self.name = name;
+        self.type = name;
         self.data = data;
     }
     return self;

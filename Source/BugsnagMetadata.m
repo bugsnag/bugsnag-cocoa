@@ -63,7 +63,7 @@
     }
 }
 
-- (void)registerStateObserverWithBlock:(BugsnagObserverBlock _Nonnull)block {
+- (void)addObserverUsingBlock:(BugsnagObserverBlock _Nonnull)block {
     [self.stateEventBlocks addObject:[block copy]];
 }
 

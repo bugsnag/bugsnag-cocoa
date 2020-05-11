@@ -22,7 +22,7 @@ typedef void (^BugsnagObserverBlock)(BugsnagStateEvent *_Nonnull event);
 
 - (NSDictionary *)toDictionary;
 - (id)deepCopy;
-- (void)registerStateObserverWithBlock:(BugsnagObserverBlock _Nonnull)block;
+- (void)addObserverUsingBlock:(BugsnagObserverBlock _Nonnull)block;
 @end
 
 NS_ASSUME_NONNULL_END

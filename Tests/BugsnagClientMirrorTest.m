@@ -101,7 +101,7 @@
             @"setExtraRuntimeInfo: v24@0:8@16",
             @"collectDeviceWithState @16@0:8",
             @"setStateEventBlocks: v24@0:8@16",
-            @"registerStateObserverWithBlock: v24@0:8@?16",
+            @"addObserverUsingBlock: v24@0:8@?16",
             @"notifyObservers: v24@0:8@16",
             @"stateEventBlocks @16@0:8"
     ]];

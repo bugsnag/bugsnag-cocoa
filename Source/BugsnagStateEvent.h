@@ -16,12 +16,8 @@ static NSString *const kStateEventUser = @"UserUpdate";
 
 @interface BugsnagStateEvent : NSObject
 - (instancetype)initWithName:(NSString *)name data:(id)data;
-@property NSString *name;
+@property NSString *type;
 @property id data;
-@end
-
-@protocol BugsnagObservable <NSObject>
-@property BugsnagStateEvent *observable;
 @end
 
 NS_ASSUME_NONNULL_END

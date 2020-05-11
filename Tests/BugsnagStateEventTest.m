@@ -16,7 +16,7 @@
 
 @interface BugsnagClient()
 @property BugsnagMetadata *metadata;
-- (void)registerStateObserverWithBlock:(void (^_Nonnull)(BugsnagStateEvent *_Nonnull))event;
+- (void)addObserverUsingBlock:(BugsnagObserverBlock _Nonnull)observer;
 @end
 
 @interface BugsnagStateEventTest : XCTestCase
@@ -30,8 +30,9 @@
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     self.client = [Bugsnag startWithConfiguration:config];
 
-    [self.client registerStateObserverWithBlock:^(BugsnagStateEvent *event) {
-        self.event = event;
+    __weak __typeof__(self) weakSelf = self;
+    [self.client addObserverUsingBlock:^(BugsnagStateEvent *event) {
+        weakSelf.event = event;
     }];
 }
 
@@ -39,7 +40,7 @@
     [self.client setUser:@"123" withEmail:@"test@example.com" andName:@"Jamie"];
 
     BugsnagStateEvent* obj = self.event;
-    XCTAssertEqualObjects(@"UserUpdate", obj.name);
+    XCTAssertEqualObjects(@"UserUpdate", obj.type);
 
     NSDictionary *dict = obj.data;
     XCTAssertEqualObjects(@"123", dict[@"id"]);
@@ -50,7 +51,7 @@
 - (void)testContextUpdate {
     [self.client setContext:@"Foo"];
     BugsnagStateEvent* obj = self.event;
-    XCTAssertEqualObjects(@"ContextUpdate", obj.name);
+    XCTAssertEqualObjects(@"ContextUpdate", obj.type);
     XCTAssertEqualObjects(@"Foo", obj.data);
 }
 

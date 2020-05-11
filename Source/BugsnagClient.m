@@ -400,8 +400,9 @@ NSString *_lastOrientation = nil;
         [self metadataChanged:self.state];
 
         // add observers for future metadata changes
-        [self registerStateObserverWithBlock:^(BugsnagStateEvent *event) {
-            [self metadataChanged:event.data];
+        __weak __typeof__(self) weakSelf = self;
+        [self addObserverUsingBlock:^(BugsnagStateEvent *event) {
+            [weakSelf metadataChanged:event.data];
         }];
 
         self.pluginClient = [[BugsnagPluginClient alloc] initWithPlugins:self.configuration.plugins];
@@ -413,14 +414,14 @@ NSString *_lastOrientation = nil;
     return self;
 }
 
-- (void)registerStateObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer {
+- (void)addObserverUsingBlock:(BugsnagObserverBlock _Nonnull)observer {
     [self.stateEventBlocks addObject:[observer copy]];
 
     // additionally listen for metadata updates
-    [self.metadata registerStateObserverWithBlock:observer];
-    [self.configuration.metadata registerStateObserverWithBlock:observer];
-    [self.configuration.config registerStateObserverWithBlock:observer];
-    [self.state registerStateObserverWithBlock:observer];
+    [self.metadata addObserverUsingBlock:observer];
+    [self.configuration.metadata addObserverUsingBlock:observer];
+    [self.configuration.config addObserverUsingBlock:observer];
+    [self.state addObserverUsingBlock:observer];
 }
 
 - (void)notifyObservers:(BugsnagStateEvent *)event {
@@ -1016,8 +1017,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         } else if (metadata == self.state) {
             BSSerializeJSONDictionary([metadata toDictionary],
                                       &bsg_g_bugsnag_data.stateJSON);
-        } else {
-            bsg_log_debug(@"Unknown metadata dictionary changed");
         }
     }
 }
