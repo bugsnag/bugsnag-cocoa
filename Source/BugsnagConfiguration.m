@@ -174,7 +174,7 @@ static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
     }
 }
 
-- (void)setNotifyReleaseStages:(NSArray *)newNotifyReleaseStages;
+- (void)setNotifyReleaseStages:(NSArray *)newNotifyReleaseStages
 {
     @synchronized (self) {
         NSArray *notifyReleaseStagesCopy = [newNotifyReleaseStages copy];
