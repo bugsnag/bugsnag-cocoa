@@ -92,7 +92,7 @@ void bsg_initialise_mach_binary_headers(size_t initialSize) {
  *
  * @returns a boolean indicating success
  */
-bool bsg_populate_mach_image_info(const struct mach_header *header, BSG_Mach_Binary_Image_Info *info) {
+bool bsg_populate_mach_image_info(const struct mach_header *header, intptr_t slide, BSG_Mach_Binary_Image_Info *info) {
     
     // Early exit conditions; this is not a valid/useful binary image
     // 1. We can't find a sensible Mach command
@@ -152,6 +152,7 @@ bool bsg_populate_mach_image_info(const struct mach_header *header, BSG_Mach_Bin
     info->imageVmAddr = imageVmAddr;
     info->uuid = uuid;
     info->name = imageName;
+    info->slide = slide;
     
     return true;
 }
@@ -163,12 +164,12 @@ bool bsg_populate_mach_image_info(const struct mach_header *header, BSG_Mach_Bin
  * @param header A mach_header structure
  *
  * @param slide A virtual memory slide amount. The virtual memory slide amount specifies the difference between the
- *              address at which the image was linked and the address at which the image is loaded.  Unused.
+ *              address at which the image was linked and the address at which the image is loaded.
  */
 void bsg_mach_binary_image_added(const struct mach_header *header, intptr_t slide)
 {
     BSG_Mach_Binary_Image_Info info = { 0 };
-    if (bsg_populate_mach_image_info(header, &info)) {
+    if (bsg_populate_mach_image_info(header, slide, &info)) {
         bsg_add_mach_binary_image(info);
     }
 }
@@ -180,7 +181,7 @@ void bsg_mach_binary_image_removed(const struct mach_header *header, intptr_t sl
 {
     // Convert header into an info struct
     BSG_Mach_Binary_Image_Info info = { 0 };
-    if (bsg_populate_mach_image_info(header, &info)) {
+    if (bsg_populate_mach_image_info(header, slide, &info)) {
         bsg_remove_mach_binary_image(info.imageVmAddr);
     }
 }

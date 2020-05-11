@@ -26,6 +26,7 @@
 
 #include "BSG_KSDynamicLinker.h"
 #include "BSG_KSArchSpecific.h"
+#include "BSG_KSMachHeaders.h"
 
 #include <limits.h>
 #include <mach-o/nlist.h>
@@ -33,10 +34,11 @@
 
 uint32_t bsg_ksdlimageNamed(const char *const imageName, bool exactMatch) {
     if (imageName != NULL) {
-        const uint32_t imageCount = _dyld_image_count();
-
+        BSG_Mach_Binary_Images *images = bsg_get_mach_binary_images();
+        const size_t imageCount = images->used;
+        
         for (uint32_t iImg = 0; iImg < imageCount; iImg++) {
-            const char *name = _dyld_get_image_name(iImg);
+            const char *name = images->contents[iImg].name;
             if (name == NULL) {
                 continue; // name is null if the index is out of range per dyld(3)
             } else if (exactMatch) {
@@ -57,7 +59,8 @@ const uint8_t *bsg_ksdlimageUUID(const char *const imageName, bool exactMatch) {
     if (imageName != NULL) {
         const uint32_t iImg = bsg_ksdlimageNamed(imageName, exactMatch);
         if (iImg != UINT32_MAX) {
-            const struct mach_header *header = _dyld_get_image_header(iImg);
+            BSG_Mach_Binary_Images *images = bsg_get_mach_binary_images();
+            const struct mach_header *header = images->contents[iImg].mh;
             if (header != NULL) {
                 uintptr_t cmdPtr = bsg_ksdlfirstCmdAfterHeader(header);
                 if (cmdPtr != 0) {
@@ -96,15 +99,16 @@ uintptr_t bsg_ksdlfirstCmdAfterHeader(const struct mach_header *const header) {
 }
 
 uint32_t bsg_ksdlimageIndexContainingAddress(const uintptr_t address) {
-    const uint32_t imageCount = _dyld_image_count();
+    BSG_Mach_Binary_Images *images = bsg_get_mach_binary_images();
+    const size_t imageCount = images->used;
     const struct mach_header *header = 0;
 
     for (uint32_t iImg = 0; iImg < imageCount; iImg++) {
-        header = _dyld_get_image_header(iImg);
+        header = images->contents[iImg].mh;
         if (header != NULL) {
             // Look for a segment command with this address within its range.
             uintptr_t addressWSlide =
-                address - (uintptr_t)_dyld_get_image_vmaddr_slide(iImg);
+                address - images->contents[iImg].slide;
             uintptr_t cmdPtr = bsg_ksdlfirstCmdAfterHeader(header);
             if (cmdPtr == 0) {
                 continue;
@@ -115,16 +119,20 @@ uint32_t bsg_ksdlimageIndexContainingAddress(const uintptr_t address) {
                 if (loadCmd->cmd == LC_SEGMENT) {
                     const struct segment_command *segCmd =
                         (struct segment_command *)cmdPtr;
-                    if (addressWSlide >= segCmd->vmaddr &&
-                        addressWSlide < segCmd->vmaddr + segCmd->vmsize) {
-                        return iImg;
+                    if ( strcmp(segCmd->segname, "__TEXT") == 0 ) {
+                        if (addressWSlide >= segCmd->vmaddr &&
+                            addressWSlide < segCmd->vmaddr + segCmd->vmsize) {
+                            return iImg;
+                        }
                     }
                 } else if (loadCmd->cmd == LC_SEGMENT_64) {
                     const struct segment_command_64 *segCmd =
                         (struct segment_command_64 *)cmdPtr;
-                    if (addressWSlide >= segCmd->vmaddr &&
-                        addressWSlide < segCmd->vmaddr + segCmd->vmsize) {
-                        return iImg;
+                    if ( strcmp(segCmd->segname, "__TEXT") == 0 ) {
+                        if (addressWSlide >= segCmd->vmaddr &&
+                            addressWSlide < segCmd->vmaddr + segCmd->vmsize) {
+                            return iImg;
+                        }
                     }
                 }
                 cmdPtr += loadCmd->cmdsize;
@@ -135,7 +143,8 @@ uint32_t bsg_ksdlimageIndexContainingAddress(const uintptr_t address) {
 }
 
 uintptr_t bsg_ksdlsegmentBaseOfImageIndex(const uint32_t idx) {
-    const struct mach_header *header = _dyld_get_image_header(idx);
+    BSG_Mach_Binary_Images *images = bsg_get_mach_binary_images();
+    const struct mach_header *header = images->contents[idx].mh;
     if (header == NULL) {
         return 0;
     }
@@ -176,12 +185,13 @@ bool bsg_ksdldladdr(const uintptr_t address, Dl_info *const info) {
     if (idx == UINT_MAX) {
         return false;
     }
-    const struct mach_header *header = _dyld_get_image_header(idx);
+    BSG_Mach_Binary_Images *images = bsg_get_mach_binary_images();
+    const struct mach_header *header = images->contents[idx].mh;
     if (header == NULL) {
         return false;
     }
     const uintptr_t imageVMAddrSlide =
-        (uintptr_t)_dyld_get_image_vmaddr_slide(idx);
+        images->contents[idx].slide;
     const uintptr_t addressWithSlide = address - imageVMAddrSlide;
     const uintptr_t segmentBase =
         bsg_ksdlsegmentBaseOfImageIndex(idx) + imageVMAddrSlide;
@@ -189,7 +199,7 @@ bool bsg_ksdldladdr(const uintptr_t address, Dl_info *const info) {
         return false;
     }
 
-    info->dli_fname = _dyld_get_image_name(idx);
+    info->dli_fname = images->contents[idx].name;
     info->dli_fbase = (void *)header;
 
     // Find symbol tables and get whichever symbol is closest to the address.
@@ -244,12 +254,13 @@ bool bsg_ksdldladdr(const uintptr_t address, Dl_info *const info) {
 
 const void *bsg_ksdlgetSymbolAddrInImage(uint32_t imageIdx,
                                          const char *symbolName) {
-    const struct mach_header *header = _dyld_get_image_header(imageIdx);
+    BSG_Mach_Binary_Images *images = bsg_get_mach_binary_images();
+    const struct mach_header *header = images->contents[imageIdx].mh;
     if (header == NULL) {
         return NULL;
     }
     const uintptr_t imageVMAddrSlide =
-        (uintptr_t)_dyld_get_image_vmaddr_slide(imageIdx);
+        images->contents[imageIdx].slide;
     const uintptr_t segmentBase =
         bsg_ksdlsegmentBaseOfImageIndex(imageIdx) + imageVMAddrSlide;
     if (segmentBase == 0) {
@@ -290,7 +301,8 @@ const void *bsg_ksdlgetSymbolAddrInImage(uint32_t imageIdx,
 }
 
 const void *bsg_ksdlgetSymbolAddrInAnyImage(const char *symbolName) {
-    const uint32_t imageCount = _dyld_image_count();
+    BSG_Mach_Binary_Images *images = bsg_get_mach_binary_images();
+    const size_t imageCount = images->used;
 
     for (uint32_t iImg = 0; iImg < imageCount; iImg++) {
         const void *symbolAddr = bsg_ksdlgetSymbolAddrInImage(iImg, symbolName);

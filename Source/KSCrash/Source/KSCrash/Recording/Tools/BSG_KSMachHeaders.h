@@ -11,7 +11,6 @@
 
 #import <mach/machine.h>
 
-
 /**
  * An encapsulation of the Mach header - either 64 or 32 bit, along with some additional information required for
  * detailing a crash report's binary images.
@@ -24,6 +23,7 @@ typedef struct {
     const char* name;
     cpu_type_t cputype;          /* cpu specifier */
     cpu_subtype_t cpusubtype;    /* machine specifier */
+    intptr_t slide;
 } BSG_Mach_Binary_Image_Info;
 
 /**
