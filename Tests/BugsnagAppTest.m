@@ -24,6 +24,7 @@
                                     config:(BugsnagConfiguration *)config
                               codeBundleId:(NSString *)codeBundleId;
 + (BugsnagAppWithState *)appWithOomData:(NSDictionary *)event;
++ (BugsnagAppWithState *)appFromJson:(NSDictionary *)json;
 - (NSDictionary *)toDict;
 @end
 
@@ -150,6 +151,37 @@
     XCTAssertEqualObjects(@"1", app.bundleVersion);
     XCTAssertEqualObjects(@"bundle-123", app.codeBundleId);
     XCTAssertNil(app.dsymUuid);
+    XCTAssertEqualObjects(@"com.example.foo.MyIosApp", app.id);
+    XCTAssertEqualObjects(@"beta", app.releaseStage);
+    XCTAssertEqualObjects(@"iOS", app.type);
+    XCTAssertEqualObjects(@"5.6.3", app.version);
+}
+
+- (void)testAppFromJson {
+    NSDictionary *json = @{
+            @"duration": @7000,
+            @"durationInForeground": @2000,
+            @"inForeground": @YES,
+            @"bundleVersion": @"1",
+            @"codeBundleId": @"bundle-123",
+            @"dsymUuid": @"dsym-uuid-123",
+            @"id": @"com.example.foo.MyIosApp",
+            @"releaseStage": @"beta",
+            @"type": @"iOS",
+            @"version": @"5.6.3",
+    };
+    BugsnagAppWithState *app = [BugsnagAppWithState appFromJson:json];
+    XCTAssertNotNil(app);
+
+    // verify stateful fields
+    XCTAssertEqual(7000, app.duration);
+    XCTAssertEqual(2000, app.durationInForeground);
+    XCTAssertTrue(app.inForeground);
+
+    // verify stateless fields
+    XCTAssertEqualObjects(@"1", app.bundleVersion);
+    XCTAssertEqualObjects(@"bundle-123", app.codeBundleId);
+    XCTAssertEqualObjects(@"dsym-uuid-123", app.dsymUuid);
     XCTAssertEqualObjects(@"com.example.foo.MyIosApp", app.id);
     XCTAssertEqualObjects(@"beta", app.releaseStage);
     XCTAssertEqualObjects(@"iOS", app.type);
