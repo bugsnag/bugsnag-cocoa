@@ -313,6 +313,8 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
                                   metadata:(BugsnagMetadata *_Nullable)metadata
                               handledState:(BugsnagHandledState *_Nonnull)handledState
                                    session:(BugsnagSession *_Nullable)session;
+- (void)setOverrideProperty:(NSString *)key value:(id)value;
+- (NSDictionary *)toJson;
 @end
 
 @interface BugsnagMetadata ()
@@ -930,6 +932,11 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     if ([event.originalError isKindOfClass:[NSException class]]) {
         exc = event.originalError;
     }
+
+    // handled errors should persist any information edited by the user
+    // in a section within the KSCrash report so it can be read
+    // when the error is delivered
+    [event setOverrideProperty:@"bugsnag_event" value:[event toJson]];
 
     [self.crashSentry reportUserException:eventErrorClass
                                    reason:eventMessage
