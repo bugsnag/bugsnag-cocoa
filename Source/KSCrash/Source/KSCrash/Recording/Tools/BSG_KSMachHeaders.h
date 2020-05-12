@@ -98,6 +98,6 @@ void bsg_mach_binary_image_removed(const struct mach_header *mh, intptr_t slide)
 /**
  * Create an empty array with initial capacity to hold Mach header info.
  */
-void bsg_initialise_mach_binary_headers(size_t initialSize);
+BSG_Mach_Binary_Images *bsg_initialise_mach_binary_headers(size_t initialSize);
 
 #endif /* BSG_KSMachHeaders_h */

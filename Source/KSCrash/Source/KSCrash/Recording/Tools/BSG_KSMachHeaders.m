@@ -107,10 +107,11 @@ void bsg_remove_mach_binary_image(uint64_t imageVmAddr) {
     bsg_unlock_mach_binary_image_access(&bsg_mach_binary_images_access_lock);
 }
 
-void bsg_initialise_mach_binary_headers(size_t initialSize) {
+BSG_Mach_Binary_Images *bsg_initialise_mach_binary_headers(size_t initialSize) {
     bsg_mach_binary_images.contents = (BSG_Mach_Binary_Image_Info *)malloc(initialSize * sizeof(BSG_Mach_Binary_Image_Info));
     bsg_mach_binary_images.used = 0;
     bsg_mach_binary_images.size = initialSize;
+    return &bsg_mach_binary_images;
 }
 
 /**
