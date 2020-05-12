@@ -11,10 +11,8 @@
 #import <mach-o/dyld.h>
 
 // Private methods
-void bsg_initialize_binary_images_array(size_t initialSize);
 void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element);
 void bsg_remove_mach_binary_image(uint64_t imageVmAddr);
-BSG_Mach_Binary_Images *bsg_get_mach_binary_images(void);
 
 const struct mach_header mh = {
     .magic = 1,

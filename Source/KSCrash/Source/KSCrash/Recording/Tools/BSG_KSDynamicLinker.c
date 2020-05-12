@@ -34,7 +34,7 @@
 
 uint32_t bsg_ksdlimageNamed(const char *const imageName, bool exactMatch) {
     if (imageName != NULL) {
-        const size_t imageCount = bsg_dyld_image_count();
+        const uint32_t imageCount = bsg_dyld_image_count();
         
         for (uint32_t iImg = 0; iImg < imageCount; iImg++) {
             const char *name = bsg_dyld_get_image_name(iImg);
@@ -291,7 +291,7 @@ const void *bsg_ksdlgetSymbolAddrInImage(uint32_t imageIdx,
 }
 
 const void *bsg_ksdlgetSymbolAddrInAnyImage(const char *symbolName) {
-    const size_t imageCount = bsg_dyld_image_count();
+    const uint32_t imageCount = bsg_dyld_image_count();
 
     for (uint32_t iImg = 0; iImg < imageCount; iImg++) {
         const void *symbolAddr = bsg_ksdlgetSymbolAddrInImage(iImg, symbolName);

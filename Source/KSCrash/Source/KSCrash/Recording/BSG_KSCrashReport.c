@@ -1115,7 +1115,7 @@ void bsg_kscrw_i_writeBinaryImage(const BSG_KSCrashReportWriter *const writer,
 void bsg_kscrw_i_writeBinaryImages(const BSG_KSCrashReportWriter *const writer,
                                    const char *const key)
 {
-    const uint32_t imageCount = (uint32_t)bsg_dyld_image_count();
+    const uint32_t imageCount = bsg_dyld_image_count();
 
     writer->beginArray(writer, key);
     {

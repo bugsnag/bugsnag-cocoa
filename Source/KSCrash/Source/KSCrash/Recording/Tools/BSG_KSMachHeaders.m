@@ -89,7 +89,7 @@ void bsg_remove_mach_binary_image(uint64_t imageVmAddr) {
     
     bsg_lock_mach_binary_image_access(&bsg_mach_binary_images_access_lock);
     
-    for (size_t i=0; i<bsg_mach_binary_images.used; i++) {
+    for (uint32_t i=0; i<bsg_mach_binary_images.used; i++) {
         BSG_Mach_Binary_Image_Info item = bsg_mach_binary_images.contents[i];
         
         if (imageVmAddr == item.imageVmAddr) {
