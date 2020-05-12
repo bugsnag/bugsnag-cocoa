@@ -51,7 +51,7 @@ void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
 }
 
 /**
- * Binary images can only be loaded at most once.  We can use the (file)name as a key, without needing to compare the
+ * Binary images can only be loaded at most once.  We can use the VMAddress as a key, without needing to compare the
  * other fields.  Element order is not important; deletion is accomplished by copying the last item into the deleted
  * position.
  */
