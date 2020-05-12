@@ -59,10 +59,31 @@ static BSG_Mach_Binary_Images bsg_mach_binary_images;
     #define bsg_unlock_mach_binary_image_access OSSpinLockUnlock
 #endif
 
+// MARK: - Replicate the DYLD API
+
 /**
- * Provide external access to the array of binary image info
+ * Returns the current number of images mapped in by dyld
  */
-BSG_Mach_Binary_Images *bsg_get_mach_binary_images(void);
+size_t bsg_dyld_image_count(void);
+
+/**
+ * Returns a pointer to the mach header of the image indexed by image_index.  If imageIndex
+ * is out of range, NULL is returned.
+ */
+const struct mach_header* bsg_dyld_get_image_header(uint32_t imageIndex);
+
+/**
+ * Returns the virtural memory address slide amount of the image indexed by imageIndex.
+ * If image_index is out of range zero is returned.
+ */
+intptr_t bsg_dyld_get_image_vmaddr_slide(uint32_t imageIndex);
+
+/**
+ * Returns the name of the image indexed by imageIndex.
+ */
+const char* bsg_dyld_get_image_name(uint32_t imageIndex);
+
+BSG_Mach_Binary_Image_Info *bsg_dyld_get_image_info(uint32_t imageIndex); // An additional convenience function
 
 /**
  * Called when a binary image is loaded.

@@ -1113,12 +1113,14 @@ void bsg_kscrw_i_writeBinaryImage(const BSG_KSCrashReportWriter *const writer,
 void bsg_kscrw_i_writeBinaryImages(const BSG_KSCrashReportWriter *const writer,
                                    const char *const key)
 {
+    const uint32_t imageCount = (uint32_t)bsg_dyld_image_count();
+    
     writer->beginArray(writer, key);
     {
-        BSG_Mach_Binary_Images *images = bsg_get_mach_binary_images();
-        for (uint32_t i = 0; i < images->used; i++) {
+        for (uint32_t i = 0; i < imageCount; i++) {
             // Threads are suspended at this point; no need to synchronise/lock
-            bsg_kscrw_i_writeBinaryImage(writer, NULL, &(images->contents[i]));
+            BSG_Mach_Binary_Image_Info *info = bsg_dyld_get_image_info(i);
+            bsg_kscrw_i_writeBinaryImage(writer, NULL, info);
         }
     }
     writer->endContainer(writer);

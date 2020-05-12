@@ -12,8 +12,38 @@
 #import "BSG_KSDynamicLinker.h"
 #import "BSG_KSMachHeaders.h"
 
-BSG_Mach_Binary_Images *bsg_get_mach_binary_images() {
-    return &bsg_mach_binary_images;
+// MARK: - Replicate the DYLD API
+
+size_t bsg_dyld_image_count(void) {
+    return bsg_mach_binary_images.used;
+}
+
+const struct mach_header* bsg_dyld_get_image_header(uint32_t imageIndex) {
+    if (imageIndex < bsg_mach_binary_images.used) {
+        return bsg_mach_binary_images.contents[imageIndex].mh;
+    }
+    return NULL;
+}
+
+intptr_t bsg_dyld_get_image_vmaddr_slide(uint32_t imageIndex) {
+    if (imageIndex < bsg_mach_binary_images.used) {
+        return bsg_mach_binary_images.contents[imageIndex].slide;
+    }
+    return 0;
+}
+
+const char* bsg_dyld_get_image_name(uint32_t imageIndex) {
+    if (imageIndex < bsg_mach_binary_images.used) {
+        return bsg_mach_binary_images.contents[imageIndex].name;
+    }
+    return NULL;
+}
+
+BSG_Mach_Binary_Image_Info *bsg_dyld_get_image_info(uint32_t imageIndex) {
+    if (imageIndex < bsg_mach_binary_images.used) {
+        return &bsg_mach_binary_images.contents[imageIndex];
+    }
+    return NULL;
 }
 
 /**
