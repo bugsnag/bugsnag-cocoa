@@ -400,6 +400,9 @@ NSString *_lastOrientation = nil;
         [self metadataChanged:self.state];
 
         // add observers for future metadata changes
+        // weakSelf is used as the BugsnagClient will always be instantiated
+        // for the entire lifecycle of an application, and there is therefore
+        // no need to check for strong self
         __weak __typeof__(self) weakSelf = self;
         [self addObserverUsingBlock:^(BugsnagStateEvent *event) {
             [weakSelf metadataChanged:event.data];
