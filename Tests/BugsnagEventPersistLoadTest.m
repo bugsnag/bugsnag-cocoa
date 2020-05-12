@@ -13,9 +13,17 @@
 #import "BugsnagDeviceWithState.h"
 #import "BugsnagError.h"
 #import "BugsnagStackframe.h"
+#import "BugsnagBreadcrumb.h"
+#import "BugsnagHandledState.h"
+#import "Bugsnag.h"
+
+@interface Bugsnag ()
++ (NSDateFormatter *)payloadDateFormatter;
+@end
 
 @interface BugsnagEvent ()
 - (instancetype)initWithKSReport:(NSDictionary *)report;
+@property(readonly, nonnull) BugsnagHandledState *handledState;
 @end
 
 @interface BugsnagDeviceWithState ()
@@ -215,6 +223,64 @@
     XCTAssertEqual(0x10b5756bf, frame.frameAddress);
     XCTAssertTrue(frame.isPc);
     XCTAssertTrue(frame.isLr);
+}
+
+- (void)testMetadataOverride {
+    BugsnagEvent *event = [self generateEventWithOverrides:@{
+            @"metaData": @{
+                    @"custom": @{
+                            @"foo": @"bar"
+                    }
+            }
+    }];
+    XCTAssertEqualObjects(@"bar", [event getMetadataFromSection:@"custom" withKey:@"foo"]);
+}
+
+- (void)testBreadcrumbsOverride {
+    BugsnagEvent *event = [self generateEventWithOverrides:@{
+            @"breadcrumbs": @[
+                    @{
+                            @"type": @"manual",
+                            @"timestamp": @"2020-02-14T16:12:23+001",
+                            @"message": @"installed NDK",
+                            @"metaData": @{
+                            @"custom": @{
+                                    @"foo": @"bar"
+                            }
+                    }
+                    }]
+    }];
+    BugsnagBreadcrumb *breadcrumb = event.breadcrumbs[0];
+    XCTAssertNotNil(breadcrumb);
+    XCTAssertEqual(1, [event.breadcrumbs count]);
+    XCTAssertEqual(BSGBreadcrumbTypeManual, breadcrumb.type);
+    XCTAssertEqualObjects(@"installed NDK", breadcrumb.message);
+    NSDate *date = [[Bugsnag payloadDateFormatter] dateFromString:@"2020-02-14T16:12:23+001"];
+    XCTAssertEqualObjects(date, breadcrumb.timestamp);
+    XCTAssertEqualObjects(@{
+            @"custom": @{
+                    @"foo": @"bar"
+            }
+    }, breadcrumb.metadata);
+}
+
+- (void)testSeverityReasonOverride {
+    BugsnagEvent *event = [self generateEventWithOverrides:@{
+            @"severityReason": @{
+                    @"type": @"log",
+                    @"attributes": @{
+                            @"level": @"info"
+                    }
+            },
+            @"severity": @"info",
+            @"unhandled": @YES
+    }];
+    XCTAssertEqualObjects(@"level", event.handledState.attrKey);
+    XCTAssertEqualObjects(@"info", event.handledState.attrValue);
+    XCTAssertEqual(LogMessage, event.handledState.severityReasonType);
+    XCTAssertEqual(BSGSeverityInfo, event.handledState.originalSeverity);
+    XCTAssertEqual(BSGSeverityInfo, event.handledState.currentSeverity);
+    XCTAssertTrue(event.unhandled);
 }
 
 @end
