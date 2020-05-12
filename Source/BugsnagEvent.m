@@ -469,6 +469,20 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         _breadcrumbs = [BugsnagBreadcrumb breadcrumbArrayFromJson:bugsnagPayload[@"breadcrumbs"]];
     }
     _handledState = [BugsnagHandledState handledStateFromJson:bugsnagPayload];
+
+    NSArray *errorDicts = bugsnagPayload[BSGKeyExceptions];
+    NSMutableArray *data = [NSMutableArray new];
+
+    if (errorDicts != nil) {
+        for (NSDictionary *dict in errorDicts) {
+            BugsnagError *error = [BugsnagError errorFromJson:dict];
+
+            if (error != nil) {
+                [data addObject:error];
+            }
+        }
+    }
+    _errors = data;
 }
 
 - (NSMutableDictionary *)parseOnCrashData:(NSDictionary *)report {
