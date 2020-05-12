@@ -20,7 +20,7 @@ size_t bsg_dyld_image_count(void) {
 
 const struct mach_header* bsg_dyld_get_image_header(uint32_t imageIndex) {
     if (imageIndex < bsg_mach_binary_images.used) {
-        return bsg_mach_binary_images.contents[imageIndex].mh;
+        return bsg_mach_binary_images.contents[imageIndex].header;
     }
     return NULL;
 }
@@ -58,8 +58,8 @@ void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
     // Expand array if necessary.  We're slightly paranoid here.  An OOM is likely to be indicative of bigger problems
     // but we should still do *our* best not to crash the app.
     if (bsg_mach_binary_images.used == bsg_mach_binary_images.size) {
-        size_t newSize = bsg_mach_binary_images.size *= 2;
-        size_t newAllocationSize = newSize * sizeof(BSG_Mach_Binary_Image_Info);
+        uint32_t newSize = bsg_mach_binary_images.size *= 2;
+        uint32_t newAllocationSize = newSize * sizeof(BSG_Mach_Binary_Image_Info);
         errno = 0;
         BSG_Mach_Binary_Image_Info *newAllocation = (BSG_Mach_Binary_Image_Info *)realloc(bsg_mach_binary_images.contents, newAllocationSize);
         
@@ -107,7 +107,7 @@ void bsg_remove_mach_binary_image(uint64_t imageVmAddr) {
     bsg_unlock_mach_binary_image_access(&bsg_mach_binary_images_access_lock);
 }
 
-BSG_Mach_Binary_Images *bsg_initialise_mach_binary_headers(size_t initialSize) {
+BSG_Mach_Binary_Images *bsg_initialise_mach_binary_headers(uint32_t initialSize) {
     bsg_mach_binary_images.contents = (BSG_Mach_Binary_Image_Info *)malloc(initialSize * sizeof(BSG_Mach_Binary_Image_Info));
     bsg_mach_binary_images.used = 0;
     bsg_mach_binary_images.size = initialSize;
@@ -176,9 +176,7 @@ bool bsg_populate_mach_image_info(const struct mach_header *header, intptr_t sli
     }
     
     // Save these values
-    info->mh = header;
-    info->cpusubtype = header->cpusubtype;
-    info->cputype = header->cputype;
+    info->header = header;
     info->imageSize = imageSize;
     info->imageVmAddr = imageVmAddr;
     info->uuid = uuid;

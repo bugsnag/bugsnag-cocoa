@@ -18,18 +18,18 @@ BSG_Mach_Binary_Images *bsg_get_mach_binary_images(void);
 
 const struct mach_header mh = {
     .magic = 1,
-    .cputype = 1,
-    .cpusubtype = 1,
+    .cputype = 42,
+    .cpusubtype = 27,
     .filetype = 1,
     .ncmds = 1,
     .sizeofcmds = 1,
     .flags = 1
 };
 
-const BSG_Mach_Binary_Image_Info info1 = {.mh = &mh, .imageVmAddr = 12345, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the first",  .cputype = 42, .cpusubtype = 27, .slide = 123 };
-const BSG_Mach_Binary_Image_Info info2 = {.mh = &mh, .imageVmAddr = 23456, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the second", .cputype = 42, .cpusubtype = 27, .slide = 1234 };
-const BSG_Mach_Binary_Image_Info info3 = {.mh = &mh, .imageVmAddr = 34567, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the third",  .cputype = 42, .cpusubtype = 27, .slide = 12345 };
-const BSG_Mach_Binary_Image_Info info4 = {.mh = &mh, .imageVmAddr = 45678, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the fourth", .cputype = 42, .cpusubtype = 27, .slide = 123456 };
+const BSG_Mach_Binary_Image_Info info1 = {.header = &mh, .imageVmAddr = 12345, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the first",  .slide = 123 };
+const BSG_Mach_Binary_Image_Info info2 = {.header = &mh, .imageVmAddr = 23456, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the second", .slide = 1234 };
+const BSG_Mach_Binary_Image_Info info3 = {.header = &mh, .imageVmAddr = 34567, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the third",  .slide = 12345 };
+const BSG_Mach_Binary_Image_Info info4 = {.header = &mh, .imageVmAddr = 45678, .imageSize = 6789, .uuid = (uint8_t *)123, .name = "header the fourth", .slide = 123456 };
 
 @interface KSMachHeader_Tests : XCTestCase
 @end

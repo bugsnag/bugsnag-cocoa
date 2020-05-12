@@ -16,13 +16,11 @@
  * detailing a crash report's binary images.
  */
 typedef struct {
-    const struct mach_header *mh;      /* The mach_header - 32 or 64 bit */
+    const struct mach_header *header; /* The mach_header - 32 or 64 bit */
     uint64_t imageVmAddr;
     uint64_t imageSize;
     uint8_t *uuid;
     const char* name;
-    cpu_type_t cputype;          /* cpu specifier */
-    cpu_subtype_t cpusubtype;    /* machine specifier */
     intptr_t slide;
 } BSG_Mach_Binary_Image_Info;
 
@@ -31,8 +29,8 @@ typedef struct {
  * See: https://stackoverflow.com/a/3536261/2431627
  */
 typedef struct {
-    size_t used;
-    size_t size;
+    uint32_t used;
+    uint32_t size;
     BSG_Mach_Binary_Image_Info *contents;
 } BSG_Mach_Binary_Images;
 
@@ -98,6 +96,6 @@ void bsg_mach_binary_image_removed(const struct mach_header *mh, intptr_t slide)
 /**
  * Create an empty array with initial capacity to hold Mach header info.
  */
-BSG_Mach_Binary_Images *bsg_initialise_mach_binary_headers(size_t initialSize);
+BSG_Mach_Binary_Images *bsg_initialise_mach_binary_headers(uint32_t initialSize);
 
 #endif /* BSG_KSMachHeaders_h */

@@ -1093,13 +1093,13 @@ void bsg_kscrw_i_writeBinaryImage(const BSG_KSCrashReportWriter *const writer,
 {
     writer->beginObject(writer, key);
     {
-        writer->addUIntegerElement(writer, BSG_KSCrashField_ImageAddress, (uintptr_t)info->mh);
+        writer->addUIntegerElement(writer, BSG_KSCrashField_ImageAddress, (uintptr_t)info->header);
         writer->addUIntegerElement(writer, BSG_KSCrashField_ImageVmAddress,          info->imageVmAddr);
         writer->addUIntegerElement(writer, BSG_KSCrashField_ImageSize,               info->imageSize);
         writer->addStringElement(writer, BSG_KSCrashField_Name,                      info->name);
         writer->addUUIDElement(writer, BSG_KSCrashField_UUID,                        info->uuid);
-        writer->addIntegerElement(writer, BSG_KSCrashField_CPUType,                  info->cputype);
-        writer->addIntegerElement(writer, BSG_KSCrashField_CPUSubType,               info->cpusubtype);
+        writer->addIntegerElement(writer, BSG_KSCrashField_CPUType,                  info->header->cputype);
+        writer->addIntegerElement(writer, BSG_KSCrashField_CPUSubType,               info->header->cpusubtype);
     }
     writer->endContainer(writer);
 }
