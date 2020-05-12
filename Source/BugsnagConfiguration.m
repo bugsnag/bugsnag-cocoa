@@ -40,6 +40,9 @@
 #import "BSGSerialization.h"
 #import "BugsnagEndpointConfiguration.h"
 #import "BugsnagErrorTypes.h"
+#import "BugsnagStateEvent.h"
+#import "BugsnagCollections.h"
+#import "BugsnagMetadataInternal.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -56,10 +59,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 @interface Bugsnag ()
 + (BugsnagClient *)client;
-@end
-
-@interface BugsnagMetadata ()
-- (NSDictionary *_Nonnull)toDictionary;
 @end
 
 @interface BugsnagUser ()
@@ -155,7 +154,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setUser:self.user.id
         withEmail:self.user.email
           andName:self.user.name];
-
     return copy;
 }
 
@@ -251,7 +249,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 #elif TARGET_OS_MAC
     _appType = @"macOS";
 #endif
-
     return self;
 }
 

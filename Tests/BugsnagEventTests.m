@@ -15,6 +15,7 @@
 #import "BugsnagSession.h"
 #import "BugsnagSessionInternal.h"
 #import "BugsnagBaseUnitTest.h"
+#import "BugsnagStateEvent.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagTestsDummyClass.h"
 
