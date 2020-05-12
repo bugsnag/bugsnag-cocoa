@@ -77,19 +77,18 @@ void bsg_kscrashsentry_freeReportContext(BSG_KSCrash_Context *context) {
     free(context);
 }
 
-void bsg_kscrashsentry_reportUserException(const char *name,
-                                           const char *reason,
-                                           uintptr_t *stackAddresses,
-                                           unsigned long stackLength,
-                                           const char *severity,
-                                           const char *handledState,
-                                           const char *overrides,
-                                           const char *metadata,
-                                           const char *appState,
-                                           const char *config,
-                                           int discardDepth,
-                                           bool terminateProgram,
-                                           const char *eventJson) {
+void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
+        uintptr_t *stackAddresses,
+        unsigned long stackLength,
+        const char *severity,
+        const char *handledState,
+        const char *overrides,
+        const char *eventOverrides,
+        const char *metadata,
+        const char *appState,
+        const char *config,
+        int discardDepth,
+        bool terminateProgram) {
     if (bsg_g_context == NULL) {
         BSG_KSLOG_WARN("User-reported exception sentry is not installed. "
                        "Exception has not been recorded.");
@@ -136,7 +135,7 @@ void bsg_kscrashsentry_reportUserException(const char *name,
         localContext->userException.discardDepth = discardDepth;
         localContext->userException.metadata = metadata;
         localContext->userException.state = appState;
-        localContext->userException.eventJson = eventJson;
+        localContext->userException.eventOverrides = eventOverrides;
 
         BSG_KSLOG_DEBUG("Calling main crash handler.");
         localContext->onCrash(reportContext);

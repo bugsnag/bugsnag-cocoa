@@ -24,9 +24,9 @@
                handledState:(NSDictionary *)handledState
                    appState:(NSDictionary *)appState
           callbackOverrides:(NSDictionary *)overrides
+             eventOverrides:(NSDictionary *)eventOverrides
                    metadata:(NSDictionary *)metadata
                      config:(NSDictionary *)config
-               discardDepth:(int)depth
-                  eventJson:(NSDictionary *)eventJson;
+               discardDepth:(int)depth;
 
 @end

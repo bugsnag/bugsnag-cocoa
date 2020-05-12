@@ -134,11 +134,11 @@ typedef enum {
                handledState:(NSDictionary *)handledState
                    appState:(NSDictionary *)appState
           callbackOverrides:(NSDictionary *)overrides
+             eventOverrides:(NSDictionary *)eventOverrides
                    metadata:(NSDictionary *)metadata
                      config:(NSDictionary *)config
                discardDepth:(int)depth
-           terminateProgram:(BOOL)terminateProgram
-                  eventJson:(NSDictionary *)eventJson;
+           terminateProgram:(BOOL)terminateProgram;
 
 /** If YES, user reported exceptions will suspend all threads during report
  * generation. All threads will be suspended while generating a crash report for

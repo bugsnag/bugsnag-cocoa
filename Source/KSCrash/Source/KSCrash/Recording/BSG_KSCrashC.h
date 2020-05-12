@@ -149,12 +149,12 @@ void bsg_kscrash_reportUserException(const char *name, const char *reason,
                                      const char *severity,
                                      const char *handledState,
                                      const char *overrides,
+                                     const char *eventOverrides,
                                      const char *metadata,
                                      const char *appState,
                                      const char *config,
                                      int discardDepth,
-                                     bool terminateProgram,
-                                     const char *eventJson);
+                                     bool terminateProgram);
 
 /** If YES, user reported exceptions will suspend all threads during report
  * generation. All threads will be suspended while generating a crash report for

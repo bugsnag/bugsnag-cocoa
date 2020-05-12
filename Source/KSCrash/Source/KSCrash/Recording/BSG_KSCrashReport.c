@@ -1640,9 +1640,9 @@ void bsg_kscrashreport_writeStandardReport(
                    writer->addJSONElement(writer, BSG_KSCrashField_Overrides,
                                           crashContext->crash.userException.overrides);
                 }
-                if (crashContext->crash.userException.eventJson != NULL) {
+                if (crashContext->crash.userException.eventOverrides != NULL) {
                     writer->addJSONElement(writer, BSG_KSCrashField_EventJson,
-                            crashContext->crash.userException.eventJson);
+                            crashContext->crash.userException.eventOverrides);
                 }
                 if (crashContext->crash.userException.handledState != NULL) {
                     writer->addJSONElement(writer, BSG_KSCrashField_HandledState,
