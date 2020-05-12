@@ -14,7 +14,7 @@
 
 // MARK: - Replicate the DYLD API
 
-size_t bsg_dyld_image_count(void) {
+uint32_t bsg_dyld_image_count(void) {
     return bsg_mach_binary_images.used;
 }
 

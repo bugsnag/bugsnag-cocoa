@@ -62,7 +62,7 @@ static BSG_Mach_Binary_Images bsg_mach_binary_images;
 /**
  * Returns the current number of images mapped in by dyld
  */
-size_t bsg_dyld_image_count(void);
+uint32_t bsg_dyld_image_count(void);
 
 /**
  * Returns a pointer to the mach header of the image indexed by image_index.  If imageIndex

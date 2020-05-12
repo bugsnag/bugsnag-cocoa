@@ -97,7 +97,7 @@ uintptr_t bsg_ksdlfirstCmdAfterHeader(const struct mach_header *const header) {
 }
 
 uint32_t bsg_ksdlimageIndexContainingAddress(const uintptr_t address) {
-    const size_t imageCount = bsg_dyld_image_count();
+    const uint32_t imageCount = bsg_dyld_image_count();
     const struct mach_header *header = 0;
 
     for (uint32_t iImg = 0; iImg < imageCount; iImg++) {
@@ -116,20 +116,16 @@ uint32_t bsg_ksdlimageIndexContainingAddress(const uintptr_t address) {
                 if (loadCmd->cmd == LC_SEGMENT) {
                     const struct segment_command *segCmd =
                         (struct segment_command *)cmdPtr;
-                    if ( strcmp(segCmd->segname, "__TEXT") == 0 ) {
-                        if (addressWSlide >= segCmd->vmaddr &&
-                            addressWSlide < segCmd->vmaddr + segCmd->vmsize) {
-                            return iImg;
-                        }
+                    if (addressWSlide >= segCmd->vmaddr &&
+                        addressWSlide < segCmd->vmaddr + segCmd->vmsize) {
+                        return iImg;
                     }
                 } else if (loadCmd->cmd == LC_SEGMENT_64) {
                     const struct segment_command_64 *segCmd =
                         (struct segment_command_64 *)cmdPtr;
-                    if ( strcmp(segCmd->segname, "__TEXT") == 0 ) {
-                        if (addressWSlide >= segCmd->vmaddr &&
-                            addressWSlide < segCmd->vmaddr + segCmd->vmsize) {
-                            return iImg;
-                        }
+                    if (addressWSlide >= segCmd->vmaddr &&
+                        addressWSlide < segCmd->vmaddr + segCmd->vmsize) {
+                        return iImg;
                     }
                 }
                 cmdPtr += loadCmd->cmdsize;
@@ -181,7 +177,6 @@ bool bsg_ksdldladdr(const uintptr_t address, Dl_info *const info) {
     if (idx == UINT_MAX) {
         return false;
     }
-    
     const struct mach_header *header = bsg_dyld_get_image_header(idx);
     if (header == NULL) {
         return false;
