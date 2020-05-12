@@ -122,6 +122,7 @@ typedef enum {
  * @param appState breadcrumbs and other app environmental info
  * @param overrides Report fields overridden by callbacks, collated in the
  *        final report
+ * @param eventOverrides the Bugsnag Error Payload, for handled errors only
  * @param metadata additional information to attach to the report
  * @param config delivery options
  * @param depth The number of frames to discard from the top of the stacktrace
