@@ -291,7 +291,8 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
                    metadata:(NSDictionary *)metadata
                      config:(NSDictionary *)config
                discardDepth:(int)depth
-           terminateProgram:(BOOL)terminateProgram {
+           terminateProgram:(BOOL)terminateProgram
+                  eventJson:(NSDictionary *)eventJson {
     const char *cName = [name cStringUsingEncoding:NSUTF8StringEncoding];
     const char *cReason = [reason cStringUsingEncoding:NSUTF8StringEncoding];
     NSArray *addresses = [exception callStackReturnAddresses];
@@ -312,7 +313,8 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
                                     [self encodeAsJSONString:appState],
                                     [self encodeAsJSONString:config],
                                     depth,
-                                    terminateProgram);
+                                    terminateProgram,
+                                    [self encodeAsJSONString:eventJson]);
 
     free(callstack);
 }

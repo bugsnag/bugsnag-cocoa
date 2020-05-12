@@ -871,7 +871,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                         callbackOverrides:@{}
                                  metadata:@{}
                                    config:@{}
-                             discardDepth:0];
+                             discardDepth:0
+                                eventJson:@{}];
 }
 
 - (void)notify:(NSException *)exception
@@ -936,8 +937,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     // handled errors should persist any information edited by the user
     // in a section within the KSCrash report so it can be read
     // when the error is delivered
-    [event setOverrideProperty:@"bugsnag_event" value:[event toJson]];
-
     [self.crashSentry reportUserException:eventErrorClass
                                    reason:eventMessage
                         originalException:exc
@@ -946,7 +945,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                         callbackOverrides:event.overrides
                                  metadata:[event.metadata toDictionary]
                                    config:[self.configuration.config toDictionary]
-                             discardDepth:depth];
+                             discardDepth:depth
+                                eventJson:[event toJson]];
 
     // A basic set of event metadata
     NSMutableDictionary *metadata = [@{

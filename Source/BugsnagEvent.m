@@ -423,7 +423,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
  * form of a bugsnag error reporting API payload, within the KSCrashReport user section.
  */
 - (void)parseHandledCrashData:(NSDictionary *)event {
-    NSDictionary *bugsnagPayload = [event valueForKeyPath:@"user.overrides.bugsnag_event"];
+    NSDictionary *bugsnagPayload = [event valueForKeyPath:@"user.event"];
 
     // only handled errors persist this info, so fallback to KSCrash values if not present
     if (bugsnagPayload == nil || ![bugsnagPayload isKindOfClass:[NSDictionary class]]) {

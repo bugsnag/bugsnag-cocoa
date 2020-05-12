@@ -137,7 +137,8 @@ typedef enum {
                    metadata:(NSDictionary *)metadata
                      config:(NSDictionary *)config
                discardDepth:(int)depth
-           terminateProgram:(BOOL)terminateProgram;
+           terminateProgram:(BOOL)terminateProgram
+                  eventJson:(NSDictionary *)eventJson;
 
 /** If YES, user reported exceptions will suspend all threads during report
  * generation. All threads will be suspended while generating a crash report for

@@ -40,6 +40,7 @@
 //#define BSG_kSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 #include "BSG_KSCrashContext.h"
+#include "BSG_KSCrashSentry.h"
 
 #ifdef __arm64__
 #include <sys/_types/_ucontext64.h>
@@ -1638,6 +1639,10 @@ void bsg_kscrashreport_writeStandardReport(
                 if (crashContext->crash.userException.overrides != NULL) {
                    writer->addJSONElement(writer, BSG_KSCrashField_Overrides,
                                           crashContext->crash.userException.overrides);
+                }
+                if (crashContext->crash.userException.eventJson != NULL) {
+                    writer->addJSONElement(writer, BSG_KSCrashField_EventJson,
+                            crashContext->crash.userException.eventJson);
                 }
                 if (crashContext->crash.userException.handledState != NULL) {
                     writer->addJSONElement(writer, BSG_KSCrashField_HandledState,

@@ -47,9 +47,7 @@
     NSMutableDictionary *event = [self.eventData mutableCopy];
     if (overrides != nil) {
         event[@"user"] = [event[@"user"] mutableCopy];
-        event[@"user"][@"overrides"] = @{
-                @"bugsnag_event": overrides
-        };
+        event[@"user"][@"event"] = overrides;
     }
     return [[BugsnagEvent alloc] initWithKSReport:event];
 }

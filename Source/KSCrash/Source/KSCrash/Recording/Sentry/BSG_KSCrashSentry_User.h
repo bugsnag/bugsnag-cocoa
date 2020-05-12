@@ -77,7 +77,8 @@ void bsg_kscrashsentry_uninstallUserExceptionHandler(void);
                                                const char *appState,
                                                const char *config,
                                                int discardDepth,
-                                               bool terminateProgram);
+                                               bool terminateProgram,
+                                               const char *eventJson);
 
 #ifdef __cplusplus
 }

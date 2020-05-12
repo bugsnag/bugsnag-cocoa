@@ -78,6 +78,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
                    metadata:(NSDictionary *)metadata
                      config:(NSDictionary *)config
                discardDepth:(int)depth
+                  eventJson:(NSDictionary *)eventJson
 {
     [[BSG_KSCrash sharedInstance] reportUserException:reportName
                                                reason:reportMessage
@@ -88,7 +89,8 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
                                              metadata:metadata
                                                config:config
                                          discardDepth:depth
-                                     terminateProgram:NO];
+                                     terminateProgram:NO
+                                            eventJson:eventJson];
 }
 
 @end

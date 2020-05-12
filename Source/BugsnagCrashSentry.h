@@ -26,6 +26,7 @@
           callbackOverrides:(NSDictionary *)overrides
                    metadata:(NSDictionary *)metadata
                      config:(NSDictionary *)config
-               discardDepth:(int)depth;
+               discardDepth:(int)depth
+                  eventJson:(NSDictionary *)eventJson;
 
 @end
