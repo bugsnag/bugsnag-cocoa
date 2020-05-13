@@ -41,6 +41,7 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
                               codeBundleId:(NSString *)codeBundleId;
 - (NSDictionary *)toDict;
 + (BugsnagAppWithState *)appWithOomData:(NSDictionary *)event;
++ (BugsnagAppWithState *)appFromJson:(NSDictionary *)json;
 @end
 
 @interface BugsnagBreadcrumb ()
@@ -224,6 +225,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 - (NSDictionary *)toDictionary;
 + (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event;
 + (BugsnagDeviceWithState *)deviceWithOomData:(NSDictionary *)data;
++ (BugsnagDeviceWithState *)deviceFromJson:(NSDictionary *)json;
 @end
 
 @interface BugsnagUser ()
@@ -429,7 +431,19 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     if (bugsnagPayload == nil || ![bugsnagPayload isKindOfClass:[NSDictionary class]]) {
         return;
     }
+
     _context = bugsnagPayload[@"context"];
+    _groupingHash = bugsnagPayload[@"groupingHash"];
+    _apiKey = bugsnagPayload[@"apiKey"];
+
+    NSDictionary *user = bugsnagPayload[@"user"];
+
+    if (user != nil) {
+        _user = [[BugsnagUser alloc] initWithDictionary:user];
+    }
+
+    _app = [BugsnagAppWithState appFromJson:bugsnagPayload[@"app"]];
+    _device = [BugsnagDeviceWithState deviceFromJson:bugsnagPayload[@"device"]];
 }
 
 - (NSMutableDictionary *)parseOnCrashData:(NSDictionary *)report {
@@ -536,21 +550,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     return [self.enabledReleaseStages containsObject:self.releaseStage] ||
            (self.enabledReleaseStages.count == 0 &&
             [[Bugsnag configuration] shouldSendReports]);
-}
-
-@synthesize groupingHash = _groupingHash;
-
-- (NSString *)groupingHash {
-    @synchronized (self) {
-        return _groupingHash;
-    }
-}
-
-- (void)setGroupingHash:(NSString *)groupingHash {
-    [self setOverrideProperty:BSGKeyGroupingHash value:groupingHash];
-    @synchronized (self) {
-        _groupingHash = groupingHash;
-    }
 }
 
 - (NSArray *)serializeBreadcrumbs {
