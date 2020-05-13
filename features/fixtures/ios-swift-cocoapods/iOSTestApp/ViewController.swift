@@ -42,7 +42,9 @@ class ViewController: UIViewController {
         
         let config = BugsnagConfiguration("12312312312312312312312312312312")
         config.endpoints = BugsnagEndpointConfiguration(notify: "http://bs-local.com:9339", sessions: "http://bs-local.com:9339")
-        config.enabledErrorTypes = [.CPP, .Mach, .NSExceptions, .Signals]
+        let allowedErrorTypes = BugsnagErrorTypes()
+        allowedErrorTypes.ooms = false
+        config.enabledErrorTypes = allowedErrorTypes
         
         let scenario = Scenario.createScenarioNamed(eventType, withConfig: config)
         scenario.eventMode = eventMode

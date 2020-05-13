@@ -19,12 +19,9 @@
         
         return YES;
     }];
-    
-    self.config.enabledErrorTypes = BSGErrorTypesCPP
-        | BSGErrorTypesMach
-        | BSGErrorTypesNSExceptions
-        | BSGErrorTypesOOMs
-        | BSGErrorTypesSignals;
+
+    BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
+    self.config.enabledErrorTypes = errorTypes;
     
     [super startBugsnag];
 }
