@@ -53,7 +53,7 @@ BSG_Mach_Binary_Image_Info *bsg_dyld_get_image_info(uint32_t imageIndex) {
  */
 void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
     
-    bsg_lock_mach_binary_image_access(&bsg_mach_binary_images_access_lock);
+    BSG_DYLD_CACHE_LOCK
     
     // Expand array if necessary.  We're slightly paranoid here.  An OOM is likely to be indicative of bigger problems
     // but we should still do *our* best not to crash the app.
@@ -69,7 +69,7 @@ void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
         }
         else {
             // Exit early, don't expand the array, don't store the header info and unlock
-            bsg_unlock_mach_binary_image_access(&bsg_mach_binary_images_access_lock);
+            BSG_DYLD_CACHE_UNLOCK
             return;
         }
     }
@@ -77,7 +77,7 @@ void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
     // Store the value, increment the number of used elements
     bsg_mach_binary_images.contents[bsg_mach_binary_images.used++] = element;
     
-    bsg_unlock_mach_binary_image_access(&bsg_mach_binary_images_access_lock);
+    BSG_DYLD_CACHE_UNLOCK
 }
 
 /**
@@ -87,7 +87,7 @@ void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
  */
 void bsg_remove_mach_binary_image(uint64_t imageVmAddr) {
     
-    bsg_lock_mach_binary_image_access(&bsg_mach_binary_images_access_lock);
+    BSG_DYLD_CACHE_LOCK
     
     for (uint32_t i=0; i<bsg_mach_binary_images.used; i++) {
         BSG_Mach_Binary_Image_Info item = bsg_mach_binary_images.contents[i];
@@ -104,7 +104,7 @@ void bsg_remove_mach_binary_image(uint64_t imageVmAddr) {
         }
     }
     
-    bsg_unlock_mach_binary_image_access(&bsg_mach_binary_images_access_lock);
+    BSG_DYLD_CACHE_UNLOCK
 }
 
 BSG_Mach_Binary_Images *bsg_initialise_mach_binary_headers(uint32_t initialSize) {
