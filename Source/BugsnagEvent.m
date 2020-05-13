@@ -435,7 +435,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     if (bugsnagPayload == nil || ![bugsnagPayload isKindOfClass:[NSDictionary class]]) {
         return;
     }
-    self.apiKey = bugsnagPayload[@"apiKey"];
+    _apiKey = bugsnagPayload[@"apiKey"];
     _context = bugsnagPayload[@"context"];
     _groupingHash = bugsnagPayload[@"groupingHash"];
     _apiKey = bugsnagPayload[@"apiKey"];
