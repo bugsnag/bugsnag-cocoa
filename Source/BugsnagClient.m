@@ -319,6 +319,9 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
                                    session:(BugsnagSession *_Nullable)session;
 - (void)setOverrideProperty:(NSString *)key value:(id)value;
 - (NSDictionary *)toJson;
+- (void)updateAppInternal:(BugsnagAppWithState *)app;
+- (void)updateDeviceInternal:(BugsnagDeviceWithState *)device;
+- (void)updateMetadataInternal:(BugsnagMetadata *)metadata;
 @end
 
 @interface BSGOutOfMemoryWatchdog ()
@@ -931,16 +934,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (void)notifyInternal:(BugsnagEvent *_Nonnull)event
                  block:(BugsnagOnErrorBlock)block
 {
-    [event.device appendRuntimeInfo:self.extraRuntimeInfo];
-    if (block != nil && !block(event)) { // skip notifying if callback false
-        return;
-    }
-
-    if (event.handledState.unhandled) {
-        [self.sessionTracker handleUnhandledErrorEvent];
-    } else {
-        [self.sessionTracker handleHandledErrorEvent];
-    }
+    [self populateEventData:event];
 
     //    We discard 6 stack frames (including this one) by default,
     //    and sum that with the number specified by report.depth:
@@ -962,6 +956,15 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
     if ([event.originalError isKindOfClass:[NSException class]]) {
         exc = event.originalError;
+    }
+    if (block != nil && !block(event)) { // skip notifying if callback false
+        return;
+    }
+
+    if (event.handledState.unhandled) {
+        [self.sessionTracker handleUnhandledErrorEvent];
+    } else {
+        [self.sessionTracker handleHandledErrorEvent];
     }
 
     // handled errors should persist any information edited by the user
@@ -1444,20 +1447,43 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.metadata clearMetadataFromSection:sectionName withKey:key];
 }
 
+// MARK: - event data population
+
+- (void)populateEventData:(BugsnagEvent *)event {
+    event.apiKey = self.configuration.apiKey;
+    event.context = self.context;
+
+    BugsnagUser *user = self.user;
+    [event setUser:user.id withEmail:user.email andName:user.name];
+
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    [event updateAppInternal:[self generateAppWithState:systemInfo]];
+    [event updateDeviceInternal:[self generateDeviceWithState:systemInfo]];
+    [event updateMetadataInternal:self.metadata];
+    event.breadcrumbs = [NSArray arrayWithArray:self.configuration.breadcrumbs.breadcrumbs];
+}
+
+- (BugsnagAppWithState *)generateAppWithState:(NSDictionary *)systemInfo {
+    return [BugsnagAppWithState appWithDictionary:@{@"system": systemInfo}
+                                           config:self.configuration
+                                     codeBundleId:self.codeBundleId];
+}
+
+- (BugsnagDeviceWithState *)generateDeviceWithState:(NSDictionary *)systemInfo {
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithDictionary:@{@"system": systemInfo}];
+    [device appendRuntimeInfo:self.extraRuntimeInfo];
+    return device;
+}
+
 // MARK: - methods used by React Native for collecting payload data
 
 - (NSDictionary *)collectAppWithState {
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
-    BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:@{@"system": systemInfo}
-                                                               config:self.configuration
-                                                         codeBundleId:self.codeBundleId];
-    return [app toDict];
+    return [[self generateAppWithState:[BSG_KSSystemInfo systemInfo]] toDict];
 }
 
 - (NSDictionary *)collectDeviceWithState {
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
-    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithDictionary:@{@"system": systemInfo}];
-    [device appendRuntimeInfo:self.extraRuntimeInfo];
+    BugsnagDeviceWithState *device = [self generateDeviceWithState:systemInfo];
     return [device toDictionary];
 }
 
