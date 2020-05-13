@@ -435,7 +435,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     if (bugsnagPayload == nil || ![bugsnagPayload isKindOfClass:[NSDictionary class]]) {
         return;
     }
-
+    self.apiKey = bugsnagPayload[@"apiKey"];
     _context = bugsnagPayload[@"context"];
     _groupingHash = bugsnagPayload[@"groupingHash"];
     _apiKey = bugsnagPayload[@"apiKey"];
@@ -823,6 +823,20 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 - (BOOL)unhandled {
     return self.handledState.unhandled;
+}
+
+// MARK: - setting readonly fields
+
+- (void)updateAppInternal:(BugsnagAppWithState *)app {
+    _app = app;
+}
+
+- (void)updateDeviceInternal:(BugsnagDeviceWithState *)device {
+    _device = device;
+}
+
+- (void)updateMetadataInternal:(BugsnagMetadata *)metadata {
+    _metadata = [metadata deepCopy];
 }
 
 // MARK: - <BugsnagMetadataStore>
