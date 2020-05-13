@@ -115,6 +115,7 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
                                          binaryImages:(NSArray *)binaryImages
                                                 depth:(NSUInteger)depth
                                             errorType:(NSString *)errorType;
++ (instancetype)threadFromJson:(NSDictionary *)json;
 @end
 
 @interface BugsnagStacktrace ()
@@ -470,6 +471,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     }
     _handledState = [BugsnagHandledState handledStateFromJson:bugsnagPayload];
 
+    // deserialize exceptions
     NSArray *errorDicts = bugsnagPayload[BSGKeyExceptions];
     NSMutableArray *data = [NSMutableArray new];
 
@@ -483,6 +485,21 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         }
     }
     _errors = data;
+
+    // deserialize threads
+    NSArray *threadDicts = bugsnagPayload[BSGKeyThreads];
+    NSMutableArray *threadData = [NSMutableArray new];
+
+    if (threadDicts != nil) {
+        for (NSDictionary *dict in threadDicts) {
+            BugsnagThread *thread = [BugsnagThread threadFromJson:dict];
+
+            if (thread != nil) {
+                [threadData addObject:thread];
+            }
+        }
+    }
+    _threads = threadData;
 }
 
 - (NSMutableDictionary *)parseOnCrashData:(NSDictionary *)report {
