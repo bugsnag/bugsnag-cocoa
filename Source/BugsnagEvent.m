@@ -48,6 +48,7 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
 + (instancetype _Nullable)breadcrumbWithBlock:
         (BSGBreadcrumbConfiguration _Nonnull)block;
 + (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
++ (NSArray<BugsnagBreadcrumb *> *)breadcrumbArrayFromJson:(NSArray *)json;
 @end
 
 @interface BugsnagUser ()
@@ -464,33 +465,10 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     if (bugsnagPayload[@"metaData"]) {
         _metadata = [[BugsnagMetadata alloc] initWithDictionary:bugsnagPayload[@"metaData"]];
     }
-
     if (bugsnagPayload[@"breadcrumbs"]) {
-        NSArray *crumbs = bugsnagPayload[@"breadcrumbs"];
-        NSMutableArray *data = [NSMutableArray new];
-
-        for (NSDictionary *dict in crumbs) {
-            BugsnagBreadcrumb *crumb = [BugsnagBreadcrumb breadcrumbFromDict:dict];
-            [data addObject:crumb];
-        }
-        _breadcrumbs = data;
+        _breadcrumbs = [BugsnagBreadcrumb breadcrumbArrayFromJson:bugsnagPayload[@"breadcrumbs"]];
     }
-
-    BOOL unhandled = [bugsnagPayload[@"unhandled"] boolValue];
-    NSDictionary *data = bugsnagPayload[@"severityReason"];
-    BSGSeverity severity = BSGParseSeverity(bugsnagPayload[@"severity"]);
-
-    NSString *attrValue = nil;
-    NSDictionary *attrs = data[@"attributes"];
-
-    if (attrs != nil && [attrs count] == 1) { // only 1 attrValue is ever present
-        attrValue = [attrs allValues][0];
-    }
-    SeverityReasonType reason = [BugsnagHandledState severityReasonFromString:data[@"type"]];
-    _handledState = [[BugsnagHandledState alloc] initWithSeverityReason:reason
-                                                               severity:severity
-                                                              unhandled:unhandled
-                                                              attrValue:attrValue];
+    _handledState = [BugsnagHandledState handledStateFromJson:bugsnagPayload];
 }
 
 - (NSMutableDictionary *)parseOnCrashData:(NSDictionary *)report {
