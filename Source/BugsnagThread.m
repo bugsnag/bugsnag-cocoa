@@ -11,7 +11,7 @@
 #import "BugsnagStacktrace.h"
 #import "BugsnagKeys.h"
 
-BSGThreadType BSGDeserializeThreadType(NSString *type) {
+BSGThreadType BSGParseThreadType(NSString *type) {
     return [@"cocoa" isEqualToString:type] ? BSGThreadTypeCocoa : BSGThreadTypeReactNativeJs;
 }
 
@@ -39,7 +39,7 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
         return nil;
     }
     NSString *type = json[@"type"];
-    BSGThreadType threadType = BSGDeserializeThreadType(type);
+    BSGThreadType threadType = BSGParseThreadType(type);
     BOOL errorReportingThread = json[@"errorReportingThread"] && [json[@"errorReportingThread"] boolValue];
     BugsnagStacktrace *stacktrace = [BugsnagStacktrace stacktraceFromJson:json[BSGKeyStacktrace]];
     BugsnagThread *thread = [[BugsnagThread alloc] initWithId:json[@"id"]
