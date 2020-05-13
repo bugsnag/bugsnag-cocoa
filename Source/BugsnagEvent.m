@@ -48,6 +48,7 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
 + (instancetype _Nullable)breadcrumbWithBlock:
         (BSGBreadcrumbConfiguration _Nonnull)block;
 + (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
++ (NSArray<BugsnagBreadcrumb *> *)breadcrumbArrayFromJson:(NSArray *)json;
 @end
 
 @interface BugsnagUser ()
@@ -460,6 +461,14 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         }
     }
     _errors = data;
+
+    if (bugsnagPayload[@"metaData"]) {
+        _metadata = [[BugsnagMetadata alloc] initWithDictionary:bugsnagPayload[@"metaData"]];
+    }
+    if (bugsnagPayload[@"breadcrumbs"]) {
+        _breadcrumbs = [BugsnagBreadcrumb breadcrumbArrayFromJson:bugsnagPayload[@"breadcrumbs"]];
+    }
+    _handledState = [BugsnagHandledState handledStateFromJson:bugsnagPayload];
 }
 
 - (NSMutableDictionary *)parseOnCrashData:(NSDictionary *)report {
