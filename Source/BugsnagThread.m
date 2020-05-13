@@ -20,10 +20,42 @@
 @end
 
 @interface BugsnagStacktrace ()
++ (instancetype)stacktraceFromJson:(NSDictionary *)json;
 @property NSMutableArray<BugsnagStackframe *> *trace;
 @end
 
 @implementation BugsnagThread
+
++ (instancetype)threadFromJson:(NSDictionary *)json {
+    if (json == nil) {
+        return nil;
+    }
+    NSString *type = json[@"type"];
+    BSGThreadType threadType = [@"cocoa" isEqualToString:type] ? BSGThreadTypeCocoa : BSGThreadTypeReactNativeJs;
+    BOOL errorReportingThread = json[@"errorReportingThread"] && [json[@"errorReportingThread"] boolValue];
+    BugsnagStacktrace *stacktrace = [BugsnagStacktrace stacktraceFromJson:json[BSGKeyStacktrace]];
+    BugsnagThread *thread = [[BugsnagThread alloc] initWithId:json[@"id"]
+                                                         name:json[@"name"]
+                                         errorReportingThread:errorReportingThread
+                                                         type:threadType
+                                                        trace:stacktrace];
+    return thread;
+}
+
+- (instancetype)initWithId:(NSString *)id
+                      name:(NSString *)name
+      errorReportingThread:(BOOL)errorReportingThread
+                      type:(BSGThreadType)type
+                     trace:(BugsnagStacktrace *)trace {
+    if (self = [super init]) {
+        _id = id;
+        _name = name;
+        _errorReportingThread = errorReportingThread;
+        _type = type;
+        _trace = trace;
+    }
+    return self;
+}
 
 - (instancetype)initWithThread:(NSDictionary *)thread binaryImages:(NSArray *)binaryImages {
     if (self = [super init]) {
