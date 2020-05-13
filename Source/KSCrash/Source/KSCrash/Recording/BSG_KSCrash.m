@@ -288,6 +288,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
                handledState:(NSDictionary *)handledState
                    appState:(NSDictionary *)appState
           callbackOverrides:(NSDictionary *)overrides
+             eventOverrides:(NSDictionary *)eventOverrides
                    metadata:(NSDictionary *)metadata
                      config:(NSDictionary *)config
                discardDepth:(int)depth
@@ -304,15 +305,16 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         depth = 0; // reset depth if the stack does not need to be generated
     }
     bsg_kscrash_reportUserException(cName, cReason,
-                                    callstack, numFrames,
-                                    [handledState[@"currentSeverity"] UTF8String],
-                                    [self encodeAsJSONString:handledState],
-                                    [self encodeAsJSONString:overrides],
-                                    [self encodeAsJSONString:metadata],
-                                    [self encodeAsJSONString:appState],
-                                    [self encodeAsJSONString:config],
-                                    depth,
-                                    terminateProgram);
+            callstack, numFrames,
+            [handledState[@"currentSeverity"] UTF8String],
+            [self encodeAsJSONString:handledState],
+            [self encodeAsJSONString:overrides],
+            [self encodeAsJSONString:eventOverrides],
+            [self encodeAsJSONString:metadata],
+            [self encodeAsJSONString:appState],
+            [self encodeAsJSONString:config],
+            depth,
+            terminateProgram);
 
     free(callstack);
 }
