@@ -32,14 +32,20 @@
 - (NSDictionary *_Nonnull)toJson;
 - (BOOL)shouldBeSent;
 - (instancetype)initWithKSReport:(NSDictionary *)report;
-- (instancetype _Nonnull)initWithErrorName:(NSString *_Nonnull)name
-                              errorMessage:(NSString *_Nonnull)message
-                             configuration:(BugsnagConfiguration *_Nonnull)config
-                                  metadata:(BugsnagMetadata *_Nullable)metadata
-                              handledState:(BugsnagHandledState *_Nonnull)handledState
-                                   session:(BugsnagSession *_Nullable)session;
+- (instancetype)initWithApp:(BugsnagAppWithState *)app
+                     device:(BugsnagDeviceWithState *)device
+               handledState:(BugsnagHandledState *)handledState
+                       user:(BugsnagUser *)user
+                   metadata:(BugsnagMetadata *)metadata
+                breadcrumbs:(NSArray<BugsnagBreadcrumb *> *)breadcrumbs
+                     errors:(NSArray<BugsnagError *> *)errors
+                    threads:(NSArray<BugsnagThread *> *)threads
+                    session:(BugsnagSession *)session;
 @property (nonatomic, strong) BugsnagMetadata *metadata;
 @property(readwrite) NSUInteger depth;
+@property NSString *releaseStage;
+@property NSArray *enabledReleaseStages;
+@property BugsnagSession *session;
 @end
 
 @interface BugsnagMetadata ()
@@ -51,46 +57,34 @@
 
 @implementation BugsnagEventTests
 
+- (BugsnagEvent *)generateEvent:(BugsnagHandledState *)handledState {
+    return [[BugsnagEvent alloc] initWithApp:nil
+                                      device:nil
+                                handledState:handledState
+                                        user:nil
+                                    metadata:nil
+                                 breadcrumbs:@[]
+                                      errors:@[]
+                                     threads:@[]
+                                     session:nil];
+}
+
 - (void)testEnabledReleaseStagesSendsFromConfig {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    config.enabledReleaseStages = @[ @"foo" ];
-    config.releaseStage = @"foo";
-    BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagEvent *event =
-        [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
-                                         errorMessage:@"it was so bad"
-                                        configuration:config
-                                             metadata:nil
-                                         handledState:state
-                                              session:nil];
+    BugsnagEvent *event = [self generateEvent:nil];
+    event.enabledReleaseStages = @[@"foo"];
+    event.releaseStage = @"foo";
     XCTAssertTrue([event shouldBeSent]);
 }
 
 - (void)testEnabledReleaseStagesSkipsSendFromConfig {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    config.enabledReleaseStages = @[ @"foo", @"bar" ];
-    config.releaseStage = @"not foo or bar";
-
-    BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagEvent *event =
-        [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
-                                         errorMessage:@"it was so bad"
-                                        configuration:config
-                                             metadata:nil
-                                         handledState:state
-                                              session:nil];
+    BugsnagEvent *event = [self generateEvent:nil];
+    event.enabledReleaseStages = @[ @"foo", @"bar" ];
+    event.releaseStage = @"not foo or bar";
     XCTAssertFalse([event shouldBeSent]);
 }
 
 - (void)testSessionJson {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-
-    BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     NSDate *now = [NSDate date];
-
     BugsnagApp *app;
     BugsnagDevice *device;
     BugsnagSession *bugsnagSession = [[BugsnagSession alloc] initWithId:@"123"
@@ -102,13 +96,8 @@
     bugsnagSession.handledCount = 2;
     bugsnagSession.unhandledCount = 1;
 
-    BugsnagEvent *event =
-        [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
-                                         errorMessage:@"it was so bad"
-                                        configuration:config
-                                             metadata:nil
-                                         handledState:state
-                                              session:bugsnagSession];
+    BugsnagEvent *event = [self generateEvent:nil];
+    event.session = bugsnagSession;
     NSDictionary *json = [event toJson];
     XCTAssertNotNil(json);
 
@@ -445,10 +434,10 @@
     BugsnagEvent *report2 = [[BugsnagEvent alloc] initWithKSReport:dict];
     
     XCTAssertNotNil(report2.metadata);
-    XCTAssertEqual([[report2.metadata toDictionary] count], 1);
-    XCTAssertEqualObjects([report2.metadata getMetadataFromSection:@"user" withKey:@"id"], @"OOMuser");
-    XCTAssertEqualObjects([report2.metadata getMetadataFromSection:@"user" withKey:@"name"], @"OOMname");
-    XCTAssertEqualObjects([report2.metadata getMetadataFromSection:@"user" withKey:@"email"], @"OOMemail");
+    XCTAssertEqual([[report2.metadata toDictionary] count], 0);
+    XCTAssertEqualObjects(@"OOMuser", report2.user.id);
+    XCTAssertEqualObjects(@"OOMname", report2.user.name);
+    XCTAssertEqualObjects(@"OOMemail", report2.user.email);
 }
 
 - (void)testUnhandledReportMetaData {
@@ -727,23 +716,12 @@
 }
 
 - (void)testUnhandled {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagEvent *event = [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
-                                                     errorMessage:@"it was so bad"
-                                                    configuration:config
-                                                         metadata:nil
-                                                     handledState:state
-                                                          session:nil];
+    BugsnagEvent *event = [self generateEvent:state];
     XCTAssertFalse(event.unhandled);
 
     state = [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
-    event = [[BugsnagEvent alloc] initWithErrorName:@"Bad error"
-                                                     errorMessage:@"it was so bad"
-                                                    configuration:config
-                                                         metadata:nil
-                                                     handledState:state
-                                                          session:nil];
+    event = [self generateEvent:state];
     XCTAssertTrue(event.unhandled);
 }
 

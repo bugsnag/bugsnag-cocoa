@@ -90,9 +90,9 @@
 
 - (void)testApiKeyOverride {
     BugsnagEvent *event = [self generateEventWithOverrides:@{
-            @"apiKey": @"f0ab9123095c09d"
+            @"apiKey": @"f0ab0192837465afbecd0192837465af"
     }];
-    XCTAssertEqualObjects(@"f0ab9123095c09d", event.apiKey);
+    XCTAssertEqualObjects(@"f0ab0192837465afbecd0192837465af", event.apiKey);
 }
 
 - (void)testGroupingHashOverride {

@@ -1538,7 +1538,7 @@ void bsg_kscrashreport_writeStandardReport(
                           bsg_kscrw_i_addJSONData, &fd);
 
     writer->beginObject(writer, BSG_KSCrashField_Report);
-    {
+    { // TODO avoid collecting these fields for handled errors. they're not required at all.
         bsg_kscrw_i_writeReportInfo(
             writer, BSG_KSCrashField_Report, BSG_KSCrashReportType_Standard,
             crashContext->config.crashID, crashContext->config.processName);
