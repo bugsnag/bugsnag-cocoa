@@ -449,19 +449,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     _app = [BugsnagAppWithState appFromJson:bugsnagPayload[@"app"]];
     _device = [BugsnagDeviceWithState deviceFromJson:bugsnagPayload[@"device"]];
 
-    NSArray *errorDicts = bugsnagPayload[BSGKeyExceptions];
-    NSMutableArray *data = [NSMutableArray new];
-
-    if (errorDicts != nil) {
-        for (NSDictionary *dict in errorDicts) {
-            BugsnagError *error = [BugsnagError errorFromJson:dict];
-
-            if (error != nil) {
-                [data addObject:error];
-            }
-        }
-    }
-    _errors = data;
 
     if (bugsnagPayload[@"metaData"]) {
         _metadata = [[BugsnagMetadata alloc] initWithDictionary:bugsnagPayload[@"metaData"]];

@@ -286,48 +286,6 @@
     XCTAssertTrue(event.unhandled);
 }
 
-- (void)testErrorsOverride {
-    BugsnagEvent *event = [self generateEventWithOverrides:@{
-            @"exceptions": @[@{
-                    @"errorClass": @"InvalidNetworkError",
-                    @"message": @"No network connection",
-                    @"type": @"reactnativejs",
-                    @"stacktrace": @[
-                            @{
-                                    @"machoFile": @"/Users/foo/Bugsnag.h",
-                                    @"method": @"-[BugsnagClient notify:handledState:block:]",
-                                    @"machoUUID": @"B6D80CB5-A772-3D2F-B5A1-A3A137B8B58F",
-                                    @"frameAddress": @"0x10b5756bf",
-                                    @"symbolAddress": @"0x10b574fa0",
-                                    @"machoLoadAddress": @"0x10b54b000",
-                                    @"machoVMAddress": @"0x102340922",
-                                    @"isPC": @YES,
-                                    @"isLR": @YES
-                            }
-                    ]
-            }]
-    }];
-    BugsnagError *error = event.errors[0];
-    XCTAssertNotNil(error);
-    XCTAssertEqual(1, [event.errors count]);
-    XCTAssertEqualObjects(@"InvalidNetworkError", error.errorClass);
-    XCTAssertEqualObjects(@"No network connection", error.errorMessage);
-    XCTAssertEqual(BSGErrorTypeReactNativeJs, error.type);
-
-    BugsnagStackframe *frame = error.stacktrace[0];
-    XCTAssertNotNil(frame);
-    XCTAssertEqual(1, [error.stacktrace count]);
-    XCTAssertEqualObjects(@"-[BugsnagClient notify:handledState:block:]", frame.method);
-    XCTAssertEqualObjects(@"/Users/foo/Bugsnag.h", frame.machoFile);
-    XCTAssertEqualObjects(@"B6D80CB5-A772-3D2F-B5A1-A3A137B8B58F", frame.machoUuid);
-    XCTAssertEqual(0x102340922, frame.machoVmAddress);
-    XCTAssertEqual(0x10b574fa0, frame.symbolAddress);
-    XCTAssertEqual(0x10b54b000, frame.machoLoadAddress);
-    XCTAssertEqual(0x10b5756bf, frame.frameAddress);
-    XCTAssertTrue(frame.isPc);
-    XCTAssertTrue(frame.isLr);
-}
-
 - (void)testThreadsOverride {
     BugsnagEvent *event = [self generateEventWithOverrides:@{
             @"threads": @[
