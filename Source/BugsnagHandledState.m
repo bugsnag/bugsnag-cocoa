@@ -60,9 +60,9 @@ static NSString *const kUserCallbackSetSeverity = @"userCallbackSetSeverity";
     }
     SeverityReasonType reason = [BugsnagHandledState severityReasonFromString:data[@"type"]];
     return [[BugsnagHandledState alloc] initWithSeverityReason:reason
-                                                               severity:severity
-                                                              unhandled:unhandled
-                                                              attrValue:attrValue];
+                                                      severity:severity
+                                                     unhandled:unhandled
+                                                     attrValue:attrValue];
 }
 
 + (instancetype)handledStateWithSeverityReason:
