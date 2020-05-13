@@ -20,6 +20,9 @@
 @interface Bugsnag ()
 + (NSDateFormatter *)payloadDateFormatter;
 @end
+#import "BugsnagError.h"
+#import "BugsnagStackframe.h"
+#import "BugsnagThread.h"
 
 @interface BugsnagEvent ()
 - (instancetype)initWithKSReport:(NSDictionary *)report;
@@ -281,6 +284,51 @@
     XCTAssertEqual(BSGSeverityInfo, event.handledState.originalSeverity);
     XCTAssertEqual(BSGSeverityInfo, event.handledState.currentSeverity);
     XCTAssertTrue(event.unhandled);
+}
+
+- (void)testThreadsOverride {
+    BugsnagEvent *event = [self generateEventWithOverrides:@{
+            @"threads": @[
+                    @{
+                            @"id": @"13",
+                            @"name": @"thread-id-1",
+                            @"errorReportingThread": @YES,
+                            @"type": @"reactnativejs",
+                            @"stacktrace": @[
+                            @{
+                                    @"machoFile": @"/Users/foo/Bugsnag.h",
+                                    @"method": @"-[BugsnagClient notify:handledState:block:]",
+                                    @"machoUUID": @"B6D80CB5-A772-3D2F-B5A1-A3A137B8B58F",
+                                    @"frameAddress": @"0x10b5756bf",
+                                    @"symbolAddress": @"0x10b574fa0",
+                                    @"machoLoadAddress": @"0x10b54b000",
+                                    @"machoVMAddress": @"0x102340922",
+                                    @"isPC": @YES,
+                                    @"isLR": @YES
+                            }
+                    ]}
+            ]
+    }];
+    BugsnagThread *thread = event.threads[0];
+    XCTAssertNotNil(thread);
+    XCTAssertEqual(1, [event.threads count]);
+    XCTAssertEqualObjects(@"13", thread.id);
+    XCTAssertEqualObjects(@"thread-id-1", thread.name);
+    XCTAssertTrue(thread.errorReportingThread);
+    XCTAssertEqual(BSGThreadTypeReactNativeJs, thread.type);
+
+    BugsnagStackframe *frame = thread.stacktrace[0];
+    XCTAssertNotNil(frame);
+    XCTAssertEqual(1, [thread.stacktrace count]);
+    XCTAssertEqualObjects(@"-[BugsnagClient notify:handledState:block:]", frame.method);
+    XCTAssertEqualObjects(@"/Users/foo/Bugsnag.h", frame.machoFile);
+    XCTAssertEqualObjects(@"B6D80CB5-A772-3D2F-B5A1-A3A137B8B58F", frame.machoUuid);
+    XCTAssertEqual(0x102340922, frame.machoVmAddress);
+    XCTAssertEqual(0x10b574fa0, frame.symbolAddress);
+    XCTAssertEqual(0x10b54b000, frame.machoLoadAddress);
+    XCTAssertEqual(0x10b5756bf, frame.frameAddress);
+    XCTAssertTrue(frame.isPc);
+    XCTAssertTrue(frame.isLr);
 }
 
 @end

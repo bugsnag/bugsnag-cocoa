@@ -115,6 +115,7 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
                                          binaryImages:(NSArray *)binaryImages
                                                 depth:(NSUInteger)depth
                                             errorType:(NSString *)errorType;
++ (instancetype)threadFromJson:(NSDictionary *)json;
 @end
 
 @interface BugsnagStacktrace ()
@@ -448,6 +449,16 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     _app = [BugsnagAppWithState appFromJson:bugsnagPayload[@"app"]];
     _device = [BugsnagDeviceWithState deviceFromJson:bugsnagPayload[@"device"]];
 
+
+    if (bugsnagPayload[@"metaData"]) {
+        _metadata = [[BugsnagMetadata alloc] initWithDictionary:bugsnagPayload[@"metaData"]];
+    }
+    if (bugsnagPayload[@"breadcrumbs"]) {
+        _breadcrumbs = [BugsnagBreadcrumb breadcrumbArrayFromJson:bugsnagPayload[@"breadcrumbs"]];
+    }
+    _handledState = [BugsnagHandledState handledStateFromJson:bugsnagPayload];
+
+    // deserialize exceptions
     NSArray *errorDicts = bugsnagPayload[BSGKeyExceptions];
     NSMutableArray *data = [NSMutableArray new];
 
@@ -462,13 +473,20 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     }
     _errors = data;
 
-    if (bugsnagPayload[@"metaData"]) {
-        _metadata = [[BugsnagMetadata alloc] initWithDictionary:bugsnagPayload[@"metaData"]];
+    // deserialize threads
+    NSArray *threadDicts = bugsnagPayload[BSGKeyThreads];
+    NSMutableArray *threadData = [NSMutableArray new];
+
+    if (threadDicts != nil) {
+        for (NSDictionary *dict in threadDicts) {
+            BugsnagThread *thread = [BugsnagThread threadFromJson:dict];
+
+            if (thread != nil) {
+                [threadData addObject:thread];
+            }
+        }
     }
-    if (bugsnagPayload[@"breadcrumbs"]) {
-        _breadcrumbs = [BugsnagBreadcrumb breadcrumbArrayFromJson:bugsnagPayload[@"breadcrumbs"]];
-    }
-    _handledState = [BugsnagHandledState handledStateFromJson:bugsnagPayload];
+    _threads = threadData;
 }
 
 - (NSMutableDictionary *)parseOnCrashData:(NSDictionary *)report {
