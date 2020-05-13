@@ -33,9 +33,8 @@
 @implementation CustomPluginNotifierDescriptionScenario
 
 - (void)startBugsnag {
-    
-//    [Bugsnag registerPlugin:[DescriptionPlugin new]];
     self.config.autoTrackSessions = NO;
+    [self.config addPlugin:[DescriptionPlugin new]];
     [super startBugsnag];
 }
 
