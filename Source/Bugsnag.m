@@ -56,9 +56,10 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 @interface BugsnagClient ()
 - (void)startListeningForStateChangeNotification:(NSString *_Nonnull)notificationName;
 - (void)addBreadcrumbWithBlock:(void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
-- (void)internalClientNotify:(NSException *_Nonnull)exception
-                    withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagOnErrorBlock _Nullable)block;
+- (void)notifyInternal:(BugsnagEvent *_Nonnull)event
+                 block:(BugsnagOnErrorBlock)block;
+- (void)addRuntimeVersionInfo:(NSString *)info
+                      withKey:(NSString *)key;
 @property (nonatomic) NSString *codeBundleId;
 @end
 
@@ -68,12 +69,12 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 
 @implementation Bugsnag
 
-+ (BugsnagClient *_Nonnull)startBugsnagWithApiKey:(NSString *)apiKey {
++ (BugsnagClient *_Nonnull)startWithApiKey:(NSString *_Nonnull)apiKey {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
-    return [self startBugsnagWithConfiguration:configuration];
+    return [self startWithConfiguration:configuration];
 }
 
-+ (BugsnagClient *_Nonnull)startBugsnagWithConfiguration:(BugsnagConfiguration *)configuration {
++ (BugsnagClient *_Nonnull)startWithConfiguration:(BugsnagConfiguration *_Nonnull)configuration {
     @synchronized(self) {
         bsg_g_bugsnag_client =
                 [[BugsnagClient alloc] initWithConfiguration:configuration];
@@ -156,13 +157,11 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
  * Intended for use by other clients (React Native/Unity). Calling this method
  * directly from iOS is not supported.
  */
-+ (void)internalClientNotify:(NSException *_Nonnull)exception
-                    withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagOnErrorBlock _Nullable)block {
++ (void)notifyInternal:(BugsnagEvent *_Nonnull)event
+                 block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagStarted]) {
-        [self.client internalClientNotify:exception
-                                   withData:metadata
-                                      block:block];
+        [self.client notifyInternal:event
+                              block:block];
     }
 }
 
@@ -236,6 +235,13 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
       formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
     });
     return formatter;
+}
+
++ (void)addRuntimeVersionInfo:(NSString *)info
+                      withKey:(NSString *)key {
+    if ([self bugsnagStarted]) {
+        [self.client addRuntimeVersionInfo:info withKey:key];
+    }
 }
 
 // =============================================================================

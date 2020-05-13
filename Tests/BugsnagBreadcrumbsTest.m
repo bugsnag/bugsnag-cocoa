@@ -305,7 +305,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
         return false;
     }];
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+    [Bugsnag startWithConfiguration:configuration];
 
     NSDictionary *md1 = @{ @"x" : @"y"};
     NSDictionary *md2 = @{ @"a" : @"b",
@@ -374,7 +374,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
         return false;
     }];
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+    [Bugsnag startWithConfiguration:configuration];
 
     [Bugsnag leaveBreadcrumbWithMessage:@"message1"];
     [Bugsnag leaveBreadcrumbWithMessage:@"message2" metadata:nil andType:BSGBreadcrumbTypeUser];

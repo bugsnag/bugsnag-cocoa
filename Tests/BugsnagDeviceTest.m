@@ -18,6 +18,8 @@ NSNumber *BSGDeviceFreeSpace(NSSearchPathDirectory directory);
 + (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)event;
 
 - (NSDictionary *)toDictionary;
+
+- (void)appendRuntimeInfo:(NSDictionary *)info;
 @end
 
 @interface BugsnagDeviceWithState ()
@@ -26,6 +28,8 @@ NSNumber *BSGDeviceFreeSpace(NSSearchPathDirectory directory);
 + (BugsnagDeviceWithState *)deviceWithOomData:(NSDictionary *)data;
 
 - (NSDictionary *)toDictionary;
+
++ (BugsnagDeviceWithState *) deviceFromJson:(NSDictionary *)json;
 @end
 
 @interface BugsnagDeviceTest : XCTestCase
@@ -198,6 +202,69 @@ NSNumber *BSGDeviceFreeSpace(NSSearchPathDirectory directory);
     NSSearchPathDirectory notAccessibleDirectory = NSAdminApplicationDirectory;
     NSNumber *freeBytes = BSGDeviceFreeSpace(notAccessibleDirectory);
     XCTAssertNil(freeBytes, @"expect nil when fails to retrieve free space for the directory");
+}
+
+- (void)testDeviceRuntimeInfoAppended {
+    BugsnagDevice *device = [BugsnagDevice deviceWithDictionary:self.data];
+    XCTAssertEqual(2, [device.runtimeVersions count]);
+    XCTAssertEqualObjects(@"14B25", device.runtimeVersions[@"osBuild"]);
+    XCTAssertEqualObjects(@"10.0.0 (clang-1000.11.45.5)", device.runtimeVersions[@"clangVersion"]);
+
+    [device appendRuntimeInfo:@{@"foo": @"bar"}];
+    XCTAssertEqual(3, [device.runtimeVersions count]);
+    XCTAssertEqualObjects(@"14B25", device.runtimeVersions[@"osBuild"]);
+    XCTAssertEqualObjects(@"10.0.0 (clang-1000.11.45.5)", device.runtimeVersions[@"clangVersion"]);
+    XCTAssertEqualObjects(@"bar", device.runtimeVersions[@"foo"]);
+}
+
+- (void)testDeviceFromJson {
+    NSDictionary *json = @{
+            @"jailbroken": @YES,
+            @"id": @"123",
+            @"locale": @"en-US",
+            @"manufacturer": @"Apple",
+            @"model": @"x86_64",
+            @"modelNumber": @"iPhone 6",
+            @"osName": @"iPhone OS",
+            @"osVersion": @"8.1",
+            @"totalMemory": @15065522176,
+            @"runtimeVersions": @{
+                    @"osBuild": @"14B25",
+                    @"clangVersion": @"10.0.0 (clang-1000.11.45.5)"
+            },
+            @"freeDisk": @509234098,
+            @"freeMemory": @742920192,
+            @"orientation": @"portrait",
+            @"time": @"2014-12-02T01:56:13Z"
+    };
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceFromJson:json];
+    XCTAssertNotNil(device);
+
+    // verify stateless fields
+    XCTAssertTrue(device.jailbroken);
+    XCTAssertEqualObjects(@"123", device.id);
+    XCTAssertEqualObjects(@"en-US", device.locale);
+    XCTAssertEqualObjects(@"Apple", device.manufacturer);
+    XCTAssertEqualObjects(@"x86_64", device.model);
+    XCTAssertEqualObjects(@"iPhone 6", device.modelNumber);
+    XCTAssertEqualObjects(@"iPhone OS", device.osName);
+    XCTAssertEqualObjects(@"8.1", device.osVersion);
+    XCTAssertEqualObjects(@15065522176, device.totalMemory);
+    NSDictionary *runtimeVersions = @{
+            @"osBuild": @"14B25",
+            @"clangVersion": @"10.0.0 (clang-1000.11.45.5)"
+    };
+    XCTAssertEqualObjects(runtimeVersions, device.runtimeVersions);
+
+    // verify stateful fields
+    XCTAssertEqualObjects(@509234098, device.freeDisk);
+    XCTAssertEqualObjects(@742920192, device.freeMemory);
+    XCTAssertEqualObjects(@"portrait", device.orientation);
+
+    NSDateFormatter *formatter = [NSDateFormatter new];
+    formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
+    formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    XCTAssertEqualObjects([formatter dateFromString:@"2014-12-02T01:56:13Z"], device.time);
 }
 
 @end

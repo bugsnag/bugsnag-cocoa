@@ -56,7 +56,7 @@
             @"automaticBreadcrumbControlEvents @16@0:8",
             @"crashSentry @16@0:8",
             @"computeDidCrashLastLaunch v16@0:8",
-            @"details @16@0:8",
+            @"notifier @16@0:8",
             @"updateAutomaticBreadcrumbDetectionSettings v16@0:8",
             @"automaticBreadcrumbStateEvents @16@0:8",
             @"sessionTracker @16@0:8",
@@ -70,7 +70,7 @@
             @"state @16@0:8",
             @"sendBreadcrumbForTableViewNotification: v24@0:8@16",
             @"pluginClient @16@0:8",
-            @"setDetails: v24@0:8@16",
+            @"setNotifier: v24@0:8@16",
             @"setErrorReportApiClient: v24@0:8@16",
             @"metadataChanged: v24@0:8@16",
             @"automaticBreadcrumbMenuItemEvents @16@0:8",
@@ -92,14 +92,25 @@
             @"startListeningForWorkspaceStateChangeNotifications: v24@0:8@16",
             @"codeBundleId @16@0:8",
             @"setCodeBundleId: v24@0:8@16",
-            @"context @16@0:8"
+            @"context @16@0:8",
+            @"collectAppWithState @16@0:8",
+            @"collectBreadcrumbs @16@0:8",
+            @"collectThreads @16@0:8",
+            @"collectDeviceWithState @16@0:8",
+            @"extraRuntimeInfo @16@0:8",
+            @"setExtraRuntimeInfo: v24@0:8@16",
+            @"collectDeviceWithState @16@0:8",
+            @"setStateEventBlocks: v24@0:8@16",
+            @"addObserverUsingBlock: v24@0:8@?16",
+            @"notifyObservers: v24@0:8@16",
+            @"stateEventBlocks @16@0:8"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to
     // be mirrored on BugsnagClient
     self.clientWhitelist = [NSSet setWithArray:@[
-            @"startBugsnagWithApiKey: @24@0:8@16",
-            @"startBugsnagWithConfiguration: @24@0:8@16",
+            @"startWithApiKey: @24@0:8@16",
+            @"startWithConfiguration: @24@0:8@16",
             @"payloadDateFormatter @16@0:8",
             @"updateCodeBundleId: v24@0:8@16",
             @"instance @16@0:8",

@@ -57,7 +57,7 @@
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [config addPlugin:plugin];
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
     [self waitForExpectations:@[expectation] timeout:3.0];
 }
 
@@ -69,7 +69,7 @@
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [config addPlugin:plugin];
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
     [self waitForExpectations:@[expectation] timeout:3.0];
 }
 

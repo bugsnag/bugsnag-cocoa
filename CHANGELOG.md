@@ -8,6 +8,18 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Alter default session background timeout to 30s
+  [#581](https://github.com/bugsnag/bugsnag-cocoa/pull/581)
+
+* Support loading configuration from values in `Info.plist`.
+  [#582](https://github.com/bugsnag/bugsnag-cocoa/pull/582)
+
+* Add `unhandledRejections` to `BugsnagErrorTypes`
+  [#567](https://github.com/bugsnag/bugsnag-cocoa/pull/567)
+
+* Rename `Bugsnag` start methods
+  [#566](https://github.com/bugsnag/bugsnag-cocoa/pull/566)
+
 * Rename `OnSend` to `OnSendError`
   [#562](https://github.com/bugsnag/bugsnag-cocoa/pull/562)
 
@@ -215,10 +227,11 @@ Bugsnag Notifiers on other platforms.
 * Add metadata accessor methods to `BugsnagEvent`
   [#465](https://github.com/bugsnag/bugsnag-cocoa/pull/465)
   
-* Added a user-configurable `enabledErrorTypes` bitfield property to `BugsnagConfiguration`.
-  This allows users to choose which types of events are reported.  If automatic crash detection
+* Added a user-configurable `enabledErrorTypes` property to `BugsnagConfiguration`.
+  The `BugsnagErrorTypes` property allows users to choose which types of events are reported.  If automatic crash detection
   is disabled this value is ignored.  User-generated `notify()` events are reported in all cases.
   [#477](https://github.com/bugsnag/bugsnag-cocoa/pull/477)
+  [#561](https://github.com/bugsnag/bugsnag-cocoa/pull/561)
 
 * Internal logging has been unified.  Where before two preprocessor macros were
   required to configure both `Bugsnag` and `KSCrash` portions, now the Bugsnag

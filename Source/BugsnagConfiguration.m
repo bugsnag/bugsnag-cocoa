@@ -33,11 +33,16 @@
 #import "BugsnagUser.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagLogger.h"
+#import "BSGConfigurationBuilder.h"
 #import "BSG_SSKeychain.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagMetadataStore.h"
 #import "BSGSerialization.h"
 #import "BugsnagEndpointConfiguration.h"
+#import "BugsnagErrorTypes.h"
+#import "BugsnagStateEvent.h"
+#import "BugsnagCollections.h"
+#import "BugsnagMetadataInternal.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -54,10 +59,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 @interface Bugsnag ()
 + (BugsnagClient *)client;
-@end
-
-@interface BugsnagMetadata ()
-- (NSDictionary *_Nonnull)toDictionary;
 @end
 
 @interface BugsnagUser ()
@@ -105,6 +106,15 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 @implementation BugsnagConfiguration
 
++ (instancetype _Nonnull)loadConfig {
+    NSDictionary *options = [[NSBundle mainBundle] infoDictionary][@"bugsnag"];
+    return [BSGConfigurationBuilder configurationFromOptions:options];
+}
+
++ (instancetype)loadConfigFromOptions:(NSDictionary *)options {
+    return [BSGConfigurationBuilder configurationFromOptions:options];
+}
+
 // -----------------------------------------------------------------------------
 // MARK: - <NSCopying>
 // -----------------------------------------------------------------------------
@@ -144,7 +154,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setUser:self.user.id
         withEmail:self.user.email
           andName:self.user.name];
-    
     return copy;
 }
 
@@ -162,7 +171,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 + (BOOL)isValidApiKey:(NSString *)apiKey {
     NSCharacterSet *chars = [[NSCharacterSet
         characterSetWithCharactersInString:@"0123456789ABCDEF"] invertedSet];
-    BOOL isHex = (NSNotFound == [[apiKey uppercaseString] rangeOfCharacterFromSet:chars].location);
+    BOOL isHex = [apiKey isKindOfClass:[NSString class]] &&
+            (NSNotFound == [[apiKey uppercaseString] rangeOfCharacterFromSet:chars].location);
     return isHex && [apiKey length] == BSGApiKeyLength;
 }
 
@@ -184,13 +194,18 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 {
     if (![BugsnagConfiguration isValidApiKey:apiKey]) {
         bsg_log_err(@"Invalid configuration. apiKey should be a 32-character hexademical string, got \"%@\"", apiKey);
+        _apiKey = @"";
     }
-    
+    if ([apiKey isKindOfClass: [NSString class]]) {
+        _apiKey = apiKey;
+    } else {
+        _apiKey = @"";
+    }
+
     self = [super init];
-    
+
     _metadata = [[BugsnagMetadata alloc] init];
     _config = [[BugsnagMetadata alloc] init];
-    _apiKey = apiKey;
     _bundleVersion = NSBundle.mainBundle.infoDictionary[@"CFBundleVersion"];
     _endpoints = [BugsnagEndpointConfiguration new];
     _sessionURL = [NSURL URLWithString:@"https://sessions.bugsnag.com"];
@@ -206,10 +221,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _autoTrackSessions = YES;
     _sendThreads = BSGThreadSendPolicyAlways;
     // Default to recording all error types
-    _enabledErrorTypes = BSGErrorTypesCPP
-                       | BSGErrorTypesMach
-                       | BSGErrorTypesSignals
-                       | BSGErrorTypesNSExceptions;
+    _enabledErrorTypes = [BugsnagErrorTypes new];
 
     // Enabling OOM detection only happens in release builds, to avoid triggering
     // the heuristic when killing/restarting an app in Xcode or similar.
@@ -218,10 +230,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     // persistUser isn't settable until post-init.
     _user = [self getPersistedUserData];
     [self setUserMetadataFromUser:_user];
-    
-    #if !DEBUG
-        _enabledErrorTypes |= BSGErrorTypesOOMs;
-    #endif
 
     if ([NSURLSession class]) {
         _session = [NSURLSession
@@ -241,7 +249,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 #elif TARGET_OS_MAC
     _appType = @"macOS";
 #endif
-    
     return self;
 }
 
@@ -267,7 +274,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     // Persist the user
     if (_persistUser)
         [self persistUserData];
-    
+
     // Add user info to the metadata
     [self setUserMetadataFromUser:self.user];
 }
@@ -419,7 +426,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
                 [BSG_SSKeychain deletePasswordForService:kBugsnagUserName
                                              account:kBugsnagUserKeychainAccount];
             }
-            
+
             // UserId
             if (_user.id) {
                 [BSG_SSKeychain setPassword:_user.id
@@ -474,7 +481,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     if (!self.enabledBreadcrumbTypes) {
         return YES;
     }
-    
+
     switch (type) {
         case BSGBreadcrumbTypeManual:
             return YES;
@@ -516,32 +523,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
                          withKey:BSGKeyReleaseStage
                        toSection:BSGKeyConfig];
     }
-}
-
-// MARK: -
-
-@synthesize autoDetectErrors = _autoDetectErrors;
-
-- (BOOL)autoDetectErrors {
-    return _autoDetectErrors;
-}
-
-- (void)setAutoDetectErrors:(BOOL)autoDetectErrors {
-    if (autoDetectErrors == _autoDetectErrors) {
-        return;
-    }
-    [self willChangeValueForKey:NSStringFromSelector(@selector(autoDetectErrors))];
-    _autoDetectErrors = autoDetectErrors;
-    [[Bugsnag client] updateCrashDetectionSettings];
-    [self didChangeValueForKey:NSStringFromSelector(@selector(autoDetectErrors))];
-}
-
-- (BOOL)autoNotify {
-    return self.autoDetectErrors;
-}
-
-- (void)setAutoNotify:(BOOL)autoNotify {
-    self.autoDetectErrors = autoNotify;
 }
 
 // MARK: -

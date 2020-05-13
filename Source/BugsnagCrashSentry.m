@@ -14,6 +14,7 @@
 #import "BugsnagSink.h"
 #import "BugsnagConfiguration.h"
 #import "Bugsnag.h"
+#import "BugsnagErrorTypes.h"
 
 NSUInteger const BSG_MAX_STORED_REPORTS = 12;
 
@@ -39,9 +40,8 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
     // If Bugsnag is autodetecting errors then the types of event detected is configurable
     // (otherwise it's just the user reported events)
     if (config.autoDetectErrors) {
-        BSGEnabledErrorType errorTypes = [config enabledErrorTypes];
         // Translate the relevant BSGErrorTypes bitfield into the equivalent BSG_KSCrashType one
-        crashTypes = crashTypes | [self mapKSToBSGCrashTypes:errorTypes];
+        crashTypes = crashTypes | [self mapKSToBSGCrashTypes:config.enabledErrorTypes];
     }
     
     bsg_kscrash_setHandlingCrashTypes(crashTypes);
@@ -58,17 +58,15 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
  * OOMs are dealt with exclusively in the Bugsnag layer so omitted from consideration here.
  * User reported events should always be included and so also not dealt with here.
  *
- * @param bsgCrashMask The BSGErrorType bitfield
+ * @param errorTypes The enabled error types
  * @returns A BSG_KSCrashType equivalent (with the above caveats) to the input
  */
-- (BSG_KSCrashType)mapKSToBSGCrashTypes:(BSGEnabledErrorType)bsgCrashMask
+- (BSG_KSCrashType)mapKSToBSGCrashTypes:(BugsnagErrorTypes *)errorTypes
 {
-    BSG_KSCrashType crashType;
-    crashType = (bsgCrashMask & BSGErrorTypesNSExceptions ? BSG_KSCrashTypeNSException   : 0)
-              | (bsgCrashMask & BSGErrorTypesCPP          ? BSG_KSCrashTypeCPPException  : 0)
-              | (bsgCrashMask & BSGErrorTypesSignals      ? BSG_KSCrashTypeSignal        : 0)
-              | (bsgCrashMask & BSGErrorTypesMach         ? BSG_KSCrashTypeMachException : 0);
-    return crashType;
+    return (BSG_KSCrashType) ((errorTypes.unhandledExceptions ? BSG_KSCrashTypeNSException : 0)
+                    | (errorTypes.cppExceptions ? BSG_KSCrashTypeCPPException : 0)
+                    | (errorTypes.signals ? BSG_KSCrashTypeSignal : 0)
+                    | (errorTypes.machExceptions ? BSG_KSCrashTypeMachException : 0));
 }
 
 - (void)reportUserException:(NSString *)reportName

@@ -45,6 +45,11 @@
 #import "BSG_KSMach.h"
 #import "BSGSerialization.h"
 #import "Bugsnag.h"
+#import "BugsnagErrorTypes.h"
+#import "BugsnagNotifier.h"
+#import "BugsnagMetadataInternal.h"
+#import "BugsnagStateEvent.h"
+#import "BugsnagCollections.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -52,13 +57,11 @@
 #import <AppKit/AppKit.h>
 #endif
 
-NSString *const NOTIFIER_VERSION = @"5.23.0";
-NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 NSString *const BSTabCrash = @"crash";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
-static NSInteger const BSGNotifierStackFrameCount = 5;
+static NSInteger const BSGNotifierStackFrameCount = 6;
 
 struct bugsnag_data_t {
     // Contains the state of the event (handled/unhandled)
@@ -100,6 +103,20 @@ static bool hasRecordedSessions;
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
+@end
+
+
+@interface BugsnagAppWithState ()
++ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
+                                    config:(BugsnagConfiguration *)config
+                              codeBundleId:(NSString *)codeBundleId;
+- (NSDictionary *)toDict;
+@end
+
+@interface BugsnagDeviceWithState ()
++ (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event;
+- (NSDictionary *)toDictionary;
+- (void)appendRuntimeInfo:(NSDictionary *)info;
 @end
 
 /**
@@ -271,10 +288,12 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic) BOOL appDidCrashLastLaunch;
 @property (nonatomic, strong) BugsnagMetadata *metadata;
 @property (nonatomic) NSString *codeBundleId;
+@property(nonatomic, readwrite, strong) NSMutableArray *stateEventBlocks;
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 // The previous device orientation - iOS only
 @property (nonatomic, strong) NSString *lastOrientation;
 #endif
+@property NSMutableDictionary *extraRuntimeInfo;
 @end
 
 @interface BugsnagConfiguration ()
@@ -300,12 +319,6 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
                                    session:(BugsnagSession *_Nullable)session;
 @end
 
-@interface BugsnagMetadata ()
-@property(unsafe_unretained) id<BugsnagMetadataDelegate> _Nullable delegate;
-- (NSDictionary *_Nonnull)toDictionary;
-- (id)deepCopy;
-@end
-
 @interface BSGOutOfMemoryWatchdog ()
 @property(nonatomic) NSString *codeBundleId;
 @end
@@ -320,6 +333,10 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 
 @interface Bugsnag ()
 + (NSDateFormatter *_Nonnull)payloadDateFormatter;
+@end
+
+@interface BugsnagBreadcrumbs ()
+@property(nonatomic, readwrite, strong) NSMutableArray *breadcrumbs;
 @end
 
 // =============================================================================
@@ -344,21 +361,7 @@ NSString *_lastOrientation = nil;
         // Take a shallow copy of the configuration
         self.configuration = [initConfiguration copy];
         self.state = [[BugsnagMetadata alloc] init];
-        NSString *notifierName =
-#if TARGET_OS_TV
-            @"tvOS Bugsnag Notifier";
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-            @"iOS Bugsnag Notifier";
-#elif TARGET_OS_MAC
-            @"OSX Bugsnag Notifier";
-#else
-            @"Bugsnag Objective-C";
-#endif
-        self.details = [@{
-            BSGKeyName : notifierName,
-            BSGKeyVersion : NOTIFIER_VERSION,
-            BSGKeyUrl : NOTIFIER_URL
-        } mutableCopy];
+        self.notifier = [BugsnagNotifier new];
 
         NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(
                                 NSCachesDirectory, NSUserDomainMask, YES) firstObject];
@@ -371,10 +374,9 @@ NSString *_lastOrientation = nil;
                                                                       configuration:configuration];
         }
 
+        self.stateEventBlocks = [NSMutableArray new];
+        self.extraRuntimeInfo = [NSMutableDictionary new];
         self.metadataLock = [[NSLock alloc] init];
-        self.configuration.metadata.delegate = self;
-        self.configuration.config.delegate = self;
-        self.state.delegate = self;
         self.crashSentry = [BugsnagCrashSentry new];
         self.errorReportApiClient = [[BugsnagErrorReportApiClient alloc] initWithConfig:configuration
                                                                               queueName:@"Error API queue"];
@@ -392,9 +394,20 @@ NSString *_lastOrientation = nil;
 
         // Start with a copy of the configuration metadata
         self.metadata = [[configuration metadata] deepCopy];
+        // sync initial state
         [self metadataChanged:self.configuration.metadata];
         [self metadataChanged:self.configuration.config];
         [self metadataChanged:self.state];
+
+        // add observers for future metadata changes
+        // weakSelf is used as the BugsnagClient will always be instantiated
+        // for the entire lifecycle of an application, and there is therefore
+        // no need to check for strong self
+        __weak __typeof__(self) weakSelf = self;
+        [self addObserverUsingBlock:^(BugsnagStateEvent *event) {
+            [weakSelf metadataChanged:event.data];
+        }];
+
         self.pluginClient = [[BugsnagPluginClient alloc] initWithPlugins:self.configuration.plugins];
 
 #if TARGET_OS_IOS
@@ -402,6 +415,22 @@ NSString *_lastOrientation = nil;
 #endif
     }
     return self;
+}
+
+- (void)addObserverUsingBlock:(BugsnagObserverBlock _Nonnull)observer {
+    [self.stateEventBlocks addObject:[observer copy]];
+
+    // additionally listen for metadata updates
+    [self.metadata addObserverUsingBlock:observer];
+    [self.configuration.metadata addObserverUsingBlock:observer];
+    [self.configuration.config addObserverUsingBlock:observer];
+    [self.state addObserverUsingBlock:observer];
+}
+
+- (void)notifyObservers:(BugsnagStateEvent *)event {
+    for (BugsnagObserverBlock callback in self.stateEventBlocks) {
+        callback(event);
+    }
 }
 
 NSString *const kWindowVisible = @"Window Became Visible";
@@ -530,8 +559,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
     _started = YES;
     // autoDetectErrors disables all unhandled event reporting
-    BOOL configuredToReportOOMs = self.configuration.autoDetectErrors
-        && ([[Bugsnag configuration] enabledErrorTypes] & BSGErrorTypesOOMs);
+    BOOL configuredToReportOOMs = self.configuration.autoDetectErrors && self.configuration.enabledErrorTypes.ooms;
     
     // Disable if a debugger is enabled, since the development cycle of starting
     // and restarting an app is also an uncatchable kill
@@ -730,6 +758,12 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.metadata addMetadata:userId withKey:BSGKeyId    toSection:BSGKeyUser];
     [self.metadata addMetadata:name   withKey:BSGKeyName  toSection:BSGKeyUser];
     [self.metadata addMetadata:email  withKey:BSGKeyEmail toSection:BSGKeyUser];
+
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+    BSGDictInsertIfNotNil(dict, self.user.id, @"id");
+    BSGDictInsertIfNotNil(dict, self.user.email, @"email");
+    BSGDictInsertIfNotNil(dict, self.user.name, @"name");
+    [self notifyObservers:[[BugsnagStateEvent alloc] initWithName:kStateEventUser data:dict]];
 }
 
 // =============================================================================
@@ -774,6 +808,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)setContext:(NSString *_Nullable)context {
     self.configuration.context = context;
+    [self notifyObservers:[[BugsnagStateEvent alloc] initWithName:kStateEventContext data:context]];
 }
 
 - (NSString *)context {
@@ -828,35 +863,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self notify:exception handledState:state block:block];
 }
 
-/**
- *  Notify Bugsnag of an exception. Only intended for React Native/Unity use.
- *
- *  @param exception the exception
- *  @param metadata  the metadata
- *  @param block     Configuration block for adding additional report
- * information
- */
-- (void)internalClientNotify:(NSException *_Nonnull)exception
-                    withData:(NSDictionary *_Nullable)metadata
-                       block:(BugsnagOnErrorBlock _Nullable)block
-{
-    BSGSeverity severity = BSGParseSeverity(metadata[BSGKeySeverity]);
-    NSString *severityReason = metadata[BSGKeySeverityReason];
-    BOOL unhandled = [metadata[BSGKeyUnhandled] boolValue];
-    NSString *logLevel = metadata[BSGKeyLogLevel];
-    NSParameterAssert(severityReason.length > 0);
-
-    SeverityReasonType severityReasonType =
-        [BugsnagHandledState severityReasonFromString:severityReason];
-
-    BugsnagHandledState *state = [[BugsnagHandledState alloc] initWithSeverityReason:severityReasonType
-                                                                            severity:severity
-                                                                           unhandled:unhandled
-                                                                           attrValue:logLevel];
-
-    [self notify:exception handledState:state block:block];
-}
-
 - (void)notifyOutOfMemoryEvent {
     static NSString *const BSGOutOfMemoryErrorClass = @"Out Of Memory";
     static NSString *const BSGOutOfMemoryMessageFormat = @"The app was likely terminated by the operating system while in the %@";
@@ -902,11 +908,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 {
     NSString *exceptionName = exception.name ?: NSStringFromClass([exception class]);
     NSString *message = exception.reason;
-    if (handledState.unhandled) {
-        [self.sessionTracker handleUnhandledErrorEvent];
-    } else {
-        [self.sessionTracker handleHandledErrorEvent];
-    }
 
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithErrorName:exceptionName
                                                      errorMessage:message
@@ -915,12 +916,30 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                                                      handledState:handledState
                                                           session:self.sessionTracker.runningSession];
     event.originalError = exception;
-    
+    [self notifyInternal:event block:block];
+}
+
+/**
+ *  Notify Bugsnag of an exception. Only intended for React Native/Unity use.
+ *
+ *  @param event    the event
+ *  @param block     Configuration block for adding additional report information
+ */
+- (void)notifyInternal:(BugsnagEvent *_Nonnull)event
+                 block:(BugsnagOnErrorBlock)block
+{
+    [event.device appendRuntimeInfo:self.extraRuntimeInfo];
     if (block != nil && !block(event)) { // skip notifying if callback false
         return;
     }
-    
-    //    We discard 5 stack frames (including this one) by default,
+
+    if (event.handledState.unhandled) {
+        [self.sessionTracker handleUnhandledErrorEvent];
+    } else {
+        [self.sessionTracker handleHandledErrorEvent];
+    }
+
+    //    We discard 6 stack frames (including this one) by default,
     //    and sum that with the number specified by report.depth:
     //
     //    0 bsg_kscrashsentry_reportUserException
@@ -928,35 +947,42 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     //    2 -[BSG_KSCrash
     //    reportUserException:reason:language:lineOfCode:stackTrace:terminateProgram:]
     //    3 -[BugsnagCrashSentry reportUserException:reason:]
-    //    4 -[BugsnagClient notify:message:block:]
+    //    4 -[BugsnagClient notifyInternal:block:]
+    //    5 -[BugsnagClient notify:message:block:]
 
     int depth = (int)(BSGNotifierStackFrameCount + event.depth);
 
     NSString *eventErrorClass = event.errors[0].errorClass ?: NSStringFromClass([NSException class]);
     NSString *eventMessage = event.errors[0].errorMessage ?: @"";
 
+    NSException *exc = nil;
+
+    if ([event.originalError isKindOfClass:[NSException class]]) {
+        exc = event.originalError;
+    }
+
     [self.crashSentry reportUserException:eventErrorClass
                                    reason:eventMessage
-                        originalException:exception
-                             handledState:[handledState toJson]
+                        originalException:exc
+                             handledState:[event.handledState toJson]
                                  appState:[self.state toDictionary]
                         callbackOverrides:event.overrides
                                  metadata:[event.metadata toDictionary]
                                    config:[self.configuration.config toDictionary]
                              discardDepth:depth];
-    
+
     // A basic set of event metadata
     NSMutableDictionary *metadata = [@{
-        BSGKeyErrorClass : eventErrorClass,
-        BSGKeyUnhandled : [[event handledState] unhandled] ? @YES : @NO,
-        BSGKeySeverity : BSGFormatSeverity(event.severity)
+            BSGKeyErrorClass : eventErrorClass,
+            BSGKeyUnhandled : [[event handledState] unhandled] ? @YES : @NO,
+            BSGKeySeverity : BSGFormatSeverity(event.severity)
     } mutableCopy];
-    
+
     // Only include the eventMessage if it contains something
     if (eventMessage && [eventMessage length] > 0) {
         [metadata setValue:eventMessage forKey:BSGKeyName];
     }
-    
+
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeError
                       withMessage:eventErrorClass
                       andMetadata:metadata];
@@ -994,8 +1020,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         } else if (metadata == self.state) {
             BSSerializeJSONDictionary([metadata toDictionary],
                                       &bsg_g_bugsnag_data.stateJSON);
-        } else {
-            bsg_log_debug(@"Unknown metadata dictionary changed");
         }
     }
 }
@@ -1090,21 +1114,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
             breadcrumb.type = breadcrumbType;
             breadcrumb.message = message;
         }];
-    }
-}
-
-- (void)updateCrashDetectionSettings {
-    if (self.configuration.autoDetectErrors) {
-        // Enable all crash detection
-        bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeAll);
-        if (self.configuration.enabledErrorTypes & BSGErrorTypesOOMs) {
-            [self.oomWatchdog enable];
-        }
-    } else {
-        // Only enable support for notify()-based reports
-        bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeUserReported);
-        // autoDetectErrors gates all unhandled report detection
-        [self.oomWatchdog disable];
     }
 }
 
@@ -1426,6 +1435,54 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                        withKey:(NSString *_Nonnull)key
 {
     [self.metadata clearMetadataFromSection:sectionName withKey:key];
+}
+
+// MARK: - methods used by React Native for collecting payload data
+
+- (NSDictionary *)collectAppWithState {
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:@{@"system": systemInfo}
+                                                               config:self.configuration
+                                                         codeBundleId:self.codeBundleId];
+    return [app toDict];
+}
+
+- (NSDictionary *)collectDeviceWithState {
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithDictionary:@{@"system": systemInfo}];
+    [device appendRuntimeInfo:self.extraRuntimeInfo];
+    return [device toDictionary];
+}
+
+- (NSArray *)collectBreadcrumbs {
+    NSMutableArray *crumbs = self.configuration.breadcrumbs.breadcrumbs;
+    NSMutableArray *data = [NSMutableArray new];
+
+    for (BugsnagBreadcrumb *crumb in crumbs) {
+        NSMutableDictionary *crumbData = [[crumb objectValue] mutableCopy];
+        // JSON is serialized as 'name', we want as 'message' when passing to RN
+        crumbData[@"message"] = crumbData[@"name"];
+        crumbData[@"name"] = nil;
+        crumbData[@"metadata"] = crumbData[@"metaData"];
+        crumbData[@"metaData"] = nil;
+        [data addObject: crumbData];
+    }
+    return data;
+}
+
+- (NSArray *)collectThreads {
+    return @[
+        // TODO implement
+    ];
+}
+
+- (void)addRuntimeVersionInfo:(NSString *)info
+                      withKey:(NSString *)key {
+    [self.sessionTracker addRuntimeVersionInfo:info
+                                       withKey:key];
+    if (info != nil && key != nil) {
+        self.extraRuntimeInfo[key] = info;
+    }
 }
 
 @end

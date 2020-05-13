@@ -57,7 +57,7 @@
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 1);
 
     // Call onbreadcrumb blocks
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
     [Bugsnag leaveBreadcrumbWithMessage:@"Hello"];
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
@@ -86,7 +86,7 @@
     [config removeOnBreadcrumbBlock:crumbBlock];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 0);
 
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
     [Bugsnag leaveBreadcrumbWithMessage:@"Hello"];
 
     // Wait a second NOT to be called
@@ -126,7 +126,7 @@
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 1);
 
     // Call onbreadcrumb blocks
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
     [Bugsnag leaveBreadcrumbWithMessage:@"Hello"];
     [self waitForExpectations:@[expectation1] timeout:1.0];
 
@@ -183,7 +183,7 @@
     }];
 
     // Call onbreadcrumb blocks
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 1);
     NSDictionary *crumb = [[[[[Bugsnag client] configuration] breadcrumbs] arrayValue] firstObject];
     XCTAssertEqualObjects(@"Foo", crumb[@"name"]);
@@ -201,7 +201,7 @@
     }];
 
     // Call onbreadcrumb blocks
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
     XCTAssertEqual([[config breadcrumbs].breadcrumbs count], 0);
     [Bugsnag leaveBreadcrumbWithMessage:@"Hello"];
     XCTAssertEqual([[config breadcrumbs].breadcrumbs count], 0);

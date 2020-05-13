@@ -23,7 +23,7 @@ void exceptionHandler(NSException *ex) {
     
     NSString *apiKey = @"<YOUR_APIKEY_HERE>";
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
     
 }
 
