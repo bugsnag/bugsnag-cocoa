@@ -11,6 +11,7 @@
 		00432CC4240912A100826D05 /* EnabledErrorTypesCxxScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 00432CC2240912A000826D05 /* EnabledErrorTypesCxxScenario.mm */; };
 		00507A64242BFE5600EF1B87 /* EnabledBreadcrumbTypesIsNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00507A63242BFE5600EF1B87 /* EnabledBreadcrumbTypesIsNilScenario.swift */; };
 		00CEB60D24080C690004793D /* EnabledErrorTypesScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEB60C24080C690004793D /* EnabledErrorTypesScenario.m */; };
+		001E5502243B8FDA0009E31D /* AutoCaptureRunScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 001E5501243B8FDA0009E31D /* AutoCaptureRunScenario.m */; };
 		8A14F0F52282D4AE00337B05 /* ReportBackgroundOOMsEnabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F02282D4AD00337B05 /* ReportBackgroundOOMsEnabledScenario.m */; };
 		8A14F0F62282D4AE00337B05 /* ReportOOMsDisabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F22282D4AD00337B05 /* ReportOOMsDisabledScenario.m */; };
 		8A14F0F72282D4AE00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A14F0F32282D4AE00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.m */; };
@@ -99,6 +100,8 @@
 		00A98315240DBB7A0016A57E /* out_of_memory.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = out_of_memory.feature; path = ../../../out_of_memory.feature; sourceTree = "<group>"; };
 		00CEB60B24080C690004793D /* EnabledErrorTypesScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EnabledErrorTypesScenario.h; sourceTree = "<group>"; };
 		00CEB60C24080C690004793D /* EnabledErrorTypesScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EnabledErrorTypesScenario.m; sourceTree = "<group>"; };
+		001E5500243B7D290009E31D /* AutoCaptureRunScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoCaptureRunScenario.h; sourceTree = "<group>"; };
+		001E5501243B8FDA0009E31D /* AutoCaptureRunScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoCaptureRunScenario.m; sourceTree = "<group>"; };
 		4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOSTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A14F0EF2282D4AD00337B05 /* ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReportOOMsDisabledReportBackgroundOOMsEnabledScenario.h; sourceTree = "<group>"; };
 		8A14F0F02282D4AD00337B05 /* ReportBackgroundOOMsEnabledScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReportBackgroundOOMsEnabledScenario.m; sourceTree = "<group>"; };
@@ -408,6 +411,8 @@
 				E77AFEF72449C6460082B8BB /* AttachCustomStacktraceHook.h */,
 				E7F6087B244F0A3A00F1532A /* BugsnagHooks.h */,
 				8AB65FCB22DC77CB001200AB /* LoadConfigFromFileScenario.swift */,
+				001E5501243B8FDA0009E31D /* AutoCaptureRunScenario.m */,
+				001E5500243B7D290009E31D /* AutoCaptureRunScenario.h */,
 			);
 			path = scenarios;
 			sourceTree = "<group>";
@@ -565,6 +570,7 @@
 				8A22FC66225B598500CA8895 /* OOMScenario.m in Sources */,
 				F42953498545B853CC0B635E /* NullPointerScenario.m in Sources */,
 				8A840FBA21AF5C450041DBFA /* SwiftAssertion.swift in Sources */,
+				001E5502243B8FDA0009E31D /* AutoCaptureRunScenario.m in Sources */,
 				F429538D8941382EC2C857CE /* AsyncSafeThreadScenario.m in Sources */,
 				F42955869D33EE0E510B9651 /* ReadGarbagePointerScenario.m in Sources */,
 				8AEFC73420F8D1BB00A78779 /* ManualSessionWithUserScenario.m in Sources */,
