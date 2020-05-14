@@ -42,7 +42,7 @@
 
     NSArray *observedKeys = [[app allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     NSArray *expectedKeys = @[@"bundleVersion", @"codeBundleId", @"dsymUUIDs", @"duration", @"durationInForeground",
-            @"id", @"inForeground", @"releaseStage", @"type", @"version"];
+            @"id", @"inForeground", @"name", @"releaseStage", @"type", @"version"];
     XCTAssertEqualObjects(observedKeys, expectedKeys);
 }
 

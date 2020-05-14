@@ -35,6 +35,13 @@
 @property(nonatomic) NSString *_Nullable id;
 
 /**
+ * For an app, this key is the executable. For a loadable bundle, it's the binary that's loaded dynamically by the
+ * bundle. For a framework, it's the shared library framework and must have the same name as the framework but
+ * without the .framework extension.
+ */
+@property(nonatomic) NSString *_Nullable name;
+
+/**
  * The release stage set in Configuration
  */
 @property(nonatomic) NSString *_Nullable releaseStage;
