@@ -358,7 +358,9 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
             _context = BSGParseContext(event);
             _device = [BugsnagDeviceWithState deviceWithDictionary:event];
-            _app = [BugsnagAppWithState appWithDictionary:event config:config codeBundleId:self.codeBundleId];
+            _app = [BugsnagAppWithState appWithDictionary:event
+                                                   config:config
+                                             codeBundleId:self.codeBundleId];
             _groupingHash = BSGParseGroupingHash(event);
             _overrides = [event valueForKeyPath:@"user.overrides"];
 
