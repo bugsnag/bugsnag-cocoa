@@ -66,7 +66,7 @@
 
 - (void)testDefaultSessionConfig {
     BugsnagConfiguration *config = [BugsnagConfiguration new];
-    XCTAssertTrue([config shouldAutoCaptureSessions]);
+    XCTAssertTrue([config autoTrackSessions]);
 }
 
 - (void)testDefaultReportOOMs {

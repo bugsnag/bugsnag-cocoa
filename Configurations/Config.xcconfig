@@ -41,6 +41,13 @@ LD_RUNPATH_SEARCH_PATHS[sdk=watchsimulator*]   = $(inherited) '@executable_path/
 LD_RUNPATH_SEARCH_PATHS[sdk=appletvos*]        = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks'
 LD_RUNPATH_SEARCH_PATHS[sdk=appletvsimulator*] = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks'
 
+// Platform-specific dependencies
+OTHER_LDFLAGS[sdk=macosx*]           = $(inherited) '-framework' 'Cocoa'
+OTHER_LDFLAGS[sdk=iphoneos*]         = $(inherited) '-framework' 'UIKit'
+OTHER_LDFLAGS[sdk=iphonesimulator*]  = $(inherited) '-framework' 'UIKit'
+OTHER_LDFLAGS[sdk=appletvos*]        = $(inherited) '-framework' 'UIKit'
+OTHER_LDFLAGS[sdk=appletvsimulator*] = $(inherited) '-framework' 'UIKit'
+
 // OSX-specific default settings
 FRAMEWORK_VERSION[sdk=macosx*]                = A
 COMBINE_HIDPI_IMAGES[sdk=macosx*]             = YES
@@ -65,3 +72,9 @@ ENABLE_BITCODE[sdk=iphonesimulator*]          = YES
 ENABLE_BITCODE[sdk=iphone*]                   = YES
 ENABLE_BITCODE[sdk=appletvsimulator*]         = YES
 ENABLE_BITCODE[sdk=appletv*]                  = YES
+
+
+// Unset this property to work around an issue where the build paths generated
+// by `xcodebuild -showBuildSettings` are wrong when building the macOS variant
+// of a universal framework. (FB7365403)
+EFFECTIVE_PLATFORM_NAME =

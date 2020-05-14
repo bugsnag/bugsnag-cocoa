@@ -51,14 +51,10 @@ When("I put the app in the background") do
   }
 end
 
-When("I corrupt all reports on disk") do
-  step("I wait for 4 seconds")
-  app_path = `xcrun simctl get_app_container maze-sim com.bugsnag.iOSTestApp`.chomp
-  app_path.gsub!(/(.*Containers).*/, '\1')
-  files = Dir.glob("#{app_path}/**/KSCrashReports/iOSTestApp/*.json")
-  files.each do |path|
-    File.open(path, 'w') {|file| file.truncate(0) }
-  end
+When("I bring the app to the foreground") do
+  steps %Q{
+    When I run the script "features/scripts/foreground_ios_app.sh" synchronously
+  }
 end
 
 Then("each event in the payload for request {int} matches one of:") do |request_index, table|

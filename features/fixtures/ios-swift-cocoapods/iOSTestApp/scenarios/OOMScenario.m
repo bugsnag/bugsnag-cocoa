@@ -5,7 +5,7 @@
 @implementation OOMScenario
 
 - (void)startBugsnag {
-    self.config.shouldAutoCaptureSessions = NO;
+    self.config.autoTrackSessions = NO;
     self.config.releaseStage = @"alpha";
     [self.config addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagCrashReport * _Nonnull report) {
         NSMutableDictionary *metadata = [report.metaData mutableCopy];

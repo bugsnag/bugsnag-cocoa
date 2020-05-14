@@ -26,6 +26,7 @@
 
 #import "BugsnagSink.h"
 #import "Bugsnag.h"
+#import "BugsnagLogger.h"
 #import "BugsnagCollections.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagKeys.h"
@@ -63,47 +64,18 @@
     
     for (NSString *fileKey in reports) {
         NSDictionary *report = reports[fileKey];
-        BugsnagCrashReport *bugsnagReport = [[BugsnagCrashReport alloc] initWithKSReport:report
-                                                                            fileMetadata:fileKey];
-        BOOL incompleteReport = ([bugsnagReport isIncomplete]
-                                 || ![@"standard" isEqualToString:[report valueForKeyPath:@"report.type"]]
-                                 || [[report objectForKey:@"incomplete"] boolValue]);
-        
-        if (incompleteReport) { // append app/device data as this is unlikely to change between sessions
-            NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
-            
-            // reset any existing data as it will be corrupted/nil
-            bugsnagReport.appState = @{};
-            bugsnagReport.deviceState = @{};
-
-
-            NSMutableDictionary *appDict = [NSMutableDictionary new];
-            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_BundleVersion], @"bundleVersion");
-            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_BundleID], @"id");
-            BSGDictInsertIfNotNil(appDict, configuration.releaseStage, @"releaseStage");
-            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_SystemName], @"type");
-            BSGDictInsertIfNotNil(appDict, sysInfo[@BSG_KSSystemField_BundleShortVersion], @"version");
-
-            NSMutableDictionary *deviceDict = [NSMutableDictionary new];
-            BSGDictInsertIfNotNil(deviceDict, sysInfo[@BSG_KSSystemField_Jailbroken], @"jailbroken");
-            BSGDictInsertIfNotNil(deviceDict, [[NSLocale currentLocale] localeIdentifier], @"locale");
-            BSGDictInsertIfNotNil(deviceDict, sysInfo[@"Apple"], @"manufacturer");
-            BSGDictInsertIfNotNil(deviceDict, sysInfo[@BSG_KSSystemField_Machine], @"model");
-            BSGDictInsertIfNotNil(deviceDict, sysInfo[@BSG_KSSystemField_Model], @"modelNumber");
-            BSGDictInsertIfNotNil(deviceDict, sysInfo[@BSG_KSSystemField_SystemName], @"osName");
-            BSGDictInsertIfNotNil(deviceDict, sysInfo[@BSG_KSSystemField_SystemVersion], @"osVersion");
-
-            bugsnagReport.app = appDict;
-            bugsnagReport.device = deviceDict;
-        }
-        
+        BugsnagCrashReport *bugsnagReport = [[BugsnagCrashReport alloc] initWithKSReport:report];
         if (![bugsnagReport shouldBeSent])
             continue;
         BOOL shouldSend = YES;
         for (BugsnagBeforeSendBlock block in configuration.beforeSendBlocks) {
-            shouldSend = block(report, bugsnagReport);
-            if (!shouldSend)
-                break;
+            @try {
+                shouldSend = block(report, bugsnagReport);
+                if (!shouldSend)
+                    break;
+            } @catch (NSException *exception) {
+                bsg_log_err(@"Error from beforeSend callback: %@", exception);
+            }
         }
         if (shouldSend) {
             [bugsnagReports addObject:bugsnagReport];

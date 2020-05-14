@@ -12,9 +12,9 @@
 
 - (void)startBugsnag {
     if ([self.eventMode isEqualToString:@"noevent"])
-        self.config.shouldAutoCaptureSessions = NO;
+        self.config.autoTrackSessions = NO;
     else
-        self.config.shouldAutoCaptureSessions = YES;
+        self.config.autoTrackSessions = YES;
     [super startBugsnag];
 }
 

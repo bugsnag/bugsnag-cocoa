@@ -3,6 +3,71 @@ Changelog
 
 ## TBD
 
+=======
+## 5.23.2 (2020-05-13)
+
+## Bug Fixes
+
+* Fixed an issue where an app could deadlock during a crash if unfavourable 
+  timing caused DYLD lock contention.
+  [#580](https://github.com/bugsnag/bugsnag-cocoa/pull/580)
+
+## 5.23.1 (2020-04-08)
+
+## Bug fixes
+
+* Fix possible report corruption when using `notify()` from multiple threads
+  when configured to skip capturing/reporting background thread contents
+  (generally only Unity games).
+  [#442](https://github.com/bugsnag/bugsnag-cocoa/pull/442)
+  
+* Added several additional event fields (`codeBundleId`, `osName`, `modelNumber`, 
+  `locale`) that were missing from the OOM reports.
+  [#444](https://github.com/bugsnag/bugsnag-cocoa/pull/444)
+  
+* Bugsnag now correctly records a new session if it is returning to the foreground 
+  after more than 60 seconds in the background.
+  [#529](https://github.com/bugsnag/bugsnag-cocoa/pull/529)
+
+## 5.23.0 (2019-12-10)
+
+This release removes support for reporting 'partial' or 'minimal' crash reports
+where the crash report could not be entirely written (due to disk space or other
+issues like the device battery dying). While sometimes the reports could point
+in the right direction for debugging, they could also be confusing or not enough
+information to pursue and close the issue successfully.
+
+This release  also renames a few configuration properties to align better with the
+intended use and other Bugsnag libraries, so people who use more than one
+platform can easily find related functionality in a different library. The old
+names are deprecated but still supported until the next major release.
+[#435](https://github.com/bugsnag/bugsnag-cocoa/pull/435)
+
+* `Bugsnag.setBreadcrumbCapacity()` is now `setMaxBreadcrumbs()` on the
+  `BugsnagConfiguration` class. In addition, the default number of breadcrumbs
+  saved has been raised to 25 and limited to no more than 100.
+* `BugsnagConfiguration.autoNotify` is now named
+  `BugsnagConfiguration.autoDetectErrors`
+* `BugsnagConfiguration.autoCaptureSessions` is now named
+  `BugsnagConfiguration.autoDetectSessions`
+
+## 5.22.10 (2019-11-04)
+
+### Bug fixes
+
+* Fix unrecognized selector crash when adding metadata
+  [#430](https://github.com/bugsnag/bugsnag-cocoa/pull/430)
+
+## 5.22.9 (2019-10-16)
+
+### Bug fixes
+
+* Fix a packaging issue when using Carthage, introduced in 5.22.7. **Note:**
+  There is a remaining known issue when updating/building the bugsnag-cocoa
+  dependency with Carthage, the project will build three times before completing
+  successfully. This issue will be resolved in a subsequent patch release.
+  [#423](https://github.com/bugsnag/bugsnag-cocoa/pull/423)
+
 * Deprecate `config.reportBackgroundOOMs` property - designating any app
   termination as a possible error condition can cause a lot of false positives,
   especially since the app can die for many genuine reasons, especially when
