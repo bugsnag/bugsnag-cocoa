@@ -25,6 +25,8 @@
 
 @interface BugsnagClient ()
 - (void)orientationChanged:(NSNotification *)notif;
+- (NSDictionary *)deserializeJson:(char *)json;
+- (NSArray<BugsnagThread *> *)generateThreads;
 @property (nonatomic, strong) BugsnagMetadata *metadata;
 @end
 
@@ -161,6 +163,16 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     [client addMetadata:[@{@"foo" : @"bar"} mutableCopy] toSection:@"section2"];
     NSObject *metadata2 = [client getMetadataFromSection:@"section2"];
     XCTAssertTrue([metadata2 isKindOfClass:[NSMutableDictionary class]]);
+}
+
+- (void)testDeserializeJson {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+
+    XCTAssertNil([client deserializeJson:NULL]);
+    XCTAssertNil([client deserializeJson:"5"]);
+    XCTAssertEqualObjects(@{}, [client deserializeJson:"{}"]);
+    XCTAssertEqualObjects(@{@"foo": @"bar"}, [client deserializeJson:"{\"foo\": \"bar\"}"]);
 }
 
 @end

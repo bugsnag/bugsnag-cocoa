@@ -101,11 +101,7 @@ void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
         int callstackCount = 100;
         uintptr_t callstack[callstackCount];
 
-        if (localContext->suspendThreadsForUserReported) {
-            pthread_mutex_lock(&bsg_suspend_threads_mutex);
-            BSG_KSLOG_DEBUG("Suspending all threads");
-            bsg_kscrashsentry_suspendThreads();
-        }
+        bsg_kscrashsentry_suspend_threads_user();
 
         if (stackAddresses != NULL && stackLength > 0) {
             localContext->stackTrace = stackAddresses;
@@ -147,10 +143,19 @@ void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
         } else {
             bsg_kscrashsentry_resumeThreads();
         }
-        if (localContext->suspendThreadsForUserReported) {
-            pthread_mutex_unlock(&bsg_suspend_threads_mutex);
-        }
+        pthread_mutex_unlock(&bsg_suspend_threads_mutex);
 
         bsg_kscrashsentry_freeReportContext(reportContext);
     }
+}
+
+void bsg_kscrashsentry_suspend_threads_user() {
+    pthread_mutex_lock(&bsg_suspend_threads_mutex);
+    BSG_KSLOG_DEBUG("Suspending all threads");
+    bsg_kscrashsentry_suspendThreads();
+}
+
+void bsg_kscrashsentry_resume_threads_user() {
+    bsg_kscrashsentry_resumeThreads();
+    pthread_mutex_unlock(&bsg_suspend_threads_mutex);
 }

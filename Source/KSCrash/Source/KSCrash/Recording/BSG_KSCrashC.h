@@ -182,6 +182,14 @@ void bsg_kscrash_setWriteBinaryImagesForUserReported(
  */
 BSG_KSCrash_Context *crashContext(void);
 
+/**
+ * Captures a thread trace for the current application state, if the user
+ * has configured this functionality.
+ *
+ * @return a trace of all the threads as a JSON string.
+ */
+char *bsg_kscrash_captureThreadTrace(void);
+
 #ifdef __cplusplus
 }
 #endif

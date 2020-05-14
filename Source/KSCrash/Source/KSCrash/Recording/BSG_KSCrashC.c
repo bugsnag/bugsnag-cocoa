@@ -223,3 +223,10 @@ void bsg_kscrash_setReportWhenDebuggerIsAttached(
 void bsg_kscrash_setThreadTracingEnabled(int threadTracingEnabled) {
     crashContext()->crash.threadTracingEnabled = threadTracingEnabled;
 }
+
+char *bsg_kscrash_captureThreadTrace() {
+    bsg_kscrashsentry_suspend_threads_user();
+    char *trace = bsg_kscrw_i_captureThreadTrace(crashContext());
+    bsg_kscrashsentry_resume_threads_user();
+    return trace;
+}

@@ -50,6 +50,7 @@
 #import "BugsnagMetadataInternal.h"
 #import "BugsnagStateEvent.h"
 #import "BugsnagCollections.h"
+#import "BSG_KSCrashReport.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -117,6 +118,10 @@ static bool hasRecordedSessions;
 + (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event;
 - (NSDictionary *)toDictionary;
 - (void)appendRuntimeInfo:(NSDictionary *)info;
+@end
+
+@interface BugsnagThread ()
+- (instancetype)initWithThread:(NSDictionary *)thread binaryImages:(NSArray *)binaryImages;
 @end
 
 /**
@@ -946,6 +951,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (void)notifyInternal:(BugsnagEvent *_Nonnull)event
                  block:(BugsnagOnErrorBlock)block
 {
+    [self populateEventData:event];
+    event.threads = [self generateThreads];
 
     //    We discard 6 stack frames (including this one) by default,
     //    and sum that with the number specified by report.depth:
@@ -1471,6 +1478,44 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     device.time = [NSDate date]; // default to current time for handled errors
     [device appendRuntimeInfo:self.extraRuntimeInfo];
     return device;
+}
+
+- (NSArray<BugsnagThread *> *)generateThreads {
+    char *trace = bsg_kscrash_captureThreadTrace();
+    NSDictionary *json = [self deserializeJson:trace];
+    NSMutableArray *threads = [NSMutableArray new];
+
+    if (json) {
+        NSArray *binaryImages = json[@"binary_images"];
+        NSArray *threadDicts = [json valueForKeyPath:@"crash.threads"];
+
+        for (NSDictionary *dict in threadDicts) {
+            [threads addObject:[[BugsnagThread alloc] initWithThread:dict binaryImages:binaryImages]];
+        }
+    }
+    return threads;
+}
+
+- (NSDictionary *)deserializeJson:(char *)json {
+    if (json != NULL) {
+        NSString *str = [NSString stringWithCString:json encoding:NSUTF8StringEncoding];
+
+        if (str != nil) {
+            NSData *data = [str dataUsingEncoding:NSUTF8StringEncoding] ;
+            if (data != nil) {
+                NSError *error;
+                NSDictionary *decode = [NSJSONSerialization JSONObjectWithData:data
+                                                                       options:0
+                                                                         error:&error];
+                if (error != nil) {
+                    bsg_log_err(@"Failed to deserialize JSON: %@", error);
+                } else {
+                    return decode;
+                }
+            }
+        }
+    }
+    return nil;
 }
 
 // MARK: - methods used by React Native for collecting payload data

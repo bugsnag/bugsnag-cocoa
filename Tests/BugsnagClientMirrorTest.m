@@ -106,7 +106,9 @@
             @"stateEventBlocks @16@0:8",
             @"generateDeviceWithState: @24@0:8@16",
             @"populateEventData: v24@0:8@16",
-            @"generateAppWithState: @24@0:8@16"
+            @"generateAppWithState: @24@0:8@16",
+            @"generateThreads @16@0:8",
+            @"deserializeJson: @24@0:8*16"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to
