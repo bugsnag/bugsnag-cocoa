@@ -429,7 +429,7 @@
 
     BugsnagEvent *report1 = [[BugsnagEvent alloc] initWithKSReport:dict];
     XCTAssertNotNil(report1.metadata);
-    XCTAssertEqual([[report1.metadata toDictionary] count], 1);
+    XCTAssertEqual([[report1.metadata toDictionary] count], 2);
     XCTAssertEqualObjects([report1.metadata getMetadataFromSection:@"app" withKey:@"name"], @"TestAppNAme");
     
     // OOM metadata is set from the session user data.
@@ -447,7 +447,7 @@
     BugsnagEvent *report2 = [[BugsnagEvent alloc] initWithKSReport:dict];
     
     XCTAssertNotNil(report2.metadata);
-    XCTAssertEqual([[report2.metadata toDictionary] count], 1);
+    XCTAssertEqual([[report2.metadata toDictionary] count], 2);
     XCTAssertEqualObjects([report2.metadata getMetadataFromSection:@"user" withKey:@"id"], @"OOMuser");
     XCTAssertEqualObjects([report2.metadata getMetadataFromSection:@"user" withKey:@"name"], @"OOMname");
     XCTAssertEqualObjects([report2.metadata getMetadataFromSection:@"user" withKey:@"email"], @"OOMemail");
