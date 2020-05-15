@@ -330,6 +330,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             _threads = @[]; // no threads captured for OOMs
             _errors = @[[[BugsnagError alloc] initWithEvent:event errorReportingThread:nil]];
             self.metadata = [BugsnagMetadata new];
+            // Cocoa-specific, non-spec., device and app data
+            [self.metadata addMetadata:BSGParseDeviceMetadata(event) toSection:@"device"];
             [self.metadata addMetadata:BSGParseAppMetadata(event) toSection:@"app"];
 
             NSDictionary *sessionData = [event valueForKeyPath:@"user.state.oom.session"];
