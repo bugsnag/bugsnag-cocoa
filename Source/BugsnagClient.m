@@ -611,11 +611,15 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         }
     }
     self.appDidCrashLastLaunch = handledCrashLastLaunch || [self.oomWatchdog didOOMLastLaunch];
+    
     // Ignore potential false positive OOM if previous session crashed and was
     // reported. There are two checks in place:
-    // 1. crashState->crashedLastLaunch: Accurate unless the crash callback crashes
-    // 2. crash sentinel file exists: This file is written in the event of a crash
-    //    and insures against the crash callback crashing
+    //
+    //     1. crashState->crashedLastLaunch: Accurate unless the crash callback crashes
+    //
+    //     2. crash sentinel file exists: This file is written in the event of a crash
+    //        and insures against the crash callback crashing
+    
     if (!handledCrashLastLaunch && [self.oomWatchdog didOOMLastLaunch]) {
         [self notifyOutOfMemoryEvent];
     }

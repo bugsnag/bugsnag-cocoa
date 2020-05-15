@@ -163,6 +163,12 @@
     XCTAssertEqualObjects(context, expected);
 }
 
+- (void)testEventMetadataApp {
+    NSDictionary *app = [[self.processedData valueForKeyPath:@"events.metaData.app"] firstObject];
+    NSDictionary *expected = @{@"name" : self.rawReportData[@"system"][@"CFBundleExecutable"]};
+    XCTAssertEqualObjects(app, expected);
+}
+
 - (void)testEventMetadataUser {
     NSDictionary *user =
     [self.processedData[@"events"] firstObject][@"user"];
@@ -299,10 +305,8 @@
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     NSDictionary *app = event[@"app"];
     XCTAssertNotNil(app);
-    XCTAssertEqual(10, app.count);
-    
+    XCTAssertEqual(9, app.count);
     XCTAssertEqualObjects(app[@"id"], @"net.hockeyapp.CrashProbeiOS");
-    XCTAssertEqualObjects(app[@"name"], @"CrashProbeiOS");
     XCTAssertNotNil(app[@"type"]);
     XCTAssertEqualObjects(app[@"version"], @"1.0");
     XCTAssertEqualObjects(app[@"bundleVersion"], @"1");

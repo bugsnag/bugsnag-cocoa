@@ -44,7 +44,6 @@
     app.codeBundleId = json[@"codeBundleId"];
     app.dsymUuid = json[@"dsymUuid"];
     app.id = json[@"id"];
-    app.name = json[@"name"];
     app.releaseStage = json[@"releaseStage"];
     app.type = json[@"type"];
     app.version = json[@"version"];
@@ -55,7 +54,6 @@
 {
     BugsnagAppWithState *app = [BugsnagAppWithState new];
     app.id = event[@"id"];
-    app.name = event[@"name"];
     app.releaseStage = event[@"releaseStage"];
     app.version = event[@"version"];
     app.bundleVersion = event[@"bundleVersion"];
