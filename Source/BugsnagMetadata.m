@@ -60,10 +60,8 @@
  * @return a sanitized dictionary
  */
 - (NSMutableDictionary *)sanitizeDictionary:(NSDictionary *)dictionary {
-    NSMutableDictionary *input;
-    if (dictionary != nil) {
-        input = [dictionary mutableCopy];
-    }
+    NSMutableDictionary *input = [dictionary mutableCopy];
+
     for (NSString *key in [input allKeys]) {
         id obj = input[key];
 
