@@ -61,7 +61,7 @@
  */
 - (NSMutableDictionary *)sanitizeDictionary:(NSDictionary *)dictionary {
     NSMutableDictionary *input;
-    if (dictionary != nil && [dictionary isKindOfClass:[NSDictionary class]]) {
+    if (dictionary != nil) {
         input = [dictionary mutableCopy];
     }
     for (NSString *key in [input allKeys]) {
@@ -70,20 +70,26 @@
         if (obj == [NSNull null]) {
             [input removeObjectForKey:key];
         } else if ([obj isKindOfClass:[NSDictionary class]]) {
-            input[key] = [self sanitizeDictionary:[obj mutableCopy]];
+            input[key] = [self sanitizeDictionary:obj];
         } else if ([obj isKindOfClass:[NSArray class]]) {
-            NSMutableArray *ary = [obj mutableCopy];
-            [ary removeObject:[NSNull null]];
-
-            for (NSUInteger k = 0; k < [ary count]; ++k) {
-                if ([ary[k] isKindOfClass:[NSDictionary class]]) {
-                    ary[k] = [self sanitizeDictionary:ary[k]];
-                }
-            }
-            input[key] = ary;
+            input[key] = [self sanitizeArray:obj];
         }
     }
     return input;
+}
+
+- (NSMutableArray *)sanitizeArray:(NSArray *)obj {
+    NSMutableArray *ary = [obj mutableCopy];
+    [ary removeObject:[NSNull null]];
+
+    for (NSUInteger k = 0; k < [ary count]; ++k) {
+        if ([ary[k] isKindOfClass:[NSDictionary class]]) {
+            ary[k] = [self sanitizeDictionary:ary[k]];
+        } else if ([ary[k] isKindOfClass:[NSArray class]]) {
+            ary[k] = [self sanitizeArray:ary[k]];
+        }
+    }
+    return ary;
 }
 
 - (NSDictionary *)toDictionary {
