@@ -17,6 +17,23 @@ class FakePlugin: NSObject, BugsnagPlugin {
     func unload() {}
 }
 
+// MetadataStore conformance - presence of required methods is a test in and of itself
+class myMetadata: NSObject, BugsnagMetadataStore, BugsnagClassLevelMetadataStore {
+    static func addMetadata(_ metadata: [AnyHashable : Any], section sectionName: String) {}
+    static func addMetadata(_ metadata: Any?, key: String, section sectionName: String) {}
+    static func getMetadata(section sectionName: String) -> NSMutableDictionary? { return NSMutableDictionary() }
+    static func getMetadata(section sectionName: String, key: String) -> Any? { return nil }
+    static func clearMetadata(section sectionName: String) {}
+    static func clearMetadata(section sectionName: String, key: String) {}
+    
+    func addMetadata(_ metadata: [AnyHashable : Any], section sectionName: String) {}
+    func addMetadata(_ metadata: Any?, key: String, section sectionName: String) {}
+    func getMetadata(section sectionName: String) -> NSMutableDictionary? { return NSMutableDictionary() }
+    func getMetadata(section sectionName: String, key: String) -> Any? { return nil }
+    func clearMetadata(section sectionName: String) {}
+    func clearMetadata(section sectionName: String, key: String) {}
+}
+
 class BugsnagSwiftPublicAPITests: XCTestCase {
 
     let apiKey = "01234567890123456789012345678901"
