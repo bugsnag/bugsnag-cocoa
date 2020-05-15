@@ -142,7 +142,7 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
  * By default, redactedKeys is set to ["password"]. Both string literals and regex
  * values can be supplied to this property.
  */
-@property(readwrite, retain, nullable) NSArray<id> *redactedKeys;
+@property(readwrite, retain, nullable) NSSet<id> *redactedKeys;
 
 /**
  *  A general summary of what was occuring in the application

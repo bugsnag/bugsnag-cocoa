@@ -663,7 +663,7 @@
 - (void)testDefaultRedactedKeys {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertEqual(1, [config.redactedKeys count]);
-    XCTAssertEqualObjects(@"password", config.redactedKeys[0]);
+    XCTAssertEqualObjects(@"password", [config.redactedKeys allObjects][0]);
 }
 
 - (void)testApiKeySetter {

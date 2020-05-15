@@ -290,7 +290,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
  */
 @property(readwrite, copy, nullable) NSString *releaseStage;
 
-@property NSArray *redactedKeys;
+@property NSSet<id> *redactedKeys;
 
 @property(nonatomic) NSString *codeBundleId;
 @end
