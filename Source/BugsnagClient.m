@@ -310,18 +310,17 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property(readwrite) NSUInteger depth;
 @property(readonly, nonnull) BugsnagHandledState *handledState;
 @property (nonatomic, strong) BugsnagMetadata *metadata;
-
-- (instancetype _Nonnull)initWithErrorName:(NSString *_Nonnull)name
-                              errorMessage:(NSString *_Nonnull)message
-                             configuration:(BugsnagConfiguration *_Nonnull)config
-                                  metadata:(BugsnagMetadata *_Nullable)metadata
-                              handledState:(BugsnagHandledState *_Nonnull)handledState
-                                   session:(BugsnagSession *_Nullable)session;
 - (void)setOverrideProperty:(NSString *)key value:(id)value;
 - (NSDictionary *)toJson;
-- (void)updateAppInternal:(BugsnagAppWithState *)app;
-- (void)updateDeviceInternal:(BugsnagDeviceWithState *)device;
-- (void)updateMetadataInternal:(BugsnagMetadata *)metadata;
+- (instancetype)initWithApp:(BugsnagAppWithState *)app
+                     device:(BugsnagDeviceWithState *)device
+               handledState:(BugsnagHandledState *)handledState
+                       user:(BugsnagUser *)user
+                   metadata:(BugsnagMetadata *)metadata
+                breadcrumbs:(NSArray<BugsnagBreadcrumb *> *)breadcrumbs
+                     errors:(NSArray<BugsnagError *> *)errors
+                    threads:(NSArray<BugsnagThread *> *)threads
+                    session:(BugsnagSession *)session;
 @end
 
 @interface BSGOutOfMemoryWatchdog ()
@@ -912,15 +911,23 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
   handledState:(BugsnagHandledState *_Nonnull)handledState
          block:(BugsnagOnErrorBlock)block
 {
-    NSString *exceptionName = exception.name ?: NSStringFromClass([exception class]);
-    NSString *message = exception.reason;
+    BugsnagError *error = [BugsnagError new];
+    error.errorClass = exception.name ?: NSStringFromClass([exception class]);
+    error.errorMessage = exception.reason;
+    error.type = BSGErrorTypeCocoa;
 
-    BugsnagEvent *event = [[BugsnagEvent alloc] initWithErrorName:exceptionName
-                                                     errorMessage:message
-                                                    configuration:self.configuration
-                                                         metadata:self.metadata
-                                                     handledState:handledState
-                                                          session:self.sessionTracker.runningSession];
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithApp:[self generateAppWithState:systemInfo]
+                                                     device:[self generateDeviceWithState:systemInfo]
+                                               handledState:handledState
+                                                       user:self.user
+                                                   metadata:[self.metadata deepCopy]
+                                                breadcrumbs:[NSArray arrayWithArray:self.configuration.breadcrumbs.breadcrumbs]
+                                                     errors:@[error]
+                                                    threads:@[]
+                                                    session:self.sessionTracker.runningSession];
+    event.apiKey = self.configuration.apiKey;
+    event.context = self.context;
     event.originalError = exception;
     [self notifyInternal:event block:block];
 }
@@ -934,7 +941,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (void)notifyInternal:(BugsnagEvent *_Nonnull)event
                  block:(BugsnagOnErrorBlock)block
 {
-    [self populateEventData:event];
 
     //    We discard 6 stack frames (including this one) by default,
     //    and sum that with the number specified by report.depth:
@@ -1448,20 +1454,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 // MARK: - event data population
-
-- (void)populateEventData:(BugsnagEvent *)event {
-    event.apiKey = self.configuration.apiKey;
-    event.context = self.context;
-
-    BugsnagUser *user = self.user;
-    [event setUser:user.id withEmail:user.email andName:user.name];
-
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
-    [event updateAppInternal:[self generateAppWithState:systemInfo]];
-    [event updateDeviceInternal:[self generateDeviceWithState:systemInfo]];
-    [event updateMetadataInternal:self.metadata];
-    event.breadcrumbs = [NSArray arrayWithArray:self.configuration.breadcrumbs.breadcrumbs];
-}
 
 - (BugsnagAppWithState *)generateAppWithState:(NSDictionary *)systemInfo {
     return [BugsnagAppWithState appWithDictionary:@{@"system": systemInfo}
