@@ -236,8 +236,7 @@
 		E7D2E673243B8FA8005A3041 /* BugsnagStacktrace.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D2E671243B8FA7005A3041 /* BugsnagStacktrace.h */; };
 		E7D2E674243B8FA8005A3041 /* BugsnagStacktrace.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D2E672243B8FA7005A3041 /* BugsnagStacktrace.m */; };
 		E7D2E676243B8FB6005A3041 /* BugsnagStacktraceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D2E675243B8FB6005A3041 /* BugsnagStacktraceTest.m */; };
-		E7F69CE2246EC4A600CEFED5 /* BugsnagMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FC61C6BC2C800846019 /* BugsnagMetadata.m */; };
-		E7F69CE1246EA89100CEFED5 /* BugsnagMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FC61C6BC2C800846019 /* BugsnagMetadata.m */; };
+		E7F69CE3246EC9B600CEFED5 /* BugsnagMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C8FC61C6BC2C800846019 /* BugsnagMetadata.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1161,8 +1160,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7F69CE2246EC4A600CEFED5 /* BugsnagMetadata.m in Sources */,
-				E7F69CE1246EA89100CEFED5 /* BugsnagMetadata.m in Sources */,
+				E7F69CE3246EC9B600CEFED5 /* BugsnagMetadata.m in Sources */,
 				E79E6BCD1F4E3850002B35F9 /* BSG_KSString.c in Sources */,
 				E790C47924349CE2006FFB26 /* BugsnagDevice.m in Sources */,
 				E79E6BCF1F4E3850002B35F9 /* BSG_KSSysCtl.c in Sources */,

@@ -45,14 +45,25 @@
     if (self = [super init]) {
         // Ensure that the instantiating dictionary is mutable.
         // Saves checks later.
-        self.dictionary = [self sanitizeDictionary:[dict mutableCopy]];
+        self.dictionary = [self sanitizeDictionary:dict];
         self.stateEventBlocks = [NSMutableArray new];
     }
     [self notifyObservers];
     return self;
 }
 
-- (NSMutableDictionary *)sanitizeDictionary:(NSMutableDictionary *)input {
+/**
+ * Sanitizes the given dictionary to prevent [NSNull null] values from being added
+ * to the metadata when deserializing a payload.
+ *
+ * @param dictionary the input dictionary
+ * @return a sanitized dictionary
+ */
+- (NSMutableDictionary *)sanitizeDictionary:(NSDictionary *)dictionary {
+    NSMutableDictionary *input;
+    if (dictionary != nil && [dictionary isKindOfClass:[NSDictionary class]]) {
+        input = [dictionary mutableCopy];
+    }
     for (NSString *key in [input allKeys]) {
         id obj = input[key];
 
@@ -63,6 +74,12 @@
         } else if ([obj isKindOfClass:[NSArray class]]) {
             NSMutableArray *ary = [obj mutableCopy];
             [ary removeObject:[NSNull null]];
+
+            for (NSUInteger k = 0; k < [ary count]; ++k) {
+                if ([ary[k] isKindOfClass:[NSDictionary class]]) {
+                    ary[k] = [self sanitizeDictionary:ary[k]];
+                }
+            }
             input[key] = ary;
         }
     }
