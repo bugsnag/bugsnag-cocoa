@@ -317,6 +317,8 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
                                   metadata:(BugsnagMetadata *_Nullable)metadata
                               handledState:(BugsnagHandledState *_Nonnull)handledState
                                    session:(BugsnagSession *_Nullable)session;
+- (void)setOverrideProperty:(NSString *)key value:(id)value;
+- (NSDictionary *)toJson;
 @end
 
 @interface BSGOutOfMemoryWatchdog ()
@@ -897,6 +899,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                              handledState:[handledState toJson]
                                  appState:appState
                         callbackOverrides:@{}
+                           eventOverrides:@{}
                                  metadata:@{}
                                    config:@{}
                              discardDepth:0];
@@ -961,12 +964,16 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         exc = event.originalError;
     }
 
+    // handled errors should persist any information edited by the user
+    // in a section within the KSCrash report so it can be read
+    // when the error is delivered
     [self.crashSentry reportUserException:eventErrorClass
                                    reason:eventMessage
                         originalException:exc
                              handledState:[event.handledState toJson]
                                  appState:[self.state toDictionary]
                         callbackOverrides:event.overrides
+                           eventOverrides:[event toJson]
                                  metadata:[event.metadata toDictionary]
                                    config:[self.configuration.config toDictionary]
                              discardDepth:depth];

@@ -51,6 +51,12 @@ When("I put the app in the background") do
   }
 end
 
+When("I bring the app to the foreground") do
+  steps %Q{
+    When I run the script "features/scripts/foreground_ios_app.sh" synchronously
+  }
+end
+
 Then("each event in the payload for request {int} matches one of:") do |request_index, table|
   # Checks string equality of event fields against values
   events = read_key_path(find_request(request_index)[:body], "events")
