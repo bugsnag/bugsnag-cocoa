@@ -52,7 +52,9 @@
                             @"test": @"test_val"
                     },
                     @"metaData": @{
-                            @"test": @"test_val"
+                            @"test": @{
+                                    @"foo": @"test_val"
+                            }
                     },
                     @"state": @{
                             @"test": @"test_val"
