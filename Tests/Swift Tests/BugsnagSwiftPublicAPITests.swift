@@ -153,4 +153,28 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         md.clearMetadata(section: "enterprise")
         md.clearMetadata(section: "enterprise", key: "key")
     }
+    
+    func testBugsnagEventClass() throws {
+        let event = BugsnagEvent()
+        
+        event.context = nil
+        event.context = "ctx"
+        event.errors = []
+        event.errors = [BugsnagError()]
+        event.groupingHash = nil
+        event.groupingHash = "1234"
+        event.breadcrumbs = []
+        event.breadcrumbs = [BugsnagBreadcrumb()]
+        event.apiKey = apiKey
+        _ = event.device
+        _ = event.app
+        _ = event.unhandled
+        event.threads = []
+        event.threads = [BugsnagThread()]
+        event.originalError = nil
+        event.originalError = 123
+        event.originalError = BugsnagError()
+        _ = event.user
+        event.setUser("user", withEmail: "email", andName: "name")
+    }
 }
