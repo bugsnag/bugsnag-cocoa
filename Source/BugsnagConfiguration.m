@@ -348,6 +348,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _notifyURL = [NSURL URLWithString:endpoints.notify];
     _sessionURL = [NSURL URLWithString:endpoints.sessions];
 
+    // This causes a crash under DEBUG but is ignored in production
     NSAssert([self isValidUrl:_notifyURL], @"Invalid URL supplied for notify endpoint");
 
     if (![self isValidUrl:_sessionURL]) {

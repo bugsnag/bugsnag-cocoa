@@ -12,6 +12,11 @@ import XCTest
  * Test all public APIs from Swift.  Purely existence tests, no attempt to verify correctness
  */
 
+class FakePlugin: NSObject, BugsnagPlugin {
+    func load(_ client: BugsnagClient!) {}
+    func unload() {}
+}
+
 class BugsnagSwiftPublicAPITests: XCTestCase {
 
     let apiKey = "01234567890123456789012345678901"
@@ -19,8 +24,11 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
                          reason: "myReason",
                          userInfo: nil)
     let err = NSError(domain: "dom", code: 123, userInfo: nil)
+    let sessionBlock: BugsnagOnSessionBlock = { (session) -> Bool in return false }
+    let onSendErrorBlock: BugsnagOnSendErrorBlock = { (event) -> Bool in return false }
+    let onBreadcrumbBlock: BugsnagOnBreadcrumbBlock = { (breadcrumb) -> Bool in return false }
     
-    func testBugsnag() throws {
+    func testBugsnagClass() throws {
         // TODO: prevent init()?
         let bs = Bugsnag()
         
@@ -49,17 +57,70 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         Bugsnag.setUser("me", withEmail: "memail@foo.com", andName: "you")
         let _ = Bugsnag.user()
         
-        let sessionBlock: BugsnagOnSessionBlock = { (session) -> Bool in return false }
         Bugsnag.addOnSession(block: sessionBlock)
         Bugsnag.removeOnSession(block: sessionBlock)
         
-        let onSendErrorBlock: BugsnagOnSendErrorBlock = { (event) -> Bool in return false }
         Bugsnag.addOnSendError(block: onSendErrorBlock)
         Bugsnag.removeOnSendError(block: onSendErrorBlock)
         
-        let onBreadcrumbBlock: BugsnagOnBreadcrumbBlock = { (breadcrumb) -> Bool in return false }
         Bugsnag.addOnBreadcrumb(block: onBreadcrumbBlock)
         Bugsnag.removeOnBreadcrumb(block: onBreadcrumbBlock)
     }
+    
+    func testBugsnagConfigurationClass() throws {
+        let _ = BugsnagConfiguration.loadConfig()
+        let config = BugsnagConfiguration(apiKey)
 
+        config.apiKey = apiKey
+        config.releaseStage = "stage1"
+        config.enabledReleaseStages = nil
+        config.enabledReleaseStages = ["one", "two", "three"]
+        config.redactedKeys = nil
+        config.redactedKeys = ["1", 2, 3]
+        config.redactedKeys = ["a", "a", "b"]
+        config.context = nil
+        config.context = "ctx"
+        config.appVersion = nil
+        config.appVersion = "vers"
+        config.session = URLSession();
+        config.sendThreads = .always
+
+        config.onCrashHandler = nil
+        config.onCrashHandler = { (writer) in }
+        let crashHandler: (@convention(c)(UnsafePointer<BSG_KSCrashReportWriter>) -> Void)? = { writer in }
+        config.onCrashHandler = crashHandler
+        
+        config.autoDetectErrors = true
+        config.autoTrackSessions = true
+        config.enabledBreadcrumbTypes = .all
+        config.bundleVersion = nil
+        config.bundleVersion = "bundle"
+        config.appType = nil
+        config.appType = "appType"
+        config.maxBreadcrumbs = 999
+        config.persistUser = true
+        
+        let errorTypes =  BugsnagErrorTypes()
+        errorTypes.cppExceptions = true
+        errorTypes.ooms = true
+        errorTypes.machExceptions = true
+        errorTypes.signals = true
+        errorTypes.unhandledExceptions = true
+        errorTypes.unhandledRejections = true
+        config.enabledErrorTypes = errorTypes
+        
+        config.endpoints = BugsnagEndpointConfiguration()
+        config.endpoints = BugsnagEndpointConfiguration(notify: "http://test.com", sessions: "http://test.com")
+        
+        config.setUser("user", withEmail: "email", andName: "name")
+        config.addOnSession(block: sessionBlock)
+        config.removeOnSession(block: sessionBlock)
+        config.addOnSendError(block:onSendErrorBlock)
+        config.removeOnSendError(block: onSendErrorBlock)
+        config.addOnBreadcrumb(block: onBreadcrumbBlock)
+        config.removeOnBreadcrumb(block: onBreadcrumbBlock)
+        
+        let plugin = FakePlugin()
+        config.add(plugin)
+    }
 }
