@@ -240,10 +240,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 @interface BugsnagEvent ()
 
 /**
- *  The type of the error, such as `mach` or `user`
- */
-@property(nonatomic, readwrite, copy, nullable) NSString *errorType;
-/**
  *  A unique hash identifying this device for the application or vendor
  */
 @property(nonatomic, readwrite, copy, nullable) NSString *deviceAppHash;
@@ -475,10 +471,12 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         [metadata addMetadata:userAtCrash toSection:@BSG_KSCrashField_OnCrashMetadataSectionName];
     }
     NSString *deviceAppHash = [event valueForKeyPath:@"system.device_app_hash"];
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithDictionary:event];
+    BugsnagUser *user = [self parseUser:[metadata toDictionary] deviceAppHash:deviceAppHash deviceId:device.id];
     BugsnagEvent *obj = [self initWithApp:[BugsnagAppWithState appWithDictionary:event config:config codeBundleId:self.codeBundleId]
-                                   device:[BugsnagDeviceWithState deviceWithDictionary:event]
+                                   device:device
                              handledState:handledState
-                                     user:[self parseUser:[metadata toDictionary] deviceAppHash:deviceAppHash]
+                                     user:user
                                  metadata:metadata
                               breadcrumbs:BSGParseBreadcrumbs(event)
                                    errors:errors
@@ -491,7 +489,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     obj.releaseStage = BSGParseReleaseStage(event);
     obj.deviceAppHash = deviceAppHash;
     obj.customException = BSGParseCustomException(event, [errors[0].errorClass copy], [errors[0].errorMessage copy]);
-    obj.errorType = errorType;
     obj.error = error;
     obj.depth = depth;
     return obj;
@@ -569,6 +566,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     obj.apiKey = bugsnagPayload[@"apiKey"];
     obj.context = bugsnagPayload[@"context"];
     obj.groupingHash = bugsnagPayload[@"groupingHash"];
+    obj.error = [obj getMetadataFromSection:BSGKeyError];
     return obj;
 }
 
@@ -687,13 +685,15 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
  * @param metadata the KSCrash report metadata
  * @return the user, or nil if not available
  */
-- (BugsnagUser *)parseUser:(NSDictionary *)metadata deviceAppHash:(NSString *)deviceAppHash {
+- (BugsnagUser *)parseUser:(NSDictionary *)metadata
+             deviceAppHash:(NSString *)deviceAppHash
+                  deviceId:(NSString *)deviceId {
     NSMutableDictionary *user = [metadata[BSGKeyUser] mutableCopy];
     if (user == nil) {
         user = [NSMutableDictionary dictionary];
     }
 
-    if (!user[BSGKeyId]) {
+    if (!user[BSGKeyId] && deviceId) { // if device id is null, don't set user id to default
         BSGDictSetSafeObject(user, deviceAppHash, BSGKeyId);
     }
     return [[BugsnagUser alloc] initWithDictionary:user];
