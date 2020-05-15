@@ -181,8 +181,6 @@ void bsg_kscrash_setCrashNotifyCallback(
 }
 
 void bsg_kscrash_reportUserException(const char *name, const char *reason,
-        uintptr_t *stackAddresses,
-        unsigned long stackLength,
         const char *severity,
         const char *handledState,
         const char *overrides,
@@ -190,15 +188,12 @@ void bsg_kscrash_reportUserException(const char *name, const char *reason,
         const char *metadata,
         const char *appState,
         const char *config,
-        int discardDepth,
         bool terminateProgram) {
     bsg_kscrashsentry_reportUserException(name, reason,
-            stackAddresses,
-            stackLength,
             severity,
             handledState, overrides,
             eventOverrides,
-            metadata, appState, config, discardDepth,
+            metadata, appState, config,
             terminateProgram);
 }
 
@@ -224,9 +219,19 @@ void bsg_kscrash_setThreadTracingEnabled(int threadTracingEnabled) {
     crashContext()->crash.threadTracingEnabled = threadTracingEnabled;
 }
 
-char *bsg_kscrash_captureThreadTrace() {
+char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t *callstack) {
     bsg_kscrashsentry_suspend_threads_user();
-    char *trace = bsg_kscrw_i_captureThreadTrace(crashContext());
+    BSG_KSCrash_Context *context = crashContext();
+
+    // populate context with pre-recorded stacktrace/thread info
+    // for KSCrash to serialize
+    context->crash.stackTrace = callstack;
+    context->crash.stackTraceLength = frameCount;
+    context->crash.userException.discardDepth = discardDepth;
+    context->crash.offendingThread = bsg_ksmachthread_self();
+    context->crash.crashType = BSG_KSCrashTypeUserReported;
+
+    char *trace = bsg_kscrw_i_captureThreadTrace(context);
     bsg_kscrashsentry_resume_threads_user();
     return trace;
 }

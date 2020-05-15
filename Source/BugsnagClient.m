@@ -51,6 +51,7 @@
 #import "BugsnagStateEvent.h"
 #import "BugsnagCollections.h"
 #import "BSG_KSCrashReport.h"
+#import "BSG_KSCrash.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -62,7 +63,7 @@ NSString *const BSTabCrash = @"crash";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
-static NSInteger const BSGNotifierStackFrameCount = 6;
+static NSInteger const BSGNotifierStackFrameCount = 3;
 
 struct bugsnag_data_t {
     // Contains the state of the event (handled/unhandled)
@@ -118,10 +119,6 @@ static bool hasRecordedSessions;
 + (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event;
 - (NSDictionary *)toDictionary;
 - (void)appendRuntimeInfo:(NSDictionary *)info;
-@end
-
-@interface BugsnagThread ()
-- (instancetype)initWithThread:(NSDictionary *)thread binaryImages:(NSArray *)binaryImages;
 @end
 
 /**
@@ -326,6 +323,10 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
                      errors:(NSArray<BugsnagError *> *)errors
                     threads:(NSArray<BugsnagThread *> *)threads
                     session:(BugsnagSession *)session;
+@end
+
+@interface BugsnagError ()
+- (instancetype)initWithEvent:(NSDictionary *)event errorReportingThread:(BugsnagThread *)thread;
 @end
 
 @interface BSGOutOfMemoryWatchdog ()
@@ -832,7 +833,13 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 // MARK: - Notify
 
 - (void)notifyError:(NSError *_Nonnull)error {
-    [self notifyError:error block:nil];
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError
+                                                                            severity:BSGSeverityWarning
+                                                                           attrValue:error.domain];
+    NSException *wrapper = [NSException exceptionWithName:NSStringFromClass([error class])
+                                                   reason:error.localizedDescription
+                                                 userInfo:error.userInfo];
+    [self notify:wrapper handledState:state block:nil];
 }
 
 - (void)notifyError:(NSError *)error
@@ -866,7 +873,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)notify:(NSException *_Nonnull)exception {
-    [self notify:exception block:nil];
+    BugsnagHandledState *state =
+            [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    [self notify:exception handledState:state block:nil];
 }
 
 - (void)notify:(NSException *)exception 
@@ -907,14 +916,12 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     NSDictionary *appState = @{@"oom": lastLaunchInfo, @"didOOM": @YES};
     [self.crashSentry reportUserException:BSGOutOfMemoryErrorClass
                                    reason:message
-                        originalException:nil
                              handledState:[handledState toJson]
                                  appState:appState
                         callbackOverrides:@{}
                            eventOverrides:@{}
                                  metadata:@{}
-                                   config:@{}
-                             discardDepth:0];
+                                   config:@{}];
 }
 
 - (void)notify:(NSException *)exception
@@ -939,6 +946,21 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     event.apiKey = self.configuration.apiKey;
     event.context = self.context;
     event.originalError = exception;
+
+    /**
+     * Stack frames starting from this one are removed by setting the depth.
+     * This helps remove bugsnag frames from showing in NSErrors as their
+     * trace is synthesized.
+     *
+     * 0. +[Bugsnag notifyError:block:]
+     * 1. -[BugsnagClient notifyError:block:]
+     * 2. -[BugsnagClient notifyError:block:]
+     * 3. -[BSG_KSCrash captureThreads:depth:]
+     */
+    int depth = (int)(BSGNotifierStackFrameCount + event.depth);
+    event.threads = [[BSG_KSCrash sharedInstance] captureThreads:event.originalError depth:depth];
+    event.errors = [self generateErrors:event];
+
     [self notifyInternal:event block:block];
 }
 
@@ -951,30 +973,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (void)notifyInternal:(BugsnagEvent *_Nonnull)event
                  block:(BugsnagOnErrorBlock)block
 {
-    [self populateEventData:event];
-    event.threads = [self generateThreads];
-
-    //    We discard 6 stack frames (including this one) by default,
-    //    and sum that with the number specified by report.depth:
-    //
-    //    0 bsg_kscrashsentry_reportUserException
-    //    1 bsg_kscrash_reportUserException
-    //    2 -[BSG_KSCrash
-    //    reportUserException:reason:language:lineOfCode:stackTrace:terminateProgram:]
-    //    3 -[BugsnagCrashSentry reportUserException:reason:]
-    //    4 -[BugsnagClient notifyInternal:block:]
-    //    5 -[BugsnagClient notify:message:block:]
-
-    int depth = (int)(BSGNotifierStackFrameCount + event.depth);
-
-    NSString *eventErrorClass = event.errors[0].errorClass ?: NSStringFromClass([NSException class]);
-    NSString *eventMessage = event.errors[0].errorMessage ?: @"";
-
-    NSException *exc = nil;
-
-    if ([event.originalError isKindOfClass:[NSException class]]) {
-        exc = event.originalError;
-    }
     if (block != nil && !block(event)) { // skip notifying if callback false
         return;
     }
@@ -988,34 +986,49 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     // handled errors should persist any information edited by the user
     // in a section within the KSCrash report so it can be read
     // when the error is delivered
-    [self.crashSentry reportUserException:eventErrorClass
-                                   reason:eventMessage
-                        originalException:exc
+    [self.crashSentry reportUserException:@""
+                                   reason:@""
                              handledState:[event.handledState toJson]
                                  appState:[self.state toDictionary]
                         callbackOverrides:event.overrides
                            eventOverrides:[event toJson]
                                  metadata:[event.metadata toDictionary]
-                                   config:[self.configuration.config toDictionary]
-                             discardDepth:depth];
+                                   config:[self.configuration.config toDictionary]];
 
     // A basic set of event metadata
     NSMutableDictionary *metadata = [@{
-            BSGKeyErrorClass : eventErrorClass,
+            BSGKeyErrorClass : event.errors[0].errorClass,
             BSGKeyUnhandled : [[event handledState] unhandled] ? @YES : @NO,
             BSGKeySeverity : BSGFormatSeverity(event.severity)
     } mutableCopy];
 
     // Only include the eventMessage if it contains something
+    NSString *eventMessage = event.errors[0].errorMessage;
     if (eventMessage && [eventMessage length] > 0) {
         [metadata setValue:eventMessage forKey:BSGKeyName];
     }
 
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeError
-                      withMessage:eventErrorClass
+                      withMessage:event.errors[0].errorClass
                       andMetadata:metadata];
 
     [self flushPendingReports];
+}
+
+- (NSArray<BugsnagError *> *)generateErrors:(BugsnagEvent *)event {
+    BugsnagThread *errorReportingThread;
+
+    for (BugsnagThread *thread in event.threads) {
+        if (thread.errorReportingThread) {
+            errorReportingThread = thread;
+            break;
+        }
+    }
+
+    BugsnagError *error = [[BugsnagError alloc] initWithEvent:@{} errorReportingThread:errorReportingThread];
+    error.errorClass = event.errors[0].errorClass ?: NSStringFromClass([NSException class]);
+    error.errorMessage = event.errors[0].errorMessage ?: @"";
+    return @[error];
 }
 
 // MARK: - Breadcrumbs
@@ -1478,44 +1491,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     device.time = [NSDate date]; // default to current time for handled errors
     [device appendRuntimeInfo:self.extraRuntimeInfo];
     return device;
-}
-
-- (NSArray<BugsnagThread *> *)generateThreads {
-    char *trace = bsg_kscrash_captureThreadTrace();
-    NSDictionary *json = [self deserializeJson:trace];
-    NSMutableArray *threads = [NSMutableArray new];
-
-    if (json) {
-        NSArray *binaryImages = json[@"binary_images"];
-        NSArray *threadDicts = [json valueForKeyPath:@"crash.threads"];
-
-        for (NSDictionary *dict in threadDicts) {
-            [threads addObject:[[BugsnagThread alloc] initWithThread:dict binaryImages:binaryImages]];
-        }
-    }
-    return threads;
-}
-
-- (NSDictionary *)deserializeJson:(char *)json {
-    if (json != NULL) {
-        NSString *str = [NSString stringWithCString:json encoding:NSUTF8StringEncoding];
-
-        if (str != nil) {
-            NSData *data = [str dataUsingEncoding:NSUTF8StringEncoding] ;
-            if (data != nil) {
-                NSError *error;
-                NSDictionary *decode = [NSJSONSerialization JSONObjectWithData:data
-                                                                       options:0
-                                                                         error:&error];
-                if (error != nil) {
-                    bsg_log_err(@"Failed to deserialize JSON: %@", error);
-                } else {
-                    return decode;
-                }
-            }
-        }
-    }
-    return nil;
 }
 
 // MARK: - methods used by React Native for collecting payload data

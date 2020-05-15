@@ -78,8 +78,6 @@ void bsg_kscrashsentry_freeReportContext(BSG_KSCrash_Context *context) {
 }
 
 void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
-        uintptr_t *stackAddresses,
-        unsigned long stackLength,
         const char *severity,
         const char *handledState,
         const char *overrides,
@@ -87,7 +85,6 @@ void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
         const char *metadata,
         const char *appState,
         const char *config,
-        int discardDepth,
         bool terminateProgram) {
     if (bsg_g_context == NULL) {
         BSG_KSLOG_WARN("User-reported exception sentry is not installed. "
@@ -96,30 +93,10 @@ void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
         BSG_KSCrash_Context *reportContext = bsg_kscrashsentry_generateReportContext();
         BSG_KSCrash_SentryContext *localContext = &reportContext->crash;
 
-        // We want these variables to persist until the onCrash
-        // call later
-        int callstackCount = 100;
-        uintptr_t callstack[callstackCount];
-
         bsg_kscrashsentry_suspend_threads_user();
 
-        if (stackAddresses != NULL && stackLength > 0) {
-            localContext->stackTrace = stackAddresses;
-            localContext->stackTraceLength = (int)stackLength;
-        } else {
-            BSG_KSLOG_DEBUG("Fetching call stack.");
-            callstackCount = backtrace((void **)callstack, callstackCount);
-            if (callstackCount <= 0) {
-                BSG_KSLOG_ERROR("backtrace() returned call stack length of %d",
-                                callstackCount);
-                callstackCount = 0;
-            }
-            BSG_KSLOG_DEBUG("Filling out stack context entries.");
-            localContext->stackTrace = callstack;
-            localContext->stackTraceLength = callstackCount;
-        }
-
         BSG_KSLOG_DEBUG("Filling out context.");
+        localContext->stackTraceLength = 0;
         localContext->crashType = BSG_KSCrashTypeUserReported;
         localContext->offendingThread = bsg_ksmachthread_self();
         localContext->registersAreValid = false;
@@ -128,7 +105,7 @@ void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
         localContext->userException.handledState = handledState;
         localContext->userException.overrides = overrides;
         localContext->userException.config = config;
-        localContext->userException.discardDepth = discardDepth;
+        localContext->userException.discardDepth = 0;
         localContext->userException.metadata = metadata;
         localContext->userException.state = appState;
         localContext->userException.eventOverrides = eventOverrides;
