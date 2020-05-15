@@ -308,4 +308,20 @@
     XCTAssertEqualObjects(@[@"foo"], [metadata getMetadataFromSection:@"foo" withKey:@"custom"]);
 }
 
+- (void)testSanitizeNestedArrayDict {
+    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:@{
+            @"foo": @{
+                    @"bar": @[
+                            @[
+                                    @{ @"custom": [NSNull null] }
+                            ]
+                    ]
+            }
+    }];
+    XCTAssertEqual(1, [metadata.dictionary count]);
+    NSArray *bar = [metadata getMetadataFromSection:@"foo" withKey:@"bar"];
+    NSDictionary *nestedDict = bar[0][0];
+    XCTAssertEqual(0, [nestedDict count]);
+}
+
 @end
