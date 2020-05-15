@@ -23,7 +23,7 @@ End to end tests are written in cucumber-style `.feature` files, and need Ruby-b
 
 For testing against a real device, maze-runner's CLI and the test fixtures are containerised so you'll need Docker (and Docker Compose) to run them.
 
-__Note: only Bugsnag employees can run the end-to-end tests.__ We have dedicated test infrastructure and private BrowserStack credentials which can't be shared outside of the organisation.
+__Note: only Bugsnag employees can run the end-to-end tests.__ We have dedicated test infrastructure and private BrowserStack credentials which can't be shared outside of the organization.
 
 #### Requirements
 
@@ -59,7 +59,7 @@ Ensure the following environment variables are set:
 - `DEVICE_TYPE` : The iOS version to run the tests against, one of: IOS_10, IOS_11, IOS_12, IOS_13
 
 If you wish to test a single feature, set the `TEST_FEATURE` environment variable to the name of the feature file.  For example"
-`export TEST_FEATURE=features/handled_error.feature`
+`export TEST_FEATURE=features/handled_errors.feature`
 
 There are several `make` commands that will run various parts of the testing process:
 
