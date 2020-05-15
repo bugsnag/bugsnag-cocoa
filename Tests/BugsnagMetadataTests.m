@@ -262,4 +262,50 @@
     XCTAssertTrue([metadata2 isKindOfClass:[NSMutableDictionary class]]);
 }
 
+- (void)testSanitizeSection {
+    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:@{
+            @"custom": [NSNull null],
+            @"foo": @{
+                    @"bar": @YES
+            }
+    }];
+    XCTAssertEqual(1, [metadata.dictionary count]);
+    XCTAssertTrue([metadata getMetadataFromSection:@"foo" withKey:@"bar"]);
+}
+
+- (void)testSanitizeSectionValue {
+    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:@{
+            @"foo": @{
+                    @"bar": @YES,
+                    @"custom": [NSNull null]
+            }
+    }];
+    XCTAssertEqual(1, [metadata.dictionary count]);
+    XCTAssertTrue([metadata getMetadataFromSection:@"foo" withKey:@"bar"]);
+}
+
+- (void)testSanitizeNestedDict {
+    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:@{
+            @"foo": @{
+                    @"bar": @YES,
+                    @"custom": @{
+                            @"some_val": [NSNull null]
+                    }
+            }
+    }];
+    XCTAssertEqual(1, [metadata.dictionary count]);
+    XCTAssertEqualObjects(@{}, [metadata getMetadataFromSection:@"foo" withKey:@"custom"]);
+}
+
+- (void)testSanitizeNestedArray {
+    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:@{
+            @"foo": @{
+                    @"bar": @YES,
+                    @"custom": @[[NSNull null], @"foo"]
+            }
+    }];
+    XCTAssertEqual(1, [metadata.dictionary count]);
+    XCTAssertEqualObjects(@[@"foo"], [metadata getMetadataFromSection:@"foo" withKey:@"custom"]);
+}
+
 @end

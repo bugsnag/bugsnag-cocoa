@@ -449,7 +449,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     _app = [BugsnagAppWithState appFromJson:bugsnagPayload[@"app"]];
     _device = [BugsnagDeviceWithState deviceFromJson:bugsnagPayload[@"device"]];
 
-
     if (bugsnagPayload[@"metaData"]) {
         _metadata = [[BugsnagMetadata alloc] initWithDictionary:bugsnagPayload[@"metaData"]];
     }

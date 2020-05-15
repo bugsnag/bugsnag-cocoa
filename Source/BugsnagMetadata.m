@@ -45,11 +45,28 @@
     if (self = [super init]) {
         // Ensure that the instantiating dictionary is mutable.
         // Saves checks later.
-        self.dictionary = [dict mutableCopy];
+        self.dictionary = [self sanitizeDictionary:[dict mutableCopy]];
         self.stateEventBlocks = [NSMutableArray new];
     }
     [self notifyObservers];
     return self;
+}
+
+- (NSMutableDictionary *)sanitizeDictionary:(NSMutableDictionary *)input {
+    for (NSString *key in [input allKeys]) {
+        id obj = input[key];
+
+        if (obj == [NSNull null]) {
+            [input removeObjectForKey:key];
+        } else if ([obj isKindOfClass:[NSDictionary class]]) {
+            input[key] = [self sanitizeDictionary:[obj mutableCopy]];
+        } else if ([obj isKindOfClass:[NSArray class]]) {
+            NSMutableArray *ary = [obj mutableCopy];
+            [ary removeObject:[NSNull null]];
+            input[key] = ary;
+        }
+    }
+    return input;
 }
 
 - (NSDictionary *)toDictionary {
