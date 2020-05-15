@@ -269,28 +269,28 @@
 - (void)testEnabledReleaseStagesEmptySends {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    config.enabledReleaseStages = @[];
+    config.enabledReleaseStages = [NSSet new];
     XCTAssertTrue([config shouldSendReports]);
 }
 
 - (void)testEnabledReleaseStagesIncludedSends {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    config.enabledReleaseStages = @[ @"beta" ];
+    config.enabledReleaseStages = [NSSet setWithArray:@[ @"beta" ]];
     XCTAssertTrue([config shouldSendReports]);
 }
 
 - (void)testEnabledReleaseStagesIncludedInManySends {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    config.enabledReleaseStages = @[ @"beta", @"production" ];
+    config.enabledReleaseStages = [NSSet setWithArray:@[ @"beta", @"production" ]];
     XCTAssertTrue([config shouldSendReports]);
 }
 
 - (void)testEnabledReleaseStagesExcludedSkipsSending {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    config.enabledReleaseStages = @[ @"production" ];
+    config.enabledReleaseStages = [NSSet setWithArray:@[ @"production" ]];
     XCTAssertFalse([config shouldSendReports]);
 }
 

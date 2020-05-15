@@ -51,9 +51,15 @@
 
 @implementation BugsnagEventTests
 
+- (void)testEnabledReleaseStageSetBehaviour {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    config.enabledReleaseStages = [NSSet setWithArray:@[ @"foo", @"foo", @"bar", @"foo" ]];
+    XCTAssertEqual(config.enabledReleaseStages.count, 2);
+}
+
 - (void)testEnabledReleaseStagesSendsFromConfig {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    config.enabledReleaseStages = @[ @"foo" ];
+    config.enabledReleaseStages = [NSSet setWithArray:@[ @"foo" ]];
     config.releaseStage = @"foo";
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
@@ -69,7 +75,7 @@
 
 - (void)testEnabledReleaseStagesSkipsSendFromConfig {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    config.enabledReleaseStages = @[ @"foo", @"bar" ];
+    config.enabledReleaseStages = [NSSet setWithArray:@[ @"foo", @"bar" ]];
     config.releaseStage = @"not foo or bar";
 
     BugsnagHandledState *state =

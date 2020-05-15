@@ -265,7 +265,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 /**
  *  The release stages used to notify at the time this report is captured
  */
-@property(readwrite, copy, nullable) NSArray *enabledReleaseStages;
+@property(readwrite, copy, nullable) NSSet<NSString *> *enabledReleaseStages;
 
 /**
  *  Property overrides

@@ -529,7 +529,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 @synthesize enabledReleaseStages = _enabledReleaseStages;
 
-- (NSArray *)enabledReleaseStages {
+- (NSSet<NSString *> *)enabledReleaseStages {
     @synchronized (self) {
         return _enabledReleaseStages;
     }
@@ -538,7 +538,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 - (void)setEnabledReleaseStages:(NSArray *)newReleaseStages;
 {
     @synchronized (self) {
-        NSArray *releaseStagesCopy = [newReleaseStages copy];
+        NSSet<NSString *> *releaseStagesCopy = [newReleaseStages copy];
         _enabledReleaseStages = releaseStagesCopy;
         [self.config addMetadata:releaseStagesCopy
                          withKey:BSGKeyEnabledReleaseStages

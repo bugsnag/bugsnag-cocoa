@@ -121,15 +121,17 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
  *  The API key of a Bugsnag project
  */
 @property(readwrite, retain, nonnull) NSString *apiKey;
+
 /**
  *  The release stage of the application, such as production, development, beta
  *  et cetera
  */
 @property(readwrite, retain, nullable) NSString *releaseStage;
+
 /**
  *  Release stages which are allowed to notify Bugsnag
  */
-@property(readwrite, retain, nullable) NSArray *enabledReleaseStages;
+@property(readwrite, retain, nullable) NSSet<NSString *> *enabledReleaseStages;
 
 /**
  * Sets which values should be removed from any Metadata objects before
