@@ -123,4 +123,17 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         let plugin = FakePlugin()
         config.add(plugin)
     }
+    
+    // Also test <BugsnagMetadataStore> behaviour
+    func testBugsnagMetadataClass() throws {
+        var md = BugsnagMetadata()
+        md = BugsnagMetadata(dictionary: ["foo" : "bar"])
+        
+        md.addMetadata(["key" : "secret"], section: "mental")
+        md.addMetadata("spock", key: "kirk", section: "enterprise")
+        md.getMetadata(section: "mental")
+        md.getMetadata(section: "mental", key: "key")
+        md.clearMetadata(section: "enterprise")
+        md.clearMetadata(section: "enterprise", key: "key")
+    }
 }
