@@ -46,9 +46,6 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
     let onBreadcrumbBlock: BugsnagOnBreadcrumbBlock = { (breadcrumb) -> Bool in return false }
     
     func testBugsnagClass() throws {
-        // TODO: prevent init()?
-        _ = Bugsnag()
-        
         Bugsnag.start(withApiKey: "")
         Bugsnag.start(withApiKey: apiKey);
         Bugsnag.start(with: BugsnagConfiguration(apiKey))

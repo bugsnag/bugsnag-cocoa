@@ -43,6 +43,11 @@
 
 @interface Bugsnag : NSObject <BugsnagClassLevelMetadataStore>
 
+/**
+ * All Bugsnag access is class-level.  Prevent the creation of instances.
+ */
+- (instancetype _Nonnull )init NS_UNAVAILABLE NS_SWIFT_UNAVAILABLE("Use class methods to initialise Bugsnag.");
+
 /** Start listening for crashes.
  *
  * This method initializes Bugsnag with the default configuration. Any uncaught
