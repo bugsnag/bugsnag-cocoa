@@ -47,7 +47,7 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
     
     func testBugsnagClass() throws {
         // TODO: prevent init()?
-        let bs = Bugsnag()
+        _ = Bugsnag()
         
         Bugsnag.start(withApiKey: "")
         Bugsnag.start(withApiKey: apiKey);
@@ -310,5 +310,62 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         e.type = .cocoa
         e.type = .c
         e.type = .reactNativeJs
+    }
+
+    func testBugsnagSessionClass() throws {
+        let session = BugsnagSession()
+        session.id = "id"
+        _ = session.id
+        session.startedAt = Date()
+        _ = session.startedAt
+        _ = session.app
+        _ = session.device
+        _ = session.user
+        session.setUser("user", withEmail: "email", andName: "name")
+    }
+
+    func testBugsnagStackframeClass() throws {
+        let sf = BugsnagStackframe()
+        sf.method = nil
+        sf.method = "method"
+        _ = sf.method
+        sf.machoFile = nil
+        sf.machoFile = "file"
+        _ = sf.machoFile
+        sf.machoUuid = nil
+        sf.machoUuid = "uuid"
+        _ = sf.machoUuid
+        sf.frameAddress = 123
+        _ = sf.frameAddress
+        sf.machoVmAddress = 123
+        _ = sf.machoVmAddress
+        sf.symbolAddress = 123
+        _ = sf.symbolAddress
+        sf.machoLoadAddress = 123
+        _ = sf.machoLoadAddress
+        sf.isPc = true
+        _ = sf.isPc
+        sf.isLr = true
+        _ = sf.isLr
+    }
+
+    func testBugsnagThreadClass() throws {
+        let thread = BugsnagThread()
+        thread.id = nil
+        thread.id = "id"
+        _ = thread.id
+        thread.name = nil
+        thread.name = "name"
+        _ = thread.name
+        thread.type = .cocoa
+        _ = thread.errorReportingThread
+        _ = thread.stacktrace
+    }
+
+    func testBugsnagUserClass() throws {
+        let user = BugsnagUser()
+        _ = user.id
+        _ = user.email
+        _ = user.name
     }
 }
