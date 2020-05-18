@@ -654,7 +654,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
     #if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     foregroundName = UIApplicationWillEnterForegroundNotification;
-    backgroundName = UIApplicationWillEnterForegroundNotification;
+    backgroundName = UIApplicationDidEnterBackgroundNotification;
     #elif TARGET_OS_MAC
     foregroundName = NSApplicationWillBecomeActiveNotification;
     backgroundName = NSApplicationDidFinishLaunchingNotification;
