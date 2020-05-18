@@ -209,4 +209,47 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         app.version = "bundle"
         _ = app.version
     }
+
+    func testBugsnagBreadcrumbClass() throws {
+        let breadcrumb = BugsnagBreadcrumb()
+        breadcrumb.type = .manual
+        breadcrumb.message = "message"
+        breadcrumb.metadata = [:]
+    }
+
+    func testBugsnagClientClass() throws {
+        var client = BugsnagClient()
+        let config = BugsnagConfiguration(apiKey)
+        client = BugsnagClient(configuration: config)
+        client.notify(ex)
+        client.notify(ex) { (event) -> Bool in return false }
+        client.notifyError(err)
+        client.notifyError(err) { (event) -> Bool in return false }
+     
+        client.leaveBreadcrumb(withMessage: "msg")
+        client.leaveBreadcrumb("msg", metadata: [:], type: .manual)
+        client.leaveBreadcrumb(forNotificationName: "name")
+        
+        client.startSession()
+        client.pauseSession()
+        client.resumeSession()
+        
+        client.context = nil
+        client.context = ""
+        _ = client.context
+        
+        let _ = client.appDidCrashLastLaunch()
+        
+        client.setUser("me", withEmail: "memail@foo.com", andName: "you")
+        let _ = client.user()
+        
+        client.addOnSession(block: sessionBlock)
+        client.removeOnSession(block: sessionBlock)
+        
+        client.addOnSendError(block: onSendErrorBlock)
+        client.removeOnSendError(block: onSendErrorBlock)
+        
+        client.addOnBreadcrumb(block: onBreadcrumbBlock)
+        client.removeOnBreadcrumb(block: onBreadcrumbBlock)
+    }
 }
