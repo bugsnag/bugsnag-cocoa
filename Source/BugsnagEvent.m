@@ -64,6 +64,7 @@ NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
 @end
 
 @interface BugsnagSession ()
++ (instancetype)fromJson:(NSDictionary *)json;
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
 @end
@@ -553,6 +554,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             }
         }
     }
+    BugsnagSession *session = [BugsnagSession fromJson:bugsnagPayload[@"session"]];
 
     BugsnagEvent *obj = [self initWithApp:[BugsnagAppWithState appFromJson:bugsnagPayload[@"app"]]
                                    device:[BugsnagDeviceWithState deviceFromJson:bugsnagPayload[@"device"]]
@@ -562,7 +564,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
                               breadcrumbs:[BugsnagBreadcrumb breadcrumbArrayFromJson:bugsnagPayload[@"breadcrumbs"]]
                                    errors:errors
                                   threads:threads
-                                  session:nil];
+                                  session:session];
     obj.apiKey = bugsnagPayload[@"apiKey"];
     obj.context = bugsnagPayload[@"context"];
     obj.groupingHash = bugsnagPayload[@"groupingHash"];

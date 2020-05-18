@@ -27,10 +27,16 @@
 @interface BugsnagEvent ()
 - (instancetype)initWithKSReport:(NSDictionary *)report;
 @property(readonly, nonnull) BugsnagHandledState *handledState;
+@property BugsnagSession *session;
 @end
 
 @interface BugsnagDeviceWithState ()
 @property (nonatomic, readonly) NSDateFormatter *formatter;
+@end
+
+@interface BugsnagSession ()
+@property NSUInteger unhandledCount;
+@property NSUInteger handledCount;
 @end
 
 @interface BugsnagEventPersistLoadTest : XCTestCase
@@ -329,6 +335,25 @@
     XCTAssertEqual(0x10b5756bf, frame.frameAddress);
     XCTAssertTrue(frame.isPc);
     XCTAssertTrue(frame.isLr);
+}
+
+- (void)testSessionOverride {
+    BugsnagEvent *event = [self generateEventWithOverrides:@{
+            @"session": @{
+                    @"startedAt": @"2020-05-18T13:13:24Z",
+                    @"id": @"123",
+                    @"events": @{
+                            @"unhandled": @1,
+                            @"handled": @2
+                    }
+            }
+    }];
+
+    NSDate *date = [[Bugsnag payloadDateFormatter] dateFromString:@"2020-05-18T13:13:24Z"];
+    XCTAssertEqualObjects(date, event.session.startedAt);
+    XCTAssertEqualObjects(@"123", event.session.id);
+    XCTAssertEqual(1, event.session.unhandledCount);
+    XCTAssertEqual(2, event.session.handledCount);
 }
 
 @end
