@@ -11,9 +11,9 @@
 @class BugsnagStackframe;
 
 typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
-    BSGErrorTypeCocoa,
-    BSGErrorTypeC,
-    BSGErrorTypeReactNativeJs
+    BSGErrorTypeCocoa = 1 << 0,
+    BSGErrorTypeC NS_SWIFT_NAME(c) = 1 << 1,
+    BSGErrorTypeReactNativeJs = 1 << 2
 };
 
 /**

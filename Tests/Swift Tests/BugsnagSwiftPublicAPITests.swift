@@ -252,4 +252,63 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         client.addOnBreadcrumb(block: onBreadcrumbBlock)
         client.removeOnBreadcrumb(block: onBreadcrumbBlock)
     }
+
+    func testBugsnagDeviceClass() throws {
+        let device = BugsnagDevice()
+        
+        device.jailbroken = false
+        _ = device.jailbroken
+        
+        device.id = nil
+        device.id = "id"
+        _ = device.id
+        
+        device.locale = nil
+        device.locale = "locale"
+        _ = device.locale
+        
+        device.manufacturer = nil
+        device.manufacturer = "man"
+        _ = device.manufacturer
+        device.model = nil
+        device.model = "model"
+        _ = device.model
+        device.modelNumber = nil
+        device.modelNumber = "model"
+        _ = device.modelNumber
+        device.osName = nil
+        device.osName = "name"
+        _ = device.osName
+        device.osVersion = nil
+        device.osVersion = "version"
+        _ = device.osVersion
+        device.runtimeVersions = nil
+        device.runtimeVersions = [:]
+        device.runtimeVersions = ["a" : "b"]
+        _ = device.runtimeVersions
+        device.totalMemory = nil
+        device.totalMemory = 1234
+        _ = device.totalMemory
+    }
+
+    func testBugsnagEndpointConfigurationlass() throws {
+        let epc = BugsnagEndpointConfiguration()
+        epc.notify = "notify"
+        epc.sessions = "sessions"
+    }
+
+    // Also error types
+    func testBugsnagErrorClass() throws {
+        let e = BugsnagError()
+        e.errorClass = nil
+        e.errorClass = "class"
+        _ = e.errorClass
+        e.errorMessage = nil
+        e.errorMessage = "msg"
+        _ = e.errorMessage
+        
+        e.type = .cocoa
+        e.type = .c
+        e.type = .reactNativeJs
+    }
 }
