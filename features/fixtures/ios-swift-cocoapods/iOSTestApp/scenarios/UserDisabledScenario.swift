@@ -16,7 +16,6 @@ internal class UserDisabledScenario: Scenario {
     }
 
     override func run() {
-        Bugsnag.setUser(nil, withEmail: nil, andName: nil)
         let error = NSError(domain: "UserDisabledScenario", code: 100, userInfo: nil)
         Bugsnag.notifyError(error)
     }

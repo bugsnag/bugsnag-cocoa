@@ -53,7 +53,7 @@
 
     NSArray *observedKeys = [[device allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     NSMutableArray *expectedKeys = [@[@"freeDisk", @"freeMemory", @"id", @"jailbroken", @"locale", @"manufacturer",
-            @"model", @"osName", @"osVersion", @"runtimeVersions", @"totalMemory"] mutableCopy];
+            @"model", @"osName", @"osVersion", @"runtimeVersions", @"time", @"totalMemory"] mutableCopy];
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     [expectedKeys addObject:@"modelNumber"];
