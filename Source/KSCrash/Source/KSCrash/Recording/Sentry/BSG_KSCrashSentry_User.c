@@ -93,7 +93,9 @@ void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
         BSG_KSCrash_Context *reportContext = bsg_kscrashsentry_generateReportContext();
         BSG_KSCrash_SentryContext *localContext = &reportContext->crash;
 
-        bsg_kscrashsentry_suspend_threads_user();
+        if (localContext->suspendThreadsForUserReported) {
+            bsg_kscrashsentry_suspend_threads_user();
+        }
 
         BSG_KSLOG_DEBUG("Filling out context.");
         localContext->stackTraceLength = 0;
@@ -113,15 +115,9 @@ void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
         BSG_KSLOG_DEBUG("Calling main crash handler.");
         localContext->onCrash(reportContext);
 
-        if (terminateProgram) {
-            bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAll);
-            bsg_kscrashsentry_resumeThreads();
-            abort();
-        } else {
-            bsg_kscrashsentry_resumeThreads();
+        if (localContext->suspendThreadsForUserReported) {
+            bsg_kscrashsentry_resume_threads_user(terminateProgram);
         }
-        pthread_mutex_unlock(&bsg_suspend_threads_mutex);
-
         bsg_kscrashsentry_freeReportContext(reportContext);
     }
 }
@@ -132,7 +128,13 @@ void bsg_kscrashsentry_suspend_threads_user() {
     bsg_kscrashsentry_suspendThreads();
 }
 
-void bsg_kscrashsentry_resume_threads_user() {
-    bsg_kscrashsentry_resumeThreads();
+void bsg_kscrashsentry_resume_threads_user(bool terminateProgram) {
+    if (terminateProgram) {
+        bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAll);
+        bsg_kscrashsentry_resumeThreads();
+        abort();
+    } else {
+        bsg_kscrashsentry_resumeThreads();
+    }
     pthread_mutex_unlock(&bsg_suspend_threads_mutex);
 }

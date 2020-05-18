@@ -75,7 +75,7 @@ void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
 
 void bsg_kscrashsentry_suspend_threads_user(void);
 
-void bsg_kscrashsentry_resume_threads_user(void);
+void bsg_kscrashsentry_resume_threads_user(bool terminateProgram);
 
 #ifdef __cplusplus
 }

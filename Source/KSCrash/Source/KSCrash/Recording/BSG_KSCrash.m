@@ -39,6 +39,7 @@
 //#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
 #import "BugsnagThread.h"
+#import "BSGSerialization.h"
 
 #if BSG_KSCRASH_HAS_UIKIT
 #import <UIKit/UIKit.h>
@@ -341,8 +342,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 
     char *trace = bsg_kscrash_captureThreadTrace(depth, numFrames, callstack);
     free(callstack);
-
-    NSDictionary *json = [self deserializeJson:trace];
+    NSDictionary *json = BSGDeserializeJson(trace);
 
     if (json) {
         return [BugsnagThread threadsFromArray:[json valueForKeyPath:@"crash.threads"]
@@ -351,28 +351,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
                                      errorType:nil];
     }
     return @[];
-}
-
-- (NSDictionary *)deserializeJson:(char *)json {
-    if (json != NULL) {
-        NSString *str = [NSString stringWithCString:json encoding:NSUTF8StringEncoding];
-
-        if (str != nil) {
-            NSData *data = [str dataUsingEncoding:NSUTF8StringEncoding] ;
-            if (data != nil) {
-                NSError *error;
-                NSDictionary *decode = [NSJSONSerialization JSONObjectWithData:data
-                                                                       options:0
-                                                                         error:&error];
-                if (error != nil) {
-                    bsg_log_err(@"Failed to deserialize JSON: %@", error);
-                } else {
-                    return decode;
-                }
-            }
-        }
-    }
-    return nil;
 }
 
 - (void)reportUserException:(NSString *)name

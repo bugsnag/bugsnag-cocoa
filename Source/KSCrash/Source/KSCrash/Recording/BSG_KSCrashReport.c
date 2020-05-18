@@ -1013,10 +1013,12 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
 /** Write information about all threads to the report.
  *
  * @param writer The writer.
- *
  * @param key The object key, if needed.
- *
  * @param crash The crash handler context.
+ * @param writeNotableAddresses whether notable addresses should be written
+ * so additional information about the error can be extracted
+ * @param recordAllThreads controls whether all threads are captured. If this parameter is false,
+ * the threads are still suspended but only the main thread's stacktrace is serialized.
  */
 void bsg_kscrw_i_writeAllThreads(const BSG_KSCrashReportWriter *const writer,
                                  const char *const key,
@@ -1618,30 +1620,32 @@ void bsg_kscrashreport_logCrash(const BSG_KSCrash_Context *const crashContext) {
     bsg_kscrw_i_logCrashThreadBacktrace(&crashContext->crash);
 }
 
-size_t thread_json_size = sizeof(char) * 32 * 1024;
-char *thread_json_data;
+static size_t bsg_g_thread_json_size = sizeof(char) * 32 * 1024;
+static char *bsg_g_thread_json_data;
 
 int bsg_kscrw_i_collectJsonData(const char *const data, const size_t length, void *const userData) {
-    size_t new_size = strlen(thread_json_data) + length;
-    char tmp[length];
-    memcpy(tmp, data, length);
-    tmp[length] = '\0';
+    size_t new_size = strlen(bsg_g_thread_json_data) + length;
+    char terminated_str[length + 1];
+    memcpy(terminated_str, data, length);
+    terminated_str[length] = '\0';
 
-    if (new_size > thread_json_size) {
-        thread_json_size *= 2;
-        thread_json_data = realloc(thread_json_data, thread_json_size);
+    if (new_size > bsg_g_thread_json_size) {
+        bsg_g_thread_json_size *= 2;
+        bsg_g_thread_json_data = realloc(bsg_g_thread_json_data, bsg_g_thread_json_size);
     }
-    strcat(thread_json_data, tmp);
+    strcat(bsg_g_thread_json_data, terminated_str);
     return BSG_KSJSON_OK;
 }
 
-char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext) {
-    if (thread_json_data == NULL) {
-        thread_json_data = malloc(thread_json_size);
+void bsg_kscrw_i_resetThreadTraceData() {
+    if (bsg_g_thread_json_data == NULL) {
+        bsg_g_thread_json_data = malloc(bsg_g_thread_json_size);
     }
-    memset(thread_json_data, 0, strlen(thread_json_data));
-    thread_json_data[0] = '\0';
+    memset(bsg_g_thread_json_data, 0, strlen(bsg_g_thread_json_data));
+}
 
+char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext) {
+    bsg_kscrw_i_resetThreadTraceData();
     BSG_KSJSONEncodeContext jsonContext;
     BSG_KSCrashReportWriter concreteWriter;
     BSG_KSCrashReportWriter *writer = &concreteWriter;
@@ -1651,24 +1655,24 @@ char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext) {
     bsg_kscrw_i_writeTraceInfo(crashContext, writer);
     writer->endContainer(writer);
     bsg_ksjsonendEncode(bsg_getJsonContext(writer));
-    return thread_json_data;
+    return bsg_g_thread_json_data;
 }
 
 void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext, const BSG_KSCrashReportWriter *writer) {
+    bool unhandledCrash = crashContext->crash.crashType != BSG_KSCrashTypeUserReported;
+
     // Don't write the binary images for user reported crashes to improve performance
-    if (crashContext->crash.writeBinaryImagesForUserReported == true ||
-            crashContext->crash.crashType != BSG_KSCrashTypeUserReported) {
+    if (crashContext->crash.writeBinaryImagesForUserReported == true || unhandledCrash) {
         bsg_kscrw_i_writeBinaryImages(writer, BSG_KSCrashField_BinaryImages);
     }
     writer->beginObject(writer, BSG_KSCrashField_Crash);
     {
-    // Conditionally write threads depending on user configuration
-    int sendPolicy = crashContext->crash.threadTracingEnabled;
-    bool unhandledCrash = crashContext->crash.crashType != BSG_KSCrashTypeUserReported;
-    bool recordAllThreads = sendPolicy == 0 || (unhandledCrash && sendPolicy == 1);
+        // Conditionally write threads depending on user configuration
+        int sendPolicy = crashContext->crash.threadTracingEnabled;
+        bool recordAllThreads = sendPolicy == 0 || (unhandledCrash && sendPolicy == 1);
 
-    bsg_kscrw_i_writeAllThreads(writer, BSG_KSCrashField_Threads, &crashContext->crash,
-            crashContext->config.introspectionRules.enabled, recordAllThreads);
+        bsg_kscrw_i_writeAllThreads(writer, BSG_KSCrashField_Threads, &crashContext->crash,
+                crashContext->config.introspectionRules.enabled, recordAllThreads);
         bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error,&crashContext->crash);
     }
     writer->endContainer(writer);

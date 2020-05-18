@@ -230,8 +230,9 @@ char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t
     context->crash.userException.discardDepth = discardDepth;
     context->crash.offendingThread = bsg_ksmachthread_self();
     context->crash.crashType = BSG_KSCrashTypeUserReported;
+    context->crash.suspendThreadsForUserReported = true;
 
     char *trace = bsg_kscrw_i_captureThreadTrace(context);
-    bsg_kscrashsentry_resume_threads_user();
+    bsg_kscrashsentry_resume_threads_user(false);
     return trace;
 }
