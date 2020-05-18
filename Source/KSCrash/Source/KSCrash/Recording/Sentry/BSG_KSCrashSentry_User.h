@@ -73,8 +73,16 @@ void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
         const char *config,
         bool terminateProgram);
 
+/**
+ * Suspends execution of all threads, which is required to collect an
+ * accurate error report. If threads are already frozen calling this has no effect.
+ */
 void bsg_kscrashsentry_suspend_threads_user(void);
 
+/**
+ * Resumes execution of all threads, which is required after collecting an
+ * error report. If threads are already resumed calling this has no effect.
+ */
 void bsg_kscrashsentry_resume_threads_user(bool terminateProgram);
 
 #ifdef __cplusplus

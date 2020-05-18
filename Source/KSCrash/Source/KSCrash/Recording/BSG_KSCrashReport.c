@@ -1624,12 +1624,11 @@ static size_t bsg_g_thread_json_size = sizeof(char) * 32 * 1024;
 static char *bsg_g_thread_json_data;
 
 int bsg_kscrw_i_collectJsonData(const char *const data, const size_t length, void *const userData) {
-    size_t new_size = strlen(bsg_g_thread_json_data) + length;
     char terminated_str[length + 1];
     memcpy(terminated_str, data, length);
     terminated_str[length] = '\0';
 
-    if (new_size > bsg_g_thread_json_size) {
+    if (strlen(bsg_g_thread_json_data) + strlen(terminated_str) > bsg_g_thread_json_size) {
         bsg_g_thread_json_size *= 2;
         bsg_g_thread_json_data = realloc(bsg_g_thread_json_data, bsg_g_thread_json_size);
     }

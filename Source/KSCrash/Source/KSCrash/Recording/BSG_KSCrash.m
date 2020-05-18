@@ -319,18 +319,20 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 - (NSArray<BugsnagThread *> *)captureThreads:(NSException *)exc depth:(int)depth {
     NSArray *addresses = [exc callStackReturnAddresses];
     int numFrames = (int) [addresses count];
-    uintptr_t *callstack = malloc(numFrames * sizeof(*callstack));
+    uintptr_t *callstack;
 
-    for (NSUInteger i = 0; i < numFrames; i++) {
-        callstack[i] = [addresses[i] unsignedLongValue];
-    }
     if (numFrames > 0) {
         depth = 0; // reset depth if the stack does not need to be generated
+        callstack = malloc(numFrames * sizeof(*callstack));
+
+        for (NSUInteger i = 0; i < numFrames; i++) {
+            callstack[i] = [addresses[i] unsignedLongValue];
+        }
     } else {
         // generate a backtrace. This is required for NSError for example,
         // which does not have a useful stacktrace generated.
         numFrames = 100;
-        callstack = realloc(callstack, numFrames * sizeof(*callstack));
+        callstack = malloc(numFrames * sizeof(*callstack));
 
         BSG_KSLOG_DEBUG("Fetching call stack.");
         numFrames = backtrace((void **)callstack, numFrames);

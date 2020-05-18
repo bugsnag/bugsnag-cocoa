@@ -82,6 +82,10 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
 
 @implementation BugsnagError
 
+- (instancetype)initWithErrorReportingThread:(BugsnagThread *)thread {
+    return [self initWithEvent:@{} errorReportingThread:thread];
+}
+
 - (instancetype)initWithEvent:(NSDictionary *)event errorReportingThread:(BugsnagThread *)thread {
     if (self = [super init]) {
         NSDictionary *error = [event valueForKeyPath:@"crash.error"];
