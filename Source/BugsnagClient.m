@@ -63,7 +63,7 @@ NSString *const BSTabCrash = @"crash";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
-static NSInteger const BSGNotifierStackFrameCount = 3;
+static NSInteger const BSGNotifierStackFrameCount = 4;
 
 struct bugsnag_data_t {
     // Contains the state of the event (handled/unhandled)
@@ -832,8 +832,19 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 // MARK: - Notify
 
+// note - some duplication between notifyError calls is required to ensure
+// the same number of stackframes are used for each call.
+// see notify:handledState:block for further info
+
 - (void)notifyError:(NSError *_Nonnull)error {
-    [self notifyError:error block:nil];
+    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError
+                                                                            severity:BSGSeverityWarning
+                                                                           attrValue:error.domain];
+    [self notify:[self createNSErrorWrapper:error]
+    handledState:state
+           block:^BOOL(BugsnagEvent *_Nonnull event) {
+               return [self appendNSErrorInfo:error block:nil event:event];
+           }];
 }
 
 - (void)notifyError:(NSError *)error
@@ -842,28 +853,37 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError
                                                                             severity:BSGSeverityWarning
                                                                            attrValue:error.domain];
-    NSException *wrapper = [NSException exceptionWithName:NSStringFromClass([error class])
-                                                   reason:error.localizedDescription
-                                                 userInfo:error.userInfo];
-    [self notify:wrapper
+    [self notify:[self createNSErrorWrapper:error]
     handledState:state
            block:^BOOL(BugsnagEvent *_Nonnull event) {
-                event.originalError = error;
-                [event addMetadata:@{
-                                        @"code" : @(error.code),
-                                        @"domain" : error.domain,
-                                        BSGKeyReason : error.localizedFailureReason ?: @""
-                                    }
-                         toSection:@"nserror"];
-               if (event.context == nil) { // set context as error domain
-                    event.context = [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code];
-               }
-
-               if (block) {
-                   return block(event);
-               }
-               return true;
+               return [self appendNSErrorInfo:error block:block event:event];
            }];
+}
+
+- (NSException *)createNSErrorWrapper:(NSError *)error {
+    return [NSException exceptionWithName:NSStringFromClass([error class])
+                                   reason:error.localizedDescription
+                                 userInfo:error.userInfo];
+}
+
+- (BOOL)appendNSErrorInfo:(NSError *)error
+                    block:(BugsnagOnErrorBlock)block
+                    event:(BugsnagEvent *)event {
+    event.originalError = error;
+    [event addMetadata:@{
+                            @"code" : @(error.code),
+                            @"domain" : error.domain,
+                            BSGKeyReason : error.localizedFailureReason ?: @""
+                        }
+             toSection:@"nserror"];
+    if (event.context == nil) { // set context as error domain
+         event.context = [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code];
+    }
+
+    if (block) {
+        return block(event);
+    }
+    return true;
 }
 
 - (void)notify:(NSException *_Nonnull)exception {
@@ -930,14 +950,17 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
      * This helps remove bugsnag frames from showing in NSErrors as their
      * trace is synthesized.
      *
-     * 0. +[Bugsnag notifyError:block:]
-     * 1. -[BugsnagClient notifyError:block:]
+     * For example, for [Bugsnag notifyError:block:], bugsnag adds the following
+     * frames which must be removed:
+     *
+     * 1. +[Bugsnag notifyError:block:]
      * 2. -[BugsnagClient notifyError:block:]
-     * 3. -[BSG_KSCrash captureThreads:depth:]
+     * 3. -[BugsnagClient notify:handledState:block:]
+     * 4. -[BSG_KSCrash captureThreads:depth:]
      */
     int depth = (int)(BSGNotifierStackFrameCount);
     NSArray *threads = [[BSG_KSCrash sharedInstance] captureThreads:exception depth:depth];
-    NSArray *errors = @[[self generateError:exception threads:threads]]; // TODO move to notifyinternal, or equivalent?
+    NSArray *errors = @[[self generateError:exception threads:threads]];
 
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithApp:[self generateAppWithState:systemInfo]
@@ -1518,9 +1541,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (NSArray *)collectThreads {
-    return @[
-        // TODO implement
-    ];
+    int depth = (int)(BSGNotifierStackFrameCount);
+    NSException *exc = [NSException exceptionWithName:@"Bugsnag" reason:@"" userInfo:nil];
+    return [[BSG_KSCrash sharedInstance] captureThreads:exc depth:depth];
 }
 
 - (void)addRuntimeVersionInfo:(NSString *)info
