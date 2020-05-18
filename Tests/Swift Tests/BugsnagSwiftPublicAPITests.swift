@@ -177,4 +177,36 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         _ = event.user
         event.setUser("user", withEmail: "email", andName: "name")
     }
+    
+    func testBugsnagAppClass() throws {
+        let app = BugsnagApp()
+        
+        app.bundleVersion = nil
+        app.bundleVersion = "bundle"
+        _ = app.bundleVersion
+        
+        app.codeBundleId = nil
+        app.codeBundleId = "bundle"
+        _ = app.codeBundleId
+        
+        app.dsymUuid = nil
+        app.dsymUuid = "bundle"
+        _ = app.dsymUuid
+        
+        app.id = nil
+        app.id = "bundle"
+        _ = app.id
+        
+        app.releaseStage = nil
+        app.releaseStage = "bundle"
+        _ = app.releaseStage
+        
+        app.type = nil
+        app.type = "bundle"
+        _ = app.type
+        
+        app.version = nil
+        app.version = "bundle"
+        _ = app.version
+    }
 }
