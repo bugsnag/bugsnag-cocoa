@@ -15,7 +15,7 @@ Scenario: User fields set as null
     Then the request is valid for the error reporting API
     And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the exception "message" equals "The operation couldn’t be completed. (UserDisabledScenario error 100.)"
-    And the event "user.id" is not null
+    And the event "user.id" is null
     And the event "user.email" is null
     And the event "user.name" is null
 
