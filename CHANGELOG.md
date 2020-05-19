@@ -85,6 +85,7 @@ Bugsnag Notifiers on other platforms.
 
 * Convert `event.app` from `NSDictionary` to a structured class
   [#520](https://github.com/bugsnag/bugsnag-cocoa/pull/520)
+  [#600](https://github.com/bugsnag/bugsnag-cocoa/pull/600)
 
 * Make `BugsnagClient` a public interface
 [#517](https://github.com/bugsnag/bugsnag-cocoa/pull/517)
