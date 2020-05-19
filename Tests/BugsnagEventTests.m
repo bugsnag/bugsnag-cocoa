@@ -588,6 +588,7 @@
     NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
     
     [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+        [event clearMetadataFromSection:@"user"];
         NSDictionary *invalidDict = @{};
         NSDictionary *validDict = @{@"myKey" : @"myValue"};
         [event addMetadata:invalidDict toSection:@"mySection"];
@@ -604,6 +605,7 @@
     NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
     
     [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+        [event clearMetadataFromSection:@"user"];
         [event addMetadata:[NSNull null] withKey:@"myKey" toSection:@"mySection"];
 
         // Invalid value for a non-existant section doesn't cause the section to be created
