@@ -619,6 +619,12 @@ void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext, const B
 
 bool bsg_kscrw_i_exceedsBufferLen(const size_t length);
 
+void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext, BSG_KSCrashReportWriter *writer);
+
+void bsg_kscrashreport_writeBugsnagPayload(const BSG_KSCrash_Context *crashContext, const BSG_KSCrashReportWriter *writer);
+
+void bsg_kscrashreport_writeOverrides(const BSG_KSCrash_Context *crashContext, const BSG_KSCrashReportWriter *writer);
+
 /** Write the contents of a memory location.
  * Also writes meta information about the data.
  *
@@ -1544,66 +1550,21 @@ void bsg_kscrashreport_writeStandardReport(
                           bsg_kscrw_i_addJSONData, &fd);
 
     writer->beginObject(writer, BSG_KSCrashField_Report);
-    { // TODO avoid collecting these fields for handled errors. they're not required at all.
-        bsg_kscrw_i_writeReportInfo(
-            writer, BSG_KSCrashField_Report, BSG_KSCrashReportType_Standard,
-            crashContext->config.crashID, crashContext->config.processName);
-
-        bsg_kscrw_i_writeProcessState(writer, BSG_KSCrashField_ProcessState);
-
-        if (crashContext->config.systemInfoJSON != NULL) {
-            bsg_kscrw_i_addJSONElement(writer, BSG_KSCrashField_System,
-                                       crashContext->config.systemInfoJSON);
-        }
-
-        writer->beginObject(writer, BSG_KSCrashField_SystemAtCrash);
-        {
-            bsg_kscrw_i_writeMemoryInfo(writer, BSG_KSCrashField_Memory);
-            bsg_kscrw_i_writeAppStats(writer, BSG_KSCrashField_AppStats,
-                                      &crashContext->state);
-        }
-        writer->endContainer(writer);
-
-        if (crashContext->config.userInfoJSON != NULL) {
-            bsg_kscrw_i_addJSONElement(writer, BSG_KSCrashField_User,
-                                       crashContext->config.userInfoJSON);
-        }
-        bsg_kscrw_i_writeTraceInfo(crashContext, writer);
+    {
+        bsg_kscrashreport_writeKSCrashFields(crashContext, writer);
 
         if (crashContext->config.onCrashNotify != NULL) {
-
             // NOTE: The blacklist for BSG_KSCrashField_UserAtCrash children in BugsnagEvent.m
             // should be updated when adding new fields here
 
             // Write handled exception report info
             writer->beginObject(writer, BSG_KSCrashField_UserAtCrash);
             if (crashContext->crash.crashType == BSG_KSCrashTypeUserReported) {
-                if (crashContext->crash.userException.overrides != NULL) {
-                   writer->addJSONElement(writer, BSG_KSCrashField_Overrides,
-                                          crashContext->crash.userException.overrides);
+                bsg_kscrashreport_writeBugsnagPayload(crashContext, writer);
+
+                if (crashContext->crash.recordKSCrashFields) {
+                    bsg_kscrashreport_writeOverrides(crashContext, writer);
                 }
-                if (crashContext->crash.userException.eventOverrides != NULL) {
-                    writer->addJSONElement(writer, BSG_KSCrashField_EventJson,
-                            crashContext->crash.userException.eventOverrides);
-                }
-                if (crashContext->crash.userException.handledState != NULL) {
-                    writer->addJSONElement(writer, BSG_KSCrashField_HandledState,
-                                           crashContext->crash.userException.handledState);
-                }
-                if (crashContext->crash.userException.metadata != NULL) {
-                    writer->addJSONElement(writer, BSG_KSCrashField_Metadata,
-                                           crashContext->crash.userException.metadata);
-                }
-                if (crashContext->crash.userException.state != NULL) {
-                    writer->addJSONElement(writer, BSG_KSCrashField_State,
-                                           crashContext->crash.userException.state);
-                }
-                if (crashContext->crash.userException.config != NULL) {
-                    writer->addJSONElement(writer, BSG_KSCrashField_Config,
-                                           crashContext->crash.userException.config);
-                }
-                writer->addIntegerElement(writer, BSG_KSCrashField_DiscardDepth,
-                                       crashContext->crash.userException.discardDepth);
             }
             { bsg_kscrw_i_callUserCrashHandler(crashContext, writer); }
             writer->endContainer(writer);
@@ -1614,6 +1575,70 @@ void bsg_kscrashreport_writeStandardReport(
     bsg_ksjsonendEncode(bsg_getJsonContext(writer));
 
     close(fd);
+}
+
+void bsg_kscrashreport_writeBugsnagPayload(const BSG_KSCrash_Context *crashContext,
+                                           const BSG_KSCrashReportWriter *writer) {
+    if (crashContext->crash.userException.eventOverrides != NULL) {
+        writer->addJSONElement(writer, BSG_KSCrashField_EventJson,
+                crashContext->crash.userException.eventOverrides);
+    }
+}
+
+void bsg_kscrashreport_writeOverrides(const BSG_KSCrash_Context *crashContext,
+                                      const BSG_KSCrashReportWriter *writer) {
+    if (crashContext->crash.userException.overrides != NULL) {
+        writer->addJSONElement(writer, BSG_KSCrashField_Overrides,
+                crashContext->crash.userException.overrides);
+    }
+    if (crashContext->crash.userException.handledState != NULL) {
+        writer->addJSONElement(writer, BSG_KSCrashField_HandledState,
+                crashContext->crash.userException.handledState);
+    }
+    if (crashContext->crash.userException.metadata != NULL) {
+        writer->addJSONElement(writer, BSG_KSCrashField_Metadata,
+                crashContext->crash.userException.metadata);
+    }
+    if (crashContext->crash.userException.state != NULL) {
+        writer->addJSONElement(writer, BSG_KSCrashField_State,
+                crashContext->crash.userException.state);
+    }
+    if (crashContext->crash.userException.config != NULL) {
+        writer->addJSONElement(writer, BSG_KSCrashField_Config,
+                crashContext->crash.userException.config);
+    }
+    writer->addIntegerElement(writer, BSG_KSCrashField_DiscardDepth,
+            crashContext->crash.userException.discardDepth);
+}
+
+void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext,
+                                          BSG_KSCrashReportWriter *writer) {
+    bsg_kscrw_i_writeReportInfo(
+            writer, BSG_KSCrashField_Report, BSG_KSCrashReportType_Standard,
+            crashContext->config.crashID, crashContext->config.processName);
+
+    if (crashContext->crash.recordKSCrashFields) {
+        bsg_kscrw_i_writeProcessState(writer, BSG_KSCrashField_ProcessState);
+
+        if (crashContext->config.systemInfoJSON != NULL) {
+            bsg_kscrw_i_addJSONElement(writer, BSG_KSCrashField_System,
+                    crashContext->config.systemInfoJSON);
+        }
+
+        writer->beginObject(writer, BSG_KSCrashField_SystemAtCrash);
+        {
+            bsg_kscrw_i_writeMemoryInfo(writer, BSG_KSCrashField_Memory);
+            bsg_kscrw_i_writeAppStats(writer, BSG_KSCrashField_AppStats,
+                    &crashContext->state);
+        }
+        writer->endContainer(writer);
+
+        if (crashContext->config.userInfoJSON != NULL) {
+            bsg_kscrw_i_addJSONElement(writer, BSG_KSCrashField_User,
+                    crashContext->config.userInfoJSON);
+        }
+        bsg_kscrw_i_writeTraceInfo(crashContext, writer);
+    }
 }
 
 void bsg_kscrashreport_logCrash(const BSG_KSCrash_Context *const crashContext) {

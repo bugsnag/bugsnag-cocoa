@@ -126,6 +126,7 @@ typedef enum {
  * @param config delivery options
  * @param terminateProgram If true, do not return from this function call.
  * Terminate the program instead.
+ * @param recordKSCrashFields whether KSCrash should record fields for the report or not
  */
 - (void)reportUserException:(NSString *)name
                      reason:(NSString *)reason
@@ -135,7 +136,8 @@ typedef enum {
              eventOverrides:(NSDictionary *)eventOverrides
                    metadata:(NSDictionary *)metadata
                      config:(NSDictionary *)config
-           terminateProgram:(BOOL)terminateProgram;
+           terminateProgram:(BOOL)terminateProgram
+        recordKSCrashFields:(BOOL)recordKSCrashFields;
 
 /**
  * Collects a trace of all the threads running in application, if the user has

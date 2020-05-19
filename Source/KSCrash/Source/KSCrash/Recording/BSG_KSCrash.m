@@ -363,7 +363,8 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
              eventOverrides:(NSDictionary *)eventOverrides
                    metadata:(NSDictionary *)metadata
                      config:(NSDictionary *)config
-           terminateProgram:(BOOL)terminateProgram {
+           terminateProgram:(BOOL)terminateProgram
+        recordKSCrashFields:(BOOL)recordKSCrashFields {
     const char *cName = [name cStringUsingEncoding:NSUTF8StringEncoding];
     const char *cReason = [reason cStringUsingEncoding:NSUTF8StringEncoding];
 
@@ -375,7 +376,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
             [self encodeAsJSONString:metadata],
             [self encodeAsJSONString:appState],
             [self encodeAsJSONString:config],
-            terminateProgram);
+            terminateProgram, recordKSCrashFields);
 }
 
 // ============================================================================

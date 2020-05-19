@@ -85,7 +85,8 @@ void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
         const char *metadata,
         const char *appState,
         const char *config,
-        bool terminateProgram) {
+        bool terminateProgram,
+        bool recordKSCrashFields) {
     if (bsg_g_context == NULL) {
         BSG_KSLOG_WARN("User-reported exception sentry is not installed. "
                        "Exception has not been recorded.");
@@ -111,6 +112,7 @@ void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
         localContext->userException.metadata = metadata;
         localContext->userException.state = appState;
         localContext->userException.eventOverrides = eventOverrides;
+        localContext->recordKSCrashFields = recordKSCrashFields;
 
         BSG_KSLOG_DEBUG("Calling main crash handler.");
         localContext->onCrash(reportContext);

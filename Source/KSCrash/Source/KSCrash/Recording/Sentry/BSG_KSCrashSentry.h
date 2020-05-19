@@ -65,6 +65,12 @@ typedef struct BSG_KSCrash_SentryContext {
      */
     int threadTracingEnabled;
 
+    /**
+     * Whether KSCrash should record report fields. Handled errors are
+     * serialized in the Bugsnag payload format.
+     */
+    bool recordKSCrashFields;
+
     /** If true, will record binary images. */
     bool writeBinaryImagesForUserReported;
 
