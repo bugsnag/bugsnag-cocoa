@@ -18,7 +18,7 @@ Scenario: Override errorClass and message from a notifyError() callback, customi
     And the event "device.time" is within 30 seconds of the current timestamp
     And the event "metaData.account.items.0" equals 400
     And the event "metaData.account.items.1" equals 200
-    And the stack trace is an array with 15 stack frames
+    And the stack trace is an array with 17 stack frames
 
 Scenario: Reporting an NSError
     When I run "HandledErrorScenario"

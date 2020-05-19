@@ -617,6 +617,8 @@ void bsg_kscrw_i_writeMemoryContents(
 
 void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext, const BSG_KSCrashReportWriter *writer);
 
+bool bsg_kscrw_i_exceedsBufferLen(const size_t length);
+
 /** Write the contents of a memory location.
  * Also writes meta information about the data.
  *
@@ -1620,20 +1622,25 @@ void bsg_kscrashreport_logCrash(const BSG_KSCrash_Context *const crashContext) {
     bsg_kscrw_i_logCrashThreadBacktrace(&crashContext->crash);
 }
 
-static size_t bsg_g_thread_json_size = sizeof(char) * 32 * 1024;
+static const size_t bsg_g_buffer_increment = sizeof(char) * 8 * 1024;
+static size_t bsg_g_thread_json_size = 128 * 1024;
 static char *bsg_g_thread_json_data;
 
 int bsg_kscrw_i_collectJsonData(const char *const data, const size_t length, void *const userData) {
-    char terminated_str[length + 1];
-    memcpy(terminated_str, data, length);
-    terminated_str[length] = '\0';
-
-    if (strlen(bsg_g_thread_json_data) + strlen(terminated_str) > bsg_g_thread_json_size) {
-        bsg_g_thread_json_size *= 2;
+    if (bsg_kscrw_i_exceedsBufferLen(length)) {
+        bsg_g_thread_json_size += bsg_g_buffer_increment;
         bsg_g_thread_json_data = realloc(bsg_g_thread_json_data, bsg_g_thread_json_size);
     }
-    strcat(bsg_g_thread_json_data, terminated_str);
-    return BSG_KSJSON_OK;
+    if (bsg_g_thread_json_data != NULL && !bsg_kscrw_i_exceedsBufferLen(length)) {
+        strncat(bsg_g_thread_json_data, data, length);
+        return BSG_KSJSON_OK;
+    } else { // failed to allocate enough memory
+        return BSG_KSJSON_ERROR_CANNOT_ADD_DATA;
+    }
+}
+
+bool bsg_kscrw_i_exceedsBufferLen(const size_t length) {
+    return strlen(bsg_g_thread_json_data) + length >= bsg_g_thread_json_size;
 }
 
 void bsg_kscrw_i_resetThreadTraceData() {
