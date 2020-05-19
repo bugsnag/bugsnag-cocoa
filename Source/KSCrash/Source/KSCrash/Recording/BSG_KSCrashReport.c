@@ -1684,7 +1684,7 @@ char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext) {
     BSG_KSCrashReportWriter concreteWriter;
     BSG_KSCrashReportWriter *writer = &concreteWriter;
     bsg_kscrw_i_prepareReportWriter(writer, &jsonContext);
-    bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), false, bsg_kscrw_i_collectJsonData, 0);
+    bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), true, bsg_kscrw_i_collectJsonData, 0);
     writer->beginObject(writer, BSG_KSCrashField_Report);
     bsg_kscrw_i_writeTraceInfo(crashContext, writer);
     writer->endContainer(writer);
