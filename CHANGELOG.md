@@ -256,9 +256,10 @@ Bugsnag Notifiers on other platforms.
   should be performed prior to calling `Bugsnag.start()`.
   
 * User information is now persisted between application runs by default.  When set a users' 
-  email, id and name are set on `BugsnagConfiguration` they are stored in the Keychain and
+  email, id and name are set on `BugsnagConfiguration` they are stored in the User Defaults and
   restored if an application is restarted.  The values are also copied to the configuration metadata.
   [#469](https://github.com/bugsnag/bugsnag-cocoa/pull/469)
+  [#590](https://github.com/bugsnag/bugsnag-cocoa/pull/590)
   
 * Added callback-free method to leave breadcrumbs: `[Bugsnag leaveBreadcrumbWithMessage:metadata:andType]`
   (Swift: `Bugsnag.leaveBreadcrumb(_, metadata:, type:)`)

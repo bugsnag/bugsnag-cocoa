@@ -794,7 +794,6 @@
 				E7433AD01F4F64D400C082D1 /* libc++.tbd in Frameworks */,
 				E7EC041A1F4CC97200C2E9D5 /* Foundation.framework in Frameworks */,
 				8A2C8F6C1C6BBE9500846019 /* SystemConfiguration.framework in Frameworks */,
-				004A41CE23FE91070092DF97 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -827,17 +826,6 @@
 				00D7ACAE23EABBC800FBE4A7 /* BugsnagSwiftTests.swift */,
 			);
 			path = "Swift Tests";
-			sourceTree = "<group>";
-		};
-		0061D84324067AF70041C068 /* SSKeychain */ = {
-			isa = PBXGroup;
-			children = (
-				0061D84424067AF70041C068 /* LICENSE */,
-				0061D84524067AF70041C068 /* BSG_SSKeychain.m */,
-				0061D84624067AF80041C068 /* BSG_SSKeychain.h */,
-			);
-			name = SSKeychain;
-			path = ../Source/SSKeychain;
 			sourceTree = "<group>";
 		};
 		8A2C8F0E1C6BBD2300846019 = {
@@ -914,7 +902,6 @@
 				E7529F87243C8DA2006B4932 /* RegisterErrorData.h */,
 				E7529F88243C8DA2006B4932 /* RegisterErrorData.m */,
 				8A2C8F1D1C6BBD2300846019 /* Info.plist */,
-				0061D84324067AF70041C068 /* SSKeychain */,
 				E7107BB31F4C97F100BB3F98 /* KSCrash */,
 				8A2C8F321C6BBD7200846019 /* module.modulemap */,
 			);
@@ -1357,7 +1344,6 @@
 				E7107C581F4C97F100BB3F98 /* BSG_KSCrashSentry_User.h in Headers */,
 				E7107C4B1F4C97F100BB3F98 /* BSG_KSCrashSentry.h in Headers */,
 				E7107C541F4C97F100BB3F98 /* BSG_KSCrashSentry_Private.h in Headers */,
-				0061D84B24067AF80041C068 /* BSG_SSKeychain.h in Headers */,
 				E737DEA21F73AD7400BC7C80 /* BugsnagHandledState.h in Headers */,
 				E7107C351F4C97F100BB3F98 /* BSG_KSCrashAdvanced.h in Headers */,
 				E7107C711F4C97F100BB3F98 /* BSG_KSObjC.h in Headers */,
@@ -1485,7 +1471,6 @@
 				000E6EA323D8AC8C009D8194 /* UPGRADING.md in Resources */,
 				E74D8E93243B3DF000F2A630 /* ORGANIZATION.md in Resources */,
 				000E6EA623D8AC8C009D8194 /* CHANGELOG.md in Resources */,
-				0061D84724067AF80041C068 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1502,7 +1487,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0061D84824067AF80041C068 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1580,7 +1564,6 @@
 				E7107C851F4C97F100BB3F98 /* BSG_RFC3339DateTool.m in Sources */,
 				F42953297D561ACAB878DEB8 /* BugsnagFileStore.m in Sources */,
 				E790C44F24349898006FFB26 /* BugsnagError.m in Sources */,
-				0061D84924067AF80041C068 /* BSG_SSKeychain.m in Sources */,
 				F4295B2AC95281CBA3A42DCA /* BugsnagSessionFileStore.m in Sources */,
 				F4295C52A30DC98515F2FF02 /* BugsnagSessionTrackingApiClient.m in Sources */,
 				F4295168CDC7A77A832C9475 /* BugsnagApiClient.m in Sources */,
@@ -1695,7 +1678,6 @@
 				E7397E421F83BC320034242A /* BSG_KSMach_x86_64.c in Sources */,
 				E7397E431F83BC320034242A /* BSG_KSObjC.c in Sources */,
 				E790C455243498BB006FFB26 /* BugsnagStackframe.m in Sources */,
-				0061D84A24067AF80041C068 /* BSG_SSKeychain.m in Sources */,
 				E7397E441F83BC320034242A /* BSG_KSSignalInfo.c in Sources */,
 				E7397E451F83BC320034242A /* BSG_KSString.c in Sources */,
 				E7397E461F83BC320034242A /* BSG_KSSysCtl.c in Sources */,
