@@ -10,7 +10,9 @@
 
 @implementation BugsnagStateEvent
 
-- (instancetype)initWithName:(NSString *)name data:(id)data {
+- (instancetype)initWithName:(NSString *)name
+                        data:(id)data
+{
     if (self = [super init]) {
         self.type = name;
         self.data = data;

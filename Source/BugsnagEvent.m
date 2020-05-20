@@ -34,6 +34,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 // MARK: - Accessing hidden methods/properties
 
 NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
+NSDictionary *_Nonnull BSGParseAppMetadata(NSDictionary *_Nonnull event);
 
 @interface BugsnagAppWithState ()
 + (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
@@ -385,11 +386,16 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             user = session.user;
         }
     }
+    BugsnagMetadata *metadata = [BugsnagMetadata new];
+    // Cocoa-specific, non-spec., device and app data
+    [metadata addMetadata:BSGParseDeviceMetadata(event) toSection:@"device"];
+    [metadata addMetadata:BSGParseAppMetadata(event) toSection:@"app"];
+
     BugsnagEvent *obj = [self initWithApp:[BugsnagAppWithState appWithOomData:[event valueForKeyPath:@"user.state.oom.app"]]
                                    device:[BugsnagDeviceWithState deviceWithOomData:[event valueForKeyPath:@"user.state.oom.device"]]
                              handledState:[BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory]
                                      user:user
-                                 metadata:[BugsnagMetadata new]
+                                 metadata:metadata
                               breadcrumbs:BSGParseBreadcrumbs(event)
                                    errors:@[[[BugsnagError alloc] initWithEvent:event errorReportingThread:nil]]
                                   threads:@[]
@@ -422,8 +428,9 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         metadata = [BugsnagMetadata new];
     }
 
-    NSDictionary *deviceMetadata = BSGParseDeviceMetadata(event);
-    [metadata addMetadata:deviceMetadata toSection:@"device"];
+    // Cocoa-specific, non-spec., device and app data
+    [metadata addMetadata:BSGParseDeviceMetadata(event) toSection:@"device"];
+    [metadata addMetadata:BSGParseAppMetadata(event) toSection:@"app"];
 
     NSDictionary *recordedState = [event valueForKeyPath:@"user.handledState"];
 
@@ -443,8 +450,9 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     NSArray *threadDict = [event valueForKeyPath:@"crash.threads"];
     NSMutableArray<BugsnagThread *> *threads = [BugsnagThread threadsFromArray:threadDict
                                                                   binaryImages:binaryImages
-                                                                         depth:self.depth
+                                                                         depth:depth
                                                                      errorType:errorType];
+
     BugsnagThread *errorReportingThread;
     for (BugsnagThread *thread in threads) {
         if (thread.errorReportingThread) {

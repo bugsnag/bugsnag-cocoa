@@ -15,9 +15,14 @@ static NSString *const kStateEventMetadata = @"MetadataUpdate";
 static NSString *const kStateEventUser = @"UserUpdate";
 
 @interface BugsnagStateEvent : NSObject
-- (instancetype)initWithName:(NSString *)name data:(id)data;
+
 @property NSString *type;
+
 @property id data;
+
+- (instancetype)initWithName:(NSString *)name
+                        data:(id)data;
+
 @end
 
 NS_ASSUME_NONNULL_END

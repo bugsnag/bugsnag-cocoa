@@ -412,12 +412,14 @@
     NSDictionary *dict = @{
         @"user.state.didOOM" : @YES,
         @"user.handledState": [state toJson],
-        @"user.metaData": [metadata toDictionary]
+        @"user.metaData": [metadata toDictionary],
+        @"system.CFBundleExecutable" : @"TestAppNAme"
     };
 
     BugsnagEvent *report1 = [[BugsnagEvent alloc] initWithKSReport:dict];
     XCTAssertNotNil(report1.metadata);
-    XCTAssertEqual([[report1.metadata toDictionary] count], 0);
+    XCTAssertEqual([[report1.metadata toDictionary] count], 2);
+    XCTAssertEqualObjects([report1.metadata getMetadataFromSection:@"app" withKey:@"name"], @"TestAppNAme");
 
     // OOM metadata is set from the session user data.
     [metadata addMetadata:@"OOMuser" withKey:@"id" toSection:@"user"];
@@ -434,6 +436,7 @@
     BugsnagEvent *report2 = [[BugsnagEvent alloc] initWithKSReport:dict];
     
     XCTAssertNotNil(report2.metadata);
+    [report2.metadata clearMetadataFromSection:@"device"];
     XCTAssertEqual([[report2.metadata toDictionary] count], 0);
     XCTAssertEqualObjects(@"OOMuser", report2.user.id);
     XCTAssertEqualObjects(@"OOMname", report2.user.name);
