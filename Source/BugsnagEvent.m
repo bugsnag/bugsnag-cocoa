@@ -529,7 +529,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     // deserialize exceptions
     NSArray *errorDicts = bugsnagPayload[BSGKeyExceptions];
-    NSMutableArray *errors = [NSMutableArray new];
+    NSMutableArray<BugsnagError *> *errors = [NSMutableArray new];
 
     if (errorDicts != nil) {
         for (NSDictionary *dict in errorDicts) {
@@ -569,6 +569,11 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     obj.context = bugsnagPayload[@"context"];
     obj.groupingHash = bugsnagPayload[@"groupingHash"];
     obj.error = [obj getMetadataFromSection:BSGKeyError];
+
+    if ([errors count] > 0) {
+        BugsnagError *err = errors[0];
+        obj.customException = BSGParseCustomException(event, err.errorClass, err.errorMessage);
+    }
     return obj;
 }
 

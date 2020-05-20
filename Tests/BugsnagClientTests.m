@@ -59,20 +59,20 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
  * correctly.
  */
 - (void)testAutomaticNotifyBreadcrumbData {
-    
+
     [self setUpBugsnagWillCallNotify:false];
 
     NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
-    
+
     __block NSString *eventErrorClass;
     __block NSString *eventErrorMessage;
     __block BOOL eventUnhandled;
     __block NSString *eventSeverity;
-    
+
     // Check that the event is passed the apiKey
     [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
-        
+
         // Grab the values that end up in the event for later comparison
         eventErrorClass = event.errors[0].errorClass;
         eventErrorMessage = event.errors[0].errorMessage;
@@ -80,13 +80,13 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
         eventSeverity = BSGFormatSeverity([event severity]);
         return true;
     }];
-    
+
     // Check that we can change it
     [Bugsnag notify:ex];
 
     NSDictionary *breadcrumb = [[[[Bugsnag client] configuration] breadcrumbs][1] objectValue];
     NSDictionary *metadata = [breadcrumb valueForKey:@"metaData"];
-    
+
     XCTAssertEqualObjects([breadcrumb valueForKey:@"type"], @"error");
     XCTAssertEqualObjects([breadcrumb valueForKey:@"name"], eventErrorClass);
     XCTAssertEqualObjects([metadata valueForKey:@"errorClass"], eventErrorClass);
@@ -100,23 +100,23 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
  */
 - (void) testClientConfigurationHaveSeparateMetadata {
     [self setUpBugsnagWillCallNotify:false];
-    
+
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [configuration addMetadata:@{@"exampleKey" : @"exampleValue"} toSection:@"exampleSection"];
-    
+
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
-    
+
     // We expect that the client metadata is the same as the configuration's to start with
     XCTAssertEqualObjects([client getMetadataFromSection:@"exampleSection" withKey:@"exampleKey"],
                           [configuration getMetadataFromSection:@"exampleSection" withKey:@"exampleKey"]);
     XCTAssertNil([client getMetadataFromSection:@"aSection" withKey:@"foo"]);
     [client addMetadata:@{@"foo" : @"bar"} withKey:@"aDict" toSection:@"aSection"];
     XCTAssertNotNil([client getMetadataFromSection:@"aSection" withKey:@"aDict"]);
-    
+
     // Updates to Configuration should not affect Client
     [configuration addMetadata:@{@"exampleKey2" : @"exampleValue2"} toSection:@"exampleSection2"];
     XCTAssertNil([client getMetadataFromSection:@"exampleSection2" withKey:@"exampleKey2"]);
-    
+
     // Updates to Client should not affect Configuration
     [client addMetadata:@{@"exampleKey3" : @"exampleValue3"} toSection:@"exampleSection3"];
     XCTAssertNil([configuration getMetadataFromSection:@"exampleSection3" withKey:@"exampleKey3"]);
@@ -131,7 +131,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
 
     [client setUser:@"Jiminy" withEmail:@"jiminy@bugsnag.com" andName:@"Jiminy Cricket"];
-    
+
     XCTAssertEqualObjects([client.metadata getMetadataFromSection:BSGKeyUser withKey:BSGKeyId], @"Jiminy");
     XCTAssertEqualObjects([client.metadata getMetadataFromSection:BSGKeyUser withKey:BSGKeyName], @"Jiminy Cricket");
     XCTAssertEqualObjects([client.metadata getMetadataFromSection:BSGKeyUser withKey:BSGKeyEmail], @"jiminy@bugsnag.com");
@@ -139,9 +139,9 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     XCTAssertEqualObjects([client user].id, @"Jiminy");
     XCTAssertEqualObjects([client user].name, @"Jiminy Cricket");
     XCTAssertEqualObjects([client user].email, @"jiminy@bugsnag.com");
-    
+
     [client setUser:nil withEmail:nil andName:@"Jiminy Cricket"];
-    
+
     XCTAssertNil([client user].id);
     XCTAssertEqualObjects([client user].name, @"Jiminy Cricket");
     XCTAssertNil([client user].email);
@@ -151,12 +151,12 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     [self setUpBugsnagWillCallNotify:false];
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
-    
+
     // Immutable in, mutable out
     [client addMetadata:@{@"foo" : @"bar"} toSection:@"section1"];
     NSObject *metadata1 = [client getMetadataFromSection:@"section1"];
     XCTAssertTrue([metadata1 isKindOfClass:[NSMutableDictionary class]]);
-    
+
     // Mutable in, mutable out
     [client addMetadata:[@{@"foo" : @"bar"} mutableCopy] toSection:@"section2"];
     NSObject *metadata2 = [client getMetadataFromSection:@"section2"];

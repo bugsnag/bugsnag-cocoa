@@ -615,6 +615,10 @@ void bsg_kscrw_i_writeMemoryContents(
     const BSG_KSCrashReportWriter *const writer, const char *const key,
     const uintptr_t address, int *limit);
 
+void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext, const BSG_KSCrashReportWriter *writer);
+
+bool bsg_kscrw_i_exceedsBufferLen(const size_t length);
+
 /** Write the contents of a memory location.
  * Also writes meta information about the data.
  *
@@ -1011,10 +1015,12 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
 /** Write information about all threads to the report.
  *
  * @param writer The writer.
- *
  * @param key The object key, if needed.
- *
  * @param crash The crash handler context.
+ * @param writeNotableAddresses whether notable addresses should be written
+ * so additional information about the error can be extracted
+ * @param recordAllThreads controls whether all threads are captured. If this parameter is false,
+ * the threads are still suspended but only the main thread's stacktrace is serialized.
  */
 void bsg_kscrw_i_writeAllThreads(const BSG_KSCrashReportWriter *const writer,
                                  const char *const key,
@@ -1543,14 +1549,6 @@ void bsg_kscrashreport_writeStandardReport(
             writer, BSG_KSCrashField_Report, BSG_KSCrashReportType_Standard,
             crashContext->config.crashID, crashContext->config.processName);
 
-        // Don't write the binary images for user reported crashes to improve
-        // performance
-        if (crashContext->crash.writeBinaryImagesForUserReported == true ||
-            crashContext->crash.crashType != BSG_KSCrashTypeUserReported) {
-            bsg_kscrw_i_writeBinaryImages(writer,
-                                          BSG_KSCrashField_BinaryImages);
-        }
-
         bsg_kscrw_i_writeProcessState(writer, BSG_KSCrashField_ProcessState);
 
         if (crashContext->config.systemInfoJSON != NULL) {
@@ -1570,19 +1568,7 @@ void bsg_kscrashreport_writeStandardReport(
             bsg_kscrw_i_addJSONElement(writer, BSG_KSCrashField_User,
                                        crashContext->config.userInfoJSON);
         }
-
-        writer->beginObject(writer, BSG_KSCrashField_Crash);
-        {
-            // Conditionally write threads depending on user configuration
-            int sendPolicy = crashContext->crash.threadTracingEnabled;
-            bool unhandledCrash = crashContext->crash.crashType != BSG_KSCrashTypeUserReported;
-            bool recordAllThreads = sendPolicy == 0 || (unhandledCrash && sendPolicy == 1);
-
-            bsg_kscrw_i_writeAllThreads(writer, BSG_KSCrashField_Threads, &crashContext->crash,
-                    crashContext->config.introspectionRules.enabled, recordAllThreads);
-            bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error,&crashContext->crash);
-        }
-        writer->endContainer(writer);
+        bsg_kscrw_i_writeTraceInfo(crashContext, writer);
 
         if (crashContext->config.onCrashNotify != NULL) {
 
@@ -1634,4 +1620,69 @@ void bsg_kscrashreport_logCrash(const BSG_KSCrash_Context *const crashContext) {
     const BSG_KSCrash_SentryContext *crash = &crashContext->crash;
     bsg_kscrw_i_logCrashType(crash);
     bsg_kscrw_i_logCrashThreadBacktrace(&crashContext->crash);
+}
+
+static const size_t bsg_g_buffer_increment = sizeof(char) * 8 * 1024;
+static size_t bsg_g_thread_json_size = 128 * 1024;
+static char *bsg_g_thread_json_data;
+
+int bsg_kscrw_i_collectJsonData(const char *const data, const size_t length, void *const userData) {
+    if (bsg_kscrw_i_exceedsBufferLen(length)) {
+        bsg_g_thread_json_size += bsg_g_buffer_increment;
+        void *ptr = realloc(bsg_g_thread_json_data, bsg_g_thread_json_size);
+
+        if (ptr != NULL) {
+            bsg_g_thread_json_data = ptr;
+        } else { // failed to allocate enough memory
+            free(bsg_g_thread_json_data);
+            return BSG_KSJSON_ERROR_CANNOT_ADD_DATA;
+        }
+    }
+    strncat(bsg_g_thread_json_data, data, length);
+    return BSG_KSJSON_OK;
+}
+
+bool bsg_kscrw_i_exceedsBufferLen(const size_t length) {
+    return strlen(bsg_g_thread_json_data) + length >= bsg_g_thread_json_size;
+}
+
+void bsg_kscrw_i_resetThreadTraceData() {
+    if (bsg_g_thread_json_data == NULL) {
+        bsg_g_thread_json_data = malloc(bsg_g_thread_json_size);
+    }
+    memset(bsg_g_thread_json_data, 0, strlen(bsg_g_thread_json_data));
+}
+
+char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext) {
+    bsg_kscrw_i_resetThreadTraceData();
+    BSG_KSJSONEncodeContext jsonContext;
+    BSG_KSCrashReportWriter concreteWriter;
+    BSG_KSCrashReportWriter *writer = &concreteWriter;
+    bsg_kscrw_i_prepareReportWriter(writer, &jsonContext);
+    bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), false, bsg_kscrw_i_collectJsonData, 0);
+    writer->beginObject(writer, BSG_KSCrashField_Report);
+    bsg_kscrw_i_writeTraceInfo(crashContext, writer);
+    writer->endContainer(writer);
+    bsg_ksjsonendEncode(bsg_getJsonContext(writer));
+    return bsg_g_thread_json_data;
+}
+
+void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext, const BSG_KSCrashReportWriter *writer) {
+    bool unhandledCrash = crashContext->crash.crashType != BSG_KSCrashTypeUserReported;
+
+    // Don't write the binary images for user reported crashes to improve performance
+    if (crashContext->crash.writeBinaryImagesForUserReported == true || unhandledCrash) {
+        bsg_kscrw_i_writeBinaryImages(writer, BSG_KSCrashField_BinaryImages);
+    }
+    writer->beginObject(writer, BSG_KSCrashField_Crash);
+    {
+        // Conditionally write threads depending on user configuration
+        int sendPolicy = crashContext->crash.threadTracingEnabled;
+        bool recordAllThreads = sendPolicy == 0 || (unhandledCrash && sendPolicy == 1);
+
+        bsg_kscrw_i_writeAllThreads(writer, BSG_KSCrashField_Threads, &crashContext->crash,
+                crashContext->config.introspectionRules.enabled, recordAllThreads);
+        bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error,&crashContext->crash);
+    }
+    writer->endContainer(writer);
 }
