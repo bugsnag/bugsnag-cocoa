@@ -1570,6 +1570,10 @@ void bsg_kscrashreport_writeStandardReport(
             // Write handled exception report info
             writer->beginObject(writer, BSG_KSCrashField_UserAtCrash);
             if (crashContext->crash.crashType == BSG_KSCrashTypeUserReported) {
+                if (crashContext->crash.userException.overrides != NULL) {
+                    writer->addJSONElement(writer, BSG_KSCrashField_Overrides,
+                            crashContext->crash.userException.overrides);
+                }
                 if (recordKSCrashFields) {
                     bsg_kscrashreport_writeOverrides(crashContext, writer);
                 } else {
@@ -1597,10 +1601,6 @@ void bsg_kscrashreport_writeBugsnagPayload(const BSG_KSCrash_Context *crashConte
 
 void bsg_kscrashreport_writeOverrides(const BSG_KSCrash_Context *crashContext,
                                       const BSG_KSCrashReportWriter *writer) {
-    if (crashContext->crash.userException.overrides != NULL) {
-        writer->addJSONElement(writer, BSG_KSCrashField_Overrides,
-                crashContext->crash.userException.overrides);
-    }
     if (crashContext->crash.userException.handledState != NULL) {
         writer->addJSONElement(writer, BSG_KSCrashField_HandledState,
                 crashContext->crash.userException.handledState);
