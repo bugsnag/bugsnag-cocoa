@@ -326,7 +326,10 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @end
 
 @interface BugsnagError ()
-- (instancetype)initWithErrorReportingThread:(BugsnagThread *)thread;
+- (instancetype)initWithErrorClass:(NSString *)errorClass
+                      errorMessage:(NSString *)errorMessage
+                         errorType:(BSGErrorType)errorType
+                        stacktrace:(NSArray<BugsnagStackframe *> *)stacktrace;
 @end
 
 @interface BSGOutOfMemoryWatchdog ()
@@ -1044,9 +1047,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         }
     }
 
-    BugsnagError *error = [[BugsnagError alloc] initWithErrorReportingThread:errorReportingThread];
-    error.errorClass = errorClass;
-    error.errorMessage = errorMessage ?: @"";
+    BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:errorClass
+                                                      errorMessage:errorMessage ?: @""
+                                                         errorType:BSGErrorTypeCocoa
+                                                        stacktrace:errorReportingThread.stacktrace];
     return error;
 }
 
