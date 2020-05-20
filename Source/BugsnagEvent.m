@@ -571,8 +571,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     obj.error = [obj getMetadataFromSection:BSGKeyError];
 
     if ([errors count] > 0) {
-        BugsnagError *bugsnagError = errors[0];
-        obj.customException = BSGParseCustomException(event, bugsnagError.errorClass, bugsnagError.errorMessage);
+        BugsnagError *err = errors[0];
+        obj.customException = BSGParseCustomException(event, err.errorClass, err.errorMessage);
     }
     return obj;
 }

@@ -1629,14 +1629,17 @@ static char *bsg_g_thread_json_data;
 int bsg_kscrw_i_collectJsonData(const char *const data, const size_t length, void *const userData) {
     if (bsg_kscrw_i_exceedsBufferLen(length)) {
         bsg_g_thread_json_size += bsg_g_buffer_increment;
-        bsg_g_thread_json_data = realloc(bsg_g_thread_json_data, bsg_g_thread_json_size);
+        void *ptr = realloc(bsg_g_thread_json_data, bsg_g_thread_json_size);
+
+        if (ptr != NULL) {
+            bsg_g_thread_json_data = ptr;
+        } else { // failed to allocate enough memory
+            free(bsg_g_thread_json_data);
+            return BSG_KSJSON_ERROR_CANNOT_ADD_DATA;
+        }
     }
-    if (bsg_g_thread_json_data != NULL && !bsg_kscrw_i_exceedsBufferLen(length)) {
-        strncat(bsg_g_thread_json_data, data, length);
-        return BSG_KSJSON_OK;
-    } else { // failed to allocate enough memory
-        return BSG_KSJSON_ERROR_CANNOT_ADD_DATA;
-    }
+    strncat(bsg_g_thread_json_data, data, length);
+    return BSG_KSJSON_OK;
 }
 
 bool bsg_kscrw_i_exceedsBufferLen(const size_t length) {
