@@ -188,14 +188,13 @@ void bsg_kscrash_reportUserException(const char *name, const char *reason,
         const char *metadata,
         const char *appState,
         const char *config,
-        bool terminateProgram,
-        bool recordKSCrashFields) {
+        bool terminateProgram) {
     bsg_kscrashsentry_reportUserException(name, reason,
             severity,
             handledState, overrides,
             eventOverrides,
             metadata, appState, config,
-            terminateProgram, recordKSCrashFields);
+            terminateProgram);
 }
 
 void bsg_kscrash_setSuspendThreadsForUserReported(

@@ -936,10 +936,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                              handledState:[handledState toJson]
                                  appState:appState
                         callbackOverrides:@{}
-                           eventOverrides:@{}
+                           eventOverrides:nil
                                  metadata:@{}
-                                   config:@{}
-            recordKSCrashFields:true];
+                                   config:@{}];
 }
 
 - (void)notify:(NSException *)exception
@@ -1012,8 +1011,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                         callbackOverrides:event.overrides
                            eventOverrides:[event toJson]
                                  metadata:[event.metadata toDictionary]
-                                   config:[self.configuration.config toDictionary]
-                      recordKSCrashFields:false];
+                                   config:[self.configuration.config toDictionary]];
 
     // A basic set of event metadata
     NSMutableDictionary *metadata = [@{

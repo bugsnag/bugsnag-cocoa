@@ -619,7 +619,7 @@ void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext, const B
 
 bool bsg_kscrw_i_exceedsBufferLen(const size_t length);
 
-void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext, BSG_KSCrashReportWriter *writer);
+void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext, BSG_KSCrashReportWriter *writer, bool recordKSCrashFields);
 
 void bsg_kscrashreport_writeBugsnagPayload(const BSG_KSCrash_Context *crashContext, const BSG_KSCrashReportWriter *writer);
 
@@ -1549,9 +1549,11 @@ void bsg_kscrashreport_writeStandardReport(
     bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), true,
                           bsg_kscrw_i_addJSONData, &fd);
 
+    bool recordKSCrashFields = crashContext->crash.userException.eventOverrides == NULL;
+
     writer->beginObject(writer, BSG_KSCrashField_Report);
     {
-        bsg_kscrashreport_writeKSCrashFields(crashContext, writer);
+        bsg_kscrashreport_writeKSCrashFields(crashContext, writer, recordKSCrashFields);
 
         if (crashContext->config.onCrashNotify != NULL) {
             // NOTE: The blacklist for BSG_KSCrashField_UserAtCrash children in BugsnagEvent.m
@@ -1562,7 +1564,7 @@ void bsg_kscrashreport_writeStandardReport(
             if (crashContext->crash.crashType == BSG_KSCrashTypeUserReported) {
                 bsg_kscrashreport_writeBugsnagPayload(crashContext, writer);
 
-                if (crashContext->crash.recordKSCrashFields) {
+                if (recordKSCrashFields) {
                     bsg_kscrashreport_writeOverrides(crashContext, writer);
                 }
             }
@@ -1612,12 +1614,13 @@ void bsg_kscrashreport_writeOverrides(const BSG_KSCrash_Context *crashContext,
 }
 
 void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext,
-                                          BSG_KSCrashReportWriter *writer) {
+                                          BSG_KSCrashReportWriter *writer, 
+                                          bool recordKSCrashFields) {
     bsg_kscrw_i_writeReportInfo(
             writer, BSG_KSCrashField_Report, BSG_KSCrashReportType_Standard,
             crashContext->config.crashID, crashContext->config.processName);
 
-    if (crashContext->crash.recordKSCrashFields) {
+    if (recordKSCrashFields) {
         bsg_kscrw_i_writeProcessState(writer, BSG_KSCrashField_ProcessState);
 
         if (crashContext->config.systemInfoJSON != NULL) {
@@ -1684,7 +1687,7 @@ char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext) {
     BSG_KSCrashReportWriter concreteWriter;
     BSG_KSCrashReportWriter *writer = &concreteWriter;
     bsg_kscrw_i_prepareReportWriter(writer, &jsonContext);
-    bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), true, bsg_kscrw_i_collectJsonData, 0);
+    bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), false, bsg_kscrw_i_collectJsonData, 0);
     writer->beginObject(writer, BSG_KSCrashField_Report);
     bsg_kscrw_i_writeTraceInfo(crashContext, writer);
     writer->endContainer(writer);

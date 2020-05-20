@@ -76,8 +76,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
           callbackOverrides:(NSDictionary *)overrides
              eventOverrides:(NSDictionary *)eventOverrides
                    metadata:(NSDictionary *)metadata
-                     config:(NSDictionary *)config
-        recordKSCrashFields:(BOOL)recordKSCrashFields {
+                     config:(NSDictionary *)config {
     [[BSG_KSCrash sharedInstance] reportUserException:reportName
                                                reason:reportMessage
                                          handledState:handledState
@@ -86,8 +85,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
                                        eventOverrides:eventOverrides
                                              metadata:metadata
                                                config:config
-                                     terminateProgram:NO
-                                  recordKSCrashFields:recordKSCrashFields];
+                                     terminateProgram:NO];
 }
 
 @end

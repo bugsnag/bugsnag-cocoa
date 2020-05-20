@@ -363,8 +363,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
              eventOverrides:(NSDictionary *)eventOverrides
                    metadata:(NSDictionary *)metadata
                      config:(NSDictionary *)config
-           terminateProgram:(BOOL)terminateProgram
-        recordKSCrashFields:(BOOL)recordKSCrashFields {
+           terminateProgram:(BOOL)terminateProgram {
     const char *cName = [name cStringUsingEncoding:NSUTF8StringEncoding];
     const char *cReason = [reason cStringUsingEncoding:NSUTF8StringEncoding];
 
@@ -376,7 +375,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
             [self encodeAsJSONString:metadata],
             [self encodeAsJSONString:appState],
             [self encodeAsJSONString:config],
-            terminateProgram, recordKSCrashFields);
+            terminateProgram);
 }
 
 // ============================================================================
@@ -476,6 +475,9 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 }
 
 - (const char *)encodeAsJSONString:(id)object {
+    if (object == nil) {
+        return NULL;
+    }
     NSError *error = nil;
     NSData *jsonData = [BSG_KSJSONCodec encode:object options:0 error:&error];
     if (jsonData == nil || error != nil) {

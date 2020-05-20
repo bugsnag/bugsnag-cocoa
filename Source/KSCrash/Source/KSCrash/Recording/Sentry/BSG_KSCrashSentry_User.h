@@ -71,8 +71,7 @@ void bsg_kscrashsentry_reportUserException(const char *name, const char *reason,
         const char *metadata,
         const char *appState,
         const char *config,
-        bool terminateProgram,
-        bool recordKSCrashFields);
+        bool terminateProgram);
 
 /**
  * Suspends execution of all threads, which is required to collect an

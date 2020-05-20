@@ -215,7 +215,6 @@ void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext *context) {
     context->suspendThreadsForUserReported = suspendThreadsForUserReported;
     context->writeBinaryImagesForUserReported =
         writeBinaryImagesForUserReported;
-    context->recordKSCrashFields = true;
 }
 
 void bsg_kscrashsentry_beginHandlingCrash(BSG_KSCrash_SentryContext *context) {

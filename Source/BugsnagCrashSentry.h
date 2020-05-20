@@ -25,7 +25,6 @@
           callbackOverrides:(NSDictionary *)overrides
              eventOverrides:(NSDictionary *)eventOverrides
                    metadata:(NSDictionary *)metadata
-                     config:(NSDictionary *)config
-        recordKSCrashFields:(BOOL)recordKSCrashFields;
+                     config:(NSDictionary *)config;
 
 @end
