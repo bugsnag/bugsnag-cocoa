@@ -21,12 +21,16 @@
 
 @interface BugsnagEvent ()
 - (instancetype)initWithKSReport:(NSDictionary *)report;
-- (instancetype _Nonnull)initWithErrorName:(NSString *_Nonnull)name
-                              errorMessage:(NSString *_Nonnull)message
-                             configuration:(BugsnagConfiguration *_Nonnull)config
-                                  metadata:(BugsnagMetadata *_Nullable)metadata
-                              handledState:(BugsnagHandledState *_Nonnull)handledState
-                                   session:(BugsnagSession *_Nullable)session;
+
+- (instancetype)initWithApp:(BugsnagAppWithState *)app
+                     device:(BugsnagDeviceWithState *)device
+               handledState:(BugsnagHandledState *)handledState
+                       user:(BugsnagUser *)user
+                   metadata:(BugsnagMetadata *)metadata
+                breadcrumbs:(NSArray<BugsnagBreadcrumb *> *)breadcrumbs
+                     errors:(NSArray<BugsnagError *> *)errors
+                    threads:(NSArray<BugsnagThread *> *)threads
+                    session:(BugsnagSession *)session;
 @end
 
 @interface BugsnagSink ()
@@ -320,16 +324,22 @@
 #pragma mark - handled/unhandled serialisation
 
 - (NSDictionary *)reportFromHandledState:(BugsnagHandledState *)state {
-    BugsnagEvent *report =
-    [[BugsnagEvent alloc] initWithErrorName:@"TestError"
-                                     errorMessage:@"Error for testing"
-                                    configuration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1]
-                                         metadata:nil
-                                     handledState:state
-                                          session:nil];
-    
+    BugsnagEvent *report = [self generateEvent:state];
     NSDictionary *data = [[BugsnagSink new] getBodyFromEvents:@[report]];
     return [data[@"events"] firstObject];
+}
+
+- (BugsnagEvent *)generateEvent:(BugsnagHandledState *)state {
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithApp:nil
+                                                      device:nil
+                                                handledState:state
+                                                        user:nil
+                                                    metadata:nil
+                                                 breadcrumbs:@[]
+                                                      errors:@[]
+                                                     threads:@[]
+                                                     session:nil];
+    return report;
 }
 
 - (void)testHandledSerialization {
@@ -403,13 +413,7 @@
 - (void)testCallbackSpecified {
     BugsnagHandledState *state =
     [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagEvent *report =
-    [[BugsnagEvent alloc] initWithErrorName:@"TestError"
-                                     errorMessage:@"Error for testing"
-                                    configuration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1]
-                                         metadata:nil
-                                     handledState:state
-                                          session:nil];
+    BugsnagEvent *report = [self generateEvent:state];
     report.severity = BSGSeverityInfo;
     
     NSDictionary *data = [[BugsnagSink new] getBodyFromEvents:@[report]];
