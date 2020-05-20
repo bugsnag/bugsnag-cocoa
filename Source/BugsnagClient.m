@@ -936,7 +936,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                              handledState:[handledState toJson]
                                  appState:appState
                         callbackOverrides:@{}
-                           eventOverrides:@{}
+                           eventOverrides:nil
                                  metadata:@{}
                                    config:@{}];
 }

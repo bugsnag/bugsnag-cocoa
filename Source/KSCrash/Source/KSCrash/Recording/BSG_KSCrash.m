@@ -475,6 +475,9 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 }
 
 - (const char *)encodeAsJSONString:(id)object {
+    if (object == nil) {
+        return NULL;
+    }
     NSError *error = nil;
     NSData *jsonData = [BSG_KSJSONCodec encode:object options:0 error:&error];
     if (jsonData == nil || error != nil) {
