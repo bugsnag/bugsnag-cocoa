@@ -10,7 +10,7 @@
 		00C3ED5C23F2DA4900757DBD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00C3ED5B23F2DA4900757DBD /* README.md */; };
 		378BA2CD24229CBB00123123 /* BigHonkinWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 378BA2CC24229CBB00123123 /* BigHonkinWebViewController.m */; };
 		379D203A242B697600C11EFE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 379D2038242B697600C11EFE /* LaunchScreen.storyboard */; };
-		B0296B46CF7321F684ECACB1 /* libPods-bugsnag-example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A8C72BF7F8211697881F641 /* libPods-bugsnag-example.a */; };
+		C5919A6339550FB7F6EDE6D3 /* libPods-bugsnag-example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 748011746FE3AB74879FB7FB /* libPods-bugsnag-example.a */; };
 		D175F4BE1ACDBD81009AFFB7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4BD1ACDBD81009AFFB7 /* AppDelegate.swift */; };
 		D175F4C01ACDBD81009AFFB7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */; };
 		D175F4C31ACDBD81009AFFB7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C11ACDBD81009AFFB7 /* Main.storyboard */; };
@@ -25,10 +25,10 @@
 
 /* Begin PBXFileReference section */
 		00C3ED5B23F2DA4900757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		1A8C72BF7F8211697881F641 /* libPods-bugsnag-example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bugsnag-example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		378BA2CB24229CBB00123123 /* BigHonkinWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BigHonkinWebViewController.h; sourceTree = "<group>"; };
 		378BA2CC24229CBB00123123 /* BigHonkinWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BigHonkinWebViewController.m; sourceTree = "<group>"; };
 		379D2039242B697600C11EFE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		748011746FE3AB74879FB7FB /* libPods-bugsnag-example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bugsnag-example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72198B7DFCD1FD2F92628E3 /* Pods-bugsnag-example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example.release.xcconfig"; path = "Pods/Target Support Files/Pods-bugsnag-example/Pods-bugsnag-example.release.xcconfig"; sourceTree = "<group>"; };
 		C9204A923B81A3D14457E739 /* Pods-bugsnag-example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-bugsnag-example/Pods-bugsnag-example.debug.xcconfig"; sourceTree = "<group>"; };
 		D175F4B81ACDBD81009AFFB7 /* bugsnag-example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "bugsnag-example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -58,7 +58,7 @@
 			files = (
 				E75E62E11F4CE1DD000C44C0 /* libz.tbd in Frameworks */,
 				E75E62DF1F4CE1D8000C44C0 /* libc++.tbd in Frameworks */,
-				B0296B46CF7321F684ECACB1 /* libPods-bugsnag-example.a in Frameworks */,
+				C5919A6339550FB7F6EDE6D3 /* libPods-bugsnag-example.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,7 +122,7 @@
 				E6152E17248ABA8D00CE9FC6 /* libBugsnag.a */,
 				E75E62E01F4CE1DD000C44C0 /* libz.tbd */,
 				E75E62DE1F4CE1D8000C44C0 /* libc++.tbd */,
-				1A8C72BF7F8211697881F641 /* libPods-bugsnag-example.a */,
+				748011746FE3AB74879FB7FB /* libPods-bugsnag-example.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -191,7 +191,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D175F4C31ACDBD81009AFFB7 /* Main.storyboard in Resources */,
-				D175F4C81ACDBD81009AFFB7 /* LaunchScreen.xib in Resources */,
 				00C3ED5C23F2DA4900757DBD /* README.md in Resources */,
 				379D203A242B697600C11EFE /* LaunchScreen.storyboard in Resources */,
 				D175F4C51ACDBD81009AFFB7 /* Images.xcassets in Resources */,
