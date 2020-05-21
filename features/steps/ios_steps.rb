@@ -101,6 +101,12 @@ Then("each event in the payload matches one of:") do |table|
   end
 end
 
+When("I bring the app to the foreground") do
+  steps %Q{
+    When I run the script "features/scripts/foreground_ios_app.sh" synchronously
+  }
+end
+
 Then("the event {string} is within {int} seconds of the current timestamp") do |field, threshold_secs|
   value = read_key_path(Server.current_request[:body], "events.0.#{field}")
   assert_not_nil(value, "Expected a timestamp")
