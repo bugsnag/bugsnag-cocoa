@@ -449,7 +449,7 @@ NSString *_lastOrientation = nil;
 - (void)removeObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer {
     [self.stateEventBlocks removeObject:observer];
 
-    // additionally listen for metadata updates
+    // additionally remove metadata listener
     [self.metadata removeObserverWithBlock:observer];
 }
 
