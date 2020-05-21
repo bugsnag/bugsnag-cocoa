@@ -606,6 +606,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     for (NSString *key in [userAtCrash allKeys]) { // remove any non-dictionary values
         if (![userAtCrash[key] isKindOfClass:[NSDictionary class]]) {
+            bsg_log_warn(@"Removing value added in onCrashHandler for key %@ as it is not a dictionary value", key);
             [userAtCrash removeObjectForKey:key];
         }
     }

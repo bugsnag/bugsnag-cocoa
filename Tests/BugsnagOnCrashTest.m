@@ -46,6 +46,7 @@
 - (void)testBlacklistedFields {
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
             @"user": @{
+                    @"foo": @"some value here",
                     @"customer": @{@"name": @"Joe Bloggs"},
                     @"overrides": @{
                             @"test": @{@"test_key": @"test_val"}
