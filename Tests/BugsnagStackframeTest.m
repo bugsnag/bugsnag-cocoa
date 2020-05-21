@@ -42,10 +42,10 @@
     XCTAssertEqualObjects(@"-[BugsnagClient notify:handledState:block:]", frame.method);
     XCTAssertEqualObjects(@"/Users/foo/Bugsnag.h", frame.machoFile);
     XCTAssertEqualObjects(@"B6D80CB5-A772-3D2F-B5A1-A3A137B8B58F", frame.machoUuid);
-    XCTAssertEqual(0x102340922, frame.machoVmAddress);
-    XCTAssertEqual(0x10b574fa0, frame.symbolAddress);
-    XCTAssertEqual(0x10b54b000, frame.machoLoadAddress);
-    XCTAssertEqual(0x10b5756bf, frame.frameAddress);
+    XCTAssertEqualObjects(@0x102340922, frame.machoVmAddress);
+    XCTAssertEqualObjects(@0x10b574fa0, frame.symbolAddress);
+    XCTAssertEqualObjects(@0x10b54b000, frame.machoLoadAddress);
+    XCTAssertEqualObjects(@0x10b5756bf, frame.frameAddress);
     XCTAssertFalse(frame.isPc);
     XCTAssertFalse(frame.isLr);
 }
