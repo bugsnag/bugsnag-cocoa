@@ -34,7 +34,6 @@
 #import "BugsnagSessionTracker.h"
 #import "BugsnagLogger.h"
 #import "BSGConfigurationBuilder.h"
-#import "BSG_SSKeychain.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagMetadataStore.h"
 #import "BSGSerialization.h"
@@ -52,7 +51,6 @@ static NSString *const BSGInitError = @"Init is unavailable.  Use [[BugsnagConfi
 static const int BSGApiKeyLength = 32;
 
 // User info persistence keys
-NSString * const kBugsnagUserKeychainAccount = @"BugsnagUserKeychainAccount";
 NSString * const kBugsnagUserEmailAddress = @"BugsnagUserEmailAddress";
 NSString * const kBugsnagUserName = @"BugsnagUserName";
 NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
@@ -386,9 +384,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 - (BugsnagUser *)getPersistedUserData {
     @synchronized(self) {
-        NSString *email = [BSG_SSKeychain passwordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount];
-        NSString *name = [BSG_SSKeychain passwordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount];
-        NSString *userId = [BSG_SSKeychain passwordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount];
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        NSString *email = [userDefaults objectForKey:kBugsnagUserEmailAddress];
+        NSString *name = [userDefaults objectForKey:kBugsnagUserName];
+        NSString *userId = [userDefaults objectForKey:kBugsnagUserUserId];
 
         if (email || name || userId) {
             return [[BugsnagUser alloc] initWithUserId:userId name:name emailAddress:email];
@@ -405,37 +404,30 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 - (void)persistUserData {
     @synchronized(self) {
         if (_user) {
+            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            
             // Email
             if (_user.email) {
-                [BSG_SSKeychain setPassword:_user.email
-                             forService:kBugsnagUserEmailAddress
-                                account:kBugsnagUserKeychainAccount];
+                [userDefaults setObject:_user.email forKey:kBugsnagUserEmailAddress];
             }
             else {
-                [BSG_SSKeychain deletePasswordForService:kBugsnagUserEmailAddress
-                                             account:kBugsnagUserKeychainAccount];
+                [userDefaults removeObjectForKey:kBugsnagUserEmailAddress];
             }
 
             // Name
             if (_user.name) {
-                [BSG_SSKeychain setPassword:_user.name
-                             forService:kBugsnagUserName
-                                account:kBugsnagUserKeychainAccount];
+                [userDefaults setObject:_user.name forKey:kBugsnagUserName];
             }
             else {
-                [BSG_SSKeychain deletePasswordForService:kBugsnagUserName
-                                             account:kBugsnagUserKeychainAccount];
+                [userDefaults removeObjectForKey:kBugsnagUserName];
             }
 
             // UserId
             if (_user.id) {
-                [BSG_SSKeychain setPassword:_user.id
-                             forService:kBugsnagUserUserId
-                                account:kBugsnagUserKeychainAccount];
+                [userDefaults setObject:_user.id forKey:kBugsnagUserUserId];
             }
             else {
-                [BSG_SSKeychain deletePasswordForService:kBugsnagUserUserId
-                                             account:kBugsnagUserKeychainAccount];
+                [userDefaults removeObjectForKey:kBugsnagUserUserId];
             }
         }
     }
@@ -446,9 +438,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 -(void)deletePersistedUserData {
     @synchronized(self) {
-        [BSG_SSKeychain deletePasswordForService:kBugsnagUserEmailAddress account:kBugsnagUserKeychainAccount];
-        [BSG_SSKeychain deletePasswordForService:kBugsnagUserName account:kBugsnagUserKeychainAccount];
-        [BSG_SSKeychain deletePasswordForService:kBugsnagUserUserId account:kBugsnagUserKeychainAccount];
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        [userDefaults removeObjectForKey:kBugsnagUserEmailAddress];
+        [userDefaults removeObjectForKey:kBugsnagUserName];
+        [userDefaults removeObjectForKey:kBugsnagUserUserId];
     }
 }
 

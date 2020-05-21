@@ -18,11 +18,15 @@ NS_ASSUME_NONNULL_BEGIN
 typedef void (^BugsnagObserverBlock)(BugsnagStateEvent *_Nonnull event);
 
 @interface BugsnagMetadata ()
+
 @property(atomic, strong) NSMutableDictionary *dictionary;
 
 - (NSDictionary *)toDictionary;
+
 - (id)deepCopy;
+
 - (void)addObserverUsingBlock:(BugsnagObserverBlock _Nonnull)block;
+
 @end
 
 NS_ASSUME_NONNULL_END
