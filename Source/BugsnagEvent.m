@@ -477,7 +477,9 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     NSMutableDictionary *userAtCrash = [self parseOnCrashData:event];
     if (userAtCrash != nil) {
-        [metadata addMetadata:userAtCrash toSection:@BSG_KSCrashField_OnCrashMetadataSectionName];
+        for (NSString *section in [userAtCrash allKeys]) {
+            [metadata addMetadata:userAtCrash[section] toSection:section];
+        }
     }
     NSString *deviceAppHash = [event valueForKeyPath:@"system.device_app_hash"];
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithDictionary:event];
@@ -601,6 +603,12 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             @"id",
     ];
     [userAtCrash removeObjectsForKeys:blacklistedKeys];
+
+    for (NSString *key in [userAtCrash allKeys]) { // remove any non-dictionary values
+        if (![userAtCrash[key] isKindOfClass:[NSDictionary class]]) {
+            [userAtCrash removeObjectForKey:key];
+        }
+    }
     return userAtCrash;
 }
 
