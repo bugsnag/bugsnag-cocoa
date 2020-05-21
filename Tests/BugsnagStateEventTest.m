@@ -16,12 +16,14 @@
 
 @interface BugsnagClient()
 @property BugsnagMetadata *metadata;
-- (void)addObserverUsingBlock:(BugsnagObserverBlock _Nonnull)observer;
+- (void)addObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer;
+- (void)removeObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer;
 @end
 
 @interface BugsnagStateEventTest : XCTestCase
 @property BugsnagClient *client;
 @property BugsnagStateEvent *event;
+@property BugsnagObserverBlock block;
 @end
 
 @implementation BugsnagStateEventTest
@@ -31,9 +33,10 @@
     self.client = [Bugsnag startWithConfiguration:config];
 
     __weak __typeof__(self) weakSelf = self;
-    [self.client addObserverUsingBlock:^(BugsnagStateEvent *event) {
+    self.block = ^(BugsnagStateEvent *event) {
         weakSelf.event = event;
-    }];
+    };
+    [self.client addObserverWithBlock:self.block];
 }
 
 - (void)testUserUpdate {
@@ -59,6 +62,15 @@
     XCTAssertNil(self.event);
     [self.client addMetadata:@"Bar" withKey:@"Foo" toSection:@"test"];
     XCTAssertEqualObjects(self.client.metadata, self.event.data);
+}
+
+- (void)testRemoveObserver {
+    XCTAssertNil(self.event);
+    [self.client removeObserverWithBlock:self.block];
+    [self.client setUser:@"123" withEmail:@"test@example.com" andName:@"Jamie"];
+    [self.client setContext:@"Foo"];
+    [self.client addMetadata:@"Bar" withKey:@"Foo" toSection:@"test"];
+    XCTAssertNil(self.event);
 }
 
 @end
