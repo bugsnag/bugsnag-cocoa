@@ -29,7 +29,9 @@
 #import "BugsnagLogger.h"
 #import "BugsnagCollections.h"
 #import "BugsnagClient.h"
+#import "BugsnagClientInternal.h"
 #import "BugsnagKeys.h"
+#import "BugsnagNotifier.h"
 #import "BSG_KSSystemInfo.h"
 #import "Private.h"
 
@@ -39,8 +41,28 @@
 + (BugsnagClient *)client;
 @end
 
+@interface BugsnagNotifier ()
+- (NSDictionary *)toDict;
+@end
+
+@interface BugsnagClient ()
+@property (nonatomic) NSString *codeBundleId;
+@end
+
+@interface BugsnagEvent ()
+- (NSDictionary *_Nonnull)toJson;
+- (BOOL)shouldBeSent;
+- (instancetype _Nonnull)initWithKSReport:(NSDictionary *_Nonnull)report;
+@property NSArray *redactedKeys;
+@property (nonatomic) NSString *codeBundleId;
+@end
+
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
+- (NSDictionary *_Nonnull)errorApiHeaders;
+- (NSDictionary *_Nonnull)sessionApiHeaders;
+@property(readonly, retain, nullable) NSURL *sessionURL;
+@property(readonly, retain, nullable) NSURL *notifyURL;
 @end
 
 @implementation BugsnagSink
@@ -54,13 +76,13 @@
 
 // Entry point called by BSG_KSCrash when a report needs to be sent. Handles
 // report filtering based on the configuration options for
-// `notifyReleaseStages`. Removes all reports not meeting at least one of the
+// `enabledReleaseStages`. Removes all reports not meeting at least one of the
 // following conditions:
-// - the report-specific config specifies the `notifyReleaseStages` property and
+// - the report-specific config specifies the `enabledReleaseStages` property and
 // it contains the current stage
-// - the report-specific and global `notifyReleaseStages` properties are unset
-// - the report-specific `notifyReleaseStages` property is unset and the global
-// `notifyReleaseStages` property
+// - the report-specific and global `enabledReleaseStages` properties are unset
+// - the report-specific `enabledReleaseStages` property is unset and the global
+// `enabledReleaseStages` property
 //   and it contains the current stage
 - (void)filterReports:(NSDictionary <NSString *, NSDictionary *> *)reports
          onCompletion:(BSG_KSCrashReportFilterCompletion)onCompletion {
@@ -70,10 +92,12 @@
     for (NSString *fileKey in reports) {
         NSDictionary *report = reports[fileKey];
         BugsnagEvent *bugsnagReport = [[BugsnagEvent alloc] initWithKSReport:report];
+        bugsnagReport.codeBundleId = [Bugsnag client].codeBundleId;
+
         if (![bugsnagReport shouldBeSent])
             continue;
         BOOL shouldSend = YES;
-        for (BugsnagOnSendBlock block in configuration.onSendBlocks) {
+        for (BugsnagOnSendErrorBlock block in configuration.onSendBlocks) {
             @try {
                 shouldSend = block(bugsnagReport);
                 if (!shouldSend)
@@ -94,7 +118,7 @@
         return;
     }
 
-    NSDictionary *reportData = [self getBodyFromReports:bugsnagReports];
+    NSDictionary *reportData = [self getBodyFromEvents:bugsnagReports];
 
     if (reportData == nil) {
         if (onCompletion) {
@@ -110,19 +134,19 @@
                  onCompletion:onCompletion];
 }
 
-
 // Generates the payload for notifying Bugsnag
-- (NSDictionary *)getBodyFromReports:(NSArray *)reports {
+- (NSDictionary *)getBodyFromEvents:(NSArray *)events {
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-    BSGDictSetSafeObject(data, [Bugsnag client].details, BSGKeyNotifier);
+    BSGDictSetSafeObject(data, [[Bugsnag client].notifier toDict], BSGKeyNotifier);
     BSGDictSetSafeObject(data, [Bugsnag client].configuration.apiKey, BSGKeyApiKey);
     BSGDictSetSafeObject(data, @"4.0", @"payloadVersion");
 
     NSMutableArray *formatted =
-            [[NSMutableArray alloc] initWithCapacity:[reports count]];
+            [[NSMutableArray alloc] initWithCapacity:[events count]];
 
-    for (BugsnagEvent *report in reports) {
-        BSGArrayAddSafeObject(formatted, [report toJson]);
+    for (BugsnagEvent *event in events) {
+        event.redactedKeys = [Bugsnag configuration].redactedKeys;
+        BSGArrayAddSafeObject(formatted, [event toJson]);
     }
 
     BSGDictSetSafeObject(data, formatted, BSGKeyEvents);

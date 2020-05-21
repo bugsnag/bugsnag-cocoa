@@ -21,9 +21,28 @@ typedef NS_ENUM(NSUInteger, SeverityReasonType) {
     LikelyOutOfMemory,
 };
 
+/**
+ *  Convert a string to a severity value
+ *
+ *  @param severity Intended severity value, such as info, warning, or error
+ *
+ *  @return converted severity level or BSGSeverityError if no conversion is
+ * found
+ */
+BSGSeverity BSGParseSeverity(NSString *severity);
+
+/**
+ *  Serialize a severity for JSON payloads
+ *
+ *  @param severity a severity
+ *
+ *  @return the equivalent string value
+ */
+NSString *BSGFormatSeverity(BSGSeverity severity);
+
 @interface BugsnagHandledState : NSObject
 
-@property(nonatomic, readonly) BOOL unhandled;
+@property(nonatomic) BOOL unhandled;
 @property(nonatomic, readonly) SeverityReasonType severityReasonType;
 @property(nonatomic, readonly) BSGSeverity originalSeverity;
 @property(nonatomic) BSGSeverity currentSeverity;
@@ -36,6 +55,8 @@ typedef NS_ENUM(NSUInteger, SeverityReasonType) {
 
 + (instancetype)handledStateWithSeverityReason:
     (SeverityReasonType)severityReason;
+
++ (instancetype)handledStateFromJson:(NSDictionary *)json;
 
 + (instancetype)handledStateWithSeverityReason:
                     (SeverityReasonType)severityReason

@@ -59,8 +59,11 @@ typedef struct BSG_KSCrash_SentryContext {
     /** If true, will send reports even if debugger is attached. */
     bool reportWhenDebuggerIsAttached;
 
-    /** If true, will trace threads and report binary images. */
-    bool threadTracingEnabled;
+    /**
+     * The methodology used for tracing threads and report binary images.
+     * The value will be equal to an enum value from BSGThreadSendPolicy
+     */
+    int threadTracingEnabled;
 
     /** If true, will record binary images. */
     bool writeBinaryImagesForUserReported;
@@ -140,6 +143,7 @@ typedef struct BSG_KSCrash_SentryContext {
 
         /** Handled exception report info: */
         const char *overrides; // info set in callbacks
+        const char *eventOverrides; // Bugsnag Error API JSON payload for handled events
         const char *handledState;
         const char *metadata;
         const char *state; // breadcrumbs, other shared app state

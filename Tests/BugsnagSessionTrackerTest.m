@@ -14,8 +14,18 @@
 #import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagTestConstants.h"
 
+@interface BugsnagSession ()
+@property NSUInteger unhandledCount;
+@property NSUInteger handledCount;
+@property(readonly) BOOL autoCaptured;
+@end
+
 @interface BugsnagConfiguration ()
 - (void)deletePersistedUserData;
+@end
+
+@interface BugsnagSessionTracker ()
+@property (strong, readwrite) BugsnagSession *currentSession;
 @end
 
 @interface BugsnagSessionTrackerTest : XCTestCase
@@ -39,23 +49,23 @@
     [self.sessionTracker startNewSession];
     BugsnagSession *session = self.sessionTracker.runningSession;
     XCTAssertNotNil(session);
-    XCTAssertNotNil(session.sessionId);
+    XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
     XCTAssertFalse(session.autoCaptured);
 }
 
 - (void)testStartNewSessionWithUser {
-    [self.configuration setUser:@"123" withName:@"Bill" andEmail:nil];
+    [self.configuration setUser:@"123" withEmail:nil andName:@"Bill"];
     XCTAssertNil(self.sessionTracker.runningSession);
     [self.sessionTracker startNewSession];
     BugsnagSession *session = self.sessionTracker.runningSession;
 
     XCTAssertNotNil(session);
-    XCTAssertNotNil(session.sessionId);
+    XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
     XCTAssertEqual(session.user.name, @"Bill");
-    XCTAssertEqual(session.user.userId, @"123");
-    XCTAssertNil(session.user.emailAddress);
+    XCTAssertEqual(session.user.id, @"123");
+    XCTAssertNil(session.user.email);
     XCTAssertFalse(session.autoCaptured);
 }
 
@@ -65,26 +75,26 @@
     BugsnagSession *session = self.sessionTracker.runningSession;
 
     XCTAssertNotNil(session);
-    XCTAssertNotNil(session.sessionId);
+    XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
     XCTAssertTrue(session.autoCaptured);
     XCTAssertNil(session.user.name);
-    XCTAssertNil(session.user.userId);
-    XCTAssertNil(session.user.emailAddress);
+    XCTAssertNil(session.user.id);
+    XCTAssertNil(session.user.email);
 }
 
 - (void)testStartNewAutoCapturedSessionWithUser {
-    [self.configuration setUser:@"123" withName:@"Bill" andEmail:@"bill@example.com"];
+    [self.configuration setUser:@"123" withEmail:@"bill@example.com" andName:@"Bill"];
     XCTAssertNil(self.sessionTracker.runningSession);
     [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
     BugsnagSession *session = self.sessionTracker.runningSession;
 
     XCTAssertNotNil(session);
-    XCTAssertNotNil(session.sessionId);
+    XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
     XCTAssertEqual(session.user.name, @"Bill");
-    XCTAssertEqual(session.user.userId, @"123");
-    XCTAssertEqual(session.user.emailAddress, @"bill@example.com");
+    XCTAssertEqual(session.user.id, @"123");
+    XCTAssertEqual(session.user.email, @"bill@example.com");
     XCTAssertTrue(session.autoCaptured);
 }
 
@@ -104,7 +114,7 @@
     [self.sessionTracker startNewSession];
 
     BugsnagSession *secondSession = self.sessionTracker.runningSession;
-    XCTAssertNotEqualObjects(firstSession.sessionId, secondSession.sessionId);
+    XCTAssertNotEqualObjects(firstSession.id, secondSession.id);
 }
 
 - (void)testIncrementCounts {
@@ -132,5 +142,32 @@
     XCTAssertEqual(1, session.handledCount);
     XCTAssertEqual(1, session.unhandledCount);
 }
+
+- (void)testOnSendBlockFalse {
+    self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    [self.configuration addOnSessionBlock:^BOOL(BugsnagSession *sessionPayload) {
+        return NO;
+    }];
+    self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
+                                                     postRecordCallback:nil];
+    [self.sessionTracker startNewSession];
+    XCTAssertNil(self.sessionTracker.currentSession);
+}
+
+- (void)testOnSendBlockTrue {
+    __block XCTestExpectation *expectation = [self expectationWithDescription:@"Session block is invoked"];
+
+    self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    [self.configuration addOnSessionBlock:^BOOL(BugsnagSession *sessionPayload) {
+        [expectation fulfill];
+        return YES;
+    }];
+    self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
+                                                     postRecordCallback:nil];
+    [self.sessionTracker startNewSession];
+    [self waitForExpectations:@[expectation] timeout:2];
+    XCTAssertNotNil(self.sessionTracker.currentSession);
+}
+
 
 @end

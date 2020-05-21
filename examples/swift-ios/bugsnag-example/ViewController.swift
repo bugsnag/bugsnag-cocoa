@@ -110,6 +110,7 @@ class ViewController: UITableViewController {
             Bugsnag.notifyError(error) { report in
                 // modify report properties in the (optional) block
                 report.severity = .info
+                return true
             }
         }
     }

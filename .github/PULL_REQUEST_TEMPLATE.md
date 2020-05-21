@@ -25,8 +25,6 @@ Related to #
 <!-- How was this change tested? What manual and automated tests were
      run/added? -->
 
-[ ] The example apps compile and run.
-
 ## Review
 
 ### Outstanding Questions
@@ -39,6 +37,7 @@ Related to #
 
 * Added a changelog entry?
 * Checked the scope to ensure the commits are only related to the goal above?
+* Added any new headers to the "Copy Files" stage of the static iOS target?
 
 -->
 
@@ -46,12 +45,16 @@ Related to #
   - [ ] Initial review of the intended approach, not yet feature complete
   - [ ] Structural review of the classes, functions, and properties modified
   - [ ] Final review
+  - [ ] Release
 
 <!-- What do you need from a reviewer to get this changeset
      ready for release -->
-
+     
+- [ ] The example apps compile and run.
+- [ ] The library has been unit tested on iOS, MacOS and tvOS
 - [ ] The correct target branch has been selected (`master` for fixes, `next` for
   features)
+- [ ] If this is intended for release have all of the [pre-release checks](CONTRIBUTING.md) been considered?
 - [ ] Consistency across platforms for structures or concepts added or modified
 - [ ] Consistency between the changeset and the goal stated above
 - [ ] Internal consistency with the rest of the library - is there any overlap between existing interfaces and any which have been added?

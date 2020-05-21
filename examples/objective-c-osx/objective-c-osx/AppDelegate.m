@@ -20,15 +20,11 @@ void exceptionHandler(NSException *ex) {
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    NSString *apiKey = @"<YOUR_APIKEY_HERE>";
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:apiKey
-                                                                                 error:&error];
-    [Bugsnag startBugsnagWithConfiguration:configuration];
     
-    if (error) {
-        NSLog(@"There was an error while starting Bugsnag: %@", [error localizedDescription]);
-    }
+    NSString *apiKey = @"<YOUR_APIKEY_HERE>";
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
+    [Bugsnag startWithConfiguration:config];
+    
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

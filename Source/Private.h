@@ -7,6 +7,7 @@
 
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumb.h"
+#import "BugsnagBreadcrumbs.h"
 
 @interface BugsnagBreadcrumb ()
 
@@ -24,8 +25,8 @@
 
 /** Get the current Bugsnag configuration.
  *
- * This method returns nil if called before +startBugsnagWithApiKey: or
- * +startBugsnagWithConfiguration:, and otherwise returns the current
+ * This method returns nil if called before +startWithApiKey: or
+ * +startWithConfiguration:, and otherwise returns the current
  * configuration for Bugsnag.
  *
  * @return The configuration, or nil.

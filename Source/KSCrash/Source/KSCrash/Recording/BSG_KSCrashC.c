@@ -181,23 +181,20 @@ void bsg_kscrash_setCrashNotifyCallback(
 }
 
 void bsg_kscrash_reportUserException(const char *name, const char *reason,
-                                     uintptr_t *stackAddresses,
-                                     unsigned long stackLength,
-                                     const char *severity,
-                                     const char *handledState,
-                                     const char *overrides,
-                                     const char *metadata,
-                                     const char *appState,
-                                     const char *config,
-                                     int discardDepth,
-                                     bool terminateProgram) {
+        const char *severity,
+        const char *handledState,
+        const char *overrides,
+        const char *eventOverrides,
+        const char *metadata,
+        const char *appState,
+        const char *config,
+        bool terminateProgram) {
     bsg_kscrashsentry_reportUserException(name, reason,
-                                          stackAddresses,
-                                          stackLength,
-                                          severity,
-                                          handledState, overrides,
-                                          metadata, appState, config, discardDepth,
-                                          terminateProgram);
+            severity,
+            handledState, overrides,
+            eventOverrides,
+            metadata, appState, config,
+            terminateProgram);
 }
 
 void bsg_kscrash_setSuspendThreadsForUserReported(
@@ -218,6 +215,24 @@ void bsg_kscrash_setReportWhenDebuggerIsAttached(
         reportWhenDebuggerIsAttached;
 }
 
-void bsg_kscrash_setThreadTracingEnabled(bool threadTracingEnabled) {
+void bsg_kscrash_setThreadTracingEnabled(int threadTracingEnabled) {
     crashContext()->crash.threadTracingEnabled = threadTracingEnabled;
+}
+
+char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t *callstack) {
+    bsg_kscrashsentry_suspend_threads_user();
+    BSG_KSCrash_Context *context = crashContext();
+
+    // populate context with pre-recorded stacktrace/thread info
+    // for KSCrash to serialize
+    context->crash.stackTrace = callstack;
+    context->crash.stackTraceLength = frameCount;
+    context->crash.userException.discardDepth = discardDepth;
+    context->crash.offendingThread = bsg_ksmachthread_self();
+    context->crash.crashType = BSG_KSCrashTypeUserReported;
+    context->crash.suspendThreadsForUserReported = true;
+
+    char *trace = bsg_kscrw_i_captureThreadTrace(context);
+    bsg_kscrashsentry_resume_threads_user(false);
+    return trace;
 }

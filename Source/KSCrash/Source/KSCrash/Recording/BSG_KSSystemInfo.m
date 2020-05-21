@@ -34,6 +34,8 @@
 #import "BugsnagKeys.h"
 #import "BugsnagCollections.h"
 #import "BSG_KSLogger.h"
+#import "BSG_KSCrashReportFields.h"
+#import "BSG_KSMach.h"
 
 #import <CommonCrypto/CommonDigest.h>
 #if BSG_KSCRASH_HAS_UIKIT
@@ -167,12 +169,6 @@
     return result;
 }
 
-/** Generate a 20 byte SHA1 hash that remains unique across a single device and
- * application. This is slightly different from the Apple crash report key,
- * which is unique to the device, regardless of the application.
- *
- * @return The stringified hex representation of the hash for this device + app.
- */
 + (NSString *)deviceAndAppHash {
     NSMutableData *data = nil;
 
@@ -407,6 +403,7 @@
     BSGDictSetSafeObject(sysInfo, infoDict[BSGKeyExecutableName], @BSG_KSSystemField_Executable);
     BSGDictSetSafeObject(sysInfo, infoDict[@"CFBundleIdentifier"], @BSG_KSSystemField_BundleID);
     BSGDictSetSafeObject(sysInfo, infoDict[@"CFBundleName"], @BSG_KSSystemField_BundleName);
+    BSGDictSetSafeObject(sysInfo, infoDict[@"CFBundleExecutable"], @BSG_KSSystemField_BundleExecutable);
     BSGDictSetSafeObject(sysInfo, infoDict[@"CFBundleVersion"], @BSG_KSSystemField_BundleVersion);
     BSGDictSetSafeObject(sysInfo, infoDict[@"CFBundleShortVersionString"], @BSG_KSSystemField_BundleShortVersion);
     BSGDictSetSafeObject(sysInfo, [self appUUID], @BSG_KSSystemField_AppUUID);
@@ -422,8 +419,10 @@
     BSGDictSetSafeObject(sysInfo, [self deviceAndAppHash], @BSG_KSSystemField_DeviceAppHash);
     BSGDictSetSafeObject(sysInfo, [BSG_KSSystemInfo buildType], @BSG_KSSystemField_BuildType);
 
-    NSDictionary *memory =
-            @{@BSG_KSSystemField_Size: [self int64Sysctl:@"hw.memsize"]};
+    NSDictionary *memory = @{
+            @BSG_KSSystemField_Size: [self int64Sysctl:@"hw.memsize"],
+            @BSG_KSCrashField_Usable: @(bsg_ksmachusableMemory())
+    };
     BSGDictSetSafeObject(sysInfo, memory, @BSG_KSSystemField_Memory);
 
     return sysInfo;

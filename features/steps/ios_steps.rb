@@ -51,6 +51,12 @@ When("I put the app in the background") do
   }
 end
 
+When("I bring the app to the foreground") do
+  steps %Q{
+    When I run the script "features/scripts/foreground_ios_app.sh" synchronously
+  }
+end
+
 Then("each event in the payload for request {int} matches one of:") do |request_index, table|
   # Checks string equality of event fields against values
   events = read_key_path(find_request(request_index)[:body], "events")
@@ -102,7 +108,7 @@ Then("the event breadcrumbs contain {string} with type {string}") do |string, ty
   crumbs = read_key_path(find_request(0)[:body], "events.0.breadcrumbs")
   assert_not_equal(0, crumbs.length, "There are no breadcrumbs on this event")
   match = crumbs.detect do |crumb|
-    crumb["message"] == string && crumb["type"] == type
+    crumb["name"] == string && crumb["type"] == type
   end
   assert_not_nil(match, "No crumb matches the provided message and type")
 end
@@ -111,7 +117,7 @@ Then("the event breadcrumbs contain {string}") do |string|
   crumbs = read_key_path(find_request(0)[:body], "events.0.breadcrumbs")
   assert_not_equal(0, crumbs.length, "There are no breadcrumbs on this event")
   match = crumbs.detect do |crumb|
-    crumb["message"] == string
+    crumb["name"] == string
   end
   assert_not_nil(match, "No crumb matches the provided message")
 end

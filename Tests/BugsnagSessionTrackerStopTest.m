@@ -10,6 +10,11 @@
 #import "BugsnagSessionTracker.h"
 #import "BugsnagTestConstants.h"
 
+@interface BugsnagSession ()
+@property NSUInteger unhandledCount;
+@property NSUInteger handledCount;
+@end
+
 @interface BugsnagSessionTrackerStopTest : XCTestCase
 @property BugsnagConfiguration *configuration;
 @property BugsnagSessionTracker *tracker;

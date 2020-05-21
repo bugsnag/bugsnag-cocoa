@@ -44,9 +44,11 @@
     [configuration setPersistUser:willPersistUser];
     
     if (willNotify) {
-        [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
+        [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
+            return false;
+        }];
     }
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+    [Bugsnag startWithConfiguration:configuration];
 }
 
 @end

@@ -9,6 +9,21 @@
 #import <XCTest/XCTest.h>
 
 #import "BugsnagUser.h"
+#import "BugsnagEvent.h"
+
+@interface BugsnagEvent ()
+- (instancetype)initWithKSReport:(NSDictionary *)report;
+@end
+
+@interface BugsnagUser ()
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
+- (NSDictionary *)toJson;
+@end
+
+@interface BugsnagEvent ()
+- (instancetype)initWithKSReport:(NSDictionary *)report;
+@end
 
 @interface BugsnagUserTest : XCTestCase
 @end
@@ -25,17 +40,13 @@
     BugsnagUser *user = [[BugsnagUser alloc] initWithDictionary:dict];
 
     XCTAssertNotNil(user);
-    XCTAssertEqualObjects(user.userId, @"test");
-    XCTAssertEqualObjects(user.emailAddress, @"fake@example.com");
+    XCTAssertEqualObjects(user.id, @"test");
+    XCTAssertEqualObjects(user.email, @"fake@example.com");
     XCTAssertEqualObjects(user.name, @"Tom Bombadil");
 }
 
 - (void)testPayloadSerialisation {
-    BugsnagUser *payload = [BugsnagUser new];
-    payload.userId = @"test";
-    payload.emailAddress = @"fake@example.com";
-    payload.name = @"Tom Bombadil";
-    
+    BugsnagUser *payload = [[BugsnagUser alloc] initWithUserId:@"test" name:@"Tom Bombadil" emailAddress:@"fake@example.com"];
     NSDictionary *rootNode = [payload toJson];
     XCTAssertNotNil(rootNode);
     XCTAssertEqual(3, [rootNode count]);
@@ -43,6 +54,21 @@
     XCTAssertEqualObjects(@"test", rootNode[@"id"]);
     XCTAssertEqualObjects(@"fake@example.com", rootNode[@"email"]);
     XCTAssertEqualObjects(@"Tom Bombadil", rootNode[@"name"]);
+}
+
+- (void)testUserEvent {
+    // Setup
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
+            @"user.metaData": @{
+                    @"user": @{
+                            @"id": @"123",
+                            @"name": @"Jane Smith",
+                            @"email": @"jane@example.com",
+                    }
+            }}];
+    XCTAssertEqualObjects(@"123", event.user.id);
+    XCTAssertEqualObjects(@"Jane Smith", event.user.name);
+    XCTAssertEqualObjects(@"jane@example.com", event.user.email);
 }
 
 @end

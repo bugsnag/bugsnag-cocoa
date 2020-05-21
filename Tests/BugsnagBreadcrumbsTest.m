@@ -8,12 +8,24 @@
 
 #import "Bugsnag.h"
 #import "BugsnagClient.h"
+#import "BugsnagClientInternal.h"
 #import "BugsnagBreadcrumb.h"
+#import "BugsnagBreadcrumbs.h"
 #import "BugsnagTestConstants.h"
 #import <XCTest/XCTest.h>
 
 @interface BugsnagBreadcrumbsTest : XCTestCase
 @property(nonatomic, strong) BugsnagBreadcrumbs *crumbs;
+@end
+
+@interface BugsnagConfiguration ()
+@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
+@end
+
+@interface BugsnagBreadcrumb ()
++ (instancetype _Nullable)breadcrumbWithBlock:
+    (BSGBreadcrumbConfiguration _Nonnull)block;
++ (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
 @end
 
 @interface BugsnagBreadcrumbs ()
@@ -77,13 +89,6 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqual(100, self.crumbs.capacity);
 }
 
-- (void)testClearBreadcrumbs {
-    [self.crumbs clearBreadcrumbs];
-    awaitBreadcrumbSync(self.crumbs);
-    XCTAssertTrue(self.crumbs.count == 0);
-    XCTAssertNil(self.crumbs[0]);
-}
-
 - (void)testEmptyCapacity {
     self.crumbs.capacity = 0;
     [self.crumbs addBreadcrumb:@"Clear notifications"];
@@ -115,9 +120,9 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
         XCTAssertTrue([[formatter dateFromString:item[@"timestamp"]]
                        isKindOfClass:[NSDate class]]);
     }
-    XCTAssertEqualObjects(value[0][@"message"], @"Launch app");
-    XCTAssertEqualObjects(value[1][@"message"], @"Tap button");
-    XCTAssertEqualObjects(value[2][@"message"], @"Close tutorial");
+    XCTAssertEqualObjects(value[0][@"name"], @"Launch app");
+    XCTAssertEqualObjects(value[1][@"name"], @"Tap button");
+    XCTAssertEqualObjects(value[2][@"name"], @"Close tutorial");
 }
 
 - (void)testStateType {
@@ -130,7 +135,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     awaitBreadcrumbSync(self.crumbs);
     NSArray *value = [crumbs arrayValue];
     XCTAssertEqualObjects(value[0][@"metaData"][@"direction"], @"right");
-    XCTAssertEqualObjects(value[0][@"message"], @"Rotated Menu");
+    XCTAssertEqualObjects(value[0][@"name"], @"Rotated Menu");
     XCTAssertEqualObjects(value[0][@"type"], @"state");
 }
 
@@ -139,13 +144,13 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     NSArray *value = [NSJSONSerialization JSONObjectWithData:crumbs options:0 error:nil];
     XCTAssertEqual(value.count, 3);
     XCTAssertEqualObjects(value[0][@"type"], @"manual");
-    XCTAssertEqualObjects(value[0][@"message"], @"Launch app");
+    XCTAssertEqualObjects(value[0][@"name"], @"Launch app");
     XCTAssertNotNil(value[0][@"timestamp"]);
     XCTAssertEqualObjects(value[1][@"type"], @"manual");
-    XCTAssertEqualObjects(value[1][@"message"], @"Tap button");
+    XCTAssertEqualObjects(value[1][@"name"], @"Tap button");
     XCTAssertNotNil(value[1][@"timestamp"]);
     XCTAssertEqualObjects(value[2][@"type"], @"manual");
-    XCTAssertEqualObjects(value[2][@"message"], @"Close tutorial");
+    XCTAssertEqualObjects(value[2][@"name"], @"Close tutorial");
     XCTAssertNotNil(value[2][@"timestamp"]);
 }
 
@@ -159,14 +164,13 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     NSArray *value = [NSJSONSerialization JSONObjectWithData:crumbs options:0 error:nil];
     XCTAssertEqual(value.count, 4);
     XCTAssertEqualObjects(value[3][@"type"], @"state");
-    XCTAssertEqualObjects(value[3][@"message"], @"Initiate sequence");
+    XCTAssertEqualObjects(value[3][@"name"], @"Initiate sequence");
     XCTAssertEqualObjects(value[3][@"metaData"][@"captain"], @"Bob");
     XCTAssertNotNil(value[3][@"timestamp"]);
 }
 
 - (void)testDefaultDiscardByType {
-    [self.crumbs clearBreadcrumbs];
-    awaitBreadcrumbSync(self.crumbs);
+    self.crumbs = [BugsnagBreadcrumbs new];
     [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeState;
         crumb.message = @"state";
@@ -212,28 +216,31 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 }
 
 - (void)testAlwaysAllowManual {
-    [self.crumbs clearBreadcrumbs];
-    awaitBreadcrumbSync(self.crumbs);
+    self.crumbs = [BugsnagBreadcrumbs new];
     self.crumbs.enabledBreadcrumbTypes = 0;
     [self.crumbs addBreadcrumb:@"this is a test"];
     awaitBreadcrumbSync(self.crumbs);
     NSArray *value = [self.crumbs arrayValue];
     XCTAssertEqual(1, value.count);
     XCTAssertEqualObjects(value[0][@"type"], @"manual");
-    XCTAssertEqualObjects(value[0][@"message"], @"this is a test");
+    XCTAssertEqualObjects(value[0][@"name"], @"this is a test");
 }
 
-- (void)testDiscardByType {
-    [self.crumbs clearBreadcrumbs];
-    awaitBreadcrumbSync(self.crumbs);
+/**
+ * enabledBreadcrumbTypes filtering only happens on the client.  The BugsnagBreadcrumbs container is
+ * private and assumes filtering is already configured.
+ */
+- (void)testDiscardByTypeDoesNotApply {
+    self.crumbs = [BugsnagBreadcrumbs new];
     self.crumbs.enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeProcess;
+    // Don't discard this
     [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeState;
         crumb.message = @"state";
     }];
     awaitBreadcrumbSync(self.crumbs);
     NSArray *value = [self.crumbs arrayValue];
-    XCTAssertEqual(0, value.count);
+    XCTAssertEqual(1, value.count);
 }
 
 - (void)testConvertBreadcrumbTypeFromString {
@@ -295,8 +302,10 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 - (void)testCallbackFreeConstructors2 {
     // Prevent sending events
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+    [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
+        return false;
+    }];
+    [Bugsnag startWithConfiguration:configuration];
 
     NSDictionary *md1 = @{ @"x" : @"y"};
     NSDictionary *md2 = @{ @"a" : @"b",
@@ -322,7 +331,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqual(Bugsnag.client.configuration.breadcrumbs.count, 8);
 
     XCTAssertEqualObjects(bc0[@"type"], @"state");
-    XCTAssertEqualObjects(bc0[@"message"], @"Bugsnag loaded");
+    XCTAssertEqualObjects(bc0[@"name"], @"Bugsnag loaded");
     XCTAssertEqual([bc0[@"metaData"] count], 0);
 
     XCTAssertEqual([bc1[@"metaData"] count], 1);
@@ -334,25 +343,25 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqual([bc4[@"metaData"] count], 2);
     XCTAssertEqual([bc6[@"metaData"] count], 2);
     
-    XCTAssertEqualObjects(bc1[@"message"], @"manual message");
+    XCTAssertEqualObjects(bc1[@"name"], @"manual message");
     XCTAssertEqualObjects(bc1[@"type"], @"manual");
 
-    XCTAssertEqualObjects(bc2[@"message"], @"log message");
+    XCTAssertEqualObjects(bc2[@"name"], @"log message");
     XCTAssertEqualObjects(bc2[@"type"], @"log");
 
-    XCTAssertEqualObjects(bc3[@"message"], @"navigation message");
+    XCTAssertEqualObjects(bc3[@"name"], @"navigation message");
     XCTAssertEqualObjects(bc3[@"type"], @"navigation");
 
-    XCTAssertEqualObjects(bc4[@"message"], @"process message");
+    XCTAssertEqualObjects(bc4[@"name"], @"process message");
     XCTAssertEqualObjects(bc4[@"type"], @"process");
 
-    XCTAssertEqualObjects(bc5[@"message"], @"request message");
+    XCTAssertEqualObjects(bc5[@"name"], @"request message");
     XCTAssertEqualObjects(bc5[@"type"], @"request");
 
-    XCTAssertEqualObjects(bc6[@"message"], @"state message");
+    XCTAssertEqualObjects(bc6[@"name"], @"state message");
     XCTAssertEqualObjects(bc6[@"type"], @"state");
 
-    XCTAssertEqualObjects(bc7[@"message"], @"user message");
+    XCTAssertEqualObjects(bc7[@"name"], @"user message");
     XCTAssertEqualObjects(bc7[@"type"], @"user");
 }
 
@@ -362,8 +371,10 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 - (void)testCallbackFreeConstructors3 {
     // Prevent sending events
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [configuration addOnSendBlock:^bool(BugsnagEvent * _Nonnull event) { return false; }];
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+    [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
+        return false;
+    }];
+    [Bugsnag startWithConfiguration:configuration];
 
     [Bugsnag leaveBreadcrumbWithMessage:@"message1"];
     [Bugsnag leaveBreadcrumbWithMessage:@"message2" metadata:nil andType:BSGBreadcrumbTypeUser];
@@ -371,8 +382,8 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     NSDictionary *bc1 = [Bugsnag.client.configuration.breadcrumbs arrayValue][1];
     NSDictionary *bc2 = [Bugsnag.client.configuration.breadcrumbs arrayValue][2];
 
-    XCTAssertEqualObjects(bc1[@"message"], @"message1");
-    XCTAssertEqualObjects(bc2[@"message"], @"message2");
+    XCTAssertEqualObjects(bc1[@"name"], @"message1");
+    XCTAssertEqualObjects(bc2[@"name"], @"message2");
     
     XCTAssertEqual([bc1[@"metaData"] count], 0);
     XCTAssertEqual([bc2[@"metaData"] count], 0);

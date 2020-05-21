@@ -129,6 +129,7 @@
 #define BSG_KSCrashField_Subcode "subcode"
 #define BSG_KSCrashField_UserReported "user_reported"
 #define BSG_KSCrashField_Overrides "overrides"
+#define BSG_KSCrashField_EventJson "event"
 #define BSG_KSCrashField_HandledState "handledState"
 #define BSG_KSCrashField_Metadata "metaData"
 #define BSG_KSCrashField_State "state"
@@ -174,6 +175,7 @@
 #define BSG_KSCrashField_Threads "threads"
 #define BSG_KSCrashField_User "user"
 #define BSG_KSCrashField_UserAtCrash "user_atcrash"
+#define BSG_KSCrashField_OnCrashMetadataSectionName "onCrash"
 
 #pragma mark Incomplete
 #define BSG_KSCrashField_Incomplete "incomplete"

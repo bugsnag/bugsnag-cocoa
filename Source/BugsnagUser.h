@@ -10,13 +10,8 @@
 
 @interface BugsnagUser : NSObject
 
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
-
-- (NSDictionary *)toJson;
-
-@property NSString *userId;
-@property NSString *name;
-@property NSString *emailAddress;
+@property(readonly) NSString *id;
+@property(readonly) NSString *name;
+@property(readonly) NSString *email;
 
 @end

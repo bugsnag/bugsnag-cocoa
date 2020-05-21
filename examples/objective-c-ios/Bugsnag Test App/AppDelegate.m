@@ -11,18 +11,12 @@
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    NSString *apiKey = @"<YOUR_APIKEY_HERE>";
-    NSError *error;
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:apiKey
-                                                                                 error:&error];
-    [Bugsnag startBugsnagWithConfiguration:configuration];
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    if (error) {
-        NSLog(@"There was an error while starting Bugsnag: %@", [error localizedDescription]);
-    }
-
+    NSString *apiKey = @"<YOUR_APIKEY_HERE>";
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
+    [Bugsnag startWithConfiguration:config];
+    
     return YES;
 }
 

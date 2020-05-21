@@ -9,42 +9,34 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagUser.h"
+#import "BugsnagApp.h"
+#import "BugsnagDevice.h"
 
 @interface BugsnagSession : NSObject
 
-- (_Nonnull instancetype)initWithId:(NSString *_Nonnull)sessionId
-                 startDate:(NSDate *_Nonnull)startDate
-                      user:(BugsnagUser *_Nullable)user
-              autoCaptured:(BOOL)autoCaptured;
+@property NSString *_Nonnull id;
+@property NSDate *_Nonnull startedAt;
+@property(readonly) BugsnagApp *_Nonnull app;
+@property(readonly) BugsnagDevice *_Nonnull device;
 
-- (_Nonnull instancetype)initWithDictionary:(NSDictionary *_Nonnull)dict;
-
-- (_Nonnull instancetype)initWithId:(NSString *_Nonnull)sessionId
-                          startDate:(NSDate *_Nonnull)startDate
-                               user:(BugsnagUser *_Nullable)user
-                       handledCount:(NSUInteger)handledCount
-                     unhandledCount:(NSUInteger)unhandledCount;
+// =============================================================================
+// MARK: - User
+// =============================================================================
 
 /**
- * Representation used in report payloads
+ * The current user
  */
-- (NSDictionary *_Nonnull)toJson;
+@property(readonly, retain, nonnull) BugsnagUser *user;
 
 /**
- * Full representation of a session suitable for creating an identical session
- * using initWithDictionary
+ *  Set user metadata
+ *
+ *  @param userId ID of the user
+ *  @param name   Name of the user
+ *  @param email  Email address of the user
  */
-- (NSDictionary *_Nonnull)toDictionary;
-- (void)stop;
-- (void)resume;
-
-@property(readonly) NSString *_Nonnull sessionId;
-@property(readonly) NSDate *_Nonnull startedAt;
-@property(readonly) BugsnagUser *_Nullable user;
-@property(readonly) BOOL autoCaptured;
-@property(readonly, getter=isStopped) BOOL stopped;
-
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
+- (void)setUser:(NSString *_Nullable)userId
+      withEmail:(NSString *_Nullable)email
+        andName:(NSString *_Nullable)name;
 
 @end

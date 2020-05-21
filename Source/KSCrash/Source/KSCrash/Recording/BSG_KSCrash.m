@@ -24,6 +24,8 @@
 // THE SOFTWARE.
 //
 
+#import <mach-o/dyld.h>
+#import <execinfo.h>
 #import "BSG_KSCrashAdvanced.h"
 
 #import "BSG_KSCrashC.h"
@@ -31,10 +33,13 @@
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSSingleton.h"
 #import "BSG_KSSystemCapabilities.h"
+#import "BSG_KSMachHeaders.h"
 #import "NSError+BSG_SimpleConstructor.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
+#import "BugsnagThread.h"
+#import "BSGSerialization.h"
 
 #if BSG_KSCRASH_HAS_UIKIT
 #import <UIKit/UIKit.h>
@@ -49,6 +54,10 @@
 #define BSG_KSCRASH_DefaultReportFilesDirectory @"KSCrashReports"
 #endif
 
+#ifndef BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE
+#define BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE 400
+#endif
+
 // ============================================================================
 #pragma mark - Constants -
 // ============================================================================
@@ -59,6 +68,13 @@
 // ============================================================================
 #pragma mark - Globals -
 // ============================================================================
+
+@interface BugsnagThread ()
++ (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads
+                                         binaryImages:(NSArray *)binaryImages
+                                                depth:(NSUInteger)depth
+                                            errorType:(NSString *)errorType;
+@end
 
 @interface BSG_KSCrash ()
 
@@ -134,7 +150,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 
         self.suspendThreadsForUserReported = YES;
         self.reportWhenDebuggerIsAttached = NO;
-        self.threadTracingEnabled = YES;
+        self.threadTracingEnabled = BSGThreadSendPolicyAlways;
         self.writeBinaryImagesForUserReported = YES;
     }
     return self;
@@ -191,7 +207,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     bsg_kscrash_setReportWhenDebuggerIsAttached(reportWhenDebuggerIsAttached);
 }
 
-- (void)setThreadTracingEnabled:(BOOL)threadTracingEnabled {
+- (void)setThreadTracingEnabled:(int)threadTracingEnabled {
     _threadTracingEnabled = threadTracingEnabled;
     bsg_kscrash_setThreadTracingEnabled(threadTracingEnabled);
 }
@@ -219,13 +235,16 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 }
 
 - (BOOL)install {
+    // Maintain a cache of info about dynamically loaded binary images
+    [self listenForLoadedBinaries];
+
     _handlingCrashTypes = bsg_kscrash_install(
         [self.crashReportPath UTF8String], [self.recrashReportPath UTF8String],
         [self.stateFilePath UTF8String], [self.nextCrashID UTF8String]);
     if (self.handlingCrashTypes == 0) {
         return false;
     }
-
+    
 #if BSG_KSCRASH_HAS_UIKIT
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
     [nCenter addObserver:self
@@ -251,6 +270,21 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 #endif
 
     return true;
+}
+
+/**
+ * Set up listeners for un/loaded frameworks.  Maintaining our own list of framework Mach
+ * headers means that we avoid potential deadlock situations where we try and suspend
+ * lock-holding threads prior to loading mach headers as part of our normal event handling
+ * behaviour.
+ */
+- (void)listenForLoadedBinaries {
+    bsg_initialise_mach_binary_headers(BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE);
+
+    // Note: Internally, access to DYLD's binary image store is guarded by an OSSpinLock.  We therefore don't need to
+    // add additional guards around our access.
+    _dyld_register_func_for_remove_image(&bsg_mach_binary_image_removed);
+    _dyld_register_func_for_add_image(&bsg_mach_binary_image_added);
 }
 
 - (void)sendAllReportsWithCompletion:
@@ -282,39 +316,66 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     [self.crashReportStore deleteAllFiles];
 }
 
+- (NSArray<BugsnagThread *> *)captureThreads:(NSException *)exc depth:(int)depth {
+    NSArray *addresses = [exc callStackReturnAddresses];
+    int numFrames = (int) [addresses count];
+    uintptr_t *callstack;
+
+    if (numFrames > 0) {
+        depth = 0; // reset depth if the stack does not need to be generated
+        callstack = malloc(numFrames * sizeof(*callstack));
+
+        for (NSUInteger i = 0; i < numFrames; i++) {
+            callstack[i] = [addresses[i] unsignedLongValue];
+        }
+    } else {
+        // generate a backtrace. This is required for NSError for example,
+        // which does not have a useful stacktrace generated.
+        numFrames = 100;
+        callstack = malloc(numFrames * sizeof(*callstack));
+
+        BSG_KSLOG_DEBUG("Fetching call stack.");
+        numFrames = backtrace((void **)callstack, numFrames);
+        if (numFrames <= 0) {
+            BSG_KSLOG_ERROR(@"backtrace() returned call stack length of %d", numFrames);
+            numFrames = 0;
+        }
+    }
+
+    char *trace = bsg_kscrash_captureThreadTrace(depth, numFrames, callstack);
+    free(callstack);
+    NSDictionary *json = BSGDeserializeJson(trace);
+
+    if (json) {
+        return [BugsnagThread threadsFromArray:[json valueForKeyPath:@"crash.threads"]
+                                  binaryImages:json[@"binary_images"]
+                                         depth:depth
+                                     errorType:nil];
+    }
+    return @[];
+}
+
 - (void)reportUserException:(NSString *)name
                      reason:(NSString *)reason
-          originalException:(NSException *)exception
                handledState:(NSDictionary *)handledState
                    appState:(NSDictionary *)appState
           callbackOverrides:(NSDictionary *)overrides
+             eventOverrides:(NSDictionary *)eventOverrides
                    metadata:(NSDictionary *)metadata
                      config:(NSDictionary *)config
-               discardDepth:(int)depth
            terminateProgram:(BOOL)terminateProgram {
     const char *cName = [name cStringUsingEncoding:NSUTF8StringEncoding];
     const char *cReason = [reason cStringUsingEncoding:NSUTF8StringEncoding];
-    NSArray *addresses = [exception callStackReturnAddresses];
-    NSUInteger numFrames = [addresses count];
-    uintptr_t *callstack = malloc(numFrames * sizeof(*callstack));
-    for (NSUInteger i = 0; i < numFrames; i++) {
-        callstack[i] = [addresses[i] unsignedLongValue];
-    }
-    if (numFrames > 0) {
-        depth = 0; // reset depth if the stack does not need to be generated
-    }
-    bsg_kscrash_reportUserException(cName, cReason,
-                                    callstack, numFrames,
-                                    [handledState[@"currentSeverity"] UTF8String],
-                                    [self encodeAsJSONString:handledState],
-                                    [self encodeAsJSONString:overrides],
-                                    [self encodeAsJSONString:metadata],
-                                    [self encodeAsJSONString:appState],
-                                    [self encodeAsJSONString:config],
-                                    depth,
-                                    terminateProgram);
 
-    free(callstack);
+    bsg_kscrash_reportUserException(cName, cReason,
+            [handledState[@"currentSeverity"] UTF8String],
+            [self encodeAsJSONString:handledState],
+            [self encodeAsJSONString:overrides],
+            [self encodeAsJSONString:eventOverrides],
+            [self encodeAsJSONString:metadata],
+            [self encodeAsJSONString:appState],
+            [self encodeAsJSONString:config],
+            terminateProgram);
 }
 
 // ============================================================================
@@ -414,6 +475,9 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 }
 
 - (const char *)encodeAsJSONString:(id)object {
+    if (object == nil) {
+        return NULL;
+    }
     NSError *error = nil;
     NSData *jsonData = [BSG_KSJSONCodec encode:object options:0 error:&error];
     if (jsonData == nil || error != nil) {

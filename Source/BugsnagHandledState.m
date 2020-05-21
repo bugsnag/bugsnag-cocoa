@@ -7,6 +7,26 @@
 //
 
 #import "BugsnagHandledState.h"
+#import "BugsnagKeys.h"
+
+BSGSeverity BSGParseSeverity(NSString *severity) {
+    if ([severity isEqualToString:BSGKeyInfo])
+        return BSGSeverityInfo;
+    else if ([severity isEqualToString:BSGKeyWarning])
+        return BSGSeverityWarning;
+    return BSGSeverityError;
+}
+
+NSString *BSGFormatSeverity(BSGSeverity severity) {
+    switch (severity) {
+    case BSGSeverityError:
+        return BSGKeyError;
+    case BSGSeverityInfo:
+        return BSGKeyInfo;
+    case BSGSeverityWarning:
+        return BSGKeyWarning;
+    }
+}
 
 static NSString *const kUnhandled = @"unhandled";
 static NSString *const kSeverityReasonType = @"severityReasonType";
@@ -26,6 +46,24 @@ static NSString *const kUserSpecifiedSeverity = @"userSpecifiedSeverity";
 static NSString *const kUserCallbackSetSeverity = @"userCallbackSetSeverity";
 
 @implementation BugsnagHandledState
+
++ (instancetype)handledStateFromJson:(NSDictionary *)json {
+    BOOL unhandled = [json[@"unhandled"] boolValue];
+    NSDictionary *data = json[@"severityReason"];
+    BSGSeverity severity = BSGParseSeverity(json[@"severity"]);
+
+    NSString *attrValue = nil;
+    NSDictionary *attrs = data[@"attributes"];
+
+    if (attrs != nil && [attrs count] == 1) { // only 1 attrValue is ever present
+        attrValue = [attrs allValues][0];
+    }
+    SeverityReasonType reason = [BugsnagHandledState severityReasonFromString:data[@"type"]];
+    return [[BugsnagHandledState alloc] initWithSeverityReason:reason
+                                                      severity:severity
+                                                     unhandled:unhandled
+                                                     attrValue:attrValue];
+}
 
 + (instancetype)handledStateWithSeverityReason:
     (SeverityReasonType)severityReason {

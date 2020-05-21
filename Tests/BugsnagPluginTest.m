@@ -24,7 +24,7 @@
 @property XCTestExpectation *expectation;
 @end
 @implementation FakePlugin
-    - (void)load {
+    - (void)load:(BugsnagClient *)client {
         [self.expectation fulfill];
     }
     - (void)unload {}
@@ -34,7 +34,7 @@
 @property XCTestExpectation *expectation;
 @end
 @implementation CrashyPlugin
-    - (void)load {
+    - (void)load:(BugsnagClient *)client {
         [NSException raise:@"WhoopsException" format:@"something went wrong"];
         [self.expectation fulfill];
     }
@@ -57,7 +57,7 @@
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [config addPlugin:plugin];
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
     [self waitForExpectations:@[expectation] timeout:3.0];
 }
 
@@ -69,7 +69,7 @@
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [config addPlugin:plugin];
-    [Bugsnag startBugsnagWithConfiguration:config];
+    [Bugsnag startWithConfiguration:config];
     [self waitForExpectations:@[expectation] timeout:3.0];
 }
 

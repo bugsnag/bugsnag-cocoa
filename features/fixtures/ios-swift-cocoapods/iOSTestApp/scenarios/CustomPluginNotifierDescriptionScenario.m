@@ -1,8 +1,12 @@
 #import "CustomPluginNotifierDescriptionScenario.h"
-#import <Bugsnag/BugsnagPlugin.h>
+#import <Bugsnag/Bugsnag.h>
 
-@interface Bugsnag()
-+ (id)client;
+@interface Bugsnag ()
++ (BugsnagClient *)client;
+@end
+
+@interface BugsnagClient ()
+@property id notifier;
 @end
 
 @interface DescriptionPlugin : NSObject<BugsnagPlugin>
@@ -16,14 +20,11 @@
     return self;
 }
 
-- (void)load {
-    id notifier = [Bugsnag client];
-    NSDictionary *newDetails = @{
-        @"version": @"2.1.0",
-        @"name": @"Foo Handler Library",
-        @"url": @"https://example.com"
-    };
-    [notifier setValue:newDetails forKey:@"details"];
+- (void)load:(BugsnagClient *)client {
+    id notifier = [Bugsnag client].notifier;
+    [notifier setValue:@"2.1.0" forKeyPath:@"version"];
+    [notifier setValue:@"Foo Handler Library" forKeyPath:@"name"];
+    [notifier setValue:@"https://example.com" forKeyPath:@"url"];
 }
 
 - (void)unload {}

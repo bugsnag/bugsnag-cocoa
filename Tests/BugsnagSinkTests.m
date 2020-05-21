@@ -19,8 +19,22 @@
 @property NSDictionary *processedData;
 @end
 
+@interface BugsnagEvent ()
+- (instancetype)initWithKSReport:(NSDictionary *)report;
+
+- (instancetype)initWithApp:(BugsnagAppWithState *)app
+                     device:(BugsnagDeviceWithState *)device
+               handledState:(BugsnagHandledState *)handledState
+                       user:(BugsnagUser *)user
+                   metadata:(BugsnagMetadata *)metadata
+                breadcrumbs:(NSArray<BugsnagBreadcrumb *> *)breadcrumbs
+                     errors:(NSArray<BugsnagError *> *)errors
+                    threads:(NSArray<BugsnagThread *> *)threads
+                    session:(BugsnagSession *)session;
+@end
+
 @interface BugsnagSink ()
-- (NSDictionary *)getBodyFromReports:(NSArray *)reports;
+- (NSDictionary *)getBodyFromEvents:(NSArray *)events;
 @end
 
 @implementation BugsnagSinkTests
@@ -43,11 +57,12 @@
     config.releaseStage = @"MagicalTestingTime";
 
     // set a dummy endpoint, avoid hitting production
-    [config setEndpointsForNotify:@"http://localhost:1234" sessions:@"http://localhost:1234"];
-    [Bugsnag startBugsnagWithConfiguration:config];
+    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://localhost:1234"
+                                                                   sessions:@"http://localhost:1234"];
+    [Bugsnag startWithConfiguration:config];
     BugsnagEvent *report =
     [[BugsnagEvent alloc] initWithKSReport:self.rawReportData];
-    self.processedData = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    self.processedData = [[BugsnagSink new] getBodyFromEvents:@[report]];
 }
 
 - (void)tearDown {
@@ -138,7 +153,7 @@
     [self.processedData[@"events"] firstObject][@"breadcrumbs"];
     XCTAssertEqual(2, breadcrumbs.count);
     for (int i = 0; i < breadcrumbs.count; i++) {
-        XCTAssertEqualObjects(expected[i][@"message"], breadcrumbs[i][@"message"]);
+        XCTAssertEqualObjects(expected[i][@"name"], breadcrumbs[i][@"message"]);
         XCTAssertEqualObjects(expected[i][@"type"], breadcrumbs[i][@"type"]);
         XCTAssertEqualObjects(expected[i][@"timestamp"], breadcrumbs[i][@"timestamp"]);
         XCTAssertEqualObjects(expected[i][@"metadata"], breadcrumbs[i][@"metadata"]);
@@ -150,6 +165,12 @@
     [self.rawReportData valueForKeyPath:@"user.config.context"];
     NSArray *context = [self.processedData[@"events"] firstObject][@"context"];
     XCTAssertEqualObjects(context, expected);
+}
+
+- (void)testEventMetadataApp {
+    NSDictionary *app = [[self.processedData valueForKeyPath:@"events.metaData.app"] firstObject];
+    NSDictionary *expected = @{@"name" : self.rawReportData[@"system"][@"CFBundleExecutable"]};
+    XCTAssertEqualObjects(app, expected);
 }
 
 - (void)testEventMetadataUser {
@@ -245,7 +266,7 @@
     NSArray *exceptions =
     [self.processedData[@"events"] firstObject][@"exceptions"];
     NSArray *stacktrace = [exceptions firstObject][@"stacktrace"];
-    XCTAssert([stacktrace count] != 0);
+    XCTAssertNotEqual(0, [stacktrace count]);
     XCTAssertNotNil(stacktrace);
     for (NSDictionary *frame in stacktrace) {
         XCTAssertNotNil([frame valueForKey:@"machoUUID"]);
@@ -266,11 +287,7 @@
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     NSDictionary *device = event[@"device"];
     XCTAssertNotNil(device);
-#if TARGET_OS_IPHONE || TARGET_OS_TV || TARGET_IPHONE_SIMULATOR
-    XCTAssertEqual(19, device.count);
-#else
-    XCTAssertEqual(18, device.count);
-#endif
+    XCTAssertEqual(14, device.count);
 
     XCTAssertEqualObjects(device[@"id"], @"f6d519a74213a57f8d052c53febfeee6f856d062");
     XCTAssertEqualObjects(device[@"manufacturer"], @"Apple");
@@ -282,29 +299,20 @@
     XCTAssertEqualObjects(device[@"runtimeVersions"][@"clangVersion"], @"10.0.0 (clang-1000.11.45.5)");
     XCTAssertEqualObjects(device[@"totalMemory"], @15065522176);
     XCTAssertNotNil(device[@"freeDisk"]);
-    XCTAssertEqualObjects(device[@"timezone"], @"PST");
     XCTAssertEqualObjects(device[@"jailbroken"], @YES);
     XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
     XCTAssertEqualObjects(device[@"orientation"], @"unknown");
-    XCTAssertEqualObjects(device[@"time"], @"2014-12-02T01:56:13Z");
-
-#if defined(__LP64__)
-    XCTAssertEqualObjects(device[@"wordSize"], @64);
-#else
-    XCTAssertEqualObjects(device[@"wordSize"], @32);
-#endif
+    XCTAssertEqualObjects(device[@"time"], @"2014-12-02T01:56:13+0000");
 }
 
 - (void)testEventApp {
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     NSDictionary *app = event[@"app"];
     XCTAssertNotNil(app);
-    XCTAssertEqual(11, app.count);
-    
+    XCTAssertEqual(9, app.count);
     XCTAssertEqualObjects(app[@"id"], @"net.hockeyapp.CrashProbeiOS");
     XCTAssertNotNil(app[@"type"]);
     XCTAssertEqualObjects(app[@"version"], @"1.0");
-    XCTAssertEqualObjects(app[@"name"], @"CrashProbeiOS");
     XCTAssertEqualObjects(app[@"bundleVersion"], @"1");
     XCTAssertEqualObjects(app[@"releaseStage"], @"production");
     XCTAssertEqualObjects(app[@"dsymUUIDs"], @[@"D0A41830-4FD2-3B02-A23B-0741AD4C7F52"]);
@@ -316,16 +324,22 @@
 #pragma mark - handled/unhandled serialisation
 
 - (NSDictionary *)reportFromHandledState:(BugsnagHandledState *)state {
-    BugsnagEvent *report =
-    [[BugsnagEvent alloc] initWithErrorName:@"TestError"
-                                     errorMessage:@"Error for testing"
-                                    configuration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1]
-                                         metadata:[NSDictionary new]
-                                     handledState:state
-                                          session:nil];
-    
-    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    BugsnagEvent *report = [self generateEvent:state];
+    NSDictionary *data = [[BugsnagSink new] getBodyFromEvents:@[report]];
     return [data[@"events"] firstObject];
+}
+
+- (BugsnagEvent *)generateEvent:(BugsnagHandledState *)state {
+    BugsnagEvent *report = [[BugsnagEvent alloc] initWithApp:nil
+                                                      device:nil
+                                                handledState:state
+                                                        user:nil
+                                                    metadata:nil
+                                                 breadcrumbs:@[]
+                                                      errors:@[]
+                                                     threads:@[]
+                                                     session:nil];
+    return report;
 }
 
 - (void)testHandledSerialization {
@@ -399,16 +413,10 @@
 - (void)testCallbackSpecified {
     BugsnagHandledState *state =
     [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    BugsnagEvent *report =
-    [[BugsnagEvent alloc] initWithErrorName:@"TestError"
-                                     errorMessage:@"Error for testing"
-                                    configuration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1]
-                                         metadata:[NSDictionary new]
-                                     handledState:state
-                                          session:nil];
+    BugsnagEvent *report = [self generateEvent:state];
     report.severity = BSGSeverityInfo;
     
-    NSDictionary *data = [[BugsnagSink new] getBodyFromReports:@[ report ]];
+    NSDictionary *data = [[BugsnagSink new] getBodyFromEvents:@[report]];
     NSDictionary *payload = [data[@"events"] firstObject];
     
     XCTAssertEqualObjects(@"info", payload[@"severity"]);
