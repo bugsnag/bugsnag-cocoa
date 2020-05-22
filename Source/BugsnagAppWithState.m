@@ -72,11 +72,11 @@
     NSDictionary *stats = system[@"application_stats"];
 
     // convert from seconds to milliseconds
-    NSUInteger activeTimeSinceLaunch = (NSUInteger) ([stats[@"active_time_since_launch"] longValue] * 1000);
-    NSUInteger backgroundTimeSinceLaunch = (NSUInteger) ([stats[@"background_time_since_launch"] longValue] * 1000);
+    NSNumber *activeTimeSinceLaunch = @([stats[@"active_time_since_launch"] longValue] * 1000);
+    NSNumber *backgroundTimeSinceLaunch = @([stats[@"background_time_since_launch"] longValue] * 1000);
 
-    app.durationInForeground = @(activeTimeSinceLaunch);
-    app.duration = @(activeTimeSinceLaunch + backgroundTimeSinceLaunch);
+    app.durationInForeground = activeTimeSinceLaunch;
+    app.duration = @([activeTimeSinceLaunch longValue] + [backgroundTimeSinceLaunch longValue]);
     app.inForeground = [stats[@"application_in_foreground"] boolValue];
     [BugsnagApp populateFields:app dictionary:event config:config codeBundleId:codeBundleId];
     return app;
