@@ -28,12 +28,12 @@ jobs:
   - osx_image: xcode10.2 # macos 10.14
     name: macOS 10.14 unit tests
     stage: macOS unit tests
-    env: PLATFORM=OSX
+    env: PLATFORM=macOS
 
   - osx_image: xcode9.4 # macos 10.13
     name: macOS 10.13 unit tests
     stage: macOS unit tests
-    env: PLATFORM=OSX
+    env: PLATFORM=macOS
   
   # ----------------------------------------------------------------------------
   # Unit Tests - iOS & tvOS

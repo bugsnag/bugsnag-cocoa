@@ -1,9 +1,9 @@
 PLATFORM?=iOS
 OS?=latest
 TEST_CONFIGURATION?=Debug
-BUILD_FLAGS=-project $(PLATFORM)/Bugsnag.xcodeproj -scheme Bugsnag -derivedDataPath build
+BUILD_FLAGS=-project Project/Bugsnag.xcodeproj -scheme Bugsnag-$(PLATFORM) -derivedDataPath build/build-$(PLATFORM)
 
-ifeq ($(PLATFORM),OSX)
+ifeq ($(PLATFORM),macOS)
  SDK?=macosx
  RELEASE_DIR=Release
  BUILD_ONLY_FLAGS=-sdk $(SDK) CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
@@ -95,8 +95,8 @@ endif
 	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings
 
 clean: ## Clean build artifacts
-	@$(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
-	@rm -rf build
+	@set -x && $(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
+	@rm -rf build-$(PLATFORM)
 
 test: ## Run unit tests
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
