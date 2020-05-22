@@ -5,6 +5,7 @@
 #import "BugsnagTestConstants.h"
 #import "BugsnagEndpointConfiguration.h"
 #import "BugsnagErrorTypes.h"
+#import "BugsnagKeys.h"
 
 @interface BSGConfigurationBuilderTests : XCTestCase
 @end

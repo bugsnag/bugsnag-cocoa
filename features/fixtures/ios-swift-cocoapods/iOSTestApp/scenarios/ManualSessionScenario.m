@@ -14,9 +14,6 @@
 
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;
-    self.config.persistUser = NO;
-    [self.config deletePersistedUserData];
-    [self.config setUser:nil withEmail:nil andName:nil];
     [super startBugsnag];
 }
 

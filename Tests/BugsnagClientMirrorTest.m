@@ -101,9 +101,20 @@
             @"setExtraRuntimeInfo: v24@0:8@16",
             @"collectDeviceWithState @16@0:8",
             @"setStateEventBlocks: v24@0:8@16",
-            @"addObserverUsingBlock: v24@0:8@?16",
+            @"addObserverWithBlock: v24@0:8@?16",
+            @"removeObserverWithBlock: v24@0:8@?16",
             @"notifyObservers: v24@0:8@16",
-            @"stateEventBlocks @16@0:8"
+            @"stateEventBlocks @16@0:8",
+            @"generateDeviceWithState: @24@0:8@16",
+            @"populateEventData: v24@0:8@16",
+            @"generateAppWithState: @24@0:8@16",
+            @"generateThreads @16@0:8",
+            @"deserializeJson: @24@0:8*16",
+            @"generateErrors: @24@0:8@16",
+            @"generateError:threads: @32@0:8@16@24",
+            @"appendNSErrorInfo:block:event: B40@0:8@16@?24@32",
+            @"appendNSErrorInfo:block:event: c40@0:8@16@?24@32",
+            @"createNSErrorWrapper: @24@0:8@16"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to

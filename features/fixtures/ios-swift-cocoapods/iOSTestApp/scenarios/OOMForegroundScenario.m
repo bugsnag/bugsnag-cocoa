@@ -1,7 +1,7 @@
-#import "OOMScenario.h"
-#import <signal.h>
 
-@implementation OOMScenario
+#import "OOMForegroundScenario.h"
+
+@implementation OOMForegroundScenario
 
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;
@@ -10,10 +10,17 @@
         [event addMetadata:@{ @"shape": @"line" } toSection:@"extra"];
         return YES;
     }];
+    
+    if(![self.eventMode isEqualToString:@"reportOOMsFalse"]) {
+        BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
+        self.config.enabledErrorTypes = errorTypes;
+    }
+    
     [super startBugsnag];
 }
 
 - (void)run {
     [Bugsnag leaveBreadcrumbWithMessage:@"Crumb left before crash"];
+    kill(getpid(), SIGKILL);
 }
 @end

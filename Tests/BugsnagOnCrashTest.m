@@ -28,10 +28,12 @@
 - (void)testOnCrashData {
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
             @"user": @{
-                    @"name": @"Joe Bloggs"
+                    @"customer": @{
+                            @"name": @"Joe Bloggs"
+                    }
             }
     }];
-    NSMutableDictionary *data = [event getMetadataFromSection:@"onCrash"];
+    NSMutableDictionary *data = [event getMetadataFromSection:@"customer"];
     XCTAssertNotNil(data);
     XCTAssertEqual(1, [data count]);
     XCTAssertEqualObjects(@"Joe Bloggs", data[@"name"]);
@@ -44,21 +46,22 @@
 - (void)testBlacklistedFields {
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
             @"user": @{
-                    @"name": @"Joe Bloggs",
+                    @"foo": @"some value here",
+                    @"customer": @{@"name": @"Joe Bloggs"},
                     @"overrides": @{
-                            @"test": @"test_val"
+                            @"test": @{@"test_key": @"test_val"}
                     },
                     @"handledState": @{
-                            @"test": @"test_val"
+                            @"test": @{@"test_key": @"test_val"}
                     },
                     @"metaData": @{
-                            @"test": @"test_val"
+                            @"test": @{@"test_key": @"test_val"}
                     },
                     @"state": @{
-                            @"test": @"test_val"
+                            @"test": @{@"test_key": @"test_val"}
                     },
                     @"config": @{
-                            @"test": @"test_val"
+                            @"test": @{@"test_key": @"test_val"}
                     },
                     @"depth": @2,
                     @"id": @"E7E3A6E8-D1FE-426D-B7BB-B247C957A109",
@@ -67,7 +70,7 @@
                     @"unhandledCount": @1,
             }
     }];
-    NSMutableDictionary *data = [event getMetadataFromSection:@"onCrash"];
+    NSMutableDictionary *data = [event getMetadataFromSection:@"customer"];
     XCTAssertNotNil(data);
     XCTAssertEqual(1, [data count]);
     XCTAssertEqualObjects(@"Joe Bloggs", data[@"name"]);
@@ -80,16 +83,18 @@
 - (void)testMergePrecedence {
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
             @"user": @{
-                    @"name": @"Joe Bloggs",
+                    @"customer": @{
+                            @"name": @"Joe Bloggs",
+                    },
                     @"metaData": @{
-                            @"onCrash": @{
+                            @"customer": @{
                                     @"name": @"Beryl Merryweather",
                                     @"age": @76
                             }
                     }
             }
     }];
-    NSMutableDictionary *data = [event getMetadataFromSection:@"onCrash"];
+    NSMutableDictionary *data = [event getMetadataFromSection:@"customer"];
     XCTAssertNotNil(data);
     XCTAssertEqual(2, [data count]);
     XCTAssertEqualObjects(@"Joe Bloggs", data[@"name"]);

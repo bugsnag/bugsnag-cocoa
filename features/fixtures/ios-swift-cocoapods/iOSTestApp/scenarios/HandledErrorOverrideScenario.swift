@@ -8,8 +8,6 @@ import Bugsnag
 
 /**
  Sends a handled Error to Bugsnag and overrides the exception name + message
- Demonstrates adjusting report depth to exclude common error handling code from grouping
- See: https://docs.bugsnag.com/platforms/ios-objc/reporting-handled-exceptions/#depth
  */
 class HandledErrorOverrideScenario: Scenario {
 
@@ -23,8 +21,6 @@ class HandledErrorOverrideScenario: Scenario {
             let error = report.errors[0]
             error.errorMessage = "Foo"
             error.errorClass = "Bar"
-            let depth: Int = report.value(forKey: "depth") as! Int
-            report.setValue(depth + 2, forKey: "depth")
             report.addMetadata(["items": [400,200]], section: "account")
             return true
         }
