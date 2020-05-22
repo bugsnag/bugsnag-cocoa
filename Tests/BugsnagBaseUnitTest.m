@@ -27,7 +27,6 @@
  * We take the former approach.
  *
  * @param willNotify Whether the notifier should actually send the event to the server
- * @param willPersistUser Whether any user information should be persisted
  */
 
 -(void)setUpBugsnagWillCallNotify:(bool)willNotify

@@ -25,7 +25,7 @@
     "tvos": "9.0"
   },
   "source_files": [
-    "Source/{**/,}*.{m,h,mm,c,cpp}"
+    "Source/{**/,}*.{m,h,mm,c}"
   ],
   "requires_arc": true,
   "public_header_files": [
