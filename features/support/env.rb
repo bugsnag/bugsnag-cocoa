@@ -27,7 +27,7 @@ AfterConfiguration do |config|
     :accessibility_id,
     {
       'browserstack.deviceLogs' => true,
-      'browserstack.appium_version' => '1.16.0'
+      'browserstack.appium_version' => '1.15.0' # Temporary fix to allow running on iOS 10
     }
   )
   $driver.start_driver
