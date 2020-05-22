@@ -4,8 +4,7 @@ Feature: Loading Bugsnag configuration from Info.plist
 
     Scenario: Specifying config in Info.plist
         When I run "LoadConfigFromFileScenario"
-        And I wait for a request
-        Then the request is valid for the error reporting API
+        And I wait to receive a request
         And the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
         And the event "metaData.nserror.domain" equals "iOSTestApp.LaunchError"
         And the event "app.releaseStage" equals "beta2"
