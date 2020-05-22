@@ -142,3 +142,4 @@ Scenario: Encountering handled and unhandled events during a session
     And the payload field "events.0.session.id" equals the stored value "session_id"
     And the payload field "events.1.session.id" equals the stored value "session_id"
     And the payload field "events.2.session.id" equals the stored value "session_id"
+    

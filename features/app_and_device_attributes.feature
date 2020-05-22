@@ -14,7 +14,7 @@ Scenario: App and Device info is as expected
     And the payload field "events.0.device.manufacturer" equals "Apple"
     And the payload field "events.0.device.locale" is not null
     And the payload field "events.0.device.id" is not null
-    And the payload field "events.0.device.model" equals "iPhone10,4"
+    And the payload field "events.0.device.model" matches the test device model
     And the payload field "events.0.device.modelNumber" is not null
     And the payload field "events.0.device.runtimeVersions.osBuild" is not null
     And the payload field "events.0.device.runtimeVersions.clangVersion" is not null 
@@ -25,7 +25,6 @@ Scenario: App and Device info is as expected
     And the payload field "events.0.device.freeDisk" is an integer
     And the payload field "events.0.device.freeMemory" is an integer
     #And the payload field "events.0.device.orientation" equals "portrait"
-    And the payload field "events.0.device.time" is not null
     And the payload field "events.0.device.time" is a date
 
     # App
@@ -42,4 +41,4 @@ Scenario: App and Device info is as expected
     
     And the payload field "events.0.app.duration" is a number
     And the payload field "events.0.app.durationInForeground" is a number
-    And the payload field "events.0.app.inForeground" is not null
+    And the payload field "events.0.app.inForeground" is true

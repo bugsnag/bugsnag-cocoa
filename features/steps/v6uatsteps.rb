@@ -4,7 +4,7 @@ require 'date'
 
 Then(/^the payload field "(.+)" is a number$/) do |field_path|
     value = read_key_path(Server.current_request[:body], field_path)
-    assert_true(value.is_a?(Integer) || value.is_a?(Float))
+    assert_kind_of Numeric, value
 end
 
 Then(/^the payload field "(.+)" is not a number$/) do |field_path|
@@ -40,8 +40,7 @@ end
 
 Then(/^the payload field "(.+)" is a date$/) do |field_path|
     value = read_key_path(Server.current_request[:body], field_path)
-    date = nil
-    date = Date.parse(value)
+    date = Date.parse(value) rescue nil
     assert_true(date.is_a?(Date))
 end
 
