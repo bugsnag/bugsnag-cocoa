@@ -1,21 +1,7 @@
 #import "BSGConfigurationBuilder.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagEndpointConfiguration.h"
-
-NSString *const BSGKeyAppType = @"appType";
-NSString *const BSGKeyAppVersion = @"appVersion";
-NSString *const BSGKeyAutoDetectErrors = @"autoDetectErrors";
-NSString *const BSGKeyAutoTrackSessions = @"autoTrackSessions";
-NSString *const BSGKeyBundleVersion = @"bundleVersion";
-NSString *const BSGKeyPersistUser = @"persistUser";
-NSString *const BSGKeyReleaseStage = @"releaseStage";
-NSString *const BSGKeyEnabledReleaseStages = @"enabledReleaseStages";
-NSString *const BSGKeyRedactedKeys = @"redactedKeys";
-NSString *const BSGKeyEndpoints = @"endpoints";
-NSString *const BSGKeyNotifyEndpoint = @"notify";
-NSString *const BSGKeySessionsEndpoint = @"sessions";
-NSString *const BSGKeyMaxBreadcrumbs = @"maxBreadcrumbs";
-NSString *const BSGKeySendThreads = @"sendThreads";
+#import "BugsnagKeys.h"
 
 static BOOL BSGValueIsBoolean(id object) {
     return object != nil && [object isKindOfClass:[NSNumber class]]
