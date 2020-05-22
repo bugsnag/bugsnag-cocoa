@@ -27,12 +27,12 @@
 
     id duration = json[@"duration"];
     if (duration && [duration isKindOfClass:[NSNumber class]]) {
-        app.duration = [(NSNumber *) duration unsignedIntValue];
+        app.duration = duration;
     }
 
     id durationInForeground = json[@"durationInForeground"];
     if (durationInForeground && [durationInForeground isKindOfClass:[NSNumber class]]) {
-        app.durationInForeground = [(NSNumber *) durationInForeground unsignedIntValue];
+        app.durationInForeground = durationInForeground;
     }
 
     id inForeground = json[@"inForeground"];
@@ -72,11 +72,11 @@
     NSDictionary *stats = system[@"application_stats"];
 
     // convert from seconds to milliseconds
-    NSUInteger activeTimeSinceLaunch = (NSUInteger) ([stats[@"active_time_since_launch"] longValue] * 1000);
-    NSUInteger backgroundTimeSinceLaunch = (NSUInteger) ([stats[@"background_time_since_launch"] longValue] * 1000);
+    NSNumber *activeTimeSinceLaunch = @([stats[@"active_time_since_launch"] longValue] * 1000);
+    NSNumber *backgroundTimeSinceLaunch = @([stats[@"background_time_since_launch"] longValue] * 1000);
 
     app.durationInForeground = activeTimeSinceLaunch;
-    app.duration = activeTimeSinceLaunch + backgroundTimeSinceLaunch;
+    app.duration = @([activeTimeSinceLaunch longValue] + [backgroundTimeSinceLaunch longValue]);
     app.inForeground = [stats[@"application_in_foreground"] boolValue];
     [BugsnagApp populateFields:app dictionary:event config:config codeBundleId:codeBundleId];
     return app;
@@ -85,8 +85,8 @@
 - (NSDictionary *)toDict
 {
     NSMutableDictionary *dict = (NSMutableDictionary *) [super toDict];
-    BSGDictInsertIfNotNil(dict, @(self.duration), @"duration");
-    BSGDictInsertIfNotNil(dict, @(self.durationInForeground), @"durationInForeground");
+    BSGDictInsertIfNotNil(dict, self.duration, @"duration");
+    BSGDictInsertIfNotNil(dict, self.durationInForeground, @"durationInForeground");
     BSGDictInsertIfNotNil(dict, @(self.inForeground), @"inForeground");
     return dict;
 }

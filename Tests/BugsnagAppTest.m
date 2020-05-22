@@ -82,8 +82,8 @@
     BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
 
     // verify stateful fields
-    XCTAssertEqual(7000, app.duration);
-    XCTAssertEqual(2000, app.durationInForeground);
+    XCTAssertEqualObjects(@7000, app.duration);
+    XCTAssertEqualObjects(@2000, app.durationInForeground);
     XCTAssertTrue(app.inForeground);
 
     // verify stateless fields
@@ -115,8 +115,8 @@
     NSDictionary *dict = [app toDict];
 
     // verify stateful fields
-    XCTAssertEqual(7000, [dict[@"duration"] longValue]);
-    XCTAssertEqual(2000, [dict[@"durationInForeground"] longValue]);
+    XCTAssertEqualObjects(@7000, dict[@"duration"]);
+    XCTAssertEqualObjects(@2000, dict[@"durationInForeground"]);
     XCTAssertTrue([dict[@"inForeground"] boolValue]);
 
     // verify stateless fields
@@ -143,8 +143,8 @@
     BugsnagAppWithState *app = [BugsnagAppWithState appWithOomData:oomData];
 
     // verify stateful fields
-    XCTAssertEqual(0, app.duration);
-    XCTAssertEqual(0, app.durationInForeground);
+    XCTAssertNil(app.duration);
+    XCTAssertNil(app.durationInForeground);
     XCTAssertTrue(app.inForeground);
 
     // verify stateless fields
@@ -174,8 +174,8 @@
     XCTAssertNotNil(app);
 
     // verify stateful fields
-    XCTAssertEqual(7000, app.duration);
-    XCTAssertEqual(2000, app.durationInForeground);
+    XCTAssertEqualObjects(@7000, app.duration);
+    XCTAssertEqualObjects(@2000, app.durationInForeground);
     XCTAssertTrue(app.inForeground);
 
     // verify stateless fields
