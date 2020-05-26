@@ -2,8 +2,8 @@ Feature: Reporting User Information
 
 Scenario: Default user information only includes ID
     When I run "UserDefaultInfoScenario"
-    And I wait for a request
-    Then the request is valid for the error reporting API
+    And I wait to receive a request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the exception "message" equals "The operation couldn’t be completed. (UserDefaultInfoScenario error 100.)"
     And the event "user.id" is not null
     And the event "user.email" is null
