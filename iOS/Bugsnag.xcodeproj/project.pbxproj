@@ -13,6 +13,13 @@
 		000E6EA423D8AC8C009D8194 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA023D8AC8C009D8194 /* README.md */; };
 		000E6EA523D8AC8C009D8194 /* VERSION in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA123D8AC8C009D8194 /* VERSION */; };
 		000E6EA623D8AC8C009D8194 /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA223D8AC8C009D8194 /* CHANGELOG.md */; };
+		0016B28A246EDC9A002B34C8 /* BugsnagSwiftPublicAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0016B289246EDC9A002B34C8 /* BugsnagSwiftPublicAPITests.swift */; };
+		004A41CE23FE91070092DF97 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004A41CD23FE91070092DF97 /* Security.framework */; };
+		0061D84724067AF80041C068 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 0061D84424067AF70041C068 /* LICENSE */; };
+		0061D84824067AF80041C068 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 0061D84424067AF70041C068 /* LICENSE */; };
+		0061D84924067AF80041C068 /* BSG_SSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 0061D84524067AF70041C068 /* BSG_SSKeychain.m */; };
+		0061D84A24067AF80041C068 /* BSG_SSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 0061D84524067AF70041C068 /* BSG_SSKeychain.m */; };
+		0061D84B24067AF80041C068 /* BSG_SSKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 0061D84624067AF80041C068 /* BSG_SSKeychain.h */; };
 		0071CB4B2460213200F562B1 /* BSG_KSMachHeaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 0071CB4A2460213200F562B1 /* BSG_KSMachHeaders.m */; };
 		0071CB4C2460213200F562B1 /* BSG_KSMachHeaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 0071CB4A2460213200F562B1 /* BSG_KSMachHeaders.m */; };
 		0071CB4F246025AF00F562B1 /* KSMachHeader_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0071CB4E246025AF00F562B1 /* KSMachHeader_Tests.m */; };
@@ -525,7 +532,11 @@
 		000E6EA023D8AC8C009D8194 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		000E6EA123D8AC8C009D8194 /* VERSION */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = VERSION; path = ../VERSION; sourceTree = "<group>"; };
 		000E6EA223D8AC8C009D8194 /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
+		0016B289246EDC9A002B34C8 /* BugsnagSwiftPublicAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BugsnagSwiftPublicAPITests.swift; path = "../../../Tests/Swift Tests/BugsnagSwiftPublicAPITests.swift"; sourceTree = "<group>"; };
 		004A41CD23FE91070092DF97 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
+		0061D84424067AF70041C068 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		0061D84524067AF70041C068 /* BSG_SSKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSG_SSKeychain.m; sourceTree = "<group>"; };
+		0061D84624067AF80041C068 /* BSG_SSKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSG_SSKeychain.h; sourceTree = "<group>"; };
 		0071CB4A2460213200F562B1 /* BSG_KSMachHeaders.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSG_KSMachHeaders.m; sourceTree = "<group>"; };
 		0071CB4D2460216200F562B1 /* BSG_KSMachHeaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSG_KSMachHeaders.h; sourceTree = "<group>"; };
 		0071CB4E246025AF00F562B1 /* KSMachHeader_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSMachHeader_Tests.m; sourceTree = "<group>"; };
@@ -817,6 +828,7 @@
 			children = (
 				000E6E9D23D8690F009D8194 /* BugsnagSwiftConfigurationTests.swift */,
 				00D7ACAE23EABBC800FBE4A7 /* BugsnagSwiftTests.swift */,
+				0016B289246EDC9A002B34C8 /* BugsnagSwiftPublicAPITests.swift */,
 			);
 			path = "Swift Tests";
 			sourceTree = "<group>";
@@ -1627,6 +1639,7 @@
 				E78C1EF31FCC615400B976D3 /* BugsnagSessionTrackingPayloadTest.m in Sources */,
 				E78C1EF11FCC2F1700B976D3 /* BugsnagSessionTrackerTest.m in Sources */,
 				E70E52152216E41C00A590AB /* BugsnagSessionTrackerStopTest.m in Sources */,
+				0016B28A246EDC9A002B34C8 /* BugsnagSwiftPublicAPITests.swift in Sources */,
 				00F9393923FC4F64008C7073 /* BugsnagTestsDummyClass.m in Sources */,
 				F4295F017754324FD52CCE46 /* RegisterErrorDataTest.m in Sources */,
 				00D7ACAF23EABBC800FBE4A7 /* BugsnagSwiftTests.swift in Sources */,

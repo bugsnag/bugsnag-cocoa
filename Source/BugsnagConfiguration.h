@@ -121,15 +121,17 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
  *  The API key of a Bugsnag project
  */
 @property(readwrite, retain, nonnull) NSString *apiKey;
+
 /**
  *  The release stage of the application, such as production, development, beta
  *  et cetera
  */
 @property(readwrite, retain, nullable) NSString *releaseStage;
+
 /**
  *  Release stages which are allowed to notify Bugsnag
  */
-@property(readwrite, retain, nullable) NSArray *enabledReleaseStages;
+@property(readwrite, retain, nullable) NSSet<NSString *> *enabledReleaseStages;
 
 /**
  * Sets which values should be removed from any Metadata objects before
@@ -140,7 +142,7 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
  * By default, redactedKeys is set to ["password"]. Both string literals and regex
  * values can be supplied to this property.
  */
-@property(readwrite, retain, nullable) NSArray<id> *redactedKeys;
+@property(readwrite, retain, nullable) NSSet<id> *redactedKeys;
 
 /**
  *  A general summary of what was occuring in the application

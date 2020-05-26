@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 typedef NS_OPTIONS(NSUInteger, BSGThreadType) {
-    BSGThreadTypeCocoa = 0,
+    BSGThreadTypeCocoa NS_SWIFT_NAME(cocoa) = 0,
     BSGThreadTypeReactNativeJs = 1 << 1
 };
 
