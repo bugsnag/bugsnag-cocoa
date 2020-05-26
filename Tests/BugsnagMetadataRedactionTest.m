@@ -12,7 +12,7 @@
 @interface BugsnagEvent ()
 - (NSDictionary *)toJson;
 - (instancetype)initWithKSReport:(NSDictionary *)report;
-@property NSSet<id> *redactedKeys;
+@property NSArray *redactedKeys;
 @end
 
 @interface BugsnagMetadataRedactionTest : XCTestCase
@@ -39,7 +39,7 @@
             @"password": @"hunter2",
             @"some_key": @"2fa0"
     }];
-    event.redactedKeys = [NSSet setWithArray:@[@"password"]];
+    event.redactedKeys = @[@"password"];
 
     NSDictionary *payload = [event toJson];
     NSDictionary *section = payload[@"metaData"][@"custom"];
@@ -59,7 +59,7 @@
             },
             @"some_key": @"2fa0"
     }];
-    event.redactedKeys = [NSSet setWithArray:@[@"password"]];
+    event.redactedKeys = @[@"password"];
 
     NSDictionary *payload = [event toJson];
     NSDictionary *section = payload[@"metaData"][@"custom"];
@@ -79,7 +79,7 @@
             @"some_key": @"2fa0",
             @"foo": @"gasdf"
     }];
-    event.redactedKeys = [NSSet setWithArray:@[@"authority", @"some_key"]];
+    event.redactedKeys = @[@"authority", @"some_key"];
 
     NSDictionary *payload = [event toJson];
     NSDictionary *section = payload[@"metaData"][@"custom"];
@@ -107,7 +107,7 @@
     }];
     // disallow any numeric characters
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[0-9]" options:0 error:nil];
-    event.redactedKeys = [NSSet setWithArray:@[@"password", regex]];
+    event.redactedKeys = @[@"password", regex];
 
     NSDictionary *payload = [event toJson];
     NSDictionary *section = payload[@"metaData"][@"custom"];

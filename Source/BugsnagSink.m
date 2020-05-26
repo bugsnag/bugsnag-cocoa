@@ -53,7 +53,7 @@
 - (NSDictionary *_Nonnull)toJson;
 - (BOOL)shouldBeSent;
 - (instancetype _Nonnull)initWithKSReport:(NSDictionary *_Nonnull)report;
-@property NSSet<id> *redactedKeys;
+@property NSArray *redactedKeys;
 @property (nonatomic) NSString *codeBundleId;
 @end
 

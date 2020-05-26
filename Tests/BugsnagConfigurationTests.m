@@ -268,28 +268,28 @@
 - (void)testEnabledReleaseStagesEmptySends {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    config.enabledReleaseStages = [NSSet new];
+    config.enabledReleaseStages = @[];
     XCTAssertTrue([config shouldSendReports]);
 }
 
 - (void)testEnabledReleaseStagesIncludedSends {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    config.enabledReleaseStages = [NSSet setWithArray:@[ @"beta" ]];
+    config.enabledReleaseStages = @[ @"beta" ];
     XCTAssertTrue([config shouldSendReports]);
 }
 
 - (void)testEnabledReleaseStagesIncludedInManySends {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    config.enabledReleaseStages = [NSSet setWithArray:@[ @"beta", @"production" ]];
+    config.enabledReleaseStages = @[ @"beta", @"production" ];
     XCTAssertTrue([config shouldSendReports]);
 }
 
 - (void)testEnabledReleaseStagesExcludedSkipsSending {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    config.enabledReleaseStages = [NSSet setWithArray:@[ @"production" ]];
+    config.enabledReleaseStages = @[ @"production" ];
     XCTAssertFalse([config shouldSendReports]);
 }
 
@@ -654,7 +654,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 - (void)testDefaultRedactedKeys {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertEqual(1, [config.redactedKeys count]);
-    XCTAssertEqualObjects(@"password", [config.redactedKeys allObjects][0]);
+    XCTAssertEqualObjects(@"password", config.redactedKeys[0]);
 }
 
 - (void)testApiKeySetter {

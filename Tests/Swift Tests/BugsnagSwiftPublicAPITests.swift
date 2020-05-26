@@ -13,7 +13,7 @@ import XCTest
  */
 
 class FakePlugin: NSObject, BugsnagPlugin {
-    func load(_ client: BugsnagClient!) {}
+    func load(_ client: BugsnagClient) {}
     func unload() {}
 }
 
@@ -72,12 +72,21 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         let _ = Bugsnag.user()
         
         Bugsnag.addOnSession(block: sessionBlock)
+        Bugsnag.addOnSession { (session: BugsnagSession) -> Bool in
+            return true
+        }
         Bugsnag.removeOnSession(block: sessionBlock)
         
         Bugsnag.addOnSendError(block: onSendErrorBlock)
+        Bugsnag.addOnSendError { (event: BugsnagEvent) -> Bool in
+            return true
+        }
         Bugsnag.removeOnSendError(block: onSendErrorBlock)
         
         Bugsnag.addOnBreadcrumb(block: onBreadcrumbBlock)
+        Bugsnag.addOnBreadcrumb { (breadcrumb: BugsnagBreadcrumb) -> Bool in
+            return true
+        }
         Bugsnag.removeOnBreadcrumb(block: onBreadcrumbBlock)
     }
     
@@ -91,7 +100,8 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         config.enabledReleaseStages = ["one", "two", "three"]
         config.redactedKeys = nil
         config.redactedKeys = ["1", 2, 3]
-        config.redactedKeys = ["a", "a", "b"]
+        let re = try! NSRegularExpression(pattern: "test", options: [])
+        config.redactedKeys = ["a", "a", "b", re]
         config.context = nil
         config.context = "ctx"
         config.appVersion = nil
@@ -128,10 +138,19 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         
         config.setUser("user", withEmail: "email", andName: "name")
         config.addOnSession(block: sessionBlock)
+        config.addOnSession { (session: BugsnagSession) -> Bool in
+            return true
+        }
         config.removeOnSession(block: sessionBlock)
         config.addOnSendError(block:onSendErrorBlock)
+        config.addOnSendError { (event: BugsnagEvent) -> Bool in
+            return true
+        }
         config.removeOnSendError(block: onSendErrorBlock)
         config.addOnBreadcrumb(block: onBreadcrumbBlock)
+        config.addOnBreadcrumb { (breadcrumb: BugsnagBreadcrumb) -> Bool in
+            return true
+        }
         config.removeOnBreadcrumb(block: onBreadcrumbBlock)
         
         let plugin = FakePlugin()
@@ -173,10 +192,12 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         event.originalError = BugsnagError()
         _ = event.user
         event.setUser("user", withEmail: "email", andName: "name")
+        event.severity = .error
+        _ = event.severity
     }
     
-    func testBugsnagAppClass() throws {
-        let app = BugsnagApp()
+    func testBugsnagAppWithStateClass() throws {
+        let app = BugsnagAppWithState()
         
         app.bundleVersion = nil
         app.bundleVersion = "bundle"
@@ -205,6 +226,26 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         app.version = nil
         app.version = "bundle"
         _ = app.version
+        
+        // withState
+        
+        app.duration = nil
+        app.duration = 0
+        app.duration = 1.1
+        app.duration = -45
+        app.duration = NSNumber(booleanLiteral: true)
+        _ = app.duration
+        
+        app.durationInForeground = nil
+        app.durationInForeground = 0
+        app.durationInForeground = 1.1
+        app.durationInForeground = -45
+        app.durationInForeground = NSNumber(booleanLiteral: true)
+        _ = app.durationInForeground
+        
+        app.inForeground = true
+        _ = app.inForeground
+        
     }
 
     func testBugsnagBreadcrumbClass() throws {
@@ -241,17 +282,26 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         let _ = client.user()
         
         client.addOnSession(block: sessionBlock)
+        client.addOnSession { (session: BugsnagSession) -> Bool in
+            return true
+        }
         client.removeOnSession(block: sessionBlock)
         
         client.addOnSendError(block: onSendErrorBlock)
+        client.addOnSendError { (event: BugsnagEvent) -> Bool in
+            return true
+        }
         client.removeOnSendError(block: onSendErrorBlock)
         
         client.addOnBreadcrumb(block: onBreadcrumbBlock)
+        client.addOnBreadcrumb { (breadcrumb: BugsnagBreadcrumb) -> Bool in
+            return true
+        }
         client.removeOnBreadcrumb(block: onBreadcrumbBlock)
     }
 
-    func testBugsnagDeviceClass() throws {
-        let device = BugsnagDevice()
+    func testBugsnagDeviceWithStateClass() throws {
+        let device = BugsnagDeviceWithState()
         
         device.jailbroken = false
         _ = device.jailbroken
@@ -286,6 +336,30 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         device.totalMemory = nil
         device.totalMemory = 1234
         _ = device.totalMemory
+        
+        // withState
+        
+        device.freeDisk = nil
+        device.freeDisk = 0
+        device.freeDisk = 1.1
+        device.freeDisk = -45
+        device.freeDisk = NSNumber(booleanLiteral: true)
+        _ = device.freeDisk
+        
+        device.freeMemory = nil
+        device.freeMemory = 0
+        device.freeMemory = 1.1
+        device.freeMemory = -45
+        device.freeMemory = NSNumber(booleanLiteral: true)
+        _ = device.freeMemory
+        
+        device.orientation = nil
+        device.orientation = "upside your head"
+        _ = device.orientation
+        
+        device.time = nil
+        device.time = Date()
+        _ = device.time
     }
 
     func testBugsnagEndpointConfigurationlass() throws {
@@ -332,12 +406,16 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         sf.machoUuid = nil
         sf.machoUuid = "uuid"
         _ = sf.machoUuid
+        sf.frameAddress = nil
         sf.frameAddress = 123
         _ = sf.frameAddress
+        sf.machoVmAddress = nil
         sf.machoVmAddress = 123
         _ = sf.machoVmAddress
+        sf.symbolAddress = nil
         sf.symbolAddress = 123
         _ = sf.symbolAddress
+        sf.machoLoadAddress = nil
         sf.machoLoadAddress = 123
         _ = sf.machoLoadAddress
         sf.isPc = true

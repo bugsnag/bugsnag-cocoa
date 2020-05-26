@@ -62,7 +62,7 @@
     XCTAssertTrue(config.autoTrackSessions);
     XCTAssertEqual(25, config.maxBreadcrumbs);
     XCTAssertTrue(config.persistUser);
-    XCTAssertEqualObjects(@[@"password"], [config.redactedKeys allObjects]);
+    XCTAssertEqualObjects(@[@"password"], config.redactedKeys);
     XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);
     XCTAssertEqual(BSGEnabledBreadcrumbTypeAll, config.enabledBreadcrumbTypes);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);

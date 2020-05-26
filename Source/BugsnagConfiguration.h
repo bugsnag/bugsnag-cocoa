@@ -131,7 +131,7 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
 /**
  *  Release stages which are allowed to notify Bugsnag
  */
-@property(readwrite, retain, nullable) NSSet<NSString *> *enabledReleaseStages;
+@property(readwrite, retain, nullable) NSArray *enabledReleaseStages;
 
 /**
  * Sets which values should be removed from any Metadata objects before
@@ -142,7 +142,7 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
  * By default, redactedKeys is set to ["password"]. Both string literals and regex
  * values can be supplied to this property.
  */
-@property(readwrite, retain, nullable) NSSet<id> *redactedKeys;
+@property(readwrite, retain, nullable) NSArray<id> *redactedKeys;
 
 /**
  *  A general summary of what was occuring in the application

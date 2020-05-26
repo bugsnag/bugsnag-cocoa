@@ -269,7 +269,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 /**
  *  The release stages used to notify at the time this report is captured
  */
-@property(readwrite, copy, nullable) NSSet<NSString *> *enabledReleaseStages;
+@property(readwrite, copy, nullable) NSArray *enabledReleaseStages;
 
 /**
  *  Property overrides
@@ -294,7 +294,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
  */
 @property(readwrite, copy, nullable) NSString *releaseStage;
 
-@property NSSet<id> *redactedKeys;
+@property NSArray *redactedKeys;
 
 @property(nonatomic) NSString *codeBundleId;
 @end
