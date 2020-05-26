@@ -214,7 +214,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _onBreadcrumbBlocks = [NSMutableArray new];
     _plugins = [NSMutableSet new];
     _enabledReleaseStages = nil;
-    _redactedKeys = @[@"password"];
+    _redactedKeys = [NSSet setWithArray:@[@"password"]];
     _breadcrumbs = [BugsnagBreadcrumbs new];
     _autoTrackSessions = YES;
     _sendThreads = BSGThreadSendPolicyAlways;
@@ -523,18 +523,18 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 @synthesize enabledReleaseStages = _enabledReleaseStages;
 
-- (NSArray *)enabledReleaseStages {
+- (NSSet<NSString *> *)enabledReleaseStages {
     @synchronized (self) {
         return _enabledReleaseStages;
     }
 }
 
-- (void)setEnabledReleaseStages:(NSArray *)newReleaseStages;
+- (void)setEnabledReleaseStages:(NSSet<NSString *> *)newReleaseStages;
 {
     @synchronized (self) {
-        NSArray *releaseStagesCopy = [newReleaseStages copy];
+        NSSet<NSString *> *releaseStagesCopy = [newReleaseStages copy];
         _enabledReleaseStages = releaseStagesCopy;
-        [self.config addMetadata:releaseStagesCopy
+        [self.config addMetadata:[releaseStagesCopy allObjects]
                          withKey:BSGKeyEnabledReleaseStages
                        toSection:BSGKeyConfig];
     }
