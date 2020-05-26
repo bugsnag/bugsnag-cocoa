@@ -41,4 +41,4 @@ Scenario: App and Device info is as expected
     
     And the payload field "events.0.app.duration" is a number
     And the payload field "events.0.app.durationInForeground" is a number
-    And the payload field "events.0.app.inForeground" is true
+    And the payload field "events.0.app.inForeground" is not null
