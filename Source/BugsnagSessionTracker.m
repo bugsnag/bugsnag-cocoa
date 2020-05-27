@@ -6,6 +6,7 @@
 //  Copyright © 2017 Bugsnag. All rights reserved.
 //
 
+#import "BugsnagClient.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagSessionFileStore.h"
 #import "BSG_KSLogger.h"
@@ -55,6 +56,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 
 @interface BugsnagSessionTracker ()
 @property (weak, nonatomic) BugsnagConfiguration *config;
+@property (weak, nonatomic) BugsnagClient *client;
 @property (strong, nonatomic) BugsnagSessionFileStore *sessionStore;
 @property (strong, nonatomic) BugsnagSessionTrackingApiClient *apiClient;
 @property (strong, nonatomic) NSDate *backgroundStartTime;
@@ -72,9 +74,11 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 @implementation BugsnagSessionTracker
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config
+                        client:(BugsnagClient *)client
             postRecordCallback:(void(^)(BugsnagSession *))callback {
     if (self = [super init]) {
         _config = config;
+        _client = client;
         _apiClient = [[BugsnagSessionTrackingApiClient alloc] initWithConfig:config queueName:@"Session API queue"];
         _callback = callback;
 
@@ -156,7 +160,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 
     BugsnagSession *newSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                           startDate:[NSDate date]
-                                                               user:self.config.user
+                                                               user:self.client.user
                                                        autoCaptured:isAutoCaptured
                                                                 app:app
                                                              device:device];

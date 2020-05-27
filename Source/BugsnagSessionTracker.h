@@ -27,6 +27,7 @@ extern NSString *const BSGSessionUpdateNotification;
  @return A new session tracker
  */
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config
+                        client:(BugsnagClient *)client
             postRecordCallback:(void(^)(BugsnagSession *))callback;
 
 /**

@@ -404,6 +404,7 @@ NSString *_lastOrientation = nil;
         });
 
         self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
+                                                                     client:self
                                                          postRecordCallback:^(BugsnagSession *session) {
                                                              BSGWriteSessionCrashData(session);
                                                          }];
