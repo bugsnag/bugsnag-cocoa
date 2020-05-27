@@ -15,7 +15,6 @@ Feature: Attaching a series of notable events leading up to errors
         And I wait to receive a request
         Then the event has a "log" breadcrumb named "Noisy event"
         And the event has a "process" breadcrumb named "Important event"
-        Then the event has a "state" breadcrumb named "Bugsnag loaded"
 
     Scenario: An app lauches and subsequently sends a manual event using notify()
         When I run "HandledErrorScenario"
