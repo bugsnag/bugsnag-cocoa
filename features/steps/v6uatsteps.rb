@@ -26,5 +26,5 @@ end
 Then(/^the payload field "(.+)" is a date$/) do |field_path|
     value = read_key_path(Server.current_request[:body], field_path)
     date = Date.parse(value) rescue nil
-    assert_kind_of Date, value
+    assert_kind_of Date, date
 end
