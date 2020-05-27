@@ -163,4 +163,71 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     XCTAssertTrue([metadata2 isKindOfClass:[NSMutableDictionary class]]);
 }
 
+/**
+ * Helper for asserting two BugsnagConfiguration objects are equal
+ */
+- (void)assertEqualConfiguration:(BugsnagConfiguration *)expected withActual:(BugsnagConfiguration *)actual {
+    XCTAssertEqualObjects(expected.apiKey, actual.apiKey);
+    XCTAssertEqualObjects(expected.appType, actual.appType);
+    XCTAssertEqualObjects(expected.appVersion, actual.appVersion);
+    XCTAssertEqual(expected.autoDetectErrors, actual.autoDetectErrors);
+    XCTAssertEqual(expected.autoTrackSessions, actual.autoTrackSessions);
+    XCTAssertEqualObjects(expected.bundleVersion, actual.bundleVersion);
+    XCTAssertEqual(expected.context, actual.context);
+    XCTAssertEqual(expected.enabledBreadcrumbTypes, actual.enabledBreadcrumbTypes);
+    XCTAssertEqual(expected.enabledErrorTypes.cppExceptions, actual.enabledErrorTypes.cppExceptions);
+    XCTAssertEqual(expected.enabledErrorTypes.machExceptions, actual.enabledErrorTypes.machExceptions);
+    XCTAssertEqual(expected.enabledErrorTypes.signals, actual.enabledErrorTypes.signals);
+    XCTAssertEqual(expected.enabledErrorTypes.unhandledExceptions, actual.enabledErrorTypes.unhandledExceptions);
+    XCTAssertEqual(expected.enabledErrorTypes.unhandledRejections, actual.enabledErrorTypes.unhandledRejections);
+    XCTAssertEqual(expected.enabledErrorTypes.ooms, actual.enabledErrorTypes.ooms);
+    XCTAssertEqual(expected.enabledReleaseStages, actual.enabledReleaseStages);
+    XCTAssertEqualObjects(expected.endpoints.notify, actual.endpoints.notify);
+    XCTAssertEqualObjects(expected.endpoints.sessions, actual.endpoints.sessions);
+    XCTAssertEqual(expected.maxBreadcrumbs, actual.maxBreadcrumbs);
+    XCTAssertEqual(expected.persistUser, actual.persistUser);
+    XCTAssertEqual([expected.redactedKeys count], [actual.redactedKeys count]);
+    XCTAssertEqualObjects([expected.redactedKeys allObjects][0], [actual.redactedKeys allObjects][0]);
+    XCTAssertEqualObjects(expected.releaseStage, actual.releaseStage);
+    XCTAssertEqual(expected.sendThreads, actual.sendThreads);
+}
+
+/**
+ * Test creating a client using "startWithApiKey" uses the default configuration values
+ */
+- (void)testClientStartWithApiKeyMatchesDefaultConfiguration {
+    BugsnagConfiguration *defaultConfig = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+
+    [Bugsnag startWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagConfiguration *config = [Bugsnag configuration];
+
+    [self assertEqualConfiguration:defaultConfig withActual:config];
+}
+
+/**
+ * After starting Bugsnag, any changes to the supplied Configuration should be ignored
+ * Instead it should be changed by mutating the returned Configuration from "[Bugsnag configuration]"
+ */
+- (void)testChangesToConfigurationAreIgnoredAfterCallingStart {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    // Take a copy of our Configuration object so we can compare with it later
+    BugsnagConfiguration *initialConfig = [config copy];
+
+    [Bugsnag startWithConfiguration:config];
+
+    // Modify some arbitrary properties
+    config.persistUser = !config.persistUser;
+    config.maxBreadcrumbs = config.maxBreadcrumbs * 2;
+    config.appVersion = @"99.99.99";
+
+    // Ensure the changes haven't been reflected in our copy
+    XCTAssertNotEqual(initialConfig.persistUser, config.persistUser);
+    XCTAssertNotEqual(initialConfig.maxBreadcrumbs, config.maxBreadcrumbs);
+    XCTAssertNotEqualObjects(initialConfig.appVersion, config.appVersion);
+
+    BugsnagConfiguration *configAfter = [Bugsnag configuration];
+
+    [self assertEqualConfiguration:initialConfig withActual:configAfter];
+}
+
 @end
