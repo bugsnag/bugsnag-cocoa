@@ -140,10 +140,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setMaxBreadcrumbs:self.maxBreadcrumbs];
     [copy setMetadata: [[BugsnagMetadata alloc] initWithDictionary:[[self.metadata toDictionary] mutableCopy]]];
     [copy setEndpoints:self.endpoints];
-    [copy setOnBreadcrumbBlocks:[self.onBreadcrumbBlocks mutableCopy]];
     [copy setOnCrashHandler:self.onCrashHandler];
-    [copy setOnSendBlocks:[self.onSendBlocks mutableCopy]];
-    [copy setOnSessionBlocks:[self.onSessionBlocks mutableCopy]];
     [copy setPersistUser:self.persistUser];
     [copy setPlugins:[self.plugins copy]];
     [copy setReleaseStage:self.releaseStage];
@@ -152,6 +149,12 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setUser:self.user.id
         withEmail:self.user.email
           andName:self.user.name];
+
+    // retain original blocks to allow removing blocks added in config
+    // as creating a copy of the array would prevent this
+    [copy setOnBreadcrumbBlocks:self.onBreadcrumbBlocks];
+    [copy setOnSendBlocks:self.onSendBlocks];
+    [copy setOnSessionBlocks:self.onSessionBlocks];
     return copy;
 }
 
