@@ -111,7 +111,7 @@ endif
 ifeq ($(BROWSER_STACK_ACCESS_KEY),)
 	@$(error BROWSER_STACK_ACCESS_KEY is not defined)
 endif
-	@docker-compose run cocoa-maze-runner $(TEST_FEATURE)
+	@docker-compose run cocoa-maze-runner --tags 'not @skip' $(TEST_FEATURE)
 
 e2e:
 	@make e2e_build
