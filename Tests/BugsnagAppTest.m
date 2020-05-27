@@ -62,6 +62,7 @@
 
     self.config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     self.config.appType = @"iOS";
+    self.config.appVersion = @"3.14.159";
     self.codeBundleId = @"bundle-123";
 }
 
@@ -75,7 +76,7 @@
     XCTAssertEqualObjects(@"com.example.foo.MyIosApp", app.id);
     XCTAssertEqualObjects(@"beta", app.releaseStage);
     XCTAssertEqualObjects(@"iOS", app.type);
-    XCTAssertEqualObjects(@"5.6.3", app.version);
+    XCTAssertEqualObjects(@"3.14.159", app.version);
 }
 
 - (void)testAppWithState {
@@ -93,10 +94,11 @@
     XCTAssertEqualObjects(@"com.example.foo.MyIosApp", app.id);
     XCTAssertEqualObjects(@"beta", app.releaseStage);
     XCTAssertEqualObjects(@"iOS", app.type);
-    XCTAssertEqualObjects(@"5.6.3", app.version);
+    XCTAssertEqualObjects(@"3.14.159", app.version);
 }
 
 - (void)testAppToDict {
+    self.config.appVersion = nil; // Check that the system value is picked up
     BugsnagApp *app = [BugsnagApp appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
     NSDictionary *dict = [app toDict];
 
@@ -111,6 +113,7 @@
 }
 
 - (void)testAppWithStateToDict {
+    self.config.appVersion = nil; // Check that the system value is picked up
     BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
     NSDictionary *dict = [app toDict];
 

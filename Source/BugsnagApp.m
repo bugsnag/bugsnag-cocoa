@@ -43,7 +43,10 @@ NSDictionary *BSGParseAppMetadata(NSDictionary *event) {
                      codeBundleId:(NSString *)codeBundleId
 {
     BugsnagApp *app = [BugsnagApp new];
-    [self populateFields:app dictionary:event config:config codeBundleId:codeBundleId];
+    [self populateFields:app
+              dictionary:event
+                  config:config
+            codeBundleId:codeBundleId];
     return app;
 }
 
@@ -56,7 +59,10 @@ NSDictionary *BSGParseAppMetadata(NSDictionary *event) {
     app.id = system[@"CFBundleIdentifier"];
     app.bundleVersion = [event valueForKeyPath:@"user.config.bundleVersion"] ?: system[@"CFBundleVersion"];
     app.dsymUuid = system[@"app_uuid"];
-    app.version = [event valueForKeyPath:@"user.config.appVersion"] ?: system[@"CFBundleShortVersionString"];
+    // Preferentially take App version values from the event, the config and the system
+    app.version = [event valueForKeyPath:@"user.config.appVersion"] ?:
+        ([config valueForKey:@"appVersion"] ?:
+            system[@"CFBundleShortVersionString"]);
     app.releaseStage = [event valueForKeyPath:@"user.config.releaseStage"] ?: config.releaseStage;
     app.codeBundleId = codeBundleId;
     app.type = config.appType;
