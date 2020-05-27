@@ -294,15 +294,6 @@
     XCTAssertFalse([config shouldSendReports]);
 }
 
-- (void)testDefaultReleaseStage {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-#if DEBUG
-    XCTAssertEqualObjects(@"development", config.releaseStage);
-#else
-    XCTAssertEqualObjects(@"production", config.releaseStage);
-#endif
-}
-
 // =============================================================================
 // MARK: - Endpoint-related
 // =============================================================================
@@ -583,6 +574,55 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertEqual(0, config.maxBreadcrumbs);
 }
 
+// =============================================================================
+// MARK: - Default configuration values
+// =============================================================================
+
+- (void)testDefaultConfigurationValues {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+
+#if TARGET_OS_TV
+    XCTAssertEqualObjects(@"tvOS", config.appType);
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    XCTAssertEqualObjects(@"iOS", config.appType);
+#elif TARGET_OS_MAC
+    XCTAssertEqualObjects(@"macOS", config.appType);
+#endif
+
+    XCTAssertNil(config.appVersion);
+    XCTAssertTrue(config.autoDetectErrors);
+    XCTAssertTrue(config.autoTrackSessions);
+    XCTAssertEqualObjects(NSBundle.mainBundle.infoDictionary[@"CFBundleVersion"], config.bundleVersion);
+    XCTAssertNil(config.context);
+    XCTAssertEqual(BSGEnabledBreadcrumbTypeAll, config.enabledBreadcrumbTypes);
+    XCTAssertTrue(config.enabledErrorTypes.cppExceptions);
+    XCTAssertTrue(config.enabledErrorTypes.machExceptions);
+    XCTAssertTrue(config.enabledErrorTypes.signals);
+    XCTAssertTrue(config.enabledErrorTypes.unhandledExceptions);
+    XCTAssertTrue(config.enabledErrorTypes.unhandledRejections);
+
+#if DEBUG
+    XCTAssertFalse(config.enabledErrorTypes.ooms);
+#else
+    XCTAssertTrue(config.enabledErrorTypes.ooms);
+#endif
+
+    XCTAssertNil(config.enabledReleaseStages);
+    XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
+    XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
+    XCTAssertEqual(25, config.maxBreadcrumbs);
+    XCTAssertTrue(config.persistUser);
+    XCTAssertEqual(1, [config.redactedKeys count]);
+    XCTAssertEqualObjects(@"password", [config.redactedKeys allObjects][0]);
+
+#if DEBUG
+    XCTAssertEqualObjects(@"development", config.releaseStage);
+#else
+    XCTAssertEqualObjects(@"production", config.releaseStage);
+#endif
+
+    XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);
+}
 
 // =============================================================================
 // MARK: - Other tests
@@ -625,15 +665,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertThrows(func(config, selector));
 }
 
-- (void)testDefaultReportOOMs {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-#if DEBUG
-    XCTAssertFalse(config.enabledErrorTypes.ooms);
-#else
-    XCTAssertTrue(config.enabledErrorTypes.ooms);
-#endif
-}
-
 - (void)testErrorApiHeaders {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     NSDictionary *headers = [config errorApiHeaders];
@@ -650,12 +681,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertEqualObjects(@"123", config.user.id);
     XCTAssertEqualObjects(@"foo", config.user.name);
     XCTAssertEqualObjects(@"test@example.com", config.user.email);
-}
-
-- (void)testDefaultRedactedKeys {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    XCTAssertEqual(1, [config.redactedKeys count]);
-    XCTAssertEqualObjects(@"password", [config.redactedKeys allObjects][0]);
 }
 
 - (void)testApiKeySetter {
