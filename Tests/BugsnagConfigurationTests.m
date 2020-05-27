@@ -166,6 +166,7 @@
     __block XCTestExpectation *expectation2 = [self expectationWithDescription:@"Remove On Session Block 2"];
     __block XCTestExpectation *expectation3 = [self expectationWithDescription:@"Remove On Session Block 3"];
     __block XCTestExpectation *expectation4 = [self expectationWithDescription:@"Remove On Session Block 4"];
+    expectation3.inverted = YES;
     expectation4.inverted = YES;
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
@@ -206,7 +207,7 @@
     [Bugsnag startSession];
     [self waitForExpectations:@[expectation2] timeout:1.0];
 
-    // Check it's still called once the block's deleted (block has been copied in client init)
+    // Check block is not called after removing and initialisation
     [Bugsnag pauseSession];
     called++;
     [config removeOnSessionBlock:sessionBlock];
@@ -846,7 +847,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertNotEqual(config.onCrashHandler, clone.onCrashHandler);
 
     // Array (of blocks)
-    XCTAssertNotEqual(config.onSendBlocks, clone.onSendBlocks);
+    XCTAssertEqual(config.onSendBlocks, clone.onSendBlocks);
     XCTAssertEqual(config.onSendBlocks[0], clone.onSendBlocks[0]);
     [clone setOnSendBlocks:[@[ onSendBlock2 ] mutableCopy]];
     XCTAssertNotEqual(config.onSendBlocks[0], clone.onSendBlocks[0]);
