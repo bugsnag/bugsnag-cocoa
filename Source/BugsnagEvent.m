@@ -294,7 +294,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
  */
 @property(readwrite, copy, nullable) NSString *releaseStage;
 
-@property NSArray *redactedKeys;
+@property NSSet<NSString *> *redactedKeys;
 
 @property(nonatomic) NSString *codeBundleId;
 @end
@@ -477,7 +477,9 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     NSMutableDictionary *userAtCrash = [self parseOnCrashData:event];
     if (userAtCrash != nil) {
-        [metadata addMetadata:userAtCrash toSection:@BSG_KSCrashField_OnCrashMetadataSectionName];
+        for (NSString *section in [userAtCrash allKeys]) {
+            [metadata addMetadata:userAtCrash[section] toSection:section];
+        }
     }
     NSString *deviceAppHash = [event valueForKeyPath:@"system.device_app_hash"];
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithDictionary:event];
@@ -601,6 +603,13 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             @"id",
     ];
     [userAtCrash removeObjectsForKeys:blacklistedKeys];
+
+    for (NSString *key in [userAtCrash allKeys]) { // remove any non-dictionary values
+        if (![userAtCrash[key] isKindOfClass:[NSDictionary class]]) {
+            bsg_log_warn(@"Removing value added in onCrashHandler for key %@ as it is not a dictionary value", key);
+            [userAtCrash removeObjectForKey:key];
+        }
+    }
     return userAtCrash;
 }
 
@@ -752,8 +761,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             BSGArrayAddSafeObject(array, [error toDictionary]);
         }
         BSGDictSetSafeObject(event, array, BSGKeyExceptions);
-        BSGDictSetSafeObject(event, [BugsnagThread serializeThreads:self.threads], BSGKeyThreads);
     }
+    BSGDictSetSafeObject(event, [BugsnagThread serializeThreads:self.threads], BSGKeyThreads);
 
     // Build Event
     BSGDictSetSafeObject(event, BSGFormatSeverity(self.severity), BSGKeySeverity);

@@ -45,6 +45,12 @@
 		8AF8FCAC22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF8FCAB22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift */; };
 		8AF8FCAE22BD23BA00A967CA /* HandledInternalNotifyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */; };
 		C4D0B5FF8E60C0835B86DFE9 /* Pods_iOSTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */; };
+		E75040A02478019D005D33BD /* AutoDetectFalseHandledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E750409F2478019D005D33BD /* AutoDetectFalseHandledScenario.swift */; };
+		E75040A2247801A8005D33BD /* AutoDetectFalseNSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75040A1247801A8005D33BD /* AutoDetectFalseNSExceptionScenario.swift */; };
+		E75040A42478052D005D33BD /* AutoDetectFalseAbortScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75040A32478052D005D33BD /* AutoDetectFalseAbortScenario.swift */; };
+		E75040B02478214F005D33BD /* MetadataRedactionDefaultScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75040AD2478214E005D33BD /* MetadataRedactionDefaultScenario.swift */; };
+		E75040B12478214F005D33BD /* MetadataRedactionRegexScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75040AE2478214E005D33BD /* MetadataRedactionRegexScenario.swift */; };
+		E75040B22478214F005D33BD /* MetadataRedactionNestedScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75040AF2478214E005D33BD /* MetadataRedactionNestedScenario.swift */; };
 		E7767F11221C21D90006648C /* StoppedSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7767F10221C21D90006648C /* StoppedSessionScenario.swift */; };
 		E7767F13221C21E30006648C /* ResumedSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7767F12221C21E30006648C /* ResumedSessionScenario.swift */; };
 		E7767F15221C223C0006648C /* NewSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7767F14221C223C0006648C /* NewSessionScenario.swift */; };
@@ -156,6 +162,12 @@
 		8AF8FCAB22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnhandledInternalNotifyScenario.swift; sourceTree = "<group>"; };
 		8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandledInternalNotifyScenario.swift; sourceTree = "<group>"; };
 		960A6E7D4E847F1D76A4FD06 /* Pods-iOSTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.release.xcconfig"; sourceTree = "<group>"; };
+		E750409F2478019D005D33BD /* AutoDetectFalseHandledScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoDetectFalseHandledScenario.swift; sourceTree = "<group>"; };
+		E75040A1247801A8005D33BD /* AutoDetectFalseNSExceptionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoDetectFalseNSExceptionScenario.swift; sourceTree = "<group>"; };
+		E75040A32478052D005D33BD /* AutoDetectFalseAbortScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoDetectFalseAbortScenario.swift; sourceTree = "<group>"; };
+		E75040AD2478214E005D33BD /* MetadataRedactionDefaultScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataRedactionDefaultScenario.swift; sourceTree = "<group>"; };
+		E75040AE2478214E005D33BD /* MetadataRedactionRegexScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataRedactionRegexScenario.swift; sourceTree = "<group>"; };
+		E75040AF2478214E005D33BD /* MetadataRedactionNestedScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataRedactionNestedScenario.swift; sourceTree = "<group>"; };
 		E7767F10221C21D90006648C /* StoppedSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoppedSessionScenario.swift; sourceTree = "<group>"; };
 		E7767F12221C21E30006648C /* ResumedSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumedSessionScenario.swift; sourceTree = "<group>"; };
 		E7767F14221C223C0006648C /* NewSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSessionScenario.swift; sourceTree = "<group>"; };
@@ -302,9 +314,31 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		E750409C24780158005D33BD /* AutoDetectErrors */ = {
+			isa = PBXGroup;
+			children = (
+				E750409F2478019D005D33BD /* AutoDetectFalseHandledScenario.swift */,
+				E75040A1247801A8005D33BD /* AutoDetectFalseNSExceptionScenario.swift */,
+				E75040A32478052D005D33BD /* AutoDetectFalseAbortScenario.swift */,
+			);
+			name = AutoDetectErrors;
+			sourceTree = "<group>";
+		};
+		E75040AC2478213D005D33BD /* Metadata Redaction */ = {
+			isa = PBXGroup;
+			children = (
+				E75040AD2478214E005D33BD /* MetadataRedactionDefaultScenario.swift */,
+				E75040AF2478214E005D33BD /* MetadataRedactionNestedScenario.swift */,
+				E75040AE2478214E005D33BD /* MetadataRedactionRegexScenario.swift */,
+			);
+			name = "Metadata Redaction";
+			sourceTree = "<group>";
+		};
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				E75040AC2478213D005D33BD /* Metadata Redaction */,
+				E750409C24780158005D33BD /* AutoDetectErrors */,
 				F49695A9244545EC00105DA9 /* Crashprobe */,
 				F49695B0244547CB00105DA9 /* Cross notifier notify */,
 				F49695AF2445477E00105DA9 /* Handled errors */,
@@ -594,6 +628,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E75040A02478019D005D33BD /* AutoDetectFalseHandledScenario.swift in Sources */,
 				8AB8866620404DD30003E444 /* ViewController.swift in Sources */,
 				8AB8866420404DD30003E444 /* AppDelegate.swift in Sources */,
 				00507A64242BFE5600EF1B87 /* EnabledBreadcrumbTypesIsNilScenario.swift in Sources */,
@@ -601,16 +636,20 @@
 				F42955E0916B8851F074D9B3 /* UserEmailScenario.swift in Sources */,
 				8A3B5F292407F66700CE4A3A /* ModifyBreadcrumbScenario.swift in Sources */,
 				8AA05A2F23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m in Sources */,
+				E75040A2247801A8005D33BD /* AutoDetectFalseNSExceptionScenario.swift in Sources */,
 				F4295968571A4118D6A4606A /* UserEnabledScenario.swift in Sources */,
+				E75040A42478052D005D33BD /* AutoDetectFalseAbortScenario.swift in Sources */,
 				F4295A036B228AF608641699 /* UserDisabledScenario.swift in Sources */,
 				8A14F0F62282D4AE00337B05 /* BuildFile in Sources */,
 				0011E6672403D13100ED71CD /* UserPersistenceScenarios.m in Sources */,
 				8AB65FCC22DC77CB001200AB /* LoadConfigFromFileScenario.swift in Sources */,
 				E7767F13221C21E30006648C /* ResumedSessionScenario.swift in Sources */,
+				E75040B12478214F005D33BD /* MetadataRedactionRegexScenario.swift in Sources */,
 				8AEFC73120F8D1A000A78779 /* AutoSessionWithUserScenario.m in Sources */,
 				8AB1081923301FE600672818 /* ReleaseStageScenarios.swift in Sources */,
 				8AF6FD7A225E3FA00056EF9E /* ResumeSessionOOMScenario.m in Sources */,
 				00CEB60D24080C690004793D /* EnabledErrorTypesScenario.m in Sources */,
+				E75040B22478214F005D33BD /* MetadataRedactionNestedScenario.swift in Sources */,
 				F429565A951303E2C3136D0D /* UserIdScenario.swift in Sources */,
 				8A38C5D124094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift in Sources */,
 				8AEEBBD020FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m in Sources */,
@@ -631,6 +670,7 @@
 				F42954B7318A02824C65C514 /* ObjCMsgSendScenario.m in Sources */,
 				8A22FC66225B598500CA8895 /* OOMForegroundScenario.m in Sources */,
 				F42953498545B853CC0B635E /* NullPointerScenario.m in Sources */,
+				E75040B02478214F005D33BD /* MetadataRedactionDefaultScenario.swift in Sources */,
 				8A840FBA21AF5C450041DBFA /* SwiftAssertion.swift in Sources */,
 				001E5502243B8FDA0009E31D /* AutoCaptureRunScenario.m in Sources */,
 				F429538D8941382EC2C857CE /* AsyncSafeThreadScenario.m in Sources */,

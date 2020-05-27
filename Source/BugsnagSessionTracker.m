@@ -144,7 +144,9 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
     }
 
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
-    BugsnagApp *app = [BugsnagApp appWithDictionary:@{@"system": systemInfo} config:self.config codeBundleId:self.codeBundleId];
+    BugsnagApp *app = [BugsnagApp appWithDictionary:@{@"system": systemInfo}
+                                             config:self.config
+                                       codeBundleId:self.codeBundleId];
     BugsnagDevice *device = [BugsnagDevice deviceWithDictionary:@{@"system": systemInfo}];
     [device appendRuntimeInfo:self.extraRuntimeInfo];
 

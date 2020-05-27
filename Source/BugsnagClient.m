@@ -107,6 +107,9 @@ static bool hasRecordedSessions;
 @property NSUInteger handledCount;
 @end
 
+@interface BugsnagThread ()
++ (NSMutableArray *)serializeThreads:(NSArray<BugsnagThread *> *)threads;
+@end
 
 @interface BugsnagAppWithState ()
 + (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
@@ -417,9 +420,13 @@ NSString *_lastOrientation = nil;
         // for the entire lifecycle of an application, and there is therefore
         // no need to check for strong self
         __weak __typeof__(self) weakSelf = self;
-        [self addObserverUsingBlock:^(BugsnagStateEvent *event) {
+        void (^observer)(BugsnagStateEvent *) = ^(BugsnagStateEvent *event) {
             [weakSelf metadataChanged:event.data];
-        }];
+        };
+        [self addObserverWithBlock:observer];
+        [self.configuration.metadata addObserverWithBlock:observer];
+        [self.configuration.config addObserverWithBlock:observer];
+        [self.state addObserverWithBlock:observer];
 
         self.pluginClient = [[BugsnagPluginClient alloc] initWithPlugins:self.configuration.plugins];
 
@@ -435,14 +442,18 @@ NSString *_lastOrientation = nil;
     return self;
 }
 
-- (void)addObserverUsingBlock:(BugsnagObserverBlock _Nonnull)observer {
+- (void)addObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer {
     [self.stateEventBlocks addObject:[observer copy]];
 
     // additionally listen for metadata updates
-    [self.metadata addObserverUsingBlock:observer];
-    [self.configuration.metadata addObserverUsingBlock:observer];
-    [self.configuration.config addObserverUsingBlock:observer];
-    [self.state addObserverUsingBlock:observer];
+    [self.metadata addObserverWithBlock:observer];
+}
+
+- (void)removeObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer {
+    [self.stateEventBlocks removeObject:observer];
+
+    // additionally remove metadata listener
+    [self.metadata removeObserverWithBlock:observer];
 }
 
 - (void)notifyObservers:(BugsnagStateEvent *)event {
@@ -1551,7 +1562,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (NSArray *)collectThreads {
     int depth = (int)(BSGNotifierStackFrameCount);
     NSException *exc = [NSException exceptionWithName:@"Bugsnag" reason:@"" userInfo:nil];
-    return [[BSG_KSCrash sharedInstance] captureThreads:exc depth:depth];
+    NSArray<BugsnagThread *> *threads = [[BSG_KSCrash sharedInstance] captureThreads:exc depth:depth];
+    return [BugsnagThread serializeThreads:threads];
 }
 
 - (void)addRuntimeVersionInfo:(NSString *)info

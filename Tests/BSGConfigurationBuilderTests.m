@@ -5,6 +5,7 @@
 #import "BugsnagTestConstants.h"
 #import "BugsnagEndpointConfiguration.h"
 #import "BugsnagErrorTypes.h"
+#import "BugsnagKeys.h"
 
 @interface BSGConfigurationBuilderTests : XCTestCase
 @end
@@ -61,7 +62,7 @@
     XCTAssertTrue(config.autoTrackSessions);
     XCTAssertEqual(25, config.maxBreadcrumbs);
     XCTAssertTrue(config.persistUser);
-    XCTAssertEqualObjects(@[@"password"], config.redactedKeys);
+    XCTAssertEqualObjects(@[@"password"], [config.redactedKeys allObjects]);
     XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);
     XCTAssertEqual(BSGEnabledBreadcrumbTypeAll, config.enabledBreadcrumbTypes);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);

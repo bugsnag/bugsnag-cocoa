@@ -31,22 +31,22 @@
 /**
  * The stack frame address
  */
-@property unsigned long frameAddress;
+@property(nullable) NSNumber *frameAddress;
 
 /**
  * The VM address of the Mach-O file
  */
-@property unsigned long machoVmAddress;
+@property(nullable) NSNumber *machoVmAddress;
 
 /**
  * The address of the stackframe symbol
  */
-@property unsigned long symbolAddress;
+@property(nullable) NSNumber *symbolAddress;
 
 /**
  * The load address of the Mach-O file
  */
-@property unsigned long machoLoadAddress;
+@property(nullable) NSNumber *machoLoadAddress;
 
 /**
  * Whether the frame was within the program counter

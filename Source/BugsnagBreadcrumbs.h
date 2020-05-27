@@ -21,6 +21,7 @@ typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 
 /** Number of breadcrumbs accumulated */
 @property(assign, readonly) NSUInteger count;
+
 /**
  * Path where breadcrumbs are persisted on disk
  */

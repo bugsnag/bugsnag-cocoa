@@ -137,8 +137,8 @@
             }
     }];
     BugsnagAppWithState *app = event.app;
-    XCTAssertEqual(5092, app.duration);
-    XCTAssertEqual(4293, app.durationInForeground);
+    XCTAssertEqual(@5092, app.duration);
+    XCTAssertEqual(@4293, app.durationInForeground);
     XCTAssertFalse(app.inForeground);
     XCTAssertEqualObjects(@"5.69", app.bundleVersion);
     XCTAssertEqualObjects(@"293.4", app.codeBundleId);
@@ -226,10 +226,10 @@
     XCTAssertEqualObjects(@"-[BugsnagClient notify:handledState:block:]", frame.method);
     XCTAssertEqualObjects(@"/Users/foo/Bugsnag.h", frame.machoFile);
     XCTAssertEqualObjects(@"B6D80CB5-A772-3D2F-B5A1-A3A137B8B58F", frame.machoUuid);
-    XCTAssertEqual(0x102340922, frame.machoVmAddress);
-    XCTAssertEqual(0x10b574fa0, frame.symbolAddress);
-    XCTAssertEqual(0x10b54b000, frame.machoLoadAddress);
-    XCTAssertEqual(0x10b5756bf, frame.frameAddress);
+    XCTAssertEqualObjects(@0x102340922, frame.machoVmAddress);
+    XCTAssertEqualObjects(@0x10b574fa0, frame.symbolAddress);
+    XCTAssertEqualObjects(@0x10b54b000, frame.machoLoadAddress);
+    XCTAssertEqualObjects(@0x10b5756bf, frame.frameAddress);
     XCTAssertTrue(frame.isPc);
     XCTAssertTrue(frame.isLr);
 }
@@ -329,10 +329,10 @@
     XCTAssertEqualObjects(@"-[BugsnagClient notify:handledState:block:]", frame.method);
     XCTAssertEqualObjects(@"/Users/foo/Bugsnag.h", frame.machoFile);
     XCTAssertEqualObjects(@"B6D80CB5-A772-3D2F-B5A1-A3A137B8B58F", frame.machoUuid);
-    XCTAssertEqual(0x102340922, frame.machoVmAddress);
-    XCTAssertEqual(0x10b574fa0, frame.symbolAddress);
-    XCTAssertEqual(0x10b54b000, frame.machoLoadAddress);
-    XCTAssertEqual(0x10b5756bf, frame.frameAddress);
+    XCTAssertEqualObjects(@0x102340922, frame.machoVmAddress);
+    XCTAssertEqualObjects(@0x10b574fa0, frame.symbolAddress);
+    XCTAssertEqualObjects(@0x10b54b000, frame.machoLoadAddress);
+    XCTAssertEqualObjects(@0x10b5756bf, frame.frameAddress);
     XCTAssertTrue(frame.isPc);
     XCTAssertTrue(frame.isLr);
 }
