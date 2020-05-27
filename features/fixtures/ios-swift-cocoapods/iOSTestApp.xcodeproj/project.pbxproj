@@ -81,6 +81,11 @@
 		E7A324ED247E9DB3008B0052 /* BreadcrumbCallbackRemovalScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A324EC247E9DB3008B0052 /* BreadcrumbCallbackRemovalScenario.m */; };
 		E7A324EF247E9DBC008B0052 /* BreadcrumbCallbackCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A324EE247E9DBC008B0052 /* BreadcrumbCallbackCrashScenario.swift */; };
 		E7B79CDA24800A5D0039FB88 /* MetadataMergeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B79CD924800A5D0039FB88 /* MetadataMergeScenario.swift */; };
+		E7A324D8247E70B2008B0052 /* SessionCallbackOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A324D7247E70B2008B0052 /* SessionCallbackOverrideScenario.swift */; };
+		E7A324DA247E70C4008B0052 /* SessionCallbackCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A324D9247E70C4008B0052 /* SessionCallbackCrashScenario.swift */; };
+		E7A324DE247E70E6008B0052 /* SessionCallbackOrderScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A324DD247E70E6008B0052 /* SessionCallbackOrderScenario.swift */; };
+		E7A324E0247E70F9008B0052 /* SessionCallbackDiscardScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A324DF247E70F9008B0052 /* SessionCallbackDiscardScenario.swift */; };
+		E7A324E3247E7C17008B0052 /* SessionCallbackRemovalScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A324E2247E7C17008B0052 /* SessionCallbackRemovalScenario.m */; };
 		E7DD40452473D980000EDC14 /* UserDefaultInfoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DD40442473D980000EDC14 /* UserDefaultInfoScenario.swift */; };
 		F429502603396F8671B333B3 /* HandledExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F429526319377A8848136413 /* HandledExceptionScenario.swift */; };
 		F4295109FCAB93708FDAFE12 /* DisabledSessionTrackingScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429563584D9BC3A5B86BECF /* DisabledSessionTrackingScenario.m */; };
@@ -237,6 +242,12 @@
 		E7A324EC247E9DB3008B0052 /* BreadcrumbCallbackRemovalScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BreadcrumbCallbackRemovalScenario.m; sourceTree = "<group>"; };
 		E7A324EE247E9DBC008B0052 /* BreadcrumbCallbackCrashScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreadcrumbCallbackCrashScenario.swift; sourceTree = "<group>"; };
 		E7B79CD924800A5D0039FB88 /* MetadataMergeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataMergeScenario.swift; sourceTree = "<group>"; };
+		E7A324D7247E70B2008B0052 /* SessionCallbackOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCallbackOverrideScenario.swift; sourceTree = "<group>"; };
+		E7A324D9247E70C4008B0052 /* SessionCallbackCrashScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCallbackCrashScenario.swift; sourceTree = "<group>"; };
+		E7A324DD247E70E6008B0052 /* SessionCallbackOrderScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCallbackOrderScenario.swift; sourceTree = "<group>"; };
+		E7A324DF247E70F9008B0052 /* SessionCallbackDiscardScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCallbackDiscardScenario.swift; sourceTree = "<group>"; };
+		E7A324E1247E7C17008B0052 /* SessionCallbackRemovalScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionCallbackRemovalScenario.h; sourceTree = "<group>"; };
+		E7A324E2247E7C17008B0052 /* SessionCallbackRemovalScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionCallbackRemovalScenario.m; sourceTree = "<group>"; };
 		E7DD40442473D980000EDC14 /* UserDefaultInfoScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultInfoScenario.swift; sourceTree = "<group>"; };
 		E7F6087B244F0A3A00F1532A /* BugsnagHooks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagHooks.h; sourceTree = "<group>"; };
 		EE18B3777C62D7BCA8DDBE30 /* Pods-iOSTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -451,6 +462,19 @@
 			name = "Breadcrumb Callbacks";
 			sourceTree = "<group>";
 		};
+		E7A324D4247E707D008B0052 /* Session Callbacks */ = {
+			isa = PBXGroup;
+			children = (
+				E7A324DF247E70F9008B0052 /* SessionCallbackDiscardScenario.swift */,
+				E7A324DD247E70E6008B0052 /* SessionCallbackOrderScenario.swift */,
+				E7A324D7247E70B2008B0052 /* SessionCallbackOverrideScenario.swift */,
+				E7A324D9247E70C4008B0052 /* SessionCallbackCrashScenario.swift */,
+				E7A324E1247E7C17008B0052 /* SessionCallbackRemovalScenario.h */,
+				E7A324E2247E7C17008B0052 /* SessionCallbackRemovalScenario.m */,
+			);
+			name = "Session Callbacks";
+			sourceTree = "<group>";
+		};
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
@@ -467,6 +491,7 @@
 				8AB1081823301FE600672818 /* ReleaseStageScenarios.swift */,
 				F4295ABA693D273D52AA9F6B /* Scenario.h */,
 				F42954E8B66F3FB7F5333CF7 /* Scenario.m */,
+				E7A324D4247E707D008B0052 /* Session Callbacks */,
 				F49695AC2445471400105DA9 /* Session stopping */,
 				F49695AB244546CA00105DA9 /* Session tracking */,
 				E700EE66247D73B7008CFFB6 /* Unhandled Errors */,
@@ -823,6 +848,7 @@
 				8AEFC73420F8D1BB00A78779 /* ManualSessionWithUserScenario.m in Sources */,
 				F4295B56219D228FAA99BC14 /* ObjCExceptionScenario.m in Sources */,
 				F4295218A62E41518DC3C057 /* AccessNonObjectScenario.m in Sources */,
+				E7A324E0247E70F9008B0052 /* SessionCallbackDiscardScenario.swift in Sources */,
 				8A72A0382396574F00328051 /* CustomPluginNotifierDescriptionScenario.m in Sources */,
 				E700EE72247D79FF008CFFB6 /* SIGBUSScenario.m in Sources */,
 				E7767F11221C21D90006648C /* StoppedSessionScenario.swift in Sources */,
@@ -832,10 +858,14 @@
 				F42951A9FD696D9047149DA8 /* UndefinedInstructionScenario.m in Sources */,
 				E7A324E6247E9D8D008B0052 /* BreadcrumbCallbackDiscardScenario.swift in Sources */,
 				00432CC4240912A100826D05 /* EnabledErrorTypesCxxScenario.mm in Sources */,
+				E7A324DE247E70E6008B0052 /* SessionCallbackOrderScenario.swift in Sources */,
+				E7A324DA247E70C4008B0052 /* SessionCallbackCrashScenario.swift in Sources */,
 				F49695A62441098600105DA9 /* OOMBackgroundScenario.m in Sources */,
 				E7DD40452473D980000EDC14 /* UserDefaultInfoScenario.swift in Sources */,
+				E7A324E3247E7C17008B0052 /* SessionCallbackRemovalScenario.m in Sources */,
 				E7767F15221C223C0006648C /* NewSessionScenario.swift in Sources */,
 				F42951BEB2518C610A85FE0D /* BuiltinTrapScenario.m in Sources */,
+				E7A324D8247E70B2008B0052 /* SessionCallbackOverrideScenario.swift in Sources */,
 				8AEFC79C20F92E2200A78779 /* AutoSessionUnhandledScenario.m in Sources */,
 				E700EE4E247D1317008CFFB6 /* UserFromClientScenario.swift in Sources */,
 				E7B79CDA24800A5D0039FB88 /* MetadataMergeScenario.swift in Sources */,
