@@ -138,6 +138,10 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 }
 
 - (void)startNewSessionWithAutoCaptureValue:(BOOL)isAutoCaptured {
+    NSSet<NSString *> *releaseStages = self.config.enabledReleaseStages;
+    if (releaseStages != nil && ![releaseStages containsObject:self.config.releaseStage]) {
+        return;
+    }
     if (self.config.sessionURL == nil) {
         bsg_log_err(@"The session tracking endpoint has not been set. Session tracking is disabled");
         return;
