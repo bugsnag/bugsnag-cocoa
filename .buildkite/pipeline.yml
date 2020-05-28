@@ -23,9 +23,6 @@ steps:
     concurrency: 10
     concurrency_group: browserstack-app
 
-  # Temporarily removing this block entirely to test all devices.
-  # - block: Trigger full test suite
-
   - label: ':ios: iOS 12 end-to-end tests'
     timeout_in_minutes: 60
     agents:
@@ -53,6 +50,8 @@ steps:
       DEVICE_TYPE: IOS_11
     concurrency: 10
     concurrency_group: browserstack-app
+    soft_fail:
+      - exit_status: "*"
 
   - label: ':ios: iOS 10 end-to-end tests'
     timeout_in_minutes: 60
@@ -67,3 +66,5 @@ steps:
       DEVICE_TYPE: IOS_10
     concurrency: 10
     concurrency_group: browserstack-app
+    soft_fail:
+      - exit_status: "*"
