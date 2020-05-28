@@ -2,6 +2,7 @@ version: '3.6'
 services:
   cocoa-maze-runner:
     image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:latest-cli
+    command: ["--tags", "not @skip"]
     environment:
       APP_LOCATION: /app/build/iOSTestApp.ipa
       BROWSER_STACK_USERNAME:
@@ -13,6 +14,3 @@ services:
     volumes:
       - ./features/fixtures/ios-swift-cocoapods/output:/app/build
       - ./features/:/app/features/
-    # entrypoint: /bin/sh
-    # stdin_open: true
-    # tty: true
