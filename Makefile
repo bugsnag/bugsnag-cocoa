@@ -1,9 +1,9 @@
 PLATFORM?=iOS
 OS?=latest
 TEST_CONFIGURATION?=Debug
-BUILD_FLAGS=-project $(PLATFORM)/Bugsnag.xcodeproj -scheme Bugsnag -derivedDataPath build
+BUILD_FLAGS=-project Project/Bugsnag.xcodeproj -scheme Bugsnag-$(PLATFORM) -derivedDataPath build/build-$(PLATFORM)
 
-ifeq ($(PLATFORM),OSX)
+ifeq ($(PLATFORM),macOS)
  SDK?=macosx
  RELEASE_DIR=Release
  BUILD_ONLY_FLAGS=-sdk $(SDK) CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
@@ -47,13 +47,15 @@ build: ## Build the library
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) build $(FORMATTER)
 
 build_ios_static: ## Build the static library target
-	$(XCODEBUILD) -project iOS/Bugsnag.xcodeproj -scheme BugsnagStatic
+	$(XCODEBUILD) -project Project/Bugsnag.xcodeproj -scheme BugsnagStatic
 
 build_carthage: ## Build the latest pushed commit with Carthage
 	@mkdir -p features/fixtures/carthage-proj
 	@echo 'git "file://$(shell pwd)" "'$(shell git rev-parse HEAD)'"' > features/fixtures/carthage-proj/Cartfile
-	@cd features/fixtures/carthage-proj && carthage update --platform ios && \
-		carthage update --platform macos
+	@cd features/fixtures/carthage-proj && \
+	 carthage update --platform ios && \
+	 carthage update --platform macos && \
+	 carthage update --platform tvos
 
 bump: ## Bump the version numbers to $VERSION
 ifeq ($(VERSION),)
@@ -95,8 +97,8 @@ endif
 	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings
 
 clean: ## Clean build artifacts
-	@$(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
-	@rm -rf build
+	@set -x && $(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
+	@rm -rf build-$(PLATFORM)
 
 test: ## Run unit tests
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
@@ -111,7 +113,7 @@ endif
 ifeq ($(BROWSER_STACK_ACCESS_KEY),)
 	@$(error BROWSER_STACK_ACCESS_KEY is not defined)
 endif
-	@docker-compose run cocoa-maze-runner $(TEST_FEATURE)
+	@docker-compose run cocoa-maze-runner --tags 'not @skip' $(TEST_FEATURE)
 
 e2e:
 	@make e2e_build
