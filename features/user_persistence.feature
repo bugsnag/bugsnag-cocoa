@@ -3,7 +3,7 @@ Feature: Persisting User Information
 Scenario: User Info is persisted across app runs
     When I run "UserPersistencePersistUserScenario"
 
-    # User is set and comes through 
+    # User is set and comes through
     And I wait to receive a request
     And I relaunch the app
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
@@ -12,7 +12,7 @@ Scenario: User Info is persisted across app runs
     And the session "user.name" equals "bar"
     And I discard the oldest request
 
-    # Generate session and event 
+    # Generate session and event
     Then I run "UserPersistenceNoUserScenario"
     And I wait to receive 2 requests
     And I relaunch the app

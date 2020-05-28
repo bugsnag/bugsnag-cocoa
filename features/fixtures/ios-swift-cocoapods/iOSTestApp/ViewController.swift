@@ -36,6 +36,11 @@ class ViewController: UIViewController {
         scenario?.startBugsnag()
     }
     
+    @IBAction func clearUserData(_ sender: Any) {
+        NSLog("Clear user defaults")
+        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+    }
+    
     internal func prepareScenario() -> Scenario {
         let eventType : String! = scenarioNameField.text
         let eventMode : String! = scenarioMetaDataField.text
@@ -50,6 +55,7 @@ class ViewController: UIViewController {
         scenario.eventMode = eventMode
         return scenario
     }
+    
     
     @objc func didEnterBackgroundNotification() {
         scenario?.didEnterBackgroundNotification()
