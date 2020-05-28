@@ -42,3 +42,27 @@ Scenario: App and Device info is as expected
     And the payload field "events.0.app.duration" is a number
     And the payload field "events.0.app.durationInForeground" is a number
     And the payload field "events.0.app.inForeground" is not null
+
+Scenario: App and Device info is as expected when overridden via config
+    When I run "AppAndDeviceAttributesScenarioConfigOverride"
+    And I wait to receive a request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
+
+    And the payload field "events.0.app.type" equals "iLeet"
+    And the payload field "events.0.app.bundleVersion" does not equal "12345"
+    And the payload field "events.0.context" equals "myContext"
+    And the payload field "events.0.app.releaseStage" equals "secondStage"
+    
+Scenario: App and Device info is as expected when overridden via callback
+    When I run "AppAndDeviceAttributesScenarioCallbackOverride"
+    And I wait to receive a request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
+
+    And the payload field "events.0.app.type" equals "newAppType"
+    And the payload field "events.0.app.bundleVersion" does not equal "12345"
+    And the payload field "events.0.app.version" equals "999"
+    And the payload field "events.0.app.releaseStage" equals "thirdStage"
+    And the payload field "events.0.device.manufacturer" equals "Nokia"
+    And the payload field "events.0.device.modelNumber" equals "0898"
