@@ -6,6 +6,7 @@
 //  Copyright © 2017 Bugsnag. All rights reserved.
 //
 
+#import "BugsnagClient.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagSessionFileStore.h"
 #import "BSG_KSLogger.h"
@@ -55,6 +56,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 
 @interface BugsnagSessionTracker ()
 @property (weak, nonatomic) BugsnagConfiguration *config;
+@property (weak, nonatomic) BugsnagClient *client;
 @property (strong, nonatomic) BugsnagSessionFileStore *sessionStore;
 @property (strong, nonatomic) BugsnagSessionTrackingApiClient *apiClient;
 @property (strong, nonatomic) NSDate *backgroundStartTime;
@@ -72,9 +74,11 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 @implementation BugsnagSessionTracker
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config
+                        client:(BugsnagClient *)client
             postRecordCallback:(void(^)(BugsnagSession *))callback {
     if (self = [super init]) {
         _config = config;
+        _client = client;
         _apiClient = [[BugsnagSessionTrackingApiClient alloc] initWithConfig:config queueName:@"Session API queue"];
         _callback = callback;
 
@@ -138,6 +142,10 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 }
 
 - (void)startNewSessionWithAutoCaptureValue:(BOOL)isAutoCaptured {
+    NSSet<NSString *> *releaseStages = self.config.enabledReleaseStages;
+    if (releaseStages != nil && ![releaseStages containsObject:self.config.releaseStage]) {
+        return;
+    }
     if (self.config.sessionURL == nil) {
         bsg_log_err(@"The session tracking endpoint has not been set. Session tracking is disabled");
         return;
@@ -152,16 +160,21 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 
     BugsnagSession *newSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                           startDate:[NSDate date]
-                                                               user:self.config.user
+                                                               user:self.client.user
                                                        autoCaptured:isAutoCaptured
                                                                 app:app
                                                              device:device];
 
     for (BugsnagOnSessionBlock onSessionBlock in self.config.onSessionBlocks) {
-        if (!onSessionBlock(newSession)) {
-            return;
+        @try {
+            if (!onSessionBlock(newSession)) {
+                return;
+            }
+        } @catch (NSException *exception) {
+            bsg_log_err(@"Error from onSession callback: %@", exception);
         }
     }
+
     self.currentSession = newSession;
     [self.sessionStore write:self.currentSession];
 

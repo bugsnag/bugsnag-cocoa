@@ -15,7 +15,7 @@ Scenario: Launching using the default configuration sends a single session
 
     And the session "id" is not null
     And the session "startedAt" is not null
-    And the session "user.id" is null
+    And the session "user.id" is not null
     And the session "user.email" is null
     And the session "user.name" is null
 
@@ -34,7 +34,7 @@ Scenario: Configuring a custom version sends it in a session request
 
     And the session "id" is not null
     And the session "startedAt" is not null
-    And the session "user.id" is null
+    And the session "user.id" is not null
     And the session "user.email" is null
     And the session "user.name" is null
 

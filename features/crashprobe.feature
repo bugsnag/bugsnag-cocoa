@@ -18,27 +18,6 @@ Scenario: Calling __builtin_trap()
     And the exception "errorClass" equals "EXC_BREAKPOINT"
     And the "method" of stack frame 0 equals "-[BuiltinTrapScenario run]"
 
-Scenario: Calling abort()
-    When I run "AbortScenario" and relaunch the app
-    And I configure Bugsnag for "AbortScenario"
-    And I wait to receive a request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
-    And the exception "errorClass" equals "SIGABRT"
-    And the "method" of stack frame 0 equals "__pthread_kill"
-    And the "method" of stack frame 1 equals "<redacted>"
-    And the "method" of stack frame 2 equals "abort"
-    And the "method" of stack frame 3 equals "-[AbortScenario run]"
-
-Scenario: Throwing a C++ exception
-    When I run "CxxExceptionScenario" and relaunch the app
-    And I configure Bugsnag for "CxxExceptionScenario"
-    And I wait to receive a request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the exception "errorClass" equals "P16kaboom_exception"
-    And the exception "type" equals "cocoa"
-    And the payload field "events.0.exceptions.0.stacktrace" is an array with 0 elements
-
 Scenario: Calling non-existent method
     When I run "NonExistentMethodScenario" and relaunch the app
     And I configure Bugsnag for "NonExistentMethodScenario"
@@ -163,18 +142,6 @@ Scenario: Read a garbage pointer
     And the exception "message" starts with "Attempted to dereference garbage pointer"
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "-[ReadGarbagePointerScenario run]"
-
-Scenario: Throw a NSException
-    When I run "ObjCExceptionScenario" and relaunch the app
-    And I configure Bugsnag for "ObjCExceptionScenario"
-    And I wait to receive a request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the exception "message" equals "An uncaught exception! SCREAM."
-    And the exception "errorClass" equals "NSGenericException"
-    And the "method" of stack frame 0 equals "<redacted>"
-    And the "method" of stack frame 1 equals "objc_exception_throw"
-    And the "method" of stack frame 2 equals "-[ObjCExceptionScenario run]"
-    And the event "device.time" is within 60 seconds of the current timestamp
 
 Scenario: Access a non-object as an object
     When I run "AccessNonObjectScenario" and relaunch the app
