@@ -193,12 +193,26 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
 }
 
 /**
- * Test creating a client using "startWithApiKey" uses the default configuration values
+ * Test creating a client using "startWithApiKey" uses the same configuration values as
+ * BugsnagConfiguration's "initWithApiKey" method
  */
-- (void)testClientStartWithApiKeyMatchesDefaultConfiguration {
+- (void)testClientStartWithApiKeyMatchesConfigurationInitWithApiKey {
     BugsnagConfiguration *defaultConfig = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
 
     [Bugsnag startWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagConfiguration *config = [Bugsnag configuration];
+
+    [self assertEqualConfiguration:defaultConfig withActual:config];
+}
+
+/**
+ * Test creating a client using "startWithApiKey" uses the same configuration values as
+ * BugsnagConfiguration's "loadConfig" method
+ */
+- (void)testClientStartWithApiKeyMatchesConfigurationLoadConfig {
+    BugsnagConfiguration *defaultConfig = [BugsnagConfiguration loadConfig];
+
+    [Bugsnag startWithApiKey:@""];
     BugsnagConfiguration *config = [Bugsnag configuration];
 
     [self assertEqualConfiguration:defaultConfig withActual:config];
