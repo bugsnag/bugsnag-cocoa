@@ -11,3 +11,6 @@ Scenario: Throw a NSException
     And the "method" of stack frame 1 equals "objc_exception_throw"
     And the "method" of stack frame 2 equals "-[ObjCExceptionScenario run]"
     And the event "device.time" is within 60 seconds of the current timestamp
+    And the event "severity" equals "error"
+    And the event "unhandled" is true
+    And the event "severityReason.type" equals "unhandledException"
