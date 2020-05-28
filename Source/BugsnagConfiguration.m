@@ -48,7 +48,7 @@
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
 static NSString *const kHeaderApiSentAt = @"Bugsnag-Sent-At";
-static NSString *const BSGApiKeyError = @"apiKey must be a 32-digit hexadecimal value.";
+static NSString *const BSGApiKeyMissingError = @"No Bugsnag API Key set";
 static NSString *const BSGInitError = @"Init is unavailable.  Use [[BugsnagConfiguration alloc] initWithApiKey:] instead.";
 static const int BSGApiKeyLength = 32;
 
@@ -172,11 +172,29 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  * @returns A boolean representing whether the apiKey is valid.
  */
 + (BOOL)isValidApiKey:(NSString *)apiKey {
+    if ([self isApiKeyMissing:apiKey]) {
+        return false;
+    }
+
     NSCharacterSet *chars = [[NSCharacterSet
         characterSetWithCharactersInString:@"0123456789ABCDEF"] invertedSet];
-    BOOL isHex = [apiKey isKindOfClass:[NSString class]] &&
-            (NSNotFound == [[apiKey uppercaseString] rangeOfCharacterFromSet:chars].location);
+
+    BOOL isHex = (NSNotFound == [[apiKey uppercaseString] rangeOfCharacterFromSet:chars].location);
+
     return isHex && [apiKey length] == BSGApiKeyLength;
+}
+
+/**
+ * Check if the API Key is missing, i.e. it's nil, not a string or is empty.
+ *
+ * This is distinct from 'isValidApiKey' to allow throwing an exception in this case, but not
+ * if the API Key is in the wrong format.
+ *
+ * @param apiKey The API key.
+ * @returns A boolean representing whether the API key is nil, of the wrong type or is an empty string
+ */
++ (BOOL)isApiKeyMissing:(NSString *)apiKey {
+    return apiKey == nil || ![apiKey isKindOfClass:[NSString class]] || [apiKey length] == 0;
 }
 
 // -----------------------------------------------------------------------------
@@ -195,15 +213,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 - (instancetype _Nonnull)initWithApiKey:(NSString *_Nonnull)apiKey
 {
-    if (![BugsnagConfiguration isValidApiKey:apiKey]) {
-        bsg_log_err(@"Invalid configuration. apiKey should be a 32-character hexademical string, got \"%@\"", apiKey);
-        _apiKey = @"";
-    }
-    if ([apiKey isKindOfClass: [NSString class]]) {
-        _apiKey = apiKey;
-    } else {
-        _apiKey = @"";
-    }
+    [self setApiKey:apiKey];
 
     self = [super init];
 
@@ -631,13 +641,17 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 }
 
 - (void)setApiKey:(NSString *)apiKey {
-    if ([BugsnagConfiguration isValidApiKey:apiKey]) {
-        [self willChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
-        _apiKey = apiKey;
-        [self didChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
-    } else {
-        @throw BSGApiKeyError;
+    if ([BugsnagConfiguration isApiKeyMissing:apiKey]) {
+        @throw BSGApiKeyMissingError;
     }
+
+    if (![BugsnagConfiguration isValidApiKey:apiKey]) {
+        bsg_log_warn(@"Invalid configuration. apiKey should be a 32-character hexademical string, got \"%@\"", apiKey);
+    }
+
+    [self willChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
+    _apiKey = apiKey;
+    [self didChangeValueForKey:NSStringFromSelector(@selector(apiKey))];
 }
 
 - (void)addPlugin:(id<BugsnagPlugin> _Nonnull)plugin {
