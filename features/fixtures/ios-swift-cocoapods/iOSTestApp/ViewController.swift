@@ -48,9 +48,10 @@ class ViewController: UIViewController {
         let eventMode : String! = scenarioMetaDataField.text
 
         let config: BugsnagConfiguration
-        if let apiKey = apiKeyField.text {
+        if (apiKeyField.text!.count > 0) {
             // Manual testing mode - use the real dashboard and the API key provided
-            config = BugsnagConfiguration(apiKey)
+            NSLog("Running in manual mode with API key: %@", apiKeyField.text!)
+            config = BugsnagConfiguration(apiKeyField.text!)
         }
         else {
             // Automation mode
