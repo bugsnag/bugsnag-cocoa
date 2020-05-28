@@ -22,6 +22,8 @@ internal class UserFromConfigEventScenario: Scenario {
 
     override func run() {
         let user = Bugsnag.user()
+        // set Client.user in the metadata so we can verify that the user set
+        // in Configuration is copied over during initialisation
         Bugsnag.addMetadata(user.id, key: "id", section: "clientUserValue")
         Bugsnag.addMetadata(user.email, key: "email", section: "clientUserValue")
         Bugsnag.addMetadata(user.name, key: "name", section: "clientUserValue")
