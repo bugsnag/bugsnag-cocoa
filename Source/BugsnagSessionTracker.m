@@ -162,10 +162,15 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
                                                              device:device];
 
     for (BugsnagOnSessionBlock onSessionBlock in self.config.onSessionBlocks) {
-        if (!onSessionBlock(newSession)) {
-            return;
+        @try {
+            if (!onSessionBlock(newSession)) {
+                return;
+            }
+        } @catch (NSException *exception) {
+            bsg_log_err(@"Error from onSession callback: %@", exception);
         }
     }
+
     self.currentSession = newSession;
     [self.sessionStore write:self.currentSession];
 

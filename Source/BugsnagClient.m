@@ -1006,8 +1006,12 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (void)notifyInternal:(BugsnagEvent *_Nonnull)event
                  block:(BugsnagOnErrorBlock)block
 {
-    if (block != nil && !block(event)) { // skip notifying if callback false
-        return;
+    @try {
+        if (block != nil && !block(event)) { // skip notifying if callback false
+            return;
+        }
+    } @catch (NSException *exception) {
+        bsg_log_err(@"Error from onError callback: %@", exception);
     }
 
     if (event.handledState.unhandled) {
