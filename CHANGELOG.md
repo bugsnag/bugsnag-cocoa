@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* Unified the three main XCode projects
+  [#633](https://github.com/bugsnag/bugsnag-cocoa/pull/633)
+
 * Alter default session background timeout to 30s
   [#581](https://github.com/bugsnag/bugsnag-cocoa/pull/581)
 

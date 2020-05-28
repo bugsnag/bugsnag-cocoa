@@ -3,16 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0003F3C52461B29A00AE0C93 /* BSG_KSMachHeaders.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0071CB4D2460216200F562B1 /* BSG_KSMachHeaders.h */; };
 		000E6E9E23D8690F009D8194 /* BugsnagSwiftConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000E6E9D23D8690F009D8194 /* BugsnagSwiftConfigurationTests.swift */; };
-		000E6EA323D8AC8C009D8194 /* UPGRADING.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6E9F23D8AC8C009D8194 /* UPGRADING.md */; platformFilter = ios; };
-		000E6EA423D8AC8C009D8194 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA023D8AC8C009D8194 /* README.md */; platformFilter = ios; };
-		000E6EA523D8AC8C009D8194 /* VERSION in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA123D8AC8C009D8194 /* VERSION */; platformFilter = ios; };
-		000E6EA623D8AC8C009D8194 /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 000E6EA223D8AC8C009D8194 /* CHANGELOG.md */; platformFilter = ios; };
 		0016B28A246EDC9A002B34C8 /* BugsnagSwiftPublicAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0016B289246EDC9A002B34C8 /* BugsnagSwiftPublicAPITests.swift */; };
 		0071CB4B2460213200F562B1 /* BSG_KSMachHeaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 0071CB4A2460213200F562B1 /* BSG_KSMachHeaders.m */; };
 		0071CB4C2460213200F562B1 /* BSG_KSMachHeaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 0071CB4A2460213200F562B1 /* BSG_KSMachHeaders.m */; };
@@ -705,7 +701,6 @@
 		E74477192458601600DFC4E8 /* BugsnagMetadataInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = E74477182458601600DFC4E8 /* BugsnagMetadataInternal.h */; };
 		E744771A2458608F00DFC4E8 /* BugsnagMetadataInternal.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E74477182458601600DFC4E8 /* BugsnagMetadataInternal.h */; };
 		E748DA781FD02A3F00B14909 /* BugsnagSessionFileStore.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F42955025DBE1DCEFD928CAA /* BugsnagSessionFileStore.h */; };
-		E74D8E93243B3DF000F2A630 /* ORGANIZATION.md in Resources */ = {isa = PBXBuildFile; fileRef = E74D8E92243B3DF000F2A630 /* ORGANIZATION.md */; platformFilter = ios; };
 		E74EFDC21FD04B9200577D23 /* BugsnagSessionTrackingApiClient.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F429517A5571A61A897E963D /* BugsnagSessionTrackingApiClient.h */; };
 		E7529F89243C8DA2006B4932 /* RegisterErrorData.h in Headers */ = {isa = PBXBuildFile; fileRef = E7529F87243C8DA2006B4932 /* RegisterErrorData.h */; };
 		E7529F8A243C8DA2006B4932 /* RegisterErrorData.m in Sources */ = {isa = PBXBuildFile; fileRef = E7529F88243C8DA2006B4932 /* RegisterErrorData.m */; };
@@ -796,7 +791,6 @@
 		E7A56789245AE79C009BE2F1 /* BugsnagClientPayloadInfoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A56788245AE79C009BE2F1 /* BugsnagClientPayloadInfoTest.m */; };
 		E7A8EA3A24606A3E00CCBBD1 /* BSGConfigurationBuilder.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8A89F3F022D8B62B000D34D1 /* BSGConfigurationBuilder.h */; };
 		E7A8EA3B24606C6B00CCBBD1 /* BSGConfigurationBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A89F3F122D8B62B000D34D1 /* BSGConfigurationBuilder.m */; };
-		E7A8EA612461813700CCBBD1 /* TestsInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = E7A8EA602461813700CCBBD1 /* TestsInfo.plist */; };
 		E7A9E56B2436363900D99F8A /* BugsnagDeviceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A9E56A2436363900D99F8A /* BugsnagDeviceTest.m */; };
 		E7AB4B9C2423E16C004F015A /* BugsnagOnBreadcrumbTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E7AB4B9B2423E16C004F015A /* BugsnagOnBreadcrumbTest.m */; };
 		E7B3291A1FD707EC0098FC47 /* KSCrashReportConverter_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B329171FD707EC0098FC47 /* KSCrashReportConverter_Tests.m */; };
@@ -2179,7 +2173,7 @@
 		8A2C8F0F1C6BBD2300846019 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1140;
 				ORGANIZATIONNAME = Bugsnag;
 				TargetAttributes = {
 					009BBD612478369100731BF5 = {
@@ -2213,11 +2207,11 @@
 			};
 			buildConfigurationList = 8A2C8F121C6BBD2300846019 /* Build configuration list for PBXProject "Bugsnag" */;
 			compatibilityVersion = "Xcode 8.0";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
+				Base,
 			);
 			mainGroup = 8A2C8F0E1C6BBD2300846019;
 			productRefGroup = 8A2C8F191C6BBD2300846019 /* Products */;
@@ -2270,11 +2264,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000E6EA523D8AC8C009D8194 /* VERSION in Resources */,
-				000E6EA423D8AC8C009D8194 /* README.md in Resources */,
-				000E6EA323D8AC8C009D8194 /* UPGRADING.md in Resources */,
-				E74D8E93243B3DF000F2A630 /* ORGANIZATION.md in Resources */,
-				000E6EA623D8AC8C009D8194 /* CHANGELOG.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2282,7 +2271,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7A8EA612461813700CCBBD1 /* TestsInfo.plist in Resources */,
 				8A2C8F961C6BC08600846019 /* report.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2841,11 +2829,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -2882,11 +2866,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
@@ -2915,11 +2895,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = TestsInfo.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -2946,11 +2922,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = TestsInfo.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.Bugsnag-MacOSTests";
@@ -2981,11 +2953,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -3020,11 +2988,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
@@ -3052,11 +3016,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = TestsInfo.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -3083,11 +3043,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = TestsInfo.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.Bugsnag-tvOSTests";
@@ -3205,6 +3161,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -3226,11 +3183,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
 					"-lc++",
@@ -3262,11 +3215,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
 					"-lc++",
@@ -3290,11 +3239,7 @@
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = TestsInfo.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3315,11 +3260,7 @@
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = TestsInfo.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
