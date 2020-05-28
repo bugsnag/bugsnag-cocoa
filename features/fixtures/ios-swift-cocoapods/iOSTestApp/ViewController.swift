@@ -13,6 +13,8 @@ class ViewController: UIViewController {
 
     @IBOutlet var scenarioNameField : UITextField!
     @IBOutlet var scenarioMetaDataField : UITextField!
+    @IBOutlet var apiKeyField: UITextField!
+    
     var scenario : Scenario?
 
     override func viewDidLoad() {
@@ -44,9 +46,18 @@ class ViewController: UIViewController {
     internal func prepareScenario() -> Scenario {
         let eventType : String! = scenarioNameField.text
         let eventMode : String! = scenarioMetaDataField.text
+
+        let config: BugsnagConfiguration
+        if let apiKey = apiKeyField.text {
+            // Manual testing mode - use the real dashboard and the API key provided
+            config = BugsnagConfiguration(apiKey)
+        }
+        else {
+            // Automation mode
+            config = BugsnagConfiguration("12312312312312312312312312312312")
+            config.endpoints = BugsnagEndpointConfiguration(notify: "http://bs-local.com:9339", sessions: "http://bs-local.com:9339")
+        }
         
-        let config = BugsnagConfiguration("12312312312312312312312312312312")
-        config.endpoints = BugsnagEndpointConfiguration(notify: "http://bs-local.com:9339", sessions: "http://bs-local.com:9339")
         let allowedErrorTypes = BugsnagErrorTypes()
         allowedErrorTypes.ooms = false
         config.enabledErrorTypes = allowedErrorTypes
