@@ -436,6 +436,7 @@
 		009DF96924327FA2000A8363 /* BugsnagMetadataStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 009DF96824327FA2000A8363 /* BugsnagMetadataStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00D7ACAD23E9C63000FBE4A7 /* BugsnagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACAC23E9C63000FBE4A7 /* BugsnagTests.m */; };
 		00D7ACAF23EABBC800FBE4A7 /* BugsnagSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D7ACAE23EABBC800FBE4A7 /* BugsnagSwiftTests.swift */; };
+		00DF4119248029B700D2FE76 /* CONTRIBUTING.md in Resources */ = {isa = PBXBuildFile; fileRef = 00DF4118248029B700D2FE76 /* CONTRIBUTING.md */; };
 		00F9393923FC4F64008C7073 /* BugsnagTestsDummyClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F9393823FC4F64008C7073 /* BugsnagTestsDummyClass.m */; };
 		4B47970A22A9AE1F00FF9C2E /* BugsnagEventFromKSCrashReportTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B47970922A9AE1F00FF9C2E /* BugsnagEventFromKSCrashReportTest.m */; };
 		4B775FCF22CBDEB4004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B775FCE22CBDEB4004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m */; };
@@ -974,6 +975,11 @@
 		00D7ACAC23E9C63000FBE4A7 /* BugsnagTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagTests.m; path = ../../Tests/BugsnagTests.m; sourceTree = "<group>"; };
 		00D7ACAE23EABBC800FBE4A7 /* BugsnagSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagSwiftTests.swift; sourceTree = "<group>"; };
 		00DBC4AB247E8544009F17D0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		00DF41142480284000D2FE76 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; name = Makefile; path = ../Makefile; sourceTree = "<group>"; };
+		00DF41152480284000D2FE76 /* Bugsnag.podspec.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = Bugsnag.podspec.json; path = ../Bugsnag.podspec.json; sourceTree = "<group>"; };
+		00DF41162480284100D2FE76 /* docker-compose.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = "docker-compose.yml"; path = "../docker-compose.yml"; sourceTree = "<group>"; };
+		00DF41172480291F00D2FE76 /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE.txt; path = ../LICENSE.txt; sourceTree = "<group>"; };
+		00DF4118248029B700D2FE76 /* CONTRIBUTING.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = CONTRIBUTING.md; path = ../CONTRIBUTING.md; sourceTree = "<group>"; };
 		00F9393723FC4F63008C7073 /* BugsnagTestsDummyClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagTestsDummyClass.h; path = ../../Tests/BugsnagTestsDummyClass.h; sourceTree = "<group>"; };
 		00F9393823FC4F64008C7073 /* BugsnagTestsDummyClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagTestsDummyClass.m; path = ../../Tests/BugsnagTestsDummyClass.m; sourceTree = "<group>"; };
 		4B3B193422CA7B0900475354 /* BugsnagCollectionsBSGDictSetSafeObjectTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagCollectionsBSGDictSetSafeObjectTest.m; path = ../../Tests/BugsnagCollectionsBSGDictSetSafeObjectTest.m; sourceTree = "<group>"; };
@@ -1294,17 +1300,30 @@
 			path = "Swift Tests";
 			sourceTree = "<group>";
 		};
+		00DF41132480280200D2FE76 /* Extras */ = {
+			isa = PBXGroup;
+			children = (
+				00DF41152480284000D2FE76 /* Bugsnag.podspec.json */,
+				00DF41162480284100D2FE76 /* docker-compose.yml */,
+				00DF41142480284000D2FE76 /* Makefile */,
+				8AF2894923339CCA00E8EB27 /* Config.xcconfig */,
+				000E6E9F23D8AC8C009D8194 /* UPGRADING.md */,
+				000E6EA223D8AC8C009D8194 /* CHANGELOG.md */,
+				00DF4118248029B700D2FE76 /* CONTRIBUTING.md */,
+				00DF41172480291F00D2FE76 /* LICENSE.txt */,
+				000E6EA123D8AC8C009D8194 /* VERSION */,
+			);
+			name = Extras;
+			sourceTree = "<group>";
+		};
 		8A2C8F0E1C6BBD2300846019 = {
 			isa = PBXGroup;
 			children = (
-				E74D8E92243B3DF000F2A630 /* ORGANIZATION.md */,
-				000E6EA223D8AC8C009D8194 /* CHANGELOG.md */,
 				000E6EA023D8AC8C009D8194 /* README.md */,
-				000E6E9F23D8AC8C009D8194 /* UPGRADING.md */,
-				000E6EA123D8AC8C009D8194 /* VERSION */,
-				8AF2894923339CCA00E8EB27 /* Config.xcconfig */,
+				E74D8E92243B3DF000F2A630 /* ORGANIZATION.md */,
 				8A2C8F1A1C6BBD2300846019 /* Bugsnag */,
 				8A2C8F261C6BBD2300846019 /* Tests */,
+				00DF41132480280200D2FE76 /* Extras */,
 				8A2C8F751C6BBEBB00846019 /* Frameworks */,
 				8A2C8F191C6BBD2300846019 /* Products */,
 			);
@@ -2264,6 +2283,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00DF4119248029B700D2FE76 /* CONTRIBUTING.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

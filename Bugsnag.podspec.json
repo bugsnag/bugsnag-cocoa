@@ -21,7 +21,7 @@
   ],
   "platforms": {
     "ios": "8.0",
-    "osx": "10.8",
+    "osx": "10.11",
     "tvos": "9.0"
   },
   "source_files": [
