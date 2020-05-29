@@ -16,12 +16,13 @@ class MetadataMergeScenario: Scenario {
     }
 
     override func run() {
+        // set placeholder values
+        Bugsnag.addMetadata("initialValue", key: "nonNullValue", section: "custom")
+        Bugsnag.addMetadata("initialValue", key: "nullValue", section: "custom")
+        Bugsnag.addMetadata("initialValue", key: "invalidValue", section: "custom")
+
         let error = NSError(domain: "MetadataMergeScenario", code: 100, userInfo: nil)
         Bugsnag.notifyError(error) { (event) -> Bool in
-            // set placeholder values
-            event.addMetadata("initialValue", key: "nonNullValue", section: "custom")
-            event.addMetadata("initialValue", key: "nullValue", section: "custom")
-            event.addMetadata("initialValue", key: "invalidValue", section: "custom")
 
             // null values should remove existing values
             event.addMetadata("overriddenValue", key: "nonNullValue", section: "custom")
