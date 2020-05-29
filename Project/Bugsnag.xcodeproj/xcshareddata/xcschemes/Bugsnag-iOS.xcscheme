@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1010"
+   LastUpgradeVersion = "1140"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "8A2C8FA01C6BC1F700846019"
+               BlueprintIdentifier = "8A2C8F171C6BBD2300846019"
                BuildableName = "Bugsnag.framework"
-               BlueprintName = "Bugsnag"
+               BlueprintName = "Bugsnag-iOS"
                ReferencedContainer = "container:Bugsnag.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -24,32 +24,41 @@
    </BuildAction>
    <TestAction
       buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = ""
-      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES"
+      onlyGenerateCoverageForSpecifiedTargets = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "8A2C8F171C6BBD2300846019"
+            BuildableName = "Bugsnag.framework"
+            BlueprintName = "Bugsnag-iOS"
+            ReferencedContainer = "container:Bugsnag.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "8A2C8F171C6BBD2300846019"
+            BuildableName = "Bugsnag.framework"
+            BlueprintName = "Bugsnag-iOS"
+            ReferencedContainer = "container:Bugsnag.xcodeproj">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "8A2C8FAA1C6BC1F700846019"
-               BuildableName = "Tests.xctest"
-               BlueprintName = "Tests"
+               BlueprintIdentifier = "8A2C8F211C6BBD2300846019"
+               BuildableName = "Bugsnag-iOSTests.xctest"
+               BlueprintName = "Bugsnag-iOSTests"
                ReferencedContainer = "container:Bugsnag.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "8A2C8FA01C6BC1F700846019"
-            BuildableName = "Bugsnag.framework"
-            BlueprintName = "Bugsnag"
-            ReferencedContainer = "container:Bugsnag.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -64,14 +73,12 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "8A2C8FA01C6BC1F700846019"
+            BlueprintIdentifier = "8A2C8F171C6BBD2300846019"
             BuildableName = "Bugsnag.framework"
-            BlueprintName = "Bugsnag"
+            BlueprintName = "Bugsnag-iOS"
             ReferencedContainer = "container:Bugsnag.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -82,9 +89,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "8A2C8FA01C6BC1F700846019"
+            BlueprintIdentifier = "8A2C8F171C6BBD2300846019"
             BuildableName = "Bugsnag.framework"
-            BlueprintName = "Bugsnag"
+            BlueprintName = "Bugsnag-iOS"
             ReferencedContainer = "container:Bugsnag.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
