@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import Bugsnag
 
 class BugsnagSwiftConfigurationTests: XCTestCase {
 
