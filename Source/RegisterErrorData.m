@@ -44,8 +44,12 @@
         [interestingValues sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 
         NSString *message = [interestingValues componentsJoinedByString:@" | "];
-        return [[RegisterErrorData alloc] initWithClass:reservedWord
-                                                message:message];
+        // reservedWord *shouldn't* equal nil, but since RegisterErrorData expects a non-nil
+        // argument guard against it anyway, and fall through.
+        if (reservedWord != nil) {
+            return [[RegisterErrorData alloc] initWithClass:reservedWord
+                                                    message:message];
+       }
     }
     return nil;
 }
