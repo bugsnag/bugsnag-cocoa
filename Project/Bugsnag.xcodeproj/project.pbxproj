@@ -486,6 +486,10 @@
 		00DF41FE248141EB00D2FE76 /* BSGOutOfMemoryWatchdog.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8A70D9C722539C81006B696F /* BSGOutOfMemoryWatchdog.h */; };
 		00DF41FF248141EB00D2FE76 /* BSG_KSCrashIdentifier.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8A530CBE22FDC3AE00F0C108 /* BSG_KSCrashIdentifier.h */; };
 		00DF42002481420200D2FE76 /* Private.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8A3B5F252407EC6400CE4A3A /* Private.h */; };
+		00DF420924815F2100D2FE76 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00942D11247FDEE400B4571F /* libz.tbd */; };
+		00DF420A24815F2C00D2FE76 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00942D0E247FDEC800B4571F /* libc++.tbd */; };
+		00DF420C24815F3700D2FE76 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DF420B24815F3700D2FE76 /* Foundation.framework */; };
+		00DF420D24815F3E00D2FE76 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DBC4AB247E8544009F17D0 /* Foundation.framework */; };
 		00F9393923FC4F64008C7073 /* BugsnagTestsDummyClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F9393823FC4F64008C7073 /* BugsnagTestsDummyClass.m */; };
 		4B47970A22A9AE1F00FF9C2E /* BugsnagEventFromKSCrashReportTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B47970922A9AE1F00FF9C2E /* BugsnagEventFromKSCrashReportTest.m */; };
 		4B775FCF22CBDEB4004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B775FCE22CBDEB4004839C5 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m */; };
@@ -1034,6 +1038,7 @@
 		00DF4118248029B700D2FE76 /* CONTRIBUTING.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = CONTRIBUTING.md; path = ../CONTRIBUTING.md; sourceTree = "<group>"; };
 		00DF415124805CB000D2FE76 /* BugsnagMetadataTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BugsnagMetadataTests.swift; sourceTree = "<group>"; };
 		00DF4156248065AC00D2FE76 /* .travis.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; name = .travis.yml; path = ../.travis.yml; sourceTree = "<group>"; };
+		00DF420B24815F3700D2FE76 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS13.4.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		00F9393723FC4F63008C7073 /* BugsnagTestsDummyClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagTestsDummyClass.h; path = ../../Tests/BugsnagTestsDummyClass.h; sourceTree = "<group>"; };
 		00F9393823FC4F64008C7073 /* BugsnagTestsDummyClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagTestsDummyClass.m; path = ../../Tests/BugsnagTestsDummyClass.m; sourceTree = "<group>"; };
 		4B3B193422CA7B0900475354 /* BugsnagCollectionsBSGDictSetSafeObjectTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagCollectionsBSGDictSetSafeObjectTest.m; path = ../../Tests/BugsnagCollectionsBSGDictSetSafeObjectTest.m; sourceTree = "<group>"; };
@@ -1283,6 +1288,7 @@
 			files = (
 				009BBF312478573600731BF5 /* libz.tbd in Frameworks */,
 				009BBF2F2478572B00731BF5 /* libc++.tbd in Frameworks */,
+				00DF420D24815F3E00D2FE76 /* Foundation.framework in Frameworks */,
 				009BBF332478574000731BF5 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1299,6 +1305,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00DF420A24815F2C00D2FE76 /* libc++.tbd in Frameworks */,
+				00DF420924815F2100D2FE76 /* libz.tbd in Frameworks */,
+				00DF420C24815F3700D2FE76 /* Foundation.framework in Frameworks */,
 				00942D10247FDED400B4571F /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1504,6 +1513,7 @@
 		8A2C8F751C6BBEBB00846019 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				00DF420B24815F3700D2FE76 /* Foundation.framework */,
 				00942D11247FDEE400B4571F /* libz.tbd */,
 				00942D0F247FDED400B4571F /* SystemConfiguration.framework */,
 				00942D0E247FDEC800B4571F /* libc++.tbd */,
