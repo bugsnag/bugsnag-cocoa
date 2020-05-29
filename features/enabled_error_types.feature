@@ -27,15 +27,13 @@ Scenario: NSException Crash Reporting is disabled
     And the event "unhandled" is false
     And the payload field "events.0.exceptions.0.message" equals "DisableNSExceptionScenario - Handled"
 
-# TODO: PLAT-4422 - Currently flakey, bubbling up SIGABRT.
-@skip
 Scenario: CPP Crash Reporting is disabled
     When I run "EnabledErrorTypesCxxScenario" and relaunch the app
     And I configure Bugsnag for "EnabledErrorTypesCxxScenario"
-    And I wait to receive a request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the event "unhandled" is false
-    And the payload field "events.0.exceptions.0.message" equals "EnabledErrorTypesCxxScenario - Handled"
+    And I wait to receive 2 requests
+    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
 
 Scenario: Mach Crash Reporting is disabled
     When I run "DisableMachExceptionScenario"
