@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "BigHonkinWebViewController.h"
+#import "OutOfMemoryController.h"
 #import "Bugsnag.h"
 #import <pthread.h>
 #import <stdlib.h>
@@ -16,7 +16,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [Bugsnag leaveBreadcrumbWithMessage:@"Loaded iOS Objective-C test app"];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -24,12 +23,17 @@
     [Bugsnag leaveBreadcrumbWithMessage:@"Received memory warning"];
 }
 
-- (IBAction)generateOOM:(id)sender {
-    BigHonkinWebViewController *controller = [BigHonkinWebViewController new];
+/**
+ This method generates an out-of-memory (OOM) exception.  The method of generating this error can be seen in the `OutOfMemoryController` file.
+ 
+ When this low memory state occurs the application will be closed by the operating system and an OOM error report delivered to your Bugsnag dashboard.
+ */
+- (IBAction)crashMemoryPressure:(id)sender {
+    OutOfMemoryController *controller = [OutOfMemoryController new];
     [self.navigationController pushViewController:controller animated:YES];
 }
 
-- (IBAction)generateException:(id)sender {
+- (IBAction)crashUncaughtException:(id)sender {
     [Bugsnag leaveBreadcrumbWithMessage:@"Generating exception by non-existent selector"];
     [self performSelectorOnMainThread:@selector(someRandomMethod) withObject:nil waitUntilDone:NO];
 }
@@ -67,9 +71,10 @@
         [NSJSONSerialization dataWithJSONObject:actuallyReallyJSON options:0 error:nil];
     }
     @catch (NSException *exception) {
-        [Bugsnag notify:exception block:^BOOL(BugsnagEvent * _Nonnull report) {
-            [report addMetadata:@{@"user": @"Bob Loblaw"} toSection:@"tab"];
-            return true;
+        [Bugsnag notify:exception block:^(BugsnagCrashReport *report) {
+            [report addMetadata:@{
+                                  @"foo":@"bar"
+                                  } toTabWithName:@"extras"];
         }];
     }
 }
@@ -130,6 +135,54 @@ static void *enable_threading (void *ctx) {
         [results addObject: results]; // Whoops!
 
     NSLog(@"Results: %@", results);
+}
+
+- (IBAction)addClientMetadata:(id)sender {
+    [Bugsnag addAttribute:@"client!" withValue:@"metadata!" toTabWithName:@"extras"];
+}
+
+- (IBAction)addFilteredMetadata:(id)sender {
+    [Bugsnag addAttribute:@"filter_me" withValue:@"not_here" toTabWithName:@"extras"];
+}
+
+- (IBAction)addMetadataCallback:(id)sender {
+    [Bugsnag.configuration addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagCrashReport * _Nonnull report) {
+        [report addMetadata:@{@"callback": @"data!"} toTabWithName:@"extras"];
+        return YES;
+    }];
+}
+
+- (IBAction)addSeverityCallback:(id)sender {
+    [Bugsnag.configuration addBeforeSendBlock:^bool(NSDictionary * _Nonnull rawEventData, BugsnagCrashReport * _Nonnull report) {
+        [report setSeverity:BSGSeverityInfo];
+        return YES;
+    }];
+}
+
+- (IBAction)addCustomBreadcrumb:(id)sender {
+    [Bugsnag leaveBreadcrumbWithMessage:@"This is our custom breadcrumb!"];
+}
+
+- (IBAction)addBreadcrumbWithCallback:(id)sender {
+    [Bugsnag leaveBreadcrumbWithBlock:^(BugsnagBreadcrumb * breadcrumb) {
+        breadcrumb.name = @"Custom breadcrumb name";
+        breadcrumb.type = BSGBreadcrumbTypeManual;
+        breadcrumb.metadata = @{
+            @"metadata": @"here!"
+        };
+    }];
+}
+
+- (IBAction)startNewSession:(id)sender {
+    [Bugsnag startSession];
+}
+
+- (IBAction)pauseCurrentSession:(id)sender {
+    [Bugsnag stopSession];
+}
+
+- (IBAction)resumeCurrentSession:(id)sender {
+    [Bugsnag resumeSession];
 }
 
 @end

@@ -13,9 +13,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    NSString *apiKey = @"<YOUR_APIKEY_HERE>";
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
-    [Bugsnag startWithConfiguration:config];
+    NSString *apiKey = @"e508b95352442d9f550bbc7053b93969";
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    config.apiKey = apiKey;
+    [Bugsnag startBugsnagWithConfiguration:config];
     
     return YES;
 }
