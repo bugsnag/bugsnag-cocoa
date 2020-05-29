@@ -8,3 +8,6 @@ Scenario: Throwing a C++ exception
     And the exception "errorClass" equals "P16kaboom_exception"
     And the exception "type" equals "cocoa"
     And the payload field "events.0.exceptions.0.stacktrace" is an array with 0 elements
+    And the event "severity" equals "error"
+    And the event "unhandled" is true
+    And the event "severityReason.type" equals "unhandledException"

@@ -15,6 +15,9 @@ Scenario: Override errorClass and message from a notifyError() callback, customi
     And the event "device.time" is within 30 seconds of the current timestamp
     And the event "metaData.account.items.0" equals 400
     And the event "metaData.account.items.1" equals 200
+    And the event "severity" equals "warning"
+    And the event "unhandled" is false
+    And the event "severityReason.type" equals "handledError"
     # This may be platform specific.
     # TODO Consider using a step to check for "at least {int} stack frames"
     # And the stack trace is an array with 15 stack frames
@@ -26,6 +29,9 @@ Scenario: Reporting an NSError
     And the payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "NSError"
     And the exception "message" equals "The operation couldn’t be completed. (HandledErrorScenario error 100.)"
+    And the event "severity" equals "warning"
+    And the event "unhandled" is false
+    And the event "severityReason.type" equals "handledError"
     # This may be platform specific
     # And the stack trace is an array with 15 stack frames
 
@@ -36,6 +42,9 @@ Scenario: Reporting a handled exception
     And the payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "HandledExceptionScenario"
     And the exception "message" equals "Message: HandledExceptionScenario"
+    And the event "severity" equals "warning"
+    And the event "unhandled" is false
+    And the event "severityReason.type" equals "handledException"
     # This may be platform specific
     # And the stack trace is an array with 15 stack frames
 
@@ -46,6 +55,9 @@ Scenario: Reporting a handled exception's stacktrace
     And the payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "Tertiary failure"
     And the exception "message" equals "invalid invariant"
+    And the event "severity" equals "warning"
+    And the event "unhandled" is false
+    And the event "severityReason.type" equals "handledException"
     # This may be platform specific
     And the "method" of stack frame 0 equals "<redacted>"
     And the "method" of stack frame 1 equals "objc_exception_throw"
