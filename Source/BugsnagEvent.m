@@ -331,7 +331,10 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         _app = app;
         _device = device;
         _handledState = handledState;
-        _user = user;
+        // _user is nonnull but this method is not public so _Nonnull is unenforcable,  Guard explicitly.
+        if (user != nil) {
+            _user = user;
+        }
         _metadata = metadata;
         _breadcrumbs = breadcrumbs;
         _errors = errors;
