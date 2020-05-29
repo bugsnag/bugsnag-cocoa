@@ -45,3 +45,46 @@ Scenario: Only User ID field set
     And the event "user.id" equals "abc"
     And the event "user.email" is null
     And the event "user.name" is null
+
+Scenario: Overriding the user in the Event callback
+    When I run "UserEventOverrideScenario"
+    And I wait to receive a request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the event "user.id" equals "customId"
+    And the event "user.email" equals "customEmail"
+    And the event "user.name" equals "customName"
+
+Scenario: Overriding the user in the Session callback
+    When I run "UserSessionOverrideScenario"
+    And I wait to receive a request
+    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And the session "user.id" equals "customId"
+    And the session "user.email" equals "customEmail"
+    And the session "user.name" equals "customName"
+
+Scenario: Setting the user from Configuration for an event
+    When I run "UserFromConfigEventScenario"
+    And I wait to receive a request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the event "user.id" equals "abc"
+    And the event "user.email" equals "fake@gmail.com"
+    And the event "user.name" equals "Fay K"
+    And the event "metaData.clientUserValue.id" equals "abc"
+    And the event "metaData.clientUserValue.email" equals "fake@gmail.com"
+    And the event "metaData.clientUserValue.name" equals "Fay K"
+
+Scenario: Setting the user from Configuration for a session
+    When I run "UserFromConfigSessionScenario"
+    And I wait to receive a request
+    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And the session "user.id" equals "abc"
+    And the session "user.email" equals "fake@gmail.com"
+    And the session "user.name" equals "Fay K"
+
+Scenario: Setting the user from Client for sessions
+    When I run "UserFromClientScenario"
+    And I wait to receive a request
+    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And the session "user.id" equals "def"
+    And the session "user.email" equals "sue@gmail.com"
+    And the session "user.name" equals "Sue"
