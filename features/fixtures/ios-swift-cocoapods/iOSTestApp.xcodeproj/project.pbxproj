@@ -86,6 +86,11 @@
 		E7A324DE247E70E6008B0052 /* SessionCallbackOrderScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A324DD247E70E6008B0052 /* SessionCallbackOrderScenario.swift */; };
 		E7A324E0247E70F9008B0052 /* SessionCallbackDiscardScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A324DF247E70F9008B0052 /* SessionCallbackDiscardScenario.swift */; };
 		E7A324E3247E7C17008B0052 /* SessionCallbackRemovalScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A324E2247E7C17008B0052 /* SessionCallbackRemovalScenario.m */; };
+		E7B79CD0247FD6660039FB88 /* ManualContextConfigurationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B79CCF247FD6660039FB88 /* ManualContextConfigurationScenario.swift */; };
+		E7B79CD2247FD66E0039FB88 /* ManualContextClientScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B79CD1247FD66E0039FB88 /* ManualContextClientScenario.swift */; };
+		E7B79CD4247FD6760039FB88 /* ManualContextOnErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B79CD3247FD6760039FB88 /* ManualContextOnErrorScenario.swift */; };
+		E7B79CD6247FD7750039FB88 /* AutoContextNSErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B79CD5247FD7750039FB88 /* AutoContextNSErrorScenario.swift */; };
+		E7B79CD8247FD7810039FB88 /* AutoContextNSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B79CD7247FD7810039FB88 /* AutoContextNSExceptionScenario.swift */; };
 		E7DD40452473D980000EDC14 /* UserDefaultInfoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DD40442473D980000EDC14 /* UserDefaultInfoScenario.swift */; };
 		F429502603396F8671B333B3 /* HandledExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F429526319377A8848136413 /* HandledExceptionScenario.swift */; };
 		F4295109FCAB93708FDAFE12 /* DisabledSessionTrackingScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429563584D9BC3A5B86BECF /* DisabledSessionTrackingScenario.m */; };
@@ -248,6 +253,11 @@
 		E7A324DF247E70F9008B0052 /* SessionCallbackDiscardScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCallbackDiscardScenario.swift; sourceTree = "<group>"; };
 		E7A324E1247E7C17008B0052 /* SessionCallbackRemovalScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionCallbackRemovalScenario.h; sourceTree = "<group>"; };
 		E7A324E2247E7C17008B0052 /* SessionCallbackRemovalScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionCallbackRemovalScenario.m; sourceTree = "<group>"; };
+		E7B79CCF247FD6660039FB88 /* ManualContextConfigurationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualContextConfigurationScenario.swift; sourceTree = "<group>"; };
+		E7B79CD1247FD66E0039FB88 /* ManualContextClientScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualContextClientScenario.swift; sourceTree = "<group>"; };
+		E7B79CD3247FD6760039FB88 /* ManualContextOnErrorScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualContextOnErrorScenario.swift; sourceTree = "<group>"; };
+		E7B79CD5247FD7750039FB88 /* AutoContextNSErrorScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoContextNSErrorScenario.swift; sourceTree = "<group>"; };
+		E7B79CD7247FD7810039FB88 /* AutoContextNSExceptionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoContextNSExceptionScenario.swift; sourceTree = "<group>"; };
 		E7DD40442473D980000EDC14 /* UserDefaultInfoScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultInfoScenario.swift; sourceTree = "<group>"; };
 		E7F6087B244F0A3A00F1532A /* BugsnagHooks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagHooks.h; sourceTree = "<group>"; };
 		EE18B3777C62D7BCA8DDBE30 /* Pods-iOSTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -432,6 +442,7 @@
 		E750409C24780158005D33BD /* AutoDetectErrors */ = {
 			isa = PBXGroup;
 			children = (
+				E7B79CCD247FD6400039FB88 /* Context */,
 				E750409F2478019D005D33BD /* AutoDetectFalseHandledScenario.swift */,
 				E75040A1247801A8005D33BD /* AutoDetectFalseNSExceptionScenario.swift */,
 				E75040A32478052D005D33BD /* AutoDetectFalseAbortScenario.swift */,
@@ -475,12 +486,32 @@
 			name = "Session Callbacks";
 			sourceTree = "<group>";
 		};
+		E7B79CCD247FD6400039FB88 /* Context */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Context;
+			sourceTree = "<group>";
+		};
+		E7B79CCE247FD6520039FB88 /* Context */ = {
+			isa = PBXGroup;
+			children = (
+				E7B79CCF247FD6660039FB88 /* ManualContextConfigurationScenario.swift */,
+				E7B79CD1247FD66E0039FB88 /* ManualContextClientScenario.swift */,
+				E7B79CD3247FD6760039FB88 /* ManualContextOnErrorScenario.swift */,
+				E7B79CD5247FD7750039FB88 /* AutoContextNSErrorScenario.swift */,
+				E7B79CD7247FD7810039FB88 /* AutoContextNSExceptionScenario.swift */,
+			);
+			name = Context;
+			sourceTree = "<group>";
+		};
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
 				E7A324E4247E9C96008B0052 /* Breadcrumb Callbacks */,
 				E75040AC2478213D005D33BD /* Metadata Redaction */,
 				E750409C24780158005D33BD /* AutoDetectErrors */,
+				E7B79CCE247FD6520039FB88 /* Context */,
 				F49695A9244545EC00105DA9 /* Crashprobe */,
 				F49695B0244547CB00105DA9 /* Cross notifier notify */,
 				E700EE51247D31CF008CFFB6 /* Event Callbacks */,
@@ -798,6 +829,7 @@
 				8A14F0F62282D4AE00337B05 /* (null) in Sources */,
 				0011E6672403D13100ED71CD /* UserPersistenceScenarios.m in Sources */,
 				8AB65FCC22DC77CB001200AB /* LoadConfigFromFileScenario.swift in Sources */,
+				E7B79CD4247FD6760039FB88 /* ManualContextOnErrorScenario.swift in Sources */,
 				E7767F13221C21E30006648C /* ResumedSessionScenario.swift in Sources */,
 				E700EE69247D73F8008CFFB6 /* UnhandledMachExceptionScenario.m in Sources */,
 				E75040B12478214F005D33BD /* MetadataRedactionRegexScenario.swift in Sources */,
@@ -835,6 +867,7 @@
 				F42954B7318A02824C65C514 /* ObjCMsgSendScenario.m in Sources */,
 				8A22FC66225B598500CA8895 /* OOMForegroundScenario.m in Sources */,
 				E700EE5D247D322D008CFFB6 /* OnSendCallbackOrderScenario.swift in Sources */,
+				E7B79CD0247FD6660039FB88 /* ManualContextConfigurationScenario.swift in Sources */,
 				E700EE59247D321B008CFFB6 /* OriginalErrorNSErrorScenario.swift in Sources */,
 				F42953498545B853CC0B635E /* NullPointerScenario.m in Sources */,
 				E75040B02478214F005D33BD /* MetadataRedactionDefaultScenario.swift in Sources */,
@@ -869,6 +902,9 @@
 				8AEFC79C20F92E2200A78779 /* AutoSessionUnhandledScenario.m in Sources */,
 				E700EE4E247D1317008CFFB6 /* UserFromClientScenario.swift in Sources */,
 				E7B79CDA24800A5D0039FB88 /* MetadataMergeScenario.swift in Sources */,
+				E7B79CD8247FD7810039FB88 /* AutoContextNSExceptionScenario.swift in Sources */,
+				E7B79CD2247FD66E0039FB88 /* ManualContextClientScenario.swift in Sources */,
+				E7B79CD6247FD7750039FB88 /* AutoContextNSErrorScenario.swift in Sources */,
 				F4295397AD31C1C1E64144F5 /* NonExistentMethodScenario.m in Sources */,
 				E700EE53247D31EA008CFFB6 /* OnErrorOverwriteScenario.swift in Sources */,
 				8AEFC79920F9132C00A78779 /* AutoSessionHandledEventsScenario.m in Sources */,
