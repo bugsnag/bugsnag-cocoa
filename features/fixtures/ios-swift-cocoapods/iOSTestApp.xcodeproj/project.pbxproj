@@ -385,8 +385,8 @@
 				8AB88675204052990003E444 /* iOSTestApp-Bridging-Header.h */,
 				00A98324240DBB930016A57E /* Features */,
 				8AB8866C20404DD30003E444 /* LaunchScreen.storyboard */,
-				8AB8866720404DD30003E444 /* Main.storyboard */,
 				8AB8866520404DD30003E444 /* ViewController.swift */,
+				8AB8866720404DD30003E444 /* Main.storyboard */,
 				F42953DE2BB41023C0B07F41 /* scenarios */,
 			);
 			path = iOSTestApp;
@@ -1068,7 +1068,7 @@
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = iOSTestApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LINKER_DISPLAYS_MANGLED_NAMES = NO;
 				OTHER_SWIFT_FLAGS = "-Onone";
@@ -1104,7 +1104,7 @@
 				ENABLE_NS_ASSERTIONS = YES;
 				ENABLE_TESTABILITY = NO;
 				INFOPLIST_FILE = iOSTestApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LINKER_DISPLAYS_MANGLED_NAMES = NO;
 				MTL_ENABLE_DEBUG_INFO = YES;
