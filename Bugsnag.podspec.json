@@ -20,9 +20,9 @@
     "c++", "z"
   ],
   "platforms": {
-    "ios": "8.0",
+    "ios": "9.3",
     "osx": "10.11",
-    "tvos": "9.0"
+    "tvos": "9.2"
   },
   "source_files": [
     "Source/{**/,}*.{m,h,mm,c}"
