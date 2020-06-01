@@ -13,9 +13,9 @@ Scenario: Launching using the default configuration sends a single session
     And the payload field "device.osName" equals "iOS"
     And the payload field "device.model" matches the test device model
 
-    And the session "id" is not null
-    And the session "startedAt" is not null
-    And the session "user.id" is null
+    And the payload field "sessions.0.id" is a UUID
+    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
+    And the session "user.id" is not null
     And the session "user.email" is null
     And the session "user.name" is null
 
@@ -32,9 +32,9 @@ Scenario: Configuring a custom version sends it in a session request
     And the payload field "device.osName" equals "iOS"
     And the payload field "device.model" matches the test device model
 
-    And the session "id" is not null
-    And the session "startedAt" is not null
-    And the session "user.id" is null
+    And the payload field "sessions.0.id" is a UUID
+    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
+    And the session "user.id" is not null
     And the session "user.email" is null
     And the session "user.name" is null
 
@@ -44,7 +44,8 @@ Scenario: Configuring user info sends it with auto-captured sessions
     And the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "sessions" is an array with 1 elements
-    And the session "id" is not null
+    And the payload field "sessions.0.id" is a UUID
+    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
     And the session "user.id" equals "123"
     And the session "user.email" equals "joe@example.com"
     And the session "user.name" equals "Joe Bloggs"
@@ -55,7 +56,8 @@ Scenario: Configuring user info sends it with manually captured sessions
     And the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "sessions" is an array with 1 elements
-    And the session "id" is not null
+    And the payload field "sessions.0.id" is a UUID
+    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
     And the session "user.id" equals "123"
     And the session "user.email" equals "joe@example.com"
     And the session "user.name" equals "Joe Bloggs"
@@ -66,8 +68,8 @@ Scenario: Disabling auto-capture and calling startSession() manually sends a sin
     And the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
     And the payload field "sessions" is an array with 1 elements
-    And the session "id" is not null
-    And the session "startedAt" is not null
+    And the payload field "sessions.0.id" is a UUID
+    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
     # This behaviour isn't established yet
     # And the session "user.id" is null
     # And the session "user.email" is null
@@ -105,8 +107,8 @@ Scenario: Encountering an unhandled event during a session
     And I wait to receive 2 requests
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "sessions" is an array with 1 elements
-    And the session "id" is not null
-    And the session "startedAt" is not null
+    And the payload field "sessions.0.id" is a UUID
+    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
     And the payload field "sessions.0.id" is stored as the value "session_id"
     And I discard the oldest request
 
@@ -124,8 +126,8 @@ Scenario: Encountering handled and unhandled events during a session
     And I wait to receive 3 requests
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "sessions" is an array with 1 elements
-    And the session "id" is not null
-    And the session "startedAt" is not null
+    And the payload field "sessions.0.id" is a UUID
+    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
     And the payload field "sessions.0.id" is stored as the value "session_id"
     And I discard the oldest request
 

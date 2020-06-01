@@ -148,6 +148,25 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     XCTAssertEqualObjects(@"Something went wrong", dict[@"message"]);
 }
 
+- (void) testEmptyErrorDataFromThreads {
+    self.event = [self generateEvent:@{
+            @"x9": @{
+                    @"address": @4511086448,
+                    @"type": @"string",
+                    @"value": @"Something went wrong"
+            },
+            @"r16": @{
+                    @"address": @4511089532,
+                    @"type": @"string",
+                    @"value": [NSNull null]
+            }
+    }];
+    BugsnagError *error = [[BugsnagError alloc] initWithEvent:self.event errorReportingThread:nil];
+    NSDictionary *dict = [error toDictionary];
+    XCTAssertEqualObjects(@"Foo Exception", dict[@"errorClass"]);
+    XCTAssertEqualObjects(@"Foo overload", dict[@"message"]);
+}
+
 - (void)testErrorClassParse {
     XCTAssertEqualObjects(@"foo", BSGParseErrorClass(@{@"cpp_exception": @{@"name": @"foo"}}, @"cpp_exception"));
     XCTAssertEqualObjects(@"bar", BSGParseErrorClass(@{@"mach": @{@"exception_name": @"bar"}}, @"mach"));

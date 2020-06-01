@@ -71,19 +71,19 @@
     BSGDictInsertIfNotNil(dict, self.method, BSGKeyMethod);
     BSGDictInsertIfNotNil(dict, self.machoUuid, BSGKeyMachoUUID);
 
-    if (self.frameAddress) {
+    if (self.frameAddress != nil) {
         NSString *frameAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, [self.frameAddress unsignedLongValue]];
         BSGDictSetSafeObject(dict, frameAddr, BSGKeyFrameAddress);
     }
-    if (self.symbolAddress) {
+    if (self.symbolAddress != nil) {
         NSString *symbolAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, [self.symbolAddress unsignedLongValue]];
         BSGDictSetSafeObject(dict, symbolAddr, BSGKeySymbolAddr);
     }
-    if (self.machoLoadAddress) {
+    if (self.machoLoadAddress != nil) {
         NSString *imageAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, [self.machoLoadAddress unsignedLongValue]];
         BSGDictSetSafeObject(dict, imageAddr, BSGKeyMachoLoadAddr);
     }
-    if (self.machoVmAddress) {
+    if (self.machoVmAddress != nil) {
         NSString *vmAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, [self.machoVmAddress unsignedLongValue]];
         BSGDictSetSafeObject(dict, vmAddr, BSGKeyMachoVMAddress);
     }

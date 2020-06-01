@@ -1,9 +1,27 @@
+#--------------------------------------------------------------------------
+# Bugsnag Makefile
+#
+# This file contains rules for building, testing and releasing the Bugsnag
+# Cocoa crash reporting framework.  It is intended to be used by Bugsnag
+# developers and automated systems.  It is NOT intended for use by end-users
+# wishing to use the framework.  For that please deploy Bugsnag in your
+# application using one of the supported methods: Cocoapods, Carthage etc.
+#
+# The rules are typically run with some environment variables set, e.g.
+#
+#     $ PLATFORM=macOS make e2e OS=10.11
+#
+#--------------------------------------------------------------------------
+
+# Set up the build environment based on environment variables, or defaults
+# if the environment has not been set.
+
 PLATFORM?=iOS
 OS?=latest
 TEST_CONFIGURATION?=Debug
-BUILD_FLAGS=-project $(PLATFORM)/Bugsnag.xcodeproj -scheme Bugsnag -derivedDataPath build
+BUILD_FLAGS=-project Project/Bugsnag.xcodeproj -scheme Bugsnag-$(PLATFORM) -derivedDataPath build/build-$(PLATFORM)
 
-ifeq ($(PLATFORM),OSX)
+ifeq ($(PLATFORM),macOS)
  SDK?=macosx
  RELEASE_DIR=Release
  BUILD_ONLY_FLAGS=-sdk $(SDK) CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
@@ -25,7 +43,16 @@ ifneq ($(strip $(shell which xcpretty)),)
 FORMATTER = | tee xcodebuild.log | xcpretty -c
 endif
 
+# The default rule.
+
 all: build
+
+#--------------------------------------------------------------------------
+# Build
+#--------------------------------------------------------------------------
+
+build: ## Build the library
+	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) build $(FORMATTER)
 
 # Generated framework package for Bugsnag for either iOS or macOS
 build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework:
@@ -43,17 +70,63 @@ build/Bugsnag-%-$(PRESET_VERSION).zip: build/Build/Products/$(RELEASE_DIR)/Bugsn
 bootstrap: ## Install development dependencies
 	@bundle install
 
-build: ## Build the library
-	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) build $(FORMATTER)
-
 build_ios_static: ## Build the static library target
-	$(XCODEBUILD) -project iOS/Bugsnag.xcodeproj -scheme BugsnagStatic
+	$(XCODEBUILD) -project Project/Bugsnag.xcodeproj -scheme BugsnagStatic
 
 build_carthage: ## Build the latest pushed commit with Carthage
 	@mkdir -p features/fixtures/carthage-proj
 	@echo 'git "file://$(shell pwd)" "'$(shell git rev-parse HEAD)'"' > features/fixtures/carthage-proj/Cartfile
-	@cd features/fixtures/carthage-proj && carthage update --platform ios && \
-		carthage update --platform macos
+	@cd features/fixtures/carthage-proj && \
+	 carthage update --platform ios && \
+	 carthage update --platform macos && \
+	 carthage update --platform tvos
+
+#--------------------------------------------------------------------------
+# Testing
+#--------------------------------------------------------------------------
+
+test: ## Run unit tests
+	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
+
+e2e:
+	@make e2e_build
+	@make e2e_run
+
+e2e_build: ## Build the end-to-end test fixture
+	@./features/scripts/export_ios_app.sh
+
+e2e_run: ## Run integration tests
+ifeq ($(BROWSER_STACK_USERNAME),)
+	@$(error BROWSER_STACK_USERNAME is not defined)
+endif
+ifeq ($(BROWSER_STACK_ACCESS_KEY),)
+	@$(error BROWSER_STACK_ACCESS_KEY is not defined)
+endif
+	@docker-compose run cocoa-maze-runner $(MAZE_ARGS) --tags 'not @skip' $(TEST_FEATURE)
+	
+#--------------------------------------------------------------------------
+# Release
+#
+# See CONTRIBUTING.md for step-by-step release instructions.
+#--------------------------------------------------------------------------
+
+release: ## Releases the current master branch as $VERSION
+	@git fetch origin
+ifneq ($(shell git rev-parse --abbrev-ref HEAD),master) # Check the current branch name
+	@git checkout master
+	@git rebase origin/master
+endif
+ifneq ($(shell git diff origin/master..master),)
+	$(error you have unpushed commits on the master branch)
+endif
+	@git tag v$(PRESET_VERSION)
+	@git push origin v$(PRESET_VERSION)
+	# Prep GitHub release
+	# We could technically do a `hub release` here but a verification step
+	# before it goes live always seems like a good thing
+	@open 'https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v$(PRESET_VERSION)&body='$$(awk 'start && /^## /{exit;};/^## /{start=1;next};start' CHANGELOG.md | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
+	# Workaround for CocoaPods/CocoaPods#8000
+	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings
 
 bump: ## Bump the version numbers to $VERSION
 ifeq ($(VERSION),)
@@ -76,46 +149,13 @@ endif
 	@git push origin release-v$(VERSION)
 	@hub pull-request -m "Release v$(VERSION)" --browse
 
-release: ## Releases the current master branch as $VERSION
-	@git fetch origin
-ifneq ($(shell git rev-parse --abbrev-ref HEAD),master) # Check the current branch name
-	@git checkout master
-	@git rebase origin/master
-endif
-ifneq ($(shell git diff origin/master..master),)
-	$(error you have unpushed commits on the master branch)
-endif
-	@git tag v$(PRESET_VERSION)
-	@git push origin v$(PRESET_VERSION)
-	# Prep GitHub release
-	# We could technically do a `hub release` here but a verification step
-	# before it goes live always seems like a good thing
-	@open 'https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v$(PRESET_VERSION)&body='$$(awk 'start && /^## /{exit;};/^## /{start=1;next};start' CHANGELOG.md | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
-	# Workaround for CocoaPods/CocoaPods#8000
-	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings
+#--------------------------------------------------------------------------
+# Miscellaneous
+#--------------------------------------------------------------------------
 
 clean: ## Clean build artifacts
-	@$(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
-	@rm -rf build
-
-test: ## Run unit tests
-	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
-
-e2e_build: ## Build the end-to-end test fixture
-	@./features/scripts/export_ios_app.sh
-
-e2e_run: ## Run integration tests
-ifeq ($(BROWSER_STACK_USERNAME),)
-	@$(error BROWSER_STACK_USERNAME is not defined)
-endif
-ifeq ($(BROWSER_STACK_ACCESS_KEY),)
-	@$(error BROWSER_STACK_ACCESS_KEY is not defined)
-endif
-	@docker-compose run cocoa-maze-runner --tags 'not @skip' $(TEST_FEATURE)
-
-e2e:
-	@make e2e_build
-	@make e2e_run
+	@set -x && $(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
+	@rm -rf build-$(PLATFORM)
 
 archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip
 

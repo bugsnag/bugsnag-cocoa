@@ -475,8 +475,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 - (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)type {
     // enabledBreadcrumbTypes is BSGEnabledBreadcrumbTypeNone
-    if (!self.enabledBreadcrumbTypes) {
-        return YES;
+    if (self.enabledBreadcrumbTypes == BSGEnabledBreadcrumbTypeNone && type != BSGBreadcrumbTypeManual) {
+        return NO;
     }
 
     switch (type) {
