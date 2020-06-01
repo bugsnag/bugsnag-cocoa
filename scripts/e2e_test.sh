@@ -8,6 +8,7 @@ if [ $# -eq 0 ]; then
   echo
   echo "    MAZE_ARGS is any number of arguments to be passed to Maze Runner"
   echo
+  exit 1
 fi;
 
 # Ensure feature file exists
