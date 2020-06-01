@@ -622,6 +622,10 @@
 		E722105C243B69F00083CF15 /* BugsnagStackframeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E722105B243B69F00083CF15 /* BugsnagStackframeTest.m */; };
 		E72352B61F55718E00436528 /* BSGConnectivity.h in Headers */ = {isa = PBXBuildFile; fileRef = E72352B41F55718E00436528 /* BSGConnectivity.h */; };
 		E72352B71F55718E00436528 /* BSGConnectivity.m in Sources */ = {isa = PBXBuildFile; fileRef = E72352B51F55718E00436528 /* BSGConnectivity.m */; };
+		E723693924850AB400C607A2 /* BugsnagPlatformConditional.h in Headers */ = {isa = PBXBuildFile; fileRef = E723693824850AB400C607A2 /* BugsnagPlatformConditional.h */; };
+		E723693A24850AB400C607A2 /* BugsnagPlatformConditional.h in Headers */ = {isa = PBXBuildFile; fileRef = E723693824850AB400C607A2 /* BugsnagPlatformConditional.h */; };
+		E723693B24850AB400C607A2 /* BugsnagPlatformConditional.h in Headers */ = {isa = PBXBuildFile; fileRef = E723693824850AB400C607A2 /* BugsnagPlatformConditional.h */; };
+		E723693C24850B2A00C607A2 /* BugsnagPlatformConditional.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E723693824850AB400C607A2 /* BugsnagPlatformConditional.h */; };
 		E728378B2451843000EE2B7D /* BugsnagOnCrashTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E728378A2451843000EE2B7D /* BugsnagOnCrashTest.m */; };
 		E72962D61F4BBA8B00CEA15D /* BugsnagCrashSentry.h in Headers */ = {isa = PBXBuildFile; fileRef = E72962D01F4BBA8A00CEA15D /* BugsnagCrashSentry.h */; };
 		E72962D71F4BBA8B00CEA15D /* BugsnagCrashSentry.m in Sources */ = {isa = PBXBuildFile; fileRef = E72962D11F4BBA8A00CEA15D /* BugsnagCrashSentry.m */; };
@@ -903,6 +907,7 @@
 			dstPath = "include/${PRODUCT_NAME}";
 			dstSubfolderSpec = 16;
 			files = (
+				E723693C24850B2A00C607A2 /* BugsnagPlatformConditional.h in CopyFiles */,
 				00DF42002481420200D2FE76 /* Private.h in CopyFiles */,
 				00DF41FC248141EB00D2FE76 /* BugsnagMetadataStore.h in CopyFiles */,
 				00DF41FD248141EB00D2FE76 /* BugsnagPluginClient.h in CopyFiles */,
@@ -1182,6 +1187,7 @@
 		E722105B243B69F00083CF15 /* BugsnagStackframeTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagStackframeTest.m; path = ../../Tests/BugsnagStackframeTest.m; sourceTree = "<group>"; };
 		E72352B41F55718E00436528 /* BSGConnectivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSGConnectivity.h; path = ../Source/BSGConnectivity.h; sourceTree = SOURCE_ROOT; };
 		E72352B51F55718E00436528 /* BSGConnectivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSGConnectivity.m; path = ../Source/BSGConnectivity.m; sourceTree = SOURCE_ROOT; };
+		E723693824850AB400C607A2 /* BugsnagPlatformConditional.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagPlatformConditional.h; path = ../Source/BugsnagPlatformConditional.h; sourceTree = "<group>"; };
 		E728378A2451843000EE2B7D /* BugsnagOnCrashTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BugsnagOnCrashTest.m; path = ../../Tests/BugsnagOnCrashTest.m; sourceTree = "<group>"; };
 		E72962D01F4BBA8A00CEA15D /* BugsnagCrashSentry.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = BugsnagCrashSentry.h; path = ../Source/BugsnagCrashSentry.h; sourceTree = SOURCE_ROOT; };
 		E72962D11F4BBA8A00CEA15D /* BugsnagCrashSentry.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = BugsnagCrashSentry.m; path = ../Source/BugsnagCrashSentry.m; sourceTree = SOURCE_ROOT; };
@@ -1390,6 +1396,7 @@
 				E794E8021F9F743D00A67EE7 /* BugsnagKeys.h */,
 				009BBBC02477EE1900731BF5 /* BugsnagKeys.m */,
 				8A381D491EAA49A700AF8429 /* BugsnagLogger.h */,
+				E723693824850AB400C607A2 /* BugsnagPlatformConditional.h */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1881,6 +1888,7 @@
 				009BBE552478377B00731BF5 /* BSG_KSSystemCapabilities.h in Headers */,
 				009BBDCF2478375400731BF5 /* BugsnagSessionInternal.h in Headers */,
 				009BBE042478376700731BF5 /* BugsnagLogger.h in Headers */,
+				E723693A24850AB400C607A2 /* BugsnagPlatformConditional.h in Headers */,
 				009BBE922478378A00731BF5 /* BSG_KSDynamicLinker.h in Headers */,
 				009BBDFE2478376700731BF5 /* BugsnagCrashSentry.h in Headers */,
 				009BBE4C2478377B00731BF5 /* BSG_KSCrashReportStore.h in Headers */,
@@ -1979,6 +1987,7 @@
 				009BBE642478377B00731BF5 /* BSG_KSCrashReportStore.h in Headers */,
 				009BBEB42478378B00731BF5 /* BSG_KSArchSpecific.h in Headers */,
 				009BBED92478378B00731BF5 /* BSG_RFC3339DateTool.h in Headers */,
+				E723693B24850AB400C607A2 /* BugsnagPlatformConditional.h in Headers */,
 				009BBE5F2478377B00731BF5 /* BSG_KSCrashDoctor.h in Headers */,
 				009BBEBD2478378B00731BF5 /* BSG_KSFileUtils.h in Headers */,
 				009BBED72478378B00731BF5 /* NSError+BSG_SimpleConstructor.h in Headers */,
@@ -2077,6 +2086,7 @@
 				E7107C671F4C97F100BB3F98 /* BSG_KSLogger.h in Headers */,
 				E7107C391F4C97F100BB3F98 /* BSG_KSCrashDoctor.h in Headers */,
 				E7107C801F4C97F100BB3F98 /* NSError+BSG_SimpleConstructor.h in Headers */,
+				E723693924850AB400C607A2 /* BugsnagPlatformConditional.h in Headers */,
 				E7107C5D1F4C97F100BB3F98 /* BSG_KSCrashCallCompletion.h in Headers */,
 				E7107C7B1F4C97F100BB3F98 /* BSG_KSSysCtl.h in Headers */,
 				E7107C381F4C97F100BB3F98 /* BSG_KSCrashContext.h in Headers */,

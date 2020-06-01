@@ -1,4 +1,6 @@
-#if (TARGET_OS_TV || TARGET_OS_IPHONE)
+#import "BugsnagPlatformConditional.h"
+
+#if (BSG_PLATFORM_TVOS || BSG_PLATFORM_IOS)
 #define BSGOOMAvailable 1
 #else
 #define BSGOOMAvailable 0

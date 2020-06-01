@@ -6,6 +6,8 @@
 //
 //
 
+#import "BugsnagPlatformConditional.h"
+
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
 
@@ -88,9 +90,9 @@
 
 - (void)testNotifierName {
     NSString *name = self.processedData[@"notifier"][@"name"];
-#if TARGET_OS_TV
+#if BSG_PLATFORM_TVOS
     XCTAssertEqualObjects(name, @"tvOS Bugsnag Notifier");
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif BSG_PLATFORM_IOS
     XCTAssertEqualObjects(name, @"iOS Bugsnag Notifier");
 #else
     XCTAssertEqualObjects(name, @"OSX Bugsnag Notifier");

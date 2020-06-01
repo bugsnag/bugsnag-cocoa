@@ -24,6 +24,8 @@
 // THE SOFTWARE.
 //
 
+#import "BugsnagPlatformConditional.h"
+
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSSystemInfoC.h"
 #import "BSG_KSDynamicLinker.h"
@@ -452,7 +454,7 @@
 #endif
 }
 
-#if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
 + (UIApplicationState)currentAppState {
     // Only checked outside of app extensions since sharedApplication is
     // unavailable to extension UIKit APIs

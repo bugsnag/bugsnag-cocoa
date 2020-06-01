@@ -24,6 +24,8 @@
 // THE SOFTWARE.
 //
 
+#import "BugsnagPlatformConditional.h"
+
 #import "BugsnagClient.h"
 #import "BugsnagClientInternal.h"
 #import "BSGConnectivity.h"
@@ -53,9 +55,9 @@
 #import "BSG_KSCrashReport.h"
 #import "BSG_KSCrash.h"
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if BSG_PLATFORM_IOS
 #import <UIKit/UIKit.h>
-#elif TARGET_OS_MAC
+#elif BSG_PLATFORM_OSX
 #import <AppKit/AppKit.h>
 #endif
 
@@ -196,7 +198,9 @@ NSString *BSGBreadcrumbNameForNotificationName(NSString *name) {
  *
  * @returns A string representing the device orientation or nil if there's no equivalent
  */
-#if TARGET_OS_IOS
+
+#if BSG_PLATFORM_TVOS
+#elif BSG_PLATFORM_IOS
 NSString *BSGOrientationNameFromEnum(UIDeviceOrientation deviceOrientation)
 {
     NSString *orientation;
@@ -294,7 +298,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic, strong) BugsnagMetadata *metadata;
 @property (nonatomic) NSString *codeBundleId;
 @property(nonatomic, readwrite, strong) NSMutableArray *stateEventBlocks;
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if BSG_PLATFORM_IOS
 // The previous device orientation - iOS only
 @property (nonatomic, strong) NSString *lastOrientation;
 #endif
@@ -361,7 +365,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 
 @implementation BugsnagClient
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if BSG_PLATFORM_IOS
 /**
  * Storage for the device orientation.  It is "last" whenever an orientation change is received
  */
@@ -431,7 +435,8 @@ NSString *_lastOrientation = nil;
 
         self.pluginClient = [[BugsnagPluginClient alloc] initWithPlugins:self.configuration.plugins];
 
-#if TARGET_OS_IOS
+#if BSG_PLATFORM_TVOS
+#elif BSG_PLATFORM_IOS
         _lastOrientation = BSGOrientationNameFromEnum([UIDevice currentDevice].orientation);
 #endif
         BugsnagUser *user = self.configuration.user;
@@ -478,7 +483,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
  */
 - (void)initializeNotificationNameMap {
     notificationNameMap = @{
-#if TARGET_OS_TV
+#if BSG_PLATFORM_TVOS
         NSUndoManagerDidUndoChangeNotification : kUndoOperation,
         NSUndoManagerDidRedoChangeNotification : kRedoOperation,
         UIWindowDidBecomeVisibleNotification : kWindowVisible,
@@ -488,7 +493,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         UIScreenBrightnessDidChangeNotification : @"Screen Brightness Changed",
         UITableViewSelectionDidChangeNotification : kTableViewSelectionChange,
 
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif BSG_PLATFORM_IOS
         UIWindowDidBecomeVisibleNotification : kWindowVisible,
         UIWindowDidBecomeHiddenNotification : kWindowHidden,
         UIApplicationWillTerminateNotification : kAppWillTerminate,
@@ -511,7 +516,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         UIDeviceOrientationDidChangeNotification : @"Orientation Changed",
         UIApplicationDidReceiveMemoryWarningNotification : @"Memory Warning",
 
-#elif TARGET_OS_MAC
+#elif BSG_PLATFORM_OSX
         NSApplicationDidBecomeActiveNotification : @"App Became Active",
         NSApplicationDidResignActiveNotification : @"App Resigned Active",
         NSApplicationDidHideNotification : @"App Did Hide",
@@ -543,10 +548,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [self watchLifecycleEvents:center];
 
-#if TARGET_OS_TV
+#if BSG_PLATFORM_TVOS
     [self addTerminationObserver:UIApplicationWillTerminateNotification];
 
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif BSG_PLATFORM_IOS
     [center addObserver:self
                selector:@selector(batteryChanged:)
                    name:UIDeviceBatteryStateDidChangeNotification
@@ -573,7 +578,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self batteryChanged:nil];
     [self addTerminationObserver:UIApplicationWillTerminateNotification];
 
-#elif TARGET_OS_MAC
+#elif BSG_PLATFORM_OSX
     [center addObserver:self
                selector:@selector(willEnterForeground:)
                    name:NSApplicationDidBecomeActiveNotification
@@ -625,7 +630,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)computeDidCrashLastLaunch {
     const BSG_KSCrash_State *crashState = bsg_kscrashstate_currentState();
-#if TARGET_OS_TV || TARGET_OS_IPHONE
+#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
     NSFileManager *manager = [NSFileManager defaultManager];
     NSString *didCrashSentinelPath = [NSString stringWithUTF8String:crashSentinelPath];
     BOOL appCrashSentinelExists = [manager fileExistsAtPath:didCrashSentinelPath];
@@ -669,8 +674,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [BSGConnectivity stopMonitoring];
 
-#if TARGET_OS_TV || TARGET_OS_MAC
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if BSG_PLATFORM_TVOS
+#elif BSG_PLATFORM_IOS
     [UIDevice currentDevice].batteryMonitoringEnabled = NO;
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 #endif
@@ -680,10 +685,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     NSString *foregroundName;
     NSString *backgroundName;
 
-    #if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
     foregroundName = UIApplicationWillEnterForegroundNotification;
     backgroundName = UIApplicationDidEnterBackgroundNotification;
-    #elif TARGET_OS_MAC
+    #elif BSG_PLATFORM_OSX
     foregroundName = NSApplicationWillBecomeActiveNotification;
     backgroundName = NSApplicationDidFinishLaunchingNotification;
     #endif
@@ -1113,8 +1118,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
  *
  * @param notification The change notification
  */
-#if TARGET_OS_TV
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if BSG_PLATFORM_TVOS
+#elif BSG_PLATFORM_IOS
 - (void)batteryChanged:(NSNotification *)notification {
     NSNumber *batteryLevel = @([UIDevice currentDevice].batteryLevel);
     BOOL charging = [UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging ||
@@ -1212,9 +1217,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
             [self startListeningForStateChangeNotification:name];
         }
 
-#if TARGET_OS_TV
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-#elif TARGET_OS_MAC
+#if BSG_PLATFORM_TVOS || BSG_PLATFORM_IOS
+#elif BSG_PLATFORM_OSX
         // Workspace-specific events - MacOS only
         for (NSString *name in [self workspaceBreadcrumbStateEvents]) {
             [self startListeningForWorkspaceStateChangeNotifications:name];
@@ -1260,9 +1264,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
  * NSWorkspace-specific automatic breadcrumb events
  */
 - (NSArray<NSString *> *)workspaceBreadcrumbStateEvents {
-#if TARGET_OS_TV
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-#elif TARGET_OS_MAC
+#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
+#elif BSG_PLATFORM_OSX
     return @[
         NSWorkspaceScreensDidSleepNotification,
         NSWorkspaceScreensDidWakeNotification
@@ -1274,7 +1277,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (NSArray<NSString *> *)automaticBreadcrumbStateEvents {
-#if TARGET_OS_TV
+#if BSG_PLATFORM_TVOS
     return @[
         NSUndoManagerDidUndoChangeNotification,
         NSUndoManagerDidRedoChangeNotification,
@@ -1283,7 +1286,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         UIWindowDidResignKeyNotification,
         UIScreenBrightnessDidChangeNotification
     ];
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif BSG_PLATFORM_IOS
     return @[
         UIWindowDidBecomeHiddenNotification,
         UIWindowDidBecomeVisibleNotification,
@@ -1299,7 +1302,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         UIApplicationUserDidTakeScreenshotNotification
 #endif
     ];
-#elif TARGET_OS_MAC
+#elif BSG_PLATFORM_OSX
     return @[
         NSApplicationDidBecomeActiveNotification,
         NSApplicationDidResignActiveNotification,
@@ -1320,14 +1323,14 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (NSArray<NSString *> *)automaticBreadcrumbControlEvents {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if BSG_PLATFORM_IOS
     return @[
         UITextFieldTextDidBeginEditingNotification,
         UITextViewTextDidBeginEditingNotification,
         UITextFieldTextDidEndEditingNotification,
         UITextViewTextDidEndEditingNotification
     ];
-#elif TARGET_OS_MAC
+#elif BSG_PLATFORM_OSX
     return @[
         NSControlTextDidBeginEditingNotification,
         NSControlTextDidEndEditingNotification
@@ -1339,9 +1342,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (NSArray<NSString *> *)automaticBreadcrumbTableItemEvents {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE || TARGET_OS_TV
+#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
     return @[ UITableViewSelectionDidChangeNotification ];
-#elif TARGET_OS_MAC
+#elif BSG_PLATFORM_OSX
     return @[ NSTableViewSelectionDidChangeNotification ];
 #endif
 
@@ -1350,11 +1353,11 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (NSArray<NSString *> *)automaticBreadcrumbMenuItemEvents {
-#if TARGET_OS_TV
+#if BSG_PLATFORM_TVOS
     return @[];
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif BSG_PLATFORM_IOS
     return nil;
-#elif TARGET_OS_MAC
+#elif BSG_PLATFORM_OSX
     return @[ NSMenuWillSendActionNotification ];
 #endif
 
@@ -1380,9 +1383,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
  *
  * @param notificationName The name of the notification.
  */
-#if TARGET_OS_TV
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-#elif TARGET_OS_MAC
+#if BSG_PLATFORM_TVOS || BSG_PLATFORM_IOS
+#elif BSG_PLATFORM_OSX
 - (void)startListeningForWorkspaceStateChangeNotifications:(NSString *)notificationName {
     [NSWorkspace.sharedWorkspace.notificationCenter
         addObserver:self
@@ -1409,7 +1411,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
  * @param notification The UI/NSTableViewSelectionDidChangeNotification
  */
 - (void)sendBreadcrumbForTableViewNotification:(NSNotification *)notification {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE || TARGET_OS_TV
+#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
     UITableView *tableView = [notification object];
     NSIndexPath *indexPath = [tableView indexPathForSelectedRow];
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
@@ -1421,7 +1423,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                  @"section" : @(indexPath.section) };
       }
     }];
-#elif TARGET_OS_MAC
+#elif BSG_PLATFORM_OSX
     NSTableView *tableView = [notification object];
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeNavigation;
@@ -1442,9 +1444,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 * @param notification The UI/NSTableViewSelectionDidChangeNotification
 */
 - (void)sendBreadcrumbForMenuItemNotification:(NSNotification *)notification {
-#if TARGET_OS_TV
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-#elif TARGET_OS_MAC
+#if BSG_PLATFORM_TVOS || BSG_PLATFORM_IOS
+#elif BSG_PLATFORM_OSX
     NSMenuItem *menuItem = [[notification userInfo] valueForKey:@"MenuItem"];
     if ([menuItem isKindOfClass:[NSMenuItem class]]) {
         [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
@@ -1458,8 +1459,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)sendBreadcrumbForControlNotification:(NSNotification *)note {
-#if TARGET_OS_TV
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if BSG_PLATFORM_TVOS
+#elif BSG_PLATFORM_IOS
     UIControl *control = note.object;
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeUser;

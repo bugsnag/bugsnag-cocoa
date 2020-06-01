@@ -24,6 +24,8 @@
 // THE SOFTWARE.
 //
 
+#import "BugsnagPlatformConditional.h"
+
 #import <XCTest/XCTest.h>
 
 #import "BSG_KSSystemInfo.h"
@@ -75,7 +77,7 @@
     XCTAssertEqualObjects(executablePath, expectedExecutablePath);
 }
 
-#if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if BSG_PLATFORM_TVOS || BSG_PLATFORM_IOS
 - (void)testCurrentAppState {
     // Should default to active as tests aren't in an app bundle
     XCTAssertEqual(UIApplicationStateActive, [BSG_KSSystemInfo currentAppState]);

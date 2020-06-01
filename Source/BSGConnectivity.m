@@ -24,6 +24,8 @@
 // THE SOFTWARE.
 //
 
+#import "BugsnagPlatformConditional.h"
+
 #import "BSGConnectivity.h"
 #import "Bugsnag.h"
 
@@ -41,7 +43,7 @@ NSString *const BSGConnectivityNone = @"none";
  * @return YES if the connectivity change should be reported
  */
 BOOL BSGConnectivityShouldReportChange(SCNetworkReachabilityFlags flags) {
-    #if TARGET_OS_TV || TARGET_OS_IPHONE
+    #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
         // kSCNetworkReachabilityFlagsIsWWAN does not exist on macOS
         const SCNetworkReachabilityFlags importantFlags = kSCNetworkReachabilityFlagsIsWWAN | kSCNetworkReachabilityFlagsReachable;
     #else
@@ -69,7 +71,7 @@ BOOL BSGConnectivityShouldReportChange(SCNetworkReachabilityFlags flags) {
  */
 NSString *BSGConnectivityFlagRepresentation(SCNetworkReachabilityFlags flags) {
     BOOL connected = (flags & kSCNetworkReachabilityFlagsReachable);
-    #if TARGET_OS_TV || TARGET_OS_IPHONE
+    #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
         return connected
             ? ((flags & kSCNetworkReachabilityFlagsIsWWAN) ? BSGConnectivityCellular : BSGConnectivityWiFi)
             : BSGConnectivityNone;
