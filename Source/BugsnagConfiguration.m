@@ -24,6 +24,8 @@
 // THE SOFTWARE.
 //
 
+#import "BugsnagPlatformConditional.h"
+
 #import "BugsnagConfiguration.h"
 #import "Bugsnag.h"
 #import "BugsnagClient.h"
@@ -243,13 +245,13 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
         _releaseStage = BSGKeyProduction;
     #endif
 
-#if TARGET_OS_TV
-    _appType = @"tvOS";
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    _appType = @"iOS";
-#elif TARGET_OS_MAC
-    _appType = @"macOS";
-#endif
+    #if BSG_PLATFORM_TVOS
+        _appType = @"tvOS";
+    #elif BSG_PLATFORM_IOS
+        _appType = @"iOS";
+    #elif BSG_PLATFORM_OSX
+        _appType = @"macOS";
+    #endif
     return self;
 }
 

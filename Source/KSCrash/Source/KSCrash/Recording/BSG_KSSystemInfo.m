@@ -24,13 +24,14 @@
 // THE SOFTWARE.
 //
 
+#import "BugsnagPlatformConditional.h"
+
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSSystemInfoC.h"
 #import "BSG_KSDynamicLinker.h"
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSSysCtl.h"
-#import "BSG_KSSystemCapabilities.h"
 #import "BugsnagKeys.h"
 #import "BugsnagCollections.h"
 #import "BSG_KSLogger.h"
@@ -38,7 +39,7 @@
 #import "BSG_KSMach.h"
 
 #import <CommonCrypto/CommonDigest.h>
-#if BSG_KSCRASH_HAS_UIKIT
+#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
 #import <UIKit/UIKit.h>
 #endif
 
@@ -172,7 +173,7 @@
 + (NSString *)deviceAndAppHash {
     NSMutableData *data = nil;
 
-#if BSG_KSCRASH_HAS_UIDEVICE
+#if BSG_HAS_UIDEVICE
     if ([[UIDevice currentDevice]
             respondsToSelector:@selector(identifierForVendor)]) {
         data = [NSMutableData dataWithLength:16];
@@ -278,7 +279,7 @@
  * @return YES if this is a simulator build.
  */
 + (BOOL)isSimulatorBuild {
-#if TARGET_OS_SIMULATOR
+#if BSG_PLATFORM_SIMULATOR
     return YES;
 #else
     return NO;
@@ -290,18 +291,7 @@
  * @return App Store receipt for iOS 7+, nil otherwise.
  */
 + (NSString *)receiptUrlPath {
-    NSString *path = nil;
-#if BSG_KSCRASH_HOST_IOS
-    // For iOS 6 compatibility
-    if ([[UIDevice currentDevice].systemVersion
-            compare:@"7"
-            options:NSNumericSearch] != NSOrderedAscending) {
-#endif
-        path = [NSBundle mainBundle].appStoreReceiptURL.path;
-#if BSG_KSCRASH_HOST_IOS
-    }
-#endif
-    return path;
+    return [NSBundle mainBundle].appStoreReceiptURL.path;
 }
 
 /** Check if the current build is a "testing" build.
@@ -361,7 +351,7 @@
 #ifdef __clang_version__
     BSGDictSetSafeObject(sysInfo, @__clang_version__, @BSG_KSSystemField_ClangVersion);
 #endif
-#if BSG_KSCRASH_HAS_UIDEVICE
+#if BSG_HAS_UIDEVICE
     BSGDictSetSafeObject(sysInfo, [UIDevice currentDevice].systemName, @BSG_KSSystemField_SystemName);
     BSGDictSetSafeObject(sysInfo, [UIDevice currentDevice].systemVersion, @BSG_KSSystemField_SystemVersion);
 #else
@@ -386,7 +376,7 @@
         BSGDictSetSafeObject(sysInfo, model, @BSG_KSSystemField_Machine);
         BSGDictSetSafeObject(sysInfo, @"simulator", @BSG_KSSystemField_Model);
     } else {
-#if BSG_KSCRASH_HOST_OSX
+#if BSG_PLATFORM_OSX
         // MacOS has the machine in the model field, and no model
         BSGDictSetSafeObject(sysInfo, [self stringSysctl:BSGKeyHwModel], @BSG_KSSystemField_Machine);
 #else
@@ -433,7 +423,7 @@
 }
 
 + (BOOL)isRunningInAppExtension {
-#if BSG_KSCRASH_HOST_IOS
+#if BSG_PLATFORM_IOS
     NSBundle *mainBundle = [NSBundle mainBundle];
     // From the App Extension Programming Guide:
     // > When you build an extension based on an Xcode template, you get an
@@ -452,7 +442,7 @@
 #endif
 }
 
-#if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
 + (UIApplicationState)currentAppState {
     // Only checked outside of app extensions since sharedApplication is
     // unavailable to extension UIKit APIs

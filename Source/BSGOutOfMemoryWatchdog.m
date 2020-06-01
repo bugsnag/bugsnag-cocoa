@@ -1,4 +1,6 @@
-#if (TARGET_OS_TV || TARGET_OS_IPHONE)
+#import "BugsnagPlatformConditional.h"
+
+#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
 #define BSGOOMAvailable 1
 #else
 #define BSGOOMAvailable 0
@@ -267,9 +269,9 @@
 #else
     app[@"inForeground"] = @YES;
 #endif
-#if TARGET_OS_TV
+#if BSG_PLATFORM_TVOS
     app[@"type"] = @"tvOS";
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif BSG_PLATFORM_IOS
     app[@"type"] = @"iOS";
 #endif
     cache[@"app"] = app;
@@ -285,7 +287,7 @@
     device[@"modelNumber"] = systemInfo[@ BSG_KSSystemField_Model];
     device[@"wordSize"] = @(PLATFORM_WORD_SIZE);
     device[@"locale"] = [[NSLocale currentLocale] localeIdentifier];
-#if TARGET_OS_SIMULATOR
+#if BSG_PLATFORM_SIMULATOR
     device[@"simulator"] = @YES;
 #else
     device[@"simulator"] = @NO;

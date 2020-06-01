@@ -6,8 +6,9 @@
 //
 //
 
-#if TARGET_OS_MAC || TARGET_OS_TV
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#import "BugsnagPlatformConditional.h"
+
+#if BSG_PLATFORM_IOS
 #import <UIKit/UIKit.h>
 #include <sys/utsname.h>
 #endif

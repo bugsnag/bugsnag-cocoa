@@ -57,7 +57,9 @@
 #define BSG_KSSystemField_BuildType "build_type"
 
 #import <Foundation/Foundation.h>
-#if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#import "BugsnagPlatformConditional.h"
+
+#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
 #import <UIKit/UIKit.h>
 #endif
 
@@ -90,7 +92,7 @@
  */
 + (NSString *)deviceAndAppHash;
 
-#if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
 + (UIApplicationState)currentAppState;
 
 /**
