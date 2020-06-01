@@ -13,7 +13,7 @@
 #ifndef BugsnagPlatformConditional_h
 #define BugsnagPlatformConditional_h
 
-#import <Foundation/Foundation.h>
+#include <TargetConditionals.h>
 
 /**
  * Defined as true if this is the iOS platform.
@@ -29,5 +29,34 @@
 * Defined as true if this is the tvOS platform.
 */
 #define BSG_PLATFORM_TVOS TARGET_OS_TV
+
+/**
+* Defined as true if this is the watchOS platform.
+*/
+#define BSG_PLATFORM_WATCHOS TARGET_OS_WATCH
+
+/**
+* Defined as true if this is a simulator.
+*/
+#define BSG_PLATFORM_SIMULATOR TARGET_OS_SIMULATOR
+
+#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
+#define BSG_HAS_UIKIT 1
+#else
+#define BSG_HAS_UIKIT 0
+#endif
+
+#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
+#define BSG_HAS_UIDEVICE 1
+#else
+#define BSG_HAS_UIDEVICE 0
+#endif
+
+#if BSG_PLATFORM_IOS || BSG_PLATFORM_OSX
+#define BSG_HAS_MACH 1
+#else
+#define BSG_HAS_MACH 0
+#endif
+
 
 #endif /* BugsnagPlatformConditional_h */

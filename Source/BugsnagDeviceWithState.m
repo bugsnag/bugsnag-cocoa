@@ -6,6 +6,8 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
+#import "BugsnagPlatformConditional.h"
+
 #import "BugsnagDeviceWithState.h"
 #import "BugsnagCollections.h"
 #import "BugsnagLogger.h"
@@ -18,9 +20,9 @@ NSDictionary *BSGParseDeviceMetadata(NSDictionary *event) {
     [device addEntriesFromDictionary:state];
     BSGDictSetSafeObject(device, [event valueForKeyPath:@"system.time_zone"], @"timezone");
 
-#if TARGET_OS_SIMULATOR
+#if BSG_PLATFORM_SIMULATOR
     BSGDictSetSafeObject(device, @YES, @"simulator");
-#elif TARGET_OS_IPHONE || TARGET_OS_TV
+#else
     BSGDictSetSafeObject(device, @NO, @"simulator");
 #endif
 

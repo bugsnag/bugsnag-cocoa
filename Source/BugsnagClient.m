@@ -434,8 +434,7 @@ NSString *_lastOrientation = nil;
 
         self.pluginClient = [[BugsnagPluginClient alloc] initWithPlugins:self.configuration.plugins];
 
-#if BSG_PLATFORM_TVOS
-#elif BSG_PLATFORM_IOS
+#if BSG_PLATFORM_IOS
         _lastOrientation = BSGOrientationNameFromEnum([UIDevice currentDevice].orientation);
 #endif
         BugsnagUser *user = self.configuration.user;
@@ -629,7 +628,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)computeDidCrashLastLaunch {
     const BSG_KSCrash_State *crashState = bsg_kscrashstate_currentState();
-#if TARGET_OS_TV || TARGET_OS_IPHONE
+#if BSG_PLATFORM_TVOS || BSG_PLATFORM_IOS
     NSFileManager *manager = [NSFileManager defaultManager];
     NSString *didCrashSentinelPath = [NSString stringWithUTF8String:crashSentinelPath];
     BOOL appCrashSentinelExists = [manager fileExistsAtPath:didCrashSentinelPath];

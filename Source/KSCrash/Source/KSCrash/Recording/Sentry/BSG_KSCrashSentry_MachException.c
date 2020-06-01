@@ -23,15 +23,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
+#include "BugsnagPlatformConditional.h"
 
 #include "BSG_KSCrashSentry_MachException.h"
-#include "BSG_KSSystemCapabilities.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 #include "BSG_KSCrashC.h"
 
-#if BSG_KSCRASH_HAS_MACH
+#if BSG_HAS_MACH
 
 #include "BSG_KSMach.h"
 #include "BSG_KSCrashSentry_Private.h"
