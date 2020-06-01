@@ -339,6 +339,7 @@
 			knownRegions = (
 				English,
 				en,
+				Base,
 			);
 			mainGroup = F40B873B16AA233500676BB2;
 			productRefGroup = F40B874716AA233500676BB2 /* Products */;
