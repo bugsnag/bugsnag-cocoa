@@ -840,7 +840,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 - (BOOL)isRedactedKey:(NSString *)key {
     for (id obj in self.redactedKeys) {
         if ([obj isKindOfClass:[NSString class]]) {
-            if ([key isEqualToString:obj]) {
+            if ([[key lowercaseString] isEqualToString:[obj lowercaseString]]) {
                 return true;
             }
         } else if ([obj isKindOfClass:[NSRegularExpression class]]) {

@@ -8,6 +8,9 @@ Bugsnag Notifiers on other platforms.
 
 ## Enhancements
 
+* The comparison of redacted keys is now case-insensitive
+  [#653](https://github.com/bugsnag/bugsnag-cocoa/pull/653)
+
 * Unified the three main XCode projects
   [#633](https://github.com/bugsnag/bugsnag-cocoa/pull/633)
 

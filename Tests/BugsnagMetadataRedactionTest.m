@@ -117,5 +117,27 @@
     XCTAssertEqualObjects(@"ba09", section[@"somekey"]);
 }
 
+- (void)testCaseInsensitiveKeys {
+    BugsnagEvent *event = [self generateEventWithMetadata:@{
+            @"password": @"hunter2",
+            @"somekey9": @"2fa0",
+            @"somekey": @"ba09",
+            @"CaseInsensitiveKey" : @"CaseInsensitiveValue",
+            @"caseInsensitiveKey" : @"CaseInsensitiveValue",
+            @"caseInsensitiveKeyX" : @"CaseInsensitiveValue",
+    }];
+    
+    // Note: this redacts both keys
+    event.redactedKeys = [NSSet setWithArray:@[@"password", @"Caseinsensitivekey"]];
+
+    NSDictionary *payload = [event toJson];
+    NSDictionary *section = payload[@"metaData"][@"custom"];
+    XCTAssertNotNil(section);
+    XCTAssertEqualObjects(@"[REDACTED]", section[@"password"]);
+    XCTAssertEqualObjects(@"[REDACTED]", section[@"CaseInsensitiveKey"]);
+    XCTAssertEqualObjects(@"[REDACTED]", section[@"caseInsensitiveKey"]);
+    XCTAssertEqualObjects(@"CaseInsensitiveValue", section[@"caseInsensitiveKeyX"]);
+    XCTAssertEqualObjects(@"ba09", section[@"somekey"]);
+}
 
 @end
