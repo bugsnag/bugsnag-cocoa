@@ -669,6 +669,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertThrows(config.apiKey = nil);
 #pragma clang diagnostic pop
 
+    XCTAssertThrows(config.apiKey = @"");
+
     XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
 
     XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
