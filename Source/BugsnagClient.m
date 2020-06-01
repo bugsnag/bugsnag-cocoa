@@ -199,8 +199,7 @@ NSString *BSGBreadcrumbNameForNotificationName(NSString *name) {
  * @returns A string representing the device orientation or nil if there's no equivalent
  */
 
-#if BSG_PLATFORM_TVOS
-#elif BSG_PLATFORM_IOS
+#if BSG_PLATFORM_IOS
 NSString *BSGOrientationNameFromEnum(UIDeviceOrientation deviceOrientation)
 {
     NSString *orientation;
@@ -630,7 +629,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)computeDidCrashLastLaunch {
     const BSG_KSCrash_State *crashState = bsg_kscrashstate_currentState();
-#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
+#if TARGET_OS_TV || TARGET_OS_IPHONE
     NSFileManager *manager = [NSFileManager defaultManager];
     NSString *didCrashSentinelPath = [NSString stringWithUTF8String:crashSentinelPath];
     BOOL appCrashSentinelExists = [manager fileExistsAtPath:didCrashSentinelPath];
@@ -674,8 +673,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [BSGConnectivity stopMonitoring];
 
-#if BSG_PLATFORM_TVOS
-#elif BSG_PLATFORM_IOS
+#if BSG_PLATFORM_IOS
     [UIDevice currentDevice].batteryMonitoringEnabled = NO;
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 #endif
@@ -1118,8 +1116,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
  *
  * @param notification The change notification
  */
-#if BSG_PLATFORM_TVOS
-#elif BSG_PLATFORM_IOS
+#if BSG_PLATFORM_IOS
 - (void)batteryChanged:(NSNotification *)notification {
     NSNumber *batteryLevel = @([UIDevice currentDevice].batteryLevel);
     BOOL charging = [UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging ||
@@ -1217,8 +1214,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
             [self startListeningForStateChangeNotification:name];
         }
 
-#if BSG_PLATFORM_TVOS || BSG_PLATFORM_IOS
-#elif BSG_PLATFORM_OSX
+#if BSG_PLATFORM_OSX
         // Workspace-specific events - MacOS only
         for (NSString *name in [self workspaceBreadcrumbStateEvents]) {
             [self startListeningForWorkspaceStateChangeNotifications:name];
@@ -1264,8 +1260,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
  * NSWorkspace-specific automatic breadcrumb events
  */
 - (NSArray<NSString *> *)workspaceBreadcrumbStateEvents {
-#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
-#elif BSG_PLATFORM_OSX
+#if BSG_PLATFORM_OSX
     return @[
         NSWorkspaceScreensDidSleepNotification,
         NSWorkspaceScreensDidWakeNotification
@@ -1383,8 +1378,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
  *
  * @param notificationName The name of the notification.
  */
-#if BSG_PLATFORM_TVOS || BSG_PLATFORM_IOS
-#elif BSG_PLATFORM_OSX
+#if BSG_PLATFORM_OSX
 - (void)startListeningForWorkspaceStateChangeNotifications:(NSString *)notificationName {
     [NSWorkspace.sharedWorkspace.notificationCenter
         addObserver:self
@@ -1444,8 +1438,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 * @param notification The UI/NSTableViewSelectionDidChangeNotification
 */
 - (void)sendBreadcrumbForMenuItemNotification:(NSNotification *)notification {
-#if BSG_PLATFORM_TVOS || BSG_PLATFORM_IOS
-#elif BSG_PLATFORM_OSX
+#if BSG_PLATFORM_OSX
     NSMenuItem *menuItem = [[notification userInfo] valueForKey:@"MenuItem"];
     if ([menuItem isKindOfClass:[NSMenuItem class]]) {
         [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
@@ -1459,8 +1452,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)sendBreadcrumbForControlNotification:(NSNotification *)note {
-#if BSG_PLATFORM_TVOS
-#elif BSG_PLATFORM_IOS
+#if BSG_PLATFORM_IOS
     UIControl *control = note.object;
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeUser;
@@ -1470,7 +1462,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
           breadcrumb.metadata = @{BSGKeyLabel : label};
       }
     }];
-#elif TARGET_OS_MAC
+#elif BSG_PLATFORM_OSX
     NSControl *control = note.object;
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
       breadcrumb.type = BSGBreadcrumbTypeUser;

@@ -18,12 +18,12 @@
 /**
  * Defined as true if this is the iOS platform.
  */
-#define BSG_PLATFORM_IOS TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#define BSG_PLATFORM_IOS TARGET_OS_IOS
 
 /**
 * Defined as true if this is the OSX platform.
 */
-#define BSG_PLATFORM_OSX TARGET_OS_MAC
+#define BSG_PLATFORM_OSX TARGET_OS_OSX
 
 /**
 * Defined as true if this is the tvOS platform.
