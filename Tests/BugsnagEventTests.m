@@ -14,7 +14,6 @@
 #import "BugsnagHandledState.h"
 #import "BugsnagSession.h"
 #import "BugsnagSessionInternal.h"
-#import "BugsnagBaseUnitTest.h"
 #import "BugsnagStateEvent.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagTestsDummyClass.h"
@@ -22,6 +21,11 @@
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
+@end
+
+@interface BugsnagClient ()
+- (void)start;
+@property BugsnagConfiguration *configuration;
 @end
 
 @interface Bugsnag ()
@@ -52,7 +56,7 @@
 - (NSDictionary *_Nonnull)toDictionary;
 @end
 
-@interface BugsnagEventTests : BugsnagBaseUnitTest
+@interface BugsnagEventTests : XCTestCase
 @end
 
 @implementation BugsnagEventTests
@@ -501,52 +505,53 @@
  * per-event changes to apiKey.
  */
 - (void)testApiKey {
-    
-    [self setUpBugsnagWillCallNotify:false];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
 
     NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
     
     // Check that the event is passed the apiKey
-    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         return true;
     }];
     
     // Check that we can change it
-    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         event.apiKey = DUMMY_APIKEY_32CHAR_2;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_2);
-        XCTAssertEqualObjects(Bugsnag.configuration.apiKey, DUMMY_APIKEY_32CHAR_1);
+        XCTAssertEqualObjects(client.configuration.apiKey, DUMMY_APIKEY_32CHAR_1);
         return true;
     }];
 
     // Check that the global configuration is unaffected
-    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         event.apiKey = DUMMY_APIKEY_32CHAR_1;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
-        XCTAssertEqualObjects(Bugsnag.configuration.apiKey, DUMMY_APIKEY_32CHAR_1);
+        XCTAssertEqualObjects(client.configuration.apiKey, DUMMY_APIKEY_32CHAR_1);
         event.apiKey = DUMMY_APIKEY_32CHAR_3;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_3);
         return true;
     }];
     
     // Check that previous local and global values are not persisted erroneously
-    Bugsnag.configuration.apiKey = DUMMY_APIKEY_32CHAR_4;
-    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+    client.configuration.apiKey = DUMMY_APIKEY_32CHAR_4;
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_4);
         event.apiKey = DUMMY_APIKEY_32CHAR_1;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
-        XCTAssertEqual(Bugsnag.configuration.apiKey, DUMMY_APIKEY_32CHAR_4);
+        XCTAssertEqual(client.configuration.apiKey, DUMMY_APIKEY_32CHAR_4);
         event.apiKey = DUMMY_APIKEY_32CHAR_2;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_2);
         return true;
     }];
     
     // Check that validation is performed and that invalid API keys can't be set
-    Bugsnag.configuration.apiKey = DUMMY_APIKEY_32CHAR_1;
-    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+    client.configuration.apiKey = DUMMY_APIKEY_32CHAR_1;
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         event.apiKey = DUMMY_APIKEY_16CHAR;
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         return true;
@@ -556,9 +561,6 @@
 // MARK: - Metadata interface
 
 - (void)testAddMetadataSectionKeyValue {
-    
-    [self setUpBugsnagWillCallNotify:true];
-    
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
         @"user.metaData": @{
                 @"user": @{@"id": @"user id"}
@@ -586,11 +588,12 @@
  * Invalid data should not be set.  Manually check for coverage of logging code.
  */
 - (void)testInvalidSectionData {
-    [self setUpBugsnagWillCallNotify:true];
-    
     NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
-    
-    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
+
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         [event clearMetadataFromSection:@"user"];
         NSDictionary *invalidDict = @{};
         NSDictionary *validDict = @{@"myKey" : @"myValue"};
@@ -603,11 +606,12 @@
 }
 
 - (void)testInvalidKeyValueData {
-    [self setUpBugsnagWillCallNotify:true];
-    
     NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
-    
-    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
+
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         [event clearMetadataFromSection:@"user"];
         [event addMetadata:[NSNull null] withKey:@"myKey" toSection:@"mySection"];
 
@@ -731,7 +735,6 @@
 }
 
 - (void)testMetadataMutability {
-    [self setUpBugsnagWillCallNotify:false];
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{@"dummy" : @"value"}];
     
     // Immutable in, mutable out

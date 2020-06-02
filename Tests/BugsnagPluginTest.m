@@ -12,6 +12,10 @@
 #import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
 
+@interface BugsnagClient ()
+- (void)start;
+@end
+
 @interface BugsnagPluginTest : XCTestCase
 
 @end
@@ -57,7 +61,8 @@
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [config addPlugin:plugin];
-    [Bugsnag startWithConfiguration:config];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
     [self waitForExpectations:@[expectation] timeout:3.0];
 }
 
@@ -69,7 +74,8 @@
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [config addPlugin:plugin];
-    [Bugsnag startWithConfiguration:config];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
     [self waitForExpectations:@[expectation] timeout:3.0];
 }
 

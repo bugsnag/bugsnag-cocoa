@@ -44,14 +44,14 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
 /**
  * A boilerplate helper method to setup Bugsnag
  */
--(void)setUpBugsnagWillCallNotify:(bool)willNotify {
+-(BugsnagClient *)setUpBugsnagWillCallNotify:(bool)willNotify {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     if (willNotify) {
         [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
             return false;
         }];
     }
-    [Bugsnag startWithConfiguration:configuration];
+    return [[BugsnagClient alloc] initWithConfiguration:configuration];
 }
 
 /**
@@ -60,7 +60,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
  */
 - (void)testAutomaticNotifyBreadcrumbData {
 
-    [self setUpBugsnagWillCallNotify:false];
+    BugsnagClient *client = [self setUpBugsnagWillCallNotify:false];
 
     NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
 
@@ -70,7 +70,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     __block NSString *eventSeverity;
 
     // Check that the event is passed the apiKey
-    [Bugsnag notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
 
         // Grab the values that end up in the event for later comparison
@@ -82,9 +82,9 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     }];
 
     // Check that we can change it
-    [Bugsnag notify:ex];
+    [client notify:ex];
 
-    NSDictionary *breadcrumb = [[[[Bugsnag client] configuration] breadcrumbs][1] objectValue];
+    NSDictionary *breadcrumb = [client.configuration.breadcrumbs[1] objectValue];
     NSDictionary *metadata = [breadcrumb valueForKey:@"metaData"];
 
     XCTAssertEqualObjects([breadcrumb valueForKey:@"type"], @"error");
@@ -99,12 +99,11 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
  * Test that Client inherits metadata from Configuration on init()
  */
 - (void) testClientConfigurationHaveSeparateMetadata {
-    [self setUpBugsnagWillCallNotify:false];
-
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [configuration addMetadata:@{@"exampleKey" : @"exampleValue"} toSection:@"exampleSection"];
 
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
 
     // We expect that the client metadata is the same as the configuration's to start with
     XCTAssertEqualObjects([client getMetadataFromSection:@"exampleSection" withKey:@"exampleKey"],
@@ -126,9 +125,9 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
  * Test that user info is stored and retreived correctly
  */
 - (void) testUserInfoStorageRetrieval {
-    [self setUpBugsnagWillCallNotify:false];
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
 
     [client setUser:@"Jiminy" withEmail:@"jiminy@bugsnag.com" andName:@"Jiminy Cricket"];
 
@@ -148,9 +147,9 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
 }
 
 - (void)testMetadataMutability {
-    [self setUpBugsnagWillCallNotify:false];
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
 
     // Immutable in, mutable out
     [client addMetadata:@{@"foo" : @"bar"} toSection:@"section1"];
@@ -193,32 +192,6 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
 }
 
 /**
- * Test creating a client using "startWithApiKey" uses the same configuration values as
- * BugsnagConfiguration's "initWithApiKey" method
- */
-- (void)testClientStartWithApiKeyMatchesConfigurationInitWithApiKey {
-    BugsnagConfiguration *defaultConfig = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-
-    [Bugsnag startWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    BugsnagConfiguration *config = [Bugsnag configuration];
-
-    [self assertEqualConfiguration:defaultConfig withActual:config];
-}
-
-/**
- * Test creating a client using "startWithApiKey" uses the same configuration values as
- * BugsnagConfiguration's "loadConfig" method
- */
-- (void)testClientStartWithApiKeyMatchesConfigurationLoadConfig {
-    BugsnagConfiguration *defaultConfig = [BugsnagConfiguration loadConfig];
-
-    [Bugsnag startWithApiKey:@""];
-    BugsnagConfiguration *config = [Bugsnag configuration];
-
-    [self assertEqualConfiguration:defaultConfig withActual:config];
-}
-
-/**
  * After starting Bugsnag, any changes to the supplied Configuration should be ignored
  * Instead it should be changed by mutating the returned Configuration from "[Bugsnag configuration]"
  */
@@ -227,7 +200,8 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     // Take a copy of our Configuration object so we can compare with it later
     BugsnagConfiguration *initialConfig = [config copy];
 
-    [Bugsnag startWithConfiguration:config];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
 
     // Modify some arbitrary properties
     config.persistUser = !config.persistUser;
@@ -239,7 +213,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     XCTAssertNotEqual(initialConfig.maxBreadcrumbs, config.maxBreadcrumbs);
     XCTAssertNotEqualObjects(initialConfig.appVersion, config.appVersion);
 
-    BugsnagConfiguration *configAfter = [Bugsnag configuration];
+    BugsnagConfiguration *configAfter = client.configuration;
 
     [self assertEqualConfiguration:initialConfig withActual:configAfter];
 }

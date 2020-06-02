@@ -32,6 +32,10 @@
 - (BSG_KSCrashType)mapKSToBSGCrashTypes:(BugsnagErrorTypes *)errorTypes;
 @end
 
+@interface BugsnagClient ()
+- (void)start;
+@end
+
 // =============================================================================
 // MARK: - Tests
 // =============================================================================
@@ -120,7 +124,8 @@
     XCTAssertEqual([[config onSessionBlocks] count], 1);
 
     // Call onSession blocks
-    [Bugsnag startWithConfiguration:config];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
 
@@ -148,7 +153,8 @@
     [config removeOnSessionBlock:sessionBlock];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
 
-    [Bugsnag startWithConfiguration:config];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
 
     // Wait a second NOT to be called
     [self waitForExpectationsWithTimeout:1.0 handler:nil];
@@ -198,27 +204,28 @@
     XCTAssertEqual([[config onSessionBlocks] count], 1);
 
     // Call onSession blocks
-    [Bugsnag startWithConfiguration:config];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
     [self waitForExpectations:@[expectation1] timeout:1.0];
 
     // Check it's called on new session start
-    [Bugsnag pauseSession];
+    [client pauseSession];
     called++;
-    [Bugsnag startSession];
+    [client startSession];
     [self waitForExpectations:@[expectation2] timeout:1.0];
 
     // Check block is not called after removing and initialisation
-    [Bugsnag pauseSession];
+    [client pauseSession];
     called++;
     [config removeOnSessionBlock:sessionBlock];
-    [Bugsnag startSession];
+    [client startSession];
     [self waitForExpectations:@[expectation3] timeout:1.0];
 
     // Check it's NOT called on session resume
-    [Bugsnag pauseSession];
+    [client pauseSession];
     called++;
     [config addOnSessionBlock:sessionBlock];
-    [Bugsnag resumeSession];
+    [client resumeSession];
     [self waitForExpectations:@[expectation4] timeout:1.0];
 }
 
@@ -790,7 +797,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     BugsnagOnSendErrorBlock block = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
 
     [configuration addOnSendErrorBlock:block];
-    [Bugsnag startWithConfiguration:configuration];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
 
     XCTAssertEqual([[configuration onSendBlocks] count], 1);
 
@@ -813,7 +821,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [configuration addOnSendErrorBlock:block1];
     [configuration addOnSendErrorBlock:block2];
 
-    [Bugsnag startWithConfiguration:configuration];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
 
     XCTAssertEqual([[configuration onSendBlocks] count], 2);
 }

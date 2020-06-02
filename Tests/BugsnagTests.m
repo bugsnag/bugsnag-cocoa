@@ -28,6 +28,8 @@
 @interface BugsnagClient ()
 @property (nonatomic, strong) NSString *lastOrientation;
 @property(readwrite, retain, nullable) BugsnagMetadata *metadata;
+- (void)start;
+@property BugsnagConfiguration *configuration;
 @end
 
 @interface BugsnagEvent ()
@@ -40,19 +42,6 @@
 @implementation BugsnagTests
 
 /**
- * A boilerplate helper method to setup Bugsnag
- */
--(void)setUpBugsnagWillCallNotify:(bool)willNotify {
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    if (willNotify) {
-        [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
-            return false;
-        }];
-    }
-    [Bugsnag startWithConfiguration:configuration];
-}
-
-/**
  * Test that global metadata is added correctly, applied to each event, and
  * deleted appropriately.
  */
@@ -60,25 +49,27 @@
 
 	__block XCTestExpectation *expectation = [self expectationWithDescription:@"Localized metadata changes"];
 
-    [self setUpBugsnagWillCallNotify:true];
-    [Bugsnag addMetadata:@"aValue1" withKey:@"aKey1" toSection:@"mySection1"];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
+    [client addMetadata:@"aValue1" withKey:@"aKey1" toSection:@"mySection1"];
     
     // We should see our added metadata in every request.  Let's try a couple:
     
     NSException *exception1 = [[NSException alloc] initWithName:@"exception1" reason:@"reason1" userInfo:nil];
     NSException *exception2 = [[NSException alloc] initWithName:@"exception2" reason:@"reason2" userInfo:nil];
 
-    [Bugsnag notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull event) {
+    [client notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects([event getMetadataFromSection:@"mySection1" withKey:@"aKey1"], @"aValue1");
         XCTAssertEqual(event.errors[0].errorClass, @"exception1");
         XCTAssertEqual(event.errors[0].errorMessage, @"reason1");
         XCTAssertNil([event getMetadataFromSection:@"mySection2"]);
         
         // Add some additional metadata once we're sure it's not already there
-        [Bugsnag addMetadata:@"aValue2" withKey:@"aKey2" toSection:@"mySection2"];
+        [client addMetadata:@"aValue2" withKey:@"aKey2" toSection:@"mySection2"];
     }];
     
-    [Bugsnag notify:exception2 block:^BOOL(BugsnagEvent * _Nonnull event) {
+    [client notify:exception2 block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects([event getMetadataFromSection:@"mySection1" withKey:@"aKey1"], @"aValue1");
         XCTAssertEqualObjects([event getMetadataFromSection:@"mySection2" withKey:@"aKey2"], @"aValue2");
         XCTAssertEqual(event.errors[0].errorClass, @"exception2");
@@ -87,10 +78,10 @@
 
     // Check nil value causes deletions
     
-    [Bugsnag addMetadata:nil withKey:@"aKey1" toSection:@"mySection1"];
-    [Bugsnag addMetadata:nil withKey:@"aKey2" toSection:@"mySection2"];
+    [client addMetadata:nil withKey:@"aKey1" toSection:@"mySection1"];
+    [client addMetadata:nil withKey:@"aKey2" toSection:@"mySection2"];
     
-    [Bugsnag notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull event) {
+    [client notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertNil([event getMetadataFromSection:@"mySection1" withKey:@"aKey1"]);
         XCTAssertNil([event getMetadataFromSection:@"mySection2" withKey:@"aKey2"]);
     }];
@@ -98,17 +89,17 @@
     // Check that event-level metadata alteration doesn't affect configuration-level metadata
     
     // This goes to Client
-    [Bugsnag addMetadata:@"aValue1" withKey:@"aKey1" toSection:@"mySection1"];
-    [Bugsnag notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull event) {
+    [client addMetadata:@"aValue1" withKey:@"aKey1" toSection:@"mySection1"];
+    [client notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull event) {
         // event should have a copy of Client metadata
         
-        XCTAssertEqualObjects([[[Bugsnag client] metadata] getMetadataFromSection:@"mySection1" withKey:@"aKey1"],
+        XCTAssertEqualObjects([client getMetadataFromSection:@"mySection1" withKey:@"aKey1"],
                               [event.metadata getMetadataFromSection:@"mySection1" withKey:@"aKey1"]);
 
         [event addMetadata:@{@"myNewKey" : @"myNewValue"}
                  toSection:@"myNewSection"];
 
-        XCTAssertNil([[[Bugsnag client] metadata] getMetadataFromSection:@"myNewSection" withKey:@"myNewKey"]);
+        XCTAssertNil([client getMetadataFromSection:@"myNewSection" withKey:@"myNewKey"]);
         
         
         [expectation fulfill];
@@ -116,11 +107,11 @@
 
     [self waitForExpectationsWithTimeout:0.1 handler:^(NSError * _Nullable error) {
         // Check old values still exist
-        XCTAssertNil([[[[Bugsnag configuration] metadata] getMetadataFromSection: @"mySection1"] valueForKey:@"aKey1"]);
+        XCTAssertNil([[client.configuration getMetadataFromSection: @"mySection1"] valueForKey:@"aKey1"]);
         
         // Check "new" values don't exist
-        XCTAssertNil([[[[Bugsnag configuration] metadata] getMetadataFromSection:@"myNewSection"] valueForKey:@"myNewKey"]);
-        XCTAssertNil([[[Bugsnag configuration] metadata] getMetadataFromSection:@"myNewSection"]);
+        XCTAssertNil([[client.configuration getMetadataFromSection:@"myNewSection"] valueForKey:@"myNewKey"]);
+        XCTAssertNil([client.configuration getMetadataFromSection:@"myNewSection"]);
         expectation = nil;
     }];
 }
@@ -130,17 +121,19 @@
  * return a section when there is one, or nil otherwise.
  */
 - (void)testGetMetadata {
-    [self setUpBugsnagWillCallNotify:false];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
     
-    XCTAssertNil([Bugsnag getMetadataFromSection:@"dummySection"]);
-    [Bugsnag addMetadata:@"aValue1" withKey:@"aKey1" toSection:@"dummySection"];
-    NSMutableDictionary *section = [[Bugsnag getMetadataFromSection:@"dummySection"] mutableCopy];
+    XCTAssertNil([client getMetadataFromSection:@"dummySection"]);
+    [client addMetadata:@"aValue1" withKey:@"aKey1" toSection:@"dummySection"];
+    NSMutableDictionary *section = [[client getMetadataFromSection:@"dummySection"] mutableCopy];
     XCTAssertNotNil(section);
     XCTAssertEqual(section[@"aKey1"], @"aValue1");
-    XCTAssertNil([Bugsnag getMetadataFromSection:@"anotherSection"]);
+    XCTAssertNil([client getMetadataFromSection:@"anotherSection"]);
     
-    XCTAssertTrue([[Bugsnag getMetadataFromSection:@"dummySection" withKey:@"aKey1"] isEqualToString:@"aValue1"]);
-    XCTAssertNil([Bugsnag getMetadataFromSection:@"noSection" withKey:@"notaKey1"]);
+    XCTAssertTrue([[client getMetadataFromSection:@"dummySection" withKey:@"aKey1"] isEqualToString:@"aValue1"]);
+    XCTAssertNil([client getMetadataFromSection:@"noSection" withKey:@"notaKey1"]);
 }
 
 /**
@@ -154,10 +147,11 @@
         return false;
     }];
 
-    [Bugsnag startWithConfiguration:configuration];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
 
     // For now only test that the method exists
-    [Bugsnag pauseSession];
+    [client pauseSession];
 }
 
 /**
@@ -173,20 +167,21 @@
         return false;
     }];
 
-    [Bugsnag startWithConfiguration:configuration];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
 
     NSException *exception1 = [[NSException alloc] initWithName:@"exception1" reason:@"reason1" userInfo:nil];
 
     // Check that the context is set going in to the test and that we can change it
-    [Bugsnag notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull event) {
-        XCTAssertEqual([[Bugsnag configuration] context], @"firstContext");
+    [client notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull event) {
+        XCTAssertEqual(client.configuration.context, @"firstContext");
         
         // Change the global context
-        [Bugsnag setContext:@"secondContext"];
+        [client setContext:@"secondContext"];
         
         // Check that it's made it into the configuration (from the point of view of the block)
         // and that setting it here doesn't affect the event's value.
-        XCTAssertEqual([[Bugsnag configuration] context], @"secondContext");
+        XCTAssertEqual(client.configuration.context, @"secondContext");
         XCTAssertEqual([event context], @"firstContext");
         
         [expectation1 fulfill];
@@ -196,10 +191,10 @@
     // Test that the context (changed inside the notify block) remains changed
     // And that the event picks up this value.
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError * _Nullable error) {
-        XCTAssertEqual([[Bugsnag configuration] context], @"secondContext");
+        XCTAssertEqual(client.configuration.context, @"secondContext");
         
-        [Bugsnag notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull report) {
-            XCTAssertEqual([[Bugsnag configuration] context], @"secondContext");
+        [client notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull report) {
+            XCTAssertEqual(client.configuration.context, @"secondContext");
             XCTAssertEqual([report context], @"secondContext");
             return true;
         }];
@@ -207,39 +202,43 @@
 }
 
 -(void)testClearMetadataInSectionWithKey {
-    [self setUpBugsnagWillCallNotify:false];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
 
-    [Bugsnag addMetadata:@"myValue1" withKey:@"myKey1" toSection:@"section1"];
-    [Bugsnag addMetadata:@"myValue2" withKey:@"myKey2" toSection:@"section1"];
-    [Bugsnag addMetadata:@"myValue3" withKey:@"myKey3" toSection:@"section2"];
+    [client addMetadata:@"myValue1" withKey:@"myKey1" toSection:@"section1"];
+    [client addMetadata:@"myValue2" withKey:@"myKey2" toSection:@"section1"];
+    [client addMetadata:@"myValue3" withKey:@"myKey3" toSection:@"section2"];
     
-    XCTAssertEqual([[Bugsnag getMetadataFromSection:@"section1"] count], 2);
-    XCTAssertEqual([[Bugsnag getMetadataFromSection:@"section2"] count], 1);
+    XCTAssertEqual([[client getMetadataFromSection:@"section1"] count], 2);
+    XCTAssertEqual([[client getMetadataFromSection:@"section2"] count], 1);
     
-    [Bugsnag clearMetadataFromSection:@"section1" withKey:@"myKey1"];
-    XCTAssertEqual([[Bugsnag getMetadataFromSection:@"section1"] count], 1);
-    XCTAssertNil([[Bugsnag getMetadataFromSection:@"section1"] valueForKey:@"myKey1"]);
-    XCTAssertEqual([[Bugsnag getMetadataFromSection:@"section1"] valueForKey:@"myKey2"], @"myValue2");
+    [client clearMetadataFromSection:@"section1" withKey:@"myKey1"];
+    XCTAssertEqual([[client getMetadataFromSection:@"section1"] count], 1);
+    XCTAssertNil([[client getMetadataFromSection:@"section1"] valueForKey:@"myKey1"]);
+    XCTAssertEqual([[client getMetadataFromSection:@"section1"] valueForKey:@"myKey2"], @"myValue2");
 }
 
 -(void)testClearMetadataInSection {
-    [self setUpBugsnagWillCallNotify:false];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
 
-    [Bugsnag addMetadata:@"myValue1" withKey:@"myKey1" toSection:@"section1"];
-    [Bugsnag addMetadata:@"myValue2" withKey:@"myKey2" toSection:@"section1"];
-    [Bugsnag addMetadata:@"myValue3" withKey:@"myKey3" toSection:@"section2"];
+    [client addMetadata:@"myValue1" withKey:@"myKey1" toSection:@"section1"];
+    [client addMetadata:@"myValue2" withKey:@"myKey2" toSection:@"section1"];
+    [client addMetadata:@"myValue3" withKey:@"myKey3" toSection:@"section2"];
 
     // Existing section
-    [Bugsnag clearMetadataFromSection:@"section2"];
-    XCTAssertNil([Bugsnag getMetadataFromSection:@"section2"]);
-    XCTAssertEqual([[Bugsnag getMetadataFromSection:@"section1"] valueForKey:@"myKey1"], @"myValue1");
+    [client clearMetadataFromSection:@"section2"];
+    XCTAssertNil([client getMetadataFromSection:@"section2"]);
+    XCTAssertEqual([[client getMetadataFromSection:@"section1"] valueForKey:@"myKey1"], @"myValue1");
     
     // nonexistent sections
-    [Bugsnag clearMetadataFromSection:@"section3"];
+    [client clearMetadataFromSection:@"section3"];
     
     // Add it back in, but different
-    [Bugsnag addMetadata:@"myValue4" withKey:@"myKey4" toSection:@"section2"];
-    XCTAssertEqual([[Bugsnag getMetadataFromSection:@"section2"] valueForKey:@"myKey4"], @"myValue4");
+    [client addMetadata:@"myValue4" withKey:@"myKey4" toSection:@"section2"];
+    XCTAssertEqual([[client getMetadataFromSection:@"section2"] valueForKey:@"myKey4"], @"myValue4");
 }
 
 /**
@@ -274,13 +273,14 @@
 
     [configuration addOnSessionBlock:sessionBlock];
 
-    [Bugsnag startWithConfiguration:configuration];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
     [self waitForExpectations:@[expectation1] timeout:1.0];
     
-    [Bugsnag pauseSession];
+    [client pauseSession];
     called++;
-    [Bugsnag removeOnSessionBlock:sessionBlock];
-    [Bugsnag startSession];
+    [client removeOnSessionBlock:sessionBlock];
+    [client startSession];
     [self waitForExpectations:@[expectation2] timeout:1.0];
 }
 
@@ -319,18 +319,19 @@
     //       We *should* be able to test that pre-start() calls to add/removeOnSessionBlock()
     //       do nothing, but actually we can't guarantee this.  For now we don't test this.
 
-    [Bugsnag startWithConfiguration:configuration];
-    [Bugsnag pauseSession];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
+    [client pauseSession];
 
-    [Bugsnag addOnSessionBlock:sessionBlock];
-    [Bugsnag startSession];
+    [client addOnSessionBlock:sessionBlock];
+    [client startSession];
     [self waitForExpectations:@[expectation1] timeout:1.0];
 
-    [Bugsnag pauseSession];
+    [client pauseSession];
     called++;
 
-    [Bugsnag removeOnSessionBlock:sessionBlock];
-    [Bugsnag startSession];
+    [client removeOnSessionBlock:sessionBlock];
+    [client startSession];
     // This expectation should also NOT be met
     [self waitForExpectations:@[expectation2] timeout:1.0];
 }
@@ -359,16 +360,18 @@ NSString *BSGOrientationNameFromEnum(UIDeviceOrientation deviceOrientation);
 #endif
 
 - (void)testMetadataMutability {
-    [self setUpBugsnagWillCallNotify:false];
-    
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
+
     // Immutable in, mutable out
-    [Bugsnag addMetadata:@{@"foo" : @"bar"} toSection:@"section1"];
-    NSObject *metadata1 = [Bugsnag getMetadataFromSection:@"section1"];
+    [client addMetadata:@{@"foo" : @"bar"} toSection:@"section1"];
+    NSObject *metadata1 = [client getMetadataFromSection:@"section1"];
     XCTAssertTrue([metadata1 isKindOfClass:[NSMutableDictionary class]]);
     
     // Mutable in, mutable out
-    [Bugsnag addMetadata:[@{@"foo" : @"bar"} mutableCopy] toSection:@"section2"];
-    NSObject *metadata2 = [Bugsnag getMetadataFromSection:@"section2"];
+    [client addMetadata:[@{@"foo" : @"bar"} mutableCopy] toSection:@"section2"];
+    NSObject *metadata2 = [client getMetadataFromSection:@"section2"];
     XCTAssertTrue([metadata2 isKindOfClass:[NSMutableDictionary class]]);
 }
 
