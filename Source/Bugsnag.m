@@ -76,9 +76,12 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 
 + (BugsnagClient *_Nonnull)startWithConfiguration:(BugsnagConfiguration *_Nonnull)configuration {
     @synchronized(self) {
-        bsg_g_bugsnag_client =
-                [[BugsnagClient alloc] initWithConfiguration:configuration];
-        [bsg_g_bugsnag_client start];
+        if (bsg_g_bugsnag_client == nil) {
+            bsg_g_bugsnag_client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+            [bsg_g_bugsnag_client start];
+        } else {
+            bsg_log_warn(@"Multiple Bugsnag.start calls detected. Ignoring.");
+        }
         return bsg_g_bugsnag_client;
     }
 }

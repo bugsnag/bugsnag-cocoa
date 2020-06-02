@@ -21,6 +21,10 @@
 @property NSDictionary *processedData;
 @end
 
+@interface BugsnagClient ()
+- (void)start;
+@end
+
 @interface BugsnagEvent ()
 - (instancetype)initWithKSReport:(NSDictionary *)report;
 
@@ -61,7 +65,8 @@
     // set a dummy endpoint, avoid hitting production
     config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://localhost:1234"
                                                                    sessions:@"http://localhost:1234"];
-    [Bugsnag startWithConfiguration:config];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
     BugsnagEvent *report =
     [[BugsnagEvent alloc] initWithKSReport:self.rawReportData];
     self.processedData = [[BugsnagSink new] getBodyFromEvents:@[report]];

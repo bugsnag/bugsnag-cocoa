@@ -17,12 +17,17 @@
 @property (nonatomic) NSString *codeBundleId;
 @end
 
+@interface BugsnagClient ()
+- (void)start;
+@end
+
 @interface BSGOutOfMemoryWatchdog (Testing)
 - (NSMutableDictionary *)generateCacheInfoWithConfig:(BugsnagConfiguration *)config;
 @property(nonatomic, strong, readwrite) NSMutableDictionary *cachedFileInfo;
 @end
 
 @interface BSGOutOfMemoryWatchdogTests : XCTestCase
+@property BugsnagClient *client;
 @end
 
 @implementation BSGOutOfMemoryWatchdogTests
@@ -33,7 +38,8 @@
     config.autoDetectErrors = NO;
     config.releaseStage = @"MagicalTestingTime";
 
-    [Bugsnag startWithConfiguration:config];
+    self.client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [self.client start];
 }
 
 - (void)testNilPathDoesNotCreateWatchdog {
@@ -46,10 +52,9 @@
  * Test that the generated OOM report values exist and are correct (where that can be tested)
  */
 - (void)testOOMFieldsSetCorrectly {
-    BugsnagClient *client = [Bugsnag client];
-    BSGOutOfMemoryWatchdog *watchdog = [client oomWatchdog];
+    BSGOutOfMemoryWatchdog *watchdog = [self.client oomWatchdog];
 
-    client.codeBundleId = @"codeBundleIdHere";
+    self.client.codeBundleId = @"codeBundleIdHere";
     NSMutableDictionary *cachedFileInfo = [watchdog cachedFileInfo];
     XCTAssertNotNil([cachedFileInfo objectForKey:@"app"]);
     XCTAssertNotNil([cachedFileInfo objectForKey:@"device"]);
