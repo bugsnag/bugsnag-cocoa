@@ -11,7 +11,13 @@ if [ $# -eq 0 ]; then
   exit 1
 fi;
 
+# Ensure feature file exists
 FEATURE=$1
+if [ ! -f "$FEATURE" ]; then
+    echo "File $FEATURE not found"
+    exit 1
+fi
+
 shift
 
 if [ $# -gt 0 ] && [[ "$1" == IOS* ]]; then
