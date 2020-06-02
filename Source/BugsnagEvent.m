@@ -805,7 +805,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     //  Inserted into `context` property
     [metadata removeObjectForKey:BSGKeyContext];
     // Build metadata
-    BSGDictSetSafeObject(metadata, [self error], BSGKeyError);
+    BSGDictInsertIfNotNil(metadata, self.error, BSGKeyError);
 
     // add user
     BSGDictInsertIfNotNil(event, [self.user toJson], BSGKeyUser);
