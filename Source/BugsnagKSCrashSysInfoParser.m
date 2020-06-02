@@ -65,7 +65,7 @@ NSDictionary *BSGParseDevice(NSDictionary *report) {
     return device;
 }
 
-NSDictionary *BSGParseApp(NSDictionary *report) {
+NSDictionary *BSGParseAppState(NSDictionary *report) {
     NSDictionary *system = report[BSGKeySystem];
 
     NSMutableDictionary *appState = [NSMutableDictionary dictionary];
@@ -90,7 +90,7 @@ NSDictionary *BSGParseApp(NSDictionary *report) {
     return appState;
 }
 
-NSDictionary *BSGParseAppState(NSDictionary *report, NSString *preferredVersion, NSString *releaseStage, NSString *codeBundleId) {
+NSDictionary *BSGParseApp(NSDictionary *report, NSString *preferredVersion, NSString *releaseStage, NSString *codeBundleId) {
     NSMutableDictionary *app = [NSMutableDictionary dictionary];
 
     NSString *version = preferredVersion ?: report[@"CFBundleShortVersionString"];

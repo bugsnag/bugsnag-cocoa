@@ -39,7 +39,7 @@
     BSGDictSetSafeObject(dict, [Bugsnag notifier].details, BSGKeyNotifier);
     
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
-    BSGDictSetSafeObject(dict, BSGParseAppState(systemInfo,
+    BSGDictSetSafeObject(dict, BSGParseApp(systemInfo,
                                                 [Bugsnag configuration].appVersion,
                                                 [Bugsnag configuration].releaseStage,
                                                 [Bugsnag configuration].codeBundleId), @"app");

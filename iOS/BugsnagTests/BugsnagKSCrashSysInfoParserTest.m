@@ -56,7 +56,7 @@ NSNumber * _Nullable BSGDeviceFreeSpace(NSSearchPathDirectory directory);
         @"CFBundleVersion":@"4.1.1.2362",
         @"extra":@"foo",
     };
-    NSDictionary *state = BSGParseAppState(rawInfo, nil, @"prod", nil);
+    NSDictionary *state = BSGParseApp(rawInfo, nil, @"prod", nil);
     XCTAssertEqual(state.count, 5);
     XCTAssertEqualObjects(state[@"releaseStage"], @"prod");
     XCTAssertEqualObjects(state[@"version"], @"4.1.1");
@@ -77,7 +77,7 @@ NSNumber * _Nullable BSGDeviceFreeSpace(NSSearchPathDirectory directory);
         @"CFBundleVersion":@"4.1.1.2362",
         @"extra":@"foo",
     };
-    NSDictionary *state = BSGParseAppState(rawInfo, @"2.0", @"prod", @"4.2.0-cbd");
+    NSDictionary *state = BSGParseApp(rawInfo, @"2.0", @"prod", @"4.2.0-cbd");
     XCTAssertEqual(state.count, 5);
     XCTAssertEqualObjects(state[@"releaseStage"], @"prod");
     XCTAssertEqualObjects(state[@"version"], @"2.0");

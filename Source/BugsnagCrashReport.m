@@ -276,8 +276,8 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
             _context = BSGParseContext(report, _metaData);
             _deviceState = BSGParseDeviceState(report);
             _device = BSGParseDevice(report);
-            _app = BSGParseApp(report);
-            _appState = BSGParseAppState(report[BSGKeySystem],
+            _appState = BSGParseAppState(report);
+            _app = BSGParseApp(report[BSGKeySystem],
                                          BSGLoadConfigValue(report, @"appVersion"),
                                          _releaseStage, // Already loaded from config
                                          BSGLoadConfigValue(report, @"codeBundleId"));
