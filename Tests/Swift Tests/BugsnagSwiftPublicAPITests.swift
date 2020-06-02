@@ -46,7 +46,6 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
     let onBreadcrumbBlock: BugsnagOnBreadcrumbBlock = { (breadcrumb) -> Bool in return false }
     
     func testBugsnagClass() throws {
-        Bugsnag.start(withApiKey: "")
         Bugsnag.start(withApiKey: apiKey);
         Bugsnag.start(with: BugsnagConfiguration(apiKey))
         
@@ -89,9 +88,8 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         }
         Bugsnag.removeOnBreadcrumb(block: onBreadcrumbBlock)
     }
-    
+
     func testBugsnagConfigurationClass() throws {
-        let _ = BugsnagConfiguration.loadConfig()
         let config = BugsnagConfiguration(apiKey)
 
         config.apiKey = apiKey

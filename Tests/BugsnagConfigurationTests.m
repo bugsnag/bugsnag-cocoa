@@ -635,18 +635,22 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 // MARK: - Other tests
 // =============================================================================
 
+- (void)testInitWithApiKeyThrowsWhenMissing {
+    NSString *nilKey = nil;
+
+    XCTAssertThrows([[BugsnagConfiguration alloc] initWithApiKey:nilKey]);
+    XCTAssertThrows([[BugsnagConfiguration alloc] initWithApiKey:@""]);
+}
+
 /**
- * Test correct population of an NSError in the case of an invalid apiKey
+ * When passed an invalid API Key we log a warning message but will still use the key
  */
--(void)testDesignatedInitializerInvalidApiKey {
+- (void)testInitWithApiKeyUsesInvalidApiKeys {
     BugsnagConfiguration *invalidApiConfig = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_16CHAR];
     XCTAssertNotNil(invalidApiConfig);
     XCTAssertEqualObjects(invalidApiConfig.apiKey, DUMMY_APIKEY_16CHAR);
 }
 
-/**
-* Test NSError is not populated in the case of a valid apiKey
-*/
 -(void)testDesignatedInitializerValidApiKey {
     BugsnagConfiguration *validApiConfig1 = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertNotNil(validApiConfig1);
@@ -692,7 +696,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 - (void)testApiKeySetter {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
+    XCTAssertEqual(DUMMY_APIKEY_32CHAR_1, config.apiKey);
+
     config.apiKey = DUMMY_APIKEY_32CHAR_1;
     XCTAssertEqual(DUMMY_APIKEY_32CHAR_1, config.apiKey);
 
@@ -701,22 +706,16 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertThrows(config.apiKey = nil);
 #pragma clang diagnostic pop
 
+    XCTAssertEqual(DUMMY_APIKEY_32CHAR_1, config.apiKey);
+
     XCTAssertThrows(config.apiKey = @"");
+    XCTAssertEqual(DUMMY_APIKEY_32CHAR_1, config.apiKey);
 
-    XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
+    config.apiKey = DUMMY_APIKEY_16CHAR;
+    XCTAssertEqual(DUMMY_APIKEY_16CHAR, config.apiKey);
 
-    XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
-    XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
-}
-
-- (void)testHasValidApiKey {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-
-    XCTAssertThrows(config.apiKey = DUMMY_APIKEY_16CHAR);
-    XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_1]);
-
-    config.apiKey = DUMMY_APIKEY_32CHAR_2;
-    XCTAssertTrue([config.apiKey isEqualToString:DUMMY_APIKEY_32CHAR_2]);
+    config.apiKey = DUMMY_APIKEY_32CHAR_1;
+    XCTAssertEqual(DUMMY_APIKEY_32CHAR_1, config.apiKey);
 }
 
 -(void)testBSGErrorTypes {

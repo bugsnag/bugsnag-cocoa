@@ -15,24 +15,18 @@
 // MARK: - rejecting invalid plists
 
 - (void)testDecodeEmptyApiKey {
-    BugsnagConfiguration *config = [BSGConfigurationBuilder
-            configurationFromOptions:@{@"apiKey": @""}];
-    XCTAssertNotNil(config);
-    XCTAssertEqualObjects(@"", config.apiKey);
+    XCTAssertThrows([BSGConfigurationBuilder
+                     configurationFromOptions:@{@"apiKey": @""}]);
 }
 
 - (void)testDecodeInvalidTypeApiKey {
-    BugsnagConfiguration *config = [BSGConfigurationBuilder
-            configurationFromOptions:@{@"apiKey": @[@"one", @"two"]}];
-    XCTAssertNotNil(config);
-    XCTAssertEqualObjects(@"", config.apiKey);
+    XCTAssertThrows([BSGConfigurationBuilder
+                     configurationFromOptions:@{@"apiKey": @[@"one"]}]);
 }
 
 - (void)testDecodeWithoutApiKey {
-    BugsnagConfiguration *config = [BSGConfigurationBuilder
-            configurationFromOptions:@{@"autoDetectErrors": @NO}];
-    XCTAssertNotNil(config);
-    XCTAssertEqualObjects(@"", config.apiKey);
+    XCTAssertThrows([BSGConfigurationBuilder
+                     configurationFromOptions:@{@"autoDetectErrors": @NO}]);
 }
 
 - (void)testDecodeUnknownKeys {
@@ -44,9 +38,8 @@
 }
 
 - (void)testDecodeEmptyOptions {
-    BugsnagConfiguration *config = [BSGConfigurationBuilder configurationFromOptions:@{}];
-    XCTAssertNotNil(config);
-    XCTAssertEqualObjects(@"", config.apiKey);
+    XCTAssertThrows([BSGConfigurationBuilder
+                     configurationFromOptions:@{}]);
 }
 
 // MARK: - config loading
