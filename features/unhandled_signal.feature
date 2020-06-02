@@ -8,7 +8,7 @@ Scenario: Triggering SIGABRT
     And the payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "SIGABRT"
     And the "method" of stack frame 0 equals "__pthread_kill"
-    And the "method" of stack frame 1 equals "<redacted>"
+    And the "method" of stack frame 1 matches "^(<redacted>|pthread_kill)$"
     And the "method" of stack frame 2 equals "abort"
     And the "method" of stack frame 3 equals "-[AbortScenario run]"
     And the event "severity" equals "error"
