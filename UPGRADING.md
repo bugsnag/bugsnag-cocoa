@@ -1,316 +1,274 @@
-# Upgrading
+Upgrading Guide
+===============
 
-Guide to ease migrations between significant changes
+Upgrade from 5.X to 6.X
+-----------------------
 
-## v5 -> v6
+__This version contains many breaking changes__. It is part of an effort to unify our notifier libraries across platforms, making the user interface more consistent, and implementations better on multi-layered environments where multiple Bugsnag libraries need to work together (such as React Native).
 
-### `BugsnagConfiguration` class
+### Key points
 
-#### Instantiation
+- Several configuration options have been renamed and can now load configuration options from a `.plist`.
+- Callback blocks have been expanded to breadcrumbs and sessions.
 
-Initializing a configuration requires a valid API key.
+More details of these changes can be found below and full documentation is available online
+([iOS](https://docs.bugsnag.com/platforms/ios) |
+ [macOS](https://docs.bugsnag.com/platforms/macos) |
+ [tvOS](https://docs.bugsnag.com/platforms/tvos)).
+
+### Bugsnag Client
+
+#### Starting Bugsnag
+
+You can now start Bugsnag using your application's `plist` file with configuration values, including your API key. The simplest start-up code is therefore:
 
 ```objc
-NSError *error;
-BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:@"YOUR API KEY HERE"];
+[Bugsnag start];
 ```
+or
 ```swift
-  let config = BugsnagConfiguration("YOUR API KEY HERE")
+Bugsnag.start()
 ```
+
+With an entry in your `plist` file:
+
+```xml
+<key>bugsnag</key>
+<dict>
+    <key>apiKey</key>
+    <string>YOUR-API-KEY</string>
+</dict>
+```
+
+You can add further configuration options to the `plist` or construct a `BugsnagConfiguration` to set further options in code. For full details, see the online docs
+([iOS](https://docs.bugsnag.com/platforms/ios/configuration-options/#setting-configuration-options) |
+ [macOS](https://docs.bugsnag.com/platforms/macos/configuration-options/#setting-configuration-options) |
+ [tvOS](https://docs.bugsnag.com/platforms/tvos/configuration-options/#setting-configuration-options)).
 
 #### Additions
 
-* `Bugsnag.setBreadcrumbCapacity()` is now `config.setMaxBreadcrumbs()`
+The following functions have been added to the `Bugsnag` client: 
 
-```diff
-- Bugsnag.setBreadcrumbCapacity(40)
-  let config = try BugsnagConfiguration("YOUR API KEY HERE")
-+ config.setMaxBreadcrumbs(40)
-+ config.persistUser
+| Property/Method                                                    | Usage                                                             |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `addOnBreadcrumb` / `removeOnBreadcrumb`<br />`addOnBreadcrumbBlock` / `removeOnBreadcrumbBlock` | Add/remove callbacks to modify or discard breadcrumbs before they are recorded. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-breadcrumbs/#discarding-and-amending-breadcrumbs) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-breadcrumbs/#discarding-and-amending-breadcrumbs) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-breadcrumbs/#discarding-and-amending-breadcrumbs)).
+| `getMetadata` / `getMetadataFromSection`                           | Retrieves previously set metadata. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-error-reports/#global-metadata) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-error-reports/#global-metadata) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-error-reports/#global-metadata)).
+| `setUser:withEmail:andName` / `setUser(_:email:name)`              | Sets the active user for the app for future events. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-error-reports/#adding-user-data) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-error-reports/#adding-user-data) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-error-reports/#adding-user-data)).
 
-+ config.persistUserData()
-+ config.deletePersistedUserData()
+#### Changes
 
-+ config.addOnBreadcrumb(block:)
-+ config.removeOnBreadcrumb(block:)
+The following changes have been made to the `Bugsnag` client: 
 
-+ config.redactedKeys
-+ config.sendThreads
-```
+##### Objective-C
 
-#### Renames
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `addAttribute:withValue:toTabWithName:`                            | `addMetadataToSection:withKey:toSection:`                         |
+| `clearTabWithName`                                                 | `clearMetadataFromSection`                                        |
+| `startBugsnagWithApiKey`                                           | `startWithApiKey`                                                 |
+| `startBugsnagWithConfiguration`                                    | `startWithConfiguration`                                          |
+| `stopSession`                                                      | `pauseSession`                                                    |
 
-```diff
-- config.autoNotify
-+ config.autoDetectErrors
+##### Swift
 
-- config.autoCaptureSessions
-+ config.autoTrackSessions
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `addAttribute(attributeName:withValue:toTabName`                   | `addMetadata(metadata:key:section)`                               |
+| `clearTab(withName:)`                                              | `clearMetadata(section:)`                                         |
+| `stopSession`                                                      | `pauseSession`                                                    |
 
-- config.beforeSendBlocks
-- config.add(beforeSend:)
-+ config.onSendBlocks
-+ config.addOnSendError(block:)
+#### Deprecations
 
-- config.beforeSessionBlocks
-- config.add(beforeSession:)
-+ config.onSessionBlocks
-+ config.addOnSession(block:)
+The following properties/methods have been removed from the `Bugsnag` client:
 
-- config.automaticallyCollectBreadcrumbs
-+ config.enabledBreadcrumbTypes
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `BugsnagSeverityError` /<br />`BugsnagSeverityWarning` /<br />`BugsnagSeverityWarning` | Deprecated - no longer public API             |
+| `clearBreadcrumbs`                                                 | Deprecated in favor of `OnBreadcrumb` callback blocks             |
+| `configuration`                                                    | Deprecated - no longer public API                                 |
+| `notify:withData:` / `notify(exception:withData)`                  | `notify:block:` / `notify(exception:block:)`                      |
+| `notify:withData:atSeverity:` / `notify(exception:withData:atSeverity:)` | `notify:block:` / `notify(exception:block:)`                |
+| `payloadDateFormatter`                                             | Deprecated - no longer public API                                 |
+| `setBreadcrumbCapacity`                                            | Now set in `BugsnagConfiguration`: `maxBreadcrumbs`/`setMaxBreadcrumbs`  |
 
-- config.reportOOMs
-+ config.enabledErrorTypes
-
-- config.currentUser
-+ config.user
-
-- config.notifierType
-+ config.appType
-
-- config.notifyReleaseStages
-+ config.enabledReleaseStages
-
-- config.setEndpoints(notify: sessions)
-+ config.setEndpoints(BugsnagEndpointConfiguration(notify: sessions))
-```
-
-#### Removals
-
-```diff
-- BugsnagBeforeNotifyHook
-- config.metadata
-- config.config
-- config.breadcrumbs
-- config.reportBackgroundOOMs
-- config.notifyURL
-- config.sessionURL
-- config.shouldAutoCaptureSessions
-- config.autoNotify
-- config.shouldSendReports
-- config.errorApiHeaders
-- config.sessionApiHeaders
-- config.codeBundleId
-```
-
-### `Bugsnag` class
-
-#### Removals
-
-* `Bugsnag.setBreadcrumbCapacity()` is now `config.setMaxBreadcrumbs()`
-
-```diff
-- Bugsnag.setBreadcrumbCapacity(40)
-  let config = try BugsnagConfiguration("YOUR API KEY HERE")
-+ config.setMaxBreadcrumbs(40)
-
-- Bugsnag.payloadDateFormatter()
-- Bugsnag.clearBreadcrumbs()
-
-- BugsnagSeverityError
-- BugsnagSeverityWarning
-- BugsnagSeverityInfo
-```
+### Configuration
 
 #### Additions
 
-Retrieve previously set metadata using `getMetadata`:
+The following options have been added to the `BugsnagConfiguration` class: 
 
-```swift
-Bugsnag.getMetadata("section")
-Bugsnag.getMetadata("section" key:"key")
-```
-```objc
-[Bugsnag getMetadata:@"section"];
-[Bugsnag getMetadata:@"section" key:@"key"];
-```
+| Property/Method                                                    | Usage                                                             |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `addOnBreadcrumb` / `removeOnBreadcrumb`<br />`addOnBreadcrumbBlock` / `removeOnBreadcrumbBlock` | Add/remove callbacks to modify or discard breadcrumbs before they are recorded. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-breadcrumbs/#discarding-and-amending-breadcrumbs) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-breadcrumbs/#discarding-and-amending-breadcrumbs) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-breadcrumbs/#discarding-and-amending-breadcrumbs)).
+| `maxBreadcrumbs`                                                   | Sets the maximum number of breadcrumbs which will be stored. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/configuration-options/#maxbreadcrumbs) \| [macOS](https://docs.bugsnag.com/platforms/macos/configuration-options/#maxbreadcrumbs) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/configuration-options/#maxbreadcrumbs)).
+| `persistUser`                                                      | Set whether or not Bugsnag should persist user information between application sessions. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/configuration-options/#persistuser) \| [macOS](https://docs.bugsnag.com/platforms/macos/configuration-options/#persistuser) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/configuration-options/#persistuser)).
+| `redactedKeys`                                                     | Sets which values should be removed from any `Metadata` objects before sending them to Bugsnag. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/configuration-options/#redactedkeys) \| [macOS](https://docs.bugsnag.com/platforms/macos/configuration-options/#redactedkeys) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/configuration-options/#redactedkeys)).
+| `sendThreads`                                                      | Controls whether we should capture and serialize the state of all threads at the time of an exception. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/configuration-options/#sendthreads) \| [macOS](https://docs.bugsnag.com/platforms/macos/configuration-options/#sendthreads) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/configuration-options/#sendthreads)).
 
-`startWithApiKey` and `startWithConfiguration` now return a `BugsnagClient`.
+#### Changes
 
-#### Renames
+The following changes have been made to the `BugsnagConfiguration` class:
 
-```diff
-ObjC:
-+ [Bugsnag start]
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `autoCaptureSessions`                                              | `autoTrackSessions`                                               |
+| `automaticallyCollectBreadcrumbs`                                  | `enabledBreadcrumbTypes`                                          |
+| `autoNotify`                                                       | `autoDetectErrors`                                                |
+| `beforeSendBlocks`                                                 | `addOnSendError` / `removeOnSendError`<br /> `addOnSendErrorBlock` / `removeOnSendErrorBlock` |
+| `beforeSessionBlocks`                                              | `addOnSession` / `removeOnSession`<br /> `addOnSessionBlock` / `removeOnSessionBlock` |
+| `currentUser`                                                      | `user`                                                            |
+| `metadata`                                                         | `addMetadata` / `clearMetadata` / `getMetadata`                   |
+| `notifierType`                                                     | `appType`                                                         |
+| `notifyReleaseStages`                                              | `enabledReleaseStages`                                            |
+| `notifyURL`                                                        | `setEndpoints(BugsnagEndpointConfiguration)`                      |
+| `reportOOMs`                                                       | `enabledErrorTypes`                                               |
+| `sessionURL`                                                       | `setEndpoints(BugsnagEndpointConfiguration)`                      |
+| `setEndpointsForNotify:sessions` / `setEndpoints(notify: sessions)`| `setEndpoints(BugsnagEndpointConfiguration)`                      |
+| `shouldAutoCaptureSessions`                                        | `autoTrackSessions`                                               |
 
-- [Bugsnag startBugsnagWithApiKey]
-+ [Bugsnag startWithApiKey]
+#### Deprecations
 
-- [Bugsnag startBugsnagWithConfiguration]
-+ [Bugsnag startWithConfiguration]
+The following properties/methods have been removed from the `BugsnagConfiguration` class:
 
-- [Bugsnag configuration]
-+ [Bugsnag setUser:withEmail:andName:]
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `addBeforeNotifyHook`                                              | Deprecated in favor of callback block argument to `Bugsnag.notify`|
+| `breadcrumbs`                                                      | Deprecated in favor of `OnBreadcrumb` callback blocks             |
+| `config`                                                           | Deprecated - no longer public API                                 |
+| `codeBundleId`                                                     | Deprecated - no longer public API                                 |
+| `errorApiHeaders`                                                  | Deprecated - no longer public API                                 |
+| `reportBackgroundOOMs`                                             | Deprecated feature                                                |
+| `sessionApiHeaders`                                                | Deprecated - no longer public API                                 |
+| `shouldSendReports`                                                | Deprecated - no longer public API                                 |
 
-- [Bugsnag addAttribute:WithValuetoTabWithName:]
-+ [Bugsnag addMetadataToSection:key:value:]
+### Metadata
 
-- [Bugsnag clearTabWithName:]
-+ [Bugsnag clearMetadataInSection:]
+Metadata should be managed through the `Bugsnag` client for future events or in a `BugsnagEvent` in a callback, therefore direct access to the `BugsnagMetadata` is no longer part of the public API.
 
-- [Bugsnag stopSession]
-+ [Bugsnag pauseSession]
+(See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-error-reports/#global-metadata) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-error-reports/#global-metadata) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-error-reports/#global-metadata)).
 
-- [Bugsnag notify:withData:]
-+ [Bugsnag notify:block:]
+### Breadcrumbs
 
-- [Bugsnag notify:withData:severity:]
-+ [Bugsnag notify:block:]
+#### Additions
 
-Swift:
-+ Bugsnag.start
+See `addOnBreadcrumb` for adding callbacks to access/amended data in the `BugsnagBreadcrumb` object that is about to be recorded.
 
-- Bugsnag.startBugsnagWith(:apiKey)
-+ Bugsnag.startWith(:apiKey)
+(See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-breadcrumbs/#discarding-and-amending-breadcrumbs) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-breadcrumbs/#discarding-and-amending-breadcrumbs) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-breadcrumbs/#discarding-and-amending-breadcrumbs)).
 
-- Bugsnag.startBugsnagWith(:configuration)
-+ Bugsnag.startWith(:configuration)
+#### Changes
 
-- Bugsnag.configuration()
-+ Bugsnag.setUser(_:email:name:)
+The following changes have been made to the `BugsnagBreadcrumb` class:
 
-- Bugsnag.addAttribute(attributeName:withValue:toTabWithName:)
-+ Bugsnag.addMetadata(_:key:value:)
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `name`                                                             | `message`                                               |
 
-- Bugsnag.clearTab(name:)
-+ Bugsnag.clearMetadata(_ section)
+#### Deprecations
 
-- Bugsnag.stopSession()
-+ Bugsnag.pauseSession()
+The following properties/methods have been removed:
 
-- Bugsnag.notify(exception:metadata:)
-+ Bugsnag.notify(exception:block:)
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `BugsnagBreadcrumb` constructors                                   | Deprecated - no longer public API                                 |
+| `BugsnagBreadcrumbs`                                               | Deprecated - no longer public API                                 |
 
-- Bugsnag.notify(exception:metadata:severity:)
-+ Bugsnag.notify(exception:block:)
-```
 
-### `BugsnagMetadata` class
+### Events (`BugsnagCrashReport`)
 
-#### Renames
-
-```diff
-ObjC: 
-
-- [BugsnagMetadata clearTabWithName:]
-+ [BugsnagMetadata clearMetadataInSection:]
-
-- [BugsnagMetadata getTab:]
-+ [BugsnagMetadata getMetadata:]
-
-+ [BugsnagMetadata addMetadataToSection:values:]
-
-Swift:
-
-- BugsnagMetadata.clearTab(name:)
-+ BugsnagMetadata.clearMetadata(section:)
-
-- BugsnagMetadata.getTab(name:)
-+ BugsnagMetadata.getMetadata(_ section)
-```
-
-Note that `BugsnagMetadata.getTab()` previously would create a metadata section if it
-did not exist; the new behaviour in `getMetadata` is to return `nil`.
-
-#### Removals
-
-```diff
-- toDictionary
-- delegate
-```
-
-### `BugsnagBreadcrumb` class
-
-The short "name" value has been removed and replaced with an arbitrarily long "message".
-
-```diff
-- BugsnagBreadcrumb.name
-+ BugsnagBreadcrumb.message
-```
-
-`BugsnagBreadcrumbs` is no longer publicly accessible, along with `BugsnagBreadcrumb` constructors.
-
-### `BugsnagCrashReport` class
-
-This is now BugsnagEvent. Each event is now delivered in a separate request to avoid exceeding Bugsnag's request payload size limit in extreme scenarios.
+`BugsnagCrashReport` is now called `BugsnagEvent` and contains all the data representing the error that's been captured for access and/or mutation in callbacks.
 
 #### Additions
 
-```diff
-+ event.unhandled
-+ event.originalError
-+ event.user
-+ event.setUser
-```
+The following options have been added to the `BugsnagEvent` class: 
 
-`event.device` is now a structured class with properties for each value, rather than an `NSDictionary`.
-`event.app` is now a structured class with properties for each value, rather than an `NSDictionary`.
-`event.errors` is now an array containing a structured class with properties for each `BugsnagError` value.
-`event.threads` is now an array containing a structured class with properties for each `BugsnagThread` value.
+| Property/Method                                                    | Usage                                                             |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `unhandled`                                                        | Whether the error was detected automatically by Bugsnag or reported manually via notify/notifyError. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-error-reports/#unhandled) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-error-reports/#unhandled) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-error-reports/#unhandled)).
+| `originalError`                                                    | The original object that caused the error in your application. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-error-reports/#originalerror) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-error-reports/#originalerror) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-error-reports/#originalerror)).
+| `user` / `setUser:withEmail:andName` / `setUser(_:email:name)`     | The user of the app when the event occurred. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-error-reports/#setuser) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-error-reports/#setuser) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-error-reports/#setuser)).
 
-#### Renames
+#### Changes
 
-To add metadata to an individual report in a callback, use `addMetadata` instead
-of the removed `addAttribute`:
+The `device`, `app`, `errors` and `threads` fields on the `BugsnagEvent` class are now structured classes, rather than `NSDictionary` types. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-error-reports/#the-bugsnagevent-class) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-error-reports/#the-bugsnagevent-class) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-error-reports/#the-bugsnagevent-class)).
 
-```diff
-- BugsnagCrashReport.addAttribute(_:withValue:toTabWithName:)
-+ BugsnagEvent.addMetadata(sectionName:key:value:)
-```
+Each event is now also delivered in a separate request to avoid exceeding Bugsnag's request payload size limit in extreme scenarios.
 
-#### Removals
+In addition:
 
-```diff
-- BSGParseSeverity
-- BSGFormatSeverity
-- [event serializableValueWithTopLevelData:]
-- [event shouldBeSent:]
-- [event toJson:]
-- [event enhancedErrorMessageForThread:]
-- event.enabledReleaseStages
-- event.handledState
-- event.overrides
-- event.depth
-- event.error
-- event.isIncomplete
-- [event attachCustomStacktrace:type:]
+##### Objective-C
 
-### `BugsnagSession` class
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `addAttribute:withValue:toTabWithName:`                            | `addMetadataToSection:withKey:toSection:`                         |
 
-#### Additions
+##### Swift
 
-```diff
-+ session.id
-+ session.setUser(id:name:email:)
-+ session.user
-+ session.app
-+ session.device
-```
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `addAttribute(attributeName:withValue:toTabName`                   | `addMetadata(metadata:key:section)`                               |
 
-#### Removals
+#### Deprecations
 
-```diff
-- toJson
-- toDictionary
-- stop
-- resume
-- autoCaptured
-- handledCount
-- unhandledCount
-- stopped
-- user
-- sessionId
-```
+The following properties/methods have been removed from the `BugsnagEvent` (previously `BugsnagCrashReport`) class:
 
-### `BugsnagUser` class
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `attachCustomStacktrace:type:`                                     | Deprecated - no longer public API                                 |
+| `BSGParseSeverity`                                                 | Deprecated - no longer public API                                 |
+| `BSGFormatSeverity`                                                | Deprecated - no longer public API                                 |
+| `depth`                                                            | Deprecated - no longer public API                                 |
+| `enhancedErrorMessageForThread`                                    | Deprecated - no longer public API                                 |
+| `error`                                                            | Deprecated - no longer public API                                 |
+| `handledState`                                                     | Deprecated in favor of `handled` property                         |
+| `enabledReleaseStages`                                             | Deprecated - no longer public API                                 |
+| `isIncomplete`                                                     | Deprecated feature                                                |
+| `overrides`                                                        | Deprecated - no longer public API                                 |
+| `serializableValueWithTopLevelData`                                | Deprecated - no longer public API                                 |
+| `shouldBeSent`                                                     | Deprecated - no longer public API                                 |
+| `toJson`                                                           | Deprecated - no longer public API                                 |
 
-#### Renames
+### Sessions
 
-```diff
-- userId
-+ id
+#### Additions
 
-- emailAddress
-+ email
-```
+The following options have been added to the `BugsnagSession` class: 
+
+| Property/Method                                                    | Usage                                                             |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `app`                                                              | A subset of the `app` data contained in error events. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/capturing-sessions/#the-bugsnagsession-class) \| [macOS](https://docs.bugsnag.com/platforms/macos/capturing-sessions/#the-bugsnagsession-class) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/capturing-sessions/#the-bugsnagsession-class)).
+| `device`                                                           | A subset of the `device` data contained in error events. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/capturing-sessions/#the-bugsnagsession-class) \| [macOS](https://docs.bugsnag.com/platforms/macos/capturing-sessions/#the-bugsnagsession-class) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/capturing-sessions/#the-bugsnagsession-class)).
+| `setUser:withEmail:andName` / `setUser(_:email:name)`     | The user of the app. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/capturing-sessions/#the-bugsnagsession-class) \| [macOS](https://docs.bugsnag.com/platforms/macos/capturing-sessions/#the-bugsnagsession-class) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/capturing-sessions/#the-bugsnagsession-class)).
+
+#### Changes
+
+The following changes have been made to the `BugsnagSession` class:
+
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `sessionId`                                                        | `id`                                                              |
+
+#### Deprecations
+
+The following properties/methods have been removed from the `BugsnagSession` class:
+
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `toJson`                                                           | Deprecated - no longer public API                                 |
+| `toDictionary`                                                     | Deprecated - no longer public API                                 |
+| `stop`                                                             | Deprecated in favour of `pauseSession` on the `Bugsnag` client    |
+| `resume`                                                           | Deprecated in favour of `resumeSession` on the `Bugsnag` client   |
+| `autoCaptured`                                                     | Deprecated - no longer public API                                 |
+| `handledCount`                                                     | Deprecated - no longer public API                                 |
+| `unhandledCount`                                                   | Deprecated - no longer public API                                 |
+| `stopped`                                                          | Deprecated - no longer public API                                 |
+
+### User Information
+
+#### Changes
+
+The following changes have been made to the `BugsnagUser` class:
+
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `userId`                                                           | `id`                                                              |
+| `emailAddress`                                                     | `email`                                                           |
