@@ -9,10 +9,13 @@
 #import <Foundation/Foundation.h>
 
 #import "BugsnagBreadcrumb.h"
+#import "BugsnagConfiguration.h"
 
 typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 
 @interface BugsnagBreadcrumbs : NSObject
+
+- (instancetype _Nonnull)initWithConfiguration:(BugsnagConfiguration *_Nonnull)config;
 
 /**
  * The maximum number of breadcrumbs. Resizable.

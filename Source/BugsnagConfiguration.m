@@ -220,7 +220,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _plugins = [NSMutableSet new];
     _enabledReleaseStages = nil;
     _redactedKeys = [NSSet setWithArray:@[@"password"]];
-    _breadcrumbs = [BugsnagBreadcrumbs new];
+    _breadcrumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self];
     _autoTrackSessions = YES;
     _sendThreads = BSGThreadSendPolicyAlways;
     // Default to recording all error types
