@@ -20,15 +20,14 @@ const char *disabled_cxx_reporting_kaboom_exception::what() const throw() {
     errorTypes.cppExceptions = false;
     errorTypes.ooms = false;
     self.config.enabledErrorTypes = errorTypes;
-    self.config.autoTrackSessions = NO;
+    [self.config addOnSendErrorBlock:^BOOL(BugsnagEvent * _Nonnull event) {
+        // std::exception terminates with abort() by default, therefore discard SIGABRT
+        return ![@"SIGABRT" isEqualToString:event.errors[0].errorClass];
+    }];
     [super startBugsnag];
 }
 
 - (void)run {
-    // Send a handled exception to confirm the scenario is running.
-    [Bugsnag notify:[NSException exceptionWithName:NSGenericException reason:@"EnabledErrorTypesCxxScenario - Handled"
-                                          userInfo:@{NSLocalizedDescriptionKey: @""}]];
-    
     [self crash];
 }
 
