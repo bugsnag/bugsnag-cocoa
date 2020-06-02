@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00AD1C7124869B0E00A27979"
-               BuildableName = "Bugsnag_iOS.framework"
+               BuildableName = "Bugsnag.framework"
                BlueprintName = "Bugsnag-iOS"
                ReferencedContainer = "container:Bugsnag.xcodeproj">
             </BuildableReference>
@@ -61,7 +61,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "00AD1C7124869B0E00A27979"
-            BuildableName = "Bugsnag_iOS.framework"
+            BuildableName = "Bugsnag.framework"
             BlueprintName = "Bugsnag-iOS"
             ReferencedContainer = "container:Bugsnag.xcodeproj">
          </BuildableReference>

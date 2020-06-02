@@ -23,7 +23,7 @@
 @end
 
 @interface BugsnagBreadcrumbs ()
-
+@property BugsnagConfiguration *config;
 @property(nonatomic, readwrite, strong) NSMutableArray *breadcrumbs;
 @property(nonatomic, readonly, strong) dispatch_queue_t readWriteQueue;
 @end
@@ -32,9 +32,10 @@
 
 NSUInteger BreadcrumbsDefaultCapacity = 25;
 
-- (instancetype)init {
+- (instancetype)initWithConfiguration:(BugsnagConfiguration *)config {
     static NSString *const BSGBreadcrumbCacheFileName = @"bugsnag_breadcrumbs.json";
     if (self = [super init]) {
+        _config = config;
         _breadcrumbs = [NSMutableArray new];
         _capacity = BreadcrumbsDefaultCapacity;
         _enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeAll;
@@ -88,8 +89,7 @@ NSUInteger BreadcrumbsDefaultCapacity = 25;
 }
 
 - (BOOL)shouldSendBreadcrumb:(BugsnagBreadcrumb *)crumb {
-    BugsnagConfiguration *configuration = [Bugsnag configuration];
-    for (BugsnagOnBreadcrumbBlock block in configuration.onBreadcrumbBlocks) {
+    for (BugsnagOnBreadcrumbBlock block in self.config.onBreadcrumbBlocks) {
         @try {
             if (!block(crumb)) {
                 return NO;
