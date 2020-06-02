@@ -60,13 +60,6 @@ typedef NS_ENUM(NSInteger, BSGThreadSendPolicy) {
 };
 
 /**
- * BugsnagConfiguration error constants
- */
-typedef NS_ENUM(NSInteger, BSGConfigurationErrorCode) {
-    BSGConfigurationErrorInvalidApiKey = 0
-};
-
-/**
  *  A configuration block for modifying an error report
  *
  *  @param event the error report to be modified
