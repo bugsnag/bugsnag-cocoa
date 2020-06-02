@@ -730,6 +730,13 @@
 		00AD1F2F2486A17900A27979 /* BugsnagSessionTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AD1F012486A17900A27979 /* BugsnagSessionTracker.m */; };
 		00AD1F302486A17900A27979 /* BugsnagSessionTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AD1F012486A17900A27979 /* BugsnagSessionTracker.m */; };
 		00AD1F312486A17900A27979 /* BugsnagSessionTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AD1F012486A17900A27979 /* BugsnagSessionTracker.m */; };
+		00E636B5248702A1006CBF1A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00E636B2248702A1006CBF1A /* README.md */; };
+		00E636B6248702A1006CBF1A /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 00E636B3248702A1006CBF1A /* LICENSE.txt */; };
+		00E636B7248702A1006CBF1A /* UPGRADING.md in Resources */ = {isa = PBXBuildFile; fileRef = 00E636B4248702A1006CBF1A /* UPGRADING.md */; };
+		00E636BC248702DA006CBF1A /* ORGANIZATION.md in Resources */ = {isa = PBXBuildFile; fileRef = 00E636B8248702DA006CBF1A /* ORGANIZATION.md */; };
+		00E636BD248702DA006CBF1A /* CONTRIBUTING.md in Resources */ = {isa = PBXBuildFile; fileRef = 00E636B9248702DA006CBF1A /* CONTRIBUTING.md */; };
+		00E636BE248702DA006CBF1A /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 00E636BA248702DA006CBF1A /* CHANGELOG.md */; };
+		00E636BF248702DA006CBF1A /* TESTING.md in Resources */ = {isa = PBXBuildFile; fileRef = 00E636BB248702DA006CBF1A /* TESTING.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1015,6 +1022,15 @@
 		00AD1F002486A17900A27979 /* BugsnagCrashSentry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagCrashSentry.h; sourceTree = "<group>"; };
 		00AD1F012486A17900A27979 /* BugsnagSessionTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagSessionTracker.m; sourceTree = "<group>"; };
 		00AD209E2486A7CD00A27979 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = Framework/module.modulemap; sourceTree = "<group>"; };
+		00E636B2248702A1006CBF1A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		00E636B3248702A1006CBF1A /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+		00E636B4248702A1006CBF1A /* UPGRADING.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = UPGRADING.md; sourceTree = "<group>"; };
+		00E636B8248702DA006CBF1A /* ORGANIZATION.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = ORGANIZATION.md; sourceTree = "<group>"; };
+		00E636B9248702DA006CBF1A /* CONTRIBUTING.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
+		00E636BA248702DA006CBF1A /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
+		00E636BB248702DA006CBF1A /* TESTING.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = TESTING.md; sourceTree = "<group>"; };
+		00E636C02487031D006CBF1A /* Bugsnag.podspec.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Bugsnag.podspec.json; sourceTree = SOURCE_ROOT; };
+		00E636C12487031D006CBF1A /* docker-compose.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = "docker-compose.yml"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1259,6 +1275,8 @@
 		00AD1C6824869B0E00A27979 = {
 			isa = PBXGroup;
 			children = (
+				00E636B2248702A1006CBF1A /* README.md */,
+				00E636B3248702A1006CBF1A /* LICENSE.txt */,
 				00AD1C7424869B0E00A27979 /* Bugsnag */,
 				00AD1CFA24869F2500A27979 /* Extras */,
 				00AD1C7F24869B0E00A27979 /* Tests */,
@@ -1504,8 +1522,15 @@
 		00AD1CFA24869F2500A27979 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
+				00E636BA248702DA006CBF1A /* CHANGELOG.md */,
+				00E636B9248702DA006CBF1A /* CONTRIBUTING.md */,
+				00E636B8248702DA006CBF1A /* ORGANIZATION.md */,
+				00E636BB248702DA006CBF1A /* TESTING.md */,
+				00E636B4248702A1006CBF1A /* UPGRADING.md */,
 				008967AE2486D6E100DC48C2 /* Makefile */,
 				00AD209E2486A7CD00A27979 /* module.modulemap */,
+				00E636C12487031D006CBF1A /* docker-compose.yml */,
+				00E636C02487031D006CBF1A /* Bugsnag.podspec.json */,
 				00AD1C7624869B0E00A27979 /* Info.plist */,
 			);
 			path = Extras;
@@ -2004,8 +2029,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00E636B6248702A1006CBF1A /* LICENSE.txt in Resources */,
+				00E636B5248702A1006CBF1A /* README.md in Resources */,
 				00896A382486DAD100DC48C2 /* README.md in Resources */,
+				00E636BE248702DA006CBF1A /* CHANGELOG.md in Resources */,
+				00E636BF248702DA006CBF1A /* TESTING.md in Resources */,
+				00E636BC248702DA006CBF1A /* ORGANIZATION.md in Resources */,
+				00E636BD248702DA006CBF1A /* CONTRIBUTING.md in Resources */,
 				0089694E2486DAD000DC48C2 /* LICENSE in Resources */,
+				00E636B7248702A1006CBF1A /* UPGRADING.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
