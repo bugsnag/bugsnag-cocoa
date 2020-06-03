@@ -734,7 +734,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 - (void)batteryChanged:(NSNotification *)notif {
     NSNumber *batteryLevel =
             @([UIDevice currentDevice].batteryLevel);
-    NSNumber *charging =
+    BOOL *charging =
             @([UIDevice currentDevice].batteryState ==
                     UIDeviceBatteryStateCharging);
 
