@@ -27,9 +27,9 @@
 #import "BSG_KSCrashCallCompletion.h"
 
 void bsg_kscrash_i_callCompletion(
-    BSG_KSCrashReportFilterCompletion onCompletion, NSUInteger reportCount,
+    BSGOnErrorSentBlock onErrorSentBlock, NSString *filename,
     BOOL completed, NSError *error) {
-    if (onCompletion) {
-        onCompletion(reportCount, completed, error);
+    if (onErrorSentBlock) {
+        onErrorSentBlock(filename, completed, error);
     }
 }

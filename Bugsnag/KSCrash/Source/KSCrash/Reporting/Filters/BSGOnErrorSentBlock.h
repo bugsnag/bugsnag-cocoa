@@ -1,9 +1,9 @@
 //
-//  BugsnagSink.h
+//  BSGOnErrorSentBlock.h
 //
-//  Created by Conrad Irwin on 2014-10-01.
+//  Created by Karl Stenerud on 2016-10-06.
 //
-//  Copyright (c) 2014 Bugsnag, Inc. All rights reserved.
+//  Copyright (c) Karl Stenerud. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,14 +25,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BSG_KSCrash.h"
-#import "BSG_KSCrashReportFilter.h"
-#import "BugsnagErrorReportApiClient.h"
 
-@interface BugsnagSink : NSObject <BSG_KSCrashReportFilter>
-
-@property(nonatomic, strong) BugsnagErrorReportApiClient *apiClient;
-
-- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient;
-
-@end
+/**
+ * Callback invoked when delivery of an error report has been concluded.
+ *
+ * @param filename The filename of the error report sent.
+ * @param completed True if filtering completed.
+ *                  Can be false due to a non-erroneous condition (such as a
+ *                  user cancelling the operation).
+ * @param error Non-nil if an error occurred.
+ */
+typedef void (^BSGOnErrorSentBlock)(NSString *filename, BOOL completed, NSError *error);

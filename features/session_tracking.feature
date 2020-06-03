@@ -123,25 +123,23 @@ Scenario: Encountering handled and unhandled events during a session
     And I wait for 5 seconds
     And I relaunch the app
     And I configure Bugsnag for "AutoSessionMixedEventsScenario"
-    And I wait to receive 3 requests
+    And I wait to receive 5 requests
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "sessions" is an array with 1 elements
-    And the payload field "sessions.0.id" is a UUID
-    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
-    And the payload field "sessions.0.id" is stored as the value "session_id"
+    And the session "id" is not null
+    And the session "startedAt" is not null
+    And the payload field "sessions" is an array with 1 elements
     And I discard the oldest request
-
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest request
-
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 3 elements
-    And each event in the payload matches one of:
+    And the received requests match:
         | exceptions.0.errorClass | session.events.handled | session.events.unhandled |
         | FirstErr                | 1                      | 0                        |
         | SecondErr               | 2                      | 0                        |
         | Kaboom                  | 2                      | 1                        |
-    And the payload field "events.0.session.id" equals the stored value "session_id"
-    And the payload field "events.1.session.id" equals the stored value "session_id"
-    And the payload field "events.2.session.id" equals the stored value "session_id"
-    
+
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier

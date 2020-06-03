@@ -24,15 +24,15 @@
 // THE SOFTWARE.
 //
 
-#import "BSG_KSCrashReportFilterCompletion.h"
+#import "BSGOnErrorSentBlock.h"
 
 /** Conditionally call a completion method if it's not nil.
  *
- * @param onCompletion The completion block. If nil, this function does nothing.
- * @param sentReportCount The number of reports successfully handled.
+ * @param onErrorSentBlock A block invoked when an error is delivered. If nil, this function does nothing.
+ * @param filename The filename of the error report sent.
  * @param completed The parameter to send as "completed".
  * @param error The parameter to send as "error".
  */
 void bsg_kscrash_i_callCompletion(
-    BSG_KSCrashReportFilterCompletion onCompletion, NSUInteger sentReportCount,
+    BSGOnErrorSentBlock onErrorSentBlock, NSString *filename,
     BOOL completed, NSError *error);

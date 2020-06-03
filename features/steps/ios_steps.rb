@@ -80,25 +80,54 @@ Then("The app is not running") do
   end
 end
 
-Then("each event in the payload matches one of:") do |table|
-  # Checks string equality of event fields against values
-  events = read_key_path(Server.current_request[:body], "events")
-  table.hashes.each do |values|
-    assert_not_nil(events.detect do |event|
-      values.all? do |k, v|
-        if k.start_with? 'has '
-          event_value = read_key_path(event, k.split(' ').last)
-          if v == 'yes'
-            !event_value.nil?
-          else
-            event_value.nil?
-          end
-        else
-          v == read_key_path(event, k) || (v.to_i == read_key_path(event, k).to_i)
-        end
+Then("the received requests match:") do |table|
+  # Checks that each request matches one of the event fields
+  requests = Server.stored_requests
+  request_count = requests.count()
+  match_count = 0
+
+  # iterate through each row in the table. exactly 1 request should match each row.
+  table.hashes.each do |row|
+    requests.each do |request|
+      event = read_key_path(request[:body], "events.0")
+
+      if request_matches_row(event, row)
+        puts("Found a match")
+        match_count += 1
       end
-    end, "No event matches the following values: #{values}")
+    end
   end
+  assert_equal(request_count, match_count, "Unexpected number of requests matched the received payloads")
+end
+
+def request_matches_row(body, row)
+  request_matches = true
+
+  row.all? do |key, expected_value|
+    obs_val = read_key_path(body, key)
+    equal_values = expected_value.to_s.eql? obs_val.to_s
+    null_value = "null".eql? expected_value || obs_val.nil?
+    match = equal_values || null_value
+    request_matches = request_matches && match
+  end
+  return request_matches
+end
+
+Then("the payload field {string} is equal for request {int} and request {int}") do |key, index_a, index_b|
+  assert_true(request_fields_are_equal(key, index_a, index_b))
+end
+
+Then("the payload field {string} is not equal for request {int} and request {int}") do |key, index_a, index_b|
+  assert_false(request_fields_are_equal(key, index_a, index_b))
+end
+
+def request_fields_are_equal(key, index_a, index_b)
+  requests = Server.stored_requests.to_a
+  request_a = requests[index_a][:body]
+  request_b = requests[index_b][:body]
+  val_a = read_key_path(request_a, key)
+  val_b = read_key_path(request_b, key)
+  return val_a.eql? val_b
 end
 
 Then("the event {string} is within {int} seconds of the current timestamp") do |field, threshold_secs|

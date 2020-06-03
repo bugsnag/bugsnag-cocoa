@@ -13,7 +13,6 @@ Scenario: All Crash reporting is disabled but manual notification works
     # enabledErrorTypes = None, Generate a manual notification, crash
     When I run "DisableAllExceptManualExceptionsSendManualAndCrashScenario" and relaunch the app
     And I configure Bugsnag for "DisableAllExceptManualExceptionsSendManualAndCrashScenario"
-
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
 

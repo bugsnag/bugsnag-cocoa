@@ -66,24 +66,51 @@ Scenario: Reporting a handled exception's stacktrace
 
 Scenario: Reporting handled errors concurrently
     When I run "ManyConcurrentNotifyScenario"
-    And I wait to receive a request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 8 elements
-    And each event in the payload matches one of:
+    And I wait to receive 8 requests
+    And the received requests match:
         | exceptions.0.errorClass | exceptions.0.message |
         | FooError                | Err 0   |
         | FooError                | Err 1   |
         | FooError                | Err 2   |
         | FooError                | Err 3   |
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
 
 Scenario: Reporting handled errors concurrently in an environment without background thread reporting
     When I run "ManyConcurrentNotifyNoBackgroundThreads"
-    And I wait to receive a request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 8 elements
-    And each event in the payload matches one of:
+    And I wait to receive 8 requests
+    And the received requests match:
         | exceptions.0.errorClass | exceptions.0.message |
         | BarError                | Err 0   |
         | BarError                | Err 1   |
         | BarError                | Err 2   |
         | BarError                | Err 3   |
+    
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier

@@ -460,6 +460,9 @@ names are deprecated but still supported until the next major release.
 This release disables reporting out-of-memory events in debug mode, to reduce
 false positives.
 
+* Deliver each event in a separate request to avoid exceeding payload size limit
+  [#424](https://github.com/bugsnag/bugsnag-cocoa/pull/424)
+
 ### Bug fixes
 
 * Fix incrementing unhandled counts when using internal notify() API. This
