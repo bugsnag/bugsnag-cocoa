@@ -1318,8 +1318,7 @@
 				00AD1EF52486A17600A27979 /* RegisterErrorData.m */,
 				00AD1C7524869B0E00A27979 /* Bugsnag_old_fw.h */,
 			);
-			name = Bugsnag;
-			path = Bugsnag/Bugsnag;
+			path = Bugsnag;
 			sourceTree = "<group>";
 		};
 		00AD1C7F24869B0E00A27979 /* Tests */ = {
