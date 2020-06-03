@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		004E35352487AFDC007FBAE4 /* BugsnagHandledStateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966B92486D43500DC48C2 /* BugsnagHandledStateTest.m */; };
+		004E35362487AFF2007FBAE4 /* BugsnagHandledStateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966B92486D43500DC48C2 /* BugsnagHandledStateTest.m */; };
+		004E35372487AFF2007FBAE4 /* BugsnagHandledStateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966B92486D43500DC48C2 /* BugsnagHandledStateTest.m */; };
 		008966EB2486D43700DC48C2 /* BugsnagDeviceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966A42486D43400DC48C2 /* BugsnagDeviceTest.m */; };
 		008966EC2486D43700DC48C2 /* BugsnagDeviceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966A42486D43400DC48C2 /* BugsnagDeviceTest.m */; };
 		008966ED2486D43700DC48C2 /* BugsnagDeviceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966A42486D43400DC48C2 /* BugsnagDeviceTest.m */; };
@@ -2199,6 +2202,7 @@
 				008967392486D43700DC48C2 /* BugsnagEventFromKSCrashReportTest.m in Sources */,
 				008967182486D43700DC48C2 /* BugsnagErrorTest.m in Sources */,
 				008967212486D43700DC48C2 /* BugsnagSinkTests.m in Sources */,
+				004E35352487AFDC007FBAE4 /* BugsnagHandledStateTest.m in Sources */,
 				008967932486D43700DC48C2 /* KSSignalInfo_Tests.m in Sources */,
 				008967662486D43700DC48C2 /* BugsnagNotifierTest.m in Sources */,
 				008966F12486D43700DC48C2 /* BugsnagMetadataRedactionTest.m in Sources */,
@@ -2345,6 +2349,7 @@
 				008967972486D43700DC48C2 /* KSCrashState_Tests.m in Sources */,
 				008967762486D43700DC48C2 /* XCTestCase+KSCrash.m in Sources */,
 				008967312486D43700DC48C2 /* BugsnagStateEventTest.m in Sources */,
+				004E35362487AFF2007FBAE4 /* BugsnagHandledStateTest.m in Sources */,
 				0089678B2486D43700DC48C2 /* KSCrashReportStore_Tests.m in Sources */,
 				00896A412486DBDD00DC48C2 /* BSGConfigurationBuilderTests.m in Sources */,
 				008967672486D43700DC48C2 /* BugsnagNotifierTest.m in Sources */,
@@ -2491,6 +2496,7 @@
 				008967982486D43700DC48C2 /* KSCrashState_Tests.m in Sources */,
 				008967772486D43700DC48C2 /* XCTestCase+KSCrash.m in Sources */,
 				008967322486D43700DC48C2 /* BugsnagStateEventTest.m in Sources */,
+				004E35372487AFF2007FBAE4 /* BugsnagHandledStateTest.m in Sources */,
 				0089678C2486D43700DC48C2 /* KSCrashReportStore_Tests.m in Sources */,
 				00896A422486DBDD00DC48C2 /* BSGConfigurationBuilderTests.m in Sources */,
 				008967682486D43700DC48C2 /* BugsnagNotifierTest.m in Sources */,
