@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="ogA-pf-q3e">
-    <device id="retina6_1" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="ogA-pf-q3e">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -40,7 +38,7 @@
                                         <rect key="frame" x="0.0" y="55.5" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="bDh-CK-h1h" id="Z68-om-Prg">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MkL-AZ-Bqt">
@@ -49,7 +47,7 @@
                                                         <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </state>
                                                     <connections>
-                                                        <action selector="generateException:" destination="uYB-Rg-v98" eventType="touchUpInside" id="Eq7-nh-qPa"/>
+                                                        <action selector="crashUncaughtException:" destination="uYB-Rg-v98" eventType="touchUpInside" id="b8k-WO-rxO"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
@@ -64,7 +62,7 @@
                                         <rect key="frame" x="0.0" y="99.5" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8Sn-lK-a7g" id="3dJ-Ye-puY">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wc6-pu-JVA">
@@ -88,7 +86,7 @@
                                         <rect key="frame" x="0.0" y="143.5" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Yhl-gQ-P06" id="zVu-Ug-2Kf">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ylc-KZ-kmq">
@@ -112,7 +110,7 @@
                                         <rect key="frame" x="0.0" y="187.5" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="CSh-nu-bQF" id="O0Y-bH-MiN">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B1f-Jm-0Hk">
@@ -136,7 +134,7 @@
                                         <rect key="frame" x="0.0" y="231.5" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Oxa-rC-wVQ" id="rYc-OF-DON">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6K4-3G-uRI">
@@ -160,14 +158,14 @@
                                         <rect key="frame" x="0.0" y="275.5" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="kTk-Cf-4A3" id="WsA-pq-zKg">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6kT-FU-9Vb">
                                                     <rect key="frame" x="16" y="7" width="280" height="30"/>
                                                     <state key="normal" title="Memory pressure (not simulator friendly)"/>
                                                     <connections>
-                                                        <action selector="generateOOM:" destination="uYB-Rg-v98" eventType="touchUpInside" id="Y1X-XQ-w3V"/>
+                                                        <action selector="crashMemoryPressure:" destination="uYB-Rg-v98" eventType="touchUpInside" id="uzO-LY-FUe"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
@@ -186,7 +184,7 @@
                                         <rect key="frame" x="0.0" y="411" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Ofe-wk-wKd" id="qW2-pi-SzL">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gsL-Pw-GHc">
@@ -210,7 +208,7 @@
                                         <rect key="frame" x="0.0" y="455" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="fZi-2v-vlx" id="DfY-Um-9hb">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lq8-kV-y3N">
@@ -234,7 +232,7 @@
                                         <rect key="frame" x="0.0" y="499" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="t4o-vg-er6" id="bUh-rr-kY1">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T16-Wx-wJ1">
@@ -251,6 +249,278 @@
                                                 <constraint firstItem="T16-Wx-wJ1" firstAttribute="leading" secondItem="bUh-rr-kY1" secondAttribute="leading" constant="16" id="F9k-Ak-XPA"/>
                                                 <constraint firstItem="T16-Wx-wJ1" firstAttribute="centerY" secondItem="bUh-rr-kY1" secondAttribute="centerY" id="hZj-aP-sC4"/>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="T16-Wx-wJ1" secondAttribute="trailing" constant="20" symbolic="YES" id="jW4-xd-O0r"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Metadata, breadcrumbs, and callbacks" footerTitle="Adding diagnostic data and modifying how the event shows on the Bugsnag dashboard." id="K0K-hZ-r53">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="Xml-lW-dEC">
+                                        <rect key="frame" x="0.0" y="634.5" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Xml-lW-dEC" id="WVv-Ay-AQP">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FP3-49-kDn">
+                                                    <rect key="frame" x="16" y="7" width="138" height="30"/>
+                                                    <state key="normal" title="Add client metadata">
+                                                        <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="addClientMetadata:" destination="uYB-Rg-v98" eventType="touchUpInside" id="PHC-6e-0TQ"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="FP3-49-kDn" firstAttribute="centerY" secondItem="WVv-Ay-AQP" secondAttribute="centerY" id="MPl-8R-TMd"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="FP3-49-kDn" secondAttribute="trailing" constant="20" symbolic="YES" id="Md4-4B-pJ3"/>
+                                                <constraint firstItem="FP3-49-kDn" firstAttribute="leading" secondItem="WVv-Ay-AQP" secondAttribute="leading" constant="16" id="fGa-Cc-nTf"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="dPJ-z6-yma">
+                                        <rect key="frame" x="0.0" y="678.5" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="dPJ-z6-yma" id="96p-LU-lNg">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4jB-Ac-ONf">
+                                                    <rect key="frame" x="16" y="7" width="149" height="30"/>
+                                                    <state key="normal" title="Add filtered metadata">
+                                                        <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="addFilteredMetadata:" destination="uYB-Rg-v98" eventType="touchUpInside" id="GZs-6H-sjV"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="4jB-Ac-ONf" secondAttribute="trailing" constant="20" symbolic="YES" id="M1d-U5-1E9"/>
+                                                <constraint firstItem="4jB-Ac-ONf" firstAttribute="centerY" secondItem="96p-LU-lNg" secondAttribute="centerY" id="eyv-Iy-wTS"/>
+                                                <constraint firstItem="4jB-Ac-ONf" firstAttribute="leading" secondItem="96p-LU-lNg" secondAttribute="leading" constant="16" id="g2w-ZT-e71"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="JVr-4s-rQC">
+                                        <rect key="frame" x="0.0" y="722.5" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JVr-4s-rQC" id="50m-iu-ppV">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bDy-36-6kb">
+                                                    <rect key="frame" x="16" y="7" width="157" height="30"/>
+                                                    <state key="normal" title="Add metadata callback">
+                                                        <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="addMetadataCallback:" destination="uYB-Rg-v98" eventType="touchUpInside" id="Dmr-Vs-h1F"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="bDy-36-6kb" firstAttribute="leading" secondItem="50m-iu-ppV" secondAttribute="leading" constant="16" id="DOp-Fj-H4B"/>
+                                                <constraint firstItem="bDy-36-6kb" firstAttribute="centerY" secondItem="50m-iu-ppV" secondAttribute="centerY" id="SIv-SX-12T"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="bDy-36-6kb" secondAttribute="trailing" constant="20" symbolic="YES" id="Skd-ql-jeH"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="Ym9-ue-F4d">
+                                        <rect key="frame" x="0.0" y="766.5" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Ym9-ue-F4d" id="z0j-Et-9re">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fQQ-zy-T8S">
+                                                    <rect key="frame" x="16" y="7" width="105" height="30"/>
+                                                    <state key="normal" title="Clear metadata">
+                                                        <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="clearMetaData:" destination="uYB-Rg-v98" eventType="touchUpInside" id="tZt-ZQ-sBp"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="fQQ-zy-T8S" secondAttribute="trailing" constant="20" symbolic="YES" id="4O6-hS-SRT"/>
+                                                <constraint firstItem="fQQ-zy-T8S" firstAttribute="centerY" secondItem="z0j-Et-9re" secondAttribute="centerY" id="UMk-Ad-KDh"/>
+                                                <constraint firstItem="fQQ-zy-T8S" firstAttribute="leading" secondItem="z0j-Et-9re" secondAttribute="leading" constant="16" id="zlI-ef-7e1"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="X6n-ZN-aIR">
+                                        <rect key="frame" x="0.0" y="810.5" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="X6n-ZN-aIR" id="F08-qY-aWV">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ct1-sv-ZXx">
+                                                    <rect key="frame" x="16" y="7" width="146" height="30"/>
+                                                    <state key="normal" title="Add severity callback">
+                                                        <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="addSeverityCallback:" destination="uYB-Rg-v98" eventType="touchUpInside" id="Bnu-t7-qgV"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Ct1-sv-ZXx" secondAttribute="trailing" constant="20" symbolic="YES" id="1lf-mX-ccb"/>
+                                                <constraint firstItem="Ct1-sv-ZXx" firstAttribute="leading" secondItem="F08-qY-aWV" secondAttribute="leading" constant="16" id="qQf-8W-C44"/>
+                                                <constraint firstItem="Ct1-sv-ZXx" firstAttribute="centerY" secondItem="F08-qY-aWV" secondAttribute="centerY" id="vDc-j5-x8R"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="iLJ-67-m29">
+                                        <rect key="frame" x="0.0" y="854.5" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="iLJ-67-m29" id="3jS-Q9-XXa">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="unC-Ou-LMY">
+                                                    <rect key="frame" x="16" y="7" width="170" height="30"/>
+                                                    <state key="normal" title="Add custom breadcrumb">
+                                                        <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="addCustomBreadcrumb:" destination="uYB-Rg-v98" eventType="touchUpInside" id="T3L-i0-b1Z"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="unC-Ou-LMY" secondAttribute="trailing" constant="20" symbolic="YES" id="Ovb-Qv-dLx"/>
+                                                <constraint firstItem="unC-Ou-LMY" firstAttribute="centerY" secondItem="3jS-Q9-XXa" secondAttribute="centerY" id="T4r-jA-UNx"/>
+                                                <constraint firstItem="unC-Ou-LMY" firstAttribute="leading" secondItem="3jS-Q9-XXa" secondAttribute="leading" constant="16" id="nzH-sv-EmB"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="VU0-88-oQg">
+                                        <rect key="frame" x="0.0" y="898.5" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="VU0-88-oQg" id="fh1-bq-dqm">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dqk-pN-qmq">
+                                                    <rect key="frame" x="16" y="7" width="176" height="30"/>
+                                                    <state key="normal" title="Add breadcrumb callback">
+                                                        <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="addBreadcrumbWithCallback:" destination="uYB-Rg-v98" eventType="touchUpInside" id="OJn-Tm-vbN"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="dqk-pN-qmq" secondAttribute="trailing" constant="20" symbolic="YES" id="1gH-FX-via"/>
+                                                <constraint firstItem="dqk-pN-qmq" firstAttribute="leading" secondItem="fh1-bq-dqm" secondAttribute="leading" constant="16" id="KQr-jN-PKN"/>
+                                                <constraint firstItem="dqk-pN-qmq" firstAttribute="centerY" secondItem="fh1-bq-dqm" secondAttribute="centerY" id="R1M-2X-T36"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="tQI-H9-Pif">
+                                        <rect key="frame" x="0.0" y="942.5" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="tQI-H9-Pif" id="z7r-dO-CFN">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hDD-t2-6cS">
+                                                    <rect key="frame" x="16" y="7" width="57" height="30"/>
+                                                    <state key="normal" title="Set user">
+                                                        <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="setUser:" destination="uYB-Rg-v98" eventType="touchUpInside" id="EOF-nw-tH3"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="hDD-t2-6cS" firstAttribute="centerY" secondItem="z7r-dO-CFN" secondAttribute="centerY" id="9vT-a0-Lyf"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="hDD-t2-6cS" secondAttribute="trailing" constant="20" symbolic="YES" id="WTu-I1-PPB"/>
+                                                <constraint firstItem="hDD-t2-6cS" firstAttribute="leading" secondItem="z7r-dO-CFN" secondAttribute="leading" constant="16" id="xhl-98-juw"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Sessions" footerTitle="Demonstrates the methods of manually determining when sessions are created and expire." id="c1s-hY-H6T">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="14J-Sf-fUZ">
+                                        <rect key="frame" x="0.0" y="1078" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="14J-Sf-fUZ" id="zNt-QR-Det">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="58Z-MC-Lhx">
+                                                    <rect key="frame" x="16" y="7" width="122" height="30"/>
+                                                    <state key="normal" title="Start new session">
+                                                        <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="startNewSession:" destination="uYB-Rg-v98" eventType="touchUpInside" id="5Fe-st-Fhf"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="58Z-MC-Lhx" firstAttribute="leading" secondItem="zNt-QR-Det" secondAttribute="leading" constant="16" id="7y8-bz-f8Y"/>
+                                                <constraint firstItem="58Z-MC-Lhx" firstAttribute="centerY" secondItem="zNt-QR-Det" secondAttribute="centerY" id="cge-Pj-Kdt"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="58Z-MC-Lhx" secondAttribute="trailing" constant="20" symbolic="YES" id="qhA-YW-cHV"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="cfA-li-lxr">
+                                        <rect key="frame" x="0.0" y="1122" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="cfA-li-lxr" id="kLX-Zm-Pyu">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q7Q-Dq-Dlu">
+                                                    <rect key="frame" x="16" y="7" width="151" height="30"/>
+                                                    <state key="normal" title="Pause current session">
+                                                        <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="pauseCurrentSession:" destination="uYB-Rg-v98" eventType="touchUpInside" id="74K-Va-LLJ"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Q7Q-Dq-Dlu" firstAttribute="leading" secondItem="kLX-Zm-Pyu" secondAttribute="leading" constant="16" id="0Dg-jW-a2I"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Q7Q-Dq-Dlu" secondAttribute="trailing" constant="20" symbolic="YES" id="WAg-ZK-ux4"/>
+                                                <constraint firstItem="Q7Q-Dq-Dlu" firstAttribute="centerY" secondItem="kLX-Zm-Pyu" secondAttribute="centerY" id="f3G-oY-Xb2"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="6J4-hS-TCq">
+                                        <rect key="frame" x="0.0" y="1166" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="6J4-hS-TCq" id="KqM-oJ-SbO">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v7G-Wx-s97">
+                                                    <rect key="frame" x="16" y="7" width="165" height="30"/>
+                                                    <state key="normal" title="Resume current session">
+                                                        <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="resumeCurrentSession:" destination="uYB-Rg-v98" eventType="touchUpInside" id="pod-dN-VXY"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="v7G-Wx-s97" firstAttribute="leading" secondItem="KqM-oJ-SbO" secondAttribute="leading" constant="16" id="BNH-Wj-hWO"/>
+                                                <constraint firstItem="v7G-Wx-s97" firstAttribute="centerY" secondItem="KqM-oJ-SbO" secondAttribute="centerY" id="Gxw-rK-Iik"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="v7G-Wx-s97" secondAttribute="trailing" constant="20" symbolic="YES" id="mcP-PL-QbP"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
