@@ -21,6 +21,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:))))
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundNotification), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        apiKeyField.text = UserDefaults.standard.string(forKey: "apiKey")
     }
 
     @IBAction func runTestScenario() {
@@ -50,7 +51,9 @@ class ViewController: UIViewController {
         let config: BugsnagConfiguration
         if (apiKeyField.text!.count > 0) {
             // Manual testing mode - use the real dashboard and the API key provided
-            NSLog("Running in manual mode with API key: %@", apiKeyField.text!)
+            let apiKey = apiKeyField.text!
+            NSLog("Running in manual mode with API key: %@", apiKey)
+            UserDefaults.standard.setValue(apiKey, forKey: "apiKey")
             config = BugsnagConfiguration(apiKeyField.text!)
         }
         else {
