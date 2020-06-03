@@ -13,12 +13,9 @@
 		004E35382487B2BC007FBAE4 /* BugsnagSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966AF2486D43500DC48C2 /* BugsnagSwiftTests.swift */; };
 		004E353A2487B3B3007FBAE4 /* BugsnagSwiftPublicAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966B02486D43500DC48C2 /* BugsnagSwiftPublicAPITests.swift */; };
 		004E353B2487B3B3007FBAE4 /* BugsnagSwiftPublicAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966B02486D43500DC48C2 /* BugsnagSwiftPublicAPITests.swift */; };
-		004E353C2487B3B4007FBAE4 /* BugsnagSwiftPublicAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966B02486D43500DC48C2 /* BugsnagSwiftPublicAPITests.swift */; };
 		004E353D2487B3B8007FBAE4 /* BugsnagSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966AF2486D43500DC48C2 /* BugsnagSwiftTests.swift */; };
-		004E353E2487B3B9007FBAE4 /* BugsnagSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966AF2486D43500DC48C2 /* BugsnagSwiftTests.swift */; };
 		004E353F2487B3BD007FBAE4 /* BugsnagSwiftConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966B12486D43500DC48C2 /* BugsnagSwiftConfigurationTests.swift */; };
 		004E35402487B3BE007FBAE4 /* BugsnagSwiftConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966B12486D43500DC48C2 /* BugsnagSwiftConfigurationTests.swift */; };
-		004E35412487B3BE007FBAE4 /* BugsnagSwiftConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966B12486D43500DC48C2 /* BugsnagSwiftConfigurationTests.swift */; };
 		004E35492487CC04007FBAE4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0089694D2486DAD000DC48C2 /* README.md */; };
 		004E354A2487CC04007FBAE4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0089694D2486DAD000DC48C2 /* README.md */; };
 		004E354B2487CC05007FBAE4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0089694D2486DAD000DC48C2 /* README.md */; };
@@ -2476,7 +2473,6 @@
 				008966ED2486D43700DC48C2 /* BugsnagDeviceTest.m in Sources */,
 				008967472486D43700DC48C2 /* BugsnagTests.m in Sources */,
 				008967A72486D43700DC48C2 /* KSString_Tests.m in Sources */,
-				004E353E2487B3B9007FBAE4 /* BugsnagSwiftTests.swift in Sources */,
 				0089671A2486D43700DC48C2 /* BugsnagErrorTest.m in Sources */,
 				008967172486D43700DC48C2 /* BugsnagCollectionsBSGDictMergeTest.m in Sources */,
 				008967532486D43700DC48C2 /* BSGOutOfMemoryWatchdogTests.m in Sources */,
@@ -2503,12 +2499,10 @@
 				008967652486D43700DC48C2 /* BugsnagCollectionsBSGDictSetSafeObjectTest.m in Sources */,
 				008967292486D43700DC48C2 /* BugsnagStackframeTest.m in Sources */,
 				008967952486D43700DC48C2 /* KSSignalInfo_Tests.m in Sources */,
-				004E35412487B3BE007FBAE4 /* BugsnagSwiftConfigurationTests.swift in Sources */,
 				0089678F2486D43700DC48C2 /* KSCrashReportConverter_Tests.m in Sources */,
 				008966F62486D43700DC48C2 /* BugsnagThreadTest.m in Sources */,
 				0089679E2486D43700DC48C2 /* KSFileUtils_Tests.m in Sources */,
 				008967A42486D43700DC48C2 /* KSCrashSentry_Signal_Tests.m in Sources */,
-				004E353C2487B3B4007FBAE4 /* BugsnagSwiftPublicAPITests.swift in Sources */,
 				0089677D2486D43700DC48C2 /* RFC3339DateTool_Tests.m in Sources */,
 				008967562486D43700DC48C2 /* BugsnagOnCrashTest.m in Sources */,
 				008967A12486D43700DC48C2 /* KSCrashSentry_Tests.m in Sources */,
