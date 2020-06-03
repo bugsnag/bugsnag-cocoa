@@ -71,7 +71,7 @@ bootstrap: ## Install development dependencies
 	@bundle install
 
 build_ios_static: ## Build the static library target
-	$(XCODEBUILD) -project Project/Bugsnag.xcodeproj -scheme BugsnagStatic
+	$(XCODEBUILD) -project Bugsnag.xcodeproj -scheme BugsnagStatic
 
 build_carthage: ## Build the latest pushed commit with Carthage
 	@mkdir -p features/fixtures/carthage-proj
