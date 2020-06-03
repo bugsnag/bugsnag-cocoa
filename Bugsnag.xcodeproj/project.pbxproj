@@ -445,9 +445,6 @@
 		008968F42486DAB800DC48C2 /* BugsnagSessionFileStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968E82486DAB800DC48C2 /* BugsnagSessionFileStore.h */; };
 		008968F52486DAB800DC48C2 /* BugsnagSessionFileStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968E82486DAB800DC48C2 /* BugsnagSessionFileStore.h */; };
 		008968F62486DAB800DC48C2 /* BugsnagSessionFileStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968E82486DAB800DC48C2 /* BugsnagSessionFileStore.h */; };
-		0089694E2486DAD000DC48C2 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 008968F82486DAD000DC48C2 /* LICENSE */; };
-		0089694F2486DAD000DC48C2 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 008968F82486DAD000DC48C2 /* LICENSE */; };
-		008969502486DAD000DC48C2 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 008968F82486DAD000DC48C2 /* LICENSE */; };
 		008969512486DAD000DC48C2 /* BSG_KSCrashReportFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968FD2486DAD000DC48C2 /* BSG_KSCrashReportFilter.h */; };
 		008969522486DAD000DC48C2 /* BSG_KSCrashReportFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968FD2486DAD000DC48C2 /* BSG_KSCrashReportFilter.h */; };
 		008969532486DAD000DC48C2 /* BSG_KSCrashReportFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968FD2486DAD000DC48C2 /* BSG_KSCrashReportFilter.h */; };
@@ -679,9 +676,6 @@
 		00896A352486DAD100DC48C2 /* BSG_KSSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0089694C2486DAD000DC48C2 /* BSG_KSSystemInfo.m */; };
 		00896A362486DAD100DC48C2 /* BSG_KSSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0089694C2486DAD000DC48C2 /* BSG_KSSystemInfo.m */; };
 		00896A372486DAD100DC48C2 /* BSG_KSSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0089694C2486DAD000DC48C2 /* BSG_KSSystemInfo.m */; };
-		00896A382486DAD100DC48C2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0089694D2486DAD000DC48C2 /* README.md */; };
-		00896A392486DAD100DC48C2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0089694D2486DAD000DC48C2 /* README.md */; };
-		00896A3A2486DAD100DC48C2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0089694D2486DAD000DC48C2 /* README.md */; };
 		00896A402486DBDD00DC48C2 /* BSGConfigurationBuilderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00896A3F2486DBDD00DC48C2 /* BSGConfigurationBuilderTests.m */; };
 		00896A412486DBDD00DC48C2 /* BSGConfigurationBuilderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00896A3F2486DBDD00DC48C2 /* BSGConfigurationBuilderTests.m */; };
 		00896A422486DBDD00DC48C2 /* BSGConfigurationBuilderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00896A3F2486DBDD00DC48C2 /* BSGConfigurationBuilderTests.m */; };
@@ -2027,8 +2021,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00896A382486DAD100DC48C2 /* README.md in Resources */,
-				0089694E2486DAD000DC48C2 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2044,8 +2036,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00896A392486DAD100DC48C2 /* README.md in Resources */,
-				0089694F2486DAD000DC48C2 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2061,8 +2051,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00896A3A2486DAD100DC48C2 /* README.md in Resources */,
-				008969502486DAD000DC48C2 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
