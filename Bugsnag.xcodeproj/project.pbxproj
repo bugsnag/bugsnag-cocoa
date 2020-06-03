@@ -181,9 +181,6 @@
 		008967AB2486D43700DC48C2 /* KSMach_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966EA2486D43700DC48C2 /* KSMach_Tests.m */; };
 		008967AC2486D43700DC48C2 /* KSMach_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966EA2486D43700DC48C2 /* KSMach_Tests.m */; };
 		008967AD2486D43700DC48C2 /* KSMach_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966EA2486D43700DC48C2 /* KSMach_Tests.m */; };
-		008967AF2486D6E100DC48C2 /* Makefile in Resources */ = {isa = PBXBuildFile; fileRef = 008967AE2486D6E100DC48C2 /* Makefile */; };
-		008967B02486D6E100DC48C2 /* Makefile in Resources */ = {isa = PBXBuildFile; fileRef = 008967AE2486D6E100DC48C2 /* Makefile */; };
-		008967B12486D6E100DC48C2 /* Makefile in Resources */ = {isa = PBXBuildFile; fileRef = 008967AE2486D6E100DC48C2 /* Makefile */; };
 		008967B42486D9D800DC48C2 /* BugsnagBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = 008967B22486D9D700DC48C2 /* BugsnagBreadcrumbs.m */; };
 		008967B52486D9D800DC48C2 /* BugsnagBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = 008967B22486D9D700DC48C2 /* BugsnagBreadcrumbs.m */; };
 		008967B62486D9D800DC48C2 /* BugsnagBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = 008967B22486D9D700DC48C2 /* BugsnagBreadcrumbs.m */; };
@@ -730,13 +727,7 @@
 		00AD1F2F2486A17900A27979 /* BugsnagSessionTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AD1F012486A17900A27979 /* BugsnagSessionTracker.m */; };
 		00AD1F302486A17900A27979 /* BugsnagSessionTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AD1F012486A17900A27979 /* BugsnagSessionTracker.m */; };
 		00AD1F312486A17900A27979 /* BugsnagSessionTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AD1F012486A17900A27979 /* BugsnagSessionTracker.m */; };
-		00E636B5248702A1006CBF1A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00E636B2248702A1006CBF1A /* README.md */; };
-		00E636B6248702A1006CBF1A /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 00E636B3248702A1006CBF1A /* LICENSE.txt */; };
-		00E636B7248702A1006CBF1A /* UPGRADING.md in Resources */ = {isa = PBXBuildFile; fileRef = 00E636B4248702A1006CBF1A /* UPGRADING.md */; };
-		00E636BC248702DA006CBF1A /* ORGANIZATION.md in Resources */ = {isa = PBXBuildFile; fileRef = 00E636B8248702DA006CBF1A /* ORGANIZATION.md */; };
-		00E636BD248702DA006CBF1A /* CONTRIBUTING.md in Resources */ = {isa = PBXBuildFile; fileRef = 00E636B9248702DA006CBF1A /* CONTRIBUTING.md */; };
-		00E636BE248702DA006CBF1A /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 00E636BA248702DA006CBF1A /* CHANGELOG.md */; };
-		00E636BF248702DA006CBF1A /* TESTING.md in Resources */ = {isa = PBXBuildFile; fileRef = 00E636BB248702DA006CBF1A /* TESTING.md */; };
+		00E636C224878D84006CBF1A /* BSG_RFC3339DateTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 008969142486DAD000DC48C2 /* BSG_RFC3339DateTool.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1278,8 +1269,8 @@
 				00E636B2248702A1006CBF1A /* README.md */,
 				00E636B3248702A1006CBF1A /* LICENSE.txt */,
 				00AD1C7424869B0E00A27979 /* Bugsnag */,
-				00AD1CFA24869F2500A27979 /* Extras */,
 				00AD1C7F24869B0E00A27979 /* Tests */,
+				00AD1CFA24869F2500A27979 /* Extras */,
 				00AD1C7324869B0E00A27979 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -1301,7 +1292,6 @@
 		00AD1C7424869B0E00A27979 /* Bugsnag */ = {
 			isa = PBXGroup;
 			children = (
-				00AD20982486A1C100A27979 /* Framework */,
 				00AD1CF124869EBD00A27979 /* Breadcrumbs */,
 				00AD1CF224869ECF00A27979 /* Client */,
 				00AD1CF324869ED700A27979 /* Configuration */,
@@ -1312,21 +1302,21 @@
 				00AD1CF824869EF800A27979 /* Plugins */,
 				00AD1CF924869F0100A27979 /* Storage */,
 				008968F72486DAD000DC48C2 /* KSCrash */,
-				00AD1C7524869B0E00A27979 /* Bugsnag_old_fw.h */,
+				00AD1EFA2486A17700A27979 /* Private.h */,
 				00AD1EFB2486A17800A27979 /* BSG_KSCrashReportWriter.h */,
-				00AD1EFC2486A17800A27979 /* BSGOutOfMemoryWatchdog.h */,
-				00AD1EF72486A17700A27979 /* BSGOutOfMemoryWatchdog.m */,
 				00AD1EF62486A17600A27979 /* Bugsnag.h */,
 				00AD1EFE2486A17800A27979 /* Bugsnag.m */,
+				00AD1EFC2486A17800A27979 /* BSGOutOfMemoryWatchdog.h */,
+				00AD1EF72486A17700A27979 /* BSGOutOfMemoryWatchdog.m */,
 				00AD1F002486A17900A27979 /* BugsnagCrashSentry.h */,
 				00AD1EFF2486A17900A27979 /* BugsnagCrashSentry.m */,
 				00AD1EF82486A17700A27979 /* BugsnagSessionTracker.h */,
 				00AD1F012486A17900A27979 /* BugsnagSessionTracker.m */,
 				00AD1EFD2486A17800A27979 /* BugsnagSink.h */,
 				00AD1EF92486A17700A27979 /* BugsnagSink.m */,
-				00AD1EFA2486A17700A27979 /* Private.h */,
 				00AD1EF42486A17600A27979 /* RegisterErrorData.h */,
 				00AD1EF52486A17600A27979 /* RegisterErrorData.m */,
+				00AD1C7524869B0E00A27979 /* Bugsnag_old_fw.h */,
 			);
 			name = Bugsnag;
 			path = Bugsnag/Bugsnag;
@@ -1534,13 +1524,6 @@
 				00AD1C7624869B0E00A27979 /* Info.plist */,
 			);
 			path = Extras;
-			sourceTree = "<group>";
-		};
-		00AD20982486A1C100A27979 /* Framework */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Framework;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2029,15 +2012,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E636B6248702A1006CBF1A /* LICENSE.txt in Resources */,
-				00E636B5248702A1006CBF1A /* README.md in Resources */,
 				00896A382486DAD100DC48C2 /* README.md in Resources */,
-				00E636BE248702DA006CBF1A /* CHANGELOG.md in Resources */,
-				00E636BF248702DA006CBF1A /* TESTING.md in Resources */,
-				00E636BC248702DA006CBF1A /* ORGANIZATION.md in Resources */,
-				00E636BD248702DA006CBF1A /* CONTRIBUTING.md in Resources */,
 				0089694E2486DAD000DC48C2 /* LICENSE in Resources */,
-				00E636B7248702A1006CBF1A /* UPGRADING.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2045,7 +2021,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				008967AF2486D6E100DC48C2 /* Makefile in Resources */,
 				0089671E2486D43700DC48C2 /* report.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2063,7 +2038,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				008967B02486D6E100DC48C2 /* Makefile in Resources */,
 				0089671F2486D43700DC48C2 /* report.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2081,7 +2055,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				008967B12486D6E100DC48C2 /* Makefile in Resources */,
 				008967202486D43700DC48C2 /* report.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2535,6 +2508,7 @@
 				00AD1F0F2486A17900A27979 /* BSGOutOfMemoryWatchdog.m in Sources */,
 				008967C12486DA1900DC48C2 /* BugsnagClient.m in Sources */,
 				008968752486DA9500DC48C2 /* BugsnagDevice.m in Sources */,
+				00E636C224878D84006CBF1A /* BSG_RFC3339DateTool.m in Sources */,
 				0089687F2486DA9600DC48C2 /* BugsnagBreadcrumb.m in Sources */,
 				008968012486DA4500DC48C2 /* BugsnagSessionTrackingApiClient.m in Sources */,
 				008968322486DA5600DC48C2 /* BugsnagCollections.m in Sources */,
