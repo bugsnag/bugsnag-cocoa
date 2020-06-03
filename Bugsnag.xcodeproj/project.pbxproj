@@ -19,6 +19,12 @@
 		004E353F2487B3BD007FBAE4 /* BugsnagSwiftConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966B12486D43500DC48C2 /* BugsnagSwiftConfigurationTests.swift */; };
 		004E35402487B3BE007FBAE4 /* BugsnagSwiftConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966B12486D43500DC48C2 /* BugsnagSwiftConfigurationTests.swift */; };
 		004E35412487B3BE007FBAE4 /* BugsnagSwiftConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966B12486D43500DC48C2 /* BugsnagSwiftConfigurationTests.swift */; };
+		004E35492487CC04007FBAE4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0089694D2486DAD000DC48C2 /* README.md */; };
+		004E354A2487CC04007FBAE4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0089694D2486DAD000DC48C2 /* README.md */; };
+		004E354B2487CC05007FBAE4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0089694D2486DAD000DC48C2 /* README.md */; };
+		004E354C2487CC08007FBAE4 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 008968F82486DAD000DC48C2 /* LICENSE */; };
+		004E354D2487CC09007FBAE4 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 008968F82486DAD000DC48C2 /* LICENSE */; };
+		004E354E2487CC09007FBAE4 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 008968F82486DAD000DC48C2 /* LICENSE */; };
 		008966EB2486D43700DC48C2 /* BugsnagDeviceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966A42486D43400DC48C2 /* BugsnagDeviceTest.m */; };
 		008966EC2486D43700DC48C2 /* BugsnagDeviceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966A42486D43400DC48C2 /* BugsnagDeviceTest.m */; };
 		008966ED2486D43700DC48C2 /* BugsnagDeviceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966A42486D43400DC48C2 /* BugsnagDeviceTest.m */; };
@@ -2021,6 +2027,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				004E354C2487CC08007FBAE4 /* LICENSE in Resources */,
+				004E35492487CC04007FBAE4 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2036,6 +2044,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				004E354D2487CC09007FBAE4 /* LICENSE in Resources */,
+				004E354A2487CC04007FBAE4 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2051,6 +2061,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				004E354E2487CC09007FBAE4 /* LICENSE in Resources */,
+				004E354B2487CC05007FBAE4 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
