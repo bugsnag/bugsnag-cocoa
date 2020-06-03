@@ -677,8 +677,8 @@
 		00896A452486DBF000DC48C2 /* BugsnagConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00896A432486DBF000DC48C2 /* BugsnagConfigurationTests.m */; };
 		00896A462486DBF000DC48C2 /* BugsnagConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00896A432486DBF000DC48C2 /* BugsnagConfigurationTests.m */; };
 		00AD1C7C24869B0E00A27979 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00AD1C7224869B0E00A27979 /* Bugsnag.framework */; };
-		00AD1CB624869C1200A27979 /* Bugsnag_macOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00AD1CAD24869C1200A27979 /* Bugsnag_macOS.framework */; };
-		00AD1CD224869C2400A27979 /* Bugsnag_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00AD1CC924869C2400A27979 /* Bugsnag_tvOS.framework */; };
+		00AD1CB624869C1200A27979 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00AD1CAD24869C1200A27979 /* Bugsnag.framework */; };
+		00AD1CD224869C2400A27979 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00AD1CC924869C2400A27979 /* Bugsnag.framework */; };
 		00AD1F022486A17900A27979 /* RegisterErrorData.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AD1EF42486A17600A27979 /* RegisterErrorData.h */; };
 		00AD1F032486A17900A27979 /* RegisterErrorData.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AD1EF42486A17600A27979 /* RegisterErrorData.h */; };
 		00AD1F042486A17900A27979 /* RegisterErrorData.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AD1EF42486A17600A27979 /* RegisterErrorData.h */; };
@@ -993,9 +993,9 @@
 		00AD1C7524869B0E00A27979 /* Bugsnag_old_fw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bugsnag_old_fw.h; sourceTree = "<group>"; };
 		00AD1C7624869B0E00A27979 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Framework/Info.plist; sourceTree = "<group>"; };
 		00AD1C7B24869B0E00A27979 /* Bugsnag-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Bugsnag-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		00AD1CAD24869C1200A27979 /* Bugsnag_macOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bugsnag_macOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		00AD1CAD24869C1200A27979 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		00AD1CB524869C1200A27979 /* Bugsnag-macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Bugsnag-macOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		00AD1CC924869C2400A27979 /* Bugsnag_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bugsnag_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		00AD1CC924869C2400A27979 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		00AD1CD124869C2400A27979 /* Bugsnag-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Bugsnag-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00AD1CE424869C6C00A27979 /* libBugsnagStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnagStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		00AD1EF42486A17600A27979 /* RegisterErrorData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegisterErrorData.h; sourceTree = "<group>"; };
@@ -1052,7 +1052,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00AD1CB624869C1200A27979 /* Bugsnag_macOS.framework in Frameworks */,
+				00AD1CB624869C1200A27979 /* Bugsnag.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1067,7 +1067,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00AD1CD224869C2400A27979 /* Bugsnag_tvOS.framework in Frameworks */,
+				00AD1CD224869C2400A27979 /* Bugsnag.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1281,9 +1281,9 @@
 			children = (
 				00AD1C7224869B0E00A27979 /* Bugsnag.framework */,
 				00AD1C7B24869B0E00A27979 /* Bugsnag-iOSTests.xctest */,
-				00AD1CAD24869C1200A27979 /* Bugsnag_macOS.framework */,
+				00AD1CAD24869C1200A27979 /* Bugsnag.framework */,
 				00AD1CB524869C1200A27979 /* Bugsnag-macOSTests.xctest */,
-				00AD1CC924869C2400A27979 /* Bugsnag_tvOS.framework */,
+				00AD1CC924869C2400A27979 /* Bugsnag.framework */,
 				00AD1CD124869C2400A27979 /* Bugsnag-tvOSTests.xctest */,
 				00AD1CE424869C6C00A27979 /* libBugsnagStatic.a */,
 			);
@@ -1878,7 +1878,7 @@
 			);
 			name = "Bugsnag-macOS";
 			productName = "Bugsnag-macOS";
-			productReference = 00AD1CAD24869C1200A27979 /* Bugsnag_macOS.framework */;
+			productReference = 00AD1CAD24869C1200A27979 /* Bugsnag.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		00AD1CB424869C1200A27979 /* Bugsnag-macOSTests */ = {
@@ -1914,7 +1914,7 @@
 			);
 			name = "Bugsnag-tvOS";
 			productName = "Bugsnag-tvOS";
-			productReference = 00AD1CC924869C2400A27979 /* Bugsnag_tvOS.framework */;
+			productReference = 00AD1CC924869C2400A27979 /* Bugsnag.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		00AD1CD024869C2400A27979 /* Bugsnag-tvOSTests */ = {
@@ -2785,7 +2785,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = Bugsnag;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
@@ -2807,7 +2807,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = Bugsnag;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
@@ -2863,7 +2863,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = Bugsnag;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -2885,7 +2885,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = Bugsnag;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
