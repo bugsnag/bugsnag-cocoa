@@ -19,7 +19,7 @@
 PLATFORM?=iOS
 OS?=latest
 TEST_CONFIGURATION?=Debug
-BUILD_FLAGS=-project Project/Bugsnag.xcodeproj -scheme Bugsnag-$(PLATFORM) -derivedDataPath build/build-$(PLATFORM)
+BUILD_FLAGS=-project Bugsnag.xcodeproj -scheme Bugsnag-$(PLATFORM) -derivedDataPath build/build-$(PLATFORM)
 
 ifeq ($(PLATFORM),macOS)
  SDK?=macosx

@@ -780,6 +780,7 @@
 
 /* Begin PBXFileReference section */
 		004E35392487B375007FBAE4 /* Tests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Bridging-Header.h"; sourceTree = "<group>"; };
+		004E35482487B79B007FBAE4 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .travis.yml; sourceTree = SOURCE_ROOT; };
 		008966A42486D43400DC48C2 /* BugsnagDeviceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagDeviceTest.m; sourceTree = "<group>"; };
 		008966A52486D43400DC48C2 /* BugsnagClientPayloadInfoTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagClientPayloadInfoTest.m; sourceTree = "<group>"; };
 		008966A62486D43400DC48C2 /* BugsnagMetadataRedactionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagMetadataRedactionTest.m; sourceTree = "<group>"; };
@@ -1525,6 +1526,7 @@
 		00AD1CFA24869F2500A27979 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
+				004E35482487B79B007FBAE4 /* .travis.yml */,
 				00E636BA248702DA006CBF1A /* CHANGELOG.md */,
 				00E636B9248702DA006CBF1A /* CONTRIBUTING.md */,
 				00E636B8248702DA006CBF1A /* ORGANIZATION.md */,
