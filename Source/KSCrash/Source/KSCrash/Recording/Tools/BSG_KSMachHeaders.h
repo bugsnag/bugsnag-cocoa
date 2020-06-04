@@ -105,6 +105,6 @@ BSG_Mach_Binary_Images *bsg_initialise_mach_binary_headers(uint32_t initialSize)
 /**
  * Store a static copy of the OS for comparison efficiency.
  */
-void bsg_initialise_static_os(void);
+void bsg_check_spin_lock_support(void);
 
 #endif /* BSG_KSMachHeaders_h */

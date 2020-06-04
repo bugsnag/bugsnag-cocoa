@@ -26,8 +26,7 @@ _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
 static OSSpinLock bsg_mach_binary_images_access_lock_spin = OS_SPINLOCK_INIT;
 _Pragma("clang diagnostic pop")
 
-// A static copy of the OS for comparison efficiency
-static NSOperatingSystemVersion bsg_os_version;
+static BOOL bsg_spin_lock_supported;
 
 // Lock helpers.  These use bulky Pragmas to hide warnings so are in their own functions for clarity.
 
@@ -62,66 +61,41 @@ void bsg_unfair_unlock() {
 // Lock and unlock sections of code
 
 void bsg_dyld_cache_lock() {
-#if BSG_PLATFORM_IOS
-    if (bsg_os_version.majorVersion < 10) {
+    if (bsg_spin_lock_supported) {
         bsg_spin_lock();
-        return;
+    } else {
+        bsg_unfair_lock();
     }
-    bsg_unfair_lock();
-#elif BSG_PLATFORM_OSX
-    if (bsg_os_version.majorVersion < 10 && bsg_os_version.minorVersion < 12) {
-        bsg_spin_lock();
-        return;
-    }
-    bsg_unfair_lock();
-#elif BSG_PLATFORM_TVOS
-    if (bsg_os_version.majorVersion < 10) {
-        bsg_spin_lock();
-        return;
-    }
-    bsg_unfair_lock();
-#elif BSG_PLATFORM_WATCHOS
-    if (bsg_os_version.majorVersion < 3) {
-        bsg_spin_lock();
-        return;
-    }
-    bsg_unfair_lock();
-#endif
 }
 
 void bsg_dyld_cache_unlock() {
+    if (bsg_spin_lock_supported) {
+        bsg_spin_unlock();
+    } else {
+        bsg_unfair_unlock();
+    }
+}
+
+BOOL IsSpinLockSupported(NSProcessInfo *processInfo) {
+    NSOperatingSystemVersion minSdk = {0,0,0};
 #if BSG_PLATFORM_IOS
-    if (bsg_os_version.majorVersion < 10) {
-        bsg_spin_unlock();
-        return;
-    }
-    bsg_unfair_unlock();
+    minSdk.majorVersion = 10;
 #elif BSG_PLATFORM_OSX
-    if (bsg_os_version.majorVersion < 10 && bsg_os_version.minorVersion < 12) {
-        bsg_spin_unlock();
-        return;
-    }
-    bsg_unfair_unlock();
+    minSdk.majorVersion = 10;
+    minSdk.minorVersion = 12;
 #elif BSG_PLATFORM_TVOS
-    if (bsg_os_version.majorVersion < 10) {
-        bsg_spin_unlock();
-        return;
-    }
-    bsg_unfair_unlock();
+    minSdk.majorVersion = 10;
 #elif BSG_PLATFORM_WATCHOS
-    if (bsg_os_version.majorVersion < 3) {
-        bsg_spin_unlock();
-        return;
-    }
-    bsg_unfair_unlock();
+    minSdk.majorVersion = 3;
 #endif
+    return [processInfo isOperatingSystemAtLeastVersion:minSdk];
 }
 
 /**
- * Store a static copy of the OS for comparison efficiency.
+ * Determines whether the OS supports spin locks or not.
  */
-void bsg_initialise_static_os() {
-    bsg_os_version = [[NSProcessInfo processInfo] operatingSystemVersion];
+void bsg_check_spin_lock_support() {
+    bsg_spin_lock_supported = IsSpinLockSupported([NSProcessInfo processInfo]);
 }
 
 // MARK: - Replicate the DYLD API
