@@ -875,9 +875,6 @@
 		E746299624890D3200F92D67 /* BugsnagSessionTracker.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 00AD1EF82486A17700A27979 /* BugsnagSessionTracker.h */; };
 		E746299724890D3200F92D67 /* BugsnagSink.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 00AD1EFD2486A17800A27979 /* BugsnagSink.h */; };
 		E746299824890D3200F92D67 /* RegisterErrorData.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 00AD1EF42486A17600A27979 /* RegisterErrorData.h */; };
-		E74629992489260200F92D67 /* BugsnagSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966AF2486D43500DC48C2 /* BugsnagSwiftTests.swift */; };
-		E746299A2489260400F92D67 /* BugsnagSwiftPublicAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966B02486D43500DC48C2 /* BugsnagSwiftPublicAPITests.swift */; };
-		E746299B2489260600F92D67 /* BugsnagSwiftConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008966B12486D43500DC48C2 /* BugsnagSwiftConfigurationTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2776,7 +2773,6 @@
 				008967292486D43700DC48C2 /* BugsnagStackframeTest.m in Sources */,
 				008967952486D43700DC48C2 /* KSSignalInfo_Tests.m in Sources */,
 				0089678F2486D43700DC48C2 /* KSCrashReportConverter_Tests.m in Sources */,
-				E746299B2489260600F92D67 /* BugsnagSwiftConfigurationTests.swift in Sources */,
 				008966F62486D43700DC48C2 /* BugsnagThreadTest.m in Sources */,
 				0089679E2486D43700DC48C2 /* KSFileUtils_Tests.m in Sources */,
 				008967A42486D43700DC48C2 /* KSCrashSentry_Signal_Tests.m in Sources */,
@@ -2790,8 +2786,6 @@
 				004E35372487AFF2007FBAE4 /* BugsnagHandledStateTest.m in Sources */,
 				0089678C2486D43700DC48C2 /* KSCrashReportStore_Tests.m in Sources */,
 				00896A422486DBDD00DC48C2 /* BSGConfigurationBuilderTests.m in Sources */,
-				E74629992489260200F92D67 /* BugsnagSwiftTests.swift in Sources */,
-				E746299A2489260400F92D67 /* BugsnagSwiftPublicAPITests.swift in Sources */,
 				008967682486D43700DC48C2 /* BugsnagNotifierTest.m in Sources */,
 				0089676E2486D43700DC48C2 /* BugsnagTestsDummyClass.m in Sources */,
 				008967412486D43700DC48C2 /* BugsnagAppTest.m in Sources */,
