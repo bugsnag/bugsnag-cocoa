@@ -280,8 +280,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
  * behaviour.
  */
 - (void)listenForLoadedBinaries {
-    // Store a static version of the OS for comparison efficiency
-    bsg_check_spin_lock_support();
+    bsg_check_unfair_lock_support();
     bsg_initialise_mach_binary_headers(BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE);
 
     // Note: Access to DYLD's binary image store is guarded by locks.

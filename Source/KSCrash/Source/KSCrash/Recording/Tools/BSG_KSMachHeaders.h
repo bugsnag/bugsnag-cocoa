@@ -103,8 +103,8 @@ void bsg_mach_binary_image_removed(const struct mach_header *mh, intptr_t slide)
 BSG_Mach_Binary_Images *bsg_initialise_mach_binary_headers(uint32_t initialSize);
 
 /**
- * Store a static copy of the OS for comparison efficiency.
+ * Determines whether the OS supports unfair locks or not.
  */
-void bsg_check_spin_lock_support(void);
+void bsg_check_unfair_lock_support(void);
 
 #endif /* BSG_KSMachHeaders_h */
