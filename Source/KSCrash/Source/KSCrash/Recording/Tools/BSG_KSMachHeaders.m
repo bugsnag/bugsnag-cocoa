@@ -11,7 +11,6 @@
 #import <Foundation/Foundation.h>
 #import "BSG_KSDynamicLinker.h"
 #import "BSG_KSMachHeaders.h"
-#import "BugsnagPlatformConditional.h"
 
 // MARK: - Locking
 
@@ -78,14 +77,14 @@ void bsg_dyld_cache_unlock() {
 
 BOOL IsUnfairLockSupported(NSProcessInfo *processInfo) {
     NSOperatingSystemVersion minSdk = {0,0,0};
-#if BSG_PLATFORM_IOS
+#if TARGET_OS_IOS
     minSdk.majorVersion = 10;
-#elif BSG_PLATFORM_OSX
+#elif TARGET_OS_OSX
     minSdk.majorVersion = 10;
     minSdk.minorVersion = 12;
-#elif BSG_PLATFORM_TVOS
+#elif TARGET_OS_TV
     minSdk.majorVersion = 10;
-#elif BSG_PLATFORM_WATCHOS
+#elif TARGET_OS_WATCH
     minSdk.majorVersion = 3;
 #endif
     return [processInfo isOperatingSystemAtLeastVersion:minSdk];
