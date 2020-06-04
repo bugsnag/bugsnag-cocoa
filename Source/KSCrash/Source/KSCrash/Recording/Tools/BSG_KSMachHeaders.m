@@ -75,7 +75,7 @@ void bsg_dyld_cache_unlock() {
     }
 }
 
-BOOL IsUnfairLockSupported(NSProcessInfo *processInfo) {
+BOOL BSGIsUnfairLockSupported(NSProcessInfo *processInfo) {
     NSOperatingSystemVersion minSdk = {0,0,0};
 #if TARGET_OS_IOS
     minSdk.majorVersion = 10;
@@ -91,7 +91,7 @@ BOOL IsUnfairLockSupported(NSProcessInfo *processInfo) {
 }
 
 void bsg_check_unfair_lock_support() {
-    bsg_unfair_lock_supported = IsUnfairLockSupported([NSProcessInfo processInfo]);
+    bsg_unfair_lock_supported = BSGIsUnfairLockSupported([NSProcessInfo processInfo]);
 }
 
 // MARK: - Replicate the DYLD API
