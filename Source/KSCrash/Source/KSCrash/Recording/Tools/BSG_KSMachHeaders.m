@@ -11,6 +11,89 @@
 #import <Foundation/Foundation.h>
 #import "BSG_KSDynamicLinker.h"
 #import "BSG_KSMachHeaders.h"
+#import "BugsnagPlatformConditional.h"
+
+// MARK: - Locking
+
+// Pragma's hide unavoidable (and expected) deprecation/unavailable warnings
+_Pragma("clang diagnostic push")
+_Pragma("clang diagnostic ignored \"-Wunguarded-availability\"")
+static os_unfair_lock bsg_mach_binary_images_access_lock_unfair = OS_UNFAIR_LOCK_INIT;
+_Pragma("clang diagnostic pop")
+
+_Pragma("clang diagnostic push")
+_Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
+static OSSpinLock bsg_mach_binary_images_access_lock_spin = OS_SPINLOCK_INIT;
+_Pragma("clang diagnostic pop")
+
+static BOOL bsg_unfair_lock_supported;
+
+// Lock helpers.  These use bulky Pragmas to hide warnings so are in their own functions for clarity.
+
+void bsg_spin_lock() {
+    _Pragma("clang diagnostic push")
+    _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
+    OSSpinLockLock(&bsg_mach_binary_images_access_lock_spin);
+    _Pragma("clang diagnostic pop")
+}
+
+void bsg_spin_unlock() {
+    _Pragma("clang diagnostic push")
+    _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
+    OSSpinLockUnlock(&bsg_mach_binary_images_access_lock_spin);
+    _Pragma("clang diagnostic pop")
+}
+
+void bsg_unfair_lock() {
+    _Pragma("clang diagnostic push")
+    _Pragma("clang diagnostic ignored \"-Wunguarded-availability\"")
+    os_unfair_lock_lock(&bsg_mach_binary_images_access_lock_unfair);
+    _Pragma("clang diagnostic pop")
+}
+
+void bsg_unfair_unlock() {
+    _Pragma("clang diagnostic push")
+    _Pragma("clang diagnostic ignored \"-Wunguarded-availability\"")
+    os_unfair_lock_unlock(&bsg_mach_binary_images_access_lock_unfair);
+    _Pragma("clang diagnostic pop")
+}
+
+// Lock and unlock sections of code
+
+void bsg_dyld_cache_lock() {
+    if (bsg_unfair_lock_supported) {
+        bsg_unfair_lock();
+    } else {
+        bsg_spin_lock();
+    }
+}
+
+void bsg_dyld_cache_unlock() {
+    if (bsg_unfair_lock_supported) {
+        bsg_unfair_unlock();
+    } else {
+        bsg_spin_unlock();
+    }
+}
+
+BOOL IsUnfairLockSupported(NSProcessInfo *processInfo) {
+    NSOperatingSystemVersion minSdk = {0,0,0};
+#if BSG_PLATFORM_IOS
+    minSdk.majorVersion = 10;
+#elif BSG_PLATFORM_OSX
+    minSdk.majorVersion = 10;
+    minSdk.minorVersion = 12;
+#elif BSG_PLATFORM_TVOS
+    minSdk.majorVersion = 10;
+#elif BSG_PLATFORM_WATCHOS
+    minSdk.majorVersion = 3;
+#endif
+    return [processInfo isOperatingSystemAtLeastVersion:minSdk];
+}
+
+void bsg_check_unfair_lock_support() {
+    bsg_unfair_lock_supported = IsUnfairLockSupported([NSProcessInfo processInfo]);
+}
 
 // MARK: - Replicate the DYLD API
 
@@ -53,7 +136,7 @@ BSG_Mach_Binary_Image_Info *bsg_dyld_get_image_info(uint32_t imageIndex) {
  */
 void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
     
-    BSG_DYLD_CACHE_LOCK
+    bsg_dyld_cache_lock();
     
     // Expand array if necessary.  We're slightly paranoid here.  An OOM is likely to be indicative of bigger problems
     // but we should still do *our* best not to crash the app.
@@ -69,7 +152,7 @@ void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
         }
         else {
             // Exit early, don't expand the array, don't store the header info and unlock
-            BSG_DYLD_CACHE_UNLOCK
+            bsg_dyld_cache_unlock();
             return;
         }
     }
@@ -77,7 +160,7 @@ void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
     // Store the value, increment the number of used elements
     bsg_mach_binary_images.contents[bsg_mach_binary_images.used++] = element;
     
-    BSG_DYLD_CACHE_UNLOCK
+    bsg_dyld_cache_unlock();
 }
 
 /**
@@ -87,7 +170,7 @@ void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
  */
 void bsg_remove_mach_binary_image(uint64_t imageVmAddr) {
     
-    BSG_DYLD_CACHE_LOCK
+    bsg_dyld_cache_lock();
     
     for (uint32_t i=0; i<bsg_mach_binary_images.used; i++) {
         BSG_Mach_Binary_Image_Info item = bsg_mach_binary_images.contents[i];
@@ -104,9 +187,16 @@ void bsg_remove_mach_binary_image(uint64_t imageVmAddr) {
         }
     }
     
-    BSG_DYLD_CACHE_UNLOCK
+    bsg_dyld_cache_unlock();
 }
 
+/**
+ * Create an empty array with initial capacity to hold Mach header info.
+ *
+ * @param initialSize The initial array capacity
+ *
+ * @returns A struct for holding Mach binary image info
+*/
 BSG_Mach_Binary_Images *bsg_initialise_mach_binary_headers(uint32_t initialSize) {
     bsg_mach_binary_images.contents = (BSG_Mach_Binary_Image_Info *)malloc(initialSize * sizeof(BSG_Mach_Binary_Image_Info));
     bsg_mach_binary_images.used = 0;
