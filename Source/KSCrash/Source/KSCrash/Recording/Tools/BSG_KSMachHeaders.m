@@ -26,7 +26,7 @@ _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
 static OSSpinLock bsg_mach_binary_images_access_lock_spin = OS_SPINLOCK_INIT;
 _Pragma("clang diagnostic pop")
 
-static BOOL bsg_spin_lock_supported;
+static BOOL bsg_unfair_lock_supported;
 
 // Lock helpers.  These use bulky Pragmas to hide warnings so are in their own functions for clarity.
 
@@ -61,22 +61,22 @@ void bsg_unfair_unlock() {
 // Lock and unlock sections of code
 
 void bsg_dyld_cache_lock() {
-    if (bsg_spin_lock_supported) {
-        bsg_spin_lock();
-    } else {
+    if (bsg_unfair_lock_supported) {
         bsg_unfair_lock();
+    } else {
+        bsg_spin_lock();
     }
 }
 
 void bsg_dyld_cache_unlock() {
-    if (bsg_spin_lock_supported) {
-        bsg_spin_unlock();
-    } else {
+    if (bsg_unfair_lock_supported) {
         bsg_unfair_unlock();
+    } else {
+        bsg_spin_unlock();
     }
 }
 
-BOOL IsSpinLockSupported(NSProcessInfo *processInfo) {
+BOOL IsUnfairLockSupported(NSProcessInfo *processInfo) {
     NSOperatingSystemVersion minSdk = {0,0,0};
 #if BSG_PLATFORM_IOS
     minSdk.majorVersion = 10;
@@ -91,11 +91,8 @@ BOOL IsSpinLockSupported(NSProcessInfo *processInfo) {
     return [processInfo isOperatingSystemAtLeastVersion:minSdk];
 }
 
-/**
- * Determines whether the OS supports spin locks or not.
- */
-void bsg_check_spin_lock_support() {
-    bsg_spin_lock_supported = IsSpinLockSupported([NSProcessInfo processInfo]);
+void bsg_check_unfair_lock_support() {
+    bsg_unfair_lock_supported = IsUnfairLockSupported([NSProcessInfo processInfo]);
 }
 
 // MARK: - Replicate the DYLD API
