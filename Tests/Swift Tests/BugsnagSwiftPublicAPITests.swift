@@ -104,7 +104,7 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         config.context = "ctx"
         config.appVersion = nil
         config.appVersion = "vers"
-        config.session = URLSession();
+        config.session = URLSession(configuration: URLSessionConfiguration.default);
         config.sendThreads = .always
 
         config.onCrashHandler = nil

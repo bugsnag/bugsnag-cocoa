@@ -19,7 +19,7 @@
 PLATFORM?=iOS
 OS?=latest
 TEST_CONFIGURATION?=Debug
-BUILD_FLAGS=-project Project/Bugsnag.xcodeproj -scheme Bugsnag-$(PLATFORM) -derivedDataPath build/build-$(PLATFORM)
+BUILD_FLAGS=-project Bugsnag.xcodeproj -scheme Bugsnag-$(PLATFORM) -derivedDataPath build/build-$(PLATFORM)
 
 ifeq ($(PLATFORM),macOS)
  SDK?=macosx
@@ -71,7 +71,7 @@ bootstrap: ## Install development dependencies
 	@bundle install
 
 build_ios_static: ## Build the static library target
-	$(XCODEBUILD) -project Project/Bugsnag.xcodeproj -scheme BugsnagStatic
+	$(XCODEBUILD) -project Bugsnag.xcodeproj -scheme BugsnagStatic
 
 build_carthage: ## Build the latest pushed commit with Carthage
 	@mkdir -p features/fixtures/carthage-proj

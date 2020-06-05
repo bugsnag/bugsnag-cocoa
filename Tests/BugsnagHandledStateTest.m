@@ -6,8 +6,9 @@
 //  Copyright © 2017 Bugsnag. All rights reserved.
 //
 
-#import "BugsnagHandledState.h"
 #import <XCTest/XCTest.h>
+#import <Bugsnag/Bugsnag.h>
+#import "BugsnagHandledState.h"
 
 @interface BugsnagHandledStateTest : XCTestCase
 

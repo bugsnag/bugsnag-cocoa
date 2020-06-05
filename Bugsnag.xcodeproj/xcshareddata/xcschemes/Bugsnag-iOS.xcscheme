@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "009BBD612478369100731BF5"
+               BlueprintIdentifier = "00AD1C7124869B0E00A27979"
                BuildableName = "Bugsnag.framework"
-               BlueprintName = "Bugsnag-macOS"
+               BlueprintName = "Bugsnag-iOS"
                ReferencedContainer = "container:Bugsnag.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -26,15 +26,16 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "009BBD692478369200731BF5"
-               BuildableName = "Bugsnag-MacOSTests.xctest"
-               BlueprintName = "Bugsnag-MacOSTests"
+               BlueprintIdentifier = "00AD1C7A24869B0E00A27979"
+               BuildableName = "Bugsnag-iOSTests.xctest"
+               BlueprintName = "Bugsnag-iOSTests"
                ReferencedContainer = "container:Bugsnag.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -60,9 +61,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "009BBD612478369100731BF5"
+            BlueprintIdentifier = "00AD1C7124869B0E00A27979"
             BuildableName = "Bugsnag.framework"
-            BlueprintName = "Bugsnag-macOS"
+            BlueprintName = "Bugsnag-iOS"
             ReferencedContainer = "container:Bugsnag.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

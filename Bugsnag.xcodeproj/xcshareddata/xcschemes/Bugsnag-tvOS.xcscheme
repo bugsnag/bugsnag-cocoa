@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E7397DC31F83BAC50034242A"
-               BuildableName = "libBugsnagStatic.a"
-               BlueprintName = "BugsnagStatic"
+               BlueprintIdentifier = "00AD1CC824869C2400A27979"
+               BuildableName = "Bugsnag.framework"
+               BlueprintName = "Bugsnag-tvOS"
                ReferencedContainer = "container:Bugsnag.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -26,8 +26,19 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "00AD1CD024869C2400A27979"
+               BuildableName = "Bugsnag-tvOSTests.xctest"
+               BlueprintName = "Bugsnag-tvOSTests"
+               ReferencedContainer = "container:Bugsnag.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -50,9 +61,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E7397DC31F83BAC50034242A"
-            BuildableName = "libBugsnagStatic.a"
-            BlueprintName = "BugsnagStatic"
+            BlueprintIdentifier = "00AD1CC824869C2400A27979"
+            BuildableName = "Bugsnag.framework"
+            BlueprintName = "Bugsnag-tvOS"
             ReferencedContainer = "container:Bugsnag.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
