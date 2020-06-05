@@ -132,6 +132,7 @@ Bugsnag.getMetadata("section" key:"key")
 
 ```diff
 ObjC:
++ [Bugsnag start]
 
 - [Bugsnag startBugsnagWithApiKey]
 + [Bugsnag startWithApiKey]
@@ -158,6 +159,8 @@ ObjC:
 + [Bugsnag notify:block:]
 
 Swift:
++ Bugsnag.start
+
 - Bugsnag.startBugsnagWith(:apiKey)
 + Bugsnag.startWith(:apiKey)
 
