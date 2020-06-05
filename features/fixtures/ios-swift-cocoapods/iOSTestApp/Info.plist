@@ -20,7 +20,7 @@
 	<string>5</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-		<key>NSAppTransportSecurity</key>
+	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
@@ -64,6 +64,13 @@
 	</array>
 	<key>bugsnag</key>
 	<dict>
+		<key>endpoints</key>
+		<dict>
+			<key>sessions</key>
+			<string>http://bs-local.com:9339</string>
+			<key>notify</key>
+			<string>http://bs-local.com:9339</string>
+		</dict>
 		<key>apiKey</key>
 		<string>0192837465afbecd0192837465afbecd</string>
 		<key>releaseStage</key>

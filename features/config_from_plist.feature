@@ -9,3 +9,9 @@ Feature: Loading Bugsnag configuration from Info.plist
         And the event "metaData.nserror.domain" equals "iOSTestApp.LaunchError"
         And the event "app.releaseStage" equals "beta2"
 
+    Scenario: Calling Bugsnag.start() with no configuration
+        When I run "LoadConfigFromFileAutoScenario"
+        And I wait to receive a request
+        And the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
+        And the event "metaData.nserror.domain" equals "iOSTestApp.LoadConfigFromFileAutoScenarioError"
+        And the event "app.releaseStage" equals "beta2"
