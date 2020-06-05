@@ -60,9 +60,9 @@ class ViewController: UITableViewController {
         do {
             try FileManager.default.removeItem(atPath:"//invalid/file")
         } catch {
-            Bugsnag.notifyError(error) { report in
+            Bugsnag.notifyError(error) { event in
                 // modify report properties in the (optional) block
-                report.severity = .info
+                event.severity = .info
                 return true
             }
         }

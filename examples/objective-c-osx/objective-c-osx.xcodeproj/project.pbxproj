@@ -112,11 +112,12 @@
 				93BE1CD51B62CC360016380C /* AppDelegate.m */,
 				93BE1CD91B62CC360016380C /* ViewController.h */,
 				93BE1CDA1B62CC360016380C /* ViewController.m */,
+				93CF94F61B66B09300D1558C /* CustomApplication.h */,
+				93CF94F71B66B09300D1558C /* CustomApplication.m */,
+				93BE1CD31B62CC360016380C /* Info.plist */,
 				93BE1CDC1B62CC360016380C /* Images.xcassets */,
 				93BE1CDE1B62CC360016380C /* Main.storyboard */,
 				93BE1CD21B62CC360016380C /* Supporting Files */,
-				93CF94F61B66B09300D1558C /* CustomApplication.h */,
-				93CF94F71B66B09300D1558C /* CustomApplication.m */,
 			);
 			path = "objective-c-osx";
 			sourceTree = "<group>";
@@ -124,7 +125,6 @@
 		93BE1CD21B62CC360016380C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				93BE1CD31B62CC360016380C /* Info.plist */,
 				93BE1CD71B62CC360016380C /* main.m */,
 			);
 			name = "Supporting Files";

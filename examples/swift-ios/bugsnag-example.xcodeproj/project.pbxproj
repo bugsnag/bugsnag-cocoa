@@ -52,6 +52,8 @@
 		D175F4DE1ACDBEFA009AFFB7 /* AnotherClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnotherClass.swift; sourceTree = "<group>"; };
 		D175F4E01ACDBFD9009AFFB7 /* AnObjCClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnObjCClass.h; sourceTree = "<group>"; };
 		D175F4E11ACDBFD9009AFFB7 /* AnObjCClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnObjCClass.m; sourceTree = "<group>"; };
+		E6152E17248ABA8D00CE9FC6 /* libBugsnag.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libBugsnag.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E6152E19248ABAAF00CE9FC6 /* libBugsnag.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libBugsnag.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E75E62DE1F4CE1D8000C44C0 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		E75E62E01F4CE1DD000C44C0 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -113,25 +115,17 @@
 			isa = PBXGroup;
 			children = (
 				D175F4BD1ACDBD81009AFFB7 /* AppDelegate.swift */,
-				D175F4DD1ACDBE24009AFFB7 /* bugsnag-example-Bridging-Header.h */,
 				D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */,
-				D175F4C11ACDBD81009AFFB7 /* Main.storyboard */,
-				D175F4C41ACDBD81009AFFB7 /* Images.xcassets */,
-				D175F4C61ACDBD81009AFFB7 /* LaunchScreen.xib */,
-				D175F4BB1ACDBD81009AFFB7 /* Supporting Files */,
 				D175F4DE1ACDBEFA009AFFB7 /* AnotherClass.swift */,
+				D175F4BC1ACDBD81009AFFB7 /* Info.plist */,
+				D175F4DD1ACDBE24009AFFB7 /* bugsnag-example-Bridging-Header.h */,
 				D175F4E01ACDBFD9009AFFB7 /* AnObjCClass.h */,
 				D175F4E11ACDBFD9009AFFB7 /* AnObjCClass.m */,
+				D175F4C41ACDBD81009AFFB7 /* Images.xcassets */,
+				D175F4C11ACDBD81009AFFB7 /* Main.storyboard */,
+				D175F4C61ACDBD81009AFFB7 /* LaunchScreen.xib */,
 			);
 			path = "bugsnag-example";
-			sourceTree = "<group>";
-		};
-		D175F4BB1ACDBD81009AFFB7 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				D175F4BC1ACDBD81009AFFB7 /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		D175F4D01ACDBD81009AFFB7 /* bugsnag-exampleTests */ = {
@@ -154,6 +148,8 @@
 		FD51012AA06FE025CCC45C93 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E6152E19248ABAAF00CE9FC6 /* libBugsnag.a */,
+				E6152E17248ABA8D00CE9FC6 /* libBugsnag.a */,
 				E75E62E01F4CE1DD000C44C0 /* libz.tbd */,
 				E75E62DE1F4CE1D8000C44C0 /* libc++.tbd */,
 				1A8C72BF7F8211697881F641 /* libPods-bugsnag-example.a */,

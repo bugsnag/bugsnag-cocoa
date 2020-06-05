@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import "OutOfMemoryController.h"
-#import "Bugsnag.h"
+#import <Bugsnag/Bugsnag.h>
 #import <pthread.h>
 #import <stdlib.h>
 
