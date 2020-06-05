@@ -13,6 +13,9 @@ how to upgrade.
 
 ## Enhancements
 
+* Allow starting Bugsnag from PList
+  [#676](https://github.com/bugsnag/bugsnag-cocoa/pull/676)
+
 * The comparison of redacted keys is now case-insensitive
   [#653](https://github.com/bugsnag/bugsnag-cocoa/pull/653)
 

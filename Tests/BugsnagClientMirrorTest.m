@@ -129,7 +129,8 @@
             @"bugsnagStarted B16@0:8",
             @"bugsnagStarted c16@0:8",
             @"leaveBreadcrumbWithBlock: v24@0:8@?16",
-            @"getContext @16@0:8"
+            @"getContext @16@0:8",
+            @"start @16@0:8"
     ]];
 }
 
