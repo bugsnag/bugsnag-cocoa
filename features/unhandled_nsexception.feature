@@ -1,6 +1,9 @@
 Feature: Uncaught NSExceptions are captured by Bugsnag
 
-Scenario: Throw a NSException
+  Background:
+    Given I clear all UserDefaults data
+
+  Scenario: Throw a NSException
     When I run "ObjCExceptionScenario" and relaunch the app
     And I configure Bugsnag for "ObjCExceptionScenario"
     And I wait to receive a request

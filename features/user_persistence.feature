@@ -1,6 +1,9 @@
 Feature: Persisting User Information
 
-Scenario: User Info is persisted across app runs
+  Background:
+    Given I clear all UserDefaults data
+
+  Scenario: User Info is persisted across app runs
     When I run "UserPersistencePersistUserScenario"
 
     # User is set and comes through
@@ -30,7 +33,7 @@ Scenario: User Info is persisted across app runs
     And the payload field "events.0.user.email" equals "baz@grok.com"
     And the payload field "events.0.user.name" equals "bar"
 
-Scenario: User Info is not persisted across app runs
+  Scenario: User Info is not persisted across app runs
     When I run "UserPersistenceDontPersistUserScenario"
 
     # User is set and comes through

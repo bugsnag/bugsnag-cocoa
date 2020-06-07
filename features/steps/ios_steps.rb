@@ -22,6 +22,13 @@ When("I run {string} and relaunch the app") do |event_type|
   }
 end
 
+When("I clear all UserDefaults data") do
+  steps %Q{
+    Given the element "ClearUserDefaultsButton" is present
+    And I click the element "ClearUserDefaultsButton"
+  }
+end
+
 When("I close the keyboard") do
   steps %Q{
     Given the element "CloseKeyboardItem" is present

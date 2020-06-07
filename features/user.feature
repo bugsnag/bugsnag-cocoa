@@ -1,16 +1,18 @@
 Feature: Reporting User Information
 
-# TODO: Temporarily removed whilst internal ticket PLAT-4416 is worked
-#Scenario: Default user information only includes ID
-#    When I run "UserDefaultInfoScenario"
-#    And I wait to receive a request
-#    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-#    And the exception "message" equals "The operation couldn’t be completed. (UserDefaultInfoScenario error 100.)"
-#    And the event "user.id" is not null
-#    And the event "user.email" is null
-#    And the event "user.name" is null
+  Background:
+    Given I clear all UserDefaults data
 
-Scenario: User fields set as null
+  Scenario: Default user information only includes ID
+    When I run "UserDefaultInfoScenario"
+    And I wait to receive a request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the exception "message" equals "The operation couldn’t be completed. (UserDefaultInfoScenario error 100.)"
+    And the event "user.id" is not null
+    And the event "user.email" is null
+    And the event "user.name" is null
+
+  Scenario: User fields set as null
     When I run "UserDisabledScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
@@ -19,7 +21,7 @@ Scenario: User fields set as null
     And the event "user.email" is null
     And the event "user.name" is null
 
-Scenario: Only User email field set
+  Scenario: Only User email field set
     When I run "UserEmailScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
@@ -28,7 +30,7 @@ Scenario: Only User email field set
     And the event "user.email" equals "user@example.com"
     And the event "user.name" is null
 
-Scenario: All user fields set
+  Scenario: All user fields set
     When I run "UserEnabledScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
@@ -37,7 +39,7 @@ Scenario: All user fields set
     And the event "user.email" equals "user@example.com"
     And the event "user.name" equals "Joe Bloggs"
 
-Scenario: Only User ID field set
+  Scenario: Only User ID field set
     When I run "UserIdScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
@@ -46,7 +48,7 @@ Scenario: Only User ID field set
     And the event "user.email" is null
     And the event "user.name" is null
 
-Scenario: Overriding the user in the Event callback
+  Scenario: Overriding the user in the Event callback
     When I run "UserEventOverrideScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
@@ -54,7 +56,7 @@ Scenario: Overriding the user in the Event callback
     And the event "user.email" equals "customEmail"
     And the event "user.name" equals "customName"
 
-Scenario: Overriding the user in the Session callback
+  Scenario: Overriding the user in the Session callback
     When I run "UserSessionOverrideScenario"
     And I wait to receive a request
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
@@ -62,7 +64,7 @@ Scenario: Overriding the user in the Session callback
     And the session "user.email" equals "customEmail"
     And the session "user.name" equals "customName"
 
-Scenario: Setting the user from Configuration for an event
+  Scenario: Setting the user from Configuration for an event
     When I run "UserFromConfigEventScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
@@ -73,7 +75,7 @@ Scenario: Setting the user from Configuration for an event
     And the event "metaData.clientUserValue.email" equals "fake@gmail.com"
     And the event "metaData.clientUserValue.name" equals "Fay K"
 
-Scenario: Setting the user from Configuration for a session
+  Scenario: Setting the user from Configuration for a session
     When I run "UserFromConfigSessionScenario"
     And I wait to receive a request
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
@@ -81,7 +83,7 @@ Scenario: Setting the user from Configuration for a session
     And the session "user.email" equals "fake@gmail.com"
     And the session "user.name" equals "Fay K"
 
-Scenario: Setting the user from Client for sessions
+  Scenario: Setting the user from Client for sessions
     When I run "UserFromClientScenario"
     And I wait to receive a request
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
