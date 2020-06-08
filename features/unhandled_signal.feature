@@ -1,6 +1,9 @@
 Feature: Signals are captured as error reports in Bugsnag
 
-Scenario: Triggering SIGABRT
+  Background:
+    Given I clear all UserDefaults data
+
+  Scenario: Triggering SIGABRT
     When I run "AbortScenario" and relaunch the app
     And I configure Bugsnag for "AbortScenario"
     And I wait to receive a request
@@ -8,7 +11,7 @@ Scenario: Triggering SIGABRT
     And the payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "SIGABRT"
     And the "method" of stack frame 0 equals "__pthread_kill"
-    And the "method" of stack frame 1 matches "^(<redacted>|pthread_kill)$"
+    And the "method" of stack frame 1 matches "^(<redacted>| pthread_kill)$"
     And the "method" of stack frame 2 equals "abort"
     And the "method" of stack frame 3 equals "-[AbortScenario run]"
     And the event "severity" equals "error"
@@ -16,7 +19,7 @@ Scenario: Triggering SIGABRT
     And the event "severityReason.type" equals "signal"
     And the event "severityReason.attributes.signalType" equals "SIGABRT"
 
-Scenario: Triggering SIGPIPE
+  Scenario: Triggering SIGPIPE
     When I run "SIGPIPEScenario" and relaunch the app
     And I configure Bugsnag for "SIGPIPEScenario"
     And I wait to receive a request
@@ -28,7 +31,7 @@ Scenario: Triggering SIGPIPE
     And the event "severityReason.type" equals "signal"
     And the event "severityReason.attributes.signalType" equals "SIGPIPE"
 
-Scenario: Triggering SIGBUS
+  Scenario: Triggering SIGBUS
     When I run "SIGBUSScenario" and relaunch the app
     And I configure Bugsnag for "SIGBUSScenario"
     And I wait to receive a request
@@ -40,7 +43,7 @@ Scenario: Triggering SIGBUS
     And the event "severityReason.type" equals "signal"
     And the event "severityReason.attributes.signalType" equals "SIGBUS"
 
-Scenario: Triggering SIGFPE
+  Scenario: Triggering SIGFPE
     When I run "SIGFPEScenario" and relaunch the app
     And I configure Bugsnag for "SIGFPEScenario"
     And I wait to receive a request
@@ -52,7 +55,7 @@ Scenario: Triggering SIGFPE
     And the event "severityReason.type" equals "signal"
     And the event "severityReason.attributes.signalType" equals "SIGFPE"
 
-Scenario: Triggering SIGILL
+  Scenario: Triggering SIGILL
     When I run "SIGILLScenario" and relaunch the app
     And I configure Bugsnag for "SIGILLScenario"
     And I wait to receive a request
@@ -64,7 +67,7 @@ Scenario: Triggering SIGILL
     And the event "severityReason.type" equals "signal"
     And the event "severityReason.attributes.signalType" equals "SIGILL"
 
-Scenario: Triggering SIGSEGV
+  Scenario: Triggering SIGSEGV
     When I run "SIGSEGVScenario" and relaunch the app
     And I configure Bugsnag for "SIGSEGVScenario"
     And I wait to receive a request
@@ -76,7 +79,7 @@ Scenario: Triggering SIGSEGV
     And the event "severityReason.type" equals "signal"
     And the event "severityReason.attributes.signalType" equals "SIGSEGV"
 
-Scenario: Triggering SIGSYS
+  Scenario: Triggering SIGSYS
     When I run "SIGSYSScenario" and relaunch the app
     And I configure Bugsnag for "SIGSYSScenario"
     And I wait to receive a request
@@ -88,7 +91,7 @@ Scenario: Triggering SIGSYS
     And the event "severityReason.type" equals "signal"
     And the event "severityReason.attributes.signalType" equals "SIGSYS"
 
-Scenario: Triggering SIGTRAP
+  Scenario: Triggering SIGTRAP
     When I run "SIGTRAPScenario" and relaunch the app
     And I configure Bugsnag for "SIGTRAPScenario"
     And I wait to receive a request

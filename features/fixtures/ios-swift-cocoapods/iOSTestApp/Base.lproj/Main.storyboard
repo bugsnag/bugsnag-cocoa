@@ -53,6 +53,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zEv-jB-Vej">
                                 <rect key="frame" x="20" y="343" width="374" height="30"/>
+                                <accessibility key="accessibilityConfiguration" identifier="ClearUserDefaultsButton"/>
                                 <state key="normal" title="Clear User Defaults"/>
                                 <connections>
                                     <action selector="clearUserData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZcO-Ew-Mhu"/>

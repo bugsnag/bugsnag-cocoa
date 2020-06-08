@@ -2,6 +2,9 @@ Feature: autoDetectErrors flag controls whether errors are captured automaticall
     Bugsnag captures several error types by default. If the autoDetectErrors flag
     is false it should only capture handled errors which the user has reported.
 
+    Background:
+        Given I clear all UserDefaults data
+
     Scenario: Uncaught NSException not reported when autoDetectErrors is false
         When I run "AutoDetectFalseHandledScenario"
         And I wait to receive a request

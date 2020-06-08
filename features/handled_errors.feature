@@ -1,11 +1,14 @@
 Feature: Handled Errors and Exceptions
 
-Scenario: Override errorClass and message from a notifyError() callback, customize report
+  Background:
+    Given I clear all UserDefaults data
 
-    Discard 2 lines from the stacktrace, as we have single place to report and log errors, see
-    https://docs.bugsnag.com/platforms/ios-objc/reporting-handled-exceptions/#depth
-    This way top of the stacktrace is not logError but run
-    Include configured metadata dictionary into the report
+  Scenario: Override errorClass and message from a notifyError() callback, customize report
+
+  Discard 2 lines from the stacktrace, as we have single place to report and log errors, see
+  https://docs.bugsnag.com/platforms/ios-objc/reporting-handled-exceptions/#depth
+  This way top of the stacktrace is not logError but run
+  Include configured metadata dictionary into the report
 
     When I run "HandledErrorOverrideScenario"
     And I wait to receive a request
@@ -22,7 +25,7 @@ Scenario: Override errorClass and message from a notifyError() callback, customi
     # Consider using a step to check for "at least {int} stack frames"
     # And the stack trace is an array with 15 stack frames
 
-Scenario: Reporting an NSError
+  Scenario: Reporting an NSError
     When I run "HandledErrorScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
@@ -35,7 +38,7 @@ Scenario: Reporting an NSError
     # TODO This may be platform specific:
     # And the stack trace is an array with 15 stack frames
 
-Scenario: Reporting a handled exception
+  Scenario: Reporting a handled exception
     When I run "HandledExceptionScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
@@ -48,7 +51,7 @@ Scenario: Reporting a handled exception
     # This may be platform specific
     # And the stack trace is an array with 15 stack frames
 
-Scenario: Reporting a handled exception's stacktrace
+  Scenario: Reporting a handled exception's stacktrace
     When I run "NSExceptionShiftScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
@@ -64,26 +67,26 @@ Scenario: Reporting a handled exception's stacktrace
     And the "method" of stack frame 2 equals "-[NSExceptionShiftScenario causeAnException]"
     And the "method" of stack frame 3 equals "-[NSExceptionShiftScenario run]"
 
-Scenario: Reporting handled errors concurrently
+  Scenario: Reporting handled errors concurrently
     When I run "ManyConcurrentNotifyScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 8 elements
     And each event in the payload matches one of:
-        | exceptions.0.errorClass | exceptions.0.message |
-        | FooError                | Err 0   |
-        | FooError                | Err 1   |
-        | FooError                | Err 2   |
-        | FooError                | Err 3   |
+      | exceptions.0.errorClass | exceptions.0.message |
+      | FooError                | Err 0                |
+      | FooError                | Err 1                |
+      | FooError                | Err 2                |
+      | FooError                | Err 3                |
 
-Scenario: Reporting handled errors concurrently in an environment without background thread reporting
+  Scenario: Reporting handled errors concurrently in an environment without background thread reporting
     When I run "ManyConcurrentNotifyNoBackgroundThreads"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 8 elements
     And each event in the payload matches one of:
-        | exceptions.0.errorClass | exceptions.0.message |
-        | BarError                | Err 0   |
-        | BarError                | Err 1   |
-        | BarError                | Err 2   |
-        | BarError                | Err 3   |
+      | exceptions.0.errorClass | exceptions.0.message |
+      | BarError                | Err 0                |
+      | BarError                | Err 1                |
+      | BarError                | Err 2                |
+      | BarError                | Err 3                |

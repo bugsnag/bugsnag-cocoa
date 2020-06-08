@@ -1,6 +1,9 @@
 Feature: Thrown C++ exceptions are captured by Bugsnag
 
-Scenario: Throwing a C++ exception
+  Background:
+    Given I clear all UserDefaults data
+
+  Scenario: Throwing a C++ exception
     When I run "CxxExceptionScenario" and relaunch the app
     And I configure Bugsnag for "CxxExceptionScenario"
     And I wait to receive a request
