@@ -33,6 +33,8 @@ Feature: Enabled error types
   Scenario: CPP Crash Reporting is disabled
     When I run "EnabledErrorTypesCxxScenario" and relaunch the app
     And I configure Bugsnag for "EnabledErrorTypesCxxScenario"
+    # Give ignored SIGABRT report time to be processed
+    And I wait for 2 seconds
     And I wait to receive 2 requests
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest request
@@ -42,6 +44,8 @@ Feature: Enabled error types
     When I run "DisableMachExceptionScenario"
     And I relaunch the app
     And I configure Bugsnag for "DisableMachExceptionScenario"
+    # Give ignored SIGSEGV report time to be processed
+    And I wait for 2 seconds
     And I wait to receive 2 requests
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest request
