@@ -12,14 +12,14 @@ Scenario: Override errorClass and message from a notifyError() callback, customi
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the exception "errorClass" equals "Bar"
     And the exception "message" equals "Foo"
-    And the event "device.time" is within 30 seconds of the current timestamp
+    And the payload field "events.0.device.time" is a date
     And the event "metaData.account.items.0" equals 400
     And the event "metaData.account.items.1" equals 200
     And the event "severity" equals "warning"
     And the event "unhandled" is false
     And the event "severityReason.type" equals "handledError"
-    # This may be platform specific.
-    # TODO Consider using a step to check for "at least {int} stack frames"
+    # TODO This may be platform specific:
+    # Consider using a step to check for "at least {int} stack frames"
     # And the stack trace is an array with 15 stack frames
 
 Scenario: Reporting an NSError
@@ -32,7 +32,7 @@ Scenario: Reporting an NSError
     And the event "severity" equals "warning"
     And the event "unhandled" is false
     And the event "severityReason.type" equals "handledError"
-    # This may be platform specific
+    # TODO This may be platform specific:
     # And the stack trace is an array with 15 stack frames
 
 Scenario: Reporting a handled exception
