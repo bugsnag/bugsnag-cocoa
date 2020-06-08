@@ -142,10 +142,12 @@
         BugsnagEvent *event = storedEvents[filename];
         NSDictionary *requestPayload = [self prepareEventPayload:event];
 
+        NSMutableDictionary *apiHeaders = [[configuration errorApiHeaders] mutableCopy];
+        BSGDictSetSafeObject(apiHeaders, event.apiKey, BSGHeaderApiKey);
         [self.apiClient sendItems:1
                       withPayload:requestPayload
                             toURL:configuration.notifyURL
-                          headers:[configuration errorApiHeaders]
+                          headers:apiHeaders
                      onCompletion:^(NSUInteger reportCount, BOOL success, NSError *error) {
                          [self finishActiveRequest:filename success:success error:error block:block];
                      }];
@@ -174,7 +176,7 @@
 - (NSDictionary *)prepareEventPayload:(BugsnagEvent *)event {
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     BSGDictSetSafeObject(data, [[Bugsnag client].notifier toDict], BSGKeyNotifier);
-    BSGDictSetSafeObject(data, [Bugsnag client].configuration.apiKey, BSGKeyApiKey);
+    BSGDictSetSafeObject(data, event.apiKey, BSGKeyApiKey);
     BSGDictSetSafeObject(data, @"4.0", @"payloadVersion");
     BSGDictSetSafeObject(data, @[[event toJson]], BSGKeyEvents);
     return data;

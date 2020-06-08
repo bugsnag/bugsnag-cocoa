@@ -44,6 +44,7 @@
 #import "BugsnagStateEvent.h"
 #import "BugsnagCollections.h"
 #import "BugsnagMetadataInternal.h"
+#import "BugsnagKeys.h"
 
 static NSString *const kHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
 static NSString *const kHeaderApiKey = @"Bugsnag-Api-Key";
@@ -343,7 +344,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 - (NSDictionary *)errorApiHeaders {
     return @{
              kHeaderApiPayloadVersion: @"4.0",
-             kHeaderApiKey: self.apiKey,
+             BSGHeaderApiKey: self.apiKey,
              kHeaderApiSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate new]]
     };
 }

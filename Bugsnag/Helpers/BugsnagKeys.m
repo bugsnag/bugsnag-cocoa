@@ -96,3 +96,4 @@ NSString *const BSGKeyUser = @"user";
 NSString *const BSGKeyUuid = @"uuid";
 NSString *const BSGKeyVersion = @"version";
 NSString *const BSGKeyWarning = @"warning";
+NSString *const BSGHeaderApiKey = @"Bugsnag-Api-Key";
