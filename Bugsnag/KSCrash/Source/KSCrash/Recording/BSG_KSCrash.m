@@ -31,7 +31,6 @@
 #import "BSG_KSCrashAdvanced.h"
 
 #import "BSG_KSCrashC.h"
-#import "BSG_KSCrashCallCompletion.h"
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSSingleton.h"
 #import "BSG_KSMachHeaders.h"
@@ -287,7 +286,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     _dyld_register_func_for_add_image(&bsg_mach_binary_image_added);
 }
 
-- (void)sendAllReportsWithBlock:(BSGOnErrorSentBlock)block {
+- (void)sendAllReports {
     [self.crashReportStore pruneFilesLeaving:self.maxStoredReports];
 
     NSDictionary *reports = [self allReportsByFilename];
@@ -301,11 +300,9 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
                 if (error != nil) {
                     BSG_KSLOG_ERROR(@"Failed to send reports: %@", error);
                 }
-                if (completed) {
+                if (completed && filename != nil) {
                     [self.crashReportStore deleteFileWithId:filename];
                 }
-                bsg_kscrash_i_callCompletion(block, filename,
-                        completed, error);
             }];
 }
 
@@ -403,25 +400,18 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 - (void)sendReports:(NSDictionary <NSString *, NSDictionary *> *)reports
           withBlock:(BSGOnErrorSentBlock)block {
     if ([reports count] == 0) {
-        bsg_kscrash_i_callCompletion(block, 0, YES, nil);
+        block(nil, YES, nil);
         return;
     }
 
     if (self.sink == nil) {
-        bsg_kscrash_i_callCompletion(
-            block, 0, NO,
-            [NSError bsg_errorWithDomain:[[self class] description]
-                                    code:0
-                             description:@"No sink set. Crash reports not sent."]);
+        block(nil, NO, [NSError bsg_errorWithDomain:[[self class] description]
+                                               code:0
+                                        description:@"No sink set. Crash reports not sent."]);
         return;
     }
-
     [self.sink sendStoredReports:reports
-                       withBlock:^(NSString *filename, BOOL completed,
-                               NSError *error) {
-                           bsg_kscrash_i_callCompletion(block, filename,
-                                   completed, error);
-                       }];
+                       withBlock:block];
 }
 
 - (NSArray *)allReports {

@@ -117,10 +117,14 @@
     NSMutableDictionary<NSString *, BugsnagEvent *>* storedEvents = [NSMutableDictionary new];
     BugsnagConfiguration *configuration = [Bugsnag configuration];
 
+    // run user callbacks on events before enqueueing any requests, as
+    // this way events can be discarded quickly. This frees up disk
+    // space for any events which are captured in the meantime.
     for (NSString *fileKey in keys) {
         NSDictionary *report = ksCrashReports[fileKey];
         BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:report];
         event.codeBundleId = [Bugsnag client].codeBundleId;
+        event.redactedKeys = configuration.redactedKeys;
 
         if ([event shouldBeSent] && [self runOnSendBlocks:configuration event:event]) {
             storedEvents[fileKey] = event;
@@ -136,7 +140,6 @@
                       block:(BSGOnErrorSentBlock)block {
     for (NSString *filename in storedEvents) {
         BugsnagEvent *event = storedEvents[filename];
-        event.redactedKeys = configuration.redactedKeys;
         NSDictionary *requestPayload = [self prepareEventPayload:event];
 
         [self.apiClient sendItems:1

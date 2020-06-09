@@ -307,6 +307,9 @@ how to upgrade.
 * The `bundleVersion` property is available on `BugsnagConfiguration` allowing overriding the default plist value.
   [#550](https://github.com/bugsnag/bugsnag-cocoa/pull/550)
 
+* Deliver each event in a separate request to avoid exceeding payload size limit
+  [#424](https://github.com/bugsnag/bugsnag-cocoa/pull/424)
+
 ## 5.23.2 (2020-05-13)
 
 ## Bug Fixes
@@ -462,9 +465,6 @@ names are deprecated but still supported until the next major release.
 
 This release disables reporting out-of-memory events in debug mode, to reduce
 false positives.
-
-* Deliver each event in a separate request to avoid exceeding payload size limit
-  [#424](https://github.com/bugsnag/bugsnag-cocoa/pull/424)
 
 ### Bug fixes
 

@@ -97,11 +97,7 @@ Then("the received requests match:") do |table|
   table.hashes.each do |row|
     requests.each do |request|
       event = read_key_path(request[:body], "events.0")
-
-      if request_matches_row(event, row)
-        puts("Found a match")
-        match_count += 1
-      end
+      match_count += 1 if request_matches_row(event, row)
     end
   end
   assert_equal(request_count, match_count, "Unexpected number of requests matched the received payloads")
@@ -112,12 +108,12 @@ def request_matches_row(body, row)
 
   row.all? do |key, expected_value|
     obs_val = read_key_path(body, key)
-    equal_values = expected_value.to_s.eql? obs_val.to_s
-    null_value = "null".eql? expected_value || obs_val.nil?
+    equal_values = expected_value.to_s.eql? obs_val.to_s && !obs_val.nil?
+    null_value = "null".eql? expected_value && obs_val.nil?
     match = equal_values || null_value
     request_matches = request_matches && match
   end
-  return request_matches
+  request_matches
 end
 
 Then("the payload field {string} is equal for request {int} and request {int}") do |key, index_a, index_b|
@@ -130,6 +126,8 @@ end
 
 def request_fields_are_equal(key, index_a, index_b)
   requests = Server.stored_requests.to_a
+  assert_true(requests.length > index_a, "Not enough requests received to access index #{index_a}")
+  assert_true(requests.length > index_b, "Not enough requests received to access index #{index_b}")
   request_a = requests[index_a][:body]
   request_b = requests[index_b][:body]
   val_a = read_key_path(request_a, key)

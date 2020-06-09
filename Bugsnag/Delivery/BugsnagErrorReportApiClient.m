@@ -29,15 +29,7 @@
 - (void)main {
     @autoreleasepool {
         @try {
-            [[BSG_KSCrash sharedInstance]
-                    sendAllReportsWithBlock:^(NSString *filename,
-                            BOOL completed, NSError *error) {
-                        if (error) {
-                            bsg_log_warn(@"Failed to send error report: %@ %@", filename, error);
-                        } else if (filename) {
-                            bsg_log_info(@"Delivered error report '%@'", filename);
-                        }
-                    }];
+            [[BSG_KSCrash sharedInstance] sendAllReports];
         } @catch (NSException *e) {
             bsg_log_err(@"Could not send error report: %@", e);
         }

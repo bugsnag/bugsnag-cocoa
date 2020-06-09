@@ -7,6 +7,8 @@ Feature: Enabled error types
     # Sessions: on, unhandled crashes: off
     When I run "DisableAllExceptManualExceptionsAndCrashScenario" and relaunch the app
     And I configure Bugsnag for "DisableAllExceptManualExceptionsAndCrashScenario"
+    # Give ignored report time to be processed
+    And I wait for 2 seconds
     And I wait to receive 2 requests
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest request
