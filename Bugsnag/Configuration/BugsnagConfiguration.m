@@ -555,16 +555,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     }
 }
 
-// MARK: -
-
-- (void)setShouldAutoCaptureSessions:(BOOL)shouldAutoCaptureSessions {
-    self.autoTrackSessions = shouldAutoCaptureSessions;
-}
-
-- (BOOL)shouldAutoCaptureSessions {
-    return self.autoTrackSessions;
-}
-
 // MARK: - enabledBreadcrumbTypes
 
 - (BSGEnabledBreadcrumbType)enabledBreadcrumbTypes {
