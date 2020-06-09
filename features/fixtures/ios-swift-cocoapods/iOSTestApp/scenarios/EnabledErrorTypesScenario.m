@@ -44,7 +44,7 @@
 
 
 /**
- * Disable all crash reporting (except, implicitly, manual), send a manual report 
+ * Disable all crash reporting (except, implicitly, manual), send a manual report
  * and crash the app (one session request with 2 sessions and 1 report should be sent)
  */
 @implementation DisableAllExceptManualExceptionsSendManualAndCrashScenario
@@ -94,7 +94,7 @@
     // Send a handled exception to confirm the scenario is running.
     [Bugsnag notify:[NSException exceptionWithName:NSGenericException reason:@"DisableNSExceptionScenario - Handled"
                                                  userInfo:@{NSLocalizedDescriptionKey: @""}]];
-    
+
     // From ObjCExceptionScenario.  Wait 1 seconds before throwing.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         @throw [NSException exceptionWithName:NSGenericException reason:@"An uncaught exception! SCREAM."
@@ -114,19 +114,17 @@
     errorTypes.machExceptions = false;
     errorTypes.ooms = false;
     self.config.enabledErrorTypes = errorTypes;
-    self.config.autoTrackSessions = NO;
+    [self.config addOnSendErrorBlock:^BOOL(BugsnagEvent * _Nonnull event) {
+        // Suppress the SIGSEGV caused by EXC_BAD_ACCESS (https://flylib.com/books/en/3.126.1.110/1/)
+        return ![@"SIGSEGV" isEqualToString:event.errors[0].errorClass];
+    }];
     [super startBugsnag];
 }
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-noreturn"
 - (void)run  __attribute__((noreturn)) {
-    // Send a handled exception to confirm the scenario is running.
-    [Bugsnag notify:[NSException exceptionWithName:NSGenericException reason:@"DisableMachExceptionScenario - Handled"
-                                          userInfo:@{NSLocalizedDescriptionKey: @""}]];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        strcmp(0, ""); // Generate EXC_BAD_ACCESS (see e.g. https://stackoverflow.com/q/22488358/2431627)
-    });
+    strcmp(0, ""); // Generate EXC_BAD_ACCESS (see e.g. https://stackoverflow.com/q/22488358/2431627)
 }
 #pragma clang diagnostic pop
 
