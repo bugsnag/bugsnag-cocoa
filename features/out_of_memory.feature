@@ -1,7 +1,10 @@
 Feature: Reporting out of memory events
-    If the app is terminated without either a reported crash or a "will
-    terminate" event, and the underlying OS and app versions remain the same,
-    it is likely that the app has been killed.
+  If the app is terminated without either a reported crash or a "will
+  terminate" event, and the underlying OS and app versions remain the same,
+  it is likely that the app has been killed.
+#  Background:
+#    Given I clear all UserDefaults data
+
 
     # Scenario: The app is terminated normally
     #    The application can be gracefully terminated by the OS if more

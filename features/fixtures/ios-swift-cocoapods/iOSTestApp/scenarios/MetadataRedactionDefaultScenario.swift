@@ -21,6 +21,8 @@ class MetadataRedactionDefaultScenario: Scenario {
 
     override func run() {
         Bugsnag.addMetadata("hunter2", key: "password", section: "custom")
+        Bugsnag.addMetadata("hunter3", key: "Password", section: "custom")
+        Bugsnag.addMetadata("not redacted", key: "password2", section: "custom")
         Bugsnag.addMetadata("brown fox", key: "normalKey", section: "custom")
 
         let error = NSError(domain: "HandledErrorScenario", code: 100, userInfo: nil)

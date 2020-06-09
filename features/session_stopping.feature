@@ -1,6 +1,9 @@
 Feature: Stopping and resuming sessions
 
-Scenario: When a session is stopped the error has no session information
+  Background:
+    Given I clear all UserDefaults data
+
+  Scenario: When a session is stopped the error has no session information
     When I run "StoppedSessionScenario"
     And I wait to receive 3 requests
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
@@ -14,7 +17,7 @@ Scenario: When a session is stopped the error has no session information
     And I discard the oldest request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
 
-Scenario: When a session is resumed the error uses the previous session information
+  Scenario: When a session is resumed the error uses the previous session information
     When I run "ResumedSessionScenario"
     And I wait to receive 3 requests
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
@@ -30,8 +33,7 @@ Scenario: When a session is resumed the error uses the previous session informat
     And I discard the oldest request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
 
-
-Scenario: When a new session is started the error uses different session information
+  Scenario: When a new session is started the error uses different session information
     When I run "NewSessionScenario"
     And I wait to receive 4 requests
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
