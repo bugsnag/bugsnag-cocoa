@@ -9,6 +9,8 @@ Feature: Metadata values can be redacted
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "metaData.custom.password" equals "[REDACTED]"
+    And the event "metaData.custom.Password" equals "[REDACTED]"
+    And the event "metaData.custom.password2" equals "not redacted"
     And the event "metaData.custom.normalKey" equals "brown fox"
     And the event "metaData.extras.callbackValue" equals "hunter2"
 
