@@ -14,15 +14,24 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     /**
-     This is the minimum amount of setup required for Bugsnag to work.  Simply input your apiKey and the application will deliver all error and session notifications to the appropriate dashboard.
+     This is the minimum amount of setup required for Bugsnag to work.  Simply add your API key to the app's .plist (Supporting Files/Bugsnag Test App-Info.plist) and the application will deliver all error and session notifications to the appropriate dashboard.
+     
+     You can find your API key in your Bugsnag dashboard under the settings menu.
      */
-    NSString *apiKey = @"<YOUR_APIKEY_HERE>";
-    [Bugsnag startWithApiKey:apiKey];
+    [Bugsnag start];
     
     /**
+     Bugsnag behavior can be configured through the plist and/or further extended in code by creating a BugsnagConfiguration object and passing it to [Bugsnag startWithConfiguration].
+     
      All subsequent setup is optional, and will configure your Bugsnag setup in different ways. A few common examples are included here, for more detailed explanations please look at the documented configuration options at https://docs.bugsnag.com/platforms/ios/configuration-options/
      */
-//     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
+    
+    // Create config object from the application plist
+//    BugsnagConfiguration *config = [BugsnagConfiguration loadConfig];
+    
+    // ... or construct an empty object
+//    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:@"YOUR-API-KEY"];
+    
     /**
      This sets some user information that will be attached to each error.
      */
@@ -46,18 +55,20 @@
     /**
      Enabled error types allow you to customize exactly what errors are automatically captured and delivered to your Bugsnag dashboard.  A detailed breakdown of each error type can be found in the configuration option documentation.
      */
-//    BugsnagErrorTypes *enabledErrorTypes = [BugsnagErrorTypes alloc];
-//    enabledErrorTypes.ooms = NO;
-//    enabledErrorTypes.unhandledExceptions = YES;
-//    enabledErrorTypes.machExceptions = YES;
-//    [config setEnabledErrorTypes:enabledErrorTypes];
+//    config.enabledErrorTypes.ooms = NO;
+//    config.enabledErrorTypes.unhandledExceptions = YES;
+//    config.enabledErrorTypes.machExceptions = YES;
     
     /**
      If there's information that you do not wish sent to your Bugsnag dashboard, such as passwords or user information, you can set the keys as redacted. When a notification is sent to Bugsnag all keys matching your set filters will be redacted before they leave your application.
      All automatically captured data can be found here: https://docs.bugsnag.com/platforms/ios/automatically-captured-data/.
      */
 //    [config setRedactedKeys:[NSSet setWithArray:@[@"filter_me", @"firstName", @"lastName"]]];
-    //[Bugsnag startWithConfiguration:config];
+    
+    /**
+     Finally, start Bugsnag with the specified configuration:
+     */
+//    [Bugsnag startWithConfiguration:config];
     
     return YES;
 }
