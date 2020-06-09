@@ -53,10 +53,12 @@ static BSG_CrashSentry bsg_g_sentries[] = {
         bsg_kscrashsentry_uninstallMachHandler,
     },
 #endif
+#if BSG_KSCRASH_HAS_SIGNAL
     {
         BSG_KSCrashTypeSignal, bsg_kscrashsentry_installSignalHandler,
         bsg_kscrashsentry_uninstallSignalHandler,
     },
+#endif
     {
         BSG_KSCrashTypeCPPException,
         bsg_kscrashsentry_installCPPExceptionHandler,

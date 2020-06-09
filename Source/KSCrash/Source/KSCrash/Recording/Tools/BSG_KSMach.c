@@ -164,6 +164,7 @@ const char *bsg_ksmachkernelReturnCodeName(const kern_return_t returnCode) {
 bool bsg_ksmachfillState(const thread_t thread, const thread_state_t state,
                          const thread_state_flavor_t flavor,
                          const mach_msg_type_number_t stateCount) {
+#if BSG_KSCRASH_HAS_MACH
     mach_msg_type_number_t stateCountBuff = stateCount;
     kern_return_t kr;
 
@@ -173,6 +174,9 @@ bool bsg_ksmachfillState(const thread_t thread, const thread_state_t state,
         return false;
     }
     return true;
+#else
+    return false;
+#endif
 }
 
 void bsg_ksmach_init(void) {
@@ -342,12 +346,14 @@ bool bsg_ksmachsuspendAllThreadsExcept(thread_t *exceptThreads,
         thread_t thread = threads[i];
         if (thread != thisThread &&
             !isThreadInList(thread, exceptThreads, exceptThreadsCount)) {
+#if BSG_KSCRASH_HAS_MACH
             if ((kr = thread_suspend(thread)) != KERN_SUCCESS) {
                 // The thread may have completed running already
                 // Don't treat this as a fatal error.
                 BSG_KSLOG_DEBUG("thread_suspend (%08x): %s", thread,
                                 mach_error_string(kr));
             }
+#endif
         }
     }
 
@@ -376,17 +382,18 @@ bool bsg_ksmachresumeAllThreadsExcept(thread_t *exceptThreads,
         BSG_KSLOG_ERROR("task_threads: %s", mach_error_string(kr));
         return false;
     }
-
     for (mach_msg_type_number_t i = 0; i < numThreads; i++) {
         thread_t thread = threads[i];
         if (thread != thisThread &&
             !isThreadInList(thread, exceptThreads, exceptThreadsCount)) {
+#if BSG_KSCRASH_HAS_MACH
             if ((kr = thread_resume(thread)) != KERN_SUCCESS) {
                 // The thread may have completed running already
                 // Don't treat this as a fatal error.
                 BSG_KSLOG_DEBUG("thread_resume (%08x): %s", thread,
                                  mach_error_string(kr));
             }
+#endif
         }
     }
 

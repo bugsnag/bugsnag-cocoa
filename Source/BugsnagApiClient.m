@@ -84,17 +84,14 @@
                         }];
             [task resume];
         } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            NSURLResponse *response = nil;
             request.HTTPBody = jsonData;
-            [NSURLConnection sendSynchronousRequest:request
-                                  returningResponse:&response
-                                              error:&error];
-            if (onCompletion) {
-                onCompletion(count, error == nil, error);
-            }
-#pragma clang diagnostic pop
+
+            NSURLSession *session = [NSURLSession sharedSession];
+            [[session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                if (onCompletion) {
+                    onCompletion(count, error == nil, error);
+                }
+            }] resume];
         }
     } @catch (NSException *exception) {
         if (onCompletion) {

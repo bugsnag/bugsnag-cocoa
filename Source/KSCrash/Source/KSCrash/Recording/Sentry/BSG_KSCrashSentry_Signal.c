@@ -137,7 +137,7 @@ bool bsg_kscrashsentry_installSignalHandler(
 
     bsg_g_context = context;
 
-#if !TARGET_OS_TV
+#if !TARGET_OS_TV && !TARGET_OS_WATCH
     if (bsg_g_signalStack.ss_size == 0) {
         BSG_KSLOG_DEBUG("Allocating signal stack area.");
         bsg_g_signalStack.ss_size = SIGSTKSZ;

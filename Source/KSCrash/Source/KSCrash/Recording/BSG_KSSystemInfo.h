@@ -56,8 +56,10 @@
 #define BSG_KSSystemField_BuildType "build_type"
 
 #import <Foundation/Foundation.h>
-#if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV || TARGET_OS_IOS
 #import <UIKit/UIKit.h>
+#elif TARGET_OS_WATCH
+#import <WatchKit/WatchKit.h>
 #endif
 
 /**
@@ -81,13 +83,17 @@
  */
 + (BOOL)isRunningInAppExtension;
 
-#if TARGET_OS_TV || TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_TV || TARGET_OS_IOS
 + (UIApplicationState)currentAppState;
 
 /**
  * YES if the app is currently shown in the foreground
  */
 + (BOOL)isInForeground:(UIApplicationState)state;
+#elif TARGET_OS_WATCH
++ (WKApplicationState)currentAppState;
+
++ (BOOL)isInForeground:(WKApplicationState)state;
 #endif
 
 @end

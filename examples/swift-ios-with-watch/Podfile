@@ -1,0 +1,6 @@
+use_frameworks!
+platform :watchos, '4.0'
+
+target 'bugsnag-example WatchKit Extension' do
+  pod 'Bugsnag', :path => "../.."
+end

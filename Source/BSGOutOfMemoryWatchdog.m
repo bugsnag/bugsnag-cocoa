@@ -1,4 +1,4 @@
-#if (TARGET_OS_TV || TARGET_OS_IPHONE)
+#if (TARGET_OS_TV || TARGET_OS_IOS)
 #define BSGOOMAvailable 1
 #else
 #define BSGOOMAvailable 0
@@ -246,7 +246,11 @@
     // 'codeBundleId' only (optionally) exists for React Native clients and defaults otherwise to nil
     app[@"codeBundleId"] = [config codeBundleId];
 #if BSGOOMAvailable
+#if TARGET_OS_WATCH
+    WKApplicationState state = [BSG_KSSystemInfo currentAppState];
+#else
     UIApplicationState state = [BSG_KSSystemInfo currentAppState];
+#endif
     app[@"inForeground"] = @([BSG_KSSystemInfo isInForeground:state]);
     app[@"isActive"] = @(state == UIApplicationStateActive);
 #else
@@ -254,8 +258,10 @@
 #endif
 #if TARGET_OS_TV
     app[@"type"] = @"tvOS";
-#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#elif TARGET_OS_IOS
     app[@"type"] = @"iOS";
+#elif TARGET_OS_WATCHOS
+    app[@"type"] = @"watchOS";
 #endif
     cache[@"app"] = app;
 
