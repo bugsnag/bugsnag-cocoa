@@ -108,9 +108,16 @@ def request_matches_row(body, row)
 
   row.all? do |key, expected_value|
     obs_val = read_key_path(body, key)
-    equal_values = expected_value.to_s.eql? obs_val.to_s && !obs_val.nil?
-    null_value = "null".eql? expected_value && obs_val.nil?
-    match = equal_values || null_value
+    match = false
+    if obs_val.nil?
+      match = true
+    elsif expected_value.to_s.eql? obs_val.to_s
+      match = true
+    elsif "null".eql? expected_value && obs_val.nil?
+      match = true
+    else
+      match = false
+    end
     request_matches = request_matches && match
   end
   request_matches
