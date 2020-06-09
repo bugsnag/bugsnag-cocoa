@@ -101,6 +101,8 @@ extern NSString *const BSGKeyUuid;
 extern NSString *const BSGKeyVersion;
 extern NSString *const BSGKeyWarning;
 extern NSString *const BSGHeaderApiKey;
+extern NSString *const BSGHeaderApiPayloadVersion;
+extern NSString *const BSGHeaderApiSentAt;
 
 #define BSGKeyHwCputype "hw.cputype"
 #define BSGKeyHwCpusubtype "hw.cpusubtype"

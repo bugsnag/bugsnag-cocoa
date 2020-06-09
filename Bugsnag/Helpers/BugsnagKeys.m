@@ -97,3 +97,5 @@ NSString *const BSGKeyUuid = @"uuid";
 NSString *const BSGKeyVersion = @"version";
 NSString *const BSGKeyWarning = @"warning";
 NSString *const BSGHeaderApiKey = @"Bugsnag-Api-Key";
+NSString *const BSGHeaderApiPayloadVersion = @"Bugsnag-Payload-Version";
+NSString *const BSGHeaderApiSentAt = @"Bugsnag-Sent-At";
