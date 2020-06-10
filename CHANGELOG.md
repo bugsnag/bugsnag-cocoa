@@ -239,12 +239,6 @@ how to upgrade.
   prominently displayed and is not truncated.
   [#433](https://github.com/bugsnag/bugsnag-cocoa/pull/433)
 
-* Added `Bugsnag.getMetadata(_ section)`.  The behaviour is: calling with a valid section
-  name will return the metadata for that section if it exists, or `nil` if it does not exist.  Other,
-  similar functionality (e.g. `BugsnagConfiguration.getTab()` has been renamed and
-  had usage aligned with this change.
-  [#459](https://github.com/bugsnag/bugsnag-cocoa/pull/459)
-
 * Add metadata accessor methods to `BugsnagEvent`
   [#465](https://github.com/bugsnag/bugsnag-cocoa/pull/465)
   
