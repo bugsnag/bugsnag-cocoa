@@ -52,7 +52,8 @@ The following functions have been added to the `Bugsnag` client:
 | Property/Method                                                    | Usage                                                             |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
 | `addOnBreadcrumb` / `removeOnBreadcrumb`<br />`addOnBreadcrumbBlock` / `removeOnBreadcrumbBlock` | Add/remove callbacks to modify or discard breadcrumbs before they are recorded. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-breadcrumbs/#discarding-and-amending-breadcrumbs) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-breadcrumbs/#discarding-and-amending-breadcrumbs) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-breadcrumbs/#discarding-and-amending-breadcrumbs)).
-| `getMetadata` / `getMetadataFromSection`                           | Retrieves previously set metadata. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-error-reports/#global-metadata) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-error-reports/#global-metadata) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-error-reports/#global-metadata)).
+| `addMetadata:metadata:toSection` / `addMetadata(metadata:section)` | Adds a dictionary of metadata to a section/tab. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-error-reports/#global-metadata) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-error-reports/#global-metadata) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-error-reports/#global-metadata)).
+| `getMetadata` / `getMetadataFromSection`                           | Retrieves previously set metadata from a section/tab. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-error-reports/#global-metadata) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-error-reports/#global-metadata) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-error-reports/#global-metadata)).
 | `setUser:withEmail:andName` / `setUser(_:email:name)`              | Sets the active user for the app for future events. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/customizing-error-reports/#adding-user-data) \| [macOS](https://docs.bugsnag.com/platforms/macos/customizing-error-reports/#adding-user-data) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/customizing-error-reports/#adding-user-data)).
 
 #### Changes
@@ -125,6 +126,8 @@ The following changes have been made to the `BugsnagConfiguration` class:
 | `sessionURL`                                                       | `setEndpoints(BugsnagEndpointConfiguration)`                      |
 | `setEndpointsForNotify:sessions` / `setEndpoints(notify: sessions)`| `setEndpoints(BugsnagEndpointConfiguration)`                      |
 | `shouldAutoCaptureSessions`                                        | `autoTrackSessions`                                               |
+
+Note - `OnSendError` blocks now take a `BugsnagEvent` parameter (see below) only. If you are setting an `onCrashHandler` block to add crash-time data you must ensure the extra data is added as a string->object dictionary-like entry. This data will then be available as metadata in the `BugsnagEvent`.
 
 #### Deprecations
 
