@@ -19,7 +19,6 @@
 		F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874A16AA233500676BB2 /* UIKit.framework */; };
 		F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874C16AA233500676BB2 /* Foundation.framework */; };
 		F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874E16AA233500676BB2 /* CoreGraphics.framework */; };
-		F40B875516AA233500676BB2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F40B875316AA233500676BB2 /* InfoPlist.strings */; };
 		F40B875716AA233500676BB2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F40B875616AA233500676BB2 /* main.m */; };
 		F40B875B16AA233500676BB2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F40B875A16AA233500676BB2 /* AppDelegate.m */; };
 		F40B875D16AA233500676BB2 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = F40B875C16AA233500676BB2 /* Default.png */; };
@@ -73,8 +72,7 @@
 		F40B874A16AA233500676BB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		F40B874C16AA233500676BB2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F40B874E16AA233500676BB2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		F40B875216AA233500676BB2 /* Bugsnag Test App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Bugsnag Test App-Info.plist"; sourceTree = "<group>"; };
-		F40B875416AA233500676BB2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F40B875216AA233500676BB2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F40B875616AA233500676BB2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F40B875816AA233500676BB2 /* Bugsnag Test App-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bugsnag Test App-Prefix.pch"; sourceTree = "<group>"; };
 		F40B875916AA233500676BB2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -199,14 +197,15 @@
 		F40B875016AA233500676BB2 /* Bugsnag Test App */ = {
 			isa = PBXGroup;
 			children = (
-				8A4882E3224BCD5D0035B94C /* OutOfMemoryController.h */,
-				8A4882E4224BCD5D0035B94C /* OutOfMemoryController.m */,
 				F40B875916AA233500676BB2 /* AppDelegate.h */,
 				F40B875A16AA233500676BB2 /* AppDelegate.m */,
-				F40B876216AA233500676BB2 /* MainStoryboard.storyboard */,
 				F40B876816AA233500676BB2 /* ViewController.h */,
 				F40B876916AA233500676BB2 /* ViewController.m */,
+				8A4882E3224BCD5D0035B94C /* OutOfMemoryController.h */,
+				8A4882E4224BCD5D0035B94C /* OutOfMemoryController.m */,
+				F40B875216AA233500676BB2 /* Info.plist */,
 				0013DB142449E934003DB182 /* Images.xcassets */,
+				F40B876216AA233500676BB2 /* MainStoryboard.storyboard */,
 				F40B875116AA233500676BB2 /* Supporting Files */,
 			);
 			path = "Bugsnag Test App";
@@ -215,8 +214,6 @@
 		F40B875116AA233500676BB2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				F40B875216AA233500676BB2 /* Bugsnag Test App-Info.plist */,
-				F40B875316AA233500676BB2 /* InfoPlist.strings */,
 				F40B875616AA233500676BB2 /* main.m */,
 				F40B875816AA233500676BB2 /* Bugsnag Test App-Prefix.pch */,
 				F40B875C16AA233500676BB2 /* Default.png */,
@@ -323,7 +320,6 @@
 						TestTargetID = F40B874516AA233500676BB2;
 					};
 					E7AB1DDE1F2F3AC0000AAF94 = {
-						DevelopmentTeam = LB9U9M53WT;
 						TestTargetID = F40B874516AA233500676BB2;
 					};
 					F40B874516AA233500676BB2 = {
@@ -381,7 +377,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				00C3ED5823F2D6D900757DBD /* README.md in Resources */,
-				F40B875516AA233500676BB2 /* InfoPlist.strings in Resources */,
 				0013DB152449E934003DB182 /* Images.xcassets in Resources */,
 				F40B875D16AA233500676BB2 /* Default.png in Resources */,
 				F40B875F16AA233500676BB2 /* Default@2x.png in Resources */,
@@ -481,14 +476,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		F40B875316AA233500676BB2 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F40B875416AA233500676BB2 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 		F40B876216AA233500676BB2 /* MainStoryboard.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -670,7 +657,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = LB9U9M53WT;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -687,7 +674,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 				TEST_TARGET_NAME = "Bugsnag Test App";
 			};
 			name = Debug;
@@ -710,7 +697,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = LB9U9M53WT;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -726,7 +713,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagUIHarness;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 				TEST_TARGET_NAME = "Bugsnag Test App";
 			};
 			name = Release;
@@ -778,6 +765,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -823,6 +811,7 @@
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -844,7 +833,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Bugsnag Test App/Bugsnag Test App-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				INFOPLIST_FILE = "Bugsnag Test App/Bugsnag Test App-Info.plist";
+				INFOPLIST_FILE = "Bugsnag Test App/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "bugsnag.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -869,7 +858,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Bugsnag Test App/Bugsnag Test App-Prefix.pch";
-				INFOPLIST_FILE = "Bugsnag Test App/Bugsnag Test App-Info.plist";
+				INFOPLIST_FILE = "Bugsnag Test App/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "bugsnag.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

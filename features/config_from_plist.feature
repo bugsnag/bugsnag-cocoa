@@ -1,6 +1,9 @@
 Feature: Loading Bugsnag configuration from Info.plist
-    Configuration options can be specified in build at build time to avoid
-    writing code for those options.
+  Configuration options can be specified in build at build time to avoid
+  writing code for those options.
+
+    Background:
+        Given I clear all UserDefaults data
 
     Scenario: Specifying config in Info.plist
         When I run "LoadConfigFromFileScenario"

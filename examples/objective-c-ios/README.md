@@ -1,6 +1,6 @@
-# iOS Example application with Bugsnag
+# Example iOS application with Bugsnag
 
-This application was made to demonstrate various features of the Bugsnag Cocoa notifier when used in an iOS application.
+This application was made to demonstrate various features of the Bugsnag Cocoa notifier when used in an iOS application written in Objective-C.
 
 When running the application you will see a number of elements that will exercise different features provided by Bugsnag.  These are broadly divided into the following sections:
 
@@ -15,16 +15,11 @@ Specific implementation details can be found in the `ViewController.m` file.
 
 1. Run `pod install`
 2. Open the generated workspace in XCode
-3. Insert your API key in the AppDelegate's `application:didFinishLaunchingWithOptions:`
-
-    `NSString *apiKey = @"<YOUR_APIKEY_HERE>";`
-
+3. Add your API key to the `bugsnag` dictionary of `Info.plist` 
 4. Run the app! There are several examples of different kinds of errors which can be thrown.
 
 #### Configuration examples
 
-A set of configuration examples have been included underneath the minimum setup.  To use, simply comment out the AppDelegate's:
-`[Bugsnag startWithApiKey:apiKey];`
-and uncomment the subsequent  configuration lines.
+A set of configuration examples have been included underneath the minimum setup.  To use, simply comment out the AppDelegate's: `[Bugsnag start]` and uncomment the subsequent configuration lines.
 
 Each line has a brief explanation of what the option does, and for full information please read the documentation at https://docs.bugsnag.com/platforms/ios/configuration-options/.

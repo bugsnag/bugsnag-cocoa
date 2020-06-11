@@ -18,6 +18,7 @@
 		00CEB60D24080C690004793D /* EnabledErrorTypesScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEB60C24080C690004793D /* EnabledErrorTypesScenario.m */; };
 		6526A0D4248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */; };
 		8A14F0F62282D4AE00337B05 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		8A14F0F62282D4AE00337B05 /* BuildFile in Sources */ = {isa = PBXBuildFile; };
 		8A22FC66225B598500CA8895 /* OOMForegroundScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A22FC65225B598500CA8895 /* OOMForegroundScenario.m */; };
 		8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */; };
 		8A38C5D124094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */; };
@@ -795,7 +796,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Bugsnag/Bugsnag.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -804,7 +805,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -829,7 +830,7 @@
 				E700EE7E247D7A61008CFFB6 /* SIGSYSScenario.m in Sources */,
 				E75040A42478052D005D33BD /* AutoDetectFalseAbortScenario.swift in Sources */,
 				F4295A036B228AF608641699 /* UserDisabledScenario.swift in Sources */,
-				8A14F0F62282D4AE00337B05 /* (null) in Sources */,
+				8A14F0F62282D4AE00337B05 /* BuildFile in Sources */,
 				0011E6672403D13100ED71CD /* UserPersistenceScenarios.m in Sources */,
 				8AB65FCC22DC77CB001200AB /* LoadConfigFromFileScenario.swift in Sources */,
 				E7B79CD4247FD6760039FB88 /* ManualContextOnErrorScenario.swift in Sources */,

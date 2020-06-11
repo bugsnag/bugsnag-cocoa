@@ -233,7 +233,7 @@ The short "name" value has been removed and replaced with an arbitrarily long "m
 
 ### `BugsnagCrashReport` class
 
-This is now BugsnagEvent.
+This is now BugsnagEvent. Each event is now delivered in a separate request to avoid exceeding Bugsnag's request payload size limit in extreme scenarios.
 
 #### Additions
 

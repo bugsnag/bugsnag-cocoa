@@ -1,6 +1,9 @@
 Feature: Bugsnag captures an unhandled mach exception
 
-Scenario: Trigger a mach exception
+  Background:
+    Given I clear all UserDefaults data
+
+  Scenario: Trigger a mach exception
     When I run "UnhandledMachExceptionScenario" and relaunch the app
     And I configure Bugsnag for "UnhandledMachExceptionScenario"
     And I wait to receive a request

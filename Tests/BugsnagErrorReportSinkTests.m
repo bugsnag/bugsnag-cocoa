@@ -1,5 +1,5 @@
 //
-//  BugsnagSinkTests.m
+//  BugsnagErrorReportSinkTests.m
 //  Bugsnag
 //
 //  Created by Simon Maynard on 12/1/14.
@@ -13,10 +13,10 @@
 
 #import "Bugsnag.h"
 #import "BugsnagHandledState.h"
-#import "BugsnagSink.h"
+#import "BugsnagErrorReportSink.h"
 #import "BugsnagTestConstants.h"
 
-@interface BugsnagSinkTests : XCTestCase
+@interface BugsnagErrorReportSinkTests : XCTestCase
 @property NSDictionary *rawReportData;
 @property NSDictionary *processedData;
 @end
@@ -39,11 +39,11 @@
                     session:(BugsnagSession *)session;
 @end
 
-@interface BugsnagSink ()
-- (NSDictionary *)getBodyFromEvents:(NSArray *)events;
+@interface BugsnagErrorReportSink ()
+- (NSDictionary *)prepareEventPayload:(BugsnagEvent *)event;
 @end
 
-@implementation BugsnagSinkTests
+@implementation BugsnagErrorReportSinkTests
 
 - (void)setUp {
     [super setUp];
@@ -68,8 +68,8 @@
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
     [client start];
     BugsnagEvent *report =
-    [[BugsnagEvent alloc] initWithKSReport:self.rawReportData];
-    self.processedData = [[BugsnagSink new] getBodyFromEvents:@[report]];
+            [[BugsnagEvent alloc] initWithKSReport:self.rawReportData];
+    self.processedData = [[BugsnagErrorReportSink new] prepareEventPayload:report];
 }
 
 - (void)tearDown {
@@ -332,7 +332,7 @@
 
 - (NSDictionary *)reportFromHandledState:(BugsnagHandledState *)state {
     BugsnagEvent *report = [self generateEvent:state];
-    NSDictionary *data = [[BugsnagSink new] getBodyFromEvents:@[report]];
+    NSDictionary *data = [[BugsnagErrorReportSink new] prepareEventPayload:report];
     return [data[@"events"] firstObject];
 }
 
@@ -423,7 +423,7 @@
     BugsnagEvent *report = [self generateEvent:state];
     report.severity = BSGSeverityInfo;
     
-    NSDictionary *data = [[BugsnagSink new] getBodyFromEvents:@[report]];
+    NSDictionary *data = [[BugsnagErrorReportSink new] prepareEventPayload:report];
     NSDictionary *payload = [data[@"events"] firstObject];
     
     XCTAssertEqualObjects(@"info", payload[@"severity"]);
