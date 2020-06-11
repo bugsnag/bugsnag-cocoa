@@ -241,10 +241,12 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
 
     // large breadcrumb is also left without issue
     __block NSUInteger crumbSize = 0;
+    __block BugsnagBreadcrumb *crumb;
 
     [client addOnBreadcrumbBlock:^BOOL(BugsnagBreadcrumb *breadcrumb) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:[breadcrumb objectValue] options:0 error:nil];
         crumbSize = data.length;
+        crumb = breadcrumb;
         return true;
     }];
 
@@ -254,6 +256,9 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
                                andType:BSGBreadcrumbTypeManual];
     XCTAssertTrue(crumbSize > 4096); // previous 4kb limit
     XCTAssertEqual(2, [breadcrumbs count]);
+    XCTAssertNotNil(crumb);
+    XCTAssertEqualObjects(@"Hello World", crumb.message);
+    XCTAssertEqualObjects(largeMetadata, crumb.metadata);
 }
 
 - (NSDictionary *)generateLargeMetadata {
