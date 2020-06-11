@@ -25,6 +25,10 @@ class BreadcrumbCallbackCrashScenario : Scenario {
             crumb.metadata["shouldNotHappen"] = "it happened"
             return true
         }
+        self.config.addOnBreadcrumb { (crumb) -> Bool in
+            crumb.metadata["secondCallback"] = true
+            return true
+        }
         super.startBugsnag()
     }
 

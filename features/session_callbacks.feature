@@ -34,5 +34,6 @@ Feature: Callbacks can access and modify session information
     When I run "SessionCallbackCrashScenario"
     And I wait to receive a request
     And the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "app.id" equals "customAppId"
+    And the payload field "app.id" equals "someAppId"
     And the session "user.id" equals "placeholderId"
+    And the payload field "device.id" equals "customDeviceId"

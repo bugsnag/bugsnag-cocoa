@@ -57,3 +57,4 @@ Feature: Callbacks can access and modify breadcrumb information
     And the payload field "events.0.breadcrumbs.0.metaData.foo" equals "bar"
     And the payload field "events.0.breadcrumbs.0.metaData.addedInCallback" is true
     And the payload field "events.0.breadcrumbs.0.metaData.shouldNotHappen" is null
+    And the payload field "events.0.breadcrumbs.0.metaData.secondCallback" is true

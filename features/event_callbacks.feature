@@ -69,3 +69,22 @@ Feature: Callbacks can access and modify event information
     And the event "metaData.callbacks.config" equals 1
     And the event "metaData.callbacks.client" equals 2
     And the event "metaData.callbacks.secondClient" equals 3
+
+  Scenario: An uncaught NSException in a notify callback does not affect error delivery
+    When I run "NotifyCallbackCrashScenario"
+    And I wait to receive a request
+    And the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the event "unhandled" is false
+    And the exception "message" equals "The operation couldn’t be completed. (NotifyCallbackCrashScenario error 100.)"
+    And the event "metaData.callbacks.beforeCrash" is true
+    And the event "metaData.callbacks.afterCrash" is null
+
+  Scenario: An uncaught NSException in an OnSendError callback does not affect error delivery
+    When I run "OnSendErrorCallbackCrashScenario"
+    And I wait to receive a request
+    And the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the event "unhandled" is false
+    And the exception "message" equals "The operation couldn’t be completed. (OnSendErrorCallbackCrashScenario error 100.)"
+    And the event "metaData.callbacks.beforeCrash" is true
+    And the event "metaData.callbacks.afterCrash" is null
+    And the event "metaData.callbacks.secondCallback" is true
