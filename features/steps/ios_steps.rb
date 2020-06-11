@@ -68,52 +68,83 @@ end
 # 4: The application is running in the foreground
 Then("The app is running in the foreground") do
   wait_for_true do
-    status = $driver.execute_script('mobile: queryAppState',{bundleId: "com.bugsnag.iOSTestApp"})
+    status = $driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
     status == 4
   end
 end
 
 Then("The app is running in the background") do
   wait_for_true do
-    status = $driver.execute_script('mobile: queryAppState',{bundleId: "com.bugsnag.iOSTestApp"})
+    status = $driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
     status == 3
   end
 end
 
 Then("The app is not running") do
   wait_for_true do
-    status = $driver.execute_script('mobile: queryAppState',{bundleId: "com.bugsnag.iOSTestApp"})
+    status = $driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
     status == 1
   end
 end
 
-Then("each event in the payload matches one of:") do |table|
-  # Checks string equality of event fields against values
-  events = read_key_path(Server.current_request[:body], "events")
-  table.hashes.each do |values|
-    assert_not_nil(events.detect do |event|
-      values.all? do |k, v|
-        if k.start_with? 'has '
-          event_value = read_key_path(event, k.split(' ').last)
-          if v == 'yes'
-            !event_value.nil?
-          else
-            event_value.nil?
-          end
-        else
-          v == read_key_path(event, k) || (v.to_i == read_key_path(event, k).to_i)
-        end
+Then("the received requests match:") do |table|
+  # Checks that each request matches one of the event fields
+  requests = Server.stored_requests
+  request_count = requests.count()
+  match_count = 0
+
+  # iterate through each row in the table. exactly 1 request should match each row.
+  table.hashes.each do |row|
+    requests.each do |request|
+      if !request.key? :body or !request[:body].key? "events" then
+        # No body.events in this request - skip
+        return
       end
-    end, "No event matches the following values: #{values}")
+      events = request[:body]['events']
+      assert_equal(1, events.length, 'Expected exactly one event per request')
+      match_count += 1 if request_matches_row(events[0], row)
+    end
   end
+  assert_equal(request_count, match_count, "Unexpected number of requests matched the received payloads")
+end
+
+def request_matches_row(body, row)
+  row.each do |key, expected_value|
+    obs_val = read_key_path(body, key)
+    next if ("null".eql? expected_value) && obs_val.nil? # Both are null/nil
+    next if !obs_val.nil? && (expected_value.to_s.eql? obs_val.to_s) # Values match
+    # Match not found - return false
+    return false
+  end
+  # All matched - return true
+  true
+end
+
+Then("the payload field {string} is equal for request {int} and request {int}") do |key, index_a, index_b|
+  assert_true(request_fields_are_equal(key, index_a, index_b))
+end
+
+Then("the payload field {string} is not equal for request {int} and request {int}") do |key, index_a, index_b|
+  assert_false(request_fields_are_equal(key, index_a, index_b))
+end
+
+def request_fields_are_equal(key, index_a, index_b)
+  requests = Server.stored_requests.to_a
+  assert_true(requests.length > index_a, "Not enough requests received to access index #{index_a}")
+  assert_true(requests.length > index_b, "Not enough requests received to access index #{index_b}")
+  request_a = requests[index_a][:body]
+  request_b = requests[index_b][:body]
+  val_a = read_key_path(request_a, key)
+  val_b = read_key_path(request_b, key)
+  val_a.eql? val_b
 end
 
 Then("the event {string} is within {int} seconds of the current timestamp") do |field, threshold_secs|
   value = read_key_path(Server.current_request[:body], "events.0.#{field}")
   assert_not_nil(value, "Expected a timestamp")
-  nowSecs = Time.now.to_i
-  thenSecs = Time.parse(value).to_i
-  delta = nowSecs - thenSecs
+  now_secs = Time.now.to_i
+  then_secs = Time.parse(value).to_i
+  delta = now_secs - then_secs
   assert_true(delta.abs < threshold_secs, "Expected current timestamp, but received #{value}")
 end
 
@@ -137,24 +168,24 @@ end
 
 Then("the stack trace is an array with {int} stack frames") do |expected_length|
   stack_trace = read_key_path(Server.current_request[:body], "events.0.exceptions.0.stacktrace")
-  assert_equal(expected_length,  stack_trace.length)
+  assert_equal(expected_length, stack_trace.length)
 end
 
 Then("the stacktrace contains methods:") do |table|
   stack_trace = read_key_path(Server.current_request[:body], "events.0.exceptions.0.stacktrace")
   expected = table.raw.flatten
-  actual = stack_trace.map{|s| s["method"]}
+  actual = stack_trace.map { |s| s["method"] }
   contains = actual.each_cons(expected.length).to_a.include? expected
   assert_true(contains, "Stacktrace methods #{actual} did not contain #{expected}")
 end
 
 Then("the payload field {string} matches the test device model") do |field|
   internal_names = {
-    "iPhone 7" => ["iPhone9,1", "iPhone9,2", "iPhone9,3", "iPhone9,4"],
-    "iPhone 8" => ["iPhone10,1", "iPhone10,2", "iPhone10,4", "iPhone10,5"],
-    "iPhone X" => ["iPhone10,3", "iPhone10,6"],
-    "iPhone XR" => ["iPhone11,8"],
-    "iPhone XS" => ["iPhone11,2", "iPhone11,4", "iPhone11,8"]
+      "iPhone 7" => %w[iPhone9,1 iPhone9,2 iPhone9,3 iPhone9,4],
+      "iPhone 8" => %w[iPhone10,1 iPhone10,2 iPhone10,4 iPhone10,5],
+      "iPhone X" => %w[iPhone10,3 iPhone10,6],
+      "iPhone XR" => ["iPhone11,8"],
+      "iPhone XS" => %w[iPhone11,2 iPhone11,4 iPhone11,8]
   }
   expected_model = Devices::DEVICE_HASH[$driver.device_type]["device"]
   valid_models = internal_names[expected_model]
