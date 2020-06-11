@@ -19,6 +19,7 @@
 // THE SOFTWARE.
 
 import UIKit
+import Bugsnag
 
 class ViewController: UITableViewController {
 
