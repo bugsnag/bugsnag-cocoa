@@ -85,9 +85,9 @@
 		<key>autoNotify</key>
 		<false/>
 		<key>autoBreadcrumbs</key>
-		<false/>
+		<true/>
 		<key>autoTrackSessions</key>
-		<false/>
+		<true/>
 	</dict>
 </dict>
 </plist>
