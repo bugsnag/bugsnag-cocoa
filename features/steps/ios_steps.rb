@@ -136,15 +136,15 @@ def request_fields_are_equal(key, index_a, index_b)
   request_b = requests[index_b][:body]
   val_a = read_key_path(request_a, key)
   val_b = read_key_path(request_b, key)
-  return val_a.eql? val_b
+  val_a.eql? val_b
 end
 
 Then("the event {string} is within {int} seconds of the current timestamp") do |field, threshold_secs|
   value = read_key_path(Server.current_request[:body], "events.0.#{field}")
   assert_not_nil(value, "Expected a timestamp")
-  nowSecs = Time.now.to_i
-  thenSecs = Time.parse(value).to_i
-  delta = nowSecs - thenSecs
+  now_secs = Time.now.to_i
+  then_secs = Time.parse(value).to_i
+  delta = now_secs - then_secs
   assert_true(delta.abs < threshold_secs, "Expected current timestamp, but received #{value}")
 end
 
@@ -181,11 +181,11 @@ end
 
 Then("the payload field {string} matches the test device model") do |field|
   internal_names = {
-      "iPhone 7" => ["iPhone9,1", "iPhone9,2", "iPhone9,3", "iPhone9,4"],
-      "iPhone 8" => ["iPhone10,1", "iPhone10,2", "iPhone10,4", "iPhone10,5"],
-      "iPhone X" => ["iPhone10,3", "iPhone10,6"],
+      "iPhone 7" => %w[iPhone9,1 iPhone9,2 iPhone9,3 iPhone9,4],
+      "iPhone 8" => %w[iPhone10,1 iPhone10,2 iPhone10,4 iPhone10,5],
+      "iPhone X" => %w[iPhone10,3 iPhone10,6],
       "iPhone XR" => ["iPhone11,8"],
-      "iPhone XS" => ["iPhone11,2", "iPhone11,4", "iPhone11,8"]
+      "iPhone XS" => %w[iPhone11,2 iPhone11,4 iPhone11,8]
   }
   expected_model = Devices::DEVICE_HASH[$driver.device_type]["device"]
   valid_models = internal_names[expected_model]
