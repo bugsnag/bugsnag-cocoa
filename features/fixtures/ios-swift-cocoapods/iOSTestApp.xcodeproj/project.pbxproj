@@ -19,6 +19,7 @@
 		6526A0D4248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */; };
 		8A14F0F62282D4AE00337B05 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		8A14F0F62282D4AE00337B05 /* BuildFile in Sources */ = {isa = PBXBuildFile; };
+		8A14F0F62282D4AE00337B05 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		8A22FC66225B598500CA8895 /* OOMForegroundScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A22FC65225B598500CA8895 /* OOMForegroundScenario.m */; };
 		8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */; };
 		8A38C5D124094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */; };
@@ -74,6 +75,8 @@
 		E75040B12478214F005D33BD /* MetadataRedactionRegexScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75040AE2478214E005D33BD /* MetadataRedactionRegexScenario.swift */; };
 		E75040B22478214F005D33BD /* MetadataRedactionNestedScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75040AF2478214E005D33BD /* MetadataRedactionNestedScenario.swift */; };
 		E75040B424782597005D33BD /* ReleaseStageSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75040B324782597005D33BD /* ReleaseStageSessionScenario.swift */; };
+		E753F24624927409001FB671 /* NotifyCallbackCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E753F24524927409001FB671 /* NotifyCallbackCrashScenario.swift */; };
+		E753F24824927412001FB671 /* OnSendErrorCallbackCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E753F24724927412001FB671 /* OnSendErrorCallbackCrashScenario.swift */; };
 		E7767F11221C21D90006648C /* StoppedSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7767F10221C21D90006648C /* StoppedSessionScenario.swift */; };
 		E7767F13221C21E30006648C /* ResumedSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7767F12221C21E30006648C /* ResumedSessionScenario.swift */; };
 		E7767F15221C223C0006648C /* NewSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7767F14221C223C0006648C /* NewSessionScenario.swift */; };
@@ -239,6 +242,8 @@
 		E75040AE2478214E005D33BD /* MetadataRedactionRegexScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataRedactionRegexScenario.swift; sourceTree = "<group>"; };
 		E75040AF2478214E005D33BD /* MetadataRedactionNestedScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataRedactionNestedScenario.swift; sourceTree = "<group>"; };
 		E75040B324782597005D33BD /* ReleaseStageSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseStageSessionScenario.swift; sourceTree = "<group>"; };
+		E753F24524927409001FB671 /* NotifyCallbackCrashScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifyCallbackCrashScenario.swift; sourceTree = "<group>"; };
+		E753F24724927412001FB671 /* OnSendErrorCallbackCrashScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnSendErrorCallbackCrashScenario.swift; sourceTree = "<group>"; };
 		E7767F10221C21D90006648C /* StoppedSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoppedSessionScenario.swift; sourceTree = "<group>"; };
 		E7767F12221C21E30006648C /* ResumedSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumedSessionScenario.swift; sourceTree = "<group>"; };
 		E7767F14221C223C0006648C /* NewSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSessionScenario.swift; sourceTree = "<group>"; };
@@ -406,6 +411,7 @@
 		E700EE51247D31CF008CFFB6 /* Event Callbacks */ = {
 			isa = PBXGroup;
 			children = (
+				E753F24524927409001FB671 /* NotifyCallbackCrashScenario.swift */,
 				E700EE52247D31EA008CFFB6 /* OnErrorOverwriteScenario.swift */,
 				E700EE54247D3204008CFFB6 /* OnSendOverwriteScenario.swift */,
 				E700EE58247D321B008CFFB6 /* OriginalErrorNSErrorScenario.swift */,
@@ -415,6 +421,7 @@
 				E700EE61247D4D42008CFFB6 /* OnCrashHandlerScenario.m */,
 				E700EE63247D6C08008CFFB6 /* OnSendCallbackRemovalScenario.h */,
 				E700EE64247D6C08008CFFB6 /* OnSendCallbackRemovalScenario.m */,
+				E753F24724927412001FB671 /* OnSendErrorCallbackCrashScenario.swift */,
 			);
 			name = "Event Callbacks";
 			sourceTree = "<group>";
@@ -830,7 +837,7 @@
 				E700EE7E247D7A61008CFFB6 /* SIGSYSScenario.m in Sources */,
 				E75040A42478052D005D33BD /* AutoDetectFalseAbortScenario.swift in Sources */,
 				F4295A036B228AF608641699 /* UserDisabledScenario.swift in Sources */,
-				8A14F0F62282D4AE00337B05 /* BuildFile in Sources */,
+				8A14F0F62282D4AE00337B05 /* (null) in Sources */,
 				0011E6672403D13100ED71CD /* UserPersistenceScenarios.m in Sources */,
 				8AB65FCC22DC77CB001200AB /* LoadConfigFromFileScenario.swift in Sources */,
 				E7B79CD4247FD6760039FB88 /* ManualContextOnErrorScenario.swift in Sources */,
@@ -848,6 +855,7 @@
 				F429565A951303E2C3136D0D /* UserIdScenario.swift in Sources */,
 				8A38C5D124094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift in Sources */,
 				8AEEBBD020FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m in Sources */,
+				E753F24624927409001FB671 /* NotifyCallbackCrashScenario.swift in Sources */,
 				8AF8FCAC22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift in Sources */,
 				6526A0D4248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift in Sources */,
 				F4295A94DD2D131A594A212C /* HandledErrorScenario.swift in Sources */,
@@ -879,6 +887,7 @@
 				E700EE6C247D793A008CFFB6 /* SIGPIPEScenario.m in Sources */,
 				E700EE50247D15DE008CFFB6 /* UserFromConfigSessionScenario.swift in Sources */,
 				8A840FBA21AF5C450041DBFA /* SwiftAssertion.swift in Sources */,
+				E753F24824927412001FB671 /* OnSendErrorCallbackCrashScenario.swift in Sources */,
 				001E5502243B8FDA0009E31D /* AutoCaptureRunScenario.m in Sources */,
 				E700EE55247D3204008CFFB6 /* OnSendOverwriteScenario.swift in Sources */,
 				F429538D8941382EC2C857CE /* AsyncSafeThreadScenario.m in Sources */,
