@@ -193,6 +193,44 @@ Then("the payload field {string} matches the test device model") do |field|
   assert_true(valid_models.include?(device_model), "The field #{device_model} did not match any of the list of expected fields")
 end
 
+Then("the thread information is valid for the event") do
+  # veriy that thread/stacktrace information was captured at all
+  thread_traces = read_key_path(Server.current_request[:body], "events.0.threads")
+  stack_traces = read_key_path(Server.current_request[:body], "events.0.exceptions.0.stacktrace")
+  assert_not_nil(thread_traces, "No thread trace recorded")
+  assert_not_nil(stack_traces, "No thread trace recorded")
+  assert_true(stack_traces.count() > 0, "Expected stacktrace collected to be > 0.")
+  assert_true(thread_traces.count() > 0, "Expected number of threads collected to be > 0.")
+
+  # verify threads are recorded and contain plausible information (id, type, stacktrace)
+  thread_traces.each do |thread|
+    assert_not_nil(thread["id"], "Thread ID missing for #{thread}")
+    assert_equal("cocoa", thread["type"], "Thread type does not equal 'cocoa' for #{thread}")
+    stacktrace = thread["stacktrace"]
+    assert_not_nil(stacktrace, "Stacktrace is null for #{thread}")
+    stack_traces.each do |frame|
+      assert_not_nil(frame["method"], "Method is null for frame #{frame}")
+    end
+  end
+
+  # verify the errorReportingThread is present and set for only oine thread
+  err_thread_count = 0
+  err_thread_trace = nil
+  thread_traces.each.with_index do |thread, index|
+    if thread["errorReportingThread"] == true
+      err_thread_count += 1
+      err_thread_trace = thread["stacktrace"]
+    end
+  end
+  assert_equal(1, err_thread_count, "Expected errorReportingThread to be reported once for threads #{thread_traces}")
+  
+  # verify the errorReportingThread stacktrace matches the exception stacktrace
+  stack_traces.each_with_index do |frame, index|
+    thread_frame = err_thread_trace[index]
+    assert_equal(frame, thread_frame, "Thread and stacktrace differ at #{index}. Stack=#{frame}, thread=#{thread_frame}")
+  end
+end
+  
 def wait_for_true
   max_attempts = 300
   attempts = 0
