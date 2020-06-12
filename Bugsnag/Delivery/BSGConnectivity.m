@@ -31,7 +31,7 @@
 
 static SCNetworkReachabilityRef bsg_reachability_ref;
 BSGConnectivityChangeBlock bsg_reachability_change_block;
-SCNetworkReachabilityFlags bsg_current_reachability_state;
+SCNetworkReachabilityFlags bsg_current_reachability_state = -1;
 
 NSString *const BSGConnectivityCellular = @"cellular";
 NSString *const BSGConnectivityWiFi = @"wifi";
