@@ -55,7 +55,7 @@ BOOL BSGConnectivityShouldReportChange(SCNetworkReachabilityFlags flags) {
         // When first subscribing to be notified of changes, the callback is
         // invoked immmediately even if nothing has changed. So this block
         // ignores the very first check, reporting all others.
-        if (bsg_current_reachability_state == 0) {
+        if (bsg_current_reachability_state == -1) {
             shouldReport = NO;
         }
         // Cache the reachability state to report the previous value representation
