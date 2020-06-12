@@ -12,10 +12,7 @@ class LaunchError : Error {
 @objc class LoadConfigFromFileScenario: Scenario {
 
     override func startBugsnag() {
-        let fileConfig = BugsnagConfiguration.loadConfig()
-        fileConfig.endpoints.notify = config.endpoints.notify
-        fileConfig.endpoints.sessions = config.endpoints.sessions
-        config = fileConfig
+        config = BugsnagConfiguration.loadConfig()
         Bugsnag.start(with: config)
     }
 

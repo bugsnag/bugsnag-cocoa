@@ -32,6 +32,10 @@
 - (NSDictionary *)objectValue;
 @end
 
+@interface BugsnagBreadcrumbs ()
+@property(nonatomic, readwrite, strong) NSMutableArray *breadcrumbs;
+@end
+
 @interface BugsnagConfiguration ()
 @property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 @property(readwrite, retain, nullable) BugsnagMetadata *metadata;
@@ -216,6 +220,56 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     BugsnagConfiguration *configAfter = client.configuration;
 
     [self assertEqualConfiguration:initialConfig withActual:configAfter];
+}
+
+
+/**
+ * Verifies that a large breadcrumb is not dropped (historically there was a 4kB limit)
+ */
+- (void)testLargeBreadcrumbSize {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    configuration.enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeNone;
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
+
+    NSMutableArray *breadcrumbs = client.configuration.breadcrumbs.breadcrumbs;
+    XCTAssertEqual(0, [breadcrumbs count]);
+
+    // small breadcrumb can be left without issue
+    [client leaveBreadcrumbWithMessage:@"Hello World"];
+    XCTAssertEqual(1, [breadcrumbs count]);
+
+    // large breadcrumb is also left without issue
+    __block NSUInteger crumbSize = 0;
+    __block BugsnagBreadcrumb *crumb;
+
+    [client addOnBreadcrumbBlock:^BOOL(BugsnagBreadcrumb *breadcrumb) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:[breadcrumb objectValue] options:0 error:nil];
+        crumbSize = data.length;
+        crumb = breadcrumb;
+        return true;
+    }];
+
+    NSDictionary *largeMetadata = [self generateLargeMetadata];
+    [client leaveBreadcrumbWithMessage:@"Hello World"
+                              metadata:largeMetadata
+                               andType:BSGBreadcrumbTypeManual];
+    XCTAssertTrue(crumbSize > 4096); // previous 4kb limit
+    XCTAssertEqual(2, [breadcrumbs count]);
+    XCTAssertNotNil(crumb);
+    XCTAssertEqualObjects(@"Hello World", crumb.message);
+    XCTAssertEqualObjects(largeMetadata, crumb.metadata);
+}
+
+- (NSDictionary *)generateLargeMetadata {
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+
+    for (int k = 0; k < 10000; ++k) {
+        NSString *key = [NSString stringWithFormat:@"%d", k];
+        NSString *value = [NSString stringWithFormat:@"Some metadata value here %d", k];
+        dict[key] = value;
+    }
+    return dict;
 }
 
 @end
