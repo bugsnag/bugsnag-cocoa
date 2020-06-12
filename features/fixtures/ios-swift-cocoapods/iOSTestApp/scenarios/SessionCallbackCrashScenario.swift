@@ -27,7 +27,7 @@ class SessionCallbackCrashScenario : Scenario {
 
         // overwrite app ID set in first callback
         self.config.addOnSession { (session) -> Bool in
-            session.device.id = "customDeviceId"
+            session.app.id = "customAppId"
             return true
         }
         super.startBugsnag()
