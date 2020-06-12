@@ -75,27 +75,27 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
     // Ignore very first call to change block as "in real life" the first
     // invocation is a false positive
     [self simulateConnectivityChangeTo:kSCNetworkReachabilityFlagsReachable];
-    XCTAssertEqual(0, timesCalled);
+    XCTAssertEqual(1, timesCalled);
 
     [self simulateConnectivityChangeTo:kSCNetworkReachabilityFlagsReachable | kSCNetworkReachabilityFlagsIsWWAN];
-    XCTAssertEqual(1, timesCalled);
+    XCTAssertEqual(2, timesCalled);
     XCTAssertEqualObjects(@"cellular", description);
 
     [self simulateConnectivityChangeTo:kSCNetworkReachabilityFlagsReachable];
-    XCTAssertEqual(2, timesCalled);
+    XCTAssertEqual(3, timesCalled);
     XCTAssertEqualObjects(@"wifi", description);
 
     // No change
     [self simulateConnectivityChangeTo:kSCNetworkReachabilityFlagsReachable | kSCNetworkReachabilityFlagsConnectionOnDemand];
-    XCTAssertEqual(2, timesCalled);
+    XCTAssertEqual(3, timesCalled);
 
     [self simulateConnectivityChangeTo:kSCNetworkReachabilityFlagsIsWWAN];
-    XCTAssertEqual(3, timesCalled);
+    XCTAssertEqual(4, timesCalled);
     XCTAssertEqualObjects(@"none", description);
 
     // Insignificant change
     [self simulateConnectivityChangeTo:kSCNetworkReachabilityFlagsIsWWAN | kSCNetworkReachabilityFlagsConnectionOnDemand];
-    XCTAssertEqual(3, timesCalled);
+    XCTAssertEqual(4, timesCalled);
 }
 #else
 - (void)testCallbackInvokedForSignificantChange {

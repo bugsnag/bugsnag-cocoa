@@ -51,7 +51,9 @@ BOOL BSGConnectivityShouldReportChange(SCNetworkReachabilityFlags flags) {
     #endif
     __block BOOL shouldReport = YES;
     // Check if the reported state is different from the last known state (if any)
-    if ((flags & importantFlags) != (bsg_current_reachability_state & importantFlags)) {
+    SCNetworkReachabilityFlags newFlags = flags & importantFlags;
+    SCNetworkReachabilityFlags oldFlags = bsg_current_reachability_state & importantFlags;
+    if (newFlags != oldFlags) {
         // When first subscribing to be notified of changes, the callback is
         // invoked immmediately even if nothing has changed. So this block
         // ignores the very first check, reporting all others.
@@ -136,6 +138,7 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
         SCNetworkReachabilitySetCallback(bsg_reachability_ref, NULL, NULL);
         SCNetworkReachabilitySetDispatchQueue(bsg_reachability_ref, NULL);
     }
+    bsg_current_reachability_state = -1;
 }
 
 @end
