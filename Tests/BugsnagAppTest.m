@@ -191,4 +191,26 @@
     XCTAssertEqualObjects(@"5.6.3", app.version);
 }
 
+- (void)testAppVersionPrecedence {
+    // default to system.CFBundleShortVersionString
+    self.config.appVersion = nil;
+    BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
+    XCTAssertEqualObjects(@"5.6.3", app.version);
+
+    // 2nd precedence is config.appVersion
+    self.config.appVersion = @"4.2.6";
+    app = [BugsnagAppWithState appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
+    XCTAssertEqualObjects(@"4.2.6", app.version);
+
+    // 1st precedence is user.config.appVersion
+    NSMutableDictionary *data = [self.data mutableCopy];
+    data[@"user"] = @{
+            @"config": @{
+                    @"appVersion": @"1.2.3"
+            }
+    };
+    app = [BugsnagAppWithState appWithDictionary:data config:self.config codeBundleId:self.codeBundleId];
+    XCTAssertEqualObjects(@"1.2.3", app.version);
+}
+
 @end
