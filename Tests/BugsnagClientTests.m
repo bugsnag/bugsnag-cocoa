@@ -222,6 +222,23 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     [self assertEqualConfiguration:initialConfig withActual:configAfter];
 }
 
+- (void)testStartingBugsnagTwiceLogsAWarningAndIgnoresNewConfiguration {
+    [Bugsnag startWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagConfiguration *initialConfig = [Bugsnag configuration];
+
+    // Create a new Configuration object and modify some arbitrary properties
+    // These updates should all be ignored as Bugsnag has been started already
+    BugsnagConfiguration *updatedConfig = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_2];
+    updatedConfig.persistUser = !initialConfig.persistUser;
+    updatedConfig.maxBreadcrumbs = initialConfig.maxBreadcrumbs * 2;
+    updatedConfig.appVersion = @"99.99.99";
+
+    [Bugsnag startWithConfiguration:updatedConfig];
+
+    BugsnagConfiguration *configAfter = [Bugsnag configuration];
+
+    [self assertEqualConfiguration:initialConfig withActual:configAfter];
+}
 
 /**
  * Verifies that a large breadcrumb is not dropped (historically there was a 4kB limit)
