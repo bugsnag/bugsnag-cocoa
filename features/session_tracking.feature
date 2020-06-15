@@ -103,7 +103,7 @@ Feature: Session Tracking
 
   Scenario: Encountering an unhandled event during a session
     When I run "AutoSessionUnhandledScenario"
-    And I wait for 2 seconds
+    And I wait for 4 seconds
     And I relaunch the app
     And I set the app to "noevent" mode
     And I configure Bugsnag for "AutoSessionUnhandledScenario"
