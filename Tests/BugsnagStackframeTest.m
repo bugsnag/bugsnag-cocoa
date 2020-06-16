@@ -26,7 +26,7 @@
             @"symbol_addr": @0x10b574fa0,
             @"instruction_addr": @0x10b5756bf,
             @"object_addr": @0x10b54b000,
-            @"object_name": @"/Users/foo/Bugsnag.h",
+            @"object_name": @"/Library/bar/Bugsnag.h",
             @"symbol_name": @"-[BugsnagClient notify:handledState:block:]",
     };
     self.binaryImages = @[@{
@@ -60,6 +60,17 @@
     XCTAssertEqualObjects(@"0x10b574fa0", dict[@"symbolAddress"]);
     XCTAssertEqualObjects(@"0x10b54b000", dict[@"machoLoadAddress"]);
     XCTAssertEqualObjects(@"0x10b5756bf", dict[@"frameAddress"]);
+    XCTAssertNil(dict[@"isPC"]);
+    XCTAssertNil(dict[@"isLR"]);
+}
+
+- (void)testStackframeToDictPcLr {
+    BugsnagStackframe *frame = [BugsnagStackframe frameFromDict:self.frameDict withImages:self.binaryImages];
+    frame.isPc = true;
+    frame.isLr = true;
+    NSDictionary *dict = [frame toDictionary];
+    XCTAssertTrue(dict[@"isPC"]);
+    XCTAssertTrue(dict[@"isLR"]);
 }
 
 - (void)testStackframeBools {
