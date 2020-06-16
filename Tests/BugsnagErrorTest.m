@@ -91,7 +91,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     XCTAssertEqual(1, [error.stacktrace count]);
     BugsnagStackframe *frame = error.stacktrace[0];
     XCTAssertEqualObjects(@"kscrashsentry_reportUserException", frame.method);
-    XCTAssertEqualObjects(@"CrashProbeiOS", frame.machoFile);
+    XCTAssertEqualObjects(@"/Users/joesmith/foo", frame.machoFile);
     XCTAssertEqualObjects(@"D0A41830-4FD2-3B02-A23B-0741AD4C7F52", frame.machoUuid);
 }
 
@@ -107,7 +107,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     NSDictionary *frame = dict[@"stacktrace"][0];
     XCTAssertEqualObjects(@"kscrashsentry_reportUserException", frame[@"method"]);
     XCTAssertEqualObjects(@"D0A41830-4FD2-3B02-A23B-0741AD4C7F52", frame[@"machoUUID"]);
-    XCTAssertEqualObjects(@"CrashProbeiOS", frame[@"machoFile"]);
+    XCTAssertEqualObjects(@"/Users/joesmith/foo", frame[@"machoFile"]);
 }
 
 - (BugsnagThread *)findErrorReportingThread:(NSDictionary *)event {

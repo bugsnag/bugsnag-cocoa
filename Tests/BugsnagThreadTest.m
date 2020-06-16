@@ -68,7 +68,7 @@
     XCTAssertEqual(1, [thread.stacktrace count]);
     BugsnagStackframe *frame = thread.stacktrace[0];
     XCTAssertEqualObjects(@"kscrashsentry_reportUserException", frame.method);
-    XCTAssertEqualObjects(@"CrashProbeiOS", frame.machoFile);
+    XCTAssertEqualObjects(@"/Users/joesmith/foo", frame.machoFile);
     XCTAssertEqualObjects(@"D0A41830-4FD2-3B02-A23B-0741AD4C7F52", frame.machoUuid);
 }
 
@@ -86,7 +86,7 @@
     XCTAssertEqual(1, [dict[@"stacktrace"] count]);
     NSDictionary *frame = dict[@"stacktrace"][0];
     XCTAssertEqualObjects(@"kscrashsentry_reportUserException", frame[@"method"]);
-    XCTAssertEqualObjects(@"CrashProbeiOS", frame[@"machoFile"]);
+    XCTAssertEqualObjects(@"/Users/joesmith/foo", frame[@"machoFile"]);
     XCTAssertEqualObjects(@"D0A41830-4FD2-3B02-A23B-0741AD4C7F52", frame[@"machoUUID"]);
 }
 
