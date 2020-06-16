@@ -14,24 +14,11 @@
 		D175F4C31ACDBD81009AFFB7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C11ACDBD81009AFFB7 /* Main.storyboard */; };
 		D175F4C51ACDBD81009AFFB7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C41ACDBD81009AFFB7 /* Images.xcassets */; };
 		D175F4C81ACDBD81009AFFB7 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C61ACDBD81009AFFB7 /* LaunchScreen.xib */; };
-		D175F4D41ACDBD81009AFFB7 /* bugsnag_exampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4D31ACDBD81009AFFB7 /* bugsnag_exampleTests.swift */; };
 		D175F4DF1ACDBEFA009AFFB7 /* AnotherClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4DE1ACDBEFA009AFFB7 /* AnotherClass.swift */; };
 		D175F4E21ACDBFD9009AFFB7 /* AnObjCClass.m in Sources */ = {isa = PBXBuildFile; fileRef = D175F4E11ACDBFD9009AFFB7 /* AnObjCClass.m */; };
 		E75E62DF1F4CE1D8000C44C0 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E75E62DE1F4CE1D8000C44C0 /* libc++.tbd */; };
 		E75E62E11F4CE1DD000C44C0 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E75E62E01F4CE1DD000C44C0 /* libz.tbd */; };
-		E75E62E21F4CE1E3000C44C0 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E75E62DE1F4CE1D8000C44C0 /* libc++.tbd */; };
-		E75E62E31F4CE1E8000C44C0 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E75E62E01F4CE1DD000C44C0 /* libz.tbd */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		D175F4CE1ACDBD81009AFFB7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D175F4B01ACDBD81009AFFB7 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = D175F4B71ACDBD81009AFFB7;
-			remoteInfo = "bugsnag-example";
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		00C3ED5B23F2DA4900757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -45,9 +32,6 @@
 		D175F4C21ACDBD81009AFFB7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D175F4C41ACDBD81009AFFB7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D175F4C71ACDBD81009AFFB7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		D175F4CD1ACDBD81009AFFB7 /* bugsnag-exampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "bugsnag-exampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D175F4D21ACDBD81009AFFB7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D175F4D31ACDBD81009AFFB7 /* bugsnag_exampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bugsnag_exampleTests.swift; sourceTree = "<group>"; };
 		D175F4DD1ACDBE24009AFFB7 /* bugsnag-example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "bugsnag-example-Bridging-Header.h"; sourceTree = "<group>"; };
 		D175F4DE1ACDBEFA009AFFB7 /* AnotherClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnotherClass.swift; sourceTree = "<group>"; };
 		D175F4E01ACDBFD9009AFFB7 /* AnObjCClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnObjCClass.h; sourceTree = "<group>"; };
@@ -69,15 +53,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D175F4CA1ACDBD81009AFFB7 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E75E62E31F4CE1E8000C44C0 /* libz.tbd in Frameworks */,
-				E75E62E21F4CE1E3000C44C0 /* libc++.tbd in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -95,7 +70,6 @@
 			children = (
 				00C3ED5B23F2DA4900757DBD /* README.md */,
 				D175F4BA1ACDBD81009AFFB7 /* bugsnag-example */,
-				D175F4D01ACDBD81009AFFB7 /* bugsnag-exampleTests */,
 				D175F4B91ACDBD81009AFFB7 /* Products */,
 				8E8DD6619C44560FAAA686AB /* Pods */,
 				FD51012AA06FE025CCC45C93 /* Frameworks */,
@@ -106,7 +80,6 @@
 			isa = PBXGroup;
 			children = (
 				D175F4B81ACDBD81009AFFB7 /* bugsnag-example.app */,
-				D175F4CD1ACDBD81009AFFB7 /* bugsnag-exampleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -126,23 +99,6 @@
 				D175F4C61ACDBD81009AFFB7 /* LaunchScreen.xib */,
 			);
 			path = "bugsnag-example";
-			sourceTree = "<group>";
-		};
-		D175F4D01ACDBD81009AFFB7 /* bugsnag-exampleTests */ = {
-			isa = PBXGroup;
-			children = (
-				D175F4D31ACDBD81009AFFB7 /* bugsnag_exampleTests.swift */,
-				D175F4D11ACDBD81009AFFB7 /* Supporting Files */,
-			);
-			path = "bugsnag-exampleTests";
-			sourceTree = "<group>";
-		};
-		D175F4D11ACDBD81009AFFB7 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				D175F4D21ACDBD81009AFFB7 /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		FD51012AA06FE025CCC45C93 /* Frameworks */ = {
@@ -179,24 +135,6 @@
 			productReference = D175F4B81ACDBD81009AFFB7 /* bugsnag-example.app */;
 			productType = "com.apple.product-type.application";
 		};
-		D175F4CC1ACDBD81009AFFB7 /* bugsnag-exampleTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D175F4DA1ACDBD81009AFFB7 /* Build configuration list for PBXNativeTarget "bugsnag-exampleTests" */;
-			buildPhases = (
-				D175F4C91ACDBD81009AFFB7 /* Sources */,
-				D175F4CA1ACDBD81009AFFB7 /* Frameworks */,
-				D175F4CB1ACDBD81009AFFB7 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				D175F4CF1ACDBD81009AFFB7 /* PBXTargetDependency */,
-			);
-			name = "bugsnag-exampleTests";
-			productName = "bugsnag-exampleTests";
-			productReference = D175F4CD1ACDBD81009AFFB7 /* bugsnag-exampleTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -211,11 +149,6 @@
 						CreatedOnToolsVersion = 6.2;
 						DevelopmentTeam = 372ZUL2ZB7;
 						LastSwiftMigration = 1010;
-					};
-					D175F4CC1ACDBD81009AFFB7 = {
-						CreatedOnToolsVersion = 6.2;
-						LastSwiftMigration = 1010;
-						TestTargetID = D175F4B71ACDBD81009AFFB7;
 					};
 				};
 			};
@@ -234,7 +167,6 @@
 			projectRoot = "";
 			targets = (
 				D175F4B71ACDBD81009AFFB7 /* bugsnag-example */,
-				D175F4CC1ACDBD81009AFFB7 /* bugsnag-exampleTests */,
 			);
 		};
 /* End PBXProject section */
@@ -248,13 +180,6 @@
 				D175F4C81ACDBD81009AFFB7 /* LaunchScreen.xib in Resources */,
 				00C3ED5C23F2DA4900757DBD /* README.md in Resources */,
 				D175F4C51ACDBD81009AFFB7 /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D175F4CB1ACDBD81009AFFB7 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,23 +233,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D175F4C91ACDBD81009AFFB7 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D175F4D41ACDBD81009AFFB7 /* bugsnag_exampleTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		D175F4CF1ACDBD81009AFFB7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = D175F4B71ACDBD81009AFFB7 /* bugsnag-example */;
-			targetProxy = D175F4CE1ACDBD81009AFFB7 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		D175F4C11ACDBD81009AFFB7 /* Main.storyboard */ = {
@@ -487,44 +396,6 @@
 			};
 			name = Release;
 		};
-		D175F4DB1ACDBD81009AFFB7 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "bugsnag-exampleTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.isaacwaller.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/bugsnag-example.app/bugsnag-example";
-			};
-			name = Debug;
-		};
-		D175F4DC1ACDBD81009AFFB7 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "bugsnag-exampleTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.isaacwaller.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/bugsnag-example.app/bugsnag-example";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -542,15 +413,6 @@
 			buildConfigurations = (
 				D175F4D81ACDBD81009AFFB7 /* Debug */,
 				D175F4D91ACDBD81009AFFB7 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D175F4DA1ACDBD81009AFFB7 /* Build configuration list for PBXNativeTarget "bugsnag-exampleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D175F4DB1ACDBD81009AFFB7 /* Debug */,
-				D175F4DC1ACDBD81009AFFB7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

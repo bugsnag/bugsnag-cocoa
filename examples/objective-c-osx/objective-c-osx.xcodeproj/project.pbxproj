@@ -13,22 +13,11 @@
 		93BE1CDB1B62CC360016380C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 93BE1CDA1B62CC360016380C /* ViewController.m */; };
 		93BE1CDD1B62CC360016380C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93BE1CDC1B62CC360016380C /* Images.xcassets */; };
 		93BE1CE01B62CC360016380C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93BE1CDE1B62CC360016380C /* Main.storyboard */; };
-		93BE1CEC1B62CC360016380C /* objective_c_osxTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 93BE1CEB1B62CC360016380C /* objective_c_osxTests.m */; };
 		93CF94F81B66B09300D1558C /* CustomApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 93CF94F71B66B09300D1558C /* CustomApplication.m */; };
 		D237D8A707A739A4034FF767 /* libPods-objective-c-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 54B9582E2984563C0F07C26D /* libPods-objective-c-osx.a */; };
 		E76616EE1F4E43CC0094CECF /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E76616ED1F4E43CC0094CECF /* libc++.tbd */; };
 		E76616F01F4E43D10094CECF /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E76616EF1F4E43D10094CECF /* libz.tbd */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		93BE1CE61B62CC360016380C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 93BE1CC71B62CC360016380C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 93BE1CCE1B62CC360016380C;
-			remoteInfo = "objective-c-osx";
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		00C3ED5923F2D89400757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -43,9 +32,6 @@
 		93BE1CDA1B62CC360016380C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		93BE1CDC1B62CC360016380C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		93BE1CDF1B62CC360016380C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		93BE1CE51B62CC360016380C /* objective-c-osxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "objective-c-osxTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		93BE1CEA1B62CC360016380C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		93BE1CEB1B62CC360016380C /* objective_c_osxTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = objective_c_osxTests.m; sourceTree = "<group>"; };
 		93CF94F61B66B09300D1558C /* CustomApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomApplication.h; sourceTree = "<group>"; };
 		93CF94F71B66B09300D1558C /* CustomApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomApplication.m; sourceTree = "<group>"; };
 		E76616ED1F4E43CC0094CECF /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
@@ -61,13 +47,6 @@
 				E76616F01F4E43D10094CECF /* libz.tbd in Frameworks */,
 				E76616EE1F4E43CC0094CECF /* libc++.tbd in Frameworks */,
 				D237D8A707A739A4034FF767 /* libPods-objective-c-osx.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		93BE1CE21B62CC360016380C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,7 +68,6 @@
 			children = (
 				00C3ED5923F2D89400757DBD /* README.md */,
 				93BE1CD11B62CC360016380C /* objective-c-osx */,
-				93BE1CE81B62CC360016380C /* objective-c-osxTests */,
 				93BE1CD01B62CC360016380C /* Products */,
 				FEC429E808D94D8B6E6E14D5 /* Pods */,
 				237A9755E6B64C219CB26705 /* Frameworks */,
@@ -100,7 +78,6 @@
 			isa = PBXGroup;
 			children = (
 				93BE1CCF1B62CC360016380C /* objective-c-osx.app */,
-				93BE1CE51B62CC360016380C /* objective-c-osxTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -126,23 +103,6 @@
 			isa = PBXGroup;
 			children = (
 				93BE1CD71B62CC360016380C /* main.m */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		93BE1CE81B62CC360016380C /* objective-c-osxTests */ = {
-			isa = PBXGroup;
-			children = (
-				93BE1CEB1B62CC360016380C /* objective_c_osxTests.m */,
-				93BE1CE91B62CC360016380C /* Supporting Files */,
-			);
-			path = "objective-c-osxTests";
-			sourceTree = "<group>";
-		};
-		93BE1CE91B62CC360016380C /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				93BE1CEA1B62CC360016380C /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -178,24 +138,6 @@
 			productReference = 93BE1CCF1B62CC360016380C /* objective-c-osx.app */;
 			productType = "com.apple.product-type.application";
 		};
-		93BE1CE41B62CC360016380C /* objective-c-osxTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 93BE1CF21B62CC360016380C /* Build configuration list for PBXNativeTarget "objective-c-osxTests" */;
-			buildPhases = (
-				93BE1CE11B62CC360016380C /* Sources */,
-				93BE1CE21B62CC360016380C /* Frameworks */,
-				93BE1CE31B62CC360016380C /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				93BE1CE71B62CC360016380C /* PBXTargetDependency */,
-			);
-			name = "objective-c-osxTests";
-			productName = "objective-c-osxTests";
-			productReference = 93BE1CE51B62CC360016380C /* objective-c-osxTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -207,10 +149,6 @@
 				TargetAttributes = {
 					93BE1CCE1B62CC360016380C = {
 						CreatedOnToolsVersion = 6.4;
-					};
-					93BE1CE41B62CC360016380C = {
-						CreatedOnToolsVersion = 6.4;
-						TestTargetID = 93BE1CCE1B62CC360016380C;
 					};
 				};
 			};
@@ -229,7 +167,6 @@
 			projectRoot = "";
 			targets = (
 				93BE1CCE1B62CC360016380C /* objective-c-osx */,
-				93BE1CE41B62CC360016380C /* objective-c-osxTests */,
 			);
 		};
 /* End PBXProject section */
@@ -242,13 +179,6 @@
 				00C3ED5A23F2D89400757DBD /* README.md in Resources */,
 				93BE1CDD1B62CC360016380C /* Images.xcassets in Resources */,
 				93BE1CE01B62CC360016380C /* Main.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		93BE1CE31B62CC360016380C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,23 +232,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		93BE1CE11B62CC360016380C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				93BE1CEC1B62CC360016380C /* objective_c_osxTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		93BE1CE71B62CC360016380C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 93BE1CCE1B62CC360016380C /* objective-c-osx */;
-			targetProxy = 93BE1CE61B62CC360016380C /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		93BE1CDE1B62CC360016380C /* Main.storyboard */ = {
@@ -460,44 +374,6 @@
 			};
 			name = Release;
 		};
-		93BE1CF31B62CC360016380C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "objective-c-osxTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/objective-c-osx.app/Contents/MacOS/objective-c-osx";
-			};
-			name = Debug;
-		};
-		93BE1CF41B62CC360016380C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "objective-c-osxTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/objective-c-osx.app/Contents/MacOS/objective-c-osx";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -515,15 +391,6 @@
 			buildConfigurations = (
 				93BE1CF01B62CC360016380C /* Debug */,
 				93BE1CF11B62CC360016380C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		93BE1CF21B62CC360016380C /* Build configuration list for PBXNativeTarget "objective-c-osxTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				93BE1CF31B62CC360016380C /* Debug */,
-				93BE1CF41B62CC360016380C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

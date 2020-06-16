@@ -11,11 +11,7 @@
 		00C3ED5823F2D6D900757DBD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00C3ED5723F2D6D800757DBD /* README.md */; };
 		8A4882E2224BCC130035B94C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A4882E1224BCC130035B94C /* WebKit.framework */; };
 		8A4882E5224BCD5D0035B94C /* OutOfMemoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4882E4224BCD5D0035B94C /* OutOfMemoryController.m */; };
-		8ACFFA0C1D895D4D00357B5E /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */; };
 		DB7A2D239A0F25E0ED01EBF7 /* libPods-Bugsnag Test App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */; };
-		E77F7CCE1F2B90800017CE04 /* CrashyUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77F7CCD1F2B90800017CE04 /* CrashyUITest.swift */; };
-		E7AB1DE21F2F3AC0000AAF94 /* CrashyUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77F7CCD1F2B90800017CE04 /* CrashyUITest.swift */; };
-		E7AB1DEE1F2F3EE1000AAF94 /* UIHarnessTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AB1DED1F2F3EE1000AAF94 /* UIHarnessTest.swift */; };
 		F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874A16AA233500676BB2 /* UIKit.framework */; };
 		F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874C16AA233500676BB2 /* Foundation.framework */; };
 		F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874E16AA233500676BB2 /* CoreGraphics.framework */; };
@@ -28,23 +24,6 @@
 		F40B876A16AA233500676BB2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F40B876916AA233500676BB2 /* ViewController.m */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		E77F7CD01F2B90800017CE04 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F40B873D16AA233500676BB2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F40B874516AA233500676BB2;
-			remoteInfo = "Bugsnag Test App";
-		};
-		E7AB1DE01F2F3AC0000AAF94 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F40B873D16AA233500676BB2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F40B874516AA233500676BB2;
-			remoteInfo = "Bugsnag Test App";
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		0013DB142449E934003DB182 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		00C3ED5723F2D6D800757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -52,17 +31,7 @@
 		8A4882E1224BCC130035B94C /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		8A4882E3224BCD5D0035B94C /* OutOfMemoryController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OutOfMemoryController.h; sourceTree = "<group>"; };
 		8A4882E4224BCD5D0035B94C /* OutOfMemoryController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OutOfMemoryController.m; sourceTree = "<group>"; };
-		8ACFFA091D895D4D00357B5E /* custom-keyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "custom-keyboard.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
-		8ACFFA0D1D895D4D00357B5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8ACFFA151D895E0300357B5E /* BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
-		9333D154DE949C52593C64D3 /* libPods-custom-keyboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-custom-keyboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E77F7CCB1F2B90800017CE04 /* BugsnagUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E77F7CCD1F2B90800017CE04 /* CrashyUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashyUITest.swift; sourceTree = "<group>"; };
-		E77F7CCF1F2B90800017CE04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E7989EEC1F33619D007C37A4 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		E7AB1DE81F2F3AC0000AAF94 /* BugsnagUIHarness.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagUIHarness.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E7AB1DED1F2F3EE1000AAF94 /* UIHarnessTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIHarnessTest.swift; sourceTree = "<group>"; };
 		E7EC04121F4CC87300C2E9D5 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
 		E7EC04131F4CC87300C2E9D5 /* libz.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.dylib; path = ../../../../../../usr/lib/libz.1.dylib; sourceTree = "<group>"; };
 		E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -87,27 +56,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		8ACFFA061D895D4D00357B5E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E77F7CC81F2B90800017CE04 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E7AB1DE31F2F3AC0000AAF94 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		F40B874316AA233500676BB2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -123,16 +71,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8ACFFA0A1D895D4D00357B5E /* custom-keyboard */ = {
-			isa = PBXGroup;
-			children = (
-				8ACFFA0B1D895D4D00357B5E /* KeyboardViewController.swift */,
-				8ACFFA0D1D895D4D00357B5E /* Info.plist */,
-				8ACFFA151D895E0300357B5E /* BridgingHeader.h */,
-			);
-			path = "custom-keyboard";
-			sourceTree = "<group>";
-		};
 		9454D93E2BC4F75FD6540595 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -142,23 +80,11 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		E77F7CCC1F2B90800017CE04 /* BugsnagUITests */ = {
-			isa = PBXGroup;
-			children = (
-				E77F7CCD1F2B90800017CE04 /* CrashyUITest.swift */,
-				E77F7CCF1F2B90800017CE04 /* Info.plist */,
-				E7AB1DED1F2F3EE1000AAF94 /* UIHarnessTest.swift */,
-			);
-			path = BugsnagUITests;
-			sourceTree = "<group>";
-		};
 		F40B873B16AA233500676BB2 = {
 			isa = PBXGroup;
 			children = (
 				00C3ED5723F2D6D800757DBD /* README.md */,
 				F40B875016AA233500676BB2 /* Bugsnag Test App */,
-				8ACFFA0A1D895D4D00357B5E /* custom-keyboard */,
-				E77F7CCC1F2B90800017CE04 /* BugsnagUITests */,
 				F40B874916AA233500676BB2 /* Frameworks */,
 				F40B874716AA233500676BB2 /* Products */,
 				9454D93E2BC4F75FD6540595 /* Pods */,
@@ -169,9 +95,6 @@
 			isa = PBXGroup;
 			children = (
 				F40B874616AA233500676BB2 /* Bugsnag Test App.app */,
-				8ACFFA091D895D4D00357B5E /* custom-keyboard.appex */,
-				E77F7CCB1F2B90800017CE04 /* BugsnagUITests.xctest */,
-				E7AB1DE81F2F3AC0000AAF94 /* BugsnagUIHarness.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -188,8 +111,7 @@
 				F40B874A16AA233500676BB2 /* UIKit.framework */,
 				F40B874C16AA233500676BB2 /* Foundation.framework */,
 				F40B874E16AA233500676BB2 /* CoreGraphics.framework */,
-				F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */,
-				9333D154DE949C52593C64D3 /* libPods-custom-keyboard.a */,
+				F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -226,59 +148,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8ACFFA081D895D4D00357B5E /* custom-keyboard */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 8ACFFA131D895D4D00357B5E /* Build configuration list for PBXNativeTarget "custom-keyboard" */;
-			buildPhases = (
-				8ACFFA051D895D4D00357B5E /* Sources */,
-				8ACFFA061D895D4D00357B5E /* Frameworks */,
-				8ACFFA071D895D4D00357B5E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "custom-keyboard";
-			productName = "custom-keyboard";
-			productReference = 8ACFFA091D895D4D00357B5E /* custom-keyboard.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
-		E77F7CCA1F2B90800017CE04 /* BugsnagUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E77F7CD41F2B90800017CE04 /* Build configuration list for PBXNativeTarget "BugsnagUITests" */;
-			buildPhases = (
-				E77F7CC71F2B90800017CE04 /* Sources */,
-				E77F7CC81F2B90800017CE04 /* Frameworks */,
-				E77F7CC91F2B90800017CE04 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				E77F7CD11F2B90800017CE04 /* PBXTargetDependency */,
-			);
-			name = BugsnagUITests;
-			productName = BugsnagUITests;
-			productReference = E77F7CCB1F2B90800017CE04 /* BugsnagUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
-		E7AB1DDE1F2F3AC0000AAF94 /* BugsnagUIHarness */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E7AB1DE51F2F3AC0000AAF94 /* Build configuration list for PBXNativeTarget "BugsnagUIHarness" */;
-			buildPhases = (
-				E7AB1DE11F2F3AC0000AAF94 /* Sources */,
-				E7AB1DE31F2F3AC0000AAF94 /* Frameworks */,
-				E7AB1DE41F2F3AC0000AAF94 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				E7AB1DDF1F2F3AC0000AAF94 /* PBXTargetDependency */,
-			);
-			name = BugsnagUIHarness;
-			productName = BugsnagUITests;
-			productReference = E7AB1DE81F2F3AC0000AAF94 /* BugsnagUIHarness.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 		F40B874516AA233500676BB2 /* Bugsnag Test App */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F40B876D16AA233500676BB2 /* Build configuration list for PBXNativeTarget "Bugsnag Test App" */;
@@ -308,20 +177,6 @@
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Simon Maynard";
 				TargetAttributes = {
-					8ACFFA081D895D4D00357B5E = {
-						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 372ZUL2ZB7;
-						LastSwiftMigration = 0830;
-					};
-					E77F7CCA1F2B90800017CE04 = {
-						CreatedOnToolsVersion = 8.3.3;
-						LastSwiftMigration = 0900;
-						ProvisioningStyle = Automatic;
-						TestTargetID = F40B874516AA233500676BB2;
-					};
-					E7AB1DDE1F2F3AC0000AAF94 = {
-						TestTargetID = F40B874516AA233500676BB2;
-					};
 					F40B874516AA233500676BB2 = {
 						DevelopmentTeam = 372ZUL2ZB7;
 						LastSwiftMigration = 0900;
@@ -343,35 +198,11 @@
 			projectRoot = "";
 			targets = (
 				F40B874516AA233500676BB2 /* Bugsnag Test App */,
-				8ACFFA081D895D4D00357B5E /* custom-keyboard */,
-				E77F7CCA1F2B90800017CE04 /* BugsnagUITests */,
-				E7AB1DDE1F2F3AC0000AAF94 /* BugsnagUIHarness */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		8ACFFA071D895D4D00357B5E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E77F7CC91F2B90800017CE04 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E7AB1DE41F2F3AC0000AAF94 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		F40B874416AA233500676BB2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -424,31 +255,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		8ACFFA051D895D4D00357B5E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8ACFFA0C1D895D4D00357B5E /* KeyboardViewController.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E77F7CC71F2B90800017CE04 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E7AB1DEE1F2F3EE1000AAF94 /* UIHarnessTest.swift in Sources */,
-				E77F7CCE1F2B90800017CE04 /* CrashyUITest.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E7AB1DE11F2F3AC0000AAF94 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E7AB1DE21F2F3AC0000AAF94 /* CrashyUITest.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		F40B874216AA233500676BB2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -462,19 +268,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		E77F7CD11F2B90800017CE04 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F40B874516AA233500676BB2 /* Bugsnag Test App */;
-			targetProxy = E77F7CD01F2B90800017CE04 /* PBXContainerItemProxy */;
-		};
-		E7AB1DDF1F2F3AC0000AAF94 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F40B874516AA233500676BB2 /* Bugsnag Test App */;
-			targetProxy = E7AB1DE01F2F3AC0000AAF94 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
 		F40B876216AA233500676BB2 /* MainStoryboard.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -487,237 +280,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		8ACFFA111D895D4D00357B5E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_BITCODE = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				INFOPLIST_FILE = "custom-keyboard/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "bugsnag.Bugsnag-Test-App.custom-keyboard";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "custom-keyboard/BridgingHeader.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
-			};
-			name = Debug;
-		};
-		8ACFFA121D895D4D00357B5E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_BITCODE = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				INFOPLIST_FILE = "custom-keyboard/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "bugsnag.Bugsnag-Test-App.custom-keyboard";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "custom-keyboard/BridgingHeader.h";
-				SWIFT_VERSION = 3.0;
-			};
-			name = Release;
-		};
-		E77F7CD21F2B90800017CE04 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				INFOPLIST_FILE = BugsnagUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
-				TEST_TARGET_NAME = "Bugsnag Test App";
-			};
-			name = Debug;
-		};
-		E77F7CD31F2B90800017CE04 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				INFOPLIST_FILE = BugsnagUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 4.0;
-				TEST_TARGET_NAME = "Bugsnag Test App";
-			};
-			name = Release;
-		};
-		E7AB1DE61F2F3AC0000AAF94 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				INFOPLIST_FILE = "BugsnagUIHarness-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagUIHarness;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
-				TEST_TARGET_NAME = "Bugsnag Test App";
-			};
-			name = Debug;
-		};
-		E7AB1DE71F2F3AC0000AAF94 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				INFOPLIST_FILE = "BugsnagUIHarness-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagUIHarness;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 4.0;
-				TEST_TARGET_NAME = "Bugsnag Test App";
-			};
-			name = Release;
-		};
 		F40B876B16AA233500676BB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -834,6 +396,7 @@
 				GCC_PREFIX_HEADER = "Bugsnag Test App/Bugsnag Test App-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				INFOPLIST_FILE = "Bugsnag Test App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "bugsnag.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -859,6 +422,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Bugsnag Test App/Bugsnag Test App-Prefix.pch";
 				INFOPLIST_FILE = "Bugsnag Test App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "bugsnag.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -872,33 +436,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8ACFFA131D895D4D00357B5E /* Build configuration list for PBXNativeTarget "custom-keyboard" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				8ACFFA111D895D4D00357B5E /* Debug */,
-				8ACFFA121D895D4D00357B5E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E77F7CD41F2B90800017CE04 /* Build configuration list for PBXNativeTarget "BugsnagUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E77F7CD21F2B90800017CE04 /* Debug */,
-				E77F7CD31F2B90800017CE04 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E7AB1DE51F2F3AC0000AAF94 /* Build configuration list for PBXNativeTarget "BugsnagUIHarness" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E7AB1DE61F2F3AC0000AAF94 /* Debug */,
-				E7AB1DE71F2F3AC0000AAF94 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		F40B874016AA233500676BB2 /* Build configuration list for PBXProject "Bugsnag Test App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
