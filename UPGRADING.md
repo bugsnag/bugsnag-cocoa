@@ -83,7 +83,7 @@ The following properties/methods have been removed from the `Bugsnag` client:
 | `notify:withData:` / `notify(exception:withData)`                  | Use `notify:block:` / `notify(exception:block:)` to add data in a block. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/reporting-handled-exceptions/#customizing-diagnostic-data) \| [macOS](https://docs.bugsnag.com/platforms/macos/reporting-handled-exceptions/#customizing-diagnostic-data) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/reporting-handled-exceptions/#customizing-diagnostic-data).) |
 | `notify:withData:atSeverity:` / `notify(exception:withData:atSeverity:)` | Use `notify:block:` / `notify(exception:block:)` to add data and set severity in a block. (See docs: [iOS](https://docs.bugsnag.com/platforms/ios/reporting-handled-exceptions/#customizing-diagnostic-data) \| [macOS](https://docs.bugsnag.com/platforms/macos/reporting-handled-exceptions/#customizing-diagnostic-data) \| [tvOS](https://docs.bugsnag.com/platforms/tvos/reporting-handled-exceptions/#customizing-diagnostic-data).) |
 | `payloadDateFormatter`                                             | Deprecated - no longer public API.                                |
-| `setBreadcrumbCapacity`                                            | Now set in `BugsnagConfiguration`: `maxBreadcrumbs`/`setMaxBreadcrumbs`. |
+| `setBreadcrumbCapacity`                                            | Now set in `BugsnagConfiguration`: `maxBreadcrumbs`.              |
 
 ### Configuration
 
