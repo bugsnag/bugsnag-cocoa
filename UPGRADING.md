@@ -41,10 +41,10 @@ With an entry in your `Info.plist` file:
 </dict>
 ```
 
-You can add further configuration options to your `Info.plist` or construct a `BugsnagConfiguration` to set further options in code. For full details, see the online docs
-([iOS](https://docs.bugsnag.com/platforms/ios/configuration-options/#setting-configuration-options) |
- [macOS](https://docs.bugsnag.com/platforms/macos/configuration-options/#setting-configuration-options) |
- [tvOS](https://docs.bugsnag.com/platforms/tvos/configuration-options/#setting-configuration-options).)
+You can add further configuration options to your `Info.plist` or construct a `BugsnagConfiguration` to set further options in code. For full details, see the online docs:
+[iOS](https://docs.bugsnag.com/platforms/ios/configuration-options/#setting-configuration-options) |
+[macOS](https://docs.bugsnag.com/platforms/macos/configuration-options/#setting-configuration-options) |
+[tvOS](https://docs.bugsnag.com/platforms/tvos/configuration-options/#setting-configuration-options).
 
 #### Additions
 
