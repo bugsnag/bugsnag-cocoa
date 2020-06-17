@@ -81,8 +81,9 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bxc-Z5-jZv">
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bxc-Z5-jZv">
                                                     <rect key="frame" x="16" y="7" width="109" height="30"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="Mach exception">
                                                         <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </state>
@@ -91,11 +92,6 @@
                                                     </connections>
                                                 </button>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstItem="bxc-Z5-jZv" firstAttribute="centerY" secondItem="hKq-7y-MPC" secondAttribute="centerY" id="4Kz-4h-71T"/>
-                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="bxc-Z5-jZv" secondAttribute="trailing" constant="20" symbolic="YES" id="cn5-e9-Gc1"/>
-                                                <constraint firstItem="bxc-Z5-jZv" firstAttribute="leading" secondItem="hKq-7y-MPC" secondAttribute="leading" constant="16" id="qN5-aM-MAs"/>
-                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="Yhl-gQ-P06">
@@ -163,19 +159,15 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X3D-Ek-foR">
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X3D-Ek-foR">
                                                     <rect key="frame" x="16" y="7" width="97" height="30"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="Cxx Exception"/>
                                                     <connections>
                                                         <action selector="generateCxxException:" destination="uYB-Rg-v98" eventType="touchUpInside" id="gkd-ww-sxk"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstItem="X3D-Ek-foR" firstAttribute="leading" secondItem="ivc-Lr-ZnL" secondAttribute="leading" constant="16" id="26A-xo-x7r"/>
-                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="X3D-Ek-foR" secondAttribute="trailing" constant="20" symbolic="YES" id="5aM-hT-jwS"/>
-                                                <constraint firstItem="X3D-Ek-foR" firstAttribute="centerY" secondItem="ivc-Lr-ZnL" secondAttribute="centerY" id="U7o-2q-hol"/>
-                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>
