@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "OutOfMemoryController.h"
+#import "CxxException.h"
 #import <Bugsnag/Bugsnag.h>
 #import <pthread.h>
 #import <stdlib.h>
@@ -55,15 +56,22 @@
  This method causes a signal from the operating system to terminate the app.  Upon reopening the app this signal should be notified to your Bugsnag dashboard.
  */
 - (IBAction)generateSignal:(id)sender {
-    Byte *p[10000];
-    int allocatedMB = 0;
+    __builtin_trap();
+}
 
-    while (true) {
-        p[allocatedMB] = malloc(1048576);
-        memset(p[allocatedMB], 0, 1048576);
-        allocatedMB += 1;
-        NSLog(@"%d", allocatedMB);
-    }
+/**
+ This method causes a low-level exception from the operating system to terminate the app.  Upon reopening the app this signal should be notified to your Bugsnag dashboard.
+ */
+- (IBAction)generateMachException:(id)sender {
+    void (*ptr)(void) = NULL;
+    ptr();
+}
+
+/**
+ This method causes a Cxx exception to crash the app.  Upon reopening the app this exception should be notified to your Bugsnag dashboard.
+ */
+- (IBAction)generateCxxException:(id)sender {
+    [[CxxException new] crash];
 }
 
 /**

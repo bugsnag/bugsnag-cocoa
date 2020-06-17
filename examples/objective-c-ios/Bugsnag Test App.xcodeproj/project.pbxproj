@@ -11,6 +11,7 @@
 		00C3ED5823F2D6D900757DBD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00C3ED5723F2D6D800757DBD /* README.md */; };
 		8A4882E2224BCC130035B94C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A4882E1224BCC130035B94C /* WebKit.framework */; };
 		8A4882E5224BCD5D0035B94C /* OutOfMemoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4882E4224BCD5D0035B94C /* OutOfMemoryController.m */; };
+		A1F5109B249A5C4000AFF4DE /* CxxException.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1F51099249A5C4000AFF4DE /* CxxException.mm */; };
 		DB7A2D239A0F25E0ED01EBF7 /* libPods-Bugsnag Test App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */; };
 		F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874A16AA233500676BB2 /* UIKit.framework */; };
 		F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874C16AA233500676BB2 /* Foundation.framework */; };
@@ -31,6 +32,8 @@
 		8A4882E1224BCC130035B94C /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		8A4882E3224BCD5D0035B94C /* OutOfMemoryController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OutOfMemoryController.h; sourceTree = "<group>"; };
 		8A4882E4224BCD5D0035B94C /* OutOfMemoryController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OutOfMemoryController.m; sourceTree = "<group>"; };
+		A1F51099249A5C4000AFF4DE /* CxxException.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxException.mm; sourceTree = "<group>"; };
+		A1F5109A249A5C4000AFF4DE /* CxxException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CxxException.h; sourceTree = "<group>"; };
 		E7989EEC1F33619D007C37A4 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E7EC04121F4CC87300C2E9D5 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
 		E7EC04131F4CC87300C2E9D5 /* libz.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.dylib; path = ../../../../../../usr/lib/libz.1.dylib; sourceTree = "<group>"; };
@@ -111,7 +114,7 @@
 				F40B874A16AA233500676BB2 /* UIKit.framework */,
 				F40B874C16AA233500676BB2 /* Foundation.framework */,
 				F40B874E16AA233500676BB2 /* CoreGraphics.framework */,
-				F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */
+				F4DBCA8024A91BC0C2D34FB5 /* libPods-Bugsnag Test App.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -119,6 +122,8 @@
 		F40B875016AA233500676BB2 /* Bugsnag Test App */ = {
 			isa = PBXGroup;
 			children = (
+				A1F5109A249A5C4000AFF4DE /* CxxException.h */,
+				A1F51099249A5C4000AFF4DE /* CxxException.mm */,
 				F40B875916AA233500676BB2 /* AppDelegate.h */,
 				F40B875A16AA233500676BB2 /* AppDelegate.m */,
 				F40B876816AA233500676BB2 /* ViewController.h */,
@@ -259,6 +264,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1F5109B249A5C4000AFF4DE /* CxxException.mm in Sources */,
 				F40B875716AA233500676BB2 /* main.m in Sources */,
 				8A4882E5224BCD5D0035B94C /* OutOfMemoryController.m in Sources */,
 				F40B875B16AA233500676BB2 /* AppDelegate.m in Sources */,
