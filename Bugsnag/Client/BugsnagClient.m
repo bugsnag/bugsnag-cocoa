@@ -415,7 +415,7 @@ NSString *_lastOrientation = nil;
         // Start with a copy of the configuration metadata
         self.metadata = [[configuration metadata] deepCopy];
         // sync initial state
-        [self metadataChanged:self.configuration.metadata];
+        [self metadataChanged:self.metadata];
         [self metadataChanged:self.configuration.config];
         [self metadataChanged:self.state];
 
@@ -428,7 +428,7 @@ NSString *_lastOrientation = nil;
             [weakSelf metadataChanged:event.data];
         };
         [self addObserverWithBlock:observer];
-        [self.configuration.metadata addObserverWithBlock:observer];
+        [self.metadata addObserverWithBlock:observer];
         [self.configuration.config addObserverWithBlock:observer];
         [self.state addObserverWithBlock:observer];
 
@@ -1099,7 +1099,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)metadataChanged:(BugsnagMetadata *)metadata {
     @synchronized(metadata) {
-        if (metadata == self.configuration.metadata) {
+        if (metadata == self.metadata) {
             if ([self.metadataLock tryLock]) {
                 BSSerializeJSONDictionary([metadata toDictionary],
                                           &bsg_g_bugsnag_data.metadataJSON);
