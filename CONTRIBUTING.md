@@ -151,7 +151,10 @@ Run the integration tests using `make e2e` (end-to-end)
 ### Release steps
 
 * Once the pull request is merged, publish the release by running `make release`
-* Click "Publish Release" in the freshly opened GitHub release page
+* A GitHub release page will open.  Fill in the release notes: `vMaj.Min.Patch`
+  as a title and a summary of the changes from the CHANGELOG.  Look to previous
+  releases for style guidance; _"This release fixes a number of issues..."_ etc.
+* Click "Publish Release".
 * Perform post-release checks:
   - [ ] Have all Docs and dashboard PRs been merged?
   - [ ] Do the installation instructions work using the released artefact?
@@ -159,5 +162,9 @@ Run the integration tests using `make e2e` (end-to-end)
         build, using the released artefact?
   - [ ] Do the existing example apps send an error report using the released 
         artefact?
-* Make releases to downstream libraries, if appropriate (generally for bug 
-  fixes)
+* Plan to make releases to downstream libraries once adoption of the main
+  library has begun, if appropriate (generally for bug fixes).  These include:
+  * [bugsnag-react-native](https://github.com/bugsnag/bugsnag-react-native)
+  * [bugsnag-cocos2dx](https://github.com/bugsnag/bugsnag-cocos2dx)
+  * [bugsnag-unity](https://github.com/bugsnag/bugsnag-unity)
+

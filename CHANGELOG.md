@@ -304,6 +304,13 @@ how to upgrade.
 * Deliver each event in a separate request to avoid exceeding payload size limit
   [#424](https://github.com/bugsnag/bugsnag-cocoa/pull/424)
 
+## 5.23.3 (2020-06-05)
+
+## Bug Fixes
+
+* Fix DYLD lock mechanism preventing compilation on iOS <10.
+  [#675](https://github.com/bugsnag/bugsnag-cocoa/pull/675)
+
 ## 5.23.2 (2020-05-13)
 
 ## Bug Fixes
