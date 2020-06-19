@@ -129,7 +129,7 @@
                     @"inForeground": @NO,
                     @"bundleVersion": @"5.69",
                     @"codeBundleId": @"293.4",
-                    @"dsymUuid": @"f0ab09ee",
+                    @"dsymUUIDs": @[@"f0ab09ee"],
                     @"id": @"uk.co.bugsnag",
                     @"releaseStage": @"beta",
                     @"type": @"custom",

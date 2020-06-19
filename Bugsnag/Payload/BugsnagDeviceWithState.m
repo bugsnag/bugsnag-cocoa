@@ -18,7 +18,11 @@ NSDictionary *BSGParseDeviceMetadata(NSDictionary *event) {
     NSMutableDictionary *device = [NSMutableDictionary new];
     NSDictionary *state = [event valueForKeyPath:@"user.state.deviceState"];
     [device addEntriesFromDictionary:state];
-    BSGDictSetSafeObject(device, [event valueForKeyPath:@"system.time_zone"], @"timezone");
+
+    // insert for unhandled errors
+    BSGDictInsertIfNotNil(device, [event valueForKeyPath:@"system.time_zone"], @"timezone");
+    // handled errors in different location
+    BSGDictInsertIfNotNil(device, [event valueForKeyPath:@"time_zone"], @"timezone");
 
 #if BSG_PLATFORM_SIMULATOR
     BSGDictSetSafeObject(device, @YES, @"simulator");

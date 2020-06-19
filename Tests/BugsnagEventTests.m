@@ -595,6 +595,7 @@
 
     [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         [event clearMetadataFromSection:@"user"];
+        [event clearMetadataFromSection:@"device"];
         NSDictionary *invalidDict = @{};
         NSDictionary *validDict = @{@"myKey" : @"myValue"};
         [event addMetadata:invalidDict toSection:@"mySection"];
@@ -613,6 +614,7 @@
 
     [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         [event clearMetadataFromSection:@"user"];
+        [event clearMetadataFromSection:@"device"];
         [event addMetadata:[NSNull null] withKey:@"myKey" toSection:@"mySection"];
 
         // Invalid value for a non-existant section doesn't cause the section to be created
