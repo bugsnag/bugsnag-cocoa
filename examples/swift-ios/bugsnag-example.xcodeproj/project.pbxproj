@@ -16,13 +16,14 @@
 		D175F4C51ACDBD81009AFFB7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C41ACDBD81009AFFB7 /* Images.xcassets */; };
 		D175F4DF1ACDBEFA009AFFB7 /* AnotherClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4DE1ACDBEFA009AFFB7 /* AnotherClass.swift */; };
 		D175F4E21ACDBFD9009AFFB7 /* AnObjCClass.m in Sources */ = {isa = PBXBuildFile; fileRef = D175F4E11ACDBFD9009AFFB7 /* AnObjCClass.m */; };
-		DA053489B6DC1509697519B2 /* Pods_bugsnag_example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D30E783512A4AA57DDE63261 /* Pods_bugsnag_example.framework */; };
+		D38DA2C9F174278540C08156 /* Pods_bugsnag_example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3573BE2B7139FE81FC96415D /* Pods_bugsnag_example.framework */; };
 		E75E62DF1F4CE1D8000C44C0 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E75E62DE1F4CE1D8000C44C0 /* libc++.tbd */; };
 		E75E62E11F4CE1DD000C44C0 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E75E62E01F4CE1DD000C44C0 /* libz.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		00C3ED5B23F2DA4900757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		3573BE2B7139FE81FC96415D /* Pods_bugsnag_example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bugsnag_example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		378BA2CB24229CBB00123123 /* BigHonkinWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BigHonkinWebViewController.h; sourceTree = "<group>"; };
 		378BA2CC24229CBB00123123 /* BigHonkinWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BigHonkinWebViewController.m; sourceTree = "<group>"; };
 		379D2039242B697600C11EFE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -38,9 +39,6 @@
 		D175F4DE1ACDBEFA009AFFB7 /* AnotherClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnotherClass.swift; sourceTree = "<group>"; };
 		D175F4E01ACDBFD9009AFFB7 /* AnObjCClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnObjCClass.h; sourceTree = "<group>"; };
 		D175F4E11ACDBFD9009AFFB7 /* AnObjCClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnObjCClass.m; sourceTree = "<group>"; };
-		D30E783512A4AA57DDE63261 /* Pods_bugsnag_example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bugsnag_example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E6152E17248ABA8D00CE9FC6 /* libBugsnag.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libBugsnag.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		E6152E19248ABAAF00CE9FC6 /* libBugsnag.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libBugsnag.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E75E62DE1F4CE1D8000C44C0 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		E75E62E01F4CE1DD000C44C0 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -52,7 +50,7 @@
 			files = (
 				E75E62E11F4CE1DD000C44C0 /* libz.tbd in Frameworks */,
 				E75E62DF1F4CE1D8000C44C0 /* libc++.tbd in Frameworks */,
-				DA053489B6DC1509697519B2 /* Pods_bugsnag_example.framework in Frameworks */,
+				D38DA2C9F174278540C08156 /* Pods_bugsnag_example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,11 +107,9 @@
 		FD51012AA06FE025CCC45C93 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E6152E19248ABAAF00CE9FC6 /* libBugsnag.a */,
-				E6152E17248ABA8D00CE9FC6 /* libBugsnag.a */,
 				E75E62E01F4CE1DD000C44C0 /* libz.tbd */,
 				E75E62DE1F4CE1D8000C44C0 /* libc++.tbd */,
-				D30E783512A4AA57DDE63261 /* Pods_bugsnag_example.framework */,
+				3573BE2B7139FE81FC96415D /* Pods_bugsnag_example.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -153,7 +149,6 @@
 				TargetAttributes = {
 					D175F4B71ACDBD81009AFFB7 = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = 372ZUL2ZB7;
 						LastSwiftMigration = 1010;
 					};
 				};
@@ -391,7 +386,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "bugsnag-example/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -412,7 +407,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "bugsnag-example/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
