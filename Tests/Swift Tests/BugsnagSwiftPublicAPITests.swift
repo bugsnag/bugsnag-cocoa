@@ -76,12 +76,6 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         }
         Bugsnag.removeOnSession(block: sessionBlock)
         
-        Bugsnag.addOnSendError(block: onSendErrorBlock)
-        Bugsnag.addOnSendError { (event: BugsnagEvent) -> Bool in
-            return true
-        }
-        Bugsnag.removeOnSendError(block: onSendErrorBlock)
-        
         Bugsnag.addOnBreadcrumb(block: onBreadcrumbBlock)
         Bugsnag.addOnBreadcrumb { (breadcrumb: BugsnagBreadcrumb) -> Bool in
             return true
@@ -284,12 +278,6 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
             return true
         }
         client.removeOnSession(block: sessionBlock)
-        
-        client.addOnSendError(block: onSendErrorBlock)
-        client.addOnSendError { (event: BugsnagEvent) -> Bool in
-            return true
-        }
-        client.removeOnSendError(block: onSendErrorBlock)
         
         client.addOnBreadcrumb(block: onBreadcrumbBlock)
         client.addOnBreadcrumb { (breadcrumb: BugsnagBreadcrumb) -> Bool in

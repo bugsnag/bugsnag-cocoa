@@ -283,9 +283,9 @@ how to upgrade.
   of callbacks run when a session starts.
   [#483](https://github.com/bugsnag/bugsnag-cocoa/pull/483)
   
-* Added `addOnSendBlock:`, `removeOnSendBlock:` and `clearOnSendBlocks` methods to `Bugsnag` 
-  and `BugsnagConfiguration`.
+* Added `addOnSendBlock:`, `removeOnSendBlock:` to `BugsnagConfiguration`.
   [#485](https://github.com/bugsnag/bugsnag-cocoa/pull/485)
+  [#485](https://github.com/bugsnag/bugsnag-cocoa/pull/713)
   
 * Enhanced device orientation change breadcrumbs.  These are now reported with "from" and "to" values
   in a form consistent with the Android notifier.

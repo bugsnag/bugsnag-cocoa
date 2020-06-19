@@ -67,8 +67,6 @@ Feature: Callbacks can access and modify event information
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "metaData.callbacks.notify" equals 0
     And the event "metaData.callbacks.config" equals 1
-    And the event "metaData.callbacks.client" equals 2
-    And the event "metaData.callbacks.secondClient" equals 3
 
   Scenario: An uncaught NSException in a notify callback does not affect error delivery
     When I run "NotifyCallbackCrashScenario"
