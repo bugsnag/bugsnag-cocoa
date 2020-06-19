@@ -169,26 +169,6 @@
 }
 
 /**
- This method adds a callback that will trigger whenever an error is triggered.  In this case some extra information is added to the "extras" tab, and the full range of callback functionality can be found at https://docs.bugsnag.com/platforms/ios/customizing-error-reports/
- */
-- (IBAction)addMetadataCallback:(id)sender {
-    [Bugsnag addOnSendErrorBlock:^BOOL(BugsnagEvent * _Nonnull event) {
-        [event addMetadata:@{@"callback": @"data!"} toSection:@"extras"];
-        return YES;
-    }];
-}
-
-/**
- As above, this method adds a callback to trigger when an error occurs.  However this one will set the Severity of the error to "Info" which will be reflected in the errors appearance in your Bugsnag dashboard.
- */
-- (IBAction)addSeverityCallback:(id)sender {
-    [Bugsnag addOnSendErrorBlock:^BOOL(BugsnagEvent * _Nonnull event) {
-        [event setSeverity:BSGSeverityInfo];
-        return YES;
-    }];
-}
-
-/**
  This is the simplest example of leaving a custom breadcrumb. This will show up under the "breadcrumbs" tab of your error on the Bugsnag dashboard
  */
 - (IBAction)addCustomBreadcrumb:(id)sender {
