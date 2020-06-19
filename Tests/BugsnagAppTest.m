@@ -167,7 +167,7 @@
             @"inForeground": @YES,
             @"bundleVersion": @"1",
             @"codeBundleId": @"bundle-123",
-            @"dsymUuid": @"dsym-uuid-123",
+            @"dsymUUIDs": @[@"dsym-uuid-123"],
             @"id": @"com.example.foo.MyIosApp",
             @"releaseStage": @"beta",
             @"type": @"iOS",
