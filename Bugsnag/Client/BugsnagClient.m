@@ -622,7 +622,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     // add metadata about app/device
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
-    [self.metadata addMetadata:BSGParseDeviceMetadata(systemInfo) toSection:BSGKeyDevice];
+    [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
 }
 
 - (void)addTerminationObserver:(NSString *)name {
