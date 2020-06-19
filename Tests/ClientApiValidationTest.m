@@ -110,14 +110,6 @@
     [self.client removeOnSessionBlock:block];
 }
 
-- (void)testValidOnSendErrorBlock {
-    BOOL (^block)(BugsnagEvent *) = ^BOOL(BugsnagEvent *event) {
-        return NO;
-    };
-    [self.client addOnSendErrorBlock:block];
-    [self.client removeOnSendErrorBlock:block];
-}
-
 - (void)testValidOnBreadcrumbBlock {
     BOOL (^block)(BugsnagBreadcrumb *) = ^BOOL(BugsnagBreadcrumb *breadcrumb) {
         return NO;

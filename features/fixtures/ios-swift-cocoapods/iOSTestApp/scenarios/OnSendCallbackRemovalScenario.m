@@ -25,8 +25,8 @@
         [event addMetadata:@"adding metadata" withKey:@"config2" toSection:@"callbacks"];
         return true;
     }];
+    [self.config removeOnSendErrorBlock:block];
     [super startBugsnag];
-    [Bugsnag removeOnSendErrorBlock:block];
 }
 
 - (void)run {

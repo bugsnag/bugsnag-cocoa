@@ -26,17 +26,6 @@ class OnSendCallbackOrderScenario : Scenario {
     }
 
     override func run() {
-        Bugsnag.addOnSendError { (event) -> Bool in
-            event.addMetadata(self.callbackOrder, key: "client", section: "callbacks")
-            self.callbackOrder += 1
-            return true
-        }
-        Bugsnag.addOnSendError { (event) -> Bool in
-            event.addMetadata(self.callbackOrder, key: "secondClient", section: "callbacks")
-            self.callbackOrder += 1
-            return true
-        }
-
         let error = NSError(domain: "OnSendCallbackOrderScenario", code: 100, userInfo: nil)
         Bugsnag.notifyError(error) { (event) -> Bool in
             event.addMetadata(self.callbackOrder, key: "notify", section: "callbacks")
