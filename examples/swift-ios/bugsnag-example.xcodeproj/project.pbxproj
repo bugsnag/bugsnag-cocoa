@@ -15,7 +15,6 @@
 		D175F4C01ACDBD81009AFFB7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */; };
 		D175F4C31ACDBD81009AFFB7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C11ACDBD81009AFFB7 /* Main.storyboard */; };
 		D175F4C51ACDBD81009AFFB7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C41ACDBD81009AFFB7 /* Images.xcassets */; };
-		D175F4C81ACDBD81009AFFB7 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C61ACDBD81009AFFB7 /* LaunchScreen.xib */; };
 		D175F4D41ACDBD81009AFFB7 /* bugsnag_exampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4D31ACDBD81009AFFB7 /* bugsnag_exampleTests.swift */; };
 		D175F4DF1ACDBEFA009AFFB7 /* AnotherClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4DE1ACDBEFA009AFFB7 /* AnotherClass.swift */; };
 		D175F4E21ACDBFD9009AFFB7 /* AnObjCClass.m in Sources */ = {isa = PBXBuildFile; fileRef = D175F4E11ACDBFD9009AFFB7 /* AnObjCClass.m */; };
@@ -37,7 +36,6 @@
 		D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		D175F4C21ACDBD81009AFFB7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D175F4C41ACDBD81009AFFB7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		D175F4C71ACDBD81009AFFB7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		D175F4CD1ACDBD81009AFFB7 /* bugsnag-exampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "bugsnag-exampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D175F4D21ACDBD81009AFFB7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D175F4D31ACDBD81009AFFB7 /* bugsnag_exampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bugsnag_exampleTests.swift; sourceTree = "<group>"; };
@@ -59,6 +57,15 @@
 				E75E62E11F4CE1DD000C44C0 /* libz.tbd in Frameworks */,
 				E75E62DF1F4CE1D8000C44C0 /* libc++.tbd in Frameworks */,
 				C5919A6339550FB7F6EDE6D3 /* libPods-bugsnag-example.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D175F4CA1ACDBD81009AFFB7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E75E62E31F4CE1E8000C44C0 /* libz.tbd in Frameworks */,
+				E75E62E21F4CE1E3000C44C0 /* libc++.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
