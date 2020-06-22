@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 6.0.0 (2020-06-22)
 
 __This version contains many breaking changes__. It is part of an effort to unify our notifier
 libraries across platforms, making the user interface more consistent, and implementations better

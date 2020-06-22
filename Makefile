@@ -136,7 +136,7 @@ endif
 	@echo $(VERSION) > VERSION
 	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" Bugsnag.podspec.json
 	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" Bugsnag.podspec.json
-	@sed -i '' "s/self.version = .*;/self.version = @\"$(VERSION)\";/" Source/BugsnagNotifier.m
+	@sed -i '' "s/self.version = .*;/self.version = @\"$(VERSION)\";/" Bugsnag/Payload/BugsnagNotifier.m
 	@sed -i '' "s/## TBD/## $(VERSION) ($(shell date '+%Y-%m-%d'))/" CHANGELOG.md
 
 prerelease: bump ## Generates a PR for the $VERSION release
