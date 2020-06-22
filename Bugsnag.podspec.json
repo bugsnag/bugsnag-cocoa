@@ -1,7 +1,7 @@
 {
   "name": "Bugsnag",
-  "version": "5.23.3",
-  "summary": "Cocoa notifier for SDK for bugsnag.com",
+  "version": "6.0.0",
+  "summary": "The Bugsnag crash reporting framework for Apple platforms.",
   "homepage": "https://bugsnag.com",
   "license": "MIT",
   "authors": {
@@ -9,23 +9,45 @@
   },
   "source": {
     "git": "https://github.com/bugsnag/bugsnag-cocoa.git",
-    "tag": "v5.23.3"
+    "tag": "v6.0.0"
   },
-  "frameworks": ["Foundation", "SystemConfiguration"],
+  "frameworks": [
+    "Foundation",
+    "SystemConfiguration",
+    "Security"
+  ],
   "libraries": [
     "c++", "z"
   ],
   "platforms": {
-    "ios": "8.0",
-    "osx": "10.8",
-    "tvos": "9.0"
+    "ios": "9.3",
+    "osx": "10.11",
+    "tvos": "9.2"
   },
   "source_files": [
-    "Source/{**/,}*.{m,h,mm,c,cpp}"
+    "Bugsnag/{**/,}*.{m,h,mm,c}"
   ],
   "requires_arc": true,
   "public_header_files": [
-    "Source/BSG_KSCrashReportWriter.h",
-    "Source/Bugsnag{,MetaData,Configuration,Breadcrumb,CrashReport,Plugin}.h"
+    "Bugsnag/Bugsnag.h",
+    "Bugsnag/Client/BugsnagClient.h",
+    "Bugsnag/Configuration/BugsnagConfiguration.h",
+    "Bugsnag/Configuration/BugsnagEndpointConfiguration.h",
+    "Bugsnag/Configuration/BugsnagErrorTypes.h",
+    "Bugsnag/Metadata/BugsnagMetadata.h",
+    "Bugsnag/Metadata/BugsnagMetadataStore.h",
+    "Bugsnag/Payload/BugsnagApp.h",
+    "Bugsnag/Payload/BugsnagAppWithState.h",
+    "Bugsnag/Payload/BugsnagBreadcrumb.h",
+    "Bugsnag/Payload/BugsnagDevice.h",
+    "Bugsnag/Payload/BugsnagDeviceWithState.h",
+    "Bugsnag/Payload/BugsnagError.h",
+    "Bugsnag/Payload/BugsnagEvent.h",
+    "Bugsnag/Payload/BugsnagSession.h",
+    "Bugsnag/Payload/BugsnagStackframe.h",
+    "Bugsnag/Payload/BugsnagThread.h",
+    "Bugsnag/Payload/BugsnagUser.h",
+    "Bugsnag/Plugins/BugsnagPlugin.h",
+    "Bugsnag/BSG_KSCrashReportWriter.h"
   ]
 }

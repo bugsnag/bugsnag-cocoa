@@ -2,12 +2,12 @@ import UIKit
 
 class MagicError : NSError {}
 
-class NotifyWhenReleaseStageInNotifyReleaseStages : Scenario {
+class HandledErrorValidReleaseStage : Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
         self.config.releaseStage = "prod"
-        self.config.notifyReleaseStages = ["dev", "prod"]
+        self.config.enabledReleaseStages = ["dev", "prod"]
         super.startBugsnag()
     }
 
@@ -18,12 +18,12 @@ class NotifyWhenReleaseStageInNotifyReleaseStages : Scenario {
     }
 }
 
-class CrashWhenReleaseStageInNotifyReleaseStages : Scenario {
+class UnhandledErrorValidReleaseStage : Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
         self.config.releaseStage = "prod"
-        self.config.notifyReleaseStages = ["dev", "prod"]
+        self.config.enabledReleaseStages = ["dev", "prod"]
         super.startBugsnag()
     }
 
@@ -32,7 +32,7 @@ class CrashWhenReleaseStageInNotifyReleaseStages : Scenario {
     }
 }
 
-class CrashWhenReleaseStageInNotifyReleaseStagesChanges : Scenario {
+class UnhandledErrorChangeValidReleaseStage : Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
@@ -43,7 +43,7 @@ class CrashWhenReleaseStageInNotifyReleaseStagesChanges : Scenario {
           // A crash will occur
           self.config.releaseStage = "prod"
         }
-        self.config.notifyReleaseStages = ["dev", "prod"]
+        self.config.enabledReleaseStages = ["dev", "prod"]
         super.startBugsnag()
     }
 
@@ -52,7 +52,7 @@ class CrashWhenReleaseStageInNotifyReleaseStagesChanges : Scenario {
     }
 }
 
-class CrashWhenReleaseStageNotInNotifyReleaseStagesChanges : Scenario {
+class UnhandledErrorChangeInvalidReleaseStage : Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
@@ -63,7 +63,7 @@ class CrashWhenReleaseStageNotInNotifyReleaseStagesChanges : Scenario {
           // A crash will occur
           self.config.releaseStage = "test"
         }
-        self.config.notifyReleaseStages = ["dev", "prod"]
+        self.config.enabledReleaseStages = ["dev", "prod"]
         super.startBugsnag()
     }
 
@@ -72,12 +72,12 @@ class CrashWhenReleaseStageNotInNotifyReleaseStagesChanges : Scenario {
     }
 }
 
-class NotifyWhenReleaseStageNotInNotifyReleaseStages : Scenario {
+class HandledErrorInvalidReleaseStage : Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
         self.config.releaseStage = "dev"
-        self.config.notifyReleaseStages = ["prod"]
+        self.config.enabledReleaseStages = ["prod"]
         super.startBugsnag()
     }
 
@@ -88,12 +88,12 @@ class NotifyWhenReleaseStageNotInNotifyReleaseStages : Scenario {
     }
 }
 
-class CrashWhenReleaseStageNotInNotifyReleaseStages : Scenario {
+class UnhandledErrorInvalidReleaseStage : Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
         self.config.releaseStage = "dev"
-        self.config.notifyReleaseStages = ["prod"]
+        self.config.enabledReleaseStages = ["prod"]
         super.startBugsnag()
     }
 

@@ -6,6 +6,10 @@
 #import "ManualSessionScenario.h"
 #import <Bugsnag/Bugsnag.h>
 
+@interface BugsnagConfiguration ()
+- (void)deletePersistedUserData;
+@end
+
 @implementation ManualSessionScenario
 
 - (void)startBugsnag {

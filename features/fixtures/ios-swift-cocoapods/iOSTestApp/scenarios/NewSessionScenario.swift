@@ -21,7 +21,7 @@ internal class NewSessionScenario: Scenario {
         Bugsnag.notifyError(NSError(domain: "First error", code: 101, userInfo: nil))
 
         // stop tracking the existing session
-        Bugsnag.stopSession()
+        Bugsnag.pauseSession()
 
         // send 2nd exception which should contain new session info
         Bugsnag.startSession()

@@ -4,3 +4,5 @@
 
 #import <Bugsnag/Bugsnag.h>
 #import "Scenario.h"
+#import "AttachCustomStacktraceHook.h"
+#import "BugsnagHooks.h"
