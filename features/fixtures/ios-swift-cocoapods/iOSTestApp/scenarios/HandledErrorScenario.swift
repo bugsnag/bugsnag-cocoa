@@ -20,5 +20,4 @@ class HandledErrorScenario: Scenario {
         let error = NSError(domain: "HandledErrorScenario", code: 100, userInfo: nil)
         Bugsnag.notifyError(error)
     }
-
 }

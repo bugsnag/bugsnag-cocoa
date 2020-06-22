@@ -39,6 +39,10 @@
     self.tempPath = [self createTempPath];
 }
 
+- (void) testNOP {
+    // A test that does nothing to prevent an empty line in the XCode test results
+}
+
 - (void) tearDown
 {
     [super tearDown];

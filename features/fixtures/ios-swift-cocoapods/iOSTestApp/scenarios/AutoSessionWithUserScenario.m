@@ -11,7 +11,7 @@
 @implementation AutoSessionWithUserScenario
 
 - (void)startBugsnag {
-    [self.config setUser:@"123" withName:@"Joe Bloggs" andEmail:@"joe@example.com"];
+    [self.config setUser:@"123" withEmail:@"joe@example.com" andName:@"Joe Bloggs"];
     [super startBugsnag];
 }
 

@@ -22,5 +22,7 @@
 
 - (void)startBugsnag;
 
+- (void)didEnterBackgroundNotification;
+
 @property (nonatomic, strong, nullable) NSString *eventMode;
 @end

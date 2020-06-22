@@ -8,18 +8,17 @@ import Bugsnag
         let exception = NSException(name: NSExceptionName("Unhandled Error?!"),
                                     reason: "Internally reported an unhandled event",
                                     userInfo: nil);
-        let options = [
-            "severity": "info",
-            "severityReason": "userCallbackSetSeverity",
-            "unhandled": true
-            ] as [String : Any]
-        Bugsnag.internalClientNotify(exception, withData: options) { report in
+
+        Bugsnag.notify(exception) { (event) -> Bool in
             let frames = [
                 ["method":"bar()", "file":"foo.js", "lineNumber": 43],
                 ["method":"baz()", "file":"[native code]"],
                 ["method":"is_done()"]
             ]
-            report.attachCustomStacktrace(frames, withType: "fake")
+            event.severity = .info
+            event.updateUnhandled(true)
+            event.attachCustomStacktrace(frames, withType: "fake")
+            return true
         }
     }
 }

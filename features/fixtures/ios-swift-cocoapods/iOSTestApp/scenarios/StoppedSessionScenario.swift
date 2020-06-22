@@ -21,7 +21,7 @@ internal class StoppedSessionScenario: Scenario {
         Bugsnag.notifyError(NSError(domain: "First error", code: 101, userInfo: nil))
 
         // send 2nd exception which should not include session info
-        Bugsnag.stopSession()
+        Bugsnag.pauseSession()
         Bugsnag.notifyError(NSError(domain: "Second error", code: 101, userInfo: nil))
     }
 }

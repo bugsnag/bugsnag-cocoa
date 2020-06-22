@@ -1,165 +1,149 @@
 Feature: Session Tracking
 
-Scenario: Launching using the default configuration sends a single session
+  Background:
+    Given I clear all UserDefaults data
+
+  Scenario: Launching using the default configuration sends a single session
     When I run "AutoSessionScenario"
-    And I wait for a request
-    Then the request is valid for the session tracking API
-    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And the payload includes app and device data
+    And I wait to receive a request
+    And the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
-    And the payload field "sessions" is an array with 1 element
+    And the payload field "sessions" is an array with 1 elements
     And the payload field "app.version" equals "1.0.3"
     And the payload field "app.bundleVersion" equals "5"
     And the payload field "app.releaseStage" equals "development"
     And the payload field "app.type" equals "iOS"
-    And the payload field "device.osVersion" equals the device version
     And the payload field "device.osName" equals "iOS"
-    And the payload field "device.model" equals "iPhone10,4"
+    And the payload field "device.model" matches the test device model
 
-    And the session "id" is not null
-    And the session "startedAt" is not null
-    And the session "user.id" is null
+    And the payload field "sessions.0.id" is a UUID
+    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
+    And the session "user.id" is not null
     And the session "user.email" is null
     And the session "user.name" is null
 
-Scenario: Configuring a custom version sends it in a session request
+  Scenario: Configuring a custom version sends it in a session request
     When I run "AutoSessionCustomVersionScenario"
-    And I wait for a request
-    Then the request is valid for the session tracking API
-    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And the payload includes app and device data
+    And I wait to receive a request
+    And the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
-    And the payload field "sessions" is an array with 1 element
+    And the payload field "sessions" is an array with 1 elements
     And the payload field "app.version" equals "2.0.14"
     And the payload field "app.bundleVersion" equals "5"
     And the payload field "app.releaseStage" equals "development"
     And the payload field "app.type" equals "iOS"
-    And the payload field "device.osVersion" equals the device version
     And the payload field "device.osName" equals "iOS"
-    And the payload field "device.model" equals "iPhone10,4"
+    And the payload field "device.model" matches the test device model
 
-    And the session "id" is not null
-    And the session "startedAt" is not null
-    And the session "user.id" is null
+    And the payload field "sessions.0.id" is a UUID
+    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
+    And the session "user.id" is not null
     And the session "user.email" is null
     And the session "user.name" is null
 
-Scenario: Configuring user info sends it with auto-captured sessions
+  Scenario: Configuring user info sends it with auto-captured sessions
     When I run "AutoSessionWithUserScenario"
-    And I wait for a request
-    Then the request is valid for the session tracking API
-    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And the payload includes app and device data
+    And I wait to receive a request
+    And the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
-    And the payload field "sessions" is an array with 1 element
-    And the session "id" is not null
+    And the payload field "sessions" is an array with 1 elements
+    And the payload field "sessions.0.id" is a UUID
+    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
     And the session "user.id" equals "123"
     And the session "user.email" equals "joe@example.com"
     And the session "user.name" equals "Joe Bloggs"
 
-Scenario: Configuring user info sends it with manually captured sessions
+  Scenario: Configuring user info sends it with manually captured sessions
     When I run "ManualSessionWithUserScenario"
-    And I wait for a request
-    Then the request is valid for the session tracking API
-    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And the payload includes app and device data
+    And I wait to receive a request
+    And the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
-    And the payload field "sessions" is an array with 1 element
-    And the session "id" is not null
+    And the payload field "sessions" is an array with 1 elements
+    And the payload field "sessions.0.id" is a UUID
+    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
     And the session "user.id" equals "123"
     And the session "user.email" equals "joe@example.com"
     And the session "user.name" equals "Joe Bloggs"
 
-Scenario: Disabling auto-capture and calling startSession() manually sends a single session
+  Scenario: Disabling auto-capture and calling startSession() manually sends a single session
     When I run "ManualSessionScenario"
-    And I wait for a request
-    Then the request is valid for the session tracking API
-    And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    And the payload includes app and device data
+    And I wait to receive a request
+    And the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "notifier.name" equals "iOS Bugsnag Notifier"
-    And the payload field "sessions" is an array with 1 element
-    And the session "id" is not null
-    And the session "startedAt" is not null
-    And the session "user.id" is null
-    And the session "user.email" is null
-    And the session "user.name" is null
+    And the payload field "sessions" is an array with 1 elements
+    And the payload field "sessions.0.id" is a UUID
+    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
+    # This behaviour isn't established yet
+    # And the session "user.id" is null
+    # And the session "user.email" is null
+    # And the session "user.name" is null
 
-Scenario: Disabling auto-capture sends no sessions
+  Scenario: Disabling auto-capture sends no sessions
     When I run "DisabledSessionTrackingScenario"
-    And I wait for 10 seconds
-    Then I should receive 0 requests
+    And I wait for 3 seconds
+    Then I should receive no requests
 
-Scenario: Encountering a handled event during a session
+  Scenario: Encountering a handled event during a session
     When I run "AutoSessionHandledEventsScenario"
-    And I wait for 3 requests
-    Then request 0 is valid for the session tracking API
-    And request 1 is valid for the error reporting API
-    And request 2 is valid for the error reporting API
+    And I wait to receive 3 requests
+    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And the payload field "sessions.0.id" is stored as the value "session_id"
+    And I discard the oldest request
 
-    And the payload field "events" is an array with 1 element for request 1
-    And the payload field "events.0.session.events.handled" equals 1 for request 1
-    And the payload field "events.0.session.id" of request 1 equals the payload field "sessions.0.id" of request 0
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the payload field "events" is an array with 1 elements
+    And the payload field "events.0.session.events.handled" equals 1
+    And the payload field "events.0.session.id" equals the stored value "session_id"
+    And I discard the oldest request
 
-    And the payload field "events" is an array with 1 element for request 2
-    And the payload field "events.0.session.events.handled" equals 2 for request 2
-    And the payload field "events.0.session.id" of request 2 equals the payload field "sessions.0.id" of request 0
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the payload field "events" is an array with 1 elements
+    And the payload field "events.0.session.events.handled" equals 2
+    And the payload field "events.0.session.id" equals the stored value "session_id"
 
-Scenario: Encountering an unhandled event during a session
-    When I crash the app using "AutoSessionUnhandledScenario"
+  Scenario: Encountering an unhandled event during a session
+    When I run "AutoSessionUnhandledScenario"
+    And I wait for 4 seconds
     And I relaunch the app
-    And I wait for 2 requests
-    Then request 0 is valid for the session tracking API
-    And request 1 is valid for the error reporting API
+    And I set the app to "noevent" mode
+    And I configure Bugsnag for "AutoSessionUnhandledScenario"
+    And I wait to receive 2 requests
+    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And the payload field "sessions" is an array with 1 elements
+    And the payload field "sessions.0.id" is a UUID
+    And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
+    And the payload field "sessions.0.id" is stored as the value "session_id"
+    And I discard the oldest request
 
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the payload field "events" is an array with 1 elements
+    And the payload field "events.0.session.events.handled" equals 0
+    And the payload field "events.0.session.events.unhandled" equals 1
+    And the payload field "events.0.session.id" equals the stored value "session_id"
+
+  Scenario: Encountering handled and unhandled events during a session
+    When I run "AutoSessionMixedEventsScenario"
+    And I wait for 5 seconds
+    And I relaunch the app
+    And I configure Bugsnag for "AutoSessionMixedEventsScenario"
+    And I wait to receive 5 requests
+    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "sessions" is an array with 1 elements
     And the session "id" is not null
     And the session "startedAt" is not null
+    And the payload field "sessions" is an array with 1 elements
+    And I discard the oldest request
+    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    And the received requests match:
+        | exceptions.0.errorClass | session.events.handled | session.events.unhandled |
+        | FirstErr                | 1                      | 0                        |
+        | SecondErr               | 2                      | 0                        |
+        | Kaboom                  | 2                      | 1                        |
 
-    And the payload field "events" is an array with 1 element for request 1
-    And the payload field "events.0.session.events.handled" equals 0 for request 1
-    And the payload field "events.0.session.events.unhandled" equals 1 for request 1
-    And the payload field "events.0.session.id" of request 1 equals the payload field "sessions.0.id" of request 0
-    And the payload field "events.0.session.id" of request 1 does not equal the payload field "sessions.1.id" of request 0
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
 
-Scenario: Encountering handled and unhandled events during a session
-    When I crash the app using "AutoSessionMixedEventsScenario"
-    And I relaunch the app
-    And I wait for 3 requests
-    Then request 0 is valid for the session tracking API
-    And request 1 is valid for the session tracking API
-    And request 2 is valid for the error reporting API
-
-    And the payload field "sessions" is an array with 1 element
-    And the session "id" is not null
-    And the session "startedAt" is not null
-
-    And the payload field "sessions" is an array with 1 element for request 1
-
-    And the payload field "events" is an array with 3 elements for request 2
-    And each event with a session in the payload for request 2 matches one of:
-        | class     | handled | unhandled |
-        | FirstErr  | 1       | 0         |
-        | SecondErr | 2       | 0         |
-        | Kaboom    | 2       | 1         |
-    And the payload field "events.0.session.id" of request 2 equals the payload field "sessions.0.id" of request 0
-    And the payload field "events.1.session.id" of request 2 equals the payload field "sessions.0.id" of request 0
-    And the payload field "events.2.session.id" of request 2 equals the payload field "sessions.0.id" of request 0
-    And the payload field "events.0.session.id" of request 2 does not equal the payload field "sessions.1.id" of request 0
-
-Scenario: Backgrounding an app for more than a minute causes a new session to start on re-foregrounding it
-    Given I set environment variable "BUGSNAG_API_KEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
-    When I run "AutoCaptureRunScenario"
-    And I wait for 1 request
-    Then request 0 is valid for the session tracking API
-    And the payload field "sessions" is an array with 1 element for request 0
-    
-    Then I put the app in the background
-    And I wait for 70 seconds
-    
-    Then I bring the app to the foreground
-    # cummulative
-    And I wait for 2 requests
-    Then request 1 is valid for the session tracking API
-    And the payload field "sessions" is an array with 1 element for request 1
-    And the payload field "sessions.0.id" of request 0 does not equal the payload field "sessions.0.id" of request 1
-    

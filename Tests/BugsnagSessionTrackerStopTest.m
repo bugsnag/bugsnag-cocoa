@@ -7,8 +7,13 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "BugsnagConfiguration.h"
 #import "BugsnagSessionTracker.h"
+#import "BugsnagTestConstants.h"
+
+@interface BugsnagSession ()
+@property NSUInteger unhandledCount;
+@property NSUInteger handledCount;
+@end
 
 @interface BugsnagSessionTrackerStopTest : XCTestCase
 @property BugsnagConfiguration *configuration;
@@ -19,10 +24,11 @@
 
 - (void)setUp {
     [super setUp];
-    self.configuration = [BugsnagConfiguration new];
-    self.configuration.apiKey = @"test";
+    self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     self.configuration.autoTrackSessions = NO;
-    self.tracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration postRecordCallback:nil];
+    self.tracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
+                                                          client:nil
+                                              postRecordCallback:nil];
 }
 
 /**
@@ -33,7 +39,7 @@
     BugsnagSession *original = self.tracker.runningSession;
     XCTAssertNotNil(original);
 
-    [self.tracker stopSession];
+    [self.tracker pauseSession];
     XCTAssertNil(self.tracker.runningSession);
 
     XCTAssertTrue([self.tracker resumeSession]);
@@ -57,7 +63,7 @@
     [self.tracker startNewSession];
     BugsnagSession *originalSession = self.tracker.runningSession;
 
-    [self.tracker stopSession];
+    [self.tracker pauseSession];
     [self.tracker startNewSession];
     XCTAssertNotEqual(originalSession, self.tracker.runningSession);
 }
@@ -68,7 +74,7 @@
 - (void)testMultipleResumesHaveNoEffect {
     [self.tracker startNewSession];
     BugsnagSession *original = self.tracker.runningSession;
-    [self.tracker stopSession];
+    [self.tracker pauseSession];
 
     XCTAssertTrue([self.tracker resumeSession]);
     XCTAssertEqual(original, self.tracker.runningSession);
@@ -78,16 +84,16 @@
 }
 
 /**
- * Verifies that calling stopSession multiple times only stops one session
+ * Verifies that calling pauseSession multiple times only stops one session
  */
 - (void)testMultipleStopsHaveNoEffect {
     [self.tracker startNewSession];
     XCTAssertNotNil(self.tracker.runningSession);
 
-    [self.tracker stopSession];
+    [self.tracker pauseSession];
     XCTAssertNil(self.tracker.runningSession);
 
-    [self.tracker stopSession];
+    [self.tracker pauseSession];
     XCTAssertNil(self.tracker.runningSession);
 }
 
@@ -103,7 +109,7 @@
     XCTAssertEqual(1, self.tracker.runningSession.handledCount);
     XCTAssertEqual(1, self.tracker.runningSession.unhandledCount);
 
-    [self.tracker stopSession];
+    [self.tracker pauseSession];
     self.tracker.runningSession.handledCount++;
     self.tracker.runningSession.unhandledCount++;
     [self.tracker resumeSession];

@@ -65,6 +65,8 @@ Here’s a bit about our process designing and building the Bugsnag libraries:
   engineering design and code review process that adheres to our style and 
   linting guidelines.
 
+For an overview of source code organisation, see [ORGANIZATION.md](ORGANIZATION.md).
+
 ## Building
 
 Each OS version of `Bugsnag` has an Xcode project in a directory named for the
