@@ -1,13 +1,13 @@
 #import <WebKit/WebKit.h>
 #import <signal.h>
-#import "BigHonkinWebViewController.h"
+#import "OutOfMemoryController.h"
 #import <Bugsnag/Bugsnag.h>
 
-@interface BigHonkinWebViewController ()
+@interface OutOfMemoryController ()
 @property (nonatomic, strong) UIWebView *webView;
 @end
 
-@implementation BigHonkinWebViewController
+@implementation OutOfMemoryController
 
 - (void)viewDidLoad {
     [super viewDidLoad];

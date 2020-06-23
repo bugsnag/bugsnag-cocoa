@@ -99,8 +99,8 @@ class ViewController: UITableViewController {
     }
     
     func generateOutOfMemoryError() {
-        Bugsnag.leaveBreadcrumb(withMessage: "Starting a BigHonkinWebViewController for an OOM")
-        let controller = BigHonkinWebViewController();
+        Bugsnag.leaveBreadcrumb(withMessage: "Starting an OutOfMemoryController for an OOM")
+        let controller = OutOfMemoryController();
         navigationController?.pushViewController(controller, animated: true)
     }
 

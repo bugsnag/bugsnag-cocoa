@@ -19,4 +19,4 @@
 // THE SOFTWARE.
 
 #import "AnObjCClass.h"
-#import "BigHonkinWebViewController.h"
+#import "OutOfMemoryController.h"

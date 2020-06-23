@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00C3ED5C23F2DA4900757DBD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00C3ED5B23F2DA4900757DBD /* README.md */; };
-		378BA2CD24229CBB00123123 /* BigHonkinWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 378BA2CC24229CBB00123123 /* BigHonkinWebViewController.m */; };
+		378BA2CD24229CBB00123123 /* OutOfMemoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 378BA2CC24229CBB00123123 /* OutOfMemoryController.m */; };
 		379D203A242B697600C11EFE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 379D2038242B697600C11EFE /* LaunchScreen.storyboard */; };
 		D175F4BE1ACDBD81009AFFB7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4BD1ACDBD81009AFFB7 /* AppDelegate.swift */; };
 		D175F4C01ACDBD81009AFFB7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */; };
@@ -24,8 +24,8 @@
 /* Begin PBXFileReference section */
 		00C3ED5B23F2DA4900757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3573BE2B7139FE81FC96415D /* Pods_bugsnag_example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bugsnag_example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		378BA2CB24229CBB00123123 /* BigHonkinWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BigHonkinWebViewController.h; sourceTree = "<group>"; };
-		378BA2CC24229CBB00123123 /* BigHonkinWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BigHonkinWebViewController.m; sourceTree = "<group>"; };
+		378BA2CB24229CBB00123123 /* OutOfMemoryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutOfMemoryController.h; sourceTree = "<group>"; };
+		378BA2CC24229CBB00123123 /* OutOfMemoryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutOfMemoryController.m; sourceTree = "<group>"; };
 		379D2039242B697600C11EFE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C72198B7DFCD1FD2F92628E3 /* Pods-bugsnag-example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example.release.xcconfig"; path = "Pods/Target Support Files/Pods-bugsnag-example/Pods-bugsnag-example.release.xcconfig"; sourceTree = "<group>"; };
 		C9204A923B81A3D14457E739 /* Pods-bugsnag-example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bugsnag-example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-bugsnag-example/Pods-bugsnag-example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -91,8 +91,8 @@
 				379D2038242B697600C11EFE /* LaunchScreen.storyboard */,
 				D175F4BD1ACDBD81009AFFB7 /* AppDelegate.swift */,
 				D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */,
-				378BA2CB24229CBB00123123 /* BigHonkinWebViewController.h */,
-				378BA2CC24229CBB00123123 /* BigHonkinWebViewController.m */,
+				378BA2CB24229CBB00123123 /* OutOfMemoryController.h */,
+				378BA2CC24229CBB00123123 /* OutOfMemoryController.m */,
 				D175F4DE1ACDBEFA009AFFB7 /* AnotherClass.swift */,
 				D175F4BC1ACDBD81009AFFB7 /* Info.plist */,
 				D175F4DD1ACDBE24009AFFB7 /* bugsnag-example-Bridging-Header.h */,
@@ -245,7 +245,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				378BA2CD24229CBB00123123 /* BigHonkinWebViewController.m in Sources */,
+				378BA2CD24229CBB00123123 /* OutOfMemoryController.m in Sources */,
 				D175F4C01ACDBD81009AFFB7 /* ViewController.swift in Sources */,
 				D175F4BE1ACDBD81009AFFB7 /* AppDelegate.swift in Sources */,
 				D175F4DF1ACDBEFA009AFFB7 /* AnotherClass.swift in Sources */,
