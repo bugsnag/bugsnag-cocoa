@@ -615,7 +615,7 @@ void bsg_kscrw_i_writeMemoryContents(
     const BSG_KSCrashReportWriter *const writer, const char *const key,
     const uintptr_t address, int *limit);
 
-void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext, const BSG_KSCrashReportWriter *writer);
+void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext, const BSG_KSCrashReportWriter *writer, const bool i);
 
 bool bsg_kscrw_i_exceedsBufferLen(const size_t length);
 
@@ -971,13 +971,8 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
                              const char *const key,
                              const BSG_KSCrash_SentryContext *const crash,
                              const thread_t thread, const int index,
-                             const bool writeNotableAddresses,
-                             const bool recordAllThreads) {
+                             const bool writeNotableAddresses) {
     bool isCrashedThread = thread == crash->offendingThread;
-    if (!isCrashedThread && !recordAllThreads) {
-        return;
-    }
-
     BSG_STRUCT_MCONTEXT_L machineContextBuffer;
     uintptr_t backtraceBuffer[BSG_kMaxBacktraceDepth];
     int backtraceLength = sizeof(backtraceBuffer) / sizeof(*backtraceBuffer);
@@ -1026,7 +1021,7 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
  * @param writeNotableAddresses whether notable addresses should be written
  * so additional information about the error can be extracted
  * @param recordAllThreads controls whether all threads are captured. If this parameter is false,
- * the threads are still suspended but only the main thread's stacktrace is serialized.
+ * only the main thread's stacktrace is serialized.
  */
 void bsg_kscrw_i_writeAllThreads(const BSG_KSCrashReportWriter *const writer,
                                  const char *const key,
@@ -1047,8 +1042,10 @@ void bsg_kscrw_i_writeAllThreads(const BSG_KSCrashReportWriter *const writer,
     writer->beginArray(writer, key);
     {
         for (mach_msg_type_number_t i = 0; i < numThreads; i++) {
-            bsg_kscrw_i_writeThread(writer, NULL, crash, threads[i], (int)i,
-                                    writeNotableAddresses, recordAllThreads);
+            thread_t thread = threads[i];
+            if (recordAllThreads || thread == crash->offendingThread) {
+                bsg_kscrw_i_writeThread(writer, NULL, crash, thread, (int) i, writeNotableAddresses);
+            }
         }
     }
     writer->endContainer(writer);
@@ -1514,7 +1511,7 @@ void bsg_kscrashreport_writeMinimalReport(
                 writer, BSG_KSCrashField_CrashedThread, &crashContext->crash,
                 crashContext->crash.offendingThread,
                 bsg_kscrw_i_threadIndex(crashContext->crash.offendingThread),
-                false, false);
+                false);
             bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error,
                                    &crashContext->crash);
         }
@@ -1641,7 +1638,7 @@ void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext, BSG
         bsg_kscrw_i_addJSONElement(writer, BSG_KSCrashField_User,
                 crashContext->config.userInfoJSON);
     }
-    bsg_kscrw_i_writeTraceInfo(crashContext, writer);
+    bsg_kscrw_i_writeTraceInfo(crashContext, writer, 0);
 }
 
 void bsg_kscrashreport_logCrash(const BSG_KSCrash_Context *const crashContext) {
@@ -1686,7 +1683,7 @@ void bsg_kscrw_i_resetThreadTraceData() {
     }
 }
 
-char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext) {
+char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext, const bool captureAllThreads) {
     BSG_KSJSONEncodeContext jsonContext;
     BSG_KSCrashReportWriter concreteWriter;
     BSG_KSCrashReportWriter *writer = &concreteWriter;
@@ -1694,13 +1691,15 @@ char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext) {
     bsg_kscrw_i_resetThreadTraceData();
     bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), false, bsg_kscrw_i_collectJsonData, 0);
     writer->beginObject(writer, BSG_KSCrashField_Report);
-    bsg_kscrw_i_writeTraceInfo(crashContext, writer);
+    bsg_kscrw_i_writeTraceInfo(crashContext, writer, captureAllThreads);
     writer->endContainer(writer);
     bsg_ksjsonendEncode(bsg_getJsonContext(writer));
     return bsg_g_thread_json_data;
 }
 
-void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext, const BSG_KSCrashReportWriter *writer) {
+void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext,
+                                const BSG_KSCrashReportWriter *writer,
+                                const bool captureAllThreads) {
     bool unhandledCrash = crashContext->crash.crashType != BSG_KSCrashTypeUserReported;
 
     // Don't write the binary images for user reported crashes to improve performance
@@ -1710,11 +1709,8 @@ void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext, const B
     writer->beginObject(writer, BSG_KSCrashField_Crash);
     {
         // Conditionally write threads depending on user configuration
-        int sendPolicy = crashContext->crash.threadTracingEnabled;
-        bool recordAllThreads = sendPolicy == 0 || (unhandledCrash && sendPolicy == 1);
-
         bsg_kscrw_i_writeAllThreads(writer, BSG_KSCrashField_Threads, &crashContext->crash,
-                crashContext->config.introspectionRules.enabled, recordAllThreads);
+                crashContext->config.introspectionRules.enabled, captureAllThreads);
         bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error,&crashContext->crash);
     }
     writer->endContainer(writer);
