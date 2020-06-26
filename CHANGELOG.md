@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## TBD
+
+* Address unterminated string in thread gathering logic
+  [#720](https://github.com/bugsnag/bugsnag-cocoa/pull/720)
+
 ## 6.0.0 (2020-06-22)
 
 __This version contains many breaking changes__. It is part of an effort to unify our notifier
