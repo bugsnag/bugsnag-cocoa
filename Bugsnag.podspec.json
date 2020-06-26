@@ -29,25 +29,6 @@
   ],
   "requires_arc": true,
   "public_header_files": [
-    "include/Bugsnag/Bugsnag.h",
-    "include/Bugsnag/BugsnagClient.h",
-    "include/Bugsnag/BugsnagConfiguration.h",
-    "include/Bugsnag/BugsnagEndpointConfiguration.h",
-    "include/Bugsnag/BugsnagErrorTypes.h",
-    "include/Bugsnag/BugsnagMetadata.h",
-    "include/Bugsnag/BugsnagMetadataStore.h",
-    "include/Bugsnag/BugsnagApp.h",
-    "include/Bugsnag/BugsnagAppWithState.h",
-    "include/Bugsnag/BugsnagBreadcrumb.h",
-    "include/Bugsnag/BugsnagDevice.h",
-    "include/Bugsnag/BugsnagDeviceWithState.h",
-    "include/Bugsnag/BugsnagError.h",
-    "include/Bugsnag/BugsnagEvent.h",
-    "include/Bugsnag/BugsnagSession.h",
-    "include/Bugsnag/BugsnagStackframe.h",
-    "include/Bugsnag/BugsnagThread.h",
-    "include/Bugsnag/BugsnagUser.h",
-    "include/Bugsnag/BugsnagPlugin.h",
-    "include/Bugsnag/BSG_KSCrashReportWriter.h"
+    "Bugsnag/include/Bugsnag/*.h"
   ]
 }
