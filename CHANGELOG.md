@@ -3,6 +3,9 @@ Changelog
 
 ## TBD
 
+* Make stacktrace properties for error/thread readwrite
+  [#722](https://github.com/bugsnag/bugsnag-cocoa/pull/722)
+
 * Fix incorrect string comparison of thread names in Mach exception handling
   [#721](https://github.com/bugsnag/bugsnag-cocoa/pull/721)
 
