@@ -3,6 +3,9 @@ Changelog
 
 ## TBD
 
+* Move binary images store declaration from header file
+  [#725](https://github.com/bugsnag/bugsnag-cocoa/pull/725)
+
 * Make stacktrace properties for error/thread readwrite
   [#722](https://github.com/bugsnag/bugsnag-cocoa/pull/722)
 
