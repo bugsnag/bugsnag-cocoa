@@ -3,6 +3,9 @@ Changelog
 
 ## TBD
 
+* Make stacktrace properties for error/thread readwrite
+  [#722](https://github.com/bugsnag/bugsnag-cocoa/pull/722)
+
 * Address unterminated string in thread gathering logic
   [#720](https://github.com/bugsnag/bugsnag-cocoa/pull/720)
 

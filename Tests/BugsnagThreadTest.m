@@ -205,4 +205,12 @@
     XCTAssertEqual(0, [trace[2] count]);
 }
 
+- (void)testStacktraceOverride {
+    BugsnagThread *thread = [[BugsnagThread alloc] initWithThread:self.thread binaryImages:self.binaryImages];
+    XCTAssertNotNil(thread.stacktrace);
+    XCTAssertEqual(1, thread.stacktrace.count);
+    thread.stacktrace = @[];
+    XCTAssertEqual(0, thread.stacktrace.count);
+}
+
 @end
