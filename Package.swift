@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "Bugsnag",
     platforms: [
-        .macOS(.v10_10),
+        .macOS(.v10_11),
         .tvOS(.v9),
         .iOS(.v9),
     ],
