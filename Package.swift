@@ -51,6 +51,10 @@ let package = Package(
                 .headerSearchPath("KSCrash/Source/KSCrash/Recording/Tools"),
                 .headerSearchPath("KSCrash/Source/KSCrash/Recording"),
                 .headerSearchPath("KSCrash/Source/KSCrash/Recording/Sentry"),
+            ],
+            linkerSettings: [
+                .linkedLibrary("z"),
+                .linkedLibrary("c++"),
             ]
         ),
     ]
