@@ -3,6 +3,9 @@ Changelog
 
 ## TBD
 
+* Fix incorrect string comparison of thread names in Mach exception handling
+  [#721](https://github.com/bugsnag/bugsnag-cocoa/pull/721)
+
 * Address unterminated string in thread gathering logic
   [#720](https://github.com/bugsnag/bugsnag-cocoa/pull/720)
 
