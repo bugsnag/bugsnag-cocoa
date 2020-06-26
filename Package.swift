@@ -57,5 +57,7 @@ let package = Package(
                 .linkedLibrary("c++"),
             ]
         ),
-    ]
+    ],
+    cLanguageStandard: .gnu11,
+    cxxLanguageStandard: .gnucxx14
 )
