@@ -59,11 +59,5 @@
     XCTAssertTrue(uuidBytes != NULL, @"");
 }
 
-- (void) testGetImageNameNULL
-{
-    uint32_t imageIdx = bsg_ksdlimageNamed(NULL, false);
-    XCTAssertEqual(imageIdx, UINT32_MAX, @"");
-}
-
 
 @end
