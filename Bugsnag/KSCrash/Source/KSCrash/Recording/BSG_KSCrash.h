@@ -120,7 +120,7 @@
  * @param depth the number of frames to discard from the main thread's stacktrace
  * @return NSDictionary of thread data
  */
-- (NSDictionary *)captureThreads:(NSException *)exc depth:(int)depth;
+- (NSDictionary *)captureThreads:(NSException *)exc depth:(int *)depth;
 
 /** If YES, user reported exceptions will suspend all threads during report
  * generation. All threads will be suspended while generating a crash report for

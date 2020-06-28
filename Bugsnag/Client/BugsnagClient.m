@@ -977,7 +977,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
      * 3. -[BugsnagClient notify:handledState:block:]
      */
     int depth = (int)(BSGNotifierStackFrameCount);
-    NSDictionary *threadData = [[BSG_KSCrash sharedInstance] captureThreads:exception depth:depth];
+    NSDictionary *threadData = [[BSG_KSCrash sharedInstance] captureThreads:exception depth:&depth];
     NSArray *threads = [BugsnagThread threadsFromArray:[threadData valueForKeyPath:@"crash.threads"]
                               binaryImages:threadData[@"binary_images"]
                                      depth:depth
@@ -1573,7 +1573,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (NSArray *)collectThreads {
     int depth = (int)(BSGNotifierStackFrameCount);
     NSException *exc = [NSException exceptionWithName:@"Bugsnag" reason:@"" userInfo:nil];
-    NSDictionary *threadData = [[BSG_KSCrash sharedInstance] captureThreads:exc depth:depth];
+    NSDictionary *threadData = [[BSG_KSCrash sharedInstance] captureThreads:exc depth:&depth];
     NSArray<BugsnagThread *> *threads =
         [BugsnagThread threadsFromArray:[threadData valueForKeyPath:@"crash.threads"]
                            binaryImages:threadData[@"binary_images"]
