@@ -220,8 +220,13 @@ void bsg_kscrash_setThreadTracingEnabled(int threadTracingEnabled) {
 }
 
 char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t *callstack) {
-    bsg_kscrashsentry_suspend_threads_user();
     BSG_KSCrash_Context *context = crashContext();
+    // capture all threads only when set to BSGThreadSendPolicyAlways
+    bool captureAllThreads = context->crash.threadTracingEnabled == 0;
+
+    if (captureAllThreads) { // only suspend threads when capturing a full thread trace
+        bsg_kscrashsentry_suspend_threads_user();
+    }
 
     // populate context with pre-recorded stacktrace/thread info
     // for KSCrash to serialize
@@ -232,7 +237,10 @@ char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t
     context->crash.crashType = BSG_KSCrashTypeUserReported;
     context->crash.suspendThreadsForUserReported = true;
 
-    char *trace = bsg_kscrw_i_captureThreadTrace(context);
-    bsg_kscrashsentry_resume_threads_user(false);
+    char *trace = bsg_kscrw_i_captureThreadTrace(context, captureAllThreads);
+
+    if (captureAllThreads) {
+        bsg_kscrashsentry_resume_threads_user(false);
+    }
     return trace;
 }
