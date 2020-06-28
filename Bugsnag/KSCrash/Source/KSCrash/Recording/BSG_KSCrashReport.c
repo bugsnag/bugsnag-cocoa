@@ -1104,23 +1104,21 @@ int bsg_kscrw_i_threadIndex(const thread_t thread) {
  *
  * @param key The object key, if needed.
  *
- * @param index Cached info about the binary image.
+ * @param img Cached info about the binary image.
  */
 void bsg_kscrw_i_writeBinaryImage(const BSG_KSCrashReportWriter *const writer,
                                   const char *const key,
-                                  const uint32_t index)
+                                  const BSG_Mach_Header_Info *img)
 {
-    BSG_Mach_Binary_Image_Info info = *bsg_dyld_get_image_info(index);
-    
     writer->beginObject(writer, key);
     {
-        writer->addUIntegerElement(writer, BSG_KSCrashField_ImageAddress, (uintptr_t)info.header);
-        writer->addUIntegerElement(writer, BSG_KSCrashField_ImageVmAddress,          info.imageVmAddr);
-        writer->addUIntegerElement(writer, BSG_KSCrashField_ImageSize,               info.imageSize);
-        writer->addStringElement(writer, BSG_KSCrashField_Name,                      info.name);
-        writer->addUUIDElement(writer, BSG_KSCrashField_UUID,                        info.uuid);
-        writer->addIntegerElement(writer, BSG_KSCrashField_CPUType,                  info.header->cputype);
-        writer->addIntegerElement(writer, BSG_KSCrashField_CPUSubType,               info.header->cpusubtype);
+        writer->addUIntegerElement(writer, BSG_KSCrashField_ImageAddress, (uintptr_t)img->header);
+        writer->addUIntegerElement(writer, BSG_KSCrashField_ImageVmAddress,          img->imageVmAddr);
+        writer->addUIntegerElement(writer, BSG_KSCrashField_ImageSize,               img->imageSize);
+        writer->addStringElement(writer, BSG_KSCrashField_Name,                      img->name);
+        writer->addUUIDElement(writer, BSG_KSCrashField_UUID,                        img->uuid);
+        writer->addIntegerElement(writer, BSG_KSCrashField_CPUType,                  img->header->cputype);
+        writer->addIntegerElement(writer, BSG_KSCrashField_CPUSubType,               img->header->cpusubtype);
     }
     writer->endContainer(writer);
 }
@@ -1134,13 +1132,12 @@ void bsg_kscrw_i_writeBinaryImage(const BSG_KSCrashReportWriter *const writer,
 void bsg_kscrw_i_writeBinaryImages(const BSG_KSCrashReportWriter *const writer,
                                    const char *const key)
 {
-    const uint32_t imageCount = bsg_dyld_image_count();
-
     writer->beginArray(writer, key);
     {
-        for (uint32_t iImg = 0; iImg < imageCount; iImg++) {
-            // Threads are suspended at this point; no need to synchronise/lock
-            bsg_kscrw_i_writeBinaryImage(writer, NULL, iImg);
+        for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = img->next) {
+            if (!img->removed) {
+                bsg_kscrw_i_writeBinaryImage(writer, NULL, img);
+            }
         }
     }
     writer->endContainer(writer);

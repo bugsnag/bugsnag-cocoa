@@ -260,7 +260,7 @@
  * @return YES if the device is jailbroken.
  */
 + (BOOL)isJailbroken {
-    return bsg_mach_image_named("MobileSubstrate", false) != NULL;
+    return bsg_mach_headers_image_named("MobileSubstrate", false) != NULL;
 }
 
 /** Check if the current build is a debug build.

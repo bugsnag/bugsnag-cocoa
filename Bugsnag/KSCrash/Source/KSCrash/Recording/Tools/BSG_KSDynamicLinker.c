@@ -34,9 +34,9 @@
 
 const uint8_t *bsg_ksdlimageUUID(const char *const imageName, bool exactMatch) {
     if (imageName != NULL) {
-        BSG_Mach_Binary_Image_Info *img = bsg_mach_image_named(imageName, exactMatch);
+        BSG_Mach_Header_Info *img = bsg_mach_headers_image_named(imageName, exactMatch);
         if (img != NULL) {
-            uintptr_t cmdPtr = bsg_mach_image_first_cmd_after_header(img->header);
+            uintptr_t cmdPtr = bsg_mach_headers_first_cmd_after_header(img->header);
                 if (cmdPtr != 0) {
                 for (uint32_t iCmd = 0; iCmd < img->header->ncmds; iCmd++) {
                         const struct load_command *loadCmd =
@@ -54,21 +54,19 @@ const uint8_t *bsg_ksdlimageUUID(const char *const imageName, bool exactMatch) {
     return NULL;
 }
 
-
-
 bool bsg_ksdldladdr(const uintptr_t address, Dl_info *const info) {
     info->dli_fname = NULL;
     info->dli_fbase = NULL;
     info->dli_sname = NULL;
     info->dli_saddr = NULL;
 
-    BSG_Mach_Binary_Image_Info *image = bsg_mach_image_at_address(address);
+    BSG_Mach_Header_Info *image = bsg_mach_headers_image_at_address(address);
     if (image == NULL) {
         return false;
     }
     const uintptr_t addressWithSlide = address - image->slide;
     const uintptr_t segmentBase =
-        bsg_mach_image_base_of_image_index(image->header) + image->slide;
+        bsg_mach_headers_image_at_base_of_image_index(image->header) + image->slide;
     if (segmentBase == 0) {
         return false;
     }
@@ -79,7 +77,7 @@ bool bsg_ksdldladdr(const uintptr_t address, Dl_info *const info) {
     // Find symbol tables and get whichever symbol is closest to the address.
     const BSG_STRUCT_NLIST *bestMatch = NULL;
     uintptr_t bestDistance = ULONG_MAX;
-    uintptr_t cmdPtr = bsg_mach_image_first_cmd_after_header(image->header);
+    uintptr_t cmdPtr = bsg_mach_headers_first_cmd_after_header(image->header);
     if (cmdPtr == 0) {
         return false;
     }

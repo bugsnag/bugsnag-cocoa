@@ -26,8 +26,6 @@ _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
 static OSSpinLock bsg_mach_binary_images_access_lock_spin = OS_SPINLOCK_INIT;
 _Pragma("clang diagnostic pop")
 
-static BOOL bsg_unfair_lock_supported;
-
 // Lock helpers.  These use bulky Pragmas to hide warnings so are in their own functions for clarity.
 
 void bsg_spin_lock() {
@@ -58,25 +56,7 @@ void bsg_unfair_unlock() {
     _Pragma("clang diagnostic pop")
 }
 
-// Lock and unlock sections of code
-
-void bsg_dyld_cache_lock() {
-    if (bsg_unfair_lock_supported) {
-        bsg_unfair_lock();
-    } else {
-        bsg_spin_lock();
-    }
-}
-
-void bsg_dyld_cache_unlock() {
-    if (bsg_unfair_lock_supported) {
-        bsg_unfair_unlock();
-    } else {
-        bsg_spin_unlock();
-    }
-}
-
-BOOL bsg_is_unfair_lock_supported(NSProcessInfo *processInfo) {
+BOOL bsg_is_unfair_lock_supported() {
     NSOperatingSystemVersion minSdk = {0,0,0};
 #if BSG_PLATFORM_IOS
     minSdk.majorVersion = 10;
@@ -88,105 +68,58 @@ BOOL bsg_is_unfair_lock_supported(NSProcessInfo *processInfo) {
 #elif BSG_PLATFORM_WATCHOS
     minSdk.majorVersion = 3;
 #endif
-    return [processInfo isOperatingSystemAtLeastVersion:minSdk];
+    return [[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:minSdk];
 }
 
-/**
- * MARK: - A Dynamic array container
- * See: https://stackoverflow.com/a/3536261/2431627
- */
-typedef struct {
-    uint32_t used;
-    uint32_t size;
-    BSG_Mach_Binary_Image_Info *contents;
-} BSG_Mach_Binary_Images;
+static void (*bsg_mach_headers_cache_lock_func)(void) = NULL;
+static void (*bsg_mach_headers_cache_unlock_func)(void) = NULL;
 
-// MARK: - Replicate the DYLD API
-
-static BSG_Mach_Binary_Images bsg_mach_binary_images;
-
-uint32_t bsg_dyld_image_count(void) {
-    return bsg_mach_binary_images.used;
-}
-
-BSG_Mach_Binary_Image_Info *bsg_dyld_get_image_info(uint32_t imageIndex) {
-    if (imageIndex < bsg_mach_binary_images.used) {
-        return &bsg_mach_binary_images.contents[imageIndex];
-    }
-    return NULL;
-}
-
-/**
- * Store a Mach binary image-excapsulating struct in a dynamic array.
- * The array doubles on filling-up.  Typical sizes is expected to be in < 1000 (i.e. 2-3 doublings, at app start-up)
- * This should be called in a threadsafe way; we lock against a simultaneous add and remove.
- */
-void bsg_add_mach_binary_image(BSG_Mach_Binary_Image_Info element) {
-    
-    bsg_dyld_cache_lock();
-    
-    // Expand array if necessary.  We're slightly paranoid here.  An OOM is likely to be indicative of bigger problems
-    // but we should still do *our* best not to crash the app.
-    if (bsg_mach_binary_images.used == bsg_mach_binary_images.size) {
-        uint32_t newSize = bsg_mach_binary_images.size *= 2;
-        uint32_t newAllocationSize = newSize * sizeof(BSG_Mach_Binary_Image_Info);
-        errno = 0;
-        BSG_Mach_Binary_Image_Info *newAllocation = (BSG_Mach_Binary_Image_Info *)realloc(bsg_mach_binary_images.contents, newAllocationSize);
-        
-        if (newAllocation != NULL && errno != ENOMEM) {
-            bsg_mach_binary_images.size = newSize;
-            bsg_mach_binary_images.contents = newAllocation;
-        }
-        else {
-            // Exit early, don't expand the array, don't store the header info and unlock
-            bsg_dyld_cache_unlock();
-            return;
+void bsg_mach_headers_cache_lock() {
+    if (bsg_mach_headers_cache_lock_func == NULL) {
+        if (bsg_is_unfair_lock_supported()) {
+            bsg_mach_headers_cache_lock_func = &bsg_unfair_lock;
+        } else {
+            bsg_mach_headers_cache_lock_func = &bsg_spin_lock;
         }
     }
-    
-    // Store the value, increment the number of used elements
-    bsg_mach_binary_images.contents[bsg_mach_binary_images.used++] = element;
-    
-    bsg_dyld_cache_unlock();
+    bsg_mach_headers_cache_lock_func();
 }
 
-/**
- * Binary images can only be loaded at most once.  We can use the VMAddress as a key, without needing to compare the
- * other fields.  Element order is not important; deletion is accomplished by copying the last item into the deleted
- * position.
- */
-void bsg_remove_mach_binary_image(uint64_t imageVmAddr) {
-    
-    bsg_dyld_cache_lock();
-    
-    for (uint32_t i=0; i<bsg_mach_binary_images.used; i++) {
-        BSG_Mach_Binary_Image_Info item = bsg_mach_binary_images.contents[i];
-        
-        if (imageVmAddr == item.imageVmAddr) {
-            // Note: removal of the last (ith) item involves a redundant copy from last->last.
-            if (bsg_mach_binary_images.used >= 2) {
-                bsg_mach_binary_images.contents[i] = bsg_mach_binary_images.contents[--bsg_mach_binary_images.used];
-            }
-            else {
-                bsg_mach_binary_images.used = 0;
-            }
-            break; // an image can only be loaded singularly; exit loop once found
+void bsg_mach_headers_cache_unlock() {
+    if (bsg_mach_headers_cache_unlock_func == NULL) {
+        if (bsg_is_unfair_lock_supported()) {
+            bsg_mach_headers_cache_unlock_func = &bsg_unfair_unlock;
+        } else {
+            bsg_mach_headers_cache_unlock_func = &bsg_spin_unlock;
         }
     }
-    
-    bsg_dyld_cache_unlock();
+    bsg_mach_headers_cache_unlock_func();
 }
 
-/**
- * Create an empty array with initial capacity to hold Mach header info.
- *
- * @param initialSize The initial array capacity
-*/
-void bsg_initialise_mach_binary_headers(uint32_t initialSize) {
-    bsg_unfair_lock_supported = bsg_is_unfair_lock_supported([NSProcessInfo processInfo]);
-    bsg_mach_binary_images.contents = (BSG_Mach_Binary_Image_Info *)malloc(initialSize * sizeof(BSG_Mach_Binary_Image_Info));
-    bsg_mach_binary_images.used = 0;
-    bsg_mach_binary_images.size = initialSize;
+// MARK: - Mach Header Linked List
+
+static BSG_Mach_Header_Info *bsg_mach_headers_images_head;
+static BSG_Mach_Header_Info *bsg_mach_headers_images_tail;
+
+BSG_Mach_Header_Info *bsg_mach_headers_get_images() {
+    return bsg_mach_headers_images_head;
+}
+
+void bsg_mach_headers_initialize() {
+    
+    // Free any existing data (this may be present in tests)
+    for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; ) {
+        BSG_Mach_Header_Info *imgToDelete = img;
+        img = img->next;
+        free(imgToDelete);
+    }
+    
+    bsg_mach_headers_images_head = NULL;
+    bsg_mach_headers_images_tail = NULL;
+    
+    // Register for binary images being loaded and unloaded
+    _dyld_register_func_for_add_image(&bsg_mach_headers_add_image);
+    _dyld_register_func_for_remove_image(&bsg_mach_headers_remove_image);
 }
 
 /**
@@ -198,11 +131,11 @@ void bsg_initialise_mach_binary_headers(uint32_t initialSize) {
  *
  * @returns a boolean indicating success
  */
-bool bsg_populate_mach_image_info(const struct mach_header *header, intptr_t slide, BSG_Mach_Binary_Image_Info *info) {
+bool bsg_mach_headers_populate_info(const struct mach_header *header, intptr_t slide, BSG_Mach_Header_Info *info) {
     
     // Early exit conditions; this is not a valid/useful binary image
     // 1. We can't find a sensible Mach command
-    uintptr_t cmdPtr = bsg_mach_image_first_cmd_after_header(header);
+    uintptr_t cmdPtr = bsg_mach_headers_first_cmd_after_header(header);
     if (cmdPtr == 0) {
         return false;
     }
@@ -257,107 +190,106 @@ bool bsg_populate_mach_image_info(const struct mach_header *header, intptr_t sli
     info->uuid = uuid;
     info->name = imageName;
     info->slide = slide;
+    info->removed = FALSE;
+    info->next = NULL;
     
     return true;
 }
 
-/**
- * A callback invoked when dyld loads binary images.  It stores enough relevant info about the
- * image to populate a crash report later.
- *
- * @param header A mach_header structure
- *
- * @param slide A virtual memory slide amount. The virtual memory slide amount specifies the difference between the
- *              address at which the image was linked and the address at which the image is loaded.
- */
-void bsg_mach_binary_image_added(const struct mach_header *header, intptr_t slide)
-{
-    BSG_Mach_Binary_Image_Info info = { 0 };
-    if (bsg_populate_mach_image_info(header, slide, &info)) {
-        bsg_add_mach_binary_image(info);
+void bsg_mach_headers_add_image(const struct mach_header *header, intptr_t slide) {
+    
+    BSG_Mach_Header_Info *newImage = malloc(sizeof(BSG_Mach_Header_Info));
+    if (newImage != NULL && errno != ENOMEM) {
+        if (bsg_mach_headers_populate_info(header, slide, newImage)) {
+            
+            bsg_mach_headers_cache_lock();
+            
+            if (bsg_mach_headers_images_head == NULL) {
+                bsg_mach_headers_images_head = newImage;
+            } else {
+                bsg_mach_headers_images_tail->next = newImage;
+            }
+            bsg_mach_headers_images_tail = newImage;
+            
+            bsg_mach_headers_cache_unlock();
+        }
+    }
+    
+}
+
+void bsg_mach_headers_remove_image(const struct mach_header *header, intptr_t slide) {
+    BSG_Mach_Header_Info existingImage = { 0 };
+    if (bsg_mach_headers_populate_info(header, slide, &existingImage)) {
+        for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = img->next) {
+            if (img->imageVmAddr == existingImage.imageVmAddr) {
+                img->removed = true;
+            }
+        }
     }
 }
 
-/**
- * Called when a binary image is unloaded.
- */
-void bsg_mach_binary_image_removed(const struct mach_header *header, intptr_t slide)
-{
-    // Convert header into an info struct
-    BSG_Mach_Binary_Image_Info info = { 0 };
-    if (bsg_populate_mach_image_info(header, slide, &info)) {
-        bsg_remove_mach_binary_image(info.imageVmAddr);
-    }
-}
-
-BSG_Mach_Binary_Image_Info *bsg_mach_image_named(const char *const imageName, bool exactMatch) {
-    
-    BSG_Mach_Binary_Image_Info *imageFound = NULL;
-    
+BSG_Mach_Header_Info *bsg_mach_headers_image_named(const char *const imageName, bool exactMatch) {
+        
     if (imageName != NULL) {
-        for (uint32_t iImg = 0; iImg < bsg_dyld_image_count(); iImg++) {
-            BSG_Mach_Binary_Image_Info *img = bsg_dyld_get_image_info(iImg);
+        
+        for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = img->next) {
             if (img->name == NULL) {
                 continue; // name is null if the index is out of range per dyld(3)
+            } else if (img->removed == true) {
+                continue; // ignore unloaded libraries
             } else if (exactMatch) {
                 if (strcmp(img->name, imageName) == 0) {
-                    imageFound = img;
-                    break;
+                    return img;
                 }
             } else {
                 if (strstr(img->name, imageName) != NULL) {
-                    imageFound = img;
-                    break;
+                    return img;
                 }
             }
         }
     }
     
-    return imageFound;
+    return NULL;
 }
 
-BSG_Mach_Binary_Image_Info *bsg_mach_image_at_address(const uintptr_t address) {
-    
-    BSG_Mach_Binary_Image_Info *imageFound = NULL;
-    
-    for (uint32_t iImg = 0; iImg < bsg_dyld_image_count(); iImg++) {
-        BSG_Mach_Binary_Image_Info *img = bsg_dyld_get_image_info(iImg);
-        if (img->header != NULL) {
-            // Look for a segment command with this address within its range.
-            uintptr_t addressWSlide = address - img->slide;
-            uintptr_t cmdPtr = bsg_mach_image_first_cmd_after_header(img->header);
-            if (cmdPtr == 0) {
-                continue;
-            }
-            for (uint32_t iCmd = 0; iCmd < img->header->ncmds; iCmd++) {
-                const struct load_command *loadCmd =
-                    (struct load_command *)cmdPtr;
-                if (loadCmd->cmd == LC_SEGMENT) {
-                    const struct segment_command *segCmd =
-                        (struct segment_command *)cmdPtr;
-                    if (addressWSlide >= segCmd->vmaddr &&
-                        addressWSlide < segCmd->vmaddr + segCmd->vmsize) {
-                        imageFound = img;
-                        break;
-                    }
-                } else if (loadCmd->cmd == LC_SEGMENT_64) {
-                    const struct segment_command_64 *segCmd =
-                        (struct segment_command_64 *)cmdPtr;
-                    if (addressWSlide >= segCmd->vmaddr &&
-                        addressWSlide < segCmd->vmaddr + segCmd->vmsize) {
-                        imageFound = img;
-                        break;
-                    }
+BSG_Mach_Header_Info *bsg_mach_headers_image_at_address(const uintptr_t address) {
+        
+    for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = img->next) {
+        if (img->removed == true) {
+            continue;
+        }
+        // Look for a segment command with this address within its range.
+        uintptr_t cmdPtr = bsg_mach_headers_first_cmd_after_header(img->header);
+        if (cmdPtr == 0) {
+            continue;
+        }
+        uintptr_t addressWSlide = address - img->slide;
+        for (uint32_t iCmd = 0; iCmd < img->header->ncmds; iCmd++) {
+            const struct load_command *loadCmd =
+                (struct load_command *)cmdPtr;
+            if (loadCmd->cmd == LC_SEGMENT) {
+                const struct segment_command *segCmd =
+                    (struct segment_command *)cmdPtr;
+                if (addressWSlide >= segCmd->vmaddr &&
+                    addressWSlide < segCmd->vmaddr + segCmd->vmsize) {
+                    return img;
                 }
-                cmdPtr += loadCmd->cmdsize;
+            } else if (loadCmd->cmd == LC_SEGMENT_64) {
+                const struct segment_command_64 *segCmd =
+                    (struct segment_command_64 *)cmdPtr;
+                if (addressWSlide >= segCmd->vmaddr &&
+                    addressWSlide < segCmd->vmaddr + segCmd->vmsize) {
+                    return img;
+                }
             }
+            cmdPtr += loadCmd->cmdsize;
         }
     }
     
-    return imageFound;
+    return NULL;
 }
 
-uintptr_t bsg_mach_image_first_cmd_after_header(const struct mach_header *const header) {
+uintptr_t bsg_mach_headers_first_cmd_after_header(const struct mach_header *const header) {
     if (header == NULL) {
       return 0;
     }
@@ -374,9 +306,9 @@ uintptr_t bsg_mach_image_first_cmd_after_header(const struct mach_header *const 
     }
 }
 
-uintptr_t bsg_mach_image_base_of_image_index(const struct mach_header *const header) {
+uintptr_t bsg_mach_headers_image_at_base_of_image_index(const struct mach_header *const header) {
     // Look for a segment command and return the file image address.
-    uintptr_t cmdPtr = bsg_mach_image_first_cmd_after_header(header);
+    uintptr_t cmdPtr = bsg_mach_headers_first_cmd_after_header(header);
     if (cmdPtr == 0) {
         return 0;
     }

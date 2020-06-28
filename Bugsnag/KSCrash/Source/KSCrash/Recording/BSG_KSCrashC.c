@@ -29,6 +29,7 @@
 #include "BSG_KSCrashReport.h"
 #include "BSG_KSCrashSentry_User.h"
 #include "BSG_KSMach.h"
+#include "BSG_KSMachHeaders.h"
 #include "BSG_KSObjC.h"
 #include "BSG_KSString.h"
 #include "BSG_KSSystemInfoC.h"
@@ -97,7 +98,9 @@ BSG_KSCrashType bsg_kscrash_install(const char *const crashReportFilePath,
     BSG_KSLOG_DEBUG("Installing crash reporter.");
 
     BSG_KSCrash_Context *context = crashContext();
-
+    
+    bsg_mach_headers_initialize();
+    
     if (bsg_g_installed) {
         BSG_KSLOG_DEBUG("Crash reporter already installed.");
         return context->config.handlingCrashTypes;
