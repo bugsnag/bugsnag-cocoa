@@ -38,7 +38,6 @@
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
-#import "BugsnagThread.h"
 #import "BSGSerialization.h"
 #import "BugsnagErrorReportSink.h"
 
@@ -69,13 +68,6 @@
 // ============================================================================
 #pragma mark - Globals -
 // ============================================================================
-
-@interface BugsnagThread ()
-+ (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads
-                                         binaryImages:(NSArray *)binaryImages
-                                                depth:(NSUInteger)depth
-                                            errorType:(NSString *)errorType;
-@end
 
 @interface BSG_KSCrash ()
 
@@ -306,7 +298,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
             }];
 }
 
-- (NSArray<BugsnagThread *> *)captureThreads:(NSException *)exc depth:(int)depth {
+- (NSDictionary *)captureThreads:(NSException *)exc depth:(int)depth {
     NSArray *addresses = [exc callStackReturnAddresses];
     int numFrames = (int) [addresses count];
     uintptr_t *callstack;
@@ -335,14 +327,9 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     char *trace = bsg_kscrash_captureThreadTrace(depth, numFrames, callstack);
     free(callstack);
     NSDictionary *json = BSGDeserializeJson(trace);
-
-    if (json) {
-        return [BugsnagThread threadsFromArray:[json valueForKeyPath:@"crash.threads"]
-                                  binaryImages:json[@"binary_images"]
-                                         depth:depth
-                                     errorType:nil];
-    }
-    return @[];
+    free(trace);
+    
+    return json;
 }
 
 - (void)reportUserException:(NSString *)name
