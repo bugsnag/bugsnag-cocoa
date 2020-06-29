@@ -37,20 +37,18 @@ const uint8_t *bsg_ksdlimageUUID(const char *const imageName, bool exactMatch) {
         BSG_Mach_Header_Info *img = bsg_mach_headers_image_named(imageName, exactMatch);
         if (img != NULL) {
             uintptr_t cmdPtr = bsg_mach_headers_first_cmd_after_header(img->header);
-                if (cmdPtr != 0) {
+            if (cmdPtr != 0) {
                 for (uint32_t iCmd = 0; iCmd < img->header->ncmds; iCmd++) {
-                        const struct load_command *loadCmd =
-                            (struct load_command *)cmdPtr;
-                        if (loadCmd->cmd == LC_UUID) {
-                            struct uuid_command *uuidCmd =
-                                (struct uuid_command *)cmdPtr;
-                            return uuidCmd->uuid;
-                        }
-                        cmdPtr += loadCmd->cmdsize;
+                    const struct load_command *loadCmd = (struct load_command *)cmdPtr;
+                    if (loadCmd->cmd == LC_UUID) {
+                        struct uuid_command *uuidCmd = (struct uuid_command *)cmdPtr;
+                        return uuidCmd->uuid;
                     }
+                    cmdPtr += loadCmd->cmdsize;
                 }
             }
         }
+    }
     return NULL;
 }
 

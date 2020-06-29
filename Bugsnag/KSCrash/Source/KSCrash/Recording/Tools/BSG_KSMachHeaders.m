@@ -15,6 +15,17 @@
 
 // MARK: - Locking
 
+static const NSOperatingSystemVersion minSdkForUnfairLock =
+    #if BSG_PLATFORM_IOS
+    {10,0,0};
+    #elif BSG_PLATFORM_OSX
+    {10,12,0};
+    #elif BSG_PLATFORM_TVOS
+    {10,0,0};
+    #elif BSG_PLATFORM_WATCHOS
+    {3,0,0}
+    #endif
+
 // Pragma's hide unavoidable (and expected) deprecation/unavailable warnings
 _Pragma("clang diagnostic push")
 _Pragma("clang diagnostic ignored \"-Wunguarded-availability\"")
@@ -56,44 +67,20 @@ void bsg_unfair_unlock() {
     _Pragma("clang diagnostic pop")
 }
 
-BOOL bsg_is_unfair_lock_supported() {
-    NSOperatingSystemVersion minSdk = {0,0,0};
-#if BSG_PLATFORM_IOS
-    minSdk.majorVersion = 10;
-#elif BSG_PLATFORM_OSX
-    minSdk.majorVersion = 10;
-    minSdk.minorVersion = 12;
-#elif BSG_PLATFORM_TVOS
-    minSdk.majorVersion = 10;
-#elif BSG_PLATFORM_WATCHOS
-    minSdk.majorVersion = 3;
-#endif
-    return [[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:minSdk];
-}
-
-static void (*bsg_mach_headers_cache_lock_func)(void) = NULL;
-static void (*bsg_mach_headers_cache_unlock_func)(void) = NULL;
-
 void bsg_mach_headers_cache_lock() {
-    if (bsg_mach_headers_cache_lock_func == NULL) {
-        if (bsg_is_unfair_lock_supported()) {
-            bsg_mach_headers_cache_lock_func = &bsg_unfair_lock;
-        } else {
-            bsg_mach_headers_cache_lock_func = &bsg_spin_lock;
-        }
+    if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:minSdkForUnfairLock]) {
+        bsg_unfair_lock();
+    } else {
+        bsg_spin_lock();
     }
-    bsg_mach_headers_cache_lock_func();
 }
 
 void bsg_mach_headers_cache_unlock() {
-    if (bsg_mach_headers_cache_unlock_func == NULL) {
-        if (bsg_is_unfair_lock_supported()) {
-            bsg_mach_headers_cache_unlock_func = &bsg_unfair_unlock;
-        } else {
-            bsg_mach_headers_cache_unlock_func = &bsg_spin_unlock;
-        }
+    if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:minSdkForUnfairLock]) {
+        bsg_unfair_unlock();
+    } else {
+        bsg_spin_unlock();
     }
-    bsg_mach_headers_cache_unlock_func();
 }
 
 // MARK: - Mach Header Linked List
@@ -117,7 +104,9 @@ void bsg_mach_headers_initialize() {
     bsg_mach_headers_images_head = NULL;
     bsg_mach_headers_images_tail = NULL;
     
-    // Register for binary images being loaded and unloaded
+    // Register for binary images being loaded and unloaded. dyld calls the add function once
+    // for each library that has already been loaded and then keeps this cache up-to-date
+    // with future changes
     _dyld_register_func_for_add_image(&bsg_mach_headers_add_image);
     _dyld_register_func_for_remove_image(&bsg_mach_headers_remove_image);
 }

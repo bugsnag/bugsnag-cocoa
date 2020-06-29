@@ -13,6 +13,11 @@
 #import <os/lock.h>
 #import <libkern/OSAtomic.h>
 
+/* Maintaining our own list of framework Mach headers means that we avoid potential
+ * deadlock situations where we try and suspend lock-holding threads prior to
+ * loading mach headers as part of our normal event handling behaviour.
+ */
+
 /**
  * An encapsulation of the Mach header data as a linked list - either 64 or 32 bit, along with some additiona
  * information required for detailing a crash report's binary images.

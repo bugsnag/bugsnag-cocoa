@@ -99,6 +99,8 @@ BSG_KSCrashType bsg_kscrash_install(const char *const crashReportFilePath,
 
     BSG_KSCrash_Context *context = crashContext();
     
+    // Initialize local store of dynamically loaded libraries so that binary
+    // image information can be extracted for reports
     bsg_mach_headers_initialize();
     
     if (bsg_g_installed) {

@@ -34,7 +34,6 @@
 
 @implementation KSDynamicLinker_Tests
 
-// TODO:TL Fix test
 - (void) testImageUUID
 {
     bsg_mach_headers_initialize();
