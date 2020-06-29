@@ -31,7 +31,7 @@ typedef struct bsg_mach_image {
     uint8_t *uuid;
     const char* name;
     intptr_t slide;
-    bool removed;
+    bool unloaded;
     struct bsg_mach_image *next;
 } BSG_Mach_Header_Info;
 

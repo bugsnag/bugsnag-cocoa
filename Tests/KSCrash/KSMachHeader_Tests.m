@@ -57,26 +57,26 @@ const struct segment_command command2 = {
     bsg_mach_headers_add_image(&header1, 0);
     
     XCTAssertEqual(listTail->next->imageVmAddr, 111);
-    XCTAssert(listTail->next->removed == FALSE);
+    XCTAssert(listTail->next->unloaded == FALSE);
     
     bsg_mach_headers_add_image(&header2, 0);
     
     XCTAssertEqual(listTail->next->imageVmAddr, 111);
-    XCTAssert(listTail->next->removed == FALSE);
+    XCTAssert(listTail->next->unloaded == FALSE);
     XCTAssertEqual(listTail->next->next->imageVmAddr, 222);
-    XCTAssert(listTail->next->next->removed == FALSE);
+    XCTAssert(listTail->next->next->unloaded == FALSE);
     
     bsg_mach_headers_remove_image(&header1, 0);
     XCTAssertEqual(listTail->next->imageVmAddr, 111);
-    XCTAssert(listTail->next->removed == TRUE);
+    XCTAssert(listTail->next->unloaded == TRUE);
     XCTAssertEqual(listTail->next->next->imageVmAddr, 222);
-    XCTAssert(listTail->next->next->removed == FALSE);
+    XCTAssert(listTail->next->next->unloaded == FALSE);
     
     bsg_mach_headers_remove_image(&header2, 0);
     XCTAssertEqual(listTail->next->imageVmAddr, 111);
-    XCTAssert(listTail->next->removed == TRUE);
+    XCTAssert(listTail->next->unloaded == TRUE);
     XCTAssertEqual(listTail->next->next->imageVmAddr, 222);
-    XCTAssert(listTail->next->next->removed == TRUE);
+    XCTAssert(listTail->next->next->unloaded == TRUE);
     
 }
 

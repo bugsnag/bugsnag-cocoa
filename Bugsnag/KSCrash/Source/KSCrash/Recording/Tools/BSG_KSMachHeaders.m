@@ -85,24 +85,24 @@ void bsg_mach_headers_cache_unlock() {
 
 // MARK: - Mach Header Linked List
 
-static BSG_Mach_Header_Info *bsg_mach_headers_images_head;
-static BSG_Mach_Header_Info *bsg_mach_headers_images_tail;
+static BSG_Mach_Header_Info *bsg_g_mach_headers_images_head;
+static BSG_Mach_Header_Info *bsg_g_mach_headers_images_tail;
 
 BSG_Mach_Header_Info *bsg_mach_headers_get_images() {
-    return bsg_mach_headers_images_head;
+    return bsg_g_mach_headers_images_head;
 }
 
 void bsg_mach_headers_initialize() {
     
-    // Free any existing data (this may be present in tests)
-    for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; ) {
+    // Clear any existing headers to reset the head/tail pointers
+    for (BSG_Mach_Header_Info *img = bsg_g_mach_headers_images_head; img != NULL; ) {
         BSG_Mach_Header_Info *imgToDelete = img;
         img = img->next;
         free(imgToDelete);
     }
     
-    bsg_mach_headers_images_head = NULL;
-    bsg_mach_headers_images_tail = NULL;
+    bsg_g_mach_headers_images_head = NULL;
+    bsg_g_mach_headers_images_tail = NULL;
     
     // Register for binary images being loaded and unloaded. dyld calls the add function once
     // for each library that has already been loaded and then keeps this cache up-to-date
@@ -179,7 +179,7 @@ bool bsg_mach_headers_populate_info(const struct mach_header *header, intptr_t s
     info->uuid = uuid;
     info->name = imageName;
     info->slide = slide;
-    info->removed = FALSE;
+    info->unloaded = FALSE;
     info->next = NULL;
     
     return true;
@@ -193,12 +193,12 @@ void bsg_mach_headers_add_image(const struct mach_header *header, intptr_t slide
             
             bsg_mach_headers_cache_lock();
             
-            if (bsg_mach_headers_images_head == NULL) {
-                bsg_mach_headers_images_head = newImage;
+            if (bsg_g_mach_headers_images_head == NULL) {
+                bsg_g_mach_headers_images_head = newImage;
             } else {
-                bsg_mach_headers_images_tail->next = newImage;
+                bsg_g_mach_headers_images_tail->next = newImage;
             }
-            bsg_mach_headers_images_tail = newImage;
+            bsg_g_mach_headers_images_tail = newImage;
             
             bsg_mach_headers_cache_unlock();
         }
@@ -206,12 +206,16 @@ void bsg_mach_headers_add_image(const struct mach_header *header, intptr_t slide
     
 }
 
+/**
+  * To avoid a destructive operation that could lead thread safety problems, we maintain the
+  * image record, but mark it as unloaded
+ */
 void bsg_mach_headers_remove_image(const struct mach_header *header, intptr_t slide) {
     BSG_Mach_Header_Info existingImage = { 0 };
     if (bsg_mach_headers_populate_info(header, slide, &existingImage)) {
-        for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = img->next) {
+        for (BSG_Mach_Header_Info *img = bsg_g_mach_headers_images_head; img != NULL; img = img->next) {
             if (img->imageVmAddr == existingImage.imageVmAddr) {
-                img->removed = true;
+                img->unloaded = true;
             }
         }
     }
@@ -221,10 +225,10 @@ BSG_Mach_Header_Info *bsg_mach_headers_image_named(const char *const imageName, 
         
     if (imageName != NULL) {
         
-        for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = img->next) {
+        for (BSG_Mach_Header_Info *img = bsg_g_mach_headers_images_head; img != NULL; img = img->next) {
             if (img->name == NULL) {
                 continue; // name is null if the index is out of range per dyld(3)
-            } else if (img->removed == true) {
+            } else if (img->unloaded == true) {
                 continue; // ignore unloaded libraries
             } else if (exactMatch) {
                 if (strcmp(img->name, imageName) == 0) {
@@ -243,8 +247,8 @@ BSG_Mach_Header_Info *bsg_mach_headers_image_named(const char *const imageName, 
 
 BSG_Mach_Header_Info *bsg_mach_headers_image_at_address(const uintptr_t address) {
         
-    for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = img->next) {
-        if (img->removed == true) {
+    for (BSG_Mach_Header_Info *img = bsg_g_mach_headers_images_head; img != NULL; img = img->next) {
+        if (img->unloaded == true) {
             continue;
         }
         // Look for a segment command with this address within its range.
