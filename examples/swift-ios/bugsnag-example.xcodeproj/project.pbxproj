@@ -145,7 +145,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 1010;
-				ORGANIZATIONNAME = "Isaac Waller";
+				ORGANIZATIONNAME = Bugsnag;
 				TargetAttributes = {
 					D175F4B71ACDBD81009AFFB7 = {
 						CreatedOnToolsVersion = 6.2;
