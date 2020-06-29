@@ -199,4 +199,13 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     }, @{}, @"mach"));
 }
 
+- (void)testStacktraceOverride {
+    BugsnagThread *thread = [self findErrorReportingThread:self.event];
+    BugsnagError *error = [[BugsnagError alloc] initWithEvent:self.event errorReportingThread:thread];
+    XCTAssertNotNil(error.stacktrace);
+    XCTAssertEqual(1, error.stacktrace.count);
+    error.stacktrace = @[];
+    XCTAssertEqual(0, error.stacktrace.count);
+}
+
 @end
