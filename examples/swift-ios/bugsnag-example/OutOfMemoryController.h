@@ -18,5 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AnObjCClass.h"
-#import "OutOfMemoryController.h"
+#import <UIKit/UIKit.h>
+@interface OutOfMemoryController : UIViewController
+
+@end

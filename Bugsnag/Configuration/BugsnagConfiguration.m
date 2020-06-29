@@ -534,7 +534,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     }
 }
 
-- (void)setEnabledReleaseStages:(NSSet<NSString *> *)newReleaseStages;
+- (void)setEnabledReleaseStages:(NSSet<NSString *> *)newReleaseStages
 {
     @synchronized (self) {
         NSSet<NSString *> *releaseStagesCopy = [newReleaseStages copy];
