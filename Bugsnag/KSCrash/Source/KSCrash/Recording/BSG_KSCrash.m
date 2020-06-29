@@ -38,6 +38,7 @@
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
+#import "BugsnagThread.h"
 #import "BSGSerialization.h"
 #import "BugsnagErrorReportSink.h"
 
@@ -68,6 +69,13 @@
 // ============================================================================
 #pragma mark - Globals -
 // ============================================================================
+
+@interface BugsnagThread ()
++ (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads
+                                         binaryImages:(NSArray *)binaryImages
+                                                depth:(NSUInteger)depth
+                                            errorType:(NSString *)errorType;
+@end
 
 @interface BSG_KSCrash ()
 
@@ -298,13 +306,13 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
             }];
 }
 
-- (NSDictionary *)captureThreads:(NSException *)exc depth:(int *)depth {
+- (NSArray<BugsnagThread *> *)captureThreads:(NSException *)exc depth:(int)depth {
     NSArray *addresses = [exc callStackReturnAddresses];
     int numFrames = (int) [addresses count];
     uintptr_t *callstack;
 
     if (numFrames > 0) {
-        *depth = 0; // reset depth if the stack does not need to be generated
+        depth = 0; // reset depth if the stack does not need to be generated
         callstack = malloc(numFrames * sizeof(*callstack));
 
         for (NSUInteger i = 0; i < numFrames; i++) {
@@ -324,12 +332,18 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         }
     }
 
-    char *trace = bsg_kscrash_captureThreadTrace(*depth, numFrames, callstack);
+    char *trace = bsg_kscrash_captureThreadTrace(depth, numFrames, callstack);
     free(callstack);
     NSDictionary *json = BSGDeserializeJson(trace);
     free(trace);
     
-    return json;
+    if (json) {	
+        return [BugsnagThread threadsFromArray:[json valueForKeyPath:@"crash.threads"]
+                                  binaryImages:json[@"binary_images"]
+                                         depth:depth
+                                     errorType:nil];
+    }
+    return @[];
 }
 
 - (void)reportUserException:(NSString *)name

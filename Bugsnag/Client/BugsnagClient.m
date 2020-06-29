@@ -65,7 +65,7 @@ NSString *const BSTabCrash = @"crash";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
-static NSInteger const BSGNotifierStackFrameCount = 3;
+static NSInteger const BSGNotifierStackFrameCount = 4;
 
 struct bugsnag_data_t {
     // Contains the state of the event (handled/unhandled)
@@ -114,10 +114,6 @@ NSDictionary *BSGParseDeviceMetadata(NSDictionary *event);
 
 @interface BugsnagThread ()
 + (NSMutableArray *)serializeThreads:(NSArray<BugsnagThread *> *)threads;
-+ (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads
-                                         binaryImages:(NSArray *)binaryImages
-                                                depth:(NSUInteger)depth
-                                            errorType:(NSString *)errorType;
 @end
 
 @interface BugsnagAppWithState ()
@@ -975,13 +971,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
      * 1. +[Bugsnag notifyError:block:]
      * 2. -[BugsnagClient notifyError:block:]
      * 3. -[BugsnagClient notify:handledState:block:]
+     * 4. -[BSG_KSCrash captureThreads:depth:]
      */
     int depth = (int)(BSGNotifierStackFrameCount);
-    NSDictionary *threadData = [[BSG_KSCrash sharedInstance] captureThreads:exception depth:&depth];
-    NSArray *threads = [BugsnagThread threadsFromArray:[threadData valueForKeyPath:@"crash.threads"]
-                              binaryImages:threadData[@"binary_images"]
-                                     depth:depth
-                                 errorType:nil];
+    NSArray *threads = [[BSG_KSCrash sharedInstance] captureThreads:exception depth:depth];
     NSArray *errors = @[[self generateError:exception threads:threads]];
 
     BugsnagMetadata *metadata = [self.metadata deepCopy];
@@ -1573,12 +1566,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (NSArray *)collectThreads {
     int depth = (int)(BSGNotifierStackFrameCount);
     NSException *exc = [NSException exceptionWithName:@"Bugsnag" reason:@"" userInfo:nil];
-    NSDictionary *threadData = [[BSG_KSCrash sharedInstance] captureThreads:exc depth:&depth];
-    NSArray<BugsnagThread *> *threads =
-        [BugsnagThread threadsFromArray:[threadData valueForKeyPath:@"crash.threads"]
-                           binaryImages:threadData[@"binary_images"]
-                                  depth:depth
-                              errorType:nil];
+    NSArray<BugsnagThread *> *threads = [[BSG_KSCrash sharedInstance] captureThreads:exc depth:depth];
     return [BugsnagThread serializeThreads:threads];
 }
 

@@ -114,13 +114,13 @@
 
 /**
  * Collects a trace of all the threads running in application, if the user has
- * configured this behaviour, and serializes them into a NSDictionary.
+ * configured this behaviour, and serializes them into an array of BugsnagThread.
  *
  * @param exc the exception to record
  * @param depth the number of frames to discard from the main thread's stacktrace
- * @return NSDictionary of thread data
+ * @return an array of BugsnagThread
  */
-- (NSDictionary *)captureThreads:(NSException *)exc depth:(int *)depth;
+- (NSArray<BugsnagThread *> *)captureThreads:(NSException *)exc depth:(int)depth;
 
 /** If YES, user reported exceptions will suspend all threads during report
  * generation. All threads will be suspended while generating a crash report for
