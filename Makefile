@@ -144,7 +144,7 @@ ifeq ($(VERSION),)
 	@$(error VERSION is not defined. Run with `make VERSION=number prerelease`)
 endif
 	@git checkout -b release-v$(VERSION)
-	@git add Source/BugsnagNotifier.m Bugsnag.podspec.json VERSION CHANGELOG.md
+	@git add Bugsnag/Payload/BugsnagNotifier.m Bugsnag.podspec.json VERSION CHANGELOG.md
 	@git commit -m "Release v$(VERSION)"
 	@git push origin release-v$(VERSION)
 	@hub pull-request -m "Release v$(VERSION)" --browse
