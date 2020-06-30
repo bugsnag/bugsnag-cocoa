@@ -316,8 +316,9 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     char *trace = bsg_kscrash_captureThreadTrace(depth, numFrames, callstack);
     free(callstack);
     NSDictionary *json = BSGDeserializeJson(trace);
-
-    if (json) {
+    free(trace);
+    
+    if (json) {	
         return [BugsnagThread threadsFromArray:[json valueForKeyPath:@"crash.threads"]
                                   binaryImages:json[@"binary_images"]
                                          depth:depth
