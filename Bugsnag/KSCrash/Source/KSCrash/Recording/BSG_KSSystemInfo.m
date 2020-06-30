@@ -29,6 +29,7 @@
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSSystemInfoC.h"
 #import "BSG_KSDynamicLinker.h"
+#import "BSG_KSMachHeaders.h"
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSSysCtl.h"
@@ -259,7 +260,7 @@
  * @return YES if the device is jailbroken.
  */
 + (BOOL)isJailbroken {
-    return bsg_ksdlimageNamed("MobileSubstrate", false) != UINT32_MAX;
+    return bsg_mach_headers_image_named("MobileSubstrate", false) != NULL;
 }
 
 /** Check if the current build is a debug build.

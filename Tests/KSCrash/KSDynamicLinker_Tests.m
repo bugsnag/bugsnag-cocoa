@@ -28,6 +28,7 @@
 #import <XCTest/XCTest.h>
 
 #import "BSG_KSDynamicLinker.h"
+#import "BSG_KSMachHeaders.h"
 
 @interface KSDynamicLinker_Tests : XCTestCase @end
 
@@ -35,6 +36,9 @@
 
 - (void) testImageUUID
 {
+    bsg_mach_headers_initialize();
+    _dyld_register_func_for_add_image(&bsg_mach_headers_add_image);
+    
     // Just abritrarily grab the name of the 4th image...
     const char* name = _dyld_get_image_name(4);
     const uint8_t* uuidBytes = bsg_ksdlimageUUID(name, true);
@@ -43,26 +47,29 @@
 
 - (void) testImageUUIDInvalidName
 {
+    bsg_mach_headers_initialize();
+    _dyld_register_func_for_add_image(&bsg_mach_headers_add_image);
+    
     const uint8_t* uuidBytes = bsg_ksdlimageUUID("sdfgserghwerghwrh", true);
     XCTAssertTrue(uuidBytes == NULL, @"");
 }
 
 - (void) testImageUUIDNULLName
 {
+    bsg_mach_headers_initialize();
+    _dyld_register_func_for_add_image(&bsg_mach_headers_add_image);
+    
     const uint8_t* uuidBytes = bsg_ksdlimageUUID(NULL, true);
     XCTAssertTrue(uuidBytes == NULL, @"");
 }
 
 - (void) testImageUUIDPartialMatch
 {
+    bsg_mach_headers_initialize();
+    _dyld_register_func_for_add_image(&bsg_mach_headers_add_image);
+    
     const uint8_t* uuidBytes = bsg_ksdlimageUUID("libSystem", false);
     XCTAssertTrue(uuidBytes != NULL, @"");
-}
-
-- (void) testGetImageNameNULL
-{
-    uint32_t imageIdx = bsg_ksdlimageNamed(NULL, false);
-    XCTAssertEqual(imageIdx, UINT32_MAX, @"");
 }
 
 

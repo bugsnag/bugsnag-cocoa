@@ -26,14 +26,12 @@
 
 #import "BugsnagPlatformConditional.h"
 
-#import <mach-o/dyld.h>
 #import <execinfo.h>
 #import "BSG_KSCrashAdvanced.h"
 
 #import "BSG_KSCrashC.h"
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSSingleton.h"
-#import "BSG_KSMachHeaders.h"
 #import "NSError+BSG_SimpleConstructor.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
@@ -234,8 +232,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 }
 
 - (BOOL)install {
-    // Maintain a cache of info about dynamically loaded binary images
-    [self listenForLoadedBinaries];
 
     _handlingCrashTypes = bsg_kscrash_install(
         [self.crashReportPath UTF8String], [self.recrashReportPath UTF8String],
@@ -269,21 +265,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 #endif
 
     return true;
-}
-
-/**
- * Set up listeners for un/loaded frameworks.  Maintaining our own list of framework Mach
- * headers means that we avoid potential deadlock situations where we try and suspend
- * lock-holding threads prior to loading mach headers as part of our normal event handling
- * behaviour.
- */
-- (void)listenForLoadedBinaries {
-    bsg_check_unfair_lock_support();
-    bsg_initialise_mach_binary_headers(BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE);
-
-    // Note: Access to DYLD's binary image store is guarded by locks.
-    _dyld_register_func_for_remove_image(&bsg_mach_binary_image_removed);
-    _dyld_register_func_for_add_image(&bsg_mach_binary_image_added);
 }
 
 - (void)sendAllReports {
