@@ -2,7 +2,6 @@
 
 @interface BSG_KSCrash
 + (instancetype)sharedInstance;
-- (void)setSuspendThreadsForUserReported:(BOOL)suspend;
 @end
 
 @interface ManyConcurrentNotifyNoBackgroundThreads ()
@@ -46,6 +45,5 @@
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;
     [super startBugsnag];
-    [[BSG_KSCrash sharedInstance] setSuspendThreadsForUserReported:NO];
 }
 @end
