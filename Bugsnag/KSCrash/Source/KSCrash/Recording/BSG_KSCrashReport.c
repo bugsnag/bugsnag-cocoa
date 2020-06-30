@@ -627,7 +627,9 @@ void bsg_kscrw_i_writeMemoryContents(
     const BSG_KSCrashReportWriter *const writer, const char *const key,
     const uintptr_t address, int *limit);
 
-void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext, const BSG_KSCrashReportWriter *writer, const bool i);
+void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext, 
+                                const BSG_KSCrashReportWriter *writer,
+                                const bool captureAllThreads);
 
 bool bsg_kscrw_i_exceedsBufferLen(const size_t length);
 
@@ -1650,7 +1652,7 @@ void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext, BSG
         bsg_kscrw_i_addJSONElement(writer, BSG_KSCrashField_User,
                 crashContext->config.userInfoJSON);
     }
-    bsg_kscrw_i_writeTraceInfo(crashContext, writer, 0);
+    bsg_kscrw_i_writeTraceInfo(crashContext, writer, crashContext->crash.threadTracingEnabled == 0);
 }
 
 void bsg_kscrashreport_logCrash(const BSG_KSCrash_Context *const crashContext) {

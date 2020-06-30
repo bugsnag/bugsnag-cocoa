@@ -224,10 +224,6 @@ char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t
     // capture all threads only when set to BSGThreadSendPolicyAlways
     bool captureAllThreads = context->crash.threadTracingEnabled == 0;
 
-    if (captureAllThreads) { // only suspend threads when capturing a full thread trace
-        bsg_kscrashsentry_suspend_threads_user();
-    }
-
     // populate context with pre-recorded stacktrace/thread info
     // for KSCrash to serialize
     context->crash.stackTrace = callstack;
@@ -236,11 +232,5 @@ char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t
     context->crash.offendingThread = bsg_ksmachthread_self();
     context->crash.crashType = BSG_KSCrashTypeUserReported;
     context->crash.suspendThreadsForUserReported = true;
-
-    char *trace = bsg_kscrw_i_captureThreadTrace(context, captureAllThreads);
-
-    if (captureAllThreads) {
-        bsg_kscrashsentry_resume_threads_user(false);
-    }
-    return trace;
+    return bsg_kscrw_i_captureThreadTrace(context, captureAllThreads);
 }
