@@ -80,7 +80,7 @@ jobs:
     - make test OS=9.2
     
   # ----------------------------------------------------------------------------
-  # Static framework and Carthage builds
+  # Static framework, Carthage and Swift Package Manager builds
   # ----------------------------------------------------------------------------
     
   - osx_image: xcode11
@@ -93,6 +93,12 @@ jobs:
     script:
     - make build_carthage   # Build example carthage project
     - make build_ios_static # Build static framework target
+    
+  - osx_image: xcode11
+    name: Building with Swift Package Manager
+    stage: integration
+    script:
+    - swift build
 
   # ----------------------------------------------------------------------------
   # Doc Generation
