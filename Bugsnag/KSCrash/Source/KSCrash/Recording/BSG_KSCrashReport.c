@@ -79,6 +79,18 @@ typedef ucontext_t SignalUserContext;
 #define BSG_kMinStringLength 4
 
 // ============================================================================
+#pragma mark - Thread Data Buffer -
+// ============================================================================
+
+#define BSG_THREAD_DATA_SIZE_INITIAL 128 * 1024
+#define BSG_THREAD_DATA_SIZE_INCREMENT 8 * 1024
+
+typedef struct {
+    char *data;
+    size_t allocated_size;
+} BSG_ThreadDataBuffer;
+
+// ============================================================================
 #pragma mark - Formatting -
 // ============================================================================
 
@@ -1647,40 +1659,31 @@ void bsg_kscrashreport_logCrash(const BSG_KSCrash_Context *const crashContext) {
     bsg_kscrw_i_logCrashThreadBacktrace(&crashContext->crash);
 }
 
-static const size_t bsg_g_buffer_increment = sizeof(char) * 8 * 1024;
-static size_t bsg_g_thread_json_size = sizeof(char) * 128 * 1024;
-static char *bsg_g_thread_json_data = NULL;
-
 int bsg_kscrw_i_collectJsonData(const char *const data, const size_t length, void *const userData) {
-    if (bsg_g_thread_json_data == NULL) {
+    BSG_ThreadDataBuffer *thread_data = (BSG_ThreadDataBuffer *)userData;
+    if (thread_data->data == NULL) {
         // Allocate initial memory for JSON data
-        void *ptr = malloc(bsg_g_thread_json_size);
+        void *ptr = malloc(BSG_THREAD_DATA_SIZE_INITIAL);
         if (ptr != NULL) {
-            bsg_g_thread_json_data = ptr;
-            *bsg_g_thread_json_data = '\0';
-        } else { // failed to allocate enough memory
+            thread_data->data = ptr;
+            *thread_data->data = '\0';
+            thread_data->allocated_size = BSG_THREAD_DATA_SIZE_INITIAL;
+        } else { // failed to allocate enough memory - abandon collection
             return BSG_KSJSON_ERROR_CANNOT_ADD_DATA;
         }
     }
-    if (strlen(bsg_g_thread_json_data) + length >= bsg_g_thread_json_size) {
+    while (strlen(thread_data->data) + length >= thread_data->allocated_size) {
         // Expand memory to hold further data
-        bsg_g_thread_json_size += bsg_g_buffer_increment;
-        void *ptr = realloc(bsg_g_thread_json_data, bsg_g_thread_json_size);
+        void *ptr = realloc(thread_data->data, thread_data->allocated_size + BSG_THREAD_DATA_SIZE_INCREMENT);
         if (ptr != NULL) {
-            bsg_g_thread_json_data = ptr;
-        } else { // failed to allocate enough memory
-            free(bsg_g_thread_json_data);
+            thread_data->data = ptr;
+            thread_data->allocated_size += BSG_THREAD_DATA_SIZE_INCREMENT;
+        } else { // failed to allocate enough memory - abandon collection
             return BSG_KSJSON_ERROR_CANNOT_ADD_DATA;
         }
     }
-    strncat(bsg_g_thread_json_data, data, length);
+    strncat(thread_data->data, data, length);
     return BSG_KSJSON_OK;
-}
-
-void bsg_kscrw_i_resetThreadTraceData() {
-    if (bsg_g_thread_json_data != NULL) {
-        *bsg_g_thread_json_data = '\0';
-    }
 }
 
 char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext, const bool captureAllThreads) {
@@ -1688,13 +1691,13 @@ char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext, co
     BSG_KSCrashReportWriter concreteWriter;
     BSG_KSCrashReportWriter *writer = &concreteWriter;
     bsg_kscrw_i_prepareReportWriter(writer, &jsonContext);
-    bsg_kscrw_i_resetThreadTraceData();
-    bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), false, bsg_kscrw_i_collectJsonData, 0);
+    BSG_ThreadDataBuffer userData = { NULL, 0 };
+    bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), false, bsg_kscrw_i_collectJsonData, &userData);
     writer->beginObject(writer, BSG_KSCrashField_Report);
     bsg_kscrw_i_writeTraceInfo(crashContext, writer, captureAllThreads);
     writer->endContainer(writer);
     bsg_ksjsonendEncode(bsg_getJsonContext(writer));
-    return bsg_g_thread_json_data;
+    return userData.data;
 }
 
 void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext,
@@ -1708,7 +1711,6 @@ void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext,
     }
     writer->beginObject(writer, BSG_KSCrashField_Crash);
     {
-        // Conditionally write threads depending on user configuration
         bsg_kscrw_i_writeAllThreads(writer, BSG_KSCrashField_Threads, &crashContext->crash,
                 crashContext->config.introspectionRules.enabled, captureAllThreads);
         bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error,&crashContext->crash);
