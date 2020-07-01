@@ -159,6 +159,7 @@ endif
 clean: ## Clean build artifacts
 	@set -x && $(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
 	@rm -rf build-$(PLATFORM)
+	@rm -rf .build
 
 archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip
 
