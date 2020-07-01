@@ -84,21 +84,16 @@ jobs:
   # ----------------------------------------------------------------------------
     
   - osx_image: xcode11
-    name: Building static framework and Carthage integration
+    name: Static framework, Carthage and Swift Package Manager builds
     stage: integration
     before_script:
       # Xcode 11+ no longer ships with all device combinations premade
     - xcrun simctl create "13-xs" "iPhone XS" com.apple.CoreSimulator.SimRuntime.iOS-13-0
     - mkdir -p features/fixtures/carthage-proj
     script:
+    - make build_swift      # Build with Swift Package Manager
     - make build_carthage   # Build example carthage project
     - make build_ios_static # Build static framework target
-    
-  - osx_image: xcode11
-    name: Building with Swift Package Manager
-    stage: integration
-    script:
-    - swift build
 
   # ----------------------------------------------------------------------------
   # Doc Generation

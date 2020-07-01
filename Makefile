@@ -81,6 +81,9 @@ build_carthage: ## Build the latest pushed commit with Carthage
 	 carthage update --platform macos && \
 	 carthage update --platform tvos
 
+build_swift: ## Build with Swift Package Manager
+	@swift build
+
 #--------------------------------------------------------------------------
 # Testing
 #--------------------------------------------------------------------------
