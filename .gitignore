@@ -22,3 +22,5 @@ Carthage
 features/fixtures/carthage-proj
 IDEWorkspaceChecks.plist
 Podfile.lock
+.build
+.swiftpm

@@ -81,6 +81,9 @@ build_carthage: ## Build the latest pushed commit with Carthage
 	 carthage update --platform macos && \
 	 carthage update --platform tvos
 
+build_swift: ## Build with Swift Package Manager
+	@swift build
+
 #--------------------------------------------------------------------------
 # Testing
 #--------------------------------------------------------------------------
@@ -156,6 +159,7 @@ endif
 clean: ## Clean build artifacts
 	@set -x && $(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
 	@rm -rf build-$(PLATFORM)
+	@rm -rf .build
 
 archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip
 
