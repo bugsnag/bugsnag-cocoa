@@ -1,16 +1,33 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+The following bug fixes have been applied to the v5 branch to provide a patch
+for users who have not yet upgraded to v6:
+
+* Fix incorrect string comparison of thread names in Mach exception handling
+  [#721](https://github.com/bugsnag/bugsnag-cocoa/pull/721)
+
+* Move binary images store declaration from header file
+  [#725](https://github.com/bugsnag/bugsnag-cocoa/pull/725)
+
+* Avoid dereference null pointer in JSON serialisation
+  [#637](https://github.com/bugsnag/bugsnag-cocoa/pull/637)
+  [Naugladur](https://github.com/Naugladur)
+
 ## 5.23.3 (2020-06-05)
 
-## Bug Fixes
+### Bug Fixes
 
 * Fix DYLD lock mechanism preventing compilation on iOS <10.
   [#675](https://github.com/bugsnag/bugsnag-cocoa/pull/675)
 
 ## 5.23.2 (2020-05-13)
 
-## Bug Fixes
+### Bug Fixes
 
 * Fixed an issue where an app could deadlock during a crash if unfavourable 
   timing caused DYLD lock contention.
@@ -18,7 +35,7 @@ Changelog
 
 ## 5.23.1 (2020-04-08)
 
-## Bug fixes
+### Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads
   when configured to skip capturing/reporting background thread contents
