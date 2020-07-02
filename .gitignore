@@ -24,3 +24,4 @@ IDEWorkspaceChecks.plist
 Podfile.lock
 .build
 .swiftpm
+Package.resolved
