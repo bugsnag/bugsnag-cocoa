@@ -1091,9 +1091,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)serializeBreadcrumbs {
-    BugsnagBreadcrumbs *crumbs = self.configuration.breadcrumbs;
-    NSArray *arrayValue = crumbs.count == 0 ? nil : [crumbs arrayValue];
-    [self.state addMetadata:arrayValue
+    [self.state addMetadata:[self.configuration.breadcrumbs arrayValue]
                     withKey:BSGKeyBreadcrumbs
                   toSection:BSTabCrash];
 }

@@ -137,52 +137,56 @@ NSUInteger BreadcrumbsDefaultCapacity = 25;
 }
 
 - (NSUInteger)count {
-    return self.breadcrumbs.count;
+    __block NSUInteger count;
+    dispatch_barrier_sync(self.readWriteQueue, ^{
+        count = self.breadcrumbs.count;
+    });
+    return count;
 }
 
 - (BugsnagBreadcrumb *)objectAtIndexedSubscript:(NSUInteger)index {
-    if (index < [self count]) {
-        __block BugsnagBreadcrumb *crumb = nil;
-        dispatch_barrier_sync(self.readWriteQueue, ^{
-          crumb = self.breadcrumbs[index];
-        });
-        return crumb;
-    }
-    return nil;
+    __block BugsnagBreadcrumb *crumb = nil;
+    dispatch_barrier_sync(self.readWriteQueue, ^{
+        if (index < self.breadcrumbs.count) {
+            crumb = self.breadcrumbs[index];
+        }
+    });
+    return crumb;
 }
 
 - (NSArray *)arrayValue {
-    if ([self count] == 0) {
-        return nil;
-    }
-    __block NSMutableArray *contents =
-        [[NSMutableArray alloc] initWithCapacity:[self count]];
+    __block NSMutableArray *contents = nil;
     dispatch_barrier_sync(self.readWriteQueue, ^{
-      for (BugsnagBreadcrumb *crumb in self.breadcrumbs) {
-          NSDictionary *objectValue = [crumb objectValue];
-          NSError *error = nil;
-          @try {
-              if (![NSJSONSerialization isValidJSONObject:objectValue]) {
-                  bsg_log_err(@"Unable to serialize breadcrumb: Not a valid "
-                              @"JSON object");
-                  continue;
-              }
-              [contents addObject:objectValue];
-          } @catch (NSException *exception) {
-              bsg_log_err(@"Unable to serialize breadcrumb: %@", error);
-          }
-      }
+        NSUInteger numBreadcrumbs = self.breadcrumbs.count;
+        if (numBreadcrumbs > 0) {
+            contents = [[NSMutableArray alloc] initWithCapacity:numBreadcrumbs];
+            for (BugsnagBreadcrumb *crumb in self.breadcrumbs) {
+                NSDictionary *objectValue = [crumb objectValue];
+                NSError *error = nil;
+                @try {
+                    if (![NSJSONSerialization isValidJSONObject:objectValue]) {
+                        bsg_log_err(@"Unable to serialize breadcrumb: Not a valid "
+                                    @"JSON object");
+                        continue;
+                    }
+                    [contents addObject:objectValue];
+                } @catch (NSException *exception) {
+                  bsg_log_err(@"Unable to serialize breadcrumb: %@", error);
+                }
+            }
+        }
     });
     return contents;
 }
 
 - (void)resizeToFitCapacity:(NSUInteger)capacity {
-    if ([self count] > capacity) {
-        dispatch_barrier_sync(self.readWriteQueue, ^{
-          [self.breadcrumbs
-              removeObjectsInRange:NSMakeRange(0, self.count - capacity)];
-        });
-    }
+    dispatch_barrier_sync(self.readWriteQueue, ^{
+        NSUInteger numBreadcrumbs = self.breadcrumbs.count;
+        if (numBreadcrumbs > capacity) {
+            [self.breadcrumbs
+                removeObjectsInRange:NSMakeRange(0, numBreadcrumbs - capacity)];
+        }
+    });
 }
 
 @end
