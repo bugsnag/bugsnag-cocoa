@@ -91,29 +91,3 @@ Feature: Handled Errors and Exceptions
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-
-  Scenario: Reporting handled errors concurrently in an environment without background thread reporting
-    When I run "ManyConcurrentNotifyNoBackgroundThreads"
-    And I wait to receive 8 requests
-    And the received requests match:
-        | exceptions.0.errorClass | exceptions.0.message |
-        | BarError                | Err 0   |
-        | BarError                | Err 1   |
-        | BarError                | Err 2   |
-        | BarError                | Err 3   |
-    
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
