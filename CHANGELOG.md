@@ -3,6 +3,9 @@ Changelog
 
 ## TBD
 
+* Fix JSON serialisation of strings with control characters
+  [739](https://github.com/bugsnag/bugsnag-cocoa/pull/739)
+
 * Disable reporting of notable addresses from registers for handled errors
   [#741](https://github.com/bugsnag/bugsnag-cocoa/pull/741)
 
