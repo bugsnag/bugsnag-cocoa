@@ -111,7 +111,6 @@
 @synthesize nextCrashID = _nextCrashID;
 @synthesize introspectMemory = _introspectMemory;
 @synthesize maxStoredReports = _maxStoredReports;
-@synthesize suspendThreadsForUserReported = _suspendThreadsForUserReported;
 @synthesize reportWhenDebuggerIsAttached = _reportWhenDebuggerIsAttached;
 @synthesize threadTracingEnabled = _threadTracingEnabled;
 @synthesize writeBinaryImagesForUserReported =
@@ -145,7 +144,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         self.introspectMemory = YES;
         self.maxStoredReports = 5;
 
-        self.suspendThreadsForUserReported = YES;
         self.reportWhenDebuggerIsAttached = NO;
         self.threadTracingEnabled = BSGThreadSendPolicyAlways;
         self.writeBinaryImagesForUserReported = YES;
@@ -192,11 +190,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 - (void)setIntrospectMemory:(bool)introspectMemory {
     _introspectMemory = introspectMemory;
     bsg_kscrash_setIntrospectMemory(introspectMemory);
-}
-
-- (void)setSuspendThreadsForUserReported:(BOOL)suspendThreadsForUserReported {
-    _suspendThreadsForUserReported = suspendThreadsForUserReported;
-    bsg_kscrash_setSuspendThreadsForUserReported(suspendThreadsForUserReported);
 }
 
 - (void)setReportWhenDebuggerIsAttached:(BOOL)reportWhenDebuggerIsAttached {
@@ -334,8 +327,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
           callbackOverrides:(NSDictionary *)overrides
              eventOverrides:(NSDictionary *)eventOverrides
                    metadata:(NSDictionary *)metadata
-                     config:(NSDictionary *)config
-           terminateProgram:(BOOL)terminateProgram {
+                     config:(NSDictionary *)config {
     const char *cName = [name cStringUsingEncoding:NSUTF8StringEncoding];
     const char *cReason = [reason cStringUsingEncoding:NSUTF8StringEncoding];
 
@@ -346,8 +338,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
             [self encodeAsJSONString:eventOverrides],
             [self encodeAsJSONString:metadata],
             [self encodeAsJSONString:appState],
-            [self encodeAsJSONString:config],
-            terminateProgram);
+            [self encodeAsJSONString:config]);
 }
 
 // ============================================================================
