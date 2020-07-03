@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## TBD
+
+* Fix JSON serialisation of strings with control characters
+  [739](https://github.com/bugsnag/bugsnag-cocoa/pull/739)
+
 ## 6.0.1 (2020-06-29)
 
 * Move binary images store declaration from header file
