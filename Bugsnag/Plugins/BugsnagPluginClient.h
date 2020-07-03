@@ -14,8 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagPluginClient : NSObject
 
-- (instancetype _Nonnull)initWithPlugins:(NSMutableSet<id<BugsnagPlugin>> *_Nonnull)plugins
-                                  client:(BugsnagClient *)client;
+- (instancetype _Nonnull)initWithPlugins:(NSMutableSet<id<BugsnagPlugin>> *_Nonnull)plugins;
 - (void)loadPlugins;
 
 @end
