@@ -192,20 +192,12 @@ void bsg_kscrash_reportUserException(const char *name, const char *reason,
         const char *eventOverrides,
         const char *metadata,
         const char *appState,
-        const char *config,
-        bool terminateProgram) {
+        const char *config) {
     bsg_kscrashsentry_reportUserException(name, reason,
             severity,
             handledState, overrides,
             eventOverrides,
-            metadata, appState, config,
-            terminateProgram);
-}
-
-void bsg_kscrash_setSuspendThreadsForUserReported(
-    bool suspendThreadsForUserReported) {
-    crashContext()->crash.suspendThreadsForUserReported =
-        suspendThreadsForUserReported;
+            metadata, appState, config);
 }
 
 void bsg_kscrash_setWriteBinaryImagesForUserReported(
@@ -226,8 +218,6 @@ void bsg_kscrash_setThreadTracingEnabled(int threadTracingEnabled) {
 
 char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t *callstack) {
     BSG_KSCrash_Context *context = crashContext();
-    // capture all threads only when set to BSGThreadSendPolicyAlways
-    bool captureAllThreads = context->crash.threadTracingEnabled == 0;
 
     // populate context with pre-recorded stacktrace/thread info
     // for KSCrash to serialize
@@ -236,6 +226,18 @@ char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t
     context->crash.userException.discardDepth = discardDepth;
     context->crash.offendingThread = bsg_ksmachthread_self();
     context->crash.crashType = BSG_KSCrashTypeUserReported;
-    context->crash.suspendThreadsForUserReported = true;
-    return bsg_kscrw_i_captureThreadTrace(context, captureAllThreads);
+    
+    // Only suspend threads if tracing is set to always
+    // (to ensure trace is captured at the same point in time)
+    if (context->crash.threadTracingEnabled == 0) {
+        bsg_kscrashsentry_suspend_threads_user();
+    }
+    
+    char *trace = bsg_kscrw_i_captureThreadTrace(context);
+    
+    if (context->crash.threadTracingEnabled == 0) {
+        bsg_kscrashsentry_resume_threads_user(false);
+    }
+    return trace;
+    
 }
