@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+* Fix JSON serialisation of strings with control characters
+  [739](https://github.com/bugsnag/bugsnag-cocoa/pull/739)
+
+
 ## 5.23.4 (2020-07-06)
 
 ### Bug Fixes
