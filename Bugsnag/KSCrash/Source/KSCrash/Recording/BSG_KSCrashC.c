@@ -226,6 +226,9 @@ char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t
     context->crash.userException.discardDepth = discardDepth;
     context->crash.offendingThread = bsg_ksmachthread_self();
     context->crash.crashType = BSG_KSCrashTypeUserReported;
+
+    // No need to gather notable addresses for handled errors
+    context->config.introspectionRules.enabled = false;
     
     // Only suspend threads if tracing is set to always
     // (to ensure trace is captured at the same point in time)
