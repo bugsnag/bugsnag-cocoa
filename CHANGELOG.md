@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## TBD
+
+* Disable reporting of notable addresses from registers for handled errors
+  [#741](https://github.com/bugsnag/bugsnag-cocoa/pull/741)
+
 ## 6.0.1 (2020-06-29)
 
 * Move binary images store declaration from header file
