@@ -433,8 +433,7 @@ NSString *_lastOrientation = nil;
         [self.configuration.config addObserverWithBlock:observer];
         [self.state addObserverWithBlock:observer];
 
-        self.pluginClient = [[BugsnagPluginClient alloc] initWithPlugins:self.configuration.plugins
-                                                                  client:self];
+        self.pluginClient = [[BugsnagPluginClient alloc] initWithPlugins:self.configuration.plugins];
 
 #if BSG_PLATFORM_IOS
         _lastOrientation = BSGOrientationNameFromEnum([UIDevice currentDevice].orientation);
