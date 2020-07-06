@@ -7,6 +7,7 @@ Changelog
   [#741](https://github.com/bugsnag/bugsnag-cocoa/pull/741)
 
 * Improve thread-safety of breadcrumb count
+  [#743](https://github.com/bugsnag/bugsnag-cocoa/pull/743)
 
 ## 6.0.1 (2020-06-29)
 
