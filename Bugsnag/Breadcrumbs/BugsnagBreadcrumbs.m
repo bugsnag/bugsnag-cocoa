@@ -62,7 +62,8 @@
 
     if (crumb != nil && [self shouldSendBreadcrumb:crumb]) {
         dispatch_barrier_sync(self.readWriteQueue, ^{
-            while ([self.breadcrumbs count] >= self.config.maxBreadcrumbs) {
+            if ((self.breadcrumbs.count > 0) &&
+                (self.breadcrumbs.count == self.config.maxBreadcrumbs)) {
                 [self.breadcrumbs removeObjectAtIndex:0];
             }
             [self.breadcrumbs addObject:crumb];
