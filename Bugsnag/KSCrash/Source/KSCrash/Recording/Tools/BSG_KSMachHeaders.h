@@ -43,6 +43,11 @@ typedef struct bsg_mach_image {
 void bsg_mach_headers_initialize(void);
 
 /**
+  * Registers with dyld to keep data updated when libraries are loaded and unloaded
+ */
+void bsg_mach_headers_register_for_changes(void);
+
+/**
  * Returns the head of the link list of headers
  */
 BSG_Mach_Header_Info *bsg_mach_headers_get_images(void);

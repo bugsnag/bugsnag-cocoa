@@ -12,7 +12,6 @@
 
 void bsg_mach_headers_add_image(const struct mach_header *mh, intptr_t slide);
 
-
 const struct mach_header header1 = {
     .magic = MH_MAGIC,
     .cputype = 0,
@@ -48,40 +47,43 @@ const struct segment_command command2 = {
     
     bsg_mach_headers_initialize();
     
-    // Get to the end of the list of system images to check additions
-    BSG_Mach_Header_Info *listTail;
-    for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = img->next) {
-        listTail = img;
-    }
-    
     bsg_mach_headers_add_image(&header1, 0);
     
-    XCTAssertEqual(listTail->next->imageVmAddr, 111);
-    XCTAssert(listTail->next->unloaded == FALSE);
+    BSG_Mach_Header_Info *listTail;
+    
+    listTail = bsg_mach_headers_get_images();
+    XCTAssertEqual(listTail->imageVmAddr, 111);
+    XCTAssert(listTail->unloaded == FALSE);
     
     bsg_mach_headers_add_image(&header2, 0);
-    
-    XCTAssertEqual(listTail->next->imageVmAddr, 111);
+
+    listTail = bsg_mach_headers_get_images();
+    XCTAssertEqual(listTail->imageVmAddr, 111);
+    XCTAssert(listTail->unloaded == FALSE);
+    XCTAssertEqual(listTail->next->imageVmAddr, 222);
     XCTAssert(listTail->next->unloaded == FALSE);
-    XCTAssertEqual(listTail->next->next->imageVmAddr, 222);
-    XCTAssert(listTail->next->next->unloaded == FALSE);
-    
+
     bsg_mach_headers_remove_image(&header1, 0);
-    XCTAssertEqual(listTail->next->imageVmAddr, 111);
-    XCTAssert(listTail->next->unloaded == TRUE);
-    XCTAssertEqual(listTail->next->next->imageVmAddr, 222);
-    XCTAssert(listTail->next->next->unloaded == FALSE);
     
+    listTail = bsg_mach_headers_get_images();
+    XCTAssertEqual(listTail->imageVmAddr, 111);
+    XCTAssert(listTail->unloaded == TRUE);
+    XCTAssertEqual(listTail->next->imageVmAddr, 222);
+    XCTAssert(listTail->next->unloaded == FALSE);
+
     bsg_mach_headers_remove_image(&header2, 0);
-    XCTAssertEqual(listTail->next->imageVmAddr, 111);
+    
+    listTail = bsg_mach_headers_get_images();
+    XCTAssertEqual(listTail->imageVmAddr, 111);
+    XCTAssert(listTail->unloaded == TRUE);
+    XCTAssertEqual(listTail->next->imageVmAddr, 222);
     XCTAssert(listTail->next->unloaded == TRUE);
-    XCTAssertEqual(listTail->next->next->imageVmAddr, 222);
-    XCTAssert(listTail->next->next->unloaded == TRUE);
     
 }
 
 - (void)testFindImageAtAddress {
     bsg_mach_headers_initialize();
+    
     bsg_mach_headers_add_image(&header1, 0);
     bsg_mach_headers_add_image(&header2, 0);
     
