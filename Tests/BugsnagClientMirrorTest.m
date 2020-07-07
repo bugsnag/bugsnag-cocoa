@@ -114,7 +114,9 @@
             @"generateError:threads: @32@0:8@16@24",
             @"appendNSErrorInfo:block:event: B40@0:8@16@?24@32",
             @"appendNSErrorInfo:block:event: c40@0:8@16@?24@32",
-            @"createNSErrorWrapper: @24@0:8@16"
+            @"createNSErrorWrapper: @24@0:8@16",
+            @"setBreadcrumbs: v24@0:8@16",
+            @"breadcrumbs @16@0:8"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to

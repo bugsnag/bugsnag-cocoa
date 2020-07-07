@@ -298,6 +298,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic, strong) BugsnagPluginClient *pluginClient;
 @property (nonatomic) BOOL appDidCrashLastLaunch;
 @property (nonatomic, strong) BugsnagMetadata *metadata;
+@property(nonatomic, strong) BugsnagBreadcrumbs *breadcrumbs;
 @property (nonatomic) NSString *codeBundleId;
 @property(nonatomic, readwrite, strong) NSMutableArray *stateEventBlocks;
 #if BSG_PLATFORM_IOS
@@ -312,7 +313,6 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property(readonly, retain, nullable) NSURL *notifyURL;
 @property(readwrite, retain, nullable) BugsnagMetadata *metadata;
 @property(readwrite, retain, nullable) BugsnagMetadata *config;
-@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 - (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)type;
 @end
 
@@ -413,6 +413,8 @@ NSString *_lastOrientation = nil;
                                                              BSGWriteSessionCrashData(session);
                                                          }];
 
+        self.breadcrumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
+        
         // Start with a copy of the configuration metadata
         self.metadata = [[configuration metadata] deepCopy];
         // sync initial state
@@ -919,7 +921,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     static NSString *const BSGOutOfMemoryErrorClass = @"Out Of Memory";
     static NSString *const BSGOutOfMemoryMessageFormat = @"The app was likely terminated by the operating system while in the %@";
     NSMutableDictionary *lastLaunchInfo = [[self.oomWatchdog lastBootCachedFileInfo] mutableCopy];
-    NSArray *crumbs = [self.configuration.breadcrumbs cachedBreadcrumbs];
+    NSArray *crumbs = [self.breadcrumbs cachedBreadcrumbs];
     if (crumbs.count > 0) {
         lastLaunchInfo[@"breadcrumbs"] = crumbs;
     }
@@ -990,7 +992,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                                                handledState:handledState
                                                        user:self.user
                                                    metadata:metadata
-                                                breadcrumbs:[NSArray arrayWithArray:self.configuration.breadcrumbs.breadcrumbs]
+                                                breadcrumbs:[NSArray arrayWithArray:self.breadcrumbs.breadcrumbs]
                                                      errors:errors
                                                     threads:threads
                                                     session:self.sessionTracker.runningSession];
@@ -1086,14 +1088,12 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)addBreadcrumbWithBlock:
     (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
-    [self.configuration.breadcrumbs addBreadcrumbWithBlock:block];
+    [self.breadcrumbs addBreadcrumbWithBlock:block];
     [self serializeBreadcrumbs];
 }
 
 - (void)serializeBreadcrumbs {
-    BugsnagBreadcrumbs *crumbs = self.configuration.breadcrumbs;
-    NSArray *arrayValue = crumbs.count == 0 ? nil : [crumbs arrayValue];
-    [self.state addMetadata:arrayValue
+    [self.state addMetadata:[self.breadcrumbs arrayValue]
                     withKey:BSGKeyBreadcrumbs
                   toSection:BSTabCrash];
 }
@@ -1548,7 +1548,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (NSArray *)collectBreadcrumbs {
-    NSMutableArray *crumbs = self.configuration.breadcrumbs.breadcrumbs;
+    NSMutableArray *crumbs = self.breadcrumbs.breadcrumbs;
     NSMutableArray *data = [NSMutableArray new];
 
     for (BugsnagBreadcrumb *crumb in crumbs) {

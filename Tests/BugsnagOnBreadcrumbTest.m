@@ -15,6 +15,7 @@
 
 @interface BugsnagClient ()
 @property(nonatomic, readwrite, retain) BugsnagConfiguration *_Nullable configuration;
+@property BugsnagBreadcrumbs *breadcrumbs;
 - (void)start;
 @end
 
@@ -25,7 +26,6 @@
 
 @interface BugsnagConfiguration ()
 @property NSMutableArray *onBreadcrumbBlocks;
-@property BugsnagBreadcrumbs *breadcrumbs;
 @end
 
 @interface BugsnagBreadcrumbs ()
@@ -190,7 +190,7 @@
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
     [client start];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 1);
-    NSDictionary *crumb = [[client.configuration.breadcrumbs arrayValue] firstObject];
+    NSDictionary *crumb = [[client.breadcrumbs arrayValue] firstObject];
     XCTAssertEqualObjects(@"Foo", crumb[@"name"]);
 }
 
@@ -208,9 +208,9 @@
     [client start];
 
     // Call onbreadcrumb blocks
-    XCTAssertEqual([[config breadcrumbs].breadcrumbs count], 0);
+    XCTAssertEqual([client.breadcrumbs.breadcrumbs count], 0);
     [client leaveBreadcrumbWithMessage:@"Hello"];
-    XCTAssertEqual([[config breadcrumbs].breadcrumbs count], 0);
+    XCTAssertEqual([client.breadcrumbs.breadcrumbs count], 0);
 }
 
 @end
