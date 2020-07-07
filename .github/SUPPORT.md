@@ -7,7 +7,7 @@ Include the following information to help us understand your environment:
 
 ### Library versions
 
-* CocoaPods version (if any) (`pod -v`):
+* CocoaPods version (if any) (`pod --version`):
 * Carthage version (if any):
 * iOS/tvOS/macOS version(s)
 * debug mode or production?:
