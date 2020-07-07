@@ -103,12 +103,16 @@ void bsg_mach_headers_initialize() {
     
     bsg_g_mach_headers_images_head = NULL;
     bsg_g_mach_headers_images_tail = NULL;
+}
+
+void bsg_mach_headers_register_for_changes() {
     
     // Register for binary images being loaded and unloaded. dyld calls the add function once
     // for each library that has already been loaded and then keeps this cache up-to-date
     // with future changes
     _dyld_register_func_for_add_image(&bsg_mach_headers_add_image);
     _dyld_register_func_for_remove_image(&bsg_mach_headers_remove_image);
+
 }
 
 /**
