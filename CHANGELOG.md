@@ -3,16 +3,32 @@ Changelog
 
 ## TBD
 
-* Fix JSON serialisation of strings with control characters
-  [739](https://github.com/bugsnag/bugsnag-cocoa/pull/739)
+### Bug fixes
 
-* Disable reporting of notable addresses from registers for handled errors
-  [#741](https://github.com/bugsnag/bugsnag-cocoa/pull/741)
+* Improve performance of thread capture
+  [#723](https://github.com/bugsnag/bugsnag-cocoa/pull/723)
+  [#725](https://github.com/bugsnag/bugsnag-cocoa/pull/725)
+  [#728](https://github.com/bugsnag/bugsnag-cocoa/pull/728)
 
 * Improve thread-safety of breadcrumb count
   [#743](https://github.com/bugsnag/bugsnag-cocoa/pull/743)
 
+* Fix JSON serialisation of strings with control characters
+  [#739](https://github.com/bugsnag/bugsnag-cocoa/pull/739)
+
+* Disable reporting of notable addresses from registers for handled errors
+  [#741](https://github.com/bugsnag/bugsnag-cocoa/pull/741)
+
+## 6.1.0 (2020-07-06)
+
+### Enhancements
+
+* Add support for Swift Package Manager
+  [#729](https://github.com/bugsnag/bugsnag-cocoa/pull/729)
+
 ## 6.0.1 (2020-06-29)
+
+### Bug fixes
 
 * Move binary images store declaration from header file
   [#725](https://github.com/bugsnag/bugsnag-cocoa/pull/725)
@@ -36,7 +52,7 @@ libraries across platforms, making the user interface more consistent, and imple
 Please see the [upgrade guide](UPGRADING.md) for details of all the changes and instructions on
 how to upgrade.
 
-## Enhancements
+### Enhancements
 
 * Allow starting Bugsnag from PList
   [#676](https://github.com/bugsnag/bugsnag-cocoa/pull/676)
@@ -331,14 +347,14 @@ how to upgrade.
 
 ## 5.23.3 (2020-06-05)
 
-## Bug Fixes
+### Bug Fixes
 
 * Fix DYLD lock mechanism preventing compilation on iOS <10.
   [#675](https://github.com/bugsnag/bugsnag-cocoa/pull/675)
 
 ## 5.23.2 (2020-05-13)
 
-## Bug Fixes
+### Bug Fixes
 
 * Fixed an issue where an app could deadlock during a crash if unfavourable 
   timing caused DYLD lock contention.
@@ -346,7 +362,7 @@ how to upgrade.
 
 ## 5.23.1 (2020-04-08)
 
-## Bug fixes
+### Bug fixes
 
 * Fix possible report corruption when using `notify()` from multiple threads
   when configured to skip capturing/reporting background thread contents
