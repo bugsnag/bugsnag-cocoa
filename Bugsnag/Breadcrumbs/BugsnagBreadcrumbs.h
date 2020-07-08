@@ -36,9 +36,7 @@ typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
     (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
 
 /**
- * Serializable array representation of breadcrumbs, represented as nested
- * strings in the format:
- * [[timestamp,message]...]
+ * Generates an array of dictionaries representing the current buffer of breadcrumbs.
  */
 - (NSArray *_Nonnull)arrayValue;
 
