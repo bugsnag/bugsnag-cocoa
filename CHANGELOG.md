@@ -7,7 +7,7 @@ Changelog
 
 * Improve performance of thread capture
   [#723](https://github.com/bugsnag/bugsnag-cocoa/pull/723)
-  [#725](https://github.com/bugsnag/bugsnag-cocoa/pull/725)
+  [#727](https://github.com/bugsnag/bugsnag-cocoa/pull/727)
   [#728](https://github.com/bugsnag/bugsnag-cocoa/pull/728)
 
 * Improve thread-safety of breadcrumb count
