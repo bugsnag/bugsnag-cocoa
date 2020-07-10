@@ -116,22 +116,24 @@
 }
 
 - (NSArray *)arrayValue {
-    NSMutableArray *crumbs = [self.breadcrumbs mutableCopy];
-    NSMutableArray *contents = [[NSMutableArray alloc] initWithCapacity:[crumbs count]];
-    for (BugsnagBreadcrumb *crumb in crumbs) {
-        NSDictionary *objectValue = [crumb objectValue];
-        NSError *error = nil;
-        @try {
-            if (![NSJSONSerialization isValidJSONObject:objectValue]) {
-                bsg_log_err(@"Unable to serialize breadcrumb: Not a valid "
-                            @"JSON object");
-                continue;
+    __block NSMutableArray *contents =
+        [[NSMutableArray alloc] initWithCapacity:self.breadcrumbs.count];
+    dispatch_barrier_sync(self.readWriteQueue, ^{
+        for (BugsnagBreadcrumb *crumb in self.breadcrumbs) {
+            NSDictionary *objectValue = [crumb objectValue];
+            NSError *error = nil;
+            @try {
+                if (![NSJSONSerialization isValidJSONObject:objectValue]) {
+                    bsg_log_err(@"Unable to serialize breadcrumb: Not a valid "
+                                @"JSON object");
+                    continue;
+                }
+                [contents addObject:objectValue];
+            } @catch (NSException *exception) {
+              bsg_log_err(@"Unable to serialize breadcrumb: %@", error);
             }
-            [contents addObject:objectValue];
-        } @catch (NSException *exception) {
-          bsg_log_err(@"Unable to serialize breadcrumb: %@", error);
         }
-    }
+    });
     return contents;
 }
 
