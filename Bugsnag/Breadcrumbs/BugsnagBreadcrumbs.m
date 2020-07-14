@@ -116,9 +116,9 @@
 }
 
 - (NSArray *)arrayValue {
-    __block NSMutableArray *contents =
-        [[NSMutableArray alloc] initWithCapacity:self.breadcrumbs.count];
+    __block NSMutableArray *contents;
     dispatch_barrier_sync(self.readWriteQueue, ^{
+        contents = [[NSMutableArray alloc] initWithCapacity:self.breadcrumbs.count];
         for (BugsnagBreadcrumb *crumb in self.breadcrumbs) {
             NSDictionary *objectValue = [crumb objectValue];
             NSError *error = nil;
