@@ -354,7 +354,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/bugsnag/bugsnag-cocoa.git";
 			requirement = {
-				branch = "swift-package-manager";
+				branch = master;
 				kind = branch;
 			};
 		};

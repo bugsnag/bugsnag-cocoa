@@ -17,7 +17,7 @@ about: Create a report to help us improve the library
 Library versions:
 
 * Bugsnag version (from your Podfile, Podfile.lock, or elsewhere):
-* CocoaPods version (if any) (`pod -v`):
+* CocoaPods version (if any) (`pod --version`):
 * Carthage version (if any):
 * iOS/tvOS/macOS version(s)
 * debug mode or production?:
