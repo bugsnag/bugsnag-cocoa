@@ -26,6 +26,7 @@
 @interface BugsnagClient ()
 - (void)orientationChanged:(NSNotification *)notif;
 @property (nonatomic, strong) BugsnagMetadata *metadata;
+@property(nonatomic, strong) BugsnagBreadcrumbs *breadcrumbs;
 @end
 
 @interface BugsnagBreadcrumb ()
@@ -37,7 +38,6 @@
 @end
 
 @interface BugsnagConfiguration ()
-@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 @property(readwrite, retain, nullable) BugsnagMetadata *metadata;
 @end
 
@@ -88,7 +88,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     // Check that we can change it
     [client notify:ex];
 
-    NSDictionary *breadcrumb = [client.configuration.breadcrumbs[1] objectValue];
+    NSDictionary *breadcrumb = [client.breadcrumbs.breadcrumbs[1] objectValue];
     NSDictionary *metadata = [breadcrumb valueForKey:@"metaData"];
 
     XCTAssertEqualObjects([breadcrumb valueForKey:@"type"], @"error");
@@ -249,7 +249,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
     [client start];
 
-    NSMutableArray *breadcrumbs = client.configuration.breadcrumbs.breadcrumbs;
+    NSMutableArray *breadcrumbs = client.breadcrumbs.breadcrumbs;
     XCTAssertEqual(0, [breadcrumbs count]);
 
     // small breadcrumb can be left without issue

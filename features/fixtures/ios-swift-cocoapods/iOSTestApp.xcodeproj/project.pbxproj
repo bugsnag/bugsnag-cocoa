@@ -18,8 +18,6 @@
 		00CEB60D24080C690004793D /* EnabledErrorTypesScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEB60C24080C690004793D /* EnabledErrorTypesScenario.m */; };
 		6526A0D4248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */; };
 		8A14F0F62282D4AE00337B05 /* (null) in Sources */ = {isa = PBXBuildFile; };
-		8A14F0F62282D4AE00337B05 /* BuildFile in Sources */ = {isa = PBXBuildFile; };
-		8A14F0F62282D4AE00337B05 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		8A22FC66225B598500CA8895 /* OOMForegroundScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A22FC65225B598500CA8895 /* OOMForegroundScenario.m */; };
 		8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */; };
 		8A38C5D124094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */; };
@@ -30,7 +28,6 @@
 		8A72A0382396574F00328051 /* CustomPluginNotifierDescriptionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */; };
 		8A840FBA21AF5C450041DBFA /* SwiftAssertion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */; };
 		8A98400320FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */; };
-		8AA05A2F23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AA05A2E23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m */; };
 		8AB1081923301FE600672818 /* ReleaseStageScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB1081823301FE600672818 /* ReleaseStageScenarios.swift */; };
 		8AB65FCC22DC77CB001200AB /* LoadConfigFromFileScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB65FCB22DC77CB001200AB /* LoadConfigFromFileScenario.swift */; };
 		8AB8866420404DD30003E444 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB8866320404DD30003E444 /* AppDelegate.swift */; };
@@ -177,8 +174,6 @@
 		8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftAssertion.swift; sourceTree = "<group>"; };
 		8A98400120FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoSessionCustomVersionScenario.h; sourceTree = "<group>"; };
 		8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoSessionCustomVersionScenario.m; sourceTree = "<group>"; };
-		8AA05A2D23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ManyConcurrentNotifyNoBackgroundThreads.h; sourceTree = "<group>"; };
-		8AA05A2E23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ManyConcurrentNotifyNoBackgroundThreads.m; sourceTree = "<group>"; };
 		8AB1081823301FE600672818 /* ReleaseStageScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleaseStageScenarios.swift; sourceTree = "<group>"; };
 		8AB65FCB22DC77CB001200AB /* LoadConfigFromFileScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadConfigFromFileScenario.swift; sourceTree = "<group>"; };
 		8AB8866020404DD30003E444 /* iOSTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -689,8 +684,6 @@
 		F49695AF2445477E00105DA9 /* Handled errors */ = {
 			isa = PBXGroup;
 			children = (
-				8AA05A2D23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.h */,
-				8AA05A2E23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m */,
 				00CEB60B24080C690004793D /* EnabledErrorTypesScenario.h */,
 				00CEB60C24080C690004793D /* EnabledErrorTypesScenario.m */,
 				00432CC3240912A100826D05 /* EnabledErrorTypesCxxScenario.h */,
@@ -844,7 +837,6 @@
 				F42955E0916B8851F074D9B3 /* UserEmailScenario.swift in Sources */,
 				E700EE4C247D12E4008CFFB6 /* UserFromConfigEventScenario.swift in Sources */,
 				8A3B5F292407F66700CE4A3A /* ModifyBreadcrumbScenario.swift in Sources */,
-				8AA05A2F23BE700C00C7AD00 /* ManyConcurrentNotifyNoBackgroundThreads.m in Sources */,
 				E75040A2247801A8005D33BD /* AutoDetectFalseNSExceptionScenario.swift in Sources */,
 				F4295968571A4118D6A4606A /* UserEnabledScenario.swift in Sources */,
 				E700EE7E247D7A61008CFFB6 /* SIGSYSScenario.m in Sources */,
