@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Synchronize access to sessions being delivered in de-duplication code
+
 ## 6.1.1 (2020-07-16)
 
 ### Bug fixes
