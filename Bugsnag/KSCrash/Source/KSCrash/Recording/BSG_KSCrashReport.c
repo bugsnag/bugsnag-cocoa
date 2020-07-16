@@ -88,7 +88,7 @@ typedef ucontext_t SignalUserContext;
 typedef struct {
     char *data;
     size_t allocated_size;
-} BSG_ThreadDataBuffer;
+} BSG_JsonDataBuffer;
 
 // ============================================================================
 #pragma mark - Formatting -
@@ -1660,7 +1660,7 @@ void bsg_kscrashreport_logCrash(const BSG_KSCrash_Context *const crashContext) {
 }
 
 int bsg_kscrw_i_collectJsonData(const char *const data, const size_t length, void *const userData) {
-    BSG_ThreadDataBuffer *thread_data = (BSG_ThreadDataBuffer *)userData;
+    BSG_JsonDataBuffer *thread_data = (BSG_JsonDataBuffer *)userData;
     if (thread_data->data == NULL) {
         // Allocate initial memory for JSON data
         void *ptr = malloc(BSG_THREAD_DATA_SIZE_INITIAL);
@@ -1691,11 +1691,23 @@ char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext) {
     BSG_KSCrashReportWriter concreteWriter;
     BSG_KSCrashReportWriter *writer = &concreteWriter;
     bsg_kscrw_i_prepareReportWriter(writer, &jsonContext);
-    BSG_ThreadDataBuffer userData = { NULL, 0 };
+    BSG_JsonDataBuffer userData = { NULL, 0 };
     bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), false, bsg_kscrw_i_collectJsonData, &userData);
     writer->beginObject(writer, BSG_KSCrashField_Report);
     bsg_kscrw_i_writeTraceInfo(crashContext, writer);
     writer->endContainer(writer);
+    bsg_ksjsonendEncode(bsg_getJsonContext(writer));
+    return userData.data;
+}
+
+char *bsg_kscrw_i_captureAppForegroundStats(const BSG_KSCrash_Context *crashContext) {
+    BSG_KSJSONEncodeContext jsonContext;
+    BSG_KSCrashReportWriter concreteWriter;
+    BSG_KSCrashReportWriter *writer = &concreteWriter;
+    bsg_kscrw_i_prepareReportWriter(writer, &jsonContext);
+    BSG_JsonDataBuffer userData = { NULL, 0 };
+    bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), false, bsg_kscrw_i_collectJsonData, &userData);
+    bsg_kscrw_i_writeAppStats(writer, BSG_KSCrashField_AppStats, &crashContext->state);
     bsg_ksjsonendEncode(bsg_getJsonContext(writer));
     return userData.data;
 }

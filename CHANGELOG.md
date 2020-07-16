@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## TBD
+
+* Ensure foreground stats are recorded for handled errors
+  [#755](https://github.com/bugsnag/bugsnag-cocoa/pull/755)
+
 ## 6.1.1 (2020-07-16)
 
 ### Bug fixes

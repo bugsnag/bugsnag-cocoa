@@ -119,6 +119,11 @@
  */
 - (NSArray<BugsnagThread *> *)captureThreads:(NSException *)exc depth:(int)depth;
 
+/**
+ * Collects information about the application's foreground state (duration in foreground/background)
+ */
+- (NSDictionary *)captureApplicationStatsInfo;
+
 /** If YES, reports will be sent even if a debugger is attached
  *
  * Default: NO

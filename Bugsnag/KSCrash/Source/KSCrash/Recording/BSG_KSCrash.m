@@ -320,6 +320,13 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     return @[];
 }
 
+- (NSDictionary *)captureApplicationStatsInfo {
+    char *trace = bsg_kscrash_captureAppForegroundStats();
+    NSDictionary *json = BSGDeserializeJson(trace);
+    free(trace);
+    return json;
+}
+
 - (void)reportUserException:(NSString *)name
                      reason:(NSString *)reason
                handledState:(NSDictionary *)handledState

@@ -74,6 +74,13 @@ void bsg_kscrashreport_logCrash(const BSG_KSCrash_Context *const crashContext);
  */
 char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext);
 
+/**
+ * Captures app foreground stats for use by the Objective-C layer to append to handled errors.
+ *
+ * @return the stats encoded as a JSON string
+ */
+char *bsg_kscrw_i_captureAppForegroundStats(const BSG_KSCrash_Context *crashContext);
+
 #ifdef __cplusplus
 }
 #endif

@@ -38,6 +38,7 @@
 #import "BSG_KSLogger.h"
 #import "BSG_KSCrashReportFields.h"
 #import "BSG_KSMach.h"
+#import "BSG_KSCrash.h"
 
 #import <CommonCrypto/CommonDigest.h>
 #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
@@ -416,6 +417,8 @@
     };
     BSGDictSetSafeObject(sysInfo, memory, @BSG_KSSystemField_Memory);
 
+    NSDictionary *statsInfo = [[BSG_KSCrash sharedInstance] captureApplicationStatsInfo];
+    BSGDictSetSafeObject(sysInfo, statsInfo, @BSG_KSCrashField_AppStats);
     return sysInfo;
 }
 
