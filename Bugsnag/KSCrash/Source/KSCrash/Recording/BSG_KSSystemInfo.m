@@ -417,7 +417,7 @@
     };
     BSGDictSetSafeObject(sysInfo, memory, @BSG_KSSystemField_Memory);
 
-    NSDictionary *statsInfo = [[BSG_KSCrash sharedInstance] captureApplicationStatsInfo];
+    NSDictionary *statsInfo = [[BSG_KSCrash sharedInstance] captureAppStats];
     BSGDictSetSafeObject(sysInfo, statsInfo, @BSG_KSCrashField_AppStats);
     return sysInfo;
 }

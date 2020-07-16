@@ -122,7 +122,7 @@
 /**
  * Collects information about the application's foreground state (duration in foreground/background)
  */
-- (NSDictionary *)captureApplicationStatsInfo;
+- (NSDictionary *)captureAppStats;
 
 /** If YES, reports will be sent even if a debugger is attached
  *

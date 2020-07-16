@@ -79,7 +79,7 @@ char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext);
  *
  * @return the stats encoded as a JSON string
  */
-char *bsg_kscrw_i_captureAppForegroundStats(const BSG_KSCrash_Context *crashContext);
+char *bsg_kscrw_i_captureAppStats(const BSG_KSCrash_Context *crashContext);
 
 #ifdef __cplusplus
 }

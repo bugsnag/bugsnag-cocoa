@@ -176,7 +176,7 @@ char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t
 /**
  * Captures application foreground state info and returns it as a JSON string.
  */
-char *bsg_kscrash_captureAppForegroundStats();
+char *bsg_kscrash_captureAppStats(void);
 
 #ifdef __cplusplus
 }

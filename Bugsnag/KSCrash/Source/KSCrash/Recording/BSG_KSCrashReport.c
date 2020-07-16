@@ -1348,7 +1348,7 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
  */
 void bsg_kscrw_i_writeAppStats(const BSG_KSCrashReportWriter *const writer,
                                const char *const key,
-                               BSG_KSCrash_State *state) {
+                               const BSG_KSCrash_State *state) {
     writer->beginObject(writer, key);
     {
         writer->addBooleanElement(writer, BSG_KSCrashField_AppActive,
@@ -1700,7 +1700,7 @@ char *bsg_kscrw_i_captureThreadTrace(const BSG_KSCrash_Context *crashContext) {
     return userData.data;
 }
 
-char *bsg_kscrw_i_captureAppForegroundStats(const BSG_KSCrash_Context *crashContext) {
+char *bsg_kscrw_i_captureAppStats(const BSG_KSCrash_Context *crashContext) {
     BSG_KSJSONEncodeContext jsonContext;
     BSG_KSCrashReportWriter concreteWriter;
     BSG_KSCrashReportWriter *writer = &concreteWriter;
