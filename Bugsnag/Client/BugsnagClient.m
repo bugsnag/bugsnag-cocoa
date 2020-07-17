@@ -306,6 +306,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic, strong) NSString *lastOrientation;
 #endif
 @property NSMutableDictionary *extraRuntimeInfo;
+@property BugsnagUser *user;
 @end
 
 @interface BugsnagConfiguration ()
@@ -351,6 +352,8 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 
 @interface BugsnagUser ()
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
+- (NSDictionary *)toJson;
 @end
 
 @interface Bugsnag ()
@@ -792,23 +795,17 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (BugsnagUser *_Nonnull)user
 {
-    NSDictionary *userInfo = [self.metadata getMetadataFromSection:BSGKeyUser];
-    return [[BugsnagUser alloc] initWithDictionary:userInfo ?: @{}];
+    return _user;
 }
 
 - (void)setUser:(NSString *_Nullable)userId
       withEmail:(NSString *_Nullable)email
         andName:(NSString *_Nullable)name
 {
-    [self.metadata addMetadata:userId withKey:BSGKeyId    toSection:BSGKeyUser];
-    [self.metadata addMetadata:name   withKey:BSGKeyName  toSection:BSGKeyUser];
-    [self.metadata addMetadata:email  withKey:BSGKeyEmail toSection:BSGKeyUser];
-
-    NSMutableDictionary *dict = [NSMutableDictionary new];
-    BSGDictInsertIfNotNil(dict, self.user.id, @"id");
-    BSGDictInsertIfNotNil(dict, self.user.email, @"email");
-    BSGDictInsertIfNotNil(dict, self.user.name, @"name");
-    [self notifyObservers:[[BugsnagStateEvent alloc] initWithName:kStateEventUser data:dict]];
+    _user = [[BugsnagUser alloc] initWithUserId:userId name:name emailAddress:email];
+    NSDictionary *userJson = [_user toJson];
+    [self.state addMetadata:userJson toSection:BSGKeyUser];
+    [self notifyObservers:[[BugsnagStateEvent alloc] initWithName:kStateEventUser data:userJson]];
 }
 
 // =============================================================================
