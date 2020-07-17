@@ -72,6 +72,8 @@ static BSG_KSCrash_State *bsg_g_state;
 // Avoiding static functions due to linker issues.
 
 // ============================================================================
+void bsg_kscrashstate_updateForegroundStats(BSG_KSCrash_State *const state);
+
 #pragma mark - JSON Encoding -
 // ============================================================================
 
@@ -356,7 +358,15 @@ void bsg_kscrashstate_notifyAppTerminate(void) {
 void bsg_kscrashstate_notifyAppCrash(BSG_KSCrashType type) {
     BSG_KSCrash_State *const state = bsg_g_state;
     const char *const stateFilePath = bsg_g_stateFilePath;
+    bsg_kscrashstate_updateForegroundStats(state);
+    BOOL didCrash = type != BSG_KSCrashTypeUserReported;
+    state->crashedThisLaunch |= didCrash;
+    if (didCrash) {
+        bsg_kscrashstate_i_saveState(state, stateFilePath);
+    }
+}
 
+void bsg_kscrashstate_updateForegroundStats(BSG_KSCrash_State *const state) {
     const double duration = bsg_ksmachtimeDifferenceInSeconds(
         mach_absolute_time(), state->appStateTransitionTime);
     if (state->applicationIsActive) {
@@ -365,11 +375,6 @@ void bsg_kscrashstate_notifyAppCrash(BSG_KSCrashType type) {
     } else if (!state->applicationIsInForeground) {
         state->backgroundDurationSinceLaunch += duration;
         state->backgroundDurationSinceLastCrash += duration;
-    }
-    BOOL didCrash = type != BSG_KSCrashTypeUserReported;
-    state->crashedThisLaunch |= didCrash;
-    if (didCrash) {
-        bsg_kscrashstate_i_saveState(state, stateFilePath);
     }
 }
 

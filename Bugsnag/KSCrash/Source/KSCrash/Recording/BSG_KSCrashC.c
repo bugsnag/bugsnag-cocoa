@@ -244,7 +244,3 @@ char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t
     }
     return trace;
 }
-
-char *bsg_kscrash_captureAppStats() {
-    return bsg_kscrw_i_captureAppStats(crashContext());
-}
