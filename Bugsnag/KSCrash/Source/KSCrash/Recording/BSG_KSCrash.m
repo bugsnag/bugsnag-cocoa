@@ -324,7 +324,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 
 - (NSDictionary *)captureAppStats {
     BSG_KSCrash_State state = crashContext()->state;
-    bsg_kscrashstate_updateForegroundStats(&state);
+    bsg_kscrashstate_updateDurationStats(&state);
     NSMutableDictionary *dict = [NSMutableDictionary new];
     BSGDictSetSafeObject(dict, @(state.activeDurationSinceLaunch), @BSG_KSCrashField_ActiveTimeSinceLaunch);
     BSGDictSetSafeObject(dict, @(state.backgroundDurationSinceLaunch), @BSG_KSCrashField_BGTimeSinceLaunch);

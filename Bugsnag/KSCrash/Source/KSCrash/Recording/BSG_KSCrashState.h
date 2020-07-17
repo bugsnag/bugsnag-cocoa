@@ -127,7 +127,7 @@ const BSG_KSCrash_State *bsg_kscrashstate_currentState(void);
  *
  * @param state the kscrash state
  */
-void bsg_kscrashstate_updateForegroundStats(BSG_KSCrash_State *const state);
+void bsg_kscrashstate_updateDurationStats(BSG_KSCrash_State *const state);
 
 #ifdef __cplusplus
 }
