@@ -243,5 +243,4 @@ char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t
         bsg_kscrashsentry_resume_threads_user(false);
     }
     return trace;
-    
 }
