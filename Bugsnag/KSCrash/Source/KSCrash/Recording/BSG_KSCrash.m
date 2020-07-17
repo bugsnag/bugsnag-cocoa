@@ -26,14 +26,12 @@
 
 #import "BugsnagPlatformConditional.h"
 
-#import <mach-o/dyld.h>
 #import <execinfo.h>
 #import "BSG_KSCrashAdvanced.h"
 
 #import "BSG_KSCrashC.h"
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSSingleton.h"
-#import "BSG_KSMachHeaders.h"
 #import "NSError+BSG_SimpleConstructor.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
@@ -113,7 +111,6 @@
 @synthesize nextCrashID = _nextCrashID;
 @synthesize introspectMemory = _introspectMemory;
 @synthesize maxStoredReports = _maxStoredReports;
-@synthesize suspendThreadsForUserReported = _suspendThreadsForUserReported;
 @synthesize reportWhenDebuggerIsAttached = _reportWhenDebuggerIsAttached;
 @synthesize threadTracingEnabled = _threadTracingEnabled;
 @synthesize writeBinaryImagesForUserReported =
@@ -147,7 +144,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         self.introspectMemory = YES;
         self.maxStoredReports = 5;
 
-        self.suspendThreadsForUserReported = YES;
         self.reportWhenDebuggerIsAttached = NO;
         self.threadTracingEnabled = BSGThreadSendPolicyAlways;
         self.writeBinaryImagesForUserReported = YES;
@@ -196,11 +192,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     bsg_kscrash_setIntrospectMemory(introspectMemory);
 }
 
-- (void)setSuspendThreadsForUserReported:(BOOL)suspendThreadsForUserReported {
-    _suspendThreadsForUserReported = suspendThreadsForUserReported;
-    bsg_kscrash_setSuspendThreadsForUserReported(suspendThreadsForUserReported);
-}
-
 - (void)setReportWhenDebuggerIsAttached:(BOOL)reportWhenDebuggerIsAttached {
     _reportWhenDebuggerIsAttached = reportWhenDebuggerIsAttached;
     bsg_kscrash_setReportWhenDebuggerIsAttached(reportWhenDebuggerIsAttached);
@@ -234,8 +225,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 }
 
 - (BOOL)install {
-    // Maintain a cache of info about dynamically loaded binary images
-    [self listenForLoadedBinaries];
 
     _handlingCrashTypes = bsg_kscrash_install(
         [self.crashReportPath UTF8String], [self.recrashReportPath UTF8String],
@@ -269,21 +258,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 #endif
 
     return true;
-}
-
-/**
- * Set up listeners for un/loaded frameworks.  Maintaining our own list of framework Mach
- * headers means that we avoid potential deadlock situations where we try and suspend
- * lock-holding threads prior to loading mach headers as part of our normal event handling
- * behaviour.
- */
-- (void)listenForLoadedBinaries {
-    bsg_check_unfair_lock_support();
-    bsg_initialise_mach_binary_headers(BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE);
-
-    // Note: Access to DYLD's binary image store is guarded by locks.
-    _dyld_register_func_for_remove_image(&bsg_mach_binary_image_removed);
-    _dyld_register_func_for_add_image(&bsg_mach_binary_image_added);
 }
 
 - (void)sendAllReports {
@@ -335,8 +309,9 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     char *trace = bsg_kscrash_captureThreadTrace(depth, numFrames, callstack);
     free(callstack);
     NSDictionary *json = BSGDeserializeJson(trace);
-
-    if (json) {
+    free(trace);
+    
+    if (json) {	
         return [BugsnagThread threadsFromArray:[json valueForKeyPath:@"crash.threads"]
                                   binaryImages:json[@"binary_images"]
                                          depth:depth
@@ -352,8 +327,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
           callbackOverrides:(NSDictionary *)overrides
              eventOverrides:(NSDictionary *)eventOverrides
                    metadata:(NSDictionary *)metadata
-                     config:(NSDictionary *)config
-           terminateProgram:(BOOL)terminateProgram {
+                     config:(NSDictionary *)config {
     const char *cName = [name cStringUsingEncoding:NSUTF8StringEncoding];
     const char *cReason = [reason cStringUsingEncoding:NSUTF8StringEncoding];
 
@@ -364,8 +338,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
             [self encodeAsJSONString:eventOverrides],
             [self encodeAsJSONString:metadata],
             [self encodeAsJSONString:appState],
-            [self encodeAsJSONString:config],
-            terminateProgram);
+            [self encodeAsJSONString:config]);
 }
 
 // ============================================================================
