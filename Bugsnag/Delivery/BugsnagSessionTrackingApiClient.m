@@ -67,7 +67,6 @@
                 initWithSessions:@[session]
                           config:[Bugsnag configuration]
                     codeBundleId:self.codeBundleId];
-            NSUInteger sessionCount = payload.sessions.count;
             NSMutableDictionary *data = [payload toJson];
             NSDictionary *HTTPHeaders = @{
                     @"Bugsnag-Payload-Version": @"1.0",
@@ -87,19 +86,12 @@
                    }
 
                    // remove request
-                   [self.activeIds removeObject:fileId];
+                   @synchronized (self.activeIds) {
+                       [self.activeIds removeObject:fileId];
+                   }
                }];
         }];
     }
-}
-
-- (BOOL)isActiveRequest:(NSString *)fileId {
-    for (NSString *val in self.activeIds) {
-        if ([val isEqualToString:fileId]) {
-            return true;
-        }
-    }
-    return false;
 }
 
 @end

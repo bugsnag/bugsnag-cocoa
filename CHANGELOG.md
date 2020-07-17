@@ -6,6 +6,7 @@ Changelog
 ### Bug fixes
 
 * Synchronize access to sessions being delivered in de-duplication code
+  [#756](https://github.com/bugsnag/bugsnag-cocoa/pull/756)
 
 ## 6.1.1 (2020-07-16)
 
