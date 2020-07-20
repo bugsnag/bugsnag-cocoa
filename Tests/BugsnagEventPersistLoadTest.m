@@ -17,9 +17,6 @@
 #import "BugsnagHandledState.h"
 #import "Bugsnag.h"
 
-@interface Bugsnag ()
-+ (NSDateFormatter *)payloadDateFormatter;
-@end
 #import "BugsnagError.h"
 #import "BugsnagStackframe.h"
 #import "BugsnagThread.h"
@@ -170,6 +167,10 @@
                     }
             }
     }];
+    
+    NSDateFormatter *formatter = [NSDateFormatter new];
+    formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
+    formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
 
     BugsnagDeviceWithState *device = event.device;
     XCTAssertEqualObjects(@920234094, device.freeDisk);
@@ -177,7 +178,7 @@
     XCTAssertEqualObjects(@92092340923, device.totalMemory);
     XCTAssertEqualObjects(@"landscape", device.orientation);
     XCTAssertFalse(device.jailbroken);
-    NSString *date = [device.formatter stringFromDate:device.time];
+    NSString *date = [formatter stringFromDate:device.time];
     XCTAssertEqualObjects(@"2020-05-11T15:36:09+0000", date);
 
     XCTAssertEqualObjects(@"f0a9b99", device.id);
@@ -264,7 +265,11 @@
     XCTAssertEqual(1, [event.breadcrumbs count]);
     XCTAssertEqual(BSGBreadcrumbTypeManual, breadcrumb.type);
     XCTAssertEqualObjects(@"installed NDK", breadcrumb.message);
-    NSDate *date = [[Bugsnag payloadDateFormatter] dateFromString:@"2020-02-14T16:12:23+001"];
+    
+    NSDateFormatter *formatter = [NSDateFormatter new];
+    formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
+    formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    NSDate *date = [formatter dateFromString:@"2020-02-14T16:12:23+001"];
     XCTAssertEqualObjects(date, breadcrumb.timestamp);
     XCTAssertEqualObjects(@{
             @"custom": @{
@@ -348,8 +353,11 @@
                     }
             }
     }];
-
-    NSDate *date = [[Bugsnag payloadDateFormatter] dateFromString:@"2020-05-18T13:13:24Z"];
+    
+    NSDateFormatter *formatter = [NSDateFormatter new];
+    formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
+    formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    NSDate *date = [formatter dateFromString:@"2020-05-18T13:13:24Z"];
     XCTAssertEqualObjects(date, event.session.startedAt);
     XCTAssertEqualObjects(@"123", event.session.id);
     XCTAssertEqual(1, event.session.unhandledCount);
