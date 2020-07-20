@@ -356,10 +356,6 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 - (NSDictionary *)toJson;
 @end
 
-@interface Bugsnag ()
-+ (NSDateFormatter *_Nonnull)payloadDateFormatter;
-@end
-
 @interface BugsnagBreadcrumbs ()
 @property(nonatomic, readwrite, strong) NSMutableArray *breadcrumbs;
 @end
@@ -1175,7 +1171,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)lowMemoryWarning:(NSNotification *)notif {
-    [self.state addMetadata:[[Bugsnag payloadDateFormatter] stringFromDate:[NSDate date]]
+    [self.state addMetadata:[BSG_RFC3339DateTool stringFromDate:[NSDate date]]
                       withKey:BSEventLowMemoryWarning
                     toSection:BSGKeyDeviceState];
      

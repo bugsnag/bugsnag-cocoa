@@ -39,6 +39,8 @@
 #import "BugsnagThread.h"
 #import "BSGSerialization.h"
 #import "BugsnagErrorReportSink.h"
+#import "BugsnagCollections.h"
+#import "BSG_KSCrashReportFields.h"
 
 #if BSG_HAS_UIKIT
 #import <UIKit/UIKit.h>
@@ -318,6 +320,16 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
                                      errorType:nil];
     }
     return @[];
+}
+
+- (NSDictionary *)captureAppStats {
+    BSG_KSCrash_State state = crashContext()->state;
+    bsg_kscrashstate_updateDurationStats(&state);
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+    BSGDictSetSafeObject(dict, @(state.activeDurationSinceLaunch), @BSG_KSCrashField_ActiveTimeSinceLaunch);
+    BSGDictSetSafeObject(dict, @(state.backgroundDurationSinceLaunch), @BSG_KSCrashField_BGTimeSinceLaunch);
+    BSGDictSetSafeObject(dict, @(state.applicationIsInForeground), @BSG_KSCrashField_AppInFG);
+    return dict;
 }
 
 - (void)reportUserException:(NSString *)name

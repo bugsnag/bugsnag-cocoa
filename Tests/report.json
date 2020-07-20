@@ -2103,8 +2103,8 @@
                 "depth": 4,
                 "severity": "warning",
                 "breadcrumbs": [
-                    {"message": "App launched", "timestamp": "2020-02-14T16:12:22+0000", "type": "manual", "metaData":{}},
-                    {"message": "Tapped button", "timestamp": "2020-02-14T16:12:24+0000", "type": "manual", "metaData":{}}
+                    {"message": "App launched", "timestamp": "2020-02-14T16:12:22Z", "type": "manual", "metaData":{}},
+                    {"message": "Tapped button", "timestamp": "2020-02-14T16:12:24Z", "type": "manual", "metaData":{}}
                 ]
             }
         }

@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Ensure foreground stats are recorded for handled errors
+  [#755](https://github.com/bugsnag/bugsnag-cocoa/pull/755)
+
+* Synchronize access to sessions being delivered in de-duplication code
+  [#756](https://github.com/bugsnag/bugsnag-cocoa/pull/756)
+
+* Removed non-thread safe date formatter
+  [#758](https://github.com/bugsnag/bugsnag-cocoa/pull/758)
+
 ## 6.1.1 (2020-07-16)
 
 ### Bug fixes
