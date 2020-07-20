@@ -306,7 +306,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic, strong) NSString *lastOrientation;
 #endif
 @property NSMutableDictionary *extraRuntimeInfo;
-@property BugsnagUser *user;
+@property (nonatomic) BugsnagUser *user;
 @end
 
 @interface BugsnagConfiguration ()
