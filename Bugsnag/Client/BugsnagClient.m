@@ -669,6 +669,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)setCodeBundleId:(NSString *)codeBundleId {
     _codeBundleId = codeBundleId;
+    [self.state addMetadata:codeBundleId withKey:BSGKeyCodeBundleId toSection:BSGKeyApp];
     self.oomWatchdog.codeBundleId = codeBundleId;
     self.sessionTracker.codeBundleId = codeBundleId;
 }

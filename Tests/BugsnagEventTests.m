@@ -35,6 +35,7 @@
 @interface BugsnagEvent ()
 - (NSDictionary *_Nonnull)toJson;
 - (BOOL)shouldBeSent;
+- (instancetype)initWithUserData:(NSDictionary *)event;
 - (instancetype)initWithKSReport:(NSDictionary *)report;
 - (instancetype)initWithApp:(BugsnagAppWithState *)app
                      device:(BugsnagDeviceWithState *)device
@@ -795,6 +796,32 @@
     XCTAssertNil(event.user.id);
     XCTAssertNil(event.user.name);
     XCTAssertNil(event.user.email);
+}
+
+- (void)testCodeBundleIdHandled {
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithUserData:@{
+            @"user": @{
+                    @"event": @{
+                            @"app": @{
+                                    @"codeBundleId": @"cb-123"
+                            }
+                    }
+            }
+    }];
+    XCTAssertEqualObjects(@"cb-123", event.app.codeBundleId);
+}
+
+- (void)testCodeBundleIdUnhandled {
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
+            @"user": @{
+                    @"state": @{
+                            @"app": @{
+                                    @"codeBundleId": @"cb-123"
+                            }
+                    }
+            }
+    }];
+    XCTAssertEqualObjects(@"cb-123", event.app.codeBundleId);
 }
 
 @end
