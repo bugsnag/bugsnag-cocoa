@@ -824,4 +824,28 @@
     XCTAssertEqualObjects(@"cb-123", event.app.codeBundleId);
 }
 
+- (void)testRuntimeVersionsUnhandled {
+    NSDictionary *runtimeVersions = @{
+            @"fooVersion": @"5.23",
+            @"barVersion": @"7.902.40fc"
+    };
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
+            @"system": @{
+                    @"os_version": @"13.2"
+            },
+            @"user": @{
+                    @"state": @{
+                            @"device": @{
+                                    @"extraRuntimeInfo": runtimeVersions
+                            }
+                    }
+            }
+    }];
+    NSDictionary *expected = @{
+            @"fooVersion": @"5.23",
+            @"barVersion": @"7.902.40fc",
+            @"osBuild": @"13.2"
+    };
+    XCTAssertEqualObjects(expected, event.device.runtimeVersions);
+}
 @end
