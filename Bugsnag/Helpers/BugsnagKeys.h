@@ -42,6 +42,7 @@ extern NSString *const BSGKeyException;
 extern NSString *const BSGKeyExceptionName;
 extern NSString *const BSGKeyExceptions;
 extern NSString *const BSGKeyExecutableName;
+extern NSString *const BSGKeyExtraRuntimeInfo;
 extern NSString *const BSGKeyFrameAddrFormat;
 extern NSString *const BSGKeyFrameAddress;
 extern NSString *const BSGKeyGroupingHash;

@@ -1576,6 +1576,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     if (info != nil && key != nil) {
         self.extraRuntimeInfo[key] = info;
     }
+    [self.state addMetadata:self.extraRuntimeInfo withKey:BSGKeyExtraRuntimeInfo toSection:BSGKeyDevice];
 }
 
 @end

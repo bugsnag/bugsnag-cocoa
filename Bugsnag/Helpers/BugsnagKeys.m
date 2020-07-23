@@ -38,6 +38,7 @@ NSString *const BSGKeyException = @"exception";
 NSString *const BSGKeyExceptionName = @"exception_name";
 NSString *const BSGKeyExceptions = @"exceptions";
 NSString *const BSGKeyExecutableName = @"CFBundleExecutable";
+NSString *const BSGKeyExtraRuntimeInfo = @"extraRuntimeInfo";
 NSString *const BSGKeyFrameAddrFormat = @"0x%lx";
 NSString *const BSGKeyFrameAddress = @"frameAddress";
 NSString *const BSGKeyGroupingHash = @"groupingHash";
