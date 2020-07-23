@@ -62,6 +62,7 @@
 
     self.config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     self.config.appType = @"iOS";
+    self.config.bundleVersion = nil;
     self.config.appVersion = @"3.14.159";
     self.codeBundleId = @"bundle-123";
 }

@@ -21,6 +21,10 @@
 @property NSDictionary *processedData;
 @end
 
+@interface Bugsnag ()
++ (BugsnagConfiguration *)configuration;
+@end
+
 @interface BugsnagClient ()
 - (void)start;
 @end
@@ -67,6 +71,7 @@
                                                                    sessions:@"http://localhost:1234"];
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
     [client start];
+    [Bugsnag configuration].bundleVersion = @"3.2";
     BugsnagEvent *report =
             [[BugsnagEvent alloc] initWithKSReport:self.rawReportData];
     self.processedData = [[BugsnagErrorReportSink new] prepareEventPayload:report];
@@ -320,7 +325,7 @@
     XCTAssertEqualObjects(app[@"id"], @"net.hockeyapp.CrashProbeiOS");
     XCTAssertNotNil(app[@"type"]);
     XCTAssertEqualObjects(app[@"version"], @"1.0");
-    XCTAssertEqualObjects(app[@"bundleVersion"], @"1");
+    XCTAssertEqualObjects(app[@"bundleVersion"], @"3.2");
     XCTAssertEqualObjects(app[@"releaseStage"], @"production");
     XCTAssertEqualObjects(app[@"dsymUUIDs"], @[@"D0A41830-4FD2-3B02-A23B-0741AD4C7F52"]);
     XCTAssertEqualObjects(app[@"duration"], @4000);
