@@ -59,13 +59,15 @@
 }
 
 - (void)testMetadataUpdate {
-    XCTAssertNil(self.event);
+    XCTAssertNotNil(self.event);
+    self.event = nil;
     [self.client addMetadata:@"Bar" withKey:@"Foo" toSection:@"test"];
     XCTAssertEqualObjects(self.client.metadata, self.event.data);
 }
 
 - (void)testRemoveObserver {
-    XCTAssertNil(self.event);
+    XCTAssertNotNil(self.event);
+    self.event = nil;
     [self.client removeObserverWithBlock:self.block];
     [self.client setUser:@"123" withEmail:@"test@example.com" andName:@"Jamie"];
     [self.client setContext:@"Foo"];

@@ -107,10 +107,6 @@ NSDictionary *BSGParseDeviceMetadata(NSDictionary *event);
 + (BugsnagClient *)client;
 @end
 
-@interface BugsnagMetadata ()
-- (void)notifyObservers;
-@end
-
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
@@ -458,7 +454,10 @@ NSString *_lastOrientation = nil;
 
     // additionally listen for metadata updates
     [self.metadata addObserverWithBlock:observer];
-    [self.metadata notifyObservers];
+
+    // sync the new observer with changes to metadata so far
+    BugsnagStateEvent *event = [[BugsnagStateEvent alloc] initWithName:kStateEventMetadata data:self.metadata];
+    observer(event);
 }
 
 - (void)removeObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer {
