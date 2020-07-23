@@ -4,6 +4,8 @@ Changelog
 ## TBD
 
 ### Bug fixes
+* Respect bundle version set from config
+  [#762](https://github.com/bugsnag/bugsnag-cocoa/pull/762)
 
 * Ensure foreground stats are recorded for handled errors
   [#755](https://github.com/bugsnag/bugsnag-cocoa/pull/755)
