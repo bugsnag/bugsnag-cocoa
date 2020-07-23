@@ -107,6 +107,10 @@ NSDictionary *BSGParseDeviceMetadata(NSDictionary *event);
 + (BugsnagClient *)client;
 @end
 
+@interface BugsnagMetadata ()
+- (void)notifyObservers;
+@end
+
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
@@ -413,7 +417,7 @@ NSString *_lastOrientation = nil;
                                                          }];
 
         self.breadcrumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
-        
+
         // Start with a copy of the configuration metadata
         self.metadata = [[configuration metadata] deepCopy];
         // sync initial state
@@ -461,6 +465,7 @@ NSString *_lastOrientation = nil;
 
     // additionally remove metadata listener
     [self.metadata removeObserverWithBlock:observer];
+    [self.metadata notifyObservers];
 }
 
 - (void)notifyObservers:(BugsnagStateEvent *)event {
@@ -567,7 +572,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                selector:@selector(orientationChanged:)
                    name:UIDeviceOrientationDidChangeNotification
                  object:nil];
-    
+
     [center addObserver:self
                selector:@selector(lowMemoryWarning:)
                    name:UIApplicationDidReceiveMemoryWarningNotification
@@ -596,7 +601,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     _started = YES;
     // autoDetectErrors disables all unhandled event reporting
     BOOL configuredToReportOOMs = self.configuration.autoDetectErrors && self.configuration.enabledErrorTypes.ooms;
-    
+
     // Disable if a debugger is enabled, since the development cycle of starting
     // and restarting an app is also an uncatchable kill
     BOOL noDebuggerEnabled = !bsg_ksmachisBeingTraced();
@@ -650,7 +655,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         }
     }
     self.appDidCrashLastLaunch = handledCrashLastLaunch || [self.oomWatchdog didOOMLastLaunch];
-    
+
     // Ignore potential false positive OOM if previous session crashed and was
     // reported. There are two checks in place:
     //
@@ -658,7 +663,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     //
     //     2. crash sentinel file exists: This file is written in the event of a crash
     //        and insures against the crash callback crashing
-    
+
     if (!handledCrashLastLaunch && [self.oomWatchdog didOOMLastLaunch]) {
         [self notifyOutOfMemoryEvent];
     }
@@ -753,7 +758,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         if (connected) {
             [strongSelf flushPendingReports];
         }
-        
+
         [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
                           withMessage:@"Connectivity changed"
                           andMetadata:@{
@@ -904,7 +909,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self notify:exception handledState:state block:nil];
 }
 
-- (void)notify:(NSException *)exception 
+- (void)notify:(NSException *)exception
          block:(BugsnagOnErrorBlock)block
 {
     BugsnagHandledState *state =
@@ -975,11 +980,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     NSArray *errors = @[[self generateError:exception threads:threads]];
 
     BugsnagMetadata *metadata = [self.metadata deepCopy];
-    NSDictionary *deviceFields = [self.state getMetadataFromSection:BSGKeyDeviceState];
-
-    if (deviceFields) {
-        [metadata addMetadata:deviceFields toSection:BSGKeyDevice];
-    }
 
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithApp:[self generateAppWithState:systemInfo]
@@ -1007,6 +1007,13 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (void)notifyInternal:(BugsnagEvent *_Nonnull)event
                  block:(BugsnagOnErrorBlock)block
 {
+    // enhance device information with additional metadata
+    NSDictionary *deviceFields = [self.state getMetadataFromSection:BSGKeyDeviceState];
+
+    if (deviceFields) {
+        [event.metadata addMetadata:deviceFields toSection:BSGKeyDevice];
+    }
+
     @try {
         if (block != nil && !block(event)) { // skip notifying if callback false
             return;
@@ -1157,17 +1164,17 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         _lastOrientation = orientation;
         return;
     }
-    
+
     // We have an orientation, it's not a dupe and we have a lastOrientation.
     // Send a breadcrumb and preserve the orientation.
-    
+
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
                       withMessage:BSGBreadcrumbNameForNotificationName(notification.name)
                       andMetadata:@{
                           @"from" : _lastOrientation,
                           @"to" : orientation
                       }];
-    
+
     _lastOrientation = orientation;
 }
 
@@ -1175,7 +1182,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.state addMetadata:[BSG_RFC3339DateTool stringFromDate:[NSDate date]]
                       withKey:BSEventLowMemoryWarning
                     toSection:BSGKeyDeviceState];
-     
+
     if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
         [self sendBreadcrumbForNotification:notif];
     }
@@ -1230,7 +1237,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                      object:nil];
         }
     }
-    
+
     // Navigation events
     if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeNavigation]) {
         // UI/NSTableView events
@@ -1312,7 +1319,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         NSWindowDidExitFullScreenNotification
     ];
 #endif
-    
+
     // Fall-through
     return nil;
 }
@@ -1331,7 +1338,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         NSControlTextDidEndEditingNotification
     ];
 #endif
-    
+
     // Fall-through
     return nil;
 }
