@@ -64,7 +64,7 @@ Feature: App and Device attributes present
     And the "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
 
     And the payload field "events.0.app.type" equals "newAppType"
-    And the payload field "events.0.app.bundleVersion" equals "5"
+    And the payload field "events.0.app.bundleVersion" equals "42"
     And the payload field "events.0.app.version" equals "999"
     And the payload field "events.0.app.releaseStage" equals "thirdStage"
     And the payload field "events.0.device.manufacturer" equals "Nokia"

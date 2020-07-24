@@ -53,6 +53,7 @@ class AppAndDeviceAttributesScenarioCallbackOverride: Scenario {
             event.app.type = "newAppType"
             event.app.releaseStage = "thirdStage"
             event.app.version = "999"
+            event.app.bundleVersion = "42"
             event.device.manufacturer = "Nokia"
             event.device.modelNumber = "0898"
             

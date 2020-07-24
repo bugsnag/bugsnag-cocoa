@@ -71,6 +71,7 @@
                                                                    sessions:@"http://localhost:1234"];
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
     [client start];
+    // required due to BugsnagEvent using global singleton
     [Bugsnag configuration].bundleVersion = @"3.2";
     BugsnagEvent *report =
             [[BugsnagEvent alloc] initWithKSReport:self.rawReportData];
