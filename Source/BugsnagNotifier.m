@@ -802,8 +802,7 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
 - (void)lowMemoryWarning:(NSNotification *)notif {
     [[self state] addAttribute:BSEventLowMemoryWarning
-                     withValue:[[Bugsnag payloadDateFormatter]
-                                   stringFromDate:[NSDate date]]
+                     withValue:[BSG_RFC3339DateTool stringFromDate:[NSDate date]]
                  toTabWithName:BSGKeyDeviceState];
     if ([self.configuration automaticallyCollectBreadcrumbs]) {
         [self sendBreadcrumbForNotification:notif];

@@ -3,11 +3,16 @@ Changelog
 
 ## TBD
 
-### Bug Fixes
+### Bug fixes
+
+The following bug fixes have been applied to the v5 branch to provide a patch
+for users who have not yet upgraded to v6:
 
 * Fix JSON serialisation of strings with control characters
   [739](https://github.com/bugsnag/bugsnag-cocoa/pull/739)
 
+* Removed non-thread safe date formatter
+  [#758](https://github.com/bugsnag/bugsnag-cocoa/pull/758)
 
 ## 5.23.4 (2020-07-06)
 
