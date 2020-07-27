@@ -266,16 +266,6 @@ static NSMutableArray <id<BugsnagPlugin>> *registeredPlugins;
     }
 }
 
-+ (NSDateFormatter *)payloadDateFormatter {
-    static NSDateFormatter *formatter;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-      formatter = [NSDateFormatter new];
-      formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
-    });
-    return formatter;
-}
-
 + (void)setSuspendThreadsForUserReported:(BOOL)suspendThreadsForUserReported {
     if ([self bugsnagStarted]) {
         [[BSG_KSCrash sharedInstance]

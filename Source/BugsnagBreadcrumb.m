@@ -27,6 +27,7 @@
 #import "Bugsnag.h"
 #import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
+#import "BSG_RFC3339DateTool.h"
 
 static NSString *const BSGBreadcrumbDefaultName = @"manual";
 static NSUInteger const BSGBreadcrumbMaxByteSize = 4096;
@@ -82,7 +83,7 @@ NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type) {
 - (NSDictionary *)objectValue {
     @synchronized (self) {
         NSString *timestamp =
-        [[Bugsnag payloadDateFormatter] stringFromDate:_timestamp];
+        [BSG_RFC3339DateTool stringFromDate:_timestamp];
         if (timestamp && _name.length > 0) {
             NSMutableDictionary *metadata = [NSMutableDictionary new];
             for (NSString *key in _metadata) {
