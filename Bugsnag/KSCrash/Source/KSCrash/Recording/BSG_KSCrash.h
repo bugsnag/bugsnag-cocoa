@@ -115,6 +115,8 @@
  *
  * @param exc the exception to record
  * @param depth the number of frames to discard from the main thread's stacktrace
+ * @param recordAllThreads whether all threads should be recorded or just the
+ * main thread's stacktrace
  * @return an array of BugsnagThread
  */
 - (NSArray<BugsnagThread *> *)captureThreads:(NSException *)exc

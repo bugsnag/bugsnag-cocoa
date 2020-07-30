@@ -41,7 +41,6 @@
 #import "Bugsnag.h"
 #import "BugsnagCollections.h"
 #import "BSG_KSCrashReportFields.h"
-#import "Private.h"
 
 #if BSG_HAS_UIKIT
 #import <UIKit/UIKit.h>
