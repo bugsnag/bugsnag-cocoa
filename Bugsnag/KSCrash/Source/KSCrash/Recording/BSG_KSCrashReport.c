@@ -1034,7 +1034,6 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
  * @param writeNotableAddresses whether notable addresses should be written
  * so additional information about the error can be extracted
  * only the main thread's stacktrace is serialized.
- * @param recordAllThreads whether all threads should be recorded, or just the current one
  */
 void bsg_kscrw_i_writeAllThreads(const BSG_KSCrashReportWriter *const writer,
                                  const char *const key,
@@ -1702,7 +1701,7 @@ void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext,
     const BSG_KSCrash_SentryContext *crash = &crashContext->crash;
 
     // Don't write the binary images for user reported crashes to improve performance
-    if (crash->writeBinaryImagesForUserReported == true || crashContext->crash.crashType != BSG_KSCrashTypeUserReported) {
+    if (crash->writeBinaryImagesForUserReported == true || crash->crashType != BSG_KSCrashTypeUserReported) {
         bsg_kscrw_i_writeBinaryImages(writer, BSG_KSCrashField_BinaryImages);
     }
     writer->beginObject(writer, BSG_KSCrashField_Crash);

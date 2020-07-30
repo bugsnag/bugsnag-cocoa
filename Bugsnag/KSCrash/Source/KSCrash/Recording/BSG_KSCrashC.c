@@ -219,7 +219,8 @@ void bsg_kscrash_setThreadTracingEnabled(bool threadTracingEnabled) {
 
 char *bsg_kscrash_captureThreadTrace(int discardDepth, int frameCount, uintptr_t *callstack, const bool recordAllThreads) {
     BSG_KSCrash_Context *globalContext = crashContext();
-    BSG_KSCrash_Context *context = malloc(sizeof(BSG_KSCrash_Context));
+    BSG_KSCrash_Context localContext = {};
+    BSG_KSCrash_Context *context = &localContext;
     memcpy(context, globalContext, sizeof(BSG_KSCrash_Context));
 
     // populate context with pre-recorded stacktrace/thread info

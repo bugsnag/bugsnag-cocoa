@@ -284,8 +284,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 
 - (NSArray<BugsnagThread *> *)captureThreads:(NSException *)exc
                                        depth:(int)depth
-                                   unhandled:(BOOL)unhandled
-                                 sendThreads:(BSGThreadSendPolicy)sendThreads {
+                            recordAllThreads:(BOOL)recordAllThreads {
     NSArray *addresses = [exc callStackReturnAddresses];
     int numFrames = (int) [addresses count];
     uintptr_t *callstack;
@@ -311,8 +310,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         }
     }
 
-    bool recordAllThreads = sendThreads == BSGThreadSendPolicyAlways
-            || (sendThreads == BSGThreadSendPolicyUnhandledOnly && unhandled);
     char *trace = bsg_kscrash_captureThreadTrace(depth, numFrames, callstack, recordAllThreads);
     free(callstack);
     NSDictionary *json = BSGDeserializeJson(trace);
