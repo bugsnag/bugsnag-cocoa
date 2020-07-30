@@ -149,12 +149,6 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
 
         self.reportWhenDebuggerIsAttached = NO;
         self.writeBinaryImagesForUserReported = YES;
-
-        // overridden elsewhere for handled errors, so we can assume that this only
-        // applies to unhandled errors
-        BSGThreadSendPolicy sendThreads = [Bugsnag configuration].sendThreads;
-        self.threadTracingEnabled = sendThreads == BSGThreadSendPolicyAlways
-                || sendThreads == BSGThreadSendPolicyUnhandledOnly;
     }
     return self;
 }
@@ -205,7 +199,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     bsg_kscrash_setReportWhenDebuggerIsAttached(reportWhenDebuggerIsAttached);
 }
 
-- (void)setThreadTracingEnabled:(bool)threadTracingEnabled {
+- (void)setThreadTracingEnabled:(BOOL)threadTracingEnabled {
     _threadTracingEnabled = threadTracingEnabled;
     bsg_kscrash_setThreadTracingEnabled(threadTracingEnabled);
 }

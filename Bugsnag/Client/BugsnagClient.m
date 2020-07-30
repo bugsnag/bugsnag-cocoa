@@ -546,6 +546,11 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.crashSentry install:self.configuration
                     apiClient:self.errorReportApiClient
                       onCrash:&BSSerializeDataCrashHandler];
+    // overridden elsewhere for handled errors, so we can assume that this only
+    // applies to unhandled errors
+    BSGThreadSendPolicy sendThreads = self.configuration.sendThreads;
+    [BSG_KSCrash sharedInstance].threadTracingEnabled = sendThreads == BSGThreadSendPolicyAlways
+                                                     || sendThreads == BSGThreadSendPolicyUnhandledOnly;
     [self computeDidCrashLastLaunch];
     [self setupConnectivityListener];
     [self updateAutomaticBreadcrumbDetectionSettings];

@@ -135,9 +135,8 @@
 
 /**
 * The methodology used for tracing threads.
-* The value will be equal to an enum value from BSGThreadSendPolicy
  */
-@property(nonatomic, readwrite, assign) int threadTracingEnabled;
+@property(nonatomic, readwrite, assign) BOOL threadTracingEnabled;
 
 /**
  * If YES, binary images will be collected for each report.
