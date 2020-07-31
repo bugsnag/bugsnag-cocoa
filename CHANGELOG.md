@@ -4,6 +4,10 @@ Changelog
 ## TBD
 
 ### Bug fixes
+
+* Call react native observer with initial user/context values
+  [#768](https://github.com/bugsnag/bugsnag-cocoa/pull/768)
+
 * Respect bundle version set from config
   [#762](https://github.com/bugsnag/bugsnag-cocoa/pull/762)
 
