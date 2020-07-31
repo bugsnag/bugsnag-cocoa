@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Record thread information for unhandled JS errors
+  [#766](https://github.com/bugsnag/bugsnag-cocoa/pull/766)
+
 * Call react native observer with initial user/context values
   [#768](https://github.com/bugsnag/bugsnag-cocoa/pull/768)
 
