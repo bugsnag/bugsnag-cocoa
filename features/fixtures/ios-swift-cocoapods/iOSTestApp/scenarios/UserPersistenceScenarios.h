@@ -15,6 +15,9 @@
 @interface UserPersistencePersistUserScenario : Scenario
 @end
 
+@interface UserPersistencePersistUserClientScenario : Scenario
+@end
+
 @interface UserPersistenceDontPersistUserScenario : Scenario
 @end
 
