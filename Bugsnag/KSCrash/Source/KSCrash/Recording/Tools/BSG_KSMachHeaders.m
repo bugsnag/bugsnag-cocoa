@@ -206,8 +206,9 @@ void bsg_mach_headers_add_image(const struct mach_header *header, intptr_t slide
             
             bsg_mach_headers_cache_unlock();
         }
+    } else {
+        free(newImage);
     }
-    
 }
 
 /**

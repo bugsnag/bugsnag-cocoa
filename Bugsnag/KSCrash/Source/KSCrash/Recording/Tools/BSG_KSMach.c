@@ -342,7 +342,8 @@ bool bsg_ksmachsuspendAllThreadsExcept(thread_t *exceptThreads,
         thread_t thread = threads[i];
         if (thread != thisThread &&
             !isThreadInList(thread, exceptThreads, exceptThreadsCount)) {
-            if ((kr = thread_suspend(thread)) != KERN_SUCCESS) {
+            kr = thread_suspend(thread);
+            if (kr != KERN_SUCCESS) {
                 // The thread may have completed running already
                 // Don't treat this as a fatal error.
                 BSG_KSLOG_DEBUG("thread_suspend (%08x): %s", thread,
@@ -381,7 +382,8 @@ bool bsg_ksmachresumeAllThreadsExcept(thread_t *exceptThreads,
         thread_t thread = threads[i];
         if (thread != thisThread &&
             !isThreadInList(thread, exceptThreads, exceptThreadsCount)) {
-            if ((kr = thread_resume(thread)) != KERN_SUCCESS) {
+            kr = thread_resume(thread);
+            if (kr != KERN_SUCCESS) {
                 // The thread may have completed running already
                 // Don't treat this as a fatal error.
                 BSG_KSLOG_DEBUG("thread_resume (%08x): %s", thread,
