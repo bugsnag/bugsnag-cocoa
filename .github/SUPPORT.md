@@ -7,9 +7,15 @@ When contacting support, please include as much information as necessary, includ
 
 - example code snippet
 - steps to reproduce
-- notifier version
-- environment / OS 
 - expected/actual behaviour 
+
+* Bugsnag version:
+* CocoaPods version:
+* Carthage version (if any):
+* iOS/tvOS/macOS version(s):
+* Simulator or physical device:
+* XCode version:
+* Swift version (if applicable):
 
 ## Bug or Feature Requests
 If you would like to raise a bug or feature request please do so by creating a [New Issue](https://github.com/bugsnag/bugsnag-cocoa/issues/new/choose) and selecting bug or feature.
