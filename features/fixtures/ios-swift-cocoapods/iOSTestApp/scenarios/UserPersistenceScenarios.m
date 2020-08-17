@@ -10,7 +10,7 @@
 #import "UserPersistenceScenarios.h"
 
 /**
- * Set a user and persist it
+ * Set a user on the config and persist it
  */
 @implementation UserPersistencePersistUserScenario
 
@@ -21,6 +21,25 @@
 }
 
 - (void)run {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+    });
+}
+
+@end
+
+/**
+ * Set a user on the client and persist it
+ */
+@implementation UserPersistencePersistUserClientScenario
+
+- (void)startBugsnag {
+    self.config.persistUser = YES;
+    [super startBugsnag];
+}
+
+- (void)run {
+    [Bugsnag setUser:@"foo" withEmail:@"baz@grok.com" andName:@"bar"];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
     });

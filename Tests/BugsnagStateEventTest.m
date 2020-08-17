@@ -20,6 +20,10 @@
 - (void)removeObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer;
 @end
 
+@interface BugsnagMetadata ()
+- (NSDictionary *)toDictionary;
+@end
+
 @interface BugsnagStateEventTest : XCTestCase
 @property BugsnagClient *client;
 @property BugsnagStateEvent *event;
@@ -59,18 +63,49 @@
 }
 
 - (void)testMetadataUpdate {
-    XCTAssertNil(self.event);
+    XCTAssertNotNil(self.event);
+    self.event = nil;
     [self.client addMetadata:@"Bar" withKey:@"Foo" toSection:@"test"];
     XCTAssertEqualObjects(self.client.metadata, self.event.data);
 }
 
 - (void)testRemoveObserver {
-    XCTAssertNil(self.event);
+    XCTAssertNotNil(self.event);
+    self.event = nil;
     [self.client removeObserverWithBlock:self.block];
     [self.client setUser:@"123" withEmail:@"test@example.com" andName:@"Jamie"];
     [self.client setContext:@"Foo"];
     [self.client addMetadata:@"Bar" withKey:@"Foo" toSection:@"test"];
     XCTAssertNil(self.event);
+}
+
+- (void)testAddObserverTriggersCallback {
+    [self.client setUser:@"123" withEmail:@"test@example.com" andName:@"Jamie"];
+    [self.client setContext:@"Foo"];
+    [self.client addMetadata:@"Bar" withKey:@"Foo" toSection:@"test"];
+
+    __block NSDictionary *user;
+    __block NSString *context;
+    __block BugsnagMetadata *metadata;
+
+    self.block = ^(BugsnagStateEvent *event) {
+        if ([kStateEventContext isEqualToString:event.type]) {
+            context = event.data;
+        } else if ([kStateEventUser isEqualToString:event.type]) {
+            user = event.data;
+        } else if ([kStateEventMetadata isEqualToString:event.type]) {
+            metadata = event.data;
+        }
+    };
+    XCTAssertNil(user);
+    XCTAssertNil(context);
+    XCTAssertNil(metadata);
+    [self.client addObserverWithBlock:self.block];
+
+    NSDictionary *expectedUser = @{@"id": @"123", @"email": @"test@example.com", @"name": @"Jamie"};
+    XCTAssertEqualObjects(expectedUser, user);
+    XCTAssertEqualObjects(@"Foo", context);
+    XCTAssertEqualObjects(self.client.metadata, metadata);
 }
 
 @end

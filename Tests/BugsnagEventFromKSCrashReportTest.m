@@ -9,6 +9,10 @@
 @import XCTest;
 #import "Bugsnag.h"
 
+@interface Bugsnag ()
++ (BugsnagConfiguration *)configuration;
+@end
+
 @interface BugsnagEventFromKSCrashReportTest : XCTestCase
 @property BugsnagEvent *event;
 @end
@@ -34,6 +38,8 @@
                                 JSONObjectWithData:[contents dataUsingEncoding:NSUTF8StringEncoding]
                                 options:0
                                 error:nil];
+    // required due to BugsnagEvent using global singleton
+    [Bugsnag configuration].bundleVersion = @"3";
     self.event = [[BugsnagEvent alloc] initWithKSReport:dictionary];
 }
 
@@ -113,7 +119,7 @@
 - (void)testAppVersion {
     NSDictionary *dictionary = [self.event toJson];
     XCTAssertEqualObjects(@"1.0", dictionary[@"app"][@"version"]);
-    XCTAssertEqualObjects(@"1", dictionary[@"app"][@"bundleVersion"]);
+    XCTAssertEqualObjects(@"3", dictionary[@"app"][@"bundleVersion"]);
 }
 
 - (void)testThreadsPopulated {

@@ -35,6 +35,7 @@
 @interface BugsnagEvent ()
 - (NSDictionary *_Nonnull)toJson;
 - (BOOL)shouldBeSent;
+- (instancetype)initWithUserData:(NSDictionary *)event;
 - (instancetype)initWithKSReport:(NSDictionary *)report;
 - (instancetype)initWithApp:(BugsnagAppWithState *)app
                      device:(BugsnagDeviceWithState *)device
@@ -429,16 +430,16 @@
     [metadata addMetadata:@"OOMuser" withKey:@"id" toSection:@"user"];
     [metadata addMetadata:@"OOMemail" withKey:@"email" toSection:@"user"];
     [metadata addMetadata:@"OOMname" withKey:@"name" toSection:@"user"];
-    
+
     // Try it again with more fully formed session data
     dict = @{
         @"user.state.didOOM" : @YES,
         @"user.handledState": [state toJson],
         @"user.state.oom.session" : [metadata toDictionary]
     };
-    
+
     BugsnagEvent *report2 = [[BugsnagEvent alloc] initWithKSReport:dict];
-    
+
     XCTAssertNotNil(report2.metadata);
     [report2.metadata clearMetadataFromSection:@"device"];
     XCTAssertEqual([[report2.metadata toDictionary] count], 0);
@@ -510,13 +511,13 @@
     [client start];
 
     NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
-    
+
     // Check that the event is passed the apiKey
     [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         return true;
     }];
-    
+
     // Check that we can change it
     [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertEqualObjects(event.apiKey, DUMMY_APIKEY_32CHAR_1);
@@ -536,7 +537,7 @@
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_3);
         return true;
     }];
-    
+
     // Check that previous local and global values are not persisted erroneously
     client.configuration.apiKey = DUMMY_APIKEY_32CHAR_4;
     [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
@@ -548,7 +549,7 @@
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_2);
         return true;
     }];
-    
+
     // Check that validation is performed and that invalid API keys can't be set
     client.configuration.apiKey = DUMMY_APIKEY_32CHAR_1;
     [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
@@ -566,7 +567,7 @@
                 @"user": @{@"id": @"user id"}
         }}];
     [event addMetadata:@{@"foo": @"bar"} toSection:@"section"];
-    
+
     // Known
     XCTAssertEqual([event getMetadataFromSection:@"section" withKey:@"foo"], @"bar");
     XCTAssertNotNil([event getMetadataFromSection:@"section"]);
@@ -624,12 +625,12 @@
         [event addMetadata:@"aValue" withKey:@"myKey" toSection:@"mySection"];
         XCTAssertEqual([[event.metadata toDictionary] count], 1);
         XCTAssertNotNil([event.metadata getMetadataFromSection:@"mySection" withKey:@"myKey"]);
-        
+
         BugsnagTestsDummyClass *dummy = [BugsnagTestsDummyClass new];
         [event addMetadata:dummy withKey:@"myNewKey" toSection:@"mySection"];
         XCTAssertEqual([[event.metadata toDictionary] count], 1);
         XCTAssertNil([event.metadata getMetadataFromSection:@"mySection" withKey:@"myNewKey"]);
-        
+
         [event addMetadata:@"realValue" withKey:@"myNewKey" toSection:@"mySection"];
         XCTAssertEqual([[event.metadata toDictionary] count], 1);
         XCTAssertNotNil([event.metadata getMetadataFromSection:@"mySection" withKey:@"myNewKey"]);
@@ -648,17 +649,17 @@
     [event addMetadata:@{@"baz": @"bill"} toSection:@"section1"];
     [event addMetadata:@{@"alice": @"bob"} toSection:@"section2"];
     XCTAssertEqual([[event.metadata toDictionary] count], 3);
-    
+
     // Known
     [event clearMetadataFromSection:@"section1"];
     XCTAssertEqual([[event.metadata toDictionary] count], 2);
-    
+
     // Unknown
     [event addMetadata:@{@"foo": @"bar"} toSection:@"section1"];
     [event addMetadata:@{@"baz": @"bill"} toSection:@"section1"];
     [event clearMetadataFromSection:@"section3"];
     XCTAssertEqual([[event.metadata toDictionary] count], 3);
-    
+
     // Empty
     [event addMetadata:@{@"foo": @"bar"} toSection:@"section1"];
     [event addMetadata:@{@"baz": @"bill"} toSection:@"section1"];
@@ -669,7 +670,7 @@
 
     [event clearMetadataFromSection:@"user"];
     XCTAssertEqual([[event.metadata toDictionary] count], 0);
-  
+
     [event clearMetadataFromSection:@"section1"];
     [event clearMetadataFromSection:@"section2"];
     [event clearMetadataFromSection:@"section3"];
@@ -693,7 +694,7 @@
     XCTAssertEqual([[event getMetadataFromSection:@"section1"] count], 2);
     [event clearMetadataFromSection:@"section1" withKey:@"foo"];
     XCTAssertEqual([[event getMetadataFromSection:@"section1"] count], 1);
-    
+
     // Remove all keys, check section exists
     [event clearMetadataFromSection:@"section1" withKey:@"baz"];
     XCTAssertNotNil([event getMetadataFromSection:@"section1"]);
@@ -718,7 +719,7 @@
     [event clearMetadataFromSection:@"section1" withKey:@"foo"];
     XCTAssertEqual([[event getMetadataFromSection:@"section1"] count], 1);
     XCTAssertEqual([[event.metadata toDictionary] count], 3);
-    
+
     // Nonexistent section
     [event clearMetadataFromSection:@"section52" withKey:@"baz"];
     XCTAssertEqual([[event.metadata toDictionary] count], 3);
@@ -738,16 +739,113 @@
 
 - (void)testMetadataMutability {
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{@"dummy" : @"value"}];
-    
+
     // Immutable in, mutable out
     [event addMetadata:@{@"foo" : @"bar"} toSection:@"section1"];
     NSObject *metadata1 = [event getMetadataFromSection:@"section1"];
     XCTAssertTrue([metadata1 isKindOfClass:[NSMutableDictionary class]]);
-    
+
     // Mutable in, mutable out
     [event addMetadata:[@{@"foo" : @"bar"} mutableCopy] toSection:@"section2"];
     NSObject *metadata2 = [event getMetadataFromSection:@"section2"];
     XCTAssertTrue([metadata2 isKindOfClass:[NSMutableDictionary class]]);
 }
 
+/**
+ * Legacy unhandled reports stored user in metadata - this should be loaded if present
+ */
+- (void)testLoadUserFromMetadata {
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
+            @"user": @{
+                    @"metaData": @{
+                            @"user": @{
+                                    @"id": @"someId",
+                                    @"name": @"someName",
+                                    @"email": @"someEmail"
+                            }
+                    }
+            }
+    }];
+    XCTAssertEqualObjects(@"someId", event.user.id);
+    XCTAssertEqualObjects(@"someName", event.user.name);
+    XCTAssertEqualObjects(@"someEmail", event.user.email);
+}
+
+/**
+ * Current unhandled reports store user in state - this should be loaded if present
+ */
+- (void)testLoadUserFromState {
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
+            @"user": @{
+                    @"state": @{
+                            @"user": @{
+                                    @"id": @"someId",
+                                    @"name": @"someName",
+                                    @"email": @"someEmail"
+                            }
+                    }
+            }
+    }];
+    XCTAssertEqualObjects(@"someId", event.user.id);
+    XCTAssertEqualObjects(@"someName", event.user.name);
+    XCTAssertEqualObjects(@"someEmail", event.user.email);
+}
+
+- (void)testLoadNoUser {
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{@"user": @{}}];
+    XCTAssertNil(event.user.id);
+    XCTAssertNil(event.user.name);
+    XCTAssertNil(event.user.email);
+}
+
+- (void)testCodeBundleIdHandled {
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithUserData:@{
+            @"user": @{
+                    @"event": @{
+                            @"app": @{
+                                    @"codeBundleId": @"cb-123"
+                            }
+                    }
+            }
+    }];
+    XCTAssertEqualObjects(@"cb-123", event.app.codeBundleId);
+}
+
+- (void)testCodeBundleIdUnhandled {
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
+            @"user": @{
+                    @"state": @{
+                            @"app": @{
+                                    @"codeBundleId": @"cb-123"
+                            }
+                    }
+            }
+    }];
+    XCTAssertEqualObjects(@"cb-123", event.app.codeBundleId);
+}
+
+- (void)testRuntimeVersionsUnhandled {
+    NSDictionary *runtimeVersions = @{
+            @"fooVersion": @"5.23",
+            @"barVersion": @"7.902.40fc"
+    };
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
+            @"system": @{
+                    @"os_version": @"13.2"
+            },
+            @"user": @{
+                    @"state": @{
+                            @"device": @{
+                                    @"extraRuntimeInfo": runtimeVersions
+                            }
+                    }
+            }
+    }];
+    NSDictionary *expected = @{
+            @"fooVersion": @"5.23",
+            @"barVersion": @"7.902.40fc",
+            @"osBuild": @"13.2"
+    };
+    XCTAssertEqualObjects(expected, event.device.runtimeVersions);
+}
 @end
