@@ -1,6 +1,25 @@
 Changelog
 =========
 
+## 6.1.3 (2020-08-17)
+
+### Bug fixes
+
+* Persist user when set on client
+  [#770](https://github.com/bugsnag/bugsnag-cocoa/pull/770)
+
+* Avoid sharing global crash context when recording thread information for handled errors
+  [#766](https://github.com/bugsnag/bugsnag-cocoa/pull/766)
+
+* Respect bundle version set from config
+  [#762](https://github.com/bugsnag/bugsnag-cocoa/pull/762)
+
+* (React Native) Call react native observer with initial user/context values
+  [#768](https://github.com/bugsnag/bugsnag-cocoa/pull/768)
+
+* (React Native) Populate app/device metadata fields for RN errors
+  [#763](https://github.com/bugsnag/bugsnag-cocoa/pull/763)
+
 ## 6.1.2 (2020-07-21)
 
 ### Bug fixes

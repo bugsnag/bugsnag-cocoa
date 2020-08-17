@@ -62,6 +62,7 @@
 
     self.config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     self.config.appType = @"iOS";
+    self.config.bundleVersion = nil;
     self.config.appVersion = @"3.14.159";
     self.codeBundleId = @"bundle-123";
 }
@@ -211,6 +212,28 @@
     };
     app = [BugsnagAppWithState appWithDictionary:data config:self.config codeBundleId:self.codeBundleId];
     XCTAssertEqualObjects(@"1.2.3", app.version);
+}
+
+- (void)testBundleVersionPrecedence {
+    // default to system.CFBundleVersion
+    self.config.bundleVersion = nil;
+    BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
+    XCTAssertEqualObjects(@"1", app.bundleVersion);
+
+    // 2nd precedence is config.bundleVersion
+    self.config.bundleVersion = @"4.2.6";
+    app = [BugsnagAppWithState appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
+    XCTAssertEqualObjects(@"4.2.6", app.bundleVersion);
+
+    // 1st precedence is user.config.bundleVersion
+    NSMutableDictionary *data = [self.data mutableCopy];
+    data[@"user"] = @{
+            @"config": @{
+                    @"bundleVersion": @"1.2.3"
+            }
+    };
+    app = [BugsnagAppWithState appWithDictionary:data config:self.config codeBundleId:self.codeBundleId];
+    XCTAssertEqualObjects(@"1.2.3", app.bundleVersion);
 }
 
 @end
