@@ -54,7 +54,10 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[ReadOnlyPageScenario run]"
 
   Scenario: Stack overflow
-    When I run "StackOverflowScenario" and relaunch the app
+    When I run "StackOverflowScenario"
+    # Present to allow the scenario to crash
+    And I wait for 3 seconds
+    And I relaunch the app
     And I configure Bugsnag for "StackOverflowScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
