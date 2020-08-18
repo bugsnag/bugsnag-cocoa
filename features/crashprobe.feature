@@ -113,6 +113,7 @@ Feature: Reporting crash events
     And I configure Bugsnag for "SwiftAssertion"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    # Temporary workaround until potential issue is investigated thoroughly [PLAT-4875]
     And the exception "errorClass" equals one of:
       | Fatal error    |
       | EXC_BREAKPOINT |
