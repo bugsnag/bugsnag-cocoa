@@ -230,6 +230,11 @@ Then("the thread information is valid for the event") do
     assert_equal(frame, thread_frame, "Thread and stacktrace differ at #{index}. Stack=#{frame}, thread=#{thread_frame}")
   end
 end
+
+Then("the exception {string} equals one of:") do |keypath, possible_values|
+  value = read_key_path(Server.current_request[:body], "events.0.exceptions.0.#{keypath}")
+  assert_includes(possible_values.raw.flatten, value)
+end
   
 def wait_for_true
   max_attempts = 300
