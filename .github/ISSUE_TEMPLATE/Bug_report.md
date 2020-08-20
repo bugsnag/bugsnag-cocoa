@@ -1,35 +1,47 @@
 ---
 name: Bug report
 about: Create a report to help us improve the library
+title: ''
+labels: ''
+assignees: ''
 
 ---
 
-### Description
-<!-- A quick description of what you're trying to accomplish -->
+<!-- Before raising, please check if somebody else has already reported your issue. -->
 
-### Issue
-<!--
-  What went wrong?
--->
+### Describe the bug
+A clear and concise description of what the bug is.
+
+### Steps to reproduce
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
 ### Environment
-
-Library versions:
-
-* Bugsnag version (from your Podfile, Podfile.lock, or elsewhere):
-* CocoaPods version (if any) (`pod --version`):
+* Bugsnag version:
+* CocoaPods version:
 * Carthage version (if any):
-* iOS/tvOS/macOS version(s)
-* debug mode or production?:
-* How are you initializing Bugsnag? Can you share a snippet of your
-  `AppDelegate` where Bugsnag is configured?
+* iOS/tvOS/macOS version(s):
+* Simulator or physical device:
+* XCode version:
+* Swift version (if applicable):
 
-### Example code snippet
+<!--
+  Below are a few approaches you might take to communicate the issue, in
+  descending order of awesomeness. Please choose one and feel free to delete
+  the others from this template.
+-->
 
-```swift
-import Bugsnag
+### Example Repo <!-- Option 1 -->
 
-// (Insert code sample to reproduce the problem)
+- [ ] Create a minimal repository that can reproduce the issue
+- [ ] Link to it here:
+
+### Example code snippet <!-- Option 2 -->
+
+```
+# (Insert code sample to reproduce the problem)
 ```
 
 <!-- Error messages, if any -->
