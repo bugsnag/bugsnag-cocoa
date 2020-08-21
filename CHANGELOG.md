@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Avoid crash reporting OOMs if nil provided as codeBundleId
+  [#784](https://github.com/bugsnag/bugsnag-cocoa/pull/784)
+
 ## 6.1.3 (2020-08-17)
 
 ### Bug fixes

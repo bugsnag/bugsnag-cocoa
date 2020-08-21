@@ -17,6 +17,7 @@
 #import "Private.h"
 #import "BugsnagErrorTypes.h"
 #import "BSG_RFC3339DateTool.h"
+#import "BugsnagCollections.h"
 
 @interface BSGOutOfMemoryWatchdog ()
 @property(nonatomic, getter=isWatching) BOOL watching;
@@ -167,7 +168,7 @@
 
 - (void)setCodeBundleId:(NSString *)codeBundleId {
     _codeBundleId = codeBundleId;
-    self.cachedFileInfo[@"app"][@"codeBundleId"] = codeBundleId;
+    BSGDictInsertIfNotNil(self.cachedFileInfo[@"app"], codeBundleId, @"codeBundleId");
 
     if ([self isWatching]) {
         [self writeSentinelFile];
@@ -258,7 +259,7 @@
     app[@"version"] = systemInfo[@BSG_KSSystemField_BundleShortVersion] ?: @"";
     app[@"bundleVersion"] = systemInfo[@BSG_KSSystemField_BundleVersion] ?: @"";
     // 'codeBundleId' only (optionally) exists for React Native clients and defaults otherwise to nil
-    app[@"codeBundleId"] = self.codeBundleId;
+    BSGDictInsertIfNotNil(app, self.codeBundleId, @"codeBundleId");
 #if BSGOOMAvailable
     UIApplicationState state = [BSG_KSSystemInfo currentAppState];
     app[@"inForeground"] = @([BSG_KSSystemInfo isInForeground:state]);
