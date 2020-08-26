@@ -96,7 +96,7 @@ Feature: Reporting crash events
     And I configure Bugsnag for "ReleasedObjectScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the exception "message" starts with "Attempted to dereference garbage pointer"
+    And the exception "message" matches "Attempted to dereference (garbage|null) pointer"
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "objc_msgSend"
     And the "method" of stack frame 1 equals "__29-[ReleasedObjectScenario run]_block_invoke"
@@ -148,7 +148,7 @@ Feature: Reporting crash events
     And I configure Bugsnag for "ReadGarbagePointerScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the exception "message" matches "Attempted to dereference (garbage|null) pointer"
+    And the exception "message" starts with "Attempted to dereference garbage pointer"
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "-[ReadGarbagePointerScenario run]"
 
