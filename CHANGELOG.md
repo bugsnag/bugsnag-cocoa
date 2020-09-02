@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Quiet some Analyzer false positives
+  [#789](https://github.com/bugsnag/bugsnag-cocoa/pull/789)
+
 ## 6.1.3 (2020-08-17)
 
 ### Bug fixes
