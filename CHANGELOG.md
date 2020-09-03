@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Guard against non-string metadata map keys
+  [#790](https://bugsnag.atlassian.net/browse/PLAT-4685)
+
 ## 6.1.3 (2020-08-17)
 
 ### Bug fixes
