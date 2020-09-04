@@ -8,6 +8,9 @@ Changelog
 * Guard against non-string metadata map keys
   [#790](https://bugsnag.atlassian.net/browse/PLAT-4685)
 
+* Quiet some Analyzer false positives
+  [#789](https://github.com/bugsnag/bugsnag-cocoa/pull/789)
+
 ## 6.1.3 (2020-08-17)
 
 ### Bug fixes
