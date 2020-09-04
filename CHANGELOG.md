@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Removed some magic values and used the const string references instead.
+  [#792](https://github.com/bugsnag/bugsnag-cocoa/pull/792)
+
 * Guard against non-string metadata map keys
   [#790](https://bugsnag.atlassian.net/browse/PLAT-4685)
 
