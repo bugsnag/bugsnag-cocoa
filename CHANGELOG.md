@@ -8,6 +8,9 @@ Changelog
 * Added BSGJSONSerializer, which ensures no exceptions get thrown (NSErrors get returned instead)
   [791](https://github.com/bugsnag/bugsnag-cocoa/pull/791)
 
+* Guard against non-string metadata map keys
+  [#790](https://bugsnag.atlassian.net/browse/PLAT-4685)
+
 * Quiet some Analyzer false positives
   [#789](https://github.com/bugsnag/bugsnag-cocoa/pull/789)
 
