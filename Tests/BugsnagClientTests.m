@@ -43,6 +43,8 @@
 
 NSString *BSGFormatSeverity(BSGSeverity severity);
 
+void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination);
+
 @implementation BugsnagClientTests
 
 /**
@@ -287,6 +289,12 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
         dict[key] = value;
     }
     return dict;
+}
+
+- (void)testBSSerializeJSONDictionary {
+    // Test that it doesn't raise an exception
+    char* dest = NULL;
+    BSSerializeJSONDictionary(@{@1: @"a"}, &dest);
 }
 
 @end

@@ -89,6 +89,22 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqualObjects(self.crumbs.breadcrumbs[2].message, @"Clear notifications");
 }
 
+- (void)testBreadcrumbsInvalidKey {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagOnBreadcrumbBlock crumbBlock = ^(BugsnagBreadcrumb * _Nonnull crumb) {
+        return YES;
+    };
+    [config addOnBreadcrumbBlock:crumbBlock];
+
+    self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
+    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+        crumb.type = BSGBreadcrumbTypeState;
+        crumb.message = @"message";
+        crumb.metadata = @{@123 : @"would raise exception"};
+    }];
+    awaitBreadcrumbSync(self.crumbs);
+}
+
 - (void)testEmptyCapacity {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.maxBreadcrumbs = 0;

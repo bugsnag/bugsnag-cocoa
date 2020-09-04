@@ -17,6 +17,7 @@
 #import "Private.h"
 #import "BugsnagErrorTypes.h"
 #import "BSG_RFC3339DateTool.h"
+#import "BSGJSONSerialization.h"
 
 @interface BSGOutOfMemoryWatchdog ()
 @property(nonatomic, getter=isWatching) BOOL watching;
@@ -224,7 +225,7 @@
         bsg_log_err(@"Failed to read oom watchdog file: %@", error);
         return nil;
     }
-    NSDictionary *contents = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    NSDictionary *contents = [BSGJSONSerialization JSONObjectWithData:data options:0 error:&error];
     if (error) {
         bsg_log_err(@"Failed to read oom watchdog file: %@", error);
         return nil;
@@ -235,11 +236,11 @@
 
 - (void)writeSentinelFile {
     NSError *error = nil;
-    if (![NSJSONSerialization isValidJSONObject:self.cachedFileInfo]) {
+    if (![BSGJSONSerialization isValidJSONObject:self.cachedFileInfo]) {
         bsg_log_err(@"Cached oom watchdog data cannot be written as JSON");
         return;
     }
-    NSData *data = [NSJSONSerialization dataWithJSONObject:self.cachedFileInfo options:0 error:&error];
+    NSData *data = [BSGJSONSerialization dataWithJSONObject:self.cachedFileInfo options:0 error:&error];
     if (error) {
         bsg_log_err(@"Cached oom watchdog data cannot be written as JSON: %@", error);
         return;
