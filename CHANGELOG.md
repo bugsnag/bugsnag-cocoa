@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Reorganized the project file
+  [793](https://github.com/bugsnag/bugsnag-cocoa/pull/793)
+
 * Removed some magic values and used the const string references instead.
   [#792](https://github.com/bugsnag/bugsnag-cocoa/pull/792)
 
