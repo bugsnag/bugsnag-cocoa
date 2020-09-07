@@ -8,6 +8,9 @@ Changelog
 * Removed some magic values and used the const string references instead.
   [#792](https://github.com/bugsnag/bugsnag-cocoa/pull/792)
 
+* Added BSGJSONSerializer, which ensures no exceptions get thrown (NSErrors get returned instead)
+  [791](https://github.com/bugsnag/bugsnag-cocoa/pull/791)
+
 * Guard against non-string metadata map keys
   [#790](https://bugsnag.atlassian.net/browse/PLAT-4685)
 

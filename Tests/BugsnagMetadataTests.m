@@ -181,6 +181,10 @@
     XCTAssertEqual(metadata.dictionary.count, 0);
     XCTAssertFalse(delegateCalled);
     
+    [metadata addMetadata:@{@123 : @"Numeric key is invalid"} toSection:@"invalidKeyTab"];
+    XCTAssertEqual(metadata.dictionary.count, 0);
+    XCTAssertFalse(delegateCalled);
+    
     // Once more with a delegate
     delegateCalled = NO;
     __weak __typeof__(self) weakSelf = self;
