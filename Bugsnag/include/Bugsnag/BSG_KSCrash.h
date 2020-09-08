@@ -26,11 +26,8 @@
 
 #import <Foundation/Foundation.h>
 
-#import "BugsnagErrorReportSink.h"
-#import "BSGOnErrorSentBlock.h"
-#import "BSG_KSCrashReportWriter.h"
 #import "BSG_KSCrashType.h"
-#import "BugsnagConfiguration.h"
+#import "BugsnagThread.h"
 
 /**
  * Reports any crashes that occur in the application.

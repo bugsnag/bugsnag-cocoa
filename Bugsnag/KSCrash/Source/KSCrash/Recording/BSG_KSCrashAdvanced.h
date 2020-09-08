@@ -26,6 +26,8 @@
 
 #import "BSG_KSCrash.h"
 #import "BSG_KSCrashReportStore.h"
+#import "BSG_KSCrashReportWriter.h"
+#import "BSGOnErrorSentBlock.h"
 
 @class BugsnagErrorReportSink;
 

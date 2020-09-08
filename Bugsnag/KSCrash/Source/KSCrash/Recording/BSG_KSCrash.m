@@ -36,11 +36,15 @@
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
-#import "BugsnagThread.h"
 #import "BSGSerialization.h"
 #import "Bugsnag.h"
 #import "BugsnagCollections.h"
 #import "BSG_KSCrashReportFields.h"
+
+#import "BugsnagErrorReportSink.h"
+#import "BSGOnErrorSentBlock.h"
+#import "BSG_KSCrashReportWriter.h"
+#import "BugsnagConfiguration.h"
 
 #if BSG_HAS_UIKIT
 #import <UIKit/UIKit.h>
