@@ -65,7 +65,7 @@ NSString *const BSTabCrash = @"crash";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
-static NSInteger const BSGNotifierStackFrameCount = 4;
+int const BSGNotifierStackFrameCount = 4;
 
 struct bugsnag_data_t {
     // Contains the state of the event (handled/unhandled)
@@ -984,7 +984,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
      * 3. -[BugsnagClient notify:handledState:block:]
      * 4. -[BSG_KSCrash captureThreads:depth:]
      */
-    int depth = (int)(BSGNotifierStackFrameCount);
+    int depth = BSGNotifierStackFrameCount;
 
     BOOL recordAllThreads = self.configuration.sendThreads == BSGThreadSendPolicyAlways;
     NSArray *threads = [[BSG_KSCrash sharedInstance] captureThreads:exception
