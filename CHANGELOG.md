@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Copy the metadata observer list rather than mutating it directly.
+  [796](https://github.com/bugsnag/bugsnag-cocoa/pull/796)
+
 * Reorganized the project file
   [793](https://github.com/bugsnag/bugsnag-cocoa/pull/793)
 
