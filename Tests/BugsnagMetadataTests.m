@@ -328,4 +328,38 @@
     XCTAssertEqual(0, [nestedDict count]);
 }
 
+- (void)testConcurrentObserverAccess {
+    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:@{
+            @"foo": @{
+                    @"bar": @[
+                            @[
+                                    @{ @"custom": [NSNull null] }
+                            ]
+                    ]
+            }
+    }];
+
+    BugsnagObserverBlock firstObserver = ^(BugsnagStateEvent *_Nonnull event){};
+    BugsnagObserverBlock secondObserver = ^(BugsnagStateEvent *_Nonnull event){};
+
+    [metadata addObserverWithBlock:firstObserver];
+    
+    bool threadShouldQuit = false;
+    if (@available(iOS 10.0, tvOS 10.0, *)) {
+        [NSThread detachNewThreadWithBlock:^{
+            while(!threadShouldQuit) {
+                [metadata addObserverWithBlock:secondObserver];
+                [metadata removeObserverWithBlock:secondObserver];
+            }
+        }];
+    } else {
+        // Fallback on earlier versions
+    }
+
+    for(int i = 0; i < 10000; i++) {
+        [metadata addMetadata:[NSNumber numberWithInt:i] withKey:@"bar" toSection:@"foo"];
+    }
+    threadShouldQuit = true;
+}
+
 @end
