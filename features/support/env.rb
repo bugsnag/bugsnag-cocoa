@@ -13,7 +13,7 @@ After do |scenario|
   if $driver
     # [:syslog, :crashlog, :performance, :server, :safariConsole, :safariNetwork]
     # puts $driver.driver.logs.get(:crashlog)
-    $driver.reset
+    $driver.reset_with_timeout
   end
 end
 
