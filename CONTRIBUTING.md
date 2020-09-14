@@ -110,20 +110,19 @@ Run the integration tests using `make e2e` (end-to-end)
 * Check the `master` and `next` branches for what changes are intended to be
   released. If any changes on `next` should go out, check out that branch before
   the subsequent steps.
-* Add any missing entries to the CHANGELOG. Update the README.md if appropriate.
+* Add any missing entries to the CHANGELOG. Update the README if appropriate.
 * Create a pull request for a new version by running `make VERSION=[number] 
   prerelease`. Pull request generation depends on [`hub`](https://hub.github.com) 
   (`brew install hub`)
 * Perform preflight checks:
-  - [ ] Have the changelog and README been updated?
+  - [ ] Have the CHANGELOG and README been updated?
   - [ ] Are there pull requests for installation changes on the 
         [dashboard](https://github.com/bugsnag/dashboard-js)?
   - [ ] Are there pull requests for new features/behavior on the 
         [docs site](https://github.com/bugsnag/docs.bugsnag.com)?
-  - [ ] Run `./Tests/prerelease/run_prerelease_checks.sh`
+  - [ ] Run pre-release checks - see [instructions](./Tests/prerelease/README.md)
   
-* The following checks are optional.  Use your judgement to decide if the scope 
-  of the release merits performing any or all of them.
+* Consider the following, additional checks based on changes in the release:
   
   - [ ] Has all new functionality been manually tested on a release build?
   - [ ] Do the [installation instructions](https://docs.bugsnag.com/platforms/ios/#installation) 
