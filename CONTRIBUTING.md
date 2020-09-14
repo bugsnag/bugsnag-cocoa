@@ -80,15 +80,17 @@ test` on the command-line. To specify a specific iOS SDK, run with the SDK name:
 
     make SDK=iphonesimulator11.3 test
 
+(The specified SDK must be installed in Xcode > Preferences > Components)
 Or test on macOS:
 
-    make BUILD_OSX=1 test
+    make PLATFORM=macOS test
 
 Or to test on tvOS:
 
-    make BUILD_TV=1 appletvsimulator11.2 test
+    make PLATFORM=tvOS test
 
-Run the integration tests using `make e2e` (end-to-end)
+Run the integration tests using `make e2e` (end-to-end). For more information
+see [TESTING.md](TESTING.md#end-to-end-tests).
 
 ## Releasing
 
