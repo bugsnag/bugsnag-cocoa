@@ -1,9 +1,27 @@
 Changelog
 =========
 
-## TBD
+## 6.1.4 (2020-09-11)
 
 ### Bug fixes
+
+* Copy the metadata observer list rather than mutating it directly.
+  [796](https://github.com/bugsnag/bugsnag-cocoa/pull/796)
+
+* Reorganized the project file
+  [793](https://github.com/bugsnag/bugsnag-cocoa/pull/793)
+
+* Removed some magic values and used the const string references instead.
+  [#792](https://github.com/bugsnag/bugsnag-cocoa/pull/792)
+
+* Added BSGJSONSerializer, which ensures no exceptions get thrown (NSErrors get returned instead)
+  [791](https://github.com/bugsnag/bugsnag-cocoa/pull/791)
+
+* Guard against non-string metadata map keys
+  [#790](https://github.com/bugsnag/bugsnag-cocoa/pull/790)
+
+* Quiet some Analyzer false positives
+  [#789](https://github.com/bugsnag/bugsnag-cocoa/pull/789)
 
 * Avoid crash reporting OOMs if nil provided as codeBundleId
   [#784](https://github.com/bugsnag/bugsnag-cocoa/pull/784)

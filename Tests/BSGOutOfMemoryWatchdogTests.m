@@ -7,6 +7,10 @@
 #import "BugsnagTestConstants.h"
 
 // Expose private identifiers for testing
+@interface BSGOutOfMemoryWatchdog(Test)
+- (NSDictionary *)readSentinelFile;
+- (void)writeSentinelFile;
+@end
 
 @interface Bugsnag (Testing)
 + (BugsnagClient *)client;
@@ -79,4 +83,18 @@
     XCTAssertEqualObjects([device valueForKey:@"locale"], [[NSLocale currentLocale] localeIdentifier]);
 }
 
+-(void)testBadJSONData {
+    NSString *tempFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+
+    BSGOutOfMemoryWatchdog *watchdog = [[BSGOutOfMemoryWatchdog alloc] initWithSentinelPath:tempFilePath configuration:config];
+    watchdog.cachedFileInfo[@1] = @"a";
+    [watchdog writeSentinelFile];
+    NSError* error;
+    [@"{1=\"a\"" writeToFile:tempFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    XCTAssertNil(error);
+    [watchdog readSentinelFile];
+}
+
 @end
+

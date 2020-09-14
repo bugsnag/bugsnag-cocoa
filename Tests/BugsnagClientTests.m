@@ -43,6 +43,8 @@
 
 NSString *BSGFormatSeverity(BSGSeverity severity);
 
+void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination);
+
 @implementation BugsnagClientTests
 
 /**
@@ -278,6 +280,27 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     XCTAssertEqualObjects(largeMetadata, crumb.metadata);
 }
 
+- (void)testMetadataInvalidKey {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    configuration.enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeNone;
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
+
+    NSMutableArray *breadcrumbs = client.breadcrumbs.breadcrumbs;
+    XCTAssertEqual(0, [breadcrumbs count]);
+
+    id badMetadata = @{
+        @"test": @"string key is fine",
+        @85 : @"numeric key would break JSON"
+    };
+
+    [client leaveBreadcrumbWithMessage:@"test msg" metadata:badMetadata andType:BSGBreadcrumbTypeUser];
+
+    XCTAssertEqual(1, [breadcrumbs count]);
+
+    [client notifyError:[NSError errorWithDomain:@"test" code:0 userInfo:badMetadata]];
+}
+
 - (NSDictionary *)generateLargeMetadata {
     NSMutableDictionary *dict = [NSMutableDictionary new];
 
@@ -287,6 +310,12 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
         dict[key] = value;
     }
     return dict;
+}
+
+- (void)testBSSerializeJSONDictionary {
+    // Test that it doesn't raise an exception
+    char* dest = NULL;
+    BSSerializeJSONDictionary(@{@1: @"a"}, &dest);
 }
 
 @end
