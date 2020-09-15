@@ -9,11 +9,11 @@ test` on the command-line. To specify a specific iOS SDK, run with the SDK name:
 
 Or test on macOS:
 
-    make BUILD_OSX=1 test
+    make PLATFORM=macOS test
 
 Or to test on tvOS:
 
-    make BUILD_TV=1 appletvsimulator11.2 test
+    make PLATFORM=tvOS test
 
 ## End-to-end tests
 

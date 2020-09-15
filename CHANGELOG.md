@@ -5,6 +5,13 @@ Changelog
 
 ### Bug fixes
 
+* Refactor OOM handler to be less suceptible to data loss on crash.
+  [804](https://github.com/bugsnag/bugsnag-cocoa/pull/804)
+
+## 6.1.4 (2020-09-11)
+
+### Bug fixes
+
 * Copy the metadata observer list rather than mutating it directly.
   [796](https://github.com/bugsnag/bugsnag-cocoa/pull/796)
 
