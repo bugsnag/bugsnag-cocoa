@@ -92,9 +92,6 @@
 }
 
 - (void)testCorrectNotifierKeys {
-    NSLog(@"### processedData = %@", self.processedData);
-    NSLog(@"### top keys = %@", [self.processedData allKeys]);
-    NSLog(@"### notifier = %@", self.processedData[@"notifier"]);
     NSArray *expectedKeys = @[ @"name", @"url", @"version" ];
     NSArray *notifierKeys = [self.processedData[@"notifier"] allKeys];
     XCTAssertEqualObjects(
