@@ -617,7 +617,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     BOOL notInAppExtension = ![BSG_KSSystemInfo isRunningInAppExtension];
 
     if (configuredToReportOOMs && noDebuggerEnabled && notInAppExtension) {
-        [self.oomWatchdog enable];
+        [self.oomWatchdog start];
     }
 
     [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
