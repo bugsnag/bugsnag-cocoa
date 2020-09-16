@@ -13,6 +13,9 @@ Changelog
 * Create date formatters at init time to avoid potential race conditions.
   [807](https://github.com/bugsnag/bugsnag-cocoa/pull/807)
 
+* Refactor OOM handler to be less suceptible to data loss on crash.
+  [804](https://github.com/bugsnag/bugsnag-cocoa/pull/804)
+
 ## 6.1.4 (2020-09-11)
 
 ### Bug fixes
