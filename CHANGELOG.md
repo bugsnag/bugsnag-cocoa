@@ -8,6 +8,11 @@ Changelog
 * Disable JSON pretty-printing in KSCrash reports to save disk space and bandwidth.
   [802](https://github.com/bugsnag/bugsnag-cocoa/pull/802)
 
+### Bug fixes
+
+* Refactor OOM handler to be less suceptible to data loss on crash.
+  [804](https://github.com/bugsnag/bugsnag-cocoa/pull/804)
+
 ## 6.1.4 (2020-09-11)
 
 ### Bug fixes
