@@ -1504,7 +1504,7 @@ void bsg_kscrashreport_writeMinimalReport(
     BSG_KSCrashReportWriter *writer = &concreteWriter;
     bsg_kscrw_i_prepareReportWriter(writer, &jsonContext);
 
-    bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), true,
+    bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), false,
                           bsg_kscrw_i_addJSONData, &fd);
 
     writer->beginObject(writer, BSG_KSCrashField_Report);
@@ -1551,7 +1551,7 @@ void bsg_kscrashreport_writeStandardReport(
     BSG_KSCrashReportWriter *writer = &concreteWriter;
     bsg_kscrw_i_prepareReportWriter(writer, &jsonContext);
 
-    bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), true,
+    bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), false,
                           bsg_kscrw_i_addJSONData, &fd);
 
     // KSCrash report fields are not required for handled errors as
