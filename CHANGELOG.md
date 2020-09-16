@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Disable JSON pretty-printing in KSCrash reports to save disk space and bandwidth.
+  [802](https://github.com/bugsnag/bugsnag-cocoa/pull/802)
+
 ## 6.1.4 (2020-09-11)
 
 ### Bug fixes
