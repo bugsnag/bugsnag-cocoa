@@ -226,7 +226,7 @@ The following properties/methods have been removed from the `BugsnagEvent` (prev
 
 #### Depth Replacement
 
-The `depth` property was removed in v6.x of the `bugsnag-cocoa` notifier. To reproduce this behaviour, you can use a [callback](https://docs.bugsnag.com/platforms/ios/customizing-error-reports/#updating-events-using-callbacks) to modify the stacktrace.
+The `depth` property was removed in v6.x of the `bugsnag-cocoa` notifier. To reproduce this behaviour, you can use a [callback](https://docs.bugsnag.com/platforms/ios/customizing-error-reports/#updating-events-using-callbacks) to modify the stacktrace. The functions below will reproduce this behaviour:
 
 > :warning: This can only be achieved using `bugsnag-cocoa` v6.0.1 and above, as the stacktrace array was previously `readonly`.
 
