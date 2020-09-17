@@ -9,6 +9,20 @@ steps:
 
   - wait
 
+  - label: ':ios: iOS 14 end-to-end tests'
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
+      docker-compose#v3.3.0:
+        run: cocoa-maze-runner
+    env:
+      DEVICE_TYPE: IOS_14
+    concurrency: 10
+    concurrency_group: browserstack-app
+
   - label: ':ios: iOS 13 end-to-end tests'
     timeout_in_minutes: 60
     agents:
