@@ -32,6 +32,8 @@
 
 @class BugsnagSessionTracker;
 
+extern int const BSGNotifierStackFrameCount;
+
 @interface BugsnagClient : NSObject<BugsnagMetadataStore>
 
 - (instancetype _Nonnull)initWithConfiguration:(BugsnagConfiguration *_Nonnull)configuration;
