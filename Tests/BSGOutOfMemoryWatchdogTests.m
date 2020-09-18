@@ -5,6 +5,7 @@
 #import "Bugsnag.h"
 #import "BugsnagClient.h"
 #import "BugsnagTestConstants.h"
+#import "BugsnagKVStoreObjC.h"
 
 // Expose private identifiers for testing
 @interface BSGOutOfMemoryWatchdog(Test)
@@ -31,19 +32,16 @@
 @end
 
 @interface BSGOutOfMemoryWatchdogTests : XCTestCase
-@property BugsnagClient *client;
 @end
 
 @implementation BSGOutOfMemoryWatchdogTests
 
-- (void)setUp {
-    [super setUp];
+- (BugsnagClient *)newClient {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.autoDetectErrors = NO;
     config.releaseStage = @"MagicalTestingTime";
 
-    self.client = [[BugsnagClient alloc] initWithConfiguration:config];
-    [self.client start];
+    return [[BugsnagClient alloc] initWithConfiguration:config];
 }
 
 - (void)testNilPathDoesNotCreateWatchdog {
@@ -56,9 +54,10 @@
  * Test that the generated OOM report values exist and are correct (where that can be tested)
  */
 - (void)testOOMFieldsSetCorrectly {
-    BSGOutOfMemoryWatchdog *watchdog = [self.client oomWatchdog];
+    BugsnagClient *client = [self newClient];
+    BSGOutOfMemoryWatchdog *watchdog = [client oomWatchdog];
 
-    self.client.codeBundleId = @"codeBundleIdHere";
+    client.codeBundleId = @"codeBundleIdHere";
     NSMutableDictionary *cachedFileInfo = [watchdog cachedFileInfo];
     XCTAssertNotNil([cachedFileInfo objectForKey:@"app"]);
     XCTAssertNotNil([cachedFileInfo objectForKey:@"device"]);
@@ -94,6 +93,51 @@
     [@"{1=\"a\"" writeToFile:tempFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
     XCTAssertNil(error);
     [watchdog readSentinelFile];
+}
+
+#define KV_KEY_IS_MONITORING_OOM @"oom-isMonitoringOOM"
+#define KV_KEY_IS_ACTIVE @"oom-isActive"
+#define KV_KEY_IS_IN_FOREGROUND @"oom-isInForeground"
+
+-(void)testOOM {
+    BugsnagClient *client = nil;
+    BugsnagKVStore *kvStore = [BugsnagKVStore new];
+
+    [kvStore setBoolean:true forKey:KV_KEY_IS_MONITORING_OOM];
+    [kvStore setBoolean:true forKey:KV_KEY_IS_ACTIVE];
+    [kvStore setBoolean:true forKey:KV_KEY_IS_IN_FOREGROUND];
+    client = [self newClient];
+    XCTAssertTrue([client.oomWatchdog didOOMLastLaunch]);
+
+    [kvStore setBoolean:true forKey:KV_KEY_IS_MONITORING_OOM];
+    [kvStore setBoolean:false forKey:KV_KEY_IS_ACTIVE];
+    [kvStore setBoolean:true forKey:KV_KEY_IS_IN_FOREGROUND];
+    client = [self newClient];
+    XCTAssertFalse([client.oomWatchdog didOOMLastLaunch]);
+
+    [kvStore setBoolean:true forKey:KV_KEY_IS_MONITORING_OOM];
+    [kvStore setBoolean:true forKey:KV_KEY_IS_ACTIVE];
+    [kvStore setBoolean:false forKey:KV_KEY_IS_IN_FOREGROUND];
+    client = [self newClient];
+    XCTAssertFalse([client.oomWatchdog didOOMLastLaunch]);
+    
+    [kvStore setBoolean:false forKey:KV_KEY_IS_MONITORING_OOM];
+    [kvStore setBoolean:true forKey:KV_KEY_IS_ACTIVE];
+    [kvStore setBoolean:true forKey:KV_KEY_IS_IN_FOREGROUND];
+    client = [self newClient];
+    XCTAssertFalse([client.oomWatchdog didOOMLastLaunch]);
+
+    [kvStore setBoolean:false forKey:KV_KEY_IS_MONITORING_OOM];
+    [kvStore setBoolean:false forKey:KV_KEY_IS_ACTIVE];
+    [kvStore setBoolean:true forKey:KV_KEY_IS_IN_FOREGROUND];
+    client = [self newClient];
+    XCTAssertFalse([client.oomWatchdog didOOMLastLaunch]);
+
+    [kvStore setBoolean:false forKey:KV_KEY_IS_MONITORING_OOM];
+    [kvStore setBoolean:true forKey:KV_KEY_IS_ACTIVE];
+    [kvStore setBoolean:false forKey:KV_KEY_IS_IN_FOREGROUND];
+    client = [self newClient];
+    XCTAssertFalse([client.oomWatchdog didOOMLastLaunch]);
 }
 
 @end
