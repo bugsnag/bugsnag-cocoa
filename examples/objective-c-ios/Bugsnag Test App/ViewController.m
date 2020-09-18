@@ -63,7 +63,8 @@
  This method causes a low-level exception from the operating system to terminate the app.  Upon reopening the app this signal should be notified to your Bugsnag dashboard.
  */
 - (IBAction)generateMachException:(id)sender {
-    void (*ptr)(void) = NULL;
+    // This should result in an EXC_BAD_ACCESS mach exception with code = KERN_INVALID_ADDRESS and subcode = 0xDEADBEEF
+    void (* ptr)(void) = (void *)0xDEADBEEF;
     ptr();
 }
 
