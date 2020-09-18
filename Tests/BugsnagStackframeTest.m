@@ -7,6 +7,8 @@
 //
 
 #import <XCTest/XCTest.h>
+
+#import "BSG_KSMachHeaders.h"
 #import "BugsnagStackframe.h"
 
 @interface BugsnagStackframe ()
@@ -91,6 +93,67 @@
 - (void)testInvalidFrame {
     BugsnagStackframe *frame = [BugsnagStackframe frameFromDict:self.frameDict withImages:@[]];
     XCTAssertNil(frame);
+}
+
+- (void)testDummyCallStackSymbols {
+    bsg_mach_headers_initialize(); // Prevent symbolication
+    
+    NSArray<BugsnagStackframe *> *stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:@[]];
+    XCTAssertEqual(stackframes.count, 0);
+    
+    stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:@[
+        @"",
+        @"1",
+        @"ReactNativeTest",
+        @"0x0000000000000000",
+        @"__invoking___ + 140"]];
+    XCTAssertEqual(stackframes.count, 0, @"Invalid stack frame strings should be ignored");
+    
+    stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:@[
+        @"0   ReactNativeTest                     0x000000010fda7f1b RCTJSErrorFromCodeMessageAndNSError + 79",
+        @"1   ReactNativeTest                     0x000000010fd76897 __41-[RCTModuleMethod processMethodSignature]_block_invoke_2.103 + 97",
+        @"2   ReactNativeTest                     0x000000010fccd9c3 -[BenCrash asyncReject:rejecter:] + 106",
+        @"3   CoreFoundation                      0x00007fff23e44dec __invoking___ + 140",
+        @"4   CoreFoundation                      0x00007fff23e41fd1 -[NSInvocation invoke] + 321",
+        @"5   CoreFoundation                      0x00007fff23e422a4 -[NSInvocation invokeWithTarget:] + 68",
+        @"6  ReactNativeTest                     0x000000010fd76eae -[RCTModuleMethod invokeWithBridge:module:arguments:] + 578",
+        @"7 ReactNativeTest                     0x000000010fd79138 _ZN8facebook5reactL11invokeInnerEP9RCTBridgeP13RCTModuleDatajRKN5folly7dynamicE + 246"]];
+    XCTAssertEqual(stackframes.count, 8);
+    
+    stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:@[
+        @"0   ReactNativeTest                     0x000000010fda7f1b",
+        @"1   ReactNativeTest                     0x000000010fd76897",
+        @"2   ReactNativeTest                     0x000000010fccd9c3",
+        @"3   CoreFoundation                      0x00007fff23e44dec",
+        @"4   CoreFoundation                      0x00007fff23e41fd1",
+        @"5   CoreFoundation                      0x00007fff23e422a4",
+        @"6   ReactNativeTest                     0x000000010fd76eae",
+        @"7   ReactNativeTest                     0x000000010fd79138"]];
+    XCTAssertEqual(stackframes.count, 8, @"Symbol name and offset are optional; stack frames should still be parsed if they are omitted");
+}
+
+- (void)testRealCallStackSymbols {
+    bsg_mach_headers_register_for_changes(); // Ensure call stack can be symbolicated
+    
+    NSArray<NSString *> *callStackSymbols = [NSThread callStackSymbols];
+    NSArray<BugsnagStackframe *> *stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:callStackSymbols];
+    XCTAssertEqual(stackframes.count, callStackSymbols.count, @"All valid stack frame strings should be parsed");
+    XCTAssertTrue(stackframes.firstObject.isPc, @"The first stack frame should have isPc set to true");
+    [stackframes enumerateObjectsUsingBlock:^(BugsnagStackframe *stackframe, NSUInteger idx, BOOL *stop) {
+        XCTAssertNotNil(stackframe.frameAddress);
+        XCTAssertNotNil(stackframe.machoFile);
+        XCTAssertNotNil(stackframe.method);
+        if (idx == stackframes.count - 1 && stackframe.machoLoadAddress == nil) {
+            // The last callStackSymbol is often not in any Mach-O image, e.g.
+            // "41  ???                                 0x0000000000000005 0x0 + 5"
+            return;
+        }
+        XCTAssertNotNil(stackframe.machoUuid);
+        XCTAssertNotNil(stackframe.machoVmAddress);
+        XCTAssertNotNil(stackframe.machoLoadAddress);
+        XCTAssertNotNil(stackframe.symbolAddress);
+        XCTAssertTrue([callStackSymbols[idx] containsString:stackframe.method]);
+    }];
 }
 
 @end
