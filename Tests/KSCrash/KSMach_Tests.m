@@ -28,6 +28,7 @@
 #import <XCTest/XCTest.h>
 
 #import "BSG_KSMach.h"
+#import "BSG_KSMachApple.h"
 #import <mach/mach_time.h>
 
 
@@ -77,6 +78,14 @@
     NSString* actual = [NSString stringWithCString:bsg_ksmachkernelReturnCodeName(KERN_FAILURE)
                                           encoding:NSUTF8StringEncoding];
     XCTAssertEqualObjects(actual, expected, @"");
+}
+
+- (void) testArmExcBadAccessKernReturnCodeNames
+{
+    XCTAssertEqualObjects(@(bsg_ksmachkernelReturnCodeName(EXC_ARM_DA_ALIGN)), @"EXC_ARM_DA_ALIGN");
+    XCTAssertEqualObjects(@(bsg_ksmachkernelReturnCodeName(EXC_ARM_DA_DEBUG)), @"EXC_ARM_DA_DEBUG");
+    XCTAssertEqualObjects(@(bsg_ksmachkernelReturnCodeName(EXC_ARM_SP_ALIGN)), @"EXC_ARM_SP_ALIGN");
+    XCTAssertEqualObjects(@(bsg_ksmachkernelReturnCodeName(EXC_ARM_SWP)), @"EXC_ARM_SWP");
 }
 
 - (void) testVeryHighKernReturnCodeName

@@ -153,6 +153,11 @@ const char *bsg_ksmachkernelReturnCodeName(const kern_return_t returnCode) {
         RETURN_NAME_FOR_ENUM(KERN_NOT_WAITING);
         RETURN_NAME_FOR_ENUM(KERN_OPERATION_TIMED_OUT);
         RETURN_NAME_FOR_ENUM(KERN_CODESIGN_ERROR);
+        // Note: these are only valid for EXC_BAD_ACCESS
+        RETURN_NAME_FOR_ENUM(EXC_ARM_DA_ALIGN);
+        RETURN_NAME_FOR_ENUM(EXC_ARM_DA_DEBUG);
+        RETURN_NAME_FOR_ENUM(EXC_ARM_SP_ALIGN);
+        RETURN_NAME_FOR_ENUM(EXC_ARM_SWP);
     }
     return NULL;
 }
