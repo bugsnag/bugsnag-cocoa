@@ -95,6 +95,11 @@
     XCTAssertNil(frame);
 }
 
+#define AssertStackframeValues(stackframe_, machoFile_, frameAddress_, method_) \
+    XCTAssertEqualObjects(stackframe_.method, method_); \
+    XCTAssertEqualObjects(stackframe_.machoFile, machoFile_); \
+    XCTAssertEqualObjects(stackframe_.frameAddress, @(frameAddress_));
+
 - (void)testDummyCallStackSymbols {
     bsg_mach_headers_initialize(); // Prevent symbolication
     
@@ -118,7 +123,15 @@
         @"5   CoreFoundation                      0x00007fff23e422a4 -[NSInvocation invokeWithTarget:] + 68",
         @"6  ReactNativeTest                     0x000000010fd76eae -[RCTModuleMethod invokeWithBridge:module:arguments:] + 578",
         @"7 ReactNativeTest                     0x000000010fd79138 _ZN8facebook5reactL11invokeInnerEP9RCTBridgeP13RCTModuleDatajRKN5folly7dynamicE + 246"]];
-    XCTAssertEqual(stackframes.count, 8);
+    
+    AssertStackframeValues(stackframes[0], @"ReactNativeTest",  0x000000010fda7f1b, @"RCTJSErrorFromCodeMessageAndNSError");
+    AssertStackframeValues(stackframes[1], @"ReactNativeTest",  0x000000010fd76897, @"__41-[RCTModuleMethod processMethodSignature]_block_invoke_2.103");
+    AssertStackframeValues(stackframes[2], @"ReactNativeTest",  0x000000010fccd9c3, @"-[BenCrash asyncReject:rejecter:]");
+    AssertStackframeValues(stackframes[3], @"CoreFoundation",   0x00007fff23e44dec, @"__invoking___");
+    AssertStackframeValues(stackframes[4], @"CoreFoundation",   0x00007fff23e41fd1, @"-[NSInvocation invoke]");
+    AssertStackframeValues(stackframes[5], @"CoreFoundation",   0x00007fff23e422a4, @"-[NSInvocation invokeWithTarget:]");
+    AssertStackframeValues(stackframes[6], @"ReactNativeTest",  0x000000010fd76eae, @"-[RCTModuleMethod invokeWithBridge:module:arguments:]");
+    AssertStackframeValues(stackframes[7], @"ReactNativeTest",  0x000000010fd79138, @"_ZN8facebook5reactL11invokeInnerEP9RCTBridgeP13RCTModuleDatajRKN5folly7dynamicE");
     
     stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:@[
         @"0   ReactNativeTest                     0x000000010fda7f1b",
@@ -129,7 +142,15 @@
         @"5   CoreFoundation                      0x00007fff23e422a4",
         @"6   ReactNativeTest                     0x000000010fd76eae",
         @"7   ReactNativeTest                     0x000000010fd79138"]];
-    XCTAssertEqual(stackframes.count, 8, @"Symbol name and offset are optional; stack frames should still be parsed if they are omitted");
+    
+    AssertStackframeValues(stackframes[0], @"ReactNativeTest",  0x000000010fda7f1b, @"0x000000010fda7f1b");
+    AssertStackframeValues(stackframes[1], @"ReactNativeTest",  0x000000010fd76897, @"0x000000010fd76897");
+    AssertStackframeValues(stackframes[2], @"ReactNativeTest",  0x000000010fccd9c3, @"0x000000010fccd9c3");
+    AssertStackframeValues(stackframes[3], @"CoreFoundation",   0x00007fff23e44dec, @"0x00007fff23e44dec");
+    AssertStackframeValues(stackframes[4], @"CoreFoundation",   0x00007fff23e41fd1, @"0x00007fff23e41fd1");
+    AssertStackframeValues(stackframes[5], @"CoreFoundation",   0x00007fff23e422a4, @"0x00007fff23e422a4");
+    AssertStackframeValues(stackframes[6], @"ReactNativeTest",  0x000000010fd76eae, @"0x000000010fd76eae");
+    AssertStackframeValues(stackframes[7], @"ReactNativeTest",  0x000000010fd79138, @"0x000000010fd79138");
 }
 
 - (void)testRealCallStackSymbols {
