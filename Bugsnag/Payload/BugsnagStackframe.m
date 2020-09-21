@@ -113,7 +113,7 @@
         
         BugsnagStackframe *frame = [BugsnagStackframe new];
         frame.machoFile = imageName;
-        frame.method = symbolName;
+        frame.method = symbolName ?: frameAddress;
         frame.frameAddress = [NSNumber numberWithUnsignedLongLong:address];
         frame.isPc = [frameNumber isEqualToString:@"0"];
         
