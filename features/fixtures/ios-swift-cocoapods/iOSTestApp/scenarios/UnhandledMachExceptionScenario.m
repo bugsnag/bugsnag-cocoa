@@ -16,7 +16,7 @@
 }
 
 - (void)run {
-    void (*ptr)(void) = NULL;
+    void (*ptr)(void) = (void *)0xDEADBEEF;
     ptr();
 }
 

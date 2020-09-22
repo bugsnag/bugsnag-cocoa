@@ -13,6 +13,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix reporting of Mach exception code and subcode.
+  [806](https://github.com/bugsnag/bugsnag-cocoa/pull/806)
+
 * Create date formatters at init time to avoid potential race conditions.
   [807](https://github.com/bugsnag/bugsnag-cocoa/pull/807)
 
