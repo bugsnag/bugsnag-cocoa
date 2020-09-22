@@ -35,7 +35,6 @@
 
 @interface BugsnagClient ()
 - (void)start;
-@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
 @end
 
 void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
@@ -400,6 +399,16 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     
     XCTAssertEqual([bc1[@"metaData"] count], 0);
     XCTAssertEqual([bc2[@"metaData"] count], 0);
+}
+
+- (void)testGetBreadcrumbs {
+    NSArray<BugsnagBreadcrumb *> *breadcrumbs = [self.crumbs getBreadcrumbs];
+    XCTAssertEqual(breadcrumbs[0].message, @"Launch app");
+    XCTAssertEqual(breadcrumbs[0].type, BSGBreadcrumbTypeManual);
+    XCTAssertEqual(breadcrumbs[1].message, @"Tap button");
+    XCTAssertEqual(breadcrumbs[1].type, BSGBreadcrumbTypeManual);
+    XCTAssertEqual(breadcrumbs[2].message, @"Close tutorial");
+    XCTAssertEqual(breadcrumbs[2].type, BSGBreadcrumbTypeManual);
 }
 
 @end
