@@ -1,6 +1,27 @@
 Changelog
 =========
 
+## 6.1.5 (2020-09-23)
+
+### Enhancements
+
+* Add `+[Bugsnag breadcrumbs]` to allow apps to fetch the list of breadcrumbs.
+  [813](https://github.com/bugsnag/bugsnag-cocoa/pull/813)
+
+* Disable JSON pretty-printing in KSCrash reports to save disk space and bandwidth.
+  [802](https://github.com/bugsnag/bugsnag-cocoa/pull/802)
+
+### Bug fixes
+
+* Fix reporting of Mach exception code and subcode.
+  [806](https://github.com/bugsnag/bugsnag-cocoa/pull/806)
+
+* Create date formatters at init time to avoid potential race conditions.
+  [807](https://github.com/bugsnag/bugsnag-cocoa/pull/807)
+
+* Refactor OOM handler to be less suceptible to data loss on crash.
+  [804](https://github.com/bugsnag/bugsnag-cocoa/pull/804)
+
 ## 6.1.4 (2020-09-11)
 
 ### Bug fixes

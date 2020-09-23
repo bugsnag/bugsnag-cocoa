@@ -26,7 +26,6 @@
 @interface BugsnagClient ()
 - (void)orientationChanged:(NSNotification *)notif;
 @property (nonatomic, strong) BugsnagMetadata *metadata;
-@property(nonatomic, strong) BugsnagBreadcrumbs *breadcrumbs;
 @end
 
 @interface BugsnagBreadcrumb ()
