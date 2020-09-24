@@ -295,6 +295,8 @@ function disclosure_triangle(elt) {
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/appDidCrashLastLaunch" target="_top">+appDidCrashLastLaunch</a></tt></dt>
 <dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/breadcrumbs" target="_top">+breadcrumbs</a></tt></dt>
+<dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/context" target="_top">+context</a></tt></dt>
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/leaveBreadcrumbForNotificationName:" target="_top">+leaveBreadcrumbForNotificationName:</a></tt></dt>
@@ -396,6 +398,20 @@ change the breadcrumb contents as needed
 <p>YES if Bugsnag has been started and the previous launch crashed
 
 <!-- end return value --></p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/breadcrumbs;   name=breadcrumbs -->
+<a name="//apple_ref/c/func/breadcrumbs"></a>
+<h3><a name="breadcrumbs">breadcrumbs</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/breadcrumbs;name=start -->+ (<a machinegenerated="true" href="../BugsnagEvent_h/index.html#//apple_ref/c/func/NSArray" logicalPath="//apple_ref/c/cl/NSArray //apple_ref/c/tdef/NSArray //apple_ref/c/tag/NSArray //apple_ref/c/struct/NSArray //apple_ref/c/intf/NSArray //apple_ref/doc/anysymbol/NSArray" target="_top"><span class="type">NSArray</span></a>&lt;<span class="param">BugsnagBreadcrumb</span> <span class="param">*</span>&gt; <span class="type">*</span><!-- a logicalPath="//apple_ref/c/cl/_Nonnull //apple_ref/c/tdef/_Nonnull //apple_ref/c/tag/_Nonnull //apple_ref/c/struct/_Nonnull //apple_ref/c/intf/_Nonnull //apple_ref/doc/anysymbol/_Nonnull" machineGenerated="true" --><span class="type">_Nonnull</span><!-- /a -->)<!-- a logicalPath="//apple_ref/c/econst/breadcrumbs //apple_ref/c/data/breadcrumbs //apple_ref/c/clconst/breadcrumbs " machineGenerated="true" --><span class="var">breadcrumbs</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/func/breadcrumbs;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/breadcrumbs;name=start --><p>Returns the current buffer of breadcrumbs that will be sent with captured events. This
+ordered list represents the most recent breadcrumbs to be captured up to the limit
+set in `BugsnagConfiguration.maxBreadcrumbs`
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/breadcrumbs;name=end --><!-- end discussion -->
+</p>
 <hr class="betweenAPIEntries">
 <!-- headerDoc=func;  uid=//apple_ref/c/func/context;   name=context -->
 <a name="//apple_ref/c/func/context"></a>
@@ -879,7 +895,7 @@ reports to Bugsnag.
 <p class="gapBeforeFooter">&nbsp;</p>
 <hr class="afterFooter">
 <div class="hd_copyright_and_timestamp">
-<p class="hd_timestamp">Last Updated: Thursday, September 17, 2020
+<p class="hd_timestamp">Last Updated: Thursday, September 24, 2020
 </p>
 </div>
 </td>
