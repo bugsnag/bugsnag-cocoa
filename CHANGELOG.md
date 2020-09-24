@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix crash-on-launch (attempt to insert into immutable dictionary).
+  [819](https://github.com/bugsnag/bugsnag-cocoa/pull/819)
+
 ## 6.1.5 (2020-09-23)
 
 ### Enhancements
