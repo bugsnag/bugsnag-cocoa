@@ -607,12 +607,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertTrue(config.enabledErrorTypes.signals);
     XCTAssertTrue(config.enabledErrorTypes.unhandledExceptions);
     XCTAssertTrue(config.enabledErrorTypes.unhandledRejections);
-
-#if DEBUG
-    XCTAssertFalse(config.enabledErrorTypes.ooms);
-#else
     XCTAssertTrue(config.enabledErrorTypes.ooms);
-#endif
 
     XCTAssertNil(config.enabledReleaseStages);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);

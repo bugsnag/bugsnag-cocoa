@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Refactored OOM handler, which can now run on debug builds.
+  [820](https://github.com/bugsnag/bugsnag-cocoa/pull/820)
+
 ## 6.1.6 (2020-09-24)
 
 ### Bug fixes
