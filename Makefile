@@ -141,6 +141,7 @@ endif
 	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" Bugsnag.podspec.json
 	@sed -i '' "s/self.version = .*;/self.version = @\"$(VERSION)\";/" Bugsnag/Payload/BugsnagNotifier.m
 	@sed -i '' "s/## TBD/## $(VERSION) ($(shell date '+%Y-%m-%d'))/" CHANGELOG.md
+	@agvtool new-marketing-version $(VERSION)
 
 prerelease: bump ## Generates a PR for the $VERSION release
 ifeq ($(VERSION),)
