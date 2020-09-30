@@ -5,7 +5,8 @@ Changelog
 
 ### Enhancements
 
-* Refactored OOM handler, which can now run on debug builds.
+* Improved out-of-memory event detection by disabling reporting when a debugger
+  is attached. OOM reporting is now enabled by default in debug builds.
   [820](https://github.com/bugsnag/bugsnag-cocoa/pull/820)
 
 ## 6.1.6 (2020-09-24)
