@@ -23,6 +23,7 @@
 
 @interface BugsnagEvent ()
 - (instancetype)initWithKSReport:(NSDictionary *)report;
+- (NSDictionary *)toJson;
 @property(readonly, nonnull) BugsnagHandledState *handledState;
 @property BugsnagSession *session;
 @end
@@ -362,6 +363,16 @@
     XCTAssertEqualObjects(@"123", event.session.id);
     XCTAssertEqual(1, event.session.unhandledCount);
     XCTAssertEqual(2, event.session.handledCount);
+}
+
+- (void)testReactNativePromiseRejection {
+    NSURL *url = [[NSBundle bundleForClass:[self class]] URLForResource:@"report-react-native-promise-rejection" withExtension:@"json"];
+    NSDictionary *userData = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfURL:url] options:0 error:nil];
+    XCTAssertEqualObjects([userData valueForKeyPath:@"user.event.exceptions.@count"], @(2));
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:userData];
+    XCTAssertEqual(event.errors.count, 2);
+    XCTAssertEqualObjects([[event toJson] valueForKeyPath:@"exceptions.@count"], @(2),
+                          @"JSON representation of event should have the same number of errors / exceptions");
 }
 
 @end
