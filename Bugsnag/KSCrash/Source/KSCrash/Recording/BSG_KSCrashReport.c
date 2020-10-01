@@ -1252,20 +1252,25 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
         case BSG_KSCrashTypeMachException:
             writer->beginObject(writer, BSG_KSCrashField_Mach);
             {
+                char buffer[20] = {0};
+                
                 writer->addUIntegerElement(writer, BSG_KSCrashField_Exception,
                                            (unsigned)machExceptionType);
                 if (machExceptionName != NULL) {
                     writer->addStringElement(writer, BSG_KSCrashField_ExceptionName,
                                              machExceptionName);
                 }
-                writer->addUIntegerElement(writer, BSG_KSCrashField_Code,
-                                           (unsigned)machCode);
+                
+                snprintf(buffer, sizeof(buffer), "0x%llx", machCode);
+                writer->addStringElement(writer, BSG_KSCrashField_Code, buffer);
+                
                 if (machCodeName != NULL) {
                     writer->addStringElement(writer, BSG_KSCrashField_CodeName,
                                              machCodeName);
                 }
-                writer->addUIntegerElement(writer, BSG_KSCrashField_Subcode,
-                                           (unsigned)machSubCode);
+                
+                snprintf(buffer, sizeof(buffer), "0x%llx", machSubCode);
+                writer->addStringElement(writer, BSG_KSCrashField_Subcode, buffer);
             }
             writer->endContainer(writer);
             writer->addStringElement(writer, BSG_KSCrashField_Type,

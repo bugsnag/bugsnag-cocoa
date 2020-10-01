@@ -12,11 +12,11 @@ Feature: Bugsnag captures an unhandled mach exception
     And the event "exceptions.0.message" equals "Attempted to dereference garbage pointer 0xdeadbeef."
     And the event "metaData.error.address" equals 3735928559
     And the event "metaData.error.type" equals "mach"
-    And the event "metaData.error.mach.code" equals 257
+    And the event "metaData.error.mach.code" equals "0x101"
     And the event "metaData.error.mach.code_name" equals "EXC_ARM_DA_ALIGN"
     And the event "metaData.error.mach.exception" equals 1
     And the event "metaData.error.mach.exception_name" equals "EXC_BAD_ACCESS"
-    And the event "metaData.error.mach.subcode" equals 3735928559
+    And the event "metaData.error.mach.subcode" equals "0xdeadbeef"
     And the event "severity" equals "error"
     And the event "unhandled" is true
     And the event "severityReason.type" equals "unhandledException"
