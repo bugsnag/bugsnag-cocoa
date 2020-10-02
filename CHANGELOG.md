@@ -9,6 +9,16 @@ Changelog
   is attached. OOM reporting is now enabled by default in debug builds.
   [820](https://github.com/bugsnag/bugsnag-cocoa/pull/820)
 
+## 6.1.7 (2020-10-01)
+
+## Bug fixes
+
+* Re-enabled the `Require Only App-Extension-Safe API` build setting
+  [823](https://github.com/bugsnag/bugsnag-cocoa/pull/823)
+
+* Fix reporting of events with more than one error
+  [821](https://github.com/bugsnag/bugsnag-cocoa/pull/821)
+
 ## 6.1.6 (2020-09-24)
 
 ### Bug fixes
