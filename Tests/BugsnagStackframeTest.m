@@ -164,7 +164,8 @@
         XCTAssertNotNil(stackframe.frameAddress);
         XCTAssertNotNil(stackframe.machoFile);
         XCTAssertNotNil(stackframe.method);
-        if (idx == stackframes.count - 1 && stackframe.machoLoadAddress == nil) {
+        if (idx == stackframes.count - 1 &&
+            (stackframe.machoLoadAddress == nil || stackframe.symbolAddress == nil)) {
             // The last callStackSymbol is often not in any Mach-O image, e.g.
             // "41  ???                                 0x0000000000000005 0x0 + 5"
             return;

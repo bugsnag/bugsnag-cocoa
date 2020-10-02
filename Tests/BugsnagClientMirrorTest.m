@@ -118,7 +118,11 @@
             @"createNSErrorWrapper: @24@0:8@16",
             @"setBreadcrumbs: v24@0:8@16",
             @"breadcrumbs @16@0:8",
-            @"setUser: v24@0:8@16"
+            @"setUser: v24@0:8@16",
+            @"didLikelyOOM B16@0:8",
+            @"shouldReportOOM B16@0:8",
+            @"systemState @16@0:8",
+            @"setSystemState: v24@0:8@16"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to
@@ -133,7 +137,8 @@
             @"bugsnagStarted c16@0:8",
             @"leaveBreadcrumbWithBlock: v24@0:8@?16",
             @"getContext @16@0:8",
-            @"start @16@0:8"
+            @"start @16@0:8",
+            @"purge v16@0:8"
     ]];
 }
 

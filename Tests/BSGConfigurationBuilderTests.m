@@ -60,13 +60,12 @@
     XCTAssertEqual(BSGEnabledBreadcrumbTypeAll, config.enabledBreadcrumbTypes);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
+    XCTAssertTrue(config.enabledErrorTypes.ooms);
 
 #if DEBUG
     XCTAssertEqualObjects(@"development", config.releaseStage);
-    XCTAssertFalse(config.enabledErrorTypes.ooms);
 #else
     XCTAssertEqualObjects(@"production", config.releaseStage);
-    XCTAssertTrue(config.enabledErrorTypes.ooms);
 #endif
 
     XCTAssertNil(config.enabledReleaseStages);
@@ -114,12 +113,7 @@
 
     NSArray *releaseStages = @[@"beta2", @"prod"];
     XCTAssertEqualObjects(releaseStages, config.enabledReleaseStages);
-
-#if DEBUG
-    XCTAssertFalse(config.enabledErrorTypes.ooms);
-#else
     XCTAssertTrue(config.enabledErrorTypes.ooms);
-#endif
 
     XCTAssertTrue(config.enabledErrorTypes.unhandledExceptions);
     XCTAssertTrue(config.enabledErrorTypes.signals);
