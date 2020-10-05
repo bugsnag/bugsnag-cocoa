@@ -45,7 +45,7 @@
                       &context);
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
-    XCTAssertFalse(context.applicationIsActive, @"");
+    XCTAssertTrue(context.applicationIsActive, @"");
 
     XCTAssertEqual(context.activeDurationSinceLastCrash, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLastCrash, 0.0, @"");
@@ -65,7 +65,7 @@
                       &context);
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
-    XCTAssertFalse(context.applicationIsActive, @"");
+    XCTAssertTrue(context.applicationIsActive, @"");
 
     XCTAssertEqual(context.activeDurationSinceLastCrash, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLastCrash, 0.0, @"");
@@ -124,7 +124,7 @@
                       &context);
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
-    XCTAssertFalse(context.applicationIsActive, @"");
+    XCTAssertTrue(context.applicationIsActive, @"");
 
     XCTAssertEqual(context.activeDurationSinceLastCrash, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLastCrash, 0.0, @"");
@@ -184,7 +184,7 @@
                       &context);
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
-    XCTAssertFalse(context.applicationIsActive, @"");
+    XCTAssertTrue(context.applicationIsActive, @"");
 
     XCTAssertEqual(context.activeDurationSinceLastCrash, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLastCrash, 0.0, @"");
@@ -268,7 +268,7 @@
                       &context);
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
-    XCTAssertFalse(context.applicationIsActive, @"");
+    XCTAssertTrue(context.applicationIsActive, @"");
 
     XCTAssertEqual(context.activeDurationSinceLastCrash, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLastCrash, 0.0, @"");
@@ -331,7 +331,7 @@
     BSG_KSCrash_State checkpointR = context;
 
     XCTAssertTrue(checkpointR.applicationIsInForeground, @"");
-    XCTAssertFalse(checkpointR.applicationIsActive, @"");
+    XCTAssertTrue(checkpointR.applicationIsActive, @"");
     XCTAssertEqual(checkpointR.appLaunchTime, 0, @"");
 
     // We don't save after going inactive, so this will still be 0.
@@ -395,7 +395,7 @@
                       &context);
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
-    XCTAssertFalse(context.applicationIsActive, @"");
+    XCTAssertTrue(context.applicationIsActive, @"");
 
     XCTAssertEqual(context.activeDurationSinceLastCrash, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLastCrash, 0.0, @"");
@@ -460,7 +460,7 @@
     BSG_KSCrash_State checkpointR = context;
 
     XCTAssertTrue(checkpointR.applicationIsInForeground, @"");
-    XCTAssertFalse(checkpointR.applicationIsActive, @"");
+    XCTAssertTrue(checkpointR.applicationIsActive, @"");
 
     XCTAssertTrue(checkpointR.activeDurationSinceLastCrash > 0, @"");
     XCTAssertEqual(checkpointR.backgroundDurationSinceLastCrash, 0.0, @"");
@@ -499,7 +499,7 @@
     BSG_KSCrash_State checkpointR = context;
 
     XCTAssertTrue(checkpointR.applicationIsInForeground, @"");
-    XCTAssertFalse(checkpointR.applicationIsActive, @"");
+    XCTAssertTrue(checkpointR.applicationIsActive, @"");
     XCTAssertEqual(checkpointR.appLaunchTime, 0, @"");
 
     XCTAssertTrue(checkpointR.backgroundDurationSinceLastCrash >
@@ -564,7 +564,7 @@
                       &context);
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
-    XCTAssertFalse(context.applicationIsActive, @"");
+    XCTAssertTrue(context.applicationIsActive, @"");
 
     XCTAssertEqual(context.activeDurationSinceLastCrash, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLastCrash, 0.0, @"");
@@ -645,7 +645,7 @@
     BSG_KSCrash_State checkpointR = context;
 
     XCTAssertTrue(checkpointR.applicationIsInForeground, @"");
-    XCTAssertFalse(checkpointR.applicationIsActive, @"");
+    XCTAssertTrue(checkpointR.applicationIsActive, @"");
 
     XCTAssertTrue(checkpointR.activeDurationSinceLastCrash > 0, @"");
     // We don't save after going to FG, so this will still be 0.
@@ -712,7 +712,7 @@
                       &context);
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
-    XCTAssertFalse(context.applicationIsActive, @"");
+    XCTAssertTrue(context.applicationIsActive, @"");
 
     XCTAssertEqual(context.activeDurationSinceLastCrash, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLastCrash, 0.0, @"");

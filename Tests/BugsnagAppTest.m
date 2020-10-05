@@ -44,7 +44,7 @@
             @"system": @{
                     @"application_stats": @{
                             @"active_time_since_launch": @2,
-                            @"background_time_since_launch": @5,
+                            @"time_since_launch": @7,
                             @"application_in_foreground": @YES,
                     },
                     @"CFBundleExecutable": @"MyIosApp",

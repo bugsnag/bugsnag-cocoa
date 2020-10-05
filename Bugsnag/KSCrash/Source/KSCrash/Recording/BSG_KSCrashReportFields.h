@@ -143,6 +143,8 @@
 
 #pragma mark - App Stats -
 
+#define BSG_KSCrashField_TimeSinceCrash "time_since_last_crash"
+#define BSG_KSCrashField_TimeSinceLaunch "time_since_launch"
 #define BSG_KSCrashField_ActiveTimeSinceCrash "active_time_since_last_crash"
 #define BSG_KSCrashField_ActiveTimeSinceLaunch "active_time_since_launch"
 #define BSG_KSCrashField_AppActive "application_active"

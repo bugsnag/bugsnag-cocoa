@@ -99,6 +99,12 @@
  * YES if the app is currently shown in the foreground
  */
 + (BOOL)isInForeground:(UIApplicationState)state;
+
+/**
+ * YES if the app is currently active
+ */
++ (BOOL)isActive:(UIApplicationState)state;
+
 #endif
 
 @end

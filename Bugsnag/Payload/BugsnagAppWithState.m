@@ -10,6 +10,7 @@
 #import "BugsnagKeys.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagCollections.h"
+#import "BSG_KSCrashReportFields.h"
 
 @interface BugsnagApp ()
 + (void)populateFields:(BugsnagApp *)app
@@ -77,12 +78,12 @@
     NSDictionary *stats = system[@"application_stats"];
 
     // convert from seconds to milliseconds
-    NSNumber *activeTimeSinceLaunch = @([stats[@"active_time_since_launch"] longValue] * 1000);
-    NSNumber *backgroundTimeSinceLaunch = @([stats[@"background_time_since_launch"] longValue] * 1000);
+    NSNumber *activeTimeSinceLaunch = @([stats[@BSG_KSCrashField_ActiveTimeSinceLaunch] longValue] * 1000);
+    NSNumber *totalTimeSinceLaunch = @([stats[@BSG_KSCrashField_TimeSinceLaunch] longValue] * 1000);
 
     app.durationInForeground = activeTimeSinceLaunch;
-    app.duration = @([activeTimeSinceLaunch longValue] + [backgroundTimeSinceLaunch longValue]);
-    app.inForeground = [stats[@"application_in_foreground"] boolValue];
+    app.duration = totalTimeSinceLaunch;
+    app.inForeground = [stats[@BSG_KSCrashField_AppInFG] boolValue];
     [BugsnagApp populateFields:app dictionary:event config:config codeBundleId:codeBundleId];
     return app;
 }

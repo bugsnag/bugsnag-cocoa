@@ -1365,6 +1365,9 @@ void bsg_kscrw_i_writeAppStats(const BSG_KSCrashReportWriter *const writer,
         writer->addIntegerElement(writer, BSG_KSCrashField_SessionsSinceLaunch,
                                   state->sessionsSinceLaunch);
         writer->addFloatingPointElement(writer,
+                                        BSG_KSCrashField_TimeSinceLaunch,
+                                        state->durationSinceLaunch);
+        writer->addFloatingPointElement(writer,
                                         BSG_KSCrashField_ActiveTimeSinceLaunch,
                                         state->activeDurationSinceLaunch);
         writer->addFloatingPointElement(writer,

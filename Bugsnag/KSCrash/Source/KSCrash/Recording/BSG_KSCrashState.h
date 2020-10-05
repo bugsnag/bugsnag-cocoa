@@ -42,6 +42,9 @@ extern "C" {
 typedef struct {
     // Saved data
 
+    /** Total time elapsed since the last crash. */
+    double durationSinceLastCrash;
+
     /** Total active time elapsed since the last crash. */
     double activeDurationSinceLastCrash;
 
@@ -74,9 +77,11 @@ typedef struct {
     /** Timestamp for when the app was launched (mach_absolute_time()) */
     uint64_t appLaunchTime;
 
-    /** Timestamp for when the app state was last changed (active<-> inactive,
-     * background<->foreground) (mach_absolute_time()) */
-    uint64_t appStateTransitionTime;
+    /** Seconds elapsed since app launch */
+    double durationSinceLaunch;
+
+    /** When the app durations were last updated */
+    uint64_t lastDurationUpdate;
 
     /** If true, the application is currently active. */
     bool applicationIsActive;

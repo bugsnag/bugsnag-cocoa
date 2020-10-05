@@ -488,6 +488,10 @@
     return state == UIApplicationStateInactive
         || state == UIApplicationStateActive;
 }
+
++ (BOOL)isActive:(UIApplicationState)state {
+    return state == UIApplicationStateActive;
+}
 #endif
 
 @end
