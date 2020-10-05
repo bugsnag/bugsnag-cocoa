@@ -389,7 +389,7 @@
 - (void)testHandledReportSeverity {
     // handled reports should use the serialised depth
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    NSDictionary *dict = @{@"user.state.crash.severity": @"info", @"user.handledState": [state toJson]};
+    NSDictionary *dict = @{@"user.handledState": [state toJson]};
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:dict];
     XCTAssertEqual(event.severity, BSGSeverityWarning);
 }
