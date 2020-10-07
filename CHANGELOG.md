@@ -1,6 +1,24 @@
 Changelog
 =========
 
+## 6.2.0 (2020-10-07)
+
+### Enhancements
+
+* An invalid or missing API key now causes an NSException to be thrown upon
+  calling [Bugsnag start]. This check used to occur during configuration,
+  and only for malformed API keys.
+  [828](https://github.com/bugsnag/bugsnag-cocoa/pull/828)
+
+* Exception Mach code and subcode are now written to the crash report as
+  stringified hex values instead of integers to avoid potential data loss from
+  JSON readers that lose the lower bits from unsigned 64-bit numbers.
+  [827](https://github.com/bugsnag/bugsnag-cocoa/pull/827)
+
+* Improved out-of-memory event detection by disabling reporting when a debugger
+  is attached. OOM reporting is now enabled by default in debug builds.
+  [820](https://github.com/bugsnag/bugsnag-cocoa/pull/820)
+
 ## 6.1.7 (2020-10-01)
 
 ## Bug fixes

@@ -46,11 +46,11 @@ When("I configure Bugsnag for {string}") do |event_type|
 end
 
 When("I send the app to the background") do
-  $driver.background_app(-1)
+  MazeRunner.driver.background_app(-1)
 end
 
 When("I relaunch the app") do
-  $driver.launch_app
+  MazeRunner.driver.launch_app
 end
 
 When("I clear the request queue") do
@@ -68,21 +68,21 @@ end
 # 4: The application is running in the foreground
 Then("The app is running in the foreground") do
   wait_for_true do
-    status = $driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
+    status = MazeRunner.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
     status == 4
   end
 end
 
 Then("The app is running in the background") do
   wait_for_true do
-    status = $driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
+    status = MazeRunner.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
     status == 3
   end
 end
 
 Then("The app is not running") do
   wait_for_true do
-    status = $driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
+    status = MazeRunner.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
     status == 1
   end
 end
@@ -190,7 +190,7 @@ Then("the payload field {string} matches the test device model") do |field|
       "iPhone XR" => ["iPhone11,8"],
       "iPhone XS" => %w[iPhone11,2 iPhone11,4 iPhone11,8]
   }
-  expected_model = Devices::DEVICE_HASH[$driver.device_type]["device"]
+  expected_model = Devices::DEVICE_HASH[MazeRunner.driver.device_type]["device"]
   valid_models = internal_names[expected_model]
   device_model = read_key_path(Server.current_request[:body], field)
   assert_true(valid_models.include?(device_model), "The field #{device_model} did not match any of the list of expected fields")

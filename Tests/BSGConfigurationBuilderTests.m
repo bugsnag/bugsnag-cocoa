@@ -1,11 +1,8 @@
 #import <XCTest/XCTest.h>
 
 #import "BSGConfigurationBuilder.h"
-#import "BugsnagConfiguration.h"
 #import "BugsnagTestConstants.h"
-#import "BugsnagEndpointConfiguration.h"
-#import "BugsnagErrorTypes.h"
-#import "BugsnagKeys.h"
+#import "Private.h"
 
 @interface BSGConfigurationBuilderTests : XCTestCase
 @end
@@ -15,8 +12,10 @@
 // MARK: - rejecting invalid plists
 
 - (void)testDecodeEmptyApiKey {
-    XCTAssertThrows([BSGConfigurationBuilder
-                     configurationFromOptions:@{@"apiKey": @""}]);
+    BugsnagConfiguration *configuration;
+    XCTAssertNoThrow(configuration = [BSGConfigurationBuilder configurationFromOptions:@{@"apiKey": @""}]);
+    XCTAssertEqualObjects(configuration.apiKey, @"");
+    XCTAssertThrows([configuration validate]);
 }
 
 - (void)testDecodeInvalidTypeApiKey {
@@ -25,8 +24,11 @@
 }
 
 - (void)testDecodeWithoutApiKey {
-    XCTAssertThrows([BSGConfigurationBuilder
-                     configurationFromOptions:@{@"autoDetectErrors": @NO}]);
+    BugsnagConfiguration *configuration;
+    XCTAssertNoThrow(configuration = [BSGConfigurationBuilder configurationFromOptions:@{@"autoDetectErrors": @NO}]);
+    XCTAssertNil(configuration.apiKey);
+    XCTAssertFalse(configuration.autoDetectErrors);
+    XCTAssertThrows([configuration validate]);
 }
 
 - (void)testDecodeUnknownKeys {
@@ -38,8 +40,7 @@
 }
 
 - (void)testDecodeEmptyOptions {
-    XCTAssertThrows([BSGConfigurationBuilder
-                     configurationFromOptions:@{}]);
+    XCTAssertNoThrow([BSGConfigurationBuilder configurationFromOptions:@{}]);
 }
 
 // MARK: - config loading
@@ -60,13 +61,12 @@
     XCTAssertEqual(BSGEnabledBreadcrumbTypeAll, config.enabledBreadcrumbTypes);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
+    XCTAssertTrue(config.enabledErrorTypes.ooms);
 
 #if DEBUG
     XCTAssertEqualObjects(@"development", config.releaseStage);
-    XCTAssertFalse(config.enabledErrorTypes.ooms);
 #else
     XCTAssertEqualObjects(@"production", config.releaseStage);
-    XCTAssertTrue(config.enabledErrorTypes.ooms);
 #endif
 
     XCTAssertNil(config.enabledReleaseStages);
@@ -114,12 +114,7 @@
 
     NSArray *releaseStages = @[@"beta2", @"prod"];
     XCTAssertEqualObjects(releaseStages, config.enabledReleaseStages);
-
-#if DEBUG
-    XCTAssertFalse(config.enabledErrorTypes.ooms);
-#else
     XCTAssertTrue(config.enabledErrorTypes.ooms);
-#endif
 
     XCTAssertTrue(config.enabledErrorTypes.unhandledExceptions);
     XCTAssertTrue(config.enabledErrorTypes.signals);

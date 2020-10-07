@@ -5,13 +5,10 @@
 #import <XCTest/XCTest.h>
 
 #import "BugsnagTestConstants.h"
-#import "Bugsnag.h"
-#import "BugsnagConfiguration.h"
 #import "BugsnagCrashSentry.h"
-#import "BugsnagKeys.h"
 #import "BugsnagSessionTracker.h"
-#import "BugsnagUser.h"
 #import "BSG_KSCrashType.h"
+#import "Private.h"
 
 // =============================================================================
 // MARK: - Required private methods
@@ -607,12 +604,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertTrue(config.enabledErrorTypes.signals);
     XCTAssertTrue(config.enabledErrorTypes.unhandledExceptions);
     XCTAssertTrue(config.enabledErrorTypes.unhandledRejections);
-
-#if DEBUG
-    XCTAssertFalse(config.enabledErrorTypes.ooms);
-#else
     XCTAssertTrue(config.enabledErrorTypes.ooms);
-#endif
 
     XCTAssertNil(config.enabledReleaseStages);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
@@ -635,11 +627,11 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 // MARK: - Other tests
 // =============================================================================
 
-- (void)testInitWithApiKeyThrowsWhenMissing {
+- (void)testValidateThrowsWhenMissingApiKey {
     NSString *nilKey = nil;
 
-    XCTAssertThrows([[BugsnagConfiguration alloc] initWithApiKey:nilKey]);
-    XCTAssertThrows([[BugsnagConfiguration alloc] initWithApiKey:@""]);
+    XCTAssertThrows([[[BugsnagConfiguration alloc] initWithApiKey:nilKey] validate]);
+    XCTAssertThrows([[[BugsnagConfiguration alloc] initWithApiKey:@""] validate]);
 }
 
 /**
@@ -692,30 +684,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertEqualObjects(@"123", config.user.id);
     XCTAssertEqualObjects(@"foo", config.user.name);
     XCTAssertEqualObjects(@"test@example.com", config.user.email);
-}
-
-- (void)testApiKeySetter {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    XCTAssertEqual(DUMMY_APIKEY_32CHAR_1, config.apiKey);
-
-    config.apiKey = DUMMY_APIKEY_32CHAR_1;
-    XCTAssertEqual(DUMMY_APIKEY_32CHAR_1, config.apiKey);
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnonnull"
-    XCTAssertThrows(config.apiKey = nil);
-#pragma clang diagnostic pop
-
-    XCTAssertEqual(DUMMY_APIKEY_32CHAR_1, config.apiKey);
-
-    XCTAssertThrows(config.apiKey = @"");
-    XCTAssertEqual(DUMMY_APIKEY_32CHAR_1, config.apiKey);
-
-    config.apiKey = DUMMY_APIKEY_16CHAR;
-    XCTAssertEqual(DUMMY_APIKEY_16CHAR, config.apiKey);
-
-    config.apiKey = DUMMY_APIKEY_32CHAR_1;
-    XCTAssertEqual(DUMMY_APIKEY_32CHAR_1, config.apiKey);
 }
 
 -(void)testBSGErrorTypes {
