@@ -1,4 +1,6 @@
 #import "BSGConfigurationBuilder.h"
+
+#import "BSG_KSLogger.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagEndpointConfiguration.h"
 #import "BugsnagKeys.h"
@@ -18,6 +20,28 @@ static BOOL BSGValueIsBoolean(id object) {
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
 
+    NSArray<NSString *> *validKeys = @[
+        BSGKeyApiKey,
+        BSGKeyAppType,
+        BSGKeyAppVersion,
+        BSGKeyAutoDetectErrors,
+        BSGKeyAutoTrackSessions,
+        BSGKeyBundleVersion,
+        BSGKeyEnabledReleaseStages,
+        BSGKeyEndpoints,
+        BSGKeyMaxBreadcrumbs,
+        BSGKeyPersistUser,
+        BSGKeyRedactedKeys,
+        BSGKeyReleaseStage,
+        BSGKeySendThreads,
+    ];
+    
+    NSMutableSet *unknownKeys = [NSMutableSet setWithArray:options.allKeys];
+    [unknownKeys minusSet:[NSSet setWithArray:validKeys]];
+    if (unknownKeys.count > 0) {
+        BSG_KSLOG_WARN(@"Unknown dictionary keys passed in configuration options: %@", unknownKeys);
+    }
+    
     [self loadString:config options:options key:BSGKeyAppType];
     [self loadString:config options:options key:BSGKeyAppVersion];
     [self loadBoolean:config options:options key:BSGKeyAutoDetectErrors];
