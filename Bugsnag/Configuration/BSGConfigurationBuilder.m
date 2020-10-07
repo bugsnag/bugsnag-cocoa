@@ -8,19 +8,15 @@ static BOOL BSGValueIsBoolean(id object) {
             && CFGetTypeID((__bridge CFTypeRef)object) == CFBooleanGetTypeID();
 }
 
-@interface BugsnagConfiguration ()
-+ (BOOL)isValidApiKey:(NSString *)apiKey;
-@end
-
 @implementation BSGConfigurationBuilder
 
 + (BugsnagConfiguration *)configurationFromOptions:(NSDictionary *)options {
     NSString *apiKey = options[@"apiKey"];
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
-
-    if (![BugsnagConfiguration isValidApiKey:apiKey]) {
-        return config;
+    if (apiKey != nil && ![apiKey isKindOfClass:[NSString class]]) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Bugsnag apiKey must be a string" userInfo:nil];
     }
+
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:apiKey];
 
     [self loadString:config options:options key:BSGKeyAppType];
     [self loadString:config options:options key:BSGKeyAppVersion];

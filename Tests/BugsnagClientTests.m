@@ -126,6 +126,26 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination);
     XCTAssertNil([configuration getMetadataFromSection:@"exampleSection3" withKey:@"exampleKey3"]);
 }
 
+- (void)testMissingApiKey {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@""];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    XCTAssertThrowsSpecificNamed([client start], NSException, NSInvalidArgumentException,
+                                 @"An empty apiKey should cause [BugsnagClient start] to throw an exception.");
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    configuration.apiKey = nil;
+#pragma clang diagnostic pop
+    XCTAssertThrowsSpecificNamed([client start], NSException, NSInvalidArgumentException,
+                                 @"A missing apiKey should cause [BugsnagClient start] to throw an exception.");
+}
+
+- (void)testInvalidApiKey {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"INVALID-API-KEY"];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    XCTAssertNoThrow([client start], @"[BugsnagClient start] should not throw an exception if the apiKey appears to be malformed");
+}
+
 /**
  * Test that user info is stored and retreived correctly
  */
