@@ -42,6 +42,14 @@ class ViewController: UIViewController {
     @IBAction func clearUserData(_ sender: Any) {
         NSLog("Clear user defaults")
         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        do {
+            let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+            for url in try FileManager.default.contentsOfDirectory(at: cachesDirectory, includingPropertiesForKeys: []) {
+                try FileManager.default.removeItem(at: url)
+            }
+        } catch {
+            NSLog("%@", String(describing: error))
+        }
     }
     
     internal func prepareScenario() -> Scenario {
