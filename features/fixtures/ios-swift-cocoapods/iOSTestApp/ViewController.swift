@@ -44,8 +44,12 @@ class ViewController: UIViewController {
         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
         do {
             let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-            for url in try FileManager.default.contentsOfDirectory(at: cachesDirectory, includingPropertiesForKeys: []) {
-                try FileManager.default.removeItem(at: url)
+            try FileManager.default.contentsOfDirectory(at: cachesDirectory, includingPropertiesForKeys: []).forEach {
+                do {
+                    try FileManager.default.removeItem(at: $0)
+                } catch {
+                    NSLog("%@", String(describing: error))
+                }
             }
         } catch {
             NSLog("%@", String(describing: error))
