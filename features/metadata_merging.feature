@@ -1,7 +1,7 @@
 Feature: Metadata values are merged in a defined order
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Merging metadata values
     When I run "MetadataMergeScenario"

@@ -75,17 +75,6 @@
 		<string>0192837465afbecd0192837465afbecd</string>
 		<key>releaseStage</key>
 		<string>beta2</string>
-		<key>notifyReleaseStages</key>
-		<array>
-			<string>beta2</string>
-			<string>prod</string>
-		</array>
-		<key>reportOOMs</key>
-		<false/>
-		<key>autoNotify</key>
-		<false/>
-		<key>autoBreadcrumbs</key>
-		<true/>
 		<key>autoTrackSessions</key>
 		<true/>
 	</dict>

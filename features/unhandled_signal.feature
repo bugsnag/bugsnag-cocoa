@@ -1,7 +1,7 @@
 Feature: Signals are captured as error reports in Bugsnag
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Triggering SIGABRT
     When I run "AbortScenario" and relaunch the app

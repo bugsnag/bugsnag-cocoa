@@ -1,7 +1,7 @@
 Feature: Reporting User Information
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Default user information only includes ID
     When I run "UserDefaultInfoScenario"

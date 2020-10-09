@@ -1,7 +1,7 @@
 Feature: Persisting User Information
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: User Info is persisted from config across app runs
     When I run "UserPersistencePersistUserScenario"

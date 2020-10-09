@@ -1,7 +1,7 @@
 Feature: Handled Errors and Exceptions
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Threads are captured for handled errors by default
     When I run "HandledErrorThreadSendAlwaysScenario"

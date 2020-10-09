@@ -1,7 +1,7 @@
 Feature: Discarding reports based on release stage
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Unhandled error ignored when release stage is not present in enabledReleaseStages
     When I run "UnhandledErrorInvalidReleaseStage" and relaunch the app

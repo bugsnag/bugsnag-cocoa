@@ -1,7 +1,7 @@
 Feature: Discarding sessions based on release stage
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Automatic sessions are only sent when enabledReleaseStages contains the releaseStage
     When I run "EnabledReleaseStageAutoSessionScenario"

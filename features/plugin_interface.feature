@@ -6,7 +6,7 @@ Feature: Add custom behavior through a plugin interface
   initialization process.
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Changing payload notifier description
     When I run "CustomPluginNotifierDescriptionScenario" and relaunch the app

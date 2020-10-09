@@ -1,7 +1,7 @@
 Feature: Stopping and resuming sessions
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: When a session is stopped the error has no session information
     When I run "StoppedSessionScenario"

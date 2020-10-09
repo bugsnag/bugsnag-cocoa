@@ -1,7 +1,7 @@
 Feature: Thrown C++ exceptions are captured by Bugsnag
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Throwing a C++ exception
     When I run "CxxExceptionScenario" and relaunch the app

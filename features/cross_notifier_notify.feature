@@ -6,7 +6,7 @@ Feature: Communicating events between notifiers
   using bugsnag-cocoa as the delivery layer.
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Report a handled event through internalNotify()
   Report a handled exception, including a custom stacktrace and severity.
