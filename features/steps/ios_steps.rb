@@ -22,10 +22,10 @@ When("I run {string} and relaunch the app") do |event_type|
   }
 end
 
-When("I clear all UserDefaults data") do
+When("I clear all persistent data") do
   steps %Q{
-    Given the element "ClearUserDefaultsButton" is present
-    And I click the element "ClearUserDefaultsButton"
+    Given the element "ClearPersistentDataButton" is present
+    And I click the element "ClearPersistentDataButton"
   }
 end
 

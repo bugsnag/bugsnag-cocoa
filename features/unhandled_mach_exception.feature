@@ -1,7 +1,7 @@
 Feature: Bugsnag captures an unhandled mach exception
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Trigger a mach exception
     When I run "UnhandledMachExceptionScenario" and relaunch the app

@@ -1,7 +1,7 @@
 Feature: Handled Errors and Exceptions
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Override errorClass and message from a notifyError() callback, customize report
 

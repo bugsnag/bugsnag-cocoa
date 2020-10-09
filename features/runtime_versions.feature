@@ -1,7 +1,7 @@
 Feature: Runtime versions are included in all requests
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Runtime versions included in Cocoa error
     When I run "HandledErrorScenario"

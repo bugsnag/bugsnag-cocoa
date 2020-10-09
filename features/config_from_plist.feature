@@ -3,7 +3,7 @@ Feature: Loading Bugsnag configuration from Info.plist
   writing code for those options.
 
     Background:
-        Given I clear all UserDefaults data
+        Given I clear all persistent data
 
     Scenario: Specifying config in Info.plist
         When I run "LoadConfigFromFileScenario"

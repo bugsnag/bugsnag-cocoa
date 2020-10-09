@@ -1,7 +1,7 @@
 Feature: Error Reporting Thread
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Only 1 thread is flagged as the error reporting thread
     When I run "HandledErrorScenario"

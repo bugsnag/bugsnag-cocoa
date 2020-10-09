@@ -1,7 +1,7 @@
 Feature: App and Device attributes present
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: App and Device info is as expected
     When I run "AppAndDeviceAttributesScenario"

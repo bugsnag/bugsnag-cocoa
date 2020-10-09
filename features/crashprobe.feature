@@ -1,7 +1,7 @@
 Feature: Reporting crash events
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Executing privileged instruction
     When I run "PrivilegedInstructionScenario" and relaunch the app
