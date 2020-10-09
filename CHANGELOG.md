@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+## Bug fixes
+
+* Changed synchronization method when responding to dynamic library image events
+  to a dispatch queue, which is a more bulletproof and battle-hardened approach.
+  [837](https://github.com/bugsnag/bugsnag-cocoa/pull/837)
+
 ## 6.2.0 (2020-10-07)
 
 ### Enhancements
