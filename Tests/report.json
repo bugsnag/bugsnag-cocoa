@@ -9,7 +9,7 @@
         "kernel_version": "Darwin Kernel Version 14.0.0: Fri Sep 19 00:26:44 PDT 2014; root:xnu-2782.1.97~2/RELEASE_X86_64",
         "machine": "x86_64",
         "application_stats": {
-            "background_time_since_last_crash": 2,
+            "time_since_launch": 4,
             "active_time_since_launch": 2,
             "sessions_since_last_crash": 1,
             "launches_since_last_crash": 1,
