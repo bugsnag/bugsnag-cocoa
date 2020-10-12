@@ -151,6 +151,7 @@ void bsg_kscrash_reinstall(const char *const crashReportFilePath,
         BSG_KSLOG_ERROR("Failed to initialize persistent crash state");
     }
     context->state.appLaunchTime = mach_absolute_time();
+    context->state.appStateTransitionTime = mach_absolute_time();
 }
 
 BSG_KSCrashType bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashType crashTypes) {

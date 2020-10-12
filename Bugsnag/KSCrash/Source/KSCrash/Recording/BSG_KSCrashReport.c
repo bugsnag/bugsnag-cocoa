@@ -1351,8 +1351,6 @@ void bsg_kscrw_i_writeAppStats(const BSG_KSCrashReportWriter *const writer,
                                BSG_KSCrash_State *state) {
     writer->beginObject(writer, key);
     {
-        writer->addBooleanElement(writer, BSG_KSCrashField_AppActive,
-                                  state->applicationIsActive);
         writer->addBooleanElement(writer, BSG_KSCrashField_AppInFG,
                                   state->applicationIsInForeground);
 
@@ -1362,7 +1360,7 @@ void bsg_kscrw_i_writeAppStats(const BSG_KSCrashReportWriter *const writer,
                                   state->sessionsSinceLastCrash);
         writer->addFloatingPointElement(writer,
                                         BSG_KSCrashField_ActiveTimeSinceCrash,
-                                        state->activeDurationSinceLastCrash);
+                                        state->foregroundDurationSinceLastCrash);
         writer->addFloatingPointElement(
             writer, BSG_KSCrashField_BGTimeSinceCrash,
             state->backgroundDurationSinceLastCrash);
@@ -1371,7 +1369,7 @@ void bsg_kscrw_i_writeAppStats(const BSG_KSCrashReportWriter *const writer,
                                   state->sessionsSinceLaunch);
         writer->addFloatingPointElement(writer,
                                         BSG_KSCrashField_ActiveTimeSinceLaunch,
-                                        state->activeDurationSinceLaunch);
+                                        state->foregroundDurationSinceLaunch);
         writer->addFloatingPointElement(writer,
                                         BSG_KSCrashField_BGTimeSinceLaunch,
                                         state->backgroundDurationSinceLaunch);
