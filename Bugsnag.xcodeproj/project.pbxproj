@@ -751,7 +751,6 @@
 		CB10E548250BAD6100AF5824 /* BSGCachesDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = CB10E543250BAD6100AF5824 /* BSGCachesDirectory.m */; };
 		CB10E549250BAD6100AF5824 /* BSGCachesDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = CB10E543250BAD6100AF5824 /* BSGCachesDirectory.m */; };
 		CB9103642502320A00E9D1E2 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
-		CB9103662502404000E9D1E2 /* BSGSerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103652502404000E9D1E2 /* BSGSerializationTest.m */; };
 		CBA2249B251E429C00B87416 /* TestSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = CBA2249A251E429C00B87416 /* TestSupport.m */; };
 		CBA2249C251E429C00B87416 /* TestSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = CBA2249A251E429C00B87416 /* TestSupport.m */; };
 		CBA2249D251E429C00B87416 /* TestSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = CBA2249A251E429C00B87416 /* TestSupport.m */; };
@@ -1296,7 +1295,6 @@
 		CB10E542250BAD6100AF5824 /* BSGCachesDirectory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGCachesDirectory.h; sourceTree = "<group>"; };
 		CB10E543250BAD6100AF5824 /* BSGCachesDirectory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGCachesDirectory.m; sourceTree = "<group>"; };
 		CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagApiClientTest.m; sourceTree = "<group>"; };
-		CB9103652502404000E9D1E2 /* BSGSerializationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGSerializationTest.m; sourceTree = "<group>"; };
 		CBA22499251E429C00B87416 /* TestSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestSupport.h; sourceTree = "<group>"; };
 		CBA2249A251E429C00B87416 /* TestSupport.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestSupport.m; sourceTree = "<group>"; };
 		CBAA6AB3250BA00500713376 /* BugsnagKVStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagKVStore.h; sourceTree = "<group>"; };
@@ -1639,7 +1637,6 @@
 				008966C62486D43600DC48C2 /* BSGConnectivityTest.m */,
 				CBCF77AA250142E0004AF22A /* BSGJSONSerializerTest.m */,
 				008966C82486D43600DC48C2 /* BSGOutOfMemoryTests.m */,
-				CB9103652502404000E9D1E2 /* BSGSerializationTest.m */,
 				CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */,
 				E701FA9E2490EF4A008D842F /* BugsnagApiValidationTest.m */,
 				008966C22486D43600DC48C2 /* BugsnagAppTest.m */,
@@ -2579,7 +2576,6 @@
 				008966F72486D43700DC48C2 /* RegisterErrorDataTest.m in Sources */,
 				008967152486D43700DC48C2 /* BugsnagCollectionsBSGDictMergeTest.m in Sources */,
 				008967632486D43700DC48C2 /* BugsnagCollectionsBSGDictSetSafeObjectTest.m in Sources */,
-				CB9103662502404000E9D1E2 /* BSGSerializationTest.m in Sources */,
 				008967AB2486D43700DC48C2 /* KSMach_Tests.m in Sources */,
 				0089672A2486D43700DC48C2 /* BugsnagStacktraceTest.m in Sources */,
 				0089678D2486D43700DC48C2 /* KSCrashReportConverter_Tests.m in Sources */,
