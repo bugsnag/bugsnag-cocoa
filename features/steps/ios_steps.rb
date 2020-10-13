@@ -239,6 +239,18 @@ Then("the exception {string} equals one of:") do |keypath, possible_values|
   assert_includes(possible_values.raw.flatten, value)
 end
 
+Then("the error is an OOM event") do
+  steps %Q{
+    Then the exception "message" equals "The app was likely terminated by the operating system while in the foreground"
+    And the exception "errorClass" equals "Out Of Memory"
+    And the exception "type" equals "cocoa"
+    And the payload field "events.0.exceptions.0.stacktrace" is an array with 0 elements
+    And the event "severity" equals "error"
+    And the event "severityReason.type" equals "outOfMemory"
+    And the event "unhandled" is true
+  }
+end
+
 def wait_for_true
   max_attempts = 300
   attempts = 0
