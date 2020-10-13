@@ -19,7 +19,8 @@
 PLATFORM?=iOS
 OS?=latest
 TEST_CONFIGURATION?=Debug
-BUILD_FLAGS=-project Bugsnag.xcodeproj -scheme Bugsnag-$(PLATFORM) -derivedDataPath build/build-$(PLATFORM)
+DATA_PATH=build/build-$(PLATFORM)
+BUILD_FLAGS=-project Bugsnag.xcodeproj -scheme Bugsnag-$(PLATFORM) -derivedDataPath $(DATA_PATH)
 
 ifeq ($(PLATFORM),macOS)
  SDK?=macosx
@@ -87,6 +88,13 @@ build_swift: ## Build with Swift Package Manager
 #--------------------------------------------------------------------------
 # Testing
 #--------------------------------------------------------------------------
+
+analyze: ## Run static analysis on the build and fail if issues found
+	@rm -rf $(DATA_PATH)/analyzer
+	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) analyze \
+		CLANG_ANALYZER_OUTPUT=html \
+		CLANG_ANALYZER_OUTPUT_DIR=$(DATA_PATH)/analyzer $(FORMATTER) \
+		&& [[ -z `find $(DATA_PATH)/analyzer -name "*.html"` ]]
 
 test: ## Run unit tests
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
