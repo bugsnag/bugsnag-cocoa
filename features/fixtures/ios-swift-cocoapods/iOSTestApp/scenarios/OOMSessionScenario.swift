@@ -1,5 +1,5 @@
 //
-//  OOMLoadScenario.swift
+//  OOMSessionScenario.swift
 //  iOSTestApp
 //
 //  Created by Alexander Moinet on 13/10/2020.
@@ -13,7 +13,7 @@ class OOMSessionScenario: Scenario {
 
     override func startBugsnag() {
         config.enabledErrorTypes.ooms = true
-        config.autoTrackSessions = true
+        config.autoTrackSessions = false
         Bugsnag.start(with: config)
     }
 
