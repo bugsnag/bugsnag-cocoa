@@ -6,7 +6,16 @@ Feature: Out of memory errors
   Scenario: Out of memory errors are enabled when loading configuration
     When I run "OOMLoadScenario"
     And I wait to receive a request
-    And the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
+    Then the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
+    And the event "unhandled" is false
+    And the exception "message" equals "OOMLoadScenario"
+    And the event has a "manual" breadcrumb named "OOMLoadScenarioBreadcrumb"
+    And I discard the oldest request
+
+    When I relaunch the app
+    And I configure Bugsnag for "OOMLoadScenario"
+    And I wait to receive a request
+    Then the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
     And the error is an OOM event
 
     # Ensure the basic data from OOMs are present
@@ -21,8 +30,20 @@ Feature: Out of memory errors
     And the event "app.bundleVersion" is not null
     And the event "app.version" is not null
 
+    # Ensure breadcrumbs are carried over
+    And the event has a "manual" breadcrumb named "OOMLoadScenarioBreadcrumb"
+    And the event has a "error" breadcrumb named "OOMLoadScenario"
+
   Scenario: Out of memory errors are disabled by AutoDetectErrors
     When I run "OOMAutoDetectErrorsScenario"
+    And I wait to receive a request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the event "unhandled" is false
+    And the exception "message" equals "OOMAutoDetectErrorsScenario"
+    And I discard the oldest request
+
+    And I relaunch the app
+    And I run "OOMAutoDetectErrorsScenario"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
@@ -34,5 +55,11 @@ Feature: Out of memory errors
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
     And the exception "message" equals "OOMEnabledErrorTypesScenario"
+    And I discard the oldest request
 
-  
+    And I relaunch the app
+    And I run "OOMEnabledErrorTypesScenario"
+    And I wait to receive a request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the event "unhandled" is false
+    And the exception "message" equals "OOMEnabledErrorTypesScenario"

@@ -9,17 +9,19 @@
 import Foundation
 import Bugsnag
 
-class OOMLoadScenario: OOMBaseScenario {
+class OOMLoadScenario: Scenario {
 
     override func startBugsnag() {
-        self.createOOMFiles()
-
-        // Use a loaded config so OOMs are enabled by default
         config = BugsnagConfiguration.loadConfig()
-        // We only want the one request
         config.autoTrackSessions = false
         Bugsnag.start(with: config)
     }
 
-    override func run() {}
+    override func run() {
+        Bugsnag.leaveBreadcrumb("OOMLoadScenarioBreadcrumb", metadata: ["foo":"bar"], type: BSGBreadcrumbType.manual)
+        Bugsnag.notify(NSException(name: NSExceptionName("OOMLoadScenario"),
+            reason: "OOMLoadScenario",
+            userInfo: nil)
+        )
+    }
 }

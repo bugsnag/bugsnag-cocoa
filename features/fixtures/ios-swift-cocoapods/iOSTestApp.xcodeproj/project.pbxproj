@@ -43,10 +43,10 @@
 		8AF6FD7A225E3FA00056EF9E /* ResumeSessionOOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AF6FD79225E3FA00056EF9E /* ResumeSessionOOMScenario.m */; };
 		8AF8FCAC22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF8FCAB22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift */; };
 		8AF8FCAE22BD23BA00A967CA /* HandledInternalNotifyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */; };
-		A1117E532534696B00014FDA /* OOMBaseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E522534696B00014FDA /* OOMBaseScenario.swift */; };
 		A1117E552535A59100014FDA /* OOMLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E542535A59100014FDA /* OOMLoadScenario.swift */; };
 		A1117E572535B22300014FDA /* OOMAutoDetectErrorsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E562535B22300014FDA /* OOMAutoDetectErrorsScenario.swift */; };
 		A1117E592535B29800014FDA /* OOMEnabledErrorTypesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E582535B29800014FDA /* OOMEnabledErrorTypesScenario.swift */; };
+		A1117E5B2536036400014FDA /* OOMSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E5A2536036400014FDA /* OOMSessionScenario.swift */; };
 		C4D0B5FF8E60C0835B86DFE9 /* Pods_iOSTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */; };
 		E700EE48247D1158008CFFB6 /* UserEventOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE47247D1158008CFFB6 /* UserEventOverrideScenario.swift */; };
 		E700EE4A247D1164008CFFB6 /* UserSessionOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE49247D1164008CFFB6 /* UserSessionOverrideScenario.swift */; };
@@ -199,10 +199,10 @@
 		8AF8FCAB22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnhandledInternalNotifyScenario.swift; sourceTree = "<group>"; };
 		8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandledInternalNotifyScenario.swift; sourceTree = "<group>"; };
 		960A6E7D4E847F1D76A4FD06 /* Pods-iOSTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOSTestApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOSTestApp/Pods-iOSTestApp.release.xcconfig"; sourceTree = "<group>"; };
-		A1117E522534696B00014FDA /* OOMBaseScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMBaseScenario.swift; sourceTree = "<group>"; };
 		A1117E542535A59100014FDA /* OOMLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMLoadScenario.swift; sourceTree = "<group>"; };
 		A1117E562535B22300014FDA /* OOMAutoDetectErrorsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMAutoDetectErrorsScenario.swift; sourceTree = "<group>"; };
 		A1117E582535B29800014FDA /* OOMEnabledErrorTypesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMEnabledErrorTypesScenario.swift; sourceTree = "<group>"; };
+		A1117E5A2536036400014FDA /* OOMSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMSessionScenario.swift; sourceTree = "<group>"; };
 		E700EE47247D1158008CFFB6 /* UserEventOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventOverrideScenario.swift; sourceTree = "<group>"; };
 		E700EE49247D1164008CFFB6 /* UserSessionOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionOverrideScenario.swift; sourceTree = "<group>"; };
 		E700EE4B247D12E4008CFFB6 /* UserFromConfigEventScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFromConfigEventScenario.swift; sourceTree = "<group>"; };
@@ -565,8 +565,8 @@
 				8AF6FD76225E3F870056EF9E /* StopSessionOOMScenario.m */,
 				A1117E562535B22300014FDA /* OOMAutoDetectErrorsScenario.swift */,
 				A1117E582535B29800014FDA /* OOMEnabledErrorTypesScenario.swift */,
-				A1117E522534696B00014FDA /* OOMBaseScenario.swift */,
 				A1117E542535A59100014FDA /* OOMLoadScenario.swift */,
+				A1117E5A2536036400014FDA /* OOMSessionScenario.swift */,
 			);
 			name = OOMs;
 			sourceTree = "<group>";
@@ -890,6 +890,7 @@
 				A1117E572535B22300014FDA /* OOMAutoDetectErrorsScenario.swift in Sources */,
 				E75040B424782597005D33BD /* ReleaseStageSessionScenario.swift in Sources */,
 				E700EE75247D7A0C008CFFB6 /* SIGFPEScenario.m in Sources */,
+				A1117E5B2536036400014FDA /* OOMSessionScenario.swift in Sources */,
 				8AF8FCAE22BD23BA00A967CA /* HandledInternalNotifyScenario.swift in Sources */,
 				8A42FD35225DEE04007AE561 /* SessionOOMScenario.m in Sources */,
 				E7A324EF247E9DBC008B0052 /* BreadcrumbCallbackCrashScenario.swift in Sources */,
@@ -919,7 +920,6 @@
 				8AEFC73420F8D1BB00A78779 /* ManualSessionWithUserScenario.m in Sources */,
 				E753F25424937A83001FB671 /* ThreadScenarios.m in Sources */,
 				F4295B56219D228FAA99BC14 /* ObjCExceptionScenario.m in Sources */,
-				A1117E532534696B00014FDA /* OOMBaseScenario.swift in Sources */,
 				F4295218A62E41518DC3C057 /* AccessNonObjectScenario.m in Sources */,
 				E7A324E0247E70F9008B0052 /* SessionCallbackDiscardScenario.swift in Sources */,
 				8A72A0382396574F00328051 /* CustomPluginNotifierDescriptionScenario.m in Sources */,

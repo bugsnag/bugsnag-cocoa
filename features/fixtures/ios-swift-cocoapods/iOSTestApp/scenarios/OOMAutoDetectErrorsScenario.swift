@@ -9,14 +9,12 @@
 import Foundation
 import Bugsnag
 
-class OOMAutoDetectErrorsScenario: OOMBaseScenario {
+class OOMAutoDetectErrorsScenario: Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false
         self.config.enabledErrorTypes.ooms = true
         self.config.autoDetectErrors = false
-        
-        self.createOOMFiles()
         
         super.startBugsnag()
     }
