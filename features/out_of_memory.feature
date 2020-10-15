@@ -1,5 +1,9 @@
 Feature: Out of memory errors
 
+# Due to the combination of BrowserStack's behaviour when resetting the app and the way that our OOM detection works,
+# the I relaunch the app steps are currently sufficient to trigger the OOM mechanism. However, these tests may not
+# behave in the same way on local devices, device farms other that BrowserStack, or if we change that OOM detection works.
+
   Background:
     Given I clear all persistent data
 

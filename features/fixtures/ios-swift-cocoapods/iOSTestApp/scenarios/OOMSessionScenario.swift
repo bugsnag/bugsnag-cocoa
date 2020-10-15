@@ -18,6 +18,6 @@ class OOMSessionScenario: Scenario {
     }
 
     override func run() {
-//        Bugsnag.startSession()
+        Bugsnag.startSession()
     }
 }
