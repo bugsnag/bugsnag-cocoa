@@ -1,7 +1,7 @@
 Feature: Session Tracking
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Launching using the default configuration sends a single session
     When I run "AutoSessionScenario"

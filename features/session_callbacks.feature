@@ -1,7 +1,7 @@
 Feature: Callbacks can access and modify session information
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Returning false in a callback discards sessions
     When I run "SessionCallbackDiscardScenario"

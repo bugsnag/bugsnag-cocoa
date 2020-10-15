@@ -4,7 +4,7 @@ Feature: Attaching a series of notable events leading up to errors
   lead the developer to the cause of the event being reported.
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Manually leaving a breadcrumb of a discarded type and discarding automatic
     When I run "DiscardedBreadcrumbTypeScenario"

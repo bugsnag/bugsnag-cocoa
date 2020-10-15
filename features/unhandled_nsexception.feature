@@ -1,7 +1,7 @@
 Feature: Uncaught NSExceptions are captured by Bugsnag
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Throw a NSException
     When I run "ObjCExceptionScenario" and relaunch the app

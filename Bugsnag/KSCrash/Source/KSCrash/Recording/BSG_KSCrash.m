@@ -37,6 +37,7 @@
 //#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
 #import "BugsnagThread.h"
+#import "BSGJSONSerialization.h"
 #import "BSGSerialization.h"
 #import "Bugsnag.h"
 #import "BugsnagCollections.h"
@@ -308,17 +309,28 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
             numFrames = 0;
         }
     }
-
-    char *trace = bsg_kscrash_captureThreadTrace(depth, numFrames, callstack, recordAllThreads);
+    
+    NSString *tracePath = [NSTemporaryDirectory() stringByAppendingPathComponent:
+                           [NSUUID UUID].UUIDString];
+    bsg_kscrash_captureThreadTrace(depth, numFrames, callstack, recordAllThreads,
+                                   tracePath.fileSystemRepresentation);
     free(callstack);
-    NSDictionary *json = BSGDeserializeJson(trace);
-    free(trace);
+    
+    NSData *jsonData = [NSData dataWithContentsOfFile:tracePath];
+    NSError *error = nil;
+    NSDictionary *json = [BSGJSONSerialization
+                          JSONObjectWithData:jsonData options:0 error:&error];
+    
+    [[NSFileManager defaultManager] removeItemAtPath:tracePath error:NULL];
     
     if (json) {	
         return [BugsnagThread threadsFromArray:[json valueForKeyPath:@"crash.threads"]
                                   binaryImages:json[@"binary_images"]
                                          depth:depth
                                      errorType:nil];
+    } else {
+        BSG_KSLOG_ERROR(@"Failed to decode thread trace JSON, error = %@",
+                        error);
     }
     return @[];
 }

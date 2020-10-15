@@ -2,7 +2,7 @@ Feature: Metadata values can be redacted
   Values added to metadata can be redacted through the use of config.redactedKeys
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Default behaviour redacts 'password' values after callback is run
     When I run "MetadataRedactionDefaultScenario"

@@ -1,7 +1,7 @@
 Feature: Enabled error types
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: All Crash reporting is disabled
     # Sessions: on, unhandled crashes: off

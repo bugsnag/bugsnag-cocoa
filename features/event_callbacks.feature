@@ -1,7 +1,7 @@
 Feature: Callbacks can access and modify event information
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Removing an OnSend callback does not affect other OnSend callbacks
     When I run "OnSendCallbackRemovalScenario"

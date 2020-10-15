@@ -1,7 +1,7 @@
 Feature: The context can be automatically and manually set on errors
 
   Background:
-    Given I clear all UserDefaults data
+    Given I clear all persistent data
 
   Scenario: Automatic context from a handled NSError
     When I run "AutoContextNSErrorScenario"

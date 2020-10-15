@@ -3,7 +3,7 @@ Feature: autoDetectErrors flag controls whether errors are captured automaticall
     is false it should only capture handled errors which the user has reported.
 
     Background:
-        Given I clear all UserDefaults data
+        Given I clear all persistent data
 
     Scenario: Uncaught NSException not reported when autoDetectErrors is false
         When I run "AutoDetectFalseHandledScenario"
