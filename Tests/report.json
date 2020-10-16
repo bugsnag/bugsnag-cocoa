@@ -1,7 +1,7 @@
 {
     "system": {
         "binary_cpu_type": 16777223,
-        "boot_time": "2014-11-18T07:02:37Z",
+        "boot_time": "2014-11-18T07:02:37.000Z",
         "CFBundleName": "CrashProbeiOS",
         "app_uuid": "D0A41830-4FD2-3B02-A23B-0741AD4C7F52",
         "process_name": "CrashProbeiOS",
@@ -24,7 +24,7 @@
         "CFBundleShortVersionString": "1.0",
         "binary_cpu_subtype": 3,
         "system_name": "iPhone OS",
-        "app_start_time": "2014-12-02T01:56:13Z",
+        "app_start_time": "2014-12-02T01:56:13.000Z",
         "CFBundleExecutable": "CrashProbeiOS",
         "process_id": 15137,
         "cpu_subtype": 8,
@@ -48,7 +48,7 @@
     "report": {
         "process_name": "CrashProbeiOS",
         "id": "10BA6DDD-6658-4B6A-B66E-9378B9F354BB",
-        "timestamp": "2014-12-02T01:56:13Z",
+        "timestamp": "2014-12-02T01:56:13.000Z",
         "type": "standard",
         "version": {
             "major": 3,
@@ -2103,8 +2103,8 @@
                 "depth": 4,
                 "severity": "warning",
                 "breadcrumbs": [
-                    {"message": "App launched", "timestamp": "2020-02-14T16:12:22Z", "type": "manual", "metaData":{}},
-                    {"message": "Tapped button", "timestamp": "2020-02-14T16:12:24Z", "type": "manual", "metaData":{}}
+                    {"message": "App launched", "timestamp": "2020-02-14T16:12:22.000Z", "type": "manual", "metaData":{}},
+                    {"message": "Tapped button", "timestamp": "2020-02-14T16:12:24.000Z", "type": "manual", "metaData":{}}
                 ]
             }
         }
