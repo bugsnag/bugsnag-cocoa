@@ -7,7 +7,9 @@
 //
 
 #import <TargetConditionals.h>
-#if !TARGET_OS_OSX
+#if TARGET_OS_OSX
+#import <AppKit/AppKit.h>
+#else
 #import <UIKit/UIKit.h>
 #endif
 
@@ -71,7 +73,10 @@ static NSMutableDictionary* initCurrentState(BugsnagKVStore *kvstore, BugsnagCon
     bool isBeingDebugged = bsg_ksmachisBeingTraced();
     bool isInForeground = true;
     bool isActive = true;
-#if !TARGET_OS_OSX
+#if TARGET_OS_OSX
+    // MacOS "active" serves the same purpose as "foreground" in iOS
+    isInForeground = [NSApplication sharedApplication].active;
+#else
     UIApplicationState appState = [BSG_KSSystemInfo currentAppState];
     isInForeground = [BSG_KSSystemInfo isInForeground:appState];
     isActive = appState == UIApplicationStateActive;
@@ -95,6 +100,8 @@ static NSMutableDictionary* initCurrentState(BugsnagKVStore *kvstore, BugsnagCon
     app[BSGKeyType] = @"tvOS";
 #elif BSG_PLATFORM_IOS
     app[BSGKeyType] = @"iOS";
+#elif BSG_PLATFORM_OSX
+    app[BSGKeyType] = @"macOS";
 #endif
     app[SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE] = @(isBeingDebugged);
 
@@ -149,9 +156,23 @@ NSDictionary *copyLaunchState(NSDictionary *launchState) {
         _currentLaunchState = [_currentLaunchStateRW copy];
         [self sync];
 
-#if !TARGET_OS_OSX
         __weak __typeof__(self) weakSelf = self;
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+#if TARGET_OS_OSX
+        [center addObserverForName:NSApplicationWillTerminateNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            [weakSelf.kvStore setBoolean:YES forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
+            // No need to update since we are shutting down.
+        }];
+        // MacOS "active" serves the same purpose as "foreground" in iOS
+        [center addObserverForName:NSApplicationDidBecomeActiveNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            [weakSelf.kvStore setBoolean:YES forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
+            [weakSelf bgSetAppValue:@YES forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
+        }];
+        [center addObserverForName:NSApplicationDidResignActiveNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            [weakSelf.kvStore setBoolean:NO forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
+            [weakSelf bgSetAppValue:@NO forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
+        }];
+#else
         [center addObserverForName:UIApplicationWillTerminateNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
             [weakSelf.kvStore setBoolean:YES forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
             // No need to update since we are shutting down.
