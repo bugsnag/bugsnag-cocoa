@@ -339,7 +339,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     BSG_KSCrash_State state = crashContext()->state;
     bsg_kscrashstate_updateDurationStats(&state);
     NSMutableDictionary *dict = [NSMutableDictionary new];
-    BSGDictSetSafeObject(dict, @(state.activeDurationSinceLaunch), @BSG_KSCrashField_ActiveTimeSinceLaunch);
+    BSGDictSetSafeObject(dict, @(state.foregroundDurationSinceLaunch), @BSG_KSCrashField_ActiveTimeSinceLaunch);
     BSGDictSetSafeObject(dict, @(state.backgroundDurationSinceLaunch), @BSG_KSCrashField_BGTimeSinceLaunch);
     BSGDictSetSafeObject(dict, @(state.applicationIsInForeground), @BSG_KSCrashField_AppInFG);
     return dict;
@@ -376,12 +376,12 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     }
 
 BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval,
-                                    activeDurationSinceLastCrash)
+                                    foregroundDurationSinceLastCrash)
 BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval,
                                     backgroundDurationSinceLastCrash)
 BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(int, launchesSinceLastCrash)
 BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(int, sessionsSinceLastCrash)
-BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval, activeDurationSinceLaunch)
+BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval, foregroundDurationSinceLaunch)
 BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval,
                                     backgroundDurationSinceLaunch)
 BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(int, sessionsSinceLaunch)
@@ -476,11 +476,11 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 // ============================================================================
 
 - (void)applicationDidBecomeActive {
-    bsg_kscrashstate_notifyAppActive(true);
+    bsg_kscrashstate_notifyAppInForeground(true);
 }
 
 - (void)applicationWillResignActive {
-    bsg_kscrashstate_notifyAppActive(false);
+    bsg_kscrashstate_notifyAppInForeground(true);
 }
 
 - (void)applicationDidEnterBackground {
