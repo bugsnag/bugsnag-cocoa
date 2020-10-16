@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+## Enhancements
+
+* Timestamp accuracy in reports has been increased from seconds to milliseconds.
+  [847](https://github.com/bugsnag/bugsnag-cocoa/pull/847)
+
 ## 6.2.1 (2020-10-15)
 
 ## Bug fixes
