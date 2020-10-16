@@ -46,6 +46,9 @@
 #if BSG_HAS_UIKIT
 #import <UIKit/UIKit.h>
 #endif
+#if TARGET_OS_OSX
+#import <AppKit/AppKit.h>
+#endif
 
 // ============================================================================
 #pragma mark - Default Constants -
@@ -235,8 +238,8 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
         return false;
     }
     
-#if BSG_HAS_UIKIT
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
+#if BSG_HAS_UIKIT
     [nCenter addObserver:self
                 selector:@selector(applicationDidBecomeActive)
                     name:UIApplicationDidBecomeActiveNotification
@@ -256,6 +259,20 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
     [nCenter addObserver:self
                 selector:@selector(applicationWillTerminate)
                     name:UIApplicationWillTerminateNotification
+                  object:nil];
+#elif TARGET_OS_OSX
+    // MacOS "active" serves the same purpose as "foreground" in iOS
+    [nCenter addObserver:self
+                selector:@selector(applicationDidEnterBackground)
+                    name:NSApplicationDidResignActiveNotification
+                  object:nil];
+    [nCenter addObserver:self
+                selector:@selector(applicationWillEnterForeground)
+                    name:NSApplicationDidBecomeActiveNotification
+                  object:nil];
+    [nCenter addObserver:self
+                selector:@selector(applicationWillTerminate)
+                    name:NSApplicationWillTerminateNotification
                   object:nil];
 #endif
 
