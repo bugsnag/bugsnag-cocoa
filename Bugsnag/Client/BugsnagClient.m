@@ -84,6 +84,8 @@ struct bugsnag_data_t {
     // Contains notifier state, under "deviceState" and crash-specific
     // information under "crash".
     char *stateJSON;
+    // Path to the JSON formatted file containing breadcrumbs.
+    char *breadcrumbsPath;
     // Contains properties in the Bugsnag payload overridden by the user before
     // it was sent
     char *userOverridesJSON;
@@ -158,6 +160,9 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type
         }
         if (bsg_g_bugsnag_data.stateJSON) {
             writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
+        }
+        if (bsg_g_bugsnag_data.breadcrumbsPath) {
+            writer->addJSONFileElement(writer, "breadcrumbs", bsg_g_bugsnag_data.breadcrumbsPath);
         }
         if (bsg_g_bugsnag_data.metadataJSON) {
             // The API expects "metaData", capitalised as such.  Elsewhere is is one word.
@@ -411,6 +416,9 @@ NSString *_lastOrientation = nil;
                                                          }];
 
         self.breadcrumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
+        if (self.breadcrumbs.cachePath != nil) {
+            bsg_g_bugsnag_data.breadcrumbsPath = strdup(self.breadcrumbs.cachePath.fileSystemRepresentation);
+        }
 
         // Start with a copy of the configuration metadata
         self.metadata = [[configuration metadata] deepCopy];
@@ -1153,16 +1161,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 // MARK: - Breadcrumbs
 
-- (void)addBreadcrumbWithBlock:
-    (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
+- (void)addBreadcrumbWithBlock:(void (^)(BugsnagBreadcrumb *))block {
     [self.breadcrumbs addBreadcrumbWithBlock:block];
-    [self serializeBreadcrumbs];
-}
-
-- (void)serializeBreadcrumbs {
-    [self.state addMetadata:[self.breadcrumbs arrayValue]
-                    withKey:BSGKeyBreadcrumbs
-                  toSection:BSTabCrash];
 }
 
 - (void)metadataChanged:(BugsnagMetadata *)metadata {

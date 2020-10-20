@@ -185,7 +185,10 @@ NSArray <BugsnagBreadcrumb *> *BSGParseBreadcrumbs(NSDictionary *report) {
         // then cached breadcrumbs from an OOM event
         ?: [report valueForKeyPath:@"user.state.oom.breadcrumbs"]
         // then cached breadcrumbs from a regular event
-        ?: [report valueForKeyPath:@"user.state.crash.breadcrumbs"];
+        // KSCrashReports from earlier versions of the notifier used this
+        ?: [report valueForKeyPath:@"user.state.crash.breadcrumbs"]
+        // breadcrumbs added to a KSCrashReport by BSSerializeDataCrashHandler
+        ?: [report valueForKeyPath:@"user.breadcrumbs"];
     NSMutableArray *breadcrumbs = [NSMutableArray arrayWithCapacity:cache.count];
     for (NSDictionary *data in cache) {
         if (![data isKindOfClass:[NSDictionary class]]) {
