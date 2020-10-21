@@ -315,7 +315,7 @@
     XCTAssertEqualObjects(device[@"jailbroken"], @YES);
     XCTAssertEqualObjects(device[@"freeMemory"], @742920192);
     XCTAssertEqualObjects(device[@"orientation"], @"unknown");
-    XCTAssertEqualObjects(device[@"time"], @"2014-12-02T01:56:13Z");
+    XCTAssertEqualObjects(device[@"time"], @"2014-12-02T01:56:13.000Z");
 }
 
 - (void)testEventApp {

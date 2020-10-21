@@ -32,6 +32,37 @@
 
 @implementation RFC3339DateTool_Tests
 
+- (NSDate *)newDateWithYear:(int) year month:(int)month day:(int)day hour:(int)hour minute:(int)minute second:(int)second nano:(int)nano tz:(NSString *)tz {
+    NSDateComponents* comps = [[NSDateComponents alloc]init];
+    comps.year = year;
+    comps.month = month;
+    comps.day = day;
+    comps.hour = hour;
+    comps.minute = minute;
+    comps.second = second;
+    comps.nanosecond = nano;
+    comps.timeZone = [NSTimeZone timeZoneWithName:tz];
+    NSCalendar* calendar = [NSCalendar currentCalendar];
+    return [calendar dateFromComponents:comps];
+}
+
+- (void)assertString:(NSString*)asString isEquivalentToString:(NSString *)encodedString andYear:(int) year month:(int)month day:(int)day hour:(int)hour minute:(int)minute second:(int)second nano:(int)nano tz:(NSString *)tz {
+    NSDate *expectedDate = [self newDateWithYear:year month:month day:day hour:hour minute:minute second:second nano:nano tz:tz];
+    NSDate *actualDate = [BSG_RFC3339DateTool dateFromString:asString];
+    NSString *actualString = [BSG_RFC3339DateTool stringFromDate:expectedDate];
+    XCTAssertEqualObjects(encodedString, actualString);
+    NSString *expectedInterval = [NSString stringWithFormat:@"%f", expectedDate.timeIntervalSince1970];
+    NSString *actualInterval = [NSString stringWithFormat:@"%f", actualDate.timeIntervalSince1970];
+    XCTAssertEqualObjects(expectedInterval, actualInterval);
+}
+
+- (void)testLegacyFormats {
+    [self assertString:@"2020-05-14T11:41:20.123Z" isEquivalentToString:@"2020-05-14T11:41:20.123Z" andYear:2020 month:5 day:14 hour:11 minute:41 second:20 nano:123000000 tz:@"UTC"];
+    [self assertString:@"2020-05-14T11:41:20Z" isEquivalentToString:@"2020-05-14T11:41:20.000Z" andYear:2020 month:5 day:14 hour:11 minute:41 second:20 nano:0 tz:@"UTC"];
+    [self assertString:@"2020-05-14T11:41:20+000" isEquivalentToString:@"2020-05-14T11:41:20.000Z" andYear:2020 month:5 day:14 hour:11 minute:41 second:20 nano:0 tz:@"UTC"];
+    [self assertString:@"2020-05-14T12:41:20+100" isEquivalentToString:@"2020-05-14T11:41:20.000Z" andYear:2020 month:5 day:14 hour:11 minute:41 second:20 nano:0 tz:@"UTC"];
+}
+
 - (NSDate*) gmtDateWithYear:(int) year
                       month:(int) month
                         day:(int) day
@@ -54,7 +85,7 @@
 - (void) testStringFromDate
 {
     NSDate* date = [self gmtDateWithYear:2000 month:1 day:2 hour:3 minute:4 second:5];
-    NSString* expected = @"2000-01-02T03:04:05Z";
+    NSString* expected = @"2000-01-02T03:04:05.000Z";
     NSString* actual = [BSG_RFC3339DateTool stringFromDate:date];
 
     XCTAssertEqualObjects(actual, expected, @"");
@@ -84,13 +115,13 @@
     XCTAssertEqualObjects(actual, expected, @"");
     
     // Convert back again to verify overall effect
-    XCTAssertEqualObjects([BSG_RFC3339DateTool stringFromDate:actual], @"2000-01-02T01:04:05Z");
+    XCTAssertEqualObjects([BSG_RFC3339DateTool stringFromDate:actual], @"2000-01-02T01:04:05.000Z");
 }
 
 - (void) testStringFromUnixTimestamp
 {
     NSDate* date = [self gmtDateWithYear:2000 month:1 day:2 hour:3 minute:4 second:5];
-    NSString* expected = @"2000-01-02T03:04:05Z";
+    NSString* expected = @"2000-01-02T03:04:05.000Z";
     NSString* actual = [BSG_RFC3339DateTool stringFromUNIXTimestamp:(unsigned long long)[date timeIntervalSince1970]];
 
     XCTAssertEqualObjects(actual, expected, @"");

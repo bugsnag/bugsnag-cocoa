@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## 6.2.2 (2020-10-21)
+
+## Enhancements
+
+* Support "foreground" duration in MacOS as well.
+  [848](https://github.com/bugsnag/bugsnag-cocoa/pull/848)
+
+* Timestamp accuracy in reports has been increased from seconds to milliseconds.
+  [847](https://github.com/bugsnag/bugsnag-cocoa/pull/847)
+
+* Calculation of "foreground" duration now also includes time in
+  UIApplicationStateActive and UIApplicationStateInactive states in order to
+  match Apple's definition of "foreground".
+  [839](https://github.com/bugsnag/bugsnag-cocoa/pull/839)
+
 ## 6.2.1 (2020-10-15)
 
 ## Bug fixes
