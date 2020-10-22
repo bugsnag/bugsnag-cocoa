@@ -37,11 +37,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addBreadcrumbWithBlock:(BSGBreadcrumbConfiguration)block;
 
 /**
- * Generates an array of dictionaries representing the current buffer of breadcrumbs.
- */
-- (NSArray<NSDictionary *> *)arrayValue;
-
-/**
  * Returns an array containing the current buffer of breadcrumbs.
  */
 - (NSArray<BugsnagBreadcrumb *> *)getBreadcrumbs;

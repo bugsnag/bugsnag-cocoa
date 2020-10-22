@@ -114,28 +114,6 @@
     return [cache isKindOfClass:[NSArray class]] ? cache : nil;
 }
 
-- (NSArray<NSDictionary *> *)arrayValue {
-    __block NSMutableArray *contents;
-    dispatch_barrier_sync(self.readWriteQueue, ^{
-        contents = [[NSMutableArray alloc] initWithCapacity:self.breadcrumbs.count];
-        for (BugsnagBreadcrumb *crumb in self.breadcrumbs) {
-            NSDictionary *objectValue = [crumb objectValue];
-            NSError *error = nil;
-            @try {
-                if (![BSGJSONSerialization isValidJSONObject:objectValue]) {
-                    bsg_log_err(@"Unable to serialize breadcrumb: Not a valid "
-                                @"JSON object");
-                    continue;
-                }
-                [contents addObject:objectValue];
-            } @catch (NSException *exception) {
-              bsg_log_err(@"Unable to serialize breadcrumb: %@", error);
-            }
-        }
-    });
-    return contents;
-}
-
 - (NSArray<BugsnagBreadcrumb *> *)getBreadcrumbs {
     __block NSArray *result = nil;
     dispatch_barrier_sync(self.readWriteQueue, ^{

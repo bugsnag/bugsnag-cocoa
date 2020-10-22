@@ -24,6 +24,10 @@
 + (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
 @end
 
+@interface BugsnagBreadcrumbs (Testing)
+- (NSArray<NSDictionary *> *)arrayValue;
+@end
+
 @interface Bugsnag ()
 + (BugsnagClient *)client;
 @end
@@ -428,6 +432,16 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     leaveBreadcrumbs();
     
     [self measureBlock:leaveBreadcrumbs];
+}
+
+@end
+
+#pragma mark -
+
+@implementation BugsnagBreadcrumbs (Testing)
+
+- (NSArray<NSDictionary *> *)arrayValue {
+    return [self.breadcrumbs valueForKey:@"objectValue"];
 }
 
 @end
