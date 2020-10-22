@@ -165,7 +165,8 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type
         }
         if (bsg_g_bugsnag_data.breadcrumbsPath) {
             // FIXME: This needs to be updated to cater for new breadcrumb storage scheme
-            writer->addJSONFileElement(writer, "breadcrumbs", bsg_g_bugsnag_data.breadcrumbsPath);
+            // FIXME: addJSONFileElement generates broken JSON if the file cannot be opened
+            // writer->addJSONFileElement(writer, "breadcrumbs", bsg_g_bugsnag_data.breadcrumbsPath);
         }
         if (bsg_g_bugsnag_data.metadataJSON) {
             // The API expects "metaData", capitalised as such.  Elsewhere is is one word.
