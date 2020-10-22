@@ -411,4 +411,28 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqual(breadcrumbs[2].type, BSGBreadcrumbTypeManual);
 }
 
+- (void)testPerformance {
+    NSInteger maxBreadcrumbs = 100;
+    
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    configuration.maxBreadcrumbs = maxBreadcrumbs;
+    [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *event) { return NO; }];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
+    
+    dispatch_block_t leaveBreadcrumbs = ^{
+        for (int i=0; i<maxBreadcrumbs; i++) {
+            [client leaveBreadcrumbWithMessage:[NSString stringWithFormat:@"%s %@", __PRETTY_FUNCTION__, [NSDate date]]
+                                      metadata:[[NSBundle mainBundle] infoDictionary]
+                                       andType:BSGBreadcrumbTypeLog];
+        }
+    };
+    
+    // The first run is always faster (while the number of breadcrumbs builds up)
+    // which upsets the performance measurements, so run in without measuring.
+    leaveBreadcrumbs();
+    
+    [self measureBlock:leaveBreadcrumbs];
+}
+
 @end
