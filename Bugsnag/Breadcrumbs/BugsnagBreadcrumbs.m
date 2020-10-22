@@ -23,8 +23,15 @@
 + (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
 @end
 
+#pragma mark -
+
 @interface BugsnagBreadcrumbs ()
+
 @property BugsnagConfiguration *config;
+@property NSArray<BugsnagBreadcrumb *> *breadcrumbs;
+@property NSUInteger lastFileNumber;
+@property NSUInteger maxBreadcrumbs;
+
 @end
 
 #pragma mark -
@@ -32,19 +39,22 @@
 @implementation BugsnagBreadcrumbs
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)config {
-    static NSString *const BSGBreadcrumbCacheFileName = @"bugsnag_breadcrumbs.json";
-    if (self = [super init]) {
-        _config = config;
-        _breadcrumbs = [NSMutableArray arrayWithCapacity:config.maxBreadcrumbs];
-        _readWriteQueue = dispatch_queue_create("com.bugsnag.BreadcrumbRead",
-                                                DISPATCH_QUEUE_SERIAL);
-        NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(
-                                 NSCachesDirectory, NSUserDomainMask, YES) firstObject];
-        if (cacheDir != nil) {
-            _cachePath = [cacheDir stringByAppendingPathComponent:
-                             BSGBreadcrumbCacheFileName];
-        }
+    if (!(self = [super init])) {
+        return nil;
     }
+    
+    _config = config;
+    _breadcrumbs = [NSArray array];
+    // Capture maxBreadcrumbs to protect against config being changed after initialization
+    _maxBreadcrumbs = config.maxBreadcrumbs;
+    
+    NSError *error = nil;
+    NSString *cachesDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+    _cachePath = [[cachesDir stringByAppendingPathComponent:@"bugsnag"] stringByAppendingPathComponent:@"breadcrumbs"];
+    if (![[NSFileManager defaultManager] createDirectoryAtPath:_cachePath withIntermediateDirectories:YES attributes:nil error:&error]) {
+        bsg_log_err(@"Unable to create breadcrumbs directory: %@", error);
+    }
+    
     return self;
 }
 
@@ -55,35 +65,29 @@
 }
 
 - (void)addBreadcrumbWithBlock:(BSGBreadcrumbConfiguration)block {
-    if (self.config.maxBreadcrumbs == 0) {
+    if (self.maxBreadcrumbs == 0) {
         return;
     }
     BugsnagBreadcrumb *crumb = [BugsnagBreadcrumb breadcrumbWithBlock:block];
-    if (crumb != nil && [self shouldSendBreadcrumb:crumb]) {
-        dispatch_barrier_sync(self.readWriteQueue, ^{
-            if ((self.breadcrumbs.count > 0) &&
-                (self.breadcrumbs.count == self.config.maxBreadcrumbs)) {
-                [self.breadcrumbs removeObjectAtIndex:0];
-            }
-            [self.breadcrumbs addObject:crumb];
-            // Serialize crumbs to disk inside barrier to avoid simultaneous
-            // access to the file
-            if (self.cachePath != nil) {
-                static NSString *const arrayKeyPath = @"objectValue";
-                NSArray *items = [self.breadcrumbs valueForKeyPath:arrayKeyPath];
-                if ([BSGJSONSerialization isValidJSONObject:items]) {
-                    NSError *error = nil;
-                    NSData *data = [BSGJSONSerialization dataWithJSONObject:items
-                                                                   options:0
-                                                                     error:&error];
-                    [data writeToFile:self.cachePath atomically:NO];
-                    if (error != nil) {
-                        bsg_log_err(@"Failed to write breadcrumbs to disk: %@", error);
-                    }
-                }
-            }
-        });
+    if (!crumb || ![self shouldSendBreadcrumb:crumb]) {
+        return;
     }
+    NSData *data = [self dataForBreadcrumb:crumb];
+    if (!data) {
+        return;
+    }
+    NSUInteger fileNumber;
+    @synchronized (self) {
+        NSMutableArray<BugsnagBreadcrumb *> *breadcrumbs = [self.breadcrumbs mutableCopy];
+        if (breadcrumbs.count >= self.maxBreadcrumbs) {
+            [breadcrumbs removeObjectAtIndex:0];
+        }
+        [breadcrumbs addObject:crumb];
+        self.breadcrumbs = [NSArray arrayWithArray:breadcrumbs];
+        fileNumber = self.lastFileNumber + 1;
+        self.lastFileNumber = fileNumber;
+    }
+    [self writeBreadcrumbData:(NSData *)data toFileNumber:fileNumber];
 }
 
 - (BOOL)shouldSendBreadcrumb:(BugsnagBreadcrumb *)crumb {
@@ -99,27 +103,96 @@
     return YES;
 }
 
-- (nullable NSArray<NSDictionary *> *)cachedBreadcrumbs {
-    __block NSArray *cache = nil;
-    dispatch_barrier_sync(self.readWriteQueue, ^{
-        NSError *error = nil;
-        NSData *data = [NSData dataWithContentsOfFile:self.cachePath options:0 error:&error];
-        if (error == nil) {
-            cache = [BSGJSONSerialization JSONObjectWithData:data options:0 error:&error];
-        }
-        if (error != nil) {
-            bsg_log_err(@"Failed to read breadcrumbs from disk: %@", error);
-        }
-    });
-    return [cache isKindOfClass:[NSArray class]] ? cache : nil;
+- (void)removeAllBreadcrumbs {
+    @synchronized (self) {
+        self.breadcrumbs = @[];
+        self.lastFileNumber = 0;
+    }
+    [self deleteBreadcrumbFiles];
 }
 
-- (NSArray<BugsnagBreadcrumb *> *)getBreadcrumbs {
-    __block NSArray *result = nil;
-    dispatch_barrier_sync(self.readWriteQueue, ^{
-        result = [NSArray arrayWithArray:self.breadcrumbs];
-    });
-    return result;
+#pragma mark - File storage
+
+- (NSData *)dataForBreadcrumb:(BugsnagBreadcrumb *)breadcrumb {
+    id JSONObject = [breadcrumb objectValue];
+    if (![BSGJSONSerialization isValidJSONObject:JSONObject]) {
+        bsg_log_err(@"Unable to serialize breadcrumb: Not a valid JSON object");
+        return nil;
+    }
+    NSError *error = nil;
+    NSData *data = [BSGJSONSerialization dataWithJSONObject:JSONObject options:0 error:&error];
+    if (!data) {
+        bsg_log_err(@"Unable to serialize breadcrumb: %@", error);
+    }
+    return data;
+}
+
+- (NSString *)pathForFileNumber:(NSUInteger)fileNumber {
+    return [self.cachePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.json", (long)fileNumber]];
+}
+
+- (void)writeBreadcrumbData:(NSData *)data toFileNumber:(NSUInteger)fileNumber {
+    NSString *path = [self pathForFileNumber:fileNumber];
+    
+    NSError *error = nil;
+    if (![data writeToFile:path options:NSDataWritingAtomic error:&error]) {
+        bsg_log_err(@"Unable to write breadcrumb: %@", error);
+        return;
+    }
+    
+    if (fileNumber > self.maxBreadcrumbs) {
+        NSString *path = [self pathForFileNumber:fileNumber - self.maxBreadcrumbs];
+        if (![[NSFileManager defaultManager] removeItemAtPath:path error:&error]) {
+            bsg_log_err(@"Unable to delete old breadcrumb: %@", error);
+        }
+    }
+}
+
+- (nullable NSArray<NSDictionary *> *)cachedBreadcrumbs {
+    NSError *error = nil;
+    
+    NSArray<NSString *> *filenames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:_cachePath error:&error];
+    if (!filenames) {
+        bsg_log_err(@"Unable to read breadcrumbs: %@", error);
+        return nil;
+    }
+    
+    NSMutableArray<NSDictionary *> *dictionaries = [NSMutableArray array];
+    
+    for (NSString *file in [filenames sortedArrayUsingSelector:@selector(compare:)]) {
+        NSString *path = [self.cachePath stringByAppendingPathComponent:file];
+        NSData *data = [NSData dataWithContentsOfFile:path];
+        if (!data) {
+            bsg_log_err(@"Unable to read breadcrumb from %@", path);
+            continue;
+        }
+        id JSONObject = [BSGJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        if (!JSONObject) {
+            bsg_log_err(@"Unable to parse breadcrumb: %@", error);
+            continue;
+        }
+        if (![JSONObject isKindOfClass:[NSDictionary class]] ||
+            ![BugsnagBreadcrumb breadcrumbFromDict:JSONObject]) {
+            bsg_log_err(@"Unexpected breadcrumb payload in file %@", file);
+            continue;
+        }
+        [dictionaries addObject:JSONObject];
+    }
+    
+    return dictionaries;
+}
+
+- (void)deleteBreadcrumbFiles {
+    [[NSFileManager defaultManager] removeItemAtPath:self.cachePath error:NULL];
+    
+    NSError *error = nil;
+    if (![[NSFileManager defaultManager] createDirectoryAtPath:self.cachePath withIntermediateDirectories:YES attributes:nil error:&error]) {
+        bsg_log_err(@"Unable to create breadcrumbs directory: %@", error);
+    }
+
+    NSString *cachesDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+    NSString *oldBreadcrumbsPath = [cachesDir stringByAppendingPathComponent:@"bugsnag_breadcrumbs.json"];
+    [[NSFileManager defaultManager] removeItemAtPath:oldBreadcrumbsPath error:NULL];
 }
 
 @end

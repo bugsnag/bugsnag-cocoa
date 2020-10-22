@@ -266,12 +266,11 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination);
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
     [client start];
 
-    NSMutableArray *breadcrumbs = client.breadcrumbs.breadcrumbs;
-    XCTAssertEqual(0, [breadcrumbs count]);
+    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 0);
 
     // small breadcrumb can be left without issue
     [client leaveBreadcrumbWithMessage:@"Hello World"];
-    XCTAssertEqual(1, [breadcrumbs count]);
+    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 1);
 
     // large breadcrumb is also left without issue
     __block NSUInteger crumbSize = 0;
@@ -289,7 +288,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination);
                               metadata:largeMetadata
                                andType:BSGBreadcrumbTypeManual];
     XCTAssertTrue(crumbSize > 4096); // previous 4kb limit
-    XCTAssertEqual(2, [breadcrumbs count]);
+    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 2);
     XCTAssertNotNil(crumb);
     XCTAssertEqualObjects(@"Hello World", crumb.message);
     XCTAssertEqualObjects(largeMetadata, crumb.metadata);
@@ -301,8 +300,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination);
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
     [client start];
 
-    NSMutableArray *breadcrumbs = client.breadcrumbs.breadcrumbs;
-    XCTAssertEqual(0, [breadcrumbs count]);
+    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 0);
 
     id badMetadata = @{
         @"test": @"string key is fine",
@@ -311,7 +309,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination);
 
     [client leaveBreadcrumbWithMessage:@"test msg" metadata:badMetadata andType:BSGBreadcrumbTypeUser];
 
-    XCTAssertEqual(1, [breadcrumbs count]);
+    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 0, @"A breadcrumb with invalid JSON payload should be rejected");
 
     [client notifyError:[NSError errorWithDomain:@"test" code:0 userInfo:badMetadata]];
 }
