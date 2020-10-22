@@ -27,6 +27,8 @@
 #import "BugsnagPlatformConditional.h"
 
 #import "BugsnagClient.h"
+
+#import "BugsnagBreadcrumbs.h"
 #import "BugsnagClientInternal.h"
 #import "BSGConnectivity.h"
 #import "Bugsnag.h"
@@ -361,10 +363,6 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
 - (NSDictionary *)toJson;
-@end
-
-@interface BugsnagBreadcrumbs ()
-@property(nonatomic, readwrite, strong) NSMutableArray *breadcrumbs;
 @end
 
 // =============================================================================

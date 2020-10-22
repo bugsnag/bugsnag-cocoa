@@ -13,9 +13,11 @@
 
 typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface BugsnagBreadcrumbs : NSObject
 
-- (instancetype _Nonnull)initWithConfiguration:(BugsnagConfiguration *_Nonnull)config;
+- (instancetype _Nonnull)initWithConfiguration:(BugsnagConfiguration *)config;
 
 /**
  * Path where breadcrumbs are persisted on disk
@@ -25,25 +27,29 @@ typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 /**
  * Store a new breadcrumb with a provided message.
  */
-- (void)addBreadcrumb:(NSString *_Nonnull)breadcrumbMessage;
+- (void)addBreadcrumb:(NSString *)breadcrumbMessage;
 
 /**
  *  Store a new breadcrumb configured via block.
  *
  *  @param block configuration block
  */
-- (void)addBreadcrumbWithBlock:
-    (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;
+- (void)addBreadcrumbWithBlock:(BSGBreadcrumbConfiguration)block;
 
 /**
  * Generates an array of dictionaries representing the current buffer of breadcrumbs.
  */
-- (NSArray *_Nonnull)arrayValue;
+- (NSArray<NSDictionary *> *)arrayValue;
 
 /**
  * Returns an array containing the current buffer of breadcrumbs.
  */
-- (NSArray<BugsnagBreadcrumb *> *_Nonnull)getBreadcrumbs;
+- (NSArray<BugsnagBreadcrumb *> *)getBreadcrumbs;
+
+/**
+ * Returns the breadcrumb JSON dictionaries stored on disk.
+ */
+- (nullable NSArray<NSDictionary *> *)cachedBreadcrumbs;
 
 /**
  * The types of breadcrumbs which will be automatically captured.
@@ -51,4 +57,12 @@ typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
  */
 @property BSGEnabledBreadcrumbType enabledBreadcrumbTypes;
 
+#pragma mark - Private
+
+@property (nonatomic, readonly, strong) NSMutableArray<BugsnagBreadcrumb *> *breadcrumbs;
+
+@property (nonatomic, readonly, strong) dispatch_queue_t readWriteQueue;
+
 @end
+
+NS_ASSUME_NONNULL_END

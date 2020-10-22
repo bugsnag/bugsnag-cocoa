@@ -8,7 +8,7 @@
 
 
 #import "BugsnagBreadcrumbs.h"
-#import "BugsnagBreadcrumb.h"
+
 #import "BugsnagLogger.h"
 #import "Private.h"
 #import "BSGJSONSerialization.h"
@@ -25,9 +25,9 @@
 
 @interface BugsnagBreadcrumbs ()
 @property BugsnagConfiguration *config;
-@property(nonatomic, readwrite, strong) NSMutableArray *breadcrumbs;
-@property(nonatomic, readonly, strong) dispatch_queue_t readWriteQueue;
 @end
+
+#pragma mark -
 
 @implementation BugsnagBreadcrumbs
 
@@ -54,8 +54,7 @@
     }];
 }
 
-- (void)addBreadcrumbWithBlock:
-    (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
+- (void)addBreadcrumbWithBlock:(BSGBreadcrumbConfiguration)block {
     if (self.config.maxBreadcrumbs == 0) {
         return;
     }
@@ -100,7 +99,7 @@
     return YES;
 }
 
-- (NSArray *)cachedBreadcrumbs {
+- (nullable NSArray<NSDictionary *> *)cachedBreadcrumbs {
     __block NSArray *cache = nil;
     dispatch_barrier_sync(self.readWriteQueue, ^{
         NSError *error = nil;
@@ -115,7 +114,7 @@
     return [cache isKindOfClass:[NSArray class]] ? cache : nil;
 }
 
-- (NSArray *)arrayValue {
+- (NSArray<NSDictionary *> *)arrayValue {
     __block NSMutableArray *contents;
     dispatch_barrier_sync(self.readWriteQueue, ^{
         contents = [[NSMutableArray alloc] initWithCapacity:self.breadcrumbs.count];

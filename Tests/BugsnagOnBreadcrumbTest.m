@@ -28,10 +28,6 @@
 @property NSMutableArray *onBreadcrumbBlocks;
 @end
 
-@interface BugsnagBreadcrumbs ()
-@property(nonatomic, readwrite, strong) NSMutableArray *breadcrumbs;
-@end
-
 @interface BugsnagOnBreadcrumbTest : XCTestCase
 @end
 

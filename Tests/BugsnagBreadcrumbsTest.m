@@ -24,11 +24,6 @@
 + (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
 @end
 
-@interface BugsnagBreadcrumbs ()
-@property(nonatomic, readwrite, strong) NSMutableArray<BugsnagBreadcrumb *> *breadcrumbs;
-@property(nonatomic, readonly, strong) dispatch_queue_t readWriteQueue;
-@end
-
 @interface Bugsnag ()
 + (BugsnagClient *)client;
 @end
