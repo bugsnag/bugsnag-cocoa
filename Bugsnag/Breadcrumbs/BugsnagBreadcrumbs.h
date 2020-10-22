@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#import "BugsnagBreadcrumb.h"
-#import "BugsnagConfiguration.h"
+@class BugsnagBreadcrumb;
+@class BugsnagConfiguration;
 
 typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 
@@ -45,12 +45,6 @@ NS_ASSUME_NONNULL_BEGIN
  * Returns the breadcrumb JSON dictionaries stored on disk.
  */
 - (nullable NSArray<NSDictionary *> *)cachedBreadcrumbs;
-
-/**
- * The types of breadcrumbs which will be automatically captured.
- * By default, this is all types.
- */
-@property BSGEnabledBreadcrumbType enabledBreadcrumbTypes;
 
 #pragma mark - Private
 
