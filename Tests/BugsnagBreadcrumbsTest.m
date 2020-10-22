@@ -24,9 +24,8 @@
 + (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
 @end
 
-@interface BugsnagBreadcrumbs ()
-@property(nonatomic, readwrite, strong) NSMutableArray<BugsnagBreadcrumb *> *breadcrumbs;
-@property(nonatomic, readonly, strong) dispatch_queue_t readWriteQueue;
+@interface BugsnagBreadcrumbs (Testing)
+- (NSArray<NSDictionary *> *)arrayValue;
 @end
 
 @interface Bugsnag ()
@@ -226,7 +225,6 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 - (void)testAlwaysAllowManual {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
-    self.crumbs.enabledBreadcrumbTypes = 0;
     [self.crumbs addBreadcrumb:@"this is a test"];
     awaitBreadcrumbSync(self.crumbs);
     NSArray *value = [self.crumbs arrayValue];
@@ -242,7 +240,6 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 - (void)testDiscardByTypeDoesNotApply {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
-    self.crumbs.enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeProcess;
     // Don't discard this
     [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeState;
@@ -433,6 +430,16 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     leaveBreadcrumbs();
     
     [self measureBlock:leaveBreadcrumbs];
+}
+
+@end
+
+#pragma mark -
+
+@implementation BugsnagBreadcrumbs (Testing)
+
+- (NSArray<NSDictionary *> *)arrayValue {
+    return [self.breadcrumbs valueForKey:@"objectValue"];
 }
 
 @end

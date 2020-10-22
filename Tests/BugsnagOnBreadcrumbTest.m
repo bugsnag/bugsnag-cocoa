@@ -12,6 +12,7 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagBreadcrumbs.h"
+#import "Private.h"
 
 @interface BugsnagClient ()
 @property(nonatomic, readwrite, retain) BugsnagConfiguration *_Nullable configuration;
@@ -26,10 +27,6 @@
 
 @interface BugsnagConfiguration ()
 @property NSMutableArray *onBreadcrumbBlocks;
-@end
-
-@interface BugsnagBreadcrumbs ()
-@property(nonatomic, readwrite, strong) NSMutableArray *breadcrumbs;
 @end
 
 @interface BugsnagOnBreadcrumbTest : XCTestCase
@@ -190,7 +187,7 @@
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
     [client start];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 1);
-    NSDictionary *crumb = [[client.breadcrumbs arrayValue] firstObject];
+    NSDictionary *crumb = [client.breadcrumbs.breadcrumbs.firstObject objectValue];
     XCTAssertEqualObjects(@"Foo", crumb[@"name"]);
 }
 

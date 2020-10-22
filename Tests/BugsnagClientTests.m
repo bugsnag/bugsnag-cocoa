@@ -32,10 +32,6 @@
 - (NSDictionary *)objectValue;
 @end
 
-@interface BugsnagBreadcrumbs ()
-@property(nonatomic, readwrite, strong) NSMutableArray *breadcrumbs;
-@end
-
 @interface BugsnagConfiguration ()
 @property(readwrite, retain, nullable) BugsnagMetadata *metadata;
 @end
