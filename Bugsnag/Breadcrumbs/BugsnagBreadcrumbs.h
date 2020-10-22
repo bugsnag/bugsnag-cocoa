@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagBreadcrumbs : NSObject
 
-- (instancetype _Nonnull)initWithConfiguration:(BugsnagConfiguration *)config;
+- (instancetype)initWithConfiguration:(BugsnagConfiguration *)config;
 
 /**
  * Path where breadcrumbs are persisted on disk
