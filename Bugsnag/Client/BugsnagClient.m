@@ -1562,6 +1562,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
           toSection:(NSString *_Nonnull)sectionName
 {
     [self.metadata addMetadata:metadata withKey:key toSection:sectionName];
+    [self.configuration addOnSendErrorBlock:^BOOL (BugsnagEvent *event) {
+        [event addMetadata:metadata withKey:key toSection:sectionName];
+        return YES;
+    }];
 }
 
 - (id _Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
