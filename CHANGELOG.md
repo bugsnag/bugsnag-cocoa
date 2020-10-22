@@ -3,14 +3,20 @@ Changelog
 
 ## TBD
 
-## Enhancements
+### Bug fixes
+
+* Catch and report unexpected exceptions when (de)serializing JSON data rather
+  than crashing.
+  [856](https://github.com/bugsnag/bugsnag-cocoa/pull/856)
+
+### Enhancements
 
 * Reduced the CPU and memory impact of leaving breadcrumbs.
   [853](https://github.com/bugsnag/bugsnag-cocoa/pull/853)
 
 ## 6.2.2 (2020-10-21)
 
-## Enhancements
+### Enhancements
 
 * Support "foreground" duration in MacOS as well.
   [848](https://github.com/bugsnag/bugsnag-cocoa/pull/848)
@@ -25,7 +31,7 @@ Changelog
 
 ## 6.2.1 (2020-10-15)
 
-## Bug fixes
+### Bug fixes
 
 * Changed synchronization method when responding to dynamic library image events
   to a dispatch queue, which is a more bulletproof and battle-hardened approach.
@@ -54,7 +60,7 @@ Changelog
 
 ## 6.1.7 (2020-10-01)
 
-## Bug fixes
+### Bug fixes
 
 * Re-enabled the `Require Only App-Extension-Safe API` build setting
   [823](https://github.com/bugsnag/bugsnag-cocoa/pull/823)
