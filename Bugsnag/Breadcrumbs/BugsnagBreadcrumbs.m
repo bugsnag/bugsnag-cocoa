@@ -10,9 +10,9 @@
 #import "BugsnagBreadcrumbs.h"
 
 #import "BSGCachesDirectory.h"
+#import "BSGJSONSerialization.h"
 #import "BugsnagLogger.h"
 #import "Private.h"
-#import "BSGJSONSerialization.h"
 
 @interface BugsnagConfiguration ()
 @property(nonatomic) NSMutableArray *onBreadcrumbBlocks;
