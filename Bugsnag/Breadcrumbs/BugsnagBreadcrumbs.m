@@ -63,6 +63,7 @@
 }
 
 - (void)dealloc {
+    free(_context->directoryPath);
     free(_context);
 }
 
