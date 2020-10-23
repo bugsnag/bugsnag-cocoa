@@ -164,7 +164,9 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type
             writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
         }
         if (bsg_g_bugsnag_data.breadcrumbsPath) {
-            writer->addJSONFileElement(writer, "breadcrumbs", bsg_g_bugsnag_data.breadcrumbsPath);
+            // FIXME: This needs to be updated to cater for new breadcrumb storage scheme
+            // FIXME: addJSONFileElement generates broken JSON if the file cannot be opened
+            // writer->addJSONFileElement(writer, "breadcrumbs", bsg_g_bugsnag_data.breadcrumbsPath);
         }
         if (bsg_g_bugsnag_data.metadataJSON) {
             // The API expects "metaData", capitalised as such.  Elsewhere is is one word.
@@ -558,6 +560,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                     apiClient:self.errorReportApiClient
                       onCrash:&BSSerializeDataCrashHandler];
     [self computeDidCrashLastLaunch];
+    [self.breadcrumbs removeAllBreadcrumbs];
     [self setupConnectivityListener];
     [self updateAutomaticBreadcrumbDetectionSettings];
 
@@ -1613,10 +1616,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (NSArray *)collectBreadcrumbs {
-    NSMutableArray *crumbs = self.breadcrumbs.breadcrumbs;
     NSMutableArray *data = [NSMutableArray new];
 
-    for (BugsnagBreadcrumb *crumb in crumbs) {
+    for (BugsnagBreadcrumb *crumb in self.breadcrumbs.breadcrumbs) {
         NSMutableDictionary *crumbData = [[crumb objectValue] mutableCopy];
         // JSON is serialized as 'name', we want as 'message' when passing to RN
         crumbData[@"message"] = crumbData[@"name"];

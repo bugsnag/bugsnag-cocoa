@@ -19,10 +19,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)config;
 
+@property (readonly) NSArray<BugsnagBreadcrumb *> *breadcrumbs;
+
 /**
  * Path where breadcrumbs are persisted on disk
  */
-@property (nonatomic, readonly, strong, nullable) NSString *cachePath;
+@property (readonly) NSString *cachePath;
 
 /**
  * Store a new breadcrumb with a provided message.
@@ -37,20 +39,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addBreadcrumbWithBlock:(BSGBreadcrumbConfiguration)block;
 
 /**
- * Returns an array containing the current buffer of breadcrumbs.
- */
-- (NSArray<BugsnagBreadcrumb *> *)getBreadcrumbs;
-
-/**
  * Returns the breadcrumb JSON dictionaries stored on disk.
  */
 - (nullable NSArray<NSDictionary *> *)cachedBreadcrumbs;
 
-#pragma mark - Private
-
-@property (nonatomic, readonly, strong) NSMutableArray<BugsnagBreadcrumb *> *breadcrumbs;
-
-@property (nonatomic, readonly, strong) dispatch_queue_t readWriteQueue;
+/**
+ * Removes breadcrumbs from disk and memory.
+ */
+- (void)removeAllBreadcrumbs;
 
 @end
 
