@@ -170,8 +170,7 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type
                 if (snprintf(path, sizeof(path), "%s/%d.json", breadcrumbs->directoryPath, i) > sizeof(path)) {
                     continue;
                 }
-                // The name is ignored when adding an element to an array
-                writer->addJSONFileElement(writer, "IGNORED", path);
+                writer->addJSONFileElement(writer, NULL, path);
             }
             writer->endContainer(writer);
         }

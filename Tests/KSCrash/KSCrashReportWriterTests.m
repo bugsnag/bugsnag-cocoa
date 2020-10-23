@@ -41,7 +41,7 @@ static id JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer)) {
 
 - (void)testSimpleObject {
     id object = JSONObject(^(BSG_KSCrashReportWriter *writer) {
-        writer->beginObject(writer, "IGNORED");
+        writer->beginObject(writer, NULL);
         writer->addStringElement(writer, "foo", "bar");
         writer->endContainer(writer);
     });
@@ -50,7 +50,7 @@ static id JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer)) {
 
 - (void)testArray {
     id object = JSONObject(^(BSG_KSCrashReportWriter *writer) {
-        writer->beginArray(writer, "IGNORED");
+        writer->beginArray(writer, NULL);
         writer->addStringElement(writer, "foo", "bar");
         writer->endContainer(writer);
     });
@@ -59,10 +59,10 @@ static id JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer)) {
 
 - (void)testArrayInsideObject {
     id object = JSONObject(^(BSG_KSCrashReportWriter *writer) {
-        writer->beginObject(writer, "IGNORED");
+        writer->beginObject(writer, NULL);
         writer->beginArray(writer, "items");
-        writer->addStringElement(writer, "IGNORED", "bar");
-        writer->addStringElement(writer, "IGNORED", "foo");
+        writer->addStringElement(writer, NULL, "bar");
+        writer->addStringElement(writer, NULL, "foo");
         writer->endContainer(writer);
         writer->endContainer(writer);
     });
@@ -74,10 +74,10 @@ static id JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer)) {
     NSString *temporaryFile = [NSTemporaryDirectory() stringByAppendingPathComponent:@"testFileElementsInsideArray.json"];
     [@"{\"foo\":\"bar\"}" writeToFile:temporaryFile atomically:NO encoding:NSUTF8StringEncoding error:NULL];
     id object = JSONObject(^(BSG_KSCrashReportWriter *writer) {
-        writer->beginArray(writer, "IGNORED");
-        writer->addJSONFileElement(writer, "IGNORED", temporaryFile.fileSystemRepresentation);
-        writer->addJSONFileElement(writer, "IGNORED", "/invalid/files/should/be/ignored");
-        writer->addJSONFileElement(writer, "IGNORED", temporaryFile.fileSystemRepresentation);
+        writer->beginArray(writer, NULL);
+        writer->addJSONFileElement(writer, NULL, temporaryFile.fileSystemRepresentation);
+        writer->addJSONFileElement(writer, NULL, "/invalid/files/should/be/ignored");
+        writer->addJSONFileElement(writer, NULL, temporaryFile.fileSystemRepresentation);
         writer->endContainer(writer);
     });
     id expected = @[@{@"foo": @"bar"}, @{@"foo": @"bar"}];
