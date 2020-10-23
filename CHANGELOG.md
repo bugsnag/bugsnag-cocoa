@@ -11,6 +11,9 @@ Changelog
 
 ### Enhancements
 
+* Use os_proc_available_memory() to get free memory, if available.
+  [851](https://github.com/bugsnag/bugsnag-cocoa/pull/851)
+
 * Reduced the CPU and memory impact of leaving breadcrumbs.
   [853](https://github.com/bugsnag/bugsnag-cocoa/pull/853)
 
