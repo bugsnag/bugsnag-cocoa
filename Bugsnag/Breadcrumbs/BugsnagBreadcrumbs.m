@@ -9,6 +9,7 @@
 
 #import "BugsnagBreadcrumbs.h"
 
+#import "BSGCachesDirectory.h"
 #import "BugsnagLogger.h"
 #import "Private.h"
 #import "BSGJSONSerialization.h"
@@ -49,7 +50,7 @@
     _maxBreadcrumbs = config.maxBreadcrumbs;
     
     NSError *error = nil;
-    NSString *cachesDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+    NSString *cachesDir = [BSGCachesDirectory cachesDirectory];
     _cachePath = [[cachesDir stringByAppendingPathComponent:@"bugsnag"] stringByAppendingPathComponent:@"breadcrumbs"];
     if (![[NSFileManager defaultManager] createDirectoryAtPath:_cachePath withIntermediateDirectories:YES attributes:nil error:&error]) {
         bsg_log_err(@"Unable to create breadcrumbs directory: %@", error);
@@ -190,7 +191,7 @@
         bsg_log_err(@"Unable to create breadcrumbs directory: %@", error);
     }
 
-    NSString *cachesDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+    NSString *cachesDir = [BSGCachesDirectory cachesDirectory];
     NSString *oldBreadcrumbsPath = [cachesDir stringByAppendingPathComponent:@"bugsnag_breadcrumbs.json"];
     [[NSFileManager defaultManager] removeItemAtPath:oldBreadcrumbsPath error:NULL];
 }
