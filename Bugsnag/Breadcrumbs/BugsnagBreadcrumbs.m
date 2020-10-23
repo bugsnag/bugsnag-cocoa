@@ -30,8 +30,8 @@
 
 @property BugsnagConfiguration *config;
 @property NSArray<BugsnagBreadcrumb *> *breadcrumbs;
-@property NSUInteger lastFileNumber;
-@property NSUInteger maxBreadcrumbs;
+@property unsigned int nextFileNumber;
+@property unsigned int maxBreadcrumbs;
 
 @end
 
@@ -47,7 +47,7 @@
     _config = config;
     _breadcrumbs = [NSArray array];
     // Capture maxBreadcrumbs to protect against config being changed after initialization
-    _maxBreadcrumbs = config.maxBreadcrumbs;
+    _maxBreadcrumbs = (unsigned int)config.maxBreadcrumbs;
     
     NSError *error = nil;
     NSString *cachesDir = [BSGCachesDirectory cachesDirectory];
@@ -56,7 +56,14 @@
         bsg_log_err(@"Unable to create breadcrumbs directory: %@", error);
     }
     
+    _context = calloc(sizeof(BugsnagBreadcrumbsContext), 1);
+    _context->directoryPath = strdup(_cachePath.fileSystemRepresentation);
+    
     return self;
+}
+
+- (void)dealloc {
+    free(_context);
 }
 
 - (void)addBreadcrumb:(NSString *)breadcrumbMessage {
@@ -77,7 +84,7 @@
     if (!data) {
         return;
     }
-    NSUInteger fileNumber;
+    unsigned int fileNumber;
     @synchronized (self) {
         NSMutableArray<BugsnagBreadcrumb *> *breadcrumbs = [self.breadcrumbs mutableCopy];
         if (breadcrumbs.count >= self.maxBreadcrumbs) {
@@ -85,8 +92,12 @@
         }
         [breadcrumbs addObject:crumb];
         self.breadcrumbs = [NSArray arrayWithArray:breadcrumbs];
-        fileNumber = self.lastFileNumber + 1;
-        self.lastFileNumber = fileNumber;
+        fileNumber = self.nextFileNumber;
+        self.nextFileNumber = fileNumber + 1;
+        if (fileNumber + 1 > self.maxBreadcrumbs) {
+            self.context->firstFileNumber = fileNumber + 1 - self.maxBreadcrumbs;
+        }
+        self.context->nextFileNumber = fileNumber + 1;
     }
     [self writeBreadcrumbData:(NSData *)data toFileNumber:fileNumber];
 }
@@ -107,7 +118,9 @@
 - (void)removeAllBreadcrumbs {
     @synchronized (self) {
         self.breadcrumbs = @[];
-        self.lastFileNumber = 0;
+        self.nextFileNumber = 0;
+        self.context->firstFileNumber = 0;
+        self.context->nextFileNumber = 0;
     }
     [self deleteBreadcrumbFiles];
 }
@@ -128,11 +141,11 @@
     return data;
 }
 
-- (NSString *)pathForFileNumber:(NSUInteger)fileNumber {
-    return [self.cachePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%ld.json", (long)fileNumber]];
+- (NSString *)pathForFileNumber:(unsigned int)fileNumber {
+    return [self.cachePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%u.json", fileNumber]];
 }
 
-- (void)writeBreadcrumbData:(NSData *)data toFileNumber:(NSUInteger)fileNumber {
+- (void)writeBreadcrumbData:(NSData *)data toFileNumber:(unsigned int)fileNumber {
     NSString *path = [self pathForFileNumber:fileNumber];
     
     NSError *error = nil;

@@ -13,6 +13,17 @@
 
 typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 
+/**
+ * Information that can be accessed in an async-safe manner from the crash handler.
+ */
+typedef struct {
+    char * _Nonnull directoryPath;
+    unsigned int firstFileNumber;
+    unsigned int nextFileNumber;
+} BugsnagBreadcrumbsContext;
+
+#pragma mark -
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagBreadcrumbs : NSObject
@@ -20,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)config;
 
 @property (readonly) NSArray<BugsnagBreadcrumb *> *breadcrumbs;
+
+@property (readonly) BugsnagBreadcrumbsContext *context;
 
 /**
  * Path where breadcrumbs are persisted on disk
