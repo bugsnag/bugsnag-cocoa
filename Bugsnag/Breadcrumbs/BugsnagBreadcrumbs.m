@@ -41,7 +41,6 @@ static BugsnagBreadcrumbsContext g_context;
 @interface BugsnagBreadcrumbs ()
 
 @property BugsnagConfiguration *config;
-@property NSArray<BugsnagBreadcrumb *> *breadcrumbs;
 @property unsigned int nextFileNumber;
 @property unsigned int maxBreadcrumbs;
 
@@ -57,7 +56,6 @@ static BugsnagBreadcrumbsContext g_context;
     }
     
     _config = config;
-    _breadcrumbs = [NSArray array];
     // Capture maxBreadcrumbs to protect against config being changed after initialization
     _maxBreadcrumbs = (unsigned int)config.maxBreadcrumbs;
     
@@ -71,6 +69,10 @@ static BugsnagBreadcrumbsContext g_context;
     [_cachePath getFileSystemRepresentation:g_context.directoryPath maxLength:sizeof(g_context.directoryPath)];
     
     return self;
+}
+
+- (NSArray<BugsnagBreadcrumb *> *)breadcrumbs {
+    return [self loadBreadcrumbsAsDictionaries:NO] ?: @[];
 }
 
 - (void)addBreadcrumb:(NSString *)breadcrumbMessage {
@@ -93,12 +95,6 @@ static BugsnagBreadcrumbsContext g_context;
     }
     unsigned int fileNumber;
     @synchronized (self) {
-        NSMutableArray<BugsnagBreadcrumb *> *breadcrumbs = [self.breadcrumbs mutableCopy];
-        if (breadcrumbs.count >= self.maxBreadcrumbs) {
-            [breadcrumbs removeObjectAtIndex:0];
-        }
-        [breadcrumbs addObject:crumb];
-        self.breadcrumbs = [NSArray arrayWithArray:breadcrumbs];
         fileNumber = self.nextFileNumber;
         self.nextFileNumber = fileNumber + 1;
         if (fileNumber + 1 > self.maxBreadcrumbs) {
@@ -124,7 +120,6 @@ static BugsnagBreadcrumbsContext g_context;
 
 - (void)removeAllBreadcrumbs {
     @synchronized (self) {
-        self.breadcrumbs = @[];
         self.nextFileNumber = 0;
         g_context.firstFileNumber = 0;
         g_context.nextFileNumber = 0;
@@ -170,6 +165,10 @@ static BugsnagBreadcrumbsContext g_context;
 }
 
 - (nullable NSArray<NSDictionary *> *)cachedBreadcrumbs {
+    return [self loadBreadcrumbsAsDictionaries:YES];
+}
+
+- (nullable NSArray *)loadBreadcrumbsAsDictionaries:(BOOL)asDictionaries {
     NSError *error = nil;
     
     NSArray<NSString *> *filenames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:_cachePath error:&error];
@@ -178,7 +177,7 @@ static BugsnagBreadcrumbsContext g_context;
         return nil;
     }
     
-    NSMutableArray<NSDictionary *> *dictionaries = [NSMutableArray array];
+    NSMutableArray<NSDictionary *> *breadcrumbs = [NSMutableArray array];
     
     for (NSString *file in [filenames sortedArrayUsingSelector:@selector(compare:)]) {
         NSString *path = [self.cachePath stringByAppendingPathComponent:file];
@@ -192,15 +191,16 @@ static BugsnagBreadcrumbsContext g_context;
             bsg_log_err(@"Unable to parse breadcrumb: %@", error);
             continue;
         }
+        BugsnagBreadcrumb *breadcrumb;
         if (![JSONObject isKindOfClass:[NSDictionary class]] ||
-            ![BugsnagBreadcrumb breadcrumbFromDict:JSONObject]) {
+            !(breadcrumb = [BugsnagBreadcrumb breadcrumbFromDict:JSONObject])) {
             bsg_log_err(@"Unexpected breadcrumb payload in file %@", file);
             continue;
         }
-        [dictionaries addObject:JSONObject];
+        [breadcrumbs addObject:asDictionaries ? JSONObject : breadcrumb];
     }
     
-    return dictionaries;
+    return breadcrumbs;
 }
 
 - (void)deleteBreadcrumbFiles {
