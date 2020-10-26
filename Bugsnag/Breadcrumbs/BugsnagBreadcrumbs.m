@@ -11,6 +11,7 @@
 
 #import "BSGCachesDirectory.h"
 #import "BSGJSONSerialization.h"
+#import "BSG_KSCrashReportWriter.h"
 #import "BugsnagLogger.h"
 #import "Private.h"
 
@@ -23,6 +24,17 @@
     (BSGBreadcrumbConfiguration _Nonnull)block;
 + (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
 @end
+
+/**
+ * Information that can be accessed in an async-safe manner from the crash handler.
+ */
+typedef struct {
+    char directoryPath[PATH_MAX];
+    unsigned int firstFileNumber;
+    unsigned int nextFileNumber;
+} BugsnagBreadcrumbsContext;
+
+static BugsnagBreadcrumbsContext g_context;
 
 #pragma mark -
 
@@ -56,15 +68,9 @@
         bsg_log_err(@"Unable to create breadcrumbs directory: %@", error);
     }
     
-    _context = calloc(sizeof(BugsnagBreadcrumbsContext), 1);
-    _context->directoryPath = strdup(_cachePath.fileSystemRepresentation);
+    [_cachePath getFileSystemRepresentation:g_context.directoryPath maxLength:sizeof(g_context.directoryPath)];
     
     return self;
-}
-
-- (void)dealloc {
-    free(_context->directoryPath);
-    free(_context);
 }
 
 - (void)addBreadcrumb:(NSString *)breadcrumbMessage {
@@ -96,9 +102,9 @@
         fileNumber = self.nextFileNumber;
         self.nextFileNumber = fileNumber + 1;
         if (fileNumber + 1 > self.maxBreadcrumbs) {
-            self.context->firstFileNumber = fileNumber + 1 - self.maxBreadcrumbs;
+            g_context.firstFileNumber = fileNumber + 1 - self.maxBreadcrumbs;
         }
-        self.context->nextFileNumber = fileNumber + 1;
+        g_context.nextFileNumber = fileNumber + 1;
     }
     [self writeBreadcrumbData:(NSData *)data toFileNumber:fileNumber];
 }
@@ -120,8 +126,8 @@
     @synchronized (self) {
         self.breadcrumbs = @[];
         self.nextFileNumber = 0;
-        self.context->firstFileNumber = 0;
-        self.context->nextFileNumber = 0;
+        g_context.firstFileNumber = 0;
+        g_context.nextFileNumber = 0;
     }
     [self deleteBreadcrumbFiles];
 }
@@ -211,3 +217,19 @@
 }
 
 @end
+
+#pragma mark -
+
+void BugsnagBreadcrumbsWriteCrashReport(BSG_KSCrashReportWriter *writer) {
+    char path[PATH_MAX];
+    writer->beginArray(writer, "breadcrumbs");
+    for (int i = g_context.firstFileNumber; i < g_context.nextFileNumber; i++) {
+        int result = snprintf(path, sizeof(path), "%s/%d.json", g_context.directoryPath, i);
+        if (result < 0 || result >= sizeof(path)) {
+            bsg_log_err(@"Breadcrumb path is too long");
+            continue;
+        }
+        writer->addJSONFileElement(writer, NULL, path);
+    }
+    writer->endContainer(writer);
+}

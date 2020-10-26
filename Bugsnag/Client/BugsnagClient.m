@@ -86,7 +86,6 @@ struct bugsnag_data_t {
     // Contains notifier state, under "deviceState" and crash-specific
     // information under "crash".
     char *stateJSON;
-    BugsnagBreadcrumbsContext *breadcrumbs;
     // Contains properties in the Bugsnag payload overridden by the user before
     // it was sent
     char *userOverridesJSON;
@@ -162,18 +161,7 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type
         if (bsg_g_bugsnag_data.stateJSON) {
             writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
         }
-        if (bsg_g_bugsnag_data.breadcrumbs) {
-            writer->beginArray(writer, "breadcrumbs");
-            BugsnagBreadcrumbsContext *breadcrumbs = bsg_g_bugsnag_data.breadcrumbs;
-            for (int i = breadcrumbs->firstFileNumber; i < breadcrumbs->nextFileNumber; i++) {
-                static char path[PATH_MAX];
-                if (snprintf(path, sizeof(path), "%s/%d.json", breadcrumbs->directoryPath, i) > sizeof(path)) {
-                    continue;
-                }
-                writer->addJSONFileElement(writer, NULL, path);
-            }
-            writer->endContainer(writer);
-        }
+        BugsnagBreadcrumbsWriteCrashReport(writer);
         if (bsg_g_bugsnag_data.metadataJSON) {
             // The API expects "metaData", capitalised as such.  Elsewhere is is one word.
             writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metadataJSON);
@@ -422,7 +410,6 @@ NSString *_lastOrientation = nil;
                                                          }];
 
         self.breadcrumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
-        bsg_g_bugsnag_data.breadcrumbs = self.breadcrumbs.context;
 
         // Start with a copy of the configuration metadata
         self.metadata = [[configuration metadata] deepCopy];
