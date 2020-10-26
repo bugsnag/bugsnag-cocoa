@@ -27,7 +27,7 @@ static id JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer)) {
     bsg_kscrw_i_prepareReportWriter(&reportWriter, &encodeContext);
     bsg_ksjsonbeginEncode(&encodeContext, false, (BSG_KSJSONAddDataFunc)addJSONData, (__bridge void *)data);
     block(&reportWriter);
-    return [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingFragmentsAllowed error:NULL];
+    return [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
 }
 
 #pragma mark -
