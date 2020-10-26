@@ -172,7 +172,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
     _metadata = [[BugsnagMetadata alloc] init];
     _config = [[BugsnagMetadata alloc] init];
-    _bundleVersion = NSBundle.mainBundle.infoDictionary[@"CFBundleVersion"];
     _endpoints = [BugsnagEndpointConfiguration new];
     _sessionURL = [NSURL URLWithString:@"https://sessions.bugsnag.com"];
     _autoDetectErrors = YES;
@@ -203,19 +202,30 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
             sessionWithConfiguration:[NSURLSessionConfiguration
                                          defaultSessionConfiguration]];
     }
+    
+    NSString *releaseStage = nil;
     #if DEBUG
-        _releaseStage = BSGKeyDevelopment;
+        releaseStage = BSGKeyDevelopment;
     #else
-        _releaseStage = BSGKeyProduction;
+        releaseStage = BSGKeyProduction;
     #endif
 
+    NSString *appType = nil;
     #if BSG_PLATFORM_TVOS
-        _appType = @"tvOS";
+        appType = @"tvOS";
     #elif BSG_PLATFORM_IOS
-        _appType = @"iOS";
+        appType = @"iOS";
     #elif BSG_PLATFORM_OSX
-        _appType = @"macOS";
+        appType = @"macOS";
+    #else
+        appType = @"unknown";
     #endif
+
+    [self setAppType:appType];
+    [self setReleaseStage:releaseStage];
+    [self setAppVersion:NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"]];
+    [self setBundleVersion:NSBundle.mainBundle.infoDictionary[@"CFBundleVersion"]];
+
     return self;
 }
 
