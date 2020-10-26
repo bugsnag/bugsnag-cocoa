@@ -161,7 +161,7 @@ static BugsnagBreadcrumbsContext g_context;
         return;
     }
     
-    if (fileNumber > self.maxBreadcrumbs) {
+    if (fileNumber >= self.maxBreadcrumbs) {
         NSString *path = [self pathForFileNumber:fileNumber - self.maxBreadcrumbs];
         if (![[NSFileManager defaultManager] removeItemAtPath:path error:&error]) {
             bsg_log_err(@"Unable to delete old breadcrumb: %@", error);
