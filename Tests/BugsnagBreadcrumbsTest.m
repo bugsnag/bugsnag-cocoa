@@ -6,13 +6,33 @@
 //
 //
 
+#import "BSG_KSJSONCodec.h"
 #import "Bugsnag.h"
 #import "BugsnagClient.h"
 #import "BugsnagClientInternal.h"
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagTestConstants.h"
+
 #import <XCTest/XCTest.h>
+
+// Defined in BSG_KSCrashReport.c
+void bsg_kscrw_i_prepareReportWriter(BSG_KSCrashReportWriter *const writer, BSG_KSJSONEncodeContext *const context);
+
+static int addJSONData(const char *data, size_t length, NSMutableData *userData) {
+    [userData appendBytes:data length:length];
+    return BSG_KSJSON_OK;
+}
+
+static id JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer)) {
+    NSMutableData *data = [NSMutableData data];
+    BSG_KSJSONEncodeContext encodeContext;
+    BSG_KSCrashReportWriter reportWriter;
+    bsg_kscrw_i_prepareReportWriter(&reportWriter, &encodeContext);
+    bsg_ksjsonbeginEncode(&encodeContext, false, (BSG_KSJSONAddDataFunc)addJSONData, (__bridge void *)data);
+    block(&reportWriter);
+    return [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+}
 
 @interface BugsnagBreadcrumbsTest : XCTestCase
 @property(nonatomic, strong) BugsnagBreadcrumbs *crumbs;
@@ -385,6 +405,30 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     
     XCTAssertEqual([bc1[@"metaData"] count], 0);
     XCTAssertEqual([bc2[@"metaData"] count], 0);
+}
+
+- (void)testCrashReportWriter {
+    NSDictionary<NSString *, id> *object = JSONObject(^(BSG_KSCrashReportWriter *writer) {
+        writer->beginObject(writer, "");
+        BugsnagBreadcrumbsWriteCrashReport(writer);
+        writer->endContainer(writer);
+    });
+    
+    XCTAssertEqualObjects(object.allKeys, @[@"breadcrumbs"]);
+    NSArray<NSDictionary *> *breadcrumbs = object[@"breadcrumbs"];
+    XCTAssertEqual(breadcrumbs.count, 3);
+    
+    XCTAssertEqualObjects(breadcrumbs[0][@"type"], @"manual");
+    XCTAssertEqualObjects(breadcrumbs[0][@"name"], @"Launch app");
+    XCTAssertEqualObjects(breadcrumbs[0][@"metaData"], @{});
+    
+    XCTAssertEqualObjects(breadcrumbs[1][@"type"], @"manual");
+    XCTAssertEqualObjects(breadcrumbs[1][@"name"], @"Tap button");
+    XCTAssertEqualObjects(breadcrumbs[1][@"metaData"], @{});
+    
+    XCTAssertEqualObjects(breadcrumbs[2][@"type"], @"manual");
+    XCTAssertEqualObjects(breadcrumbs[2][@"name"], @"Close tutorial");
+    XCTAssertEqualObjects(breadcrumbs[2][@"metaData"], @{});
 }
 
 - (void)testPerformance {

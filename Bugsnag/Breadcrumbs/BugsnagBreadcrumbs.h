@@ -10,8 +10,11 @@
 
 @class BugsnagBreadcrumb;
 @class BugsnagConfiguration;
+typedef struct BSG_KSCrashReportWriter BSG_KSCrashReportWriter;
 
 typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
+
+#pragma mark -
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -51,3 +54,12 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#pragma mark -
+
+/**
+ * Inserts the current breadcrumbs into a crash report.
+ *
+ * This function is async-signal-safe.
+ */
+void BugsnagBreadcrumbsWriteCrashReport(const BSG_KSCrashReportWriter * _Nonnull writer);
