@@ -224,7 +224,7 @@ void BugsnagBreadcrumbsWriteCrashReport(BSG_KSCrashReportWriter *writer) {
     char path[PATH_MAX];
     writer->beginArray(writer, "breadcrumbs");
     for (unsigned int i = g_context.firstFileNumber; i < g_context.nextFileNumber; i++) {
-        int result = snprintf(path, sizeof(path), "%s/%d.json", g_context.directoryPath, i);
+        int result = snprintf(path, sizeof(path), "%s/%u.json", g_context.directoryPath, i);
         if (result < 0 || result >= sizeof(path)) {
             bsg_log_err(@"Breadcrumb path is too long");
             continue;
