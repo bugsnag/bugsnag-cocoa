@@ -220,7 +220,7 @@ static BugsnagBreadcrumbsContext g_context;
 
 #pragma mark -
 
-void BugsnagBreadcrumbsWriteCrashReport(BSG_KSCrashReportWriter *writer) {
+void BugsnagBreadcrumbsWriteCrashReport(const BSG_KSCrashReportWriter *writer) {
     char path[PATH_MAX];
     writer->beginArray(writer, "breadcrumbs");
     for (unsigned int i = g_context.firstFileNumber; i < g_context.nextFileNumber; i++) {

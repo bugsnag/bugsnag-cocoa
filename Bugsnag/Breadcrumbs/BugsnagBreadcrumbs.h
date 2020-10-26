@@ -62,4 +62,4 @@ NS_ASSUME_NONNULL_END
  *
  * This function is async-signal-safe.
  */
-void BugsnagBreadcrumbsWriteCrashReport(BSG_KSCrashReportWriter * _Nonnull writer);
+void BugsnagBreadcrumbsWriteCrashReport(const BSG_KSCrashReportWriter * _Nonnull writer);
