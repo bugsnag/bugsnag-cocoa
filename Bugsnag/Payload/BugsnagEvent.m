@@ -16,6 +16,7 @@
 #import <Foundation/Foundation.h>
 #import "BSGSerialization.h"
 #import "Bugsnag.h"
+#import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagLogger.h"
