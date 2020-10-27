@@ -5,6 +5,10 @@ Changelog
 
 ### Bug fixes
 
+* Fix for incorrect version info during edge case where version info is not
+  manually set, and app version is changed between crashing and reporting the error.
+  [862](https://github.com/bugsnag/bugsnag-cocoa/pull/862)
+
 * Catch and report unexpected exceptions when (de)serializing JSON data rather
   than crashing.
   [856](https://github.com/bugsnag/bugsnag-cocoa/pull/856)
