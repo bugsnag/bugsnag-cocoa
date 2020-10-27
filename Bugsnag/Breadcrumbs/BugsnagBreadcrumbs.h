@@ -22,6 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)config;
 
+/**
+ * The current breadcrumbs, loaded from disk.
+ */
 @property (readonly) NSArray<BugsnagBreadcrumb *> *breadcrumbs;
 
 /**
@@ -47,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSArray<NSDictionary *> *)cachedBreadcrumbs;
 
 /**
- * Removes breadcrumbs from disk and memory.
+ * Removes breadcrumbs from disk.
  */
 - (void)removeAllBreadcrumbs;
 
