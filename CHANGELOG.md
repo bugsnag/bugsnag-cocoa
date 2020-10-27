@@ -7,6 +7,7 @@ Changelog
 
 * Reduced the CPU and memory impact of leaving breadcrumbs.
   [853](https://github.com/bugsnag/bugsnag-cocoa/pull/853)
+  [863](https://github.com/bugsnag/bugsnag-cocoa/pull/863)
 
 ## 6.2.2 (2020-10-21)
 
