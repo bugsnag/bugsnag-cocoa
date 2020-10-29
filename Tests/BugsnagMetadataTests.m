@@ -344,8 +344,8 @@
 
     [metadata addObserverWithBlock:firstObserver];
     
-    bool threadShouldQuit = false;
-    if (@available(iOS 10.0, tvOS 10.0, *)) {
+    __block bool threadShouldQuit = false;
+    if (@available(iOS 10.0, tvOS 10.0, macOS 10.12, *)) {
         [NSThread detachNewThreadWithBlock:^{
             while(!threadShouldQuit) {
                 [metadata addObserverWithBlock:secondObserver];
