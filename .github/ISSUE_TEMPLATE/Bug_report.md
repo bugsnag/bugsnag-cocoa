@@ -24,7 +24,7 @@ A clear and concise description of what the bug is.
 * Carthage version (if any):
 * iOS/tvOS/macOS version(s):
 * Simulator or physical device:
-* XCode version:
+* Xcode version:
 * Swift version (if applicable):
 
 <!--

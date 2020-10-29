@@ -127,7 +127,7 @@ endif
 	# Prep GitHub release
 	# We could technically do a `hub release` here but a verification step
 	# before it goes live always seems like a good thing
-	@open 'https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v$(PRESET_VERSION)&body='$$(awk 'start && /^## /{exit;};/^## /{start=1;next};start' CHANGELOG.md | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
+	@open 'https://github.com/bugsnag/bugsnag-cocoa/releases/new?title=v$(PRESET_VERSION)&tag=v$(PRESET_VERSION)&body='$$(awk 'start && /^## /{exit;};/^## /{start=1;next};start' CHANGELOG.md | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
 	# Workaround for CocoaPods/CocoaPods#8000
 	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings
 
@@ -148,7 +148,7 @@ ifeq ($(VERSION),)
 	@$(error VERSION is not defined. Run with `make VERSION=number prerelease`)
 endif
 	@git checkout -b release-v$(VERSION)
-	@git add Bugsnag/Payload/BugsnagNotifier.m Bugsnag.podspec.json VERSION CHANGELOG.md
+	@git add Bugsnag/Payload/BugsnagNotifier.m Bugsnag.podspec.json VERSION CHANGELOG.md Framework/Info.plist Tests/Info.plist
 	@git commit -m "Release v$(VERSION)"
 	@git push origin release-v$(VERSION)
 	@hub pull-request -m "Release v$(VERSION)" --browse

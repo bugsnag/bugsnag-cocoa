@@ -27,6 +27,8 @@
 #import "BugsnagPlatformConditional.h"
 
 #import "BugsnagClient.h"
+
+#import "BugsnagBreadcrumbs.h"
 #import "BugsnagClientInternal.h"
 #import "BSGConnectivity.h"
 #import "Bugsnag.h"
@@ -159,6 +161,7 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type
         if (bsg_g_bugsnag_data.stateJSON) {
             writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
         }
+        BugsnagBreadcrumbsWriteCrashReport(writer);
         if (bsg_g_bugsnag_data.metadataJSON) {
             // The API expects "metaData", capitalised as such.  Elsewhere is is one word.
             writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metadataJSON);
@@ -358,10 +361,6 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 - (NSDictionary *)toJson;
 @end
 
-@interface BugsnagBreadcrumbs ()
-@property(nonatomic, readwrite, strong) NSMutableArray *breadcrumbs;
-@end
-
 // =============================================================================
 // MARK: - BugsnagClient
 // =============================================================================
@@ -552,6 +551,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                     apiClient:self.errorReportApiClient
                       onCrash:&BSSerializeDataCrashHandler];
     [self computeDidCrashLastLaunch];
+    [self.breadcrumbs removeAllBreadcrumbs];
     [self setupConnectivityListener];
     [self updateAutomaticBreadcrumbDetectionSettings];
 
@@ -1153,16 +1153,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 // MARK: - Breadcrumbs
 
-- (void)addBreadcrumbWithBlock:
-    (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
+- (void)addBreadcrumbWithBlock:(void (^)(BugsnagBreadcrumb *))block {
     [self.breadcrumbs addBreadcrumbWithBlock:block];
-    [self serializeBreadcrumbs];
-}
-
-- (void)serializeBreadcrumbs {
-    [self.state addMetadata:[self.breadcrumbs arrayValue]
-                    withKey:BSGKeyBreadcrumbs
-                  toSection:BSTabCrash];
 }
 
 - (void)metadataChanged:(BugsnagMetadata *)metadata {
@@ -1615,10 +1607,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (NSArray *)collectBreadcrumbs {
-    NSMutableArray *crumbs = self.breadcrumbs.breadcrumbs;
     NSMutableArray *data = [NSMutableArray new];
 
-    for (BugsnagBreadcrumb *crumb in crumbs) {
+    for (BugsnagBreadcrumb *crumb in self.breadcrumbs.breadcrumbs) {
         NSMutableDictionary *crumbData = [[crumb objectValue] mutableCopy];
         // JSON is serialized as 'name', we want as 'message' when passing to RN
         crumbData[@"message"] = crumbData[@"name"];
