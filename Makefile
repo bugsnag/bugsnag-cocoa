@@ -90,10 +90,9 @@ build_swift: ## Build with Swift Package Manager
 #--------------------------------------------------------------------------
 
 analyze: ## Run static analysis on the build and fail if issues found
-	@rm -rf $(DATA_PATH)/analyzer
-	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) analyze \
+	@xcodebuild $(BUILD_FLAGS) -quiet $(BUILD_ONLY_FLAGS) analyze \
 		CLANG_ANALYZER_OUTPUT=html \
-		CLANG_ANALYZER_OUTPUT_DIR=$(DATA_PATH)/analyzer $(FORMATTER) \
+		CLANG_ANALYZER_OUTPUT_DIR=$(DATA_PATH)/analyzer \
 		&& [[ -z `find $(DATA_PATH)/analyzer -name "*.html"` ]]
 
 test: ## Run unit tests
