@@ -551,7 +551,8 @@
 				E75040B324782597005D33BD /* ReleaseStageSessionScenario.swift */,
 				E7B79CD924800A5D0039FB88 /* MetadataMergeScenario.swift */,
 			);
-			path = scenarios;
+			name = scenarios;
+			path = ../../shared/scenarios;
 			sourceTree = "<group>";
 		};
 		F49695A3243EF7B600105DA9 /* OOMs */ = {

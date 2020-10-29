@@ -7,7 +7,9 @@
 //
 
 #import "SessionCallbackRemovalScenario.h"
-#import "BugsnagSession.h"
+
+#import <Bugsnag/Bugsnag.h>
+
 
 @implementation SessionCallbackRemovalScenario
 

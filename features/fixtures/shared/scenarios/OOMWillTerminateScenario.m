@@ -1,7 +1,7 @@
 
 #import "OOMWillTerminateScenario.h"
+
 #import <signal.h>
-#import <UIKit/UIKit.h>
 
 @implementation OOMWillTerminateScenario
 

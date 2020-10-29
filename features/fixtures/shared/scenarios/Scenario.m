@@ -13,7 +13,11 @@
     Class clz = NSClassFromString(className);
 
     if (clz == nil) { // swift class
+#if TARGET_OS_IPHONE
         clz = NSClassFromString([NSString stringWithFormat:@"iOSTestApp.%@", className]);
+#elif TARGET_OS_MAC
+        clz = NSClassFromString([NSString stringWithFormat:@"macOSTestApp.%@", className]);
+#endif
     }
 
     NSAssert(clz != nil, @"Failed to find class named '%@'", className);

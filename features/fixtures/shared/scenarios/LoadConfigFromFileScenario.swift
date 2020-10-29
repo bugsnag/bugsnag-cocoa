@@ -1,6 +1,5 @@
 
 import Foundation
-import UIKit
 import Bugsnag
 
 class LaunchError : Error {
