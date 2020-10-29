@@ -8,7 +8,7 @@ install: make bootstrap
 env:
 - TEST_CONFIGURATION=Debug
 
-script: make test
+script: make analyze test
 
 stages:
 - build

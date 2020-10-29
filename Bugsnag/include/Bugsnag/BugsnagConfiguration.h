@@ -111,7 +111,7 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
 /**
  * Initializes a new configuration object with the provided API key.
  */
-- (instancetype)initWithApiKey:(NSString *)apiKey NS_DESIGNATED_INITIALIZER NS_SWIFT_NAME(init(_:));
+- (instancetype)initWithApiKey:(nullable NSString *)apiKey NS_DESIGNATED_INITIALIZER NS_SWIFT_NAME(init(_:));
 
 /**
  * Required declaration to suppress a superclass designated-initializer error

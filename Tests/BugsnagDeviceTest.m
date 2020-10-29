@@ -108,7 +108,7 @@ NSNumber *BSGDeviceFreeSpace(NSSearchPathDirectory directory);
     XCTAssertEqualObjects(runtimeVersions, device.runtimeVersions);
 
     // verify stateful fields
-    XCTAssertTrue(device.freeDisk > 0);
+    XCTAssertGreaterThan(device.freeDisk.longLongValue, 0);
     XCTAssertEqualObjects(@742920192, device.freeMemory);
     XCTAssertEqualObjects(@"portrait", device.orientation);
 
