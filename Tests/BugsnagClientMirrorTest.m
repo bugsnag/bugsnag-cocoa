@@ -119,7 +119,9 @@
             @"setBreadcrumbs: v24@0:8@16",
             @"breadcrumbs @16@0:8",
             @"setUser: v24@0:8@16",
+            @"didLikelyOOM B16@0:8",
             @"didLikelyOOM c16@0:8",
+            @"shouldReportOOM B16@0:8",
             @"shouldReportOOM c16@0:8",
             @"systemState @16@0:8",
             @"setSystemState: v24@0:8@16"
