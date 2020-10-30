@@ -621,7 +621,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
 }
 
-- (bool)shouldReportOOM {
+- (BOOL)shouldReportOOM {
 #if BSGOOMAvailable
     // Disable if in an app extension, since app extensions have a different
     // app lifecycle and the heuristic used for finding app terminations rooted
@@ -649,7 +649,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 /**
  * These heuristics aren't 100% guaranteed to be correct, but they're correct often enough to be useful.
  */
-- (bool)didLikelyOOM {
+- (BOOL)didLikelyOOM {
 #if BSGOOMAvailable
     NSDictionary *currAppState = self.systemState.currentLaunchState[SYSTEMSTATE_KEY_APP];
     NSDictionary *prevAppState = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP];
@@ -696,7 +696,6 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 
 - (void)computeDidCrashLastLaunch {
     const BSG_KSCrash_State *crashState = bsg_kscrashstate_currentState();
-#if BSG_PLATFORM_TVOS || BSG_PLATFORM_IOS
     BOOL didOOMLastLaunch = [self shouldReportOOM];
     NSFileManager *manager = [NSFileManager defaultManager];
     NSString *didCrashSentinelPath = [NSString stringWithUTF8String:crashSentinelPath];
@@ -721,11 +720,12 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     //        and insures against the crash callback crashing
 
     if (!handledCrashLastLaunch && didOOMLastLaunch) {
+        void *onCrash = bsg_g_bugsnag_data.onCrash;
+        // onCrash should not be called for OOMs
+        bsg_g_bugsnag_data.onCrash = NULL;
         [self notifyOutOfMemoryEvent];
+        bsg_g_bugsnag_data.onCrash = onCrash;
     }
-#else
-    self.appDidCrashLastLaunch = crashState->crashedLastLaunch;
-#endif
 }
 
 - (void)setCodeBundleId:(NSString *)codeBundleId {

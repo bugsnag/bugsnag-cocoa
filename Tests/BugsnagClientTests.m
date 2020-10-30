@@ -13,6 +13,8 @@
 #import "BugsnagTestConstants.h"
 #import "BugsnagKeys.h"
 #import "BugsnagUser.h"
+
+#import <objc/runtime.h>
 #import <XCTest/XCTest.h>
 
 @interface BugsnagClientTests : XCTestCase
@@ -329,6 +331,25 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination);
     // Test that it doesn't raise an exception
     char* dest = NULL;
     BSSerializeJSONDictionary(@{@1: @"a"}, &dest);
+}
+
+static void testOnCrashHandlerNotCalledForOOM_onCrashHandler(const BSG_KSCrashReportWriter *writer) {
+    XCTFail(@"onCrashHandler should not be called for OOMs");
+}
+
+static BOOL testOnCrashHandlerNotCalledForOOM_shouldReportOOM(BugsnagClient *client, SEL _cmd) {
+    return YES;
+}
+
+- (void)testOnCrashHandlerNotCalledForOOM {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    configuration.onCrashHandler = testOnCrashHandlerNotCalledForOOM_onCrashHandler;
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    Method method = class_getInstanceMethod([BugsnagClient class], @selector(shouldReportOOM));
+    NSParameterAssert(method != NULL);
+    void *originalImplementation = method_setImplementation(method, (void *)testOnCrashHandlerNotCalledForOOM_shouldReportOOM);
+    [client start];
+    method_setImplementation(method, originalImplementation);
 }
 
 @end

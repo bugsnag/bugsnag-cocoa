@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* The `onCrashHandler` is no longer called in the event of an OOM.
+  [#874](https://github.com/bugsnag/bugsnag-cocoa/pull/874)
+
 ## 6.2.3 (2020-10-28)
 
 ### Enhancements
