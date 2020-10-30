@@ -10,8 +10,6 @@
 
 #import <Bugsnag/Bugsnag.h>
 
-#import "BugsnagSession.h"
-
 @implementation AutoSessionCustomVersionScenario
 
 - (void)startBugsnag {
