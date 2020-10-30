@@ -11,8 +11,8 @@
 #import <Bugsnag/Bugsnag.h>
 
 @interface BugsnagClientMirrorTest : XCTestCase
-@property NSSet *bugsnagWhitelist;
-@property NSSet *clientWhitelist;
+@property NSSet *clientMethodsNotRequiredOnBugsnag;
+@property NSSet *bugsnagMethodsNotRequiredOnClient;
 @end
 
 /**
@@ -20,15 +20,15 @@
  *
  * This class relies on introspection using the Objective-C runtime which gets the name
  * of all methods implemented in each class. As Objective-C doesn't seem to have a way of
- * only gathering methods implemented in a header file, the whitelists need to be updated
- * whenever a method signature changes within the Bugsnag/BugsnagClient class.
+ * only gathering methods implemented in a header file, the "not required" lists need to be
+ * updated whenever a method signature changes within the Bugsnag/BugsnagClient class.
  */
 @implementation BugsnagClientMirrorTest
 
 - (void)setUp {
     // the following methods are implemented on BugsnagClient but do not need to
     // be mirrored on the Bugsnag facade
-    self.bugsnagWhitelist = [NSSet setWithArray:@[
+    self.clientMethodsNotRequiredOnBugsnag = [NSSet setWithArray:@[
             @"notify:handledState:block: v40@0:8@16@24@?32",
             @"setAppDidCrashLastLaunch: v20@0:8B16",
             @"started B16@0:8",
@@ -127,7 +127,7 @@
 
     // the following methods are implemented on Bugsnag but do not need to
     // be mirrored on BugsnagClient
-    self.clientWhitelist = [NSSet setWithArray:@[
+    self.bugsnagMethodsNotRequiredOnClient = [NSSet setWithArray:@[
             @"startWithApiKey: @24@0:8@16",
             @"startWithConfiguration: @24@0:8@16",
             @"updateCodeBundleId: v24@0:8@16",
@@ -149,7 +149,7 @@
     // remove all methods implemented on Bugsnag from Client.
     // any leftover methods have not been implemented on the Bugsnag facade.
     [clientMethods minusSet:bugsnagMethods];
-    [clientMethods minusSet:self.bugsnagWhitelist];
+    [clientMethods minusSet:self.clientMethodsNotRequiredOnBugsnag];
 
     if ([clientMethods count] > 0) {
         XCTFail(@"Missing the following methods on Bugsnag %@", clientMethods);
@@ -163,7 +163,7 @@
     // remove all methods implemented on Client from Bugsnag.
     // any leftover methods have not been implemented on the Client object.
     [bugsnagMethods minusSet:clientMethods];
-    [bugsnagMethods minusSet:self.clientWhitelist];
+    [bugsnagMethods minusSet:self.bugsnagMethodsNotRequiredOnClient];
 
     if ([bugsnagMethods count] > 0) {
         XCTFail(@"Missing the following methods on Client %@", bugsnagMethods);
