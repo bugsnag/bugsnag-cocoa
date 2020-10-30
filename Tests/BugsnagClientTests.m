@@ -333,8 +333,10 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination);
     BSSerializeJSONDictionary(@{@1: @"a"}, &dest);
 }
 
+static BOOL testOnCrashHandlerNotCalledForOOM_didCallOnCrashHandler;
+
 static void testOnCrashHandlerNotCalledForOOM_onCrashHandler(const BSG_KSCrashReportWriter *writer) {
-    XCTFail(@"onCrashHandler should not be called for OOMs");
+    testOnCrashHandlerNotCalledForOOM_didCallOnCrashHandler = YES;
 }
 
 static BOOL testOnCrashHandlerNotCalledForOOM_shouldReportOOM(BugsnagClient *client, SEL _cmd) {
@@ -350,6 +352,7 @@ static BOOL testOnCrashHandlerNotCalledForOOM_shouldReportOOM(BugsnagClient *cli
     void *originalImplementation = method_setImplementation(method, (void *)testOnCrashHandlerNotCalledForOOM_shouldReportOOM);
     [client start];
     method_setImplementation(method, originalImplementation);
+    XCTAssertFalse(testOnCrashHandlerNotCalledForOOM_didCallOnCrashHandler, @"onCrashHandler should not be called for OOMs");
 }
 
 @end
