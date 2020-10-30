@@ -43,7 +43,7 @@
  * Verifies that fields stored in same section under different keys are
  * _not_ added to the metadata
  */
-- (void)testBlacklistedFields {
+- (void)testDisallowedUserKeys {
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
             @"user": @{
                     @"foo": @"some value here",
