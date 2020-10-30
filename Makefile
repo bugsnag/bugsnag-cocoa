@@ -104,6 +104,7 @@ e2e:
 
 e2e_build: ## Build the end-to-end test fixture
 	@./features/scripts/export_ios_app.sh
+	@./features/scripts/export_mac_app.sh
 
 e2e_run: ## Run integration tests
 ifeq ($(BROWSER_STACK_USERNAME),)
