@@ -190,7 +190,7 @@ Then("the payload field {string} matches the test device model") do |field|
       "iPhone XR" => ["iPhone11,8"],
       "iPhone XS" => %w[iPhone11,2 iPhone11,4 iPhone11,8]
   }
-  expected_model = Devices::DEVICE_HASH[MazeRunner.driver.device_type]["device"]
+  expected_model = MazeRunner.config.capabilities["device"]
   valid_models = internal_names[expected_model]
   device_model = read_key_path(Server.current_request[:body], field)
   assert_true(valid_models.include?(device_model), "The field #{device_model} did not match any of the list of expected fields")
