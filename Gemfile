@@ -2,4 +2,10 @@ source 'https://rubygems.org'
 
 gem 'cocoapods'
 gem 'xcpretty'
-gem 'bugsnag-maze-runner', :path => '../maze-runner'
+
+# You can run against local Maze Runner branches and uncommitted changes:
+gem 'bugsnag-maze-runner', path: '../maze-runner'
+# Or a specific release:
+#gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', tag: 'v3.2.0'
+# Or follow master:
+#gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner'
