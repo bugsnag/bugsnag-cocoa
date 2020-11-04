@@ -27,6 +27,8 @@ steps:
           - "--device=IOS_14"
           - "--username=$BROWSER_STACK_USERNAME"
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
+          - "--resilient"
+          - "--appium-version=1.15.0"
     concurrency: 10
     concurrency_group: browserstack-app
 
@@ -45,6 +47,8 @@ steps:
           - "--device=IOS_13"
           - "--username=$BROWSER_STACK_USERNAME"
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
+          - "--resilient"
+          - "--appium-version=1.15.0"
     concurrency: 10
     concurrency_group: browserstack-app
 
@@ -63,6 +67,8 @@ steps:
           - "--device=IOS_12"
           - "--username=$BROWSER_STACK_USERNAME"
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
+          - "--resilient"
+          - "--appium-version=1.15.0"
     concurrency: 10
     concurrency_group: browserstack-app
 
@@ -81,6 +87,8 @@ steps:
           - "--device=IOS_11"
           - "--username=$BROWSER_STACK_USERNAME"
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
+          - "--resilient"
+          - "--appium-version=1.15.0"
     concurrency: 10
     concurrency_group: browserstack-app
 
@@ -99,5 +107,7 @@ steps:
           - "--device=IOS_10"
           - "--username=$BROWSER_STACK_USERNAME"
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
+          - "--resilient"
+          - "--appium-version=1.15.0"
     concurrency: 10
     concurrency_group: browserstack-app
