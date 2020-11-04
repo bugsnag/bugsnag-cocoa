@@ -164,12 +164,13 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 /**
  * The designated initializer.
  */
-- (instancetype _Nonnull)initWithApiKey:(NSString *_Nonnull)apiKey
-{
-    [self setApiKey:apiKey];
-
-    self = [super init];
-
+- (instancetype)initWithApiKey:(NSString *)apiKey {
+    if (!(self = [super init])) {
+        return nil;
+    }
+    if (apiKey) {
+        [self setApiKey:apiKey];
+    }
     _metadata = [[BugsnagMetadata alloc] init];
     _config = [[BugsnagMetadata alloc] init];
     _endpoints = [BugsnagEndpointConfiguration new];

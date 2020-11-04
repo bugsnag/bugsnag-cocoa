@@ -577,7 +577,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 - (NSMutableDictionary *)parseOnCrashData:(NSDictionary *)report {
     NSMutableDictionary *userAtCrash = [report[BSGKeyUser] mutableCopy];
     // avoid adding internal information to user-defined metadata
-    NSArray *blacklistedKeys = @[
+    NSArray *keysToRemove = @[
             @BSG_KSCrashField_Overrides,
             @BSG_KSCrashField_HandledState,
             @BSG_KSCrashField_Metadata,
@@ -590,7 +590,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             @"handledCount",
             @"id",
     ];
-    [userAtCrash removeObjectsForKeys:blacklistedKeys];
+    [userAtCrash removeObjectsForKeys:keysToRemove];
 
     for (NSString *key in [userAtCrash allKeys]) { // remove any non-dictionary values
         if (![userAtCrash[key] isKindOfClass:[NSDictionary class]]) {

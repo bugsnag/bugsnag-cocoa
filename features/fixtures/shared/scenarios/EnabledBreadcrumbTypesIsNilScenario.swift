@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 class EnabledBreadcrumbTypesIsNilScenario : Scenario {
     override func startBugsnag() {

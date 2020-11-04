@@ -31,7 +31,7 @@ class MetadataMergeScenario: Scenario {
             event.addMetadata(nil, key: "nullValue", section: "custom")
 
             // invalid values should be ignored
-            event.addMetadata(UIColor.red, key: "invalidValue", section: "custom")
+            event.addMetadata(Calendar.current, key: "invalidValue", section: "custom")
             return true
         }
     }
