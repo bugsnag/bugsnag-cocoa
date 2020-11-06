@@ -21,8 +21,14 @@ steps:
         download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
-    env:
-      DEVICE_TYPE: IOS_14
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bs"
+          - "--device=IOS_14"
+          - "--username=$BROWSER_STACK_USERNAME"
+          - "--access-key=$BROWSER_STACK_ACCESS_KEY"
+          - "--resilient"
+          - "--appium-version=1.15.0"
     concurrency: 10
     concurrency_group: browserstack-app
 
@@ -35,8 +41,14 @@ steps:
         download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
-    env:
-      DEVICE_TYPE: IOS_13
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bs"
+          - "--device=IOS_13"
+          - "--username=$BROWSER_STACK_USERNAME"
+          - "--access-key=$BROWSER_STACK_ACCESS_KEY"
+          - "--resilient"
+          - "--appium-version=1.15.0"
     concurrency: 10
     concurrency_group: browserstack-app
 
@@ -49,8 +61,14 @@ steps:
         download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
-    env:
-      DEVICE_TYPE: IOS_12
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bs"
+          - "--device=IOS_12"
+          - "--username=$BROWSER_STACK_USERNAME"
+          - "--access-key=$BROWSER_STACK_ACCESS_KEY"
+          - "--resilient"
+          - "--appium-version=1.15.0"
     concurrency: 10
     concurrency_group: browserstack-app
 
@@ -63,8 +81,14 @@ steps:
         download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
-    env:
-      DEVICE_TYPE: IOS_11
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bs"
+          - "--device=IOS_11"
+          - "--username=$BROWSER_STACK_USERNAME"
+          - "--access-key=$BROWSER_STACK_ACCESS_KEY"
+          - "--resilient"
+          - "--appium-version=1.15.0"
     concurrency: 10
     concurrency_group: browserstack-app
 
@@ -77,7 +101,13 @@ steps:
         download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
-    env:
-      DEVICE_TYPE: IOS_10
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bs"
+          - "--device=IOS_10"
+          - "--username=$BROWSER_STACK_USERNAME"
+          - "--access-key=$BROWSER_STACK_ACCESS_KEY"
+          - "--resilient"
+          - "--appium-version=1.15.0"
     concurrency: 10
     concurrency_group: browserstack-app

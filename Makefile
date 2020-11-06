@@ -7,10 +7,6 @@
 # wishing to use the framework.  For that please deploy Bugsnag in your
 # application using one of the supported methods: Cocoapods, Carthage etc.
 #
-# The rules are typically run with some environment variables set, e.g.
-#
-#     $ PLATFORM=macOS make e2e OS=10.11
-#
 #--------------------------------------------------------------------------
 
 # Set up the build environment based on environment variables, or defaults
@@ -66,7 +62,7 @@ build/Bugsnag-%-$(PRESET_VERSION).zip: build/Build/Products/$(RELEASE_DIR)/Bugsn
 	@cd build/Build/Products/$(RELEASE_DIR); \
 		zip --symlinks -rq ../../../Bugsnag-$*-$(PRESET_VERSION).zip Bugsnag.framework
 
-.PHONY: all build test bump prerelease release clean e2e
+.PHONY: all build test bump prerelease release clean test-fixtures
 
 bootstrap: ## Install development dependencies
 	@bundle install
@@ -98,23 +94,10 @@ analyze: ## Run static analysis on the build and fail if issues found
 test: ## Run unit tests
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
 
-e2e:
-	@make e2e_build
-	@make e2e_run
-
-e2e_build: ## Build the end-to-end test fixture
+test-fixtures: ## Build the end-to-end test fixture
 	@./features/scripts/export_ios_app.sh
 	@./features/scripts/export_mac_app.sh
 
-e2e_run: ## Run integration tests
-ifeq ($(BROWSER_STACK_USERNAME),)
-	@$(error BROWSER_STACK_USERNAME is not defined)
-endif
-ifeq ($(BROWSER_STACK_ACCESS_KEY),)
-	@$(error BROWSER_STACK_ACCESS_KEY is not defined)
-endif
-	@docker-compose run cocoa-maze-runner $(MAZE_ARGS) --tags 'not @skip' $(TEST_FEATURE)
-	
 #--------------------------------------------------------------------------
 # Release
 #

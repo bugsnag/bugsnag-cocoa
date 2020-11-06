@@ -19,11 +19,14 @@ Or to test on tvOS:
 
 These tests are implemented with our notifier testing tool [Maze runner](https://github.com/bugsnag/maze-runner).
 
-End to end tests are written in cucumber-style `.feature` files, and need Ruby-backed "steps" in order to know what to run. The tests are located in the ['features'](/features/) directory.
+End to end tests are written in cucumber-style `.feature` files, and need Ruby-backed "steps" in order to know what to 
+run. The tests are located in the ['features'](/features/) directory.
 
-For testing against a real device, maze-runner's CLI and the test fixtures are containerised so you'll need Docker (and Docker Compose) to run them.
+For testing against a real device, maze-runner's CLI and the test fixtures are containerized so you'll need Docker 
+(and Docker Compose) to run them.
 
-__Note: only Bugsnag employees can run the end-to-end tests.__ We have dedicated test infrastructure and private BrowserStack credentials which can't be shared outside of the organization.
+__Note: only Bugsnag employees can run the end-to-end tests.__ We have dedicated test infrastructure and private 
+BrowserStack credentials that cannot be shared outside of the organization.
 
 #### Requirements
 
@@ -52,17 +55,27 @@ __Your session will periodically expire__, so you'll need to run this command to
 
 #### Steps
 
-Ensure the following environment variables are set:
-
-- `BROWSER_STACK_USERNAME`: The BrowserStack App Automate Username
-- `BROWSER_STACK_ACCESS_KEY`: The BrowserStack App Automate Access Key
-- `DEVICE_TYPE` : The iOS version to run the tests against, one of: IOS_10, IOS_11, IOS_12, IOS_13
-
-If you wish to test a single feature, set the `TEST_FEATURE` environment variable to the name of the feature file.  For example"
-`export TEST_FEATURE=features/handled_errors.feature`
-
-There are several `make` commands that will run various parts of the testing process:
-
-- `make e2e` will build and run the test fixture against the remote device, repeating the build process every run.
-- `make e2e_build` will build the test fixture, exporting it to the `features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa` application file.
-- `make e2e_run` will consume the built fixture and attempt to run either all the tests, or only those defined by `TEST_FEATURE`, against the remote device.
+1. Ensure the following environment variables are set:
+    - `BROWSER_STACK_USERNAME` - your BrowserStack App Automate Username
+    - `BROWSER_STACK_ACCESS_KEY` - your BrowserStack App Automate Access Key
+1. Build the test fixtures:
+    ```shell script
+    make test-fixtures
+    ```
+1. Check the contents of `Gemfile` to select the version of `maze-runner` to use
+1. See https://www.browserstack.com/local-testing/app-automate for details of the required local testing binary.
+1. To run a single feature:
+    ```shell script
+    bundle exec maze-runner --app=features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa \
+                            --farm=bs                                                         \
+                            --device=IOS_14                                                   \
+                            --username=$BROWSER_STACK_USERNAME                                \
+                            --access-key=$BROWSER_STACK_ACCESS_KEY                            \
+                            --bs-local=~/BrowserStackLocal                                    \
+                            features/app_and_device_attributes.feature
+    ```
+1. To run all features, omit the final argument.
+1. Maze Runner supports various other option, as well as all those that Cucumber does. For full details run:
+    ```shell script
+    `bundle exec maze-runner --help`
+    ```
