@@ -10,5 +10,7 @@ gem 'xcpretty'
 # Or follow master:
 # gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner'
 
-# Locally, you can run against Maze Runner branches and uncommitted changes:
-# gem 'bugsnag-maze-runner', path: '../maze-runner'
+install_if -> { File.directory?('../maze-runner') } do
+  # Locally, you can run against Maze Runner branches and uncommitted changes:
+  gem 'bugsnag-maze-runner', path: '../maze-runner'
+end
