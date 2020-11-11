@@ -374,7 +374,7 @@ NSString *_lastOrientation = nil;
 
 @synthesize configuration;
 
-- (id)initWithConfiguration:(BugsnagConfiguration *)initConfiguration {
+- (instancetype)initWithConfiguration:(BugsnagConfiguration *)initConfiguration {
     static NSString *const BSGCrashSentinelFileName = @"bugsnag_handled_crash.txt";
     if ((self = [super init])) {
         // Take a shallow copy of the configuration
