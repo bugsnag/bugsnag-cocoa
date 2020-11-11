@@ -39,10 +39,7 @@
 }
 
 - (BugsnagConfiguration *)configuration {
-    BugsnagConfiguration *configuration = [BugsnagConfiguration loadConfig];
-    if (self.apiKey) {
-        configuration.apiKey = self.apiKey;
-    }
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:self.apiKey];
     if (self.notifyEndpoint) {
         configuration.endpoints.notify = self.notifyEndpoint;
     }
@@ -55,16 +52,22 @@
 
 - (IBAction)runScenario:(id)sender {
     self.scenario = [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
+    self.scenario.eventMode = self.scenarioMetadata;
     
     NSLog(@"Starting Bugsnag for scenario: %@", self.scenario);
     [self.scenario startBugsnag];
     
     NSLog(@"Running scenario: %@", self.scenario);
-    [self.scenario run];
+    // Using dispatch_async to prevent AppleEvents swallowing exceptions.
+    // For more info see https://www.chimehq.com/blog/sad-state-of-exceptions
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.scenario run];
+    });
 }
 
 - (IBAction)startBugsnag:(id)sender {
     self.scenario = [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
+    self.scenario.eventMode = self.scenarioMetadata;
     
     NSLog(@"Starting Bugsnag for scenario: %@", self.scenario);
     [self.scenario startBugsnag];
@@ -86,7 +89,9 @@
         NSString *path = [cachesDir stringByAppendingPathComponent:entry];
         NSError *error = nil;
         if (![NSFileManager.defaultManager removeItemAtPath:path error:&error]) {
-            NSLog(@"%@", error);
+            if (![error.domain isEqualTo:NSCocoaErrorDomain] && error.code != NSFileNoSuchFileError) {
+                NSLog(@"%@", error);
+            }
         }
     }
 }
