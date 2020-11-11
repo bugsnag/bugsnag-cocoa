@@ -653,7 +653,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 #if BSGOOMAvailable
     NSDictionary *currAppState = self.systemState.currentLaunchState[SYSTEMSTATE_KEY_APP];
     NSDictionary *prevAppState = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP];
-
+    NSDictionary *currentDeviceState = self.systemState.currentLaunchState[SYSTEMSTATE_KEY_DEVICE];
+    NSDictionary *previousDeviceState = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_DEVICE];
+    
     // Disable if a debugger was active, since the development cycle of
     // starting and restarting an app is also an uncatchable kill
     if([prevAppState[SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE] boolValue]) {
@@ -680,7 +682,14 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     if([prevAppState[SYSTEMSTATE_APP_WAS_TERMINATED] boolValue]) {
         return NO;
     }
-
+    
+    id currentBootTime = currentDeviceState[SYSTEMSTATE_DEVICE_BOOT_TIME];
+    id previousBootTime = previousDeviceState[SYSTEMSTATE_DEVICE_BOOT_TIME];
+    BOOL didReboot = currentBootTime && previousBootTime && ![currentBootTime isEqual:previousBootTime];
+    if (didReboot) {
+        return NO;
+    }
+    
     return YES;
 #else
     return NO;

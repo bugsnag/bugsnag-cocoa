@@ -106,6 +106,7 @@ static NSMutableDictionary* initCurrentState(BugsnagKVStore *kvstore, BugsnagCon
     app[SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE] = @(isBeingDebugged);
 
     NSMutableDictionary *device = [NSMutableDictionary new];
+    device[SYSTEMSTATE_DEVICE_BOOT_TIME] = [BSG_RFC3339DateTool stringFromDate:systemInfo[@BSG_KSSystemField_BootTime]];
     device[@"id"] = systemInfo[@BSG_KSSystemField_DeviceAppHash];
     // device[@"lowMemory"] is initially unset
     device[@"osBuild"] = systemInfo[@BSG_KSSystemField_OSVersion];
@@ -223,6 +224,7 @@ NSDictionary *copyLaunchState(NSDictionary *launchState) {
 - (void)sync {
     NSDictionary *state = self.currentLaunchState;
     NSError *error = nil;
+    NSAssert([BSGJSONSerialization isValidJSONObject:state], @"BugsnagSystemState cannot be converted to JSON data");
     if (![BSGJSONSerialization isValidJSONObject:state]) {
         bsg_log_err(@"System state cannot be written as JSON");
         return;
