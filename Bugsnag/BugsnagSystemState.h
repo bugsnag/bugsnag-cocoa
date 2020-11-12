@@ -20,6 +20,8 @@
 #define SYSTEMSTATE_APP_BUNDLE_VERSION @"bundleVersion"
 #define SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE @"debuggerIsActive"
 
+#define SYSTEMSTATE_DEVICE_BOOT_TIME @"bootTime"
+
 #define PLATFORM_WORD_SIZE sizeof(void*)*8
 
 NS_ASSUME_NONNULL_BEGIN
