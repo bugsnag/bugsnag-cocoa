@@ -29,6 +29,7 @@ steps:
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.15.0"
+          - "--fail-fast"
     concurrency: 10
     concurrency_group: browserstack-app
 
@@ -49,6 +50,7 @@ steps:
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.15.0"
+          - "--fail-fast"
     concurrency: 10
     concurrency_group: browserstack-app
 
@@ -69,6 +71,7 @@ steps:
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.15.0"
+          - "--fail-fast"
     concurrency: 10
     concurrency_group: browserstack-app
 
@@ -89,8 +92,12 @@ steps:
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.15.0"
+          - "--fail-fast"
     concurrency: 10
     concurrency_group: browserstack-app
+    # Soft fail while Browserstack's iOS 11 devices are flakey
+    soft_fail:
+      - exit_status: "*"
 
   - label: ':ios: iOS 10 end-to-end tests'
     timeout_in_minutes: 60
@@ -109,5 +116,6 @@ steps:
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.15.0"
+          - "--fail-fast"
     concurrency: 10
     concurrency_group: browserstack-app
