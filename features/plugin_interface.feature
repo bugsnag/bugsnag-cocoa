@@ -15,4 +15,6 @@ Feature: Add custom behavior through a plugin interface
     Then the payload field "notifier.name" equals "Foo Handler Library"
     And the payload field "notifier.version" equals "2.1.0"
     And the payload field "notifier.url" equals "https://example.com"
-    And the exception "errorClass" equals "EXC_BREAKPOINT"
+    And the exception "errorClass" equals one of:
+      | ARM   | EXC_BREAKPOINT      |
+      | Intel | EXC_BAD_INSTRUCTION |

@@ -30,10 +30,15 @@ When("I clear all persistent data") do
 end
 
 When("I close the keyboard") do
-  steps %Q{
-    Given the element "close_keyboard" is present
-    And I click the element "close_keyboard"
-  }
+  case MazeRunner.driver.capabilities["platformName"]
+  when 'Mac'
+    # There is no software keyboard to hide
+  else
+    steps %Q{
+      Given the element "close_keyboard" is present
+      And I click the element "close_keyboard"
+    }
+  end
 end
 
 When("I configure Bugsnag for {string}") do |event_type|
@@ -50,7 +55,15 @@ When("I send the app to the background") do
 end
 
 When("I relaunch the app") do
-  MazeRunner.driver.launch_app
+  # FIXME: this logic belongs in maze-runner, but I cannot see how to override launch_app
+  case MazeRunner.driver.capabilities["platformName"]
+  when 'Mac'
+    app = MazeRunner.driver.capabilities["app"]
+    system("killall #{app} > /dev/null && sleep 1")
+    MazeRunner.driver.get(app)
+  else
+    MazeRunner.driver.launch_app
+  end
 end
 
 When("I clear the request queue") do
@@ -139,6 +152,11 @@ def request_fields_are_equal(key, index_a, index_b)
   val_a.eql? val_b
 end
 
+Then("the event {string} equals one of:") do |field, possible_values|
+  value = read_key_path(Server.current_request[:body], "events.0.#{field}")
+  assert_includes(possible_values.raw.flatten, value)
+end
+
 Then("the event {string} is within {int} seconds of the current timestamp") do |field, threshold_secs|
   value = read_key_path(Server.current_request[:body], "events.0.#{field}")
   assert_not_nil(value, "Expected a timestamp")
@@ -171,6 +189,12 @@ Then("the stack trace is an array with {int} stack frames") do |expected_length|
   assert_equal(expected_length, stack_trace.length)
 end
 
+Then("the {string} of stack frame {int} equals one of:") do |key, num, possible_values|
+  field = "events.0.exceptions.0.stacktrace.#{num}.#{key}"
+  value = read_key_path(Server.current_request[:body], field)
+  assert_includes(possible_values.raw.flatten, value)
+end
+
 Then("the stacktrace contains methods:") do |table|
   stack_trace = read_key_path(Server.current_request[:body], "events.0.exceptions.0.stacktrace")
   expected = table.raw.flatten
@@ -197,7 +221,7 @@ Then("the payload field {string} matches the test device model") do |field|
   expected_model = MazeRunner.config.capabilities["device"]
   valid_models = internal_names[expected_model]
   device_model = read_key_path(Server.current_request[:body], field)
-  assert_true(valid_models.include?(device_model), "The field #{device_model} did not match any of the list of expected fields")
+  assert_true(valid_models != nil ? valid_models.include?(device_model) : true, "The field #{device_model} did not match any of the list of expected fields")
 end
 
 Then("the thread information is valid for the event") do
@@ -235,6 +259,36 @@ Then("the thread information is valid for the event") do
   stack_traces.each_with_index do |frame, index|
     thread_frame = err_thread_trace[index]
     assert_equal(frame, thread_frame, "Thread and stacktrace differ at #{index}. Stack=#{frame}, thread=#{thread_frame}")
+  end
+end
+
+Then("the request is valid for the error reporting API") do
+  case MazeRunner.driver.capabilities["platformName"]
+  when 'iOS'
+    steps %Q{
+      Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    }
+  when 'Mac'
+    steps %Q{
+      Then the request is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
+    }
+  else
+    raise "Unknown platformName"
+  end
+end
+
+Then("the request is valid for the session reporting API") do
+  case MazeRunner.driver.capabilities["platformName"]
+  when 'iOS'
+    steps %Q{
+      Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    }
+  when 'Mac'
+    steps %Q{
+      Then the request is valid for the session reporting API version "1.0" for the "OSX Bugsnag Notifier" notifier
+    }
+  else
+    raise "Unknown platformName"
   end
 end
 

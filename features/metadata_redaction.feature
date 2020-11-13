@@ -7,7 +7,7 @@ Feature: Metadata values can be redacted
   Scenario: Default behaviour redacts 'password' values after callback is run
     When I run "MetadataRedactionDefaultScenario"
     And I wait to receive a request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the error reporting API
     And the event "metaData.custom.password" equals "[REDACTED]"
     And the event "metaData.custom.Password" equals "[REDACTED]"
     And the event "metaData.custom.password2" equals "not redacted"

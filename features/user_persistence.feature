@@ -9,7 +9,7 @@ Feature: Persisting User Information
     # User is set and comes through
     And I wait to receive a request
     And I relaunch the app
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the session reporting API
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
     And the session "user.name" equals "bar"
@@ -21,14 +21,14 @@ Feature: Persisting User Information
     And I relaunch the app
 
     # Session - User persisted
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the session reporting API
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
     And the session "user.name" equals "bar"
     And I discard the oldest request
 
     # Event - User persisted
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the error reporting API
     And the payload field "events.0.user.id" equals "foo"
     And the payload field "events.0.user.email" equals "baz@grok.com"
     And the payload field "events.0.user.name" equals "bar"
@@ -39,7 +39,7 @@ Scenario: User Info is persisted from client across app runs
     # Session is captured before the user can be set on the Client
     And I wait to receive a request
     And I relaunch the app
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the session reporting API
     And the session "user.id" is not null
     And the session "user.email" is null
     And the session "user.name" is null
@@ -51,14 +51,14 @@ Scenario: User Info is persisted from client across app runs
     And I relaunch the app
 
     # Session - User persisted
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the session reporting API
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
     And the session "user.name" equals "bar"
     And I discard the oldest request
 
     # Event - User persisted
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the error reporting API
     And the payload field "events.0.user.id" equals "foo"
     And the payload field "events.0.user.email" equals "baz@grok.com"
     And the payload field "events.0.user.name" equals "bar"
@@ -72,14 +72,14 @@ Scenario: User Info is persisted from client across app runs
     And I relaunch the app
 
     # First Session
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the session reporting API
     And the session "user.id" equals "john"
     And the session "user.email" equals "george@ringo.com"
     And the session "user.name" equals "paul"
     And I discard the oldest request
 
     # First Event
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the error reporting API
     And the payload field "events.0.user.id" equals "john"
     And the payload field "events.0.user.email" equals "george@ringo.com"
     And the payload field "events.0.user.name" equals "paul"
@@ -90,7 +90,7 @@ Scenario: User Info is persisted from client across app runs
     And I wait to receive 2 requests
 
     # Second Session
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the session reporting API
     And the session "user.id" does not equal "john"
     And the session "user.id" does not equal "foo"
     And the session "user.email" is null
@@ -98,7 +98,7 @@ Scenario: User Info is persisted from client across app runs
     And I discard the oldest request
 
     # Third Event (Manually sent, non-persisted, generated id)
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the error reporting API
     And the payload field "events.0.user.id" is not null
     And the payload field "events.0.user.id" does not equal "john"
     And the payload field "events.0.user.id" does not equal "foo"

@@ -7,7 +7,7 @@ Feature: Thrown C++ exceptions are captured by Bugsnag
     When I run "CxxExceptionScenario" and relaunch the app
     And I configure Bugsnag for "CxxExceptionScenario"
     And I wait to receive a request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the error reporting API
     And the exception "errorClass" equals "P16kaboom_exception"
     And the exception "type" equals "cocoa"
     And the payload field "events.0.exceptions.0.stacktrace" is an array with 0 elements
@@ -19,7 +19,7 @@ Feature: Thrown C++ exceptions are captured by Bugsnag
     When I run "CxxExceptionOverrideScenario" and relaunch the app
     And I configure Bugsnag for "CxxExceptionOverrideScenario"
     And I wait to receive a request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the error reporting API
     And the exception "errorClass" equals "P16kaboom_exception"
     And the exception "type" equals "cocoa"
     And the payload field "events.0.exceptions.0.stacktrace" is an array with 0 elements

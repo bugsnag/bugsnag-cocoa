@@ -14,10 +14,10 @@ Feature: Communicating events between notifiers
 
     When I run "HandledInternalNotifyScenario"
     And I wait to receive 2 requests
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the session reporting API
     And the payload field "sessions.0.id" is stored as the value "session_id"
     And I discard the oldest request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the error reporting API
     And the exception "errorClass" equals "Handled Error!"
     And the exception "message" equals "Internally reported a handled event"
     And the exception "type" equals "unreal"
@@ -46,10 +46,10 @@ Feature: Communicating events between notifiers
 
     When I run "UnhandledInternalNotifyScenario"
     And I wait to receive 2 requests
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the session reporting API
     And the payload field "sessions.0.id" is stored as the value "session_id"
     And I discard the oldest request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the request is valid for the error reporting API
     And the exception "errorClass" equals "Unhandled Error?!"
     And the exception "message" equals "Internally reported an unhandled event"
     And the exception "type" equals "fake"

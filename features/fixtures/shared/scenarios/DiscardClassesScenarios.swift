@@ -59,9 +59,9 @@ class DiscardClassesUnhandledCrashScenario: Scenario {
     
     override func startBugsnag() {
         config.autoTrackSessions = false
-        config.discardClasses = ["EXC_BREAKPOINT"]
+        config.discardClasses = ["SIGABRT"]
         config.addOnSendError {
-            precondition(!$0.unhandled, "OnSendError should not be called for discarded errors (EXC_BREAKPOINT)")
+            precondition(!$0.unhandled, "OnSendError should not be called for discarded errors (SIGABRT)")
             return true
         }
         super.startBugsnag()
@@ -72,6 +72,6 @@ class DiscardClassesUnhandledCrashScenario: Scenario {
     }
     
     override func run() {
-        triggerExcBreakpoint()
+        abort()
     }
 }

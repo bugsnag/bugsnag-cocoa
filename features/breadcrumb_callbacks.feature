@@ -6,7 +6,7 @@ Feature: Callbacks can access and modify breadcrumb information
   Scenario: Returning false in a callback discards breadcrumbs
     When I run "BreadcrumbCallbackDiscardScenario"
     And I wait to receive a request
-    And the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the request is valid for the error reporting API
     And the payload field "events.0.breadcrumbs" is an array with 1 elements
     And the payload field "events.0.breadcrumbs.0.name" equals "Hello World"
     And the payload field "events.0.breadcrumbs.0.type" equals "manual"
@@ -17,7 +17,7 @@ Feature: Callbacks can access and modify breadcrumb information
   Scenario: Callbacks execute in the order in which they were added
     When I run "BreadcrumbCallbackOrderScenario"
     And I wait to receive a request
-    And the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the request is valid for the error reporting API
     And the payload field "events.0.breadcrumbs" is an array with 1 elements
     And the payload field "events.0.breadcrumbs.0.name" equals "Hello World"
     And the payload field "events.0.breadcrumbs.0.type" equals "manual"
@@ -28,7 +28,7 @@ Feature: Callbacks can access and modify breadcrumb information
   Scenario: Modifying breadcrumb information with a callback
     When I run "BreadcrumbCallbackOverrideScenario"
     And I wait to receive a request
-    And the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the request is valid for the error reporting API
     And the payload field "events.0.breadcrumbs" is an array with 1 elements
     And the payload field "events.0.breadcrumbs.0.name" equals "Feliz Navidad"
     And the payload field "events.0.breadcrumbs.0.type" equals "manual"
@@ -38,7 +38,7 @@ Feature: Callbacks can access and modify breadcrumb information
   Scenario: Callbacks can be removed without affecting the functionality of other callbacks
     When I run "BreadcrumbCallbackRemovalScenario"
     And I wait to receive a request
-    And the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the request is valid for the error reporting API
     And the payload field "events.0.breadcrumbs" is an array with 1 elements
     And the payload field "events.0.breadcrumbs.0.name" equals "Hello World"
     And the payload field "events.0.breadcrumbs.0.type" equals "manual"
@@ -49,7 +49,7 @@ Feature: Callbacks can access and modify breadcrumb information
   Scenario: An uncaught NSException in a callback does not affect breadcrumb delivery
     When I run "BreadcrumbCallbackCrashScenario"
     And I wait to receive a request
-    And the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the request is valid for the error reporting API
     And the payload field "events.0.breadcrumbs" is an array with 1 elements
     And the payload field "events.0.breadcrumbs.0.name" equals "Hello World"
     And the payload field "events.0.breadcrumbs.0.type" equals "manual"

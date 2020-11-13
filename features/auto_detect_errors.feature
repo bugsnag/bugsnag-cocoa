@@ -8,7 +8,7 @@ Feature: autoDetectErrors flag controls whether errors are captured automaticall
     Scenario: Uncaught NSException not reported when autoDetectErrors is false
         When I run "AutoDetectFalseHandledScenario"
         And I wait to receive a request
-        Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+        Then the request is valid for the error reporting API
         And the payload field "events" is an array with 1 elements
         And the event "unhandled" is false
         And I discard the oldest request
@@ -19,7 +19,7 @@ Feature: autoDetectErrors flag controls whether errors are captured automaticall
     Scenario: Signal not reported when autoDetectErrors is false
         When I run "AutoDetectFalseHandledScenario"
         And I wait to receive a request
-        Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+        Then the request is valid for the error reporting API
         And the payload field "events" is an array with 1 elements
         And the event "unhandled" is false
         And I discard the oldest request

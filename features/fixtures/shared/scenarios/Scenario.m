@@ -81,8 +81,4 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
 - (void)didEnterBackgroundNotification {
 }
 
-- (void)triggerExcBreakpoint {
-    __builtin_trap();
-}
-
 @end
