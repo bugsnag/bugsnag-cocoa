@@ -181,13 +181,17 @@ end
 
 Then("the payload field {string} matches the test device model") do |field|
   internal_names = {
+      "iPhone 6" => %w[iPhone7,2],
+      "iPhone 6 Plus" => %w[iPhone7,1],
+      "iPhone 6S" => %w[iPhone8,1],
       "iPhone 7" => %w[iPhone9,1 iPhone9,2 iPhone9,3 iPhone9,4],
-      "iPhone 8" => %w[iPhone10,1 iPhone10,2 iPhone10,4 iPhone10,5],
+      "iPhone 8" => %w[iPhone10,1 iPhone10,4],
+      "iPhone 8 Plus" => %w[iPhone10,2 iPhone10,5],
       "iPhone 11" => %w[iPhone12,1],
       "iPhone 11 Pro" => %w[iPhone12,3],
       "iPhone 11 Pro Max" => %w[iPhone12,5],
       "iPhone X" => %w[iPhone10,3 iPhone10,6],
-      "iPhone XR" => ["iPhone11,8"],
+      "iPhone XR" => %w[iPhone11,8],
       "iPhone XS" => %w[iPhone11,2 iPhone11,4 iPhone11,8]
   }
   expected_model = MazeRunner.config.capabilities["device"]
