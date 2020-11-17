@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface BugsnagSystemState : NSObject
 
 @property(readonly,nonatomic) NSDictionary *lastLaunchState;
-@property(readonly,nonatomic) NSDictionary *currentLaunchState;
+@property(readonly,atomic) NSDictionary *currentLaunchState;
 
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)config;
