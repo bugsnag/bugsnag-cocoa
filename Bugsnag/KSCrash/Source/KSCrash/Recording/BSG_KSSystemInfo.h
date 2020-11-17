@@ -60,7 +60,7 @@
 #import "BugsnagPlatformConditional.h"
 
 #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
-#import <UIKit/UIKit.h>
+#import "BSGUIKit.h"
 #endif
 
 /**

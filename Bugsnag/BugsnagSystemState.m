@@ -10,7 +10,7 @@
 #if TARGET_OS_OSX
 #import <AppKit/AppKit.h>
 #else
-#import <UIKit/UIKit.h>
+#import "BSGUIKit.h"
 #endif
 
 #import "BugsnagSystemState.h"

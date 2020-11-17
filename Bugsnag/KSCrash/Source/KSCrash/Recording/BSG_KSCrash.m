@@ -43,7 +43,7 @@
 #import "BSG_KSCrashReportFields.h"
 
 #if BSG_HAS_UIKIT
-#import <UIKit/UIKit.h>
+#import "BSGUIKit.h"
 #endif
 #if TARGET_OS_OSX
 #import <AppKit/AppKit.h>
