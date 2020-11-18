@@ -13,7 +13,7 @@ Feature: autoDetectErrors flag controls whether errors are captured automaticall
         And the event "unhandled" is false
         And I discard the oldest request
         When I run "AutoDetectFalseNSExceptionScenario" and relaunch the app
-        And I configure Bugsnag for "Scenario"
+        And I configure Bugsnag for "AutoDetectFalseHandledScenario"
         Then I should receive no requests
 
     Scenario: Signal not reported when autoDetectErrors is false
@@ -24,5 +24,5 @@ Feature: autoDetectErrors flag controls whether errors are captured automaticall
         And the event "unhandled" is false
         And I discard the oldest request
         When I run "AutoDetectFalseAbortScenario" and relaunch the app
-        And I configure Bugsnag for "Scenario"
+        And I configure Bugsnag for "AutoDetectFalseHandledScenario"
         Then I should receive no requests

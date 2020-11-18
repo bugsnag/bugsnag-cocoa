@@ -1,16 +1,16 @@
 When("I run {string}") do |event_type|
   steps %Q{
-    Given the element "ScenarioNameField" is present
-    When I send the keys "#{event_type}" to the element "ScenarioNameField"
+    Given the element "scenario_name" is present
+    When I send the keys "#{event_type}" to the element "scenario_name"
     And I close the keyboard
-    And I click the element "StartScenarioButton"
+    And I click the element "run_scenario"
   }
 end
 
 When("I set the app to {string} mode") do |mode|
   steps %Q{
-    Given the element "ScenarioMetaDataField" is present
-    When I send the keys "#{mode}" to the element "ScenarioMetaDataField"
+    Given the element "scenario_metadata" is present
+    When I send the keys "#{mode}" to the element "scenario_metadata"
     And I close the keyboard
   }
 end
@@ -24,24 +24,24 @@ end
 
 When("I clear all persistent data") do
   steps %Q{
-    Given the element "ClearPersistentDataButton" is present
-    And I click the element "ClearPersistentDataButton"
+    Given the element "clear_persistent_data" is present
+    And I click the element "clear_persistent_data"
   }
 end
 
 When("I close the keyboard") do
   steps %Q{
-    Given the element "CloseKeyboardItem" is present
-    And I click the element "CloseKeyboardItem"
+    Given the element "close_keyboard" is present
+    And I click the element "close_keyboard"
   }
 end
 
 When("I configure Bugsnag for {string}") do |event_type|
   steps %Q{
-    Given the element "ScenarioNameField" is present
-    When I send the keys "#{event_type}" to the element "ScenarioNameField"
+    Given the element "scenario_name" is present
+    When I send the keys "#{event_type}" to the element "scenario_name"
     And I close the keyboard
-    And I click the element "StartBugsnagButton"
+    And I click the element "start_bugsnag"
   }
 end
 
@@ -58,7 +58,7 @@ When("I clear the request queue") do
 end
 
 When("derp {string}") do |value|
-  send_keys_to_element("ScenarioNameField", value)
+  send_keys_to_element("scenario_name", value)
 end
 
 # 0: The current application state cannot be determined/is unknown
@@ -190,7 +190,7 @@ Then("the payload field {string} matches the test device model") do |field|
       "iPhone XR" => ["iPhone11,8"],
       "iPhone XS" => %w[iPhone11,2 iPhone11,4 iPhone11,8]
   }
-  expected_model = Devices::DEVICE_HASH[MazeRunner.driver.device_type]["device"]
+  expected_model = MazeRunner.config.capabilities["device"]
   valid_models = internal_names[expected_model]
   device_model = read_key_path(Server.current_request[:body], field)
   assert_true(valid_models.include?(device_model), "The field #{device_model} did not match any of the list of expected fields")

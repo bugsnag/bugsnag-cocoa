@@ -25,19 +25,19 @@
                             </label>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Scenario Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5Cz-db-j7f">
                                 <rect key="frame" x="20" y="135" width="374" height="34"/>
-                                <accessibility key="accessibilityConfiguration" identifier="ScenarioNameField"/>
+                                <accessibility key="accessibilityConfiguration" identifier="scenario_name"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Scenario Metadata" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IN4-CK-eEf">
                                 <rect key="frame" x="20" y="189" width="374" height="34"/>
-                                <accessibility key="accessibilityConfiguration" identifier="ScenarioMetaDataField"/>
+                                <accessibility key="accessibilityConfiguration" identifier="scenario_metadata"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oym-db-43x">
                                 <rect key="frame" x="20" y="243" width="374" height="30"/>
-                                <accessibility key="accessibilityConfiguration" identifier="StartScenarioButton"/>
+                                <accessibility key="accessibilityConfiguration" identifier="run_scenario"/>
                                 <state key="normal" title="Start Scenario"/>
                                 <connections>
                                     <action selector="runTestScenario" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="tlB-VZ-ZdP"/>
@@ -45,7 +45,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2z0-6z-4u6">
                                 <rect key="frame" x="20" y="293" width="374" height="30"/>
-                                <accessibility key="accessibilityConfiguration" identifier="StartBugsnagButton"/>
+                                <accessibility key="accessibilityConfiguration" identifier="start_bugsnag"/>
                                 <state key="normal" title="Start Bugsnag"/>
                                 <connections>
                                     <action selector="startBugsnag" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="Wv1-OW-OOt"/>
@@ -53,7 +53,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zEv-jB-Vej">
                                 <rect key="frame" x="20" y="343" width="374" height="30"/>
-                                <accessibility key="accessibilityConfiguration" identifier="ClearPersistentDataButton"/>
+                                <accessibility key="accessibilityConfiguration" identifier="clear_persistent_data"/>
                                 <state key="normal" title="Clear Persistent Data"/>
                                 <connections>
                                     <action selector="clearPersistentData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZcO-Ew-Mhu"/>
@@ -61,7 +61,7 @@
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Manual Testing" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X9q-4y-UF2">
                                 <rect key="frame" x="20" y="423" width="374" height="21"/>
-                                <accessibility key="accessibilityConfiguration" identifier="CloseKeyboardItem"/>
+                                <accessibility key="accessibilityConfiguration" identifier="close_keyboard"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>

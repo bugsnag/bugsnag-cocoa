@@ -176,10 +176,13 @@
 - (void) testTimeDifferenceInSeconds
 {
     uint64_t startTime = mach_absolute_time();
+    CFAbsoluteTime cfStartTime = CFAbsoluteTimeGetCurrent();
     [NSThread sleepForTimeInterval:0.1];
     uint64_t endTime = mach_absolute_time();
+    CFAbsoluteTime cfEndTime = CFAbsoluteTimeGetCurrent();
     double diff = bsg_ksmachtimeDifferenceInSeconds(endTime, startTime);
-    XCTAssertTrue(diff >= 0.1 && diff < 0.2, @"");
+    double cfDiff = cfEndTime - cfStartTime;
+    XCTAssertEqualWithAccuracy(diff, cfDiff, 0.0001);
 }
 
 // TODO: Disabling this until I figure out what's wrong with queue names.

@@ -89,8 +89,7 @@ Or to test on tvOS:
 
     make PLATFORM=tvOS test
 
-Run the integration tests using `make e2e` (end-to-end). For more information
-see [TESTING.md](TESTING.md#end-to-end-tests).
+Run the integration tests - see [TESTING.md](TESTING.md#end-to-end-tests).
 
 ## Releasing
 

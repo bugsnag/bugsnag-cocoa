@@ -107,6 +107,7 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <accessibility identifier="clear_persistent_data"/>
                         <connections>
                             <action selector="clearPersistentData:" target="-2" id="p7v-vJ-tOI"/>
                         </connections>
