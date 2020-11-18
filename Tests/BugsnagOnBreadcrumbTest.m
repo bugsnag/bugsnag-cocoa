@@ -34,6 +34,10 @@
 
 @implementation BugsnagOnBreadcrumbTest
 
+- (void)setUp {
+    [super setUp];
+    [[[BugsnagBreadcrumbs alloc] initWithConfiguration:[[BugsnagConfiguration alloc] initWithApiKey:nil]] removeAllBreadcrumbs];
+}
 
 /**
  * Test that onBreadcrumb blocks get called once added

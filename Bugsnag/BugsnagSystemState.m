@@ -139,10 +139,10 @@ NSDictionary *copyLaunchState(NSDictionary *launchState) {
 
 @interface BugsnagSystemState ()
 
-@property(readwrite,nonatomic) NSMutableDictionary *currentLaunchStateRW;
-@property(readwrite,nonatomic) NSDictionary *currentLaunchState;
+@property(readonly,nonatomic) NSMutableDictionary *currentLaunchStateRW;
+@property(readwrite,atomic) NSDictionary *currentLaunchState;
 @property(readonly,nonatomic) NSString *persistenceFilePath;
-@property(nonatomic) BugsnagKVStore *kvStore;
+@property(readonly,nonatomic) BugsnagKVStore *kvStore;
 
 @end
 
