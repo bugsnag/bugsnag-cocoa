@@ -7,7 +7,16 @@
 
 @class BugsnagConfiguration;
 
-typedef void (^RequestCompletion)(NSUInteger reportCount, BOOL success, NSError *error);
+NS_ASSUME_NONNULL_BEGIN
+
+typedef NS_ENUM(NSInteger, BugsnagApiClientDeliveryStatus) {
+    /// The payload was delivered successfully and can be deleted.
+    BugsnagApiClientDeliveryStatusDelivered,
+    /// The payload was not delivered but can be retried, e.g. when there was a loss of connectivity.
+    BugsnagApiClientDeliveryStatusFailed,
+    /// The payload cannot be delivered and should be deleted without attempting to retry.
+    BugsnagApiClientDeliveryStatusUndeliverable,
+};
 
 @interface BugsnagApiClient : NSObject
 
@@ -21,14 +30,14 @@ typedef void (^RequestCompletion)(NSUInteger reportCount, BOOL success, NSError 
 
 - (NSOperation *)deliveryOperation;
 
-- (void)sendItems:(NSUInteger)count
-      withPayload:(NSDictionary *)payload
-            toURL:(NSURL *)url
-          headers:(NSDictionary *)headers
-     onCompletion:(RequestCompletion)onCompletion;
+- (void)sendJSONPayload:(NSDictionary *)payload
+                headers:(NSDictionary<NSString *, NSString *> *)headers
+                  toURL:(NSURL *)url
+      completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error))completionHandler;
 
 @property(readonly) NSOperationQueue *sendQueue;
 @property(readonly) BugsnagConfiguration *config;
 
-
 @end
+
+NS_ASSUME_NONNULL_END

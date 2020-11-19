@@ -20,8 +20,8 @@
 - (void)testBadJSON {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     BugsnagApiClient* client = [[BugsnagApiClient alloc] initWithConfig:config queueName:@"test"];
-    [client sendItems:1 withPayload:@{@1: @"a"} toURL:[NSURL URLWithString:@"file:///dev/null"] headers:@{@1: @"a"} onCompletion:^(NSUInteger reportCount, BOOL success, NSError *error) {
-    }];
+    XCTAssertNoThrow([client sendJSONPayload:(id)@{@1: @"a"} headers:(id)@{@1: @"a"} toURL:[NSURL URLWithString:@"file:///dev/null"]
+                           completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error) {}]);
 }
 
 @end
