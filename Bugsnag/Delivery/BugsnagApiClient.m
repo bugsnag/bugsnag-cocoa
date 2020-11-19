@@ -34,18 +34,15 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
 
 @implementation BugsnagApiClient
 
-- (instancetype)initWithConfig:(BugsnagConfiguration *)configuration
-                     queueName:(NSString *)queueName {
+- (instancetype)initWithSession:(nullable NSURLSession *)session queueName:(NSString *)queueName {
     if (self = [super init]) {
         _sendQueue = [NSOperationQueue new];
         _sendQueue.maxConcurrentOperationCount = 1;
-        _config = configuration;
-        _session = configuration.session ?: [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
-
         if ([_sendQueue respondsToSelector:@selector(qualityOfService)]) {
             _sendQueue.qualityOfService = NSQualityOfServiceUtility;
         }
         _sendQueue.name = queueName;
+        _session = session ?: [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
     }
     return self;
 }

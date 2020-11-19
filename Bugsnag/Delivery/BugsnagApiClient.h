@@ -5,8 +5,6 @@
 
 #import <Foundation/Foundation.h>
 
-@class BugsnagConfiguration;
-
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, BugsnagApiClientDeliveryStatus) {
@@ -20,8 +18,7 @@ typedef NS_ENUM(NSInteger, BugsnagApiClientDeliveryStatus) {
 
 @interface BugsnagApiClient : NSObject
 
-- (instancetype)initWithConfig:(BugsnagConfiguration *)configuration
-                     queueName:(NSString *)queueName;
+- (instancetype)initWithSession:(nullable NSURLSession *)session queueName:(NSString *)queueName;
 
 /**
  * Send outstanding reports
@@ -36,7 +33,6 @@ typedef NS_ENUM(NSInteger, BugsnagApiClientDeliveryStatus) {
       completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error))completionHandler;
 
 @property(readonly) NSOperationQueue *sendQueue;
-@property(readonly) BugsnagConfiguration *config;
 
 @end
 

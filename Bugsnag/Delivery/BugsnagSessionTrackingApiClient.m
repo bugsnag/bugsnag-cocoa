@@ -21,15 +21,16 @@
 @interface BugsnagSessionTrackingApiClient ()
 @property NSMutableSet *activeIds;
 @property(nonatomic) NSString *codeBundleId;
+@property(nonatomic) BugsnagConfiguration *config;
 @end
 
 
 @implementation BugsnagSessionTrackingApiClient
 
-- (instancetype)initWithConfig:(BugsnagConfiguration *)configuration
-                     queueName:(NSString *)queueName {
-    if (self = [super initWithConfig:configuration queueName:queueName]) {
+- (instancetype)initWithConfig:(BugsnagConfiguration *)configuration queueName:(NSString *)queueName {
+    if ((self = [super initWithSession:configuration.session queueName:queueName])) {
         _activeIds = [NSMutableSet new];
+        _config = configuration;
     }
     return self;
 }
