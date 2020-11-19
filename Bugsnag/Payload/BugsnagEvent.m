@@ -81,17 +81,6 @@ NSDictionary *_Nonnull BSGParseAppMetadata(NSDictionary *_Nonnull event);
 - (instancetype)deepCopy;
 @end
 
-@interface BugsnagStackframe ()
-+ (BugsnagStackframe *)frameFromDict:(NSDictionary *)dict
-                          withImages:(NSArray *)binaryImages;
-@end
-
-@interface BugsnagStackframe ()
-+ (BugsnagStackframe *)frameFromDict:(NSDictionary *)dict
-                          withImages:(NSArray *)binaryImages;
-+ (BugsnagStackframe *)frameFromJson:(NSDictionary *)json;
-@end
-
 @interface BugsnagThread ()
 @property BugsnagStacktrace *trace;
 - (NSDictionary *)toDictionary;
