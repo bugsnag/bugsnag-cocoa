@@ -70,9 +70,9 @@
                     codeBundleId:self.codeBundleId];
             NSMutableDictionary *data = [payload toJson];
             NSDictionary *HTTPHeaders = @{
-                    @"Bugsnag-Payload-Version": @"1.0",
-                    @"Bugsnag-API-Key": apiKey,
-                    @"Bugsnag-Sent-At": [BSG_RFC3339DateTool stringFromDate:[NSDate new]]
+                BugsnagHTTPHeaderNameApiKey: apiKey ?: @"",
+                BugsnagHTTPHeaderNamePayloadVersion: @"1.0",
+                BugsnagHTTPHeaderNameSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate date]]
             };
             [self sendJSONPayload:data headers:HTTPHeaders toURL:sessionURL
                 completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {

@@ -11,6 +11,10 @@
 #import "Private.h"
 #import "BSGJSONSerialization.h"
 
+BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameApiKey             = @"Bugsnag-Api-Key";
+BugsnagHTTPHeaderName const BugsnagHTTPHeaderNamePayloadVersion     = @"Bugsnag-Payload-Version";
+BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameSentAt             = @"Bugsnag-Sent-At";
+
 typedef NS_ENUM(NSInteger, HTTPStatusCode) {
     /// 402 Payment Required: a nonstandard client error status response code that is reserved for future use.
     ///
@@ -63,7 +67,7 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
 #pragma mark - Delivery
 
 - (void)sendJSONPayload:(NSDictionary *)payload
-                headers:(NSDictionary<NSString *, NSString *> *)headers
+                headers:(NSDictionary<BugsnagHTTPHeaderName, NSString *> *)headers
                   toURL:(NSURL *)url
       completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error))completionHandler {
     
