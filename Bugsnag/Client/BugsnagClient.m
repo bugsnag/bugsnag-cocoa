@@ -823,11 +823,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
             [strongSelf flushPendingReports];
         }
 
-        [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
-                          withMessage:@"Connectivity changed"
-                          andMetadata:@{
-                              @"type"  :  connectionType
-                          }];
+        [strongSelf addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
+                                withMessage:@"Connectivity changed"
+                                andMetadata:@{@"type": connectionType}];
     }];
 }
 
