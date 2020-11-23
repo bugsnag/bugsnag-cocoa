@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Error and session deliveries that fail with an HTTP error status code will now be retried if appropriate.
+  [#895](https://github.com/bugsnag/bugsnag-cocoa/pull/895)
+
 ## 6.2.5 (2020-11-18)
 
 ### Bug fixes

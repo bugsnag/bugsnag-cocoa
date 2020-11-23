@@ -92,10 +92,10 @@
 }
 
 - (void)finishActiveRequest:(NSString *)requestId
-                    success:(BOOL)success
+                  completed:(BOOL)completed
                       error:(NSError *)error
                       block:(BSGOnErrorSentBlock)block {
-    block(requestId, success, error);
+    block(requestId, completed, error);
     @synchronized (self.activeRequests) {
         [self.activeRequests removeObject:requestId];
     }
@@ -123,7 +123,7 @@
         if ([event shouldBeSent] && [self runOnSendBlocks:configuration event:event]) {
             storedEvents[fileKey] = event;
         } else { // delete the report as the user has discarded it
-            [self finishActiveRequest:fileKey success:true error:nil block:block];
+            [self finishActiveRequest:fileKey completed:YES error:nil block:block];
         }
     }
     [self deliverStoredEvents:storedEvents configuration:configuration block:block];
@@ -138,13 +138,11 @@
 
         NSMutableDictionary *apiHeaders = [[configuration errorApiHeaders] mutableCopy];
         BSGDictSetSafeObject(apiHeaders, event.apiKey, BSGHeaderApiKey);
-        [self.apiClient sendItems:1
-                      withPayload:requestPayload
-                            toURL:configuration.notifyURL
-                          headers:apiHeaders
-                     onCompletion:^(NSUInteger reportCount, BOOL success, NSError *error) {
-                         [self finishActiveRequest:filename success:success error:error block:block];
-                     }];
+        [self.apiClient sendJSONPayload:requestPayload headers:apiHeaders toURL:configuration.notifyURL
+                      completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
+            BOOL completed = status == BugsnagApiClientDeliveryStatusDelivered || status == BugsnagApiClientDeliveryStatusUndeliverable;
+            [self finishActiveRequest:filename completed:completed error:error block:block];
+        }];
     }
 }
 
