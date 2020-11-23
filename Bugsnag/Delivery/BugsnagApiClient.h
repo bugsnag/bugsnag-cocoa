@@ -7,6 +7,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NSString * BugsnagHTTPHeaderName NS_TYPED_ENUM;
+
+extern BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameApiKey;
+extern BugsnagHTTPHeaderName const BugsnagHTTPHeaderNamePayloadVersion;
+extern BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameSentAt;
+
 typedef NS_ENUM(NSInteger, BugsnagApiClientDeliveryStatus) {
     /// The payload was delivered successfully and can be deleted.
     BugsnagApiClientDeliveryStatusDelivered,
@@ -28,7 +34,7 @@ typedef NS_ENUM(NSInteger, BugsnagApiClientDeliveryStatus) {
 - (NSOperation *)deliveryOperation;
 
 - (void)sendJSONPayload:(NSDictionary *)payload
-                headers:(NSDictionary<NSString *, NSString *> *)headers
+                headers:(NSDictionary<BugsnagHTTPHeaderName, NSString *> *)headers
                   toURL:(NSURL *)url
       completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error))completionHandler;
 

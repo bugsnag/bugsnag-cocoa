@@ -137,7 +137,7 @@
         NSDictionary *requestPayload = [self prepareEventPayload:event];
 
         NSMutableDictionary *apiHeaders = [[configuration errorApiHeaders] mutableCopy];
-        BSGDictSetSafeObject(apiHeaders, event.apiKey, BSGHeaderApiKey);
+        apiHeaders[BugsnagHTTPHeaderNameApiKey] = event.apiKey;
         [self.apiClient sendJSONPayload:requestPayload headers:apiHeaders toURL:configuration.notifyURL
                       completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
             BOOL completed = status == BugsnagApiClientDeliveryStatusDelivered || status == BugsnagApiClientDeliveryStatusUndeliverable;
