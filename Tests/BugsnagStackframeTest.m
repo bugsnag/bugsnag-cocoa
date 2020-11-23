@@ -9,12 +9,7 @@
 #import <XCTest/XCTest.h>
 
 #import "BSG_KSMachHeaders.h"
-#import "BugsnagStackframe.h"
-
-@interface BugsnagStackframe ()
-- (NSDictionary *)toDictionary;
-+ (BugsnagStackframe *)frameFromDict:(NSDictionary *)dict withImages:(NSArray *)binaryImages;
-@end
+#import "BugsnagStackframe+Private.h"
 
 @interface BugsnagStackframeTest : XCTestCase
 @property NSDictionary *frameDict;
@@ -48,6 +43,7 @@
     XCTAssertEqualObjects(@0x10b574fa0, frame.symbolAddress);
     XCTAssertEqualObjects(@0x10b54b000, frame.machoLoadAddress);
     XCTAssertEqualObjects(@0x10b5756bf, frame.frameAddress);
+    XCTAssertNil(frame.type);
     XCTAssertFalse(frame.isPc);
     XCTAssertFalse(frame.isLr);
 }
@@ -55,6 +51,7 @@
 - (void)testStackframeToDict {
     BugsnagStackframe *frame = [BugsnagStackframe frameFromDict:self.frameDict withImages:self.binaryImages];
     NSDictionary *dict = [frame toDictionary];
+    XCTAssertTrue([NSJSONSerialization isValidJSONObject:dict]);
     XCTAssertEqualObjects(@"-[BugsnagClient notify:handledState:block:]", dict[@"method"]);
     XCTAssertEqualObjects(@"/Users/foo/Bugsnag.h", dict[@"machoFile"]);
     XCTAssertEqualObjects(@"B6D80CB5-A772-3D2F-B5A1-A3A137B8B58F", dict[@"machoUUID"]);
@@ -62,8 +59,39 @@
     XCTAssertEqualObjects(@"0x10b574fa0", dict[@"symbolAddress"]);
     XCTAssertEqualObjects(@"0x10b54b000", dict[@"machoLoadAddress"]);
     XCTAssertEqualObjects(@"0x10b5756bf", dict[@"frameAddress"]);
+    XCTAssertNil(frame.type);
     XCTAssertNil(dict[@"isPC"]);
     XCTAssertNil(dict[@"isLR"]);
+}
+
+- (void)testStackframeFromJson {
+    BugsnagStackframe *frame = [BugsnagStackframe frameFromJson:@{
+        @"frameAddress":        @"0x10b5756bf",
+        @"isLR":                @NO,
+        @"isPC":                @NO,
+        @"machoFile":           @"/Users/foo/Bugsnag.h",
+        @"machoLoadAddress":    @"0x10b54b000",
+        @"machoUUID":           @"B6D80CB5-A772-3D2F-B5A1-A3A137B8B58F",
+        @"machoVMAddress":      @"0x102340922",
+        @"method":              @"-[BugsnagClient notify:handledState:block:]",
+        @"symbolAddress":       @"0x10b574fa0",
+        @"type":                @"cocoa",
+    }];
+    XCTAssertEqual(frame.isLr, NO);
+    XCTAssertEqual(frame.isPc, NO);
+    XCTAssertEqualObjects(frame.frameAddress,       @0x10b5756bf);
+    XCTAssertEqualObjects(frame.machoFile,          @"/Users/foo/Bugsnag.h");
+    XCTAssertEqualObjects(frame.machoLoadAddress,   @0x10b54b000);
+    XCTAssertEqualObjects(frame.machoUuid,          @"B6D80CB5-A772-3D2F-B5A1-A3A137B8B58F");
+    XCTAssertEqualObjects(frame.machoVmAddress,     @0x102340922);
+    XCTAssertEqualObjects(frame.method,             @"-[BugsnagClient notify:handledState:block:]");
+    XCTAssertEqualObjects(frame.symbolAddress,      @0x10b574fa0);
+    XCTAssertEqualObjects(frame.type,               BugsnagStackframeTypeCocoa);
+}
+
+- (void)testStackframeFromJsonWithoutType {
+    BugsnagStackframe *frame = [BugsnagStackframe frameFromJson:@{}];
+    XCTAssertNil(frame.type);
 }
 
 - (void)testStackframeToDictPcLr {
@@ -98,7 +126,8 @@
 #define AssertStackframeValues(stackframe_, machoFile_, frameAddress_, method_) \
     XCTAssertEqualObjects(stackframe_.method, method_); \
     XCTAssertEqualObjects(stackframe_.machoFile, machoFile_); \
-    XCTAssertEqualObjects(stackframe_.frameAddress, @(frameAddress_));
+    XCTAssertEqualObjects(stackframe_.frameAddress, @(frameAddress_)); \
+    XCTAssertNil(stackframe_.type);
 
 - (void)testDummyCallStackSymbols {
     bsg_mach_headers_initialize(); // Prevent symbolication
@@ -174,6 +203,7 @@
         XCTAssertNotNil(stackframe.machoVmAddress);
         XCTAssertNotNil(stackframe.machoLoadAddress);
         XCTAssertNotNil(stackframe.symbolAddress);
+        XCTAssertNil(stackframe.type);
         XCTAssertTrue([callStackSymbols[idx] containsString:stackframe.method]);
     }];
 }
