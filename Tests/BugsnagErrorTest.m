@@ -9,26 +9,13 @@
 #import <XCTest/XCTest.h>
 
 #import "BugsnagKeys.h"
-#import "BugsnagError.h"
+#import "BugsnagError+Private.h"
 #import "BugsnagStackframe.h"
-#import "BugsnagThread.h"
+#import "BugsnagThread+Private.h"
 
 NSString *_Nonnull BSGParseErrorClass(NSDictionary *error, NSString *errorType);
 
 NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSString *errorType);
-
-@interface BugsnagError ()
-- (instancetype)initWithEvent:(NSDictionary *)event errorReportingThread:(BugsnagThread *)thread;
-
-- (NSDictionary *)toDictionary;
-@end
-
-@interface BugsnagThread ()
-+ (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads
-                                         binaryImages:(NSArray *)binaryImages
-                                                depth:(NSUInteger)depth
-                                            errorType:(NSString *)errorType;
-@end
 
 @interface BugsnagErrorTest : XCTestCase
 @property NSDictionary *event;

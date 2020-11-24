@@ -52,10 +52,6 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
 @end
 
-@interface BugsnagEvent ()
-@property(readwrite) NSUInteger depth;
-@end
-
 @interface BugsnagClient ()
 - (void)startListeningForStateChangeNotification:(NSString *_Nonnull)notificationName;
 - (void)addBreadcrumbWithBlock:(void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block;

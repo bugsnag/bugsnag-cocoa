@@ -9,17 +9,7 @@
 #import <XCTest/XCTest.h>
 
 #import "BugsnagStackframe.h"
-#import "BugsnagThread.h"
-
-@interface BugsnagThread ()
-- (NSDictionary *)toDictionary;
-
-- (instancetype)initWithThread:(NSDictionary *)thread binaryImages:(NSArray *)binaryImages;
-
-+ (NSDictionary *)enhanceThreadInfo:(NSDictionary *)thread
-                              depth:(NSUInteger)depth
-                          errorType:(NSString *)errorType;
-@end
+#import "BugsnagThread+Private.h"
 
 @interface BugsnagThreadTest : XCTestCase
 @property NSArray *binaryImages;

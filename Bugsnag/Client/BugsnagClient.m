@@ -28,35 +28,38 @@
 
 #import "BugsnagClient.h"
 
+#import "BSGConnectivity.h"
+#import "BSGJSONSerialization.h"
+#import "BSGSerialization.h"
+#import "BSG_KSCrash.h"
+#import "BSG_KSCrashC.h"
+#import "BSG_KSCrashReport.h"
+#import "BSG_KSCrashState.h"
+#import "BSG_KSCrashType.h"
+#import "BSG_KSMach.h"
+#import "BSG_KSSystemInfo.h"
+#import "BSG_RFC3339DateTool.h"
+#import "Bugsnag.h"
+#import "Bugsnag.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagClientInternal.h"
-#import "BSGConnectivity.h"
-#import "Bugsnag.h"
-#import "Private.h"
+#import "BugsnagCollections.h"
 #import "BugsnagCrashSentry.h"
+#import "BugsnagError+Private.h"
+#import "BugsnagErrorTypes.h"
+#import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
-#import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
+#import "BugsnagLogger.h"
+#import "BugsnagMetadataInternal.h"
+#import "BugsnagNotifier.h"
+#import "BugsnagPluginClient.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagSessionTrackingApiClient.h"
-#import "BugsnagPluginClient.h"
-#import "BugsnagSystemState.h"
-#import "BSG_RFC3339DateTool.h"
-#import "BSG_KSCrashC.h"
-#import "BSG_KSCrashType.h"
-#import "BSG_KSCrashState.h"
-#import "BSG_KSSystemInfo.h"
-#import "BSG_KSMach.h"
-#import "BSGSerialization.h"
-#import "Bugsnag.h"
-#import "BugsnagErrorTypes.h"
-#import "BugsnagNotifier.h"
-#import "BugsnagMetadataInternal.h"
 #import "BugsnagStateEvent.h"
-#import "BugsnagCollections.h"
-#import "BSG_KSCrashReport.h"
-#import "BSG_KSCrash.h"
-#import "BSGJSONSerialization.h"
+#import "BugsnagSystemState.h"
+#import "BugsnagThread+Private.h"
+#import "Private.h"
 
 #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
 #define BSGOOMAvailable 1
@@ -119,10 +122,6 @@ NSDictionary *BSGParseDeviceMetadata(NSDictionary *event);
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
-@end
-
-@interface BugsnagThread ()
-+ (NSMutableArray *)serializeThreads:(NSArray<BugsnagThread *> *)threads;
 @end
 
 @interface BugsnagAppWithState ()
@@ -324,31 +323,6 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property(readwrite, retain, nullable) BugsnagMetadata *metadata;
 @property(readwrite, retain, nullable) BugsnagMetadata *config;
 - (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)type;
-@end
-
-@interface BugsnagEvent ()
-@property(readonly, copy, nonnull) NSDictionary *overrides;
-@property(readwrite) NSUInteger depth;
-@property(readonly, nonnull) BugsnagHandledState *handledState;
-@property (nonatomic, strong) BugsnagMetadata *metadata;
-- (void)setOverrideProperty:(NSString *)key value:(id)value;
-- (NSDictionary *)toJson;
-- (instancetype)initWithApp:(BugsnagAppWithState *)app
-                     device:(BugsnagDeviceWithState *)device
-               handledState:(BugsnagHandledState *)handledState
-                       user:(BugsnagUser *)user
-                   metadata:(BugsnagMetadata *)metadata
-                breadcrumbs:(NSArray<BugsnagBreadcrumb *> *)breadcrumbs
-                     errors:(NSArray<BugsnagError *> *)errors
-                    threads:(NSArray<BugsnagThread *> *)threads
-                    session:(BugsnagSession *)session;
-@end
-
-@interface BugsnagError ()
-- (instancetype)initWithErrorClass:(NSString *)errorClass
-                      errorMessage:(NSString *)errorMessage
-                         errorType:(BSGErrorType)errorType
-                        stacktrace:(NSArray<BugsnagStackframe *> *)stacktrace;
 @end
 
 @interface BugsnagSessionTracker ()

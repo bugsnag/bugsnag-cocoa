@@ -25,14 +25,16 @@
 //
 
 #import "BugsnagErrorReportSink.h"
+
+#import "BSG_KSSystemInfo.h"
 #import "Bugsnag.h"
-#import "BugsnagLogger.h"
-#import "BugsnagCollections.h"
 #import "BugsnagClient.h"
 #import "BugsnagClientInternal.h"
+#import "BugsnagCollections.h"
+#import "BugsnagEvent+Private.h"
 #import "BugsnagKeys.h"
+#import "BugsnagLogger.h"
 #import "BugsnagNotifier.h"
-#import "BSG_KSSystemInfo.h"
 #import "Private.h"
 
 // This is private in Bugsnag, but really we want package private so define
@@ -43,13 +45,6 @@
 
 @interface BugsnagNotifier ()
 - (NSDictionary *)toDict;
-@end
-
-@interface BugsnagEvent ()
-- (NSDictionary *_Nonnull)toJson;
-- (BOOL)shouldBeSent;
-- (instancetype _Nonnull)initWithKSReport:(NSDictionary *_Nonnull)report;
-@property NSSet<NSString *> *redactedKeys;
 @end
 
 @interface BugsnagConfiguration ()

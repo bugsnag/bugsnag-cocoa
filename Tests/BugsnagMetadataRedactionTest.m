@@ -7,13 +7,8 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "BugsnagEvent.h"
 
-@interface BugsnagEvent ()
-- (NSDictionary *)toJson;
-- (instancetype)initWithKSReport:(NSDictionary *)report;
-@property NSSet<NSString *> *redactedKeys;
-@end
+#import "BugsnagEvent+Private.h"
 
 @interface BugsnagMetadataRedactionTest : XCTestCase
 

@@ -14,6 +14,7 @@
 #import "Bugsnag.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagErrorReportSink.h"
+#import "BugsnagEvent+Private.h"
 #import "BugsnagTestConstants.h"
 
 @interface BugsnagErrorReportSinkTests : XCTestCase
@@ -27,20 +28,6 @@
 
 @interface BugsnagClient ()
 - (void)start;
-@end
-
-@interface BugsnagEvent ()
-- (instancetype)initWithKSReport:(NSDictionary *)report;
-
-- (instancetype)initWithApp:(BugsnagAppWithState *)app
-                     device:(BugsnagDeviceWithState *)device
-               handledState:(BugsnagHandledState *)handledState
-                       user:(BugsnagUser *)user
-                   metadata:(BugsnagMetadata *)metadata
-                breadcrumbs:(NSArray<BugsnagBreadcrumb *> *)breadcrumbs
-                     errors:(NSArray<BugsnagError *> *)errors
-                    threads:(NSArray<BugsnagThread *> *)threads
-                    session:(BugsnagSession *)session;
 @end
 
 @interface BugsnagErrorReportSink ()

@@ -7,7 +7,8 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "BugsnagEvent.h"
+
+#import "BugsnagEvent+Private.h"
 #import "BugsnagAppWithState.h"
 #import "BugsnagUser.h"
 #import "BugsnagDeviceWithState.h"
@@ -16,17 +17,9 @@
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagHandledState.h"
 #import "Bugsnag.h"
-
 #import "BugsnagError.h"
 #import "BugsnagStackframe.h"
 #import "BugsnagThread.h"
-
-@interface BugsnagEvent ()
-- (instancetype)initWithKSReport:(NSDictionary *)report;
-- (NSDictionary *)toJson;
-@property(readonly, nonnull) BugsnagHandledState *handledState;
-@property BugsnagSession *session;
-@end
 
 @interface BugsnagDeviceWithState ()
 @property (nonatomic, readonly) NSDateFormatter *formatter;
