@@ -38,7 +38,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
 // MARK: - Accessing hidden methods/properties
 
-NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
+NSMutableDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
 NSDictionary *_Nonnull BSGParseAppMetadata(NSDictionary *_Nonnull event);
 
 @interface BugsnagAppWithState ()
@@ -296,7 +296,12 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     }
     BugsnagMetadata *metadata = [BugsnagMetadata new];
     // Cocoa-specific, non-spec., device and app data
-    [metadata addMetadata:BSGParseDeviceMetadata(event) toSection:BSGKeyDevice];
+    NSMutableDictionary *deviceMetadata = BSGParseDeviceMetadata(event);
+    // This can be removed once metadata is being persisted to disk
+    deviceMetadata[BSGKeyBatteryLevel]  = [event valueForKeyPath:@"user.state.oom.device.batteryLevel"];
+    deviceMetadata[BSGKeyCharging]      = [event valueForKeyPath:@"user.state.oom.device.charging"];
+    deviceMetadata[BSGKeyOrientation]   = [event valueForKeyPath:@"user.state.oom.device.orientation"];
+    [metadata addMetadata:deviceMetadata toSection:BSGKeyDevice];
     [metadata addMetadata:BSGParseAppMetadata(event) toSection:BSGKeyApp];
 
     BugsnagEvent *obj = [self initWithApp:[BugsnagAppWithState appWithOomData:[event valueForKeyPath:@"user.state.oom.app"]]

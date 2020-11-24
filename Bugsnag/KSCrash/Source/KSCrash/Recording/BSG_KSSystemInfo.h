@@ -74,6 +74,12 @@
  */
 + (NSDictionary *)systemInfo;
 
+/** Get this application's UUID.
+ *
+ * @return The UUID.
+ */
++ (NSString *)appUUID;
+
 /**
  * The build version of the OS
  */
@@ -99,6 +105,7 @@
  * YES if the app is currently shown in the foreground
  */
 + (BOOL)isInForeground:(UIApplicationState)state;
+
 #endif
 
 @end
