@@ -36,7 +36,7 @@
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
-#import "BugsnagThread.h"
+#import "BugsnagThread+Private.h"
 #import "BSGJSONSerialization.h"
 #import "BSGSerialization.h"
 #import "Bugsnag.h"
@@ -73,13 +73,6 @@
 // ============================================================================
 #pragma mark - Globals -
 // ============================================================================
-
-@interface BugsnagThread ()
-+ (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads
-                                         binaryImages:(NSArray *)binaryImages
-                                                depth:(NSUInteger)depth
-                                            errorType:(NSString *)errorType;
-@end
 
 @interface BSG_KSCrash ()
 

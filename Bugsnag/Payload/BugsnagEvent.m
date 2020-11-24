@@ -14,22 +14,25 @@
 #endif
 
 #import <Foundation/Foundation.h>
+
 #import "BSGSerialization.h"
+#import "BSG_KSCrashReportFields.h"
+#import "BSG_RFC3339DateTool.h"
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
+#import "BugsnagError+Private.h"
+#import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
-#import "BugsnagLogger.h"
 #import "BugsnagKeys.h"
+#import "BugsnagLogger.h"
 #import "BugsnagSession.h"
-#import "Private.h"
-#import "BSG_RFC3339DateTool.h"
-#import "BugsnagStacktrace.h"
-#import "BugsnagThread.h"
-#import "RegisterErrorData.h"
 #import "BugsnagSessionInternal.h"
+#import "BugsnagStacktrace.h"
+#import "BugsnagThread+Private.h"
 #import "BugsnagUser.h"
-#import "BSG_KSCrashReportFields.h"
+#import "Private.h"
+#import "RegisterErrorData.h"
 
 static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
@@ -81,44 +84,12 @@ NSDictionary *_Nonnull BSGParseAppMetadata(NSDictionary *_Nonnull event);
 - (instancetype)deepCopy;
 @end
 
-@interface BugsnagThread ()
-@property BugsnagStacktrace *trace;
-- (NSDictionary *)toDictionary;
-
-- (instancetype)initWithThread:(NSDictionary *)thread
-                  binaryImages:(NSArray *)binaryImages;
-
-+ (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads
-                                         binaryImages:(NSArray *)binaryImages
-                                                depth:(NSUInteger)depth
-                                            errorType:(NSString *)errorType;
-
-+ (NSMutableArray *)serializeThreads:(NSArray<BugsnagThread *> *)threads;
-@end
-
 @interface BugsnagStacktrace ()
 - (NSArray *)toArray;
 @end
 
-@interface BugsnagThread ()
-- (instancetype)initWithThread:(NSDictionary *)thread
-                  binaryImages:(NSArray *)binaryImages;
-
-+ (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads
-                                         binaryImages:(NSArray *)binaryImages
-                                                depth:(NSUInteger)depth
-                                            errorType:(NSString *)errorType;
-+ (instancetype)threadFromJson:(NSDictionary *)json;
-@end
-
 @interface BugsnagStacktrace ()
 - (NSArray *)toArray;
-@end
-
-@interface BugsnagError ()
-- (NSDictionary *)toDictionary;
-- (instancetype)initWithEvent:(NSDictionary *)event errorReportingThread:(BugsnagThread *)thread;
-+ (BugsnagError *)errorFromJson:(NSDictionary *)json;
 @end
 
 // MARK: - KSCrashReport parsing
@@ -231,66 +202,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 @interface BugsnagUser ()
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
-@end
-
-@interface BugsnagEvent ()
-
-/**
- *  A unique hash identifying this device for the application or vendor
- */
-@property(nonatomic, readwrite, copy, nullable) NSString *deviceAppHash;
-/**
- *  User-provided exception metadata
- */
-@property(nonatomic, readwrite, copy, nullable) NSDictionary *customException;
-@property(nonatomic, strong) BugsnagSession *session;
-
-/**
- *  The event state (whether the error is handled/unhandled)
- */
-@property(readonly, nonnull) BugsnagHandledState *handledState;
-
-- (NSDictionary *_Nonnull)toJson;
-
-/**
- *  Whether this report should be sent, based on release stage information
- *  cached at crash time and within the application currently
- *
- *  @return YES if the report should be sent
- */
-- (BOOL)shouldBeSent;
-
-/**
- *  The release stages used to notify at the time this report is captured
- */
-@property(readwrite, copy, nullable) NSArray *enabledReleaseStages;
-
-/**
- *  Property overrides
- */
-@property(readonly, copy, nonnull) NSDictionary *overrides;
-
-/**
- *  Number of frames to discard at the top of the generated stacktrace.
- *  Stacktraces from raised exceptions are unaffected.
- */
-@property(readwrite) NSUInteger depth;
-
-@property (nonatomic, strong) BugsnagMetadata *metadata;
-
-/**
- *  Raw error data added to metadata
- */
-@property(readwrite, copy, nullable) NSDictionary *error;
-
-/**
- *  The release stage of the application
- */
-@property(readwrite, copy, nullable) NSString *releaseStage;
-
-@property NSSet<NSString *> *redactedKeys;
-
-@property(nonatomic) NSString *codeBundleId;
 @end
 
 @implementation BugsnagEvent

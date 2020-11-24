@@ -7,7 +7,9 @@
 //
 
 @import XCTest;
-#import "Bugsnag.h"
+
+#import <Bugsnag/Bugsnag.h>
+#import "BugsnagEvent+Private.h"
 
 @interface Bugsnag ()
 + (BugsnagConfiguration *)configuration;
@@ -15,14 +17,6 @@
 
 @interface BugsnagEventFromKSCrashReportTest : XCTestCase
 @property BugsnagEvent *event;
-@end
-
-@interface BugsnagEvent ()
-- (NSDictionary *_Nonnull)toJson;
-- (BOOL)shouldBeSent;
-- (instancetype)initWithKSReport:(NSDictionary *)event;
-@property(readwrite, copy, nullable) NSArray *enabledReleaseStages;
-@property(readwrite) NSUInteger depth;
 @end
 
 @implementation BugsnagEventFromKSCrashReportTest

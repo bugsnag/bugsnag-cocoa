@@ -7,11 +7,13 @@
 //
 // Unit tests of global Bugsnag behaviour
 
+#import <XCTest/XCTest.h>
+
 #import "Bugsnag.h"
 #import "BugsnagClient.h"
+#import "BugsnagEvent+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagNotifier.h"
-#import <XCTest/XCTest.h>
 
 // MARK: - BugsnagTests
 
@@ -30,10 +32,6 @@
 @property(readwrite, retain, nullable) BugsnagMetadata *metadata;
 - (void)start;
 @property BugsnagConfiguration *configuration;
-@end
-
-@interface BugsnagEvent ()
-@property (nonatomic, strong) BugsnagMetadata *metadata;
 @end
 
 @interface BugsnagTests : XCTestCase

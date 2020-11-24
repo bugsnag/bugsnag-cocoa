@@ -11,6 +11,7 @@
 
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag.h"
+#import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagSession.h"
 #import "BugsnagSessionInternal.h"
@@ -30,27 +31,6 @@
 
 @interface Bugsnag ()
 + (BugsnagConfiguration *)configuration;
-@end
-
-@interface BugsnagEvent ()
-- (NSDictionary *_Nonnull)toJson;
-- (BOOL)shouldBeSent;
-- (instancetype)initWithUserData:(NSDictionary *)event;
-- (instancetype)initWithKSReport:(NSDictionary *)report;
-- (instancetype)initWithApp:(BugsnagAppWithState *)app
-                     device:(BugsnagDeviceWithState *)device
-               handledState:(BugsnagHandledState *)handledState
-                       user:(BugsnagUser *)user
-                   metadata:(BugsnagMetadata *)metadata
-                breadcrumbs:(NSArray<BugsnagBreadcrumb *> *)breadcrumbs
-                     errors:(NSArray<BugsnagError *> *)errors
-                    threads:(NSArray<BugsnagThread *> *)threads
-                    session:(BugsnagSession *)session;
-@property (nonatomic, strong) BugsnagMetadata *metadata;
-@property(readwrite) NSUInteger depth;
-@property NSString *releaseStage;
-@property NSArray *enabledReleaseStages;
-@property BugsnagSession *session;
 @end
 
 @interface BugsnagMetadata ()
