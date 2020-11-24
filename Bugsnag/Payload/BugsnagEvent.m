@@ -807,4 +807,37 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     self.handledState.unhandled = val;
 }
 
+#pragma mark -
+
+- (NSArray<NSString *> *)stacktraceTypes {
+    NSMutableSet *stacktraceTypes = [NSMutableSet set];
+    
+    // The error in self.errors is not always the error that will be sent; this is the case when used in React Native.
+    // Using [self toJson] to ensure this uses the same logic of reading from self.customException instead.
+    NSDictionary *json = [self toJson];
+    NSArray *exceptions = json[BSGKeyExceptions];
+    for (NSDictionary *exception in exceptions) {
+        BugsnagError *error = [BugsnagError errorFromJson:exception];
+        
+        [stacktraceTypes addObject:BSGSerializeErrorType(error.type)];
+        
+        for (BugsnagStackframe *stackframe in error.stacktrace) {
+            if (stackframe.type) {
+                [stacktraceTypes addObject:stackframe.type];
+            }
+        }
+    }
+    
+    for (BugsnagThread *thread in self.threads) {
+        [stacktraceTypes addObject:BSGSerializeThreadType(thread.type)];
+        for (BugsnagStackframe *stackframe in thread.stacktrace) {
+            if (stackframe.type) {
+                [stacktraceTypes addObject:stackframe.type];
+            }
+        }
+    }
+    
+    return stacktraceTypes.allObjects;
+}
+
 @end
