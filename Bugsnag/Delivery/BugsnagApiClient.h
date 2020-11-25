@@ -10,6 +10,7 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NSString * BugsnagHTTPHeaderName NS_TYPED_ENUM;
 
 extern BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameApiKey;
+extern BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameIntegrity;
 extern BugsnagHTTPHeaderName const BugsnagHTTPHeaderNamePayloadVersion;
 extern BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameSentAt;
 
@@ -37,6 +38,8 @@ typedef NS_ENUM(NSInteger, BugsnagApiClientDeliveryStatus) {
                 headers:(NSDictionary<BugsnagHTTPHeaderName, NSString *> *)headers
                   toURL:(NSURL *)url
       completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error))completionHandler;
+
+- (NSString *)SHA1HashStringWithData:(NSData *)data;
 
 @property(readonly) NSOperationQueue *sendQueue;
 
