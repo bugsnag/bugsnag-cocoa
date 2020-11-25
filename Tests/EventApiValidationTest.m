@@ -7,11 +7,9 @@
 //
 
 #import <XCTest/XCTest.h>
-#import <Bugsnag/Bugsnag.h>
 
-@interface BugsnagEvent ()
-- (instancetype)initWithKSReport:(NSDictionary *)event;
-@end
+#import <Bugsnag/Bugsnag.h>
+#import "BugsnagEvent+Private.h"
 
 /**
 * Validates that the Event API interface handles any invalid input gracefully.

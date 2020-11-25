@@ -9,10 +9,7 @@
 #import <XCTest/XCTest.h>
 
 #import <Bugsnag/Bugsnag.h>
-
-@interface BugsnagEvent ()
-- (instancetype)initWithKSReport:(NSDictionary *)report;
-@end
+#import "BugsnagEvent+Private.h"
 
 @interface BugsnagOnCrashTest : XCTestCase
 

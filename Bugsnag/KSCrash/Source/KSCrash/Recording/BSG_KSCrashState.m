@@ -180,7 +180,9 @@ bool bsg_kscrashstate_i_loadState(BSG_KSCrash_State *const context,
     NSError *error = nil;
     NSData *data = [NSData dataWithContentsOfFile:[NSString stringWithUTF8String:path] options:0 error:&error];
     if (error != nil) {
-        BSG_KSLOG_ERROR(@"%s: Could not load file: %@", path, error);
+        if (!(error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError)) {
+            BSG_KSLOG_ERROR(@"%s: Could not load file: %@", path, error);
+        }
         return false;
     }
     id objectContext = [BSG_KSJSONCodec decode:data options:0 error:&error];
