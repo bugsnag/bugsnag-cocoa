@@ -560,6 +560,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 
     [self batteryChanged:nil];
+    [self orientationChanged:nil];
     [self addTerminationObserver:UIApplicationWillTerminateNotification];
 
 #elif BSG_PLATFORM_OSX
