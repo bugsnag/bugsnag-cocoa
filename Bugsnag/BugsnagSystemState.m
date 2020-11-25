@@ -27,6 +27,10 @@
 #define STATE_DIR @"bugsnag/state"
 #define STATE_FILE @"system_state.json"
 
+#if BSG_PLATFORM_IOS
+NSString *BSGOrientationNameFromEnum(UIDeviceOrientation deviceOrientation);
+#endif
+
 static NSDictionary* loadPreviousState(BugsnagKVStore *kvstore, NSString *jsonPath) {
     NSData *data = [NSData dataWithContentsOfFile:jsonPath];
     if(data == nil) {
@@ -127,6 +131,12 @@ static NSMutableDictionary* initCurrentState(BugsnagKVStore *kvstore, BugsnagCon
     device[@"simulator"] = @NO;
 #endif
     device[@"totalMemory"] = systemInfo[@BSG_KSSystemField_Memory][@"usable"];
+#if BSG_PLATFORM_IOS
+    device[BSGKeyBatteryLevel] = @([UIDevice currentDevice].batteryLevel);
+    UIDeviceBatteryState batteryState = [UIDevice currentDevice].batteryState;
+    device[BSGKeyCharging] = @(batteryState == UIDeviceBatteryStateCharging || batteryState == UIDeviceBatteryStateFull);
+    device[BSGKeyOrientation] = BSGOrientationNameFromEnum([UIDevice currentDevice].orientation);
+#endif
 
     NSMutableDictionary *state = [NSMutableDictionary new];
     state[BSGKeyApp] = app;
