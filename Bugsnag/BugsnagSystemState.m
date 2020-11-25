@@ -231,18 +231,18 @@ NSDictionary *copyLaunchState(NSDictionary *launchState) {
 }
 
 - (void)setValue:(id)value forAppKey:(NSString *)key {
-    [self setValue:value forKey:key inDictionary:SYSTEMSTATE_KEY_APP];
+    [self setValue:value forKey:key inSection:SYSTEMSTATE_KEY_APP];
 }
 
 - (void)setValue:(id)value forDeviceKey:(NSString *)key {
-    [self setValue:value forKey:key inDictionary:SYSTEMSTATE_KEY_DEVICE];
+    [self setValue:value forKey:key inSection:SYSTEMSTATE_KEY_DEVICE];
 }
 
-- (void)setValue:(id)value forKey:(NSString *)key inDictionary:(NSString *)dictionary {
+- (void)setValue:(id)value forKey:(NSString *)key inSection:(NSString *)section {
     // Run on a BG thread so we don't monopolize the notification queue.
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
         @synchronized (self) {
-            self.currentLaunchStateRW[dictionary][key] = value;
+            self.currentLaunchStateRW[section][key] = value;
             // User-facing state should never mutate from under them.
             self.currentLaunchState = copyLaunchState(self.currentLaunchStateRW);
         }
