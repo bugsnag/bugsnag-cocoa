@@ -28,15 +28,9 @@ steps:
           - "--username=$BROWSER_STACK_USERNAME"
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
-<<<<<<< HEAD
           - "--appium-version=1.17.0"
-          - "--fail-fast"
+          # TODO Temporary slow-fail to flush out any problems - "--fail-fast"
     concurrency: 9
-=======
-          - "--appium-version=1.15.0"
-          #- "--fail-fast"
-    concurrency: 10
->>>>>>> TEMP COMMIT - Use latest Maze and slow fail to flush out issues
     concurrency_group: browserstack-app
     retry:
       automatic:
