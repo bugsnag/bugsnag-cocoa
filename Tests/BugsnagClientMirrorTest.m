@@ -40,7 +40,6 @@
             @"setSessionTracker: v24@0:8@16",
             @"addTerminationObserver: v24@0:8@16",
             @"setLastOrientation: v24@0:8@16",
-            @"metadataLock @16@0:8",
             @"oomWatchdog @16@0:8",
             @"initializeNotificationNameMap v16@0:8",
             @"notifyOutOfMemoryEvent v16@0:8",
@@ -124,7 +123,10 @@
             @"shouldReportOOM B16@0:8",
             @"shouldReportOOM c16@0:8",
             @"systemState @16@0:8",
-            @"setSystemState: v24@0:8@16"
+            @"setSystemState: v24@0:8@16",
+            @"stateMetadataFile @16@0:8",
+            @"metadataFile @16@0:8",
+            @"configMetadataFile @16@0:8",
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to

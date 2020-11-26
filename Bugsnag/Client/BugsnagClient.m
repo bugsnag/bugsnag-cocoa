@@ -28,6 +28,7 @@
 
 #import "BugsnagClient+Private.h"
 
+#import "BSGCachesDirectory.h"
 #import "BSGConnectivity.h"
 #import "BSGJSONSerialization.h"
 #import "BSGSerialization.h"
@@ -77,31 +78,29 @@ NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
 static NSInteger const BSGNotifierStackFrameCount = 4;
 
-struct bugsnag_data_t {
+static struct {
     // Contains the state of the event (handled/unhandled)
     char *handledState;
     // Contains the user-specified metadata, including the user tab from config.
-    char *metadataJSON;
+    char metadataPath[PATH_MAX];
     // Contains the Bugsnag configuration, all under the "config" tab.
-    char *configJSON;
+    char configPath[PATH_MAX];
     // Contains notifier state, under "deviceState" and crash-specific
     // information under "crash".
-    char *stateJSON;
+    char statePath[PATH_MAX];
     // Contains properties in the Bugsnag payload overridden by the user before
     // it was sent
     char *userOverridesJSON;
     // User onCrash handler
     void (*onCrash)(const BSG_KSCrashReportWriter *writer);
-};
-
-static struct bugsnag_data_t bsg_g_bugsnag_data;
+} bsg_g_bugsnag_data;
 
 static NSDictionary *notificationNameMap;
 
 static char *sessionId[128];
 static char *sessionStartDate[128];
 static char *watchdogSentinelPath = NULL;
-static char *crashSentinelPath = NULL;
+static char crashSentinelPath[PATH_MAX];
 static NSUInteger handledCount;
 static NSUInteger unhandledCount;
 static bool hasRecordedSessions;
@@ -152,29 +151,20 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type
         writer->addUIntegerElement(writer, "unhandledCount", unhandledEvents);
     }
     if (isCrash) {
-        if (bsg_g_bugsnag_data.configJSON) {
-            writer->addJSONElement(writer, "config", bsg_g_bugsnag_data.configJSON);
-        }
-        if (bsg_g_bugsnag_data.stateJSON) {
-            writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
-        }
+        writer->addJSONFileElement(writer, "config", bsg_g_bugsnag_data.configPath);
+        writer->addJSONFileElement(writer, "metaData", bsg_g_bugsnag_data.metadataPath);
+        writer->addJSONFileElement(writer, "state", bsg_g_bugsnag_data.statePath);
         BugsnagBreadcrumbsWriteCrashReport(writer);
-        if (bsg_g_bugsnag_data.metadataJSON) {
-            // The API expects "metaData", capitalised as such.  Elsewhere is is one word.
-            writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metadataJSON);
-        }
         if (watchdogSentinelPath != NULL) {
             // Delete the file to indicate a handled termination
             unlink(watchdogSentinelPath);
         }
-        if (crashSentinelPath != NULL) {
-            // Create a file to indicate that the crash has been handled by
-            // the library. This exists in case the subsequent `onCrash` handler
-            // crashes or otherwise corrupts the crash report file.
-            int fd = open(crashSentinelPath, O_RDWR | O_CREAT, 0644);
-            if (fd > -1) {
-                close(fd);
-            }
+        // Create a file to indicate that the crash has been handled by
+        // the library. This exists in case the subsequent `onCrash` handler
+        // crashes or otherwise corrupts the crash report file.
+        int fd = open(crashSentinelPath, O_RDWR | O_CREAT, 0644);
+        if (fd > -1) {
+            close(fd);
         }
     }
 
@@ -240,37 +230,6 @@ NSString *BSGOrientationNameFromEnum(UIDeviceOrientation deviceOrientation)
 #endif
 
 /**
- *  Writes a dictionary to a destination using the BSG_KSCrash JSON encoding
- *
- *  @param dictionary  data to encode
- *  @param destination target location of the data
- */
-void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
-    if (![BSGJSONSerialization isValidJSONObject:dictionary]) {
-        bsg_log_err(@"could not serialize metadata: is not valid JSON object");
-        return;
-    }
-    @try {
-        NSError *error;
-        NSData *json = [BSGJSONSerialization dataWithJSONObject:dictionary
-                                                       options:0
-                                                         error:&error];
-
-        if (!json) {
-            bsg_log_err(@"could not serialize metadata: %@", error);
-            return;
-        }
-        *destination = reallocf(*destination, [json length] + 1);
-        if (*destination) {
-            memcpy(*destination, [json bytes], [json length]);
-            (*destination)[[json length]] = '\0';
-        }
-    } @catch (NSException *exception) {
-        bsg_log_err(@"could not serialize metadata: %@", exception);
-    }
-}
-
-/**
  Save info about the current session to crash data. Ensures that session
  data is written to unhandled error reports.
 
@@ -330,7 +289,6 @@ NSString *_lastOrientation = nil;
 @synthesize configuration;
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)initConfiguration {
-    static NSString *const BSGCrashSentinelFileName = @"bugsnag_handled_crash.txt";
     if ((self = [super init])) {
         // Take a shallow copy of the configuration
         self.configuration = [initConfiguration copy];
@@ -338,16 +296,24 @@ NSString *_lastOrientation = nil;
         self.notifier = [BugsnagNotifier new];
         self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
-        NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(
-                                NSCachesDirectory, NSUserDomainMask, YES) firstObject];
-        if (cacheDir) {
-            NSString *crashPath = [cacheDir stringByAppendingPathComponent:BSGCrashSentinelFileName];
-            crashSentinelPath = strdup([crashPath UTF8String]);
-        }
+        NSString *cachesDir = [BSGCachesDirectory cachesDirectory];
+        NSString *bugsnagDir = [cachesDir stringByAppendingPathComponent:@"bugsnag"];
+        [[NSFileManager defaultManager] createDirectoryAtPath:bugsnagDir withIntermediateDirectories:YES attributes:nil error:nil];
+        
+        NSString *crashPath = [cachesDir stringByAppendingPathComponent:@"bugsnag_handled_crash.txt"];
+        [crashPath getFileSystemRepresentation:crashSentinelPath maxLength:sizeof(crashSentinelPath)];
+        
+        _configMetadataFile = [bugsnagDir stringByAppendingPathComponent:@"config.json"];
+        [_configMetadataFile getFileSystemRepresentation:bsg_g_bugsnag_data.configPath maxLength:sizeof(bsg_g_bugsnag_data.configPath)];
+        
+        _metadataFile = [bugsnagDir stringByAppendingPathComponent:@"metadata.json"];
+        [_metadataFile getFileSystemRepresentation:bsg_g_bugsnag_data.metadataPath maxLength:sizeof(bsg_g_bugsnag_data.metadataPath)];
+        
+        _stateMetadataFile = [bugsnagDir stringByAppendingPathComponent:@"state.json"];
+        [_stateMetadataFile getFileSystemRepresentation:bsg_g_bugsnag_data.statePath maxLength:sizeof(bsg_g_bugsnag_data.statePath)];
 
         self.stateEventBlocks = [NSMutableArray new];
         self.extraRuntimeInfo = [NSMutableDictionary new];
-        self.metadataLock = [[NSLock alloc] init];
         self.crashSentry = [BugsnagCrashSentry new];
         self.errorReportApiClient = [[BugsnagErrorReportApiClient alloc] initWithSession:configuration.session queueName:@"Error API queue"];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
@@ -668,8 +634,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     BOOL handledCrashLastLaunch = appCrashSentinelExists || crashState->crashedLastLaunch;
     if (appCrashSentinelExists) {
         NSError *error = nil;
-        [manager removeItemAtPath:didCrashSentinelPath error:&error];
-        if (error) {
+        if (![manager removeItemAtPath:didCrashSentinelPath error:&error]) {
             bsg_log_err(@"Failed to remove crash sentinel file: %@", error);
             unlink(crashSentinelPath);
         }
@@ -1123,17 +1088,11 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (void)metadataChanged:(BugsnagMetadata *)metadata {
     @synchronized(metadata) {
         if (metadata == self.metadata) {
-            if ([self.metadataLock tryLock]) {
-                BSSerializeJSONDictionary([metadata toDictionary],
-                                          &bsg_g_bugsnag_data.metadataJSON);
-                [self.metadataLock unlock];
-            }
+            [BSGJSONSerialization writeJSONObject:[metadata toDictionary] toFile:self.metadataFile options:0 error:nil];
         } else if (metadata == self.configuration.config) {
-            BSSerializeJSONDictionary([metadata getMetadataFromSection:BSGKeyConfig],
-                                      &bsg_g_bugsnag_data.configJSON);
+            [BSGJSONSerialization writeJSONObject:[metadata getMetadataFromSection:BSGKeyConfig] toFile:self.configMetadataFile options:0 error:nil];
         } else if (metadata == self.state) {
-            BSSerializeJSONDictionary([metadata toDictionary],
-                                      &bsg_g_bugsnag_data.stateJSON);
+            [BSGJSONSerialization writeJSONObject:[metadata toDictionary] toFile:self.stateMetadataFile options:0 error:nil];
         }
     }
 }

@@ -44,6 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (nullable id)JSONObjectWithStream:(NSInputStream *)stream options:(NSJSONReadingOptions)opt error:(NSError **)error;
 
++ (BOOL)writeJSONObject:(id)JSONObject toFile:(NSString *)file options:(NSJSONWritingOptions)options error:(NSError **)errorPtr;
+
 @end
 
 NS_ASSUME_NONNULL_END
