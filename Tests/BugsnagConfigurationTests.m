@@ -4,6 +4,7 @@
 
 #import <XCTest/XCTest.h>
 
+#import "BugsnagClient+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagCrashSentry.h"
 #import "BugsnagSessionTracker.h"
@@ -27,10 +28,6 @@
 
 @interface BugsnagCrashSentry ()
 - (BSG_KSCrashType)mapKSToBSGCrashTypes:(BugsnagErrorTypes *)errorTypes;
-@end
-
-@interface BugsnagClient ()
-- (void)start;
 @end
 
 // =============================================================================
