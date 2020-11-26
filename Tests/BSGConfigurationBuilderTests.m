@@ -1,8 +1,9 @@
 #import <XCTest/XCTest.h>
 
+#import <Bugsnag/Bugsnag.h>
 #import "BSGConfigurationBuilder.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
-#import "Private.h"
 
 @interface BSGConfigurationBuilderTests : XCTestCase
 @end

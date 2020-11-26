@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagConfiguration.h"
+#import "BugsnagConfiguration+Private.h"
 
 #import "BSGConfigurationBuilder.h"
 #import "BugsnagApiClient.h"

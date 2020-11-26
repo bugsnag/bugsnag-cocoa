@@ -4,11 +4,12 @@
 
 #import <XCTest/XCTest.h>
 
-#import "BugsnagTestConstants.h"
+#import <Bugsnag/Bugsnag.h>
+#import "BSG_KSCrashType.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagCrashSentry.h"
 #import "BugsnagSessionTracker.h"
-#import "BSG_KSCrashType.h"
-#import "Private.h"
+#import "BugsnagTestConstants.h"
 
 // =============================================================================
 // MARK: - Required private methods

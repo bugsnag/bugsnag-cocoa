@@ -21,6 +21,7 @@
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
