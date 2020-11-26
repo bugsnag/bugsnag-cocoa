@@ -11,6 +11,7 @@
 
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagSession.h"
@@ -22,11 +23,6 @@
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
-@end
-
-@interface BugsnagClient ()
-- (void)start;
-@property BugsnagConfiguration *configuration;
 @end
 
 @interface Bugsnag ()
