@@ -48,6 +48,8 @@
 		A1117E592535B29800014FDA /* OOMEnabledErrorTypesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E582535B29800014FDA /* OOMEnabledErrorTypesScenario.swift */; };
 		A1117E5B2536036400014FDA /* OOMSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E5A2536036400014FDA /* OOMSessionScenario.swift */; };
 		C4D0B5FF8E60C0835B86DFE9 /* Pods_iOSTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */; };
+		CBE1C9242574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE1C9222574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift */; };
+		CBE1C9252574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE1C9232574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift */; };
 		E700EE48247D1158008CFFB6 /* UserEventOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE47247D1158008CFFB6 /* UserEventOverrideScenario.swift */; };
 		E700EE4A247D1164008CFFB6 /* UserSessionOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE49247D1164008CFFB6 /* UserSessionOverrideScenario.swift */; };
 		E700EE4C247D12E4008CFFB6 /* UserFromConfigEventScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE4B247D12E4008CFFB6 /* UserFromConfigEventScenario.swift */; };
@@ -203,6 +205,8 @@
 		A1117E562535B22300014FDA /* OOMAutoDetectErrorsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMAutoDetectErrorsScenario.swift; sourceTree = "<group>"; };
 		A1117E582535B29800014FDA /* OOMEnabledErrorTypesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMEnabledErrorTypesScenario.swift; sourceTree = "<group>"; };
 		A1117E5A2536036400014FDA /* OOMSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMSessionScenario.swift; sourceTree = "<group>"; };
+		CBE1C9222574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteUnhandledFalseScenario.swift; sourceTree = "<group>"; };
+		CBE1C9232574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteUnhandledTrueScenario.swift; sourceTree = "<group>"; };
 		E700EE47247D1158008CFFB6 /* UserEventOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventOverrideScenario.swift; sourceTree = "<group>"; };
 		E700EE49247D1164008CFFB6 /* UserSessionOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionOverrideScenario.swift; sourceTree = "<group>"; };
 		E700EE4B247D12E4008CFFB6 /* UserFromConfigEventScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFromConfigEventScenario.swift; sourceTree = "<group>"; };
@@ -411,6 +415,8 @@
 			children = (
 				E753F24524927409001FB671 /* NotifyCallbackCrashScenario.swift */,
 				E700EE52247D31EA008CFFB6 /* OnErrorOverwriteScenario.swift */,
+				CBE1C9222574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift */,
+				CBE1C9232574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift */,
 				E700EE54247D3204008CFFB6 /* OnSendOverwriteScenario.swift */,
 				E700EE58247D321B008CFFB6 /* OriginalErrorNSErrorScenario.swift */,
 				E700EE5A247D3224008CFFB6 /* OriginalErrorNSExceptionScenario.swift */,
@@ -891,8 +897,10 @@
 				A1117E572535B22300014FDA /* OOMAutoDetectErrorsScenario.swift in Sources */,
 				E75040B424782597005D33BD /* ReleaseStageSessionScenario.swift in Sources */,
 				E700EE75247D7A0C008CFFB6 /* SIGFPEScenario.m in Sources */,
+				CBE1C9242574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift in Sources */,
 				A1117E5B2536036400014FDA /* OOMSessionScenario.swift in Sources */,
 				8AF8FCAE22BD23BA00A967CA /* HandledInternalNotifyScenario.swift in Sources */,
+				CBE1C9252574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift in Sources */,
 				8A42FD35225DEE04007AE561 /* SessionOOMScenario.m in Sources */,
 				E7A324EF247E9DBC008B0052 /* BreadcrumbCallbackCrashScenario.swift in Sources */,
 				F4295CEAD7C915EFA04898A5 /* Scenario.m in Sources */,

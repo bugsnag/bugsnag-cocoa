@@ -1017,12 +1017,16 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         [event.metadata addMetadata:deviceFields toSection:BSGKeyDevice];
     }
 
+    BOOL originalUnhandledValue = event.unhandled;
     @try {
         if (block != nil && !block(event)) { // skip notifying if callback false
             return;
         }
     } @catch (NSException *exception) {
         bsg_log_err(@"Error from onError callback: %@", exception);
+    }
+    if (event.unhandled != originalUnhandledValue) {
+        [event notifyUnhandledOverridden];
     }
 
     if (event.handledState.unhandled) {

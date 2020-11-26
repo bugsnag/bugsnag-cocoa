@@ -2083,6 +2083,7 @@
         },
         "handledState":{
             "unhandled":false,
+            "unhandledOverridden":false,
             "currentSeverity":"info",
             "severityReasonType":"handledError",
             "originalSeverity":"warning"
