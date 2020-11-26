@@ -34,7 +34,15 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)config;
 
+- (void)recordAppUUID;
+
+- (void)setBatteryCharging:(BOOL)charging;
+
+- (void)setBatteryLevel:(NSNumber *)batteryLevel;
+
 - (void)setCodeBundleID:(NSString*)codeBundleID;
+
+- (void)setOrientation:(NSString *)orientation;
 
 /**
  * Purge all stored system state.

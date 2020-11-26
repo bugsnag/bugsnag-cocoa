@@ -523,6 +523,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.crashSentry install:self.configuration
                     apiClient:self.errorReportApiClient
                       onCrash:&BSSerializeDataCrashHandler];
+    [self.systemState recordAppUUID]; // Needs to be called after crashSentry installed but before -computeDidCrashLastLaunch
     [self computeDidCrashLastLaunch];
     [self.breadcrumbs removeAllBreadcrumbs];
     [self setupConnectivityListener];
@@ -559,6 +560,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 
     [self batteryChanged:nil];
+    [self orientationChanged:nil];
     [self addTerminationObserver:UIApplicationWillTerminateNotification];
 
 #elif BSG_PLATFORM_OSX
@@ -1173,6 +1175,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.state addMetadata:charging ? @YES : @NO
                     withKey:BSGKeyCharging
                   toSection:BSGKeyDeviceState];
+    
+    [self.systemState setBatteryLevel:batteryLevel];
+    
+    [self.systemState setBatteryCharging:charging];
 }
 
 /**
@@ -1194,6 +1200,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.state addMetadata:orientation
                     withKey:BSGKeyOrientation
                   toSection:BSGKeyDeviceState];
+    
+    [self.systemState setOrientation:orientation];
 
     // Short-circuit the exit if we don't have enough info to record a full breadcrumb
     // or the orientation hasn't changed (false positive).
