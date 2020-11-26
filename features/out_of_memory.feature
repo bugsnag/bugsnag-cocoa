@@ -38,7 +38,6 @@ Feature: Out of memory errors
     And the event "app.dsymUUIDs" is not null
     And the event "app.version" is not null
     And the event "device.manufacturer" equals "Apple"
-    And the event "device.orientation" is not null
     And the event "device.runtimeVersions" is not null
     And the event "device.totalMemory" is not null
 

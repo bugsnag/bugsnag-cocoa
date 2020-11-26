@@ -84,4 +84,12 @@ static NSError* wrapException(NSException* exception) {
     return [data writeToFile:file options:NSDataWritingAtomic error:errorPtr];
 }
 
++ (nullable id)JSONObjectWithContentsOfFile:(NSString *)file options:(NSJSONReadingOptions)options error:(NSError **)errorPtr {
+    NSData *data = [NSData dataWithContentsOfFile:file options:0 error:errorPtr];
+    if (!data) {
+        return nil;
+    }
+    return [BSGJSONSerialization JSONObjectWithData:data options:options error:errorPtr];
+}
+
 @end

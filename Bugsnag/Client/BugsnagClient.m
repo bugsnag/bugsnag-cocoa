@@ -305,12 +305,15 @@ NSString *_lastOrientation = nil;
         
         _configMetadataFile = [bugsnagDir stringByAppendingPathComponent:@"config.json"];
         [_configMetadataFile getFileSystemRepresentation:bsg_g_bugsnag_data.configPath maxLength:sizeof(bsg_g_bugsnag_data.configPath)];
+        _configMetadataFromLastLaunch = [BSGJSONSerialization JSONObjectWithContentsOfFile:_configMetadataFile options:0 error:nil];
         
         _metadataFile = [bugsnagDir stringByAppendingPathComponent:@"metadata.json"];
         [_metadataFile getFileSystemRepresentation:bsg_g_bugsnag_data.metadataPath maxLength:sizeof(bsg_g_bugsnag_data.metadataPath)];
+        _metadataFromLastLaunch = [BSGJSONSerialization JSONObjectWithContentsOfFile:_metadataFile options:0 error:nil];
         
         _stateMetadataFile = [bugsnagDir stringByAppendingPathComponent:@"state.json"];
         [_stateMetadataFile getFileSystemRepresentation:bsg_g_bugsnag_data.statePath maxLength:sizeof(bsg_g_bugsnag_data.statePath)];
+        _stateMetadataFromLastLaunch = [BSGJSONSerialization JSONObjectWithContentsOfFile:_stateMetadataFile options:0 error:nil];
 
         self.stateEventBlocks = [NSMutableArray new];
         self.extraRuntimeInfo = [NSMutableDictionary new];
@@ -656,6 +659,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
         [self notifyOutOfMemoryEvent];
         bsg_g_bugsnag_data.onCrash = onCrash;
     }
+    
+    self.configMetadataFromLastLaunch = nil;
+    self.metadataFromLastLaunch = nil;
+    self.stateMetadataFromLastLaunch = nil;
 }
 
 - (void)setCodeBundleId:(NSString *)codeBundleId {
@@ -933,15 +940,17 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                                          handledStateWithSeverityReason:LikelyOutOfMemory
                                          severity:BSGSeverityError
                                          attrValue:nil];
-    NSDictionary *appState = @{@"oom": lastLaunchInfo, @"didOOM": @YES};
+    NSMutableDictionary *appState = [self.stateMetadataFromLastLaunch mutableCopy] ?: [NSMutableDictionary dictionary];
+    appState[@"didOOM"] = @YES;
+    appState[@"oom"] = lastLaunchInfo;
     [self.crashSentry reportUserException:BSGOutOfMemoryErrorClass
                                    reason:message
                              handledState:[handledState toJson]
                                  appState:appState
                         callbackOverrides:@{}
                            eventOverrides:nil
-                                 metadata:@{}
-                                   config:@{}];
+                                 metadata:self.metadataFromLastLaunch
+                                   config:self.configMetadataFromLastLaunch];
 }
 
 - (void)notify:(NSException *)exception

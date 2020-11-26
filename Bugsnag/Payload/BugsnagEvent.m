@@ -283,7 +283,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
  * @return a BugsnagEvent containing the parsed information
  */
 - (instancetype)initWithOOMData:(NSDictionary *)event {
-    // no threads or metadata captured for OOMs
     NSDictionary *sessionData = [event valueForKeyPath:@"user.state.oom.session"];
     BugsnagSession *session;
     BugsnagUser *user;
@@ -294,14 +293,13 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             user = session.user;
         }
     }
-    BugsnagMetadata *metadata = [BugsnagMetadata new];
+    NSDictionary *metaData = [event valueForKeyPath:@"user.metaData"];
+    if (!metaData) {
+        bsg_log_err(@"user.metaData was missing from the OOM KSCrashReport");
+    }
+    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:metaData ?: @{}];
     // Cocoa-specific, non-spec., device and app data
-    NSMutableDictionary *deviceMetadata = BSGParseDeviceMetadata(event);
-    // This can be removed once metadata is being persisted to disk
-    deviceMetadata[BSGKeyBatteryLevel]  = [event valueForKeyPath:@"user.state.oom.device.batteryLevel"];
-    deviceMetadata[BSGKeyCharging]      = [event valueForKeyPath:@"user.state.oom.device.charging"];
-    deviceMetadata[BSGKeyOrientation]   = [event valueForKeyPath:@"user.state.oom.device.orientation"];
-    [metadata addMetadata:deviceMetadata toSection:BSGKeyDevice];
+    [metadata addMetadata:BSGParseDeviceMetadata(event) toSection:BSGKeyDevice];
     [metadata addMetadata:BSGParseAppMetadata(event) toSection:BSGKeyApp];
 
     BugsnagEvent *obj = [self initWithApp:[BugsnagAppWithState appWithOomData:[event valueForKeyPath:@"user.state.oom.app"]]

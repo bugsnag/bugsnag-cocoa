@@ -32,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly) NSString *configMetadataFile;
 
+@property (nullable) NSDictionary *configMetadataFromLastLaunch;
+
 @property (nullable, retain, nonatomic) BugsnagConfiguration *configuration;
 
 @property (strong, nonatomic) BugsnagCrashSentry *crashSentry;
@@ -48,6 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly) NSString *metadataFile;
 
+@property (nullable) NSDictionary *metadataFromLastLaunch;
+
 @property (strong, nonatomic) BugsnagNotifier *notifier; // Used in BugsnagReactNative
 
 @property (strong, nonatomic) BugsnagPluginClient *pluginClient;
@@ -61,6 +65,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) NSMutableArray *stateEventBlocks;
 
 @property (readonly) NSString *stateMetadataFile;
+
+@property (nullable) NSDictionary *stateMetadataFromLastLaunch;
 
 @property (strong, nonatomic) BugsnagSystemState *systemState;
 
