@@ -231,6 +231,18 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     return self;
 }
 
+- (instancetype)initWithMetadata:(NSDictionary *)metadata {
+    if (!(self = [super init])) {
+        return nil;
+    }
+    _appVersion = metadata[BSGKeyAppVersion];
+    _context = metadata[BSGKeyContext];
+    _bundleVersion = metadata[BSGKeyBundleVersion];
+    _enabledReleaseStages = metadata[BSGKeyEnabledReleaseStages];
+    _releaseStage = metadata[BSGKeyReleaseStage];
+    return self;
+}
+
 // -----------------------------------------------------------------------------
 // MARK: - Instance Methods
 // -----------------------------------------------------------------------------

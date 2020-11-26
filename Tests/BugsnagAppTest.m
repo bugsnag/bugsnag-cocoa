@@ -9,7 +9,7 @@
 #import <XCTest/XCTest.h>
 
 #import "BugsnagAppWithState.h"
-#import "BugsnagConfiguration.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
 
 @interface BugsnagApp ()
@@ -60,7 +60,7 @@
             }
     };
 
-    self.config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    self.config = [[BugsnagConfiguration alloc] initWithMetadata:self.data[@"user"][@"config"]];
     self.config.appType = @"iOS";
     self.config.bundleVersion = nil;
     self.config.appVersion = @"3.14.159";
@@ -202,16 +202,6 @@
     self.config.appVersion = @"4.2.6";
     app = [BugsnagAppWithState appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
     XCTAssertEqualObjects(@"4.2.6", app.version);
-
-    // 1st precedence is user.config.appVersion
-    NSMutableDictionary *data = [self.data mutableCopy];
-    data[@"user"] = @{
-            @"config": @{
-                    @"appVersion": @"1.2.3"
-            }
-    };
-    app = [BugsnagAppWithState appWithDictionary:data config:self.config codeBundleId:self.codeBundleId];
-    XCTAssertEqualObjects(@"1.2.3", app.version);
 }
 
 - (void)testBundleVersionPrecedence {
@@ -224,16 +214,6 @@
     self.config.bundleVersion = @"4.2.6";
     app = [BugsnagAppWithState appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
     XCTAssertEqualObjects(@"4.2.6", app.bundleVersion);
-
-    // 1st precedence is user.config.bundleVersion
-    NSMutableDictionary *data = [self.data mutableCopy];
-    data[@"user"] = @{
-            @"config": @{
-                    @"bundleVersion": @"1.2.3"
-            }
-    };
-    app = [BugsnagAppWithState appWithDictionary:data config:self.config codeBundleId:self.codeBundleId];
-    XCTAssertEqualObjects(@"1.2.3", app.bundleVersion);
 }
 
 @end

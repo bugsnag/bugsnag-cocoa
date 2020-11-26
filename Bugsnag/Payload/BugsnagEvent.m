@@ -329,7 +329,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
  * @return a BugsnagEvent containing the parsed information
  */
 - (instancetype)initWithKSCrashData:(NSDictionary *)event {
-    BugsnagConfiguration *config = [Bugsnag configuration];
     NSDictionary *error = [event valueForKeyPath:@"crash.error"];
     NSString *errorType = error[BSGKeyType];
 
@@ -398,7 +397,12 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     NSString *deviceAppHash = [event valueForKeyPath:@"system.device_app_hash"];
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithDictionary:event];
     BugsnagUser *user = [self parseUser:event deviceAppHash:deviceAppHash deviceId:device.id];
-    BugsnagEvent *obj = [self initWithApp:[BugsnagAppWithState appWithDictionary:event config:config codeBundleId:self.codeBundleId]
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithMetadata:[event valueForKeyPath:@"user.config"]];
+    BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:event config:config codeBundleId:self.codeBundleId];
+    if (!app.type) { // Configuration.type does not get stored in the crash report at the time of writing.
+        app.type = [Bugsnag configuration].appType;
+    }
+    BugsnagEvent *obj = [self initWithApp:app
                                    device:device
                              handledState:handledState
                                      user:user

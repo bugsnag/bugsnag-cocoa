@@ -9,11 +9,11 @@
 #import <XCTest/XCTest.h>
 
 #import "BugsnagApp.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagDevice.h"
 #import "BugsnagSession.h"
 #import "BugsnagSessionInternal.h"
 #import "BSG_RFC3339DateTool.h"
-#import "BugsnagConfiguration.h"
 #import "BugsnagTestConstants.h"
 
 @interface BugsnagApp ()
@@ -78,7 +78,7 @@
             }
     };
 
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithMetadata:appData[@"user"][@"config"]];
     config.appType = @"iOS";
     config.bundleVersion = nil;
     return [BugsnagApp appWithDictionary:appData config:config codeBundleId:@"bundle-123"];
