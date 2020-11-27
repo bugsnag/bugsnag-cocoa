@@ -43,7 +43,37 @@
     XCTAssertNotNil(error);
     XCTAssertNil(result);
     error = nil;
+}
 
+- (void)testJSONFileSerialization {
+    id validJSON = @{@"foo": @"bar"};
+    id invalidJSON = @{@"foo": [NSDate date]};
+    
+    NSString *file = [NSTemporaryDirectory() stringByAppendingPathComponent:@(__PRETTY_FUNCTION__)];
+    
+    XCTAssertTrue([BSGJSONSerialization writeJSONObject:validJSON toFile:file options:0 error:nil]);
+
+    XCTAssertEqualObjects([BSGJSONSerialization JSONObjectWithContentsOfFile:file options:0 error:nil], @{@"foo": @"bar"});
+    
+    [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
+    
+    NSError *error = nil;
+    XCTAssertFalse([BSGJSONSerialization writeJSONObject:invalidJSON toFile:file options:0 error:&error]);
+    XCTAssertNotNil(error);
+    
+    error = nil;
+    XCTAssertNil([BSGJSONSerialization JSONObjectWithContentsOfFile:file options:0 error:&error]);
+    XCTAssertNotNil(error);
+
+    NSString *unwritablePath = @"/System/Library/foobar";
+    
+    error = nil;
+    XCTAssertFalse([BSGJSONSerialization writeJSONObject:validJSON toFile:unwritablePath options:0 error:&error]);
+    XCTAssertNotNil(error);
+    
+    error = nil;
+    XCTAssertNil([BSGJSONSerialization JSONObjectWithContentsOfFile:unwritablePath options:0 error:&error]);
+    XCTAssertNotNil(error);
 }
 
 @end
