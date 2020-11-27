@@ -637,9 +637,9 @@
 		00AD1F142486A17900A27979 /* BugsnagErrorReportSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AD1EF92486A17700A27979 /* BugsnagErrorReportSink.m */; };
 		00AD1F152486A17900A27979 /* BugsnagErrorReportSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AD1EF92486A17700A27979 /* BugsnagErrorReportSink.m */; };
 		00AD1F162486A17900A27979 /* BugsnagErrorReportSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AD1EF92486A17700A27979 /* BugsnagErrorReportSink.m */; };
-		00AD1F172486A17900A27979 /* Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AD1EFA2486A17700A27979 /* Private.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		00AD1F182486A17900A27979 /* Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AD1EFA2486A17700A27979 /* Private.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		00AD1F192486A17900A27979 /* Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AD1EFA2486A17700A27979 /* Private.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		00AD1F172486A17900A27979 /* Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AD1EFA2486A17700A27979 /* Private.h */; };
+		00AD1F182486A17900A27979 /* Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AD1EFA2486A17700A27979 /* Private.h */; };
+		00AD1F192486A17900A27979 /* Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AD1EFA2486A17700A27979 /* Private.h */; };
 		00AD1F212486A17900A27979 /* BugsnagErrorReportSink.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AD1EFD2486A17800A27979 /* BugsnagErrorReportSink.h */; };
 		00AD1F222486A17900A27979 /* BugsnagErrorReportSink.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AD1EFD2486A17800A27979 /* BugsnagErrorReportSink.h */; };
 		00AD1F232486A17900A27979 /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AD1EFE2486A17800A27979 /* Bugsnag.m */; };
