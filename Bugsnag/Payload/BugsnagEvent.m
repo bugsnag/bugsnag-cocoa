@@ -293,6 +293,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             user = session.user;
         }
     }
+    
     NSDictionary *metaData = [event valueForKeyPath:@"user.metaData"];
     if (!metaData) {
         bsg_log_err(@"user.metaData was missing from the OOM KSCrashReport");
@@ -302,8 +303,16 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     [metadata addMetadata:BSGParseDeviceMetadata(event) toSection:BSGKeyDevice];
     [metadata addMetadata:BSGParseAppMetadata(event) toSection:BSGKeyApp];
 
-    BugsnagEvent *obj = [self initWithApp:[BugsnagAppWithState appWithOomData:[event valueForKeyPath:@"user.state.oom.app"]]
-                                   device:[BugsnagDeviceWithState deviceWithOomData:[event valueForKeyPath:@"user.state.oom.device"]]
+    BugsnagAppWithState *app = [BugsnagAppWithState appWithOomData:[event valueForKeyPath:@"user.state.oom.app"]];
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithOomData:[event valueForKeyPath:@"user.state.oom.device"]];
+    
+    if (!user) {
+        NSString *deviceAppHash = [event valueForKeyPath:@"system.device_app_hash"];
+        user = [self parseUser:event deviceAppHash:deviceAppHash deviceId:device.id];
+    }
+    
+    BugsnagEvent *obj = [self initWithApp:app
+                                   device:device
                              handledState:[BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory]
                                      user:user
                                  metadata:metadata

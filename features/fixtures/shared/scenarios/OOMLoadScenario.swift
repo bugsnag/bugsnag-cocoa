@@ -15,6 +15,7 @@ class OOMLoadScenario: Scenario {
         config = BugsnagConfiguration.loadConfig()
         config.autoTrackSessions = false
         config.addMetadata(["bar": "foo"], section: "custom")
+        config.setUser("foobar", withEmail: "foobar@example.com", andName: "Foo Bar")
         Bugsnag.start(with: config)
     }
 
