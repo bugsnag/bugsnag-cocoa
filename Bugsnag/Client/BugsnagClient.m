@@ -82,12 +82,12 @@ static struct {
     // Contains the state of the event (handled/unhandled)
     char *handledState;
     // Contains the user-specified metadata, including the user tab from config.
-    char metadataPath[PATH_MAX];
+    char *metadataPath;
     // Contains the Bugsnag configuration, all under the "config" tab.
-    char configPath[PATH_MAX];
+    char *configPath;
     // Contains notifier state, under "deviceState" and crash-specific
     // information under "crash".
-    char statePath[PATH_MAX];
+    char *statePath;
     // Contains properties in the Bugsnag payload overridden by the user before
     // it was sent
     char *userOverridesJSON;
@@ -100,7 +100,7 @@ static NSDictionary *notificationNameMap;
 static char *sessionId[128];
 static char *sessionStartDate[128];
 static char *watchdogSentinelPath = NULL;
-static char crashSentinelPath[PATH_MAX];
+static char *crashSentinelPath;
 static NSUInteger handledCount;
 static NSUInteger unhandledCount;
 static bool hasRecordedSessions;
@@ -301,18 +301,18 @@ NSString *_lastOrientation = nil;
         [[NSFileManager defaultManager] createDirectoryAtPath:bugsnagDir withIntermediateDirectories:YES attributes:nil error:nil];
         
         NSString *crashPath = [cachesDir stringByAppendingPathComponent:@"bugsnag_handled_crash.txt"];
-        [crashPath getFileSystemRepresentation:crashSentinelPath maxLength:sizeof(crashSentinelPath)];
+        crashSentinelPath = strdup(crashPath.fileSystemRepresentation);
         
         _configMetadataFile = [bugsnagDir stringByAppendingPathComponent:@"config.json"];
-        [_configMetadataFile getFileSystemRepresentation:bsg_g_bugsnag_data.configPath maxLength:sizeof(bsg_g_bugsnag_data.configPath)];
+        bsg_g_bugsnag_data.configPath = strdup(_configMetadataFile.fileSystemRepresentation);
         _configMetadataFromLastLaunch = [BSGJSONSerialization JSONObjectWithContentsOfFile:_configMetadataFile options:0 error:nil];
         
         _metadataFile = [bugsnagDir stringByAppendingPathComponent:@"metadata.json"];
-        [_metadataFile getFileSystemRepresentation:bsg_g_bugsnag_data.metadataPath maxLength:sizeof(bsg_g_bugsnag_data.metadataPath)];
+        bsg_g_bugsnag_data.metadataPath = strdup(_metadataFile.fileSystemRepresentation);
         _metadataFromLastLaunch = [BSGJSONSerialization JSONObjectWithContentsOfFile:_metadataFile options:0 error:nil];
         
         _stateMetadataFile = [bugsnagDir stringByAppendingPathComponent:@"state.json"];
-        [_stateMetadataFile getFileSystemRepresentation:bsg_g_bugsnag_data.statePath maxLength:sizeof(bsg_g_bugsnag_data.statePath)];
+        bsg_g_bugsnag_data.statePath = strdup(_stateMetadataFile.fileSystemRepresentation);
         _stateMetadataFromLastLaunch = [BSGJSONSerialization JSONObjectWithContentsOfFile:_stateMetadataFile options:0 error:nil];
 
         self.stateEventBlocks = [NSMutableArray new];
