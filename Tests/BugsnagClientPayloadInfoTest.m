@@ -7,20 +7,14 @@
 //
 
 #import <XCTest/XCTest.h>
+
 #import "Bugsnag.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagTestConstants.h"
 
 @interface Bugsnag ()
 + (BugsnagClient *)client;
-@end
-
-@interface BugsnagClient ()
-- (NSDictionary *)collectAppWithState;
-- (NSDictionary *)collectDeviceWithState;
-- (NSArray *)collectBreadcrumbs;
-- (NSArray *)collectThreads;
-@property NSString *codeBundleId;
 @end
 
 @interface BugsnagClientPayloadInfoTest : XCTestCase

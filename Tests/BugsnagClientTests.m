@@ -8,8 +8,7 @@
 
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumbs.h"
-#import "BugsnagClient.h"
-#import "BugsnagClientInternal.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagKeys.h"
 #import "BugsnagUser.h"
@@ -23,11 +22,6 @@
 @interface Bugsnag ()
 + (BugsnagConfiguration *)configuration;
 + (BugsnagClient *)client;
-@end
-
-@interface BugsnagClient ()
-- (void)orientationChanged:(NSNotification *)notif;
-@property (nonatomic, strong) BugsnagMetadata *metadata;
 @end
 
 @interface BugsnagBreadcrumb ()

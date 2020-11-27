@@ -26,7 +26,7 @@
 
 #import "BugsnagPlatformConditional.h"
 
-#import "BugsnagClient.h"
+#import "BugsnagClient+Private.h"
 
 #import "BSGConnectivity.h"
 #import "BSGJSONSerialization.h"
@@ -40,9 +40,7 @@
 #import "BSG_KSSystemInfo.h"
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag.h"
-#import "Bugsnag.h"
 #import "BugsnagBreadcrumbs.h"
-#import "BugsnagClientInternal.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagCrashSentry.h"
@@ -300,23 +298,6 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
     unhandledCount = session.unhandledCount;
     hasRecordedSessions = true;
 }
-
-@interface BugsnagClient ()
-@property(nonatomic, strong) BugsnagCrashSentry *crashSentry;
-@property(nonatomic, strong) BugsnagErrorReportApiClient *errorReportApiClient;
-@property (nonatomic, strong) BugsnagSystemState *systemState;
-@property (nonatomic, strong) BugsnagPluginClient *pluginClient;
-@property (nonatomic) BOOL appDidCrashLastLaunch;
-@property (nonatomic, strong) BugsnagMetadata *metadata;
-@property (nonatomic) NSString *codeBundleId;
-@property(nonatomic, readwrite, strong) NSMutableArray *stateEventBlocks;
-#if BSG_PLATFORM_IOS
-// The previous device orientation - iOS only
-@property (nonatomic, strong) NSString *lastOrientation;
-#endif
-@property NSMutableDictionary *extraRuntimeInfo;
-@property (nonatomic) BugsnagUser *user;
-@end
 
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableSet *plugins;

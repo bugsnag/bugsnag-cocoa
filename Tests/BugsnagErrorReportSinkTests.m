@@ -12,6 +12,7 @@
 #import <XCTest/XCTest.h>
 
 #import "Bugsnag.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagErrorReportSink.h"
 #import "BugsnagEvent+Private.h"
@@ -24,10 +25,6 @@
 
 @interface Bugsnag ()
 + (BugsnagConfiguration *)configuration;
-@end
-
-@interface BugsnagClient ()
-- (void)start;
 @end
 
 @interface BugsnagErrorReportSink ()

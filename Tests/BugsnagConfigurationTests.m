@@ -4,12 +4,13 @@
 
 #import <XCTest/XCTest.h>
 
-#import <Bugsnag/Bugsnag.h>
 #import "BSG_KSCrashType.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagCrashSentry.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagTestConstants.h"
+#import "Private.h"
 
 // =============================================================================
 // MARK: - Required private methods
@@ -28,10 +29,6 @@
 
 @interface BugsnagCrashSentry ()
 - (BSG_KSCrashType)mapKSToBSGCrashTypes:(BugsnagErrorTypes *)errorTypes;
-@end
-
-@interface BugsnagClient ()
-- (void)start;
 @end
 
 // =============================================================================

@@ -10,11 +10,8 @@
 
 #import "BugsnagTestConstants.h"
 #import "Bugsnag.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration.h"
-
-@interface BugsnagClient ()
-- (void)start;
-@end
 
 @interface BugsnagPluginTest : XCTestCase
 

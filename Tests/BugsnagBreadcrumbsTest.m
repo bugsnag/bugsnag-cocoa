@@ -8,8 +8,7 @@
 
 #import "BSG_KSJSONCodec.h"
 #import "Bugsnag.h"
-#import "BugsnagClient.h"
-#import "BugsnagClientInternal.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagTestConstants.h"
@@ -50,10 +49,6 @@ static id JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer)) {
 
 @interface Bugsnag ()
 + (BugsnagClient *)client;
-@end
-
-@interface BugsnagClient ()
-- (void)start;
 @end
 
 void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
