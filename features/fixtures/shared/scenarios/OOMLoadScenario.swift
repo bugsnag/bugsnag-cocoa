@@ -14,6 +14,7 @@ class OOMLoadScenario: Scenario {
     override func startBugsnag() {
         config = BugsnagConfiguration.loadConfig()
         config.autoTrackSessions = false
+        config.addMetadata(["bar": "foo"], section: "custom")
         Bugsnag.start(with: config)
     }
 

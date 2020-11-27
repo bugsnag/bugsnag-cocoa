@@ -40,6 +40,7 @@ Feature: Out of memory errors
     And the event "device.manufacturer" equals "Apple"
     And the event "device.runtimeVersions" is not null
     And the event "device.totalMemory" is not null
+    And the event "metaData.custom.bar" equals "foo"
 
     # Ensure breadcrumbs are carried over
     And the event has a "manual" breadcrumb named "OOMLoadScenarioBreadcrumb"
