@@ -42,6 +42,7 @@
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagCrashSentry.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagErrorTypes.h"

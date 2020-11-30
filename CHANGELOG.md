@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## TBD
+
+* Fixed incorrect app version reported when sending crash reports from older versions of Bugsnag (before 6.2.3)
+  [#911](https://github.com/bugsnag/bugsnag-cocoa/pull/911)
+
 ## 6.2.6 (2020-11-25)
 
 ### Bug fixes

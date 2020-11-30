@@ -4,11 +4,12 @@
 
 #import <XCTest/XCTest.h>
 
+#import "BSG_KSCrashType.h"
 #import "BugsnagClient+Private.h"
-#import "BugsnagTestConstants.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagCrashSentry.h"
 #import "BugsnagSessionTracker.h"
-#import "BSG_KSCrashType.h"
+#import "BugsnagTestConstants.h"
 #import "Private.h"
 
 // =============================================================================

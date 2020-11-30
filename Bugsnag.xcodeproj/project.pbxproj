@@ -1279,6 +1279,7 @@
 		0198762E2567D5AB000A7AF3 /* BugsnagStackframe+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagStackframe+Private.h"; sourceTree = "<group>"; };
 		01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "report-react-native-promise-rejection.json"; sourceTree = "<group>"; };
 		01C17AE62542ED7F00C102C9 /* KSCrashReportWriterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSCrashReportWriterTests.m; sourceTree = "<group>"; };
+		01D8EC3C256FC6C3006F2A2D /* BugsnagConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagConfiguration+Private.h"; sourceTree = "<group>"; };
 		01E8765C256684E700F4B70A /* URLSessionMock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = URLSessionMock.h; sourceTree = "<group>"; };
 		01E8765D256684E700F4B70A /* URLSessionMock.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = URLSessionMock.m; sourceTree = "<group>"; };
 		3A700A8024A63A8E0068CD1B /* BugsnagThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagThread.h; sourceTree = "<group>"; };
@@ -1727,6 +1728,7 @@
 				008967CA2486DA2D00DC48C2 /* BSGConfigurationBuilder.h */,
 				008967CC2486DA2D00DC48C2 /* BSGConfigurationBuilder.m */,
 				008967CB2486DA2D00DC48C2 /* BugsnagConfiguration.m */,
+				01D8EC3C256FC6C3006F2A2D /* BugsnagConfiguration+Private.h */,
 				008967C92486DA2D00DC48C2 /* BugsnagEndpointConfiguration.m */,
 				008967CF2486DA2D00DC48C2 /* BugsnagErrorTypes.m */,
 			);

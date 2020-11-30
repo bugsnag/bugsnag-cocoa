@@ -112,8 +112,8 @@
 
 - (void)testAppVersion {
     NSDictionary *dictionary = [self.event toJson];
-    XCTAssertEqualObjects(@"1.0", dictionary[@"app"][@"version"]);
-    XCTAssertEqualObjects(@"3", dictionary[@"app"][@"bundleVersion"]);
+    XCTAssertEqualObjects(dictionary[@"app"][@"version"], @"1.0");
+    XCTAssertEqualObjects(dictionary[@"app"][@"bundleVersion"], @"1");
 }
 
 - (void)testThreadsPopulated {
