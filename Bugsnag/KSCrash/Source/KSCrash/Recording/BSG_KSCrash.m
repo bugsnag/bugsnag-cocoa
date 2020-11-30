@@ -31,7 +31,6 @@
 
 #import "BSG_KSCrashC.h"
 #import "BSG_KSJSONCodecObjC.h"
-#import "BSG_KSSingleton.h"
 #import "NSError+BSG_SimpleConstructor.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
@@ -119,7 +118,14 @@
 #pragma mark - Lifecycle -
 // ============================================================================
 
-IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(BSG_KSCrash)
++ (BSG_KSCrash *)sharedInstance {
+    static id sharedInstance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[self alloc] init];
+    });
+    return sharedInstance;
+}
 
 - (instancetype)init {
     return [self
