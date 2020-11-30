@@ -14,6 +14,7 @@
 BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameApiKey             = @"Bugsnag-Api-Key";
 BugsnagHTTPHeaderName const BugsnagHTTPHeaderNamePayloadVersion     = @"Bugsnag-Payload-Version";
 BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameSentAt             = @"Bugsnag-Sent-At";
+BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameStacktraceTypes    = @"Bugsnag-Stacktrace-Types";
 
 typedef NS_ENUM(NSInteger, HTTPStatusCode) {
     /// 402 Payment Required: a nonstandard client error status response code that is reserved for future use.

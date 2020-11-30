@@ -12,6 +12,7 @@ typedef NSString * BugsnagHTTPHeaderName NS_TYPED_ENUM;
 extern BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameApiKey;
 extern BugsnagHTTPHeaderName const BugsnagHTTPHeaderNamePayloadVersion;
 extern BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameSentAt;
+extern BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameStacktraceTypes;
 
 typedef NS_ENUM(NSInteger, BugsnagApiClientDeliveryStatus) {
     /// The payload was delivered successfully and can be deleted.

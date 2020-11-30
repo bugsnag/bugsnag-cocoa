@@ -132,6 +132,7 @@
 
         NSMutableDictionary *apiHeaders = [[configuration errorApiHeaders] mutableCopy];
         apiHeaders[BugsnagHTTPHeaderNameApiKey] = event.apiKey;
+        apiHeaders[BugsnagHTTPHeaderNameStacktraceTypes] = [event.stacktraceTypes componentsJoinedByString:@","];
         [self.apiClient sendJSONPayload:requestPayload headers:apiHeaders toURL:configuration.notifyURL
                       completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
             BOOL completed = status == BugsnagApiClientDeliveryStatusDelivered || status == BugsnagApiClientDeliveryStatusUndeliverable;

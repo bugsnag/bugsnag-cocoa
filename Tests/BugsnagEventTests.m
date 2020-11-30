@@ -16,6 +16,7 @@
 #import "BugsnagHandledState.h"
 #import "BugsnagSession.h"
 #import "BugsnagSessionInternal.h"
+#import "BugsnagStackframe+Private.h"
 #import "BugsnagStateEvent.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagTestsDummyClass.h"
@@ -533,6 +534,47 @@
         XCTAssertEqual(event.apiKey, DUMMY_APIKEY_32CHAR_1);
         return true;
     }];
+}
+
+- (void)testStacktraceTypes {
+    BugsnagEvent *event = [[BugsnagEvent alloc] init];
+    XCTAssertEqualObjects(event.stacktraceTypes, @[]);
+    
+    BugsnagError *error = [[BugsnagError alloc] init];
+    event.errors = @[error];
+    error.type = BSGErrorTypeCocoa;
+    XCTAssertEqualObjects(event.stacktraceTypes, @[@"cocoa"]);
+    
+    error.type = BSGErrorTypeReactNativeJs;
+    XCTAssertEqualObjects(event.stacktraceTypes, @[@"reactnativejs"]);
+    
+    NSArray *(^ sorted)(NSArray *) = ^(NSArray *array) { return [array sortedArrayUsingSelector:@selector(compare:)]; };
+    
+    error.stacktrace = @[
+        [BugsnagStackframe frameFromJson:@{}],
+        [BugsnagStackframe frameFromJson:@{@"type": @"cocoa"}],
+        [BugsnagStackframe frameFromJson:@{@"type": @"reactnativejs"}],
+    ];
+    XCTAssertEqualObjects(sorted(event.stacktraceTypes), (@[@"cocoa", @"reactnativejs"]));
+    
+    event.errors = @[[[BugsnagError alloc] init]];
+    
+    BugsnagThread *thread1 = [[BugsnagThread alloc] init];
+    thread1.stacktrace = @[
+        [BugsnagStackframe frameFromJson:@{@"type": @"c"}],
+        [BugsnagStackframe frameFromJson:@{@"type": @"java"}],
+    ];
+    thread1.type = BSGThreadTypeCocoa;
+    event.threads = @[thread1];
+    XCTAssertEqualObjects(sorted(event.stacktraceTypes), (@[@"c", @"cocoa", @"java"]));
+
+    BugsnagThread *thread2 = [[BugsnagThread alloc] init];
+    thread2.stacktrace = @[
+        [BugsnagStackframe frameFromJson:@{@"type": @"csharp"}],
+        [BugsnagStackframe frameFromJson:@{@"type": @"android"}],
+    ];
+    event.threads = @[thread1, thread2];
+    XCTAssertEqualObjects(sorted(event.stacktraceTypes), (@[@"android", @"c", @"cocoa", @"csharp", @"java"]));
 }
 
 // MARK: - Metadata interface
