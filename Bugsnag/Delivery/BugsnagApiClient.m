@@ -4,6 +4,7 @@
 //
 
 #import "BugsnagApiClient.h"
+
 #import "BugsnagConfiguration.h"
 #import "Bugsnag.h"
 #import "BugsnagKeys.h"
@@ -11,7 +12,10 @@
 #import "Private.h"
 #import "BSGJSONSerialization.h"
 
+#import <CommonCrypto/CommonCrypto.h>
+
 BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameApiKey             = @"Bugsnag-Api-Key";
+BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameIntegrity          = @"Bugsnag-Integrity";
 BugsnagHTTPHeaderName const BugsnagHTTPHeaderNamePayloadVersion     = @"Bugsnag-Payload-Version";
 BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameSentAt             = @"Bugsnag-Sent-At";
 BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameStacktraceTypes    = @"Bugsnag-Stacktrace-Types";
@@ -84,7 +88,10 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
         return completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, error);
     }
     
-    NSMutableURLRequest *request = [self prepareRequest:url headers:headers];
+    NSMutableDictionary<BugsnagHTTPHeaderName, NSString *> *mutableHeaders = [headers mutableCopy];
+    mutableHeaders[BugsnagHTTPHeaderNameIntegrity] = [NSString stringWithFormat:@"sha1 %@", [self SHA1HashStringWithData:data]];
+    
+    NSMutableURLRequest *request = [self prepareRequest:url headers:mutableHeaders];
     
     [[self.session uploadTaskWithRequest:request fromData:data completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
@@ -130,6 +137,19 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
         [request setValue:headers[key] forHTTPHeaderField:key];
     }
     return request;
+}
+
+- (NSString *)SHA1HashStringWithData:(NSData *)data {
+    if (!data) {
+        return nil;
+    }
+    unsigned char md[CC_SHA1_DIGEST_LENGTH];
+    CC_SHA1(data.bytes, (CC_LONG)data.length, md);
+    return [NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+            md[0], md[1], md[2], md[3], md[4],
+            md[5], md[6], md[7], md[8], md[9],
+            md[10], md[11], md[12], md[13], md[14],
+            md[15], md[16], md[17], md[18], md[19]];
 }
 
 - (void)dealloc {
