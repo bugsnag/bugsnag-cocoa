@@ -24,12 +24,12 @@ Feature: Enabled error types
   Scenario: NSException Crash Reporting is disabled
     When I run "DisableNSExceptionScenario" and relaunch the app
     And I configure Bugsnag for "DisableNSExceptionScenario"
-
-    # This received request is confirmation the scenario is running through
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the event "unhandled" is false
-    And the payload field "events.0.exceptions.0.message" equals "DisableNSExceptionScenario - Handled"
+    And the event "severity" equals "error"
+    And the event "unhandled" is true
+    And the event "severityReason.type" equals "signal"
+    And the event "severityReason.attributes.signalType" equals "SIGABRT"
 
   Scenario: CPP Crash Reporting is disabled
     When I run "EnabledErrorTypesCxxScenario" and relaunch the app
