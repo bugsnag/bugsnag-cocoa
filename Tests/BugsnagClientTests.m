@@ -34,8 +34,6 @@
 
 NSString *BSGFormatSeverity(BSGSeverity severity);
 
-void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination);
-
 @implementation BugsnagClientTests
 
 /**
@@ -319,12 +317,6 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination);
         dict[key] = value;
     }
     return dict;
-}
-
-- (void)testBSSerializeJSONDictionary {
-    // Test that it doesn't raise an exception
-    char* dest = NULL;
-    BSSerializeJSONDictionary(@{@1: @"a"}, &dest);
 }
 
 static BOOL testOnCrashHandlerNotCalledForOOM_didCallOnCrashHandler;

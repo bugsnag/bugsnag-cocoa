@@ -38,9 +38,12 @@ Feature: Out of memory errors
     And the event "app.dsymUUIDs" is not null
     And the event "app.version" is not null
     And the event "device.manufacturer" equals "Apple"
-    And the event "device.orientation" is not null
     And the event "device.runtimeVersions" is not null
     And the event "device.totalMemory" is not null
+    And the event "metaData.custom.bar" equals "foo"
+    And the event "user.id" equals "foobar"
+    And the event "user.email" equals "foobar@example.com"
+    And the event "user.name" equals "Foo Bar"
 
     # Ensure breadcrumbs are carried over
     And the event has a "manual" breadcrumb named "OOMLoadScenarioBreadcrumb"
