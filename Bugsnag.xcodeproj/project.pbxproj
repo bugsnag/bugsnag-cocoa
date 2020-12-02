@@ -656,6 +656,8 @@
 		00AD1F312486A17900A27979 /* BugsnagSessionTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AD1F012486A17900A27979 /* BugsnagSessionTracker.m */; };
 		00E636C224878D84006CBF1A /* BSG_RFC3339DateTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 008969142486DAD000DC48C2 /* BSG_RFC3339DateTool.m */; };
 		0140D29A25767C9A00FD0306 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
+		012482A325627B51003F7243 /* UIKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 012482A225627B51003F7243 /* UIKitTests.m */; };
+		014475FD2566844F0018AB94 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
 		01447605256684500018AB94 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
 		0187D464255BD7B800C503D9 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
 		01B14C56251CE55F00118748 /* report-react-native-promise-rejection.json in Resources */ = {isa = PBXBuildFile; fileRef = 01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */; };
@@ -1274,8 +1276,10 @@
 		00E636C02487031D006CBF1A /* Bugsnag.podspec.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Bugsnag.podspec.json; sourceTree = SOURCE_ROOT; };
 		00E636C12487031D006CBF1A /* docker-compose.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = "docker-compose.yml"; sourceTree = SOURCE_ROOT; };
 		00E636C324878FFC006CBF1A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		012482A225627B51003F7243 /* UIKitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIKitTests.m; sourceTree = "<group>"; };
 		0134524A256BCF7C0088C548 /* BugsnagError+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagError+Private.h"; sourceTree = "<group>"; };
 		0134524B256BD00A0088C548 /* BugsnagThread+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagThread+Private.h"; sourceTree = "<group>"; };
+		0140D24725765F8F00FD0306 /* BSGUIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGUIKit.h; sourceTree = "<group>"; };
 		0195FC3B256BC81400DE6646 /* BugsnagEvent+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagEvent+Private.h"; sourceTree = "<group>"; };
 		0198762E2567D5AB000A7AF3 /* BugsnagStackframe+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagStackframe+Private.h"; sourceTree = "<group>"; };
 		01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "report-react-native-promise-rejection.json"; sourceTree = "<group>"; };
@@ -1701,6 +1705,7 @@
 				CBA2249A251E429C00B87416 /* TestSupport.m */,
 				01E8765C256684E700F4B70A /* URLSessionMock.h */,
 				01E8765D256684E700F4B70A /* URLSessionMock.m */,
+				012482A225627B51003F7243 /* UIKitTests.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1762,6 +1767,7 @@
 				CBCF77A225010648004AF22A /* BSGJSONSerialization.m */,
 				008968112486DA5600DC48C2 /* BSGSerialization.h */,
 				008968162486DA5600DC48C2 /* BSGSerialization.m */,
+				0140D24725765F8F00FD0306 /* BSGUIKit.h */,
 				008968102486DA5600DC48C2 /* BugsnagCollections.h */,
 				008968172486DA5600DC48C2 /* BugsnagCollections.m */,
 				008968152486DA5600DC48C2 /* BugsnagKeys.h */,
@@ -2552,6 +2558,7 @@
 				0089678A2486D43700DC48C2 /* KSCrashReportStore_Tests.m in Sources */,
 				E701FAAB2490EFD9008D842F /* EventApiValidationTest.m in Sources */,
 				0089677E2486D43700DC48C2 /* KSLogger_Tests.m in Sources */,
+				012482A325627B51003F7243 /* UIKitTests.m in Sources */,
 				008967482486D43700DC48C2 /* BugsnagUserTest.m in Sources */,
 				008967962486D43700DC48C2 /* KSCrashState_Tests.m in Sources */,
 				0089675D2486D43700DC48C2 /* BugsnagSessionTrackingPayloadTest.m in Sources */,
@@ -3184,6 +3191,7 @@
 		00AD1C8724869B0E00A27979 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -3206,6 +3214,7 @@
 		00AD1C8824869B0E00A27979 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;

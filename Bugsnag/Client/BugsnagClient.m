@@ -68,7 +68,7 @@
 #endif
 
 #if BSG_PLATFORM_IOS
-#import <UIKit/UIKit.h>
+#import "BSGUIKit.h"
 #elif BSG_PLATFORM_OSX
 #import <AppKit/AppKit.h>
 #endif
@@ -359,7 +359,7 @@ NSString *_lastOrientation = nil;
                                                                   client:self];
 
 #if BSG_PLATFORM_IOS
-        _lastOrientation = BSGOrientationNameFromEnum([UIDevice currentDevice].orientation);
+        _lastOrientation = BSGOrientationNameFromEnum([UIDEVICE currentDevice].orientation);
 #endif
         _user = self.configuration.user;
 
@@ -507,8 +507,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                    name:UIApplicationDidReceiveMemoryWarningNotification
                  object:nil];
 
-    [UIDevice currentDevice].batteryMonitoringEnabled = YES;
-    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    [UIDEVICE currentDevice].batteryMonitoringEnabled = YES;
+    [[UIDEVICE currentDevice] beginGeneratingDeviceOrientationNotifications];
 
     [self batteryChanged:nil];
     [self orientationChanged:nil];
@@ -681,8 +681,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [BSGConnectivity stopMonitoring];
 
 #if BSG_PLATFORM_IOS
-    [UIDevice currentDevice].batteryMonitoringEnabled = NO;
-    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+    [UIDEVICE currentDevice].batteryMonitoringEnabled = NO;
+    [[UIDEVICE currentDevice] endGeneratingDeviceOrientationNotifications];
 #endif
 }
 
@@ -1114,9 +1114,9 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
  */
 #if BSG_PLATFORM_IOS
 - (void)batteryChanged:(NSNotification *)notification {
-    NSNumber *batteryLevel = @([UIDevice currentDevice].batteryLevel);
-    BOOL charging = [UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging ||
-                    [UIDevice currentDevice].batteryState == UIDeviceBatteryStateFull;
+    NSNumber *batteryLevel = @([UIDEVICE currentDevice].batteryLevel);
+    BOOL charging = [UIDEVICE currentDevice].batteryState == UIDeviceBatteryStateCharging ||
+                    [UIDEVICE currentDevice].batteryState == UIDeviceBatteryStateFull;
 
     [self.state addMetadata:batteryLevel
                     withKey:BSGKeyBatteryLevel
@@ -1134,7 +1134,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
  * @param notification The orientation-change notification
  */
 - (void)orientationChanged:(NSNotification *)notification {
-    UIDeviceOrientation currentDeviceOrientation = [UIDevice currentDevice].orientation;
+    UIDeviceOrientation currentDeviceOrientation = [UIDEVICE currentDevice].orientation;
     NSString *orientation = BSGOrientationNameFromEnum(currentDeviceOrientation);
 
     // No orientation, nothing  to be done

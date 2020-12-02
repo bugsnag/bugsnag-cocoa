@@ -36,7 +36,7 @@
 #include "BSG_KSLogger.h"
 
 #if (TARGET_OS_TV || TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
-#import <UIKit/UIKit.h>
+#import "BSGUIKit.h"
 #endif
 #include <errno.h>
 #include <fcntl.h>

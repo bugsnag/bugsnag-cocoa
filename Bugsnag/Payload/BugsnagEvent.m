@@ -9,7 +9,7 @@
 #import "BugsnagPlatformConditional.h"
 
 #if BSG_PLATFORM_IOS
-#import <UIKit/UIKit.h>
+#import "BSGUIKit.h"
 #include <sys/utsname.h>
 #endif
 
