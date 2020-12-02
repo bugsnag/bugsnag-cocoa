@@ -25,8 +25,11 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "Scenario.h"
+#import "MarkUnhandledHandledScenario.h"
 
 
 @interface CxxExceptionScenario : Scenario
+@end
+
+@interface CxxExceptionOverrideScenario : MarkUnhandledHandledScenario
 @end

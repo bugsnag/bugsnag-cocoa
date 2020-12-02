@@ -121,7 +121,6 @@
                            @"severityReason",
                            @"threads",
                            @"unhandled",
-                           @"unhandledOverridden",
                            @"user",
                            ];
     XCTAssertEqualObjects(actualKeys, eventKeys);

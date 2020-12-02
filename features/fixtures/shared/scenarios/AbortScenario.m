@@ -38,3 +38,16 @@
 }
 
 @end
+
+@implementation AbortOverrideScenario
+
+- (void)startBugsnag {
+    self.config.autoTrackSessions = NO;
+    [super startBugsnag];
+}
+
+- (void)run {
+    abort();
+}
+
+@end
