@@ -252,6 +252,7 @@ Then("the error is an OOM event") do
     And the event "severity" equals "error"
     And the event "severityReason.type" equals "outOfMemory"
     And the event "unhandled" is true
+    And the event "unhandledOverridden" is false
   }
 end
 

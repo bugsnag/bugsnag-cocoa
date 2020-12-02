@@ -757,6 +757,41 @@
     XCTAssertTrue(event.unhandled);
 }
 
+- (void)testUnhandledOverride {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
+
+    NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
+    __block BugsnagEvent *eventRef = nil;
+
+    // No change to unhandled.
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+        eventRef = event;
+        return true;
+    }];
+    XCTAssertEqual(eventRef.unhandled, NO);
+    XCTAssertEqual(eventRef.handledState.unhandledOverridden, NO);
+
+    // Change unhandled from NO to YES.
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+        eventRef = event;
+        event.unhandled = YES;
+        return true;
+    }];
+    XCTAssertEqual(eventRef.unhandled, YES);
+    XCTAssertEqual(eventRef.handledState.unhandledOverridden, YES);
+
+    // Set unhandled to NO, but was already NO.
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+        eventRef = event;
+        event.unhandled = NO;
+        return true;
+    }];
+    XCTAssertEqual(eventRef.unhandled, NO);
+    XCTAssertEqual(eventRef.handledState.unhandledOverridden, NO);
+}
+
 - (void)testMetadataMutability {
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{@"dummy" : @"value"}];
 

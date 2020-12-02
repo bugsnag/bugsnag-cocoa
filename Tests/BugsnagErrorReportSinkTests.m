@@ -121,6 +121,7 @@
                            @"severityReason",
                            @"threads",
                            @"unhandled",
+                           @"unhandledOverridden",
                            @"user",
                            ];
     XCTAssertEqualObjects(actualKeys, eventKeys);
@@ -352,6 +353,38 @@
     [BugsnagHandledState stringFromSeverityReason:HandledException];
     XCTAssertEqualObjects(expected, severityReason[@"type"]);
     XCTAssertNil(severityReason[@"attributes"]);
+}
+
+- (void)testHandledOverriddenSerialization {
+    BugsnagHandledState *state =
+    [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+    state.unhandled = YES;
+    state.unhandledOverridden = YES;
+    NSDictionary *payload = [self reportFromHandledState:state];
+    
+    XCTAssertTrue([payload[@"unhandled"] boolValue]);
+    XCTAssertTrue([payload[@"unhandledOverridden"] boolValue]);
+
+    state.unhandled = YES;
+    state.unhandledOverridden = NO;
+    payload = [self reportFromHandledState:state];
+    
+    XCTAssertTrue([payload[@"unhandled"] boolValue]);
+    XCTAssertFalse([payload[@"unhandledOverridden"] boolValue]);
+
+    state.unhandled = NO;
+    state.unhandledOverridden = YES;
+    payload = [self reportFromHandledState:state];
+    
+    XCTAssertFalse([payload[@"unhandled"] boolValue]);
+    XCTAssertTrue([payload[@"unhandledOverridden"] boolValue]);
+
+    state.unhandled = NO;
+    state.unhandledOverridden = NO;
+    payload = [self reportFromHandledState:state];
+    
+    XCTAssertFalse([payload[@"unhandled"] boolValue]);
+    XCTAssertFalse([payload[@"unhandledOverridden"] boolValue]);
 }
 
 - (void)testUnhandledSerialization {

@@ -16,7 +16,7 @@ import Foundation
                 ["method":"is_done()"]
             ]
             event.severity = .info
-            event.updateUnhandled(true)
+            event.unhandled = true
             event.attachCustomStacktrace(frames, withType: "fake")
             return true
         }

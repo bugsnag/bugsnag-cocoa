@@ -658,6 +658,10 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     }
 }
 
+- (void)notifyUnhandledOverridden {
+    self.handledState.unhandledOverridden = YES;
+}
+
 - (NSDictionary *)toJson {
     NSMutableDictionary *event = [NSMutableDictionary dictionary];
 
@@ -691,6 +695,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 
     BSGDictSetSafeObject(event, @(self.handledState.unhandled), BSGKeyUnhandled);
+    BSGDictSetSafeObject(event, @(self.handledState.unhandledOverridden), BSGKeyUnhandledOverridden);
 
     // serialize handled/unhandled into payload
     NSMutableDictionary *severityReason = [NSMutableDictionary new];
@@ -783,6 +788,10 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     return self.handledState.unhandled;
 }
 
+- (void)setUnhandled:(BOOL)unhandled {
+    self.handledState.unhandled = unhandled;
+}
+
 // MARK: - <BugsnagMetadataStore>
 
 - (void)addMetadata:(NSDictionary *_Nonnull)metadata
@@ -818,10 +827,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
                        withKey:(NSString *_Nonnull)key
 {
     [self.metadata clearMetadataFromSection:sectionName withKey:key];
-}
-
-- (void)updateUnhandled:(BOOL)val {
-    self.handledState.unhandled = val;
 }
 
 #pragma mark -
