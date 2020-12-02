@@ -3,7 +3,7 @@
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagConfiguration.h"
 #import "Bugsnag.h"
-#import "BugsnagClient.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagKVStoreObjC.h"
 #import "BSGCachesDirectory.h"
@@ -16,10 +16,6 @@
 @property (nonatomic, strong) BugsnagSystemState *systemState;
 @property (nonatomic) NSString *codeBundleId;
 - (BOOL)didLikelyOOM;
-@end
-
-@interface BugsnagClient ()
-- (void)start;
 @end
 
 @interface BSGOutOfMemoryTests : XCTestCase

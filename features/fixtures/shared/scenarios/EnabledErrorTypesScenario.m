@@ -87,15 +87,8 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-noreturn"
 - (void)run  __attribute__((noreturn)) {
-    // Send a handled exception to confirm the scenario is running.
-    [Bugsnag notify:[NSException exceptionWithName:NSGenericException reason:@"DisableNSExceptionScenario - Handled"
-                                                 userInfo:@{NSLocalizedDescriptionKey: @""}]];
-
-    // From ObjCExceptionScenario.  Wait 1 seconds before throwing.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        @throw [NSException exceptionWithName:NSGenericException reason:@"An uncaught exception! SCREAM."
-                                    userInfo:@{NSLocalizedDescriptionKey: @"I'm in your program, catching your exceptions!"}];
-    });
+    @throw [NSException exceptionWithName:NSGenericException reason:@"An uncaught exception! SCREAM."
+                                userInfo:@{NSLocalizedDescriptionKey: @"I'm in your program, catching your exceptions!"}];
 }
 #pragma clang diagnostic pop
 

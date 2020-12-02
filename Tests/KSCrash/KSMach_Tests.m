@@ -182,7 +182,7 @@
     CFAbsoluteTime cfEndTime = CFAbsoluteTimeGetCurrent();
     double diff = bsg_ksmachtimeDifferenceInSeconds(endTime, startTime);
     double cfDiff = cfEndTime - cfStartTime;
-    XCTAssertEqualWithAccuracy(diff, cfDiff, 0.0001);
+    XCTAssertEqualWithAccuracy(diff, cfDiff, 0.001);
 }
 
 // TODO: Disabling this until I figure out what's wrong with queue names.

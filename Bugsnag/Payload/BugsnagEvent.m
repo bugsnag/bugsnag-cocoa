@@ -9,7 +9,7 @@
 #import "BugsnagPlatformConditional.h"
 
 #if BSG_PLATFORM_IOS
-#import <UIKit/UIKit.h>
+#import "BSGUIKit.h"
 #include <sys/utsname.h>
 #endif
 
@@ -21,6 +21,7 @@
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
@@ -38,7 +39,7 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
 // MARK: - Accessing hidden methods/properties
 
-NSDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
+NSMutableDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
 NSDictionary *_Nonnull BSGParseAppMetadata(NSDictionary *_Nonnull event);
 
 @interface BugsnagAppWithState ()
@@ -283,7 +284,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
  * @return a BugsnagEvent containing the parsed information
  */
 - (instancetype)initWithOOMData:(NSDictionary *)event {
-    // no threads or metadata captured for OOMs
     NSDictionary *sessionData = [event valueForKeyPath:@"user.state.oom.session"];
     BugsnagSession *session;
     BugsnagUser *user;
@@ -294,13 +294,26 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             user = session.user;
         }
     }
-    BugsnagMetadata *metadata = [BugsnagMetadata new];
+    
+    NSDictionary *metaData = [event valueForKeyPath:@"user.metaData"];
+    if (!metaData) {
+        bsg_log_err(@"user.metaData was missing from the OOM KSCrashReport");
+    }
+    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:metaData ?: @{}];
     // Cocoa-specific, non-spec., device and app data
     [metadata addMetadata:BSGParseDeviceMetadata(event) toSection:BSGKeyDevice];
     [metadata addMetadata:BSGParseAppMetadata(event) toSection:BSGKeyApp];
 
-    BugsnagEvent *obj = [self initWithApp:[BugsnagAppWithState appWithOomData:[event valueForKeyPath:@"user.state.oom.app"]]
-                                   device:[BugsnagDeviceWithState deviceWithOomData:[event valueForKeyPath:@"user.state.oom.device"]]
+    BugsnagAppWithState *app = [BugsnagAppWithState appWithOomData:[event valueForKeyPath:@"user.state.oom.app"]];
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithOomData:[event valueForKeyPath:@"user.state.oom.device"]];
+    
+    if (!user) {
+        NSString *deviceAppHash = [event valueForKeyPath:@"system.device_app_hash"];
+        user = [self parseUser:event deviceAppHash:deviceAppHash deviceId:device.id];
+    }
+    
+    BugsnagEvent *obj = [self initWithApp:app
+                                   device:device
                              handledState:[BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory]
                                      user:user
                                  metadata:metadata
@@ -323,7 +336,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
  * @return a BugsnagEvent containing the parsed information
  */
 - (instancetype)initWithKSCrashData:(NSDictionary *)event {
-    BugsnagConfiguration *config = [Bugsnag configuration];
     NSDictionary *error = [event valueForKeyPath:@"crash.error"];
     NSString *errorType = error[BSGKeyType];
 
@@ -392,7 +404,12 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     NSString *deviceAppHash = [event valueForKeyPath:@"system.device_app_hash"];
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithDictionary:event];
     BugsnagUser *user = [self parseUser:event deviceAppHash:deviceAppHash deviceId:device.id];
-    BugsnagEvent *obj = [self initWithApp:[BugsnagAppWithState appWithDictionary:event config:config codeBundleId:self.codeBundleId]
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithMetadata:[event valueForKeyPath:@"user.config"]];
+    BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:event config:config codeBundleId:self.codeBundleId];
+    if (!app.type) { // Configuration.type does not get stored in the crash report at the time of writing.
+        app.type = [Bugsnag configuration].appType;
+    }
+    BugsnagEvent *obj = [self initWithApp:app
                                    device:device
                              handledState:handledState
                                      user:user
@@ -805,6 +822,39 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 - (void)updateUnhandled:(BOOL)val {
     self.handledState.unhandled = val;
+}
+
+#pragma mark -
+
+- (NSArray<NSString *> *)stacktraceTypes {
+    NSMutableSet *stacktraceTypes = [NSMutableSet set];
+    
+    // The error in self.errors is not always the error that will be sent; this is the case when used in React Native.
+    // Using [self toJson] to ensure this uses the same logic of reading from self.customException instead.
+    NSDictionary *json = [self toJson];
+    NSArray *exceptions = json[BSGKeyExceptions];
+    for (NSDictionary *exception in exceptions) {
+        BugsnagError *error = [BugsnagError errorFromJson:exception];
+        
+        [stacktraceTypes addObject:BSGSerializeErrorType(error.type)];
+        
+        for (BugsnagStackframe *stackframe in error.stacktrace) {
+            if (stackframe.type) {
+                [stacktraceTypes addObject:stackframe.type];
+            }
+        }
+    }
+    
+    for (BugsnagThread *thread in self.threads) {
+        [stacktraceTypes addObject:BSGSerializeThreadType(thread.type)];
+        for (BugsnagStackframe *stackframe in thread.stacktrace) {
+            if (stackframe.type) {
+                [stacktraceTypes addObject:stackframe.type];
+            }
+        }
+    }
+    
+    return stacktraceTypes.allObjects;
 }
 
 @end

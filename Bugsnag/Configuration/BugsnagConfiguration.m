@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagConfiguration.h"
+#import "BugsnagConfiguration+Private.h"
 
 #import "BSGConfigurationBuilder.h"
 #import "BugsnagApiClient.h"
@@ -228,6 +228,18 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [self setAppVersion:NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"]];
     [self setBundleVersion:NSBundle.mainBundle.infoDictionary[@"CFBundleVersion"]];
 
+    return self;
+}
+
+- (instancetype)initWithMetadata:(NSDictionary *)metadata {
+    if (!(self = [super init])) {
+        return nil;
+    }
+    _appVersion = metadata[BSGKeyAppVersion];
+    _context = metadata[BSGKeyContext];
+    _bundleVersion = metadata[BSGKeyBundleVersion];
+    _enabledReleaseStages = metadata[BSGKeyEnabledReleaseStages];
+    _releaseStage = metadata[BSGKeyReleaseStage];
     return self;
 }
 

@@ -24,6 +24,9 @@ Feature: Out of memory errors
 
     # Ensure the basic data from OOMs are present
     And the event "device.jailbroken" is false
+    And the event "metaData.device.batteryLevel" is not null
+    And the event "metaData.device.charging" is not null
+    And the event "metaData.device.orientation" is not null
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.wordSize" is not null
@@ -32,7 +35,15 @@ Feature: Out of memory errors
     And the event "app.inForeground" is true
     And the event "app.type" equals "iOS"
     And the event "app.bundleVersion" is not null
+    And the event "app.dsymUUIDs" is not null
     And the event "app.version" is not null
+    And the event "device.manufacturer" equals "Apple"
+    And the event "device.runtimeVersions" is not null
+    And the event "device.totalMemory" is not null
+    And the event "metaData.custom.bar" equals "foo"
+    And the event "user.id" equals "foobar"
+    And the event "user.email" equals "foobar@example.com"
+    And the event "user.name" equals "Foo Bar"
 
     # Ensure breadcrumbs are carried over
     And the event has a "manual" breadcrumb named "OOMLoadScenarioBreadcrumb"

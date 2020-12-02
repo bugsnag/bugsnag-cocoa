@@ -11,7 +11,7 @@
 #import "BugsnagApp.h"
 #import "BugsnagDevice.h"
 #import "BugsnagSessionTrackingPayload.h"
-#import "BugsnagConfiguration.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagSessionInternal.h"
 
@@ -71,7 +71,7 @@
             }
     };
 
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithMetadata:appData[@"user"][@"config"]];
     config.appType = @"iOS";
     config.bundleVersion = nil;
     return [BugsnagApp appWithDictionary:appData config:config codeBundleId:@"bundle-123"];

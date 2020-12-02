@@ -8,8 +8,7 @@
 
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumbs.h"
-#import "BugsnagClient.h"
-#import "BugsnagClientInternal.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagKeys.h"
 #import "BugsnagUser.h"
@@ -25,11 +24,6 @@
 + (BugsnagClient *)client;
 @end
 
-@interface BugsnagClient ()
-- (void)orientationChanged:(NSNotification *)notif;
-@property (nonatomic, strong) BugsnagMetadata *metadata;
-@end
-
 @interface BugsnagBreadcrumb ()
 - (NSDictionary *)objectValue;
 @end
@@ -39,8 +33,6 @@
 @end
 
 NSString *BSGFormatSeverity(BSGSeverity severity);
-
-void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination);
 
 @implementation BugsnagClientTests
 
@@ -325,12 +317,6 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination);
         dict[key] = value;
     }
     return dict;
-}
-
-- (void)testBSSerializeJSONDictionary {
-    // Test that it doesn't raise an exception
-    char* dest = NULL;
-    BSSerializeJSONDictionary(@{@1: @"a"}, &dest);
 }
 
 static BOOL testOnCrashHandlerNotCalledForOOM_didCallOnCrashHandler;

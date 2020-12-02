@@ -28,8 +28,7 @@
 
 #import "BSG_KSSystemInfo.h"
 #import "Bugsnag.h"
-#import "BugsnagClient.h"
-#import "BugsnagClientInternal.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagCollections.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagKeys.h"
@@ -133,6 +132,7 @@
 
         NSMutableDictionary *apiHeaders = [[configuration errorApiHeaders] mutableCopy];
         apiHeaders[BugsnagHTTPHeaderNameApiKey] = event.apiKey;
+        apiHeaders[BugsnagHTTPHeaderNameStacktraceTypes] = [event.stacktraceTypes componentsJoinedByString:@","];
         [self.apiClient sendJSONPayload:requestPayload headers:apiHeaders toURL:configuration.notifyURL
                       completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
             BOOL completed = status == BugsnagApiClientDeliveryStatusDelivered || status == BugsnagApiClientDeliveryStatusUndeliverable;

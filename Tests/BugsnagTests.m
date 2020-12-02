@@ -10,7 +10,7 @@
 #import <XCTest/XCTest.h>
 
 #import "Bugsnag.h"
-#import "BugsnagClient.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagNotifier.h"
@@ -25,13 +25,6 @@
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
 @property(readwrite, retain, nullable) BugsnagMetadata *metadata;
-@end
-
-@interface BugsnagClient ()
-@property (nonatomic, strong) NSString *lastOrientation;
-@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
-- (void)start;
-@property BugsnagConfiguration *configuration;
 @end
 
 @interface BugsnagTests : XCTestCase

@@ -9,16 +9,11 @@
 #import <XCTest/XCTest.h>
 
 #import "Bugsnag.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagBreadcrumbs.h"
 #import "Private.h"
-
-@interface BugsnagClient ()
-@property(nonatomic, readwrite, retain) BugsnagConfiguration *_Nullable configuration;
-@property BugsnagBreadcrumbs *breadcrumbs;
-- (void)start;
-@end
 
 @interface Bugsnag ()
 + (BugsnagClient *)client;
