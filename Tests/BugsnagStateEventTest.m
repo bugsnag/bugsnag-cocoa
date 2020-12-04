@@ -65,7 +65,7 @@
 - (void)testMetadataUpdate {
     XCTAssertNotNil(self.event);
     self.event = nil;
-    [self.client addMetadata:@"Bar" withKey:@"Foo" toSection:@"test"];
+    [self.client addMetadata:@"Bar" withKey:@"Foo2" toSection:@"test"];
     XCTAssertEqualObjects(self.client.metadata, self.event.data);
 }
 
