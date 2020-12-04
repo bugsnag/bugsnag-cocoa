@@ -41,10 +41,6 @@
 
 static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
-// MARK: - KSCrashReport parsing
-NSString *_Nonnull BSGParseErrorClass(NSDictionary *error, NSString *errorType);
-NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSString *errorType);
-
 id BSGLoadConfigValue(NSDictionary *report, NSString *valueName) {
     NSString *keypath = [NSString stringWithFormat:@"user.config.%@", valueName];
     NSString *fallbackKeypath = [NSString stringWithFormat:@"user.config.config.%@", valueName];
