@@ -42,6 +42,7 @@
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag.h"
 #import "BugsnagApp+Private.h"
+#import "BugsnagAppWithState+Private.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
@@ -116,13 +117,6 @@ NSDictionary *BSGParseDeviceMetadata(NSDictionary *event);
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
-@end
-
-@interface BugsnagAppWithState ()
-+ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
-                                    config:(BugsnagConfiguration *)config
-                              codeBundleId:(NSString *)codeBundleId;
-- (NSDictionary *)toDict;
 @end
 
 @interface BugsnagDeviceWithState ()

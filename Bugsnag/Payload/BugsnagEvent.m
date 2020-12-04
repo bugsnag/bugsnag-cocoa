@@ -20,6 +20,7 @@
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag+Private.h"
 #import "BugsnagApp+Private.h"
+#import "BugsnagAppWithState+Private.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
@@ -42,15 +43,6 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 // MARK: - Accessing hidden methods/properties
 
 NSMutableDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
-
-@interface BugsnagAppWithState ()
-+ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
-                                    config:(BugsnagConfiguration *)config
-                              codeBundleId:(NSString *)codeBundleId;
-- (NSDictionary *)toDict;
-+ (BugsnagAppWithState *)appWithOomData:(NSDictionary *)event;
-+ (BugsnagAppWithState *)appFromJson:(NSDictionary *)json;
-@end
 
 @interface BugsnagBreadcrumb ()
 + (instancetype _Nullable)breadcrumbWithBlock:

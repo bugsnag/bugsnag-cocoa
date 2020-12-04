@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "BugsnagAppWithState.h"
+#import "BugsnagAppWithState+Private.h"
 
 #import "BugsnagApp+Private.h"
 #import "BugsnagKeys.h"

@@ -9,18 +9,9 @@
 #import <XCTest/XCTest.h>
 
 #import "BugsnagApp+Private.h"
-#import "BugsnagAppWithState.h"
+#import "BugsnagAppWithState+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
-
-@interface BugsnagAppWithState ()
-+ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
-                                    config:(BugsnagConfiguration *)config
-                              codeBundleId:(NSString *)codeBundleId;
-+ (BugsnagAppWithState *)appWithOomData:(NSDictionary *)event;
-+ (BugsnagAppWithState *)appFromJson:(NSDictionary *)json;
-- (NSDictionary *)toDict;
-@end
 
 @interface BugsnagAppTest : XCTestCase
 @property NSDictionary *data;
