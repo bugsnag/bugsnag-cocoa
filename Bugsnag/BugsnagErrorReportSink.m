@@ -37,10 +37,6 @@
 #import "BugsnagNotifier.h"
 #import "Private.h"
 
-@interface BugsnagNotifier ()
-- (NSDictionary *)toDict;
-@end
-
 @interface BugsnagErrorReportSink ()
 @property NSMutableSet<NSString *> *activeRequests;
 @end

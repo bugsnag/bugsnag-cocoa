@@ -9,10 +9,6 @@
 #import <XCTest/XCTest.h>
 #import "BugsnagNotifier.h"
 
-@interface BugsnagNotifier ()
-- (NSDictionary *)toDict;
-@end
-
 @interface BugsnagNotifierTest : XCTestCase
 @property BugsnagNotifier *notifier;
 @end

@@ -21,10 +21,6 @@
 #import "Private.h"
 #import "BugsnagApp.h"
 
-@interface BugsnagNotifier ()
-- (NSDictionary *)toDict;
-@end
-
 @interface BugsnagSessionTrackingPayload ()
 @property (nonatomic) BugsnagConfiguration *config;
 @property(nonatomic, copy) NSString *codeBundleId;
