@@ -32,8 +32,7 @@
 #import "BugsnagKeys.h"
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagLogger.h"
-#import "BugsnagSession.h"
-#import "BugsnagSessionInternal.h"
+#import "BugsnagSession+Private.h"
 #import "BugsnagStacktrace.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser.h"
@@ -48,12 +47,6 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 - (NSDictionary *)toJson;
 - (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
-@end
-
-@interface BugsnagSession ()
-+ (instancetype)fromJson:(NSDictionary *)json;
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
 @end
 
 @interface BugsnagStacktrace ()

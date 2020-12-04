@@ -17,7 +17,7 @@
 #import "BugsnagSessionTrackingPayload.h"
 #import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagLogger.h"
-#import "BugsnagSessionInternal.h"
+#import "BugsnagSession+Private.h"
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagCollections.h"
 
@@ -27,16 +27,6 @@
 NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 
 NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
-
-@interface BugsnagSession ()
-
-@property(readwrite, getter=isStopped) BOOL stopped;
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
-- (NSDictionary *_Nonnull)toDictionary;
-- (void)stop;
-- (void)resume;
-@end
 
 @interface BugsnagSessionTrackingApiClient ()
 @property (nonatomic) NSString *codeBundleId;

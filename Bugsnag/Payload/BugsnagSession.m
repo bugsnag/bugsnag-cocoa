@@ -6,7 +6,7 @@
 //  Copyright © 2017 Bugsnag. All rights reserved.
 //
 
-#import "BugsnagSession.h"
+#import "BugsnagSession+Private.h"
 
 #import "BugsnagApp+Private.h"
 #import "BugsnagCollections.h"
@@ -24,26 +24,6 @@ static NSString *const kBugsnagUser = @"user";
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
 - (NSDictionary *)toJson;
-@end
-
-@interface BugsnagSession ()
-@property(readwrite, getter=isStopped) BOOL stopped;
-@property(readonly) BOOL autoCaptured;
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
-
-/**
- * Representation used in report payloads
- */
-- (NSDictionary *_Nonnull)toJson;
-
-/**
- * Full representation of a session suitable for creating an identical session
- * using initWithDictionary
- */
-- (NSDictionary *_Nonnull)toDictionary;
-- (void)stop;
-- (void)resume;
 @end
 
 @implementation BugsnagSession

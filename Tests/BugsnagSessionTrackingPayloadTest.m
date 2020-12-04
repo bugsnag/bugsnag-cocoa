@@ -13,7 +13,7 @@
 #import "BugsnagSessionTrackingPayload.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
-#import "BugsnagSessionInternal.h"
+#import "BugsnagSession+Private.h"
 
 @interface BugsnagSessionTrackingPayloadTest : XCTestCase
 @property NSDictionary *payload;

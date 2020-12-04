@@ -16,16 +16,11 @@
 #import "BugsnagHandledState.h"
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagSession.h"
-#import "BugsnagSessionInternal.h"
+#import "BugsnagSession+Private.h"
 #import "BugsnagStackframe+Private.h"
 #import "BugsnagStateEvent.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagTestsDummyClass.h"
-
-@interface BugsnagSession ()
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
-@end
 
 @interface BugsnagEventTests : XCTestCase
 @end

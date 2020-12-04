@@ -58,6 +58,7 @@
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagPluginClient.h"
+#import "BugsnagSession+Private.h"
 #import "BugsnagSessionTracker+Private.h"
 #import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagStateEvent.h"
@@ -112,11 +113,6 @@ static bool hasRecordedSessions;
 
 @interface NSDictionary (BSGKSMerge)
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
-@end
-
-@interface BugsnagSession ()
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
 @end
 
 /**

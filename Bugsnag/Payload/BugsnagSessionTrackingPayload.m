@@ -15,6 +15,7 @@
 #import "Bugsnag+Private.h"
 #import "BugsnagKeys.h"
 #import "BugsnagNotifier.h"
+#import "BugsnagSession+Private.h"
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagConfiguration.h"
 #import "Private.h"
@@ -22,10 +23,6 @@
 
 @interface BugsnagNotifier ()
 - (NSDictionary *)toDict;
-@end
-
-@interface BugsnagSession ()
-- (NSDictionary *)toDictionary;
 @end
 
 @interface BugsnagSessionTrackingPayload ()

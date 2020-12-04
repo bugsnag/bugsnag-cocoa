@@ -18,13 +18,9 @@
 #import "BugsnagHandledState.h"
 #import "Bugsnag.h"
 #import "BugsnagError.h"
+#import "BugsnagSession+Private.h"
 #import "BugsnagStackframe.h"
 #import "BugsnagThread.h"
-
-@interface BugsnagSession ()
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
-@end
 
 @interface BugsnagEventPersistLoadTest : XCTestCase
 @property NSDictionary *eventData;

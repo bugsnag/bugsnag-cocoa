@@ -11,17 +11,9 @@
 #import "BugsnagApp+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagDevice+Private.h"
-#import "BugsnagSession.h"
-#import "BugsnagSessionInternal.h"
+#import "BugsnagSession+Private.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagTestConstants.h"
-
-@interface BugsnagSession ()
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
-- (NSDictionary *_Nonnull)toJson;
-- (NSDictionary *_Nonnull)toDictionary;
-@end
 
 @interface BugsnagUser ()
 - (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
