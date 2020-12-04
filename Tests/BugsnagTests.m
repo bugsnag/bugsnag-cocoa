@@ -11,6 +11,7 @@
 
 #import "Bugsnag.h"
 #import "BugsnagClient+Private.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagNotifier.h"
@@ -20,11 +21,6 @@
 @interface Bugsnag ()
 + (BugsnagConfiguration *)configuration;
 + (BugsnagClient *)client;
-@end
-
-@interface BugsnagConfiguration ()
-@property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
-@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
 @end
 
 @interface BugsnagTests : XCTestCase

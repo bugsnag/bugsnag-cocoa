@@ -10,7 +10,7 @@
 
 #import "Bugsnag.h"
 #import "BugsnagClient+Private.h"
-#import "BugsnagConfiguration.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagBreadcrumbs.h"
 #import "Private.h"
@@ -18,10 +18,6 @@
 @interface Bugsnag ()
 + (BugsnagClient *)client;
 + (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block;
-@end
-
-@interface BugsnagConfiguration ()
-@property NSMutableArray *onBreadcrumbBlocks;
 @end
 
 @interface BugsnagOnBreadcrumbTest : XCTestCase

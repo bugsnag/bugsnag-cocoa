@@ -9,7 +9,7 @@
 #import <XCTest/XCTest.h>
 
 #import "BugsnagUser.h"
-#import "BugsnagConfiguration.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagTestConstants.h"
@@ -18,10 +18,6 @@
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
 @property(readonly) BOOL autoCaptured;
-@end
-
-@interface BugsnagConfiguration ()
-- (void)deletePersistedUserData;
 @end
 
 @interface BugsnagSessionTracker ()

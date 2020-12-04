@@ -30,17 +30,13 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagLogger.h"
 #import "BugsnagClient+Private.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagKeys.h"
 #import "BugsnagPlugin.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagSystemState.h"
 
 static BugsnagClient *bsg_g_bugsnag_client = NULL;
-
-@interface BugsnagConfiguration ()
-@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
-@property(readwrite, retain, nullable) BugsnagMetadata *config;
-@end
 
 @interface Bugsnag ()
 + (BugsnagClient *)client;

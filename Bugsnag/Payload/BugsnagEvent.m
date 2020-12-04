@@ -64,12 +64,6 @@ NSDictionary *_Nonnull BSGParseAppMetadata(NSDictionary *_Nonnull event);
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 @end
 
-@interface BugsnagConfiguration (BugsnagEvent)
-+ (BOOL)isValidApiKey:(NSString *_Nullable)apiKey;
-- (BOOL)shouldSendReports;
-@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
-@end
-
 @interface BugsnagSession ()
 + (instancetype)fromJson:(NSDictionary *)json;
 @property NSUInteger unhandledCount;

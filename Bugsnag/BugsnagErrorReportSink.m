@@ -30,6 +30,7 @@
 #import "Bugsnag.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagCollections.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagKeys.h"
 #import "BugsnagLogger.h"
@@ -44,14 +45,6 @@
 
 @interface BugsnagNotifier ()
 - (NSDictionary *)toDict;
-@end
-
-@interface BugsnagConfiguration ()
-@property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
-- (NSDictionary *_Nonnull)errorApiHeaders;
-- (NSDictionary *_Nonnull)sessionApiHeaders;
-@property(readonly, retain, nullable) NSURL *sessionURL;
-@property(readonly, retain, nullable) NSURL *notifyURL;
 @end
 
 @interface BugsnagErrorReportSink ()

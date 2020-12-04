@@ -43,34 +43,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 - (NSDictionary *)toJson;
 @end
 
-@interface BugsnagConfiguration ()
-
-/**
- *  Hooks for modifying crash reports before it is sent to Bugsnag
- */
-@property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
-
-/**
- *  Hooks for modifying sessions before they are sent to Bugsnag. Intended for internal use only by React Native/Unity.
- */
-@property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
-@property(nonatomic, readwrite, strong) NSMutableArray *onBreadcrumbBlocks;
-@property(nonatomic, readwrite, strong) NSMutableSet *plugins;
-@property(readonly, retain, nullable) NSURL *notifyURL;
-@property(readonly, retain, nullable) NSURL *sessionURL;
-
-/**
- *  Additional information about the state of the app or environment at the
- *  time the report was generated
- */
-@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
-
-/**
- *  Meta-information about the state of Bugsnag
- */
-@property(readwrite, retain, nullable) BugsnagMetadata *config;
-@end
-
 // =============================================================================
 // MARK: - BugsnagConfiguration
 // =============================================================================
@@ -110,7 +82,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setEnabledReleaseStages:self.enabledReleaseStages];
     [copy setRedactedKeys:self.redactedKeys];
     [copy setMaxBreadcrumbs:self.maxBreadcrumbs];
-    [copy setMetadata: [[BugsnagMetadata alloc] initWithDictionary:[[self.metadata toDictionary] mutableCopy]]];
+    copy->_metadata = [[BugsnagMetadata alloc] initWithDictionary:[[self.metadata toDictionary] mutableCopy]];
     [copy setEndpoints:self.endpoints];
     [copy setOnCrashHandler:self.onCrashHandler];
     [copy setPersistUser:self.persistUser];

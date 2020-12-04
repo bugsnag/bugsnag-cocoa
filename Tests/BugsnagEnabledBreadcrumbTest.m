@@ -7,12 +7,9 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "BugsnagConfiguration.h"
-#import "BugsnagTestConstants.h"
 
-@interface BugsnagConfiguration ()
-- (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)type;
-@end
+#import "BugsnagConfiguration+Private.h"
+#import "BugsnagTestConstants.h"
 
 @interface BugsnagEnabledBreadcrumbTest : XCTestCase
 

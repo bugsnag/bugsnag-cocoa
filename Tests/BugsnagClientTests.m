@@ -9,6 +9,7 @@
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagClient+Private.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagKeys.h"
 #import "BugsnagUser.h"
@@ -26,10 +27,6 @@
 
 @interface BugsnagBreadcrumb ()
 - (NSDictionary *)objectValue;
-@end
-
-@interface BugsnagConfiguration ()
-@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
 @end
 
 NSString *BSGFormatSeverity(BSGSeverity severity);

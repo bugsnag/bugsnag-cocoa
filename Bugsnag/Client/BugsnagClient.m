@@ -258,14 +258,6 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
     hasRecordedSessions = true;
 }
 
-@interface BugsnagConfiguration ()
-@property(nonatomic, readwrite, strong) NSMutableSet *plugins;
-@property(readonly, retain, nullable) NSURL *notifyURL;
-@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
-@property(readwrite, retain, nullable) BugsnagMetadata *config;
-- (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)type;
-@end
-
 @interface BugsnagSessionTracker ()
 @property(nonatomic) NSString *codeBundleId;
 @end

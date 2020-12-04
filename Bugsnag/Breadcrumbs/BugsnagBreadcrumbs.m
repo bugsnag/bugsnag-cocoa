@@ -12,12 +12,9 @@
 #import "BSGCachesDirectory.h"
 #import "BSGJSONSerialization.h"
 #import "BSG_KSCrashReportWriter.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagLogger.h"
 #import "Private.h"
-
-@interface BugsnagConfiguration ()
-@property(nonatomic) NSMutableArray *onBreadcrumbBlocks;
-@end
 
 @interface BugsnagBreadcrumb ()
 + (instancetype _Nullable)breadcrumbWithBlock:
