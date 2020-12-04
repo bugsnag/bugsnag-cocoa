@@ -17,7 +17,6 @@
 
 @interface BugsnagSessionTrackingApiClient ()
 @property NSMutableSet *activeIds;
-@property(nonatomic) NSString *codeBundleId;
 @property(nonatomic) BugsnagConfiguration *config;
 @end
 

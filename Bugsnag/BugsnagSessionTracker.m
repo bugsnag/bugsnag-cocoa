@@ -28,10 +28,6 @@ NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 
 NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 
-@interface BugsnagSessionTrackingApiClient ()
-@property (nonatomic) NSString *codeBundleId;
-@end
-
 @interface BugsnagSessionTracker ()
 @property (weak, nonatomic) BugsnagConfiguration *config;
 @property (weak, nonatomic) BugsnagClient *client;
