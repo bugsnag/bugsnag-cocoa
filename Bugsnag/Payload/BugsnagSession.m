@@ -7,6 +7,8 @@
 //
 
 #import "BugsnagSession.h"
+
+#import "BugsnagApp+Private.h"
 #import "BugsnagCollections.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagKeys.h"
@@ -16,11 +18,6 @@ static NSString *const kBugsnagUnhandledCount = @"unhandledCount";
 static NSString *const kBugsnagHandledCount = @"handledCount";
 static NSString *const kBugsnagStartedAt = @"startedAt";
 static NSString *const kBugsnagUser = @"user";
-
-@interface BugsnagApp ()
-- (NSDictionary *)toDict;
-+ (BugsnagApp *)deserializeFromJson:(NSDictionary *)json;
-@end
 
 @interface BugsnagDevice ()
 - (NSDictionary *)toDictionary;

@@ -41,6 +41,7 @@
 #import "BSG_KSSystemInfo.h"
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag.h"
+#import "BugsnagApp+Private.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
@@ -106,7 +107,6 @@ static NSUInteger handledCount;
 static NSUInteger unhandledCount;
 static bool hasRecordedSessions;
 
-NSDictionary *BSGParseAppMetadata(NSDictionary *event);
 NSDictionary *BSGParseDeviceMetadata(NSDictionary *event);
 
 @interface NSDictionary (BSGKSMerge)

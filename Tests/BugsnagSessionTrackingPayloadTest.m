@@ -8,18 +8,12 @@
 
 #import <XCTest/XCTest.h>
 
-#import "BugsnagApp.h"
+#import "BugsnagApp+Private.h"
 #import "BugsnagDevice.h"
 #import "BugsnagSessionTrackingPayload.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagSessionInternal.h"
-
-@interface BugsnagApp ()
-+ (BugsnagApp *)appWithDictionary:(NSDictionary *)data
-                           config:(BugsnagConfiguration *)config
-                     codeBundleId:(NSString *)codeBundleId;
-@end
 
 @interface BugsnagDevice ()
 + (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)data;

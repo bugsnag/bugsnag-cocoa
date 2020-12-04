@@ -8,6 +8,7 @@
 
 #import "BugsnagSessionTracker+Private.h"
 
+#import "BugsnagApp+Private.h"
 #import "BugsnagClient.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagSessionFileStore.h"
@@ -34,12 +35,6 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 - (NSDictionary *_Nonnull)toDictionary;
 - (void)stop;
 - (void)resume;
-@end
-
-@interface BugsnagApp ()
-+ (BugsnagApp *)appWithDictionary:(NSDictionary *)event
-                           config:(BugsnagConfiguration *)config
-                     codeBundleId:(NSString *)codeBundleId;
 @end
 
 @interface BugsnagDevice ()
