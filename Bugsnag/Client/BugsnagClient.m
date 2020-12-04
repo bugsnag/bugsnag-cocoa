@@ -48,6 +48,7 @@
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagCrashSentry.h"
+#import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagErrorTypes.h"
 #import "BugsnagEvent+Private.h"
@@ -109,8 +110,6 @@ static NSUInteger handledCount;
 static NSUInteger unhandledCount;
 static bool hasRecordedSessions;
 
-NSDictionary *BSGParseDeviceMetadata(NSDictionary *event);
-
 @interface NSDictionary (BSGKSMerge)
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
 @end
@@ -118,12 +117,6 @@ NSDictionary *BSGParseDeviceMetadata(NSDictionary *event);
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
-@end
-
-@interface BugsnagDeviceWithState ()
-+ (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event;
-- (NSDictionary *)toDictionary;
-- (void)appendRuntimeInfo:(NSDictionary *)info;
 @end
 
 /**

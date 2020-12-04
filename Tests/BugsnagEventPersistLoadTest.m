@@ -11,7 +11,7 @@
 #import "BugsnagEvent+Private.h"
 #import "BugsnagAppWithState.h"
 #import "BugsnagUser.h"
-#import "BugsnagDeviceWithState.h"
+#import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError.h"
 #import "BugsnagStackframe.h"
 #import "BugsnagBreadcrumb.h"
@@ -20,10 +20,6 @@
 #import "BugsnagError.h"
 #import "BugsnagStackframe.h"
 #import "BugsnagThread.h"
-
-@interface BugsnagDeviceWithState ()
-@property (nonatomic, readonly) NSDateFormatter *formatter;
-@end
 
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;

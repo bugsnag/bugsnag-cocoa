@@ -25,6 +25,7 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
+#import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
@@ -42,8 +43,6 @@
 static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 
 // MARK: - Accessing hidden methods/properties
-
-NSMutableDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
 
 @interface BugsnagUser ()
 - (NSDictionary *)toJson;
@@ -164,13 +163,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
 @end
 
-
-@interface BugsnagDeviceWithState ()
-- (NSDictionary *)toDictionary;
-+ (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event;
-+ (BugsnagDeviceWithState *)deviceWithOomData:(NSDictionary *)data;
-+ (BugsnagDeviceWithState *)deviceFromJson:(NSDictionary *)json;
-@end
 
 @interface BugsnagUser ()
 - (instancetype)initWithDictionary:(NSDictionary *)dict;

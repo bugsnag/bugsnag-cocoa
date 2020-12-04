@@ -1265,6 +1265,7 @@
 		0126DED7257A87F40031A70C /* BugsnagAppWithState+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagAppWithState+Private.h"; sourceTree = "<group>"; };
 		0126DEDF257A89490031A70C /* BugsnagBreadcrumb+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagBreadcrumb+Private.h"; sourceTree = "<group>"; };
 		0126DEE7257A8B0F0031A70C /* BugsnagDevice+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagDevice+Private.h"; sourceTree = "<group>"; };
+		0126DEEF257A8C3D0031A70C /* BugsnagDeviceWithState+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagDeviceWithState+Private.h"; sourceTree = "<group>"; };
 		0134524A256BCF7C0088C548 /* BugsnagError+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagError+Private.h"; sourceTree = "<group>"; };
 		0134524B256BD00A0088C548 /* BugsnagThread+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagThread+Private.h"; sourceTree = "<group>"; };
 		0140D24725765F8F00FD0306 /* BSGUIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGUIKit.h; sourceTree = "<group>"; };
@@ -1797,6 +1798,7 @@
 				008968482486DA9400DC48C2 /* BugsnagDevice.m */,
 				0126DEE7257A8B0F0031A70C /* BugsnagDevice+Private.h */,
 				0089685A2486DA9500DC48C2 /* BugsnagDeviceWithState.m */,
+				0126DEEF257A8C3D0031A70C /* BugsnagDeviceWithState+Private.h */,
 				008968512486DA9400DC48C2 /* BugsnagError.m */,
 				0134524A256BCF7C0088C548 /* BugsnagError+Private.h */,
 				008968462486DA9300DC48C2 /* BugsnagEvent.m */,
