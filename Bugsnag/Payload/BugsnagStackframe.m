@@ -160,9 +160,9 @@ BugsnagStackframeType const BugsnagStackframeTypeCocoa = @"cocoa";
 
 - (NSDictionary *)toDictionary {
     NSMutableDictionary *dict = [NSMutableDictionary new];
-    BSGDictInsertIfNotNil(dict, self.machoFile, BSGKeyMachoFile);
-    BSGDictInsertIfNotNil(dict, self.method, BSGKeyMethod);
-    BSGDictInsertIfNotNil(dict, self.machoUuid, BSGKeyMachoUUID);
+    dict[BSGKeyMachoFile] = self.machoFile;
+    dict[BSGKeyMethod] = self.method;
+    dict[BSGKeyMachoUUID] = self.machoUuid;
 
     if (self.frameAddress != nil) {
         NSString *frameAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, [self.frameAddress unsignedLongValue]];

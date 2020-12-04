@@ -69,7 +69,7 @@
     for (BugsnagSession *session in self.sessions) {
         [sessionData addObject:[session toDictionary]];
     }
-    BSGDictInsertIfNotNil(dict, sessionData, @"sessions");
+    dict[@"sessions"] = sessionData;
     BSGDictSetSafeObject(dict, [[Bugsnag client].notifier toDict], BSGKeyNotifier);
 
     // app/device data collection relies on KSCrash reports,

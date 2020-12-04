@@ -128,15 +128,15 @@ static NSString *const kBugsnagUser = @"user";
 
 - (NSDictionary *)toJson {
     NSMutableDictionary *dict = [NSMutableDictionary new];
-    BSGDictInsertIfNotNil(dict, self.id, kBugsnagSessionId);
-    BSGDictInsertIfNotNil(dict, [BSG_RFC3339DateTool stringFromDate:self.startedAt], kBugsnagStartedAt);
+    dict[kBugsnagSessionId] = self.id;
+    dict[kBugsnagStartedAt] = [BSG_RFC3339DateTool stringFromDate:self.startedAt];
 
     if (self.user) {
-        BSGDictInsertIfNotNil(dict, [self.user toJson], kBugsnagUser);
+        dict[kBugsnagUser] = [self.user toJson];
     }
 
-    BSGDictInsertIfNotNil(dict, [self.app toDict], BSGKeyApp);
-    BSGDictInsertIfNotNil(dict, [self.device toDictionary], BSGKeyDevice);
+    dict[BSGKeyApp] = [self.app toDict];
+    dict[BSGKeyDevice] = [self.device toDictionary];
     return [NSDictionary dictionaryWithDictionary:dict];
 }
 

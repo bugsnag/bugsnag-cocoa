@@ -149,9 +149,9 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
 
 - (NSDictionary *)toDictionary {
     NSMutableDictionary *dict = [NSMutableDictionary new];
-    BSGDictInsertIfNotNil(dict, self.errorClass, BSGKeyErrorClass);
-    BSGDictInsertIfNotNil(dict, self.errorMessage, BSGKeyMessage);
-    BSGDictInsertIfNotNil(dict, BSGSerializeErrorType(self.type), BSGKeyType);
+    dict[BSGKeyErrorClass] = self.errorClass;
+    dict[BSGKeyMessage] = self.errorMessage;
+    dict[BSGKeyType] = BSGSerializeErrorType(self.type);
 
     NSMutableArray *frames = [NSMutableArray new];
     for (BugsnagStackframe *frame in self.stacktrace) {

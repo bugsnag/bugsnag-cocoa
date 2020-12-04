@@ -78,8 +78,8 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
 
 - (NSDictionary *)toDictionary {
     NSMutableDictionary *dict = [NSMutableDictionary new];
-    BSGDictInsertIfNotNil(dict, self.id, @"id");
-    BSGDictInsertIfNotNil(dict, self.name, @"name");
+    dict[@"id"] = self.id;
+    dict[@"name"] = self.name;
     BSGDictSetSafeObject(dict, @(self.errorReportingThread), @"errorReportingThread");
     BSGDictSetSafeObject(dict, BSGSerializeThreadType(self.type), @"type");
     BSGDictSetSafeObject(dict, @(self.errorReportingThread), @"errorReportingThread");
@@ -155,7 +155,7 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
                 if (seen == 2 && !stackOverflow && [@[BSGKeySignal, BSGKeyMach] containsObject:errorType]) {
                     BSGDictSetSafeObject(mutableFrame, @YES, BSGKeyIsLR);
                 }
-                BSGArrayInsertIfNotNil(stacktrace, mutableFrame);
+                [stacktrace addObject:mutableFrame];
             }
         }
         NSMutableDictionary *copy = [NSMutableDictionary dictionaryWithDictionary:thread];

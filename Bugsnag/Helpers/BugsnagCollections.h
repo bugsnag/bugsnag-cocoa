@@ -38,23 +38,6 @@ void BSGDictSetSafeObject(NSMutableDictionary *dict, id object, id<NSCopying> ke
 void BSGArrayAddSafeObject(NSMutableArray *array, id object);
 
 /**
- *  Insert an object into a collection only if not nil
- *
- *  @param dict   a mutable dictionary
- *  @param object an object or nil
- *  @param key    the key of the object
- */
-void BSGDictInsertIfNotNil(NSMutableDictionary *dict, id object, id<NSCopying> key);
-
-/**
- *  Insert an object into a collection only if not nil
- *
- *  @param array  a mutable array
- *  @param object an object or nil
- */
-void BSGArrayInsertIfNotNil(NSMutableArray *array, id object);
-
-/**
  *  Merge values from source dictionary with destination
  *
  *  @param source a dictionary
