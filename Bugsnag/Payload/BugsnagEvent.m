@@ -33,7 +33,7 @@
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSession+Private.h"
-#import "BugsnagStacktrace.h"
+#import "BugsnagStacktrace+Private.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser.h"
 #import "Private.h"
@@ -47,14 +47,6 @@ static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
 - (NSDictionary *)toJson;
 - (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
-@end
-
-@interface BugsnagStacktrace ()
-- (NSArray *)toArray;
-@end
-
-@interface BugsnagStacktrace ()
-- (NSArray *)toArray;
 @end
 
 // MARK: - KSCrashReport parsing

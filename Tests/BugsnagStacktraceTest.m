@@ -8,15 +8,11 @@
 
 #import <XCTest/XCTest.h>
 
-#import "BugsnagStacktrace.h"
+#import "BugsnagStacktrace+Private.h"
 
 @interface BugsnagStacktraceTest : XCTestCase
 @property NSDictionary *frameDict;
 @property NSArray *binaryImages;
-@end
-
-@interface BugsnagStacktrace ()
-@property NSMutableArray<BugsnagStackframe *> *trace;
 @end
 
 @implementation BugsnagStacktraceTest
