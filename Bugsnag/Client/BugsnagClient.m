@@ -113,10 +113,6 @@ NSDictionary *BSGParseDeviceMetadata(NSDictionary *event);
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
 @end
 
-@interface Bugsnag ()
-+ (BugsnagClient *)client;
-@end
-
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;

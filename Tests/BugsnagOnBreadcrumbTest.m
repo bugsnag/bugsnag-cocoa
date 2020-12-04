@@ -15,11 +15,6 @@
 #import "BugsnagBreadcrumbs.h"
 #import "Private.h"
 
-@interface Bugsnag ()
-+ (BugsnagClient *)client;
-+ (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block;
-@end
-
 @interface BugsnagOnBreadcrumbTest : XCTestCase
 @end
 

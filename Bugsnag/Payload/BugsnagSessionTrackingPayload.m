@@ -9,7 +9,7 @@
 #import "BugsnagSessionTrackingPayload.h"
 #import "BugsnagCollections.h"
 #import "BugsnagClient+Private.h"
-#import "Bugsnag.h"
+#import "Bugsnag+Private.h"
 #import "BugsnagKeys.h"
 #import "BugsnagNotifier.h"
 #import "BSG_KSSystemInfo.h"
@@ -23,10 +23,6 @@
 
 @interface BugsnagSession ()
 - (NSDictionary *)toDictionary;
-@end
-
-@interface Bugsnag ()
-+ (BugsnagClient *)client;
 @end
 
 @interface BugsnagDevice ()

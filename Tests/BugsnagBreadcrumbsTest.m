@@ -47,10 +47,6 @@ static id JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer)) {
 - (NSArray<NSDictionary *> *)arrayValue;
 @end
 
-@interface Bugsnag ()
-+ (BugsnagClient *)client;
-@end
-
 void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
     // This used to wait for the queue to finish adding breadcrumb(s). Not
     // required in current implementation but leaving this function in case

@@ -23,10 +23,6 @@
 @property NSDictionary *processedData;
 @end
 
-@interface Bugsnag ()
-+ (BugsnagConfiguration *)configuration;
-@end
-
 @interface BugsnagErrorReportSink ()
 - (NSDictionary *)prepareEventPayload:(BugsnagEvent *)event;
 @end

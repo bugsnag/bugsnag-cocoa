@@ -18,7 +18,7 @@
 #import "BSGSerialization.h"
 #import "BSG_KSCrashReportFields.h"
 #import "BSG_RFC3339DateTool.h"
-#import "Bugsnag.h"
+#import "Bugsnag+Private.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
@@ -68,10 +68,6 @@ NSDictionary *_Nonnull BSGParseAppMetadata(NSDictionary *_Nonnull event);
 + (instancetype)fromJson:(NSDictionary *)json;
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
-@end
-
-@interface Bugsnag ()
-+ (BugsnagClient *)client;
 @end
 
 @interface BugsnagMetadata ()

@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "Bugsnag.h"
+#import "Bugsnag+Private.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration+Private.h"
@@ -18,11 +18,6 @@
 #import <XCTest/XCTest.h>
 
 @interface BugsnagClientTests : XCTestCase
-@end
-
-@interface Bugsnag ()
-+ (BugsnagConfiguration *)configuration;
-+ (BugsnagClient *)client;
 @end
 
 @interface BugsnagBreadcrumb ()

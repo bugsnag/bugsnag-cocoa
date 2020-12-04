@@ -23,20 +23,4 @@
 
 @end
 
-#pragma mark -
-
-@interface Bugsnag ()
-
-/** Get the current Bugsnag configuration.
- *
- * This method returns nil if called before +startWithApiKey: or
- * +startWithConfiguration:, and otherwise returns the current
- * configuration for Bugsnag.
- *
- * @return The configuration, or nil.
- */
-+ (BugsnagConfiguration *_Nullable)configuration;
-
-@end
-
 #endif // BUGSNAG_PRIVATE_H

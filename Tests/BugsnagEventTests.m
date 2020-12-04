@@ -26,10 +26,6 @@
 @property NSUInteger handledCount;
 @end
 
-@interface Bugsnag ()
-+ (BugsnagConfiguration *)configuration;
-@end
-
 @interface BugsnagMetadata ()
 - (NSDictionary *_Nonnull)toDictionary;
 @end

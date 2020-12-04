@@ -18,11 +18,6 @@
 
 // MARK: - BugsnagTests
 
-@interface Bugsnag ()
-+ (BugsnagConfiguration *)configuration;
-+ (BugsnagClient *)client;
-@end
-
 @interface BugsnagTests : XCTestCase
 @end
 

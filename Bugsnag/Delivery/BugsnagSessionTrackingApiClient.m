@@ -5,6 +5,7 @@
 
 #import "BugsnagSessionTrackingApiClient.h"
 
+#import "Bugsnag+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagSessionTrackingPayload.h"
 #import "BugsnagSessionFileStore.h"
