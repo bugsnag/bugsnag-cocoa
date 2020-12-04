@@ -64,6 +64,7 @@
 #import "BugsnagStateEvent.h"
 #import "BugsnagSystemState.h"
 #import "BugsnagThread+Private.h"
+#import "BugsnagUser+Private.h"
 #import "Private.h"
 
 #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
@@ -237,12 +238,6 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
     unhandledCount = session.unhandledCount;
     hasRecordedSessions = true;
 }
-
-@interface BugsnagUser ()
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
-- (NSDictionary *)toJson;
-@end
 
 // =============================================================================
 // MARK: - BugsnagClient

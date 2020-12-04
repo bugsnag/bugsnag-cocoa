@@ -8,14 +8,8 @@
 
 #import <XCTest/XCTest.h>
 
-#import "BugsnagUser.h"
 #import "BugsnagEvent+Private.h"
-
-@interface BugsnagUser ()
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
-- (NSDictionary *)toJson;
-@end
+#import "BugsnagUser+Private.h"
 
 @interface BugsnagUserTest : XCTestCase
 @end

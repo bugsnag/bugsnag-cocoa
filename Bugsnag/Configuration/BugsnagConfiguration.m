@@ -29,6 +29,7 @@
 #import "BSGConfigurationBuilder.h"
 #import "BugsnagApiClient.h"
 #import "BugsnagMetadata+Private.h"
+#import "BugsnagUser+Private.h"
 #import "Private.h"
 
 static const int BSGApiKeyLength = 32;
@@ -37,12 +38,6 @@ static const int BSGApiKeyLength = 32;
 NSString * const kBugsnagUserEmailAddress = @"BugsnagUserEmailAddress";
 NSString * const kBugsnagUserName = @"BugsnagUserName";
 NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
-
-@interface BugsnagUser ()
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
-- (NSDictionary *)toJson;
-@end
 
 // =============================================================================
 // MARK: - BugsnagConfiguration

@@ -35,19 +35,11 @@
 #import "BugsnagSession+Private.h"
 #import "BugsnagStacktrace+Private.h"
 #import "BugsnagThread+Private.h"
-#import "BugsnagUser.h"
+#import "BugsnagUser+Private.h"
 #import "Private.h"
 #import "RegisterErrorData.h"
 
 static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
-
-// MARK: - Accessing hidden methods/properties
-
-@interface BugsnagUser ()
-- (NSDictionary *)toJson;
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
-@end
 
 // MARK: - KSCrashReport parsing
 NSString *_Nonnull BSGParseErrorClass(NSDictionary *error, NSString *errorType);
@@ -148,11 +140,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
 @end
 
-
-@interface BugsnagUser ()
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
-@end
 
 @implementation BugsnagEvent
 

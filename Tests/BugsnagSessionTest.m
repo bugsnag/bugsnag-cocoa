@@ -12,21 +12,14 @@
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagDevice+Private.h"
 #import "BugsnagSession+Private.h"
+#import "BugsnagUser+Private.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagTestConstants.h"
-
-@interface BugsnagUser ()
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
-@end
 
 @interface BugsnagSessionTest : XCTestCase
 @property BugsnagApp *app;
 @property BugsnagDevice *device;
 @property NSDictionary *serializedSession;
-@end
-
-@interface BugsnagUser ()
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
 @end
 
 @implementation BugsnagSessionTest
