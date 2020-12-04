@@ -30,7 +30,7 @@ steps:
           - "--resilient"
           - "--appium-version=1.17.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
 
   - label: ':ios: iOS 13 end-to-end tests'
@@ -51,7 +51,7 @@ steps:
           - "--resilient"
           - "--appium-version=1.17.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
 
   - label: ':ios: iOS 12 end-to-end tests'
@@ -72,7 +72,7 @@ steps:
           - "--resilient"
           - "--appium-version=1.17.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
 
   - label: ':ios: iOS 11 end-to-end tests'
@@ -93,7 +93,7 @@ steps:
           - "--resilient"
           - "--appium-version=1.16.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
     # Soft fail while Browserstack's iOS 11 devices are flakey
     soft_fail:
@@ -117,5 +117,5 @@ steps:
           - "--resilient"
           - "--appium-version=1.15.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
