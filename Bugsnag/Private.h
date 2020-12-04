@@ -13,14 +13,4 @@
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagPlatformConditional.h"
 
-@class BugsnagConfiguration;
-
-#pragma mark -
-
-@interface BugsnagBreadcrumb ()
-
-- (NSDictionary *_Nullable)objectValue;
-
-@end
-
 #endif // BUGSNAG_PRIVATE_H

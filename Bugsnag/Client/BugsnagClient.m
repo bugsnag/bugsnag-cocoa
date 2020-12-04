@@ -43,6 +43,7 @@
 #import "Bugsnag.h"
 #import "BugsnagApp+Private.h"
 #import "BugsnagAppWithState+Private.h"
+#import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"

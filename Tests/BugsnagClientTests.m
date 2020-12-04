@@ -7,6 +7,7 @@
 //
 
 #import "Bugsnag+Private.h"
+#import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration+Private.h"
@@ -18,10 +19,6 @@
 #import <XCTest/XCTest.h>
 
 @interface BugsnagClientTests : XCTestCase
-@end
-
-@interface BugsnagBreadcrumb ()
-- (NSDictionary *)objectValue;
 @end
 
 NSString *BSGFormatSeverity(BSGSeverity severity);

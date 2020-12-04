@@ -12,15 +12,10 @@
 #import "BSGCachesDirectory.h"
 #import "BSGJSONSerialization.h"
 #import "BSG_KSCrashReportWriter.h"
+#import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagLogger.h"
 #import "Private.h"
-
-@interface BugsnagBreadcrumb ()
-+ (instancetype _Nullable)breadcrumbWithBlock:
-    (BSGBreadcrumbConfiguration _Nonnull)block;
-+ (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
-@end
 
 /**
  * Information that can be accessed in an async-safe manner from the crash handler.
