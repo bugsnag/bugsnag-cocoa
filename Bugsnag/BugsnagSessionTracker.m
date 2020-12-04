@@ -6,9 +6,10 @@
 //  Copyright © 2017 Bugsnag. All rights reserved.
 //
 
+#import "BugsnagSessionTracker+Private.h"
+
 #import "BugsnagClient.h"
 #import "BugsnagConfiguration+Private.h"
-#import "BugsnagSessionTracker.h"
 #import "BugsnagSessionFileStore.h"
 #import "BSG_KSLogger.h"
 #import "BugsnagSessionTrackingPayload.h"
@@ -56,8 +57,6 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 @property (strong, nonatomic) BugsnagSessionFileStore *sessionStore;
 @property (strong, nonatomic) BugsnagSessionTrackingApiClient *apiClient;
 @property (strong, nonatomic) NSDate *backgroundStartTime;
-@property (nonatomic) NSString *codeBundleId;
-@property (strong, readwrite) BugsnagSession *currentSession;
 
 /**
  * Called when a session is altered

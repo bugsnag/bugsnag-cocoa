@@ -54,7 +54,7 @@
 #import "BugsnagMetadataInternal.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagPluginClient.h"
-#import "BugsnagSessionTracker.h"
+#import "BugsnagSessionTracker+Private.h"
 #import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagStateEvent.h"
 #import "BugsnagSystemState.h"
@@ -253,10 +253,6 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
     unhandledCount = session.unhandledCount;
     hasRecordedSessions = true;
 }
-
-@interface BugsnagSessionTracker ()
-@property(nonatomic) NSString *codeBundleId;
-@end
 
 @interface BugsnagUser ()
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
