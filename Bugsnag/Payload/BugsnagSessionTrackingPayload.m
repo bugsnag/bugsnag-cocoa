@@ -18,7 +18,6 @@
 #import "BugsnagSession+Private.h"
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagConfiguration.h"
-#import "Private.h"
 #import "BugsnagApp.h"
 
 @interface BugsnagSessionTrackingPayload ()

@@ -36,7 +36,6 @@
 #import "BugsnagStacktrace+Private.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
-#import "Private.h"
 #import "RegisterErrorData.h"
 
 static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";

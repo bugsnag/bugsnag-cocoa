@@ -15,7 +15,6 @@
 #import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagLogger.h"
-#import "Private.h"
 
 /**
  * Information that can be accessed in an async-safe manner from the crash handler.

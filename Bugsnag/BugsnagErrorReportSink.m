@@ -35,7 +35,6 @@
 #import "BugsnagKeys.h"
 #import "BugsnagLogger.h"
 #import "BugsnagNotifier.h"
-#import "Private.h"
 
 @interface BugsnagErrorReportSink ()
 @property NSMutableSet<NSString *> *activeRequests;

@@ -8,9 +8,10 @@
 #import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagCrashSentry.h"
+#import "BugsnagEndpointConfiguration.h"
+#import "BugsnagErrorTypes.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagTestConstants.h"
-#import "Private.h"
 
 // =============================================================================
 // MARK: - Tests

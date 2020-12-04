@@ -14,7 +14,6 @@
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagBreadcrumbs.h"
-#import "Private.h"
 
 @interface BugsnagOnBreadcrumbTest : XCTestCase
 @end

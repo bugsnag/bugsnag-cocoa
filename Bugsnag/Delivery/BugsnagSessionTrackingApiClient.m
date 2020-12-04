@@ -13,7 +13,6 @@
 #import "BugsnagSession.h"
 #import "BugsnagSession+Private.h"
 #import "BSG_RFC3339DateTool.h"
-#import "Private.h"
 
 @interface BugsnagSessionTrackingApiClient ()
 @property NSMutableSet *activeIds;

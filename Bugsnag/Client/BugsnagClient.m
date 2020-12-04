@@ -65,7 +65,6 @@
 #import "BugsnagSystemState.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
-#import "Private.h"
 
 #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
 #define BSGOOMAvailable 1
