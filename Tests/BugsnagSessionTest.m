@@ -10,16 +10,11 @@
 
 #import "BugsnagApp+Private.h"
 #import "BugsnagConfiguration+Private.h"
-#import "BugsnagDevice.h"
+#import "BugsnagDevice+Private.h"
 #import "BugsnagSession.h"
 #import "BugsnagSessionInternal.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagTestConstants.h"
-
-@interface BugsnagDevice ()
-+ (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)data;
-- (NSDictionary *)toDictionary;
-@end
 
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;

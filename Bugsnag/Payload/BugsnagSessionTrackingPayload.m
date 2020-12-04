@@ -11,6 +11,7 @@
 #import "BugsnagApp+Private.h"
 #import "BugsnagCollections.h"
 #import "BugsnagClient+Private.h"
+#import "BugsnagDevice+Private.h"
 #import "Bugsnag+Private.h"
 #import "BugsnagKeys.h"
 #import "BugsnagNotifier.h"
@@ -24,11 +25,6 @@
 @end
 
 @interface BugsnagSession ()
-- (NSDictionary *)toDictionary;
-@end
-
-@interface BugsnagDevice ()
-+ (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)event;
 - (NSDictionary *)toDictionary;
 @end
 

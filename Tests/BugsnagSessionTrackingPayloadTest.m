@@ -9,15 +9,11 @@
 #import <XCTest/XCTest.h>
 
 #import "BugsnagApp+Private.h"
-#import "BugsnagDevice.h"
+#import "BugsnagDevice+Private.h"
 #import "BugsnagSessionTrackingPayload.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagSessionInternal.h"
-
-@interface BugsnagDevice ()
-+ (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)data;
-@end
 
 @interface BugsnagSessionTrackingPayloadTest : XCTestCase
 @property NSDictionary *payload;

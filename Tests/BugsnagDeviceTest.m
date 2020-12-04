@@ -9,18 +9,10 @@
 #import <XCTest/XCTest.h>
 #import "BugsnagConfiguration.h"
 #import "BugsnagDeviceWithState.h"
-#import "BugsnagDevice.h"
+#import "BugsnagDevice+Private.h"
 #import "BugsnagTestConstants.h"
 
 NSNumber *BSGDeviceFreeSpace(NSSearchPathDirectory directory);
-
-@interface BugsnagDevice ()
-+ (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)event;
-
-- (NSDictionary *)toDictionary;
-
-- (void)appendRuntimeInfo:(NSDictionary *)info;
-@end
 
 @interface BugsnagDeviceWithState ()
 + (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event;

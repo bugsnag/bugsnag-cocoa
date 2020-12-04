@@ -11,6 +11,7 @@
 #import "BugsnagApp+Private.h"
 #import "BugsnagClient.h"
 #import "BugsnagConfiguration+Private.h"
+#import "BugsnagDevice+Private.h"
 #import "BugsnagSessionFileStore.h"
 #import "BSG_KSLogger.h"
 #import "BugsnagSessionTrackingPayload.h"
@@ -35,11 +36,6 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 - (NSDictionary *_Nonnull)toDictionary;
 - (void)stop;
 - (void)resume;
-@end
-
-@interface BugsnagDevice ()
-+ (BugsnagDevice *)deviceWithDictionary:(NSDictionary *)event;
-- (void)appendRuntimeInfo:(NSDictionary *)info;
 @end
 
 @interface BugsnagSessionTrackingApiClient ()
