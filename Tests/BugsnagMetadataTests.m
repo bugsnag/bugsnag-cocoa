@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "BugsnagMetadata.h"
-#import "BugsnagMetadataInternal.h"
+#import "BugsnagMetadata+Private.h"
 
 // MARK: - Expose tested-class internals
 

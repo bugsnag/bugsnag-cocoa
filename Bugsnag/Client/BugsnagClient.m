@@ -51,7 +51,7 @@
 #import "BugsnagHandledState.h"
 #import "BugsnagKeys.h"
 #import "BugsnagLogger.h"
-#import "BugsnagMetadataInternal.h"
+#import "BugsnagMetadata+Private.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagPluginClient.h"
 #import "BugsnagSessionTracker+Private.h"

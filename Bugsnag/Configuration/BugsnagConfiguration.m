@@ -28,6 +28,7 @@
 
 #import "BSGConfigurationBuilder.h"
 #import "BugsnagApiClient.h"
+#import "BugsnagMetadata+Private.h"
 #import "Private.h"
 
 static const int BSGApiKeyLength = 32;

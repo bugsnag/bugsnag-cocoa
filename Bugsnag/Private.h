@@ -10,7 +10,7 @@
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagKeys.h"
 #import "BugsnagLogger.h"
-#import "BugsnagMetadataInternal.h"
+#import "BugsnagMetadata+Private.h"
 #import "BugsnagPlatformConditional.h"
 
 @class BugsnagConfiguration;

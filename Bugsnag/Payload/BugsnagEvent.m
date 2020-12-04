@@ -26,6 +26,7 @@
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagKeys.h"
+#import "BugsnagMetadata+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSession.h"
 #import "BugsnagSessionInternal.h"
@@ -68,11 +69,6 @@ NSDictionary *_Nonnull BSGParseAppMetadata(NSDictionary *_Nonnull event);
 + (instancetype)fromJson:(NSDictionary *)json;
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
-@end
-
-@interface BugsnagMetadata ()
-- (NSDictionary *)toDictionary;
-- (instancetype)deepCopy;
 @end
 
 @interface BugsnagStacktrace ()

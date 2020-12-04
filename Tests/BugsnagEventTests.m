@@ -14,6 +14,7 @@
 #import "BugsnagClient+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
+#import "BugsnagMetadata+Private.h"
 #import "BugsnagSession.h"
 #import "BugsnagSessionInternal.h"
 #import "BugsnagStackframe+Private.h"
@@ -24,10 +25,6 @@
 @interface BugsnagSession ()
 @property NSUInteger unhandledCount;
 @property NSUInteger handledCount;
-@end
-
-@interface BugsnagMetadata ()
-- (NSDictionary *_Nonnull)toDictionary;
 @end
 
 @interface BugsnagEventTests : XCTestCase
