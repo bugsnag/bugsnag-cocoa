@@ -30,7 +30,7 @@ steps:
           - "--resilient"
           - "--appium-version=1.17.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
     retry:
       automatic:
@@ -55,7 +55,7 @@ steps:
           - "--resilient"
           - "--appium-version=1.17.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
     retry:
       automatic:
@@ -80,7 +80,7 @@ steps:
           - "--resilient"
           - "--appium-version=1.17.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
     retry:
       automatic:
@@ -105,7 +105,7 @@ steps:
           - "--resilient"
           - "--appium-version=1.16.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
     retry:
       automatic:
@@ -130,7 +130,7 @@ steps:
           - "--resilient"
           - "--appium-version=1.15.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
     retry:
       automatic:
