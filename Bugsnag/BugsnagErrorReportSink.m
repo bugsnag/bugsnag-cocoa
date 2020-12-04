@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagErrorReportSink.h"
+#import "BugsnagErrorReportSink+Private.h"
 
 #import "BSG_KSSystemInfo.h"
 #import "Bugsnag+Private.h"
