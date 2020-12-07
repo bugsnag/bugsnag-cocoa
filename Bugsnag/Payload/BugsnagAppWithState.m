@@ -91,9 +91,9 @@
 - (NSDictionary *)toDict
 {
     NSMutableDictionary *dict = (NSMutableDictionary *) [super toDict];
-    BSGDictInsertIfNotNil(dict, self.duration, @"duration");
-    BSGDictInsertIfNotNil(dict, self.durationInForeground, @"durationInForeground");
-    BSGDictInsertIfNotNil(dict, @(self.inForeground), @"inForeground");
+    dict[@"duration"] = self.duration;
+    dict[@"durationInForeground"] = self.durationInForeground;
+    dict[@"inForeground"] = @(self.inForeground);
     return dict;
 }
 

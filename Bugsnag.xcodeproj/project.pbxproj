@@ -37,9 +37,6 @@
 		008966F72486D43700DC48C2 /* RegisterErrorDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966A92486D43400DC48C2 /* RegisterErrorDataTest.m */; };
 		008966F82486D43700DC48C2 /* RegisterErrorDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966A92486D43400DC48C2 /* RegisterErrorDataTest.m */; };
 		008966F92486D43700DC48C2 /* RegisterErrorDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966A92486D43400DC48C2 /* RegisterErrorDataTest.m */; };
-		008966FA2486D43700DC48C2 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966AA2486D43400DC48C2 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m */; };
-		008966FB2486D43700DC48C2 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966AA2486D43400DC48C2 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m */; };
-		008966FC2486D43700DC48C2 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966AA2486D43400DC48C2 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m */; };
 		008966FD2486D43700DC48C2 /* BugsnagOnBreadcrumbTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966AB2486D43500DC48C2 /* BugsnagOnBreadcrumbTest.m */; };
 		008966FE2486D43700DC48C2 /* BugsnagOnBreadcrumbTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966AB2486D43500DC48C2 /* BugsnagOnBreadcrumbTest.m */; };
 		008966FF2486D43700DC48C2 /* BugsnagOnBreadcrumbTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966AB2486D43500DC48C2 /* BugsnagOnBreadcrumbTest.m */; };
@@ -655,9 +652,8 @@
 		00AD1F302486A17900A27979 /* BugsnagSessionTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AD1F012486A17900A27979 /* BugsnagSessionTracker.m */; };
 		00AD1F312486A17900A27979 /* BugsnagSessionTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AD1F012486A17900A27979 /* BugsnagSessionTracker.m */; };
 		00E636C224878D84006CBF1A /* BSG_RFC3339DateTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 008969142486DAD000DC48C2 /* BSG_RFC3339DateTool.m */; };
-		0140D29A25767C9A00FD0306 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
 		012482A325627B51003F7243 /* UIKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 012482A225627B51003F7243 /* UIKitTests.m */; };
-		014475FD2566844F0018AB94 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
+		0140D29A25767C9A00FD0306 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
 		01447605256684500018AB94 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
 		0187D464255BD7B800C503D9 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
 		01B14C56251CE55F00118748 /* report-react-native-promise-rejection.json in Resources */ = {isa = PBXBuildFile; fileRef = 01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */; };
@@ -1054,7 +1050,6 @@
 		008966A72486D43400DC48C2 /* BugsnagThreadTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagThreadTest.m; sourceTree = "<group>"; };
 		008966A82486D43400DC48C2 /* BugsnagTestConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagTestConstants.h; sourceTree = "<group>"; };
 		008966A92486D43400DC48C2 /* RegisterErrorDataTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisterErrorDataTest.m; sourceTree = "<group>"; };
-		008966AA2486D43400DC48C2 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagCollectionsBSGDictInsertIfNotNilTest.m; sourceTree = "<group>"; };
 		008966AB2486D43500DC48C2 /* BugsnagOnBreadcrumbTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagOnBreadcrumbTest.m; sourceTree = "<group>"; };
 		008966AC2486D43500DC48C2 /* BugsnagEventPersistLoadTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagEventPersistLoadTest.m; sourceTree = "<group>"; };
 		008966AD2486D43500DC48C2 /* BugsnagThreadSerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagThreadSerializationTest.m; sourceTree = "<group>"; };
@@ -1659,7 +1654,6 @@
 				008966CA2486D43600DC48C2 /* BugsnagClientMirrorTest.m */,
 				008966A52486D43400DC48C2 /* BugsnagClientPayloadInfoTest.m */,
 				008966BE2486D43500DC48C2 /* BugsnagClientTests.m */,
-				008966AA2486D43400DC48C2 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m */,
 				008966B42486D43500DC48C2 /* BugsnagCollectionsBSGDictMergeTest.m */,
 				008966CE2486D43600DC48C2 /* BugsnagCollectionsBSGDictSetSafeObjectTest.m */,
 				00896A432486DBF000DC48C2 /* BugsnagConfigurationTests.m */,
@@ -2584,7 +2578,6 @@
 				0089679F2486D43700DC48C2 /* KSCrashSentry_Tests.m in Sources */,
 				008967872486D43700DC48C2 /* KSCrashSentry_NSException_Tests.m in Sources */,
 				0089679C2486D43700DC48C2 /* KSFileUtils_Tests.m in Sources */,
-				008966FA2486D43700DC48C2 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m in Sources */,
 				008966EE2486D43700DC48C2 /* BugsnagClientPayloadInfoTest.m in Sources */,
 				008967782486D43700DC48C2 /* KSMachHeader_Tests.m in Sources */,
 				0089673F2486D43700DC48C2 /* BugsnagAppTest.m in Sources */,
@@ -2712,7 +2705,6 @@
 				008967882486D43700DC48C2 /* KSCrashSentry_NSException_Tests.m in Sources */,
 				0140D29A25767C9A00FD0306 /* BugsnagApiClientTest.m in Sources */,
 				E701FAA02490EF4A008D842F /* BugsnagApiValidationTest.m in Sources */,
-				008966FB2486D43700DC48C2 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m in Sources */,
 				0089677F2486D43700DC48C2 /* KSLogger_Tests.m in Sources */,
 				008967342486D43700DC48C2 /* BugsnagClientTests.m in Sources */,
 				008967222486D43700DC48C2 /* BugsnagErrorReportSinkTests.m in Sources */,
@@ -2872,7 +2864,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				008967892486D43700DC48C2 /* KSCrashSentry_NSException_Tests.m in Sources */,
-				008966FC2486D43700DC48C2 /* BugsnagCollectionsBSGDictInsertIfNotNilTest.m in Sources */,
 				008967802486D43700DC48C2 /* KSLogger_Tests.m in Sources */,
 				008967352486D43700DC48C2 /* BugsnagClientTests.m in Sources */,
 				008967232486D43700DC48C2 /* BugsnagErrorReportSinkTests.m in Sources */,

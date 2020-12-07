@@ -691,7 +691,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     BSGDictSetSafeObject(event, [self.app toDict], BSGKeyApp);
 
     BSGDictSetSafeObject(event, [self context], BSGKeyContext);
-    BSGDictInsertIfNotNil(event, self.groupingHash, BSGKeyGroupingHash);
+    event[BSGKeyGroupingHash] = self.groupingHash;
 
 
     BSGDictSetSafeObject(event, @(self.handledState.unhandled), BSGKeyUnhandled);
@@ -713,10 +713,10 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     //  Inserted into `context` property
     [metadata removeObjectForKey:BSGKeyContext];
     // Build metadata
-    BSGDictInsertIfNotNil(metadata, self.error, BSGKeyError);
+    metadata[BSGKeyError] = self.error;
 
     // add user
-    BSGDictInsertIfNotNil(event, [self.user toJson], BSGKeyUser);
+    event[BSGKeyUser] = [self.user toJson];
 
     if (self.session) {
         BSGDictSetSafeObject(event, [self generateSessionDict], BSGKeySession);
