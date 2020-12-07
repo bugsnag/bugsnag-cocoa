@@ -162,10 +162,10 @@
  */
 - (NSDictionary *)prepareEventPayload:(BugsnagEvent *)event {
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-    BSGDictSetSafeObject(data, [[Bugsnag client].notifier toDict], BSGKeyNotifier);
-    BSGDictSetSafeObject(data, event.apiKey, BSGKeyApiKey);
-    BSGDictSetSafeObject(data, @"4.0", @"payloadVersion");
-    BSGDictSetSafeObject(data, @[[event toJson]], BSGKeyEvents);
+    data[BSGKeyNotifier] = [[Bugsnag client].notifier toDict];
+    data[BSGKeyApiKey] = event.apiKey;
+    data[BSGKeyPayloadVersion] = @"4.0";
+    data[BSGKeyEvents] = @[[event toJson]];
     return data;
 }
 

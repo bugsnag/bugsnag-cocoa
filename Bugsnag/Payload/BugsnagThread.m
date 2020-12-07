@@ -80,15 +80,15 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
     NSMutableDictionary *dict = [NSMutableDictionary new];
     dict[@"id"] = self.id;
     dict[@"name"] = self.name;
-    BSGDictSetSafeObject(dict, @(self.errorReportingThread), @"errorReportingThread");
-    BSGDictSetSafeObject(dict, BSGSerializeThreadType(self.type), @"type");
-    BSGDictSetSafeObject(dict, @(self.errorReportingThread), @"errorReportingThread");
+    dict[@"errorReportingThread"] = @(self.errorReportingThread);
+    dict[@"type"] = BSGSerializeThreadType(self.type);
+    dict[@"errorReportingThread"] = @(self.errorReportingThread);
 
     NSMutableArray *array = [NSMutableArray new];
     for (BugsnagStackframe *frame in self.stacktrace) {
         [array addObject:[frame toDictionary]];
     }
-    BSGDictSetSafeObject(dict, array, @"stacktrace");
+    dict[@"stacktrace"] = array;
     return dict;
 }
 
@@ -150,10 +150,10 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
             if (seen++ >= depth) {
                 // Mark the frame so we know where it came from
                 if (seen == 1 && !stackOverflow) {
-                    BSGDictSetSafeObject(mutableFrame, @YES, BSGKeyIsPC);
+                    mutableFrame[BSGKeyIsPC] = @YES;
                 }
                 if (seen == 2 && !stackOverflow && [@[BSGKeySignal, BSGKeyMach] containsObject:errorType]) {
-                    BSGDictSetSafeObject(mutableFrame, @YES, BSGKeyIsLR);
+                    mutableFrame[BSGKeyIsLR] = @YES;
                 }
                 [stacktrace addObject:mutableFrame];
             }

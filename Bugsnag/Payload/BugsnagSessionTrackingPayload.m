@@ -70,15 +70,15 @@
         [sessionData addObject:[session toDictionary]];
     }
     dict[@"sessions"] = sessionData;
-    BSGDictSetSafeObject(dict, [[Bugsnag client].notifier toDict], BSGKeyNotifier);
+    dict[BSGKeyNotifier] = [[Bugsnag client].notifier toDict];
 
     // app/device data collection relies on KSCrash reports,
     // need to mimic the JSON structure here
     BugsnagApp *app = self.sessions[0].app;
-    BSGDictSetSafeObject(dict, [app toDict], BSGKeyApp);
+    dict[BSGKeyApp] = [app toDict];
 
     BugsnagDevice *device = self.sessions[0].device;
-    BSGDictSetSafeObject(dict, [device toDictionary], BSGKeyDevice);
+    dict[BSGKeyDevice] = [device toDictionary];
     return dict;
 }
 

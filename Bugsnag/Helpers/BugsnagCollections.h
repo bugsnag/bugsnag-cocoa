@@ -22,22 +22,6 @@
 #import <Foundation/Foundation.h>
 
 /**
- *  Insert an object or NSNull into a collection
- *
- *  @param dict   a mutable dictionary
- *  @param object an object or nil
- */
-void BSGDictSetSafeObject(NSMutableDictionary *dict, id object, id<NSCopying> key);
-
-/**
- *  Insert an object or NSNull into a collection
- *
- *  @param array  a mutable array
- *  @param object an object or nil
- */
-void BSGArrayAddSafeObject(NSMutableArray *array, id object);
-
-/**
  *  Merge values from source dictionary with destination
  *
  *  @param source a dictionary

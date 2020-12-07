@@ -166,25 +166,25 @@ BugsnagStackframeType const BugsnagStackframeTypeCocoa = @"cocoa";
 
     if (self.frameAddress != nil) {
         NSString *frameAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, [self.frameAddress unsignedLongValue]];
-        BSGDictSetSafeObject(dict, frameAddr, BSGKeyFrameAddress);
+        dict[BSGKeyFrameAddress] = frameAddr;
     }
     if (self.symbolAddress != nil) {
         NSString *symbolAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, [self.symbolAddress unsignedLongValue]];
-        BSGDictSetSafeObject(dict, symbolAddr, BSGKeySymbolAddr);
+        dict[BSGKeySymbolAddr] = symbolAddr;
     }
     if (self.machoLoadAddress != nil) {
         NSString *imageAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, [self.machoLoadAddress unsignedLongValue]];
-        BSGDictSetSafeObject(dict, imageAddr, BSGKeyMachoLoadAddr);
+        dict[BSGKeyMachoLoadAddr] = imageAddr;
     }
     if (self.machoVmAddress != nil) {
         NSString *vmAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, [self.machoVmAddress unsignedLongValue]];
-        BSGDictSetSafeObject(dict, vmAddr, BSGKeyMachoVMAddress);
+        dict[BSGKeyMachoVMAddress] = vmAddr;
     }
     if (self.isPc) {
-        BSGDictSetSafeObject(dict, @(self.isPc), BSGKeyIsPC);
+        dict[BSGKeyIsPC] = @(self.isPc);
     }
     if (self.isLr) {
-        BSGDictSetSafeObject(dict, @(self.isLr), BSGKeyIsLR);
+        dict[BSGKeyIsLR] = @(self.isLr);
     }
     dict[BSGKeyType] = self.type;
     return dict;

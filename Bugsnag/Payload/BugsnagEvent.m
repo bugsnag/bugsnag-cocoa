@@ -648,7 +648,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     }
 
     if (!user[BSGKeyId] && deviceId) { // if device id is null, don't set user id to default
-        BSGDictSetSafeObject(user, deviceAppHash, BSGKeyId);
+        user[BSGKeyId] = deviceAppHash;
     }
     return [[BugsnagUser alloc] initWithDictionary:user];
 }
@@ -698,26 +698,25 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         [NSArray arrayWithArray:array];
     });
     
-    BSGDictSetSafeObject(event, [BugsnagThread serializeThreads:self.threads], BSGKeyThreads);
+    event[BSGKeyThreads] = [BugsnagThread serializeThreads:self.threads];
 
     // Build Event
-    BSGDictSetSafeObject(event, BSGFormatSeverity(self.severity), BSGKeySeverity);
-    BSGDictSetSafeObject(event, [self serializeBreadcrumbs], BSGKeyBreadcrumbs);
+    event[BSGKeySeverity] = BSGFormatSeverity(self.severity);
+    event[BSGKeyBreadcrumbs] = [self serializeBreadcrumbs];
 
     // add metadata
     NSMutableDictionary *metadata = [[[self metadata] toDictionary] mutableCopy];
-    BSGDictSetSafeObject(event, [self sanitiseMetadata:metadata], BSGKeyMetadata);
+    event[BSGKeyMetadata] = [self sanitiseMetadata:metadata];
 
-    BSGDictSetSafeObject(event, [self.device toDictionary], BSGKeyDevice);
-    BSGDictSetSafeObject(event, [self.app toDict], BSGKeyApp);
+    event[BSGKeyDevice] = [self.device toDictionary];
+    event[BSGKeyApp] = [self.app toDict];
 
-    BSGDictSetSafeObject(event, [self context], BSGKeyContext);
+    event[BSGKeyContext] = [self context];
     event[BSGKeyGroupingHash] = self.groupingHash;
 
-
-    BSGDictSetSafeObject(event, @(self.handledState.unhandled), BSGKeyUnhandled);
+    event[BSGKeyUnhandled] = @(self.handledState.unhandled);
     if (self.handledState.unhandledOverridden) {
-        BSGDictSetSafeObject(event, @(self.handledState.unhandledOverridden), BSGKeyUnhandledOverridden);
+        event[BSGKeyUnhandledOverridden] = @(self.handledState.unhandledOverridden);
     }
 
     // serialize handled/unhandled into payload
@@ -731,7 +730,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             @{self.handledState.attrKey : self.handledState.attrValue};
     }
 
-    BSGDictSetSafeObject(event, severityReason, BSGKeySeverityReason);
+    event[BSGKeySeverityReason] = severityReason;
 
     //  Inserted into `context` property
     [metadata removeObjectForKey:BSGKeyContext];
@@ -742,7 +741,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     event[BSGKeyUser] = [self.user toJson];
 
     if (self.session) {
-        BSGDictSetSafeObject(event, [self generateSessionDict], BSGKeySession);
+        event[BSGKeySession] = [self generateSessionDict];
     }
     return event;
 }
