@@ -29,7 +29,7 @@ steps:
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.17.0"
-          # TODO Temporary slow-fail to flush out any problems - "--fail-fast"
+          - "--fail-fast"
     concurrency: 9
     concurrency_group: browserstack-app
     retry:
@@ -54,7 +54,7 @@ steps:
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.17.0"
-          # TODO Temporary slow-fail to flush out any problems - "--fail-fast"
+          - "--fail-fast"
     concurrency: 9
     concurrency_group: browserstack-app
     retry:
@@ -79,7 +79,7 @@ steps:
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.17.0"
-          # TODO Temporary slow-fail to flush out any problems - "--fail-fast"
+          - "--fail-fast"
     concurrency: 9
     concurrency_group: browserstack-app
     retry:
@@ -104,7 +104,7 @@ steps:
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.16.0"
-          # TODO Temporary slow-fail to flush out any problems - "--fail-fast"
+          - "--fail-fast"
     concurrency: 9
     concurrency_group: browserstack-app
     retry:
@@ -129,7 +129,7 @@ steps:
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.15.0"
-          # TODO Temporary slow-fail to flush out any problems - "--fail-fast"
+          - "--fail-fast"
     concurrency: 9
     concurrency_group: browserstack-app
     retry:
