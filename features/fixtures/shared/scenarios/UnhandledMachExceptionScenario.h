@@ -7,11 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Scenario.h"
+#import "MarkUnhandledHandledScenario.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface UnhandledMachExceptionScenario : Scenario
+
+@end
+
+@interface UnhandledMachExceptionOverrideScenario : MarkUnhandledHandledScenario
 
 @end
 

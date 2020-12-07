@@ -6,6 +6,10 @@
 
 #import "Scenario.h"
 
+void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
+    writer->addBooleanElement(writer, "unhandled", false);
+}
+
 @implementation Scenario
 
 + (Scenario *)createScenarioNamed:(NSString *)className

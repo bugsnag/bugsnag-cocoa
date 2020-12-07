@@ -25,11 +25,15 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "Scenario.h"
+#import "MarkUnhandledHandledScenario.h"
 
 /**
  * Call abort() to terminate the program.
  */
 @interface AbortScenario: Scenario
+
+@end
+
+@interface AbortOverrideScenario: MarkUnhandledHandledScenario
 
 @end

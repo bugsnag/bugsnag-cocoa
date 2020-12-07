@@ -6,6 +6,8 @@
 #import <Foundation/Foundation.h>
 #import <Bugsnag/Bugsnag.h>
 
+void markErrorHandledCallback(const BSG_KSCrashReportWriter * _Nonnull writer);
+
 @interface Scenario : NSObject
 
 @property (strong, nonatomic, nonnull) BugsnagConfiguration *config;
