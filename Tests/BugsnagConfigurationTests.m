@@ -8,28 +8,10 @@
 #import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagCrashSentry.h"
+#import "BugsnagEndpointConfiguration.h"
+#import "BugsnagErrorTypes.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagTestConstants.h"
-#import "Private.h"
-
-// =============================================================================
-// MARK: - Required private methods
-// =============================================================================
-
-@interface BugsnagConfiguration ()
-@property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
-@property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
-@property(readonly, retain, nullable) NSURL *sessionURL;
-@property(readonly, retain, nullable) NSURL *notifyURL;
-- (void)deletePersistedUserData;
-- (BOOL)shouldSendReports;
-- (NSDictionary *_Nonnull)errorApiHeaders;
-- (NSDictionary *_Nonnull)sessionApiHeaders;
-@end
-
-@interface BugsnagCrashSentry ()
-- (BSG_KSCrashType)mapKSToBSGCrashTypes:(BugsnagErrorTypes *)errorTypes;
-@end
 
 // =============================================================================
 // MARK: - Tests

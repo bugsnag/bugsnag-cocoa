@@ -18,84 +18,27 @@
 #import "BSGSerialization.h"
 #import "BSG_KSCrashReportFields.h"
 #import "BSG_RFC3339DateTool.h"
-#import "Bugsnag.h"
+#import "Bugsnag+Private.h"
+#import "BugsnagApp+Private.h"
+#import "BugsnagAppWithState+Private.h"
+#import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
+#import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagKeys.h"
+#import "BugsnagMetadata+Private.h"
 #import "BugsnagLogger.h"
-#import "BugsnagSession.h"
-#import "BugsnagSessionInternal.h"
-#import "BugsnagStacktrace.h"
+#import "BugsnagSession+Private.h"
+#import "BugsnagStacktrace+Private.h"
 #import "BugsnagThread+Private.h"
-#import "BugsnagUser.h"
-#import "Private.h"
+#import "BugsnagUser+Private.h"
 #import "RegisterErrorData.h"
 
 static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
-
-// MARK: - Accessing hidden methods/properties
-
-NSMutableDictionary *_Nonnull BSGParseDeviceMetadata(NSDictionary *_Nonnull event);
-NSDictionary *_Nonnull BSGParseAppMetadata(NSDictionary *_Nonnull event);
-
-@interface BugsnagAppWithState ()
-+ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
-                                    config:(BugsnagConfiguration *)config
-                              codeBundleId:(NSString *)codeBundleId;
-- (NSDictionary *)toDict;
-+ (BugsnagAppWithState *)appWithOomData:(NSDictionary *)event;
-+ (BugsnagAppWithState *)appFromJson:(NSDictionary *)json;
-@end
-
-@interface BugsnagBreadcrumb ()
-+ (instancetype _Nullable)breadcrumbWithBlock:
-        (BSGBreadcrumbConfiguration _Nonnull)block;
-+ (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
-+ (NSArray<BugsnagBreadcrumb *> *)breadcrumbArrayFromJson:(NSArray *)json;
-@end
-
-@interface BugsnagUser ()
-- (NSDictionary *)toJson;
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
-@end
-
-@interface BugsnagConfiguration (BugsnagEvent)
-+ (BOOL)isValidApiKey:(NSString *_Nullable)apiKey;
-- (BOOL)shouldSendReports;
-@property(readonly, strong, nullable) BugsnagBreadcrumbs *breadcrumbs;
-@end
-
-@interface BugsnagSession ()
-+ (instancetype)fromJson:(NSDictionary *)json;
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
-@end
-
-@interface Bugsnag ()
-+ (BugsnagClient *)client;
-@end
-
-@interface BugsnagMetadata ()
-- (NSDictionary *)toDictionary;
-- (instancetype)deepCopy;
-@end
-
-@interface BugsnagStacktrace ()
-- (NSArray *)toArray;
-@end
-
-@interface BugsnagStacktrace ()
-- (NSArray *)toArray;
-@end
-
-// MARK: - KSCrashReport parsing
-NSString *_Nonnull BSGParseErrorClass(NSDictionary *error, NSString *errorType);
-NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSString *errorType);
 
 id BSGLoadConfigValue(NSDictionary *report, NSString *valueName) {
     NSString *keypath = [NSString stringWithFormat:@"user.config.%@", valueName];
@@ -192,18 +135,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
 @end
 
-
-@interface BugsnagDeviceWithState ()
-- (NSDictionary *)toDictionary;
-+ (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event;
-+ (BugsnagDeviceWithState *)deviceWithOomData:(NSDictionary *)data;
-+ (BugsnagDeviceWithState *)deviceFromJson:(NSDictionary *)json;
-@end
-
-@interface BugsnagUser ()
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
-@end
 
 @implementation BugsnagEvent
 

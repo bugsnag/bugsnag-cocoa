@@ -24,8 +24,8 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagMetadata.h"
-#import "BugsnagMetadataInternal.h"
+#import "BugsnagMetadata+Private.h"
+
 #import "BSGSerialization.h"
 #import "BugsnagLogger.h"
 #import "BugsnagStateEvent.h"
@@ -45,7 +45,7 @@
     if (self = [super init]) {
         // Ensure that the instantiating dictionary is mutable.
         // Saves checks later.
-        self.dictionary = [self sanitizeDictionary:dict];
+        _dictionary = [self sanitizeDictionary:dict];
         self.stateEventBlocks = [NSMutableArray new];
     }
     [self notifyObservers];

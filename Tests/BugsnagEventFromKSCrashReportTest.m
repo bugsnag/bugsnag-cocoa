@@ -8,12 +8,8 @@
 
 @import XCTest;
 
-#import <Bugsnag/Bugsnag.h>
+#import "Bugsnag+Private.h"
 #import "BugsnagEvent+Private.h"
-
-@interface Bugsnag ()
-+ (BugsnagConfiguration *)configuration;
-@end
 
 @interface BugsnagEventFromKSCrashReportTest : XCTestCase
 @property BugsnagEvent *event;

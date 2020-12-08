@@ -41,25 +41,30 @@
 #import "BSG_KSSystemInfo.h"
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag.h"
+#import "BugsnagApp+Private.h"
+#import "BugsnagAppWithState+Private.h"
+#import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagCrashSentry.h"
+#import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagErrorTypes.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagKeys.h"
 #import "BugsnagLogger.h"
-#import "BugsnagMetadataInternal.h"
+#import "BugsnagMetadata+Private.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagPluginClient.h"
-#import "BugsnagSessionTracker.h"
+#import "BugsnagSession+Private.h"
+#import "BugsnagSessionTracker+Private.h"
 #import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagStateEvent.h"
 #import "BugsnagSystemState.h"
 #import "BugsnagThread+Private.h"
-#import "Private.h"
+#import "BugsnagUser+Private.h"
 
 #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
 #define BSGOOMAvailable 1
@@ -106,33 +111,8 @@ static NSUInteger handledCount;
 static NSUInteger unhandledCount;
 static bool hasRecordedSessions;
 
-NSDictionary *BSGParseAppMetadata(NSDictionary *event);
-NSDictionary *BSGParseDeviceMetadata(NSDictionary *event);
-
 @interface NSDictionary (BSGKSMerge)
 - (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
-@end
-
-@interface Bugsnag ()
-+ (BugsnagClient *)client;
-@end
-
-@interface BugsnagSession ()
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
-@end
-
-@interface BugsnagAppWithState ()
-+ (BugsnagAppWithState *)appWithDictionary:(NSDictionary *)event
-                                    config:(BugsnagConfiguration *)config
-                              codeBundleId:(NSString *)codeBundleId;
-- (NSDictionary *)toDict;
-@end
-
-@interface BugsnagDeviceWithState ()
-+ (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event;
-- (NSDictionary *)toDictionary;
-- (void)appendRuntimeInfo:(NSDictionary *)info;
 @end
 
 /**
@@ -257,24 +237,6 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
     unhandledCount = session.unhandledCount;
     hasRecordedSessions = true;
 }
-
-@interface BugsnagConfiguration ()
-@property(nonatomic, readwrite, strong) NSMutableSet *plugins;
-@property(readonly, retain, nullable) NSURL *notifyURL;
-@property(readwrite, retain, nullable) BugsnagMetadata *metadata;
-@property(readwrite, retain, nullable) BugsnagMetadata *config;
-- (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)type;
-@end
-
-@interface BugsnagSessionTracker ()
-@property(nonatomic) NSString *codeBundleId;
-@end
-
-@interface BugsnagUser ()
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
-- (NSDictionary *)toJson;
-@end
 
 // =============================================================================
 // MARK: - BugsnagClient

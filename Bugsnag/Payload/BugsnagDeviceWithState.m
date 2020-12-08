@@ -9,6 +9,7 @@
 #import "BugsnagPlatformConditional.h"
 #import "BSG_RFC3339DateTool.h"
 
+#import "BugsnagDevice+Private.h"
 #import "BugsnagDeviceWithState.h"
 #import "BugsnagCollections.h"
 #import "BugsnagLogger.h"
@@ -53,13 +54,6 @@ NSNumber *BSGDeviceFreeSpace(NSSearchPathDirectory directory) {
     }
     return freeBytes;
 }
-
-@interface BugsnagDevice ()
-+ (void)populateFields:(BugsnagDevice *)device
-            dictionary:(NSDictionary *)event;
-- (void)appendRuntimeInfo:(NSDictionary *)info;
-- (NSDictionary *)toDictionary;
-@end
 
 @implementation BugsnagDeviceWithState
 

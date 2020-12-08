@@ -11,14 +11,10 @@
 #import "BugsnagTestConstants.h"
 #import "Bugsnag.h"
 #import "BugsnagClient+Private.h"
-#import "BugsnagConfiguration.h"
+#import "BugsnagConfiguration+Private.h"
 
 @interface BugsnagPluginTest : XCTestCase
 
-@end
-
-@interface BugsnagConfiguration ()
-@property(nonatomic, readwrite, strong) NSMutableSet *plugins;
 @end
 
 @interface FakePlugin: NSObject<BugsnagPlugin>

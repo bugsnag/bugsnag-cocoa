@@ -6,7 +6,8 @@
 //  Copyright © 2017 Bugsnag. All rights reserved.
 //
 
-#import "BugsnagUser.h"
+#import "BugsnagUser+Private.h"
+
 #import "BugsnagCollections.h"
 
 @implementation BugsnagUser

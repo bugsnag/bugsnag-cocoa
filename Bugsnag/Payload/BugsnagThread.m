@@ -10,7 +10,7 @@
 
 #import "BugsnagCollections.h"
 #import "BugsnagStackframe+Private.h"
-#import "BugsnagStacktrace.h"
+#import "BugsnagStacktrace+Private.h"
 #import "BugsnagKeys.h"
 
 BSGThreadType BSGParseThreadType(NSString *type) {
@@ -20,15 +20,6 @@ BSGThreadType BSGParseThreadType(NSString *type) {
 NSString *BSGSerializeThreadType(BSGThreadType type) {
     return type == BSGThreadTypeCocoa ? @"cocoa" : @"reactnativejs";
 }
-
-@interface BugsnagStacktrace ()
-- (NSArray *)toArray;
-@end
-
-@interface BugsnagStacktrace ()
-+ (instancetype)stacktraceFromJson:(NSDictionary *)json;
-@property NSMutableArray<BugsnagStackframe *> *trace;
-@end
 
 @implementation BugsnagThread
 

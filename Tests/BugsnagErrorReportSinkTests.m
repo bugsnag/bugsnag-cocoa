@@ -14,21 +14,13 @@
 #import "Bugsnag.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagHandledState.h"
-#import "BugsnagErrorReportSink.h"
+#import "BugsnagErrorReportSink+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagTestConstants.h"
 
 @interface BugsnagErrorReportSinkTests : XCTestCase
 @property NSDictionary *rawReportData;
 @property NSDictionary *processedData;
-@end
-
-@interface Bugsnag ()
-+ (BugsnagConfiguration *)configuration;
-@end
-
-@interface BugsnagErrorReportSink ()
-- (NSDictionary *)prepareEventPayload:(BugsnagEvent *)event;
 @end
 
 @implementation BugsnagErrorReportSinkTests

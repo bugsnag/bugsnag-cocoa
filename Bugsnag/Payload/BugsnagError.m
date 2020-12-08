@@ -72,10 +72,6 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     return error[BSGKeyReason] ?: @"";
 }
 
-@interface BugsnagStacktrace ()
-@property NSMutableArray<BugsnagStackframe *> *trace;
-@end
-
 @implementation BugsnagError
 
 - (instancetype)initWithErrorReportingThread:(BugsnagThread *)thread {

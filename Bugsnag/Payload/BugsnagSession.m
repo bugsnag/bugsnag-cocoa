@@ -6,8 +6,12 @@
 //  Copyright © 2017 Bugsnag. All rights reserved.
 //
 
-#import "BugsnagSession.h"
+#import "BugsnagSession+Private.h"
+
+#import "BugsnagApp+Private.h"
 #import "BugsnagCollections.h"
+#import "BugsnagDevice+Private.h"
+#import "BugsnagUser+Private.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagKeys.h"
 
@@ -16,42 +20,6 @@ static NSString *const kBugsnagUnhandledCount = @"unhandledCount";
 static NSString *const kBugsnagHandledCount = @"handledCount";
 static NSString *const kBugsnagStartedAt = @"startedAt";
 static NSString *const kBugsnagUser = @"user";
-
-@interface BugsnagApp ()
-- (NSDictionary *)toDict;
-+ (BugsnagApp *)deserializeFromJson:(NSDictionary *)json;
-@end
-
-@interface BugsnagDevice ()
-- (NSDictionary *)toDictionary;
-+ (BugsnagDevice *)deserializeFromJson:(NSDictionary *)json;
-@end
-
-@interface BugsnagUser ()
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress;
-- (NSDictionary *)toJson;
-@end
-
-@interface BugsnagSession ()
-@property(readwrite, getter=isStopped) BOOL stopped;
-@property(readonly) BOOL autoCaptured;
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
-
-/**
- * Representation used in report payloads
- */
-- (NSDictionary *_Nonnull)toJson;
-
-/**
- * Full representation of a session suitable for creating an identical session
- * using initWithDictionary
- */
-- (NSDictionary *_Nonnull)toDictionary;
-- (void)stop;
-- (void)resume;
-@end
 
 @implementation BugsnagSession
 

@@ -12,16 +12,12 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagStateEvent.h"
-#import "BugsnagMetadataInternal.h"
+#import "BugsnagMetadata+Private.h"
 
 @interface BugsnagClient()
 @property BugsnagMetadata *metadata;
 - (void)addObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer;
 - (void)removeObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer;
-@end
-
-@interface BugsnagMetadata ()
-- (NSDictionary *)toDictionary;
 @end
 
 @interface BugsnagStateEventTest : XCTestCase

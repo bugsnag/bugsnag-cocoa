@@ -11,24 +11,16 @@
 #import "BugsnagEvent+Private.h"
 #import "BugsnagAppWithState.h"
 #import "BugsnagUser.h"
-#import "BugsnagDeviceWithState.h"
+#import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError.h"
 #import "BugsnagStackframe.h"
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagHandledState.h"
 #import "Bugsnag.h"
 #import "BugsnagError.h"
+#import "BugsnagSession+Private.h"
 #import "BugsnagStackframe.h"
 #import "BugsnagThread.h"
-
-@interface BugsnagDeviceWithState ()
-@property (nonatomic, readonly) NSDateFormatter *formatter;
-@end
-
-@interface BugsnagSession ()
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
-@end
 
 @interface BugsnagEventPersistLoadTest : XCTestCase
 @property NSDictionary *eventData;
