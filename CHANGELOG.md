@@ -1,6 +1,28 @@
 Changelog
 =========
 
+## 6.3.1 (2020-12-08)
+
+### Enhancements
+
+* Removes internal BSGDictSetSafeObject and BSGArrayAddSafeObject functions because they can cause issues.
+  [#928](https://github.com/bugsnag/bugsnag-cocoa/pull/928)
+
+* Removes internal BSGXYZInsertIfNotNil functions because they can cause issues.
+  [#926](https://github.com/bugsnag/bugsnag-cocoa/pull/926)
+
+* Reduce disk writes when handling metadata changes.
+  [#924](https://github.com/bugsnag/bugsnag-cocoa/pull/924)
+
+* Allow overriding the "unhandled" flag in error callbacks.
+  [#921](https://github.com/bugsnag/bugsnag-cocoa/pull/921)
+  [#912](https://github.com/bugsnag/bugsnag-cocoa/pull/912)
+
+### Bug fixes
+
+* Fix unexpected exception behavior when started without an API key.
+  [#931](https://github.com/bugsnag/bugsnag-cocoa/pull/931)
+
 ## 6.3.0 (2020-12-02)
 
 ### Enhancements
