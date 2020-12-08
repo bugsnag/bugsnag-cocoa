@@ -96,7 +96,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  * @param zone This parameter is ignored. Memory zones are no longer used by Objective-C.
  */
 - (nonnull id)copyWithZone:(nullable NSZone *)zone {
-    BugsnagConfiguration *copy = [[BugsnagConfiguration alloc] initWithApiKey:[NSMutableString stringWithString:self.apiKey]];
+    BugsnagConfiguration *copy = [[BugsnagConfiguration alloc] initWithApiKey:[self.apiKey copy]];
     // Omit apiKey - it's set explicitly in the line above
     [copy setAppType:self.appType];
     [copy setAppVersion:self.appVersion];
