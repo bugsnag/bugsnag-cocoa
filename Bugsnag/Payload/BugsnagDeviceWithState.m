@@ -22,12 +22,12 @@ NSMutableDictionary *BSGParseDeviceMetadata(NSDictionary *event) {
     device[@"timezone"] = [event valueForKeyPath:@"system.time_zone"];
 
 #if BSG_PLATFORM_SIMULATOR
-    BSGDictSetSafeObject(device, @YES, @"simulator");
+    device[@"simulator"] = @YES;
 #else
-    BSGDictSetSafeObject(device, @NO, @"simulator");
+    device[@"simulator"] = @NO;
 #endif
 
-    BSGDictSetSafeObject(device, @(PLATFORM_WORD_SIZE), @"wordSize");
+    device[@"wordSize"] = @(PLATFORM_WORD_SIZE);
     return device;
 }
 

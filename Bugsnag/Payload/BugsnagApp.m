@@ -18,7 +18,7 @@
  */
 NSDictionary *BSGParseAppMetadata(NSDictionary *event) {
     NSMutableDictionary *app = [NSMutableDictionary new];
-    BSGDictSetSafeObject(app, [event valueForKeyPath:@"system.CFBundleExecutable"] , @"name");
+    app[@"name"] = [event valueForKeyPath:@"system.CFBundleExecutable"];
     return app;
 }
 

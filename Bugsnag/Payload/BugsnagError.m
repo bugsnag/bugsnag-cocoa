@@ -158,7 +158,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
         [frames addObject:[frame toDictionary]];
     }
 
-    BSGDictSetSafeObject(dict, frames, BSGKeyStacktrace);
+    dict[BSGKeyStacktrace] = frames;
     return dict;
 }
 

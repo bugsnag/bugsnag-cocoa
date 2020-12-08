@@ -21,15 +21,6 @@
 
 #import "BugsnagCollections.h"
 
-void BSGDictSetSafeObject(NSMutableDictionary *dict, id object,
-                          id<NSCopying> key) {
-    dict[key] = object ?: [NSNull null];
-}
-
-void BSGArrayAddSafeObject(NSMutableArray *array, id object) {
-    [array addObject:object ?: [NSNull null]];
-}
-
 NSDictionary *BSGDictMerge(NSDictionary *source, NSDictionary *destination) {
     if ([destination count] == 0) {
         return source;
