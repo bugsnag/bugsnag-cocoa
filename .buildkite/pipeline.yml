@@ -28,10 +28,14 @@ steps:
           - "--username=$BROWSER_STACK_USERNAME"
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
-          - "--appium-version=1.15.0"
+          - "--appium-version=1.17.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
 
   - label: ':ios: iOS 13 end-to-end tests'
     timeout_in_minutes: 60
@@ -49,10 +53,14 @@ steps:
           - "--username=$BROWSER_STACK_USERNAME"
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
-          - "--appium-version=1.15.0"
+          - "--appium-version=1.17.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
 
   - label: ':ios: iOS 12 end-to-end tests'
     timeout_in_minutes: 60
@@ -70,10 +78,14 @@ steps:
           - "--username=$BROWSER_STACK_USERNAME"
           - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
-          - "--appium-version=1.15.0"
+          - "--appium-version=1.17.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
 
   - label: ':ios: iOS 11 end-to-end tests'
     timeout_in_minutes: 60
@@ -93,11 +105,12 @@ steps:
           - "--resilient"
           - "--appium-version=1.16.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
-    # Soft fail while Browserstack's iOS 11 devices are flakey
-    soft_fail:
-      - exit_status: "*"
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
 
   - label: ':ios: iOS 10 end-to-end tests'
     timeout_in_minutes: 60
@@ -117,5 +130,9 @@ steps:
           - "--resilient"
           - "--appium-version=1.15.0"
           - "--fail-fast"
-    concurrency: 10
+    concurrency: 9
     concurrency_group: browserstack-app
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2

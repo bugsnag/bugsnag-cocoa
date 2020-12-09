@@ -8,15 +8,9 @@
 
 #import <XCTest/XCTest.h>
 #import <Bugsnag/Bugsnag.h>
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagPlugin.h"
 #import "BugsnagTestConstants.h"
-
-@interface BugsnagConfiguration ()
-@property(nonatomic, readwrite, strong) NSMutableArray *onSendBlocks;
-@property(nonatomic, readwrite, strong) NSMutableArray *onSessionBlocks;
-@property(nonatomic, readwrite, strong) NSMutableArray *onBreadcrumbBlocks;
-@property(nonatomic, readwrite, strong) NSMutableSet *plugins;
-@end
 
 @interface FooPlugin: NSObject<BugsnagPlugin>
 @end

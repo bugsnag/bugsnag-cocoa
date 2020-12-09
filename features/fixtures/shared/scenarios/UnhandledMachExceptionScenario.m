@@ -21,3 +21,17 @@
 }
 
 @end
+
+@implementation UnhandledMachExceptionOverrideScenario
+
+- (void)startBugsnag {
+    self.config.autoTrackSessions = NO;
+    [super startBugsnag];
+}
+
+- (void)run {
+    void (*ptr)(void) = (void *)0xDEADBEEF;
+    ptr();
+}
+
+@end

@@ -12,16 +12,12 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagStateEvent.h"
-#import "BugsnagMetadataInternal.h"
+#import "BugsnagMetadata+Private.h"
 
 @interface BugsnagClient()
 @property BugsnagMetadata *metadata;
 - (void)addObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer;
 - (void)removeObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer;
-@end
-
-@interface BugsnagMetadata ()
-- (NSDictionary *)toDictionary;
 @end
 
 @interface BugsnagStateEventTest : XCTestCase
@@ -65,7 +61,7 @@
 - (void)testMetadataUpdate {
     XCTAssertNotNil(self.event);
     self.event = nil;
-    [self.client addMetadata:@"Bar" withKey:@"Foo" toSection:@"test"];
+    [self.client addMetadata:@"Bar" withKey:@"Foo2" toSection:@"test"];
     XCTAssertEqualObjects(self.client.metadata, self.event.data);
 }
 

@@ -66,6 +66,7 @@ Feature: Communicating events between notifiers
     And the "file" of stack frame 2 is null
     And the "lineNumber" of stack frame 2 is null
     And the event "unhandled" is true
+    And the event "unhandledOverridden" is true
 
     And the payload field "events" is an array with 1 elements
     And the payload field "events.0.session.events.handled" equals 0

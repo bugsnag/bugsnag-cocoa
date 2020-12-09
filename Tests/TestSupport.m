@@ -10,14 +10,8 @@
 #import "BugsnagSystemState.h"
 #import "BSGConfigurationBuilder.h"
 #import "BugsnagTestConstants.h"
-#import "Bugsnag.h"
+#import "Bugsnag+Private.h"
 
-
-@interface Bugsnag ()
-
-+ (void)purge;
-
-@end
 
 @implementation TestSupport
 

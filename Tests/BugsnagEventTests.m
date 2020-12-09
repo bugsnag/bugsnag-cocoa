@@ -14,25 +14,13 @@
 #import "BugsnagClient+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
+#import "BugsnagMetadata+Private.h"
 #import "BugsnagSession.h"
-#import "BugsnagSessionInternal.h"
+#import "BugsnagSession+Private.h"
 #import "BugsnagStackframe+Private.h"
 #import "BugsnagStateEvent.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagTestsDummyClass.h"
-
-@interface BugsnagSession ()
-@property NSUInteger unhandledCount;
-@property NSUInteger handledCount;
-@end
-
-@interface Bugsnag ()
-+ (BugsnagConfiguration *)configuration;
-@end
-
-@interface BugsnagMetadata ()
-- (NSDictionary *_Nonnull)toDictionary;
-@end
 
 @interface BugsnagEventTests : XCTestCase
 @end
@@ -755,6 +743,41 @@
     state = [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
     event = [self generateEvent:state];
     XCTAssertTrue(event.unhandled);
+}
+
+- (void)testUnhandledOverride {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
+
+    NSException *ex = [[NSException alloc] initWithName:@"myName" reason:@"myReason1" userInfo:nil];
+    __block BugsnagEvent *eventRef = nil;
+
+    // No change to unhandled.
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+        eventRef = event;
+        return true;
+    }];
+    XCTAssertEqual(eventRef.unhandled, NO);
+    XCTAssertEqual(eventRef.handledState.unhandledOverridden, NO);
+
+    // Change unhandled from NO to YES.
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+        eventRef = event;
+        event.unhandled = YES;
+        return true;
+    }];
+    XCTAssertEqual(eventRef.unhandled, YES);
+    XCTAssertEqual(eventRef.handledState.unhandledOverridden, YES);
+
+    // Set unhandled to NO, but was already NO.
+    [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+        eventRef = event;
+        event.unhandled = NO;
+        return true;
+    }];
+    XCTAssertEqual(eventRef.unhandled, NO);
+    XCTAssertEqual(eventRef.handledState.unhandledOverridden, NO);
 }
 
 - (void)testMetadataMutability {

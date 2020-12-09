@@ -19,6 +19,23 @@ Feature: Signals are captured as error reports in Bugsnag
     And the event "severityReason.type" equals "signal"
     And the event "severityReason.attributes.signalType" equals "SIGABRT"
 
+  Scenario: Triggering SIGABRT with unhandled override
+    When I run "AbortOverrideScenario" and relaunch the app
+    And I configure Bugsnag for "AbortOverrideScenario"
+    And I wait to receive a request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the payload field "events" is an array with 1 elements
+    And the exception "errorClass" equals "SIGABRT"
+    And the "method" of stack frame 0 equals "__pthread_kill"
+    And the "method" of stack frame 1 matches "^(<redacted>| ?pthread_kill)$"
+    And the "method" of stack frame 2 equals "abort"
+    And the "method" of stack frame 3 equals "-[AbortOverrideScenario run]"
+    And the event "severity" equals "error"
+    And the event "unhandled" is false
+    And the event "unhandledOverridden" is true
+    And the event "severityReason.type" equals "signal"
+    And the event "severityReason.attributes.signalType" equals "SIGABRT"
+
   Scenario: Triggering SIGPIPE
     When I run "SIGPIPEScenario" and relaunch the app
     And I configure Bugsnag for "SIGPIPEScenario"

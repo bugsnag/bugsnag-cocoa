@@ -22,6 +22,36 @@ Feature: Callbacks can access and modify event information
     And the event "user.id" equals "customId"
     And the event "user.email" equals "customEmail"
     And the event "user.name" equals "customName"
+    And the event "unhandled" is false
+
+  Scenario: An OnErrorCallback can overwrite unhandled (true) for a handled error
+    When I run "OnErrorOverwriteUnhandledTrueScenario"
+    And I wait to receive a request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the event "app.id" equals "customAppId"
+    And the event "context" equals "customContext"
+    And the event "device.id" equals "customDeviceId"
+    And the event "groupingHash" equals "customGroupingHash"
+    And the event "severity" equals "info"
+    And the event "user.id" equals "customId"
+    And the event "user.email" equals "customEmail"
+    And the event "user.name" equals "customName"
+    And the event "unhandled" is true
+    And the event "unhandledOverridden" is true
+
+  Scenario: An OnErrorCallback can overwrite unhandled (false) for a handled error
+    When I run "OnErrorOverwriteUnhandledFalseScenario"
+    And I wait to receive a request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the event "app.id" equals "customAppId"
+    And the event "context" equals "customContext"
+    And the event "device.id" equals "customDeviceId"
+    And the event "groupingHash" equals "customGroupingHash"
+    And the event "severity" equals "info"
+    And the event "user.id" equals "customId"
+    And the event "user.email" equals "customEmail"
+    And the event "user.name" equals "customName"
+    And the event "unhandled" is false
 
   Scenario: An OnSend callback can overwrite information for an unhandled error
     When I run "SwiftAssertion" and relaunch the app

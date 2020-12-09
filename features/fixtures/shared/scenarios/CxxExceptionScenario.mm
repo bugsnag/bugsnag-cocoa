@@ -55,3 +55,20 @@ const char *kaboom_exception::what() const throw() {
 }
 
 @end
+
+@implementation CxxExceptionOverrideScenario
+
+- (void)startBugsnag {
+    self.config.autoTrackSessions = NO;
+    [super startBugsnag];
+}
+
+- (void)run {
+    [self crash];
+}
+
+- (void)crash __attribute__((noreturn)) {
+    throw new kaboom_exception;
+}
+
+@end

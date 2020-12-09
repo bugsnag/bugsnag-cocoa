@@ -11,5 +11,4 @@
 
 @interface BugsnagEvent ()
 - (void)attachCustomStacktrace:(NSArray *)frames withType:(NSString *)type;
-- (void)updateUnhandled:(BOOL)val;
 @end

@@ -9,7 +9,7 @@
 #import "BSG_KSJSONCodec.h"
 #import "Bugsnag.h"
 #import "BugsnagClient+Private.h"
-#import "BugsnagBreadcrumb.h"
+#import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagTestConstants.h"
 
@@ -37,18 +37,8 @@ static id JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer)) {
 @property(nonatomic, strong) BugsnagBreadcrumbs *crumbs;
 @end
 
-@interface BugsnagBreadcrumb ()
-+ (instancetype _Nullable)breadcrumbWithBlock:
-    (BSGBreadcrumbConfiguration _Nonnull)block;
-+ (instancetype _Nullable)breadcrumbFromDict:(NSDictionary *_Nonnull)dict;
-@end
-
 @interface BugsnagBreadcrumbs (Testing)
 - (NSArray<NSDictionary *> *)arrayValue;
-@end
-
-@interface Bugsnag ()
-+ (BugsnagClient *)client;
 @end
 
 void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
