@@ -82,7 +82,9 @@ steps:
           limit: 2
 
   - label: ':ios: iOS 11 end-to-end tests'
-    timeout_in_minutes: 60
+    # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
+    # sessions need resetting frequently, taking a minute or more each time.
+    timeout_in_minutes: 90
     agents:
       queue: opensource
     plugins:
