@@ -56,8 +56,9 @@ __Your session will periodically expire__, so you'll need to run this command to
 #### Steps
 
 1. Ensure the following environment variables are set:
-    - `BROWSER_STACK_USERNAME` - your BrowserStack App Automate Username
-    - `BROWSER_STACK_ACCESS_KEY` - your BrowserStack App Automate Access Key
+    - `MAZE_DEVICE_FARM_USERNAME` - your BrowserStack App Automate Username
+    - `MAZE_DEVICE_FARM_ACCESS_KEY` - your BrowserStack App Automate Access Key
+    - `MAZE_BS_LOCAL` - location of the `BrowserStackLocal` executable on your local file system
 1. Build the test fixtures:
     ```shell script
     make test-fixtures
@@ -69,9 +70,6 @@ __Your session will periodically expire__, so you'll need to run this command to
     bundle exec maze-runner --app=features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa \
                             --farm=bs                                                         \
                             --device=IOS_14                                                   \
-                            --username=$BROWSER_STACK_USERNAME                                \
-                            --access-key=$BROWSER_STACK_ACCESS_KEY                            \
-                            --bs-local=~/BrowserStackLocal                                    \
                             features/app_and_device_attributes.feature
     ```
 1. To run all features, omit the final argument.
