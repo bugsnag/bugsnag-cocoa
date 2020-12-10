@@ -131,8 +131,10 @@
             @"setConfigMetadataFromLastLaunch: v24@0:8@16",
             @"setMetadataFromLastLaunch: v24@0:8@16",
             @"setStateMetadataFromLastLaunch: v24@0:8@16",
+            @"setUiDevice: v24@0:8@16",
             @"stateMetadataFile @16@0:8",
             @"stateMetadataFromLastLaunch @16@0:8",
+            @"uiDevice @16@0:8",
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to

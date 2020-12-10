@@ -18,6 +18,10 @@
 @class BugsnagSessionTracker;
 @class BugsnagSystemState;
 
+#if TARGET_OS_IOS
+@class UIDevice;
+#endif
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagClient ()
@@ -43,7 +47,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property NSMutableDictionary *extraRuntimeInfo;
 
 #if TARGET_OS_IOS
+
+@property (strong, nonatomic) UIDevice *uiDevice; // Used for unit testing
+
 @property (strong, nonatomic) NSString *lastOrientation;
+
 #endif
 
 @property (strong, nonatomic) BugsnagMetadata *metadata; // Used in BugsnagReactNative
