@@ -850,4 +850,74 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertTrue([metadata2 isKindOfClass:[NSMutableDictionary class]]);
 }
 
+- (void)testDiscardClasses {
+    XCTAssertNil([[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1].discardClasses, @"discardClasses should be nil be default");
+    
+    NSArray<NSString *> *errorClasses = @[@"EXC_BAD_ACCESS",
+                                          @"EXC_BAD_INSTRUCTION",
+                                          @"EXC_BREAKPOINT",
+                                          @"Exception",
+                                          @"Fatal error",
+                                          @"NSError",
+                                          @"NSGenericException",
+                                          @"NSInternalInconsistencyException",
+                                          @"NSMallocException",
+                                          @"NSRangeException",
+                                          @"SIGABRT",
+                                          @"UIViewControllerHierarchyInconsistency",
+                                          @"std::__1::system_error"];
+    
+    __block NSArray *discarded, *kept;
+    
+    void (^ applyDiscardClasses)(NSSet *) = ^(NSSet *discardClasses){
+        BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+        configuration.discardClasses = discardClasses;
+        NSPredicate *shouldDiscard = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+            return [configuration shouldDiscardErrorClass:evaluatedObject];
+        }];
+        discarded = [errorClasses filteredArrayUsingPredicate:shouldDiscard];
+        kept = [errorClasses filteredArrayUsingPredicate:[NSCompoundPredicate notPredicateWithSubpredicate:shouldDiscard]];
+    };
+    
+    applyDiscardClasses(nil);
+    XCTAssertEqualObjects(discarded, @[]);
+    XCTAssertEqualObjects(kept, errorClasses);
+    
+    applyDiscardClasses([NSSet setWithObjects:@"nserror", nil]);
+    XCTAssertEqualObjects(discarded, @[]);
+    XCTAssertEqualObjects(kept, errorClasses);
+    
+    applyDiscardClasses([NSSet setWithObjects:@"EXC_BAD_ACCESS", @"NSError", nil]);
+    XCTAssertEqualObjects(discarded, (@[@"EXC_BAD_ACCESS", @"NSError"]));
+    XCTAssertEqualObjects(kept, (@[@"EXC_BAD_INSTRUCTION",
+                                   @"EXC_BREAKPOINT",
+                                   @"Exception",
+                                   @"Fatal error",
+                                   @"NSGenericException",
+                                   @"NSInternalInconsistencyException",
+                                   @"NSMallocException",
+                                   @"NSRangeException",
+                                   @"SIGABRT",
+                                   @"UIViewControllerHierarchyInconsistency",
+                                   @"std::__1::system_error"]));
+    
+    applyDiscardClasses([NSSet setWithObjects:@"Exception", @"NSError",
+                         [NSRegularExpression regularExpressionWithPattern:@"std::__1::.*" options:0 error:nil], nil]);
+    XCTAssertEqualObjects(discarded, (@[@"Exception", @"NSError", @"std::__1::system_error"]));
+    XCTAssertEqualObjects(kept, (@[@"EXC_BAD_ACCESS",
+                                   @"EXC_BAD_INSTRUCTION",
+                                   @"EXC_BREAKPOINT",
+                                   @"Fatal error",
+                                   @"NSGenericException",
+                                   @"NSInternalInconsistencyException",
+                                   @"NSMallocException",
+                                   @"NSRangeException",
+                                   @"SIGABRT",
+                                   @"UIViewControllerHierarchyInconsistency"]));
+    
+    applyDiscardClasses([NSSet setWithObjects:[NSRegularExpression regularExpressionWithPattern:@".*" options:0 error:nil], nil]);
+    XCTAssertEqualObjects(discarded, errorClasses);
+    XCTAssertEqualObjects(kept, (@[]));
+}
+
 @end

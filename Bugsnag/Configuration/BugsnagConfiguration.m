@@ -82,6 +82,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setEnabledBreadcrumbTypes:self.enabledBreadcrumbTypes];
     [copy setEnabledErrorTypes:self.enabledErrorTypes];
     [copy setEnabledReleaseStages:self.enabledReleaseStages];
+    copy.discardClasses = self.discardClasses;
     [copy setRedactedKeys:self.redactedKeys];
     [copy setMaxBreadcrumbs:self.maxBreadcrumbs];
     copy->_metadata = [[BugsnagMetadata alloc] initWithDictionary:[[self.metadata toDictionary] mutableCopy]];
@@ -433,6 +434,21 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
                         (unsigned long) maxBreadcrumbs);
         }
     }
+}
+
+- (BOOL)shouldDiscardErrorClass:(NSString *)errorClass {
+    for (id obj in self.discardClasses) {
+        if ([obj isKindOfClass:[NSString class]]) {
+            if ([obj isEqualToString:errorClass]) {
+                return YES;
+            }
+        } else if ([obj isKindOfClass:[NSRegularExpression class]]) {
+            if ([obj firstMatchInString:errorClass options:0 range:NSMakeRange(0, errorClass.length)]) {
+                return YES;
+            }
+        }
+    }
+    return NO;
 }
 
 /**

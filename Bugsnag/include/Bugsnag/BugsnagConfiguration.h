@@ -150,6 +150,18 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
 @property(readwrite, retain, nullable) NSSet<id> *redactedKeys;
 
 /**
+ * A set of strings and NSRegularExpression objects that determine which errors will be
+ * immediately discarded, based on the value of `BugsnagError.errorClass`.
+ *
+ * OnError / OnSendError blocks will not be called for discarded errors.
+ *
+ * Some examples of errorClass are: Objective-C exception names like "NSRangeException",
+ * signal names like "SIGABRT", mach exception names like "EXC_BREAKPOINT", and Swift
+ * error names like "Fatal error".
+ */
+@property(readwrite, copy, nullable) NSSet<id> *discardClasses;
+
+/**
  *  A general summary of what was occuring in the application
  */
 @property(readwrite, retain, nullable) NSString *context;
