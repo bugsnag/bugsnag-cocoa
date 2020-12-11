@@ -25,5 +25,5 @@ Feature: Thrown C++ exceptions are captured by Bugsnag
     And the payload field "events.0.exceptions.0.stacktrace" is an array with 0 elements
     And the event "severity" equals "error"
     And the event "unhandled" is false
-    And the event "unhandledOverridden" is true
+    And the event "severityReason.unhandledOverridden" is true
     And the event "severityReason.type" equals "unhandledException"

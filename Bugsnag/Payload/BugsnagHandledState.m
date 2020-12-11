@@ -49,18 +49,18 @@ static NSString *const kUserCallbackSetSeverity = @"userCallbackSetSeverity";
 @implementation BugsnagHandledState
 
 + (instancetype)handledStateFromJson:(NSDictionary *)json {
-    BOOL unhandled = [json[@"unhandled"] boolValue];
-    BOOL unhandledOverridden = [json[@"unhandledOverridden"] boolValue];
-    NSDictionary *data = json[@"severityReason"];
-    BSGSeverity severity = BSGParseSeverity(json[@"severity"]);
+    BOOL unhandled = [json[BSGKeyUnhandled] boolValue];
+    NSDictionary *severityReason = json[BSGKeySeverityReason];
+    BOOL unhandledOverridden = [severityReason[BSGKeyUnhandledOverridden] boolValue];
+    BSGSeverity severity = BSGParseSeverity(json[BSGKeySeverity]);
 
     NSString *attrValue = nil;
-    NSDictionary *attrs = data[@"attributes"];
+    NSDictionary *attrs = severityReason[BSGKeyAttributes];
 
     if (attrs != nil && [attrs count] == 1) { // only 1 attrValue is ever present
         attrValue = [attrs allValues][0];
     }
-    SeverityReasonType reason = [BugsnagHandledState severityReasonFromString:data[@"type"]];
+    SeverityReasonType reason = [BugsnagHandledState severityReasonFromString:severityReason[BSGKeyType]];
     return [[BugsnagHandledState alloc] initWithSeverityReason:reason
                                                       severity:severity
                                                      unhandled:unhandled

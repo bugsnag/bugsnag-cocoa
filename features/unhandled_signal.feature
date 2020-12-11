@@ -32,7 +32,7 @@ Feature: Signals are captured as error reports in Bugsnag
     And the "method" of stack frame 3 equals "-[AbortOverrideScenario run]"
     And the event "severity" equals "error"
     And the event "unhandled" is false
-    And the event "unhandledOverridden" is true
+    And the event "severityReason.unhandledOverridden" is true
     And the event "severityReason.type" equals "signal"
     And the event "severityReason.attributes.signalType" equals "SIGABRT"
 
