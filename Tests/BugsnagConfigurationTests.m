@@ -530,6 +530,38 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 }
 
 // =============================================================================
+// MARK: - Max Persisted Events
+// =============================================================================
+
+- (void)testMaxPersistedEvents {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertEqual(12, config.maxPersistedEvents);
+
+    // alter to valid value
+    config.maxPersistedEvents = 10;
+    XCTAssertEqual(10, config.maxPersistedEvents);
+
+    // alter to max value
+    config.maxPersistedEvents = 100;
+    XCTAssertEqual(100, config.maxPersistedEvents);
+
+    // alter to min value
+    config.maxPersistedEvents = 1;
+    XCTAssertEqual(1, config.maxPersistedEvents);
+
+    config.maxPersistedEvents = 0;
+    XCTAssertEqual(1, config.maxPersistedEvents);
+
+    // alter to negative value
+    config.maxPersistedEvents = -1;
+    XCTAssertEqual(1, config.maxPersistedEvents);
+
+    // alter to > max value
+    config.maxPersistedEvents = 500;
+    XCTAssertEqual(1, config.maxPersistedEvents);
+}
+
+// =============================================================================
 // MARK: - Max Breadcrumb
 // =============================================================================
 

@@ -16,8 +16,6 @@
 #import "Bugsnag.h"
 #import "BugsnagErrorTypes.h"
 
-NSUInteger const BSG_MAX_STORED_REPORTS = 12;
-
 @implementation BugsnagCrashSentry
 
 - (void)install:(BugsnagConfiguration *)config
@@ -29,7 +27,7 @@ NSUInteger const BSG_MAX_STORED_REPORTS = 12;
     ksCrash.sink = sink;
     ksCrash.introspectMemory = YES;
     ksCrash.onCrash = onCrash;
-    ksCrash.maxStoredReports = BSG_MAX_STORED_REPORTS;
+    ksCrash.maxStoredReports = (int)config.maxPersistedEvents;
 
     // overridden elsewhere for handled errors, so we can assume that this only
     // applies to unhandled errors
