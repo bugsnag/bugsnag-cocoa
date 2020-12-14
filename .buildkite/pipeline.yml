@@ -1,5 +1,6 @@
 steps:
   - label: Build cocoa IPA
+    key: cocoa_fixture
     timeout_in_minutes: 20
     agents:
       queue: opensource-mac-cocoa
@@ -10,9 +11,20 @@ steps:
       - ./features/scripts/export_ios_app.sh
       - ./features/scripts/export_mac_app.sh
 
-  - wait
+  - label: macOS 10.15 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa
+    env:
+      - TEST_CONFIGURE: Debug
+      - PLATFORM: macOS
+    commands:
+      - make bootstrap
+      - make analyze test
 
   - label: ':ios: iOS 14 end-to-end tests'
+    depends_on:
+      - cocoa_fixture
     timeout_in_minutes: 60
     agents:
       queue: opensource
@@ -36,6 +48,8 @@ steps:
           limit: 2
 
   - label: ':ios: iOS 13 end-to-end tests'
+    depends_on:
+      - cocoa_fixture
     timeout_in_minutes: 60
     agents:
       queue: opensource
@@ -59,6 +73,8 @@ steps:
           limit: 2
 
   - label: ':ios: iOS 12 end-to-end tests'
+    depends_on:
+      - cocoa_fixture
     timeout_in_minutes: 60
     agents:
       queue: opensource
@@ -82,6 +98,8 @@ steps:
           limit: 2
 
   - label: ':ios: iOS 11 end-to-end tests'
+    depends_on:
+      - cocoa_fixture
     # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
     # sessions need resetting frequently, taking a minute or more each time.
     timeout_in_minutes: 90
@@ -107,6 +125,8 @@ steps:
           limit: 2
 
   - label: ':ios: iOS 10 end-to-end tests'
+    depends_on:
+      - cocoa_fixture
     timeout_in_minutes: 60
     agents:
       queue: opensource
