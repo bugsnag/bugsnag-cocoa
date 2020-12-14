@@ -150,8 +150,10 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
 @property(readwrite, retain, nullable) NSSet<id> *redactedKeys;
 
 /**
- * A set of strings and NSRegularExpression objects that determines which errors should
+ * A set of strings and / or NSRegularExpression objects that determine which errors should
  * be discarded based on their `errorClass`.
+ *
+ * Comparisons are case sensitive.
  *
  * OnError / OnSendError blocks will not be called for discarded errors.
  *
