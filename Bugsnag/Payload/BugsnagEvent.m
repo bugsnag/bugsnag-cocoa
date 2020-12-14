@@ -646,12 +646,12 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     event[BSGKeyGroupingHash] = self.groupingHash;
 
     event[BSGKeyUnhandled] = @(self.handledState.unhandled);
-    if (self.handledState.unhandledOverridden) {
-        event[BSGKeyUnhandledOverridden] = @(self.handledState.unhandledOverridden);
-    }
 
     // serialize handled/unhandled into payload
     NSMutableDictionary *severityReason = [NSMutableDictionary new];
+    if (self.handledState.unhandledOverridden) {
+        severityReason[BSGKeyUnhandledOverridden] = @(self.handledState.unhandledOverridden);
+    }
     NSString *reasonType = [BugsnagHandledState
         stringFromSeverityReason:self.handledState.calculateSeverityReasonType];
     severityReason[BSGKeyType] = reasonType;

@@ -26,41 +26,12 @@
     errorTypes.signals = false;
     errorTypes.ooms = false;
     self.config.enabledErrorTypes = errorTypes;
-    self.config.autoTrackSessions = YES;
-    [super startBugsnag];
-}
-
-- (void)run {
-    // From null prt scenario
-    volatile char *ptr = NULL;
-    (void) *ptr;
-}
-
-@end
-
-// MARK: -
-
-
-/**
- * Disable all crash reporting (except, implicitly, manual), send a manual report
- * and crash the app (one session request with 2 sessions and 1 report should be sent)
- */
-@implementation DisableAllExceptManualExceptionsSendManualAndCrashScenario
-
-- (void)startBugsnag {
-    BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
-    errorTypes.cppExceptions = false;
-    errorTypes.machExceptions = false;
-    errorTypes.unhandledExceptions = false;
-    errorTypes.signals = false;
-    errorTypes.ooms = false;
-    self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = NO;
     [super startBugsnag];
 }
 
 - (void)run {
-    // Manual crash
+    // Notify error so that mazerunner sees something
     [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
 
     // From null prt scenario
@@ -103,6 +74,7 @@
     errorTypes.machExceptions = false;
     errorTypes.ooms = false;
     self.config.enabledErrorTypes = errorTypes;
+    self.config.autoTrackSessions = NO;
     [self.config addOnSendErrorBlock:^BOOL(BugsnagEvent * _Nonnull event) {
         // Suppress the SIGSEGV caused by EXC_BAD_ACCESS (https://flylib.com/books/en/3.126.1.110/1/)
         return ![@"SIGSEGV" isEqualToString:event.errors[0].errorClass];
@@ -113,6 +85,9 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-noreturn"
 - (void)run  __attribute__((noreturn)) {
+    // Notify error so that mazerunner sees something
+    [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+
     strcmp(0, ""); // Generate EXC_BAD_ACCESS (see e.g. https://stackoverflow.com/q/22488358/2431627)
 }
 #pragma clang diagnostic pop
@@ -135,6 +110,9 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-noreturn"
 - (void)run  __attribute__((noreturn)) {
+    // Notify error so that mazerunner sees something
+    [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+
     raise(SIGINT);
 }
 #pragma  clang pop

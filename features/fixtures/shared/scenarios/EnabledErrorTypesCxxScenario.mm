@@ -20,6 +20,7 @@ const char *disabled_cxx_reporting_kaboom_exception::what() const throw() {
     errorTypes.cppExceptions = false;
     errorTypes.ooms = false;
     self.config.enabledErrorTypes = errorTypes;
+    self.config.autoTrackSessions = false;
     [self.config addOnSendErrorBlock:^BOOL(BugsnagEvent * _Nonnull event) {
         // std::exception terminates with abort() by default, therefore discard SIGABRT
         return ![@"SIGABRT" isEqualToString:event.errors[0].errorClass];
@@ -32,6 +33,9 @@ const char *disabled_cxx_reporting_kaboom_exception::what() const throw() {
 }
 
 - (void)crash __attribute__((noreturn)) {
+    // Notify error so that mazerunner sees something
+    [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+
     throw new disabled_cxx_reporting_kaboom_exception;
 }
 

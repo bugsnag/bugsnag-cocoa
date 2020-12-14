@@ -5,6 +5,10 @@ services:
     environment:
       DEBUG:
       VERBOSE:
+      BUILDKITE:
+      BUILDKITE_PIPELINE_NAME:
+      MAZE_DEVICE_FARM_USERNAME:
+      MAZE_DEVICE_FARM_ACCESS_KEY:
     volumes:
       - ./features/fixtures/ios-swift-cocoapods/output:/app/build
       - ./features/:/app/features/

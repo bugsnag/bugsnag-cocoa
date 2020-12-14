@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 6.4.1 (2020-12-14)
+
+### Bug fixes
+
+* Place "unhandledOverridden" inside "severityReason" instead of at the top level.
+  [937](https://github.com/bugsnag/bugsnag-cocoa/pull/937)
+
 ## 6.4.0 (2020-12-08)
 
 ### Enhancements

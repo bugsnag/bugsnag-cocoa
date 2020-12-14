@@ -25,8 +25,6 @@ steps:
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
           - "--device=IOS_14"
-          - "--username=$BROWSER_STACK_USERNAME"
-          - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.17.0"
           - "--fail-fast"
@@ -50,8 +48,6 @@ steps:
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
           - "--device=IOS_13"
-          - "--username=$BROWSER_STACK_USERNAME"
-          - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.17.0"
           - "--fail-fast"
@@ -75,8 +71,6 @@ steps:
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
           - "--device=IOS_12"
-          - "--username=$BROWSER_STACK_USERNAME"
-          - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.17.0"
           - "--fail-fast"
@@ -88,7 +82,9 @@ steps:
           limit: 2
 
   - label: ':ios: iOS 11 end-to-end tests'
-    timeout_in_minutes: 60
+    # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
+    # sessions need resetting frequently, taking a minute or more each time.
+    timeout_in_minutes: 90
     agents:
       queue: opensource
     plugins:
@@ -100,8 +96,6 @@ steps:
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
           - "--device=IOS_11_0_IPHONE_8_PLUS"
-          - "--username=$BROWSER_STACK_USERNAME"
-          - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.16.0"
           - "--fail-fast"
@@ -125,8 +119,6 @@ steps:
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
           - "--device=IOS_10"
-          - "--username=$BROWSER_STACK_USERNAME"
-          - "--access-key=$BROWSER_STACK_ACCESS_KEY"
           - "--resilient"
           - "--appium-version=1.15.0"
           - "--fail-fast"
