@@ -8,23 +8,19 @@
 
 #import <XCTest/XCTest.h>
 
+#import <Bugsnag/Bugsnag.h>
+
+#import "BSGNotificationBreadcrumbs.h"
 #import "BugsnagBreadcrumb+Private.h"
-#import "BugsnagBreadcrumbs.h"
-#import "BugsnagClient+Private.h"
-
-#if TARGET_OS_IOS
-#import "UIDeviceStub.h"
-#endif
 
 
-@interface NotificationBreadcrumbTests : XCTestCase
+@interface NotificationBreadcrumbTests : XCTestCase <BSGBreadcrumbSink>
 
 @property NSNotificationCenter *notificationCenter;
 @property id notificationObject;
 @property NSDictionary *notificationUserInfo;
 
-@property BugsnagClient *client;
-
+@property BSGNotificationBreadcrumbs *notificationBreadcrumbs;
 @property (nonatomic) BugsnagBreadcrumb *breadcrumb;
 
 @end
@@ -39,16 +35,11 @@
 - (void)setUp {
     self.breadcrumb = nil;
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
-    self.client = [[BugsnagClient alloc] initWithConfiguration:configuration];
-    self.client.breadcrumbs = (id)self;
-#if TARGET_OS_IOS
-    self.client.uiDevice = (id)[[UIDeviceStub alloc] init];
-    ((UIDeviceStub *)self.client.uiDevice).orientation = UIDeviceOrientationPortrait;
-#endif
-    [self.client start];
+    self.notificationBreadcrumbs = [[BSGNotificationBreadcrumbs alloc] initWithConfiguration:configuration breadcrumbSink:self];
     self.notificationCenter = NSNotificationCenter.defaultCenter;
     self.notificationObject = nil;
     self.notificationUserInfo = nil;
+    [self.notificationBreadcrumbs start];
 }
 
 - (BugsnagBreadcrumb *)breadcrumbForNotificationWithName:(NSString *)name {
@@ -56,6 +47,16 @@
     [self.notificationCenter postNotification:
      [NSNotification notificationWithName:name object:self.notificationObject userInfo:self.notificationUserInfo]];
     return self.breadcrumb;
+}
+
+#pragma mark BSGBreadcrumbSink
+
+- (void)leaveBreadcrumbWithMessage:(NSString *)message metadata:(NSDictionary *)metadata andType:(BSGBreadcrumbType)type {
+    self.breadcrumb = [BugsnagBreadcrumb breadcrumbWithBlock:^(BugsnagBreadcrumb *breadcrumb) {
+        breadcrumb.message = message;
+        breadcrumb.metadata = metadata;
+        breadcrumb.type = type;
+    }];
 }
 
 #define TEST(__NAME__, __TYPE__, __MESSAGE__, __METADATA__) do { \
@@ -67,12 +68,6 @@
         XCTAssertEqualObjects(breadcrumb.metadata, __METADATA__); \
     } \
 } while (0)
-
-#pragma mark Tests
-
-- (void)testStartedBreadcrumb {
-    XCTAssertEqualObjects(self.breadcrumb.message, @"Bugsnag loaded");
-}
 
 #pragma mark iOS Tests
 
@@ -86,12 +81,6 @@
     TEST(UIApplicationWillTerminateNotification, BSGBreadcrumbTypeState, @"App Will Terminate", @{});
 }
  
-- (void)testUIDeviceNotifications {
-    ((UIDeviceStub *)self.client.uiDevice).orientation = UIDeviceOrientationLandscapeLeft;
-    TEST(UIDeviceOrientationDidChangeNotification, BSGBreadcrumbTypeState, @"Orientation Changed",
-         (@{@"from": @"portrait", @"to": @"landscapeleft"}));
-}
-
 - (void)testUIKeyboardNotifications {
     TEST(UIKeyboardDidHideNotification, BSGBreadcrumbTypeState, @"Keyboard Became Hidden", @{});
     TEST(UIKeyboardDidShowNotification, BSGBreadcrumbTypeState, @"Keyboard Became Visible", @{});
@@ -201,24 +190,5 @@
 }
 
 #endif
-
-@end
-
-
-#pragma mark -
-
-@implementation NotificationBreadcrumbTests (BugsnagBreadcrumbsMock)
-
-- (void)removeAllBreadcrumbs {}
-
-- (void)addBreadcrumb:(NSString *)message {}
-
-- (void)addBreadcrumbWithBlock:(BSGBreadcrumbConfiguration)block {
-    self.breadcrumb = [BugsnagBreadcrumb breadcrumbWithBlock:block];
-}
-
-- (NSArray<BugsnagBreadcrumb *> *)breadcrumbs {
-    return @[];
-}
 
 @end

@@ -1,0 +1,53 @@
+//
+//  BSGBreadcrumbsProducer.h
+//  Bugsnag
+//
+//  Created by Nick Dowell on 10/12/2020.
+//  Copyright © 2020 Bugsnag Inc. All rights reserved.
+//
+
+#import <Bugsnag/BugsnagBreadcrumb.h>
+
+@class BugsnagConfiguration;
+
+NS_ASSUME_NONNULL_BEGIN
+
+@protocol BSGBreadcrumbSink <NSObject>
+
+- (void)leaveBreadcrumbWithMessage:(NSString *)message metadata:(nullable NSDictionary *)metadata andType:(BSGBreadcrumbType)type;
+
+@end
+
+
+#pragma mark -
+
+@interface BSGNotificationBreadcrumbs : NSObject
+
+#pragma mark Initializers
+
+- (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration
+                       breadcrumbSink:(id<BSGBreadcrumbSink>)breadcrumbSink NS_DESIGNATED_INITIALIZER;
+
+- (instancetype)init UNAVAILABLE_ATTRIBUTE;
+
+#pragma mark Properties
+
+@property BugsnagConfiguration *configuration;
+
+@property (weak) id<BSGBreadcrumbSink> breadcrumbSink;
+
+@property NSNotificationCenter *notificationCenter;
+
+@property NSNotificationCenter *workspaceNotificationCenter;
+
+#pragma mark Methods
+
+/// Starts observing the default notifications.
+- (void)start;
+
+/// Starts observing notifications with the given name and adds a "state" breadcrumbs when received.
+- (void)startListeningForStateChangeNotification:(NSNotificationName)notificationName;
+
+@end
+
+NS_ASSUME_NONNULL_END
