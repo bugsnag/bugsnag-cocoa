@@ -16,8 +16,8 @@ steps:
     agents:
       queue: opensource-mac-cocoa
     env:
-      - TEST_CONFIGURE: Debug
-      - PLATFORM: macOS
+      - TEST_CONFIGURATION=Debug
+      - PLATFORM=macOS
     commands:
       - make bootstrap
       - make analyze test
