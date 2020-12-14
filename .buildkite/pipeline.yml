@@ -16,7 +16,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa
     commands:
-      - env
+      - ruby -e "pp ENV"
 
   - label: macOS 10.15 unit tests
     timeout_in_minutes: 10
