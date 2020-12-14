@@ -11,19 +11,12 @@ steps:
       - ./features/scripts/export_ios_app.sh
       - ./features/scripts/export_mac_app.sh
 
-  - label: get env
+  - label: macOS 10.15 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa
     env:
       LANG: "en_GB.UTF-8"
-    commands:
-      - ruby -e "pp ENV"
-
-  - label: macOS 10.15 unit tests
-    timeout_in_minutes: 10
-    agents:
-      queue: opensource-mac-cocoa
     commands:
       - make bootstrap
       - TEST_CONFIGURATION=Debug PLATFORM=macOS make analyze test
