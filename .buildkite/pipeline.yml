@@ -15,6 +15,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa
+    env:
+      LANG: "en_GB.UTF-8"
     commands:
       - ruby -e "pp ENV"
 
