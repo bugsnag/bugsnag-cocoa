@@ -11,6 +11,13 @@ steps:
       - ./features/scripts/export_ios_app.sh
       - ./features/scripts/export_mac_app.sh
 
+  - label: get env
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa
+    commands:
+      - env
+
   - label: macOS 10.15 unit tests
     timeout_in_minutes: 10
     agents:
