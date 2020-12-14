@@ -19,6 +19,28 @@ steps:
       - make bootstrap
       - TEST_CONFIGURATION=Debug PLATFORM=macOS make analyze test
 
+  - label: iOS 11-14 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa
+    commands:
+      - make bootstrap
+      - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=14.1
+      - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=13.5
+      - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=12.4
+      - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=11.4
+
+  - label: tvOS 11-14 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa
+    commands:
+      - make bootstrap
+      - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=14.0
+      - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=13.3
+      - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=12.4
+      - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=11.4
+
   - label: ':ios: iOS 14 end-to-end tests'
     depends_on:
       - cocoa_fixture
