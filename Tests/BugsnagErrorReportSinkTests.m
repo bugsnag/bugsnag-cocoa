@@ -354,7 +354,7 @@
     NSDictionary *payload = [self reportFromHandledState:state];
     
     XCTAssertTrue([payload[@"unhandled"] boolValue]);
-    XCTAssertTrue([payload[@"unhandledOverridden"] boolValue]);
+    XCTAssertTrue([payload[@"severityReason"][@"unhandledOverridden"] boolValue]);
 
     state.unhandled = YES;
     state.unhandledOverridden = NO;
@@ -368,7 +368,7 @@
     payload = [self reportFromHandledState:state];
     
     XCTAssertFalse([payload[@"unhandled"] boolValue]);
-    XCTAssertTrue([payload[@"unhandledOverridden"] boolValue]);
+    XCTAssertTrue([payload[@"severityReason"][@"unhandledOverridden"] boolValue]);
 
     state.unhandled = NO;
     state.unhandledOverridden = NO;

@@ -37,7 +37,7 @@ Feature: Callbacks can access and modify event information
     And the event "user.email" equals "customEmail"
     And the event "user.name" equals "customName"
     And the event "unhandled" is true
-    And the event "unhandledOverridden" is true
+    And the event "severityReason.unhandledOverridden" is true
 
   Scenario: An OnErrorCallback can overwrite unhandled (false) for a handled error
     When I run "OnErrorOverwriteUnhandledFalseScenario"
