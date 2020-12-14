@@ -27,7 +27,7 @@ steps:
       queue: opensource-mac-cocoa
     commands:
       - make bootstrap
-      - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=14.1
+      # - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=14.1
       - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=13.5
       - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=12.4
       - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=11.4
@@ -38,7 +38,7 @@ steps:
       queue: opensource-mac-cocoa
     commands:
       - make bootstrap
-      - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=14.0
+      # - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=14.0
       - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=13.3
       - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=12.4
       - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=11.4
