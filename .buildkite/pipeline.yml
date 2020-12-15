@@ -25,6 +25,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa
+    env:
+      LANG: "en_GB.UTF-8"
     commands:
       - make bootstrap
       # - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=14.1
@@ -36,6 +38,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa
+    env:
+      LANG: "en_GB.UTF-8"
     commands:
       - make bootstrap
       # - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=14.0

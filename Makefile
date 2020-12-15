@@ -28,7 +28,7 @@ else
   DESTINATION?=platform=tvOS Simulator,name=Apple TV,OS=$(OS)
  else
   SDK?=iphonesimulator
-  DEVICE?=iPhone 5s
+  DEVICE?=iPhone 8
   DESTINATION?=platform=iOS Simulator,name=$(DEVICE),OS=$(OS)
   RELEASE_DIR=Release-iphoneos
  endif
