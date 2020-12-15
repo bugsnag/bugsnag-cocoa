@@ -26,5 +26,8 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter * _Nonnull writer);
 
 - (void)didEnterBackgroundNotification;
 
+- (void)triggerExcBreakpoint;
+
 @property (nonatomic, strong, nullable) NSString *eventMode;
+
 @end

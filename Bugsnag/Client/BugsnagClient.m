@@ -964,6 +964,12 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 - (void)notifyInternal:(BugsnagEvent *_Nonnull)event
                  block:(BugsnagOnErrorBlock)block
 {
+    NSString *errorClass = event.errors.firstObject.errorClass;
+    if ([self.configuration shouldDiscardErrorClass:errorClass]) {
+        bsg_log_info(@"Discarding event because errorClass \"%@\" matched configuration.discardClasses", errorClass);
+        return;
+    }
+    
     // enhance device information with additional metadata
     NSDictionary *deviceFields = [self.state getMetadataFromSection:BSGKeyDeviceState];
 

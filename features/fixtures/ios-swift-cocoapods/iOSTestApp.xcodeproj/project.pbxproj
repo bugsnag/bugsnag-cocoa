@@ -16,6 +16,7 @@
 		00432CC4240912A100826D05 /* EnabledErrorTypesCxxScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 00432CC2240912A000826D05 /* EnabledErrorTypesCxxScenario.mm */; };
 		00507A64242BFE5600EF1B87 /* EnabledBreadcrumbTypesIsNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00507A63242BFE5600EF1B87 /* EnabledBreadcrumbTypesIsNilScenario.swift */; };
 		00CEB60D24080C690004793D /* EnabledErrorTypesScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEB60C24080C690004793D /* EnabledErrorTypesScenario.m */; };
+		0163BFA72583B3CF008DC28B /* DiscardClassesScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0163BFA62583B3CF008DC28B /* DiscardClassesScenarios.swift */; };
 		6526A0D4248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */; };
 		8A14F0F62282D4AE00337B05 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */; };
@@ -159,6 +160,7 @@
 		00A98315240DBB7A0016A57E /* out_of_memory.feature */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = out_of_memory.feature; path = ../../../out_of_memory.feature; sourceTree = "<group>"; };
 		00CEB60B24080C690004793D /* EnabledErrorTypesScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EnabledErrorTypesScenario.h; sourceTree = "<group>"; };
 		00CEB60C24080C690004793D /* EnabledErrorTypesScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EnabledErrorTypesScenario.m; sourceTree = "<group>"; };
+		0163BFA62583B3CF008DC28B /* DiscardClassesScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardClassesScenarios.swift; sourceTree = "<group>"; };
 		4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOSTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadConfigFromFileAutoScenario.swift; sourceTree = "<group>"; };
 		8A32DB8022424E3000EDD92F /* NSExceptionShiftScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSExceptionShiftScenario.h; sourceTree = "<group>"; };
@@ -549,6 +551,7 @@
 				F49695A3243EF7B600105DA9 /* OOMs */,
 				F49695AE2445476700105DA9 /* Plugin */,
 				0037410E2473CF2300BE41AA /* AppAndDeviceAttributesScenario.swift */,
+				0163BFA62583B3CF008DC28B /* DiscardClassesScenarios.swift */,
 				8AB1081823301FE600672818 /* ReleaseStageScenarios.swift */,
 				F4295ABA693D273D52AA9F6B /* Scenario.h */,
 				F42954E8B66F3FB7F5333CF7 /* Scenario.m */,
@@ -877,6 +880,7 @@
 				8AB65FCC22DC77CB001200AB /* LoadConfigFromFileScenario.swift in Sources */,
 				E7B79CD4247FD6760039FB88 /* ManualContextOnErrorScenario.swift in Sources */,
 				E7767F13221C21E30006648C /* ResumedSessionScenario.swift in Sources */,
+				0163BFA72583B3CF008DC28B /* DiscardClassesScenarios.swift in Sources */,
 				E700EE69247D73F8008CFFB6 /* UnhandledMachExceptionScenario.m in Sources */,
 				E75040B12478214F005D33BD /* MetadataRedactionRegexScenario.swift in Sources */,
 				E700EE5B247D3224008CFFB6 /* OriginalErrorNSExceptionScenario.swift in Sources */,
