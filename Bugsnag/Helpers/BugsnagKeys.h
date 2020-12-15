@@ -64,6 +64,7 @@ extern NSString *const BSGKeyMachoUUID;
 extern NSString *const BSGKeyMachoVMAddress;
 extern NSString *const BSGKeyMaxBreadcrumbs;
 extern NSString *const BSGKeyMaxPersistedEvents;
+extern NSString *const BSGKeyMaxPersistedSessions;
 extern NSString *const BSGKeyMessage;
 extern NSString *const BSGKeyMetadata;
 extern NSString *const BSGKeyMethod;

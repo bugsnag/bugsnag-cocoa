@@ -60,6 +60,7 @@ NSString *const BSGKeyMachoUUID = @"machoUUID";
 NSString *const BSGKeyMachoVMAddress = @"machoVMAddress";
 NSString *const BSGKeyMaxBreadcrumbs = @"maxBreadcrumbs";
 NSString *const BSGKeyMaxPersistedEvents = @"maxPersistedEvents";
+NSString *const BSGKeyMaxPersistedSessions = @"maxPersistedSessions";
 NSString *const BSGKeyMessage = @"message";
 NSString *const BSGKeyMetadata = @"metaData";
 NSString *const BSGKeyMethod = @"method";
