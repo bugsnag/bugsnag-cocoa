@@ -30,7 +30,7 @@ steps:
     commands:
       - make bootstrap
       # - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=14.1
-      - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=13.5
+      - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=13.7
       - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=12.4
       - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=11.4
 
