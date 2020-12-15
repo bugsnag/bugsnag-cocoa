@@ -213,31 +213,28 @@ NSString * const BSGNotificationBreadcrumbsMessageAppWillTerminate = @"App Will 
         }
         
 #if TARGET_OS_OSX
-        // Workspace-specific events - MacOS only
+        // Workspace-specific events - macOS only
         for (NSNotificationName name in [self workspaceBreadcrumbStateEvents]) {
-            NSLog(@"%@", name);
             [_workspaceNotificationCenter addObserver:self
                                              selector:@selector(addBreadcrumbForNotification:)
                                                  name:name
                                                object:nil];
         }
-#endif
         
-        // NSMenu events (Mac only)
+        // NSMenu events (macOS only)
         for (NSNotificationName name in [self automaticBreadcrumbMenuItemEvents]) {
-            NSLog(@"%@", name);
             [_notificationCenter addObserver:self
                                     selector:@selector(addBreadcrumbForMenuItemNotification:)
                                         name:name
                                       object:nil];
         }
+#endif
     }
     
     // Navigation events
     if ([_configuration shouldRecordBreadcrumbType:BSGBreadcrumbTypeNavigation]) {
         // UI/NSTableView events
         for (NSNotificationName name in [self automaticBreadcrumbTableItemEvents]) {
-            NSLog(@"%@", name);
             [_notificationCenter addObserver:self
                                     selector:@selector(addBreadcrumbForTableViewNotification:)
                                         name:name
@@ -249,7 +246,6 @@ NSString * const BSGNotificationBreadcrumbsMessageAppWillTerminate = @"App Will 
     if ([_configuration shouldRecordBreadcrumbType:BSGBreadcrumbTypeUser]) {
         // UITextField/NSControl events (text editing)
         for (NSNotificationName name in [self automaticBreadcrumbControlEvents]) {
-            NSLog(@"%@", name);
             [_notificationCenter addObserver:self
                                     selector:@selector(addBreadcrumbForControlNotification:)
                                         name:name
