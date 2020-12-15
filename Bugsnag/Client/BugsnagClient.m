@@ -796,7 +796,7 @@ NSString *_lastOrientation = nil;
             // If the termination breadcrumb is set, the app entered a normal
             // termination flow but expired before the watchdog sentinel could
             // be updated. In this case, no report should be sent.
-            if ([name isEqualToString:@"App Will Terminate"]) {
+            if ([name isEqualToString:BSGNotificationBreadcrumbsMessageAppWillTerminate]) {
                 return;
             }
         }
@@ -1029,7 +1029,7 @@ NSString *_lastOrientation = nil;
     // Send a breadcrumb and preserve the orientation.
 
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
-                      withMessage:@"Orientation Changed"
+                      withMessage:[self.notificationBreadcrumbs messageForNotificationName:notification.name]
                       andMetadata:@{
                           @"from" : _lastOrientation,
                           @"to" : orientation

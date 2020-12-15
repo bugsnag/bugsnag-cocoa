@@ -19,6 +19,9 @@
 #endif
 
 
+NSString * const BSGNotificationBreadcrumbsMessageAppWillTerminate = @"App Will Terminate";
+
+
 @interface BSGNotificationBreadcrumbs ()
 
 @property NSDictionary<NSNotificationName, NSString *> *notificationNameMap;
@@ -54,7 +57,7 @@
             UIApplicationDidReceiveMemoryWarningNotification : @"Memory Warning",
             UIApplicationUserDidTakeScreenshotNotification : @"Took Screenshot",
             UIApplicationWillEnterForegroundNotification : @"App Will Enter Foreground",
-            UIApplicationWillTerminateNotification : @"App Will Terminate",
+            UIApplicationWillTerminateNotification : BSGNotificationBreadcrumbsMessageAppWillTerminate,
             UIDeviceBatteryLevelDidChangeNotification : @"Battery Level Changed",
             UIDeviceBatteryStateDidChangeNotification : @"Battery State Changed",
             UIDeviceOrientationDidChangeNotification : @"Orientation Changed",
@@ -76,7 +79,7 @@
             NSApplicationDidHideNotification : @"App Did Hide",
             NSApplicationDidResignActiveNotification : @"App Resigned Active",
             NSApplicationDidUnhideNotification : @"App Did Unhide",
-            NSApplicationWillTerminateNotification : @"App Will Terminate",
+            NSApplicationWillTerminateNotification : BSGNotificationBreadcrumbsMessageAppWillTerminate,
             NSControlTextDidBeginEditingNotification : @"Control Text Began Edit",
             NSControlTextDidEndEditingNotification : @"Control Text Ended Edit",
             NSMenuWillSendActionNotification : @"Menu Will Send Action",

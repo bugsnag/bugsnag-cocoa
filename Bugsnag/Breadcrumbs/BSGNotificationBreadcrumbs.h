@@ -21,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark -
 
+extern NSString * const BSGNotificationBreadcrumbsMessageAppWillTerminate;
+
 @interface BSGNotificationBreadcrumbs : NSObject
 
 #pragma mark Initializers
@@ -47,6 +49,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Starts observing notifications with the given name and adds a "state" breadcrumbs when received.
 - (void)startListeningForStateChangeNotification:(NSNotificationName)notificationName;
+
+- (NSString *)messageForNotificationName:(NSNotificationName)name;
 
 @end
 
