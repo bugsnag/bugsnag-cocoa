@@ -219,6 +219,14 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
 @property(retain, nullable) NSString *appType;
 
 /**
+ * Sets the maximum number of events which will be stored. Once the threshold is reached,
+ * the oldest events will be deleted.
+ *
+ * By default, 12 events are stored: this can be amended up to a maximum of 100.
+ */
+@property (nonatomic) NSUInteger maxPersistedEvents;
+
+/**
  * Sets the maximum number of breadcrumbs which will be stored. Once the threshold is reached,
  * the oldest breadcrumbs will be deleted.
  *

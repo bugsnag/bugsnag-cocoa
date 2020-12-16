@@ -128,6 +128,25 @@
     XCTAssertEqualObjects(@"cocoa", self.config.appType);
 }
 
+- (void)testValidMaxPersistedEvents {
+    self.config.maxPersistedEvents = 1;
+    XCTAssertEqual(1, self.config.maxPersistedEvents);
+    self.config.maxPersistedEvents = 100;
+    XCTAssertEqual(100, self.config.maxPersistedEvents);
+    self.config.maxPersistedEvents = 40;
+    XCTAssertEqual(40, self.config.maxPersistedEvents);
+}
+
+- (void)testInvalidMaxPersistedEvents {
+    self.config.maxPersistedEvents = 1;
+    self.config.maxPersistedEvents = 0;
+    XCTAssertEqual(1, self.config.maxPersistedEvents);
+    self.config.maxPersistedEvents = -1;
+    XCTAssertEqual(1, self.config.maxPersistedEvents);
+    self.config.maxPersistedEvents = 590;
+    XCTAssertEqual(1, self.config.maxPersistedEvents);
+}
+
 - (void)testValidMaxBreadcrumbs {
     self.config.maxBreadcrumbs = 0;
     XCTAssertEqual(0, self.config.maxBreadcrumbs);

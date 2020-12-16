@@ -84,6 +84,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [copy setEnabledReleaseStages:self.enabledReleaseStages];
     copy.discardClasses = self.discardClasses;
     [copy setRedactedKeys:self.redactedKeys];
+    [copy setMaxPersistedEvents:self.maxPersistedEvents];
     [copy setMaxBreadcrumbs:self.maxBreadcrumbs];
     copy->_metadata = [[BugsnagMetadata alloc] initWithDictionary:[[self.metadata toDictionary] mutableCopy]];
     [copy setEndpoints:self.endpoints];
@@ -160,6 +161,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _enabledReleaseStages = nil;
     _redactedKeys = [NSSet setWithArray:@[@"password"]];
     _enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeAll;
+    _maxPersistedEvents = 12;
     _maxBreadcrumbs = 25;
     _autoTrackSessions = YES;
     _sendThreads = BSGThreadSendPolicyAlways;
@@ -415,6 +417,26 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 // -----------------------------------------------------------------------------
 // MARK: - Properties: Getters and Setters
 // -----------------------------------------------------------------------------
+
+@synthesize maxPersistedEvents = _maxPersistedEvents;
+
+- (NSUInteger)maxPersistedEvents {
+    @synchronized (self) {
+        return _maxPersistedEvents;
+    }
+}
+
+- (void)setMaxPersistedEvents:(NSUInteger)maxPersistedEvents {
+    @synchronized (self) {
+        if (maxPersistedEvents >= 1 && maxPersistedEvents <= 100) {
+            _maxPersistedEvents = maxPersistedEvents;
+        } else {
+            bsg_log_err(@"Invalid configuration value detected. Option maxPersistedEvents "
+                        "should be an integer between 1-100. Supplied value is %lu",
+                        (unsigned long) maxPersistedEvents);
+        }
+    }
+}
 
 @synthesize maxBreadcrumbs = _maxBreadcrumbs;
 

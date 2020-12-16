@@ -349,7 +349,6 @@ NSString *_lastOrientation = nil;
 
 - (void)start {
     [self.configuration validate];
-    
     [self.crashSentry install:self.configuration
                     apiClient:self.errorReportApiClient
                       onCrash:&BSSerializeDataCrashHandler];

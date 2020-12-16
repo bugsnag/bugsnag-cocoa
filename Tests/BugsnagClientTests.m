@@ -187,6 +187,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     XCTAssertEqual(expected.enabledReleaseStages, actual.enabledReleaseStages);
     XCTAssertEqualObjects(expected.endpoints.notify, actual.endpoints.notify);
     XCTAssertEqualObjects(expected.endpoints.sessions, actual.endpoints.sessions);
+    XCTAssertEqual(expected.maxPersistedEvents, actual.maxPersistedEvents);
     XCTAssertEqual(expected.maxBreadcrumbs, actual.maxBreadcrumbs);
     XCTAssertEqual(expected.persistUser, actual.persistUser);
     XCTAssertEqual([expected.redactedKeys count], [actual.redactedKeys count]);
@@ -209,11 +210,13 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
 
     // Modify some arbitrary properties
     config.persistUser = !config.persistUser;
+    config.maxPersistedEvents = config.maxPersistedEvents * 2;
     config.maxBreadcrumbs = config.maxBreadcrumbs * 2;
     config.appVersion = @"99.99.99";
 
     // Ensure the changes haven't been reflected in our copy
     XCTAssertNotEqual(initialConfig.persistUser, config.persistUser);
+    XCTAssertNotEqual(initialConfig.maxPersistedEvents, config.maxPersistedEvents);
     XCTAssertNotEqual(initialConfig.maxBreadcrumbs, config.maxBreadcrumbs);
     XCTAssertNotEqualObjects(initialConfig.appVersion, config.appVersion);
 
@@ -231,6 +234,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     BugsnagConfiguration *updatedConfig = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_2];
     updatedConfig.persistUser = !initialConfig.persistUser;
     updatedConfig.maxBreadcrumbs = initialConfig.maxBreadcrumbs * 2;
+    updatedConfig.maxPersistedEvents = initialConfig.maxPersistedEvents * 2;
     updatedConfig.appVersion = @"99.99.99";
 
     [Bugsnag startWithConfiguration:updatedConfig];

@@ -30,6 +30,7 @@ static BOOL BSGValueIsBoolean(id object) {
         BSGKeyEnabledReleaseStages,
         BSGKeyEndpoints,
         BSGKeyMaxBreadcrumbs,
+        BSGKeyMaxPersistedEvents,
         BSGKeyPersistUser,
         BSGKeyRedactedKeys,
         BSGKeyReleaseStage,
@@ -54,7 +55,8 @@ static BOOL BSGValueIsBoolean(id object) {
     [self loadStringArray:config options:options key:BSGKeyRedactedKeys];
     [self loadEndpoints:config options:options];
 
-    [self loadMaxBreadcrumbs:config options:options];
+    [self loadNumber:config options:options key:BSGKeyMaxBreadcrumbs];
+    [self loadNumber:config options:options key:BSGKeyMaxPersistedEvents];
     [self loadSendThreads:config options:options];
     return config;
 }
@@ -67,6 +69,12 @@ static BOOL BSGValueIsBoolean(id object) {
 
 + (void)loadString:(BugsnagConfiguration *)config options:(NSDictionary *)options key:(NSString *)key {
     if (options[key] && [options[key] isKindOfClass:[NSString class]]) {
+        [config setValue:options[key] forKey:key];
+    }
+}
+
++ (void)loadNumber:(BugsnagConfiguration *)config options:(NSDictionary *)options key:(NSString *)key {
+    if (options[key] && [options[key] isKindOfClass:[NSNumber class]]) {
         [config setValue:options[key] forKey:key];
     }
 }
@@ -94,13 +102,6 @@ static BOOL BSGValueIsBoolean(id object) {
         if ([endpoints[BSGKeySessionsEndpoint] isKindOfClass:[NSString class]]) {
             config.endpoints.sessions = endpoints[BSGKeySessionsEndpoint];
         }
-    }
-}
-
-+ (void)loadMaxBreadcrumbs:(BugsnagConfiguration *)config options:(NSDictionary *)options {
-    if (options[BSGKeyMaxBreadcrumbs] && [options[BSGKeyMaxBreadcrumbs] isKindOfClass:[NSNumber class]]) {
-        NSNumber *num = options[BSGKeyMaxBreadcrumbs];
-        config.maxBreadcrumbs = [num unsignedIntValue];
     }
 }
 
