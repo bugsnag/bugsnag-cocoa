@@ -17,35 +17,91 @@ steps:
       queue: opensource-mac-cocoa
     env:
       LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
     commands:
       - make bootstrap
+      - PLATFORM=macOS make analyze test
+
+  - label: Static framework, Carthage and Swift Package Manager builds
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
+    commands:
+      - make bootstrap
+      - xcrun simctl create "13-xs" "iPhone XS" com.apple.CoreSimulator.SimRuntime.iOS-13-0
+      - mkdir -p features/fixtures/carthage-proj
+      - make build_swift
+      - make build_carthage
+      - make build_ios_static
+
+  - label: xcode12+ unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-11
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
+    commands:
+      - make bootstrap
+      - PLATFORM=iOS make test OS=14.1
+      - PLATFORM=tvOS make test OS=14.0
+      - PLATFORM=macOS make analyze test
+
+  - label: xcode11 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-10.14
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
+    commands:
+      - make bootstrap
+      - PLATFORM=iOS DEVICE="iPhone 7" make test OS=10.3.1
+      - PLATFORM=tvOS make test OS=10.2
+      - PLATFORM=macOS make analyze test
+
+  - label: xcode10.2 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-10.13
+    env:
+      LANG: "en_GB.UTF-8"
+    commands:
+      - sudo mkdir -p '/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 9.3.simruntime/Contents/Resources/RuntimeRoot/usr/lib/swift'
+      - make bootstrap
+      - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=9.3
+      - TEST_CONFIGURATION=Release PLATFORM=iOS make test OS=9.3
+      - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=9.2
       - TEST_CONFIGURATION=Debug PLATFORM=macOS make analyze test
 
-  - label: iOS 11-14 unit tests
+  - label: iOS 11-13 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa
     env:
       LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
     commands:
       - make bootstrap
-      # - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=14.1
-      - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=13.7
-      - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=12.4
-      - TEST_CONFIGURATION=Debug PLATFORM=iOS make test OS=11.4
+      - PLATFORM=iOS make test OS=13.7
+      - PLATFORM=iOS make test OS=12.4
+      - PLATFORM=iOS make test OS=11.4
 
-  - label: tvOS 11-14 unit tests
+  - label: tvOS 11-13 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa
     env:
       LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
     commands:
       - make bootstrap
-      # - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=14.0
-      - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=13.3
-      - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=12.4
-      - TEST_CONFIGURATION=Debug PLATFORM=tvOS make test OS=11.4
+      - PLATFORM=tvOS make test OS=13.3
+      - PLATFORM=tvOS make test OS=12.4
+      - PLATFORM=tvOS make test OS=11.4
 
   # - label: ':ios: iOS 14 end-to-end tests'
   #   depends_on:
