@@ -31,6 +31,7 @@
 #import "BSGCachesDirectory.h"
 #import "BSGConnectivity.h"
 #import "BSGJSONSerialization.h"
+#import "BSGNotificationBreadcrumbs.h"
 #import "BSGSerialization.h"
 #import "BSG_KSCrash.h"
 #import "BSG_KSCrashC.h"
@@ -101,8 +102,6 @@ static struct {
     void (*onCrash)(const BSG_KSCrashReportWriter *writer);
 } bsg_g_bugsnag_data;
 
-static NSDictionary *notificationNameMap;
-
 static char *sessionId[128];
 static char *sessionStartDate[128];
 static char *watchdogSentinelPath = NULL;
@@ -151,24 +150,6 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type
 
     if (bsg_g_bugsnag_data.onCrash) {
         bsg_g_bugsnag_data.onCrash(writer);
-    }
-}
-
-/**
- * Maps an NSNotificationName to its standard (Bugsnag) name
- *
- * @param name The NSNotificationName (type aliased to NSString)
- *
- * @returns The Bugsnag-standard name, or the notification name minus the "Notification" portion.
- */
-NSString *BSGBreadcrumbNameForNotificationName(NSString *name) {
-    NSString *readableName = notificationNameMap[name];
-
-    if (readableName) {
-        return readableName;
-    } else {
-        return [name stringByReplacingOccurrencesOfString:@"Notification"
-                                               withString:@""];
     }
 }
 
@@ -242,6 +223,12 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 // MARK: - BugsnagClient
 // =============================================================================
 
+@interface BugsnagClient () <BSGBreadcrumbSink>
+
+@property BSGNotificationBreadcrumbs *notificationBreadcrumbs;
+
+@end
+
 @implementation BugsnagClient
 
 /**
@@ -284,10 +271,7 @@ NSString *_lastOrientation = nil;
         self.errorReportApiClient = [[BugsnagErrorReportApiClient alloc] initWithSession:configuration.session queueName:@"Error API queue"];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
 
-        static dispatch_once_t once_t;
-        dispatch_once(&once_t, ^{
-            [self initializeNotificationNameMap];
-        });
+        _notificationBreadcrumbs = [[BSGNotificationBreadcrumbs alloc] initWithConfiguration:configuration breadcrumbSink:self];
 
         self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
                                                                      client:self
@@ -363,75 +347,6 @@ NSString *_lastOrientation = nil;
     }
 }
 
-NSString *const kWindowVisible = @"Window Became Visible";
-NSString *const kWindowHidden = @"Window Became Hidden";
-NSString *const kBeganTextEdit = @"Began Editing Text";
-NSString *const kStoppedTextEdit = @"Stopped Editing Text";
-NSString *const kUndoOperation = @"Undo Operation";
-NSString *const kRedoOperation = @"Redo Operation";
-NSString *const kTableViewSelectionChange = @"TableView Select Change";
-NSString *const kAppWillTerminate = @"App Will Terminate";
-NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
-
-/**
- * A map of notification names to human-readable strings
- */
-- (void)initializeNotificationNameMap {
-    notificationNameMap = @{
-#if BSG_PLATFORM_TVOS
-        NSUndoManagerDidUndoChangeNotification : kUndoOperation,
-        NSUndoManagerDidRedoChangeNotification : kRedoOperation,
-        UIWindowDidBecomeVisibleNotification : kWindowVisible,
-        UIWindowDidBecomeHiddenNotification : kWindowHidden,
-        UIWindowDidBecomeKeyNotification : @"Window Became Key",
-        UIWindowDidResignKeyNotification : @"Window Resigned Key",
-        UIScreenBrightnessDidChangeNotification : @"Screen Brightness Changed",
-        UITableViewSelectionDidChangeNotification : kTableViewSelectionChange,
-
-#elif BSG_PLATFORM_IOS
-        UIWindowDidBecomeVisibleNotification : kWindowVisible,
-        UIWindowDidBecomeHiddenNotification : kWindowHidden,
-        UIApplicationWillTerminateNotification : kAppWillTerminate,
-        UIApplicationWillEnterForegroundNotification : @"App Will Enter Foreground",
-        UIApplicationDidEnterBackgroundNotification : @"App Did Enter Background",
-        UIKeyboardDidShowNotification : @"Keyboard Became Visible",
-        UIKeyboardDidHideNotification : @"Keyboard Became Hidden",
-        UIMenuControllerDidShowMenuNotification : @"Did Show Menu",
-        UIMenuControllerDidHideMenuNotification : @"Did Hide Menu",
-        NSUndoManagerDidUndoChangeNotification : kUndoOperation,
-        NSUndoManagerDidRedoChangeNotification : kRedoOperation,
-        UIApplicationUserDidTakeScreenshotNotification : @"Took Screenshot",
-        UITextFieldTextDidBeginEditingNotification : kBeganTextEdit,
-        UITextViewTextDidBeginEditingNotification : kBeganTextEdit,
-        UITextFieldTextDidEndEditingNotification : kStoppedTextEdit,
-        UITextViewTextDidEndEditingNotification : kStoppedTextEdit,
-        UITableViewSelectionDidChangeNotification : kTableViewSelectionChange,
-        UIDeviceBatteryStateDidChangeNotification : @"Battery State Changed",
-        UIDeviceBatteryLevelDidChangeNotification : @"Battery Level Changed",
-        UIDeviceOrientationDidChangeNotification : @"Orientation Changed",
-        UIApplicationDidReceiveMemoryWarningNotification : @"Memory Warning",
-
-#elif BSG_PLATFORM_OSX
-        NSApplicationDidBecomeActiveNotification : @"App Became Active",
-        NSApplicationDidResignActiveNotification : @"App Resigned Active",
-        NSApplicationDidHideNotification : @"App Did Hide",
-        NSApplicationDidUnhideNotification : @"App Did Unhide",
-        NSApplicationWillTerminateNotification : kAppWillTerminate,
-        NSWorkspaceScreensDidSleepNotification : @"Workspace Screen Slept",
-        NSWorkspaceScreensDidWakeNotification : @"Workspace Screen Awoke",
-        NSWindowWillCloseNotification : @"Window Will Close",
-        NSWindowDidBecomeKeyNotification : @"Window Became Key",
-        NSWindowWillMiniaturizeNotification : @"Window Will Miniaturize",
-        NSWindowDidEnterFullScreenNotification : @"Window Entered Full Screen",
-        NSWindowDidExitFullScreenNotification : @"Window Exited Full Screen",
-        NSControlTextDidBeginEditingNotification : @"Control Text Began Edit",
-        NSControlTextDidEndEditingNotification : @"Control Text Ended Edit",
-        NSMenuWillSendActionNotification : @"Menu Will Send Action",
-        NSTableViewSelectionDidChangeNotification : kTableViewSelectionChange,
-#endif
-    };
-}
-
 - (void)start {
     [self.configuration validate];
     
@@ -442,7 +357,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self computeDidCrashLastLaunch];
     [self.breadcrumbs removeAllBreadcrumbs];
     [self setupConnectivityListener];
-    [self updateAutomaticBreadcrumbDetectionSettings];
+    [self.notificationBreadcrumbs start];
 
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [self watchLifecycleEvents:center];
@@ -497,9 +412,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
 
     // Record a "Bugsnag Loaded" message
-    [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
-                      withMessage:BSGBreadcrumbLoadedMessage
-                      andMetadata:nil];
+    [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState withMessage:@"Bugsnag loaded" andMetadata:nil];
 
     // notification not received in time on initial startup, so trigger manually
     [self willEnterForeground:self];
@@ -729,7 +642,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
 }
 
 - (void)leaveBreadcrumbForNotificationName:(NSString *_Nonnull)notificationName {
-    [self startListeningForStateChangeNotification:notificationName];
+    [self.notificationBreadcrumbs startListeningForStateChangeNotification:notificationName];
 }
 
 - (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message
@@ -883,7 +796,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
             // If the termination breadcrumb is set, the app entered a normal
             // termination flow but expired before the watchdog sentinel could
             // be updated. In this case, no report should be sent.
-            if ([name isEqualToString:kAppWillTerminate]) {
+            if ([name isEqualToString:BSGNotificationBreadcrumbsMessageAppWillTerminate]) {
                 return;
             }
         }
@@ -1122,7 +1035,7 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     // Send a breadcrumb and preserve the orientation.
 
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
-                      withMessage:BSGBreadcrumbNameForNotificationName(notification.name)
+                      withMessage:[self.notificationBreadcrumbs messageForNotificationName:notification.name]
                       andMetadata:@{
                           @"from" : _lastOrientation,
                           @"to" : orientation
@@ -1135,11 +1048,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.state addMetadata:[BSG_RFC3339DateTool stringFromDate:[NSDate date]]
                       withKey:BSEventLowMemoryWarning
                     toSection:BSGKeyDeviceState];
-
-    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
-        [self sendBreadcrumbForNotification:notif];
-    }
 }
+
 #endif
 
 /**
@@ -1163,278 +1073,8 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     }
 }
 
-/**
- * Configure event listeners (i.e. observers) for enabled automatic breadcrumbs.
- */
-- (void)updateAutomaticBreadcrumbDetectionSettings {
-   // State events
-    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeState]) {
-        // Generic state events
-        for (NSString *name in [self automaticBreadcrumbStateEvents]) {
-            [self startListeningForStateChangeNotification:name];
-        }
-
-#if BSG_PLATFORM_OSX
-        // Workspace-specific events - MacOS only
-        for (NSString *name in [self workspaceBreadcrumbStateEvents]) {
-            [self startListeningForWorkspaceStateChangeNotifications:name];
-        }
-#endif
-
-        // NSMenu events (Mac only)
-        for (NSString *name in [self automaticBreadcrumbMenuItemEvents]) {
-            [[NSNotificationCenter defaultCenter]
-                addObserver:self
-                   selector:@selector(sendBreadcrumbForMenuItemNotification:)
-                       name:name
-                     object:nil];
-        }
-    }
-
-    // Navigation events
-    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeNavigation]) {
-        // UI/NSTableView events
-        for (NSString *name in [self automaticBreadcrumbTableItemEvents]) {
-            [[NSNotificationCenter defaultCenter]
-                addObserver:self
-                   selector:@selector(sendBreadcrumbForTableViewNotification:)
-                       name:name
-                     object:nil];
-        }
-    }
-
-    // User events
-    if ([[self configuration] shouldRecordBreadcrumbType:BSGBreadcrumbTypeUser]) {
-        // UITextField/NSControl events (text editing)
-        for (NSString *name in [self automaticBreadcrumbControlEvents]) {
-            [[NSNotificationCenter defaultCenter]
-                addObserver:self
-                   selector:@selector(sendBreadcrumbForControlNotification:)
-                       name:name
-                     object:nil];
-        }
-    }
-}
-
-/**
- * NSWorkspace-specific automatic breadcrumb events
- */
-- (NSArray<NSString *> *)workspaceBreadcrumbStateEvents {
-#if BSG_PLATFORM_OSX
-    return @[
-        NSWorkspaceScreensDidSleepNotification,
-        NSWorkspaceScreensDidWakeNotification
-    ];
-#endif
-
-    // Fall-through
-    return nil;
-}
-
-- (NSArray<NSString *> *)automaticBreadcrumbStateEvents {
-#if BSG_PLATFORM_TVOS
-    return @[
-        NSUndoManagerDidUndoChangeNotification,
-        NSUndoManagerDidRedoChangeNotification,
-        UIWindowDidBecomeVisibleNotification,
-        UIWindowDidBecomeHiddenNotification, UIWindowDidBecomeKeyNotification,
-        UIWindowDidResignKeyNotification,
-        UIScreenBrightnessDidChangeNotification
-    ];
-#elif BSG_PLATFORM_IOS
-    return @[
-        UIWindowDidBecomeHiddenNotification,
-        UIWindowDidBecomeVisibleNotification,
-        UIApplicationWillTerminateNotification,
-        UIApplicationWillEnterForegroundNotification,
-        UIApplicationDidEnterBackgroundNotification,
-        UIKeyboardDidShowNotification, UIKeyboardDidHideNotification,
-        UIMenuControllerDidShowMenuNotification,
-        UIMenuControllerDidHideMenuNotification,
-        NSUndoManagerDidUndoChangeNotification,
-        NSUndoManagerDidRedoChangeNotification,
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0
-        UIApplicationUserDidTakeScreenshotNotification
-#endif
-    ];
-#elif BSG_PLATFORM_OSX
-    return @[
-        NSApplicationDidBecomeActiveNotification,
-        NSApplicationDidResignActiveNotification,
-        NSApplicationDidHideNotification,
-        NSApplicationDidUnhideNotification,
-        NSApplicationWillTerminateNotification,
-
-        NSWindowWillCloseNotification,
-        NSWindowDidBecomeKeyNotification,
-        NSWindowWillMiniaturizeNotification,
-        NSWindowDidEnterFullScreenNotification,
-        NSWindowDidExitFullScreenNotification
-    ];
-#endif
-
-    // Fall-through
-    return nil;
-}
-
-- (NSArray<NSString *> *)automaticBreadcrumbControlEvents {
-#if BSG_PLATFORM_IOS
-    return @[
-        UITextFieldTextDidBeginEditingNotification,
-        UITextViewTextDidBeginEditingNotification,
-        UITextFieldTextDidEndEditingNotification,
-        UITextViewTextDidEndEditingNotification
-    ];
-#elif BSG_PLATFORM_OSX
-    return @[
-        NSControlTextDidBeginEditingNotification,
-        NSControlTextDidEndEditingNotification
-    ];
-#endif
-
-    // Fall-through
-    return nil;
-}
-
-- (NSArray<NSString *> *)automaticBreadcrumbTableItemEvents {
-#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
-    return @[ UITableViewSelectionDidChangeNotification ];
-#elif BSG_PLATFORM_OSX
-    return @[ NSTableViewSelectionDidChangeNotification ];
-#endif
-
-    // Fall-through
-    return nil;
-}
-
-- (NSArray<NSString *> *)automaticBreadcrumbMenuItemEvents {
-#if BSG_PLATFORM_TVOS
-    return @[];
-#elif BSG_PLATFORM_IOS
-    return nil;
-#elif BSG_PLATFORM_OSX
-    return @[ NSMenuWillSendActionNotification ];
-#endif
-
-    // Fall-through
-    return nil;
-}
-
-/**
- * Configure a generic state change breadcrumb listener
- *
- * @param notificationName The name of the notification.
- */
-- (void)startListeningForStateChangeNotification:(NSString *)notificationName {
-    [[NSNotificationCenter defaultCenter]
-        addObserver:self
-           selector:@selector(sendBreadcrumbForNotification:)
-               name:notificationName
-             object:nil];
-}
-
-/**
- * Configure an NSWorkspace-specific state change breadcrumb listener.  MacOS only.
- *
- * @param notificationName The name of the notification.
- */
-#if BSG_PLATFORM_OSX
-- (void)startListeningForWorkspaceStateChangeNotifications:(NSString *)notificationName {
-    [NSWorkspace.sharedWorkspace.notificationCenter
-        addObserver:self
-           selector:@selector(sendBreadcrumbForNotification:)
-               name:notificationName
-             object:nil];
-    }
-#endif
-
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)sendBreadcrumbForNotification:(NSNotification *)note {
-    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-        breadcrumb.type = BSGBreadcrumbTypeState;
-        breadcrumb.message = BSGBreadcrumbNameForNotificationName(note.name);
-    }];
-}
-
-/**
- * Leave a navigation breadcrumb whenever a tableView selection changes
- *
- * @param notification The UI/NSTableViewSelectionDidChangeNotification
- */
-- (void)sendBreadcrumbForTableViewNotification:(NSNotification *)notification {
-#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
-    UITableView *tableView = [notification object];
-    NSIndexPath *indexPath = [tableView indexPathForSelectedRow];
-    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-      breadcrumb.type = BSGBreadcrumbTypeNavigation;
-      breadcrumb.message = BSGBreadcrumbNameForNotificationName(notification.name);
-      if (indexPath) {
-          breadcrumb.metadata =
-              @{ @"row" : @(indexPath.row),
-                 @"section" : @(indexPath.section) };
-      }
-    }];
-#elif BSG_PLATFORM_OSX
-    NSTableView *tableView = [notification object];
-    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-      breadcrumb.type = BSGBreadcrumbTypeNavigation;
-      breadcrumb.message = BSGBreadcrumbNameForNotificationName(notification.name);
-      if (tableView) {
-          breadcrumb.metadata = @{
-              @"selectedRow" : @(tableView.selectedRow),
-              @"selectedColumn" : @(tableView.selectedColumn)
-          };
-      }
-    }];
-#endif
-}
-
-/**
-* Leave a state breadcrumb whenever a tableView selection changes
-*
-* @param notification The UI/NSTableViewSelectionDidChangeNotification
-*/
-- (void)sendBreadcrumbForMenuItemNotification:(NSNotification *)notification {
-#if BSG_PLATFORM_OSX
-    NSMenuItem *menuItem = [[notification userInfo] valueForKey:@"MenuItem"];
-    if ([menuItem isKindOfClass:[NSMenuItem class]]) {
-        [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-          breadcrumb.type = BSGBreadcrumbTypeState;
-          breadcrumb.message = BSGBreadcrumbNameForNotificationName(notification.name);
-          if (menuItem.title.length > 0)
-              breadcrumb.metadata = @{BSGKeyAction : menuItem.title};
-        }];
-    }
-#endif
-}
-
-- (void)sendBreadcrumbForControlNotification:(NSNotification *)note {
-#if BSG_PLATFORM_IOS
-    UIControl *control = note.object;
-    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-      breadcrumb.type = BSGBreadcrumbTypeUser;
-      breadcrumb.message = BSGBreadcrumbNameForNotificationName(note.name);
-      NSString *label = control.accessibilityLabel;
-      if (label.length > 0) {
-          breadcrumb.metadata = @{BSGKeyLabel : label};
-      }
-    }];
-#elif BSG_PLATFORM_OSX
-    NSControl *control = note.object;
-    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-      breadcrumb.type = BSGBreadcrumbTypeUser;
-      breadcrumb.message = BSGBreadcrumbNameForNotificationName(note.name);
-      if ([control respondsToSelector:@selector(accessibilityLabel)]) {
-          NSString *label = control.accessibilityLabel;
-          if (label.length > 0) {
-              breadcrumb.metadata = @{BSGKeyLabel : label};
-          }
-      }
-    }];
-#endif
 }
 
 // MARK: - <BugsnagMetadataStore>

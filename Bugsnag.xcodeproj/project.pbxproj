@@ -646,6 +646,16 @@
 		0126DF1D257A92860031A70C /* BugsnagSession+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 0126DF1A257A92860031A70C /* BugsnagSession+Private.h */; };
 		0140D29A25767C9A00FD0306 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
 		01447605256684500018AB94 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
+		01468F5225876DC1002B0519 /* BSGNotificationBreadcrumbs.h in Headers */ = {isa = PBXBuildFile; fileRef = 01468F5025876DC1002B0519 /* BSGNotificationBreadcrumbs.h */; };
+		01468F5325876DC1002B0519 /* BSGNotificationBreadcrumbs.h in Headers */ = {isa = PBXBuildFile; fileRef = 01468F5025876DC1002B0519 /* BSGNotificationBreadcrumbs.h */; };
+		01468F5425876DC1002B0519 /* BSGNotificationBreadcrumbs.h in Headers */ = {isa = PBXBuildFile; fileRef = 01468F5025876DC1002B0519 /* BSGNotificationBreadcrumbs.h */; };
+		01468F5525876DC1002B0519 /* BSGNotificationBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = 01468F5125876DC1002B0519 /* BSGNotificationBreadcrumbs.m */; };
+		01468F5625876DC1002B0519 /* BSGNotificationBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = 01468F5125876DC1002B0519 /* BSGNotificationBreadcrumbs.m */; };
+		01468F5725876DC1002B0519 /* BSGNotificationBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = 01468F5125876DC1002B0519 /* BSGNotificationBreadcrumbs.m */; };
+		01468F5825876DC1002B0519 /* BSGNotificationBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = 01468F5125876DC1002B0519 /* BSGNotificationBreadcrumbs.m */; };
+		0163BF5925823D8D008DC28B /* NotificationBreadcrumbTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0163BF5825823D8D008DC28B /* NotificationBreadcrumbTests.m */; };
+		0163BF5A25823D8D008DC28B /* NotificationBreadcrumbTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0163BF5825823D8D008DC28B /* NotificationBreadcrumbTests.m */; };
+		0163BF5B25823D8D008DC28B /* NotificationBreadcrumbTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0163BF5825823D8D008DC28B /* NotificationBreadcrumbTests.m */; };
 		0187D464255BD7B800C503D9 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
 		01B14C56251CE55F00118748 /* report-react-native-promise-rejection.json in Resources */ = {isa = PBXBuildFile; fileRef = 01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */; };
 		01B14C57251CE55F00118748 /* report-react-native-promise-rejection.json in Resources */ = {isa = PBXBuildFile; fileRef = 01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */; };
@@ -1263,6 +1273,9 @@
 		0134524A256BCF7C0088C548 /* BugsnagError+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagError+Private.h"; sourceTree = "<group>"; };
 		0134524B256BD00A0088C548 /* BugsnagThread+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagThread+Private.h"; sourceTree = "<group>"; };
 		0140D24725765F8F00FD0306 /* BSGUIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGUIKit.h; sourceTree = "<group>"; };
+		01468F5025876DC1002B0519 /* BSGNotificationBreadcrumbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGNotificationBreadcrumbs.h; sourceTree = "<group>"; };
+		01468F5125876DC1002B0519 /* BSGNotificationBreadcrumbs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGNotificationBreadcrumbs.m; sourceTree = "<group>"; };
+		0163BF5825823D8D008DC28B /* NotificationBreadcrumbTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationBreadcrumbTests.m; sourceTree = "<group>"; };
 		01937CF9257A7B4C00F2DE31 /* Bugsnag+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bugsnag+Private.h"; sourceTree = "<group>"; };
 		01937D01257A7E0E00F2DE31 /* BugsnagErrorReportSink+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagErrorReportSink+Private.h"; sourceTree = "<group>"; };
 		01937D09257A7ED000F2DE31 /* BugsnagSessionTracker+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagSessionTracker+Private.h"; sourceTree = "<group>"; };
@@ -1685,6 +1698,7 @@
 				E701FAAA2490EFD9008D842F /* EventApiValidationTest.m */,
 				00E636C324878FFC006CBF1A /* Info.plist */,
 				008966D32486D43700DC48C2 /* KSCrash */,
+				0163BF5825823D8D008DC28B /* NotificationBreadcrumbTests.m */,
 				008966A92486D43400DC48C2 /* RegisterErrorDataTest.m */,
 				01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */,
 				008966B72486D43500DC48C2 /* report.json */,
@@ -1701,6 +1715,8 @@
 		00AD1CF124869EBD00A27979 /* Breadcrumbs */ = {
 			isa = PBXGroup;
 			children = (
+				01468F5025876DC1002B0519 /* BSGNotificationBreadcrumbs.h */,
+				01468F5125876DC1002B0519 /* BSGNotificationBreadcrumbs.m */,
 				008967B32486D9D700DC48C2 /* BugsnagBreadcrumbs.h */,
 				008967B22486D9D700DC48C2 /* BugsnagBreadcrumbs.m */,
 			);
@@ -1995,6 +2011,7 @@
 				008969962486DAD100DC48C2 /* BSG_KSBacktrace_Private.h in Headers */,
 				00896A112486DAD100DC48C2 /* BSG_KSCrashSentry_CPPException.h in Headers */,
 				008969ED2486DAD100DC48C2 /* BSG_KSCrashDoctor.h in Headers */,
+				01468F5225876DC1002B0519 /* BSGNotificationBreadcrumbs.h in Headers */,
 				00AD1F022486A17900A27979 /* RegisterErrorData.h in Headers */,
 				008968ED2486DAB800DC48C2 /* BugsnagFileStore.h in Headers */,
 				00896A292486DAD100DC48C2 /* BSG_KSCrashType.h in Headers */,
@@ -2092,6 +2109,7 @@
 				00896A122486DAD100DC48C2 /* BSG_KSCrashSentry_CPPException.h in Headers */,
 				008969EE2486DAD100DC48C2 /* BSG_KSCrashDoctor.h in Headers */,
 				00AD1F032486A17900A27979 /* RegisterErrorData.h in Headers */,
+				01468F5325876DC1002B0519 /* BSGNotificationBreadcrumbs.h in Headers */,
 				008968EE2486DAB800DC48C2 /* BugsnagFileStore.h in Headers */,
 				00896A2A2486DAD100DC48C2 /* BSG_KSCrashType.h in Headers */,
 				008969DC2486DAD100DC48C2 /* BSG_KSCrash.h in Headers */,
@@ -2189,6 +2207,7 @@
 				00896A132486DAD100DC48C2 /* BSG_KSCrashSentry_CPPException.h in Headers */,
 				008969EF2486DAD100DC48C2 /* BSG_KSCrashDoctor.h in Headers */,
 				00AD1F042486A17900A27979 /* RegisterErrorData.h in Headers */,
+				01468F5425876DC1002B0519 /* BSGNotificationBreadcrumbs.h in Headers */,
 				008968EF2486DAB800DC48C2 /* BugsnagFileStore.h in Headers */,
 				00896A2B2486DAD100DC48C2 /* BSG_KSCrashType.h in Headers */,
 				008969DD2486DAD100DC48C2 /* BSG_KSCrash.h in Headers */,
@@ -2489,6 +2508,7 @@
 				008969572486DAD000DC48C2 /* BSG_KSCrashDoctor.m in Sources */,
 				008968B92486DA9600DC48C2 /* BugsnagStacktrace.m in Sources */,
 				00896A142486DAD100DC48C2 /* BSG_KSCrashSentry_Signal.c in Sources */,
+				01468F5525876DC1002B0519 /* BSGNotificationBreadcrumbs.m in Sources */,
 				008967BE2486DA1900DC48C2 /* BugsnagClient.m in Sources */,
 				008968952486DA9600DC48C2 /* BugsnagHandledState.m in Sources */,
 				008969C32486DAD100DC48C2 /* BSG_KSObjC.c in Sources */,
@@ -2590,6 +2610,7 @@
 				008967AB2486D43700DC48C2 /* KSMach_Tests.m in Sources */,
 				0089672A2486D43700DC48C2 /* BugsnagStacktraceTest.m in Sources */,
 				0089678D2486D43700DC48C2 /* KSCrashReportConverter_Tests.m in Sources */,
+				0163BF5925823D8D008DC28B /* NotificationBreadcrumbTests.m in Sources */,
 				008967392486D43700DC48C2 /* BugsnagEventFromKSCrashReportTest.m in Sources */,
 				008967182486D43700DC48C2 /* BugsnagErrorTest.m in Sources */,
 				008967212486D43700DC48C2 /* BugsnagErrorReportSinkTests.m in Sources */,
@@ -2651,6 +2672,7 @@
 				008969582486DAD000DC48C2 /* BSG_KSCrashDoctor.m in Sources */,
 				008968BA2486DA9600DC48C2 /* BugsnagStacktrace.m in Sources */,
 				00896A152486DAD100DC48C2 /* BSG_KSCrashSentry_Signal.c in Sources */,
+				01468F5625876DC1002B0519 /* BSGNotificationBreadcrumbs.m in Sources */,
 				008967BF2486DA1900DC48C2 /* BugsnagClient.m in Sources */,
 				008968962486DA9600DC48C2 /* BugsnagHandledState.m in Sources */,
 				008969C42486DAD100DC48C2 /* BSG_KSObjC.c in Sources */,
@@ -2733,6 +2755,7 @@
 				008967702486D43700DC48C2 /* NSError+SimpleConstructor_Tests.m in Sources */,
 				0089671C2486D43700DC48C2 /* BugsnagSessionTest.m in Sources */,
 				008967AC2486D43700DC48C2 /* KSMach_Tests.m in Sources */,
+				0163BF5A25823D8D008DC28B /* NotificationBreadcrumbTests.m in Sources */,
 				00896A452486DBF000DC48C2 /* BugsnagConfigurationTests.m in Sources */,
 				008967492486D43700DC48C2 /* BugsnagUserTest.m in Sources */,
 				0089673A2486D43700DC48C2 /* BugsnagEventFromKSCrashReportTest.m in Sources */,
@@ -2811,6 +2834,7 @@
 				008969592486DAD000DC48C2 /* BSG_KSCrashDoctor.m in Sources */,
 				008968BB2486DA9600DC48C2 /* BugsnagStacktrace.m in Sources */,
 				00896A162486DAD100DC48C2 /* BSG_KSCrashSentry_Signal.c in Sources */,
+				01468F5725876DC1002B0519 /* BSGNotificationBreadcrumbs.m in Sources */,
 				008967C02486DA1900DC48C2 /* BugsnagClient.m in Sources */,
 				008968972486DA9600DC48C2 /* BugsnagHandledState.m in Sources */,
 				008969C52486DAD100DC48C2 /* BSG_KSObjC.c in Sources */,
@@ -2907,6 +2931,7 @@
 				E701FAB12490EFE8008D842F /* ConfigurationApiValidationTest.m in Sources */,
 				0089677D2486D43700DC48C2 /* RFC3339DateTool_Tests.m in Sources */,
 				CBCF77AD250142E0004AF22A /* BSGJSONSerializerTest.m in Sources */,
+				0163BF5B25823D8D008DC28B /* NotificationBreadcrumbTests.m in Sources */,
 				008967562486D43700DC48C2 /* BugsnagOnCrashTest.m in Sources */,
 				008967A12486D43700DC48C2 /* KSCrashSentry_Tests.m in Sources */,
 				008967442486D43700DC48C2 /* BugsnagSessionTrackerStopTest.m in Sources */,
@@ -2973,6 +2998,7 @@
 				0089687F2486DA9600DC48C2 /* BugsnagBreadcrumb.m in Sources */,
 				008968012486DA4500DC48C2 /* BugsnagSessionTrackingApiClient.m in Sources */,
 				008968322486DA5600DC48C2 /* BugsnagCollections.m in Sources */,
+				01468F5825876DC1002B0519 /* BSGNotificationBreadcrumbs.m in Sources */,
 				008968832486DA9600DC48C2 /* BugsnagAppWithState.m in Sources */,
 				008968AA2486DA9600DC48C2 /* BugsnagSession.m in Sources */,
 				008968982486DA9600DC48C2 /* BugsnagHandledState.m in Sources */,
