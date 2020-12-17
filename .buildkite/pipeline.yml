@@ -11,12 +11,24 @@ steps:
   #     - ./features/scripts/export_ios_app.sh
   #     - ./features/scripts/export_mac_app.sh
 
+  - label: Static framework, Carthage, and Swift Package Manager builds
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
+    env:
+      LANG: "en_GB.UTF-8"
+    commands:
+      - mkdir -p features/fixtures/carthage-proj
+      - make build_swift
+      - make build_carthage
+      - make build_ios_static
+
   - label: macOS 11 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa-11
-    concurrency: 3
-    concurrency_group: cocoa-unit-tests
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
