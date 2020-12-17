@@ -35,7 +35,7 @@ steps:
       - make bootstrap
       - PLATFORM=iOS make test OS=13.7
 
-- label: iOS 12 unit tests
+  - label: iOS 12 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa
@@ -48,7 +48,7 @@ steps:
       - make bootstrap
       - PLATFORM=iOS make test OS=12.4
 
-- label: iOS 11 unit tests
+  - label: iOS 11 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa
