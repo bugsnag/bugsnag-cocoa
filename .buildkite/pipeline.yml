@@ -11,6 +11,20 @@ steps:
   #     - ./features/scripts/export_ios_app.sh
   #     - ./features/scripts/export_mac_app.sh
 
+  - label: macOS 11 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-11
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
+      PLATFORM: "macOS"
+    commands:
+      - make bootstrap
+      - make analyze test
+
   - label: macOS 10.15 unit tests
     timeout_in_minutes: 10
     agents:
@@ -57,7 +71,7 @@ steps:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
       PLATFORM: "iOS"
-      OS: "14.1"
+      OS: "14.2"
     commands:
       - make bootstrap
       - make test
