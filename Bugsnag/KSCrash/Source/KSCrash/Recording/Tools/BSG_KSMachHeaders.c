@@ -1,16 +1,36 @@
 //
-//  BSG_KSMachHeaders.m
+//  BSG_KSMachHeaders.c
 //  Bugsnag
 //
 //  Created by Robin Macharg on 04/05/2020.
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <mach-o/dyld.h>
-#import <dlfcn.h>
-#import <Foundation/Foundation.h>
-#import "BSG_KSDynamicLinker.h"
-#import "BSG_KSMachHeaders.h"
+#include "BSG_KSMachHeaders.h"
+
+#include "BSG_KSDynamicLinker.h"
+#include "BSG_KSMach.h"
+
+#include <dispatch/dispatch.h>
+#include <dlfcn.h>
+#include <mach-o/dyld.h>
+#include <stdlib.h>
+
+// Copied from https://github.com/apple/swift/blob/swift-5.0-RELEASE/include/swift/Runtime/Debug.h#L28-L40
+
+#define CRASHREPORTER_ANNOTATIONS_VERSION 5
+#define CRASHREPORTER_ANNOTATIONS_SECTION "__crash_info"
+
+struct crashreporter_annotations_t {
+    uint64_t version;          // unsigned long
+    uint64_t message;          // char *
+    uint64_t signature_string; // char *
+    uint64_t backtrace;        // char *
+    uint64_t message2;         // char *
+    uint64_t thread;           // uint64_t
+    uint64_t dialog_mode;      // unsigned int
+    uint64_t abort_cause;      // unsigned int
+};
 
 // MARK: - Mach Header Linked List
 
@@ -254,4 +274,67 @@ uintptr_t bsg_mach_headers_image_at_base_of_image_index(const struct mach_header
     }
 
     return 0;
+}
+static uintptr_t bsg_mach_header_info_get_section_addr_named(const BSG_Mach_Header_Info *header, const char *name) {
+    uintptr_t cmdPtr = bsg_mach_headers_first_cmd_after_header(header->header);
+    if (!cmdPtr) {
+        return 0;
+    }
+    for (uint32_t i = 0; i < header->header->ncmds; i++) {
+        const struct load_command *loadCmd = (struct load_command *)cmdPtr;
+        if (loadCmd->cmd == LC_SEGMENT) {
+            const struct segment_command *segment = (void *)cmdPtr;
+            char *sectionPtr = (void *)(cmdPtr + sizeof(*segment));
+            for (uint32_t i = 0; i < segment->nsects; i++) {
+                struct section *section = (void *)sectionPtr;
+                if (strcmp(name, section->sectname) == 0) {
+                    return section->addr + header->slide;
+                }
+                sectionPtr += sizeof(*section);
+            }
+        } else if (loadCmd->cmd == LC_SEGMENT_64) {
+            const struct segment_command_64 *segment = (void *)cmdPtr;
+            char *sectionPtr = (void *)(cmdPtr + sizeof(*segment));
+            for (uint32_t i = 0; i < segment->nsects; i++) {
+                struct section_64 *section = (void *)sectionPtr;
+                if (strcmp(name, section->sectname) == 0) {
+                    return (uintptr_t)section->addr + header->slide;
+                }
+                sectionPtr += sizeof(*section);
+            }
+        }
+        cmdPtr += loadCmd->cmdsize;
+    }
+    return 0;
+}
+
+const char *bsg_mach_headers_get_crash_info_message(const BSG_Mach_Header_Info *header) {
+    struct crashreporter_annotations_t info;
+    uintptr_t sectionAddress = bsg_mach_header_info_get_section_addr_named(header, CRASHREPORTER_ANNOTATIONS_SECTION);
+    if (!sectionAddress) {
+        return NULL;
+    }
+    if (bsg_ksmachcopyMem((void *)sectionAddress, &info, sizeof(info)) != KERN_SUCCESS) {
+        return NULL;
+    }
+    // Version 4 was in use until iOS 9 / Swift 2.0 when the version was bumped to 5.
+    if (info.version > CRASHREPORTER_ANNOTATIONS_VERSION) {
+        return NULL;
+    }
+    if (!info.message) {
+        return NULL;
+    }
+    // Probe the string to ensure it's safe to read.
+    for (uintptr_t i = 0; i < 500; i++) {
+        char c;
+        if (bsg_ksmachcopyMem((void *)(info.message + i), &c, sizeof(c)) != KERN_SUCCESS) {
+            // String is not readable.
+            return NULL;
+        }
+        if (c == '\0') {
+            // Found end of string.
+            return (const char *)info.message;
+        }
+    }
+    return NULL;
 }
