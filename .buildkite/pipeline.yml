@@ -22,30 +22,82 @@ steps:
       - make bootstrap
       - PLATFORM=macOS make analyze test
 
-  - label: iOS 11-13 unit tests
+  - label: iOS 13 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
     commands:
       - make bootstrap
       - PLATFORM=iOS make test OS=13.7
-      - PLATFORM=iOS make test OS=12.4
-      - PLATFORM=iOS make test OS=11.4
 
-  - label: tvOS 11-13 unit tests
+- label: iOS 12 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
+    commands:
+      - make bootstrap
+      - PLATFORM=iOS make test OS=12.4
+
+- label: iOS 11 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
+    commands:
+      - make bootstrap
+      - PLATFORM=iOS make test OS=11.4
+
+  - label: tvOS 13 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
     commands:
       - make bootstrap
       - PLATFORM=tvOS make test OS=13.3
+
+  - label: tvOS 12 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
+    commands:
+      - make bootstrap
       - PLATFORM=tvOS make test OS=12.4
+
+  - label: tvOS 11 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
+    commands:
+      - make bootstrap
       - PLATFORM=tvOS make test OS=11.4
 
   - label: ':ios: iOS 14 end-to-end tests'
