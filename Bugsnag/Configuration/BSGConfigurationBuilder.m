@@ -31,6 +31,7 @@ static BOOL BSGValueIsBoolean(id object) {
         BSGKeyEndpoints,
         BSGKeyMaxBreadcrumbs,
         BSGKeyMaxPersistedEvents,
+        BSGKeyMaxPersistedSessions,
         BSGKeyPersistUser,
         BSGKeyRedactedKeys,
         BSGKeyReleaseStage,
@@ -57,6 +58,7 @@ static BOOL BSGValueIsBoolean(id object) {
 
     [self loadNumber:config options:options key:BSGKeyMaxBreadcrumbs];
     [self loadNumber:config options:options key:BSGKeyMaxPersistedEvents];
+    [self loadNumber:config options:options key:BSGKeyMaxPersistedSessions];
     [self loadSendThreads:config options:options];
     return config;
 }

@@ -11,11 +11,27 @@
 
 static NSString *const kSessionStoreSuffix = @"-Session-";
 
+@interface BugsnagSessionFileStore ()
+
+@property NSUInteger maxPersistedSessions;
+
+@end
+
 @implementation BugsnagSessionFileStore
 
-+ (BugsnagSessionFileStore *)storeWithPath:(NSString *)path {
++ (BugsnagSessionFileStore *)storeWithPath:(NSString *)path
+                      maxPersistedSessions:(NSUInteger)maxPersistedSessions {
     return [[self alloc] initWithPath:path
-                       filenameSuffix:kSessionStoreSuffix];
+                 maxPersistedSessions:maxPersistedSessions];
+}
+
+- (instancetype) initWithPath:(NSString *)path
+         maxPersistedSessions:(NSUInteger)maxPersistedSessions {
+    if ((self = [super initWithPath:path
+                     filenameSuffix:kSessionStoreSuffix])) {
+        _maxPersistedSessions = maxPersistedSessions;
+    }
+    return self;
 }
 
 - (void)write:(BugsnagSession *)session {
@@ -30,6 +46,8 @@ static NSString *const kSessionStoreSuffix = @"-Session-";
         BSG_KSLOG_ERROR(@"Failed to write session %@", error);
         return;
     }
+    
+    [self pruneFilesLeaving:(int)self.maxPersistedSessions];
 }
 
 

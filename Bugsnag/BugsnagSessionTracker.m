@@ -58,7 +58,8 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
         if (!storePath) {
             BSG_KSLOG_ERROR(@"Failed to initialize session store.");
         }
-        _sessionStore = [BugsnagSessionFileStore storeWithPath:storePath];
+
+        _sessionStore = [BugsnagSessionFileStore storeWithPath:storePath maxPersistedSessions:config.maxPersistedSessions];
         _extraRuntimeInfo = [NSMutableDictionary new];
     }
     return self;

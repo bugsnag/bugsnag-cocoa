@@ -147,6 +147,25 @@
     XCTAssertEqual(1, self.config.maxPersistedEvents);
 }
 
+- (void)testValidMaxPersistedSessions {
+    self.config.maxPersistedSessions = 1;
+    XCTAssertEqual(1, self.config.maxPersistedSessions);
+    self.config.maxPersistedSessions = 100;
+    XCTAssertEqual(100, self.config.maxPersistedSessions);
+    self.config.maxPersistedSessions = 40;
+    XCTAssertEqual(40, self.config.maxPersistedSessions);
+}
+
+- (void)testInvalidMaxPersistedSessions {
+    self.config.maxPersistedSessions = 1;
+    self.config.maxPersistedSessions = 0;
+    XCTAssertEqual(1, self.config.maxPersistedSessions);
+    self.config.maxPersistedSessions = -1;
+    XCTAssertEqual(1, self.config.maxPersistedSessions);
+    self.config.maxPersistedSessions = 590;
+    XCTAssertEqual(1, self.config.maxPersistedSessions);
+}
+
 - (void)testValidMaxBreadcrumbs {
     self.config.maxBreadcrumbs = 0;
     XCTAssertEqual(0, self.config.maxBreadcrumbs);

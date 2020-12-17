@@ -85,6 +85,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     copy.discardClasses = self.discardClasses;
     [copy setRedactedKeys:self.redactedKeys];
     [copy setMaxPersistedEvents:self.maxPersistedEvents];
+    [copy setMaxPersistedSessions:self.maxPersistedSessions];
     [copy setMaxBreadcrumbs:self.maxBreadcrumbs];
     copy->_metadata = [[BugsnagMetadata alloc] initWithDictionary:[[self.metadata toDictionary] mutableCopy]];
     [copy setEndpoints:self.endpoints];
@@ -162,6 +163,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     _redactedKeys = [NSSet setWithArray:@[@"password"]];
     _enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeAll;
     _maxPersistedEvents = 12;
+    _maxPersistedSessions = 32;
     _maxBreadcrumbs = 25;
     _autoTrackSessions = YES;
     _sendThreads = BSGThreadSendPolicyAlways;
@@ -434,6 +436,26 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
             bsg_log_err(@"Invalid configuration value detected. Option maxPersistedEvents "
                         "should be an integer between 1-100. Supplied value is %lu",
                         (unsigned long) maxPersistedEvents);
+        }
+    }
+}
+
+@synthesize maxPersistedSessions = _maxPersistedSessions;
+
+- (NSUInteger)maxPersistedSessions {
+    @synchronized (self) {
+        return _maxPersistedSessions;
+    }
+}
+
+- (void)setMaxPersistedSessions:(NSUInteger)maxPersistedSessions {
+    @synchronized (self) {
+        if (maxPersistedSessions >= 1 && maxPersistedSessions <= 100) {
+            _maxPersistedSessions = maxPersistedSessions;
+        } else {
+            bsg_log_err(@"Invalid configuration value detected. Option maxPersistedSessions "
+                        "should be an integer between 1-100. Supplied value is %lu",
+                        (unsigned long) maxPersistedSessions);
         }
     }
 }

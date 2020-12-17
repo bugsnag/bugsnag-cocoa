@@ -227,6 +227,14 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
 @property (nonatomic) NSUInteger maxPersistedEvents;
 
 /**
+ * Sets the maximum number of sessions which will be stored. Once the threshold is reached,
+ * the oldest sessions will be deleted.
+ *
+ * By default, 32 sessions are stored: this can be amended up to a maximum of 100.
+ */
+@property (nonatomic) NSUInteger maxPersistedSessions;
+
+/**
  * Sets the maximum number of breadcrumbs which will be stored. Once the threshold is reached,
  * the oldest breadcrumbs will be deleted.
  *

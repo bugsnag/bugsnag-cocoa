@@ -562,6 +562,38 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 }
 
 // =============================================================================
+// MARK: - Max Persisted Sessions
+// =============================================================================
+
+- (void)testMaxPersistedSessions {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertEqual(32, config.maxPersistedSessions);
+
+    // alter to valid value
+    config.maxPersistedSessions = 10;
+    XCTAssertEqual(10, config.maxPersistedSessions);
+
+    // alter to max value
+    config.maxPersistedSessions = 100;
+    XCTAssertEqual(100, config.maxPersistedSessions);
+
+    // alter to min value
+    config.maxPersistedSessions = 1;
+    XCTAssertEqual(1, config.maxPersistedSessions);
+
+    config.maxPersistedSessions = 0;
+    XCTAssertEqual(1, config.maxPersistedSessions);
+
+    // alter to negative value
+    config.maxPersistedSessions = -1;
+    XCTAssertEqual(1, config.maxPersistedSessions);
+
+    // alter to > max value
+    config.maxPersistedSessions = 500;
+    XCTAssertEqual(1, config.maxPersistedSessions);
+}
+
+// =============================================================================
 // MARK: - Max Breadcrumb
 // =============================================================================
 
