@@ -157,3 +157,12 @@ Feature: Reporting crash events
     And the exception "message" equals "Attempted to dereference garbage pointer 0x10."
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "objc_msgSend"
+
+  Scenario: Misuse of libdispatch
+    When I run "DispatchCrashScenario" and relaunch the app
+    And I configure Bugsnag for "DispatchCrashScenario"
+    And I wait to receive a request
+    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the exception "errorClass" equals "EXC_BREAKPOINT"
+    And the exception "message" starts with "BUG IN CLIENT OF LIBDISPATCH: dispatch_"
+    And the event "metaData.error.crashInfo" starts with "BUG IN CLIENT OF LIBDISPATCH: dispatch_"
