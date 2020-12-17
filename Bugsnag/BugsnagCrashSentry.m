@@ -25,7 +25,7 @@
     BugsnagErrorReportSink *sink = [[BugsnagErrorReportSink alloc] initWithApiClient:apiClient];
     BSG_KSCrash *ksCrash = [BSG_KSCrash sharedInstance];
     ksCrash.sink = sink;
-    ksCrash.introspectMemory = YES;
+    ksCrash.introspectMemory = NO;
     ksCrash.onCrash = onCrash;
     ksCrash.maxStoredReports = (int)config.maxPersistedEvents;
 
