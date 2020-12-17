@@ -103,129 +103,129 @@ steps:
       - PLATFORM=tvOS make test OS=12.4
       - PLATFORM=tvOS make test OS=11.4
 
-  # - label: ':ios: iOS 14 end-to-end tests'
-  #   depends_on:
-  #     - cocoa_fixture
-  #   timeout_in_minutes: 60
-  #   agents:
-  #     queue: opensource
-  #   plugins:
-  #     artifacts#v1.3.0:
-  #       download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
-  #     docker-compose#v3.3.0:
-  #       run: cocoa-maze-runner
-  #       command:
-  #         - "--app=/app/build/iOSTestApp.ipa"
-  #         - "--farm=bs"
-  #         - "--device=IOS_14"
-  #         - "--resilient"
-  #         - "--appium-version=1.17.0"
-  #         - "--fail-fast"
-  #   concurrency: 9
-  #   concurrency_group: browserstack-app
-  #   retry:
-  #     automatic:
-  #       - exit_status: -1  # Agent was lost
-  #         limit: 2
+  - label: ':ios: iOS 14 end-to-end tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
+      docker-compose#v3.3.0:
+        run: cocoa-maze-runner
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bs"
+          - "--device=IOS_14"
+          - "--resilient"
+          - "--appium-version=1.17.0"
+          - "--fail-fast"
+    concurrency: 9
+    concurrency_group: browserstack-app
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
 
-  # - label: ':ios: iOS 13 end-to-end tests'
-  #   depends_on:
-  #     - cocoa_fixture
-  #   timeout_in_minutes: 60
-  #   agents:
-  #     queue: opensource
-  #   plugins:
-  #     artifacts#v1.3.0:
-  #       download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
-  #     docker-compose#v3.3.0:
-  #       run: cocoa-maze-runner
-  #       command:
-  #         - "--app=/app/build/iOSTestApp.ipa"
-  #         - "--farm=bs"
-  #         - "--device=IOS_13"
-  #         - "--resilient"
-  #         - "--appium-version=1.17.0"
-  #         - "--fail-fast"
-  #   concurrency: 9
-  #   concurrency_group: browserstack-app
-  #   retry:
-  #     automatic:
-  #       - exit_status: -1  # Agent was lost
-  #         limit: 2
+  - label: ':ios: iOS 13 end-to-end tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
+      docker-compose#v3.3.0:
+        run: cocoa-maze-runner
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bs"
+          - "--device=IOS_13"
+          - "--resilient"
+          - "--appium-version=1.17.0"
+          - "--fail-fast"
+    concurrency: 9
+    concurrency_group: browserstack-app
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
 
-  # - label: ':ios: iOS 12 end-to-end tests'
-  #   depends_on:
-  #     - cocoa_fixture
-  #   timeout_in_minutes: 60
-  #   agents:
-  #     queue: opensource
-  #   plugins:
-  #     artifacts#v1.3.0:
-  #       download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
-  #     docker-compose#v3.3.0:
-  #       run: cocoa-maze-runner
-  #       command:
-  #         - "--app=/app/build/iOSTestApp.ipa"
-  #         - "--farm=bs"
-  #         - "--device=IOS_12"
-  #         - "--resilient"
-  #         - "--appium-version=1.17.0"
-  #         - "--fail-fast"
-  #   concurrency: 9
-  #   concurrency_group: browserstack-app
-  #   retry:
-  #     automatic:
-  #       - exit_status: -1  # Agent was lost
-  #         limit: 2
+  - label: ':ios: iOS 12 end-to-end tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
+      docker-compose#v3.3.0:
+        run: cocoa-maze-runner
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bs"
+          - "--device=IOS_12"
+          - "--resilient"
+          - "--appium-version=1.17.0"
+          - "--fail-fast"
+    concurrency: 9
+    concurrency_group: browserstack-app
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
 
-  # - label: ':ios: iOS 11 end-to-end tests'
-  #   depends_on:
-  #     - cocoa_fixture
-  #   # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
-  #   # sessions need resetting frequently, taking a minute or more each time.
-  #   timeout_in_minutes: 90
-  #   agents:
-  #     queue: opensource
-  #   plugins:
-  #     artifacts#v1.3.0:
-  #       download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
-  #     docker-compose#v3.3.0:
-  #       run: cocoa-maze-runner
-  #       command:
-  #         - "--app=/app/build/iOSTestApp.ipa"
-  #         - "--farm=bs"
-  #         - "--device=IOS_11_0_IPHONE_8_PLUS"
-  #         - "--resilient"
-  #         - "--appium-version=1.16.0"
-  #         - "--fail-fast"
-  #   concurrency: 9
-  #   concurrency_group: browserstack-app
-  #   retry:
-  #     automatic:
-  #       - exit_status: -1  # Agent was lost
-  #         limit: 2
+  - label: ':ios: iOS 11 end-to-end tests'
+    depends_on:
+      - cocoa_fixture
+    # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
+    # sessions need resetting frequently, taking a minute or more each time.
+    timeout_in_minutes: 90
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
+      docker-compose#v3.3.0:
+        run: cocoa-maze-runner
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bs"
+          - "--device=IOS_11_0_IPHONE_8_PLUS"
+          - "--resilient"
+          - "--appium-version=1.16.0"
+          - "--fail-fast"
+    concurrency: 9
+    concurrency_group: browserstack-app
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
 
-  # - label: ':ios: iOS 10 end-to-end tests'
-  #   depends_on:
-  #     - cocoa_fixture
-  #   timeout_in_minutes: 60
-  #   agents:
-  #     queue: opensource
-  #   plugins:
-  #     artifacts#v1.3.0:
-  #       download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
-  #     docker-compose#v3.3.0:
-  #       run: cocoa-maze-runner
-  #       command:
-  #         - "--app=/app/build/iOSTestApp.ipa"
-  #         - "--farm=bs"
-  #         - "--device=IOS_10"
-  #         - "--resilient"
-  #         - "--appium-version=1.15.0"
-  #         - "--fail-fast"
-  #   concurrency: 9
-  #   concurrency_group: browserstack-app
-  #   retry:
-  #     automatic:
-  #       - exit_status: -1  # Agent was lost
-  #         limit: 2
+  - label: ':ios: iOS 10 end-to-end tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
+      docker-compose#v3.3.0:
+        run: cocoa-maze-runner
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bs"
+          - "--device=IOS_10"
+          - "--resilient"
+          - "--appium-version=1.15.0"
+          - "--fail-fast"
+    concurrency: 9
+    concurrency_group: browserstack-app
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2

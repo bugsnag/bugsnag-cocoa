@@ -1,0 +1,53 @@
+language: objective-c
+cache:
+- bundler
+- cocoapods
+
+install: make bootstrap
+
+env:
+- TEST_CONFIGURATION=Debug
+
+script: make analyze test
+
+stages:
+- build
+- macOS unit tests
+- unit tests
+- integration
+- name: deploy
+  if: branch = master AND tag IS present
+
+jobs:
+  include:
+  # ----------------------------------------------------------------------------
+  # Static framework, Carthage and Swift Package Manager builds
+  # ----------------------------------------------------------------------------
+    
+  - osx_image: xcode11
+    name: Static framework, Carthage and Swift Package Manager builds
+    stage: integration
+    before_script:
+      # Xcode 11+ no longer ships with all device combinations premade
+    - xcrun simctl create "13-xs" "iPhone XS" com.apple.CoreSimulator.SimRuntime.iOS-13-0
+    - mkdir -p features/fixtures/carthage-proj
+    script:
+    - make build_swift      # Build with Swift Package Manager
+    - make build_carthage   # Build example carthage project
+    - make build_ios_static # Build static framework target
+
+  # ----------------------------------------------------------------------------
+  # Doc Generation
+  # ----------------------------------------------------------------------------
+
+  - osx_image: xcode11
+    stage: deploy
+    before_deploy: make doc
+    script: skip
+    deploy:
+      provider: pages
+      local_dir: docs # only include the contents of the generated docs dir
+      skip_cleanup: true
+      github_token: $GITHUB_TOKEN # set in travis-ci dashboard
+      on:
+        tags: true # only deploy when tag is applied to commit
