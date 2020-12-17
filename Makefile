@@ -92,6 +92,8 @@ analyze: ## Run static analysis on the build and fail if issues found
 		&& [[ -z `find $(DATA_PATH)/analyzer -name "*.html"` ]]
 
 test: ## Run unit tests
+	@sw_vers
+	@$(XCODEBUILD) -version
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
 
 test-fixtures: ## Build the end-to-end test fixture
