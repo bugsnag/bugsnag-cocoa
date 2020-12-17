@@ -101,26 +101,23 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "objc_msgSend"
     And the "method" of stack frame 1 equals "__29-[ReleasedObjectScenario run]_block_invoke"
 
-# N.B. this scenario is "imprecise" on CrashProbe due to line number info,
-# which is not tested here as this would require symbolication
   Scenario: Crash within Swift code
     When I run "SwiftCrash" and relaunch the app
     And I configure Bugsnag for "SwiftCrash"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    # And the exception "message" equals "Unexpectedly found nil while unwrapping an Optional value"
     And the exception "errorClass" equals "Fatal error"
+    And the exception "message" equals "Unexpectedly found nil while unwrapping an Optional value"
+    And the event "metaData.error.crashInfo" matches "Fatal error: Unexpectedly found nil while unwrapping an Optional value: file .+\.swift, line \d+\n"
 
   Scenario: Assertion failure in Swift code
     When I run "SwiftAssertion" and relaunch the app
     And I configure Bugsnag for "SwiftAssertion"
     And I wait to receive a request
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    # Temporary workaround until potential issue is investigated thoroughly [PLAT-4875]
-    And the exception "errorClass" equals one of:
-      | Fatal error    |
-      | EXC_BREAKPOINT |
-    # And the exception "message" equals "several unfortunate things just happened"
+    And the exception "errorClass" equals "Fatal error"
+    And the exception "message" equals "several unfortunate things just happened"
+    And the event "metaData.error.crashInfo" matches "Fatal error: several unfortunate things just happened: file .+\.swift, line \d+\n"
 
   Scenario: Dereference a null pointer
     When I run "NullPointerScenario" and relaunch the app
