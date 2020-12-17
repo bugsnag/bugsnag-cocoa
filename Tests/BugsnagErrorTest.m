@@ -24,10 +24,6 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
 @implementation BugsnagErrorTest
 
 - (void)setUp {
-    self.event = [self generateEvent:@{}];
-}
-
-- (NSDictionary *)generateEvent:(NSDictionary *)notableAddresses {
     NSDictionary *thread = @{
             @"current_thread": @YES,
             @"crashed": @YES,
@@ -43,8 +39,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
                                     @"object_addr": @4490747904
                             }
                     ]
-            },
-            @"notable_addresses": notableAddresses
+            }
     };
     NSDictionary *binaryImage = @{
             @"uuid": @"D0A41830-4FD2-3B02-A23B-0741AD4C7F52",
@@ -53,7 +48,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
             @"image_size": @483328,
             @"name": @"/Users/joesmith/foo",
     };
-    return @{
+    self.event = @{
             @"crash": @{
                     @"error": @{
                             @"type": @"user",
@@ -112,48 +107,6 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     return nil;
 }
 
-/**
- * If notable addresses are in the event, the error message/class should be enhanced
- * with these values
- */
-- (void)testMessageEnhancement {
-    self.event = [self generateEvent:@{
-            @"x9": @{
-                    @"address": @4511086448,
-                    @"type": @"string",
-                    @"value": @"Something went wrong"
-            },
-            @"r16": @{
-                    @"address": @4511089532,
-                    @"type": @"string",
-                    @"value": @"Fatal error"
-            }
-    }];
-    BugsnagError *error = [[BugsnagError alloc] initWithEvent:self.event errorReportingThread:nil];
-    NSDictionary *dict = [error toDictionary];
-    XCTAssertEqualObjects(@"Fatal error", dict[@"errorClass"]);
-    XCTAssertEqualObjects(@"Something went wrong", dict[@"message"]);
-}
-
-- (void) testEmptyErrorDataFromThreads {
-    self.event = [self generateEvent:@{
-            @"x9": @{
-                    @"address": @4511086448,
-                    @"type": @"string",
-                    @"value": @"Something went wrong"
-            },
-            @"r16": @{
-                    @"address": @4511089532,
-                    @"type": @"string",
-                    @"value": [NSNull null]
-            }
-    }];
-    BugsnagError *error = [[BugsnagError alloc] initWithEvent:self.event errorReportingThread:nil];
-    NSDictionary *dict = [error toDictionary];
-    XCTAssertEqualObjects(@"Foo Exception", dict[@"errorClass"]);
-    XCTAssertEqualObjects(@"Foo overload", dict[@"message"]);
-}
-
 - (void)testErrorClassParse {
     XCTAssertEqualObjects(@"foo", BSGParseErrorClass(@{@"cpp_exception": @{@"name": @"foo"}}, @"cpp_exception"));
     XCTAssertEqualObjects(@"bar", BSGParseErrorClass(@{@"mach": @{@"exception_name": @"bar"}}, @"mach"));
@@ -193,6 +146,87 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     XCTAssertEqual(1, error.stacktrace.count);
     error.stacktrace = @[];
     XCTAssertEqual(0, error.stacktrace.count);
+}
+
+- (void)testUpdateWithCrashInfoMessage {
+    BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:@"" errorMessage:@"" errorType:BSGErrorTypeCocoa stacktrace:nil];
+    
+    // Swift fatal errors with a message.
+    // The errorClass and errorMessage should be overwritten with values extracted from the crash info message.
+    
+    error.errorClass = nil;
+    error.errorMessage = nil;
+    [error updateWithCrashInfoMessage:@"Assertion failed: This should NEVER happen: file bugsnag_example/AnotherClass.swift, line 24\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Assertion failed");
+    XCTAssertEqualObjects(error.errorMessage, @"This should NEVER happen");
+    
+    error.errorClass = nil;
+    error.errorMessage = nil;
+    [error updateWithCrashInfoMessage:@"Fatal error: This should NEVER happen: file bugsnag_example/AnotherClass.swift, line 24\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Fatal error");
+    XCTAssertEqualObjects(error.errorMessage, @"This should NEVER happen");
+    
+    error.errorClass = nil;
+    error.errorMessage = nil;
+    [error updateWithCrashInfoMessage:@"Precondition failed:   : strange formatting 😱::: file bugsnag_example/AnotherClass.swift, line 24\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Precondition failed");
+    XCTAssertEqualObjects(error.errorMessage, @"  : strange formatting 😱::");
+    
+    // Swift fatal errors without a message.
+    // The errorClass should be overwritten but the errorMessage left as-is.
+    
+    error.errorClass = nil;
+    error.errorMessage = @"Expected message";
+    [error updateWithCrashInfoMessage:@"Assertion failed: file bugsnag_example/AnotherClass.swift, line 24\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Assertion failed");
+    XCTAssertEqualObjects(error.errorMessage, @"Expected message");
+    
+    error.errorClass = nil;
+    error.errorMessage = @"Expected message";
+    [error updateWithCrashInfoMessage:@"Fatal error: file bugsnag_example/AnotherClass.swift, line 24\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Fatal error");
+    XCTAssertEqualObjects(error.errorMessage, @"Expected message");
+    
+    error.errorClass = nil;
+    error.errorMessage = @"Expected message";
+    [error updateWithCrashInfoMessage:@"Precondition failed: file bugsnag_example/AnotherClass.swift, line 24\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Precondition failed");
+    XCTAssertEqualObjects(error.errorMessage, @"Expected message");
+    
+    // Non-matching crash info messages.
+    // The errorClass should not be overwritten, the errorMessage should be overwritten if it was previously empty / nil.
+    
+    error.errorClass = nil;
+    error.errorMessage = @"Expected message";
+    [error updateWithCrashInfoMessage:@"Assertion failed: This should NEVER happen: file bugsnag_example/AnotherClass.swift, line 24\njunk"];
+    XCTAssertEqualObjects(error.errorClass, nil,);
+    XCTAssertEqualObjects(error.errorMessage, @"Expected message");
+    
+    error.errorClass = @"Expected error class";
+    error.errorMessage = @"Expected message";
+    [error updateWithCrashInfoMessage:@"BUG IN CLIENT OF LIBDISPATCH: dispatch_sync called on queue already owned by current thread"];
+    XCTAssertEqualObjects(error.errorClass, @"Expected error class");
+    
+    error.errorClass = @"Expected error class";
+    error.errorMessage = nil;
+    [error updateWithCrashInfoMessage:@"BUG IN CLIENT OF LIBDISPATCH: dispatch_sync called on queue already owned by current thread"];
+    XCTAssertEqualObjects(error.errorClass, @"Expected error class",);
+    XCTAssertEqualObjects(error.errorMessage, @"BUG IN CLIENT OF LIBDISPATCH: dispatch_sync called on queue already owned by current thread");
+    
+    error.errorClass = @"Expected error class";
+    error.errorMessage = @"Expected message";
+    [error updateWithCrashInfoMessage:@""];
+    XCTAssertEqualObjects(error.errorClass, @"Expected error class");
+    XCTAssertEqualObjects(error.errorMessage, @"Expected message",);
+    
+    error.errorClass = @"Expected error class";
+    error.errorMessage = @"Expected message";
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    [error updateWithCrashInfoMessage:nil];
+#pragma clang diagnostic pop
+    XCTAssertEqualObjects(error.errorClass, @"Expected error class",);
+    XCTAssertEqualObjects(error.errorMessage, @"Expected message",);
 }
 
 @end
