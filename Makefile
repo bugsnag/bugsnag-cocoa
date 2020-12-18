@@ -74,9 +74,9 @@ build_carthage: ## Build the latest pushed commit with Carthage
 	@mkdir -p features/fixtures/carthage-proj
 	@echo 'git "file://$(shell pwd)" "'$(shell git rev-parse HEAD)'"' > features/fixtures/carthage-proj/Cartfile
 	@cd features/fixtures/carthage-proj && \
-	 carthage update --platform ios --no-use-binaries && \
-	 carthage update --platform macos --no-use-binaries && \
-	 carthage update --platform tvos --no-use-binaries
+	 carthage update --platform ios --verbose && \
+	 carthage update --platform macos --verbose && \
+	 carthage update --platform tvos --verbose
 
 build_swift: ## Build with Swift Package Manager
 	@swift build
