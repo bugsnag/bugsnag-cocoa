@@ -51,6 +51,12 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 @implementation BugsnagConfiguration
 
+static NSUserDefaults *userDefaults;
+
++ (void)initialize {
+    userDefaults = NSUserDefaults.standardUserDefaults;
+}
+
 + (instancetype _Nonnull)loadConfig {
     NSDictionary *options = [[NSBundle mainBundle] infoDictionary][@"bugsnag"];
     return [BSGConfigurationBuilder configurationFromOptions:options];
@@ -122,6 +128,14 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     BOOL isHex = (NSNotFound == [[apiKey uppercaseString] rangeOfCharacterFromSet:chars].location);
 
     return isHex && [apiKey length] == BSGApiKeyLength;
+}
+
++ (void)setUserDefaults:(NSUserDefaults *)newValue {
+    userDefaults = newValue;
+}
+
++ (NSUserDefaults *)userDefaults {
+    return userDefaults;
 }
 
 // -----------------------------------------------------------------------------
@@ -335,7 +349,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 - (BugsnagUser *)getPersistedUserData {
     @synchronized(self) {
-        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         NSString *email = [userDefaults objectForKey:kBugsnagUserEmailAddress];
         NSString *name = [userDefaults objectForKey:kBugsnagUserName];
         NSString *userId = [userDefaults objectForKey:kBugsnagUserUserId];
@@ -355,8 +368,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 - (void)persistUserData {
     @synchronized(self) {
         if (_user) {
-            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-            
             // Email
             if (_user.email) {
                 [userDefaults setObject:_user.email forKey:kBugsnagUserEmailAddress];
@@ -389,7 +400,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 -(void)deletePersistedUserData {
     @synchronized(self) {
-        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         [userDefaults removeObjectForKey:kBugsnagUserEmailAddress];
         [userDefaults removeObjectForKey:kBugsnagUserName];
         [userDefaults removeObjectForKey:kBugsnagUserUserId];
