@@ -162,14 +162,32 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     
     error.errorClass = nil;
     error.errorMessage = nil;
+    [error updateWithCrashInfoMessage:@"assertion failed: This should NEVER happen: file bugsnag_example/AnotherClass.swift, line 24\n"];
+    XCTAssertEqualObjects(error.errorClass, @"assertion failed");
+    XCTAssertEqualObjects(error.errorMessage, @"This should NEVER happen");
+    
+    error.errorClass = nil;
+    error.errorMessage = nil;
     [error updateWithCrashInfoMessage:@"Fatal error: This should NEVER happen: file bugsnag_example/AnotherClass.swift, line 24\n"];
     XCTAssertEqualObjects(error.errorClass, @"Fatal error");
     XCTAssertEqualObjects(error.errorMessage, @"This should NEVER happen");
     
     error.errorClass = nil;
     error.errorMessage = nil;
+    [error updateWithCrashInfoMessage:@"fatal error: This should NEVER happen: file bugsnag_example/AnotherClass.swift, line 24\n"];
+    XCTAssertEqualObjects(error.errorClass, @"fatal error");
+    XCTAssertEqualObjects(error.errorMessage, @"This should NEVER happen");
+    
+    error.errorClass = nil;
+    error.errorMessage = nil;
     [error updateWithCrashInfoMessage:@"Precondition failed:   : strange formatting 😱::: file bugsnag_example/AnotherClass.swift, line 24\n"];
     XCTAssertEqualObjects(error.errorClass, @"Precondition failed");
+    XCTAssertEqualObjects(error.errorMessage, @"  : strange formatting 😱::");
+    
+    error.errorClass = nil;
+    error.errorMessage = nil;
+    [error updateWithCrashInfoMessage:@"precondition failed:   : strange formatting 😱::: file bugsnag_example/AnotherClass.swift, line 24\n"];
+    XCTAssertEqualObjects(error.errorClass, @"precondition failed");
     XCTAssertEqualObjects(error.errorMessage, @"  : strange formatting 😱::");
     
     // Swift fatal errors without a message.

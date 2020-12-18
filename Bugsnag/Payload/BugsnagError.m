@@ -132,7 +132,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     @try {
         // Messages that match this pattern should override the errorClass (and errorMessage if there is enough information.)
         NSString *pattern = @"^(Assertion failed|Fatal error|Precondition failed): ((.+): )?file .+, line \\d+\n$";
-        NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:pattern options:0 error:nil];
+        NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
         NSArray<NSTextCheckingResult *> *matches = [regex matchesInString:crashInfoMessage options:0 range:NSMakeRange(0, crashInfoMessage.length)];
         if (matches.count != 1 || matches[0].numberOfRanges != 4) {
             if (!self.errorMessage.length) {
