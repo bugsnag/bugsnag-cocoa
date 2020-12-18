@@ -171,7 +171,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     // Only gets persisted user data if there is any, otherwise nil
     // persistUser isn't settable until post-init.
     _user = [self getPersistedUserData];
-    [self setUserMetadataFromUser:_user];
 
     if ([NSURLSession class]) {
         _session = [NSURLSession
@@ -239,20 +238,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     // Persist the user
     if (_persistUser)
         [self persistUserData];
-
-    // Add user info to the metadata
-    [self setUserMetadataFromUser:self.user];
-}
-
-/**
- * Add user data to the Configuration metadata
- *
- * @param user A BugsnagUser object containing data to be added to the configuration metadata.
- */
-- (void)setUserMetadataFromUser:(BugsnagUser *)user {
-    [self.metadata addMetadata:user.id withKey:BSGKeyId toSection:BSGKeyUser];
-    [self.metadata addMetadata:user.name         withKey:BSGKeyName  toSection:BSGKeyUser];
-    [self.metadata addMetadata:user.email withKey:BSGKeyEmail toSection:BSGKeyUser];
 }
 
 // =============================================================================
