@@ -162,5 +162,19 @@ doc: ## Generate html documentation
 	@gatherheaderdoc docs
 	@mv docs/masterTOC.html docs/index.html
 
+update-docs: ## Update and upload docs to Github
+ifeq ($(BUILDKITE),)
+	@$(error Docs deployment is handled by CI, and shouldn't be run locally)
+endif
+ifeq ($(BUILDKITE_TAG),)
+	@$(error Docs deployments should only occur on a tagged release)
+endif
+	@git clone --single-branch --branch=gh-pages git@github.com:bugsnag/bugsnag-cocoa.git docs
+	@make doc
+	@cd docs
+	@git add .
+	@git commit -m "Docs update for $BUILDKITE_TAG release"
+	@git push --force-with-lease
+
 help: ## Show help text
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
