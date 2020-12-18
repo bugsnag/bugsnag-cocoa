@@ -19,6 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Properties
 
+/// The user defaults database to use for persistence of user information.
+@property (class, nonatomic) NSUserDefaults *userDefaults;
+
 /// Meta-information about the state of Bugsnag
 @property (retain, nullable) BugsnagMetadata *config;
 

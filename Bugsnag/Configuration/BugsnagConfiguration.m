@@ -51,6 +51,12 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 @implementation BugsnagConfiguration
 
+static NSUserDefaults *userDefaults;
+
++ (void)initialize {
+    userDefaults = NSUserDefaults.standardUserDefaults;
+}
+
 + (instancetype _Nonnull)loadConfig {
     NSDictionary *options = [[NSBundle mainBundle] infoDictionary][@"bugsnag"];
     return [BSGConfigurationBuilder configurationFromOptions:options];
@@ -124,6 +130,14 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     return isHex && [apiKey length] == BSGApiKeyLength;
 }
 
++ (void)setUserDefaults:(NSUserDefaults *)newValue {
+    userDefaults = newValue;
+}
+
++ (NSUserDefaults *)userDefaults {
+    return userDefaults;
+}
+
 // -----------------------------------------------------------------------------
 // MARK: - Initializers
 // -----------------------------------------------------------------------------
@@ -171,7 +185,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     // Only gets persisted user data if there is any, otherwise nil
     // persistUser isn't settable until post-init.
     _user = [self getPersistedUserData];
-    [self setUserMetadataFromUser:_user];
 
     if ([NSURLSession class]) {
         _session = [NSURLSession
@@ -239,20 +252,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     // Persist the user
     if (_persistUser)
         [self persistUserData];
-
-    // Add user info to the metadata
-    [self setUserMetadataFromUser:self.user];
-}
-
-/**
- * Add user data to the Configuration metadata
- *
- * @param user A BugsnagUser object containing data to be added to the configuration metadata.
- */
-- (void)setUserMetadataFromUser:(BugsnagUser *)user {
-    [self.metadata addMetadata:user.id withKey:BSGKeyId toSection:BSGKeyUser];
-    [self.metadata addMetadata:user.name         withKey:BSGKeyName  toSection:BSGKeyUser];
-    [self.metadata addMetadata:user.email withKey:BSGKeyEmail toSection:BSGKeyUser];
 }
 
 // =============================================================================
@@ -350,7 +349,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 - (BugsnagUser *)getPersistedUserData {
     @synchronized(self) {
-        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         NSString *email = [userDefaults objectForKey:kBugsnagUserEmailAddress];
         NSString *name = [userDefaults objectForKey:kBugsnagUserName];
         NSString *userId = [userDefaults objectForKey:kBugsnagUserUserId];
@@ -370,8 +368,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 - (void)persistUserData {
     @synchronized(self) {
         if (_user) {
-            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-            
             // Email
             if (_user.email) {
                 [userDefaults setObject:_user.email forKey:kBugsnagUserEmailAddress];
@@ -404,7 +400,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  */
 -(void)deletePersistedUserData {
     @synchronized(self) {
-        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         [userDefaults removeObjectForKey:kBugsnagUserEmailAddress];
         [userDefaults removeObjectForKey:kBugsnagUserName];
         [userDefaults removeObjectForKey:kBugsnagUserUserId];
