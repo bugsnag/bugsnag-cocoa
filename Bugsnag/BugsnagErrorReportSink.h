@@ -25,16 +25,21 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BSG_KSCrash.h"
-#import "BugsnagErrorReportApiClient.h"
+
+#import "BSGOnErrorSentBlock.h"
+
+@class BugsnagConfiguration;
+@class BugsnagErrorReportApiClient;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagErrorReportSink : NSObject
 
-@property(nonatomic, strong) BugsnagErrorReportApiClient *apiClient;
+- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient configuration:(BugsnagConfiguration *)configuration;
 
-- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient;
+@property (strong, nonatomic) BugsnagErrorReportApiClient *apiClient;
+
+@property (strong, nonatomic) BugsnagConfiguration *configuration;
 
 /**
  * Invoked when reports stored by KSCrash need to be delivered.

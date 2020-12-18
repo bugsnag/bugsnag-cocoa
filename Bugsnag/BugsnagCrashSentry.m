@@ -22,7 +22,7 @@
       apiClient:(BugsnagErrorReportApiClient *)apiClient
         onCrash:(BSGReportCallback)onCrash
 {
-    BugsnagErrorReportSink *sink = [[BugsnagErrorReportSink alloc] initWithApiClient:apiClient];
+    BugsnagErrorReportSink *sink = [[BugsnagErrorReportSink alloc] initWithApiClient:apiClient configuration:config];
     BSG_KSCrash *ksCrash = [BSG_KSCrash sharedInstance];
     ksCrash.sink = sink;
     ksCrash.introspectMemory = YES;

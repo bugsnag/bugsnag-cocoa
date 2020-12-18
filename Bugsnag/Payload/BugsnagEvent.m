@@ -358,9 +358,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     BugsnagUser *user = [self parseUser:event deviceAppHash:deviceAppHash deviceId:device.id];
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithMetadata:[event valueForKeyPath:@"user.config"]];
     BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:event config:config codeBundleId:self.codeBundleId];
-    if (!app.type) { // Configuration.type does not get stored in the crash report at the time of writing.
-        app.type = [Bugsnag configuration].appType;
-    }
     BugsnagEvent *obj = [self initWithApp:app
                                    device:device
                              handledState:handledState
@@ -496,8 +493,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 - (BOOL)shouldBeSent {
     return [self.enabledReleaseStages containsObject:self.releaseStage] ||
-           (self.enabledReleaseStages.count == 0 &&
-            [[Bugsnag configuration] shouldSendReports]);
+           (self.enabledReleaseStages.count == 0);
 }
 
 - (NSArray *)serializeBreadcrumbs {

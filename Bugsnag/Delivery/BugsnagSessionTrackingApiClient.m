@@ -61,7 +61,7 @@
         [self.sendQueue addOperationWithBlock:^{
             BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc]
                 initWithSessions:@[session]
-                          config:[Bugsnag configuration]
+                          config:self.config
                     codeBundleId:self.codeBundleId];
             NSMutableDictionary *data = [payload toJson];
             NSDictionary *HTTPHeaders = @{
