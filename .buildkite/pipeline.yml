@@ -1,15 +1,15 @@
 steps:
-  # - label: Build cocoa IPA
-  #   key: cocoa_fixture
-  #   timeout_in_minutes: 20
-  #   agents:
-  #     queue: opensource-mac-cocoa
-  #   artifact_paths:
-  #     - features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa
-  #     - features/fixtures/macos/output/macOSTestApp.zip
-  #   commands:
-  #     - ./features/scripts/export_ios_app.sh
-  #     - ./features/scripts/export_mac_app.sh
+  - label: Build cocoa IPA
+    key: cocoa_fixture
+    timeout_in_minutes: 20
+    agents:
+      queue: opensource-mac-cocoa
+    artifact_paths:
+      - features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa
+      - features/fixtures/macos/output/macOSTestApp.zip
+    commands:
+      - ./features/scripts/export_ios_app.sh
+      - ./features/scripts/export_mac_app.sh
 
   - label: Static framework, Carthage, and Swift Package Manager builds
     timeout_in_minutes: 10
