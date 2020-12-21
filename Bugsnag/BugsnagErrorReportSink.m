@@ -95,6 +95,13 @@
         NSDictionary *report = ksCrashReports[fileKey];
         BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:report];
         event.redactedKeys = configuration.redactedKeys;
+        
+        NSString *errorClass = event.errors.firstObject.errorClass;
+        if ([configuration shouldDiscardErrorClass:errorClass]) {
+            bsg_log_info(@"Discarding event because errorClass \"%@\" matched configuration.discardClasses", errorClass);
+            [self finishActiveRequest:fileKey completed:YES error:nil block:block];
+            continue;
+        }
 
         if ([event shouldBeSent] && [self runOnSendBlocks:configuration event:event]) {
             storedEvents[fileKey] = event;

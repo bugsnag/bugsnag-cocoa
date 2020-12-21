@@ -18,6 +18,11 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter * _Nonnull writer);
 - (instancetype _Nonnull)initWithConfig:(BugsnagConfiguration *_Nonnull)config;
 
 /**
+ * Blocks the calling thread until network connectivity to the notify endpoint has been verified.
+ */
+- (void)waitForNetworkConnectivity;
+
+/**
  * Executes the test case
  */
 - (void)run;
@@ -26,5 +31,8 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter * _Nonnull writer);
 
 - (void)didEnterBackgroundNotification;
 
+- (void)triggerExcBreakpoint;
+
 @property (nonatomic, strong, nullable) NSString *eventMode;
+
 @end

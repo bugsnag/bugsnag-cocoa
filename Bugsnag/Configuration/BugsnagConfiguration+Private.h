@@ -52,6 +52,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)deletePersistedUserData;
 
+- (BOOL)shouldDiscardErrorClass:(NSString *)errorClass;
+
 - (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)breadcrumbType;
 
 /// Throws an NSInvalidArgumentException if the API key is empty or missing.

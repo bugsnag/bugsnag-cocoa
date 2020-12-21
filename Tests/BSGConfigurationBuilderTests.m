@@ -55,6 +55,8 @@
     XCTAssertNil(config.appVersion);
     XCTAssertTrue(config.autoDetectErrors);
     XCTAssertTrue(config.autoTrackSessions);
+    XCTAssertEqual(12, config.maxPersistedEvents);
+    XCTAssertEqual(32, config.maxPersistedSessions);
     XCTAssertEqual(25, config.maxBreadcrumbs);
     XCTAssertTrue(config.persistUser);
     XCTAssertEqualObjects(@[@"password"], [config.redactedKeys allObjects]);
@@ -92,6 +94,8 @@
                             @"sessions": @"https://sessions.example.co"
                     },
                     @"enabledReleaseStages": @[@"beta2", @"prod"],
+                    @"maxPersistedEvents": @29,
+                    @"maxPersistedSessions": @19,
                     @"maxBreadcrumbs": @27,
                     @"persistUser": @NO,
                     @"redactedKeys": @[@"foo"],
@@ -105,6 +109,8 @@
     XCTAssertFalse(config.autoDetectErrors);
     XCTAssertFalse(config.autoTrackSessions);
     XCTAssertEqualObjects(@"7.22", config.bundleVersion);
+    XCTAssertEqual(29, config.maxPersistedEvents);
+    XCTAssertEqual(19, config.maxPersistedSessions);
     XCTAssertEqual(27, config.maxBreadcrumbs);
     XCTAssertFalse(config.persistUser);
     XCTAssertEqualObjects(@[@"foo"], config.redactedKeys);
@@ -138,6 +144,8 @@
                     @"endpoints": [NSNull null],
                     @"enabledReleaseStages": @[@"beta2", @"prod"],
                     @"enabledErrorTypes": @[@"ooms", @"signals"],
+                    @"maxPersistedEvents": @29,
+                    @"maxPersistedSessions": @19,
                     @"maxBreadcrumbs": @27,
                     @"persistUser": @"pomelo",
                     @"redactedKeys": @[@77],
