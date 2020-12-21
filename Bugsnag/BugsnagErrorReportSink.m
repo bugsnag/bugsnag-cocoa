@@ -155,6 +155,9 @@
         // Use current value for crashes from older notifier versions that didn't persist config.appType
         event.app.type = self.configuration.appType;
     }
+    if (!event.apiKey) {
+        event.apiKey = self.configuration.apiKey;
+    }
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     data[BSGKeyNotifier] = [self.notifier toDict];
     data[BSGKeyApiKey] = event.apiKey;

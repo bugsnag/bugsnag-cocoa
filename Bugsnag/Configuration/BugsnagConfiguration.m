@@ -99,7 +99,7 @@ static NSUserDefaults *userDefaults;
     [copy setPersistUser:self.persistUser];
     [copy setPlugins:[self.plugins copy]];
     [copy setReleaseStage:self.releaseStage];
-    [copy setSession:[self.session copy]];
+    copy.session = self.session; // NSURLSession does not declare conformance to NSCopying
     [copy setSendThreads:self.sendThreads];
     [copy setUser:self.user.id
         withEmail:self.user.email
