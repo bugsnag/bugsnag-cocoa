@@ -78,7 +78,7 @@ Feature: Barebone tests
     And the exception "message" equals "The data couldn’t be read because it isn’t in the correct format."
     And the exception "type" equals "cocoa"
 
-  Scenario: Smoke test: unhandled error
+  Scenario: Barebone test: unhandled error
     When I run "BareboneTestUnhandledErrorScenario" and relaunch the app
     And I set the app to "report" mode
     And I configure Bugsnag for "BareboneTestUnhandledErrorScenario"
