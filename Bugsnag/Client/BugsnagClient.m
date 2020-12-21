@@ -281,6 +281,8 @@ NSString *_lastOrientation = nil;
 
         self.breadcrumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
 
+        [BSGJSONSerialization writeJSONObject:configuration.dictionaryRepresentation toFile:_configMetadataFile options:0 error:nil];
+        
         // Start with a copy of the configuration metadata
         self.metadata = [[configuration metadata] deepCopy];
         // add metadata about app/device
@@ -289,7 +291,6 @@ NSString *_lastOrientation = nil;
         [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
         // sync initial state
         [self metadataChanged:self.metadata];
-        [self metadataChanged:self.configuration.config];
         [self metadataChanged:self.state];
 
         // add observers for future metadata changes
@@ -301,7 +302,6 @@ NSString *_lastOrientation = nil;
             [weakSelf metadataChanged:event.data];
         };
         [self.metadata addObserverWithBlock:observer];
-        [self.configuration.config addObserverWithBlock:observer];
         [self.state addObserverWithBlock:observer];
 
         self.pluginClient = [[BugsnagPluginClient alloc] initWithPlugins:self.configuration.plugins
@@ -920,7 +920,7 @@ NSString *_lastOrientation = nil;
                         callbackOverrides:event.overrides
                            eventOverrides:eventOverrides
                                  metadata:[event.metadata toDictionary]
-                                   config:[self.configuration.config toDictionary]];
+                                   config:self.configuration.dictionaryRepresentation];
 
     // A basic set of event metadata
     NSMutableDictionary *metadata = [@{
@@ -973,8 +973,6 @@ NSString *_lastOrientation = nil;
     @synchronized(metadata) {
         if (metadata == self.metadata) {
             [BSGJSONSerialization writeJSONObject:[metadata toDictionary] toFile:self.metadataFile options:0 error:nil];
-        } else if (metadata == self.configuration.config) {
-            [BSGJSONSerialization writeJSONObject:[metadata getMetadataFromSection:BSGKeyConfig] toFile:self.configMetadataFile options:0 error:nil];
         } else if (metadata == self.state) {
             [BSGJSONSerialization writeJSONObject:[metadata toDictionary] toFile:self.stateMetadataFile options:0 error:nil];
         }

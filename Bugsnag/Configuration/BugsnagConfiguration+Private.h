@@ -14,16 +14,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Initializers
 
-/// Initializes the configuration with values previously stored in metadata.
-- (instancetype)initWithMetadata:(NSDictionary *)JSONObject NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithDictionaryRepresentation:(NSDictionary<NSString *, id> *)JSONObject NS_DESIGNATED_INITIALIZER;
 
 #pragma mark Properties
 
 /// The user defaults database to use for persistence of user information.
 @property (class, nonatomic) NSUserDefaults *userDefaults;
 
-/// Meta-information about the state of Bugsnag
-@property (retain, nullable) BugsnagMetadata *config;
+@property (readonly) NSDictionary<NSString *, id> *dictionaryRepresentation;
 
 @property (readonly) NSDictionary<NSString *, id> *errorApiHeaders;
 
