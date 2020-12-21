@@ -30,16 +30,21 @@
 
 @class BugsnagConfiguration;
 @class BugsnagErrorReportApiClient;
+@class BugsnagNotifier;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagErrorReportSink : NSObject
 
-- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient configuration:(BugsnagConfiguration *)configuration;
+- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient
+                    configuration:(BugsnagConfiguration *)configuration
+                         notifier:(BugsnagNotifier *)notifier;
 
 @property (strong, nonatomic) BugsnagErrorReportApiClient *apiClient;
 
 @property (strong, nonatomic) BugsnagConfiguration *configuration;
+
+@property (strong, nonatomic) BugsnagNotifier *notifier;
 
 /**
  * Invoked when reports stored by KSCrash need to be delivered.

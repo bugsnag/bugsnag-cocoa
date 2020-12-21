@@ -43,11 +43,14 @@
 
 @implementation BugsnagErrorReportSink
 
-- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient configuration:(BugsnagConfiguration *)configuration {
+- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient
+                    configuration:(BugsnagConfiguration *)configuration
+                         notifier:(BugsnagNotifier *)notifier {
     if ((self = [super init])) {
         _apiClient = apiClient;
         _activeRequests = [NSMutableSet new];
         _configuration = configuration;
+        _notifier = notifier;
     }
     return self;
 }
@@ -153,7 +156,7 @@
         event.app.type = self.configuration.appType;
     }
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-    data[BSGKeyNotifier] = [[Bugsnag client].notifier toDict];
+    data[BSGKeyNotifier] = [self.notifier toDict];
     data[BSGKeyApiKey] = event.apiKey;
     data[BSGKeyPayloadVersion] = @"4.0";
     data[BSGKeyEvents] = @[[event toJson]];
