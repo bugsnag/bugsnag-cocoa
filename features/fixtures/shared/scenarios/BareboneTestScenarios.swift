@@ -12,6 +12,8 @@ class BareboneTestHandledScenario: Scenario {
     var onSendErrorCount = 0
     var onSessionCount = 0
     
+    var afterSendErrorBlock: (() -> Void)?
+    
     override func startBugsnag() {
         config.addOnBreadcrumb {
             NSLog("OnBreadcrumb: \"\($0.message)\"")
@@ -24,6 +26,10 @@ class BareboneTestHandledScenario: Scenario {
         config.addOnSendError {
             NSLog("OnSendError: \"\($0.errors[0].errorClass ?? "")\" \"\($0.errors[0].errorMessage ?? "")\"")
             self.onSendErrorCount += 1
+            if let block = self.afterSendErrorBlock {
+                DispatchQueue.main.async(execute: block)
+                self.afterSendErrorBlock = nil
+            }
             return true
         }
         config.addOnSession {
@@ -60,8 +66,10 @@ class BareboneTestHandledScenario: Scenario {
             return true
         }
         
-        // There is a delay between notify() and an error being sent.
-        RunLoop.current.run(until: .init(timeIntervalSinceNow: 2))
+        self.afterSendErrorBlock = self.afterSendError
+    }
+    
+    func afterSendError() {
         precondition(onSendErrorCount == 1)
         
         Bugsnag.leaveBreadcrumb(withMessage: "About to decode a payload...")
