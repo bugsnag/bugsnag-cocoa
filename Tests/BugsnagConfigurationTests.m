@@ -351,7 +351,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 // Helper
 - (void)getName:(NSString **)name email:(NSString **)email id:(NSString **  )id {
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSUserDefaults *userDefaults = BugsnagConfiguration.userDefaults;
     *email = [userDefaults objectForKey:kBugsnagUserEmailAddress];
     *id = [userDefaults objectForKey:kBugsnagUserUserId];
     *name = [userDefaults objectForKey:kBugsnagUserName];
