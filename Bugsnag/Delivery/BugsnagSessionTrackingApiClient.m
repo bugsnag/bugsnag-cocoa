@@ -5,7 +5,6 @@
 
 #import "BugsnagSessionTrackingApiClient.h"
 
-#import "Bugsnag+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagSessionTrackingPayload.h"
 #import "BugsnagSessionFileStore.h"
@@ -22,10 +21,11 @@
 
 @implementation BugsnagSessionTrackingApiClient
 
-- (instancetype)initWithConfig:(BugsnagConfiguration *)configuration queueName:(NSString *)queueName {
+- (instancetype)initWithConfig:(BugsnagConfiguration *)configuration queueName:(NSString *)queueName notifier:(BugsnagNotifier *)notifier {
     if ((self = [super initWithSession:configuration.session queueName:queueName])) {
         _activeIds = [NSMutableSet new];
         _config = configuration;
+        _notifier = notifier;
     }
     return self;
 }
@@ -61,8 +61,9 @@
         [self.sendQueue addOperationWithBlock:^{
             BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc]
                 initWithSessions:@[session]
-                          config:[Bugsnag configuration]
-                    codeBundleId:self.codeBundleId];
+                          config:self.config
+                    codeBundleId:self.codeBundleId
+                        notifier:self.notifier];
             NSMutableDictionary *data = [payload toJson];
             NSDictionary *HTTPHeaders = @{
                 BugsnagHTTPHeaderNameApiKey: apiKey ?: @"",

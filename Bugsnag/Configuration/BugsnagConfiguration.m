@@ -99,7 +99,7 @@ static NSUserDefaults *userDefaults;
     [copy setPersistUser:self.persistUser];
     [copy setPlugins:[self.plugins copy]];
     [copy setReleaseStage:self.releaseStage];
-    [copy setSession:[self.session copy]];
+    copy.session = self.session; // NSURLSession does not declare conformance to NSCopying
     [copy setSendThreads:self.sendThreads];
     [copy setUser:self.user.id
         withEmail:self.user.email
@@ -228,6 +228,7 @@ static NSUserDefaults *userDefaults;
     if (!(self = [super init])) {
         return nil;
     }
+    _appType = metadata[BSGKeyAppType];
     _appVersion = metadata[BSGKeyAppVersion];
     _context = metadata[BSGKeyContext];
     _bundleVersion = metadata[BSGKeyBundleVersion];
@@ -614,6 +615,23 @@ static NSUserDefaults *userDefaults;
         [self.config addMetadata:newContext
                          withKey:BSGKeyContext
                        toSection:BSGKeyConfig];
+    }
+}
+
+// MARK: -
+
+@synthesize appType = _appType;
+
+- (NSString *)appType {
+    @synchronized (self) {
+        return _appType;
+    }
+}
+
+- (void)setAppType:(NSString *)appType {
+    @synchronized (self) {
+        _appType = [appType copy];
+        [self.config addMetadata:appType withKey:BSGKeyAppType toSection:BSGKeyConfig];
     }
 }
 

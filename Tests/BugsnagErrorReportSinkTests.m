@@ -49,7 +49,12 @@
     [client start];
     BugsnagEvent *report =
             [[BugsnagEvent alloc] initWithKSReport:self.rawReportData];
-    self.processedData = [[BugsnagErrorReportSink new] prepareEventPayload:report];
+    
+    BugsnagErrorReportSink *sink = [[BugsnagErrorReportSink alloc] initWithApiClient:client.errorReportApiClient
+                                                                       configuration:client.configuration
+                                                                            notifier:client.notifier];
+    
+    self.processedData = [sink prepareEventPayload:report];
 }
 
 - (void)tearDown {

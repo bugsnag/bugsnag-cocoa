@@ -9,7 +9,7 @@
 #import "BugsnagSessionTracker+Private.h"
 
 #import "BugsnagApp+Private.h"
-#import "BugsnagClient.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagDevice+Private.h"
 #import "BugsnagSessionFileStore.h"
@@ -51,7 +51,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
     if (self = [super init]) {
         _config = config;
         _client = client;
-        _apiClient = [[BugsnagSessionTrackingApiClient alloc] initWithConfig:config queueName:@"Session API queue"];
+        _apiClient = [[BugsnagSessionTrackingApiClient alloc] initWithConfig:config queueName:@"Session API queue" notifier:client.notifier];
         _callback = callback;
 
         NSString *storePath = [BugsnagFileStore findReportStorePath:@"Sessions"];
