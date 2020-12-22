@@ -472,12 +472,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 @synthesize apiKey = _apiKey;
 
 - (NSString *)apiKey {
-    if (! _apiKey) {
-        _apiKey = Bugsnag.configuration.apiKey;
-    }
     return _apiKey;
 }
-
 
 - (void)setApiKey:(NSString *)apiKey {
     if ([BugsnagConfiguration isValidApiKey:apiKey]) {
