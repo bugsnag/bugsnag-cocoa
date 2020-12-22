@@ -83,7 +83,6 @@ static NSUserDefaults *userDefaults;
     [copy setAutoDetectErrors:self.autoDetectErrors];
     [copy setAutoTrackSessions:self.autoTrackSessions];
     [copy setBundleVersion:self.bundleVersion];
-    [copy setConfig:[[BugsnagMetadata alloc] initWithDictionary:[[self.config toDictionary] mutableCopy]]];
     [copy setContext:self.context];
     [copy setEnabledBreadcrumbTypes:self.enabledBreadcrumbTypes];
     [copy setEnabledErrorTypes:self.enabledErrorTypes];
@@ -164,7 +163,6 @@ static NSUserDefaults *userDefaults;
         [self setApiKey:apiKey];
     }
     _metadata = [[BugsnagMetadata alloc] init];
-    _config = [[BugsnagMetadata alloc] init];
     _endpoints = [BugsnagEndpointConfiguration new];
     _sessionURL = [NSURL URLWithString:@"https://sessions.bugsnag.com"];
     _autoDetectErrors = YES;
@@ -224,22 +222,33 @@ static NSUserDefaults *userDefaults;
     return self;
 }
 
-- (instancetype)initWithMetadata:(NSDictionary *)metadata {
+- (instancetype)initWithDictionaryRepresentation:(NSDictionary<NSString *, id> *)dictionaryRepresentation {
     if (!(self = [super init])) {
         return nil;
     }
-    _appType = metadata[BSGKeyAppType];
-    _appVersion = metadata[BSGKeyAppVersion];
-    _context = metadata[BSGKeyContext];
-    _bundleVersion = metadata[BSGKeyBundleVersion];
-    _enabledReleaseStages = metadata[BSGKeyEnabledReleaseStages];
-    _releaseStage = metadata[BSGKeyReleaseStage];
+    _appType = dictionaryRepresentation[BSGKeyAppType];
+    _appVersion = dictionaryRepresentation[BSGKeyAppVersion];
+    _bundleVersion = dictionaryRepresentation[BSGKeyBundleVersion];
+    _context = dictionaryRepresentation[BSGKeyContext];
+    _enabledReleaseStages = dictionaryRepresentation[BSGKeyEnabledReleaseStages];
+    _releaseStage = dictionaryRepresentation[BSGKeyReleaseStage];
     return self;
 }
 
 // -----------------------------------------------------------------------------
 // MARK: - Instance Methods
 // -----------------------------------------------------------------------------
+
+- (NSDictionary<NSString *, id> *)dictionaryRepresentation {
+    NSMutableDictionary *dictionaryRepresentation = [NSMutableDictionary dictionary];
+    dictionaryRepresentation[BSGKeyAppType] = self.appType;
+    dictionaryRepresentation[BSGKeyAppVersion] = self.appVersion;
+    dictionaryRepresentation[BSGKeyBundleVersion] = self.bundleVersion;
+    dictionaryRepresentation[BSGKeyContext] = self.context;
+    dictionaryRepresentation[BSGKeyEnabledReleaseStages] = self.enabledReleaseStages.allObjects;
+    dictionaryRepresentation[BSGKeyReleaseStage] = self.releaseStage;
+    return dictionaryRepresentation;
+}
 
 /**
  *  Whether reports should be sent, based on release stage options
@@ -540,49 +549,6 @@ static NSUserDefaults *userDefaults;
     return NO;
 }
 
-// MARK: -
-
-@synthesize releaseStage = _releaseStage;
-
-- (NSString *)releaseStage {
-    @synchronized (self) {
-        return _releaseStage;
-    }
-}
-
-- (void)setReleaseStage:(NSString *)newReleaseStage {
-    @synchronized (self) {
-        NSString *key = NSStringFromSelector(@selector(releaseStage));
-        [self willChangeValueForKey:key];
-        _releaseStage = newReleaseStage;
-        [self didChangeValueForKey:key];
-        [self.config addMetadata:newReleaseStage
-                         withKey:BSGKeyReleaseStage
-                       toSection:BSGKeyConfig];
-    }
-}
-
-// MARK: -
-
-@synthesize enabledReleaseStages = _enabledReleaseStages;
-
-- (NSSet<NSString *> *)enabledReleaseStages {
-    @synchronized (self) {
-        return _enabledReleaseStages;
-    }
-}
-
-- (void)setEnabledReleaseStages:(NSSet<NSString *> *)newReleaseStages
-{
-    @synchronized (self) {
-        NSSet<NSString *> *releaseStagesCopy = [newReleaseStages copy];
-        _enabledReleaseStages = releaseStagesCopy;
-        [self.config addMetadata:[releaseStagesCopy allObjects]
-                         withKey:BSGKeyEnabledReleaseStages
-                       toSection:BSGKeyConfig];
-    }
-}
-
 // MARK: - enabledBreadcrumbTypes
 
 @synthesize enabledBreadcrumbTypes = _enabledBreadcrumbTypes;
@@ -596,80 +562,6 @@ static NSUserDefaults *userDefaults;
 - (void)setEnabledBreadcrumbTypes:(BSGEnabledBreadcrumbType)enabledBreadcrumbTypes {
     @synchronized (self) {
         _enabledBreadcrumbTypes = enabledBreadcrumbTypes;
-    }
-}
-
-// MARK: -
-
-@synthesize context = _context;
-
-- (NSString *)context {
-    @synchronized (self) {
-        return _context;
-    }
-}
-
-- (void)setContext:(NSString *)newContext {
-    @synchronized (self) {
-        _context = newContext;
-        [self.config addMetadata:newContext
-                         withKey:BSGKeyContext
-                       toSection:BSGKeyConfig];
-    }
-}
-
-// MARK: -
-
-@synthesize appType = _appType;
-
-- (NSString *)appType {
-    @synchronized (self) {
-        return _appType;
-    }
-}
-
-- (void)setAppType:(NSString *)appType {
-    @synchronized (self) {
-        _appType = [appType copy];
-        [self.config addMetadata:appType withKey:BSGKeyAppType toSection:BSGKeyConfig];
-    }
-}
-
-// MARK: -
-
-@synthesize appVersion = _appVersion;
-
-- (NSString *)appVersion {
-    @synchronized (self) {
-        return _appVersion;
-    }
-}
-
-- (void)setAppVersion:(NSString *)newVersion {
-    @synchronized (self) {
-        _appVersion = newVersion;
-        [self.config addMetadata:newVersion
-                         withKey:BSGKeyAppVersion
-                       toSection:BSGKeyConfig];
-    }
-}
-
-// MARK: -
-
-@synthesize bundleVersion = _bundleVersion;
-
-- (NSString *)bundleVersion {
-    @synchronized (self) {
-        return _bundleVersion;
-    }
-}
-
-- (void)setBundleVersion:(NSString *)newVersion {
-    @synchronized (self) {
-        _bundleVersion = newVersion;
-        [self.config addMetadata:newVersion
-                         withKey:BSGKeyBundleVersion
-                       toSection:BSGKeyConfig];
     }
 }
 

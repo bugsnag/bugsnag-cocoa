@@ -671,6 +671,29 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 // MARK: - Other tests
 // =============================================================================
 
+- (void)testDictionaryRepresentation {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertNotNil(configuration.dictionaryRepresentation[@"appType"]);
+    XCTAssertNotNil(configuration.dictionaryRepresentation[@"releaseStage"]);
+    
+    configuration.appVersion = @"1.2.3";
+    XCTAssertEqualObjects(configuration.dictionaryRepresentation[@"appVersion"], @"1.2.3");
+    
+    configuration.bundleVersion = @"2001";
+    XCTAssertEqualObjects(configuration.dictionaryRepresentation[@"bundleVersion"], @"2001");
+    
+    XCTAssertNil(configuration.dictionaryRepresentation[@"context"]);
+    configuration.context = @"lorem ipsum";
+    XCTAssertEqualObjects(configuration.dictionaryRepresentation[@"context"], @"lorem ipsum");
+    
+    configuration.releaseStage = @"release";
+    XCTAssertEqualObjects(configuration.dictionaryRepresentation[@"releaseStage"], @"release");
+    
+    XCTAssertNil(configuration.dictionaryRepresentation[@"enabledReleaseStages"]);
+    configuration.enabledReleaseStages = [NSSet setWithArray:@[@"release"]];
+    XCTAssertEqualObjects(configuration.dictionaryRepresentation[@"enabledReleaseStages"], @[@"release"]);
+}
+
 - (void)testValidateThrowsWhenMissingApiKey {
     NSString *nilKey = nil;
 

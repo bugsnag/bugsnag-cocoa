@@ -45,7 +45,7 @@
             }
     };
 
-    self.config = [[BugsnagConfiguration alloc] initWithMetadata:self.data[@"user"][@"config"]];
+    self.config = [[BugsnagConfiguration alloc] initWithDictionaryRepresentation:self.data[@"user"][@"config"]];
     self.config.appType = @"iOS";
     self.config.bundleVersion = nil;
     self.config.appVersion = @"3.14.159";

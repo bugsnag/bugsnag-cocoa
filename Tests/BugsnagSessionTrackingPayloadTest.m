@@ -66,7 +66,7 @@
             }
     };
 
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithMetadata:appData[@"user"][@"config"]];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithDictionaryRepresentation:appData[@"user"][@"config"]];
     config.appType = @"iOS";
     config.bundleVersion = nil;
     return [BugsnagApp appWithDictionary:appData config:config codeBundleId:@"bundle-123"];
