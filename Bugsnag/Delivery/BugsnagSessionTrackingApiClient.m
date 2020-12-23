@@ -74,14 +74,14 @@
                 completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
                 switch (status) {
                     case BugsnagApiClientDeliveryStatusDelivered:
-                        bsg_log_info(@"Sent session %@ to Bugsnag", session.id);
+                        bsg_log_info(@"Sent session %@", session.id);
                         [store deleteFileWithId:fileId];
                         break;
                     case BugsnagApiClientDeliveryStatusFailed:
-                        bsg_log_warn(@"Failed to send sessions to Bugsnag: %@", error);
+                        bsg_log_warn(@"Failed to send sessions: %@", error);
                         break;
                     case BugsnagApiClientDeliveryStatusUndeliverable:
-                        bsg_log_warn(@"Failed to send sessions to Bugsnag: %@", error);
+                        bsg_log_warn(@"Failed to send sessions: %@", error);
                         [store deleteFileWithId:fileId];
                         break;
                 }
