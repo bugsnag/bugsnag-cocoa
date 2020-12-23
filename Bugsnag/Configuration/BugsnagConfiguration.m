@@ -574,7 +574,7 @@ static NSUserDefaults *userDefaults;
     }
 
     if (![BugsnagConfiguration isValidApiKey:self.apiKey]) {
-        bsg_log_warn(@"Invalid Bugsnag apiKey: expected a 32-character hexademical string, got \"%@\"", self.apiKey);
+        bsg_log_warn(@"Invalid apiKey: expected a 32-character hexademical string, got \"%@\"", self.apiKey);
     }
 }
 
