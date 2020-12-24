@@ -53,8 +53,8 @@ When("I relaunch the app") do
   MazeRunner.driver.launch_app
 end
 
-When("I clear the request queue") do
-  Server.stored_requests.clear
+When("I clear the error queue") do
+  Server.errors.clear
 end
 
 When("derp {string}") do |value|
@@ -158,7 +158,7 @@ Then("the event breadcrumbs contain {string} with type {string}") do |string, ty
 end
 
 Then("the event breadcrumbs contain {string}") do |string|
-  crumbs = read_key_path(Server.current_request[:body], "events.0.breadcrumbs")
+  crumbs = read_key_path(Server.errors.current[:body], "events.0.breadcrumbs")
   assert_not_equal(0, crumbs.length, "There are no breadcrumbs on this event")
   match = crumbs.detect do |crumb|
     crumb["name"] == string
@@ -167,12 +167,12 @@ Then("the event breadcrumbs contain {string}") do |string|
 end
 
 Then("the stack trace is an array with {int} stack frames") do |expected_length|
-  stack_trace = read_key_path(Server.current_request[:body], "events.0.exceptions.0.stacktrace")
+  stack_trace = read_key_path(Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
   assert_equal(expected_length, stack_trace.length)
 end
 
 Then("the stacktrace contains methods:") do |table|
-  stack_trace = read_key_path(Server.current_request[:body], "events.0.exceptions.0.stacktrace")
+  stack_trace = read_key_path(Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
   expected = table.raw.flatten
   actual = stack_trace.map { |s| s["method"] }
   contains = actual.each_cons(expected.length).to_a.include? expected
@@ -196,14 +196,14 @@ Then("the payload field {string} matches the test device model") do |field|
   }
   expected_model = MazeRunner.config.capabilities["device"]
   valid_models = internal_names[expected_model]
-  device_model = read_key_path(Server.current_request[:body], field)
+  device_model = read_key_path(Server.errors.current[:body], field)
   assert_true(valid_models.include?(device_model), "The field #{device_model} did not match any of the list of expected fields")
 end
 
 Then("the thread information is valid for the event") do
   # veriy that thread/stacktrace information was captured at all
-  thread_traces = read_key_path(Server.current_request[:body], "events.0.threads")
-  stack_traces = read_key_path(Server.current_request[:body], "events.0.exceptions.0.stacktrace")
+  thread_traces = read_key_path(Server.errors.current[:body], "events.0.threads")
+  stack_traces = read_key_path(Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
   assert_not_nil(thread_traces, "No thread trace recorded")
   assert_not_nil(stack_traces, "No thread trace recorded")
   assert_true(stack_traces.count() > 0, "Expected stacktrace collected to be > 0.")
@@ -239,7 +239,7 @@ Then("the thread information is valid for the event") do
 end
 
 Then("the exception {string} equals one of:") do |keypath, possible_values|
-  value = read_key_path(Server.current_request[:body], "events.0.exceptions.0.#{keypath}")
+  value = read_key_path(Server.errors.current[:body], "events.0.exceptions.0.#{keypath}")
   assert_includes(possible_values.raw.flatten, value)
 end
 
