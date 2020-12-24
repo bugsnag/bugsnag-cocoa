@@ -5,7 +5,7 @@ Feature: Handled Errors and Exceptions
 
   Scenario: Threads are captured for handled errors by default
     When I run "HandledErrorThreadSendAlwaysScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
     And the payload field "events" is an array with 1 elements
@@ -15,7 +15,7 @@ Feature: Handled Errors and Exceptions
   Scenario: Threads are captured for unhandled errors by default
     When I run "UnhandledErrorThreadSendAlwaysScenario" and relaunch the app
     And I configure Bugsnag for "UnhandledErrorThreadSendAlwaysScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is true
     And the payload field "events" is an array with 1 elements
@@ -24,7 +24,7 @@ Feature: Handled Errors and Exceptions
 
   Scenario: Threads are not captured for handled errors when sendThreads is set to unhandled_only
     When I run "HandledErrorThreadSendUnhandledOnlyScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
     And the payload field "events" is an array with 1 elements
@@ -39,7 +39,7 @@ Feature: Handled Errors and Exceptions
   Scenario: Threads are not captured for unhandled errors when sendThreads is set to never
     When I run "UnhandledErrorThreadSendNeverScenario" and relaunch the app
     And I configure Bugsnag for "UnhandledErrorThreadSendNeverScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is true
     And the payload field "events" is an array with 1 elements

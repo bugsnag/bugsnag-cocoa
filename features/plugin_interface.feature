@@ -11,7 +11,7 @@ Feature: Add custom behavior through a plugin interface
   Scenario: Changing payload notifier description
     When I run "CustomPluginNotifierDescriptionScenario" and relaunch the app
     And I configure Bugsnag for "CustomPluginNotifierDescriptionScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the payload field "notifier.name" equals "Foo Handler Library"
     And the payload field "notifier.version" equals "2.1.0"
     And the payload field "notifier.url" equals "https://example.com"

@@ -7,7 +7,7 @@ Feature: Persisting User Information
     When I run "UserPersistencePersistUserScenario"
 
     # User is set and comes through
-    And I wait to receive a request
+    And I wait to receive an error
     And I relaunch the app
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the session "user.id" equals "foo"
@@ -37,7 +37,7 @@ Scenario: User Info is persisted from client across app runs
     When I run "UserPersistencePersistUserClientScenario"
 
     # Session is captured before the user can be set on the Client
-    And I wait to receive a request
+    And I wait to receive an error
     And I relaunch the app
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the session "user.id" is not null

@@ -11,7 +11,7 @@ Feature: Handled Errors and Exceptions
   Include configured metadata dictionary into the report
 
     When I run "HandledErrorOverrideScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the exception "errorClass" equals "Bar"
     And the exception "message" equals "Foo"
@@ -27,7 +27,7 @@ Feature: Handled Errors and Exceptions
 
   Scenario: Reporting an NSError
     When I run "HandledErrorScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "NSError"
@@ -40,7 +40,7 @@ Feature: Handled Errors and Exceptions
 
   Scenario: Reporting a handled exception
     When I run "HandledExceptionScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "HandledExceptionScenario"
@@ -53,7 +53,7 @@ Feature: Handled Errors and Exceptions
 
   Scenario: Reporting a handled exception's stacktrace
     When I run "NSExceptionShiftScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "Tertiary failure"

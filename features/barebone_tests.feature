@@ -6,7 +6,7 @@ Feature: Barebone tests
   Scenario: Barebone test: handled errors
     When I run "BareboneTestHandledScenario"
     And I wait to receive 3 requests
-  
+
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "sessions.0.id" is not null
     And the session "user.id" equals "foobar"
@@ -82,7 +82,7 @@ Feature: Barebone tests
     When I run "BareboneTestUnhandledErrorScenario" and relaunch the app
     And I set the app to "report" mode
     And I configure Bugsnag for "BareboneTestUnhandledErrorScenario"
-    And I wait to receive a request
+    And I wait to receive an error
 
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "app.bundleVersion" equals "12301"
@@ -126,7 +126,7 @@ Feature: Barebone tests
 
   Scenario: Barebone test: Out Of Memory
     When I run "OOMLoadScenario"
-    And I wait to receive a request
+    And I wait to receive an error
 
     Then the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
     And the event "unhandled" is false
@@ -136,7 +136,7 @@ Feature: Barebone tests
 
     When I relaunch the app
     And I configure Bugsnag for "OOMLoadScenario"
-    And I wait to receive a request
+    And I wait to receive an error
 
     Then the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
     And the error is an OOM event

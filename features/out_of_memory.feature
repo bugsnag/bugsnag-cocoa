@@ -9,7 +9,7 @@ Feature: Out of memory errors
 
   Scenario: Out of memory errors are enabled when loading configuration
     When I run "OOMLoadScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
     And the event "unhandled" is false
     And the exception "message" equals "OOMLoadScenario"
@@ -18,7 +18,7 @@ Feature: Out of memory errors
 
     When I relaunch the app
     And I configure Bugsnag for "OOMLoadScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
     And the error is an OOM event
 
@@ -51,7 +51,7 @@ Feature: Out of memory errors
 
   Scenario: Out of memory errors are disabled by AutoDetectErrors
     When I run "OOMAutoDetectErrorsScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
     And the exception "message" equals "OOMAutoDetectErrorsScenario"
@@ -59,14 +59,14 @@ Feature: Out of memory errors
 
     And I relaunch the app
     And I run "OOMAutoDetectErrorsScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
     And the exception "message" equals "OOMAutoDetectErrorsScenario"
 
   Scenario: Out of memory errors are disabled by EnabledErrorTypes
     When I run "OOMEnabledErrorTypesScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
     And the exception "message" equals "OOMEnabledErrorTypesScenario"
@@ -74,7 +74,7 @@ Feature: Out of memory errors
 
     And I relaunch the app
     And I run "OOMEnabledErrorTypesScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
     And the exception "message" equals "OOMEnabledErrorTypesScenario"
