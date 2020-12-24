@@ -85,7 +85,7 @@ Feature: Session Tracking
 
   Scenario: Encountering a handled event during a session
     When I run "AutoSessionHandledEventsScenario"
-    And I wait to receive 3 requests
+    And I wait to receive 3 errors
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "sessions.0.id" is stored as the value "session_id"
     And I discard the oldest request
@@ -107,7 +107,7 @@ Feature: Session Tracking
     And I relaunch the app
     And I set the app to "noevent" mode
     And I configure Bugsnag for "AutoSessionUnhandledScenario"
-    And I wait to receive 2 requests
+    And I wait to receive 2 errors
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "sessions" is an array with 1 elements
     And the payload field "sessions.0.id" is a UUID
@@ -126,7 +126,7 @@ Feature: Session Tracking
     And I wait for 5 seconds
     And I relaunch the app
     And I configure Bugsnag for "AutoSessionMixedEventsScenario"
-    And I wait to receive 5 requests
+    And I wait to receive 5 errors
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "sessions" is an array with 1 elements
     And the session "id" is not null

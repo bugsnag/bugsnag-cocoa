@@ -5,7 +5,7 @@ Feature: Stopping and resuming sessions
 
   Scenario: When a session is stopped the error has no session information
     When I run "StoppedSessionScenario"
-    And I wait to receive 3 requests
+    And I wait to receive 3 errors
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest request
     And the received requests match:
@@ -19,7 +19,7 @@ Feature: Stopping and resuming sessions
 
   Scenario: When a session is resumed the error uses the previous session information
     When I run "ResumedSessionScenario"
-    And I wait to receive 3 requests
+    And I wait to receive 3 errors
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest request
     And the received requests match:
@@ -35,7 +35,7 @@ Feature: Stopping and resuming sessions
 
   Scenario: When a new session is started the error uses different session information
     When I run "NewSessionScenario"
-    And I wait to receive 4 requests
+    And I wait to receive 4 errors
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest request
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier

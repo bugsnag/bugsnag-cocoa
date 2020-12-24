@@ -69,7 +69,7 @@ Feature: Handled Errors and Exceptions
 
   Scenario: Reporting handled errors concurrently
     When I run "ManyConcurrentNotifyScenario"
-    And I wait to receive 8 requests
+    And I wait to receive 8 errors
     And the received requests match:
         | exceptions.0.errorClass | exceptions.0.message |
         | FooError                | Err 0   |

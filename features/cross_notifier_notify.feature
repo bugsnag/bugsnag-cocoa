@@ -13,7 +13,7 @@ Feature: Communicating events between notifiers
   Event counts in the report's session should match the handled-ness.
 
     When I run "HandledInternalNotifyScenario"
-    And I wait to receive 2 requests
+    And I wait to receive 2 errors
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "sessions.0.id" is stored as the value "session_id"
     And I discard the oldest request
@@ -45,7 +45,7 @@ Feature: Communicating events between notifiers
   Event counts in the report's session should match the handled-ness.
 
     When I run "UnhandledInternalNotifyScenario"
-    And I wait to receive 2 requests
+    And I wait to receive 2 errors
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "sessions.0.id" is stored as the value "session_id"
     And I discard the oldest request

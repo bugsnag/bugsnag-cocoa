@@ -5,7 +5,7 @@ Feature: Barebone tests
 
   Scenario: Barebone test: handled errors
     When I run "BareboneTestHandledScenario"
-    And I wait to receive 3 requests
+    And I wait to receive 3 errors
 
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "sessions.0.id" is not null
