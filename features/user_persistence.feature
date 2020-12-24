@@ -13,7 +13,7 @@ Feature: Persisting User Information
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
     And the session "user.name" equals "bar"
-    And I discard the oldest request
+    And I discard the oldest error
 
     # Generate session and event
     Then I run "UserPersistenceNoUserScenario"
@@ -25,7 +25,7 @@ Feature: Persisting User Information
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
     And the session "user.name" equals "bar"
-    And I discard the oldest request
+    And I discard the oldest error
 
     # Event - User persisted
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
@@ -43,7 +43,7 @@ Scenario: User Info is persisted from client across app runs
     And the session "user.id" is not null
     And the session "user.email" is null
     And the session "user.name" is null
-    And I discard the oldest request
+    And I discard the oldest error
 
     # Generate session and event
     Then I run "UserPersistenceNoUserScenario"
@@ -55,7 +55,7 @@ Scenario: User Info is persisted from client across app runs
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
     And the session "user.name" equals "bar"
-    And I discard the oldest request
+    And I discard the oldest error
 
     # Event - User persisted
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
@@ -76,14 +76,14 @@ Scenario: User Info is persisted from client across app runs
     And the session "user.id" equals "john"
     And the session "user.email" equals "george@ringo.com"
     And the session "user.name" equals "paul"
-    And I discard the oldest request
+    And I discard the oldest error
 
     # First Event
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events.0.user.id" equals "john"
     And the payload field "events.0.user.email" equals "george@ringo.com"
     And the payload field "events.0.user.name" equals "paul"
-    And I discard the oldest request
+    And I discard the oldest error
 
     # Restart app - expect no user
     When I run "UserPersistenceNoUserScenario"
@@ -95,7 +95,7 @@ Scenario: User Info is persisted from client across app runs
     And the session "user.id" does not equal "foo"
     And the session "user.email" is null
     And the session "user.name" is null
-    And I discard the oldest request
+    And I discard the oldest error
 
     # Third Event (Manually sent, non-persisted, generated id)
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier

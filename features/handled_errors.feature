@@ -77,17 +77,17 @@ Feature: Handled Errors and Exceptions
         | FooError                | Err 2   |
         | FooError                | Err 3   |
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
+    And I discard the oldest error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
+    And I discard the oldest error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
+    And I discard the oldest error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
+    And I discard the oldest error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
+    And I discard the oldest error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
+    And I discard the oldest error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
+    And I discard the oldest error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier

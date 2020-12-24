@@ -14,7 +14,7 @@ Feature: Out of memory errors
     And the event "unhandled" is false
     And the exception "message" equals "OOMLoadScenario"
     And the event has a "manual" breadcrumb named "OOMLoadScenarioBreadcrumb"
-    And I discard the oldest request
+    And I discard the oldest error
 
     When I relaunch the app
     And I configure Bugsnag for "OOMLoadScenario"
@@ -55,7 +55,7 @@ Feature: Out of memory errors
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
     And the exception "message" equals "OOMAutoDetectErrorsScenario"
-    And I discard the oldest request
+    And I discard the oldest error
 
     And I relaunch the app
     And I run "OOMAutoDetectErrorsScenario"
@@ -70,7 +70,7 @@ Feature: Out of memory errors
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
     And the exception "message" equals "OOMEnabledErrorTypesScenario"
-    And I discard the oldest request
+    And I discard the oldest error
 
     And I relaunch the app
     And I run "OOMEnabledErrorTypesScenario"

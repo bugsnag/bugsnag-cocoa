@@ -13,7 +13,7 @@ Feature: Barebone tests
     And the session "user.email" equals "foobar@example.com"
     And the session "user.name" equals "Foo Bar"
 
-    And I discard the oldest request
+    And I discard the oldest error
 
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "app.bundleVersion" equals "12301"
@@ -61,7 +61,7 @@ Feature: Barebone tests
     And the payload field "events.0.device.model" matches the test device model
     And the payload field "events.0.device.totalMemory" is an integer
 
-    And I discard the oldest request
+    And I discard the oldest error
 
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "breadcrumbs.2.name" equals "NSRangeException"
@@ -132,7 +132,7 @@ Feature: Barebone tests
     And the event "unhandled" is false
     And the exception "message" equals "OOMLoadScenario"
     And the event has a "manual" breadcrumb named "OOMLoadScenarioBreadcrumb"
-    And I discard the oldest request
+    And I discard the oldest error
 
     When I relaunch the app
     And I configure Bugsnag for "OOMLoadScenario"

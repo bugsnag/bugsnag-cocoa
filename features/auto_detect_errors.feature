@@ -11,7 +11,7 @@ Feature: autoDetectErrors flag controls whether errors are captured automaticall
         Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
         And the payload field "events" is an array with 1 elements
         And the event "unhandled" is false
-        And I discard the oldest request
+        And I discard the oldest error
         When I run "AutoDetectFalseNSExceptionScenario" and relaunch the app
         And I configure Bugsnag for "AutoDetectFalseHandledScenario"
         Then I should receive no requests
@@ -22,7 +22,7 @@ Feature: autoDetectErrors flag controls whether errors are captured automaticall
         Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
         And the payload field "events" is an array with 1 elements
         And the event "unhandled" is false
-        And I discard the oldest request
+        And I discard the oldest error
         When I run "AutoDetectFalseAbortScenario" and relaunch the app
         And I configure Bugsnag for "AutoDetectFalseHandledScenario"
         Then I should receive no requests

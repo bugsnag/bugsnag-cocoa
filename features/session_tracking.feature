@@ -88,13 +88,13 @@ Feature: Session Tracking
     And I wait to receive 3 errors
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "sessions.0.id" is stored as the value "session_id"
-    And I discard the oldest request
+    And I discard the oldest error
 
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 1 elements
     And the payload field "events.0.session.events.handled" equals 1
     And the payload field "events.0.session.id" equals the stored value "session_id"
-    And I discard the oldest request
+    And I discard the oldest error
 
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 1 elements
@@ -113,7 +113,7 @@ Feature: Session Tracking
     And the payload field "sessions.0.id" is a UUID
     And the payload field "sessions.0.startedAt" is a parsable timestamp in seconds
     And the payload field "sessions.0.id" is stored as the value "session_id"
-    And I discard the oldest request
+    And I discard the oldest error
 
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 1 elements
@@ -132,9 +132,9 @@ Feature: Session Tracking
     And the session "id" is not null
     And the session "startedAt" is not null
     And the payload field "sessions" is an array with 1 elements
-    And I discard the oldest request
+    And I discard the oldest error
     Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
+    And I discard the oldest error
     And the received requests match:
         | exceptions.0.errorClass | session.events.handled | session.events.unhandled |
         | FirstErr                | 1                      | 0                        |
@@ -142,8 +142,8 @@ Feature: Session Tracking
         | Kaboom                  | 2                      | 1                        |
 
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
+    And I discard the oldest error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
+    And I discard the oldest error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
 
