@@ -7,7 +7,7 @@ Feature: App and Device attributes present
     When I run "AppAndDeviceAttributesScenario"
     And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
+    And the error "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
 
     # Device
 
@@ -50,7 +50,7 @@ Feature: App and Device attributes present
     When I run "AppAndDeviceAttributesScenarioConfigOverride"
     And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
+    And the error "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
 
     And the payload field "events.0.app.type" equals "iLeet"
     And the payload field "events.0.app.bundleVersion" equals "12345"
@@ -61,7 +61,7 @@ Feature: App and Device attributes present
     When I run "AppAndDeviceAttributesScenarioCallbackOverride"
     And I wait to receive an error
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
+    And the error "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
 
     And the payload field "events.0.app.type" equals "newAppType"
     And the payload field "events.0.app.bundleVersion" equals "42"

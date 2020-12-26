@@ -5,15 +5,14 @@ Feature: Barebone tests
 
   Scenario: Barebone test: handled errors
     When I run "BareboneTestHandledScenario"
-    And I wait to receive 3 errors
+    And I wait to receive a session
+    And I wait to receive 2 errors
 
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "sessions.0.id" is not null
+    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And the session payload field "sessions.0.id" is not null
     And the session "user.id" equals "foobar"
     And the session "user.email" equals "foobar@example.com"
     And the session "user.name" equals "Foo Bar"
-
-    And I discard the oldest error
 
     Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "app.bundleVersion" equals "12301"
@@ -128,7 +127,7 @@ Feature: Barebone tests
     When I run "OOMLoadScenario"
     And I wait to receive an error
 
-    Then the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
+    Then the error "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
     And the event "unhandled" is false
     And the exception "message" equals "OOMLoadScenario"
     And the event has a "manual" breadcrumb named "OOMLoadScenarioBreadcrumb"
@@ -138,7 +137,7 @@ Feature: Barebone tests
     And I configure Bugsnag for "OOMLoadScenario"
     And I wait to receive an error
 
-    Then the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
+    Then the error "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
     And the error is an OOM event
     And the event "app.bundleVersion" is not null
     And the event "app.dsymUUIDs" is not null
