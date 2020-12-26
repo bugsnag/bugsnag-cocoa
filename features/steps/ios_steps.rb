@@ -87,27 +87,6 @@ Then("The app is not running") do
   end
 end
 
-Then("the received requests match:") do |table|
-  # Checks that each request matches one of the event fields
-  requests = Server.stored_requests
-  request_count = requests.count()
-  match_count = 0
-
-  # iterate through each row in the table. exactly 1 request should match each row.
-  table.hashes.each do |row|
-    requests.each do |request|
-      if !request.key? :body or !request[:body].key? "events" then
-        # No body.events in this request - skip
-        return
-      end
-      events = request[:body]['events']
-      assert_equal(1, events.length, 'Expected exactly one event per request')
-      match_count += 1 if request_matches_row(events[0], row)
-    end
-  end
-  assert_equal(request_count, match_count, "Unexpected number of requests matched the received payloads")
-end
-
 def request_matches_row(body, row)
   row.each do |key, expected_value|
     obs_val = read_key_path(body, key)
@@ -120,27 +99,28 @@ def request_matches_row(body, row)
   true
 end
 
-Then("the payload field {string} is equal for request {int} and request {int}") do |key, index_a, index_b|
+Then("the payload field {string} is equal for error {int} and error {int}") do |key, index_a, index_b|
   assert_true(request_fields_are_equal(key, index_a, index_b))
 end
 
-Then("the payload field {string} is not equal for request {int} and request {int}") do |key, index_a, index_b|
+Then("the payload field {string} is not equal for error {int} and error {int}") do |key, index_a, index_b|
   assert_false(request_fields_are_equal(key, index_a, index_b))
 end
 
 def request_fields_are_equal(key, index_a, index_b)
-  requests = Server.stored_requests.to_a
+  requests = Server.errors.remaining
   assert_true(requests.length > index_a, "Not enough requests received to access index #{index_a}")
   assert_true(requests.length > index_b, "Not enough requests received to access index #{index_b}")
   request_a = requests[index_a][:body]
   request_b = requests[index_b][:body]
   val_a = read_key_path(request_a, key)
   val_b = read_key_path(request_b, key)
+  $logger.info "Comparing '#{val_a}' against '#{val_b}'"
   val_a.eql? val_b
 end
 
 Then("the event {string} is within {int} seconds of the current timestamp") do |field, threshold_secs|
-  value = read_key_path(Server.current_request[:body], "events.0.#{field}")
+  value = read_key_path(Server.errors.current[:body], "events.0.#{field}")
   assert_not_nil(value, "Expected a timestamp")
   now_secs = Time.now.to_i
   then_secs = Time.parse(value).to_i
@@ -179,7 +159,7 @@ Then("the stacktrace contains methods:") do |table|
   assert_true(contains, "Stacktrace methods #{actual} did not contain #{expected}")
 end
 
-Then("the payload field {string} matches the test device model") do |field|
+def check_device_model(field, list)
   internal_names = {
       "iPhone 6" => %w[iPhone7,2],
       "iPhone 6 Plus" => %w[iPhone7,1],
@@ -194,10 +174,18 @@ Then("the payload field {string} matches the test device model") do |field|
       "iPhone XR" => %w[iPhone11,8],
       "iPhone XS" => %w[iPhone11,2 iPhone11,4 iPhone11,8]
   }
-  expected_model = MazeRunner.config.capabilities["device"]
+  expected_model = MazeRunner.config.capabilities['device']
   valid_models = internal_names[expected_model]
-  device_model = read_key_path(Server.errors.current[:body], field)
+  device_model = read_key_path(list.current[:body], field)
   assert_true(valid_models.include?(device_model), "The field #{device_model} did not match any of the list of expected fields")
+end
+
+Then("the payload field {string} matches the test device model") do |field|
+  check_device_model field, Server.errors
+end
+
+Then("the session payload field {string} matches the test device model") do |field|
+  check_device_model field, Server.sessions
 end
 
 Then("the thread information is valid for the event") do

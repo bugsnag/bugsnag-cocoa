@@ -58,8 +58,8 @@ Feature: Reporting User Information
 
   Scenario: Overriding the user in the Session callback
     When I run "UserSessionOverrideScenario"
-    And I wait to receive an error
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And I wait to receive a session
+    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the session "user.id" equals "customId"
     And the session "user.email" equals "customEmail"
     And the session "user.name" equals "customName"
@@ -77,16 +77,16 @@ Feature: Reporting User Information
 
   Scenario: Setting the user from Configuration for a session
     When I run "UserFromConfigSessionScenario"
-    And I wait to receive an error
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And I wait to receive a session
+    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the session "user.id" equals "abc"
     And the session "user.email" equals "fake@gmail.com"
     And the session "user.name" equals "Fay K"
 
   Scenario: Setting the user from Client for sessions
     When I run "UserFromClientScenario"
-    And I wait to receive an error
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And I wait to receive a session
+    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the session "user.id" equals "def"
     And the session "user.email" equals "sue@gmail.com"
     And the session "user.name" equals "Sue"

@@ -10,7 +10,7 @@ Feature: Out of memory errors
   Scenario: Out of memory errors are enabled when loading configuration
     When I run "OOMLoadScenario"
     And I wait to receive an error
-    Then the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
+    Then the error "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
     And the event "unhandled" is false
     And the exception "message" equals "OOMLoadScenario"
     And the event has a "manual" breadcrumb named "OOMLoadScenarioBreadcrumb"
@@ -19,7 +19,7 @@ Feature: Out of memory errors
     When I relaunch the app
     And I configure Bugsnag for "OOMLoadScenario"
     And I wait to receive an error
-    Then the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
+    Then the error "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
     And the error is an OOM event
 
     # Ensure the basic data from OOMs are present
