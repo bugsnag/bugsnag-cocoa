@@ -8,5 +8,5 @@ gem 'xcpretty'
 #gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', tag: 'v3.6.0'
 
 # Locally, you can run against Maze Runner branches and uncommitted changes:
-gem 'bugsnag-maze-runner', path: '../maze-runner'
-
+#gem 'bugsnag-maze-runner', path: '../maze-runner'
+gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', branch: 'tms/separate-endpoints-cocoa'
