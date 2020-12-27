@@ -50,6 +50,9 @@ When("I send the app to the background") do
 end
 
 When("I relaunch the app") do
+  # This step should only be used when the app has crashed, but the notifier needs a little
+  # time to write the crash report before being forced to reopen.
+  sleep(2)
   MazeRunner.driver.launch_app
 end
 
