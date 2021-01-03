@@ -57,7 +57,7 @@ When("I relaunch the app") do
 end
 
 When("I clear the error queue") do
-  Server.errors.clear
+  Maze::Server.errors.clear
 end
 
 When("derp {string}") do |value|
@@ -111,7 +111,7 @@ Then("the payload field {string} is not equal for error {int} and error {int}") 
 end
 
 def request_fields_are_equal(key, index_a, index_b)
-  requests = Server.errors.remaining
+  requests = Maze::Server.errors.remaining
   assert_true(requests.length > index_a, "Not enough requests received to access index #{index_a}")
   assert_true(requests.length > index_b, "Not enough requests received to access index #{index_b}")
   request_a = requests[index_a][:body]
@@ -123,7 +123,7 @@ def request_fields_are_equal(key, index_a, index_b)
 end
 
 Then("the event {string} is within {int} seconds of the current timestamp") do |field, threshold_secs|
-  value = read_key_path(Server.errors.current[:body], "events.0.#{field}")
+  value = read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
   assert_not_nil(value, "Expected a timestamp")
   now_secs = Time.now.to_i
   then_secs = Time.parse(value).to_i
@@ -141,7 +141,7 @@ Then("the event breadcrumbs contain {string} with type {string}") do |string, ty
 end
 
 Then("the event breadcrumbs contain {string}") do |string|
-  crumbs = read_key_path(Server.errors.current[:body], "events.0.breadcrumbs")
+  crumbs = read_key_path(Maze::Server.errors.current[:body], "events.0.breadcrumbs")
   assert_not_equal(0, crumbs.length, "There are no breadcrumbs on this event")
   match = crumbs.detect do |crumb|
     crumb["name"] == string
@@ -150,12 +150,12 @@ Then("the event breadcrumbs contain {string}") do |string|
 end
 
 Then("the stack trace is an array with {int} stack frames") do |expected_length|
-  stack_trace = read_key_path(Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
+  stack_trace = read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
   assert_equal(expected_length, stack_trace.length)
 end
 
 Then("the stacktrace contains methods:") do |table|
-  stack_trace = read_key_path(Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
+  stack_trace = read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
   expected = table.raw.flatten
   actual = stack_trace.map { |s| s["method"] }
   contains = actual.each_cons(expected.length).to_a.include? expected
@@ -184,17 +184,17 @@ def check_device_model(field, list)
 end
 
 Then("the payload field {string} matches the test device model") do |field|
-  check_device_model field, Server.errors
+  check_device_model field, Maze::Server.errors
 end
 
 Then("the session payload field {string} matches the test device model") do |field|
-  check_device_model field, Server.sessions
+  check_device_model field, Maze::Server.sessions
 end
 
 Then("the thread information is valid for the event") do
   # veriy that thread/stacktrace information was captured at all
-  thread_traces = read_key_path(Server.errors.current[:body], "events.0.threads")
-  stack_traces = read_key_path(Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
+  thread_traces = read_key_path(Maze::Server.errors.current[:body], "events.0.threads")
+  stack_traces = read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
   assert_not_nil(thread_traces, "No thread trace recorded")
   assert_not_nil(stack_traces, "No thread trace recorded")
   assert_true(stack_traces.count() > 0, "Expected stacktrace collected to be > 0.")
@@ -230,7 +230,7 @@ Then("the thread information is valid for the event") do
 end
 
 Then("the exception {string} equals one of:") do |keypath, possible_values|
-  value = read_key_path(Server.errors.current[:body], "events.0.exceptions.0.#{keypath}")
+  value = read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.#{keypath}")
   assert_includes(possible_values.raw.flatten, value)
 end
 
