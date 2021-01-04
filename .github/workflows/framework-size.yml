@@ -43,7 +43,7 @@ jobs:
           bundle install --jobs 4 --retry 3
 
       - name: Danger
-        run: bundle exec danger --dangerfile=.github/workflows/framework-size.danger
+        run: bundle exec danger --dangerfile=.github/workflows/framework-size.danger --danger_id=framework-size
         env:
           # https://docs.github.com/en/free-pro-team@latest/actions/reference/authentication-in-a-workflow
           DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}

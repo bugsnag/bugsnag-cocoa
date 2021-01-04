@@ -1,0 +1,10 @@
+require 'json'
+
+JSON.parse(File.read('infer-out/report.json')).each do |result|
+  case result['severity']
+  when 'ERROR'
+    fail(result['qualifier'], file: result['file'], line: result['line'])
+  when 'WARNING'
+    warn(result['qualifier'], file: result['file'], line: result['line'])
+  end
+end
