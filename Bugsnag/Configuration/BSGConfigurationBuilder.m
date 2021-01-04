@@ -1,9 +1,9 @@
 #import "BSGConfigurationBuilder.h"
 
-#import "BSG_KSLogger.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagEndpointConfiguration.h"
 #import "BugsnagKeys.h"
+#import "BugsnagLogger.h"
 
 static BOOL BSGValueIsBoolean(id object) {
     return object != nil && [object isKindOfClass:[NSNumber class]]
@@ -41,7 +41,7 @@ static BOOL BSGValueIsBoolean(id object) {
     NSMutableSet *unknownKeys = [NSMutableSet setWithArray:options.allKeys];
     [unknownKeys minusSet:[NSSet setWithArray:validKeys]];
     if (unknownKeys.count > 0) {
-        BSG_KSLOG_WARN(@"Unknown dictionary keys passed in configuration options: %@", unknownKeys);
+        bsg_log_warn(@"Unknown dictionary keys passed in configuration options: %@", unknownKeys);
     }
     
     [self loadString:config options:options key:BSGKeyAppType];

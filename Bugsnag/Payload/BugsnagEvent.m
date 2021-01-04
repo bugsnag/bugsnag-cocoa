@@ -362,11 +362,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     NSString *deviceAppHash = [event valueForKeyPath:@"system.device_app_hash"];
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithDictionary:event];
     BugsnagUser *user = [self parseUser:event deviceAppHash:deviceAppHash deviceId:device.id];
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithMetadata:[event valueForKeyPath:@"user.config"]];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithDictionaryRepresentation:[event valueForKeyPath:@"user.config"]];
     BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:event config:config codeBundleId:self.codeBundleId];
-    if (!app.type) { // Configuration.type does not get stored in the crash report at the time of writing.
-        app.type = [Bugsnag configuration].appType;
-    }
     BugsnagEvent *obj = [self initWithApp:app
                                    device:device
                              handledState:handledState
@@ -481,12 +478,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 @synthesize apiKey = _apiKey;
 
 - (NSString *)apiKey {
-    if (! _apiKey) {
-        _apiKey = Bugsnag.configuration.apiKey;
-    }
     return _apiKey;
 }
-
 
 - (void)setApiKey:(NSString *)apiKey {
     if ([BugsnagConfiguration isValidApiKey:apiKey]) {
@@ -502,8 +495,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 - (BOOL)shouldBeSent {
     return [self.enabledReleaseStages containsObject:self.releaseStage] ||
-           (self.enabledReleaseStages.count == 0 &&
-            [[Bugsnag configuration] shouldSendReports]);
+           (self.enabledReleaseStages.count == 0);
 }
 
 - (NSArray *)serializeBreadcrumbs {

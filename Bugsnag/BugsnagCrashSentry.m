@@ -20,9 +20,10 @@
 
 - (void)install:(BugsnagConfiguration *)config
       apiClient:(BugsnagErrorReportApiClient *)apiClient
+       notifier:(BugsnagNotifier *)notifier
         onCrash:(BSGReportCallback)onCrash
 {
-    BugsnagErrorReportSink *sink = [[BugsnagErrorReportSink alloc] initWithApiClient:apiClient];
+    BugsnagErrorReportSink *sink = [[BugsnagErrorReportSink alloc] initWithApiClient:apiClient configuration:config notifier:notifier];
     BSG_KSCrash *ksCrash = [BSG_KSCrash sharedInstance];
     ksCrash.sink = sink;
     ksCrash.introspectMemory = NO;

@@ -58,11 +58,6 @@
     BSG_KSLOG_ERROR(@"TEST");
 }
 
-- (void) testLogErrorNull
-{
-    BSG_KSLOG_ERROR(nil);
-}
-
 - (void) testLogAlways
 {
     BSG_KSLOG_ALWAYS(@"TEST");

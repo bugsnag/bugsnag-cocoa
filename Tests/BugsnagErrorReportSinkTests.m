@@ -8,15 +8,16 @@
 
 #import "BugsnagPlatformConditional.h"
 
-#import <Foundation/Foundation.h>
+#import <Bugsnag/Bugsnag.h>
 #import <XCTest/XCTest.h>
 
-#import "Bugsnag.h"
-#import "BugsnagClient+Private.h"
-#import "BugsnagHandledState.h"
+#import "BugsnagErrorReportApiClient.h"
 #import "BugsnagErrorReportSink+Private.h"
 #import "BugsnagEvent+Private.h"
+#import "BugsnagHandledState.h"
+#import "BugsnagNotifier.h"
 #import "BugsnagTestConstants.h"
+#import "URLSessionMock.h"
 
 @interface BugsnagErrorReportSinkTests : XCTestCase
 @property NSDictionary *rawReportData;
@@ -27,6 +28,7 @@
 
 - (void)setUp {
     [super setUp];
+    
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     NSString *path = [bundle pathForResource:@"report" ofType:@"json"];
     NSString *contents = [NSString stringWithContentsOfFile:path
@@ -41,15 +43,18 @@
     // This value should not appear in the assertions, as it is not equal to
     // the release stage in the serialized report
     config.releaseStage = @"MagicalTestingTime";
-
-    // set a dummy endpoint, avoid hitting production
-    config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://localhost:1234"
-                                                                   sessions:@"http://localhost:1234"];
-    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
-    [client start];
-    BugsnagEvent *report =
-            [[BugsnagEvent alloc] initWithKSReport:self.rawReportData];
-    self.processedData = [[BugsnagErrorReportSink new] prepareEventPayload:report];
+    
+    id session = [[URLSessionMock alloc] init];
+    
+    BugsnagErrorReportApiClient *apiClient = [[BugsnagErrorReportApiClient alloc] initWithSession:session queueName:@""];
+    
+    BugsnagNotifier *notifier = [[BugsnagNotifier alloc] init];
+    
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:self.rawReportData];
+    
+    BugsnagErrorReportSink *sink = [[BugsnagErrorReportSink alloc] initWithApiClient:apiClient configuration:config notifier:notifier];
+    
+    self.processedData = [sink prepareEventPayload:event];
 }
 
 - (void)tearDown {
