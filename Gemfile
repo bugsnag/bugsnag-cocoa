@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'cocoapods'
+gem 'danger'
 gem 'xcpretty'
 
 # A reference to Maze Runner is only needed for running tests locally and if committed it must be
