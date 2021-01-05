@@ -28,8 +28,8 @@
 
 #import "BugsnagClient+Private.h"
 
-#import "BSGCachesDirectory.h"
 #import "BSGConnectivity.h"
+#import "BSGFileLocations.h"
 #import "BSGJSONSerialization.h"
 #import "BSGNotificationBreadcrumbs.h"
 #import "BSGSerialization.h"
@@ -246,22 +246,20 @@ NSString *_lastOrientation = nil;
         self.notifier = [BugsnagNotifier new];
         self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
-        NSString *cachesDir = [BSGCachesDirectory cachesDirectory];
-        NSString *bugsnagDir = [cachesDir stringByAppendingPathComponent:@"bugsnag"];
-        [[NSFileManager defaultManager] createDirectoryAtPath:bugsnagDir withIntermediateDirectories:YES attributes:nil error:nil];
+        BSGFileLocations *fileLocations = [BSGFileLocations current];
         
-        NSString *crashPath = [cachesDir stringByAppendingPathComponent:@"bugsnag_handled_crash.txt"];
+        NSString *crashPath = fileLocations.flagHandledCrash;
         crashSentinelPath = strdup(crashPath.fileSystemRepresentation);
         
-        _configMetadataFile = [bugsnagDir stringByAppendingPathComponent:@"config.json"];
+        _configMetadataFile = fileLocations.configuration;
         bsg_g_bugsnag_data.configPath = strdup(_configMetadataFile.fileSystemRepresentation);
         _configMetadataFromLastLaunch = [BSGJSONSerialization JSONObjectWithContentsOfFile:_configMetadataFile options:0 error:nil];
         
-        _metadataFile = [bugsnagDir stringByAppendingPathComponent:@"metadata.json"];
+        _metadataFile = fileLocations.metadata;
         bsg_g_bugsnag_data.metadataPath = strdup(_metadataFile.fileSystemRepresentation);
         _metadataFromLastLaunch = [BSGJSONSerialization JSONObjectWithContentsOfFile:_metadataFile options:0 error:nil];
         
-        _stateMetadataFile = [bugsnagDir stringByAppendingPathComponent:@"state.json"];
+        _stateMetadataFile = fileLocations.state;
         bsg_g_bugsnag_data.statePath = strdup(_stateMetadataFile.fileSystemRepresentation);
         _stateMetadataFromLastLaunch = [BSGJSONSerialization JSONObjectWithContentsOfFile:_stateMetadataFile options:0 error:nil];
 
