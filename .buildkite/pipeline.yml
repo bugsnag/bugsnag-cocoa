@@ -103,7 +103,7 @@ steps:
       - make bootstrap
       - make test
 
-  - label: ':ios: iOS 14 end-to-end tests'
+  - label: ':ios: iOS 14 barebones end-to-end tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -115,10 +115,7 @@ steps:
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
-          - "features/app_and_device_attributes.feature"
-          - "features/crashprobe.feature"
-          - "features/handled_errors.feature"
-          - "features/out_of_memory.feature"
+          - "features/barebone_tests.feature"
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
           - "--device=IOS_14"
@@ -132,7 +129,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':ios: iOS 10 end-to-end tests'
+  - label: ':ios: iOS 10 barebones end-to-end tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -144,10 +141,7 @@ steps:
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
-          - "features/app_and_device_attributes.feature"
-          - "features/crashprobe.feature"
-          - "features/handled_errors.feature"
-          - "features/out_of_memory.feature"
+          - "features/barebone_tests.feature"
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
           - "--device=IOS_10"
@@ -162,4 +156,4 @@ steps:
           limit: 2
 
   - label: 'Conditionally trigger full set of tests'
-    command: sh -c .buildkite/full_pipeline_trigger.sh
+    command: sh -c .buildkite/pipeline_trigger.sh
