@@ -194,6 +194,12 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     // The errorClass should be overwritten but the errorMessage left as-is.
     
     error.errorClass = nil;
+    error.errorMessage = nil;
+    [error updateWithCrashInfoMessage:@"Assertion failed: file bugsnag_example/AnotherClass.swift, line 24\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Assertion failed");
+    XCTAssertEqualObjects(error.errorMessage, nil);
+    
+    error.errorClass = nil;
     error.errorMessage = @"Expected message";
     [error updateWithCrashInfoMessage:@"Assertion failed: file bugsnag_example/AnotherClass.swift, line 24\n"];
     XCTAssertEqualObjects(error.errorClass, @"Assertion failed");

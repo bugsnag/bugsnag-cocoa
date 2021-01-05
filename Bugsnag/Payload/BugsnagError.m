@@ -151,7 +151,10 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
         }
     } @catch (NSException *exception) {
         bsg_log_err(@"Exception thrown while parsing crash info message: %@", exception);
-        return;
+        if (!self.errorMessage.length) {
+            // It's better to fall back to the raw string than have an empty errorMessage.
+            self.errorMessage = crashInfoMessage;
+        }
     }
 }
 
