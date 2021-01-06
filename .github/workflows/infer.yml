@@ -12,14 +12,8 @@ jobs:
           ref: ${{ github.ref }}
           clean: false
 
-      - name: Install Infer
-        run: |
-          curl -OL https://github.com/facebook/infer/releases/download/v1.0.0/infer-osx-v1.0.0.tar.xz
-          xattr -cr infer-osx-v1.0.0.tar.xz
-          tar xf infer-osx-v1.0.0.tar.xz
-
-      - name: Analyze
-        run: ./infer-osx-v1.0.0/bin/infer run -- xcodebuild -project Bugsnag.xcodeproj -configuration Release -scheme Bugsnag-iOS -destination generic/platform=iOS build VALID_ARCHS=arm64
+      - name: Infer
+        run: make infer
 
       - uses: actions/cache@v2
         with:

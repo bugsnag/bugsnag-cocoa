@@ -25,3 +25,4 @@ Podfile.lock
 .build
 .swiftpm
 Package.resolved
+/infer-out
