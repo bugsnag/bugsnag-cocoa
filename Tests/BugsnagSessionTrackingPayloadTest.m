@@ -9,11 +9,12 @@
 #import <XCTest/XCTest.h>
 
 #import "BugsnagApp+Private.h"
-#import "BugsnagDevice+Private.h"
-#import "BugsnagSessionTrackingPayload.h"
 #import "BugsnagConfiguration+Private.h"
-#import "BugsnagTestConstants.h"
+#import "BugsnagDevice+Private.h"
+#import "BugsnagNotifier.h"
 #import "BugsnagSession+Private.h"
+#import "BugsnagSessionTrackingPayload.h"
+#import "BugsnagTestConstants.h"
 
 @interface BugsnagSessionTrackingPayloadTest : XCTestCase
 @property NSDictionary *payload;
@@ -29,15 +30,19 @@
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.releaseStage = @"beta";
-    BugsnagSessionTrackingPayload *data = [[BugsnagSessionTrackingPayload alloc] initWithSessions:@[] config:config codeBundleId:nil];
+    
+    BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc] initWithSessions:@[]
+                                                                                              config:config
+                                                                                        codeBundleId:nil
+                                                                                            notifier:[[BugsnagNotifier alloc] init]];
     BugsnagSession *session = [[BugsnagSession alloc] initWithId:@"test"
                                                        startDate:[NSDate date]
                                                             user:nil
                                                     autoCaptured:NO
                                                              app:self.app
                                                           device:self.device];
-    data.sessions = @[session];
-    self.payload = [data toJson];
+    payload.sessions = @[session];
+    self.payload = [payload toJson];
 }
 
 - (BugsnagApp *)generateApp {
@@ -61,7 +66,7 @@
             }
     };
 
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithMetadata:appData[@"user"][@"config"]];
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithDictionaryRepresentation:appData[@"user"][@"config"]];
     config.appType = @"iOS";
     config.bundleVersion = nil;
     return [BugsnagApp appWithDictionary:appData config:config codeBundleId:@"bundle-123"];

@@ -28,7 +28,7 @@ else
   DESTINATION?=platform=tvOS Simulator,name=Apple TV,OS=$(OS)
  else
   SDK?=iphonesimulator
-  DEVICE?=iPhone 5s
+  DEVICE?=iPhone 8
   DESTINATION?=platform=iOS Simulator,name=$(DEVICE),OS=$(OS)
   RELEASE_DIR=Release-iphoneos
  endif
@@ -92,6 +92,8 @@ analyze: ## Run static analysis on the build and fail if issues found
 		&& [[ -z `find $(DATA_PATH)/analyzer -name "*.html"` ]]
 
 test: ## Run unit tests
+	@sw_vers
+	@$(XCODEBUILD) -version
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
 
 test-fixtures: ## Build the end-to-end test fixture
@@ -159,6 +161,20 @@ doc: ## Generate html documentation
 	@headerdoc2html -N -o docs $(shell ruby -e "require 'json'; print Dir.glob(JSON.parse(File.read('Bugsnag.podspec.json'))['public_header_files']).join(' ')") -j
 	@gatherheaderdoc docs
 	@mv docs/masterTOC.html docs/index.html
+
+update-docs: ## Update and upload docs to Github
+ifeq ($(BUILDKITE),)
+	@$(error Docs deployment is handled by CI, and shouldn't be run locally)
+endif
+ifeq ($(BUILDKITE_TAG),)
+	@$(error Docs deployments should only occur on a tagged release)
+endif
+	@git clone --single-branch --branch=gh-pages git@github.com:bugsnag/bugsnag-cocoa.git docs
+	@make doc
+	@cd docs
+	@git add .
+	@git commit -m "Docs update for $BUILDKITE_TAG release"
+	@git push --force-with-lease
 
 help: ## Show help text
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

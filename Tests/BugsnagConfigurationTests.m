@@ -351,7 +351,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 // Helper
 - (void)getName:(NSString **)name email:(NSString **)email id:(NSString **  )id {
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSUserDefaults *userDefaults = BugsnagConfiguration.userDefaults;
     *email = [userDefaults objectForKey:kBugsnagUserEmailAddress];
     *id = [userDefaults objectForKey:kBugsnagUserUserId];
     *name = [userDefaults objectForKey:kBugsnagUserName];
@@ -530,6 +530,70 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 }
 
 // =============================================================================
+// MARK: - Max Persisted Events
+// =============================================================================
+
+- (void)testMaxPersistedEvents {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertEqual(12, config.maxPersistedEvents);
+
+    // alter to valid value
+    config.maxPersistedEvents = 10;
+    XCTAssertEqual(10, config.maxPersistedEvents);
+
+    // alter to max value
+    config.maxPersistedEvents = 100;
+    XCTAssertEqual(100, config.maxPersistedEvents);
+
+    // alter to min value
+    config.maxPersistedEvents = 1;
+    XCTAssertEqual(1, config.maxPersistedEvents);
+
+    config.maxPersistedEvents = 0;
+    XCTAssertEqual(1, config.maxPersistedEvents);
+
+    // alter to negative value
+    config.maxPersistedEvents = -1;
+    XCTAssertEqual(1, config.maxPersistedEvents);
+
+    // alter to > max value
+    config.maxPersistedEvents = 500;
+    XCTAssertEqual(1, config.maxPersistedEvents);
+}
+
+// =============================================================================
+// MARK: - Max Persisted Sessions
+// =============================================================================
+
+- (void)testMaxPersistedSessions {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertEqual(32, config.maxPersistedSessions);
+
+    // alter to valid value
+    config.maxPersistedSessions = 10;
+    XCTAssertEqual(10, config.maxPersistedSessions);
+
+    // alter to max value
+    config.maxPersistedSessions = 100;
+    XCTAssertEqual(100, config.maxPersistedSessions);
+
+    // alter to min value
+    config.maxPersistedSessions = 1;
+    XCTAssertEqual(1, config.maxPersistedSessions);
+
+    config.maxPersistedSessions = 0;
+    XCTAssertEqual(1, config.maxPersistedSessions);
+
+    // alter to negative value
+    config.maxPersistedSessions = -1;
+    XCTAssertEqual(1, config.maxPersistedSessions);
+
+    // alter to > max value
+    config.maxPersistedSessions = 500;
+    XCTAssertEqual(1, config.maxPersistedSessions);
+}
+
+// =============================================================================
 // MARK: - Max Breadcrumb
 // =============================================================================
 
@@ -606,6 +670,29 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 // =============================================================================
 // MARK: - Other tests
 // =============================================================================
+
+- (void)testDictionaryRepresentation {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertNotNil(configuration.dictionaryRepresentation[@"appType"]);
+    XCTAssertNotNil(configuration.dictionaryRepresentation[@"releaseStage"]);
+    
+    configuration.appVersion = @"1.2.3";
+    XCTAssertEqualObjects(configuration.dictionaryRepresentation[@"appVersion"], @"1.2.3");
+    
+    configuration.bundleVersion = @"2001";
+    XCTAssertEqualObjects(configuration.dictionaryRepresentation[@"bundleVersion"], @"2001");
+    
+    XCTAssertNil(configuration.dictionaryRepresentation[@"context"]);
+    configuration.context = @"lorem ipsum";
+    XCTAssertEqualObjects(configuration.dictionaryRepresentation[@"context"], @"lorem ipsum");
+    
+    configuration.releaseStage = @"release";
+    XCTAssertEqualObjects(configuration.dictionaryRepresentation[@"releaseStage"], @"release");
+    
+    XCTAssertNil(configuration.dictionaryRepresentation[@"enabledReleaseStages"]);
+    configuration.enabledReleaseStages = [NSSet setWithArray:@[@"release"]];
+    XCTAssertEqualObjects(configuration.dictionaryRepresentation[@"enabledReleaseStages"], @[@"release"]);
+}
 
 - (void)testValidateThrowsWhenMissingApiKey {
     NSString *nilKey = nil;
@@ -848,6 +935,76 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [configuration addMetadata:[@{@"foo" : @"bar"} mutableCopy] toSection:@"section2"];
     NSObject *metadata2 = [configuration getMetadataFromSection:@"section2"];
     XCTAssertTrue([metadata2 isKindOfClass:[NSMutableDictionary class]]);
+}
+
+- (void)testDiscardClasses {
+    XCTAssertNil([[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1].discardClasses, @"discardClasses should be nil be default");
+    
+    NSArray<NSString *> *errorClasses = @[@"EXC_BAD_ACCESS",
+                                          @"EXC_BAD_INSTRUCTION",
+                                          @"EXC_BREAKPOINT",
+                                          @"Exception",
+                                          @"Fatal error",
+                                          @"NSError",
+                                          @"NSGenericException",
+                                          @"NSInternalInconsistencyException",
+                                          @"NSMallocException",
+                                          @"NSRangeException",
+                                          @"SIGABRT",
+                                          @"UIViewControllerHierarchyInconsistency",
+                                          @"std::__1::system_error"];
+    
+    __block NSArray *discarded, *kept;
+    
+    void (^ applyDiscardClasses)(NSSet *) = ^(NSSet *discardClasses){
+        BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+        configuration.discardClasses = discardClasses;
+        NSPredicate *shouldDiscard = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+            return [configuration shouldDiscardErrorClass:evaluatedObject];
+        }];
+        discarded = [errorClasses filteredArrayUsingPredicate:shouldDiscard];
+        kept = [errorClasses filteredArrayUsingPredicate:[NSCompoundPredicate notPredicateWithSubpredicate:shouldDiscard]];
+    };
+    
+    applyDiscardClasses(nil);
+    XCTAssertEqualObjects(discarded, @[]);
+    XCTAssertEqualObjects(kept, errorClasses);
+    
+    applyDiscardClasses([NSSet setWithObjects:@"nserror", nil]);
+    XCTAssertEqualObjects(discarded, @[]);
+    XCTAssertEqualObjects(kept, errorClasses);
+    
+    applyDiscardClasses([NSSet setWithObjects:@"EXC_BAD_ACCESS", @"NSError", nil]);
+    XCTAssertEqualObjects(discarded, (@[@"EXC_BAD_ACCESS", @"NSError"]));
+    XCTAssertEqualObjects(kept, (@[@"EXC_BAD_INSTRUCTION",
+                                   @"EXC_BREAKPOINT",
+                                   @"Exception",
+                                   @"Fatal error",
+                                   @"NSGenericException",
+                                   @"NSInternalInconsistencyException",
+                                   @"NSMallocException",
+                                   @"NSRangeException",
+                                   @"SIGABRT",
+                                   @"UIViewControllerHierarchyInconsistency",
+                                   @"std::__1::system_error"]));
+    
+    applyDiscardClasses([NSSet setWithObjects:@"Exception", @"NSError",
+                         [NSRegularExpression regularExpressionWithPattern:@"std::__1::.*" options:0 error:nil], nil]);
+    XCTAssertEqualObjects(discarded, (@[@"Exception", @"NSError", @"std::__1::system_error"]));
+    XCTAssertEqualObjects(kept, (@[@"EXC_BAD_ACCESS",
+                                   @"EXC_BAD_INSTRUCTION",
+                                   @"EXC_BREAKPOINT",
+                                   @"Fatal error",
+                                   @"NSGenericException",
+                                   @"NSInternalInconsistencyException",
+                                   @"NSMallocException",
+                                   @"NSRangeException",
+                                   @"SIGABRT",
+                                   @"UIViewControllerHierarchyInconsistency"]));
+    
+    applyDiscardClasses([NSSet setWithObjects:[NSRegularExpression regularExpressionWithPattern:@".*" options:0 error:nil], nil]);
+    XCTAssertEqualObjects(discarded, errorClasses);
+    XCTAssertEqualObjects(kept, (@[]));
 }
 
 @end

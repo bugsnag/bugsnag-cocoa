@@ -43,8 +43,4 @@
                   usingCallback:block];
 }
 
-- (void)simulateConnectivityChangeTo:(SCNetworkReachabilityFlags) flags {
-    BSGConnectivityCallback(nil, flags, NULL);
-}
-
 @end
