@@ -6,11 +6,13 @@ elif [[ "$BUILDKITE_MESSAGE" == *"[full ci]"* ||
   "$BUILDKITE_PULL_REQUEST_BASE_BRANCH" == "master" ||
   "$BUILDKITE_BRANCH" == "master" ]]; then
   echo "Running full build"
-  buildkite-agent pipeline upload .buildkite/pipeline.quick.yml .buildkite/pipeline.full.yml
+  buildkite-agent pipeline upload .buildkite/pipeline.quick.yml
+  buildkite-agent pipeline upload .buildkite/pipeline.full.yml
 elif [[ "$BUILDKITE_MESSAGE" == *"[pre-release ci]"* ||
   "$BUILDKITE_BRANCH" == "next" ]]; then
   echo "Running pre-release build"
-  buildkite-agent pipeline upload .buildkite/pipeline.quick.yml .buildkite/block.full.yml
+  buildkite-agent pipeline upload .buildkite/pipeline.quick.yml
+  buildkite-agent pipeline upload .buildkite/block.full.yml
 elif [[ "$BUILDKITE_MESSAGE" == *"[integration ci]"* ||
   "$BUILDKITE_PULL_REQUEST_BASE_BRANCH" == "next" ]]; then
   echo "Running integration build"
