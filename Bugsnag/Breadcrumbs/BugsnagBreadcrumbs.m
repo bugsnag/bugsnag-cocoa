@@ -158,7 +158,7 @@ static BugsnagBreadcrumbsContext g_context;
 - (nullable NSArray *)loadBreadcrumbsAsDictionaries:(BOOL)asDictionaries {
     NSError *error = nil;
     
-    NSArray<NSString *> *filenames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:_breadcrumbsPath error:&error];
+    NSArray<NSString *> *filenames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.breadcrumbsPath error:&error];
     if (!filenames) {
         bsg_log_err(@"Unable to read breadcrumbs: %@", error);
         return nil;

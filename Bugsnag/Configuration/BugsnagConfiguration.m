@@ -266,8 +266,9 @@ static NSUserDefaults *userDefaults;
     _user = [[BugsnagUser alloc] initWithUserId:userId name:name emailAddress:email];
 
     // Persist the user
-    if (_persistUser)
+    if (self.persistUser) {
         [self persistUserData];
+    }
 
     // Add user info to the metadata
     [self setUserMetadataFromUser:self.user];
