@@ -4,7 +4,8 @@ if [[ "$BUILDKITE_MESSAGE" == *"[barebones ci]"* ]]; then
   echo "Running barebones build due to commit message\n"
 elif [[ "$BUILDKITE_MESSAGE" == *"[full ci]"* ||
   "$BUILDKITE_PULL_REQUEST_BASE_BRANCH" == "master" ||
-  "$BUILDKITE_BRANCH" == "master" ]]; then
+  "$BUILDKITE_BRANCH" == "master" ||
+  ! -z "$FULL_SCHEDULED_BUILD" ]]; then
   echo "Running full build"
   buildkite-agent pipeline upload .buildkite/pipeline.quick.yml
   buildkite-agent pipeline upload .buildkite/pipeline.full.yml
