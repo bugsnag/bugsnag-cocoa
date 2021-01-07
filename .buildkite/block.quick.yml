@@ -1,0 +1,7 @@
+steps:
+  - block: 'Trigger extra iOS 10 and iOS 14 end-to-end tests and all unit tests'
+    key: 'trigger-quick-build'
+
+  - label: 'Upload the quick test pipeline'
+    depends_on: 'trigger-quick-build'
+    command: buildkite-agent pipeline upload .buildkite/pipeline.quick.yml

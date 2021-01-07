@@ -1,109 +1,146 @@
 steps:
-  - label: Build cocoa IPA
-    key: cocoa_fixture
-    timeout_in_minutes: 20
-    agents:
-      queue: opensource-mac-cocoa
-    artifact_paths:
-      - features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa
-      - features/fixtures/macos/output/macOSTestApp.zip
-    commands:
-      - ./features/scripts/export_ios_app.sh
-      - ./features/scripts/export_mac_app.sh
-
-  - label: Static framework and Swift Package Manager builds
-    timeout_in_minutes: 10
-    agents:
-      queue: opensource-mac-cocoa
-    concurrency: 3
-    concurrency_group: cocoa-unit-tests
-    env:
-      LANG: "en_GB.UTF-8"
-    commands:
-      - mkdir -p features/fixtures/carthage-proj
-      - make build_swift
-      - make build_ios_static
-
-  - label: macOS 10.15 unit tests
-    timeout_in_minutes: 10
-    agents:
-      queue: opensource-mac-cocoa
-    concurrency: 3
-    concurrency_group: cocoa-unit-tests
-    env:
-      LANG: "en_GB.UTF-8"
-      TEST_CONFIGURATION: "Debug"
-      PLATFORM: "macOS"
-    commands:
-      - make bootstrap
-      - make analyze test
-
-  - label: macOS 10.13 unit tests
-    timeout_in_minutes: 10
-    agents:
-      queue: opensource-mac-cocoa-10.13
-    env:
-      LANG: "en_GB.UTF-8"
-      TEST_CONFIGURATION: "Debug"
-      PLATFORM: "macOS"
-    commands:
-      - make bootstrap
-      - make analyze test
-
-  - label: iOS 14 unit tests
+  - label: macOS 11 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa-11
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
+      PLATFORM: "macOS"
+    commands:
+      - make bootstrap
+      - make analyze test
+
+  - label: macOS 10.14 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-10.14
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
+      PLATFORM: "macOS"
+    commands:
+      - make bootstrap
+      - make analyze test
+
+  - label: iOS 13 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
       PLATFORM: "iOS"
-      OS: "14.2"
+      OS: "13.7"
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
     commands:
       - make bootstrap
       - make test
 
-  - label: iOS 9 unit tests
+  - label: iOS 12 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.13
+      queue: opensource-mac-cocoa
     env:
       LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
       PLATFORM: "iOS"
-      OS: "9.3"
+      OS: "12.4"
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
+    commands:
+      - make bootstrap
+      - make test
+
+  - label: iOS 11 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
+      PLATFORM: "iOS"
+      OS: "11.4"
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
+    commands:
+      - make bootstrap
+      - make test
+
+  - label: iOS 10 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-10.14
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
+      PLATFORM: "iOS"
+      OS: "10.3.1"
       DEVICE: "iPhone 5s"
     commands:
       - make bootstrap
-      - TEST_CONFIGURATION=Debug make test
-      - TEST_CONFIGURATION=Release make test
+      - make test
 
-  - label: tvOS 14 unit tests
+  - label: tvOS 13 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-mac-cocoa
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
       PLATFORM: "tvOS"
-      OS: "14.0"
+      OS: "13.3"
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
     commands:
       - make bootstrap
       - make test
 
-  - label: tvOS 9 unit tests
+  - label: tvOS 12 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.13
+      queue: opensource-mac-cocoa
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
       PLATFORM: "tvOS"
-      OS: "9.2"
+      OS: "12.4"
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
     commands:
       - make bootstrap
       - make test
 
-  - label: ':ios: iOS 14 barebones end-to-end tests'
+  - label: tvOS 11 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
+      PLATFORM: "tvOS"
+      OS: "11.4"
+    concurrency: 3
+    concurrency_group: cocoa-unit-tests
+    commands:
+      - make bootstrap
+      - make test
+
+  - label: tvOS 10 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-10.14
+    env:
+      LANG: "en_GB.UTF-8"
+      TEST_CONFIGURATION: "Debug"
+      PLATFORM: "tvOS"
+      OS: "10.2"
+    commands:
+      - make bootstrap
+      - make test
+
+  - label: ':ios: iOS 14 full end-to-end tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -115,7 +152,6 @@ steps:
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
-          - "features/barebone_tests.feature"
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
           - "--device=IOS_14"
@@ -129,7 +165,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':ios: iOS 10 barebones end-to-end tests'
+  - label: ':ios: iOS 10 full end-to-end tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -141,7 +177,6 @@ steps:
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
-          - "features/barebone_tests.feature"
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
           - "--device=IOS_10"
@@ -154,6 +189,3 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
-
-  - label: 'Conditionally trigger full set of tests'
-    command: sh -c .buildkite/pipeline_trigger.sh
