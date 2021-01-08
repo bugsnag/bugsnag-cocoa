@@ -32,7 +32,7 @@ steps:
     concurrency_group: cocoa-unit-tests
     env:
       LANG: "en_GB.UTF-8"
-      DEVELOPER_DIR: "/Applications/Xcode.app/Contents/Developer"
+      DEVELOPER_DIR: "/Applications/Xcode11.app/Contents/Developer"
     commands:
       - mkdir -p features/fixtures/carthage-proj
       - make build_swift
