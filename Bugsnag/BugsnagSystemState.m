@@ -1,5 +1,5 @@
 //
-//  BugsnagSystemInfo.m
+//  BugsnagSystemState.m
 //  Bugsnag
 //
 //  Created by Karl Stenerud on 21.09.20.
@@ -8,22 +8,26 @@
 
 #import "BugsnagPlatformConditional.h"
 
+#import "BugsnagSystemState.h"
+
 #if TARGET_OS_OSX
 #import <AppKit/AppKit.h>
 #else
 #import "BSGUIKit.h"
 #endif
 
-#import "BugsnagSystemState.h"
+#import <Bugsnag/Bugsnag.h>
+
 #import "BSGFileLocations.h"
 #import "BSGJSONSerialization.h"
-#import "BugsnagLogger.h"
-#import "BugsnagKVStoreObjC.h"
-#import "BSG_RFC3339DateTool.h"
-#import "BSG_KSSystemInfo.h"
 #import "BSG_KSMach.h"
+#import "BSG_KSSystemInfo.h"
+#import "BSG_RFC3339DateTool.h"
+#import "BugsnagKVStoreObjC.h"
 #import "BugsnagKeys.h"
-#import "Bugsnag.h"
+#import "BugsnagLogger.h"
+#import "BugsnagSessionTracker.h"
+#import "BugsnagSystemState.h"
 
 static NSDictionary* loadPreviousState(BugsnagKVStore *kvstore, NSString *jsonPath) {
     NSData *data = [NSData dataWithContentsOfFile:jsonPath];
@@ -133,11 +137,12 @@ static NSMutableDictionary* initCurrentState(BugsnagKVStore *kvstore, BugsnagCon
     return state;
 }
 
-NSDictionary *copyLaunchState(NSDictionary *launchState) {
-    return @{
-        BSGKeyApp: [launchState[BSGKeyApp] copy],
-        BSGKeyDevice: [launchState[BSGKeyDevice] copy],
-    };
+static NSDictionary *copyDictionary(NSDictionary *launchState) {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    for (id key in launchState) {
+        dictionary[key] = [launchState[key] copy];
+    }
+    return dictionary;
 }
 
 @interface BugsnagSystemState ()
@@ -212,8 +217,18 @@ NSDictionary *copyLaunchState(NSDictionary *launchState) {
             [strongSelf setValue:date forAppKey:SYSTEMSTATE_APP_LAST_LOW_MEMORY_WARNING];
         }];
 #endif
+        [center addObserver:self selector:@selector(sessionUpdateNotification:) name:BSGSessionUpdateNotification object:nil];
     }
     return self;
+}
+
+- (void)sessionUpdateNotification:(NSNotification *)notification {
+    if (![BSGJSONSerialization isValidJSONObject:notification.object]) {
+        return bsg_log_err("Invalid session payload in notification");
+    }
+    [self mutateLaunchState:^(NSMutableDictionary *state) {
+        state[BSGKeySession] = notification.object;
+    }];
 }
 
 - (void)recordAppUUID {
@@ -230,12 +245,18 @@ NSDictionary *copyLaunchState(NSDictionary *launchState) {
 }
 
 - (void)setValue:(id)value forKey:(NSString *)key inSection:(NSString *)section {
+    [self mutateLaunchState:^(NSMutableDictionary *state) {
+        state[section][key] = value;
+    }];
+}
+
+- (void)mutateLaunchState:(void (^)(NSMutableDictionary *state))block {
     // Run on a BG thread so we don't monopolize the notification queue.
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
         @synchronized (self) {
-            self.currentLaunchStateRW[section][key] = value;
+            block(self.currentLaunchStateRW);
             // User-facing state should never mutate from under them.
-            self.currentLaunchState = copyLaunchState(self.currentLaunchStateRW);
+            self.currentLaunchState = copyDictionary(self.currentLaunchStateRW);
         }
         [self sync];
     });
