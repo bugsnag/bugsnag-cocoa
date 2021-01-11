@@ -15,7 +15,7 @@
 #endif
 
 #import "BugsnagSystemState.h"
-#import "BSGCachesDirectory.h"
+#import "BSGFileLocations.h"
 #import "BSGJSONSerialization.h"
 #import "BugsnagLogger.h"
 #import "BugsnagKVStoreObjC.h"
@@ -24,9 +24,6 @@
 #import "BSG_KSMach.h"
 #import "BugsnagKeys.h"
 #import "Bugsnag.h"
-
-#define STATE_DIR @"bugsnag/state"
-#define STATE_FILE @"system_state.json"
 
 static NSDictionary* loadPreviousState(BugsnagKVStore *kvstore, NSString *jsonPath) {
     NSData *data = [NSData dataWithContentsOfFile:jsonPath];
@@ -157,7 +154,7 @@ NSDictionary *copyLaunchState(NSDictionary *launchState) {
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)config {
     if (self = [super init]) {
         _kvStore = [BugsnagKVStore new];
-        _persistenceFilePath = [[BSGCachesDirectory getSubdirPath:STATE_DIR] stringByAppendingPathComponent:STATE_FILE];
+        _persistenceFilePath = [BSGFileLocations current].systemState;
         _lastLaunchState = loadPreviousState(_kvStore, _persistenceFilePath);
         _currentLaunchStateRW = initCurrentState(_kvStore, config);
         _currentLaunchState = [_currentLaunchStateRW copy];

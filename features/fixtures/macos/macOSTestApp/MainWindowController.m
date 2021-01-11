@@ -94,6 +94,14 @@
             }
         }
     }
+    NSString *appSupportDir = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
+    NSString *rootDir = [appSupportDir stringByAppendingPathComponent:@"com.bugsnag.Bugsnag"];
+    NSError *error = nil;
+    if (![NSFileManager.defaultManager removeItemAtPath:rootDir error:&error]) {
+        if (![error.domain isEqualTo:NSCocoaErrorDomain] && error.code != NSFileNoSuchFileError) {
+            NSLog(@"%@", error);
+        }
+    }
 }
 
 - (IBAction)useDashboardEndpoints:(id)sender {
