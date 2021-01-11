@@ -102,8 +102,8 @@ static struct {
     void (*onCrash)(const BSG_KSCrashReportWriter *writer);
 } bsg_g_bugsnag_data;
 
-static char *sessionId[128];
-static char *sessionStartDate[128];
+static char sessionId[128];
+static char sessionStartDate[128];
 static char *watchdogSentinelPath = NULL;
 static char *crashSentinelPath;
 static NSUInteger handledCount;
@@ -202,16 +202,11 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
         hasRecordedSessions = false;
         return;
     }
-    // copy session id
-    const char *newSessionId = [session.id UTF8String];
-    size_t idSize = strlen(newSessionId);
-    strncpy((char *)sessionId, newSessionId, idSize);
-    sessionId[idSize - 1] = NULL;
-
-    const char *newSessionDate = [[BSG_RFC3339DateTool stringFromDate:session.startedAt] UTF8String];
-    size_t dateSize = strlen(newSessionDate);
-    strncpy((char *)sessionStartDate, newSessionDate, dateSize);
-    sessionStartDate[dateSize - 1] = NULL;
+    
+    [session.id getCString:sessionId maxLength:sizeof(sessionId) encoding:NSUTF8StringEncoding];
+    
+    NSString *dateString = [BSG_RFC3339DateTool stringFromDate:session.startedAt];
+    [dateString getCString:sessionStartDate maxLength:sizeof(sessionStartDate) encoding:NSUTF8StringEncoding];
 
     // record info for C JSON serialiser
     handledCount = session.handledCount;
@@ -1140,6 +1135,9 @@ NSString *_lastOrientation = nil;
 
     for (BugsnagBreadcrumb *crumb in self.breadcrumbs.breadcrumbs) {
         NSMutableDictionary *crumbData = [[crumb objectValue] mutableCopy];
+        if (!crumbData) {
+            continue;
+        }
         // JSON is serialized as 'name', we want as 'message' when passing to RN
         crumbData[@"message"] = crumbData[@"name"];
         crumbData[@"name"] = nil;

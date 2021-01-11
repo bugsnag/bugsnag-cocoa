@@ -276,7 +276,7 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
 /**
  * The current user
  */
-@property(readonly, retain, nonnull) BugsnagUser *user;
+@property(readonly, retain, nonnull, nonatomic) BugsnagUser *user;
 
 /**
  *  Set user metadata

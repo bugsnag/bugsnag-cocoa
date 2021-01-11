@@ -396,14 +396,18 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 - (void)sendReports:(NSDictionary <NSString *, NSDictionary *> *)reports
           withBlock:(BSGOnErrorSentBlock)block {
     if ([reports count] == 0) {
-        block(nil, YES, nil);
+        if (block) {
+            block(nil, YES, nil);
+        }
         return;
     }
 
     if (self.sink == nil) {
-        block(nil, NO, [NSError bsg_errorWithDomain:[[self class] description]
-                                               code:0
-                                        description:@"No sink set. Crash reports not sent."]);
+        if (block) {
+            block(nil, NO, [NSError bsg_errorWithDomain:[[self class] description]
+                                                   code:0
+                                            description:@"No sink set. Crash reports not sent."]);
+        }
         return;
     }
     [self.sink sendStoredReports:reports
