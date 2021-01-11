@@ -12,36 +12,36 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BSGFileLocations : NSObject
 
-@property(readonly) NSString *kvStore;
-@property(readonly) NSString *breadcrumbs;
-@property(readonly) NSString *kscrashReports;
-@property(readonly) NSString *sessions;
+@property (readonly, nonatomic) NSString *kvStore;
+@property (readonly, nonatomic) NSString *breadcrumbs;
+@property (readonly, nonatomic) NSString *kscrashReports;
+@property (readonly, nonatomic) NSString *sessions;
 
 /**
  * File whose presence indicates that the libary at least attempted to handle the last
  * crash (in case it crashed before writing enough information).
  */
-@property(readonly) NSString *flagHandledCrash;
+@property (readonly, nonatomic) NSString *flagHandledCrash;
 
 /**
  * Bugsnag client configuration
  */
-@property(readonly) NSString *configuration;
+@property (readonly, nonatomic) NSString *configuration;
 
 /**
  * General per-launch metadata
  */
-@property(readonly) NSString *metadata;
+@property (readonly, nonatomic) NSString *metadata;
 
 /**
  * State info that gets added to the low level crash report.
  */
-@property(readonly) NSString *state;
+@property (readonly, nonatomic) NSString *state;
 
 /**
  * State information about the app and operating envronment.
  */
-@property(readonly) NSString *systemState;
+@property (readonly, nonatomic) NSString *systemState;
 
 + (instancetype) current;
 + (instancetype) v1;
