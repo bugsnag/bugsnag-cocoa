@@ -7,6 +7,8 @@ Changelog
 
 * Fix missing session information in OOM events.
   [#963](https://github.com/bugsnag/bugsnag-cocoa/pull/963)
+* Make `maxPersistedEvents` and `maxPersistedSessions` comply with the specification, with defaults of 32 and 128 respectively.
+  [#966](https://github.com/bugsnag/bugsnag-cocoa/pull/966)
 
 ## 6.5.0 (2021-01-06)
 

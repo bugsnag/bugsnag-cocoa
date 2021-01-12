@@ -535,30 +535,19 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 - (void)testMaxPersistedEvents {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    XCTAssertEqual(12, config.maxPersistedEvents);
+    XCTAssertEqual(config.maxPersistedEvents, 32, @"maxPersistedEvents should default to 32");
 
-    // alter to valid value
     config.maxPersistedEvents = 10;
-    XCTAssertEqual(10, config.maxPersistedEvents);
+    XCTAssertEqual(config.maxPersistedEvents, 10, @"Valid values should be accepted");
 
-    // alter to max value
-    config.maxPersistedEvents = 100;
-    XCTAssertEqual(100, config.maxPersistedEvents);
+    config.maxPersistedEvents = 1000;
+    XCTAssertEqual(config.maxPersistedEvents, 1000, @"No maximum bound should be applied");
 
-    // alter to min value
     config.maxPersistedEvents = 1;
-    XCTAssertEqual(1, config.maxPersistedEvents);
+    XCTAssertEqual(config.maxPersistedEvents, 1, @"A value of 1 should be accepted");
 
     config.maxPersistedEvents = 0;
-    XCTAssertEqual(1, config.maxPersistedEvents);
-
-    // alter to negative value
-    config.maxPersistedEvents = -1;
-    XCTAssertEqual(1, config.maxPersistedEvents);
-
-    // alter to > max value
-    config.maxPersistedEvents = 500;
-    XCTAssertEqual(1, config.maxPersistedEvents);
+    XCTAssertEqual(config.maxPersistedEvents, 1, @"Setting to zero should have no effect");
 }
 
 // =============================================================================
@@ -567,30 +556,19 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 - (void)testMaxPersistedSessions {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    XCTAssertEqual(32, config.maxPersistedSessions);
+    XCTAssertEqual(config.maxPersistedSessions, 128, @"maxPersistedSessions should default to 128");
 
-    // alter to valid value
     config.maxPersistedSessions = 10;
-    XCTAssertEqual(10, config.maxPersistedSessions);
+    XCTAssertEqual(config.maxPersistedSessions, 10, @"Valid values should be accepted");
 
-    // alter to max value
-    config.maxPersistedSessions = 100;
-    XCTAssertEqual(100, config.maxPersistedSessions);
+    config.maxPersistedSessions = 1000;
+    XCTAssertEqual(config.maxPersistedSessions, 1000, @"No maximum bound should be applied");
 
-    // alter to min value
     config.maxPersistedSessions = 1;
-    XCTAssertEqual(1, config.maxPersistedSessions);
+    XCTAssertEqual(config.maxPersistedSessions, 1, @"A value of 1 should be accepted");
 
     config.maxPersistedSessions = 0;
-    XCTAssertEqual(1, config.maxPersistedSessions);
-
-    // alter to negative value
-    config.maxPersistedSessions = -1;
-    XCTAssertEqual(1, config.maxPersistedSessions);
-
-    // alter to > max value
-    config.maxPersistedSessions = 500;
-    XCTAssertEqual(1, config.maxPersistedSessions);
+    XCTAssertEqual(config.maxPersistedSessions, 1, @"Setting to zero should have no effect");
 }
 
 // =============================================================================
