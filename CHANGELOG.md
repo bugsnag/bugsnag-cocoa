@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix missing session information in OOM events.
+  [#963](https://github.com/bugsnag/bugsnag-cocoa/pull/963)
+
 ## 6.5.0 (2021-01-06)
 
 ### Enhancements
@@ -17,7 +24,7 @@ Changelog
 * Bugsnag log messages are now prefixed with `[Bugsnag]` for easier searching & filtering.
   [#955](https://github.com/bugsnag/bugsnag-cocoa/pull/955)
 
-## Bug fixes
+### Bug fixes
 
 * Fix reliability of Swift fatal error message reporting.
   [#948](https://github.com/bugsnag/bugsnag-cocoa/pull/948)
