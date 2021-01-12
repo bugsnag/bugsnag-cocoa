@@ -143,7 +143,7 @@ steps:
   - label: ':ios: iOS 14 full end-to-end tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 60
+    timeout_in_minutes: 75
     agents:
       queue: opensource
     plugins:
@@ -168,7 +168,7 @@ steps:
   - label: ':ios: iOS 10 full end-to-end tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 60
+    timeout_in_minutes: 75
     agents:
       queue: opensource
     plugins:
