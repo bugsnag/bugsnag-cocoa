@@ -2,7 +2,7 @@ steps:
   - label: ':ios: iOS 13 end-to-end tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 75
+    timeout_in_minutes: 120
     agents:
       queue: opensource
     plugins:
@@ -27,7 +27,7 @@ steps:
   - label: ':ios: iOS 12 end-to-end tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 75
+    timeout_in_minutes: 120
     agents:
       queue: opensource
     plugins:
@@ -54,7 +54,7 @@ steps:
       - cocoa_fixture
     # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
     # sessions need resetting frequently, taking a minute or more each time.
-    timeout_in_minutes: 90
+    timeout_in_minutes: 120
     agents:
       queue: opensource
     plugins:
