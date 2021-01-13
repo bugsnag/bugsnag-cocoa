@@ -44,6 +44,11 @@ endif
 
 all: build
 
+# A phony target is one that is not really the name of a file; rather it is just a name for a recipe to be executed when you make an explicit request.
+# There are two reasons to use a phony target: to avoid a conflict with a file of the same name, and to improve performance.
+
+.PHONY: all analyze archive bootstrap build build_carthage build_ios_static build_swift bump clean doc help infer prerelease release test test-fixtures update-docs
+
 #--------------------------------------------------------------------------
 # Build
 #--------------------------------------------------------------------------
@@ -61,8 +66,6 @@ build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework:
 build/Bugsnag-%-$(PRESET_VERSION).zip: build/Build/Products/$(RELEASE_DIR)/Bugsnag.framework
 	@cd build/Build/Products/$(RELEASE_DIR); \
 		zip --symlinks -rq ../../../Bugsnag-$*-$(PRESET_VERSION).zip Bugsnag.framework
-
-.PHONY: all build test bump prerelease release clean test-fixtures
 
 bootstrap: ## Install development dependencies
 	@bundle install
@@ -82,14 +85,29 @@ build_swift: ## Build with Swift Package Manager
 	@swift build
 
 #--------------------------------------------------------------------------
-# Testing
+# Static Analysis
 #--------------------------------------------------------------------------
 
-analyze: ## Run static analysis on the build and fail if issues found
+analyze: ## Run Xcode's analyzer on the build and fail if issues found
 	@xcodebuild $(BUILD_FLAGS) -quiet $(BUILD_ONLY_FLAGS) analyze \
 		CLANG_ANALYZER_OUTPUT=html \
 		CLANG_ANALYZER_OUTPUT_DIR=$(DATA_PATH)/analyzer \
 		&& [[ -z `find $(DATA_PATH)/analyzer -name "*.html"` ]]
+
+INFER=$(HOME)/Library/Caches/infer-osx-v1.0.0/bin/infer
+
+infer: $(INFER) ## Run the "Infer" static analyzer
+	@$(INFER) run --report-console-limit 100 -- xcodebuild -quiet \
+		$(BUILD_FLAGS) -configuration Release -destination generic/platform=iOS \
+		clean build VALID_ARCHS=arm64
+
+$(INFER):
+	@echo Downloading Infer...
+	@curl -L https://github.com/facebook/infer/releases/download/v1.0.0/infer-osx-v1.0.0.tar.xz | tar -x -C $(HOME)/Library/Caches
+
+#--------------------------------------------------------------------------
+# Testing
+#--------------------------------------------------------------------------
 
 test: ## Run unit tests
 	@sw_vers

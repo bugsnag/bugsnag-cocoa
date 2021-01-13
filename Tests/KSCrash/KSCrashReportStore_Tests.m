@@ -36,6 +36,12 @@
 //#define REPORT_BADPOINTER @"CrashReport-KSCrashTest-BadPointer.json"
 //#define REPORT_NSEXCEPTION @"CrashReport-KSCrashTest-NSException.json"
 
+@interface BugsnagFileStore ()
+
+- (NSString *)fileIdFromFilename:(NSString *)filename;
+
+@end
+
 @interface BSG_KSCrashReportStore (Tests)
 
 - (NSString*) reportIDFromFilename:(NSString*) filename;

@@ -55,9 +55,9 @@
     XCTAssertNil(config.appVersion);
     XCTAssertTrue(config.autoDetectErrors);
     XCTAssertTrue(config.autoTrackSessions);
-    XCTAssertEqual(12, config.maxPersistedEvents);
-    XCTAssertEqual(32, config.maxPersistedSessions);
-    XCTAssertEqual(25, config.maxBreadcrumbs);
+    XCTAssertEqual(config.maxPersistedEvents, 32);
+    XCTAssertEqual(config.maxPersistedSessions, 128);
+    XCTAssertEqual(config.maxBreadcrumbs, 25);
     XCTAssertTrue(config.persistUser);
     XCTAssertEqualObjects(@[@"password"], [config.redactedKeys allObjects]);
     XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);

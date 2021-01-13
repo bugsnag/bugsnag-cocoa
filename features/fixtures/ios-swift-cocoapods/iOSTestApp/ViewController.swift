@@ -51,6 +51,8 @@ class ViewController: UIViewController {
                     NSLog("%@", String(describing: error))
                 }
             }
+            let rootDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("com.bugsnag.Bugsnag")
+            try FileManager.default.removeItem(at: rootDirectory)
         } catch {
             NSLog("%@", String(describing: error))
         }

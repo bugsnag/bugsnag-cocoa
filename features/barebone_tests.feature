@@ -126,9 +126,11 @@ Feature: Barebone tests
 
   Scenario: Barebone test: Out Of Memory
     When I run "OOMLoadScenario"
-    And I wait to receive a request
+    And I wait to receive 2 requests
 
-    Then the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
+    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+
     And the event "unhandled" is false
     And the exception "message" equals "OOMLoadScenario"
     And the event has a "manual" breadcrumb named "OOMLoadScenarioBreadcrumb"
@@ -136,9 +138,11 @@ Feature: Barebone tests
 
     When I relaunch the app
     And I configure Bugsnag for "OOMLoadScenario"
-    And I wait to receive a request
+    And I wait to receive 2 requests
 
-    Then the "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
+    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+
     And the error is an OOM event
     And the event "app.bundleVersion" is not null
     And the event "app.dsymUUIDs" is not null
@@ -165,6 +169,11 @@ Feature: Barebone tests
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.wordSize" is not null
+    And the event "session.id" is not null
+    And the event "session.startedAt" is not null
+    And the event "session.events.handled" equals 1
+    And the event "session.events.unhandled" equals 1
+    And the event "unhandled" is true
     And the event "user.email" equals "foobar@example.com"
     And the event "user.id" equals "foobar"
     And the event "user.name" equals "Foo Bar"
