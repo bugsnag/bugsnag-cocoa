@@ -181,17 +181,14 @@ doc: ## Generate html documentation
 	@mv docs/masterTOC.html docs/index.html
 
 update-docs: ## Update and upload docs to Github
-ifeq ($(BUILDKITE),)
+ifneq ($(BUILDKITE_BRANCH), master)
 	@$(error Docs deployment is handled by CI, and shouldn't be run locally)
-endif
-ifeq ($(BUILDKITE_TAG),)
-	@$(error Docs deployments should only occur on a tagged release)
 endif
 	@git clone --single-branch --branch=gh-pages git@github.com:bugsnag/bugsnag-cocoa.git docs
 	@make doc
 	@cd docs
 	@git add .
-	@git commit -m "Docs update for $BUILDKITE_TAG release"
+	@git commit -m "Docs update for $(PRESET_VERSION) release"
 	@git push --force-with-lease
 
 help: ## Show help text
