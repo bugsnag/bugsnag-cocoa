@@ -77,14 +77,16 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
     
     if (![BSGJSONSerialization isValidJSONObject:payload]) {
         bsg_log_err(@"Error: Invalid JSON payload passed to %s", __PRETTY_FUNCTION__);
-        return completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, nil);
+        completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, nil);
+        return;
     }
     
     NSError *error = nil;
     NSData *data = [BSGJSONSerialization dataWithJSONObject:payload options:0 error:&error];
     if (!data) {
         bsg_log_err(@"Error: Could not encode JSON payload passed to %s", __PRETTY_FUNCTION__);
-        return completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, error);
+        completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, error);
+        return;
     }
     
     NSMutableDictionary<BugsnagHTTPHeaderName, NSString *> *mutableHeaders = [headers mutableCopy];
@@ -94,16 +96,18 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
     
     [[self.session uploadTaskWithRequest:request fromData:data completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
-            return completionHandler(BugsnagApiClientDeliveryStatusFailed, error ?:
-                                     [NSError errorWithDomain:@"BugsnagApiClientErrorDomain" code:0 userInfo:@{
-                                         NSLocalizedDescriptionKey: @"Request failed: no response was received",
-                                         NSURLErrorFailingURLErrorKey: url }]);
+            completionHandler(BugsnagApiClientDeliveryStatusFailed, error ?:
+                              [NSError errorWithDomain:@"BugsnagApiClientErrorDomain" code:0 userInfo:@{
+                                  NSLocalizedDescriptionKey: @"Request failed: no response was received",
+                                  NSURLErrorFailingURLErrorKey: url }]);
+            return;
         }
         
         NSInteger statusCode = ((NSHTTPURLResponse *)response).statusCode;
         
         if (statusCode / 100 == 2) {
-            return completionHandler(BugsnagApiClientDeliveryStatusDelivered, nil);
+            completionHandler(BugsnagApiClientDeliveryStatusDelivered, nil);
+            return;
         }
         
         error = [NSError errorWithDomain:@"BugsnagApiClientErrorDomain" code:1 userInfo:@{
@@ -116,10 +120,11 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
             statusCode != HTTPStatusCodeProxyAuthenticationRequired &&
             statusCode != HTTPStatusCodeClientTimeout &&
             statusCode != HTTPStatusCodeTooManyRequests) {
-            return completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, error);
+            completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, error);
+            return;
         }
         
-        return completionHandler(BugsnagApiClientDeliveryStatusFailed, error);
+        completionHandler(BugsnagApiClientDeliveryStatusFailed, error);
     }] resume];
 }
 

@@ -224,7 +224,8 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
 
 - (void)sessionUpdateNotification:(NSNotification *)notification {
     if (![BSGJSONSerialization isValidJSONObject:notification.object]) {
-        return bsg_log_err("Invalid session payload in notification");
+        bsg_log_err("Invalid session payload in notification");
+        return;
     }
     [self mutateLaunchState:^(NSMutableDictionary *state) {
         state[BSGKeySession] = notification.object;
