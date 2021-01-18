@@ -70,6 +70,9 @@ Feature: Barebone tests
     And the event "metaData.nserror.code" equals 4864
     And the event "metaData.nserror.domain" equals "NSCocoaErrorDomain"
     And the event "metaData.nserror.reason" equals "The data isn’t in the correct format."
+    And the event "metaData.nserror.userInfo.NSCodingPath" is not null
+    And the event "metaData.nserror.userInfo.NSDebugDescription" equals "The given data was not valid JSON."
+    And the event "metaData.nserror.userInfo.NSUnderlyingError" matches "Error Domain=NSCocoaErrorDomain Code=3840"
     And the event "severity" equals "warning"
     And the event "severityReason.type" equals "handledError"
     And the event "severityReason.unhandledOverridden" is null
