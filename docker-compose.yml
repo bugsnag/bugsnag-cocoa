@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   cocoa-maze-runner:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:tms-separate-endpoints-browser-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v4-cli
     environment:
       DEBUG:
       VERBOSE:
