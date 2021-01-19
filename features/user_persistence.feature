@@ -28,9 +28,9 @@ Feature: Persisting User Information
 
     # Event - User persisted
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events.0.user.id" equals "foo"
-    And the payload field "events.0.user.email" equals "baz@grok.com"
-    And the payload field "events.0.user.name" equals "bar"
+    And the error payload field "events.0.user.id" equals "foo"
+    And the error payload field "events.0.user.email" equals "baz@grok.com"
+    And the error payload field "events.0.user.name" equals "bar"
 
 Scenario: User Info is persisted from client across app runs
     When I run "UserPersistencePersistUserClientScenario"
@@ -59,9 +59,9 @@ Scenario: User Info is persisted from client across app runs
 
     # Event - User persisted
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events.0.user.id" equals "foo"
-    And the payload field "events.0.user.email" equals "baz@grok.com"
-    And the payload field "events.0.user.name" equals "bar"
+    And the error payload field "events.0.user.id" equals "foo"
+    And the error payload field "events.0.user.email" equals "baz@grok.com"
+    And the error payload field "events.0.user.name" equals "bar"
 
 
   Scenario: User Info is not persisted across app runs
@@ -81,9 +81,9 @@ Scenario: User Info is persisted from client across app runs
 
     # First Event
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events.0.user.id" equals "john"
-    And the payload field "events.0.user.email" equals "george@ringo.com"
-    And the payload field "events.0.user.name" equals "paul"
+    And the error payload field "events.0.user.id" equals "john"
+    And the error payload field "events.0.user.email" equals "george@ringo.com"
+    And the error payload field "events.0.user.name" equals "paul"
     And I discard the oldest error
 
     # Restart app - expect no user
@@ -100,8 +100,8 @@ Scenario: User Info is persisted from client across app runs
 
     # Second Event (Manually sent, non-persisted, generated id)
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events.0.user.id" is not null
-    And the payload field "events.0.user.id" does not equal "john"
-    And the payload field "events.0.user.id" does not equal "foo"
-    And the payload field "events.0.user.email" is null
-    And the payload field "events.0.user.name" is null
+    And the error payload field "events.0.user.id" is not null
+    And the error payload field "events.0.user.id" does not equal "john"
+    And the error payload field "events.0.user.id" does not equal "foo"
+    And the error payload field "events.0.user.email" is null
+    And the error payload field "events.0.user.name" is null

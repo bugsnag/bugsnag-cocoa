@@ -7,8 +7,8 @@ Feature: Runtime versions are included in all requests
     When I run "HandledErrorScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events.0.device.runtimeVersions.osBuild" is not null
-    And the payload field "events.0.device.runtimeVersions.clangVersion" is not null
+    And the error payload field "events.0.device.runtimeVersions.osBuild" is not null
+    And the error payload field "events.0.device.runtimeVersions.clangVersion" is not null
 
   Scenario: Runtime versions included in Cocoa session
     When I run "ManualSessionScenario"
@@ -22,4 +22,4 @@ Feature: Runtime versions are included in all requests
     And I configure Bugsnag for "CxxExceptionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events.0.device.runtimeVersions.osBuild" is not null
+    And the error payload field "events.0.device.runtimeVersions.osBuild" is not null

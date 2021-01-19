@@ -36,10 +36,10 @@ Feature: Communicating events between notifiers
     And the "lineNumber" of stack frame 2 is null
     And the event "unhandled" is false
 
-    And the payload field "events" is an array with 1 elements
-    And the payload field "events.0.session.events.handled" equals 1
-    And the payload field "events.0.session.events.unhandled" equals 0
-    And the payload field "events.0.session.id" equals the stored value "session_id"
+    And the error payload field "events" is an array with 1 elements
+    And the error payload field "events.0.session.events.handled" equals 1
+    And the error payload field "events.0.session.events.unhandled" equals 0
+    And the error payload field "events.0.session.id" equals the stored value "session_id"
 
   Scenario: Report an unhandled event through internalNotify()
   Report an unhandled exception, including a custom stacktrace and severity.
@@ -70,7 +70,7 @@ Feature: Communicating events between notifiers
     And the event "unhandled" is true
     And the event "severityReason.unhandledOverridden" is true
 
-    And the payload field "events" is an array with 1 elements
-    And the payload field "events.0.session.events.handled" equals 0
-    And the payload field "events.0.session.events.unhandled" equals 1
-    And the payload field "events.0.session.id" equals the stored value "session_id"
+    And the error payload field "events" is an array with 1 elements
+    And the error payload field "events.0.session.events.handled" equals 0
+    And the error payload field "events.0.session.events.unhandled" equals 1
+    And the error payload field "events.0.session.id" equals the stored value "session_id"

@@ -15,7 +15,7 @@ Feature: Handled Errors and Exceptions
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the exception "errorClass" equals "Bar"
     And the exception "message" equals "Foo"
-    And the payload field "events.0.device.time" is a date
+    And the error payload field "events.0.device.time" is a date
     And the event "metaData.account.items.0" equals 400
     And the event "metaData.account.items.1" equals 200
     And the event "severity" equals "warning"
@@ -29,7 +29,7 @@ Feature: Handled Errors and Exceptions
     When I run "HandledErrorScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "NSError"
     And the exception "message" equals "The operation couldn’t be completed. (HandledErrorScenario error 100.)"
     And the event "severity" equals "warning"
@@ -42,7 +42,7 @@ Feature: Handled Errors and Exceptions
     When I run "HandledExceptionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "HandledExceptionScenario"
     And the exception "message" equals "Message: HandledExceptionScenario"
     And the event "severity" equals "warning"
@@ -55,7 +55,7 @@ Feature: Handled Errors and Exceptions
     When I run "NSExceptionShiftScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "Tertiary failure"
     And the exception "message" equals "invalid invariant"
     And the event "severity" equals "warning"

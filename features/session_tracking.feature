@@ -92,15 +92,15 @@ Feature: Session Tracking
     And the session payload field "sessions.0.id" is stored as the value "session_id"
 
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
-    And the payload field "events.0.session.events.handled" equals 1
-    And the payload field "events.0.session.id" equals the stored value "session_id"
+    And the error payload field "events" is an array with 1 elements
+    And the error payload field "events.0.session.events.handled" equals 1
+    And the error payload field "events.0.session.id" equals the stored value "session_id"
     And I discard the oldest error
 
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
-    And the payload field "events.0.session.events.handled" equals 2
-    And the payload field "events.0.session.id" equals the stored value "session_id"
+    And the error payload field "events" is an array with 1 elements
+    And the error payload field "events.0.session.events.handled" equals 2
+    And the error payload field "events.0.session.id" equals the stored value "session_id"
 
   Scenario: Encountering an unhandled event during a session
     When I run "AutoSessionUnhandledScenario"
@@ -117,10 +117,10 @@ Feature: Session Tracking
     And the session payload field "sessions.0.id" is stored as the value "session_id"
 
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
-    And the payload field "events.0.session.events.handled" equals 0
-    And the payload field "events.0.session.events.unhandled" equals 1
-    And the payload field "events.0.session.id" equals the stored value "session_id"
+    And the error payload field "events" is an array with 1 elements
+    And the error payload field "events.0.session.events.handled" equals 0
+    And the error payload field "events.0.session.events.unhandled" equals 1
+    And the error payload field "events.0.session.id" equals the stored value "session_id"
 
   Scenario: Encountering handled and unhandled events during a session
     When I run "AutoSessionMixedEventsScenario"

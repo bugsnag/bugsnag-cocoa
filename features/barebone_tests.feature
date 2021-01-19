@@ -52,13 +52,13 @@ Feature: Barebone tests
     And the exception "errorClass" equals "NSRangeException"
     And the exception "message" equals "-[__NSSingleObjectArrayI objectAtIndex:]: index 1 beyond bounds [0 .. 0]"
     And the exception "type" equals "cocoa"
-    And the payload field "events.0.app.dsymUUIDs" is a non-empty array
-    And the payload field "events.0.app.duration" is a number
-    And the payload field "events.0.app.durationInForeground" is a number
-    And the payload field "events.0.device.freeDisk" is an integer
-    And the payload field "events.0.device.freeMemory" is an integer
-    And the payload field "events.0.device.model" matches the test device model
-    And the payload field "events.0.device.totalMemory" is an integer
+    And the error payload field "events.0.app.dsymUUIDs" is a non-empty array
+    And the error payload field "events.0.app.duration" is a number
+    And the error payload field "events.0.app.durationInForeground" is a number
+    And the error payload field "events.0.device.freeDisk" is an integer
+    And the error payload field "events.0.device.freeMemory" is an integer
+    And the error payload field "events.0.device.model" matches the test device model
+    And the error payload field "events.0.device.totalMemory" is an integer
 
     And I discard the oldest error
 
@@ -118,13 +118,13 @@ Feature: Barebone tests
     # This can be uncommented once Swift fatal error message reporting is fixed.
     # And the exception "message" equals "iOSTestApp/BareboneTestScenarios.swift | Unexpectedly found nil while implicitly unwrapping an Optional value"
     And the exception "type" equals "cocoa"
-    And the payload field "events.0.app.dsymUUIDs" is a non-empty array
-    And the payload field "events.0.app.duration" is a number
-    And the payload field "events.0.app.durationInForeground" is a number
-    And the payload field "events.0.device.freeDisk" is an integer
-    And the payload field "events.0.device.freeMemory" is an integer
-    And the payload field "events.0.device.model" matches the test device model
-    And the payload field "events.0.device.totalMemory" is an integer
+    And the error payload field "events.0.app.dsymUUIDs" is a non-empty array
+    And the error payload field "events.0.app.duration" is a number
+    And the error payload field "events.0.app.durationInForeground" is a number
+    And the error payload field "events.0.device.freeDisk" is an integer
+    And the error payload field "events.0.device.freeMemory" is an integer
+    And the error payload field "events.0.device.model" matches the test device model
+    And the error payload field "events.0.device.totalMemory" is an integer
 
   Scenario: Barebone test: Out Of Memory
     When I run "OOMScenario"
@@ -181,10 +181,10 @@ Feature: Barebone tests
     And the event "user.email" equals "foobar@example.com"
     And the event "user.id" equals "foobar"
     And the event "user.name" equals "Foo Bar"
-    And the payload field "events.0.app.dsymUUIDs" is a non-empty array
-    And the payload field "events.0.app.duration" is null
-    And the payload field "events.0.app.durationInForeground" is null
-    And the payload field "events.0.device.freeDisk" is null
-    And the payload field "events.0.device.freeMemory" is null
-    And the payload field "events.0.device.model" matches the test device model
-    And the payload field "events.0.device.totalMemory" is an integer
+    And the error payload field "events.0.app.dsymUUIDs" is a non-empty array
+    And the error payload field "events.0.app.duration" is null
+    And the error payload field "events.0.app.durationInForeground" is null
+    And the error payload field "events.0.device.freeDisk" is null
+    And the error payload field "events.0.device.freeMemory" is null
+    And the error payload field "events.0.device.model" matches the test device model
+    And the error payload field "events.0.device.totalMemory" is an integer

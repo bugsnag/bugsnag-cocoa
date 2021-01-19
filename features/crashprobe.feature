@@ -8,7 +8,7 @@ Feature: Reporting crash events
     And I configure Bugsnag for "PrivilegedInstructionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "EXC_BAD_INSTRUCTION"
     And the "method" of stack frame 0 equals "-[PrivilegedInstructionScenario run]"
 
@@ -17,7 +17,7 @@ Feature: Reporting crash events
     And I configure Bugsnag for "BuiltinTrapScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "EXC_BREAKPOINT"
     And the "method" of stack frame 0 equals "-[BuiltinTrapScenario run]"
 
@@ -26,7 +26,7 @@ Feature: Reporting crash events
     And I configure Bugsnag for "NonExistentMethodScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "message" starts with "-[NonExistentMethodScenario santaclaus:]: unrecognized selector sent to instance"
     And the exception "errorClass" equals "NSInvalidArgumentException"
     And the "method" of stack frame 0 equals "<redacted>"
@@ -133,7 +133,7 @@ Feature: Reporting crash events
     And I configure Bugsnag for "AsyncSafeThreadScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "message" equals "Attempted to dereference garbage pointer 0x1."
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the stacktrace contains methods:

@@ -8,7 +8,7 @@ Feature: Signals are captured as error reports in Bugsnag
     And I configure Bugsnag for "AbortScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "SIGABRT"
     And the "method" of stack frame 0 equals "__pthread_kill"
     And the "method" of stack frame 1 matches "^(<redacted>| ?pthread_kill)$"
@@ -24,7 +24,7 @@ Feature: Signals are captured as error reports in Bugsnag
     And I configure Bugsnag for "AbortOverrideScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "SIGABRT"
     And the "method" of stack frame 0 equals "__pthread_kill"
     And the "method" of stack frame 1 matches "^(<redacted>| ?pthread_kill)$"
@@ -41,7 +41,7 @@ Feature: Signals are captured as error reports in Bugsnag
     And I configure Bugsnag for "SIGPIPEScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "SIGPIPE"
     And the event "severity" equals "error"
     And the event "unhandled" is true
@@ -53,7 +53,7 @@ Feature: Signals are captured as error reports in Bugsnag
     And I configure Bugsnag for "SIGBUSScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "SIGBUS"
     And the event "severity" equals "error"
     And the event "unhandled" is true
@@ -65,7 +65,7 @@ Feature: Signals are captured as error reports in Bugsnag
     And I configure Bugsnag for "SIGFPEScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "SIGFPE"
     And the event "severity" equals "error"
     And the event "unhandled" is true
@@ -77,7 +77,7 @@ Feature: Signals are captured as error reports in Bugsnag
     And I configure Bugsnag for "SIGILLScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "SIGILL"
     And the event "severity" equals "error"
     And the event "unhandled" is true
@@ -89,7 +89,7 @@ Feature: Signals are captured as error reports in Bugsnag
     And I configure Bugsnag for "SIGSEGVScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "SIGSEGV"
     And the event "severity" equals "error"
     And the event "unhandled" is true
@@ -101,7 +101,7 @@ Feature: Signals are captured as error reports in Bugsnag
     And I configure Bugsnag for "SIGSYSScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "SIGSYS"
     And the event "severity" equals "error"
     And the event "unhandled" is true
@@ -113,7 +113,7 @@ Feature: Signals are captured as error reports in Bugsnag
     And I configure Bugsnag for "SIGTRAPScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "SIGTRAP"
     And the event "severity" equals "error"
     And the event "unhandled" is true

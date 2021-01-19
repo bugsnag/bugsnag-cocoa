@@ -8,7 +8,7 @@ Feature: Handled Errors and Exceptions
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "message" equals "HandledErrorThreadSendAlwaysScenario"
     And the thread information is valid for the event
 
@@ -18,7 +18,7 @@ Feature: Handled Errors and Exceptions
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is true
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "message" equals "UnhandledErrorThreadSendAlwaysScenario"
     And the thread information is valid for the event
 
@@ -27,13 +27,13 @@ Feature: Handled Errors and Exceptions
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "HandledErrorThreadSendUnhandledOnlyScenario"
-    And the payload field "events.0.threads" is an array with 1 elements
-    And the payload field "events.0.threads.0.errorReportingThread" is true
-    And the payload field "events.0.threads.0.id" is not null
-    And the payload field "events.0.threads.0.name" is null
-    And the payload field "events.0.threads.0.type" equals "cocoa"
+    And the error payload field "events.0.threads" is an array with 1 elements
+    And the error payload field "events.0.threads.0.errorReportingThread" is true
+    And the error payload field "events.0.threads.0.id" is not null
+    And the error payload field "events.0.threads.0.name" is null
+    And the error payload field "events.0.threads.0.type" equals "cocoa"
     And the thread information is valid for the event
 
   Scenario: Threads are not captured for unhandled errors when sendThreads is set to never
@@ -42,11 +42,11 @@ Feature: Handled Errors and Exceptions
     And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is true
-    And the payload field "events" is an array with 1 elements
+    And the error payload field "events" is an array with 1 elements
     And the exception "message" equals "UnhandledErrorThreadSendNeverScenario"
-    And the payload field "events.0.threads" is an array with 1 elements
-    And the payload field "events.0.threads.0.errorReportingThread" is true
-    And the payload field "events.0.threads.0.id" is not null
-    And the payload field "events.0.threads.0.name" is null
-    And the payload field "events.0.threads.0.type" equals "cocoa"
+    And the error payload field "events.0.threads" is an array with 1 elements
+    And the error payload field "events.0.threads.0.errorReportingThread" is true
+    And the error payload field "events.0.threads.0.id" is not null
+    And the error payload field "events.0.threads.0.name" is null
+    And the error payload field "events.0.threads.0.type" equals "cocoa"
     And the thread information is valid for the event
