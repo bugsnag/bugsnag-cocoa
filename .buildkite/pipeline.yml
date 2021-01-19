@@ -168,5 +168,26 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
+  - label: ':apple: macOS 10.15 barebones end-to-end tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource-mac-cocoa
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+      docker-compose#v3.3.0:
+        run: cocoa-maze-runner
+        command:
+          - "features/barebone_tests.feature"
+          - "--farm=local"
+          - "--os=macos"
+          - "--os-version=10.15"
+          - "--app=macOSTestApp"
+          - "--tags"
+          - "'not @skip_macos'"
+          - "--fail-fast"
+
   - label: 'Conditionally trigger full set of tests'
     command: sh -c .buildkite/pipeline_trigger.sh
