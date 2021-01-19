@@ -161,7 +161,7 @@ Feature: Reporting crash events
   Scenario: Misuse of libdispatch
     When I run "DispatchCrashScenario" and relaunch the app
     And I configure Bugsnag for "DispatchCrashScenario"
-    And I wait to receive a request
+    And I wait to receive an error
     Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the exception "errorClass" equals "EXC_BREAKPOINT"
     And the exception "message" starts with "BUG IN CLIENT OF LIBDISPATCH: dispatch_"
