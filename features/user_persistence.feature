@@ -27,7 +27,7 @@ Feature: Persisting User Information
     And the session "user.name" equals "bar"
 
     # Event - User persisted
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events.0.user.id" equals "foo"
     And the payload field "events.0.user.email" equals "baz@grok.com"
     And the payload field "events.0.user.name" equals "bar"
@@ -58,7 +58,7 @@ Scenario: User Info is persisted from client across app runs
     And the session "user.name" equals "bar"
 
     # Event - User persisted
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events.0.user.id" equals "foo"
     And the payload field "events.0.user.email" equals "baz@grok.com"
     And the payload field "events.0.user.name" equals "bar"
@@ -80,7 +80,7 @@ Scenario: User Info is persisted from client across app runs
     And I discard the oldest session
 
     # First Event
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events.0.user.id" equals "john"
     And the payload field "events.0.user.email" equals "george@ringo.com"
     And the payload field "events.0.user.name" equals "paul"
@@ -99,7 +99,7 @@ Scenario: User Info is persisted from client across app runs
     And the session "user.name" is null
 
     # Second Event (Manually sent, non-persisted, generated id)
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events.0.user.id" is not null
     And the payload field "events.0.user.id" does not equal "john"
     And the payload field "events.0.user.id" does not equal "foo"

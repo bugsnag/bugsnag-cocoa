@@ -14,7 +14,7 @@ Feature: Barebone tests
     And the session "user.email" equals "foobar@example.com"
     And the session "user.name" equals "Foo Bar"
 
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "app.bundleVersion" equals "12301"
     And the event "app.id" equals "com.bugsnag.iOSTestApp"
     And the event "app.inForeground" is true
@@ -62,7 +62,7 @@ Feature: Barebone tests
 
     And I discard the oldest error
 
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "breadcrumbs.2.name" equals "NSRangeException"
     And the event "breadcrumbs.2.type" equals "error"
     And the event "breadcrumbs.3.name" equals "About to decode a payload..."
@@ -86,7 +86,7 @@ Feature: Barebone tests
     And I configure Bugsnag for "BareboneTestUnhandledErrorScenario"
     And I wait to receive an error
 
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "app.bundleVersion" equals "12301"
     And the event "app.inForeground" is true
     And the event "app.releaseStage" equals "development"

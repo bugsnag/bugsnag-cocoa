@@ -65,7 +65,7 @@ Feature: Out of memory errors
   Scenario: Out of memory errors are disabled by AutoDetectErrors
     When I run "OOMAutoDetectErrorsScenario"
     And I wait to receive an error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
     And the exception "message" equals "OOMAutoDetectErrorsScenario"
     And I discard the oldest error
@@ -73,14 +73,14 @@ Feature: Out of memory errors
     And I relaunch the app
     And I run "OOMAutoDetectErrorsScenario"
     And I wait to receive an error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
     And the exception "message" equals "OOMAutoDetectErrorsScenario"
 
   Scenario: Out of memory errors are disabled by EnabledErrorTypes
     When I run "OOMEnabledErrorTypesScenario"
     And I wait to receive an error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
     And the exception "message" equals "OOMEnabledErrorTypesScenario"
     And I discard the oldest error
@@ -88,6 +88,6 @@ Feature: Out of memory errors
     And I relaunch the app
     And I run "OOMEnabledErrorTypesScenario"
     And I wait to receive an error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the event "unhandled" is false
     And the exception "message" equals "OOMEnabledErrorTypesScenario"

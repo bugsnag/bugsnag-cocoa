@@ -46,14 +46,14 @@ When("I configure Bugsnag for {string}") do |event_type|
 end
 
 When("I send the app to the background") do
-  MazeRunner.driver.background_app(-1)
+  Maze.driver.background_app(-1)
 end
 
 When("I relaunch the app") do
   # This step should only be used when the app has crashed, but the notifier needs a little
   # time to write the crash report before being forced to reopen.
   sleep(2)
-  MazeRunner.driver.launch_app
+  Maze.driver.launch_app
 end
 
 When("I clear the error queue") do
@@ -71,21 +71,21 @@ end
 # 4: The application is running in the foreground
 Then("The app is running in the foreground") do
   wait_for_true do
-    status = MazeRunner.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
+    status = Maze.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
     status == 4
   end
 end
 
 Then("The app is running in the background") do
   wait_for_true do
-    status = MazeRunner.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
+    status = Maze.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
     status == 3
   end
 end
 
 Then("The app is not running") do
   wait_for_true do
-    status = MazeRunner.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
+    status = Maze.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
     status == 1
   end
 end
@@ -177,7 +177,7 @@ def check_device_model(field, list)
       "iPhone XR" => %w[iPhone11,8],
       "iPhone XS" => %w[iPhone11,2 iPhone11,4 iPhone11,8]
   }
-  expected_model = MazeRunner.config.capabilities['device']
+  expected_model = Maze.config.capabilities['device']
   valid_models = internal_names[expected_model]
   device_model = read_key_path(list.current[:body], field)
   assert_true(valid_models.include?(device_model), "The field #{device_model} did not match any of the list of expected fields")

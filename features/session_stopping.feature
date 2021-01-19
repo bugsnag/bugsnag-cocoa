@@ -14,9 +14,9 @@ Feature: Stopping and resuming sessions
         | 1                      | The operation couldn’t be completed. (First error error 101.) |
         | null                   | The operation couldn’t be completed. (Second error error 101.) |
 
-    And the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
 
   Scenario: When a session is resumed the error uses the previous session information
     When I run "ResumedSessionScenario"
@@ -31,9 +31,9 @@ Feature: Stopping and resuming sessions
 
     And the payload field "events.0.session.id" is equal for error 0 and error 1
     And the payload field "events.0.session.startedAt" is equal for error 0 and error 1
-    And the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
 
   Scenario: When a new session is started the error uses different session information
     When I run "NewSessionScenario"
@@ -52,6 +52,6 @@ Feature: Stopping and resuming sessions
 
     And the payload field "events.0.session.id" is not equal for error 0 and error 1
 
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier

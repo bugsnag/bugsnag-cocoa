@@ -91,13 +91,13 @@ Feature: Session Tracking
     Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     And the session payload field "sessions.0.id" is stored as the value "session_id"
 
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 1 elements
     And the payload field "events.0.session.events.handled" equals 1
     And the payload field "events.0.session.id" equals the stored value "session_id"
     And I discard the oldest error
 
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 1 elements
     And the payload field "events.0.session.events.handled" equals 2
     And the payload field "events.0.session.id" equals the stored value "session_id"
@@ -116,7 +116,7 @@ Feature: Session Tracking
     And the session payload field "sessions.0.startedAt" is a parsable timestamp in seconds
     And the session payload field "sessions.0.id" is stored as the value "session_id"
 
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 1 elements
     And the payload field "events.0.session.events.handled" equals 0
     And the payload field "events.0.session.events.unhandled" equals 1
@@ -144,10 +144,10 @@ Feature: Session Tracking
         | SecondErr               | 2                      | 0                        |
         | Kaboom                  | 2                      | 1                        |
 
-    And the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest error
 
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest error
 
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier

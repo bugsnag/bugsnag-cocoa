@@ -11,7 +11,7 @@ Feature: Delivery of errors
     And I clear the error queue
     And I configure Bugsnag for "HandledExceptionScenario"
     And I wait to receive an error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
 
   Scenario: Delivery is not retried after an HTTP 400 error
     When I set the HTTP status code for the next request to 400

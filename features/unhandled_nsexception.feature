@@ -7,7 +7,7 @@ Feature: Uncaught NSExceptions are captured by Bugsnag
     When I run "ObjCExceptionScenario" and relaunch the app
     And I configure Bugsnag for "ObjCExceptionScenario"
     And I wait to receive an error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the exception "message" equals "An uncaught exception! SCREAM."
     And the exception "errorClass" equals "NSGenericException"
     And the "method" of stack frame 0 equals "<redacted>"
@@ -22,7 +22,7 @@ Feature: Uncaught NSExceptions are captured by Bugsnag
     When I run "ObjCExceptionOverrideScenario" and relaunch the app
     And I configure Bugsnag for "ObjCExceptionOverrideScenario"
     And I wait to receive an error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the exception "message" equals "An uncaught exception! SCREAM."
     And the exception "errorClass" equals "NSGenericException"
     And the "method" of stack frame 0 equals "<redacted>"

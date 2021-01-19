@@ -12,7 +12,7 @@ Feature: Handled Errors and Exceptions
 
     When I run "HandledErrorOverrideScenario"
     And I wait to receive an error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the exception "errorClass" equals "Bar"
     And the exception "message" equals "Foo"
     And the payload field "events.0.device.time" is a date
@@ -28,7 +28,7 @@ Feature: Handled Errors and Exceptions
   Scenario: Reporting an NSError
     When I run "HandledErrorScenario"
     And I wait to receive an error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "NSError"
     And the exception "message" equals "The operation couldn’t be completed. (HandledErrorScenario error 100.)"
@@ -41,7 +41,7 @@ Feature: Handled Errors and Exceptions
   Scenario: Reporting a handled exception
     When I run "HandledExceptionScenario"
     And I wait to receive an error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "HandledExceptionScenario"
     And the exception "message" equals "Message: HandledExceptionScenario"
@@ -54,7 +54,7 @@ Feature: Handled Errors and Exceptions
   Scenario: Reporting a handled exception's stacktrace
     When I run "NSExceptionShiftScenario"
     And I wait to receive an error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And the payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "Tertiary failure"
     And the exception "message" equals "invalid invariant"
@@ -76,18 +76,18 @@ Feature: Handled Errors and Exceptions
         | FooError                | Err 1   |
         | FooError                | Err 2   |
         | FooError                | Err 3   |
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     And I discard the oldest error
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
