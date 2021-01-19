@@ -25,7 +25,7 @@ Feature: Out of memory errors
 
     And I wait to receive a session
     Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
+    And I discard the oldest session
 
     And I wait to receive an error
     Then the error is an OOM event
