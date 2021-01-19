@@ -102,11 +102,11 @@ def request_matches_row(body, row)
   true
 end
 
-Then("the payload field {string} is equal for error {int} and error {int}") do |key, index_a, index_b|
+Then("the error payload field {string} is equal for error {int} and error {int}") do |key, index_a, index_b|
   assert_true(request_fields_are_equal(key, index_a, index_b))
 end
 
-Then("the payload field {string} is not equal for error {int} and error {int}") do |key, index_a, index_b|
+Then("the error payload field {string} is not equal for error {int} and error {int}") do |key, index_a, index_b|
   assert_false(request_fields_are_equal(key, index_a, index_b))
 end
 
@@ -183,7 +183,7 @@ def check_device_model(field, list)
   assert_true(valid_models.include?(device_model), "The field #{device_model} did not match any of the list of expected fields")
 end
 
-Then("the payload field {string} matches the test device model") do |field|
+Then("the error payload field {string} matches the test device model") do |field|
   check_device_model field, Maze::Server.errors
 end
 
@@ -239,7 +239,7 @@ Then("the error is an OOM event") do
     Then the exception "message" equals "The app was likely terminated by the operating system while in the foreground"
     And the exception "errorClass" equals "Out Of Memory"
     And the exception "type" equals "cocoa"
-    And the payload field "events.0.exceptions.0.stacktrace" is an array with 0 elements
+    And the error payload field "events.0.exceptions.0.stacktrace" is an array with 0 elements
     And the event "severity" equals "error"
     And the event "severityReason.type" equals "outOfMemory"
     And the event "unhandled" is true
