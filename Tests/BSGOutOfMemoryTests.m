@@ -6,7 +6,7 @@
 #import "BugsnagClient+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagKVStoreObjC.h"
-#import "BSGCachesDirectory.h"
+#import "BSGFileLocations.h"
 
 @interface Bugsnag (Testing)
 + (BugsnagClient *)client;
@@ -66,7 +66,7 @@
 }
 
 -(void)testBadJSONData {
-    NSString *stateFilePath = [[BSGCachesDirectory getSubdirPath:@"bugsnag/state"] stringByAppendingPathComponent:@"system_state.json"];
+    NSString *stateFilePath = [BSGFileLocations current].systemState;
     NSError* error;
     [@"{1=\"a\"" writeToFile:stateFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
     XCTAssertNil(error);

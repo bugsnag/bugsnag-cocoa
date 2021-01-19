@@ -9,18 +9,26 @@ Feature: Out of memory errors
 
   Scenario: Out of memory errors are enabled when loading configuration
     When I run "OOMLoadScenario"
+    And I wait to receive a session
+
+    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest session
+
     And I wait to receive an error
-    Then the error "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
-    And the event "unhandled" is false
+    Then the event "unhandled" is false
     And the exception "message" equals "OOMLoadScenario"
     And the event has a "manual" breadcrumb named "OOMLoadScenarioBreadcrumb"
     And I discard the oldest error
 
     When I relaunch the app
     And I configure Bugsnag for "OOMLoadScenario"
+
+    And I wait to receive a session
+    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+
     And I wait to receive an error
-    Then the error "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
-    And the error is an OOM event
+    Then the error is an OOM event
 
     # Ensure the basic data from OOMs are present
     And the event "device.jailbroken" is false
@@ -41,6 +49,11 @@ Feature: Out of memory errors
     And the event "device.runtimeVersions" is not null
     And the event "device.totalMemory" is not null
     And the event "metaData.custom.bar" equals "foo"
+    And the event "session.id" is not null
+    And the event "session.startedAt" is not null
+    And the event "session.events.handled" equals 1
+    And the event "session.events.unhandled" equals 1
+    And the event "unhandled" is true
     And the event "user.id" equals "foobar"
     And the event "user.email" equals "foobar@example.com"
     And the event "user.name" equals "Foo Bar"

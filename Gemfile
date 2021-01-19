@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'cocoapods'
+gem 'danger'
 gem 'xcpretty'
 
 # A reference to Maze Runner is only needed for running tests locally and if committed it must be
@@ -9,4 +10,4 @@ gem 'xcpretty'
 
 # Locally, you can run against Maze Runner branches and uncommitted changes:
 #gem 'bugsnag-maze-runner', path: '../maze-runner'
-gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', branch: 'tms/separate-endpoints-browser'
+gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', tag: 'v4.0.0'

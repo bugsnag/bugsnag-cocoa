@@ -1,20 +1,13 @@
-#import <WebKit/WebKit.h>
-#import <signal.h>
 #import "OutOfMemoryController.h"
 
-@interface OutOfMemoryController ()
-@property (nonatomic, strong) UIWebView *webView;
-@end
+#import <os/proc.h>
 
 @implementation OutOfMemoryController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
-    [self.webView loadHTMLString:@"<h2>Loading a lot of JavaScript. Please wait.</h2>"
-                                  "<p>You can follow along in Console.app</p>"
-                         baseURL:nil];
-    [self.view addSubview:self.webView];
+    
+    self.view.backgroundColor = UIColor.groupTableViewBackgroundColor;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -23,13 +16,23 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    NSString *format = @"var b = document.createElement('div'); div.innerHTML = 'Hello item %d'; document.documentElement.appendChild(div);";
-    for (int i = 0; i < 3000 * 1024; i++) {
-        NSString *item = [NSString stringWithFormat:format, i];
-        [self.webView stringByEvaluatingJavaScriptFromString:item];
+    
+    [NSThread detachNewThreadSelector:@selector(consumeMemory) toTarget:self withObject:nil];
+}
 
-        if (i % 1000 == 0) {
-            NSLog(@"Loaded %d items", i);
+- (void)consumeMemory {
+    const int blocksize = 2 * 1024 * 1024;
+    const int pagesize = (int)NSPageSize();
+    const int npages = blocksize / pagesize;
+    while (1) {
+        volatile char *ptr = malloc(blocksize);
+        for (int i = 0; i < npages; i++) {
+            ptr[i * pagesize] = 42; // Dirty each page
+        }
+        if (@available(iOS 13.0, *)) {
+            NSLog(@"    Available memory: %@", [NSByteCountFormatter
+                                                stringFromByteCount:os_proc_available_memory()
+                                                countStyle:NSByteCountFormatterCountStyleMemory]);
         }
     }
 }

@@ -16,6 +16,7 @@
 		0176C0B6254AE81B0066E0F3 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0176C0B4254AE81B0066E0F3 /* MainMenu.xib */; };
 		017FBFB8254B09C300809042 /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 017FBFB6254B09C300809042 /* MainWindowController.m */; };
 		017FBFB9254B09C300809042 /* MainWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 017FBFB7254B09C300809042 /* MainWindowController.xib */; };
+		01AF6A84258BB38A00FFC803 /* DispatchCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A83258BB38A00FFC803 /* DispatchCrashScenario.swift */; };
 		01AF6A50258A00DE00FFC803 /* BareboneTestScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A4F258A00DE00FFC803 /* BareboneTestScenarios.swift */; };
 		01F47CC4254B1B3100B184AD /* OriginalErrorNSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C21254B1B2C00B184AD /* OriginalErrorNSExceptionScenario.swift */; };
 		01F47CC5254B1B3100B184AD /* LoadConfigFromFileAutoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C23254B1B2C00B184AD /* LoadConfigFromFileAutoScenario.swift */; };
@@ -159,6 +160,7 @@
 		017FBFB5254B09C300809042 /* MainWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainWindowController.h; sourceTree = "<group>"; };
 		017FBFB6254B09C300809042 /* MainWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainWindowController.m; sourceTree = "<group>"; };
 		017FBFB7254B09C300809042 /* MainWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindowController.xib; sourceTree = "<group>"; };
+		01AF6A83258BB38A00FFC803 /* DispatchCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchCrashScenario.swift; sourceTree = "<group>"; };
 		01AF6A4F258A00DE00FFC803 /* BareboneTestScenarios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BareboneTestScenarios.swift; sourceTree = "<group>"; };
 		01F47C21254B1B2C00B184AD /* OriginalErrorNSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OriginalErrorNSExceptionScenario.swift; sourceTree = "<group>"; };
 		01F47C22254B1B2C00B184AD /* ThreadScenarios.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadScenarios.h; sourceTree = "<group>"; };
@@ -388,6 +390,7 @@
 				0163BF9A2583AF2A008DC28B /* DiscardClassesScenarios.swift */,
 				01F47CA8254B1B3000B184AD /* DiscardedBreadcrumbTypeScenario.swift */,
 				01F47CB6254B1B3000B184AD /* DiscardSessionScenario.swift */,
+				01AF6A83258BB38A00FFC803 /* DispatchCrashScenario.swift */,
 				01F47C3D254B1B2D00B184AD /* EnabledBreadcrumbTypesIsNilScenario.swift */,
 				01F47C5C254B1B2E00B184AD /* EnabledErrorTypesCxxScenario.h */,
 				01F47C81254B1B2F00B184AD /* EnabledErrorTypesCxxScenario.mm */,
@@ -702,6 +705,7 @@
 				01F47D30254B1B3100B184AD /* AutoContextNSExceptionScenario.swift in Sources */,
 				01F47CE1254B1B3100B184AD /* ManualSessionWithUserScenario.m in Sources */,
 				01F47D01254B1B3100B184AD /* SessionCallbackOrderScenario.swift in Sources */,
+				01AF6A84258BB38A00FFC803 /* DispatchCrashScenario.swift in Sources */,
 				01F47D0A254B1B3100B184AD /* CxxExceptionScenario.mm in Sources */,
 				01F47D03254B1B3100B184AD /* OriginalErrorNSErrorScenario.swift in Sources */,
 				01F47D28254B1B3100B184AD /* ReadGarbagePointerScenario.m in Sources */,

@@ -69,6 +69,9 @@ Feature: Barebone tests
     And the event "metaData.nserror.code" equals 4864
     And the event "metaData.nserror.domain" equals "NSCocoaErrorDomain"
     And the event "metaData.nserror.reason" equals "The data isn’t in the correct format."
+    And the event "metaData.nserror.userInfo.NSCodingPath" is not null
+    And the event "metaData.nserror.userInfo.NSDebugDescription" equals "The given data was not valid JSON."
+    And the event "metaData.nserror.userInfo.NSUnderlyingError" matches "Error Domain=NSCocoaErrorDomain Code=3840"
     And the event "severity" equals "warning"
     And the event "severityReason.type" equals "handledError"
     And the event "severityReason.unhandledOverridden" is null
@@ -124,27 +127,32 @@ Feature: Barebone tests
     And the payload field "events.0.device.totalMemory" is an integer
 
   Scenario: Barebone test: Out Of Memory
-    When I run "OOMLoadScenario"
+    When I run "OOMScenario"
+
+    And I wait to receive a session
+    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest session
+
+    # Wait for app to be killed for using too much memory
+    And I wait for 5 seconds
+
+    And I relaunch the app
+    And I configure Bugsnag for "OOMScenario"
+    And I wait to receive a session
+
+    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    And I discard the oldest request
+
     And I wait to receive an error
-
-    Then the error "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
-    And the event "unhandled" is false
-    And the exception "message" equals "OOMLoadScenario"
-    And the event has a "manual" breadcrumb named "OOMLoadScenarioBreadcrumb"
-    And I discard the oldest error
-
-    When I relaunch the app
-    And I configure Bugsnag for "OOMLoadScenario"
-    And I wait to receive an error
-
-    Then the error "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
-    And the error is an OOM event
+    Then the error is an OOM event
     And the event "app.bundleVersion" is not null
     And the event "app.dsymUUIDs" is not null
     And the event "app.id" equals "com.bugsnag.iOSTestApp"
     And the event "app.inForeground" is true
     And the event "app.type" equals "iOS"
     And the event "app.version" is not null
+    And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
+    And the event "breadcrumbs.1.name" equals "Memory Warning"
     And the event "device.id" is not null
     And the event "device.jailbroken" is false
     And the event "device.locale" is not null
@@ -160,10 +168,16 @@ Feature: Barebone tests
     And the event "metaData.custom.bar" equals "foo"
     And the event "metaData.device.batteryLevel" is not null
     And the event "metaData.device.charging" is not null
+    And the event "metaData.device.lowMemoryWarning" is not null
     And the event "metaData.device.orientation" is not null
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.wordSize" is not null
+    And the event "session.id" is not null
+    And the event "session.startedAt" is not null
+    And the event "session.events.handled" equals 0
+    And the event "session.events.unhandled" equals 1
+    And the event "unhandled" is true
     And the event "user.email" equals "foobar@example.com"
     And the event "user.id" equals "foobar"
     And the event "user.name" equals "Foo Bar"

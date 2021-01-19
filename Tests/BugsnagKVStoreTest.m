@@ -8,7 +8,6 @@
 
 #import <XCTest/XCTest.h>
 #import "BugsnagKVStore.h"
-#import "BSGCachesDirectory.h"
  
 #define AssertEqualCString(actual, expected) \
     actual == NULL \
@@ -21,9 +20,24 @@
 
 @implementation BugsnagKVStoreTest
 
+- (NSString *)getCachesDir {
+    NSArray *dirs = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    if ([dirs count] == 0) {
+        XCTFail(@"Could not locate cache directory path.");
+        return nil;
+    }
+
+    if ([dirs[0] length] == 0) {
+        XCTFail(@"Cache directory path is empty!");
+        return nil;
+    }
+    return dirs[0];
+}
+
+
 - (void)setUp {
     int err = 0;
-    NSString* path = [[BSGCachesDirectory cachesDirectory] stringByAppendingPathComponent:@"bsgkv"];
+    NSString* path = [[self getCachesDir] stringByAppendingPathComponent:@"bsgkv"];
     bsgkv_open([path cStringUsingEncoding:NSUTF8StringEncoding], &err);
     XCTAssertEqual(err, 0);
 }
