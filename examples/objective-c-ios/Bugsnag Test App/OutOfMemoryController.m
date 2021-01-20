@@ -1,7 +1,5 @@
 #import "OutOfMemoryController.h"
 
-#import <os/proc.h>
-
 @implementation OutOfMemoryController
 
 - (void)viewDidLoad {
@@ -21,18 +19,26 @@
 }
 
 - (void)consumeMemory {
-    const int blocksize = 2 * 1024 * 1024;
+    NSLog(@"*** Consuming all available memory...");
+    __block BOOL pause = NO;
+    [NSNotificationCenter.defaultCenter addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil
+                                                     queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        pause = YES;
+    }];
+    const int blocksize = 1024 * 1024;
     const int pagesize = (int)NSPageSize();
     const int npages = blocksize / pagesize;
     while (1) {
         volatile char *ptr = malloc(blocksize);
         for (int i = 0; i < npages; i++) {
             ptr[i * pagesize] = 42; // Dirty each page
-        }
-        if (@available(iOS 13.0, *)) {
-            NSLog(@"    Available memory: %@", [NSByteCountFormatter
-                                                stringFromByteCount:os_proc_available_memory()
-                                                countStyle:NSByteCountFormatterCountStyleMemory]);
+            
+            if (pause) {
+                pause = NO;
+                NSLog(@"*** Pausing memory consumption to allow Bugsnag to write breadcrumbs and metadata");
+                [NSThread sleepForTimeInterval:0.5];
+                NSLog(@"*** Resuming memory consumption...");
+            }
         }
     }
 }
