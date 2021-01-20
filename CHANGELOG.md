@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 6.6.0 (2021-01-20)
 
 ### Enhancements
 
