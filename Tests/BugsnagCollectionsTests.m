@@ -1,5 +1,5 @@
 //
-//  BugsnagCollectionsBSGDictMergeTest.m
+//  BugsnagCollectionsTests.m
 //  Tests
 //
 //  Created by Paul Zabelin on 7/1/19.
@@ -9,10 +9,15 @@
 @import XCTest;
 #import "BugsnagCollections.h"
 
-@interface BugsnagCollectionsBSGDictMergeTest : XCTestCase
+@interface BugsnagCollectionsTests : XCTestCase
 @end
 
-@implementation BugsnagCollectionsBSGDictMergeTest
+@interface BugsnagCollectionsTests_DummyObject : NSObject
+@end
+
+@implementation BugsnagCollectionsTests
+
+// MARK: BSGDictMergeTest
 
 - (void)testBasicMerge {
     NSDictionary *combined = @{@"a": @"one",
@@ -56,6 +61,45 @@
     NSDictionary* expected = @{@"a": @{@"x": @"blah",
                                        @"y": @"something"}};
     XCTAssertEqualObjects(expected, BSGDictMerge(src, dst), @"should combine");
+}
+
+// MARK: BSGJSONDictionary
+
+- (void)testBSGJSONDictionary {
+    XCTAssertNil(BSGJSONDictionary(nil));
+    
+    id validDictionary = @{
+        @"name": @"foobar",
+        @"count": @1,
+        @"userInfo": @{@"extra": @"hello"}
+    };
+    XCTAssertEqualObjects(BSGJSONDictionary(validDictionary), validDictionary);
+    
+    id invalidDictionary = @{
+        @123: @"invalid key; should be ignored",
+        @[]: @"this is backwards",
+        @{}: @""
+    };
+    XCTAssertEqualObjects(BSGJSONDictionary(invalidDictionary), @{});
+    
+    id mixedDictionary = @{
+        @"count": @42,
+        @"dict": @{@"object": [[BugsnagCollectionsTests_DummyObject alloc] init]},
+        @123: @"invalid key; should be ignored"
+    };
+    XCTAssertEqualObjects(BSGJSONDictionary(mixedDictionary),
+                          (@{@"count": @42,
+                             @"dict": @{@"object": @"Dummy object"}}));
+}
+
+@end
+
+// MARK: -
+
+@implementation BugsnagCollectionsTests_DummyObject
+
+- (NSString *)description {
+    return @"Dummy object";
 }
 
 @end
