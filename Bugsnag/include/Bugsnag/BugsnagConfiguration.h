@@ -98,6 +98,9 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
 // MARK: - BugsnagConfiguration
 // =============================================================================
 
+/**
+ * Contains user-provided configuration, including API key and endpoints.
+ */
 @interface BugsnagConfiguration : NSObject <BugsnagMetadataStore>
 
 /**

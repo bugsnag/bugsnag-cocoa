@@ -32,8 +32,16 @@
 
 @class BugsnagSessionTracker;
 
+/**
+ * The BugsnagClient is not intended to be used directly.
+ * 
+ * Use the static access provided by the Bugsnag class instead.
+ */
 @interface BugsnagClient : NSObject<BugsnagMetadataStore>
 
+/**
+ * Initializes the client with the provided configuration.
+ */
 - (instancetype _Nonnull)initWithConfiguration:(BugsnagConfiguration *_Nonnull)configuration;
 
 // =============================================================================

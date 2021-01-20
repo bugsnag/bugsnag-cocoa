@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ * Information about the current user of your application.
+ */
 @interface BugsnagUser : NSObject
 
 @property(readonly) NSString *id;

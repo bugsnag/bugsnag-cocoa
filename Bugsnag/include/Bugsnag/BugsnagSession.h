@@ -12,6 +12,9 @@
 #import <Bugsnag/BugsnagDevice.h>
 #import <Bugsnag/BugsnagUser.h>
 
+/**
+ * Represents a session of user interaction with your app.
+ */
 @interface BugsnagSession : NSObject
 
 @property NSString *_Nonnull id;
