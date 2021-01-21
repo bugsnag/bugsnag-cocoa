@@ -140,6 +140,25 @@ steps:
       - make bootstrap
       - make test
 
+  - label: ':apple: macOS 10.15 full end-to-end tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource-mac-cocoa
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+    commands:
+      - bundle install
+      - bundle exec bugsnag-maze-runner
+        --farm=local
+        --os=macos
+        --os-version=10.15
+        --app=macOSTestApp
+        --tags='not @skip_macos'
+        --fail-fast
+
   - label: ':ios: iOS 14 full end-to-end tests'
     depends_on:
       - cocoa_fixture

@@ -187,7 +187,6 @@ steps:
         --app=macOSTestApp
         --tags='not @skip_macos'
         --fail-fast
-        --verbose
 
   - label: 'Conditionally trigger full set of tests'
     command: sh -c .buildkite/pipeline_trigger.sh
