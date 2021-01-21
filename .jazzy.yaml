@@ -1,6 +1,6 @@
 author_url: "https://www.bugsnag.com"
 author: "Bugsnag Inc"
-clean: true
+clean: false # avoid deleting docs/.git
 framework_root: "Bugsnag"
 github_file_prefix: "https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.0"
 github_url: "https://github.com/bugsnag/bugsnag-cocoa"

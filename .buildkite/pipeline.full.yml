@@ -75,12 +75,3 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
-
-  - label: 'Update documentation page'
-    if: build.branch == "master"
-    agents:
-      queue: opensource-mac-cocoa
-    concurrency: 3
-    concurrency_group: cocoa-unit-tests
-    command:
-      - make update-docs
