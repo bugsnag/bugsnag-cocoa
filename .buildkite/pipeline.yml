@@ -177,17 +177,17 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-      docker-compose#v3.3.0:
-        run: cocoa-maze-runner
-        command:
-          - "features/barebone_tests.feature"
-          - "--farm=local"
-          - "--os=macos"
-          - "--os-version=10.15"
-          - "--app=macOSTestApp"
-          - "--tags"
-          - "'not @skip_macos'"
-          - "--fail-fast"
+    commands:
+      - bundle install
+      - bundle exec bugsnag-maze-runner
+        features/barebone_tests.feature
+        --farm=local
+        --os=macos
+        --os-version=10.15
+        --app=macOSTestApp
+        --tags='not @skip_macos'
+        --fail-fast
+        --verbose
 
   - label: 'Conditionally trigger full set of tests'
     command: sh -c .buildkite/pipeline_trigger.sh

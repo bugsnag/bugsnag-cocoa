@@ -15,9 +15,9 @@ if MazeRunner.config.os == 'macos'
   app_name = "#{MazeRunner.config.app}.app"
 
   # If built app file already exists, skip unzip
-  unless File.exists?("#{fixture_dir}/#{app_name}")
+  unless File.exist?("#{fixture_dir}/#{app_name}")
     raise Exception, 'Test fixture build archive not found' unless File.file?("#{fixture_dir}/#{zip_name}")
-    `unzip #{fixture_dir}/#{zip_name}`
+    `cd #{fixture_dir} && unzip #{zip_name}`
   end
 
   FileUtils.mv("#{fixture_dir}/#{app_name}", "#{app_dir}/#{app_name}")
