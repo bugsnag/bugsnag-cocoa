@@ -46,15 +46,18 @@ When("I configure Bugsnag for {string}") do |event_type|
 end
 
 When("I send the app to the background") do
-  MazeRunner.driver.background_app(-1)
+  Maze.driver.background_app(-1)
 end
 
 When("I relaunch the app") do
-  MazeRunner.driver.launch_app
+  # This step should only be used when the app has crashed, but the notifier needs a little
+  # time to write the crash report before being forced to reopen.
+  sleep(2)
+  Maze.driver.launch_app
 end
 
-When("I clear the request queue") do
-  Server.stored_requests.clear
+When("I clear the error queue") do
+  Maze::Server.errors.clear
 end
 
 When("derp {string}") do |value|
@@ -68,49 +71,28 @@ end
 # 4: The application is running in the foreground
 Then("The app is running in the foreground") do
   wait_for_true do
-    status = MazeRunner.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
+    status = Maze.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
     status == 4
   end
 end
 
 Then("The app is running in the background") do
   wait_for_true do
-    status = MazeRunner.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
+    status = Maze.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
     status == 3
   end
 end
 
 Then("The app is not running") do
   wait_for_true do
-    status = MazeRunner.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
+    status = Maze.driver.execute_script('mobile: queryAppState', {bundleId: "com.bugsnag.iOSTestApp"})
     status == 1
   end
 end
 
-Then("the received requests match:") do |table|
-  # Checks that each request matches one of the event fields
-  requests = Server.stored_requests
-  request_count = requests.count()
-  match_count = 0
-
-  # iterate through each row in the table. exactly 1 request should match each row.
-  table.hashes.each do |row|
-    requests.each do |request|
-      if !request.key? :body or !request[:body].key? "events" then
-        # No body.events in this request - skip
-        return
-      end
-      events = request[:body]['events']
-      assert_equal(1, events.length, 'Expected exactly one event per request')
-      match_count += 1 if request_matches_row(events[0], row)
-    end
-  end
-  assert_equal(request_count, match_count, "Unexpected number of requests matched the received payloads")
-end
-
 def request_matches_row(body, row)
   row.each do |key, expected_value|
-    obs_val = read_key_path(body, key)
+    obs_val = Maze::Helper.read_key_path(body, key)
     next if ("null".eql? expected_value) && obs_val.nil? # Both are null/nil
     next if !obs_val.nil? && (expected_value.to_s.eql? obs_val.to_s) # Values match
     # Match not found - return false
@@ -120,27 +102,28 @@ def request_matches_row(body, row)
   true
 end
 
-Then("the payload field {string} is equal for request {int} and request {int}") do |key, index_a, index_b|
+Then("the error payload field {string} is equal for error {int} and error {int}") do |key, index_a, index_b|
   assert_true(request_fields_are_equal(key, index_a, index_b))
 end
 
-Then("the payload field {string} is not equal for request {int} and request {int}") do |key, index_a, index_b|
+Then("the error payload field {string} is not equal for error {int} and error {int}") do |key, index_a, index_b|
   assert_false(request_fields_are_equal(key, index_a, index_b))
 end
 
 def request_fields_are_equal(key, index_a, index_b)
-  requests = Server.stored_requests.to_a
+  requests = Maze::Server.errors.remaining
   assert_true(requests.length > index_a, "Not enough requests received to access index #{index_a}")
   assert_true(requests.length > index_b, "Not enough requests received to access index #{index_b}")
   request_a = requests[index_a][:body]
   request_b = requests[index_b][:body]
-  val_a = read_key_path(request_a, key)
-  val_b = read_key_path(request_b, key)
+  val_a = Maze::Helper.read_key_path(request_a, key)
+  val_b = Maze::Helper.read_key_path(request_b, key)
+  $logger.info "Comparing '#{val_a}' against '#{val_b}'"
   val_a.eql? val_b
 end
 
 Then("the event {string} is within {int} seconds of the current timestamp") do |field, threshold_secs|
-  value = read_key_path(Server.current_request[:body], "events.0.#{field}")
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
   assert_not_nil(value, "Expected a timestamp")
   now_secs = Time.now.to_i
   then_secs = Time.parse(value).to_i
@@ -149,7 +132,7 @@ Then("the event {string} is within {int} seconds of the current timestamp") do |
 end
 
 Then("the event breadcrumbs contain {string} with type {string}") do |string, type|
-  crumbs = read_key_path(find_request(0)[:body], "events.0.breadcrumbs")
+  crumbs = Maze::Helper.read_key_path(find_request(0)[:body], "events.0.breadcrumbs")
   assert_not_equal(0, crumbs.length, "There are no breadcrumbs on this event")
   match = crumbs.detect do |crumb|
     crumb["name"] == string && crumb["type"] == type
@@ -158,7 +141,7 @@ Then("the event breadcrumbs contain {string} with type {string}") do |string, ty
 end
 
 Then("the event breadcrumbs contain {string}") do |string|
-  crumbs = read_key_path(Server.current_request[:body], "events.0.breadcrumbs")
+  crumbs = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.breadcrumbs")
   assert_not_equal(0, crumbs.length, "There are no breadcrumbs on this event")
   match = crumbs.detect do |crumb|
     crumb["name"] == string
@@ -167,19 +150,19 @@ Then("the event breadcrumbs contain {string}") do |string|
 end
 
 Then("the stack trace is an array with {int} stack frames") do |expected_length|
-  stack_trace = read_key_path(Server.current_request[:body], "events.0.exceptions.0.stacktrace")
+  stack_trace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
   assert_equal(expected_length, stack_trace.length)
 end
 
 Then("the stacktrace contains methods:") do |table|
-  stack_trace = read_key_path(Server.current_request[:body], "events.0.exceptions.0.stacktrace")
+  stack_trace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
   expected = table.raw.flatten
   actual = stack_trace.map { |s| s["method"] }
   contains = actual.each_cons(expected.length).to_a.include? expected
   assert_true(contains, "Stacktrace methods #{actual} did not contain #{expected}")
 end
 
-Then("the payload field {string} matches the test device model") do |field|
+def check_device_model(field, list)
   internal_names = {
       "iPhone 6" => %w[iPhone7,2],
       "iPhone 6 Plus" => %w[iPhone7,1],
@@ -194,16 +177,24 @@ Then("the payload field {string} matches the test device model") do |field|
       "iPhone XR" => %w[iPhone11,8],
       "iPhone XS" => %w[iPhone11,2 iPhone11,4 iPhone11,8]
   }
-  expected_model = MazeRunner.config.capabilities["device"]
+  expected_model = Maze.config.capabilities['device']
   valid_models = internal_names[expected_model]
-  device_model = read_key_path(Server.current_request[:body], field)
+  device_model = Maze::Helper.read_key_path(list.current[:body], field)
   assert_true(valid_models.include?(device_model), "The field #{device_model} did not match any of the list of expected fields")
+end
+
+Then("the error payload field {string} matches the test device model") do |field|
+  check_device_model field, Maze::Server.errors
+end
+
+Then("the session payload field {string} matches the test device model") do |field|
+  check_device_model field, Maze::Server.sessions
 end
 
 Then("the thread information is valid for the event") do
   # veriy that thread/stacktrace information was captured at all
-  thread_traces = read_key_path(Server.current_request[:body], "events.0.threads")
-  stack_traces = read_key_path(Server.current_request[:body], "events.0.exceptions.0.stacktrace")
+  thread_traces = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.threads")
+  stack_traces = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
   assert_not_nil(thread_traces, "No thread trace recorded")
   assert_not_nil(stack_traces, "No thread trace recorded")
   assert_true(stack_traces.count() > 0, "Expected stacktrace collected to be > 0.")
@@ -239,7 +230,7 @@ Then("the thread information is valid for the event") do
 end
 
 Then("the exception {string} equals one of:") do |keypath, possible_values|
-  value = read_key_path(Server.current_request[:body], "events.0.exceptions.0.#{keypath}")
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.#{keypath}")
   assert_includes(possible_values.raw.flatten, value)
 end
 
@@ -248,7 +239,7 @@ Then("the error is an OOM event") do
     Then the exception "message" equals "The app was likely terminated by the operating system while in the foreground"
     And the exception "errorClass" equals "Out Of Memory"
     And the exception "type" equals "cocoa"
-    And the payload field "events.0.exceptions.0.stacktrace" is an array with 0 elements
+    And the error payload field "events.0.exceptions.0.stacktrace" is an array with 0 elements
     And the event "severity" equals "error"
     And the event "severityReason.type" equals "outOfMemory"
     And the event "unhandled" is true

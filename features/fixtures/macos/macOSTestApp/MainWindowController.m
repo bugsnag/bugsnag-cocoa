@@ -32,10 +32,10 @@
 
 - (void)windowDidLoad {
     [super windowDidLoad];
-    
+
     self.apiKey = @"12312312312312312312312312312312";
-    self.notifyEndpoint = @"http://bs-local.com:9339";
-    self.sessionEndpoint = @"http://bs-local.com:9339";
+    self.notifyEndpoint = @"http://bs-local.com:9339/notify";
+    self.sessionEndpoint = @"http://bs-local.com:9339/sessions";
 }
 
 - (BugsnagConfiguration *)configuration {
@@ -53,10 +53,10 @@
 - (IBAction)runScenario:(id)sender {
     self.scenario = [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
     self.scenario.eventMode = self.scenarioMetadata;
-    
+
     NSLog(@"Starting Bugsnag for scenario: %@", self.scenario);
     [self.scenario startBugsnag];
-    
+
     NSLog(@"Running scenario: %@", self.scenario);
     // Using dispatch_async to prevent AppleEvents swallowing exceptions.
     // For more info see https://www.chimehq.com/blog/sad-state-of-exceptions
@@ -68,7 +68,7 @@
 - (IBAction)startBugsnag:(id)sender {
     self.scenario = [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
     self.scenario.eventMode = self.scenarioMetadata;
-    
+
     NSLog(@"Starting Bugsnag for scenario: %@", self.scenario);
     [self.scenario startBugsnag];
 }
