@@ -8,11 +8,11 @@ AfterConfiguration do |_config|
 end
 
 # Additional require MacOS configuration
-if MazeRunner.config.os == 'macos'
+if Maze.config.os == 'macos'
   fixture_dir = 'features/fixtures/macos/output'
   app_dir = '/Applications'
-  zip_name = "#{MazeRunner.config.app}.zip"
-  app_name = "#{MazeRunner.config.app}.app"
+  zip_name = "#{Maze.config.app}.zip"
+  app_name = "#{Maze.config.app}.app"
 
   # If built app file already exists, skip unzip
   unless File.exist?("#{fixture_dir}/#{app_name}")
