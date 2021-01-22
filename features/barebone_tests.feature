@@ -5,17 +5,16 @@ Feature: Barebone tests
 
   Scenario: Barebone test: handled errors
     When I run "BareboneTestHandledScenario"
-    And I wait to receive 3 requests
-  
-    Then the request is valid for the session reporting API
-    And the payload field "sessions.0.id" is not null
+    And I wait to receive a session
+    And I wait to receive 2 errors
+
+    Then the session is valid for the session reporting API
+    And the session payload field "sessions.0.id" is not null
     And the session "user.id" equals "foobar"
     And the session "user.email" equals "foobar@example.com"
     And the session "user.name" equals "Foo Bar"
 
-    And I discard the oldest request
-
-    Then the request is valid for the error reporting API
+    Then the error is valid for the error reporting API
     And the event "app.bundleVersion" equals "12301"
     And the event "app.id" equals the platform-dependent string:
       | ios   | com.bugsnag.iOSTestApp   |
@@ -59,17 +58,17 @@ Feature: Barebone tests
     And the exception "errorClass" equals "NSRangeException"
     And the exception "message" equals "-[__NSSingleObjectArrayI objectAtIndex:]: index 1 beyond bounds [0 .. 0]"
     And the exception "type" equals "cocoa"
-    And the payload field "events.0.app.dsymUUIDs" is a non-empty array
-    And the payload field "events.0.app.duration" is a number
-    And the payload field "events.0.app.durationInForeground" is a number
-    And the payload field "events.0.device.freeDisk" is an integer
-    And the payload field "events.0.device.freeMemory" is an integer
-    And the payload field "events.0.device.model" matches the test device model
-    And the payload field "events.0.device.totalMemory" is an integer
+    And the error payload field "events.0.app.dsymUUIDs" is a non-empty array
+    And the error payload field "events.0.app.duration" is a number
+    And the error payload field "events.0.app.durationInForeground" is a number
+    And the error payload field "events.0.device.freeDisk" is an integer
+    And the error payload field "events.0.device.freeMemory" is an integer
+    And the error payload field "events.0.device.model" matches the test device model
+    And the error payload field "events.0.device.totalMemory" is an integer
 
-    And I discard the oldest request
+    And I discard the oldest error
 
-    Then the request is valid for the error reporting API
+    Then the error is valid for the error reporting API
     And the event "breadcrumbs.2.name" equals "NSRangeException"
     And the event "breadcrumbs.2.type" equals "error"
     And the event "breadcrumbs.3.name" equals "About to decode a payload..."
@@ -91,9 +90,9 @@ Feature: Barebone tests
     When I run "BareboneTestUnhandledErrorScenario" and relaunch the app
     And I set the app to "report" mode
     And I configure Bugsnag for "BareboneTestUnhandledErrorScenario"
-    And I wait to receive a request
+    And I wait to receive an error
 
-    Then the request is valid for the error reporting API
+    Then the error is valid for the error reporting API
     And the event "app.bundleVersion" equals "12301"
     And the event "app.inForeground" is true
     And the event "app.releaseStage" equals "development"
@@ -127,33 +126,34 @@ Feature: Barebone tests
     And the exception "errorClass" equals "Fatal error"
     And the exception "message" equals "Unexpectedly found nil while implicitly unwrapping an Optional value"
     And the exception "type" equals "cocoa"
-    And the payload field "events.0.app.dsymUUIDs" is a non-empty array
-    And the payload field "events.0.app.duration" is a number
-    And the payload field "events.0.app.durationInForeground" is a number
-    And the payload field "events.0.device.freeDisk" is an integer
-    And the payload field "events.0.device.freeMemory" is an integer
-    And the payload field "events.0.device.model" matches the test device model
-    And the payload field "events.0.device.totalMemory" is an integer
+    And the error payload field "events.0.app.dsymUUIDs" is a non-empty array
+    And the error payload field "events.0.app.duration" is a number
+    And the error payload field "events.0.app.durationInForeground" is a number
+    And the error payload field "events.0.device.freeDisk" is an integer
+    And the error payload field "events.0.device.freeMemory" is an integer
+    And the error payload field "events.0.device.model" matches the test device model
+    And the error payload field "events.0.device.totalMemory" is an integer
 
   @skip_macos
   Scenario: Barebone test: Out Of Memory
     When I run "OOMScenario"
 
-    And I wait to receive 1 requests
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
+    And I wait to receive a session
+    Then the session is valid for the session reporting API
+    And I discard the oldest session
 
     # Wait for app to be killed for using too much memory
     And I wait for 5 seconds
 
     And I relaunch the app
     And I configure Bugsnag for "OOMScenario"
-    And I wait to receive 2 requests
+    And I wait to receive a session
 
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
-    And I discard the oldest request
+    Then the session is valid for the session reporting API
+    And I discard the oldest session
 
-    And the error is an OOM event
+    And I wait to receive an error
+    Then the error is an OOM event
     And the event "app.bundleVersion" is not null
     And the event "app.dsymUUIDs" is not null
     And the event "app.id" equals the platform-dependent string:
@@ -196,10 +196,10 @@ Feature: Barebone tests
     And the event "user.email" equals "foobar@example.com"
     And the event "user.id" equals "foobar"
     And the event "user.name" equals "Foo Bar"
-    And the payload field "events.0.app.dsymUUIDs" is a non-empty array
-    And the payload field "events.0.app.duration" is null
-    And the payload field "events.0.app.durationInForeground" is null
-    And the payload field "events.0.device.freeDisk" is null
-    And the payload field "events.0.device.freeMemory" is null
-    And the payload field "events.0.device.model" matches the test device model
-    And the payload field "events.0.device.totalMemory" is an integer
+    And the error payload field "events.0.app.dsymUUIDs" is a non-empty array
+    And the error payload field "events.0.app.duration" is null
+    And the error payload field "events.0.app.durationInForeground" is null
+    And the error payload field "events.0.device.freeDisk" is null
+    And the error payload field "events.0.device.freeMemory" is null
+    And the error payload field "events.0.device.model" matches the test device model
+    And the error payload field "events.0.device.totalMemory" is an integer
