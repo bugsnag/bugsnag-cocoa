@@ -134,7 +134,7 @@ def request_fields_are_equal(key, index_a, index_b)
 end
 
 Then("the event {string} equals one of:") do |field, possible_values|
-  value = read_key_path(Server.current_request[:body], "events.0.#{field}")
+  value = read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
   assert_includes(possible_values.raw.flatten, value)
 end
 
