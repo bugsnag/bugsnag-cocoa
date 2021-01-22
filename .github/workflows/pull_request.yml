@@ -6,31 +6,24 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout base branch
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
           ref: ${{ github.base_ref }}
-          clean: false
 
       - name: Build framework
+        # Base branch may not have the latest Makefile, so cannot use `make` here
         run: |
           xcodebuild -project Bugsnag.xcodeproj -configuration Release -scheme Bugsnag-iOS -destination generic/platform=iOS -derivedDataPath DerivedData -quiet clean build VALID_ARCHS=arm64
           eval $(stat -s DerivedData/Build/Products/Release-iphoneos/Bugsnag.framework/Bugsnag)
           echo $st_size > .size_before
+          rm -rf DerivedData
 
       - name: Checkout PR branch
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
+          fetch-depth: 0
           clean: false
-
-      - name: Build framework
-        run: |
-          xcodebuild -project Bugsnag.xcodeproj -configuration Release -scheme Bugsnag-iOS -destination generic/platform=iOS -derivedDataPath DerivedData -quiet clean build VALID_ARCHS=arm64
-          eval $(stat -s DerivedData/Build/Products/Release-iphoneos/Bugsnag.framework/Bugsnag)
-          echo $st_size > .size_after
-      
-      - name: Infer
-        run: make infer
 
       - uses: actions/cache@v2
         with:
@@ -43,6 +36,18 @@ jobs:
         run: |
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
+
+      - name: Build framework
+        run: |
+          make compile_commands.json
+          eval $(stat -s DerivedData/Build/Products/Release-iphoneos/Bugsnag.framework/Bugsnag)
+          echo $st_size > .size_after
+      
+      - name: Infer
+        run: make infer
+      
+      - name: OCLint
+        run: make oclint
 
       - name: Danger
         run: bundle exec danger

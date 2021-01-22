@@ -15,7 +15,7 @@
 PLATFORM?=iOS
 OS?=latest
 TEST_CONFIGURATION?=Debug
-DATA_PATH=build/build-$(PLATFORM)
+DATA_PATH=DerivedData
 BUILD_FLAGS=-project Bugsnag.xcodeproj -scheme Bugsnag-$(PLATFORM) -derivedDataPath $(DATA_PATH)
 
 ifeq ($(PLATFORM),macOS)
@@ -84,6 +84,13 @@ build_carthage: ## Build the latest pushed commit with Carthage
 build_swift: ## Build with Swift Package Manager
 	@swift build
 
+compile_commands.json:
+	set -o pipefail && xcodebuild -project Bugsnag.xcodeproj -configuration Release -scheme Bugsnag-iOS \
+		-destination generic/platform=iOS \
+		-derivedDataPath $(DATA_PATH) \
+		build VALID_ARCHS=arm64 RUN_CLANG_STATIC_ANALYZER=NO | \
+		bundle exec xcpretty -r json-compilation-database -o compile_commands.json
+
 #--------------------------------------------------------------------------
 # Static Analysis
 #--------------------------------------------------------------------------
@@ -96,14 +103,25 @@ analyze: ## Run Xcode's analyzer on the build and fail if issues found
 
 INFER=$(HOME)/Library/Caches/infer-osx-v1.0.0/bin/infer
 
-infer: $(INFER) ## Run the "Infer" static analyzer
-	@$(INFER) run --report-console-limit 100 -- xcodebuild -quiet \
-		$(BUILD_FLAGS) -configuration Release -destination generic/platform=iOS \
-		clean build VALID_ARCHS=arm64
+infer: $(INFER) compile_commands.json ## Run the "Infer" static analysis tool
+	@$(INFER) run --report-console-limit 100 --compilation-database compile_commands.json
 
 $(INFER):
 	@echo Downloading Infer...
 	@curl -L https://github.com/facebook/infer/releases/download/v1.0.0/infer-osx-v1.0.0.tar.xz | tar -x -C $(HOME)/Library/Caches
+
+OCLINT=$(HOME)/Library/Caches/oclint-20.11/bin/oclint-json-compilation-database
+
+oclint: $(OCLINT) compile_commands.json ## Run the "OCLint" static analysis tool
+ifeq ($(CI), true)
+	@$(OCLINT) -- --report-type=json -o=oclint.json || echo "OCLint exited with an error status"
+else
+	@$(OCLINT) || echo "OCLint exited with an error status"
+endif
+
+$(OCLINT):
+	@echo Downloading oclint...
+	@curl -L https://github.com/oclint/oclint/releases/download/v20.11/oclint-20.11-llvm-11.0.0-x86_64-darwin-macos-big-sur-11.0.1-xcode-12.2.tar.gz | tar -x -C $(HOME)/Library/Caches
 
 #--------------------------------------------------------------------------
 # Testing
@@ -170,9 +188,8 @@ endif
 #--------------------------------------------------------------------------
 
 clean: ## Clean build artifacts
+	@rm -rf .build $(DATA_PATH) compile_commands.json docs xcodebuild.log
 	@set -x && $(XCODEBUILD) $(BUILD_FLAGS) clean $(FORMATTER)
-	@rm -rf build-$(PLATFORM)
-	@rm -rf .build
 
 archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip
 
