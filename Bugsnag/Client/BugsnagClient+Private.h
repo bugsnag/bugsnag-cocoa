@@ -60,7 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (strong, nonatomic) BugsnagSessionTracker *sessionTracker; // Used in BugsnagReactNative
 
-@property (readonly, nonatomic) BOOL started;
+@property (nonatomic) BOOL started;
 
 @property (strong, nonatomic) BugsnagMetadata *state;
 

@@ -132,7 +132,7 @@ bool bsg_ksstring_extractHexValue(const char *string, size_t stringLength,
                 accum += nybble;
             }
             *result = accum;
-            return true;
+            return true; //!OCLINT
         }
     }
     return false;

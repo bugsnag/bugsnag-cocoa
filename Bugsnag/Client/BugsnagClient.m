@@ -397,7 +397,7 @@ NSString *_lastOrientation = nil;
     [self addTerminationObserver:NSApplicationWillTerminateNotification];
 #endif
 
-    _started = YES;
+    self.started = YES;
 
     [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
 
@@ -926,7 +926,7 @@ NSString *_lastOrientation = nil;
 
     // Only include the eventMessage if it contains something
     NSString *eventMessage = event.errors[0].errorMessage;
-    if (eventMessage && [eventMessage length] > 0) {
+    if (eventMessage.length) {
         [metadata setValue:eventMessage forKey:BSGKeyName];
     }
 
@@ -1017,7 +1017,7 @@ NSString *_lastOrientation = nil;
     // Short-circuit the exit if we don't have enough info to record a full breadcrumb
     // or the orientation hasn't changed (false positive).
     if (!_lastOrientation || [orientation isEqualToString:_lastOrientation]) {
-        _lastOrientation = orientation;
+        self.lastOrientation = orientation;
         return;
     }
 
@@ -1031,7 +1031,7 @@ NSString *_lastOrientation = nil;
                           @"to" : orientation
                       }];
 
-    _lastOrientation = orientation;
+    self.lastOrientation = orientation;
 }
 
 - (void)lowMemoryWarning:(NSNotification *)notif {
