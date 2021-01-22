@@ -30,7 +30,7 @@ When("I clear all persistent data") do
 end
 
 When("I close the keyboard") do
-  case MazeRunner.driver.capabilities["platformName"]
+  case Maze.driver.capabilities["platformName"]
   when 'Mac'
     # There is no software keyboard to hide
   else
@@ -56,11 +56,11 @@ end
 
 When("I relaunch the app") do
   # FIXME: this logic belongs in maze-runner, but I cannot see how to override launch_app
-  case MazeRunner.driver.capabilities["platformName"]
+  case Maze.driver.capabilities["platformName"]
   when 'Mac'
-    app = MazeRunner.driver.capabilities["app"]
+    app = Maze.driver.capabilities["app"]
     system("killall #{app} > /dev/null && sleep 1")
-    MazeRunner.driver.get(app)
+    Maze.driver.get(app)
   else
     sleep(2)
     Maze.driver.launch_app
@@ -252,7 +252,7 @@ Then("the thread information is valid for the event") do
 end
 
 Then("the error is valid for the error reporting API") do
-  case MazeRunner.driver.capabilities["platformName"]
+  case Maze.driver.capabilities["platformName"]
   when 'iOS'
     steps %Q{
       Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
@@ -267,7 +267,7 @@ Then("the error is valid for the error reporting API") do
 end
 
 Then("the session is valid for the session reporting API") do
-  case MazeRunner.driver.capabilities["platformName"]
+  case Maze.driver.capabilities["platformName"]
   when 'iOS'
     steps %Q{
       Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
