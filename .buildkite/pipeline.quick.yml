@@ -151,7 +151,7 @@ steps:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
     commands:
       - bundle install
-      - bundle exec bugsnag-maze-runner
+      - bundle exec maze-runner
         --farm=local
         --os=macos
         --os-version=10.15

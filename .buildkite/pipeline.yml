@@ -179,7 +179,7 @@ steps:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
     commands:
       - bundle install
-      - bundle exec bugsnag-maze-runner
+      - bundle exec maze-runner
         features/barebone_tests.feature
         --farm=local
         --os=macos
