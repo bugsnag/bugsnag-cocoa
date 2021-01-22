@@ -10,6 +10,9 @@
 
 @class BugsnagStackframe;
 
+/**
+ * Denote which platform or runtime the Error occurred in.
+ */
 typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
     BSGErrorTypeCocoa NS_SWIFT_NAME(cocoa), // Swift won't bring in the zeroeth option by default
     BSGErrorTypeC NS_SWIFT_NAME(c), // Fix Swift auto-capitalisation

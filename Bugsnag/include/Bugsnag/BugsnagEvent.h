@@ -21,12 +21,18 @@
 @class BugsnagError;
 @class BugsnagUser;
 
+/**
+ * Represents the importance of a particular event.
+ */
 typedef NS_ENUM(NSUInteger, BSGSeverity) {
     BSGSeverityError,
     BSGSeverityWarning,
     BSGSeverityInfo,
 };
 
+/**
+ * Represents an occurrence of an error, along with information about the state of the app and device.
+ */
 @interface BugsnagEvent : NSObject <BugsnagMetadataStore>
 
 // -----------------------------------------------------------------------------

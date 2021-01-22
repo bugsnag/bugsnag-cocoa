@@ -1,0 +1,16 @@
+author_url: "https://www.bugsnag.com"
+author: "Bugsnag Inc"
+clean: false # avoid deleting docs/.git
+framework_root: "Bugsnag"
+github_file_prefix: "https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.0"
+github_url: "https://github.com/bugsnag/bugsnag-cocoa"
+hide_documentation_coverage: true
+module: "Bugsnag"
+module_version: "6.6.0"
+objc: true
+output: "docs"
+readme: "README.md"
+root_url: "https://bugsnag.github.io/bugsnag-cocoa"
+source_directory: "Bugsnag"
+theme: "apple"
+umbrella_header: "Bugsnag/include/Bugsnag/Bugsnag.h"

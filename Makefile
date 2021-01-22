@@ -47,7 +47,7 @@ all: build
 # A phony target is one that is not really the name of a file; rather it is just a name for a recipe to be executed when you make an explicit request.
 # There are two reasons to use a phony target: to avoid a conflict with a file of the same name, and to improve performance.
 
-.PHONY: all analyze archive bootstrap build build_carthage build_ios_static build_swift bump clean doc help infer prerelease release test test-fixtures update-docs
+.PHONY: all analyze archive bootstrap build build_carthage build_ios_static build_swift bump clean docs help infer prerelease release test test-fixtures
 
 #--------------------------------------------------------------------------
 # Build
@@ -152,6 +152,7 @@ endif
 	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" Bugsnag.podspec.json
 	@sed -i '' "s/self.version = .*;/self.version = @\"$(VERSION)\";/" Bugsnag/Payload/BugsnagNotifier.m
 	@sed -i '' "s/## TBD/## $(VERSION) ($(shell date '+%Y-%m-%d'))/" CHANGELOG.md
+	@sed -i '' -E "s/[0-9]+.[0-9]+.[0-9]+/$(VERSION)/g" .jazzy.yaml
 	@agvtool new-marketing-version $(VERSION)
 
 prerelease: bump ## Generates a PR for the $VERSION release
@@ -175,21 +176,12 @@ clean: ## Clean build artifacts
 
 archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip
 
-doc: ## Generate html documentation
-	@headerdoc2html -N -o docs $(shell ruby -e "require 'json'; print Dir.glob(JSON.parse(File.read('Bugsnag.podspec.json'))['public_header_files']).join(' ')") -j
-	@gatherheaderdoc docs
-	@mv docs/masterTOC.html docs/index.html
-
-update-docs: ## Update and upload docs to Github
-ifneq ($(BUILDKITE_BRANCH), master)
-	@$(error Docs deployment is handled by CI, and shouldn't be run locally)
+docs: ## Generate or update HTML documentation
+	@rm -rf docs/*
+	@bundle exec jazzy
+ifneq ($(wildcard docs/.git),)
+	@cd docs && git add --all . && git commit -m "Docs update for $(PRESET_VERSION) release"
 endif
-	@git clone --single-branch --branch=gh-pages git@github.com:bugsnag/bugsnag-cocoa.git docs
-	@make doc
-	@cd docs
-	@git add .
-	@git commit -m "Docs update for $(PRESET_VERSION) release"
-	@git push --force-with-lease
 
 help: ## Show help text
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
