@@ -134,7 +134,7 @@ def request_fields_are_equal(key, index_a, index_b)
 end
 
 Then("the event {string} equals one of:") do |field, possible_values|
-  value = read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
   assert_includes(possible_values.raw.flatten, value)
 end
 
@@ -172,7 +172,7 @@ end
 
 Then("the {string} of stack frame {int} equals one of:") do |key, num, possible_values|
   field = "events.0.exceptions.0.stacktrace.#{num}.#{key}"
-  value = read_key_path(Server.current_request[:body], field)
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], field)
   assert_includes(possible_values.raw.flatten, value)
 end
 
