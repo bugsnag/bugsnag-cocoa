@@ -63,7 +63,9 @@ Feature: Handled Errors and Exceptions
     And the event "severityReason.type" equals "handledException"
     # This may be platform specific
     #And the "method" of stack frame 0 equals "<redacted>"
-    And the "method" of stack frame 0 equals "__exceptionPreprocess"
+    And the event "exceptions.0.stacktrace.0.method" equals one of:
+      | <redacted>            |
+      | __exceptionPreprocess |
     And the "method" of stack frame 1 equals "objc_exception_throw"
     And the "method" of stack frame 2 equals "-[NSExceptionShiftScenario causeAnException]"
     And the "method" of stack frame 3 equals "-[NSExceptionShiftScenario run]"

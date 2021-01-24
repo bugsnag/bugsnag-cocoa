@@ -42,7 +42,9 @@ Feature: Reporting crash events
     And the event "exceptions.0.stacktrace.1.method" equals one of:
       | <redacted>           |
       | objc_exception_throw |
-    And the "method" of stack frame 2 equals "-[NSObject(NSObject) doesNotRecognizeSelector:]"
+    And the event "exceptions.0.stacktrace.2.method" equals one of:
+      | <redacted>                                      |
+      | -[NSObject(NSObject) doesNotRecognizeSelector:] |
     And the event "exceptions.0.stacktrace.3.method" equals one of:
       | <redacted>                                      |
       | ___forwarding___ |
