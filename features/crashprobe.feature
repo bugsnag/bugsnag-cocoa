@@ -36,14 +36,14 @@ Feature: Reporting crash events
     #  | ios   | -[NonExistentMethodScenario santaclaus:]: unrecognized selector sent to instance |
     #  | macos | @skip                                                                            |
     And the exception "errorClass" equals "NSInvalidArgumentException"
-    And the event "exception.0.stacktrace.0.method" equals one of:
+    And the event "exceptions.0.stacktrace.0.method" equals one of:
       | <redacted>            |
       | __exceptionPreprocess |
-    And the event "exception.0.stacktrace.1.method" equals one of:
+    And the event "exceptions.0.stacktrace.1.method" equals one of:
       | <redacted>           |
       | objc_exception_throw |
     And the "method" of stack frame 2 equals "-[NSObject(NSObject) doesNotRecognizeSelector:]"
-    And the event "exception.0.stacktrace.3.method" equals one of:
+    And the event "exceptions.0.stacktrace.3.method" equals one of:
       | <redacted>                                      |
       | ___forwarding___ |
     And the "method" of stack frame 4 equals "_CF_forwarding_prep_0"
