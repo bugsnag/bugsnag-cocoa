@@ -535,6 +535,10 @@ NSString *_lastOrientation = nil;
     self.sessionTracker.codeBundleId = codeBundleId;
 }
 
+- (void)setStarted:(BOOL)started {
+    _started = started;
+}
+
 /**
  * Removes observers and listeners to prevent allocations when the app is terminated
  */
