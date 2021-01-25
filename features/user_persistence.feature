@@ -9,7 +9,7 @@ Feature: Persisting User Information
     # User is set and comes through
     And I wait to receive a session
     And I relaunch the app
-    Then the request is valid for the session reporting API
+    Then the session is valid for the session reporting API
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
     And the session "user.name" equals "bar"
@@ -21,7 +21,7 @@ Feature: Persisting User Information
     And I relaunch the app
 
     # Session - User persisted
-    Then the request is valid for the session reporting API
+    Then the session is valid for the session reporting API
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
     And the session "user.name" equals "bar"
