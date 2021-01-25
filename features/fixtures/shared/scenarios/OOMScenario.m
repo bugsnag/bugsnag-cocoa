@@ -10,7 +10,11 @@
 
 #import <UIKit/UIKit.h>
 
-@implementation OOMScenario
+#define MEGABYTE 0x100000
+
+@implementation OOMScenario {
+    NSUInteger _blockSize;
+}
 
 - (void)startBugsnag {
     self.config.autoTrackSessions = YES;
@@ -21,31 +25,53 @@
 }
 
 - (void)run {
+    [NSNotificationCenter.defaultCenter addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil
+                                                     queue:nil usingBlock:^(NSNotification *note) {
+        NSLog(@"*** Received memory warning");
+    }];
     // Delay to allow session payload to be sent
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-        NSLog(@"*** Consuming all available memory...");
-        __block BOOL pause = NO;
-        [NSNotificationCenter.defaultCenter addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil
-                                                         queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-            pause = YES;
-        }];
-        const int blocksize = 1024 * 1024;
-        const int pagesize = (int)NSPageSize();
-        const int npages = blocksize / pagesize;
-        while (1) {
-            volatile char *ptr = malloc(blocksize);
-            for (int i = 0; i < npages; i++) {
-                ptr[i * pagesize] = 42; // Dirty each page
-                
-                if (pause) {
-                    pause = NO;
-                    NSLog(@"*** Pausing memory consumption to allow Bugsnag to write breadcrumbs and metadata");
-                    [NSThread sleepForTimeInterval:0.5];
-                    NSLog(@"*** Resuming memory consumption...");
-                }
-            }
+    [self performSelector:@selector(consumeAllMemory) withObject:nil afterDelay:2];
+}
+
+- (void)consumeAllMemory {
+    NSUInteger physicalMemory = (NSUInteger)NSProcessInfo.processInfo.physicalMemory;
+    NSUInteger megabytes = physicalMemory / MEGABYTE;
+    NSLog(@"*** Physical memory = %lu MB", (unsigned long)megabytes);
+    
+    // The ActiveHard limit varies between devices
+    //
+    // Device       iOS     Total   Limit
+    // ========================================
+    // iPad3,19      9       987     700  (70%)
+    // iPhone12,1   14      3859    2098  (54%)
+    // iPhone12,8   14      2965    2095  (70%)
+    // iPhone13,1   14      3718    2098  (57%)
+    //
+    NSUInteger limit = MIN(2098, megabytes * 70 / 100);
+    
+    NSUInteger initial = limit * 95 / 100;
+    NSLog(@"*** Dirtying an initial block of %lu MB", (unsigned long)initial);
+    [self consumeMegabytes:initial];
+    
+    _blockSize = limit <= 1024 ? 1 : 2;
+    NSLog(@"*** Dirtying remaining memory in %lu MB blocks", (unsigned long)_blockSize);
+    // This should take around 2 seconds to trigger an OOM kill
+    [NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
+}
+
+- (void)timerFired {
+    [self consumeMegabytes:_blockSize];
+}
+
+- (void)consumeMegabytes:(NSUInteger)megabytes {
+    for (NSUInteger i = 0; i < megabytes; i++) {
+        const NSUInteger pagesize = NSPageSize();
+        const NSUInteger npages = MEGABYTE / pagesize;
+        volatile char *ptr = malloc(MEGABYTE);
+        for (NSUInteger page = 0; page < npages; page++) {
+            ptr[page * pagesize] = 42; // Dirty each page
         }
-    });
+    }
 }
 
 @end
