@@ -489,6 +489,14 @@ static NSUserDefaults *userDefaults;
     _metadata = [metadata deepCopy];
 }
 
+- (void)setNotifyURL:(NSURL *)notifyURL {
+    _notifyURL = notifyURL;
+}
+
+- (void)setSessionURL:(NSURL *)sessionURL {
+    _sessionURL = sessionURL;
+}
+
 - (BOOL)shouldDiscardErrorClass:(NSString *)errorClass {
     for (id obj in self.discardClasses) {
         if ([obj isKindOfClass:[NSString class]]) {
