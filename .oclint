@@ -1,0 +1,33 @@
+# vim: set ft=yaml
+
+disable-rules:
+  - BitwiseOperatorInConditional    # Used quite a bit in KSCrash
+  - CollapsibleIfStatements         # Fixing violations would churn a lot of code
+  - ConstantConditionalOperator     # False positive for e.g. strncpy()
+  - EmptyDoWhileStatement           # False positive for e.g. NSAssert()
+  - GotoStatement                   # KSCrash uses gotos extensively
+  - HighCyclomaticComplexity
+  - HighNcssMethod
+  - HighNPathComplexity
+  - InvertedLogic                   # Triggers on e.g. `if (old != new)`
+  - MissingDefaultStatement         # Rule not smart enough to only trigger for missing cases
+  - ParameterReassignment
+  - PreferEarlyExit                 # Fixing violations would churn a lot of code
+  - ShortVariableName
+  - UnnecessaryElseStatement        # Fixing violations would churn a lot of code
+  - UnusedMethodParameter           # Quite common for notification handlers
+  - UselessParentheses              # False positive for e.g. ULONG_MAX
+
+rule-configurations:
+  - key: LONG_LINE
+    # GitHub's PR viewer allows 150 characters before scrolling
+    value: 150
+  - key: LONG_METHOD
+    value: 159
+  - key: LONG_VARIABLE_NAME
+    value: 50
+  - key: NESTED_BLOCK_DEPTH
+    value: 6
+  - key: TOO_MANY_METHODS
+    # We have several very large classses (BugsnagConfiguration, BugsnagClient)
+    value: 110

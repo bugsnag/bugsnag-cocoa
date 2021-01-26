@@ -1,10 +1,12 @@
+# vim: set ft=ruby
+
 require 'json'
 
 ###
 
-def infer
+def parse_infer_results(path)
   issue_count = 0
-  JSON.parse(File.read('infer-out/report.json')).each do |result|
+  JSON.parse(File.read(path)).each do |result|
     case result['severity']
     when 'ERROR'
       fail(result['qualifier'], file: result['file'], line: result['line'])
@@ -14,6 +16,24 @@ def infer
     issue_count += 1
   end
   markdown("**[Infer](https://fbinfer.com)**: No issues found :tada:") if issue_count == 0
+end
+
+###
+
+def parse_oclint_results(path)
+  issue_count = 0
+  results = JSON.parse(File.read(path))
+  results['violation'].each do |violation|
+    file = violation['path'].sub("#{Dir.pwd}/", '')
+    case violation['priority']
+    when 1
+      fail(violation['rule'], file: file, line: violation['startLine'])
+    when 2, 3
+      warn(violation['rule'], file: file, line: violation['startLine'])
+    end
+    issue_count += 1
+  end
+  markdown("**[OCLint](http://oclint.org)**: No issues found :tada:") if issue_count == 0
 end
 
 ###
@@ -39,5 +59,8 @@ end
 
 ###
 
-infer()
+parse_infer_results('infer-out/report.json')
+
+parse_oclint_results('oclint.json')
+
 framework_size()

@@ -212,7 +212,7 @@
 
 - (BOOL)install {
 
-    _handlingCrashTypes = bsg_kscrash_install(
+    self.handlingCrashTypes = bsg_kscrash_install(
         [self.crashReportPath UTF8String], [self.recrashReportPath UTF8String],
         [self.stateFilePath UTF8String], [self.nextCrashID UTF8String]);
     if (self.handlingCrashTypes == 0) {
