@@ -77,15 +77,15 @@ static NSString *getAndCreateSubdir(NSString *rootPath, NSString *relativePath) 
 - (instancetype)initWithVersion1 {
     if (self = [super init]) {
         NSString *root = rootDirectory(@"v1");
-        self->_sessions = getAndCreateSubdir(root, @"sessions");
-        self->_breadcrumbs = getAndCreateSubdir(root, @"breadcrumbs");
-        self->_kscrashReports = getAndCreateSubdir(root, @"KSCrashReports");
-        self->_kvStore = getAndCreateSubdir(root, @"kvstore");
-        self->_flagHandledCrash = [root stringByAppendingPathComponent:@"bugsnag_handled_crash.txt"];
-        self->_configuration = [root stringByAppendingPathComponent:@"config.json"];
-        self->_metadata = [root stringByAppendingPathComponent:@"metadata.json"];
-        self->_state = [root stringByAppendingPathComponent:@"state.json"];
-        self->_systemState = [root stringByAppendingPathComponent:@"system_state.json"];
+        _sessions = getAndCreateSubdir(root, @"sessions");
+        _breadcrumbs = getAndCreateSubdir(root, @"breadcrumbs");
+        _kscrashReports = getAndCreateSubdir(root, @"KSCrashReports");
+        _kvStore = getAndCreateSubdir(root, @"kvstore");
+        _flagHandledCrash = [root stringByAppendingPathComponent:@"bugsnag_handled_crash.txt"];
+        _configuration = [root stringByAppendingPathComponent:@"config.json"];
+        _metadata = [root stringByAppendingPathComponent:@"metadata.json"];
+        _state = [root stringByAppendingPathComponent:@"state.json"];
+        _systemState = [root stringByAppendingPathComponent:@"system_state.json"];
     }
     return self;
 }
