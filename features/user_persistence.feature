@@ -13,6 +13,7 @@ Feature: Persisting User Information
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
     And the session "user.name" equals "bar"
+    And I discard the oldest session
 
     # Generate session and event
     Then I run "UserPersistenceNoUserScenario"
