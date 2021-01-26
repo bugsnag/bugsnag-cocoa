@@ -116,7 +116,7 @@ bool bsg_ksstring_extractHexValue(const char *string, size_t stringLength,
     }
     
     const char *value = strnstr(string, "0x", stringLength);
-    if (!value) {
+    unlikely_if (!value) {
         return false;
     }
     
