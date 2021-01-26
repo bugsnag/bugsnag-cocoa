@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly) NSDictionary<NSString *, id> *errorApiHeaders;
 
-@property (readonly, nonatomic) BugsnagMetadata *metadata;
+@property (readonly, copy, nonatomic) BugsnagMetadata *metadata;
 
 @property (nullable, nonatomic) NSURL *notifyURL;
 

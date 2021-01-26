@@ -92,7 +92,7 @@ static NSUserDefaults *userDefaults;
     [copy setMaxPersistedEvents:self.maxPersistedEvents];
     [copy setMaxPersistedSessions:self.maxPersistedSessions];
     [copy setMaxBreadcrumbs:self.maxBreadcrumbs];
-    copy->_metadata = [[BugsnagMetadata alloc] initWithDictionary:[[self.metadata toDictionary] mutableCopy]]; //!OCLINT
+    [copy setMetadata:self.metadata];
     [copy setEndpoints:self.endpoints];
     [copy setOnCrashHandler:self.onCrashHandler];
     [copy setPersistUser:self.persistUser];
@@ -483,6 +483,10 @@ static NSUserDefaults *userDefaults;
                         (unsigned long) maxBreadcrumbs);
         }
     }
+}
+
+- (void)setMetadata:(BugsnagMetadata *)metadata {
+    _metadata = [metadata deepCopy];
 }
 
 - (BOOL)shouldDiscardErrorClass:(NSString *)errorClass {
