@@ -9,9 +9,9 @@
 		<key>endpoints</key>
 		<dict>
 			<key>notify</key>
-			<string>http://bs-local.com:9339</string>
+			<string>http://bs-local.com:9339/notify</string>
 			<key>sessions</key>
-			<string>http://bs-local.com:9339</string>
+			<string>http://bs-local.com:9339/sessions</string>
 		</dict>
 		<key>releaseStage</key>
 		<string>beta2</string>
