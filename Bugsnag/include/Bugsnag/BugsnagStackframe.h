@@ -67,7 +67,7 @@ FOUNDATION_EXPORT BugsnagStackframeType const BugsnagStackframeTypeCocoa;
 /**
  * The type of the stack frame, if it differs from that of the containing error or event.
  */
-@property (strong, nullable, nonatomic) BugsnagStackframeType type;
+@property (copy, nullable, nonatomic) BugsnagStackframeType type;
 
 /**
  * Returns an array of stackframe objects representing the provided call stack strings.
