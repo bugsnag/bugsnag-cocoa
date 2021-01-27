@@ -91,9 +91,11 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
     mutableHeaders[BugsnagHTTPHeaderNameIntegrity] = [NSString stringWithFormat:@"sha1 %@", [self SHA1HashStringWithData:data]];
     
     NSMutableURLRequest *request = [self prepareRequest:url headers:mutableHeaders];
+    bsg_log_debug(@"Sending %lu byte payload to %@", (unsigned long)data.length, url);
     
     [[self.session uploadTaskWithRequest:request fromData:data completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
+            bsg_log_debug(@"Request to %@ completed with error %@", url, error);
             return completionHandler(BugsnagApiClientDeliveryStatusFailed, error ?:
                                      [NSError errorWithDomain:@"BugsnagApiClientErrorDomain" code:0 userInfo:@{
                                          NSLocalizedDescriptionKey: @"Request failed: no response was received",
@@ -101,6 +103,7 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
         }
         
         NSInteger statusCode = ((NSHTTPURLResponse *)response).statusCode;
+        bsg_log_debug(@"Request to %@ completed with status code %ld", url, (long)statusCode);
         
         if (statusCode / 100 == 2) {
             return completionHandler(BugsnagApiClientDeliveryStatusDelivered, nil);
