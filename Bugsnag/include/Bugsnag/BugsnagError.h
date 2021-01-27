@@ -27,17 +27,17 @@ typedef NS_OPTIONS(NSUInteger, BSGErrorType) {
 /**
  * The class of the error generating the report
  */
-@property(nullable) NSString *errorClass;
+@property (copy, nullable, nonatomic) NSString *errorClass;
 
 /**
  * The message of or reason for the error generating the report
  */
-@property(nullable) NSString *errorMessage;
+@property (copy, nullable, nonatomic) NSString *errorMessage;
 
 /**
  * Sets a representation of this error's stacktrace
  */
-@property(nonnull) NSArray<BugsnagStackframe *> *stacktrace;
+@property (copy, nonnull, nonatomic) NSArray<BugsnagStackframe *> *stacktrace;
 
 /**
  * The type of the captured error
