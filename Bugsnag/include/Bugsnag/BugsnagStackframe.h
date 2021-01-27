@@ -37,22 +37,22 @@ FOUNDATION_EXPORT BugsnagStackframeType const BugsnagStackframeTypeCocoa;
 /**
  * The stack frame address
  */
-@property (strong, nullable, nonatomic)NSNumber *frameAddress;
+@property (strong, nullable, nonatomic) NSNumber *frameAddress;
 
 /**
  * The VM address of the Mach-O file
  */
-@property (strong, nullable, nonatomic)NSNumber *machoVmAddress;
+@property (strong, nullable, nonatomic) NSNumber *machoVmAddress;
 
 /**
  * The address of the stackframe symbol
  */
-@property (strong, nullable, nonatomic)NSNumber *symbolAddress;
+@property (strong, nullable, nonatomic) NSNumber *symbolAddress;
 
 /**
  * The load address of the Mach-O file
  */
-@property (strong, nullable, nonatomic)NSNumber *machoLoadAddress;
+@property (strong, nullable, nonatomic) NSNumber *machoLoadAddress;
 
 /**
  * Whether the frame was within the program counter
