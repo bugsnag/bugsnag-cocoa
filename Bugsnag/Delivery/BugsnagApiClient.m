@@ -114,6 +114,9 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
                                         (long)statusCode, [NSHTTPURLResponse localizedStringForStatusCode:statusCode]],
             NSURLErrorFailingURLErrorKey: url }];
         
+        bsg_log_debug(@"Response headers: %@", ((NSHTTPURLResponse *)response).allHeaderFields);
+        bsg_log_debug(@"Response body: %.*s", (int)data.length, data.bytes);
+        
         if (statusCode / 100 == 4 &&
             statusCode != HTTPStatusCodePaymentRequired &&
             statusCode != HTTPStatusCodeProxyAuthenticationRequired &&
