@@ -19,7 +19,7 @@
 /**
  * The number of free bytes of storage available on the device
  */
-@property (copy, nullable, nonatomic) NSNumber *freeDisk;
+@property (strong, nullable, nonatomic) NSNumber *freeDisk;
 
 /**
  * The number of free bytes of memory available on the device
