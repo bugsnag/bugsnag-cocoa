@@ -11,3 +11,13 @@ target 'iOSTestApp' do
   pod 'Bugsnag', path: '../../..'
 
 end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    if target.name == "Bugsnag"
+      target.build_configurations.each do |config|
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'BSG_LOG_LEVEL=BSG_LOGLEVEL_DEBUG']
+      end
+    end
+  end
+end
