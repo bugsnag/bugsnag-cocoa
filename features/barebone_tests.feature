@@ -31,7 +31,9 @@ Feature: Barebone tests
     And the event "device.jailbroken" is false
     And the event "device.locale" is not null
     And the event "device.manufacturer" equals "Apple"
-    # And the event "device.modelNumber" is not null
+    And the event "device.modelNumber" equals the platform-dependent string:
+      | ios   | @not_null |
+      | macos | @null     |
     And the event "device.osName" equals the platform-dependent string:
       | ios   | iOS    |
       | macos | Mac OS |
@@ -39,9 +41,15 @@ Feature: Barebone tests
     And the event "device.runtimeVersions.clangVersion" is not null
     And the event "device.runtimeVersions.osBuild" is not null
     And the event "device.time" is a timestamp
-    # And the event "metaData.device.batteryLevel" is not null
-    # And the event "metaData.device.charging" is not null
-    # And the event "metaData.device.orientation" is not null
+    And the event "metaData.device.batteryLevel" equals the platform-dependent string:
+      | ios   | @not_null |
+      | macos | @null     |
+    And the event "metaData.device.charging" equals the platform-dependent string:
+      | ios   | @not_null |
+      | macos | @null     |
+    And the event "metaData.device.orientation" equals the platform-dependent string:
+      | ios   | @not_null |
+      | macos | @null     |
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.wordSize" is not null
@@ -170,7 +178,9 @@ Feature: Barebone tests
     And the event "device.jailbroken" is false
     And the event "device.locale" is not null
     And the event "device.manufacturer" equals "Apple"
-    # And the event "device.modelNumber" is not null
+    And the event "device.modelNumber" equals the platform-dependent string:
+      | ios   | @not_null |
+      | macos | @null     |
     And the event "device.osName" equals the platform-dependent string:
       | ios   | iOS    |
       | macos | Mac OS |
@@ -181,10 +191,18 @@ Feature: Barebone tests
     And the event "device.totalMemory" is not null
     And the event "metaData.app.name" equals "iOSTestApp"
     And the event "metaData.custom.bar" equals "foo"
-    # And the event "metaData.device.batteryLevel" is not null
-    # And the event "metaData.device.charging" is not null
-    # And the event "metaData.device.lowMemoryWarning" is not null
-    # And the event "metaData.device.orientation" is not null
+    And the event "metaData.device.batteryLevel" equals the platform-dependent string:
+      | ios   | @not_null |
+      | macos | @null     |
+    And the event "metaData.device.charging" equals the platform-dependent string:
+      | ios   | @not_null |
+      | macos | @null     |
+    And the event "metaData.device.orientation" equals the platform-dependent string:
+      | ios   | @not_null |
+      | macos | @null     |
+    And the event "metaData.device.lowMemoryWarning" equals the platform-dependent string:
+      | ios   | @not_null |
+      | macos | @null     |
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.wordSize" is not null

@@ -62,7 +62,6 @@ Feature: Handled Errors and Exceptions
     And the event "unhandled" is false
     And the event "severityReason.type" equals "handledException"
     # This may be platform specific
-    #And the "method" of stack frame 0 equals "<redacted>"
     And the event "exceptions.0.stacktrace.0.method" equals one of:
       | <redacted>            |
       | __exceptionPreprocess |

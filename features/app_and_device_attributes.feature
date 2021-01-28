@@ -20,8 +20,9 @@ Feature: App and Device attributes present
     And the error payload field "events.0.device.locale" is not null
     And the error payload field "events.0.device.id" is not null
     And the error payload field "events.0.device.model" matches the test device model
-    # modelNumber is not available on macOS
-    # And the error payload field "events.0.device.modelNumber" is not null
+    And the error payload field "events.0.device.modelNumber" equals the platform-dependent string:
+      | ios   | @not_null |
+      | macos | @null     |
     And the error payload field "events.0.device.runtimeVersions.osBuild" is not null
     And the error payload field "events.0.device.runtimeVersions.clangVersion" is not null
     And the error payload field "events.0.device.totalMemory" is an integer
@@ -30,7 +31,9 @@ Feature: App and Device attributes present
 
     And the error payload field "events.0.device.freeDisk" is an integer
     And the error payload field "events.0.device.freeMemory" is an integer
-    #And the error payload field "events.0.device.orientation" equals "portrait"
+    And the error payload field "events.0.device.orientation" equals the platform-dependent string:
+      | ios   | @not_null |
+      | macos | @null     |
     And the error payload field "events.0.device.time" is a date
 
     # App
