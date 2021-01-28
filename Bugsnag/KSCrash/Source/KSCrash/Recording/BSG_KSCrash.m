@@ -264,17 +264,21 @@
     [self.crashReportStore pruneFilesLeaving:self.maxStoredReports];
 
     NSDictionary *reports = [self allReportsByFilename];
+    if (!reports.count) {
+        return;
+    }
 
     BSG_KSLOG_INFO(@"Sending %lu crash reports", (unsigned long)reports.count);
 
     [self sendReports:reports
             withBlock:^(NSString *filename, BOOL completed,
                     NSError *error) {
-                BSG_KSLOG_DEBUG(@"Process finished with completion: %d", completed);
+                BSG_KSLOG_DEBUG(@"Sending finished with completion: %d", completed);
                 if (error != nil) {
                     BSG_KSLOG_ERROR(@"Failed to send reports: %@", error);
                 }
                 if (completed && filename != nil) {
+                    BSG_KSLOG_DEBUG(@"Deleting KSCrashReport %@", filename);
                     [self.crashReportStore deleteFileWithId:filename];
                 }
             }];
