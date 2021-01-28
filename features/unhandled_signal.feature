@@ -10,6 +10,8 @@ Feature: Signals are captured as error reports in Bugsnag
     Then the error is valid for the error reporting API
     And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "SIGABRT"
+
+    # Being addressed in PLAT-5861
     # On ARM the stack looks like:
     #   __pthread_kill
     #   pthread_kill

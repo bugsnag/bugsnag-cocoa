@@ -32,6 +32,7 @@ Feature: Reporting crash events
     Then the error is valid for the error reporting API
     And the error payload field "events" is an array with 1 elements
     # TODO: Figure out why message is empty on macOS
+    # See PLAT-5860
     #And the exception "message" equals the platform-dependent string:
     #  | ios   | -[NonExistentMethodScenario santaclaus:]: unrecognized selector sent to instance |
     #  | macos | @skip                                                                            |
