@@ -11,12 +11,12 @@ Feature: Loading Bugsnag configuration from Info.plist
         And I wait to receive an error
 
         Then the session "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
-        And the session payload field "notifier.name" equals "iOS Bugsnag Notifier"
         And the session payload field "sessions" is not null
 
         And the error "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
-        And the error payload field "notifier.name" equals "iOS Bugsnag Notifier"
-        And the event "metaData.nserror.domain" equals "iOSTestApp.LaunchError"
+        And the event "metaData.nserror.domain" equals the platform-dependent string:
+          | ios   | iOSTestApp.LaunchError   |
+          | macos | macOSTestApp.LaunchError |
         And the event "app.releaseStage" equals "beta2"
 
     Scenario: Calling Bugsnag.start() with no configuration
@@ -25,10 +25,13 @@ Feature: Loading Bugsnag configuration from Info.plist
         And I wait to receive an error
 
         Then the session "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
-        And the session payload field "notifier.name" equals "iOS Bugsnag Notifier"
         And the session payload field "sessions" is not null
 
         And the error "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
-        And the error payload field "notifier.name" equals "iOS Bugsnag Notifier"
-        And the event "metaData.nserror.domain" equals "iOSTestApp.LoadConfigFromFileAutoScenarioError"
+        And the error payload field "notifier.name" equals the platform-dependent string:
+          | ios   | iOS Bugsnag Notifier |
+          | macos | OSX Bugsnag Notifier |
+        And the event "metaData.nserror.domain" equals the platform-dependent string:
+          | ios   | iOSTestApp.LoadConfigFromFileAutoScenarioError   |
+          | macos | macOSTestApp.LoadConfigFromFileAutoScenarioError |
         And the event "app.releaseStage" equals "beta2"

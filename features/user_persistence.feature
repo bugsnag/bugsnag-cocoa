@@ -9,10 +9,11 @@ Feature: Persisting User Information
     # User is set and comes through
     And I wait to receive a session
     And I relaunch the app
-    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the session is valid for the session reporting API
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
     And the session "user.name" equals "bar"
+    And I discard the oldest session
 
     # Generate session and event
     Then I run "UserPersistenceNoUserScenario"
@@ -21,13 +22,13 @@ Feature: Persisting User Information
     And I relaunch the app
 
     # Session - User persisted
-    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the session is valid for the session reporting API
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
     And the session "user.name" equals "bar"
 
     # Event - User persisted
-    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API
     And the error payload field "events.0.user.id" equals "foo"
     And the error payload field "events.0.user.email" equals "baz@grok.com"
     And the error payload field "events.0.user.name" equals "bar"
@@ -39,7 +40,7 @@ Scenario: User Info is persisted from client across app runs
     And I wait to receive a session
     And I relaunch the app
 
-    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the session is valid for the session reporting API
     And the session "user.id" is not null
     And the session "user.email" is null
     And the session "user.name" is null
@@ -52,13 +53,13 @@ Scenario: User Info is persisted from client across app runs
     And I relaunch the app
 
     # Session - User persisted
-    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the session is valid for the session reporting API
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
     And the session "user.name" equals "bar"
 
     # Event - User persisted
-    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API
     And the error payload field "events.0.user.id" equals "foo"
     And the error payload field "events.0.user.email" equals "baz@grok.com"
     And the error payload field "events.0.user.name" equals "bar"
@@ -73,14 +74,14 @@ Scenario: User Info is persisted from client across app runs
     And I relaunch the app
 
     # First Session
-    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the session is valid for the session reporting API
     And the session "user.id" equals "john"
     And the session "user.email" equals "george@ringo.com"
     And the session "user.name" equals "paul"
     And I discard the oldest session
 
     # First Event
-    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API
     And the error payload field "events.0.user.id" equals "john"
     And the error payload field "events.0.user.email" equals "george@ringo.com"
     And the error payload field "events.0.user.name" equals "paul"
@@ -92,14 +93,14 @@ Scenario: User Info is persisted from client across app runs
     And I wait to receive an error
 
     # Second Session
-    Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    Then the session is valid for the session reporting API
     And the session "user.id" does not equal "john"
     And the session "user.id" does not equal "foo"
     And the session "user.email" is null
     And the session "user.name" is null
 
     # Second Event (Manually sent, non-persisted, generated id)
-    Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    Then the error is valid for the error reporting API
     And the error payload field "events.0.user.id" is not null
     And the error payload field "events.0.user.id" does not equal "john"
     And the error payload field "events.0.user.id" does not equal "foo"
