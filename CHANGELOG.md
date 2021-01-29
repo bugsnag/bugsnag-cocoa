@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix compiler warnings when importing Bugsnag from Objective-C sources that do not use ARC.
+  [#985](https://github.com/bugsnag/bugsnag-cocoa/pull/985)
+
 ## 6.6.0 (2021-01-20)
 
 ### Enhancements

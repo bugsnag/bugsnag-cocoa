@@ -102,7 +102,7 @@ typedef NS_ENUM(NSUInteger, BSGSeverity) {
  * Bugsnag dashboard. Use event.errors to access and amend the representation of
  * the error that will be sent.
  */
-@property(nullable) id originalError;
+@property(strong, nullable, nonatomic) id originalError;
 
 
 // =============================================================================
