@@ -10,4 +10,4 @@ gem 'xcpretty'
 gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', tag: 'v4.4.0'
 
 # Locally, you can run against Maze Runner branches and uncommitted changes:
-# gem 'bugsnag-maze-runner', path: '/Users/amoinet/Desktop/bugsnag-tools/maze-runner'
+# gem 'bugsnag-maze-runner', path: '../maze-runner'
