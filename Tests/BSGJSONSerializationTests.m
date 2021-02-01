@@ -1,5 +1,5 @@
 //
-//  BSGJSONSerializerTest.m
+//  BSGJSONSerializationTests.m
 //  Bugsnag
 //
 //  Created by Karl Stenerud on 03.09.20.
@@ -7,13 +7,13 @@
 //
 
 #import <XCTest/XCTest.h>
+
 #import "BSGJSONSerialization.h"
 
-@interface BSGJSONSerializerTest : XCTestCase
-
+@interface BSGJSONSerializationTests : XCTestCase
 @end
 
-@implementation BSGJSONSerializerTest
+@implementation BSGJSONSerializationTests
 
 - (void)testBadJSONKey {
     id badDict = @{@123: @"string"};
@@ -74,6 +74,17 @@
     error = nil;
     XCTAssertNil([BSGJSONSerialization JSONObjectWithContentsOfFile:unwritablePath options:0 error:&error]);
     XCTAssertNotNil(error);
+}
+
+- (void)testExceptionHandling {
+    NSError *error = nil;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    XCTAssertNil([BSGJSONSerialization JSONObjectWithData:nil options:0 error:&error]);
+#pragma clang diagnostic pop
+    XCTAssertNotNil(error);
+    id underlyingError = error.userInfo[NSUnderlyingErrorKey];
+    XCTAssert(!underlyingError || [underlyingError isKindOfClass:[NSError class]], @"The value of %@ should be an NSError", NSUnderlyingErrorKey);
 }
 
 @end

@@ -7,6 +7,8 @@ Changelog
 
 * Fix compiler warnings when importing Bugsnag from Objective-C sources that do not use ARC.
   [#985](https://github.com/bugsnag/bugsnag-cocoa/pull/985)
+* Fix a rare crash that could occur in the event of JSON parsing failures.
+  [#987](https://github.com/bugsnag/bugsnag-cocoa/pull/987)
 
 ## 6.6.0 (2021-01-20)
 
