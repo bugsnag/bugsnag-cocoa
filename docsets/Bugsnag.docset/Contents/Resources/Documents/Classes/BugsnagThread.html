@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>BugsnagThread Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a name="//apple_ref/objc/Class/BugsnagThread" class="dashAnchor"></a>
+    <a title="BugsnagThread Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Bugsnag 6.6.1 Docs</a></p>
+        <p class="header-right"><a href="https://github.com/bugsnag/bugsnag-cocoa"><img src="../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="dash-feed://https%3A%2F%2Fbugsnag.github.io%2Fbugsnag-cocoa%2Fdocsets%2FBugsnag.xml"><img src="../img/dash.png"/>Install in Dash</a></p>
+        <p class="header-right">
+          <form role="search" action="../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Bugsnag Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        BugsnagThread Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Bugsnag.html">Bugsnag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagApp.html">BugsnagApp</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagAppWithState.html">BugsnagAppWithState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagBreadcrumb.html">BugsnagBreadcrumb</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagClient.html">BugsnagClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagConfiguration.html">BugsnagConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagDevice.html">BugsnagDevice</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagDeviceWithState.html">BugsnagDeviceWithState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagEndpointConfiguration.html">BugsnagEndpointConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagError.html">BugsnagError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagErrorTypes.html">BugsnagErrorTypes</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagEvent.html">BugsnagEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagSession.html">BugsnagSession</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagStackframe.html">BugsnagStackframe</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagThread.html">BugsnagThread</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagUser.html">BugsnagUser</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Constants.html">Constants</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Constants.html#/c:@BugsnagStackframeTypeCocoa">BugsnagStackframeTypeCocoa</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/BSGBreadcrumbType.html">BSGBreadcrumbType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/BSGEnabledBreadcrumbType.html">BSGEnabledBreadcrumbType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/BSGErrorType.html">BSGErrorType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/BSGSeverity.html">BSGSeverity</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/BSGThreadSendPolicy.html">BSGThreadSendPolicy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/BSGThreadType.html">BSGThreadType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/BugsnagClassLevelMetadataStore.html">BugsnagClassLevelMetadataStore</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Type%20Definitions.html">Type Definitions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BSG_KSCrashReportWriter.h@T@BSGReportCallback">BSGReportCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions/BSG_KSCrashReportWriter.html">BSG_KSCrashReportWriter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BSG_KSCrashReportWriter.h@T@BSG_KSReportWriteCallback">BSG_KSReportWriteCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnBreadcrumbBlock">BugsnagOnBreadcrumbBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnErrorBlock">BugsnagOnErrorBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnSendErrorBlock">BugsnagOnSendErrorBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnSessionBlock">BugsnagOnSessionBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BugsnagStackframe.h@T@BugsnagStackframeType">BugsnagStackframeType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/BSG_KSCrashReportWriter.html">BSG_KSCrashReportWriter</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>BugsnagThread</h1>
+              <div class="declaration">
+                <div class="language">
+                  <p class="aside-title">Objective-C</p>
+                  <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagThread</span> <span class="p">:</span> <span class="nc">NSObject</span></code></pre>
+
+                </div>
+                <div class="language">
+                  <p class="aside-title">Swift</p>
+                  <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagThread</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                </div>
+              </div>
+            <p>A representation of thread information recorded as part of a BugsnagEvent.</p>
+
+              <div class="slightly-smaller">
+                <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagThread.h#L22-L50">Show on GitHub</a>
+              </div>
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagThread(py)id"></a>
+                    <a name="//apple_ref/objc/Property/id" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagThread(py)id">id</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A unique ID which identifies this thread</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">copy</span><span class="p">,</span> <span class="n">nullable</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">id</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagThread.h#L27">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagThread(py)name"></a>
+                    <a name="//apple_ref/objc/Property/name" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagThread(py)name">name</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The name which identifies this thread</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">copy</span><span class="p">,</span> <span class="n">nullable</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagThread.h#L32">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagThread(py)errorReportingThread"></a>
+                    <a name="//apple_ref/objc/Property/errorReportingThread" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagThread(py)errorReportingThread">errorReportingThread</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether this thread was the thread that triggered the captured error</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span> <span class="n">BOOL</span> <span class="n">errorReportingThread</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">errorReportingThread</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagThread.h#L37">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagThread(py)stacktrace"></a>
+                    <a name="//apple_ref/objc/Property/stacktrace" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagThread(py)stacktrace">stacktrace</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets a representation of this thread&rsquo;s stacktrace</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">copy</span><span class="p">,</span> <span class="n">nonnull</span><span class="p">)</span> <span class="n">NSArray</span><span class="o">&lt;</span><span class="n"><a href="../Classes/BugsnagStackframe.html">BugsnagStackframe</a></span> <span class="o">*&gt;</span> <span class="o">*</span><span class="n">stacktrace</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">stacktrace</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/BugsnagStackframe.html">BugsnagStackframe</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagThread.h#L42">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagThread(py)type"></a>
+                    <a name="//apple_ref/objc/Property/type" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagThread(py)type">type</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Determines the type of thread based on the originating platform
+(intended for internal use only)</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@property</span> <span class="n"><a href="../Enums/BSGThreadType.html">BSGThreadType</a></span> <span class="n">type</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">type</span><span class="p">:</span> <span class="kt"><a href="../Enums/BSGThreadType.html">BSGThreadType</a></span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagThread.h#L48">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2021 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external">Bugsnag Inc</a>. All rights reserved. (Last updated: 2021-02-03)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

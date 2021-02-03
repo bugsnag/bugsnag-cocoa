@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>BugsnagMetadataStore Protocol Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a name="//apple_ref/objc/Protocol/BugsnagMetadataStore" class="dashAnchor"></a>
+    <a title="BugsnagMetadataStore Protocol Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Bugsnag 6.6.1 Docs</a></p>
+        <p class="header-right"><a href="https://github.com/bugsnag/bugsnag-cocoa"><img src="../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="dash-feed://https%3A%2F%2Fbugsnag.github.io%2Fbugsnag-cocoa%2Fdocsets%2FBugsnag.xml"><img src="../img/dash.png"/>Install in Dash</a></p>
+        <p class="header-right">
+          <form role="search" action="../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Bugsnag Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        BugsnagMetadataStore Protocol Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Bugsnag.html">Bugsnag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagApp.html">BugsnagApp</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagAppWithState.html">BugsnagAppWithState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagBreadcrumb.html">BugsnagBreadcrumb</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagClient.html">BugsnagClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagConfiguration.html">BugsnagConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagDevice.html">BugsnagDevice</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagDeviceWithState.html">BugsnagDeviceWithState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagEndpointConfiguration.html">BugsnagEndpointConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagError.html">BugsnagError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagErrorTypes.html">BugsnagErrorTypes</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagEvent.html">BugsnagEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagSession.html">BugsnagSession</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagStackframe.html">BugsnagStackframe</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagThread.html">BugsnagThread</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagUser.html">BugsnagUser</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Constants.html">Constants</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Constants.html#/c:@BugsnagStackframeTypeCocoa">BugsnagStackframeTypeCocoa</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/BSGBreadcrumbType.html">BSGBreadcrumbType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/BSGEnabledBreadcrumbType.html">BSGEnabledBreadcrumbType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/BSGErrorType.html">BSGErrorType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/BSGSeverity.html">BSGSeverity</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/BSGThreadSendPolicy.html">BSGThreadSendPolicy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/BSGThreadType.html">BSGThreadType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/BugsnagClassLevelMetadataStore.html">BugsnagClassLevelMetadataStore</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Type%20Definitions.html">Type Definitions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BSG_KSCrashReportWriter.h@T@BSGReportCallback">BSGReportCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions/BSG_KSCrashReportWriter.html">BSG_KSCrashReportWriter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BSG_KSCrashReportWriter.h@T@BSG_KSReportWriteCallback">BSG_KSReportWriteCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnBreadcrumbBlock">BugsnagOnBreadcrumbBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnErrorBlock">BugsnagOnErrorBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnSendErrorBlock">BugsnagOnSendErrorBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnSessionBlock">BugsnagOnSessionBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Type%20Definitions.html#/c:BugsnagStackframe.h@T@BugsnagStackframeType">BugsnagStackframeType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/BSG_KSCrashReportWriter.html">BSG_KSCrashReportWriter</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>BugsnagMetadataStore</h1>
+              <div class="declaration">
+                <div class="language">
+                  <p class="aside-title">Objective-C</p>
+                  <pre class="highlight objective_c"><code><span class="k">@protocol</span> <span class="nc">BugsnagMetadataStore</span> <span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span></code></pre>
+
+                </div>
+                <div class="language">
+                  <p class="aside-title">Swift</p>
+                  <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">BugsnagMetadataStore</span> <span class="p">:</span> <span class="kt">NSObjectProtocol</span></code></pre>
+
+                </div>
+              </div>
+            <p>An internal protocol defining methods a Bugsnag metadata store must implement.</p>
+
+              <div class="slightly-smaller">
+                <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagMetadataStore.h#L26-L119">Show on GitHub</a>
+              </div>
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(pl)BugsnagMetadataStore(im)addMetadata:toSection:"></a>
+                    <a name="//apple_ref/objc/Method/-addMetadata:toSection:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(pl)BugsnagMetadataStore(im)addMetadata:toSection:">-addMetadata:<wbr>toSection:<wbr></a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Merge supplied and existing metadata.</p>
+
+<ul>
+<li><p>Non-null values will replace existing values for identical keys.</p></li>
+<li><p>Null values will remove the existing key/value pair if the key exists.
+Where null-valued keys do not exist they will not be set.  (Since ObjC
+dicts can&rsquo;t store &lsquo;nil&rsquo; directly we assume [NSNUll null])</p></li>
+<li><p>Tabs are only created if at least one value is valid.</p></li>
+<li><p>Invalid values (i.e. unserializable to JSON) are logged and ignored.</p></li>
+</ul>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">addMetadata</span><span class="p">:(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">_Nonnull</span><span class="p">)</span><span class="nv">metadata</span>
+          <span class="nf">toSection</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">_Nonnull</span><span class="p">)</span><span class="nv">sectionName</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">addMetadata</span><span class="p">(</span><span class="n">_</span> <span class="nv">metadata</span><span class="p">:</span> <span class="p">[</span><span class="kt">AnyHashable</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">],</span> <span class="n">section</span> <span class="nv">sectionName</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>metadata</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A dictionary of string -&gt; id key/value pairs.
+             Values should be serializable to JSON.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>sectionName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name of the metadata section</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagMetadataStore.h#L49-L51">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(pl)BugsnagMetadataStore(im)addMetadata:withKey:toSection:"></a>
+                    <a name="//apple_ref/objc/Method/-addMetadata:withKey:toSection:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(pl)BugsnagMetadataStore(im)addMetadata:withKey:toSection:">-addMetadata:<wbr>withKey:<wbr>toSection:<wbr></a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add a piece of metadata to a particular key in a particular section.</p>
+
+<ul>
+<li><p>Non-null values will replace existing values for identical keys.</p></li>
+<li><p>Null values will remove the existing key/value pair if the key exists.
+Where null-valued keys do not exist they will not be set.  (Since ObjC
+dicts can&rsquo;t store &lsquo;nil&rsquo; directly we assume [NSNUll null])</p></li>
+<li><p>Tabs are only created if at least one value is valid.</p></li>
+<li><p>Invalid values (i.e. unserializable to JSON) are logged and ignored.</p></li>
+</ul>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">addMetadata</span><span class="p">:(</span><span class="n">id</span> <span class="n">_Nullable</span><span class="p">)</span><span class="nv">metadata</span>
+            <span class="nf">withKey</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">_Nonnull</span><span class="p">)</span><span class="nv">key</span>
+          <span class="nf">toSection</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">_Nonnull</span><span class="p">)</span><span class="nv">sectionName</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">addMetadata</span><span class="p">(</span><span class="n">_</span> <span class="nv">metadata</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?,</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">section</span> <span class="nv">sectionName</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>metadata</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A dictionary of string -&gt; id key/value pairs.
+             Values should be serializable to JSON.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>key</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The metadata key to store the value under</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>sectionName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name of the metadata section</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagMetadataStore.h#L74-L77">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(pl)BugsnagMetadataStore(im)getMetadataFromSection:"></a>
+                    <a name="//apple_ref/objc/Method/-getMetadataFromSection:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(pl)BugsnagMetadataStore(im)getMetadataFromSection:">-getMetadataFromSection:<wbr></a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a named metadata section</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">-</span> <span class="p">(</span><span class="n">NSMutableDictionary</span> <span class="o">*</span><span class="n">_Nullable</span><span class="p">)</span><span class="nf">getMetadataFromSection</span><span class="p">:</span>
+    <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">_Nonnull</span><span class="p">)</span><span class="nv">sectionName</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">getMetadata</span><span class="p">(</span><span class="n">section</span> <span class="nv">sectionName</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">NSMutableDictionary</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>sectionName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name of the section
+@returns The mutable dictionary representing the metadata section, if it
+      exists, or nil if not.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagMetadataStore.h#L86-L87">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(pl)BugsnagMetadataStore(im)getMetadataFromSection:withKey:"></a>
+                    <a name="//apple_ref/objc/Method/-getMetadataFromSection:withKey:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(pl)BugsnagMetadataStore(im)getMetadataFromSection:withKey:">-getMetadataFromSection:<wbr>withKey:<wbr></a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a keyed value from a named metadata section</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">-</span> <span class="p">(</span><span class="n">id</span> <span class="n">_Nullable</span><span class="p">)</span><span class="nf">getMetadataFromSection</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">_Nonnull</span><span class="p">)</span><span class="nv">sectionName</span>
+                               <span class="nf">withKey</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">_Nonnull</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">getMetadata</span><span class="p">(</span><span class="n">section</span> <span class="nv">sectionName</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Any</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>sectionName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name of the section</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>key</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The key
+@returns The value if it exists, or nil if not.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagMetadataStore.h#L96-L98">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(pl)BugsnagMetadataStore(im)clearMetadataFromSection:"></a>
+                    <a name="//apple_ref/objc/Method/-clearMetadataFromSection:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(pl)BugsnagMetadataStore(im)clearMetadataFromSection:">-clearMetadataFromSection:<wbr></a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Remove a named metadata section, if it exists.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">clearMetadataFromSection</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">_Nonnull</span><span class="p">)</span><span class="nv">sectionName</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">clearMetadata</span><span class="p">(</span><span class="n">section</span> <span class="nv">sectionName</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>sectionName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The section name</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagMetadataStore.h#L105-L106">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(pl)BugsnagMetadataStore(im)clearMetadataFromSection:withKey:"></a>
+                    <a name="//apple_ref/objc/Method/-clearMetadataFromSection:withKey:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(pl)BugsnagMetadataStore(im)clearMetadataFromSection:withKey:">-clearMetadataFromSection:<wbr>withKey:<wbr></a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Remove a specific value for a specific key in a specific metadata section.
+ If either section or key do not exist no action is taken.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">clearMetadataFromSection</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">_Nonnull</span><span class="p">)</span><span class="nv">sectionName</span>
+                         <span class="nf">withKey</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">_Nonnull</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">clearMetadata</span><span class="p">(</span><span class="n">section</span> <span class="nv">sectionName</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>sectionName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The section name</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>key</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the metadata key</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagMetadataStore.h#L115-L117">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2021 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external">Bugsnag Inc</a>. All rights reserved. (Last updated: 2021-02-03)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

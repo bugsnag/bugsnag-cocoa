@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Classes  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a name="//apple_ref/objc/Section/Classes" class="dashAnchor"></a>
+    <a title="Classes  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">Bugsnag 6.6.1 Docs</a></p>
+        <p class="header-right"><a href="https://github.com/bugsnag/bugsnag-cocoa"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="dash-feed://https%3A%2F%2Fbugsnag.github.io%2Fbugsnag-cocoa%2Fdocsets%2FBugsnag.xml"><img src="img/dash.png"/>Install in Dash</a></p>
+        <p class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">Bugsnag Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Classes  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/Bugsnag.html">Bugsnag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagApp.html">BugsnagApp</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagAppWithState.html">BugsnagAppWithState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagBreadcrumb.html">BugsnagBreadcrumb</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagClient.html">BugsnagClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagConfiguration.html">BugsnagConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagDevice.html">BugsnagDevice</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagDeviceWithState.html">BugsnagDeviceWithState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagEndpointConfiguration.html">BugsnagEndpointConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagError.html">BugsnagError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagErrorTypes.html">BugsnagErrorTypes</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagEvent.html">BugsnagEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagSession.html">BugsnagSession</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagStackframe.html">BugsnagStackframe</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagThread.html">BugsnagThread</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagUser.html">BugsnagUser</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Constants.html">Constants</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Constants.html#/c:@BugsnagStackframeTypeCocoa">BugsnagStackframeTypeCocoa</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/BSGBreadcrumbType.html">BSGBreadcrumbType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/BSGEnabledBreadcrumbType.html">BSGEnabledBreadcrumbType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/BSGErrorType.html">BSGErrorType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/BSGSeverity.html">BSGSeverity</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/BSGThreadSendPolicy.html">BSGThreadSendPolicy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/BSGThreadType.html">BSGThreadType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/BugsnagClassLevelMetadataStore.html">BugsnagClassLevelMetadataStore</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Type%20Definitions.html">Type Definitions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Type%20Definitions.html#/c:BSG_KSCrashReportWriter.h@T@BSGReportCallback">BSGReportCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Type%20Definitions/BSG_KSCrashReportWriter.html">BSG_KSCrashReportWriter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Type%20Definitions.html#/c:BSG_KSCrashReportWriter.h@T@BSG_KSReportWriteCallback">BSG_KSReportWriteCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnBreadcrumbBlock">BugsnagOnBreadcrumbBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnErrorBlock">BugsnagOnErrorBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnSendErrorBlock">BugsnagOnSendErrorBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnSessionBlock">BugsnagOnSessionBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Type%20Definitions.html#/c:BugsnagStackframe.h@T@BugsnagStackframeType">BugsnagStackframeType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Structs/BSG_KSCrashReportWriter.html">BSG_KSCrashReportWriter</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Classes</h1>
+            <p>The following classes are available globally.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)Bugsnag"></a>
+                    <a name="//apple_ref/objc/Class/Bugsnag" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)Bugsnag">Bugsnag</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Static access to a Bugsnag Client, the easiest way to use Bugsnag in your app.</p>
+
+                        <a href="Classes/Bugsnag.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">Bugsnag</span> <span class="p">:</span> <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n"><a href="Protocols/BugsnagClassLevelMetadataStore.html">BugsnagClassLevelMetadataStore</a></span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Bugsnag</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt"><a href="Protocols/BugsnagClassLevelMetadataStore.html">BugsnagClassLevelMetadataStore</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/Bugsnag.h#L47-L322">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagApp"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagApp" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagApp">BugsnagApp</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Stateless information set by the notifier about your app can be found on this class. These values
+can be accessed and amended if necessary.</p>
+
+                        <a href="Classes/BugsnagApp.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagApp</span> <span class="p">:</span> <span class="nc">NSObject</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagApp</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagApp.h#L15-L52">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagAppWithState"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagAppWithState" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagAppWithState">BugsnagAppWithState</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Stateful information set by the notifier about your app can be found on this class. These values
+can be accessed and amended if necessary.</p>
+
+                        <a href="Classes/BugsnagAppWithState.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagAppWithState</span> <span class="p">:</span> <span class="nc"><a href="Classes/BugsnagApp.html">BugsnagApp</a></span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagAppWithState</span> <span class="p">:</span> <span class="kt"><a href="Classes/BugsnagApp.html">BugsnagApp</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagAppWithState.h#L17-L35">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagBreadcrumb"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagBreadcrumb" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagBreadcrumb">BugsnagBreadcrumb</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A short log message, representing an action that occurred in your app, to aid with debugging.</p>
+
+                        <a href="Classes/BugsnagBreadcrumb.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@class</span> <span class="nc">BugsnagBreadcrumb</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagBreadcrumb</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagBreadcrumb.h#L100-L124">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagClient"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagClient" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagClient">BugsnagClient</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The BugsnagClient is not intended to be used directly.</p>
+
+<p>Use the static access provided by the Bugsnag class instead.</p>
+
+                        <a href="Classes/BugsnagClient.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagClient</span> <span class="p">:</span> <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n"><a href="Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagClient</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt"><a href="Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagClient.h#L40-L255">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagConfiguration"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagConfiguration" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagConfiguration">BugsnagConfiguration</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Contains user-provided configuration, including API key and endpoints.</p>
+
+                        <a href="Classes/BugsnagConfiguration.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagConfiguration</span> <span class="p">:</span> <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n"><a href="Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagConfiguration</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt"><a href="Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagConfiguration.h#L104-L359">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagDevice"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagDevice" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagDevice">BugsnagDevice</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Stateless information set by the notifier about the device on which the event occurred can be
+found on this class. These values can be accessed and amended if necessary.</p>
+
+                        <a href="Classes/BugsnagDevice.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagDevice</span> <span class="p">:</span> <span class="nc">NSObject</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagDevice</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagDevice.h#L15-L68">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagDeviceWithState"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagDeviceWithState" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagDeviceWithState">BugsnagDeviceWithState</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Stateful information set by the notifier about the device on which the event occurred can be
+found on this class. These values can be accessed and amended if necessary.</p>
+
+                        <a href="Classes/BugsnagDeviceWithState.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagDeviceWithState</span> <span class="p">:</span> <span class="nc"><a href="Classes/BugsnagDevice.html">BugsnagDevice</a></span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagDeviceWithState</span> <span class="p">:</span> <span class="kt"><a href="Classes/BugsnagDevice.html">BugsnagDevice</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagDeviceWithState.h#L17-L39">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagEndpointConfiguration"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagEndpointConfiguration" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagEndpointConfiguration">BugsnagEndpointConfiguration</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the endpoints to send data to. By default we&rsquo;ll send error reports to
+<a href="https://notify.bugsnag.com">https://notify.bugsnag.com</a>, and sessions to <a href="https://sessions.bugsnag.com">https://sessions.bugsnag.com</a>, but you can
+override this if you are using Bugsnag Enterprise to point to your own Bugsnag endpoints.</p>
+
+                        <a href="Classes/BugsnagEndpointConfiguration.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagEndpointConfiguration</span> <span class="p">:</span> <span class="nc">NSObject</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagEndpointConfiguration</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagEndpointConfiguration.h#L18-L33">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagError"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagError" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagError">BugsnagError</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>An Error represents information extracted from an NSError, NSException, or other error source.</p>
+
+                        <a href="Classes/BugsnagError.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagError</span> <span class="p">:</span> <span class="nc">NSObject</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagError</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagError.h#L25-L47">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagErrorTypes"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagErrorTypes" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagErrorTypes">BugsnagErrorTypes</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The types of error that should be reported.</p>
+
+                        <a href="Classes/BugsnagErrorTypes.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagErrorTypes</span> <span class="p">:</span> <span class="nc">NSObject</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagErrorTypes</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagErrorTypes.h#L14-L58">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagEvent"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagEvent" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagEvent">BugsnagEvent</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Represents an occurrence of an error, along with information about the state of the app and device.</p>
+
+                        <a href="Classes/BugsnagEvent.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagEvent</span> <span class="p">:</span> <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n"><a href="Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagEvent</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt"><a href="Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagEvent.h#L36-L128">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagSession"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagSession" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagSession">BugsnagSession</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Represents a session of user interaction with your app.</p>
+
+                        <a href="Classes/BugsnagSession.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagSession</span> <span class="p">:</span> <span class="nc">NSObject</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagSession</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagSession.h#L20-L48">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagStackframe"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagStackframe" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagStackframe">BugsnagStackframe</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Represents a single stackframe from a stacktrace.</p>
+
+                        <a href="Classes/BugsnagStackframe.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagStackframe</span> <span class="p">:</span> <span class="nc">NSObject</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagStackframe</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagStackframe.h#L20-L79">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagThread"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagThread" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagThread">BugsnagThread</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A representation of thread information recorded as part of a BugsnagEvent.</p>
+
+                        <a href="Classes/BugsnagThread.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagThread</span> <span class="p">:</span> <span class="nc">NSObject</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagThread</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagThread.h#L22-L50">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagUser"></a>
+                    <a name="//apple_ref/objc/Class/BugsnagUser" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagUser">BugsnagUser</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Information about the current user of your application.</p>
+
+                        <a href="Classes/BugsnagUser.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagUser</span> <span class="p">:</span> <span class="nc">NSObject</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagUser</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BugsnagUser.h#L14-L22">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2021 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external">Bugsnag Inc</a>. All rights reserved. (Last updated: 2021-02-03)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

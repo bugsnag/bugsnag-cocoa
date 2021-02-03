@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>BSG_KSCrashReportWriter Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/jazzy.js" defer></script>
+    
+    <script src="../../js/lunr.min.js" defer></script>
+    <script src="../../js/typeahead.jquery.js" defer></script>
+    <script src="../../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a name="//apple_ref/objc/Struct/BSG_KSCrashReportWriter" class="dashAnchor"></a>
+    <a title="BSG_KSCrashReportWriter Structure Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../../index.html">Bugsnag 6.6.1 Docs</a></p>
+        <p class="header-right"><a href="https://github.com/bugsnag/bugsnag-cocoa"><img src="../../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="dash-feed://https%3A%2F%2Fbugsnag.github.io%2Fbugsnag-cocoa%2Fdocsets%2FBugsnag.xml"><img src="../../img/dash.png"/>Install in Dash</a></p>
+        <p class="header-right">
+          <form role="search" action="../../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../../index.html">Bugsnag Reference</a>
+        <img id="carat" src="../../img/carat.png" />
+        BSG_KSCrashReportWriter Structure Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Classes/Bugsnag.html">Bugsnag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagApp.html">BugsnagApp</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagAppWithState.html">BugsnagAppWithState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagBreadcrumb.html">BugsnagBreadcrumb</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagClient.html">BugsnagClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagConfiguration.html">BugsnagConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagDevice.html">BugsnagDevice</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagDeviceWithState.html">BugsnagDeviceWithState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagEndpointConfiguration.html">BugsnagEndpointConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagError.html">BugsnagError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagErrorTypes.html">BugsnagErrorTypes</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagEvent.html">BugsnagEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagSession.html">BugsnagSession</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagStackframe.html">BugsnagStackframe</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagThread.html">BugsnagThread</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/BugsnagUser.html">BugsnagUser</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Constants.html">Constants</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Constants.html#/c:@BugsnagStackframeTypeCocoa">BugsnagStackframeTypeCocoa</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Enums/BSGBreadcrumbType.html">BSGBreadcrumbType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/BSGEnabledBreadcrumbType.html">BSGEnabledBreadcrumbType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/BSGErrorType.html">BSGErrorType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/BSGSeverity.html">BSGSeverity</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/BSGThreadSendPolicy.html">BSGThreadSendPolicy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/BSGThreadType.html">BSGThreadType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Protocols/BugsnagClassLevelMetadataStore.html">BugsnagClassLevelMetadataStore</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Type%20Definitions.html">Type Definitions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Type%20Definitions.html#/c:BSG_KSCrashReportWriter.h@T@BSGReportCallback">BSGReportCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Type%20Definitions/BSG_KSCrashReportWriter.html">BSG_KSCrashReportWriter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Type%20Definitions.html#/c:BSG_KSCrashReportWriter.h@T@BSG_KSReportWriteCallback">BSG_KSReportWriteCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnBreadcrumbBlock">BugsnagOnBreadcrumbBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnErrorBlock">BugsnagOnErrorBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnSendErrorBlock">BugsnagOnSendErrorBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnSessionBlock">BugsnagOnSessionBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Type%20Definitions.html#/c:BugsnagStackframe.h@T@BugsnagStackframeType">BugsnagStackframeType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Structs/BSG_KSCrashReportWriter.html">BSG_KSCrashReportWriter</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>BSG_KSCrashReportWriter</h1>
+              <div class="declaration">
+                <div class="language">
+                  <p class="aside-title">Objective-C</p>
+                  <pre class="highlight objective_c"><code><span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="p">{}</span></code></pre>
+
+                </div>
+                <div class="language">
+                  <p class="aside-title">Swift</p>
+                  <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">BSG_KSCrashReportWriter</span></code></pre>
+
+                </div>
+              </div>
+            <p>Encapsulates report writing functionality.</p>
+
+              <div class="slightly-smaller">
+                <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L44-L229">Show on GitHub</a>
+              </div>
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@addBooleanElement"></a>
+                    <a name="//apple_ref/objc/Field/addBooleanElement" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@addBooleanElement">addBooleanElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add a boolean element to the report.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">addBooleanElement</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span>
+                          <span class="kt">_Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">addBooleanElement</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name to give this element.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>value</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The value to add.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L54-L55">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@addFloatingPointElement"></a>
+                    <a name="//apple_ref/objc/Field/addFloatingPointElement" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@addFloatingPointElement">addFloatingPointElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add a floating point element to the report.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">addFloatingPointElement</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span>
+                                <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="kt">double</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">addFloatingPointElement</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">Double</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name to give this element.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>value</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The value to add.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L66-L68">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@addIntegerElement"></a>
+                    <a name="//apple_ref/objc/Field/addIntegerElement" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@addIntegerElement">addIntegerElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add an integer element to the report.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">addIntegerElement</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span>
+                          <span class="kt">long</span> <span class="kt">long</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">addIntegerElement</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">Int64</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name to give this element.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>value</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The value to add.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L79-L80">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@addUIntegerElement"></a>
+                    <a name="//apple_ref/objc/Field/addUIntegerElement" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@addUIntegerElement">addUIntegerElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add an unsigned integer element to the report.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">addUIntegerElement</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span>
+                           <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">addUIntegerElement</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UInt64</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name to give this element.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>value</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The value to add.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L91-L92">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@addStringElement"></a>
+                    <a name="//apple_ref/objc/Field/addStringElement" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@addStringElement">addStringElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add a string element to the report.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">addStringElement</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span>
+                         <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">addStringElement</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name to give this element.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>value</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The value to add.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L103-L104">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@addTextFileElement"></a>
+                    <a name="//apple_ref/objc/Field/addTextFileElement" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@addTextFileElement">addTextFileElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add a string element from a text file to the report.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">addTextFileElement</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span>
+                           <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">addTextFileElement</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name to give this element.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>filePath</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path to the file containing the value to add.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L115-L116">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@addJSONFileElement"></a>
+                    <a name="//apple_ref/objc/Field/addJSONFileElement" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@addJSONFileElement">addJSONFileElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add a JSON element from a text file to the report.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">addJSONFileElement</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span>
+                           <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">addJSONFileElement</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name to give this element.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>filePath</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path to the file containing the value to add.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L127-L128">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@addDataElement"></a>
+                    <a name="//apple_ref/objc/Field/addDataElement" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@addDataElement">addDataElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add a hex encoded data element to the report.</p>
+
+<p>@paramn length The length of the data.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">addDataElement</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span>
+                       <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">size_t</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">addDataElement</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name to give this element.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>value</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A pointer to the binary data.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L141-L143">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@beginDataElement"></a>
+                    <a name="//apple_ref/objc/Field/beginDataElement" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@beginDataElement">beginDataElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Begin writing a hex encoded data element to the report.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">beginDataElement</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">beginDataElement</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name to give this element.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L152-L153">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@appendDataElement"></a>
+                    <a name="//apple_ref/objc/Field/appendDataElement" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@appendDataElement">appendDataElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Append hex encoded data to the current data element in the report.</p>
+
+<p>@paramn length The length of the data.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">appendDataElement</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span>
+                          <span class="k">const</span> <span class="kt">size_t</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">appendDataElement</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>value</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A pointer to the binary data.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L164-L165">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@endDataElement"></a>
+                    <a name="//apple_ref/objc/Field/endDataElement" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@endDataElement">endDataElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Complete writing a hex encoded data element to the report.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">endDataElement</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">endDataElement</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L172">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@addUUIDElement"></a>
+                    <a name="//apple_ref/objc/Field/addUUIDElement" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@addUUIDElement">addUUIDElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add a UUID element to the report.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">addUUIDElement</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span>
+                       <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">addUUIDElement</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">UInt8</span><span class="o">&gt;</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name to give this element.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>value</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A pointer to the binary UUID data.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L183-L184">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@addJSONElement"></a>
+                    <a name="//apple_ref/objc/Field/addJSONElement" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@addJSONElement">addJSONElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add a preformatted JSON element to the report.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">addJSONElement</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span>
+                       <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">addJSONElement</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name to give this element.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>value</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A pointer to the JSON data.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L195-L196">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@beginObject"></a>
+                    <a name="//apple_ref/objc/Field/beginObject" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@beginObject">beginObject</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Begin a new object container.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">beginObject</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">beginObject</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name to give this element.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L205-L206">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@beginArray"></a>
+                    <a name="//apple_ref/objc/Field/beginArray" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@beginArray">beginArray</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Begin a new array container.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">beginArray</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">beginArray</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?,</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">Int8</span><span class="o">&gt;</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name to give this element.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L215-L216">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@endContainer"></a>
+                    <a name="//apple_ref/objc/Field/endContainer" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@endContainer">endContainer</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Leave the current container, returning to the next higher level
+  container.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">endContainer</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">BSG_KSCrashReportWriter</span> <span class="o">*</span><span class="p">)</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">endContainer</span><span class="p">:</span> <span class="p">((</span><span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">BSG_KSCrashReportWriter</span><span class="o">&gt;</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>writer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>This writer.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L224">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@S@BSG_KSCrashReportWriter@FI@context"></a>
+                    <a name="//apple_ref/objc/Field/context" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@S@BSG_KSCrashReportWriter@FI@context">context</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Internal contextual data for the writer</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="kt">void</span> <span class="o">*</span><span class="n">context</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">context</span><span class="p">:</span> <span class="kt">UnsafeMutableRawPointer</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.1/include/Bugsnag/BSG_KSCrashReportWriter.h#L227">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2021 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external">Bugsnag Inc</a>. All rights reserved. (Last updated: 2021-02-03)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
