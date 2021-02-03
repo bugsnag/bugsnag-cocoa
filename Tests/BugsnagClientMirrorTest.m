@@ -132,6 +132,8 @@
             @"setConfigMetadataFromLastLaunch: v24@0:8@16",
             @"setMetadataFromLastLaunch: v24@0:8@16",
             @"setNotificationBreadcrumbs: v24@0:8@16",
+            @"setStarted: v20@0:8B16",
+            @"setStarted: v20@0:8c16",
             @"setStateMetadataFromLastLaunch: v24@0:8@16",
             @"stateMetadataFile @16@0:8",
             @"stateMetadataFromLastLaunch @16@0:8",
@@ -163,8 +165,8 @@
     [clientMethods minusSet:bugsnagMethods];
     [clientMethods minusSet:self.clientMethodsNotRequiredOnBugsnag];
 
-    if ([clientMethods count] > 0) {
-        XCTFail(@"Missing the following methods on Bugsnag %@", clientMethods);
+    for (NSString *method in clientMethods) {
+        XCTFail(@"The \"Bugsnag\" class should implement +%@", method);
     }
 }
 
@@ -177,8 +179,8 @@
     [bugsnagMethods minusSet:clientMethods];
     [bugsnagMethods minusSet:self.bugsnagMethodsNotRequiredOnClient];
 
-    if ([bugsnagMethods count] > 0) {
-        XCTFail(@"Missing the following methods on Client %@", bugsnagMethods);
+    for (NSString *method in bugsnagMethods) {
+        XCTFail(@"The \"BugsnagClient\" class should implement -%@", method);
     }
 }
 

@@ -109,6 +109,13 @@
     XCTAssertFalse(success, @"");
 }
 
+- (void) testExtractHexValueInvalid3
+{
+    const char *string = "A string with nothing after 0x";
+    uint64_t result = 0;
+    XCTAssertFalse(bsg_ksstring_extractHexValue(string, strlen(string), &result));
+}
+
 - (void) testIsNullTerminatedUTF8String
 {
     const char* string = "A string";

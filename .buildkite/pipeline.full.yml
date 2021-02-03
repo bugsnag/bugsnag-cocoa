@@ -76,11 +76,40 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'Update documentation page'
-    if: build.branch == "master"
+  - label: ':apple: macOS 11.0 full end-to-end tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
     agents:
-      queue: opensource-mac-cocoa
-    concurrency: 3
-    concurrency_group: cocoa-unit-tests
-    command:
-      - make update-docs
+      queue: opensource-mac-cocoa-11
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        --farm=local
+        --os=macos
+        --os-version=11.0
+        --app=macOSTestApp
+        --tags='not @skip_macos'
+        --fail-fast
+
+  - label: ':apple: macOS 10.14 full end-to-end tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource-mac-cocoa-10.14
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        --farm=local
+        --os=macos
+        --os-version=10.14
+        --app=macOSTestApp
+        --tags='not @skip_macos'
+        --fail-fast

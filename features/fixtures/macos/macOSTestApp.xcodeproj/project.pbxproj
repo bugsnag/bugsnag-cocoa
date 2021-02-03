@@ -16,8 +16,10 @@
 		0176C0B6254AE81B0066E0F3 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0176C0B4254AE81B0066E0F3 /* MainMenu.xib */; };
 		017FBFB8254B09C300809042 /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 017FBFB6254B09C300809042 /* MainWindowController.m */; };
 		017FBFB9254B09C300809042 /* MainWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 017FBFB7254B09C300809042 /* MainWindowController.xib */; };
-		01AF6A84258BB38A00FFC803 /* DispatchCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A83258BB38A00FFC803 /* DispatchCrashScenario.swift */; };
 		01AF6A50258A00DE00FFC803 /* BareboneTestScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A4F258A00DE00FFC803 /* BareboneTestScenarios.swift */; };
+		01AF6A84258BB38A00FFC803 /* DispatchCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A83258BB38A00FFC803 /* DispatchCrashScenario.swift */; };
+		01ECBCF425A7522000FC0678 /* OnErrorOverwriteUnhandledFalseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ECBCF225A7522000FC0678 /* OnErrorOverwriteUnhandledFalseScenario.swift */; };
+		01ECBCF525A7522000FC0678 /* OnErrorOverwriteUnhandledTrueScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ECBCF325A7522000FC0678 /* OnErrorOverwriteUnhandledTrueScenario.swift */; };
 		01F47CC4254B1B3100B184AD /* OriginalErrorNSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C21254B1B2C00B184AD /* OriginalErrorNSExceptionScenario.swift */; };
 		01F47CC5254B1B3100B184AD /* LoadConfigFromFileAutoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C23254B1B2C00B184AD /* LoadConfigFromFileAutoScenario.swift */; };
 		01F47CC6254B1B3100B184AD /* HandledExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C28254B1B2C00B184AD /* HandledExceptionScenario.swift */; };
@@ -160,8 +162,10 @@
 		017FBFB5254B09C300809042 /* MainWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainWindowController.h; sourceTree = "<group>"; };
 		017FBFB6254B09C300809042 /* MainWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainWindowController.m; sourceTree = "<group>"; };
 		017FBFB7254B09C300809042 /* MainWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindowController.xib; sourceTree = "<group>"; };
-		01AF6A83258BB38A00FFC803 /* DispatchCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchCrashScenario.swift; sourceTree = "<group>"; };
 		01AF6A4F258A00DE00FFC803 /* BareboneTestScenarios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BareboneTestScenarios.swift; sourceTree = "<group>"; };
+		01AF6A83258BB38A00FFC803 /* DispatchCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchCrashScenario.swift; sourceTree = "<group>"; };
+		01ECBCF225A7522000FC0678 /* OnErrorOverwriteUnhandledFalseScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteUnhandledFalseScenario.swift; sourceTree = "<group>"; };
+		01ECBCF325A7522000FC0678 /* OnErrorOverwriteUnhandledTrueScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteUnhandledTrueScenario.swift; sourceTree = "<group>"; };
 		01F47C21254B1B2C00B184AD /* OriginalErrorNSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OriginalErrorNSExceptionScenario.swift; sourceTree = "<group>"; };
 		01F47C22254B1B2C00B184AD /* ThreadScenarios.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadScenarios.h; sourceTree = "<group>"; };
 		01F47C23254B1B2C00B184AD /* LoadConfigFromFileAutoScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadConfigFromFileAutoScenario.swift; sourceTree = "<group>"; };
@@ -434,6 +438,8 @@
 				01F47C9F254B1B3000B184AD /* OnCrashHandlerScenario.h */,
 				01F47C7F254B1B2F00B184AD /* OnCrashHandlerScenario.m */,
 				01F47CBA254B1B3000B184AD /* OnErrorOverwriteScenario.swift */,
+				01ECBCF225A7522000FC0678 /* OnErrorOverwriteUnhandledFalseScenario.swift */,
+				01ECBCF325A7522000FC0678 /* OnErrorOverwriteUnhandledTrueScenario.swift */,
 				01F47C30254B1B2D00B184AD /* OnSendCallbackOrderScenario.swift */,
 				01F47C69254B1B2E00B184AD /* OnSendCallbackRemovalScenario.h */,
 				01F47C9B254B1B2F00B184AD /* OnSendCallbackRemovalScenario.m */,
@@ -649,6 +655,7 @@
 				01F47D15254B1B3100B184AD /* UndefinedInstructionScenario.m in Sources */,
 				01F47D1E254B1B3100B184AD /* SIGPIPEScenario.m in Sources */,
 				01F47CCF254B1B3100B184AD /* ObjCExceptionScenario.m in Sources */,
+				01ECBCF425A7522000FC0678 /* OnErrorOverwriteUnhandledFalseScenario.swift in Sources */,
 				01AF6A50258A00DE00FFC803 /* BareboneTestScenarios.swift in Sources */,
 				01F47CED254B1B3100B184AD /* ResumedSessionScenario.swift in Sources */,
 				01F47CE8254B1B3100B184AD /* AppAndDeviceAttributesScenario.swift in Sources */,
@@ -738,6 +745,7 @@
 				01F47D2C254B1B3100B184AD /* SIGSYSScenario.m in Sources */,
 				01F47D20254B1B3100B184AD /* ObjCMsgSendScenario.m in Sources */,
 				01F47CD4254B1B3100B184AD /* AsyncSafeThreadScenario.m in Sources */,
+				01ECBCF525A7522000FC0678 /* OnErrorOverwriteUnhandledTrueScenario.swift in Sources */,
 				01F47CDE254B1B3100B184AD /* ReleasedObjectScenario.m in Sources */,
 				01F47CF1254B1B3100B184AD /* UserEnabledScenario.swift in Sources */,
 				01F47D16254B1B3100B184AD /* NewSessionScenario.swift in Sources */,

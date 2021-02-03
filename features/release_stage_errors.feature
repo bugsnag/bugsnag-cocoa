@@ -11,8 +11,8 @@ Feature: Discarding reports based on release stage
   Scenario: Unhandled error captured when release stage is present in enabledReleaseStages
     When I run "UnhandledErrorValidReleaseStage" and relaunch the app
     And I configure Bugsnag for "UnhandledErrorValidReleaseStage"
-    And I wait to receive a request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I wait to receive an error
+    Then the error is valid for the error reporting API
     And the exception "errorClass" equals "SIGABRT"
     And the event "unhandled" is true
     And the event "app.releaseStage" equals "prod"
@@ -31,8 +31,8 @@ Feature: Discarding reports based on release stage
   Scenario: Crash when release stage is changed to be present in enabledReleaseStages before the event
     When I run "UnhandledErrorChangeValidReleaseStage" and relaunch the app
     And I configure Bugsnag for "UnhandledErrorChangeValidReleaseStage"
-    And I wait to receive a request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I wait to receive an error
+    Then the error is valid for the error reporting API
     And the exception "errorClass" equals "SIGABRT"
     And the event "unhandled" is true
     And the event "app.releaseStage" equals "prod"
@@ -44,9 +44,11 @@ Feature: Discarding reports based on release stage
 
   Scenario: Handled error when release stage is present in enabledReleaseStages
     When I run "HandledErrorValidReleaseStage"
-    And I wait to receive a request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    And the exception "errorClass" equals "iOSTestApp.MagicError"
+    And I wait to receive an error
+    Then the error is valid for the error reporting API
+    And the exception "errorClass" equals the platform-dependent string:
+      | ios   | iOSTestApp.MagicError   |
+      | macos | macOSTestApp.MagicError |
     And the exception "message" equals "incoming!"
     And the event "unhandled" is false
     And the event "app.releaseStage" equals "prod"

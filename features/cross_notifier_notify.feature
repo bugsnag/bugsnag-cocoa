@@ -13,11 +13,12 @@ Feature: Communicating events between notifiers
   Event counts in the report's session should match the handled-ness.
 
     When I run "HandledInternalNotifyScenario"
-    And I wait to receive 2 requests
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "sessions.0.id" is stored as the value "session_id"
-    And I discard the oldest request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I wait to receive a session
+    And I wait to receive an error
+    Then the session is valid for the session reporting API
+    And the session payload field "sessions.0.id" is stored as the value "session_id"
+
+    Then the error is valid for the error reporting API
     And the exception "errorClass" equals "Handled Error!"
     And the exception "message" equals "Internally reported a handled event"
     And the exception "type" equals "unreal"
@@ -35,21 +36,22 @@ Feature: Communicating events between notifiers
     And the "lineNumber" of stack frame 2 is null
     And the event "unhandled" is false
 
-    And the payload field "events" is an array with 1 elements
-    And the payload field "events.0.session.events.handled" equals 1
-    And the payload field "events.0.session.events.unhandled" equals 0
-    And the payload field "events.0.session.id" equals the stored value "session_id"
+    And the error payload field "events" is an array with 1 elements
+    And the error payload field "events.0.session.events.handled" equals 1
+    And the error payload field "events.0.session.events.unhandled" equals 0
+    And the error payload field "events.0.session.id" equals the stored value "session_id"
 
   Scenario: Report an unhandled event through internalNotify()
   Report an unhandled exception, including a custom stacktrace and severity.
   Event counts in the report's session should match the handled-ness.
 
     When I run "UnhandledInternalNotifyScenario"
-    And I wait to receive 2 requests
-    Then the request is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
-    And the payload field "sessions.0.id" is stored as the value "session_id"
-    And I discard the oldest request
-    Then the request is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    And I wait to receive a session
+    And I wait to receive an error
+    Then the session is valid for the session reporting API
+    And the session payload field "sessions.0.id" is stored as the value "session_id"
+
+    Then the error is valid for the error reporting API
     And the exception "errorClass" equals "Unhandled Error?!"
     And the exception "message" equals "Internally reported an unhandled event"
     And the exception "type" equals "fake"
@@ -68,7 +70,7 @@ Feature: Communicating events between notifiers
     And the event "unhandled" is true
     And the event "severityReason.unhandledOverridden" is true
 
-    And the payload field "events" is an array with 1 elements
-    And the payload field "events.0.session.events.handled" equals 0
-    And the payload field "events.0.session.events.unhandled" equals 1
-    And the payload field "events.0.session.id" equals the stored value "session_id"
+    And the error payload field "events" is an array with 1 elements
+    And the error payload field "events.0.session.events.handled" equals 0
+    And the error payload field "events.0.session.events.unhandled" equals 1
+    And the error payload field "events.0.session.id" equals the stored value "session_id"
