@@ -103,6 +103,14 @@
  */
 + (BOOL)appDidCrashLastLaunch;
 
+/**
+ * Tells Bugsnag that your app has finished launching.
+ *
+ * Errors reported after calling this method will have the `BugsnagAppWithState.isLaunching`
+ * property set to false.
+ */
++ (void)markLaunchCompleted;
+
 // =============================================================================
 // MARK: - Notify
 // =============================================================================

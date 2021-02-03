@@ -221,6 +221,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @interface BugsnagClient () <BSGBreadcrumbSink>
 
 @property BSGNotificationBreadcrumbs *notificationBreadcrumbs;
+@property (weak) NSTimer *appLaunchTimer;
 
 @end
 
@@ -237,7 +238,7 @@ NSString *_lastOrientation = nil;
     if ((self = [super init])) {
         // Take a shallow copy of the configuration
         _configuration = [configuration copy];
-        self.state = [[BugsnagMetadata alloc] init];
+        _state = [[BugsnagMetadata alloc] initWithDictionary:@{BSGKeyApp: @{BSGKeyIsLaunching: @YES}}];
         self.notifier = [BugsnagNotifier new];
         self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
@@ -407,6 +408,22 @@ NSString *_lastOrientation = nil;
     // notification not received in time on initial startup, so trigger manually
     [self willEnterForeground:self];
     [self.pluginClient loadPlugins];
+    
+    if (self.configuration.launchDurationMillis > 0) {
+        self.appLaunchTimer = [NSTimer scheduledTimerWithTimeInterval:self.configuration.launchDurationMillis / 1000.0
+                                                               target:self selector:@selector(appLaunchTimerFired:)
+                                                             userInfo:nil repeats:NO];
+    }
+}
+
+- (void)appLaunchTimerFired:(NSTimer *)timer {
+    [self markLaunchCompleted];
+}
+
+- (void)markLaunchCompleted {
+    bsg_log_debug(@"App has finished launching");
+    [self.appLaunchTimer invalidate];
+    [self.state addMetadata:@NO withKey:BSGKeyIsLaunching toSection:BSGKeyApp];
 }
 
 - (BOOL)shouldReportOOM {
@@ -1111,9 +1128,9 @@ NSString *_lastOrientation = nil;
 // MARK: - event data population
 
 - (BugsnagAppWithState *)generateAppWithState:(NSDictionary *)systemInfo {
-    return [BugsnagAppWithState appWithDictionary:@{@"system": systemInfo}
-                                           config:self.configuration
-                                     codeBundleId:self.codeBundleId];
+    // Replicate the parts of a KSCrashReport that +[BugsnagAppWithState appWithDictionary:config:codeBundleId:] examines
+    NSDictionary *kscrashDict = @{BSGKeySystem: systemInfo, @"user": @{@"state": [self.state deepCopy].dictionary}};
+    return [BugsnagAppWithState appWithDictionary:kscrashDict config:self.configuration codeBundleId:self.codeBundleId];
 }
 
 - (BugsnagDeviceWithState *)generateDeviceWithState:(NSDictionary *)systemInfo {

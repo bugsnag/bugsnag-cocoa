@@ -100,6 +100,12 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     return NO;
 }
 
++ (void)markLaunchCompleted {
+    if ([self bugsnagStarted]) {
+        [self.client markLaunchCompleted];
+    }
+}
+
 + (void)notify:(NSException *)exception {
     if ([self bugsnagStarted]) {
         [self.client notify:exception];
