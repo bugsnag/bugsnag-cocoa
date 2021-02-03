@@ -119,7 +119,7 @@
 }
 
 - (void)testAppFromOOM {
-    NSDictionary *oomData = @{
+    NSDictionary *appDict = @{
             @"id": @"com.example.foo.MyIosApp",
             @"releaseStage": @"beta",
             @"version": @"5.6.3",
@@ -128,8 +128,9 @@
             @"inForeground": @YES,
             @"type": @"iOS"
     };
+    NSDictionary *crashReport = @{@"user": @{@"state": @{@"oom": @{@"app": appDict}}}};
 
-    BugsnagAppWithState *app = [BugsnagAppWithState appWithOomData:oomData];
+    BugsnagAppWithState *app = [BugsnagAppWithState appWithKSCrashReportOOM:crashReport];
 
     // verify stateful fields
     XCTAssertNil(app.duration);
