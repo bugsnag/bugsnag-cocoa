@@ -20,6 +20,7 @@ Feature: Barebone tests
       | ios   | com.bugsnag.iOSTestApp   |
       | macos | com.bugsnag.macOSTestApp |
     And the event "app.inForeground" is true
+    And the event "app.isLaunching" is true
     And the event "app.releaseStage" equals "development"
     And the event "app.type" equals the platform-dependent string:
       | ios   | iOS   |
@@ -77,6 +78,7 @@ Feature: Barebone tests
     And I discard the oldest error
 
     Then the error is valid for the error reporting API
+    And the event "app.isLaunching" is false
     And the event "breadcrumbs.2.name" equals "NSRangeException"
     And the event "breadcrumbs.2.type" equals "error"
     And the event "breadcrumbs.3.name" equals "About to decode a payload..."
@@ -103,6 +105,7 @@ Feature: Barebone tests
     Then the error is valid for the error reporting API
     And the event "app.bundleVersion" equals "12301"
     And the event "app.inForeground" is true
+    And the event "app.isLaunching" is true
     And the event "app.releaseStage" equals "development"
     And the event "app.type" equals the platform-dependent string:
       | ios   | iOS   |
@@ -168,6 +171,7 @@ Feature: Barebone tests
       | ios   | com.bugsnag.iOSTestApp   |
       | macos | com.bugsnag.macOSTestApp |
     And the event "app.inForeground" is true
+    And the event "app.isLaunching" is true
     And the event "app.type" equals the platform-dependent string:
       | ios   | iOS   |
       | macos | macOS |
