@@ -5,7 +5,7 @@ Feature: App and Device attributes present
 
   Scenario: App and Device info is as expected
     When I run "AppAndDeviceAttributesScenario"
-    And I wait to receive an error
+    And I wait to receive 2 errors
     Then the error is valid for the error reporting API
     And the error "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
 
@@ -44,6 +44,7 @@ Feature: App and Device attributes present
     And the error payload field "events.0.app.id" equals the platform-dependent string:
       | ios   | com.bugsnag.iOSTestApp   |
       | macos | com.bugsnag.macOSTestApp |
+    And the error payload field "events.0.app.isLaunching" is true
     And the error payload field "events.0.app.releaseStage" equals "development"
     And the error payload field "events.0.app.type" equals the platform-dependent string:
       | ios   | iOS   |
@@ -55,6 +56,10 @@ Feature: App and Device attributes present
     And the error payload field "events.0.app.duration" is a number
     And the error payload field "events.0.app.durationInForeground" is a number
     And the error payload field "events.0.app.inForeground" is not null
+
+    And I discard the oldest error
+    And I wait to receive an error
+    And the event "app.isLaunching" is false
 
   Scenario: App and Device info is as expected when overridden via config
     When I run "AppAndDeviceAttributesScenarioConfigOverride"
@@ -79,3 +84,20 @@ Feature: App and Device attributes present
     And the error payload field "events.0.app.releaseStage" equals "thirdStage"
     And the error payload field "events.0.device.manufacturer" equals "Nokia"
     And the error payload field "events.0.device.modelNumber" equals "0898"
+
+  Scenario: isLaunching should be true if launchDurationMillis is 0
+    When I run "AppAndDeviceAttributesInfiniteLaunchDurationScenario"
+    And I wait to receive an error
+    And the event "app.isLaunching" is true
+
+  Scenario: isLaunching is true for unhandled exception during launch
+    When I run "AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario" and relaunch the app
+    And I configure Bugsnag for "AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario"
+    And I wait to receive an error
+    And the event "app.isLaunching" is true
+
+  Scenario: isLaunching is false for unhandled exception after launch
+    When I run "AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario" and relaunch the app
+    And I configure Bugsnag for "AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario"
+    And I wait to receive an error
+    And the event "app.isLaunching" is false
