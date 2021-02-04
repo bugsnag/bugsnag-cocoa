@@ -58,7 +58,6 @@ Feature: App and Device attributes present
     And the error payload field "events.0.app.inForeground" is not null
 
     And I discard the oldest error
-    And I wait to receive an error
     And the event "app.isLaunching" is false
 
   Scenario: App and Device info is as expected when overridden via config
