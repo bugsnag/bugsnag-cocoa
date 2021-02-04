@@ -31,11 +31,7 @@ Feature: Reporting crash events
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the error payload field "events" is an array with 1 elements
-    # TODO: Figure out why message is empty on macOS
-    # See PLAT-5860
-    #And the exception "message" equals the platform-dependent string:
-    #  | ios   | -[NonExistentMethodScenario santaclaus:]: unrecognized selector sent to instance |
-    #  | macos | @skip                                                                            |
+    And the exception "message" starts with "-[NonExistentMethodScenario santaclaus:]: unrecognized selector sent to instance"
     And the exception "errorClass" equals "NSInvalidArgumentException"
     And the event "exceptions.0.stacktrace.0.method" equals one of:
       | <redacted>            |
