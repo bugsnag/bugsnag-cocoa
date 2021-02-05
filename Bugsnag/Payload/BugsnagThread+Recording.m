@@ -155,19 +155,13 @@ static void bsg_backtrace(thread_t thread, struct backtrace_t *output) {
               errorReportingThread:(BOOL)errorReportingThread
                              index:(int)index {
     
-    // Match the way Xcode's UI displays thread names
-    NSString *name = nil;
-    char buffer[64] = "";
-    if (bsg_ksmachgetThreadName(machThread, buffer, sizeof(buffer)) && buffer[0]) {
-        name = [NSString stringWithFormat:@"%s (%d)", buffer, index + 1];
-    } else if (bsg_ksmachgetThreadQueueName(machThread, buffer, sizeof(buffer)) && buffer[0]) {
-        name = [NSString stringWithFormat:@"Thread %d Queue: %s", index + 1, buffer];
-    } else {
-        name = [NSString stringWithFormat:@"Thread %d", index + 1];
+    char name[64] = "";
+    if (!bsg_ksmachgetThreadName(machThread, name, sizeof(name)) || !name[0]) {
+        bsg_ksmachgetThreadQueueName(machThread, name, sizeof(name));
     }
     
     return [self initWithId:[NSString stringWithFormat:@"%d", index]
-                       name:name
+                       name:name[0] ? @(name) : nil
        errorReportingThread:errorReportingThread
                        type:BSGThreadTypeCocoa
                  stacktrace:[BugsnagStackframe stackframesWithBacktrace:backtraceAddresses length:backtraceLength]];

@@ -1,5 +1,5 @@
 //
-//  BugsnagThreadTest.m
+//  BugsnagThreadTests.m
 //  Tests
 //
 //  Created by Jamie Lynch on 07/04/2020.
@@ -15,12 +15,12 @@
 
 #include <execinfo.h>
 
-@interface BugsnagThreadTest : XCTestCase
+@interface BugsnagThreadTests : XCTestCase
 @property NSArray *binaryImages;
 @property NSDictionary *thread;
 @end
 
-@implementation BugsnagThreadTest
+@implementation BugsnagThreadTests
 
 + (void)setUp {
     bsg_mach_headers_initialize();
@@ -216,7 +216,7 @@
 
 - (void)testAllThreads {
     NSArray<BugsnagThread *> *threads = [BugsnagThread allThreadsWithSkippedFrames:0];
-    XCTAssertEqualObjects(threads[0].name, @"Thread 1 Queue: com.apple.main-thread");
+    XCTAssertEqualObjects(threads[0].name, @"com.apple.main-thread");
     XCTAssertEqualObjects(threads[0].stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
 }
 
@@ -224,7 +224,7 @@
     BugsnagThread *thread = [BugsnagThread currentThreadWithSkippedFrames:0];
     XCTAssertTrue(thread.errorReportingThread);
     XCTAssertEqualObjects(thread.id, @"0");
-    XCTAssertEqualObjects(thread.name, @"Thread 1 Queue: com.apple.main-thread");
+    XCTAssertEqualObjects(thread.name, @"com.apple.main-thread");
     XCTAssertEqualObjects(thread.stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
     
     thread = [BugsnagThread currentThreadWithSkippedFrames:1];
@@ -247,7 +247,7 @@
     BugsnagThread *thread = [BugsnagThread mainThread];
     XCTAssertTrue(thread.errorReportingThread);
     XCTAssertEqualObjects(thread.id, @"0");
-    XCTAssertEqualObjects(thread.name, @"Thread 1 Queue: com.apple.main-thread");
+    XCTAssertEqualObjects(thread.name, @"com.apple.main-thread");
     XCTAssertEqualObjects(thread.stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
 }
 
@@ -259,7 +259,7 @@
     while (!thread) {}
     XCTAssertTrue(thread.errorReportingThread);
     XCTAssertEqualObjects(thread.id, @"0");
-    XCTAssertEqualObjects(thread.name, @"Thread 1 Queue: com.apple.main-thread");
+    XCTAssertEqualObjects(thread.name, @"com.apple.main-thread");
     XCTAssertEqualObjects(thread.stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
 }
 

@@ -12,8 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagThread ()
 
-- (instancetype)initWithId:(NSString *)identifier
-                      name:(NSString *)name
+- (instancetype)initWithId:(nullable NSString *)identifier
+                      name:(nullable NSString *)name
       errorReportingThread:(BOOL)errorReportingThread
                       type:(BSGThreadType)type
                 stacktrace:(NSArray<BugsnagStackframe *> *)stacktrace;
