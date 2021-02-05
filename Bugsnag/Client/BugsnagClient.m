@@ -1169,16 +1169,14 @@ NSString *_lastOrientation = nil;
     // discard the following
     // 1. [BugsnagReactNative getPayloadInfo:resolve:reject:]
     // 2. [BugsnagClient collectThreads:]
-    // 3. [BSG_KSCrash captureThreads:depth:unhandled:]
+    // 3. [BugsnagThread allThreadsWithSkippedFrames:]
     int depth = 3;
-    NSException *exc = [NSException exceptionWithName:@"Bugsnag" reason:@"" userInfo:nil];
-    BSGThreadSendPolicy sendThreads = self.configuration.sendThreads;
-    BOOL recordAllThreads = sendThreads == BSGThreadSendPolicyAlways
-            || (unhandled && sendThreads == BSGThreadSendPolicyUnhandledOnly);
-    NSArray<BugsnagThread *> *threads = [[BSG_KSCrash sharedInstance] captureThreads:exc
-                                                                               depth:depth
-                                                                    recordAllThreads:recordAllThreads];
-    return [BugsnagThread serializeThreads:threads];
+    if (self.configuration.sendThreads == BSGThreadSendPolicyAlways ||
+        (self.configuration.sendThreads == BSGThreadSendPolicyUnhandledOnly && unhandled)) {
+        return [BugsnagThread serializeThreads:[BugsnagThread allThreadsWithSkippedFrames:depth]];
+    } else {
+        return [BugsnagThread serializeThreads:@[[BugsnagThread currentThreadWithSkippedFrames:depth]]];
+    }
 }
 
 - (void)addRuntimeVersionInfo:(NSString *)info
