@@ -24,21 +24,6 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
 
 @implementation BugsnagThread
 
-- (instancetype)initWithId:(nullable NSString *)identifier
-                      name:(nullable NSString *)name
-      errorReportingThread:(BOOL)errorReportingThread
-                stacktrace:(NSArray<BugsnagStackframe *> *)stacktrace
-                      type:(BSGThreadType)type {
-    if (self = [super init]) {
-        _id = [identifier copy];
-        _name = [name copy];
-        _errorReportingThread = errorReportingThread;
-        _stacktrace = [stacktrace copy];
-        _type = type;
-    }
-    return self;
-}
-
 + (instancetype)threadFromJson:(NSDictionary *)json {
     if (json == nil) {
         return nil;

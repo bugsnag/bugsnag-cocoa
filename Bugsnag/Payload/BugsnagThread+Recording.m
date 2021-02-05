@@ -167,8 +167,8 @@ static void bsg_backtrace(thread_t thread, struct backtrace_t *output) {
     return [self initWithId:[NSString stringWithFormat:@"%d", index]
                        name:name
        errorReportingThread:errorReportingThread
-                 stacktrace:[BugsnagStackframe stackframesWithBacktrace:backtraceAddresses length:backtraceLength]
-                       type:BSGThreadTypeCocoa];
+                       type:BSGThreadTypeCocoa
+                 stacktrace:[BugsnagStackframe stackframesWithBacktrace:backtraceAddresses length:backtraceLength]];
 }
 
 @end

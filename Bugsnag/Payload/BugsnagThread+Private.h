@@ -12,11 +12,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagThread ()
 
-- (instancetype)initWithId:(nullable NSString *)identifier
-                      name:(nullable NSString *)name
+- (instancetype)initWithId:(NSString *)identifier
+                      name:(NSString *)name
       errorReportingThread:(BOOL)errorReportingThread
-                stacktrace:(NSArray<BugsnagStackframe *> *)stacktrace
-                      type:(BSGThreadType)type;
+                      type:(BSGThreadType)type
+                stacktrace:(NSArray<BugsnagStackframe *> *)stacktrace;
 
 - (instancetype)initWithThread:(NSDictionary *)thread binaryImages:(NSArray *)binaryImages;
 
