@@ -835,7 +835,7 @@ NSString *_lastOrientation = nil;
      * 1. +[Bugsnag notifyError:block:]
      * 2. -[BugsnagClient notifyError:block:]
      * 3. -[BugsnagClient notify:handledState:block:]
-     * 4. -[BSG_KSCrash captureThreads:depth:]
+     * 4. -[BugsnagThread allThreadsWithSkippedFrames:]
      *
      * Note that this results in one too many frames being removed if the
      * -[BugsnagClient notifyError:block:] is used directly.
