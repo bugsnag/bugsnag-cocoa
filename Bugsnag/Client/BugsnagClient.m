@@ -835,12 +835,11 @@ NSString *_lastOrientation = nil;
      * 1. +[Bugsnag notifyError:block:]
      * 2. -[BugsnagClient notifyError:block:]
      * 3. -[BugsnagClient notify:handledState:block:]
-     * 4. -[BugsnagThread allThreadsWithSkippedFrames:]
      *
      * Note that this results in one too many frames being removed if the
      * -[BugsnagClient notifyError:block:] is used directly.
      */
-    NSInteger const BSGNotifierStackFrameCount = 4;
+    NSInteger const BSGNotifierStackFrameCount = 3;
     
     NSArray *threads = nil;
     if (self.configuration.sendThreads == BSGThreadSendPolicyAlways) {
@@ -1169,8 +1168,7 @@ NSString *_lastOrientation = nil;
     // discard the following
     // 1. [BugsnagReactNative getPayloadInfo:resolve:reject:]
     // 2. [BugsnagClient collectThreads:]
-    // 3. [BugsnagThread allThreadsWithSkippedFrames:]
-    int depth = 3;
+    int depth = 2;
     if (self.configuration.sendThreads == BSGThreadSendPolicyAlways ||
         (self.configuration.sendThreads == BSGThreadSendPolicyUnhandledOnly && unhandled)) {
         return [BugsnagThread serializeThreads:[BugsnagThread allThreadsWithSkippedFrames:depth]];
