@@ -8,11 +8,17 @@
 
 #import <Bugsnag/BugsnagThread.h>
 
+@class BugsnagStacktrace;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagThread ()
 
-@property BugsnagStacktrace *trace;
+- (instancetype)initWithId:(nullable NSString *)identifier
+                      name:(nullable NSString *)name
+      errorReportingThread:(BOOL)errorReportingThread
+                stacktrace:(NSArray<BugsnagStackframe *> *)stacktrace
+                      type:(BSGThreadType)type;
 
 - (instancetype)initWithThread:(NSDictionary *)thread binaryImages:(NSArray *)binaryImages;
 

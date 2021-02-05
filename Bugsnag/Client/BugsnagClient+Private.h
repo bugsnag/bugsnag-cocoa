@@ -90,6 +90,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray *)collectThreads:(BOOL)unhandled; // Used in BugsnagReactNative
 
+- (BugsnagError *)generateError:(NSException *)exception threads:(nullable NSArray<BugsnagThread *> *)threads;
+
 - (void)notifyInternal:(BugsnagEvent *)event block:(BugsnagOnErrorBlock)block;
 
 - (void)removeObserverWithBlock:(BugsnagObserverBlock)block; // Used in BugsnagReactNative

@@ -24,6 +24,21 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
 
 @implementation BugsnagThread
 
+- (instancetype)initWithId:(nullable NSString *)identifier
+                      name:(nullable NSString *)name
+      errorReportingThread:(BOOL)errorReportingThread
+                stacktrace:(NSArray<BugsnagStackframe *> *)stacktrace
+                      type:(BSGThreadType)type {
+    if (self = [super init]) {
+        _id = [identifier copy];
+        _name = [name copy];
+        _errorReportingThread = errorReportingThread;
+        _stacktrace = [stacktrace copy];
+        _type = type;
+    }
+    return self;
+}
+
 + (instancetype)threadFromJson:(NSDictionary *)json {
     if (json == nil) {
         return nil;
@@ -31,12 +46,12 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
     NSString *type = json[@"type"];
     BSGThreadType threadType = BSGParseThreadType(type);
     BOOL errorReportingThread = json[@"errorReportingThread"] && [json[@"errorReportingThread"] boolValue];
-    BugsnagStacktrace *stacktrace = [BugsnagStacktrace stacktraceFromJson:json[BSGKeyStacktrace]];
+    NSArray<BugsnagStackframe *> *stacktrace = [BugsnagStacktrace stacktraceFromJson:json[BSGKeyStacktrace]].trace;
     BugsnagThread *thread = [[BugsnagThread alloc] initWithId:json[@"id"]
                                                          name:json[@"name"]
                                          errorReportingThread:errorReportingThread
                                                          type:threadType
-                                                        trace:stacktrace];
+                                                   stacktrace:stacktrace];
     return thread;
 }
 
@@ -44,13 +59,13 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
                       name:(NSString *)name
       errorReportingThread:(BOOL)errorReportingThread
                       type:(BSGThreadType)type
-                     trace:(BugsnagStacktrace *)trace {
+                stacktrace:(NSArray<BugsnagStackframe *> *)stacktrace {
     if (self = [super init]) {
         _id = id;
         _name = name;
         _errorReportingThread = errorReportingThread;
         _type = type;
-        _stacktrace = trace.trace;
+        _stacktrace = stacktrace;
     }
     return self;
 }

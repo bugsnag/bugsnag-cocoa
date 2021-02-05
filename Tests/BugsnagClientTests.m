@@ -15,6 +15,8 @@
 #import "BugsnagKeys.h"
 #import "BugsnagUser.h"
 
+#include "BSG_KSMachHeaders.h"
+
 #import <objc/runtime.h>
 #import <XCTest/XCTest.h>
 
@@ -336,6 +338,22 @@ static BOOL testOnCrashHandlerNotCalledForOOM_shouldReportOOM(BugsnagClient *cli
     [client start];
     method_setImplementation(method, originalImplementation);
     XCTAssertFalse(testOnCrashHandlerNotCalledForOOM_didCallOnCrashHandler, @"onCrashHandler should not be called for OOMs");
+}
+
+- (void)testGenerateError {
+    bsg_mach_headers_initialize();
+    bsg_mach_headers_register_for_changes();
+    
+    BugsnagClient *client = [[BugsnagClient alloc] init];
+    BugsnagError *error = nil;
+    @try {
+        [[NSArray array] objectAtIndex:42];
+    } @catch (NSException *exception) {
+        error = [client generateError:exception threads:nil];
+    }
+    XCTAssertEqualObjects(error.stacktrace[0].method, @"__exceptionPreprocess");
+    XCTAssertEqualObjects(error.stacktrace[1].method, @"objc_exception_throw");
+    XCTAssertEqualObjects(error.stacktrace[3].method, @(__PRETTY_FUNCTION__));
 }
 
 @end

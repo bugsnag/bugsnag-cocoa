@@ -8,8 +8,12 @@
 
 #import <XCTest/XCTest.h>
 
+#import "BSG_KSMachHeaders.h"
 #import "BugsnagStackframe.h"
 #import "BugsnagThread+Private.h"
+#import "BugsnagThread+Recording.h"
+
+#include <execinfo.h>
 
 @interface BugsnagThreadTest : XCTestCase
 @property NSArray *binaryImages;
@@ -17,6 +21,11 @@
 @end
 
 @implementation BugsnagThreadTest
+
++ (void)setUp {
+    bsg_mach_headers_initialize();
+    bsg_mach_headers_register_for_changes();
+}
 
 - (void)setUp {
     self.thread = @{
@@ -201,6 +210,57 @@
     XCTAssertEqual(1, thread.stacktrace.count);
     thread.stacktrace = @[];
     XCTAssertEqual(0, thread.stacktrace.count);
+}
+
+// MARK: - BugsnagThread (Recording)
+
+- (void)testAllThreads {
+    NSArray<BugsnagThread *> *threads = [BugsnagThread allThreadsWithSkippedFrames:0];
+    XCTAssertEqualObjects(threads[0].name, @"Thread 1 Queue: com.apple.main-thread");
+    XCTAssertEqualObjects(threads[0].stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
+}
+
+- (void)testCurrentThread {
+    BugsnagThread *thread = [BugsnagThread currentThreadWithSkippedFrames:0];
+    XCTAssertTrue(thread.errorReportingThread);
+    XCTAssertEqualObjects(thread.id, @"0");
+    XCTAssertEqualObjects(thread.name, @"Thread 1 Queue: com.apple.main-thread");
+    XCTAssertEqualObjects(thread.stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
+    
+    thread = [BugsnagThread currentThreadWithSkippedFrames:1];
+    XCTAssertEqualObjects(thread.stacktrace.firstObject.method, @"__invoking___");
+}
+
+- (void)testCurrentThreadBackground {
+    __block BugsnagThread *thread = nil;
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        thread = [BugsnagThread currentThreadWithSkippedFrames:0];
+    });
+    while (!thread) {}
+    XCTAssertTrue(thread.errorReportingThread);
+    XCTAssertGreaterThan(thread.id.intValue, 0);
+    XCTAssertNotNil(thread.name);
+    XCTAssert([thread.stacktrace.firstObject.method hasSuffix:@"_block_invoke"]);
+}
+
+- (void)testMainThread {
+    BugsnagThread *thread = [BugsnagThread mainThread];
+    XCTAssertTrue(thread.errorReportingThread);
+    XCTAssertEqualObjects(thread.id, @"0");
+    XCTAssertEqualObjects(thread.name, @"Thread 1 Queue: com.apple.main-thread");
+    XCTAssertEqualObjects(thread.stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
+}
+
+- (void)testMainThreadFromBackground {
+    __block BugsnagThread *thread = nil;
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        thread = [BugsnagThread mainThread];
+    });
+    while (!thread) {}
+    XCTAssertTrue(thread.errorReportingThread);
+    XCTAssertEqualObjects(thread.id, @"0");
+    XCTAssertEqualObjects(thread.name, @"Thread 1 Queue: com.apple.main-thread");
+    XCTAssertEqualObjects(thread.stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
 }
 
 @end

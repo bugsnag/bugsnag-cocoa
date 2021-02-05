@@ -62,9 +62,11 @@
 #import "BugsnagSession+Private.h"
 #import "BugsnagSessionTracker+Private.h"
 #import "BugsnagSessionTrackingApiClient.h"
+#import "BugsnagStackframe+Private.h"
 #import "BugsnagStateEvent.h"
 #import "BugsnagSystemState.h"
 #import "BugsnagThread+Private.h"
+#import "BugsnagThread+Recording.h"
 #import "BugsnagUser+Private.h"
 
 #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
@@ -82,8 +84,6 @@
 NSString *const BSTabCrash = @"crash";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
-
-static NSInteger const BSGNotifierStackFrameCount = 4;
 
 static struct {
     // Contains the state of the event (handled/unhandled)
@@ -836,13 +836,20 @@ NSString *_lastOrientation = nil;
      * 2. -[BugsnagClient notifyError:block:]
      * 3. -[BugsnagClient notify:handledState:block:]
      * 4. -[BSG_KSCrash captureThreads:depth:]
+     *
+     * Note that this results in one too many frames being removed if the
+     * -[BugsnagClient notifyError:block:] is used directly.
      */
-    int depth = (int)(BSGNotifierStackFrameCount);
-
-    BOOL recordAllThreads = self.configuration.sendThreads == BSGThreadSendPolicyAlways;
-    NSArray *threads = [[BSG_KSCrash sharedInstance] captureThreads:exception
-                                                              depth:depth
-                                                   recordAllThreads:recordAllThreads];
+    NSInteger const BSGNotifierStackFrameCount = 4;
+    
+    NSArray *threads = nil;
+    if (self.configuration.sendThreads == BSGThreadSendPolicyAlways) {
+        threads = [BugsnagThread allThreadsWithSkippedFrames:BSGNotifierStackFrameCount];
+    } else {
+        // -generateError:threads: reads the stacktrace from the current thread
+        threads = @[[BugsnagThread currentThreadWithSkippedFrames:BSGNotifierStackFrameCount]];
+    }
+    
     NSArray *errors = @[[self generateError:exception threads:threads]];
 
     BugsnagMetadata *metadata = [self.metadata deepCopy];
@@ -853,7 +860,7 @@ NSString *_lastOrientation = nil;
                                                handledState:handledState
                                                        user:self.user
                                                    metadata:metadata
-                                                breadcrumbs:[NSArray arrayWithArray:self.breadcrumbs.breadcrumbs]
+                                                breadcrumbs:self.breadcrumbs.breadcrumbs
                                                      errors:errors
                                                     threads:threads
                                                     session:self.sessionTracker.runningSession];
@@ -945,21 +952,25 @@ NSString *_lastOrientation = nil;
                                  threads:(NSArray<BugsnagThread *> *)threads {
     NSString *errorClass = exception.name ?: NSStringFromClass([exception class]);
     NSString *errorMessage = exception.reason;
-
-    BugsnagThread *errorReportingThread;
-
-    for (BugsnagThread *thread in threads) {
-        if (thread.errorReportingThread) {
-            errorReportingThread = thread;
-            break;
+    NSArray<BugsnagStackframe *> *stacktrace = nil;
+    
+    NSArray<NSNumber *> *callStackReturnAddresses = exception.callStackReturnAddresses;
+    if (callStackReturnAddresses.count) {
+        stacktrace = [BugsnagStackframe stackframesWithCallStackReturnAddresses:callStackReturnAddresses];
+    } else {
+        // The NSException will not have a call stack unless it was raised by the Objective-C runtime.
+        for (BugsnagThread *thread in threads) {
+            if (thread.errorReportingThread) {
+                stacktrace = thread.stacktrace;
+                break;
+            }
         }
     }
-
-    BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:errorClass
-                                                      errorMessage:errorMessage ?: @""
-                                                         errorType:BSGErrorTypeCocoa
-                                                        stacktrace:errorReportingThread.stacktrace];
-    return error;
+    
+    return [[BugsnagError alloc] initWithErrorClass:errorClass
+                                       errorMessage:errorMessage ?: @""
+                                          errorType:BSGErrorTypeCocoa
+                                         stacktrace:stacktrace];
 }
 
 // MARK: - Breadcrumbs
