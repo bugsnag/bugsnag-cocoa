@@ -25,9 +25,6 @@ struct backtrace_t {
     uintptr_t addresses[kMaxAddresses];
 };
 
-
-@implementation BugsnagThread (Recording)
-
 static void bsg_backtrace(thread_t thread, struct backtrace_t *output) {
     output->length = 0;
     if (thread == bsg_ksmachthread_self()) {
@@ -39,6 +36,11 @@ static void bsg_backtrace(thread_t thread, struct backtrace_t *output) {
         output->length = bsg_ksbt_backtraceThreadState(&machineContext, output->addresses, 0, kMaxAddresses);
     }
 }
+
+
+// MARK: -
+
+@implementation BugsnagThread (Recording)
 
 + (nullable NSArray<BugsnagThread *> *)allThreadsWithSkippedFrames:(int)skippedFrames {
     thread_t *threads = NULL;
