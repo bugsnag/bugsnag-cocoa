@@ -8,8 +8,6 @@
 
 #import <Bugsnag/BugsnagThread.h>
 
-@class BugsnagStacktrace;
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagThread ()
