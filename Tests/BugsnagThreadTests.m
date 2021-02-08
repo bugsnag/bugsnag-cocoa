@@ -13,8 +13,6 @@
 #import "BugsnagThread+Private.h"
 #import "BugsnagThread+Recording.h"
 
-#include <execinfo.h>
-
 @interface BugsnagThreadTests : XCTestCase
 @property NSArray *binaryImages;
 @property NSDictionary *thread;
@@ -231,12 +229,14 @@
     XCTAssertEqualObjects(threads[0].stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
 }
 
-- (void)testCurrentThreadBackground {
+- (void)testCurrentThreadFromBackground {
     __block BugsnagThread *thread = nil;
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Thread recorded in background"];
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         thread = [BugsnagThread allThreads:NO callStackReturnAddresses:NSThread.callStackReturnAddresses][0];
+        [expectation fulfill];
     });
-    while (!thread) {}
+    [self waitForExpectationsWithTimeout:2 handler:nil];
     XCTAssertTrue(thread.errorReportingThread);
     XCTAssertGreaterThan(thread.id.intValue, 0);
     XCTAssertNotNil(thread.name);
@@ -251,13 +251,15 @@
 
 - (void)testMainThreadFromBackground {
     __block BugsnagThread *thread = nil;
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Thread recorded in background"];
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         thread = [BugsnagThread mainThread];
+        [expectation fulfill];
     });
-    while (!thread) {}
+    [self waitForExpectationsWithTimeout:2 handler:nil];
     XCTAssertTrue(thread.errorReportingThread);
     XCTAssertEqualObjects(thread.id, @"0");
-    XCTAssertEqualObjects(thread.name, @"com.apple.main-thread");
+    XCTAssert([thread.name isEqualToString:@"com.apple.main-thread"] || [thread.name isEqualToString:@"com.apple.dt.xctest.xctwaiter"]);
     XCTAssert([[thread.stacktrace valueForKeyPath:@"method"] containsObject:@(__PRETTY_FUNCTION__)]);
 }
 
