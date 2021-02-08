@@ -123,10 +123,6 @@ static void backtrace_for_callstack(NSArray<NSNumber *> *callStackReturnAddresse
 }
 
 + (nullable instancetype)mainThread {
-    if ([NSThread isMainThread]) {
-        return nil;
-    }
-    
     thread_t *threads = NULL;
     mach_msg_type_number_t threadCount = 0;
     if (task_threads(mach_task_self(), &threads, &threadCount) != KERN_SUCCESS) {
@@ -136,6 +132,9 @@ static void backtrace_for_callstack(NSArray<NSNumber *> *callStackReturnAddresse
     BugsnagThread *object = nil;
     if (threadCount) {
         thread_t thread = threads[0];
+        if (MACH_PORT_INDEX(thread) == MACH_PORT_INDEX(bsg_ksmachthread_self())) {
+            return nil;
+        }
         struct backtrace_t backtrace;
         BOOL needsResume = NO;
         needsResume = thread_suspend(thread) == KERN_SUCCESS;
