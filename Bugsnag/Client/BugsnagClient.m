@@ -842,10 +842,18 @@ NSString *_lastOrientation = nil;
     BOOL recordAllThreads = self.configuration.sendThreads == BSGThreadSendPolicyAlways;
     NSArray *threads = [BugsnagThread allThreads:recordAllThreads callStackReturnAddresses:callStack];
     
+    NSArray<BugsnagStackframe *> *stacktrace = nil;
+    for (BugsnagThread *thread in threads) {
+        if (thread.errorReportingThread) {
+            stacktrace = thread.stacktrace;
+            break;
+        }
+    }
+    
     BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:exception.name ?: NSStringFromClass([exception class])
                                                       errorMessage:exception.reason ?: @""
                                                          errorType:BSGErrorTypeCocoa
-                                                        stacktrace:[BugsnagStackframe stackframesWithCallStackReturnAddresses:callStack]];
+                                                        stacktrace:stacktrace];
 
     BugsnagMetadata *metadata = [self.metadata deepCopy];
 
