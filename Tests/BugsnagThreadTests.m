@@ -258,7 +258,7 @@
     XCTAssertTrue(thread.errorReportingThread);
     XCTAssertEqualObjects(thread.id, @"0");
     XCTAssertEqualObjects(thread.name, @"com.apple.main-thread");
-    XCTAssertEqualObjects(thread.stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
+    XCTAssert([[thread.stacktrace valueForKeyPath:@"method"] containsObject:@(__PRETTY_FUNCTION__)]);
 }
 
 @end
