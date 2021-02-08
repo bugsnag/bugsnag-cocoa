@@ -15,8 +15,6 @@
 #include "BSG_KSCrashSentry_User.h"
 #include "BSG_KSMach.h"
 
-#include <execinfo.h>
-
 
 #define kMaxAddresses 150 // same as BSG_kMaxBacktraceDepth
 
@@ -25,15 +23,18 @@ struct backtrace_t {
     uintptr_t addresses[kMaxAddresses];
 };
 
-static void bsg_backtrace(thread_t thread, struct backtrace_t *output) {
+static void backtrace_for_thread(thread_t thread, struct backtrace_t *output) {
     output->length = 0;
-    if (thread == bsg_ksmachthread_self()) {
-        output->length = backtrace((void **)output->addresses, kMaxAddresses);
-        return;
-    }
     BSG_STRUCT_MCONTEXT_L machineContext;
     if (bsg_ksmachthreadState(thread, &machineContext)) {
         output->length = bsg_ksbt_backtraceThreadState(&machineContext, output->addresses, 0, kMaxAddresses);
+    }
+}
+
+static void backtrace_for_callstack(NSArray<NSNumber *> *callStackReturnAddresses, struct backtrace_t *output) {
+    output->length = (int)MIN(callStackReturnAddresses.count, kMaxAddresses);
+    for (int i = 0; i < output->length; i++) {
+        output->addresses[i] = (uintptr_t)callStackReturnAddresses[i].unsignedLongLongValue;
     }
 }
 
@@ -42,7 +43,15 @@ static void bsg_backtrace(thread_t thread, struct backtrace_t *output) {
 
 @implementation BugsnagThread (Recording)
 
-+ (nullable NSArray<BugsnagThread *> *)allThreadsWithSkippedFrames:(int)skippedFrames {
++ (NSArray<BugsnagThread *> *)allThreads:(BOOL)allThreads callStackReturnAddresses:(NSArray<NSNumber *> *)callStackReturnAddresses {
+    if (allThreads) {
+        return [BugsnagThread allThreadsWithCallStackReturnAddresses:callStackReturnAddresses];
+    } else {
+        return @[[BugsnagThread currentThreadWithCallStackReturnAddresses:callStackReturnAddresses]];
+    }
+}
+
++ (NSArray<BugsnagThread *> *)allThreadsWithCallStackReturnAddresses:(NSArray<NSNumber *> *)callStackReturnAddresses {
     thread_t *threads = NULL;
     mach_msg_type_number_t threadCount = 0;
     
@@ -53,13 +62,18 @@ static void bsg_backtrace(thread_t thread, struct backtrace_t *output) {
     
     if (task_threads(mach_task_self(), &threads, &threadCount) != KERN_SUCCESS) {
         bsg_kscrashsentry_resume_threads_user(false);
-        return nil;
+        return @[];
     }
     
     struct backtrace_t backtraces[threadCount];
     
     for (int i = 0; i < threadCount; i++) {
-        bsg_backtrace(threads[i], &backtraces[i]);
+        BOOL isCurrentThread = MACH_PORT_INDEX(threads[i]) == MACH_PORT_INDEX(bsg_ksmachthread_self());
+        if (isCurrentThread) {
+            backtrace_for_callstack(callStackReturnAddresses, &backtraces[i]);
+        } else {
+            backtrace_for_thread(threads[i], &backtraces[i]);
+        }
     }
     
     bsg_kscrashsentry_resume_threads_user(false);
@@ -68,13 +82,9 @@ static void bsg_backtrace(thread_t thread, struct backtrace_t *output) {
     
     for (int i = 0; i < threadCount; i++) {
         BOOL isCurrentThread = MACH_PORT_INDEX(threads[i]) == MACH_PORT_INDEX(bsg_ksmachthread_self());
-        int skip = 0;
-        if (isCurrentThread && backtraces[i].length > (skippedFrames + 2)) {
-            skip = skippedFrames + 2; // +2 to account for this method and bsg_backtrace()
-        }
         [objects addObject:[[BugsnagThread alloc] initWithMachThread:threads[i]
-                                                  backtraceAddresses:backtraces[i].addresses + skip
-                                                     backtraceLength:backtraces[i].length - skip
+                                                  backtraceAddresses:backtraces[i].addresses
+                                                     backtraceLength:backtraces[i].length
                                                 errorReportingThread:isCurrentThread
                                                                index:i]];
     }
@@ -87,10 +97,10 @@ static void bsg_backtrace(thread_t thread, struct backtrace_t *output) {
     return objects;
 }
 
-+ (instancetype)currentThreadWithSkippedFrames:(int)skippedFrames {
++ (instancetype)currentThreadWithCallStackReturnAddresses:(NSArray<NSNumber *> *)callStackReturnAddresses {
     thread_t thread = mach_thread_self();
     struct backtrace_t backtrace;
-    bsg_backtrace(thread, &backtrace);
+    backtrace_for_callstack(callStackReturnAddresses, &backtrace);
     thread_t *threads = NULL;
     mach_msg_type_number_t threadCount = 0;
     int threadIndex = 0;
@@ -103,10 +113,9 @@ static void bsg_backtrace(thread_t thread, struct backtrace_t *output) {
         }
         vm_deallocate(mach_task_self(), (vm_address_t)threads, sizeof(thread_t) * threadCount);
     }
-    int skip = MIN(skippedFrames + 2, backtrace.length); // +2 to account for this method and bsg_backtrace()
     BugsnagThread *object = [[BugsnagThread alloc] initWithMachThread:thread
-                                                   backtraceAddresses:backtrace.addresses + skip
-                                                      backtraceLength:backtrace.length - skip
+                                                   backtraceAddresses:backtrace.addresses
+                                                      backtraceLength:backtrace.length
                                                  errorReportingThread:YES
                                                                 index:threadIndex];
     mach_port_deallocate(mach_task_self(), thread);
@@ -115,7 +124,7 @@ static void bsg_backtrace(thread_t thread, struct backtrace_t *output) {
 
 + (nullable instancetype)mainThread {
     if ([NSThread isMainThread]) {
-        return [BugsnagThread currentThreadWithSkippedFrames:1];
+        return nil;
     }
     
     thread_t *threads = NULL;
@@ -130,7 +139,7 @@ static void bsg_backtrace(thread_t thread, struct backtrace_t *output) {
         struct backtrace_t backtrace;
         BOOL needsResume = NO;
         needsResume = thread_suspend(thread) == KERN_SUCCESS;
-        bsg_backtrace(thread, &backtrace);
+        backtrace_for_thread(thread, &backtrace);
         if (needsResume) {
             thread_resume(thread);
         }

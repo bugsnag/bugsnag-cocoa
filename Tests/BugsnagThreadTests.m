@@ -215,40 +215,38 @@
 // MARK: - BugsnagThread (Recording)
 
 - (void)testAllThreads {
-    NSArray<BugsnagThread *> *threads = [BugsnagThread allThreadsWithSkippedFrames:0];
+    NSArray<BugsnagThread *> *threads = [BugsnagThread allThreads:YES callStackReturnAddresses:NSThread.callStackReturnAddresses];
+    XCTAssertTrue(threads[0].errorReportingThread);
     XCTAssertEqualObjects(threads[0].name, @"com.apple.main-thread");
     XCTAssertEqualObjects(threads[0].stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
+    XCTAssertGreaterThan(threads.count, 1);
 }
 
 - (void)testCurrentThread {
-    BugsnagThread *thread = [BugsnagThread currentThreadWithSkippedFrames:0];
-    XCTAssertTrue(thread.errorReportingThread);
-    XCTAssertEqualObjects(thread.id, @"0");
-    XCTAssertEqualObjects(thread.name, @"com.apple.main-thread");
-    XCTAssertEqualObjects(thread.stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
-    
-    thread = [BugsnagThread currentThreadWithSkippedFrames:1];
-    XCTAssertEqualObjects(thread.stacktrace.firstObject.method, @"__invoking___");
+    NSArray<BugsnagThread *> *threads = [BugsnagThread allThreads:NO callStackReturnAddresses:NSThread.callStackReturnAddresses];
+    XCTAssertEqual(threads.count, 1);
+    XCTAssertTrue(threads[0].errorReportingThread);
+    XCTAssertEqualObjects(threads[0].id, @"0");
+    XCTAssertEqualObjects(threads[0].name, @"com.apple.main-thread");
+    XCTAssertEqualObjects(threads[0].stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
 }
 
 - (void)testCurrentThreadBackground {
     __block BugsnagThread *thread = nil;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-        thread = [BugsnagThread currentThreadWithSkippedFrames:0];
+        thread = [BugsnagThread allThreads:NO callStackReturnAddresses:NSThread.callStackReturnAddresses][0];
     });
     while (!thread) {}
     XCTAssertTrue(thread.errorReportingThread);
     XCTAssertGreaterThan(thread.id.intValue, 0);
     XCTAssertNotNil(thread.name);
+    XCTAssertNotEqualObjects(thread.name, @"com.apple.main-thread");
     XCTAssert([thread.stacktrace.firstObject.method hasSuffix:@"_block_invoke"]);
 }
 
 - (void)testMainThread {
     BugsnagThread *thread = [BugsnagThread mainThread];
-    XCTAssertTrue(thread.errorReportingThread);
-    XCTAssertEqualObjects(thread.id, @"0");
-    XCTAssertEqualObjects(thread.name, @"com.apple.main-thread");
-    XCTAssertEqualObjects(thread.stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
+    XCTAssertNil(thread);
 }
 
 - (void)testMainThreadFromBackground {

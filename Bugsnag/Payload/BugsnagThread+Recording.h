@@ -12,11 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagThread (Recording)
 
-// `skippedFrames` is the number of stack frames to strip from the calling thread, to allow omitting frames within Bugsnag itself.
-
-+ (nullable NSArray<BugsnagThread *> *)allThreadsWithSkippedFrames:(int)skippedFrames;
-
-+ (instancetype)currentThreadWithSkippedFrames:(int)skippedFrames;
++ (NSArray<BugsnagThread *> *)allThreads:(BOOL)allThreads callStackReturnAddresses:(NSArray<NSNumber *> *)callStackReturnAddresses;
 
 + (nullable instancetype)mainThread;
 
