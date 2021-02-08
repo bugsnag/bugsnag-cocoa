@@ -84,11 +84,12 @@ BugsnagStackframeType const BugsnagStackframeTypeCocoa = @"cocoa";
         stackframes.isPc = i == 0;
         
         Dl_info dl_info = {0};
-        bsg_ksbt_symbolicate(&address, &dl_info, 1, 0);
-        stackframes.machoFile = dl_info.dli_fname ? @(dl_info.dli_fname) : nil;
-        stackframes.machoLoadAddress = dl_info.dli_fbase ? @((uintptr_t)dl_info.dli_fbase) : nil;
-        stackframes.symbolAddress = dl_info.dli_saddr ? @((uintptr_t)dl_info.dli_saddr) : nil;
-        stackframes.method = dl_info.dli_sname ? @(dl_info.dli_sname) : nil;
+        if (dladdr((const void *)address, &dl_info)) {
+            stackframes.machoFile = dl_info.dli_fname ? @(dl_info.dli_fname) : nil;
+            stackframes.machoLoadAddress = @((uintptr_t)dl_info.dli_fbase);
+            stackframes.symbolAddress = dl_info.dli_saddr ? @((uintptr_t)dl_info.dli_saddr) : nil;
+            stackframes.method = dl_info.dli_sname ? @(dl_info.dli_sname) : nil;
+        }
         
         BSG_Mach_Header_Info *header = bsg_mach_headers_image_at_address(address);
         if (header) {
