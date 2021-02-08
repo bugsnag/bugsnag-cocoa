@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Improve performance of thread recording for handled errors.
+  [#992](https://github.com/bugsnag/bugsnag-cocoa/pull/992)
+
 ## 6.6.1 (2021-02-03)
 
 ### Bug fixes
