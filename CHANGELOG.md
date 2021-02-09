@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix a tvOS file permission error that was introduced in 6.5.1
+  [#996](https://github.com/bugsnag/bugsnag-cocoa/pull/996)
+
 ## 6.6.1 (2021-02-03)
 
 ### Bug fixes
