@@ -97,6 +97,16 @@ class BareboneTestUnhandledErrorScenario: Scenario {
             // The version of the app at report time.
             config.appVersion = "23.4"
             config.bundleVersion = "23401"
+            config.addOnSendError { [weak self] in
+                if let lastRunInfo = self?.client?.lastRunInfo {
+                    $0.addMetadata(
+                        ["consecutiveLaunchCrashes": lastRunInfo.consecutiveLaunchCrashes,
+                         "crashed": lastRunInfo.crashed,
+                         "crashedDuringLaunch": lastRunInfo.crashedDuringLaunch
+                        ], section: "lastRunInfo")
+                }
+                return true
+            }
         } else {
             // The version of the app at crash time.
             config.appVersion = "12.3"
