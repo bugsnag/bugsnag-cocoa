@@ -29,12 +29,19 @@ When('I clear all persistent data') do
   )
 end
 
+def click_if_present(element)
+  return false unless Maze.driver.wait_for_element(element, 1)
+
+  Maze.driver.click_element(element)
+  true
+rescue Selenium::WebDriver::Error::NoSuchElementError
+  # Ignore - we have seen clicks fail like this despite having just checked for the element's presence
+  false
+end
+
 When('I close the keyboard') do
   unless Maze.driver.capabilities['platformName'].eql?('Mac')
-    steps %(
-      Given the element "close_keyboard" is present
-      And I click the element "close_keyboard"
-    )
+    click_if_present 'close_keyboard'
   end
 end
 
