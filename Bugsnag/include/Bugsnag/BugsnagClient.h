@@ -27,6 +27,7 @@
 #import <Foundation/Foundation.h>
 
 #import <Bugsnag/BugsnagConfiguration.h>
+#import <Bugsnag/BugsnagLastRunInfo.h>
 #import <Bugsnag/BugsnagMetadata.h>
 #import <Bugsnag/BugsnagMetadataStore.h>
 
@@ -209,7 +210,12 @@ NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
 /**
  * @return YES if Bugsnag has been started and the previous launch crashed
  */
-- (BOOL)appDidCrashLastLaunch;
+- (BOOL)appDidCrashLastLaunch __attribute__((deprecated("use 'lastRunInfo.crashed' instead")));
+
+/**
+ * Information about the last run of the app, and whether it crashed.
+ */
+@property (readonly, nullable, nonatomic) BugsnagLastRunInfo *lastRunInfo;
 
 /**
  * Tells Bugsnag that your app has finished launching.
