@@ -55,6 +55,7 @@
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagKeys.h"
+#import "BugsnagLastRunInfo+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagNotifier.h"
@@ -521,8 +522,21 @@ NSString *_lastOrientation = nil;
             unlink(crashSentinelPath);
         }
     }
-    self.appDidCrashLastLaunch = handledCrashLastLaunch || didOOMLastLaunch;
-
+    BOOL didCrash = handledCrashLastLaunch || didOOMLastLaunch;
+    self.appDidCrashLastLaunch = didCrash;
+    
+    BOOL wasLaunching = [self.stateMetadataFromLastLaunch[BSGKeyApp][BSGKeyIsLaunching] boolValue];
+    BOOL didCrashDuringLaunch = didCrash && wasLaunching;
+    if (didCrashDuringLaunch) {
+        self.systemState.consecutiveLaunchCrashes++;
+    } else {
+        self.systemState.consecutiveLaunchCrashes = 0;
+    }
+    
+    self.lastRunInfo = [[BugsnagLastRunInfo alloc] initWithConsecutiveLaunchCrashes:self.systemState.consecutiveLaunchCrashes
+                                                                            crashed:didCrash
+                                                                crashedDuringLaunch:didCrashDuringLaunch];
+    
     // Ignore potential false positive OOM if previous session crashed and was
     // reported. There are two checks in place:
     //
@@ -549,6 +563,10 @@ NSString *_lastOrientation = nil;
     [self.state addMetadata:codeBundleId withKey:BSGKeyCodeBundleId toSection:BSGKeyApp];
     [self.systemState setCodeBundleID:codeBundleId];
     self.sessionTracker.codeBundleId = codeBundleId;
+}
+
+- (void)setLastRunInfo:(BugsnagLastRunInfo *)lastRunInfo {
+    _lastRunInfo = lastRunInfo;
 }
 
 - (void)setStarted:(BOOL)started {
