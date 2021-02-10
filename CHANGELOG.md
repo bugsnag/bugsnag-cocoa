@@ -1,12 +1,16 @@
 Changelog
 =========
 
-## TBD
+## 6.6.2 (2021-02-10)
 
 ### Bug fixes
 
 * Fix a tvOS file permission error that was introduced in 6.5.1
   [#996](https://github.com/bugsnag/bugsnag-cocoa/pull/996)
+* Fix an analyzer warning.
+  [#994](https://github.com/bugsnag/bugsnag-cocoa/pull/994)
+* Stop Bugsnag unregistering other signal handlers when catching a mach exception.
+  [#976](https://github.com/bugsnag/bugsnag-cocoa/pull/976)
 
 ## 6.6.1 (2021-02-03)
 
