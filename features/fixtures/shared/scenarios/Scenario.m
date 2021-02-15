@@ -76,7 +76,7 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
 - (void)startBugsnag {
     // TODO: PLAT-5827
     // [self waitForNetworkConnectivity]; // Disabled for now because MR v4 does not listen on /
-    _client = [Bugsnag startWithConfiguration:self.config];
+    [Bugsnag startWithConfiguration:self.config];
 }
 
 - (void)didEnterBackgroundNotification {
