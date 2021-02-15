@@ -226,6 +226,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 
 @end
 
+__attribute__((annotate("oclint:suppress[long class]")))
 @implementation BugsnagClient
 
 /**
