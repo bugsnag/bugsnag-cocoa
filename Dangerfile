@@ -9,9 +9,9 @@ def parse_infer_results(path)
   JSON.parse(File.read(path)).each do |result|
     case result['severity']
     when 'ERROR'
-      fail(result['qualifier'], file: result['file'], line: result['line'])
+      fail("[Infer] #{result['qualifier']}", file: result['file'], line: result['line'])
     when 'WARNING'
-      warn(result['qualifier'], file: result['file'], line: result['line'])
+      warn("[Infer] #{result['qualifier']}", file: result['file'], line: result['line'])
     end
     issue_count += 1
   end
@@ -27,9 +27,9 @@ def parse_oclint_results(path)
     file = violation['path'].sub("#{Dir.pwd}/", '')
     case violation['priority']
     when 1
-      fail(violation['rule'], file: file, line: violation['startLine'])
+      fail("[OCLint] #{violation['rule']}", file: file, line: violation['startLine'])
     when 2, 3
-      warn(violation['rule'], file: file, line: violation['startLine'])
+      warn("[OCLint] #{violation['rule']}", file: file, line: violation['startLine'])
     end
     issue_count += 1
   end
@@ -63,4 +63,4 @@ parse_infer_results('infer-out/report.json')
 
 parse_oclint_results('oclint.json')
 
-framework_size()
+# framework_size()
