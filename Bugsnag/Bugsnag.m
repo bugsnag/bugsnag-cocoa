@@ -100,6 +100,13 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     return NO;
 }
 
++ (BugsnagLastRunInfo *)lastRunInfo {
+    if ([self bugsnagStarted]) {
+        return self.client.lastRunInfo;
+    }
+    return nil;
+}
+
 + (void)markLaunchCompleted {
     if ([self bugsnagStarted]) {
         [self.client markLaunchCompleted];

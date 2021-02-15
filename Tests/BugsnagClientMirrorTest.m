@@ -133,6 +133,7 @@
             @"notificationBreadcrumbs @16@0:8",
             @"setAppLaunchTimer: v24@0:8@16",
             @"setConfigMetadataFromLastLaunch: v24@0:8@16",
+            @"setLastRunInfo: v24@0:8@16",
             @"setMetadataFromLastLaunch: v24@0:8@16",
             @"setNotificationBreadcrumbs: v24@0:8@16",
             @"setStarted: v20@0:8B16",

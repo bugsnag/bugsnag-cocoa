@@ -27,7 +27,7 @@
 
 - (void)testAppDidCrashLastLaunch {
     [TestSupport purgePersistentData];
-    XCTAssertFalse([Bugsnag appDidCrashLastLaunch]);
+    XCTAssertFalse(Bugsnag.lastRunInfo.crashed);
 }
 
 - (void)testValidNotify {
@@ -88,7 +88,7 @@
 }
 
 - (void)testValidAppDidCrashLastLaunch {
-    XCTAssertFalse(Bugsnag.appDidCrashLastLaunch);
+    XCTAssertFalse(Bugsnag.lastRunInfo.crashed);
 }
 
 - (void)testValidUser {

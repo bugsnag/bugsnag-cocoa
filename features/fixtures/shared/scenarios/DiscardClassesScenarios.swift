@@ -43,7 +43,7 @@ class DiscardClassesUnhandledExceptionScenario: Scenario {
         }
         super.startBugsnag()
         
-        if Bugsnag.appDidCrashLastLaunch() {
+        if Bugsnag.lastRunInfo?.crashed == true {
             Bugsnag.notify(NSException(name: .notDiscarded, reason: "This exception should not be discarded"))
         }
     }
@@ -66,7 +66,7 @@ class DiscardClassesUnhandledCrashScenario: Scenario {
         }
         super.startBugsnag()
         
-        if Bugsnag.appDidCrashLastLaunch() {
+        if Bugsnag.lastRunInfo?.crashed == true {
             Bugsnag.notify(NSException(name: .notDiscarded, reason: "This exception should not be discarded"))
         }
     }
