@@ -9,8 +9,8 @@
 class LastRunInfoConsecutiveLaunchCrashesScenario: Scenario {
     
     override func startBugsnag() {
-        config.addOnSendError { [weak self] in
-            if let lastRunInfo = self?.client?.lastRunInfo {
+        config.addOnSendError {
+            if let lastRunInfo = Bugsnag.lastRunInfo {
                 $0.addMetadata(
                     ["consecutiveLaunchCrashes": lastRunInfo.consecutiveLaunchCrashes,
                      "crashed": lastRunInfo.crashed,
