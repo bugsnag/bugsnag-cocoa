@@ -27,9 +27,9 @@ def parse_oclint_results(path)
     file = violation['path'].sub("#{Dir.pwd}/", '')
     case violation['priority']
     when 1
-      fail("[OCLint] #{violation['rule']}", file: file, line: violation['startLine'])
+      fail("[OCLint] #{violation['rule']}: #{violation['message']}", file: file, line: violation['startLine'])
     when 2, 3
-      warn("[OCLint] #{violation['rule']}", file: file, line: violation['startLine'])
+      warn("[OCLint] #{violation['rule']}: #{violation['message']}", file: file, line: violation['startLine'])
     end
     issue_count += 1
   end
