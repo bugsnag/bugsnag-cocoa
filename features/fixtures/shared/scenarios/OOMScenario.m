@@ -22,7 +22,6 @@
     self.config.launchDurationMillis = 0; // Ensure isLaunching will be true for the OOM, no matter how long it takes to occur.
     [self.config addMetadata:@{@"bar": @"foo"} toSection:@"custom"];
     [self.config setUser:@"foobar" withEmail:@"foobar@example.com" andName:@"Foo Bar"];
-    __weak typeof(self) weakSelf = self;
     [self.config addOnSendErrorBlock:^BOOL(BugsnagEvent *event) {
         BugsnagLastRunInfo *lastRunInfo = Bugsnag.lastRunInfo;
         if (lastRunInfo) {
