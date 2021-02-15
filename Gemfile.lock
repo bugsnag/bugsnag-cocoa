@@ -1,10 +1,10 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: acdffd98a16ecf7b32c4efbb9f38583e3a0c06ab
-  tag: v4.4.0
+  revision: 8d98b99e29e8dfa4257d0788adeb0701f373fa9e
+  branch: tms/response-delays
   specs:
-    bugsnag-maze-runner (4.4.0)
-      appium_lib (~> 10.2)
+    bugsnag-maze-runner (4.10.0)
+      appium_lib (~> 11.2.0)
       boring (~> 0.1.0)
       cucumber (~> 3.1.2)
       cucumber-expressions (~> 6.0.0)
@@ -31,11 +31,11 @@ GEM
     algoliasearch (1.27.5)
       httpclient (~> 2.8, >= 2.8.3)
       json (>= 1.5.1)
-    appium_lib (10.6.0)
-      appium_lib_core (~> 3.3)
+    appium_lib (11.2.0)
+      appium_lib_core (~> 4.1)
       nokogiri (~> 1.8, >= 1.8.1)
       tomlrb (~> 1.1)
-    appium_lib_core (3.11.1)
+    appium_lib_core (4.4.0)
       faye-websocket (~> 0.11.0)
       selenium-webdriver (~> 3.14, >= 3.14.1)
     atomos (0.1.3)
