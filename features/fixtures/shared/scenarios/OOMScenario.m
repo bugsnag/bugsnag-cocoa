@@ -24,7 +24,7 @@
     [self.config setUser:@"foobar" withEmail:@"foobar@example.com" andName:@"Foo Bar"];
     __weak typeof(self) weakSelf = self;
     [self.config addOnSendErrorBlock:^BOOL(BugsnagEvent *event) {
-        BugsnagLastRunInfo *lastRunInfo = weakSelf.client.lastRunInfo;
+        BugsnagLastRunInfo *lastRunInfo = Bugsnag.lastRunInfo;
         if (lastRunInfo) {
             [event addMetadata:@{@"consecutiveLaunchCrashes": @(lastRunInfo.consecutiveLaunchCrashes),
                                  @"crashed": @(lastRunInfo.crashed),
