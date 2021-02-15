@@ -276,13 +276,17 @@
     
     NSString *fileId = [self.crashReportStore fileIds].lastObject;
     if (!fileId) {
-        completionHander();
+        if (completionHander) {
+            completionHander();
+        }
         return;
     }
     
     NSDictionary *contents = [self.crashReportStore fileWithId:fileId];
     if (!contents) {
-        completionHander();
+        if (completionHander) {
+            completionHander();
+        }
         return;
     }
     
