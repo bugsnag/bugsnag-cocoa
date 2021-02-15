@@ -73,6 +73,17 @@ static BSG_KSCrash_SentryContext *bsg_g_context;
 #pragma mark - Callbacks -
 // ============================================================================
 
+static struct sigaction *get_previous_sigaction(int sigNum) {
+    const int *fatalSignals = bsg_kssignal_fatalSignals();
+    int fatalSignalsCount = bsg_kssignal_numFatalSignals();
+    for (int i = 0; i < fatalSignalsCount; i++) {
+        if(fatalSignals[i] == sigNum) {
+            return &bsg_g_previousSignalHandlers[i];
+        }
+    }
+    return NULL;
+}
+
 // Avoiding static functions due to linker issues.
 
 /** Our custom signal handler.
@@ -126,15 +137,19 @@ void bsg_kssighndl_i_handleSignal(int sigNum, siginfo_t *signalInfo,
 
     BSG_KSLOG_DEBUG(
         "Re-raising or chaining signal for regular handlers to catch.");
-    struct sigaction previous = bsg_g_previousSignalHandlers[sigNum];
-    if (previous.sa_flags & SA_SIGINFO) {
-        previous.sa_sigaction(sigNum, signalInfo, userContext);
-    } else if (previous.sa_handler == SIG_DFL) {
+    struct sigaction *previous = get_previous_sigaction(sigNum);
+    if(previous == NULL) {
+        BSG_KSLOG_ERROR("BUG: Could not find handler for signal %d", sigNum);
+        return;
+    }
+    if (previous->sa_flags & SA_SIGINFO) {
+        previous->sa_sigaction(sigNum, signalInfo, userContext);
+    } else if (previous->sa_handler == SIG_DFL) {
         // This is technically not allowed, but it works in OSX and iOS.
         signal(sigNum, SIG_DFL);
         raise(sigNum);
-    } else if (previous.sa_handler != SIG_IGN) {
-        previous.sa_handler(sigNum);
+    } else if (previous->sa_handler != SIG_IGN) {
+        previous->sa_handler(sigNum);
     }
 }
 
