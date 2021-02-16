@@ -78,6 +78,11 @@ BugsnagStackframeType const BugsnagStackframeTypeCocoa = @"cocoa";
     
     for (int i = 0; i < length; i++) {
         uintptr_t address = backtrace[i];
+        if (address == 1) {
+            // We sometimes get a frame address of 0x1 at the bottom of the call stack.
+            // It's not a valid stack frame and causes E2E tests to fail, so should be ignored.
+            continue;
+        }
 
         BugsnagStackframe *stackframes = [[BugsnagStackframe alloc] init];
         stackframes.frameAddress = @(address);
