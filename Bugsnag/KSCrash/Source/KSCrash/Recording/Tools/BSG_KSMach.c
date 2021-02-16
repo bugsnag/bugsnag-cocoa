@@ -196,11 +196,10 @@ bool bsg_ksmachfillState(const thread_t thread, const thread_state_t state,
     mach_msg_type_number_t stateCountBuff = stateCount;
     kern_return_t kr;
 
-    // For unknown reasons, thread_get_state returns this value on Rosetta,
-    // but still succeeds.
-    const int ROSETTA_SUCCESS = 268435459;
     kr = thread_get_state(thread, flavor, state, &stateCountBuff);
-    if (kr != KERN_SUCCESS && kr != ROSETTA_SUCCESS) {
+    if (kr != KERN_SUCCESS) {
+        // When running under Rosetta 2, thread_get_state() sometimes fails
+        // with MACH_SEND_INVALID_DEST and returns no data.
         BSG_KSLOG_ERROR("thread_get_state: %s", mach_error_string(kr));
         return false;
     }
