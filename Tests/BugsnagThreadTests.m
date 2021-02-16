@@ -249,18 +249,22 @@
     XCTAssertNil(thread);
 }
 
+#define XCTAssertContainsObject(collection, object) \
+    XCTAssert([collection containsObject:object], @"%@ is not contained in %@", object, \
+        [[collection description] stringByReplacingOccurrencesOfString:@"\n" withString:@"\\n"])
+
 - (void)testMainThreadFromBackground {
     __block BugsnagThread *thread = nil;
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Thread recorded in background"];
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         thread = [BugsnagThread mainThread];
-        [expectation fulfill];
+        dispatch_semaphore_signal(semaphore);
     });
-    [self waitForExpectationsWithTimeout:2 handler:nil];
+    dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC));
     XCTAssertTrue(thread.errorReportingThread);
     XCTAssertEqualObjects(thread.id, @"0");
     XCTAssert([thread.name isEqualToString:@"com.apple.main-thread"] || [thread.name isEqualToString:@"com.apple.dt.xctest.xctwaiter"]);
-    XCTAssert([[thread.stacktrace valueForKeyPath:@"method"] containsObject:@(__PRETTY_FUNCTION__)]);
+    XCTAssertContainsObject([thread.stacktrace valueForKeyPath:@"method"], @(__PRETTY_FUNCTION__));
 }
 
 @end
