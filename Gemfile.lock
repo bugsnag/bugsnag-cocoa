@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: a131571eecf43e8649138fa9f0b9192aa8dfaeeb
+  revision: 5ad610b2586fdd6496b6dcc14370dcb3757a0d8d
   branch: tms/response-delays
   specs:
     bugsnag-maze-runner (4.10.0)
