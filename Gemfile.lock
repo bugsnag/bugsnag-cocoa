@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: 3054d552402107ceadb8b8c6f60fa959e8863c2a
+  revision: a131571eecf43e8649138fa9f0b9192aa8dfaeeb
   branch: tms/response-delays
   specs:
     bugsnag-maze-runner (4.10.0)
@@ -35,7 +35,7 @@ GEM
       appium_lib_core (~> 4.1)
       nokogiri (~> 1.8, >= 1.8.1)
       tomlrb (~> 1.1)
-    appium_lib_core (4.4.0)
+    appium_lib_core (4.4.1)
       faye-websocket (~> 0.11.0)
       selenium-webdriver (~> 3.14, >= 3.14.1)
     atomos (0.1.3)
