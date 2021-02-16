@@ -34,7 +34,11 @@
 }
 
 - (NSString *)getV1RootDir {
+#if TARGET_OS_TV
+    NSArray *dirs = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+#else
     NSArray *dirs = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+#endif
     if ([dirs count] == 0) {
         XCTFail(@"Could not locate directory path for NSApplicationSupportDirectory.");
         return nil;
