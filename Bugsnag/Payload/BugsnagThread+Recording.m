@@ -24,10 +24,11 @@ struct backtrace_t {
 };
 
 static void backtrace_for_thread(thread_t thread, struct backtrace_t *output) {
-    output->length = 0;
-    BSG_STRUCT_MCONTEXT_L machineContext;
+    BSG_STRUCT_MCONTEXT_L machineContext = {0};
     if (bsg_ksmachthreadState(thread, &machineContext)) {
         output->length = bsg_ksbt_backtraceThreadState(&machineContext, output->addresses, 0, kMaxAddresses);
+    } else {
+        output->length = 0;
     }
 }
 
