@@ -63,4 +63,4 @@ parse_infer_results('infer-out/report.json')
 
 parse_oclint_results('oclint.json')
 
-# framework_size()
+framework_size()
