@@ -22,7 +22,7 @@ Feature: Delivery of errors
     And I configure Bugsnag for "HandledExceptionScenario"
     Then I should receive no requests
 
-  Scenario: Bugsnag.start() should block for no more than 2 seconds
+  Scenario: Bugsnag.start() should block for 2 seconds after a launch crash
     When I run "SendLaunchCrashesSynchronouslyScenario" and relaunch the app
     And I set the response delay for the next request to 5000 milliseconds
     And I set the app to "report" mode
