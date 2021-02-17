@@ -19,6 +19,14 @@
 
 // MARK: BSGDictMergeTest
 
+- (void)testSubarrayFromIndex {
+    XCTAssertEqualObjects(BSGArraySubarrayFromIndex(@[@"foo", @"bar"], 0), (@[@"foo", @"bar"]));
+    XCTAssertEqualObjects(BSGArraySubarrayFromIndex(@[@"foo", @"bar"], 1), @[@"bar"]);
+    XCTAssertEqualObjects(BSGArraySubarrayFromIndex(@[@"foo", @"bar"], 2), @[]);
+    XCTAssertEqualObjects(BSGArraySubarrayFromIndex(@[@"foo", @"bar"], 42), @[]);
+    XCTAssertEqualObjects(BSGArraySubarrayFromIndex(@[@"foo", @"bar"], -1), @[]);
+}
+
 - (void)testBasicMerge {
     NSDictionary *combined = @{@"a": @"one",
                                @"b": @"two"};
