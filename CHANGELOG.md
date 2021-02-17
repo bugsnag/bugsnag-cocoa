@@ -1,9 +1,12 @@
 Changelog
 =========
 
-## TBD
+## 6.6.3 (2021-02-17)
 
 ### Bug fixes
+
+* Fix hang after receiving signals in some cases.
+  [1002](https://github.com/bugsnag/bugsnag-cocoa/pull/1002)
 
 * Improve performance of thread recording for handled errors.
   [#992](https://github.com/bugsnag/bugsnag-cocoa/pull/992)
