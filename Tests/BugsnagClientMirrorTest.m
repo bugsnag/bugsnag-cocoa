@@ -131,6 +131,7 @@
             @"metadataFile @16@0:8",
             @"metadataFromLastLaunch @16@0:8",
             @"notificationBreadcrumbs @16@0:8",
+            @"sendLaunchCrashSynchronously v16@0:8",
             @"setAppLaunchTimer: v24@0:8@16",
             @"setConfigMetadataFromLastLaunch: v24@0:8@16",
             @"setLastRunInfo: v24@0:8@16",

@@ -224,6 +224,16 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
 @property (nonatomic) NSUInteger launchDurationMillis;
 
 /**
+ * Determines whether launch crashes should be sent synchronously during `+[Bugsnag start]`.
+ *
+ * If true and the previous run terminated due to a crash during app launch, `+[Bugsnag start]`
+ * will block the calling thread for up to 2 seconds while the crash report is sent.
+ *
+ * By default this value is true.
+ */
+@property (nonatomic) BOOL sendLaunchCrashesSynchronously;
+
+/**
  * The types of breadcrumbs which will be captured. By default, this is all types.
  */
 @property BSGEnabledBreadcrumbType enabledBreadcrumbTypes;

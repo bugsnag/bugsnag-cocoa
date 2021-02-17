@@ -148,6 +148,12 @@ Then('the event {string} is within {int} seconds of the current timestamp') do |
   assert_true(delta.abs < threshold_secs, "Expected current timestamp, but received #{value}")
 end
 
+Then('the event {string} is between {float} and {float}') do |field, lower, upper|
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
+  assert_not_nil(value, 'Expected a value')
+  assert_true(lower <= value && value <= upper, "Expected a value between #{lower} and #{upper}, but received #{value}")
+end
+
 Then('the event breadcrumbs contain {string} with type {string}') do |string, type|
   crumbs = Maze::Helper.read_key_path(find_request(0)[:body], 'events.0.breadcrumbs')
   assert_not_equal(0, crumbs.length, 'There are no breadcrumbs on this event')

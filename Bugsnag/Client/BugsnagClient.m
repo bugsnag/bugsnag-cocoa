@@ -226,6 +226,9 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 
 @end
 
+#if __clang_major__ >= 11 // Xcode 10 does not like the following attribute
+__attribute__((annotate("oclint:suppress[long class]")))
+#endif
 @implementation BugsnagClient
 
 /**
@@ -414,6 +417,10 @@ NSString *_lastOrientation = nil;
                                                                target:self selector:@selector(appLaunchTimerFired:)
                                                              userInfo:nil repeats:NO];
     }
+    
+    if (self.lastRunInfo.crashedDuringLaunch && self.configuration.sendLaunchCrashesSynchronously) {
+        [self sendLaunchCrashSynchronously];
+    }
 }
 
 - (void)appLaunchTimerFired:(NSTimer *)timer {
@@ -424,6 +431,23 @@ NSString *_lastOrientation = nil;
     bsg_log_debug(@"App has finished launching");
     [self.appLaunchTimer invalidate];
     [self.state addMetadata:@NO withKey:BSGKeyIsLaunching toSection:BSGKeyApp];
+}
+
+- (void)sendLaunchCrashSynchronously {
+    if (self.configuration.session.delegateQueue == NSOperationQueue.currentQueue) {
+        bsg_log_warn(@"Cannot send launch crash synchronously because session.delegateQueue is set to the current queue.");
+        return;
+    }
+    bsg_log_info(@"Sending launch crash synchronously.");
+    NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:2];
+    NSCondition *sentLaunchCrash = [[NSCondition alloc] init];
+    [[BSG_KSCrash sharedInstance] sendLatestReport:^{
+        bsg_log_debug(@"Sent launch crash.");
+        [sentLaunchCrash signal];
+    }];
+    if (![sentLaunchCrash waitUntilDate:deadline]) {
+        bsg_log_debug(@"Timed out waiting for launch crash to be sent.");
+    }
 }
 
 - (BOOL)shouldReportOOM {

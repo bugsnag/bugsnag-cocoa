@@ -12,8 +12,6 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter * _Nonnull writer);
 
 @property (strong, nonatomic, nonnull) BugsnagConfiguration *config;
 
-@property (readonly, nullable, nonatomic) BugsnagClient *client;
-
 + (Scenario *_Nonnull)createScenarioNamed:(NSString *_Nonnull)className
                                withConfig:(BugsnagConfiguration *_Nonnull)config;
 
