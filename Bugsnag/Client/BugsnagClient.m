@@ -66,6 +66,7 @@
 #import "BugsnagStateEvent.h"
 #import "BugsnagSystemState.h"
 #import "BugsnagThread+Private.h"
+#import "BugsnagThread+Recording.h"
 #import "BugsnagUser+Private.h"
 
 #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
@@ -83,8 +84,6 @@
 NSString *const BSTabCrash = @"crash";
 NSString *const BSAttributeDepth = @"depth";
 NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
-
-static NSInteger const BSGNotifierStackFrameCount = 4;
 
 static struct {
     // Contains the state of the event (handled/unhandled)
@@ -879,9 +878,6 @@ NSString *_lastOrientation = nil;
   handledState:(BugsnagHandledState *_Nonnull)handledState
          block:(BugsnagOnErrorBlock)block
 {
-    BugsnagError *error = [BugsnagError new];
-    error.type = BSGErrorTypeCocoa;
-
     /**
      * Stack frames starting from this one are removed by setting the depth.
      * This helps remove bugsnag frames from showing in NSErrors as their
@@ -893,15 +889,28 @@ NSString *_lastOrientation = nil;
      * 1. +[Bugsnag notifyError:block:]
      * 2. -[BugsnagClient notifyError:block:]
      * 3. -[BugsnagClient notify:handledState:block:]
-     * 4. -[BSG_KSCrash captureThreads:depth:]
      */
-    int depth = (int)(BSGNotifierStackFrameCount);
+    int depth = 3;
 
+    NSArray<NSNumber *> *callStack = exception.callStackReturnAddresses;
+    if (!callStack.count) {
+        callStack = BSGArraySubarrayFromIndex(NSThread.callStackReturnAddresses, depth);
+    }
     BOOL recordAllThreads = self.configuration.sendThreads == BSGThreadSendPolicyAlways;
-    NSArray *threads = [[BSG_KSCrash sharedInstance] captureThreads:exception
-                                                              depth:depth
-                                                   recordAllThreads:recordAllThreads];
-    NSArray *errors = @[[self generateError:exception threads:threads]];
+    NSArray *threads = [BugsnagThread allThreads:recordAllThreads callStackReturnAddresses:callStack];
+    
+    NSArray<BugsnagStackframe *> *stacktrace = nil;
+    for (BugsnagThread *thread in threads) {
+        if (thread.errorReportingThread) {
+            stacktrace = thread.stacktrace;
+            break;
+        }
+    }
+    
+    BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:exception.name ?: NSStringFromClass([exception class])
+                                                      errorMessage:exception.reason ?: @""
+                                                         errorType:BSGErrorTypeCocoa
+                                                        stacktrace:stacktrace];
 
     BugsnagMetadata *metadata = [self.metadata deepCopy];
 
@@ -911,8 +920,8 @@ NSString *_lastOrientation = nil;
                                                handledState:handledState
                                                        user:self.user
                                                    metadata:metadata
-                                                breadcrumbs:[NSArray arrayWithArray:self.breadcrumbs.breadcrumbs]
-                                                     errors:errors
+                                                breadcrumbs:self.breadcrumbs.breadcrumbs
+                                                     errors:@[error]
                                                     threads:threads
                                                     session:self.sessionTracker.runningSession];
     event.apiKey = self.configuration.apiKey;
@@ -997,27 +1006,6 @@ NSString *_lastOrientation = nil;
                       andMetadata:metadata];
 
     [self flushPendingReports];
-}
-
-- (BugsnagError *)generateError:(NSException *)exception
-                                 threads:(NSArray<BugsnagThread *> *)threads {
-    NSString *errorClass = exception.name ?: NSStringFromClass([exception class]);
-    NSString *errorMessage = exception.reason;
-
-    BugsnagThread *errorReportingThread;
-
-    for (BugsnagThread *thread in threads) {
-        if (thread.errorReportingThread) {
-            errorReportingThread = thread;
-            break;
-        }
-    }
-
-    BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:errorClass
-                                                      errorMessage:errorMessage ?: @""
-                                                         errorType:BSGErrorTypeCocoa
-                                                        stacktrace:errorReportingThread.stacktrace];
-    return error;
 }
 
 // MARK: - Breadcrumbs
@@ -1216,15 +1204,12 @@ NSString *_lastOrientation = nil;
     // discard the following
     // 1. [BugsnagReactNative getPayloadInfo:resolve:reject:]
     // 2. [BugsnagClient collectThreads:]
-    // 3. [BSG_KSCrash captureThreads:depth:unhandled:]
-    int depth = 3;
-    NSException *exc = [NSException exceptionWithName:@"Bugsnag" reason:@"" userInfo:nil];
+    int depth = 2;
+    NSArray<NSNumber *> *callStack = BSGArraySubarrayFromIndex(NSThread.callStackReturnAddresses, depth);
     BSGThreadSendPolicy sendThreads = self.configuration.sendThreads;
     BOOL recordAllThreads = sendThreads == BSGThreadSendPolicyAlways
             || (unhandled && sendThreads == BSGThreadSendPolicyUnhandledOnly);
-    NSArray<BugsnagThread *> *threads = [[BSG_KSCrash sharedInstance] captureThreads:exc
-                                                                               depth:depth
-                                                                    recordAllThreads:recordAllThreads];
+    NSArray<BugsnagThread *> *threads = [BugsnagThread allThreads:recordAllThreads callStackReturnAddresses:callStack];
     return [BugsnagThread serializeThreads:threads];
 }
 

@@ -32,7 +32,7 @@ Feature: Handled Errors and Exceptions
     And the error payload field "events.0.threads" is an array with 1 elements
     And the error payload field "events.0.threads.0.errorReportingThread" is true
     And the error payload field "events.0.threads.0.id" is not null
-    And the error payload field "events.0.threads.0.name" is null
+    And the error payload field "events.0.threads.0.name" equals "com.apple.main-thread"
     And the error payload field "events.0.threads.0.type" equals "cocoa"
     And the thread information is valid for the event
 
