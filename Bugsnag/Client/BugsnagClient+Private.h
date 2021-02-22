@@ -10,10 +10,10 @@
 
 #import "BugsnagMetadata+Private.h" // For BugsnagObserverBlock
 
+@class BSGEventUploader;
 @class BugsnagBreadcrumbs;
 @class BugsnagConfiguration;
 @class BugsnagCrashSentry;
-@class BugsnagErrorReportApiClient;
 @class BugsnagMetadata;
 @class BugsnagNotifier;
 @class BugsnagPluginClient;
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (strong, nonatomic) BugsnagCrashSentry *crashSentry;
 
-@property (strong, nonatomic) BugsnagErrorReportApiClient *errorReportApiClient;
+@property (strong, nonatomic) BSGEventUploader *eventUploader;
 
 @property NSMutableDictionary *extraRuntimeInfo;
 

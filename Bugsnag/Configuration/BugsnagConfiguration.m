@@ -322,13 +322,6 @@ static NSUserDefaults *userDefaults;
     [(NSMutableArray *)self.onBreadcrumbBlocks removeObject:block];
 }
 
-- (NSDictionary *)errorApiHeaders {
-    return @{BugsnagHTTPHeaderNameApiKey: self.apiKey ?: @"",
-             BugsnagHTTPHeaderNamePayloadVersion: @"4.0",
-             BugsnagHTTPHeaderNameSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate date]]
-    };
-}
-
 - (NSDictionary *)sessionApiHeaders {
     return @{BugsnagHTTPHeaderNameApiKey: self.apiKey ?: @"",
              BugsnagHTTPHeaderNamePayloadVersion: @"1.0",

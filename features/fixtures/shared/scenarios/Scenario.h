@@ -6,16 +6,17 @@
 #import <Foundation/Foundation.h>
 #import <Bugsnag/Bugsnag.h>
 
-void markErrorHandledCallback(const BSG_KSCrashReportWriter * _Nonnull writer);
+NS_ASSUME_NONNULL_BEGIN
+
+void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 
 @interface Scenario : NSObject
 
 @property (strong, nonatomic, nonnull) BugsnagConfiguration *config;
 
-+ (Scenario *_Nonnull)createScenarioNamed:(NSString *_Nonnull)className
-                               withConfig:(BugsnagConfiguration *_Nonnull)config;
++ (Scenario *)createScenarioNamed:(NSString *)className withConfig:(BugsnagConfiguration *)config;
 
-- (instancetype _Nonnull)initWithConfig:(BugsnagConfiguration *_Nonnull)config;
+- (instancetype)initWithConfig:(BugsnagConfiguration *)config;
 
 /**
  * Blocks the calling thread until network connectivity to the notify endpoint has been verified.
@@ -33,4 +34,8 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter * _Nonnull writer);
 
 @property (nonatomic, strong, nullable) NSString *eventMode;
 
+- (NSURLSession *)URLSessionWithObserver:(void (^)(NSURLRequest *request, NSData *responseData, NSURLResponse *response, NSError *error))observer;
+
 @end
+
+NS_ASSUME_NONNULL_END

@@ -29,6 +29,7 @@
 #import "BugsnagClient+Private.h"
 
 #import "BSGConnectivity.h"
+#import "BSGEventUploader.h"
 #import "BSGFileLocations.h"
 #import "BSGJSONSerialization.h"
 #import "BSGNotificationBreadcrumbs.h"
@@ -260,7 +261,7 @@ NSString *_lastOrientation = nil;
         self.stateEventBlocks = [NSMutableArray new];
         self.extraRuntimeInfo = [NSMutableDictionary new];
         self.crashSentry = [BugsnagCrashSentry new];
-        self.errorReportApiClient = [[BugsnagErrorReportApiClient alloc] initWithSession:configuration.session queueName:@"Error API queue"];
+        _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration notifier:_notifier];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
 
         _notificationBreadcrumbs = [[BSGNotificationBreadcrumbs alloc] initWithConfiguration:configuration breadcrumbSink:self];
@@ -341,7 +342,7 @@ NSString *_lastOrientation = nil;
 
 - (void)start {
     [self.configuration validate];
-    [self.crashSentry install:self.configuration apiClient:self.errorReportApiClient notifier:self.notifier onCrash:&BSSerializeDataCrashHandler];
+    [self.crashSentry install:self.configuration notifier:self.notifier onCrash:&BSSerializeDataCrashHandler];
     [self.systemState recordAppUUID]; // Needs to be called after crashSentry installed but before -computeDidCrashLastLaunch
     [self computeDidCrashLastLaunch];
     [self.breadcrumbs removeAllBreadcrumbs];
@@ -405,6 +406,8 @@ NSString *_lastOrientation = nil;
     // notification not received in time on initial startup, so trigger manually
     [self willEnterForeground:self];
     [self.pluginClient loadPlugins];
+    
+    [self.eventUploader uploadStoredEvents];
 }
 
 - (BOOL)shouldReportOOM {
@@ -594,7 +597,7 @@ NSString *_lastOrientation = nil;
 }
 
 - (void)flushPendingReports {
-    [self.errorReportApiClient flushPendingData];
+    [self.eventUploader uploadStoredEvents];
 }
 
 /**
@@ -914,7 +917,7 @@ NSString *_lastOrientation = nil;
 
     // apiKey not added to event JSON by default, need to add it here
     // for when it is read next
-    NSMutableDictionary *eventOverrides = [[event toJson] mutableCopy];
+    NSMutableDictionary *eventOverrides = [[event toJsonWithRedactedKeys:self.configuration.redactedKeys] mutableCopy];
     eventOverrides[BSGKeyApiKey] = event.apiKey;
 
     // handled errors should persist any information edited by the user

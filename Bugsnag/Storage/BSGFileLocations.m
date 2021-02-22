@@ -81,6 +81,7 @@ static NSString *getAndCreateSubdir(NSString *rootPath, NSString *relativePath) 
 - (instancetype)initWithVersion1 {
     if (self = [super init]) {
         NSString *root = rootDirectory(@"v1");
+        _events = getAndCreateSubdir(root, @"events");
         _sessions = getAndCreateSubdir(root, @"sessions");
         _breadcrumbs = getAndCreateSubdir(root, @"breadcrumbs");
         _kscrashReports = getAndCreateSubdir(root, @"KSCrashReports");

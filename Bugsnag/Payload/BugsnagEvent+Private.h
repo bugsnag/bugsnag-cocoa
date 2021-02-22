@@ -37,8 +37,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// Property overrides.
 @property (readonly, nonatomic) NSDictionary *overrides;
 
-@property NSSet<id> *redactedKeys;
-
 /// The release stage of the application
 @property (readwrite, copy, nullable) NSString *releaseStage;
 
@@ -70,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setOverrideProperty:(NSString *)key value:(id)value;
 
-- (NSDictionary *)toJson;
+- (NSDictionary *)toJsonWithRedactedKeys:(nullable NSSet *)redactedKeys;
 
 - (void)notifyUnhandledOverridden;
 
