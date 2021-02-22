@@ -612,7 +612,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     self.handledState.unhandledOverridden = YES;
 }
 
-- (NSDictionary *)toJson {
+- (NSDictionary *)toJsonWithRedactedKeys:(NSSet *)redactedKeys {
     NSMutableDictionary *event = [NSMutableDictionary dictionary];
 
     event[BSGKeyExceptions] = ({
@@ -635,7 +635,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     // add metadata
     NSMutableDictionary *metadata = [[[self metadata] toDictionary] mutableCopy];
-    event[BSGKeyMetadata] = [self sanitiseMetadata:metadata];
+    event[BSGKeyMetadata] = [self sanitiseMetadata:metadata redactedKeys:redactedKeys];
 
     event[BSGKeyDevice] = [self.device toDictionary];
     event[BSGKeyApp] = [self.app toDict];
@@ -675,28 +675,28 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     return event;
 }
 
-- (NSMutableDictionary *)sanitiseMetadata:(NSMutableDictionary *)metadata {
+- (NSMutableDictionary *)sanitiseMetadata:(NSMutableDictionary *)metadata redactedKeys:(NSSet *)redactedKeys {
     for (NSString *sectionKey in [metadata allKeys]) {
         metadata[sectionKey] = [metadata[sectionKey] mutableCopy];
         NSMutableDictionary *section = metadata[sectionKey];
 
         if (section != nil) { // redact sensitive metadata values
             for (NSString *objKey in [section allKeys]) {
-                section[objKey] = [self sanitiseMetadataValue:section[objKey] key:objKey];
+                section[objKey] = [self sanitiseMetadataValue:section[objKey] key:objKey redactedKeys:redactedKeys];
             }
         }
     }
     return metadata;
 }
 
-- (id)sanitiseMetadataValue:(id)value key:(NSString *)key {
-    if ([self isRedactedKey:key]) {
+- (id)sanitiseMetadataValue:(id)value key:(NSString *)key redactedKeys:(NSSet *)redactedKeys {
+    if ([self isRedactedKey:key redactedKeys:redactedKeys]) {
         return BSGKeyRedaction;
     } else if ([value isKindOfClass:[NSDictionary class]]) {
         NSMutableDictionary *nestedDict = [(NSDictionary *)value mutableCopy];
 
         for (NSString *nestedKey in [nestedDict allKeys]) {
-            nestedDict[nestedKey] = [self sanitiseMetadataValue:nestedDict[nestedKey] key:nestedKey];
+            nestedDict[nestedKey] = [self sanitiseMetadataValue:nestedDict[nestedKey] key:nestedKey redactedKeys:redactedKeys];
         }
         return nestedDict;
     } else {
@@ -704,8 +704,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     }
 }
 
-- (BOOL)isRedactedKey:(NSString *)key {
-    for (id obj in self.redactedKeys) {
+- (BOOL)isRedactedKey:(NSString *)key redactedKeys:(NSSet *)redactedKeys {
+    for (id obj in redactedKeys) {
         if ([obj isKindOfClass:[NSString class]]) {
             if ([[key lowercaseString] isEqualToString:[obj lowercaseString]]) {
                 return true;
@@ -787,7 +787,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     
     // The error in self.errors is not always the error that will be sent; this is the case when used in React Native.
     // Using [self toJson] to ensure this uses the same logic of reading from self.customException instead.
-    NSDictionary *json = [self toJson];
+    NSDictionary *json = [self toJsonWithRedactedKeys:nil];
     NSArray *exceptions = json[BSGKeyExceptions];
     for (NSDictionary *exception in exceptions) {
         BugsnagError *error = [BugsnagError errorFromJson:exception];

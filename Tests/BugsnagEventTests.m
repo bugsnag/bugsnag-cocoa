@@ -68,7 +68,7 @@
 
     BugsnagEvent *event = [self generateEvent:nil];
     event.session = bugsnagSession;
-    NSDictionary *json = [event toJson];
+    NSDictionary *json = [event toJsonWithRedactedKeys:nil];
     XCTAssertNotNil(json);
 
     NSDictionary *session = json[@"session"];
@@ -87,7 +87,7 @@
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
         @"threads" : @[]
     }];
-    NSDictionary *payload = [event toJson];
+    NSDictionary *payload = [event toJsonWithRedactedKeys:nil];
     XCTAssertEqualObjects(@"Exception",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
@@ -211,7 +211,7 @@
                     }
             }
     }];
-    NSDictionary *dictionary = [overrideReport toJson];
+    NSDictionary *dictionary = [overrideReport toJsonWithRedactedKeys:nil];
     XCTAssertEqualObjects(@"1.2.3", dictionary[@"app"][@"version"]);
 }
 
@@ -226,7 +226,7 @@
                     }
             }
     }];
-    NSDictionary *dictionary = [overrideReport toJson];
+    NSDictionary *dictionary = [overrideReport toJsonWithRedactedKeys:nil];
     XCTAssertEqualObjects(@"1.2.3", dictionary[@"app"][@"bundleVersion"]);
 }
 

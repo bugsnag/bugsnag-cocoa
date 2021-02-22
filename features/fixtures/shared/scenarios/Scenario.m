@@ -10,6 +10,21 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
     writer->addBooleanElement(writer, "unhandled", false);
 }
 
+// MARK: -
+
+typedef void (^ URLSessionResponseObserver)(NSURLRequest *request, NSData *responseData, NSURLResponse *response, NSError *error);
+
+@interface ObservableURLSession : NSObject
+
++ (instancetype)sessionWithObserver:(URLSessionResponseObserver)observer;
+
+@property (copy, nonatomic) URLSessionResponseObserver observer;
+
+@end
+
+
+// MARK: -
+
 @implementation Scenario
 
 + (Scenario *)createScenarioNamed:(NSString *)className
@@ -80,6 +95,41 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
 }
 
 - (void)didEnterBackgroundNotification {
+}
+
+- (NSURLSession *)URLSessionWithObserver:(URLSessionResponseObserver)observer {
+    return (id)[ObservableURLSession sessionWithObserver:observer];
+}
+
+@end
+
+
+// MARK: -
+
+@implementation ObservableURLSession
+
+// NSURLSession does not allow subclassing - calling [ObservableURLSession sessionWithConfiguration:] will return an
+// instance of NSURLSession instead of ObservableURLSession, so we have to resort to acting as a proxy object.
+
++ (instancetype)sessionWithObserver:(URLSessionResponseObserver)observer {
+    ObservableURLSession *session = [[ObservableURLSession alloc] init];
+    session.observer = observer;
+    return session;
+}
+
+- (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request fromData:(NSData *)bodyData
+                                completionHandler:(void (^)(NSData *, NSURLResponse *, NSError *))completionHandler {
+    return [NSURLSession.sharedSession uploadTaskWithRequest:request fromData:bodyData completionHandler:
+            ^(NSData *responseData, NSURLResponse *response, NSError *error) {
+        completionHandler(responseData, response, error);
+        if (self.observer) {
+            self.observer(request, responseData, response, error);
+        }
+    }];
+}
+
+- (id)forwardingTargetForSelector:(SEL)aSelector {
+    return NSURLSession.sharedSession;
 }
 
 @end
