@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithDelegate:(id<BSGEventUploadOperationDelegate>)delegate;
 
-@property (readonly, nonatomic) id<BSGEventUploadOperationDelegate> delegate;
+@property (readonly, weak, nonatomic) id<BSGEventUploadOperationDelegate> delegate;
 
 // MARK: Subclassing
 

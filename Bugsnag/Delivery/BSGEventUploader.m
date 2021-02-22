@@ -59,6 +59,7 @@ static void *OperationsContext = &OperationsContext;
 
 - (void)dealloc {
     [_operationQueue removeObserver:self forKeyPath:NSStringFromSelector(@selector(operations)) context:OperationsContext];
+    [_operationQueue cancelAllOperations];
 }
 
 // KVO is used to ensure `currentFiles` always reflects the state of the operation queue.

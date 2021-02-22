@@ -27,11 +27,15 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     BSGEventUploadOperationStateFinished,
 };
 
+@interface BSGEventUploadOperation ()
+
+@property (nonatomic) BSGEventUploadOperationState state;
+
+@end
+
 // MARK: -
 
-@implementation BSGEventUploadOperation {
-    BSGEventUploadOperationState _state;
-}
+@implementation BSGEventUploadOperation
 
 - (instancetype)initWithDelegate:(id<BSGEventUploadOperationDelegate>)delegate {
     if (self = [super init]) {
@@ -40,7 +44,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     return self;
 }
 
-- (void)startUpload:(void (^)(void))completionHandler {
+- (void)runWithDelegate:(id<BSGEventUploadOperationDelegate>)delegate completionHandler:(nonnull void (^)(void))completionHandler {
     bsg_log_debug(@"Preparing event %@", self.name);
     
     BugsnagEvent *event = [self loadEvent];
@@ -51,7 +55,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
         return;
     }
     
-    BugsnagConfiguration *configuration = self.delegate.configuration;
+    BugsnagConfiguration *configuration = delegate.configuration;
     
     if (!configuration.shouldSendReports || ![event shouldBeSent]) {
         bsg_log_info(@"Discarding event %@ because releaseStage not in enabledReleaseStages", self.name);
@@ -87,7 +91,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     NSMutableDictionary *requestPayload = [NSMutableDictionary dictionary];
     requestPayload[BSGKeyApiKey] = apiKey;
     requestPayload[BSGKeyEvents] = @[eventPayload];
-    requestPayload[BSGKeyNotifier] = [self.delegate.notifier toDict];
+    requestPayload[BSGKeyNotifier] = [delegate.notifier toDict];
     requestPayload[BSGKeyPayloadVersion] = EventPayloadVersion;
     
     NSMutableDictionary *requestHeaders = [NSMutableDictionary dictionary];
@@ -96,8 +100,8 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     requestHeaders[BugsnagHTTPHeaderNameSentAt] = [BSG_RFC3339DateTool stringFromDate:[NSDate date]];
     requestHeaders[BugsnagHTTPHeaderNameStacktraceTypes] = [event.stacktraceTypes componentsJoinedByString:@","];
     
-    [self.delegate.apiClient sendJSONPayload:requestPayload headers:requestHeaders toURL:configuration.notifyURL
-                           completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
+    [delegate.apiClient sendJSONPayload:requestPayload headers:requestHeaders toURL:configuration.notifyURL
+                      completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
         
         switch (status) {
             case BugsnagApiClientDeliveryStatusDelivered:
@@ -140,22 +144,29 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
         return;
     }
     
+    id delegate = self.delegate;
+    if (!delegate) {
+        bsg_log_err(@"Upload operation %@ has no delegate", self);
+        [self setFinished];
+        return;
+    }
+    
     [self willChangeValueForKey:NSStringFromSelector(@selector(isExecuting))];
-    _state = BSGEventUploadOperationStateExecuting;
+    self.state = BSGEventUploadOperationStateExecuting;
     [self didChangeValueForKey:NSStringFromSelector(@selector(isExecuting))];
     
-    [self startUpload:^{
+    [self runWithDelegate:delegate completionHandler:^{
         [self setFinished];
     }];
 }
 
 - (void)setFinished {
-    if (_state == BSGEventUploadOperationStateFinished) {
+    if (self.state == BSGEventUploadOperationStateFinished) {
         return;
     }
     [self willChangeValueForKey:NSStringFromSelector(@selector(isExecuting))];
     [self willChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
-    _state = BSGEventUploadOperationStateFinished;
+    self.state = BSGEventUploadOperationStateFinished;
     [self didChangeValueForKey:NSStringFromSelector(@selector(isExecuting))];
     [self didChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
 }
@@ -165,15 +176,15 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
 }
 
 - (BOOL)isReady {
-    return _state == BSGEventUploadOperationStateReady;
+    return self.state == BSGEventUploadOperationStateReady;
 }
 
 - (BOOL)isExecuting {
-    return _state == BSGEventUploadOperationStateExecuting;
+    return self.state == BSGEventUploadOperationStateExecuting;
 }
 
 - (BOOL)isFinished {
-    return _state == BSGEventUploadOperationStateFinished;
+    return self.state == BSGEventUploadOperationStateFinished;
 }
 
 @end
