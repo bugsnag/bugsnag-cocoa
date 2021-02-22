@@ -438,13 +438,13 @@ NSString *_lastOrientation = nil;
         return;
     }
     bsg_log_info(@"Sending launch crash synchronously.");
-    NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:2];
-    NSCondition *sentLaunchCrash = [[NSCondition alloc] init];
+    dispatch_time_t deadline = dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC);
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [[BSG_KSCrash sharedInstance] sendLatestReport:^{
         bsg_log_debug(@"Sent launch crash.");
-        [sentLaunchCrash signal];
+        dispatch_semaphore_signal(semaphore);
     }];
-    if (![sentLaunchCrash waitUntilDate:deadline]) {
+    if (dispatch_semaphore_wait(semaphore, deadline)) {
         bsg_log_debug(@"Timed out waiting for launch crash to be sent.");
     }
 }
