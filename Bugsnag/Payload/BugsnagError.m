@@ -155,7 +155,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
         if (errorMessageRange.location != NSNotFound) {
             self.errorMessage = [crashInfoMessage substringWithRange:errorMessageRange];
         }
-        return;
+        return; //!OCLint
     }
     
     if (!self.errorMessage.length) {
