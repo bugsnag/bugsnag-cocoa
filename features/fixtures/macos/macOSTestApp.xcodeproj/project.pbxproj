@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01018BAB25E417EC000312C6 /* AsyncSafeMallocScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01018BAA25E417EC000312C6 /* AsyncSafeMallocScenario.m */; };
 		01452354254AFD7C00D436AA /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01452353254AFD7C00D436AA /* Bugsnag.framework */; };
 		01452355254AFD7C00D436AA /* Bugsnag.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 01452353254AFD7C00D436AA /* Bugsnag.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0163BF9B2583AF2A008DC28B /* DiscardClassesScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0163BF9A2583AF2A008DC28B /* DiscardClassesScenarios.swift */; };
@@ -149,6 +150,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		01018BAA25E417EC000312C6 /* AsyncSafeMallocScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncSafeMallocScenario.m; sourceTree = "<group>"; };
 		01452353254AFD7C00D436AA /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		01452360254AFEA700D436AA /* macOSTestApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "macOSTestApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		0163BF9A2583AF2A008DC28B /* DiscardClassesScenarios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardClassesScenarios.swift; sourceTree = "<group>"; };
@@ -353,6 +355,7 @@
 				01F47C4A254B1B2D00B184AD /* AccessNonObjectScenario.h */,
 				01F47C5B254B1B2E00B184AD /* AccessNonObjectScenario.m */,
 				01F47C60254B1B2E00B184AD /* AppAndDeviceAttributesScenario.swift */,
+				01018BAA25E417EC000312C6 /* AsyncSafeMallocScenario.m */,
 				01F47C73254B1B2E00B184AD /* AsyncSafeThreadScenario.h */,
 				01F47C40254B1B2D00B184AD /* AsyncSafeThreadScenario.m */,
 				01F47CBE254B1B3000B184AD /* AttachCustomStacktraceHook.h */,
@@ -689,6 +692,7 @@
 				01F47D32254B1B3100B184AD /* ResumeSessionOOMScenario.m in Sources */,
 				01F47D13254B1B3100B184AD /* UserPersistenceScenarios.m in Sources */,
 				01F47CF9254B1B3100B184AD /* BreadcrumbCallbackDiscardScenario.swift in Sources */,
+				01018BAB25E417EC000312C6 /* AsyncSafeMallocScenario.m in Sources */,
 				01F47CE6254B1B3100B184AD /* HandledErrorOverrideScenario.swift in Sources */,
 				01F47D26254B1B3100B184AD /* PrivilegedInstructionScenario.m in Sources */,
 				01F47D18254B1B3100B184AD /* SIGBUSScenario.m in Sources */,
