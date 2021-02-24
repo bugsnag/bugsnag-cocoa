@@ -11,6 +11,9 @@ Changelog
 * Fix Swift 5.4 fatal error message parsing.
   [1010](https://github.com/bugsnag/bugsnag-cocoa/pull/1010)
 
+* Improve accuracy of jailbreak detection.
+  [1000](https://github.com/bugsnag/bugsnag-cocoa/pull/1000)
+
 ## 6.6.3 (2021-02-17)
 
 ### Bug fixes
