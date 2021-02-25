@@ -52,6 +52,8 @@
     [_operationQueue cancelAllOperations];
 }
 
+// MARK: - Public API
+
 - (void)uploadEvent:(BugsnagEvent *)event {
     [self.operationQueue addOperation:[[BSGEventUploadObjectOperation alloc] initWithEvent:event delegate:self]];
 }
@@ -59,16 +61,19 @@
 - (void)uploadStoredEvents {
     bsg_log_debug(@"Will scan stored events");
     [self.operationQueue addOperationWithBlock:^{
-        NSArray<BSGEventUploadFileOperation *> *operations = [self scanStoredEvents];
+        NSMutableArray<NSString *> *sortedFiles = [self sortedEventFiles];
+        [self deleteExcessFiles:sortedFiles];
+        NSArray<BSGEventUploadFileOperation *> *operations = [self uploadOperationsWithFiles:sortedFiles];
         bsg_log_debug(@"Uploading %lu stored events", (unsigned long)operations.count);
         [self.operationQueue addOperations:operations waitUntilFinished:NO];
     }];
 }
 
 - (void)uploadLatestStoredEvent:(void (^)(void))completionHandler {
-    BSGEventUploadFileOperation *operation = [self scanStoredEvents].lastObject;
+    NSString *latestFile = [self sortedEventFiles].lastObject;
+    BSGEventUploadFileOperation *operation = latestFile ? [self uploadOperationsWithFiles:@[latestFile]].lastObject : nil;
     if (!operation) {
-        bsg_log_warn(@"Could not find a stored event to send");
+        bsg_log_warn(@"Could not find a stored event to upload");
         completionHandler();
         return;
     }
@@ -76,19 +81,13 @@
     [self.operationQueue addOperation:operation];
 }
 
-/// Scans the events stored on disk, deleting the oldest ones if the count exceeds configuration.maxPersistedEvents,
-/// and returns an array of operations (in ascending file creation date ready) to be added to the operation queue.
-- (NSArray<BSGEventUploadFileOperation *> *)scanStoredEvents {
-    NSMutableArray<BSGEventUploadFileOperation *> *operations = [NSMutableArray array];
+// MARK: - Implementation
+
+/// Returns the stored event files sorted from oldest to most recent.
+- (NSMutableArray<NSString *> *)sortedEventFiles {
+    NSMutableArray<NSString *> *files = [NSMutableArray array];
     
     NSMutableDictionary<NSString *, NSDate *> *creationDates = [NSMutableDictionary dictionary];
-    
-    NSMutableArray *currentFiles = [NSMutableArray array];
-    for (id operation in self.operationQueue.operations) {
-        if ([operation isKindOfClass:[BSGEventUploadFileOperation class]]) {
-            [currentFiles addObject:((BSGEventUploadFileOperation *)operation).file];
-        }
-    }
     
     for (NSString *directory in @[self.eventsDirectory, self.kscrashReportsDirectory]) {
         NSError *error = nil;
@@ -104,41 +103,63 @@
             }
             
             NSString *file = [directory stringByAppendingPathComponent:filename];
-            if ([currentFiles containsObject:file]) {
-                continue;
-            }
-            
-            if (directory == self.kscrashReportsDirectory) {
-                [operations addObject:[[BSGEventUploadKSCrashReportOperation alloc] initWithFile:file delegate:self]];
-            } else {
-                [operations addObject:[[BSGEventUploadFileOperation alloc] initWithFile:file delegate:self]];
-            }
-            
             NSDictionary *attributes = [NSFileManager.defaultManager attributesOfItemAtPath:file error:nil];
             creationDates[file] = attributes.fileCreationDate;
+            [files addObject:file];
         }
     }
     
-    [operations sortUsingComparator:^NSComparisonResult(BSGEventUploadFileOperation *lhs, BSGEventUploadFileOperation *rhs) {
-        return [creationDates[lhs.file] compare:creationDates[rhs.file]];
+    [files sortUsingComparator:^NSComparisonResult(NSString *lhs, NSString *rhs) {
+        return [creationDates[lhs] compare:creationDates[rhs]];
     }];
     
-    while (operations.count > self.configuration.maxPersistedEvents) {
-        BSGEventUploadFileOperation *operation = operations.firstObject;
-        [operations removeObject:operation];
+    return files;
+}
+
+/// Deletes the oldest files until no more than `config.maxPersistedEvents` remain and removes them from the array.
+- (void)deleteExcessFiles:(NSMutableArray<NSString *> *)sortedEventFiles {
+    while (sortedEventFiles.count > self.configuration.maxPersistedEvents) {
+        NSString *file = sortedEventFiles[0];
         NSError *error = nil;
-        if ([NSFileManager.defaultManager removeItemAtPath:operation.file error:&error]) {
-            bsg_log_debug(@"Deleted %@ to meet maxPersistedEvents", operation.name);
+        if ([NSFileManager.defaultManager removeItemAtPath:file error:&error]) {
+            bsg_log_debug(@"Deleted %@ to comply with maxPersistedEvents", file);
         } else {
             bsg_log_err(@"Error while deleting file: %@", error);
+        }
+        [sortedEventFiles removeObject:file];
+    }
+}
+
+/// Creates an upload operation for each file that is not currently being uploaded
+- (NSArray<BSGEventUploadFileOperation *> *)uploadOperationsWithFiles:(NSArray<NSString *> *)files {
+    NSMutableArray<BSGEventUploadFileOperation *> *operations = [NSMutableArray array];
+    
+    NSMutableSet<NSString *> *currentFiles = [NSMutableSet set];
+    for (id operation in self.operationQueue.operations) {
+        if ([operation isKindOfClass:[BSGEventUploadFileOperation class]]) {
+            [currentFiles addObject:((BSGEventUploadFileOperation *)operation).file];
+        }
+    }
+    
+    for (NSString *file in files) {
+        if ([currentFiles containsObject:file]) {
+            continue;
+        }
+        NSString *directory = file.stringByDeletingLastPathComponent;
+        if ([directory isEqualToString:self.kscrashReportsDirectory]) {
+            [operations addObject:[[BSGEventUploadKSCrashReportOperation alloc] initWithFile:file delegate:self]];
+        } else {
+            [operations addObject:[[BSGEventUploadFileOperation alloc] initWithFile:file delegate:self]];
         }
     }
     
     return operations;
 }
 
+// MARK: - BSGEventUploadOperationDelegate
+
 - (void)uploadOperationDidStoreEventPayload:(BSGEventUploadOperation *)uploadOperation {
-    [self scanStoredEvents]; // enforces maxPersistedEvents
+    [self deleteExcessFiles:[self sortedEventFiles]];
 }
 
 @end
