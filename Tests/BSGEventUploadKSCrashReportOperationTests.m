@@ -23,7 +23,7 @@
 #pragma clang diagnostic ignored "-Wnonnull"
     BSGEventUploadKSCrashReportOperation *operation = [[BSGEventUploadKSCrashReportOperation alloc] initWithFile:file delegate:nil];
 #pragma clang diagnostic pop
-    BugsnagEvent *event = [operation loadEvent];
+    BugsnagEvent *event = [operation loadEventAndReturnError:nil];
     XCTAssertEqual(event.threads.count, 20);
     XCTAssertEqualObjects([event.breadcrumbs valueForKeyPath:NSStringFromSelector(@selector(message))], @[@"Bugsnag loaded"]);
     XCTAssertEqualObjects(event.app.bundleVersion, @"5");

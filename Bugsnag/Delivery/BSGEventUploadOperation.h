@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 // MARK: Subclassing
 
 /// To be implemented by all subclasses.
-- (nullable BugsnagEvent *)loadEvent;
+- (nullable BugsnagEvent *)loadEventAndReturnError:(NSError **)errorPtr;
 
 /// Called if the event should not be sent or failed to upload in a non-retrable way.
 ///

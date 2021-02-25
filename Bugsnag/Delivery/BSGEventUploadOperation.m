@@ -47,10 +47,13 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
 - (void)runWithDelegate:(id<BSGEventUploadOperationDelegate>)delegate completionHandler:(nonnull void (^)(void))completionHandler {
     bsg_log_debug(@"Preparing event %@", self.name);
     
-    BugsnagEvent *event = [self loadEvent];
+    NSError *error = nil;
+    BugsnagEvent *event = [self loadEventAndReturnError:&error];
     if (!event) {
-        bsg_log_err(@"Failed to load event %@", self.name);
-        [self deleteEvent];
+        bsg_log_err(@"Failed to load event %@ due to error %@", self.name, error);
+        if (!(error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError)) {
+            [self deleteEvent];
+        }
         completionHandler();
         return;
     }
@@ -126,7 +129,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
 
 // MARK: Subclassing
 
-- (BugsnagEvent *)loadEvent {
+- (BugsnagEvent *)loadEventAndReturnError:(NSError **)errorPtr {
     return nil;
 }
 

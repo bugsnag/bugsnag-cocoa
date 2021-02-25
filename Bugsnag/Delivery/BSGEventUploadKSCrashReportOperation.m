@@ -21,18 +21,15 @@
 
 @implementation BSGEventUploadKSCrashReportOperation
 
-- (BugsnagEvent *)loadEvent {
-    NSError *error = nil;
-    NSData *data = [NSData dataWithContentsOfFile:self.file options:0 error:&error];
+- (BugsnagEvent *)loadEventAndReturnError:(NSError **)errorPtr {
+    NSData *data = [NSData dataWithContentsOfFile:self.file options:0 error:errorPtr];
     if (!data) {
-        bsg_log_err(@"Could not load %@: %@", self.file, error);
         return nil;
     }
     
-    id json = [BSGJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    id json = [BSGJSONSerialization JSONObjectWithData:data options:0 error:errorPtr];
     if (!json) {
-        bsg_log_err(@"Could not load %@: %@", self.file, error);
-        bsg_log_debug(@"File contents: %.*s", (int)data.length, data.bytes);
+        bsg_log_debug(@"Could not load file contents: %.*s", (int)data.length, data.bytes);
         return nil;
     }
     
