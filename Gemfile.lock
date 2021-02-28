@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: 8dea04f256db383ae84364f054f144da28e7ed1a
+  revision: 0d80bf9ef1f50889092775cfba39ec531c9117d9
   branch: macos-app-logs
   specs:
     bugsnag-maze-runner (4.10.1)
