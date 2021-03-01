@@ -38,6 +38,8 @@
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagUser+Private.h"
 
+const NSUInteger BugsnagAppHangThresholdFatalOnly = INT_MAX;
+
 static const int BSGApiKeyLength = 32;
 
 // User info persistence keys
@@ -78,6 +80,7 @@ static NSUserDefaults *userDefaults;
 - (nonnull id)copyWithZone:(nullable NSZone *)zone {
     BugsnagConfiguration *copy = [[BugsnagConfiguration alloc] initWithApiKey:[self.apiKey copy]];
     // Omit apiKey - it's set explicitly in the line above
+    [copy setAppHangThresholdMillis:self.appHangThresholdMillis];
     [copy setAppType:self.appType];
     [copy setAppVersion:self.appVersion];
     [copy setAutoDetectErrors:self.autoDetectErrors];
@@ -166,6 +169,7 @@ static NSUserDefaults *userDefaults;
     _endpoints = [BugsnagEndpointConfiguration new];
     _sessionURL = [NSURL URLWithString:@"https://sessions.bugsnag.com"];
     _autoDetectErrors = YES;
+    _appHangThresholdMillis = 2000;
     _notifyURL = [NSURL URLWithString:BSGDefaultNotifyUrl];
     _onSendBlocks = [NSMutableArray new];
     _onSessionBlocks = [NSMutableArray new];
@@ -440,6 +444,16 @@ static NSUserDefaults *userDefaults;
 // -----------------------------------------------------------------------------
 // MARK: - Properties: Getters and Setters
 // -----------------------------------------------------------------------------
+
+- (void)setAppHangThresholdMillis:(NSUInteger)appHangThresholdMillis {
+    if (appHangThresholdMillis >= 250) {
+        _appHangThresholdMillis = appHangThresholdMillis;
+    } else {
+        bsg_log_err(@"Invalid configuration value detected. Option appHangThresholdMillis "
+                    "should be greater than or equal to 250. Supplied value is %lu",
+                    (unsigned long)appHangThresholdMillis);
+    }
+}
 
 - (void)setMaxPersistedEvents:(NSUInteger)maxPersistedEvents {
     @synchronized (self) {
