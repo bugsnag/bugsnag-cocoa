@@ -28,6 +28,7 @@
 
 #import "BugsnagClient+Private.h"
 
+#import "BSGAppHangDetector.h"
 #import "BSGConnectivity.h"
 #import "BSGFileLocations.h"
 #import "BSGJSONSerialization.h"
@@ -219,6 +220,8 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 
 @interface BugsnagClient () <BSGBreadcrumbSink>
 
+@property (nonatomic) BSGAppHangDetector *appHangDetector;
+
 @property BSGNotificationBreadcrumbs *notificationBreadcrumbs;
 
 @end
@@ -405,6 +408,11 @@ NSString *_lastOrientation = nil;
     // notification not received in time on initial startup, so trigger manually
     [self willEnterForeground:self];
     [self.pluginClient loadPlugins];
+
+    if (self.configuration.enabledErrorTypes.appHangs) {
+        self.appHangDetector = [[BSGAppHangDetector alloc] init];
+        [self.appHangDetector startWithConfiguration:self.configuration];
+    }
 }
 
 - (BOOL)shouldReportOOM {
