@@ -156,6 +156,12 @@ Feature: Reporting crash events
     # |pthread_getname_np|
       | -[AsyncSafeThreadScenario run] |
 
+  Scenario: Trigger a crash with simulated malloc() lock held
+    When I run "AsyncSafeMallocScenario" and relaunch the app
+    And I configure Bugsnag for "AsyncSafeMallocScenario"
+    And I wait to receive an error
+    And the exception "errorClass" equals "SIGABRT"
+
   Scenario: Read a garbage pointer
     When I run "ReadGarbagePointerScenario" and relaunch the app
     And I configure Bugsnag for "ReadGarbagePointerScenario"

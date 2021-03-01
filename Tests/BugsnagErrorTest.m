@@ -168,9 +168,9 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     
     error.errorClass = nil;
     error.errorMessage = nil;
-    [error updateWithCrashInfoMessage:@"Fatal error: This should NEVER happen: file bugsnag_example/AnotherClass.swift, line 24\n"];
+    [error updateWithCrashInfoMessage:@"Fatal error: A suffusion of yellow: file calc.swift, line 5\n"];
     XCTAssertEqualObjects(error.errorClass, @"Fatal error");
-    XCTAssertEqualObjects(error.errorMessage, @"This should NEVER happen");
+    XCTAssertEqualObjects(error.errorMessage, @"A suffusion of yellow");
     
     error.errorClass = nil;
     error.errorMessage = nil;
@@ -251,6 +251,58 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
 #pragma clang diagnostic pop
     XCTAssertEqualObjects(error.errorClass, @"Expected error class",);
     XCTAssertEqualObjects(error.errorMessage, @"Expected message",);
+}
+
+- (void)testUpdateWithCrashInfoMessage_Swift54 {
+    BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:@"" errorMessage:@"" errorType:BSGErrorTypeCocoa stacktrace:nil];
+    
+    // Swift fatal errors with a message.
+    // The errorClass and errorMessage should be overwritten with values extracted from the crash info message.
+    
+    error.errorClass = nil;
+    error.errorMessage = nil;
+    [error updateWithCrashInfoMessage:@"bugsnag_example/AnotherClass.swift:24: Assertion failed: This should NEVER happen\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Assertion failed");
+    XCTAssertEqualObjects(error.errorMessage, @"This should NEVER happen");
+    
+    error.errorClass = nil;
+    error.errorMessage = nil;
+    [error updateWithCrashInfoMessage:@"calc.swift:5: Fatal error: A suffusion of yellow\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Fatal error");
+    XCTAssertEqualObjects(error.errorMessage, @"A suffusion of yellow");
+    
+    error.errorClass = nil;
+    error.errorMessage = nil;
+    [error updateWithCrashInfoMessage:@"bugsnag_example/AnotherClass.swift:24: Precondition failed:   : strange formatting 😱::\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Precondition failed");
+    XCTAssertEqualObjects(error.errorMessage, @"  : strange formatting 😱::");
+    
+    // Swift fatal errors without a message.
+    // The errorClass should be overwritten but the errorMessage left as-is.
+    
+    error.errorClass = nil;
+    error.errorMessage = nil;
+    [error updateWithCrashInfoMessage:@"bugsnag_example/AnotherClass.swift:24: Assertion failed\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Assertion failed");
+    XCTAssertEqualObjects(error.errorMessage, nil);
+    
+    error.errorClass = nil;
+    error.errorMessage = @"Expected message";
+    [error updateWithCrashInfoMessage:@"bugsnag_example/AnotherClass.swift:24: Assertion failed\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Assertion failed");
+    XCTAssertEqualObjects(error.errorMessage, @"Expected message");
+    
+    error.errorClass = nil;
+    error.errorMessage = @"Expected message";
+    [error updateWithCrashInfoMessage:@"bugsnag_example/AnotherClass.swift:24: Fatal error\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Fatal error");
+    XCTAssertEqualObjects(error.errorMessage, @"Expected message");
+    
+    error.errorClass = nil;
+    error.errorMessage = @"Expected message";
+    [error updateWithCrashInfoMessage:@"bugsnag_example/AnotherClass.swift:24: Precondition failed\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Precondition failed");
+    XCTAssertEqualObjects(error.errorMessage, @"Expected message");
 }
 
 @end

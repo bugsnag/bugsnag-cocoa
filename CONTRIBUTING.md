@@ -164,7 +164,7 @@ Run the integration tests - see [TESTING.md](TESTING.md#end-to-end-tests).
         artefact?
 * Plan to make releases to downstream libraries once adoption of the main
   library has begun, if appropriate (generally for bug fixes).  These include:
-  * [bugsnag-react-native](https://github.com/bugsnag/bugsnag-react-native)
+  * [bugsnag-js](https://github.com/bugsnag/bugsnag-js) - see [JS Contributing Guide](https://github.com/bugsnag/bugsnag-js/blob/next/packages/react-native/CONTRIBUTING.md#ios)
   * [bugsnag-cocos2dx](https://github.com/bugsnag/bugsnag-cocos2dx)
   * [bugsnag-unity](https://github.com/bugsnag/bugsnag-unity)
 

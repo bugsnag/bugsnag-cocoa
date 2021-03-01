@@ -14,7 +14,7 @@ When contacting support, please include as much information as necessary, includ
 * Carthage version (if any):
 * iOS/tvOS/macOS version(s):
 * Simulator or physical device:
-* XCode version:
+* Xcode version:
 * Swift version (if applicable):
 
 ## Bug or Feature Requests
