@@ -72,8 +72,8 @@
     NSDictionary *stats = system[@"application_stats"];
 
     // convert from seconds to milliseconds
-    NSNumber *activeTimeSinceLaunch = @([stats[@"active_time_since_launch"] longValue] * 1000);
-    NSNumber *backgroundTimeSinceLaunch = @([stats[@"background_time_since_launch"] longValue] * 1000);
+    NSNumber *activeTimeSinceLaunch = @((int)([stats[@"active_time_since_launch"] doubleValue] * 1000.0));
+    NSNumber *backgroundTimeSinceLaunch = @((int)([stats[@"background_time_since_launch"] doubleValue] * 1000.0));
 
     app.durationInForeground = activeTimeSinceLaunch;
     app.duration = @([activeTimeSinceLaunch longValue] + [backgroundTimeSinceLaunch longValue]);

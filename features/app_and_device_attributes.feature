@@ -84,6 +84,15 @@ Feature: App and Device attributes present
     And the error payload field "events.0.device.manufacturer" equals "Nokia"
     And the error payload field "events.0.device.modelNumber" equals "0898"
 
+  Scenario: Duration value increments as expected
+    When I run "AppDurationScenario"
+    And I wait to receive 3 errors
+    And the event "app.duration" is between 0 and 200
+    And I discard the oldest error
+    And the event "app.duration" is between 2600 and 2800
+    And I discard the oldest error
+    And the event "app.duration" is between 5400 and 5600
+
   Scenario: isLaunching should be true if launchDurationMillis is 0
     When I run "AppAndDeviceAttributesInfiniteLaunchDurationScenario"
     And I wait to receive an error

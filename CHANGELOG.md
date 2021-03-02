@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix inaccurate `app.duration` after multiple calls to `notify()`
+  [#1014](https://github.com/bugsnag/bugsnag-cocoa/pull/1014)
+
 *  Fix a possible deadlock when writing crash reports for unhandled errors.
   [#1013](https://github.com/bugsnag/bugsnag-cocoa/pull/1013)
 

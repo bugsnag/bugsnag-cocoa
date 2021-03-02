@@ -22,6 +22,7 @@
 		01AF6A53258A112F00FFC803 /* BareboneTestScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A52258A112F00FFC803 /* BareboneTestScenarios.swift */; };
 		01B6BB7525D5748800FC4DE6 /* LastRunInfoScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B6BB7425D5748800FC4DE6 /* LastRunInfoScenarios.swift */; };
 		01B6BBB625DA82B800FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B6BBB525DA82B700FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift */; };
+		01E0DB0B25E8EBD100A740ED /* AppDurationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E0DB0A25E8EBD100A740ED /* AppDurationScenario.swift */; };
 		01E5EAD225B713990066EA8A /* OOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E5EAD125B713990066EA8A /* OOMScenario.m */; };
 		6526A0D4248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */; };
 		8A14F0F62282D4AE00337B05 /* (null) in Sources */ = {isa = PBXBuildFile; };
@@ -172,6 +173,7 @@
 		01AF6A52258A112F00FFC803 /* BareboneTestScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestScenarios.swift; sourceTree = "<group>"; };
 		01B6BB7425D5748800FC4DE6 /* LastRunInfoScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastRunInfoScenarios.swift; sourceTree = "<group>"; };
 		01B6BBB525DA82B700FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendLaunchCrashesSynchronouslyScenario.swift; sourceTree = "<group>"; };
+		01E0DB0A25E8EBD100A740ED /* AppDurationScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDurationScenario.swift; sourceTree = "<group>"; };
 		01E5EAD025B713990066EA8A /* OOMScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OOMScenario.h; sourceTree = "<group>"; };
 		01E5EAD125B713990066EA8A /* OOMScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OOMScenario.m; sourceTree = "<group>"; };
 		4994F05E0421A0B037DD2CC5 /* Pods_iOSTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOSTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -564,6 +566,7 @@
 				F49695A3243EF7B600105DA9 /* OOMs */,
 				F49695AE2445476700105DA9 /* Plugin */,
 				0037410E2473CF2300BE41AA /* AppAndDeviceAttributesScenario.swift */,
+				01E0DB0A25E8EBD100A740ED /* AppDurationScenario.swift */,
 				01AF6A52258A112F00FFC803 /* BareboneTestScenarios.swift */,
 				0163BFA62583B3CF008DC28B /* DiscardClassesScenarios.swift */,
 				01E5EAD025B713990066EA8A /* OOMScenario.h */,
@@ -922,6 +925,7 @@
 				6526A0D4248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift in Sources */,
 				F4295A94DD2D131A594A212C /* HandledErrorScenario.swift in Sources */,
 				F4295A7AA9B4A18992A2F020 /* HandledErrorOverrideScenario.swift in Sources */,
+				01E0DB0B25E8EBD100A740ED /* AppDurationScenario.swift in Sources */,
 				E700EE62247D4D42008CFFB6 /* OnCrashHandlerScenario.m in Sources */,
 				E700EE48247D1158008CFFB6 /* UserEventOverrideScenario.swift in Sources */,
 				F429502603396F8671B333B3 /* HandledExceptionScenario.swift in Sources */,
