@@ -40,6 +40,13 @@
         return;
     }
     
+    if (NSProcessInfo.processInfo.environment[@"XCTestConfigurationFilePath"]) {
+        // Disable functionality during unit testing to avoid crashes that can occur due to there
+        // being many leaked BugsnagClient instances and BSGAppHangDetectors running while global
+        // shared data structures are being reinitialized.
+        return;
+    }
+    
     const BOOL fatalOnly = configuration.appHangThresholdMillis == BugsnagAppHangThresholdFatalOnly;
     const BOOL recordAllThreads = configuration.sendThreads == BSGThreadSendPolicyAlways;
     const NSTimeInterval threshold = fatalOnly ? 2 : configuration.appHangThresholdMillis / 1000.0;
