@@ -254,12 +254,16 @@
 - (void)testMainThreadFromBackground {
     NSParameterAssert(NSThread.currentThread.isMainThread);
     __block BugsnagThread *thread = nil;
-    __block atomic_bool done = false;
+    __block atomic_int state = 0;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        while (atomic_load(&state) != 1) {
+            // Wait for main thread to be back in -testMainThreadFromBackground
+        }
         thread = [BugsnagThread mainThread];
-        atomic_store(&done, true);
+        atomic_store(&state, 2);
     });
-    while (!atomic_load(&done)) {
+    atomic_store(&state, 1);
+    while (atomic_load(&state) != 2) {
         // Wait for `thread` to be set by background queue.
         // Busy waiting so that this method will appear at the top of the stack trace.
     }
