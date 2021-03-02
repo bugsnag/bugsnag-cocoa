@@ -3,6 +3,13 @@ Changelog
 
 ## TBD
 
+### Enhancements
+
+* Bugsnag will now identify crashes that occur whilst your app is launching, allowing you to prioritize fixing high-impact launch crashes.
+  For more information see [the documentation](https://docs.bugsnag.com/platforms/ios/identifying-crashes-at-launch/)
+  `Bugsnag.appDidCrashLastLaunch` is now deprecated and replaced with `Bugsnag.lastRunInfo.crashed`
+  [#1004](https://github.com/bugsnag/bugsnag-cocoa/pull/1004)
+
 ### Bug fixes
 
 * Fix inaccurate `app.duration` after multiple calls to `notify()`
