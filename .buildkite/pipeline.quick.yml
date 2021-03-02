@@ -10,6 +10,8 @@ steps:
     commands:
       - make bootstrap
       - make analyze test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: macOS 10.14 unit tests
     timeout_in_minutes: 10
@@ -22,6 +24,8 @@ steps:
     commands:
       - make bootstrap
       - make analyze test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: iOS 13 unit tests
     timeout_in_minutes: 10
@@ -37,6 +41,8 @@ steps:
     commands:
       - make bootstrap
       - make test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: iOS 12 unit tests
     timeout_in_minutes: 10
@@ -52,6 +58,8 @@ steps:
     commands:
       - make bootstrap
       - make test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: iOS 11 unit tests
     timeout_in_minutes: 10
@@ -67,6 +75,8 @@ steps:
     commands:
       - make bootstrap
       - make test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: iOS 10 unit tests
     timeout_in_minutes: 10
@@ -81,6 +91,8 @@ steps:
     commands:
       - make bootstrap
       - make test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: tvOS 13 unit tests
     timeout_in_minutes: 10
@@ -96,6 +108,8 @@ steps:
     commands:
       - make bootstrap
       - make test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: tvOS 12 unit tests
     timeout_in_minutes: 10
@@ -111,6 +125,8 @@ steps:
     commands:
       - make bootstrap
       - make test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: tvOS 11 unit tests
     timeout_in_minutes: 10
@@ -126,6 +142,8 @@ steps:
     commands:
       - make bootstrap
       - make test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: tvOS 10 unit tests
     timeout_in_minutes: 10
@@ -139,6 +157,8 @@ steps:
     commands:
       - make bootstrap
       - make test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: ':apple: macOS 10.15 full end-to-end tests'
     depends_on:
