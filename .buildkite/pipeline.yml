@@ -62,6 +62,8 @@ steps:
     commands:
       - make bootstrap
       - make analyze test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: iOS 14 unit tests
     timeout_in_minutes: 10
@@ -75,6 +77,8 @@ steps:
     commands:
       - make bootstrap
       - make test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: iOS 9 unit tests
     timeout_in_minutes: 10
@@ -89,6 +93,8 @@ steps:
       - make bootstrap
       - TEST_CONFIGURATION=Debug make test
       - TEST_CONFIGURATION=Release make test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: tvOS 14 unit tests
     timeout_in_minutes: 10
@@ -102,6 +108,8 @@ steps:
     commands:
       - make bootstrap
       - make test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: tvOS 9 unit tests
     timeout_in_minutes: 10
@@ -115,6 +123,8 @@ steps:
     commands:
       - make bootstrap
       - make test
+    artifact_paths:
+      - xcodebuild.log
 
   - label: ':ios: iOS 14 barebones end-to-end tests'
     depends_on:

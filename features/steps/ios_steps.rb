@@ -15,11 +15,11 @@ When('I set the app to {string} mode') do |mode|
   )
 end
 
-When('I run {string} and relaunch the app') do |event_type|
-  steps %(
+When("I run {string} and relaunch the app") do |event_type|
+  steps %Q{
     When I run "#{event_type}"
-    And I relaunch the app
-  )
+    And I relaunch the app after a crash
+  }
 end
 
 When('I clear all persistent data') do
@@ -65,9 +65,18 @@ When('I relaunch the app') do
     system("killall #{app} > /dev/null && sleep 1")
     Maze.driver.get(app)
   else
-    # This step should only be used when the app has crashed, but the notifier needs a little
-    # time to write the crash report before being forced to reopen.
-    sleep(2)
+    Maze.driver.launch_app
+  end
+end
+
+When("I relaunch the app after a crash") do
+  # This step should only be used when the app has crashed, but the notifier needs a little
+  # time to write the crash report before being forced to reopen.  From trials, 2s was not enough.
+  sleep(5)
+  case Maze.driver.capabilities['platformName']
+  when 'Mac'
+    Maze.driver.get(Maze.driver.capabilities['app'])
+  else
     Maze.driver.launch_app
   end
 end
