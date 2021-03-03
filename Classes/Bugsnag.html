@@ -17,7 +17,7 @@
     <a title="Bugsnag Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Bugsnag 6.6.4 Docs</a></p>
+        <p><a href="../index.html">Bugsnag 6.7.0 Docs</a></p>
         <p class="header-right"><a href="https://github.com/bugsnag/bugsnag-cocoa"><img src="../img/gh.png"/>View on GitHub</a></p>
         <p class="header-right"><a href="dash-feed://https%3A%2F%2Fbugsnag.github.io%2Fbugsnag-cocoa%2Fdocsets%2FBugsnag.xml"><img src="../img/dash.png"/>Install in Dash</a></p>
         <p class="header-right">
@@ -75,6 +75,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/BugsnagEvent.html">BugsnagEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagLastRunInfo.html">BugsnagLastRunInfo</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/BugsnagSession.html">BugsnagSession</a>
@@ -190,7 +193,7 @@
             <p>Static access to a Bugsnag Client, the easiest way to use Bugsnag in your app.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L47-L322">Show on GitHub</a>
+                <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L48-L336">Show on GitHub</a>
               </div>
           </section>
           <section class="section task-group-section">
@@ -225,7 +228,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L52">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L53">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -269,7 +272,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L66">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L67">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -333,7 +336,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L83">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L84">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -397,7 +400,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L99">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L100">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -407,13 +410,18 @@
                     <code>
                     <a name="/c:objc(cs)Bugsnag(cm)appDidCrashLastLaunch"></a>
                     <a name="//apple_ref/objc/Method/+appDidCrashLastLaunch" class="dashAnchor"></a>
-                    <a class="token" href="#/c:objc(cs)Bugsnag(cm)appDidCrashLastLaunch">+appDidCrashLastLaunch</a>
+                    <a class="token discouraged" href="#/c:objc(cs)Bugsnag(cm)appDidCrashLastLaunch">+appDidCrashLastLaunch</a>
                     </code>
                   </div>
                   <div class="height-container">
                     <div class="pointer-container"></div>
                     <section class="section">
                       <div class="pointer"></div>
+                      <div class="aside aside-deprecated">
+                        <p class="aside-title">Deprecated</p>
+                        <p>use &lsquo;lastRunInfo.crashed&rsquo; instead</p>
+
+                      </div>
                       <div class="abstract">
                         
                       </div>
@@ -435,7 +443,80 @@
                         <p>YES if Bugsnag has been started and the previous launch crashed</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L104">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L105">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)Bugsnag(cpy)lastRunInfo"></a>
+                    <a name="//apple_ref/objc/Property/lastRunInfo" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)Bugsnag(cpy)lastRunInfo">lastRunInfo</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Information about the last run of the app, and whether it crashed.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@property</span> <span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">readonly</span><span class="p">,</span> <span class="n">nullable</span><span class="p">)</span> <span class="n"><a href="../Classes/BugsnagLastRunInfo.html">BugsnagLastRunInfo</a></span> <span class="o">*</span><span class="n">lastRunInfo</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="k">var</span> <span class="nv">lastRunInfo</span><span class="p">:</span> <span class="kt"><a href="../Classes/BugsnagLastRunInfo.html">BugsnagLastRunInfo</a></span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L110">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)Bugsnag(cm)markLaunchCompleted"></a>
+                    <a name="//apple_ref/objc/Method/+markLaunchCompleted" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)Bugsnag(cm)markLaunchCompleted">+markLaunchCompleted</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Tells Bugsnag that your app has finished launching.</p>
+
+<p>Errors reported after calling this method will have the <code><a href="../Classes/BugsnagAppWithState.html#/c:objc(cs)BugsnagAppWithState(py)isLaunching">BugsnagAppWithState.isLaunching</a></code>
+ property set to false.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">markLaunchCompleted</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kd">func</span> <span class="nf">markLaunchCompleted</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L118">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -492,7 +573,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L118">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L132">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -559,7 +640,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L126-L127">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L140-L141">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -613,7 +694,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L134">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L148">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -680,7 +761,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L142-L143">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L156-L157">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -735,7 +816,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L155">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L169">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -790,7 +871,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L163">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L177">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -872,7 +953,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L174-L177">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L188-L191">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -909,7 +990,7 @@ set in <code><a href="../Classes/BugsnagConfiguration.html#/c:objc(cs)BugsnagCon
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L184">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L198">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -963,7 +1044,7 @@ set in <code><a href="../Classes/BugsnagConfiguration.html#/c:objc(cs)BugsnagCon
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L206">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L220">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1016,7 +1097,7 @@ set in <code><a href="../Classes/BugsnagConfiguration.html#/c:objc(cs)BugsnagCon
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L223">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L237">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1076,7 +1157,7 @@ set in <code><a href="../Classes/BugsnagConfiguration.html#/c:objc(cs)BugsnagCon
                         <p>true if a previous session was resumed, false if a new session was started.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L245">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L259">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1111,7 +1192,7 @@ set in <code><a href="../Classes/BugsnagConfiguration.html#/c:objc(cs)BugsnagCon
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L254">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L268">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1146,7 +1227,7 @@ set in <code><a href="../Classes/BugsnagConfiguration.html#/c:objc(cs)BugsnagCon
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L259">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L273">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1181,7 +1262,7 @@ set in <code><a href="../Classes/BugsnagConfiguration.html#/c:objc(cs)BugsnagCon
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L268">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L282">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1261,7 +1342,7 @@ set in <code><a href="../Classes/BugsnagConfiguration.html#/c:objc(cs)BugsnagCon
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L277-L279">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L291-L293">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1315,7 +1396,7 @@ set in <code><a href="../Classes/BugsnagConfiguration.html#/c:objc(cs)BugsnagCon
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L290-L291">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L304-L305">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1369,7 +1450,7 @@ set in <code><a href="../Classes/BugsnagConfiguration.html#/c:objc(cs)BugsnagCon
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L298-L299">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L312-L313">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1424,7 +1505,7 @@ set in <code><a href="../Classes/BugsnagConfiguration.html#/c:objc(cs)BugsnagCon
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L311-L312">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L325-L326">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1478,7 +1559,7 @@ set in <code><a href="../Classes/BugsnagConfiguration.html#/c:objc(cs)BugsnagCon
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.6.4/Bugsnag/include/Bugsnag/Bugsnag.h#L319-L320">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.7.0/Bugsnag/include/Bugsnag/Bugsnag.h#L333-L334">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1488,7 +1569,7 @@ set in <code><a href="../Classes/BugsnagConfiguration.html#/c:objc(cs)BugsnagCon
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2021 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external">Bugsnag Inc</a>. All rights reserved. (Last updated: 2021-02-24)</p>
+          <p>&copy; 2021 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external">Bugsnag Inc</a>. All rights reserved. (Last updated: 2021-03-03)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
