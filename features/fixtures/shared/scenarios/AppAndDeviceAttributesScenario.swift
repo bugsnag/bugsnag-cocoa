@@ -12,15 +12,21 @@ import Bugsnag
 class AppAndDeviceAttributesScenario: Scenario {
 
     override func startBugsnag() {
-      self.config.autoTrackSessions = false
-      super.startBugsnag()
+        config.autoTrackSessions = false
+        config.launchDurationMillis = 1000
+        super.startBugsnag()
     }
 
     override func run() {
         let error = NSError(domain: "AppAndDeviceAttributesScenario", code: 100, userInfo: nil)
         Bugsnag.notifyError(error)
+        after(.seconds(2)) {
+            Bugsnag.notifyError(error)
+        }
     }
 }
+
+// MARK: -
 
 /**
  * Override default values in config
@@ -43,6 +49,8 @@ class AppAndDeviceAttributesScenarioConfigOverride: Scenario {
         Bugsnag.notifyError(error)
     }
 }
+
+// MARK: -
 
 class AppAndDeviceAttributesScenarioCallbackOverride: Scenario {
 
@@ -69,4 +77,54 @@ class AppAndDeviceAttributesScenarioCallbackOverride: Scenario {
     }
 }
 
+// MARK: -
 
+class AppAndDeviceAttributesInfiniteLaunchDurationScenario: Scenario {
+    
+    override func startBugsnag() {
+        config.autoTrackSessions = false
+        config.launchDurationMillis = 0
+        super.startBugsnag()
+    }
+    
+    override func run() {
+        after(.seconds(6)) {
+            Bugsnag.notify(NSException(name: .genericException, reason: "isLaunching should be true if `launchDurationMillis` is 0"))
+        }
+    }
+}
+
+// MARK: -
+
+class AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario: Scenario {
+    
+    override func startBugsnag() {
+        config.autoTrackSessions = false
+        super.startBugsnag()
+    }
+    
+    override func run() {
+        NSException(name: .genericException, reason: "isLaunching should be true").raise()
+    }
+}
+
+// MARK: -
+
+class AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario: Scenario {
+    
+    override func startBugsnag() {
+        config.autoTrackSessions = false
+        super.startBugsnag()
+    }
+    
+    override func run() {
+        Bugsnag.markLaunchCompleted()
+        NSException(name: .genericException, reason: "isLaunching should be false after `Bugsnag.markLaunchCompleted()`").raise()
+    }
+}
+
+// MARK: -
+
+private func after(_ interval: DispatchTimeInterval, execute work: @escaping @convention(block) () -> Void) {
+    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + interval, execute: work)
+}

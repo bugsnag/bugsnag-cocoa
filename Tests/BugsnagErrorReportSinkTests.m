@@ -300,8 +300,6 @@
 - (void)testEventApp {
     NSDictionary *event = [self.processedData[@"events"] firstObject];
     NSDictionary *app = event[@"app"];
-    XCTAssertNotNil(app);
-    XCTAssertEqual(9, app.count);
     XCTAssertEqualObjects(app[@"id"], @"net.hockeyapp.CrashProbeiOS");
     XCTAssertNotNil(app[@"type"]);
     XCTAssertEqualObjects(app[@"version"], @"1.0");
@@ -311,6 +309,7 @@
     XCTAssertEqualObjects(app[@"duration"], @4000);
     XCTAssertEqualObjects(app[@"durationInForeground"], @2000);
     XCTAssertEqualObjects(app[@"inForeground"], @YES);
+    XCTAssertEqualObjects(app[@"isLaunching"], @NO);
 }
 
 #pragma mark - handled/unhandled serialisation

@@ -13,6 +13,8 @@
 #import "BugsnagThread+Private.h"
 #import "BugsnagThread+Recording.h"
 
+#include <stdatomic.h>
+
 @interface BugsnagThreadTests : XCTestCase
 @property NSArray *binaryImages;
 @property NSDictionary *thread;
@@ -249,22 +251,26 @@
     XCTAssertNil(thread);
 }
 
-#define XCTAssertContainsObject(collection, object) \
-    XCTAssert([collection containsObject:object], @"%@ is not contained in %@", object, \
-        [[collection description] stringByReplacingOccurrencesOfString:@"\n" withString:@"\\n"])
-
 - (void)testMainThreadFromBackground {
+    NSParameterAssert(NSThread.currentThread.isMainThread);
     __block BugsnagThread *thread = nil;
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    __block atomic_int state = 0;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        while (atomic_load(&state) != 1) {
+            // Wait for main thread to be back in -testMainThreadFromBackground
+        }
         thread = [BugsnagThread mainThread];
-        dispatch_semaphore_signal(semaphore);
+        atomic_store(&state, 2);
     });
-    dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC));
+    atomic_store(&state, 1);
+    while (atomic_load(&state) != 2) {
+        // Wait for `thread` to be set by background queue.
+        // Busy waiting so that this method will appear at the top of the stack trace.
+    }
     XCTAssertTrue(thread.errorReportingThread);
     XCTAssertEqualObjects(thread.id, @"0");
-    XCTAssert([thread.name isEqualToString:@"com.apple.main-thread"] || [thread.name isEqualToString:@"com.apple.dt.xctest.xctwaiter"]);
-    XCTAssertContainsObject([thread.stacktrace valueForKeyPath:@"method"], @(__PRETTY_FUNCTION__));
+    XCTAssertEqualObjects(thread.name, @"com.apple.main-thread");
+    XCTAssertEqualObjects(thread.stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
 }
 
 @end

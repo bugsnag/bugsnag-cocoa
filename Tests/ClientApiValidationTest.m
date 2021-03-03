@@ -85,7 +85,7 @@
 }
 
 - (void)testValidAppDidCrashLastLaunch {
-    XCTAssertFalse(self.client.appDidCrashLastLaunch);
+    XCTAssertFalse(self.client.lastRunInfo.crashed);
 }
 
 - (void)testValidUser {
