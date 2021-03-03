@@ -51,11 +51,13 @@
 }
 
 - (IBAction)runScenario:(id)sender {
-    self.scenario = [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
-    self.scenario.eventMode = self.scenarioMetadata;
+    if (!self.scenario) {
+        self.scenario = [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
+        self.scenario.eventMode = self.scenarioMetadata;
 
-    NSLog(@"Starting Bugsnag for scenario: %@", self.scenario);
-    [self.scenario startBugsnag];
+        NSLog(@"Starting Bugsnag for scenario: %@", self.scenario);
+        [self.scenario startBugsnag];
+    }
 
     NSLog(@"Running scenario: %@", self.scenario);
     // Using dispatch_async to prevent AppleEvents swallowing exceptions.

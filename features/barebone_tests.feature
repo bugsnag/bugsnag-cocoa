@@ -20,6 +20,7 @@ Feature: Barebone tests
       | ios   | com.bugsnag.iOSTestApp   |
       | macos | com.bugsnag.macOSTestApp |
     And the event "app.inForeground" is true
+    And the event "app.isLaunching" is true
     And the event "app.releaseStage" equals "development"
     And the event "app.type" equals the platform-dependent string:
       | ios   | iOS   |
@@ -83,6 +84,7 @@ Feature: Barebone tests
     And I discard the oldest error
 
     Then the error is valid for the error reporting API
+    And the event "app.isLaunching" is false
     And the event "breadcrumbs.2.name" equals "NSRangeException"
     And the event "breadcrumbs.2.type" equals "error"
     And the event "breadcrumbs.3.name" equals "About to decode a payload..."
@@ -109,6 +111,7 @@ Feature: Barebone tests
     Then the error is valid for the error reporting API
     And the event "app.bundleVersion" equals "12301"
     And the event "app.inForeground" is true
+    And the event "app.isLaunching" is true
     And the event "app.releaseStage" equals "development"
     And the event "app.type" equals the platform-dependent string:
       | ios   | iOS   |
@@ -130,6 +133,9 @@ Feature: Barebone tests
     And the event "metaData.error.mach.code_name" equals "KERN_INVALID_ADDRESS"
     And the event "metaData.error.mach.code" equals "0x1"
     And the event "metaData.error.mach.exception_name" is not null
+    And the event "metaData.lastRunInfo.consecutiveLaunchCrashes" equals 1
+    And the event "metaData.lastRunInfo.crashed" is true
+    And the event "metaData.lastRunInfo.crashedDuringLaunch" is true
     And the event "severity" equals "error"
     And the event "severityReason.type" equals "unhandledException"
     And the event "severityReason.unhandledOverridden" is null
@@ -178,6 +184,7 @@ Feature: Barebone tests
       | ios   | com.bugsnag.iOSTestApp   |
       | macos | com.bugsnag.macOSTestApp |
     And the event "app.inForeground" is true
+    And the event "app.isLaunching" is true
     And the event "app.type" equals the platform-dependent string:
       | ios   | iOS   |
       | macos | macOS |
@@ -216,6 +223,9 @@ Feature: Barebone tests
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.wordSize" is not null
+    And the event "metaData.lastRunInfo.consecutiveLaunchCrashes" equals 1
+    And the event "metaData.lastRunInfo.crashed" is true
+    And the event "metaData.lastRunInfo.crashedDuringLaunch" is true
     And the event "session.id" is not null
     And the event "session.startedAt" is not null
     And the event "session.events.handled" equals 0

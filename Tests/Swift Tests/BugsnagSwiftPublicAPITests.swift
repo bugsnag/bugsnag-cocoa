@@ -49,7 +49,7 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         Bugsnag.start(withApiKey: apiKey);
         Bugsnag.start(with: BugsnagConfiguration(apiKey))
         
-        let _ = Bugsnag.appDidCrashLastLaunch()
+        let _ = Bugsnag.lastRunInfo?.crashed
         
         Bugsnag.notify(ex)
         Bugsnag.notify(ex) { (event) -> Bool in return false }
@@ -268,7 +268,7 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         client.context = ""
         _ = client.context
         
-        let _ = client.appDidCrashLastLaunch()
+        let _ = client.lastRunInfo?.crashed
         
         client.setUser("me", withEmail: "memail@foo.com", andName: "you")
         let _ = client.user()

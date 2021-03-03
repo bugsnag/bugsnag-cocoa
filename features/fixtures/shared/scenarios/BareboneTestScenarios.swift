@@ -40,6 +40,7 @@ class BareboneTestHandledScenario: Scenario {
         config.enabledBreadcrumbTypes = [.error]
         config.addMetadata(["Testing": true], section: "Flags")
         config.addMetadata(["password": "123456"], section: "Other")
+        config.launchDurationMillis = 0
         config.sendThreads = .unhandledOnly
         config.setUser("foobar", withEmail: "foobar@example.com", andName: "Foo Bar")
         config.appVersion = "12.3"
@@ -72,6 +73,8 @@ class BareboneTestHandledScenario: Scenario {
     func afterSendError() {
         precondition(onSendErrorCount == 1)
         
+        Bugsnag.markLaunchCompleted()
+        
         Bugsnag.leaveBreadcrumb(withMessage: "About to decode a payload...")
         
         do {
@@ -94,6 +97,16 @@ class BareboneTestUnhandledErrorScenario: Scenario {
             // The version of the app at report time.
             config.appVersion = "23.4"
             config.bundleVersion = "23401"
+            config.addOnSendError {
+                if let lastRunInfo = Bugsnag.lastRunInfo {
+                    $0.addMetadata(
+                        ["consecutiveLaunchCrashes": lastRunInfo.consecutiveLaunchCrashes,
+                         "crashed": lastRunInfo.crashed,
+                         "crashedDuringLaunch": lastRunInfo.crashedDuringLaunch
+                        ], section: "lastRunInfo")
+                }
+                return true
+            }
         } else {
             // The version of the app at crash time.
             config.appVersion = "12.3"
