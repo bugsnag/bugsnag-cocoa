@@ -389,12 +389,13 @@ static inline bool is_jailbroken() {
     NSString *systemVersion;
     if (version.patchVersion == 0) {
         systemVersion =
-            [NSString stringWithFormat:@"%ld.%ld", version.majorVersion,
-                                       version.minorVersion];
+        [NSString stringWithFormat:@"%ld.%ld",
+         (long)version.majorVersion, (long)version.minorVersion];
     } else {
-        systemVersion = [NSString
-            stringWithFormat:@"%ld.%ld.%ld", version.majorVersion,
-                             version.minorVersion, version.patchVersion];
+        systemVersion =
+        [NSString stringWithFormat:@"%ld.%ld.%ld",
+         (long)version.majorVersion, (long)version.minorVersion,
+         (long)version.patchVersion];
     }
     sysInfo[@BSG_KSSystemField_SystemVersion] = systemVersion;
 
