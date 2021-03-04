@@ -7,10 +7,10 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "BugsnagConfiguration.h"
-#import "BugsnagDeviceWithState+Private.h"
+
+#import "BSG_KSSystemInfo.h"
 #import "BugsnagDevice+Private.h"
-#import "BugsnagTestConstants.h"
+#import "BugsnagDeviceWithState+Private.h"
 
 @interface BugsnagDeviceTest : XCTestCase
 @property NSDictionary *data;
@@ -96,6 +96,12 @@
     formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
     formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
     XCTAssertEqualObjects([formatter dateFromString:@"2014-12-02T01:56:13Z"], device.time);
+}
+
+- (void)testDeviceWithRealSystemInfo {
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithKSCrashReport:@{@"system": systemInfo}];
+    XCTAssertLessThan(device.freeMemory.unsignedLongLongValue, device.totalMemory.unsignedLongLongValue);
 }
 
 - (void)testDeviceToDict {
