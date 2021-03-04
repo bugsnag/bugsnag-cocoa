@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix incorrect `freeMemory` for errors reported via `notify()`
+  [#1021](https://github.com/bugsnag/bugsnag-cocoa/pull/1021)
+
 ## 6.7.0 (2021-03-03)
 
 ### Enhancements
