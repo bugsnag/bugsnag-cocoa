@@ -97,7 +97,7 @@ NSNumber *BSGDeviceFreeSpace(NSSearchPathDirectory directory) {
     return device;
 }
 
-+ (BugsnagDeviceWithState *)deviceWithDictionary:(NSDictionary *)event {
++ (BugsnagDeviceWithState *)deviceWithKSCrashReport:(NSDictionary *)event {
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState new];
     [self populateFields:device dictionary:event];
     device.orientation = [event valueForKeyPath:@"user.state.deviceState.orientation"];
