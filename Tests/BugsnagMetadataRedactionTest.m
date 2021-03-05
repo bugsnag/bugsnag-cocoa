@@ -22,7 +22,7 @@
             @"some_key": @"2fa0"
     }];
 
-    NSDictionary *payload = [event toJson];
+    NSDictionary *payload = [event toJsonWithRedactedKeys:nil];
     NSDictionary *section = payload[@"metaData"][@"custom"];
     XCTAssertNotNil(section);
     XCTAssertEqualObjects(@"hunter2", section[@"password"]);
@@ -34,9 +34,8 @@
             @"password": @"hunter2",
             @"some_key": @"2fa0"
     }];
-    event.redactedKeys = [NSSet setWithArray:@[@"password"]];
 
-    NSDictionary *payload = [event toJson];
+    NSDictionary *payload = [event toJsonWithRedactedKeys:[NSSet setWithArray:@[@"password"]]];
     NSDictionary *section = payload[@"metaData"][@"custom"];
     XCTAssertNotNil(section);
     XCTAssertEqualObjects(@"[REDACTED]", section[@"password"]);
@@ -54,9 +53,8 @@
             },
             @"some_key": @"2fa0"
     }];
-    event.redactedKeys = [NSSet setWithArray:@[@"password"]];
 
-    NSDictionary *payload = [event toJson];
+    NSDictionary *payload = [event toJsonWithRedactedKeys:[NSSet setWithArray:@[@"password"]]];
     NSDictionary *section = payload[@"metaData"][@"custom"];
     XCTAssertNotNil(section);
     XCTAssertEqualObjects(@"[REDACTED]", section[@"user_auth"][@"meta"][@"password"]);
@@ -74,9 +72,8 @@
             @"some_key": @"2fa0",
             @"foo": @"gasdf"
     }];
-    event.redactedKeys = [NSSet setWithArray:@[@"authority", @"some_key"]];
 
-    NSDictionary *payload = [event toJson];
+    NSDictionary *payload = [event toJsonWithRedactedKeys:[NSSet setWithArray:@[@"authority", @"some_key"]]];
     NSDictionary *section = payload[@"metaData"][@"custom"];
     XCTAssertNotNil(section);
     XCTAssertEqualObjects(@"123456", section[@"user_auth"][@"password"]);
@@ -102,9 +99,8 @@
     }];
     // disallow any numeric characters
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[0-9]" options:0 error:nil];
-    event.redactedKeys = [NSSet setWithArray:@[@"password", regex]];
 
-    NSDictionary *payload = [event toJson];
+    NSDictionary *payload = [event toJsonWithRedactedKeys:[NSSet setWithArray:@[@"password", regex]]];
     NSDictionary *section = payload[@"metaData"][@"custom"];
     XCTAssertNotNil(section);
     XCTAssertEqualObjects(@"[REDACTED]", section[@"password"]);
@@ -123,9 +119,8 @@
     }];
     
     // Note: this redacts both keys
-    event.redactedKeys = [NSSet setWithArray:@[@"password", @"Caseinsensitivekey"]];
 
-    NSDictionary *payload = [event toJson];
+    NSDictionary *payload = [event toJsonWithRedactedKeys:[NSSet setWithArray:@[@"password", @"Caseinsensitivekey"]]];
     NSDictionary *section = payload[@"metaData"][@"custom"];
     XCTAssertNotNil(section);
     XCTAssertEqualObjects(@"[REDACTED]", section[@"password"]);
