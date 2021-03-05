@@ -1031,6 +1031,10 @@ NSString *_lastOrientation = nil;
  */
 #if BSG_PLATFORM_IOS
 - (void)batteryChanged:(NSNotification *)notification {
+    if (![UIDEVICE currentDevice]) {
+        return;
+    }
+
     NSNumber *batteryLevel = @([UIDEVICE currentDevice].batteryLevel);
     BOOL charging = [UIDEVICE currentDevice].batteryState == UIDeviceBatteryStateCharging ||
                     [UIDEVICE currentDevice].batteryState == UIDeviceBatteryStateFull;

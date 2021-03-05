@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix missing `osName` and `osVersion` for errors reported from app extensions that do not link against UIKit.
+  [#1022](https://github.com/bugsnag/bugsnag-cocoa/pull/1022)
+
 ## 6.7.0 (2021-03-03)
 
 ### Enhancements
