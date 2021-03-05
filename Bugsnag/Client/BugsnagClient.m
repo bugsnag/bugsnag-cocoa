@@ -28,6 +28,7 @@
 
 #import "BugsnagClient+Private.h"
 
+#import "BSGAppHangDetector.h"
 #import "BSGConnectivity.h"
 #import "BSGEventUploader.h"
 #import "BSGFileLocations.h"
@@ -220,6 +221,8 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 // =============================================================================
 
 @interface BugsnagClient () <BSGBreadcrumbSink>
+
+@property (nonatomic) BSGAppHangDetector *appHangDetector;
 
 @property BSGNotificationBreadcrumbs *notificationBreadcrumbs;
 @property (weak) NSTimer *appLaunchTimer;
@@ -423,6 +426,12 @@ NSString *_lastOrientation = nil;
     }
     
     [self.eventUploader uploadStoredEvents];
+    
+    // App hang detector deliberately started after sendLaunchCrashSynchronously
+    if (self.configuration.enabledErrorTypes.appHangs) {
+        self.appHangDetector = [[BSGAppHangDetector alloc] init];
+        [self.appHangDetector startWithConfiguration:self.configuration];
+    }
 }
 
 - (void)appLaunchTimerFired:(NSTimer *)timer {
