@@ -13,6 +13,7 @@
 
 #import "BugsnagLogger.h"
 #import "BugsnagThread+Recording.h"
+#import "BugsnagThread+Private.h"
 
 
 @interface BSGAppHangDetector ()
@@ -30,12 +31,13 @@
     }
 }
 
-- (void)startWithConfiguration:(BugsnagConfiguration *)configuration {
+- (void)startWithDelegate:(id<BSGAppHangDetectorDelegate>)delegate {
     if (self.observer) {
         bsg_log_err(@"Attempted to call %s more than once", __PRETTY_FUNCTION__);
         return;
     }
     
+    BugsnagConfiguration *configuration = delegate.configuration;
     if (!configuration.enabledErrorTypes.appHangs) {
         return;
     }
@@ -55,6 +57,7 @@
     
     dispatch_queue_t backgroundQueue;
     __block dispatch_semaphore_t semaphore;
+    __weak typeof(delegate) weakDelegate = delegate;
     
     backgroundQueue = dispatch_queue_create("com.bugsnag.app-hang-detector", DISPATCH_QUEUE_SERIAL);
     
@@ -72,16 +75,15 @@
                     NSArray<BugsnagThread *> *threads = nil;
                     if (recordAllThreads) {
                         threads = [BugsnagThread allThreads:YES callStackReturnAddresses:NSThread.callStackReturnAddresses];
+                        // By default the calling thread is marked as "Error reported from this thread", which is not correct case for app hangs.
+                        [threads enumerateObjectsUsingBlock:^(BugsnagThread * _Nonnull thread, NSUInteger idx, BOOL * _Nonnull stop) {
+                            thread.errorReportingThread = idx == 0;
+                        }];
                     } else {
                         threads = [NSArray arrayWithObjects:[BugsnagThread mainThread], nil]; //!OCLint
                     }
                     
-                    NSArray<BugsnagStackframe *> *stacktrace = threads.firstObject.stacktrace;
-                    
-                    // TODO: Create BugsnagEvent with stacktrace
-                    if (!fatalOnly) {
-                        NSLog(@"%@", stacktrace);
-                    }
+                    BugsnagEvent *event = [weakDelegate appHangEventWithThreads:threads];
                     
                     // TODO: Persist BugsnagEvent to app_hang.json
                     
@@ -90,7 +92,9 @@
                     
                     // TODO: Delete app_hang.json
                     
-                    // TODO: Send BugsnagEvent if !fatalOnly
+                    if (event && !fatalOnly) {
+                        [weakDelegate notifyAppHangEvent:event];
+                    }
                 }
             });
         }

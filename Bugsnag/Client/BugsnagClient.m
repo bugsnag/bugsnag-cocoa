@@ -225,9 +225,16 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic) BSGAppHangDetector *appHangDetector;
 
 @property BSGNotificationBreadcrumbs *notificationBreadcrumbs;
+
 @property (weak) NSTimer *appLaunchTimer;
 
 @end
+
+
+@interface BugsnagClient (BSGAppHangDetectorDelegate) <BSGAppHangDetectorDelegate>
+
+@end
+
 
 #if __clang_major__ >= 11 // Xcode 10 does not like the following attribute
 __attribute__((annotate("oclint:suppress[long class]")))
@@ -430,7 +437,7 @@ NSString *_lastOrientation = nil;
     // App hang detector deliberately started after sendLaunchCrashSynchronously
     if (self.configuration.enabledErrorTypes.appHangs) {
         self.appHangDetector = [[BSGAppHangDetector alloc] init];
-        [self.appHangDetector startWithConfiguration:self.configuration];
+        [self.appHangDetector startWithDelegate:self];
     }
 }
 
@@ -1233,6 +1240,46 @@ NSString *_lastOrientation = nil;
         self.extraRuntimeInfo[key] = info;
     }
     [self.state addMetadata:self.extraRuntimeInfo withKey:BSGKeyExtraRuntimeInfo toSection:BSGKeyDevice];
+}
+
+@end
+
+// MARK: -
+
+@implementation BugsnagClient (BSGAppHangDetectorDelegate)
+
+- (nonnull BugsnagEvent *)appHangEventWithThreads:(nonnull NSArray<BugsnagThread *> *)threads {
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    
+    NSString *message = [NSString stringWithFormat:@"The app's main thread failed to respond to an event within %d milliseconds",
+                         (int)self.configuration.appHangThresholdMillis];
+    
+    BugsnagError *error =
+    [[BugsnagError alloc] initWithErrorClass:@"App Hang"
+                                errorMessage:message
+                                   errorType:BSGErrorTypeCocoa
+                                  stacktrace:threads.firstObject.stacktrace];
+    
+    BugsnagHandledState *handledState =
+    [[BugsnagHandledState alloc] initWithSeverityReason:AppHang
+                                               severity:BSGSeverityError
+                                              unhandled:NO
+                                    unhandledOverridden:NO
+                                              attrValue:nil];
+    
+    return [[BugsnagEvent alloc] initWithApp:[self generateAppWithState:systemInfo]
+                                      device:[self generateDeviceWithState:systemInfo]
+                                handledState:handledState
+                                        user:self.configuration.user
+                                    metadata:[self.metadata deepCopy]
+                                 breadcrumbs:self.breadcrumbs.breadcrumbs
+                                      errors:@[error]
+                                     threads:threads
+                                     session:self.sessionTracker.runningSession];
+}
+
+- (void)notifyAppHangEvent:(nonnull BugsnagEvent *)event {
+    [self notifyInternal:event block:nil];
 }
 
 @end

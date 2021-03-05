@@ -9,12 +9,28 @@
 #import <Foundation/Foundation.h>
 
 @class BugsnagConfiguration;
+@class BugsnagEvent;
+@class BugsnagThread;
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol BSGAppHangDetectorDelegate;
+
+
 @interface BSGAppHangDetector : NSObject
 
-- (void)startWithConfiguration:(BugsnagConfiguration *)configuration;
+- (void)startWithDelegate:(id<BSGAppHangDetectorDelegate>)delegate;
+
+@end
+
+
+@protocol BSGAppHangDetectorDelegate <NSObject>
+
+- (BugsnagConfiguration *)configuration;
+
+- (BugsnagEvent *)appHangEventWithThreads:(NSArray<BugsnagThread *> *)threads;
+
+- (void)notifyAppHangEvent:(BugsnagEvent *)event;
 
 @end
 
