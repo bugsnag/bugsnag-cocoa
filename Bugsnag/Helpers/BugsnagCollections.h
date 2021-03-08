@@ -21,6 +21,9 @@
 
 #import <Foundation/Foundation.h>
 
+/// Returns an array containing the results of mapping the given block over the array's elements
+NSArray * BSGArrayMap(NSArray *array, id (^ transform)(id));
+
 /// Returns a new array containing the elements starting at position `index`, or
 /// an empty array if `index` is beyond the array's range range of elements.
 NSArray * BSGArraySubarrayFromIndex(NSArray *array, NSUInteger index);

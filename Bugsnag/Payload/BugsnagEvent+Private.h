@@ -57,6 +57,8 @@ NS_ASSUME_NONNULL_BEGIN
                     threads:(NSArray<BugsnagThread *> *)threads
                     session:(nullable BugsnagSession *)session;
 
+- (instancetype)initWithJson:(NSDictionary *)json;
+
 - (instancetype)initWithKSReport:(NSDictionary *)KSReport;
 
 - (instancetype)initWithUserData:(NSDictionary *)event;
