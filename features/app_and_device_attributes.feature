@@ -35,6 +35,7 @@ Feature: App and Device attributes present
       | ios   | @not_null |
       | macos | @null     |
     And the error payload field "events.0.device.time" is a date
+    And the event "device.freeMemory" is less than the event "device.totalMemory"
 
     # App
 

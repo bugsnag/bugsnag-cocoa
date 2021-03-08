@@ -28,6 +28,7 @@ Feature: Barebone tests
     And the event "app.version" equals "12.3"
     And the event "breadcrumbs.0.name" equals "Running BareboneTestHandledScenario"
     And the event "breadcrumbs.1.name" equals "This is super <redacted>"
+    And the event "device.freeMemory" is less than the event "device.totalMemory"
     And the event "device.id" is not null
     And the event "device.jailbroken" is false
     And the event "device.locale" is not null
@@ -119,6 +120,7 @@ Feature: Barebone tests
     And the event "app.version" equals "12.3"
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" is null
+    And the event "device.freeMemory" is less than the event "device.totalMemory"
     And the event "device.id" is not null
     And the event "device.jailbroken" is false
     And the event "device.locale" is not null

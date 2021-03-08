@@ -438,11 +438,11 @@ static inline bool is_jailbroken() {
     sysInfo[@BSG_KSSystemField_DeviceAppHash] = [self deviceAndAppHash];
     sysInfo[@BSG_KSSystemField_BuildType] = [BSG_KSSystemInfo buildType];
 
-    NSDictionary *memory = @{
-            @BSG_KSSystemField_Size: [self int64Sysctl:@"hw.memsize"],
-            @BSG_KSCrashField_Usable: @(bsg_ksmachusableMemory())
+    sysInfo[@(BSG_KSSystemField_Memory)] = @{
+        @(BSG_KSCrashField_Free): @(bsg_ksmachfreeMemory()),
+        @(BSG_KSCrashField_Usable): @(bsg_ksmachusableMemory()),
+        @(BSG_KSSystemField_Size): [self int64Sysctl:@"hw.memsize"]
     };
-    sysInfo[@BSG_KSSystemField_Memory] = memory;
 
     NSDictionary *statsInfo = [[BSG_KSCrash sharedInstance] captureAppStats];
     sysInfo[@BSG_KSCrashField_AppStats] = statsInfo;

@@ -84,7 +84,7 @@
                     }
             }
     };
-    BugsnagDevice *device = [BugsnagDevice deviceWithDictionary:deviceData];
+    BugsnagDevice *device = [BugsnagDevice deviceWithKSCrashReport:deviceData];
     device.locale = @"en-US";
     return device;
 }

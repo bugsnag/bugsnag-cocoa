@@ -8,6 +8,9 @@ Changelog
 * Fix missing `osName` and `osVersion` for errors reported from app extensions that do not link against UIKit.
   [#1022](https://github.com/bugsnag/bugsnag-cocoa/pull/1022)
 
+* Fix incorrect `freeMemory` for errors reported via `notify()`
+  [#1021](https://github.com/bugsnag/bugsnag-cocoa/pull/1021)
+
 ## 6.7.0 (2021-03-03)
 
 ### Enhancements
