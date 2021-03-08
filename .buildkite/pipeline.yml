@@ -138,6 +138,7 @@ steps:
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
+          - "features/app_hangs.feature"
           - "features/barebone_tests.feature"
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
@@ -164,6 +165,7 @@ steps:
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
+          - "features/app_hangs.feature"
           - "features/barebone_tests.feature"
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
@@ -189,6 +191,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
+        features/app_hangs.feature
         features/barebone_tests.feature
         --farm=local
         --os=macos
