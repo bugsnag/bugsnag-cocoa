@@ -225,9 +225,11 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 @property (nonatomic) BSGAppHangDetector *appHangDetector;
 
 @property BSGNotificationBreadcrumbs *notificationBreadcrumbs;
+
 @property (weak) NSTimer *appLaunchTimer;
 
 @end
+
 
 #if __clang_major__ >= 11 // Xcode 10 does not like the following attribute
 __attribute__((annotate("oclint:suppress[long class]")))
@@ -430,7 +432,7 @@ NSString *_lastOrientation = nil;
     // App hang detector deliberately started after sendLaunchCrashSynchronously
     if (self.configuration.enabledErrorTypes.appHangs) {
         self.appHangDetector = [[BSGAppHangDetector alloc] init];
-        [self.appHangDetector startWithConfiguration:self.configuration];
+        [self.appHangDetector startWithDelegate:self];
     }
 }
 

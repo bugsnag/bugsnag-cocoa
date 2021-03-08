@@ -11,9 +11,11 @@
 #import "BugsnagMetadata+Private.h" // For BugsnagObserverBlock
 
 @class BSGEventUploader;
+@class BugsnagAppWithState;
 @class BugsnagBreadcrumbs;
 @class BugsnagConfiguration;
 @class BugsnagCrashSentry;
+@class BugsnagDeviceWithState;
 @class BugsnagMetadata;
 @class BugsnagNotifier;
 @class BugsnagPluginClient;
@@ -27,6 +29,8 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Properties
 
 @property (nonatomic) BOOL appDidCrashLastLaunch;
+
+@property (nullable, nonatomic) BugsnagEvent *appHangEvent;
 
 @property (nullable, retain, nonatomic) BugsnagBreadcrumbs *breadcrumbs;
 
@@ -90,7 +94,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray *)collectThreads:(BOOL)unhandled; // Used in BugsnagReactNative
 
-- (void)notifyInternal:(BugsnagEvent *)event block:(BugsnagOnErrorBlock)block;
+- (BugsnagAppWithState *)generateAppWithState:(NSDictionary *)systemInfo;
+
+- (BugsnagDeviceWithState *)generateDeviceWithState:(NSDictionary *)systemInfo;
+
+- (void)notifyInternal:(BugsnagEvent *)event block:(nullable BugsnagOnErrorBlock)block;
 
 - (void)removeObserverWithBlock:(BugsnagObserverBlock)block; // Used in BugsnagReactNative
 
