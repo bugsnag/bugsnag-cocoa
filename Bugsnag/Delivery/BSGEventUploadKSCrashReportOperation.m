@@ -22,14 +22,8 @@
 @implementation BSGEventUploadKSCrashReportOperation
 
 - (BugsnagEvent *)loadEventAndReturnError:(NSError **)errorPtr {
-    NSData *data = [NSData dataWithContentsOfFile:self.file options:0 error:errorPtr];
-    if (!data) {
-        return nil;
-    }
-    
-    id json = [BSGJSONSerialization JSONObjectWithData:data options:0 error:errorPtr];
+    id json = [BSGJSONSerialization JSONObjectWithContentsOfFile:self.file options:0 error:errorPtr];
     if (!json) {
-        bsg_log_debug(@"Could not load file contents: %.*s", (int)data.length, data.bytes);
         return nil;
     }
     

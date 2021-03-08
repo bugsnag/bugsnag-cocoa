@@ -48,6 +48,7 @@
 #import "BugsnagAppWithState+Private.h"
 #import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagBreadcrumbs.h"
+#import "BugsnagClient+AppHangs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagCrashSentry.h"
@@ -423,7 +424,10 @@ NSString *_lastOrientation = nil;
                                                              userInfo:nil repeats:NO];
     }
     
-    if (self.lastRunInfo.crashedDuringLaunch && self.configuration.sendLaunchCrashesSynchronously) {
+    if (self.appHangEvent) {
+        [self.eventUploader uploadEvent:self.appHangEvent];
+        self.appHangEvent = nil;
+    } else if (self.lastRunInfo.crashedDuringLaunch && self.configuration.sendLaunchCrashesSynchronously) {
         [self sendLaunchCrashSynchronously];
     }
     
@@ -547,7 +551,6 @@ NSString *_lastOrientation = nil;
 
 - (void)computeDidCrashLastLaunch {
     const BSG_KSCrash_State *crashState = bsg_kscrashstate_currentState();
-    BOOL didOOMLastLaunch = [self shouldReportOOM];
     NSFileManager *manager = [NSFileManager defaultManager];
     NSString *didCrashSentinelPath = [NSString stringWithUTF8String:crashSentinelPath];
     BOOL appCrashSentinelExists = [manager fileExistsAtPath:didCrashSentinelPath];
@@ -559,7 +562,12 @@ NSString *_lastOrientation = nil;
             unlink(crashSentinelPath);
         }
     }
-    BOOL didCrash = handledCrashLastLaunch || didOOMLastLaunch;
+    
+    BOOL shouldReportOOM = NO;
+    BOOL didCrash = (handledCrashLastLaunch ||
+                     [self lastRunEndedWithAppHang] ||
+                     (shouldReportOOM = [self shouldReportOOM]));
+    
     self.appDidCrashLastLaunch = didCrash;
     
     BOOL wasLaunching = [self.stateMetadataFromLastLaunch[BSGKeyApp][BSGKeyIsLaunching] boolValue];
@@ -582,7 +590,7 @@ NSString *_lastOrientation = nil;
     //     2. crash sentinel file exists: This file is written in the event of a crash
     //        and insures against the crash callback crashing
 
-    if (!handledCrashLastLaunch && didOOMLastLaunch) {
+    if (!handledCrashLastLaunch && shouldReportOOM) {
         void *onCrash = bsg_g_bugsnag_data.onCrash;
         // onCrash should not be called for OOMs
         bsg_g_bugsnag_data.onCrash = NULL;

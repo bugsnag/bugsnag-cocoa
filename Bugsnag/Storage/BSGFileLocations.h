@@ -19,6 +19,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic) NSString *sessions;
 
 /**
+ * File containing details of the current app hang (if the app is hung)
+ */
+@property (readonly, nonatomic) NSString *appHangEvent;
+
+/**
  * File whose presence indicates that the libary at least attempted to handle the last
  * crash (in case it crashed before writing enough information).
  */

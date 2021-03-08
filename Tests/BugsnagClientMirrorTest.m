@@ -135,6 +135,8 @@
             @"metadataFile @16@0:8",
             @"metadataFromLastLaunch @16@0:8",
             @"notificationBreadcrumbs @16@0:8",
+            @"lastRunEndedWithAppHang B16@0:8",
+            @"lastRunEndedWithAppHang c16@0:8",
             @"sendLaunchCrashSynchronously v16@0:8",
             @"setAppHangDetector: v24@0:8@16",
             @"setAppHangEvent: v24@0:8@16",

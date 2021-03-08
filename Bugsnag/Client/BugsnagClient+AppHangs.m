@@ -8,12 +8,16 @@
 
 #import "BugsnagClient+AppHangs.h"
 
+#import "BSGEventUploader.h"
+#import "BSGFileLocations.h"
+#import "BSGJSONSerialization.h"
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagLogger.h"
+#import "BugsnagSession+Private.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagThread+Private.h"
 
@@ -49,17 +53,54 @@
                               threads:threads
                               session:self.sessionTracker.runningSession];
     
-    // TODO: Persist BugsnagEvent to app_hang.json
+    NSError *writeError = nil;
+    NSDictionary *json = [self.appHangEvent toJsonWithRedactedKeys:self.configuration.redactedKeys];
+    if (![BSGJSONSerialization writeJSONObject:json toFile:BSGFileLocations.current.appHangEvent options:0 error:&writeError]) {
+        bsg_log_err(@"Could not write app_hang.json: %@", error);
+    }
 }
 
 - (void)appHangEnded {
-    // TODO: Delete app_hang.json
+    NSError *error = nil;
+    if (![NSFileManager.defaultManager removeItemAtPath:BSGFileLocations.current.appHangEvent error:&error]) {
+        bsg_log_err(@"Could not delete app_hang.json: %@", error);
+    }
     
     const BOOL fatalOnly = self.configuration.appHangThresholdMillis == BugsnagAppHangThresholdFatalOnly;
     if (!fatalOnly && self.appHangEvent) {
         [self notifyInternal:self.appHangEvent block:nil];
     }
     self.appHangEvent = nil;
+}
+
+- (BOOL)lastRunEndedWithAppHang {
+    NSError *error = nil;
+    NSDictionary *json = [BSGJSONSerialization JSONObjectWithContentsOfFile:BSGFileLocations.current.appHangEvent options:0 error:&error];
+    if (!json) {
+        if (!(error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError)) {
+            bsg_log_err(@"Could not read app_hang.json: %@", error);
+        }
+        return NO;
+    }
+    
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithJson:json];
+    if (!event) {
+        bsg_log_err(@"Could not parse app_hang.json");
+        return NO;
+    }
+    
+    // Update event to reflect that the app hang was fatal.
+    event.errors.firstObject.errorMessage = @"The app was terminated while unresponsive";
+    event.unhandled = YES;
+    event.session.unhandledCount++;
+    
+    error = nil;
+    if (![NSFileManager.defaultManager removeItemAtPath:BSGFileLocations.current.appHangEvent error:&error]) {
+        bsg_log_err(@"Could not delete app_hang.json: %@", error);
+    }
+    
+    self.appHangEvent = event;
+    return YES;
 }
 
 @end

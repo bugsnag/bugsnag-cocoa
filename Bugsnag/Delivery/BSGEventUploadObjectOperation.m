@@ -21,7 +21,7 @@
     return self;
 }
 
-- (BugsnagEvent *)loadEvent {
+- (BugsnagEvent *)loadEventAndReturnError:(NSError **)errorPtr {
     return self.event;
 }
 

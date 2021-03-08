@@ -30,3 +30,28 @@ class AppHangDisabledScenario: Scenario {
         NSLog("Finished sleeping")
     }
 }
+
+class AppHangFatalOnlyScenario: Scenario {
+    
+    override func startBugsnag() {
+        config.appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly
+        super.startBugsnag()
+    }
+    
+    override func run() {
+        while true {}
+    }
+}
+
+class AppHangFatalDisabledScenario: Scenario {
+    
+    override func startBugsnag() {
+        config.enabledErrorTypes.appHangs = false
+        config.enabledErrorTypes.ooms = false
+        super.startBugsnag()
+    }
+    
+    override func run() {
+        while true {}
+    }
+}

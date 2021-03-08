@@ -62,7 +62,8 @@
     NSLog(@"Running scenario: %@", self.scenario);
     // Using dispatch_async to prevent AppleEvents swallowing exceptions.
     // For more info see https://www.chimehq.com/blog/sad-state-of-exceptions
-    dispatch_async(dispatch_get_main_queue(), ^{
+    // 0.1s delay allows accessibility APIs to finish handling the mouse click and returns control to the tests framework.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.scenario run];
     });
 }

@@ -10,6 +10,7 @@
 
 #import "BSGFileLocations.h"
 #import "BSGJSONSerialization.h"
+#import "BugsnagEvent+Private.h"
 #import "BugsnagLogger.h"
 
 
@@ -22,10 +23,12 @@
     return self;
 }
 
-- (BugsnagEvent *)loadEvent {
-    // TODO: Load a BugsnagEvent from json file on disk
-    NSAssert(NO, @"Not implemented yet!");
-    return nil;
+- (BugsnagEvent *)loadEventAndReturnError:(NSError **)errorPtr {
+    id json = [BSGJSONSerialization JSONObjectWithContentsOfFile:self.file options:0 error:errorPtr];
+    if (![json isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    return [[BugsnagEvent alloc] initWithJson:json];
 }
 
 - (void)deleteEvent {
