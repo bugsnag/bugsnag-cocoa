@@ -234,6 +234,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 
 #if __clang_major__ >= 11 // Xcode 10 does not like the following attribute
 __attribute__((annotate("oclint:suppress[long class]")))
+__attribute__((annotate("oclint:suppress[too many methods]")))
 #endif
 @implementation BugsnagClient
 

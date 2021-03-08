@@ -21,6 +21,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// Returns an array containing the results of mapping the given block over the array's elements
 NSArray * BSGArrayMap(NSArray *array, id (^ transform)(id));
 
@@ -40,3 +42,5 @@ NSDictionary *BSGDictMerge(NSDictionary *source, NSDictionary *destination);
 /// Any dictionary keys that are not strings will be ignored.
 /// Any values that are not valid JSON will be replaced by a string description.
 NSDictionary * BSGJSONDictionary(NSDictionary *dictionary);
+
+NS_ASSUME_NONNULL_END
