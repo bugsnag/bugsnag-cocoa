@@ -83,18 +83,12 @@
                         threads = [NSArray arrayWithObjects:[BugsnagThread mainThread], nil]; //!OCLint
                     }
                     
-                    BugsnagEvent *event = [weakDelegate appHangEventWithThreads:threads];
-                    
-                    // TODO: Persist BugsnagEvent to app_hang.json
+                    [weakDelegate appHangDetectedWithThreads:threads];
                     
                     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                     bsg_log_info("App hang has ended");
                     
-                    // TODO: Delete app_hang.json
-                    
-                    if (event && !fatalOnly) {
-                        [weakDelegate notifyAppHangEvent:event];
-                    }
+                    [weakDelegate appHangEnded];
                 }
             });
         }

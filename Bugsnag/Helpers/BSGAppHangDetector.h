@@ -26,11 +26,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol BSGAppHangDetectorDelegate <NSObject>
 
-- (BugsnagConfiguration *)configuration;
+@property (readonly) BugsnagConfiguration *configuration;
 
-- (BugsnagEvent *)appHangEventWithThreads:(NSArray<BugsnagThread *> *)threads;
+- (void)appHangDetectedWithThreads:(NSArray<BugsnagThread *> *)threads;
 
-- (void)notifyAppHangEvent:(BugsnagEvent *)event;
+- (void)appHangEnded;
 
 @end
 
