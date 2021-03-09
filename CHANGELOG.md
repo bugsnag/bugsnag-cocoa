@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix `os_proc_available_memory` runtime link error on Mac Catalyst.
+  [#1025](https://github.com/bugsnag/bugsnag-cocoa/pull/1025)
+
 * Fix missing `osName` and `osVersion` for errors reported from app extensions that do not link against UIKit.
   [#1022](https://github.com/bugsnag/bugsnag-cocoa/pull/1022)
 
