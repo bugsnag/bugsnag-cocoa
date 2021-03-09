@@ -668,10 +668,6 @@ NSString *_lastOrientation = nil;
     return [self.sessionTracker resumeSession];
 }
 
-- (void)flushPendingReports {
-    [self.eventUploader uploadStoredEvents];
-}
-
 /**
  * Monitor the Bugsnag endpoint to detect changes in connectivity,
  * flush pending events when (re)connected and report connectivity
@@ -689,7 +685,7 @@ NSString *_lastOrientation = nil;
                   usingCallback:^(BOOL connected, NSString *connectionType) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (connected) {
-            [strongSelf flushPendingReports];
+            [strongSelf.eventUploader uploadStoredEvents];
         }
 
         [strongSelf addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
@@ -963,10 +959,17 @@ NSString *_lastOrientation = nil;
 - (void)notifyInternal:(BugsnagEvent *_Nonnull)event
                  block:(BugsnagOnErrorBlock)block
 {
+    if ([self shouldNotifyEvent:event withOnErrorBlock:block]) {
+        [self deliverEvent:event];
+        [self addAutoBreadcrumbForEvent:event];
+    }
+}
+
+- (BOOL)shouldNotifyEvent:(nonnull BugsnagEvent *)event withOnErrorBlock:(nullable BugsnagOnErrorBlock)block {
     NSString *errorClass = event.errors.firstObject.errorClass;
     if ([self.configuration shouldDiscardErrorClass:errorClass]) {
         bsg_log_info(@"Discarding event because errorClass \"%@\" matched configuration.discardClasses", errorClass);
-        return;
+        return NO;
     }
     
     // enhance device information with additional metadata
@@ -979,7 +982,7 @@ NSString *_lastOrientation = nil;
     BOOL originalUnhandledValue = event.unhandled;
     @try {
         if (block != nil && !block(event)) { // skip notifying if callback false
-            return;
+            return NO;
         }
     } @catch (NSException *exception) {
         bsg_log_err(@"Error from onError callback: %@", exception);
@@ -988,10 +991,20 @@ NSString *_lastOrientation = nil;
         [event notifyUnhandledOverridden];
     }
 
+    return YES;
+}
+
+- (void)deliverEvent:(BugsnagEvent *)event {
     if (event.handledState.unhandled) {
         [self.sessionTracker handleUnhandledErrorEvent];
     } else {
         [self.sessionTracker handleHandledErrorEvent];
+    }
+
+    // Temporary conditional until all (non-crash) events can be sent via -uploadEvent:
+    if (event == self.appHangEvent) {
+        [self.eventUploader uploadEvent:event];
+        return;
     }
 
     // apiKey not added to event JSON by default, need to add it here
@@ -1011,6 +1024,12 @@ NSString *_lastOrientation = nil;
                                  metadata:[event.metadata toDictionary]
                                    config:self.configuration.dictionaryRepresentation];
 
+    [self.eventUploader uploadStoredEvents];
+}
+
+// MARK: - Breadcrumbs
+
+- (void)addAutoBreadcrumbForEvent:(BugsnagEvent *)event {
     // A basic set of event metadata
     NSMutableDictionary *metadata = [@{
             BSGKeyErrorClass : event.errors[0].errorClass,
@@ -1027,11 +1046,7 @@ NSString *_lastOrientation = nil;
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeError
                       withMessage:event.errors[0].errorClass
                       andMetadata:metadata];
-
-    [self flushPendingReports];
 }
-
-// MARK: - Breadcrumbs
 
 - (void)addBreadcrumbWithBlock:(void (^)(BugsnagBreadcrumb *))block {
     [self.breadcrumbs addBreadcrumbWithBlock:block];
