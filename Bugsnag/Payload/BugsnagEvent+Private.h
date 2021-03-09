@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readwrite, copy, nullable) NSDictionary *error;
 
 /// The event state (whether the error is handled/unhandled.)
-@property (readonly) BugsnagHandledState *handledState;
+@property (readwrite, nonatomic) BugsnagHandledState *handledState;
 
 @property (strong, nonatomic) BugsnagMetadata *metadata;
 

@@ -44,8 +44,8 @@
     
     BugsnagHandledState *handledState =
     [[BugsnagHandledState alloc] initWithSeverityReason:AppHang
-                                               severity:BSGSeverityError
-                                              unhandled:NO
+                                               severity:BSGSeverityWarning
+                                              unhandled:YES
                                     unhandledOverridden:NO
                                               attrValue:nil];
     
@@ -98,7 +98,12 @@
     
     // Update event to reflect that the app hang was fatal.
     event.errors.firstObject.errorMessage = @"The app was terminated while unresponsive";
-    event.unhandled = YES;
+    // Cannot set event.severity directly because that sets severityReason.type to "userCallbackSetSeverity"
+    event.handledState = [[BugsnagHandledState alloc] initWithSeverityReason:AppHang
+                                                                    severity:BSGSeverityError
+                                                                   unhandled:YES
+                                                         unhandledOverridden:NO
+                                                                   attrValue:nil];
     event.session.unhandledCount++;
     
     self.appHangEvent = event;

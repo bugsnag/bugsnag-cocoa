@@ -65,6 +65,10 @@
 }
 
 - (void)uploadStoredEvents {
+    if (self.scanQueue.operationCount > 1) {
+        // Prevent too many scan operations being scheduled
+        return;
+    }
     bsg_log_debug(@"Will scan stored events");
     [self.scanQueue addOperationWithBlock:^{
         NSMutableArray<NSString *> *sortedFiles = [self sortedEventFiles];
