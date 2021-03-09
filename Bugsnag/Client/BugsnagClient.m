@@ -1031,11 +1031,10 @@ NSString *_lastOrientation = nil;
 
 - (void)addAutoBreadcrumbForEvent:(BugsnagEvent *)event {
     // A basic set of event metadata
-    NSMutableDictionary *metadata = [@{
-            BSGKeyErrorClass : event.errors[0].errorClass,
-            BSGKeyUnhandled : [[event handledState] unhandled] ? @YES : @NO,
-            BSGKeySeverity : BSGFormatSeverity(event.severity)
-    } mutableCopy];
+    NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
+    metadata[BSGKeyErrorClass] = event.errors[0].errorClass;
+    metadata[BSGKeyUnhandled] = @(event.handledState.unhandled);
+    metadata[BSGKeySeverity] = BSGFormatSeverity(event.severity);
 
     // Only include the eventMessage if it contains something
     NSString *eventMessage = event.errors[0].errorMessage;
