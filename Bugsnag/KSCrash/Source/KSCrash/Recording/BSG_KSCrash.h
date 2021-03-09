@@ -71,11 +71,6 @@
  */
 - (BOOL)install:(NSString *)directory;
 
-/**
- * Send the most recent crash report to the current sink.
- */
-- (void)sendLatestReport:(dispatch_block_t)completionHander;
-
 /** Report a custom, user defined exception.
  * This can be useful when dealing with scripting languages.
  *

@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration notifier:(BugsnagNotifier *)notifier;
 
-- (void)uploadEvent:(BugsnagEvent *)event __attribute__((deprecated("this has not been tested yet")));
+- (void)uploadEvent:(BugsnagEvent *)event;
 
 - (void)uploadStoredEvents;
 

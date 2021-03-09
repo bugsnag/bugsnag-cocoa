@@ -21,7 +21,9 @@
 
 @property (readonly, nonatomic) NSString *kscrashReportsDirectory;
 
-@property (readonly, nonatomic) NSOperationQueue *operationQueue;
+@property (readonly, nonatomic) NSOperationQueue *scanQueue;
+
+@property (readonly, nonatomic) NSOperationQueue *uploadQueue;
 
 @end
 
@@ -41,31 +43,35 @@
         _eventsDirectory = [BSGFileLocations current].events;
         _kscrashReportsDirectory = [BSGFileLocations current].kscrashReports;
         _notifier = notifier;
-        _operationQueue = [[NSOperationQueue alloc] init];
-        _operationQueue.maxConcurrentOperationCount = 1;
-        _operationQueue.name = @"com.bugsnag.event-uploader";
+        _scanQueue = [[NSOperationQueue alloc] init];
+        _scanQueue.maxConcurrentOperationCount = 1;
+        _scanQueue.name = @"com.bugsnag.event-scanner";
+        _uploadQueue = [[NSOperationQueue alloc] init];
+        _uploadQueue.maxConcurrentOperationCount = 1;
+        _uploadQueue.name = @"com.bugsnag.event-uploader";
     }
     return self;
 }
 
 - (void)dealloc {
-    [_operationQueue cancelAllOperations];
+    [_scanQueue cancelAllOperations];
+    [_uploadQueue cancelAllOperations];
 }
 
 // MARK: - Public API
 
 - (void)uploadEvent:(BugsnagEvent *)event {
-    [self.operationQueue addOperation:[[BSGEventUploadObjectOperation alloc] initWithEvent:event delegate:self]];
+    [self.uploadQueue addOperation:[[BSGEventUploadObjectOperation alloc] initWithEvent:event delegate:self]];
 }
 
 - (void)uploadStoredEvents {
     bsg_log_debug(@"Will scan stored events");
-    [self.operationQueue addOperationWithBlock:^{
+    [self.scanQueue addOperationWithBlock:^{
         NSMutableArray<NSString *> *sortedFiles = [self sortedEventFiles];
         [self deleteExcessFiles:sortedFiles];
         NSArray<BSGEventUploadFileOperation *> *operations = [self uploadOperationsWithFiles:sortedFiles];
         bsg_log_debug(@"Uploading %lu stored events", (unsigned long)operations.count);
-        [self.operationQueue addOperations:operations waitUntilFinished:NO];
+        [self.uploadQueue addOperations:operations waitUntilFinished:NO];
     }];
 }
 
@@ -78,7 +84,7 @@
         return;
     }
     operation.completionBlock = completionHandler;
-    [self.operationQueue addOperation:operation];
+    [self.uploadQueue addOperation:operation];
 }
 
 // MARK: - Implementation
@@ -135,7 +141,7 @@
     NSMutableArray<BSGEventUploadFileOperation *> *operations = [NSMutableArray array];
     
     NSMutableSet<NSString *> *currentFiles = [NSMutableSet set];
-    for (id operation in self.operationQueue.operations) {
+    for (id operation in self.uploadQueue.operations) {
         if ([operation isKindOfClass:[BSGEventUploadFileOperation class]]) {
             [currentFiles addObject:((BSGEventUploadFileOperation *)operation).file];
         }

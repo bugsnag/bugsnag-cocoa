@@ -130,6 +130,8 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
 // MARK: Subclassing
 
 - (BugsnagEvent *)loadEventAndReturnError:(NSError **)errorPtr {
+    // Must be implemented by all subclasses
+    [self doesNotRecognizeSelector:_cmd];
     return nil;
 }
 

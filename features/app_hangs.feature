@@ -20,6 +20,9 @@ Feature: App hangs
     And the exception "message" equals "The app's main thread failed to respond to an event within 2000 milliseconds"
     And the exception "type" equals "cocoa"
 
+    And the event "session.events.handled" equals 1
+    And the event "session.events.unhandled" equals 0
+
     #
     # Checks copied from app_and_device_attributes.feature
     #
@@ -77,4 +80,35 @@ Feature: App hangs
 
   Scenario: App hangs should not be reported if enabledErrorTypes.appHangs = false
     When I run "AppHangDisabledScenario"
+    Then I should receive no errors
+
+  Scenario: Fatal app hangs should be reported if appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly
+    When I run "AppHangFatalOnlyScenario"
+    And I wait for 3 seconds
+    And I relaunch the app
+    And I set the HTTP status code to 500
+    And I configure Bugsnag for "AppHangFatalOnlyScenario"
+    And I wait to receive an error
+    And I clear the error queue
+    And I relaunch the app
+    And I set the HTTP status code to 200
+    And I configure Bugsnag for "AppHangFatalOnlyScenario"
+    And I wait to receive an error
+
+    And the event "severity" equals "error"
+    And the event "severityReason.type" equals "appHang"
+    And the event "threads.0.errorReportingThread" is true
+
+    And the exception "errorClass" equals "App Hang"
+    And the exception "message" equals "The app was terminated while unresponsive"
+    And the exception "type" equals "cocoa"
+
+    And the event "session.events.handled" equals 0
+    And the event "session.events.unhandled" equals 1
+
+  Scenario: Fatal app hangs should not be reported if enabledErrorTypes.appHangs = false
+    When I run "AppHangFatalDisabledScenario"
+    And I wait for 3 seconds
+    And I relaunch the app
+    And I configure Bugsnag for "AppHangFatalDisabledScenario"
     Then I should receive no errors

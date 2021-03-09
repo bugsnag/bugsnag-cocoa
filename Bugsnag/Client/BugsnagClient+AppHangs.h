@@ -14,6 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagClient (AppHangs) <BSGAppHangDetectorDelegate>
 
+- (BOOL)lastRunEndedWithAppHang;
+
+- (void)startAppHangDetector;
+
 @end
 
 NS_ASSUME_NONNULL_END

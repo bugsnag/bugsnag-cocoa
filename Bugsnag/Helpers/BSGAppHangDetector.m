@@ -67,9 +67,13 @@
             if (!semaphore) {
                 semaphore = dispatch_semaphore_create(0);
             }
+            dispatch_time_t now = dispatch_time(DISPATCH_TIME_NOW, 0);
             // Using dispatch_after prevents our queue showing up in Instruments' Time Profiler until there is a hang.
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(threshold * NSEC_PER_SEC)), backgroundQueue, ^{
-                if (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW) != 0) {
+            // Schedule block slightly ahead of time to work around dispatch_after's leeway.
+            dispatch_time_t after = dispatch_time(now, (int64_t)((threshold * 0.95) * NSEC_PER_SEC));
+            dispatch_time_t timeout = dispatch_time(now, (int64_t)(threshold * NSEC_PER_SEC));
+            dispatch_after(after, backgroundQueue, ^{
+                if (dispatch_semaphore_wait(semaphore, timeout) != 0) {
                     bsg_log_info("App hang detected");
                     
                     NSArray<BugsnagThread *> *threads = nil;
