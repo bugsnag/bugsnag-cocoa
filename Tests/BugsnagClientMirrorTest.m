@@ -149,6 +149,7 @@
             @"setStarted: v20@0:8B16",
             @"setStarted: v20@0:8c16",
             @"setStateMetadataFromLastLaunch: v24@0:8@16",
+            @"startAppHangDetector v16@0:8",
             @"stateMetadataFile @16@0:8",
             @"stateMetadataFromLastLaunch @16@0:8",
     ]];

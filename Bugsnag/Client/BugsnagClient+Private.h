@@ -10,6 +10,7 @@
 
 #import "BugsnagMetadata+Private.h" // For BugsnagObserverBlock
 
+@class BSGAppHangDetector;
 @class BSGEventUploader;
 @class BugsnagAppWithState;
 @class BugsnagBreadcrumbs;
@@ -29,6 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Properties
 
 @property (nonatomic) BOOL appDidCrashLastLaunch;
+
+@property (nonatomic) BSGAppHangDetector *appHangDetector;
 
 @property (nullable, nonatomic) BugsnagEvent *appHangEvent;
 

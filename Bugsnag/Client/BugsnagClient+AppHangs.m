@@ -23,6 +23,13 @@
 
 @implementation BugsnagClient (AppHangs)
 
+- (void)startAppHangDetector {
+    [NSFileManager.defaultManager removeItemAtPath:BSGFileLocations.current.appHangEvent error:nil];
+    
+    self.appHangDetector = [[BSGAppHangDetector alloc] init];
+    [self.appHangDetector startWithDelegate:self];
+}
+
 - (void)appHangDetectedWithThreads:(nonnull NSArray<BugsnagThread *> *)threads {
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     
@@ -93,11 +100,6 @@
     event.errors.firstObject.errorMessage = @"The app was terminated while unresponsive";
     event.unhandled = YES;
     event.session.unhandledCount++;
-    
-    error = nil;
-    if (![NSFileManager.defaultManager removeItemAtPath:BSGFileLocations.current.appHangEvent error:&error]) {
-        bsg_log_err(@"Could not delete app_hang.json: %@", error);
-    }
     
     self.appHangEvent = event;
     return YES;

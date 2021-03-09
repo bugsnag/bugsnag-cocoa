@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)lastRunEndedWithAppHang;
 
+- (void)startAppHangDetector;
+
 @end
 
 NS_ASSUME_NONNULL_END
