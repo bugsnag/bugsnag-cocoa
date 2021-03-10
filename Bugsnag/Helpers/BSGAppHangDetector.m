@@ -105,7 +105,11 @@
         }
     };
     
-    self.observer = CFRunLoopObserverCreateWithHandler(NULL, kCFRunLoopAfterWaiting | kCFRunLoopBeforeWaiting, true, 0, observerBlock);
+    // A high `order` is required to ensure our observer runs after others that may introduce an app hang.
+    // Once such culprit is -[UITableView tableView:didSelectRowAtIndexPath:] which is run in a
+    // _afterCACommitHandler, which is invoked via a CFRunLoopObserver.
+    CFIndex order = INT_MAX;
+    self.observer = CFRunLoopObserverCreateWithHandler(NULL, kCFRunLoopAfterWaiting | kCFRunLoopBeforeWaiting, true, order, observerBlock);
     
     CFRunLoopMode runLoopMode = CFRunLoopCopyCurrentMode(CFRunLoopGetCurrent());
     // The run loop mode will be NULL if called before the run loop has started; e.g. in a +load method.
