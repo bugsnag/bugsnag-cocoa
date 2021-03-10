@@ -84,6 +84,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        upload: ["macOSTestApp.log"]
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -103,6 +104,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        upload: ["macOSTestApp.log"]
     commands:
       - bundle install
       - bundle exec maze-runner
