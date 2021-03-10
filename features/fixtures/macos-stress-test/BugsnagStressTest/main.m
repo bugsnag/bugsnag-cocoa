@@ -1,0 +1,96 @@
+//
+//  main.m
+//  BugsnagStressTest
+//
+//  Created by Nick Dowell on 04/03/2021.
+//
+
+#import <Bugsnag/Bugsnag.h>
+
+#import <mach/mach_init.h>
+#import <mach/task.h>
+#import <mach/task_info.h>
+
+static NSString * const kNotifyEndpoint = @"http://bs-local.com:9339/notify";
+
+static const int kNumberOfIterations = 5000;
+
+static const NSInteger kMaxConcurrentNotifies = 8;
+
+// Note: memory usage increases with the number of threads
+static const mach_vm_size_t kMemoryLimit = 50 * 1024 * 1024;
+
+int main(int argc, const char * argv[]) {
+    if (getenv("QUIET")) {
+        freopen("BugsnagStressTest.stdout.log", "w", stdout);
+        freopen("BugsnagStressTest.stderr.log", "w", stderr);
+    }
+    
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+    
+    NSOperationQueue *notifyQueue = [[NSOperationQueue alloc] init];
+    notifyQueue.maxConcurrentOperationCount = kMaxConcurrentNotifies;
+    
+    @autoreleasepool {
+        BugsnagConfiguration *config = [BugsnagConfiguration loadConfig];
+        config.apiKey = @"0192837465afbecd0192837465afbecd";
+        config.autoDetectErrors = NO;
+        config.endpoints.notify = kNotifyEndpoint;
+        [Bugsnag startWithConfiguration:config];
+        
+        // These threads make a deadlock more likely if any of the notify threads are doing something they shouldn't.
+        
+        [NSThread detachNewThreadWithBlock:^{
+            NSThread.currentThread.name = @"com.bugsnag.stress-test-malloc";
+            while (1) {
+                free(malloc(1024 * 1024));
+            }
+        }];
+        
+        [NSThread detachNewThreadWithBlock:^{
+            NSThread.currentThread.name = @"com.bugsnag.stress-test-objc";
+            while (1) {
+                @autoreleasepool {
+                    [[NSArray arrayWithObjects:@0, @1, @3, @4, nil] sortedArrayUsingSelector:@selector(compare:)];
+                }
+            }
+        }];
+        
+        for (int i = 0; i < kNumberOfIterations; i++) {
+            [notifyQueue addOperationWithBlock:^{
+                NSError *error = [NSError errorWithDomain:@"BugsnagStressTest" code:random() userInfo:nil];
+                [Bugsnag notifyError:error block:^BOOL(BugsnagEvent *event) {
+                    return YES;
+                }];
+            }];
+        }
+        
+        [notifyQueue addBarrierBlock:^{
+            CFRunLoopStop(CFRunLoopGetMain());
+        }];
+    }
+    
+    __block mach_vm_size_t maxFootprint = 0;
+    
+    // Memory watchdog that terminates the app if Bugsnag is using too much memory.
+    // setrlimit() and ulimit are not able to limit memory usage on macOS.
+    [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        task_vm_info_data_t task_vm_info = {0};
+        mach_msg_type_number_t count = TASK_VM_INFO_COUNT;
+        task_info(mach_task_self(), TASK_VM_INFO, (task_info_t)&task_vm_info, &count);
+        maxFootprint = MAX(maxFootprint, task_vm_info.phys_footprint);
+        if (task_vm_info.phys_footprint > kMemoryLimit) {
+            NSLog(@"💥 Memory limit (%d MB) exceeded", (int)kMemoryLimit / (1024 * 1024));
+            kill(getpid(), SIGKILL);
+        }
+    }];
+    
+    NSLog(@"Starting main run loop...");
+    
+    CFRunLoopRun();
+    
+    NSLog(@"Ran in %f seconds", CFAbsoluteTimeGetCurrent() - startTime);
+    NSLog(@"Maximum memory usage: %.1f MB", maxFootprint / (1024.0 * 1024.0));
+    
+    return 0;
+}

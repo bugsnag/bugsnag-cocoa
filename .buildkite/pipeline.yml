@@ -200,5 +200,15 @@ steps:
         --tags='not @skip_macos'
         --fail-fast
 
+  - label: 'macOS 10.15 stress test'
+    timeout_in_minutes: 3
+    agents:
+      queue: opensource-mac-cocoa
+    commands:
+      - cd features/fixtures/macos-stress-test && make build run
+    artifact_paths:
+      - features/fixtures/macos-stress-test/BugsnagStressTest.stdout.log
+      - features/fixtures/macos-stress-test/BugsnagStressTest.stderr.log
+
   - label: 'Conditionally trigger full set of tests'
     command: sh -c .buildkite/pipeline_trigger.sh
