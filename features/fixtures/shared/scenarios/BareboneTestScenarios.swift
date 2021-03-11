@@ -61,13 +61,13 @@ class BareboneTestHandledScenario: Scenario {
         
         Bugsnag.leaveBreadcrumb(withMessage: "This is super secret")
         
+        self.afterSendErrorBlock = self.afterSendError
+        
         Bugsnag.notify(NSException(name: .rangeException, reason: "-[__NSSingleObjectArrayI objectAtIndex:]: index 1 beyond bounds [0 .. 0]")) {
             $0.addMetadata(["info": "Some error specific information"], section: "Exception")
             $0.unhandled = true
             return true
         }
-        
-        self.afterSendErrorBlock = self.afterSendError
     }
     
     func afterSendError() {
