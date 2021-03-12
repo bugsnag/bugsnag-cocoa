@@ -11,7 +11,7 @@
 #import <mach/task.h>
 #import <mach/task_info.h>
 
-static NSString * const kNotifyEndpoint = @"http://bs-local.com:9339/notify";
+static NSString * const kNotifyEndpoint = @"http://localhost:9339/notify";
 
 static const int kNumberOfIterations = 5000;
 
