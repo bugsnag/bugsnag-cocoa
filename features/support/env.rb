@@ -5,6 +5,14 @@ $api_key = "12312312312312312312312312312312"
 
 AfterConfiguration do |_config|
   Maze.config.receive_no_requests_wait = 15
+
+  # Setup a 3 minute timeout for receiving requests is STRESS_TEST env var is set
+  Maze.config.receive_requests_wait = 90 unless ENV['STRESS_TEST'].nil?
+end
+
+# Skip stress tests unless STRESS_TEST env var is set
+Before('@stress_test') do |_scenario|
+  skip_this_scenario('Skipping: Run is not configured for stress tests') if ENV['STRESS_TEST'].nil?
 end
 
 # Additional require MacOS configuration
