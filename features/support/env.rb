@@ -7,7 +7,7 @@ AfterConfiguration do |_config|
   Maze.config.receive_no_requests_wait = 15
 
   # Setup a 3 minute timeout for receiving requests is STRESS_TEST env var is set
-  Maze.config.receive_requests_wait = 90 unless ENV['STRESS_TEST'].nil?
+  Maze.config.receive_requests_wait = 180 unless ENV['STRESS_TEST'].nil?
 end
 
 # Skip stress tests unless STRESS_TEST env var is set
