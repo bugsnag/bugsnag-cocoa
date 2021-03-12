@@ -3,7 +3,7 @@ steps:
     key: cocoa_fixture
     timeout_in_minutes: 20
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-11
     artifact_paths:
       - features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa
       - features/fixtures/macos/output/macOSTestApp.zip
