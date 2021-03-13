@@ -14,7 +14,7 @@ steps:
   - label: Static framework and Swift Package Manager builds
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-10.15
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     env:
@@ -27,7 +27,7 @@ steps:
   - label: Static Carthage build
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-10.15
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     env:
@@ -40,7 +40,7 @@ steps:
   - label: macOS 10.15 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-10.15
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     env:
@@ -182,7 +182,7 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-10.15
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
