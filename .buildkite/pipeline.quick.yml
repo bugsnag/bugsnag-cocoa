@@ -30,7 +30,7 @@ steps:
   - label: iOS 13 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-11
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
@@ -47,7 +47,7 @@ steps:
   - label: iOS 12 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-11
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
@@ -64,7 +64,7 @@ steps:
   - label: iOS 11 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-11
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
@@ -81,7 +81,7 @@ steps:
   - label: iOS 10 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.14
+      queue: opensource-mac-cocoa-11
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
@@ -97,7 +97,7 @@ steps:
   - label: tvOS 13 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-11
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
@@ -114,7 +114,7 @@ steps:
   - label: tvOS 12 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-11
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
@@ -131,7 +131,7 @@ steps:
   - label: tvOS 11 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-11
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
@@ -148,7 +148,7 @@ steps:
   - label: tvOS 10 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.14
+      queue: opensource-mac-cocoa-11
     env:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
@@ -165,7 +165,7 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-10.15
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
