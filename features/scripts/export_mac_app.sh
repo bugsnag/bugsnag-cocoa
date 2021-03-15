@@ -11,7 +11,8 @@ xcrun xcodebuild \
   -configuration Debug \
   -archivePath archive/macOSTestApp.xcarchive \
   -quiet \
-  archive
+  archive \
+  GCC_PREPROCESSOR_DEFINITIONS='$(inherited) BSG_LOG_LEVEL=BSG_LOGLEVEL_DEBUG'
 
 xcrun xcodebuild \
   -exportArchive \
