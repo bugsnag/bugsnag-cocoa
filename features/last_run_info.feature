@@ -4,8 +4,7 @@ Feature: Launch detection
     Given I clear all persistent data
 
   Scenario: LastRunInfo consecutiveLaunchCrashes increments when isLaunching is true
-    When I run "LastRunInfoConsecutiveLaunchCrashesScenario"
-    And I relaunch the app
+    When I run "LastRunInfoConsecutiveLaunchCrashesScenario" and relaunch the app
     And I configure Bugsnag for "LastRunInfoConsecutiveLaunchCrashesScenario"
     And I wait to receive an error
     And the event "metaData.lastRunInfo.consecutiveLaunchCrashes" equals 1
