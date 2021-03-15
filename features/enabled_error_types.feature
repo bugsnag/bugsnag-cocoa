@@ -28,8 +28,7 @@ Feature: Enabled error types
     And the event "unhandled" is false
 
   Scenario: Mach Crash Reporting is disabled
-    When I run "DisableMachExceptionScenario"
-    And I relaunch the app
+    When I run "DisableMachExceptionScenario" and relaunch the app
     And I configure Bugsnag for "DisableMachExceptionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
