@@ -1068,6 +1068,10 @@ NSString *_lastOrientation = nil;
  */
 #if BSG_PLATFORM_IOS
 - (void)batteryChanged:(NSNotification *)notification {
+    if (![UIDEVICE currentDevice]) {
+        return;
+    }
+
     NSNumber *batteryLevel = @([UIDEVICE currentDevice].batteryLevel);
     BOOL charging = [UIDEVICE currentDevice].batteryState == UIDeviceBatteryStateCharging ||
                     [UIDEVICE currentDevice].batteryState == UIDeviceBatteryStateFull;
@@ -1200,7 +1204,7 @@ NSString *_lastOrientation = nil;
 }
 
 - (BugsnagDeviceWithState *)generateDeviceWithState:(NSDictionary *)systemInfo {
-    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithDictionary:@{@"system": systemInfo}];
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithKSCrashReport:@{@"system": systemInfo}];
     device.time = [NSDate date]; // default to current time for handled errors
     [device appendRuntimeInfo:self.extraRuntimeInfo];
     device.orientation = _lastOrientation;

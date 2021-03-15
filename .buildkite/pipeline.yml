@@ -3,7 +3,7 @@ steps:
     key: cocoa_fixture
     timeout_in_minutes: 20
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-11
     artifact_paths:
       - features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa
       - features/fixtures/macos/output/macOSTestApp.zip
@@ -14,7 +14,7 @@ steps:
   - label: Static framework and Swift Package Manager builds
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-10.15
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     env:
@@ -27,7 +27,7 @@ steps:
   - label: Static Carthage build
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-10.15
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     env:
@@ -40,7 +40,7 @@ steps:
   - label: macOS 10.15 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-10.15
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     env:
@@ -73,7 +73,7 @@ steps:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
       PLATFORM: "iOS"
-      OS: "14.2"
+      OS: "14.3"
     commands:
       - make bootstrap
       - make test
@@ -104,7 +104,7 @@ steps:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
       PLATFORM: "tvOS"
-      OS: "14.0"
+      OS: "14.3"
     commands:
       - make bootstrap
       - make test
@@ -184,10 +184,11 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-10.15
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        upload: ["macOSTestApp.log"]
     commands:
       - bundle install
       - bundle exec maze-runner
