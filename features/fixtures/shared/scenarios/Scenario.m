@@ -31,20 +31,31 @@ typedef void (^ URLSessionResponseObserver)(NSURLRequest *request, NSData *respo
                        withConfig:(BugsnagConfiguration *)config {
     Class clz = NSClassFromString(className);
 
-    if (clz == nil) { // swift class
 #if TARGET_OS_IPHONE
-        clz = NSClassFromString([NSString stringWithFormat:@"iOSTestApp.%@", className]);
-#elif TARGET_OS_MAC
-        clz = NSClassFromString([NSString stringWithFormat:@"macOSTestApp.%@", className]);
+    NSString *swiftPrefix = @"iOSTestApp.";
+#elif TARGET_OS_OSX
+    NSString *swiftPrefix = @"macOSTestApp.";
 #endif
+
+    if (!clz) { // Case-insensitive class lookup because AppiumForMac is a bit unreliable at entering uppercase characters.
+        unsigned int classCount = 0;
+        Class *classes = objc_copyClassList(&classCount);
+        for (unsigned int i = 0; i < classCount; i++) {
+            NSString *name = NSStringFromClass(classes[i]);
+            if ([name hasPrefix:swiftPrefix]) {
+                name = [name substringFromIndex:swiftPrefix.length];
+            }
+            if ([name caseInsensitiveCompare:className] == NSOrderedSame) {
+                clz = classes[i];
+                break;
+            }
+        }
+        free(classes);
     }
 
-    NSAssert(clz != nil, @"Failed to find class named '%@'", className);
-
-    BOOL implementsRun = method_getImplementation(class_getInstanceMethod([Scenario class], @selector(run))) !=
-    method_getImplementation(class_getInstanceMethod(clz, @selector(run)));
-
-    NSAssert(implementsRun, @"Class '%@' does not implement the run method", className);
+    if (!clz) {
+        [NSException raise:NSInvalidArgumentException format:@"Failed to find scenario class named %@", className];
+    }
 
     id obj = [clz alloc];
 
@@ -86,6 +97,8 @@ typedef void (^ URLSessionResponseObserver)(NSURLRequest *request, NSData *respo
 }
 
 - (void)run {
+    // Must be implemented by all subclasses
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 - (void)startBugsnag {
