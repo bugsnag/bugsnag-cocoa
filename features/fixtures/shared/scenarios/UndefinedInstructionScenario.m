@@ -25,6 +25,7 @@
  */
 
 #import "UndefinedInstructionScenario.h"
+#include "spin_malloc.h"
 
 /**
  * Attempt to execute an instruction not to be defined on the current architecture.
@@ -37,6 +38,7 @@
 }
 
 - (void)run {
+    install_spin_malloc();
 #if __i386__
     asm volatile ( "ud2" : : : );
 #elif __x86_64__

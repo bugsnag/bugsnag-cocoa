@@ -25,6 +25,7 @@
  */
 
 #import "OverwriteLinkRegisterScenario.h"
+#include "spin_malloc.h"
 
 /**
  * Trigger a crash after first overwriting the link register. Crash reporters that insert a stack frame
@@ -46,6 +47,8 @@
     /* Call a method to trigger modification of LR. We use the result below to
      * convince the compiler to order this function the way we want it. */
     uintptr_t ptr = (uintptr_t) [NSObject class];
+
+    install_spin_malloc();
 
     /* Make-work code that simply advances the PC to better demonstrate the discrepency. We use the
      * 'ptr' value here to make sure the compiler doesn't optimize-away this code, or re-order it below

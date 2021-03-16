@@ -24,6 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 #import "NullPointerScenario.h"
+#include "spin_malloc.h"
 
 /**
  * Attempts to read from 0x0, which causes a segmentation violation.
@@ -36,6 +37,7 @@
 }
 
 - (void)run {
+    install_spin_malloc();
     volatile char *ptr = NULL;
     (void) *ptr;
 }
