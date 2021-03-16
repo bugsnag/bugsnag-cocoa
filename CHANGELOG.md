@@ -3,6 +3,12 @@ Changelog
 
 ## TBD
 
+### Enhancements
+
+* Bugsnag now detects app hangs (when the main thread is unresponsive for a period of time), alerting you of issues with your app’s responsiveness.
+  For more information see [the documentation](https://docs.bugsnag.com/platforms/ios/reporting-app-hangs/).
+  [#1039](https://github.com/bugsnag/bugsnag-cocoa/pull/1039)
+
 ### Bug fixes
 
 * Fix parsing of `callStackSymbols` where the image name contains spaces.
