@@ -45,7 +45,7 @@
     BugsnagHandledState *handledState =
     [[BugsnagHandledState alloc] initWithSeverityReason:AppHang
                                                severity:BSGSeverityWarning
-                                              unhandled:YES
+                                              unhandled:NO
                                     unhandledOverridden:NO
                                               attrValue:nil];
     
