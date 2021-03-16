@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix parsing of `callStackSymbols` where the image name contains spaces.
+  [#1036](https://github.com/bugsnag/bugsnag-cocoa/pull/1036)
+
 ## 6.7.1 (2021-03-10)
 
 ### Bug fixes

@@ -170,7 +170,7 @@
         @"4   CoreFoundation                      0x00007fff23e41fd1",
         @"5   CoreFoundation                      0x00007fff23e422a4",
         @"6   ReactNativeTest                     0x000000010fd76eae",
-        @"7   ReactNativeTest                     0x000000010fd79138"]];
+        @"7   ReactNative App                     0x000000010fd79138"]];
     
     AssertStackframeValues(stackframes[0], @"ReactNativeTest",  0x000000010fda7f1b, @"0x000000010fda7f1b");
     AssertStackframeValues(stackframes[1], @"ReactNativeTest",  0x000000010fd76897, @"0x000000010fd76897");
@@ -179,7 +179,7 @@
     AssertStackframeValues(stackframes[4], @"CoreFoundation",   0x00007fff23e41fd1, @"0x00007fff23e41fd1");
     AssertStackframeValues(stackframes[5], @"CoreFoundation",   0x00007fff23e422a4, @"0x00007fff23e422a4");
     AssertStackframeValues(stackframes[6], @"ReactNativeTest",  0x000000010fd76eae, @"0x000000010fd76eae");
-    AssertStackframeValues(stackframes[7], @"ReactNativeTest",  0x000000010fd79138, @"0x000000010fd79138");
+    AssertStackframeValues(stackframes[7], @"ReactNative App",  0x000000010fd79138, @"0x000000010fd79138");
 }
 
 - (void)testRealCallStackSymbols {
