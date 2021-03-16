@@ -19,4 +19,4 @@ run:
 	rm -rf $(HOME)/Library/Application\ Support/com.bugsnag.Bugsnag
 	QUIET=true /usr/bin/time -l ./build/usr/local/bin/BugsnagStressTest
 	rm -rf $(HOME)/Library/Application\ Support/com.bugsnag.Bugsnag
-	echo "MacOS stress-test complete"
+	echo "macOS stress-test complete"
