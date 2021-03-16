@@ -9,4 +9,4 @@ Feature: Stress test
     Then the last interactive command exited successfully
 
     # This is low, but due to network congestion all we can guarantee in the course of a normal test
-    And I have received at least 1 error requests
+    And I have received at least 1 error

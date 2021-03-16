@@ -328,11 +328,6 @@ Then('the error is an OOM event') do
   )
 end
 
-Then('I have received at least {int} {word} requests') do |min_received, request_type|
-  list = Maze::Server.list_for(request_type)
-  assert(list.size >= min_received, "Actually received #{list.size} requests")
-end
-
 def wait_for_true
   max_attempts = 300
   attempts = 0
