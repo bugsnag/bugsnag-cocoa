@@ -61,6 +61,11 @@
 // MARK: - Public API
 
 - (void)uploadEvent:(BugsnagEvent *)event completionHandler:(nullable void (^)(void))completionHandler {
+    NSUInteger operationCount = self.uploadQueue.operationCount;
+    if (operationCount >= self.configuration.maxPersistedEvents) {
+        bsg_log_warn(@"Dropping notification, %lu outstanding requests", (unsigned long)operationCount);
+        return;
+    }
     BSGEventUploadObjectOperation *operation = [[BSGEventUploadObjectOperation alloc] initWithEvent:event delegate:self];
     operation.completionBlock = completionHandler;
     [self.uploadQueue addOperation:operation];
