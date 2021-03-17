@@ -6,6 +6,8 @@ Changelog
 ### Enhancements
 
 * Bugsnag now detects app hangs (when the main thread is unresponsive for a period of time), alerting you of issues with your app’s responsiveness.
+  By default, only fatal app hangs (those that end with termination by the system watchdog or being force-quit by the user) will be reported.
+  This behaviour can be configured using the new  `appHangThresholdMillis` configuration option.
   For more information see [the documentation](https://docs.bugsnag.com/platforms/ios/reporting-app-hangs/).
   [#1039](https://github.com/bugsnag/bugsnag-cocoa/pull/1039)
 

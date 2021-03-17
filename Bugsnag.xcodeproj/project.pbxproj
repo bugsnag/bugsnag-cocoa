@@ -1332,6 +1332,8 @@
 		01BDB1CE25DEBF4600A91FAF /* BSGEventUploadKSCrashReportOperationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGEventUploadKSCrashReportOperationTests.m; sourceTree = "<group>"; };
 		01BDB21425DEC02900A91FAF /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Data; sourceTree = "<group>"; };
 		01C17AE62542ED7F00C102C9 /* KSCrashReportWriterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSCrashReportWriterTests.m; sourceTree = "<group>"; };
+		01C2769B2601F44D006901EA /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
+		01C2769C2601F455006901EA /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
 		01CCAEE825D414D60057268D /* BugsnagLastRunInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagLastRunInfo.h; sourceTree = "<group>"; };
 		01CCAEE925D414D60057268D /* BugsnagLastRunInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagLastRunInfo.m; sourceTree = "<group>"; };
 		01CCAEFF25D4151C0057268D /* BugsnagLastRunInfo+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagLastRunInfo+Private.h"; sourceTree = "<group>"; };
@@ -1644,6 +1646,8 @@
 		00AD1C6824869B0E00A27979 = {
 			isa = PBXGroup;
 			children = (
+				01C2769B2601F44D006901EA /* CHANGELOG.md */,
+				01C2769C2601F455006901EA /* CONTRIBUTING.md */,
 				00E636B2248702A1006CBF1A /* README.md */,
 				00E636B3248702A1006CBF1A /* LICENSE.txt */,
 				00AD1C7424869B0E00A27979 /* Bugsnag */,

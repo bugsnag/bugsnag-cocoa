@@ -3,6 +3,10 @@ Feature: App hangs
   Background:
     Given I clear all persistent data
 
+  Scenario: Non-fatal app hangs should not be reported by default
+    When I run "AppHangDefaultConfigScenario"
+    Then I should receive no errors
+
   Scenario: App hangs above the threshold should be reported
     When I set the app to "2.1" mode
     And I run "AppHangScenario"
