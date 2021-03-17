@@ -205,8 +205,13 @@ steps:
     timeout_in_minutes: 3
     agents:
       queue: opensource-mac-cocoa
+    env:
+      STRESS_TEST: "true"
     commands:
-      - cd features/fixtures/macos-stress-test && make build run
+      - bundle install
+      - bundle exec maze-runner
+        features/stress_test.feature
+        --no-log-requests
     artifact_paths:
       - features/fixtures/macos-stress-test/BugsnagStressTest.stdout.log
       - features/fixtures/macos-stress-test/BugsnagStressTest.stderr.log
