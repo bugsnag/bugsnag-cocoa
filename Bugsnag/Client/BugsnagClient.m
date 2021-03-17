@@ -895,7 +895,7 @@ NSString *_lastOrientation = nil;
 }
 
 /**
- *  Notify Bugsnag of an exception. Only intended for React Native/Unity use.
+ *  Notify Bugsnag of an exception. Used for user-reported (handled) errors, React Native, and Unity.
  *
  *  @param event    the event
  *  @param block     Configuration block for adding additional report information
@@ -903,17 +903,10 @@ NSString *_lastOrientation = nil;
 - (void)notifyInternal:(BugsnagEvent *_Nonnull)event
                  block:(BugsnagOnErrorBlock)block
 {
-    if ([self shouldNotifyEvent:event withOnErrorBlock:block]) {
-        [self deliverEvent:event];
-        [self addAutoBreadcrumbForEvent:event];
-    }
-}
-
-- (BOOL)shouldNotifyEvent:(nonnull BugsnagEvent *)event withOnErrorBlock:(nullable BugsnagOnErrorBlock)block {
     NSString *errorClass = event.errors.firstObject.errorClass;
     if ([self.configuration shouldDiscardErrorClass:errorClass]) {
         bsg_log_info(@"Discarding event because errorClass \"%@\" matched configuration.discardClasses", errorClass);
-        return NO;
+        return;
     }
     
     // enhance device information with additional metadata
@@ -926,7 +919,7 @@ NSString *_lastOrientation = nil;
     BOOL originalUnhandledValue = event.unhandled;
     @try {
         if (block != nil && !block(event)) { // skip notifying if callback false
-            return NO;
+            return;
         }
     } @catch (NSException *exception) {
         bsg_log_err(@"Error from onError callback: %@", exception);
@@ -935,40 +928,15 @@ NSString *_lastOrientation = nil;
         [event notifyUnhandledOverridden];
     }
 
-    return YES;
-}
-
-- (void)deliverEvent:(BugsnagEvent *)event {
     if (event.handledState.unhandled) {
         [self.sessionTracker handleUnhandledErrorEvent];
     } else {
         [self.sessionTracker handleHandledErrorEvent];
     }
 
-    // Temporary conditional until all (non-crash) events can be sent via -uploadEvent:
-    if (event == self.appHangEvent) {
-        [self.eventUploader uploadEvent:event completionHandler:nil];
-        return;
-    }
+    [self.eventUploader uploadEvent:event completionHandler:nil];
 
-    // apiKey not added to event JSON by default, need to add it here
-    // for when it is read next
-    NSMutableDictionary *eventOverrides = [[event toJsonWithRedactedKeys:self.configuration.redactedKeys] mutableCopy];
-    eventOverrides[BSGKeyApiKey] = event.apiKey;
-
-    // handled errors should persist any information edited by the user
-    // in a section within the KSCrash report so it can be read
-    // when the error is delivered
-    [self.crashSentry reportUserException:@""
-                                   reason:@""
-                             handledState:[event.handledState toJson]
-                                 appState:[self.state toDictionary]
-                        callbackOverrides:event.overrides
-                           eventOverrides:eventOverrides
-                                 metadata:[event.metadata toDictionary]
-                                   config:self.configuration.dictionaryRepresentation];
-
-    [self.eventUploader uploadStoredEvents];
+    [self addAutoBreadcrumbForEvent:event];
 }
 
 // MARK: - Breadcrumbs
