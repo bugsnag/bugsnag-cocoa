@@ -124,7 +124,7 @@ static bool hasRecordedSessions;
  *  @param writer report writer which will receive updated metadata
  */
 void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type) {
-    BOOL isCrash = BSG_KSCrashTypeUserReported != type;
+    BOOL isCrash = YES;
     if (hasRecordedSessions) { // a session is available
         // persist session info
         writer->addStringElement(writer, "id", (const char *) sessionId);
