@@ -847,50 +847,41 @@ NSString *_lastOrientation = nil;
 }
 
 - (void)notifyOutOfMemoryEvent {
-    static NSString *const BSGOutOfMemoryErrorClass = @"Out Of Memory";
-    static NSString *const BSGOutOfMemoryMessageFormat = @"The app was likely terminated by the operating system while in the %@";
-    NSMutableDictionary *lastLaunchInfo = [self.systemState.lastLaunchState mutableCopy];
-    NSArray *crumbs = [self.breadcrumbs cachedBreadcrumbs];
-    if (crumbs.count > 0) {
-        lastLaunchInfo[@"breadcrumbs"] = crumbs;
-    }
-    for (NSDictionary *crumb in crumbs) {
-        if ([crumb isKindOfClass:[NSDictionary class]]
-            && [crumb[@"name"] isKindOfClass:[NSString class]]) {
-            NSString *name = crumb[@"name"];
-            // If the termination breadcrumb is set, the app entered a normal
-            // termination flow but expired before the watchdog sentinel could
-            // be updated. In this case, no report should be sent.
-            if ([name isEqualToString:BSGNotificationBreadcrumbsMessageAppWillTerminate]) {
-                return;
-            }
-        }
-    }
-
-    BOOL wasInForeground = [[lastLaunchInfo valueForKeyPath:@"app.inForeground"] boolValue];
-    NSString *message = [NSString stringWithFormat:BSGOutOfMemoryMessageFormat, wasInForeground ? @"foreground" : @"background"];
-    BugsnagHandledState *handledState = [BugsnagHandledState
-                                         handledStateWithSeverityReason:LikelyOutOfMemory
-                                         severity:BSGSeverityError
-                                         attrValue:nil];
-    NSMutableDictionary *appState = [self.stateMetadataFromLastLaunch mutableCopy] ?: [NSMutableDictionary dictionary];
-    appState[@"didOOM"] = @YES;
-    appState[@"oom"] = lastLaunchInfo;
+    NSDictionary *appDict = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP];
+    BugsnagAppWithState *app = [BugsnagAppWithState appFromJson:appDict];
+    app.dsymUuid = appDict[BSGKeyMachoUUID];
+    app.isLaunching = [self.stateMetadataFromLastLaunch[BSGKeyApp][BSGKeyIsLaunching] boolValue];
     
-    // onCrash should not be called for OOMs
-    void *onCrash = bsg_g_bugsnag_data.onCrash;
-    bsg_g_bugsnag_data.onCrash = NULL;
+    NSDictionary *deviceDict = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_DEVICE];
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceFromJson:deviceDict];
+    device.manufacturer = @"Apple";
+    device.orientation = self.stateMetadataFromLastLaunch[BSGKeyDeviceState][BSGKeyOrientation];
     
-    [self.crashSentry reportUserException:BSGOutOfMemoryErrorClass
-                                   reason:message
-                             handledState:[handledState toJson]
-                                 appState:appState
-                        callbackOverrides:@{}
-                           eventOverrides:nil
-                                 metadata:self.metadataFromLastLaunch
-                                   config:self.configMetadataFromLastLaunch];
+    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:self.metadataFromLastLaunch ?: @{}];
+    [metadata addMetadata:self.stateMetadataFromLastLaunch[BSGKeyDeviceState] toSection:BSGKeyDevice];
     
-    bsg_g_bugsnag_data.onCrash = onCrash;
+    NSDictionary *sessionDict = self.systemState.lastLaunchState[BSGKeySession];
+    BugsnagSession *session = sessionDict ? [[BugsnagSession alloc] initWithDictionary:sessionDict] : nil;
+    session.unhandledCount += 1;
+    
+    BugsnagError *error =
+    [[BugsnagError alloc] initWithErrorClass:@"Out Of Memory"
+                                errorMessage:@"The app was likely terminated by the operating system while in the foreground"
+                                   errorType:BSGErrorTypeCocoa
+                                  stacktrace:nil];
+    
+    BugsnagEvent *event =
+    [[BugsnagEvent alloc] initWithApp:app
+                               device:device
+                         handledState:[BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory]
+                                 user:session.user
+                             metadata:metadata
+                          breadcrumbs:self.breadcrumbs.breadcrumbs
+                               errors:@[error]
+                              threads:nil
+                              session:session];
+    
+    [self.eventUploader uploadEvent:event];
 }
 
 - (void)notify:(NSException *)exception

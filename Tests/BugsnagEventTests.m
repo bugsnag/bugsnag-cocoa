@@ -145,49 +145,6 @@
     XCTAssertEqualObjects([event.metadata getMetadataFromSection:@"Custom" withKey:@"Foo"], @"Bar");
 }
 
-/**
- * Test report metadata handling in OOM situations
- */
-- (void)testHandledReportMetaDataOOM {
-    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
-    BugsnagMetadata *metadata = [BugsnagMetadata new];
-    [metadata addMetadata:@"Bar" withKey:@"Foo" toSection:@"Custom"];
-    NSDictionary *dict = @{
-        @"user.state.didOOM" : @YES,
-        @"user.handledState": [state toJson],
-        @"user.metaData": [metadata toDictionary],
-        @"system.CFBundleExecutable" : @"TestAppNAme"
-    };
-
-    BugsnagEvent *report1 = [[BugsnagEvent alloc] initWithKSReport:dict];
-    XCTAssertNotNil(report1.metadata);
-    XCTAssertEqualObjects([report1.metadata getMetadataFromSection:@"app" withKey:@"name"], @"TestAppNAme");
-    XCTAssertEqualObjects([report1.metadata getMetadataFromSection:@"Custom" withKey:@"Foo"], @"Bar");
-    XCTAssertNotNil([report1.metadata getMetadataFromSection:@"device" withKey:@"simulator"]);
-    XCTAssertNotNil([report1.metadata getMetadataFromSection:@"device" withKey:@"wordSize"]);
-
-    // OOM metadata is set from the session user data.
-    [metadata addMetadata:@"OOMuser" withKey:@"id" toSection:@"user"];
-    [metadata addMetadata:@"OOMemail" withKey:@"email" toSection:@"user"];
-    [metadata addMetadata:@"OOMname" withKey:@"name" toSection:@"user"];
-
-    // Try it again with more fully formed session data
-    dict = @{
-        @"user.state.didOOM" : @YES,
-        @"user.handledState": [state toJson],
-        @"user.state.oom.session" : [metadata toDictionary]
-    };
-
-    BugsnagEvent *report2 = [[BugsnagEvent alloc] initWithKSReport:dict];
-
-    XCTAssertNotNil(report2.metadata);
-    [report2.metadata clearMetadataFromSection:@"device"];
-    XCTAssertEqual([[report2.metadata toDictionary] count], 0);
-    XCTAssertEqualObjects(@"OOMuser", report2.user.id);
-    XCTAssertEqualObjects(@"OOMname", report2.user.name);
-    XCTAssertEqualObjects(@"OOMemail", report2.user.email);
-}
-
 - (void)testUnhandledReportMetaData {
     BugsnagMetadata *metadata = [BugsnagMetadata new];
     [metadata addMetadata:@"Bar" withKey:@"Foo" toSection:@"Custom"];
