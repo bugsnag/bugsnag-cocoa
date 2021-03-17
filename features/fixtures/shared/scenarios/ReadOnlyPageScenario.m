@@ -25,6 +25,7 @@
  */
 
 #import "ReadOnlyPageScenario.h"
+#include "spin_malloc.h"
 
 /**
  * Attempt to write to a page into which the app's code is mapped.
@@ -40,6 +41,7 @@ static void __attribute__((used)) dummyfunc(void) {
 }
 
 - (void)run {
+    install_spin_malloc();
     volatile char *ptr = (char *) dummyfunc;
     *ptr = 0;
 }

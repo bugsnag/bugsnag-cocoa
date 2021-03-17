@@ -4,6 +4,7 @@
 //
 
 #import "BuiltinTrapScenario.h"
+#include "spin_malloc.h"
 
 /**
  * Calls __builtin_trap
@@ -17,6 +18,7 @@
 
 
 - (void)run {
+    install_spin_malloc();
     __builtin_trap();
 }
 

@@ -25,6 +25,7 @@
  */
 
 #import "PrivilegedInstructionScenario.h"
+#include "spin_malloc.h"
 
 /**
  * Attempt to execute an instruction that can only be executed in supervisor mode.
@@ -37,6 +38,7 @@
 }
 
 - (void)run {
+    install_spin_malloc();
 #if __i386__
     asm volatile ( "hlt" : : : );
 #elif __x86_64__
