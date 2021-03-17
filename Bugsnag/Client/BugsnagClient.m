@@ -422,11 +422,13 @@ NSString *_lastOrientation = nil;
                                                              userInfo:nil repeats:NO];
     }
     
-    if (self.appHangEvent) {
-        [self.eventUploader uploadEvent:self.appHangEvent];
-        self.appHangEvent = nil;
-    } else if (self.lastRunInfo.crashedDuringLaunch && self.configuration.sendLaunchCrashesSynchronously) {
+    if (self.lastRunInfo.crashedDuringLaunch && self.configuration.sendLaunchCrashesSynchronously) {
         [self sendLaunchCrashSynchronously];
+    }
+    
+    if (self.eventFromLastLaunch) {
+        [self.eventUploader uploadEvent:self.eventFromLastLaunch completionHandler:nil];
+        self.eventFromLastLaunch = nil;
     }
     
     [self.eventUploader uploadStoredEvents];
@@ -459,10 +461,16 @@ NSString *_lastOrientation = nil;
     bsg_log_info(@"Sending launch crash synchronously.");
     dispatch_time_t deadline = dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC);
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    [self.eventUploader uploadLatestStoredEvent:^{
+    dispatch_block_t completionHandler = ^{
         bsg_log_debug(@"Sent launch crash.");
         dispatch_semaphore_signal(semaphore);
-    }];
+    };
+    if (self.eventFromLastLaunch) {
+        [self.eventUploader uploadEvent:self.eventFromLastLaunch completionHandler:completionHandler];
+        self.eventFromLastLaunch = nil;
+    } else {
+        [self.eventUploader uploadLatestStoredEvent:completionHandler];
+    }
     if (dispatch_semaphore_wait(semaphore, deadline)) {
         bsg_log_debug(@"Timed out waiting for launch crash to be sent.");
     }
@@ -568,7 +576,7 @@ NSString *_lastOrientation = nil;
     
     // App hangs take precedence over OOMs.
     if (!didCrash) {
-        // Avoid calling -lastRunEndedWithAppHang if the app crashed, to prevent self.appHangEvent being set and the hang being reported.
+        // Avoid calling -lastRunEndedWithAppHang if the app crashed, to prevent self.eventFromLastLaunch being set and the hang being reported.
         didCrash = [self lastRunEndedWithAppHang];
     }
     
@@ -870,7 +878,7 @@ NSString *_lastOrientation = nil;
                                    errorType:BSGErrorTypeCocoa
                                   stacktrace:nil];
     
-    BugsnagEvent *event =
+    self.eventFromLastLaunch =
     [[BugsnagEvent alloc] initWithApp:app
                                device:device
                          handledState:[BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory]
@@ -880,8 +888,6 @@ NSString *_lastOrientation = nil;
                                errors:@[error]
                               threads:nil
                               session:session];
-    
-    [self.eventUploader uploadEvent:event];
 }
 
 - (void)notify:(NSException *)exception
@@ -994,7 +1000,7 @@ NSString *_lastOrientation = nil;
 
     // Temporary conditional until all (non-crash) events can be sent via -uploadEvent:
     if (event == self.appHangEvent) {
-        [self.eventUploader uploadEvent:event];
+        [self.eventUploader uploadEvent:event completionHandler:nil];
         return;
     }
 

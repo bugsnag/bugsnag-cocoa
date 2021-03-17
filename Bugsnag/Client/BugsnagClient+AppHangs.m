@@ -106,7 +106,7 @@
                                                                    attrValue:nil];
     event.session.unhandledCount++;
     
-    self.appHangEvent = event;
+    self.eventFromLastLaunch = event;
     return YES;
 }
 
