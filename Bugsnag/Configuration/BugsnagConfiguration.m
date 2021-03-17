@@ -171,7 +171,7 @@ static NSUserDefaults *userDefaults;
     _endpoints = [BugsnagEndpointConfiguration new];
     _sessionURL = [NSURL URLWithString:@"https://sessions.bugsnag.com"];
     _autoDetectErrors = YES;
-    _appHangThresholdMillis = 2000;
+    _appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly;
     _notifyURL = [NSURL URLWithString:BSGDefaultNotifyUrl];
     _onSendBlocks = [NSMutableArray new];
     _onSessionBlocks = [NSMutableArray new];

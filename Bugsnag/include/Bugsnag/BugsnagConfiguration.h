@@ -212,10 +212,11 @@ typedef BOOL (^BugsnagOnSessionBlock)(BugsnagSession *_Nonnull session);
  * The minimum number of milliseconds of main thread unresponsiveness that will trigger the
  * detection and reporting of an app hang.
  *
- * By default this is 2000 milliseconds, and can be configured down to 250 milliseconds.
- * 
  * Set to `BugsnagAppHangThresholdFatalOnly` to disable reporting of app hangs that did not
  * end with the app being force quit by the user or terminated by the system watchdog.
+ *
+ * By default this is `BugsnagAppHangThresholdFatalOnly`, and can be set to a minimum of 250
+ * milliseconds.
  */
 @property (nonatomic) NSUInteger appHangThresholdMillis;
 
