@@ -26,6 +26,7 @@
 
 #import "ReadGarbagePointerScenario.h"
 #import <sys/mman.h>
+#include "spin_malloc.h"
 
 /**
  * Attempts to read from a garbage pointer that's not mapped but also isn't NULL.
@@ -43,6 +44,7 @@
     if (ptr != MAP_FAILED)
         munmap(ptr, (size_t) getpagesize());
 
+    install_spin_malloc();
 #if __i386__
     asm volatile ( "mov %0, %%eax\n\tmov (%%eax), %%eax" : : "X" (ptr) : "memory", "eax" );
 #elif __x86_64__

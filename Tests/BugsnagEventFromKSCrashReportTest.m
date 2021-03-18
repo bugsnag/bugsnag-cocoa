@@ -107,7 +107,7 @@
 }
 
 - (void)testAppVersion {
-    NSDictionary *dictionary = [self.event toJson];
+    NSDictionary *dictionary = [self.event toJsonWithRedactedKeys:nil];
     XCTAssertEqualObjects(dictionary[@"app"][@"version"], @"1.0");
     XCTAssertEqualObjects(dictionary[@"app"][@"bundleVersion"], @"1");
 }

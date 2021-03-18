@@ -1,0 +1,25 @@
+name: "Unit Tests"
+on: [push]
+
+# The purpose of this workflow is to run unit tests on beta versions of
+# Xcode and iOS that have not yet been added to Bugsnag's Buildkite.
+
+jobs:
+  build:
+    runs-on: macos-11.0
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_12.5.app
+      PLATFORM: iOS
+      OS: 14.5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Unit Tests
+        run: make test
+
+      - name: Archive xcodebuild output
+        uses: actions/upload-artifact@v2
+        with:
+          name: xcodebuild-${{ env.PLATFORM }}-${{ env.OS }}-${{ github.run_id }}
+          path: xcodebuild.log

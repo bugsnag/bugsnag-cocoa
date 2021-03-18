@@ -10,4 +10,6 @@
 
 @interface AutoSessionMixedEventsScenario : Scenario
 
+@property (copy, nonatomic) dispatch_block_t onEventDelivery;
+
 @end

@@ -1,0 +1,5 @@
+platform :osx, '10.11'
+
+target 'BugsnagStressTest' do
+  pod 'Bugsnag', :path => '../../..'
+end

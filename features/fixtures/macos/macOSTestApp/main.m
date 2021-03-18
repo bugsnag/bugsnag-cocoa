@@ -8,6 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
+void sigterm(int signum) {
+    NSLog(@"Received SIGTERM");
+    exit(0);
+}
+
 int main(int argc, const char * argv[]) {
     [[NSUserDefaults standardUserDefaults] registerDefaults:@{
         // Disable state restoration to prevent the following dialog being shown after crashes
@@ -18,6 +23,8 @@ int main(int argc, const char * argv[]) {
         // Stop NSApplication swallowing NSExceptions thrown on the main thread.
         @"NSApplicationCrashOnExceptions": @YES,
     }];
+    
+    sigaction(SIGTERM, &(struct sigaction){ .sa_handler = &sigterm }, NULL);
     
     return NSApplicationMain(argc, argv);
 }

@@ -3,7 +3,7 @@ steps:
     key: cocoa_fixture
     timeout_in_minutes: 20
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-11
     artifact_paths:
       - features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa
       - features/fixtures/macos/output/macOSTestApp.zip
@@ -14,7 +14,7 @@ steps:
   - label: Static framework and Swift Package Manager builds
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-10.15
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     env:
@@ -27,7 +27,7 @@ steps:
   - label: Static Carthage build
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-10.15
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     env:
@@ -40,7 +40,7 @@ steps:
   - label: macOS 10.15 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-10.15
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     env:
@@ -73,7 +73,7 @@ steps:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
       PLATFORM: "iOS"
-      OS: "14.2"
+      OS: "14.3"
     commands:
       - make bootstrap
       - make test
@@ -104,7 +104,7 @@ steps:
       LANG: "en_GB.UTF-8"
       TEST_CONFIGURATION: "Debug"
       PLATFORM: "tvOS"
-      OS: "14.0"
+      OS: "14.3"
     commands:
       - make bootstrap
       - make test
@@ -138,6 +138,7 @@ steps:
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
+          - "features/app_hangs.feature"
           - "features/barebone_tests.feature"
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
@@ -164,6 +165,7 @@ steps:
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
+          - "features/app_hangs.feature"
           - "features/barebone_tests.feature"
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
@@ -182,7 +184,7 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-10.15
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
@@ -190,6 +192,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
+        features/app_hangs.feature
         features/barebone_tests.feature
         --farm=local
         --os=macos
@@ -197,6 +200,21 @@ steps:
         --app=macOSTestApp
         --tags='not @skip_macos'
         --fail-fast
+
+  - label: 'macOS 10.15 stress test'
+    timeout_in_minutes: 3
+    agents:
+      queue: opensource-mac-cocoa
+    env:
+      STRESS_TEST: "true"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/stress_test.feature
+        --no-log-requests
+    artifact_paths:
+      - features/fixtures/macos-stress-test/BugsnagStressTest.stdout.log
+      - features/fixtures/macos-stress-test/BugsnagStressTest.stderr.log
 
   - label: 'Conditionally trigger full set of tests'
     command: sh -c .buildkite/pipeline_trigger.sh

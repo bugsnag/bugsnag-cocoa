@@ -713,14 +713,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertThrows(func(config, selector));
 }
 
-- (void)testErrorApiHeaders {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    NSDictionary *headers = [config errorApiHeaders];
-    XCTAssertEqualObjects(config.apiKey, headers[@"Bugsnag-Api-Key"]);
-    XCTAssertNotNil(headers[@"Bugsnag-Sent-At"]);
-    XCTAssertNotNil(headers[@"Bugsnag-Payload-Version"]);
-}
-
 - (void)testUser {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     

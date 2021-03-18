@@ -141,7 +141,7 @@ static NSString* toString(NSData* data)
 - (void) testSerializeDeserializeArrayFloat
 {
     NSError* error = (NSError*)self;
-    NSString* expected = @"[-0.2]";
+    NSString* expected = @"[-2e-1]";
     id original = @[@(-0.2f)];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
@@ -408,7 +408,7 @@ static NSString* toString(NSData* data)
 - (void) testSerializeDeserializeDictionaryFloat
 {
     NSError* error = (NSError*)self;
-    NSString* expected = @"{\"One\":54.918}";
+    NSString* expected = @"{\"One\":5.4918e+1}";
     id original = @{@"One": @54.918F};
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
@@ -422,6 +422,100 @@ static NSString* toString(NSData* data)
     XCTAssertEqual([((NSDictionary *) result)[@"One"] floatValue], 54.918f, @"");
     // This always fails on NSNumber filled with float.
     //XCTAssertEqualObjects(result, original, @"");
+}
+
+- (void) assertInt:(int64_t) value convertsTo:(NSString *)str
+{
+    NSError* error = (NSError*)self;
+    NSString* expected = [NSString stringWithFormat:@"{\"One\":%@}", str];
+    id original = @{@"One": @(value)};
+    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
+                                                options:BSG_KSJSONEncodeOptionSorted
+                                                  error:&error]);
+    XCTAssertNotNil(jsonString, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(jsonString, expected, @"");
+}
+
+- (void) assertDouble:(double) value convertsTo:(NSString *)str
+{
+    NSError* error = (NSError*)self;
+    NSString* expected = [NSString stringWithFormat:@"{\"One\":%@}", str];
+    id original = @{@"One": @(value)};
+    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
+                                                options:BSG_KSJSONEncodeOptionSorted
+                                                  error:&error]);
+    XCTAssertNotNil(jsonString, @"");
+    XCTAssertNil(error, @"");
+    XCTAssertEqualObjects(jsonString, expected, @"");
+}
+
+- (void) testIntConversions
+{
+    [self assertInt:0 convertsTo:@"0"];
+    [self assertInt:1 convertsTo:@"1"];
+    [self assertInt:-1 convertsTo:@"-1"];
+    [self assertInt:127 convertsTo:@"127"];
+    [self assertInt:-127 convertsTo:@"-127"];
+    [self assertInt:128 convertsTo:@"128"];
+    [self assertInt:-128 convertsTo:@"-128"];
+    [self assertInt:255 convertsTo:@"255"];
+    [self assertInt:-255 convertsTo:@"-255"];
+    [self assertInt:256 convertsTo:@"256"];
+    [self assertInt:-256 convertsTo:@"-256"];
+    [self assertInt:65535 convertsTo:@"65535"];
+    [self assertInt:-65535 convertsTo:@"-65535"];
+    [self assertInt:65536 convertsTo:@"65536"];
+    [self assertInt:-65536 convertsTo:@"-65536"];
+    [self assertInt:4294967295 convertsTo:@"4294967295"];
+    [self assertInt:-4294967295 convertsTo:@"-4294967295"];
+    [self assertInt:4294967296 convertsTo:@"4294967296"];
+    [self assertInt:-4294967296 convertsTo:@"-4294967296"];
+    [self assertInt:9223372036854775807ll convertsTo:@"9223372036854775807"];
+    // This gets incorrectly flagged as too large for int64
+    [self assertInt:-9223372036854775808ll convertsTo:@"-9223372036854775808"];
+}
+
+- (void) testFloatConversions
+{
+    [self assertDouble:100000000 convertsTo:@"1e+8"];
+    [self assertDouble:10000000 convertsTo:@"1e+7"];
+    [self assertDouble:1000000 convertsTo:@"1e+6"];
+    [self assertDouble:100000 convertsTo:@"1e+5"];
+    [self assertDouble:10000 convertsTo:@"1e+4"];
+    [self assertDouble:1000 convertsTo:@"1e+3"];
+    [self assertDouble:100 convertsTo:@"1e+2"];
+    [self assertDouble:10 convertsTo:@"1e+1"];
+    [self assertDouble:1 convertsTo:@"1"];
+    [self assertDouble:0.1 convertsTo:@"1e-1"];
+    [self assertDouble:0.01 convertsTo:@"1e-2"];
+    [self assertDouble:0.001 convertsTo:@"1e-3"];
+    [self assertDouble:0.0001 convertsTo:@"1e-4"];
+    [self assertDouble:0.00001 convertsTo:@"1e-5"];
+    [self assertDouble:0.000001 convertsTo:@"1e-6"];
+    [self assertDouble:0.0000001 convertsTo:@"1e-7"];
+    [self assertDouble:0.00000001 convertsTo:@"1e-8"];
+
+    [self assertDouble:1.2 convertsTo:@"1.2"];
+    [self assertDouble:0.12 convertsTo:@"1.2e-1"];
+    [self assertDouble:12 convertsTo:@"1.2e+1"];
+    [self assertDouble:9.5932455 convertsTo:@"9.593246"];
+    [self assertDouble:1.456e+80 convertsTo:@"1.456e+80"];
+    [self assertDouble:1.456e-80 convertsTo:@"1.456e-80"];
+    [self assertDouble:-1.456e+80 convertsTo:@"-1.456e+80"];
+    [self assertDouble:-1.456e-80 convertsTo:@"-1.456e-80"];
+    [self assertDouble:1.5e-10 convertsTo:@"1.5e-10"];
+    [self assertDouble:123456789123456789 convertsTo:@"1.234568e+17"];
+
+    [self assertDouble:NAN convertsTo:@"nan"];
+    [self assertDouble:INFINITY convertsTo:@"inf"];
+    [self assertDouble:-INFINITY convertsTo:@"-inf"];
+
+    // Check stepping over the 7 significant digit limit
+    [self assertDouble:9999999 convertsTo:@"9.999999e+6"];
+    [self assertDouble:99999994 convertsTo:@"9.999999e+7"];
+    [self assertDouble:99999995 convertsTo:@"1e+8"];
+    [self assertDouble:99999999 convertsTo:@"1e+8"];
 }
 
 - (void) testSerializeDeserializeDictionaryFloat2
@@ -839,7 +933,7 @@ static NSString* toString(NSData* data)
 - (void) testSerializeDeserializeDouble
 {
     NSError* error = (NSError*)self;
-    NSString* expected = @"[0.1]";
+    NSString* expected = @"[1e-1]";
     id original = @[@0.1];
     NSString* jsonString = toString([BSG_KSJSONCodec encode:original
                                                 options:BSG_KSJSONEncodeOptionSorted
