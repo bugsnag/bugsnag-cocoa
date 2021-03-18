@@ -1297,7 +1297,6 @@
 		0126DEE7257A8B0F0031A70C /* BugsnagDevice+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagDevice+Private.h"; sourceTree = "<group>"; };
 		0126DEEF257A8C3D0031A70C /* BugsnagDeviceWithState+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagDeviceWithState+Private.h"; sourceTree = "<group>"; };
 		0126DF1A257A92860031A70C /* BugsnagSession+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BugsnagSession+Private.h"; sourceTree = "<group>"; };
-		0126DF2C257A92D70031A70C /* BugsnagStacktrace+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagStacktrace+Private.h"; sourceTree = "<group>"; };
 		0126DF34257A94740031A70C /* BugsnagUser+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagUser+Private.h"; sourceTree = "<group>"; };
 		0126F78925DD508C008483C2 /* BSGEventUploadOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGEventUploadOperation.h; sourceTree = "<group>"; };
 		0126F78A25DD508C008483C2 /* BSGEventUploadOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGEventUploadOperation.m; sourceTree = "<group>"; };
@@ -1890,7 +1889,6 @@
 				0198762E2567D5AB000A7AF3 /* BugsnagStackframe+Private.h */,
 				0089684F2486DA9400DC48C2 /* BugsnagStacktrace.h */,
 				0089685C2486DA9500DC48C2 /* BugsnagStacktrace.m */,
-				0126DF2C257A92D70031A70C /* BugsnagStacktrace+Private.h */,
 				008968552486DA9400DC48C2 /* BugsnagStateEvent.h */,
 				008968582486DA9500DC48C2 /* BugsnagStateEvent.m */,
 				008968612486DA9500DC48C2 /* BugsnagThread.m */,
@@ -3225,6 +3223,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -3247,6 +3246,7 @@
 				SDKROOT = iphoneos;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				WARNING_CFLAGS = "-Werror=incomplete-implementation";
 			};
 			name = Debug;
 		};
@@ -3292,6 +3292,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -3314,6 +3315,7 @@
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				WARNING_CFLAGS = "-Werror=incomplete-implementation";
 			};
 			name = Release;
 		};

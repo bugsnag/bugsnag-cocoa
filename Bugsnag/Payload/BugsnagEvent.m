@@ -34,7 +34,7 @@
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSession+Private.h"
-#import "BugsnagStacktrace+Private.h"
+#import "BugsnagStacktrace.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
 
@@ -340,7 +340,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
                                   session:session];
     obj.context = BSGParseContext(event);
     obj.groupingHash = BSGParseGroupingHash(event);
-    obj.overrides = [event valueForKeyPath:@"user.overrides"];
     obj.enabledReleaseStages = BSGLoadConfigValue(event, BSGKeyEnabledReleaseStages);
     obj.releaseStage = BSGParseReleaseStage(event);
     obj.deviceAppHash = deviceAppHash;
@@ -467,24 +466,10 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     return [[self breadcrumbs] valueForKeyPath:NSStringFromSelector(@selector(objectValue))];
 }
 
-@synthesize releaseStage = _releaseStage;
-
-- (NSString *)releaseStage {
-    @synchronized (self) {
-        return _releaseStage;
-    }
-}
-
-- (void)setReleaseStage:(NSString *)releaseStage {
-    [self setOverrideProperty:BSGKeyReleaseStage value:releaseStage];
-    @synchronized (self) {
-        _releaseStage = releaseStage;
-    }
-}
-
 - (void)attachCustomStacktrace:(NSArray *)frames withType:(NSString *)type {
-    [self setOverrideProperty:@"customStacktraceFrames" value:frames];
-    [self setOverrideProperty:@"customStacktraceType" value:type];
+    BugsnagError *error = self.errors.firstObject;
+    error.stacktrace = [BugsnagStacktrace stacktraceFromJson:frames].trace;
+    error.typeString = type;
 }
 
 - (BSGSeverity)severity {
@@ -548,30 +533,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 }
 
 // MARK: - Callback overrides
-
-@synthesize overrides = _overrides;
-
-- (NSDictionary *)overrides {
-    NSMutableDictionary *values = [_overrides mutableCopy] ?: [NSMutableDictionary new];
-    values[BSGKeyBreadcrumbs] = [self serializeBreadcrumbs];
-    return values;
-}
-
-- (void)setOverrides:(NSDictionary * _Nonnull)overrides {
-    _overrides = overrides;
-}
-
-- (void)setOverrideProperty:(NSString *)key value:(id)value {
-    @synchronized (self) {
-        NSMutableDictionary *metadata = [self.overrides mutableCopy];
-        if (value) {
-            metadata[key] = value;
-        } else {
-            [metadata removeObjectForKey:key];
-        }
-        self.overrides = metadata;
-    }
-}
 
 - (void)notifyUnhandledOverridden {
     self.handledState.unhandledOverridden = YES;
