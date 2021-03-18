@@ -356,7 +356,7 @@
     XCTAssertEqualObjects([userData valueForKeyPath:@"user.event.exceptions.@count"], @(2));
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:userData];
     XCTAssertEqual(event.errors.count, 2);
-    XCTAssertEqualObjects([[event toJson] valueForKeyPath:@"exceptions.@count"], @(2),
+    XCTAssertEqualObjects([[event toJsonWithRedactedKeys:nil] valueForKeyPath:@"exceptions.@count"], @(2),
                           @"JSON representation of event should have the same number of errors / exceptions");
 }
 

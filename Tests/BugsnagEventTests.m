@@ -68,7 +68,7 @@
 
     BugsnagEvent *event = [self generateEvent:nil];
     event.session = bugsnagSession;
-    NSDictionary *json = [event toJson];
+    NSDictionary *json = [event toJsonWithRedactedKeys:nil];
     XCTAssertNotNil(json);
 
     NSDictionary *session = json[@"session"];
@@ -87,7 +87,7 @@
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
         @"threads" : @[]
     }];
-    NSDictionary *payload = [event toJson];
+    NSDictionary *payload = [event toJsonWithRedactedKeys:nil];
     XCTAssertEqualObjects(@"Exception",
                           payload[@"exceptions"][0][@"errorClass"]);
     XCTAssertEqualObjects(@"", payload[@"exceptions"][0][@"message"]);
@@ -211,7 +211,7 @@
                     }
             }
     }];
-    NSDictionary *dictionary = [overrideReport toJson];
+    NSDictionary *dictionary = [overrideReport toJsonWithRedactedKeys:nil];
     XCTAssertEqualObjects(@"1.2.3", dictionary[@"app"][@"version"]);
 }
 
@@ -226,7 +226,7 @@
                     }
             }
     }];
-    NSDictionary *dictionary = [overrideReport toJson];
+    NSDictionary *dictionary = [overrideReport toJsonWithRedactedKeys:nil];
     XCTAssertEqualObjects(@"1.2.3", dictionary[@"app"][@"bundleVersion"]);
 }
 
@@ -338,6 +338,32 @@
     ];
     event.threads = @[thread1, thread2];
     XCTAssertEqualObjects(sorted(event.stacktraceTypes), (@[@"android", @"c", @"cocoa", @"csharp", @"java"]));
+}
+
+// MARK: - JSON serialization tests
+
+- (void)testJsonToEventToJson {
+    NSString *directory = [[[[NSBundle bundleForClass:[self class]] resourcePath]
+                            stringByAppendingPathComponent:@"Data"]
+                           stringByAppendingPathComponent:@"BugsnagEvents"];
+    
+    NSArray<NSString *> *entries = [NSFileManager.defaultManager contentsOfDirectoryAtPath:directory error:nil];
+    
+    for (NSString *filename in entries) {
+        if (![filename.pathExtension isEqual:@"json"] || [filename hasSuffix:@"."]) {
+            continue;
+        }
+        
+        NSString *file = [directory stringByAppendingPathComponent:filename];
+        NSData *data = [NSData dataWithContentsOfFile:file];
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        
+        BugsnagEvent *event = [[BugsnagEvent alloc] initWithJson:json];
+        XCTAssertNotNil(event);
+        
+        NSDictionary *toJson = [event toJsonWithRedactedKeys:nil];
+        XCTAssertEqualObjects(json, toJson, @"Input and output JSON do not match");
+    }
 }
 
 // MARK: - Metadata interface
