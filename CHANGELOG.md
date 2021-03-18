@@ -13,8 +13,14 @@ Changelog
 
 ### Bug fixes
 
+* Fix a heap buffer overflow reported by Address Sanitizer.
+  [#1043](https://github.com/bugsnag/bugsnag-cocoa/pull/1043)
+
 * Fix parsing of `callStackSymbols` where the image name contains spaces.
   [#1036](https://github.com/bugsnag/bugsnag-cocoa/pull/1036)
+
+* Fix a possible deadlock when writing crash reports for unhandled errors.
+  [#1034](https://github.com/bugsnag/bugsnag-cocoa/pull/1034)
 
 ## 6.7.1 (2021-03-10)
 
