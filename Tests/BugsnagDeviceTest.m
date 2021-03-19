@@ -159,25 +159,6 @@
     XCTAssertEqualObjects([formatter dateFromString:@"2014-12-02T01:56:13Z"], device.time);
 }
 
-- (void)testDeviceFromOOM {
-    NSDictionary *oomData = @{
-            @"id": @"123",
-            @"osVersion": @"13.1",
-            @"osName": @"macOS",
-            @"model": @"iPhone 6",
-            @"modelNumber": @"iPhone X",
-            @"locale": @"yue"
-    };
-
-    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithOomData:oomData];
-    XCTAssertEqualObjects(@"123", device.id);
-    XCTAssertEqualObjects(@"13.1", device.osVersion);
-    XCTAssertEqualObjects(@"macOS", device.osName);
-    XCTAssertEqualObjects(@"iPhone 6", device.model);
-    XCTAssertEqualObjects(@"iPhone X", device.modelNumber);
-    XCTAssertEqualObjects(@"yue", device.locale);
-}
-
 - (void)testDeviceFreeSpaceShouldBeLargeNumber {
     NSNumber *freeBytes = BSGDeviceFreeSpace(NSCachesDirectory);
     XCTAssertNotNil(freeBytes, @"expect a valid number for successful call to retrieve free space");

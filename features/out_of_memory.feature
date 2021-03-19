@@ -54,6 +54,9 @@ Feature: Out of memory errors
     And the event "session.startedAt" is not null
     And the event "session.events.handled" equals 1
     And the event "session.events.unhandled" equals 1
+    And the event "severity" equals "error"
+    And the event "severityReason.type" equals "outOfMemory"
+    And the event "severityReason.unhandledOverridden" is null
     And the event "unhandled" is true
     And the event "user.id" equals "foobar"
     And the event "user.email" equals "foobar@example.com"

@@ -50,6 +50,8 @@ class AppHangFatalOnlyScenario: Scenario {
     
     override func startBugsnag() {
         config.appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly
+        // Sending synchronously causes an immediate retry upon failure, which creates flakes.
+        config.sendLaunchCrashesSynchronously = false
         super.startBugsnag()
     }
     

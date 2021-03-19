@@ -118,35 +118,6 @@
     XCTAssertEqualObjects(@"5.6.3", dict[@"version"]);
 }
 
-- (void)testAppFromOOM {
-    NSDictionary *appDict = @{
-            @"id": @"com.example.foo.MyIosApp",
-            @"releaseStage": @"beta",
-            @"version": @"5.6.3",
-            @"bundleVersion": @"1",
-            @"codeBundleId": @"bundle-123",
-            @"inForeground": @YES,
-            @"type": @"iOS"
-    };
-    NSDictionary *crashReport = @{@"user": @{@"state": @{@"oom": @{@"app": appDict}}}};
-
-    BugsnagAppWithState *app = [BugsnagAppWithState appWithKSCrashReportOOM:crashReport];
-
-    // verify stateful fields
-    XCTAssertNil(app.duration);
-    XCTAssertNil(app.durationInForeground);
-    XCTAssertTrue(app.inForeground);
-
-    // verify stateless fields
-    XCTAssertEqualObjects(@"1", app.bundleVersion);
-    XCTAssertEqualObjects(@"bundle-123", app.codeBundleId);
-    XCTAssertNil(app.dsymUuid);
-    XCTAssertEqualObjects(@"com.example.foo.MyIosApp", app.id);
-    XCTAssertEqualObjects(@"beta", app.releaseStage);
-    XCTAssertEqualObjects(@"iOS", app.type);
-    XCTAssertEqualObjects(@"5.6.3", app.version);
-}
-
 - (void)testAppFromJson {
     NSDictionary *json = @{
             @"duration": @7000,
