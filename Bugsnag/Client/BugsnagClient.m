@@ -934,7 +934,18 @@ NSString *_lastOrientation = nil;
         [self.sessionTracker handleHandledErrorEvent];
     }
 
-    [self.eventUploader uploadEvent:event completionHandler:nil];
+    if (event.unhandled) {
+        // Unhandled Javscript exceptions from React Native result in the app being terminated shortly after the
+        // call to notifyInternal, so the event needs to be persisted to disk for sending in the next session.
+        // The fatal "RCTFatalException" / "Unhandled JS Exception" is explicitly ignored by
+        // BugsnagReactNativePlugin's OnSendErrorBlock.
+        [self.eventUploader storeEvent:event];
+        // Replicate previous delivery mechanism's behaviour of waiting 1 second before delivering the event.
+        // This should prevent potential duplicate uploads of unhandled errors where the app subsequently terminates.
+        [self.eventUploader performSelector:@selector(uploadStoredEvents) withObject:nil afterDelay:1];
+    } else {
+        [self.eventUploader uploadEvent:event completionHandler:nil];
+    }
 
     [self addAutoBreadcrumbForEvent:event];
 }
