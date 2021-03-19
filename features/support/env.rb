@@ -17,6 +17,10 @@ end
 
 # Additional require MacOS configuration
 if Maze.config.os == 'macos'
+  # The default macOS Crash Reporter "#{app_name} quit unexpectedly" alert grabs focus which can cause tests to flake.
+  # This option, which appears to have been introduced in macOS 10.11, displays a notification instead of the alert.
+  `defaults write com.apple.CrashReporter UseUNC 1`
+
   fixture_dir = 'features/fixtures/macos/output'
   app_dir = '/Applications'
   zip_name = "#{Maze.config.app}.zip"
