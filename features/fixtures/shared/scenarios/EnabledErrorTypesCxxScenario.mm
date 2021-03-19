@@ -34,7 +34,9 @@ const char *disabled_cxx_reporting_kaboom_exception::what() const throw() {
 
 - (void)crash __attribute__((noreturn)) {
     // Notify error so that mazerunner sees something
-    [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+    [self performBlockAndWaitForEventDelivery:^{
+        [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+    }];
 
     throw new disabled_cxx_reporting_kaboom_exception;
 }

@@ -32,7 +32,9 @@
 
 - (void)run {
     // Notify error so that mazerunner sees something
-    [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+    [self performBlockAndWaitForEventDelivery:^{
+        [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+    }];
 
     // From null prt scenario
     volatile char *ptr = NULL;
@@ -86,7 +88,9 @@
 #pragma clang diagnostic ignored "-Winvalid-noreturn"
 - (void)run  __attribute__((noreturn)) {
     // Notify error so that mazerunner sees something
-    [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+    [self performBlockAndWaitForEventDelivery:^{
+        [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+    }];
 
     strcmp(0, ""); // Generate EXC_BAD_ACCESS (see e.g. https://stackoverflow.com/q/22488358/2431627)
 }
@@ -111,7 +115,9 @@
 #pragma clang diagnostic ignored "-Winvalid-noreturn"
 - (void)run  __attribute__((noreturn)) {
     // Notify error so that mazerunner sees something
-    [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+    [self performBlockAndWaitForEventDelivery:^{
+        [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+    }];
 
     raise(SIGINT);
 }

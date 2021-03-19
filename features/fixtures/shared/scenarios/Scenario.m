@@ -12,20 +12,11 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
 
 // MARK: -
 
-typedef void (^ URLSessionResponseObserver)(NSURLRequest *request, NSData *responseData, NSURLResponse *response, NSError *error);
+static Scenario *theScenario;
 
-@interface ObservableURLSession : NSObject
-
-+ (instancetype)sessionWithObserver:(URLSessionResponseObserver)observer;
-
-@property (copy, nonatomic) URLSessionResponseObserver observer;
-
-@end
-
-
-// MARK: -
-
-@implementation Scenario
+@implementation Scenario {
+    dispatch_block_t _onEventDelivery;
+}
 
 + (Scenario *)createScenarioNamed:(NSString *)className
                        withConfig:(BugsnagConfiguration *)config {
@@ -60,6 +51,8 @@ typedef void (^ URLSessionResponseObserver)(NSURLRequest *request, NSData *respo
     id obj = [clz alloc];
 
     NSAssert([obj isKindOfClass:[Scenario class]], @"Class '%@' is not a subclass of Scenario", className);
+
+    theScenario = obj;
 
     return [(Scenario *)obj initWithConfig:config];
 }
@@ -110,39 +103,42 @@ typedef void (^ URLSessionResponseObserver)(NSURLRequest *request, NSData *respo
 - (void)didEnterBackgroundNotification {
 }
 
-- (NSURLSession *)URLSessionWithObserver:(URLSessionResponseObserver)observer {
-    return (id)[ObservableURLSession sessionWithObserver:observer];
+- (void)performBlockAndWaitForEventDelivery:(dispatch_block_t)block {
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    _onEventDelivery = ^{
+        dispatch_semaphore_signal(semaphore);
+    };
+    block();
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
 }
 
-@end
-
-
-// MARK: -
-
-@implementation ObservableURLSession
-
-// NSURLSession does not allow subclassing - calling [ObservableURLSession sessionWithConfiguration:] will return an
-// instance of NSURLSession instead of ObservableURLSession, so we have to resort to acting as a proxy object.
-
-+ (instancetype)sessionWithObserver:(URLSessionResponseObserver)observer {
-    ObservableURLSession *session = [[ObservableURLSession alloc] init];
-    session.observer = observer;
-    return session;
+- (void)requestDidComplete:(NSURLRequest *)request {
+    if (_onEventDelivery && [request.URL.absoluteString isEqual:self.config.endpoints.notify]) {
+        _onEventDelivery();
+        _onEventDelivery = nil;
+    }
 }
 
-- (NSURLSessionUploadTask *)uploadTaskWithRequest:(NSURLRequest *)request fromData:(NSData *)bodyData
-                                completionHandler:(void (^)(NSData *, NSURLResponse *, NSError *))completionHandler {
-    return [NSURLSession.sharedSession uploadTaskWithRequest:request fromData:bodyData completionHandler:
-            ^(NSData *responseData, NSURLResponse *response, NSError *error) {
-        completionHandler(responseData, response, error);
-        if (self.observer) {
-            self.observer(request, responseData, response, error);
-        }
-    }];
-}
+// Pointer to the original implementation of -[NSURLSession uploadTaskWithRequest:fromData:completionHandler:]
+static NSURLSessionUploadTask * (* NSURLSession_uploadTaskWithRequest_fromData_completionHandler)
+ (NSURLSession *session, SEL _cmd, NSURLRequest *request, NSData *fromData, void (^ completionHandler)(NSData *, NSURLResponse *, NSError *));
 
-- (id)forwardingTargetForSelector:(SEL)aSelector {
-    return NSURLSession.sharedSession;
+// Custom implmentation of -[NSURLSession uploadTaskWithRequest:fromData:completionHandler:] to allow tracking when requests finish
+static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
+ (NSURLSession *session, SEL _cmd, NSURLRequest *request, NSData *fromData, void (^ completionHandler)(NSData *, NSURLResponse *, NSError *)) {
+     return NSURLSession_uploadTaskWithRequest_fromData_completionHandler(session, _cmd, request, fromData,
+                                                                          ^(NSData *responseData, NSURLResponse *response, NSError *error) {
+         completionHandler(responseData, response, error);
+         [theScenario requestDidComplete:request];
+     });
+ }
+
++ (void)initialize {
+    if (self == [Scenario self]) {
+        Method method = class_getInstanceMethod([NSURLSession class], @selector(uploadTaskWithRequest:fromData:completionHandler:));
+        NSURLSession_uploadTaskWithRequest_fromData_completionHandler =
+        (void *)method_setImplementation(method, (void *)uploadTaskWithRequest_fromData_completionHandler);
+    }
 }
 
 @end

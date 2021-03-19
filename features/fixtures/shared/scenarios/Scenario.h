@@ -34,7 +34,7 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 
 @property (nonatomic, strong, nullable) NSString *eventMode;
 
-- (NSURLSession *)URLSessionWithObserver:(void (^)(NSURLRequest *request, NSData *responseData, NSURLResponse *response, NSError *error))observer;
+- (void)performBlockAndWaitForEventDelivery:(dispatch_block_t)block NS_SWIFT_NAME(performBlockAndWaitForEventDelivery(_:));
 
 @end
 
