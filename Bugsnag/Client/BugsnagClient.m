@@ -48,6 +48,7 @@
 #import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagClient+AppHangs.h"
+#import "BugsnagClient+OutOfMemory.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagCrashSentry.h"
@@ -559,37 +560,23 @@ NSString *_lastOrientation = nil;
 }
 
 - (void)computeDidCrashLastLaunch {
-    BOOL didCrash = NO;
-    
-    const BSG_KSCrash_State *crashState = bsg_kscrashstate_currentState();
-    NSFileManager *manager = [NSFileManager defaultManager];
-    NSString *didCrashSentinelPath = [NSString stringWithUTF8String:crashSentinelPath];
-    BOOL appCrashSentinelExists = [manager fileExistsAtPath:didCrashSentinelPath];
-    didCrash = appCrashSentinelExists || crashState->crashedLastLaunch;
-    if (appCrashSentinelExists) {
-        NSError *error = nil;
-        if (![manager removeItemAtPath:didCrashSentinelPath error:&error]) {
-            bsg_log_err(@"Failed to remove crash sentinel file: %@", error);
-            unlink(crashSentinelPath);
-        }
+    // Did the app crash in a way that was detected by KSCrash?
+    if (bsg_kscrashstate_currentState()->crashedLastLaunch || !access(crashSentinelPath, F_OK)) {
+        unlink(crashSentinelPath);
+        self.appDidCrashLastLaunch = YES;
     }
-    
-    // App hangs take precedence over OOMs.
-    if (!didCrash) {
-        // Avoid calling -lastRunEndedWithAppHang if the app crashed, to prevent self.eventFromLastLaunch being set and the hang being reported.
-        didCrash = [self lastRunEndedWithAppHang];
+    // Was the app terminated while the main thread was hung?
+    else if ((self.eventFromLastLaunch = [self loadFatalAppHangEvent])) {
+        self.appDidCrashLastLaunch = YES;
     }
-    
-    BOOL shouldReportOOM = NO;
-    if (!didCrash) {
-        shouldReportOOM = [self shouldReportOOM];
-        didCrash = shouldReportOOM;
+    // Was the app terminated while in the foreground? (probably an OOM)
+    else if ([self shouldReportOOM]) {
+        self.eventFromLastLaunch = [self generateOutOfMemoryEvent];
+        self.appDidCrashLastLaunch = YES;
     }
-    
-    self.appDidCrashLastLaunch = didCrash;
     
     BOOL wasLaunching = [self.stateMetadataFromLastLaunch[BSGKeyApp][BSGKeyIsLaunching] boolValue];
-    BOOL didCrashDuringLaunch = didCrash && wasLaunching;
+    BOOL didCrashDuringLaunch = self.appDidCrashLastLaunch && wasLaunching;
     if (didCrashDuringLaunch) {
         self.systemState.consecutiveLaunchCrashes++;
     } else {
@@ -597,12 +584,8 @@ NSString *_lastOrientation = nil;
     }
     
     self.lastRunInfo = [[BugsnagLastRunInfo alloc] initWithConsecutiveLaunchCrashes:self.systemState.consecutiveLaunchCrashes
-                                                                            crashed:didCrash
+                                                                            crashed:self.appDidCrashLastLaunch
                                                                 crashedDuringLaunch:didCrashDuringLaunch];
-    
-    if (shouldReportOOM) {
-        [self notifyOutOfMemoryEvent];
-    }
 }
 
 - (void)setCodeBundleId:(NSString *)codeBundleId {
@@ -852,42 +835,6 @@ NSString *_lastOrientation = nil;
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     [self notify:exception handledState:state block:block];
-}
-
-- (void)notifyOutOfMemoryEvent {
-    NSDictionary *appDict = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP];
-    BugsnagAppWithState *app = [BugsnagAppWithState appFromJson:appDict];
-    app.dsymUuid = appDict[BSGKeyMachoUUID];
-    app.isLaunching = [self.stateMetadataFromLastLaunch[BSGKeyApp][BSGKeyIsLaunching] boolValue];
-    
-    NSDictionary *deviceDict = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_DEVICE];
-    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceFromJson:deviceDict];
-    device.manufacturer = @"Apple";
-    device.orientation = self.stateMetadataFromLastLaunch[BSGKeyDeviceState][BSGKeyOrientation];
-    
-    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:self.metadataFromLastLaunch ?: @{}];
-    [metadata addMetadata:self.stateMetadataFromLastLaunch[BSGKeyDeviceState] toSection:BSGKeyDevice];
-    
-    NSDictionary *sessionDict = self.systemState.lastLaunchState[BSGKeySession];
-    BugsnagSession *session = sessionDict ? [[BugsnagSession alloc] initWithDictionary:sessionDict] : nil;
-    session.unhandledCount += 1;
-    
-    BugsnagError *error =
-    [[BugsnagError alloc] initWithErrorClass:@"Out Of Memory"
-                                errorMessage:@"The app was likely terminated by the operating system while in the foreground"
-                                   errorType:BSGErrorTypeCocoa
-                                  stacktrace:nil];
-    
-    self.eventFromLastLaunch =
-    [[BugsnagEvent alloc] initWithApp:app
-                               device:device
-                         handledState:[BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory]
-                                 user:session.user
-                             metadata:metadata
-                          breadcrumbs:self.breadcrumbs.breadcrumbs
-                               errors:@[error]
-                              threads:nil
-                              session:session];
 }
 
 - (void)notify:(NSException *)exception
