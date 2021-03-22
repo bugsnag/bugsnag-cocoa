@@ -1245,11 +1245,8 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
 
     writer->beginObject(writer, key);
     {
-
-        if (crash->crashType) {
-            writer->addUIntegerElement(writer, BSG_KSCrashField_Address,
-                                       crash->faultAddress);
-        }
+        writer->addUIntegerElement(writer, BSG_KSCrashField_Address,
+                                   crash->faultAddress);
 
         if (crashReason != NULL) {
             writer->addStringElement(writer, BSG_KSCrashField_Reason,
