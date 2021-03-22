@@ -186,9 +186,11 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     if (self = [super init]) {
         _app = [BugsnagAppWithState appFromJson:json[BSGKeyApp]];
         _breadcrumbs = BSGArrayMap(json[BSGKeyBreadcrumbs], ^id (NSDictionary *json) { return [BugsnagBreadcrumb breadcrumbFromDict:json]; });
+        _context = json[BSGKeyContext];
         _device = [BugsnagDeviceWithState deviceFromJson:json[BSGKeyDevice]];
         _error = json[BSGKeyMetadata][BSGKeyError];
         _errors = BSGArrayMap(json[BSGKeyExceptions], ^id (NSDictionary *json) { return [BugsnagError errorFromJson:json]; });
+        _groupingHash = json[BSGKeyGroupingHash];
         _handledState = [BugsnagHandledState handledStateFromJson:json];
         _metadata = [[BugsnagMetadata alloc] initWithDictionary:json[BSGKeyMetadata]];
         _session = [BugsnagSession fromJson:json[BSGKeySession]];
