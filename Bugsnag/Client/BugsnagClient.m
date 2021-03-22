@@ -562,15 +562,18 @@ NSString *_lastOrientation = nil;
 - (void)computeDidCrashLastLaunch {
     // Did the app crash in a way that was detected by KSCrash?
     if (bsg_kscrashstate_currentState()->crashedLastLaunch || !access(crashSentinelPath, F_OK)) {
+        bsg_log_info(@"Last run terminated due to a crash.");
         unlink(crashSentinelPath);
         self.appDidCrashLastLaunch = YES;
     }
     // Was the app terminated while the main thread was hung?
     else if ((self.eventFromLastLaunch = [self loadFatalAppHangEvent])) {
+        bsg_log_info(@"Last run terminated during an app hang.");
         self.appDidCrashLastLaunch = YES;
     }
     // Was the app terminated while in the foreground? (probably an OOM)
     else if ([self shouldReportOOM]) {
+        bsg_log_info(@"Last run terminated abnormally; likely Out Of Memory.");
         self.eventFromLastLaunch = [self generateOutOfMemoryEvent];
         self.appDidCrashLastLaunch = YES;
     }
@@ -772,6 +775,7 @@ NSString *_lastOrientation = nil;
 // see notify:handledState:block for further info
 
 - (void)notifyError:(NSError *_Nonnull)error {
+    bsg_log_debug(@"Notify called with %@", error);
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError
                                                                             severity:BSGSeverityWarning
                                                                            attrValue:error.domain];
@@ -785,6 +789,7 @@ NSString *_lastOrientation = nil;
 - (void)notifyError:(NSError *)error
               block:(BugsnagOnErrorBlock)block
 {
+    bsg_log_debug(@"Notify called with %@", error);
     BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError
                                                                             severity:BSGSeverityWarning
                                                                            attrValue:error.domain];
@@ -824,6 +829,7 @@ NSString *_lastOrientation = nil;
 }
 
 - (void)notify:(NSException *_Nonnull)exception {
+    bsg_log_debug(@"Notify called with %@", exception);
     BugsnagHandledState *state =
             [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     [self notify:exception handledState:state block:nil];
@@ -832,6 +838,7 @@ NSString *_lastOrientation = nil;
 - (void)notify:(NSException *)exception
          block:(BugsnagOnErrorBlock)block
 {
+    bsg_log_debug(@"Notify called with %@", exception);
     BugsnagHandledState *state =
         [BugsnagHandledState handledStateWithSeverityReason:HandledException];
     [self notify:exception handledState:state block:block];
