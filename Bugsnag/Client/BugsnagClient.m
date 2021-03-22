@@ -560,26 +560,30 @@ NSString *_lastOrientation = nil;
 }
 
 - (void)computeDidCrashLastLaunch {
+    BOOL didCrash = NO;
+    
     // Did the app crash in a way that was detected by KSCrash?
     if (bsg_kscrashstate_currentState()->crashedLastLaunch || !access(crashSentinelPath, F_OK)) {
         bsg_log_info(@"Last run terminated due to a crash.");
         unlink(crashSentinelPath);
-        self.appDidCrashLastLaunch = YES;
+        didCrash = YES;
     }
     // Was the app terminated while the main thread was hung?
     else if ((self.eventFromLastLaunch = [self loadFatalAppHangEvent])) {
         bsg_log_info(@"Last run terminated during an app hang.");
-        self.appDidCrashLastLaunch = YES;
+        didCrash = YES;
     }
     // Was the app terminated while in the foreground? (probably an OOM)
     else if ([self shouldReportOOM]) {
         bsg_log_info(@"Last run terminated abnormally; likely Out Of Memory.");
         self.eventFromLastLaunch = [self generateOutOfMemoryEvent];
-        self.appDidCrashLastLaunch = YES;
+        didCrash = YES;
     }
     
+    self.appDidCrashLastLaunch = didCrash;
+    
     BOOL wasLaunching = [self.stateMetadataFromLastLaunch[BSGKeyApp][BSGKeyIsLaunching] boolValue];
-    BOOL didCrashDuringLaunch = self.appDidCrashLastLaunch && wasLaunching;
+    BOOL didCrashDuringLaunch = didCrash && wasLaunching;
     if (didCrashDuringLaunch) {
         self.systemState.consecutiveLaunchCrashes++;
     } else {
@@ -587,7 +591,7 @@ NSString *_lastOrientation = nil;
     }
     
     self.lastRunInfo = [[BugsnagLastRunInfo alloc] initWithConsecutiveLaunchCrashes:self.systemState.consecutiveLaunchCrashes
-                                                                            crashed:self.appDidCrashLastLaunch
+                                                                            crashed:didCrash
                                                                 crashedDuringLaunch:didCrashDuringLaunch];
 }
 
