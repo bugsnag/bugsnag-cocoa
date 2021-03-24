@@ -765,10 +765,6 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
     XCTAssertEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
 
-    crashTypes = crashTypes | BSG_KSCrashTypeUserReported;
-
-    XCTAssertNotEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
-
     // Check partial sets
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
     errorTypes.ooms = false;
