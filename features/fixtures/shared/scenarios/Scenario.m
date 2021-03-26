@@ -113,9 +113,10 @@ static Scenario *theScenario;
 }
 
 - (void)requestDidComplete:(NSURLRequest *)request {
-    if (_onEventDelivery && [request.URL.absoluteString isEqual:self.config.endpoints.notify]) {
-        _onEventDelivery();
+    dispatch_block_t block = _onEventDelivery;
+    if (block && [request.URL.absoluteString isEqual:self.config.endpoints.notify]) {
         _onEventDelivery = nil;
+        block();
     }
 }
 
