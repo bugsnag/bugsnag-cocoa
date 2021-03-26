@@ -138,7 +138,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value) {
 - (void)setTimestampString:(NSString *)timestampString {
     @synchronized (self) {
         _timestampString = [timestampString copy];
-        _timestamp = nil;
+        _timestamp = nil; //!OCLint
     }
 }
 
