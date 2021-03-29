@@ -144,7 +144,8 @@ void bsg_recordException(NSException *exception) {
 // iOS apps behave a little differently when running on macOS via Catalyst or
 // on Apple Silicon. Uncaught NSExceptions raised while handling UI events get
 // caught by AppKit and are not propagated to NSUncaughtExceptionHandler or
-// std::terminate_handler, therefore we need another way to detect them...
+// std::terminate_handler (reported to Apple: FB8901200) therefore we need
+// another way to detect them...
 
 #if TARGET_OS_IOS
 
