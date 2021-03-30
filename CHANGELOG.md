@@ -5,6 +5,10 @@ Changelog
 
 ### Bug fixes
 
+* `osName` and `osVersion` now reflect the Mac's OS when running Mac Catalyst apps or iOS apps running on macOS.
+  Fix reporting of `model` for Mac Catalyst apps or iOS apps running on macOS.
+  [#1054](https://github.com/bugsnag/bugsnag-cocoa/pull/1054)
+
 * Uncaught exceptions thrown while handing UI events in iOS apps running on macOS are now detected.
   [#1053](https://github.com/bugsnag/bugsnag-cocoa/pull/1053)
 
