@@ -72,27 +72,28 @@ static inline bool is_jailbroken() {
  */
 static NSDictionary * bsg_systemversion() {
     static NSDictionary *systemVersion;
-    if (!systemVersion) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         int fd = -1;
         char buffer[1024] = {0};
         const char *file = "/System/Library/CoreServices/SystemVersion.plist";
         bsg_syscall_open(file, O_RDONLY, 0, &fd);
         if (fd < 0) {
             BSG_KSLOG_ERROR("Could not open SystemVersion.plist");
-            return nil;
+            return;
         }
         ssize_t length = read(fd, buffer, sizeof(buffer));
         close(fd);
         if (length < 0 || length == sizeof(buffer)) {
             BSG_KSLOG_ERROR("Could not read SystemVersion.plist");
-            return nil;
+            return;
         }
         NSData *data = [NSData
                         dataWithBytesNoCopy:buffer
                         length:length freeWhenDone:NO];
         if (!data) {
             BSG_KSLOG_ERROR("Could not read SystemVersion.plist");
-            return nil;
+            return;
         }
         NSError *error = nil;
         systemVersion = [NSPropertyListSerialization
@@ -101,7 +102,7 @@ static NSDictionary * bsg_systemversion() {
         if (!systemVersion) {
             BSG_KSLOG_ERROR("Could not read SystemVersion.plist: %@", error);
         }
-    }
+    });
     return systemVersion;
 }
 
