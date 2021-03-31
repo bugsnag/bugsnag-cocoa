@@ -23,6 +23,7 @@
 
 /* Begin PBXFileReference section */
 		00C3ED5B23F2DA4900757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		015637022613754E004F6047 /* bugsnag-example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "bugsnag-example.entitlements"; sourceTree = "<group>"; };
 		3573BE2B7139FE81FC96415D /* Pods_bugsnag_example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bugsnag_example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		378BA2CB24229CBB00123123 /* OutOfMemoryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutOfMemoryController.h; sourceTree = "<group>"; };
 		378BA2CC24229CBB00123123 /* OutOfMemoryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutOfMemoryController.m; sourceTree = "<group>"; };
@@ -88,6 +89,7 @@
 		D175F4BA1ACDBD81009AFFB7 /* bugsnag-example */ = {
 			isa = PBXGroup;
 			children = (
+				015637022613754E004F6047 /* bugsnag-example.entitlements */,
 				379D2038242B697600C11EFE /* LaunchScreen.storyboard */,
 				D175F4BD1ACDBD81009AFFB7 /* AppDelegate.swift */,
 				D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */,
@@ -149,6 +151,7 @@
 				TargetAttributes = {
 					D175F4B71ACDBD81009AFFB7 = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 372ZUL2ZB7;
 						LastSwiftMigration = 1010;
 					};
 				};
@@ -383,10 +386,11 @@
 			baseConfigurationReference = C9204A923B81A3D14457E739 /* Pods-bugsnag-example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "bugsnag-example/bugsnag-example.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				INFOPLIST_FILE = "bugsnag-example/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -394,6 +398,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.bugsnag-example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "bugsnag-example/bugsnag-example-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 			};
@@ -404,10 +409,11 @@
 			baseConfigurationReference = C72198B7DFCD1FD2F92628E3 /* Pods-bugsnag-example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "bugsnag-example/bugsnag-example.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				INFOPLIST_FILE = "bugsnag-example/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -415,6 +421,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.bugsnag-example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "bugsnag-example/bugsnag-example-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 			};

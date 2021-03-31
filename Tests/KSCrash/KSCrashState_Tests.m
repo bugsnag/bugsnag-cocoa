@@ -135,19 +135,6 @@
     XCTAssertTrue(context.crashedLastLaunch, @"");
 }
 
-- (void)testCrashThisLaunchWithUserReported
-{
-    BSG_KSCrash_State context = {0};
-    NSString* stateFile = [self.tempPath stringByAppendingPathComponent:@"state.json"];
-
-    bsg_kscrashstate_init([stateFile cStringUsingEncoding:NSUTF8StringEncoding],
-                          &context);
-    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeUserReported);
-    XCTAssertFalse(context.crashedThisLaunch, @"");
-    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeSignal);
-    XCTAssertTrue(context.crashedThisLaunch, @"");
-}
-
 - (void)testCrashThisLaunch
 {
     BSG_KSCrash_State context = {0};

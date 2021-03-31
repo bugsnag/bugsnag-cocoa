@@ -17,6 +17,7 @@ post_install do |installer|
     if target.name == "Bugsnag"
       target.build_configurations.each do |config|
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'BSG_LOG_LEVEL=BSG_LOGLEVEL_DEBUG']
+        config.build_settings['GCC_TREAT_WARNINGS_AS_ERRORS'] = 'YES'
       end
     end
   end

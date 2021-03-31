@@ -22,15 +22,6 @@
 
 @implementation AutoSessionMixedEventsScenario
 
-- (void)startBugsnag {
-    self.config.session = [self URLSessionWithObserver:^(NSURLRequest *request, NSData *responseData, NSURLResponse *response, NSError *error) {
-        if (self.onEventDelivery && [request.URL.absoluteString isEqual:self.config.endpoints.notify]) {
-            self.onEventDelivery();
-        }
-    }];
-    [super startBugsnag];
-}
-
 - (void)run {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self performBlockAndWaitForEventDelivery:^{
@@ -41,15 +32,6 @@
         }];
         @throw [NSException exceptionWithName:@"Kaboom" reason:@"The connection exploded" userInfo:nil];
     });
-}
-
-- (void)performBlockAndWaitForEventDelivery:(dispatch_block_t)block {
-    NSCondition *condition = [[NSCondition alloc] init];
-    self.onEventDelivery = ^{
-        [condition signal];
-    };
-    block();
-    [condition wait];
 }
 
 @end

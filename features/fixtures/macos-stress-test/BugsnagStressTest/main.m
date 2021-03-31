@@ -17,8 +17,8 @@ static const int kNumberOfIterations = 5000;
 
 static const NSInteger kMaxConcurrentNotifies = 8;
 
-// Note: memory usage increases with the number of threads
-static const mach_vm_size_t kMemoryLimit = 50 * 1024 * 1024;
+// Note: memory usage increases in line with the number of threads and config.maxPersistedEvents
+static const mach_vm_size_t kMemoryLimit = 45 * 1024 * 1024;
 
 int main(int argc, const char * argv[]) {
     if (getenv("QUIET")) {
@@ -32,6 +32,12 @@ int main(int argc, const char * argv[]) {
     notifyQueue.maxConcurrentOperationCount = kMaxConcurrentNotifies;
     
     @autoreleasepool {
+        [NSFileManager.defaultManager removeItemAtURL:
+         [[NSFileManager.defaultManager
+           URLForDirectory:NSApplicationSupportDirectory inDomain:NSUserDomainMask
+           appropriateForURL:nil create:NO error:nil]
+          URLByAppendingPathComponent:@"com.bugsnag.Bugsnag"] error:nil];
+        
         BugsnagConfiguration *config = [BugsnagConfiguration loadConfig];
         config.apiKey = @"0192837465afbecd0192837465afbecd";
         config.autoDetectErrors = NO;
@@ -81,7 +87,7 @@ int main(int argc, const char * argv[]) {
         maxFootprint = MAX(maxFootprint, task_vm_info.phys_footprint);
         if (task_vm_info.phys_footprint > kMemoryLimit) {
             NSLog(@"💥 Memory limit (%d MB) exceeded", (int)kMemoryLimit / (1024 * 1024));
-            return 1;
+            abort();
         }
     }
     
