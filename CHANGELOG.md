@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Prevent app hangs being reported if a debugger is attached.
+  [#1058](https://github.com/bugsnag/bugsnag-cocoa/pull/1058)
+
 ## 6.8.2 (2021-03-31)
 
 ### Bug fixes
