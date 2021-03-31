@@ -1,16 +1,16 @@
 Changelog
 =========
 
-## TBD
+## 6.8.2 (2021-03-31)
 
 ### Bug fixes
 
 * Enable `SUPPORTS_MACCATALYST` in main Xcode project.
-  [#1055](https://github.com/bugsnag/bugsnag-cocoa/pull/1055)
+  [#1056](https://github.com/bugsnag/bugsnag-cocoa/pull/1056)
 
 * `osName` and `osVersion` now reflect the Mac's OS when running Mac Catalyst apps or iOS apps running on macOS.
   Fix reporting of `model` for Mac Catalyst apps or iOS apps running on macOS.
-  [#1054](https://github.com/bugsnag/bugsnag-cocoa/pull/1054)
+  [#1055](https://github.com/bugsnag/bugsnag-cocoa/pull/1055)
 
 * Uncaught exceptions thrown while handing UI events in iOS apps running on macOS are now detected.
   [#1053](https://github.com/bugsnag/bugsnag-cocoa/pull/1053)
