@@ -25,6 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)uploadStoredEvents;
 
+- (void)uploadStoredEventsAfterDelay:(NSTimeInterval)delay;
+
 - (void)uploadLatestStoredEvent:(void (^)(void))completionHandler;
 
 @end
