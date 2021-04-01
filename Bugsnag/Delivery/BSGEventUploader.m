@@ -92,6 +92,13 @@
     }];
 }
 
+- (void)uploadStoredEventsAfterDelay:(NSTimeInterval)delay {
+    dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), queue, ^{
+        [self uploadStoredEvents];
+    });
+}
+
 - (void)uploadLatestStoredEvent:(void (^)(void))completionHandler {
     NSString *latestFile = [self sortedEventFiles].lastObject;
     BSGEventUploadFileOperation *operation = latestFile ? [self uploadOperationsWithFiles:@[latestFile]].lastObject : nil;
