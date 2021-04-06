@@ -563,7 +563,11 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     // add metadata
     NSMutableDictionary *metadata = [[[self metadata] toDictionary] mutableCopy];
-    event[BSGKeyMetadata] = [self sanitiseMetadata:metadata redactedKeys:redactedKeys];
+    @try {
+        event[BSGKeyMetadata] = [self sanitiseMetadata:metadata redactedKeys:redactedKeys];
+    } @catch (NSException *exception) {
+        bsg_log_err(@"An exception was thrown while sanitising metadata: %@", exception);
+    }
 
     event[BSGKeyDevice] = [self.device toDictionary];
     event[BSGKeyApp] = [self.app toDict];
@@ -605,7 +609,15 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 - (NSMutableDictionary *)sanitiseMetadata:(NSMutableDictionary *)metadata redactedKeys:(NSSet *)redactedKeys {
     for (NSString *sectionKey in [metadata allKeys]) {
-        metadata[sectionKey] = [metadata[sectionKey] mutableCopy];
+        if ([metadata[sectionKey] isKindOfClass:[NSDictionary class]]) {
+            metadata[sectionKey] = [metadata[sectionKey] mutableCopy];
+        } else {
+            NSString *message = [NSString stringWithFormat:@"Expected an NSDictionary but got %@ %@",
+                                 NSStringFromClass([metadata[sectionKey] class]), metadata[sectionKey]];
+            bsg_log_err(@"%@", message);
+            // Leave an indication of the error in the payload for diagnosis
+            metadata[sectionKey] = [@{@"bugsnag.error": message} mutableCopy];
+        }
         NSMutableDictionary *section = metadata[sectionKey];
 
         if (section != nil) { // redact sensitive metadata values

@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Catch exceptions thrown while preparing JSON for upload rather than crashing.
+  [#1063](https://github.com/bugsnag/bugsnag-cocoa/pull/1063)
+
 * Prevent app hangs being reported if a debugger is attached.
   [#1058](https://github.com/bugsnag/bugsnag-cocoa/pull/1058)
 
