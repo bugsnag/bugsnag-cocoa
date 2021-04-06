@@ -43,6 +43,8 @@
 #include "BSG_KSCrashContext.h"
 #include "BSG_KSCrashSentry.h"
 
+#include <sys/times.h>
+
 #ifdef __arm64__
 #include <sys/_types/_ucontext64.h>
 #define BSG_UC_MCONTEXT uc_mcontext64
@@ -1409,6 +1411,13 @@ void bsg_kscrw_i_writeReportInfo(const BSG_KSCrashReportWriter *const writer,
                                  processName);
         writer->addIntegerElement(writer, BSG_KSCrashField_Timestamp,
                                   time(NULL));
+        // times() is declared to be async-signal safe in the sigaction man page
+        __attribute__((unused)) struct tms usage;
+        clock_t ticks = times(&usage);
+        if (ticks > 0) {
+            writer->addIntegerElement(writer, BSG_KSCrashField_Timestamp_Millis,
+                                      (ticks * 1000) / CLK_TCK);
+        }
         writer->addStringElement(writer, BSG_KSCrashField_Type, type);
     }
     writer->endContainer(writer);
