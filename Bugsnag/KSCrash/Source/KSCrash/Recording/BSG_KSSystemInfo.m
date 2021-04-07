@@ -70,6 +70,7 @@ static inline bool is_jailbroken() {
  *
  * https://opensource.apple.com/source/xnu/xnu-7195.81.3/libsyscall/wrappers/system-version-compat.c.auto.html
  */
+#if !BSG_PLATFORM_SIMULATOR
 static NSDictionary * bsg_systemversion() {
     static NSDictionary *systemVersion;
     static dispatch_once_t onceToken;
@@ -105,6 +106,7 @@ static NSDictionary * bsg_systemversion() {
     });
     return systemVersion;
 }
+#endif
 
 @implementation BSG_KSSystemInfo
 
