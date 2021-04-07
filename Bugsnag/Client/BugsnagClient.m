@@ -953,7 +953,7 @@ NSString *_lastOrientation = nil;
         [self.eventUploader storeEvent:event];
         // Replicate previous delivery mechanism's behaviour of waiting 1 second before delivering the event.
         // This should prevent potential duplicate uploads of unhandled errors where the app subsequently terminates.
-        [self.eventUploader performSelector:@selector(uploadStoredEvents) withObject:nil afterDelay:1];
+        [self.eventUploader uploadStoredEventsAfterDelay:1];
     } else {
         [self.eventUploader uploadEvent:event completionHandler:nil];
     }

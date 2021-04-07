@@ -87,8 +87,16 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
         }
     }
     
-    NSDictionary *eventPayload = [event toJsonWithRedactedKeys:configuration.redactedKeys];
-
+    NSDictionary *eventPayload;
+    @try {
+        eventPayload = [event toJsonWithRedactedKeys:configuration.redactedKeys];
+    } @catch (NSException *exception) {
+        bsg_log_err(@"Discarding event %@ because an exception was thrown by -toJsonWithRedactedKeys: %@", self.name, exception);
+        [self deleteEvent];
+        completionHandler();
+        return;
+    }
+    
     NSString *apiKey = event.apiKey ?: configuration.apiKey;
     
     NSMutableDictionary *requestPayload = [NSMutableDictionary dictionary];
