@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix a crash in `bsg_ksmachgetThreadQueueName`.
+  [#1065](https://github.com/bugsnag/bugsnag-cocoa/pull/1065)
+
 ## 6.8.3 (2021-04-07)
 
 ### Bug fixes
