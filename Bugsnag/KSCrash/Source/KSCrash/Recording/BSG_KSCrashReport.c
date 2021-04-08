@@ -43,7 +43,7 @@
 #include "BSG_KSCrashContext.h"
 #include "BSG_KSCrashSentry.h"
 
-#include <sys/times.h>
+#include <sys/time.h>
 
 #ifdef __arm64__
 #include <sys/_types/_ucontext64.h>
@@ -1411,12 +1411,13 @@ void bsg_kscrw_i_writeReportInfo(const BSG_KSCrashReportWriter *const writer,
                                  processName);
         writer->addIntegerElement(writer, BSG_KSCrashField_Timestamp,
                                   time(NULL));
-        // times() is declared to be async-signal safe in the sigaction man page
-        __attribute__((unused)) struct tms usage;
-        clock_t ticks = times(&usage);
-        if (ticks > 0) {
+        // gettimeofday() is not documented async-signal safe in the sigaction
+        // man page, but times() is and its implementation calls gettimeofday()
+        // so it's reasonable to assume that it is in fact safe.
+        struct timeval t;
+        if (!gettimeofday(&t, NULL)) {
             writer->addIntegerElement(writer, BSG_KSCrashField_Timestamp_Millis,
-                                      (ticks * 1000) / CLK_TCK);
+                                      t.tv_sec * 1000 + t.tv_usec / 1000);
         }
         writer->addStringElement(writer, BSG_KSCrashField_Type, type);
     }
