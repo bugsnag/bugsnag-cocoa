@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Improve timestamp accuracy to fix breadcrumbs that are reported to occur after the error.
+  [#1062](https://github.com/bugsnag/bugsnag-cocoa/pull/1062)
+
 ## 6.8.3 (2021-04-07)
 
 ### Bug fixes
