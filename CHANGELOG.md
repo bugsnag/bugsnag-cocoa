@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix a crash in `bsg_ksmachgetThreadQueueName`.
+  [#1065](https://github.com/bugsnag/bugsnag-cocoa/pull/1065)
+
 * Improve timestamp accuracy to fix breadcrumbs that are reported to occur after the error.
   [#1062](https://github.com/bugsnag/bugsnag-cocoa/pull/1062)
 
