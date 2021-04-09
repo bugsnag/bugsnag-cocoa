@@ -3,6 +3,11 @@ Changelog
 
 ## TBD
 
+### Enhancements
+
+* `macCatalystiOSVersion` is now reported for apps built with Mac Catalyst and iOS app running on Apple silicon.
+  [#1066](https://github.com/bugsnag/bugsnag-cocoa/pull/1066)
+
 ### Bug fixes
 
 * Fix a crash in `bsg_ksmachgetThreadQueueName`.
