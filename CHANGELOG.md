@@ -10,6 +10,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix crashes that could occur in `bsg_recordException` in low memory conditions.
+  [#1068](https://github.com/bugsnag/bugsnag-cocoa/pull/1068)
+
 * Fix a crash in `bsg_ksmachgetThreadQueueName`.
   [#1065](https://github.com/bugsnag/bugsnag-cocoa/pull/1065)
 
