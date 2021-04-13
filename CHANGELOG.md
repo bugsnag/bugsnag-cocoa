@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Bugsnag can now be used without AppKit, allowing use in daemons and other processes running in non-UI sessions.
+  [#1072](https://github.com/bugsnag/bugsnag-cocoa/pull/1072)
+
 ## 6.8.4 (2021-04-14)
 
 ### Enhancements

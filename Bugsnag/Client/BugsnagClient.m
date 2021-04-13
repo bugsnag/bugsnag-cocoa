@@ -81,7 +81,7 @@
 #if BSG_PLATFORM_IOS
 #import "BSGUIKit.h"
 #elif BSG_PLATFORM_OSX
-#import <AppKit/AppKit.h>
+#import "BSGAppKit.h"
 #endif
 
 NSString *const BSTabCrash = @"crash";
