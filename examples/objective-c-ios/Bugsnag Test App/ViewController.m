@@ -13,6 +13,12 @@
 #import <pthread.h>
 #import <stdlib.h>
 
+@interface NSObject (NeverGonnaBeImplemented)
+
+- (void)someRandomMethod;
+
+@end
+
 @implementation ViewController
 
 - (void)viewDidLoad {
@@ -142,8 +148,12 @@
     NSArray *resultMessages = [NSMutableArray arrayWithObject: @"Error message!"];
     NSMutableArray *results = [[NSMutableArray alloc] init];
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-circular-container"
+#pragma clang diagnostic ignored "-Wunused-variable"
     for (NSObject *result in resultMessages)
         [results addObject: results]; // Whoops!
+#pragma clang diagnostic pop
 
     NSLog(@"Results: %@", results);
 }
