@@ -77,18 +77,18 @@ Feature: Handled Errors and Exceptions
         | FooError                | Err 1   |
         | FooError                | Err 2   |
         | FooError                | Err 3   |
-    Then the error is valid for the error reporting API
+    Then the error is valid for the error reporting API ignoring breadcrumb timestamps
     And I discard the oldest error
-    Then the error is valid for the error reporting API
+    Then the error is valid for the error reporting API ignoring breadcrumb timestamps
     And I discard the oldest error
-    Then the error is valid for the error reporting API
+    Then the error is valid for the error reporting API ignoring breadcrumb timestamps
     And I discard the oldest error
-    Then the error is valid for the error reporting API
+    Then the error is valid for the error reporting API ignoring breadcrumb timestamps
     And I discard the oldest error
-    Then the error is valid for the error reporting API
+    Then the error is valid for the error reporting API ignoring breadcrumb timestamps
     And I discard the oldest error
-    Then the error is valid for the error reporting API
+    Then the error is valid for the error reporting API ignoring breadcrumb timestamps
     And I discard the oldest error
-    Then the error is valid for the error reporting API
+    Then the error is valid for the error reporting API ignoring breadcrumb timestamps
     And I discard the oldest error
-    Then the error is valid for the error reporting API
+    Then the error is valid for the error reporting API ignoring breadcrumb timestamps

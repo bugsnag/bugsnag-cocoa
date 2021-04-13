@@ -243,7 +243,7 @@ Then('the session payload field {string} matches the test device model') do |fie
   check_device_model field, Maze::Server.sessions
 end
 
-Then('the breadcrumbs are valid for the event') do
+Then('the breadcrumb timestamps are valid for the event') do
   device = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.device')
   breadcrumbs = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.breadcrumbs')
   breadcrumbs.each do |breadcrumb|
@@ -295,12 +295,27 @@ Then('the error is valid for the error reporting API') do
   when 'iOS'
     steps %(
       Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-      Then the breadcrumbs are valid for the event
+      Then the breadcrumb timestamps are valid for the event
     )
   when 'Mac'
     steps %(
       Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
-      Then the breadcrumbs are valid for the event
+      Then the breadcrumb timestamps are valid for the event
+    )
+  else
+    raise 'Unknown platformName'
+  end
+end
+
+Then('the error is valid for the error reporting API ignoring breadcrumb timestamps') do
+  case Maze.driver.capabilities['platformName']
+  when 'iOS'
+    steps %(
+      Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    )
+  when 'Mac'
+    steps %(
+      Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
     )
   else
     raise 'Unknown platformName'
