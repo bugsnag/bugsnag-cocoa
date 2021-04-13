@@ -1,3 +1,6 @@
+env:
+  LANG: "en_GB.UTF-8"
+
 steps:
   - label: ':ios: iOS 13 full end-to-end tests'
     depends_on:
@@ -134,3 +137,52 @@ steps:
         --app=macOSTestApp
         --tags='not @skip_macos'
         --fail-fast
+
+  - label: 'examples/objective-c-ios'
+    agents:
+      queue: opensource-mac-cocoa-11
+    commands:
+      - cd examples/objective-c-ios
+      - echo "--- Pod install"
+      - pod install
+      - echo "+++ Build Release iOS"
+      - xcodebuild -workspace Bugsnag\ Test\ App.xcworkspace -scheme Bugsnag\ Test\ App -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - echo "+++ Build Debug iOS Simulator"
+      - xcodebuild -workspace Bugsnag\ Test\ App.xcworkspace -scheme Bugsnag\ Test\ App -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+
+  - label: 'examples/objective-c-osx'
+    agents:
+      queue: opensource-mac-cocoa-11
+    commands:
+      - cd examples/objective-c-osx
+      - echo "--- Pod install"
+      - pod install
+      - echo "+++ Build Release iOS"
+      - xcodebuild -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Release -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - echo "+++ Build Debug iOS Simulator"
+      - xcodebuild -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Debug -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+
+  - label: 'examples/swift-ios'
+    agents:
+      queue: opensource-mac-cocoa-11
+    commands:
+      - cd examples/swift-ios
+      - echo "--- Pod install"
+      - pod install
+      - echo "+++ Build Release iOS"
+      - xcodebuild -workspace bugsnag-example.xcworkspace -scheme bugsnag-example -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - echo "+++ Build Debug iOS Simulator"
+      - xcodebuild -workspace bugsnag-example.xcworkspace -scheme bugsnag-example -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+
+  - label: 'examples/swift-package-manager'
+    agents:
+      queue: opensource-mac-cocoa-11
+    commands:
+      - cd examples/swift-package-manager
+      - echo "--- Resolve Swift Package Dependencies"
+      - sed -i '' -e 's/kind = branch/kind = revision/' -e "s/branch = master/revision = ${BUILDKITE_COMMIT}/" swift-package-manager.xcodeproj/project.pbxproj
+      - xcodebuild -scheme swift-package-manager -derivedDataPath DerivedData -resolvePackageDependencies
+      - echo "+++ Build Release iOS"
+      - xcodebuild -scheme swift-package-manager -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - echo "+++ Build Debug iOS Simulator"
+      - xcodebuild -scheme swift-package-manager -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
