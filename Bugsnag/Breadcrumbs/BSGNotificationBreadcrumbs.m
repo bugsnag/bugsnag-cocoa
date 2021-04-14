@@ -15,7 +15,7 @@
 #if TARGET_OS_IOS || TARGET_OS_TV
 #import "BSGUIKit.h"
 #else
-#import <AppKit/AppKit.h>
+#import "BSGAppKit.h"
 #endif
 
 
@@ -37,7 +37,7 @@ NSString * const BSGNotificationBreadcrumbsMessageAppWillTerminate = @"App Will 
         _configuration = configuration;
         _notificationCenter = NSNotificationCenter.defaultCenter;
 #if TARGET_OS_OSX
-        _workspaceNotificationCenter = NSWorkspace.sharedWorkspace.notificationCenter;
+        _workspaceNotificationCenter = [NSWORKSPACE sharedWorkspace].notificationCenter;
 #endif
         _breadcrumbSink = breadcrumbSink;
         _notificationNameMap = @{
@@ -277,7 +277,7 @@ NSString * const BSGNotificationBreadcrumbsMessageAppWillTerminate = @"App Will 
 #if TARGET_OS_OSX
     NSMenuItem *menuItem = [[notification userInfo] valueForKey:@"MenuItem"];
     [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name metadata:
-     [menuItem isKindOfClass:[NSMenuItem class]] ? @{BSGKeyAction : menuItem.title} : nil];
+     [menuItem isKindOfClass:NSMENUITEM] ? @{BSGKeyAction : menuItem.title} : nil];
 #endif
 }
 

@@ -51,7 +51,7 @@
 
     return [NSString stringWithFormat:@"%@/com.bugsnag.Bugsnag/%@/v1",
             dirs[0],
-            [NSBundle mainBundle].bundleIdentifier];
+            NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName];
 }
 
 - (NSDictionary *)getDirs {

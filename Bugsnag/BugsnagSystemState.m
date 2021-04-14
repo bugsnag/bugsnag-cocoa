@@ -11,7 +11,7 @@
 #import "BugsnagSystemState.h"
 
 #if TARGET_OS_OSX
-#import <AppKit/AppKit.h>
+#import "BSGAppKit.h"
 #else
 #import "BSGUIKit.h"
 #endif
@@ -79,7 +79,7 @@ static NSMutableDictionary* initCurrentState(BugsnagKVStore *kvstore, BugsnagCon
     bool isActive = true;
 #if TARGET_OS_OSX
     // MacOS "active" serves the same purpose as "foreground" in iOS
-    isInForeground = [NSApplication sharedApplication].active;
+    isInForeground = [NSAPPLICATION sharedApplication].active;
 #else
     UIApplicationState appState = [BSG_KSSystemInfo currentAppState];
     isInForeground = [BSG_KSSystemInfo isInForeground:appState];
