@@ -5,6 +5,9 @@ Changelog
 
 ### Enhancements
 
+* Add `binaryArch` and `runningOnRosetta` to the `app` metadata tab.
+  [#1073](https://github.com/bugsnag/bugsnag-cocoa/pull/1073)
+
 * Bugsnag can now be used without AppKit, allowing use in daemons and other processes running in non-UI sessions.
   [#1072](https://github.com/bugsnag/bugsnag-cocoa/pull/1072)
 
