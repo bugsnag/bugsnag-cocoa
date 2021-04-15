@@ -1,5 +1,6 @@
 # vim: set ft=yaml
 
+# https://oclint-docs.readthedocs.io/en/stable/rules/index.html
 disable-rules:
   - BitwiseOperatorInConditional    # Used quite a bit in KSCrash
   - CollapsibleIfStatements         # Fixing violations would churn a lot of code
@@ -14,6 +15,7 @@ disable-rules:
   - ParameterReassignment
   - PreferEarlyExit                 # Fixing violations would churn a lot of code
   - ShortVariableName
+  - TooFewBranchesInSwitchStatement
   - UnnecessaryElseStatement        # Fixing violations would churn a lot of code
   - UnusedMethodParameter           # Quite common for notification handlers
   - UselessParentheses              # False positive for e.g. ULONG_MAX
