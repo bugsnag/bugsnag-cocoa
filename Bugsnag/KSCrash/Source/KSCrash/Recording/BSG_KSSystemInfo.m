@@ -299,8 +299,18 @@ static NSDictionary * bsg_systemversion() {
         case CPU_SUBTYPE_ARM_V7S:
             return @"armv7s";
 #endif
+        case CPU_SUBTYPE_ARM_V8:
+            return @"armv8";
         }
         break;
+    }
+    case CPU_TYPE_ARM64: {
+        switch (subType) {
+        case CPU_SUBTYPE_ARM64E:
+            return @"arm64e";
+        default:
+            return @"arm64";
+        }
     }
     case CPU_TYPE_X86:
         return @"x86";
@@ -506,8 +516,7 @@ static NSDictionary * bsg_systemversion() {
     sysInfo[@BSG_KSSystemField_CPUArch] = [self currentCPUArch];
     sysInfo[@BSG_KSSystemField_CPUType] = [self int32Sysctl:@BSGKeyHwCputype];
     sysInfo[@BSG_KSSystemField_CPUSubType] = [self int32Sysctl:@BSGKeyHwCpusubtype];
-    sysInfo[@BSG_KSSystemField_BinaryCPUType] = @(header->cputype);
-    sysInfo[@BSG_KSSystemField_BinaryCPUSubType] = @(header->cpusubtype);
+    sysInfo[@BSG_KSSystemField_BinaryArch] = [self CPUArchForCPUType:header->cputype subType:header->cpusubtype];
     sysInfo[@BSG_KSSystemField_TimeZone] = [[NSTimeZone localTimeZone] abbreviation];
     sysInfo[@BSG_KSSystemField_ProcessName] = [NSProcessInfo processInfo].processName;
     sysInfo[@BSG_KSSystemField_ProcessID] = @([NSProcessInfo processInfo].processIdentifier);
@@ -520,6 +529,15 @@ static NSDictionary * bsg_systemversion() {
         @(BSG_KSCrashField_Usable): @(bsg_ksmachusableMemory()),
         @(BSG_KSSystemField_Size): [self int64Sysctl:@"hw.memsize"]
     };
+
+#if TARGET_OS_OSX || TARGET_OS_MACCATALYST
+    // https://developer.apple.com/documentation/apple-silicon/about-the-rosetta-translation-environment
+    int proc_translated = 0;
+    size_t size = sizeof(proc_translated);
+    if (!sysctlbyname("sysctl.proc_translated", &proc_translated, &size, NULL, 0) && proc_translated) {
+        sysInfo[@BSG_KSSystemField_Translated] = @YES;
+    }
+#endif
 
     NSDictionary *statsInfo = [[BSG_KSCrash sharedInstance] captureAppStats];
     sysInfo[@BSG_KSCrashField_AppStats] = statsInfo;

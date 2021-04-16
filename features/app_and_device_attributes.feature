@@ -58,6 +58,13 @@ Feature: App and Device attributes present
     And the error payload field "events.0.app.durationInForeground" is a number
     And the error payload field "events.0.app.inForeground" is not null
 
+    # App metadata
+
+    And the event "metaData.app.binaryArch" is not null
+    And the event "metaData.app.name" equals the platform-dependent string:
+      | ios   | iOSTestApp   |
+      | macos | macOSTestApp |
+
     And I discard the oldest error
     And the event "app.isLaunching" is false
 

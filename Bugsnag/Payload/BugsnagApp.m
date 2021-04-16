@@ -7,6 +7,8 @@
 //
 
 #import "BugsnagApp.h"
+
+#import "BSG_KSSystemInfo.h"
 #import "BugsnagKeys.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagCollections.h"
@@ -18,7 +20,9 @@
  */
 NSDictionary *BSGParseAppMetadata(NSDictionary *event) {
     NSMutableDictionary *app = [NSMutableDictionary new];
-    app[@"name"] = [event valueForKeyPath:@"system.CFBundleExecutable"];
+    app[@"name"] = [event valueForKeyPath:@"system." BSG_KSSystemField_BundleExecutable];
+    app[@"binaryArch"] = [event valueForKeyPath:@"system." BSG_KSSystemField_BinaryArch];
+    app[@"runningOnRosetta"] = [event valueForKeyPath:@"system." BSG_KSSystemField_Translated];
     return app;
 }
 

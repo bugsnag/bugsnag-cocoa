@@ -359,6 +359,7 @@
     [client start];
 
     [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+        [event clearMetadataFromSection:@"app"];
         [event clearMetadataFromSection:@"user"];
         [event clearMetadataFromSection:@"device"];
         NSDictionary *invalidDict = @{};
@@ -378,6 +379,7 @@
     [client start];
 
     [client notify:ex block:^BOOL(BugsnagEvent * _Nonnull event) {
+        [event clearMetadataFromSection:@"app"];
         [event clearMetadataFromSection:@"user"];
         [event clearMetadataFromSection:@"device"];
         [event addMetadata:[NSNull null] withKey:@"myKey" toSection:@"mySection"];
