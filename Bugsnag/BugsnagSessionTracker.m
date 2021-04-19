@@ -111,7 +111,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 
 - (void)startNewSessionWithAutoCaptureValue:(BOOL)isAutoCaptured {
     NSSet<NSString *> *releaseStages = self.config.enabledReleaseStages;
-    if (releaseStages != nil && ![releaseStages containsObject:self.config.releaseStage]) {
+    if (releaseStages != nil && ![releaseStages containsObject:self.config.releaseStage ?: @""]) {
         return;
     }
     if (self.config.sessionURL == nil) {

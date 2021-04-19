@@ -265,7 +265,7 @@ static NSUserDefaults *userDefaults;
  */
 - (BOOL)shouldSendReports {
     return self.enabledReleaseStages.count == 0 ||
-           [self.enabledReleaseStages containsObject:self.releaseStage];
+           [self.enabledReleaseStages containsObject:self.releaseStage ?: @""];
 }
 
 - (void)setUser:(NSString *_Nullable)userId

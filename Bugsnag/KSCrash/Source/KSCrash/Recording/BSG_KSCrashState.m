@@ -177,8 +177,13 @@ bool bsg_kscrashstate_i_loadState(BSG_KSCrash_State *const context,
     if (path == NULL) {
         return false;
     }
+    NSString *file = [NSFileManager.defaultManager stringWithFileSystemRepresentation:path length:strlen(path)];
+    if (!file) {
+        BSG_KSLOG_ERROR(@"Invalid path: %s", path);
+        return false;
+    }
     NSError *error = nil;
-    NSData *data = [NSData dataWithContentsOfFile:[NSString stringWithUTF8String:path] options:0 error:&error];
+    NSData *data = [NSData dataWithContentsOfFile:file options:0 error:&error];
     if (error != nil) {
         if (!(error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError)) {
             BSG_KSLOG_ERROR(@"%s: Could not load file: %@", path, error);

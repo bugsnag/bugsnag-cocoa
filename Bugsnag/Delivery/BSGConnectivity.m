@@ -109,12 +109,12 @@ void BSGConnectivityCallback(SCNetworkReachabilityRef target,
 
     bsg_reachability_change_block = block;
 
-    NSString *host = [URL host];
-    if (![self isValidHostname:host]) {
+    const char *nodename = URL.host.UTF8String;
+    if (!nodename || ![self isValidHostname:@(nodename)]) {
         return;
     }
 
-    bsg_reachability_ref = SCNetworkReachabilityCreateWithName(NULL, [host UTF8String]);
+    bsg_reachability_ref = SCNetworkReachabilityCreateWithName(NULL, nodename);
     if (bsg_reachability_ref) { // Can be null if a bad hostname was specified
         SCNetworkReachabilitySetCallback(bsg_reachability_ref, BSGConnectivityCallback, NULL);
         SCNetworkReachabilitySetDispatchQueue(bsg_reachability_ref, reachabilityQueue);

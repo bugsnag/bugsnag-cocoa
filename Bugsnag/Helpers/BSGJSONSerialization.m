@@ -17,9 +17,9 @@ static NSError* wrapException(NSException* exception) {
     }];
 }
 
-+ (BOOL)isValidJSONObject:(id)obj {
++ (BOOL)isValidJSONObject:(nullable id)obj {
     @try {
-        return [NSJSONSerialization isValidJSONObject:obj];
+        return obj && [NSJSONSerialization isValidJSONObject:(id _Nonnull)obj];
     } @catch (NSException *exception) {
         return NO;
     }

@@ -12,6 +12,7 @@
 #import <Bugsnag/BugsnagErrorTypes.h>
 
 #import "BSG_KSMach.h"
+#import "BugsnagCollections.h"
 #import "BugsnagLogger.h"
 #import "BugsnagThread+Recording.h"
 #import "BugsnagThread+Private.h"
@@ -91,7 +92,7 @@
                             thread.errorReportingThread = idx == 0;
                         }];
                     } else {
-                        threads = [NSArray arrayWithObjects:[BugsnagThread mainThread], nil]; //!OCLint
+                        threads = BSGArrayWithObject([BugsnagThread mainThread]);
                     }
                     
                     __strong typeof(weakDelegate) delegate = weakDelegate;

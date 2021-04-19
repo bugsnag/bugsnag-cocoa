@@ -111,7 +111,14 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     requestHeaders[BugsnagHTTPHeaderNameSentAt] = [BSG_RFC3339DateTool stringFromDate:[NSDate date]];
     requestHeaders[BugsnagHTTPHeaderNameStacktraceTypes] = [event.stacktraceTypes componentsJoinedByString:@","];
     
-    [delegate.apiClient sendJSONPayload:requestPayload headers:requestHeaders toURL:configuration.notifyURL
+    NSURL *notifyURL = configuration.notifyURL;
+    if (!notifyURL) {
+        bsg_log_err(@"Could not upload event %@ because notifyURL was nil", self.name);
+        completionHandler();
+        return;
+    }
+    
+    [delegate.apiClient sendJSONPayload:requestPayload headers:requestHeaders toURL:notifyURL
                       completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
         
         switch (status) {

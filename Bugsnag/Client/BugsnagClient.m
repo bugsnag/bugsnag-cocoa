@@ -249,7 +249,7 @@ NSString *_lastOrientation = nil;
         _configuration = [configuration copy];
         _state = [[BugsnagMetadata alloc] initWithDictionary:@{BSGKeyApp: @{BSGKeyIsLaunching: @YES}}];
         self.notifier = [BugsnagNotifier new];
-        self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
+        self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:configuration];
 
         BSGFileLocations *fileLocations = [BSGFileLocations current];
         
@@ -428,7 +428,7 @@ NSString *_lastOrientation = nil;
     }
     
     if (self.eventFromLastLaunch) {
-        [self.eventUploader uploadEvent:self.eventFromLastLaunch completionHandler:nil];
+        [self.eventUploader uploadEvent:(BugsnagEvent * _Nonnull)self.eventFromLastLaunch completionHandler:nil];
         self.eventFromLastLaunch = nil;
     }
     
@@ -467,7 +467,7 @@ NSString *_lastOrientation = nil;
         dispatch_semaphore_signal(semaphore);
     };
     if (self.eventFromLastLaunch) {
-        [self.eventUploader uploadEvent:self.eventFromLastLaunch completionHandler:completionHandler];
+        [self.eventUploader uploadEvent:(BugsnagEvent * _Nonnull)self.eventFromLastLaunch completionHandler:completionHandler];
         self.eventFromLastLaunch = nil;
     } else {
         [self.eventUploader uploadLatestStoredEvent:completionHandler];
@@ -519,10 +519,12 @@ NSString *_lastOrientation = nil;
     }
 
     // If the app code changed between launches, assume no OOM.
-    if (![prevAppState[SYSTEMSTATE_APP_VERSION] isEqualToString:currAppState[SYSTEMSTATE_APP_VERSION]]) {
+    NSString *currentAppVersion = currAppState[SYSTEMSTATE_APP_VERSION];
+    if (!currentAppVersion || ![prevAppState[SYSTEMSTATE_APP_VERSION] isEqualToString:currentAppVersion]) {
         return NO;
     }
-    if (![prevAppState[SYSTEMSTATE_APP_BUNDLE_VERSION] isEqualToString:currAppState[SYSTEMSTATE_APP_BUNDLE_VERSION]]) {
+    NSString *currentAppBundleVersion = currAppState[SYSTEMSTATE_APP_BUNDLE_VERSION];
+    if (!currentAppBundleVersion || ![prevAppState[SYSTEMSTATE_APP_BUNDLE_VERSION] isEqualToString:currentAppBundleVersion]) {
         return NO;
     }
 
@@ -711,7 +713,7 @@ NSString *_lastOrientation = nil;
                            andType:(BSGBreadcrumbType)type {
     [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumbs) {
         crumbs.message = message;
-        crumbs.metadata = metadata;
+        crumbs.metadata = metadata ?: @{};
         crumbs.type = type;
     }];
 }
@@ -763,7 +765,7 @@ NSString *_lastOrientation = nil;
 // MARK: - Other methods
 // =============================================================================
 
-- (void)setContext:(NSString *_Nullable)context {
+- (void)setContext:(nullable NSString *)context {
     self.configuration.context = context;
     [self notifyObservers:[[BugsnagStateEvent alloc] initWithName:kStateEventContext data:context]];
 }
@@ -894,7 +896,7 @@ NSString *_lastOrientation = nil;
                                                handledState:handledState
                                                        user:self.user
                                                    metadata:metadata
-                                                breadcrumbs:self.breadcrumbs.breadcrumbs
+                                                breadcrumbs:self.breadcrumbs.breadcrumbs ?: @[]
                                                      errors:@[error]
                                                     threads:threads
                                                     session:self.sessionTracker.runningSession];
@@ -977,7 +979,7 @@ NSString *_lastOrientation = nil;
     }
 
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeError
-                      withMessage:event.errors[0].errorClass
+                      withMessage:event.errors[0].errorClass ?: @""
                       andMetadata:metadata];
 }
 

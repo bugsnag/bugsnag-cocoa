@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// The event state (whether the error is handled/unhandled.)
 @property (readwrite, nonatomic) BugsnagHandledState *handledState;
 
-@property (strong, nonatomic) BugsnagMetadata *metadata;
+@property (strong, nullable, nonatomic) BugsnagMetadata *metadata;
 
 /// The release stage of the application
 @property (readwrite, copy, nullable, nonatomic) NSString *releaseStage;
@@ -42,16 +42,16 @@ NS_ASSUME_NONNULL_BEGIN
 /// An array of string representations of BSGErrorType describing the types of stackframe / stacktrace in this error.
 @property (readonly, nonatomic) NSArray<NSString *> *stacktraceTypes;
 
-@property (readwrite, nonatomic, nonnull) BugsnagUser *user;
+@property (readwrite, nonnull, nonatomic) BugsnagUser *user;
 
-- (instancetype)initWithApp:(nullable BugsnagAppWithState *)app
-                     device:(nullable BugsnagDeviceWithState *)device
+- (instancetype)initWithApp:(BugsnagAppWithState *)app
+                     device:(BugsnagDeviceWithState *)device
                handledState:(BugsnagHandledState *)handledState
-                       user:(nullable BugsnagUser *)user
-                   metadata:(nullable BugsnagMetadata *)metadata
+                       user:(BugsnagUser *)user
+                   metadata:(BugsnagMetadata *)metadata
                 breadcrumbs:(NSArray<BugsnagBreadcrumb *> *)breadcrumbs
                      errors:(NSArray<BugsnagError *> *)errors
-                    threads:(nullable NSArray<BugsnagThread *> *)threads
+                    threads:(NSArray<BugsnagThread *> *)threads
                     session:(nullable BugsnagSession *)session;
 
 - (instancetype)initWithJson:(NSDictionary *)json;

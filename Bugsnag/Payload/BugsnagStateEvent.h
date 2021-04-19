@@ -16,12 +16,11 @@ static NSString *const kStateEventUser = @"UserUpdate";
 
 @interface BugsnagStateEvent : NSObject
 
-@property (nonatomic, copy) NSString *type;
+@property (copy, nonatomic) NSString *type;
 
-@property (nonatomic) id data;
+@property (nullable, nonatomic) id data;
 
-- (instancetype)initWithName:(NSString *)name
-                        data:(id)data;
+- (instancetype)initWithName:(NSString *)name data:(nullable id)data;
 
 @end
 

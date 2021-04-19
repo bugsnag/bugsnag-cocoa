@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nullable, nonatomic) NSDictionary *configMetadataFromLastLaunch;
 
-@property (nullable, retain, nonatomic) BugsnagConfiguration *configuration;
+@property (retain, nonatomic) BugsnagConfiguration *configuration;
 
 @property (strong, nonatomic) BugsnagCrashSentry *crashSentry;
 

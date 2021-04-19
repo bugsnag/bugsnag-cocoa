@@ -43,20 +43,17 @@
         return;
     }
 
-    NSDictionary<NSString *, NSDictionary *> *filesWithIds = [store allFilesByName];
-
-    for (NSString *fileId in [filesWithIds allKeys]) {
-
+    [[store allFilesByName] enumerateKeysAndObjectsUsingBlock:^(NSString *fileId, NSDictionary *fileContents, BOOL *stop) {
         // De-duplicate files as deletion of the file is asynchronous and so multiple calls
         // to this method will result in multiple send requests
         @synchronized (self.activeIds) {
             if ([self.activeIds containsObject:fileId]) {
-                continue;
+                return;
             }
             [self.activeIds addObject:fileId];
         }
 
-        BugsnagSession *session = [[BugsnagSession alloc] initWithDictionary:filesWithIds[fileId]];
+        BugsnagSession *session = [[BugsnagSession alloc] initWithDictionary:fileContents];
 
         [self.sendQueue addOperationWithBlock:^{
             BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc]
@@ -90,7 +87,7 @@
                 }
             }];
         }];
-    }
+    }];
 }
 
 @end
