@@ -14,4 +14,6 @@ WARNING_CFLAGS = $(WARNING_CFLAGS) -Wno-unknown-warning-option -Wnon-literal-nul
 WARNING_CFLAGS = $(WARNING_CFLAGS) -Wobjc-literal-conversion -Wobjc-root-class
 WARNING_CFLAGS = $(WARNING_CFLAGS) -Wparentheses -Wpointer-sign -Wprotocol
 WARNING_CFLAGS = $(WARNING_CFLAGS) -Wreturn-type
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wshadow -Wshorten-64-to-32 -Wsign-compare -Wsign-conversion -Wstrict-prototypes -Wstrict-selector-match
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wshadow -Wshorten-64-to-32 -Wsign-compare -Wsign-conversion -Wstrict-prototypes -Wstrict-selector-match -Wswitch
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wundeclared-selector -Wunguarded-availability -Wuninitialized -Wunknown-pragmas -Wunreachable-code
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wunused-function -Wunused-label -Wunused-parameter -Wunused-value -Wunused-variable

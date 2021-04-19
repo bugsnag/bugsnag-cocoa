@@ -43,7 +43,7 @@
         return;
     }
 
-    [[store allFilesByName] enumerateKeysAndObjectsUsingBlock:^(NSString *fileId, NSDictionary *fileContents, BOOL *stop) {
+    [[store allFilesByName] enumerateKeysAndObjectsUsingBlock:^(NSString *fileId, NSDictionary *fileContents, __attribute__((unused)) BOOL *stop) {
         // De-duplicate files as deletion of the file is asynchronous and so multiple calls
         // to this method will result in multiple send requests
         @synchronized (self.activeIds) {

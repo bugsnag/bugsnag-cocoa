@@ -117,7 +117,7 @@
 
 // MARK: - <NSMutableCopying>
 
-- (instancetype)mutableCopyWithZone:(NSZone *)zone {
+- (instancetype)mutableCopyWithZone:(__attribute__((unused)) NSZone *)zone {
     @synchronized(self) {
         NSMutableDictionary *dict = [self.dictionary mutableCopy];
         return [[BugsnagMetadata alloc] initWithDictionary:dict];

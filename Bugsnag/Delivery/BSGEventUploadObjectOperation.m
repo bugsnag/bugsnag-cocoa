@@ -20,7 +20,7 @@
     return self;
 }
 
-- (BugsnagEvent *)loadEventAndReturnError:(NSError * __autoreleasing *)errorPtr {
+- (BugsnagEvent *)loadEventAndReturnError:(__attribute__((unused)) NSError * __autoreleasing *)errorPtr {
     return self.event;
 }
 

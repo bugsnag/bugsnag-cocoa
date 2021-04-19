@@ -63,7 +63,8 @@
     
     backgroundQueue = dispatch_queue_create("com.bugsnag.app-hang-detector", DISPATCH_QUEUE_SERIAL);
     
-    void (^ observerBlock)(CFRunLoopObserverRef, CFRunLoopActivity) = ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+    void (^ observerBlock)(CFRunLoopObserverRef, CFRunLoopActivity) =
+    ^(__attribute__((unused)) CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
         // "Inside the event processing loop after the run loop wakes up, but before processing the event that woke it up"
         if (activity == kCFRunLoopAfterWaiting) {
             if (!semaphore) {
@@ -88,7 +89,8 @@
                     if (recordAllThreads) {
                         threads = [BugsnagThread allThreads:YES callStackReturnAddresses:NSThread.callStackReturnAddresses];
                         // By default the calling thread is marked as "Error reported from this thread", which is not correct case for app hangs.
-                        [threads enumerateObjectsUsingBlock:^(BugsnagThread * _Nonnull thread, NSUInteger idx, BOOL * _Nonnull stop) {
+                        [threads enumerateObjectsUsingBlock:^(BugsnagThread * _Nonnull thread, NSUInteger idx,
+                                                              __attribute__((unused)) BOOL * _Nonnull stop) {
                             thread.errorReportingThread = idx == 0;
                         }];
                     } else {

@@ -344,7 +344,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         handledState.unhandledOverridden = isUnhandledOverridden;
     }
 
-    [[self parseOnCrashData:event] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [[self parseOnCrashData:event] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, __attribute__((unused)) BOOL *stop) {
         if ([key isKindOfClass:[NSString class]] &&
             [obj isKindOfClass:[NSDictionary class]]) {
             [metadata addMetadata:obj toSection:key];
@@ -531,7 +531,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     event[BSGKeyExceptions] = ({
         NSMutableArray *array = [NSMutableArray array];
-        [self.errors enumerateObjectsUsingBlock:^(BugsnagError *error, NSUInteger idx, BOOL *stop) {
+        [self.errors enumerateObjectsUsingBlock:^(BugsnagError *error, NSUInteger idx, __attribute__((unused)) BOOL *stop) {
             if (self.customException != nil && idx == 0) {
                 [array addObject:(NSDictionary * _Nonnull)self.customException];
             } else {

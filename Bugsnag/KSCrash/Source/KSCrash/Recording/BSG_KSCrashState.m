@@ -190,7 +190,7 @@ bool bsg_kscrashstate_i_loadState(BSG_KSCrash_State *const context,
         }
         return false;
     }
-    id objectContext = [BSG_KSJSONCodec decode:data options:0 error:&error];
+    id objectContext = [BSG_KSJSONCodec decode:data error:&error];
     if (error != nil) {
         BSG_KSLOG_ERROR(@"%s: Could not load file: %@", path, error);
         return false;
@@ -351,7 +351,7 @@ void bsg_kscrashstate_notifyAppTerminate(void) {
     bsg_kscrashstate_i_saveState(state, stateFilePath);
 }
 
-void bsg_kscrashstate_notifyAppCrash(BSG_KSCrashType type) {
+void bsg_kscrashstate_notifyAppCrash(void) {
     BSG_KSCrash_State *const state = bsg_g_state;
     const char *const stateFilePath = bsg_g_stateFilePath;
     bsg_kscrashstate_updateDurationStats(state);

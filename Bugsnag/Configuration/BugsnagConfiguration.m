@@ -77,7 +77,7 @@ static NSUserDefaults *userDefaults;
  *
  * @param zone This parameter is ignored. Memory zones are no longer used by Objective-C.
  */
-- (nonnull id)copyWithZone:(nullable NSZone *)zone {
+- (nonnull id)copyWithZone:(nullable __attribute__((unused)) NSZone *)zone {
     BugsnagConfiguration *copy = [[BugsnagConfiguration alloc] initWithApiKey:[self.apiKey copy]];
     // Omit apiKey - it's set explicitly in the line above
     [copy setAppHangThresholdMillis:self.appHangThresholdMillis];

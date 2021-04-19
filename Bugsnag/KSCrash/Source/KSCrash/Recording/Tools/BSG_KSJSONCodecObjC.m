@@ -514,7 +514,6 @@ int bsg_ksjsoncodecobjc_i_encodeObject(BSG_KSJSONCodec *codec, id object,
 }
 
 + (id)decode:(NSData *)JSONData
-     options:(BSG_KSJSONDecodeOption)decodeOptions
        error:(NSError *__autoreleasing *)error {
     *error = nil;
     id result = nil;

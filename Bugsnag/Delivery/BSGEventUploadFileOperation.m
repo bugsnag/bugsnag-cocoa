@@ -40,7 +40,7 @@
     }
 }
 
-- (void)storeEventPayload:(NSDictionary *)eventPayload {
+- (void)storeEventPayload:(__attribute__((unused)) NSDictionary *)eventPayload {
     // This event was loaded from disk, so nothing needs to be saved.
 }
 

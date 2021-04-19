@@ -261,7 +261,7 @@ NSString * const BSGNotificationBreadcrumbsMessageAppWillTerminate = @"App Will 
     [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name];
 }
 
-- (void)addBreadcrumbForTableViewNotification:(NSNotification *)notification {
+- (void)addBreadcrumbForTableViewNotification:(__attribute__((unused)) NSNotification *)notification {
 #if TARGET_OS_IOS || TARGET_OS_TV
     NSIndexPath *indexPath = ((UITableView *)notification.object).indexPathForSelectedRow;
     [self addBreadcrumbWithType:BSGBreadcrumbTypeNavigation forNotificationName:notification.name metadata:
@@ -273,7 +273,7 @@ NSString * const BSGNotificationBreadcrumbsMessageAppWillTerminate = @"App Will 
 #endif
 }
 
-- (void)addBreadcrumbForMenuItemNotification:(NSNotification *)notification {
+- (void)addBreadcrumbForMenuItemNotification:(__attribute__((unused)) NSNotification *)notification {
 #if TARGET_OS_OSX
     NSMenuItem *menuItem = [[notification userInfo] valueForKey:@"MenuItem"];
     [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name metadata:
@@ -281,7 +281,7 @@ NSString * const BSGNotificationBreadcrumbsMessageAppWillTerminate = @"App Will 
 #endif
 }
 
-- (void)addBreadcrumbForControlNotification:(NSNotification *)notification {
+- (void)addBreadcrumbForControlNotification:(__attribute__((unused)) NSNotification *)notification {
 #if TARGET_OS_IOS
     NSString *label = ((UIControl *)notification.object).accessibilityLabel;
     [self addBreadcrumbWithType:BSGBreadcrumbTypeUser forNotificationName:notification.name metadata:

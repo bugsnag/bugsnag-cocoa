@@ -88,9 +88,9 @@ NSString *BSGConnectivityFlagRepresentation(SCNetworkReachabilityFlags flags) {
  * Callback invoked by SCNetworkReachability, which calls an Objective-C block
  * that handles the connection change.
  */
-void BSGConnectivityCallback(SCNetworkReachabilityRef target,
+void BSGConnectivityCallback(__attribute__((unused)) SCNetworkReachabilityRef target,
                              SCNetworkReachabilityFlags flags,
-                             void *info)
+                             __attribute__((unused)) void *info)
 {
     if (bsg_reachability_change_block && BSGConnectivityShouldReportChange(flags)) {
         BOOL connected = (flags & kSCNetworkReachabilityFlagsReachable);

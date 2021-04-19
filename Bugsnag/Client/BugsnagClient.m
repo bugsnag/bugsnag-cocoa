@@ -123,7 +123,7 @@ static bool hasRecordedSessions;
  *
  *  @param writer report writer which will receive updated metadata
  */
-void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, int type) {
+void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, __attribute__((unused)) int type) {
     BOOL isCrash = YES;
     if (hasRecordedSessions) { // a session is available
         // persist session info
@@ -352,7 +352,7 @@ NSString *_lastOrientation = nil;
 
 - (void)start {
     [self.configuration validate];
-    [self.crashSentry install:self.configuration notifier:self.notifier onCrash:&BSSerializeDataCrashHandler];
+    [self.crashSentry install:self.configuration onCrash:&BSSerializeDataCrashHandler];
     [self.systemState recordAppUUID]; // Needs to be called after crashSentry installed but before -computeDidCrashLastLaunch
     [self computeDidCrashLastLaunch];
     [self.breadcrumbs removeAllBreadcrumbs];
@@ -444,7 +444,7 @@ NSString *_lastOrientation = nil;
     self.stateMetadataFromLastLaunch = nil;
 }
 
-- (void)appLaunchTimerFired:(NSTimer *)timer {
+- (void)appLaunchTimerFired:(__attribute__((unused)) NSTimer *)timer {
     [self markLaunchCompleted];
 }
 
@@ -615,7 +615,7 @@ NSString *_lastOrientation = nil;
 /**
  * Removes observers and listeners to prevent allocations when the app is terminated
  */
-- (void)unsubscribeFromNotifications:(id)sender {
+- (void)unsubscribeFromNotifications:(__attribute__((unused)) id)sender {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [BSGConnectivity stopMonitoring];
 
@@ -648,11 +648,11 @@ NSString *_lastOrientation = nil;
                  object:nil];
 }
 
-- (void)willEnterForeground:(id)sender {
+- (void)willEnterForeground:(__attribute__((unused)) id)sender {
     [self.sessionTracker handleAppForegroundEvent];
 }
 
-- (void)willEnterBackground:(id)sender {
+- (void)willEnterBackground:(__attribute__((unused)) id)sender {
     [self.sessionTracker handleAppBackgroundEvent];
 }
 
@@ -1003,7 +1003,7 @@ NSString *_lastOrientation = nil;
  * @param notification The change notification
  */
 #if BSG_PLATFORM_IOS
-- (void)batteryChanged:(NSNotification *)notification {
+- (void)batteryChanged:(__attribute__((unused)) NSNotification *)notification {
     if (![UIDEVICE currentDevice]) {
         return;
     }
@@ -1061,7 +1061,7 @@ NSString *_lastOrientation = nil;
     self.lastOrientation = orientation;
 }
 
-- (void)lowMemoryWarning:(NSNotification *)notif {
+- (void)lowMemoryWarning:(__attribute__((unused)) NSNotification *)notif {
     [self.state addMetadata:[BSG_RFC3339DateTool stringFromDate:[NSDate date]]
                       withKey:BSEventLowMemoryWarning
                     toSection:BSGKeyDeviceState];
