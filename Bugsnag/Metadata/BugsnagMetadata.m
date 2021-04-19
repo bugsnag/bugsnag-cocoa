@@ -216,9 +216,7 @@
                          withKey:(NSString *)key
 {
     @synchronized(self) {
-        if ([[[self dictionary] objectForKey:section] objectForKey:key]) {
-            [[[self dictionary] objectForKey:section] removeObjectForKey:key];
-        }
+        [(NSMutableDictionary *)self.dictionary[section] removeObjectForKey:key];
     }
     [self notifyObservers];
 }
