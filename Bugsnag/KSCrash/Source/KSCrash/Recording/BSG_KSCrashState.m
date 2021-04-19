@@ -119,7 +119,7 @@ int bsg_kscrashstate_i_onIntegerElement(const char *const name,
     }
 
     // FP value might have been written as a whole number.
-    return bsg_kscrashstate_i_onFloatingPointElement(name, value, userData);
+    return bsg_kscrashstate_i_onFloatingPointElement(name, (double)value, userData);
 }
 
 int bsg_kscrashstate_i_onNullElement(__unused const char *const name,

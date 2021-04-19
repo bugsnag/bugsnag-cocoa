@@ -418,7 +418,7 @@ NSString *_lastOrientation = nil;
     [self.pluginClient loadPlugins];
     
     if (self.configuration.launchDurationMillis > 0) {
-        self.appLaunchTimer = [NSTimer scheduledTimerWithTimeInterval:self.configuration.launchDurationMillis / 1000.0
+        self.appLaunchTimer = [NSTimer scheduledTimerWithTimeInterval:(double)self.configuration.launchDurationMillis / 1000.0
                                                                target:self selector:@selector(appLaunchTimerFired:)
                                                              userInfo:nil repeats:NO];
     }

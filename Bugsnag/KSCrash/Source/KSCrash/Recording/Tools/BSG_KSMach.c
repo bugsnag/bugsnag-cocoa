@@ -510,7 +510,7 @@ double bsg_ksmachtimeDifferenceInSeconds(const uint64_t endTime,
         conversion = 1e-9 * (double)info.numer / (double)info.denom;
     }
 
-    return conversion * (endTime - startTime);
+    return conversion * (double)(endTime - startTime);
 }
 
 /** Check if the current process is being traced or not.

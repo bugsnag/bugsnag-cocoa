@@ -189,7 +189,7 @@ static size_t positive_double_to_string(const double value, char* dst, const int
     double digits_and_remainder = normalized * pow(10, max_sig_digits-1);
     uint64_t digits = (uint64_t)digits_and_remainder;
     // Also round up if necessary (note: 0.5 is exact in both binary and decimal).
-    if (digits_and_remainder - digits >= 0.5) {
+    if (digits_and_remainder - (double)digits >= 0.5) {
         digits++;
         // Special case: Adding one bumps us to next magnitude.
         if (digits >= (uint64_t)pow(10, max_sig_digits)) {

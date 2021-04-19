@@ -53,7 +53,7 @@
     
     const BOOL fatalOnly = configuration.appHangThresholdMillis == BugsnagAppHangThresholdFatalOnly;
     const BOOL recordAllThreads = configuration.sendThreads == BSGThreadSendPolicyAlways;
-    const NSTimeInterval threshold = fatalOnly ? 2 : configuration.appHangThresholdMillis / 1000.0;
+    const NSTimeInterval threshold = fatalOnly ? 2.0 : (double)configuration.appHangThresholdMillis / 1000.0;
     
     bsg_log_debug(@"Starting App Hang detector with threshold = %g seconds", threshold);
     
