@@ -40,7 +40,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
  */
 @property (nonatomic, strong, readonly) SessionTrackerCallback callback;
 
-@property NSMutableDictionary *extraRuntimeInfo;
+@property (nonatomic) NSMutableDictionary *extraRuntimeInfo;
 @end
 
 @implementation BugsnagSessionTracker

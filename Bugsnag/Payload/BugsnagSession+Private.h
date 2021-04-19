@@ -37,13 +37,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Properties
 
-@property (readonly) BOOL autoCaptured;
+@property (readonly, nonatomic) BOOL autoCaptured;
 
-@property NSUInteger handledCount;
+@property (nonatomic) NSUInteger handledCount;
 
-@property (getter=isStopped) BOOL stopped;
+@property (getter=isStopped, nonatomic) BOOL stopped;
 
-@property NSUInteger unhandledCount;
+@property (nonatomic) NSUInteger unhandledCount;
 
 @property (readwrite, nonnull, nonatomic) BugsnagUser *user;
 

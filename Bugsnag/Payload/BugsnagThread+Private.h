@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)threadFromJson:(NSDictionary *)json;
 
-@property (readonly) NSString *crashInfoMessage;
+@property (readonly, nonatomic) NSString *crashInfoMessage;
 
 @property (readwrite, nonatomic) BOOL errorReportingThread;
 

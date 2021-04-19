@@ -14,7 +14,7 @@
 #import "BSG_RFC3339DateTool.h"
 
 @interface BugsnagSessionTrackingApiClient ()
-@property NSMutableSet *activeIds;
+@property (nonatomic) NSMutableSet *activeIds;
 @property(nonatomic) BugsnagConfiguration *config;
 @end
 

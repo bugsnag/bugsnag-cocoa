@@ -18,16 +18,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readwrite, copy, nullable, nonatomic) NSDictionary *customException;
 
 /// Number of frames to discard at the top of the generated stacktrace. Stacktraces from raised exceptions are unaffected.
-@property NSUInteger depth;
+@property (nonatomic) NSUInteger depth;
 
 /// A unique hash identifying this device for the application or vendor.
 @property (readwrite, copy, nullable, nonatomic) NSString *deviceAppHash;
 
 /// The release stages used to notify at the time this report is captured.
-@property (readwrite, copy, nullable) NSArray *enabledReleaseStages;
+@property (readwrite, copy, nullable, nonatomic) NSArray *enabledReleaseStages;
 
 /// Raw error data added to metadata.
-@property (readwrite, copy, nullable) NSDictionary *error;
+@property (readwrite, copy, nullable, nonatomic) NSDictionary *error;
 
 /// The event state (whether the error is handled/unhandled.)
 @property (readwrite, nonatomic) BugsnagHandledState *handledState;

@@ -24,7 +24,7 @@ NSString * const BSGNotificationBreadcrumbsMessageAppWillTerminate = @"App Will 
 
 @interface BSGNotificationBreadcrumbs ()
 
-@property NSDictionary<NSNotificationName, NSString *> *notificationNameMap;
+@property (nonatomic) NSDictionary<NSNotificationName, NSString *> *notificationNameMap;
 
 @end
 

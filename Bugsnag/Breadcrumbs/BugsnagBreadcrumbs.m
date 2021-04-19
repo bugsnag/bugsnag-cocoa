@@ -31,11 +31,11 @@ static BugsnagBreadcrumbsContext g_context;
 
 @interface BugsnagBreadcrumbs ()
 
-@property (readonly) NSString *breadcrumbsPath;
+@property (readonly, nonatomic) NSString *breadcrumbsPath;
 
-@property BugsnagConfiguration *config;
-@property unsigned int nextFileNumber;
-@property unsigned int maxBreadcrumbs;
+@property (nonatomic) BugsnagConfiguration *config;
+@property (nonatomic) unsigned int nextFileNumber;
+@property (nonatomic) unsigned int maxBreadcrumbs;
 
 @end
 

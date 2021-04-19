@@ -223,9 +223,9 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 
 @interface BugsnagClient () <BSGBreadcrumbSink>
 
-@property BSGNotificationBreadcrumbs *notificationBreadcrumbs;
+@property (nonatomic) BSGNotificationBreadcrumbs *notificationBreadcrumbs;
 
-@property (weak) NSTimer *appLaunchTimer;
+@property (weak, nonatomic) NSTimer *appLaunchTimer;
 
 @end
 
