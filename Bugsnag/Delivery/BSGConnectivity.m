@@ -74,7 +74,7 @@ BOOL BSGConnectivityShouldReportChange(SCNetworkReachabilityFlags flags) {
  * Textual representation of a connection type
  */
 NSString *BSGConnectivityFlagRepresentation(SCNetworkReachabilityFlags flags) {
-    BOOL connected = (flags & kSCNetworkReachabilityFlagsReachable);
+    BOOL connected = (flags & kSCNetworkReachabilityFlagsReachable) != 0;
     #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
         return connected
             ? ((flags & kSCNetworkReachabilityFlagsIsWWAN) ? BSGConnectivityCellular : BSGConnectivityWiFi)
@@ -93,7 +93,7 @@ void BSGConnectivityCallback(__attribute__((unused)) SCNetworkReachabilityRef ta
                              __attribute__((unused)) void *info)
 {
     if (bsg_reachability_change_block && BSGConnectivityShouldReportChange(flags)) {
-        BOOL connected = (flags & kSCNetworkReachabilityFlagsReachable);
+        BOOL connected = (flags & kSCNetworkReachabilityFlagsReachable) != 0;
         bsg_reachability_change_block(connected, BSGConnectivityFlagRepresentation(flags));
     }
 }
