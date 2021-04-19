@@ -540,19 +540,19 @@ static NSUserDefaults *userDefaults;
         case BSGBreadcrumbTypeManual:
             return YES;
         case BSGBreadcrumbTypeError :
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeError;
+            return (self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeError) != 0;
         case BSGBreadcrumbTypeLog:
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeLog;
+            return (self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeLog) != 0;
         case BSGBreadcrumbTypeNavigation:
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeNavigation;
+            return (self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeNavigation) != 0;
         case BSGBreadcrumbTypeProcess:
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeProcess;
+            return (self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeProcess) != 0;
         case BSGBreadcrumbTypeRequest:
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeRequest;
+            return (self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeRequest) != 0;
         case BSGBreadcrumbTypeState:
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeState;
+            return (self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeState) != 0;
         case BSGBreadcrumbTypeUser:
-            return self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeUser;
+            return (self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeUser) != 0;
     }
     return NO;
 }
