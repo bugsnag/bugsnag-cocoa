@@ -94,12 +94,14 @@
                         threads = [NSArray arrayWithObjects:[BugsnagThread mainThread], nil]; //!OCLint
                     }
                     
-                    [weakDelegate appHangDetectedWithThreads:threads];
+                    __strong typeof(weakDelegate) delegate = weakDelegate;
+                    
+                    [delegate appHangDetectedWithThreads:threads];
                     
                     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                     bsg_log_info("App hang has ended");
                     
-                    [weakDelegate appHangEnded];
+                    [delegate appHangEnded];
                 }
             });
         }
