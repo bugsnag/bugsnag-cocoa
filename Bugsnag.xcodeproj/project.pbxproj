@@ -1318,6 +1318,7 @@
 		0163BF5825823D8D008DC28B /* NotificationBreadcrumbTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationBreadcrumbTests.m; sourceTree = "<group>"; };
 		016875C4258D003200DFFF69 /* NSUserDefaultsStub.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSUserDefaultsStub.h; sourceTree = "<group>"; };
 		016875C5258D003200DFFF69 /* NSUserDefaultsStub.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSUserDefaultsStub.m; sourceTree = "<group>"; };
+		017824BD262D65A000D18AFA /* Bugsnag.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Bugsnag.xcconfig; sourceTree = "<group>"; };
 		01840B6D25DC26E200F95648 /* BSGEventUploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGEventUploader.h; sourceTree = "<group>"; };
 		01840B6E25DC26E200F95648 /* BSGEventUploader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGEventUploader.m; sourceTree = "<group>"; };
 		01937CF9257A7B4C00F2DE31 /* Bugsnag+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bugsnag+Private.h"; sourceTree = "<group>"; };
@@ -1644,6 +1645,7 @@
 		00AD1C6824869B0E00A27979 = {
 			isa = PBXGroup;
 			children = (
+				017824BD262D65A000D18AFA /* Bugsnag.xcconfig */,
 				01C2769B2601F44D006901EA /* CHANGELOG.md */,
 				01C2769C2601F455006901EA /* CONTRIBUTING.md */,
 				00E636B2248702A1006CBF1A /* README.md */,
@@ -3183,6 +3185,7 @@
 /* Begin XCBuildConfiguration section */
 		00AD1C8424869B0E00A27979 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -3252,12 +3255,12 @@
 				SDKROOT = iphoneos;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
-				WARNING_CFLAGS = "-Werror=incomplete-implementation";
 			};
 			name = Debug;
 		};
 		00AD1C8524869B0E00A27979 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -3321,7 +3324,6 @@
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
-				WARNING_CFLAGS = "-Werror=incomplete-implementation";
 			};
 			name = Release;
 		};

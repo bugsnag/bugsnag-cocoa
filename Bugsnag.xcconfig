@@ -1,0 +1,4 @@
+
+GCC_TREAT_WARNINGS_AS_ERRORS = YES
+
+WARNING_CFLAGS = $(inherited) -Wincomplete-implementation
