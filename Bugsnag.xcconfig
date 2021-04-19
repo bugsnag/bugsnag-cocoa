@@ -4,4 +4,6 @@ GCC_TREAT_WARNINGS_AS_ERRORS = YES
 WARNING_CFLAGS = $(inherited) -Warc-repeated-use-of-weak -Wassign-enum
 WARNING_CFLAGS = $(WARNING_CFLAGS) -Wblock-capture-autoreleasing -Wbool-conversion
 WARNING_CFLAGS = $(WARNING_CFLAGS) -Wcomma -Wconditional-uninitialized -Wconstant-conversion -Wconversion
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wdeprecated-declarations -Wdeprecated-implementations -Wdeprecated-objc-isa-usage -Wdocumentation -Wduplicate-method-match
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wempty-body -Wenum-conversion -Wexplicit-ownership-type
 WARNING_CFLAGS = $(WARNING_CFLAGS) -Wincomplete-implementation

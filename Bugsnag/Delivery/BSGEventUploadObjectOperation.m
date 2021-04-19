@@ -20,7 +20,7 @@
     return self;
 }
 
-- (BugsnagEvent *)loadEventAndReturnError:(NSError **)errorPtr {
+- (BugsnagEvent *)loadEventAndReturnError:(NSError * __autoreleasing *)errorPtr {
     return self.event;
 }
 
