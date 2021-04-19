@@ -130,7 +130,7 @@ BugsnagStackframeType const BugsnagStackframeTypeCocoa = @"cocoa";
 + (NSArray<BugsnagStackframe *> *)stackframesWithCallStackReturnAddresses:(NSArray<NSNumber *> *)callStackReturnAddresses {
     int length = (int)callStackReturnAddresses.count;
     uintptr_t addresses[length];
-    for (int i = 0; i < length; i++) {
+    for (NSUInteger i = 0; i < length; i++) {
         addresses[i] = (uintptr_t)callStackReturnAddresses[i].unsignedLongLongValue;
     }
     return [BugsnagStackframe stackframesWithBacktrace:addresses length:length];

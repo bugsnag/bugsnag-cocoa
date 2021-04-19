@@ -54,7 +54,7 @@ static void backtrace_for_thread(thread_t thread, struct backtrace_t *output) {
 + (NSArray<BugsnagThread *> *)allThreads:(BOOL)allThreads callStackReturnAddresses:(NSArray<NSNumber *> *)callStackReturnAddresses {
     struct backtrace_t backtrace;
     backtrace.length = (int)MIN(callStackReturnAddresses.count, kMaxAddresses);
-    for (int i = 0; i < backtrace.length; i++) {
+    for (NSUInteger i = 0; i < backtrace.length; i++) {
         backtrace.addresses[i] = (uintptr_t)callStackReturnAddresses[i].unsignedLongLongValue;
     }
     if (allThreads) {

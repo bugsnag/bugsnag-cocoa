@@ -206,7 +206,10 @@ BSG_Mach_Header_Info *bsg_mach_headers_image_at_address(const uintptr_t address)
         if (cmdPtr == 0) {
             continue;
         }
-        uintptr_t addressWSlide = address - img->slide;
+        if (address < img->slide) {
+            continue;
+        }
+        uintptr_t addressWSlide = address - (uintptr_t)img->slide;
         for (uint32_t iCmd = 0; iCmd < img->header->ncmds; iCmd++) {
             const struct load_command *loadCmd =
                 (struct load_command *)cmdPtr;
@@ -288,7 +291,7 @@ static uintptr_t bsg_mach_header_info_get_section_addr_named(const BSG_Mach_Head
             for (uint32_t i = 0; i < segment->nsects; i++) {
                 struct section *section = (void *)sectionPtr;
                 if (strcmp(name, section->sectname) == 0) {
-                    return section->addr + header->slide;
+                    return section->addr + (uintptr_t)header->slide;
                 }
                 sectionPtr += sizeof(*section);
             }
@@ -298,7 +301,7 @@ static uintptr_t bsg_mach_header_info_get_section_addr_named(const BSG_Mach_Head
             for (uint32_t i = 0; i < segment->nsects; i++) {
                 struct section_64 *section = (void *)sectionPtr;
                 if (strcmp(name, section->sectname) == 0) {
-                    return (uintptr_t)section->addr + header->slide;
+                    return (uintptr_t)section->addr + (uintptr_t)header->slide;
                 }
                 sectionPtr += sizeof(*section);
             }

@@ -864,7 +864,7 @@ NSString *_lastOrientation = nil;
      * 2. -[BugsnagClient notifyError:block:]
      * 3. -[BugsnagClient notify:handledState:block:]
      */
-    int depth = 3;
+    NSUInteger depth = 3;
 
     NSArray<NSNumber *> *callStack = exception.callStackReturnAddresses;
     if (!callStack.count) {
@@ -1179,7 +1179,7 @@ NSString *_lastOrientation = nil;
     // discard the following
     // 1. [BugsnagReactNative getPayloadInfo:resolve:reject:]
     // 2. [BugsnagClient collectThreads:]
-    int depth = 2;
+    NSUInteger depth = 2;
     NSArray<NSNumber *> *callStack = BSGArraySubarrayFromIndex(NSThread.callStackReturnAddresses, depth);
     BSGThreadSendPolicy sendThreads = self.configuration.sendThreads;
     BOOL recordAllThreads = sendThreads == BSGThreadSendPolicyAlways

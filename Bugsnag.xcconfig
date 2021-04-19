@@ -1,4 +1,7 @@
 
 GCC_TREAT_WARNINGS_AS_ERRORS = YES
 
-WARNING_CFLAGS = $(inherited) -Warc-repeated-use-of-weak -Wincomplete-implementation
+WARNING_CFLAGS = $(inherited) -Warc-repeated-use-of-weak -Wassign-enum
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wblock-capture-autoreleasing -Wbool-conversion
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wcomma -Wconditional-uninitialized -Wconstant-conversion -Wconversion
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wincomplete-implementation

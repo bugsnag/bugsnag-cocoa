@@ -91,7 +91,7 @@ static NSDictionary * bsg_systemversion() {
         }
         NSData *data = [NSData
                         dataWithBytesNoCopy:buffer
-                        length:length freeWhenDone:NO];
+                        length:(NSUInteger)length freeWhenDone:NO];
         if (!data) {
             BSG_KSLOG_ERROR("Could not read SystemVersion.plist");
             return;
