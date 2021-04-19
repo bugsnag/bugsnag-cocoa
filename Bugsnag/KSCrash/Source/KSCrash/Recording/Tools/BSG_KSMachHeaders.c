@@ -206,7 +206,7 @@ BSG_Mach_Header_Info *bsg_mach_headers_image_at_address(const uintptr_t address)
         if (cmdPtr == 0) {
             continue;
         }
-        if (address < img->slide) {
+        if (address < (uintptr_t)img->slide) {
             continue;
         }
         uintptr_t addressWSlide = address - (uintptr_t)img->slide;
