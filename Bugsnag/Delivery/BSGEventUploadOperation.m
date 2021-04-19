@@ -119,7 +119,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     }
     
     [delegate.apiClient sendJSONPayload:requestPayload headers:requestHeaders toURL:notifyURL
-                      completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
+                      completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *deliveryError) {
         
         switch (status) {
             case BugsnagApiClientDeliveryStatusDelivered:

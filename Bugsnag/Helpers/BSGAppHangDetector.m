@@ -95,14 +95,14 @@
                         threads = BSGArrayWithObject([BugsnagThread mainThread]);
                     }
                     
-                    __strong typeof(weakDelegate) delegate = weakDelegate;
+                    __strong typeof(weakDelegate) strongDelegate = weakDelegate;
                     
-                    [delegate appHangDetectedWithThreads:threads];
+                    [strongDelegate appHangDetectedWithThreads:threads];
                     
                     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                     bsg_log_info("App hang has ended");
                     
-                    [delegate appHangEnded];
+                    [strongDelegate appHangEnded];
                 }
             });
         }

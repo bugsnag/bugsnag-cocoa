@@ -11,3 +11,7 @@ WARNING_CFLAGS = $(WARNING_CFLAGS) -Wimplicit-atomic-properties -Wimplicit-retai
 WARNING_CFLAGS = $(WARNING_CFLAGS) -Wincomplete-implementation -Winfinite-recursion -Wint-conversion
 WARNING_CFLAGS = $(WARNING_CFLAGS) -Wmissing-braces
 WARNING_CFLAGS = $(WARNING_CFLAGS) -Wnon-literal-null-conversion -Wnonportable-include-path -Wnullable-to-nonnull-conversion
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wobjc-literal-conversion -Wobjc-root-class
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wparentheses -Wpointer-sign -Wprotocol
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wreturn-type
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wshadow

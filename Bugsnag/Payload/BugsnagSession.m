@@ -67,6 +67,7 @@ static NSString *const kBugsnagUser = @"user";
         _id = sessionId;
         _unhandledCount = [dict[kBugsnagUnhandledCount] unsignedIntegerValue];
         _handledCount = [dict[kBugsnagHandledCount] unsignedIntegerValue];
+
         _startedAt = BSGDeserializeDate(dict[kBugsnagStartedAt]) ?: [NSDate date];
 
         _user = BSGDeserializeObject(dict[kBugsnagUser], ^id _Nullable(NSDictionary * _Nonnull json) {
