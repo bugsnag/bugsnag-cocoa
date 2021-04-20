@@ -69,7 +69,7 @@ steps:
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bs"
           - "--device=IOS_11_0_IPHONE_8_PLUS"
-          - "--appium-version=1.7.0"
+          - "--appium-version=1.8.0"
           - "--fail-fast"
     concurrency: 9
     concurrency_group: browserstack-app
