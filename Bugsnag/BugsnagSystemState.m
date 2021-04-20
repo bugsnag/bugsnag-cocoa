@@ -171,44 +171,52 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
         __weak __typeof__(self) weakSelf = self;
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 #if TARGET_OS_OSX
-        [center addObserverForName:NSApplicationWillTerminateNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        [center addObserverForName:NSApplicationWillTerminateNotification object:nil queue:nil
+                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
             __strong __typeof__(self) strongSelf = weakSelf;
             [strongSelf.kvStore setBoolean:YES forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
             // No need to update since we are shutting down.
         }];
         // MacOS "active" serves the same purpose as "foreground" in iOS
-        [center addObserverForName:NSApplicationDidBecomeActiveNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        [center addObserverForName:NSApplicationDidBecomeActiveNotification object:nil queue:nil
+                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
             __strong __typeof__(self) strongSelf = weakSelf;
             [strongSelf.kvStore setBoolean:YES forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
             [strongSelf setValue:@YES forAppKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
         }];
-        [center addObserverForName:NSApplicationDidResignActiveNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        [center addObserverForName:NSApplicationDidResignActiveNotification object:nil queue:nil
+                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
             __strong __typeof__(self) strongSelf = weakSelf;
             [strongSelf.kvStore setBoolean:NO forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
             [strongSelf setValue:@NO forAppKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
         }];
 #else
-        [center addObserverForName:UIApplicationWillTerminateNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        [center addObserverForName:UIApplicationWillTerminateNotification object:nil queue:nil
+                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
             __strong __typeof__(self) strongSelf = weakSelf;
             [strongSelf.kvStore setBoolean:YES forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
             // No need to update since we are shutting down.
         }];
-        [center addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        [center addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:nil
+                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
             __strong __typeof__(self) strongSelf = weakSelf;
             [strongSelf.kvStore setBoolean:YES forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
             [strongSelf setValue:@YES forAppKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
         }];
-        [center addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        [center addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:nil
+                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
             __strong __typeof__(self) strongSelf = weakSelf;
             [strongSelf.kvStore setBoolean:NO forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
             [strongSelf setValue:@NO forAppKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
         }];
-        [center addObserverForName:UIApplicationDidBecomeActiveNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        [center addObserverForName:UIApplicationDidBecomeActiveNotification object:nil queue:nil
+                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
             __strong __typeof__(self) strongSelf = weakSelf;
             [strongSelf.kvStore setBoolean:YES forKey:SYSTEMSTATE_APP_IS_ACTIVE];
             [strongSelf setValue:@YES forAppKey:SYSTEMSTATE_APP_IS_ACTIVE];
         }];
-        [center addObserverForName:UIApplicationWillResignActiveNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        [center addObserverForName:UIApplicationWillResignActiveNotification object:nil queue:nil
+                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
             __strong __typeof__(self) strongSelf = weakSelf;
             [strongSelf.kvStore setBoolean:NO forKey:SYSTEMSTATE_APP_IS_ACTIVE];
             [strongSelf setValue:@NO forAppKey:SYSTEMSTATE_APP_IS_ACTIVE];

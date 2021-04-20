@@ -74,7 +74,7 @@ NSDictionary *BSGParseAppMetadata(NSDictionary *event) {
     NSMutableDictionary *dict = [NSMutableDictionary new];
     dict[@"bundleVersion"] = self.bundleVersion;
     dict[@"codeBundleId"] = self.codeBundleId;
-    dict[@"dsymUUIDs"] = self.dsymUuid ? @[self.dsymUuid] : nil;
+    dict[@"dsymUUIDs"] = BSGArrayWithObject(self.dsymUuid);
     dict[@"id"] = self.id;
     dict[@"releaseStage"] = self.releaseStage;
     dict[@"type"] = self.type;

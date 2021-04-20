@@ -1,0 +1,19 @@
+
+GCC_TREAT_WARNINGS_AS_ERRORS = YES
+
+WARNING_CFLAGS = $(inherited) -Warc-repeated-use-of-weak -Wassign-enum
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wblock-capture-autoreleasing -Wbool-conversion
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wcomma -Wconditional-uninitialized -Wconstant-conversion -Wconversion
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wdeprecated-declarations -Wdeprecated-implementations -Wdeprecated-objc-isa-usage -Wdocumentation -Wduplicate-method-match
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wempty-body -Wenum-conversion -Wexplicit-ownership-type
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wfloat-conversion -Wfour-char-constants -Wframework-include-private-from-public
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wimplicit-atomic-properties -Wimplicit-int-float-conversion -Wimplicit-retain-self -Wincompatible-pointer-types
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wincomplete-implementation -Winfinite-recursion -Wint-conversion
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wmissing-braces
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wno-unknown-warning-option -Wnon-literal-null-conversion -Wnonportable-include-path -Wnullable-to-nonnull-conversion
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wobjc-literal-conversion -Wobjc-root-class
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wparentheses -Wpointer-sign -Wprotocol
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wreturn-type
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wshadow -Wshorten-64-to-32 -Wsign-compare -Wsign-conversion -Wstrict-prototypes -Wstrict-selector-match -Wswitch
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wundeclared-selector -Wunguarded-availability -Wuninitialized -Wunknown-pragmas -Wunreachable-code
+WARNING_CFLAGS = $(WARNING_CFLAGS) -Wunused-function -Wunused-label -Wunused-parameter -Wunused-value -Wunused-variable
