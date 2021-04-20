@@ -56,6 +56,7 @@ class AppHangFatalOnlyScenario: Scenario {
     }
     
     override func run() {
+        NSLog("Hanging indefinitely...")
         while true {}
     }
 }
@@ -69,6 +70,36 @@ class AppHangFatalDisabledScenario: Scenario {
     }
     
     override func run() {
+        NSLog("Hanging indefinitely...")
         while true {}
     }
 }
+
+#if os(iOS)
+
+class AppHangDidEnterBackgroundScenario: Scenario {
+    
+    override func run() {
+        NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: nil) {
+            NSLog("Recevied \($0.name), now hanging indefinitely...")
+            while true {}
+        }
+    }
+}
+
+class AppHangDidBecomeActiveScenario: Scenario {
+    
+    override func startBugsnag() {
+        config.appHangThresholdMillis = 2_000
+        super.startBugsnag()
+    }
+    
+    override func run() {
+        NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: nil) {
+            NSLog("Recevied \($0.name), now sleeping for 3 seconds...")
+            Thread.sleep(forTimeInterval: 3)
+        }
+    }
+}
+
+#endif

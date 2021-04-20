@@ -58,6 +58,10 @@ When('I send the app to the background') do
   Maze.driver.background_app(-1)
 end
 
+When('I background the app for {int} seconds') do |duration|
+  Maze.driver.background_app(duration)
+end
+
 When('I relaunch the app') do
   case Maze.driver.capabilities['platformName']
   when 'Mac'
