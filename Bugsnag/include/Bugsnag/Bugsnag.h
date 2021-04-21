@@ -40,6 +40,8 @@
 #import "BugsnagSession.h"
 #import "BugsnagStackframe.h"
 #import "BugsnagThread.h"
+#import "BSG_KSCrash.h"
+#import "BSG_KSCrashType.h"
 
 @interface Bugsnag : NSObject <BugsnagClassLevelMetadataStore>
 
