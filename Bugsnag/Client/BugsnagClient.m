@@ -66,6 +66,7 @@
 #import "BugsnagSession+Private.h"
 #import "BugsnagSessionTracker+Private.h"
 #import "BugsnagSessionTrackingApiClient.h"
+#import "BugsnagStackframe+Private.h"
 #import "BugsnagStateEvent.h"
 #import "BugsnagSystemState.h"
 #import "BugsnagThread+Private.h"
@@ -870,18 +871,14 @@ NSString *_lastOrientation = nil;
 
     NSArray<NSNumber *> *callStack = exception.callStackReturnAddresses;
     if (!callStack.count) {
+        // If the NSException was not raised by the Objective-C runtime, it will be missing a call stack.
+        // Use the current call stack instead.
         callStack = BSGArraySubarrayFromIndex(NSThread.callStackReturnAddresses, depth);
     }
     BOOL recordAllThreads = self.configuration.sendThreads == BSGThreadSendPolicyAlways;
-    NSArray *threads = [BugsnagThread allThreads:recordAllThreads callStackReturnAddresses:callStack];
+    NSArray *threads = recordAllThreads ? [BugsnagThread allThreads:YES callStackReturnAddresses:callStack] : @[];
     
-    NSArray<BugsnagStackframe *> *stacktrace = nil;
-    for (BugsnagThread *thread in threads) {
-        if (thread.errorReportingThread) {
-            stacktrace = thread.stacktrace;
-            break;
-        }
-    }
+    NSArray<BugsnagStackframe *> *stacktrace = [BugsnagStackframe stackframesWithCallStackReturnAddresses:callStack];
     
     BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:exception.name ?: NSStringFromClass([exception class])
                                                       errorMessage:exception.reason ?: @""

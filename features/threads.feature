@@ -1,4 +1,4 @@
-Feature: Handled Errors and Exceptions
+Feature: Threads
 
   Background:
     Given I clear all persistent data
@@ -10,6 +10,8 @@ Feature: Handled Errors and Exceptions
     And the event "unhandled" is false
     And the error payload field "events" is an array with 1 elements
     And the exception "message" equals "HandledErrorThreadSendAlwaysScenario"
+    And the error payload field "events.0.threads" is a non-empty array
+    And the error payload field "events.0.threads.1" is not null
     And the thread information is valid for the event
 
   Scenario: Threads are captured for unhandled errors by default
@@ -20,6 +22,8 @@ Feature: Handled Errors and Exceptions
     And the event "unhandled" is true
     And the error payload field "events" is an array with 1 elements
     And the exception "message" equals "UnhandledErrorThreadSendAlwaysScenario"
+    And the error payload field "events.0.threads" is a non-empty array
+    And the error payload field "events.0.threads.1" is not null
     And the thread information is valid for the event
 
   Scenario: Threads are not captured for handled errors when sendThreads is set to unhandled_only
@@ -29,12 +33,7 @@ Feature: Handled Errors and Exceptions
     And the event "unhandled" is false
     And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "HandledErrorThreadSendUnhandledOnlyScenario"
-    And the error payload field "events.0.threads" is an array with 1 elements
-    And the error payload field "events.0.threads.0.errorReportingThread" is true
-    And the error payload field "events.0.threads.0.id" is not null
-    And the error payload field "events.0.threads.0.name" equals "com.apple.main-thread"
-    And the error payload field "events.0.threads.0.type" equals "cocoa"
-    And the thread information is valid for the event
+    And the error payload field "events.0.threads" is an array with 0 elements
 
   Scenario: Threads are not captured for unhandled errors when sendThreads is set to never
     When I run "UnhandledErrorThreadSendNeverScenario" and relaunch the app
@@ -44,9 +43,4 @@ Feature: Handled Errors and Exceptions
     And the event "unhandled" is true
     And the error payload field "events" is an array with 1 elements
     And the exception "message" equals "UnhandledErrorThreadSendNeverScenario"
-    And the error payload field "events.0.threads" is an array with 1 elements
-    And the error payload field "events.0.threads.0.errorReportingThread" is true
-    And the error payload field "events.0.threads.0.id" is not null
-    And the error payload field "events.0.threads.0.name" is null
-    And the error payload field "events.0.threads.0.type" equals "cocoa"
-    And the thread information is valid for the event
+    And the error payload field "events.0.threads" is an array with 0 elements
