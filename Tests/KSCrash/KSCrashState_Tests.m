@@ -90,7 +90,7 @@
     BSG_KSCrash_State checkpoint0 = context;
 
     usleep(1);
-    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeSignal);
+    bsg_kscrashstate_notifyAppCrash();
     BSG_KSCrash_State checkpointC = context;
 
     XCTAssertTrue(checkpointC.applicationIsInForeground ==
@@ -142,7 +142,7 @@
 
     bsg_kscrashstate_init([stateFile cStringUsingEncoding:NSUTF8StringEncoding],
                           &context);
-    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeSignal);
+    bsg_kscrashstate_notifyAppCrash();
     XCTAssertTrue(context.crashedThisLaunch, @"");
 }
 
@@ -289,7 +289,7 @@
     BSG_KSCrash_State checkpoint0 = context;
 
     usleep(1);
-    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeSignal);
+    bsg_kscrashstate_notifyAppCrash();
     BSG_KSCrash_State checkpointC = context;
 
     XCTAssertTrue(checkpointC.applicationIsInForeground ==
@@ -423,7 +423,7 @@
     BSG_KSCrash_State checkpoint0 = context;
 
     usleep(1);
-    bsg_kscrashstate_notifyAppCrash(BSG_KSCrashTypeSignal);
+    bsg_kscrashstate_notifyAppCrash();
     BSG_KSCrash_State checkpointC = context;
 
     XCTAssertTrue(checkpointC.applicationIsInForeground ==

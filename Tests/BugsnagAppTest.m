@@ -8,10 +8,13 @@
 
 #import <XCTest/XCTest.h>
 
+#import "BSG_KSSystemInfo.h"
 #import "BugsnagApp+Private.h"
 #import "BugsnagAppWithState+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
+
+#include <sys/sysctl.h>
 
 @interface BugsnagAppTest : XCTestCase
 @property NSDictionary *data;
@@ -171,6 +174,24 @@
     self.config.bundleVersion = @"4.2.6";
     app = [BugsnagAppWithState appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
     XCTAssertEqualObjects(@"4.2.6", app.bundleVersion);
+}
+
+- (void)testBSGParseAppMetadata {
+    NSDictionary *metadata = BSGParseAppMetadata(@{@"system": [BSG_KSSystemInfo systemInfo]});
+#if TARGET_CPU_ARM
+    XCTAssert([metadata[@"binaryArch"] hasPrefix:@"armv"]);
+#elif TARGET_CPU_ARM64
+    XCTAssert([metadata[@"binaryArch"] hasPrefix:@"arm64"]);
+#elif TARGET_CPU_X86
+    XCTAssert([metadata[@"binaryArch"] hasPrefix:@"x86"]);
+#elif TARGET_CPU_X86_64
+    XCTAssertEqualObjects(metadata[@"binaryArch"], @"x86_64");
+#endif
+    int proc_translated = 0;
+    size_t size = sizeof(proc_translated);
+    if (!sysctlbyname("sysctl.proc_translated", &proc_translated, &size, NULL, 0) && proc_translated) {
+        XCTAssertEqualObjects(metadata[@"runningOnRosetta"], @YES);
+    }
 }
 
 @end
