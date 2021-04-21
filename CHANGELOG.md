@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* `event.threads` will now be empty, rather than containing a single thread, if `sendThreads` dictates that threads should not be sent.
+  [#1077](https://github.com/bugsnag/bugsnag-cocoa/pull/1077)
+
 ## 6.9.0 (2021-04-21)
 
 ### Enhancements

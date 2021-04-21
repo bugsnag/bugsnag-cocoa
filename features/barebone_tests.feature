@@ -61,10 +61,6 @@ Feature: Barebone tests
     And the event "severity" equals "warning"
     And the event "severityReason.type" equals "handledException"
     And the event "severityReason.unhandledOverridden" is true
-    And the event "threads.0.errorReportingThread" is true
-    And the event "threads.0.id" equals "0"
-    And the event "threads.0.name" equals "com.apple.main-thread"
-    And the event "threads.0.stacktrace.0.method" matches "BareboneTestHandledScenario"
     And the event "unhandled" is true
     And the event "user.email" equals "foobar@example.com"
     And the event "user.id" equals "foobar"
@@ -79,7 +75,7 @@ Feature: Barebone tests
     And the error payload field "events.0.device.freeMemory" is an integer
     And the error payload field "events.0.device.model" matches the test device model
     And the error payload field "events.0.device.totalMemory" is an integer
-    And the error payload field "events.0.threads" is an array with 1 elements
+    And the error payload field "events.0.threads" is an array with 0 elements
     And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
 
     And I discard the oldest error
@@ -158,6 +154,8 @@ Feature: Barebone tests
     And the error payload field "events.0.device.freeMemory" is an integer
     And the error payload field "events.0.device.model" matches the test device model
     And the error payload field "events.0.device.totalMemory" is an integer
+    And the error payload field "events.0.threads" is a non-empty array
+    And the error payload field "events.0.threads.1" is not null
     And the "method" of stack frame 0 matches "(assertionFailure|<redacted>)"
 
   @skip_macos
@@ -246,3 +244,4 @@ Feature: Barebone tests
     And the error payload field "events.0.device.freeMemory" is null
     And the error payload field "events.0.device.model" matches the test device model
     And the error payload field "events.0.device.totalMemory" is an integer
+    And the error payload field "events.0.threads" is an array with 0 elements
