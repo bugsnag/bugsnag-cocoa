@@ -178,17 +178,16 @@ Feature: Barebone tests
 
     And I wait to receive an error
     Then the error is an OOM event
-    And the event "app.bundleVersion" is not null
+    And the event "app.bundleVersion" equals "321.123"
     And the event "app.dsymUUIDs" is not null
     And the event "app.id" equals the platform-dependent string:
       | ios   | com.bugsnag.iOSTestApp   |
       | macos | com.bugsnag.macOSTestApp |
     And the event "app.inForeground" is true
     And the event "app.isLaunching" is true
-    And the event "app.type" equals the platform-dependent string:
-      | ios   | iOS   |
-      | macos | macOS |
-    And the event "app.version" is not null
+    And the event "app.releaseStage" equals "staging"
+    And the event "app.type" equals "vanilla"
+    And the event "app.version" equals "3.2.1"
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" equals "Memory Warning"
     And the event "device.id" is not null
