@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix `app` properties in OOMs for apps that override `appType`, `appVersion`, `bundleVersion` or `releaseStage` in their config.
+  [#1078](https://github.com/bugsnag/bugsnag-cocoa/pull/1078)
+
 * `event.threads` will now be empty, rather than containing a single thread, if `sendThreads` dictates that threads should not be sent.
   [#1077](https://github.com/bugsnag/bugsnag-cocoa/pull/1077)
 
