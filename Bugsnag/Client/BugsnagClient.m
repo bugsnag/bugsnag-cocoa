@@ -99,9 +99,6 @@ static struct {
     // Contains notifier state, under "deviceState" and crash-specific
     // information under "crash".
     char *statePath;
-    // Contains properties in the Bugsnag payload overridden by the user before
-    // it was sent
-    char *userOverridesJSON;
     // User onCrash handler
     void (*onCrash)(const BSG_KSCrashReportWriter *writer);
 } bsg_g_bugsnag_data;
@@ -248,7 +245,10 @@ NSString *_lastOrientation = nil;
     if ((self = [super init])) {
         // Take a shallow copy of the configuration
         _configuration = [configuration copy];
-        _state = [[BugsnagMetadata alloc] initWithDictionary:@{BSGKeyApp: @{BSGKeyIsLaunching: @YES}}];
+        _state = [[BugsnagMetadata alloc] initWithDictionary:@{
+            BSGKeyApp: @{BSGKeyIsLaunching: @YES},
+            BSGKeyClient: BSGDictionaryWithKeyAndObject(BSGKeyContext, _configuration.context)
+        }];
         self.notifier = [BugsnagNotifier new];
         self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:configuration];
 
@@ -763,11 +763,12 @@ NSString *_lastOrientation = nil;
 }
 
 // =============================================================================
-// MARK: - Other methods
+// MARK: - Context
 // =============================================================================
 
 - (void)setContext:(nullable NSString *)context {
     self.configuration.context = context;
+    [self.state addMetadata:context withKey:BSGKeyContext toSection:BSGKeyClient];
     [self notifyObservers:[[BugsnagStateEvent alloc] initWithName:kStateEventContext data:context]];
 }
 

@@ -28,6 +28,8 @@ Feature: App hangs
     And the event "session.events.handled" equals 1
     And the event "session.events.unhandled" equals 0
 
+    And the event "context" equals "App Hang Scenario"
+
     #
     # Checks copied from app_and_device_attributes.feature
     #

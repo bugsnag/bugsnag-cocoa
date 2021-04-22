@@ -246,7 +246,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     } else if ([event valueForKeyPath:@"user.event"] != nil) {
         return [self initWithUserData:event];
     } else {
-        return [self initWithKSCrashData:event];
+        return [self initWithKSCrashReport:event];
     }
 }
 
@@ -259,7 +259,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
  *
  * @return a BugsnagEvent containing the parsed information
  */
-- (instancetype)initWithKSCrashData:(NSDictionary *)event {
+- (instancetype)initWithKSCrashReport:(NSDictionary *)event {
     NSMutableDictionary *error = [[event valueForKeyPath:@"crash.error"] mutableCopy];
     NSString *errorType = error[BSGKeyType];
 
@@ -377,6 +377,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     obj.enabledReleaseStages = BSGLoadConfigValue(event, BSGKeyEnabledReleaseStages);
     obj.releaseStage = BSGParseReleaseStage(event);
     obj.deviceAppHash = deviceAppHash;
+    obj.context = [event valueForKeyPath:@"user.state.client.context"];
     obj.customException = BSGParseCustomException(event, [errors[0].errorClass copy], [errors[0].errorMessage copy]);
     obj.error = error;
     obj.depth = depth;

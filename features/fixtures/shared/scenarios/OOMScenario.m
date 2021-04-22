@@ -44,6 +44,7 @@
 }
 
 - (void)run {
+    [Bugsnag setContext:@"OOM Scenario"];
     [NSNotificationCenter.defaultCenter addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil
                                                      queue:nil usingBlock:^(NSNotification *note) {
         NSLog(@"*** Received memory warning");

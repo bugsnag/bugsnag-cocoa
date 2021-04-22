@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix missing `context` for crash, OOM, and app hang errors.
+  [#1079](https://github.com/bugsnag/bugsnag-cocoa/pull/1079)
+
 * Fix `app` properties in OOMs for apps that override `appType`, `appVersion`, `bundleVersion` or `releaseStage` in their config.
   [#1078](https://github.com/bugsnag/bugsnag-cocoa/pull/1078)
 
