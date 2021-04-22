@@ -66,6 +66,8 @@
                               threads:@[]
                               session:session];
     
+    event.context = self.stateMetadataFromLastLaunch[BSGKeyClient][BSGKeyContext];
+    
     return event;
 }
 

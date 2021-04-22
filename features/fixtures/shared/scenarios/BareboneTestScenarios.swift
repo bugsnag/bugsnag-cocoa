@@ -116,6 +116,7 @@ class BareboneTestUnhandledErrorScenario: Scenario {
     }
     
     override func run() {
+        Bugsnag.setContext("Something")
         Bugsnag.setUser("barfoo", withEmail: "barfoo@example.com", andName: "Bar Foo")
         
         // Triggers "Fatal error: Unexpectedly found nil while implicitly unwrapping an Optional value: ..."
