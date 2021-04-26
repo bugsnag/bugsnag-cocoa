@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix a possible deadlock when writing crash reports for uncaught Objective-C exceptions.
+  [#1082](https://github.com/bugsnag/bugsnag-cocoa/pull/1082)
+
 * Fix missing `context` for crash, OOM, and app hang errors.
   [#1079](https://github.com/bugsnag/bugsnag-cocoa/pull/1079)
 
