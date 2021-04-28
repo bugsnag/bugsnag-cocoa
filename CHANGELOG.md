@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## v6.9.1 (2021-04-28)
 
 ### Bug fixes
 
