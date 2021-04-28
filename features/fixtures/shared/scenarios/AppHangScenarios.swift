@@ -14,6 +14,7 @@ class AppHangScenario: Scenario {
     }
     
     override func run() {
+        Bugsnag.setContext("App Hang Scenario")
         let timeInterval = TimeInterval(eventMode!)!
         NSLog("Simulating an app hang of \(timeInterval) seconds...")
         Thread.sleep(forTimeInterval: timeInterval)

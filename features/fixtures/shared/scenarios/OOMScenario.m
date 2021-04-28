@@ -24,6 +24,10 @@
     self.config.autoTrackSessions = YES;
     self.config.enabledErrorTypes.ooms = YES;
     self.config.launchDurationMillis = 0; // Ensure isLaunching will be true for the OOM, no matter how long it takes to occur.
+    self.config.appType = @"vanilla";
+    self.config.appVersion = @"3.2.1";
+    self.config.bundleVersion = @"321.123";
+    self.config.releaseStage = @"staging";
     [self.config addMetadata:@{@"bar": @"foo"} toSection:@"custom"];
     [self.config setUser:@"foobar" withEmail:@"foobar@example.com" andName:@"Foo Bar"];
     [self.config addOnSendErrorBlock:^BOOL(BugsnagEvent *event) {
@@ -40,6 +44,7 @@
 }
 
 - (void)run {
+    [Bugsnag setContext:@"OOM Scenario"];
     [NSNotificationCenter.defaultCenter addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil
                                                      queue:nil usingBlock:^(NSNotification *note) {
         NSLog(@"*** Received memory warning");

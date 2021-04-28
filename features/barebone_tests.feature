@@ -61,10 +61,6 @@ Feature: Barebone tests
     And the event "severity" equals "warning"
     And the event "severityReason.type" equals "handledException"
     And the event "severityReason.unhandledOverridden" is true
-    And the event "threads.0.errorReportingThread" is true
-    And the event "threads.0.id" equals "0"
-    And the event "threads.0.name" equals "com.apple.main-thread"
-    And the event "threads.0.stacktrace.0.method" matches "BareboneTestHandledScenario"
     And the event "unhandled" is true
     And the event "user.email" equals "foobar@example.com"
     And the event "user.id" equals "foobar"
@@ -79,7 +75,7 @@ Feature: Barebone tests
     And the error payload field "events.0.device.freeMemory" is an integer
     And the error payload field "events.0.device.model" matches the test device model
     And the error payload field "events.0.device.totalMemory" is an integer
-    And the error payload field "events.0.threads" is an array with 1 elements
+    And the error payload field "events.0.threads" is an array with 0 elements
     And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
 
     And I discard the oldest error
@@ -120,6 +116,7 @@ Feature: Barebone tests
     And the event "app.version" equals "12.3"
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" is null
+    And the event "context" equals "Something"
     And the event "device.freeMemory" is less than the event "device.totalMemory"
     And the event "device.id" is not null
     And the event "device.jailbroken" is false
@@ -158,6 +155,8 @@ Feature: Barebone tests
     And the error payload field "events.0.device.freeMemory" is an integer
     And the error payload field "events.0.device.model" matches the test device model
     And the error payload field "events.0.device.totalMemory" is an integer
+    And the error payload field "events.0.threads" is a non-empty array
+    And the error payload field "events.0.threads.1" is not null
     And the "method" of stack frame 0 matches "(assertionFailure|<redacted>)"
 
   @skip_macos
@@ -180,19 +179,19 @@ Feature: Barebone tests
 
     And I wait to receive an error
     Then the error is an OOM event
-    And the event "app.bundleVersion" is not null
+    And the event "app.bundleVersion" equals "321.123"
     And the event "app.dsymUUIDs" is not null
     And the event "app.id" equals the platform-dependent string:
       | ios   | com.bugsnag.iOSTestApp   |
       | macos | com.bugsnag.macOSTestApp |
     And the event "app.inForeground" is true
     And the event "app.isLaunching" is true
-    And the event "app.type" equals the platform-dependent string:
-      | ios   | iOS   |
-      | macos | macOS |
-    And the event "app.version" is not null
+    And the event "app.releaseStage" equals "staging"
+    And the event "app.type" equals "vanilla"
+    And the event "app.version" equals "3.2.1"
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" equals "Memory Warning"
+    And the event "context" equals "OOM Scenario"
     And the event "device.id" is not null
     And the event "device.jailbroken" is false
     And the event "device.locale" is not null
@@ -246,3 +245,4 @@ Feature: Barebone tests
     And the error payload field "events.0.device.freeMemory" is null
     And the error payload field "events.0.device.model" matches the test device model
     And the error payload field "events.0.device.totalMemory" is an integer
+    And the error payload field "events.0.threads" is an array with 0 elements

@@ -65,7 +65,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
 
 - (void)testErrorLoad {
     BugsnagThread *thread = [self findErrorReportingThread:self.event];
-    BugsnagError *error = [[BugsnagError alloc] initWithEvent:self.event errorReportingThread:thread];
+    BugsnagError *error = [[BugsnagError alloc] initWithKSCrashReport:self.event stacktrace:thread.stacktrace];
     XCTAssertEqualObjects(@"Foo Exception", error.errorClass);
     XCTAssertEqualObjects(@"Foo overload", error.errorMessage);
     XCTAssertEqual(BSGErrorTypeCocoa, error.type);
@@ -79,7 +79,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
 
 - (void)testToDictionary {
     BugsnagThread *thread = [self findErrorReportingThread:self.event];
-    BugsnagError *error = [[BugsnagError alloc] initWithEvent:self.event errorReportingThread:thread];
+    BugsnagError *error = [[BugsnagError alloc] initWithKSCrashReport:self.event stacktrace:thread.stacktrace];
     NSDictionary *dict = [error toDictionary];
     XCTAssertEqualObjects(@"Foo Exception", dict[@"errorClass"]);
     XCTAssertEqualObjects(@"Foo overload", dict[@"message"]);
@@ -141,7 +141,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
 
 - (void)testStacktraceOverride {
     BugsnagThread *thread = [self findErrorReportingThread:self.event];
-    BugsnagError *error = [[BugsnagError alloc] initWithEvent:self.event errorReportingThread:thread];
+    BugsnagError *error = [[BugsnagError alloc] initWithKSCrashReport:self.event stacktrace:thread.stacktrace];
     XCTAssertNotNil(error.stacktrace);
     XCTAssertEqual(1, error.stacktrace.count);
     error.stacktrace = @[];
