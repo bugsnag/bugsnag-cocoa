@@ -13,7 +13,6 @@
 @class BugsnagDeviceWithState;
 @class BugsnagEvent;
 @class BugsnagNotifier;
-@class BugsnagUser;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -27,8 +26,6 @@ FOUNDATION_EXPORT NSString *BSGErrorDescription(NSError *error);
 @property (readonly, nonatomic) BugsnagConfiguration *configuration;
 
 @property (readonly, nonatomic) BugsnagNotifier *notifier;
-
-@property (readonly, nonatomic) BugsnagUser *user;
 
 - (BugsnagAppWithState *)generateAppWithState:(NSDictionary *)systemInfo;
 

@@ -114,7 +114,7 @@ static BSGInternalErrorReporter *sharedInstance_;
     [[BugsnagEvent alloc] initWithApp:[dataSource generateAppWithState:systemInfo]
                                device:[dataSource generateDeviceWithState:systemInfo]
                          handledState:[BugsnagHandledState handledStateWithSeverityReason:HandledError]
-                                 user:dataSource.user
+                                 user:[[BugsnagUser alloc] init]
                              metadata:metadata
                           breadcrumbs:@[]
                                errors:@[error]

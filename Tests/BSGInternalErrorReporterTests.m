@@ -18,7 +18,6 @@
 
 @property (nonatomic) BugsnagConfiguration *configuration;
 @property (nonatomic) BugsnagNotifier *notifier;
-@property (nonatomic) BugsnagUser *user;
 
 @end
 
@@ -27,7 +26,6 @@
 - (void)setUp {
     self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
     self.notifier = [[BugsnagNotifier alloc] init];
-    self.user = self.configuration.user;
 }
 
 - (void)testEventForError {
