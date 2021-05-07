@@ -17,6 +17,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Returns a concise desription of the error including its domain, code, and debug description or localizedDescription.
+FOUNDATION_EXPORT NSString *BSGErrorDescription(NSError *error);
+
+// MARK: -
+
 @protocol BSGInternalErrorReporterDataSource <NSObject>
 
 @property (readonly, nonatomic) BugsnagConfiguration *configuration;

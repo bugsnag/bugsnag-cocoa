@@ -32,6 +32,14 @@ static NSString * const BugsnagDiagnosticsKey = @"BugsnagDiagnostics";
 BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameInternalError = @"Bugsnag-Internal-Error";
 
 
+NSString *BSGErrorDescription(NSError *error) {
+    return [NSString stringWithFormat:@"%@ %ld: %@", error.domain, (long)error.code,
+            error.userInfo[NSDebugDescriptionErrorKey] ?: error.localizedDescription];
+}
+
+
+// MARK: -
+
 @interface BSGInternalErrorReporter ()
 
 @property (weak, nullable, nonatomic) id<BSGInternalErrorReporterDataSource> dataSource;
