@@ -27,11 +27,9 @@
     
     NSData *data = [NSData dataWithContentsOfFile:self.file options:0 error:&error];
     if (!data) {
-        if (!(error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError)) {
-            [BSGInternalErrorReporter.sharedInstance reportErrorWithClass:@"File reading error"
-                                                                  message:BSGErrorDescription(error)
-                                                              diagnostics:error.userInfo];
-        }
+        [BSGInternalErrorReporter.sharedInstance reportErrorWithClass:@"File reading error"
+                                                              message:BSGErrorDescription(error)
+                                                          diagnostics:error.userInfo];
         if (errorPtr) {
             *errorPtr = error;
         }
