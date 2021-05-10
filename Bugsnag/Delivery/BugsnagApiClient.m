@@ -90,7 +90,7 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
     }
     
     NSMutableDictionary<BugsnagHTTPHeaderName, NSString *> *mutableHeaders = [headers mutableCopy];
-    mutableHeaders[BugsnagHTTPHeaderNameIntegrity] = [NSString stringWithFormat:@"sha1 %@", [self SHA1HashStringWithData:data]];
+    mutableHeaders[BugsnagHTTPHeaderNameIntegrity] = [NSString stringWithFormat:@"sha1 %@", [BugsnagApiClient SHA1HashStringWithData:data]];
     
     NSMutableURLRequest *request = [self prepareRequest:url headers:mutableHeaders];
     bsg_log_debug(@"Sending %lu byte payload to %@", (unsigned long)data.length, url);
@@ -150,7 +150,7 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
     return request;
 }
 
-- (NSString *)SHA1HashStringWithData:(NSData *)data {
++ (NSString *)SHA1HashStringWithData:(NSData *)data {
     if (!data) {
         return nil;
     }
