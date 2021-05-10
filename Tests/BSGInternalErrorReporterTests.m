@@ -32,9 +32,6 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
     BSGInternalErrorReporter *reporter = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
     
-    NSError *error = nil;
-    [NSData dataWithContentsOfFile:@"/tmp/nonexistant" options:0 error:&error];
-    
     BugsnagEvent *event = [reporter eventWithErrorClass:@"Internal error" message:@"Something went wrong" diagnostics:@{}];
     XCTAssertEqualObjects(event.errors[0].errorClass, @"Internal error");
     XCTAssertEqualObjects(event.errors[0].errorMessage, @"Something went wrong");
