@@ -22,7 +22,7 @@
 - (void)install:(BugsnagConfiguration *)config onCrash:(BSGReportCallback)onCrash
 {
     if (!config.autoDetectErrors) {
-      return;
+        return;
     }
     BSG_KSCrash *ksCrash = [BSG_KSCrash sharedInstance];
     ksCrash.introspectMemory = NO;
