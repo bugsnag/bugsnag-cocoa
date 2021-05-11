@@ -21,6 +21,9 @@
 
 - (void)install:(BugsnagConfiguration *)config onCrash:(BSGReportCallback)onCrash
 {
+    if (!config.autoDetectErrors) {
+      return;
+    }
     BSG_KSCrash *ksCrash = [BSG_KSCrash sharedInstance];
     ksCrash.introspectMemory = NO;
     ksCrash.onCrash = onCrash;
@@ -30,18 +33,8 @@
     // applies to unhandled errors
     ksCrash.threadTracingEnabled = config.sendThreads != BSGThreadSendPolicyNever;
 
-    // User reported events do not go through KSCrash
-    BSG_KSCrashType crashTypes = 0;
-    
-    // If Bugsnag is autodetecting errors then the types of event detected is configurable
-    // (otherwise it's just the user reported events)
-    if (config.autoDetectErrors) {
-        // Translate the relevant BSGErrorTypes bitfield into the equivalent BSG_KSCrashType one
-        crashTypes = crashTypes | [self mapKSToBSGCrashTypes:config.enabledErrorTypes];
-    }
-    
-    bsg_kscrash_setHandlingCrashTypes(crashTypes);
-    
+    bsg_kscrash_setHandlingCrashTypes([self mapKSToBSGCrashTypes:config.enabledErrorTypes]);
+
     if ((![ksCrash install:[BSGFileLocations current].kscrashReports])) {
         bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");
     }
