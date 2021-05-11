@@ -87,7 +87,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log"]
+        upload: ["macOSTestApp.log", "appium_server.log"]
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -107,7 +107,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log"]
+        upload: ["macOSTestApp.log", "appium_server.log"]
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -127,7 +127,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log"]
+        upload: ["macOSTestApp.log", "appium_server.log"]
     commands:
       - bundle install
       - bundle exec maze-runner
