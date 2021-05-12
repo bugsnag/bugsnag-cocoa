@@ -217,8 +217,8 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 }
 
 // =============================================================================
-// MARK: - BugsnagClient
-// =============================================================================
+
+// MARK: -
 
 @interface BugsnagClient () <BSGBreadcrumbSink, BSGInternalErrorReporterDataSource>
 
@@ -226,19 +226,18 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 
 @property (weak, nonatomic) NSTimer *appLaunchTimer;
 
+@property (readwrite, nullable, nonatomic) BugsnagLastRunInfo *lastRunInfo;
+
 @end
 
+
+// MARK: -
 
 #if __clang_major__ >= 11 // Xcode 10 does not like the following attribute
 __attribute__((annotate("oclint:suppress[long class]")))
 __attribute__((annotate("oclint:suppress[too many methods]")))
 #endif
 @implementation BugsnagClient
-
-/**
- * Storage for the device orientation.  It is "last" whenever an orientation change is received
- */
-NSString *_lastOrientation = nil;
 
 @dynamic user; // This computed property should not have a backing ivar
 
@@ -606,14 +605,6 @@ NSString *_lastOrientation = nil;
     [self.state addMetadata:codeBundleId withKey:BSGKeyCodeBundleId toSection:BSGKeyApp];
     [self.systemState setCodeBundleID:codeBundleId];
     self.sessionTracker.codeBundleId = codeBundleId;
-}
-
-- (void)setLastRunInfo:(BugsnagLastRunInfo *)lastRunInfo {
-    _lastRunInfo = lastRunInfo;
-}
-
-- (void)setStarted:(BOOL)started {
-    _started = started;
 }
 
 /**
@@ -1044,7 +1035,7 @@ NSString *_lastOrientation = nil;
 
     // Short-circuit the exit if we don't have enough info to record a full breadcrumb
     // or the orientation hasn't changed (false positive).
-    if (!_lastOrientation || [orientation isEqualToString:_lastOrientation]) {
+    if (!self.lastOrientation || [orientation isEqualToString:self.lastOrientation]) {
         self.lastOrientation = orientation;
         return;
     }
@@ -1055,7 +1046,7 @@ NSString *_lastOrientation = nil;
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
                       withMessage:[self.notificationBreadcrumbs messageForNotificationName:notification.name]
                       andMetadata:@{
-                          @"from" : _lastOrientation,
+                          @"from" : self.lastOrientation,
                           @"to" : orientation
                       }];
 
@@ -1144,7 +1135,9 @@ NSString *_lastOrientation = nil;
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithKSCrashReport:@{@"system": systemInfo}];
     device.time = [NSDate date]; // default to current time for handled errors
     [device appendRuntimeInfo:self.extraRuntimeInfo];
-    device.orientation = _lastOrientation;
+#if TARGET_OS_IOS
+    device.orientation = self.lastOrientation;
+#endif
     return device;
 }
 

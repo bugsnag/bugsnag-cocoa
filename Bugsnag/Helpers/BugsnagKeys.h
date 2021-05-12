@@ -11,7 +11,6 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString *const BSGDefaultNotifyUrl;
 extern NSString *const BSGKeyAction;
 extern NSString *const BSGKeyApiKey;
 extern NSString *const BSGKeyApp;

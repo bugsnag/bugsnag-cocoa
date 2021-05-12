@@ -157,7 +157,7 @@ static NSString *const kUserCallbackSetSeverity = @"userCallbackSetSeverity";
 }
 
 - (SeverityReasonType)calculateSeverityReasonType {
-    return _originalSeverity == _currentSeverity ? _severityReasonType
+    return self.originalSeverity == self.currentSeverity ? self.severityReasonType
                                                  : UserCallbackSetSeverity;
 }
 

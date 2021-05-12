@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, nonatomic) NSDictionary<NSString *, id> *dictionaryRepresentation;
 
-@property (readonly, copy, nonatomic) BugsnagMetadata *metadata;
+@property (copy, nonatomic) BugsnagMetadata *metadata;
 
 @property (readonly, nullable, nonatomic) NSURL *notifyURL;
 

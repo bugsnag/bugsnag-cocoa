@@ -115,6 +115,12 @@
     self.stateEventBlocks = newStateEventBlocks;
 }
 
+// MARK: - <NSCopying>
+
+- (id)copyWithZone:(__attribute__((unused)) NSZone *)zone {
+    return [self deepCopy];
+}
+
 // MARK: - <NSMutableCopying>
 
 - (instancetype)mutableCopyWithZone:(__attribute__((unused)) NSZone *)zone {

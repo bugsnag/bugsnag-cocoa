@@ -7,7 +7,6 @@
 
 #import <Foundation/Foundation.h>
 
-NSString *const BSGDefaultNotifyUrl = @"https://notify.bugsnag.com/";
 NSString *const BSGKeyAction = @"action";
 NSString *const BSGKeyApiKey = @"apiKey";
 NSString *const BSGKeyApp = @"app";

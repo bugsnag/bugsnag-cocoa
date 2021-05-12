@@ -62,7 +62,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 
 - (void)setCodeBundleId:(NSString *)codeBundleId {
     _codeBundleId = codeBundleId;
-    _apiClient.codeBundleId = codeBundleId;
+    self.apiClient.codeBundleId = codeBundleId;
 }
 
 #pragma mark - Creating and sending a new session

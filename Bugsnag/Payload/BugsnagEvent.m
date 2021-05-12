@@ -474,13 +474,13 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 - (BSGSeverity)severity {
     @synchronized (self) {
-        return _handledState.currentSeverity;
+        return self.handledState.currentSeverity;
     }
 }
 
 - (void)setSeverity:(BSGSeverity)severity {
     @synchronized (self) {
-        _handledState.currentSeverity = severity;
+        self.handledState.currentSeverity = severity;
     }
 }
 
