@@ -90,4 +90,4 @@ CLANG_WARN__ARC_BRIDGE_CAST_NONARC                     = YES // -Warc-bridge-cas
 
 // Warning flags that have no dedicated Xcode build settings
 
-WARNING_CFLAGS                                         = -Wcast-qual -Wconditional-uninitialized -Wcustom-atomic-properties -Wdirect-ivar-access -Wimplicit-int-float-conversion -Wincomplete-implementation -Wno-unknown-warning-option -Wnonportable-include-path -Wnullable-to-nonnull-conversion -Wpointer-sign
+WARNING_CFLAGS                                         = -Wcast-qual -Wconditional-uninitialized -Wcustom-atomic-properties -Wdirect-ivar-access -Wdocumentation-unknown-command -Wimplicit-int-float-conversion -Wincomplete-implementation -Wno-unknown-warning-option -Wnonportable-include-path -Wnullable-to-nonnull-conversion -Wpointer-sign

@@ -1430,7 +1430,7 @@ void bsg_kscrw_i_writeReportInfo(const BSG_KSCrashReportWriter *const writer,
 
 /** Prepare a report writer for use.
  *
- * @oaram writer The writer to prepare.
+ * @param writer The writer to prepare.
  *
  * @param context JSON writer contextual information.
  */
