@@ -11,8 +11,6 @@
 
 #import "BSGFileLocations.h"
 #import "BSG_KSCrashAdvanced.h"
-#import "BSG_KSCrashC.h"
-#import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagErrorTypes.h"
 #import "BugsnagLogger.h"
@@ -21,9 +19,6 @@
 
 - (void)install:(BugsnagConfiguration *)config onCrash:(BSGReportCallback)onCrash
 {
-    if (!config.autoDetectErrors) {
-        return;
-    }
     BSG_KSCrash *ksCrash = [BSG_KSCrash sharedInstance];
     ksCrash.introspectMemory = NO;
     ksCrash.onCrash = onCrash;
@@ -33,9 +28,11 @@
     // applies to unhandled errors
     ksCrash.threadTracingEnabled = config.sendThreads != BSGThreadSendPolicyNever;
 
-    bsg_kscrash_setHandlingCrashTypes([self mapKSToBSGCrashTypes:config.enabledErrorTypes]);
+    BSG_KSCrashType crashTypes = config.autoDetectErrors ? [self mapKSToBSGCrashTypes:config.enabledErrorTypes] : 0;
 
-    if ((![ksCrash install:[BSGFileLocations current].kscrashReports])) {
+    // In addition to installing crash handlers, -[BSG_KSCrash install:] initializes various
+    // subsystems that Bugsnag relies on, so needs to be called even if autoDetectErrors is disabled.
+    if ((![ksCrash install:crashTypes directory:[BSGFileLocations current].kscrashReports] && crashTypes)) {
         bsg_log_err(@"Failed to install crash handler. No exceptions will be reported!");
     }
 }
