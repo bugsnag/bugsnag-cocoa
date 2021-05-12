@@ -31,7 +31,6 @@
 // ===========================================================================
 
 // Compiler hints for "if" statements
-#define likely_if(x) if (__builtin_expect(x, 1))
 #define unlikely_if(x) if (__builtin_expect(x, 0))
 
 /** The buffer size to use when writing log entries.

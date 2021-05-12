@@ -29,7 +29,6 @@
 #include <string.h>
 
 // Compiler hints for "if" statements
-#define likely_if(x) if (__builtin_expect(x, 1))
 #define unlikely_if(x) if (__builtin_expect(x, 0))
 
 static const int bsg_g_printableControlChars[0x20] = {

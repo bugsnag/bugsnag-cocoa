@@ -80,13 +80,6 @@ typedef ucontext_t SignalUserContext;
 /** The minimum length for a valid string. */
 #define BSG_kMinStringLength 4
 
-// ============================================================================
-#pragma mark - Thread Data Buffer -
-// ============================================================================
-
-#define BSG_THREAD_DATA_SIZE_INITIAL 128 * 1024
-#define BSG_THREAD_DATA_SIZE_INCREMENT 8 * 1024
-
 typedef struct {
     char *data;
     size_t allocated_size;

@@ -51,18 +51,9 @@
 #endif
 
 // ============================================================================
-#pragma mark - Default Constants -
-// ============================================================================
-
-#ifndef BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE
-#define BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE 400
-#endif
-
-// ============================================================================
 #pragma mark - Constants -
 // ============================================================================
 
-#define BSG_kCrashLogFilenameSuffix "-CrashLog.txt"
 #define BSG_kCrashStateFilenameSuffix "-CrashState.json"
 
 // ============================================================================
