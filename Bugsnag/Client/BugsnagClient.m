@@ -166,30 +166,23 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, __attrib
 #if BSG_PLATFORM_IOS
 NSString *BSGOrientationNameFromEnum(UIDeviceOrientation deviceOrientation)
 {
-    NSString *orientation;
     switch (deviceOrientation) {
-    case UIDeviceOrientationPortraitUpsideDown:
-        orientation = @"portraitupsidedown";
-        break;
-    case UIDeviceOrientationPortrait:
-        orientation = @"portrait";
-        break;
-    case UIDeviceOrientationLandscapeRight:
-        orientation = @"landscaperight";
-        break;
-    case UIDeviceOrientationLandscapeLeft:
-        orientation = @"landscapeleft";
-        break;
-    case UIDeviceOrientationFaceUp:
-        orientation = @"faceup";
-        break;
-    case UIDeviceOrientationFaceDown:
-        orientation = @"facedown";
-        break;
-    default:
-        return nil; // always ignore unknown breadcrumbs
+        case UIDeviceOrientationPortraitUpsideDown:
+            return @"portraitupsidedown";
+        case UIDeviceOrientationPortrait:
+            return @"portrait";
+        case UIDeviceOrientationLandscapeRight:
+            return @"landscaperight";
+        case UIDeviceOrientationLandscapeLeft:
+            return @"landscapeleft";
+        case UIDeviceOrientationFaceUp:
+            return @"faceup";
+        case UIDeviceOrientationFaceDown:
+            return @"facedown";
+        case UIDeviceOrientationUnknown:
+            break;
     }
-    return orientation;
+    return nil;
 }
 #endif
 
