@@ -89,7 +89,6 @@
 // ============================================================================
 
 @synthesize userInfo = _userInfo;
-@synthesize handlingCrashTypes = _handlingCrashTypes;
 @synthesize printTraceToStdout = _printTraceToStdout;
 @synthesize onCrash = _onCrash;
 @synthesize bundleName = _bundleName;
@@ -146,10 +145,6 @@
     bsg_kscrash_setUserInfoJSON([userInfoJSON bytes]);
 }
 
-- (void)setHandlingCrashTypes:(BSG_KSCrashType)handlingCrashTypes {
-    _handlingCrashTypes = bsg_kscrash_setHandlingCrashTypes(handlingCrashTypes);
-}
-
 - (void)setPrintTraceToStdout:(bool)printTraceToStdout {
     _printTraceToStdout = printTraceToStdout;
     bsg_kscrash_setPrintTraceToStdout(printTraceToStdout);
@@ -175,22 +170,24 @@
     bsg_kscrash_setThreadTracingEnabled(threadTracingEnabled);
 }
 
-- (BOOL)install:(NSString *)directory {
+- (BSG_KSCrashType)install:(BSG_KSCrashType)crashTypes directory:(NSString *)directory {
     bsg_kscrash_generate_report_initialize(directory.fileSystemRepresentation, self.bundleName.UTF8String);
     char *crashReportPath = (char *)bsg_kscrash_generate_report_path(self.nextCrashID.UTF8String, false);
     char *recrashReportPath = (char *)bsg_kscrash_generate_report_path(self.nextCrashID.UTF8String, true);
     NSString *stateFilePath = [directory stringByAppendingPathComponent:
                                [self.bundleName stringByAppendingString:@BSG_kCrashStateFilenameSuffix]];
     
-    self.handlingCrashTypes = bsg_kscrash_install(
+    bsg_kscrash_setHandlingCrashTypes(crashTypes);
+    
+    BSG_KSCrashType installedCrashTypes = bsg_kscrash_install(
         crashReportPath, recrashReportPath,
         [stateFilePath UTF8String], [self.nextCrashID UTF8String]);
     
     free(crashReportPath);
     free(recrashReportPath);
     
-    if (self.handlingCrashTypes == 0) {
-        return false;
+    if (!installedCrashTypes) {
+        return 0;
     }
     
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
@@ -231,7 +228,7 @@
                   object:nil];
 #endif
 
-    return true;
+    return installedCrashTypes;
 }
 
 - (NSDictionary *)captureAppStats {

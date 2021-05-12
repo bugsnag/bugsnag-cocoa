@@ -1,3 +1,6 @@
+env:
+  LANG: "en_GB.UTF-8"
+
 steps:
   - label: 'Trigger RN tests for all builds of our next branch'
     if: build.branch == "next"
@@ -215,13 +218,17 @@ steps:
     env:
       STRESS_TEST: "true"
     commands:
+      - echo "--- Bundle install"
       - bundle install
+      - echo "--- Build"
+      - make -C features/fixtures/macos-stress-test
+      - echo "--- Test"
       - bundle exec maze-runner
         features/stress_test.feature
         --no-log-requests
     artifact_paths:
-      - features/fixtures/macos-stress-test/BugsnagStressTest.stdout.log
-      - features/fixtures/macos-stress-test/BugsnagStressTest.stderr.log
+      - features/fixtures/macos-stress-test/*.log
+      - features/fixtures/macos-stress-test/*.crash
 
   - label: 'Conditionally trigger full set of tests'
     command: sh -c .buildkite/pipeline_trigger.sh

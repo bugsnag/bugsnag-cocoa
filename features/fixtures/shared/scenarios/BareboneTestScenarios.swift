@@ -38,6 +38,7 @@ class BareboneTestHandledScenario: Scenario {
             return true
         }
         config.enabledBreadcrumbTypes = [.error]
+        config.autoDetectErrors = false
         config.addMetadata(["Testing": true], section: "Flags")
         config.addMetadata(["password": "123456"], section: "Other")
         config.launchDurationMillis = 0
