@@ -228,19 +228,19 @@ BugsnagStackframeType const BugsnagStackframeTypeCocoa = @"cocoa";
     dict[BSGKeyMachoUUID] = self.machoUuid;
 
     if (self.frameAddress != nil) {
-        NSString *frameAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, [self.frameAddress unsignedLongValue]];
+        NSString *frameAddr = [NSString stringWithFormat:@"0x%lx", [self.frameAddress unsignedLongValue]];
         dict[BSGKeyFrameAddress] = frameAddr;
     }
     if (self.symbolAddress != nil) {
-        NSString *symbolAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, [self.symbolAddress unsignedLongValue]];
+        NSString *symbolAddr = [NSString stringWithFormat:@"0x%lx", [self.symbolAddress unsignedLongValue]];
         dict[BSGKeySymbolAddr] = symbolAddr;
     }
     if (self.machoLoadAddress != nil) {
-        NSString *imageAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, [self.machoLoadAddress unsignedLongValue]];
+        NSString *imageAddr = [NSString stringWithFormat:@"0x%lx", [self.machoLoadAddress unsignedLongValue]];
         dict[BSGKeyMachoLoadAddr] = imageAddr;
     }
     if (self.machoVmAddress != nil) {
-        NSString *vmAddr = [NSString stringWithFormat:BSGKeyFrameAddrFormat, [self.machoVmAddress unsignedLongValue]];
+        NSString *vmAddr = [NSString stringWithFormat:@"0x%lx", [self.machoVmAddress unsignedLongValue]];
         dict[BSGKeyMachoVMAddress] = vmAddr;
     }
     if (self.isPc) {

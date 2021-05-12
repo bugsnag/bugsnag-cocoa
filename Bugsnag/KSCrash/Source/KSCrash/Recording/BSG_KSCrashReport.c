@@ -498,7 +498,7 @@ void bsg_kscrw_i_logCrashType(
             bsg_ksmachexceptionName(machExceptionType);
         const char *machCodeName =
             machCode == 0 ? NULL : bsg_ksmachkernelReturnCodeName(machCode);
-        BSG_KSLOGBASIC_INFO("App crashed due to mach exception: [%s: %s] at %p",
+        BSG_KSLOGBASIC_INFO("App crashed due to mach exception: [%s: %s] at %lu",
                             machExceptionName, machCodeName,
                             sentryContext->faultAddress);
         break;
@@ -520,7 +520,7 @@ void bsg_kscrw_i_logCrashType(
         int sigCode = sentryContext->signal.signalInfo->si_code;
         const char *sigName = bsg_kssignal_signalName(sigNum);
         const char *sigCodeName = bsg_kssignal_signalCodeName(sigNum, sigCode);
-        BSG_KSLOGBASIC_INFO("App crashed due to signal: [%s, %s] at %08x",
+        BSG_KSLOGBASIC_INFO("App crashed due to signal: [%s, %s] at %08lx",
                             sigName, sigCodeName, sentryContext->faultAddress);
         break;
     }

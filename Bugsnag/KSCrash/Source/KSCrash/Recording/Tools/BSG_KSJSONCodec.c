@@ -552,7 +552,7 @@ int bsg_ksjsonaddJSONElement(BSG_KSJSONEncodeContext *const context,
     case '9':
         break;
     default:
-        BSG_KSLOG_ERROR("Invalid character '%c' in: ", element[idx], element);
+        BSG_KSLOG_ERROR("Invalid character '%c' in: ", element[idx]);
         return BSG_KSJSON_ERROR_INVALID_DATA;
     }
 
