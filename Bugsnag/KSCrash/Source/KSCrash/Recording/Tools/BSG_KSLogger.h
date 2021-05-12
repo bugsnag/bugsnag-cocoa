@@ -24,7 +24,7 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagLogger.h"
+#include "BugsnagLogger.h"
 
 /**
  * BSG_KSLogger
