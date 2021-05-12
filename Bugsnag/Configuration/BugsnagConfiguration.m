@@ -611,7 +611,7 @@ static NSUserDefaults *userDefaults;
     return [self.metadata getMetadataFromSection:sectionName withKey:key];
 }
 
-- (NSDictionary *_Nullable)getMetadataFromSection:(NSString *_Nonnull)sectionName
+- (NSMutableDictionary *)getMetadataFromSection:(NSString *_Nonnull)sectionName
 {
     return [self.metadata getMetadataFromSection:sectionName];
 }
