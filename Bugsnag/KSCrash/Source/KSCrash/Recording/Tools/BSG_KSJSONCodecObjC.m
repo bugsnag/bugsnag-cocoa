@@ -408,7 +408,6 @@ int bsg_ksjsoncodecobjc_i_encodeObject(BSG_KSJSONCodec *codec, id object,
         case kCFNumberLongLongType:
         case kCFNumberCFIndexType:
         case kCFNumberNSIntegerType:
-        default:
             return bsg_ksjsonaddIntegerElement(context, cName,
                                                [object longLongValue]);
         }
