@@ -19,9 +19,9 @@
 
 typedef NSString * BSGErrorTypeString NS_TYPED_ENUM;
 
-BSGErrorTypeString const BSGErrorTypeStringCocoa = @"cocoa";
-BSGErrorTypeString const BSGErrorTypeStringC = @"c";
-BSGErrorTypeString const BSGErrorTypeStringReactNativeJs = @"reactnativejs";
+static BSGErrorTypeString const BSGErrorTypeStringCocoa = @"cocoa";
+static BSGErrorTypeString const BSGErrorTypeStringC = @"c";
+static BSGErrorTypeString const BSGErrorTypeStringReactNativeJs = @"reactnativejs";
 
 
 NSString *_Nonnull BSGSerializeErrorType(BSGErrorType errorType) {

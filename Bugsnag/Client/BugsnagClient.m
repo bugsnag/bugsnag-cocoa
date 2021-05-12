@@ -86,9 +86,9 @@
 #import "BSGAppKit.h"
 #endif
 
-NSString *const BSTabCrash = @"crash";
-NSString *const BSAttributeDepth = @"depth";
-NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
+static NSString *const BSTabCrash = @"crash";
+static NSString *const BSAttributeDepth = @"depth";
+static NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
 static struct {
     // Contains the state of the event (handled/unhandled)

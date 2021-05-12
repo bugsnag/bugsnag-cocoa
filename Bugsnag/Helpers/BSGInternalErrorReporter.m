@@ -29,7 +29,7 @@ static NSString * const EventPayloadVersion = @"4.0";
 
 static NSString * const BugsnagDiagnosticsKey = @"BugsnagDiagnostics";
 
-BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameInternalError = @"Bugsnag-Internal-Error";
+static BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameInternalError = @"Bugsnag-Internal-Error";
 
 
 NSString *BSGErrorDescription(NSError *error) {

@@ -43,9 +43,9 @@ const NSUInteger BugsnagAppHangThresholdFatalOnly = INT_MAX;
 static const int BSGApiKeyLength = 32;
 
 // User info persistence keys
-NSString * const kBugsnagUserEmailAddress = @"BugsnagUserEmailAddress";
-NSString * const kBugsnagUserName = @"BugsnagUserName";
-NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
+static NSString * const kBugsnagUserEmailAddress = @"BugsnagUserEmailAddress";
+static NSString * const kBugsnagUserName = @"BugsnagUserName";
+static NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 // =============================================================================
 // MARK: - BugsnagConfiguration

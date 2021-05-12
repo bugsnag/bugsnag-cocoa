@@ -6,9 +6,6 @@
 //  Copyright © 2017 Bugsnag. All rights reserved.
 //
 
-#ifndef BugsnagKeys_h
-#define BugsnagKeys_h
-
 #import <Foundation/Foundation.h>
 
 extern NSString *const BSGKeyAction;
@@ -105,5 +102,3 @@ extern NSString *const BSGKeyWarning;
 #define BSGKeyHwCputype "hw.cputype"
 #define BSGKeyHwCpusubtype "hw.cpusubtype"
 #define BSGKeyDefaultMacName "en0"
-
-#endif /* BugsnagKeys_h */

@@ -5,7 +5,7 @@
 //  Created by Robin Macharg on 22/05/2020.
 //
 
-#import <Foundation/Foundation.h>
+#import "BugsnagKeys.h"
 
 NSString *const BSGKeyAction = @"action";
 NSString *const BSGKeyApiKey = @"apiKey";
