@@ -457,8 +457,8 @@ kern_return_t bsg_ksmachcopyMem(const void *const src, void *const dst,
 size_t bsg_ksmachcopyMaxPossibleMem(const void *const src, void *const dst,
                                     const size_t numBytes) {
     const uint8_t *pSrc = src;
-    const uint8_t *pSrcMax = (uint8_t *)src + numBytes;
-    const uint8_t *pSrcEnd = (uint8_t *)src + numBytes;
+    const uint8_t *pSrcMax = (const uint8_t *)src + numBytes;
+    const uint8_t *pSrcEnd = (const uint8_t *)src + numBytes;
     uint8_t *pDst = dst;
 
     size_t bytesCopied = 0;

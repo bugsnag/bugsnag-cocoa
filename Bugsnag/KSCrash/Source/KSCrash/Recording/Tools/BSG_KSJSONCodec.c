@@ -619,8 +619,8 @@ int bsg_ksjsonbeginDataElement(BSG_KSJSONEncodeContext *const context,
 
 int bsg_ksjsonappendDataElement(BSG_KSJSONEncodeContext *const context,
                                 const char *const value, size_t length) {
-    unsigned char *currentByte = (unsigned char *)value;
-    unsigned char *end = currentByte + length;
+    const unsigned char *currentByte = (const unsigned char *)value;
+    const unsigned char *end = currentByte + length;
     char chars[2];
     int result = BSG_KSJSON_OK;
     while (currentByte < end) {

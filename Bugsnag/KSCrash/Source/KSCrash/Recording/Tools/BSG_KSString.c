@@ -123,14 +123,14 @@ bool bsg_ksstring_extractHexValue(const char *string, size_t stringLength,
     value += 2;
     
     // Must have at least one valid digit after "0x".
-    unlikely_if (bsg_g_hexConversion[*(uint8_t *)value] == INV) {
+    unlikely_if (bsg_g_hexConversion[*(const uint8_t *)value] == INV) {
         return false;
     }
     
     uint64_t accum = 0;
     unsigned int nybble = 0;
     while (value < string + stringLength) {
-        nybble = bsg_g_hexConversion[*(uint8_t *)value++];
+        nybble = bsg_g_hexConversion[*(const uint8_t *)value++];
         unlikely_if (nybble == INV) {
             break;
         }
@@ -141,9 +141,9 @@ bool bsg_ksstring_extractHexValue(const char *string, size_t stringLength,
     return true;
 }
 
-void bsg_ksstring_replace(const char **dest, const char *replacement) {
+void bsg_ksstring_replace(char **dest, const char *replacement) {
     if (*dest != NULL) {
-        free((void *)*dest);
+        free(*dest);
     }
     if (replacement == NULL) {
         *dest = NULL;

@@ -172,8 +172,8 @@
 
 - (BSG_KSCrashType)install:(BSG_KSCrashType)crashTypes directory:(NSString *)directory {
     bsg_kscrash_generate_report_initialize(directory.fileSystemRepresentation, self.bundleName.UTF8String);
-    char *crashReportPath = (char *)bsg_kscrash_generate_report_path(self.nextCrashID.UTF8String, false);
-    char *recrashReportPath = (char *)bsg_kscrash_generate_report_path(self.nextCrashID.UTF8String, true);
+    char *crashReportPath = bsg_kscrash_generate_report_path(self.nextCrashID.UTF8String, false);
+    char *recrashReportPath = bsg_kscrash_generate_report_path(self.nextCrashID.UTF8String, true);
     NSString *stateFilePath = [directory stringByAppendingPathComponent:
                                [self.bundleName stringByAppendingString:@BSG_kCrashStateFilenameSuffix]];
     

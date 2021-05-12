@@ -329,7 +329,7 @@ int bsg_kscrw_i_addJSONData(const char *const data, const size_t length,
  * @return true if the address points to a string.
  */
 bool bsg_kscrw_i_isValidString(const void *const address) {
-    if ((void *)address == NULL) {
+    if (!address) {
         return false;
     }
 
@@ -386,7 +386,7 @@ BSG_STRUCT_MCONTEXT_L *bsg_kscrw_i_getMachineContext(
     BSG_STRUCT_MCONTEXT_L *const machineContextBuffer) {
     if (thread == crash->offendingThread) {
         if (crash->crashType == BSG_KSCrashTypeSignal) {
-            return ((SignalUserContext *)crash->signal.userContext)
+            return ((const SignalUserContext *)crash->signal.userContext)
                 ->BSG_UC_MCONTEXT;
         }
     }
