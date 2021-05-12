@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
 @implementation BugsnagApiClient
 
 - (instancetype)initWithSession:(nullable NSURLSession *)session queueName:(NSString *)queueName {
-    if (self = [super init]) {
+    if ((self = [super init])) {
         _sendQueue = [NSOperationQueue new];
         _sendQueue.maxConcurrentOperationCount = 1;
         if ([_sendQueue respondsToSelector:@selector(qualityOfService)]) {

@@ -13,7 +13,7 @@
 @implementation BugsnagNotifier
 
 - (instancetype)init {
-    if (self = [super init]) {
+    if ((self = [super init])) {
 #if BSG_PLATFORM_TVOS
         self.name = @"tvOS Bugsnag Notifier";
 #elif BSG_PLATFORM_IOS

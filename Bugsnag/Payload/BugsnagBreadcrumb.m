@@ -88,7 +88,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value) {
 @implementation BugsnagBreadcrumb
 
 - (instancetype)init {
-    if (self = [super init]) {
+    if ((self = [super init])) {
         _timestamp = [NSDate date];
         _type = BSGBreadcrumbTypeManual;
         _metadata = @{};

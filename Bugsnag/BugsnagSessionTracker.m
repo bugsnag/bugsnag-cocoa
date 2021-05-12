@@ -48,7 +48,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config
                         client:(BugsnagClient *)client
             postRecordCallback:(void(^)(BugsnagSession *))callback {
-    if (self = [super init]) {
+    if ((self = [super init])) {
         _config = config;
         _client = client;
         _apiClient = [[BugsnagSessionTrackingApiClient alloc] initWithConfig:config queueName:@"Session API queue" notifier:client.notifier];

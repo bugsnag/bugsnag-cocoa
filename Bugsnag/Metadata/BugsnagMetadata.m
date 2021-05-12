@@ -42,7 +42,7 @@
 }
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super init]) {
+    if ((self = [super init])) {
         // Ensure that the instantiating dictionary is mutable.
         // Saves checks later.
         _dictionary = [self sanitizeDictionary:dict];
