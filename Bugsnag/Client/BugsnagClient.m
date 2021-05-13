@@ -1201,4 +1201,38 @@ NSString *_lastOrientation = nil;
     [self.state addMetadata:self.extraRuntimeInfo withKey:BSGKeyExtraRuntimeInfo toSection:BSGKeyDevice];
 }
 
+// =============================================================================
+// MARK: - autoNotify
+// =============================================================================
+
+- (BOOL)autoNotify {
+    return self.configuration.autoDetectErrors;
+}
+
+/// Alters whether error detection should be enabled or not after Bugsnag has been initialized.
+/// Intended for internal use only by Unity.
+- (void)setAutoNotify:(BOOL)autoNotify {
+    BOOL changed = self.configuration.autoDetectErrors != autoNotify;
+    self.configuration.autoDetectErrors = autoNotify;
+
+    if (changed) {
+        [self updateCrashDetectionSettings];
+    }
+}
+
+/// Updates the crash detection settings after Bugsnag has been initialized.
+/// App Hang detection is not updated as it will always be disabled for Unity.
+- (void)updateCrashDetectionSettings {
+    if (self.configuration.autoDetectErrors) {
+        // alter the enabled KSCrash types
+        BugsnagErrorTypes *errorTypes = self.configuration.enabledErrorTypes;
+        BSG_KSCrashType crashTypes = [self.crashSentry mapKSToBSGCrashTypes:errorTypes];
+        bsg_kscrash_setHandlingCrashTypes(crashTypes);
+    } else {
+        // Only enable support for notify()-based reports
+        bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeNone);
+    }
+    // OOMs are controlled by config.autoDetectErrors so don't require any further action
+}
+
 @end
