@@ -43,8 +43,6 @@
 
 - (void)testRequestForEvent {
     self.configuration.endpoints.notify = @"https://notify.example.com";
-    // endpoints.notify is only applied to notifyURL when the configuration is copied o_0
-    self.configuration = [self.configuration copy];
     
     BugsnagNotifier *notifier = [[BugsnagNotifier alloc] init];
     BSGInternalErrorReporter *reporter = [[BSGInternalErrorReporter alloc] initWithDataSource:self];

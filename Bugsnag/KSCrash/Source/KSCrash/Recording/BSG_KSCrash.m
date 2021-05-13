@@ -51,18 +51,9 @@
 #endif
 
 // ============================================================================
-#pragma mark - Default Constants -
-// ============================================================================
-
-#ifndef BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE
-#define BSG_INITIAL_MACH_BINARY_IMAGE_ARRAY_SIZE 400
-#endif
-
-// ============================================================================
 #pragma mark - Constants -
 // ============================================================================
 
-#define BSG_kCrashLogFilenameSuffix "-CrashLog.txt"
 #define BSG_kCrashStateFilenameSuffix "-CrashState.json"
 
 // ============================================================================
@@ -172,8 +163,8 @@
 
 - (BSG_KSCrashType)install:(BSG_KSCrashType)crashTypes directory:(NSString *)directory {
     bsg_kscrash_generate_report_initialize(directory.fileSystemRepresentation, self.bundleName.UTF8String);
-    char *crashReportPath = (char *)bsg_kscrash_generate_report_path(self.nextCrashID.UTF8String, false);
-    char *recrashReportPath = (char *)bsg_kscrash_generate_report_path(self.nextCrashID.UTF8String, true);
+    char *crashReportPath = bsg_kscrash_generate_report_path(self.nextCrashID.UTF8String, false);
+    char *recrashReportPath = bsg_kscrash_generate_report_path(self.nextCrashID.UTF8String, true);
     NSString *stateFilePath = [directory stringByAppendingPathComponent:
                                [self.bundleName stringByAppendingString:@BSG_kCrashStateFilenameSuffix]];
     
