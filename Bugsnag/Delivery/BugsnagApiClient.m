@@ -120,7 +120,7 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
             NSURLErrorFailingURLErrorKey: url }];
         
         bsg_log_debug(@"Response headers: %@", ((NSHTTPURLResponse *)response).allHeaderFields);
-        bsg_log_debug(@"Response body: %.*s", (int)data.length, data.bytes);
+        bsg_log_debug(@"Response body: %.*s", (int)data.length, (const char *)data.bytes);
         
         if (statusCode / 100 == 4 &&
             statusCode != HTTPStatusCodePaymentRequired &&
