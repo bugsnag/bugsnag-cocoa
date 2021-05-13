@@ -28,6 +28,7 @@
     "Bugsnag/{**/,}*.{m,h,mm,c}"
   ],
   "requires_arc": true,
+  "prefix_header_file": false,
   "public_header_files": [
     "Bugsnag/include/Bugsnag/*.h"
   ]
