@@ -1,4 +1,17 @@
+env:
+  LANG: "en_GB.UTF-8"
+
 steps:
+  - label: 'Trigger RN tests for all builds of our next branch'
+    if: build.branch == "next"
+    trigger: 'bugsnag-js'
+    build:
+      branch: 'next'
+      message: 'Run RN tests with latest Cocoa next branch'
+      env:
+        BUILD_RN_WITH_LATEST_NATIVES: "true"
+    async: true
+
   - label: Build cocoa IPA
     key: cocoa_fixture
     timeout_in_minutes: 20
@@ -186,7 +199,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log"]
+        upload: ["macOSTestApp.log", "appium_server.log"]
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -205,13 +218,17 @@ steps:
     env:
       STRESS_TEST: "true"
     commands:
+      - echo "--- Bundle install"
       - bundle install
+      - echo "--- Build"
+      - make -C features/fixtures/macos-stress-test
+      - echo "--- Test"
       - bundle exec maze-runner
         features/stress_test.feature
         --no-log-requests
     artifact_paths:
-      - features/fixtures/macos-stress-test/BugsnagStressTest.stdout.log
-      - features/fixtures/macos-stress-test/BugsnagStressTest.stderr.log
+      - features/fixtures/macos-stress-test/*.log
+      - features/fixtures/macos-stress-test/*.crash
 
   - label: 'Conditionally trigger full set of tests'
     command: sh -c .buildkite/pipeline_trigger.sh

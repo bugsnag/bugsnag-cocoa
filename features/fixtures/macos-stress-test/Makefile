@@ -1,4 +1,4 @@
-.PHONY: all build clean run
+.PHONY: all build clean
 
 all: build
 
@@ -14,8 +14,3 @@ build:
 
 clean:
 	rm -rf build Pods *.log
-
-run:
-	QUIET=true /usr/bin/time -l ./build/usr/local/bin/BugsnagStressTest
-	rm -rf $(HOME)/Library/Application\ Support/com.bugsnag.Bugsnag
-	@echo "macOS stress-test complete"

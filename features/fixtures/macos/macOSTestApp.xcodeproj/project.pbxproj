@@ -17,6 +17,7 @@
 		0176C0B6254AE81B0066E0F3 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0176C0B4254AE81B0066E0F3 /* MainMenu.xib */; };
 		017FBFB8254B09C300809042 /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 017FBFB6254B09C300809042 /* MainWindowController.m */; };
 		017FBFB9254B09C300809042 /* MainWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 017FBFB7254B09C300809042 /* MainWindowController.xib */; };
+		01847DCD26443DF000ADA4C7 /* InternalErrorReportingScenarios.m in Sources */ = {isa = PBXBuildFile; fileRef = 01847DCC26443DF000ADA4C7 /* InternalErrorReportingScenarios.m */; };
 		01AF6A50258A00DE00FFC803 /* BareboneTestScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A4F258A00DE00FFC803 /* BareboneTestScenarios.swift */; };
 		01AF6A84258BB38A00FFC803 /* DispatchCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A83258BB38A00FFC803 /* DispatchCrashScenario.swift */; };
 		01B6BB7225D56CBF00FC4DE6 /* LastRunInfoScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B6BB7125D56CBF00FC4DE6 /* LastRunInfoScenarios.swift */; };
@@ -168,6 +169,7 @@
 		017FBFB5254B09C300809042 /* MainWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainWindowController.h; sourceTree = "<group>"; };
 		017FBFB6254B09C300809042 /* MainWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainWindowController.m; sourceTree = "<group>"; };
 		017FBFB7254B09C300809042 /* MainWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindowController.xib; sourceTree = "<group>"; };
+		01847DCC26443DF000ADA4C7 /* InternalErrorReportingScenarios.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InternalErrorReportingScenarios.m; sourceTree = "<group>"; };
 		01AF6A4F258A00DE00FFC803 /* BareboneTestScenarios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BareboneTestScenarios.swift; sourceTree = "<group>"; };
 		01AF6A83258BB38A00FFC803 /* DispatchCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchCrashScenario.swift; sourceTree = "<group>"; };
 		01B6BB7125D56CBF00FC4DE6 /* LastRunInfoScenarios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastRunInfoScenarios.swift; sourceTree = "<group>"; };
@@ -417,6 +419,7 @@
 				01F47C4E254B1B2D00B184AD /* HandledErrorScenario.swift */,
 				01F47C28254B1B2C00B184AD /* HandledExceptionScenario.swift */,
 				01F47C55254B1B2E00B184AD /* HandledInternalNotifyScenario.swift */,
+				01847DCC26443DF000ADA4C7 /* InternalErrorReportingScenarios.m */,
 				01B6BB7125D56CBF00FC4DE6 /* LastRunInfoScenarios.swift */,
 				01F47C23254B1B2C00B184AD /* LoadConfigFromFileAutoScenario.swift */,
 				01F47C94254B1B2F00B184AD /* LoadConfigFromFileScenario.swift */,
@@ -679,6 +682,7 @@
 				01F47CE9254B1B3100B184AD /* SIGTRAPScenario.m in Sources */,
 				01F47CC8254B1B3100B184AD /* AutoSessionScenario.m in Sources */,
 				01E0DB0625E8E95700A740ED /* AppDurationScenario.swift in Sources */,
+				01847DCD26443DF000ADA4C7 /* InternalErrorReportingScenarios.m in Sources */,
 				01F47D2D254B1B3100B184AD /* OnErrorOverwriteScenario.swift in Sources */,
 				01F47CC7254B1B3100B184AD /* MetadataRedactionDefaultScenario.swift in Sources */,
 				01F47CEC254B1B3100B184AD /* SessionCallbackCrashScenario.swift in Sources */,

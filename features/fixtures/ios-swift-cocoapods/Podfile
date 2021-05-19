@@ -18,6 +18,12 @@ post_install do |installer|
       target.build_configurations.each do |config|
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'BSG_LOG_LEVEL=BSG_LOGLEVEL_DEBUG']
         config.build_settings['GCC_TREAT_WARNINGS_AS_ERRORS'] = 'YES'
+
+        # Include all our build warning settings without needing to duplicate them here
+        xcconfig = "Pods/Target Support Files/#{target.name}/#{target.name}.#{config.name.downcase}.xcconfig"
+        File.open(xcconfig, 'a') do |file|
+          file << '#include "../../../../../../Bugsnag.xcconfig"'
+        end
       end
     end
   end

@@ -1,19 +1,99 @@
 
-GCC_TREAT_WARNINGS_AS_ERRORS = YES
+// Apple Clang - Warning Policies
 
-WARNING_CFLAGS = $(inherited) -Warc-repeated-use-of-weak -Wassign-enum
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wblock-capture-autoreleasing -Wbool-conversion
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wcomma -Wconditional-uninitialized -Wconstant-conversion -Wconversion
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wdeprecated-declarations -Wdeprecated-implementations -Wdeprecated-objc-isa-usage -Wdocumentation -Wduplicate-method-match
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wempty-body -Wenum-conversion -Wexplicit-ownership-type
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wfloat-conversion -Wfour-char-constants -Wframework-include-private-from-public
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wimplicit-atomic-properties -Wimplicit-int-float-conversion -Wimplicit-retain-self -Wincompatible-pointer-types
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wincomplete-implementation -Winfinite-recursion -Wint-conversion
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wmissing-braces
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wno-unknown-warning-option -Wnon-literal-null-conversion -Wnonportable-include-path -Wnullable-to-nonnull-conversion
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wobjc-literal-conversion -Wobjc-root-class
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wparentheses -Wpointer-sign -Wprotocol
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wreturn-type
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wshadow -Wshorten-64-to-32 -Wsign-compare -Wsign-conversion -Wstrict-prototypes -Wstrict-selector-match -Wswitch
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wundeclared-selector -Wunguarded-availability -Wuninitialized -Wunknown-pragmas -Wunreachable-code
-WARNING_CFLAGS = $(WARNING_CFLAGS) -Wunused-function -Wunused-label -Wunused-parameter -Wunused-value -Wunused-variable
+GCC_TREAT_WARNINGS_AS_ERRORS                           = YES // -Werror
+GCC_WARN_INHIBIT_ALL_WARNINGS                          = NO
+GCC_WARN_PEDANTIC                                      = NO
+
+// Apple Clang - Warnings - All languages
+
+CLANG_WARN_ASSIGN_ENUM                                 = YES // -Wassign-enum
+CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING                 = YES // -Wblock-capture-autoreleasing
+CLANG_WARN_BOOL_CONVERSION                             = YES // -Wbool-conversion
+CLANG_WARN_COMMA                                       = YES // -Wcomma
+CLANG_WARN_CONSTANT_CONVERSION                         = YES // -Wconstant-conversion
+CLANG_WARN_DOCUMENTATION_COMMENTS                      = YES // -Wdocumentation
+CLANG_WARN_EMPTY_BODY                                  = YES // -Wempty-body
+CLANG_WARN_ENUM_CONVERSION                             = YES // -Wenum-conversion
+CLANG_WARN_FLOAT_CONVERSION                            = YES // -Wfloat-conversion
+CLANG_WARN_FRAMEWORK_INCLUDE_PRIVATE_FROM_PUBLIC       = YES // -Wframework-include-private-from-public
+CLANG_WARN_IMPLICIT_SIGN_CONVERSION                    = YES // -Wsign-conversion
+CLANG_WARN_INFINITE_RECURSION                          = YES // -Winfinite-recursion
+CLANG_WARN_INT_CONVERSION                              = YES // -Wint-conversion
+CLANG_WARN_NON_LITERAL_NULL_CONVERSION                 = YES // -Wnon-literal-null-conversion
+CLANG_WARN_PRAGMA_PACK                                 = YES // -Wpragma-pack
+CLANG_WARN_PRIVATE_MODULE                              = YES // -Wprivate-module
+CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER          = YES // -Wquoted-include-in-framework-header
+CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY                = YES // -Wsemicolon-before-method-body
+CLANG_WARN_STRICT_PROTOTYPES                           = YES // -Wstrict-prototypes
+CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION              = YES // -Wconversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wfloat-conversion -Wnon-literal-null-conversion -Wobjc-literal-conversion
+CLANG_WARN_UNGUARDED_AVAILABILITY                      = YES_AGGRESSIVE // -Wunguarded-availability
+CLANG_WARN_UNREACHABLE_CODE                            = YES // -Wunreachable-code
+GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS     = YES
+GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES // -Wincompatible-pointer-types
+GCC_WARN_64_TO_32_BIT_CONVERSION                       = YES // -Wshorten-64-to-32
+GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS                    = YES // -Wdeprecated-declarations
+GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS              = NO  // -Wmissing-field-initializers
+GCC_WARN_ABOUT_MISSING_NEWLINE                         = YES // -Wnewline-eof
+GCC_WARN_ABOUT_MISSING_PROTOTYPES                      = NO  // -Wmissing-prototypes
+GCC_WARN_ABOUT_POINTER_SIGNEDNESS                      = YES
+GCC_WARN_ABOUT_RETURN_TYPE                             = YES_ERROR // -Wreturn-type
+GCC_WARN_CHECK_SWITCH_STATEMENTS                       = YES // -Wswitch
+GCC_WARN_FOUR_CHARACTER_CONSTANTS                      = YES // -Wfour-char-constants
+GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED               = YES // -Wmissing-braces
+GCC_WARN_MISSING_PARENTHESES                           = YES // -Wparentheses
+GCC_WARN_SHADOW                                        = YES // -Wshadow
+GCC_WARN_SIGN_COMPARE                                  = YES // -Wsign-compare
+GCC_WARN_TYPECHECK_CALLS_TO_PRINTF                     = YES // -Wformat
+GCC_WARN_UNINITIALIZED_AUTOS                           = YES_AGGRESSIVE // -Wuninitialized
+GCC_WARN_UNKNOWN_PRAGMAS                               = YES // -Wunknown-pragmas
+GCC_WARN_UNUSED_FUNCTION                               = YES // -Wunused-function
+GCC_WARN_UNUSED_LABEL                                  = YES // -Wunused-label
+GCC_WARN_UNUSED_PARAMETER                              = YES // -Wunused-parameter
+GCC_WARN_UNUSED_VALUE                                  = YES // -Wunused-value
+GCC_WARN_UNUSED_VARIABLE                               = YES // -Wunused-variable
+
+// Apple Clang - Warnings - C++
+
+CLANG_WARN_ATOMIC_IMPLICIT_SEQ_CST                     = YES // -Watomic-implicit-seq-cst
+CLANG_WARN_CXX0X_EXTENSIONS                            = YES // -Wc++11-extensions
+CLANG_WARN_DELETE_NON_VIRTUAL_DTOR                     = YES // -Wdelete-non-virtual-dtor
+CLANG_WARN_RANGE_LOOP_ANALYSIS                         = YES // -Wrange-loop-analysis
+CLANG_WARN_SUSPICIOUS_MOVE                             = YES // -Wmove
+CLANG_WARN_VEXING_PARSE                                = YES // -Wvexing-parse
+CLANG_WARN__EXIT_TIME_DESTRUCTORS                      = YES // -Wexit-time-destructors
+GCC_WARN_ABOUT_INVALID_OFFSETOF_MACRO                  = YES // -Winvalid-offsetof
+GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS                      = YES // -Woverloaded-virtual
+GCC_WARN_NON_VIRTUAL_DESTRUCTOR                        = YES // -Wnon-virtual-dtor
+
+// Apple Clang - Warnings - Objective-C
+
+CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS             = YES // -Wdeprecated-implementations
+CLANG_WARN_DIRECT_OBJC_ISA_USAGE                       = YES // -Wdeprecated-objc-isa-usage
+CLANG_WARN_MISSING_NOESCAPE                            = YES // -Wmissing-noescape
+CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES             = YES // -Wimplicit-atomic-properties
+CLANG_WARN_OBJC_INTERFACE_IVARS                        = YES // -Wobjc-interface-ivars
+CLANG_WARN_OBJC_LITERAL_CONVERSION                     = YES // -Wobjc-literal-conversion
+CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS             = NO  // -Wobjc-missing-property-synthesis
+CLANG_WARN_OBJC_ROOT_CLASS                             = YES // -Wobjc-root-class
+CLANG_WARN__DUPLICATE_METHOD_MATCH                     = YES // -Wduplicate-method-match
+GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL                     = YES // -Wprotocol
+GCC_WARN_STRICT_SELECTOR_MATCH                         = YES // -Wstrict-selector-match
+GCC_WARN_UNDECLARED_SELECTOR                           = YES // -Wundeclared-selector
+
+// Apple Clang - Warnings - Objective-C and ARC
+
+CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE                = YES // -Wexplicit-ownership-type
+CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF                   = YES // -Wimplicit-retain-self
+CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK                   = YES // -Warc-repeated-use-of-weak -Wno-arc-maybe-repeated-use-of-weak
+CLANG_WARN__ARC_BRIDGE_CAST_NONARC                     = YES // -Warc-bridge-casts-disallowed-in-nonarc
+
+// Warning flags that have no dedicated Xcode build settings
+
+WARNING_CFLAGS = -Wcast-qual -Wconditional-uninitialized -Wcustom-atomic-properties -Wdirect-ivar-access -Wdocumentation-unknown-command -Wformat-nonliteral -Widiomatic-parentheses -Wimplicit-int-float-conversion -Wimport-preprocessor-directive-pedantic -Wincomplete-implementation -Wmissing-variable-declarations -Wno-unknown-warning-option -Wnonportable-include-path -Wnullable-to-nonnull-conversion -Woverriding-method-mismatch -Wpointer-sign -Wswitch-enum -Wunused-macros
+
+// Some flags that were considered and rejected:
+//
+//  -Wcstring-format-directive      warns when a %s format string is used to construct a CF/NSString, despite them being supported.
+//  -Wpadded                        warns when struct padding is added by the compiler, a common occurrence and not a programming error.
+//
