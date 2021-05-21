@@ -138,6 +138,10 @@
 		01F47D31254B1B3100B184AD /* OverwriteLinkRegisterScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CC0254B1B3000B184AD /* OverwriteLinkRegisterScenario.m */; };
 		01F47D32254B1B3100B184AD /* ResumeSessionOOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CC1254B1B3000B184AD /* ResumeSessionOOMScenario.m */; };
 		CBB7878E2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB7878C2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.m */; };
+		E780377D264D703500430C11 /* AutoNotifyReenabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7803779264D703500430C11 /* AutoNotifyReenabledScenario.swift */; };
+		E780377E264D703500430C11 /* AutoNotifyFalseHandledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E780377A264D703500430C11 /* AutoNotifyFalseHandledScenario.swift */; };
+		E780377F264D703500430C11 /* AutoNotifyFalseNSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E780377B264D703500430C11 /* AutoNotifyFalseNSExceptionScenario.swift */; };
+		E7803780264D703500430C11 /* AutoNotifyFalseAbortScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E780377C264D703500430C11 /* AutoNotifyFalseAbortScenario.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -343,6 +347,10 @@
 		01F47CC3254B1B3100B184AD /* SIGFPEScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIGFPEScenario.h; sourceTree = "<group>"; };
 		CBB7878C2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkUnhandledHandledScenario.m; sourceTree = "<group>"; };
 		CBB7878D2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkUnhandledHandledScenario.h; sourceTree = "<group>"; };
+		E7803779264D703500430C11 /* AutoNotifyReenabledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoNotifyReenabledScenario.swift; sourceTree = "<group>"; };
+		E780377A264D703500430C11 /* AutoNotifyFalseHandledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoNotifyFalseHandledScenario.swift; sourceTree = "<group>"; };
+		E780377B264D703500430C11 /* AutoNotifyFalseNSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoNotifyFalseNSExceptionScenario.swift; sourceTree = "<group>"; };
+		E780377C264D703500430C11 /* AutoNotifyFalseAbortScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoNotifyFalseAbortScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -378,6 +386,10 @@
 				01F47C68254B1B2E00B184AD /* AutoDetectFalseAbortScenario.swift */,
 				01F47C44254B1B2D00B184AD /* AutoDetectFalseHandledScenario.swift */,
 				01F47C59254B1B2E00B184AD /* AutoDetectFalseNSExceptionScenario.swift */,
+				E780377C264D703500430C11 /* AutoNotifyFalseAbortScenario.swift */,
+				E780377A264D703500430C11 /* AutoNotifyFalseHandledScenario.swift */,
+				E780377B264D703500430C11 /* AutoNotifyFalseNSExceptionScenario.swift */,
+				E7803779264D703500430C11 /* AutoNotifyReenabledScenario.swift */,
 				01F47CBC254B1B3000B184AD /* AutoSessionCustomVersionScenario.h */,
 				01F47C8B254B1B2F00B184AD /* AutoSessionCustomVersionScenario.m */,
 				01F47C9A254B1B2F00B184AD /* AutoSessionHandledEventsScenario.h */,
@@ -674,6 +686,7 @@
 				01F47D1E254B1B3100B184AD /* SIGPIPEScenario.m in Sources */,
 				01F47CCF254B1B3100B184AD /* ObjCExceptionScenario.m in Sources */,
 				01ECBCF425A7522000FC0678 /* OnErrorOverwriteUnhandledFalseScenario.swift in Sources */,
+				E780377F264D703500430C11 /* AutoNotifyFalseNSExceptionScenario.swift in Sources */,
 				01AF6A50258A00DE00FFC803 /* BareboneTestScenarios.swift in Sources */,
 				01F47CED254B1B3100B184AD /* ResumedSessionScenario.swift in Sources */,
 				01F47CE8254B1B3100B184AD /* AppAndDeviceAttributesScenario.swift in Sources */,
@@ -752,8 +765,10 @@
 				01F47CDB254B1B3100B184AD /* UnhandledMachExceptionScenario.m in Sources */,
 				01F47D12254B1B3100B184AD /* OnSendCallbackRemovalScenario.m in Sources */,
 				01F47D24254B1B3100B184AD /* UserSessionOverrideScenario.swift in Sources */,
+				E780377E264D703500430C11 /* AutoNotifyFalseHandledScenario.swift in Sources */,
 				01F47CD8254B1B3100B184AD /* ManualContextConfigurationScenario.swift in Sources */,
 				01F47CFA254B1B3100B184AD /* BreadcrumbCallbackOrderScenario.swift in Sources */,
+				E780377D264D703500430C11 /* AutoNotifyReenabledScenario.swift in Sources */,
 				01F47CF3254B1B3100B184AD /* AutoCaptureRunScenario.m in Sources */,
 				01F47CF8254B1B3100B184AD /* ModifyBreadcrumbInNotify.swift in Sources */,
 				01F47D14254B1B3100B184AD /* OOMEnabledErrorTypesScenario.swift in Sources */,
@@ -769,6 +784,7 @@
 				01F47D20254B1B3100B184AD /* ObjCMsgSendScenario.m in Sources */,
 				01F47CD4254B1B3100B184AD /* AsyncSafeThreadScenario.m in Sources */,
 				01ECBCF525A7522000FC0678 /* OnErrorOverwriteUnhandledTrueScenario.swift in Sources */,
+				E7803780264D703500430C11 /* AutoNotifyFalseAbortScenario.swift in Sources */,
 				01F47CDE254B1B3100B184AD /* ReleasedObjectScenario.m in Sources */,
 				01F47CF1254B1B3100B184AD /* UserEnabledScenario.swift in Sources */,
 				01F47D16254B1B3100B184AD /* NewSessionScenario.swift in Sources */,

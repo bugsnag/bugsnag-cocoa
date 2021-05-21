@@ -12,4 +12,10 @@
 @interface Bugsnag ()
 + (void)notifyInternal:(BugsnagEvent *_Nonnull)event
                  block:(BugsnagOnErrorBlock _Nonnull)block;
+
+@property (class, readonly) BugsnagClient *client;
+@end
+
+@interface BugsnagClient()
+@property (nonatomic) BOOL autoNotify;
 @end
