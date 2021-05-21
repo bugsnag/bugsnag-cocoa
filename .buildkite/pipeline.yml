@@ -30,8 +30,6 @@ steps:
       queue: opensource-mac-cocoa-10.15
     concurrency: 3
     concurrency_group: cocoa-unit-tests
-    env:
-      LANG: "en_GB.UTF-8"
     commands:
       - mkdir -p features/fixtures/carthage-proj
       - make build_swift
@@ -56,88 +54,55 @@ steps:
       queue: opensource-mac-cocoa-10.15
     concurrency: 3
     concurrency_group: cocoa-unit-tests
-    env:
-      LANG: "en_GB.UTF-8"
-      TEST_CONFIGURATION: "Debug"
-      PLATFORM: "macOS"
     commands:
-      - make bootstrap
-      - make analyze test
+      - ./scripts/run-unit-tests.sh PLATFORM=macOS
+    artifact_paths:
+      - logs/*
 
   - label: macOS 10.13 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa-10.13
-    env:
-      LANG: "en_GB.UTF-8"
-      TEST_CONFIGURATION: "Debug"
-      PLATFORM: "macOS"
     commands:
-      - make bootstrap
-      - make analyze test
+      - ./scripts/run-unit-tests.sh PLATFORM=macOS
     artifact_paths:
-      - xcodebuild.log
+      - logs/*
 
   - label: iOS 14 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa-11
-    env:
-      LANG: "en_GB.UTF-8"
-      TEST_CONFIGURATION: "Debug"
-      PLATFORM: "iOS"
-      OS: "14.3"
     commands:
-      - make bootstrap
-      - make test
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.3
     artifact_paths:
-      - xcodebuild.log
+      - logs/*
 
   - label: iOS 9 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa-10.13
-    env:
-      LANG: "en_GB.UTF-8"
-      PLATFORM: "iOS"
-      OS: "9.3"
-      DEVICE: "iPhone 5s"
     commands:
-      - make bootstrap
-      - TEST_CONFIGURATION=Debug make test
-      - TEST_CONFIGURATION=Release make test
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=9.3 DEVICE=iPhone\ 5s
     artifact_paths:
-      - xcodebuild.log
+      - logs/*
 
   - label: tvOS 14 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa-11
-    env:
-      LANG: "en_GB.UTF-8"
-      TEST_CONFIGURATION: "Debug"
-      PLATFORM: "tvOS"
-      OS: "14.3"
     commands:
-      - make bootstrap
-      - make test
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.3
     artifact_paths:
-      - xcodebuild.log
+      - logs/*
 
   - label: tvOS 9 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa-10.13
-    env:
-      LANG: "en_GB.UTF-8"
-      TEST_CONFIGURATION: "Debug"
-      PLATFORM: "tvOS"
-      OS: "9.2"
     commands:
-      - make bootstrap
-      - make test
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=9.2
     artifact_paths:
-      - xcodebuild.log
+      - logs/*
 
   - label: ':ios: iOS 14 barebones end-to-end tests'
     depends_on:
