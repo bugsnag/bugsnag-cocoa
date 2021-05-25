@@ -37,7 +37,7 @@
 
 - (void) testErrorWithDomain
 {
-    NSError* error = [NSError bsg_errorWithDomain:@"Domain" code:10 description:@"A description %d", 1];
+    NSError* error = [NSErrorBSG bsg_errorWithDomain:@"Domain" code:10 description:@"A description %d", 1];
     NSString* expectedDomain = @"Domain";
     NSInteger expectedCode = 10;
     NSString* expectedDescription = @"A description 1";
@@ -49,7 +49,7 @@
 - (void) testFillError
 {
     NSError* error = nil;
-    [NSError bsg_fillError:&error withDomain:@"Domain" code:10 description:@"A description %d", 1];
+    [NSErrorBSG bsg_fillError:&error withDomain:@"Domain" code:10 description:@"A description %d", 1];
     NSString* expectedDomain = @"Domain";
     NSInteger expectedCode = 10;
     NSString* expectedDescription = @"A description 1";
@@ -60,7 +60,7 @@
 
 - (void) testFillErrorNil
 {
-    [NSError bsg_fillError:nil withDomain:@"Domain" code:10 description:@"A description %d", 1];
+    [NSErrorBSG bsg_fillError:nil withDomain:@"Domain" code:10 description:@"A description %d", 1];
 }
 
 @end
