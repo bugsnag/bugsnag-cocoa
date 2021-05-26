@@ -168,6 +168,8 @@ void bsg_mach_headers_add_image(const struct mach_header *header, intptr_t slide
                 }
                 bsg_g_mach_headers_images_tail = newImage;
             });
+        } else {
+            free(newImage);
         }
     }
 }
