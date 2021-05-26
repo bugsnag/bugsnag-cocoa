@@ -39,7 +39,19 @@ static BSG_Mach_Header_Info *bsg_g_mach_headers_images_tail;
 static dispatch_queue_t bsg_g_serial_queue;
 
 BSG_Mach_Header_Info *bsg_mach_headers_get_images() {
+    if (!bsg_g_mach_headers_images_head) {
+        bsg_mach_headers_initialize();
+        bsg_mach_headers_register_for_changes();
+    }
     return bsg_g_mach_headers_images_head;
+}
+
+BSG_Mach_Header_Info *bsg_mach_headers_get_main_image() {
+    BSG_Mach_Header_Info *img = bsg_mach_headers_get_images();
+    while (img && !img->isMain) {
+        img = img->next;
+    }
+    return img;
 }
 
 void bsg_mach_headers_initialize() {
@@ -123,6 +135,10 @@ bool bsg_mach_headers_populate_info(const struct mach_header *header, intptr_t s
             uuid = uuidCmd->uuid;
             break;
         }
+        case LC_MAIN:
+        case LC_UNIXTHREAD:
+            info->isMain = true;
+            break;
         }
         cmdPtr += loadCmd->cmdsize;
     }

@@ -101,4 +101,10 @@ const struct segment_command command2 = {
     XCTAssertTrue(img == NULL);
 }
 
+- (void)testMainImage {
+    bsg_mach_headers_initialize();
+
+    XCTAssert(bsg_mach_headers_get_main_image() != NULL);
+}
+
 @end

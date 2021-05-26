@@ -215,24 +215,8 @@ static NSDictionary * bsg_systemversion() {
  * @return The UUID.
  */
 + (NSString *)appUUID {
-    NSString *result = nil;
-
-    NSString *exePath = [self executablePath];
-
-    if (exePath != nil) {
-        const uint8_t *uuidBytes =
-            bsg_ksdlimageUUID([exePath UTF8String], true);
-        if (uuidBytes == NULL) {
-            // OSX app image path is a lie.
-            uuidBytes = bsg_ksdlimageUUID(
-                [exePath.lastPathComponent UTF8String], false);
-        }
-        if (uuidBytes != NULL) {
-            result = [self uuidBytesToString:uuidBytes];
-        }
-    }
-
-    return result;
+    BSG_Mach_Header_Info *image = bsg_mach_headers_get_main_image();
+    return (image && image->uuid) ? [self uuidBytesToString:image->uuid] : nil;
 }
 
 + (NSString *)deviceAndAppHash {
