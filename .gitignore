@@ -1,5 +1,6 @@
 .DS_Store
 build/
+logs/
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -10,6 +11,7 @@ build/
 !default.perspectivev3
 xcuserdata
 *.xccheckout
+*.xcresult
 *.moved-aside
 DerivedData
 *.hmap

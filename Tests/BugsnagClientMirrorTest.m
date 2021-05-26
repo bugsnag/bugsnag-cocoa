@@ -153,6 +153,10 @@
             @"startAppHangDetector v16@0:8",
             @"stateMetadataFile @16@0:8",
             @"stateMetadataFromLastLaunch @16@0:8",
+            @"autoNotify B16@0:8",
+            @"autoNotify c16@0:8",
+            @"setAutoNotify: v20@0:8B16",
+            @"setAutoNotify: v20@0:8c16"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to
