@@ -2,6 +2,11 @@ env:
   LANG: "en_GB.UTF-8"
 
 steps:
+  ##############################################################################
+  #
+  # Unit tests
+  #
+
   - label: macOS 11 unit tests
     timeout_in_minutes: 10
     agents:
@@ -104,7 +109,12 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: ':apple: macOS 10.15 full end-to-end tests'
+  ##############################################################################
+  #
+  # E2E tests
+  #
+
+  - label: 'macOS 10.15 E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -123,11 +133,12 @@ steps:
         --app=macOSTestApp
         --tags='not @skip_macos'
         --fail-fast
+        --order=random
 
-  - label: ':ios: iOS 14 full end-to-end tests'
+  - label: 'iOS 14 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 120
+    timeout_in_minutes: 45
     agents:
       queue: opensource
     plugins:
@@ -142,6 +153,8 @@ steps:
           - "--resilient"
           - "--appium-version=1.17.0"
           - "--fail-fast"
+          - "--exclude=features/[h-z].*.feature"
+          - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
     retry:
@@ -149,10 +162,37 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':ios: iOS 10 full end-to-end tests - batch 1'
+  - label: 'iOS 14 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 60
+    timeout_in_minutes: 45
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
+      docker-compose#v3.3.0:
+        run: cocoa-maze-runner
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bs"
+          - "--device=IOS_14"
+          - "--resilient"
+          - "--appium-version=1.17.0"
+          - "--fail-fast"
+          - "--exclude=features/[a-g].*.feature"
+          - "--order=random"
+    concurrency: 9
+    concurrency_group: browserstack-app
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: 'iOS 10 E2E tests batch 1'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 45
     agents:
       queue: opensource
     plugins:
@@ -166,8 +206,8 @@ steps:
           - "--device=IOS_10"
           - "--appium-version=1.8.0"
           - "--fail-fast"
-          - "-e"
-          - "features/[o-z].*.feature"
+          - "--exclude=features/[h-z].*.feature"
+          - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
     retry:
@@ -175,10 +215,10 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':ios: iOS 10 full end-to-end tests - batch 2'
+  - label: 'iOS 10 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 60
+    timeout_in_minutes: 45
     agents:
       queue: opensource
     plugins:
@@ -192,8 +232,8 @@ steps:
           - "--device=IOS_10"
           - "--appium-version=1.8.0"
           - "--fail-fast"
-          - "-e"
-          - "features/[a-n].*.feature"
+          - "--exclude=features/[a-g].*.feature"
+          - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
     retry:

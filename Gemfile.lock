@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: 5e6c9624177f6087a75f5099130e24fb51036bb2
-  branch: local-appium-server-logs
+  revision: f7536f3128462c5e56963b6c75372b3e96243823
+  tag: v5.1.0
   specs:
-    bugsnag-maze-runner (5.0.2)
+    bugsnag-maze-runner (5.1.0)
       appium_lib (~> 11.2.0)
       cucumber (~> 3.1.2)
       cucumber-expressions (~> 6.0.0)
@@ -129,7 +129,7 @@ GEM
     faraday-http-cache (2.2.0)
       faraday (>= 0.8)
     faraday-net_http (1.0.1)
-    faye-websocket (0.11.0)
+    faye-websocket (0.11.1)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
     ffi (1.14.2)
@@ -157,7 +157,7 @@ GEM
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
     liferaft (0.0.6)
-    mini_portile2 (2.5.0)
+    mini_portile2 (2.5.1)
     minitest (5.14.4)
     molinillo (0.6.6)
     multi_json (1.15.0)
@@ -168,7 +168,7 @@ GEM
     nap (1.1.0)
     netrc (0.11.0)
     no_proxy_fix (0.1.2)
-    nokogiri (1.11.3)
+    nokogiri (1.11.6)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     octokit (4.20.0)
@@ -208,7 +208,7 @@ GEM
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
     unicode-display_width (1.7.0)
-    websocket-driver (0.7.3)
+    websocket-driver (0.7.4)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
     xcinvoke (0.3.0)

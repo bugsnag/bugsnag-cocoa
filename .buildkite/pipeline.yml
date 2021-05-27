@@ -12,6 +12,11 @@ steps:
         BUILD_RN_WITH_LATEST_NATIVES: "true"
     async: true
 
+  ##############################################################################
+  #
+  # Build
+  #
+
   - label: Build cocoa IPA
     key: cocoa_fixture
     timeout_in_minutes: 20
@@ -42,11 +47,15 @@ steps:
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     env:
-      LANG: "en_GB.UTF-8"
       DEVELOPER_DIR: "/Applications/Xcode11.app/Contents/Developer"
     commands:
       - mkdir -p features/fixtures/carthage-proj
       - make build_swift
+
+  ##############################################################################
+  #
+  # Unit tests
+  #
 
   - label: macOS 10.15 unit tests
     timeout_in_minutes: 10
@@ -104,7 +113,12 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: ':ios: iOS 14 barebones end-to-end tests'
+  ##############################################################################
+  #
+  # Barebones E2E tests
+  #
+
+  - label: 'iOS 14 barebones E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 10
@@ -123,6 +137,7 @@ steps:
           - "--resilient"
           - "--appium-version=1.17.0"
           - "--fail-fast"
+          - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
     retry:
@@ -130,7 +145,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':ios: iOS 10 barebones end-to-end tests'
+  - label: 'iOS 10 barebones E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 10
@@ -148,6 +163,7 @@ steps:
           - "--device=IOS_10"
           - "--appium-version=1.8.0"
           - "--fail-fast"
+          - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
     retry:
@@ -155,10 +171,10 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':apple: macOS 10.15 barebones end-to-end tests'
+  - label: 'macOS 10.15 barebones E2E tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 60
+    timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa-10.15
     plugins:
@@ -175,6 +191,7 @@ steps:
         --app=macOSTestApp
         --tags='not @skip_macos'
         --fail-fast
+        --order=random
 
   - label: 'macOS 10.15 stress test'
     timeout_in_minutes: 3
@@ -194,6 +211,11 @@ steps:
     artifact_paths:
       - features/fixtures/macos-stress-test/*.log
       - features/fixtures/macos-stress-test/*.crash
+
+  ##############################################################################
+  #
+  # Trigger more tests
+  #
 
   - label: 'Conditionally trigger full set of tests'
     command: sh -c .buildkite/pipeline_trigger.sh
