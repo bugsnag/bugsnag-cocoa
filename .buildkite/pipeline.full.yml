@@ -4,7 +4,7 @@ env:
 steps:
   ##############################################################################
   #
-  # Barebones E2E tests
+  # E2E tests
   #
 
   - label: 'iOS 13 E2E tests batch 1'
