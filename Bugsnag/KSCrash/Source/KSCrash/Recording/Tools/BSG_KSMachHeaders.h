@@ -32,6 +32,7 @@ typedef struct bsg_mach_image {
     const char* name;
     intptr_t slide;
     bool unloaded;
+    bool isMain;
     struct bsg_mach_image *next;
 } BSG_Mach_Header_Info;
 
@@ -51,6 +52,11 @@ void bsg_mach_headers_register_for_changes(void);
  * Returns the head of the link list of headers
  */
 BSG_Mach_Header_Info *bsg_mach_headers_get_images(void);
+
+/**
+ * Returns the process's main image
+ */
+BSG_Mach_Header_Info *bsg_mach_headers_get_main_image(void);
 
 /**
  * Called when a binary image is loaded.

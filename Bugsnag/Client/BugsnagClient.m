@@ -349,7 +349,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 - (void)start {
     [self.configuration validate];
     [self.crashSentry install:self.configuration onCrash:&BSSerializeDataCrashHandler];
-    [self.systemState recordAppUUID]; // Needs to be called after crashSentry installed but before -computeDidCrashLastLaunch
     [self computeDidCrashLastLaunch];
     [self.breadcrumbs removeAllBreadcrumbs];
     [self setupConnectivityListener];

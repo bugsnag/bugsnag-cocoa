@@ -37,7 +37,7 @@ NSDictionary *BSGParseAppMetadata(NSDictionary *event) {
         app.releaseStage = json[@"releaseStage"];
         app.type = json[@"type"];
         app.version = json[@"version"];
-        app.dsymUuid = json[@"dsymUUIDs"][0];
+        app.dsymUuid = [json[@"dsymUUIDs"] firstObject];
     }
     return app;
 }

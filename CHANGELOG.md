@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix a crash in `-[BugsnagApp deserializeFromJson:]` if main Mach-O image could not be identified, and improve reliability of identification.
+  [#1097](https://github.com/bugsnag/bugsnag-cocoa/issues/1097)
+  [#1101](https://github.com/bugsnag/bugsnag-cocoa/pull/1101)
+
 ## 6.9.3 (2021-05-26)
 
 ### Bug fixes
