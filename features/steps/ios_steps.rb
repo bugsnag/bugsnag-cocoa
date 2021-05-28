@@ -256,6 +256,17 @@ Then('the breadcrumb timestamps are valid for the event') do
   end
 end
 
+Then('the stacktrace is valid for the event') do
+  stacktrace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.exceptions.0.stacktrace')
+  # values that are required for symbolication to work
+  keys = ['frameAddress', 'machoFile', 'machoLoadAddress', 'machoUUID', 'machoVMAddress']
+  stacktrace.each_with_index do |frame, i|
+    keys.each do |key|
+      assert_not_nil(frame[key], "Stack frame #{i} is missing #{key}")
+    end
+  end
+end
+
 Then('the thread information is valid for the event') do
   # verify that thread/stacktrace information was captured at all
   thread_traces = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.threads')

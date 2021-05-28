@@ -9,7 +9,7 @@
 #import <XCTest/XCTest.h>
 
 #import "BSG_KSMachHeaders.h"
-#import "BugsnagStackframe.h"
+#import "BugsnagStackframe+Private.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagThread+Recording.h"
 
@@ -216,6 +216,7 @@
 
 - (void)testAllThreads {
     NSArray<BugsnagThread *> *threads = [BugsnagThread allThreads:YES callStackReturnAddresses:NSThread.callStackReturnAddresses];
+    [threads[0].stacktrace makeObjectsPerformSelector:@selector(symbolicateIfNeeded)];
     XCTAssertTrue(threads[0].errorReportingThread);
     XCTAssertEqualObjects(threads[0].name, @"com.apple.main-thread");
     XCTAssertEqualObjects(threads[0].stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
@@ -224,6 +225,7 @@
 
 - (void)testCurrentThread {
     NSArray<BugsnagThread *> *threads = [BugsnagThread allThreads:NO callStackReturnAddresses:NSThread.callStackReturnAddresses];
+    [threads[0].stacktrace makeObjectsPerformSelector:@selector(symbolicateIfNeeded)];
     XCTAssertEqual(threads.count, 1);
     XCTAssertTrue(threads[0].errorReportingThread);
     XCTAssertEqualObjects(threads[0].id, @"0");
@@ -236,6 +238,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"Thread recorded in background"];
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         thread = [BugsnagThread allThreads:NO callStackReturnAddresses:NSThread.callStackReturnAddresses][0];
+        [thread.stacktrace makeObjectsPerformSelector:@selector(symbolicateIfNeeded)];
         [expectation fulfill];
     });
     [self waitForExpectationsWithTimeout:2 handler:nil];
@@ -260,6 +263,7 @@
             // Wait for main thread to be back in -testMainThreadFromBackground
         }
         thread = [BugsnagThread mainThread];
+        [thread.stacktrace makeObjectsPerformSelector:@selector(symbolicateIfNeeded)];
         atomic_store(&state, 2);
     });
     atomic_store(&state, 1);

@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Improve performance of `notify()`.
+  [#1102](https://github.com/bugsnag/bugsnag-cocoa/pull/1102)
+
 * Fix a crash in `-[BugsnagApp deserializeFromJson:]` if main Mach-O image could not be identified, and improve reliability of identification.
   [#1097](https://github.com/bugsnag/bugsnag-cocoa/issues/1097)
   [#1101](https://github.com/bugsnag/bugsnag-cocoa/pull/1101)
