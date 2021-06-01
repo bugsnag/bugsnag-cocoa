@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// The release stage of the application
 @property (readwrite, copy, nullable, nonatomic) NSString *releaseStage;
 
-@property (strong, nullable, nonatomic) BugsnagSession *session;
+@property (copy, nullable, nonatomic) BugsnagSession *session;
 
 /// An array of string representations of BSGErrorType describing the types of stackframe / stacktrace in this error.
 @property (readonly, nonatomic) NSArray<NSString *> *stacktraceTypes;

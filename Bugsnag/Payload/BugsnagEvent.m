@@ -176,7 +176,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         _breadcrumbs = breadcrumbs;
         _errors = errors;
         _threads = threads;
-        _session = session;
+        _session = [session copy];
     }
     return self;
 }
