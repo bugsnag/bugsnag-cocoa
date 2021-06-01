@@ -59,24 +59,6 @@
     }
 }
 
-- (void) testExecutablePathIsNotNull
-{
-    NSDictionary* info = [BSG_KSSystemInfo systemInfo];
-    id executablePath = info[@BSG_KSSystemField_ExecutablePath];
-    XCTAssertNotEqual(executablePath, [NSNull null]);
-}
-
-- (void) testExecutablePathIsValid
-{
-    NSDictionary* info = [BSG_KSSystemInfo systemInfo];
-    NSString* executablePath = info[@BSG_KSSystemField_ExecutablePath];
-    NSDictionary* infoDictionary = [[NSBundle mainBundle] infoDictionary];
-    NSString* executableName = infoDictionary[@"CFBundleExecutable"];
-    NSString* bundlePath = [[NSBundle mainBundle] bundlePath];
-    NSString* expectedExecutablePath = [bundlePath stringByAppendingPathComponent:executableName];
-    XCTAssertEqualObjects(executablePath, expectedExecutablePath);
-}
-
 #if BSG_PLATFORM_TVOS || BSG_PLATFORM_IOS
 - (void)testCurrentAppState {
     // Should default to active as tests aren't in an app bundle

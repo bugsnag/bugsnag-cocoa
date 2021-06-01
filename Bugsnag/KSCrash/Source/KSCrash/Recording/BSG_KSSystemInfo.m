@@ -198,18 +198,6 @@ static NSDictionary * bsg_systemversion() {
     return str;
 }
 
-/** Get this application's executable path.
- *
- * @return Executable path.
- */
-+ (NSString *)executablePath {
-    NSBundle *mainBundle = [NSBundle mainBundle];
-    NSDictionary *infoDict = [mainBundle infoDictionary];
-    NSString *bundlePath = [mainBundle bundlePath];
-    NSString *executableName = infoDict[BSGKeyExecutableName];
-    return [bundlePath stringByAppendingPathComponent:executableName];
-}
-
 /** Get this application's UUID.
  *
  * @return The UUID.
@@ -410,8 +398,6 @@ static NSDictionary * bsg_systemversion() {
     sysInfo[@BSG_KSSystemField_KernelVersion] = [self stringSysctl:@"kern.version"];
     sysInfo[@BSG_KSSystemField_OSVersion] = [self osBuildVersion];
     sysInfo[@BSG_KSSystemField_BootTime] = [self dateSysctl:@"kern.boottime"];
-    sysInfo[@BSG_KSSystemField_ExecutablePath] = [self executablePath];
-    sysInfo[@BSG_KSSystemField_Executable] = infoDict[BSGKeyExecutableName];
     sysInfo[@BSG_KSSystemField_BundleID] = infoDict[@"CFBundleIdentifier"];
     sysInfo[@BSG_KSSystemField_BundleName] = infoDict[@"CFBundleName"];
     sysInfo[@BSG_KSSystemField_BundleExecutable] = infoDict[@"CFBundleExecutable"];
