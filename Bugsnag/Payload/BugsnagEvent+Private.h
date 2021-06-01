@@ -65,6 +65,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// Whether this report should be sent, based on release stage information cached at crash time and within the application currently.
 - (BOOL)shouldBeSent;
 
+- (void)symbolicateIfNeeded;
+
 - (NSDictionary *)toJsonWithRedactedKeys:(nullable NSSet *)redactedKeys;
 
 - (void)notifyUnhandledOverridden;

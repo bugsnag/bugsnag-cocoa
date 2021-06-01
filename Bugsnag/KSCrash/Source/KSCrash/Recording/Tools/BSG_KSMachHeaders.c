@@ -9,6 +9,7 @@
 #include "BSG_KSMachHeaders.h"
 
 #include "BSG_KSDynamicLinker.h"
+#include "BSG_KSLogger.h"
 #include "BSG_KSMach.h"
 
 #include <dispatch/dispatch.h>
@@ -143,7 +144,14 @@ bool bsg_mach_headers_populate_info(const struct mach_header *header, intptr_t s
         cmdPtr += loadCmd->cmdsize;
     }
     
-    // Save these values
+    // Sanity checks that should never fail
+    if (((uintptr_t)imageVmAddr + (uintptr_t)slide) != (uintptr_t)header) {
+        BSG_KSLOG_ERROR("Mach header != (vmaddr + slide) for %s; symbolication will be compromised.", imageName);
+    }
+    if ((uintptr_t)DlInfo.dli_fbase != (uintptr_t)header) {
+        BSG_KSLOG_ERROR("Mach header != dli_fbase for %s", imageName);
+    }
+    
     info->header = header;
     info->imageSize = imageSize;
     info->imageVmAddr = imageVmAddr;

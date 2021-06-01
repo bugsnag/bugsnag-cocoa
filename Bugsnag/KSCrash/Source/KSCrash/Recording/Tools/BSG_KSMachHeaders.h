@@ -9,9 +9,8 @@
 #ifndef BSG_KSMachHeaders_h
 #define BSG_KSMachHeaders_h
 
-#include <mach/machine.h>
-#include <os/lock.h>
-#include <libkern/OSAtomic.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 /* Maintaining our own list of framework Mach headers means that we avoid potential
  * deadlock situations where we try and suspend lock-holding threads prior to
@@ -21,18 +20,38 @@
 /**
  * An encapsulation of the Mach header data as a linked list - either 64 or 32 bit, along with some additiona
  * information required for detailing a crash report's binary images.
- * 
- * The removed field indicates that the library has since been unloaded by dyld and can be ignored.
  */
 typedef struct bsg_mach_image {
-    const struct mach_header *header; /* The mach_header - 32 or 64 bit */
+
+    /// The mach_header or mach_header_64
+    ///
+    /// This is also the memory address where the image has been loaded by dyld, including slide.
+    const struct mach_header *header;
+
+    /// The vmaddr specified for the __TEXT segment
+    ///
+    /// This is the load address specified at build time, and does not account for slide applied by dyld.
     uint64_t imageVmAddr;
+
+    /// The vmsize of the __TEXT segment
     uint64_t imageSize;
-    uint8_t *uuid;
+
+    /// A UUID that uniquely identifies this image, used to identify its associated dSYM
+    const uint8_t *uuid;
+
+    /// The pathname of the shared object (Dl_info.dli_fname)
     const char* name;
+
+    /// The virtural memory address slide of the image
     intptr_t slide;
+
+    /// True if the image has been unloaded and should be ignored
     bool unloaded;
+
+    /// True if this image is a program with an entry point; i.e. LC_MAIN or LC_UNIXTHREAD
     bool isMain;
+
+    /// The next image in the linked list
     struct bsg_mach_image *next;
 } BSG_Mach_Header_Info;
 

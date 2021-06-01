@@ -77,6 +77,7 @@ Feature: Barebone tests
     And the error payload field "events.0.device.totalMemory" is an integer
     And the error payload field "events.0.threads" is an array with 0 elements
     And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
+    And the stacktrace is valid for the event
 
     And I discard the oldest error
 
@@ -98,6 +99,8 @@ Feature: Barebone tests
     And the exception "errorClass" equals "__SwiftNativeNSError"
     And the exception "message" equals "The data couldn’t be read because it isn’t in the correct format."
     And the exception "type" equals "cocoa"
+    And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
+    And the stacktrace is valid for the event
 
   Scenario: Barebone test: unhandled error
     When I run "BareboneTestUnhandledErrorScenario" and relaunch the app
@@ -158,6 +161,7 @@ Feature: Barebone tests
     And the error payload field "events.0.threads" is a non-empty array
     And the error payload field "events.0.threads.1" is not null
     And the "method" of stack frame 0 matches "(assertionFailure|<redacted>)"
+    And the stacktrace is valid for the event
 
   @skip_macos
   Scenario: Barebone test: Out Of Memory
