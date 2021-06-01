@@ -403,13 +403,15 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     self.started = YES;
 
-    [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
+    if (bsg_kscrashstate_currentState()->applicationIsInForeground) {
+        [self.sessionTracker startNewSessionIfAutoCaptureEnabled];
+    } else {
+        bsg_log_debug(@"Not starting session because app is not in the foreground");
+    }
 
     // Record a "Bugsnag Loaded" message
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState withMessage:@"Bugsnag loaded" andMetadata:nil];
 
-    // notification not received in time on initial startup, so trigger manually
-    [self willEnterForeground:self];
     [self.pluginClient loadPlugins];
     
     if (self.configuration.launchDurationMillis > 0) {

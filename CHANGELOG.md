@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Stop session being reported if app is launched in the background.
+  [#1107](https://github.com/bugsnag/bugsnag-cocoa/pull/1107)
+
 * Fix KSCrash state storage for apps with no CFBundleName.
   [#1103](https://github.com/bugsnag/bugsnag-cocoa/pull/1103)
 
