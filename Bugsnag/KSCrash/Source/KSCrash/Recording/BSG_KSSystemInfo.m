@@ -419,8 +419,6 @@ static NSDictionary * bsg_systemversion() {
     sysInfo[@BSG_KSSystemField_BundleShortVersion] = infoDict[@"CFBundleShortVersionString"];
     sysInfo[@BSG_KSSystemField_AppUUID] = [self appUUID];
     sysInfo[@BSG_KSSystemField_CPUArch] = [self currentCPUArch];
-    sysInfo[@BSG_KSSystemField_CPUType] = [self int32Sysctl:@BSGKeyHwCputype];
-    sysInfo[@BSG_KSSystemField_CPUSubType] = [self int32Sysctl:@BSGKeyHwCpusubtype];
     sysInfo[@BSG_KSSystemField_BinaryArch] = [self CPUArchForCPUType:header->cputype subType:header->cpusubtype];
     sysInfo[@BSG_KSSystemField_DeviceAppHash] = [self deviceAndAppHash];
 

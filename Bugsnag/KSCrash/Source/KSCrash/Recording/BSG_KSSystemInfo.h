@@ -33,8 +33,6 @@
 #define BSG_KSSystemField_BundleShortVersion "CFBundleShortVersionString"
 #define BSG_KSSystemField_BundleVersion "CFBundleVersion"
 #define BSG_KSSystemField_CPUArch "cpu_arch"
-#define BSG_KSSystemField_CPUType "cpu_type"
-#define BSG_KSSystemField_CPUSubType "cpu_subtype"
 #define BSG_KSSystemField_DeviceAppHash "device_app_hash"
 #define BSG_KSSystemField_Executable "CFBundleExecutable"
 #define BSG_KSSystemField_ExecutablePath "CFBundleExecutablePath"
