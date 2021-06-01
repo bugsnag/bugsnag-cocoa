@@ -72,38 +72,34 @@ static inline bool is_jailbroken() {
  */
 #if !BSG_PLATFORM_SIMULATOR
 static NSDictionary * bsg_systemversion() {
-    static NSDictionary *systemVersion;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        int fd = -1;
-        char buffer[1024] = {0};
-        const char *file = "/System/Library/CoreServices/SystemVersion.plist";
-        bsg_syscall_open(file, O_RDONLY, 0, &fd);
-        if (fd < 0) {
-            BSG_KSLOG_ERROR("Could not open SystemVersion.plist");
-            return;
-        }
-        ssize_t length = read(fd, buffer, sizeof(buffer));
-        close(fd);
-        if (length < 0 || length == sizeof(buffer)) {
-            BSG_KSLOG_ERROR("Could not read SystemVersion.plist");
-            return;
-        }
-        NSData *data = [NSData
-                        dataWithBytesNoCopy:buffer
-                        length:(NSUInteger)length freeWhenDone:NO];
-        if (!data) {
-            BSG_KSLOG_ERROR("Could not read SystemVersion.plist");
-            return;
-        }
-        NSError *error = nil;
-        systemVersion = [NSPropertyListSerialization
-                         propertyListWithData:data
-                         options:0 format:NULL error:&error];
-        if (!systemVersion) {
-            BSG_KSLOG_ERROR("Could not read SystemVersion.plist: %@", error);
-        }
-    });
+    int fd = -1;
+    char buffer[1024] = {0};
+    const char *file = "/System/Library/CoreServices/SystemVersion.plist";
+    bsg_syscall_open(file, O_RDONLY, 0, &fd);
+    if (fd < 0) {
+        BSG_KSLOG_ERROR("Could not open SystemVersion.plist");
+        return nil;
+    }
+    ssize_t length = read(fd, buffer, sizeof(buffer));
+    close(fd);
+    if (length < 0 || length == sizeof(buffer)) {
+        BSG_KSLOG_ERROR("Could not read SystemVersion.plist");
+        return nil;
+    }
+    NSData *data = [NSData
+                    dataWithBytesNoCopy:buffer
+                    length:(NSUInteger)length freeWhenDone:NO];
+    if (!data) {
+        BSG_KSLOG_ERROR("Could not read SystemVersion.plist");
+        return nil;
+    }
+    NSError *error = nil;
+    NSDictionary *systemVersion = [NSPropertyListSerialization
+                                   propertyListWithData:data
+                                   options:0 format:NULL error:&error];
+    if (!systemVersion) {
+        BSG_KSLOG_ERROR("Could not read SystemVersion.plist: %@", error);
+    }
     return systemVersion;
 }
 #endif
@@ -309,11 +305,16 @@ static NSDictionary * bsg_systemversion() {
  * Returns a systemInfo dictionary containing all the nonvolatile unchanging values.
  */
 + (NSDictionary *)systemInfoStatic {
-    static NSMutableDictionary *sysInfo;
-    if (sysInfo) {
-        return sysInfo;
-    }
-    sysInfo = [NSMutableDictionary dictionary];
+    static NSDictionary *sysInfo;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sysInfo = [self buildSystemInfoStatic];
+    });
+    return sysInfo;
+}
+
++ (NSDictionary *)buildSystemInfoStatic {
+    NSMutableDictionary *sysInfo = [NSMutableDictionary dictionary];
 
     NSBundle *mainBundle = [NSBundle mainBundle];
     NSDictionary *infoDict = [mainBundle infoDictionary];
