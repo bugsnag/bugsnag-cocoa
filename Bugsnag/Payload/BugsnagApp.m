@@ -60,10 +60,10 @@ NSDictionary *BSGParseAppMetadata(NSDictionary *event) {
           codeBundleId:(NSString *)codeBundleId
 {
     NSDictionary *system = event[BSGKeySystem];
-    app.id = system[@"CFBundleIdentifier"];
-    app.bundleVersion = system[@"CFBundleVersion"];
-    app.dsymUuid = system[@"app_uuid"];
-    app.version = system[@"CFBundleShortVersionString"];
+    app.id = system[@BSG_KSSystemField_BundleID];
+    app.bundleVersion = system[@BSG_KSSystemField_BundleVersion];
+    app.dsymUuid = system[@BSG_KSSystemField_AppUUID];
+    app.version = system[@BSG_KSSystemField_BundleShortVersion];
     app.codeBundleId = [event valueForKeyPath:@"user.state.app.codeBundleId"] ?: codeBundleId;
     [app setValuesFromConfiguration:config];
 }
