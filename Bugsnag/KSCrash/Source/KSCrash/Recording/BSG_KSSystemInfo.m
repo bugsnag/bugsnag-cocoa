@@ -313,14 +313,6 @@ static NSDictionary * bsg_systemversion() {
     return result ?: [NSString stringWithUTF8String:bsg_ksmachcurrentCPUArch()];
 }
 
-/** Check if the current device is jailbroken.
- *
- * @return YES if the device is jailbroken.
- */
-+ (BOOL)isJailbroken {
-    return is_jailbroken();
-}
-
 /** Check if the current build is a debug build.
  *
  * @return YES if the app was built in debug mode.
@@ -401,8 +393,15 @@ static NSDictionary * bsg_systemversion() {
 #pragma mark - API -
 // ============================================================================
 
-+ (NSDictionary *)systemInfo {
-    NSMutableDictionary *sysInfo = [NSMutableDictionary dictionary];
+/**
+ * Returns a systemInfo dictionary containing all the nonvolatile unchanging values.
+ */
++ (NSDictionary *)systemInfoStatic {
+    static NSMutableDictionary *sysInfo;
+    if (sysInfo) {
+        return sysInfo;
+    }
+    sysInfo = [NSMutableDictionary dictionary];
 
     NSBundle *mainBundle = [NSBundle mainBundle];
     NSDictionary *infoDict = [mainBundle infoDictionary];
@@ -486,7 +485,6 @@ static NSDictionary * bsg_systemversion() {
 
     sysInfo[@BSG_KSSystemField_KernelVersion] = [self stringSysctl:@"kern.version"];
     sysInfo[@BSG_KSSystemField_OSVersion] = [self osBuildVersion];
-    sysInfo[@BSG_KSSystemField_Jailbroken] = @([self isJailbroken]);
     sysInfo[@BSG_KSSystemField_BootTime] = [self dateSysctl:@"kern.boottime"];
     sysInfo[@BSG_KSSystemField_AppStartTime] = [NSDate date];
     sysInfo[@BSG_KSSystemField_ExecutablePath] = [self executablePath];
@@ -501,18 +499,11 @@ static NSDictionary * bsg_systemversion() {
     sysInfo[@BSG_KSSystemField_CPUType] = [self int32Sysctl:@BSGKeyHwCputype];
     sysInfo[@BSG_KSSystemField_CPUSubType] = [self int32Sysctl:@BSGKeyHwCpusubtype];
     sysInfo[@BSG_KSSystemField_BinaryArch] = [self CPUArchForCPUType:header->cputype subType:header->cpusubtype];
-    sysInfo[@BSG_KSSystemField_TimeZone] = [[NSTimeZone localTimeZone] abbreviation];
     sysInfo[@BSG_KSSystemField_ProcessName] = [NSProcessInfo processInfo].processName;
     sysInfo[@BSG_KSSystemField_ProcessID] = @([NSProcessInfo processInfo].processIdentifier);
     sysInfo[@BSG_KSSystemField_ParentProcessID] = @(getppid());
     sysInfo[@BSG_KSSystemField_DeviceAppHash] = [self deviceAndAppHash];
     sysInfo[@BSG_KSSystemField_BuildType] = [BSG_KSSystemInfo buildType];
-
-    sysInfo[@BSG_KSSystemField_Memory] = @{
-        @BSG_KSCrashField_Free: @(bsg_ksmachfreeMemory()),
-        @BSG_KSCrashField_Usable: @(bsg_ksmachusableMemory()),
-        @BSG_KSSystemField_Size: [self int64Sysctl:@"hw.memsize"]
-    };
 
 #if TARGET_OS_OSX || TARGET_OS_MACCATALYST
     // https://developer.apple.com/documentation/apple-silicon/about-the-rosetta-translation-environment
@@ -522,6 +513,20 @@ static NSDictionary * bsg_systemversion() {
         sysInfo[@BSG_KSSystemField_Translated] = @YES;
     }
 #endif
+
+    return sysInfo;
+}
+
++ (NSDictionary *)systemInfo {
+    NSMutableDictionary *sysInfo = [[self systemInfoStatic] mutableCopy];
+
+    sysInfo[@BSG_KSSystemField_Jailbroken] = @(is_jailbroken());
+    sysInfo[@BSG_KSSystemField_TimeZone] = [[NSTimeZone localTimeZone] abbreviation];
+    sysInfo[@BSG_KSSystemField_Memory] = @{
+        @BSG_KSCrashField_Free: @(bsg_ksmachfreeMemory()),
+        @BSG_KSCrashField_Usable: @(bsg_ksmachusableMemory()),
+        @BSG_KSSystemField_Size: [self int64Sysctl:@"hw.memsize"]
+    };
 
     NSDictionary *statsInfo = [[BSG_KSCrash sharedInstance] captureAppStats];
     sysInfo[@BSG_KSCrashField_AppStats] = statsInfo;
