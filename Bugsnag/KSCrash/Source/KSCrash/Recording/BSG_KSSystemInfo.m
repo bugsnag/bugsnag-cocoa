@@ -423,9 +423,6 @@ static NSDictionary * bsg_systemversion() {
     sysInfo[@BSG_KSSystemField_CPUType] = [self int32Sysctl:@BSGKeyHwCputype];
     sysInfo[@BSG_KSSystemField_CPUSubType] = [self int32Sysctl:@BSGKeyHwCpusubtype];
     sysInfo[@BSG_KSSystemField_BinaryArch] = [self CPUArchForCPUType:header->cputype subType:header->cpusubtype];
-    sysInfo[@BSG_KSSystemField_ProcessName] = [NSProcessInfo processInfo].processName;
-    sysInfo[@BSG_KSSystemField_ProcessID] = @([NSProcessInfo processInfo].processIdentifier);
-    sysInfo[@BSG_KSSystemField_ParentProcessID] = @(getppid());
     sysInfo[@BSG_KSSystemField_DeviceAppHash] = [self deviceAndAppHash];
 
 #if TARGET_OS_OSX || TARGET_OS_MACCATALYST
