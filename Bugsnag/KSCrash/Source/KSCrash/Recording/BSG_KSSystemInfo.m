@@ -313,82 +313,6 @@ static NSDictionary * bsg_systemversion() {
     return result ?: [NSString stringWithUTF8String:bsg_ksmachcurrentCPUArch()];
 }
 
-/** Check if the current build is a debug build.
- *
- * @return YES if the app was built in debug mode.
- */
-+ (BOOL)isDebugBuild {
-#ifdef DEBUG
-    return YES;
-#else
-    return NO;
-#endif
-}
-
-/** Check if this code is built for the simulator.
- *
- * @return YES if this is a simulator build.
- */
-+ (BOOL)isSimulatorBuild {
-#if BSG_PLATFORM_SIMULATOR
-    return YES;
-#else
-    return NO;
-#endif
-}
-
-/** The file path for the bundle’s App Store receipt.
- *
- * @return App Store receipt for iOS 7+, nil otherwise.
- */
-+ (NSString *)receiptUrlPath {
-    return [NSBundle mainBundle].appStoreReceiptURL.path;
-}
-
-/** Check if the current build is a "testing" build.
- * This is useful for checking if the app was released through Testflight.
- *
- * @return YES if this is a testing build.
- */
-+ (BOOL)isTestBuild {
-    return [[self receiptUrlPath].lastPathComponent
-        isEqualToString:@"sandboxReceipt"];
-}
-
-/** Check if the app has an app store receipt.
- * Only apps released through the app store will have a receipt.
- *
- * @return YES if there is an app store receipt.
- */
-+ (BOOL)hasAppStoreReceipt {
-    NSString *receiptPath = [self receiptUrlPath];
-    if (receiptPath == nil) {
-        return NO;
-    }
-    BOOL isAppStoreReceipt =
-        [receiptPath.lastPathComponent isEqualToString:@"receipt"];
-    BOOL receiptExists =
-        [[NSFileManager defaultManager] fileExistsAtPath:receiptPath];
-
-    return isAppStoreReceipt && receiptExists;
-}
-
-+ (NSString *)buildType {
-    if ([BSG_KSSystemInfo isSimulatorBuild]) {
-        return @"simulator";
-    }
-    if ([BSG_KSSystemInfo isDebugBuild]) {
-        return @"debug";
-    }
-    if ([BSG_KSSystemInfo isTestBuild]) {
-        return @"test";
-    }
-    if ([BSG_KSSystemInfo hasAppStoreReceipt]) {
-        return @"app store";
-    }
-    return @"unknown";
-}
-
 // ============================================================================
 #pragma mark - API -
 // ============================================================================
@@ -503,7 +427,6 @@ static NSDictionary * bsg_systemversion() {
     sysInfo[@BSG_KSSystemField_ProcessID] = @([NSProcessInfo processInfo].processIdentifier);
     sysInfo[@BSG_KSSystemField_ParentProcessID] = @(getppid());
     sysInfo[@BSG_KSSystemField_DeviceAppHash] = [self deviceAndAppHash];
-    sysInfo[@BSG_KSSystemField_BuildType] = [BSG_KSSystemInfo buildType];
 
 #if TARGET_OS_OSX || TARGET_OS_MACCATALYST
     // https://developer.apple.com/documentation/apple-silicon/about-the-rosetta-translation-environment
