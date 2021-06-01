@@ -410,7 +410,6 @@ static NSDictionary * bsg_systemversion() {
     sysInfo[@BSG_KSSystemField_KernelVersion] = [self stringSysctl:@"kern.version"];
     sysInfo[@BSG_KSSystemField_OSVersion] = [self osBuildVersion];
     sysInfo[@BSG_KSSystemField_BootTime] = [self dateSysctl:@"kern.boottime"];
-    sysInfo[@BSG_KSSystemField_AppStartTime] = [NSDate date];
     sysInfo[@BSG_KSSystemField_ExecutablePath] = [self executablePath];
     sysInfo[@BSG_KSSystemField_Executable] = infoDict[BSGKeyExecutableName];
     sysInfo[@BSG_KSSystemField_BundleID] = infoDict[@"CFBundleIdentifier"];
