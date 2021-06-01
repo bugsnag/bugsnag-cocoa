@@ -87,10 +87,8 @@ void bsg_mach_headers_add_image(const struct mach_header *mh, intptr_t slide);
  */
 void bsg_mach_headers_remove_image(const struct mach_header *mh, intptr_t slide);
 
-/** Get the image index that the specified address is part of.
-*
-* @param address The address to examine.
-* @return The index of the image it is part of, or UINT_MAX if none was found.
+/**
+ * Find the loaded binary image that contains the specified instruction address.
 */
 BSG_Mach_Header_Info *bsg_mach_headers_image_at_address(const uintptr_t address);
 
