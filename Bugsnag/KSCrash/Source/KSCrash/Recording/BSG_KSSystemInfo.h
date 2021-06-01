@@ -35,7 +35,6 @@
 #define BSG_KSSystemField_CPUArch "cpu_arch"
 #define BSG_KSSystemField_DeviceAppHash "device_app_hash"
 #define BSG_KSSystemField_Jailbroken "jailbroken"
-#define BSG_KSSystemField_KernelVersion "kernel_version"
 #define BSG_KSSystemField_Machine "machine"
 #define BSG_KSSystemField_Memory "memory"
 #define BSG_KSSystemField_Model "model"
