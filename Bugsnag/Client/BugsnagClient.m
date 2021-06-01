@@ -925,11 +925,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         [event notifyUnhandledOverridden];
     }
 
-    if (event.handledState.unhandled) {
-        [self.sessionTracker handleUnhandledErrorEvent];
-    } else {
-        [self.sessionTracker handleHandledErrorEvent];
-    }
+    [self.sessionTracker incrementEventCountUnhandled:event.handledState.unhandled];
     event.session = self.sessionTracker.runningSession;
 
     if (event.unhandled) {
