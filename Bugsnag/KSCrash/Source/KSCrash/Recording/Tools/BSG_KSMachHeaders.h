@@ -42,7 +42,7 @@ typedef struct bsg_mach_image {
     /// The pathname of the shared object (Dl_info.dli_fname)
     const char* name;
 
-    /// The virtural memory address slide of the image
+    /// The virtual memory address slide of the image
     intptr_t slide;
 
     /// True if the image has been unloaded and should be ignored
