@@ -349,7 +349,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 - (void)start {
     [self.configuration validate];
     [self.crashSentry install:self.configuration onCrash:&BSSerializeDataCrashHandler];
-    [self.systemState recordAppUUID]; // Needs to be called after crashSentry installed but before -computeDidCrashLastLaunch
     [self computeDidCrashLastLaunch];
     [self.breadcrumbs removeAllBreadcrumbs];
     [self setupConnectivityListener];
@@ -884,7 +883,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                                 breadcrumbs:self.breadcrumbs.breadcrumbs ?: @[]
                                                      errors:@[error]
                                                     threads:threads
-                                                    session:self.sessionTracker.runningSession];
+                                                    session:nil /* the session's event counts have not yet been incremented! */];
     event.apiKey = self.configuration.apiKey;
     event.context = self.context;
     event.originalError = exception;
@@ -926,11 +925,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         [event notifyUnhandledOverridden];
     }
 
-    if (event.handledState.unhandled) {
-        [self.sessionTracker handleUnhandledErrorEvent];
-    } else {
-        [self.sessionTracker handleHandledErrorEvent];
-    }
+    [self.sessionTracker incrementEventCountUnhandled:event.handledState.unhandled];
+    event.session = self.sessionTracker.runningSession;
 
     if (event.unhandled) {
         // Unhandled Javscript exceptions from React Native result in the app being terminated shortly after the

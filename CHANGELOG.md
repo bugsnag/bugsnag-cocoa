@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## 6.9.4 (2021-06-02)
+
+### Bug fixes
+
+* Improve performance of `notify()`.
+  [#1102](https://github.com/bugsnag/bugsnag-cocoa/pull/1102)
+  [#1104](https://github.com/bugsnag/bugsnag-cocoa/pull/1104)
+  [#1105](https://github.com/bugsnag/bugsnag-cocoa/pull/1105)
+
+* Fix a crash in `-[BugsnagApp deserializeFromJson:]` if main Mach-O image could not be identified, and improve reliability of identification.
+  [#1097](https://github.com/bugsnag/bugsnag-cocoa/issues/1097)
+  [#1101](https://github.com/bugsnag/bugsnag-cocoa/pull/1101)
+
 ## 6.9.3 (2021-05-26)
 
 ### Bug fixes

@@ -202,6 +202,7 @@
         XCTAssertNotNil(stackframe.machoUuid);
         XCTAssertNotNil(stackframe.machoVmAddress);
         XCTAssertNotNil(stackframe.machoLoadAddress);
+        [stackframe symbolicateIfNeeded];
         XCTAssertNotNil(stackframe.symbolAddress);
         XCTAssertNil(stackframe.type);
         XCTAssertTrue([callStackSymbols[idx] containsString:stackframe.method]);

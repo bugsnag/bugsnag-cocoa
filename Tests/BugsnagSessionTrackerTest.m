@@ -102,8 +102,8 @@
 - (void)testIncrementCounts {
 
     [self.sessionTracker startNewSession];
-    [self.sessionTracker handleHandledErrorEvent];
-    [self.sessionTracker handleHandledErrorEvent];
+    [self.sessionTracker incrementEventCountUnhandled:NO];
+    [self.sessionTracker incrementEventCountUnhandled:NO];
 
     BugsnagSession *session = self.sessionTracker.runningSession;
     XCTAssertNotNil(session);
@@ -116,11 +116,11 @@
     XCTAssertEqual(0, session.handledCount);
     XCTAssertEqual(0, session.unhandledCount);
 
-    [self.sessionTracker handleUnhandledErrorEvent];
+    [self.sessionTracker incrementEventCountUnhandled:YES];
     XCTAssertEqual(0, session.handledCount);
     XCTAssertEqual(1, session.unhandledCount);
 
-    [self.sessionTracker handleHandledErrorEvent];
+    [self.sessionTracker incrementEventCountUnhandled:NO];
     XCTAssertEqual(1, session.handledCount);
     XCTAssertEqual(1, session.unhandledCount);
 }

@@ -2,11 +2,11 @@ author_url: "https://www.bugsnag.com"
 author: "Bugsnag Inc"
 clean: false # avoid deleting docs/.git
 framework_root: "Bugsnag"
-github_file_prefix: "https://github.com/bugsnag/bugsnag-cocoa/tree/v6.9.3/Bugsnag"
+github_file_prefix: "https://github.com/bugsnag/bugsnag-cocoa/tree/v6.9.4/Bugsnag"
 github_url: "https://github.com/bugsnag/bugsnag-cocoa"
 hide_documentation_coverage: true
 module: "Bugsnag"
-module_version: "6.9.3"
+module_version: "6.9.4"
 objc: true
 output: "docs"
 readme: "README.md"
