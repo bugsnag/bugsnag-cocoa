@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Represents a session of user interaction with your app.
  */
-@interface BugsnagSession : NSObject <NSCopying>
+@interface BugsnagSession : NSObject
 
 @property (copy, nonatomic) NSString *id;
 
