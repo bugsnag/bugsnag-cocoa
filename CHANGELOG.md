@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix KSCrash state storage for apps with no CFBundleName.
+  [#1103](https://github.com/bugsnag/bugsnag-cocoa/pull/1103)
+
 ## 6.9.4 (2021-06-02)
 
 ### Bug fixes
