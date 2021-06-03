@@ -31,6 +31,8 @@ int main(int argc, const char * argv[]) {
     NSOperationQueue *notifyQueue = [[NSOperationQueue alloc] init];
     notifyQueue.maxConcurrentOperationCount = kMaxConcurrentNotifies;
     
+    BugsnagClient *bugsnagClient = nil;
+    
     @autoreleasepool {
         [NSFileManager.defaultManager removeItemAtURL:
          [[NSFileManager.defaultManager
@@ -42,7 +44,7 @@ int main(int argc, const char * argv[]) {
         config.apiKey = @"0192837465afbecd0192837465afbecd";
         config.autoDetectErrors = NO;
         config.endpoints.notify = kNotifyEndpoint;
-        [Bugsnag startWithConfiguration:config];
+        bugsnagClient = [Bugsnag startWithConfiguration:config];
         
         // These threads make a deadlock more likely if any of the notify threads are doing something they shouldn't.
         
@@ -93,6 +95,11 @@ int main(int argc, const char * argv[]) {
     
     NSLog(@"Ran in %f seconds", CFAbsoluteTimeGetCurrent() - startTime);
     NSLog(@"Maximum memory usage: %.1f MB", maxFootprint / (1024.0 * 1024.0));
+    
+    NSOperationQueue *uploadQueue = [bugsnagClient valueForKeyPath:@"eventUploader.uploadQueue"];
+    NSLog(@"Waiting for all uploads to finish...");
+    [uploadQueue waitUntilAllOperationsAreFinished];
+    NSLog(@"All uploads have finished.");
     
     return 0;
 }
