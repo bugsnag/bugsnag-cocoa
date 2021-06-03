@@ -3,8 +3,11 @@
 // Copyright (c) 2018 Bugsnag. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <Bugsnag/Bugsnag.h>
+
+// These headers expose some Bugsnag private APIs
+#import "AttachCustomStacktraceHook.h"
+#import "BugsnagHooks.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

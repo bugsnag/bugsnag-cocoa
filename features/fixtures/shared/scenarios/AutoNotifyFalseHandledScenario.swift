@@ -6,9 +6,6 @@
 //  Copyright © 2021 Bugsnag. All rights reserved.
 //
 
-import Foundation
-import Bugsnag
-
 /**
  * Sends a handled error to Bugsnag with autoNotify set to false
  */

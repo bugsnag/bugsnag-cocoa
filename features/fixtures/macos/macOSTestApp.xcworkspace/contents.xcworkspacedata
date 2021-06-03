@@ -5,6 +5,6 @@
       location = "group:macOSTestApp.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:../../../Bugsnag.xcodeproj">
+      location = "group:Pods/Pods.xcodeproj">
    </FileRef>
 </Workspace>

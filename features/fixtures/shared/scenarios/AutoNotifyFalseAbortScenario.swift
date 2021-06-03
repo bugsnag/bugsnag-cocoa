@@ -6,9 +6,6 @@
 //  Copyright © 2021 Bugsnag. All rights reserved.
 //
 
-import Foundation
-import Bugsnag
-
 /**
 * Raises a SIGABRT with autoNotify set to false, which should be ignored by Bugsnag
 */

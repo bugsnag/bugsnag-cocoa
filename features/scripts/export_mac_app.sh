@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
 set -o errexit
-set -o verbose
 
 cd features/fixtures/macos
+
+echo "--- macOSTestApp: pod install"
+
+pod install
+
+echo "--- macOSTestApp: xcodebuild archive"
 
 xcrun xcodebuild \
   -workspace macOSTestApp.xcworkspace \
@@ -11,8 +16,9 @@ xcrun xcodebuild \
   -configuration Debug \
   -archivePath archive/macOSTestApp.xcarchive \
   -quiet \
-  archive \
-  GCC_PREPROCESSOR_DEFINITIONS='$(inherited) BSG_LOG_LEVEL=BSG_LOGLEVEL_DEBUG'
+  archive
+
+echo "--- macOSTestApp: xcodebuild -exportArchive"
 
 xcrun xcodebuild \
   -exportArchive \
@@ -22,5 +28,7 @@ xcrun xcodebuild \
   -quiet
 
 cd output
+
+echo "--- macOSTestApp: zip"
 
 zip -r macOSTestApp.zip macOSTestApp.app

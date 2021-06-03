@@ -10,5 +10,5 @@ services:
       BROWSER_STACK_USERNAME:
       BROWSER_STACK_ACCESS_KEY:
     volumes:
-      - ./features/fixtures/ios-swift-cocoapods/output:/app/build
+      - ./features/fixtures/ios/output:/app/build
       - ./features/:/app/features/

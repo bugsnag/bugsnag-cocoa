@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Bugsnag
 
 /**
  * Sends a handled error to Bugsnag which  includes the default user information

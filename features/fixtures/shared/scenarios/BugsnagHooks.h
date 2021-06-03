@@ -6,16 +6,22 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <Bugsnag/Bugsnag.h>
 
-@interface Bugsnag ()
-+ (void)notifyInternal:(BugsnagEvent *_Nonnull)event
-                 block:(BugsnagOnErrorBlock _Nonnull)block;
+NS_ASSUME_NONNULL_BEGIN
 
-@property (class, readonly) BugsnagClient *client;
+@interface Bugsnag ()
+
++ (void)notifyInternal:(BugsnagEvent *)event block:(BOOL (^)(BugsnagEvent *))block;
+
+@property (class, readonly, nonatomic) BugsnagClient *client;
+
 @end
 
 @interface BugsnagClient()
+
 @property (nonatomic) BOOL autoNotify;
+
 @end
+
+NS_ASSUME_NONNULL_END

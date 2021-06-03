@@ -4,7 +4,6 @@
 //
 
 import Foundation
-import Bugsnag
 
 /**
  * Sends a handled Error to Bugsnag

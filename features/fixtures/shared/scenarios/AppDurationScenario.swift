@@ -6,7 +6,6 @@
 //  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
-import Bugsnag
 
 class AppDurationScenario: Scenario {
     

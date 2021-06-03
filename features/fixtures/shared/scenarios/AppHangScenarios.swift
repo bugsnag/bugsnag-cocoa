@@ -6,6 +6,10 @@
 //  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
+#if os(iOS)
+import UIKit
+#endif
+
 class AppHangScenario: Scenario {
     
     override func startBugsnag() {

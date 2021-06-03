@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Bugsnag
 
 /**
 * Raises a SIGABRT with autoDetectErrors set to false, which should be ignored by Bugsnag
