@@ -23,7 +23,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     artifact_paths:
-      - features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa
+      - features/fixtures/ios/output/iOSTestApp.ipa
       - features/fixtures/macos/output/macOSTestApp.zip
     commands:
       - ./features/scripts/export_ios_app.sh
@@ -126,7 +126,7 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.3.0:
-        download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
+        download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
@@ -153,7 +153,7 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.3.0:
-        download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
+        download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:

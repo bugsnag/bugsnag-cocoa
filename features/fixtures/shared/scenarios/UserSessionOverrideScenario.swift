@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Bugsnag
 
 /**
  * Sends a session to Bugsnag which overrides the user information

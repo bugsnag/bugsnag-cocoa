@@ -67,9 +67,9 @@ __Your session will periodically expire__, so you'll need to run this command to
 1. See https://www.browserstack.com/local-testing/app-automate for details of the required local testing binary.
 1. To run a single feature:
     ```shell script
-    bundle exec maze-runner --app=features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa \
-                            --farm=bs                                                         \
-                            --device=IOS_14                                                   \
+    bundle exec maze-runner --app=features/fixtures/ios/output/iOSTestApp.ipa \
+                            --farm=bs                                         \
+                            --device=IOS_14                                   \
                             features/app_and_device_attributes.feature
     ```
 1. To run all features, omit the final argument.

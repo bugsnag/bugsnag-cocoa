@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Bugsnag
 
 class OOMEnabledErrorTypesScenario: Scenario {
 

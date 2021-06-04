@@ -1,6 +1,5 @@
 
 import Foundation
-import Bugsnag
 
 class LoadConfigFromFileAutoScenarioError : Error {
 

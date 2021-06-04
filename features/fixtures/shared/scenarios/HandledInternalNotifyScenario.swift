@@ -1,5 +1,4 @@
 
-import Bugsnag
 import Foundation
 
 @objc class HandledInternalNotifyScenario: Scenario {

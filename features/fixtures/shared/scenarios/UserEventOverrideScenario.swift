@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Bugsnag
 
 /**
  * Sends a handled error to Bugsnag which overrides the user information in the event

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Bugsnag
 
 /**
  * Sends a handled error to Bugsnag with autoDetectErrors set to false
