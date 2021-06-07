@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Stop app hangs being reported if app is launched in the background.
+  [#1112](https://github.com/bugsnag/bugsnag-cocoa/pull/1112)
+
 * Stop session being reported if app is launched in the background.
   [#1107](https://github.com/bugsnag/bugsnag-cocoa/pull/1107)
 
