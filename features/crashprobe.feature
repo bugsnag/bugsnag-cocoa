@@ -124,7 +124,7 @@ Feature: Reporting crash events
     Then the error is valid for the error reporting API
     And the exception "errorClass" equals "Fatal error"
     And the exception "message" equals "Unexpectedly found nil while unwrapping an Optional value"
-    And the event "metaData.error.crashInfo" matches "Fatal error: Unexpectedly found nil while unwrapping an Optional value: file .+\.swift, line \d+\n"
+    And the event "metaData.error.crashInfo" matches "Fatal error: Unexpectedly found nil while unwrapping an Optional value"
 
   Scenario: Assertion failure in Swift code
     When I run "SwiftAssertion" and relaunch the app
@@ -133,7 +133,7 @@ Feature: Reporting crash events
     Then the error is valid for the error reporting API
     And the exception "errorClass" equals "Fatal error"
     And the exception "message" equals "several unfortunate things just happened"
-    And the event "metaData.error.crashInfo" matches "Fatal error: several unfortunate things just happened: file .+\.swift, line \d+\n"
+    And the event "metaData.error.crashInfo" matches "Fatal error: several unfortunate things just happened"
 
   Scenario: Dereference a null pointer
     When I run "NullPointerScenario" and relaunch the app
