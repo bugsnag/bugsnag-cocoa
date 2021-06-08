@@ -176,10 +176,6 @@
     free(crashReportPath);
     free(recrashReportPath);
     
-    if (!installedCrashTypes) {
-        return 0;
-    }
-    
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
 #if BSG_HAS_UIKIT
     [nCenter addObserver:self
