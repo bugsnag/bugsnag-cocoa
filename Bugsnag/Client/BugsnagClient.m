@@ -995,12 +995,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     BOOL charging = [UIDEVICE currentDevice].batteryState == UIDeviceBatteryStateCharging ||
                     [UIDEVICE currentDevice].batteryState == UIDeviceBatteryStateFull;
 
-    [self.state addMetadata:batteryLevel
-                    withKey:BSGKeyBatteryLevel
-                  toSection:BSGKeyDeviceState];
-
-    [self.state addMetadata:charging ? @YES : @NO
-                    withKey:BSGKeyCharging
+    [self.state addMetadata:@{BSGKeyBatteryLevel: batteryLevel,
+                              BSGKeyCharging: charging ? @YES : @NO}
                   toSection:BSGKeyDeviceState];
 }
 
