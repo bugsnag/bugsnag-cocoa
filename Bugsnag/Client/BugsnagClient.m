@@ -28,6 +28,7 @@
 
 #import "BugsnagClient+Private.h"
 
+#import "BSGAppHangDetector.h"
 #import "BSGConnectivity.h"
 #import "BSGEventUploader.h"
 #import "BSGFileLocations.h"
@@ -48,8 +49,6 @@
 #import "BugsnagAppWithState+Private.h"
 #import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagBreadcrumbs.h"
-#import "BugsnagClient+AppHangs.h"
-#import "BugsnagClient+OutOfMemory.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagCrashSentry.h"
@@ -71,7 +70,6 @@
 #import "BugsnagStateEvent.h"
 #import "BugsnagSystemState.h"
 #import "BugsnagThread+Private.h"
-#import "BugsnagThread+Recording.h"
 #import "BugsnagUser+Private.h"
 
 #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
@@ -209,7 +207,7 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 
 // MARK: -
 
-@interface BugsnagClient () <BSGBreadcrumbSink, BSGInternalErrorReporterDataSource>
+@interface BugsnagClient () <BSGAppHangDetectorDelegate, BSGBreadcrumbSink, BSGInternalErrorReporterDataSource>
 
 @property (nonatomic) BSGNotificationBreadcrumbs *notificationBreadcrumbs;
 
@@ -1211,7 +1209,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     // OOMs are controlled by config.autoDetectErrors so don't require any further action
 }
 
-#pragma mark BugsnagClient+AppHangs
+// MARK: - App Hangs
 
 - (void)startAppHangDetector {
     [NSFileManager.defaultManager removeItemAtPath:BSGFileLocations.current.appHangEvent error:nil];
@@ -1301,7 +1299,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     return event;
 }
 
-#pragma mark BugsnagClient+OutOfMemory
+// MARK: - OOMs
 
 - (BugsnagEvent *)generateOutOfMemoryEvent {
     NSDictionary *appDict = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP];

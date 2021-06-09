@@ -11,7 +11,6 @@
 #import "BSG_KSMachHeaders.h"
 #import "BugsnagStackframe+Private.h"
 #import "BugsnagThread+Private.h"
-#import "BugsnagThread+Recording.h"
 
 #include <stdatomic.h>
 
