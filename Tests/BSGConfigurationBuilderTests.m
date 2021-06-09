@@ -52,7 +52,7 @@
     XCTAssertNotNil(config);
     XCTAssertEqualObjects(DUMMY_APIKEY_32CHAR_1, config.apiKey);
     XCTAssertNotNil(config.appType);
-    XCTAssertNil(config.appVersion);
+    XCTAssertEqualObjects(config.appVersion, NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"]);
     XCTAssertTrue(config.autoDetectErrors);
     XCTAssertTrue(config.autoTrackSessions);
     XCTAssertEqual(config.maxPersistedEvents, 32);
