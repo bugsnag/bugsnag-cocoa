@@ -114,8 +114,8 @@ const struct segment_command command2 = {
     for (NSNumber *number in NSThread.callStackReturnAddresses) {
         uintptr_t address = number.unsignedIntegerValue;
         BSG_Mach_Header_Info *image = bsg_mach_headers_image_at_address(address);
-        struct dl_info dlinfo = {0}; dladdr(address, &dlinfo);
-        if (dlinfo.dli_fbase) {
+        struct dl_info dlinfo = {0};
+        if (dladdr(address, &dlinfo) != 0) {
             // If dladdr was able to locate the image, so should bsg_mach_headers_image_at_address
             XCTAssertEqual(image->header, dlinfo.dli_fbase);
             XCTAssertEqual(image->imageVmAddr + image->slide, (uint64_t)dlinfo.dli_fbase);

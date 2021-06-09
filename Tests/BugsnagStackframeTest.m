@@ -183,6 +183,7 @@
 }
 
 - (void)testRealCallStackSymbols {
+    bsg_mach_headers_initialize();
     bsg_mach_headers_register_for_changes(); // Ensure call stack can be symbolicated
     
     NSArray<NSString *> *callStackSymbols = [NSThread callStackSymbols];
@@ -197,6 +198,19 @@
             (stackframe.machoLoadAddress == nil || stackframe.symbolAddress == nil)) {
             // The last callStackSymbol is often not in any Mach-O image, e.g.
             // "41  ???                                 0x0000000000000005 0x0 + 5"
+            return;
+        }
+        if (!stackframe.machoUuid && [stackframe.method isEqualToString:@"start_sim"]) {
+            // With Xcode 13 beta's iOS 15 Simulator, the stack trace ends with e.g.
+            //   xctest                              0x00000001030b03ae main + 256,
+            //   dyld                                0x00000001030bfe1e start_sim + 10,
+            //   ???                                 0x0000000000000001 0x0 + 1,
+            //   ???                                 0x0000000000000001 0x0 + 1
+            //
+            // `start_sim` is actually located in dyld_sim according to lldb's `image lookup --address` command
+            // but this image does not show up in the headers returned by `_dyld_get_image_header()`. `dladdr()`
+            // reports this symbol as being in /usr/lib/dyld
+            *stop = YES;
             return;
         }
         XCTAssertNotNil(stackframe.machoUuid);
