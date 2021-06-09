@@ -1224,9 +1224,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self.appHangDetector startWithDelegate:self];
 }
 
-- (void)appHangDetectedWithThreads:(nonnull NSArray<BugsnagThread *> *)threads {
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
-
+- (void)appHangDetectedAtDate:(nonnull NSDate *)date withThreads:(nonnull NSArray<BugsnagThread *> *)threads systemInfo:(nonnull NSDictionary *)systemInfo {
     NSString *message = [NSString stringWithFormat:@"The app's main thread failed to respond to an event within %d milliseconds",
                          (int)self.configuration.appHangThresholdMillis];
 
@@ -1243,13 +1241,20 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                     unhandledOverridden:NO
                                               attrValue:nil];
 
+    BugsnagAppWithState *app = [self generateAppWithState:systemInfo];
+
+    BugsnagDeviceWithState *device = [self generateDeviceWithState:systemInfo];
+    device.time = date;
+
+    NSArray<BugsnagBreadcrumb *> *breadcrumbs = [self.breadcrumbs breadcrumbsBeforeDate:date];
+
     self.appHangEvent =
-    [[BugsnagEvent alloc] initWithApp:[self generateAppWithState:systemInfo]
-                               device:[self generateDeviceWithState:systemInfo]
+    [[BugsnagEvent alloc] initWithApp:app
+                               device:device
                          handledState:handledState
                                  user:self.configuration.user
                              metadata:[self.metadata deepCopy]
-                          breadcrumbs:self.breadcrumbs.breadcrumbs ?: @[]
+                          breadcrumbs:breadcrumbs
                                errors:@[error]
                               threads:threads
                               session:self.sessionTracker.runningSession];

@@ -13,6 +13,7 @@
 #import "BSGJSONSerialization.h"
 #import "BSG_KSCrashReportWriter.h"
 #import "BugsnagBreadcrumb+Private.h"
+#import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagLogger.h"
 
@@ -60,6 +61,12 @@ static BugsnagBreadcrumbsContext g_context;
 
 - (NSArray<BugsnagBreadcrumb *> *)breadcrumbs {
     return [self loadBreadcrumbsAsDictionaries:NO] ?: @[];
+}
+
+- (NSArray<BugsnagBreadcrumb *> *)breadcrumbsBeforeDate:(nonnull NSDate *)date {
+    return BSGArrayMap(self.breadcrumbs, ^id _Nullable(BugsnagBreadcrumb *crumb) {
+        return [crumb.timestamp compare:date] == NSOrderedAscending ? crumb : nil;
+    });
 }
 
 - (void)addBreadcrumb:(NSString *)breadcrumbMessage {

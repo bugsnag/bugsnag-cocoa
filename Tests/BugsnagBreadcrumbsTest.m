@@ -264,6 +264,15 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqual(BSGBreadcrumbTypeManual, BSGBreadcrumbTypeFromString(@"4"));
 }
 
+- (void)testBreadcrumbsBeforeDate {
+    [self.crumbs removeAllBreadcrumbs];
+    [self.crumbs addBreadcrumb:@"Crumb 1"];
+    [self.crumbs addBreadcrumb:@"Crumb 2"];
+    [self.crumbs addBreadcrumb:@"Crumb 3"];
+    XCTAssertEqual([self.crumbs breadcrumbsBeforeDate:[NSDate date]].count, 3);
+    XCTAssertEqual([self.crumbs breadcrumbsBeforeDate:[NSDate distantPast]].count, 0);
+}
+
 - (void)testBreadcrumbFromDict {
     XCTAssertNil([BugsnagBreadcrumb breadcrumbFromDict:@{}]);
     XCTAssertNil([BugsnagBreadcrumb breadcrumbFromDict:@{@"metadata": @{}}]);
