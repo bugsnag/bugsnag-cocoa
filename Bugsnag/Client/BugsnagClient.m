@@ -112,10 +112,6 @@ static NSUInteger handledCount;
 static NSUInteger unhandledCount;
 static bool hasRecordedSessions;
 
-@interface NSDictionary (BSGKSMerge)
-- (NSDictionary *)BSG_mergedInto:(NSDictionary *)dest;
-@end
-
 /**
  *  Handler executed when the application crashes. Writes information about the
  *  current application state using the crash report writer.
