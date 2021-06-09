@@ -6,9 +6,6 @@
 //  Copyright © 2021 Bugsnag. All rights reserved.
 //
 
-import Foundation
-import Bugsnag
-
 /**
  * Raises an unhandled NSException with autoNotify set to false then true,
  * which should be reported by Bugsnag

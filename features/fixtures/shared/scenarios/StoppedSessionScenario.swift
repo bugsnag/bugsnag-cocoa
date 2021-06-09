@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Bugsnag
 
 internal class StoppedSessionScenario: Scenario {
     override func startBugsnag() {

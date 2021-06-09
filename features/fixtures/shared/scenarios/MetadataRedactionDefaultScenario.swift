@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Bugsnag
 
 /**
  * Sends a handled Error to Bugsnag with some sensitive metadata that is redacted by default

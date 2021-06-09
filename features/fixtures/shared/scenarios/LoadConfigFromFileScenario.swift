@@ -1,6 +1,5 @@
 
 import Foundation
-import Bugsnag
 
 class LaunchError : Error {
 

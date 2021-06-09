@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Bugsnag
 
 /**
  * Sends an event  to Bugsnag which contains a user set from Configuration

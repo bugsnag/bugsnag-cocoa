@@ -4,7 +4,6 @@
 //
 
 import Foundation
-import Bugsnag
 
 /**
  * Sends a handled error to Bugsnag, which does not include user data.

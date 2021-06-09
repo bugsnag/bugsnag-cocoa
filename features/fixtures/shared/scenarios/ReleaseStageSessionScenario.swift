@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Bugsnag
 
 internal class EnabledReleaseStageAutoSessionScenario : Scenario {
 

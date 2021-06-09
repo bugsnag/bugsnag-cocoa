@@ -34,12 +34,16 @@
     return dirs[0];
 }
 
-
-- (void)setUp {
+- (BOOL)openKVStore {
     int err = 0;
     NSString* path = [[self getCachesDir] stringByAppendingPathComponent:@"bsgkv"];
     bsgkv_open([path cStringUsingEncoding:NSUTF8StringEncoding], &err);
     XCTAssertEqual(err, 0);
+    return err == 0;
+}
+
+- (void)setUp {
+    [self openKVStore];
 }
 
 - (void)tearDown {
@@ -181,6 +185,64 @@ DECLARE_SCALAR_TEST(Float, double, 123.456, 7.89e50)
     XCTAssertEqual(err, 0);
     XCTAssertEqual(length, sizeof(expected));
     XCTAssertEqual(memcmp(actual, expected, sizeof(expected)), 0);
+}
+
+- (void)testFileDescriptorLeak {
+    struct rlimit limit = {0};
+    if (getrlimit(RLIMIT_NOFILE, &limit) < 0) {
+        perror("getrlimit");
+    }
+    rlim_t originalLimit = limit.rlim_cur;
+    limit.rlim_cur = 256;
+    if (setrlimit(RLIMIT_NOFILE, &limit) < 0) {
+        perror("setrlimit");
+    }
+    
+    for (int i = 0; i < limit.rlim_cur; i++) {
+        bsgkv_close();
+        
+        if (![self openKVStore]) {
+            goto testFileDescriptorLeak_end;
+        }
+    }
+        
+    const char *key = "password";
+    
+    int err = 0;
+    
+    for (int i = 0; i < limit.rlim_cur; i++) {
+        uint8_t value[] = "secret";
+        bsgkv_setBytes(key, value, sizeof(value), &err);
+        if (err != 0) {
+            XCTFail("bsgkv_setBytes err: %d", err);
+            goto testFileDescriptorLeak_end;
+        }
+    }
+    
+    for (int i = 0; i < limit.rlim_cur; i++) {
+        uint8_t value[24];
+        int length = sizeof(value);
+        bsgkv_getBytes(key, value, &length, &err);
+        if (err != 0) {
+            XCTFail("bsgkv_getBytes err: %d", err);
+            goto testFileDescriptorLeak_end;
+        }
+    }
+    
+    for (int i = 0; i < limit.rlim_cur; i++) {
+        bsgkv_delete(key, &err);
+        if (err != 0) {
+            XCTFail("bsgkv_delete err: %d", err);
+            goto testFileDescriptorLeak_end;
+        }
+    }
+    
+testFileDescriptorLeak_end:
+    
+    limit.rlim_cur = originalLimit;
+    if (setrlimit(RLIMIT_NOFILE, &limit) < 0) {
+        perror("setrlimit");
+    }
 }
 
 @end

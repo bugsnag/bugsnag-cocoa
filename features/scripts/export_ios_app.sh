@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 
-cd features/fixtures/ios-swift-cocoapods/
+set -o errexit
 
-pod install
+cd features/fixtures/ios
 
-if [ $? -ne 0 ]
-then
-  echo "Pods could not be installed"
-  exit 1
-fi
+echo "--- iOSTestApp: xcodebuild archive"
 
 xcrun xcodebuild \
   -scheme iOSTestApp \
@@ -17,21 +13,14 @@ xcrun xcodebuild \
   -archivePath archive/iosTestApp.xcarchive \
   -allowProvisioningUpdates \
   -quiet \
-  archive
+  archive \
+  GCC_PREPROCESSOR_DEFINITIONS='$(inherited) BSG_LOG_LEVEL=BSG_LOGLEVEL_DEBUG'
 
-if [ $? -ne 0 ]
-then
-  echo "App could not be exported"
-  exit 1
-fi
+echo "--- iOSTestApp: xcodebuild -exportArchive"
 
-xcrun xcodebuild -exportArchive \
+xcrun xcodebuild \
+  -exportArchive \
   -archivePath archive/iosTestApp.xcarchive \
   -exportPath output/ \
   -quiet \
   -exportOptionsPlist exportOptions.plist
-
-if [ $? -ne 0 ]; then
-  echo "Archive could not be created"
-  exit 1
-fi
