@@ -15,7 +15,6 @@
 #import "BSG_KSMach.h"
 #import "BugsnagCollections.h"
 #import "BugsnagLogger.h"
-#import "BugsnagThread+Recording.h"
 #import "BugsnagThread+Private.h"
 
 #if TARGET_OS_IOS
