@@ -11,6 +11,7 @@ CLANG_WARN_ASSIGN_ENUM                                 = YES // -Wassign-enum
 CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING                 = YES // -Wblock-capture-autoreleasing
 CLANG_WARN_BOOL_CONVERSION                             = YES // -Wbool-conversion
 CLANG_WARN_COMMA                                       = YES // -Wcomma
+CLANG_WARN_COMPLETION_HANDLER_MISUSE                   = YES // -Wcompletion-handler
 CLANG_WARN_CONSTANT_CONVERSION                         = YES // -Wconstant-conversion
 CLANG_WARN_DOCUMENTATION_COMMENTS                      = YES // -Wdocumentation
 CLANG_WARN_EMPTY_BODY                                  = YES // -Wempty-body
