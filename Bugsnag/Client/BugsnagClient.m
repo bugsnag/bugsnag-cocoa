@@ -1224,7 +1224,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self.appHangDetector startWithDelegate:self];
 }
 
-- (void)appHangDetectedAtDate:(nonnull NSDate *)date withThreads:(nonnull NSArray<BugsnagThread *> *)threads systemInfo:(nonnull NSDictionary *)systemInfo {
+- (void)appHangDetectedAtDate:(NSDate *)date withThreads:(NSArray<BugsnagThread *> *)threads systemInfo:(NSDictionary *)systemInfo {
     NSString *message = [NSString stringWithFormat:@"The app's main thread failed to respond to an event within %d milliseconds",
                          (int)self.configuration.appHangThresholdMillis];
 
