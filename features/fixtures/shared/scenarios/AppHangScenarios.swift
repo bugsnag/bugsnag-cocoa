@@ -14,6 +14,7 @@ class AppHangScenario: Scenario {
     
     override func startBugsnag() {
         config.appHangThresholdMillis = 2_000
+        config.enabledBreadcrumbTypes = [.user]
         super.startBugsnag()
     }
     
@@ -21,7 +22,14 @@ class AppHangScenario: Scenario {
         Bugsnag.setContext("App Hang Scenario")
         let timeInterval = TimeInterval(eventMode!)!
         NSLog("Simulating an app hang of \(timeInterval) seconds...")
-        Thread.sleep(forTimeInterval: timeInterval)
+        if timeInterval > 2 {
+            Thread.sleep(forTimeInterval: 1.5)
+            Bugsnag.leaveBreadcrumb(withMessage: "This breadcrumb was left during the hang, before detection")
+            Thread.sleep(forTimeInterval: timeInterval - 1.5)
+        } else {
+            Thread.sleep(forTimeInterval: timeInterval)
+        }
+        Bugsnag.leaveBreadcrumb(withMessage: "This breadcrumb was left after the hang")
         NSLog("Finished sleeping")
     }
 }
