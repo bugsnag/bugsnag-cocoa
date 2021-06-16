@@ -80,6 +80,11 @@ Feature: App hangs
     And the error payload field "events.0.app.durationInForeground" is a number
     And the error payload field "events.0.app.inForeground" is not null
 
+    # Breadcrumbs
+
+    And the error payload field "events.0.breadcrumbs" is an array with 1 elements
+    And the error payload field "events.0.breadcrumbs.0.name" equals "This breadcrumb was left during the hang, before detection"
+
   Scenario: App hangs below the threshold should not be reported
     When I set the app to "1.8" mode
     And I run "AppHangScenario"

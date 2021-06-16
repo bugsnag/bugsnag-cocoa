@@ -154,6 +154,10 @@ ifneq ($(shell git diff origin/master..master),)
 endif
 	@git tag v$(PRESET_VERSION)
 	@git push origin v$(PRESET_VERSION)
+	@git checkout next
+	@git rebase origin/next
+	@git merge master
+	@git push origin next
 	# Prep GitHub release
 	# We could technically do a `hub release` here but a verification step
 	# before it goes live always seems like a good thing
@@ -183,7 +187,7 @@ endif
 	@git diff --exit-code || (echo "you have unstaged changes - Makefile may need updating to `git add` some more files"; exit 1)
 	@git commit -m "Release v$(VERSION)"
 	@git push origin release-v$(VERSION)
-	@hub pull-request -m "Release v$(VERSION)" --browse
+	@open "https://github.com/bugsnag/bugsnag-cocoa/compare/master...release-v$(VERSION)?expand=1&title=Release%20v$(VERSION)&body="$$(awk 'start && /^## /{exit;};/^## /{start=1;next};start' CHANGELOG.md | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
 
 #--------------------------------------------------------------------------
 # Miscellaneous

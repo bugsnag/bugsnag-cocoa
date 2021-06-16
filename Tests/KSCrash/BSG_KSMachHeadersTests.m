@@ -105,7 +105,9 @@ const struct segment_command command2 = {
 - (void)testMainImage {
     bsg_mach_headers_initialize();
 
-    XCTAssert(bsg_mach_headers_get_main_image() != NULL);
+    BSG_Mach_Header_Info *image = bsg_mach_headers_get_main_image();
+    XCTAssert(image != NULL);
+    XCTAssertEqualObjects(@(image ? image->name : ""), NSBundle.mainBundle.executablePath);
 }
 
 - (void)testImageAtAddress {

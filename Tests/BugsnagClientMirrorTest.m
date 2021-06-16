@@ -121,12 +121,14 @@
             @"systemState @16@0:8",
             @"setSystemState: v24@0:8@16",
             @"addAutoBreadcrumbForEvent: v24@0:8@16",
-            @"appHangDetectedWithThreads: v24@0:8@16",
+            @"appHangDetectedAtDate:withThreads:systemInfo: v40@0:8@16@24@32",
             @"appHangDetector @16@0:8",
             @"appHangEnded v16@0:8",
             @"appHangEvent @16@0:8",
             @"appLaunchTimer @16@0:8",
             @"appLaunchTimerFired: v24@0:8@16",
+            @"autoNotify B16@0:8",
+            @"autoNotify c16@0:8",
             @"configMetadataFile @16@0:8",
             @"configMetadataFromLastLaunch @16@0:8",
             @"eventFromLastLaunch @16@0:8",
@@ -141,6 +143,8 @@
             @"setAppHangDetector: v24@0:8@16",
             @"setAppHangEvent: v24@0:8@16",
             @"setAppLaunchTimer: v24@0:8@16",
+            @"setAutoNotify: v20@0:8B16",
+            @"setAutoNotify: v20@0:8c16",
             @"setConfigMetadataFromLastLaunch: v24@0:8@16",
             @"setEventFromLastLaunch: v24@0:8@16",
             @"setEventUploader: v24@0:8@16",
@@ -153,10 +157,6 @@
             @"startAppHangDetector v16@0:8",
             @"stateMetadataFile @16@0:8",
             @"stateMetadataFromLastLaunch @16@0:8",
-            @"autoNotify B16@0:8",
-            @"autoNotify c16@0:8",
-            @"setAutoNotify: v20@0:8B16",
-            @"setAutoNotify: v20@0:8c16"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to
