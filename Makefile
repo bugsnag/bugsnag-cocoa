@@ -154,6 +154,10 @@ ifneq ($(shell git diff origin/master..master),)
 endif
 	@git tag v$(PRESET_VERSION)
 	@git push origin v$(PRESET_VERSION)
+	@git checkout next
+	@git rebase origin/next
+	@git merge master
+	@git push origin next
 	# Prep GitHub release
 	# We could technically do a `hub release` here but a verification step
 	# before it goes live always seems like a good thing
