@@ -49,6 +49,9 @@ class ViewController: UITableViewController {
             case 5:
                 // Out of Memory
                 generateOutOfMemoryError();
+            case 6:
+                // Fatal App Hang
+                fatalAppHang()
             default:
                 break;
             }
@@ -114,5 +117,10 @@ class ViewController: UITableViewController {
                 return true
             }
         }
+    }
+    
+    func fatalAppHang() {
+        Thread.sleep(forTimeInterval: 3)
+        _exit(1)
     }
 }
