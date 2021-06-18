@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)config;
 
 /**
- * The current breadcrumbs, loaded from disk.
+ * The breadcrumbs stored in memory.
  */
 @property (readonly, nonatomic) NSArray<BugsnagBreadcrumb *> *breadcrumbs;
 
@@ -42,9 +42,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray<BugsnagBreadcrumb *> *)breadcrumbsBeforeDate:(NSDate *)date;
 
 /**
- * Returns the breadcrumb JSON dictionaries stored on disk.
+ * The breadcrumb stored on disk.
  */
-- (nullable NSArray<NSDictionary *> *)cachedBreadcrumbs;
+- (NSArray<BugsnagBreadcrumb *> *)cachedBreadcrumbs;
+
+/**
+ * Used by the unit tests.
+ */
+- (nullable NSArray *)loadBreadcrumbsAsDictionaries:(BOOL)asDictionaries;
 
 /**
  * Removes breadcrumbs from disk.

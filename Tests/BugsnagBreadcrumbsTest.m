@@ -6,11 +6,12 @@
 //
 //
 
+#import "BSGGlobals.h"
 #import "BSG_KSJSONCodec.h"
 #import "Bugsnag.h"
-#import "BugsnagClient+Private.h"
 #import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagBreadcrumbs.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagTestConstants.h"
 
 #import <XCTest/XCTest.h>
@@ -42,9 +43,7 @@ static id JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer)) {
 @end
 
 void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
-    // This used to wait for the queue to finish adding breadcrumb(s). Not
-    // required in current implementation but leaving this function in case
-    // it needs to be reintroduced.
+    dispatch_sync(BSGGlobalsFileSystemQueue(), ^{});
 }
 
 BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
@@ -60,6 +59,10 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     [crumbs addBreadcrumb:@"Tap button"];
     [crumbs addBreadcrumb:@"Close tutorial"];
     self.crumbs = crumbs;
+}
+
+- (void)tearDown {
+    awaitBreadcrumbSync(self.crumbs);
 }
 
 - (void)testDefaultCount {
@@ -133,6 +136,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 - (void)testStateType {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     BugsnagBreadcrumbs *crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
+    [crumbs removeAllBreadcrumbs];
     [crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeState;
         crumb.message = @"Rotated Menu";
@@ -146,7 +150,8 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 }
 
 - (void)testPersistentCrumbManual {
-    NSArray<NSDictionary *> *value = [self.crumbs cachedBreadcrumbs];
+    awaitBreadcrumbSync(self.crumbs);
+    NSArray<NSDictionary *> *value = [self.crumbs loadBreadcrumbsAsDictionaries:YES];
     XCTAssertEqual(value.count, 3);
     XCTAssertEqualObjects(value[0][@"type"], @"manual");
     XCTAssertEqualObjects(value[0][@"name"], @"Launch app");
@@ -165,7 +170,8 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
         crumb.metadata = @{ @"captain": @"Bob"};
         crumb.type = BSGBreadcrumbTypeState;
     }];
-    NSArray<NSDictionary *> *value = [self.crumbs cachedBreadcrumbs];
+    awaitBreadcrumbSync(self.crumbs);
+    NSArray<NSDictionary *> *value = [self.crumbs loadBreadcrumbsAsDictionaries:YES];
     XCTAssertEqual(value.count, 4);
     XCTAssertEqualObjects(value[3][@"type"], @"state");
     XCTAssertEqualObjects(value[3][@"name"], @"Initiate sequence");
@@ -176,6 +182,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 - (void)testDefaultDiscardByType {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
+    [self.crumbs removeAllBreadcrumbs];
     [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeState;
         crumb.message = @"state";
@@ -440,19 +447,13 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
     [client start];
     
-    dispatch_block_t leaveBreadcrumbs = ^{
+    [self measureBlock:^{
         for (int i=0; i<maxBreadcrumbs; i++) {
             [client leaveBreadcrumbWithMessage:[NSString stringWithFormat:@"%s %@", __PRETTY_FUNCTION__, [NSDate date]]
                                       metadata:[[NSBundle mainBundle] infoDictionary]
                                        andType:BSGBreadcrumbTypeLog];
         }
-    };
-    
-    // The first run is always faster (while the number of breadcrumbs builds up)
-    // which upsets the performance measurements, so run in without measuring.
-    leaveBreadcrumbs();
-    
-    [self measureBlock:leaveBreadcrumbs];
+    }];
 }
 
 @end
