@@ -19,6 +19,7 @@
 #import <Bugsnag/Bugsnag.h>
 
 #import "BSGFileLocations.h"
+#import "BSGGlobals.h"
 #import "BSGJSONSerialization.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSSystemInfo.h"
@@ -167,7 +168,7 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
         _currentLaunchStateRW = initCurrentState(_kvStore, config);
         _currentLaunchState = [_currentLaunchStateRW copy];
         _consecutiveLaunchCrashes = [_lastLaunchState[InternalKey][ConsecutiveLaunchCrashesKey] unsignedIntegerValue];
-        [self sync];
+        [self syncState:_currentLaunchState];
 
         __weak __typeof__(self) weakSelf = self;
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
@@ -261,31 +262,25 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
 }
 
 - (void)mutateLaunchState:(void (^)(NSMutableDictionary *state))block {
+    NSDictionary *state = nil;
+    @synchronized (self) {
+        block(self.currentLaunchStateRW);
+        // User-facing state should never mutate from under them.
+        self.currentLaunchState = copyDictionary(self.currentLaunchStateRW);
+        state = self.currentLaunchState;
+    }
     // Run on a BG thread so we don't monopolize the notification queue.
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-        @synchronized (self) {
-            block(self.currentLaunchStateRW);
-            // User-facing state should never mutate from under them.
-            self.currentLaunchState = copyDictionary(self.currentLaunchStateRW);
-        }
-        [self sync];
+    dispatch_async(BSGGlobalsFileSystemQueue(), ^(void){
+        [self syncState:state];
     });
 }
 
-- (void)sync {
-    NSDictionary *state = self.currentLaunchState;
-    NSError *error = nil;
+- (void)syncState:(NSDictionary *)state {
     NSAssert([BSGJSONSerialization isValidJSONObject:state], @"BugsnagSystemState cannot be converted to JSON data");
-    if (![BSGJSONSerialization isValidJSONObject:state]) {
-        bsg_log_err(@"System state cannot be written as JSON");
-        return;
-    }
-    NSData *data = [BSGJSONSerialization dataWithJSONObject:state options:0 error:&error];
-    if (error) {
+    NSError *error = nil;
+    if (![BSGJSONSerialization writeJSONObject:state toFile:self.persistenceFilePath options:0 error:&error]) {
         bsg_log_err(@"System state cannot be written as JSON: %@", error);
-        return;
     }
-    [data writeToFile:self.persistenceFilePath atomically:YES];
 }
 
 - (void)purge {
