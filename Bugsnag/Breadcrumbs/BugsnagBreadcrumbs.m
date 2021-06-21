@@ -123,12 +123,9 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
         memcpy(newItem->jsonData + byteRange.location, bytes, byteRange.length);
     }];
     
-    unsigned int fileNumber;
-    BOOL deleteOld;
-    
     @synchronized (self) {
-        fileNumber = self.nextFileNumber;
-        deleteOld = fileNumber >= self.maxBreadcrumbs;
+        const unsigned int fileNumber = self.nextFileNumber;
+        const BOOL deleteOld = fileNumber >= self.maxBreadcrumbs;
         self.nextFileNumber = fileNumber + 1;
         
         if (g_breadcrumbs_head) {
@@ -146,29 +143,38 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
         } else {
             g_breadcrumbs_head = newItem;
         }
-    }
-    
-    if (!writeToDisk) {
-        return;
-    }
-    //
-    // Breadcrumbs are also stored on disk so that they are accessible at next
-    // launch if an OOM is detected.
-    //
-    dispatch_async(BSGGlobalsFileSystemQueue(), ^{
-        NSError *error = nil;
-        NSString *file = [self pathForFileNumber:fileNumber];
-        if (![data writeToFile:file options:NSDataWritingAtomic error:&error]) {
-            bsg_log_err(@"Unable to write breadcrumb: %@", error);
-        }
         
-        if (deleteOld) {
-            NSString *fileToDelete = [self pathForFileNumber:fileNumber - self.maxBreadcrumbs];
-            if (![[[NSFileManager alloc] init] removeItemAtPath:fileToDelete error:&error]) {
-                bsg_log_err(@"Unable to delete old breadcrumb: %@", error);
-            }
+        if (!writeToDisk) {
+            return;
         }
-    });
+        //
+        // Breadcrumbs are also stored on disk so that they are accessible at next
+        // launch if an OOM is detected.
+        //
+        dispatch_async(BSGGlobalsFileSystemQueue(), ^{
+            // Avoid writing breadcrumbs that have already been deleted from the in-memory store.
+            // This can occur when breadcrumbs are being added faster than they can be written.
+            unsigned int nextFileNumber = self.nextFileNumber;
+            BOOL isStale = (self.maxBreadcrumbs < nextFileNumber) && (fileNumber < (nextFileNumber - self.maxBreadcrumbs));
+            
+            NSError *error = nil;
+            
+            if (!isStale) {
+                NSString *file = [self pathForFileNumber:fileNumber];
+                if (![data writeToFile:file options:NSDataWritingAtomic error:&error]) {
+                    bsg_log_err(@"Unable to write breadcrumb: %@", error);
+                }
+            }
+            
+            if (deleteOld) {
+                NSString *fileToDelete = [self pathForFileNumber:fileNumber - self.maxBreadcrumbs];
+                if (![[[NSFileManager alloc] init] removeItemAtPath:fileToDelete error:&error] &&
+                    !([error.domain isEqual:NSCocoaErrorDomain] && error.code == NSFileNoSuchFileError)) {
+                    bsg_log_err(@"Unable to delete old breadcrumb: %@", error);
+                }
+            }
+        });
+    }
 }
 
 - (BOOL)shouldSendBreadcrumb:(BugsnagBreadcrumb *)crumb {
