@@ -261,7 +261,7 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
     }];
 }
 
-- (void)mutateLaunchState:(void (^)(NSMutableDictionary *state))block {
+- (void)mutateLaunchState:(nonnull void (^)(NSMutableDictionary *state))block {
     NSDictionary *state = nil;
     @synchronized (self) {
         block(self.currentLaunchStateRW);
