@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Improve performance of leaving breadcrumbs by using async file I/O.
+  [#1124](https://github.com/bugsnag/bugsnag-cocoa/pull/1124)
+
 * Prevent some potential false positive detection of app hangs.
   [#1122](https://github.com/bugsnag/bugsnag-cocoa/pull/1122)
 
