@@ -114,7 +114,10 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
     if (!data) {
         return;
     }
-    
+    [self addBreadcrumbWithData:data writeToDisk:YES];
+}
+
+- (void)addBreadcrumbWithData:(NSData *)data writeToDisk:(BOOL)writeToDisk {
     struct bsg_breadcrumb_list_item *newItem = calloc(1, sizeof(struct bsg_breadcrumb_list_item) + data.length + 1);
     [data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, __unused BOOL *stop) {
         memcpy(newItem->jsonData + byteRange.location, bytes, byteRange.length);
@@ -145,6 +148,9 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
         }
     }
     
+    if (!writeToDisk) {
+        return;
+    }
     //
     // Breadcrumbs are also stored on disk so that they are accessible at next
     // launch if an OOM is detected.

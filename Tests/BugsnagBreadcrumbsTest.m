@@ -7,6 +7,7 @@
 //
 
 #import "BSGGlobals.h"
+#import "BSG_KSCrashSentry_Private.h"
 #import "BSG_KSJSONCodec.h"
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumb+Private.h"
@@ -18,6 +19,17 @@
 
 // Defined in BSG_KSCrashReport.c
 void bsg_kscrw_i_prepareReportWriter(BSG_KSCrashReportWriter *const writer, BSG_KSJSONEncodeContext *const context);
+
+struct json_buffer {
+    size_t length;
+    char *buffer;
+};
+
+static int json_buffer_append(const char *data, size_t length, struct json_buffer *buffer) {
+    memcpy(buffer->buffer + buffer->length, data, length);
+    buffer->length += length;
+    return BSG_KSJSON_OK;
+}
 
 static int addJSONData(const char *data, size_t length, NSMutableData *userData) {
     [userData appendBytes:data length:length];
@@ -436,6 +448,63 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqualObjects(breadcrumbs[2][@"type"], @"manual");
     XCTAssertEqualObjects(breadcrumbs[2][@"name"], @"Close tutorial");
     XCTAssertEqualObjects(breadcrumbs[2][@"metaData"], @{});
+}
+
+- (void)testCrashReportWriterConcurrency {
+    //
+    // The aim of this test is to ensure that BugsnagBreadcrumbsWriteCrashReport will insert only valid JSON
+    // into a crash report when other threads are (paused while) updating the breadcrumbs linked list.
+    //
+    // So that the test spends less time serialising breadcrumbs and more time updating the linked list, the
+    // breadcrumb data is precomputed and not written to disk.
+    //
+    NSData *breadcrumbData = [NSJSONSerialization dataWithJSONObject:
+                              [[BugsnagBreadcrumb breadcrumbWithBlock:^(BugsnagBreadcrumb *breadcrumb) {
+        breadcrumb.message = @"Lorem ipsum";
+    }] objectValue] options:0 error:nil];
+    
+    __block BOOL isFinished = NO;
+    
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    queue.name = @"com.bugsnag.testCrashReportWriterConcurrency";
+    queue.maxConcurrentOperationCount = 6;
+    
+    for (NSInteger i = 0; i < queue.maxConcurrentOperationCount; i++) {
+        [queue addOperationWithBlock:^{
+            while (!isFinished) {
+                [self.crumbs addBreadcrumbWithData:breadcrumbData writeToDisk:NO];
+            }
+        }];
+    }
+    
+    const size_t bufferSize = 1024 * 1024;
+    struct json_buffer buffer = {0};
+    buffer.buffer = malloc(bufferSize);
+    
+    for (int i = 0; i < 5000; i++) {
+        buffer.length = 0;
+        
+        // BugsnagBreadcrumbsWriteCrashReport() requires other threads to be suspended.
+        bsg_kscrashsentry_suspendThreads();
+        
+        BSG_KSJSONEncodeContext context;
+        BSG_KSCrashReportWriter writer;
+        bsg_kscrw_i_prepareReportWriter(&writer, &context);
+        bsg_ksjsonbeginEncode(&context, false, (BSG_KSJSONAddDataFunc)json_buffer_append, &buffer);
+        writer.beginObject(&writer, "");
+        BugsnagBreadcrumbsWriteCrashReport(&writer);
+        writer.endContainer(&writer);
+        
+        bsg_kscrashsentry_resumeThreads();
+        
+        NSError *error = nil;
+        NSData *data = [NSData dataWithBytesNoCopy:buffer.buffer length:buffer.length freeWhenDone:NO];
+        XCTAssert([NSJSONSerialization JSONObjectWithData:data options:0 error:&error], @"%@", error);
+    }
+    
+    free(buffer.buffer);
+    isFinished = YES;
+    [queue waitUntilAllOperationsAreFinished];
 }
 
 - (void)testPerformance {
