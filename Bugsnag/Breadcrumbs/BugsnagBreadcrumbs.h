@@ -54,11 +54,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray<BugsnagBreadcrumb *> *)cachedBreadcrumbs;
 
 /**
- * Used by the unit tests.
- */
-- (nullable NSArray *)loadBreadcrumbsAsDictionaries:(BOOL)asDictionaries;
-
-/**
  * Removes breadcrumbs from disk.
  */
 - (void)removeAllBreadcrumbs;

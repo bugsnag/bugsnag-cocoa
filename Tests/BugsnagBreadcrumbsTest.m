@@ -163,17 +163,17 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 
 - (void)testPersistentCrumbManual {
     awaitBreadcrumbSync(self.crumbs);
-    NSArray<NSDictionary *> *value = [self.crumbs loadBreadcrumbsAsDictionaries:YES];
-    XCTAssertEqual(value.count, 3);
-    XCTAssertEqualObjects(value[0][@"type"], @"manual");
-    XCTAssertEqualObjects(value[0][@"name"], @"Launch app");
-    XCTAssertNotNil(value[0][@"timestamp"]);
-    XCTAssertEqualObjects(value[1][@"type"], @"manual");
-    XCTAssertEqualObjects(value[1][@"name"], @"Tap button");
-    XCTAssertNotNil(value[1][@"timestamp"]);
-    XCTAssertEqualObjects(value[2][@"type"], @"manual");
-    XCTAssertEqualObjects(value[2][@"name"], @"Close tutorial");
-    XCTAssertNotNil(value[2][@"timestamp"]);
+    NSArray<BugsnagBreadcrumb *> *breadcrumbs = [self.crumbs cachedBreadcrumbs];
+    XCTAssertEqual(breadcrumbs.count, 3);
+    XCTAssertEqual(breadcrumbs[0].type, BSGBreadcrumbTypeManual);
+    XCTAssertEqualObjects(breadcrumbs[0].message, @"Launch app");
+    XCTAssertNotNil(breadcrumbs[0].timestamp);
+    XCTAssertEqual(breadcrumbs[1].type, BSGBreadcrumbTypeManual);
+    XCTAssertEqualObjects(breadcrumbs[1].message, @"Tap button");
+    XCTAssertNotNil(breadcrumbs[1].timestamp);
+    XCTAssertEqual(breadcrumbs[2].type, BSGBreadcrumbTypeManual);
+    XCTAssertEqualObjects(breadcrumbs[2].message, @"Close tutorial");
+    XCTAssertNotNil(breadcrumbs[2].timestamp);
 }
 
 - (void)testPersistentCrumbCustom {
@@ -183,12 +183,12 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
         crumb.type = BSGBreadcrumbTypeState;
     }];
     awaitBreadcrumbSync(self.crumbs);
-    NSArray<NSDictionary *> *value = [self.crumbs loadBreadcrumbsAsDictionaries:YES];
-    XCTAssertEqual(value.count, 4);
-    XCTAssertEqualObjects(value[3][@"type"], @"state");
-    XCTAssertEqualObjects(value[3][@"name"], @"Initiate sequence");
-    XCTAssertEqualObjects(value[3][@"metaData"][@"captain"], @"Bob");
-    XCTAssertNotNil(value[3][@"timestamp"]);
+    NSArray<BugsnagBreadcrumb *> *breadcrumbs = [self.crumbs cachedBreadcrumbs];
+    XCTAssertEqual(breadcrumbs.count, 4);
+    XCTAssertEqual(breadcrumbs[3].type, BSGBreadcrumbTypeState);
+    XCTAssertEqualObjects(breadcrumbs[3].message, @"Initiate sequence");
+    XCTAssertEqualObjects(breadcrumbs[3].metadata[@"captain"], @"Bob");
+    XCTAssertNotNil(breadcrumbs[3].timestamp);
 }
 
 - (void)testDefaultDiscardByType {

@@ -219,16 +219,12 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
 }
 
 - (NSArray<BugsnagBreadcrumb *> *)cachedBreadcrumbs {
-    return [self loadBreadcrumbsAsDictionaries:NO] ?: @[];
-}
-
-- (nullable NSArray *)loadBreadcrumbsAsDictionaries:(BOOL)asDictionaries {
     NSError *error = nil;
     
     NSArray<NSString *> *filenames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.breadcrumbsPath error:&error];
     if (!filenames) {
         bsg_log_err(@"Unable to read breadcrumbs: %@", error);
-        return nil;
+        return @[];
     }
     
     // We cannot use NSString's -localizedStandardCompare: because its sorting may vary by locale.
@@ -267,7 +263,7 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
             bsg_log_err(@"Unexpected breadcrumb payload in file %@", file);
             continue;
         }
-        [breadcrumbs addObject:asDictionaries ? JSONObject : breadcrumb];
+        [breadcrumbs addObject:breadcrumb];
     }
     
     return breadcrumbs;
