@@ -91,7 +91,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.3
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.4
     artifact_paths:
       - logs/*
 
@@ -109,7 +109,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.3
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.4
     artifact_paths:
       - logs/*
 
@@ -202,7 +202,7 @@ steps:
         --fail-fast
         --order=random
 
-  # TODO: Skip penmding PLAT-6822
+  # TODO: Skip pending PLAT-6822
   - label: 'ARM macOS 11 barebones E2E tests'
     skip: Pending PLAT-6822
     depends_on:
