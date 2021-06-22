@@ -12,10 +12,8 @@
 
 @end
 
-static void InternalErrorReportingScenarios_KSCrashReport_CrashHandler() {
-    // Terminate the process without running atexit handlers. This should leave
-    // a partically written KSCrashReport which will fail to parse as JSON.
-    _exit(0);
+static void InternalErrorReportingScenarios_KSCrashReport_CrashHandler(const BSG_KSCrashReportWriter *writer) {
+    writer->addJSONElement(writer, "something", "{1: \"Not valid JSON\"}");
 }
 
 @implementation InternalErrorReportingScenarios_KSCrashReport
