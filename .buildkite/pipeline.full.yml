@@ -197,7 +197,7 @@ steps:
     skip: Pending PLAT-6822
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 10
+    timeout_in_minutes: 60
     agents:
       queue: opensource-m1-mac-cocoa-11
     plugins:
