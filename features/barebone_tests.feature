@@ -172,7 +172,7 @@ Feature: Barebone tests
     And I discard the oldest session
 
     # Wait for app to be killed for using too much memory
-    And I wait for 5 seconds
+    Then the app is not running
 
     And I relaunch the app
     And I configure Bugsnag for "OOMScenario"
