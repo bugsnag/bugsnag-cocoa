@@ -164,7 +164,8 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
             
             if (!isStale) {
                 NSString *file = [self pathForFileNumber:fileNumber];
-                if (![data writeToFile:file options:NSDataWritingAtomic error:&error]) {
+                // NSDataWritingAtomic not required because we no longer read the files without checking for validity
+                if (![data writeToFile:file options:0 error:&error]) {
                     bsg_log_err(@"Unable to write breadcrumb: %@", error);
                 }
             }
