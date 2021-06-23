@@ -74,7 +74,7 @@ steps:
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=13.3
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=13.4
     artifact_paths:
       - logs/*
 
