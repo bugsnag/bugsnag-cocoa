@@ -11,8 +11,9 @@ Feature: Internal error reporting
     And the error "Bugsnag-Internal-Error" header equals "bugsnag-cocoa"
     And the error payload field "events.0.threads" is an array with 0 elements
     And the event "apiKey" is null
+    And the event "groupingHash" equals "BSGEventUploadKSCrashReportOperation.m: JSON parsing error: NSCocoaErrorDomain 3840: No string key for value in object"
     And the event "metaData.BugsnagDiagnostics.apiKey" equals "12312312312312312312312312312312"
     And the event "metaData.BugsnagDiagnostics.data" is not null
     And the event "unhandled" is false
     And the exception "errorClass" equals "JSON parsing error"
-    And the exception "message" equals "NSCocoaErrorDomain 3840: Unexpected end of file while parsing object."
+    And the exception "message" matches "NSCocoaErrorDomain 3840: No string key for value in object around character \d+."
