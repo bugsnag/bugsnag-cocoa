@@ -119,6 +119,9 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
 
 - (void)addBreadcrumbWithData:(NSData *)data writeToDisk:(BOOL)writeToDisk {
     struct bsg_breadcrumb_list_item *newItem = calloc(1, sizeof(struct bsg_breadcrumb_list_item) + data.length + 1);
+    if (!newItem) {
+        return;
+    }
     [data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, __unused BOOL *stop) {
         memcpy(newItem->jsonData + byteRange.location, bytes, byteRange.length);
     }];
