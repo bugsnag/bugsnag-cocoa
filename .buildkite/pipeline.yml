@@ -57,6 +57,15 @@ steps:
   # Unit tests
   #
 
+  - label: ARM macOS 11 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-m1-mac-cocoa-11
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=macOS
+    artifact_paths:
+      - logs/*
+
   - label: macOS 10.15 unit tests
     timeout_in_minutes: 10
     agents:
@@ -82,7 +91,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.3
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.4
     artifact_paths:
       - logs/*
 
@@ -100,7 +109,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.3
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.4
     artifact_paths:
       - logs/*
 
@@ -188,6 +197,31 @@ steps:
         --farm=local
         --os=macos
         --os-version=10.15
+        --app=macOSTestApp
+        --tags='not @skip_macos'
+        --fail-fast
+        --order=random
+
+  # TODO: Skip pending PLAT-6822
+  - label: 'ARM macOS 11 barebones E2E tests'
+    skip: Pending PLAT-6822
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-m1-mac-cocoa-11
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        upload: ["macOSTestApp.log", "appium_server.log"]
+    commands:
+      - bundle config set --local path 'vendor/bundle'
+      - bundle install
+      - bundle exec maze-runner
+        features/barebone_tests.feature
+        --farm=local
+        --os=macos
+        --os-version=11
         --app=macOSTestApp
         --tags='not @skip_macos'
         --fail-fast

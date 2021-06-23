@@ -192,6 +192,30 @@ steps:
         --fail-fast
         --order=random
 
+  # TODO: Skip penmding PLAT-6822
+  - label: 'ARM macOS 11.0 E2E tests'
+    skip: Pending PLAT-6822
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource-m1-mac-cocoa-11
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        upload: ["macOSTestApp.log", "appium_server.log"]
+    commands:
+      - bundle config set --local path 'vendor/bundle'
+      - bundle install
+      - bundle exec maze-runner
+        --farm=local
+        --os=macos
+        --os-version=11
+        --app=macOSTestApp
+        --tags='not @skip_macos'
+        --fail-fast
+        --order=random
+
   - label: 'macOS 10.13 E2E tests'
     depends_on:
       - cocoa_fixture

@@ -158,6 +158,11 @@
     NSLog(@"Results: %@", results);
 }
 
+- (IBAction)fatalAppHang:(id)sender {
+    [NSThread sleepForTimeInterval:3];
+    _exit(1);
+}
+
 /**
  This method adds some metadata to your application client, that will be included in all subsequent error reports, and visible on the "extras" tab  on the Bugsnag dashboard.
  */
