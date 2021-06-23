@@ -54,13 +54,13 @@ Feature: App and Device attributes present
 
     # AppWithState
 
+    And the error payload field "events.0.app.binaryArch" matches the regex "(arm|x86)"
     And the error payload field "events.0.app.duration" is a number
     And the error payload field "events.0.app.durationInForeground" is a number
     And the error payload field "events.0.app.inForeground" is not null
 
     # App metadata
 
-    And the event "metaData.app.binaryArch" is not null
     And the event "metaData.app.name" equals the platform-dependent string:
       | ios   | iOSTestApp   |
       | macos | macOSTestApp |
