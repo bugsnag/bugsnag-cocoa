@@ -35,6 +35,7 @@
                             @"background_time_since_launch": @5,
                             @"application_in_foreground": @YES,
                     },
+                    @"binary_arch": @"arm64",
                     @"CFBundleExecutable": @"MyIosApp",
                     @"CFBundleIdentifier": @"com.example.foo.MyIosApp",
                     @"CFBundleShortVersionString": @"5.6.3",
@@ -59,6 +60,7 @@
     BugsnagApp *app = [BugsnagApp appWithDictionary:self.data config:self.config codeBundleId:self.codeBundleId];
 
     // verify stateless fields
+    XCTAssertEqualObjects(app.binaryArch, @"arm64");
     XCTAssertEqualObjects(@"1", app.bundleVersion);
     XCTAssertEqualObjects(@"bundle-123", app.codeBundleId);
     XCTAssertEqualObjects(@"dsym-uuid-123", app.dsymUuid);
@@ -77,6 +79,7 @@
     XCTAssertTrue(app.inForeground);
 
     // verify stateless fields
+    XCTAssertEqualObjects(app.binaryArch, @"arm64");
     XCTAssertEqualObjects(@"1", app.bundleVersion);
     XCTAssertEqualObjects(@"bundle-123", app.codeBundleId);
     XCTAssertEqualObjects(@"dsym-uuid-123", app.dsymUuid);
@@ -92,6 +95,7 @@
     NSDictionary *dict = [app toDict];
 
     // verify stateless fields
+    XCTAssertEqualObjects(dict[@"binaryArch"], @"arm64");
     XCTAssertEqualObjects(@"1", dict[@"bundleVersion"]);
     XCTAssertEqualObjects(@"bundle-123", dict[@"codeBundleId"]);
     XCTAssertEqualObjects(@[@"dsym-uuid-123"], dict[@"dsymUUIDs"]);
@@ -112,6 +116,7 @@
     XCTAssertTrue([dict[@"inForeground"] boolValue]);
 
     // verify stateless fields
+    XCTAssertEqualObjects(dict[@"binaryArch"], @"arm64");
     XCTAssertEqualObjects(@"1", dict[@"bundleVersion"]);
     XCTAssertEqualObjects(@"bundle-123", dict[@"codeBundleId"]);
     XCTAssertEqualObjects(@[@"dsym-uuid-123"], dict[@"dsymUUIDs"]);
@@ -123,6 +128,7 @@
 
 - (void)testAppFromJson {
     NSDictionary *json = @{
+            @"binaryArch": @"x86_64",
             @"duration": @7000,
             @"durationInForeground": @2000,
             @"inForeground": @YES,
@@ -143,6 +149,7 @@
     XCTAssertTrue(app.inForeground);
 
     // verify stateless fields
+    XCTAssertEqualObjects(app.binaryArch, @"x86_64");
     XCTAssertEqualObjects(@"1", app.bundleVersion);
     XCTAssertEqualObjects(@"bundle-123", app.codeBundleId);
     XCTAssertEqualObjects(@"dsym-uuid-123", app.dsymUuid);
@@ -178,15 +185,6 @@
 
 - (void)testBSGParseAppMetadata {
     NSDictionary *metadata = BSGParseAppMetadata(@{@"system": [BSG_KSSystemInfo systemInfo]});
-#if TARGET_CPU_ARM
-    XCTAssert([metadata[@"binaryArch"] hasPrefix:@"armv"]);
-#elif TARGET_CPU_ARM64
-    XCTAssert([metadata[@"binaryArch"] hasPrefix:@"arm64"]);
-#elif TARGET_CPU_X86
-    XCTAssert([metadata[@"binaryArch"] hasPrefix:@"x86"]);
-#elif TARGET_CPU_X86_64
-    XCTAssertEqualObjects(metadata[@"binaryArch"], @"x86_64");
-#endif
     int proc_translated = 0;
     size_t size = sizeof(proc_translated);
     if (!sysctlbyname("sysctl.proc_translated", &proc_translated, &size, NULL, 0) && proc_translated) {

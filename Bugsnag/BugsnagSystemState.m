@@ -98,6 +98,7 @@ static NSMutableDictionary* initCurrentState(BugsnagKVStore *kvstore, BugsnagCon
     app[BSGKeyVersion] = blankIfNil(systemInfo[@BSG_KSSystemField_BundleShortVersion]);
     app[BSGKeyBundleVersion] = blankIfNil(systemInfo[@BSG_KSSystemField_BundleVersion]);
     app[BSGKeyMachoUUID] = [BSG_KSSystemInfo appUUID];
+    app[@"binaryArch"] = systemInfo[@BSG_KSSystemField_BinaryArch];
     app[@"inForeground"] = @(isInForeground);
     app[@"isActive"] = @(isActive);
 #if BSG_PLATFORM_TVOS
