@@ -136,6 +136,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
+        upload: ["maze_output/failed/**/*"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
@@ -145,7 +146,7 @@ steps:
           - "--device=IOS_14"
           - "--resilient"
           - "--appium-version=1.17.0"
-          - "--fail-fast"
+#          - "--fail-fast"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
