@@ -68,7 +68,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     // Check that we can change it
     [client notify:ex];
 
-    NSDictionary *breadcrumb = [client.breadcrumbs.breadcrumbs[1] objectValue];
+    NSDictionary *breadcrumb = [client.breadcrumbs.breadcrumbs.lastObject objectValue];
     NSDictionary *metadata = [breadcrumb valueForKey:@"metaData"];
 
     XCTAssertEqualObjects([breadcrumb valueForKey:@"type"], @"error");

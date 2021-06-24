@@ -1347,7 +1347,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                          handledState:[BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory]
                                  user:session.user ?: [[BugsnagUser alloc] init]
                              metadata:metadata
-                          breadcrumbs:self.breadcrumbs.breadcrumbs ?: @[]
+                          breadcrumbs:[self.breadcrumbs cachedBreadcrumbs] ?: @[]
                                errors:@[error]
                               threads:@[]
                               session:session];
