@@ -1,12 +1,19 @@
 Changelog
 =========
 
-## 6.9.7 (2021-06-23)
+## TBD
 
 ### Bug fixes
 
+* Improve performance of adding metadata by using async file I/O.
+  [#1126](https://github.com/bugsnag/bugsnag-cocoa/pull/1126)
+
 * Improve performance of leaving breadcrumbs by using async file I/O.
   [#1124](https://github.com/bugsnag/bugsnag-cocoa/pull/1124)
+
+## 6.9.7 (2021-06-23)
+
+### Bug fixes
 
 * Prevent some potential false positive detection of app hangs.
   [#1122](https://github.com/bugsnag/bugsnag-cocoa/pull/1122)

@@ -25,7 +25,6 @@
 #import "BSG_KSSystemInfo.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagKVStoreObjC.h"
-#import "BugsnagKeys.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagSystemState.h"
@@ -57,10 +56,16 @@ static NSDictionary* loadPreviousState(BugsnagKVStore *kvstore, NSString *jsonPa
     NSMutableDictionary *app = state[SYSTEMSTATE_KEY_APP];
 
     // KV-store versions of these are authoritative
-    app[SYSTEMSTATE_APP_WAS_TERMINATED] = [kvstore NSBooleanForKey:SYSTEMSTATE_APP_WAS_TERMINATED defaultValue:false];
-    app[SYSTEMSTATE_APP_IS_ACTIVE] = [kvstore NSBooleanForKey:SYSTEMSTATE_APP_IS_ACTIVE defaultValue:false];
-    app[SYSTEMSTATE_APP_IS_IN_FOREGROUND] = [kvstore NSBooleanForKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND defaultValue:false];
-    app[SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE] = [kvstore NSBooleanForKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE defaultValue:false];
+    for (NSString *key in @[SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE,
+                            SYSTEMSTATE_APP_IS_ACTIVE,
+                            SYSTEMSTATE_APP_IS_IN_FOREGROUND,
+                            SYSTEMSTATE_APP_IS_LAUNCHING,
+                            SYSTEMSTATE_APP_WAS_TERMINATED]) {
+        NSNumber *value = [kvstore NSBooleanForKey:key defaultValue:nil];
+        if (value != nil) {
+            app[key] = value;
+        }
+    }
 
     return state;
 }
@@ -90,6 +95,7 @@ static NSMutableDictionary* initCurrentState(BugsnagKVStore *kvstore, BugsnagCon
     [kvstore deleteKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvstore setBoolean:isActive forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvstore setBoolean:isInForeground forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
+    [kvstore setBoolean:true forKey:SYSTEMSTATE_APP_IS_LAUNCHING];
     [kvstore setBoolean:isBeingDebugged forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
 
     NSMutableDictionary *app = [NSMutableDictionary new];
@@ -246,6 +252,10 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
 
 - (void)setConsecutiveLaunchCrashes:(NSUInteger)consecutiveLaunchCrashes {
     [self setValue:@(_consecutiveLaunchCrashes = consecutiveLaunchCrashes) forKey:ConsecutiveLaunchCrashesKey inSection:InternalKey];
+}
+
+- (void)markLaunchCompleted {
+    [self.kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_LAUNCHING];
 }
 
 - (void)setValue:(id)value forAppKey:(NSString *)key {

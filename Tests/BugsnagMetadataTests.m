@@ -6,9 +6,11 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSG_KSCrashSentry_Private.h"
 #import "BugsnagMetadata.h"
 #import "BugsnagMetadata+Private.h"
+
+#import <XCTest/XCTest.h>
 
 // MARK: - Expose tested-class internals
 
@@ -390,6 +392,75 @@
     [metadata addMetadata:@{@"foo": @"baz", [NSNull null]: @""} toSection:@"foo"];
     XCTAssertFalse(didCallObserver, @"Observer should not be called if metadata has not changed");
     XCTAssertEqualObjects([metadata getMetadataFromSection:@"foo"], @{@"foo": @"baz"});
+}
+
+- (void)testMetadataStorageBuffer {
+    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:@{}];
+    
+    [metadata addMetadata:@"Hello" withKey:@"message1" toSection:@"custom"];
+    
+    __block char *buffer = NULL;
+    
+    id (^ JSONObjectFromBuffer)(char *buffer) = ^(char *buffer) {
+        NSData *data = [NSData dataWithBytes:buffer length:strlen(buffer)];
+        NSError *error = nil;
+        id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        if (!object) {
+            NSLog(@"%@", error);
+        }
+        return object;
+    };
+    
+    [metadata setStorageBuffer:&buffer file:nil];
+    XCTAssertEqualObjects(JSONObjectFromBuffer(buffer),
+                          (@{@"custom": @{@"message1": @"Hello"}}),
+                          @"Metadata should fill the storage buffer immeditately when set");
+    
+    [metadata addMetadata:@"Hello" withKey:@"message2" toSection:@"custom"];
+    XCTAssertEqualObjects(JSONObjectFromBuffer(buffer),
+                          (@{@"custom": @{@"message1": @"Hello", @"message2": @"Hello"}}),
+                          @"Metadata should update the storage buffer when mutated");
+    
+    // Test concurrency
+    
+    __block BOOL isFinished = NO;
+    
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    queue.name = @"com.bugsnag.testMetadataStorageBuffer";
+    queue.maxConcurrentOperationCount = 6;
+    
+    NSData *data = [NSData dataWithBytes:buffer length:strlen(buffer)];
+    for (NSInteger i = 0; i < queue.maxConcurrentOperationCount; i++) {
+        [queue addOperationWithBlock:^{
+            while (!isFinished) {
+                // Since we're bypassing -addMetadata: we need to replicate its
+                // @synchronized behaviour.
+                @synchronized (metadata) {
+                    [metadata writeData:data toBuffer:&buffer];
+                }
+            }
+        }];
+    }
+    
+    char *scratch = malloc(1024 * 1024);
+    
+    for (int i = 0; i < 10000; i++) {
+        // Threads must be suspended to prevent the metadata buffer from being freed while
+        // we read it. This replicates the environment when called from the crash handler.
+        // No Objective-C code can be used while threads are suspended.
+        bsg_kscrashsentry_suspendThreads();
+        
+        strcpy(scratch, buffer);
+        
+        bsg_kscrashsentry_resumeThreads();
+        
+        XCTAssertNotNil(JSONObjectFromBuffer(scratch));
+    }
+    
+    isFinished = YES;
+    [queue waitUntilAllOperationsAreFinished];
+    free(buffer);
+    free(scratch);
 }
 
 @end

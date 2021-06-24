@@ -22,11 +22,11 @@
 @implementation BugsnagApiValidationTest
 
 - (void)setUp {
+    [TestSupport purgePersistentData];
     [Bugsnag startWithApiKey:DUMMY_APIKEY_32CHAR_1];
 }
 
 - (void)testAppDidCrashLastLaunch {
-    [TestSupport purgePersistentData];
     XCTAssertFalse(Bugsnag.lastRunInfo.crashed);
 }
 
