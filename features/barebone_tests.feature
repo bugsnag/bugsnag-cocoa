@@ -118,7 +118,7 @@ Feature: Barebone tests
     And the event "app.type" equals the platform-dependent string:
       | ios   | iOS   |
       | macos | macOS |
-    And the event "app.version" equals "12.34"
+    And the event "app.version" equals "12.3"
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" is null
     And the event "context" equals "Something"
@@ -243,7 +243,7 @@ Feature: Barebone tests
     And the event "severityReason.unhandledOverridden" is null
     And the event "unhandled" is true
     And the event "user.email" equals "foobar@example.com"
-    And the event "user.id" equals "foobar2"
+    And the event "user.id" equals "foobar"
     And the event "user.name" equals "Foo Bar"
     And the error payload field "events.0.app.dsymUUIDs" is a non-empty array
     And the error payload field "events.0.app.duration" is null
