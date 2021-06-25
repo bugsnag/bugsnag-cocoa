@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix an issue that could cause C++ exceptions with very long descriptions to not be reported.
+  [#1137](https://github.com/bugsnag/bugsnag-cocoa/pull/1137)
+
 * Improve performance of adding metadata by using async file I/O.
   [#1133](https://github.com/bugsnag/bugsnag-cocoa/pull/1133)
 
