@@ -6,7 +6,7 @@ Changelog
 ### Bug fixes
 
 * Improve performance of adding metadata by using async file I/O.
-  [#1126](https://github.com/bugsnag/bugsnag-cocoa/pull/1126)
+  [#1133](https://github.com/bugsnag/bugsnag-cocoa/pull/1133)
 
 * Improve performance of leaving breadcrumbs by using async file I/O.
   [#1124](https://github.com/bugsnag/bugsnag-cocoa/pull/1124)
