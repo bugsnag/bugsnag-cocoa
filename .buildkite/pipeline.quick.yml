@@ -123,7 +123,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "appium_server.log"]
+        upload: ["macOSTestApp.log", "appium_server.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -144,6 +144,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
+        upload: ["maze_output/failed/**/*"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
@@ -171,6 +172,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
+        upload: ["maze_output/failed/**/*"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
@@ -198,6 +200,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
+        upload: ["maze_output/failed/**/*"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
@@ -224,6 +227,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
+        upload: ["maze_output/failed/**/*"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
