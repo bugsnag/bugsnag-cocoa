@@ -36,21 +36,17 @@ steps:
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     commands:
-      - mkdir -p features/fixtures/carthage-proj
       - make build_swift
       - make build_ios_static
 
-  - label: Static Carthage build
+  - label: Carthage
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-mac-cocoa-11
     concurrency: 3
     concurrency_group: cocoa-unit-tests
-    env:
-      DEVELOPER_DIR: "/Applications/Xcode11.app/Contents/Developer"
     commands:
-      - mkdir -p features/fixtures/carthage-proj
-      - make build_swift
+      - ./scripts/build-carthage.sh
 
   ##############################################################################
   #
