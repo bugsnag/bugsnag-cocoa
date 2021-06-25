@@ -39,12 +39,13 @@
 }
 
 - (void)run {
+    install_spin_malloc();
+
     void *ptr = mmap(NULL, (size_t) getpagesize(), PROT_NONE, MAP_ANON | MAP_PRIVATE, -1, 0);
 
     if (ptr != MAP_FAILED)
         munmap(ptr, (size_t) getpagesize());
 
-    install_spin_malloc();
 #if __i386__
     asm volatile ( "mov %0, %%eax\n\tmov (%%eax), %%eax" : : "X" (ptr) : "memory", "eax" );
 #elif __x86_64__
