@@ -14,9 +14,14 @@ dir=features/fixtures/carthage
 
 mkdir -p "$dir"
 
-echo "git \"file://$(pwd)\" \"$(git rev-parse HEAD)\"" > "$dir"/Cartfile
+repo=${BUILDKITE_REPO:-file://$(pwd)}
+commit=${BUILDKITE_COMMIT:-$(git rev-parse HEAD)}
+
+echo "git \"$repo\" \"$commit\"" > "$dir"/Cartfile
 
 cd "$dir"
+
+cat Cartfile
 
 
 for platform in iOS macOS tvOS
