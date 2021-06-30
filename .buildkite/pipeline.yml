@@ -36,21 +36,17 @@ steps:
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     commands:
-      - mkdir -p features/fixtures/carthage-proj
       - make build_swift
       - make build_ios_static
 
-  - label: Static Carthage build
+  - label: Carthage
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-mac-cocoa-11
     concurrency: 3
     concurrency_group: cocoa-unit-tests
-    env:
-      DEVELOPER_DIR: "/Applications/Xcode11.app/Contents/Developer"
     commands:
-      - mkdir -p features/fixtures/carthage-proj
-      - make build_swift
+      - ./scripts/build-carthage.sh
 
   ##############################################################################
   #
@@ -136,6 +132,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
+        upload: ["maze_output/failed/**/*"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
@@ -163,6 +160,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
+        upload: ["maze_output/failed/**/*"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
         command:
@@ -189,7 +187,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "appium_server.log"]
+        upload: ["macOSTestApp.log", "appium_server.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -213,7 +211,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "appium_server.log"]
+        upload: ["macOSTestApp.log", "appium_server.log", "maze_output/failed/**/*"]
     commands:
       - bundle config set --local path 'vendor/bundle'
       - bundle install

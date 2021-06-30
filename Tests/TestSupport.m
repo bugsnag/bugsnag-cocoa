@@ -7,20 +7,23 @@
 //
 
 #import "TestSupport.h"
-#import "BugsnagSystemState.h"
-#import "BSGConfigurationBuilder.h"
-#import "BugsnagTestConstants.h"
+
+#import "BSGFileLocations.h"
+#import "BSGGlobals.h"
 #import "Bugsnag+Private.h"
 
 
 @implementation TestSupport
 
 + (void) purgePersistentData {
-    // TODO: Purge crash reports, breadcrumbs
-
-    BugsnagConfiguration *config = [BSGConfigurationBuilder
-            configurationFromOptions:@{@"apiKey": DUMMY_APIKEY_32CHAR_1}];
-    [[[BugsnagSystemState alloc] initWithConfiguration:config] purge];
+    dispatch_sync(BSGGlobalsFileSystemQueue(), ^{
+        NSString *dir = [[BSGFileLocations current].events stringByDeletingLastPathComponent];
+        NSError *error = nil;
+        if (![NSFileManager.defaultManager removeItemAtPath:dir error:&error] &&
+            !([error.domain isEqual:NSCocoaErrorDomain] && error.code == NSFileNoSuchFileError)) {
+            [NSException raise:NSInternalInconsistencyException format:@"Could not delete %@", dir];
+        }
+    });
     [Bugsnag purge];
 }
 

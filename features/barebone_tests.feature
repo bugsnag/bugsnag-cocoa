@@ -15,6 +15,7 @@ Feature: Barebone tests
     And the session "user.name" equals "Foo Bar"
 
     Then the error is valid for the error reporting API
+    And the event "app.binaryArch" matches "(arm|x86)"
     And the event "app.bundleVersion" equals "12301"
     And the event "app.id" equals the platform-dependent string:
       | ios   | com.bugsnag.iOSTestApp   |
@@ -109,6 +110,7 @@ Feature: Barebone tests
     And I wait to receive an error
 
     Then the error is valid for the error reporting API
+    And the event "app.binaryArch" matches "(arm|x86)"
     And the event "app.bundleVersion" equals "12301"
     And the event "app.inForeground" is true
     And the event "app.isLaunching" is true
@@ -172,7 +174,7 @@ Feature: Barebone tests
     And I discard the oldest session
 
     # Wait for app to be killed for using too much memory
-    And I wait for 5 seconds
+    Then the app is not running
 
     And I relaunch the app
     And I configure Bugsnag for "OOMScenario"
@@ -183,6 +185,7 @@ Feature: Barebone tests
 
     And I wait to receive an error
     Then the error is an OOM event
+    And the event "app.binaryArch" matches "(arm|x86)"
     And the event "app.bundleVersion" equals "321.123"
     And the event "app.dsymUUIDs" is not null
     And the event "app.id" equals the platform-dependent string:

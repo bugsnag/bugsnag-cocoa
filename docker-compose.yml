@@ -12,3 +12,4 @@ services:
     volumes:
       - ./features/fixtures/ios/output:/app/build
       - ./features/:/app/features/
+      - ./maze_output:/app/maze_output

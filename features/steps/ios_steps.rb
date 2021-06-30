@@ -89,26 +89,30 @@ When('I clear the error queue') do
   Maze::Server.errors.clear
 end
 
+#
+# https://appium.io/docs/en/commands/device/app/app-state/
+#
 # 0: The current application state cannot be determined/is unknown
 # 1: The application is not running
 # 2: The application is running in the background and is suspended
 # 3: The application is running in the background and is not suspended
 # 4: The application is running in the foreground
-Then('The app is running in the foreground') do
+
+Then('the app is running in the foreground') do
   wait_for_true do
     status = Maze.driver.execute_script('mobile: queryAppState', {bundleId: 'com.bugsnag.iOSTestApp'})
     status == 4
   end
 end
 
-Then('The app is running in the background') do
+Then('the app is running in the background') do
   wait_for_true do
     status = Maze.driver.execute_script('mobile: queryAppState', {bundleId: 'com.bugsnag.iOSTestApp'})
     status == 3
   end
 end
 
-Then('The app is not running') do
+Then('the app is not running') do
   wait_for_true do
     status = Maze.driver.execute_script('mobile: queryAppState', {bundleId: 'com.bugsnag.iOSTestApp'})
     status == 1
