@@ -77,6 +77,20 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     XCTAssertEqualObjects(@"D0A41830-4FD2-3B02-A23B-0741AD4C7F52", frame.machoUuid);
 }
 
+- (void)testErrorFromInvalidJson {
+    BugsnagError *error;
+    
+    error = [BugsnagError errorFromJson:@{
+        @"stacktrace": [NSNull null],
+    }];
+    XCTAssertEqualObjects(error.stacktrace, @[]);
+    
+    error = [BugsnagError errorFromJson:@{
+        @"stacktrace": @{@"foo": @"bar"},
+    }];
+    XCTAssertEqualObjects(error.stacktrace, @[]);
+}
+
 - (void)testToDictionary {
     BugsnagThread *thread = [self findErrorReportingThread:self.event];
     BugsnagError *error = [[BugsnagError alloc] initWithKSCrashReport:self.event stacktrace:thread.stacktrace];
