@@ -114,8 +114,9 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
 + (BugsnagError *)errorFromJson:(NSDictionary *)json {
     NSArray *trace = json[BSGKeyStacktrace];
     NSMutableArray *data = [NSMutableArray new];
+    BOOL traceIsNil = trace == nil || [trace isEqual:[NSNull null]];
 
-    if (trace != nil) {
+    if (!traceIsNil) {
         for (NSDictionary *dict in trace) {
             BugsnagStackframe *frame = [BugsnagStackframe frameFromJson:dict];
 
