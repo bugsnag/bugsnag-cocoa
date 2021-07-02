@@ -69,12 +69,7 @@ When('I relaunch the app') do
     system("killall #{app} > /dev/null && sleep 1")
     Maze.driver.get(app)
   else
-    begin
-      Maze.driver.launch_app
-    rescue
-      # Retry because launch_app can fail when performed immediately after an app has stopped running.
-      Maze.driver.launch_app
-    end
+    Maze.driver.launch_app
   end
 end
 
