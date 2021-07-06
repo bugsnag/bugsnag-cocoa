@@ -138,7 +138,7 @@ steps:
   - label: 'iOS 14 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 45
+    timeout_in_minutes: 60
     agents:
       queue: opensource
     plugins:
@@ -166,7 +166,7 @@ steps:
   - label: 'iOS 14 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 45
+    timeout_in_minutes: 60
     agents:
       queue: opensource
     plugins:
@@ -194,7 +194,7 @@ steps:
   - label: 'iOS 10 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 45
+    timeout_in_minutes: 60
     agents:
       queue: opensource
     plugins:
@@ -221,7 +221,7 @@ steps:
   - label: 'iOS 10 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 45
+    timeout_in_minutes: 60
     agents:
       queue: opensource
     plugins:
