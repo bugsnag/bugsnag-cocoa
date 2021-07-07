@@ -66,9 +66,12 @@
 
 - (void)testStackframeFromJson {
     BugsnagStackframe *frame = [BugsnagStackframe frameFromJson:@{
+        @"columnNumber":        @72,
         @"frameAddress":        @"0x10b5756bf",
+        @"inProject":           @YES,
         @"isLR":                @NO,
-        @"isPC":                @NO,
+        @"isPC":                @YES,
+        @"lineNumber":          @42,
         @"machoFile":           @"/Users/foo/Bugsnag.h",
         @"machoLoadAddress":    @"0x10b54b000",
         @"machoUUID":           @"B6D80CB5-A772-3D2F-B5A1-A3A137B8B58F",
@@ -78,8 +81,11 @@
         @"type":                @"cocoa",
     }];
     XCTAssertEqual(frame.isLr, NO);
-    XCTAssertEqual(frame.isPc, NO);
+    XCTAssertEqual(frame.isPc, YES);
+    XCTAssertEqualObjects(frame.columnNumber,       @72);
     XCTAssertEqualObjects(frame.frameAddress,       @0x10b5756bf);
+    XCTAssertEqualObjects(frame.inProject,          @YES);
+    XCTAssertEqualObjects(frame.lineNumber,         @42);
     XCTAssertEqualObjects(frame.machoFile,          @"/Users/foo/Bugsnag.h");
     XCTAssertEqualObjects(frame.machoLoadAddress,   @0x10b54b000);
     XCTAssertEqualObjects(frame.machoUuid,          @"B6D80CB5-A772-3D2F-B5A1-A3A137B8B58F");
@@ -87,6 +93,37 @@
     XCTAssertEqualObjects(frame.method,             @"-[BugsnagClient notify:handledState:block:]");
     XCTAssertEqualObjects(frame.symbolAddress,      @0x10b574fa0);
     XCTAssertEqualObjects(frame.type,               BugsnagStackframeTypeCocoa);
+}
+
+- (void)testStackframeFromJsonWithNullValues {
+    BugsnagStackframe *frame = [BugsnagStackframe frameFromJson:@{
+        @"columnNumber":        [NSNull null],
+        @"frameAddress":        [NSNull null],
+        @"inProject":           [NSNull null],
+        @"isLR":                [NSNull null],
+        @"isPC":                [NSNull null],
+        @"lineNumber":          [NSNull null],
+        @"machoFile":           [NSNull null],
+        @"machoLoadAddress":    [NSNull null],
+        @"machoUUID":           [NSNull null],
+        @"machoVMAddress":      [NSNull null],
+        @"method":              [NSNull null],
+        @"symbolAddress":       [NSNull null],
+        @"type":                [NSNull null],
+    }];
+    XCTAssertEqual(frame.isLr, NO);
+    XCTAssertEqual(frame.isPc, NO);
+    XCTAssertNil(frame.columnNumber);
+    XCTAssertNil(frame.frameAddress);
+    XCTAssertNil(frame.inProject);
+    XCTAssertNil(frame.lineNumber);
+    XCTAssertNil(frame.machoFile);
+    XCTAssertNil(frame.machoLoadAddress);
+    XCTAssertNil(frame.machoUuid);
+    XCTAssertNil(frame.machoVmAddress);
+    XCTAssertNil(frame.method);
+    XCTAssertNil(frame.symbolAddress);
+    XCTAssertNil(frame.type);
 }
 
 - (void)testStackframeFromJsonWithoutType {

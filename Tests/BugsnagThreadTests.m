@@ -222,6 +222,26 @@
     XCTAssertGreaterThan(threads.count, 1);
 }
 
+- (void)testAllThreadsFromBackgroundDoesNotOverflowStack {
+    const int threadCount = 1000;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    for (int i = 0; i < threadCount; i++) {
+        [NSThread detachNewThreadSelector:@selector(waitForSemaphore:) toTarget:self withObject:semaphore];
+    }
+    __block NSArray<BugsnagThread *> *threads = nil;
+    dispatch_sync(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        threads = [BugsnagThread allThreads:YES callStackReturnAddresses:NSThread.callStackReturnAddresses];
+    });
+    XCTAssertGreaterThan(threads.count, threadCount);
+    for (int i = 0; i < threadCount; i++) {
+        dispatch_semaphore_signal(semaphore);
+    }
+}
+
+- (void)waitForSemaphore:(dispatch_semaphore_t)semaphore {
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+}
+
 - (void)testCurrentThread {
     NSArray<BugsnagThread *> *threads = [BugsnagThread allThreads:NO callStackReturnAddresses:NSThread.callStackReturnAddresses];
     [threads[0].stacktrace makeObjectsPerformSelector:@selector(symbolicateIfNeeded)];

@@ -175,6 +175,9 @@ Feature: Barebone tests
 
     # Wait for app to be killed for using too much memory
     Then the app is not running
+    # Wait because The launch_app command can fail when performed
+    # immediately after an app has stopped running
+    And I wait for 2 seconds
 
     And I relaunch the app
     And I configure Bugsnag for "OOMScenario"

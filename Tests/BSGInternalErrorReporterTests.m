@@ -28,7 +28,7 @@
     self.notifier = [[BugsnagNotifier alloc] init];
 }
 
-- (void)testEventForError {
+- (void)testEventWithErrorClass {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
     BSGInternalErrorReporter *reporter = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
     
@@ -36,6 +36,31 @@
     XCTAssertEqualObjects(event.errors[0].errorClass, @"Internal error");
     XCTAssertEqualObjects(event.errors[0].errorMessage, @"Something went wrong");
     XCTAssertEqualObjects(event.groupingHash, @"test");
+    XCTAssertEqualObjects(event.threads, @[]);
+    XCTAssertGreaterThan(event.errors[0].stacktrace.count, 0);
+    XCTAssertNil(event.apiKey);
+    
+    NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
+    XCTAssertEqualObjects(diagnostics[@"apiKey"], configuration.apiKey);
+}
+
+- (void)testEventWithException {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
+    BSGInternalErrorReporter *reporter = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
+    
+    NSException *exception = nil;
+    @try {
+        NSLog(@"%@", @[][0]);
+    } @catch (NSException *e) {
+        exception = e;
+    }
+    
+    BugsnagEvent *event = [reporter eventWithException:exception diagnostics:nil groupingHash:@"test"];
+    XCTAssertEqualObjects(event.errors[0].errorClass, @"NSRangeException");
+    XCTAssertEqualObjects(event.errors[0].errorMessage, @"*** -[__NSArray0 objectAtIndex:]: index 0 beyond bounds for empty NSArray");
+    XCTAssertEqualObjects(event.groupingHash, @"test");
+    XCTAssertEqualObjects(event.threads, @[]);
+    XCTAssertGreaterThan(event.errors[0].stacktrace.count, 0);
     XCTAssertNil(event.apiKey);
     
     NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
