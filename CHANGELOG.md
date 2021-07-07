@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix a potential stack overflow in `+[BugsnagThread allThreadsWithCurrentThreadBacktrace:]`.
+  [#1148](https://github.com/bugsnag/bugsnag-cocoa/pull/1148)
+
 * Fix `NSNull` handling in `+[BugsnagError errorFromJson:]` and `+[BugsnagStackframe frameFromJson:]`.
   [#1143](https://github.com/bugsnag/bugsnag-cocoa/pull/1143)
   [#1138](https://github.com/bugsnag/bugsnag-cocoa/issues/1138)
