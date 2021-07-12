@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: 67a22f49bc5c31a144fc72892f8cfafd0289010e
-  tag: v5.3.0
+  revision: 626bbe9d8e72e46fc8cae757a032bea88b6e3829
+  tag: v5.6.0
   specs:
-    bugsnag-maze-runner (5.3.0)
+    bugsnag-maze-runner (5.6.0)
       appium_lib (~> 11.2.0)
       cucumber (~> 3.1.2)
       cucumber-expressions (~> 6.0.0)
@@ -189,7 +189,7 @@ GEM
     rouge (2.0.7)
     ruby-macho (1.4.0)
     ruby2_keywords (0.0.4)
-    rubyzip (2.3.0)
+    rubyzip (2.3.2)
     sassc (2.4.0)
       ffi (~> 1.9)
     sawyer (0.8.2)
