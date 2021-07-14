@@ -120,7 +120,7 @@ steps:
       - cocoa_fixture
     # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
     # sessions need resetting frequently, taking a minute or more each time.
-    timeout_in_minutes: 50
+    timeout_in_minutes: 60
     agents:
       queue: opensource
     plugins:
@@ -148,7 +148,7 @@ steps:
       - cocoa_fixture
     # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
     # sessions need resetting frequently, taking a minute or more each time.
-    timeout_in_minutes: 50
+    timeout_in_minutes: 60
     agents:
       queue: opensource
     plugins:

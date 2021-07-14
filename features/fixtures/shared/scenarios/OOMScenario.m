@@ -30,6 +30,7 @@
     self.config.releaseStage = @"staging";
     [self.config addMetadata:@{@"bar": @"foo"} toSection:@"custom"];
     [self.config setUser:@"foobar" withEmail:@"foobar@example.com" andName:@"Foo Bar"];
+    [self.config addMetadata:@{@"group": @"users"} toSection:@"user"];
     [self.config addOnSendErrorBlock:^BOOL(BugsnagEvent *event) {
         BugsnagLastRunInfo *lastRunInfo = Bugsnag.lastRunInfo;
         if (lastRunInfo) {

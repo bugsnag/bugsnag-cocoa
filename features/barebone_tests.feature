@@ -59,6 +59,10 @@ Feature: Barebone tests
     And the event "metaData.Exception.info" equals "Some error specific information"
     And the event "metaData.Flags.Testing" is true
     And the event "metaData.Other.password" equals "[REDACTED]"
+    And the event "metaData.user.email" is null
+    And the event "metaData.user.group" equals "users"
+    And the event "metaData.user.id" is null
+    And the event "metaData.user.name" is null
     And the event "severity" equals "warning"
     And the event "severityReason.type" equals "handledException"
     And the event "severityReason.unhandledOverridden" is true
@@ -140,6 +144,10 @@ Feature: Barebone tests
     And the event "metaData.lastRunInfo.consecutiveLaunchCrashes" equals 1
     And the event "metaData.lastRunInfo.crashed" is true
     And the event "metaData.lastRunInfo.crashedDuringLaunch" is true
+    And the event "metaData.user.email" is null
+    And the event "metaData.user.group" equals "users"
+    And the event "metaData.user.id" is null
+    And the event "metaData.user.name" is null
     And the event "severity" equals "error"
     And the event "severityReason.type" equals "unhandledException"
     And the event "severityReason.unhandledOverridden" is null
@@ -237,6 +245,10 @@ Feature: Barebone tests
     And the event "metaData.lastRunInfo.consecutiveLaunchCrashes" equals 1
     And the event "metaData.lastRunInfo.crashed" is true
     And the event "metaData.lastRunInfo.crashedDuringLaunch" is true
+    And the event "metaData.user.email" is null
+    And the event "metaData.user.group" equals "users"
+    And the event "metaData.user.id" is null
+    And the event "metaData.user.name" is null
     And the event "session.id" is not null
     And the event "session.startedAt" is not null
     And the event "session.events.handled" equals 0
