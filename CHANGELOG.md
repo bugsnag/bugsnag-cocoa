@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix another rare crash in `bsg_ksmachgetThreadQueueName`.
+  [#1157](https://github.com/bugsnag/bugsnag-cocoa/pull/1157)
+
 ## 6.10.2 (2021-07-14)
 
 ### Bug fixes

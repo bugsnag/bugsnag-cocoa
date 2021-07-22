@@ -54,6 +54,13 @@
 @end
 
 
+void * executeBlock(void *ptr)
+{
+    ((__bridge_transfer dispatch_block_t)ptr)();
+    return NULL;
+}
+
+
 @interface bsg_ksmachTests : XCTestCase @end
 
 @implementation bsg_ksmachTests
@@ -185,37 +192,87 @@
     XCTAssertEqualWithAccuracy(diff, cfDiff, 0.001);
 }
 
-// TODO: Disabling this until I figure out what's wrong with queue names.
-//- (void) testGetQueueName
-//{
-//    kern_return_t kr;
-//    const task_t thisTask = mach_task_self();
-//    thread_act_array_t threads;
-//    mach_msg_type_number_t numThreads;
-//    
-//    kr = task_threads(thisTask, &threads, &numThreads);
-//    XCTAssertTrue(kr == KERN_SUCCESS, @"");
-//    
-//    bool success = false;
-//    char buffer[100];
-//    for(mach_msg_type_number_t i = 0; i < numThreads; i++)
-//    {
-//        thread_t thread = threads[i];
-//        if(bsg_ksmachgetThreadQueueName(thread, buffer, sizeof(buffer)))
-//        {
-//            success = true;
-//            break;
-//        }
-//    }
-//    
-//    for(mach_msg_type_number_t i = 0; i < numThreads; i++)
-//    {
-//        mach_port_deallocate(thisTask, threads[i]);
-//    }
-//    vm_deallocate(thisTask, (vm_address_t)threads, sizeof(thread_t) * numThreads);
-//    
-//    XCTAssertTrue(success, @"");
-//}
+- (void) testGetQueueNameWithMainThread
+{
+    char name[32] = "";
+
+    XCTAssertTrue(bsg_ksmachgetThreadQueueName(bsg_ksmachthread_self(),
+                                               name, sizeof(name)));
+
+    XCTAssertEqualObjects(@(name), @"com.apple.main-thread");
+}
+
+- (void) testGetQueueNameWithNonDispatchThread
+{
+    pthread_t thread;
+
+    pthread_create(&thread, NULL, executeBlock,
+                   (__bridge_retained void *)^{
+        char name[32] = "";
+
+        XCTAssertFalse(bsg_ksmachgetThreadQueueName(bsg_ksmachthread_self(),
+                                                    name, sizeof(name)));
+    });
+
+    pthread_join(thread, NULL);
+}
+
+- (void) testGetQueueNameWithInvalidThread
+{
+    char name[32] = "";
+    
+    XCTAssertFalse(bsg_ksmachgetThreadQueueName(0xdeadbeef,
+                                                name, sizeof(name)));
+}
+
+- (void) testGetQueueNameWithEphemeralThreads
+{
+    //
+    // This test aims to trigger potential crashes when getting the queue name
+    // of dying / recently deceased threads.
+    //
+    // For more effective detection of bugs, enable "Malloc Scribble" under the
+    // Scheme's Diagnostics options, or set the "MallocScribble" environment
+    // variable.
+    //
+    
+    __block int finished = 0;
+    
+    dispatch_async(dispatch_queue_create(NULL, 0), ^{
+        dispatch_group_t group = dispatch_group_create();
+
+        for (int i = 0; i < 100000; i++) {
+            char *label = NULL;
+            asprintf(&label, "%d", i);
+            dispatch_group_async(group, dispatch_queue_create(label, 0), ^{
+                usleep(10);
+            });
+            free(label);
+        }
+
+        dispatch_group_notify(group, dispatch_queue_create(NULL, 0), ^{
+            finished = 1;
+        });
+    });
+    
+    while (!finished) {
+        char name[5];
+        thread_act_array_t threads;
+        mach_msg_type_number_t i, threadCount = 0;
+        task_threads(mach_task_self(), &threads, &threadCount);
+
+        for (i = 0; i < threadCount; i++) {
+            bzero(name, sizeof(name));
+            if (bsg_ksmachgetThreadQueueName(threads[i], name, sizeof(name))) {
+                XCTAssertEqual(name[sizeof(name) - 1], '\0',
+                               @"queue name must be NULL terminated");
+            }
+        }
+
+        vm_deallocate(mach_task_self(), (vm_address_t)threads,
+                      sizeof(threads[0]) * threadCount);
+    }
+}
 
 - (void) testThreadState
 {
