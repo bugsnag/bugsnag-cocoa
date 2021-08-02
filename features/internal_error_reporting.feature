@@ -14,6 +14,7 @@ Feature: Internal error reporting
     And the event "groupingHash" equals "BSGEventUploadKSCrashReportOperation.m: JSON parsing error: NSCocoaErrorDomain 3840: No string key for value in object"
     And the event "metaData.BugsnagDiagnostics.apiKey" equals "12312312312312312312312312312312"
     And the event "metaData.BugsnagDiagnostics.data" is not null
+    And the event "metaData.BugsnagDiagnostics.file" is not null
     And the event "unhandled" is false
     And the exception "errorClass" equals "JSON parsing error"
     And the exception "message" matches "NSCocoaErrorDomain 3840: No string key for value in object around character \d+."
