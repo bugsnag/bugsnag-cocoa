@@ -451,6 +451,10 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 }
 
 - (void)testCrashReportWriterConcurrency {
+#if defined(__has_feature) && __has_feature(thread_sanitizer)
+    NSLog(@"Skipping test because ThreadSanitizer deadlocks if other threads are suspended");
+    return;
+#endif
     //
     // The aim of this test is to ensure that BugsnagBreadcrumbsWriteCrashReport will insert only valid JSON
     // into a crash report when other threads are (paused while) updating the breadcrumbs linked list.

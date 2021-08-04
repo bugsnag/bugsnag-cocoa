@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix ThreadSanitizer data race in `BugsnagBreadcrumbs`.
+  [#1160](https://github.com/bugsnag/bugsnag-cocoa/pull/1160)
+
 ## 6.10.3 (2021-08-04)
 
 ### Bug fixes
