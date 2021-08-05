@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00C3ED5823F2D6D900757DBD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00C3ED5723F2D6D800757DBD /* README.md */; };
+		011E212B26BC3618006903C3 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 011E212A26BC3618006903C3 /* SceneDelegate.m */; };
 		0159747126BBE92D003BD715 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0159746F26BBE92D003BD715 /* LaunchScreen.storyboard */; };
 		01B9390826BBE17C00208C39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01B9390726BBE17C00208C39 /* Assets.xcassets */; };
 		19B2907F523540B1194E89AC /* libPods-objective-c-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE12FD2EC7D212FA4CE8C14 /* libPods-objective-c-ios.a */; };
@@ -25,6 +26,8 @@
 
 /* Begin PBXFileReference section */
 		00C3ED5723F2D6D800757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		011E212926BC3618006903C3 /* SceneDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
+		011E212A26BC3618006903C3 /* SceneDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		0159747026BBE92D003BD715 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		01B9390726BBE17C00208C39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1AE12FD2EC7D212FA4CE8C14 /* libPods-objective-c-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-objective-c-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +128,8 @@
 				A1F51099249A5C4000AFF4DE /* CxxException.mm */,
 				F40B875916AA233500676BB2 /* AppDelegate.h */,
 				F40B875A16AA233500676BB2 /* AppDelegate.m */,
+				011E212926BC3618006903C3 /* SceneDelegate.h */,
+				011E212A26BC3618006903C3 /* SceneDelegate.m */,
 				F40B876816AA233500676BB2 /* ViewController.h */,
 				F40B876916AA233500676BB2 /* ViewController.m */,
 				8A4882E3224BCD5D0035B94C /* OutOfMemoryController.h */,
@@ -259,6 +264,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1F5109B249A5C4000AFF4DE /* CxxException.mm in Sources */,
+				011E212B26BC3618006903C3 /* SceneDelegate.m in Sources */,
 				F40B875716AA233500676BB2 /* main.m in Sources */,
 				8A4882E5224BCD5D0035B94C /* OutOfMemoryController.m in Sources */,
 				F40B875B16AA233500676BB2 /* AppDelegate.m in Sources */,
