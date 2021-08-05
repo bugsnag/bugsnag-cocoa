@@ -24,5 +24,7 @@
 
 - (void)trap;
 - (void)corruptSomeMemory;
+- (void)accessInvalidMemoryAddress;
+- (void)throwCxxException;
 
 @end

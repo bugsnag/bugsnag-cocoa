@@ -20,6 +20,8 @@
 
 #import "AnObjCClass.h"
 
+#import <stdexcept>
+
 @implementation AnObjCClass
 
 - (void)trap {
@@ -33,12 +35,12 @@
     };
 
     void *displayStrings[6] = {
-        "This little piggy went to the meerket",
-        "This little piggy stayed at home",
+        (void *)"This little piggy went to the meerket",
+        (void *)"This little piggy stayed at home",
         cache,
-        "This little piggy had roast beef.",
-        "This little piggy had none.",
-        "And this little piggy went 'Wee! Wee! Wee!' all the way home",
+        (void *)"This little piggy had roast beef.",
+        (void *)"This little piggy had none.",
+        (void *)"And this little piggy went 'Wee! Wee! Wee!' all the way home",
     };
 
     /* A corrupted/under-retained/re-used piece of memory */
@@ -50,6 +52,16 @@
     /* Message an invalid/corrupt object. This will deadlock crash reporters
      * using Objective-C. */
     [(__bridge id)&corruptObj class];
+}
+
+- (void)accessInvalidMemoryAddress {
+    // This should result in an EXC_BAD_ACCESS mach exception with code = KERN_INVALID_ADDRESS and subcode = 0xDEADBEEF
+    void (* ptr)(void) = (void (*)(void))0xDEADBEEF;
+    ptr();
+}
+
+- (void)throwCxxException {
+    throw std::runtime_error("This is a C++ exception");
 }
 
 @end
