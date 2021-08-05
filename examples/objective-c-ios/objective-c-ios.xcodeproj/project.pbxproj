@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00C3ED5823F2D6D900757DBD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00C3ED5723F2D6D800757DBD /* README.md */; };
+		0159747126BBE92D003BD715 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0159746F26BBE92D003BD715 /* LaunchScreen.storyboard */; };
 		01B9390826BBE17C00208C39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01B9390726BBE17C00208C39 /* Assets.xcassets */; };
 		19B2907F523540B1194E89AC /* libPods-objective-c-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE12FD2EC7D212FA4CE8C14 /* libPods-objective-c-ios.a */; };
 		8A4882E2224BCC130035B94C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A4882E1224BCC130035B94C /* WebKit.framework */; };
@@ -18,15 +19,13 @@
 		F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874E16AA233500676BB2 /* CoreGraphics.framework */; };
 		F40B875716AA233500676BB2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F40B875616AA233500676BB2 /* main.m */; };
 		F40B875B16AA233500676BB2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F40B875A16AA233500676BB2 /* AppDelegate.m */; };
-		F40B875D16AA233500676BB2 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = F40B875C16AA233500676BB2 /* Default.png */; };
-		F40B875F16AA233500676BB2 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F40B875E16AA233500676BB2 /* Default@2x.png */; };
-		F40B876116AA233500676BB2 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F40B876016AA233500676BB2 /* Default-568h@2x.png */; };
 		F40B876416AA233500676BB2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F40B876216AA233500676BB2 /* Main.storyboard */; };
 		F40B876A16AA233500676BB2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F40B876916AA233500676BB2 /* ViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		00C3ED5723F2D6D800757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		0159747026BBE92D003BD715 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		01B9390726BBE17C00208C39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1AE12FD2EC7D212FA4CE8C14 /* libPods-objective-c-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-objective-c-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30DA6BFF87D698AA4E0F2AF4 /* Pods-objective-c-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-objective-c-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-objective-c-ios/Pods-objective-c-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -51,9 +50,6 @@
 		F40B875616AA233500676BB2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F40B875916AA233500676BB2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F40B875A16AA233500676BB2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		F40B875C16AA233500676BB2 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		F40B875E16AA233500676BB2 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		F40B876016AA233500676BB2 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		F40B876316AA233500676BB2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F40B876816AA233500676BB2 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		F40B876916AA233500676BB2 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
@@ -136,6 +132,7 @@
 				F40B875216AA233500676BB2 /* Info.plist */,
 				F40B876216AA233500676BB2 /* Main.storyboard */,
 				01B9390726BBE17C00208C39 /* Assets.xcassets */,
+				0159746F26BBE92D003BD715 /* LaunchScreen.storyboard */,
 				F40B875116AA233500676BB2 /* Supporting Files */,
 			);
 			path = "objective-c-ios";
@@ -145,9 +142,6 @@
 			isa = PBXGroup;
 			children = (
 				F40B875616AA233500676BB2 /* main.m */,
-				F40B875C16AA233500676BB2 /* Default.png */,
-				F40B875E16AA233500676BB2 /* Default@2x.png */,
-				F40B876016AA233500676BB2 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -215,9 +209,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00C3ED5823F2D6D900757DBD /* README.md in Resources */,
-				F40B875D16AA233500676BB2 /* Default.png in Resources */,
-				F40B875F16AA233500676BB2 /* Default@2x.png in Resources */,
-				F40B876116AA233500676BB2 /* Default-568h@2x.png in Resources */,
+				0159747126BBE92D003BD715 /* LaunchScreen.storyboard in Resources */,
 				01B9390826BBE17C00208C39 /* Assets.xcassets in Resources */,
 				F40B876416AA233500676BB2 /* Main.storyboard in Resources */,
 			);
@@ -278,6 +270,14 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		0159746F26BBE92D003BD715 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0159747026BBE92D003BD715 /* en */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
 		F40B876216AA233500676BB2 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
