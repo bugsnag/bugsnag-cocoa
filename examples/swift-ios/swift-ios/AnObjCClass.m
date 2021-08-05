@@ -19,7 +19,6 @@
 // THE SOFTWARE.
 
 #import "AnObjCClass.h"
-#import "bugsnag_example-Swift.h"
 
 @implementation AnObjCClass
 
