@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		011E212326BC3208006903C3 /* AnotherClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011E211E26BC3208006903C3 /* AnotherClass.swift */; };
+		011E212526BC3208006903C3 /* AnObjCClass.mm in Sources */ = {isa = PBXBuildFile; fileRef = 011E212026BC3208006903C3 /* AnObjCClass.mm */; };
+		01E53F7A26C12EAF003AD7BB /* OutOfMemoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E53F7926C12EAF003AD7BB /* OutOfMemoryController.m */; };
 		3A837DC024AA48DE00A54700 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A837DBF24AA48DE00A54700 /* AppDelegate.swift */; };
 		3A837DC224AA48DE00A54700 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A837DC124AA48DE00A54700 /* SceneDelegate.swift */; };
 		3A837DC424AA48DE00A54700 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A837DC324AA48DE00A54700 /* ViewController.swift */; };
@@ -14,10 +17,15 @@
 		3A837DC924AA48DF00A54700 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A837DC824AA48DF00A54700 /* Assets.xcassets */; };
 		3A837DCC24AA48DF00A54700 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3A837DCA24AA48DF00A54700 /* LaunchScreen.storyboard */; };
 		3A837DD524AA4A0E00A54700 /* Bugsnag in Frameworks */ = {isa = PBXBuildFile; productRef = 3A837DD424AA4A0E00A54700 /* Bugsnag */; };
-		3A837DD724AB33BE00A54700 /* OutOfMemoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A837DD624AB33BE00A54700 /* OutOfMemoryController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		011E211D26BC3207006903C3 /* swift-package-manager-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "swift-package-manager-Bridging-Header.h"; sourceTree = "<group>"; };
+		011E211E26BC3208006903C3 /* AnotherClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnotherClass.swift; path = "../../swift-ios/swift-ios/AnotherClass.swift"; sourceTree = "<group>"; };
+		011E212026BC3208006903C3 /* AnObjCClass.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AnObjCClass.mm; path = "../../swift-ios/swift-ios/AnObjCClass.mm"; sourceTree = "<group>"; };
+		011E212126BC3208006903C3 /* AnObjCClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AnObjCClass.h; path = "../../swift-ios/swift-ios/AnObjCClass.h"; sourceTree = "<group>"; };
+		01E53F7826C12EAF003AD7BB /* OutOfMemoryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutOfMemoryController.h; sourceTree = "<group>"; };
+		01E53F7926C12EAF003AD7BB /* OutOfMemoryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutOfMemoryController.m; sourceTree = "<group>"; };
 		3A837DBC24AA48DE00A54700 /* swift-package-manager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "swift-package-manager.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A837DBF24AA48DE00A54700 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3A837DC124AA48DE00A54700 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -26,7 +34,6 @@
 		3A837DC824AA48DF00A54700 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3A837DCB24AA48DF00A54700 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3A837DCD24AA48DF00A54700 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3A837DD624AB33BE00A54700 /* OutOfMemoryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutOfMemoryController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,11 +70,16 @@
 				3A837DBF24AA48DE00A54700 /* AppDelegate.swift */,
 				3A837DC124AA48DE00A54700 /* SceneDelegate.swift */,
 				3A837DC324AA48DE00A54700 /* ViewController.swift */,
-				3A837DD624AB33BE00A54700 /* OutOfMemoryController.swift */,
+				011E212126BC3208006903C3 /* AnObjCClass.h */,
+				011E212026BC3208006903C3 /* AnObjCClass.mm */,
+				011E211E26BC3208006903C3 /* AnotherClass.swift */,
+				01E53F7826C12EAF003AD7BB /* OutOfMemoryController.h */,
+				01E53F7926C12EAF003AD7BB /* OutOfMemoryController.m */,
 				3A837DC524AA48DE00A54700 /* Main.storyboard */,
 				3A837DC824AA48DF00A54700 /* Assets.xcassets */,
 				3A837DCA24AA48DF00A54700 /* LaunchScreen.storyboard */,
 				3A837DCD24AA48DF00A54700 /* Info.plist */,
+				011E211D26BC3207006903C3 /* swift-package-manager-Bridging-Header.h */,
 			);
 			path = "swift-package-manager";
 			sourceTree = "<group>";
@@ -102,11 +114,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1150;
-				LastUpgradeCheck = 1150;
+				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = Bugsnag;
 				TargetAttributes = {
 					3A837DBB24AA48DE00A54700 = {
 						CreatedOnToolsVersion = 11.5;
+						LastSwiftMigration = 1250;
 					};
 				};
 			};
@@ -149,9 +162,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3A837DD724AB33BE00A54700 /* OutOfMemoryController.swift in Sources */,
+				01E53F7A26C12EAF003AD7BB /* OutOfMemoryController.m in Sources */,
+				011E212326BC3208006903C3 /* AnotherClass.swift in Sources */,
 				3A837DC424AA48DE00A54700 /* ViewController.swift in Sources */,
 				3A837DC024AA48DE00A54700 /* AppDelegate.swift in Sources */,
+				011E212526BC3208006903C3 /* AnObjCClass.mm in Sources */,
 				3A837DC224AA48DE00A54700 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -204,6 +219,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -264,6 +280,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -296,6 +313,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				INFOPLIST_FILE = "swift-package-manager/Info.plist";
@@ -305,6 +323,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "bugsnag.swift-package-manager";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "swift-package-manager/swift-package-manager-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -314,6 +334,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				INFOPLIST_FILE = "swift-package-manager/Info.plist";
@@ -323,6 +344,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "bugsnag.swift-package-manager";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "swift-package-manager/swift-package-manager-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

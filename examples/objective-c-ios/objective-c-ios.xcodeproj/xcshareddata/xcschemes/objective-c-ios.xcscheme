@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3A837DBB24AA48DE00A54700"
-               BuildableName = "swift-package-manager.app"
-               BlueprintName = "swift-package-manager"
-               ReferencedContainer = "container:swift-package-manager.xcodeproj">
+               BlueprintIdentifier = "F40B874516AA233500676BB2"
+               BuildableName = "objective-c-ios.app"
+               BlueprintName = "objective-c-ios"
+               ReferencedContainer = "container:objective-c-ios.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -31,7 +31,7 @@
       </Testables>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = ""
       selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
       launchStyle = "0"
@@ -44,10 +44,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3A837DBB24AA48DE00A54700"
-            BuildableName = "swift-package-manager.app"
-            BlueprintName = "swift-package-manager"
-            ReferencedContainer = "container:swift-package-manager.xcodeproj">
+            BlueprintIdentifier = "F40B874516AA233500676BB2"
+            BuildableName = "objective-c-ios.app"
+            BlueprintName = "objective-c-ios"
+            ReferencedContainer = "container:objective-c-ios.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -61,10 +61,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3A837DBB24AA48DE00A54700"
-            BuildableName = "swift-package-manager.app"
-            BlueprintName = "swift-package-manager"
-            ReferencedContainer = "container:swift-package-manager.xcodeproj">
+            BlueprintIdentifier = "F40B874516AA233500676BB2"
+            BuildableName = "objective-c-ios.app"
+            BlueprintName = "objective-c-ios"
+            ReferencedContainer = "container:objective-c-ios.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
