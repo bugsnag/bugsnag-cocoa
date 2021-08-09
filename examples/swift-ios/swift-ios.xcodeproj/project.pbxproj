@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00C3ED5C23F2DA4900757DBD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00C3ED5B23F2DA4900757DBD /* README.md */; };
+		01575CF826C12B2F00BD56D7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01575CF726C12B2F00BD56D7 /* SceneDelegate.swift */; };
 		378BA2CD24229CBB00123123 /* OutOfMemoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 378BA2CC24229CBB00123123 /* OutOfMemoryController.m */; };
 		379D203A242B697600C11EFE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 379D2038242B697600C11EFE /* LaunchScreen.storyboard */; };
 		99E0BFB5118D8734EE28789F /* Pods_swift_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C150B6F7F4565C76CCBBFE1 /* Pods_swift_ios.framework */; };
@@ -23,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		00C3ED5B23F2DA4900757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		01575CF726C12B2F00BD56D7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		2C150B6F7F4565C76CCBBFE1 /* Pods_swift_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_swift_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		378BA2CB24229CBB00123123 /* OutOfMemoryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutOfMemoryController.h; sourceTree = "<group>"; };
 		378BA2CC24229CBB00123123 /* OutOfMemoryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutOfMemoryController.m; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				D175F4BD1ACDBD81009AFFB7 /* AppDelegate.swift */,
+				01575CF726C12B2F00BD56D7 /* SceneDelegate.swift */,
 				D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */,
 				378BA2CB24229CBB00123123 /* OutOfMemoryController.h */,
 				378BA2CC24229CBB00123123 /* OutOfMemoryController.m */,
@@ -255,6 +258,7 @@
 				D175F4BE1ACDBD81009AFFB7 /* AppDelegate.swift in Sources */,
 				D175F4DF1ACDBEFA009AFFB7 /* AnotherClass.swift in Sources */,
 				D175F4E21ACDBFD9009AFFB7 /* AnObjCClass.mm in Sources */,
+				01575CF826C12B2F00BD56D7 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
