@@ -311,3 +311,22 @@ steps:
       - xcodebuild -scheme swift-package-manager -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
       - echo "+++ Build Debug iOS Simulator"
       - xcodebuild -scheme swift-package-manager -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+
+  - label: 'examples/swiftui'
+    agents:
+      queue: opensource-mac-cocoa-11
+    commands:
+      - cd examples/swiftui
+      - echo "--- Resolve Swift Package Dependencies"
+      - sed -i '' -e 's/kind = branch/kind = revision/' -e "s/branch = master/revision = ${BUILDKITE_COMMIT}/" swiftui.xcodeproj/project.pbxproj
+      - xcodebuild -scheme "swiftui (iOS)" -derivedDataPath DerivedData -resolvePackageDependencies
+      - echo "+++ Build Release iOS"
+      - xcodebuild -scheme "swiftui (iOS)" -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - echo "+++ Build Debug iOS Simulator"
+      - xcodebuild -scheme "swiftui (iOS)" -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - echo "+++ Build Release macOS"
+      - xcodebuild -scheme "swiftui (macOS)" -configuration Release -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - echo "+++ Build Release tvOS"
+      - xcodebuild -scheme "swiftui (tvOS)" -configuration Release -destination generic/platform=tvOS -derivedDataPath DerivedData -allowProvisioningUpdates -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - echo "+++ Build Debug tvOS Simulator"
+      - xcodebuild -scheme "swiftui (tvOS)" -configuration Debug -destination generic/platform=tvOS\ Simulator -derivedDataPath DerivedData -allowProvisioningUpdates -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
