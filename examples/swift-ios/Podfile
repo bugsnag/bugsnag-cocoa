@@ -1,6 +1,6 @@
 platform :ios, '9.3'
 use_frameworks!
 
-target 'bugsnag-example' do
+target 'swift-ios' do
   pod 'Bugsnag', :path => "../.."
 end

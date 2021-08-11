@@ -271,9 +271,9 @@ steps:
       - echo "--- Pod install"
       - pod install
       - echo "+++ Build Release iOS"
-      - xcodebuild -workspace Bugsnag\ Test\ App.xcworkspace -scheme Bugsnag\ Test\ App -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - xcodebuild -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
       - echo "+++ Build Debug iOS Simulator"
-      - xcodebuild -workspace Bugsnag\ Test\ App.xcworkspace -scheme Bugsnag\ Test\ App -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - xcodebuild -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/objective-c-osx'
     agents:
@@ -295,9 +295,9 @@ steps:
       - echo "--- Pod install"
       - pod install
       - echo "+++ Build Release iOS"
-      - xcodebuild -workspace bugsnag-example.xcworkspace -scheme bugsnag-example -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - xcodebuild -workspace swift-ios.xcworkspace -scheme swift-ios -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
       - echo "+++ Build Debug iOS Simulator"
-      - xcodebuild -workspace bugsnag-example.xcworkspace -scheme bugsnag-example -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - xcodebuild -workspace swift-ios.xcworkspace -scheme swift-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/swift-package-manager'
     agents:
