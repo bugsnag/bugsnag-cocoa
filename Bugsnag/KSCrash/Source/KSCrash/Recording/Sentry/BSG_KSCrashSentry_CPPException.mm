@@ -28,6 +28,7 @@
 #include "BSG_KSCrashSentry_Private.h"
 #include "BSG_KSMach.h"
 #include "BSG_KSCrashC.h"
+#include "BSG_fishhook.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
@@ -63,6 +64,8 @@ static volatile sig_atomic_t bsg_g_installed = 0;
 /** True if the handler should capture the next stack trace. */
 static bool bsg_g_captureNextStackTrace = false;
 
+static bool g_did_rebind_cxa_throw = false;
+
 static std::terminate_handler bsg_g_originalTerminateHandler;
 
 /** Buffer for the backtrace of the most recent exception. */
@@ -78,21 +81,47 @@ static BSG_KSCrash_SentryContext *bsg_g_context;
 #pragma mark - Callbacks -
 // ============================================================================
 
-typedef void (*cxa_throw_type)(void *, std::type_info *, void (*)(void *));
-
-extern "C" {
-void __cxa_throw(void *thrown_exception, std::type_info *tinfo,
-                 void (*dest)(void *)) __attribute__((weak));
-
-void __cxa_throw(void *thrown_exception, std::type_info *tinfo,
-                 void (*dest)(void *)) {
+static void captureStackTrace(void*, std::type_info*, void (*)(void*))
+{
     if (bsg_g_captureNextStackTrace) {
         bsg_g_stackTraceCount =
             backtrace((void **)bsg_g_stackTrace,
                       sizeof(bsg_g_stackTrace) / sizeof(*bsg_g_stackTrace));
     }
+}
 
+static struct bsg_rebinding g_cxa_throw_rebinding = {
+    .name = "__cxa_throw",
+    .replacement = (void*)captureStackTrace
+};
+
+// Use fishhook to patch all __cxa_throw functions in all images.
+static void rebind_cxa_throw(void)
+{
+    if (!g_did_rebind_cxa_throw)
+    {
+        bsg_rebind_symbols(&g_cxa_throw_rebinding, 1);
+        g_did_rebind_cxa_throw = true;
+    }
+}
+
+// Default __cxa_throw for the main image. If cxa_throw has been patched, this will simply
+// call the original implementation. If it has not been patched, it will also capture
+// a stack trace (same as the original implementation, which only captures C++ traces
+// from the main image).
+extern "C" {
+typedef void (*cxa_throw_type)(void *, std::type_info *, void (*)(void *));
+
+void __cxa_throw(void *thrown_exception, std::type_info *tinfo,
+                 void (*dest)(void *)) __attribute__((weak));
+
+void __cxa_throw(void *thrown_exception, std::type_info *tinfo,
+                 void (*dest)(void *)) {
     static cxa_throw_type orig_cxa_throw = NULL;
+    if (!g_did_rebind_cxa_throw)
+    {
+        captureStackTrace(NULL, NULL, NULL);
+    }
     unlikely_if(orig_cxa_throw == NULL) {
         orig_cxa_throw = (cxa_throw_type)dlsym(RTLD_NEXT, "__cxa_throw");
     }
@@ -206,6 +235,7 @@ extern "C" bool bsg_kscrashsentry_installCPPExceptionHandler(
     }
     bsg_g_installed = 1;
 
+    rebind_cxa_throw();
     bsg_g_context = context;
 
     bsg_g_originalTerminateHandler = std::set_terminate(CPPExceptionTerminate);
