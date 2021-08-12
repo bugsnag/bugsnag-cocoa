@@ -503,7 +503,14 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
         
         NSError *error = nil;
         NSData *data = [NSData dataWithBytesNoCopy:buffer.buffer length:buffer.length freeWhenDone:NO];
-        XCTAssert([NSJSONSerialization JSONObjectWithData:data options:0 error:&error], @"%@", error);
+        if (![NSJSONSerialization JSONObjectWithData:data options:0 error:&error]) {
+            [self addAttachment:[XCTAttachment attachmentWithUniformTypeIdentifier:@"public.plain-text"
+                                                                              name:@"breadcrumbs.json"
+                                                                           payload:data
+                                                                          userInfo:nil]];
+            XCTFail(@"Breadcrumbs JSON could not be parsed: %@", error);
+            break;
+        }
     }
     
     free(buffer.buffer);
