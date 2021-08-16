@@ -126,26 +126,28 @@
 #if (defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0) || \
     (defined(__TVOS_13_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_13_0)
 
-- (void)testUISceneNotifications API_AVAILABLE(ios(13.0), tvos(13.0)) {
-    self.notificationObject = [[UISceneStub alloc] initWithConfiguration:@"Default Configuration"
-                                                           delegateClass:[BSGNotificationBreadcrumbsTests class]
-                                                                    role:UIWindowSceneSessionRoleApplication
-                                                              sceneClass:[UISceneStub class]
-                                                                   title:@"Home"];
-    
-    TEST(UISceneWillConnectNotification, BSGBreadcrumbTypeState, @"Scene Will Connect",
-         (@{@"configuration": @"Default Configuration",
-            @"delegateClass": @"BSGNotificationBreadcrumbsTests",
-            @"role": @"UIWindowSceneSessionRoleApplication",
-            @"sceneClass": @"UISceneStub",
-            @"title": @"Home"}));
-    
-    self.notificationObject = nil;
-    TEST(UISceneDidDisconnectNotification, BSGBreadcrumbTypeState, @"Scene Disconnected", @{});
-    TEST(UISceneDidActivateNotification, BSGBreadcrumbTypeState, @"Scene Activated", @{});
-    TEST(UISceneWillDeactivateNotification, BSGBreadcrumbTypeState, @"Scene Will Deactivate", @{});
-    TEST(UISceneWillEnterForegroundNotification, BSGBreadcrumbTypeState, @"Scene Will Enter Foreground", @{});
-    TEST(UISceneDidEnterBackgroundNotification, BSGBreadcrumbTypeState, @"Scene Entered Background", @{});
+- (void)testUISceneNotifications {
+    if (@available(iOS 13.0, tvOS 13.0, *)) {
+        self.notificationObject = [[UISceneStub alloc] initWithConfiguration:@"Default Configuration"
+                                                               delegateClass:[BSGNotificationBreadcrumbsTests class]
+                                                                        role:UIWindowSceneSessionRoleApplication
+                                                                  sceneClass:[UISceneStub class]
+                                                                       title:@"Home"];
+        
+        TEST(UISceneWillConnectNotification, BSGBreadcrumbTypeState, @"Scene Will Connect",
+             (@{@"configuration": @"Default Configuration",
+                @"delegateClass": @"BSGNotificationBreadcrumbsTests",
+                @"role": @"UIWindowSceneSessionRoleApplication",
+                @"sceneClass": @"UISceneStub",
+                @"title": @"Home"}));
+        
+        self.notificationObject = nil;
+        TEST(UISceneDidDisconnectNotification, BSGBreadcrumbTypeState, @"Scene Disconnected", @{});
+        TEST(UISceneDidActivateNotification, BSGBreadcrumbTypeState, @"Scene Activated", @{});
+        TEST(UISceneWillDeactivateNotification, BSGBreadcrumbTypeState, @"Scene Will Deactivate", @{});
+        TEST(UISceneWillEnterForegroundNotification, BSGBreadcrumbTypeState, @"Scene Will Enter Foreground", @{});
+        TEST(UISceneDidEnterBackgroundNotification, BSGBreadcrumbTypeState, @"Scene Entered Background", @{});
+    }
 }
 
 #endif
