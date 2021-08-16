@@ -39,3 +39,18 @@ Feature: Attaching a series of notable events leading up to errors
     When I run "ModifyBreadcrumbInNotify"
     And I wait to receive an error
     Then the event has a "manual" breadcrumb named "Cache locked"
+
+  @skip_below_os_version_13
+  @skip_macos
+  Scenario: State breadcrumbs
+    When I configure Bugsnag for "HandledErrorScenario"
+    And I background the app for 2 seconds
+    And I click the element "run_scenario"
+    And I wait to receive an error
+    Then the event has a "state" breadcrumb named "Bugsnag loaded"
+    # Bugsnag has been started too late to capture some early notifications
+    And the event has a "state" breadcrumb named "App Did Enter Background"
+    And the event has a "state" breadcrumb named "App Will Enter Foreground"
+    And the event has a "state" breadcrumb named "Scene Entered Background"
+    And the event has a "state" breadcrumb named "Scene Will Enter Foreground"
+    And the event has a "state" breadcrumb named "Scene Activated"
