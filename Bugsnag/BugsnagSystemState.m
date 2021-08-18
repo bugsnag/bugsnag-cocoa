@@ -19,8 +19,8 @@
 #import <Bugsnag/Bugsnag.h>
 
 #import "BSGFileLocations.h"
-#import "BSGGlobals.h"
 #import "BSGJSONSerialization.h"
+#import "BSGUtils.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSSystemInfo.h"
 #import "BSG_RFC3339DateTool.h"
@@ -281,7 +281,7 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
         state = self.currentLaunchState;
     }
     // Run on a BG thread so we don't monopolize the notification queue.
-    dispatch_async(BSGGlobalsFileSystemQueue(), ^(void){
+    dispatch_async(BSGGetFileSystemQueue(), ^(void){
         [self syncState:state];
     });
 }
