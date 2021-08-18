@@ -16,3 +16,13 @@ dispatch_queue_t BSGGetFileSystemQueue(void) {
     });
     return queue;
 }
+
+NSString *_Nullable BSGStringFromThermalState(NSProcessInfoThermalState thermalState) {
+    switch (thermalState) {
+        case NSProcessInfoThermalStateNominal:  return @"nominal";
+        case NSProcessInfoThermalStateFair:     return @"fair";
+        case NSProcessInfoThermalStateSerious:  return @"serious";
+        case NSProcessInfoThermalStateCritical: return @"critical";
+    }
+    return nil;
+}

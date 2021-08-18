@@ -14,6 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 dispatch_queue_t BSGGetFileSystemQueue(void);
 
+API_AVAILABLE(ios(11.0), tvos(11.0))
+NSString *_Nullable BSGStringFromThermalState(NSProcessInfoThermalState thermalState);
+
 NS_ASSUME_NONNULL_END
 
 __END_DECLS

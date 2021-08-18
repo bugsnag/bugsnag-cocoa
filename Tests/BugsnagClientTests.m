@@ -18,6 +18,16 @@
 #import <objc/runtime.h>
 #import <XCTest/XCTest.h>
 
+/**
+ * Tests for BugsnagClient.
+ *
+ * BugsnagClient is an expensive object and not suitable for unit testing because it depends on and alters global
+ * state like the file system and default notification center. Furthermore, instances never get deallocated - so
+ * clients instantiated by previous test cases can alter the results of a client instantiated in a later test
+ * case due to the shared global state.
+ *
+ * For these reasons, test cases should only be added here as a matter of last resort.
+ */
 @interface BugsnagClientTests : XCTestCase
 @end
 

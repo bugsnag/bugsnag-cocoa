@@ -216,6 +216,8 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 
 @property (readwrite, nullable, nonatomic) BugsnagLastRunInfo *lastRunInfo;
 
+@property (nonatomic) NSProcessInfoThermalState lastThermalState API_AVAILABLE(ios(11.0), tvos(11.0));
+
 @end
 
 
@@ -279,6 +281,12 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
         [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
         [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
+        if (@available(iOS 11.0, tvOS 11.0, *)) {
+            _lastThermalState = NSProcessInfo.processInfo.thermalState;
+            [self.metadata addMetadata:BSGStringFromThermalState(_lastThermalState)
+                               withKey:BSGKeyThermalState
+                             toSection:BSGKeyDevice];
+        }
 #if BSG_PLATFORM_IOS
         _lastOrientation = BSGOrientationNameFromEnum([UIDEVICE currentDevice].orientation);
         [self.state addMetadata:_lastOrientation withKey:BSGKeyOrientation toSection:BSGKeyDeviceState];
@@ -364,6 +372,13 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     [self batteryChanged:nil];
 #endif
+
+    if (@available(iOS 11.0, tvOS 11.0, *)) {
+        [center addObserver:self
+                   selector:@selector(thermalStateDidChange:)
+                       name:NSProcessInfoThermalStateDidChangeNotification
+                     object:nil];
+    }
 
     self.started = YES;
 
@@ -615,6 +630,26 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
 - (void)applicationWillEnterBackground:(__unused NSNotification *)notification {
     [self.sessionTracker handleAppBackgroundEvent];
+}
+
+- (void)thermalStateDidChange:(NSNotification *)notification API_AVAILABLE(ios(11.0), tvos(11.0)) {
+    NSProcessInfo *processInfo = notification.object;
+    
+    NSString *thermalStateString = BSGStringFromThermalState(processInfo.thermalState);
+    
+    [self.metadata addMetadata:thermalStateString
+                       withKey:BSGKeyThermalState
+                     toSection:BSGKeyDevice];
+    
+    NSMutableDictionary *breadcrumbMetadata = [NSMutableDictionary dictionary];
+    breadcrumbMetadata[@"from"] = BSGStringFromThermalState(self.lastThermalState);
+    breadcrumbMetadata[@"to"] = thermalStateString;
+    
+    [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
+                      withMessage:@"Thermal State Changed"
+                      andMetadata:breadcrumbMetadata];
+    
+    self.lastThermalState = processInfo.thermalState;
 }
 
 - (void)startSession {

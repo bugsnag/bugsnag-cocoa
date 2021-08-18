@@ -10,9 +10,18 @@ AfterConfiguration do |_config|
   Maze.config.receive_requests_wait = 180 unless ENV['STRESS_TEST'].nil?
 end
 
-# Maze.config.os is not set when running on BrowserStack so cannot implement @skip_below_ios_13 :-(
-Before('@skip_below_os_version_13') do |scenario|
-  skip_this_scenario("Skipping scenario") if Maze.config.os_version < 13
+def get_os
+  # Maze.config.os is currently not set when running on BrowserStack, so assume iOS.
+  # Once we need a third supported os, we will need to fix maze-runner.
+  return Maze.config.os || 'ios'
+end
+
+Before('@skip_below_ios_11') do |scenario|
+  skip_this_scenario("Skipping scenario") if get_os == 'ios' and Maze.config.os_version < 11
+end
+
+Before('@skip_below_ios_13') do |scenario|
+  skip_this_scenario("Skipping scenario") if get_os == 'ios' and Maze.config.os_version < 13
 end
 
 # Skip stress tests unless STRESS_TEST env var is set
