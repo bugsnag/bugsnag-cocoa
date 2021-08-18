@@ -210,28 +210,57 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
 }
 
 + (NSArray<BugsnagThread *> *)allThreadsWithCurrentThreadBacktrace:(struct backtrace_t *)currentThreadBacktrace {
+    const thread_t thread_self = bsg_ksmachthread_self();
+    const mach_msg_type_number_t threadExtraCount = 10;
+    mach_msg_type_number_t workingThreadCount = 0;
+    mach_msg_type_number_t actualThreadCount = 0;
+    bool threads_are_suspended = false;
     thread_t *threads = NULL;
-    mach_msg_type_number_t threadCount = 0;
 
-    if (task_threads(mach_task_self(), &threads, &threadCount) != KERN_SUCCESS) {
+    void (^deallocate_threads)(thread_t *, mach_msg_type_number_t) =
+    ^(thread_t *parm_threads, mach_msg_type_number_t parm_threadCount){
+        for (mach_msg_type_number_t i = 0; i < parm_threadCount; i++) {
+            mach_port_deallocate(mach_task_self(), parm_threads[i]);
+        }
+        vm_deallocate(mach_task_self(), (vm_address_t)parm_threads, sizeof(thread_t) * parm_threadCount);
+    };
+
+    // First, get an idea of how many threads there are. There will be around this many
+    // when we fetch this list again after suspending all threads.
+    if (task_threads(mach_task_self(), &threads, &actualThreadCount) != KERN_SUCCESS) {
         return @[];
     }
+    deallocate_threads(threads, actualThreadCount);
+    threads = NULL;
+    // Allocate for this many threads + extra in case some more threads start.
+    workingThreadCount = actualThreadCount + threadExtraCount;
 
-    NSMutableArray *objects = [NSMutableArray arrayWithCapacity:threadCount];
-
-    struct backtrace_t *backtraces = calloc(threadCount, sizeof(struct backtrace_t));
+    // Allocations must happen BEFORE suspending all threads.
+    NSMutableArray *objects = [NSMutableArray arrayWithCapacity:workingThreadCount];
+    struct backtrace_t *backtraces = calloc(workingThreadCount, sizeof(struct backtrace_t));
     if (!backtraces) {
         goto cleanup;
     }
 
     suspend_threads();
+    threads_are_suspended = true;
 
     // While threads are suspended only async-signal-safe functions should be used,
     // as another threads may have been suspended while holding a lock in malloc,
     // the Objective-C runtime, or other subsystems.
 
-    for (mach_msg_type_number_t i = 0; i < threadCount; i++) {
-        BOOL isCurrentThread = MACH_PORT_INDEX(threads[i]) == MACH_PORT_INDEX(bsg_ksmachthread_self());
+    if (task_threads(mach_task_self(), &threads, &actualThreadCount) != KERN_SUCCESS) {
+        goto cleanup;
+    }
+    // Clamp down to the actual count if needed, but process no more than we originally
+    // allocated for. Some threads will be lost if a ton of new threads were instantiated
+    // during the small window between the two task_threads() calls.
+    if (workingThreadCount > actualThreadCount) {
+        workingThreadCount = actualThreadCount;
+    }
+
+    for (mach_msg_type_number_t i = 0; i < workingThreadCount; i++) {
+        BOOL isCurrentThread = MACH_PORT_INDEX(threads[i]) == MACH_PORT_INDEX(thread_self);
         if (isCurrentThread) {
             backtraces[i].length = 0; // currentThreadBacktrace will be used instead
         } else {
@@ -240,9 +269,10 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
     }
 
     resume_threads();
+    threads_are_suspended = false;
 
-    for (mach_msg_type_number_t i = 0; i < threadCount; i++) {
-        BOOL isCurrentThread = MACH_PORT_INDEX(threads[i]) == MACH_PORT_INDEX(bsg_ksmachthread_self());
+    for (mach_msg_type_number_t i = 0; i < workingThreadCount; i++) {
+        BOOL isCurrentThread = MACH_PORT_INDEX(threads[i]) == MACH_PORT_INDEX(thread_self);
         struct backtrace_t *backtrace = isCurrentThread ? currentThreadBacktrace : &backtraces[i];
         [objects addObject:[[BugsnagThread alloc] initWithMachThread:threads[i]
                                                   backtraceAddresses:backtrace->addresses
@@ -252,10 +282,12 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
     }
 
 cleanup:
-    for (mach_msg_type_number_t i = 0; i < threadCount; i++) {
-        mach_port_deallocate(mach_task_self(), threads[i]);
+    if (threads_are_suspended) {
+        resume_threads();
     }
-    vm_deallocate(mach_task_self(), (vm_address_t)threads, sizeof(thread_t) * threadCount);
+    if (threads != NULL) {
+        deallocate_threads(threads, actualThreadCount);
+    }
 
     free(backtraces);
     return objects;
