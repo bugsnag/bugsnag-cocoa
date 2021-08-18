@@ -51,6 +51,8 @@
 }
 
 - (IBAction)runScenario:(id)sender {
+    NSLog(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
+
     if (!self.scenario) {
         self.scenario = [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
         self.scenario.eventMode = self.scenarioMetadata;
@@ -70,6 +72,8 @@
 }
 
 - (IBAction)startBugsnag:(id)sender {
+    NSLog(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
+
     self.scenario = [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
     self.scenario.eventMode = self.scenarioMetadata;
 

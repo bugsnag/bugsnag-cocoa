@@ -1,5 +1,5 @@
 //
-//  NotificationBreadcrumbTests.m
+//  BSGNotificationBreadcrumbsTests.m
 //  Bugsnag
 //
 //  Created by Nick Dowell on 10/12/2020.
@@ -13,8 +13,12 @@
 #import "BSGNotificationBreadcrumbs.h"
 #import "BugsnagBreadcrumb+Private.h"
 
+#if TARGET_OS_IOS || TARGET_OS_TV
+#import "UISceneStub.h"
+#endif
 
-@interface NotificationBreadcrumbTests : XCTestCase <BSGBreadcrumbSink>
+
+@interface BSGNotificationBreadcrumbsTests : XCTestCase <BSGBreadcrumbSink>
 
 @property NSNotificationCenter *notificationCenter;
 @property id notificationObject;
@@ -28,7 +32,7 @@
 
 #pragma mark -
 
-@implementation NotificationBreadcrumbTests
+@implementation BSGNotificationBreadcrumbsTests
 
 #pragma mark Setup
 
@@ -61,13 +65,20 @@
 
 #define TEST(__NAME__, __TYPE__, __MESSAGE__, __METADATA__) do { \
     BugsnagBreadcrumb *breadcrumb = [self breadcrumbForNotificationWithName:__NAME__]; \
-    XCTAssertNotNil(breadcrumb); \
+    XCTAssert([NSJSONSerialization isValidJSONObject:breadcrumb.metadata]); \
     if (breadcrumb) { \
         XCTAssertEqual(breadcrumb.type, __TYPE__); \
         XCTAssertEqualObjects(breadcrumb.message, __MESSAGE__); \
         XCTAssertEqualObjects(breadcrumb.metadata, __METADATA__); \
     } \
 } while (0)
+
+#pragma mark Tests
+
+- (void)testNSUndoManagerNotifications {
+    TEST(NSUndoManagerDidRedoChangeNotification, BSGBreadcrumbTypeState, @"Redo Operation", @{});
+    TEST(NSUndoManagerDidUndoChangeNotification, BSGBreadcrumbTypeState, @"Undo Operation", @{});
+}
 
 #pragma mark iOS Tests
 
@@ -112,11 +123,34 @@
 
 #if TARGET_OS_IOS || TARGET_OS_TV
 
-// This should be on macOS too!
-- (void)testNSUndoManagerNotifications {
-    TEST(NSUndoManagerDidRedoChangeNotification, BSGBreadcrumbTypeState, @"Redo Operation", @{});
-    TEST(NSUndoManagerDidUndoChangeNotification, BSGBreadcrumbTypeState, @"Undo Operation", @{});
+#if (defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0) || \
+    (defined(__TVOS_13_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_13_0)
+
+- (void)testUISceneNotifications {
+    if (@available(iOS 13.0, tvOS 13.0, *)) {
+        self.notificationObject = [[UISceneStub alloc] initWithConfiguration:@"Default Configuration"
+                                                               delegateClass:[BSGNotificationBreadcrumbsTests class]
+                                                                        role:UIWindowSceneSessionRoleApplication
+                                                                  sceneClass:[UISceneStub class]
+                                                                       title:@"Home"];
+        
+        TEST(UISceneWillConnectNotification, BSGBreadcrumbTypeState, @"Scene Will Connect",
+             (@{@"configuration": @"Default Configuration",
+                @"delegateClass": @"BSGNotificationBreadcrumbsTests",
+                @"role": @"UIWindowSceneSessionRoleApplication",
+                @"sceneClass": @"UISceneStub",
+                @"title": @"Home"}));
+        
+        self.notificationObject = nil;
+        TEST(UISceneDidDisconnectNotification, BSGBreadcrumbTypeState, @"Scene Disconnected", @{});
+        TEST(UISceneDidActivateNotification, BSGBreadcrumbTypeState, @"Scene Activated", @{});
+        TEST(UISceneWillDeactivateNotification, BSGBreadcrumbTypeState, @"Scene Will Deactivate", @{});
+        TEST(UISceneWillEnterForegroundNotification, BSGBreadcrumbTypeState, @"Scene Will Enter Foreground", @{});
+        TEST(UISceneDidEnterBackgroundNotification, BSGBreadcrumbTypeState, @"Scene Entered Background", @{});
+    }
 }
+
+#endif
 
 - (void)testUITableViewNotifications {
     TEST(UITableViewSelectionDidChangeNotification, BSGBreadcrumbTypeNavigation, @"TableView Select Change", @{});

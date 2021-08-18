@@ -43,6 +43,18 @@
     ASSERT_NOTIFICATION_NAME(UIWindowDidBecomeKeyNotification);
     ASSERT_NOTIFICATION_NAME(UIWindowDidBecomeVisibleNotification);
     ASSERT_NOTIFICATION_NAME(UIWindowDidResignKeyNotification);
+
+#if (defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0) || \
+    (defined(__TVOS_13_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_13_0)
+    if (@available(iOS 13.0, tvOS 13.0, *)) {
+        ASSERT_NOTIFICATION_NAME(UISceneWillConnectNotification);
+        ASSERT_NOTIFICATION_NAME(UISceneDidDisconnectNotification);
+        ASSERT_NOTIFICATION_NAME(UISceneDidActivateNotification);
+        ASSERT_NOTIFICATION_NAME(UISceneWillDeactivateNotification);
+        ASSERT_NOTIFICATION_NAME(UISceneWillEnterForegroundNotification);
+        ASSERT_NOTIFICATION_NAME(UISceneDidEnterBackgroundNotification);
+    }
+#endif
 }
 
 @end
