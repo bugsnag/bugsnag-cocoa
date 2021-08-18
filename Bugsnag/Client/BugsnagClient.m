@@ -338,10 +338,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [self watchLifecycleEvents:center];
 
-#if BSG_PLATFORM_TVOS
-    [self addTerminationObserver:UIApplicationWillTerminateNotification];
-
-#elif BSG_PLATFORM_IOS
+#if BSG_PLATFORM_IOS
     [center addObserver:self
                selector:@selector(batteryChanged:)
                    name:UIDeviceBatteryStateDidChangeNotification
@@ -358,7 +355,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                  object:nil];
 
     [center addObserver:self
-               selector:@selector(lowMemoryWarning:)
+               selector:@selector(applicationDidReceiveMemoryWarning:)
                    name:UIApplicationDidReceiveMemoryWarningNotification
                  object:nil];
 
@@ -366,20 +363,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [[UIDEVICE currentDevice] beginGeneratingDeviceOrientationNotifications];
 
     [self batteryChanged:nil];
-    [self addTerminationObserver:UIApplicationWillTerminateNotification];
-
-#elif BSG_PLATFORM_OSX
-    [center addObserver:self
-               selector:@selector(willEnterForeground:)
-                   name:NSApplicationDidBecomeActiveNotification
-                 object:nil];
-
-    [center addObserver:self
-               selector:@selector(willEnterBackground:)
-                   name:NSApplicationDidResignActiveNotification
-                 object:nil];
-
-    [self addTerminationObserver:NSApplicationWillTerminateNotification];
 #endif
 
     self.started = YES;
@@ -533,13 +516,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 #endif
 }
 
-- (void)addTerminationObserver:(NSString *)name {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(unsubscribeFromNotifications:)
-                                                 name:name
-                                               object:nil];
-}
-
 - (void)computeDidCrashLastLaunch {
     BOOL didCrash = NO;
     
@@ -592,7 +568,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 /**
  * Removes observers and listeners to prevent allocations when the app is terminated
  */
-- (void)unsubscribeFromNotifications:(__attribute__((unused)) id)sender {
+- (void)applicationWillTerminate:(__unused NSNotification *)notification {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [BSGConnectivity stopMonitoring];
 
@@ -603,33 +579,41 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 }
 
 - (void)watchLifecycleEvents:(NSNotificationCenter *)center {
-    NSString *foregroundName;
-    NSString *backgroundName;
+    NSNotificationName foregroundName;
+    NSNotificationName backgroundName;
+    NSNotificationName terminateName;
 
     #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
     foregroundName = UIApplicationWillEnterForegroundNotification;
     backgroundName = UIApplicationDidEnterBackgroundNotification;
+    terminateName = UIApplicationWillTerminateNotification;
     #elif BSG_PLATFORM_OSX
     foregroundName = NSApplicationWillBecomeActiveNotification;
-    backgroundName = NSApplicationDidFinishLaunchingNotification;
+    backgroundName = NSApplicationDidResignActiveNotification;
+    terminateName = NSApplicationWillTerminateNotification;
     #endif
 
     [center addObserver:self
-               selector:@selector(willEnterForeground:)
+               selector:@selector(applicationWillEnterForeground:)
                    name:foregroundName
                  object:nil];
 
     [center addObserver:self
-               selector:@selector(willEnterBackground:)
+               selector:@selector(applicationWillEnterBackground:)
                    name:backgroundName
+                 object:nil];
+
+    [center addObserver:self
+               selector:@selector(applicationWillTerminate:)
+                   name:terminateName
                  object:nil];
 }
 
-- (void)willEnterForeground:(__attribute__((unused)) id)sender {
+- (void)applicationWillEnterForeground:(__unused NSNotification *)notification {
     [self.sessionTracker handleAppForegroundEvent];
 }
 
-- (void)willEnterBackground:(__attribute__((unused)) id)sender {
+- (void)applicationWillEnterBackground:(__unused NSNotification *)notification {
     [self.sessionTracker handleAppBackgroundEvent];
 }
 
@@ -1018,7 +1002,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     self.lastOrientation = orientation;
 }
 
-- (void)lowMemoryWarning:(__attribute__((unused)) NSNotification *)notif {
+- (void)applicationDidReceiveMemoryWarning:(__unused NSNotification *)notif {
     [self.state addMetadata:[BSG_RFC3339DateTool stringFromDate:[NSDate date]]
                       withKey:BSEventLowMemoryWarning
                     toSection:BSGKeyDeviceState];
