@@ -143,8 +143,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)removeObserverWithBlock:(BugsnagObserverBlock)block; // Used in BugsnagReactNative
 
-- (BOOL)shouldReportOOM;
-
 - (void)start;
 
 - (void)startAppHangDetector;

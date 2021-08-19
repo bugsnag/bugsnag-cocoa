@@ -454,83 +454,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     }
 }
 
-- (BOOL)shouldReportOOM {
-#if BSGOOMAvailable
-    // Disable if in an app extension, since app extensions have a different
-    // app lifecycle and the heuristic used for finding app terminations rooted
-    // in fixable code does not apply
-    if([BSG_KSSystemInfo isRunningInAppExtension]) {
-        return NO;
-    }
-
-    // autoDetectErrors disables all unhandled event reporting
-    if(!self.configuration.autoDetectErrors) {
-        return NO;
-    }
-
-    // Are OOMs enabled?
-    if(!self.configuration.enabledErrorTypes.ooms) {
-        return NO;
-    }
-
-    return [self didLikelyOOM];
-#else
-    return NO;
-#endif
-}
-
-/**
- * These heuristics aren't 100% guaranteed to be correct, but they're correct often enough to be useful.
- */
-- (BOOL)didLikelyOOM {
-#if BSGOOMAvailable
-    NSDictionary *currAppState = self.systemState.currentLaunchState[SYSTEMSTATE_KEY_APP];
-    NSDictionary *prevAppState = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP];
-    NSDictionary *currentDeviceState = self.systemState.currentLaunchState[SYSTEMSTATE_KEY_DEVICE];
-    NSDictionary *previousDeviceState = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_DEVICE];
-    
-    // Disable if a debugger was active, since the development cycle of
-    // starting and restarting an app is also an uncatchable kill
-    if([prevAppState[SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE] boolValue]) {
-        return NO;
-    }
-
-    // If the app code changed between launches, assume no OOM.
-    NSString *currentAppVersion = currAppState[SYSTEMSTATE_APP_VERSION];
-    if (!currentAppVersion || ![prevAppState[SYSTEMSTATE_APP_VERSION] isEqualToString:currentAppVersion]) {
-        return NO;
-    }
-    NSString *currentAppBundleVersion = currAppState[SYSTEMSTATE_APP_BUNDLE_VERSION];
-    if (!currentAppBundleVersion || ![prevAppState[SYSTEMSTATE_APP_BUNDLE_VERSION] isEqualToString:currentAppBundleVersion]) {
-        return NO;
-    }
-
-    // If the app was inactive or backgrounded, we can't determine if it was OOM or not.
-    if(![prevAppState[SYSTEMSTATE_APP_IS_ACTIVE] boolValue]) {
-        return NO;
-    }
-    if(![prevAppState[SYSTEMSTATE_APP_IS_IN_FOREGROUND] boolValue]) {
-        return NO;
-    }
-
-    // If the app terminated normally, it wasn't an OOM.
-    if([prevAppState[SYSTEMSTATE_APP_WAS_TERMINATED] boolValue]) {
-        return NO;
-    }
-    
-    id currentBootTime = currentDeviceState[SYSTEMSTATE_DEVICE_BOOT_TIME];
-    id previousBootTime = previousDeviceState[SYSTEMSTATE_DEVICE_BOOT_TIME];
-    BOOL didReboot = currentBootTime && previousBootTime && ![currentBootTime isEqual:previousBootTime];
-    if (didReboot) {
-        return NO;
-    }
-    
-    return YES;
-#else
-    return NO;
-#endif
-}
-
 - (void)computeDidCrashLastLaunch {
     BOOL didCrash = NO;
     
@@ -545,10 +468,20 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         bsg_log_info(@"Last run terminated during an app hang.");
         didCrash = YES;
     }
-    // Was the app terminated while in the foreground? (probably an OOM)
-    else if ([self shouldReportOOM]) {
-        bsg_log_info(@"Last run terminated abnormally; likely Out Of Memory.");
-        self.eventFromLastLaunch = [self generateOutOfMemoryEvent];
+    else if (self.configuration.autoDetectErrors && self.systemState.lastLaunchTerminatedUnexpectedly) {
+        if (self.systemState.lastLaunchCriticalThermalState) {
+            bsg_log_info(@"Last run terminated during a critical thermal state.");
+            if (self.configuration.enabledErrorTypes.thermalKills) {
+                self.eventFromLastLaunch = [self generateThermalKillEvent];
+            }
+#if BSGOOMAvailable
+        } else {
+            bsg_log_info(@"Last run terminated unexpectedly; possible Out Of Memory.");
+            if (self.configuration.enabledErrorTypes.ooms) {
+                self.eventFromLastLaunch = [self generateOutOfMemoryEvent];
+            }
+#endif
+        }
         didCrash = YES;
     }
     
@@ -634,6 +567,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
 - (void)thermalStateDidChange:(NSNotification *)notification API_AVAILABLE(ios(11.0), tvos(11.0)) {
     NSProcessInfo *processInfo = notification.object;
+    
+    [self.systemState setThermalState:processInfo.thermalState];
     
     NSString *thermalStateString = BSGStringFromThermalState(processInfo.thermalState);
     
@@ -1309,9 +1244,27 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     return event;
 }
 
-// MARK: - OOMs
+// MARK: - Event generation
 
 - (BugsnagEvent *)generateOutOfMemoryEvent {
+    return [self generateEventForLastLaunchWithError:
+            [[BugsnagError alloc] initWithErrorClass:@"Out Of Memory"
+                                        errorMessage:@"The app was likely terminated by the operating system while in the foreground"
+                                           errorType:BSGErrorTypeCocoa
+                                          stacktrace:nil]
+                                        handledState:[BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory]];
+}
+
+- (BugsnagEvent *)generateThermalKillEvent {
+    return [self generateEventForLastLaunchWithError:
+            [[BugsnagError alloc] initWithErrorClass:@"Thermal Kill"
+                                        errorMessage:@"The app was terminated by the operating system due to a critical thermal state"
+                                           errorType:BSGErrorTypeCocoa
+                                          stacktrace:nil]
+                                        handledState:[BugsnagHandledState handledStateWithSeverityReason:ThermalKill]];
+}
+
+- (BugsnagEvent *)generateEventForLastLaunchWithError:(BugsnagError *)error handledState:(BugsnagHandledState *)handledState {
     NSDictionary *appDict = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP];
     BugsnagAppWithState *app = [BugsnagAppWithState appFromJson:appDict];
     app.dsymUuid = appDict[BSGKeyMachoUUID];
@@ -1338,16 +1291,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     BugsnagSession *session = sessionDict ? [[BugsnagSession alloc] initWithDictionary:sessionDict] : nil;
     session.unhandledCount += 1;
 
-    BugsnagError *error =
-    [[BugsnagError alloc] initWithErrorClass:@"Out Of Memory"
-                                errorMessage:@"The app was likely terminated by the operating system while in the foreground"
-                                   errorType:BSGErrorTypeCocoa
-                                  stacktrace:nil];
-
     BugsnagEvent *event =
     [[BugsnagEvent alloc] initWithApp:app
                                device:device
-                         handledState:[BugsnagHandledState handledStateWithSeverityReason:LikelyOutOfMemory]
+                         handledState:handledState
                                  user:session.user ?: [[BugsnagUser alloc] init]
                              metadata:metadata
                           breadcrumbs:[self.breadcrumbs cachedBreadcrumbs] ?: @[]
@@ -1359,6 +1306,5 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     return event;
 }
-
 
 @end
