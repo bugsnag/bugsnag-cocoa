@@ -3,15 +3,8 @@ When('I run {string}') do |event_type|
     Given the element "scenario_name" is present
     When I send the keys "#{event_type}" to the element "scenario_name"
     And I close the keyboard
+    And I click the element "run_scenario"
   )
-  begin
-    step('I click the element "run_scenario"')
-  rescue StandardError
-    # AppiumForMac raises an to run a scenario that crashes the app
-    raise unless Maze.driver.capabilities['platformName'].eql?('Mac')
-
-    $logger.warn 'Ignoring error - this is normal for AppiumForMac if a button click causes the app to crash.'
-  end
 end
 
 When('I set the app to {string} mode') do |mode|
@@ -23,10 +16,15 @@ When('I set the app to {string} mode') do |mode|
 end
 
 When("I run {string} and relaunch the app") do |event_type|
-  steps %Q{
-    When I run "#{event_type}"
-    And I relaunch the app after a crash
-  }
+  begin
+    step("I run \"#{event_type}\"")
+  rescue StandardError
+    # AppiumForMac raises an to run a scenario that crashes the app
+    raise unless Maze.driver.capabilities['platformName'].eql?('Mac')
+
+    $logger.warn 'Ignoring error - this is normal for AppiumForMac if a button click causes the app to crash.'
+  end
+  step('I relaunch the app after a crash')
 end
 
 When('I clear all persistent data') do
