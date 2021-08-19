@@ -92,7 +92,7 @@
             @"notifier @16@0:8",
             @"notify:handledState:block: v40@0:8@16@24@?32",
             @"notifyObservers: v24@0:8@16",
-            @"orientationChanged: v24@0:8@16",
+            @"orientationDidChange: v24@0:8@16",
             @"pluginClient @16@0:8",
             @"populateEventData: v24@0:8@16",
             @"removeObserverWithBlock: v24@0:8@?16",

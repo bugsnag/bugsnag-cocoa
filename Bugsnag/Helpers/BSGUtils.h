@@ -8,11 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
+#if TARGET_OS_IOS
+#import "BSGUIKit.h"
+#endif
+
 __BEGIN_DECLS
 
 NS_ASSUME_NONNULL_BEGIN
 
 dispatch_queue_t BSGGetFileSystemQueue(void);
+
+#if TARGET_OS_IOS
+NSString *_Nullable BSGStringFromDeviceOrientation(UIDeviceOrientation orientation);
+#endif
 
 API_AVAILABLE(ios(11.0), tvos(11.0))
 NSString *_Nullable BSGStringFromThermalState(NSProcessInfoThermalState thermalState);

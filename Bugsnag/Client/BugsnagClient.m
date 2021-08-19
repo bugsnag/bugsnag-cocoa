@@ -151,37 +151,6 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, __attrib
 }
 
 /**
- * Convert a device orientation into its Bugsnag string representation
- *
- * @param deviceOrientation The platform device orientation
- *
- * @returns A string representing the device orientation or nil if there's no equivalent
- */
-
-#if BSG_PLATFORM_IOS
-NSString *BSGOrientationNameFromEnum(UIDeviceOrientation deviceOrientation)
-{
-    switch (deviceOrientation) {
-        case UIDeviceOrientationPortraitUpsideDown:
-            return @"portraitupsidedown";
-        case UIDeviceOrientationPortrait:
-            return @"portrait";
-        case UIDeviceOrientationLandscapeRight:
-            return @"landscaperight";
-        case UIDeviceOrientationLandscapeLeft:
-            return @"landscapeleft";
-        case UIDeviceOrientationFaceUp:
-            return @"faceup";
-        case UIDeviceOrientationFaceDown:
-            return @"facedown";
-        case UIDeviceOrientationUnknown:
-            break;
-    }
-    return nil;
-}
-#endif
-
-/**
  Save info about the current session to crash data. Ensures that session
  data is written to unhandled error reports.
 
@@ -288,7 +257,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                              toSection:BSGKeyDevice];
         }
 #if BSG_PLATFORM_IOS
-        _lastOrientation = BSGOrientationNameFromEnum([UIDEVICE currentDevice].orientation);
+        _lastOrientation = BSGStringFromDeviceOrientation([UIDEVICE currentDevice].orientation);
         [self.state addMetadata:_lastOrientation withKey:BSGKeyOrientation toSection:BSGKeyDeviceState];
 #endif
         [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:_metadataFile];
@@ -358,7 +327,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                  object:nil];
 
     [center addObserver:self
-               selector:@selector(orientationChanged:)
+               selector:@selector(orientationDidChange:)
                    name:UIDeviceOrientationDidChangeNotification
                  object:nil];
 
@@ -938,9 +907,9 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
  *
  * @param notification The orientation-change notification
  */
-- (void)orientationChanged:(NSNotification *)notification {
-    UIDeviceOrientation currentDeviceOrientation = [UIDEVICE currentDevice].orientation;
-    NSString *orientation = BSGOrientationNameFromEnum(currentDeviceOrientation);
+- (void)orientationDidChange:(NSNotification *)notification {
+    UIDevice *device = notification.object;
+    NSString *orientation = BSGStringFromDeviceOrientation(device.orientation);
 
     // No orientation, nothing  to be done
     if (!orientation) {
@@ -954,7 +923,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     // Short-circuit the exit if we don't have enough info to record a full breadcrumb
     // or the orientation hasn't changed (false positive).
-    if (!self.lastOrientation || [orientation isEqualToString:self.lastOrientation]) {
+    if (!self.lastOrientation || [self.lastOrientation isEqualToString:orientation]) {
         self.lastOrientation = orientation;
         return;
     }
@@ -962,12 +931,13 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     // We have an orientation, it's not a dupe and we have a lastOrientation.
     // Send a breadcrumb and preserve the orientation.
 
+    NSMutableDictionary *breadcrumbMetadata = [NSMutableDictionary dictionary];
+    breadcrumbMetadata[@"from"] = self.lastOrientation;
+    breadcrumbMetadata[@"to"] = orientation;
+
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
                       withMessage:[self.notificationBreadcrumbs messageForNotificationName:notification.name]
-                      andMetadata:@{
-                          @"from" : self.lastOrientation,
-                          @"to" : orientation
-                      }];
+                      andMetadata:breadcrumbMetadata];
 
     self.lastOrientation = orientation;
 }
