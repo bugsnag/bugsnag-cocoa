@@ -188,7 +188,6 @@ steps:
         --os=macos
         --os-version=11.0
         --app=macOSTestApp
-        --tags='not @skip_macos'
         --fail-fast
         --order=random
 
@@ -212,7 +211,6 @@ steps:
         --os=macos
         --os-version=11
         --app=macOSTestApp
-        --tags='not @skip_macos'
         --fail-fast
         --order=random
 
@@ -233,7 +231,6 @@ steps:
         --os=macos
         --os-version=10.13
         --app=macOSTestApp
-        --tags='not @skip_macos'
         --fail-fast
         --order=random
 
@@ -254,7 +251,6 @@ steps:
         --os=macos
         --os-version=10.14
         --app=macOSTestApp
-        --tags='not @skip_macos'
         --fail-fast
         --order=random
 
