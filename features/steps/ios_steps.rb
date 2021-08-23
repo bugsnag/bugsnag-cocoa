@@ -19,7 +19,7 @@ When("I run {string} and relaunch the app") do |event_type|
   begin
     step("I run \"#{event_type}\"")
   rescue StandardError
-    # AppiumForMac raises an to run a scenario that crashes the app
+    # Ignore on macOS - AppiumForMac raises an error when clicking a button causes the app to crash
     raise unless Maze.driver.capabilities['platformName'].eql?('Mac')
 
     $logger.warn 'Ignoring error - this is normal for AppiumForMac if a button click causes the app to crash.'
