@@ -16,10 +16,15 @@ When('I set the app to {string} mode') do |mode|
 end
 
 When("I run {string} and relaunch the app") do |event_type|
-  steps %Q{
-    When I run "#{event_type}"
-    And I relaunch the app after a crash
-  }
+  begin
+    step("I run \"#{event_type}\"")
+  rescue StandardError
+    # Ignore on macOS - AppiumForMac raises an error when clicking a button causes the app to crash
+    raise unless Maze.driver.capabilities['platformName'].eql?('Mac')
+
+    $logger.warn 'Ignoring error - this is normal for AppiumForMac if a button click causes the app to crash.'
+  end
+  step('I relaunch the app after a crash')
 end
 
 When('I clear all persistent data') do
