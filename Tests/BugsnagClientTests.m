@@ -11,6 +11,7 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration+Private.h"
+#import "BugsnagSystemState.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagKeys.h"
 #import "BugsnagUser.h"
@@ -18,6 +19,16 @@
 #import <objc/runtime.h>
 #import <XCTest/XCTest.h>
 
+/**
+ * Tests for BugsnagClient.
+ *
+ * BugsnagClient is an expensive object and not suitable for unit testing because it depends on and alters global
+ * state like the file system and default notification center. Furthermore, instances never get deallocated - so
+ * clients instantiated by previous test cases can alter the results of a client instantiated in a later test
+ * case due to the shared global state.
+ *
+ * For these reasons, test cases should only be added here as a matter of last resort.
+ */
 @interface BugsnagClientTests : XCTestCase
 @end
 
@@ -316,13 +327,15 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     return dict;
 }
 
+#if TARGET_OS_IOS || TARGET_OS_TV
+
 static BOOL testOnCrashHandlerNotCalledForOOM_didCallOnCrashHandler;
 
 static void testOnCrashHandlerNotCalledForOOM_onCrashHandler(const BSG_KSCrashReportWriter *writer) {
     testOnCrashHandlerNotCalledForOOM_didCallOnCrashHandler = YES;
 }
 
-static BOOL testOnCrashHandlerNotCalledForOOM_shouldReportOOM(BugsnagClient *client, SEL _cmd) {
+static BOOL testOnCrashHandlerNotCalledForOOM_lastLaunchTerminatedUnexpectedly(id self, SEL _cmd) {
     return YES;
 }
 
@@ -330,12 +343,15 @@ static BOOL testOnCrashHandlerNotCalledForOOM_shouldReportOOM(BugsnagClient *cli
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     configuration.onCrashHandler = testOnCrashHandlerNotCalledForOOM_onCrashHandler;
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
-    Method method = class_getInstanceMethod([BugsnagClient class], @selector(shouldReportOOM));
+    Method method = class_getInstanceMethod([BugsnagSystemState class], @selector(lastLaunchTerminatedUnexpectedly));
     NSParameterAssert(method != NULL);
-    void *originalImplementation = method_setImplementation(method, (void *)testOnCrashHandlerNotCalledForOOM_shouldReportOOM);
+    void *originalImplementation = method_setImplementation(method, (void *)testOnCrashHandlerNotCalledForOOM_lastLaunchTerminatedUnexpectedly);
     [client start];
     method_setImplementation(method, originalImplementation);
     XCTAssertFalse(testOnCrashHandlerNotCalledForOOM_didCallOnCrashHandler, @"onCrashHandler should not be called for OOMs");
+    XCTAssertTrue(client.lastRunInfo.crashed);
 }
+
+#endif
 
 @end
