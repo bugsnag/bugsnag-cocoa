@@ -83,7 +83,7 @@
             @"lastOrientation @16@0:8",
             @"lastThermalState q16@0:8",
             @"leaveBreadcrumbForEvent: v24@0:8@16",
-            @"loadFatalAppHangEvent @16@0:8",
+            @"loadAppHangEvent @16@0:8",
             @"metadata @16@0:8",
             @"metadataChanged: v24@0:8@16",
             @"metadataFile @16@0:8",
