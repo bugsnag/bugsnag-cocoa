@@ -26,9 +26,9 @@
 
 #import "BugsnagMetadata+Private.h"
 
+#import "BSGGlobals.h"
 #import "BSGJSONSerialization.h"
 #import "BSGSerialization.h"
-#import "BSGUtils.h"
 #import "BugsnagLogger.h"
 #import "BugsnagStateEvent.h"
 
@@ -293,7 +293,7 @@
 - (void)writeData:(NSData *)data toFile:(NSString *)file {
     self.pendingWrite = data;
     
-    dispatch_async(BSGGetFileSystemQueue(), ^{
+    dispatch_async(BSGGlobalsFileSystemQueue(), ^{
         NSData *pendingWrite;
         
         @synchronized (self) {

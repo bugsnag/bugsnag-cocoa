@@ -20,7 +20,6 @@ typedef NS_ENUM(NSUInteger, SeverityReasonType) {
     LogMessage,
     LikelyOutOfMemory,
     AppHang,
-    ThermalKill,
 };
 
 /**

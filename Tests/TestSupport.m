@@ -9,14 +9,14 @@
 #import "TestSupport.h"
 
 #import "BSGFileLocations.h"
-#import "BSGUtils.h"
+#import "BSGGlobals.h"
 #import "Bugsnag+Private.h"
 
 
 @implementation TestSupport
 
 + (void) purgePersistentData {
-    dispatch_sync(BSGGetFileSystemQueue(), ^{
+    dispatch_sync(BSGGlobalsFileSystemQueue(), ^{
         NSString *dir = [[BSGFileLocations current].events stringByDeletingLastPathComponent];
         NSError *error = nil;
         if (![NSFileManager.defaultManager removeItemAtPath:dir error:&error] &&

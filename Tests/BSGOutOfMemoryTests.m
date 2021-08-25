@@ -8,7 +8,15 @@
 #import "BugsnagKVStoreObjC.h"
 #import "BSGFileLocations.h"
 
-#import <objc/runtime.h>
+@interface Bugsnag (Testing)
++ (BugsnagClient *)client;
+@end
+
+@interface BugsnagClient (Testing)
+@property (nonatomic, strong) BugsnagSystemState *systemState;
+@property (nonatomic) NSString *codeBundleId;
+- (BOOL)didLikelyOOM;
+@end
 
 @interface BSGOutOfMemoryTests : XCTestCase
 @end
@@ -67,21 +75,9 @@
     [self newClient];
 }
 
-- (void)testLastLaunchTerminatedUnexpectedly {
-    Method isRunningInAppExtension = class_getClassMethod([BSG_KSSystemInfo class], @selector(isRunningInAppExtension));
-    IMP originalImp = method_setImplementation(isRunningInAppExtension, imp_implementationWithBlock(^{
-        // Xcode's unit test runner has no CFBundlePackageType, which causes +isRunningInAppExtension to return YES and disables
-        // unexpected termination / OOM detection.
-        return NO;
-    }));
-    [self addTeardownBlock:^{
-        method_setImplementation(isRunningInAppExtension, originalImp);
-    }];
-
+-(void)testOOM {
+    BugsnagClient *client = nil;
     BugsnagKVStore *kvStore = [BugsnagKVStore new];
-    BugsnagSystemState *(^ systemState)() = ^{
-        return [[BugsnagSystemState alloc] initWithConfiguration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1]];
-    };
 
     // Debugger active
     
@@ -89,49 +85,57 @@
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
 
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
 
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
     
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
 
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
 
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
 
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
 
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
     
     // Debugger inactive
 
@@ -139,49 +143,57 @@
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
 
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
 
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
     
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
 
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertTrue(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertTrue([client didLikelyOOM]);
 
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
 
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:true forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
 
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_WAS_TERMINATED];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_ACTIVE];
     [kvStore setBoolean:false forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    client = [self newClient];
+    XCTAssertFalse([client didLikelyOOM]);
 
     // Delete keys so they don't interfere with other tests.
     [kvStore deleteKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];

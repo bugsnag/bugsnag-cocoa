@@ -40,7 +40,7 @@ Feature: Attaching a series of notable events leading up to errors
     And I wait to receive an error
     Then the event has a "manual" breadcrumb named "Cache locked"
 
-  @skip_below_ios_13
+  @skip_below_os_version_13
   @skip_macos
   Scenario: State breadcrumbs
     When I configure Bugsnag for "HandledErrorScenario"

@@ -1,14 +1,6 @@
 Changelog
 =========
 
-## TBD
-
-### Enhancements
-
-* Events now include a `thermalState` property in the `device` tab, and unexpected app terminations that occur
-  when the thermal state is critical will now be reported as a "Thermal Kill" rather than Out Of Memory error.
-  [#1171](https://github.com/bugsnag/bugsnag-cocoa/pull/1171)
-
 ## 6.11.0 (2021-08-18)
 
 ### Enhancements

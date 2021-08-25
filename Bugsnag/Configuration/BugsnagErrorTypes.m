@@ -19,7 +19,6 @@
         _machExceptions = YES;
         _unhandledRejections = YES;
         _ooms = YES;
-        _thermalKills = YES;
     }
     return self;
 }

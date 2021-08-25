@@ -9,8 +9,8 @@
 #import "BSGEventUploadFileOperation.h"
 
 #import "BSGFileLocations.h"
+#import "BSGGlobals.h"
 #import "BSGJSONSerialization.h"
-#import "BSGUtils.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagLogger.h"
 
@@ -33,7 +33,7 @@
 }
 
 - (void)deleteEvent {
-    dispatch_sync(BSGGetFileSystemQueue(), ^{
+    dispatch_sync(BSGGlobalsFileSystemQueue(), ^{
         NSError *error = nil;
         if ([NSFileManager.defaultManager removeItemAtPath:self.file error:&error]) {
             bsg_log_debug(@"Deleted event %@", self.name);
