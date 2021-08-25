@@ -792,6 +792,27 @@
 		CB10E53F250BA8DE00AF5824 /* BugsnagKVStoreTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CBAA6AB9250BA6B100713376 /* BugsnagKVStoreTest.m */; };
 		CB10E540250BA8DF00AF5824 /* BugsnagKVStoreTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CBAA6AB9250BA6B100713376 /* BugsnagKVStoreTest.m */; };
 		CB10E541250BA8E000AF5824 /* BugsnagKVStoreTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CBAA6AB9250BA6B100713376 /* BugsnagKVStoreTest.m */; };
+		CB1FA82E26D636AA00BA67EF /* BugsnagNetworkBreadcrumbs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB1FA82526D636A900BA67EF /* BugsnagNetworkBreadcrumbs.framework */; };
+		CB1FA83326D636AA00BA67EF /* BugsnagNetworkBreadcrumbsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB1FA83226D636AA00BA67EF /* BugsnagNetworkBreadcrumbsTests.m */; };
+		CB1FA83C26D636B900BA67EF /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00AD1C7224869B0E00A27979 /* Bugsnag.framework */; };
+		CB1FA83D26D636B900BA67EF /* Bugsnag.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 00AD1C7224869B0E00A27979 /* Bugsnag.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CB1FA84F26D637CD00BA67EF /* BugsnagNetworkBreadcrumbs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB1FA84626D637CD00BA67EF /* BugsnagNetworkBreadcrumbs.framework */; };
+		CB1FA85D26D637F900BA67EF /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00AD1CAD24869C1200A27979 /* Bugsnag.framework */; };
+		CB1FA85E26D637F900BA67EF /* Bugsnag.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 00AD1CAD24869C1200A27979 /* Bugsnag.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CB1FA87026D6381F00BA67EF /* BugsnagNetworkBreadcrumbs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB1FA86726D6381F00BA67EF /* BugsnagNetworkBreadcrumbs.framework */; };
+		CB1FA87E26D6388600BA67EF /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00AD1CC924869C2400A27979 /* Bugsnag.framework */; };
+		CB1FA87F26D6388600BA67EF /* Bugsnag.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 00AD1CC924869C2400A27979 /* Bugsnag.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CB1FA88826D6391600BA67EF /* BugsnagNetworkBreadcrumbs.h in Headers */ = {isa = PBXBuildFile; fileRef = CB1FA88726D6391600BA67EF /* BugsnagNetworkBreadcrumbs.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB1FA88926D6391600BA67EF /* BugsnagNetworkBreadcrumbs.h in Headers */ = {isa = PBXBuildFile; fileRef = CB1FA88726D6391600BA67EF /* BugsnagNetworkBreadcrumbs.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB1FA88A26D6391600BA67EF /* BugsnagNetworkBreadcrumbs.h in Headers */ = {isa = PBXBuildFile; fileRef = CB1FA88726D6391600BA67EF /* BugsnagNetworkBreadcrumbs.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB1FA88B26D6397200BA67EF /* BugsnagNetworkBreadcrumbsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB1FA83226D636AA00BA67EF /* BugsnagNetworkBreadcrumbsTests.m */; };
+		CB1FA88C26D6397D00BA67EF /* BugsnagNetworkBreadcrumbsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB1FA83226D636AA00BA67EF /* BugsnagNetworkBreadcrumbsTests.m */; };
+		CB1FA88E26D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = CB1FA88D26D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m */; };
+		CB1FA88F26D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = CB1FA88D26D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m */; };
+		CB1FA89026D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = CB1FA88D26D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m */; };
+		CB1FA89126D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = CB1FA88D26D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m */; };
+		CB1FA89226D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = CB1FA88D26D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m */; };
+		CB1FA89326D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = CB1FA88D26D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m */; };
 		CB6419AB25A73E8C00613D25 /* BSGStorageMigratorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6419AA25A73E8C00613D25 /* BSGStorageMigratorTests.m */; };
 		CB6419B425A7419400613D25 /* v0_files in Resources */ = {isa = PBXBuildFile; fileRef = CB6419B325A7419400613D25 /* v0_files */; };
 		CB6419B525A7419400613D25 /* v0_files in Resources */ = {isa = PBXBuildFile; fileRef = CB6419B325A7419400613D25 /* v0_files */; };
@@ -986,6 +1007,48 @@
 			remoteGlobalIDString = 00AD1CC824869C2400A27979;
 			remoteInfo = "Bugsnag-tvOS";
 		};
+		CB1FA82F26D636AA00BA67EF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00AD1C6924869B0E00A27979 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CB1FA82426D636A900BA67EF;
+			remoteInfo = BugsnagNetworkBreadcrumbs;
+		};
+		CB1FA83E26D636B900BA67EF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00AD1C6924869B0E00A27979 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00AD1C7124869B0E00A27979;
+			remoteInfo = "Bugsnag-iOS";
+		};
+		CB1FA85026D637CD00BA67EF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00AD1C6924869B0E00A27979 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CB1FA84526D637CD00BA67EF;
+			remoteInfo = BugsnagNetworkBreadcrumbs;
+		};
+		CB1FA85F26D637F900BA67EF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00AD1C6924869B0E00A27979 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00AD1CAC24869C1200A27979;
+			remoteInfo = "Bugsnag-macOS";
+		};
+		CB1FA87126D6381F00BA67EF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00AD1C6924869B0E00A27979 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CB1FA86626D6381F00BA67EF;
+			remoteInfo = BugsnagNetworkBreadcrumbs;
+		};
+		CB1FA88026D6388700BA67EF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00AD1C6924869B0E00A27979 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00AD1CC824869C2400A27979;
+			remoteInfo = "Bugsnag-tvOS";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -1075,6 +1138,39 @@
 				E746299524890D3200F92D67 /* BugsnagCrashSentry.h in CopyFiles */,
 				E746299624890D3200F92D67 /* BugsnagSessionTracker.h in CopyFiles */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA84026D636B900BA67EF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CB1FA83D26D636B900BA67EF /* Bugsnag.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA86126D637F900BA67EF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CB1FA85E26D637F900BA67EF /* Bugsnag.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA88226D6388700BA67EF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CB1FA87F26D6388600BA67EF /* Bugsnag.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1367,6 +1463,17 @@
 		3A700A9124A63A8E0068CD1B /* BugsnagError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagError.h; sourceTree = "<group>"; };
 		3A700A9224A63A8E0068CD1B /* BugsnagDeviceWithState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagDeviceWithState.h; sourceTree = "<group>"; };
 		3A700A9324A63A8E0068CD1B /* BugsnagMetadata.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagMetadata.h; sourceTree = "<group>"; };
+		CB1FA82526D636A900BA67EF /* BugsnagNetworkBreadcrumbs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagNetworkBreadcrumbs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB1FA82826D636A900BA67EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CB1FA82D26D636AA00BA67EF /* BugsnagNetworkBreadcrumbs-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagNetworkBreadcrumbs-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB1FA83226D636AA00BA67EF /* BugsnagNetworkBreadcrumbsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagNetworkBreadcrumbsTests.m; sourceTree = "<group>"; };
+		CB1FA83426D636AA00BA67EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CB1FA84626D637CD00BA67EF /* BugsnagNetworkBreadcrumbs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagNetworkBreadcrumbs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB1FA84E26D637CD00BA67EF /* BugsnagNetworkBreadcrumbs-macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagNetworkBreadcrumbs-macOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB1FA86726D6381F00BA67EF /* BugsnagNetworkBreadcrumbs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagNetworkBreadcrumbs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB1FA86F26D6381F00BA67EF /* BugsnagNetworkBreadcrumbs-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagNetworkBreadcrumbs-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB1FA88726D6391600BA67EF /* BugsnagNetworkBreadcrumbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagNetworkBreadcrumbs.h; sourceTree = "<group>"; };
+		CB1FA88D26D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagNetworkBreadcrumbs.m; sourceTree = "<group>"; };
 		CB6419AA25A73E8C00613D25 /* BSGStorageMigratorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGStorageMigratorTests.m; sourceTree = "<group>"; };
 		CB6419B325A7419400613D25 /* v0_files */ = {isa = PBXFileReference; lastKnownFileType = folder; path = v0_files; sourceTree = "<group>"; };
 		CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagApiClientTest.m; sourceTree = "<group>"; };
@@ -1469,6 +1576,54 @@
 			files = (
 				E746293D24890CA400F92D67 /* SystemConfiguration.framework in Frameworks */,
 				E746293C24890C9F00F92D67 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA82226D636A900BA67EF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA83C26D636B900BA67EF /* Bugsnag.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA82A26D636AA00BA67EF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA82E26D636AA00BA67EF /* BugsnagNetworkBreadcrumbs.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA84326D637CD00BA67EF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA85D26D637F900BA67EF /* Bugsnag.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA84B26D637CD00BA67EF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA84F26D637CD00BA67EF /* BugsnagNetworkBreadcrumbs.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA86426D6381F00BA67EF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA87E26D6388600BA67EF /* Bugsnag.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA86C26D6381F00BA67EF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA87026D6381F00BA67EF /* BugsnagNetworkBreadcrumbs.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1658,6 +1813,8 @@
 				00AD1C7424869B0E00A27979 /* Bugsnag */,
 				00AD1C7F24869B0E00A27979 /* Tests */,
 				00AD1CFA24869F2500A27979 /* Extras */,
+				CB1FA82626D636A900BA67EF /* BugsnagNetworkBreadcrumbs */,
+				CB1FA83126D636AA00BA67EF /* BugsnagNetworkBreadcrumbsTests */,
 				00AD1C7324869B0E00A27979 /* Products */,
 				E746292324890BFE00F92D67 /* Frameworks */,
 			);
@@ -1673,6 +1830,12 @@
 				00AD1CC924869C2400A27979 /* Bugsnag.framework */,
 				00AD1CD124869C2400A27979 /* Bugsnag-tvOSTests.xctest */,
 				00AD1CE424869C6C00A27979 /* libBugsnagStatic.a */,
+				CB1FA82526D636A900BA67EF /* BugsnagNetworkBreadcrumbs.framework */,
+				CB1FA82D26D636AA00BA67EF /* BugsnagNetworkBreadcrumbs-iOSTests.xctest */,
+				CB1FA84626D637CD00BA67EF /* BugsnagNetworkBreadcrumbs.framework */,
+				CB1FA84E26D637CD00BA67EF /* BugsnagNetworkBreadcrumbs-macOSTests.xctest */,
+				CB1FA86726D6381F00BA67EF /* BugsnagNetworkBreadcrumbs.framework */,
+				CB1FA86F26D6381F00BA67EF /* BugsnagNetworkBreadcrumbs-tvOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1989,6 +2152,41 @@
 				3A700A8224A63A8E0068CD1B /* BugsnagStackframe.h */,
 				3A700A8024A63A8E0068CD1B /* BugsnagThread.h */,
 				3A700A8A24A63A8E0068CD1B /* BugsnagUser.h */,
+			);
+			path = Bugsnag;
+			sourceTree = "<group>";
+		};
+		CB1FA82626D636A900BA67EF /* BugsnagNetworkBreadcrumbs */ = {
+			isa = PBXGroup;
+			children = (
+				CB1FA88526D6391600BA67EF /* include */,
+				CB1FA82826D636A900BA67EF /* Info.plist */,
+				CB1FA88D26D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m */,
+			);
+			path = BugsnagNetworkBreadcrumbs;
+			sourceTree = "<group>";
+		};
+		CB1FA83126D636AA00BA67EF /* BugsnagNetworkBreadcrumbsTests */ = {
+			isa = PBXGroup;
+			children = (
+				CB1FA83226D636AA00BA67EF /* BugsnagNetworkBreadcrumbsTests.m */,
+				CB1FA83426D636AA00BA67EF /* Info.plist */,
+			);
+			path = BugsnagNetworkBreadcrumbsTests;
+			sourceTree = "<group>";
+		};
+		CB1FA88526D6391600BA67EF /* include */ = {
+			isa = PBXGroup;
+			children = (
+				CB1FA88626D6391600BA67EF /* Bugsnag */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		CB1FA88626D6391600BA67EF /* Bugsnag */ = {
+			isa = PBXGroup;
+			children = (
+				CB1FA88726D6391600BA67EF /* BugsnagNetworkBreadcrumbs.h */,
 			);
 			path = Bugsnag;
 			sourceTree = "<group>";
@@ -2327,6 +2525,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CB1FA82026D636A900BA67EF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA88826D6391600BA67EF /* BugsnagNetworkBreadcrumbs.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA84126D637CD00BA67EF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA88926D6391600BA67EF /* BugsnagNetworkBreadcrumbs.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA86226D6381F00BA67EF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA88A26D6391600BA67EF /* BugsnagNetworkBreadcrumbs.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -2455,6 +2677,120 @@
 			productReference = 00AD1CE424869C6C00A27979 /* libBugsnagStatic.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		CB1FA82426D636A900BA67EF /* BugsnagNetworkBreadcrumbs-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB1FA83A26D636AA00BA67EF /* Build configuration list for PBXNativeTarget "BugsnagNetworkBreadcrumbs-iOS" */;
+			buildPhases = (
+				CB1FA82026D636A900BA67EF /* Headers */,
+				CB1FA82126D636A900BA67EF /* Sources */,
+				CB1FA82226D636A900BA67EF /* Frameworks */,
+				CB1FA82326D636A900BA67EF /* Resources */,
+				CB1FA84026D636B900BA67EF /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CB1FA83F26D636B900BA67EF /* PBXTargetDependency */,
+			);
+			name = "BugsnagNetworkBreadcrumbs-iOS";
+			productName = BugsnagNetworkBreadcrumbs;
+			productReference = CB1FA82526D636A900BA67EF /* BugsnagNetworkBreadcrumbs.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CB1FA82C26D636AA00BA67EF /* BugsnagNetworkBreadcrumbs-iOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB1FA83B26D636AA00BA67EF /* Build configuration list for PBXNativeTarget "BugsnagNetworkBreadcrumbs-iOSTests" */;
+			buildPhases = (
+				CB1FA82926D636AA00BA67EF /* Sources */,
+				CB1FA82A26D636AA00BA67EF /* Frameworks */,
+				CB1FA82B26D636AA00BA67EF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CB1FA83026D636AA00BA67EF /* PBXTargetDependency */,
+			);
+			name = "BugsnagNetworkBreadcrumbs-iOSTests";
+			productName = BugsnagNetworkBreadcrumbsTests;
+			productReference = CB1FA82D26D636AA00BA67EF /* BugsnagNetworkBreadcrumbs-iOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CB1FA84526D637CD00BA67EF /* BugsnagNetworkBreadcrumbs-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB1FA85726D637CD00BA67EF /* Build configuration list for PBXNativeTarget "BugsnagNetworkBreadcrumbs-macOS" */;
+			buildPhases = (
+				CB1FA84126D637CD00BA67EF /* Headers */,
+				CB1FA84226D637CD00BA67EF /* Sources */,
+				CB1FA84326D637CD00BA67EF /* Frameworks */,
+				CB1FA84426D637CD00BA67EF /* Resources */,
+				CB1FA86126D637F900BA67EF /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CB1FA86026D637F900BA67EF /* PBXTargetDependency */,
+			);
+			name = "BugsnagNetworkBreadcrumbs-macOS";
+			productName = BugsnagNetworkBreadcrumbs;
+			productReference = CB1FA84626D637CD00BA67EF /* BugsnagNetworkBreadcrumbs.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CB1FA84D26D637CD00BA67EF /* BugsnagNetworkBreadcrumbs-macOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB1FA85A26D637CD00BA67EF /* Build configuration list for PBXNativeTarget "BugsnagNetworkBreadcrumbs-macOSTests" */;
+			buildPhases = (
+				CB1FA84A26D637CD00BA67EF /* Sources */,
+				CB1FA84B26D637CD00BA67EF /* Frameworks */,
+				CB1FA84C26D637CD00BA67EF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CB1FA85126D637CD00BA67EF /* PBXTargetDependency */,
+			);
+			name = "BugsnagNetworkBreadcrumbs-macOSTests";
+			productName = BugsnagNetworkBreadcrumbsTests;
+			productReference = CB1FA84E26D637CD00BA67EF /* BugsnagNetworkBreadcrumbs-macOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CB1FA86626D6381F00BA67EF /* BugsnagNetworkBreadcrumbs-tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB1FA87826D6381F00BA67EF /* Build configuration list for PBXNativeTarget "BugsnagNetworkBreadcrumbs-tvOS" */;
+			buildPhases = (
+				CB1FA86226D6381F00BA67EF /* Headers */,
+				CB1FA86326D6381F00BA67EF /* Sources */,
+				CB1FA86426D6381F00BA67EF /* Frameworks */,
+				CB1FA86526D6381F00BA67EF /* Resources */,
+				CB1FA88226D6388700BA67EF /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CB1FA88126D6388700BA67EF /* PBXTargetDependency */,
+			);
+			name = "BugsnagNetworkBreadcrumbs-tvOS";
+			productName = BugsnagNetworkBreadcrumbs;
+			productReference = CB1FA86726D6381F00BA67EF /* BugsnagNetworkBreadcrumbs.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CB1FA86E26D6381F00BA67EF /* BugsnagNetworkBreadcrumbs-tvOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB1FA87B26D6381F00BA67EF /* Build configuration list for PBXNativeTarget "BugsnagNetworkBreadcrumbs-tvOSTests" */;
+			buildPhases = (
+				CB1FA86B26D6381F00BA67EF /* Sources */,
+				CB1FA86C26D6381F00BA67EF /* Frameworks */,
+				CB1FA86D26D6381F00BA67EF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CB1FA87226D6381F00BA67EF /* PBXTargetDependency */,
+			);
+			name = "BugsnagNetworkBreadcrumbs-tvOSTests";
+			productName = BugsnagNetworkBreadcrumbsTests;
+			productReference = CB1FA86F26D6381F00BA67EF /* BugsnagNetworkBreadcrumbs-tvOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -2485,6 +2821,24 @@
 					00AD1CE324869C6C00A27979 = {
 						CreatedOnToolsVersion = 11.4.1;
 					};
+					CB1FA82426D636A900BA67EF = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+					CB1FA82C26D636AA00BA67EF = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+					CB1FA84526D637CD00BA67EF = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+					CB1FA84D26D637CD00BA67EF = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+					CB1FA86626D6381F00BA67EF = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+					CB1FA86E26D6381F00BA67EF = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
 				};
 			};
 			buildConfigurationList = 00AD1C6C24869B0E00A27979 /* Build configuration list for PBXProject "Bugsnag" */;
@@ -2507,6 +2861,12 @@
 				00AD1C7A24869B0E00A27979 /* Bugsnag-iOSTests */,
 				00AD1CB424869C1200A27979 /* Bugsnag-macOSTests */,
 				00AD1CD024869C2400A27979 /* Bugsnag-tvOSTests */,
+				CB1FA82426D636A900BA67EF /* BugsnagNetworkBreadcrumbs-iOS */,
+				CB1FA82C26D636AA00BA67EF /* BugsnagNetworkBreadcrumbs-iOSTests */,
+				CB1FA84526D637CD00BA67EF /* BugsnagNetworkBreadcrumbs-macOS */,
+				CB1FA84D26D637CD00BA67EF /* BugsnagNetworkBreadcrumbs-macOSTests */,
+				CB1FA86626D6381F00BA67EF /* BugsnagNetworkBreadcrumbs-tvOS */,
+				CB1FA86E26D6381F00BA67EF /* BugsnagNetworkBreadcrumbs-tvOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -2572,6 +2932,48 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CB1FA82326D636A900BA67EF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA82B26D636AA00BA67EF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA84426D637CD00BA67EF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA84C26D637CD00BA67EF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA86526D6381F00BA67EF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA86D26D6381F00BA67EF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -2609,6 +3011,7 @@
 				008969B72486DAD100DC48C2 /* BSG_KSSignalInfo.c in Sources */,
 				008968992486DA9600DC48C2 /* BugsnagStackframe.m in Sources */,
 				00896A022486DAD100DC48C2 /* BSG_KSCrashSentry_NSException.m in Sources */,
+				CB1FA88E26D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m in Sources */,
 				008967D32486DA2D00DC48C2 /* BugsnagEndpointConfiguration.m in Sources */,
 				CBB0928C2519F891007698BC /* BugsnagSystemState.m in Sources */,
 				0089699C2486DAD100DC48C2 /* BSG_KSFileUtils.c in Sources */,
@@ -2791,6 +3194,7 @@
 				008968BA2486DA9600DC48C2 /* BugsnagStacktrace.m in Sources */,
 				00896A152486DAD100DC48C2 /* BSG_KSCrashSentry_Signal.c in Sources */,
 				01468F5625876DC1002B0519 /* BSGNotificationBreadcrumbs.m in Sources */,
+				CB1FA88F26D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m in Sources */,
 				008967BF2486DA1900DC48C2 /* BugsnagClient.m in Sources */,
 				008968962486DA9600DC48C2 /* BugsnagHandledState.m in Sources */,
 				008969C42486DAD100DC48C2 /* BSG_KSObjC.c in Sources */,
@@ -2949,6 +3353,7 @@
 				008969B92486DAD100DC48C2 /* BSG_KSSignalInfo.c in Sources */,
 				0089689B2486DA9600DC48C2 /* BugsnagStackframe.m in Sources */,
 				00896A042486DAD100DC48C2 /* BSG_KSCrashSentry_NSException.m in Sources */,
+				CB1FA89026D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m in Sources */,
 				008967D52486DA2D00DC48C2 /* BugsnagEndpointConfiguration.m in Sources */,
 				CBB0928E2519F891007698BC /* BugsnagSystemState.m in Sources */,
 				0089699E2486DAD100DC48C2 /* BSG_KSFileUtils.c in Sources */,
@@ -3174,6 +3579,54 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CB1FA82126D636A900BA67EF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA89126D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA82926D636AA00BA67EF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA83326D636AA00BA67EF /* BugsnagNetworkBreadcrumbsTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA84226D637CD00BA67EF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA89226D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA84A26D637CD00BA67EF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA88C26D6397D00BA67EF /* BugsnagNetworkBreadcrumbsTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA86326D6381F00BA67EF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA89326D63A4B00BA67EF /* BugsnagNetworkBreadcrumbs.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1FA86B26D6381F00BA67EF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1FA88B26D6397200BA67EF /* BugsnagNetworkBreadcrumbsTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -3191,6 +3644,36 @@
 			isa = PBXTargetDependency;
 			target = 00AD1CC824869C2400A27979 /* Bugsnag-tvOS */;
 			targetProxy = 00AD1CD324869C2400A27979 /* PBXContainerItemProxy */;
+		};
+		CB1FA83026D636AA00BA67EF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CB1FA82426D636A900BA67EF /* BugsnagNetworkBreadcrumbs-iOS */;
+			targetProxy = CB1FA82F26D636AA00BA67EF /* PBXContainerItemProxy */;
+		};
+		CB1FA83F26D636B900BA67EF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00AD1C7124869B0E00A27979 /* Bugsnag-iOS */;
+			targetProxy = CB1FA83E26D636B900BA67EF /* PBXContainerItemProxy */;
+		};
+		CB1FA85126D637CD00BA67EF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CB1FA84526D637CD00BA67EF /* BugsnagNetworkBreadcrumbs-macOS */;
+			targetProxy = CB1FA85026D637CD00BA67EF /* PBXContainerItemProxy */;
+		};
+		CB1FA86026D637F900BA67EF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00AD1CAC24869C1200A27979 /* Bugsnag-macOS */;
+			targetProxy = CB1FA85F26D637F900BA67EF /* PBXContainerItemProxy */;
+		};
+		CB1FA87226D6381F00BA67EF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CB1FA86626D6381F00BA67EF /* BugsnagNetworkBreadcrumbs-tvOS */;
+			targetProxy = CB1FA87126D6381F00BA67EF /* PBXContainerItemProxy */;
+		};
+		CB1FA88126D6388700BA67EF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00AD1CC824869C2400A27979 /* Bugsnag-tvOS */;
+			targetProxy = CB1FA88026D6388700BA67EF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -3563,6 +4046,602 @@
 			};
 			name = Release;
 		};
+		CB1FA83626D636AA00BA67EF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = BugsnagNetworkBreadcrumbs/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkBreadcrumbs;
+				PRODUCT_NAME = BugsnagNetworkBreadcrumbs;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CB1FA83726D636AA00BA67EF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = BugsnagNetworkBreadcrumbs/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkBreadcrumbs;
+				PRODUCT_NAME = BugsnagNetworkBreadcrumbs;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CB1FA83826D636AA00BA67EF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = BugsnagNetworkBreadcrumbsTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkBreadcrumbsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CB1FA83926D636AA00BA67EF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = BugsnagNetworkBreadcrumbsTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkBreadcrumbsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CB1FA85826D637CD00BA67EF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = BugsnagNetworkBreadcrumbs/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkBreadcrumbs;
+				PRODUCT_NAME = BugsnagNetworkBreadcrumbs;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		CB1FA85926D637CD00BA67EF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = BugsnagNetworkBreadcrumbs/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkBreadcrumbs;
+				PRODUCT_NAME = BugsnagNetworkBreadcrumbs;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		CB1FA85B26D637CD00BA67EF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = BugsnagNetworkBreadcrumbsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkBreadcrumbsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		CB1FA85C26D637CD00BA67EF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = BugsnagNetworkBreadcrumbsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkBreadcrumbsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		CB1FA87926D6381F00BA67EF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = BugsnagNetworkBreadcrumbs/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkBreadcrumbs;
+				PRODUCT_NAME = BugsnagNetworkBreadcrumbs;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 14.5;
+			};
+			name = Debug;
+		};
+		CB1FA87A26D6381F00BA67EF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = BugsnagNetworkBreadcrumbs/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkBreadcrumbs;
+				PRODUCT_NAME = BugsnagNetworkBreadcrumbs;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 14.5;
+			};
+			name = Release;
+		};
+		CB1FA87C26D6381F00BA67EF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = BugsnagNetworkBreadcrumbsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkBreadcrumbsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 14.5;
+			};
+			name = Debug;
+		};
+		CB1FA87D26D6381F00BA67EF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = BugsnagNetworkBreadcrumbsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkBreadcrumbsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 14.5;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -3634,6 +4713,60 @@
 			buildConfigurations = (
 				00AD1CEB24869C6D00A27979 /* Debug */,
 				00AD1CEC24869C6D00A27979 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB1FA83A26D636AA00BA67EF /* Build configuration list for PBXNativeTarget "BugsnagNetworkBreadcrumbs-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB1FA83626D636AA00BA67EF /* Debug */,
+				CB1FA83726D636AA00BA67EF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB1FA83B26D636AA00BA67EF /* Build configuration list for PBXNativeTarget "BugsnagNetworkBreadcrumbs-iOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB1FA83826D636AA00BA67EF /* Debug */,
+				CB1FA83926D636AA00BA67EF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB1FA85726D637CD00BA67EF /* Build configuration list for PBXNativeTarget "BugsnagNetworkBreadcrumbs-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB1FA85826D637CD00BA67EF /* Debug */,
+				CB1FA85926D637CD00BA67EF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB1FA85A26D637CD00BA67EF /* Build configuration list for PBXNativeTarget "BugsnagNetworkBreadcrumbs-macOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB1FA85B26D637CD00BA67EF /* Debug */,
+				CB1FA85C26D637CD00BA67EF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB1FA87826D6381F00BA67EF /* Build configuration list for PBXNativeTarget "BugsnagNetworkBreadcrumbs-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB1FA87926D6381F00BA67EF /* Debug */,
+				CB1FA87A26D6381F00BA67EF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB1FA87B26D6381F00BA67EF /* Build configuration list for PBXNativeTarget "BugsnagNetworkBreadcrumbs-tvOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB1FA87C26D6381F00BA67EF /* Debug */,
+				CB1FA87D26D6381F00BA67EF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
