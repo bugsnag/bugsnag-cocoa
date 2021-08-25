@@ -154,3 +154,16 @@ Feature: App hangs
     And I background the app for 3 seconds
     And I wait to receive an error
     And the exception "message" equals "The app's main thread failed to respond to an event within 2000 milliseconds"
+
+  Scenario: App hangs that occur during app termination should be non-fatal
+    Given I run "AppHangInTerminationScenario"
+    And the app is not running
+    And I relaunch the app
+    And I configure Bugsnag for "AppHangInTerminationScenario"
+    Then I wait to receive an error
+    And the event "severity" equals "warning"
+    And the event "severityReason.type" equals "appHang"
+    And the event "unhandled" is false
+    And the exception "errorClass" equals "App Hang"
+    And the exception "message" equals "The app's main thread failed to respond to an event within 2000 milliseconds"
+    And the exception "type" equals "cocoa"
