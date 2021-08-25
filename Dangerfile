@@ -59,6 +59,10 @@ end
 
 ###
 
+if github.branch_for_base == "master"
+  failure "Only release PRs should target the master branch" unless github.branch_for_head.start_with?("release-")
+end
+
 parse_infer_results('infer-out/report.json')
 
 parse_oclint_results('oclint.json')
