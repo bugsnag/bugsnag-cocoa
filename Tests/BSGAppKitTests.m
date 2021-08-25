@@ -19,14 +19,11 @@
     // These tests ensure that the hard-coded names in BSGAppKit.h match the SDK.
     #define ASSERT_NOTIFICATION_NAME(name) XCTAssertEqualObjects(name, @#name)
     ASSERT_NOTIFICATION_NAME(NSApplicationDidBecomeActiveNotification);
-    ASSERT_NOTIFICATION_NAME(NSApplicationDidBecomeActiveNotification);
     ASSERT_NOTIFICATION_NAME(NSApplicationDidFinishLaunchingNotification);
     ASSERT_NOTIFICATION_NAME(NSApplicationDidHideNotification);
     ASSERT_NOTIFICATION_NAME(NSApplicationDidResignActiveNotification);
-    ASSERT_NOTIFICATION_NAME(NSApplicationDidResignActiveNotification);
     ASSERT_NOTIFICATION_NAME(NSApplicationDidUnhideNotification);
     ASSERT_NOTIFICATION_NAME(NSApplicationWillBecomeActiveNotification);
-    ASSERT_NOTIFICATION_NAME(NSApplicationWillTerminateNotification);
     ASSERT_NOTIFICATION_NAME(NSApplicationWillTerminateNotification);
     ASSERT_NOTIFICATION_NAME(NSControlTextDidBeginEditingNotification);
     ASSERT_NOTIFICATION_NAME(NSControlTextDidEndEditingNotification);

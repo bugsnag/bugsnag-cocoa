@@ -6,7 +6,7 @@
 //
 //
 
-#import "BSGGlobals.h"
+#import "BSGUtils.h"
 #import "BSG_KSCrashSentry_Private.h"
 #import "BSG_KSJSONCodec.h"
 #import "Bugsnag.h"
@@ -55,7 +55,7 @@ static id JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer)) {
 @end
 
 void awaitBreadcrumbSync(BugsnagBreadcrumbs *crumbs) {
-    dispatch_sync(BSGGlobalsFileSystemQueue(), ^{});
+    dispatch_sync(BSGGetFileSystemQueue(), ^{});
 }
 
 BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);

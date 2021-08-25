@@ -253,10 +253,12 @@ end
 
 Then('the breadcrumb timestamps are valid for the event') do
   device = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.device')
-  breadcrumbs = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.breadcrumbs')
-  breadcrumbs.each do |breadcrumb|
-    assert(breadcrumb['timestamp'] <= device['time'],
-      "Expected breadcrumb timestamp (#{breadcrumb['timestamp']}) <= event timestamp (#{device['time']})")
+  unless device['time'].nil?
+    breadcrumbs = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.breadcrumbs')
+    breadcrumbs.each do |breadcrumb|
+      assert(breadcrumb['timestamp'] <= device['time'],
+        "Expected breadcrumb timestamp (#{breadcrumb['timestamp']}) <= event timestamp (#{device['time']})")
+    end
   end
 end
 
