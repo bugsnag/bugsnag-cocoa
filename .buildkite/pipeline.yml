@@ -40,7 +40,7 @@ steps:
       - make build_ios_static
 
   - label: Carthage
-    timeout_in_minutes: 10
+    timeout_in_minutes: 15
     agents:
       queue: opensource-mac-cocoa-11
     concurrency: 3
