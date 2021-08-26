@@ -433,7 +433,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         didCrash = YES;
     }
     // Was the app terminated while the main thread was hung?
-    else if ((self.eventFromLastLaunch = [self loadFatalAppHangEvent])) {
+    else if ((self.eventFromLastLaunch = [self loadAppHangEvent]).unhandled) {
         bsg_log_info(@"Last run terminated during an app hang.");
         didCrash = YES;
     }
@@ -1185,7 +1185,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     self.appHangEvent = nil;
 }
 
-- (nullable BugsnagEvent *)loadFatalAppHangEvent {
+- (nullable BugsnagEvent *)loadAppHangEvent {
     NSError *error = nil;
     NSDictionary *json = [BSGJSONSerialization JSONObjectWithContentsOfFile:BSGFileLocations.current.appHangEvent options:0 error:&error];
     if (!json) {
@@ -1199,6 +1199,15 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     if (!event) {
         bsg_log_err(@"Could not parse app_hang.json");
         return nil;
+    }
+
+    // Receipt of the willTerminateNotification indicates that an app hang was not the cause of the termination, so treat as non-fatal.
+    if ([self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP][SYSTEMSTATE_APP_WAS_TERMINATED] boolValue]) {
+        if (self.configuration.appHangThresholdMillis == BugsnagAppHangThresholdFatalOnly) {
+            return nil;
+        }
+        event.session.handledCount++;
+        return event;
     }
 
     // Update event to reflect that the app hang was fatal.

@@ -9,6 +9,11 @@ Changelog
   when the thermal state is critical will now be reported as a "Thermal Kill" rather than Out Of Memory error.
   [#1171](https://github.com/bugsnag/bugsnag-cocoa/pull/1171)
 
+### Bug fixes
+
+* Fatal app hangs will no longer be reported if the `willTerminateNotification` is received.
+  [#1176](https://github.com/bugsnag/bugsnag-cocoa/pull/1176)
+
 ## 6.11.0 (2021-08-18)
 
 ### Enhancements
