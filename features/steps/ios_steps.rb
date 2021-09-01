@@ -16,10 +16,15 @@ When('I set the app to {string} mode') do |mode|
 end
 
 When("I run {string} and relaunch the app") do |event_type|
-  steps %Q{
-    When I run "#{event_type}"
-    And I relaunch the app after a crash
-  }
+  begin
+    step("I run \"#{event_type}\"")
+  rescue StandardError
+    # Ignore on macOS - AppiumForMac raises an error when clicking a button causes the app to crash
+    raise unless Maze.driver.capabilities['platformName'].eql?('Mac')
+
+    $logger.warn 'Ignoring error - this is normal for AppiumForMac if a button click causes the app to crash.'
+  end
+  step('I relaunch the app after a crash')
 end
 
 When('I clear all persistent data') do
@@ -100,22 +105,26 @@ end
 
 Then('the app is running in the foreground') do
   wait_for_true do
-    status = Maze.driver.execute_script('mobile: queryAppState', {bundleId: 'com.bugsnag.iOSTestApp'})
-    status == 4
+    Maze.driver.app_state('com.bugsnag.iOSTestApp') == :running_in_foreground
   end
 end
 
 Then('the app is running in the background') do
   wait_for_true do
-    status = Maze.driver.execute_script('mobile: queryAppState', {bundleId: 'com.bugsnag.iOSTestApp'})
-    status == 3
+    Maze.driver.app_state('com.bugsnag.iOSTestApp') == :running_in_background
   end
 end
 
 Then('the app is not running') do
   wait_for_true do
-    status = Maze.driver.execute_script('mobile: queryAppState', {bundleId: 'com.bugsnag.iOSTestApp'})
-    status == 1
+    case Maze.driver.capabilities['platformName']
+    when 'iOS'
+      Maze.driver.app_state('com.bugsnag.iOSTestApp') == :not_running
+    when 'Mac'
+      `lsappinfo info -only pid -app com.bugsnag.macOSTestApp`.empty?
+    else
+      raise "Don't know how to query app state on this platform"
+    end
   end
 end
 
@@ -253,10 +262,12 @@ end
 
 Then('the breadcrumb timestamps are valid for the event') do
   device = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.device')
-  breadcrumbs = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.breadcrumbs')
-  breadcrumbs.each do |breadcrumb|
-    assert(breadcrumb['timestamp'] <= device['time'],
-      "Expected breadcrumb timestamp (#{breadcrumb['timestamp']}) <= event timestamp (#{device['time']})")
+  unless device['time'].nil?
+    breadcrumbs = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.breadcrumbs')
+    breadcrumbs.each do |breadcrumb|
+      assert(breadcrumb['timestamp'] <= device['time'],
+        "Expected breadcrumb timestamp (#{breadcrumb['timestamp']}) <= event timestamp (#{device['time']})")
+    end
   end
 end
 

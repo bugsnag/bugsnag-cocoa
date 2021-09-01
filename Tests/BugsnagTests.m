@@ -318,29 +318,6 @@
     [self waitForExpectations:@[expectation2] timeout:1.0];
 }
 
-/**
- * Test that the Orientation -> string mapping is as expected
- * NOTE: should be moved to BugsnagClientTests when that file exists
- */
-#if TARGET_OS_IOS
-NSString *BSGOrientationNameFromEnum(UIDeviceOrientation deviceOrientation);
-- (void)testBSGOrientationNameFromEnum {
-    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationPortraitUpsideDown), @"portraitupsidedown");
-    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationPortrait), @"portrait");
-    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationLandscapeRight), @"landscaperight");
-    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationLandscapeLeft), @"landscapeleft");
-    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationFaceUp), @"faceup");
-    XCTAssertEqualObjects(BSGOrientationNameFromEnum(UIDeviceOrientationFaceDown), @"facedown");
-    
-    XCTAssertNil(BSGOrientationNameFromEnum(-1));
-    XCTAssertNil(BSGOrientationNameFromEnum(99));
-    
-    BugsnagClient *client = [BugsnagClient new];
-    [client setLastOrientation:@"testOrientation"];
-    XCTAssertEqualObjects([client lastOrientation], @"testOrientation");
-}
-#endif
-
 - (void)testMetadataMutability {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
