@@ -22,6 +22,117 @@
 		CB487C3026DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagRequestMonitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB487C3126DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagRequestMonitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB487C3226DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagRequestMonitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB487E9126E11922004F6B87 /* BSGULObjectSwizzler+Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6926E11922004F6B87 /* BSGULObjectSwizzler+Internal.h */; };
+		CB487E9226E11922004F6B87 /* BSGULObjectSwizzler+Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6926E11922004F6B87 /* BSGULObjectSwizzler+Internal.h */; };
+		CB487E9326E11922004F6B87 /* BSGULObjectSwizzler+Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6926E11922004F6B87 /* BSGULObjectSwizzler+Internal.h */; };
+		CB487E9426E11922004F6B87 /* BSGULSwizzledObject.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6A26E11922004F6B87 /* BSGULSwizzledObject.h */; };
+		CB487E9526E11922004F6B87 /* BSGULSwizzledObject.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6A26E11922004F6B87 /* BSGULSwizzledObject.h */; };
+		CB487E9626E11922004F6B87 /* BSGULSwizzledObject.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6A26E11922004F6B87 /* BSGULSwizzledObject.h */; };
+		CB487E9726E11922004F6B87 /* BSGULSwizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E6B26E11922004F6B87 /* BSGULSwizzler.m */; };
+		CB487E9826E11922004F6B87 /* BSGULSwizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E6B26E11922004F6B87 /* BSGULSwizzler.m */; };
+		CB487E9926E11922004F6B87 /* BSGULSwizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E6B26E11922004F6B87 /* BSGULSwizzler.m */; };
+		CB487E9A26E11922004F6B87 /* BSGULObjectSwizzler.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6C26E11922004F6B87 /* BSGULObjectSwizzler.h */; };
+		CB487E9B26E11922004F6B87 /* BSGULObjectSwizzler.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6C26E11922004F6B87 /* BSGULObjectSwizzler.h */; };
+		CB487E9C26E11922004F6B87 /* BSGULObjectSwizzler.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6C26E11922004F6B87 /* BSGULObjectSwizzler.h */; };
+		CB487E9D26E11922004F6B87 /* BSGULOriginalIMPConvenienceMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6D26E11922004F6B87 /* BSGULOriginalIMPConvenienceMacros.h */; };
+		CB487E9E26E11922004F6B87 /* BSGULOriginalIMPConvenienceMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6D26E11922004F6B87 /* BSGULOriginalIMPConvenienceMacros.h */; };
+		CB487E9F26E11922004F6B87 /* BSGULOriginalIMPConvenienceMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6D26E11922004F6B87 /* BSGULOriginalIMPConvenienceMacros.h */; };
+		CB487EA026E11922004F6B87 /* BSGULSwizzledObject.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E6E26E11922004F6B87 /* BSGULSwizzledObject.m */; };
+		CB487EA126E11922004F6B87 /* BSGULSwizzledObject.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E6E26E11922004F6B87 /* BSGULSwizzledObject.m */; };
+		CB487EA226E11922004F6B87 /* BSGULSwizzledObject.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E6E26E11922004F6B87 /* BSGULSwizzledObject.m */; };
+		CB487EA326E11922004F6B87 /* BSGULSwizzler.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6F26E11922004F6B87 /* BSGULSwizzler.h */; };
+		CB487EA426E11922004F6B87 /* BSGULSwizzler.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6F26E11922004F6B87 /* BSGULSwizzler.h */; };
+		CB487EA526E11922004F6B87 /* BSGULSwizzler.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E6F26E11922004F6B87 /* BSGULSwizzler.h */; };
+		CB487EA626E11922004F6B87 /* BSGULObjectSwizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7026E11922004F6B87 /* BSGULObjectSwizzler.m */; };
+		CB487EA726E11922004F6B87 /* BSGULObjectSwizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7026E11922004F6B87 /* BSGULObjectSwizzler.m */; };
+		CB487EA826E11922004F6B87 /* BSGULObjectSwizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7026E11922004F6B87 /* BSGULObjectSwizzler.m */; };
+		CB487EA926E11922004F6B87 /* BSFPRConsoleLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7226E11922004F6B87 /* BSFPRConsoleLogger.h */; };
+		CB487EAA26E11922004F6B87 /* BSFPRConsoleLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7226E11922004F6B87 /* BSFPRConsoleLogger.h */; };
+		CB487EAB26E11922004F6B87 /* BSFPRConsoleLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7226E11922004F6B87 /* BSFPRConsoleLogger.h */; };
+		CB487EAC26E11922004F6B87 /* BSFPRInstrument.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7326E11922004F6B87 /* BSFPRInstrument.h */; };
+		CB487EAD26E11922004F6B87 /* BSFPRInstrument.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7326E11922004F6B87 /* BSFPRInstrument.h */; };
+		CB487EAE26E11922004F6B87 /* BSFPRInstrument.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7326E11922004F6B87 /* BSFPRInstrument.h */; };
+		CB487EAF26E11922004F6B87 /* BSFPRClassInstrumentor_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7426E11922004F6B87 /* BSFPRClassInstrumentor_Private.h */; };
+		CB487EB026E11922004F6B87 /* BSFPRClassInstrumentor_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7426E11922004F6B87 /* BSFPRClassInstrumentor_Private.h */; };
+		CB487EB126E11922004F6B87 /* BSFPRClassInstrumentor_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7426E11922004F6B87 /* BSFPRClassInstrumentor_Private.h */; };
+		CB487EB226E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7526E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.m */; };
+		CB487EB326E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7526E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.m */; };
+		CB487EB426E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7526E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.m */; };
+		CB487EB526E11922004F6B87 /* BSFPRProxyObjectHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7626E11922004F6B87 /* BSFPRProxyObjectHelper.m */; };
+		CB487EB626E11922004F6B87 /* BSFPRProxyObjectHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7626E11922004F6B87 /* BSFPRProxyObjectHelper.m */; };
+		CB487EB726E11922004F6B87 /* BSFPRProxyObjectHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7626E11922004F6B87 /* BSFPRProxyObjectHelper.m */; };
+		CB487EB826E11922004F6B87 /* BSFPRClassInstrumentor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7726E11922004F6B87 /* BSFPRClassInstrumentor.h */; };
+		CB487EB926E11922004F6B87 /* BSFPRClassInstrumentor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7726E11922004F6B87 /* BSFPRClassInstrumentor.h */; };
+		CB487EBA26E11922004F6B87 /* BSFPRClassInstrumentor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7726E11922004F6B87 /* BSFPRClassInstrumentor.h */; };
+		CB487EBB26E11922004F6B87 /* BSFPRNSURLSessionInstrument.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7926E11922004F6B87 /* BSFPRNSURLSessionInstrument.m */; };
+		CB487EBC26E11922004F6B87 /* BSFPRNSURLSessionInstrument.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7926E11922004F6B87 /* BSFPRNSURLSessionInstrument.m */; };
+		CB487EBD26E11922004F6B87 /* BSFPRNSURLSessionInstrument.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7926E11922004F6B87 /* BSFPRNSURLSessionInstrument.m */; };
+		CB487EBE26E11922004F6B87 /* BSFPRNetworkTrace.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7A26E11922004F6B87 /* BSFPRNetworkTrace.m */; };
+		CB487EBF26E11922004F6B87 /* BSFPRNetworkTrace.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7A26E11922004F6B87 /* BSFPRNetworkTrace.m */; };
+		CB487EC026E11922004F6B87 /* BSFPRNetworkTrace.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7A26E11922004F6B87 /* BSFPRNetworkTrace.m */; };
+		CB487EC126E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7B26E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.m */; };
+		CB487EC226E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7B26E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.m */; };
+		CB487EC326E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7B26E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.m */; };
+		CB487EC426E11922004F6B87 /* BSFPRNSURLSessionInstrument.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7C26E11922004F6B87 /* BSFPRNSURLSessionInstrument.h */; };
+		CB487EC526E11922004F6B87 /* BSFPRNSURLSessionInstrument.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7C26E11922004F6B87 /* BSFPRNSURLSessionInstrument.h */; };
+		CB487EC626E11922004F6B87 /* BSFPRNSURLSessionInstrument.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7C26E11922004F6B87 /* BSFPRNSURLSessionInstrument.h */; };
+		CB487EC726E11922004F6B87 /* BSFPRNSURLSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7E26E11922004F6B87 /* BSFPRNSURLSessionDelegate.h */; };
+		CB487EC826E11922004F6B87 /* BSFPRNSURLSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7E26E11922004F6B87 /* BSFPRNSURLSessionDelegate.h */; };
+		CB487EC926E11922004F6B87 /* BSFPRNSURLSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E7E26E11922004F6B87 /* BSFPRNSURLSessionDelegate.h */; };
+		CB487ECA26E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7F26E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.m */; };
+		CB487ECB26E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7F26E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.m */; };
+		CB487ECC26E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E7F26E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.m */; };
+		CB487ECD26E11922004F6B87 /* BSFPRNSURLSessionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8026E11922004F6B87 /* BSFPRNSURLSessionDelegate.m */; };
+		CB487ECE26E11922004F6B87 /* BSFPRNSURLSessionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8026E11922004F6B87 /* BSFPRNSURLSessionDelegate.m */; };
+		CB487ECF26E11922004F6B87 /* BSFPRNSURLSessionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8026E11922004F6B87 /* BSFPRNSURLSessionDelegate.m */; };
+		CB487ED026E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8126E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.h */; };
+		CB487ED126E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8126E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.h */; };
+		CB487ED226E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8126E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.h */; };
+		CB487ED326E11922004F6B87 /* BSFPRNetworkTrace.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8226E11922004F6B87 /* BSFPRNetworkTrace.h */; };
+		CB487ED426E11922004F6B87 /* BSFPRNetworkTrace.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8226E11922004F6B87 /* BSFPRNetworkTrace.h */; };
+		CB487ED526E11922004F6B87 /* BSFPRNetworkTrace.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8226E11922004F6B87 /* BSFPRNetworkTrace.h */; };
+		CB487ED626E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8326E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.h */; };
+		CB487ED726E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8326E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.h */; };
+		CB487ED826E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8326E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.h */; };
+		CB487ED926E11922004F6B87 /* BSFPRNSURLSessionInstrument_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8426E11922004F6B87 /* BSFPRNSURLSessionInstrument_Private.h */; };
+		CB487EDA26E11922004F6B87 /* BSFPRNSURLSessionInstrument_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8426E11922004F6B87 /* BSFPRNSURLSessionInstrument_Private.h */; };
+		CB487EDB26E11922004F6B87 /* BSFPRNSURLSessionInstrument_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8426E11922004F6B87 /* BSFPRNSURLSessionInstrument_Private.h */; };
+		CB487EDC26E11922004F6B87 /* BSFPRDataUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8526E11922004F6B87 /* BSFPRDataUtils.m */; };
+		CB487EDD26E11922004F6B87 /* BSFPRDataUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8526E11922004F6B87 /* BSFPRDataUtils.m */; };
+		CB487EDE26E11922004F6B87 /* BSFPRDataUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8526E11922004F6B87 /* BSFPRDataUtils.m */; };
+		CB487EDF26E11922004F6B87 /* BSFPRSelectorInstrumentor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8626E11922004F6B87 /* BSFPRSelectorInstrumentor.h */; };
+		CB487EE026E11922004F6B87 /* BSFPRSelectorInstrumentor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8626E11922004F6B87 /* BSFPRSelectorInstrumentor.h */; };
+		CB487EE126E11922004F6B87 /* BSFPRSelectorInstrumentor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8626E11922004F6B87 /* BSFPRSelectorInstrumentor.h */; };
+		CB487EE226E11922004F6B87 /* BSFPRObjectInstrumentor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8726E11922004F6B87 /* BSFPRObjectInstrumentor.h */; };
+		CB487EE326E11922004F6B87 /* BSFPRObjectInstrumentor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8726E11922004F6B87 /* BSFPRObjectInstrumentor.h */; };
+		CB487EE426E11922004F6B87 /* BSFPRObjectInstrumentor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8726E11922004F6B87 /* BSFPRObjectInstrumentor.h */; };
+		CB487EE526E11922004F6B87 /* BSFPRInstrument.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8826E11922004F6B87 /* BSFPRInstrument.m */; };
+		CB487EE626E11922004F6B87 /* BSFPRInstrument.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8826E11922004F6B87 /* BSFPRInstrument.m */; };
+		CB487EE726E11922004F6B87 /* BSFPRInstrument.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8826E11922004F6B87 /* BSFPRInstrument.m */; };
+		CB487EE826E11922004F6B87 /* BSFPRConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8926E11922004F6B87 /* BSFPRConsoleLogger.m */; };
+		CB487EE926E11922004F6B87 /* BSFPRConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8926E11922004F6B87 /* BSFPRConsoleLogger.m */; };
+		CB487EEA26E11922004F6B87 /* BSFPRConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8926E11922004F6B87 /* BSFPRConsoleLogger.m */; };
+		CB487EEB26E11922004F6B87 /* BSFPRInstrument_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8A26E11922004F6B87 /* BSFPRInstrument_Private.h */; };
+		CB487EEC26E11922004F6B87 /* BSFPRInstrument_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8A26E11922004F6B87 /* BSFPRInstrument_Private.h */; };
+		CB487EED26E11922004F6B87 /* BSFPRInstrument_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8A26E11922004F6B87 /* BSFPRInstrument_Private.h */; };
+		CB487EEE26E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8B26E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.h */; };
+		CB487EEF26E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8B26E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.h */; };
+		CB487EF026E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8B26E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.h */; };
+		CB487EF126E11922004F6B87 /* BSFPRClassInstrumentor.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8C26E11922004F6B87 /* BSFPRClassInstrumentor.m */; };
+		CB487EF226E11922004F6B87 /* BSFPRClassInstrumentor.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8C26E11922004F6B87 /* BSFPRClassInstrumentor.m */; };
+		CB487EF326E11922004F6B87 /* BSFPRClassInstrumentor.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8C26E11922004F6B87 /* BSFPRClassInstrumentor.m */; };
+		CB487EF426E11922004F6B87 /* BSFPRProxyObjectHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8D26E11922004F6B87 /* BSFPRProxyObjectHelper.h */; };
+		CB487EF526E11922004F6B87 /* BSFPRProxyObjectHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8D26E11922004F6B87 /* BSFPRProxyObjectHelper.h */; };
+		CB487EF626E11922004F6B87 /* BSFPRProxyObjectHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E8D26E11922004F6B87 /* BSFPRProxyObjectHelper.h */; };
+		CB487EF726E11922004F6B87 /* BSFPRObjectInstrumentor.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8E26E11922004F6B87 /* BSFPRObjectInstrumentor.m */; };
+		CB487EF826E11922004F6B87 /* BSFPRObjectInstrumentor.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8E26E11922004F6B87 /* BSFPRObjectInstrumentor.m */; };
+		CB487EF926E11922004F6B87 /* BSFPRObjectInstrumentor.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8E26E11922004F6B87 /* BSFPRObjectInstrumentor.m */; };
+		CB487EFA26E11922004F6B87 /* BSFPRSelectorInstrumentor.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8F26E11922004F6B87 /* BSFPRSelectorInstrumentor.m */; };
+		CB487EFB26E11922004F6B87 /* BSFPRSelectorInstrumentor.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8F26E11922004F6B87 /* BSFPRSelectorInstrumentor.m */; };
+		CB487EFC26E11922004F6B87 /* BSFPRSelectorInstrumentor.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487E8F26E11922004F6B87 /* BSFPRSelectorInstrumentor.m */; };
+		CB487EFD26E11922004F6B87 /* BSFPRDataUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E9026E11922004F6B87 /* BSFPRDataUtils.h */; };
+		CB487EFE26E11922004F6B87 /* BSFPRDataUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E9026E11922004F6B87 /* BSFPRDataUtils.h */; };
+		CB487EFF26E11922004F6B87 /* BSFPRDataUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487E9026E11922004F6B87 /* BSFPRDataUtils.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +174,43 @@
 		CB487AB426D7B191004F6B87 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB487ABE26D7B295004F6B87 /* BugsnagRequestMonitor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagRequestMonitor.m; sourceTree = "<group>"; };
 		CB487C2F26DE3EFB004F6B87 /* BugsnagRequestMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagRequestMonitor.h; sourceTree = "<group>"; };
+		CB487E6926E11922004F6B87 /* BSGULObjectSwizzler+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BSGULObjectSwizzler+Internal.h"; sourceTree = "<group>"; };
+		CB487E6A26E11922004F6B87 /* BSGULSwizzledObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGULSwizzledObject.h; sourceTree = "<group>"; };
+		CB487E6B26E11922004F6B87 /* BSGULSwizzler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGULSwizzler.m; sourceTree = "<group>"; };
+		CB487E6C26E11922004F6B87 /* BSGULObjectSwizzler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGULObjectSwizzler.h; sourceTree = "<group>"; };
+		CB487E6D26E11922004F6B87 /* BSGULOriginalIMPConvenienceMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGULOriginalIMPConvenienceMacros.h; sourceTree = "<group>"; };
+		CB487E6E26E11922004F6B87 /* BSGULSwizzledObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGULSwizzledObject.m; sourceTree = "<group>"; };
+		CB487E6F26E11922004F6B87 /* BSGULSwizzler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGULSwizzler.h; sourceTree = "<group>"; };
+		CB487E7026E11922004F6B87 /* BSGULObjectSwizzler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGULObjectSwizzler.m; sourceTree = "<group>"; };
+		CB487E7226E11922004F6B87 /* BSFPRConsoleLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRConsoleLogger.h; sourceTree = "<group>"; };
+		CB487E7326E11922004F6B87 /* BSFPRInstrument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRInstrument.h; sourceTree = "<group>"; };
+		CB487E7426E11922004F6B87 /* BSFPRClassInstrumentor_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRClassInstrumentor_Private.h; sourceTree = "<group>"; };
+		CB487E7526E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSFPRTraceBackgroundActivityTracker.m; sourceTree = "<group>"; };
+		CB487E7626E11922004F6B87 /* BSFPRProxyObjectHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSFPRProxyObjectHelper.m; sourceTree = "<group>"; };
+		CB487E7726E11922004F6B87 /* BSFPRClassInstrumentor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRClassInstrumentor.h; sourceTree = "<group>"; };
+		CB487E7926E11922004F6B87 /* BSFPRNSURLSessionInstrument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSFPRNSURLSessionInstrument.m; sourceTree = "<group>"; };
+		CB487E7A26E11922004F6B87 /* BSFPRNetworkTrace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSFPRNetworkTrace.m; sourceTree = "<group>"; };
+		CB487E7B26E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSFPRNetworkInstrumentHelpers.m; sourceTree = "<group>"; };
+		CB487E7C26E11922004F6B87 /* BSFPRNSURLSessionInstrument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRNSURLSessionInstrument.h; sourceTree = "<group>"; };
+		CB487E7E26E11922004F6B87 /* BSFPRNSURLSessionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRNSURLSessionDelegate.h; sourceTree = "<group>"; };
+		CB487E7F26E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSFPRNSURLSessionDelegateInstrument.m; sourceTree = "<group>"; };
+		CB487E8026E11922004F6B87 /* BSFPRNSURLSessionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSFPRNSURLSessionDelegate.m; sourceTree = "<group>"; };
+		CB487E8126E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRNSURLSessionDelegateInstrument.h; sourceTree = "<group>"; };
+		CB487E8226E11922004F6B87 /* BSFPRNetworkTrace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRNetworkTrace.h; sourceTree = "<group>"; };
+		CB487E8326E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRNetworkInstrumentHelpers.h; sourceTree = "<group>"; };
+		CB487E8426E11922004F6B87 /* BSFPRNSURLSessionInstrument_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRNSURLSessionInstrument_Private.h; sourceTree = "<group>"; };
+		CB487E8526E11922004F6B87 /* BSFPRDataUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSFPRDataUtils.m; sourceTree = "<group>"; };
+		CB487E8626E11922004F6B87 /* BSFPRSelectorInstrumentor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRSelectorInstrumentor.h; sourceTree = "<group>"; };
+		CB487E8726E11922004F6B87 /* BSFPRObjectInstrumentor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRObjectInstrumentor.h; sourceTree = "<group>"; };
+		CB487E8826E11922004F6B87 /* BSFPRInstrument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSFPRInstrument.m; sourceTree = "<group>"; };
+		CB487E8926E11922004F6B87 /* BSFPRConsoleLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSFPRConsoleLogger.m; sourceTree = "<group>"; };
+		CB487E8A26E11922004F6B87 /* BSFPRInstrument_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRInstrument_Private.h; sourceTree = "<group>"; };
+		CB487E8B26E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRTraceBackgroundActivityTracker.h; sourceTree = "<group>"; };
+		CB487E8C26E11922004F6B87 /* BSFPRClassInstrumentor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSFPRClassInstrumentor.m; sourceTree = "<group>"; };
+		CB487E8D26E11922004F6B87 /* BSFPRProxyObjectHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRProxyObjectHelper.h; sourceTree = "<group>"; };
+		CB487E8E26E11922004F6B87 /* BSFPRObjectInstrumentor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSFPRObjectInstrumentor.m; sourceTree = "<group>"; };
+		CB487E8F26E11922004F6B87 /* BSFPRSelectorInstrumentor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSFPRSelectorInstrumentor.m; sourceTree = "<group>"; };
+		CB487E9026E11922004F6B87 /* BSFPRDataUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSFPRDataUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +291,8 @@
 		CB487A5B26D7B109004F6B87 /* BugsnagRequestMonitor */ = {
 			isa = PBXGroup;
 			children = (
+				CB487E7126E11922004F6B87 /* Instrumentation */,
+				CB487E6826E11922004F6B87 /* Swizzle */,
 				CB487A5D26D7B109004F6B87 /* Info.plist */,
 				CB487C2D26DE3EFB004F6B87 /* include */,
 				CB487ABE26D7B295004F6B87 /* BugsnagRequestMonitor.m */,
@@ -185,6 +335,73 @@
 			path = BugsnagRequestMonitor;
 			sourceTree = "<group>";
 		};
+		CB487E6826E11922004F6B87 /* Swizzle */ = {
+			isa = PBXGroup;
+			children = (
+				CB487E6926E11922004F6B87 /* BSGULObjectSwizzler+Internal.h */,
+				CB487E6A26E11922004F6B87 /* BSGULSwizzledObject.h */,
+				CB487E6B26E11922004F6B87 /* BSGULSwizzler.m */,
+				CB487E6C26E11922004F6B87 /* BSGULObjectSwizzler.h */,
+				CB487E6D26E11922004F6B87 /* BSGULOriginalIMPConvenienceMacros.h */,
+				CB487E6E26E11922004F6B87 /* BSGULSwizzledObject.m */,
+				CB487E6F26E11922004F6B87 /* BSGULSwizzler.h */,
+				CB487E7026E11922004F6B87 /* BSGULObjectSwizzler.m */,
+			);
+			path = Swizzle;
+			sourceTree = SOURCE_ROOT;
+		};
+		CB487E7126E11922004F6B87 /* Instrumentation */ = {
+			isa = PBXGroup;
+			children = (
+				CB487E7226E11922004F6B87 /* BSFPRConsoleLogger.h */,
+				CB487E7326E11922004F6B87 /* BSFPRInstrument.h */,
+				CB487E7426E11922004F6B87 /* BSFPRClassInstrumentor_Private.h */,
+				CB487E7526E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.m */,
+				CB487E7626E11922004F6B87 /* BSFPRProxyObjectHelper.m */,
+				CB487E7726E11922004F6B87 /* BSFPRClassInstrumentor.h */,
+				CB487E7826E11922004F6B87 /* Network */,
+				CB487E8526E11922004F6B87 /* BSFPRDataUtils.m */,
+				CB487E8626E11922004F6B87 /* BSFPRSelectorInstrumentor.h */,
+				CB487E8726E11922004F6B87 /* BSFPRObjectInstrumentor.h */,
+				CB487E8826E11922004F6B87 /* BSFPRInstrument.m */,
+				CB487E8926E11922004F6B87 /* BSFPRConsoleLogger.m */,
+				CB487E8A26E11922004F6B87 /* BSFPRInstrument_Private.h */,
+				CB487E8B26E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.h */,
+				CB487E8C26E11922004F6B87 /* BSFPRClassInstrumentor.m */,
+				CB487E8D26E11922004F6B87 /* BSFPRProxyObjectHelper.h */,
+				CB487E8E26E11922004F6B87 /* BSFPRObjectInstrumentor.m */,
+				CB487E8F26E11922004F6B87 /* BSFPRSelectorInstrumentor.m */,
+				CB487E9026E11922004F6B87 /* BSFPRDataUtils.h */,
+			);
+			path = Instrumentation;
+			sourceTree = SOURCE_ROOT;
+		};
+		CB487E7826E11922004F6B87 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				CB487E7926E11922004F6B87 /* BSFPRNSURLSessionInstrument.m */,
+				CB487E7A26E11922004F6B87 /* BSFPRNetworkTrace.m */,
+				CB487E7B26E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.m */,
+				CB487E7C26E11922004F6B87 /* BSFPRNSURLSessionInstrument.h */,
+				CB487E7D26E11922004F6B87 /* Delegates */,
+				CB487E8226E11922004F6B87 /* BSFPRNetworkTrace.h */,
+				CB487E8326E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.h */,
+				CB487E8426E11922004F6B87 /* BSFPRNSURLSessionInstrument_Private.h */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		CB487E7D26E11922004F6B87 /* Delegates */ = {
+			isa = PBXGroup;
+			children = (
+				CB487E7E26E11922004F6B87 /* BSFPRNSURLSessionDelegate.h */,
+				CB487E7F26E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.m */,
+				CB487E8026E11922004F6B87 /* BSFPRNSURLSessionDelegate.m */,
+				CB487E8126E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.h */,
+			);
+			path = Delegates;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -192,7 +409,28 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB487EA326E11922004F6B87 /* BSGULSwizzler.h in Headers */,
+				CB487EE226E11922004F6B87 /* BSFPRObjectInstrumentor.h in Headers */,
+				CB487E9426E11922004F6B87 /* BSGULSwizzledObject.h in Headers */,
+				CB487EDF26E11922004F6B87 /* BSFPRSelectorInstrumentor.h in Headers */,
+				CB487EFD26E11922004F6B87 /* BSFPRDataUtils.h in Headers */,
+				CB487EEE26E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.h in Headers */,
+				CB487EC426E11922004F6B87 /* BSFPRNSURLSessionInstrument.h in Headers */,
+				CB487ED926E11922004F6B87 /* BSFPRNSURLSessionInstrument_Private.h in Headers */,
+				CB487ED326E11922004F6B87 /* BSFPRNetworkTrace.h in Headers */,
+				CB487E9A26E11922004F6B87 /* BSGULObjectSwizzler.h in Headers */,
+				CB487E9D26E11922004F6B87 /* BSGULOriginalIMPConvenienceMacros.h in Headers */,
+				CB487EC726E11922004F6B87 /* BSFPRNSURLSessionDelegate.h in Headers */,
+				CB487E9126E11922004F6B87 /* BSGULObjectSwizzler+Internal.h in Headers */,
+				CB487EAC26E11922004F6B87 /* BSFPRInstrument.h in Headers */,
+				CB487EA926E11922004F6B87 /* BSFPRConsoleLogger.h in Headers */,
+				CB487EB826E11922004F6B87 /* BSFPRClassInstrumentor.h in Headers */,
 				CB487C3026DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */,
+				CB487ED626E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.h in Headers */,
+				CB487EF426E11922004F6B87 /* BSFPRProxyObjectHelper.h in Headers */,
+				CB487EEB26E11922004F6B87 /* BSFPRInstrument_Private.h in Headers */,
+				CB487EAF26E11922004F6B87 /* BSFPRClassInstrumentor_Private.h in Headers */,
+				CB487ED026E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,7 +438,28 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB487EA426E11922004F6B87 /* BSGULSwizzler.h in Headers */,
+				CB487EE326E11922004F6B87 /* BSFPRObjectInstrumentor.h in Headers */,
+				CB487E9526E11922004F6B87 /* BSGULSwizzledObject.h in Headers */,
+				CB487EE026E11922004F6B87 /* BSFPRSelectorInstrumentor.h in Headers */,
+				CB487EFE26E11922004F6B87 /* BSFPRDataUtils.h in Headers */,
+				CB487EEF26E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.h in Headers */,
+				CB487EC526E11922004F6B87 /* BSFPRNSURLSessionInstrument.h in Headers */,
+				CB487EDA26E11922004F6B87 /* BSFPRNSURLSessionInstrument_Private.h in Headers */,
+				CB487ED426E11922004F6B87 /* BSFPRNetworkTrace.h in Headers */,
+				CB487E9B26E11922004F6B87 /* BSGULObjectSwizzler.h in Headers */,
+				CB487E9E26E11922004F6B87 /* BSGULOriginalIMPConvenienceMacros.h in Headers */,
+				CB487EC826E11922004F6B87 /* BSFPRNSURLSessionDelegate.h in Headers */,
+				CB487E9226E11922004F6B87 /* BSGULObjectSwizzler+Internal.h in Headers */,
+				CB487EAD26E11922004F6B87 /* BSFPRInstrument.h in Headers */,
+				CB487EAA26E11922004F6B87 /* BSFPRConsoleLogger.h in Headers */,
+				CB487EB926E11922004F6B87 /* BSFPRClassInstrumentor.h in Headers */,
 				CB487C3126DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */,
+				CB487ED726E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.h in Headers */,
+				CB487EF526E11922004F6B87 /* BSFPRProxyObjectHelper.h in Headers */,
+				CB487EEC26E11922004F6B87 /* BSFPRInstrument_Private.h in Headers */,
+				CB487EB026E11922004F6B87 /* BSFPRClassInstrumentor_Private.h in Headers */,
+				CB487ED126E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,7 +467,28 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB487EA526E11922004F6B87 /* BSGULSwizzler.h in Headers */,
+				CB487EE426E11922004F6B87 /* BSFPRObjectInstrumentor.h in Headers */,
+				CB487E9626E11922004F6B87 /* BSGULSwizzledObject.h in Headers */,
+				CB487EE126E11922004F6B87 /* BSFPRSelectorInstrumentor.h in Headers */,
+				CB487EFF26E11922004F6B87 /* BSFPRDataUtils.h in Headers */,
+				CB487EF026E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.h in Headers */,
+				CB487EC626E11922004F6B87 /* BSFPRNSURLSessionInstrument.h in Headers */,
+				CB487EDB26E11922004F6B87 /* BSFPRNSURLSessionInstrument_Private.h in Headers */,
+				CB487ED526E11922004F6B87 /* BSFPRNetworkTrace.h in Headers */,
+				CB487E9C26E11922004F6B87 /* BSGULObjectSwizzler.h in Headers */,
+				CB487E9F26E11922004F6B87 /* BSGULOriginalIMPConvenienceMacros.h in Headers */,
+				CB487EC926E11922004F6B87 /* BSFPRNSURLSessionDelegate.h in Headers */,
+				CB487E9326E11922004F6B87 /* BSGULObjectSwizzler+Internal.h in Headers */,
+				CB487EAE26E11922004F6B87 /* BSFPRInstrument.h in Headers */,
+				CB487EAB26E11922004F6B87 /* BSFPRConsoleLogger.h in Headers */,
+				CB487EBA26E11922004F6B87 /* BSFPRClassInstrumentor.h in Headers */,
 				CB487C3226DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */,
+				CB487ED826E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.h in Headers */,
+				CB487EF626E11922004F6B87 /* BSFPRProxyObjectHelper.h in Headers */,
+				CB487EED26E11922004F6B87 /* BSFPRInstrument_Private.h in Headers */,
+				CB487EB126E11922004F6B87 /* BSFPRClassInstrumentor_Private.h in Headers */,
+				CB487ED226E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,7 +704,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB487EC126E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.m in Sources */,
+				CB487EA026E11922004F6B87 /* BSGULSwizzledObject.m in Sources */,
+				CB487EF726E11922004F6B87 /* BSFPRObjectInstrumentor.m in Sources */,
 				CB487ABF26D7B295004F6B87 /* BugsnagRequestMonitor.m in Sources */,
+				CB487ECD26E11922004F6B87 /* BSFPRNSURLSessionDelegate.m in Sources */,
+				CB487ECA26E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.m in Sources */,
+				CB487EA626E11922004F6B87 /* BSGULObjectSwizzler.m in Sources */,
+				CB487EB526E11922004F6B87 /* BSFPRProxyObjectHelper.m in Sources */,
+				CB487EF126E11922004F6B87 /* BSFPRClassInstrumentor.m in Sources */,
+				CB487EBE26E11922004F6B87 /* BSFPRNetworkTrace.m in Sources */,
+				CB487EBB26E11922004F6B87 /* BSFPRNSURLSessionInstrument.m in Sources */,
+				CB487EE826E11922004F6B87 /* BSFPRConsoleLogger.m in Sources */,
+				CB487E9726E11922004F6B87 /* BSGULSwizzler.m in Sources */,
+				CB487EFA26E11922004F6B87 /* BSFPRSelectorInstrumentor.m in Sources */,
+				CB487EE526E11922004F6B87 /* BSFPRInstrument.m in Sources */,
+				CB487EB226E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.m in Sources */,
+				CB487EDC26E11922004F6B87 /* BSFPRDataUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -440,7 +736,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB487EC226E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.m in Sources */,
+				CB487EA126E11922004F6B87 /* BSGULSwizzledObject.m in Sources */,
+				CB487EF826E11922004F6B87 /* BSFPRObjectInstrumentor.m in Sources */,
 				CB487AC026D7B295004F6B87 /* BugsnagRequestMonitor.m in Sources */,
+				CB487ECE26E11922004F6B87 /* BSFPRNSURLSessionDelegate.m in Sources */,
+				CB487ECB26E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.m in Sources */,
+				CB487EA726E11922004F6B87 /* BSGULObjectSwizzler.m in Sources */,
+				CB487EB626E11922004F6B87 /* BSFPRProxyObjectHelper.m in Sources */,
+				CB487EF226E11922004F6B87 /* BSFPRClassInstrumentor.m in Sources */,
+				CB487EBF26E11922004F6B87 /* BSFPRNetworkTrace.m in Sources */,
+				CB487EBC26E11922004F6B87 /* BSFPRNSURLSessionInstrument.m in Sources */,
+				CB487EE926E11922004F6B87 /* BSFPRConsoleLogger.m in Sources */,
+				CB487E9826E11922004F6B87 /* BSGULSwizzler.m in Sources */,
+				CB487EFB26E11922004F6B87 /* BSFPRSelectorInstrumentor.m in Sources */,
+				CB487EE626E11922004F6B87 /* BSFPRInstrument.m in Sources */,
+				CB487EB326E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.m in Sources */,
+				CB487EDD26E11922004F6B87 /* BSFPRDataUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,7 +768,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB487EC326E11922004F6B87 /* BSFPRNetworkInstrumentHelpers.m in Sources */,
+				CB487EA226E11922004F6B87 /* BSGULSwizzledObject.m in Sources */,
+				CB487EF926E11922004F6B87 /* BSFPRObjectInstrumentor.m in Sources */,
 				CB487AC126D7B295004F6B87 /* BugsnagRequestMonitor.m in Sources */,
+				CB487ECF26E11922004F6B87 /* BSFPRNSURLSessionDelegate.m in Sources */,
+				CB487ECC26E11922004F6B87 /* BSFPRNSURLSessionDelegateInstrument.m in Sources */,
+				CB487EA826E11922004F6B87 /* BSGULObjectSwizzler.m in Sources */,
+				CB487EB726E11922004F6B87 /* BSFPRProxyObjectHelper.m in Sources */,
+				CB487EF326E11922004F6B87 /* BSFPRClassInstrumentor.m in Sources */,
+				CB487EC026E11922004F6B87 /* BSFPRNetworkTrace.m in Sources */,
+				CB487EBD26E11922004F6B87 /* BSFPRNSURLSessionInstrument.m in Sources */,
+				CB487EEA26E11922004F6B87 /* BSFPRConsoleLogger.m in Sources */,
+				CB487E9926E11922004F6B87 /* BSGULSwizzler.m in Sources */,
+				CB487EFC26E11922004F6B87 /* BSFPRSelectorInstrumentor.m in Sources */,
+				CB487EE726E11922004F6B87 /* BSFPRInstrument.m in Sources */,
+				CB487EB426E11922004F6B87 /* BSFPRTraceBackgroundActivityTracker.m in Sources */,
+				CB487EDE26E11922004F6B87 /* BSFPRDataUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

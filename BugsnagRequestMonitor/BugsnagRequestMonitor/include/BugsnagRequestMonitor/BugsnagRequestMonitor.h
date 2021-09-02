@@ -6,4 +6,3 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <Bugsnag/Bugsnag.h>
