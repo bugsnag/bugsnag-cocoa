@@ -208,7 +208,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
             BSGKeyApp: @{BSGKeyIsLaunching: @YES},
             BSGKeyClient: BSGDictionaryWithKeyAndObject(BSGKeyContext, _configuration.context)
         }];
-        self.notifier = [BugsnagNotifier new];
+        _notifier = configuration.notifier ?: [[BugsnagNotifier alloc] init];
         self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:configuration];
 
         BSGFileLocations *fileLocations = [BSGFileLocations current];
