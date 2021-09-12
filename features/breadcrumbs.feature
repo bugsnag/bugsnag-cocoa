@@ -54,3 +54,12 @@ Feature: Attaching a series of notable events leading up to errors
     And the event has a "state" breadcrumb named "Scene Entered Background"
     And the event has a "state" breadcrumb named "Scene Will Enter Foreground"
     And the event has a "state" breadcrumb named "Scene Activated"
+
+  Scenario: Network breadcrumbs
+    When I run "ModifyBreadcrumbScenario"
+    And I wait to receive an error
+    And the event "breadcrumbs.0.timestamp" is a timestamp
+    And the event "breadcrumbs.0.name" equals "OkHttp call succeeded"
+    And the event "breadcrumbs.0.type" equals "request"
+    And the event "breadcrumbs.0.metaData.method" equals "GET"
+    And the event "breadcrumbs.0.metaData.url" equals "http://bs-local.com:9340/?status=444"
