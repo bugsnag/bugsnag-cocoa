@@ -178,6 +178,27 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
+  - label: 'macOS 10.13 barebones E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-10.13
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        upload: ["macOSTestApp.log", "appium_server.log", "maze_output/failed/**/*"]
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/barebone_tests.feature
+        --farm=local
+        --os=macos
+        --os-version=10.13
+        --app=macOSTestApp
+        --fail-fast
+        --order=random
+
   - label: 'macOS 10.15 barebones E2E tests'
     depends_on:
       - cocoa_fixture
