@@ -55,12 +55,12 @@
 
 - (void) testLogError
 {
-    BSG_KSLOG_ERROR(@"TEST");
+    BSG_KSLOG_ERROR("TEST");
 }
 
 - (void) testLogAlways
 {
-    BSG_KSLOG_ALWAYS(@"TEST");
+    BSG_KSLOG_ALWAYS("TEST");
 }
 
 - (void) testLogAlwaysNull
@@ -70,7 +70,7 @@
 
 - (void) testLogBasicError
 {
-    BSG_KSLOGBASIC_ERROR(@"TEST");
+    BSG_KSLOGBASIC_ERROR("TEST");
 }
 
 - (void) testLogBasicErrorNull
@@ -80,7 +80,7 @@
 
 - (void) testLogBasicAlways
 {
-    BSG_KSLOGBASIC_ALWAYS(@"TEST");
+    BSG_KSLOGBASIC_ALWAYS("TEST");
 }
 
 - (void) testLogBasicAlwaysNull
@@ -93,7 +93,7 @@
     NSString* expected = @"TEST";
     NSString* logFileName = [self.tempDir stringByAppendingPathComponent:@"log.txt"];
     bsg_kslog_setLogFilename([logFileName UTF8String], true);
-    BSG_KSLOGBASIC_ALWAYS(expected);
+    BSG_KSLOGBASIC_ALWAYS("TEST");
     bsg_kslog_setLogFilename(nil, true);
 
     NSError* error = nil;
@@ -102,7 +102,7 @@
     result = [result componentsSeparatedByString:@"\x0a"][0];
     XCTAssertEqualObjects(result, expected, @"");
 
-    BSG_KSLOGBASIC_ALWAYS(@"blah blah");
+    BSG_KSLOGBASIC_ALWAYS("blah blah");
     result = [NSString stringWithContentsOfFile:logFileName encoding:NSUTF8StringEncoding error:&error];
     result = [result componentsSeparatedByString:@"\x0a"][0];
     XCTAssertNil(error, @"");
