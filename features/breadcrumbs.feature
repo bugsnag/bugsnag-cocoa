@@ -59,7 +59,22 @@ Feature: Attaching a series of notable events leading up to errors
     When I run "NetworkBreadcrumbsScenario"
     And I wait to receive an error
     And the event "breadcrumbs.1.timestamp" is a timestamp
-    And the event "breadcrumbs.1.name" equals "OkHttp call succeeded"
+    And the event "breadcrumbs.1.name" equals "NSURLSession failed"
     And the event "breadcrumbs.1.type" equals "request"
     And the event "breadcrumbs.1.metaData.method" equals "GET"
     And the event "breadcrumbs.1.metaData.url" equals "http://bs-local.com:9340/?status=444"
+    And the event "breadcrumbs.1.metaData.urlParams.status" equals "444"
+    And the event "breadcrumbs.1.metaData.status" equals 444
+    And the event "breadcrumbs.1.metaData.duration" is greater than 0
+    And the event "breadcrumbs.1.metaData.requestContentLength" equals 0
+    And the event "breadcrumbs.1.metaData.responseContentLength" is greater than 0
+    And the event "breadcrumbs.2.timestamp" is a timestamp
+    And the event "breadcrumbs.2.name" equals "NSURLSession succeeded"
+    And the event "breadcrumbs.2.type" equals "request"
+    And the event "breadcrumbs.2.metaData.method" equals "GET"
+    And the event "breadcrumbs.2.metaData.url" equals "http://bs-local.com:9340/?delay_ms=3000"
+    And the event "breadcrumbs.2.metaData.urlParams.delay_ms" equals "3000"
+    And the event "breadcrumbs.2.metaData.status" equals 200
+    And the event "breadcrumbs.2.metaData.duration" is greater than 0
+    And the event "breadcrumbs.2.metaData.requestContentLength" equals 0
+    And the event "breadcrumbs.2.metaData.responseContentLength" is greater than 0
