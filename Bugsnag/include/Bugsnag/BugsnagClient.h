@@ -26,6 +26,7 @@
 
 #import <Foundation/Foundation.h>
 
+#import <Bugsnag/BugsnagBreadcrumb.h>
 #import <Bugsnag/BugsnagConfiguration.h>
 #import <Bugsnag/BugsnagLastRunInfo.h>
 #import <Bugsnag/BugsnagMetadata.h>

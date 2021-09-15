@@ -6,7 +6,6 @@
 //  Copyright © 2021 Bugsnag. All rights reserved.
 //
 
-import BugsnagRequestMonitor
 import Foundation
 
 class NetworkBreadcrumbsScenario : Scenario {
