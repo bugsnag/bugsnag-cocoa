@@ -43,7 +43,7 @@
     dep.name = @"COBOL Notifier";
     dep.version = @"1.0.0";
     dep.url = @"https://github.com/bugsnag/bugsnag-cobol";
-    [self.notifier.dependencies addObject:dep];
+    self.notifier.dependencies = @[dep];
 
     NSDictionary *dict = [self.notifier toDict];
     XCTAssertEqualObjects(@"https://github.com/bugsnag/bugsnag-cocoa", dict[@"url"]);

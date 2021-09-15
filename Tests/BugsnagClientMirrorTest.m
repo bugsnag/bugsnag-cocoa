@@ -43,8 +43,6 @@
             @"appendNSErrorInfo:block:event: B40@0:8@16@?24@32",
             @"appendNSErrorInfo:block:event: c40@0:8@16@?24@32",
             @"applicationDidReceiveMemoryWarning: v24@0:8@16",
-            @"applicationWillEnterBackground: v24@0:8@16",
-            @"applicationWillEnterForeground: v24@0:8@16",
             @"applicationWillTerminate: v24@0:8@16",
             @"autoNotify B16@0:8",
             @"autoNotify c16@0:8",
@@ -139,8 +137,6 @@
             @"setupConnectivityListener v16@0:8",
             @"start v16@0:8",
             @"startAppHangDetector v16@0:8",
-            @"startListeningForStateChangeNotification: v24@0:8@16",
-            @"startListeningForWorkspaceStateChangeNotifications: v24@0:8@16",
             @"started B16@0:8",
             @"started c16@0:8",
             @"state @16@0:8",
@@ -152,7 +148,6 @@
             @"unsubscribeFromNotifications: v24@0:8@16",
             @"updateAutomaticBreadcrumbDetectionSettings v16@0:8",
             @"updateCrashDetectionSettings v16@0:8",
-            @"watchLifecycleEvents: v24@0:8@16",
             @"workspaceBreadcrumbStateEvents @16@0:8",
     ]];
 
