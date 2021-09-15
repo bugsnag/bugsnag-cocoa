@@ -1597,10 +1597,6 @@ void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext, BSG
     }
     writer->endContainer(writer);
 
-    if (crashContext->config.userInfoJSON != NULL) {
-        bsg_kscrw_i_addJSONElement(writer, BSG_KSCrashField_User,
-                crashContext->config.userInfoJSON);
-    }
     bsg_kscrw_i_writeTraceInfo(crashContext, writer);
 }
 
