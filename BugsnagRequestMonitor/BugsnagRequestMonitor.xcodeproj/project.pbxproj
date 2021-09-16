@@ -22,6 +22,24 @@
 		CB487C3026DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagRequestMonitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB487C3126DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagRequestMonitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB487C3226DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagRequestMonitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB487F0626E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */; };
+		CB487F0726E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */; };
+		CB487F0826E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */; };
+		CB487F0926E8D0B1004F6B87 /* NSURLSession+Tracing.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487F0126E8D0B0004F6B87 /* NSURLSession+Tracing.h */; };
+		CB487F0A26E8D0B1004F6B87 /* NSURLSession+Tracing.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487F0126E8D0B0004F6B87 /* NSURLSession+Tracing.h */; };
+		CB487F0B26E8D0B1004F6B87 /* NSURLSession+Tracing.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487F0126E8D0B0004F6B87 /* NSURLSession+Tracing.h */; };
+		CB487F0C26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */; };
+		CB487F0D26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */; };
+		CB487F0E26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */; };
+		CB487F0F26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487F0326E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.h */; };
+		CB487F1026E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487F0326E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.h */; };
+		CB487F1126E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487F0326E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.h */; };
+		CB487F1226E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487F0426E8D0B0004F6B87 /* BSGURLSessionTracingProxy.h */; };
+		CB487F1326E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487F0426E8D0B0004F6B87 /* BSGURLSessionTracingProxy.h */; };
+		CB487F1426E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487F0426E8D0B0004F6B87 /* BSGURLSessionTracingProxy.h */; };
+		CB487F1526E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */; };
+		CB487F1626E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */; };
+		CB487F1726E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +81,12 @@
 		CB487AB426D7B191004F6B87 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB487ABE26D7B295004F6B87 /* BugsnagRequestMonitor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagRequestMonitor.m; sourceTree = "<group>"; };
 		CB487C2F26DE3EFB004F6B87 /* BugsnagRequestMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagRequestMonitor.h; sourceTree = "<group>"; };
+		CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionTracingProxy.m; sourceTree = "<group>"; };
+		CB487F0126E8D0B0004F6B87 /* NSURLSession+Tracing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSession+Tracing.h"; sourceTree = "<group>"; };
+		CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionTracingDelegate.m; sourceTree = "<group>"; };
+		CB487F0326E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionTracingDelegate.h; sourceTree = "<group>"; };
+		CB487F0426E8D0B0004F6B87 /* BSGURLSessionTracingProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionTracingProxy.h; sourceTree = "<group>"; };
+		CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLSession+Tracing.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +170,12 @@
 				CB487A5D26D7B109004F6B87 /* Info.plist */,
 				CB487C2D26DE3EFB004F6B87 /* include */,
 				CB487ABE26D7B295004F6B87 /* BugsnagRequestMonitor.m */,
+				CB487F0326E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.h */,
+				CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */,
+				CB487F0426E8D0B0004F6B87 /* BSGURLSessionTracingProxy.h */,
+				CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */,
+				CB487F0126E8D0B0004F6B87 /* NSURLSession+Tracing.h */,
+				CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */,
 			);
 			path = BugsnagRequestMonitor;
 			sourceTree = "<group>";
@@ -192,7 +222,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB487F0F26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
 				CB487C3026DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */,
+				CB487F1226E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */,
+				CB487F0926E8D0B1004F6B87 /* NSURLSession+Tracing.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,7 +233,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB487F1026E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
 				CB487C3126DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */,
+				CB487F1326E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */,
+				CB487F0A26E8D0B1004F6B87 /* NSURLSession+Tracing.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,7 +244,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB487F1126E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
 				CB487C3226DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */,
+				CB487F1426E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */,
+				CB487F0B26E8D0B1004F6B87 /* NSURLSession+Tracing.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,7 +463,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB487F1526E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */,
 				CB487ABF26D7B295004F6B87 /* BugsnagRequestMonitor.m in Sources */,
+				CB487F0C26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */,
+				CB487F0626E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -440,7 +482,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB487F1626E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */,
 				CB487AC026D7B295004F6B87 /* BugsnagRequestMonitor.m in Sources */,
+				CB487F0D26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */,
+				CB487F0726E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,7 +501,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB487F1726E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */,
 				CB487AC126D7B295004F6B87 /* BugsnagRequestMonitor.m in Sources */,
+				CB487F0E26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */,
+				CB487F0826E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,35 +541,53 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_UNDEFINED_BEHAVIOR_SANITIZER_INTEGER = YES;
+				CLANG_UNDEFINED_BEHAVIOR_SANITIZER_NULLABILITY = YES;
+				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_ATOMIC_IMPLICIT_SEQ_CST = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_CXX0X_EXTENSIONS = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_FRAMEWORK_INCLUDE_PRIVATE_FROM_PUBLIC = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES_ERROR;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_INTERFACE_IVARS = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES_ERROR;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -535,11 +601,28 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -555,35 +638,53 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_UNDEFINED_BEHAVIOR_SANITIZER_INTEGER = YES;
+				CLANG_UNDEFINED_BEHAVIOR_SANITIZER_NULLABILITY = YES;
+				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_ATOMIC_IMPLICIT_SEQ_CST = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_CXX0X_EXTENSIONS = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_FRAMEWORK_INCLUDE_PRIVATE_FROM_PUBLIC = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES_ERROR;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_INTERFACE_IVARS = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES_ERROR;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -591,11 +692,28 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -660,6 +778,8 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = BugsnagRequestMonitorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -677,6 +797,8 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = BugsnagRequestMonitorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -745,6 +867,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = BugsnagRequestMonitorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -764,6 +888,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = BugsnagRequestMonitorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -832,6 +958,8 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = BugsnagRequestMonitorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -851,6 +979,8 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = BugsnagRequestMonitorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -26,7 +26,7 @@ cat Cartfile
 
 for platform in iOS macOS tvOS
 do
-	cmdline=("carthage" "update" "--platform" "$platform")
+	cmdline=("carthage" "update" "--platform" "$platform" "--log-path" "./carthage-${platform}.log")
 	if [ "$xcode_version_major" -ge 12 ]
 	then
 		cmdline+=("--use-xcframeworks")

@@ -47,6 +47,9 @@ steps:
     concurrency_group: cocoa-unit-tests
     commands:
       - ./scripts/build-carthage.sh
+    plugins:
+      artifacts#v1.3.0:
+        upload: ["features/fixtures/carthage/carthage-*.log"]
 
   ##############################################################################
   #
