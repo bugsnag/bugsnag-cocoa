@@ -58,6 +58,10 @@ static NSDictionary *_Nonnull queryItemsAsDict(NSArray<NSURLQueryItem *> *_Nulla
     return result;
 }
 
+static NSString * stringOrEmpty(NSString *str) {
+    return str ? str : @"";
+}
+
 - (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
 didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
@@ -87,8 +91,8 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
 
         [g_sink leaveBreadcrumbWithMessage:message metadata:@{
             @"status": @(httpResp.statusCode),
-            @"method": req.HTTPMethod,
-            @"url": urlComponents.string,
+            @"method": stringOrEmpty(req.HTTPMethod),
+            @"url": stringOrEmpty(urlComponents.string),
             @"urlParams": queryItemsAsDict(urlComponents.queryItems),
             @"duration": @(metrics.taskInterval.duration),
             @"requestContentLength": @(requestContentLength),
