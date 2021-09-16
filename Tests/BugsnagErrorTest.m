@@ -194,6 +194,12 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     
     error.errorClass = nil;
     error.errorMessage = nil;
+    [error updateWithCrashInfoMessage:@"Fatal error: Unexpectedly found nil while unwrapping an Optional value\n"];
+    XCTAssertEqualObjects(error.errorClass, @"Fatal error");
+    XCTAssertEqualObjects(error.errorMessage, @"Unexpectedly found nil while unwrapping an Optional value");
+    
+    error.errorClass = nil;
+    error.errorMessage = nil;
     [error updateWithCrashInfoMessage:@"Precondition failed:   : strange formatting 😱::: file bugsnag_example/AnotherClass.swift, line 24\n"];
     XCTAssertEqualObjects(error.errorClass, @"Precondition failed");
     XCTAssertEqualObjects(error.errorMessage, @"  : strange formatting 😱::");
