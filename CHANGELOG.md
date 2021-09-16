@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Stop dropping breadcrumbs when provided invalid metadata (that is not JSON convertible.)
+  [#1187](https://github.com/bugsnag/bugsnag-cocoa/pull/1187)
+
 * Fix Swift fatal error parsing for messages with no filename.
   [#1186](https://github.com/bugsnag/bugsnag-cocoa/pull/1186)
 
