@@ -116,7 +116,7 @@ static NSData *mock_nextData;
     XCTAssertEqual(crumb.type, BSGBreadcrumbTypeRequest);
     XCTAssertEqualObjects(crumb.message, message);
     NSDictionary *metadata = crumb.metadata;
-    XCTAssertGreaterThan([metadata[@"duration"] floatValue], 0);
+    // duration will be tested in e2e tests
     XCTAssertEqualObjects(metadata[@"method"], method);
     XCTAssertEqualObjects(metadata[@"requestContentLength"], @(reqLength));
     XCTAssertEqualObjects(metadata[@"responseContentLength"], @(respLength));
