@@ -16,7 +16,7 @@ extern "C" {
  * Performs all swizzling necesary to install tracing for network breadcrumb reporting.
  * This only lays the groundwork; you still need to set BSGURLSessionTracingDelegate.sink before anything gets reported.
  *
- * All of the initialisation for network breadcrumbs is coordinated from BugsnagRequestMonitor.
+ * All of the initialisation for network breadcrumbs is coordinated from BugsnagNetworkRequestPlugin.
  */
 void bsg_installNSURLSessionTracing(void);
 

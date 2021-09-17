@@ -7,21 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CB487A6326D7B109004F6B87 /* BugsnagRequestMonitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A5926D7B109004F6B87 /* BugsnagRequestMonitor.framework */; };
+		CB487A6326D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */; };
 		CB487A7526D7B12F004F6B87 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A7426D7B12F004F6B87 /* Bugsnag.framework */; };
-		CB487A8626D7B144004F6B87 /* BugsnagRequestMonitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A7D26D7B144004F6B87 /* BugsnagRequestMonitor.framework */; };
+		CB487A8626D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A7D26D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework */; };
 		CB487A9526D7B166004F6B87 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A9426D7B166004F6B87 /* Bugsnag.framework */; };
-		CB487AA626D7B172004F6B87 /* BugsnagRequestMonitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A9D26D7B172004F6B87 /* BugsnagRequestMonitor.framework */; };
+		CB487AA626D7B172004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A9D26D7B172004F6B87 /* BugsnagNetworkRequestPlugin.framework */; };
 		CB487AB526D7B191004F6B87 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487AB426D7B191004F6B87 /* Bugsnag.framework */; };
-		CB487ABF26D7B295004F6B87 /* BugsnagRequestMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487ABE26D7B295004F6B87 /* BugsnagRequestMonitor.m */; };
-		CB487AC026D7B295004F6B87 /* BugsnagRequestMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487ABE26D7B295004F6B87 /* BugsnagRequestMonitor.m */; };
-		CB487AC126D7B295004F6B87 /* BugsnagRequestMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487ABE26D7B295004F6B87 /* BugsnagRequestMonitor.m */; };
-		CB487AC226D7B9DB004F6B87 /* BugsnagRequestMonitorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487A6726D7B109004F6B87 /* BugsnagRequestMonitorTests.m */; };
-		CB487AC326D7B9DC004F6B87 /* BugsnagRequestMonitorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487A6726D7B109004F6B87 /* BugsnagRequestMonitorTests.m */; };
-		CB487AC426D7B9DD004F6B87 /* BugsnagRequestMonitorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487A6726D7B109004F6B87 /* BugsnagRequestMonitorTests.m */; };
-		CB487C3026DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagRequestMonitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CB487C3126DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagRequestMonitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CB487C3226DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagRequestMonitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB487ABF26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */; };
+		CB487AC026D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */; };
+		CB487AC126D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */; };
+		CB487AC226D7B9DB004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487A6726D7B109004F6B87 /* BugsnagNetworkRequestPluginTests.m */; };
+		CB487AC326D7B9DC004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487A6726D7B109004F6B87 /* BugsnagNetworkRequestPluginTests.m */; };
+		CB487AC426D7B9DD004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487A6726D7B109004F6B87 /* BugsnagNetworkRequestPluginTests.m */; };
+		CB487C3026DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB487C3126DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB487C3226DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB487F0626E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */; };
 		CB487F0726E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */; };
 		CB487F0826E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */; };
@@ -48,39 +48,39 @@
 			containerPortal = CB487A5026D7B109004F6B87 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = CB487A5826D7B109004F6B87;
-			remoteInfo = BugsnagRequestMonitor;
+			remoteInfo = BugsnagNetworkRequestPlugin;
 		};
 		CB487A8726D7B144004F6B87 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CB487A5026D7B109004F6B87 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = CB487A7C26D7B144004F6B87;
-			remoteInfo = BugsnagRequestMonitor;
+			remoteInfo = BugsnagNetworkRequestPlugin;
 		};
 		CB487AA726D7B172004F6B87 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CB487A5026D7B109004F6B87 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = CB487A9C26D7B172004F6B87;
-			remoteInfo = BugsnagRequestMonitor;
+			remoteInfo = BugsnagNetworkRequestPlugin;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		CB487A5926D7B109004F6B87 /* BugsnagRequestMonitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagRequestMonitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB487A5D26D7B109004F6B87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CB487A6226D7B109004F6B87 /* BugsnagRequestMonitor-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagRequestMonitor-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB487A6726D7B109004F6B87 /* BugsnagRequestMonitorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagRequestMonitorTests.m; sourceTree = "<group>"; };
+		CB487A6226D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagNetworkRequestPlugin-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB487A6726D7B109004F6B87 /* BugsnagNetworkRequestPluginTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagNetworkRequestPluginTests.m; sourceTree = "<group>"; };
 		CB487A6926D7B109004F6B87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CB487A7426D7B12F004F6B87 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB487A7D26D7B144004F6B87 /* BugsnagRequestMonitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagRequestMonitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB487A8526D7B144004F6B87 /* BugsnagRequestMonitor-macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagRequestMonitor-macOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB487A7D26D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB487A8526D7B144004F6B87 /* BugsnagNetworkRequestPlugin-macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagNetworkRequestPlugin-macOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB487A9426D7B166004F6B87 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB487A9D26D7B172004F6B87 /* BugsnagRequestMonitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagRequestMonitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB487AA526D7B172004F6B87 /* BugsnagRequestMonitor-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagRequestMonitor-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB487A9D26D7B172004F6B87 /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB487AA526D7B172004F6B87 /* BugsnagNetworkRequestPlugin-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagNetworkRequestPlugin-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB487AB426D7B191004F6B87 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB487ABE26D7B295004F6B87 /* BugsnagRequestMonitor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagRequestMonitor.m; sourceTree = "<group>"; };
-		CB487C2F26DE3EFB004F6B87 /* BugsnagRequestMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagRequestMonitor.h; sourceTree = "<group>"; };
+		CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagNetworkRequestPlugin.m; sourceTree = "<group>"; };
+		CB487C2F26DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagNetworkRequestPlugin.h; sourceTree = "<group>"; };
 		CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionTracingProxy.m; sourceTree = "<group>"; };
 		CB487F0126E8D0B0004F6B87 /* NSURLSession+Tracing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSession+Tracing.h"; sourceTree = "<group>"; };
 		CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionTracingDelegate.m; sourceTree = "<group>"; };
@@ -102,7 +102,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB487A6326D7B109004F6B87 /* BugsnagRequestMonitor.framework in Frameworks */,
+				CB487A6326D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,7 +118,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB487A8626D7B144004F6B87 /* BugsnagRequestMonitor.framework in Frameworks */,
+				CB487A8626D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,7 +134,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB487AA626D7B172004F6B87 /* BugsnagRequestMonitor.framework in Frameworks */,
+				CB487AA626D7B172004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,8 +144,8 @@
 		CB487A4F26D7B109004F6B87 = {
 			isa = PBXGroup;
 			children = (
-				CB487A5B26D7B109004F6B87 /* BugsnagRequestMonitor */,
-				CB487A6626D7B109004F6B87 /* BugsnagRequestMonitorTests */,
+				CB487A5B26D7B109004F6B87 /* BugsnagNetworkRequestPlugin */,
+				CB487A6626D7B109004F6B87 /* BugsnagNetworkRequestPluginTests */,
 				CB487A5A26D7B109004F6B87 /* Products */,
 				CB487A7326D7B12F004F6B87 /* Frameworks */,
 			);
@@ -154,22 +154,22 @@
 		CB487A5A26D7B109004F6B87 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CB487A5926D7B109004F6B87 /* BugsnagRequestMonitor.framework */,
-				CB487A6226D7B109004F6B87 /* BugsnagRequestMonitor-iOSTests.xctest */,
-				CB487A7D26D7B144004F6B87 /* BugsnagRequestMonitor.framework */,
-				CB487A8526D7B144004F6B87 /* BugsnagRequestMonitor-macOSTests.xctest */,
-				CB487A9D26D7B172004F6B87 /* BugsnagRequestMonitor.framework */,
-				CB487AA526D7B172004F6B87 /* BugsnagRequestMonitor-tvOSTests.xctest */,
+				CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */,
+				CB487A6226D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests.xctest */,
+				CB487A7D26D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework */,
+				CB487A8526D7B144004F6B87 /* BugsnagNetworkRequestPlugin-macOSTests.xctest */,
+				CB487A9D26D7B172004F6B87 /* BugsnagNetworkRequestPlugin.framework */,
+				CB487AA526D7B172004F6B87 /* BugsnagNetworkRequestPlugin-tvOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CB487A5B26D7B109004F6B87 /* BugsnagRequestMonitor */ = {
+		CB487A5B26D7B109004F6B87 /* BugsnagNetworkRequestPlugin */ = {
 			isa = PBXGroup;
 			children = (
 				CB487A5D26D7B109004F6B87 /* Info.plist */,
 				CB487C2D26DE3EFB004F6B87 /* include */,
-				CB487ABE26D7B295004F6B87 /* BugsnagRequestMonitor.m */,
+				CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */,
 				CB487F0326E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.h */,
 				CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */,
 				CB487F0426E8D0B0004F6B87 /* BSGURLSessionTracingProxy.h */,
@@ -177,16 +177,16 @@
 				CB487F0126E8D0B0004F6B87 /* NSURLSession+Tracing.h */,
 				CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */,
 			);
-			path = BugsnagRequestMonitor;
+			path = BugsnagNetworkRequestPlugin;
 			sourceTree = "<group>";
 		};
-		CB487A6626D7B109004F6B87 /* BugsnagRequestMonitorTests */ = {
+		CB487A6626D7B109004F6B87 /* BugsnagNetworkRequestPluginTests */ = {
 			isa = PBXGroup;
 			children = (
-				CB487A6726D7B109004F6B87 /* BugsnagRequestMonitorTests.m */,
+				CB487A6726D7B109004F6B87 /* BugsnagNetworkRequestPluginTests.m */,
 				CB487A6926D7B109004F6B87 /* Info.plist */,
 			);
-			path = BugsnagRequestMonitorTests;
+			path = BugsnagNetworkRequestPluginTests;
 			sourceTree = "<group>";
 		};
 		CB487A7326D7B12F004F6B87 /* Frameworks */ = {
@@ -202,17 +202,17 @@
 		CB487C2D26DE3EFB004F6B87 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				CB487C2E26DE3EFB004F6B87 /* BugsnagRequestMonitor */,
+				CB487C2E26DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin */,
 			);
 			path = include;
 			sourceTree = "<group>";
 		};
-		CB487C2E26DE3EFB004F6B87 /* BugsnagRequestMonitor */ = {
+		CB487C2E26DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin */ = {
 			isa = PBXGroup;
 			children = (
-				CB487C2F26DE3EFB004F6B87 /* BugsnagRequestMonitor.h */,
+				CB487C2F26DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h */,
 			);
-			path = BugsnagRequestMonitor;
+			path = BugsnagNetworkRequestPlugin;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -223,7 +223,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB487F0F26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
-				CB487C3026DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */,
+				CB487C3026DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h in Headers */,
 				CB487F1226E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */,
 				CB487F0926E8D0B1004F6B87 /* NSURLSession+Tracing.h in Headers */,
 			);
@@ -234,7 +234,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB487F1026E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
-				CB487C3126DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */,
+				CB487C3126DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h in Headers */,
 				CB487F1326E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */,
 				CB487F0A26E8D0B1004F6B87 /* NSURLSession+Tracing.h in Headers */,
 			);
@@ -245,7 +245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB487F1126E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
-				CB487C3226DE3EFB004F6B87 /* BugsnagRequestMonitor.h in Headers */,
+				CB487C3226DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h in Headers */,
 				CB487F1426E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */,
 				CB487F0B26E8D0B1004F6B87 /* NSURLSession+Tracing.h in Headers */,
 			);
@@ -254,9 +254,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		CB487A5826D7B109004F6B87 /* BugsnagRequestMonitor-iOS */ = {
+		CB487A5826D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CB487A6D26D7B109004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitor-iOS" */;
+			buildConfigurationList = CB487A6D26D7B109004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-iOS" */;
 			buildPhases = (
 				CB487A5426D7B109004F6B87 /* Headers */,
 				CB487A5526D7B109004F6B87 /* Sources */,
@@ -267,14 +267,14 @@
 			);
 			dependencies = (
 			);
-			name = "BugsnagRequestMonitor-iOS";
-			productName = BugsnagRequestMonitor;
-			productReference = CB487A5926D7B109004F6B87 /* BugsnagRequestMonitor.framework */;
+			name = "BugsnagNetworkRequestPlugin-iOS";
+			productName = BugsnagNetworkRequestPlugin;
+			productReference = CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		CB487A6126D7B109004F6B87 /* BugsnagRequestMonitor-iOSTests */ = {
+		CB487A6126D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CB487A7026D7B109004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitor-iOSTests" */;
+			buildConfigurationList = CB487A7026D7B109004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-iOSTests" */;
 			buildPhases = (
 				CB487A5E26D7B109004F6B87 /* Sources */,
 				CB487A5F26D7B109004F6B87 /* Frameworks */,
@@ -285,14 +285,14 @@
 			dependencies = (
 				CB487A6526D7B109004F6B87 /* PBXTargetDependency */,
 			);
-			name = "BugsnagRequestMonitor-iOSTests";
-			productName = BugsnagRequestMonitorTests;
-			productReference = CB487A6226D7B109004F6B87 /* BugsnagRequestMonitor-iOSTests.xctest */;
+			name = "BugsnagNetworkRequestPlugin-iOSTests";
+			productName = BugsnagNetworkRequestPluginTests;
+			productReference = CB487A6226D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		CB487A7C26D7B144004F6B87 /* BugsnagRequestMonitor-macOS */ = {
+		CB487A7C26D7B144004F6B87 /* BugsnagNetworkRequestPlugin-macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CB487A8E26D7B144004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitor-macOS" */;
+			buildConfigurationList = CB487A8E26D7B144004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-macOS" */;
 			buildPhases = (
 				CB487A7826D7B144004F6B87 /* Headers */,
 				CB487A7926D7B144004F6B87 /* Sources */,
@@ -303,14 +303,14 @@
 			);
 			dependencies = (
 			);
-			name = "BugsnagRequestMonitor-macOS";
-			productName = BugsnagRequestMonitor;
-			productReference = CB487A7D26D7B144004F6B87 /* BugsnagRequestMonitor.framework */;
+			name = "BugsnagNetworkRequestPlugin-macOS";
+			productName = BugsnagNetworkRequestPlugin;
+			productReference = CB487A7D26D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		CB487A8426D7B144004F6B87 /* BugsnagRequestMonitor-macOSTests */ = {
+		CB487A8426D7B144004F6B87 /* BugsnagNetworkRequestPlugin-macOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CB487A9126D7B144004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitor-macOSTests" */;
+			buildConfigurationList = CB487A9126D7B144004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-macOSTests" */;
 			buildPhases = (
 				CB487A8126D7B144004F6B87 /* Sources */,
 				CB487A8226D7B144004F6B87 /* Frameworks */,
@@ -321,14 +321,14 @@
 			dependencies = (
 				CB487A8826D7B144004F6B87 /* PBXTargetDependency */,
 			);
-			name = "BugsnagRequestMonitor-macOSTests";
-			productName = BugsnagRequestMonitorTests;
-			productReference = CB487A8526D7B144004F6B87 /* BugsnagRequestMonitor-macOSTests.xctest */;
+			name = "BugsnagNetworkRequestPlugin-macOSTests";
+			productName = BugsnagNetworkRequestPluginTests;
+			productReference = CB487A8526D7B144004F6B87 /* BugsnagNetworkRequestPlugin-macOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		CB487A9C26D7B172004F6B87 /* BugsnagRequestMonitor-tvOS */ = {
+		CB487A9C26D7B172004F6B87 /* BugsnagNetworkRequestPlugin-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CB487AAE26D7B172004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitor-tvOS" */;
+			buildConfigurationList = CB487AAE26D7B172004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-tvOS" */;
 			buildPhases = (
 				CB487A9826D7B172004F6B87 /* Headers */,
 				CB487A9926D7B172004F6B87 /* Sources */,
@@ -339,14 +339,14 @@
 			);
 			dependencies = (
 			);
-			name = "BugsnagRequestMonitor-tvOS";
-			productName = BugsnagRequestMonitor;
-			productReference = CB487A9D26D7B172004F6B87 /* BugsnagRequestMonitor.framework */;
+			name = "BugsnagNetworkRequestPlugin-tvOS";
+			productName = BugsnagNetworkRequestPlugin;
+			productReference = CB487A9D26D7B172004F6B87 /* BugsnagNetworkRequestPlugin.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		CB487AA426D7B172004F6B87 /* BugsnagRequestMonitor-tvOSTests */ = {
+		CB487AA426D7B172004F6B87 /* BugsnagNetworkRequestPlugin-tvOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CB487AB126D7B172004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitor-tvOSTests" */;
+			buildConfigurationList = CB487AB126D7B172004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-tvOSTests" */;
 			buildPhases = (
 				CB487AA126D7B172004F6B87 /* Sources */,
 				CB487AA226D7B172004F6B87 /* Frameworks */,
@@ -357,9 +357,9 @@
 			dependencies = (
 				CB487AA826D7B172004F6B87 /* PBXTargetDependency */,
 			);
-			name = "BugsnagRequestMonitor-tvOSTests";
-			productName = BugsnagRequestMonitorTests;
-			productReference = CB487AA526D7B172004F6B87 /* BugsnagRequestMonitor-tvOSTests.xctest */;
+			name = "BugsnagNetworkRequestPlugin-tvOSTests";
+			productName = BugsnagNetworkRequestPluginTests;
+			productReference = CB487AA526D7B172004F6B87 /* BugsnagNetworkRequestPlugin-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -390,7 +390,7 @@
 					};
 				};
 			};
-			buildConfigurationList = CB487A5326D7B109004F6B87 /* Build configuration list for PBXProject "BugsnagRequestMonitor" */;
+			buildConfigurationList = CB487A5326D7B109004F6B87 /* Build configuration list for PBXProject "BugsnagNetworkRequestPlugin" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -403,12 +403,12 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CB487A5826D7B109004F6B87 /* BugsnagRequestMonitor-iOS */,
-				CB487A6126D7B109004F6B87 /* BugsnagRequestMonitor-iOSTests */,
-				CB487A7C26D7B144004F6B87 /* BugsnagRequestMonitor-macOS */,
-				CB487A8426D7B144004F6B87 /* BugsnagRequestMonitor-macOSTests */,
-				CB487A9C26D7B172004F6B87 /* BugsnagRequestMonitor-tvOS */,
-				CB487AA426D7B172004F6B87 /* BugsnagRequestMonitor-tvOSTests */,
+				CB487A5826D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOS */,
+				CB487A6126D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests */,
+				CB487A7C26D7B144004F6B87 /* BugsnagNetworkRequestPlugin-macOS */,
+				CB487A8426D7B144004F6B87 /* BugsnagNetworkRequestPlugin-macOSTests */,
+				CB487A9C26D7B172004F6B87 /* BugsnagNetworkRequestPlugin-tvOS */,
+				CB487AA426D7B172004F6B87 /* BugsnagNetworkRequestPlugin-tvOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -464,7 +464,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB487F1526E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */,
-				CB487ABF26D7B295004F6B87 /* BugsnagRequestMonitor.m in Sources */,
+				CB487ABF26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m in Sources */,
 				CB487F0C26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */,
 				CB487F0626E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */,
 			);
@@ -474,7 +474,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB487AC226D7B9DB004F6B87 /* BugsnagRequestMonitorTests.m in Sources */,
+				CB487AC226D7B9DB004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,7 +483,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB487F1626E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */,
-				CB487AC026D7B295004F6B87 /* BugsnagRequestMonitor.m in Sources */,
+				CB487AC026D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m in Sources */,
 				CB487F0D26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */,
 				CB487F0726E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */,
 			);
@@ -493,7 +493,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB487AC326D7B9DC004F6B87 /* BugsnagRequestMonitorTests.m in Sources */,
+				CB487AC326D7B9DC004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -502,7 +502,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB487F1726E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */,
-				CB487AC126D7B295004F6B87 /* BugsnagRequestMonitor.m in Sources */,
+				CB487AC126D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m in Sources */,
 				CB487F0E26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */,
 				CB487F0826E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */,
 			);
@@ -512,7 +512,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB487AC426D7B9DD004F6B87 /* BugsnagRequestMonitorTests.m in Sources */,
+				CB487AC426D7B9DD004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -521,17 +521,17 @@
 /* Begin PBXTargetDependency section */
 		CB487A6526D7B109004F6B87 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CB487A5826D7B109004F6B87 /* BugsnagRequestMonitor-iOS */;
+			target = CB487A5826D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOS */;
 			targetProxy = CB487A6426D7B109004F6B87 /* PBXContainerItemProxy */;
 		};
 		CB487A8826D7B144004F6B87 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CB487A7C26D7B144004F6B87 /* BugsnagRequestMonitor-macOS */;
+			target = CB487A7C26D7B144004F6B87 /* BugsnagNetworkRequestPlugin-macOS */;
 			targetProxy = CB487A8726D7B144004F6B87 /* PBXContainerItemProxy */;
 		};
 		CB487AA826D7B172004F6B87 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CB487A9C26D7B172004F6B87 /* BugsnagRequestMonitor-tvOS */;
+			target = CB487A9C26D7B172004F6B87 /* BugsnagNetworkRequestPlugin-tvOS */;
 			targetProxy = CB487AA726D7B172004F6B87 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -734,7 +734,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = BugsnagRequestMonitor/Info.plist;
+				INFOPLIST_FILE = BugsnagNetworkRequestPlugin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -742,8 +742,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagRequestMonitor;
-				PRODUCT_NAME = BugsnagRequestMonitor;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkRequestPlugin;
+				PRODUCT_NAME = BugsnagNetworkRequestPlugin;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -758,7 +758,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = BugsnagRequestMonitor/Info.plist;
+				INFOPLIST_FILE = BugsnagNetworkRequestPlugin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -766,8 +766,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagRequestMonitor;
-				PRODUCT_NAME = BugsnagRequestMonitor;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkRequestPlugin;
+				PRODUCT_NAME = BugsnagNetworkRequestPlugin;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -780,13 +780,13 @@
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_UNUSED_PARAMETER = NO;
-				INFOPLIST_FILE = BugsnagRequestMonitorTests/Info.plist;
+				INFOPLIST_FILE = BugsnagNetworkRequestPluginTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagRequestMonitorTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkRequestPluginTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -799,13 +799,13 @@
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_UNUSED_PARAMETER = NO;
-				INFOPLIST_FILE = BugsnagRequestMonitorTests/Info.plist;
+				INFOPLIST_FILE = BugsnagNetworkRequestPluginTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagRequestMonitorTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkRequestPluginTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -821,7 +821,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = BugsnagRequestMonitor/Info.plist;
+				INFOPLIST_FILE = BugsnagNetworkRequestPlugin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -829,8 +829,8 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagRequestMonitor;
-				PRODUCT_NAME = BugsnagRequestMonitor;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkRequestPlugin;
+				PRODUCT_NAME = BugsnagNetworkRequestPlugin;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
@@ -846,7 +846,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = BugsnagRequestMonitor/Info.plist;
+				INFOPLIST_FILE = BugsnagNetworkRequestPlugin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -854,8 +854,8 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagRequestMonitor;
-				PRODUCT_NAME = BugsnagRequestMonitor;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkRequestPlugin;
+				PRODUCT_NAME = BugsnagNetworkRequestPlugin;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
@@ -869,14 +869,14 @@
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_UNUSED_PARAMETER = NO;
-				INFOPLIST_FILE = BugsnagRequestMonitorTests/Info.plist;
+				INFOPLIST_FILE = BugsnagNetworkRequestPluginTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagRequestMonitorTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkRequestPluginTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -890,14 +890,14 @@
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_UNUSED_PARAMETER = NO;
-				INFOPLIST_FILE = BugsnagRequestMonitorTests/Info.plist;
+				INFOPLIST_FILE = BugsnagNetworkRequestPluginTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagRequestMonitorTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkRequestPluginTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -912,15 +912,15 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = BugsnagRequestMonitor/Info.plist;
+				INFOPLIST_FILE = BugsnagNetworkRequestPlugin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagRequestMonitor;
-				PRODUCT_NAME = BugsnagRequestMonitor;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkRequestPlugin;
+				PRODUCT_NAME = BugsnagNetworkRequestPlugin;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -937,15 +937,15 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = BugsnagRequestMonitor/Info.plist;
+				INFOPLIST_FILE = BugsnagNetworkRequestPlugin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagRequestMonitor;
-				PRODUCT_NAME = BugsnagRequestMonitor;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkRequestPlugin;
+				PRODUCT_NAME = BugsnagNetworkRequestPlugin;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -960,13 +960,13 @@
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_UNUSED_PARAMETER = NO;
-				INFOPLIST_FILE = BugsnagRequestMonitorTests/Info.plist;
+				INFOPLIST_FILE = BugsnagNetworkRequestPluginTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagRequestMonitorTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkRequestPluginTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -981,13 +981,13 @@
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_UNUSED_PARAMETER = NO;
-				INFOPLIST_FILE = BugsnagRequestMonitorTests/Info.plist;
+				INFOPLIST_FILE = BugsnagNetworkRequestPluginTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagRequestMonitorTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagNetworkRequestPluginTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -998,7 +998,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CB487A5326D7B109004F6B87 /* Build configuration list for PBXProject "BugsnagRequestMonitor" */ = {
+		CB487A5326D7B109004F6B87 /* Build configuration list for PBXProject "BugsnagNetworkRequestPlugin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CB487A6B26D7B109004F6B87 /* Debug */,
@@ -1007,7 +1007,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CB487A6D26D7B109004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitor-iOS" */ = {
+		CB487A6D26D7B109004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CB487A6E26D7B109004F6B87 /* Debug */,
@@ -1016,7 +1016,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CB487A7026D7B109004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitor-iOSTests" */ = {
+		CB487A7026D7B109004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-iOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CB487A7126D7B109004F6B87 /* Debug */,
@@ -1025,7 +1025,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CB487A8E26D7B144004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitor-macOS" */ = {
+		CB487A8E26D7B144004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CB487A8F26D7B144004F6B87 /* Debug */,
@@ -1034,7 +1034,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CB487A9126D7B144004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitor-macOSTests" */ = {
+		CB487A9126D7B144004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-macOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CB487A9226D7B144004F6B87 /* Debug */,
@@ -1043,7 +1043,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CB487AAE26D7B172004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitor-tvOS" */ = {
+		CB487AAE26D7B172004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CB487AAF26D7B172004F6B87 /* Debug */,
@@ -1052,7 +1052,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CB487AB126D7B172004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitor-tvOSTests" */ = {
+		CB487AB126D7B172004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-tvOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CB487AB226D7B172004F6B87 /* Debug */,

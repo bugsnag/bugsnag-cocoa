@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CB487A9C26D7B172004F6B87"
-               BuildableName = "BugsnagRequestMonitor.framework"
-               BlueprintName = "BugsnagRequestMonitor-tvOS"
-               ReferencedContainer = "container:BugsnagRequestMonitor.xcodeproj">
+               BlueprintIdentifier = "CB487A5826D7B109004F6B87"
+               BuildableName = "BugsnagNetworkRequestPlugin.framework"
+               BlueprintName = "BugsnagNetworkRequestPlugin-iOS"
+               ReferencedContainer = "container:BugsnagNetworkRequestPlugin.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CB487AA426D7B172004F6B87"
-               BuildableName = "BugsnagRequestMonitor-tvOSTests.xctest"
-               BlueprintName = "BugsnagRequestMonitor-tvOSTests"
-               ReferencedContainer = "container:BugsnagRequestMonitor.xcodeproj">
+               BlueprintIdentifier = "CB487A6126D7B109004F6B87"
+               BuildableName = "BugsnagNetworkRequestPlugin-iOSTests.xctest"
+               BlueprintName = "BugsnagNetworkRequestPlugin-iOSTests"
+               ReferencedContainer = "container:BugsnagNetworkRequestPlugin.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -60,10 +60,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CB487A9C26D7B172004F6B87"
-            BuildableName = "BugsnagRequestMonitor.framework"
-            BlueprintName = "BugsnagRequestMonitor-tvOS"
-            ReferencedContainer = "container:BugsnagRequestMonitor.xcodeproj">
+            BlueprintIdentifier = "CB487A5826D7B109004F6B87"
+            BuildableName = "BugsnagNetworkRequestPlugin.framework"
+            BlueprintName = "BugsnagNetworkRequestPlugin-iOS"
+            ReferencedContainer = "container:BugsnagNetworkRequestPlugin.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

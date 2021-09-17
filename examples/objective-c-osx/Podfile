@@ -1,6 +1,6 @@
 target 'objective-c-osx' do
     platform :osx, "10.11"
     pod 'Bugsnag', :path => "../.."
-    pod 'BugsnagRequestMonitor', :path => "../.."
+    pod 'BugsnagNetworkRequestPlugin', :path => "../.."
 end
 

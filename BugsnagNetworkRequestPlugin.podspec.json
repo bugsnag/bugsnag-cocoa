@@ -1,5 +1,5 @@
 {
-  "name": "BugsnagRequestMonitor",
+  "name": "BugsnagNetworkRequestPlugin",
   "version": "6.11.0",
   "summary": "Network request monitoring support for Bugsnag.",
   "homepage": "https://bugsnag.com",
@@ -20,11 +20,11 @@
     "tvos": "9.2"
   },
   "source_files": [
-    "BugsnagRequestMonitor/BugsnagRequestMonitor/{**/,}*.{m,h,mm,c}"
+    "BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin/{**/,}*.{m,h,mm,c}"
   ],
   "requires_arc": true,
   "prefix_header_file": false,
   "public_header_files": [
-    "BugsnagRequestMonitor/BugsnagRequestMonitor/include/BugsnagRequestMonitor/*.h"
+    "BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin/include/BugsnagNetworkRequestPlugin/*.h"
   ]
 }

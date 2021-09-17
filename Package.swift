@@ -10,7 +10,7 @@ let package = Package(
     ],
     products: [
         .library(name: "Bugsnag", targets: ["Bugsnag"]),
-        .library(name: "BugsnagRequestMonitor", targets: ["BugsnagRequestMonitor"]),
+        .library(name: "BugsnagNetworkRequestPlugin", targets: ["BugsnagNetworkRequestPlugin"]),
     ],
     dependencies: [],
     targets: [
@@ -43,13 +43,13 @@ let package = Package(
             ]
         ),
         .target(
-            name: "BugsnagRequestMonitor",
+            name: "BugsnagNetworkRequestPlugin",
             dependencies: ["Bugsnag"],
-            path: "BugsnagRequestMonitor/BugsnagRequestMonitor",
+            path: "BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin",
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("."),
-                .headerSearchPath("include/BugsnagRequestMonitor"),
+                .headerSearchPath("include/BugsnagNetworkRequestPlugin"),
             ]
         ),
     ],
