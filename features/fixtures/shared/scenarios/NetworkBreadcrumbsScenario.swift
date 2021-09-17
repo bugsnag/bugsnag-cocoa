@@ -13,25 +13,25 @@ class NetworkBreadcrumbsScenario : Scenario {
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
         self.config.add(BugsnagRequestMonitor())
-        
+
         super.startBugsnag()
     }
 
     override func run() {
 
         // Make some network requests so that automatic network breadcrumbs are left
-        query(address: "http://bs-local.com:9340/?status=444")
-        query(address: "http://bs-local.com:9340/?delay_ms=3000")
+        query(address: "http://bs-local.com:9340/reflect/?status=444")
+        query(address: "http://bs-local.com:9340/reflect/?delay_ms=3000")
 
         // Send a handled error
         let error = NSError(domain: "NetworkBreadcrumbsScenario", code: 100, userInfo: nil)
         Bugsnag.notifyError(error)
     }
-    
+
     func query(address: String) {
         let url = URL(string: address)!
         let semaphore = DispatchSemaphore(value: 0)
-        
+
         let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
             semaphore.signal()
         }
