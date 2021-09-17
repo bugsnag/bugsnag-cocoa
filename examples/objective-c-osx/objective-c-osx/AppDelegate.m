@@ -11,9 +11,9 @@
 
 /**
  * To enable network breadcrumbs, import the plugin and then add to your config (see configuration section further down).
- * You must also update your Podfile to include pod BugsnagRequestMonitor.
+ * You must also update your Podfile to include pod BugsnagNetworkRequestPlugin.
  */
-#import <BugsnagRequestMonitor/BugsnagRequestMonitor.h>
+#import <BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin.h>
 
 @interface AppDelegate ()
 
@@ -70,9 +70,9 @@
 //    config.enabledErrorTypes.machExceptions = YES;
     
     /**
-     * To enable network breadcrumbs, add the BugsnagRequestMonitor plugin to your config.
+     * To enable network breadcrumbs, add the BugsnagNetworkRequestPlugin plugin to your config.
      */
-//    [config addPlugin:[[BugsnagRequestMonitor alloc] init]];
+//    [config addPlugin:[[BugsnagNetworkRequestPlugin alloc] init]];
 
     /**
      If there's information that you do not wish sent to your Bugsnag dashboard, such as passwords or user information, you can set the keys as redacted. When a notification is sent to Bugsnag all keys matching your set filters will be redacted before they leave your application.
