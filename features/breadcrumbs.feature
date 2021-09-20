@@ -56,8 +56,9 @@ Feature: Attaching a series of notable events leading up to errors
     And the event has a "state" breadcrumb named "Scene Activated"
 
   Scenario: Network breadcrumbs
-    When I run "NetworkBreadcrumbsScenario"
-    And I wait to receive an error
+    When I start the document server
+    And I run "NetworkBreadcrumbsScenario"
+    Then I wait to receive an error
     And the event "breadcrumbs.1.timestamp" is a timestamp
     And the event "breadcrumbs.1.name" equals "NSURLSession failed"
     And the event "breadcrumbs.1.type" equals "request"
