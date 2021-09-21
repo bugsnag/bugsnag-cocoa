@@ -302,16 +302,10 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
     [client start];
 
-    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 0);
-
     id badMetadata = @{
         @"test": @"string key is fine",
         @85 : @"numeric key would break JSON"
     };
-
-    [client leaveBreadcrumbWithMessage:@"test msg" metadata:badMetadata andType:BSGBreadcrumbTypeUser];
-
-    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 0, @"A breadcrumb with invalid JSON payload should be rejected");
 
     [client notifyError:[NSError errorWithDomain:@"test" code:0 userInfo:badMetadata]];
 }

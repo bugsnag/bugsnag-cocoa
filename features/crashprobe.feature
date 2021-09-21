@@ -67,8 +67,7 @@ Feature: Reporting crash events
 
   Scenario: Stack overflow
     When I run "StackOverflowScenario"
-    # Present to allow the scenario to crash
-    And I wait for 3 seconds
+    And the app is not running
     And I relaunch the app
     And I configure Bugsnag for "StackOverflowScenario"
     And I wait to receive an error

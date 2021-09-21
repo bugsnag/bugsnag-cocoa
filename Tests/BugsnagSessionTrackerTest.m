@@ -11,7 +11,7 @@
 #import "BugsnagUser.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagSession+Private.h"
-#import "BugsnagSessionTracker+Private.h"
+#import "BugsnagSessionTracker.h"
 #import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagTestConstants.h"
 
@@ -153,5 +153,29 @@
     XCTAssertNotNil(self.sessionTracker.currentSession);
 }
 
+- (void)testHandleAppForegroundEvent {
+    [self.sessionTracker handleAppForegroundEvent];
+    XCTAssertNotNil(self.sessionTracker.runningSession, @"There should be a running session after calling handleAppForegroundEvent");
+
+    NSString *sessionId = [self.sessionTracker.runningSession.id copy];
+    [self.sessionTracker handleAppForegroundEvent];
+    XCTAssertEqualObjects(self.sessionTracker.runningSession.id, sessionId, @"A new session should not be started if previous session did not end");
+}
+
+- (void)testStartInBackground {
+    [self.sessionTracker startWithNotificationCenter:NSNotificationCenter.defaultCenter isInForeground:NO];
+    XCTAssertNil(self.sessionTracker.runningSession, @"There should be no running session after starting tracker in background");
+#if TARGET_OS_IOS || TARGET_OS_TV
+    [NSNotificationCenter.defaultCenter postNotificationName:UIApplicationDidBecomeActiveNotification object:nil];
+#elif TARGET_OS_OSX
+    [NSNotificationCenter.defaultCenter postNotificationName:NSApplicationDidBecomeActiveNotification object:nil];
+#endif
+    XCTAssertNotNil(self.sessionTracker.runningSession, @"There should be a running session after receiving didBecomeActiveNotification");
+}
+
+- (void)testStartInForeground {
+    [self.sessionTracker startWithNotificationCenter:NSNotificationCenter.defaultCenter isInForeground:YES];
+    XCTAssertNotNil(self.sessionTracker.runningSession, @"There should be a running session after starting tracker in foreground");
+}
 
 @end
