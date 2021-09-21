@@ -1,6 +1,6 @@
 //
-//  BugsnagRequestMonitor.h
-//  BugsnagRequestMonitor
+//  BugsnagNetworkRequestPlugin.h
+//  BugsnagNetworkRequestPlugin
 //
 //  Created by Karl Stenerud on 26.08.21.
 //
@@ -10,12 +10,12 @@
 @protocol BugsnagPlugin;
 
 /**
- * BugsnagRequestMonitor produces network breadcrumbs for all URL requests made via NSURLSession.
+ * BugsnagNetworkRequestPlugin produces network breadcrumbs for all URL requests made via NSURLSession.
  *
  * Note: This plugin will only report breadcrumbs in the following operating system versions:
  * - iOS 10.0+
  * - tvOS 10.0+
  * - macOS 10.12+
  */
-@interface BugsnagRequestMonitor : NSObject<BugsnagPlugin>
+@interface BugsnagNetworkRequestPlugin : NSObject<BugsnagPlugin>
 @end

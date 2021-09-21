@@ -1,6 +1,6 @@
 //
-//  BugsnagRequestMonitorTests.m
-//  BugsnagRequestMonitorTests
+//  BugsnagNetworkRequestPluginTests.m
+//  BugsnagNetworkRequestPluginTests
 //
 //  Created by Karl Stenerud on 26.08.21.
 //
@@ -48,9 +48,9 @@ static NSData *mock_nextData;
 
 @end
 
-#pragma mark BugsnagRequestMonitorTests
+#pragma mark BugsnagNetworkRequestPluginTests
 
-@interface BugsnagRequestMonitorTests : XCTestCase <BSGBreadcrumbSink>
+@interface BugsnagNetworkRequestPluginTests : XCTestCase <BSGBreadcrumbSink>
 
 @property(nonatomic, strong) NSMutableArray<BugsnagBreadcrumb *> *breadcrumbs;
 
@@ -60,7 +60,7 @@ static NSData *mock_nextData;
 + (nullable instancetype)breadcrumbWithBlock:(void (^)(BugsnagBreadcrumb *))block;
 @end
 
-@implementation BugsnagRequestMonitorTests
+@implementation BugsnagNetworkRequestPluginTests
 
 - (void)leaveBreadcrumbWithMessage:(nonnull NSString *)message
                           metadata:(nullable NSDictionary *)metadata
@@ -116,7 +116,7 @@ static NSData *mock_nextData;
     XCTAssertEqual(crumb.type, BSGBreadcrumbTypeRequest);
     XCTAssertEqualObjects(crumb.message, message);
     NSDictionary *metadata = crumb.metadata;
-    XCTAssertGreaterThan([metadata[@"duration"] floatValue], 0);
+    // duration will be tested in e2e tests
     XCTAssertEqualObjects(metadata[@"method"], method);
     XCTAssertEqualObjects(metadata[@"requestContentLength"], @(reqLength));
     XCTAssertEqualObjects(metadata[@"responseContentLength"], @(respLength));

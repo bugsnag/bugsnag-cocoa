@@ -1,6 +1,6 @@
 //
-//  BugsnagRequestMonitor.m
-//  BugsnagRequestMonitor
+//  BugsnagNetworkRequestPlugin.m
+//  BugsnagNetworkRequestPlugin
 //
 //  Created by Karl Stenerud on 26.08.21.
 //
@@ -12,11 +12,11 @@
 
 #import <Bugsnag/BugsnagClient.h>
 #import <Bugsnag/BugsnagPlugin.h>
-#import "BugsnagRequestMonitor.h"
+#import "BugsnagNetworkRequestPlugin.h"
 #import "BSGURLSessionTracingDelegate.h"
 #import "NSURLSession+Tracing.h"
 
-@implementation BugsnagRequestMonitor
+@implementation BugsnagNetworkRequestPlugin
 
 + (void)load {
     if (@available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *)) {

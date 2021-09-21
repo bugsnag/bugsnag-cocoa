@@ -101,7 +101,7 @@ Feature: Barebone tests
     And the event "severityReason.type" equals "handledError"
     And the event "severityReason.unhandledOverridden" is null
     And the event "unhandled" is false
-    And the exception "errorClass" equals "__SwiftNativeNSError"
+    And the exception "errorClass" matches "SwiftNativeNSError"
     And the exception "message" equals "The data couldn’t be read because it isn’t in the correct format."
     And the exception "type" equals "cocoa"
     And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
@@ -153,7 +153,7 @@ Feature: Barebone tests
     And the event "severityReason.unhandledOverridden" is null
     And the event "threads.0.errorReportingThread" is true
     And the event "threads.0.id" equals "0"
-    And the event "threads.0.stacktrace.0.method" matches "(assertionFailure|<redacted>)"
+    And the event "threads.0.stacktrace.0.method" matches "(assertionFailure|fatalErrorMessage|<redacted>)"
     And the event "unhandled" is true
     And the event "user.email" equals "barfoo@example.com"
     And the event "user.id" equals "barfoo"
@@ -170,7 +170,7 @@ Feature: Barebone tests
     And the error payload field "events.0.device.totalMemory" is an integer
     And the error payload field "events.0.threads" is a non-empty array
     And the error payload field "events.0.threads.1" is not null
-    And the "method" of stack frame 0 matches "(assertionFailure|<redacted>)"
+    And the "method" of stack frame 0 matches "(assertionFailure|fatalErrorMessage|<redacted>)"
     And the stacktrace is valid for the event
 
   @skip_macos

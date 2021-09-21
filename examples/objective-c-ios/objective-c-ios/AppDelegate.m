@@ -9,6 +9,12 @@
 #import "AppDelegate.h"
 #import <Bugsnag/Bugsnag.h>
 
+/**
+ * To enable network breadcrumbs, import the plugin and then add to your config (see configuration section further down).
+ * You must also update your Podfile to include pod BugsnagNetworkRequestPlugin.
+ */
+#import <BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -59,6 +65,11 @@
 //    config.enabledErrorTypes.unhandledExceptions = YES;
 //    config.enabledErrorTypes.machExceptions = YES;
     
+    /**
+     * To enable network breadcrumbs, add the BugsnagNetworkRequestPlugin plugin to your config.
+     */
+//    [config addPlugin:[[BugsnagNetworkRequestPlugin alloc] init]];
+
     /**
      If there's information that you do not wish sent to your Bugsnag dashboard, such as passwords or user information, you can set the keys as redacted. When a notification is sent to Bugsnag all keys matching your set filters will be redacted before they leave your application.
      All automatically captured data can be found here: https://docs.bugsnag.com/platforms/ios/automatically-captured-data/.

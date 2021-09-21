@@ -94,7 +94,7 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
             @"method": stringOrEmpty(req.HTTPMethod),
             @"url": stringOrEmpty(urlComponents.string),
             @"urlParams": queryItemsAsDict(urlComponents.queryItems),
-            @"duration": @(metrics.taskInterval.duration),
+            @"duration": @((unsigned)(metrics.taskInterval.duration * 1000)),
             @"requestContentLength": @(requestContentLength),
             @"responseContentLength": @(responseContentLength)
         } andType:BSGBreadcrumbTypeRequest];

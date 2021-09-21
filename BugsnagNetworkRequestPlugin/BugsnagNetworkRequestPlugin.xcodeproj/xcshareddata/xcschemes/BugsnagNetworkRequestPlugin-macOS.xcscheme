@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CB487A7C26D7B144004F6B87"
-               BuildableName = "BugsnagRequestMonitor.framework"
-               BlueprintName = "BugsnagRequestMonitor-macOS"
-               ReferencedContainer = "container:BugsnagRequestMonitor.xcodeproj">
+               BuildableName = "BugsnagNetworkRequestPlugin.framework"
+               BlueprintName = "BugsnagNetworkRequestPlugin-macOS"
+               ReferencedContainer = "container:BugsnagNetworkRequestPlugin.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CB487A8426D7B144004F6B87"
-               BuildableName = "BugsnagRequestMonitor-macOSTests.xctest"
-               BlueprintName = "BugsnagRequestMonitor-macOSTests"
-               ReferencedContainer = "container:BugsnagRequestMonitor.xcodeproj">
+               BuildableName = "BugsnagNetworkRequestPlugin-macOSTests.xctest"
+               BlueprintName = "BugsnagNetworkRequestPlugin-macOSTests"
+               ReferencedContainer = "container:BugsnagNetworkRequestPlugin.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -61,9 +61,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CB487A7C26D7B144004F6B87"
-            BuildableName = "BugsnagRequestMonitor.framework"
-            BlueprintName = "BugsnagRequestMonitor-macOS"
-            ReferencedContainer = "container:BugsnagRequestMonitor.xcodeproj">
+            BuildableName = "BugsnagNetworkRequestPlugin.framework"
+            BlueprintName = "BugsnagNetworkRequestPlugin-macOS"
+            ReferencedContainer = "container:BugsnagNetworkRequestPlugin.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
