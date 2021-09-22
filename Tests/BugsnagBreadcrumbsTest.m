@@ -399,6 +399,11 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 
     XCTAssertEqualObjects(bc7[@"name"], @"user message");
     XCTAssertEqualObjects(bc7[@"type"], @"user");
+
+    [client leaveBreadcrumbWithMessage:@"Invalid metadata" metadata:@{@"date": [NSDate distantFuture]} andType:BSGBreadcrumbTypeUser];
+    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 9, @"Invalid metadata should not prevent a breadcrumb being left");
+    XCTAssertEqualObjects(client.breadcrumbs.breadcrumbs[8].message, @"Invalid metadata");
+    XCTAssertEqualObjects(client.breadcrumbs.breadcrumbs[8].metadata.allKeys, @[@"date"]);
 }
 
 /**
