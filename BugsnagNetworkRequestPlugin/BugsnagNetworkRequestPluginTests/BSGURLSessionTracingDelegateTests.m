@@ -15,6 +15,27 @@
 
 @implementation BSGURLSessionTracingDelegateTests
 
+- (void)testUrlParamsForQueryItems {
+#define TEST(url, expected) \
+XCTAssertEqualObjects([BSGURLSessionTracingDelegate urlParamsForQueryItems:[NSURLComponents componentsWithString:url].queryItems], expected)
+    
+    TEST(@"http://example.com", nil);
+    
+    TEST(@"http://example.com?", @{});
+    
+    TEST(@"http://example.com?foo=bar", @{@"foo": @"bar"});
+    
+    TEST(@"http://example.com?foo=bar&bar=baz", (@{@"foo": @"bar", @"bar": @"baz"}));
+    
+    // Multiple query items with the same name should be represented as arrays.
+    TEST(@"http://example.com?foo=bar&foo=baz", (@{@"foo": @[@"bar", @"baz"]}));
+    
+    // Query items with no value should be represented as empty string.
+    TEST(@"http://example.com?foo=bar&foo=baz&foo=&sort=name", (@{@"foo": @[@"bar", @"baz", @""], @"sort": @"name"}));
+
+#undef TEST
+}
+
 - (void)testURLStringWithoutQueryForComponents {
 #define TEST(url, expected) \
 XCTAssertEqualObjects([BSGURLSessionTracingDelegate URLStringWithoutQueryForComponents:[NSURLComponents componentsWithString:url]], expected)

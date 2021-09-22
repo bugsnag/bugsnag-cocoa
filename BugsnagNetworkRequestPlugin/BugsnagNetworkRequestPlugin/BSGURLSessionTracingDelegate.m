@@ -45,13 +45,19 @@ static id<BSGBreadcrumbSink> g_sink;
     return @"NSURLSession error";
 }
 
-+ (nullable NSDictionary<NSString *, NSString *> *)urlParamsForQueryItems:(nullable NSArray<NSURLQueryItem *> *)queryItems {
++ (nullable NSDictionary<NSString *, id> *)urlParamsForQueryItems:(nullable NSArray<NSURLQueryItem *> *)queryItems {
     if (!queryItems) {
         return nil;
     }
     NSMutableDictionary *result = [NSMutableDictionary new];
     for (NSURLQueryItem *item in queryItems) {
-        result[item.name] = item.value;
+        if ([result[item.name] isKindOfClass:[NSMutableArray class]]) {
+            [result[item.name] addObject:item.value];
+        } else if (result[item.name]) {
+            result[item.name] = [NSMutableArray arrayWithObjects:result[item.name], item.value, nil];
+        } else {
+            result[item.name] = item.value;
+        }
     }
     return result;
 }
