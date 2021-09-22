@@ -33,14 +33,16 @@ XCTAssertEqualObjects([BSGURLSessionTracingDelegate urlParamsForQueryItems:[NSUR
     // Query items with no value should be represented as empty string.
     TEST(@"http://example.com?foo=bar&foo=baz&foo=&sort=name", (@{@"foo": @[@"bar", @"baz", @""], @"sort": @"name"}));
     
-    TEST(@"http://example.com?foo", @{});
+    TEST(@"http://example.com?foo", @{@"foo": [NSNull null]});
     
     TEST(@"http://example.com?=bar", @{@"": @"bar"});
     
-    TEST(@"http://example.com?foo=bar&", @{@"foo": @"bar"});
+    TEST(@"http://example.com?foo=bar&", (@{@"foo": @"bar", @"": [NSNull null]}));
     
-    TEST(@"http://example.com?foo=bar&baz", @{@"foo": @"bar"});
-
+    TEST(@"http://example.com?foo=bar&baz", (@{@"foo": @"bar", @"baz": [NSNull null]}));
+    
+    TEST(@"http://example.com?foo=bar&baz&baz", (@{@"foo": @"bar", @"baz": @[[NSNull null], [NSNull null]]}));
+    
 #undef TEST
 }
 

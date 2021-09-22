@@ -51,12 +51,20 @@ static id<BSGBreadcrumbSink> g_sink;
     }
     NSMutableDictionary *result = [NSMutableDictionary new];
     for (NSURLQueryItem *item in queryItems) {
+        // - note: If a NSURLQueryItem name-value pair is empty (i.e. the query string starts with '&', ends
+        // with '&', or has "&&" within it), you get a NSURLQueryItem with a zero-length name and a nil value.
+        // If a NSURLQueryItem name-value pair has nothing before the equals sign, you get a zero-length name.
+        // If a NSURLQueryItem name-value pair has nothing after the equals sign, you get a zero-length value.
+        // If a NSURLQueryItem name-value pair has no equals sign, the NSURLQueryItem name-value pair string
+        // is the name and you get a nil value.
+        id value = item.value ? item.value : [NSNull null];
+        
         if ([result[item.name] isKindOfClass:[NSMutableArray class]]) {
-            [result[item.name] addObject:item.value];
+            [result[item.name] addObject:value];
         } else if (result[item.name]) {
-            result[item.name] = [NSMutableArray arrayWithObjects:result[item.name], item.value, nil];
+            result[item.name] = [NSMutableArray arrayWithObjects:result[item.name], value, nil];
         } else {
-            result[item.name] = item.value;
+            result[item.name] = value;
         }
     }
     return result;
