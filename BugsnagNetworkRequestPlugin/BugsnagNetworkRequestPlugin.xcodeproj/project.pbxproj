@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0196AA1026FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */; };
+		0196AA1126FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */; };
+		0196AA1226FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */; };
 		CB487A6326D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */; };
 		CB487A7526D7B12F004F6B87 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A7426D7B12F004F6B87 /* Bugsnag.framework */; };
 		CB487A8626D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A7D26D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework */; };
@@ -67,6 +70,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionTracingDelegateTests.m; sourceTree = "<group>"; };
 		CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB487A5D26D7B109004F6B87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CB487A6226D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagNetworkRequestPlugin-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -183,6 +187,7 @@
 		CB487A6626D7B109004F6B87 /* BugsnagNetworkRequestPluginTests */ = {
 			isa = PBXGroup;
 			children = (
+				0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */,
 				CB487A6726D7B109004F6B87 /* BugsnagNetworkRequestPluginTests.m */,
 				CB487A6926D7B109004F6B87 /* Info.plist */,
 			);
@@ -475,6 +480,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB487AC226D7B9DB004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */,
+				0196AA1026FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -494,6 +500,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB487AC326D7B9DC004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */,
+				0196AA1126FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -513,6 +520,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB487AC426D7B9DD004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */,
+				0196AA1226FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

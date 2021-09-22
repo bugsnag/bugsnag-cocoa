@@ -6,6 +6,7 @@
 //
 
 #import "BSGURLSessionTracingDelegate.h"
+
 #import <Bugsnag/Bugsnag.h>
 
 
@@ -32,34 +33,54 @@ static id<BSGBreadcrumbSink> g_sink;
     return g_sink != nil;
 }
 
-static NSString *responseConclusions[10] = {
-    @"NSURLSession error",
-    @"NSURLSession succeeded",
-    @"NSURLSession succeeded",
-    @"NSURLSession succeeded",
-    @"NSURLSession failed",
-    @"NSURLSession error",
-    @"NSURLSession error",
-    @"NSURLSession error",
-    @"NSURLSession error",
-    @"NSURLSession error",
-};
-
-- (NSString *)conclusionForResponseCode:(NSInteger)responseCode {
-    return responseConclusions[(responseCode / 100) % 10];
++ (nonnull NSString *)messageForResponse:(NSHTTPURLResponse *)response {
+    if (response) {
+        if (100 <= response.statusCode && response.statusCode < 400) {
+            return @"NSURLSession succeeded";
+        }
+        if (400 <= response.statusCode && response.statusCode < 500) {
+            return @"NSURLSession failed";
+        }
+    }
+    return @"NSURLSession error";
 }
 
-static NSDictionary *_Nonnull queryItemsAsDict(NSArray<NSURLQueryItem *> *_Nullable queryItems) {
++ (nullable NSDictionary<NSString *, id> *)urlParamsForQueryItems:(nullable NSArray<NSURLQueryItem *> *)queryItems {
+    if (!queryItems) {
+        return nil;
+    }
     NSMutableDictionary *result = [NSMutableDictionary new];
-    for(NSURLQueryItem *item in queryItems)
-    {
-        result[item.name] = item.value;
+    for (NSURLQueryItem *item in queryItems) {
+        // - note: If a NSURLQueryItem name-value pair is empty (i.e. the query string starts with '&', ends
+        // with '&', or has "&&" within it), you get a NSURLQueryItem with a zero-length name and a nil value.
+        // If a NSURLQueryItem name-value pair has nothing before the equals sign, you get a zero-length name.
+        // If a NSURLQueryItem name-value pair has nothing after the equals sign, you get a zero-length value.
+        // If a NSURLQueryItem name-value pair has no equals sign, the NSURLQueryItem name-value pair string
+        // is the name and you get a nil value.
+        id value = item.value ? item.value : [NSNull null];
+        
+        if ([result[item.name] isKindOfClass:[NSMutableArray class]]) {
+            [result[item.name] addObject:value];
+        } else if (result[item.name]) {
+            result[item.name] = [NSMutableArray arrayWithObjects:result[item.name], value, nil];
+        } else {
+            result[item.name] = value;
+        }
     }
     return result;
 }
 
-static NSString * stringOrEmpty(NSString *str) {
-    return str ? str : @"";
++ (nonnull NSString *)URLStringWithoutQueryForComponents:(nonnull NSURLComponents *)URLComponents {
+    if (URLComponents.rangeOfQuery.location == NSNotFound) {
+        return URLComponents.string;
+    }
+    NSRange rangeOfQuery = URLComponents.rangeOfQuery;
+    NSString *string = [URLComponents.string stringByReplacingCharactersInRange:rangeOfQuery withString:@""];
+    // rangeOfQuery does not include the '?' character, so that must be removed separately
+    if ([string characterAtIndex:rangeOfQuery.location - 1] == '?') {
+        string = [string stringByReplacingCharactersInRange:NSMakeRange(rangeOfQuery.location - 1, 1) withString:@""];
+    }
+    return string;
 }
 
 - (void)URLSession:(NSURLSession *)session
@@ -72,32 +93,27 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
         NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:req.URL resolvingAgainstBaseURL:YES];
         // Note: Cannot use metrics transaction response because it will be nil if a custom NSURLProtocol is present.
         // Note: If there was an error, task.response will be nil, and the following values will be set accordingly.
-        NSURLResponse *resp = task.response;
-        NSHTTPURLResponse *httpResp = [resp isKindOfClass:NSHTTPURLResponse.class] ? (NSHTTPURLResponse *)resp : nil;
-        NSString *message = [self conclusionForResponseCode:httpResp.statusCode];
-        int64_t requestContentLength = (int64_t)req.HTTPBody.length;
-        int64_t responseContentLength = resp.expectedContentLength;
+        NSHTTPURLResponse *httpResp = [task.response isKindOfClass:NSHTTPURLResponse.class] ? (NSHTTPURLResponse *)task.response : nil;
 
-        if (@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)) {
-            NSURLSessionTaskTransactionMetrics *transaction = [metrics.transactionMetrics lastObject];
-            // Note: Must check for zero because these somtimes lie.
-            if (transaction.countOfRequestBodyBytesSent != 0) {
-                requestContentLength= transaction.countOfRequestBodyBytesSent;
-            }
-            if (transaction.countOfResponseBodyBytesReceived != 0) {
-                responseContentLength = transaction.countOfResponseBodyBytesReceived;
-            }
+        NSString *message = [BSGURLSessionTracingDelegate messageForResponse:httpResp];
+
+        NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
+        metadata[@"duration"] = @((unsigned)(metrics.taskInterval.duration * 1000));
+        metadata[@"method"] = req.HTTPMethod;
+        metadata[@"url"] = [BSGURLSessionTracingDelegate URLStringWithoutQueryForComponents:urlComponents];
+        metadata[@"urlParams"] = [BSGURLSessionTracingDelegate urlParamsForQueryItems:urlComponents.queryItems];
+        if (task.countOfBytesSent) {
+            metadata[@"requestContentLength"] = @(task.countOfBytesSent);
+        } else if (req.HTTPBody) {
+            // Fall back because task.countOfBytesSent is 0 when a custom NSURLProtocol is used
+            metadata[@"requestContentLength"] = @(req.HTTPBody.length);
+        }
+        if (httpResp) {
+            metadata[@"responseContentLength"] = @(task.countOfBytesReceived);
+            metadata[@"status"] = @(httpResp.statusCode);
         }
 
-        [g_sink leaveBreadcrumbWithMessage:message metadata:@{
-            @"status": @(httpResp.statusCode),
-            @"method": stringOrEmpty(req.HTTPMethod),
-            @"url": stringOrEmpty(urlComponents.string),
-            @"urlParams": queryItemsAsDict(urlComponents.queryItems),
-            @"duration": @((unsigned)(metrics.taskInterval.duration * 1000)),
-            @"requestContentLength": @(requestContentLength),
-            @"responseContentLength": @(responseContentLength)
-        } andType:BSGBreadcrumbTypeRequest];
+        [g_sink leaveBreadcrumbWithMessage:message metadata:metadata andType:BSGBreadcrumbTypeRequest];
     }
 }
 
