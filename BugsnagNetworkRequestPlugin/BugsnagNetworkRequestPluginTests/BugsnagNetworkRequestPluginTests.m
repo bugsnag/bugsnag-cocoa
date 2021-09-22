@@ -125,6 +125,12 @@ static NSData *mock_nextData;
     XCTAssertEqualObjects(metadata[@"urlParams"], params);
 }
 
+- (void)waitForTask:(NSURLSessionTask *)task {
+    while (task.state == NSURLSessionTaskStateRunning) {
+        [NSThread sleepForTimeInterval:0.01];
+    }
+}
+
 typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError *error);
 
 #pragma mark Basic Fetch
@@ -150,7 +156,7 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLSessionDataTask * task = [session dataTaskWithURL:url];
     [task resume];
-    [NSThread sleepForTimeInterval:0.01];
+    [self waitForTask:task];
 }
 
 - (void)runDataTaskWithSession:(NSURLSession *)session
@@ -170,7 +176,7 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                        request:(NSURLRequest *)request {
     NSURLSessionDataTask * task = [session dataTaskWithRequest:request];
     [task resume];
-    [NSThread sleepForTimeInterval:0.01];
+    [self waitForTask:task];
 }
 
 - (void)runDataTaskWithSession:(NSURLSession *)session
@@ -268,7 +274,7 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLSessionDownloadTask *task = [session downloadTaskWithURL:url];
     [task resume];
-    [NSThread sleepForTimeInterval:0.01];
+    [self waitForTask:task];
 }
 
 - (void)runDownloadTaskWithSession:(NSURLSession *)session
@@ -288,7 +294,7 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                            request:(NSURLRequest *)request {
     NSURLSessionDownloadTask * task = [session downloadTaskWithRequest:request];
     [task resume];
-    [NSThread sleepForTimeInterval:0.01];
+    [self waitForTask:task];
 }
 
 - (void)runDownloadTaskWithSession:(NSURLSession *)session
@@ -341,7 +347,7 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                         fromData:(NSData *)fromData {
     NSURLSessionUploadTask * task = [session uploadTaskWithRequest:request fromData:fromData];
     [task resume];
-    [NSThread sleepForTimeInterval:0.01];
+    [self waitForTask:task];
 }
 
 - (void)runUploadTaskWithSession:(NSURLSession *)session
@@ -375,6 +381,7 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
     }];
     validator();
 }
+
 #pragma mark Unit Tests
 
 - (void)testBadURL {
