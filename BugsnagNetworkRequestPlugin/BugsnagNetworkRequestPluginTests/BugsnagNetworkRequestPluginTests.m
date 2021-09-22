@@ -105,12 +105,12 @@ static NSData *mock_nextData;
 }
 
 - (void)expectMessage:(NSString *)message
-                method:(NSString *)method
-             reqLength:(NSUInteger)reqLength
-            respLength:(NSUInteger)respLength
-                status:(NSInteger)statusCode
-                   url:(NSString *)urlString
-                params:(NSDictionary *)params {
+               method:(NSString *)method
+            reqLength:(NSNumber *)reqLength
+           respLength:(NSNumber *)respLength
+               status:(NSNumber *)statusCode
+                  url:(NSString *)urlString
+               params:(NSDictionary *)params {
     XCTAssertEqual(self.breadcrumbs.count, 1);
     BugsnagBreadcrumb *crumb = self.breadcrumbs.lastObject;
     XCTAssertEqual(crumb.type, BSGBreadcrumbTypeRequest);
@@ -118,9 +118,9 @@ static NSData *mock_nextData;
     NSDictionary *metadata = crumb.metadata;
     // duration will be tested in e2e tests
     XCTAssertEqualObjects(metadata[@"method"], method);
-    XCTAssertEqualObjects(metadata[@"requestContentLength"], @(reqLength));
-    XCTAssertEqualObjects(metadata[@"responseContentLength"], @(respLength));
-    XCTAssertEqualObjects(metadata[@"status"], @(statusCode));
+    XCTAssertEqualObjects(metadata[@"requestContentLength"], reqLength);
+    XCTAssertEqualObjects(metadata[@"responseContentLength"], respLength);
+    XCTAssertEqualObjects(metadata[@"status"], statusCode);
     XCTAssertEqualObjects(metadata[@"url"], urlString);
     XCTAssertEqualObjects(metadata[@"urlParams"], params);
 }
@@ -389,11 +389,11 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
     [self fetchAndWaitURL:@"xxxxxxx" usingConfig:self.defaultConfig];
     [self expectMessage:@"NSURLSession error"
                  method:@"GET"
-              reqLength:0
-             respLength:0
-                 status:0
+              reqLength:nil
+             respLength:nil
+                 status:nil
                     url:@"xxxxxxx"
-                 params:@{}];
+                 params:nil];
 }
 
 - (void)testDataTaskEmpty {
@@ -406,11 +406,11 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                     validator:^{
         [self expectMessage:@"NSURLSession succeeded"
                      method:@"GET"
-                  reqLength:0
-                 respLength:0
-                     status:200
+                  reqLength:nil
+                 respLength:@0
+                     status:@200
                         url:urlString
-                     params:@{}];
+                     params:nil];
     }];
 }
 
@@ -424,11 +424,11 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                     validator:^{
         [self expectMessage:@"NSURLSession succeeded"
                      method:@"GET"
-                  reqLength:0
-                 respLength:10
-                     status:200
+                  reqLength:nil
+                 respLength:@10
+                     status:@200
                         url:urlString
-                     params:@{}];
+                     params:nil];
     }];
 }
 
@@ -455,11 +455,11 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                         validator:^{
             [self expectMessage:expectedMessage
                          method:@"GET"
-                      reqLength:0
-                     respLength:0
-                         status:statusCode
+                      reqLength:nil
+                     respLength:@0
+                         status:@(statusCode)
                             url:urlString
-                         params:@{}];
+                         params:nil];
         }];
 
         [self resetBreadcrumbs];
@@ -470,11 +470,11 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                         validator:^{
             [self expectMessage:expectedMessage
                          method:@"GET"
-                      reqLength:100347 // Length of multipart content
-                     respLength:10
-                         status:statusCode
+                      reqLength:@100347 // Length of multipart content
+                     respLength:@10
+                         status:@(statusCode)
                             url:urlString
-                         params:@{}];
+                         params:nil];
         }];
 
         [self resetBreadcrumbs];
@@ -485,11 +485,11 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                         validator:^{
             [self expectMessage:expectedMessage
                          method:@"GET"
-                      reqLength:0
-                     respLength:100
-                         status:statusCode
+                      reqLength:nil
+                     respLength:@100
+                         status:@(statusCode)
                             url:urlString
-                         params:@{}];
+                         params:nil];
         }];
 
         [self resetBreadcrumbs];
@@ -499,45 +499,44 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                         validator:^{
             [self expectMessage:expectedMessage
                          method:@"GET"
-                      reqLength:0
-                     respLength:5109
-                         status:statusCode
+                      reqLength:nil
+                     respLength:@5109
+                         status:@(statusCode)
                             url:urlString
-                         params:@{}];
+                         params:nil];
         }];
     }
 }
 
 - (void)testTaskMethods {
     for (NSString *method in @[@"GET", @"HEAD", @"POST", @"PUT", @"DELETE", @"CONNECT", @"OPTIONS", @"TRACE", @"PATCH"]) {
-        NSString *urlString = @"https://bugsnag.com/?a=b&c=d";
         [self resetBreadcrumbs];
-        [self runDataTasksWithURL:urlString
+        [self runDataTasksWithURL:@"https://bugsnag.com/?a=b&c=d"
                            method:method
                        statusCode:200
                              data:[self dataOfLength:0]
                         validator:^{
             [self expectMessage:@"NSURLSession succeeded"
                          method:method
-                      reqLength:0
-                     respLength:0
-                         status:200
-                            url:urlString
+                      reqLength:nil
+                     respLength:@0
+                         status:@200
+                            url:@"https://bugsnag.com/"
                          params:@{@"a": @"b", @"c": @"d"}];
         }];
-
+        
         [self resetBreadcrumbs];
-        [self runDownloadTasksWithURL:urlString
-                           method:method
-                       statusCode:200
-                             data:[self dataOfLength:0]
-                        validator:^{
+        [self runDownloadTasksWithURL:@"https://bugsnag.com?a=b&c=d"
+                               method:method
+                           statusCode:200
+                                 data:[self dataOfLength:0]
+                            validator:^{
             [self expectMessage:@"NSURLSession succeeded"
                          method:method
-                      reqLength:0
-                     respLength:0
-                         status:200
-                            url:urlString
+                      reqLength:nil
+                     respLength:@0
+                         status:@200
+                            url:@"https://bugsnag.com"
                          params:@{@"a": @"b", @"c": @"d"}];
         }];
     }
