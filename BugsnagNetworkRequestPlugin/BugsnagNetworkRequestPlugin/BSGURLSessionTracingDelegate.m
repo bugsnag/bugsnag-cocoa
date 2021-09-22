@@ -88,7 +88,10 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
         metadata[@"method"] = req.HTTPMethod;
         metadata[@"url"] = [BSGURLSessionTracingDelegate URLStringWithoutQueryForComponents:urlComponents];
         metadata[@"urlParams"] = [BSGURLSessionTracingDelegate urlParamsForQueryItems:urlComponents.queryItems];
-        if (req.HTTPBody) {
+        if (task.countOfBytesSent) {
+            metadata[@"requestContentLength"] = @(task.countOfBytesSent);
+        } else if (req.HTTPBody) {
+            // Fall back because task.countOfBytesSent is 0 when a custom NSURLProtocol is used
             metadata[@"requestContentLength"] = @(req.HTTPBody.length);
         }
         if (httpResp) {
