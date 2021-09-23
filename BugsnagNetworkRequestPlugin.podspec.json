@@ -12,7 +12,7 @@
     "tag": "v6.11.0"
   },
   "dependencies": {
-    "Bugsnag": "6.11.0"
+    "Bugsnag": "~> 6.10"
   },
   "platforms": {
     "ios": "9.3",
