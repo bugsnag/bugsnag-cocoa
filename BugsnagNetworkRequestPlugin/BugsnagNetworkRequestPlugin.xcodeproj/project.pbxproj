@@ -10,8 +10,8 @@
 		CB2430E026F1DABE00CB5EC4 /* BSGURLSessionTracingDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */; };
 		CB2430E126F1DABE00CB5EC4 /* BSGURLSessionTracingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */; };
 		CB2430E226F1DABE00CB5EC4 /* NSURLSession+Tracing.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */; };
-		CB2430E326F1DAC500CB5EC4 /* BugsnagRequestMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487ABE26D7B295004F6B87 /* BugsnagRequestMonitor.m */; };
-		CB487A6326D7B109004F6B87 /* BugsnagRequestMonitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A5926D7B109004F6B87 /* BugsnagRequestMonitor.framework */; };
+		CB2430E326F1DAC500CB5EC4 /* BugsnagNetworkRequestPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */; };
+		CB487A6326D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */; };
 		CB487A6326D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */; };
 		CB487A7526D7B12F004F6B87 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A7426D7B12F004F6B87 /* Bugsnag.framework */; };
 		CB487A8626D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A7D26D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework */; };
@@ -84,8 +84,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		CB2430D726F1DA8A00CB5EC4 /* libBugsnagRequestMonitorStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnagRequestMonitorStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB487A5926D7B109004F6B87 /* BugsnagRequestMonitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagRequestMonitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB2430D726F1DA8A00CB5EC4 /* libBugsnagNetworkRequestPluginStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnagNetworkRequestPluginStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB487A5D26D7B109004F6B87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CB487A6226D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagNetworkRequestPlugin-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -180,13 +180,13 @@
 		CB487A5A26D7B109004F6B87 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CB487A5926D7B109004F6B87 /* BugsnagRequestMonitor.framework */,
-				CB487A6226D7B109004F6B87 /* BugsnagRequestMonitor-iOSTests.xctest */,
-				CB487A7D26D7B144004F6B87 /* BugsnagRequestMonitor.framework */,
-				CB487A8526D7B144004F6B87 /* BugsnagRequestMonitor-macOSTests.xctest */,
-				CB487A9D26D7B172004F6B87 /* BugsnagRequestMonitor.framework */,
-				CB487AA526D7B172004F6B87 /* BugsnagRequestMonitor-tvOSTests.xctest */,
-				CB2430D726F1DA8A00CB5EC4 /* libBugsnagRequestMonitorStatic.a */,
+				CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */,
+				CB487A6226D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests.xctest */,
+				CB487A7D26D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework */,
+				CB487A8526D7B144004F6B87 /* BugsnagNetworkRequestPlugin-macOSTests.xctest */,
+				CB487A9D26D7B172004F6B87 /* BugsnagNetworkRequestPlugin.framework */,
+				CB487AA526D7B172004F6B87 /* BugsnagNetworkRequestPlugin-tvOSTests.xctest */,
+				CB2430D726F1DA8A00CB5EC4 /* libBugsnagNetworkRequestPluginStatic.a */,
 				CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */,
 				CB487A6226D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests.xctest */,
 				CB487A7D26D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework */,
@@ -287,9 +287,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		CB2430D626F1DA8A00CB5EC4 /* BugsnagRequestMonitorStatic */ = {
+		CB2430D626F1DA8A00CB5EC4 /* BugsnagNetworkRequestPluginStatic */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CB2430DF26F1DA8A00CB5EC4 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitorStatic" */;
+			buildConfigurationList = CB2430DF26F1DA8A00CB5EC4 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPluginStatic" */;
 			buildPhases = (
 				CB2430D326F1DA8A00CB5EC4 /* Sources */,
 				CB2430D426F1DA8A00CB5EC4 /* Frameworks */,
@@ -299,12 +299,12 @@
 			);
 			dependencies = (
 			);
-			name = BugsnagRequestMonitorStatic;
-			productName = BugsnagRequestMonitorStatic;
-			productReference = CB2430D726F1DA8A00CB5EC4 /* libBugsnagRequestMonitorStatic.a */;
+			name = BugsnagNetworkRequestPluginStatic;
+			productName = BugsnagNetworkRequestPluginStatic;
+			productReference = CB2430D726F1DA8A00CB5EC4 /* libBugsnagNetworkRequestPluginStatic.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		CB487A5826D7B109004F6B87 /* BugsnagRequestMonitor-iOS */ = {
+		CB487A5826D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOS */ = {
 		CB487A5826D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CB487A6D26D7B109004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-iOS" */;
@@ -457,13 +457,13 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CB487A5826D7B109004F6B87 /* BugsnagRequestMonitor-iOS */,
-				CB487A6126D7B109004F6B87 /* BugsnagRequestMonitor-iOSTests */,
-				CB487A7C26D7B144004F6B87 /* BugsnagRequestMonitor-macOS */,
-				CB487A8426D7B144004F6B87 /* BugsnagRequestMonitor-macOSTests */,
-				CB487A9C26D7B172004F6B87 /* BugsnagRequestMonitor-tvOS */,
-				CB487AA426D7B172004F6B87 /* BugsnagRequestMonitor-tvOSTests */,
-				CB2430D626F1DA8A00CB5EC4 /* BugsnagRequestMonitorStatic */,
+				CB487A5826D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOS */,
+				CB487A6126D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests */,
+				CB487A7C26D7B144004F6B87 /* BugsnagNetworkRequestPlugin-macOS */,
+				CB487A8426D7B144004F6B87 /* BugsnagNetworkRequestPlugin-macOSTests */,
+				CB487A9C26D7B172004F6B87 /* BugsnagNetworkRequestPlugin-tvOS */,
+				CB487AA426D7B172004F6B87 /* BugsnagNetworkRequestPlugin-tvOSTests */,
+				CB2430D626F1DA8A00CB5EC4 /* BugsnagNetworkRequestPluginStatic */,
 				CB487A5826D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOS */,
 				CB487A6126D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests */,
 				CB487A7C26D7B144004F6B87 /* BugsnagNetworkRequestPlugin-macOS */,
@@ -526,7 +526,7 @@
 			files = (
 				CB2430E026F1DABE00CB5EC4 /* BSGURLSessionTracingDelegate.m in Sources */,
 				CB2430E226F1DABE00CB5EC4 /* NSURLSession+Tracing.m in Sources */,
-				CB2430E326F1DAC500CB5EC4 /* BugsnagRequestMonitor.m in Sources */,
+				CB2430E326F1DAC500CB5EC4 /* BugsnagNetworkRequestPlugin.m in Sources */,
 				CB2430E126F1DABE00CB5EC4 /* BSGURLSessionTracingProxy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1098,7 +1098,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CB2430DF26F1DA8A00CB5EC4 /* Build configuration list for PBXNativeTarget "BugsnagRequestMonitorStatic" */ = {
+		CB2430DF26F1DA8A00CB5EC4 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPluginStatic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CB2430DD26F1DA8A00CB5EC4 /* Debug */,
@@ -1107,7 +1107,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CB487A5326D7B109004F6B87 /* Build configuration list for PBXProject "BugsnagRequestMonitor" */ = {
+		CB487A5326D7B109004F6B87 /* Build configuration list for PBXProject "BugsnagNetworkRequestPlugin" */ = {
 		CB487A5326D7B109004F6B87 /* Build configuration list for PBXProject "BugsnagNetworkRequestPlugin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

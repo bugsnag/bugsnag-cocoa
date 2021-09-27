@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:../../../BugsnagRequestMonitor/BugsnagRequestMonitor.xcodeproj">
+      location = "group:../../../BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:iOSTestApp.xcodeproj">

@@ -12,7 +12,7 @@ class NetworkBreadcrumbsScenario : Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
-        self.config.add(BugsnagRequestMonitor())
+        self.config.add(BugsnagNetworkRequestPlugin())
 
         super.startBugsnag()
     }

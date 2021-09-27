@@ -62,7 +62,7 @@
 		A1117E592535B29800014FDA /* OOMEnabledErrorTypesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E582535B29800014FDA /* OOMEnabledErrorTypesScenario.swift */; };
 		A1117E5B2536036400014FDA /* OOMSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E5A2536036400014FDA /* OOMSessionScenario.swift */; };
 		AAFEF9EA26EB533800980A10 /* NetworkBreadcrumbsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFEF9E926EB533800980A10 /* NetworkBreadcrumbsScenario.swift */; };
-		CB42FF9026F1EDB500E8D5D2 /* libBugsnagRequestMonitorStatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB42FF8F26F1EDB500E8D5D2 /* libBugsnagRequestMonitorStatic.a */; };
+		CB42FF9026F1EDB500E8D5D2 /* libBugsnagNetworkRequestPluginStatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB42FF8F26F1EDB500E8D5D2 /* libBugsnagNetworkRequestPluginStatic.a */; };
 		CBB787912578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB787902578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m */; };
 		CBE1C9242574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE1C9222574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift */; };
 		CBE1C9252574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE1C9232574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift */; };
@@ -239,8 +239,8 @@
 		A1117E582535B29800014FDA /* OOMEnabledErrorTypesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMEnabledErrorTypesScenario.swift; sourceTree = "<group>"; };
 		A1117E5A2536036400014FDA /* OOMSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMSessionScenario.swift; sourceTree = "<group>"; };
 		AAFEF9E926EB533800980A10 /* NetworkBreadcrumbsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBreadcrumbsScenario.swift; sourceTree = "<group>"; };
-		AAFEFA0226EB6B5A00980A10 /* BugsnagRequestMonitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BugsnagRequestMonitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB42FF8F26F1EDB500E8D5D2 /* libBugsnagRequestMonitorStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libBugsnagRequestMonitorStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAFEFA0226EB6B5A00980A10 /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB42FF8F26F1EDB500E8D5D2 /* libBugsnagNetworkRequestPluginStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libBugsnagNetworkRequestPluginStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBB7878F2578FC0C0071BDE4 /* MarkUnhandledHandledScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkUnhandledHandledScenario.h; sourceTree = "<group>"; };
 		CBB787902578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkUnhandledHandledScenario.m; sourceTree = "<group>"; };
 		CBE1C9222574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteUnhandledFalseScenario.swift; sourceTree = "<group>"; };
@@ -369,7 +369,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB42FF9026F1EDB500E8D5D2 /* libBugsnagRequestMonitorStatic.a in Frameworks */,
+				CB42FF9026F1EDB500E8D5D2 /* libBugsnagNetworkRequestPluginStatic.a in Frameworks */,
 				01CD103926690463007FA5F0 /* libBugsnagStatic.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -437,8 +437,8 @@
 		D018DCE3210BCB4D0B8FA6D2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CB42FF8F26F1EDB500E8D5D2 /* libBugsnagRequestMonitorStatic.a */,
-				AAFEFA0226EB6B5A00980A10 /* BugsnagRequestMonitor.framework */,
+				CB42FF8F26F1EDB500E8D5D2 /* libBugsnagNetworkRequestPluginStatic.a */,
+				AAFEFA0226EB6B5A00980A10 /* BugsnagNetworkRequestPlugin.framework */,
 				01CD103826690463007FA5F0 /* libBugsnagStatic.a */,
 			);
 			name = Frameworks;
@@ -1160,7 +1160,7 @@
 				ENABLE_TESTABILITY = YES;
 				HEADER_SEARCH_PATHS = (
 					../../../Bugsnag/include,
-					../../../BugsnagRequestMonitor/BugsnagRequestMonitor/include,
+					../../../BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin/include,
 				);
 				INFOPLIST_FILE = iOSTestApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -1198,7 +1198,7 @@
 				ENABLE_TESTABILITY = NO;
 				HEADER_SEARCH_PATHS = (
 					../../../Bugsnag/include,
-					../../../BugsnagRequestMonitor/BugsnagRequestMonitor/include,
+					../../../BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin/include,
 				);
 				INFOPLIST_FILE = iOSTestApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
