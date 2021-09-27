@@ -24,10 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (void)setSink:(nullable id<BSGBreadcrumbSink>) sink;
 
-+ (nullable NSDictionary<NSString *, id> *)urlParamsForQueryItems:(nullable NSArray<NSURLQueryItem *> *)queryItems;
-
-+ (nonnull NSString *)URLStringWithoutQueryForComponents:(nonnull NSURLComponents *)URLComponents;
-
 @property(nonatomic, assign, readonly) BOOL canTrace;
 
 @end

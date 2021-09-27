@@ -1,6 +1,6 @@
 {
   "name": "BugsnagNetworkRequestPlugin",
-  "version": "6.11.0",
+  "version": "6.12.1",
   "summary": "Network request monitoring support for Bugsnag.",
   "homepage": "https://bugsnag.com",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "tag": "v6.11.0"
   },
   "dependencies": {
-    "Bugsnag": "~> 6.10"
+    "Bugsnag": "6.12.1"
   },
   "platforms": {
     "ios": "9.3",

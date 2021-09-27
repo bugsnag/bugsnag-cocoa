@@ -10,12 +10,11 @@
 // `URLSession:task:didFinishCollectingMetrics:` so that we can generate network
 // breadcrumbs from all requests.
 
+#import <Bugsnag/BugsnagClient.h>
+#import <Bugsnag/BugsnagPlugin.h>
 #import "BugsnagNetworkRequestPlugin.h"
-
 #import "BSGURLSessionTracingDelegate.h"
 #import "NSURLSession+Tracing.h"
-
-#import <Bugsnag/BugsnagClient.h>
 
 @implementation BugsnagNetworkRequestPlugin
 
