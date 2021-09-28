@@ -8,14 +8,15 @@
 
 import Foundation
 
+@available(iOS 10.0, macOS 10.12, *)
 class NetworkBreadcrumbsScenario : Scenario {
 
     override func startBugsnag() {
-        self.config.autoTrackSessions = false;
-        if #available(iOS 10.0, macOS 10.12, *) {
-            self.config.add(BugsnagNetworkRequestPlugin())
-        } else {
-            fatalError("Cannot test BugsnagNetworkRequestPlugin on iOS versions < 10, macOS < 10.12")
+        config.autoTrackSessions = false;
+        config.add(BugsnagNetworkRequestPlugin())
+        config.addOnBreadcrumb {
+            return $0.type == .request &&
+                ($0.metadata["url"] as? String)?.hasPrefix("http://bs-local.com:9340") == true
         }
 
         super.startBugsnag()
