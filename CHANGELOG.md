@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Disable app hang detection for app extensions.
+  [#1198](https://github.com/bugsnag/bugsnag-cocoa/pull/1198)
+
 ## 6.13.0 (2021-09-29)
 
 ### Enhancements
