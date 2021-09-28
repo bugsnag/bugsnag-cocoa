@@ -4,4 +4,7 @@
    <FileRef
       location = "group:Bugsnag.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin.xcodeproj">
+   </FileRef>
 </Workspace>
