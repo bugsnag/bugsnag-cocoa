@@ -40,13 +40,16 @@ steps:
       - make build_ios_static
 
   - label: Carthage
-    timeout_in_minutes: 10
+    timeout_in_minutes: 15
     agents:
       queue: opensource-mac-cocoa-11
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     commands:
       - ./scripts/build-carthage.sh
+    plugins:
+      artifacts#v1.3.0:
+        upload: ["features/fixtures/carthage/carthage-*.log"]
 
   ##############################################################################
   #

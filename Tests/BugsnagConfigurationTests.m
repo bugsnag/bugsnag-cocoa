@@ -577,7 +577,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 - (void)testMaxBreadcrumb {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    XCTAssertEqual(25, config.maxBreadcrumbs);
+    XCTAssertEqual(50, config.maxBreadcrumbs);
 
     // alter to valid value
     config.maxBreadcrumbs = 10;
@@ -631,7 +631,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertNil(config.enabledReleaseStages);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
-    XCTAssertEqual(25, config.maxBreadcrumbs);
+    XCTAssertEqual(50, config.maxBreadcrumbs);
     XCTAssertTrue(config.persistUser);
     XCTAssertEqual(1, [config.redactedKeys count]);
     XCTAssertEqualObjects(@"password", [config.redactedKeys allObjects][0]);
