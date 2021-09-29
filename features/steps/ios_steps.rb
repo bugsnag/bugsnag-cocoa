@@ -27,6 +27,21 @@ When("I run {string} and relaunch the app") do |event_type|
   step('I relaunch the app after a crash')
 end
 
+When("I run the configured scenario and relaunch the crashed app") do
+  begin
+    steps %(
+      Given I click the element "run_scenario"
+    )
+  rescue StandardError
+    raise unless Maze.driver.capabilities['platformName'].eql?('Mac')
+    $logger.info 'Ignored error raised by AppiumForMac when clicking run_scenario'
+  end
+  steps %(
+    When the app is not running
+    Then I relaunch the app
+  )
+end
+
 When('I clear all persistent data') do
   steps %(
     Given the element "clear_persistent_data" is present
