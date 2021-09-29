@@ -17,7 +17,7 @@
     <a title="Protocols  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Bugsnag 6.12.2 Docs</a></p>
+        <p><a href="index.html">Bugsnag 6.13.0 Docs</a></p>
         <p class="header-right"><a href="https://github.com/bugsnag/bugsnag-cocoa"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right"><a href="dash-feed://https%3A%2F%2Fbugsnag.github.io%2Fbugsnag-cocoa%2Fdocsets%2FBugsnag.xml"><img src="img/dash.png"/>Install in Dash</a></p>
         <p class="header-right">
@@ -131,6 +131,9 @@
             <a href="Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a href="Protocols/BSGBreadcrumbSink.html">BSGBreadcrumbSink</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Protocols/BugsnagClassLevelMetadataStore.html">BugsnagClassLevelMetadataStore</a>
               </li>
               <li class="nav-group-task">
@@ -190,6 +193,47 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/c:objc(pl)BSGBreadcrumbSink"></a>
+                    <a name="//apple_ref/objc/Protocol/BSGBreadcrumbSink" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(pl)BSGBreadcrumbSink">BSGBreadcrumbSink</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Protocols/BSGBreadcrumbSink.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@protocol</span> <span class="nc">BSGBreadcrumbSink</span> <span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span>
+
+<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">leaveBreadcrumbWithMessage</span><span class="o">:</span><span class="p">(</span><span class="n">nonnull</span> <span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">message</span> <span class="n">metadata</span><span class="o">:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">metadata</span> <span class="n">andType</span><span class="o">:</span><span class="p">(</span><span class="n"><a href="Enums/BSGBreadcrumbType.html">BSGBreadcrumbType</a></span><span class="p">)</span><span class="n">type</span>
+<span class="n">NS_SWIFT_NAME</span><span class="p">(</span><span class="n">leaveBreadcrumb</span><span class="p">(</span><span class="n">_</span><span class="o">:</span><span class="n">metadata</span><span class="o">:</span><span class="n">type</span><span class="o">:</span><span class="p">));</span>
+
+<span class="k">@end</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">BSGBreadcrumbSink</span> <span class="p">:</span> <span class="kt">NSObjectProtocol</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.13.0/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h#L128-L133">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/c:objc(pl)BugsnagMetadataStore"></a>
                     <a name="//apple_ref/objc/Protocol/BugsnagMetadataStore" class="dashAnchor"></a>
                     <a class="token" href="#/c:objc(pl)BugsnagMetadataStore">BugsnagMetadataStore</a>
@@ -218,7 +262,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.12.2/Bugsnag/include/Bugsnag/BugsnagMetadataStore.h#L26-L119">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.13.0/Bugsnag/include/Bugsnag/BugsnagMetadataStore.h#L26-L119">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -254,7 +298,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.12.2/Bugsnag/include/Bugsnag/BugsnagMetadataStore.h#L128-L221">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.13.0/Bugsnag/include/Bugsnag/BugsnagMetadataStore.h#L128-L221">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -264,7 +308,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2021 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external">Bugsnag Inc</a>. All rights reserved. (Last updated: 2021-09-22)</p>
+          <p>&copy; 2021 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external">Bugsnag Inc</a>. All rights reserved. (Last updated: 2021-09-29)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

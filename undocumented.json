@@ -78,6 +78,20 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
+      "line": 128,
+      "symbol": "BSGBreadcrumbSink",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
+      "line": 130,
+      "symbol": "BSGBreadcrumbSink.-leaveBreadcrumbWithMessage:metadata:andType:",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.method.instance",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagConfiguration.h",
       "line": 263,
       "symbol": "BugsnagConfiguration.appType",
