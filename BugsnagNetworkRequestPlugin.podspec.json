@@ -7,6 +7,7 @@
   "authors": {
     "Bugsnag": "notifiers@bugsnag.com"
   },
+  "readme": "https://raw.githubusercontent.com/bugsnag/bugsnag-cocoa/v6.11.0/BugsnagNetworkRequestPlugin/README.md",
   "source": {
     "git": "https://github.com/bugsnag/bugsnag-cocoa.git",
     "tag": "v6.11.0"
