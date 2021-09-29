@@ -1,7 +1,15 @@
 Changelog
 =========
 
-## TBD
+## 6.13.0 (2021-09-29)
+
+### Enhancements
+
+* Bugsnag can now automatically capture breadcrumbs for network requests made via `NSURLSession`.
+  To use this functionality, install the `BugsnagNetworkRequestPlugin` plugin and then enable it in your `BugsnagConfiguration`.
+  For more information see [the documentation](https://docs.bugsnag.com/platforms/ios/customizing-breadcrumbs/#capturing-network-requests).
+
+## 6.12.2 (2021-09-22)
 
 ### Bug fixes
 

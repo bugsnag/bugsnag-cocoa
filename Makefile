@@ -158,7 +158,8 @@ endif
 	# before it goes live always seems like a good thing
 	@open 'https://github.com/bugsnag/bugsnag-cocoa/releases/new?title=v$(PRESET_VERSION)&tag=v$(PRESET_VERSION)&body='$$(awk 'start && /^## /{exit;};/^## /{start=1;next};start' CHANGELOG.md | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
 	# Workaround for CocoaPods/CocoaPods#8000
-	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings
+	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings Bugsnag.podspec.json
+	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings BugsnagNetworkRequestPlugin.podspec.json
 
 bump: ## Bump the version numbers to $VERSION
 ifeq ($(VERSION),)
@@ -167,7 +168,10 @@ endif
 	@echo Bumping the version number to $(VERSION)
 	@echo $(VERSION) > VERSION
 	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" Bugsnag.podspec.json
+	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" BugsnagNetworkRequestPlugin.podspec.json
 	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" Bugsnag.podspec.json
+	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" BugsnagNetworkRequestPlugin.podspec.json
+	@sed -i '' -E "s/\/bugsnag-cocoa\/v[0-9]+\.[0-9]+\.[0-9]+\//\/bugsnag-cocoa\/v$(VERSION)\//" BugsnagNetworkRequestPlugin.podspec.json
 	@sed -i '' "s/_version = @\".*\";/_version = @\"$(VERSION)\";/" Bugsnag/Payload/BugsnagNotifier.m
 	@sed -i '' "s/## TBD/## $(VERSION) ($(shell date '+%Y-%m-%d'))/" CHANGELOG.md
 	@sed -i '' -E "s/[0-9]+.[0-9]+.[0-9]+/$(VERSION)/g" .jazzy.yaml
@@ -178,7 +182,7 @@ ifeq ($(VERSION),)
 	@$(error VERSION is not defined. Run with `make VERSION=number prerelease`)
 endif
 	@git checkout -b release-v$(VERSION)
-	@git add Bugsnag/Payload/BugsnagNotifier.m Bugsnag.podspec.json VERSION CHANGELOG.md Framework/Info.plist Tests/Info.plist .jazzy.yaml
+	@git add Bugsnag/Payload/BugsnagNotifier.m Bugsnag.podspec.json BugsnagNetworkRequestPlugin.podspec.json VERSION CHANGELOG.md Framework/Info.plist Tests/Info.plist .jazzy.yaml
 	@git diff --exit-code || (echo "you have unstaged changes - Makefile may need updating to `git add` some more files"; exit 1)
 	@git commit -m "Release v$(VERSION)"
 	@git push origin release-v$(VERSION)
