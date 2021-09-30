@@ -31,6 +31,7 @@
             @"current_thread": @YES,
             @"crashed": @YES,
             @"index": @4,
+            @"state": @"TH_STATE_RUNNING",
             @"backtrace": @{
                     @"skipped": @0,
                     @"contents": @[
@@ -78,6 +79,7 @@
     XCTAssertEqualObjects(@"4", dict[@"id"]);
     XCTAssertEqualObjects(@"bugsnag-thread-1", dict[@"name"]);
     XCTAssertEqualObjects(@"cocoa", dict[@"type"]);
+    XCTAssertEqualObjects(@"TH_STATE_RUNNING", dict[@"state"]);
     XCTAssertTrue([dict[@"errorReportingThread"] boolValue]);
 
     // validate stacktrace
@@ -248,6 +250,7 @@
     XCTAssertEqual(threads.count, 1);
     XCTAssertTrue(threads[0].errorReportingThread);
     XCTAssertEqualObjects(threads[0].id, @"0");
+    XCTAssertEqualObjects(threads[0].state, @"TH_STATE_RUNNING");
     XCTAssertEqualObjects(threads[0].name, @"com.apple.main-thread");
     XCTAssertEqualObjects(threads[0].stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
 }
@@ -264,6 +267,7 @@
     XCTAssertTrue(thread.errorReportingThread);
     XCTAssertGreaterThan(thread.id.intValue, 0);
     XCTAssertNotNil(thread.name);
+    XCTAssertNotNil(thread.state);
     XCTAssertNotEqualObjects(thread.name, @"com.apple.main-thread");
     XCTAssert([thread.stacktrace.firstObject.method hasSuffix:@"_block_invoke"]);
 }
@@ -292,6 +296,7 @@
     }
     XCTAssertTrue(thread.errorReportingThread);
     XCTAssertEqualObjects(thread.id, @"0");
+    XCTAssertEqualObjects(thread.state, @"TH_STATE_RUNNING");
     XCTAssertEqualObjects(thread.name, @"com.apple.main-thread");
     XCTAssertEqualObjects(thread.stacktrace.firstObject.method, @(__PRETTY_FUNCTION__));
 }
