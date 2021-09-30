@@ -12,16 +12,13 @@ Feature: Launch detection
     And the event "metaData.lastRunInfo.crashedDuringLaunch" is true
     And I discard the oldest error
 
-    And I click the element "run_scenario"
-    And I wait for 1 seconds
-    And I relaunch the app
+    And I run the configured scenario and relaunch the crashed app
     And I configure Bugsnag for "LastRunInfoConsecutiveLaunchCrashesScenario"
     And I wait to receive an error
     And the event "metaData.lastRunInfo.consecutiveLaunchCrashes" equals 2
     And I discard the oldest error
 
-    And I click the element "run_scenario"
-    And I relaunch the app
+    And I run the configured scenario and relaunch the crashed app
     And I configure Bugsnag for "LastRunInfoConsecutiveLaunchCrashesScenario"
     And I wait to receive an error
     And the event "metaData.lastRunInfo.consecutiveLaunchCrashes" equals 3
@@ -29,8 +26,7 @@ Feature: Launch detection
 
     And I wait for 5 seconds
 
-    And I click the element "run_scenario"
-    And I relaunch the app
+    And I run the configured scenario and relaunch the crashed app
     And I configure Bugsnag for "LastRunInfoConsecutiveLaunchCrashesScenario"
     And I wait to receive an error
     And the event "metaData.lastRunInfo.consecutiveLaunchCrashes" equals 0
