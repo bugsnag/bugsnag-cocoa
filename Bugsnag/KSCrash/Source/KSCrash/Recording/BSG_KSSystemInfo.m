@@ -441,23 +441,14 @@ static NSDictionary * bsg_systemversion() {
 }
 
 + (BOOL)isRunningInAppExtension {
-#if BSG_PLATFORM_IOS
-    NSBundle *mainBundle = [NSBundle mainBundle];
-    // From the App Extension Programming Guide:
-    // > When you build an extension based on an Xcode template, you get an
-    // > extension bundle that ends in .appex.
-    return [[mainBundle executablePath] containsString:@".appex"]
-        // In the case that the extension bundle was renamed or generated
-        // outside of the Xcode template, check the Bundle OS Type Code:
-        // > This key consists of a four-letter code for the bundle type. For
-        // > apps, the code is APPL, for frameworks, it's FMWK, and for bundles,
-        // > it's BNDL.
-        // If the main bundle type is not "APPL", assume this is an extension
-        // context.
-        || ![[mainBundle infoDictionary][@"CFBundlePackageType"] isEqualToString:@"APPL"];
-#else
-    return NO;
-#endif
+    // From "Information Property List Key Reference" > "App Extension Keys"
+    // https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/AppExtensionKeys.html
+    //
+    // NSExtensionPointIdentifier
+    // String - iOS, macOS. Specifies the extension point that supports an app extension, in reverse-DNS notation.
+    // This key is required for every app extension, and must be placed as an immediate child of the NSExtension key.
+    // Each Xcode app extension template is preconfigured with the appropriate extension point identifier key.
+    return NSBundle.mainBundle.infoDictionary[@"NSExtension"][@"NSExtensionPointIdentifier"] != nil;
 }
 
 #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
