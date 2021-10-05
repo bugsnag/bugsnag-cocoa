@@ -38,6 +38,11 @@ extern "C" {
 
 #include <stdbool.h>
 
+/** Initialize the KSCrash system. Call this once, before any other function.
+ * Note: This gets called automatically by [BSG_KSCrash sharedInstance].
+ */
+void bsg_kscrash_init(void);
+
 /** Install the crash reporter. The reporter will record the next crash and then
  * terminate the program.
  *

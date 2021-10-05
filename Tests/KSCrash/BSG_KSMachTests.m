@@ -115,11 +115,11 @@ void * executeBlock(void *ptr)
 
 - (void) testSuspendThreads
 {
-    bool success;
-    success = bsg_ksmachsuspendAllThreads();
-    XCTAssertTrue(success, @"");
-    success = bsg_ksmachresumeAllThreads();
-    XCTAssertTrue(success, @"");
+    // Just make sure that suspending and resuming doesn't hang the process.
+    unsigned threadsCount = 0;
+    thread_t *threads = bsg_ksmachgetAllThreads(&threadsCount);
+    bsg_ksmachsuspendThreads(threads, threadsCount);
+    bsg_ksmachresumeThreads(threads, threadsCount);
 }
 
 - (void) testCopyMem
@@ -363,6 +363,44 @@ void * executeBlock(void *ptr)
 - (void) testStackGrowDirection
 {
     bsg_ksmachstackGrowDirection();
+}
+
+- (void) testRemoveThreadsFromList
+{
+    thread_t src[] = {1, 2, 3};
+    thread_t dst[] = {0, 0, 0};
+    bsg_ksmachremoveThreadsFromList(src, 3, NULL, 0, dst, 2);
+    XCTAssertEqual(1, dst[0]);
+    XCTAssertEqual(2, dst[1]);
+    XCTAssertEqual(0, dst[2]);
+}
+
+- (void) testRemoveThreadsFromList2
+{
+    thread_t src[] = {1, 2, 3, 4};
+    thread_t omit[] = {2, 4};
+    thread_t dst[] = {0, 0, 0, 0};
+    int count = bsg_ksmachremoveThreadsFromList(src, 4, omit, 2, dst, 3);
+    XCTAssertEqual(1, dst[0]);
+    XCTAssertEqual(3, dst[1]);
+    XCTAssertEqual(0, dst[2]);
+    XCTAssertEqual(0, dst[3]);
+    XCTAssertEqual(2, count);
+}
+
+- (void) testRemoveThreadsFromList3
+{
+    thread_t src[] = {1, 2, 3, 4, 5, 6};
+    thread_t omit[] = {2, 4};
+    thread_t dst[] = {0, 0, 0, 0, 0, 0};
+    int count = bsg_ksmachremoveThreadsFromList(src, 6, omit, 2, dst, 3);
+    XCTAssertEqual(1, dst[0]);
+    XCTAssertEqual(3, dst[1]);
+    XCTAssertEqual(5, dst[2]);
+    XCTAssertEqual(0, dst[3]);
+    XCTAssertEqual(0, dst[4]);
+    XCTAssertEqual(0, dst[5]);
+    XCTAssertEqual(3, count);
 }
 
 @end

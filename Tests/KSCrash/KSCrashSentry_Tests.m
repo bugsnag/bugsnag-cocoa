@@ -35,16 +35,15 @@ static void onCrash(void *context)
     // Do nothing
 }
 
+static BSG_KSCrash_SentryContext context;
+
 @interface KSCrashSentry_Tests : XCTestCase @end
 
 
 @implementation KSCrashSentry_Tests
 
-- (void) testInstallUninstall
-{
-    BSG_KSCrash_SentryContext context;
+- (void) setUp {
     bsg_kscrashsentry_installWithContext(&context, BSG_KSCrashTypeAll, onCrash);
-    bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAll);
 }
 
 - (void) testSuspendResumeThreads

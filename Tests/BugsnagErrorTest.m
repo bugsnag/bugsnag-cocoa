@@ -28,6 +28,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
             @"current_thread": @YES,
             @"crashed": @YES,
             @"index": @4,
+            @"state": @"TH_STATE_RUNNING",
             @"backtrace": @{
                     @"skipped": @0,
                     @"contents": @[

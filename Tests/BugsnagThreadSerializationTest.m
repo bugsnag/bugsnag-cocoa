@@ -35,7 +35,8 @@
             },
                     @"crashed": @YES,
                     @"current_thread": @YES,
-                    @"index": @0
+                    @"index": @0,
+                    @"state": @"TH_STATE_RUNNING"
             },
             @{
                     @"backtrace": @{
@@ -52,7 +53,8 @@
             },
                     @"crashed": @NO,
                     @"current_thread": @NO,
-                    @"index": @1
+                    @"index": @1,
+                    @"state": @"TH_STATE_WAITING"
             },
     ];
 
@@ -64,6 +66,7 @@
     NSDictionary *firstThread = threads[0];
     XCTAssertEqualObjects(@"0", firstThread[@"id"]);
     XCTAssertEqualObjects(@"cocoa", firstThread[@"type"]);
+    XCTAssertEqualObjects(@"TH_STATE_RUNNING", firstThread[@"state"]);
     XCTAssertNotNil(firstThread[@"stacktrace"]);
     XCTAssertTrue(firstThread[@"errorReportingThread"]);
 
@@ -71,6 +74,7 @@
     NSDictionary *secondThread = threads[1];
     XCTAssertEqualObjects(@"1", secondThread[@"id"]);
     XCTAssertEqualObjects(@"cocoa", secondThread[@"type"]);
+    XCTAssertEqualObjects(@"TH_STATE_WAITING", secondThread[@"state"]);
     XCTAssertNotNil(secondThread[@"stacktrace"]);
     XCTAssertFalse([secondThread[@"errorReportingThread"] boolValue]);
 }
