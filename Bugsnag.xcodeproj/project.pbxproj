@@ -464,9 +464,9 @@
 		008969C32486DAD100DC48C2 /* BSG_KSObjC.c in Sources */ = {isa = PBXBuildFile; fileRef = 008969252486DAD000DC48C2 /* BSG_KSObjC.c */; };
 		008969C42486DAD100DC48C2 /* BSG_KSObjC.c in Sources */ = {isa = PBXBuildFile; fileRef = 008969252486DAD000DC48C2 /* BSG_KSObjC.c */; };
 		008969C52486DAD100DC48C2 /* BSG_KSObjC.c in Sources */ = {isa = PBXBuildFile; fileRef = 008969252486DAD000DC48C2 /* BSG_KSObjC.c */; };
-		008969C62486DAD100DC48C2 /* BSG_KSLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 008969262486DAD000DC48C2 /* BSG_KSLogger.m */; };
-		008969C72486DAD100DC48C2 /* BSG_KSLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 008969262486DAD000DC48C2 /* BSG_KSLogger.m */; };
-		008969C82486DAD100DC48C2 /* BSG_KSLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 008969262486DAD000DC48C2 /* BSG_KSLogger.m */; };
+		008969C62486DAD100DC48C2 /* BSG_KSLogger.c in Sources */ = {isa = PBXBuildFile; fileRef = 008969262486DAD000DC48C2 /* BSG_KSLogger.c */; };
+		008969C72486DAD100DC48C2 /* BSG_KSLogger.c in Sources */ = {isa = PBXBuildFile; fileRef = 008969262486DAD000DC48C2 /* BSG_KSLogger.c */; };
+		008969C82486DAD100DC48C2 /* BSG_KSLogger.c in Sources */ = {isa = PBXBuildFile; fileRef = 008969262486DAD000DC48C2 /* BSG_KSLogger.c */; };
 		008969C92486DAD100DC48C2 /* BSG_RFC3339DateTool.h in Headers */ = {isa = PBXBuildFile; fileRef = 008969272486DAD000DC48C2 /* BSG_RFC3339DateTool.h */; };
 		008969CA2486DAD100DC48C2 /* BSG_RFC3339DateTool.h in Headers */ = {isa = PBXBuildFile; fileRef = 008969272486DAD000DC48C2 /* BSG_RFC3339DateTool.h */; };
 		008969CB2486DAD100DC48C2 /* BSG_RFC3339DateTool.h in Headers */ = {isa = PBXBuildFile; fileRef = 008969272486DAD000DC48C2 /* BSG_RFC3339DateTool.h */; };
@@ -874,6 +874,7 @@
 		E74628FF248907C100F92D67 /* BSG_KSMachHeaders.c in Sources */ = {isa = PBXBuildFile; fileRef = 008969102486DAD000DC48C2 /* BSG_KSMachHeaders.c */; };
 		E7462900248907C100F92D67 /* NSError+BSG_SimpleConstructor.m in Sources */ = {isa = PBXBuildFile; fileRef = 0089691E2486DAD000DC48C2 /* NSError+BSG_SimpleConstructor.m */; };
 		E7462901248907C100F92D67 /* BSG_KSLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 008969262486DAD000DC48C2 /* BSG_KSLogger.m */; };
+		E7462901248907C100F92D67 /* BSG_KSLogger.c in Sources */ = {isa = PBXBuildFile; fileRef = 008969262486DAD000DC48C2 /* BSG_KSLogger.c */; };
 		E7462902248907C100F92D67 /* BSG_KSCrashState.m in Sources */ = {isa = PBXBuildFile; fileRef = 008969292486DAD000DC48C2 /* BSG_KSCrashState.m */; };
 		E7462904248907C100F92D67 /* BSG_KSCrashIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 008969302486DAD000DC48C2 /* BSG_KSCrashIdentifier.m */; };
 		E7462905248907C100F92D67 /* BSG_KSCrash.m in Sources */ = {isa = PBXBuildFile; fileRef = 008969362486DAD000DC48C2 /* BSG_KSCrash.m */; };
@@ -1239,7 +1240,7 @@
 		008969232486DAD000DC48C2 /* BSG_KSMachHeaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSG_KSMachHeaders.h; sourceTree = "<group>"; };
 		008969242486DAD000DC48C2 /* BSG_KSString.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BSG_KSString.c; sourceTree = "<group>"; };
 		008969252486DAD000DC48C2 /* BSG_KSObjC.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BSG_KSObjC.c; sourceTree = "<group>"; };
-		008969262486DAD000DC48C2 /* BSG_KSLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSG_KSLogger.m; sourceTree = "<group>"; };
+		008969262486DAD000DC48C2 /* BSG_KSLogger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BSG_KSLogger.c; sourceTree = "<group>"; };
 		008969272486DAD000DC48C2 /* BSG_RFC3339DateTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSG_RFC3339DateTool.h; sourceTree = "<group>"; };
 		008969282486DAD000DC48C2 /* BSG_KSMach.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSG_KSMach.h; sourceTree = "<group>"; };
 		008969292486DAD000DC48C2 /* BSG_KSCrashState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSG_KSCrashState.m; sourceTree = "<group>"; };
@@ -1619,7 +1620,7 @@
 				008969192486DAD000DC48C2 /* BSG_KSJSONCodecObjC.h */,
 				008969082486DAD000DC48C2 /* BSG_KSJSONCodecObjC.m */,
 				008969152486DAD000DC48C2 /* BSG_KSLogger.h */,
-				008969262486DAD000DC48C2 /* BSG_KSLogger.m */,
+				008969262486DAD000DC48C2 /* BSG_KSLogger.c */,
 				008969072486DAD000DC48C2 /* BSG_KSMach_Arm.c */,
 				008969172486DAD000DC48C2 /* BSG_KSMach_Arm64.c */,
 				008969032486DAD000DC48C2 /* BSG_KSMach_x86_32.c */,
@@ -2645,7 +2646,7 @@
 				0089686B2486DA9500DC48C2 /* BugsnagEvent.m in Sources */,
 				008969A82486DAD100DC48C2 /* BSG_KSSysCtl.c in Sources */,
 				008969692486DAD000DC48C2 /* BSG_KSMach_Arm.c in Sources */,
-				008969C62486DAD100DC48C2 /* BSG_KSLogger.m in Sources */,
+				008969C62486DAD100DC48C2 /* BSG_KSLogger.c in Sources */,
 				008969662486DAD000DC48C2 /* BSG_KSDynamicLinker.c in Sources */,
 				008969C02486DAD100DC48C2 /* BSG_KSString.c in Sources */,
 				0126F79E25DD510E008483C2 /* BSGEventUploadObjectOperation.m in Sources */,
@@ -2818,7 +2819,7 @@
 				0089686C2486DA9500DC48C2 /* BugsnagEvent.m in Sources */,
 				008969A92486DAD100DC48C2 /* BSG_KSSysCtl.c in Sources */,
 				0089696A2486DAD000DC48C2 /* BSG_KSMach_Arm.c in Sources */,
-				008969C72486DAD100DC48C2 /* BSG_KSLogger.m in Sources */,
+				008969C72486DAD100DC48C2 /* BSG_KSLogger.c in Sources */,
 				008969672486DAD000DC48C2 /* BSG_KSDynamicLinker.c in Sources */,
 				008969C12486DAD100DC48C2 /* BSG_KSString.c in Sources */,
 				0126F79F25DD510E008483C2 /* BSGEventUploadObjectOperation.m in Sources */,
@@ -2989,7 +2990,7 @@
 				0089686D2486DA9500DC48C2 /* BugsnagEvent.m in Sources */,
 				008969AA2486DAD100DC48C2 /* BSG_KSSysCtl.c in Sources */,
 				0089696B2486DAD000DC48C2 /* BSG_KSMach_Arm.c in Sources */,
-				008969C82486DAD100DC48C2 /* BSG_KSLogger.m in Sources */,
+				008969C82486DAD100DC48C2 /* BSG_KSLogger.c in Sources */,
 				008969682486DAD000DC48C2 /* BSG_KSDynamicLinker.c in Sources */,
 				008969C22486DAD100DC48C2 /* BSG_KSString.c in Sources */,
 				0126F7A025DD510E008483C2 /* BSGEventUploadObjectOperation.m in Sources */,
@@ -3141,6 +3142,7 @@
 				E74628FF248907C100F92D67 /* BSG_KSMachHeaders.c in Sources */,
 				E7462900248907C100F92D67 /* NSError+BSG_SimpleConstructor.m in Sources */,
 				E7462901248907C100F92D67 /* BSG_KSLogger.m in Sources */,
+				E7462901248907C100F92D67 /* BSG_KSLogger.c in Sources */,
 				E7462902248907C100F92D67 /* BSG_KSCrashState.m in Sources */,
 				E7462904248907C100F92D67 /* BSG_KSCrashIdentifier.m in Sources */,
 				CBCAF70025A457F90095771F /* BSGFileLocations.m in Sources */,

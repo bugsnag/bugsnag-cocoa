@@ -253,7 +253,7 @@ thread_t bsg_ksmachmachThreadFromPThread(const pthread_t pthread) {
     thread_t machThread = 0;
     if (bsg_ksmachcopyMem(&threadStruct->kernel_thread, &machThread,
                           sizeof(machThread)) != KERN_SUCCESS) {
-        BSG_KSLOG_TRACE("Could not copy mach thread from %p",
+        BSG_KSLOG_TRACE("Could not copy mach thread from %u",
                         threadStruct->kernel_thread);
         return 0;
     }
@@ -325,7 +325,7 @@ bool bsg_ksmachgetThreadQueueName(const thread_t thread, char *const buffer,
         bsg_ksmachcopyMem((const void *)dispatch_queue, &junk,
                           sizeof(junk)) != KERN_SUCCESS) {
         BSG_KSLOG_TRACE(
-            "This thread doesn't have a dispatch queue attached : %p", thread);
+            "This thread doesn't have a dispatch queue attached : %u", thread);
         return false;
     }
 

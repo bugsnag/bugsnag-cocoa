@@ -77,20 +77,20 @@ static NSDictionary * bsg_systemversion() {
     const char *file = "/System/Library/CoreServices/SystemVersion.plist";
     bsg_syscall_open(file, O_RDONLY, 0, &fd);
     if (fd < 0) {
-        BSG_KSLOG_ERROR("Could not open SystemVersion.plist");
+        bsg_log_err(@"Could not open SystemVersion.plist");
         return nil;
     }
     ssize_t length = read(fd, buffer, sizeof(buffer));
     close(fd);
     if (length < 0 || length == sizeof(buffer)) {
-        BSG_KSLOG_ERROR("Could not read SystemVersion.plist");
+        bsg_log_err(@"Could not read SystemVersion.plist");
         return nil;
     }
     NSData *data = [NSData
                     dataWithBytesNoCopy:buffer
                     length:(NSUInteger)length freeWhenDone:NO];
     if (!data) {
-        BSG_KSLOG_ERROR("Could not read SystemVersion.plist");
+        bsg_log_err(@"Could not read SystemVersion.plist");
         return nil;
     }
     NSError *error = nil;
@@ -98,7 +98,7 @@ static NSDictionary * bsg_systemversion() {
                                    propertyListWithData:data
                                    options:0 format:NULL error:&error];
     if (!systemVersion) {
-        BSG_KSLOG_ERROR("Could not read SystemVersion.plist: %@", error);
+        bsg_log_err(@"Could not read SystemVersion.plist: %@", error);
     }
     return systemVersion;
 }
@@ -509,7 +509,7 @@ char *bsg_kssysteminfo_toJSON(void) {
                                          options:BSG_KSJSONEncodeOptionSorted
                                            error:&error];
     if (error != nil) {
-        BSG_KSLOG_ERROR(@"Could not serialize system info: %@", error);
+        bsg_log_err(@"Could not serialize system info: %@", error);
         return NULL;
     }
     if (![jsonData isKindOfClass:[NSMutableData class]]) {

@@ -172,12 +172,6 @@ BSG_KSCrashType bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashType crashTypes) {
     return crashTypes;
 }
 
-void bsg_kscrash_setUserInfoJSON(const char *const userInfoJSON) {
-    BSG_KSLOG_TRACE("set userInfoJSON to %p", userInfoJSON);
-    BSG_KSCrash_Context *context = crashContext();
-    bsg_ksstring_replace(&context->config.userInfoJSON, userInfoJSON);
-}
-
 void bsg_kscrash_setPrintTraceToStdout(bool printTraceToStdout) {
     crashContext()->config.printTraceToStdout = printTraceToStdout;
 }

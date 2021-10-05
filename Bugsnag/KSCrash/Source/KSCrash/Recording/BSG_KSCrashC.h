@@ -92,13 +92,6 @@ void bsg_kscrash_reinstall(const char *const crashReportFilePath,
                            const char *const stateFilePath,
                            const char *const crashID);
 
-/** Set the user-supplied data in JSON format.
- *
- * @param userInfoJSON Pre-baked JSON containing user-supplied information.
- *                     NULL = delete.
- */
-void bsg_kscrash_setUserInfoJSON(const char *const userInfoJSON);
-
 /** Set whether or not to print a stack trace to stdout when a crash occurs.
  *
  * Default: false
