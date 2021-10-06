@@ -153,6 +153,7 @@ Feature: Barebone tests
     And the event "severityReason.unhandledOverridden" is null
     And the event "threads.0.errorReportingThread" is true
     And the event "threads.0.id" equals "0"
+    And the event "threads.0.state" is not null
     And the event "threads.0.stacktrace.0.method" matches "(assertionFailure|fatalErrorMessage|<redacted>)"
     And the event "unhandled" is true
     And the event "user.email" equals "barfoo@example.com"

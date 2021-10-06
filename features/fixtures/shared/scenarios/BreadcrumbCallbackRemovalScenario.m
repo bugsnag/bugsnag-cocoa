@@ -12,7 +12,7 @@
 
 - (void)startBugsnag {
     self.config.autoTrackSessions = false;
-    self.config.enabledBreadcrumbTypes = BSGBreadcrumbTypeManual;
+    self.config.enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeUser;
 
     [self.config addOnBreadcrumbBlock:^BOOL(BugsnagBreadcrumb * _Nonnull breadcrumb) {
         NSMutableDictionary *dict = [breadcrumb.metadata mutableCopy];

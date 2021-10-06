@@ -10,6 +10,10 @@
 		0196AA1026FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */; };
 		0196AA1126FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */; };
 		0196AA1226FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */; };
+		CB2430E026F1DABE00CB5EC4 /* BSGURLSessionTracingDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */; };
+		CB2430E126F1DABE00CB5EC4 /* BSGURLSessionTracingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */; };
+		CB2430E226F1DABE00CB5EC4 /* NSURLSession+Tracing.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */; };
+		CB2430E326F1DAC500CB5EC4 /* BugsnagNetworkRequestPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */; };
 		CB487A6326D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */; };
 		CB487A7526D7B12F004F6B87 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A7426D7B12F004F6B87 /* Bugsnag.framework */; };
 		CB487A8626D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A7D26D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework */; };
@@ -69,8 +73,21 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		CB2430D526F1DA8A00CB5EC4 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionTracingDelegateTests.m; sourceTree = "<group>"; };
+		CB2430D726F1DA8A00CB5EC4 /* libBugsnagNetworkRequestPluginStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnagNetworkRequestPluginStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB487A5D26D7B109004F6B87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CB487A6226D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagNetworkRequestPlugin-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -94,6 +111,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		CB2430D426F1DA8A00CB5EC4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CB487A5626D7B109004F6B87 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -158,6 +182,7 @@
 		CB487A5A26D7B109004F6B87 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				CB2430D726F1DA8A00CB5EC4 /* libBugsnagNetworkRequestPluginStatic.a */,
 				CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */,
 				CB487A6226D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests.xctest */,
 				CB487A7D26D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework */,
@@ -259,6 +284,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		CB2430D626F1DA8A00CB5EC4 /* BugsnagNetworkRequestPluginStatic */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB2430DF26F1DA8A00CB5EC4 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPluginStatic" */;
+			buildPhases = (
+				CB2430D326F1DA8A00CB5EC4 /* Sources */,
+				CB2430D426F1DA8A00CB5EC4 /* Frameworks */,
+				CB2430D526F1DA8A00CB5EC4 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BugsnagNetworkRequestPluginStatic;
+			productName = BugsnagNetworkRequestPluginStatic;
+			productReference = CB2430D726F1DA8A00CB5EC4 /* libBugsnagNetworkRequestPluginStatic.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		CB487A5826D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CB487A6D26D7B109004F6B87 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPlugin-iOS" */;
@@ -375,6 +417,9 @@
 			attributes = {
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
+					CB2430D626F1DA8A00CB5EC4 = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
 					CB487A5826D7B109004F6B87 = {
 						CreatedOnToolsVersion = 12.5.1;
 					};
@@ -408,6 +453,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				CB2430D626F1DA8A00CB5EC4 /* BugsnagNetworkRequestPluginStatic */,
 				CB487A5826D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOS */,
 				CB487A6126D7B109004F6B87 /* BugsnagNetworkRequestPlugin-iOSTests */,
 				CB487A7C26D7B144004F6B87 /* BugsnagNetworkRequestPlugin-macOS */,
@@ -464,6 +510,17 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		CB2430D326F1DA8A00CB5EC4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB2430E026F1DABE00CB5EC4 /* BSGURLSessionTracingDelegate.m in Sources */,
+				CB2430E226F1DABE00CB5EC4 /* NSURLSession+Tracing.m in Sources */,
+				CB2430E326F1DAC500CB5EC4 /* BugsnagNetworkRequestPlugin.m in Sources */,
+				CB2430E126F1DABE00CB5EC4 /* BSGURLSessionTracingProxy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CB487A5526D7B109004F6B87 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -545,6 +602,34 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		CB2430DD26F1DA8A00CB5EC4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				HEADER_SEARCH_PATHS = ../Bugsnag/include;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CB2430DE26F1DA8A00CB5EC4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				HEADER_SEARCH_PATHS = ../Bugsnag/include;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		CB487A6B26D7B109004F6B87 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1006,6 +1091,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		CB2430DF26F1DA8A00CB5EC4 /* Build configuration list for PBXNativeTarget "BugsnagNetworkRequestPluginStatic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB2430DD26F1DA8A00CB5EC4 /* Debug */,
+				CB2430DE26F1DA8A00CB5EC4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CB487A5326D7B109004F6B87 /* Build configuration list for PBXProject "BugsnagNetworkRequestPlugin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

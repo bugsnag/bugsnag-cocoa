@@ -39,7 +39,6 @@ Feature: Discarding reports based on release stage
 
   Scenario: Handled error when release stage is not present in enabledReleaseStages
     When I run "HandledErrorInvalidReleaseStage"
-    And I configure Bugsnag for "HandledErrorInvalidReleaseStage"
     Then I should receive no requests
 
   Scenario: Handled error when release stage is present in enabledReleaseStages
