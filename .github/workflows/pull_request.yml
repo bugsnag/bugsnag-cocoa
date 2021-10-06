@@ -44,10 +44,14 @@ jobs:
           echo $st_size > .size_after
       
       - name: Infer
-        run: make infer
+        run: |
+          brew install infer
+          make infer
       
       - name: OCLint
-        run: make oclint
+        run: |
+          brew install oclint
+          make oclint
 
       - name: Danger
         run: bundle exec danger

@@ -97,27 +97,15 @@ analyze: ## Run Xcode's analyzer on the build and fail if issues found
 		CLANG_ANALYZER_OUTPUT_DIR=$(DATA_PATH)/analyzer \
 		&& [[ -z `find $(DATA_PATH)/analyzer -name "*.html"` ]]
 
-INFER=$(HOME)/Library/Caches/infer-osx-v1.0.0/bin/infer
+infer: compile_commands.json ## Run the "Infer" static analysis tool
+	@infer run --report-console-limit 100 --compilation-database compile_commands.json
 
-infer: $(INFER) compile_commands.json ## Run the "Infer" static analysis tool
-	@$(INFER) run --report-console-limit 100 --compilation-database compile_commands.json
-
-$(INFER):
-	@echo Downloading Infer...
-	@curl -L https://github.com/facebook/infer/releases/download/v1.0.0/infer-osx-v1.0.0.tar.xz | tar -x -C $(HOME)/Library/Caches
-
-OCLINT=$(HOME)/Library/Caches/oclint-20.11/bin/oclint-json-compilation-database
-
-oclint: $(OCLINT) compile_commands.json ## Run the "OCLint" static analysis tool
+oclint: compile_commands.json ## Run the "OCLint" static analysis tool
 ifeq ($(CI), true)
-	@$(OCLINT) -- --report-type=json -o=oclint.json || echo "OCLint exited with an error status"
+	@oclint-json-compilation-database -- --report-type=json -o=oclint.json || echo "OCLint exited with an error status"
 else
-	@$(OCLINT) || echo "OCLint exited with an error status"
+	@oclint-json-compilation-database || echo "OCLint exited with an error status"
 endif
-
-$(OCLINT):
-	@echo Downloading oclint...
-	@curl -L https://github.com/oclint/oclint/releases/download/v20.11/oclint-20.11-llvm-11.0.0-x86_64-darwin-macos-big-sur-11.0.1-xcode-12.2.tar.gz | tar -x -C $(HOME)/Library/Caches
 
 #--------------------------------------------------------------------------
 # Testing
