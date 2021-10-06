@@ -1,7 +1,12 @@
 Changelog
 =========
 
-## TBD
+## 6.14.0 (2021-10-06)
+
+### Enhancements
+
+* Capture and report thread states (running, stopped, waiting, etc.) 
+  [#1200](https://github.com/bugsnag/bugsnag-cocoa/pull/1200)
 
 ### Bug fixes
 
