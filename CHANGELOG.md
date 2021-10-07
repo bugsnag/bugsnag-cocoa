@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Apply `redactedKeys` to breadcrumb metadata.
+  [#1204](https://github.com/bugsnag/bugsnag-cocoa/pull/1204)
+
 ## 6.14.0 (2021-10-06)
 
 ### Enhancements

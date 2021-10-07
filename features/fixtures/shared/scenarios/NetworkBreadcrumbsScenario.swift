@@ -23,9 +23,8 @@ class NetworkBreadcrumbsScenario : Scenario {
     }
 
     override func run() {
-
         // Make some network requests so that automatic network breadcrumbs are left
-        query(address: "http://bs-local.com:9340/reflect/?status=444")
+        query(address: "http://bs-local.com:9340/reflect/?status=444&password=T0p5ecr3t")
         query(address: "http://bs-local.com:9340/reflect/?delay_ms=3000")
 
         // Send a handled error

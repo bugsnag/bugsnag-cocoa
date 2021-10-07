@@ -65,6 +65,7 @@ Feature: Attaching a series of notable events leading up to errors
     And the event "breadcrumbs.0.metaData.method" equals "GET"
     And the event "breadcrumbs.0.metaData.url" equals "http://bs-local.com:9340/reflect/"
     And the event "breadcrumbs.0.metaData.urlParams.status" equals "444"
+    And the event "breadcrumbs.0.metaData.urlParams.password" equals "[REDACTED]"
     And the event "breadcrumbs.0.metaData.status" equals 444
     And the event "breadcrumbs.0.metaData.duration" is greater than 0
     And the event "breadcrumbs.0.metaData.requestContentLength" is null
