@@ -15,7 +15,9 @@ static void ReportInternalError(NSString *errorClass, NSError *error) {
     NSString *file = @(__FILE__).lastPathComponent;
     NSString *message = BSGErrorDescription(error);
     NSString *groupingHash = [NSString stringWithFormat:@"%@: %@: %@ %ld", file, errorClass, error.domain, (long)error.code];
-    [BSGInternalErrorReporter.sharedInstance reportErrorWithClass:errorClass message:message diagnostics:error.userInfo groupingHash:groupingHash];
+    [BSGInternalErrorReporter performBlock:^(BSGInternalErrorReporter *reporter) {
+        [reporter reportErrorWithClass:errorClass message:message diagnostics:error.userInfo groupingHash:groupingHash];
+    }];
 }
 
 static BOOL ensureDirExists(NSString *path) {
