@@ -7,14 +7,6 @@ When('I run {string}') do |event_type|
   )
 end
 
-When('I set the app to {string} mode') do |mode|
-  steps %(
-    Given the element "scenario_metadata" is present
-    When I send the keys "#{mode}" to the element "scenario_metadata"
-    And I close the keyboard
-  )
-end
-
 When("I run {string} and relaunch the app") do |event_type|
   begin
     step("I run \"#{event_type}\"")
@@ -74,74 +66,10 @@ When('I configure Bugsnag for {string}') do |event_type|
   )
 end
 
-When('I send the app to the background') do
-  Maze.driver.background_app(-1)
-end
-
-When('I background the app for {int} seconds') do |duration|
-  Maze.driver.background_app(duration)
-end
-
-When('I relaunch the app') do
-  case Maze.driver.capabilities['platformName']
-  when 'Mac'
-    app = Maze.driver.capabilities['app']
-    system("killall #{app} > /dev/null && sleep 1")
-    Maze.driver.get(app)
-  else
-    Maze.driver.launch_app
-  end
-end
-
-When("I relaunch the app after a crash") do
-  # This step should only be used when the app has crashed, but the notifier needs a little
-  # time to write the crash report before being forced to reopen.  From trials, 2s was not enough.
-  sleep(5)
-  case Maze.driver.capabilities['platformName']
-  when 'Mac'
-    Maze.driver.get(Maze.driver.capabilities['app'])
-  else
-    Maze.driver.launch_app
-  end
-end
-
 When('I clear the error queue') do
   Maze::Server.errors.clear
 end
 
-#
-# https://appium.io/docs/en/commands/device/app/app-state/
-#
-# 0: The current application state cannot be determined/is unknown
-# 1: The application is not running
-# 2: The application is running in the background and is suspended
-# 3: The application is running in the background and is not suspended
-# 4: The application is running in the foreground
-
-Then('the app is running in the foreground') do
-  wait_for_true do
-    Maze.driver.app_state('com.bugsnag.iOSTestApp') == :running_in_foreground
-  end
-end
-
-Then('the app is running in the background') do
-  wait_for_true do
-    Maze.driver.app_state('com.bugsnag.iOSTestApp') == :running_in_background
-  end
-end
-
-Then('the app is not running') do
-  wait_for_true do
-    case Maze.driver.capabilities['platformName']
-    when 'iOS'
-      Maze.driver.app_state('com.bugsnag.iOSTestApp') == :not_running
-    when 'Mac'
-      `lsappinfo info -only pid -app com.bugsnag.macOSTestApp`.empty?
-    else
-      raise "Don't know how to query app state on this platform"
-    end
-  end
-end
 
 def request_matches_row(body, row)
   row.each do |key, expected_value|
@@ -173,77 +101,6 @@ def request_fields_are_equal(key, index_a, index_b)
   val_b = Maze::Helper.read_key_path(request_b, key)
   $logger.info "Comparing '#{val_a}' against '#{val_b}'"
   val_a.eql? val_b
-end
-
-Then('the event {string} equals one of:') do |field, possible_values|
-  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
-  assert_includes(possible_values.raw.flatten, value)
-end
-
-Then('the event {string} is within {int} seconds of the current timestamp') do |field, threshold_secs|
-  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
-  assert_not_nil(value, 'Expected a timestamp')
-  now_secs = Time.now.to_i
-  then_secs = Time.parse(value).to_i
-  delta = now_secs - then_secs
-  assert_true(delta.abs < threshold_secs, "Expected current timestamp, but received #{value}")
-end
-
-Then('the event {string} is between {float} and {float}') do |field, lower, upper|
-  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
-  assert_not_nil(value, 'Expected a value')
-  assert_true(lower <= value && value <= upper, "Expected a value between #{lower} and #{upper}, but received #{value}")
-end
-
-Then('the event {string} is between {int} and {int}') do |field, lower, upper|
-  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
-  assert_not_nil(value, 'Expected a value')
-  assert_true(lower <= value && value <= upper, "Expected a value between #{lower} and #{upper}, but received #{value}")
-end
-
-Then('the event {string} is less than the event {string}') do |field1, field2|
-  value1 = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field1}")
-  assert_not_nil(value1, 'Expected a value')
-  value2 = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field2}")
-  assert_not_nil(value2, 'Expected a value')
-  assert_true(value1 < value2, "Expected value to be less than #{value2}, but received #{value1}")
-end
-
-Then('the event breadcrumbs contain {string} with type {string}') do |string, type|
-  crumbs = Maze::Helper.read_key_path(find_request(0)[:body], 'events.0.breadcrumbs')
-  assert_not_equal(0, crumbs.length, 'There are no breadcrumbs on this event')
-  match = crumbs.detect do |crumb|
-    crumb['name'] == string && crumb['type'] == type
-  end
-  assert_not_nil(match, 'No crumb matches the provided message and type')
-end
-
-Then('the event breadcrumbs contain {string}') do |string|
-  crumbs = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.breadcrumbs')
-  assert_not_equal(0, crumbs.length, 'There are no breadcrumbs on this event')
-  match = crumbs.detect do |crumb|
-    crumb['name'] == string
-  end
-  assert_not_nil(match, 'No crumb matches the provided message')
-end
-
-Then('the stack trace is an array with {int} stack frames') do |expected_length|
-  stack_trace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.exceptions.0.stacktrace')
-  assert_equal(expected_length, stack_trace.length)
-end
-
-Then('the {string} of stack frame {int} equals one of:') do |key, num, possible_values|
-  field = "events.0.exceptions.0.stacktrace.#{num}.#{key}"
-  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], field)
-  assert_includes(possible_values.raw.flatten, value)
-end
-
-Then('the stacktrace contains methods:') do |table|
-  stack_trace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.exceptions.0.stacktrace')
-  expected = table.raw.flatten
-  actual = stack_trace.map { |s| s['method'] }
-  contains = actual.each_cons(expected.length).to_a.include? expected
-  assert_true(contains, "Stacktrace methods #{actual} did not contain #{expected}")
 end
 
 def check_device_model(field, list)
