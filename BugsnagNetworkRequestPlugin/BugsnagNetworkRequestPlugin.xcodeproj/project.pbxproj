@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		016113862716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */; };
+		016113872716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */; };
+		016113882716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */; };
 		0196AA1026FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */; };
 		0196AA1126FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */; };
 		0196AA1226FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */; };
@@ -86,6 +89,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionTracingProxyTests.m; sourceTree = "<group>"; };
 		0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionTracingDelegateTests.m; sourceTree = "<group>"; };
 		CB2430D726F1DA8A00CB5EC4 /* libBugsnagNetworkRequestPluginStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnagNetworkRequestPluginStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -213,6 +217,7 @@
 			isa = PBXGroup;
 			children = (
 				0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */,
+				016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */,
 				CB487A6726D7B109004F6B87 /* BugsnagNetworkRequestPluginTests.m */,
 				CB487A6926D7B109004F6B87 /* Info.plist */,
 			);
@@ -536,6 +541,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				016113862716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */,
 				CB487AC226D7B9DB004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */,
 				0196AA1026FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */,
 			);
@@ -556,6 +562,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				016113872716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */,
 				CB487AC326D7B9DC004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */,
 				0196AA1126FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */,
 			);
@@ -576,6 +583,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				016113882716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */,
 				CB487AC426D7B9DD004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */,
 				0196AA1226FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */,
 			);

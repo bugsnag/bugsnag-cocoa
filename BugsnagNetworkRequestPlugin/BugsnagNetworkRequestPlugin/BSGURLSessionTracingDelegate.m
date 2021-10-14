@@ -83,9 +83,7 @@ static id<BSGBreadcrumbSink> g_sink;
     return string;
 }
 
-- (void)URLSession:(NSURLSession *)session
-              task:(NSURLSessionTask *)task
-didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
+- (void)URLSession:(__unused NSURLSession *)session task:(NSURLSessionTask *)task didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
 API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
     if (g_sink != nil) {
         // Note: Cannot use metrics transaction request because it might have a 0 length HTTP body.

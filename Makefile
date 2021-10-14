@@ -17,7 +17,7 @@ OS?=latest
 TEST_CONFIGURATION?=Debug
 XCODEBUILD_EXTRA_ARGS?=
 DATA_PATH=DerivedData
-BUILD_FLAGS=-project Bugsnag.xcodeproj -scheme Bugsnag-$(PLATFORM) -derivedDataPath $(DATA_PATH) $(XCODEBUILD_EXTRA_ARGS)
+BUILD_FLAGS=-workspace Bugsnag.xcworkspace -scheme Bugsnag-$(PLATFORM) -derivedDataPath $(DATA_PATH) $(XCODEBUILD_EXTRA_ARGS)
 
 ifeq ($(PLATFORM),macOS)
  SDK?=macosx
