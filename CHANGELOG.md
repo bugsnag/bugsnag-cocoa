@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Disable automatic session tracking in app extensions (it was not working as intended.)
+  [#1211](https://github.com/bugsnag/bugsnag-cocoa/pull/1211)
+
 * Apply `redactedKeys` to breadcrumb metadata.
   [#1204](https://github.com/bugsnag/bugsnag-cocoa/pull/1204)
 
