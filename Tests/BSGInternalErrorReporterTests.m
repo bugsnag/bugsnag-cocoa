@@ -24,6 +24,10 @@
 @implementation BSGInternalErrorReporterTests
 
 - (void)setUp {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    [BSGInternalErrorReporter setSharedInstance:nil];
+#pragma clang diagnostic pop
     self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
     self.notifier = [[BugsnagNotifier alloc] init];
 }
@@ -90,6 +94,23 @@
     XCTAssertEqualObjects(payload[@"notifier"], [notifier toDict]);
     XCTAssertEqualObjects(payload[@"payloadVersion"], @"4.0");
     XCTAssertNil(payload[@"apiKey"]);
+}
+
+- (void)testPerformBlock {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"+performBlock: block is called once sharedInstance is set"];
+    [BSGInternalErrorReporter performBlock:^(BSGInternalErrorReporter *reporter) {
+        XCTAssertNotNil(reporter);
+        [expectation fulfill];
+    }];
+    [BSGInternalErrorReporter setSharedInstance:[[BSGInternalErrorReporter alloc] initWithDataSource:self]];
+    [self waitForExpectations:@[expectation] timeout:1];
+    
+    expectation = [self expectationWithDescription:@"+performBlock: block is called immediately"];
+    [BSGInternalErrorReporter performBlock:^(BSGInternalErrorReporter *reporter) {
+        XCTAssertNotNil(reporter);
+        [expectation fulfill];
+    }];
+    [self waitForExpectations:@[expectation] timeout:0];
 }
 
 // MARK: - BSGInternalErrorReporterDataSource

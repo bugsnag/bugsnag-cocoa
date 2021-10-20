@@ -11,7 +11,7 @@
 
 @interface BSGURLSessionTracingProxy ()
 
-@property (nonatomic, strong, nonnull) id<NSURLSessionDelegate> delegate;
+@property (nonatomic, strong, nonnull) id delegate;
 @property (nonatomic, strong, nonnull) BSGURLSessionTracingDelegate *tracingDelegate;
 
 @end
@@ -47,20 +47,17 @@
     return [(NSObject *)self.delegate methodSignatureForSelector:aSelector];
 }
 
--  (void)forwardInvocation:(NSInvocation *)invocation {
-    if (sel_isEqual(invocation.selector, METRICS_SELECTOR)) {
-        if (self.tracingDelegate.canTrace) {
-            invocation.target = self.tracingDelegate;
-            [invocation invoke];
-        }
+- (void)forwardInvocation:(NSInvocation *)invocation {
+    [invocation invokeWithTarget:self.delegate];
+}
 
-        if (![self.delegate respondsToSelector:METRICS_SELECTOR]) {
-            return;
-        }
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
+API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
+    [self.tracingDelegate URLSession:session task:task didFinishCollectingMetrics:metrics];
+    
+    if ([self.delegate respondsToSelector:METRICS_SELECTOR]) {
+        [self.delegate URLSession:session task:task didFinishCollectingMetrics:metrics];
     }
-
-    invocation.target = self.delegate;
-    [invocation invoke];
 }
 
 @end

@@ -8,6 +8,7 @@
 
 #import <XCTest/XCTest.h>
 
+#import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagEvent+Private.h"
 
 @interface BugsnagMetadataRedactionTest : XCTestCase
@@ -128,6 +129,29 @@
     XCTAssertEqualObjects(@"[REDACTED]", section[@"caseInsensitiveKey"]);
     XCTAssertEqualObjects(@"CaseInsensitiveValue", section[@"caseInsensitiveKeyX"]);
     XCTAssertEqualObjects(@"ba09", section[@"somekey"]);
+}
+
+- (void)testBreadcrumbMetadataRedaction {
+    BugsnagBreadcrumb *breadcrumb = [[BugsnagBreadcrumb alloc] init];
+    breadcrumb.message = @"message cannot be empty";
+    breadcrumb.metadata = @{
+        @"foo" : @"not redacted",
+        @"password" : @"secret",
+        @"x" : @{
+            @"bar" : @"not redacted",
+            @"password" : @"123456"
+        }
+    };
+    
+    BugsnagEvent *event = [self generateEventWithMetadata:@{}];
+    event.breadcrumbs = @[breadcrumb];
+    
+    NSDictionary *eventPayload = [event toJsonWithRedactedKeys:[NSSet setWithArray:@[@"password"]]];
+    NSDictionary *metaData = eventPayload[@"breadcrumbs"][0][@"metaData"];
+    XCTAssertEqualObjects(metaData[@"foo"], @"not redacted");
+    XCTAssertEqualObjects(metaData[@"password"], @"[REDACTED]");
+    XCTAssertEqualObjects(metaData[@"x"][@"bar"], @"not redacted");
+    XCTAssertEqualObjects(metaData[@"x"][@"password"], @"[REDACTED]");
 }
 
 @end

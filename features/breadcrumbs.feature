@@ -60,17 +60,18 @@ Feature: Attaching a series of notable events leading up to errors
     And I run "NetworkBreadcrumbsScenario"
     Then I wait to receive an error
     And the event "breadcrumbs.0.timestamp" is a timestamp
-    And the event "breadcrumbs.0.name" equals "NSURLSession failed"
+    And the event "breadcrumbs.0.name" equals "NSURLSession request failed"
     And the event "breadcrumbs.0.type" equals "request"
     And the event "breadcrumbs.0.metaData.method" equals "GET"
     And the event "breadcrumbs.0.metaData.url" equals "http://bs-local.com:9340/reflect/"
     And the event "breadcrumbs.0.metaData.urlParams.status" equals "444"
+    And the event "breadcrumbs.0.metaData.urlParams.password" equals "[REDACTED]"
     And the event "breadcrumbs.0.metaData.status" equals 444
     And the event "breadcrumbs.0.metaData.duration" is greater than 0
     And the event "breadcrumbs.0.metaData.requestContentLength" is null
     And the event "breadcrumbs.0.metaData.responseContentLength" is greater than 0
     And the event "breadcrumbs.1.timestamp" is a timestamp
-    And the event "breadcrumbs.1.name" equals "NSURLSession succeeded"
+    And the event "breadcrumbs.1.name" equals "NSURLSession request succeeded"
     And the event "breadcrumbs.1.type" equals "request"
     And the event "breadcrumbs.1.metaData.method" equals "GET"
     And the event "breadcrumbs.1.metaData.url" equals "http://bs-local.com:9340/reflect/"

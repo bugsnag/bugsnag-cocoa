@@ -387,7 +387,7 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
 - (void)testBadURL {
     [self resetBreadcrumbs];
     [self fetchAndWaitURL:@"xxxxxxx" usingConfig:self.defaultConfig];
-    [self expectMessage:@"NSURLSession error"
+    [self expectMessage:@"NSURLSession request error"
                  method:@"GET"
               reqLength:nil
              respLength:nil
@@ -404,7 +404,7 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                    statusCode:200
                          data:[self dataOfLength:0]
                     validator:^{
-        [self expectMessage:@"NSURLSession succeeded"
+        [self expectMessage:@"NSURLSession request succeeded"
                      method:@"GET"
                   reqLength:nil
                  respLength:@0
@@ -422,7 +422,7 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                    statusCode:200
                          data:[self dataOfLength:10]
                     validator:^{
-        [self expectMessage:@"NSURLSession succeeded"
+        [self expectMessage:@"NSURLSession request succeeded"
                      method:@"GET"
                   reqLength:nil
                  respLength:@10
@@ -435,11 +435,11 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
 - (void)testTaskStatusCodes {
     NSArray *expectedMessages = @[
         @"",
-        @"NSURLSession succeeded",
-        @"NSURLSession succeeded",
-        @"NSURLSession succeeded",
-        @"NSURLSession failed",
-        @"NSURLSession error",
+        @"NSURLSession request succeeded",
+        @"NSURLSession request succeeded",
+        @"NSURLSession request succeeded",
+        @"NSURLSession request failed",
+        @"NSURLSession request error",
     ];
     NSString *urlString = @"https://bugsnag.com";
 
@@ -516,7 +516,7 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                        statusCode:200
                              data:[self dataOfLength:0]
                         validator:^{
-            [self expectMessage:@"NSURLSession succeeded"
+            [self expectMessage:@"NSURLSession request succeeded"
                          method:method
                       reqLength:nil
                      respLength:@0
@@ -531,7 +531,7 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                            statusCode:200
                                  data:[self dataOfLength:0]
                             validator:^{
-            [self expectMessage:@"NSURLSession succeeded"
+            [self expectMessage:@"NSURLSession request succeeded"
                          method:method
                       reqLength:nil
                      respLength:@0

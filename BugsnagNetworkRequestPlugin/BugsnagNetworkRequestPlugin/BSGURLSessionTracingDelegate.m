@@ -36,13 +36,13 @@ static id<BSGBreadcrumbSink> g_sink;
 + (nonnull NSString *)messageForResponse:(NSHTTPURLResponse *)response {
     if (response) {
         if (100 <= response.statusCode && response.statusCode < 400) {
-            return @"NSURLSession succeeded";
+            return @"NSURLSession request succeeded";
         }
         if (400 <= response.statusCode && response.statusCode < 500) {
-            return @"NSURLSession failed";
+            return @"NSURLSession request failed";
         }
     }
-    return @"NSURLSession error";
+    return @"NSURLSession request error";
 }
 
 + (nullable NSDictionary<NSString *, id> *)urlParamsForQueryItems:(nullable NSArray<NSURLQueryItem *> *)queryItems {
@@ -83,9 +83,7 @@ static id<BSGBreadcrumbSink> g_sink;
     return string;
 }
 
-- (void)URLSession:(NSURLSession *)session
-              task:(NSURLSessionTask *)task
-didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
+- (void)URLSession:(__unused NSURLSession *)session task:(NSURLSessionTask *)task didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
 API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
     if (g_sink != nil) {
         // Note: Cannot use metrics transaction request because it might have a 0 length HTTP body.

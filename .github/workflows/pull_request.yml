@@ -4,6 +4,9 @@ on: [pull_request]
 jobs:
   build:
     runs-on: macos-latest
+    env:
+      # Infer 1.0.1 cannot parse the iOS 15 SDK headers
+      DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
     steps:
       - name: Checkout base branch
         uses: actions/checkout@v2
