@@ -93,14 +93,14 @@
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagConfiguration.h",
-      "line": 263,
+      "line": 265,
       "symbol": "BugsnagConfiguration.appType",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagConfiguration.h",
-      "line": 398,
+      "line": 400,
       "symbol": "BugsnagConfiguration.-addPlugin:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.instance",
       "warning": "undocumented"
