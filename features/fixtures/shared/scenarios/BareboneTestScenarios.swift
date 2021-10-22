@@ -111,17 +111,16 @@ class BareboneTestUnhandledErrorScenario: Scenario {
             }
         } else {
             // The version of the app at crash time.
+            config.addMetadata(["group": "users"], section: "user")
             config.appVersion = "12.3"
             config.bundleVersion = "12301"
+            config.context = "Something"
+            config.setUser("barfoo", withEmail: "barfoo@example.com", andName: "Bar Foo")
         }
         super.startBugsnag()
     }
     
     override func run() {
-        Bugsnag.setContext("Something")
-        Bugsnag.setUser("barfoo", withEmail: "barfoo@example.com", andName: "Bar Foo")
-        Bugsnag.addMetadata(["group": "users"], section: "user")
-        
         // Triggers "Fatal error: Unexpectedly found nil while implicitly unwrapping an Optional value: ..."
         print(payload.name)
     }
