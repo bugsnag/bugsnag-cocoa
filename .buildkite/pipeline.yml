@@ -143,7 +143,7 @@ steps:
           - "--app=@build/ipa_url.txt"
           - "--farm=bs"
           - "--device=IOS_15"
-          - "--appium-version=1.17.0"
+          - "--appium-version=1.22.0"
           - "--fail-fast"
           - "--order=random"
     concurrency: 9
