@@ -12,7 +12,6 @@
 extern "C" {
 #endif
 
-#include <stdbool.h>
 #include <stdint.h>
 
 struct bsg_symbolicate_result {
@@ -21,7 +20,7 @@ struct bsg_symbolicate_result {
     const char *function_name;
 };
 
-bool bsg_symbolicate(const uintptr_t address, struct bsg_symbolicate_result *result);
+void bsg_symbolicate(const uintptr_t address, struct bsg_symbolicate_result *result);
 
 #ifdef __cplusplus
 }

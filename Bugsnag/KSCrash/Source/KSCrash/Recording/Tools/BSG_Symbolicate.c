@@ -29,17 +29,17 @@ typedef struct section section_t;
 #if __clang_major__ >= 11 // Xcode 10 does not like the following attribute
 __attribute__((annotate("oclint:suppress[deep nested block]")))
 #endif
-bool bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_result *result) {
+void bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_result *result) {
     bzero(result, sizeof(*result));
     
     struct bsg_mach_image *image = bsg_mach_headers_image_at_address(instruction_addr);
     if (!image || !image->header) {
-        return false;
+        return;
     }
     
     const struct load_command *load_cmd = (const void *)bsg_mach_headers_first_cmd_after_header(image->header);
     if (!load_cmd) {
-        return false;
+        return;
     }
     
     result->image = image;
@@ -74,7 +74,7 @@ bool bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
                             if (instruction_addr < start || instruction_addr >= end) {
                                 BSG_KSLOG_ERROR("Address %p is outside the " SECT_TEXT " section of image %s",
                                                 (void *)instruction_addr, image->name);
-                                return false;
+                                return;
                             }
                             break;
                         }
@@ -171,6 +171,4 @@ bool bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
             result->function_name = name[0] == '_' ? name + 1 : name;
         }
     }
-    
-    return true;
 }

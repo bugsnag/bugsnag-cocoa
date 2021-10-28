@@ -194,9 +194,8 @@ static NSString * _Nullable FormatMemoryAddress(NSNumber * _Nullable address) {
     uintptr_t frameAddress = self.frameAddress.unsignedIntegerValue;
     uintptr_t instructionAddress = self.isPc ? frameAddress: CALL_INSTRUCTION_FROM_RETURN_ADDRESS(frameAddress);
     struct bsg_symbolicate_result result;
-    if (!bsg_symbolicate(instructionAddress, &result)) {
-        return;
-    }
+    bsg_symbolicate(instructionAddress, &result);
+    
     if (result.function_address) {
         self.symbolAddress = @(result.function_address);
     }
