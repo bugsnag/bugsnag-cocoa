@@ -30,7 +30,7 @@ typedef struct section section_t;
 __attribute__((annotate("oclint:suppress[deep nested block]")))
 #endif
 bool bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_result *result) {
-    bzero(result, sizeof(struct bsg_symbolicate_result));
+    bzero(result, sizeof(*result));
     
     struct bsg_mach_image *image = bsg_mach_headers_image_at_address(instruction_addr);
     if (!image || !image->header) {
