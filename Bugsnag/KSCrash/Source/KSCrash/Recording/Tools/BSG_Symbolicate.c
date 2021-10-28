@@ -31,10 +31,11 @@ struct leb128_uintptr_context {
     uint32_t shift;
 };
 
+// Process a single byte of LEB128-encoded data and return 1 if it was the last byte of a value.
 static int leb128_uintptr_decode(struct leb128_uintptr_context *context, uint8_t input, uintptr_t *output) {
     context->value |= ((input & 0x7Ful) << context->shift);
     context->shift += 7;
-    if (input < 0x80) {
+    if (input < 0x80) { // The most significant bit is not set, so this is the last byte.
         *output = context->value;
         context->value = 0;
         context->shift = 0;
@@ -130,9 +131,9 @@ void bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
         uintptr_t func_start = addr;
         struct leb128_uintptr_context context = {0};
         const uint8_t *data = get_linkedit_data(function_starts->dataoff);
-        for (uint32_t i = 0; i < function_starts->datasize && data[i]; i++) {
-            uintptr_t delta;
-            if (leb128_uintptr_decode(&context, data[i], &delta)) {
+        for (uint32_t i = 0; i < function_starts->datasize; i++) {
+            uintptr_t delta = 0;
+            if (leb128_uintptr_decode(&context, data[i], &delta) && delta) {
                 addr += delta;
                 uintptr_t next_func_start = addr;
 #if __arm__
