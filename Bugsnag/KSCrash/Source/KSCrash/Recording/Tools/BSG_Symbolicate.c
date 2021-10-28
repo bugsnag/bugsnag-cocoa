@@ -122,11 +122,12 @@ bool bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
                 addr += delta;
                 uintptr_t next_func_start = addr;
 #if __arm__
+#define THUMB_INSTRUCTION_TAG 1ul
                 // ld64 sets the least significant bit for thumb instructions, which needs to be
                 // zeroed to recover the original address - see FunctionStartsAtom<A>::encode()
                 // https://opensource.apple.com/source/ld64/ld64-123.2/src/ld/LinkEdit.hpp.auto.html
-                if (next_func_start & 1) {
-                    next_func_start &= ~1ul;
+                if (next_func_start & THUMB_INSTRUCTION_TAG) {
+                    next_func_start &= ~THUMB_INSTRUCTION_TAG;
                 }
 #endif
                 if (instruction_addr < next_func_start) {
