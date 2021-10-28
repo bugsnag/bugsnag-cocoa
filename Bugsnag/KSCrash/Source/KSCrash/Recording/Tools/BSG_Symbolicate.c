@@ -100,18 +100,13 @@ bool bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
         load_cmd = (const void *)(uintptr_t)load_cmd + load_cmd->cmdsize;
     }
     
-    if (!linkedit || !function_starts) {
-        BSG_KSLOG_ERROR("No LC_FUNCTION_STARTS, cannot symbolicate %s", image->name);
-        return false;
-    }
-    
     // The layout of segments in memory differs depending on whether the image is in the dyld cache.
     // Subtracting __LINKEDIT's fileoff converts a *file* offset into an offset relative to __LINKEDIT
     // that lets us compute the data's address in memory regardless of layout.
 #define get_linkedit_data(__dataoff__) (const void *)(linkedit->vmaddr + slide - linkedit->fileoff + (__dataoff__))
     
     // Search functions starts data for a function that contains the address
-    if (function_starts && function_starts->dataoff > linkedit->fileoff) {
+    if (function_starts && linkedit && function_starts->dataoff > linkedit->fileoff) {
         // Function starts are stored as a series of LEB128 encoded offsets
         // Starting with delta from start of __TEXT
         uintptr_t addr = (uintptr_t)image->imageVmAddr + slide;
@@ -144,6 +139,9 @@ bool bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
             }
         }
         result->function_address = func_start;
+    } else {
+        BSG_KSLOG_ERROR("No LC_FUNCTION_STARTS, cannot symbolicate %s", image->name);
+        return;
     }
     
     // Find the best symbol that matches function_address.
