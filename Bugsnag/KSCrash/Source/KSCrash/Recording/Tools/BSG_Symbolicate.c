@@ -26,6 +26,23 @@ typedef struct segment_command segment_command_t;
 typedef struct section section_t;
 #endif
 
+struct leb128_uintptr_context {
+    uintptr_t value;
+    uint32_t shift;
+};
+
+static int leb128_uintptr_decode(struct leb128_uintptr_context *context, uint8_t input, uintptr_t *output) {
+    context->value |= ((input & 0x7Ful) << context->shift);
+    context->shift += 7;
+    if (input < 0x80) {
+        *output = context->value;
+        context->value = 0;
+        context->shift = 0;
+        return 1;
+    }
+    return 0;
+}
+
 #if __clang_major__ >= 11 // Xcode 10 does not like the following attribute
 __attribute__((annotate("oclint:suppress[deep nested block]")))
 #endif
@@ -107,18 +124,15 @@ void bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
     
     // Search functions starts data for a function that contains the address
     if (function_starts && linkedit && function_starts->dataoff > linkedit->fileoff) {
-        // Function starts are stored as a series of LEB128 encoded offsets
+        // Function starts are stored as a series of LEB128 encoded deltas
         // Starting with delta from start of __TEXT
         uintptr_t addr = (uintptr_t)image->imageVmAddr + slide;
         uintptr_t func_start = addr;
-        uintptr_t delta = 0;
-        uint32_t shift = 0;
+        struct leb128_uintptr_context context = {0};
         const uint8_t *data = get_linkedit_data(function_starts->dataoff);
         for (uint32_t i = 0; i < function_starts->datasize && data[i]; i++) {
-            uint8_t byte = data[i];
-            delta |= ((byte & 0x7Ful) << shift);
-            shift += 7;
-            if (byte < 0x80) { // Finished decoding an integer
+            uintptr_t delta;
+            if (leb128_uintptr_decode(&context, data[i], &delta)) {
                 addr += delta;
                 uintptr_t next_func_start = addr;
 #if __arm__
@@ -134,8 +148,6 @@ void bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
                     // address was in the previous function
                     break;
                 }
-                delta = 0;
-                shift = 0;
                 func_start = next_func_start;
             }
         }
