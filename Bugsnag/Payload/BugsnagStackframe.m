@@ -9,7 +9,8 @@
 #import "BugsnagStackframe+Private.h"
 
 #import "BSG_KSBacktrace.h"
-#import "BSG_KSDynamicLinker.h"
+#import "BSG_KSMachHeaders.h"
+#import "BSG_Symbolicate.h"
 #import "BugsnagCollections.h"
 #import "BugsnagKeys.h"
 #import "BugsnagLogger.h"
@@ -190,22 +191,16 @@ static NSString * _Nullable FormatMemoryAddress(NSNumber * _Nullable address) {
     }
     self.needsSymbolication = NO;
     
-    Dl_info info = {0};
-    if (!dladdr((const void *)self.frameAddress.unsignedIntegerValue, &info)) {
-        return;
+    uintptr_t frameAddress = self.frameAddress.unsignedIntegerValue;
+    uintptr_t instructionAddress = self.isPc ? frameAddress: CALL_INSTRUCTION_FROM_RETURN_ADDRESS(frameAddress);
+    struct bsg_symbolicate_result result;
+    bsg_symbolicate(instructionAddress, &result);
+    
+    if (result.function_address) {
+        self.symbolAddress = @(result.function_address);
     }
-    if (info.dli_sname) {
-        self.method = @(info.dli_sname);
-    }
-    if (info.dli_saddr) {
-        self.symbolAddress = @((uintptr_t)info.dli_saddr);
-    }
-    // Just in case these were not found via bsg_mach_headers_image_at_address()
-    if (info.dli_fname && !self.machoFile) {
-        self.machoFile = @(info.dli_fname);
-    }
-    if (info.dli_fbase && self.machoLoadAddress == nil) {
-        self.machoLoadAddress = @((uintptr_t)info.dli_fbase);
+    if (result.function_name) {
+        self.method = @(result.function_name);
     }
 }
 

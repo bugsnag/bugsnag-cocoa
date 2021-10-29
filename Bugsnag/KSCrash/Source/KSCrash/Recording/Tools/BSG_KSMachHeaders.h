@@ -113,15 +113,6 @@ BSG_Mach_Header_Info *bsg_mach_headers_image_named(const char *const imageName, 
  */
 uintptr_t bsg_mach_headers_first_cmd_after_header(const struct mach_header *header);
 
-/** Get the segment base address of the specified image.
- *
- * This is required for any symtab command offsets.
- *
- * @param header The header to get commands for.
- * @return The image's base address, or 0 if none was found.
- */
-uintptr_t bsg_mach_headers_image_at_base_of_image_index(const struct mach_header *header);
-
 /** Get the __crash_info message of the specified image.
  *
  * @param header The header to get commands for.
