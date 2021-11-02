@@ -143,8 +143,7 @@ steps:
           - "--app=@build/ipa_url.txt"
           - "--farm=bs"
           - "--device=IOS_15"
-          - "--appium-version=1.22.0"
-          - "--fail-fast"
+          - "--appium-version=1.21.0"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
