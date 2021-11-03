@@ -28,7 +28,6 @@
 
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSSystemInfoC.h"
-#import "BSG_KSDynamicLinker.h"
 #import "BSG_KSMachHeaders.h"
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSMach.h"
@@ -41,6 +40,8 @@
 #import "BSG_KSCrash.h"
 
 #import <CommonCrypto/CommonDigest.h>
+#import <mach-o/dyld.h>
+
 #if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
 #import "BSGUIKit.h"
 #endif

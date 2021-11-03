@@ -8,7 +8,6 @@
 
 #include "BSG_KSMachHeaders.h"
 
-#include "BSG_KSDynamicLinker.h"
 #include "BSG_KSLogger.h"
 #include "BSG_KSMach.h"
 
@@ -252,32 +251,6 @@ uintptr_t bsg_mach_headers_first_cmd_after_header(const struct mach_header *cons
     }
 }
 
-uintptr_t bsg_mach_headers_image_at_base_of_image_index(const struct mach_header *const header) {
-    // Look for a segment command and return the file image address.
-    uintptr_t cmdPtr = bsg_mach_headers_first_cmd_after_header(header);
-    if (cmdPtr == 0) {
-        return 0;
-    }
-    for (uint32_t i = 0; i < header->ncmds; i++) {
-        const struct load_command *loadCmd = (struct load_command *)cmdPtr;
-        if (loadCmd->cmd == LC_SEGMENT) {
-            const struct segment_command *segmentCmd =
-                (struct segment_command *)cmdPtr;
-            if (strcmp(segmentCmd->segname, SEG_LINKEDIT) == 0) {
-                return segmentCmd->vmaddr - segmentCmd->fileoff;
-            }
-        } else if (loadCmd->cmd == LC_SEGMENT_64) {
-            const struct segment_command_64 *segmentCmd =
-                (struct segment_command_64 *)cmdPtr;
-            if (strcmp(segmentCmd->segname, SEG_LINKEDIT) == 0) {
-                return (uintptr_t)(segmentCmd->vmaddr - segmentCmd->fileoff);
-            }
-        }
-        cmdPtr += loadCmd->cmdsize;
-    }
-
-    return 0;
-}
 static uintptr_t bsg_mach_header_info_get_section_addr_named(const BSG_Mach_Header_Info *header, const char *name) {
     uintptr_t cmdPtr = bsg_mach_headers_first_cmd_after_header(header->header);
     if (!cmdPtr) {

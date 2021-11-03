@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 6.14.3 (2021-11-03)
+
+### Bug fixes
+
+* Use `LC_FUNCTION_STARTS` to improve symbolication accuracy.
+  [#1214](https://github.com/bugsnag/bugsnag-cocoa/pull/1214)
+
 ## 6.14.2 (2021-10-27)
 
 ### Bug fixes
