@@ -170,6 +170,12 @@ void bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
         // Report the external symbol like dladdr, atos, lldb, et al.
         for (uint32_t i = 0; i < symtab->nsyms; i++) {
             if (syms[i].n_value == symbol_address &&
+                // Ignore symbolic debugging entries
+                //  "Only symbolic debugging entries have some of the N_STAB bits set and if any
+                //   of these bits are set then it is a symbolic debugging entry (a stab).  In
+                //   which case then the values of the n_type field (the entire field) are given
+                //   in <mach-o/stab.h>"
+                (syms[i].n_type & N_STAB) == 0 &&
                 // Sanity check string table index
                 syms[i].n_un.n_strx < symtab->strsize &&
                 // Ignore empty symbol names
