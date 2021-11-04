@@ -677,6 +677,13 @@
 		01A2C546271EB9B400A27B23 /* BSG_Symbolicate.h in Headers */ = {isa = PBXBuildFile; fileRef = 01A2C541271EB9B300A27B23 /* BSG_Symbolicate.h */; };
 		01A2C547271EB9B400A27B23 /* BSG_Symbolicate.h in Headers */ = {isa = PBXBuildFile; fileRef = 01A2C541271EB9B300A27B23 /* BSG_Symbolicate.h */; };
 		01A2C548271EB9B400A27B23 /* BSG_Symbolicate.h in Headers */ = {isa = PBXBuildFile; fileRef = 01A2C541271EB9B300A27B23 /* BSG_Symbolicate.h */; };
+		01A6176F2733CFEA00024A0B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A6176E2733CFEA00024A0B /* AppDelegate.m */; };
+		01A617782733CFEA00024A0B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01A617762733CFEA00024A0B /* Main.storyboard */; };
+		01A6177A2733CFEC00024A0B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01A617792733CFEC00024A0B /* Assets.xcassets */; };
+		01A6177D2733CFEC00024A0B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01A6177B2733CFEC00024A0B /* LaunchScreen.storyboard */; };
+		01A617802733CFEC00024A0B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A6177F2733CFEC00024A0B /* main.m */; };
+		01A617852733D15C00024A0B /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00AD1C7224869B0E00A27979 /* Bugsnag.framework */; };
+		01A617862733D15C00024A0B /* Bugsnag.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 00AD1C7224869B0E00A27979 /* Bugsnag.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		01B14C56251CE55F00118748 /* report-react-native-promise-rejection.json in Resources */ = {isa = PBXBuildFile; fileRef = 01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */; };
 		01B14C57251CE55F00118748 /* report-react-native-promise-rejection.json in Resources */ = {isa = PBXBuildFile; fileRef = 01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */; };
 		01B14C58251CE55F00118748 /* report-react-native-promise-rejection.json in Resources */ = {isa = PBXBuildFile; fileRef = 01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */; };
@@ -995,6 +1002,20 @@
 			remoteGlobalIDString = 00AD1CC824869C2400A27979;
 			remoteInfo = "Bugsnag-tvOS";
 		};
+		01A617872733D15C00024A0B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00AD1C6924869B0E00A27979 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00AD1C7124869B0E00A27979;
+			remoteInfo = "Bugsnag-iOS";
+		};
+		01A6178C2733D1EF00024A0B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00AD1C6924869B0E00A27979 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 01A6176A2733CFEA00024A0B;
+			remoteInfo = "TestHost-iOS";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -1083,6 +1104,17 @@
 				E746299524890D3200F92D67 /* BugsnagCrashSentry.h in CopyFiles */,
 				E746299624890D3200F92D67 /* BugsnagSessionTracker.h in CopyFiles */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01A6178B2733D15C00024A0B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				01A617862733D15C00024A0B /* Bugsnag.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1328,6 +1360,15 @@
 		0198762E2567D5AB000A7AF3 /* BugsnagStackframe+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagStackframe+Private.h"; sourceTree = "<group>"; };
 		01A2C540271EB9B300A27B23 /* BSG_Symbolicate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BSG_Symbolicate.c; sourceTree = "<group>"; };
 		01A2C541271EB9B300A27B23 /* BSG_Symbolicate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSG_Symbolicate.h; sourceTree = "<group>"; };
+		01A6176B2733CFEA00024A0B /* TestHost-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TestHost-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		01A6176D2733CFEA00024A0B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		01A6176E2733CFEA00024A0B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		01A617772733CFEA00024A0B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		01A617792733CFEC00024A0B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		01A6177C2733CFEC00024A0B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		01A6177E2733CFEC00024A0B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		01A6177F2733CFEC00024A0B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		01A617842733D15C00024A0B /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "report-react-native-promise-rejection.json"; sourceTree = "<group>"; };
 		01B79DA7267CC4A000C8CC5E /* BSGUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGUtils.h; sourceTree = "<group>"; };
 		01B79DA8267CC4A000C8CC5E /* BSGUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGUtils.m; sourceTree = "<group>"; };
@@ -1468,6 +1509,14 @@
 			files = (
 				E746293D24890CA400F92D67 /* SystemConfiguration.framework in Frameworks */,
 				E746293C24890C9F00F92D67 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01A617682733CFEA00024A0B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01A617852733D15C00024A0B /* Bugsnag.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1663,6 +1712,7 @@
 				00AD1CC924869C2400A27979 /* Bugsnag.framework */,
 				00AD1CD124869C2400A27979 /* Bugsnag-tvOSTests.xctest */,
 				00AD1CE424869C6C00A27979 /* libBugsnagStatic.a */,
+				01A6176B2733CFEA00024A0B /* TestHost-iOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1933,12 +1983,27 @@
 		01A617662733CF2D00024A0B /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				01A6176C2733CFEA00024A0B /* TestHost-iOS */,
 				00AD1C7F24869B0E00A27979 /* Tests */,
 				00AD1C7F24869B0E00A27979 /* BugsnagTests */,
 				008966D32486D43700DC48C2 /* KSCrashTests */,
 				01A6176C2733CFEA00024A0B /* TestHost-iOS */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		01A6176C2733CFEA00024A0B /* TestHost-iOS */ = {
+			isa = PBXGroup;
+			children = (
+				01A6176D2733CFEA00024A0B /* AppDelegate.h */,
+				01A6176E2733CFEA00024A0B /* AppDelegate.m */,
+				01A617762733CFEA00024A0B /* Main.storyboard */,
+				01A617792733CFEC00024A0B /* Assets.xcassets */,
+				01A6177B2733CFEC00024A0B /* LaunchScreen.storyboard */,
+				01A6177E2733CFEC00024A0B /* Info.plist */,
+				01A6177F2733CFEC00024A0B /* main.m */,
+			);
+			path = "TestHost-iOS";
 			sourceTree = "<group>";
 		};
 		3A700A7E24A63A8E0068CD1B /* include */ = {
@@ -1980,6 +2045,7 @@
 		E746292324890BFE00F92D67 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				01A617842733D15C00024A0B /* BugsnagNetworkRequestPlugin.framework */,
 				E746293A24890C7900F92D67 /* libz.tbd */,
 				E746293824890C7000F92D67 /* libc++.tbd */,
 				E746293624890C6B00F92D67 /* SystemConfiguration.framework */,
@@ -2347,6 +2413,7 @@
 			);
 			dependencies = (
 				00AD1C7E24869B0E00A27979 /* PBXTargetDependency */,
+				01A6178D2733D1EF00024A0B /* PBXTargetDependency */,
 			);
 			name = "Bugsnag-iOSTests";
 			productName = BugsnagTests;
@@ -2442,12 +2509,32 @@
 			productReference = 00AD1CE424869C6C00A27979 /* libBugsnagStatic.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		01A6176A2733CFEA00024A0B /* TestHost-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 01A617812733CFEC00024A0B /* Build configuration list for PBXNativeTarget "TestHost-iOS" */;
+			buildPhases = (
+				01A617672733CFEA00024A0B /* Sources */,
+				01A617682733CFEA00024A0B /* Frameworks */,
+				01A617692733CFEA00024A0B /* Resources */,
+				01A6178B2733D15C00024A0B /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				01A617882733D15C00024A0B /* PBXTargetDependency */,
+			);
+			name = "TestHost-iOS";
+			productName = "TestHost-iOS";
+			productReference = 01A6176B2733CFEA00024A0B /* TestHost-iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		00AD1C6924869B0E00A27979 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				DefaultBuildSystemTypeForWorkspace = Original;
 				LastUpgradeCheck = 1140;
 				ORGANIZATIONNAME = "Bugsnag Inc.";
 				TargetAttributes = {
@@ -2456,6 +2543,7 @@
 					};
 					00AD1C7A24869B0E00A27979 = {
 						CreatedOnToolsVersion = 11.4.1;
+						TestTargetID = 01A6176A2733CFEA00024A0B;
 					};
 					00AD1CAC24869C1200A27979 = {
 						CreatedOnToolsVersion = 11.4.1;
@@ -2471,6 +2559,9 @@
 					};
 					00AD1CE324869C6C00A27979 = {
 						CreatedOnToolsVersion = 11.4.1;
+					};
+					01A6176A2733CFEA00024A0B = {
+						CreatedOnToolsVersion = 11.7;
 					};
 				};
 			};
@@ -2494,6 +2585,7 @@
 				00AD1C7A24869B0E00A27979 /* Bugsnag-iOSTests */,
 				00AD1CB424869C1200A27979 /* Bugsnag-macOSTests */,
 				00AD1CD024869C2400A27979 /* Bugsnag-tvOSTests */,
+				01A6176A2733CFEA00024A0B /* TestHost-iOS */,
 			);
 		};
 /* End PBXProject section */
@@ -2556,6 +2648,16 @@
 				008967202486D43700DC48C2 /* report.json in Resources */,
 				01BDB21725DEC02900A91FAF /* Data in Resources */,
 				CB6419B625A7419400613D25 /* v0_files in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01A617692733CFEA00024A0B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01A6177D2733CFEC00024A0B /* LaunchScreen.storyboard in Resources */,
+				01A6177A2733CFEC00024A0B /* Assets.xcassets in Resources */,
+				01A617782733CFEA00024A0B /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3169,6 +3271,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		01A617672733CFEA00024A0B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01A6176F2733CFEA00024A0B /* AppDelegate.m in Sources */,
+				01A617802733CFEC00024A0B /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -3187,7 +3298,36 @@
 			target = 00AD1CC824869C2400A27979 /* Bugsnag-tvOS */;
 			targetProxy = 00AD1CD324869C2400A27979 /* PBXContainerItemProxy */;
 		};
+		01A617882733D15C00024A0B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00AD1C7124869B0E00A27979 /* Bugsnag-iOS */;
+			targetProxy = 01A617872733D15C00024A0B /* PBXContainerItemProxy */;
+		};
+		01A6178D2733D1EF00024A0B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 01A6176A2733CFEA00024A0B /* TestHost-iOS */;
+			targetProxy = 01A6178C2733D1EF00024A0B /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		01A617762733CFEA00024A0B /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				01A617772733CFEA00024A0B /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		01A6177B2733CFEC00024A0B /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				01A6177C2733CFEC00024A0B /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		00AD1C8424869B0E00A27979 /* Debug */ = {
@@ -3206,6 +3346,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = NO;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -3217,7 +3358,8 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = ./Framework/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -3230,6 +3372,7 @@
 				PRODUCT_NAME = Bugsnag;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+				TVOS_DEPLOYMENT_TARGET = 9.2;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -3251,12 +3394,14 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = NO;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = ./Framework/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
@@ -3268,6 +3413,7 @@
 				PRODUCT_NAME = Bugsnag;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+				TVOS_DEPLOYMENT_TARGET = 9.2;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -3286,7 +3432,6 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3310,7 +3455,6 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3326,7 +3470,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				INFOPLIST_FILE = Tests/Tests/Info.plist;
 				INFOPLIST_FILE = Tests/BugsnagTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3339,6 +3482,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Tests/BugsnagTests/Tests-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestHost-iOS.app/TestHost-iOS";
 			};
 			name = Debug;
 		};
@@ -3346,7 +3490,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				INFOPLIST_FILE = Tests/Tests/Info.plist;
 				INFOPLIST_FILE = Tests/BugsnagTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3359,6 +3502,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Tests/BugsnagTests/Tests-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestHost-iOS.app/TestHost-iOS";
 			};
 			name = Release;
 		};
@@ -3379,7 +3523,6 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -3403,7 +3546,6 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -3421,7 +3563,6 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.Bugsnag-macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -3441,7 +3582,6 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.Bugsnag-macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -3469,7 +3609,6 @@
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
 			};
 			name = Debug;
 		};
@@ -3492,7 +3631,6 @@
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
 			};
 			name = Release;
 		};
@@ -3512,7 +3650,6 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Tests/BugsnagTests/Tests-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
 			};
 			name = Debug;
 		};
@@ -3532,7 +3669,6 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Tests/BugsnagTests/Tests-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
 			};
 			name = Release;
 		};
@@ -3556,6 +3692,38 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		01A617822733CFEC00024A0B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Tests/TestHost-iOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.TestHost-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		01A617832733CFEC00024A0B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Tests/TestHost-iOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.TestHost-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -3631,6 +3799,15 @@
 			buildConfigurations = (
 				00AD1CEB24869C6D00A27979 /* Debug */,
 				00AD1CEC24869C6D00A27979 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		01A617812733CFEC00024A0B /* Build configuration list for PBXNativeTarget "TestHost-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01A617822733CFEC00024A0B /* Debug */,
+				01A617832733CFEC00024A0B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
