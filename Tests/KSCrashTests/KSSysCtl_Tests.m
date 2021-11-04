@@ -194,8 +194,7 @@
     bool success = bsg_kssysctl_getProcessInfo(pid, &procInfo);
     XCTAssertTrue(success, @"");
     NSString* processName = [NSString stringWithCString:procInfo.kp_proc.p_comm encoding:NSUTF8StringEncoding];
-    NSString* expected = @"xctest";
-    XCTAssertEqualObjects(processName, expected, @"");
+    XCTAssertEqualObjects(processName, NSProcessInfo.processInfo.processName);
 }
 
 // This sysctl always returns true for some reason...
