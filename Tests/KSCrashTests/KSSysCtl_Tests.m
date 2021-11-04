@@ -37,7 +37,7 @@
 
 - (void) testSysCtlInt32
 {
-    int32_t result = bsg_kssysctl_int32(CTL_KERN, KERN_POSIX1);
+    int32_t result = bsg_kssysctl_int32(CTL_HW, HW_NCPU);
     XCTAssertTrue(result > 0, @"");
 }
 
@@ -49,7 +49,7 @@
 
 - (void) testSysCtlInt32ForName
 {
-    int32_t result = bsg_kssysctl_int32ForName("kern.posix1version");
+    int32_t result = bsg_kssysctl_int32ForName("hw.ncpu");
     XCTAssertTrue(result > 0, @"");
 }
 
@@ -85,7 +85,7 @@
 
 - (void) testSysCtlUInt32
 {
-    uint32_t result = bsg_kssysctl_uint32(CTL_KERN, KERN_POSIX1);
+    uint32_t result = bsg_kssysctl_uint32(CTL_HW, HW_NCPU);
     XCTAssertTrue(result > 0, @"");
 }
 
@@ -97,7 +97,7 @@
 
 - (void) testSysCtlUInt32ForName
 {
-    uint32_t result = bsg_kssysctl_uint32ForName("kern.posix1version");
+    uint32_t result = bsg_kssysctl_uint32ForName("hw.ncpu");
     XCTAssertTrue(result > 0, @"");
 }
 
