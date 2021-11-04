@@ -84,7 +84,7 @@ compile_commands.json:
 	set -o pipefail && xcodebuild -project Bugsnag.xcodeproj -configuration Release -scheme Bugsnag-iOS \
 		-destination generic/platform=iOS \
 		-derivedDataPath $(DATA_PATH) \
-		build VALID_ARCHS=arm64 RUN_CLANG_STATIC_ANALYZER=NO | \
+		build VALID_ARCHS=arm64 RUN_CLANG_STATIC_ANALYZER=NO DEVELOPMENT_TEAM= | \
 		bundle exec xcpretty -r json-compilation-database -o compile_commands.json
 
 #--------------------------------------------------------------------------
