@@ -55,15 +55,14 @@
 }
 
 - (NSDictionary *)getDirs {
-    NSString *bundleName = [[NSBundle mainBundle] infoDictionary][@"CFBundleName"];
     NSString *c = [self getCachesDir];
     NSString *r = [self getV1RootDir];
 
     return @{
         [c stringByAppendingPathComponent:@"bugsnag/breadcrumbs"]: [r stringByAppendingPathComponent:@"breadcrumbs"],
         [c stringByAppendingPathComponent:@"bsg_kvstore"]: [r stringByAppendingPathComponent:@"kvstore"],
-        [c stringByAppendingPathComponent:[@"Sessions" stringByAppendingPathComponent:bundleName]]: [r stringByAppendingPathComponent:@"sessions"],
-        [c stringByAppendingPathComponent:[@"KSCrashReports" stringByAppendingPathComponent:bundleName]]: [r stringByAppendingPathComponent:@"KSCrashReports"],
+        [c stringByAppendingPathComponent:@"Sessions/xctest"]: [r stringByAppendingPathComponent:@"sessions"],
+        [c stringByAppendingPathComponent:@"KSCrashReports/xctest"]: [r stringByAppendingPathComponent:@"KSCrashReports"],
     };
 }
 
