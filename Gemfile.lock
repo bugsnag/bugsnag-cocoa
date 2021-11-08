@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: 772e63f26bdb5a9e2b0893765763fdcc54e83cd4
-  tag: v6.0.0
+  revision: c9d5240f9ccbc5a3440e8aa72330f52cbdc6a082
+  tag: v6.3.0
   specs:
-    bugsnag-maze-runner (6.0.0)
+    bugsnag-maze-runner (6.3.0)
       appium_lib (~> 11.2.0)
       cucumber (~> 7.1)
       cucumber-expressions (~> 6.0.0)
@@ -214,7 +214,7 @@ GEM
     os (1.0.1)
     power_assert (2.0.1)
     public_suffix (4.0.6)
-    racc (1.5.2)
+    racc (1.6.0)
     rake (12.3.3)
     rchardet (1.8.0)
     redcarpet (3.5.1)
