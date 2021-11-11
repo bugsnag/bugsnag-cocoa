@@ -35,6 +35,7 @@
 #import <Bugsnag/BugsnagError.h>
 #import <Bugsnag/BugsnagErrorTypes.h>
 #import <Bugsnag/BugsnagEvent.h>
+#import <Bugsnag/BugsnagFeatureFlag.h>
 #import <Bugsnag/BugsnagLastRunInfo.h>
 #import <Bugsnag/BugsnagMetadata.h>
 #import <Bugsnag/BugsnagPlugin.h>
