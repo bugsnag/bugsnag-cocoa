@@ -323,6 +323,36 @@
     }
 }
 
+// MARK: - Feature flags interface
+
+- (void)testFeatureFlags {
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:@{
+        @"user.metaData": @{
+                @"user": @{@"id": @"user id"}
+        }}];
+    
+    XCTAssertEqualObjects([event toJsonWithRedactedKeys:nil][@"featureFlags"], @[]);
+    
+    [event addFeatureFlagWithName:@"color" variant:@"red"];
+    
+    XCTAssertEqualObjects([event toJsonWithRedactedKeys:nil][@"featureFlags"],
+                          (@[@{@"featureFlag": @"color", @"variant": @"red"}]));
+    
+    [event addFeatureFlagWithName:@"color" variant:@"green"];
+    
+    XCTAssertEqualObjects([event toJsonWithRedactedKeys:nil][@"featureFlags"],
+                          (@[@{@"featureFlag": @"color", @"variant": @"green"}]));
+    
+    [event addFeatureFlagWithName:@"color"];
+    
+    XCTAssertEqualObjects([event toJsonWithRedactedKeys:nil][@"featureFlags"],
+                          (@[@{@"featureFlag": @"color"}]));
+    
+    [event clearFeatureFlags];
+    
+    XCTAssertEqualObjects([event toJsonWithRedactedKeys:nil][@"featureFlags"], @[]);
+}
+
 // MARK: - Metadata interface
 
 - (void)testAddMetadataSectionKeyValue {
