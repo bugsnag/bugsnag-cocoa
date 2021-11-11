@@ -295,6 +295,24 @@
        andName:(NSString *_Nullable)name;
 
 // =============================================================================
+// MARK: - Feature flags
+// =============================================================================
+
++ (void)addFeatureFlagWithName:(nonnull NSString *)name variant:(nullable NSString *)variant
+    NS_SWIFT_NAME(addFeatureFlag(name:variant:));
+
++ (void)addFeatureFlagWithName:(nonnull NSString *)name
+    NS_SWIFT_NAME(addFeatureFlag(name:));
+
++ (void)addFeatureFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags
+    NS_SWIFT_NAME(addFeatureFlags(_:));
+
++ (void)clearFeatureFlagWithName:(nonnull NSString *)name
+    NS_SWIFT_NAME(clearFeatureFlag(name:));
+
++ (void)clearFeatureFlags;
+
+// =============================================================================
 // MARK: - onSession
 // =============================================================================
 
