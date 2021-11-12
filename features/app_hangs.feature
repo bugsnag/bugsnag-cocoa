@@ -30,6 +30,10 @@ Feature: App hangs
 
     And the event "context" equals "App Hang Scenario"
 
+    And the event contains the following feature flags:
+      | featureFlag | variant |
+      | Testing     |         |
+
     #
     # Checks copied from app_and_device_attributes.feature
     #
@@ -116,6 +120,9 @@ Feature: App hangs
     And the event "severityReason.type" equals "appHang"
     And the event "threads.0.errorReportingThread" is true
     And the event "unhandled" is true
+    And the event contains the following feature flags:
+      | featureFlag | variant |
+      | Testing     |         |
 
     And the exception "errorClass" equals "App Hang"
     And the exception "message" equals "The app was terminated while unresponsive"

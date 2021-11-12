@@ -17,6 +17,7 @@
 
 #import <Foundation/Foundation.h>
 
+#import "BSGFeatureFlagStore.h"
 #import "BSGSerialization.h"
 #import "BSG_KSCrashReportFields.h"
 #import "BSG_RFC3339DateTool.h"
@@ -377,6 +378,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     obj.enabledReleaseStages = BSGLoadConfigValue(event, BSGKeyEnabledReleaseStages);
     obj.releaseStage = BSGParseReleaseStage(event);
     obj.deviceAppHash = deviceAppHash;
+    obj.featureFlagStore = BSGFeatureFlagStoreFromJSON([event valueForKeyPath:@"user.state.client.featureFlags"]);
     obj.context = [event valueForKeyPath:@"user.state.client.context"];
     obj.customException = BSGParseCustomException(event, [errors[0].errorClass copy], [errors[0].errorMessage copy]);
     obj.error = error;
