@@ -18,30 +18,30 @@
 
 - (void)test {
     BSGFeatureFlagStore *store = [[BSGFeatureFlagStore alloc] init];
-    XCTAssertEqualObjects(BSGFeatureFlagStoreSerialize(store), @[]);
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store), @[]);
     
     BSGFeatureFlagStoreAddFeatureFlag(store, @"featureA", @"enabled");
-    XCTAssertEqualObjects(BSGFeatureFlagStoreSerialize(store),
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
                           (@[@{@"featureFlag": @"featureA", @"variant": @"enabled"}]));
     
     BSGFeatureFlagStoreAddFeatureFlags(store, @[[BugsnagFeatureFlag flagWithName:@"featureA"]]);
-    XCTAssertEqualObjects(BSGFeatureFlagStoreSerialize(store),
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
                           @[@{@"featureFlag": @"featureA"}]);
     
     BSGFeatureFlagStoreAddFeatureFlag(store, @"featureB", nil);
-    XCTAssertEqualObjects(BSGFeatureFlagStoreSerialize(store),
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
                           (@[@{@"featureFlag": @"featureA"},
                              @{@"featureFlag": @"featureB"}]));
     
-    XCTAssertEqualObjects(BSGFeatureFlagStoreDeserialize(BSGFeatureFlagStoreSerialize(store)),
+    XCTAssertEqualObjects(BSGFeatureFlagStoreFromJSON(BSGFeatureFlagStoreToJSON(store)),
                           store);
     
     BSGFeatureFlagStoreClear(store, @"featureA");
-    XCTAssertEqualObjects(BSGFeatureFlagStoreSerialize(store),
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
                           @[@{@"featureFlag": @"featureB"}]);
     
     BSGFeatureFlagStoreClear(store, nil);
-    XCTAssertEqualObjects(BSGFeatureFlagStoreSerialize(store), @[]);
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store), @[]);
 }
 
 @end

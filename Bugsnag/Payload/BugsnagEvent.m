@@ -200,7 +200,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             return [BugsnagError errorFromJson:dict];
         }) ?: @[];
 
-        _featureFlagStore = BSGFeatureFlagStoreDeserialize(json[BSGKeyFeatureFlags]);
+        _featureFlagStore = BSGFeatureFlagStoreFromJSON(json[BSGKeyFeatureFlags]);
 
         _groupingHash = BSGDeserializeString(json[BSGKeyGroupingHash]);
 
@@ -569,7 +569,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     event[BSGKeyApp] = [self.app toDict];
 
     event[BSGKeyContext] = [self context];
-    event[BSGKeyFeatureFlags] = BSGFeatureFlagStoreSerialize(self.featureFlagStore);
+    event[BSGKeyFeatureFlags] = BSGFeatureFlagStoreToJSON(self.featureFlagStore);
     event[BSGKeyGroupingHash] = self.groupingHash;
 
     event[BSGKeyUnhandled] = @(self.handledState.unhandled);

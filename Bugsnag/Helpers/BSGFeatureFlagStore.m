@@ -29,14 +29,14 @@ void BSGFeatureFlagStoreClear(BSGFeatureFlagStore *store, NSString *_Nullable na
     }
 }
 
-NSArray<NSDictionary *> * BSGFeatureFlagStoreSerialize(BSGFeatureFlagStore *store) {
+NSArray<NSDictionary *> * BSGFeatureFlagStoreToJSON(BSGFeatureFlagStore *store) {
     NSMutableArray<NSDictionary *> *result = [NSMutableArray array];
     for (NSString *name in store) {
         id variant = store[name];
-        if (variant == [NSNull null]) {
-            [result addObject:@{BSGKeyFeatureFlag: name}];
-        } else {
+        if ([variant isKindOfClass:[NSString class]]) {
             [result addObject:@{BSGKeyFeatureFlag: name, BSGKeyVariant: variant}];
+        } else {
+            [result addObject:@{BSGKeyFeatureFlag: name}];
         }
     }
     [result sortUsingComparator:^NSComparisonResult(NSDictionary *_Nonnull obj1, NSDictionary *_Nonnull obj2) {
@@ -45,7 +45,7 @@ NSArray<NSDictionary *> * BSGFeatureFlagStoreSerialize(BSGFeatureFlagStore *stor
     return result;
 }
 
-BSGFeatureFlagStore * BSGFeatureFlagStoreDeserialize(id json) {
+BSGFeatureFlagStore * BSGFeatureFlagStoreFromJSON(id json) {
     BSGFeatureFlagStore *store = [NSMutableDictionary dictionary];
     if ([json isKindOfClass:[NSArray class]]) {
         for (id item in json) {

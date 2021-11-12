@@ -18,8 +18,8 @@ void BSGFeatureFlagStoreAddFeatureFlags(BSGFeatureFlagStore *store, NSArray<Bugs
 
 void BSGFeatureFlagStoreClear(BSGFeatureFlagStore *store, NSString *_Nullable name);
 
-NSArray<NSDictionary *> * BSGFeatureFlagStoreSerialize(BSGFeatureFlagStore *store);
+NSArray<NSDictionary *> * BSGFeatureFlagStoreToJSON(BSGFeatureFlagStore *store);
 
-BSGFeatureFlagStore * BSGFeatureFlagStoreDeserialize(id _Nullable json);
+BSGFeatureFlagStore * BSGFeatureFlagStoreFromJSON(id _Nullable json);
 
 NS_ASSUME_NONNULL_END
