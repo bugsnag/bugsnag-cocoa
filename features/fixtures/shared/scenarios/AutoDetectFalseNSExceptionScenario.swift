@@ -20,6 +20,6 @@ internal class AutoDetectFalseNSExceptionScenario: Scenario {
     }
 
     override func run() {
-        NSException.init(name: NSExceptionName("SomeError"), reason: "Something went wrnog", userInfo: nil).raise()
+        NSException.init(name: NSExceptionName("SomeError"), reason: "Something went wrong", userInfo: nil).raise()
     }
 }
