@@ -18,6 +18,6 @@ internal class AutoNotifyFalseNSExceptionScenario: Scenario {
 
     override func run() {
         Bugsnag.client.autoNotify = false
-        NSException.init(name: NSExceptionName("SomeError"), reason: "Something went wrnog", userInfo: nil).raise()
+        NSException.init(name: NSExceptionName("SomeError"), reason: "Something went wrong", userInfo: nil).raise()
     }
 }
