@@ -23,6 +23,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     artifact_paths:
+      - features/fixtures/ios/output/iOSTestApp.ipa
       - features/fixtures/macos/output/macOSTestApp.zip
       - features/fixtures/ios/output/ipa_url.txt
     commands:
