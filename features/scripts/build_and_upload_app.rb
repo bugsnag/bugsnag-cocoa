@@ -2,6 +2,7 @@
 require 'json'
 require 'net/http'
 
+# TODO: PLAT-7647 Remove once Maze Runner has support for --upload-app
 def upload_app(username, access_key, app)
   upload_uri = 'https://api-cloud.browserstack.com/app-automate/upload'
   uri = URI(upload_uri)
