@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 6.14.4 (2021-11-22)
+
+### Bug fixes
+
+* Fix a crash in `-[BSGURLSessionTracingDelegate URLSession:task:didFinishCollectingMetrics:]` for tasks with no request.
+  [#1230](https://github.com/bugsnag/bugsnag-cocoa/pull/1230)
+
 ## 6.14.3 (2021-11-03)
 
 ### Bug fixes
