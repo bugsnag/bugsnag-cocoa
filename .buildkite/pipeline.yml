@@ -17,11 +17,11 @@ steps:
   # Build
   #
 
-  - label: Build cocoa IPA
+  - label: Build test fixtures
     key: cocoa_fixture
-    timeout_in_minutes: 20
+    timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     artifact_paths:
       - features/fixtures/ios/output/iOSTestApp.ipa
       - features/fixtures/macos/output/macOSTestApp.zip
@@ -59,7 +59,7 @@ steps:
   - label: ARM macOS 11 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-m1-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=macOS
     artifact_paths:
@@ -230,14 +230,12 @@ steps:
         --fail-fast
         --order=random
 
-  # TODO: Skip pending PLAT-6822
-  - label: 'ARM macOS 11 barebones E2E tests'
-    skip: Pending PLAT-6822
+  - label: 'ARM macOS 12 barebones E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 10
     agents:
-      queue: opensource-m1-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     plugins:
       artifacts#v1.3.0:
         download: "features/fixtures/macos/output/macOSTestApp.zip"

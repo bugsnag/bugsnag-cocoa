@@ -199,14 +199,12 @@ steps:
         --fail-fast
         --order=random
 
-  # TODO: Skip penmding PLAT-6822
-  - label: 'ARM macOS 11.0 E2E tests'
-    skip: Pending PLAT-6822
+  - label: 'ARM macOS 12.0 E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: opensource-m1-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
