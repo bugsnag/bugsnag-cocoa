@@ -86,31 +86,36 @@ static id<BSGBreadcrumbSink> g_sink;
 - (void)URLSession:(__unused NSURLSession *)session task:(NSURLSessionTask *)task didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
 API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
     if (g_sink != nil) {
-        // Note: Cannot use metrics transaction request because it might have a 0 length HTTP body.
-        NSURLRequest *req = task.originalRequest;
-        NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:req.URL resolvingAgainstBaseURL:YES];
-        // Note: Cannot use metrics transaction response because it will be nil if a custom NSURLProtocol is present.
-        // Note: If there was an error, task.response will be nil, and the following values will be set accordingly.
-        NSHTTPURLResponse *httpResp = [task.response isKindOfClass:NSHTTPURLResponse.class] ? (NSHTTPURLResponse *)task.response : nil;
-
-        NSString *message = [BSGURLSessionTracingDelegate messageForResponse:httpResp];
+        NSURLRequest *req = task.originalRequest ? task.originalRequest : task.currentRequest;
+        if (req == nil) {
+            return;
+        }
 
         NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
         metadata[@"duration"] = @((unsigned)(metrics.taskInterval.duration * 1000));
         metadata[@"method"] = req.HTTPMethod;
-        metadata[@"url"] = [BSGURLSessionTracingDelegate URLStringWithoutQueryForComponents:urlComponents];
-        metadata[@"urlParams"] = [BSGURLSessionTracingDelegate urlParamsForQueryItems:urlComponents.queryItems];
+        if (req.URL) {
+            NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:req.URL resolvingAgainstBaseURL:YES];
+            metadata[@"url"] = [BSGURLSessionTracingDelegate URLStringWithoutQueryForComponents:urlComponents];
+            metadata[@"urlParams"] = [BSGURLSessionTracingDelegate urlParamsForQueryItems:urlComponents.queryItems];
+        }
+
         if (task.countOfBytesSent) {
             metadata[@"requestContentLength"] = @(task.countOfBytesSent);
         } else if (req.HTTPBody) {
             // Fall back because task.countOfBytesSent is 0 when a custom NSURLProtocol is used
             metadata[@"requestContentLength"] = @(req.HTTPBody.length);
         }
+
+        // Note: Cannot use metrics transaction response because it will be nil if a custom NSURLProtocol is present.
+        // Note: If there was an error, task.response will be nil, and the following values will be set accordingly.
+        NSHTTPURLResponse *httpResp = [task.response isKindOfClass:NSHTTPURLResponse.class] ? (NSHTTPURLResponse *)task.response : nil;
         if (httpResp) {
             metadata[@"responseContentLength"] = @(task.countOfBytesReceived);
             metadata[@"status"] = @(httpResp.statusCode);
         }
 
+        NSString *message = [BSGURLSessionTracingDelegate messageForResponse:httpResp];
         [g_sink leaveBreadcrumbWithMessage:message metadata:metadata andType:BSGBreadcrumbTypeRequest];
     }
 }

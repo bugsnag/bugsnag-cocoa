@@ -16,6 +16,7 @@
 #import "BugsnagTestConstants.h"
 
 #import <XCTest/XCTest.h>
+#import <pthread.h>
 
 // Defined in BSG_KSCrashReport.c
 void bsg_kscrw_i_prepareReportWriter(BSG_KSCrashReportWriter *const writer, BSG_KSJSONEncodeContext *const context);
@@ -455,6 +456,11 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqualObjects(breadcrumbs[2][@"metaData"], @{});
 }
 
+static void * executeBlock(void *ptr) {
+    ((__bridge_transfer dispatch_block_t)ptr)();
+    return NULL;
+}
+
 - (void)testCrashReportWriterConcurrency {
 #if defined(__has_feature) && __has_feature(thread_sanitizer)
     NSLog(@"Skipping test because ThreadSanitizer deadlocks if other threads are suspended");
@@ -474,16 +480,19 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     
     __block BOOL isFinished = NO;
     
-    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-    queue.name = @"com.bugsnag.testCrashReportWriterConcurrency";
-    queue.maxConcurrentOperationCount = 6;
-    
-    for (NSInteger i = 0; i < queue.maxConcurrentOperationCount; i++) {
-        [queue addOperationWithBlock:^{
+    const int threadCount = 6;
+    pthread_t threads[threadCount] = {0};
+    for (int i = 0; i < threadCount; i++) {
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        pthread_create(&threads[i], NULL, executeBlock, (__bridge_retained void *)^{
+            pthread_setname_np("com.bugsnag.testCrashReportWriterConcurrency.writer");
+            dispatch_semaphore_signal(semaphore);
             while (!isFinished) {
                 [self.crumbs addBreadcrumbWithData:breadcrumbData writeToDisk:NO];
             }
-        }];
+        });
+        // Wait for thread to start executing
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     }
     
     const size_t bufferSize = 1024 * 1024;
@@ -520,7 +529,9 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     
     free(buffer.buffer);
     isFinished = YES;
-    [queue waitUntilAllOperationsAreFinished];
+    for (int i = 0; i < threadCount; i++) {
+        pthread_join(threads[i], NULL);
+    }
 }
 
 - (void)testPerformance {
