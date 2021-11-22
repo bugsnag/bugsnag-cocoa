@@ -28,3 +28,7 @@ NSString *_Nullable BSGStringFromThermalState(NSProcessInfoThermalState thermalS
 NS_ASSUME_NONNULL_END
 
 __END_DECLS
+
+static inline NSString * _Nullable bsg_string_from_class(Class _Nullable cls) {
+    return cls ? NSStringFromClass((Class _Nonnull)cls) : nil;
+}

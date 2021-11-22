@@ -11,6 +11,7 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagKeys.h"
+#import "BSGUtils.h"
 
 #if TARGET_OS_IOS || TARGET_OS_TV
 #import "BSGUIKit.h"
@@ -263,19 +264,41 @@ NSString * const BSGNotificationBreadcrumbsMessageAppWillTerminate = @"App Will 
     (defined(__TVOS_13_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_13_0)
     if (@available(iOS 13.0, tvOS 13.0, *)) {
         if ([notification.name hasPrefix:@"UIScene"] && [notification.object isKindOfClass:UISCENE]) {
-#define BSG_STRING_FROM_CLASS(__CLASS__) __CLASS__ ? NSStringFromClass((Class _Nonnull)__CLASS__) : nil
             UIScene *scene = notification.object;
             NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
             metadata[@"configuration"] = scene.session.configuration.name;
-            metadata[@"delegateClass"] = BSG_STRING_FROM_CLASS(scene.session.configuration.delegateClass);
+            metadata[@"delegateClass"] = bsg_string_from_class(scene.session.configuration.delegateClass);
             metadata[@"role"] = scene.session.role;
-            metadata[@"sceneClass"] = BSG_STRING_FROM_CLASS(scene.session.configuration.sceneClass);
+            metadata[@"sceneClass"] = bsg_string_from_class(scene.session.configuration.sceneClass);
             metadata[@"title"] = scene.title.length ? scene.title : nil;
             [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name metadata:metadata];
             return;
         }
     }
 #endif
+#if !TARGET_OS_OSX && \
+    (defined(__IPHONE_2_0) || (defined(__TVOS_9_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_9_0))
+    if ([notification.name hasPrefix:@"UIWindow"] && [notification.object isKindOfClass:UIWINDOW]) {
+        UIWindow *window = notification.object;
+        NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
+        metadata[@"windowClass"] = bsg_string_from_class(window.class);
+        metadata[@"description"] = window.description;
+        [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name metadata:metadata];
+        return;
+    }
+#endif
+#if TARGET_OS_OSX
+    if ([notification.name hasPrefix:@"NSWindow"] && [notification.object isKindOfClass:NSWINDOW]) {
+        NSWindow *window = notification.object;
+        NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
+        metadata[@"windowClass"] = window.className;
+        metadata[@"title"] = window.title;
+        metadata[@"description"] = window.description;
+        [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name metadata:metadata];
+        return;
+    }
+#endif
+    
     [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name];
 }
 
