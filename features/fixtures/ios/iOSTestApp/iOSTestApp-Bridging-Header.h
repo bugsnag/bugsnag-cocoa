@@ -5,3 +5,5 @@
 #import "Scenario.h"
 #import <Bugsnag/Bugsnag.h>
 #import <BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin.h>
+
+extern bool bsg_kslog_setLogFilename(const char *filename, bool overwrite);
