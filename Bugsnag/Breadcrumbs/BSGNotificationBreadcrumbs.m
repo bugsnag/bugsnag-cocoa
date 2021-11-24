@@ -259,7 +259,7 @@ NSString * const BSGNotificationBreadcrumbsMessageAppWillTerminate = @"App Will 
     [self.notificationCenter addObserver:self selector:@selector(addBreadcrumbForNotification:) name:notificationName object:nil];
 }
 
-- (void)addBreadcrumbForNotification:(NSNotification *)notification {
+- (BOOL)tryAddSceneNotification:(NSNotification *)notification {
 #if (defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0) || \
     (defined(__TVOS_13_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_13_0)
     if (@available(iOS 13.0, tvOS 13.0, *)) {
@@ -267,38 +267,76 @@ NSString * const BSGNotificationBreadcrumbsMessageAppWillTerminate = @"App Will 
             UIScene *scene = notification.object;
             NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
             metadata[@"configuration"] = scene.session.configuration.name;
-            metadata[@"delegateClass"] = bsg_string_from_class(scene.session.configuration.delegateClass);
+            metadata[@"delegateClass"] = BSGStringFromClass(scene.session.configuration.delegateClass);
             metadata[@"role"] = scene.session.role;
-            metadata[@"sceneClass"] = bsg_string_from_class(scene.session.configuration.sceneClass);
+            metadata[@"sceneClass"] = BSGStringFromClass(scene.session.configuration.sceneClass);
             metadata[@"title"] = scene.title.length ? scene.title : nil;
             [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name metadata:metadata];
-            return;
+            return YES;
         }
     }
+#else
+    (void)notification;
 #endif
+    return NO;
+}
+
+static NSString *nullStringIfBlank(NSString *str) {
+    return str.length == 0 ? nil : str;
+}
+
+- (BOOL)tryAddWindowNotification:(NSNotification *)notification {
 #if !TARGET_OS_OSX && \
     (defined(__IPHONE_2_0) || (defined(__TVOS_9_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_9_0))
     if ([notification.name hasPrefix:@"UIWindow"] && [notification.object isKindOfClass:UIWINDOW]) {
         UIWindow *window = notification.object;
         NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
-        metadata[@"windowClass"] = bsg_string_from_class(window.class);
-        metadata[@"description"] = window.description;
+        metadata[@"description"] = nullStringIfBlank(window.description);
+#if !TARGET_OS_TV && (defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0)
+        if (@available(iOS 13.0, *)) {
+            UIWindowScene *scene = window.windowScene;
+            metadata[@"sceneTitle"] = nullStringIfBlank(scene.title);
+#if defined(__IPHONE_15_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_15_0
+            if (@available(iOS 15.0, *)) {
+                metadata[@"sceneSubtitle"] = nullStringIfBlank(scene.subtitle);
+            }
+#endif
+        }
+#endif
+        metadata[@"viewController"] = nullStringIfBlank(window.rootViewController.description);
+        metadata[@"viewControllerTitle"] = nullStringIfBlank(window.rootViewController.title);
         [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name metadata:metadata];
-        return;
+        return YES;
     }
 #endif
 #if TARGET_OS_OSX
     if ([notification.name hasPrefix:@"NSWindow"] && [notification.object isKindOfClass:NSWINDOW]) {
         NSWindow *window = notification.object;
         NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
-        metadata[@"windowClass"] = window.className;
-        metadata[@"title"] = window.title;
-        metadata[@"description"] = window.description;
+        metadata[@"description"] = nullStringIfBlank(window.description);
+        metadata[@"title"] = nullStringIfBlank(window.title);
+#if defined(__MAC_11_0) && __MAC_OS_VERSION_MAX_ALLOWED >= __MAC_11_0
+        if (@available(macOS 11.0, *)) {
+            metadata[@"subtitle"] = nullStringIfBlank(window.subtitle);
+        }
+#endif
+        metadata[@"representedURL"] = nullStringIfBlank(window.representedURL.absoluteString);
+        metadata[@"viewController"] = nullStringIfBlank(window.contentViewController.description);
+        metadata[@"viewControllerTitle"] = nullStringIfBlank(window.contentViewController.title);
         [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name metadata:metadata];
-        return;
+        return YES;
     }
 #endif
-    
+    return NO;
+}
+
+- (void)addBreadcrumbForNotification:(NSNotification *)notification {
+    if ([self tryAddSceneNotification:notification]) {
+        return;
+    }
+    if ([self tryAddWindowNotification:notification]) {
+        return;
+    }
     [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name];
 }
 
