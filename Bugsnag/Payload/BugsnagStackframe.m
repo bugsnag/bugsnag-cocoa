@@ -63,8 +63,7 @@ static NSString * _Nullable FormatMemoryAddress(NSNumber * _Nullable address) {
     return nil;
 }
 
-+ (BugsnagStackframe *)frameFromDict:(NSDictionary *)dict
-                          withImages:(NSArray *)binaryImages {
++ (instancetype)frameFromDict:(NSDictionary<NSString *, id> *)dict withImages:(NSArray<NSDictionary<NSString *, id> *> *)binaryImages {
     BugsnagStackframe *frame = [BugsnagStackframe new];
     frame.frameAddress = dict[BSGKeyInstructionAddress];
     frame.symbolAddress = dict[BSGKeySymbolAddress];
@@ -75,15 +74,18 @@ static NSString * _Nullable FormatMemoryAddress(NSNumber * _Nullable address) {
     frame.isLr = [dict[BSGKeyIsLR] boolValue];
 
     NSDictionary *image = [self findImageAddr:[frame.machoLoadAddress unsignedLongValue] inImages:binaryImages];
-
     if (image != nil) {
         frame.machoUuid = image[BSGKeyUuid];
         frame.machoVmAddress = image[BSGKeyImageVmAddress];
         frame.machoFile = image[BSGKeyName];
-        return frame;
-    } else { // invalid frame, skip
+    } else if (frame.isLr) {
+        // Ignore invalid frame
         return nil;
+    } else {
+        bsg_log_warn(@"BugsnagStackframe: no image found for address %@", FormatMemoryAddress(frame.machoLoadAddress));
     }
+    
+    return frame;
 }
 
 + (NSArray<BugsnagStackframe *> *)stackframesWithBacktrace:(uintptr_t *)backtrace length:(NSUInteger)length {

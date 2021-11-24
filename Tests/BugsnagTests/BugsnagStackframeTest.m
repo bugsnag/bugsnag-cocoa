@@ -156,7 +156,9 @@
 }
 
 - (void)testInvalidFrame {
-    BugsnagStackframe *frame = [BugsnagStackframe frameFromDict:self.frameDict withImages:@[]];
+    // Sample 2nd frame from EXC_BREAKPOINT mach exception
+    NSDictionary *dict = @{@"instruction_addr": @"0x232e968186bc223c", @"isLR": @YES};
+    BugsnagStackframe *frame = [BugsnagStackframe frameFromDict:dict withImages:@[]];
     XCTAssertNil(frame);
 }
 
