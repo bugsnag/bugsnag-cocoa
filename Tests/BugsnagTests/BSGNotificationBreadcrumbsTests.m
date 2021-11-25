@@ -30,6 +30,60 @@
 @end
 
 
+#pragma mark Mock Objects
+
+@interface BSGMockObject: NSObject
+@property(readwrite, strong) NSString *descriptionString;
+@end
+
+@implementation BSGMockObject
+- (NSString *)description {return self.descriptionString;}
+@end
+
+
+@interface BSGMockScene: BSGMockObject
+@property(readwrite, strong) NSString *title;
+@property(readwrite, strong) NSString *subtitle;
+@end
+
+@implementation BSGMockScene
+@end
+
+
+@interface BSGMockViewController: BSGMockObject
+@property(readwrite, strong) NSString *title;
+@end
+
+@implementation BSGMockViewController
+@end
+
+
+#if TARGET_OS_OSX
+@interface BSGMockWindow: NSWindow
+#else
+@interface BSGMockWindow: UIWindow
+#endif
+@property(readwrite, strong) NSString *mockDescription;
+@property(readwrite, strong) NSString *mockTitle;
+@property(readwrite, strong) NSString *mockRepresentedURLString;
+@property(readwrite, strong) BSGMockScene *mockScene;
+@property(readwrite, strong) BSGMockViewController *mockViewController;
+@end
+
+@implementation BSGMockWindow
+- (NSString *)description {return self.mockDescription;}
+#if TARGET_OS_OSX
+- (NSViewController *)contentViewController {return (NSViewController *)self.mockViewController;}
+- (NSString *)title {return self.mockTitle;}
+- (NSURL *)representedURL {return [NSURL URLWithString:self.mockRepresentedURLString];}
+#else
+#if !TARGET_OS_TV && (defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0)
+- (UIScene *)windowScene  {return (UIScene *)self.mockScene;}
+#endif
+- (UIViewController *)rootViewController {return (UIViewController *)self.mockViewController;}
+#endif
+@end
+
 #pragma mark -
 
 @implementation BSGNotificationBreadcrumbsTests
@@ -111,10 +165,46 @@
     TEST(UITextViewTextDidBeginEditingNotification, BSGBreadcrumbTypeUser, @"Began Editing Text", @{});
     TEST(UITextViewTextDidEndEditingNotification, BSGBreadcrumbTypeUser, @"Stopped Editing Text", @{});
 }
- 
-- (void)testUIWindowNotifications {
-    TEST(UIWindowDidBecomeHiddenNotification, BSGBreadcrumbTypeState, @"Window Became Hidden", @{});
-    TEST(UIWindowDidBecomeVisibleNotification, BSGBreadcrumbTypeState, @"Window Became Visible", @{});
+
+- (void)testUIWindowNotificationsNoData {
+    BSGMockWindow *window = [[BSGMockWindow alloc]  init];
+    window.mockScene = [[BSGMockScene alloc]  init];
+    window.mockViewController = [[BSGMockViewController alloc] init];
+    self.notificationObject = window;
+
+    NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
+
+    TEST(UIWindowDidBecomeHiddenNotification, BSGBreadcrumbTypeState, @"Window Became Hidden", metadata);
+    TEST(UIWindowDidBecomeVisibleNotification, BSGBreadcrumbTypeState, @"Window Became Visible", metadata);
+}
+
+- (void)testUIWindowNotificationsWithData {
+    BSGMockWindow *window = [[BSGMockWindow alloc]  init];
+    window.mockScene = [[BSGMockScene alloc]  init];
+    window.mockViewController = [[BSGMockViewController alloc] init];
+    self.notificationObject = window;
+
+    window.mockDescription = @"Window Description";
+    window.mockTitle = @"Window Title";
+    window.mockRepresentedURLString = @"https://bugsnag.com";
+    window.mockScene.title = @"Scene Title";
+    window.mockScene.subtitle = @"Scene Subtitle";
+    window.mockViewController.title = @"ViewController Title";
+    window.mockViewController.descriptionString = @"ViewController Description";
+
+    NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
+    metadata[@"description"] = @"Window Description";
+    metadata[@"viewController"] = @"ViewController Description";
+    metadata[@"viewControllerTitle"] = @"ViewController Title";
+    if (@available(iOS 13.0, *)) {
+        metadata[@"sceneTitle"] = @"Scene Title";
+    }
+    if (@available(iOS 15.0, *)) {
+        metadata[@"sceneSubtitle"] = @"Scene Subtitle";
+    }
+
+    TEST(UIWindowDidBecomeHiddenNotification, BSGBreadcrumbTypeState, @"Window Became Hidden", metadata);
+    TEST(UIWindowDidBecomeVisibleNotification, BSGBreadcrumbTypeState, @"Window Became Visible", metadata);
 }
 
 #endif
@@ -166,11 +256,43 @@
     TEST(UIScreenBrightnessDidChangeNotification, BSGBreadcrumbTypeState, @"Screen Brightness Changed", @{});
 }
 
-- (void)testUIWindowNotifications {
-    TEST(UIWindowDidBecomeHiddenNotification, BSGBreadcrumbTypeState, @"Window Became Hidden", @{});
-    TEST(UIWindowDidBecomeKeyNotification, BSGBreadcrumbTypeState, @"Window Became Key", @{});
-    TEST(UIWindowDidBecomeVisibleNotification, BSGBreadcrumbTypeState, @"Window Became Visible", @{});
-    TEST(UIWindowDidResignKeyNotification, BSGBreadcrumbTypeState, @"Window Resigned Key", @{});
+- (void)testUIWindowNotificationsNoData {
+    BSGMockWindow *window = [[BSGMockWindow alloc]  init];
+    window.mockScene = [[BSGMockScene alloc]  init];
+    window.mockViewController = [[BSGMockViewController alloc] init];
+    self.notificationObject = window;
+
+    NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
+
+    TEST(UIWindowDidBecomeHiddenNotification, BSGBreadcrumbTypeState, @"Window Became Hidden", metadata);
+    TEST(UIWindowDidBecomeKeyNotification, BSGBreadcrumbTypeState, @"Window Became Key", metadata);
+    TEST(UIWindowDidBecomeVisibleNotification, BSGBreadcrumbTypeState, @"Window Became Visible", metadata);
+    TEST(UIWindowDidResignKeyNotification, BSGBreadcrumbTypeState, @"Window Resigned Key", metadata);
+}
+
+- (void)testUIWindowNotificationsWithData {
+    BSGMockWindow *window = [[BSGMockWindow alloc]  init];
+    window.mockScene = [[BSGMockScene alloc]  init];
+    window.mockViewController = [[BSGMockViewController alloc] init];
+    self.notificationObject = window;
+
+    window.mockDescription = @"Window Description";
+    window.mockTitle = @"Window Title";
+    window.mockRepresentedURLString = @"https://bugsnag.com";
+    window.mockScene.title = @"Scene Title";
+    window.mockScene.subtitle = @"Scene Subtitle";
+    window.mockViewController.title = @"ViewController Title";
+    window.mockViewController.descriptionString = @"ViewController Description";
+
+    NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
+    metadata[@"description"] = @"Window Description";
+    metadata[@"viewController"] = @"ViewController Description";
+    metadata[@"viewControllerTitle"] = @"ViewController Title";
+
+    TEST(UIWindowDidBecomeHiddenNotification, BSGBreadcrumbTypeState, @"Window Became Hidden", metadata);
+    TEST(UIWindowDidBecomeKeyNotification, BSGBreadcrumbTypeState, @"Window Became Key", metadata);
+    TEST(UIWindowDidBecomeVisibleNotification, BSGBreadcrumbTypeState, @"Window Became Visible", metadata);
+    TEST(UIWindowDidResignKeyNotification, BSGBreadcrumbTypeState, @"Window Resigned Key", metadata);
 }
 
 #endif
@@ -209,12 +331,52 @@
          (@{@"selectedColumn": @(-1), @"selectedRow": @(-1)}));
 }
 
-- (void)testNSWindowNotifications {
-    TEST(NSWindowDidBecomeKeyNotification, BSGBreadcrumbTypeState, @"Window Became Key", @{});
-    TEST(NSWindowDidEnterFullScreenNotification, BSGBreadcrumbTypeState, @"Window Entered Full Screen", @{});
-    TEST(NSWindowDidExitFullScreenNotification, BSGBreadcrumbTypeState, @"Window Exited Full Screen", @{});
-    TEST(NSWindowWillCloseNotification, BSGBreadcrumbTypeState, @"Window Will Close", @{});
-    TEST(NSWindowWillMiniaturizeNotification, BSGBreadcrumbTypeState, @"Window Will Miniaturize", @{});
+- (void)testNSWindowNotificationsNoData {
+    BSGMockWindow *window = [[BSGMockWindow alloc]  init];
+    window.mockScene = [[BSGMockScene alloc]  init];
+    window.mockViewController = [[BSGMockViewController alloc] init];
+    self.notificationObject = window;
+
+    NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
+
+    TEST(NSWindowDidBecomeKeyNotification, BSGBreadcrumbTypeState, @"Window Became Key", metadata);
+    TEST(NSWindowDidEnterFullScreenNotification, BSGBreadcrumbTypeState, @"Window Entered Full Screen", metadata);
+    TEST(NSWindowDidExitFullScreenNotification, BSGBreadcrumbTypeState, @"Window Exited Full Screen", metadata);
+    TEST(NSWindowWillCloseNotification, BSGBreadcrumbTypeState, @"Window Will Close", metadata);
+    TEST(NSWindowWillMiniaturizeNotification, BSGBreadcrumbTypeState, @"Window Will Miniaturize", metadata);
+}
+
+- (void)testNSWindowNotificationsWithData {
+    BSGMockWindow *window = [[BSGMockWindow alloc]  init];
+    window.mockScene = [[BSGMockScene alloc]  init];
+    window.mockViewController = [[BSGMockViewController alloc] init];
+    self.notificationObject = window;
+
+    window.mockDescription = @"Window Description";
+    window.mockTitle = @"Window Title";
+    window.mockRepresentedURLString = @"https://bugsnag.com";
+    window.mockScene.title = @"Scene Title";
+    window.mockScene.subtitle = @"Scene Subtitle";
+    window.mockViewController.title = @"ViewController Title";
+    window.mockViewController.descriptionString = @"ViewController Description";
+
+    NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
+    metadata[@"description"] = @"Window Description";
+    metadata[@"title"] = @"Window Title";
+    metadata[@"viewController"] = @"ViewController Description";
+    metadata[@"viewControllerTitle"] = @"ViewController Title";
+    metadata[@"representedURL"] = @"https://bugsnag.com";
+#if defined(__MAC_11_0) && __MAC_OS_VERSION_MAX_ALLOWED >= __MAC_11_0
+    if (@available(macOS 11.0, *)) {
+        metadata[@"subtitle"] = @"Window Subtitle";
+    }
+#endif
+
+    TEST(NSWindowDidBecomeKeyNotification, BSGBreadcrumbTypeState, @"Window Became Key", metadata);
+    TEST(NSWindowDidEnterFullScreenNotification, BSGBreadcrumbTypeState, @"Window Entered Full Screen", metadata);
+    TEST(NSWindowDidExitFullScreenNotification, BSGBreadcrumbTypeState, @"Window Exited Full Screen", metadata);
+    TEST(NSWindowWillCloseNotification, BSGBreadcrumbTypeState, @"Window Will Close", metadata);
+    TEST(NSWindowWillMiniaturizeNotification, BSGBreadcrumbTypeState, @"Window Will Miniaturize", metadata);
 }
 
 - (void)testNSWorkspaceNotifications {
