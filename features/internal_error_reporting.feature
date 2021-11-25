@@ -17,4 +17,4 @@ Feature: Internal error reporting
     And the event "metaData.BugsnagDiagnostics.file" is not null
     And the event "unhandled" is false
     And the exception "errorClass" equals "JSON parsing error"
-    And the exception "message" matches "NSCocoaErrorDomain 3840: No string key for value in object around character \d+."
+    And the exception "message" matches "NSCocoaErrorDomain 3840: No string key for value in object around .+\."
