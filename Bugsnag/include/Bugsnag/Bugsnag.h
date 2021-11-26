@@ -310,7 +310,7 @@
 /**
  * Remove a callback that would be invoked before a session is sent to Bugsnag.
  *
- * @param callback The opaque reference of the callback to be removed.
+ * @param callback The opaque reference of the callback, returned by `addOnSessionBlock:`
  */
 + (void)removeOnSession:(nonnull BugsnagOnSessionRef)callback
     NS_SWIFT_NAME(removeOnSession(_:));
@@ -340,7 +340,7 @@
 /**
  * Remove the callback that would be invoked when a breadcrumb is captured.
  *
- * @param callback The opaque reference of the callback to be removed.
+ * @param callback The opaque reference of the callback, returned by `addOnBreadcrumbBlock:`
  */
 + (void)removeOnBreadcrumb:(nonnull BugsnagOnBreadcrumbRef)callback
     NS_SWIFT_NAME(removeOnBreadcrumb(_:));

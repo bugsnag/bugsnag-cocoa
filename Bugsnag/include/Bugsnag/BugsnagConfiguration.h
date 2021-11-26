@@ -372,7 +372,7 @@ typedef id<NSObject> BugsnagOnSessionRef;
 /**
  * Remove a callback that would be invoked before a session is sent to Bugsnag.
  *
- * @param callback The opaque reference of the callback to be removed.
+ * @param callback The opaque reference of the callback, returned by `addOnSessionBlock:`
  */
 - (void)removeOnSession:(BugsnagOnSessionRef)callback
     NS_SWIFT_NAME(removeOnSession(_:));
@@ -402,7 +402,7 @@ typedef id<NSObject> BugsnagOnSessionRef;
 /**
  * Remove the callback that would be invoked before an event is sent.
  *
- * @param callback The opaque reference of the callback to be removed.
+ * @param callback The opaque reference of the callback, returned by `addOnSendErrorBlock:`
  */
 - (void)removeOnSendError:(BugsnagOnSendErrorRef)callback
     NS_SWIFT_NAME(removeOnSendError(_:));
@@ -432,7 +432,7 @@ typedef id<NSObject> BugsnagOnSessionRef;
 /**
  * Remove the callback that would be invoked when a breadcrumb is captured.
  *
- * @param callback The opaque reference of the callback to be removed.
+ * @param callback The opaque reference of the callback, returned by `addOnBreadcrumbBlock:`
  */
 - (void)removeOnBreadcrumb:(BugsnagOnBreadcrumbRef)callback
     NS_SWIFT_NAME(removeOnBreadcrumb(_:));
