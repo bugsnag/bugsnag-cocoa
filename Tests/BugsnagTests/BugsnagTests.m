@@ -253,7 +253,7 @@
         return true;
     };
 
-    [configuration addOnSessionBlock:sessionBlock];
+    BugsnagOnSessionRef callback = [configuration addOnSessionBlock:sessionBlock];
 
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
     [client start];
@@ -261,7 +261,7 @@
     
     [client pauseSession];
     called++;
-    [client removeOnSessionBlock:sessionBlock];
+    [client removeOnSession:callback];
     [client startSession];
     [self waitForExpectations:@[expectation2] timeout:1.0];
 }
@@ -305,14 +305,14 @@
     [client start];
     [client pauseSession];
 
-    [client addOnSessionBlock:sessionBlock];
+    BugsnagOnSessionRef callback = [client addOnSessionBlock:sessionBlock];
     [client startSession];
     [self waitForExpectations:@[expectation1] timeout:1.0];
 
     [client pauseSession];
     called++;
 
-    [client removeOnSessionBlock:sessionBlock];
+    [client removeOnSession:callback];
     [client startSession];
     // This expectation should also NOT be met
     [self waitForExpectations:@[expectation2] timeout:1.0];

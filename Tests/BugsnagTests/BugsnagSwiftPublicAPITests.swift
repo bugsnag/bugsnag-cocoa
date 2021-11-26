@@ -70,17 +70,17 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         Bugsnag.setUser("me", withEmail: "memail@foo.com", andName: "you")
         let _ = Bugsnag.user()
         
-        Bugsnag.addOnSession(block: sessionBlock)
+        let onSession = Bugsnag.addOnSession(block: sessionBlock)
         Bugsnag.addOnSession { (session: BugsnagSession) -> Bool in
             return true
         }
-        Bugsnag.removeOnSession(block: sessionBlock)
+        Bugsnag.removeOnSession(onSession)
         
-        Bugsnag.addOnBreadcrumb(block: onBreadcrumbBlock)
+        let onBreadcrumb = Bugsnag.addOnBreadcrumb(block: onBreadcrumbBlock)
         Bugsnag.addOnBreadcrumb { (breadcrumb: BugsnagBreadcrumb) -> Bool in
             return true
         }
-        Bugsnag.removeOnBreadcrumb(block: onBreadcrumbBlock)
+        Bugsnag.removeOnBreadcrumb(onBreadcrumb)
     }
 
     func testBugsnagConfigurationClass() throws {
@@ -129,21 +129,21 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         config.endpoints = BugsnagEndpointConfiguration(notify: "http://test.com", sessions: "http://test.com")
         
         config.setUser("user", withEmail: "email", andName: "name")
-        config.addOnSession(block: sessionBlock)
+        let onSession = config.addOnSession(block: sessionBlock)
         config.addOnSession { (session: BugsnagSession) -> Bool in
             return true
         }
-        config.removeOnSession(block: sessionBlock)
+        config.removeOnSession(onSession)
         config.addOnSendError(block:onSendErrorBlock)
         config.addOnSendError { (event: BugsnagEvent) -> Bool in
             return true
         }
-        config.removeOnSendError(block: onSendErrorBlock)
-        config.addOnBreadcrumb(block: onBreadcrumbBlock)
+        config.removeOnSendError(onSession)
+        let onBreadcrumb = config.addOnBreadcrumb(block: onBreadcrumbBlock)
         config.addOnBreadcrumb { (breadcrumb: BugsnagBreadcrumb) -> Bool in
             return true
         }
-        config.removeOnBreadcrumb(block: onBreadcrumbBlock)
+        config.removeOnBreadcrumb(onBreadcrumb)
         
         let plugin = FakePlugin()
         config.add(plugin)
@@ -273,17 +273,17 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         client.setUser("me", withEmail: "memail@foo.com", andName: "you")
         let _ = client.user()
         
-        client.addOnSession(block: sessionBlock)
+        let onSession = client.addOnSession(block: sessionBlock)
         client.addOnSession { (session: BugsnagSession) -> Bool in
             return true
         }
-        client.removeOnSession(block: sessionBlock)
+        client.removeOnSession(onSession)
         
-        client.addOnBreadcrumb(block: onBreadcrumbBlock)
+        let onBreadcrumb = client.addOnBreadcrumb(block: onBreadcrumbBlock)
         client.addOnBreadcrumb { (breadcrumb: BugsnagBreadcrumb) -> Bool in
             return true
         }
-        client.removeOnBreadcrumb(block: onBreadcrumbBlock)
+        client.removeOnBreadcrumb(onBreadcrumb)
     }
 
     func testBugsnagDeviceWithStateClass() throws {

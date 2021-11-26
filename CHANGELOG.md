@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* New APIs to allow `OnBreadcrumb`, `OnSendError` and `OnSession` Swift closures to be removed.
+  The following APIs are now deprecated and will be removed in the next major release:
+  * `removeOnBreadcrumb(block:)`
+  * `removeOnSendError(block:)`
+  * `removeOnSession(block:)`
+  [#1240](https://github.com/bugsnag/bugsnag-cocoa/pull/1240)
+
 ## 6.14.4 (2021-11-22)
 
 ### Bug fixes
