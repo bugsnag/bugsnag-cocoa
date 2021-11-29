@@ -250,9 +250,8 @@ steps:
         features/barebone_tests.feature
         --farm=local
         --os=macos
-        --os-version=11
+        --os-version=12
         --app=macOSTestApp
-        --fail-fast
         --order=random
 
   - label: 'macOS 10.15 stress test'
