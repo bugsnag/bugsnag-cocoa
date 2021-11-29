@@ -211,9 +211,9 @@
     BOOL (^block)(BugsnagSession *) = ^BOOL(BugsnagSession *session) {
         return NO;
     };
-    [self.config addOnSessionBlock:block];
+    BugsnagOnSessionRef callback = [self.config addOnSessionBlock:block];
     XCTAssertEqual(1, [self.config.onSessionBlocks count]);
-    [self.config removeOnSessionBlock:block];
+    [self.config removeOnSession:callback];
     XCTAssertEqual(0, [self.config.onSessionBlocks count]);
 }
 
@@ -221,9 +221,9 @@
     BOOL (^block)(BugsnagEvent *) = ^BOOL(BugsnagEvent *event) {
         return NO;
     };
-    [self.config addOnSendErrorBlock:block];
+    BugsnagOnSendErrorRef callback = [self.config addOnSendErrorBlock:block];
     XCTAssertEqual(1, [self.config.onSendBlocks count]);
-    [self.config removeOnSendErrorBlock:block];
+    [self.config removeOnSendError:callback];
     XCTAssertEqual(0, [self.config.onSendBlocks count]);
 }
 
@@ -231,9 +231,9 @@
     BOOL (^block)(BugsnagBreadcrumb *) = ^BOOL(BugsnagBreadcrumb *breadcrumb) {
         return NO;
     };
-    [self.config addOnBreadcrumbBlock:block];
+    BugsnagOnBreadcrumbRef callback = [self.config addOnBreadcrumbBlock:block];
     XCTAssertEqual(1, [self.config.onBreadcrumbBlocks count]);
-    [self.config removeOnBreadcrumbBlock:block];
+    [self.config removeOnBreadcrumb:callback];
     XCTAssertEqual(0, [self.config.onBreadcrumbBlocks count]);
 }
 
