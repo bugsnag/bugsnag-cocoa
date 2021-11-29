@@ -9,6 +9,7 @@
 class LastRunInfoConsecutiveLaunchCrashesScenario: Scenario {
     
     override func startBugsnag() {
+        config.launchDurationMillis = 0
         config.addOnSendError {
             if let lastRunInfo = Bugsnag.lastRunInfo {
                 $0.addMetadata(
@@ -23,6 +24,9 @@ class LastRunInfoConsecutiveLaunchCrashesScenario: Scenario {
     }
     
     override func run() {
+        if Bugsnag.lastRunInfo?.consecutiveLaunchCrashes == 3 {
+            Bugsnag.markLaunchCompleted()
+        }
         fatalError("Oh no, the app crashed!")
     }
 }
