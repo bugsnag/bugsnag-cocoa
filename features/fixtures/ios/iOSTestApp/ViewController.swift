@@ -27,15 +27,15 @@ class ViewController: UIViewController {
     @IBAction func runTestScenario() {
         scenario = prepareScenario()
 
-        NSLog("Starting Bugsnag for scenario: %@", String(describing: scenario))
+        log("Starting Bugsnag for scenario: \(String(describing: scenario))")
         scenario?.startBugsnag()
-        NSLog("Running scenario: %@", String(describing: scenario))
+        log("Running scenario: \(String(describing: scenario))")
         scenario?.run()
     }
 
     @IBAction func startBugsnag() {
         scenario = prepareScenario()
-        NSLog("Starting Bugsnag for scenario: %@", String(describing: scenario))
+        log("Starting Bugsnag for scenario: \(String(describing: scenario))")
         scenario?.startBugsnag()
     }
 
@@ -56,6 +56,7 @@ class ViewController: UIViewController {
         } catch {
             NSLog("%@", String(describing: error))
         }
+        bsg_kslog_setLogFilename(kscrashLogURL.path, true)
     }
 
     internal func prepareScenario() -> Scenario {
@@ -91,3 +92,7 @@ class ViewController: UIViewController {
     }
 }
 
+private func log(_ message: String) {
+    NSLog("%@", message)
+    kslog("\(Date()) \(message)")
+}

@@ -23,7 +23,7 @@
 
 + (void)setUp {
     bsg_mach_headers_initialize();
-    bsg_mach_headers_register_for_changes();
+    bsg_mach_headers_get_images(); // Ensure call stack can be symbolicated
 }
 
 - (void)setUp {
