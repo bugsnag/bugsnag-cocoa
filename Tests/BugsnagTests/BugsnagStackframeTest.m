@@ -157,9 +157,12 @@
 
 - (void)testInvalidFrame {
     // Sample 2nd frame from EXC_BREAKPOINT mach exception
-    NSDictionary *dict = @{@"instruction_addr": @"0x232e968186bc223c", @"isLR": @YES};
+    NSDictionary *dict = @{@"instruction_addr": @0x232e968186bc223c, @"isLR": @YES};
     BugsnagStackframe *frame = [BugsnagStackframe frameFromDict:dict withImages:@[]];
     XCTAssertNil(frame);
+    
+    // Sample bottom frame from NSException on macOS
+    XCTAssertNil([BugsnagStackframe frameFromDict:@{@"instruction_addr": @0x1} withImages:@[]]);
 }
 
 #define AssertStackframeValues(stackframe_, machoFile_, frameAddress_, method_) \
