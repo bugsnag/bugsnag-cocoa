@@ -56,11 +56,12 @@ BSG_Mach_Header_Info *bsg_mach_headers_get_images() {
 }
 
 BSG_Mach_Header_Info *bsg_mach_headers_get_main_image() {
-    BSG_Mach_Header_Info *img = bsg_mach_headers_get_images();
-    while (img && !img->isMain) {
-        img = img->next;
+    for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = img->next) {
+        if (img->header->filetype == MH_EXECUTE) {
+            return img;
+        }
     }
-    return img;
+    return NULL;
 }
 
 void bsg_mach_headers_initialize() {
@@ -168,12 +169,6 @@ bool bsg_mach_headers_populate_info(const struct mach_header *header, intptr_t s
             uuid = uuidCmd->uuid;
             break;
         }
-        case LC_MAIN:
-        case LC_UNIXTHREAD:
-            if (!strstr(imageName, "/usr/lib/dyld")) {
-                info->isMain = true;
-            }
-            break;
         }
         cmdPtr += loadCmd->cmdsize;
     }
