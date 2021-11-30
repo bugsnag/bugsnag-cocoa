@@ -64,8 +64,15 @@ static NSString * _Nullable FormatMemoryAddress(NSNumber * _Nullable address) {
 }
 
 + (instancetype)frameFromDict:(NSDictionary<NSString *, id> *)dict withImages:(NSArray<NSDictionary<NSString *, id> *> *)binaryImages {
+    NSNumber *frameAddress = dict[BSGKeyInstructionAddress];
+    if (frameAddress.unsignedLongLongValue == 1) {
+        // We sometimes get a frame address of 0x1 at the bottom of the call stack.
+        // It's not a valid stack frame and causes E2E tests to fail, so should be ignored.
+        return nil;
+    }
+
     BugsnagStackframe *frame = [BugsnagStackframe new];
-    frame.frameAddress = dict[BSGKeyInstructionAddress];
+    frame.frameAddress = frameAddress;
     frame.symbolAddress = dict[BSGKeySymbolAddress];
     frame.machoLoadAddress = dict[BSGKeyObjectAddress];
     frame.machoFile = dict[BSGKeyObjectName];
