@@ -48,9 +48,6 @@ typedef struct bsg_mach_image {
     /// True if the image has been unloaded and should be ignored
     bool unloaded;
 
-    /// True if this image is a program with an entry point; i.e. LC_MAIN or LC_UNIXTHREAD
-    bool isMain;
-
     /// The next image in the linked list
     struct bsg_mach_image *next;
 } BSG_Mach_Header_Info;
