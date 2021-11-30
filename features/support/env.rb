@@ -59,17 +59,18 @@ Before('@stress_test') do |_scenario|
 end
 
 Maze.hooks.after do |scenario|
-  if Maze.driver.capabilities['platformName'] == 'iOS'
+  folder1 = File.join(Dir.pwd, 'maze_output')
+  folder2 = scenario.failed? ? 'failed' : 'passed'
+  folder3 = scenario.name.gsub(/[:"& ]/, "_").gsub(/_+/, "_")
+
+  path = File.join(folder1, folder2, folder3)
+
+  FileUtils.makedirs(path)
+
+  if Maze.config.os == 'macos'
+    FileUtils.mv('/tmp/kscrash.log', path)
+  else
     data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
-
-    folder1 = File.join(Dir.pwd, 'maze_output')
-    folder2 = scenario.failed? ? 'failed' : 'passed'
-    folder3 = scenario.name.gsub(/[:"& ]/, "_").gsub(/_+/, "_")
-
-    path = File.join(folder1, folder2, folder3)
-
-    FileUtils.makedirs(path)
-
     File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
   end
 rescue
