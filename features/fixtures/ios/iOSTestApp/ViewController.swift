@@ -40,23 +40,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction func clearPersistentData(_ sender: Any) {
-        NSLog("Clear persistent data")
-        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-        do { // Delete Bugsnag persistent data to prevent sending of OOMS, old crash reports, or old sessions
-            let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-            try FileManager.default.contentsOfDirectory(at: cachesDirectory, includingPropertiesForKeys: []).forEach {
-                do {
-                    try FileManager.default.removeItem(at: $0)
-                } catch {
-                    NSLog("%@", String(describing: error))
-                }
-            }
-            let rootDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("com.bugsnag.Bugsnag")
-            try FileManager.default.removeItem(at: rootDirectory)
-        } catch {
-            NSLog("%@", String(describing: error))
-        }
-        bsg_kslog_setLogFilename(kscrashLogURL.path, true)
+        Scenario.clearPersistentData()
     }
 
     internal func prepareScenario() -> Scenario {

@@ -6,6 +6,16 @@
 
 #import "Scenario.h"
 
+extern void bsg_kscrash_setPrintTraceToStdout(bool printTraceToStdout);
+
+extern bool bsg_kslog_setLogFilename(const char *filename, bool overwrite);
+
+extern void bsg_i_kslog_logCBasic(const char *fmt, ...) __printflike(1, 2);
+
+void kslog(const char *message) {
+    bsg_i_kslog_logCBasic("%s", message);
+}
+
 void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
     writer->addBooleanElement(writer, "unhandled", false);
 }
@@ -13,6 +23,8 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
 // MARK: -
 
 static Scenario *theScenario;
+
+static char ksLogPath[PATH_MAX];
 
 @implementation Scenario {
     dispatch_block_t _onEventDelivery;
@@ -98,6 +110,8 @@ static Scenario *theScenario;
     // TODO: PLAT-5827
     // [self waitForNetworkConnectivity]; // Disabled for now because MR v4 does not listen on /
     [Bugsnag startWithConfiguration:self.config];
+
+    bsg_kscrash_setPrintTraceToStdout(true);
 }
 
 - (void)didEnterBackgroundNotification {
@@ -136,10 +150,51 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 
 + (void)initialize {
     if (self == [Scenario self]) {
+#if TARGET_OS_IPHONE
+        NSString *logPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0]
+                             stringByAppendingPathComponent:@"kscrash.log"];
+#else
+        NSString *logPath = @"/tmp/kscrash.log";
+#endif
+        [logPath getFileSystemRepresentation:ksLogPath maxLength:sizeof(ksLogPath)];
+        bsg_kslog_setLogFilename(ksLogPath, false);
+        
         Method method = class_getInstanceMethod([NSURLSession class], @selector(uploadTaskWithRequest:fromData:completionHandler:));
         NSURLSession_uploadTaskWithRequest_fromData_completionHandler =
         (void *)method_setImplementation(method, (void *)uploadTaskWithRequest_fromData_completionHandler);
     }
+}
+
++ (void)clearPersistentData {
+    NSLog(@"Clear persistent data");
+    [NSUserDefaults.standardUserDefaults removePersistentDomainForName:NSBundle.mainBundle.bundleIdentifier];
+    NSString *cachesDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+    NSArray<NSString *> *entries = @[
+        @"bsg_kvstore",
+        @"bsgkv",
+        @"bugsnag",
+        @"bugsnag_breadcrumbs.json",
+        @"bugsnag_handled_crash.txt",
+        @"KSCrash",
+        @"KSCrashReports"];
+    for (NSString *entry in entries) {
+        NSString *path = [cachesDir stringByAppendingPathComponent:entry];
+        NSError *error = nil;
+        if (![NSFileManager.defaultManager removeItemAtPath:path error:&error]) {
+            if (![error.domain isEqualToString:NSCocoaErrorDomain] && error.code != NSFileNoSuchFileError) {
+                NSLog(@"%@", error);
+            }
+        }
+    }
+    NSString *appSupportDir = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
+    NSString *rootDir = [appSupportDir stringByAppendingPathComponent:@"com.bugsnag.Bugsnag"];
+    NSError *error = nil;
+    if (![NSFileManager.defaultManager removeItemAtPath:rootDir error:&error]) {
+        if (![error.domain isEqualToString:NSCocoaErrorDomain] && error.code != NSFileNoSuchFileError) {
+            NSLog(@"%@", error);
+        }
+    }
+    bsg_kslog_setLogFilename(ksLogPath, true);
 }
 
 @end
