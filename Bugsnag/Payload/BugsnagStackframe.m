@@ -85,8 +85,13 @@ static NSString * _Nullable FormatMemoryAddress(NSNumber * _Nullable address) {
         frame.machoUuid = image[BSGKeyUuid];
         frame.machoVmAddress = image[BSGKeyImageVmAddress];
         frame.machoFile = image[BSGKeyName];
+    } else if (frame.isPc) {
+        // If the program counter's value isn't in any known image, the crash may have been due to a bad function pointer.
+        // Ignore these frames to prevent the dashboard grouping on the address.
+        return nil;
     } else if (frame.isLr) {
-        // Ignore invalid frame
+        // Ignore invalid link register frames.
+        // For EXC_BREAKPOINT mach exceptions the link register does not contain an instruction address.
         return nil;
     } else {
         bsg_log_warn(@"BugsnagStackframe: no image found for address %@", FormatMemoryAddress(frame.machoLoadAddress));
