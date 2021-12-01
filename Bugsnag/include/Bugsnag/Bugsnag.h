@@ -102,7 +102,7 @@
 /**
  * @return YES if Bugsnag has been started and the previous launch crashed
  */
-+ (BOOL)appDidCrashLastLaunch BSG_DEPRECATED_WITH_REPLACEMENT("use 'lastRunInfo.crashed' instead");
++ (BOOL)appDidCrashLastLaunch BSG_DEPRECATED_WITH_REPLACEMENT("lastRunInfo.crashed");
 
 /**
  * Information about the last run of the app, and whether it crashed.

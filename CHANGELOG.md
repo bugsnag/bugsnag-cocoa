@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 6.15.0 (2021-12-01)
 
 ### Enhancements
 
@@ -11,6 +11,9 @@ Changelog
   * `removeOnSendError(block:)`
   * `removeOnSession(block:)`
   [#1240](https://github.com/bugsnag/bugsnag-cocoa/pull/1240)
+
+* Include metadata in breadcrumbs for `UIWindow` / `NSWindow` notifications.
+  [#1238](https://github.com/bugsnag/bugsnag-cocoa/pull/1238)
 
 ## 6.14.4 (2021-11-22)
 
