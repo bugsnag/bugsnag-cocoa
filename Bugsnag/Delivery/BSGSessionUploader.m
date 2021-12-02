@@ -32,7 +32,7 @@
 - (instancetype)initWithConfig:(BugsnagConfiguration *)configuration notifier:(BugsnagNotifier *)notifier {
     if ((self = [super init])) {
         _activeIds = [NSMutableSet new];
-        _apiClient = [[BugsnagApiClient alloc] initWithSession:configuration.session queueName:@"Session API queue"];
+        _apiClient = [[BugsnagApiClient alloc] initWithSession:configuration.session];
         _config = configuration;
         _fileStore = [BugsnagSessionFileStore storeWithPath:[BSGFileLocations current].sessions maxPersistedSessions:configuration.maxPersistedSessions];
         _notifier = notifier;
@@ -83,47 +83,45 @@
 
 - (void)sendSession:(BugsnagSession *)session completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status))completionHandler {
     NSString *apiKey = [self.config.apiKey copy];
-    NSURL *sessionURL = [self.config.sessionURL copy];
-    
     if (!apiKey) {
         bsg_log_err(@"Cannot send session because no apiKey is configured.");
         completionHandler(BugsnagApiClientDeliveryStatusUndeliverable);
         return;
     }
     
-    if (sessionURL) {
-        [self.apiClient.sendQueue addOperationWithBlock:^{
-            BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc]
-                initWithSessions:@[session]
-                          config:self.config
-                    codeBundleId:self.codeBundleId
-                        notifier:self.notifier];
-            NSMutableDictionary *data = [payload toJson];
-            NSDictionary *HTTPHeaders = @{
-                BugsnagHTTPHeaderNameApiKey: apiKey ?: @"",
-                BugsnagHTTPHeaderNamePayloadVersion: @"1.0",
-                BugsnagHTTPHeaderNameSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate date]]
-            };
-            [self.apiClient sendJSONPayload:data headers:HTTPHeaders toURL:sessionURL
-                completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
-                switch (status) {
-                    case BugsnagApiClientDeliveryStatusDelivered:
-                        bsg_log_info(@"Sent session %@", session.id);
-                        break;
-                    case BugsnagApiClientDeliveryStatusFailed:
-                        bsg_log_warn(@"Failed to send sessions: %@", error);
-                        break;
-                    case BugsnagApiClientDeliveryStatusUndeliverable:
-                        bsg_log_warn(@"Failed to send sessions: %@", error);
-                        break;
-                }
-                completionHandler(status);
-            }];
-        }];
-    } else {
+    NSURL *sessionURL = self.config.sessionURL;
+    if (!sessionURL) {
         bsg_log_err(@"Cannot send session because no endpoint is configured.");
         completionHandler(BugsnagApiClientDeliveryStatusUndeliverable);
+        return;
     }
+    
+    NSDictionary *JSONPayload =
+    [[[BugsnagSessionTrackingPayload alloc] initWithSessions:@[session]
+                                                      config:self.config
+                                                codeBundleId:self.codeBundleId
+                                                    notifier:self.notifier] toJson];
+    
+    NSDictionary *HTTPHeaders = @{
+        BugsnagHTTPHeaderNameApiKey: apiKey,
+        BugsnagHTTPHeaderNamePayloadVersion: @"1.0",
+        BugsnagHTTPHeaderNameSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate date]] ?: [NSNull null]
+    };
+    
+    [self.apiClient sendJSONPayload:JSONPayload headers:HTTPHeaders toURL:sessionURL completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
+        switch (status) {
+            case BugsnagApiClientDeliveryStatusDelivered:
+                bsg_log_info(@"Sent session %@", session.id);
+                break;
+            case BugsnagApiClientDeliveryStatusFailed:
+                bsg_log_warn(@"Failed to send sessions: %@", error);
+                break;
+            case BugsnagApiClientDeliveryStatusUndeliverable:
+                bsg_log_warn(@"Failed to send sessions: %@", error);
+                break;
+        }
+        completionHandler(status);
+    }];
 }
 
 @end
