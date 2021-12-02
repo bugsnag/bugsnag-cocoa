@@ -7,6 +7,7 @@
 
 #import "BSGFileLocations.h"
 #import "BSG_RFC3339DateTool.h"
+#import "BugsnagApiClient.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagLogger.h"
@@ -18,6 +19,7 @@
 
 @interface BugsnagSessionTrackingApiClient ()
 @property (nonatomic) NSMutableSet *activeIds;
+@property (nonatomic) BugsnagApiClient *apiClient;
 @property(nonatomic) BugsnagConfiguration *config;
 @property (nonatomic) BugsnagSessionFileStore *fileStore;
 @end
@@ -25,18 +27,15 @@
 
 @implementation BugsnagSessionTrackingApiClient
 
-- (instancetype)initWithConfig:(BugsnagConfiguration *)configuration queueName:(NSString *)queueName notifier:(BugsnagNotifier *)notifier {
-    if ((self = [super initWithSession:configuration.session queueName:queueName])) {
+- (instancetype)initWithConfig:(BugsnagConfiguration *)configuration notifier:(BugsnagNotifier *)notifier {
+    if ((self = [super init])) {
         _activeIds = [NSMutableSet new];
+        _apiClient = [[BugsnagApiClient alloc] initWithSession:configuration.session queueName:@"Session API queue"];
         _config = configuration;
         _fileStore = [BugsnagSessionFileStore storeWithPath:[BSGFileLocations current].sessions maxPersistedSessions:configuration.maxPersistedSessions];
         _notifier = notifier;
     }
     return self;
-}
-
-- (NSOperation *)deliveryOperation {
-    return [NSOperation new];
 }
 
 - (void)deliverSession:(BugsnagSession *)session {
@@ -91,7 +90,7 @@
     }
     
     if (sessionURL) {
-        [self.sendQueue addOperationWithBlock:^{
+        [self.apiClient.sendQueue addOperationWithBlock:^{
             BugsnagSessionTrackingPayload *payload = [[BugsnagSessionTrackingPayload alloc]
                 initWithSessions:@[session]
                           config:self.config
@@ -103,7 +102,7 @@
                 BugsnagHTTPHeaderNamePayloadVersion: @"1.0",
                 BugsnagHTTPHeaderNameSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate date]]
             };
-            [self sendJSONPayload:data headers:HTTPHeaders toURL:sessionURL
+            [self.apiClient sendJSONPayload:data headers:HTTPHeaders toURL:sessionURL
                 completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
                 switch (status) {
                     case BugsnagApiClientDeliveryStatusDelivered:

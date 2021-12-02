@@ -4,7 +4,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BugsnagApiClient.h"
 
 @class BugsnagConfiguration;
 @class BugsnagNotifier;
@@ -12,9 +11,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface BugsnagSessionTrackingApiClient : BugsnagApiClient
+@interface BugsnagSessionTrackingApiClient : NSObject
 
-- (instancetype)initWithConfig:(BugsnagConfiguration *)configuration queueName:(NSString *)queueName notifier:(BugsnagNotifier *)notifier;
+- (instancetype)initWithConfig:(BugsnagConfiguration *)configuration notifier:(BugsnagNotifier *)notifier;
 
 - (void)deliverSession:(BugsnagSession *)session;
 
