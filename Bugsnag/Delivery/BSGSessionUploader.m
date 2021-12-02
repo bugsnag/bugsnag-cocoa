@@ -32,12 +32,12 @@
 
 @implementation BSGSessionUploader
 
-- (instancetype)initWithConfig:(BugsnagConfiguration *)configuration notifier:(BugsnagNotifier *)notifier {
+- (instancetype)initWithConfig:(BugsnagConfiguration *)config notifier:(BugsnagNotifier *)notifier {
     if ((self = [super init])) {
         _activeIds = [NSMutableSet new];
-        _apiClient = [[BugsnagApiClient alloc] initWithSession:configuration.session];
-        _config = configuration;
-        _fileStore = [BugsnagSessionFileStore storeWithPath:[BSGFileLocations current].sessions maxPersistedSessions:configuration.maxPersistedSessions];
+        _apiClient = [[BugsnagApiClient alloc] initWithSession:config.session];
+        _config = config;
+        _fileStore = [BugsnagSessionFileStore storeWithPath:[BSGFileLocations current].sessions maxPersistedSessions:config.maxPersistedSessions];
         _notifier = notifier;
     }
     return self;
@@ -84,7 +84,7 @@
     }];
 }
 
-- (void)sendSession:(BugsnagSession *)session completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status))completionHandler {
+- (void)sendSession:(BugsnagSession *)session completionHandler:(nonnull void (^)(BugsnagApiClientDeliveryStatus status))completionHandler {
     NSString *apiKey = [self.config.apiKey copy];
     if (!apiKey) {
         bsg_log_err(@"Cannot send session because no apiKey is configured.");
@@ -92,27 +92,27 @@
         return;
     }
     
-    NSURL *sessionURL = self.config.sessionURL;
-    if (!sessionURL) {
+    NSURL *url = self.config.sessionURL;
+    if (!url) {
         bsg_log_err(@"Cannot send session because no endpoint is configured.");
         completionHandler(BugsnagApiClientDeliveryStatusUndeliverable);
         return;
     }
     
-    NSDictionary *HTTPHeaders = @{
+    NSDictionary *headers = @{
         BugsnagHTTPHeaderNameApiKey: apiKey,
         BugsnagHTTPHeaderNamePayloadVersion: @"1.0",
         BugsnagHTTPHeaderNameSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate date]] ?: [NSNull null]
     };
     
-    NSDictionary *JSONPayload = @{
+    NSDictionary *payload = @{
         BSGKeyApp: [session.app toDict] ?: [NSNull null],
         BSGKeyDevice: [session.device toDictionary] ?: [NSNull null],
         BSGKeyNotifier: [self.notifier toDict] ?: [NSNull null],
         BSGKeySessions: BSGArrayWithObject([session toJson])
     };
     
-    [self.apiClient sendJSONPayload:JSONPayload headers:HTTPHeaders toURL:sessionURL completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
+    [self.apiClient sendJSONPayload:payload headers:headers toURL:url completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
         switch (status) {
             case BugsnagApiClientDeliveryStatusDelivered:
                 bsg_log_info(@"Sent session %@", session.id);
