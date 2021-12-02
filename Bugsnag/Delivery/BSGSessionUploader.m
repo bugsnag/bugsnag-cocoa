@@ -10,13 +10,16 @@
 #import "BSGFileLocations.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagApiClient.h"
+#import "BugsnagApp+Private.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
+#import "BugsnagDevice+Private.h"
+#import "BugsnagKeys.h"
 #import "BugsnagLogger.h"
+#import "BugsnagNotifier.h"
 #import "BugsnagSession+Private.h"
 #import "BugsnagSession.h"
 #import "BugsnagSessionFileStore.h"
-#import "BugsnagSessionTrackingPayload.h"
 
 
 @interface BSGSessionUploader ()
@@ -96,16 +99,17 @@
         return;
     }
     
-    NSDictionary *JSONPayload =
-    [[[BugsnagSessionTrackingPayload alloc] initWithSessions:@[session]
-                                                      config:self.config
-                                                codeBundleId:self.codeBundleId
-                                                    notifier:self.notifier] toJson];
-    
     NSDictionary *HTTPHeaders = @{
         BugsnagHTTPHeaderNameApiKey: apiKey,
         BugsnagHTTPHeaderNamePayloadVersion: @"1.0",
         BugsnagHTTPHeaderNameSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate date]] ?: [NSNull null]
+    };
+    
+    NSDictionary *JSONPayload = @{
+        BSGKeyApp: [session.app toDict] ?: [NSNull null],
+        BSGKeyDevice: [session.device toDictionary] ?: [NSNull null],
+        BSGKeyNotifier: [self.notifier toDict] ?: [NSNull null],
+        BSGKeySessions: BSGArrayWithObject([session toJson])
     };
     
     [self.apiClient sendJSONPayload:JSONPayload headers:HTTPHeaders toURL:sessionURL completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {

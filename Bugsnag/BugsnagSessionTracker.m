@@ -17,7 +17,6 @@
 #import "BugsnagDevice+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSession+Private.h"
-#import "BugsnagSessionTrackingPayload.h"
 
 #if TARGET_OS_IOS || TARGET_OS_TV
 #import "BSGUIKit.h"
