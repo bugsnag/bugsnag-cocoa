@@ -12,7 +12,6 @@
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagSession+Private.h"
 #import "BugsnagSessionTracker.h"
-#import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagTestConstants.h"
 
 @interface BugsnagSessionTrackerTest : XCTestCase

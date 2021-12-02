@@ -1,6 +1,8 @@
 //
-// Created by Jamie Lynch on 30/11/2017.
-// Copyright (c) 2017 Bugsnag. All rights reserved.
+//  BSGSessionUploader.h
+//  Bugsnag
+//
+//  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -11,11 +13,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface BugsnagSessionTrackingApiClient : NSObject
+@interface BSGSessionUploader : NSObject
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)configuration notifier:(BugsnagNotifier *)notifier;
 
-- (void)deliverSession:(BugsnagSession *)session;
+- (void)uploadSession:(BugsnagSession *)session;
 
 @property (copy, nonatomic) NSString *codeBundleId;
 

@@ -8,6 +8,7 @@
 
 #import "BugsnagSessionTracker.h"
 
+#import "BSGSessionUploader.h"
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagApp+Private.h"
 #import "BugsnagClient+Private.h"
@@ -16,7 +17,6 @@
 #import "BugsnagDevice+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSession+Private.h"
-#import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagSessionTrackingPayload.h"
 
 #if TARGET_OS_IOS || TARGET_OS_TV
@@ -35,7 +35,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 @interface BugsnagSessionTracker ()
 @property (strong, nonatomic) BugsnagConfiguration *config;
 @property (weak, nonatomic) BugsnagClient *client;
-@property (strong, nonatomic) BugsnagSessionTrackingApiClient *apiClient;
+@property (strong, nonatomic) BSGSessionUploader *sessionUploader;
 @property (strong, nonatomic) NSDate *backgroundStartTime;
 
 /**
@@ -54,7 +54,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
     if ((self = [super init])) {
         _config = config;
         _client = client;
-        _apiClient = [[BugsnagSessionTrackingApiClient alloc] initWithConfig:config notifier:client.notifier];
+        _sessionUploader = [[BSGSessionUploader alloc] initWithConfig:config notifier:client.notifier];
         _callback = callback;
         _extraRuntimeInfo = [NSMutableDictionary new];
     }
@@ -115,7 +115,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 
 - (void)setCodeBundleId:(NSString *)codeBundleId {
     _codeBundleId = codeBundleId;
-    self.apiClient.codeBundleId = codeBundleId;
+    self.sessionUploader.codeBundleId = codeBundleId;
 }
 
 #pragma mark - Creating and sending a new session
@@ -206,7 +206,7 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
     }
     [self postUpdateNotice];
 
-    [self.apiClient deliverSession:newSession];
+    [self.sessionUploader uploadSession:newSession];
 }
 
 - (void)addRuntimeVersionInfo:(NSString *)info

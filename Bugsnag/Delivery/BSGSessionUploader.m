@@ -1,9 +1,11 @@
 //
-// Created by Jamie Lynch on 30/11/2017.
-// Copyright (c) 2017 Bugsnag. All rights reserved.
+//  BSGSessionUploader.m
+//  Bugsnag
+//
+//  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
-#import "BugsnagSessionTrackingApiClient.h"
+#import "BSGSessionUploader.h"
 
 #import "BSGFileLocations.h"
 #import "BSG_RFC3339DateTool.h"
@@ -17,7 +19,7 @@
 #import "BugsnagSessionTrackingPayload.h"
 
 
-@interface BugsnagSessionTrackingApiClient ()
+@interface BSGSessionUploader ()
 @property (nonatomic) NSMutableSet *activeIds;
 @property (nonatomic) BugsnagApiClient *apiClient;
 @property(nonatomic) BugsnagConfiguration *config;
@@ -25,7 +27,7 @@
 @end
 
 
-@implementation BugsnagSessionTrackingApiClient
+@implementation BSGSessionUploader
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)configuration notifier:(BugsnagNotifier *)notifier {
     if ((self = [super init])) {
@@ -38,11 +40,11 @@
     return self;
 }
 
-- (void)deliverSession:(BugsnagSession *)session {
+- (void)uploadSession:(BugsnagSession *)session {
     [self sendSession:session completionHandler:^(BugsnagApiClientDeliveryStatus status) {
         switch (status) {
             case BugsnagApiClientDeliveryStatusDelivered:
-                [self deliverSessionsInStore:self.fileStore];
+                [self uploadStoredSessions];
                 break;
                 
             case BugsnagApiClientDeliveryStatusFailed:
@@ -55,8 +57,8 @@
     }];
 }
 
-- (void)deliverSessionsInStore:(BugsnagSessionFileStore *)store {
-    [[store allFilesByName] enumerateKeysAndObjectsUsingBlock:^(NSString *fileId, NSDictionary *fileContents, __attribute__((unused)) BOOL *stop) {
+- (void)uploadStoredSessions {
+    [[self.fileStore allFilesByName] enumerateKeysAndObjectsUsingBlock:^(NSString *fileId, NSDictionary *fileContents, __unused BOOL *stop) {
         // De-duplicate files as deletion of the file is asynchronous and so multiple calls
         // to this method will result in multiple send requests
         @synchronized (self.activeIds) {
@@ -70,7 +72,7 @@
 
         [self sendSession:session completionHandler:^(BugsnagApiClientDeliveryStatus status) {
             if (status != BugsnagApiClientDeliveryStatusFailed) {
-                [store deleteFileWithId:fileId];
+                [self.fileStore deleteFileWithId:fileId];
             }
             @synchronized (self.activeIds) {
                 [self.activeIds removeObject:fileId];
