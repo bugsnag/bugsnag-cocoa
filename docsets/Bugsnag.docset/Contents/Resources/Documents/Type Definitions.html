@@ -17,7 +17,7 @@
     <a title="Type Definitions  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Bugsnag 6.14.4 Docs</a></p>
+        <p><a href="index.html">Bugsnag 6.15.0 Docs</a></p>
         <p class="header-right"><a href="https://github.com/bugsnag/bugsnag-cocoa"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right"><a href="dash-feed://https%3A%2F%2Fbugsnag.github.io%2Fbugsnag-cocoa%2Fdocsets%2FBugsnag.xml"><img src="img/dash.png"/>Install in Dash</a></p>
         <p class="header-right">
@@ -157,13 +157,22 @@
                 <a href="Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnBreadcrumbBlock">BugsnagOnBreadcrumbBlock</a>
               </li>
               <li class="nav-group-task">
+                <a href="Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnBreadcrumbRef">BugsnagOnBreadcrumbRef</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnErrorBlock">BugsnagOnErrorBlock</a>
               </li>
               <li class="nav-group-task">
                 <a href="Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnSendErrorBlock">BugsnagOnSendErrorBlock</a>
               </li>
               <li class="nav-group-task">
+                <a href="Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnSendErrorRef">BugsnagOnSendErrorRef</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnSessionBlock">BugsnagOnSessionBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Type%20Definitions.html#/c:BugsnagConfiguration.h@T@BugsnagOnSessionRef">BugsnagOnSessionRef</a>
               </li>
               <li class="nav-group-task">
                 <a href="Type%20Definitions.html#/c:BugsnagStackframe.h@T@BugsnagStackframeType">BugsnagStackframeType</a>
@@ -216,7 +225,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.14.4/Bugsnag/include/Bugsnag/BSG_KSCrashReportWriter.h#L44-L229">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.0/Bugsnag/include/Bugsnag/BSG_KSCrashReportWriter.h#L44-L229">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -252,7 +261,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.14.4/Bugsnag/include/Bugsnag/BSG_KSCrashReportWriter.h#L231-L232">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.0/Bugsnag/include/Bugsnag/BSG_KSCrashReportWriter.h#L231-L232">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -288,7 +297,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.14.4/Bugsnag/include/Bugsnag/BSG_KSCrashReportWriter.h#L234-L235">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.0/Bugsnag/include/Bugsnag/BSG_KSCrashReportWriter.h#L234-L235">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -342,7 +351,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.14.4/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L75">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L80">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -403,7 +412,42 @@
                         <p>YES if the event should be sent</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.14.4/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L87">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L92">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:BugsnagConfiguration.h@T@BugsnagOnSendErrorRef"></a>
+                    <a name="//apple_ref/objc/Type/BugsnagOnSendErrorRef" class="dashAnchor"></a>
+                    <a class="token" href="#/c:BugsnagConfiguration.h@T@BugsnagOnSendErrorRef">BugsnagOnSendErrorRef</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>An opaque object that identifies and allows the removal of a BugsnagOnSendErrorBlock.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">typedef</span> <span class="n">id</span><span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span> <span class="n">BugsnagOnSendErrorRef</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">BugsnagOnSendErrorRef</span> <span class="o">=</span> <span class="kt">NSObjectProtocol</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L97">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -457,7 +501,42 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.14.4/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L94">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L104">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:BugsnagConfiguration.h@T@BugsnagOnBreadcrumbRef"></a>
+                    <a name="//apple_ref/objc/Type/BugsnagOnBreadcrumbRef" class="dashAnchor"></a>
+                    <a class="token" href="#/c:BugsnagConfiguration.h@T@BugsnagOnBreadcrumbRef">BugsnagOnBreadcrumbRef</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>An opaque object that identifies and allows the removal of a BugsnagOnBreadcrumbBlock.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">typedef</span> <span class="n">id</span><span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span> <span class="n">BugsnagOnBreadcrumbRef</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">BugsnagOnBreadcrumbRef</span> <span class="o">=</span> <span class="kt">NSObjectProtocol</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L109">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -511,7 +590,42 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.14.4/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L101">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L116">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:BugsnagConfiguration.h@T@BugsnagOnSessionRef"></a>
+                    <a name="//apple_ref/objc/Type/BugsnagOnSessionRef" class="dashAnchor"></a>
+                    <a class="token" href="#/c:BugsnagConfiguration.h@T@BugsnagOnSessionRef">BugsnagOnSessionRef</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>An opaque object that identifies and allows the removal of a BugsnagOnSessionBlock.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">typedef</span> <span class="n">id</span><span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span> <span class="n">BugsnagOnSessionRef</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">BugsnagOnSessionRef</span> <span class="o">=</span> <span class="kt">NSObjectProtocol</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L121">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -546,7 +660,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.14.4/Bugsnag/include/Bugsnag/BugsnagStackframe.h#L13">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.0/Bugsnag/include/Bugsnag/BugsnagStackframe.h#L13">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -556,7 +670,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2021 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="noopener" rel="external">Bugsnag Inc</a>. All rights reserved. (Last updated: 2021-11-22)</p>
+          <p>&copy; 2021 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="noopener" rel="external">Bugsnag Inc</a>. All rights reserved. (Last updated: 2021-12-02)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="noopener" rel="external">jazzy ♪♫ v0.14.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="noopener" rel="external">Realm</a> project.</p>
         </section>
       </article>
