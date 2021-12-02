@@ -16,7 +16,8 @@ xcrun xcodebuild \
   -configuration Debug \
   -archivePath archive/macOSTestApp.xcarchive \
   -quiet \
-  archive
+  archive \
+  ONLY_ACTIVE_ARCH=NO
 
 echo "--- macOSTestApp: xcodebuild -exportArchive"
 

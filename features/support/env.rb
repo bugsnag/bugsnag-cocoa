@@ -24,6 +24,12 @@ BeforeAll do
       `cd #{fixture_dir} && unzip #{zip_name}`
     end
 
+    # Remove test fixture from /Applications if present from an earlier run
+    if File.exist?("#{app_dir}/#{app_name}")
+      $logger.warn("Removing existing app from #{app_dir}/#{app_name}")
+      FileUtils.rm_rf "#{app_dir}/#{app_name}"
+    end
+
     FileUtils.mv("#{fixture_dir}/#{app_name}", "#{app_dir}/#{app_name}")
   end
 end
