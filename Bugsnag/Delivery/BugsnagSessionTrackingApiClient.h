@@ -8,21 +8,20 @@
 
 @class BugsnagConfiguration;
 @class BugsnagNotifier;
-@class BugsnagSessionFileStore;
+@class BugsnagSession;
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagSessionTrackingApiClient : BugsnagApiClient
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)configuration queueName:(NSString *)queueName notifier:(BugsnagNotifier *)notifier;
 
-/**
- * Asynchronously delivers sessions written to the store
- *
- * @param store The store containing the sessions to deliver
- */
-- (void)deliverSessionsInStore:(BugsnagSessionFileStore *)store;
+- (void)deliverSession:(BugsnagSession *)session;
 
 @property (copy, nonatomic) NSString *codeBundleId;
 
 @property (nonatomic) BugsnagNotifier *notifier;
 
 @end
+
+NS_ASSUME_NONNULL_END

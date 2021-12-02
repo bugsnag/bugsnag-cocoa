@@ -8,7 +8,6 @@
 
 #import "BugsnagSessionTracker.h"
 
-#import "BSGFileLocations.h"
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagApp+Private.h"
 #import "BugsnagClient+Private.h"
@@ -17,7 +16,6 @@
 #import "BugsnagDevice+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSession+Private.h"
-#import "BugsnagSessionFileStore.h"
 #import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagSessionTrackingPayload.h"
 
@@ -37,7 +35,6 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
 @interface BugsnagSessionTracker ()
 @property (strong, nonatomic) BugsnagConfiguration *config;
 @property (weak, nonatomic) BugsnagClient *client;
-@property (strong, nonatomic) BugsnagSessionFileStore *sessionStore;
 @property (strong, nonatomic) BugsnagSessionTrackingApiClient *apiClient;
 @property (strong, nonatomic) NSDate *backgroundStartTime;
 
@@ -59,8 +56,6 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
         _client = client;
         _apiClient = [[BugsnagSessionTrackingApiClient alloc] initWithConfig:config queueName:@"Session API queue" notifier:client.notifier];
         _callback = callback;
-
-        _sessionStore = [BugsnagSessionFileStore storeWithPath:[BSGFileLocations current].sessions maxPersistedSessions:config.maxPersistedSessions];
         _extraRuntimeInfo = [NSMutableDictionary new];
     }
     return self;
@@ -205,14 +200,13 @@ NSString *const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
     }
 
     self.currentSession = newSession;
-    [self.sessionStore write:self.currentSession];
 
     if (self.callback) {
         self.callback(self.currentSession);
     }
     [self postUpdateNotice];
 
-    [self.apiClient deliverSessionsInStore:self.sessionStore];
+    [self.apiClient deliverSession:newSession];
 }
 
 - (void)addRuntimeVersionInfo:(NSString *)info
