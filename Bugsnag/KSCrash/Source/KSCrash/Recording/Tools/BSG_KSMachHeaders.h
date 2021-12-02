@@ -48,9 +48,6 @@ typedef struct bsg_mach_image {
     /// True if the image has been unloaded and should be ignored
     bool unloaded;
 
-    /// True if this image is a program with an entry point; i.e. LC_MAIN or LC_UNIXTHREAD
-    bool isMain;
-
     /// The next image in the linked list
     struct bsg_mach_image *next;
 } BSG_Mach_Header_Info;
@@ -61,11 +58,6 @@ typedef struct bsg_mach_image {
   * Resets mach header data
  */
 void bsg_mach_headers_initialize(void);
-
-/**
-  * Registers with dyld to keep data updated when libraries are loaded and unloaded
- */
-void bsg_mach_headers_register_for_changes(void);
 
 /**
  * Returns the head of the link list of headers

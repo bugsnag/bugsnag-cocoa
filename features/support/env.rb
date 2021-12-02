@@ -57,3 +57,22 @@ end
 Before('@stress_test') do |_scenario|
   skip_this_scenario('Skipping: Run is not configured for stress tests') if ENV['STRESS_TEST'].nil?
 end
+
+Maze.hooks.after do |scenario|
+  folder1 = File.join(Dir.pwd, 'maze_output')
+  folder2 = scenario.failed? ? 'failed' : 'passed'
+  folder3 = scenario.name.gsub(/[:"& ]/, "_").gsub(/_+/, "_")
+
+  path = File.join(folder1, folder2, folder3)
+
+  FileUtils.makedirs(path)
+
+  if Maze.config.os == 'macos'
+    FileUtils.mv('/tmp/kscrash.log', path)
+  else
+    data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
+    File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
+  end
+rescue
+  # pull_file can fail on BrowserStack iOS 10 with "Error: Command 'umount' not found"
+end

@@ -63,10 +63,16 @@ static NSString * _Nullable FormatMemoryAddress(NSNumber * _Nullable address) {
     return nil;
 }
 
-+ (BugsnagStackframe *)frameFromDict:(NSDictionary *)dict
-                          withImages:(NSArray *)binaryImages {
++ (instancetype)frameFromDict:(NSDictionary<NSString *, id> *)dict withImages:(NSArray<NSDictionary<NSString *, id> *> *)binaryImages {
+    NSNumber *frameAddress = dict[BSGKeyInstructionAddress];
+    if (frameAddress.unsignedLongLongValue == 1) {
+        // We sometimes get a frame address of 0x1 at the bottom of the call stack.
+        // It's not a valid stack frame and causes E2E tests to fail, so should be ignored.
+        return nil;
+    }
+
     BugsnagStackframe *frame = [BugsnagStackframe new];
-    frame.frameAddress = dict[BSGKeyInstructionAddress];
+    frame.frameAddress = frameAddress;
     frame.symbolAddress = dict[BSGKeySymbolAddress];
     frame.machoLoadAddress = dict[BSGKeyObjectAddress];
     frame.machoFile = dict[BSGKeyObjectName];
@@ -75,15 +81,23 @@ static NSString * _Nullable FormatMemoryAddress(NSNumber * _Nullable address) {
     frame.isLr = [dict[BSGKeyIsLR] boolValue];
 
     NSDictionary *image = [self findImageAddr:[frame.machoLoadAddress unsignedLongValue] inImages:binaryImages];
-
     if (image != nil) {
         frame.machoUuid = image[BSGKeyUuid];
         frame.machoVmAddress = image[BSGKeyImageVmAddress];
         frame.machoFile = image[BSGKeyName];
-        return frame;
-    } else { // invalid frame, skip
+    } else if (frame.isPc) {
+        // If the program counter's value isn't in any known image, the crash may have been due to a bad function pointer.
+        // Ignore these frames to prevent the dashboard grouping on the address.
         return nil;
+    } else if (frame.isLr) {
+        // Ignore invalid link register frames.
+        // For EXC_BREAKPOINT mach exceptions the link register does not contain an instruction address.
+        return nil;
+    } else {
+        bsg_log_warn(@"BugsnagStackframe: no image found for address %@", FormatMemoryAddress(frame.machoLoadAddress));
     }
+    
+    return frame;
 }
 
 + (NSArray<BugsnagStackframe *> *)stackframesWithBacktrace:(uintptr_t *)backtrace length:(NSUInteger)length {

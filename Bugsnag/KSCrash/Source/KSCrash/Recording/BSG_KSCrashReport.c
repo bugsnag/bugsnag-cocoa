@@ -535,15 +535,15 @@ void bsg_kscrw_i_logBacktraceEntry(const int entryNum, const uintptr_t address,
     char faddrBuff[20];
     char saddrBuff[20];
 
-    const char *fname = bsg_ksfulastPathEntry(info->image->name);
-    if (fname == NULL) {
+    const char *fname = info->image ? bsg_ksfulastPathEntry(info->image->name) : NULL;
+    if (fname == NULL && info->image) {
         sprintf(faddrBuff, BSG_POINTER_FMT, (uintptr_t)info->image->header);
         fname = faddrBuff;
     }
 
     uintptr_t offset = address - (uintptr_t)info->function_address;
     const char *sname = info->function_name;
-    if (sname == NULL) {
+    if (sname == NULL && info->image) {
         sprintf(saddrBuff, BSG_POINTER_SHORT_FMT, (uintptr_t)info->image->header);
         sname = saddrBuff;
         offset = address - (uintptr_t)info->image->header;

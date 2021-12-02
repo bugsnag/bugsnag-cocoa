@@ -11,6 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+void kslog(const char *message);
+
 void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 
 @interface Scenario : NSObject
@@ -38,6 +40,8 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 @property (nonatomic, strong, nullable) NSString *eventMode;
 
 - (void)performBlockAndWaitForEventDelivery:(dispatch_block_t)block NS_SWIFT_NAME(performBlockAndWaitForEventDelivery(_:));
+
++ (void)clearPersistentData;
 
 @end
 

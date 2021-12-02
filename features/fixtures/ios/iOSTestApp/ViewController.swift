@@ -27,35 +27,20 @@ class ViewController: UIViewController {
     @IBAction func runTestScenario() {
         scenario = prepareScenario()
 
-        NSLog("Starting Bugsnag for scenario: %@", String(describing: scenario))
+        log("Starting Bugsnag for scenario: \(String(describing: scenario))")
         scenario?.startBugsnag()
-        NSLog("Running scenario: %@", String(describing: scenario))
+        log("Running scenario: \(String(describing: scenario))")
         scenario?.run()
     }
 
     @IBAction func startBugsnag() {
         scenario = prepareScenario()
-        NSLog("Starting Bugsnag for scenario: %@", String(describing: scenario))
+        log("Starting Bugsnag for scenario: \(String(describing: scenario))")
         scenario?.startBugsnag()
     }
 
     @IBAction func clearPersistentData(_ sender: Any) {
-        NSLog("Clear persistent data")
-        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-        do { // Delete Bugsnag persistent data to prevent sending of OOMS, old crash reports, or old sessions
-            let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-            try FileManager.default.contentsOfDirectory(at: cachesDirectory, includingPropertiesForKeys: []).forEach {
-                do {
-                    try FileManager.default.removeItem(at: $0)
-                } catch {
-                    NSLog("%@", String(describing: error))
-                }
-            }
-            let rootDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("com.bugsnag.Bugsnag")
-            try FileManager.default.removeItem(at: rootDirectory)
-        } catch {
-            NSLog("%@", String(describing: error))
-        }
+        Scenario.clearPersistentData()
     }
 
     internal func prepareScenario() -> Scenario {
@@ -91,3 +76,7 @@ class ViewController: UIViewController {
     }
 }
 
+private func log(_ message: String) {
+    NSLog("%@", message)
+    kslog("\(Date()) \(message)")
+}
