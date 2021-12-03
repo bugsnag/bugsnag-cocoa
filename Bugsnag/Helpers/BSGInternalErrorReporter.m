@@ -196,7 +196,7 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
     
     NSMutableDictionary *requestPayload = [NSMutableDictionary dictionary];
     requestPayload[BSGKeyEvents] = @[[event toJsonWithRedactedKeys:nil]];
-    requestPayload[BSGKeyNotifier] = [dataSource.notifier toDict];
+    requestPayload[BSGKeyNotifier] = [[[BugsnagNotifier alloc] init] toDict];
     requestPayload[BSGKeyPayloadVersion] = EventPayloadVersion;
     
     NSData *data = [NSJSONSerialization dataWithJSONObject:requestPayload options:0 error:errorPtr];

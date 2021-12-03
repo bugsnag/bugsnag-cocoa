@@ -17,7 +17,6 @@
 @interface BSGInternalErrorReporterTests : XCTestCase <BSGInternalErrorReporterDataSource>
 
 @property (nonatomic) BugsnagConfiguration *configuration;
-@property (nonatomic) BugsnagNotifier *notifier;
 
 @end
 
@@ -29,7 +28,6 @@
     [BSGInternalErrorReporter setSharedInstance:nil];
 #pragma clang diagnostic pop
     self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
-    self.notifier = [[BugsnagNotifier alloc] init];
 }
 
 - (void)testEventWithErrorClass {
