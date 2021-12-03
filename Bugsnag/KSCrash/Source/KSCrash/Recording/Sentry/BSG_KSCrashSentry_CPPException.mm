@@ -126,6 +126,8 @@ static void CPPExceptionTerminate(void) {
         BSG_KSLOG_DEBUG("Detected NSException. Recording details and letting "
                         "the current NSException handler deal with it.");
         isNSException = true;
+        // recordException() doesn't call beginHandlingCrash()
+        bsg_kscrashsentry_beginHandlingCrash(bsg_g_context);
         bsg_recordException(exception);
     } catch (std::exception &exc) {
         strlcpy(descriptionBuff, exc.what(), sizeof(descriptionBuff));
