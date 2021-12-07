@@ -3,8 +3,8 @@ When('I background the app for {int} seconds') do |duration|
 end
 
 When('I relaunch the app') do
-  case Maze.driver.capabilities['platformName']
-  when 'Mac'
+  case Maze::Helper.get_current_platform
+  when 'macos'
     app = Maze.driver.capabilities['app']
     system("killall #{app} > /dev/null && sleep 1")
     Maze.driver.get(app)
@@ -17,8 +17,8 @@ When("I relaunch the app after a crash") do
   # This step should only be used when the app has crashed, but the notifier needs a little
   # time to write the crash report before being forced to reopen.  From trials, 2s was not enough.
   sleep(5)
-  case Maze.driver.capabilities['platformName']
-  when 'Mac'
+  case Maze::Helper.get_current_platform
+  when 'macos'
     Maze.driver.get(Maze.driver.capabilities['app'])
   else
     Maze.driver.launch_app
@@ -48,10 +48,10 @@ end
 
 Then('the app is not running') do
   wait_for_true do
-    case Maze.driver.capabilities['platformName']
-    when 'iOS'
+    case Maze::Helper.get_current_platform
+    when 'ios'
       Maze.driver.app_state('com.bugsnag.iOSTestApp') == :not_running
-    when 'Mac'
+    when 'macos'
       `lsappinfo info -only pid -app com.bugsnag.macOSTestApp`.empty?
     else
       raise "Don't know how to query app state on this platform"

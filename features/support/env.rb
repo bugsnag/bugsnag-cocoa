@@ -44,19 +44,19 @@ AfterAll do
 end
 
 def skip_below(os, version)
-  skip_this_scenario("Skipping scenario") if Maze.driver.capabilities['platformName'] == os and Maze.config.os_version < version
+  skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == os and Maze.config.os_version < version
 end
 
 Before('@skip_below_ios_11') do |scenario|
-  skip_below('iOS', 11)
+  skip_below('ios', 11)
 end
 
 Before('@skip_below_ios_13') do |scenario|
-  skip_below('iOS', 13)
+  skip_below('ios', 13)
 end
 
 Before('@skip_macos') do |scenario|
-  skip_this_scenario("Skipping scenario") if Maze.driver.capabilities['platformName'] == 'Mac'
+  skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == 'macos'
 end
 
 # Skip stress tests unless STRESS_TEST env var is set
