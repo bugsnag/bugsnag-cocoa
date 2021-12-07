@@ -29,8 +29,13 @@ class ViewController: UIViewController {
 
         log("Starting Bugsnag for scenario: \(String(describing: scenario))")
         scenario?.startBugsnag()
-        log("Running scenario: \(String(describing: scenario))")
-        scenario?.run()
+        
+        log("Will running scenario: \(String(describing: scenario))")
+        // 0.1s delay allows accessibility APIs to finish handling the tap event and return control to the tests framework.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            log("Running scenario: \(String(describing: self.scenario))")
+            self.scenario?.run()
+        }
     }
 
     @IBAction func startBugsnag() {
