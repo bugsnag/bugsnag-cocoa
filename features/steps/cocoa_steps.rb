@@ -194,7 +194,6 @@ end
 
 Then('the error is valid for the error reporting API') do
   platform = Maze::Helper.get_current_platform
-  STDOUT.puts "platform: #{platform}"
   case platform
   when 'ios'
     steps %(
