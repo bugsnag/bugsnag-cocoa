@@ -103,6 +103,7 @@
     // Call onSession blocks
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
     [client start];
+    [client resumeSession];
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
 
@@ -183,6 +184,7 @@
     // Call onSession blocks
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
     [client start];
+    [client resumeSession];
     [self waitForExpectations:@[expectation1] timeout:1.0];
 
     // Check it's called on new session start

@@ -659,6 +659,8 @@
 		01847DAD26441A5E00ADA4C7 /* BSGInternalErrorReporterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 01847DAB26441A5E00ADA4C7 /* BSGInternalErrorReporterTests.m */; };
 		01847DAE26441A5E00ADA4C7 /* BSGInternalErrorReporterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 01847DAB26441A5E00ADA4C7 /* BSGInternalErrorReporterTests.m */; };
 		0187D464255BD7B800C503D9 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
+		01935AE2275E68E9007498B3 /* UIApplicationStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 01935AE1275E68E9007498B3 /* UIApplicationStub.m */; };
+		01935AE3275E68E9007498B3 /* UIApplicationStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 01935AE1275E68E9007498B3 /* UIApplicationStub.m */; };
 		019480D42625F3EB00E833ED /* BSGAppKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 019480D32625F3EB00E833ED /* BSGAppKitTests.m */; };
 		01A2C542271EB9B400A27B23 /* BSG_Symbolicate.c in Sources */ = {isa = PBXBuildFile; fileRef = 01A2C540271EB9B300A27B23 /* BSG_Symbolicate.c */; };
 		01A2C543271EB9B400A27B23 /* BSG_Symbolicate.c in Sources */ = {isa = PBXBuildFile; fileRef = 01A2C540271EB9B300A27B23 /* BSG_Symbolicate.c */; };
@@ -1336,6 +1338,8 @@
 		01847D942644140F00ADA4C7 /* BSGInternalErrorReporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGInternalErrorReporter.h; sourceTree = "<group>"; };
 		01847D952644140F00ADA4C7 /* BSGInternalErrorReporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGInternalErrorReporter.m; sourceTree = "<group>"; };
 		01847DAB26441A5E00ADA4C7 /* BSGInternalErrorReporterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGInternalErrorReporterTests.m; sourceTree = "<group>"; };
+		01935AE0275E68E9007498B3 /* UIApplicationStub.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIApplicationStub.h; sourceTree = "<group>"; };
+		01935AE1275E68E9007498B3 /* UIApplicationStub.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIApplicationStub.m; sourceTree = "<group>"; };
 		01937CF9257A7B4C00F2DE31 /* Bugsnag+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bugsnag+Private.h"; sourceTree = "<group>"; };
 		01937D11257A814D00F2DE31 /* BugsnagMetadata+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagMetadata+Private.h"; sourceTree = "<group>"; };
 		01937D2E257A83A900F2DE31 /* BugsnagApp+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagApp+Private.h"; sourceTree = "<group>"; };
@@ -1795,6 +1799,8 @@
 				004E35392487B375007FBAE4 /* Tests-Bridging-Header.h */,
 				CBA22499251E429C00B87416 /* TestSupport.h */,
 				CBA2249A251E429C00B87416 /* TestSupport.m */,
+				01935AE0275E68E9007498B3 /* UIApplicationStub.h */,
+				01935AE1275E68E9007498B3 /* UIApplicationStub.m */,
 				013D9CCF26C5262F0077F0AD /* UISceneStub.h */,
 				013D9CD026C5262F0077F0AD /* UISceneStub.m */,
 				01E8765C256684E700F4B70A /* URLSessionMock.h */,
@@ -2780,6 +2786,7 @@
 				008967782486D43700DC48C2 /* BSG_KSMachHeadersTests.m in Sources */,
 				0089673F2486D43700DC48C2 /* BugsnagAppTest.m in Sources */,
 				0089675A2486D43700DC48C2 /* BugsnagEnabledBreadcrumbTest.m in Sources */,
+				01935AE2275E68E9007498B3 /* UIApplicationStub.m in Sources */,
 				008967422486D43700DC48C2 /* BugsnagSessionTrackerStopTest.m in Sources */,
 				E701FAAF2490EFE8008D842F /* ConfigurationApiValidationTest.m in Sources */,
 				008967452486D43700DC48C2 /* BugsnagTests.m in Sources */,
@@ -3138,6 +3145,7 @@
 				01847DAE26441A5E00ADA4C7 /* BSGInternalErrorReporterTests.m in Sources */,
 				004E35372487AFF2007FBAE4 /* BugsnagHandledStateTest.m in Sources */,
 				016875C8258D003200DFFF69 /* NSUserDefaultsStub.m in Sources */,
+				01935AE3275E68E9007498B3 /* UIApplicationStub.m in Sources */,
 				01C17AE92542ED7F00C102C9 /* KSCrashReportWriterTests.m in Sources */,
 				00896A422486DBDD00DC48C2 /* BSGConfigurationBuilderTests.m in Sources */,
 				008967682486D43700DC48C2 /* BugsnagNotifierTest.m in Sources */,
