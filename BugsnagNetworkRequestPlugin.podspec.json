@@ -1,16 +1,16 @@
 {
   "name": "BugsnagNetworkRequestPlugin",
-  "version": "6.15.0",
+  "version": "v6.15.1",
   "summary": "Network request monitoring support for Bugsnag.",
   "homepage": "https://bugsnag.com",
   "license": "MIT",
   "authors": {
     "Bugsnag": "notifiers@bugsnag.com"
   },
-  "readme": "https://raw.githubusercontent.com/bugsnag/bugsnag-cocoa/v6.15.0/BugsnagNetworkRequestPlugin/README.md",
+  "readme": "https://raw.githubusercontent.com/bugsnag/bugsnag-cocoa/vv6.15.1/BugsnagNetworkRequestPlugin/README.md",
   "source": {
     "git": "https://github.com/bugsnag/bugsnag-cocoa.git",
-    "tag": "v6.15.0"
+    "tag": "vv6.15.1"
   },
   "dependencies": {
     "Bugsnag": "~> 6.13"
