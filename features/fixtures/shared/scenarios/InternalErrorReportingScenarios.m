@@ -14,6 +14,7 @@
 
 static void InternalErrorReportingScenarios_KSCrashReport_CrashHandler(const BSG_KSCrashReportWriter *writer) {
     writer->addJSONElement(writer, "something", "{1: \"Not valid JSON\"}");
+    sleep(1);
 }
 
 @implementation InternalErrorReportingScenarios_KSCrashReport

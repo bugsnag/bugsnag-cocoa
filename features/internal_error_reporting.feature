@@ -15,6 +15,7 @@ Feature: Internal error reporting
     And the event "metaData.BugsnagDiagnostics.apiKey" equals "12312312312312312312312312312312"
     And the event "metaData.BugsnagDiagnostics.data" is not null
     And the event "metaData.BugsnagDiagnostics.file" is not null
+    And the event "metaData.BugsnagDiagnostics.modificationInterval" is between 1.0 and 2.0
     And the event "unhandled" is false
     And the exception "errorClass" equals "JSON parsing error"
     And the exception "message" matches "NSCocoaErrorDomain 3840: No string key for value in object around .+\."
