@@ -1,5 +1,5 @@
 //
-//  InternalErrorReportingScenarios.m
+//  InvalidCrashReportScenario.m
 //  macOSTestApp
 //
 //  Created by Nick Dowell on 07/05/2021.
@@ -8,20 +8,19 @@
 
 #import "Scenario.h"
 
-@interface InternalErrorReportingScenarios_KSCrashReport : Scenario
-
+@interface InvalidCrashReportScenario : Scenario
 @end
 
-static void InternalErrorReportingScenarios_KSCrashReport_CrashHandler(const BSG_KSCrashReportWriter *writer) {
+static void CrashHandler(const BSG_KSCrashReportWriter *writer) {
     writer->addJSONElement(writer, "something", "{1: \"Not valid JSON\"}");
     sleep(1);
 }
 
-@implementation InternalErrorReportingScenarios_KSCrashReport
+@implementation InvalidCrashReportScenario
 
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;
-    self.config.onCrashHandler = InternalErrorReportingScenarios_KSCrashReport_CrashHandler;
+    self.config.onCrashHandler = CrashHandler;
     
     [super startBugsnag];
 }
