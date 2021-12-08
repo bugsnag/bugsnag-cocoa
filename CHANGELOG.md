@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## 6.15.1 (2021-12-08)
+
+### Bug fixes
+
+* Fix `UIApplicationState` detection when started from a SwiftUI app's `init()` function.
+  This fixes false positive OOMs on iOS 15 for apps that have been prewarmed without transitioning to the foreground.
+  [#1248](https://github.com/bugsnag/bugsnag-cocoa/pull/1248)
+
+* Load configuration from the plist instead of using defaults when calling Bugsnag.start(withApiKey:)
+  [#1245](https://github.com/bugsnag/bugsnag-cocoa/pull/1245)
+
 ## 6.15.0 (2021-12-01)
 
 ### Enhancements

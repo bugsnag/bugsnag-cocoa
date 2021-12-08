@@ -7,6 +7,58 @@ steps:
   # E2E tests
   #
 
+  - label: 'iOS 14 E2E tests batch 1'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
+      docker-compose#v3.3.0:
+        run: cocoa-maze-runner
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bs"
+          - "--device=IOS_14"
+          - "--appium-version=1.17.0"
+          - "--fail-fast"
+          - "--exclude=features/[h-z].*.feature"
+          - "--order=random"
+    concurrency: 9
+    concurrency_group: browserstack-app
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: 'iOS 14 E2E tests batch 2'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
+      docker-compose#v3.3.0:
+        run: cocoa-maze-runner
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bs"
+          - "--device=IOS_14"
+          - "--appium-version=1.17.0"
+          - "--fail-fast"
+          - "--exclude=features/[a-g].*.feature"
+          - "--order=random"
+    concurrency: 9
+    concurrency_group: browserstack-app
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
   - label: 'iOS 13 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
@@ -199,27 +251,27 @@ steps:
         --fail-fast
         --order=random
 
-  # TODO: Skip penmding PLAT-6822
-  - label: 'ARM macOS 11.0 E2E tests'
-    skip: Pending PLAT-6822
+  - label: 'ARM macOS 12.0 E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: opensource-m1-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     plugins:
       artifacts#v1.3.0:
-        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "appium_server.log", "maze_output/failed/**/*"]
+        download: "features/fixtures/macos/output/macOSTestApp.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "appium_server.log"
+          - "maze_output/failed/**/*"
     commands:
       - bundle config set --local path 'vendor/bundle'
       - bundle install
       - bundle exec maze-runner
         --farm=local
         --os=macos
-        --os-version=11
+        --os-version=12
         --app=macOSTestApp
-        --fail-fast
         --order=random
 
   - label: 'macOS 10.13 E2E tests'

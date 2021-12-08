@@ -66,7 +66,6 @@
 #import "BugsnagPluginClient.h"
 #import "BugsnagSession+Private.h"
 #import "BugsnagSessionTracker.h"
-#import "BugsnagSessionTrackingApiClient.h"
 #import "BugsnagStackframe+Private.h"
 #import "BugsnagStateEvent.h"
 #import "BugsnagSystemState.h"

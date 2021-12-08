@@ -19,7 +19,7 @@
 @implementation BugsnagApiClientTest
 
 - (void)testBadJSON {
-    BugsnagApiClient *client = [[BugsnagApiClient alloc] initWithSession:nil queueName:@"test"];
+    BugsnagApiClient *client = [[BugsnagApiClient alloc] initWithSession:nil];
     XCTAssertNoThrow([client sendJSONPayload:(id)@{@1: @"a"} headers:(id)@{@1: @"a"} toURL:[NSURL URLWithString:@"file:///dev/null"]
                            completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error) {}]);
 }
@@ -27,7 +27,7 @@
 - (void)testHTTPStatusCodes {
     NSURL *url = [NSURL URLWithString:@"https://example.com"];
     URLSessionMock *session = [[URLSessionMock alloc] init];
-    BugsnagApiClient *client = [[BugsnagApiClient alloc] initWithSession:(id)session queueName:@""];
+    BugsnagApiClient *client = [[BugsnagApiClient alloc] initWithSession:(id)session];
     
     void (^ test)(NSInteger, BugsnagApiClientDeliveryStatus, BOOL) =
     ^(NSInteger statusCode, BugsnagApiClientDeliveryStatus expectedDeliveryStatus, BOOL expectError) {
@@ -64,7 +64,7 @@
 - (void)testNotConnectedToInternetError {
     NSURL *url = [NSURL URLWithString:@"https://example.com"];
     URLSessionMock *session = [[URLSessionMock alloc] init];
-    BugsnagApiClient *client = [[BugsnagApiClient alloc] initWithSession:(id)session queueName:@""];
+    BugsnagApiClient *client = [[BugsnagApiClient alloc] initWithSession:(id)session];
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"completionHandler should be called"];
     [session mockData:nil response:nil error:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorNotConnectedToInternet userInfo:@{

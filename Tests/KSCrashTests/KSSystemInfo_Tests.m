@@ -31,6 +31,10 @@
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSSystemInfoC.h"
 
+#if TARGET_OS_TV
+#import "UIApplicationStub.h"
+#endif
+
 
 @interface KSSystemInfo_Tests : XCTestCase @end
 
@@ -61,7 +65,9 @@
 
 #if BSG_PLATFORM_TVOS || BSG_PLATFORM_IOS
 - (void)testCurrentAppState {
-    // Should default to active as tests aren't in an app bundle
+#if TARGET_OS_TV
+    [self setUpUIApplicationStub];
+#endif
     XCTAssertEqual(UIApplicationStateActive, [BSG_KSSystemInfo currentAppState]);
 }
 

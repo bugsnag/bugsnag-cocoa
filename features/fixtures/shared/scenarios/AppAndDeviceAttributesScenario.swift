@@ -78,6 +78,25 @@ class AppAndDeviceAttributesScenarioCallbackOverride: Scenario {
 
 // MARK: -
 
+/**
+ * Call startWithApiKey
+ */
+class AppAndDeviceAttributesScenarioStartWithApiKey: Scenario {
+
+    override func startBugsnag() {
+        Bugsnag.start(withApiKey: "12312312312312312312312312312312")
+
+        super.startBugsnag()
+    }
+
+    override func run() {
+        let error = NSError(domain: "AppAndDeviceAttributesScenarioStartWithApiKey", code: 100, userInfo: nil)
+        Bugsnag.notifyError(error)
+    }
+}
+
+// MARK: -
+
 class AppAndDeviceAttributesInfiniteLaunchDurationScenario: Scenario {
     
     override func startBugsnag() {
