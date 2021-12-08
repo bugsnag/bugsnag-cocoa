@@ -117,14 +117,11 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
                                    diagnostics:(nullable NSDictionary<NSString *, id> *)diagnostics
                                   groupingHash:(nullable NSString *)groupingHash {
     
-    NSArray<BugsnagStackframe *> *stacktrace = [BugsnagStackframe stackframesWithCallStackReturnAddresses:
-                                                BSGArraySubarrayFromIndex(NSThread.callStackReturnAddresses, 2)];
-    
     BugsnagError *error =
     [[BugsnagError alloc] initWithErrorClass:errorClass
                                 errorMessage:message
                                    errorType:BSGErrorTypeCocoa
-                                  stacktrace:stacktrace];
+                                  stacktrace:nil];
     
     return [self eventWithError:error diagnostics:diagnostics groupingHash:groupingHash];
 }

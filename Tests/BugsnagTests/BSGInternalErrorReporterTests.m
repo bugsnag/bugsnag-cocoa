@@ -39,7 +39,7 @@
     XCTAssertEqualObjects(event.errors[0].errorMessage, @"Something went wrong");
     XCTAssertEqualObjects(event.groupingHash, @"test");
     XCTAssertEqualObjects(event.threads, @[]);
-    XCTAssertGreaterThan(event.errors[0].stacktrace.count, 0);
+    XCTAssertEqual(event.errors[0].stacktrace.count, 0);
     XCTAssertNil(event.apiKey);
     
     NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
