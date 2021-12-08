@@ -1,6 +1,5 @@
 When('I run {string}') do |event_type|
   steps %(
-    Given the element "scenario_name" is present
     When I send the keys "#{event_type}" to the element "scenario_name"
     And I click the element "run_scenario"
   )
@@ -35,8 +34,7 @@ end
 
 When('I clear all persistent data') do
   steps %(
-    Given the element "clear_persistent_data" is present
-    And I click the element "clear_persistent_data"
+    When I click the element "clear_persistent_data"
   )
 end
 
@@ -52,7 +50,6 @@ end
 
 When('I configure Bugsnag for {string}') do |event_type|
   steps %(
-    Given the element "scenario_name" is present
     When I send the keys "#{event_type}" to the element "scenario_name"
     And I click the element "start_bugsnag"
   )

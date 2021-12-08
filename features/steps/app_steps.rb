@@ -61,7 +61,6 @@ end
 
 When('I set the app to {string} mode') do |mode|
   steps %(
-    Given the element "scenario_metadata" is present
     When I send the keys "#{mode}" to the element "scenario_metadata"
   )
 end
