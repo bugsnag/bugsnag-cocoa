@@ -1,8 +1,6 @@
 When('I run {string}') do |event_type|
   steps %(
-    Given the element "scenario_name" is present
     When I send the keys "#{event_type}" to the element "scenario_name"
-    And I close the keyboard
     And I click the element "run_scenario"
   )
 end
@@ -36,8 +34,7 @@ end
 
 When('I clear all persistent data') do
   steps %(
-    Given the element "clear_persistent_data" is present
-    And I click the element "clear_persistent_data"
+    When I click the element "clear_persistent_data"
   )
 end
 
@@ -51,17 +48,9 @@ rescue Selenium::WebDriver::Error::NoSuchElementError
   false
 end
 
-When('I close the keyboard') do
-  unless Maze::Helper.get_current_platform.eql?('macos')
-    click_if_present 'close_keyboard'
-  end
-end
-
 When('I configure Bugsnag for {string}') do |event_type|
   steps %(
-    Given the element "scenario_name" is present
     When I send the keys "#{event_type}" to the element "scenario_name"
-    And I close the keyboard
     And I click the element "start_bugsnag"
   )
 end
