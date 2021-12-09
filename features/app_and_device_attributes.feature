@@ -69,7 +69,7 @@ Feature: App and Device attributes present
     And the event "app.isLaunching" is false
 
   Scenario: App and Device info is as expected when overridden via config
-    When I run "AppAndDeviceAttributesScenarioConfigOverride"
+    When I run "AppAndDeviceAttributesConfigOverrideScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the error "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
@@ -80,7 +80,7 @@ Feature: App and Device attributes present
     And the error payload field "events.0.app.releaseStage" equals "secondStage"
 
   Scenario: App and Device info is as expected when overridden via callback
-    When I run "AppAndDeviceAttributesScenarioCallbackOverride"
+    When I run "AppAndDeviceAttributesCallbackOverrideScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the error "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
@@ -93,7 +93,7 @@ Feature: App and Device attributes present
     And the error payload field "events.0.device.modelNumber" equals "0898"
 
   Scenario: Info.plist settings are used when calling startWithApiKey
-    When I run "AppAndDeviceAttributesScenarioStartWithApiKey"
+    When I run "AppAndDeviceAttributesStartWithApiKeyScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the error "Bugsnag-API-Key" header equals "12312312312312312312312312312312"

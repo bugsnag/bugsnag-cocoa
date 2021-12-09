@@ -35,11 +35,11 @@
 		8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */; };
 		8A38C5D124094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */; };
 		8A3B5F292407F66700CE4A3A /* ModifyBreadcrumbScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3B5F282407F66700CE4A3A /* ModifyBreadcrumbScenario.swift */; };
-		8A3B5F2B240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift */; };
+		8A3B5F2B240807EE00CE4A3A /* ModifyBreadcrumbInNotifyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotifyScenario.swift */; };
 		8A42FD35225DEE04007AE561 /* SessionOOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A42FD33225DEE04007AE561 /* SessionOOMScenario.m */; };
 		8A530CCC22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A530CCB22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.m */; };
 		8A72A0382396574F00328051 /* CustomPluginNotifierDescriptionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */; };
-		8A840FBA21AF5C450041DBFA /* SwiftAssertion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */; };
+		8A840FBA21AF5C450041DBFA /* SwiftAssertionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A840FB921AF5C450041DBFA /* SwiftAssertionScenario.swift */; };
 		8A98400320FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */; };
 		8AB1081923301FE600672818 /* ReleaseStageScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB1081823301FE600672818 /* ReleaseStageScenarios.swift */; };
 		8AB65FCC22DC77CB001200AB /* LoadConfigFromFileScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB65FCB22DC77CB001200AB /* LoadConfigFromFileScenario.swift */; };
@@ -136,7 +136,7 @@
 		F42955E0916B8851F074D9B3 /* UserEmailScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */; };
 		F429565A951303E2C3136D0D /* UserIdScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42957C58F98EECD3ADD84B2 /* UserIdScenario.swift */; };
 		F4295836C8AF75547C675E8D /* ReleasedObjectScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */; };
-		F42958881D3F34A76CADE4EC /* SwiftCrash.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */; };
+		F42958881D3F34A76CADE4EC /* SwiftCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4295EEDC00E5ED3C166DBF0 /* SwiftCrashScenario.swift */; };
 		F42958BE5DDACDBF653CA926 /* ManualSessionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F429570EE7A751B53D011481 /* ManualSessionScenario.m */; };
 		F42959124DB949EEF1420957 /* ReadOnlyPageScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = F4295871D1BCF211398CAEBA /* ReadOnlyPageScenario.m */; };
 		F4295968571A4118D6A4606A /* UserEnabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42954E2B3FF0C5C0474DA74 /* UserEnabledScenario.swift */; };
@@ -198,14 +198,14 @@
 		8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSExceptionShiftScenario.m; sourceTree = "<group>"; };
 		8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardedBreadcrumbTypeScenario.swift; sourceTree = "<group>"; };
 		8A3B5F282407F66700CE4A3A /* ModifyBreadcrumbScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyBreadcrumbScenario.swift; sourceTree = "<group>"; };
-		8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyBreadcrumbInNotify.swift; sourceTree = "<group>"; };
+		8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotifyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyBreadcrumbInNotifyScenario.swift; sourceTree = "<group>"; };
 		8A42FD33225DEE04007AE561 /* SessionOOMScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionOOMScenario.m; sourceTree = "<group>"; };
 		8A42FD34225DEE04007AE561 /* SessionOOMScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionOOMScenario.h; sourceTree = "<group>"; };
 		8A530CCA22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ManyConcurrentNotifyScenario.h; sourceTree = "<group>"; };
 		8A530CCB22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ManyConcurrentNotifyScenario.m; sourceTree = "<group>"; };
 		8A72A0362396574F00328051 /* CustomPluginNotifierDescriptionScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomPluginNotifierDescriptionScenario.h; sourceTree = "<group>"; };
 		8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomPluginNotifierDescriptionScenario.m; sourceTree = "<group>"; };
-		8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftAssertion.swift; sourceTree = "<group>"; };
+		8A840FB921AF5C450041DBFA /* SwiftAssertionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftAssertionScenario.swift; sourceTree = "<group>"; };
 		8A98400120FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoSessionCustomVersionScenario.h; sourceTree = "<group>"; };
 		8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoSessionCustomVersionScenario.m; sourceTree = "<group>"; };
 		8AB1081823301FE600672818 /* ReleaseStageScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleaseStageScenarios.swift; sourceTree = "<group>"; };
@@ -357,7 +357,7 @@
 		F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasedObjectScenario.m; sourceTree = "<group>"; };
 		F4295E86DC0BE9DC731B0D1C /* NullPointerScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NullPointerScenario.m; sourceTree = "<group>"; };
 		F4295EE3B0BD05E5FE513B20 /* AutoSessionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoSessionScenario.m; sourceTree = "<group>"; };
-		F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftCrash.swift; sourceTree = "<group>"; };
+		F4295EEDC00E5ED3C166DBF0 /* SwiftCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftCrashScenario.swift; sourceTree = "<group>"; };
 		F4295F13EBCAC9CB0ABC4008 /* NonExistentMethodScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NonExistentMethodScenario.m; sourceTree = "<group>"; };
 		F4295F22AA1863213F4A5F51 /* AutoSessionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoSessionScenario.h; sourceTree = "<group>"; };
 		F4295F595986A279FA3BDEA7 /* UserEmailScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEmailScenario.swift; sourceTree = "<group>"; };
@@ -534,7 +534,7 @@
 			isa = PBXGroup;
 			children = (
 				8A3B5F282407F66700CE4A3A /* ModifyBreadcrumbScenario.swift */,
-				8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift */,
+				8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotifyScenario.swift */,
 				8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */,
 				E7A324E5247E9D8D008B0052 /* BreadcrumbCallbackDiscardScenario.swift */,
 				E7A324E7247E9D9A008B0052 /* BreadcrumbCallbackOrderScenario.swift */,
@@ -674,7 +674,7 @@
 				F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */,
 				F42952BCC8A05EFAAE503E3D /* StackOverflowScenario.h */,
 				F4295493796EA93321E5CDDB /* StackOverflowScenario.m */,
-				F4295EEDC00E5ED3C166DBF0 /* SwiftCrash.swift */,
+				F4295EEDC00E5ED3C166DBF0 /* SwiftCrashScenario.swift */,
 				F4295A4EF5288C60F978676F /* UndefinedInstructionScenario.h */,
 				F429538D19421F28D8EB0446 /* UndefinedInstructionScenario.m */,
 			);
@@ -745,7 +745,7 @@
 			isa = PBXGroup;
 			children = (
 				8A32DB8022424E3000EDD92F /* NSExceptionShiftScenario.h */,
-				8A840FB921AF5C450041DBFA /* SwiftAssertion.swift */,
+				8A840FB921AF5C450041DBFA /* SwiftAssertionScenario.swift */,
 				F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */,
 				F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */,
 				F429526319377A8848136413 /* HandledExceptionScenario.swift */,
@@ -942,11 +942,11 @@
 				F4295836C8AF75547C675E8D /* ReleasedObjectScenario.m in Sources */,
 				01E5EAD225B713990066EA8A /* OOMScenario.m in Sources */,
 				8A530CCC22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.m in Sources */,
-				F42958881D3F34A76CADE4EC /* SwiftCrash.swift in Sources */,
+				F42958881D3F34A76CADE4EC /* SwiftCrashScenario.swift in Sources */,
 				E7FDB6C6264D5AD800BCF881 /* AutoNotifyFalseAbortScenario.swift in Sources */,
 				E7A324EA247E9DA5008B0052 /* BreadcrumbCallbackOverrideScenario.swift in Sources */,
 				F42955DB6D08642528917FAB /* CxxExceptionScenario.mm in Sources */,
-				8A3B5F2B240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift in Sources */,
+				8A3B5F2B240807EE00CE4A3A /* ModifyBreadcrumbInNotifyScenario.swift in Sources */,
 				CBB787912578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m in Sources */,
 				8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */,
 				F42954B7318A02824C65C514 /* ObjCMsgSendScenario.m in Sources */,
@@ -958,7 +958,7 @@
 				E700EE6C247D793A008CFFB6 /* SIGPIPEScenario.m in Sources */,
 				E700EE50247D15DE008CFFB6 /* UserFromConfigSessionScenario.swift in Sources */,
 				A1117E552535A59100014FDA /* OOMLoadScenario.swift in Sources */,
-				8A840FBA21AF5C450041DBFA /* SwiftAssertion.swift in Sources */,
+				8A840FBA21AF5C450041DBFA /* SwiftAssertionScenario.swift in Sources */,
 				E753F24824927412001FB671 /* OnSendErrorCallbackCrashScenario.swift in Sources */,
 				01847DD626453D4E00ADA4C7 /* InvalidCrashReportScenario.m in Sources */,
 				001E5502243B8FDA0009E31D /* AutoCaptureRunScenario.m in Sources */,

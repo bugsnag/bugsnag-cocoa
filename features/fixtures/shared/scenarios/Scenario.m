@@ -32,7 +32,9 @@ static char ksLogPath[PATH_MAX];
 
 + (Scenario *)createScenarioNamed:(NSString *)className
                        withConfig:(BugsnagConfiguration *)config {
-    Class clz = NSClassFromString(className);
+
+    NSString *fullClassName = [NSString stringWithFormat:@"%@Scenario", className];
+    Class clz = NSClassFromString(fullClassName);
 
 #if TARGET_OS_IPHONE
     NSString *swiftPrefix = @"iOSTestApp.";
@@ -48,7 +50,7 @@ static char ksLogPath[PATH_MAX];
             if ([name hasPrefix:swiftPrefix]) {
                 name = [name substringFromIndex:swiftPrefix.length];
             }
-            if ([name caseInsensitiveCompare:className] == NSOrderedSame) {
+            if ([name caseInsensitiveCompare:fullClassName] == NSOrderedSame) {
                 clz = classes[i];
                 break;
             }
@@ -57,12 +59,12 @@ static char ksLogPath[PATH_MAX];
     }
 
     if (!clz) {
-        [NSException raise:NSInvalidArgumentException format:@"Failed to find scenario class named %@", className];
+        [NSException raise:NSInvalidArgumentException format:@"Failed to find scenario class named %@", fullClassName];
     }
 
     id obj = [clz alloc];
 
-    NSAssert([obj isKindOfClass:[Scenario class]], @"Class '%@' is not a subclass of Scenario", className);
+    NSAssert([obj isKindOfClass:[Scenario class]], @"Class '%@' is not a subclass of Scenario", fullClassName);
 
     theScenario = obj;
 

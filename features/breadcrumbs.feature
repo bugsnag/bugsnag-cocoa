@@ -36,7 +36,7 @@ Feature: Attaching a series of notable events leading up to errors
     Then the event has a "manual" breadcrumb named "Cache locked"
 
   Scenario: Modifying a breadcrumb name in callback
-    When I run "ModifyBreadcrumbInNotify"
+    When I run "ModifyBreadcrumbInNotifyScenario"
     And I wait to receive an error
     Then the event has a "manual" breadcrumb named "Cache locked"
 
