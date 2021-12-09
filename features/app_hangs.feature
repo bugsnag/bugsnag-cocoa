@@ -156,9 +156,7 @@ Feature: App hangs
     And the exception "message" equals "The app's main thread failed to respond to an event within 2000 milliseconds"
 
   Scenario: App hangs that occur during app termination should be non-fatal
-    Given I run "AppHangInTerminationScenario"
-    And the app is not running
-    And I relaunch the app
+    Given I run "AppHangInTerminationScenario" and relaunch the crashed app
     And I configure Bugsnag for "AppHangInTerminationScenario"
     Then I wait to receive an error
     And the event "severity" equals "warning"

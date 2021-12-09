@@ -66,9 +66,7 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[ReadOnlyPageScenario run]"
 
   Scenario: Stack overflow
-    When I run "StackOverflowScenario"
-    And the app is not running
-    And I relaunch the app
+    When I run "StackOverflowScenario" and relaunch the crashed app
     And I configure Bugsnag for "StackOverflowScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
