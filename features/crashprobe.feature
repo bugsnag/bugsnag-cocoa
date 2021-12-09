@@ -117,8 +117,8 @@ Feature: Reporting crash events
       | Intel | -[ReleasedObjectScenario run]                  |
 
   Scenario: Crash within Swift code
-    When I run "SwiftCrash" and relaunch the app
-    And I configure Bugsnag for "SwiftCrash"
+    When I run "SwiftCrashScenario" and relaunch the app
+    And I configure Bugsnag for "SwiftCrashScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the exception "errorClass" equals "Fatal error"
@@ -126,8 +126,8 @@ Feature: Reporting crash events
     And the event "metaData.error.crashInfo" matches "Fatal error: Unexpectedly found nil while unwrapping an Optional value"
 
   Scenario: Assertion failure in Swift code
-    When I run "SwiftAssertion" and relaunch the app
-    And I configure Bugsnag for "SwiftAssertion"
+    When I run "SwiftAssertionScenario" and relaunch the app
+    And I configure Bugsnag for "SwiftAssertionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the exception "errorClass" equals "Fatal error"
