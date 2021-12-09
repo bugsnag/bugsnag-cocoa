@@ -11,7 +11,7 @@ Feature: autoNotify flag allows disabling error detection after Bugsnag is initi
         And the event "unhandled" is false
         And I discard the oldest error
         And I relaunch the app
-        When I run "AutoNotifyFalseNSExceptionScenario" and relaunch the app
+        When I run "AutoNotifyFalseNSExceptionScenario" and relaunch the crashed app
         And I configure Bugsnag for "AutoNotifyFalseHandledScenario"
         Then I should receive no requests
 
@@ -23,7 +23,7 @@ Feature: autoNotify flag allows disabling error detection after Bugsnag is initi
         And the event "unhandled" is false
         And I discard the oldest error
         And I relaunch the app
-        When I run "AutoNotifyFalseAbortScenario" and relaunch the app
+        When I run "AutoNotifyFalseAbortScenario" and relaunch the crashed app
         And I configure Bugsnag for "AutoNotifyFalseHandledScenario"
         Then I should receive no requests
 
@@ -35,7 +35,7 @@ Feature: autoNotify flag allows disabling error detection after Bugsnag is initi
         And the event "unhandled" is false
         And I discard the oldest error
         And I relaunch the app
-        When I run "AutoNotifyReenabledScenario" and relaunch the app
+        When I run "AutoNotifyReenabledScenario" and relaunch the crashed app
         And I configure Bugsnag for "AutoNotifyReenabledScenario"
         And I wait to receive an error
         Then the error is valid for the error reporting API

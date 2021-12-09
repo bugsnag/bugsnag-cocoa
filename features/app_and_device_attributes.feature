@@ -115,13 +115,13 @@ Feature: App and Device attributes present
     And the event "app.isLaunching" is true
 
   Scenario: isLaunching is true for unhandled exception during launch
-    When I run "AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario" and relaunch the app
+    When I run "AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario" and relaunch the crashed app
     And I configure Bugsnag for "AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario"
     And I wait to receive an error
     And the event "app.isLaunching" is true
 
   Scenario: isLaunching is false for unhandled exception after launch
-    When I run "AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario" and relaunch the app
+    When I run "AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario" and relaunch the crashed app
     And I configure Bugsnag for "AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario"
     And I wait to receive an error
     And the event "app.isLaunching" is false

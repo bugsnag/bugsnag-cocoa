@@ -4,7 +4,7 @@ Feature: Thrown C++ exceptions are captured by Bugsnag
     Given I clear all persistent data
 
   Scenario: Throwing a C++ exception
-    When I run "CxxExceptionScenario" and relaunch the app
+    When I run "CxxExceptionScenario" and relaunch the crashed app
     And I configure Bugsnag for "CxxExceptionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -16,7 +16,7 @@ Feature: Thrown C++ exceptions are captured by Bugsnag
     And the event "severityReason.type" equals "unhandledException"
 
   Scenario: Throwing a C++ exception with unhandled override
-    When I run "CxxExceptionOverrideScenario" and relaunch the app
+    When I run "CxxExceptionOverrideScenario" and relaunch the crashed app
     And I configure Bugsnag for "CxxExceptionOverrideScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API

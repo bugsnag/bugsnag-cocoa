@@ -4,12 +4,12 @@ Feature: Discarding reports based on release stage
     Given I clear all persistent data
 
   Scenario: Unhandled error ignored when release stage is not present in enabledReleaseStages
-    When I run "UnhandledErrorInvalidReleaseStageScenario" and relaunch the app
+    When I run "UnhandledErrorInvalidReleaseStageScenario" and relaunch the crashed app
     And I configure Bugsnag for "UnhandledErrorInvalidReleaseStageScenario"
     Then I should receive no requests
 
   Scenario: Unhandled error captured when release stage is present in enabledReleaseStages
-    When I run "UnhandledErrorValidReleaseStageScenario" and relaunch the app
+    When I run "UnhandledErrorValidReleaseStageScenario" and relaunch the crashed app
     And I configure Bugsnag for "UnhandledErrorValidReleaseStageScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -24,12 +24,12 @@ Feature: Discarding reports based on release stage
   if the app is used as a test harness or if the build can receive code updates,
   such as JavaScript execution contexts.
 
-    When I run "UnhandledErrorChangeInvalidReleaseStageScenario" and relaunch the app
+    When I run "UnhandledErrorChangeInvalidReleaseStageScenario" and relaunch the crashed app
     And I configure Bugsnag for "UnhandledErrorChangeInvalidReleaseStageScenario"
     Then I should receive no requests
 
   Scenario: Crash when release stage is changed to be present in enabledReleaseStages before the event
-    When I run "UnhandledErrorChangeValidReleaseStageScenario" and relaunch the app
+    When I run "UnhandledErrorChangeValidReleaseStageScenario" and relaunch the crashed app
     And I configure Bugsnag for "UnhandledErrorChangeValidReleaseStageScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API

@@ -4,7 +4,7 @@ Feature: Internal error reporting
     Given I clear all persistent data
 
   Scenario: An internal error report is sent for invalid KSCrashReport files
-    When I run "InvalidCrashReportScenario" and relaunch the app
+    When I run "InvalidCrashReportScenario" and relaunch the crashed app
     And I configure Bugsnag for "InvalidCrashReportScenario"
     And I wait to receive an error
     And the error "Bugsnag-Api-Key" header is null
