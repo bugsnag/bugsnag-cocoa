@@ -55,6 +55,10 @@ Before('@skip_below_ios_13') do |scenario|
   skip_below('ios', 13)
 end
 
+Before('@skip_below_macos_10_15') do |scenario|
+  skip_below('macos', 10.15)
+end
+
 Before('@skip_macos') do |scenario|
   skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == 'macos'
 end

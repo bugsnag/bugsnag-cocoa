@@ -8,6 +8,7 @@
 
 #import "BSGInternalErrorReporter.h"
 
+#import "BSG_KSCrashReportFields.h"
 #import "BSG_KSSystemInfo.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagApiClient.h"
@@ -110,6 +111,17 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
     }
 }
 
+- (void)reportRecrash:(NSDictionary *)recrashReport {
+    @try {
+        BugsnagEvent *event = [self eventWithRecrashReport:recrashReport];
+        if (event) {
+            [self sendEvent:event];
+        }
+    } @catch (NSException *exception) {
+        bsg_log_err(@"%@", exception);
+    }
+}
+
 // MARK: Private API
 
 - (nullable BugsnagEvent *)eventWithErrorClass:(NSString *)errorClass
@@ -139,6 +151,33 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
                                   stacktrace:stacktrace];
     
     return [self eventWithError:error diagnostics:diagnostics groupingHash:groupingHash];
+}
+
+- (nullable BugsnagEvent *)eventWithRecrashReport:(NSDictionary *)recrashReport {
+    NSString *reportType = recrashReport[@ BSG_KSCrashField_Report][@ BSG_KSCrashField_Type];
+    if (![reportType isEqualToString:@ BSG_KSCrashReportType_Minimal]) {
+        return nil;
+    }
+    
+    NSDictionary *crash = recrashReport[@ BSG_KSCrashField_Crash];
+    NSDictionary *crashedThread = crash[@ BSG_KSCrashField_CrashedThread];
+    
+    NSArray *backtrace = crashedThread[@ BSG_KSCrashField_Backtrace][@ BSG_KSCrashField_Contents];
+    NSArray *binaryImages = recrashReport[@ BSG_KSCrashField_BinaryImages];
+    NSArray<BugsnagStackframe *> *stacktrace = BSGDeserializeArrayOfObjects(backtrace, ^BugsnagStackframe *(NSDictionary *dict) {
+        return [BugsnagStackframe frameFromDict:dict withImages:binaryImages];
+    });
+    
+    NSDictionary *errorDict = crash[@ BSG_KSCrashField_Error];
+    BugsnagError *error =
+    [[BugsnagError alloc] initWithErrorClass:@"Crash handler crashed"
+                                errorMessage:BSGParseErrorClass(errorDict, (id)errorDict[@ BSG_KSCrashField_Type])
+                                   errorType:BSGErrorTypeCocoa
+                                  stacktrace:stacktrace];
+    
+    BugsnagEvent *event = [self eventWithError:error diagnostics:recrashReport groupingHash:nil];
+    event.handledState = [BugsnagHandledState handledStateWithSeverityReason:Signal];
+    return event;
 }
 
 - (nullable BugsnagEvent *)eventWithError:(BugsnagError *)error

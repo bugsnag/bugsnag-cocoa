@@ -6,7 +6,7 @@ When('I relaunch the app') do
   case Maze::Helper.get_current_platform
   when 'macos'
     app = Maze.driver.capabilities['app']
-    system("killall #{app} > /dev/null && sleep 1")
+    system("killall -KILL #{app} > /dev/null && sleep 1")
     Maze.driver.get(app)
   else
     Maze.driver.launch_app
