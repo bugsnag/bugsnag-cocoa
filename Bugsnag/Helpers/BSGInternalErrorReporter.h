@@ -25,8 +25,6 @@ FOUNDATION_EXPORT NSString *BSGErrorDescription(NSError *error);
 
 @property (readonly, nonatomic) BugsnagConfiguration *configuration;
 
-@property (readonly, nonatomic) BugsnagNotifier *notifier;
-
 - (BugsnagAppWithState *)generateAppWithState:(NSDictionary *)systemInfo;
 
 - (BugsnagDeviceWithState *)generateDeviceWithState:(NSDictionary *)systemInfo;

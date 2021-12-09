@@ -17,7 +17,6 @@
 @interface BSGInternalErrorReporterTests : XCTestCase <BSGInternalErrorReporterDataSource>
 
 @property (nonatomic) BugsnagConfiguration *configuration;
-@property (nonatomic) BugsnagNotifier *notifier;
 
 @end
 
@@ -29,7 +28,6 @@
     [BSGInternalErrorReporter setSharedInstance:nil];
 #pragma clang diagnostic pop
     self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
-    self.notifier = [[BugsnagNotifier alloc] init];
 }
 
 - (void)testEventWithErrorClass {
@@ -41,7 +39,7 @@
     XCTAssertEqualObjects(event.errors[0].errorMessage, @"Something went wrong");
     XCTAssertEqualObjects(event.groupingHash, @"test");
     XCTAssertEqualObjects(event.threads, @[]);
-    XCTAssertGreaterThan(event.errors[0].stacktrace.count, 0);
+    XCTAssertEqual(event.errors[0].stacktrace.count, 0);
     XCTAssertNil(event.apiKey);
     
     NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
