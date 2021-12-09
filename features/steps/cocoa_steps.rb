@@ -1,6 +1,13 @@
+def short_scenario_name(scenario)
+  unless scenario.end_with? 'Scenario'
+    raise 'All scenario names must end with "Scenario".  There are removed by the test harness and re-added uniformly by the test fixture.'
+  end
+  scenario.delete_suffix 'Scenario'
+end
+
 When('I run {string}') do |event_type|
   steps %(
-    When I send the keys "#{event_type}" to the element "scenario_name"
+    When I send the keys "#{short_scenario_name event_type}" to the element "scenario_name"
     And I click the element "run_scenario"
   )
 end
@@ -50,7 +57,7 @@ end
 
 When('I configure Bugsnag for {string}') do |event_type|
   steps %(
-    When I send the keys "#{event_type}" to the element "scenario_name"
+    When I send the keys "#{short_scenario_name event_type}" to the element "scenario_name"
     And I click the element "start_bugsnag"
   )
 end
