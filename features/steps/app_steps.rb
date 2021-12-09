@@ -15,8 +15,8 @@ end
 
 When("I relaunch the app after a crash") do
   # This step should only be used when the app has crashed, but the notifier needs a little
-  # time to write the crash report before being forced to reopen.  From trials, 2s was not enough.
-  sleep(5)
+  # time to write the crash report before being forced to reopen.
+  step 'the app is not running'
   case Maze::Helper.get_current_platform
   when 'macos'
     Maze.driver.get(Maze.driver.capabilities['app'])
