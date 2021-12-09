@@ -78,7 +78,7 @@
 		01F47CF5254B1B3100B184AD /* StoppedSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C74254B1B2E00B184AD /* StoppedSessionScenario.swift */; };
 		01F47CF6254B1B3100B184AD /* UserEmailScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C75254B1B2E00B184AD /* UserEmailScenario.swift */; };
 		01F47CF7254B1B3100B184AD /* OnSendErrorCallbackCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C76254B1B2E00B184AD /* OnSendErrorCallbackCrashScenario.swift */; };
-		01F47CF8254B1B3100B184AD /* ModifyBreadcrumbInNotify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C78254B1B2F00B184AD /* ModifyBreadcrumbInNotify.swift */; };
+		01F47CF8254B1B3100B184AD /* ModifyBreadcrumbInNotifyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C78254B1B2F00B184AD /* ModifyBreadcrumbInNotifyScenario.swift */; };
 		01F47CF9254B1B3100B184AD /* BreadcrumbCallbackDiscardScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C79254B1B2F00B184AD /* BreadcrumbCallbackDiscardScenario.swift */; };
 		01F47CFA254B1B3100B184AD /* BreadcrumbCallbackOrderScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C7A254B1B2F00B184AD /* BreadcrumbCallbackOrderScenario.swift */; };
 		01F47CFB254B1B3100B184AD /* ReleaseStageScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C7D254B1B2F00B184AD /* ReleaseStageScenarios.swift */; };
@@ -137,8 +137,8 @@
 		01F47D30254B1B3100B184AD /* AutoContextNSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CBF254B1B3000B184AD /* AutoContextNSExceptionScenario.swift */; };
 		01F47D31254B1B3100B184AD /* OverwriteLinkRegisterScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CC0254B1B3000B184AD /* OverwriteLinkRegisterScenario.m */; };
 		01F47D32254B1B3100B184AD /* ResumeSessionOOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CC1254B1B3000B184AD /* ResumeSessionOOMScenario.m */; };
-		AAFEF9EC26EB536D00980A10 /* NetworkBreadcrumbsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFEF9EB26EB536D00980A10 /* NetworkBreadcrumbsScenario.swift */; };
 		01FA9EC626D64FFF0059FF4A /* AppHangInTerminationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FA9EC526D64FFF0059FF4A /* AppHangInTerminationScenario.swift */; };
+		AAFEF9EC26EB536D00980A10 /* NetworkBreadcrumbsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFEF9EB26EB536D00980A10 /* NetworkBreadcrumbsScenario.swift */; };
 		CBB7878E2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB7878C2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.m */; };
 		E780377D264D703500430C11 /* AutoNotifyReenabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7803779264D703500430C11 /* AutoNotifyReenabledScenario.swift */; };
 		E780377E264D703500430C11 /* AutoNotifyFalseHandledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E780377A264D703500430C11 /* AutoNotifyFalseHandledScenario.swift */; };
@@ -272,7 +272,7 @@
 		01F47C75254B1B2E00B184AD /* UserEmailScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEmailScenario.swift; sourceTree = "<group>"; };
 		01F47C76254B1B2E00B184AD /* OnSendErrorCallbackCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnSendErrorCallbackCrashScenario.swift; sourceTree = "<group>"; };
 		01F47C77254B1B2E00B184AD /* CustomPluginNotifierDescriptionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomPluginNotifierDescriptionScenario.h; sourceTree = "<group>"; };
-		01F47C78254B1B2F00B184AD /* ModifyBreadcrumbInNotify.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifyBreadcrumbInNotify.swift; sourceTree = "<group>"; };
+		01F47C78254B1B2F00B184AD /* ModifyBreadcrumbInNotifyScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifyBreadcrumbInNotifyScenario.swift; sourceTree = "<group>"; };
 		01F47C79254B1B2F00B184AD /* BreadcrumbCallbackDiscardScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreadcrumbCallbackDiscardScenario.swift; sourceTree = "<group>"; };
 		01F47C7A254B1B2F00B184AD /* BreadcrumbCallbackOrderScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreadcrumbCallbackOrderScenario.swift; sourceTree = "<group>"; };
 		01F47C7B254B1B2F00B184AD /* NSExceptionShiftScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSExceptionShiftScenario.h; sourceTree = "<group>"; };
@@ -461,7 +461,7 @@
 				01F47C29254B1B2C00B184AD /* MetadataRedactionDefaultScenario.swift */,
 				01F47C80254B1B2F00B184AD /* MetadataRedactionNestedScenario.swift */,
 				01F47C58254B1B2E00B184AD /* MetadataRedactionRegexScenario.swift */,
-				01F47C78254B1B2F00B184AD /* ModifyBreadcrumbInNotify.swift */,
+				01F47C78254B1B2F00B184AD /* ModifyBreadcrumbInNotifyScenario.swift */,
 				01F47C87254B1B2F00B184AD /* ModifyBreadcrumbScenario.swift */,
 				01F47CA0254B1B3000B184AD /* NewSessionScenario.swift */,
 				01F47C24254B1B2C00B184AD /* NonExistentMethodScenario.h */,
@@ -843,7 +843,7 @@
 				01F47CFA254B1B3100B184AD /* BreadcrumbCallbackOrderScenario.swift in Sources */,
 				E780377D264D703500430C11 /* AutoNotifyReenabledScenario.swift in Sources */,
 				01F47CF3254B1B3100B184AD /* AutoCaptureRunScenario.m in Sources */,
-				01F47CF8254B1B3100B184AD /* ModifyBreadcrumbInNotify.swift in Sources */,
+				01F47CF8254B1B3100B184AD /* ModifyBreadcrumbInNotifyScenario.swift in Sources */,
 				01F47D14254B1B3100B184AD /* OOMEnabledErrorTypesScenario.swift in Sources */,
 				01F47CDA254B1B3100B184AD /* NonExistentMethodScenario.m in Sources */,
 				01F47CFE254B1B3100B184AD /* MetadataRedactionNestedScenario.swift in Sources */,

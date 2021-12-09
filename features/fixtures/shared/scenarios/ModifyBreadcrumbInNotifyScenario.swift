@@ -1,6 +1,6 @@
 import Foundation
 
-class ModifyBreadcrumbInNotify: Scenario {
+class ModifyBreadcrumbInNotifyScenario: Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;

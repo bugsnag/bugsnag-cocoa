@@ -35,7 +35,7 @@
 		8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */; };
 		8A38C5D124094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */; };
 		8A3B5F292407F66700CE4A3A /* ModifyBreadcrumbScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3B5F282407F66700CE4A3A /* ModifyBreadcrumbScenario.swift */; };
-		8A3B5F2B240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift */; };
+		8A3B5F2B240807EE00CE4A3A /* ModifyBreadcrumbInNotifyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotifyScenario.swift */; };
 		8A42FD35225DEE04007AE561 /* SessionOOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A42FD33225DEE04007AE561 /* SessionOOMScenario.m */; };
 		8A530CCC22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A530CCB22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.m */; };
 		8A72A0382396574F00328051 /* CustomPluginNotifierDescriptionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */; };
@@ -198,7 +198,7 @@
 		8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSExceptionShiftScenario.m; sourceTree = "<group>"; };
 		8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardedBreadcrumbTypeScenario.swift; sourceTree = "<group>"; };
 		8A3B5F282407F66700CE4A3A /* ModifyBreadcrumbScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyBreadcrumbScenario.swift; sourceTree = "<group>"; };
-		8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyBreadcrumbInNotify.swift; sourceTree = "<group>"; };
+		8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotifyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyBreadcrumbInNotifyScenario.swift; sourceTree = "<group>"; };
 		8A42FD33225DEE04007AE561 /* SessionOOMScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionOOMScenario.m; sourceTree = "<group>"; };
 		8A42FD34225DEE04007AE561 /* SessionOOMScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionOOMScenario.h; sourceTree = "<group>"; };
 		8A530CCA22FDDBF000F0C108 /* ManyConcurrentNotifyScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ManyConcurrentNotifyScenario.h; sourceTree = "<group>"; };
@@ -534,7 +534,7 @@
 			isa = PBXGroup;
 			children = (
 				8A3B5F282407F66700CE4A3A /* ModifyBreadcrumbScenario.swift */,
-				8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift */,
+				8A3B5F2A240807EE00CE4A3A /* ModifyBreadcrumbInNotifyScenario.swift */,
 				8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */,
 				E7A324E5247E9D8D008B0052 /* BreadcrumbCallbackDiscardScenario.swift */,
 				E7A324E7247E9D9A008B0052 /* BreadcrumbCallbackOrderScenario.swift */,
@@ -946,7 +946,7 @@
 				E7FDB6C6264D5AD800BCF881 /* AutoNotifyFalseAbortScenario.swift in Sources */,
 				E7A324EA247E9DA5008B0052 /* BreadcrumbCallbackOverrideScenario.swift in Sources */,
 				F42955DB6D08642528917FAB /* CxxExceptionScenario.mm in Sources */,
-				8A3B5F2B240807EE00CE4A3A /* ModifyBreadcrumbInNotify.swift in Sources */,
+				8A3B5F2B240807EE00CE4A3A /* ModifyBreadcrumbInNotifyScenario.swift in Sources */,
 				CBB787912578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m in Sources */,
 				8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */,
 				F42954B7318A02824C65C514 /* ObjCMsgSendScenario.m in Sources */,
