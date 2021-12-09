@@ -142,7 +142,13 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[NullPointerScenario run]"
 
   Scenario: Trigger a crash with libsystem_pthread's _pthread_list_lock held
-    When I run "AsyncSafeThreadScenario" and relaunch the crashed app
+    When I run "AsyncSafeThreadScenario"
+
+    # Sleep and relaunch here instead of checking the app state as this specific
+    # crash seems to inhibit Appium's ability to check the app state on iOS 10
+    And I wait for 3 seconds
+    And I relaunch the app
+
     And I configure Bugsnag for "AsyncSafeThreadScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API

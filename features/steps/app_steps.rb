@@ -14,8 +14,7 @@ When('I relaunch the app') do
 end
 
 When("I relaunch the app after a crash") do
-  # This step should only be used when the app has crashed, but the notifier needs a little
-  # time to write the crash report before being forced to reopen.
+  # Wait for the app to stop running before relaunching
   step 'the app is not running'
   case Maze::Helper.get_current_platform
   when 'macos'
