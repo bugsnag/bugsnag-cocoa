@@ -4,7 +4,7 @@ Feature: Reporting crash events
     Given I clear all persistent data
 
   Scenario: Executing privileged instruction
-    When I run "PrivilegedInstructionScenario" and relaunch the app
+    When I run "PrivilegedInstructionScenario" and relaunch the crashed app
     And I configure Bugsnag for "PrivilegedInstructionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -15,7 +15,7 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[PrivilegedInstructionScenario run]"
 
   Scenario: Calling __builtin_trap()
-    When I run "BuiltinTrapScenario" and relaunch the app
+    When I run "BuiltinTrapScenario" and relaunch the crashed app
     And I configure Bugsnag for "BuiltinTrapScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -26,7 +26,7 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[BuiltinTrapScenario run]"
 
   Scenario: Calling non-existent method
-    When I run "NonExistentMethodScenario" and relaunch the app
+    When I run "NonExistentMethodScenario" and relaunch the crashed app
     And I configure Bugsnag for "NonExistentMethodScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -49,7 +49,7 @@ Feature: Reporting crash events
     And the "method" of stack frame 5 equals "-[NonExistentMethodScenario run]"
 
   Scenario: Trigger a crash after overwriting the link register
-    When I run "OverwriteLinkRegisterScenario" and relaunch the app
+    When I run "OverwriteLinkRegisterScenario" and relaunch the crashed app
     And I configure Bugsnag for "OverwriteLinkRegisterScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -58,7 +58,7 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[OverwriteLinkRegisterScenario run]"
 
   Scenario: Attempt to write into a read-only page
-    When I run "ReadOnlyPageScenario" and relaunch the app
+    When I run "ReadOnlyPageScenario" and relaunch the crashed app
     And I configure Bugsnag for "ReadOnlyPageScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -66,9 +66,7 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[ReadOnlyPageScenario run]"
 
   Scenario: Stack overflow
-    When I run "StackOverflowScenario"
-    And the app is not running
-    And I relaunch the app
+    When I run "StackOverflowScenario" and relaunch the crashed app
     And I configure Bugsnag for "StackOverflowScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -86,7 +84,7 @@ Feature: Reporting crash events
     And the "method" of stack frame 9 equals "-[StackOverflowScenario run]"
 
   Scenario: Crash inside objc_msgSend()
-    When I run "ObjCMsgSendScenario" and relaunch the app
+    When I run "ObjCMsgSendScenario" and relaunch the crashed app
     And I configure Bugsnag for "ObjCMsgSendScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -97,7 +95,7 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "objc_msgSend"
 
   Scenario: Attempt to execute an instruction undefined on the current architecture
-    When I run "UndefinedInstructionScenario" and relaunch the app
+    When I run "UndefinedInstructionScenario" and relaunch the crashed app
     And I configure Bugsnag for "UndefinedInstructionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -105,7 +103,7 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[UndefinedInstructionScenario run]"
 
   Scenario: Send a message to an object whose memory has already been freed
-    When I run "ReleasedObjectScenario" and relaunch the app
+    When I run "ReleasedObjectScenario" and relaunch the crashed app
     And I configure Bugsnag for "ReleasedObjectScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -117,7 +115,7 @@ Feature: Reporting crash events
       | Intel | -[ReleasedObjectScenario run]                  |
 
   Scenario: Crash within Swift code
-    When I run "SwiftCrashScenario" and relaunch the app
+    When I run "SwiftCrashScenario" and relaunch the crashed app
     And I configure Bugsnag for "SwiftCrashScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -126,7 +124,7 @@ Feature: Reporting crash events
     And the event "metaData.error.crashInfo" matches "Fatal error: Unexpectedly found nil while unwrapping an Optional value"
 
   Scenario: Assertion failure in Swift code
-    When I run "SwiftAssertionScenario" and relaunch the app
+    When I run "SwiftAssertionScenario" and relaunch the crashed app
     And I configure Bugsnag for "SwiftAssertionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -135,7 +133,7 @@ Feature: Reporting crash events
     And the event "metaData.error.crashInfo" matches "Fatal error: several unfortunate things just happened"
 
   Scenario: Dereference a null pointer
-    When I run "NullPointerScenario" and relaunch the app
+    When I run "NullPointerScenario" and relaunch the crashed app
     And I configure Bugsnag for "NullPointerScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -144,7 +142,13 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[NullPointerScenario run]"
 
   Scenario: Trigger a crash with libsystem_pthread's _pthread_list_lock held
-    When I run "AsyncSafeThreadScenario" and relaunch the app
+    When I run "AsyncSafeThreadScenario"
+
+    # Sleep and relaunch here instead of checking the app state as this specific
+    # crash seems to inhibit Appium's ability to check the app state on iOS 10
+    And I wait for 3 seconds
+    And I relaunch the app
+
     And I configure Bugsnag for "AsyncSafeThreadScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -156,13 +160,13 @@ Feature: Reporting crash events
       | -[AsyncSafeThreadScenario run] |
 
   Scenario: Trigger a crash with simulated malloc() lock held
-    When I run "AsyncSafeMallocScenario" and relaunch the app
+    When I run "AsyncSafeMallocScenario" and relaunch the crashed app
     And I configure Bugsnag for "AsyncSafeMallocScenario"
     And I wait to receive an error
     And the exception "errorClass" equals "SIGABRT"
 
   Scenario: Read a garbage pointer
-    When I run "ReadGarbagePointerScenario" and relaunch the app
+    When I run "ReadGarbagePointerScenario" and relaunch the crashed app
     And I configure Bugsnag for "ReadGarbagePointerScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -171,7 +175,7 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[ReadGarbagePointerScenario run]"
 
   Scenario: Access a non-object as an object
-    When I run "AccessNonObjectScenario" and relaunch the app
+    When I run "AccessNonObjectScenario" and relaunch the crashed app
     And I configure Bugsnag for "AccessNonObjectScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -180,7 +184,7 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "objc_msgSend"
 
   Scenario: Misuse of libdispatch
-    When I run "DispatchCrashScenario" and relaunch the app
+    When I run "DispatchCrashScenario" and relaunch the crashed app
     And I configure Bugsnag for "DispatchCrashScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API

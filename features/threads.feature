@@ -15,7 +15,7 @@ Feature: Threads
     And the thread information is valid for the event
 
   Scenario: Threads are captured for unhandled errors by default
-    When I run "UnhandledErrorThreadSendAlwaysScenario" and relaunch the app
+    When I run "UnhandledErrorThreadSendAlwaysScenario" and relaunch the crashed app
     And I configure Bugsnag for "UnhandledErrorThreadSendAlwaysScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -36,7 +36,7 @@ Feature: Threads
     And the error payload field "events.0.threads" is an array with 0 elements
 
   Scenario: Threads are not captured for unhandled errors when sendThreads is set to never
-    When I run "UnhandledErrorThreadSendNeverScenario" and relaunch the app
+    When I run "UnhandledErrorThreadSendNeverScenario" and relaunch the crashed app
     And I configure Bugsnag for "UnhandledErrorThreadSendNeverScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API

@@ -9,13 +9,13 @@ Feature: Configuration discardClasses option
     And the exception "errorClass" equals "NotDiscarded"
 
   Scenario: Discard unhandled exception
-    When I run "DiscardClassesUnhandledExceptionScenario" and relaunch the app
+    When I run "DiscardClassesUnhandledExceptionScenario" and relaunch the crashed app
     And I configure Bugsnag for "DiscardClassesUnhandledExceptionScenario"
     And I wait to receive an error
     And the exception "errorClass" equals "NotDiscarded"
 
   Scenario: Discard unhandled crash
-    When I run "DiscardClassesUnhandledCrashScenario" and relaunch the app
+    When I run "DiscardClassesUnhandledCrashScenario" and relaunch the crashed app
     And I configure Bugsnag for "DiscardClassesUnhandledCrashScenario"
     And I wait to receive an error
     And the exception "errorClass" equals "NotDiscarded"

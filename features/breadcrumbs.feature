@@ -25,7 +25,7 @@ Feature: Attaching a series of notable events leading up to errors
     Then the event has a "state" breadcrumb named "Bugsnag loaded"
 
   Scenario: An app lauches and subsequently crashes
-    When I run "BuiltinTrapScenario" and relaunch the app
+    When I run "BuiltinTrapScenario" and relaunch the crashed app
     And I configure Bugsnag for "BuiltinTrapScenario"
     And I wait to receive an error
     Then the event has a "state" breadcrumb named "Bugsnag loaded"

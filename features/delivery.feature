@@ -23,7 +23,7 @@ Feature: Delivery of errors
     Then I should receive no requests
 
   Scenario: Bugsnag.start() should block for 2 seconds after a launch crash
-    When I run "SendLaunchCrashesSynchronouslyScenario" and relaunch the app
+    When I run "SendLaunchCrashesSynchronouslyScenario" and relaunch the crashed app
     And I set the response delay for the next request to 5000 milliseconds
     And I set the app to "report" mode
     And I run "SendLaunchCrashesSynchronouslyScenario"
@@ -32,7 +32,7 @@ Feature: Delivery of errors
     And the event "metaData.bugsnag.startDuration" is between 2.0 and 2.5
 
   Scenario: Bugsnag.start() should not block if sendLaunchCrashesSynchronously is false
-    When I run "SendLaunchCrashesSynchronouslyFalseScenario" and relaunch the app
+    When I run "SendLaunchCrashesSynchronouslyFalseScenario" and relaunch the crashed app
     And I set the response delay for the next request to 5000 milliseconds
     And I set the app to "report" mode
     And I run "SendLaunchCrashesSynchronouslyFalseScenario"
@@ -41,7 +41,7 @@ Feature: Delivery of errors
     And the event "metaData.bugsnag.startDuration" is between 0.0 and 0.5
 
   Scenario: Bugsnag.start() should not block for non-launch crashes
-    When I run "SendLaunchCrashesSynchronouslyLaunchCompletedScenario" and relaunch the app
+    When I run "SendLaunchCrashesSynchronouslyLaunchCompletedScenario" and relaunch the crashed app
     And I set the response delay for the next request to 5000 milliseconds
     And I set the app to "report" mode
     And I run "SendLaunchCrashesSynchronouslyLaunchCompletedScenario"
