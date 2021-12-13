@@ -30,6 +30,9 @@ Feature: Detection of crashes during crash handling
       | RecrashObjcSignalScenario   | SIGABRT        |
       | RecrashSignalSignalScenario | SIGABRT        |
 
+  # A crashing signal handler on iOS 12 / macOS 10.14 and earlier will deadlock
+  # in the kernel and fail the "I wait to receive an error" step.
+  @skip_below_ios_13
   @skip_below_macos_10_15
   Scenario Outline: An internal error report is sent if onCrashHandler crashes
     Given I run "RecrashSignalMachScenario" and relaunch the crashed app
