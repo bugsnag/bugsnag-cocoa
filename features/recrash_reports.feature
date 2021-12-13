@@ -8,7 +8,7 @@ Feature: Detection of crashes during crash handling
     Given I clear all persistent data
 
   Scenario Outline: An internal error report is sent if onCrashHandler crashes
-    Given I run "<scenario>" and relaunch the app
+    Given I run "<scenario>" and relaunch the crashed app
     And I configure Bugsnag for "<scenario>"
     And I wait to receive an error
     And the error "Bugsnag-Api-Key" header is null
@@ -32,7 +32,7 @@ Feature: Detection of crashes during crash handling
 
   @skip_below_macos_10_15
   Scenario Outline: An internal error report is sent if onCrashHandler crashes
-    Given I run "RecrashSignalMachScenario" and relaunch the app
+    Given I run "RecrashSignalMachScenario" and relaunch the crashed app
     And I configure Bugsnag for "RecrashSignalMachScenario"
     And I wait to receive an error
     And the exception "errorClass" equals "Crash handler crashed"
