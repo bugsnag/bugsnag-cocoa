@@ -2,6 +2,7 @@ require 'fileutils'
 
 BeforeAll do
   $api_key = "12312312312312312312312312312312"
+
   Maze.config.receive_no_requests_wait = 15
 
   # Setup a 3 minute timeout for receiving requests is STRESS_TEST env var is set
@@ -14,32 +15,18 @@ BeforeAll do
     `defaults write com.apple.CrashReporter UseUNC 1`
 
     fixture_dir = 'features/fixtures/macos/output'
-    app_dir = '/Applications'
     zip_name = "#{Maze.config.app}.zip"
     app_name = "#{Maze.config.app}.app"
+    app_path = "#{fixture_dir}/#{app_name}"
+    zip_path = "#{fixture_dir}/#{zip_name}"
 
-    # If built app file already exists, skip unzip
-    unless File.exist?("#{fixture_dir}/#{app_name}")
-      raise Exception, 'Test fixture build archive not found' unless File.file?("#{fixture_dir}/#{zip_name}")
-      `cd #{fixture_dir} && unzip #{zip_name}`
+    unless File.exist?(app_path) || !File.exist?(zip_path)
+      system("cd #{fixture_dir} && unzip -q #{zip_name}", exception: true)
     end
 
-    # Remove test fixture from /Applications if present from an earlier run
-    if File.exist?("#{app_dir}/#{app_name}")
-      $logger.warn("Removing existing app from #{app_dir}/#{app_name}")
-      FileUtils.rm_rf "#{app_dir}/#{app_name}"
+    if File.exist?(app_path)
+      system("#{app_path}/Contents/MacOS/#{Maze.config.app} -register", exception: true)
     end
-
-    FileUtils.mv("#{fixture_dir}/#{app_name}", "#{app_dir}/#{app_name}")
-  end
-end
-
-AfterAll do
-  # Additional require MacOS configuration
-  if Maze.config.os == 'macos'
-    app_dir = '/Applications'
-    app_name = "#{Maze.config.app}.app"
-    FileUtils.rm_rf("#{app_dir}/#{app_name}")
   end
 end
 

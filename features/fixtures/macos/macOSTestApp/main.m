@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern void _LSUnregisterURL(CFURLRef url);
+
 void NotificationCallback(CFNotificationCenterRef center, void *observer, CFNotificationName cfName, const void *object, CFDictionaryRef userInfo) {
     NSString *name = (__bridge NSString *)cfName;
     // Ignore high-frequency notifications
@@ -32,6 +34,29 @@ int main(int argc, const char * argv[]) {
         // Stop NSApplication swallowing NSExceptions thrown on the main thread.
         @"NSApplicationCrashOnExceptions": @YES,
     }];
+    
+    if ([NSProcessInfo.processInfo.arguments containsObject:@"-register"]) {
+        NSLog(@"Registering with Launch Services and exiting...");
+        
+        NSURL *appURL = NSBundle.mainBundle.bundleURL;
+        NSString *bundleId = NSBundle.mainBundle.bundleIdentifier;
+        for (NSURL *url in CFBridgingRelease(LSCopyApplicationURLsForBundleIdentifier((__bridge CFStringRef)bundleId, NULL))) {
+            if (![url isEqual:appURL]) {
+                NSLog(@"LSUnregisterURL %@", url.path);
+                _LSUnregisterURL((__bridge CFURLRef)url);
+            }
+        }
+        
+        NSLog(@"LSRegisterURL %@", appURL.path);
+        OSStatus status = LSRegisterURL((__bridge CFURLRef)appURL, true);
+        if (status != noErr) {
+            NSLog(@"LSRegisterURL failed: %d", status);
+        }
+        
+        return 0;
+    }
+    
+    NSLog(@"bundlePath = %@", NSBundle.mainBundle.bundlePath);
     
     // Log (almost) all notifications to aid in diagnosing Appium test flakes
     CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),
