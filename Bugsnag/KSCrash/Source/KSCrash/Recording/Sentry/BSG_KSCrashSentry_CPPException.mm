@@ -129,6 +129,7 @@ static void CPPExceptionTerminate(void) {
         // recordException() doesn't call beginHandlingCrash()
         bsg_kscrashsentry_beginHandlingCrash(bsg_g_context);
         bsg_recordException(exception);
+        bsg_g_context->handlingCrash = false;
     } catch (std::exception &exc) {
         strlcpy(descriptionBuff, exc.what(), sizeof(descriptionBuff));
     } catch (std::exception *exc) {

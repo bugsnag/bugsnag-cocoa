@@ -1528,6 +1528,13 @@ void bsg_kscrashreport_writeMinimalReport(
                                    &crashContext->crash);
         }
         writer->endContainer(writer);
+
+        BSG_Mach_Header_Info *image = bsg_mach_headers_get_self_image();
+        if (image) {
+            writer->beginArray(writer, BSG_KSCrashField_BinaryImages);
+            bsg_kscrw_i_writeBinaryImage(writer, NULL, image);
+            writer->endContainer(writer);
+        }
     }
     writer->endContainer(writer);
 
