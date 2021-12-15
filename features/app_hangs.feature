@@ -134,7 +134,7 @@ Feature: App hangs
   @skip_macos
   Scenario: Fatal app hangs should be reported if the app hangs before going to the background
     When I run "AppHangFatalOnlyScenario"
-    And I background the app for 3 seconds
+    And I send the app to the background for 3 seconds
     And I relaunch the app
     And I configure Bugsnag for "AppHangFatalOnlyScenario"
     And I wait to receive an error
@@ -143,7 +143,7 @@ Feature: App hangs
   @skip_macos
   Scenario: Fatal app hangs should not be reported if they occur once the app is in the background
     When I run "AppHangDidEnterBackgroundScenario"
-    And I background the app for 3 seconds
+    And I send the app to the background for 3 seconds
     And I relaunch the app
     And I configure Bugsnag for "AppHangDidEnterBackgroundScenario"
     Then I should receive no errors
@@ -151,7 +151,7 @@ Feature: App hangs
   @skip_macos
   Scenario: App hangs should be reported if the app hangs after resuming from the background
     When I run "AppHangDidBecomeActiveScenario"
-    And I background the app for 3 seconds
+    And I send the app to the background for 3 seconds
     And I wait to receive an error
     And the exception "message" equals "The app's main thread failed to respond to an event within 2000 milliseconds"
 
