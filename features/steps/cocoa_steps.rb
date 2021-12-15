@@ -7,7 +7,7 @@ end
 
 When('I run {string}') do |event_type|
   steps %(
-    When I send the keys "#{short_scenario_name event_type}" to the element "scenario_name"
+    When I set the app to "#{short_scenario_name event_type}" scenario
     And I click the element "run_scenario"
   )
 end
@@ -57,7 +57,7 @@ end
 
 When('I configure Bugsnag for {string}') do |event_type|
   steps %(
-    When I send the keys "#{short_scenario_name event_type}" to the element "scenario_name"
+    When I set the app to "#{short_scenario_name event_type}" scenario
     And I click the element "start_bugsnag"
   )
 end
