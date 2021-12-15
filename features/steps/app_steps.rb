@@ -1,7 +1,3 @@
-When('I background the app for {int} seconds') do |duration|
-  Maze.driver.background_app(duration)
-end
-
 When('I relaunch the app') do
   case Maze::Helper.get_current_platform
   when 'macos'
@@ -56,10 +52,6 @@ Then('the app is not running') do
       raise "Don't know how to query app state on this platform"
     end
   end
-end
-
-When('I send the app to the background') do
-  Maze.driver.background_app(-1)
 end
 
 #
