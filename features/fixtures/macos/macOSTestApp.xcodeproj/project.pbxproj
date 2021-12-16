@@ -10,6 +10,7 @@
 		01018BAB25E417EC000312C6 /* AsyncSafeMallocScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01018BAA25E417EC000312C6 /* AsyncSafeMallocScenario.m */; };
 		011B7A4C26CD52080071C3EB /* ThermalStateBreadcrumbScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011B7A4B26CD52080071C3EB /* ThermalStateBreadcrumbScenario.swift */; };
 		0123189C275921590007EFD7 /* RecrashScenarios.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0123189B275921590007EFD7 /* RecrashScenarios.mm */; };
+		015AE23A276B88300044B1AE /* OnSendErrorPersistenceScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 015AE239276B88300044B1AE /* OnSendErrorPersistenceScenario.m */; };
 		0163BF9B2583AF2A008DC28B /* DiscardClassesScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0163BF9A2583AF2A008DC28B /* DiscardClassesScenarios.swift */; };
 		0176C0AE254AE81B0066E0F3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0176C0AD254AE81B0066E0F3 /* main.m */; };
 		0176C0B1254AE81B0066E0F3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0176C0B0254AE81B0066E0F3 /* AppDelegate.m */; };
@@ -166,6 +167,7 @@
 		011B7A4B26CD52080071C3EB /* ThermalStateBreadcrumbScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThermalStateBreadcrumbScenario.swift; sourceTree = "<group>"; };
 		0123189B275921590007EFD7 /* RecrashScenarios.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RecrashScenarios.mm; sourceTree = "<group>"; };
 		01452360254AFEA700D436AA /* macOSTestApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "macOSTestApp-Bridging-Header.h"; sourceTree = "<group>"; };
+		015AE239276B88300044B1AE /* OnSendErrorPersistenceScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OnSendErrorPersistenceScenario.m; sourceTree = "<group>"; };
 		0163BF9A2583AF2A008DC28B /* DiscardClassesScenarios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardClassesScenarios.swift; sourceTree = "<group>"; };
 		0176C0A8254AE81B0066E0F3 /* macOSTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = macOSTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0176C0AC254AE81B0066E0F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; usesTabs = 1; };
@@ -378,7 +380,6 @@
 		01452234254AFCD600D436AA /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
-				AAFEF9EB26EB536D00980A10 /* NetworkBreadcrumbsScenario.swift */,
 				01F47C91254B1B2F00B184AD /* AbortScenario.h */,
 				01F47C54254B1B2E00B184AD /* AbortScenario.m */,
 				01F47C4A254B1B2D00B184AD /* AccessNonObjectScenario.h */,
@@ -465,6 +466,7 @@
 				01F47C58254B1B2E00B184AD /* MetadataRedactionRegexScenario.swift */,
 				01F47C78254B1B2F00B184AD /* ModifyBreadcrumbInNotifyScenario.swift */,
 				01F47C87254B1B2F00B184AD /* ModifyBreadcrumbScenario.swift */,
+				AAFEF9EB26EB536D00980A10 /* NetworkBreadcrumbsScenario.swift */,
 				01F47CA0254B1B3000B184AD /* NewSessionScenario.swift */,
 				01F47C24254B1B2C00B184AD /* NonExistentMethodScenario.h */,
 				01F47C4B254B1B2D00B184AD /* NonExistentMethodScenario.m */,
@@ -486,6 +488,7 @@
 				01F47C69254B1B2E00B184AD /* OnSendCallbackRemovalScenario.h */,
 				01F47C9B254B1B2F00B184AD /* OnSendCallbackRemovalScenario.m */,
 				01F47C76254B1B2E00B184AD /* OnSendErrorCallbackCrashScenario.swift */,
+				015AE239276B88300044B1AE /* OnSendErrorPersistenceScenario.m */,
 				01F47C6C254B1B2E00B184AD /* OnSendOverwriteScenario.swift */,
 				01F47C41254B1B2D00B184AD /* OOMAutoDetectErrorsScenario.swift */,
 				01F47C9D254B1B3000B184AD /* OOMEnabledErrorTypesScenario.swift */,
@@ -806,6 +809,7 @@
 				01F47CE4254B1B3100B184AD /* AutoDetectFalseNSExceptionScenario.swift in Sources */,
 				01F47D0F254B1B3100B184AD /* OOMWillTerminateScenario.m in Sources */,
 				01F47CFB254B1B3100B184AD /* ReleaseStageScenarios.swift in Sources */,
+				015AE23A276B88300044B1AE /* OnSendErrorPersistenceScenario.m in Sources */,
 				01F47D17254B1B3100B184AD /* ReleaseStageSessionScenario.swift in Sources */,
 				01F47CD2254B1B3100B184AD /* Scenario.m in Sources */,
 				017FBFB8254B09C300809042 /* MainWindowController.m in Sources */,

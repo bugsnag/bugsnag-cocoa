@@ -20,6 +20,7 @@
 		0104085F258CA0A100933C60 /* DispatchCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0104085E258CA0A100933C60 /* DispatchCrashScenario.swift */; };
 		0104B47E275A7B3C003EBDF0 /* RecrashScenarios.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0104B47D275A7B3C003EBDF0 /* RecrashScenarios.mm */; };
 		0163BFA72583B3CF008DC28B /* DiscardClassesScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0163BFA62583B3CF008DC28B /* DiscardClassesScenarios.swift */; };
+		017B4134276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */; };
 		01847DD626453D4E00ADA4C7 /* InvalidCrashReportScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01847DD526453D4E00ADA4C7 /* InvalidCrashReportScenario.m */; };
 		01AF6A53258A112F00FFC803 /* BareboneTestScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A52258A112F00FFC803 /* BareboneTestScenarios.swift */; };
 		01B6BB7525D5748800FC4DE6 /* LastRunInfoScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B6BB7425D5748800FC4DE6 /* LastRunInfoScenarios.swift */; };
@@ -183,6 +184,7 @@
 		0104085E258CA0A100933C60 /* DispatchCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchCrashScenario.swift; sourceTree = "<group>"; };
 		0104B47D275A7B3C003EBDF0 /* RecrashScenarios.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RecrashScenarios.mm; sourceTree = "<group>"; };
 		0163BFA62583B3CF008DC28B /* DiscardClassesScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardClassesScenarios.swift; sourceTree = "<group>"; };
+		017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnSendErrorPersistenceScenario.m; sourceTree = "<group>"; };
 		01847DD526453D4E00ADA4C7 /* InvalidCrashReportScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InvalidCrashReportScenario.m; sourceTree = "<group>"; };
 		01AF6A52258A112F00FFC803 /* BareboneTestScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestScenarios.swift; sourceTree = "<group>"; };
 		01B6BB7425D5748800FC4DE6 /* LastRunInfoScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastRunInfoScenarios.swift; sourceTree = "<group>"; };
@@ -602,6 +604,7 @@
 				01DE903726CE99B800455213 /* CriticalThermalStateScenario.swift */,
 				0163BFA62583B3CF008DC28B /* DiscardClassesScenarios.swift */,
 				01847DD526453D4E00ADA4C7 /* InvalidCrashReportScenario.m */,
+				017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */,
 				01E5EAD025B713990066EA8A /* OOMScenario.h */,
 				01E5EAD125B713990066EA8A /* OOMScenario.m */,
 				0104B47D275A7B3C003EBDF0 /* RecrashScenarios.mm */,
@@ -949,6 +952,7 @@
 				E7FDB6C6264D5AD800BCF881 /* AutoNotifyFalseAbortScenario.swift in Sources */,
 				E7A324EA247E9DA5008B0052 /* BreadcrumbCallbackOverrideScenario.swift in Sources */,
 				F42955DB6D08642528917FAB /* CxxExceptionScenario.mm in Sources */,
+				017B4134276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m in Sources */,
 				8A3B5F2B240807EE00CE4A3A /* ModifyBreadcrumbInNotifyScenario.swift in Sources */,
 				CBB787912578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m in Sources */,
 				8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */,
