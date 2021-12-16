@@ -1,21 +1,20 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: ad4225e8bcfb9765049c8abc7ae8833177249d70
-  tag: v6.7.0
+  revision: fe12189f83aad154f54221ee0fcd41b483d3c0d1
+  tag: v6.8.0
   specs:
-    bugsnag-maze-runner (6.7.0)
+    bugsnag-maze-runner (6.8.0)
       appium_lib (~> 11.2.0)
       bugsnag (~> 6.24)
       cucumber (~> 7.1)
       cucumber-expressions (~> 6.0.0)
       curb (~> 0.9.6)
-      minitest (~> 5.0)
       optimist (~> 3.0.1)
       os (~> 1.0.0)
       rake (~> 12.3.3)
       rubyzip (~> 2.3.2)
       selenium-webdriver (~> 3.11)
-      test-unit (~> 3.3.0)
+      test-unit (~> 3.5.2)
       webrick (~> 1.7.0)
 
 GEM
@@ -207,7 +206,7 @@ GEM
     nokogiri (1.12.5)
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
-    nokogiri (1.12.5-x86_64-darwin)
+    nokogiri (1.12.5-arm64-darwin)
       racc (~> 1.4)
     octokit (4.21.0)
       faraday (>= 0.9)
@@ -239,7 +238,7 @@ GEM
       ffi (~> 1.1)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
-    test-unit (3.3.9)
+    test-unit (3.5.3)
       power_assert
     tomlrb (1.3.0)
     typhoeus (1.4.0)
