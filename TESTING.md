@@ -69,7 +69,7 @@ Build the test iOS fixture:
    ```
 3. Set `MAZE_APPLE_TEAM_ID` to your Apple Developer Team Id.
 4. The test fixture is hard-coded to send requests to `bs-local.com:9339` (BrowserStack's approach to local testing).  
-   Add an entry for bs-local.com to `etc/hosts`:
+   Add an entry for bs-local.com to `/etc/hosts`:
    ```
    127.0.0.1       bs-local.com
    ```
