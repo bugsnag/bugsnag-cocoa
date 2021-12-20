@@ -27,6 +27,8 @@
 #include "BSG_KSBacktrace_Private.h"
 
 #include "BSG_KSMach.h"
+#include "BSG_KSMachHeaders.h"
+#include "BSG_KSLogger.h"
 
 /**
  * Mask to strip pointer authentication codes from pointers on Arm64e
@@ -104,6 +106,28 @@ bool bsg_ksbt_isBacktraceTooLong(
     return true;
 }
 
+static uintptr_t getFirstStackTraceAddress(const BSG_STRUCT_MCONTEXT_L *const machineContext) {
+    uintptr_t instructionAddress = bsg_ksmachinstructionAddress(machineContext);
+
+    if (!bsg_is_address_in_instruction_range(instructionAddress)) {
+        // These aren't the right addresses, but they do point to the beginning of
+        // the function that made the bad pointer call (which is better than nothing).
+#if defined (__x86_64__)
+        const uintptr_t tryAddress = machineContext->__ss.__r11;
+        if (bsg_is_address_in_instruction_range(tryAddress)) {
+            instructionAddress = tryAddress;
+        }
+#elif defined(__arm64__)
+        const uintptr_t tryAddress = machineContext->__ss.__x[17];
+        if (bsg_is_address_in_instruction_range(tryAddress)) {
+            instructionAddress = tryAddress;
+        }
+#endif
+    }
+
+    return instructionAddress;
+}
+
 int bsg_ksbt_backtraceThreadState(
     const BSG_STRUCT_MCONTEXT_L *const machineContext,
     uintptr_t *const backtraceBuffer, const int skipEntries,
@@ -115,9 +139,7 @@ int bsg_ksbt_backtraceThreadState(
     int i = 0;
 
     if (skipEntries == 0) {
-        const uintptr_t instructionAddress =
-            bsg_ksmachinstructionAddress(machineContext);
-        backtraceBuffer[i] = instructionAddress;
+        backtraceBuffer[i] = getFirstStackTraceAddress(machineContext);
         i++;
 
         if (i == maxEntries) {

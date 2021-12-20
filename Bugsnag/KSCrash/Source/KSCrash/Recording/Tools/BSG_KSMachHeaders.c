@@ -46,6 +46,8 @@ static const struct dyld_all_image_infos *g_all_image_infos;
 static BSG_Mach_Header_Info *bsg_g_mach_headers_images_head;
 static BSG_Mach_Header_Info *bsg_g_mach_headers_images_tail;
 static dispatch_queue_t bsg_g_serial_queue;
+static uintptr_t bsg_g_instructionAddressMin = __UINTPTR_MAX__;
+static uintptr_t bsg_g_instructionAddressMax = 0;
 
 static BSG_Mach_Header_Info *g_self_image;
 
@@ -198,10 +200,26 @@ bool bsg_mach_headers_populate_info(const struct mach_header *header, intptr_t s
     return true;
 }
 
+static void updateInstructionAddressRange(const BSG_Mach_Header_Info *image) {
+    const uintptr_t min = (uintptr_t)image->header;
+    const uintptr_t max = min + (uintptr_t)image->imageSize - 1;
+    if (min < bsg_g_instructionAddressMin) {
+        bsg_g_instructionAddressMin = min;
+    }
+    if (max > bsg_g_instructionAddressMax) {
+        bsg_g_instructionAddressMax = max;
+    }
+}
+
+bool bsg_is_address_in_instruction_range(uintptr_t address) {
+    return (address >= bsg_g_instructionAddressMin && address <= bsg_g_instructionAddressMax);
+}
+
 void bsg_mach_headers_add_image(const struct mach_header *header, intptr_t slide) {
     BSG_Mach_Header_Info *newImage = calloc(1, sizeof(BSG_Mach_Header_Info));
     if (newImage != NULL) {
         if (bsg_mach_headers_populate_info(header, slide, newImage)) {
+            updateInstructionAddressRange(newImage);
             dispatch_sync(bsg_g_serial_queue, ^{
                 if (bsg_g_mach_headers_images_head == NULL) {
                     bsg_g_mach_headers_images_head = newImage;

@@ -89,6 +89,10 @@ void bsg_mach_headers_remove_image(const struct mach_header *mh, intptr_t slide)
 */
 BSG_Mach_Header_Info *bsg_mach_headers_image_at_address(const uintptr_t address);
 
+/**
+ * Check if an address is roughly within range of the executable images.
+ */
+bool bsg_is_address_in_instruction_range(uintptr_t address);
 
 /** Find a loaded binary image with the specified name.
  *
