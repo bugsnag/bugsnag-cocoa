@@ -117,7 +117,7 @@ Feature: Barebone tests
     And the stacktrace is valid for the event
 
   Scenario: Barebone test: unhandled error
-    When I run "BareboneTestUnhandledErrorScenario" and relaunch the app
+    When I run "BareboneTestUnhandledErrorScenario" and relaunch the crashed app
     And I set the app to "report" mode
     And I configure Bugsnag for "BareboneTestUnhandledErrorScenario"
     And I wait to receive an error

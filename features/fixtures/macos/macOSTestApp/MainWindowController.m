@@ -12,6 +12,8 @@
 
 #import <Bugsnag/Bugsnag.h>
 
+static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL;
+
 
 @interface MainWindowController ()
 
@@ -51,65 +53,38 @@
 }
 
 - (IBAction)runScenario:(id)sender {
-    NSLog(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
+    BSLog(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
 
     if (!self.scenario) {
         self.scenario = [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
         self.scenario.eventMode = self.scenarioMetadata;
 
-        NSLog(@"Starting Bugsnag for scenario: %@", self.scenario);
+        BSLog(@"Starting Bugsnag for scenario: %@", self.scenario);
         [self.scenario startBugsnag];
     }
 
-    NSLog(@"Will run scenario: %@", self.scenario);
+    BSLog(@"Will run scenario: %@", self.scenario);
     // Using dispatch_async to prevent AppleEvents swallowing exceptions.
     // For more info see https://www.chimehq.com/blog/sad-state-of-exceptions
     // 0.1s delay allows accessibility APIs to finish handling the mouse click and returns control to the tests framework.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSLog(@"Running scenario: %@", self.scenario);
+        BSLog(@"Running scenario: %@", self.scenario);
         [self.scenario run];
     });
 }
 
 - (IBAction)startBugsnag:(id)sender {
-    NSLog(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
+    BSLog(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
 
     self.scenario = [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
     self.scenario.eventMode = self.scenarioMetadata;
 
-    NSLog(@"Starting Bugsnag for scenario: %@", self.scenario);
+    BSLog(@"Starting Bugsnag for scenario: %@", self.scenario);
     [self.scenario startBugsnag];
 }
 
 - (IBAction)clearPersistentData:(id)sender {
-    NSLog(@"Clear persistent data");
-    [NSUserDefaults.standardUserDefaults removePersistentDomainForName:NSBundle.mainBundle.bundleIdentifier];
-    NSString *cachesDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
-    NSArray<NSString *> *entries = @[
-        @"bsg_kvstore",
-        @"bsgkv",
-        @"bugsnag",
-        @"bugsnag_breadcrumbs.json",
-        @"bugsnag_handled_crash.txt",
-        @"KSCrash",
-        @"KSCrashReports"];
-    for (NSString *entry in entries) {
-        NSString *path = [cachesDir stringByAppendingPathComponent:entry];
-        NSError *error = nil;
-        if (![NSFileManager.defaultManager removeItemAtPath:path error:&error]) {
-            if (![error.domain isEqualTo:NSCocoaErrorDomain] && error.code != NSFileNoSuchFileError) {
-                NSLog(@"%@", error);
-            }
-        }
-    }
-    NSString *appSupportDir = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
-    NSString *rootDir = [appSupportDir stringByAppendingPathComponent:@"com.bugsnag.Bugsnag"];
-    NSError *error = nil;
-    if (![NSFileManager.defaultManager removeItemAtPath:rootDir error:&error]) {
-        if (![error.domain isEqualTo:NSCocoaErrorDomain] && error.code != NSFileNoSuchFileError) {
-            NSLog(@"%@", error);
-        }
-    }
+    [Scenario clearPersistentData];
 }
 
 - (IBAction)useDashboardEndpoints:(id)sender {
@@ -118,3 +93,13 @@
 }
 
 @end
+
+
+static void BSLog(NSString *format, ...) {
+    va_list vl;
+    va_start(vl, format);
+    NSString *message = [[NSString alloc] initWithFormat:format arguments:vl];
+    NSLog(@"%@", message);
+    kslog(message.UTF8String);
+    va_end(vl);
+}

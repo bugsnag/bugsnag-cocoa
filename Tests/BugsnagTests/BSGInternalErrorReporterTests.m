@@ -17,7 +17,6 @@
 @interface BSGInternalErrorReporterTests : XCTestCase <BSGInternalErrorReporterDataSource>
 
 @property (nonatomic) BugsnagConfiguration *configuration;
-@property (nonatomic) BugsnagNotifier *notifier;
 
 @end
 
@@ -29,7 +28,6 @@
     [BSGInternalErrorReporter setSharedInstance:nil];
 #pragma clang diagnostic pop
     self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
-    self.notifier = [[BugsnagNotifier alloc] init];
 }
 
 - (void)testEventWithErrorClass {
@@ -41,7 +39,7 @@
     XCTAssertEqualObjects(event.errors[0].errorMessage, @"Something went wrong");
     XCTAssertEqualObjects(event.groupingHash, @"test");
     XCTAssertEqualObjects(event.threads, @[]);
-    XCTAssertGreaterThan(event.errors[0].stacktrace.count, 0);
+    XCTAssertEqual(event.errors[0].stacktrace.count, 0);
     XCTAssertNil(event.apiKey);
     
     NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
@@ -69,6 +67,26 @@
     
     NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
     XCTAssertEqualObjects(diagnostics[@"apiKey"], configuration.apiKey);
+}
+
+- (void)testEventWithRecrashReport {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
+    BSGInternalErrorReporter *reporter = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
+    
+    NSString *path = [[NSBundle bundleForClass:[self class]] pathForResource:@"RecrashReport" ofType:@"json" inDirectory:@"Data"];
+    id recrashReport = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:path] options:0 error:nil];
+    BugsnagEvent *event = [reporter eventWithRecrashReport:recrashReport];
+    XCTAssertEqualObjects(event.errors[0].errorClass, @"Crash handler crashed");
+    XCTAssertEqualObjects(event.errors[0].errorMessage, @"EXC_BAD_ACCESS");
+    XCTAssertEqualObjects(event.errors[0].stacktrace[1].machoUuid, @"77B20495-B09E-3585-AE2C-1475AD41A48A");
+    XCTAssertEqualObjects(event.errors[0].stacktrace[1].method, @"BSSerializeDataCrashHandler");
+    XCTAssertEqualObjects(event.threads, @[]);
+    XCTAssertNil(event.apiKey);
+    
+    NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
+    XCTAssertEqualObjects(diagnostics[@"apiKey"], configuration.apiKey);
+    XCTAssert([diagnostics[@"crash"] isKindOfClass:[NSDictionary class]]);
+    XCTAssert([diagnostics[@"binary_images"] isKindOfClass:[NSArray class]]);
 }
 
 - (void)testRequestForEvent {

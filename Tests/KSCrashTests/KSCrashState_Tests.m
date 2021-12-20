@@ -30,12 +30,27 @@
 #import "BSG_KSCrashState.h"
 #import "BSG_KSCrashC.h"
 
+#if TARGET_OS_TV
+#import "UIApplicationStub.h"
+#endif
+
 
 @interface bsg_kscrashstate_Tests : FileBasedTestCase
 @end
 
 
 @implementation bsg_kscrashstate_Tests
+
+#if TARGET_OS_TV // Not needed on iOS because there the tests are injected into a host app
+
+- (void)setUp
+{
+    [self setUpUIApplicationStub]; // These tests assume applicationState == .active
+    
+    [super setUp];
+}
+
+#endif
 
 - (void) testInitRelaunch
 {

@@ -106,19 +106,17 @@
 }
 
 - (void)testValidOnSessionBlock {
-    BOOL (^block)(BugsnagSession *) = ^BOOL(BugsnagSession *session) {
+    BugsnagOnSessionRef callback = [Bugsnag addOnSessionBlock:^BOOL(BugsnagSession *session) {
         return NO;
-    };
-    [Bugsnag addOnSessionBlock:block];
-    [Bugsnag removeOnSessionBlock:block];
+    }];
+    [Bugsnag removeOnSession:callback];
 }
 
 - (void)testValidOnBreadcrumbBlock {
-    BOOL (^block)(BugsnagBreadcrumb *) = ^BOOL(BugsnagBreadcrumb *breadcrumb) {
+    BugsnagOnBreadcrumbRef callback = [Bugsnag addOnBreadcrumbBlock:^BOOL(BugsnagBreadcrumb *breadcrumb) {
         return NO;
-    };
-    [Bugsnag addOnBreadcrumbBlock:block];
-    [Bugsnag removeOnBreadcrumbBlock:block];
+    }];
+    [Bugsnag removeOnBreadcrumb:callback];
 }
 
 - (void)testValidAddMetadata {

@@ -9,7 +9,7 @@ Feature: Add custom behavior through a plugin interface
     Given I clear all persistent data
 
   Scenario: Changing payload notifier description
-    When I run "CustomPluginNotifierDescriptionScenario" and relaunch the app
+    When I run "CustomPluginNotifierDescriptionScenario" and relaunch the crashed app
     And I configure Bugsnag for "CustomPluginNotifierDescriptionScenario"
     And I wait to receive an error
     Then the error payload field "notifier.name" equals "Foo Handler Library"

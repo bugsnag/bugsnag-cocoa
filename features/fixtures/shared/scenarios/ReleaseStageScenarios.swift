@@ -2,7 +2,7 @@ import Foundation
 
 class MagicError : NSError {}
 
-class HandledErrorValidReleaseStage : Scenario {
+class HandledErrorValidReleaseStageScenario : Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
@@ -18,7 +18,7 @@ class HandledErrorValidReleaseStage : Scenario {
     }
 }
 
-class UnhandledErrorValidReleaseStage : Scenario {
+class UnhandledErrorValidReleaseStageScenario : Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
@@ -32,7 +32,7 @@ class UnhandledErrorValidReleaseStage : Scenario {
     }
 }
 
-class UnhandledErrorChangeValidReleaseStage : Scenario {
+class UnhandledErrorChangeValidReleaseStageScenario : Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
@@ -52,7 +52,7 @@ class UnhandledErrorChangeValidReleaseStage : Scenario {
     }
 }
 
-class UnhandledErrorChangeInvalidReleaseStage : Scenario {
+class UnhandledErrorChangeInvalidReleaseStageScenario : Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
@@ -72,7 +72,7 @@ class UnhandledErrorChangeInvalidReleaseStage : Scenario {
     }
 }
 
-class HandledErrorInvalidReleaseStage : Scenario {
+class HandledErrorInvalidReleaseStageScenario : Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
@@ -88,7 +88,7 @@ class HandledErrorInvalidReleaseStage : Scenario {
     }
 }
 
-class UnhandledErrorInvalidReleaseStage : Scenario {
+class UnhandledErrorInvalidReleaseStageScenario : Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;

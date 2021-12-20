@@ -123,8 +123,6 @@ const struct segment_command command2 = {
             XCTAssertEqual(image->imageVmAddr + image->slide, (uint64_t)dlinfo.dli_fbase);
             XCTAssertEqual(image->name, dlinfo.dli_fname);
             XCTAssertFalse(image->unloaded);
-        } else {
-            XCTAssertEqual(image, NULL);
         }
     }
     

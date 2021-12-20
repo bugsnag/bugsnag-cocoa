@@ -1,6 +1,6 @@
 import Foundation
 
-class SwiftAssertion: Scenario {
+class SwiftAssertionScenario: Scenario {
     override func startBugsnag() {
       self.config.autoTrackSessions = false;
       super.startBugsnag()

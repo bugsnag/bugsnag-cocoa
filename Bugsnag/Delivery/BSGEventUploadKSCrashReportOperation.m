@@ -27,10 +27,17 @@ static void ReportInternalError(NSString *errorClass, NSString *message, NSDicti
     // offsets which would lead to some types of errors not being grouped at all; e.g.
     // - "Invalid value around character 229194."
     // - "No string key for value in object around character 94208."
+    // - "No string key for value in object around line 1, column 161315." (iOS 15+)
     // - "Unable to convert data to string around character 158259."
     // - "Unterminated string around character 22568."
     //
-    NSString *groupingMessage = [message componentsSeparatedByString:@" around character "].firstObject;
+    NSString *groupingMessage = message;
+    for (NSString *separator in @[@" around character ", @" around line"]) {
+        if ([message containsString:separator]) {
+            groupingMessage = [message componentsSeparatedByString:separator].firstObject;
+            break;
+        }
+    }
     NSString *groupingHash = [NSString stringWithFormat:@"BSGEventUploadKSCrashReportOperation.m: %@: %@", errorClass, groupingMessage];
     [BSGInternalErrorReporter.sharedInstance reportErrorWithClass:errorClass message:message diagnostics:diagnostics groupingHash:groupingHash];
 }
@@ -55,6 +62,15 @@ static void ReportInternalError(NSString *errorClass, NSString *message, NSDicti
         NSMutableDictionary *diagnostics = [NSMutableDictionary dictionary];
         diagnostics[@"data"] = [data base64EncodedStringWithOptions:0];
         diagnostics[@"file"] = self.file;
+        NSDictionary<NSFileAttributeKey, id> *fileAttributes = [NSFileManager.defaultManager attributesOfItemAtPath:self.file error:nil];
+        if (fileAttributes) {
+            NSDate *creationDate = fileAttributes[NSFileCreationDate];
+            NSDate *modificationDate = fileAttributes[NSFileModificationDate];
+            if (creationDate && modificationDate) {
+                // The amount of time spent writing the file could indicate why the process never completed
+                diagnostics[@"modificationInterval"] = @([modificationDate timeIntervalSinceDate:creationDate]);
+            }
+        }
         ReportInternalError(@"JSON parsing error", BSGErrorDescription(error), diagnostics);
         if (errorPtr) {
             *errorPtr = error;

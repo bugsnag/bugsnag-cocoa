@@ -29,7 +29,7 @@ import Foundation
 /**
  * Trigger a crash from inside a Swift method.
  */
-class SwiftCrash: Scenario {
+class SwiftCrashScenario: Scenario {
     override func startBugsnag() {
       self.config.autoTrackSessions = false;
       super.startBugsnag()

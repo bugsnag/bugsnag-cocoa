@@ -4,13 +4,13 @@ Feature: Discarding reports based on release stage
     Given I clear all persistent data
 
   Scenario: Unhandled error ignored when release stage is not present in enabledReleaseStages
-    When I run "UnhandledErrorInvalidReleaseStage" and relaunch the app
-    And I configure Bugsnag for "UnhandledErrorInvalidReleaseStage"
+    When I run "UnhandledErrorInvalidReleaseStageScenario" and relaunch the crashed app
+    And I configure Bugsnag for "UnhandledErrorInvalidReleaseStageScenario"
     Then I should receive no requests
 
   Scenario: Unhandled error captured when release stage is present in enabledReleaseStages
-    When I run "UnhandledErrorValidReleaseStage" and relaunch the app
-    And I configure Bugsnag for "UnhandledErrorValidReleaseStage"
+    When I run "UnhandledErrorValidReleaseStageScenario" and relaunch the crashed app
+    And I configure Bugsnag for "UnhandledErrorValidReleaseStageScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the exception "errorClass" equals "SIGABRT"
@@ -24,13 +24,13 @@ Feature: Discarding reports based on release stage
   if the app is used as a test harness or if the build can receive code updates,
   such as JavaScript execution contexts.
 
-    When I run "UnhandledErrorChangeInvalidReleaseStage" and relaunch the app
-    And I configure Bugsnag for "UnhandledErrorChangeInvalidReleaseStage"
+    When I run "UnhandledErrorChangeInvalidReleaseStageScenario" and relaunch the crashed app
+    And I configure Bugsnag for "UnhandledErrorChangeInvalidReleaseStageScenario"
     Then I should receive no requests
 
   Scenario: Crash when release stage is changed to be present in enabledReleaseStages before the event
-    When I run "UnhandledErrorChangeValidReleaseStage" and relaunch the app
-    And I configure Bugsnag for "UnhandledErrorChangeValidReleaseStage"
+    When I run "UnhandledErrorChangeValidReleaseStageScenario" and relaunch the crashed app
+    And I configure Bugsnag for "UnhandledErrorChangeValidReleaseStageScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the exception "errorClass" equals "SIGABRT"
@@ -38,11 +38,11 @@ Feature: Discarding reports based on release stage
     And the event "app.releaseStage" equals "prod"
 
   Scenario: Handled error when release stage is not present in enabledReleaseStages
-    When I run "HandledErrorInvalidReleaseStage"
+    When I run "HandledErrorInvalidReleaseStageScenario"
     Then I should receive no requests
 
   Scenario: Handled error when release stage is present in enabledReleaseStages
-    When I run "HandledErrorValidReleaseStage"
+    When I run "HandledErrorValidReleaseStageScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the exception "errorClass" equals the platform-dependent string:

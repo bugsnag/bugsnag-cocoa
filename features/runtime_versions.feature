@@ -18,7 +18,7 @@ Feature: Runtime versions are included in all requests
     And the session payload field "device.runtimeVersions.clangVersion" is not null
 
   Scenario: Runtime versions included in C layer ThrownErrorScenario
-    And I run "CxxExceptionScenario" and relaunch the app
+    And I run "CxxExceptionScenario" and relaunch the crashed app
     And I configure Bugsnag for "CxxExceptionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API

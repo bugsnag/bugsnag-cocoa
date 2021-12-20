@@ -103,6 +103,7 @@
     // Call onSession blocks
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
     [client start];
+    [client resumeSession];
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
 
@@ -125,9 +126,9 @@
     };
 
     // It's there (and from other tests we know it gets called) and then it's not there
-    [config addOnSessionBlock:sessionBlock];
+    BugsnagOnSessionRef callback = [config addOnSessionBlock:sessionBlock];
     XCTAssertEqual([[config onSessionBlocks] count], 1);
-    [config removeOnSessionBlock:sessionBlock];
+    [config removeOnSession:callback];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
 
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
@@ -177,12 +178,13 @@
         return true;
     };
 
-    [config addOnSessionBlock:sessionBlock];
+    BugsnagOnSessionRef callback = [config addOnSessionBlock:sessionBlock];
     XCTAssertEqual([[config onSessionBlocks] count], 1);
 
     // Call onSession blocks
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
     [client start];
+    [client resumeSession];
     [self waitForExpectations:@[expectation1] timeout:1.0];
 
     // Check it's called on new session start
@@ -194,7 +196,7 @@
     // Check block is not called after removing and initialisation
     [client pauseSession];
     called++;
-    [config removeOnSessionBlock:sessionBlock];
+    [config removeOnSession:callback];
     [client startSession];
     [self waitForExpectations:@[expectation3] timeout:1.0];
 
@@ -215,15 +217,15 @@
     BugsnagOnSessionBlock sessionBlock1 = ^BOOL(BugsnagSession * _Nonnull sessionPayload) { return true; };
     BugsnagOnSessionBlock sessionBlock2 = ^BOOL(BugsnagSession * _Nonnull sessionPayload) { return true; };
 
-    [config addOnSessionBlock:sessionBlock1];
+    BugsnagOnSessionRef callback = [config addOnSessionBlock:sessionBlock1];
     XCTAssertEqual([[config onSessionBlocks] count], 1);
-    [config removeOnSessionBlock:sessionBlock2];
+    [config removeOnSession:sessionBlock2];
     XCTAssertEqual([[config onSessionBlocks] count], 1);
-    [config removeOnSessionBlock:sessionBlock1];
+    [config removeOnSession:callback];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
-    [config removeOnSessionBlock:sessionBlock2];
+    [config removeOnSession:sessionBlock2];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
-    [config removeOnSessionBlock:sessionBlock1];
+    [config removeOnSession:callback];
     XCTAssertEqual([[config onSessionBlocks] count], 0);
 
     [config addOnSessionBlock:sessionBlock1];
@@ -232,6 +234,18 @@
     XCTAssertEqual([[config onSessionBlocks] count], 2);
     [config addOnSessionBlock:sessionBlock1];
     XCTAssertEqual([[config onSessionBlocks] count], 3);
+}
+
+- (void)testRemoveInvalidOnSessionDoesNotCrash {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    [config addOnSessionBlock:^BOOL(BugsnagSession *session) { return NO; }];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    [config removeOnSession:nil];
+#pragma clang diagnostic pop
+    [config removeOnSession:[[NSObject alloc] init]];
+    [config removeOnSession:^{}];
+    XCTAssertEqual(config.onSessionBlocks.count, 1);
 }
 
 // =============================================================================
@@ -796,13 +810,13 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
     BugsnagOnSendErrorBlock block = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
 
-    [configuration addOnSendErrorBlock:block];
+    BugsnagOnSendErrorRef callback = [configuration addOnSendErrorBlock:block];
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
     [client start];
 
     XCTAssertEqual([[configuration onSendBlocks] count], 1);
 
-    [configuration removeOnSendErrorBlock:block];
+    [configuration removeOnSendError:callback];
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
 }
 

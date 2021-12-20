@@ -1,18 +1,23 @@
+def short_scenario_name(scenario)
+  unless scenario.end_with? 'Scenario'
+    raise 'All scenario names must end with "Scenario".  There are removed by the test harness and re-added uniformly by the test fixture.'
+  end
+  scenario.delete_suffix 'Scenario'
+end
+
 When('I run {string}') do |event_type|
   steps %(
-    Given the element "scenario_name" is present
-    When I send the keys "#{event_type}" to the element "scenario_name"
-    And I close the keyboard
+    When I set the app to "#{short_scenario_name event_type}" scenario
     And I click the element "run_scenario"
   )
 end
 
-When("I run {string} and relaunch the app") do |event_type|
+When("I run {string} and relaunch the crashed app") do |event_type|
   begin
     step("I run \"#{event_type}\"")
   rescue StandardError
     # Ignore on macOS - AppiumForMac raises an error when clicking a button causes the app to crash
-    raise unless Maze.driver.capabilities['platformName'].eql?('Mac')
+    raise unless Maze::Helper.get_current_platform.eql?('macos')
 
     $logger.warn 'Ignoring error - this is normal for AppiumForMac if a button click causes the app to crash.'
   end
@@ -25,7 +30,7 @@ When("I run the configured scenario and relaunch the crashed app") do
       Given I click the element "run_scenario"
     )
   rescue StandardError
-    raise unless Maze.driver.capabilities['platformName'].eql?('Mac')
+    raise unless Maze::Helper.get_current_platform.eql?('macos')
     $logger.info 'Ignored error raised by AppiumForMac when clicking run_scenario'
   end
   steps %(
@@ -36,8 +41,7 @@ end
 
 When('I clear all persistent data') do
   steps %(
-    Given the element "clear_persistent_data" is present
-    And I click the element "clear_persistent_data"
+    When I click the element "clear_persistent_data"
   )
 end
 
@@ -51,17 +55,9 @@ rescue Selenium::WebDriver::Error::NoSuchElementError
   false
 end
 
-When('I close the keyboard') do
-  unless Maze.driver.capabilities['platformName'].eql?('Mac')
-    click_if_present 'close_keyboard'
-  end
-end
-
 When('I configure Bugsnag for {string}') do |event_type|
   steps %(
-    Given the element "scenario_name" is present
-    When I send the keys "#{event_type}" to the element "scenario_name"
-    And I close the keyboard
+    When I set the app to "#{short_scenario_name event_type}" scenario
     And I click the element "start_bugsnag"
   )
 end
@@ -193,49 +189,52 @@ Then('the thread information is valid for the event') do
 end
 
 Then('the error is valid for the error reporting API') do
-  case Maze.driver.capabilities['platformName']
-  when 'iOS'
+  platform = Maze::Helper.get_current_platform
+  case platform
+  when 'ios'
     steps %(
       Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
       Then the breadcrumb timestamps are valid for the event
     )
-  when 'Mac'
+  when 'macos'
     steps %(
       Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
       Then the breadcrumb timestamps are valid for the event
     )
   else
-    raise 'Unknown platformName'
+    raise "Unknown platform: #{platform}"
   end
 end
 
 Then('the error is valid for the error reporting API ignoring breadcrumb timestamps') do
-  case Maze.driver.capabilities['platformName']
-  when 'iOS'
+  platform = Maze::Helper.get_current_platform
+  case platform
+  when 'ios'
     steps %(
       Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
     )
-  when 'Mac'
+  when 'macos'
     steps %(
       Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
     )
   else
-    raise 'Unknown platformName'
+    raise "Unknown platform: #{platform}"
   end
 end
 
 Then('the session is valid for the session reporting API') do
-  case Maze.driver.capabilities['platformName']
-  when 'iOS'
+  platform = Maze::Helper.get_current_platform
+  case platform
+  when 'ios'
     steps %(
       Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
     )
-  when 'Mac'
+  when 'macos'
     steps %(
       Then the session is valid for the session reporting API version "1.0" for the "OSX Bugsnag Notifier" notifier
     )
   else
-    raise 'Unknown platformName'
+    raise "Unknown platform: #{platform}"
   end
 end
 

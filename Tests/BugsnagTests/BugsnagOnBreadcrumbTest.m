@@ -70,9 +70,9 @@
     };
 
     // It's there (and from other tests we know it gets called) and then it's not there
-    [config addOnBreadcrumbBlock:crumbBlock];
+    BugsnagOnBreadcrumbRef callback = [config addOnBreadcrumbBlock:crumbBlock];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 1);
-    [config removeOnBreadcrumbBlock:crumbBlock];
+    [config removeOnBreadcrumb:callback];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 0);
 
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
@@ -112,7 +112,7 @@
         return YES;
     };
 
-    [config addOnBreadcrumbBlock:crumbBlock];
+    BugsnagOnBreadcrumbRef callback = [config addOnBreadcrumbBlock:crumbBlock];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 1);
 
     // Call onbreadcrumb blocks
@@ -123,7 +123,7 @@
 
     // Check it's NOT called once the block's deleted
     called++;
-    [client removeOnBreadcrumbBlock:crumbBlock];
+    [client removeOnBreadcrumb:callback];
     
     [client leaveBreadcrumbWithMessage:@"Hello"];
     [self waitForExpectations:@[expectation2] timeout:1.0];
@@ -142,15 +142,15 @@
         return YES;
     };
 
-    [config addOnBreadcrumbBlock:crumbBlock1];
+    BugsnagOnBreadcrumbRef callback1 = [config addOnBreadcrumbBlock:crumbBlock1];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 1);
-    [config removeOnBreadcrumbBlock:crumbBlock2];
+    [config removeOnBreadcrumb:crumbBlock2];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 1);
-    [config removeOnBreadcrumbBlock:crumbBlock1];
+    [config removeOnBreadcrumb:callback1];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 0);
-    [config removeOnBreadcrumbBlock:crumbBlock2];
+    [config removeOnBreadcrumb:crumbBlock2];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 0);
-    [config removeOnBreadcrumbBlock:crumbBlock1];
+    [config removeOnBreadcrumb:callback1];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 0);
 
     [config addOnBreadcrumbBlock:crumbBlock1];

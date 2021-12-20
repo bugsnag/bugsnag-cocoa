@@ -25,7 +25,7 @@ Feature: Attaching a series of notable events leading up to errors
     Then the event has a "state" breadcrumb named "Bugsnag loaded"
 
   Scenario: An app lauches and subsequently crashes
-    When I run "BuiltinTrapScenario" and relaunch the app
+    When I run "BuiltinTrapScenario" and relaunch the crashed app
     And I configure Bugsnag for "BuiltinTrapScenario"
     And I wait to receive an error
     Then the event has a "state" breadcrumb named "Bugsnag loaded"
@@ -36,7 +36,7 @@ Feature: Attaching a series of notable events leading up to errors
     Then the event has a "manual" breadcrumb named "Cache locked"
 
   Scenario: Modifying a breadcrumb name in callback
-    When I run "ModifyBreadcrumbInNotify"
+    When I run "ModifyBreadcrumbInNotifyScenario"
     And I wait to receive an error
     Then the event has a "manual" breadcrumb named "Cache locked"
 
@@ -44,7 +44,7 @@ Feature: Attaching a series of notable events leading up to errors
   @skip_macos
   Scenario: State breadcrumbs
     When I configure Bugsnag for "HandledErrorScenario"
-    And I background the app for 2 seconds
+    And I send the app to the background for 2 seconds
     And I click the element "run_scenario"
     And I wait to receive an error
     Then the event has a "state" breadcrumb named "Bugsnag loaded"

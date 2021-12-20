@@ -4,7 +4,7 @@ Feature: Uncaught NSExceptions are captured by Bugsnag
     Given I clear all persistent data
 
   Scenario: Throw a NSException
-    When I run "ObjCExceptionScenario" and relaunch the app
+    When I run "ObjCExceptionScenario" and relaunch the crashed app
     And I configure Bugsnag for "ObjCExceptionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -21,7 +21,7 @@ Feature: Uncaught NSExceptions are captured by Bugsnag
     And the event "severityReason.type" equals "unhandledException"
 
   Scenario: Throw a NSException with unhandled override
-    When I run "ObjCExceptionOverrideScenario" and relaunch the app
+    When I run "ObjCExceptionOverrideScenario" and relaunch the crashed app
     And I configure Bugsnag for "ObjCExceptionOverrideScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
