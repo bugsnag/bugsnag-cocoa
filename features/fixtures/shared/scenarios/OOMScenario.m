@@ -28,6 +28,7 @@
     self.config.appVersion = @"3.2.1";
     self.config.bundleVersion = @"321.123";
     self.config.releaseStage = @"staging";
+    [self.config addFeatureFlagWithName: @"Testing"];
     [self.config addMetadata:@{@"bar": @"foo"} toSection:@"custom"];
     [self.config setUser:@"foobar" withEmail:@"foobar@example.com" andName:@"Foo Bar"];
     [self.config addMetadata:@{@"group": @"users"} toSection:@"user"];

@@ -15,6 +15,7 @@ class AppHangScenario: Scenario {
     override func startBugsnag() {
         config.appHangThresholdMillis = 2_000
         config.enabledBreadcrumbTypes = [.user]
+        config.addFeatureFlag(name: "Testing")
         super.startBugsnag()
     }
     
@@ -65,6 +66,7 @@ class AppHangFatalOnlyScenario: Scenario {
         config.appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly
         // Sending synchronously causes an immediate retry upon failure, which creates flakes.
         config.sendLaunchCrashesSynchronously = false
+        config.addFeatureFlag(name: "Testing")
         super.startBugsnag()
     }
     

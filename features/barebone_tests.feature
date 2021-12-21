@@ -70,6 +70,14 @@ Feature: Barebone tests
     And the event "user.email" equals "foobar@example.com"
     And the event "user.id" equals "foobar"
     And the event "user.name" equals "Foo Bar"
+    And the event contains the following feature flags:
+      | featureFlag | variant        |
+      | Testing     |                |
+      | fc1         |                |
+      | fc2         | teal           |
+      | Bugsnag     |                |
+      | notify      | rangeException |
+    And the event does not contain the feature flag "nope"
     And the exception "errorClass" equals "NSRangeException"
     And the exception "message" equals "-[__NSSingleObjectArrayI objectAtIndex:]: index 1 beyond bounds [0 .. 0]"
     And the exception "type" equals "cocoa"
@@ -101,6 +109,7 @@ Feature: Barebone tests
     And the event "severityReason.type" equals "handledError"
     And the event "severityReason.unhandledOverridden" is null
     And the event "unhandled" is false
+    And the event has no feature flags
     And the exception "errorClass" matches "SwiftNativeNSError"
     And the exception "message" equals "The data couldn’t be read because it isn’t in the correct format."
     And the exception "type" equals "cocoa"
@@ -159,6 +168,9 @@ Feature: Barebone tests
     And the event "user.email" equals "barfoo@example.com"
     And the event "user.id" equals "barfoo"
     And the event "user.name" equals "Bar Foo"
+    And the event contains the following feature flags:
+      | featureFlag | variant |
+      | Testing     |         |
     And the exception "errorClass" equals "Fatal error"
     And the exception "message" equals "Unexpectedly found nil while implicitly unwrapping an Optional value"
     And the exception "type" equals "cocoa"
@@ -261,6 +273,9 @@ Feature: Barebone tests
     And the event "user.email" equals "foobar@example.com"
     And the event "user.id" equals "foobar"
     And the event "user.name" equals "Foo Bar"
+    And the event contains the following feature flags:
+      | featureFlag | variant |
+      | Testing     |         |
     And the error payload field "events.0.app.dsymUUIDs" is a non-empty array
     And the error payload field "events.0.app.duration" is null
     And the error payload field "events.0.app.durationInForeground" is null
