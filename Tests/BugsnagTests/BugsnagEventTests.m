@@ -18,7 +18,6 @@
 #import "BugsnagSession.h"
 #import "BugsnagSession+Private.h"
 #import "BugsnagStackframe+Private.h"
-#import "BugsnagStateEvent.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagTestsDummyClass.h"
 

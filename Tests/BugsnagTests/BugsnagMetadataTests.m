@@ -46,9 +46,9 @@
     metadata = [[BugsnagMetadata alloc] init];
 
     __weak __typeof__(self) weakSelf = self;
-    [metadata addObserverWithBlock:^(BugsnagStateEvent *event) {
+    metadata.observer = ^(BugsnagMetadata *metadata) {
         weakSelf.delegateCalled = YES;
-    }];
+    };
 }
 
 - (void)test_addMetadata_withName_creation {
@@ -159,7 +159,7 @@
     // Check delegate method gets called
     delegateCalled = NO;
     __weak __typeof__(self) weakSelf = self;
-    [metadata addObserverWithBlock:^(BugsnagStateEvent *event) {
+    [metadata setObserver:^(BugsnagMetadata *metadata) {
         weakSelf.delegateCalled = YES;
     }];
     [metadata addMetadata:@{@"key" : @"value"} toSection:@"OtherTab"];
@@ -190,7 +190,7 @@
     // Once more with a delegate
     delegateCalled = NO;
     __weak __typeof__(self) weakSelf = self;
-    [metadata addObserverWithBlock:^(BugsnagStateEvent *event) {
+    [metadata setObserver:^(BugsnagMetadata *metadata) {
         weakSelf.delegateCalled = YES;
     }];
     [metadata addMetadata:@{dummyObj : @"someValue"} toSection:@"invalidKeyTab"];
@@ -329,49 +329,13 @@
     XCTAssertEqual(0, [nestedDict count]);
 }
 
-- (void)testConcurrentObserverAccess {
-    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:@{
-            @"foo": @{
-                    @"bar": @[
-                            @[
-                                    @{ @"custom": [NSNull null] }
-                            ]
-                    ]
-            }
-    }];
-
-    BugsnagObserverBlock firstObserver = ^(BugsnagStateEvent *_Nonnull event){};
-    BugsnagObserverBlock secondObserver = ^(BugsnagStateEvent *_Nonnull event){};
-
-    [metadata addObserverWithBlock:firstObserver];
-    
-    __block bool threadShouldQuit = false;
-    if (@available(iOS 10.0, tvOS 10.0, macOS 10.12, *)) {
-        [NSThread detachNewThreadWithBlock:^{
-            while(!threadShouldQuit) {
-                [metadata addObserverWithBlock:secondObserver];
-                [metadata removeObserverWithBlock:secondObserver];
-            }
-        }];
-    } else {
-        // Fallback on earlier versions
-    }
-
-    for(int i = 0; i < 10000; i++) {
-        [metadata addMetadata:[NSNumber numberWithInt:i] withKey:@"bar" toSection:@"foo"];
-    }
-    threadShouldQuit = true;
-}
-
 - (void)testObserverNotCalledIfMetadataNotChanged {
     BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:@{}];
     
     __block BOOL didCallObserver = NO;
-    BugsnagObserverBlock observer = ^(BugsnagStateEvent *event) {
+    metadata.observer = ^(BugsnagMetadata *metadata) {
         didCallObserver = YES;
     };
-    
-    [metadata addObserverWithBlock:observer];
     
     didCallObserver = NO;
     [metadata addMetadata:@{@"foo": @"bar"} toSection:@"foo"];
