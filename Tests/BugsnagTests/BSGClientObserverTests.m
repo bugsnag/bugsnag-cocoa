@@ -70,13 +70,21 @@
     [self.client setUser:@"123" withEmail:@"test@example.com" andName:@"Jamie"];
     [self.client setContext:@"Foo"];
     [self.client addMetadata:@"Bar" withKey:@"Foo" toSection:@"test"];
+    [self.client addFeatureFlagWithName:@"Testing" variant:@"unit"];
 
     __block NSDictionary *user;
     __block NSString *context;
     __block BugsnagMetadata *metadata;
+    __block BugsnagFeatureFlag *featureFlag;
 
     BSGClientObserver observer = ^(BSGClientObserverEvent event, id value) {
         switch (event) {
+            case BSGClientObserverAddFeatureFlag:
+                featureFlag = value;
+                break;
+            case BSGClientObserverClearFeatureFlag:
+                XCTFail(@"BSGClientObserverClearFeatureFlag should not be sent when setting observer");
+                break;
             case BSGClientObserverUpdateContext:
                 context = value;
                 break;
@@ -97,6 +105,33 @@
     XCTAssertEqualObjects(expectedUser, user);
     XCTAssertEqualObjects(@"Foo", context);
     XCTAssertEqualObjects(self.client.metadata, metadata);
+    XCTAssertEqualObjects(featureFlag.name, @"Testing");
+    XCTAssertEqualObjects(featureFlag.variant, @"unit");
+}
+
+- (void)testFeatureFlags {
+    [self.client addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"foo" variant:@"bar"]]];
+    XCTAssertEqual(self.event, BSGClientObserverAddFeatureFlag);
+    XCTAssertEqualObjects([self.value name], @"foo");
+    XCTAssertEqualObjects([self.value variant], @"bar");
+    
+    [self.client addFeatureFlagWithName:@"baz"];
+    XCTAssertEqual(self.event, BSGClientObserverAddFeatureFlag);
+    XCTAssertEqualObjects([self.value name], @"baz");
+    XCTAssertNil([self.value variant]);
+    
+    [self.client addFeatureFlagWithName:@"baz" variant:@"vvv"];
+    XCTAssertEqual(self.event, BSGClientObserverAddFeatureFlag);
+    XCTAssertEqualObjects([self.value name], @"baz");
+    XCTAssertEqualObjects([self.value variant], @"vvv");
+    
+    [self.client clearFeatureFlagWithName:@"baz"];
+    XCTAssertEqual(self.event, BSGClientObserverClearFeatureFlag);
+    XCTAssertEqualObjects(self.value, @"baz");
+    
+    [self.client clearFeatureFlags];
+    XCTAssertEqual(self.event, BSGClientObserverClearFeatureFlag);
+    XCTAssertNil(self.value);
 }
 
 @end
