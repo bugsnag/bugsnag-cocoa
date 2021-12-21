@@ -1,5 +1,5 @@
 //
-//  BugsnagStateEventTest.m
+//  BSGClientObserverTests.m
 //  Tests
 //
 //  Created by Jamie Lynch on 18/03/2020.
@@ -9,43 +9,37 @@
 #import <XCTest/XCTest.h>
 
 #import "Bugsnag.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagTestConstants.h"
-#import "BugsnagStateEvent.h"
 #import "BugsnagMetadata+Private.h"
+#import "BugsnagUser+Private.h"
 
-@interface BugsnagClient()
-@property BugsnagMetadata *metadata;
-- (void)addObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer;
-- (void)removeObserverWithBlock:(BugsnagObserverBlock _Nonnull)observer;
-@end
-
-@interface BugsnagStateEventTest : XCTestCase
+@interface BSGClientObserverTests : XCTestCase
 @property BugsnagClient *client;
-@property BugsnagStateEvent *event;
-@property BugsnagObserverBlock block;
+@property BSGClientObserverEvent event;
+@property id value;
 @end
 
-@implementation BugsnagStateEventTest
+@implementation BSGClientObserverTests
 
 - (void)setUp {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     self.client = [Bugsnag startWithConfiguration:config];
 
     __weak __typeof__(self) weakSelf = self;
-    self.block = ^(BugsnagStateEvent *event) {
+    self.client.observer = ^(BSGClientObserverEvent event, id value) {
         weakSelf.event = event;
+        weakSelf.value = value;
     };
-    [self.client addObserverWithBlock:self.block];
 }
 
 - (void)testUserUpdate {
     [self.client setUser:@"123" withEmail:@"test@example.com" andName:@"Jamie"];
 
-    BugsnagStateEvent* obj = self.event;
-    XCTAssertEqualObjects(@"UserUpdate", obj.type);
+    XCTAssertEqual(self.event, BSGClientObserverUpdateUser);
 
-    NSDictionary *dict = obj.data;
+    NSDictionary *dict = [self.value toJson];
     XCTAssertEqualObjects(@"123", dict[@"id"]);
     XCTAssertEqualObjects(@"Jamie", dict[@"name"]);
     XCTAssertEqualObjects(@"test@example.com", dict[@"email"]);
@@ -53,26 +47,23 @@
 
 - (void)testContextUpdate {
     [self.client setContext:@"Foo"];
-    BugsnagStateEvent* obj = self.event;
-    XCTAssertEqualObjects(@"ContextUpdate", obj.type);
-    XCTAssertEqualObjects(@"Foo", obj.data);
+    XCTAssertEqual(self.event, BSGClientObserverUpdateContext);
+    XCTAssertEqualObjects(self.value, @"Foo");
 }
 
 - (void)testMetadataUpdate {
-    XCTAssertNotNil(self.event);
-    self.event = nil;
     [self.client addMetadata:@"Bar" withKey:@"Foo2" toSection:@"test"];
-    XCTAssertEqualObjects(self.client.metadata, self.event.data);
+    XCTAssertEqualObjects(self.value, self.client.metadata);
 }
 
 - (void)testRemoveObserver {
-    XCTAssertNotNil(self.event);
-    self.event = nil;
-    [self.client removeObserverWithBlock:self.block];
+    self.event = -1;
+    self.value = nil;
+    self.client.observer = nil;
     [self.client setUser:@"123" withEmail:@"test@example.com" andName:@"Jamie"];
     [self.client setContext:@"Foo"];
     [self.client addMetadata:@"Bar" withKey:@"Foo" toSection:@"test"];
-    XCTAssertNil(self.event);
+    XCTAssertEqual(self.event, -1);
 }
 
 - (void)testAddObserverTriggersCallback {
@@ -84,19 +75,23 @@
     __block NSString *context;
     __block BugsnagMetadata *metadata;
 
-    self.block = ^(BugsnagStateEvent *event) {
-        if ([kStateEventContext isEqualToString:event.type]) {
-            context = event.data;
-        } else if ([kStateEventUser isEqualToString:event.type]) {
-            user = event.data;
-        } else if ([kStateEventMetadata isEqualToString:event.type]) {
-            metadata = event.data;
+    BSGClientObserver observer = ^(BSGClientObserverEvent event, id value) {
+        switch (event) {
+            case BSGClientObserverUpdateContext:
+                context = value;
+                break;
+            case BSGClientObserverUpdateMetadata:
+                metadata = value;
+                break;
+            case BSGClientObserverUpdateUser:
+                user = [(BugsnagUser *)value toJson];
+                break;
         }
     };
     XCTAssertNil(user);
     XCTAssertNil(context);
     XCTAssertNil(metadata);
-    [self.client addObserverWithBlock:self.block];
+    self.client.observer = observer;
 
     NSDictionary *expectedUser = @{@"id": @"123", @"email": @"test@example.com", @"name": @"Jamie"};
     XCTAssertEqualObjects(expectedUser, user);
