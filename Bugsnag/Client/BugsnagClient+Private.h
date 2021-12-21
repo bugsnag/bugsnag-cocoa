@@ -26,6 +26,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, BSGClientObserverEvent) {
+    BSGClientObserverAddFeatureFlag,    // value: BugsnagFeatureFlag
+    BSGClientObserverClearFeatureFlag,  // value: NSString
     BSGClientObserverUpdateContext,     // value: NSString
     BSGClientObserverUpdateMetadata,    // value: BugsnagMetadata
     BSGClientObserverUpdateUser,        // value: BugsnagUser

@@ -57,6 +57,7 @@
 #import "BugsnagError+Private.h"
 #import "BugsnagErrorTypes.h"
 #import "BugsnagEvent+Private.h"
+#import "BugsnagFeatureFlag.h"
 #import "BugsnagHandledState.h"
 #import "BugsnagKeys.h"
 #import "BugsnagLastRunInfo+Private.h"
@@ -963,12 +964,18 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         BSGFeatureFlagStoreAddFeatureFlag(self.featureFlagStore, name, variant);
         [self.state addMetadata:BSGFeatureFlagStoreToJSON(self.featureFlagStore) withKey:BSGKeyFeatureFlags toSection:BSGKeyClient];
     }
+    if (self.observer) {
+        self.observer(BSGClientObserverAddFeatureFlag, [BugsnagFeatureFlag flagWithName:name variant:variant]);
+    }
 }
 
 - (void)addFeatureFlagWithName:(NSString *)name {
     @synchronized (self.featureFlagStore) {
         BSGFeatureFlagStoreAddFeatureFlag(self.featureFlagStore, name, nil);
         [self.state addMetadata:BSGFeatureFlagStoreToJSON(self.featureFlagStore) withKey:BSGKeyFeatureFlags toSection:BSGKeyClient];
+    }
+    if (self.observer) {
+        self.observer(BSGClientObserverAddFeatureFlag, [BugsnagFeatureFlag flagWithName:name]);
     }
 }
 
@@ -977,6 +984,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         BSGFeatureFlagStoreAddFeatureFlags(self.featureFlagStore, featureFlags);
         [self.state addMetadata:BSGFeatureFlagStoreToJSON(self.featureFlagStore) withKey:BSGKeyFeatureFlags toSection:BSGKeyClient];
     }
+    if (self.observer) {
+        for (BugsnagFeatureFlag *featureFlag in featureFlags) {
+            self.observer(BSGClientObserverAddFeatureFlag, featureFlag);
+        }
+    }
 }
 
 - (void)clearFeatureFlagWithName:(NSString *)name {
@@ -984,12 +996,18 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         BSGFeatureFlagStoreClear(self.featureFlagStore, name);
         [self.state addMetadata:BSGFeatureFlagStoreToJSON(self.featureFlagStore) withKey:BSGKeyFeatureFlags toSection:BSGKeyClient];
     }
+    if (self.observer) {
+        self.observer(BSGClientObserverClearFeatureFlag, name);
+    }
 }
 
 - (void)clearFeatureFlags {
     @synchronized (self.featureFlagStore) {
         BSGFeatureFlagStoreClear(self.featureFlagStore, nil);
         [self.state addMetadata:BSGFeatureFlagStoreToJSON(self.featureFlagStore) withKey:BSGKeyFeatureFlags toSection:BSGKeyClient];
+    }
+    if (self.observer) {
+        self.observer(BSGClientObserverClearFeatureFlag, nil);
     }
 }
 
@@ -1111,6 +1129,12 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         self.metadata.observer = ^(BugsnagMetadata *metadata) {
             observer(BSGClientObserverUpdateMetadata, metadata);
         };
+        
+        @synchronized (self.featureFlagStore) {
+            for (NSString *name in self.featureFlagStore) {
+                observer(BSGClientObserverAddFeatureFlag, [BugsnagFeatureFlag flagWithName:name variant:self.featureFlagStore[name]]);
+            }
+        }
     } else {
         self.metadata.observer = nil;
     }
