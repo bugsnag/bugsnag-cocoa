@@ -50,9 +50,15 @@ Feature: Reporting User Information
     And the event "user.email" equals "errorCustomEmail"
     And the event "user.name" equals "errorCustomName"
 
-  Scenario: Setting the user from Configuration for an event
-    When I run "UserFromConfigEventScenario"
+  Scenario: Setting the user from Configuration for a session
+    When I run "UserFromConfigSessionScenario"
+    And I wait to receive a session
     And I wait to receive an error
+    Then the session is valid for the session reporting API
+    And the session "user.id" equals "abc"
+    And the session "user.email" equals "fake@gmail.com"
+    And the session "user.name" equals "Fay K"
+
     Then the error is valid for the error reporting API
     And the event "user.id" equals "abc"
     And the event "user.email" equals "fake@gmail.com"
@@ -60,14 +66,6 @@ Feature: Reporting User Information
     And the event "metaData.clientUserValue.id" equals "abc"
     And the event "metaData.clientUserValue.email" equals "fake@gmail.com"
     And the event "metaData.clientUserValue.name" equals "Fay K"
-
-  Scenario: Setting the user from Configuration for a session
-    When I run "UserFromConfigSessionScenario"
-    And I wait to receive a session
-    Then the session is valid for the session reporting API
-    And the session "user.id" equals "abc"
-    And the session "user.email" equals "fake@gmail.com"
-    And the session "user.name" equals "Fay K"
 
   Scenario: Setting the user from Client for sessions
     When I run "UserFromClientScenario"
