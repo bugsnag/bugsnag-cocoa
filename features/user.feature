@@ -36,21 +36,19 @@ Feature: Reporting User Information
     And the event "user.email" equals "user@example.com"
     And the event "user.name" equals "Joe Bloggs"
 
-  Scenario: Overriding the user in the Event callback
-    When I run "UserEventOverrideScenario"
-    And I wait to receive an error
-    Then the error is valid for the error reporting API
-    And the event "user.id" equals "customId"
-    And the event "user.email" equals "customEmail"
-    And the event "user.name" equals "customName"
-
   Scenario: Overriding the user in the Session callback
     When I run "UserSessionOverrideScenario"
     And I wait to receive a session
+    And I wait to receive an error
     Then the session is valid for the session reporting API
-    And the session "user.id" equals "customId"
-    And the session "user.email" equals "customEmail"
-    And the session "user.name" equals "customName"
+    And the session "user.id" equals "sessionCustomId"
+    And the session "user.email" equals "sessionCustomEmail"
+    And the session "user.name" equals "sessionCustomName"
+
+    And the error is valid for the error reporting API
+    And the event "user.id" equals "errorCustomId"
+    And the event "user.email" equals "errorCustomEmail"
+    And the event "user.name" equals "errorCustomName"
 
   Scenario: Setting the user from Configuration for an event
     When I run "UserFromConfigEventScenario"
