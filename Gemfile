@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 
-# gem 'cocoapods'
-# gem 'danger'
-# gem 'jazzy'
-# gem 'xcpretty'
+gem 'cocoapods'
+gem 'danger'
+gem 'jazzy'
+gem 'xcpretty'
 
 # A reference to Maze Runner is only needed for running tests locally and if committed it must be
 # portable for CI, e.g. a specific release.  However, leaving it commented out would mean quicker CI.
