@@ -3,36 +3,33 @@ Feature: Reporting User Information
   Background:
     Given I clear all persistent data
 
-  Scenario: Default user information only includes ID
+  Scenario: Default and set user information
     When I run "UserDefaultInfoScenario"
-    And I wait to receive an error
+    And I wait to receive 4 errors
     Then the error is valid for the error reporting API
     And the exception "message" equals "The operation couldn’t be completed. (UserDefaultInfoScenario error 100.)"
     And the event "user.id" is not null
     And the event "user.email" is null
     And the event "user.name" is null
+    And I discard the oldest error
 
-  Scenario: User fields set as null
-    When I run "UserDisabledScenario"
-    And I wait to receive an error
+    # User fields set as null
     Then the error is valid for the error reporting API
     And the exception "message" equals "The operation couldn’t be completed. (UserDisabledScenario error 100.)"
     And the event "user.id" is null
     And the event "user.email" is null
     And the event "user.name" is null
+    And I discard the oldest error
 
-  Scenario: Only User email field set
-    When I run "UserEmailScenario"
-    And I wait to receive an error
+    # Only User email field set
     Then the error is valid for the error reporting API
     And the exception "message" equals "The operation couldn’t be completed. (UserEmailScenario error 100.)"
     And the event "user.id" is null
     And the event "user.email" equals "user@example.com"
     And the event "user.name" is null
+    And I discard the oldest error
 
-  Scenario: All user fields set
-    When I run "UserEnabledScenario"
-    And I wait to receive an error
+    # All user fields set
     Then the error is valid for the error reporting API
     And the exception "message" equals "The operation couldn’t be completed. (UserEnabledScenario error 100.)"
     And the event "user.id" equals "123"
