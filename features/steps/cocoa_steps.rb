@@ -1,7 +1,8 @@
 def short_scenario_name(scenario)
+  # A "Scenario" suffix is removed by the test harness and re-added uniformly by
+  # the test fixture. This reduces the time that Appium spends entering text.
   unless scenario.end_with? 'Scenario'
-    raise 'All scenario names must end with "Scenario".  ' \
-          'There are removed by the test harness and re-added uniformly by the test fixture.'
+    raise 'All scenario names must end with "Scenario".'
   end
   scenario.delete_suffix 'Scenario'
 end
