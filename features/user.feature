@@ -4,10 +4,10 @@ Feature: Reporting User Information
     Given I clear all persistent data
 
   Scenario: Default and set user information
-    When I run "UserDefaultInfoScenario"
+    When I run "UserInfoScenario"
     And I wait to receive 4 errors
     Then the error is valid for the error reporting API
-    And the exception "message" equals "The operation couldn’t be completed. (UserDefaultInfoScenario error 100.)"
+    And the exception "message" equals "The operation couldn’t be completed. (UserDefaultInfo error 100.)"
     And the event "user.id" is not null
     And the event "user.email" is null
     And the event "user.name" is null
@@ -15,7 +15,7 @@ Feature: Reporting User Information
 
     # User fields set as null
     Then the error is valid for the error reporting API
-    And the exception "message" equals "The operation couldn’t be completed. (UserDisabledScenario error 100.)"
+    And the exception "message" equals "The operation couldn’t be completed. (UserDisabled error 100.)"
     And the event "user.id" is null
     And the event "user.email" is null
     And the event "user.name" is null
@@ -23,7 +23,7 @@ Feature: Reporting User Information
 
     # Only User email field set
     Then the error is valid for the error reporting API
-    And the exception "message" equals "The operation couldn’t be completed. (UserEmailScenario error 100.)"
+    And the exception "message" equals "The operation couldn’t be completed. (UserEmail error 100.)"
     And the event "user.id" is null
     And the event "user.email" equals "user@example.com"
     And the event "user.name" is null
@@ -31,9 +31,9 @@ Feature: Reporting User Information
 
     # All user fields set
     Then the error is valid for the error reporting API
-    And the exception "message" equals "The operation couldn’t be completed. (UserEnabledScenario error 100.)"
+    And the exception "message" equals "The operation couldn’t be completed. (UserEnabled error 100.)"
     And the event "user.id" equals "123"
-    And the event "user.email" equals "user@example.com"
+    And the event "user.email" equals "user2@example.com"
     And the event "user.name" equals "Joe Bloggs"
 
   Scenario: Overriding the user in the Session callback
@@ -51,7 +51,7 @@ Feature: Reporting User Information
     And the event "user.name" equals "errorCustomName"
 
   Scenario: Setting the user from Configuration for a session
-    When I run "UserFromConfigSessionScenario"
+    When I run "UserFromConfigScenario"
     And I wait to receive a session
     And I wait to receive an error
     Then the session is valid for the session reporting API
