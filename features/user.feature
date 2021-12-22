@@ -39,15 +39,6 @@ Feature: Reporting User Information
     And the event "user.email" equals "user@example.com"
     And the event "user.name" equals "Joe Bloggs"
 
-  Scenario: Only User ID field set
-    When I run "UserIdScenario"
-    And I wait to receive an error
-    Then the error is valid for the error reporting API
-    And the exception "message" equals "The operation couldn’t be completed. (UserIdScenario error 100.)"
-    And the event "user.id" equals "abc"
-    And the event "user.email" is null
-    And the event "user.name" is null
-
   Scenario: Overriding the user in the Event callback
     When I run "UserEventOverrideScenario"
     And I wait to receive an error
