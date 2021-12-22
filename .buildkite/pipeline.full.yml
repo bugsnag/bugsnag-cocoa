@@ -16,7 +16,8 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
           - "--app=/app/build/iOSTestApp.ipa"
@@ -42,7 +43,8 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
           - "--app=/app/build/iOSTestApp.ipa"
@@ -69,7 +71,8 @@ steps:
       artifacts#v1.3.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
           - "--app=@build/ipa_url.txt"
@@ -97,7 +100,8 @@ steps:
       artifacts#v1.3.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
           - "--app=@build/ipa_url.txt"
@@ -125,7 +129,8 @@ steps:
       artifacts#v1.3.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
           - "--app=@build/ipa_url.txt"
@@ -153,7 +158,8 @@ steps:
       artifacts#v1.3.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
           - "--app=@build/ipa_url.txt"
@@ -183,7 +189,8 @@ steps:
       artifacts#v1.3.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
           - "--app=@build/ipa_url.txt"
@@ -213,7 +220,8 @@ steps:
       artifacts#v1.3.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
           - "--app=@build/ipa_url.txt"
