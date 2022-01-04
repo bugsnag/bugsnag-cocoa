@@ -5,6 +5,8 @@ Changelog
 
 ### Bug fixes
 
+* Detect hangs during launch of UIScene based apps.
+  [#1263](https://github.com/bugsnag/bugsnag-cocoa/pull/1263)
 * Fix some potential deadlocks that could occur if a crash handler crashes.
   [#1252](https://github.com/bugsnag/bugsnag-cocoa/pull/1252)
 
