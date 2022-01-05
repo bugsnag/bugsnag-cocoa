@@ -33,6 +33,9 @@
                             @"usable": @15065522176,
                             @"free": @742920192
                     },
+                    @"disk": @{
+                        @"free": @1234567
+                    },
                     @"device_app_hash": @"123"
             },
             @"report": @{
@@ -157,18 +160,6 @@
     formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
     formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
     XCTAssertEqualObjects([formatter dateFromString:@"2014-12-02T01:56:13Z"], device.time);
-}
-
-- (void)testDeviceFreeSpaceShouldBeLargeNumber {
-    NSNumber *freeBytes = BSGDeviceFreeSpace(NSCachesDirectory);
-    XCTAssertNotNil(freeBytes, @"expect a valid number for successful call to retrieve free space");
-    XCTAssertGreaterThan([freeBytes integerValue], 1000, @"expect at least 1k of free space on test device");
-}
-
-- (void)testDeviceFreeSpaceShouldBeNilWhenFailsToRetrieveIt {
-    NSSearchPathDirectory notAccessibleDirectory = NSAdminApplicationDirectory;
-    NSNumber *freeBytes = BSGDeviceFreeSpace(notAccessibleDirectory);
-    XCTAssertNil(freeBytes, @"expect nil when fails to retrieve free space for the directory");
 }
 
 - (void)testDeviceRuntimeInfoAppended {

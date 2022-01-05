@@ -54,7 +54,7 @@ Feature: Callbacks can access and modify event information
     And the event "unhandled" is false
 
   Scenario: An OnSend callback can overwrite information for an unhandled error
-    When I run "SwiftAssertion" and relaunch the app
+    When I run "SwiftAssertionScenario" and relaunch the crashed app
     And I configure Bugsnag for "OnSendOverwriteScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -68,7 +68,7 @@ Feature: Callbacks can access and modify event information
     And the event "user.name" equals "customName"
 
   Scenario: Information set in OnCrashHandler is added to the final report
-    When I run "OnCrashHandlerScenario" and relaunch the app
+    When I run "OnCrashHandlerScenario" and relaunch the crashed app
     And I configure Bugsnag for "OnSendOverwriteScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -116,3 +116,13 @@ Feature: Callbacks can access and modify event information
     And the event "metaData.callbacks.beforeCrash" is true
     And the event "metaData.callbacks.afterCrash" is null
     And the event "metaData.callbacks.secondCallback" is true
+
+  Scenario: Changes made in OnSendError should not be persisted
+    Given I set the HTTP status code for the next request to 500
+    And I run "OnSendErrorPersistenceScenario"
+    And I wait to receive an error
+    And I clear the error queue
+    And I relaunch the app
+    And I configure Bugsnag for "OnSendErrorPersistenceScenario"
+    And I wait to receive an error
+    Then the event "metaData.unexpected.message" is null

@@ -16,7 +16,7 @@ Feature: The context can be automatically and manually set on errors
     And the event "context" is null
 
   Scenario: Automatic context from a C error
-    When I run "AbortScenario" and relaunch the app
+    When I run "AbortScenario" and relaunch the crashed app
     And I configure Bugsnag for "AbortScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API

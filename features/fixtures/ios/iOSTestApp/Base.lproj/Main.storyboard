@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -35,7 +35,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oym-db-43x">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oym-db-43x">
                                 <rect key="frame" x="20" y="243" width="374" height="30"/>
                                 <accessibility key="accessibilityConfiguration" identifier="run_scenario"/>
                                 <state key="normal" title="Start Scenario"/>
@@ -43,7 +43,7 @@
                                     <action selector="runTestScenario" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="tlB-VZ-ZdP"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2z0-6z-4u6">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2z0-6z-4u6">
                                 <rect key="frame" x="20" y="293" width="374" height="30"/>
                                 <accessibility key="accessibilityConfiguration" identifier="start_bugsnag"/>
                                 <state key="normal" title="Start Bugsnag"/>
@@ -51,7 +51,7 @@
                                     <action selector="startBugsnag" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="Wv1-OW-OOt"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zEv-jB-Vej">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zEv-jB-Vej">
                                 <rect key="frame" x="20" y="343" width="374" height="30"/>
                                 <accessibility key="accessibilityConfiguration" identifier="clear_persistent_data"/>
                                 <state key="normal" title="Clear Persistent Data"/>
@@ -72,6 +72,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="41A-zo-0gw"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="KtB-q4-GVd" secondAttribute="trailing" constant="20" id="0xf-jy-64A"/>
@@ -99,7 +100,6 @@
                             <constraint firstItem="IN4-CK-eEf" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="wJi-PV-dqy"/>
                             <constraint firstItem="RWZ-At-akB" firstAttribute="top" secondItem="41A-zo-0gw" secondAttribute="top" constant="50" id="zbP-F5-B9p"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="41A-zo-0gw"/>
                     </view>
                     <connections>
                         <outlet property="apiKeyField" destination="KtB-q4-GVd" id="B66-s4-9bV"/>

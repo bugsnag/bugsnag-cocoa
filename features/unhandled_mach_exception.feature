@@ -4,7 +4,7 @@ Feature: Bugsnag captures an unhandled mach exception
     Given I clear all persistent data
 
   Scenario: Trigger a mach exception
-    When I run "UnhandledMachExceptionScenario" and relaunch the app
+    When I run "UnhandledMachExceptionScenario" and relaunch the crashed app
     And I configure Bugsnag for "UnhandledMachExceptionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -26,7 +26,7 @@ Feature: Bugsnag captures an unhandled mach exception
     And the event "severityReason.type" equals "unhandledException"
 
   Scenario: Trigger a mach exception with unhandled override
-    When I run "UnhandledMachExceptionOverrideScenario" and relaunch the app
+    When I run "UnhandledMachExceptionOverrideScenario" and relaunch the crashed app
     And I configure Bugsnag for "UnhandledMachExceptionOverrideScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API

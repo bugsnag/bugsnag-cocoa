@@ -1,13 +1,20 @@
+def short_scenario_name(scenario)
+  # A "Scenario" suffix is removed by the test harness and re-added uniformly by
+  # the test fixture. This reduces the time that Appium spends entering text.
+  unless scenario.end_with? 'Scenario'
+    raise 'All scenario names must end with "Scenario".'
+  end
+  scenario.delete_suffix 'Scenario'
+end
+
 When('I run {string}') do |event_type|
   steps %(
-    Given the element "scenario_name" is present
-    When I send the keys "#{event_type}" to the element "scenario_name"
-    And I close the keyboard
+    When I set the app to "#{short_scenario_name event_type}" scenario
     And I click the element "run_scenario"
   )
 end
 
-When("I run {string} and relaunch the app") do |event_type|
+When("I run {string} and relaunch the crashed app") do |event_type|
   begin
     step("I run \"#{event_type}\"")
   rescue StandardError
@@ -36,8 +43,7 @@ end
 
 When('I clear all persistent data') do
   steps %(
-    Given the element "clear_persistent_data" is present
-    And I click the element "clear_persistent_data"
+    When I click the element "clear_persistent_data"
   )
 end
 
@@ -51,17 +57,9 @@ rescue Selenium::WebDriver::Error::NoSuchElementError
   false
 end
 
-When('I close the keyboard') do
-  unless Maze::Helper.get_current_platform.eql?('macos')
-    click_if_present 'close_keyboard'
-  end
-end
-
 When('I configure Bugsnag for {string}') do |event_type|
   steps %(
-    Given the element "scenario_name" is present
-    When I send the keys "#{event_type}" to the element "scenario_name"
-    And I close the keyboard
+    When I set the app to "#{short_scenario_name event_type}" scenario
     And I click the element "start_bugsnag"
   )
 end
@@ -84,17 +82,17 @@ def request_matches_row(body, row)
 end
 
 Then('the error payload field {string} is equal for error {int} and error {int}') do |key, index_a, index_b|
-  assert_true(request_fields_are_equal(key, index_a, index_b))
+  Maze.check.true(request_fields_are_equal(key, index_a, index_b))
 end
 
 Then('the error payload field {string} is not equal for error {int} and error {int}') do |key, index_a, index_b|
-  assert_false(request_fields_are_equal(key, index_a, index_b))
+  Maze.check.false(request_fields_are_equal(key, index_a, index_b))
 end
 
 def request_fields_are_equal(key, index_a, index_b)
   requests = Maze::Server.errors.remaining
-  assert_true(requests.length > index_a, "Not enough requests received to access index #{index_a}")
-  assert_true(requests.length > index_b, "Not enough requests received to access index #{index_b}")
+  Maze.check.true(requests.length > index_a, "Not enough requests received to access index #{index_a}")
+  Maze.check.true(requests.length > index_b, "Not enough requests received to access index #{index_b}")
   request_a = requests[index_a][:body]
   request_b = requests[index_b][:body]
   val_a = Maze::Helper.read_key_path(request_a, key)
@@ -121,7 +119,8 @@ def check_device_model(field, list)
   expected_model = Maze.config.capabilities['device']
   valid_models = internal_names[expected_model]
   device_model = Maze::Helper.read_key_path(list.current[:body], field)
-  assert_true(valid_models != nil ? valid_models.include?(device_model) : true, "The field #{device_model} did not match any of the list of expected fields")
+  Maze.check.true(valid_models != nil ? valid_models.include?(device_model) : true,
+                  "The field #{device_model} did not match any of the list of expected fields")
 end
 
 Then('the error payload field {string} matches the test device model') do |field|
@@ -146,10 +145,10 @@ end
 Then('the stacktrace is valid for the event') do
   stacktrace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.exceptions.0.stacktrace')
   # values that are required for symbolication to work
-  keys = ['frameAddress', 'machoFile', 'machoLoadAddress', 'machoUUID', 'machoVMAddress']
+  keys = %w[frameAddress machoFile machoLoadAddress machoUUID machoVMAddress]
   stacktrace.each_with_index do |frame, i|
     keys.each do |key|
-      assert_not_nil(frame[key], "Stack frame #{i} is missing #{key}")
+      Maze.check.not_nil(frame[key], "Stack frame #{i} is missing #{key}")
     end
   end
 end
@@ -158,19 +157,19 @@ Then('the thread information is valid for the event') do
   # verify that thread/stacktrace information was captured at all
   thread_traces = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.threads')
   stack_traces = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.exceptions.0.stacktrace')
-  assert_not_nil(thread_traces, 'No thread trace recorded')
-  assert_not_nil(stack_traces, 'No thread trace recorded')
-  assert_true(stack_traces.count() > 0, 'Expected stacktrace collected to be > 0')
-  assert_true(thread_traces.count() > 0, 'Expected number of threads collected to be > 0')
+  Maze.check.not_nil(thread_traces, 'No thread trace recorded')
+  Maze.check.not_nil(stack_traces, 'No thread trace recorded')
+  Maze.check.true(stack_traces.count() > 0, 'Expected stacktrace collected to be > 0')
+  Maze.check.true(thread_traces.count() > 0, 'Expected number of threads collected to be > 0')
 
   # verify threads are recorded and contain plausible information (id, type, stacktrace)
   thread_traces.each do |thread|
-    assert_not_nil(thread['id'], "Thread ID missing for #{thread}")
-    assert_equal('cocoa', thread['type'], "Thread type does not equal 'cocoa' for #{thread}")
+    Maze.check.not_nil(thread['id'], "Thread ID missing for #{thread}")
+    Maze.check.equal('cocoa', thread['type'], "Thread type does not equal 'cocoa' for #{thread}")
     stacktrace = thread['stacktrace']
-    assert_not_nil(stacktrace, "Stacktrace is null for #{thread}")
+    Maze.check.not_nil(stacktrace, "Stacktrace is null for #{thread}")
     stack_traces.each do |frame|
-      assert_not_nil(frame['method'], "Method is null for frame #{frame}")
+      Maze.check.not_nil(frame['method'], "Method is null for frame #{frame}")
     end
   end
 
@@ -183,12 +182,16 @@ Then('the thread information is valid for the event') do
       err_thread_trace = thread['stacktrace']
     end
   end
-  assert_equal(1, err_thread_count, "Expected errorReportingThread to be reported once for threads #{thread_traces}")
+  Maze.check.equal(1,
+                   err_thread_count,
+                   "Expected errorReportingThread to be reported once for threads #{thread_traces}")
 
   # verify the errorReportingThread stacktrace matches the exception stacktrace
   stack_traces.each_with_index do |frame, index|
     thread_frame = err_thread_trace[index]
-    assert_equal(frame, thread_frame, "Thread and stacktrace differ at #{index}. Stack=#{frame}, thread=#{thread_frame}")
+    Maze.check.equal(frame,
+                     thread_frame,
+                     "Thread and stacktrace differ at #{index}. Stack=#{frame}, thread=#{thread_frame}")
   end
 end
 
@@ -244,7 +247,7 @@ end
 
 Then('the exception {string} equals one of:') do |keypath, possible_values|
   value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.#{keypath}")
-  assert_includes(possible_values.raw.flatten, value)
+  Maze.check.includes(possible_values.raw.flatten, value)
 end
 
 Then('the error is an OOM event') do

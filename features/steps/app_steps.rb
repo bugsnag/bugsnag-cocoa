@@ -1,12 +1,8 @@
-When('I background the app for {int} seconds') do |duration|
-  Maze.driver.background_app(duration)
-end
-
 When('I relaunch the app') do
   case Maze::Helper.get_current_platform
   when 'macos'
     app = Maze.driver.capabilities['app']
-    system("killall #{app} > /dev/null && sleep 1")
+    system("killall -KILL #{app} > /dev/null && sleep 1")
     Maze.driver.get(app)
   else
     Maze.driver.launch_app
@@ -14,9 +10,8 @@ When('I relaunch the app') do
 end
 
 When("I relaunch the app after a crash") do
-  # This step should only be used when the app has crashed, but the notifier needs a little
-  # time to write the crash report before being forced to reopen.  From trials, 2s was not enough.
-  sleep(5)
+  # Wait for the app to stop running before relaunching
+  step 'the app is not running'
   case Maze::Helper.get_current_platform
   when 'macos'
     Maze.driver.get(Maze.driver.capabilities['app'])
@@ -59,14 +54,32 @@ Then('the app is not running') do
   end
 end
 
-When('I set the app to {string} mode') do |mode|
-  steps %(
-    Given the element "scenario_metadata" is present
-    When I send the keys "#{mode}" to the element "scenario_metadata"
-    And I close the keyboard
-  )
+#
+# Setting scenario and mode
+#
+
+When('I set the app to {string} scenario') do |scenario|
+  case Maze::Helper.get_current_platform
+  when 'macos'
+    mac_set_value('scenarioName', scenario)
+  else
+    steps %(When I send the keys "#{scenario}" to the element "scenario_name")
+  end
 end
 
-When('I send the app to the background') do
-  Maze.driver.background_app(-1)
+When('I set the app to {string} mode') do |mode|
+  case Maze::Helper.get_current_platform
+  when 'macos'
+    mac_set_value('scenarioMetadata', mode)
+  else
+    steps %(When I send the keys "#{mode}" to the element "scenario_metadata")
+  end
+end
+
+def mac_set_value(key, value)
+  # Using find_element to ensure app is ready for input
+  Maze.driver.find_element(:id, 'scenario_name')
+  # Using 'open location' because it is one of the few AppleScript commands that does not require privacy approval
+  location = "macOSTestApp:///mainWindowController?#{key}=#{value}"
+  system("osascript -e 'tell application \"macOSTestApp\" to open location \"#{location}\"'", exception: true)
 end
