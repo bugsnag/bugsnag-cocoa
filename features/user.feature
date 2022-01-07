@@ -36,7 +36,7 @@ Feature: Reporting User Information
     And the event "user.email" equals "user2@example.com"
     And the event "user.name" equals "Joe Bloggs"
 
-  Scenario: Overriding the user in the Session callback
+  Scenario: Overriding the user in error and session callbacks
     When I run "UserSessionOverrideScenario"
     And I wait to receive a session
     And I wait to receive an error
