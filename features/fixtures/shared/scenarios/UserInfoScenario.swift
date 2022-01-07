@@ -19,29 +19,19 @@ internal class UserInfoScenario: Scenario {
     }
 
     override func run() {
-        let error = NSError(domain: "UserDefaultInfo", code: 100, userInfo: nil)
+        var error = NSError(domain: "UserDefaultInfo", code: 100, userInfo: nil)
         Bugsnag.notifyError(error)
 
-        after(.seconds(1)) {
-            Bugsnag.setUser(nil, withEmail: nil, andName: nil)
-            let error = NSError(domain: "UserDisabled", code: 100, userInfo: nil)
-            Bugsnag.notifyError(error)
-        }
+        Bugsnag.setUser(nil, withEmail: nil, andName: nil)
+        error = NSError(domain: "UserDisabled", code: 100, userInfo: nil)
+        Bugsnag.notifyError(error)
 
-        after(.seconds(2)) {
-            Bugsnag.setUser(nil, withEmail: "user@example.com", andName: nil)
-            let error = NSError(domain: "UserEmail", code: 100, userInfo: nil)
-            Bugsnag.notifyError(error)
-        }
+        Bugsnag.setUser(nil, withEmail: "user@example.com", andName: nil)
+        error = NSError(domain: "UserEmail", code: 100, userInfo: nil)
+        Bugsnag.notifyError(error)
 
-        after(.seconds(3)) {
-            Bugsnag.setUser("123", withEmail: "user2@example.com", andName: "Joe Bloggs")
-            let error = NSError(domain: "UserEnabled", code: 100, userInfo: nil)
-            Bugsnag.notifyError(error)
-        }
+        Bugsnag.setUser("123", withEmail: "user2@example.com", andName: "Joe Bloggs")
+        error = NSError(domain: "UserEnabled", code: 100, userInfo: nil)
+        Bugsnag.notifyError(error)
     }
-}
-
-private func after(_ interval: DispatchTimeInterval, execute work: @escaping @convention(block) () -> Void) {
-    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + interval, execute: work)
 }
