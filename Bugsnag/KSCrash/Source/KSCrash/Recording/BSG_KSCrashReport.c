@@ -733,6 +733,7 @@ void bsg_kscrw_i_writeBacktraceEntry(
     writer->beginObject(writer, key);
     {
         if (info->image && info->image->header) {
+            info->image->inCrashReport = true;
             writer->addUIntegerElement(writer, BSG_KSCrashField_ObjectAddr,
                                        (uintptr_t)info->image->header);
         }
@@ -1140,7 +1141,7 @@ void bsg_kscrw_i_writeBinaryImages(const BSG_KSCrashReportWriter *const writer,
     writer->beginArray(writer, key);
     {
         for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = img->next) {
-            if (!img->unloaded) {
+            if (img->inCrashReport) {
                 bsg_kscrw_i_writeBinaryImage(writer, NULL, img);
             }
         }
@@ -1623,12 +1624,14 @@ void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext,
                                 const BSG_KSCrashReportWriter *writer) {
     const BSG_KSCrash_SentryContext *crash = &crashContext->crash;
 
-    bsg_kscrw_i_writeBinaryImages(writer, BSG_KSCrashField_BinaryImages);
     writer->beginObject(writer, BSG_KSCrashField_Crash);
     {
+        bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error, crash);
         bsg_kscrw_i_writeAllThreads(writer, BSG_KSCrashField_Threads, crash,
                 crashContext->config.introspectionRules.enabled);
-        bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error,crash);
     }
     writer->endContainer(writer);
+
+    // Called *after* writeAllThreads() so that we know which images to include
+    bsg_kscrw_i_writeBinaryImages(writer, BSG_KSCrashField_BinaryImages);
 }
