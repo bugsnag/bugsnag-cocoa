@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## TBD
+
+* Improve crash report writing performance and size on disk.
+  [#1273](https://github.com/bugsnag/bugsnag-cocoa/pull/1273)
+
 ## 6.15.2 (2022-01-05)
 
 ### Bug fixes
