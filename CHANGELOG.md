@@ -1,9 +1,18 @@
 Changelog
 =========
 
-## TBD
+## 6.15.2 (2022-01-05)
 
 ### Bug fixes
+
+* Detect hangs during launch of UIScene based apps.
+  [#1263](https://github.com/bugsnag/bugsnag-cocoa/pull/1263)
+
+* Stop persisting changes made by `OnSendError` callbacks if delivery needs to be retried.
+  [#1262](https://github.com/bugsnag/bugsnag-cocoa/pull/1262)
+
+* Fix incorrect `device.freeDisk` in crash errors.
+  [#1256](https://github.com/bugsnag/bugsnag-cocoa/pull/1256)
 
 * Fix some potential deadlocks that could occur if a crash handler crashes.
   [#1252](https://github.com/bugsnag/bugsnag-cocoa/pull/1252)
