@@ -211,11 +211,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         _state = [[BugsnagMetadata alloc] initWithDictionary:@{
             BSGKeyApp: @{BSGKeyIsLaunching: @YES},
             BSGKeyClient: BSGDictionaryWithKeyAndObject(BSGKeyContext, _configuration.context),
-            BSGKeyUser: [configuration.user toJson]
+            BSGKeyUser: [_configuration.user toJson] ?: @{}
         }];
         
-        _notifier = configuration.notifier ?: [[BugsnagNotifier alloc] init];
-        self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:configuration];
+        _notifier = _configuration.notifier ?: [[BugsnagNotifier alloc] init];
+        self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:_configuration];
 
         BSGFileLocations *fileLocations = [BSGFileLocations current];
         
@@ -238,7 +238,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration notifier:_notifier];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
 
-        _notificationBreadcrumbs = [[BSGNotificationBreadcrumbs alloc] initWithConfiguration:configuration breadcrumbSink:self];
+        _notificationBreadcrumbs = [[BSGNotificationBreadcrumbs alloc] initWithConfiguration:_configuration breadcrumbSink:self];
 
         self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
                                                                      client:self
@@ -248,10 +248,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
         self.breadcrumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
 
-        [BSGJSONSerialization writeJSONObject:configuration.dictionaryRepresentation toFile:_configMetadataFile options:0 error:nil];
+        [BSGJSONSerialization writeJSONObject:_configuration.dictionaryRepresentation toFile:_configMetadataFile options:0 error:nil];
         
         // Start with a copy of the configuration metadata
-        self.metadata = [[configuration metadata] deepCopy];
+        self.metadata = [[_configuration metadata] deepCopy];
         // add metadata about app/device
         NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
         [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
@@ -1263,11 +1263,14 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     BugsnagSession *session = sessionDict ? [[BugsnagSession alloc] initWithDictionary:sessionDict] : nil;
     session.unhandledCount += 1;
 
+    NSDictionary *userDict = self.stateMetadataFromLastLaunch[BSGKeyUser];
+    BugsnagUser *user = session.user ?: [[BugsnagUser alloc] initWithDictionary:userDict];
+
     BugsnagEvent *event =
     [[BugsnagEvent alloc] initWithApp:app
                                device:device
                          handledState:handledState
-                                 user:session.user ?: [[BugsnagUser alloc] init]
+                                 user:user
                              metadata:metadata
                           breadcrumbs:[self.breadcrumbs cachedBreadcrumbs] ?: @[]
                                errors:@[error]
