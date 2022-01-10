@@ -95,3 +95,10 @@ Feature: Out of memory errors
     Then the error is valid for the error reporting API
     And the event "unhandled" is false
     And the exception "message" equals "OOMEnabledErrorTypesScenario"
+
+  Scenario: Out of memory errors with no session contain a user id
+    Given I run "OOMSessionlessScenario" and relaunch the crashed app
+    And I configure Bugsnag for "OOMSessionlessScenario"
+    And I wait to receive an error
+    Then the error is an OOM event
+    And the event "user.id" is not null

@@ -3,6 +3,11 @@ Changelog
 
 ## TBD
 
+### Bug fixes
+
+* Fix missing user.id in OOM events with no active session.
+  [#1274](https://github.com/bugsnag/bugsnag-cocoa/pull/1274)
+
 * Improve crash report writing performance and size on disk.
   [#1273](https://github.com/bugsnag/bugsnag-cocoa/pull/1273)
 
