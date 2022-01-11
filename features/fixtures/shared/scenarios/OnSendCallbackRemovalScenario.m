@@ -21,11 +21,11 @@
     self.config.autoTrackSessions = false;
     [self.config addOnSendErrorBlock:block];
 
-    BugsnagOnSendErrorRef onError = [self.config addOnSendErrorBlock:^BOOL(BugsnagEvent * _Nonnull event) {
+    [self.config addOnSendErrorBlock:^BOOL(BugsnagEvent * _Nonnull event) {
         [event addMetadata:@"adding metadata" withKey:@"config2" toSection:@"callbacks"];
         return true;
     }];
-    [self.config removeOnSendError:onError];
+    [self.config removeOnSendError:block];
     [super startBugsnag];
 }
 
