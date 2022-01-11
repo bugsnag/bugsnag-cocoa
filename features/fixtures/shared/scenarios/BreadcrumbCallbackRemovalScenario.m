@@ -25,8 +25,8 @@
         breadcrumb.message = @"Feliz Navidad";
         return true;
     };
-    [self.config addOnBreadcrumbBlock:block];
-    [self.config removeOnBreadcrumbBlock:block];
+    BugsnagOnBreadcrumbRef onBreadcrumb = [self.config addOnBreadcrumbBlock:block];
+    [self.config removeOnBreadcrumb:onBreadcrumb];
 
     [super startBugsnag];
 }

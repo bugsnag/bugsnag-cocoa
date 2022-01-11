@@ -9,6 +9,7 @@ echo "--- iOSTestApp: xcodebuild archive"
 xcrun xcodebuild \
   -scheme iOSTestApp \
   -workspace iOSTestApp.xcworkspace \
+  -destination generic/platform=iOS \
   -configuration Debug \
   -archivePath archive/iosTestApp.xcarchive \
   -allowProvisioningUpdates \
@@ -21,6 +22,7 @@ echo "--- iOSTestApp: xcodebuild -exportArchive"
 xcrun xcodebuild \
   -exportArchive \
   -archivePath archive/iosTestApp.xcarchive \
+  -destination generic/platform=iOS \
   -exportPath output/ \
   -quiet \
   -exportOptionsPlist exportOptions.plist

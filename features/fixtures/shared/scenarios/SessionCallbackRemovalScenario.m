@@ -27,8 +27,8 @@
         session.device.id = nil;
         return true;
     };
-    [self.config addOnSessionBlock:block];
-    [self.config removeOnSessionBlock:block];
+    BugsnagOnSessionRef onSession = [self.config addOnSessionBlock:block];
+    [self.config removeOnSession:onSession];
     [super startBugsnag];
 }
 
