@@ -116,3 +116,13 @@ Feature: Callbacks can access and modify event information
     And the event "metaData.callbacks.beforeCrash" is true
     And the event "metaData.callbacks.afterCrash" is null
     And the event "metaData.callbacks.secondCallback" is true
+
+  Scenario: Changes made in OnSendError should not be persisted
+    Given I set the HTTP status code for the next request to 500
+    And I run "OnSendErrorPersistenceScenario"
+    And I wait to receive an error
+    And I clear the error queue
+    And I relaunch the app
+    And I configure Bugsnag for "OnSendErrorPersistenceScenario"
+    And I wait to receive an error
+    Then the event "metaData.unexpected.message" is null

@@ -1,5 +1,5 @@
 //
-//  UserFromConfigEventScenario.swift
+//  UserFromConfigScenario.swift
 //  iOSTestApp
 //
 //  Created by Jamie Lynch on 26/05/2020.
@@ -9,9 +9,9 @@
 import Foundation
 
 /**
- * Sends an event  to Bugsnag which contains a user set from Configuration
+ * Sends a session and event to Bugsnag which contains a user set from Configuration
  */
-internal class UserFromConfigEventScenario: Scenario {
+internal class UserFromConfigScenario: Scenario {
 
     override func startBugsnag() {
         self.config.autoTrackSessions = false;
@@ -20,6 +20,8 @@ internal class UserFromConfigEventScenario: Scenario {
     }
 
     override func run() {
+        Bugsnag.startSession()
+
         let user = Bugsnag.user()
         // set Client.user in the metadata so we can verify that the user set
         // in Configuration is copied over during initialisation

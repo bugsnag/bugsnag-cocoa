@@ -72,7 +72,10 @@ class AppHangFatalOnlyScenario: Scenario {
     
     override func run() {
         NSLog("Hanging indefinitely...")
-        while true {}
+        // Use asyncAfter to allow the Appium click event to be handled
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            while true {}
+        }
     }
 }
 
@@ -86,7 +89,10 @@ class AppHangFatalDisabledScenario: Scenario {
     
     override func run() {
         NSLog("Hanging indefinitely...")
-        while true {}
+        // Use asyncAfter to allow the Appium click event to be handled
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            while true {}
+        }
     }
 }
 
