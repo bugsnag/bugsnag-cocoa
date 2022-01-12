@@ -25,7 +25,7 @@ steps:
           - "--device=IOS_14"
           - "--appium-version=1.17.0"
           - "--fail-fast"
-          - "--exclude=features/[h-z].*.feature"
+          - "--exclude=features/[h-z].*.feature$"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
@@ -52,7 +52,7 @@ steps:
           - "--device=IOS_14"
           - "--appium-version=1.17.0"
           - "--fail-fast"
-          - "--exclude=features/[a-g].*.feature"
+          - "--exclude=features/[a-g].*.feature$"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
@@ -80,7 +80,7 @@ steps:
           - "--device=IOS_13"
           - "--appium-version=1.17.0"
           - "--fail-fast"
-          - "--exclude=features/[h-z].*.feature"
+          - "--exclude=features/[h-z].*.feature$"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
@@ -109,7 +109,7 @@ steps:
           - "--device=IOS_13"
           - "--appium-version=1.17.0"
           - "--fail-fast"
-          - "--exclude=features/[a-g].*.feature"
+          - "--exclude=features/[a-g].*.feature$"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
@@ -138,7 +138,7 @@ steps:
           - "--device=IOS_12"
           - "--appium-version=1.17.0"
           - "--fail-fast"
-          - "--exclude=features/[h-z].*.feature"
+          - "--exclude=features/[h-z].*.feature$"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
@@ -167,7 +167,7 @@ steps:
           - "--device=IOS_12"
           - "--appium-version=1.17.0"
           - "--fail-fast"
-          - "--exclude=features/[a-g].*.feature"
+          - "--exclude=features/[a-g].*.feature$"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
@@ -198,7 +198,7 @@ steps:
           - "--device=IOS_11_0_IPHONE_8_PLUS"
           - "--appium-version=1.8.0"
           - "--fail-fast"
-          - "--exclude=features/[h-z].*.feature"
+          - "--exclude=features/[h-z].*.feature$"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
@@ -229,7 +229,7 @@ steps:
           - "--device=IOS_11_0_IPHONE_8_PLUS"
           - "--appium-version=1.8.0"
           - "--fail-fast"
-          - "--exclude=features/[a-g].*.feature"
+          - "--exclude=features/[a-g].*.feature$"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app

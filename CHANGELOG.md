@@ -3,6 +3,12 @@ Changelog
 
 ## TBD
 
+### Enhancements
+
+* New APIs to support forthcoming feature flag and experiment functionality.
+  For more information, please see https://docs.bugsnag.com/product/features-experiments
+  [#1279](https://github.com/bugsnag/bugsnag-cocoa/pull/1279)
+
 ### Bug fixes
 
 * Fix missing user.id in OOM events with no active session.

@@ -45,6 +45,13 @@ class BareboneTestHandledScenario: Scenario {
         config.sendThreads = .unhandledOnly
         config.setUser("foobar", withEmail: "foobar@example.com", andName: "Foo Bar")
         config.addMetadata(["group": "users"], section: "user")
+        config.addFeatureFlag(name: "Testing")
+        config.addFeatureFlag(name: "fc1", variant: "blue")
+        config.addFeatureFlags([
+            BugsnagFeatureFlag(name: "fc1"),
+            BugsnagFeatureFlag(name: "fc2", variant: "teal"),
+            BugsnagFeatureFlag(name: "nope")
+        ])
         config.appVersion = "12.3"
         config.bundleVersion = "12301"
         super.startBugsnag()
@@ -52,6 +59,8 @@ class BareboneTestHandledScenario: Scenario {
     
     override func run() {
         precondition(onSessionCount == 1)
+        
+        Bugsnag.addFeatureFlag(name: "Bugsnag")
         
         Bugsnag.leaveBreadcrumb(withMessage: "Running BareboneTestHandledScenario")
         
@@ -61,11 +70,14 @@ class BareboneTestHandledScenario: Scenario {
             return false
         }
         
+        Bugsnag.clearFeatureFlag(name: "nope")
+        
         Bugsnag.leaveBreadcrumb(withMessage: "This is super secret")
         
         self.afterSendErrorBlock = self.afterSendError
         
         Bugsnag.notify(NSException(name: .rangeException, reason: "-[__NSSingleObjectArrayI objectAtIndex:]: index 1 beyond bounds [0 .. 0]")) {
+            $0.addFeatureFlag(name: "notify", variant: "rangeException")
             $0.addMetadata(["info": "Some error specific information"], section: "Exception")
             $0.unhandled = true
             return true
@@ -82,7 +94,10 @@ class BareboneTestHandledScenario: Scenario {
         do {
             _ = try JSONDecoder().decode(Payload.self, from: Data())
         } catch {
-            Bugsnag.notifyError(error)
+            Bugsnag.notifyError(error) {
+                $0.clearFeatureFlags()
+                return true
+            }
         }
     }
 }
@@ -111,6 +126,7 @@ class BareboneTestUnhandledErrorScenario: Scenario {
             }
         } else {
             // The version of the app at crash time.
+            config.addFeatureFlag(name: "Testing")
             config.addMetadata(["group": "users"], section: "user")
             config.appVersion = "12.3"
             config.bundleVersion = "12301"
