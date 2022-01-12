@@ -17,7 +17,7 @@
     <a title="Protocols  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Bugsnag 6.15.2 Docs</a></p>
+        <p><a href="index.html">Bugsnag 6.16.0 Docs</a></p>
         <p class="header-right"><a href="https://github.com/bugsnag/bugsnag-cocoa"><img src="img/gh.png" alt="GitHub"/>View on GitHub</a></p>
         <p class="header-right"><a href="dash-feed://https%3A%2F%2Fbugsnag.github.io%2Fbugsnag-cocoa%2Fdocsets%2FBugsnag.xml"><img src="img/dash.png" alt="Dash"/>Install in Dash</a></p>
         <div class="header-right">
@@ -75,6 +75,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/BugsnagEvent.html">BugsnagEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BugsnagFeatureFlag.html">BugsnagFeatureFlag</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/BugsnagLastRunInfo.html">BugsnagLastRunInfo</a>
@@ -135,6 +138,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Protocols/BugsnagClassLevelMetadataStore.html">BugsnagClassLevelMetadataStore</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/BugsnagFeatureFlagStore.html">BugsnagFeatureFlagStore</a>
               </li>
               <li class="nav-group-task">
                 <a href="Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a>
@@ -235,7 +241,59 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h#L128-L133">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h#L128-L133">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(pl)BugsnagFeatureFlagStore"></a>
+                    <a name="//apple_ref/objc/Protocol/BugsnagFeatureFlagStore" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(pl)BugsnagFeatureFlagStore">BugsnagFeatureFlagStore</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Protocols/BugsnagFeatureFlagStore.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@protocol</span> <span class="nc">BugsnagFeatureFlagStore</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">addFeatureFlagWithName</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">name</span> <span class="nf">variant</span><span class="p">:(</span><span class="n">nullable</span> <span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">variant</span>
+<span class="n">NS_SWIFT_NAME</span><span class="p">(</span><span class="n">addFeatureFlag</span><span class="p">(</span><span class="n">name</span><span class="o">:</span><span class="n">variant</span><span class="o">:</span><span class="p">));</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">addFeatureFlagWithName</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">name</span>
+<span class="n">NS_SWIFT_NAME</span><span class="p">(</span><span class="n">addFeatureFlag</span><span class="p">(</span><span class="n">name</span><span class="o">:</span><span class="p">));</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">addFeatureFlags</span><span class="p">:(</span><span class="n">NSArray</span><span class="o">&lt;</span><span class="n"><a href="Classes/BugsnagFeatureFlag.html">BugsnagFeatureFlag</a></span> <span class="o">*&gt;</span> <span class="o">*</span><span class="p">)</span><span class="nv">featureFlags</span>
+<span class="n">NS_SWIFT_NAME</span><span class="p">(</span><span class="n">addFeatureFlags</span><span class="p">(</span><span class="n">_</span><span class="o">:</span><span class="p">));</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">clearFeatureFlagWithName</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">name</span>
+<span class="n">NS_SWIFT_NAME</span><span class="p">(</span><span class="n">clearFeatureFlag</span><span class="p">(</span><span class="n">name</span><span class="o">:</span><span class="p">));</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">clearFeatureFlags</span><span class="p">;</span>
+
+<span class="k">@end</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">BugsnagFeatureFlagStore</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagFeatureFlagStore.h#L13-L29">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -271,7 +329,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagMetadataStore.h#L26-L119">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagMetadataStore.h#L26-L119">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -307,7 +365,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagMetadataStore.h#L128-L221">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagMetadataStore.h#L128-L221">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -317,7 +375,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2022 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external noopener">Bugsnag Inc</a>. All rights reserved. (Last updated: 2022-01-05)</p>
+          <p>&copy; 2022 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external noopener">Bugsnag Inc</a>. All rights reserved. (Last updated: 2022-01-12)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

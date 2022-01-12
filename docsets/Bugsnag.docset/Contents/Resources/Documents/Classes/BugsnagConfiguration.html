@@ -17,7 +17,7 @@
     <a title="BugsnagConfiguration Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Bugsnag 6.15.2 Docs</a></p>
+        <p><a href="../index.html">Bugsnag 6.16.0 Docs</a></p>
         <p class="header-right"><a href="https://github.com/bugsnag/bugsnag-cocoa"><img src="../img/gh.png" alt="GitHub"/>View on GitHub</a></p>
         <p class="header-right"><a href="dash-feed://https%3A%2F%2Fbugsnag.github.io%2Fbugsnag-cocoa%2Fdocsets%2FBugsnag.xml"><img src="../img/dash.png" alt="Dash"/>Install in Dash</a></p>
         <div class="header-right">
@@ -75,6 +75,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/BugsnagEvent.html">BugsnagEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BugsnagFeatureFlag.html">BugsnagFeatureFlag</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/BugsnagLastRunInfo.html">BugsnagLastRunInfo</a>
@@ -137,6 +140,9 @@
                 <a href="../Protocols/BugsnagClassLevelMetadataStore.html">BugsnagClassLevelMetadataStore</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Protocols/BugsnagFeatureFlagStore.html">BugsnagFeatureFlagStore</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a>
               </li>
             </ul>
@@ -196,19 +202,20 @@
               <div class="declaration">
                 <div class="language">
                   <p class="aside-title">Objective-C</p>
-                  <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagConfiguration</span> <span class="p">:</span> <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n"><a href="../Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span><span class="o">&gt;</span></code></pre>
+                  <pre class="highlight objective_c"><code><span class="k">@interface</span> <span class="nc">BugsnagConfiguration</span>
+    <span class="p">:</span> <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n"><a href="../Protocols/BugsnagFeatureFlagStore.html">BugsnagFeatureFlagStore</a></span><span class="p">,</span> <span class="n"><a href="../Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span><span class="o">&gt;</span></code></pre>
 
                 </div>
                 <div class="language">
                   <p class="aside-title">Swift</p>
-                  <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagConfiguration</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt"><a href="../Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagConfiguration</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt"><a href="../Protocols/BugsnagFeatureFlagStore.html">BugsnagFeatureFlagStore</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span></code></pre>
 
                 </div>
               </div>
             <p>Contains user-provided configuration, including API key and endpoints.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L130-L456">Show on GitHub</a>
+                <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L131-L457">Show on GitHub</a>
               </div>
           </section>
           <section class="section task-group-section">
@@ -249,7 +256,7 @@
                         <p>a BugsnagConfiguration containing the options set in the plist file</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L138">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L139">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -284,7 +291,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L143">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L144">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -318,7 +325,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L148">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L149">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -353,7 +360,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L157">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L158">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -389,7 +396,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L163">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L164">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -424,7 +431,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L168">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L169">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -465,7 +472,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L179">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L180">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -509,7 +516,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L193">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L194">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -544,7 +551,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L198">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L199">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -579,7 +586,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L203">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L204">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -614,7 +621,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L208">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L209">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -654,7 +661,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L218">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L219">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -689,7 +696,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L223">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L224">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -724,7 +731,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L228">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L229">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -766,7 +773,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L240">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L241">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -805,7 +812,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L249">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L250">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -849,7 +856,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L263">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L264">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -889,7 +896,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L273">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L274">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -924,7 +931,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L278">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L279">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -959,7 +966,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L283">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L284">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -994,7 +1001,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L285">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L286">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1032,7 +1039,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L293">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L294">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1070,7 +1077,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L301">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L302">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1108,7 +1115,7 @@ et cetera</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L309">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L310">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1144,7 +1151,7 @@ Defaults to True.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L315">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L316">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1180,7 +1187,7 @@ all properties are true.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L325">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L326">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1221,7 +1228,7 @@ all properties are true.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L336">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L337">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1256,7 +1263,7 @@ all properties are true.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L345">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L346">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1336,7 +1343,7 @@ all properties are true.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L354-L356">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L355-L357">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1393,7 +1400,7 @@ all properties are true.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L369-L370">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L370-L371">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1447,7 +1454,7 @@ all properties are true.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L377-L378">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L378-L379">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1486,7 +1493,7 @@ all properties are true.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L383-L385">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L384-L386">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1544,7 +1551,7 @@ all properties are true.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L399-L400">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L400-L401">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1598,7 +1605,7 @@ all properties are true.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L407-L408">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L408-L409">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1637,7 +1644,7 @@ all properties are true.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L413-L415">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L414-L416">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1695,7 +1702,7 @@ all properties are true.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L429-L430">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L430-L431">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1749,7 +1756,7 @@ all properties are true.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L437-L438">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L438-L439">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1788,7 +1795,7 @@ all properties are true.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.15.2/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L443-L445">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.16.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L444-L446">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1798,7 +1805,7 @@ all properties are true.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2022 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external noopener">Bugsnag Inc</a>. All rights reserved. (Last updated: 2022-01-05)</p>
+          <p>&copy; 2022 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external noopener">Bugsnag Inc</a>. All rights reserved. (Last updated: 2022-01-12)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
