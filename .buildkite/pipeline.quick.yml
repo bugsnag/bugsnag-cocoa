@@ -153,7 +153,7 @@ steps:
           - "--device=IOS_15"
           - "--appium-version=1.21.0"
           - "--fail-fast"
-          - "--exclude=features/[h-z].*.feature"
+          - "--exclude=features/[h-z].*.feature$"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
@@ -182,7 +182,7 @@ steps:
           - "--device=IOS_15"
           - "--appium-version=1.21.0"
           - "--fail-fast"
-          - "--exclude=features/[a-g].*.feature"
+          - "--exclude=features/[a-g].*.feature$"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
@@ -211,7 +211,7 @@ steps:
           - "--device=IOS_10"
           - "--appium-version=1.8.0"
           - "--capabilities={\"browserstack.networkLogs\":\"true\"}"
-          - "--exclude=features/[h-z].*.feature"
+          - "--exclude=features/[h-z].*.feature$"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
@@ -239,8 +239,7 @@ steps:
           - "--farm=bs"
           - "--device=IOS_10"
           - "--appium-version=1.8.0"
-          - "--capabilities={\"browserstack.networkLogs\":\"true\"}"
-          - "--exclude=features/[a-g].*.feature"
+          - "--exclude=features/[a-g].*.feature$"
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app

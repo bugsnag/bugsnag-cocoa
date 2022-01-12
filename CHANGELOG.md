@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## 6.16.0 (2022-01-12)
+
+### Enhancements
+
+* New APIs to support forthcoming feature flag and experiment functionality.
+  For more information, please see https://docs.bugsnag.com/product/features-experiments
+  [#1279](https://github.com/bugsnag/bugsnag-cocoa/pull/1279)
+
+### Bug fixes
+
+* Fix missing user.id in OOM events with no active session.
+  [#1274](https://github.com/bugsnag/bugsnag-cocoa/pull/1274)
+
+* Improve crash report writing performance and size on disk.
+  [#1273](https://github.com/bugsnag/bugsnag-cocoa/pull/1273)
+
 ## 6.15.2 (2022-01-05)
 
 ### Bug fixes
