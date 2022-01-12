@@ -483,4 +483,20 @@
     XCTAssertTrue(context.crashedLastLaunch, @"");
 }
 
+- (void)testPersistence
+{
+    NSString *file = [self.tempPath stringByAppendingPathComponent:@"state.json"];
+    
+    BSG_KSCrash_State state = {0};
+    bsg_kscrashstate_init([file fileSystemRepresentation], &state);
+    
+    id json = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:file] options:0 error:nil];
+    XCTAssertEqualObjects([json objectForKey:@"crashedLastLaunch"], @NO);
+    
+    bsg_kscrashstate_notifyAppCrash();
+    
+    json = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:file] options:0 error:nil];
+    XCTAssertEqualObjects([json objectForKey:@"crashedLastLaunch"], @YES);
+}
+
 @end
