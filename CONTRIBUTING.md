@@ -67,12 +67,6 @@ Here’s a bit about our process designing and building the Bugsnag libraries:
 
 For an overview of source code organisation, see [ORGANIZATION.md](ORGANIZATION.md).
 
-## Building
-
-Each OS version of `Bugsnag` has an Xcode project in a directory named for the
-OS. For example, to build and run `Bugsnag` for iOS, open
-`iOS/Bugsnag.xcodeproj`.
-
 ## Testing
 
 Run the unit tests for the `Bugsnag` library from Xcode or by running `make
