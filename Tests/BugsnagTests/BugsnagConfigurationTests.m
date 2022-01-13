@@ -10,6 +10,7 @@
 #import "BugsnagCrashSentry.h"
 #import "BugsnagEndpointConfiguration.h"
 #import "BugsnagErrorTypes.h"
+#import "BugsnagNotifier.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagTestConstants.h"
 
@@ -855,6 +856,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     [config setAutoDetectErrors:YES];
     [config setContext:@"context1"];
     [config setAppType:@"The most amazing app, a brilliant app, the app to end all apps"];
+    [config setNotifier:[[BugsnagNotifier alloc] initWithName:@"Example"
+                                                      version:@"0.0.0"
+                                                          url:@"https://example.com"
+                                                 dependencies:@[[[BugsnagNotifier alloc] init]]]];
     [config setPersistUser:YES];
     [config setSendThreads:BSGThreadSendPolicyUnhandledOnly];
     BugsnagOnSendErrorBlock onSendBlock1 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
@@ -901,6 +906,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertEqual(config.onSendBlocks[0], clone.onSendBlocks[0]);
     [clone setOnSendBlocks:[@[ onSendBlock2 ] mutableCopy]];
     XCTAssertNotEqual(config.onSendBlocks[0], clone.onSendBlocks[0]);
+    
+    XCTAssertEqualObjects(clone.notifier.name, config.notifier.name);
+    XCTAssertEqualObjects(clone.notifier.version, config.notifier.version);
+    XCTAssertEqualObjects(clone.notifier.url, config.notifier.url);
 }
 
 - (void)testMetadataMutability {
