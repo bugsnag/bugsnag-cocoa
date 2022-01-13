@@ -1,17 +1,5 @@
-def short_scenario_name(scenario)
-  # A "Scenario" suffix is removed by the test harness and re-added uniformly by
-  # the test fixture. This reduces the time that Appium spends entering text.
-  unless scenario.end_with? 'Scenario'
-    raise 'All scenario names must end with "Scenario".'
-  end
-  scenario.delete_suffix 'Scenario'
-end
-
-When('I run {string}') do |event_type|
-  steps %(
-    When I set the app to "#{short_scenario_name event_type}" scenario
-    And I click the element "run_scenario"
-  )
+When('I run {string}') do |scenario_name|
+  execute_command :run_scenario, scenario_name
 end
 
 When("I run {string} and relaunch the crashed app") do |event_type|
@@ -57,11 +45,8 @@ rescue Selenium::WebDriver::Error::NoSuchElementError
   false
 end
 
-When('I configure Bugsnag for {string}') do |event_type|
-  steps %(
-    When I set the app to "#{short_scenario_name event_type}" scenario
-    And I click the element "start_bugsnag"
-  )
+When('I configure Bugsnag for {string}') do |scenario_name|
+  execute_command :start_bugsnag, scenario_name
 end
 
 When('I clear the error queue') do
@@ -274,8 +259,13 @@ def wait_for_true
   raise 'Assertion not passed in 30s' unless assertion_passed
 end
 
-def send_keys_to_element(element_id, text)
-  element = find_element(@element_locator, element_id)
-  element.clear()
-  element.set_value(text)
+def execute_command(action, scenario_name)
+  command = { action: action, scenario_name: scenario_name, scenario_mode: $scenario_mode }
+  Maze::Server.commands.add command
+  Maze.driver.click_element :execute_command
+  $scenario_mode = nil
+  # Ensure fixture has read the command
+  count = 100
+  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
+  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end

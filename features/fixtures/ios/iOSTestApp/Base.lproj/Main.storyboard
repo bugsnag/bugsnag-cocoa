@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="GWo-9T-4ru">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Bugsnag iOS Test Fixture-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="iOSTestApp" customModuleProvider="target" sceneMemberID="viewController">
@@ -16,91 +16,86 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bugsnag Cocoa - Test application" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RWZ-At-akB">
-                                <rect key="frame" x="20" y="94" width="374" height="21"/>
-                                <accessibility key="accessibilityConfiguration" identifier="CloseKeyboardItem"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Scenario Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5Cz-db-j7f">
-                                <rect key="frame" x="20" y="135" width="374" height="34"/>
-                                <accessibility key="accessibilityConfiguration" identifier="scenario_name"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Scenario Metadata" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IN4-CK-eEf">
-                                <rect key="frame" x="20" y="189" width="374" height="34"/>
-                                <accessibility key="accessibilityConfiguration" identifier="scenario_metadata"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oym-db-43x">
-                                <rect key="frame" x="20" y="243" width="374" height="30"/>
-                                <accessibility key="accessibilityConfiguration" identifier="run_scenario"/>
-                                <state key="normal" title="Start Scenario"/>
-                                <connections>
-                                    <action selector="runTestScenario" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="tlB-VZ-ZdP"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2z0-6z-4u6">
-                                <rect key="frame" x="20" y="293" width="374" height="30"/>
-                                <accessibility key="accessibilityConfiguration" identifier="start_bugsnag"/>
-                                <state key="normal" title="Start Bugsnag"/>
-                                <connections>
-                                    <action selector="startBugsnag" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="Wv1-OW-OOt"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zEv-jB-Vej">
-                                <rect key="frame" x="20" y="343" width="374" height="30"/>
-                                <accessibility key="accessibilityConfiguration" identifier="clear_persistent_data"/>
-                                <state key="normal" title="Clear Persistent Data"/>
-                                <connections>
-                                    <action selector="clearPersistentData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZcO-Ew-Mhu"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Manual Testing" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X9q-4y-UF2">
-                                <rect key="frame" x="20" y="423" width="374" height="21"/>
-                                <accessibility key="accessibilityConfiguration" identifier="close_keyboard"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="API key" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KtB-q4-GVd">
-                                <rect key="frame" x="20" y="464" width="374" height="34"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="uYd-Z0-HWq">
+                                <rect key="frame" x="20" y="108" width="374" height="391"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Manual Testing" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X9q-4y-UF2">
+                                        <rect key="frame" x="0.0" y="0.0" width="374" height="20.5"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="close_keyboard"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Scenario Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5Cz-db-j7f">
+                                        <rect key="frame" x="0.0" y="36.5" width="374" height="34"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="scenario_name"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Scenario Metadata" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IN4-CK-eEf">
+                                        <rect key="frame" x="0.0" y="86.5" width="374" height="34"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="scenario_metadata"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="API key" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KtB-q4-GVd">
+                                        <rect key="frame" x="0.0" y="136.5" width="374" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oym-db-43x">
+                                        <rect key="frame" x="0.0" y="186.5" width="374" height="30"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="run_scenario"/>
+                                        <state key="normal" title="Start Scenario"/>
+                                        <connections>
+                                            <action selector="runTestScenario" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="tlB-VZ-ZdP"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2z0-6z-4u6">
+                                        <rect key="frame" x="0.0" y="232.5" width="374" height="30"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="start_bugsnag"/>
+                                        <state key="normal" title="Start Bugsnag"/>
+                                        <connections>
+                                            <action selector="startBugsnag" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="Wv1-OW-OOt"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zEv-jB-Vej">
+                                        <rect key="frame" x="0.0" y="278.5" width="374" height="30"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="clear_persistent_data"/>
+                                        <state key="normal" title="Clear Persistent Data"/>
+                                        <connections>
+                                            <action selector="clearPersistentData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZcO-Ew-Mhu"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Maze Runner Testing" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pz1-DD-cDN">
+                                        <rect key="frame" x="0.0" y="324.5" width="374" height="20.5"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="close_keyboard"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6o0-hw-DJm">
+                                        <rect key="frame" x="0.0" y="361" width="374" height="30"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="execute_command"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Execute Maze Runner command"/>
+                                        <connections>
+                                            <action selector="executeCommand:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gNG-iW-jOE"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="41A-zo-0gw"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="KtB-q4-GVd" secondAttribute="trailing" constant="20" id="0xf-jy-64A"/>
-                            <constraint firstItem="RWZ-At-akB" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="1Aj-gR-NNx"/>
-                            <constraint firstItem="zEv-jB-Vej" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="4QA-rB-Dgc"/>
-                            <constraint firstItem="X9q-4y-UF2" firstAttribute="top" secondItem="zEv-jB-Vej" secondAttribute="bottom" constant="50" id="CM6-Im-X6f"/>
-                            <constraint firstItem="KtB-q4-GVd" firstAttribute="top" secondItem="X9q-4y-UF2" secondAttribute="bottom" constant="20" id="Cka-pj-BLD"/>
-                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="X9q-4y-UF2" secondAttribute="trailing" constant="20" id="D35-qc-4Ta"/>
-                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="2z0-6z-4u6" secondAttribute="trailing" constant="20" id="Kv4-xj-g7n"/>
-                            <constraint firstItem="KtB-q4-GVd" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="MNf-5J-i3s"/>
-                            <constraint firstItem="Oym-db-43x" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="MaA-V0-mCP"/>
-                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="5Cz-db-j7f" secondAttribute="trailing" constant="20" id="PBS-th-0dO"/>
-                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="RWZ-At-akB" secondAttribute="trailing" constant="20" id="Pg7-Cu-ugU"/>
-                            <constraint firstItem="X9q-4y-UF2" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="UWN-Vj-aeK"/>
-                            <constraint firstItem="Oym-db-43x" firstAttribute="top" secondItem="IN4-CK-eEf" secondAttribute="bottom" constant="20" id="VPw-nk-IzA"/>
-                            <constraint firstItem="5Cz-db-j7f" firstAttribute="top" secondItem="RWZ-At-akB" secondAttribute="bottom" constant="20" id="XET-Kr-TUe"/>
-                            <constraint firstItem="2z0-6z-4u6" firstAttribute="top" secondItem="Oym-db-43x" secondAttribute="bottom" constant="20" id="XrK-3j-sF7"/>
-                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="IN4-CK-eEf" secondAttribute="trailing" constant="20" id="aqn-8G-GNT"/>
-                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="Oym-db-43x" secondAttribute="trailing" constant="20" id="d1z-vb-lp7"/>
-                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="zEv-jB-Vej" secondAttribute="trailing" constant="20" id="f2f-mR-ig0"/>
-                            <constraint firstItem="2z0-6z-4u6" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="kCa-bn-oMx"/>
-                            <constraint firstItem="IN4-CK-eEf" firstAttribute="top" secondItem="5Cz-db-j7f" secondAttribute="bottom" constant="20" id="ldb-Ut-xXp"/>
-                            <constraint firstItem="5Cz-db-j7f" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="r5d-oU-m3j"/>
-                            <constraint firstItem="zEv-jB-Vej" firstAttribute="top" secondItem="2z0-6z-4u6" secondAttribute="bottom" constant="20" id="tpf-WN-h2e"/>
-                            <constraint firstItem="IN4-CK-eEf" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="wJi-PV-dqy"/>
-                            <constraint firstItem="RWZ-At-akB" firstAttribute="top" secondItem="41A-zo-0gw" secondAttribute="top" constant="50" id="zbP-F5-B9p"/>
+                            <constraint firstItem="uYd-Z0-HWq" firstAttribute="leading" secondItem="41A-zo-0gw" secondAttribute="leading" constant="20" id="2P3-re-Gxp"/>
+                            <constraint firstItem="uYd-Z0-HWq" firstAttribute="top" secondItem="41A-zo-0gw" secondAttribute="top" constant="20" id="btD-jh-hvc"/>
+                            <constraint firstItem="41A-zo-0gw" firstAttribute="trailing" secondItem="uYd-Z0-HWq" secondAttribute="trailing" constant="20" id="hlz-y4-zcx"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" title="Bugsnag iOS Test Fixture" id="2rr-a0-5ni"/>
                     <connections>
                         <outlet property="apiKeyField" destination="KtB-q4-GVd" id="B66-s4-9bV"/>
                         <outlet property="scenarioMetaDataField" destination="IN4-CK-eEf" id="d0Y-Er-lUg"/>
@@ -108,6 +103,24 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1042.0289855072465" y="137.94642857142856"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="ebu-7R-3vm">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="GWo-9T-4ru" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="JCn-5i-ITb">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="brw-z0-jSh"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ps2-Mg-S4K" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="131.8840579710145" y="137.94642857142856"/>
         </scene>

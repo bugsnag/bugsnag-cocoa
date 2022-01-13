@@ -55,31 +55,9 @@ Then('the app is not running') do
 end
 
 #
-# Setting scenario and mode
+# Setting scenario mode
 #
 
-When('I set the app to {string} scenario') do |scenario|
-  case Maze::Helper.get_current_platform
-  when 'macos'
-    mac_set_value('scenarioName', scenario)
-  else
-    steps %(When I send the keys "#{scenario}" to the element "scenario_name")
-  end
-end
-
 When('I set the app to {string} mode') do |mode|
-  case Maze::Helper.get_current_platform
-  when 'macos'
-    mac_set_value('scenarioMetadata', mode)
-  else
-    steps %(When I send the keys "#{mode}" to the element "scenario_metadata")
-  end
-end
-
-def mac_set_value(key, value)
-  # Using find_element to ensure app is ready for input
-  Maze.driver.find_element(:id, 'scenario_name')
-  # Using 'open location' because it is one of the few AppleScript commands that does not require privacy approval
-  location = "macOSTestApp:///mainWindowController?#{key}=#{value}"
-  system("osascript -e 'tell application \"macOSTestApp\" to open location \"#{location}\"'", exception: true)
+  $scenario_mode = mode
 end
