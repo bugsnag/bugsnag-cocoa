@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Improve crash report writing performance with buffered output.
+  [#1281](https://github.com/bugsnag/bugsnag-cocoa/pull/1281)
+
 ## 6.16.0 (2022-01-12)
 
 ### Enhancements
