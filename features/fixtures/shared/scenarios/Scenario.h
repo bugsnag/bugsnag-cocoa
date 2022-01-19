@@ -19,14 +19,11 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 
 @property (strong, nonatomic, nonnull) BugsnagConfiguration *config;
 
-+ (Scenario *)createScenarioNamed:(NSString *)className withConfig:(BugsnagConfiguration *)config;
++ (Scenario *)createScenarioNamed:(NSString *)className withConfig:(nullable BugsnagConfiguration *)config;
 
-- (instancetype)initWithConfig:(BugsnagConfiguration *)config;
+@property (class, readonly, nullable) Scenario *currentScenario;
 
-/**
- * Blocks the calling thread until network connectivity to the notify endpoint has been verified.
- */
-- (void)waitForNetworkConnectivity;
+- (instancetype)initWithConfig:(nullable BugsnagConfiguration *)config;
 
 /**
  * Executes the test case
@@ -42,6 +39,8 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 - (void)performBlockAndWaitForEventDelivery:(dispatch_block_t)block NS_SWIFT_NAME(performBlockAndWaitForEventDelivery(_:));
 
 + (void)clearPersistentData;
+
++ (void)executeMazeRunnerCommand:(void (^)(NSString *action, NSString *scenarioName, NSString *scenarioMode))preHandler;
 
 @end
 

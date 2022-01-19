@@ -24,8 +24,6 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
 @property (copy) NSString *scenarioName;
 @property (copy) NSString *sessionEndpoint;
 
-@property Scenario *scenario;
-
 @end
 
 #pragma mark -
@@ -48,39 +46,39 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
     if (self.sessionEndpoint) {
         configuration.endpoints.sessions = self.sessionEndpoint;
     }
-    configuration.enabledErrorTypes.ooms = NO;
     return configuration;
 }
 
 - (IBAction)runScenario:(id)sender {
     BSLog(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
+    
+    // Cater for multiple calls to -run
+    if (!Scenario.currentScenario) {
+        [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
+        Scenario.currentScenario.eventMode = self.scenarioMetadata;
 
-    if (!self.scenario) {
-        self.scenario = [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
-        self.scenario.eventMode = self.scenarioMetadata;
-
-        BSLog(@"Starting Bugsnag for scenario: %@", self.scenario);
-        [self.scenario startBugsnag];
+        BSLog(@"Starting Bugsnag for scenario: %@", Scenario.currentScenario);
+        [Scenario.currentScenario startBugsnag];
     }
 
-    BSLog(@"Will run scenario: %@", self.scenario);
+    BSLog(@"Will run scenario: %@", Scenario.currentScenario);
     // Using dispatch_async to prevent AppleEvents swallowing exceptions.
     // For more info see https://www.chimehq.com/blog/sad-state-of-exceptions
     // 0.1s delay allows accessibility APIs to finish handling the mouse click and returns control to the tests framework.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        BSLog(@"Running scenario: %@", self.scenario);
-        [self.scenario run];
+        BSLog(@"Running scenario: %@", Scenario.currentScenario);
+        [Scenario.currentScenario run];
     });
 }
 
 - (IBAction)startBugsnag:(id)sender {
     BSLog(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
 
-    self.scenario = [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
-    self.scenario.eventMode = self.scenarioMetadata;
+    [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
+    Scenario.currentScenario.eventMode = self.scenarioMetadata;
 
-    BSLog(@"Starting Bugsnag for scenario: %@", self.scenario);
-    [self.scenario startBugsnag];
+    BSLog(@"Starting Bugsnag for scenario: %@", Scenario.currentScenario);
+    [Scenario.currentScenario startBugsnag];
 }
 
 - (IBAction)clearPersistentData:(id)sender {
@@ -90,6 +88,13 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
 - (IBAction)useDashboardEndpoints:(id)sender {
     self.notifyEndpoint = @"https://notify.bugsnag.com";
     self.sessionEndpoint = @"https://sessions.bugsnag.com";
+}
+
+- (IBAction)executeMazeRunnerCommand:(id)sender {
+    [Scenario executeMazeRunnerCommand:^(NSString *action, NSString *scenarioName, NSString *eventMode){
+        self.scenarioName = scenarioName;
+        self.scenarioMetadata = eventMode;
+    }];
 }
 
 @end

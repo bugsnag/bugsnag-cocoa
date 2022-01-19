@@ -22,10 +22,9 @@
 @implementation BSG_KSCrashReportTests
 
 - (void)testBinaryImages {
-    NSString *directory = NSTemporaryDirectory();
-    NSString *crashReportFilePath = [directory stringByAppendingPathComponent:@"crash_report"];
-    NSString *recrashReportFilePath = [directory stringByAppendingPathComponent:@"recrash_report"];
-    NSString *stateFilePath = [directory stringByAppendingPathComponent:@"kscrash_state"];
+    NSString *crashReportFilePath = [self temporaryFile:@"crash_report.json"];
+    NSString *recrashReportFilePath = [self temporaryFile:@"recrash_report"];
+    NSString *stateFilePath = [self temporaryFile:@"kscrash_state"];
     NSString *crashID = [[NSUUID UUID] UUIDString];
     
     bsg_kscrash_init();
@@ -62,17 +61,12 @@
     [backtraceImageAddrs removeObject:[NSNull null]];
     
     XCTAssertEqualObjects(binaryImageAddrs, backtraceImageAddrs);
-    
-    [[NSFileManager defaultManager] removeItemAtPath:crashReportFilePath error:nil];
-    [[NSFileManager defaultManager] removeItemAtPath:recrashReportFilePath error:nil];
-    [[NSFileManager defaultManager] removeItemAtPath:stateFilePath error:nil];
 }
 
 - (void)testWriteStandardReportPerformance {
-    NSString *directory = NSTemporaryDirectory();
-    NSString *crashReportFilePath = [directory stringByAppendingPathComponent:@"crash_report"];
-    NSString *recrashReportFilePath = [directory stringByAppendingPathComponent:@"recrash_report"];
-    NSString *stateFilePath = [directory stringByAppendingPathComponent:@"kscrash_state"];
+    NSString *crashReportFilePath = [self temporaryFile:@"crash_report"];
+    NSString *recrashReportFilePath = [self temporaryFile:@"recrash_report"];
+    NSString *stateFilePath = [self temporaryFile:@"kscrash_state"];
     NSString *crashID = [[NSUUID UUID] UUIDString];
     
     bsg_kscrash_init();
@@ -111,11 +105,19 @@
         }
         [self stopMeasuring];
         
+        NSDictionary *report = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:crashReportFilePath] options:0 error:nil];
+        XCTAssert([report isKindOfClass:[NSDictionary class]], @"%@", report);
         [[NSFileManager defaultManager] removeItemAtPath:crashReportFilePath error:nil];
     }];
-    
-    [[NSFileManager defaultManager] removeItemAtPath:recrashReportFilePath error:nil];
-    [[NSFileManager defaultManager] removeItemAtPath:stateFilePath error:nil];
+}
+
+- (NSString *)temporaryFile:(NSString *)fileName {
+    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:fileName];
+    [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+    [self addTeardownBlock:^{
+        [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+    }];
+    return path;
 }
 
 @end

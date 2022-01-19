@@ -23,10 +23,11 @@
 		017B4134276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */; };
 		01847DD626453D4E00ADA4C7 /* InvalidCrashReportScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01847DD526453D4E00ADA4C7 /* InvalidCrashReportScenario.m */; };
 		01AF6A53258A112F00FFC803 /* BareboneTestScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A52258A112F00FFC803 /* BareboneTestScenarios.swift */; };
-		01B6BB7525D5748800FC4DE6 /* LastRunInfoScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B6BB7425D5748800FC4DE6 /* LastRunInfoScenarios.swift */; };
+		01B6BB7525D5748800FC4DE6 /* LastRunInfoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B6BB7425D5748800FC4DE6 /* LastRunInfoScenario.swift */; };
 		01B6BBB625DA82B800FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B6BBB525DA82B700FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift */; };
 		01CD103926690463007FA5F0 /* libBugsnagStatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 01CD103826690463007FA5F0 /* libBugsnagStatic.a */; };
 		01DE903826CE99B800455213 /* CriticalThermalStateScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DE903726CE99B800455213 /* CriticalThermalStateScenario.swift */; };
+		01DF442C2798044E00C31104 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01DF442B2798044E00C31104 /* SystemConfiguration.framework */; };
 		01E0DB0B25E8EBD100A740ED /* AppDurationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E0DB0A25E8EBD100A740ED /* AppDurationScenario.swift */; };
 		01E356C026CD5B6A00BE3F64 /* ThermalStateBreadcrumbScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E356BF26CD5B6A00BE3F64 /* ThermalStateBreadcrumbScenario.swift */; };
 		01E5EAD225B713990066EA8A /* OOMScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E5EAD125B713990066EA8A /* OOMScenario.m */; };
@@ -183,10 +184,11 @@
 		017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnSendErrorPersistenceScenario.m; sourceTree = "<group>"; };
 		01847DD526453D4E00ADA4C7 /* InvalidCrashReportScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InvalidCrashReportScenario.m; sourceTree = "<group>"; };
 		01AF6A52258A112F00FFC803 /* BareboneTestScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestScenarios.swift; sourceTree = "<group>"; };
-		01B6BB7425D5748800FC4DE6 /* LastRunInfoScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastRunInfoScenarios.swift; sourceTree = "<group>"; };
+		01B6BB7425D5748800FC4DE6 /* LastRunInfoScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastRunInfoScenario.swift; sourceTree = "<group>"; };
 		01B6BBB525DA82B700FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendLaunchCrashesSynchronouslyScenario.swift; sourceTree = "<group>"; };
 		01CD103826690463007FA5F0 /* libBugsnagStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libBugsnagStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		01DE903726CE99B800455213 /* CriticalThermalStateScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CriticalThermalStateScenario.swift; sourceTree = "<group>"; };
+		01DF442B2798044E00C31104 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		01E0DB0A25E8EBD100A740ED /* AppDurationScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDurationScenario.swift; sourceTree = "<group>"; };
 		01E356BF26CD5B6A00BE3F64 /* ThermalStateBreadcrumbScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThermalStateBreadcrumbScenario.swift; sourceTree = "<group>"; };
 		01E5EAD025B713990066EA8A /* OOMScenario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OOMScenario.h; sourceTree = "<group>"; };
@@ -365,6 +367,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01DF442C2798044E00C31104 /* SystemConfiguration.framework in Frameworks */,
 				CB42FF9026F1EDB500E8D5D2 /* libBugsnagNetworkRequestPluginStatic.a in Frameworks */,
 				01CD103926690463007FA5F0 /* libBugsnagStatic.a in Frameworks */,
 			);
@@ -433,6 +436,7 @@
 		D018DCE3210BCB4D0B8FA6D2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				01DF442B2798044E00C31104 /* SystemConfiguration.framework */,
 				CB42FF8F26F1EDB500E8D5D2 /* libBugsnagNetworkRequestPluginStatic.a */,
 				AAFEFA0226EB6B5A00980A10 /* BugsnagNetworkRequestPlugin.framework */,
 				01CD103826690463007FA5F0 /* libBugsnagStatic.a */,
@@ -604,7 +608,7 @@
 				8AB1081823301FE600672818 /* ReleaseStageScenarios.swift */,
 				F4295ABA693D273D52AA9F6B /* Scenario.h */,
 				F42954E8B66F3FB7F5333CF7 /* Scenario.m */,
-				01B6BB7425D5748800FC4DE6 /* LastRunInfoScenarios.swift */,
+				01B6BB7425D5748800FC4DE6 /* LastRunInfoScenario.swift */,
 				CBB7878F2578FC0C0071BDE4 /* MarkUnhandledHandledScenario.h */,
 				CBB787902578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m */,
 				01B6BBB525DA82B700FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift */,
@@ -881,7 +885,7 @@
 				01018BA025E40ADD000312C6 /* AsyncSafeMallocScenario.m in Sources */,
 				8A98400320FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m in Sources */,
 				8A3B5F292407F66700CE4A3A /* ModifyBreadcrumbScenario.swift in Sources */,
-				01B6BB7525D5748800FC4DE6 /* LastRunInfoScenarios.swift in Sources */,
+				01B6BB7525D5748800FC4DE6 /* LastRunInfoScenario.swift in Sources */,
 				E75040A2247801A8005D33BD /* AutoDetectFalseNSExceptionScenario.swift in Sources */,
 				E700EE7E247D7A61008CFFB6 /* SIGSYSScenario.m in Sources */,
 				E75040A42478052D005D33BD /* AutoDetectFalseAbortScenario.swift in Sources */,

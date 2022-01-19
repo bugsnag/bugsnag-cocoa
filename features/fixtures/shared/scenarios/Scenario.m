@@ -2,9 +2,9 @@
 // Created by Jamie Lynch on 23/03/2018.
 // Copyright (c) 2018 Bugsnag. All rights reserved.
 //
-#import <objc/runtime.h>
-
 #import "Scenario.h"
+
+#import <objc/runtime.h>
 
 extern void bsg_kscrash_setPrintTraceToStdout(bool printTraceToStdout);
 
@@ -30,77 +30,34 @@ static char ksLogPath[PATH_MAX];
     dispatch_block_t _onEventDelivery;
 }
 
-+ (Scenario *)createScenarioNamed:(NSString *)className
-                       withConfig:(BugsnagConfiguration *)config {
++ (Scenario *)createScenarioNamed:(NSString *)className withConfig:(BugsnagConfiguration *)config {
+    Class class = NSClassFromString(className) ?:
+    NSClassFromString([@"iOSTestApp." stringByAppendingString:className]) ?:
+    NSClassFromString([@"macOSTestApp." stringByAppendingString:className]);
 
-    NSString *fullClassName = [NSString stringWithFormat:@"%@Scenario", className];
-    Class clz = NSClassFromString(fullClassName);
-
-#if TARGET_OS_IPHONE
-    NSString *swiftPrefix = @"iOSTestApp.";
-#elif TARGET_OS_OSX
-    NSString *swiftPrefix = @"macOSTestApp.";
-#endif
-
-    if (!clz) { // Case-insensitive class lookup because AppiumForMac is a bit unreliable at entering uppercase characters.
-        unsigned int classCount = 0;
-        Class *classes = objc_copyClassList(&classCount);
-        for (unsigned int i = 0; i < classCount; i++) {
-            NSString *name = NSStringFromClass(classes[i]);
-            if ([name hasPrefix:swiftPrefix]) {
-                name = [name substringFromIndex:swiftPrefix.length];
-            }
-            if ([name caseInsensitiveCompare:fullClassName] == NSOrderedSame) {
-                clz = classes[i];
-                break;
-            }
-        }
-        free(classes);
+    if (!class) {
+        [NSException raise:NSInvalidArgumentException format:@"Failed to find scenario class named %@", className];
     }
 
-    if (!clz) {
-        [NSException raise:NSInvalidArgumentException format:@"Failed to find scenario class named %@", fullClassName];
-    }
+    return (theScenario = [(Scenario *)[class alloc] initWithConfig:config]);
+}
 
-    id obj = [clz alloc];
-
-    NSAssert([obj isKindOfClass:[Scenario class]], @"Class '%@' is not a subclass of Scenario", fullClassName);
-
-    theScenario = obj;
-
-    return [(Scenario *)obj initWithConfig:config];
++ (Scenario *)currentScenario {
+    return theScenario;
 }
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config {
     if (self = [super init]) {
-        self.config = config;
+        if (config) {
+            _config = config;
+        } else {
+            _config = [[BugsnagConfiguration alloc] initWithApiKey:@"12312312312312312312312312312312"];
+            _config.endpoints.notify = @"http://bs-local.com:9339/notify";
+            _config.endpoints.sessions = @"http://bs-local.com:9339/sessions";
+        }
+        _config.enabledErrorTypes.ooms = NO;
     }
     return self;
-}
-
-- (void)waitForNetworkConnectivity {
-    NSDictionary *proxySettings = (__bridge_transfer NSDictionary *)CFNetworkCopySystemProxySettings();
-    NSLog(@"*** Proxy settings = %@", proxySettings);
-    
-    // This check uses HTTP rather than sockets because connectivity is commonly provided via an HTTP proxy.
-    
-    NSURL *url = [NSURL URLWithString:self.config.endpoints.notify];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:3];
-    NSLog(@"*** Checking for connectivity to %@", url);
-    while (1) {
-        NSURLResponse *response = nil;
-        NSError *error = nil;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-#pragma clang diagnostic pop
-        if ([response isKindOfClass:[NSHTTPURLResponse class]] && ((NSHTTPURLResponse *)response).statusCode / 100 == 2) {
-            NSLog(@"*** Received response from notify endpoint.");
-            break;
-        }
-        NSLog(@"*** No response from notify endpoint, retrying in 1 second...");
-        [NSThread sleepForTimeInterval:1];
-    }
 }
 
 - (void)run {
@@ -109,8 +66,6 @@ static char ksLogPath[PATH_MAX];
 }
 
 - (void)startBugsnag {
-    // TODO: PLAT-5827
-    // [self waitForNetworkConnectivity]; // Disabled for now because MR v4 does not listen on /
     [Bugsnag startWithConfiguration:self.config];
 
     bsg_kscrash_setPrintTraceToStdout(true);
@@ -197,6 +152,62 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
         }
     }
     bsg_kslog_setLogFilename(ksLogPath, true);
+}
+
++ (void)executeMazeRunnerCommand:(void (^)(NSString *action, NSString *scenarioName, NSString *scenarioMode))preHandler {
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://bs-local.com:9339/command"]];
+    [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (![response isKindOfClass:[NSHTTPURLResponse class]] || [(NSHTTPURLResponse *)response statusCode] != 200) {
+            NSLog(@"%s request failed with %@", __PRETTY_FUNCTION__, response ?: error);
+            return;
+        }
+        NSLog(@"%s response body:  %@", __PRETTY_FUNCTION__, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+        NSDictionary *command = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        
+        NSString *action = [command objectForKey:@"action"];
+        NSParameterAssert([action isKindOfClass:[NSString class]]);
+        
+        NSString *scenarioName = [command objectForKey:@"scenario_name"];
+        NSParameterAssert([scenarioName isKindOfClass:[NSString class]]);
+        
+        NSString *eventMode = [command objectForKey:@"scenario_mode"];
+        if ([eventMode isKindOfClass:[NSNull class]]) {
+            eventMode = nil;
+        }
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            preHandler(action, scenarioName, eventMode);
+        });
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if ([action isEqualToString:@"run_scenario"]) {
+                [self runScenario:scenarioName eventMode:eventMode];
+            } else if ([action isEqualToString:@"start_bugsnag"]) {
+                [self startBugsnagForScenario:scenarioName eventMode:eventMode];
+            }
+        });
+    }] resume];
+}
+
++ (void)runScenario:(NSString *)scenarioName eventMode:(NSString *)eventMode {
+    NSLog(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
+    
+    [self startBugsnagForScenario:scenarioName eventMode:eventMode];
+    
+    NSLog(@"Running scenario \"%@\"", NSStringFromClass([theScenario class]));
+    [theScenario run];
+}
+
++ (void)startBugsnagForScenario:(NSString *)scenarioName eventMode:(NSString *)eventMode {
+    NSLog(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
+    
+    theScenario = [Scenario createScenarioNamed:scenarioName withConfig:nil];
+    theScenario.eventMode = eventMode;
+    
+    NSLog(@"Starting scenario \"%@\"", NSStringFromClass([theScenario class]));
+    [theScenario startBugsnag];
 }
 
 @end

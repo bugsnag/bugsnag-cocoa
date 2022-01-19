@@ -1,12 +1,12 @@
 //
-//  LastRunInfoScenarios.swift
+//  LastRunInfoScenario.swift
 //  macOSTestApp
 //
 //  Created by Nick Dowell on 11/02/2021.
 //  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
-class LastRunInfoConsecutiveLaunchCrashesScenario: Scenario {
+class LastRunInfoScenario: Scenario {
     
     override func startBugsnag() {
         config.launchDurationMillis = 0

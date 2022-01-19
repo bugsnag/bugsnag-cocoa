@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## 6.16.1 (2022-01-19)
+
+### Bug fixes
+
+* Fix missing imports when building with `CLANG_ENABLE_MODULES=NO`
+  [#1284](https://github.com/bugsnag/bugsnag-cocoa/pull/1284)
+
+* Improve crash report writing performance with buffered output.
+  [#1281](https://github.com/bugsnag/bugsnag-cocoa/pull/1281)
+
 ## 6.16.0 (2022-01-12)
 
 ### Enhancements

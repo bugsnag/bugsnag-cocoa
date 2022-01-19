@@ -29,6 +29,7 @@
 #include "BSG_KSBacktrace_Private.h"
 #include "BSG_KSCrashReportFields.h"
 #include "BSG_KSCrashReportVersion.h"
+#include "BSG_KSFile.h"
 #include "BSG_KSFileUtils.h"
 #include "BSG_KSJSONCodec.h"
 #include "BSG_KSMach.h"
@@ -308,8 +309,7 @@ void bsg_kscrw_i_endContainer(const BSG_KSCrashReportWriter *const writer) {
 
 int bsg_kscrw_i_addJSONData(const char *const data, const size_t length,
                             void *const userData) {
-    const int fd = *((int *)userData);
-    const bool success = bsg_ksfuwriteBytesToFD(fd, data, (ssize_t)length);
+    bool success = BSG_KSFileWrite(userData, data, length);
     return success ? BSG_KSJSON_OK : BSG_KSJSON_ERROR_CANNOT_ADD_DATA;
 }
 
@@ -1502,14 +1502,18 @@ void bsg_kscrashreport_writeMinimalReport(
 
     bsg_kscrw_i_updateStackOverflowStatus(crashContext);
 
+    BSG_KSFile file;
+    char buffer[512];
+    BSG_KSFileInit(&file, fd, buffer, sizeof(buffer) / sizeof(*buffer));
+
     BSG_KSJSONEncodeContext jsonContext;
-    jsonContext.userData = &fd;
+    jsonContext.userData = &file;
     BSG_KSCrashReportWriter concreteWriter;
     BSG_KSCrashReportWriter *writer = &concreteWriter;
     bsg_kscrw_i_prepareReportWriter(writer, &jsonContext);
 
     bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), false,
-                          bsg_kscrw_i_addJSONData, &fd);
+                          bsg_kscrw_i_addJSONData, &file);
 
     writer->beginObject(writer, BSG_KSCrashField_Report);
     {
@@ -1541,6 +1545,7 @@ void bsg_kscrashreport_writeMinimalReport(
 
     bsg_ksjsonendEncode(bsg_getJsonContext(writer));
 
+    BSG_KSFileFlush(&file);
     close(fd);
 }
 
@@ -1557,14 +1562,18 @@ void bsg_kscrashreport_writeStandardReport(
 
     bsg_kscrw_i_updateStackOverflowStatus(crashContext);
 
+    BSG_KSFile file;
+    char buffer[4096];
+    BSG_KSFileInit(&file, fd, buffer, sizeof(buffer) / sizeof(*buffer));
+
     BSG_KSJSONEncodeContext jsonContext;
-    jsonContext.userData = &fd;
+    jsonContext.userData = &file;
     BSG_KSCrashReportWriter concreteWriter;
     BSG_KSCrashReportWriter *writer = &concreteWriter;
     bsg_kscrw_i_prepareReportWriter(writer, &jsonContext);
 
     bsg_ksjsonbeginEncode(bsg_getJsonContext(writer), false,
-                          bsg_kscrw_i_addJSONData, &fd);
+                          bsg_kscrw_i_addJSONData, &file);
 
     writer->beginObject(writer, BSG_KSCrashField_Report);
     {
@@ -1588,6 +1597,7 @@ void bsg_kscrashreport_writeStandardReport(
 
     bsg_ksjsonendEncode(bsg_getJsonContext(writer));
 
+    BSG_KSFileFlush(&file);
     close(fd);
 }
 
