@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix missing imports when building with `CLANG_ENABLE_MODULES=NO`
+  [#1284](https://github.com/bugsnag/bugsnag-cocoa/pull/1284)
+
 ## 6.16.0 (2022-01-12)
 
 ### Enhancements
