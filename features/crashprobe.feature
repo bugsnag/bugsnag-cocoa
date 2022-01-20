@@ -193,3 +193,10 @@ Feature: Reporting crash events
       | Intel | EXC_BAD_INSTRUCTION |
     And the exception "message" starts with "BUG IN CLIENT OF LIBDISPATCH: dispatch_"
     And the event "metaData.error.crashInfo" starts with "BUG IN CLIENT OF LIBDISPATCH: dispatch_"
+
+  Scenario: Concurrent crashes should result in a single valid crash report
+    Given I run "ConcurrentCrashesScenario" and relaunch the crashed app
+    And I configure Bugsnag for "ConcurrentCrashesScenario"
+    And I wait to receive an error
+    Then the error is valid for the error reporting API
+    And the event "unhandled" is true
