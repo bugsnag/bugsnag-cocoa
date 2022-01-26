@@ -48,6 +48,7 @@
 extern "C" {
 #endif
 // Internal NSException recorder
+bool bsg_kscrashsentry_isNSExceptionHandlerInstalled(void);
 void bsg_recordException(NSException *exception);
 #ifdef __cplusplus
 }
@@ -127,9 +128,11 @@ static void CPPExceptionTerminate(void) {
                         "the current NSException handler deal with it.");
         isNSException = true;
         // recordException() doesn't call beginHandlingCrash()
-        bsg_kscrashsentry_beginHandlingCrash(bsg_g_context);
-        bsg_recordException(exception);
-        bsg_g_context->handlingCrash = false;
+        if (bsg_kscrashsentry_isNSExceptionHandlerInstalled() &&
+            bsg_kscrashsentry_beginHandlingCrash(bsg_ksmachthread_self())) {
+            bsg_recordException(exception);
+            bsg_kscrashsentry_endHandlingCrash();
+        }
     } catch (std::exception &exc) {
         strlcpy(descriptionBuff, exc.what(), sizeof(descriptionBuff));
     } catch (std::exception *exc) {
@@ -159,22 +162,13 @@ static void CPPExceptionTerminate(void) {
     }
     bsg_g_captureNextStackTrace = (bsg_g_installed != 0);
 
-    if (!isNSException) {
-        bool wasHandlingCrash = bsg_g_context->handlingCrash;
-        bsg_kscrashsentry_beginHandlingCrash(bsg_g_context);
-
-        if (wasHandlingCrash) {
-            BSG_KSLOG_INFO("Detected crash in the crash reporter. "
-                           "Restoring original handlers.");
-            bsg_g_context->crashedDuringCrashHandling = true;
-            bsg_kscrashsentry_uninstall((BSG_KSCrashType)BSG_KSCrashTypeAll);
-        }
+    if (!isNSException &&
+        bsg_kscrashsentry_beginHandlingCrash(bsg_ksmachthread_self())) {
 
         BSG_KSLOG_DEBUG("Suspending all threads.");
         bsg_kscrashsentry_suspendThreads();
 
         bsg_g_context->crashType = BSG_KSCrashTypeCPPException;
-        bsg_g_context->offendingThread = bsg_ksmachthread_self();
         bsg_g_context->registersAreValid = false;
         bsg_g_context->stackTrace =
             bsg_g_stackTrace + 1; // Don't record __cxa_throw stack entry
@@ -189,6 +183,7 @@ static void CPPExceptionTerminate(void) {
             "Crash handling complete. Restoring original handlers.");
         bsg_kscrashsentry_uninstall((BSG_KSCrashType)BSG_KSCrashTypeAll);
         bsg_kscrashsentry_resumeThreads();
+        bsg_kscrashsentry_endHandlingCrash();
     }
     if (bsg_g_originalTerminateHandler != NULL) {
         bsg_g_originalTerminateHandler();

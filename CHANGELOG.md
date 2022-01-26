@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## 6.16.2 (2022-01-26)
+
+* Improve reliability of crash reporting when multiple crashes occur concurrently.
+  [#1286](https://github.com/bugsnag/bugsnag-cocoa/pull/1286)
+
 ## 6.16.1 (2022-01-19)
 
 ### Bug fixes
