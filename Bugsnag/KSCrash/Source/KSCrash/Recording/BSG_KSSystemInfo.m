@@ -410,7 +410,7 @@ static NSDictionary * bsg_systemversion() {
     sysInfo[@BSG_KSSystemField_BinaryArch] = [self CPUArchForCPUType:header->cputype subType:header->cpusubtype];
     sysInfo[@BSG_KSSystemField_DeviceAppHash] = [self deviceAndAppHash];
 
-#if TARGET_OS_OSX || TARGET_OS_MACCATALYST
+#if TARGET_OS_OSX || TARGET_OS_MACCATALYST || TARGET_OS_SIMULATOR
     // https://developer.apple.com/documentation/apple-silicon/about-the-rosetta-translation-environment
     int proc_translated = 0;
     size_t size = sizeof(proc_translated);
