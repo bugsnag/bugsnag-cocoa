@@ -28,7 +28,7 @@ steps:
   - label: iOS 13 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     commands:
@@ -39,7 +39,7 @@ steps:
   - label: iOS 12 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     commands:
@@ -70,7 +70,7 @@ steps:
   - label: tvOS 13 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     commands:
@@ -81,7 +81,7 @@ steps:
   - label: tvOS 12 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     commands:

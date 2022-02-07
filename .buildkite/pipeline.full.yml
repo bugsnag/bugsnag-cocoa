@@ -239,7 +239,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'macOS 11.0 E2E tests'
+  - label: 'macOS 11 E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -259,7 +259,7 @@ steps:
         --fail-fast
         --order=random
 
-  - label: 'ARM macOS 12.0 E2E tests'
+  - label: 'ARM macOS 12 E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -329,7 +329,7 @@ steps:
 
   - label: 'examples/objective-c-ios'
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     commands:
       - cd examples/objective-c-ios
       - echo "--- Pod install"
@@ -341,7 +341,7 @@ steps:
 
   - label: 'examples/objective-c-osx'
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     commands:
       - cd examples/objective-c-osx
       - echo "--- Pod install"
@@ -353,7 +353,7 @@ steps:
 
   - label: 'examples/swift-ios'
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     commands:
       - cd examples/swift-ios
       - echo "--- Pod install"
@@ -365,7 +365,7 @@ steps:
 
   - label: 'examples/swift-package-manager'
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     commands:
       - cd examples/swift-package-manager
       - echo "--- Resolve Swift Package Dependencies"
@@ -378,7 +378,7 @@ steps:
 
   - label: 'examples/swiftui'
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     commands:
       - cd examples/swiftui
       - echo "--- Resolve Swift Package Dependencies"

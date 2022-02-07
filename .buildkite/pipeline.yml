@@ -32,7 +32,7 @@ steps:
   - label: Static framework and Swift Package Manager builds
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-arm-mac-cocoa-12
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     commands:
@@ -42,7 +42,7 @@ steps:
   - label: Carthage
     timeout_in_minutes: 15
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     concurrency: 3
     concurrency_group: cocoa-unit-tests
     commands:
@@ -56,7 +56,7 @@ steps:
   # Unit tests
   #
 
-  - label: ARM macOS 11 unit tests
+  - label: ARM macOS 12 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-arm-mac-cocoa-12
@@ -88,9 +88,9 @@ steps:
   - label: iOS 14 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.4
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5
     artifact_paths:
       - logs/*
 
@@ -106,9 +106,9 @@ steps:
   - label: tvOS 14 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.4
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.5
     artifact_paths:
       - logs/*
 
@@ -255,10 +255,10 @@ steps:
         --app=macOSTestApp
         --order=random
 
-  - label: 'macOS 10.15 stress test'
+  - label: 'macOS 11 stress test'
     timeout_in_minutes: 3
     agents:
-      queue: opensource-mac-cocoa
+      queue: opensource-mac-cocoa-11
     env:
       STRESS_TEST: "true"
     commands:
