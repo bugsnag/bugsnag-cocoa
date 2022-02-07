@@ -13,7 +13,7 @@
 
 static NSString * const kNotifyEndpoint = @"http://localhost:9339/notify";
 
-static const int kNumberOfIterations = 5000;
+static const int kNumberOfIterations = 15000;
 
 static const NSInteger kMaxConcurrentNotifies = 8;
 

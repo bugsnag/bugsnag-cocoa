@@ -29,6 +29,8 @@
 #import "BugsnagSessionTracker.h"
 #import "BugsnagSystemState.h"
 
+#import <stdatomic.h>
+
 static NSString * const ConsecutiveLaunchCrashesKey = @"consecutiveLaunchCrashes";
 static NSString * const InternalKey = @"internal";
 
@@ -160,7 +162,6 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
 
 @interface BugsnagSystemState ()
 
-@property(readonly,nonatomic) NSMutableDictionary *currentLaunchStateRW;
 @property(readwrite,atomic) NSDictionary *currentLaunchState;
 @property(readwrite,nonatomic) NSDictionary *lastLaunchState;
 @property(readonly,nonatomic) NSString *persistenceFilePath;
@@ -175,13 +176,12 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
         _kvStore = [BugsnagKVStore new];
         _persistenceFilePath = [BSGFileLocations current].systemState;
         _lastLaunchState = loadPreviousState(_kvStore, _persistenceFilePath);
-        _currentLaunchStateRW = initCurrentState(_kvStore, config);
-        _currentLaunchState = [_currentLaunchStateRW copy];
+        _currentLaunchState = initCurrentState(_kvStore, config);
         _consecutiveLaunchCrashes = [_lastLaunchState[InternalKey][ConsecutiveLaunchCrashesKey] unsignedIntegerValue];
         if (@available(iOS 11.0, tvOS 11.0, *)) {
             [self setThermalState:NSProcessInfo.processInfo.thermalState];
         }
-        [self syncState:_currentLaunchState];
+        [self sync];
 
         __weak __typeof__(self) weakSelf = self;
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
@@ -287,20 +287,31 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
 }
 
 - (void)mutateLaunchState:(nonnull void (^)(NSMutableDictionary *state))block {
-    NSDictionary *state = nil;
+    static _Atomic(BOOL) writePending;
     @synchronized (self) {
-        block(self.currentLaunchStateRW);
+        NSMutableDictionary *mutableState = [NSMutableDictionary dictionary];
+        for (NSString *section in self.currentLaunchState) {
+            mutableState[section] = [self.currentLaunchState[section] mutableCopy];
+        }
+        block(mutableState);
         // User-facing state should never mutate from under them.
-        self.currentLaunchState = copyDictionary(self.currentLaunchStateRW);
-        state = self.currentLaunchState;
+        self.currentLaunchState = copyDictionary(mutableState);
+        
+        BOOL expected = NO;
+        if (!atomic_compare_exchange_strong(&writePending, &expected, YES)) {
+            // _writePending was YES -- avoid an unnecesary dispatch_async()
+            return;
+        }
     }
     // Run on a BG thread so we don't monopolize the notification queue.
     dispatch_async(BSGGetFileSystemQueue(), ^(void){
-        [self syncState:state];
+        atomic_store(&writePending, NO);
+        [self sync];
     });
 }
 
-- (void)syncState:(NSDictionary *)state {
+- (void)sync {
+    NSDictionary *state = self.currentLaunchState;
     NSAssert([BSGJSONSerialization isValidJSONObject:state], @"BugsnagSystemState cannot be converted to JSON data");
     NSError *error = nil;
     if (![BSGJSONSerialization writeJSONObject:state toFile:self.persistenceFilePath options:0 error:&error]) {
