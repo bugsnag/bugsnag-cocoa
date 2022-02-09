@@ -255,10 +255,10 @@ steps:
         --app=macOSTestApp
         --order=random
 
-  - label: 'macOS 11 stress test'
+  - label: 'macOS 12 stress test'
     timeout_in_minutes: 3
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-arm-mac-cocoa-12
     env:
       STRESS_TEST: "true"
     commands:
