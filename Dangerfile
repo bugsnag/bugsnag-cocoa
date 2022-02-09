@@ -7,8 +7,8 @@ def framework_size
     number.to_s.reverse.scan(/.{1,3}/).join(',').reverse
   end
 
-  old_binary = 'build/Release-iphoneos/Bugsnag.framework/Bugsnag'
-  new_binary = 'build.base/Release-iphoneos/Bugsnag.framework/Bugsnag'
+  old_binary = 'build.base/Release-iphoneos/Bugsnag.framework/Bugsnag'
+  new_binary = 'build/Release-iphoneos/Bugsnag.framework/Bugsnag'
 
   size_after = File.size(new_binary)
   size_before = File.size(old_binary)
