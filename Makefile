@@ -85,7 +85,7 @@ compile_commands.json:
 		-destination generic/platform=iOS \
 		-derivedDataPath $(DATA_PATH) \
 		build VALID_ARCHS=arm64 RUN_CLANG_STATIC_ANALYZER=NO | \
-		bundle exec xcpretty -r json-compilation-database -o compile_commands.json
+		xcpretty -r json-compilation-database -o compile_commands.json
 
 #--------------------------------------------------------------------------
 # Static Analysis
