@@ -16,7 +16,10 @@
 }
 
 - (void)run {
-    raise(SIGPIPE);
+    int pipefds[2];
+    pipe(pipefds);
+    close(pipefds[0]);
+    write(pipefds[1], "hello\n", 6);
 }
 
 @end

@@ -212,6 +212,11 @@ bool bsg_kscrashsentry_installSignalHandler(
             }
             goto failed;
         }
+        if (fatalSignals[i] == SIGPIPE &&
+            bsg_g_previousSignalHandlers[i].sa_handler == SIG_IGN) {
+            BSG_KSLOG_DEBUG("Removing handler for signal %d", fatalSignals[i]);
+            sigaction(fatalSignals[i], &bsg_g_previousSignalHandlers[i], NULL);
+        }
     }
     BSG_KSLOG_DEBUG("Signal handlers installed.");
     return true;
