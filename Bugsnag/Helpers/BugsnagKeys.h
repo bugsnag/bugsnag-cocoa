@@ -53,6 +53,7 @@ extern NSString *const BSGKeyIsLR;
 extern NSString *const BSGKeyIsPC;
 extern NSString *const BSGKeyLabel;
 extern NSString *const BSGKeyLogLevel;
+extern NSString *const BSGKeyLowMemoryWarning;
 extern NSString *const BSGKeyMach;
 extern NSString *const BSGKeyMachoFile;
 extern NSString *const BSGKeyMachoLoadAddr;

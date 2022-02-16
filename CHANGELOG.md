@@ -3,6 +3,9 @@ Changelog
 
 ## TBD
 
+* Improve accuracy of `metaData.device.lowMemoryWarning`.
+  [#1296](https://github.com/bugsnag/bugsnag-cocoa/pull/1296)
+
 * Stop reporting `SIGPIPE` errors in apps that set `SIG_IGN`.
   [#1295](https://github.com/bugsnag/bugsnag-cocoa/pull/1295)
 

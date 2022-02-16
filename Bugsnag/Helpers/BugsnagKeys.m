@@ -52,6 +52,7 @@ NSString *const BSGKeyIsLR = @"isLR";
 NSString *const BSGKeyIsPC = @"isPC";
 NSString *const BSGKeyLabel = @"label";
 NSString *const BSGKeyLogLevel = @"logLevel";
+NSString *const BSGKeyLowMemoryWarning = @"lowMemoryWarning";
 NSString *const BSGKeyMach = @"mach";
 NSString *const BSGKeyMachoFile = @"machoFile";
 NSString *const BSGKeyMachoLoadAddr = @"machoLoadAddress";
