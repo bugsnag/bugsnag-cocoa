@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## TBD
+
+* Stop reporting `SIGPIPE` errors in apps that set `SIG_IGN`.
+  [#1295](https://github.com/bugsnag/bugsnag-cocoa/pull/1295)
+
 ## 6.16.2 (2022-01-26)
 
 * Improve reliability of crash reporting when multiple crashes occur concurrently.

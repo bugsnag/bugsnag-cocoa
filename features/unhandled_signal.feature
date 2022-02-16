@@ -56,6 +56,13 @@ Feature: Signals are captured as error reports in Bugsnag
     And the event "severityReason.type" equals "signal"
     And the event "severityReason.attributes.signalType" equals "SIGPIPE"
 
+  Scenario: No error should be reported if SIGPIPE is ignored
+    Given I run "SIGPIPEIgnoredScenario"
+    And I wait to receive a session
+    And I relaunch the app
+    And I configure Bugsnag for "SIGPIPEIgnoredScenario"
+    Then I should receive no errors
+
   Scenario: Triggering SIGBUS
     When I run "SIGBUSScenario" and relaunch the crashed app
     And I configure Bugsnag for "SIGBUSScenario"
