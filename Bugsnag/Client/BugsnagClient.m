@@ -86,7 +86,6 @@
 
 static NSString *const BSTabCrash = @"crash";
 static NSString *const BSAttributeDepth = @"depth";
-static NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
 static struct {
     // Contains the state of the event (handled/unhandled)
@@ -310,10 +309,29 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                    name:UIDeviceOrientationDidChangeNotification
                  object:nil];
 
-    [center addObserver:self
-               selector:@selector(applicationDidReceiveMemoryWarning:)
-                   name:UIApplicationDidReceiveMemoryWarningNotification
-                 object:nil];
+    // DISPATCH_SOURCE_TYPE_MEMORYPRESSURE arrives slightly sooner than UIApplicationDidReceiveMemoryWarningNotification
+    dispatch_queue_global_t queue = dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0);
+    uintptr_t mask = DISPATCH_MEMORYPRESSURE_NORMAL | DISPATCH_MEMORYPRESSURE_WARN | DISPATCH_MEMORYPRESSURE_CRITICAL;
+    dispatch_source_t memoryPressureSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_MEMORYPRESSURE, 0, mask, queue);
+    __weak typeof(self) weakSelf = self;
+    dispatch_source_set_event_handler(memoryPressureSource, ^{
+        __strong typeof(self) strongSelf = weakSelf;
+        dispatch_source_memorypressure_flags_t level = dispatch_source_get_data(memoryPressureSource);
+        switch (level) {
+            case DISPATCH_MEMORYPRESSURE_NORMAL:
+                [strongSelf.state clearMetadataFromSection:BSGKeyDeviceState withKey:BSGKeyLowMemoryWarning];
+                break;
+            case DISPATCH_MEMORYPRESSURE_WARN:
+            case DISPATCH_MEMORYPRESSURE_CRITICAL:
+                [strongSelf.state addMetadata:[BSG_RFC3339DateTool stringFromDate:[NSDate date]]
+                                      withKey:BSGKeyLowMemoryWarning
+                                    toSection:BSGKeyDeviceState];
+                break;
+            default:
+                break;
+        }
+    });
+    dispatch_resume(memoryPressureSource);
 
     [UIDEVICE currentDevice].batteryMonitoringEnabled = YES;
     [[UIDEVICE currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -922,12 +940,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                       andMetadata:breadcrumbMetadata];
 
     self.lastOrientation = orientation;
-}
-
-- (void)applicationDidReceiveMemoryWarning:(__unused NSNotification *)notif {
-    [self.state addMetadata:[BSG_RFC3339DateTool stringFromDate:[NSDate date]]
-                      withKey:BSEventLowMemoryWarning
-                    toSection:BSGKeyDeviceState];
 }
 
 #endif

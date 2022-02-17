@@ -41,7 +41,6 @@
             @"appLaunchTimerFired: v24@0:8@16",
             @"appendNSErrorInfo:block:event: B40@0:8@16@?24@32",
             @"appendNSErrorInfo:block:event: c40@0:8@16@?24@32",
-            @"applicationDidReceiveMemoryWarning: v24@0:8@16",
             @"applicationWillTerminate: v24@0:8@16",
             @"autoNotify B16@0:8",
             @"autoNotify c16@0:8",
