@@ -1,20 +1,15 @@
 When('I run {string}') do |scenario_name|
-  pp "DEBUG &A"
   execute_command :run_scenario, scenario_name
-  pp "DEBUG &B"
 end
 
 When("I run {string} and relaunch the crashed app") do |event_type|
-  pp "DEBUG &C"
   steps %(
     Given I run \"#{event_type}\"
     And I relaunch the app after a crash
   )
-  pp "DEBUG &D"
 end
 
 When("I run the configured scenario and relaunch the crashed app") do
-  pp "DEBUG &E"
   platform = Maze::Helper.get_current_platform
   case platform
   when 'ios'
@@ -24,21 +19,17 @@ When("I run the configured scenario and relaunch the crashed app") do
   else
     raise "Unknown platform: #{platform}"
   end
-  pp "DEBUG &F"
 end
 
 def run_and_relaunch
-  pp "DEBUG &G"
   steps %(
     Given I click the element "run_scenario"
     And the app is not running
     Then I relaunch the app
   )
-  pp "DEBUG &H"
 end
 
 When('I clear all persistent data') do
-  pp "DEBUG &I"
   platform = Maze::Helper.get_current_platform
   case platform
   when 'ios'
@@ -46,18 +37,14 @@ When('I clear all persistent data') do
       When I click the element "clear_persistent_data"
     )
   when 'macos'
-    pp "DEBUG &J"
     $reset_data = true
   else
     raise "Unknown platform: #{platform}"
   end
-  pp "DEBUG &K"
 end
 
 When('I configure Bugsnag for {string}') do |scenario_name|
-  pp "DEBUG &L"
   execute_command :start_bugsnag, scenario_name
-  pp "DEBUG &M"
 end
 
 def check_device_model(field, list)
@@ -141,26 +128,31 @@ Then('the session is valid for the session reporting API') do
 end
 
 def execute_command(action, scenario_name)
-  pp "DEBUG &N"
-  command = { action: action, scenario_name: scenario_name, scenario_mode: $scenario_mode, reset_data: $reset_data }
-  pp command
-  Maze::Server.commands.add command
-  pp "DEBUG &O"
-  trigger_app_command
-  pp "DEBUG &P"
-  $scenario_mode = nil
-  $reset_data = false
-  # Ensure fixture has read the command
-  count = 100
-  pp "DEBUG &Q"
-  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  pp "DEBUG &R"
-  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
-  pp "DEBUG &S"
+  platform = Maze::Helper.get_current_platform
+  case platform
+  when 'ios'
+    command = { action: action, scenario_name: scenario_name, scenario_mode: $scenario_mode }
+    Maze::Server.commands.add command
+    trigger_app_command
+    $scenario_mode = nil
+    $reset_data = false
+    # Ensure fixture has read the command
+    count = 100
+    sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
+    raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
+  when 'macos'
+    Maze::Runner.environment['BUGSNAG_SCENARIO_ACTION'] = action.to_s
+    Maze::Runner.environment['BUGSNAG_SCENARIO_NAME'] = scenario_name.to_s
+    Maze::Runner.environment['BUGSNAG_SCENARIO_METADATA'] = $scenario_mode.to_s
+    Maze::Runner.environment['BUGSNAG_CLEAR_DATA'] = $reset_data ? 'true' : 'false'
+    run_macos_app
+    $reset_data = false
+  else
+    raise "Unknown platform: #{platform}"
+  end
 end
 
 def trigger_app_command
-  pp "DEBUG &T"
   platform = Maze::Helper.get_current_platform
   case platform
   when 'ios'
@@ -170,32 +162,26 @@ def trigger_app_command
   else
     raise "Unknown platform: #{platform}"
   end
-  pp "DEBUG &U"
 end
 
 When('I relaunch the app') do
-  pp "DEBUG &V"
   case Maze::Helper.get_current_platform
   when 'macos'
     run_macos_app
   else
     Maze.driver.launch_app
   end
-  pp "DEBUG &W"
 end
 
 When("I relaunch the app after a crash") do
   # Wait for the app to stop running before relaunching
-  pp "DEBUG &X"
   step 'the app is not running'
-  pp "DEBUG &Y"
   case Maze::Helper.get_current_platform
   when 'macos'
     # Pass
   else
     Maze.driver.launch_app
   end
-  pp "DEBUG &Z"
 end
 
 #
@@ -308,11 +294,10 @@ def wait_for_true
 end
 
 def run_macos_app
-  pp "DEBUG &AA"
-  Maze::Runner.kill_running_scripts
-  pp "DEBUG &AB"
+  Maze::Runner.kill_running_scripts if $reset_data
   Maze::Runner.run_command("#{Maze.config.app}/Contents/MacOS/macOSTestApp", blocking: false)
-  pp "DEBUG &AC"
+  # Required to allow the non-blocking app to fully start before exiting
+  sleep(0.1)
 end
 
 Then('the breadcrumb timestamps are valid for the event') do
