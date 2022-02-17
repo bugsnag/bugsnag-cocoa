@@ -24,6 +24,11 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
 @property (copy) NSString *scenarioName;
 @property (copy) NSString *sessionEndpoint;
 
+@property Boolean automatedMode;
+@property NSString *commandEndpoint;
+@property NSString *scenarioCommandName;
+@property NSString *scenarioCommandMetadata;
+
 @end
 
 #pragma mark -
@@ -34,8 +39,16 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
     [super windowDidLoad];
 
     self.apiKey = @"12312312312312312312312312312312";
-    self.notifyEndpoint = @"http://bs-local.com:9339/notify";
-    self.sessionEndpoint = @"http://bs-local.com:9339/sessions";
+    self.notifyEndpoint = @"http://localhost:9339/notify";
+    self.sessionEndpoint = @"http://localhost:9339/sessions";
+    self.commandEndpoint = @"http://localhost:9339/command";
+    self.scenarioCommandName = @"";
+    self.scenarioCommandMetadata = @"";
+    self.automatedMode = true;
+    
+    if (self.automatedMode) {
+        [self startUsingCommand];
+    }
 }
 
 - (BugsnagConfiguration *)configuration {
@@ -50,12 +63,21 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
 }
 
 - (IBAction)runScenario:(id)sender {
-    BSLog(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
+    NSString *scenario;
+    NSString *metadata;
+    if (self.automatedMode) {
+        scenario = self.scenarioCommandName;
+        metadata = self.scenarioCommandMetadata;
+    } else {
+        scenario = self.scenarioName;
+        metadata = self.scenarioMetadata;
+    }
+    BSLog(@"%s %@", __PRETTY_FUNCTION__, scenario);
     
     // Cater for multiple calls to -run
     if (!Scenario.currentScenario) {
-        [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
-        Scenario.currentScenario.eventMode = self.scenarioMetadata;
+        [Scenario createScenarioNamed:scenario withConfig:[self configuration]];
+        Scenario.currentScenario.eventMode = metadata;
 
         BSLog(@"Starting Bugsnag for scenario: %@", Scenario.currentScenario);
         [Scenario.currentScenario startBugsnag];
@@ -72,10 +94,19 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
 }
 
 - (IBAction)startBugsnag:(id)sender {
-    BSLog(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
+    NSString *scenario;
+    NSString *metadata;
+    if (self.automatedMode) {
+        scenario = self.scenarioCommandName;
+        metadata = self.scenarioCommandMetadata;
+    } else {
+        scenario = self.scenarioName;
+        metadata = self.scenarioMetadata;
+    }
+    BSLog(@"%s %@", __PRETTY_FUNCTION__, scenario);
 
-    [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
-    Scenario.currentScenario.eventMode = self.scenarioMetadata;
+    [Scenario createScenarioNamed:scenario withConfig:[self configuration]];
+    Scenario.currentScenario.eventMode = metadata;
 
     BSLog(@"Starting Bugsnag for scenario: %@", Scenario.currentScenario);
     [Scenario.currentScenario startBugsnag];
@@ -95,6 +126,40 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
         self.scenarioName = scenarioName;
         self.scenarioMetadata = eventMode;
     }];
+}
+
+- (void) startUsingCommand {
+    NSLog(@"Running in Automated mode, contacting %@ for command", self.commandEndpoint);
+    NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:self.commandEndpoint]];
+    [urlRequest setHTTPMethod:@"GET"];
+
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+    {
+      if(error == nil)
+      {
+        NSError *parseError = nil;
+        NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+          self.scenarioCommandName = responseDictionary[@"scenario_name"];
+          self.scenarioCommandMetadata = responseDictionary[@"scenario_mode"];
+          NSLog(@"Received command: %@", responseDictionary);
+          if (responseDictionary[@"reset_data"]) {
+              [self clearPersistentData:nil];
+          }
+          if ([@"run_scenario" isEqualToString:responseDictionary[@"action"]]) {
+              [self runScenario:nil];
+          } else if ([@"start_bugsnag" isEqualToString:responseDictionary[@"action"]]) {
+              [self startBugsnag:nil];
+          } else {
+              BSLog(@"Cannot run scenario due to invalid action: %@", responseDictionary[@"action"]);
+          }
+      }
+      else
+      {
+        NSLog(@"Error: %@", error);
+      }
+    }];
+    [dataTask resume];
 }
 
 @end
