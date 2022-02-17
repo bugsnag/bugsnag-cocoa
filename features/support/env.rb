@@ -24,9 +24,7 @@ BeforeAll do
       system("cd #{fixture_dir} && unzip -q #{zip_name}", exception: true)
     end
 
-    if File.exist?(app_path)
-      system("#{app_path}/Contents/MacOS/#{Maze.config.app} -register", exception: true)
-    end
+    
   end
 end
 
