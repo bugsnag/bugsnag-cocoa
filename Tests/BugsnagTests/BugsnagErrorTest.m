@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 
-#import "BugsnagKeys.h"
+#import "BSGKeys.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagStackframe.h"
 #import "BugsnagThread+Private.h"
