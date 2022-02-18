@@ -6,6 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
+#import "BSGKeys.h"
 #import "Bugsnag+Private.h"
 #import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagBreadcrumbs.h"
@@ -13,7 +14,6 @@
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagSystemState.h"
 #import "BugsnagTestConstants.h"
-#import "BugsnagKeys.h"
 #import "BugsnagUser.h"
 
 #import <objc/runtime.h>

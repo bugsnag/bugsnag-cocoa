@@ -29,11 +29,11 @@
 #import "BugsnagConfiguration+Private.h"
 
 #import "BSGConfigurationBuilder.h"
+#import "BSGKeys.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagApiClient.h"
 #import "BugsnagEndpointConfiguration.h"
 #import "BugsnagErrorTypes.h"
-#import "BugsnagKeys.h"
 #import "BugsnagLogger.h"
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagUser+Private.h"

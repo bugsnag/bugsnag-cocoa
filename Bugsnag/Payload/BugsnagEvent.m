@@ -18,6 +18,7 @@
 #import <Foundation/Foundation.h>
 
 #import "BSGFeatureFlagStore.h"
+#import "BSGKeys.h"
 #import "BSGSerialization.h"
 #import "BSG_KSCrashReportFields.h"
 #import "BSG_RFC3339DateTool.h"
@@ -31,7 +32,6 @@
 #import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagHandledState.h"
-#import "BugsnagKeys.h"
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSession+Private.h"

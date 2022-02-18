@@ -26,6 +26,7 @@
 
 #import "BugsnagPlatformConditional.h"
 
+#import "BSGKeys.h"
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSSystemInfoC.h"
 #import "BSG_KSMachHeaders.h"
@@ -33,7 +34,6 @@
 #import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSSysCtl.h"
-#import "BugsnagKeys.h"
 #import "BugsnagCollections.h"
 #import "BSG_KSLogger.h"
 #import "BSG_KSCrashReportFields.h"
