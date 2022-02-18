@@ -297,7 +297,7 @@ def run_macos_app
   Maze::Runner.kill_running_scripts if $reset_data
   Maze::Runner.run_command("features/fixtures/macos/output/#{Maze.config.app}.app/Contents/MacOS/#{Maze.config.app}", blocking: false)
   # Required to allow the non-blocking app to fully start before exiting
-  sleep(0.1)
+  sleep(1)
 end
 
 Then('the breadcrumb timestamps are valid for the event') do

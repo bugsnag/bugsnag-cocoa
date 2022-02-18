@@ -23,8 +23,6 @@ BeforeAll do
     unless File.exist?(app_path) || !File.exist?(zip_path)
       system("cd #{fixture_dir} && unzip -q #{zip_name}", exception: true)
     end
-
-    
   end
 end
 
