@@ -6,11 +6,12 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "BSG_KSCrashSentry_Private.h"
 #import "BugsnagMetadata.h"
 #import "BugsnagMetadata+Private.h"
 
 #import <XCTest/XCTest.h>
+#import <mach/mach_init.h>
+#import <mach/thread_act.h>
 
 // MARK: - Expose tested-class internals
 
@@ -389,13 +390,17 @@
     
     __block BOOL isFinished = NO;
     
+    const int threadCount = 6;
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
     queue.name = @"com.bugsnag.testMetadataStorageBuffer";
-    queue.maxConcurrentOperationCount = 6;
+    queue.maxConcurrentOperationCount = threadCount;
     
+    thread_t threads[threadCount] = {0};
     NSData *data = [NSData dataWithBytes:buffer length:strlen(buffer)];
-    for (NSInteger i = 0; i < queue.maxConcurrentOperationCount; i++) {
+    for (NSInteger i = 0; i < threadCount; i++) {
+        thread_t *threadPtr = threads + i;
         [queue addOperationWithBlock:^{
+            *threadPtr = mach_thread_self();
             while (!isFinished) {
                 // Since we're bypassing -addMetadata: we need to replicate its
                 // @synchronized behaviour.
@@ -412,11 +417,15 @@
         // Threads must be suspended to prevent the metadata buffer from being freed while
         // we read it. This replicates the environment when called from the crash handler.
         // No Objective-C code can be used while threads are suspended.
-        bsg_kscrashsentry_suspendThreads();
+        for (int i = 0; i < threadCount; i++) {
+            thread_suspend(threads[i]);
+        }
         
         strcpy(scratch, buffer);
         
-        bsg_kscrashsentry_resumeThreads();
+        for (int i = 0; i < threadCount; i++) {
+            thread_resume(threads[i]);
+        }
         
         XCTAssertNotNil(JSONObjectFromBuffer(scratch));
     }
