@@ -243,7 +243,7 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
 }
 
 - (void)sessionUpdateNotification:(NSNotification *)notification {
-    if (![BSGJSONSerialization isValidJSONObject:notification.object]) {
+    if (notification.object && ![BSGJSONSerialization isValidJSONObject:notification.object]) {
         bsg_log_err("Invalid session payload in notification");
         return;
     }
