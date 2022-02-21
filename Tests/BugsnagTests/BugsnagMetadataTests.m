@@ -411,6 +411,11 @@
         }];
     }
     
+    // Wait for threads to start
+    for (int i = 0; i < threadCount; i++) {
+        while (!threads[i]) {}
+    }
+    
     char *scratch = malloc(1024 * 1024);
     
     for (int i = 0; i < 10000; i++) {
