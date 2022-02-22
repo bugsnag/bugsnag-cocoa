@@ -49,9 +49,8 @@
 #define BSG_KSSystemField_iOSSupportVersion "iOSSupportVersion"
 
 #import <Foundation/Foundation.h>
-#import "BugsnagPlatformConditional.h"
 
-#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
+#if TARGET_OS_IOS || TARGET_OS_TV
 #import "BSGUIKit.h"
 #endif
 
@@ -90,7 +89,7 @@
  */
 + (NSString *)deviceAndAppHash;
 
-#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
+#if TARGET_OS_IOS || TARGET_OS_TV
 + (UIApplicationState)currentAppState;
 
 /**

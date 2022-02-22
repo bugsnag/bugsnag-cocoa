@@ -24,8 +24,6 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagPlatformConditional.h"
-
 #import <execinfo.h>
 #import "BSG_KSCrashAdvanced.h"
 
@@ -43,7 +41,7 @@
 #import "BSG_KSCrashIdentifier.h"
 #import "BSG_KSCrashReportFields.h"
 
-#if BSG_HAS_UIKIT
+#if TARGET_OS_IOS || TARGET_OS_TV
 #import "BSGUIKit.h"
 #endif
 #if TARGET_OS_OSX
@@ -159,7 +157,7 @@
     free(recrashReportPath);
     
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
-#if BSG_HAS_UIKIT
+#if TARGET_OS_IOS || TARGET_OS_TV
     [nCenter addObserver:self
                 selector:@selector(applicationDidBecomeActive)
                     name:UIApplicationDidBecomeActiveNotification

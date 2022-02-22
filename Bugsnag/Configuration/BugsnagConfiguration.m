@@ -24,8 +24,6 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagPlatformConditional.h"
-
 #import "BugsnagConfiguration+Private.h"
 
 #import "BSGConfigurationBuilder.h"
@@ -212,11 +210,11 @@ static NSUserDefaults *userDefaults;
     #endif
 
     NSString *appType = nil;
-    #if BSG_PLATFORM_TVOS
+    #if TARGET_OS_TV
         appType = @"tvOS";
-    #elif BSG_PLATFORM_IOS
+    #elif TARGET_OS_IOS
         appType = @"iOS";
-    #elif BSG_PLATFORM_OSX
+    #elif TARGET_OS_OSX
         appType = @"macOS";
     #else
         appType = @"unknown";

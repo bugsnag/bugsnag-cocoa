@@ -6,8 +6,6 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import "BugsnagPlatformConditional.h"
-
 #import "BugsnagSystemState.h"
 
 #if TARGET_OS_OSX
@@ -113,11 +111,11 @@ static NSMutableDictionary* initCurrentState(BugsnagKVStore *kvstore, BugsnagCon
     app[@"binaryArch"] = systemInfo[@BSG_KSSystemField_BinaryArch];
     app[@"inForeground"] = @(isInForeground);
     app[@"isActive"] = @(isActive);
-#if BSG_PLATFORM_TVOS
+#if TARGET_OS_TV
     app[BSGKeyType] = @"tvOS";
-#elif BSG_PLATFORM_IOS
+#elif TARGET_OS_IOS
     app[BSGKeyType] = @"iOS";
-#elif BSG_PLATFORM_OSX
+#elif TARGET_OS_OSX
     app[BSGKeyType] = @"macOS";
 #endif
     app[SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE] = @(isBeingDebugged);
@@ -138,7 +136,7 @@ static NSMutableDictionary* initCurrentState(BugsnagKVStore *kvstore, BugsnagCon
         @"clangVersion": systemInfo[@BSG_KSSystemField_ClangVersion] ?: @"",
         @"osBuild": systemInfo[@BSG_KSSystemField_OSVersion] ?: @""
     };
-#if BSG_PLATFORM_SIMULATOR
+#if TARGET_OS_SIMULATOR
     device[@"simulator"] = @YES;
 #else
     device[@"simulator"] = @NO;

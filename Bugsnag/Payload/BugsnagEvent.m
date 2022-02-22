@@ -6,16 +6,7 @@
 //
 //
 
-#import "BugsnagPlatformConditional.h"
-
 #import "BugsnagEvent+Private.h"
-
-#if BSG_PLATFORM_IOS
-#import "BSGUIKit.h"
-#include <sys/utsname.h>
-#endif
-
-#import <Foundation/Foundation.h>
 
 #import "BSGFeatureFlagStore.h"
 #import "BSGKeys.h"

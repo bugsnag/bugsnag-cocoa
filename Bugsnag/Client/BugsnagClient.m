@@ -24,8 +24,6 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagPlatformConditional.h"
-
 #import "BugsnagClient+Private.h"
 
 #import "BSGAppHangDetector.h"
@@ -72,15 +70,15 @@
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
 
-#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
-#define BSGOOMAvailable 1
+#if TARGET_OS_IOS || TARGET_OS_TV
+#define BSG_OOM_AVAILABLE 1
 #else
-#define BSGOOMAvailable 0
+#define BSG_OOM_AVAILABLE 0
 #endif
 
-#if BSG_PLATFORM_IOS
+#if TARGET_OS_IOS
 #import "BSGUIKit.h"
-#elif BSG_PLATFORM_OSX
+#elif TARGET_OS_OSX
 #import "BSGAppKit.h"
 #endif
 
@@ -268,7 +266,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                withKey:BSGKeyThermalState
                              toSection:BSGKeyDevice];
         }
-#if BSG_PLATFORM_IOS
+#if TARGET_OS_IOS
         _lastOrientation = BSGStringFromDeviceOrientation([UIDEVICE currentDevice].orientation);
         [self.state addMetadata:_lastOrientation withKey:BSGKeyOrientation toSection:BSGKeyDeviceState];
 #endif
@@ -293,7 +291,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 
-#if BSG_PLATFORM_IOS
+#if TARGET_OS_IOS
     [center addObserver:self
                selector:@selector(batteryChanged:)
                    name:UIDeviceBatteryStateDidChangeNotification
@@ -348,9 +346,9 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     [center addObserver:self
                selector:@selector(applicationWillTerminate:)
-#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
+#if TARGET_OS_IOS || TARGET_OS_TV
                    name:UIApplicationWillTerminateNotification
-#elif BSG_PLATFORM_OSX
+#elif TARGET_OS_OSX
                    name:NSApplicationWillTerminateNotification
 #endif
                  object:nil];
@@ -444,7 +442,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
             if (self.configuration.enabledErrorTypes.thermalKills) {
                 self.eventFromLastLaunch = [self generateThermalKillEvent];
             }
-#if BSGOOMAvailable
+#if BSG_OOM_AVAILABLE
         } else {
             bsg_log_info(@"Last run terminated unexpectedly; possible Out Of Memory.");
             if (self.configuration.enabledErrorTypes.ooms) {
@@ -491,7 +489,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [BSGConnectivity stopMonitoring];
 
-#if BSG_PLATFORM_IOS
+#if TARGET_OS_IOS
     [UIDEVICE currentDevice].batteryMonitoringEnabled = NO;
     [[UIDEVICE currentDevice] endGeneratingDeviceOrientationNotifications];
 #endif
@@ -886,7 +884,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
  *
  * @param notification The change notification
  */
-#if BSG_PLATFORM_IOS
+#if TARGET_OS_IOS
 - (void)batteryChanged:(__attribute__((unused)) NSNotification *)notification {
     if (![UIDEVICE currentDevice]) {
         return;

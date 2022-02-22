@@ -231,9 +231,6 @@
 		0089681B2486DA5600DC48C2 /* BSGSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968112486DA5600DC48C2 /* BSGSerialization.h */; };
 		0089681C2486DA5600DC48C2 /* BSGSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968112486DA5600DC48C2 /* BSGSerialization.h */; };
 		0089681D2486DA5600DC48C2 /* BSGSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968112486DA5600DC48C2 /* BSGSerialization.h */; };
-		0089681E2486DA5600DC48C2 /* BugsnagPlatformConditional.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968122486DA5600DC48C2 /* BugsnagPlatformConditional.h */; };
-		0089681F2486DA5600DC48C2 /* BugsnagPlatformConditional.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968122486DA5600DC48C2 /* BugsnagPlatformConditional.h */; };
-		008968202486DA5600DC48C2 /* BugsnagPlatformConditional.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968122486DA5600DC48C2 /* BugsnagPlatformConditional.h */; };
 		008968252486DA5600DC48C2 /* BugsnagLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968142486DA5600DC48C2 /* BugsnagLogger.h */; };
 		008968262486DA5600DC48C2 /* BugsnagLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968142486DA5600DC48C2 /* BugsnagLogger.h */; };
 		008968272486DA5600DC48C2 /* BugsnagLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 008968142486DA5600DC48C2 /* BugsnagLogger.h */; };
@@ -944,7 +941,6 @@
 		E746294A24890D2F00F92D67 /* BugsnagCollections.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 008968102486DA5600DC48C2 /* BugsnagCollections.h */; };
 		E746294B24890D2F00F92D67 /* BSGKeys.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 008968152486DA5600DC48C2 /* BSGKeys.h */; };
 		E746294C24890D2F00F92D67 /* BugsnagLogger.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 008968142486DA5600DC48C2 /* BugsnagLogger.h */; };
-		E746294D24890D2F00F92D67 /* BugsnagPlatformConditional.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 008968122486DA5600DC48C2 /* BugsnagPlatformConditional.h */; };
 		E746295824890D3000F92D67 /* BugsnagHandledState.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0089684E2486DA9400DC48C2 /* BugsnagHandledState.h */; };
 		E746295924890D3000F92D67 /* BugsnagNotifier.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 008968622486DA9500DC48C2 /* BugsnagNotifier.h */; };
 		E746295E24890D3000F92D67 /* BugsnagStacktrace.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0089684F2486DA9400DC48C2 /* BugsnagStacktrace.h */; };
@@ -1067,7 +1063,6 @@
 				E746294A24890D2F00F92D67 /* BugsnagCollections.h in CopyFiles */,
 				E746294B24890D2F00F92D67 /* BSGKeys.h in CopyFiles */,
 				E746294C24890D2F00F92D67 /* BugsnagLogger.h in CopyFiles */,
-				E746294D24890D2F00F92D67 /* BugsnagPlatformConditional.h in CopyFiles */,
 				E746295824890D3000F92D67 /* BugsnagHandledState.h in CopyFiles */,
 				E746295924890D3000F92D67 /* BugsnagNotifier.h in CopyFiles */,
 				E746295E24890D3000F92D67 /* BugsnagStacktrace.h in CopyFiles */,
@@ -1206,7 +1201,6 @@
 		008967F22486DA4500DC48C2 /* BSGConnectivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGConnectivity.h; sourceTree = "<group>"; };
 		008968102486DA5600DC48C2 /* BugsnagCollections.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagCollections.h; sourceTree = "<group>"; };
 		008968112486DA5600DC48C2 /* BSGSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGSerialization.h; sourceTree = "<group>"; };
-		008968122486DA5600DC48C2 /* BugsnagPlatformConditional.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagPlatformConditional.h; sourceTree = "<group>"; };
 		008968142486DA5600DC48C2 /* BugsnagLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagLogger.h; sourceTree = "<group>"; };
 		008968152486DA5600DC48C2 /* BSGKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGKeys.h; sourceTree = "<group>"; };
 		008968162486DA5600DC48C2 /* BSGSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGSerialization.m; sourceTree = "<group>"; };
@@ -1926,7 +1920,6 @@
 				CBAB4DD32510D2460092CBAA /* BugsnagKVStoreObjC.h */,
 				CBAB4DD42510D2460092CBAA /* BugsnagKVStoreObjC.m */,
 				008968142486DA5600DC48C2 /* BugsnagLogger.h */,
-				008968122486DA5600DC48C2 /* BugsnagPlatformConditional.h */,
 				015F528325C15BB7000D1915 /* MRCCanary.m */,
 			);
 			path = Helpers;
@@ -2151,7 +2144,6 @@
 				00896A1D2486DAD100DC48C2 /* BSG_KSCrashSentry_NSException.h in Headers */,
 				0089695A2486DAD000DC48C2 /* BSG_KSBacktrace.h in Headers */,
 				0089688B2486DA9600DC48C2 /* BugsnagStacktrace.h in Headers */,
-				0089681E2486DA5600DC48C2 /* BugsnagPlatformConditional.h in Headers */,
 				008969602486DAD000DC48C2 /* BSG_KSSysCtl.h in Headers */,
 				010FF28425ED2A8D00E4F2B0 /* BSGAppHangDetector.h in Headers */,
 				008967F42486DA4500DC48C2 /* BSGSessionUploader.h in Headers */,
@@ -2258,7 +2250,6 @@
 				00896A1E2486DAD100DC48C2 /* BSG_KSCrashSentry_NSException.h in Headers */,
 				0089695B2486DAD000DC48C2 /* BSG_KSBacktrace.h in Headers */,
 				0089688C2486DA9600DC48C2 /* BugsnagStacktrace.h in Headers */,
-				0089681F2486DA5600DC48C2 /* BugsnagPlatformConditional.h in Headers */,
 				008969612486DAD000DC48C2 /* BSG_KSSysCtl.h in Headers */,
 				008967F52486DA4500DC48C2 /* BSGSessionUploader.h in Headers */,
 				010FF28525ED2A8D00E4F2B0 /* BSGAppHangDetector.h in Headers */,
@@ -2365,7 +2356,6 @@
 				00896A1F2486DAD100DC48C2 /* BSG_KSCrashSentry_NSException.h in Headers */,
 				0089695C2486DAD000DC48C2 /* BSG_KSBacktrace.h in Headers */,
 				0089688D2486DA9600DC48C2 /* BugsnagStacktrace.h in Headers */,
-				008968202486DA5600DC48C2 /* BugsnagPlatformConditional.h in Headers */,
 				008969622486DAD000DC48C2 /* BSG_KSSysCtl.h in Headers */,
 				008967F62486DA4500DC48C2 /* BSGSessionUploader.h in Headers */,
 				010FF28625ED2A8D00E4F2B0 /* BSGAppHangDetector.h in Headers */,

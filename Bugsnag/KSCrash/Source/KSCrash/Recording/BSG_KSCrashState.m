@@ -35,7 +35,7 @@
 //#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 
-#if (TARGET_OS_TV || TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
+#if TARGET_OS_IOS || TARGET_OS_TV
 #import "BSGUIKit.h"
 #endif
 #include <errno.h>
@@ -307,7 +307,7 @@ bool bsg_kscrashstate_init(const char *const stateFilePath,
     // Simulate first transition to foreground
     state->launchesSinceLastCrash++;
     state->sessionsSinceLastCrash++;
-#if (TARGET_OS_TV || TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
+#if TARGET_OS_IOS || TARGET_OS_TV
     // On iOS/tvOS, the app may have launched in the background due to a fetch
     // event or notification
     UIApplicationState appState = [BSG_KSSystemInfo currentAppState];
