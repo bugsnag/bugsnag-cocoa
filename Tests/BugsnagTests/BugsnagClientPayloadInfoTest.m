@@ -60,7 +60,7 @@
     XCTAssertNotNil(device[@"time"]);
     XCTAssertNotNil(device[@"totalMemory"]);
     
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_IOS
     NSProcessInfo *processInfo = NSProcessInfo.processInfo;
     BOOL isOnMac = [processInfo respondsToSelector:NSSelectorFromString(@"isMacCatalystApp")] &&
                     [[processInfo valueForKey:@"isMacCatalystApp"] boolValue];

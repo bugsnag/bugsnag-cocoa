@@ -24,8 +24,6 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagPlatformConditional.h"
-
 #import <XCTest/XCTest.h>
 
 #import "BSG_KSSystemInfo.h"
@@ -63,7 +61,7 @@
     }
 }
 
-#if BSG_PLATFORM_TVOS || BSG_PLATFORM_IOS
+#if TARGET_OS_TV || TARGET_OS_IOS
 - (void)testCurrentAppState {
 #if TARGET_OS_TV
     [self setUpUIApplicationStub];

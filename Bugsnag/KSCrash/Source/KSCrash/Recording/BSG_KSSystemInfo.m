@@ -24,8 +24,6 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagPlatformConditional.h"
-
 #import "BSGKeys.h"
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSSystemInfoC.h"
@@ -43,7 +41,7 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <mach-o/dyld.h>
 
-#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
+#if TARGET_OS_IOS || TARGET_OS_TV
 #import "BSGUIKit.h"
 #endif
 #import "BSG_Jailbreak.h"
@@ -72,7 +70,7 @@ static inline bool is_jailbroken() {
  *
  * https://opensource.apple.com/source/xnu/xnu-7195.81.3/libsyscall/wrappers/system-version-compat.c.auto.html
  */
-#if !BSG_PLATFORM_SIMULATOR
+#if !TARGET_OS_SIMULATOR
 static NSDictionary * bsg_systemversion() {
     int fd = -1;
     char buffer[1024] = {0};
@@ -208,7 +206,7 @@ static NSDictionary * bsg_systemversion() {
 + (NSString *)deviceAndAppHash {
     NSMutableData *data = nil;
 
-#if BSG_HAS_UIDEVICE
+#if TARGET_OS_IOS || TARGET_OS_TV
     if ([[UIDEVICE currentDevice]
             respondsToSelector:@selector(identifierForVendor)]) {
         data = [NSMutableData dataWithLength:16];
@@ -466,7 +464,7 @@ static NSDictionary * bsg_systemversion() {
     return NSBundle.mainBundle.infoDictionary[@"NSExtension"][@"NSExtensionPointIdentifier"] != nil;
 }
 
-#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
+#if TARGET_OS_IOS || TARGET_OS_TV
 
 + (UIApplicationState)currentAppState {
     // Only checked outside of app extensions since sharedApplication is
