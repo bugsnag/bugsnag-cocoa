@@ -24,8 +24,6 @@
 // THE SOFTWARE.
 //
 
-#import "BugsnagPlatformConditional.h"
-
 #import "BugsnagClient+Private.h"
 
 #import "BSGAppHangDetector.h"
@@ -34,6 +32,7 @@
 #import "BSGFileLocations.h"
 #import "BSGInternalErrorReporter.h"
 #import "BSGJSONSerialization.h"
+#import "BSGKeys.h"
 #import "BSGNotificationBreadcrumbs.h"
 #import "BSGSerialization.h"
 #import "BSGUtils.h"
@@ -59,7 +58,6 @@
 #import "BugsnagEvent+Private.h"
 #import "BugsnagFeatureFlag.h"
 #import "BugsnagHandledState.h"
-#import "BugsnagKeys.h"
 #import "BugsnagLastRunInfo+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagMetadata+Private.h"
@@ -72,21 +70,20 @@
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
 
-#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
-#define BSGOOMAvailable 1
+#if TARGET_OS_IOS || TARGET_OS_TV
+#define BSG_OOM_AVAILABLE 1
 #else
-#define BSGOOMAvailable 0
+#define BSG_OOM_AVAILABLE 0
 #endif
 
-#if BSG_PLATFORM_IOS
+#if TARGET_OS_IOS
 #import "BSGUIKit.h"
-#elif BSG_PLATFORM_OSX
+#elif TARGET_OS_OSX
 #import "BSGAppKit.h"
 #endif
 
 static NSString *const BSTabCrash = @"crash";
 static NSString *const BSAttributeDepth = @"depth";
-static NSString *const BSEventLowMemoryWarning = @"lowMemoryWarning";
 
 static struct {
     // Contains the state of the event (handled/unhandled)
@@ -269,7 +266,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                withKey:BSGKeyThermalState
                              toSection:BSGKeyDevice];
         }
-#if BSG_PLATFORM_IOS
+#if TARGET_OS_IOS
         _lastOrientation = BSGStringFromDeviceOrientation([UIDEVICE currentDevice].orientation);
         [self.state addMetadata:_lastOrientation withKey:BSGKeyOrientation toSection:BSGKeyDeviceState];
 #endif
@@ -294,7 +291,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 
-#if BSG_PLATFORM_IOS
+#if TARGET_OS_IOS
     [center addObserver:self
                selector:@selector(batteryChanged:)
                    name:UIDeviceBatteryStateDidChangeNotification
@@ -310,10 +307,29 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                    name:UIDeviceOrientationDidChangeNotification
                  object:nil];
 
-    [center addObserver:self
-               selector:@selector(applicationDidReceiveMemoryWarning:)
-                   name:UIApplicationDidReceiveMemoryWarningNotification
-                 object:nil];
+    // DISPATCH_SOURCE_TYPE_MEMORYPRESSURE arrives slightly sooner than UIApplicationDidReceiveMemoryWarningNotification
+    dispatch_queue_global_t queue = dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0);
+    uintptr_t mask = DISPATCH_MEMORYPRESSURE_NORMAL | DISPATCH_MEMORYPRESSURE_WARN | DISPATCH_MEMORYPRESSURE_CRITICAL;
+    dispatch_source_t memoryPressureSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_MEMORYPRESSURE, 0, mask, queue);
+    __weak typeof(self) weakSelf = self;
+    dispatch_source_set_event_handler(memoryPressureSource, ^{
+        __strong typeof(self) strongSelf = weakSelf;
+        dispatch_source_memorypressure_flags_t level = dispatch_source_get_data(memoryPressureSource);
+        switch (level) {
+            case DISPATCH_MEMORYPRESSURE_NORMAL:
+                [strongSelf.state clearMetadataFromSection:BSGKeyDeviceState withKey:BSGKeyLowMemoryWarning];
+                break;
+            case DISPATCH_MEMORYPRESSURE_WARN:
+            case DISPATCH_MEMORYPRESSURE_CRITICAL:
+                [strongSelf.state addMetadata:[BSG_RFC3339DateTool stringFromDate:[NSDate date]]
+                                      withKey:BSGKeyLowMemoryWarning
+                                    toSection:BSGKeyDeviceState];
+                break;
+            default:
+                break;
+        }
+    });
+    dispatch_resume(memoryPressureSource);
 
     [UIDEVICE currentDevice].batteryMonitoringEnabled = YES;
     [[UIDEVICE currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -330,9 +346,9 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     [center addObserver:self
                selector:@selector(applicationWillTerminate:)
-#if BSG_PLATFORM_IOS || BSG_PLATFORM_TVOS
+#if TARGET_OS_IOS || TARGET_OS_TV
                    name:UIApplicationWillTerminateNotification
-#elif BSG_PLATFORM_OSX
+#elif TARGET_OS_OSX
                    name:NSApplicationWillTerminateNotification
 #endif
                  object:nil];
@@ -426,7 +442,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
             if (self.configuration.enabledErrorTypes.thermalKills) {
                 self.eventFromLastLaunch = [self generateThermalKillEvent];
             }
-#if BSGOOMAvailable
+#if BSG_OOM_AVAILABLE
         } else {
             bsg_log_info(@"Last run terminated unexpectedly; possible Out Of Memory.");
             if (self.configuration.enabledErrorTypes.ooms) {
@@ -473,7 +489,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [BSGConnectivity stopMonitoring];
 
-#if BSG_PLATFORM_IOS
+#if TARGET_OS_IOS
     [UIDEVICE currentDevice].batteryMonitoringEnabled = NO;
     [[UIDEVICE currentDevice] endGeneratingDeviceOrientationNotifications];
 #endif
@@ -868,7 +884,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
  *
  * @param notification The change notification
  */
-#if BSG_PLATFORM_IOS
+#if TARGET_OS_IOS
 - (void)batteryChanged:(__attribute__((unused)) NSNotification *)notification {
     if (![UIDEVICE currentDevice]) {
         return;
@@ -922,12 +938,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                       andMetadata:breadcrumbMetadata];
 
     self.lastOrientation = orientation;
-}
-
-- (void)applicationDidReceiveMemoryWarning:(__unused NSNotification *)notif {
-    [self.state addMetadata:[BSG_RFC3339DateTool stringFromDate:[NSDate date]]
-                      withKey:BSEventLowMemoryWarning
-                    toSection:BSGKeyDeviceState];
 }
 
 #endif

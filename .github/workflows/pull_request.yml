@@ -2,62 +2,53 @@ name: "Pull Request"
 on: [pull_request]
 
 jobs:
-  build:
+
+  analyze:
     runs-on: macos-latest
     env:
       # Infer 1.0.1 cannot parse the iOS 15 SDK headers
       DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
     steps:
-      - name: Checkout base branch
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.base_ref }}
+    - name: Checkout pull request HEAD
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+    - name: Install dependencies
+      run: brew install infer oclint && gem install xcpretty
+    - name: Build framework
+      run: make compile_commands.json
+    - name: Infer
+      run: make infer
+    - name: OCLint
+      run: make oclint
 
-      - name: Build framework
-        # Base branch may not have the latest Makefile, so cannot use `make` here
-        run: |
-          xcodebuild -project Bugsnag.xcodeproj -configuration Release -scheme Bugsnag-iOS -destination generic/platform=iOS -derivedDataPath DerivedData -quiet clean build VALID_ARCHS=arm64
-          eval $(stat -s DerivedData/Build/Products/Release-iphoneos/Bugsnag.framework/Bugsnag)
-          echo $st_size > .size_before
-          rm -rf DerivedData
-
-      - name: Checkout PR branch
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
-          fetch-depth: 0
-          clean: false
-
-      - uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
-
-      - name: Bundle install
-        run: |
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-
-      - name: Build framework
-        run: |
-          make compile_commands.json
-          eval $(stat -s DerivedData/Build/Products/Release-iphoneos/Bugsnag.framework/Bugsnag)
-          echo $st_size > .size_after
-      
-      - name: Infer
-        run: |
-          brew install infer
-          make infer
-      
-      - name: OCLint
-        run: |
-          brew install oclint
-          make oclint
-
-      - name: Danger
-        run: bundle exec danger
-        env:
-          # https://docs.github.com/en/free-pro-team@latest/actions/reference/authentication-in-a-workflow
-          DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  danger:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout target branch
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.base_ref }}
+    - name: Build framework
+      run: xcodebuild -project Bugsnag.xcodeproj -configuration Release -target Bugsnag-iOS -destination generic/platform=iOS -quiet clean build VALID_ARCHS=arm64 RUN_CLANG_STATIC_ANALYZER=NO && mv build build.base
+    - name: Checkout pull request merge branch
+      uses: actions/checkout@v2
+      with: 
+        clean: false
+        fetch-depth: 100
+    - name: Build framework
+      run: xcodebuild -project Bugsnag.xcodeproj -configuration Release -target Bugsnag-iOS -destination generic/platform=iOS -quiet clean build VALID_ARCHS=arm64 RUN_CLANG_STATIC_ANALYZER=NO
+    - name: Install dependencies
+      run: brew install bloaty && gem install danger
+    - name: Run bloaty (compileunits)
+      run: bloaty build/Release-iphoneos/Bugsnag.framework/Bugsnag --debug-file=build/Release-iphoneos/Bugsnag.framework.dSYM/Contents/Resources/DWARF/Bugsnag -n 0 -d compileunits
+    - name: Run bloaty (sections,compileunits)
+      run: bloaty build/Release-iphoneos/Bugsnag.framework/Bugsnag --debug-file=build/Release-iphoneos/Bugsnag.framework.dSYM/Contents/Resources/DWARF/Bugsnag -n 0 -d sections,compileunits
+    - name: Run bloaty (sections,symbols)
+      run: bloaty build/Release-iphoneos/Bugsnag.framework/Bugsnag --debug-file=build/Release-iphoneos/Bugsnag.framework.dSYM/Contents/Resources/DWARF/Bugsnag -n 0 -d sections,symbols
+    - name: Run bloaty (segments,sections)
+      run: bloaty build/Release-iphoneos/Bugsnag.framework/Bugsnag --debug-file=build/Release-iphoneos/Bugsnag.framework.dSYM/Contents/Resources/DWARF/Bugsnag -n 0 -d segments,sections
+    - name: Run danger
+      run: danger
+      env:
+        DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}

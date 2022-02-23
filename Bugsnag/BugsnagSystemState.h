@@ -10,7 +10,7 @@
 
 #import <Bugsnag/BugsnagConfiguration.h>
 
-#import "BugsnagKeys.h"
+#import "BSGKeys.h"
 
 #define SYSTEMSTATE_KEY_APP @"app"
 #define SYSTEMSTATE_KEY_DEVICE @"device"

@@ -29,7 +29,9 @@
 
 #import "BSG_KSMach.h"
 #import "BSG_KSMachApple.h"
+
 #import <mach/mach_time.h>
+#import <sys/sysctl.h>
 
 
 @interface TestThread: NSThread
@@ -115,6 +117,13 @@ void * executeBlock(void *ptr)
 
 - (void) testSuspendThreads
 {
+#if TARGET_CPU_X86_64 && defined(XCTSkipIf)
+    int translated = 0;
+    size_t size = sizeof(translated);
+    sysctlbyname("sysctl.proc_translated", &translated, &size, NULL, 0);
+    XCTSkipIf(translated, @"Can deadlock under Rosetta");
+#endif
+    
     // Just make sure that suspending and resuming doesn't hang the process.
     unsigned threadsCount = 0;
     thread_t *threads = bsg_ksmachgetAllThreads(&threadsCount);

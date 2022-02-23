@@ -1,7 +1,22 @@
 Changelog
 =========
 
+## 6.16.3 (2022-02-23)
+
+### Bug fixes
+
+* Fix incorrect OOM session info after manually pausing or stopping a session.
+  [#1301](https://github.com/bugsnag/bugsnag-cocoa/pull/1301)
+
+* Improve accuracy of `metaData.device.lowMemoryWarning`.
+  [#1296](https://github.com/bugsnag/bugsnag-cocoa/pull/1296)
+
+* Stop reporting `SIGPIPE` errors in apps that set `SIG_IGN`.
+  [#1295](https://github.com/bugsnag/bugsnag-cocoa/pull/1295)
+
 ## 6.16.2 (2022-01-26)
+
+### Bug fixes
 
 * Improve reliability of crash reporting when multiple crashes occur concurrently.
   [#1286](https://github.com/bugsnag/bugsnag-cocoa/pull/1286)

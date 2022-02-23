@@ -222,6 +222,13 @@
     AssertStackframeValues(stackframes[5], @"CoreFoundation",   0x00007fff23e422a4, @"0x00007fff23e422a4");
     AssertStackframeValues(stackframes[6], @"ReactNativeTest",  0x000000010fd76eae, @"0x000000010fd76eae");
     AssertStackframeValues(stackframes[7], @"ReactNative App",  0x000000010fd79138, @"0x000000010fd79138");
+    
+    stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:@[
+        @"57  ???                                 0x0000000104eb90f4 0x0 + 4377514228",
+        @"58  ???                                 0x1855800000000000 0x0 + 1753448367419031552"]];
+    
+    AssertStackframeValues(stackframes[0], @"???",  0x0000000104eb90f4, @"0x0");
+    AssertStackframeValues(stackframes[1], @"???",  0x1855800000000000, @"0x0");
 }
 
 - (void)testRealCallStackSymbols {
@@ -232,6 +239,7 @@
     NSArray<BugsnagStackframe *> *stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:callStackSymbols];
     XCTAssertEqual(stackframes.count, callStackSymbols.count, @"All valid stack frame strings should be parsed");
     XCTAssertTrue(stackframes.firstObject.isPc, @"The first stack frame should have isPc set to true");
+    BOOL __block didSeeMain = NO;
     [stackframes enumerateObjectsUsingBlock:^(BugsnagStackframe *stackframe, NSUInteger idx, BOOL *stop) {
         XCTAssertNotNil(stackframe.frameAddress);
         XCTAssertNotNil(stackframe.machoFile);
@@ -241,16 +249,36 @@
             // Stack frames with invalid instruction addresses cannot be resolved to an image or symbol
             return;
         }
+#if TARGET_OS_SIMULATOR
+        if ([callStackSymbols[idx] containsString:@"0x0 + "]) {
+            // This frame is not in any known image
+            return;
+        }
+#endif
         XCTAssertNotNil(stackframe.machoUuid);
         XCTAssertNotNil(stackframe.machoVmAddress);
         XCTAssertNotNil(stackframe.machoLoadAddress);
+#if TARGET_OS_SIMULATOR
+        if (didSeeMain) {
+            // Stack frames below main are problematic to symbolicate, so skip those checks
+            return;
+        }
+#endif
         [stackframe symbolicateIfNeeded];
         XCTAssertNotNil(stackframe.symbolAddress);
         XCTAssertNil(stackframe.type);
         XCTAssertTrue([callStackSymbols[idx] containsString:stackframe.method] ||
+                      // Sometimes we do a better job at symbolication (-:
+                      [callStackSymbols[idx] containsString:@"???"] ||
+                      // But sometimes the best we can do is not great
+                      [stackframe.method isEqualToString:@"<redacted>"] ||
                       // callStackSymbols contains the wrong symbol name - "__copy_helper_block_e8_32s"
                       // lldb agrees that the symbol should be "__RunTests_block_invoke_2"
                       [stackframe.method isEqualToString:@"__RunTests_block_invoke_2"]);
+        
+        if ([stackframe.method isEqualToString:@"main"]) {
+            didSeeMain = YES;
+        }
     }];
 }
 

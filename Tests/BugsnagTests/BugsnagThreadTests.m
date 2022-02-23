@@ -12,7 +12,8 @@
 #import "BugsnagStackframe+Private.h"
 #import "BugsnagThread+Private.h"
 
-#include <stdatomic.h>
+#import <pthread.h>
+#import <stdatomic.h>
 
 @interface BugsnagThreadTests : XCTestCase
 @property NSArray *binaryImages;
@@ -224,11 +225,19 @@
     XCTAssertGreaterThan(threads.count, 1);
 }
 
+static void * executeBlock(void *ptr) {
+    ((__bridge_transfer dispatch_block_t)ptr)();
+    return NULL;
+}
+
 - (void)testAllThreadsFromBackgroundDoesNotOverflowStack {
     const int threadCount = 1000;
+    pthread_t pthreads[threadCount];
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     for (int i = 0; i < threadCount; i++) {
-        [NSThread detachNewThreadSelector:@selector(waitForSemaphore:) toTarget:self withObject:semaphore];
+        pthread_create(pthreads + i, NULL, executeBlock, (__bridge_retained void *)^{
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        });
     }
     __block NSArray<BugsnagThread *> *threads = nil;
     dispatch_sync(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -238,10 +247,9 @@
     for (int i = 0; i < threadCount; i++) {
         dispatch_semaphore_signal(semaphore);
     }
-}
-
-- (void)waitForSemaphore:(dispatch_semaphore_t)semaphore {
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    for (int i = 0; i < threadCount; i++) {
+        pthread_join(pthreads[i], 0);
+    }
 }
 
 - (void)testCurrentThread {

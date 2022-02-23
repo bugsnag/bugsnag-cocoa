@@ -7,7 +7,6 @@
 //
 
 #import "BSGUtils.h"
-#import "BSG_KSCrashSentry_Private.h"
 #import "BSG_KSJSONCodec.h"
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumb+Private.h"
@@ -16,6 +15,8 @@
 #import "BugsnagTestConstants.h"
 
 #import <XCTest/XCTest.h>
+#import <mach/mach_init.h>
+#import <mach/thread_act.h>
 #import <pthread.h>
 
 // Defined in BSG_KSCrashReport.c
@@ -482,9 +483,12 @@ static void * executeBlock(void *ptr) {
     
     const int threadCount = 6;
     pthread_t threads[threadCount] = {0};
+    thread_t machThreads[threadCount] = {0};
     for (int i = 0; i < threadCount; i++) {
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        thread_t *threadPtr = machThreads + i;
         pthread_create(&threads[i], NULL, executeBlock, (__bridge_retained void *)^{
+            *threadPtr = mach_thread_self();
             pthread_setname_np("com.bugsnag.testCrashReportWriterConcurrency.writer");
             dispatch_semaphore_signal(semaphore);
             while (!isFinished) {
@@ -503,7 +507,9 @@ static void * executeBlock(void *ptr) {
         buffer.length = 0;
         
         // BugsnagBreadcrumbsWriteCrashReport() requires other threads to be suspended.
-        bsg_kscrashsentry_suspendThreads();
+        for (int i = 0; i < threadCount; i++) {
+            thread_suspend(machThreads[i]);
+        }
         
         BSG_KSJSONEncodeContext context;
         BSG_KSCrashReportWriter writer;
@@ -513,7 +519,9 @@ static void * executeBlock(void *ptr) {
         BugsnagBreadcrumbsWriteCrashReport(&writer);
         writer.endContainer(&writer);
         
-        bsg_kscrashsentry_resumeThreads();
+        for (int i = 0; i < threadCount; i++) {
+            thread_resume(machThreads[i]);
+        }
         
         NSError *error = nil;
         NSData *data = [NSData dataWithBytesNoCopy:buffer.buffer length:buffer.length freeWhenDone:NO];

@@ -24,8 +24,6 @@
 // THE SOFTWARE.
 //
 
-#include "BugsnagPlatformConditional.h"
-
 #include "BSG_KSCrashSentry.h"
 #include "BSG_KSCrashSentry_Private.h"
 
@@ -49,7 +47,7 @@ typedef struct {
 } BSG_CrashSentry;
 
 static BSG_CrashSentry bsg_g_sentries[] = {
-#if BSG_HAS_MACH
+#if MACH_EXCEPTION_HANDLING_AVAILABLE
     {
         BSG_KSCrashTypeMachException, bsg_kscrashsentry_installMachHandler,
         bsg_kscrashsentry_uninstallMachHandler,
