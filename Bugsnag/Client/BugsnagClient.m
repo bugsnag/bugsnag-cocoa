@@ -219,7 +219,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         }];
         
         _notifier = _configuration.notifier ?: [[BugsnagNotifier alloc] init];
-        self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:_configuration];
 
         BSGFileLocations *fileLocations = [BSGFileLocations current];
         
@@ -284,6 +283,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 - (void)start {
     [self.configuration validate];
     [self.crashSentry install:self.configuration onCrash:&BSSerializeDataCrashHandler];
+    self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
     [self computeDidCrashLastLaunch];
     [self.breadcrumbs removeAllBreadcrumbs];
     [self setupConnectivityListener];

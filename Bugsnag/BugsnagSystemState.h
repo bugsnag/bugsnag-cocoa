@@ -16,7 +16,6 @@
 #define SYSTEMSTATE_KEY_DEVICE @"device"
 
 #define SYSTEMSTATE_APP_WAS_TERMINATED @"wasTerminated"
-#define SYSTEMSTATE_APP_IS_ACTIVE @"isActive"
 #define SYSTEMSTATE_APP_IS_IN_FOREGROUND @"inForeground"
 #define SYSTEMSTATE_APP_IS_LAUNCHING BSGKeyIsLaunching
 #define SYSTEMSTATE_APP_VERSION @"version"

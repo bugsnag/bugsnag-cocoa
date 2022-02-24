@@ -141,6 +141,7 @@ steps:
         run: cocoa-maze-runner
         command:
           - "features/barebone_tests.feature"
+          - "features/app_hangs.feature"
           - "--app=@build/ipa_url.txt"
           - "--farm=bs"
           - "--device=IOS_15"
@@ -169,6 +170,7 @@ steps:
         run: cocoa-maze-runner
         command:
           - "features/barebone_tests.feature"
+          - "features/app_hangs.feature"
           - "--app=@build/ipa_url.txt"
           - "--farm=bs"
           - "--device=IOS_10"
@@ -200,6 +202,7 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/barebone_tests.feature
+        features/app_hangs.feature
         --farm=local
         --os=macos
         --os-version=10.13
@@ -224,6 +227,7 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/barebone_tests.feature
+        features/app_hangs.feature
         --farm=local
         --os=macos
         --os-version=10.15
@@ -249,6 +253,7 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/barebone_tests.feature
+        features/app_hangs.feature
         --farm=local
         --os=macos
         --os-version=12

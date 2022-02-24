@@ -24,25 +24,32 @@
 // THE SOFTWARE.
 //
 
-#include "BSG_KSCrashState.h"
+#import "BSG_KSCrashState.h"
 
-#include "BSG_KSFile.h"
-#include "BSG_KSJSONCodec.h"
-#include "BSG_KSJSONCodecObjC.h"
-#include "BSG_KSMach.h"
-#include "BSG_KSSystemInfo.h"
-
-//#define BSG_KSLogger_LocalLevel TRACE
-#include "BSG_KSLogger.h"
+#import "BSG_KSFile.h"
+#import "BSG_KSJSONCodec.h"
+#import "BSG_KSJSONCodecObjC.h"
+#import "BSG_KSLogger.h"
+#import "BSG_KSMach.h"
+#import "BSG_KSSystemInfo.h"
 
 #if TARGET_OS_IOS || TARGET_OS_TV
 #import "BSGUIKit.h"
 #endif
-#include <errno.h>
-#include <fcntl.h>
-#include <mach/mach_time.h>
-#include <stdlib.h>
-#include <unistd.h>
+
+#if TARGET_OS_IOS
+#import <mach/mach_init.h>
+#import <mach/task.h>
+#import <mach/task_policy.h>
+#endif
+
+#import <errno.h>
+#import <fcntl.h>
+#import <mach/mach_time.h>
+#import <stdlib.h>
+#import <unistd.h>
+
+static bool bsg_kscrashstate_i_isInForeground(void);
 
 // ============================================================================
 #pragma mark - Constants -
@@ -307,16 +314,73 @@ bool bsg_kscrashstate_init(const char *const stateFilePath,
     // Simulate first transition to foreground
     state->launchesSinceLastCrash++;
     state->sessionsSinceLastCrash++;
-#if TARGET_OS_IOS || TARGET_OS_TV
+
     // On iOS/tvOS, the app may have launched in the background due to a fetch
-    // event or notification
-    UIApplicationState appState = [BSG_KSSystemInfo currentAppState];
-    state->applicationIsInForeground = [BSG_KSSystemInfo isInForeground:appState];
-#else
-    state->applicationIsInForeground = true;
-#endif
+    // event or notification (or prewarming on iOS 15+)
+    state->applicationIsInForeground = bsg_kscrashstate_i_isInForeground();
 
     return bsg_kscrashstate_i_saveState(state, stateFilePath);
+}
+
+static bool bsg_kscrashstate_i_isInForeground(void) {
+#if TARGET_OS_IOS
+    //
+    // Work around unreliability of -[UIApplication applicationState] which
+    // always returns UIApplicationStateBackground during the launch of UIScene
+    // based apps (until the first scene has been created.)
+    //
+    task_category_policy_data_t policy;
+    mach_msg_type_number_t count = TASK_CATEGORY_POLICY_COUNT;
+    boolean_t get_default = FALSE;
+    // task_policy_get() is prohibited on tvOS and watchOS
+    kern_return_t kr = task_policy_get(mach_task_self(), TASK_CATEGORY_POLICY,
+                                       (void *)&policy, &count, &get_default);
+    if (kr == KERN_SUCCESS) {
+        // TASK_FOREGROUND_APPLICATION  -> normal foreground launch
+        // TASK_NONUI_APPLICATION       -> background launch
+        // TASK_DARWINBG_APPLICATION    -> iOS 15 prewarming launch
+        // TASK_UNSPECIFIED             -> iOS 9 Simulator
+        if (!get_default && policy.role == TASK_FOREGROUND_APPLICATION) {
+            return true;
+        }
+    } else {
+        bsg_log_err(@"task_policy_get failed: %s", mach_error_string(kr));
+    }
+#endif
+
+#if TARGET_OS_IOS || TARGET_OS_TV
+    // +sharedApplication is unavailable to app extensions
+    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+        // Returning "foreground" seems wrong but matches what
+        // +[BSG_KSSystemInfo currentAppState] used to return
+        return true;
+    }
+
+    // Using performSelector: to avoid a compile-time check that
+    // +sharedApplication is not called from app extensions
+    UIApplication *application = [UIAPPLICATION performSelector:
+                                  @selector(sharedApplication)];
+
+    // There will be no UIApplication if UIApplicationMain() has not yet been
+    // called - e.g. from a SwiftUI app's init() function or UIKit app's main()
+    if (!application) {
+        return false;
+    }
+
+    __block UIApplicationState applicationState;
+    if ([[NSThread currentThread] isMainThread]) {
+        applicationState = [application applicationState];
+    } else {
+        // -[UIApplication applicationState] is a main thread-only API
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            applicationState = [application applicationState];
+        });
+    }
+
+    return applicationState != UIApplicationStateBackground;
+#else
+    return true;
+#endif
 }
 
 void bsg_kscrashstate_notifyAppInForeground(const bool isInForeground) {
