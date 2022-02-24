@@ -15,7 +15,8 @@ When("I run the configured scenario and relaunch the crashed app") do
   when 'ios'
     run_and_relaunch
   when 'macos'
-    # Pass
+    $scenario_mode = $last_scenario[:scenario_mode]
+    execute_command($last_scenario[:action], $last_scenario[:scenario_name])
   else
     raise "Unknown platform: #{platform}"
   end
@@ -47,91 +48,11 @@ When('I configure Bugsnag for {string}') do |scenario_name|
   execute_command :start_bugsnag, scenario_name
 end
 
-def check_device_model(field, list)
-  internal_names = {
-    'iPhone 6' => %w[iPhone7,2],
-    'iPhone 6 Plus' => %w[iPhone7,1],
-    'iPhone 6S' => %w[iPhone8,1],
-    'iPhone 7' => %w[iPhone9,1 iPhone9,2 iPhone9,3 iPhone9,4],
-    'iPhone 8' => %w[iPhone10,1 iPhone10,4],
-    'iPhone 8 Plus' => %w[iPhone10,2 iPhone10,5],
-    'iPhone 11' => %w[iPhone12,1],
-    'iPhone 11 Pro' => %w[iPhone12,3],
-    'iPhone 11 Pro Max' => %w[iPhone12,5],
-    'iPhone X' => %w[iPhone10,3 iPhone10,6],
-    'iPhone XR' => %w[iPhone11,8],
-    'iPhone XS' => %w[iPhone11,2 iPhone11,4 iPhone11,8]
-  }
-  expected_model = Maze.config.capabilities['device']
-  valid_models = internal_names[expected_model]
-  device_model = Maze::Helper.read_key_path(list.current[:body], field)
-  Maze.check.true(valid_models != nil ? valid_models.include?(device_model) : true,
-                  "The field #{device_model} did not match any of the list of expected fields")
-end
-
-Then('the error payload field {string} matches the test device model') do |field|
-  check_device_model field, Maze::Server.errors if Maze::Helper.get_current_platform.eql?('ios')
-end
-
-Then('the session payload field {string} matches the test device model') do |field|
-  check_device_model field, Maze::Server.sessions if Maze::Helper.get_current_platform.eql?('ios')
-end
-
-Then('the error is valid for the error reporting API') do
-  platform = Maze::Helper.get_current_platform
-  case platform
-  when 'ios'
-    steps %(
-      Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-      Then the breadcrumb timestamps are valid for the event
-    )
-  when 'macos'
-    steps %(
-      Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
-      Then the breadcrumb timestamps are valid for the event
-    )
-  else
-    raise "Unknown platform: #{platform}"
-  end
-end
-
-Then('the error is valid for the error reporting API ignoring breadcrumb timestamps') do
-  platform = Maze::Helper.get_current_platform
-  case platform
-  when 'ios'
-    steps %(
-      Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    )
-  when 'macos'
-    steps %(
-      Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
-    )
-  else
-    raise "Unknown platform: #{platform}"
-  end
-end
-
-Then('the session is valid for the session reporting API') do
-  platform = Maze::Helper.get_current_platform
-  case platform
-  when 'ios'
-    steps %(
-      Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
-    )
-  when 'macos'
-    steps %(
-      Then the session is valid for the session reporting API version "1.0" for the "OSX Bugsnag Notifier" notifier
-    )
-  else
-    raise "Unknown platform: #{platform}"
-  end
-end
-
 def execute_command(action, scenario_name)
   platform = Maze::Helper.get_current_platform
+  command = { action: action, scenario_name: scenario_name, scenario_mode: $scenario_mode }
   case platform
   when 'ios'
-    command = { action: action, scenario_name: scenario_name, scenario_mode: $scenario_mode }
     Maze::Server.commands.add command
     trigger_app_command
     $scenario_mode = nil
@@ -145,6 +66,7 @@ def execute_command(action, scenario_name)
     Maze::Runner.environment['BUGSNAG_SCENARIO_NAME'] = scenario_name.to_s
     Maze::Runner.environment['BUGSNAG_SCENARIO_METADATA'] = $scenario_mode.to_s
     Maze::Runner.environment['BUGSNAG_CLEAR_DATA'] = $reset_data ? 'true' : 'false'
+    $last_scenario = command
     run_macos_app
     $reset_data = false
   else
@@ -167,7 +89,7 @@ end
 When('I relaunch the app') do
   case Maze::Helper.get_current_platform
   when 'macos'
-    run_macos_app
+    # Pass
   else
     Maze.driver.launch_app
   end
@@ -175,11 +97,12 @@ end
 
 When("I relaunch the app after a crash") do
   # Wait for the app to stop running before relaunching
-  step 'the app is not running'
   case Maze::Helper.get_current_platform
   when 'macos'
-    # Pass
+    # Allow any operations to complete before the next step
+    sleep(2)
   else
+    step 'the app is not running'
     Maze.driver.launch_app
   end
 end
@@ -297,7 +220,87 @@ def run_macos_app
   Maze::Runner.kill_running_scripts if $reset_data
   Maze::Runner.run_command("features/fixtures/macos/output/#{Maze.config.app}.app/Contents/MacOS/#{Maze.config.app}", blocking: false)
   # Required to allow the non-blocking app to fully start before exiting
-  sleep(1)
+  sleep(2)
+end
+
+def check_device_model(field, list)
+  internal_names = {
+    'iPhone 6' => %w[iPhone7,2],
+    'iPhone 6 Plus' => %w[iPhone7,1],
+    'iPhone 6S' => %w[iPhone8,1],
+    'iPhone 7' => %w[iPhone9,1 iPhone9,2 iPhone9,3 iPhone9,4],
+    'iPhone 8' => %w[iPhone10,1 iPhone10,4],
+    'iPhone 8 Plus' => %w[iPhone10,2 iPhone10,5],
+    'iPhone 11' => %w[iPhone12,1],
+    'iPhone 11 Pro' => %w[iPhone12,3],
+    'iPhone 11 Pro Max' => %w[iPhone12,5],
+    'iPhone X' => %w[iPhone10,3 iPhone10,6],
+    'iPhone XR' => %w[iPhone11,8],
+    'iPhone XS' => %w[iPhone11,2 iPhone11,4 iPhone11,8]
+  }
+  expected_model = Maze.config.capabilities['device']
+  valid_models = internal_names[expected_model]
+  device_model = Maze::Helper.read_key_path(list.current[:body], field)
+  Maze.check.true(valid_models != nil ? valid_models.include?(device_model) : true,
+                  "The field #{device_model} did not match any of the list of expected fields")
+end
+
+Then('the error payload field {string} matches the test device model') do |field|
+  check_device_model field, Maze::Server.errors if Maze::Helper.get_current_platform.eql?('ios')
+end
+
+Then('the session payload field {string} matches the test device model') do |field|
+  check_device_model field, Maze::Server.sessions if Maze::Helper.get_current_platform.eql?('ios')
+end
+
+Then('the error is valid for the error reporting API') do
+  platform = Maze::Helper.get_current_platform
+  case platform
+  when 'ios'
+    steps %(
+      Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+      Then the breadcrumb timestamps are valid for the event
+    )
+  when 'macos'
+    steps %(
+      Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
+      Then the breadcrumb timestamps are valid for the event
+    )
+  else
+    raise "Unknown platform: #{platform}"
+  end
+end
+
+Then('the error is valid for the error reporting API ignoring breadcrumb timestamps') do
+  platform = Maze::Helper.get_current_platform
+  case platform
+  when 'ios'
+    steps %(
+      Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    )
+  when 'macos'
+    steps %(
+      Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
+    )
+  else
+    raise "Unknown platform: #{platform}"
+  end
+end
+
+Then('the session is valid for the session reporting API') do
+  platform = Maze::Helper.get_current_platform
+  case platform
+  when 'ios'
+    steps %(
+      Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    )
+  when 'macos'
+    steps %(
+      Then the session is valid for the session reporting API version "1.0" for the "OSX Bugsnag Notifier" notifier
+    )
+  else
+    raise "Unknown platform: #{platform}"
+  end
 end
 
 Then('the breadcrumb timestamps are valid for the event') do
