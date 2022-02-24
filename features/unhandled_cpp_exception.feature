@@ -27,3 +27,15 @@ Feature: Thrown C++ exceptions are captured by Bugsnag
     And the event "unhandled" is false
     And the event "severityReason.unhandledOverridden" is true
     And the event "severityReason.type" equals "unhandledException"
+
+  Scenario: Throwing without an exception
+    When I run "CxxBareThrowScenario" and relaunch the crashed app
+    And I wait to receive an error
+    Then the error is valid for the error reporting API
+    And the "method" of stack frame 0 equals "-[CxxBareThrowScenario run]"
+
+  Scenario: Causing an unexpected event
+    When I run "CxxUnexpectedScenario" and relaunch the crashed app
+    And I wait to receive an error
+    Then the error is valid for the error reporting API
+    And the "method" of stack frame 0 equals "-[CxxUnexpectedScenario run]"
