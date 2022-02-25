@@ -59,12 +59,9 @@ end
 
 When("I relaunch the app after a crash") do
   # Wait for the app to stop running before relaunching
+  step 'the app is not running'
   case Maze::Helper.get_current_platform
-  when 'macos'
-    # Allow any operations to complete before the next step
-    sleep(2)
-  else
-    step 'the app is not running'
+  when 'ios'
     Maze.driver.launch_app
   end
 end
@@ -136,6 +133,7 @@ def execute_command(action, scenario_name)
     Maze::Runner.environment['BUGSNAG_SCENARIO_METADATA'] = $scenario_mode.to_s
     Maze::Runner.environment['BUGSNAG_CLEAR_DATA'] = $reset_data ? 'true' : 'false'
     $last_scenario = command
+    $scenario_mode = nil
     run_macos_app
     $reset_data = false
   else
@@ -168,7 +166,7 @@ def wait_for_true
 end
 
 def run_macos_app
-  Maze::Runner.kill_running_scripts if $reset_data
+  Maze::Runner.kill_running_scripts
   Maze::Runner.run_command("features/fixtures/macos/output/#{Maze.config.app}.app/Contents/MacOS/#{Maze.config.app}", blocking: false)
   # Required to allow the non-blocking app to fully start before exiting
   sleep(2)
