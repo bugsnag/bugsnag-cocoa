@@ -1157,31 +1157,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     }
 }
 
-// =============================================================================
-// MARK: - autoNotify
-// =============================================================================
-
-- (BOOL)autoNotify {
-    return self.configuration.autoDetectErrors;
-}
-
-/// Alters whether error detection should be enabled or not after Bugsnag has been initialized.
-/// Intended for internal use only by Unity.
-- (void)setAutoNotify:(BOOL)autoNotify {
-    if (self.configuration.autoDetectErrors == autoNotify) {
-        return; // No change
-    }
-    self.configuration.autoDetectErrors = autoNotify;
-    
-    if (autoNotify) {
-        bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeFromBugsnagErrorTypes(self.configuration.enabledErrorTypes));
-    } else {
-        // Only enable support for notify()-based reports
-        bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeNone);
-    }
-    // OOMs are controlled by config.autoDetectErrors so don't require any further action
-}
-
 // MARK: - App Hangs
 
 - (void)startAppHangDetector {

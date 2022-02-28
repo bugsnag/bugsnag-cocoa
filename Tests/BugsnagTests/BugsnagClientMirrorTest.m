@@ -42,8 +42,6 @@
             @"appendNSErrorInfo:block:event: B40@0:8@16@?24@32",
             @"appendNSErrorInfo:block:event: c40@0:8@16@?24@32",
             @"applicationWillTerminate: v24@0:8@16",
-            @"autoNotify B16@0:8",
-            @"autoNotify c16@0:8",
             @"automaticBreadcrumbControlEvents @16@0:8",
             @"automaticBreadcrumbMenuItemEvents @16@0:8",
             @"automaticBreadcrumbStateEvents @16@0:8",
@@ -106,8 +104,6 @@
             @"setAppHangDetector: v24@0:8@16",
             @"setAppHangEvent: v24@0:8@16",
             @"setAppLaunchTimer: v24@0:8@16",
-            @"setAutoNotify: v20@0:8B16",
-            @"setAutoNotify: v20@0:8c16",
             @"setBreadcrumbs: v24@0:8@16",
             @"setCodeBundleId: v24@0:8@16",
             @"setConfigMetadataFromLastLaunch: v24@0:8@16",
@@ -148,7 +144,6 @@
             @"thermalStateDidChange: v24@0:8@16",
             @"unsubscribeFromNotifications: v24@0:8@16",
             @"updateAutomaticBreadcrumbDetectionSettings v16@0:8",
-            @"updateCrashDetectionSettings v16@0:8",
             @"workspaceBreadcrumbStateEvents @16@0:8",
     ]];
 
