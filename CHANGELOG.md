@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix accuracy of `app.inForeground` and prevent reporting of hangs during background launches.
+  [#1307](https://github.com/bugsnag/bugsnag-cocoa/pull/1307)
+
 ## 6.16.3 (2022-02-23)
 
 ### Bug fixes

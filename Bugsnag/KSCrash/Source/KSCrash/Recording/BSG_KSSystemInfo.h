@@ -89,14 +89,4 @@
  */
 + (NSString *)deviceAndAppHash;
 
-#if TARGET_OS_IOS || TARGET_OS_TV
-+ (UIApplicationState)currentAppState;
-
-/**
- * YES if the app is currently shown in the foreground
- */
-+ (BOOL)isInForeground:(UIApplicationState)state;
-
-#endif
-
 @end

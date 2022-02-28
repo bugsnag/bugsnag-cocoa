@@ -19,6 +19,7 @@
 #import "BSGFileLocations.h"
 #import "BSGJSONSerialization.h"
 #import "BSGUtils.h"
+#import "BSG_KSCrashState.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSSystemInfo.h"
 #import "BSG_RFC3339DateTool.h"
@@ -57,7 +58,6 @@ static NSDictionary* loadPreviousState(BugsnagKVStore *kvstore, NSString *jsonPa
 
     // KV-store versions of these are authoritative
     for (NSString *key in @[SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE,
-                            SYSTEMSTATE_APP_IS_ACTIVE,
                             SYSTEMSTATE_APP_IS_IN_FOREGROUND,
                             SYSTEMSTATE_APP_IS_LAUNCHING,
                             SYSTEMSTATE_APP_WAS_TERMINATED]) {
@@ -85,18 +85,19 @@ static NSMutableDictionary* initCurrentState(BugsnagKVStore *kvstore, BugsnagCon
 
     bool isBeingDebugged = bsg_ksmachisBeingTraced();
     bool isInForeground = true;
-    bool isActive = true;
 #if TARGET_OS_OSX
     // MacOS "active" serves the same purpose as "foreground" in iOS
     isInForeground = [NSAPPLICATION sharedApplication].active;
 #else
-    UIApplicationState appState = [BSG_KSSystemInfo currentAppState];
-    isInForeground = [BSG_KSSystemInfo isInForeground:appState];
-    isActive = appState == UIApplicationStateActive;
+    const BSG_KSCrash_State *crashState = bsg_kscrashstate_currentState();
+    NSCParameterAssert(crashState != nil);
+    if (crashState) {
+        isInForeground = crashState->applicationIsInForeground;
+    }
 #endif
     
     [kvstore deleteKey:SYSTEMSTATE_APP_WAS_TERMINATED];
-    [kvstore setBoolean:isActive forKey:SYSTEMSTATE_APP_IS_ACTIVE];
+    [kvstore deleteKey:@"isActive"]; // Deprecated key
     [kvstore setBoolean:isInForeground forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
     [kvstore setBoolean:true forKey:SYSTEMSTATE_APP_IS_LAUNCHING];
     [kvstore setBoolean:isBeingDebugged forKey:SYSTEMSTATE_APP_DEBUGGER_IS_ACTIVE];
@@ -110,7 +111,6 @@ static NSMutableDictionary* initCurrentState(BugsnagKVStore *kvstore, BugsnagCon
     app[BSGKeyMachoUUID] = systemInfo[@BSG_KSSystemField_AppUUID];
     app[@"binaryArch"] = systemInfo[@BSG_KSSystemField_BinaryArch];
     app[@"inForeground"] = @(isInForeground);
-    app[@"isActive"] = @(isActive);
 #if TARGET_OS_TV
     app[BSGKeyType] = @"tvOS";
 #elif TARGET_OS_IOS
@@ -225,14 +225,8 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
         [center addObserverForName:UIApplicationDidBecomeActiveNotification object:nil queue:nil
                         usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
             __strong __typeof__(self) strongSelf = weakSelf;
-            [strongSelf.kvStore setBoolean:YES forKey:SYSTEMSTATE_APP_IS_ACTIVE];
-            [strongSelf setValue:@YES forAppKey:SYSTEMSTATE_APP_IS_ACTIVE];
-        }];
-        [center addObserverForName:UIApplicationWillResignActiveNotification object:nil queue:nil
-                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
-            __strong __typeof__(self) strongSelf = weakSelf;
-            [strongSelf.kvStore setBoolean:NO forKey:SYSTEMSTATE_APP_IS_ACTIVE];
-            [strongSelf setValue:@NO forAppKey:SYSTEMSTATE_APP_IS_ACTIVE];
+            [strongSelf.kvStore setBoolean:YES forKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
+            [strongSelf setValue:@YES forAppKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
         }];
 #endif
         [center addObserver:self selector:@selector(sessionUpdateNotification:) name:BSGSessionUpdateNotification object:nil];
@@ -353,9 +347,8 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
         return NO; // The debugger may have killed the app
     }
     
-    // If the app was inactive or in the background, we cannot determine whether the termination was unexpected
-    if (![previousAppState[SYSTEMSTATE_APP_IS_ACTIVE] boolValue] ||
-        ![previousAppState[SYSTEMSTATE_APP_IS_IN_FOREGROUND] boolValue]) {
+    // If the app was in the background, we cannot determine whether the termination was unexpected
+    if (![previousAppState[SYSTEMSTATE_APP_IS_IN_FOREGROUND] boolValue]) {
         return NO;
     }
     
