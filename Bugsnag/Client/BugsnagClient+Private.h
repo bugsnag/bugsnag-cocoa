@@ -19,7 +19,6 @@
 @class BugsnagDeviceWithState;
 @class BugsnagMetadata;
 @class BugsnagNotifier;
-@class BugsnagPluginClient;
 @class BugsnagSessionTracker;
 @class BugsnagSystemState;
 
@@ -79,8 +78,6 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 @property (nullable, nonatomic) NSDictionary *metadataFromLastLaunch;
 
 @property (readonly, nonatomic) BugsnagNotifier *notifier; // Used in BugsnagReactNative
-
-@property (strong, nonatomic) BugsnagPluginClient *pluginClient;
 
 @property (strong, nonatomic) BugsnagSessionTracker *sessionTracker; // Used in BugsnagReactNative
 

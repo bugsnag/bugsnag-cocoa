@@ -62,7 +62,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagNotifier.h"
-#import "BugsnagPluginClient.h"
+#import "BugsnagPlugin.h"
 #import "BugsnagSession+Private.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagStackframe+Private.h"
@@ -273,9 +273,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:_metadataFile];
         [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:_stateMetadataFile];
 
-        self.pluginClient = [[BugsnagPluginClient alloc] initWithPlugins:self.configuration.plugins
-                                                                  client:self];
-
         BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
     }
     return self;
@@ -355,13 +352,23 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     self.started = YES;
 
+    id<BugsnagPlugin> reactNativePlugin = [NSClassFromString(@"BugsnagReactNativePlugin") new];
+    if (reactNativePlugin) {
+        [self.configuration.plugins addObject:reactNativePlugin];
+    }
+    for (id<BugsnagPlugin> plugin in self.configuration.plugins) {
+        @try {
+            [plugin load:self];
+        } @catch (NSException *exception) {
+            bsg_log_err(@"Plugin %@ threw exception in -load: %@", plugin, exception);
+        }
+    }
+
     [self.sessionTracker startWithNotificationCenter:center isInForeground:bsg_kscrashstate_currentState()->applicationIsInForeground];
 
     // Record a "Bugsnag Loaded" message
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState withMessage:@"Bugsnag loaded" andMetadata:nil];
 
-    [self.pluginClient loadPlugins];
-    
     if (self.configuration.launchDurationMillis > 0) {
         self.appLaunchTimer = [NSTimer scheduledTimerWithTimeInterval:(double)self.configuration.launchDurationMillis / 1000.0
                                                                target:self selector:@selector(appLaunchTimerFired:)
