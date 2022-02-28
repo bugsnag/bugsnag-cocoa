@@ -16,7 +16,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-void BSGCrashSentryInstall(BugsnagConfiguration *, BSGReportCallback);
+void BSGCrashSentryInstall(BugsnagConfiguration *, BSG_KSReportWriteCallback);
 
 BSG_KSCrashType BSG_KSCrashTypeFromBugsnagErrorTypes(BugsnagErrorTypes *);
 

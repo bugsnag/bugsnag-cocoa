@@ -16,7 +16,7 @@
 #import "BugsnagErrorTypes.h"
 #import "BugsnagLogger.h"
 
-void BSGCrashSentryInstall(BugsnagConfiguration *config, BSGReportCallback onCrash) {
+void BSGCrashSentryInstall(BugsnagConfiguration *config, BSG_KSReportWriteCallback onCrash) {
     BSG_KSCrash *ksCrash = [BSG_KSCrash sharedInstance];
 
     bsg_kscrash_setCrashNotifyCallback(onCrash);

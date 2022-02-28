@@ -180,7 +180,7 @@ void bsg_kscrash_setIntrospectMemory(bool introspectMemory) {
 }
 
 void bsg_kscrash_setCrashNotifyCallback(
-    const BSGReportCallback onCrashNotify) {
+    const BSG_KSReportWriteCallback onCrashNotify) {
     BSG_KSLOG_TRACE("Set onCrashNotify to %p", onCrashNotify);
     crashContext()->config.onCrashNotify = onCrashNotify;
 }
