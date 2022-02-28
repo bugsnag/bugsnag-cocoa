@@ -59,11 +59,6 @@ static bool bsg_kscrashstate_i_isInForeground(void);
 
 #define BSG_kKeyFormatVersion "version"
 #define BSG_kKeyCrashedLastLaunch "crashedLastLaunch"
-#define BSG_kKeyActiveDurationSinceLastCrash "foregroundDurationSinceLastCrash"
-#define BSG_kKeyBackgroundDurationSinceLastCrash                               \
-    "backgroundDurationSinceLastCrash"
-#define BSG_kKeyLaunchesSinceLastCrash "launchesSinceLastCrash"
-#define BSG_kKeySessionsSinceLastCrash "sessionsSinceLastCrash"
 
 // ============================================================================
 #pragma mark - Globals -
@@ -201,18 +196,13 @@ bool bsg_kscrashstate_i_loadState(BSG_KSCrash_State *const context,
         return false;
     }
 
-    context->foregroundDurationSinceLastCrash = [objectContext[@"foregroundDurationSinceLastCrash"] doubleValue];
     context->foregroundDurationSinceLaunch = [objectContext[@"foregroundDurationSinceLaunch"] doubleValue];
     context->appLaunchTime = [objectContext[@"appLaunchTime"] unsignedLongLongValue];
     context->lastUpdateDurationsTime = [objectContext[@"appStateTransitionTime"] unsignedLongLongValue];
-    context->launchesSinceLastCrash = [objectContext[@"launchesSinceLastCrash"] intValue];
-    context->sessionsSinceLastCrash = [objectContext[@"sessionsSinceLastCrash"] intValue];
-    context->sessionsSinceLaunch = [objectContext[@"sessionsSinceLaunch"] intValue];
     context->crashedLastLaunch = [objectContext[@"crashedLastLaunch"] boolValue];
     context->crashedThisLaunch = [objectContext[@"crashedThisLaunch"] boolValue];
     context->applicationIsInForeground = [objectContext[@"applicationIsInForeground"] boolValue];
     context->backgroundDurationSinceLaunch = [objectContext[@"backgroundDurationSinceLaunch"] doubleValue];
-    context->backgroundDurationSinceLastCrash = [objectContext[@"backgroundDurationSinceLastCrash"] doubleValue];
 
     return true;
 }
@@ -256,26 +246,6 @@ bool bsg_kscrashstate_i_saveState(const BSG_KSCrash_State *const state,
              state->crashedThisLaunch)) != BSG_KSJSON_OK) {
         goto done;
     }
-    if ((result = bsg_ksjsonaddFloatingPointElement(
-             &JSONContext, BSG_kKeyActiveDurationSinceLastCrash,
-             state->foregroundDurationSinceLastCrash)) != BSG_KSJSON_OK) {
-        goto done;
-    }
-    if ((result = bsg_ksjsonaddFloatingPointElement(
-             &JSONContext, BSG_kKeyBackgroundDurationSinceLastCrash,
-             state->backgroundDurationSinceLastCrash)) != BSG_KSJSON_OK) {
-        goto done;
-    }
-    if ((result = bsg_ksjsonaddIntegerElement(
-             &JSONContext, BSG_kKeyLaunchesSinceLastCrash,
-             state->launchesSinceLastCrash)) != BSG_KSJSON_OK) {
-        goto done;
-    }
-    if ((result = bsg_ksjsonaddIntegerElement(
-             &JSONContext, BSG_kKeySessionsSinceLastCrash,
-             state->sessionsSinceLastCrash)) != BSG_KSJSON_OK) {
-        goto done;
-    }
     result = bsg_ksjsonendEncode(&JSONContext);
 
 done:
@@ -300,20 +270,9 @@ bool bsg_kscrashstate_init(const char *const stateFilePath,
 
     bsg_kscrashstate_i_loadState(state, stateFilePath);
 
-    state->sessionsSinceLaunch = 1;
     state->foregroundDurationSinceLaunch = 0;
     state->backgroundDurationSinceLaunch = 0;
-    if (state->crashedLastLaunch) {
-        state->foregroundDurationSinceLastCrash = 0;
-        state->backgroundDurationSinceLastCrash = 0;
-        state->launchesSinceLastCrash = 0;
-        state->sessionsSinceLastCrash = 0;
-    }
     state->crashedThisLaunch = false;
-
-    // Simulate first transition to foreground
-    state->launchesSinceLastCrash++;
-    state->sessionsSinceLastCrash++;
 
     // On iOS/tvOS, the app may have launched in the background due to a fetch
     // event or notification (or prewarming on iOS 15+)
@@ -396,25 +355,11 @@ void bsg_kscrashstate_notifyAppInForeground(const bool isInForeground) {
         timeNow, state->lastUpdateDurationsTime);
     if (isInForeground) {
         state->backgroundDurationSinceLaunch += duration;
-        state->backgroundDurationSinceLastCrash += duration;
-        state->sessionsSinceLastCrash++;
-        state->sessionsSinceLaunch++;
     } else {
         state->foregroundDurationSinceLaunch += duration;
-        state->foregroundDurationSinceLastCrash += duration;
         bsg_kscrashstate_i_saveState(state, stateFilePath);
     }
     state->lastUpdateDurationsTime = timeNow;
-}
-
-void bsg_kscrashstate_notifyAppTerminate(void) {
-    BSG_KSCrash_State *const state = bsg_g_state;
-    const char *const stateFilePath = bsg_g_stateFilePath;
-
-    const double duration = bsg_ksmachtimeDifferenceInSeconds(
-        mach_absolute_time(), state->lastUpdateDurationsTime);
-    state->backgroundDurationSinceLastCrash += duration;
-    bsg_kscrashstate_i_saveState(state, stateFilePath);
 }
 
 void bsg_kscrashstate_notifyAppCrash(void) {
@@ -431,10 +376,8 @@ void bsg_kscrashstate_updateDurationStats(BSG_KSCrash_State *const state) {
         timeNow, state->lastUpdateDurationsTime ?: state->appLaunchTime);
     if (state->applicationIsInForeground) {
         state->foregroundDurationSinceLaunch += duration;
-        state->foregroundDurationSinceLastCrash += duration;
     } else {
         state->backgroundDurationSinceLaunch += duration;
-        state->backgroundDurationSinceLastCrash += duration;
     }
     state->lastUpdateDurationsTime = timeNow;
 }

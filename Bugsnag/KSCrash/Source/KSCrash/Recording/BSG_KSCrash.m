@@ -174,10 +174,6 @@
                 selector:@selector(applicationWillEnterForeground)
                     name:UIApplicationWillEnterForegroundNotification
                   object:nil];
-    [nCenter addObserver:self
-                selector:@selector(applicationWillTerminate)
-                    name:UIApplicationWillTerminateNotification
-                  object:nil];
 #elif TARGET_OS_OSX
     // MacOS "active" serves the same purpose as "foreground" in iOS
     [nCenter addObserver:self
@@ -187,10 +183,6 @@
     [nCenter addObserver:self
                 selector:@selector(applicationWillEnterForeground)
                     name:NSApplicationDidBecomeActiveNotification
-                  object:nil];
-    [nCenter addObserver:self
-                selector:@selector(applicationWillTerminate)
-                    name:NSApplicationWillTerminateNotification
                   object:nil];
 #endif
 
@@ -216,16 +208,9 @@
         return bsg_kscrashstate_currentState()->NAME;                          \
     }
 
-BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval,
-                                    foregroundDurationSinceLastCrash)
-BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval,
-                                    backgroundDurationSinceLastCrash)
-BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(int, launchesSinceLastCrash)
-BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(int, sessionsSinceLastCrash)
 BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval, foregroundDurationSinceLaunch)
 BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(NSTimeInterval,
                                     backgroundDurationSinceLaunch)
-BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(int, sessionsSinceLaunch)
 BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 
 - (BOOL)redirectConsoleLogsToFile:(NSString *)fullPath
@@ -255,10 +240,6 @@ BSG_SYNTHESIZE_CRASH_STATE_PROPERTY(BOOL, crashedLastLaunch)
 
 - (void)applicationWillEnterForeground {
     bsg_kscrashstate_notifyAppInForeground(true);
-}
-
-- (void)applicationWillTerminate {
-    bsg_kscrashstate_notifyAppTerminate();
 }
 
 @end

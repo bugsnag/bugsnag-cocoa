@@ -33,29 +33,12 @@
 
 #pragma mark - Information -
 
-/** Total active time elapsed since the last crash. */
-@property(nonatomic, readonly, assign)
-    NSTimeInterval foregroundDurationSinceLastCrash;
-
-/** Total time backgrounded elapsed since the last crash. */
-@property(nonatomic, readonly, assign)
-    NSTimeInterval backgroundDurationSinceLastCrash;
-
-/** Number of app launches since the last crash. */
-@property(nonatomic, readonly, assign) int launchesSinceLastCrash;
-
-/** Number of sessions (launch, resume from suspend) since last crash. */
-@property(nonatomic, readonly, assign) int sessionsSinceLastCrash;
-
 /** Total active time elapsed since launch. */
 @property(nonatomic, readonly, assign) NSTimeInterval foregroundDurationSinceLaunch;
 
 /** Total time backgrounded elapsed since launch. */
 @property(nonatomic, readonly, assign)
     NSTimeInterval backgroundDurationSinceLaunch;
-
-/** Number of sessions (launch, resume from suspend) since app launch. */
-@property(nonatomic, readonly, assign) int sessionsSinceLaunch;
 
 /** If true, the application crashed on the previous launch. */
 @property(nonatomic, readonly, assign) BOOL crashedLastLaunch;
