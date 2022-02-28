@@ -37,7 +37,6 @@ extern "C" {
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "BSG_KSCrashType.h"
 
 typedef struct {
 

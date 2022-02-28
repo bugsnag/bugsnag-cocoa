@@ -273,19 +273,6 @@
     XCTAssertTrue(context.crashedLastLaunch, @"");
 }
 
-- (void) testAppLaunchTime
-{
-    BSG_KSCrash_State context = {0};
-    NSString* stateFile = [self.tempPath stringByAppendingPathComponent:@"state.json"];
-    NSData *data = [NSJSONSerialization dataWithJSONObject:@{@"appLaunchTime": @34234235534534 } options:0 error:nil];
-    [data writeToFile:stateFile atomically:YES];
-
-    bsg_kscrashstate_init([stateFile cStringUsingEncoding:NSUTF8StringEncoding],
-                          &context);
-    usleep(1);
-    XCTAssertEqual(34234235534534, context.appLaunchTime);
-}
-
 - (void)testBGFGRelaunch
 {
     BSG_KSCrash_State context = {0};

@@ -26,9 +26,9 @@
 
 #import "BSG_KSCrashState.h"
 
+#import "BSGJSONSerialization.h"
 #import "BSG_KSFile.h"
 #import "BSG_KSJSONCodec.h"
-#import "BSG_KSJSONCodecObjC.h"
 #import "BSG_KSLogger.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSSystemInfo.h"
@@ -70,90 +70,13 @@ static const char *bsg_g_stateFilePath;
 /** Current state. */
 static BSG_KSCrash_State *bsg_g_state;
 
-// Avoiding static functions due to linker issues.
-
 // ============================================================================
 #pragma mark - JSON Encoding -
 // ============================================================================
 
-int bsg_kscrashstate_i_onBooleanElement(const char *const name,
-                                        const bool value,
-                                        void *const userData) {
-    BSG_KSCrash_State *state = userData;
-
-    if (strcmp(name, BSG_kKeyCrashedLastLaunch) == 0) {
-        state->crashedLastLaunch = value;
-    }
-
-    return BSG_KSJSON_OK;
-}
-
-int bsg_kscrashstate_i_onFloatingPointElement(const char *const name,
-                                              const double value,
-                                              void *const userData) {
-    BSG_KSCrash_State *state = userData;
-
-    if (strcmp(name, BSG_kKeyActiveDurationSinceLastCrash) == 0) {
-        state->foregroundDurationSinceLastCrash = value;
-    }
-    if (strcmp(name, BSG_kKeyBackgroundDurationSinceLastCrash) == 0) {
-        state->backgroundDurationSinceLastCrash = value;
-    }
-
-    return BSG_KSJSON_OK;
-}
-
-int bsg_kscrashstate_i_onIntegerElement(const char *const name,
-                                        const long long value,
-                                        void *const userData) {
-    BSG_KSCrash_State *state = userData;
-
-    if (strcmp(name, BSG_kKeyFormatVersion) == 0) {
-        if (value != BSG_kFormatVersion) {
-            bsg_log_err(@"Expected version 1 but got %lld", value);
-            return BSG_KSJSON_ERROR_INVALID_DATA;
-        }
-    } else if (strcmp(name, BSG_kKeyLaunchesSinceLastCrash) == 0) {
-        state->launchesSinceLastCrash = (int)value;
-    } else if (strcmp(name, BSG_kKeySessionsSinceLastCrash) == 0) {
-        state->sessionsSinceLastCrash = (int)value;
-    }
-
-    // FP value might have been written as a whole number.
-    return bsg_kscrashstate_i_onFloatingPointElement(name, (double)value, userData);
-}
-
-int bsg_kscrashstate_i_onNullElement(__unused const char *const name,
-                                     __unused void *const userData) {
-    return BSG_KSJSON_OK;
-}
-
-int bsg_kscrashstate_i_onStringElement(__unused const char *const name,
-                                       __unused const char *const value,
-                                       __unused void *const userData) {
-    return BSG_KSJSON_OK;
-}
-
-int bsg_kscrashstate_i_onBeginObject(__unused const char *const name,
-                                     __unused void *const userData) {
-    return BSG_KSJSON_OK;
-}
-
-int bsg_kscrashstate_i_onBeginArray(__unused const char *const name,
-                                    __unused void *const userData) {
-    return BSG_KSJSON_OK;
-}
-
-int bsg_kscrashstate_i_onEndContainer(__unused void *const userData) {
-    return BSG_KSJSON_OK;
-}
-
-int bsg_kscrashstate_i_onEndData(__unused void *const userData) {
-    return BSG_KSJSON_OK;
-}
-
 /** Callback for adding JSON data.
  */
+static
 int bsg_kscrashstate_i_addJSONData(const char *const data, const size_t length,
                                    void *const userData) {
     bool success = BSG_KSFileWrite(userData, data, length);
@@ -174,36 +97,27 @@ int bsg_kscrashstate_i_addJSONData(const char *const data, const size_t length,
  */
 bool bsg_kscrashstate_i_loadState(BSG_KSCrash_State *const context,
                                   const char *const path) {
-    if (path == NULL) {
-        return false;
-    }
-    NSString *file = [NSFileManager.defaultManager stringWithFileSystemRepresentation:path length:strlen(path)];
+    NSString *file = path ? @(path) : nil;
     if (!file) {
         bsg_log_err(@"Invalid path: %s", path);
         return false;
     }
-    NSError *error = nil;
-    NSData *data = [NSData dataWithContentsOfFile:file options:0 error:&error];
-    if (error != nil) {
-        if (!(error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError)) {
+    NSError *error;
+    NSDictionary *dict = [BSGJSONSerialization
+                          JSONObjectWithContentsOfFile:file
+                          options:0 error:&error];
+    if (![dict isKindOfClass:[NSDictionary class]]) {
+        if (!(error.domain == NSCocoaErrorDomain &&
+              error.code == NSFileReadNoSuchFileError)) {
             bsg_log_err(@"%s: Could not load file: %@", path, error);
         }
         return false;
     }
-    id objectContext = [BSG_KSJSONCodec decode:data error:&error];
-    if (error != nil) {
-        bsg_log_err(@"%s: Could not load file: %@", path, error);
+    if (![dict[@ BSG_kKeyFormatVersion] isEqual:@ BSG_kFormatVersion]) {
+        bsg_log_err(@"Version mismatch");
         return false;
     }
-
-    context->foregroundDurationSinceLaunch = [objectContext[@"foregroundDurationSinceLaunch"] doubleValue];
-    context->appLaunchTime = [objectContext[@"appLaunchTime"] unsignedLongLongValue];
-    context->lastUpdateDurationsTime = [objectContext[@"appStateTransitionTime"] unsignedLongLongValue];
-    context->crashedLastLaunch = [objectContext[@"crashedLastLaunch"] boolValue];
-    context->crashedThisLaunch = [objectContext[@"crashedThisLaunch"] boolValue];
-    context->applicationIsInForeground = [objectContext[@"applicationIsInForeground"] boolValue];
-    context->backgroundDurationSinceLaunch = [objectContext[@"backgroundDurationSinceLaunch"] doubleValue];
-
+    context->crashedLastLaunch = [dict[@ BSG_kKeyCrashedLastLaunch] boolValue];
     return true;
 }
 
