@@ -62,7 +62,7 @@
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
 
-    XCTAssertEqual(context.appLaunchTime, 0, @"");
+    XCTAssertNotEqual(context.appLaunchTime, 0);
 
     XCTAssertEqual(context.foregroundDurationSinceLaunch, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLaunch, 0.0, @"");
@@ -76,7 +76,7 @@
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
 
-    XCTAssertEqual(context.appLaunchTime, 0, @"");
+    XCTAssertNotEqual(context.appLaunchTime, 0);
 
     XCTAssertEqual(context.foregroundDurationSinceLaunch, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLaunch, 0.0, @"");
@@ -153,7 +153,7 @@
     BSG_KSCrash_State checkpointR = context;
 
     XCTAssertTrue(checkpointR.applicationIsInForeground, @"");
-    XCTAssertEqual(checkpointR.appLaunchTime, 0, @"");
+    XCTAssertNotEqual(context.appLaunchTime, 0);
 
     XCTAssertEqual(checkpointR.foregroundDurationSinceLaunch, 0.0, @"");
     XCTAssertEqual(checkpointR.backgroundDurationSinceLaunch, 0.0, @"");
@@ -223,7 +223,7 @@
     BSG_KSCrash_State checkpointR = context;
 
     XCTAssertTrue(checkpointR.applicationIsInForeground, @"");
-    XCTAssertEqual(checkpointR.appLaunchTime, 0, @"");
+    XCTAssertNotEqual(context.appLaunchTime, 0);
 
     XCTAssertEqual(checkpointR.foregroundDurationSinceLaunch, 0.0, @"");
     XCTAssertEqual(checkpointR.backgroundDurationSinceLaunch, 0.0, @"");

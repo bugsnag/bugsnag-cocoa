@@ -182,11 +182,11 @@ bool bsg_kscrashstate_init(const char *const stateFilePath,
     bsg_g_stateFilePath = stateFilePath;
     bsg_g_state = state;
 
+    uint64_t timeNow = mach_absolute_time();
+    memset(state, 0, sizeof(*state));
     bsg_kscrashstate_i_loadState(state, stateFilePath);
-
-    state->foregroundDurationSinceLaunch = 0;
-    state->backgroundDurationSinceLaunch = 0;
-    state->crashedThisLaunch = false;
+    state->appLaunchTime = timeNow;
+    state->lastUpdateDurationsTime = timeNow;
 
     // On iOS/tvOS, the app may have launched in the background due to a fetch
     // event or notification (or prewarming on iOS 15+)
