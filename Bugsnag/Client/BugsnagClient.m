@@ -28,6 +28,7 @@
 
 #import "BSGAppHangDetector.h"
 #import "BSGConnectivity.h"
+#import "BSGCrashSentry.h"
 #import "BSGEventUploader.h"
 #import "BSGFileLocations.h"
 #import "BSGInternalErrorReporter.h"
@@ -51,7 +52,6 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
-#import "BugsnagCrashSentry.h"
 #import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagErrorTypes.h"
@@ -113,7 +113,7 @@ static bool hasRecordedSessions;
  *
  *  @param writer report writer which will receive updated metadata
  */
-void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, __attribute__((unused)) int type) {
+void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
     BOOL isCrash = YES;
     if (hasRecordedSessions) { // a session is available
         // persist session info
@@ -237,7 +237,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
         self.stateEventBlocks = [NSMutableArray new];
         self.extraRuntimeInfo = [NSMutableDictionary new];
-        self.crashSentry = [BugsnagCrashSentry new];
+
         _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration notifier:_notifier];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
 
@@ -279,7 +279,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
 - (void)start {
     [self.configuration validate];
-    [self.crashSentry install:self.configuration onCrash:&BSSerializeDataCrashHandler];
+    BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
     [self computeDidCrashLastLaunch];
     [self.breadcrumbs removeAllBreadcrumbs];
@@ -1168,22 +1168,13 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 /// Alters whether error detection should be enabled or not after Bugsnag has been initialized.
 /// Intended for internal use only by Unity.
 - (void)setAutoNotify:(BOOL)autoNotify {
-    BOOL changed = self.configuration.autoDetectErrors != autoNotify;
-    self.configuration.autoDetectErrors = autoNotify;
-
-    if (changed) {
-        [self updateCrashDetectionSettings];
+    if (self.configuration.autoDetectErrors == autoNotify) {
+        return; // No change
     }
-}
-
-/// Updates the crash detection settings after Bugsnag has been initialized.
-/// App Hang detection is not updated as it will always be disabled for Unity.
-- (void)updateCrashDetectionSettings {
-    if (self.configuration.autoDetectErrors) {
-        // alter the enabled KSCrash types
-        BugsnagErrorTypes *errorTypes = self.configuration.enabledErrorTypes;
-        BSG_KSCrashType crashTypes = [self.crashSentry mapKSToBSGCrashTypes:errorTypes];
-        bsg_kscrash_setHandlingCrashTypes(crashTypes);
+    self.configuration.autoDetectErrors = autoNotify;
+    
+    if (autoNotify) {
+        bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeFromBugsnagErrorTypes(self.configuration.enabledErrorTypes));
     } else {
         // Only enable support for notify()-based reports
         bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeNone);

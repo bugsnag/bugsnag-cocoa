@@ -24,19 +24,22 @@
 // THE SOFTWARE.
 //
 
-#import "BSGKeys.h"
 #import "BSG_KSSystemInfo.h"
-#import "BSG_KSSystemInfoC.h"
-#import "BSG_KSMachHeaders.h"
+
+#import "BSGKeys.h"
+#import "BSG_Jailbreak.h"
+#import "BSG_KSCrash.h"
+#import "BSG_KSCrashC.h"
+#import "BSG_KSCrashReportFields.h"
 #import "BSG_KSFileUtils.h"
 #import "BSG_KSJSONCodecObjC.h"
-#import "BSG_KSMach.h"
-#import "BSG_KSSysCtl.h"
-#import "BugsnagCollections.h"
 #import "BSG_KSLogger.h"
-#import "BSG_KSCrashReportFields.h"
 #import "BSG_KSMach.h"
-#import "BSG_KSCrash.h"
+#import "BSG_KSMach.h"
+#import "BSG_KSMachHeaders.h"
+#import "BSG_KSSysCtl.h"
+#import "BSG_KSSystemInfoC.h"
+#import "BugsnagCollections.h"
 
 #import <CommonCrypto/CommonDigest.h>
 #import <mach-o/dyld.h>
@@ -44,7 +47,6 @@
 #if TARGET_OS_IOS || TARGET_OS_TV
 #import "BSGUIKit.h"
 #endif
-#import "BSG_Jailbreak.h"
 
 
 static inline bool is_jailbroken() {
@@ -444,7 +446,12 @@ static NSDictionary * bsg_systemversion() {
         }
     }
 
-    NSDictionary *statsInfo = [[BSG_KSCrash sharedInstance] captureAppStats];
+    BSG_KSCrash_State state = crashContext()->state;
+    bsg_kscrashstate_updateDurationStats(&state);
+    NSMutableDictionary *statsInfo = [NSMutableDictionary dictionary];
+    statsInfo[@ BSG_KSCrashField_ActiveTimeSinceLaunch] = @(state.foregroundDurationSinceLaunch);
+    statsInfo[@ BSG_KSCrashField_BGTimeSinceLaunch] = @(state.backgroundDurationSinceLaunch);
+    statsInfo[@ BSG_KSCrashField_AppInFG] = @(state.applicationIsInForeground);
     sysInfo[@BSG_KSCrashField_AppStats] = statsInfo;
     return sysInfo;
 }

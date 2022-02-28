@@ -1465,12 +1465,6 @@ void bsg_kscrw_i_updateStackOverflowStatus(
     }
 }
 
-void bsg_kscrw_i_callUserCrashHandler(BSG_KSCrash_Context *const crashContext,
-                                      BSG_KSCrashReportWriter *writer) {
-    BSG_KSCrashType type = crashContext->crash.crashType;
-    crashContext->config.onCrashNotify(writer, (int)type);
-}
-
 // ============================================================================
 #pragma mark - Main API -
 // ============================================================================
@@ -1575,7 +1569,7 @@ void bsg_kscrashreport_writeStandardReport(
 
             // Write handled exception report info
             writer->beginObject(writer, BSG_KSCrashField_UserAtCrash);
-            { bsg_kscrw_i_callUserCrashHandler(crashContext, writer); }
+            crashContext->config.onCrashNotify(writer);
             writer->endContainer(writer);
         }
     }

@@ -15,7 +15,6 @@
 @class BugsnagAppWithState;
 @class BugsnagBreadcrumbs;
 @class BugsnagConfiguration;
-@class BugsnagCrashSentry;
 @class BugsnagDeviceWithState;
 @class BugsnagMetadata;
 @class BugsnagNotifier;
@@ -57,8 +56,6 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 @property (nullable, nonatomic) NSDictionary *configMetadataFromLastLaunch;
 
 @property (retain, nonatomic) BugsnagConfiguration *configuration;
-
-@property (strong, nonatomic) BugsnagCrashSentry *crashSentry;
 
 /// The App hang or OOM event that caused the last launch to crash.
 @property (nullable, nonatomic) BugsnagEvent *eventFromLastLaunch;
