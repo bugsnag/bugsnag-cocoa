@@ -6,11 +6,11 @@
 //
 //
 
-
 #import "BugsnagCrashSentry.h"
 
 #import "BSGFileLocations.h"
-#import "BSG_KSCrashAdvanced.h"
+#import "BSG_KSCrash.h"
+#import "BSG_KSCrashC.h"
 #import "BSG_KSMach.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagErrorTypes.h"
@@ -21,13 +21,12 @@
 - (void)install:(BugsnagConfiguration *)config onCrash:(BSGReportCallback)onCrash
 {
     BSG_KSCrash *ksCrash = [BSG_KSCrash sharedInstance];
-    ksCrash.introspectMemory = NO;
-    ksCrash.onCrash = onCrash;
-    ksCrash.maxStoredReports = (int)config.maxPersistedEvents;
+
+    bsg_kscrash_setCrashNotifyCallback(onCrash);
 
     // overridden elsewhere for handled errors, so we can assume that this only
     // applies to unhandled errors
-    ksCrash.threadTracingEnabled = config.sendThreads != BSGThreadSendPolicyNever;
+    bsg_kscrash_setThreadTracingEnabled(config.sendThreads != BSGThreadSendPolicyNever);
 
     BSG_KSCrashType crashTypes = 0;
     if (config.autoDetectErrors) {
