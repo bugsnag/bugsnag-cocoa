@@ -108,16 +108,23 @@ static void CPPExceptionTerminate(void) {
     bool isNSException = false;
     char descriptionBuff[DESCRIPTION_BUFFER_LENGTH];
     const char *name = NULL;
-    const char *description = NULL;
+    const char *crashReason = NULL;
 
     BSG_KSLOG_DEBUG("Get exception type name.");
     std::type_info *tinfo = __cxxabiv1::__cxa_current_exception_type();
     if (tinfo != NULL) {
         name = tinfo->name();
+    } else {
+        name = "std::terminate";
+        crashReason = "throw may have been called without an exception";
+        if (!bsg_g_stackTraceCount) {
+            BSG_KSLOG_DEBUG("No exception backtrace");
+            bsg_g_stackTraceCount =
+            backtrace((void **)bsg_g_stackTrace,
+                      sizeof(bsg_g_stackTrace) / sizeof(*bsg_g_stackTrace));
+        }
+        goto after_rethrow; // Using goto to avoid indenting code below
     }
-
-    description = descriptionBuff;
-    descriptionBuff[0] = 0;
 
     BSG_KSLOG_DEBUG("Discovering what kind of exception was thrown.");
     bsg_g_captureNextStackTrace = false;
@@ -135,13 +142,16 @@ static void CPPExceptionTerminate(void) {
         }
     } catch (std::exception &exc) {
         strlcpy(descriptionBuff, exc.what(), sizeof(descriptionBuff));
+        crashReason = descriptionBuff;
     } catch (std::exception *exc) {
         strlcpy(descriptionBuff, exc->what(), sizeof(descriptionBuff));
+        crashReason = descriptionBuff;
     }
 #define CATCH_VALUE(TYPE, PRINTFTYPE)                                          \
     catch (TYPE value) {                                                       \
         snprintf(descriptionBuff, sizeof(descriptionBuff), "%" #PRINTFTYPE,    \
                  value);                                                       \
+        crashReason = descriptionBuff;                                         \
     }
     CATCH_VALUE(char, d)
     CATCH_VALUE(short, d)
@@ -158,8 +168,9 @@ static void CPPExceptionTerminate(void) {
     CATCH_VALUE(long double, Lf)
     CATCH_VALUE(char *, s)
     catch (...) {
-        description = NULL;
     }
+
+after_rethrow:
     bsg_g_captureNextStackTrace = (bsg_g_installed != 0);
 
     if (!isNSException &&
@@ -174,7 +185,7 @@ static void CPPExceptionTerminate(void) {
             bsg_g_stackTrace + 1; // Don't record __cxa_throw stack entry
         bsg_g_context->stackTraceLength = bsg_g_stackTraceCount - 1;
         bsg_g_context->CPPException.name = name;
-        bsg_g_context->crashReason = description;
+        bsg_g_context->crashReason = crashReason;
 
         BSG_KSLOG_DEBUG("Calling main crash handler.");
         bsg_g_context->onCrash(crashContext());

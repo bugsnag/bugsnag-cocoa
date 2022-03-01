@@ -37,6 +37,8 @@
 		01F1474425F282E600C2DC65 /* AppHangScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F1474325F282E600C2DC65 /* AppHangScenarios.swift */; };
 		01FA9EC426D63BB20059FF4A /* AppHangInTerminationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FA9EC326D63BB20059FF4A /* AppHangInTerminationScenario.swift */; };
 		6526A0D4248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */; };
+		8A096DF627C7E56C00DB6ECC /* CxxUnexpectedScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A096DF527C7E56C00DB6ECC /* CxxUnexpectedScenario.mm */; };
+		8A096DFC27C7E77600DB6ECC /* CxxBareThrowScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A096DFB27C7E77600DB6ECC /* CxxBareThrowScenario.mm */; };
 		8A14F0F62282D4AE00337B05 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		8A32DB8222424E3000EDD92F /* NSExceptionShiftScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */; };
 		8A38C5D124094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */; };
@@ -201,6 +203,8 @@
 		01F1474325F282E600C2DC65 /* AppHangScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppHangScenarios.swift; sourceTree = "<group>"; };
 		01FA9EC326D63BB20059FF4A /* AppHangInTerminationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHangInTerminationScenario.swift; sourceTree = "<group>"; };
 		6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadConfigFromFileAutoScenario.swift; sourceTree = "<group>"; };
+		8A096DF527C7E56C00DB6ECC /* CxxUnexpectedScenario.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxUnexpectedScenario.mm; sourceTree = "<group>"; };
+		8A096DFB27C7E77600DB6ECC /* CxxBareThrowScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxBareThrowScenario.mm; sourceTree = "<group>"; };
 		8A32DB8022424E3000EDD92F /* NSExceptionShiftScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSExceptionShiftScenario.h; sourceTree = "<group>"; };
 		8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSExceptionShiftScenario.m; sourceTree = "<group>"; };
 		8A38C5D024094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardedBreadcrumbTypeScenario.swift; sourceTree = "<group>"; };
@@ -603,6 +607,8 @@
 				01AF6A52258A112F00FFC803 /* BareboneTestScenarios.swift */,
 				01DCB82A27985D2C0048640A /* ConcurrentCrashesScenario.mm */,
 				01DE903726CE99B800455213 /* CriticalThermalStateScenario.swift */,
+				8A096DFB27C7E77600DB6ECC /* CxxBareThrowScenario.mm */,
+				8A096DF527C7E56C00DB6ECC /* CxxUnexpectedScenario.mm */,
 				0163BFA62583B3CF008DC28B /* DiscardClassesScenarios.swift */,
 				01847DD526453D4E00ADA4C7 /* InvalidCrashReportScenario.m */,
 				017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */,
@@ -917,6 +923,7 @@
 				8AEEBBD020FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m in Sources */,
 				E7FDB6C8264D607F00BCF881 /* AutoNotifyReenabledScenario.swift in Sources */,
 				E753F24624927409001FB671 /* NotifyCallbackCrashScenario.swift in Sources */,
+				8A096DFC27C7E77600DB6ECC /* CxxBareThrowScenario.mm in Sources */,
 				AA6ACD1C2773E0B3006464C4 /* UserFromConfigScenario.swift in Sources */,
 				8AF8FCAC22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift in Sources */,
 				6526A0D4248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift in Sources */,
@@ -969,6 +976,7 @@
 				F429538D8941382EC2C857CE /* AsyncSafeThreadScenario.m in Sources */,
 				F42955869D33EE0E510B9651 /* ReadGarbagePointerScenario.m in Sources */,
 				01FA9EC426D63BB20059FF4A /* AppHangInTerminationScenario.swift in Sources */,
+				8A096DF627C7E56C00DB6ECC /* CxxUnexpectedScenario.mm in Sources */,
 				8AEFC73420F8D1BB00A78779 /* ManualSessionWithUserScenario.m in Sources */,
 				E753F25424937A83001FB671 /* ThreadScenarios.m in Sources */,
 				F4295B56219D228FAA99BC14 /* ObjCExceptionScenario.m in Sources */,
