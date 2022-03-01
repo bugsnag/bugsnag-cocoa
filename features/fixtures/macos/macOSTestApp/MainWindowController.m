@@ -41,7 +41,10 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
     self.automatedMode = true;
     
     if (self.automatedMode) {
-        [self startUsingEnvironment];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performSelector:@selector(startUsingEnvironment) withObject:nil afterDelay:0.1];
+        });
+
     }
 }
 

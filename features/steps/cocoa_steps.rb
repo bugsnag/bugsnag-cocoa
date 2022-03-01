@@ -190,3 +190,15 @@ Then('the thread information is valid for the event') do
                      "Thread and stacktrace differ at #{index}. Stack=#{frame}, thread=#{thread_frame}")
   end
 end
+
+Then('the event has a critical thermal state breadcrumb') do
+  breadcrumbs = Maze::Server.errors.current[:body]['events'].first['breadcrumbs']
+  found = false
+  breadcrumbs.each do |crumb|
+    found = true if crumb['type'].eql?('state') &&
+                 ['nominal', 'fair', 'serious'].include?(crumb['metaData']['from']) &&
+                 crumb['metaData']['to'].eql?('critical') &&
+                 crumb['name'].eql?('Thermal State Changed')
+  end
+  raise("No thermal breadcrumb present in: #{breadcrumbs}") unless found
+end
