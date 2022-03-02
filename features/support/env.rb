@@ -69,3 +69,9 @@ Maze.hooks.after do |scenario|
 rescue
   # pull_file can fail on BrowserStack iOS 10 with "Error: Command 'umount' not found"
 end
+
+if Maze.config.os.eql?('macos')
+  Maze.hooks.after do |_scenario|
+    Process.kill('term', $fixture_pid) if $fixture_pid
+  end
+end

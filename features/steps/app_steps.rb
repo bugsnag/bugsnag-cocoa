@@ -166,7 +166,7 @@ def wait_for_true
 end
 
 def run_macos_app
-  `kill -s SIGTERM #{$fixture_pid}` if $fixture_pid
+  Process.kill('TERM', $fixture_pid) if $fixture_pid
   $fixture_pid = Process.spawn(
     Maze::Runner.environment,
     'features/fixtures/macos/output/macOSTestApp.app/Contents/MacOS/macOSTestApp',
