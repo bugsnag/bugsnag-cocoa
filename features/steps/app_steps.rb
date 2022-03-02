@@ -172,6 +172,6 @@ def run_macos_app
     'features/fixtures/macos/output/macOSTestApp.app/Contents/MacOS/macOSTestApp',
     [:err, :out] => 'macOSTestApp.log'
   )
-  sleep(0.1)
+  sleep(0.2)
 end
 
