@@ -72,6 +72,6 @@ end
 
 if Maze.config.os.eql?('macos')
   Maze.hooks.after do |_scenario|
-    Process.kill('term', $fixture_pid) if $fixture_pid
+    Process.kill('KILL', $fixture_pid) if $fixture_pid
   end
 end

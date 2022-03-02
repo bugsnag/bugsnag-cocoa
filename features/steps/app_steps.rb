@@ -166,13 +166,12 @@ def wait_for_true
 end
 
 def run_macos_app
-  Process.kill('TERM', $fixture_pid) if $fixture_pid
+  Process.kill('KILL', $fixture_pid) if $fixture_pid
   $fixture_pid = Process.spawn(
     Maze::Runner.environment,
     'features/fixtures/macos/output/macOSTestApp.app/Contents/MacOS/macOSTestApp',
     [:err, :out] => 'macOSTestApp.log'
   )
-  # Required to allow the non-blocking app to fully start before exiting
-  sleep(2)
+  sleep(0.1)
 end
 
