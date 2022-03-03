@@ -8,13 +8,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BSG_KSCrashReportWriter.h",
-      "line": 234,
-      "symbol": "BSGReportCallback",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.typedef",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
       "line": 301,
       "symbol": "Bugsnag.+addFeatureFlagWithName:variant:",
