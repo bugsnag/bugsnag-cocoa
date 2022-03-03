@@ -7,7 +7,7 @@
 #import "BSG_KSCrashType.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration+Private.h"
-#import "BugsnagCrashSentry.h"
+#import "BSGCrashSentry.h"
 #import "BugsnagEndpointConfiguration.h"
 #import "BugsnagErrorTypes.h"
 #import "BugsnagNotifier.h"
@@ -771,32 +771,29 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
  * Test the mapping between BSGErrorTypes and KSCrashTypes
  */
 -(void)testCrashTypeMapping {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    BugsnagCrashSentry *sentry = [BugsnagCrashSentry new];
-    BSG_KSCrashType crashTypes = BSG_KSCrashTypeNSException
-                               | BSG_KSCrashTypeMachException
-                               | BSG_KSCrashTypeSignal
-                               | BSG_KSCrashTypeCPPException;
-
-    XCTAssertEqual(crashTypes, [sentry mapKSToBSGCrashTypes:[config enabledErrorTypes]]);
+    XCTAssertEqual(BSG_KSCrashTypeFromBugsnagErrorTypes([BugsnagErrorTypes new]),
+                   BSG_KSCrashTypeNSException |
+                   BSG_KSCrashTypeMachException |
+                   BSG_KSCrashTypeSignal |
+                   BSG_KSCrashTypeCPPException);
 
     // Check partial sets
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
     errorTypes.ooms = false;
     errorTypes.signals = false;
     errorTypes.machExceptions = false;
-    crashTypes = BSG_KSCrashTypeNSException | BSG_KSCrashTypeCPPException;
-    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:errorTypes]);
+    XCTAssertEqual(BSG_KSCrashTypeFromBugsnagErrorTypes(errorTypes),
+                   BSG_KSCrashTypeNSException | BSG_KSCrashTypeCPPException);
 
     errorTypes.signals = true;
     errorTypes.cppExceptions = false;
-    crashTypes = BSG_KSCrashTypeNSException | BSG_KSCrashTypeSignal;
-    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:errorTypes]);
+    XCTAssertEqual(BSG_KSCrashTypeFromBugsnagErrorTypes(errorTypes),
+                   BSG_KSCrashTypeNSException | BSG_KSCrashTypeSignal);
 
     errorTypes.cppExceptions = true;
     errorTypes.unhandledExceptions = false;
-    crashTypes = BSG_KSCrashTypeCPPException | BSG_KSCrashTypeSignal;
-    XCTAssertEqual((NSUInteger)crashTypes, [sentry mapKSToBSGCrashTypes:errorTypes]);
+    XCTAssertEqual(BSG_KSCrashTypeFromBugsnagErrorTypes(errorTypes),
+                   BSG_KSCrashTypeCPPException | BSG_KSCrashTypeSignal);
 }
 
 /**

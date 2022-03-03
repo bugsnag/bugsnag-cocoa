@@ -28,6 +28,7 @@
 
 #import "BSGAppHangDetector.h"
 #import "BSGConnectivity.h"
+#import "BSGCrashSentry.h"
 #import "BSGEventUploader.h"
 #import "BSGFileLocations.h"
 #import "BSGInternalErrorReporter.h"
@@ -51,7 +52,6 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
-#import "BugsnagCrashSentry.h"
 #import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagErrorTypes.h"
@@ -62,7 +62,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagNotifier.h"
-#import "BugsnagPluginClient.h"
+#import "BugsnagPlugin.h"
 #import "BugsnagSession+Private.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagStackframe+Private.h"
@@ -113,7 +113,7 @@ static bool hasRecordedSessions;
  *
  *  @param writer report writer which will receive updated metadata
  */
-void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, __attribute__((unused)) int type) {
+void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
     BOOL isCrash = YES;
     if (hasRecordedSessions) { // a session is available
         // persist session info
@@ -219,7 +219,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         }];
         
         _notifier = _configuration.notifier ?: [[BugsnagNotifier alloc] init];
-        self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:_configuration];
 
         BSGFileLocations *fileLocations = [BSGFileLocations current];
         
@@ -238,7 +237,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
         self.stateEventBlocks = [NSMutableArray new];
         self.extraRuntimeInfo = [NSMutableDictionary new];
-        self.crashSentry = [BugsnagCrashSentry new];
+
         _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration notifier:_notifier];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
 
@@ -273,9 +272,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:_metadataFile];
         [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:_stateMetadataFile];
 
-        self.pluginClient = [[BugsnagPluginClient alloc] initWithPlugins:self.configuration.plugins
-                                                                  client:self];
-
         BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
     }
     return self;
@@ -283,7 +279,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
 - (void)start {
     [self.configuration validate];
-    [self.crashSentry install:self.configuration onCrash:&BSSerializeDataCrashHandler];
+    BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
+    self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
     [self computeDidCrashLastLaunch];
     [self.breadcrumbs removeAllBreadcrumbs];
     [self setupConnectivityListener];
@@ -355,13 +352,23 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     self.started = YES;
 
+    id<BugsnagPlugin> reactNativePlugin = [NSClassFromString(@"BugsnagReactNativePlugin") new];
+    if (reactNativePlugin) {
+        [self.configuration.plugins addObject:reactNativePlugin];
+    }
+    for (id<BugsnagPlugin> plugin in self.configuration.plugins) {
+        @try {
+            [plugin load:self];
+        } @catch (NSException *exception) {
+            bsg_log_err(@"Plugin %@ threw exception in -load: %@", plugin, exception);
+        }
+    }
+
     [self.sessionTracker startWithNotificationCenter:center isInForeground:bsg_kscrashstate_currentState()->applicationIsInForeground];
 
     // Record a "Bugsnag Loaded" message
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState withMessage:@"Bugsnag loaded" andMetadata:nil];
 
-    [self.pluginClient loadPlugins];
-    
     if (self.configuration.launchDurationMillis > 0) {
         self.appLaunchTimer = [NSTimer scheduledTimerWithTimeInterval:(double)self.configuration.launchDurationMillis / 1000.0
                                                                target:self selector:@selector(appLaunchTimerFired:)
@@ -1148,40 +1155,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     } else {
         self.metadata.observer = nil;
     }
-}
-
-// =============================================================================
-// MARK: - autoNotify
-// =============================================================================
-
-- (BOOL)autoNotify {
-    return self.configuration.autoDetectErrors;
-}
-
-/// Alters whether error detection should be enabled or not after Bugsnag has been initialized.
-/// Intended for internal use only by Unity.
-- (void)setAutoNotify:(BOOL)autoNotify {
-    BOOL changed = self.configuration.autoDetectErrors != autoNotify;
-    self.configuration.autoDetectErrors = autoNotify;
-
-    if (changed) {
-        [self updateCrashDetectionSettings];
-    }
-}
-
-/// Updates the crash detection settings after Bugsnag has been initialized.
-/// App Hang detection is not updated as it will always be disabled for Unity.
-- (void)updateCrashDetectionSettings {
-    if (self.configuration.autoDetectErrors) {
-        // alter the enabled KSCrash types
-        BugsnagErrorTypes *errorTypes = self.configuration.enabledErrorTypes;
-        BSG_KSCrashType crashTypes = [self.crashSentry mapKSToBSGCrashTypes:errorTypes];
-        bsg_kscrash_setHandlingCrashTypes(crashTypes);
-    } else {
-        // Only enable support for notify()-based reports
-        bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeNone);
-    }
-    // OOMs are controlled by config.autoDetectErrors so don't require any further action
 }
 
 // MARK: - App Hangs

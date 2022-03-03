@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## 6.16.4 (2022-03-02)
+
+### Bug fixes
+
+* Fix crash in `CPPExceptionTerminate()` if `throw` was called without an exception.
+  [#1312](https://github.com/bugsnag/bugsnag-cocoa/pull/1312)
+
+* Fix accuracy of `app.inForeground` and prevent reporting of hangs during background launches.
+  [#1307](https://github.com/bugsnag/bugsnag-cocoa/pull/1307)
+
 ## 6.16.3 (2022-02-23)
 
 ### Bug fixes

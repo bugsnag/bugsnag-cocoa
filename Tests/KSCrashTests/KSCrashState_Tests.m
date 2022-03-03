@@ -62,15 +62,10 @@
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
 
-    XCTAssertEqual(context.foregroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(context.backgroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(context.launchesSinceLastCrash, 1, @"");
-    XCTAssertEqual(context.sessionsSinceLastCrash, 1, @"");
-    XCTAssertEqual(context.appLaunchTime, 0, @"");
+    XCTAssertNotEqual(context.appLaunchTime, 0);
 
     XCTAssertEqual(context.foregroundDurationSinceLaunch, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLaunch, 0.0, @"");
-    XCTAssertEqual(context.sessionsSinceLaunch, 1, @"");
 
     XCTAssertFalse(context.crashedThisLaunch, @"");
     XCTAssertFalse(context.crashedLastLaunch, @"");
@@ -81,15 +76,10 @@
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
 
-    XCTAssertEqual(context.foregroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(context.backgroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(context.launchesSinceLastCrash, 2, @"");
-    XCTAssertEqual(context.sessionsSinceLastCrash, 2, @"");
-    XCTAssertEqual(context.appLaunchTime, 0, @"");
+    XCTAssertNotEqual(context.appLaunchTime, 0);
 
     XCTAssertEqual(context.foregroundDurationSinceLaunch, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLaunch, 0.0, @"");
-    XCTAssertEqual(context.sessionsSinceLaunch, 1, @"");
 
     XCTAssertFalse(context.crashedThisLaunch, @"");
     XCTAssertFalse(context.crashedLastLaunch, @"");
@@ -112,21 +102,10 @@
                  checkpoint0.applicationIsInForeground, @"");
     XCTAssertTrue(checkpointC.appLaunchTime == checkpoint0.appLaunchTime, @"");
 
-    XCTAssertGreaterThan(checkpointC.foregroundDurationSinceLastCrash,
-                         checkpoint0.foregroundDurationSinceLastCrash);
-    XCTAssertTrue(checkpointC.backgroundDurationSinceLastCrash ==
-                 checkpoint0.backgroundDurationSinceLastCrash, @"");
-    XCTAssertTrue(checkpointC.launchesSinceLastCrash ==
-                 checkpoint0.launchesSinceLastCrash, @"");
-    XCTAssertTrue(checkpointC.sessionsSinceLastCrash ==
-                 checkpoint0.sessionsSinceLastCrash, @"");
-
     XCTAssertGreaterThan(checkpointC.foregroundDurationSinceLaunch,
                          checkpoint0.foregroundDurationSinceLaunch);
     XCTAssertTrue(checkpointC.backgroundDurationSinceLaunch ==
                  checkpoint0.backgroundDurationSinceLaunch, @"");
-    XCTAssertTrue(checkpointC.sessionsSinceLaunch ==
-                 checkpoint0.sessionsSinceLaunch, @"");
 
     XCTAssertTrue(checkpointC.crashedThisLaunch, @"");
     XCTAssertFalse(checkpointC.crashedLastLaunch, @"");
@@ -137,14 +116,8 @@
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
 
-    XCTAssertEqual(context.foregroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(context.backgroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(context.launchesSinceLastCrash, 1, @"");
-    XCTAssertEqual(context.sessionsSinceLastCrash, 1, @"");
-
     XCTAssertEqual(context.foregroundDurationSinceLaunch, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLaunch, 0.0, @"");
-    XCTAssertEqual(context.sessionsSinceLaunch, 1, @"");
 
     XCTAssertFalse(context.crashedThisLaunch, @"");
     XCTAssertTrue(context.crashedLastLaunch, @"");
@@ -180,17 +153,10 @@
     BSG_KSCrash_State checkpointR = context;
 
     XCTAssertTrue(checkpointR.applicationIsInForeground, @"");
-    XCTAssertEqual(checkpointR.appLaunchTime, 0, @"");
-
-    // We don't save after going inactive, so this will still be 0.
-    XCTAssertEqual(checkpointR.foregroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(checkpointR.backgroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(checkpointR.launchesSinceLastCrash, 2, @"");
-    XCTAssertEqual(checkpointR.sessionsSinceLastCrash, 2, @"");
+    XCTAssertNotEqual(context.appLaunchTime, 0);
 
     XCTAssertEqual(checkpointR.foregroundDurationSinceLaunch, 0.0, @"");
     XCTAssertEqual(checkpointR.backgroundDurationSinceLaunch, 0.0, @"");
-    XCTAssertEqual(checkpointR.sessionsSinceLaunch, 1, @"");
 
     XCTAssertFalse(checkpointR.crashedThisLaunch, @"");
     XCTAssertFalse(checkpointR.crashedLastLaunch, @"");
@@ -215,21 +181,10 @@
     XCTAssertFalse(checkpoint1.applicationIsInForeground, @"");
     XCTAssertTrue(checkpoint0.appLaunchTime == checkpoint1.appLaunchTime, @"");
 
-    XCTAssertGreaterThan(checkpoint1.foregroundDurationSinceLastCrash,
-                         checkpoint0.foregroundDurationSinceLastCrash);
-    XCTAssertTrue(checkpoint1.backgroundDurationSinceLastCrash ==
-                 checkpoint0.backgroundDurationSinceLastCrash, @"");
-    XCTAssertTrue(checkpoint1.launchesSinceLastCrash ==
-                 checkpoint0.launchesSinceLastCrash, @"");
-    XCTAssertTrue(checkpoint1.sessionsSinceLastCrash ==
-                 checkpoint0.sessionsSinceLastCrash, @"");
-
     XCTAssertGreaterThan(checkpoint1.foregroundDurationSinceLaunch,
                          checkpoint0.foregroundDurationSinceLaunch);
     XCTAssertTrue(checkpoint1.backgroundDurationSinceLaunch ==
                  checkpoint0.backgroundDurationSinceLaunch, @"");
-    XCTAssertTrue(checkpoint1.sessionsSinceLaunch ==
-                 checkpoint0.sessionsSinceLaunch, @"");
 
     XCTAssertFalse(checkpoint1.crashedThisLaunch, @"");
     XCTAssertFalse(checkpoint1.crashedLastLaunch, @"");
@@ -242,14 +197,8 @@
 
     XCTAssertTrue(checkpointR.applicationIsInForeground, @"");
 
-    XCTAssertTrue(checkpointR.foregroundDurationSinceLastCrash > 0, @"");
-    XCTAssertEqual(checkpointR.backgroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(checkpointR.launchesSinceLastCrash, 2, @"");
-    XCTAssertEqual(checkpointR.sessionsSinceLastCrash, 2, @"");
-
     XCTAssertEqual(checkpointR.foregroundDurationSinceLaunch, 0.0, @"");
     XCTAssertEqual(checkpointR.backgroundDurationSinceLaunch, 0.0, @"");
-    XCTAssertEqual(checkpointR.sessionsSinceLaunch, 1, @"");
 
     XCTAssertFalse(checkpointR.crashedThisLaunch, @"");
     XCTAssertFalse(checkpointR.crashedLastLaunch, @"");
@@ -267,25 +216,17 @@
     bsg_kscrashstate_notifyAppInForeground(false);
     BSG_KSCrash_State checkpoint0 = context;
     usleep(1);
-    bsg_kscrashstate_notifyAppTerminate();
 
-    usleep(1);
     memset(&context, 0, sizeof(context));
     bsg_kscrashstate_init([stateFile cStringUsingEncoding:NSUTF8StringEncoding],
                       &context);
     BSG_KSCrash_State checkpointR = context;
 
     XCTAssertTrue(checkpointR.applicationIsInForeground, @"");
-    XCTAssertEqual(checkpointR.appLaunchTime, 0, @"");
-
-    XCTAssertTrue(checkpointR.backgroundDurationSinceLastCrash >
-                 checkpoint0.backgroundDurationSinceLastCrash, @"");
-    XCTAssertEqual(checkpointR.launchesSinceLastCrash, 2, @"");
-    XCTAssertEqual(checkpointR.sessionsSinceLastCrash, 2, @"");
+    XCTAssertNotEqual(context.appLaunchTime, 0);
 
     XCTAssertEqual(checkpointR.foregroundDurationSinceLaunch, 0.0, @"");
     XCTAssertEqual(checkpointR.backgroundDurationSinceLaunch, 0.0, @"");
-    XCTAssertEqual(checkpointR.sessionsSinceLaunch, 1, @"");
 
     XCTAssertFalse(checkpointR.crashedThisLaunch, @"");
     XCTAssertFalse(checkpointR.crashedLastLaunch, @"");
@@ -311,21 +252,10 @@
                  checkpoint0.applicationIsInForeground, @"");
     XCTAssertTrue(checkpointC.appLaunchTime == checkpoint0.appLaunchTime, @"");
 
-    XCTAssertTrue(checkpointC.foregroundDurationSinceLastCrash ==
-                 checkpoint0.foregroundDurationSinceLastCrash, @"");
-    XCTAssertTrue(checkpointC.backgroundDurationSinceLastCrash >
-                 checkpoint0.backgroundDurationSinceLastCrash, @"");
-    XCTAssertTrue(checkpointC.launchesSinceLastCrash ==
-                 checkpoint0.launchesSinceLastCrash, @"");
-    XCTAssertTrue(checkpointC.sessionsSinceLastCrash ==
-                 checkpoint0.sessionsSinceLastCrash, @"");
-
     XCTAssertTrue(checkpointC.foregroundDurationSinceLaunch ==
                  checkpoint0.foregroundDurationSinceLaunch, @"");
     XCTAssertTrue(checkpointC.backgroundDurationSinceLaunch >
                  checkpoint0.backgroundDurationSinceLaunch, @"");
-    XCTAssertTrue(checkpointC.sessionsSinceLaunch ==
-                 checkpoint0.sessionsSinceLaunch, @"");
 
     XCTAssertTrue(checkpointC.crashedThisLaunch, @"");
     XCTAssertFalse(checkpointC.crashedLastLaunch, @"");
@@ -336,30 +266,11 @@
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
 
-    XCTAssertEqual(context.foregroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(context.backgroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(context.launchesSinceLastCrash, 1, @"");
-    XCTAssertEqual(context.sessionsSinceLastCrash, 1, @"");
-
     XCTAssertEqual(context.foregroundDurationSinceLaunch, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLaunch, 0.0, @"");
-    XCTAssertEqual(context.sessionsSinceLaunch, 1, @"");
 
     XCTAssertFalse(context.crashedThisLaunch, @"");
     XCTAssertTrue(context.crashedLastLaunch, @"");
-}
-
-- (void) testAppLaunchTime
-{
-    BSG_KSCrash_State context = {0};
-    NSString* stateFile = [self.tempPath stringByAppendingPathComponent:@"state.json"];
-    NSData *data = [NSJSONSerialization dataWithJSONObject:@{@"appLaunchTime": @34234235534534 } options:0 error:nil];
-    [data writeToFile:stateFile atomically:YES];
-
-    bsg_kscrashstate_init([stateFile cStringUsingEncoding:NSUTF8StringEncoding],
-                          &context);
-    usleep(1);
-    XCTAssertEqual(34234235534534, context.appLaunchTime);
 }
 
 - (void)testBGFGRelaunch
@@ -383,21 +294,10 @@
     XCTAssertTrue(checkpoint1.applicationIsInForeground, @"");
     XCTAssertTrue(checkpoint1.appLaunchTime == checkpoint0.appLaunchTime, @"");
 
-    XCTAssertTrue(checkpoint1.foregroundDurationSinceLastCrash ==
-                 checkpoint0.foregroundDurationSinceLastCrash, @"");
-    XCTAssertTrue(checkpoint1.backgroundDurationSinceLastCrash >
-                 checkpoint0.backgroundDurationSinceLastCrash, @"");
-    XCTAssertTrue(checkpoint1.launchesSinceLastCrash ==
-                 checkpoint0.launchesSinceLastCrash, @"");
-    XCTAssertTrue(checkpoint1.sessionsSinceLastCrash ==
-                 checkpoint0.sessionsSinceLastCrash + 1, @"");
-
     XCTAssertTrue(checkpoint1.foregroundDurationSinceLaunch ==
                  checkpoint0.foregroundDurationSinceLaunch, @"");
     XCTAssertTrue(checkpoint1.backgroundDurationSinceLaunch >
                  checkpoint0.backgroundDurationSinceLaunch, @"");
-    XCTAssertTrue(checkpoint1.sessionsSinceLaunch ==
-                 checkpoint0.sessionsSinceLaunch + 1, @"");
 
     XCTAssertFalse(checkpoint1.crashedThisLaunch, @"");
     XCTAssertFalse(checkpoint1.crashedLastLaunch, @"");
@@ -410,15 +310,8 @@
 
     XCTAssertTrue(checkpointR.applicationIsInForeground, @"");
 
-    XCTAssertTrue(checkpointR.foregroundDurationSinceLastCrash > 0, @"");
-    // We don't save after going to FG, so this will still be 0.
-    XCTAssertEqual(checkpointR.backgroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(checkpointR.launchesSinceLastCrash, 2, @"");
-    XCTAssertEqual(checkpointR.sessionsSinceLastCrash, 2, @"");
-
     XCTAssertEqual(checkpointR.foregroundDurationSinceLaunch, 0.0, @"");
     XCTAssertEqual(checkpointR.backgroundDurationSinceLaunch, 0.0, @"");
-    XCTAssertEqual(checkpointR.sessionsSinceLaunch, 1, @"");
 
     XCTAssertFalse(checkpointR.crashedThisLaunch, @"");
     XCTAssertFalse(checkpointR.crashedLastLaunch, @"");
@@ -445,21 +338,10 @@
                  checkpoint0.applicationIsInForeground, @"");
     XCTAssertTrue(checkpointC.appLaunchTime == checkpoint0.appLaunchTime, @"");
 
-    XCTAssertGreaterThan(checkpointC.foregroundDurationSinceLastCrash,
-                         checkpoint0.foregroundDurationSinceLastCrash);
-    XCTAssertTrue(checkpointC.backgroundDurationSinceLastCrash ==
-                 checkpoint0.backgroundDurationSinceLastCrash, @"");
-    XCTAssertTrue(checkpointC.launchesSinceLastCrash ==
-                 checkpoint0.launchesSinceLastCrash, @"");
-    XCTAssertTrue(checkpointC.sessionsSinceLastCrash ==
-                 checkpoint0.sessionsSinceLastCrash, @"");
-
     XCTAssertGreaterThan(checkpointC.foregroundDurationSinceLaunch,
                          checkpoint0.foregroundDurationSinceLaunch);
     XCTAssertTrue(checkpointC.backgroundDurationSinceLaunch ==
                  checkpoint0.backgroundDurationSinceLaunch, @"");
-    XCTAssertTrue(checkpointC.sessionsSinceLaunch ==
-                 checkpoint0.sessionsSinceLaunch, @"");
 
     XCTAssertTrue(checkpointC.crashedThisLaunch, @"");
     XCTAssertFalse(checkpointC.crashedLastLaunch, @"");
@@ -470,14 +352,8 @@
 
     XCTAssertTrue(context.applicationIsInForeground, @"");
 
-    XCTAssertEqual(context.foregroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(context.backgroundDurationSinceLastCrash, 0.0, @"");
-    XCTAssertEqual(context.launchesSinceLastCrash, 1, @"");
-    XCTAssertEqual(context.sessionsSinceLastCrash, 1, @"");
-
     XCTAssertEqual(context.foregroundDurationSinceLaunch, 0.0, @"");
     XCTAssertEqual(context.backgroundDurationSinceLaunch, 0.0, @"");
-    XCTAssertEqual(context.sessionsSinceLaunch, 1, @"");
 
     XCTAssertFalse(context.crashedThisLaunch, @"");
     XCTAssertTrue(context.crashedLastLaunch, @"");

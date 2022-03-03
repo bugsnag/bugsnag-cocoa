@@ -29,10 +29,6 @@
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSSystemInfoC.h"
 
-#if TARGET_OS_TV
-#import "UIApplicationStub.h"
-#endif
-
 
 @interface KSSystemInfo_Tests : XCTestCase @end
 
@@ -60,27 +56,5 @@
         free(processName);
     }
 }
-
-#if TARGET_OS_TV || TARGET_OS_IOS
-- (void)testCurrentAppState {
-#if TARGET_OS_TV
-    [self setUpUIApplicationStub];
-#endif
-    XCTAssertEqual(UIApplicationStateActive, [BSG_KSSystemInfo currentAppState]);
-}
-
-- (void)testInactiveIsInForeground {
-    XCTAssertTrue([BSG_KSSystemInfo isInForeground:UIApplicationStateInactive]);
-}
-
-- (void)testActiveIsInForeground {
-    XCTAssertTrue([BSG_KSSystemInfo isInForeground:UIApplicationStateActive]);
-
-}
-
-- (void)testBackgroundIsNotInForeground {
-    XCTAssertFalse([BSG_KSSystemInfo isInForeground:UIApplicationStateBackground]);
-}
-#endif
 
 @end
