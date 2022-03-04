@@ -172,5 +172,7 @@ def run_macos_app
     'features/fixtures/macos/output/macOSTestApp.app/Contents/MacOS/macOSTestApp',
     [:err, :out] => ['macOSTestApp.log', File::APPEND|File::CREAT|File::RDWR]
   )
-  sleep(0.2)
+  # Ideally we would wait until we know the scenario's run method has been executed.
+  # We need to sleep to prevent tests calling Then('the app is not running') before the fixture has started.
+  sleep 1
 end
