@@ -62,16 +62,13 @@ Maze.hooks.after do |scenario|
 
   if Maze.config.os == 'macos'
     FileUtils.mv('/tmp/kscrash.log', path)
+    FileUtils.mv('macOSTestApp.log', path)
+    Process.kill('KILL', $fixture_pid) if $fixture_pid
+    $fixture_pid = nil
   else
     data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
     File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
   end
 rescue
   # pull_file can fail on BrowserStack iOS 10 with "Error: Command 'umount' not found"
-end
-
-if Maze.config.os.eql?('macos')
-  Maze.hooks.after do |_scenario|
-    Process.kill('KILL', $fixture_pid) if $fixture_pid
-  end
 end
