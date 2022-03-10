@@ -23,10 +23,6 @@ BeforeAll do
     unless File.exist?(app_path) || !File.exist?(zip_path)
       system("cd #{fixture_dir} && unzip -q #{zip_name}", exception: true)
     end
-
-    if File.exist?(app_path)
-      system("#{app_path}/Contents/MacOS/#{Maze.config.app} -register", exception: true)
-    end
   end
 end
 
@@ -66,6 +62,9 @@ Maze.hooks.after do |scenario|
 
   if Maze.config.os == 'macos'
     FileUtils.mv('/tmp/kscrash.log', path)
+    FileUtils.mv('macOSTestApp.log', path)
+    Process.kill('KILL', $fixture_pid) if $fixture_pid
+    $fixture_pid = nil
   else
     data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
     File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }

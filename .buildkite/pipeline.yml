@@ -200,7 +200,6 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/barebone_tests.feature
-        --farm=local
         --os=macos
         --os-version=10.13
         --app=macOSTestApp
@@ -224,7 +223,6 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/barebone_tests.feature
-        --farm=local
         --os=macos
         --os-version=10.15
         --app=macOSTestApp
@@ -249,7 +247,6 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/barebone_tests.feature
-        --farm=local
         --os=macos
         --os-version=12
         --app=macOSTestApp

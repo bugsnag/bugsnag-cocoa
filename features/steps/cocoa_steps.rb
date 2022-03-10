@@ -1,59 +1,3 @@
-When('I run {string}') do |scenario_name|
-  execute_command :run_scenario, scenario_name
-end
-
-When("I run {string} and relaunch the crashed app") do |event_type|
-  begin
-    step("I run \"#{event_type}\"")
-  rescue StandardError
-    # Ignore on macOS - AppiumForMac raises an error when clicking a button causes the app to crash
-    raise unless Maze::Helper.get_current_platform.eql?('macos')
-
-    $logger.warn 'Ignoring error - this is normal for AppiumForMac if a button click causes the app to crash.'
-  end
-  step('I relaunch the app after a crash')
-end
-
-When("I run the configured scenario and relaunch the crashed app") do
-  begin
-    steps %(
-      Given I click the element "run_scenario"
-    )
-  rescue StandardError
-    raise unless Maze::Helper.get_current_platform.eql?('macos')
-    $logger.info 'Ignored error raised by AppiumForMac when clicking run_scenario'
-  end
-  steps %(
-    When the app is not running
-    Then I relaunch the app
-  )
-end
-
-When('I clear all persistent data') do
-  steps %(
-    When I click the element "clear_persistent_data"
-  )
-end
-
-def click_if_present(element)
-  return false unless Maze.driver.wait_for_element(element, 1)
-
-  Maze.driver.click_element(element)
-  true
-rescue Selenium::WebDriver::Error::NoSuchElementError
-  # Ignore - we have seen clicks fail like this despite having just checked for the element's presence
-  false
-end
-
-When('I configure Bugsnag for {string}') do |scenario_name|
-  execute_command :start_bugsnag, scenario_name
-end
-
-When('I clear the error queue') do
-  Maze::Server.errors.clear
-end
-
-
 def request_matches_row(body, row)
   row.each do |key, expected_value|
     obs_val = Maze::Helper.read_key_path(body, key)
@@ -86,6 +30,23 @@ def request_fields_are_equal(key, index_a, index_b)
   val_a.eql? val_b
 end
 
+Then('the exception {string} equals one of:') do |keypath, possible_values|
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.#{keypath}")
+  Maze.check.includes(possible_values.raw.flatten, value)
+end
+
+Then('the error is an OOM event') do
+  steps %(
+    Then the exception "message" equals "The app was likely terminated by the operating system while in the foreground"
+    And the exception "errorClass" equals "Out Of Memory"
+    And the exception "type" equals "cocoa"
+    And the error payload field "events.0.exceptions.0.stacktrace" is an array with 0 elements
+    And the event "severity" equals "error"
+    And the event "severityReason.type" equals "outOfMemory"
+    And the event "unhandled" is true
+  )
+end
+
 def check_device_model(field, list)
   internal_names = {
     'iPhone 6' => %w[iPhone7,2],
@@ -109,11 +70,61 @@ def check_device_model(field, list)
 end
 
 Then('the error payload field {string} matches the test device model') do |field|
-  check_device_model field, Maze::Server.errors
+  check_device_model field, Maze::Server.errors if Maze::Helper.get_current_platform.eql?('ios')
 end
 
 Then('the session payload field {string} matches the test device model') do |field|
-  check_device_model field, Maze::Server.sessions
+  check_device_model field, Maze::Server.sessions if Maze::Helper.get_current_platform.eql?('ios')
+end
+
+Then('the error is valid for the error reporting API') do
+  platform = Maze::Helper.get_current_platform
+  case platform
+  when 'ios'
+    steps %(
+      Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+      Then the breadcrumb timestamps are valid for the event
+    )
+  when 'macos'
+    steps %(
+      Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
+      Then the breadcrumb timestamps are valid for the event
+    )
+  else
+    raise "Unknown platform: #{platform}"
+  end
+end
+
+Then('the error is valid for the error reporting API ignoring breadcrumb timestamps') do
+  platform = Maze::Helper.get_current_platform
+  case platform
+  when 'ios'
+    steps %(
+      Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
+    )
+  when 'macos'
+    steps %(
+      Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
+    )
+  else
+    raise "Unknown platform: #{platform}"
+  end
+end
+
+Then('the session is valid for the session reporting API') do
+  platform = Maze::Helper.get_current_platform
+  case platform
+  when 'ios'
+    steps %(
+      Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
+    )
+  when 'macos'
+    steps %(
+      Then the session is valid for the session reporting API version "1.0" for the "OSX Bugsnag Notifier" notifier
+    )
+  else
+    raise "Unknown platform: #{platform}"
+  end
 end
 
 Then('the breadcrumb timestamps are valid for the event') do
@@ -180,92 +191,14 @@ Then('the thread information is valid for the event') do
   end
 end
 
-Then('the error is valid for the error reporting API') do
-  platform = Maze::Helper.get_current_platform
-  case platform
-  when 'ios'
-    steps %(
-      Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-      Then the breadcrumb timestamps are valid for the event
-    )
-  when 'macos'
-    steps %(
-      Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
-      Then the breadcrumb timestamps are valid for the event
-    )
-  else
-    raise "Unknown platform: #{platform}"
+Then('the event has a critical thermal state breadcrumb') do
+  breadcrumbs = Maze::Server.errors.current[:body]['events'].first['breadcrumbs']
+  found = false
+  breadcrumbs.each do |crumb|
+    found = true if crumb['type'].eql?('state') &&
+                 ['nominal', 'fair', 'serious'].include?(crumb['metaData']['from']) &&
+                 crumb['metaData']['to'].eql?('critical') &&
+                 crumb['name'].eql?('Thermal State Changed')
   end
-end
-
-Then('the error is valid for the error reporting API ignoring breadcrumb timestamps') do
-  platform = Maze::Helper.get_current_platform
-  case platform
-  when 'ios'
-    steps %(
-      Then the error is valid for the error reporting API version "4.0" for the "iOS Bugsnag Notifier" notifier
-    )
-  when 'macos'
-    steps %(
-      Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
-    )
-  else
-    raise "Unknown platform: #{platform}"
-  end
-end
-
-Then('the session is valid for the session reporting API') do
-  platform = Maze::Helper.get_current_platform
-  case platform
-  when 'ios'
-    steps %(
-      Then the session is valid for the session reporting API version "1.0" for the "iOS Bugsnag Notifier" notifier
-    )
-  when 'macos'
-    steps %(
-      Then the session is valid for the session reporting API version "1.0" for the "OSX Bugsnag Notifier" notifier
-    )
-  else
-    raise "Unknown platform: #{platform}"
-  end
-end
-
-Then('the exception {string} equals one of:') do |keypath, possible_values|
-  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.#{keypath}")
-  Maze.check.includes(possible_values.raw.flatten, value)
-end
-
-Then('the error is an OOM event') do
-  steps %(
-    Then the exception "message" equals "The app was likely terminated by the operating system while in the foreground"
-    And the exception "errorClass" equals "Out Of Memory"
-    And the exception "type" equals "cocoa"
-    And the error payload field "events.0.exceptions.0.stacktrace" is an array with 0 elements
-    And the event "severity" equals "error"
-    And the event "severityReason.type" equals "outOfMemory"
-    And the event "unhandled" is true
-  )
-end
-
-def wait_for_true
-  max_attempts = 300
-  attempts = 0
-  assertion_passed = false
-  until (attempts >= max_attempts) || assertion_passed
-    attempts += 1
-    assertion_passed = yield
-    sleep 0.1
-  end
-  raise 'Assertion not passed in 30s' unless assertion_passed
-end
-
-def execute_command(action, scenario_name)
-  command = { action: action, scenario_name: scenario_name, scenario_mode: $scenario_mode }
-  Maze::Server.commands.add command
-  Maze.driver.click_element :execute_command
-  $scenario_mode = nil
-  # Ensure fixture has read the command
-  count = 100
-  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
+  raise("No thermal breadcrumb present in: #{breadcrumbs}") unless found
 end

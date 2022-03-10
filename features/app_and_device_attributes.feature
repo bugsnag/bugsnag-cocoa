@@ -103,7 +103,7 @@ Feature: App and Device attributes present
   Scenario: Duration value increments as expected
     When I run "AppDurationScenario"
     And I wait to receive 3 errors
-    And the event "app.duration" is between 0 and 200
+    And the event "app.duration" is between 0 and 250
     And I discard the oldest error
     And the event "app.duration" is between 2600 and 2800
     And I discard the oldest error

@@ -24,6 +24,7 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
     self.mainWindowController = [[MainWindowController alloc] initWithWindowNibName:@"MainWindowController"];
     [self.mainWindowController showWindow:self];
+    [NSApp activateIgnoringOtherApps:YES];
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {

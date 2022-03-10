@@ -254,7 +254,6 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        --farm=local
         --os=macos
         --os-version=11.0
         --app=macOSTestApp
@@ -278,7 +277,6 @@ steps:
       - bundle config set --local path 'vendor/bundle'
       - bundle install
       - bundle exec maze-runner
-        --farm=local
         --os=macos
         --os-version=12
         --app=macOSTestApp
@@ -297,7 +295,6 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        --farm=local
         --os=macos
         --os-version=10.13
         --app=macOSTestApp
@@ -317,7 +314,6 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        --farm=local
         --os=macos
         --os-version=10.14
         --app=macOSTestApp
