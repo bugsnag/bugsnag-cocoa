@@ -13,7 +13,7 @@
 
 @interface AppDelegate ()
 
-@property NSWindowController *mainWindowController;
+@property MainWindowController *mainWindowController;
 
 @end
 
@@ -21,27 +21,29 @@
 
 @implementation AppDelegate
 
+- (BOOL)launchedByMazeRunner {
+    return [[[NSProcessInfo processInfo] environment] objectForKey:@"MAZE_RUNNER"] != nil;
+}
+
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
     self.mainWindowController = [[MainWindowController alloc] initWithWindowNibName:@"MainWindowController"];
     [self.mainWindowController showWindow:self];
-    [NSApp activateIgnoringOtherApps:YES];
+    
+    if ([self launchedByMazeRunner]) {
+        [NSApp activateIgnoringOtherApps:YES];
+    }
+}
+
+- (void)applicationDidBecomeActive:(NSNotification *)notification {
+    static BOOL once;
+    if (!once && [self launchedByMazeRunner]) {
+        once = YES;
+        [self.mainWindowController executeMazeRunnerCommand:self];
+    }
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
     return YES;
-}
-
-- (void)application:(NSApplication *)application openURLs:(NSArray<NSURL *> *)urls {
-    NSLog(@"%s %@", __PRETTY_FUNCTION__, urls);
-    for (NSURL *url in urls) {
-        if ([url.scheme isEqualToString:@"macOSTestApp"] &&
-            [url.path isEqualToString:@"/mainWindowController"]) {
-            NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
-            for (NSURLQueryItem *queryItem in components.queryItems) {
-                [self.mainWindowController setValue:queryItem.value forKeyPath:queryItem.name];
-            }
-        }
-    }
 }
 
 @end
