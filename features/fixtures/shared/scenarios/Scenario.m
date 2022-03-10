@@ -30,6 +30,32 @@ static char ksLogPath[PATH_MAX];
     dispatch_block_t _onEventDelivery;
 }
 
++ (void)load {
+    [[NSNotificationCenter defaultCenter] addObserverForName:nil object:nil queue:nil usingBlock:^(NSNotification *notification) {
+        for (NSString *prefix in @[@"NSAutomaticFocusRingChanged",
+                                   @"NSBundleDidLoadNotification",
+                                   @"NSMenu",
+                                   @"NSTextStorage",
+                                   @"NSTextView",
+                                   @"NSThreadWillExitNotification",
+                                   @"NSUndoManagerCheckpointNotification",
+                                   @"NSViewDidUpdateTrackingAreasNotification",
+                                   @"NSViewFrameDidChangeNotification",
+                                   @"UIScreenBrightnessDidChangeNotification",
+                                   @"_"]) {
+            if ([notification.name hasPrefix:prefix]) {
+                return;
+            }
+        }
+#if TARGET_OS_OSX
+        if ([notification.name hasSuffix:@"UpdateNotification"]) {
+            return;
+        }
+#endif
+        NSLog(@"%@", notification.name);
+    }];
+}
+
 + (Scenario *)createScenarioNamed:(NSString *)className withConfig:(BugsnagConfiguration *)config {
     Class class = NSClassFromString(className) ?:
     NSClassFromString([@"iOSTestApp." stringByAppendingString:className]) ?:
