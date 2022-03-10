@@ -39,6 +39,7 @@ Feature: Thermal State
     And I wait to receive a session
     And I discard the oldest session
     And I send the app to the background
+    And I wait for 1 seconds
     And I relaunch the app
     And I configure Bugsnag for "CriticalThermalStateScenario"
     And I wait to receive a session
