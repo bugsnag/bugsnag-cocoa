@@ -123,7 +123,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "appium_server.log", "maze_output/failed/**/*"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
