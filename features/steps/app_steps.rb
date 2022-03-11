@@ -31,17 +31,7 @@ def run_and_relaunch
 end
 
 When('I clear all persistent data') do
-  platform = Maze::Helper.get_current_platform
-  case platform
-  when 'ios'
-    steps %(
-      When I click the element "clear_persistent_data"
-    )
-  when 'macos'
-    $reset_data = true
-  else
-    raise "Unknown platform: #{platform}"
-  end
+  $reset_data = true
 end
 
 When('I configure Bugsnag for {string}') do |scenario_name|
@@ -116,29 +106,15 @@ end
 
 def execute_command(action, scenario_name)
   platform = Maze::Helper.get_current_platform
-  command = { action: action, scenario_name: scenario_name, scenario_mode: $scenario_mode }
-  case platform
-  when 'ios'
-    Maze::Server.commands.add command
-    trigger_app_command
-    $scenario_mode = nil
-    $reset_data = false
-    # Ensure fixture has read the command
-    count = 100
-    sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-    raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
-  when 'macos'
-    Maze::Runner.environment['BUGSNAG_SCENARIO_ACTION'] = action.to_s
-    Maze::Runner.environment['BUGSNAG_SCENARIO_NAME'] = scenario_name.to_s
-    Maze::Runner.environment['BUGSNAG_SCENARIO_METADATA'] = $scenario_mode.to_s
-    Maze::Runner.environment['BUGSNAG_CLEAR_DATA'] = $reset_data ? 'true' : 'false'
-    $last_scenario = command
-    $scenario_mode = nil
-    run_macos_app
-    $reset_data = false
-  else
-    raise "Unknown platform: #{platform}"
-  end
+  command = { action: action, scenario_name: scenario_name, scenario_mode: $scenario_mode, reset_data: $reset_data }
+  Maze::Server.commands.add command
+  trigger_app_command
+  $scenario_mode = nil
+  $reset_data = false
+  # Ensure fixture has read the command
+  count = 100
+  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
+  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
 def trigger_app_command
@@ -168,11 +144,8 @@ end
 def run_macos_app
   Process.kill('KILL', $fixture_pid) if $fixture_pid
   $fixture_pid = Process.spawn(
-    Maze::Runner.environment,
+    { 'MAZE_RUNNER' => 'TRUE' },
     'features/fixtures/macos/output/macOSTestApp.app/Contents/MacOS/macOSTestApp',
-    [:err, :out] => ['macOSTestApp.log', File::APPEND|File::CREAT|File::RDWR]
+    %i[err out] => ['macOSTestApp.log', File::APPEND | File::CREAT | File::RDWR]
   )
-  # Ideally we would wait until we know the scenario's run method has been executed.
-  # We need to sleep to prevent tests calling Then('the app is not running') before the fixture has started.
-  sleep 1
 end

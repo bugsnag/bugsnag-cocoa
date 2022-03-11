@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MainWindowController : NSWindowController
 
+- (IBAction)executeMazeRunnerCommand:(id)sender;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -30,6 +30,32 @@ static char ksLogPath[PATH_MAX];
     dispatch_block_t _onEventDelivery;
 }
 
++ (void)load {
+    [[NSNotificationCenter defaultCenter] addObserverForName:nil object:nil queue:nil usingBlock:^(NSNotification *notification) {
+        for (NSString *prefix in @[@"NSAutomaticFocusRingChanged",
+                                   @"NSBundleDidLoadNotification",
+                                   @"NSMenu",
+                                   @"NSTextStorage",
+                                   @"NSTextView",
+                                   @"NSThreadWillExitNotification",
+                                   @"NSUndoManagerCheckpointNotification",
+                                   @"NSViewDidUpdateTrackingAreasNotification",
+                                   @"NSViewFrameDidChangeNotification",
+                                   @"UIScreenBrightnessDidChangeNotification",
+                                   @"_"]) {
+            if ([notification.name hasPrefix:prefix]) {
+                return;
+            }
+        }
+#if TARGET_OS_OSX
+        if ([notification.name hasSuffix:@"UpdateNotification"]) {
+            return;
+        }
+#endif
+        NSLog(@"%@", notification.name);
+    }];
+}
+
 + (Scenario *)createScenarioNamed:(NSString *)className withConfig:(BugsnagConfiguration *)config {
     Class class = NSClassFromString(className) ?:
     NSClassFromString([@"iOSTestApp." stringByAppendingString:className]) ?:
@@ -123,7 +149,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 }
 
 + (void)clearPersistentData {
-    NSLog(@"Clear persistent data");
+    NSLog(@"%s", __PRETTY_FUNCTION__);
     [NSUserDefaults.standardUserDefaults removePersistentDomainForName:NSBundle.mainBundle.bundleIdentifier];
     NSString *cachesDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
     NSArray<NSString *> *entries = @[
@@ -155,6 +181,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 }
 
 + (void)executeMazeRunnerCommand:(void (^)(NSString *action, NSString *scenarioName, NSString *scenarioMode))preHandler {
+    NSLog(@"%s", __PRETTY_FUNCTION__);
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://bs-local.com:9339/command"]];
@@ -175,6 +202,10 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
         NSString *eventMode = [command objectForKey:@"scenario_mode"];
         if ([eventMode isKindOfClass:[NSNull class]]) {
             eventMode = nil;
+        }
+
+        if ([[command objectForKey:@"reset_data"] isEqual:@YES]) {
+            [self clearPersistentData];
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{

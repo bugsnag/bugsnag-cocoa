@@ -24,8 +24,6 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
 @property (copy) NSString *scenarioName;
 @property (copy) NSString *sessionEndpoint;
 
-@property Boolean automatedMode;
-
 @end
 
 #pragma mark -
@@ -38,14 +36,6 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
     self.apiKey = @"12312312312312312312312312312312";
     self.notifyEndpoint = @"http://localhost:9339/notify";
     self.sessionEndpoint = @"http://localhost:9339/sessions";
-    self.automatedMode = true;
-    
-    if (self.automatedMode) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self performSelector:@selector(startUsingEnvironment) withObject:nil afterDelay:0.1];
-        });
-
-    }
 }
 
 - (BugsnagConfiguration *)configuration {
@@ -106,24 +96,6 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
         self.scenarioName = scenarioName;
         self.scenarioMetadata = eventMode;
     }];
-}
-
-- (void) startUsingEnvironment {
-    BSLog(@"Running in Automated mode using environment variables");
-    NSDictionary *environment = [[NSProcessInfo processInfo] environment];
-    self.scenarioName = [environment objectForKey:@"BUGSNAG_SCENARIO_NAME"];
-    self.scenarioMetadata = [environment objectForKey:@"BUGSNAG_SCENARIO_METADATA"];
-    NSString *clearData = (NSString *)[environment objectForKey:@"BUGSNAG_CLEAR_DATA"];
-    if ([clearData isEqualToString:@"true"]) {
-        [self clearPersistentData:nil];
-    }
-    NSString *action = (NSString *)[environment objectForKey:@"BUGSNAG_SCENARIO_ACTION"];
-    BSLog(@"Received action: %@ for scenario: %@ and metadata: %@", action, self.scenarioName, self.scenarioMetadata);
-    if ([action isEqualToString:@"run_scenario"]) {
-        [self runScenario:nil];
-    } else if ([action isEqualToString:@"start_bugsnag"]) {
-        [self startBugsnag:nil];
-    }
 }
 
 @end
