@@ -30,6 +30,7 @@ steps:
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
@@ -58,6 +59,7 @@ steps:
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
@@ -250,7 +252,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "appium_server.log", "maze_output/failed/**/*"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -271,7 +273,6 @@ steps:
         download: "features/fixtures/macos/output/macOSTestApp.zip"
         upload:
           - "macOSTestApp.log"
-          - "appium_server.log"
           - "maze_output/failed/**/*"
     commands:
       - bundle config set --local path 'vendor/bundle'
@@ -291,7 +292,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "appium_server.log", "maze_output/failed/**/*"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -310,7 +311,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "appium_server.log", "maze_output/failed/**/*"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
