@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix `-[NSProxy doesNotRecognizeSelector:]` crash when using `BugsnagNetworkRequestPlugin` in projects that use the New Relic SDK.
+  [#1324](https://github.com/bugsnag/bugsnag-cocoa/pull/1324)
+
 ## 6.16.4 (2022-03-02)
 
 ### Bug fixes
