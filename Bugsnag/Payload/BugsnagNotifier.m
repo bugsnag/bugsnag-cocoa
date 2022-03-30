@@ -21,7 +21,7 @@
 #else
         _name = @"Bugsnag Objective-C";
 #endif
-        _version = @"6.16.4";
+        _version = @"6.16.5";
         _url = @"https://github.com/bugsnag/bugsnag-cocoa";
         _dependencies = @[];
     }
