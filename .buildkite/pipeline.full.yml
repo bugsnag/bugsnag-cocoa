@@ -14,8 +14,9 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
+        upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
@@ -29,6 +30,7 @@ steps:
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
@@ -41,8 +43,9 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: ["features/fixtures/ios/output/iOSTestApp.ipa"]
+        upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
@@ -56,6 +59,7 @@ steps:
           - "--order=random"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
@@ -68,7 +72,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -97,7 +101,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -126,7 +130,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -155,7 +159,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -186,7 +190,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -217,7 +221,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -246,13 +250,12 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "appium_server.log", "maze_output/failed/**/*"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
-        --farm=local
         --os=macos
         --os-version=11.0
         --app=macOSTestApp
@@ -266,17 +269,15 @@ steps:
     agents:
       queue: opensource-arm-mac-cocoa-12
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp.zip"
         upload:
           - "macOSTestApp.log"
-          - "appium_server.log"
           - "maze_output/failed/**/*"
     commands:
       - bundle config set --local path 'vendor/bundle'
       - bundle install
       - bundle exec maze-runner
-        --farm=local
         --os=macos
         --os-version=12
         --app=macOSTestApp
@@ -289,13 +290,12 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.13
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "appium_server.log", "maze_output/failed/**/*"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
-        --farm=local
         --os=macos
         --os-version=10.13
         --app=macOSTestApp
@@ -309,13 +309,12 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.14
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "appium_server.log", "maze_output/failed/**/*"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
-        --farm=local
         --os=macos
         --os-version=10.14
         --app=macOSTestApp

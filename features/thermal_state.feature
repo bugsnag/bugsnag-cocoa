@@ -14,25 +14,17 @@ Feature: Thermal State
     When I run "ThermalStateBreadcrumbScenario"
     And I wait to receive an error
     Then the event "metaData.device.thermalState" matches "critical"
-    And the event "breadcrumbs.1.name" equals "Thermal State Changed"
-    And the event "breadcrumbs.1.metaData.from" matches "(nominal|fair|serious)"
-    And the event "breadcrumbs.1.metaData.to" equals "critical"
-    And the event "breadcrumbs.1.type" equals "state"
+    And the event has a critical thermal state breadcrumb
 
   Scenario: Thermal Kill
-    When I run "CriticalThermalStateScenario"
-    And I wait for 2 seconds
-    And I relaunch the app
+    When I run "CriticalThermalStateScenario" and relaunch the crashed app
     And I configure Bugsnag for "CriticalThermalStateScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the exception "errorClass" equals "Thermal Kill"
     And the exception "message" equals "The app was terminated by the operating system due to a critical thermal state"
     And the event "metaData.device.thermalState" matches "critical"
-    And the event "breadcrumbs.1.name" equals "Thermal State Changed"
-    And the event "breadcrumbs.1.metaData.from" matches "(nominal|fair|serious)"
-    And the event "breadcrumbs.1.metaData.to" equals "critical"
-    And the event "breadcrumbs.1.type" equals "state"
+    And the event has a critical thermal state breadcrumb
     And the event "session.events.handled" equals 0
     And the event "session.events.unhandled" equals 1
     And the event "severity" equals "error"
@@ -47,6 +39,7 @@ Feature: Thermal State
     And I wait to receive a session
     And I discard the oldest session
     And I send the app to the background
+    And I wait for 1 seconds
     And I relaunch the app
     And I configure Bugsnag for "CriticalThermalStateScenario"
     And I wait to receive a session

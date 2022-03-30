@@ -34,8 +34,8 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
     [super windowDidLoad];
 
     self.apiKey = @"12312312312312312312312312312312";
-    self.notifyEndpoint = @"http://bs-local.com:9339/notify";
-    self.sessionEndpoint = @"http://bs-local.com:9339/sessions";
+    self.notifyEndpoint = @"http://localhost:9339/notify";
+    self.sessionEndpoint = @"http://localhost:9339/sessions";
 }
 
 - (BugsnagConfiguration *)configuration {
@@ -82,6 +82,7 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
 }
 
 - (IBAction)clearPersistentData:(id)sender {
+    BSLog(@"Clearing persistent data");
     [Scenario clearPersistentData];
 }
 

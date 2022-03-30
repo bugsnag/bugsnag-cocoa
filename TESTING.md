@@ -85,7 +85,6 @@ Build the test iOS fixture:
 1. Run Maze Runner as follows, adjusting for your specific device:
     ```shell script
     bundle exec maze-runner --app=features/fixtures/ios/output/iOSTestApp.ipa \
-                            --farm=local                                      \
                             --udid=<udid>                                     \
                             --os=ios                                          \
                             --os-version=14                                   \

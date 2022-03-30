@@ -33,8 +33,6 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: opensource-arm-mac-cocoa-12
-    concurrency: 3
-    concurrency_group: cocoa-unit-tests
     commands:
       - make build_swift
       - make build_ios_static
@@ -43,12 +41,10 @@ steps:
     timeout_in_minutes: 15
     agents:
       queue: opensource-arm-mac-cocoa-12
-    concurrency: 3
-    concurrency_group: cocoa-unit-tests
     commands:
       - ./scripts/build-carthage.sh
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         upload: "features/fixtures/carthage/carthage-*.log"
 
   ##############################################################################
@@ -69,8 +65,6 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa-10.15
-    concurrency: 3
-    concurrency_group: cocoa-unit-tests
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=macOS
     artifact_paths:
@@ -85,12 +79,12 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: iOS 14 unit tests
+  - label: iOS 15 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-arm-mac-cocoa-12
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.0
     artifact_paths:
       - logs/*
 
@@ -103,12 +97,12 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: tvOS 14 unit tests
+  - label: tvOS 15 unit tests
     timeout_in_minutes: 10
     agents:
       queue: opensource-arm-mac-cocoa-12
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.5
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=15.0
     artifact_paths:
       - logs/*
 
@@ -133,7 +127,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -161,7 +155,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -190,17 +184,15 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.13
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp.zip"
         upload:
           - "macOSTestApp.log"
-          - "appium_server.log"
           - "maze_output/failed/**/*"
     commands:
       - bundle install
       - bundle exec maze-runner
         features/barebone_tests.feature
-        --farm=local
         --os=macos
         --os-version=10.13
         --app=macOSTestApp
@@ -214,17 +206,15 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.15
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp.zip"
         upload:
           - "macOSTestApp.log"
-          - "appium_server.log"
           - "maze_output/failed/**/*"
     commands:
       - bundle install
       - bundle exec maze-runner
         features/barebone_tests.feature
-        --farm=local
         --os=macos
         --os-version=10.15
         --app=macOSTestApp
@@ -238,18 +228,16 @@ steps:
     agents:
       queue: opensource-arm-mac-cocoa-12
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp.zip"
         upload:
           - "macOSTestApp.log"
-          - "appium_server.log"
           - "maze_output/failed/**/*"
     commands:
       - bundle config set --local path 'vendor/bundle'
       - bundle install
       - bundle exec maze-runner
         features/barebone_tests.feature
-        --farm=local
         --os=macos
         --os-version=12
         --app=macOSTestApp
