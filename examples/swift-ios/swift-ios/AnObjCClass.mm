@@ -55,9 +55,7 @@
 }
 
 - (void)accessInvalidMemoryAddress {
-    // This should result in an EXC_BAD_ACCESS mach exception with code = KERN_INVALID_ADDRESS and subcode = 0xDEADBEEF
-    void (* ptr)(void) = (void (*)(void))0xDEADBEEF;
-    ptr();
+    *(int *)0xdeadbeef = 0;
 }
 
 - (void)throwCxxException {
