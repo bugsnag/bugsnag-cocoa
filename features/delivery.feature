@@ -7,6 +7,8 @@ Feature: Delivery of errors
     When I set the HTTP status code for the next request to 500
     And I run "HandledExceptionScenario"
     And I wait to receive an error
+    # Wait for fixture to receive the response and save the payload
+    And I wait for 2 seconds
     And I relaunch the app
     And I clear the error queue
     And I configure Bugsnag for "HandledExceptionScenario"
