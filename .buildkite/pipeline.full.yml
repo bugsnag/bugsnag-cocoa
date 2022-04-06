@@ -327,6 +327,7 @@ steps:
   #
 
   - label: 'examples/objective-c-ios'
+    timeout_in_minutes: 30
     agents:
       queue: opensource-arm-mac-cocoa-12
     commands:
@@ -339,6 +340,7 @@ steps:
       - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/objective-c-osx'
+    timeout_in_minutes: 30
     agents:
       queue: opensource-arm-mac-cocoa-12
     commands:
@@ -351,6 +353,7 @@ steps:
       - xcodebuild -allowProvisioningUpdates -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Debug -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/swift-ios'
+    timeout_in_minutes: 30
     agents:
       queue: opensource-arm-mac-cocoa-12
     commands:
@@ -363,6 +366,7 @@ steps:
       - xcodebuild -allowProvisioningUpdates -workspace swift-ios.xcworkspace -scheme swift-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/swift-package-manager'
+    timeout_in_minutes: 30
     agents:
       queue: opensource-arm-mac-cocoa-12
     commands:
@@ -376,6 +380,7 @@ steps:
       - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/swiftui'
+    timeout_in_minutes: 30
     agents:
       queue: opensource-arm-mac-cocoa-12
     commands:

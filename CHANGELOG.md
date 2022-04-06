@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 6.16.6 (2022-04-06)
+
+### Changes
+
+* Add Flutter notifier support.
+  [#1328](https://github.com/bugsnag/bugsnag-cocoa/pull/1328)
+
 ## 6.16.5 (2022-03-30)
 
 ### Bug fixes
