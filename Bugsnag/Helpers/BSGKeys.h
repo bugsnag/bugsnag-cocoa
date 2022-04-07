@@ -94,6 +94,7 @@ static BSGKey const BSGKeySeverity                  = @"severity";
 static BSGKey const BSGKeySeverityReason            = @"severityReason";
 static BSGKey const BSGKeySignal                    = @"signal";
 static BSGKey const BSGKeyStacktrace                = @"stacktrace";
+static BSGKey const BSGKeyStartedAt                 = @"startedAt";
 static BSGKey const BSGKeySymbolAddr                = @"symbolAddress";
 static BSGKey const BSGKeySymbolAddress             = @"symbol_addr";
 static BSGKey const BSGKeySymbolName                = @"symbol_name";
