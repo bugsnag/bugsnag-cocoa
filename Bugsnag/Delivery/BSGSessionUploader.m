@@ -20,6 +20,7 @@
 #import "BugsnagSession+Private.h"
 #import "BugsnagSession.h"
 #import "BugsnagSessionFileStore.h"
+#import "BugsnagUser+Private.h"
 
 
 @interface BSGSessionUploader ()
@@ -84,6 +85,9 @@
     }];
 }
 
+//
+// https://bugsnagsessiontrackingapi.docs.apiary.io/#reference/0/session/report-a-session-starting
+//
 - (void)sendSession:(BugsnagSession *)session completionHandler:(nonnull void (^)(BugsnagApiClientDeliveryStatus status))completionHandler {
     NSString *apiKey = [self.config.apiKey copy];
     if (!apiKey) {
@@ -109,7 +113,11 @@
         BSGKeyApp: [session.app toDict] ?: [NSNull null],
         BSGKeyDevice: [session.device toDictionary] ?: [NSNull null],
         BSGKeyNotifier: [self.notifier toDict] ?: [NSNull null],
-        BSGKeySessions: BSGArrayWithObject([session toJson])
+        BSGKeySessions: @[@{
+            BSGKeyId: session.id,
+            BSGKeyStartedAt: [BSG_RFC3339DateTool stringFromDate:session.startedAt] ?: [NSNull null],
+            BSGKeyUser: [session.user toJson] ?: @{}
+        }]
     };
     
     [self.apiClient sendJSONPayload:payload headers:headers toURL:url completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {

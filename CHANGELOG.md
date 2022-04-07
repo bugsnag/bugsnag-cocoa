@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix duplication of `app` and `device` data in session payloads.
+  [#1332](https://github.com/bugsnag/bugsnag-cocoa/pull/1332)
+
 ## 6.16.6 (2022-04-06)
 
 ### Changes
