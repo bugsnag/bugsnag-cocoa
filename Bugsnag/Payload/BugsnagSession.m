@@ -43,14 +43,6 @@
     return session;
 }
 
-- (void)stop {
-    self.stopped = YES;
-}
-
-- (void)resume {
-    self.stopped = NO;
-}
-
 - (void)setUser:(NSString *_Nullable)userId
       withEmail:(NSString *_Nullable)email
         andName:(NSString *_Nullable)name {

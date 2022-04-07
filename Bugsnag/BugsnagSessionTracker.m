@@ -118,7 +118,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 #pragma mark - Creating and sending a new session
 
 - (void)pauseSession {
-    [[self currentSession] stop];
+    self.currentSession.stopped = YES;
 
     if (self.callback) {
         self.callback(nil);
@@ -134,7 +134,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
         return NO;
     } else {
         BOOL stopped = session.isStopped;
-        [session resume];
+        session.stopped = NO;
         if (self.callback) {
             self.callback(session);
         }
