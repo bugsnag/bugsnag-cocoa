@@ -110,14 +110,14 @@
     NSDate *now = [NSDate date];
     BugsnagUser *user = [[BugsnagUser alloc] initWithUserId:@"123" name:@"Joe Bloggs" emailAddress:@"joe@example.com"];
     BugsnagSession *payload = [[BugsnagSession alloc] initWithId:@"test"
-                                                       startDate:now
+                                                       startedAt:now
                                                             user:user
                                                              app:self.app
                                                           device:self.device];
     payload.unhandledCount = 1;
     payload.handledCount = 2;
 
-    NSDictionary *rootNode = [payload toJson];
+    NSDictionary *rootNode = BSGSessionToDictionary(payload);
     XCTAssertNotNil(rootNode);
     XCTAssertEqualObjects(@"test", rootNode[@"id"]);
     XCTAssertEqualObjects([BSG_RFC3339DateTool stringFromDate:now], rootNode[@"startedAt"]);
@@ -159,7 +159,7 @@
 }
 
 - (void)testPayloadDeserialization {
-    BugsnagSession *session = [[BugsnagSession alloc] initWithDictionary:self.serializedSession];
+    BugsnagSession *session = BSGSessionFromDictionary(self.serializedSession);
     XCTAssertNotNil(session);
 
     XCTAssertEqualObjects(@"test", session.id);
@@ -211,7 +211,7 @@
             @"unhandledCount": @1,
             @"handledCount": @2
     };
-    BugsnagSession *session = [[BugsnagSession alloc] initWithDictionary:dict];
+    BugsnagSession *session = BSGSessionFromDictionary(dict);
     XCTAssertNotNil(session);
     XCTAssertEqualObjects(@"test", session.id);
     XCTAssertNotNil(session.startedAt);

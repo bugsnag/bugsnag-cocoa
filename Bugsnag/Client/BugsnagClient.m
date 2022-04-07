@@ -1310,12 +1310,12 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         [metadata addMetadata:deviceState toSection:BSGKeyDevice];
     }
 
-    NSDictionary *sessionDict = self.systemState.lastLaunchState[BSGKeySession];
-    BugsnagSession *session = sessionDict ? [[BugsnagSession alloc] initWithDictionary:sessionDict] : nil;
-    session.unhandledCount += 1;
-
     NSDictionary *userDict = self.stateMetadataFromLastLaunch[BSGKeyUser];
-    BugsnagUser *user = session.user ?: [[BugsnagUser alloc] initWithDictionary:userDict];
+    BugsnagUser *user = [[BugsnagUser alloc] initWithDictionary:userDict];
+
+    NSDictionary *sessionDict = self.systemState.lastLaunchState[BSGKeySession];
+    BugsnagSession *session = BSGSessionFromEventJson(sessionDict, app, device, user);
+    session.unhandledCount += 1;
 
     BugsnagEvent *event =
     [[BugsnagEvent alloc] initWithApp:app

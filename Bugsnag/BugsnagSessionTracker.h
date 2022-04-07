@@ -52,6 +52,7 @@ static NSNotificationName const BSGSessionUpdateNotification = @"BugsnagSessionC
  Update the details of the current session to account for externally reported
  session information. Current session details are included in subsequent crash
  reports.
+ Used in BugsnagUnity
  */
 - (void)registerExistingSession:(NSString *)sessionId
                       startedAt:(NSDate *)startedAt

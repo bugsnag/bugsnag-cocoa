@@ -176,7 +176,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
     [device appendRuntimeInfo:self.extraRuntimeInfo];
 
     BugsnagSession *newSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
-                                                          startDate:[NSDate date]
+                                                          startedAt:[NSDate date]
                                                                user:self.client.user
                                                                 app:app
                                                              device:device];
@@ -217,12 +217,12 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
         self.currentSession = nil;
     } else {
         self.currentSession = [[BugsnagSession alloc] initWithId:sessionId
-                                                       startDate:startedAt
+                                                       startedAt:startedAt
                                                             user:user
-                                                    handledCount:handledCount
-                                                  unhandledCount:unhandledCount
                                                              app:[BugsnagApp new]
                                                           device:[BugsnagDevice new]];
+        self.currentSession.handledCount = handledCount;
+        self.currentSession.unhandledCount = unhandledCount;
     }
     if (self.callback) {
         self.callback(self.currentSession);
@@ -231,8 +231,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 }
 
 - (void)postUpdateNotice {
-    [[NSNotificationCenter defaultCenter] postNotificationName:BSGSessionUpdateNotification
-                                                        object:[self.runningSession toDictionary]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:BSGSessionUpdateNotification object:self.runningSession];
 }
 
 #pragma mark - Handling events

@@ -57,7 +57,7 @@
     BugsnagApp *app;
     BugsnagDevice *device;
     BugsnagSession *bugsnagSession = [[BugsnagSession alloc] initWithId:@"123"
-                                                              startDate:now
+                                                              startedAt:now
                                                                    user:nil
                                                                     app:app
                                                                  device:device];

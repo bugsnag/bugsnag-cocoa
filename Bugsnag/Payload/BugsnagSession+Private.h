@@ -16,21 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Initializers
 
-+ (nullable instancetype)fromJson:(NSDictionary *)json;
-
-- (nullable instancetype)initWithDictionary:(NSDictionary *)dict;
-
 - (instancetype)initWithId:(NSString *)sessionId
-                 startDate:(NSDate *)startDate
+                 startedAt:(NSDate *)startedAt
                       user:(BugsnagUser *)user
-                       app:(BugsnagApp *)app
-                    device:(BugsnagDevice *)device;
-
-- (instancetype)initWithId:(NSString *)sessionId
-                 startDate:(NSDate *)startDate
-                      user:(BugsnagUser *)user
-              handledCount:(NSUInteger)handledCount
-            unhandledCount:(NSUInteger)unhandledCount
                        app:(BugsnagApp *)app
                     device:(BugsnagDevice *)device;
 
@@ -50,12 +38,20 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)stop;
 
-// Representation used in report payloads.
-- (NSDictionary *)toJson;
-
-/// Full representation of a session suitable for creating an identical session using -initWithDictionary:
-- (NSDictionary *)toDictionary;
-
 @end
+
+#pragma mark Serialization
+
+/// Produces a session dictionary that contains all the information to fully recreate it via BSGSessionFromDictionary().
+NSDictionary * BSGSessionToDictionary(BugsnagSession *session);
+
+/// Parses a session dictionary produced by BSGSessionToDictionary() or added to a KSCrashReport by BSSerializeDataCrashHandler().
+BugsnagSession *_Nullable BSGSessionFromDictionary(NSDictionary *_Nullable json);
+
+/// Produces a session dictionary suitable for inclusion in an event's JSON representation.
+NSDictionary * BSGSessionToEventJson(BugsnagSession *session);
+
+/// Parses a session dictionary from an event's JSON representation.
+BugsnagSession *_Nullable BSGSessionFromEventJson(NSDictionary *_Nullable json, BugsnagApp *app, BugsnagDevice *device, BugsnagUser *user);
 
 NS_ASSUME_NONNULL_END
