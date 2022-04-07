@@ -38,7 +38,6 @@
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
-    XCTAssertFalse(session.autoCaptured);
 }
 
 - (void)testStartNewSessionWithUser {
@@ -50,7 +49,6 @@
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
-    XCTAssertFalse(session.autoCaptured);
 }
 
 - (void)testStartNewAutoCapturedSession {
@@ -61,7 +59,6 @@
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
-    XCTAssertTrue(session.autoCaptured);
     XCTAssertNil(session.user.name);
     XCTAssertNil(session.user.id);
     XCTAssertNil(session.user.email);
@@ -76,7 +73,6 @@
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
-    XCTAssertTrue(session.autoCaptured);
 }
 
 - (void)testStartNewAutoCapturedSessionWithAutoCaptureDisabled {

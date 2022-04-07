@@ -117,10 +117,6 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 
 #pragma mark - Creating and sending a new session
 
-- (void)startNewSession {
-    [self startNewSessionWithAutoCaptureValue:NO];
-}
-
 - (void)pauseSession {
     [[self currentSession] stop];
 
@@ -134,7 +130,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
     BugsnagSession *session = self.currentSession;
 
     if (session == nil) {
-        [self startNewSessionWithAutoCaptureValue:NO];
+        [self startNewSession];
         return NO;
     } else {
         BOOL stopped = session.isStopped;
@@ -158,11 +154,11 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 
 - (void)startNewSessionIfAutoCaptureEnabled {
     if (self.config.autoTrackSessions) {
-        [self startNewSessionWithAutoCaptureValue:YES];
+        [self startNewSession];
     }
 }
 
-- (void)startNewSessionWithAutoCaptureValue:(BOOL)isAutoCaptured {
+- (void)startNewSession {
     NSSet<NSString *> *releaseStages = self.config.enabledReleaseStages;
     if (releaseStages != nil && ![releaseStages containsObject:self.config.releaseStage ?: @""]) {
         return;
@@ -182,7 +178,6 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
     BugsnagSession *newSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                           startDate:[NSDate date]
                                                                user:self.client.user
-                                                       autoCaptured:isAutoCaptured
                                                                 app:app
                                                              device:device];
 

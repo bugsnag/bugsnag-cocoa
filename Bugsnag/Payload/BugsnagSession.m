@@ -26,14 +26,12 @@ static NSString *const kBugsnagUser = @"user";
 - (instancetype)initWithId:(NSString *)sessionId
                  startDate:(NSDate *)startDate
                       user:(BugsnagUser *)user
-              autoCaptured:(BOOL)autoCaptured
                        app:(BugsnagApp *)app
                     device:(BugsnagDevice *)device {
     if ((self = [super init])) {
         _id = sessionId;
         _startedAt = [startDate copy];
         _user = user;
-        _autoCaptured = autoCaptured;
         _app = app;
         _device = device;
     }

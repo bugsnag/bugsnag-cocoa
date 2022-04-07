@@ -112,7 +112,6 @@
     BugsnagSession *payload = [[BugsnagSession alloc] initWithId:@"test"
                                                        startDate:now
                                                             user:user
-                                                    autoCaptured:NO
                                                              app:self.app
                                                           device:self.device];
     payload.unhandledCount = 1;

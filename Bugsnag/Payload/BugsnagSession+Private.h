@@ -23,7 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithId:(NSString *)sessionId
                  startDate:(NSDate *)startDate
                       user:(BugsnagUser *)user
-              autoCaptured:(BOOL)autoCaptured
                        app:(BugsnagApp *)app
                     device:(BugsnagDevice *)device;
 
@@ -36,8 +35,6 @@ NS_ASSUME_NONNULL_BEGIN
                     device:(BugsnagDevice *)device;
 
 #pragma mark Properties
-
-@property (readonly, nonatomic) BOOL autoCaptured;
 
 @property (nonatomic) NSUInteger handledCount;
 
