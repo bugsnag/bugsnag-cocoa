@@ -13,8 +13,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class BSGSessionUploader;
-
 typedef void (^SessionTrackerCallback)(BugsnagSession *_Nullable session);
 
 @interface BugsnagSessionTracker : NSObject
