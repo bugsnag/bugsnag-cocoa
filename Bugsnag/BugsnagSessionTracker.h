@@ -15,9 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class BSGSessionUploader;
 
-typedef void (^SessionTrackerCallback)(BugsnagSession *_Nullable newSession);
-
-static NSNotificationName const BSGSessionUpdateNotification = @"BugsnagSessionChanged";
+typedef void (^SessionTrackerCallback)(BugsnagSession *_Nullable session);
 
 @interface BugsnagSessionTracker : NSObject
 
@@ -28,9 +26,7 @@ static NSNotificationName const BSGSessionUpdateNotification = @"BugsnagSessionC
  @param callback A callback invoked each time a new session is started
  @return A new session tracker
  */
-- (instancetype)initWithConfig:(BugsnagConfiguration *)config
-                        client:(nullable BugsnagClient *)client
-            postRecordCallback:(nullable void(^)(BugsnagSession *))callback;
+- (instancetype)initWithConfig:(BugsnagConfiguration *)config client:(nullable BugsnagClient *)client callback:(SessionTrackerCallback)callback;
 
 - (void)startWithNotificationCenter:(NSNotificationCenter *)notificationCenter isInForeground:(BOOL)isInForeground;
 

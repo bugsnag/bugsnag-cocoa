@@ -230,19 +230,13 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
             [strongSelf setValue:@YES forAppKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
         }];
 #endif
-        [center addObserver:self selector:@selector(sessionUpdateNotification:) name:BSGSessionUpdateNotification object:nil];
     }
     return self;
 }
 
-- (void)sessionUpdateNotification:(NSNotification *)notification {
-    BugsnagSession *session = notification.object;
-    if (session && ![session isKindOfClass:[BugsnagSession class]]) {
-        bsg_log_err("Invalid session notification");
-        return;
-    }
+- (void)setSession:(nullable BugsnagSession *)session {
     [self mutateLaunchState:^(NSMutableDictionary *state) {
-        state[BSGKeySession] = session ? BSGSessionToEventJson(session) : nil;
+        state[BSGKeySession] = session ? BSGSessionToEventJson((BugsnagSession *_Nonnull)session) : nil;
     }];
 }
 

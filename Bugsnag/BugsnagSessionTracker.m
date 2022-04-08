@@ -45,9 +45,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 
 @implementation BugsnagSessionTracker
 
-- (instancetype)initWithConfig:(BugsnagConfiguration *)config
-                        client:(BugsnagClient *)client
-            postRecordCallback:(void(^)(BugsnagSession *))callback {
+- (instancetype)initWithConfig:(BugsnagConfiguration *)config client:(BugsnagClient *)client callback:(SessionTrackerCallback)callback {
     if ((self = [super init])) {
         _config = config;
         _client = client;
@@ -120,10 +118,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 - (void)pauseSession {
     self.currentSession.stopped = YES;
 
-    if (self.callback) {
-        self.callback(nil);
-    }
-    [self postUpdateNotice];
+    self.callback(nil);
 }
 
 - (BOOL)resumeSession {
@@ -135,10 +130,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
     } else {
         BOOL stopped = session.isStopped;
         session.stopped = NO;
-        if (self.callback) {
-            self.callback(session);
-        }
-        [self postUpdateNotice];
+        self.callback(session);
         return stopped;
     }
 }
@@ -193,10 +185,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 
     self.currentSession = newSession;
 
-    if (self.callback) {
-        self.callback(self.currentSession);
-    }
-    [self postUpdateNotice];
+    self.callback(newSession);
 
     [self.sessionUploader uploadSession:newSession];
 }
@@ -224,14 +213,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
         self.currentSession.handledCount = handledCount;
         self.currentSession.unhandledCount = unhandledCount;
     }
-    if (self.callback) {
-        self.callback(self.currentSession);
-    }
-    [self postUpdateNotice];
-}
-
-- (void)postUpdateNotice {
-    [[NSNotificationCenter defaultCenter] postNotificationName:BSGSessionUpdateNotification object:self.runningSession];
+    self.callback(self.currentSession);
 }
 
 #pragma mark - Handling events
@@ -261,10 +243,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
         } else {
             session.handledCount++;
         }
-        if (self.callback) {
-            self.callback(session);
-        }
-        [self postUpdateNotice];
+        self.callback(session);
     }
 }
 
