@@ -224,16 +224,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         NSString *crashPath = fileLocations.flagHandledCrash;
         crashSentinelPath = strdup(crashPath.fileSystemRepresentation);
         
-        _configMetadataFile = fileLocations.configuration;
-        bsg_g_bugsnag_data.configPath = strdup(_configMetadataFile.fileSystemRepresentation);
-        _configMetadataFromLastLaunch = [BSGJSONSerialization JSONObjectWithContentsOfFile:_configMetadataFile options:0 error:nil];
+        bsg_g_bugsnag_data.configPath = strdup(fileLocations.configuration.fileSystemRepresentation);
         
-        _metadataFile = fileLocations.metadata;
-        _metadataFromLastLaunch = [BSGJSONSerialization JSONObjectWithContentsOfFile:_metadataFile options:0 error:nil];
-        
-        _stateMetadataFile = fileLocations.state;
-        _stateMetadataFromLastLaunch = [BSGJSONSerialization JSONObjectWithContentsOfFile:_stateMetadataFile options:0 error:nil];
-
         self.stateEventBlocks = [NSMutableArray new];
         self.extraRuntimeInfo = [NSMutableDictionary new];
 
@@ -244,8 +236,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
         self.breadcrumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
 
-        [BSGJSONSerialization writeJSONObject:_configuration.dictionaryRepresentation toFile:_configMetadataFile options:0 error:nil];
-        
         // Start with a copy of the configuration metadata
         self.metadata = [[_configuration metadata] deepCopy];
         // add metadata about app/device
@@ -262,8 +252,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         _lastOrientation = BSGStringFromDeviceOrientation([UIDEVICE currentDevice].orientation);
         [self.state addMetadata:_lastOrientation withKey:BSGKeyOrientation toSection:BSGKeyDeviceState];
 #endif
-        [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:_metadataFile];
-        [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:_stateMetadataFile];
 
         BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
     }
@@ -276,8 +264,15 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self.configuration validate];
     BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
+
     [self computeDidCrashLastLaunch];
+
+    // These files can only be overwritten once the previous contents have been read; see -generateEventForLastLaunchWithError:
+    [BSGJSONSerialization writeJSONObject:self.configuration.dictionaryRepresentation toFile:BSGFileLocations.current.configuration options:0 error:nil];
+    [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:BSGFileLocations.current.metadata];
+    [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
     [self.breadcrumbs removeAllBreadcrumbs];
+
     [self setupConnectivityListener];
     [self.notificationBreadcrumbs start];
 
@@ -387,10 +382,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     // App hang detector deliberately started after sendLaunchCrashSynchronously (which by design may itself trigger an app hang)
     // Note: BSGAppHangDetector itself checks configuration.enabledErrorTypes.appHangs
     [self startAppHangDetector];
-    
-    self.configMetadataFromLastLaunch = nil;
-    self.metadataFromLastLaunch = nil;
-    self.stateMetadataFromLastLaunch = nil;
 }
 
 - (void)appLaunchTimerFired:(__attribute__((unused)) NSTimer *)timer {
@@ -462,9 +453,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     
     NSNumber *wasLaunching = ({
         // BugsnagSystemState's KV-store is now the reliable source of the isLaunching status.
-        self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP][SYSTEMSTATE_APP_IS_LAUNCHING] ?:
-        // Earlier notifier versions stored it only in state.json - but due to async I/O this is no longer accurate.
-        self.stateMetadataFromLastLaunch[BSGKeyApp][BSGKeyIsLaunching];
+        self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP][SYSTEMSTATE_APP_IS_LAUNCHING];
     });
     
     BOOL didCrashDuringLaunch = didCrash && wasLaunching.boolValue;
@@ -1286,29 +1275,31 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 }
 
 - (BugsnagEvent *)generateEventForLastLaunchWithError:(BugsnagError *)error handledState:(BugsnagHandledState *)handledState {
+    NSDictionary *stateDict = [BSGJSONSerialization JSONObjectWithContentsOfFile:BSGFileLocations.current.state options:0 error:nil];
+
     NSDictionary *appDict = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP];
     BugsnagAppWithState *app = [BugsnagAppWithState appFromJson:appDict];
     app.dsymUuid = appDict[BSGKeyMachoUUID];
-    app.isLaunching = [self.stateMetadataFromLastLaunch[BSGKeyApp][BSGKeyIsLaunching] boolValue];
+    app.isLaunching = [stateDict[BSGKeyApp][BSGKeyIsLaunching] boolValue];
 
-    if (self.configMetadataFromLastLaunch) {
-        [app setValuesFromConfiguration:
-         [[BugsnagConfiguration alloc] initWithDictionaryRepresentation:
-          (NSDictionary * _Nonnull)self.configMetadataFromLastLaunch]];
+    NSDictionary *configDict = [BSGJSONSerialization JSONObjectWithContentsOfFile:BSGFileLocations.current.configuration options:0 error:nil];
+    if (configDict) {
+        [app setValuesFromConfiguration:[[BugsnagConfiguration alloc] initWithDictionaryRepresentation:configDict]];
     }
 
     NSDictionary *deviceDict = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_DEVICE];
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceFromJson:deviceDict];
     device.manufacturer = @"Apple";
-    device.orientation = self.stateMetadataFromLastLaunch[BSGKeyDeviceState][BSGKeyOrientation];
+    device.orientation = stateDict[BSGKeyDeviceState][BSGKeyOrientation];
 
-    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:self.metadataFromLastLaunch ?: @{}];
-    NSDictionary *deviceState = self.stateMetadataFromLastLaunch[BSGKeyDeviceState];
+    NSDictionary *metadataDict = [BSGJSONSerialization JSONObjectWithContentsOfFile:BSGFileLocations.current.metadata options:0 error:nil];
+    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:metadataDict ?: @{}];
+    NSDictionary *deviceState = stateDict[BSGKeyDeviceState];
     if ([deviceState isKindOfClass:[NSDictionary class]]) {
         [metadata addMetadata:deviceState toSection:BSGKeyDevice];
     }
 
-    NSDictionary *userDict = self.stateMetadataFromLastLaunch[BSGKeyUser];
+    NSDictionary *userDict = stateDict[BSGKeyUser];
     BugsnagUser *user = [[BugsnagUser alloc] initWithDictionary:userDict];
 
     NSDictionary *sessionDict = self.systemState.lastLaunchState[BSGKeySession];
@@ -1326,9 +1317,9 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                               threads:@[]
                               session:session];
 
-    event.context = self.stateMetadataFromLastLaunch[BSGKeyClient][BSGKeyContext];
+    event.context = stateDict[BSGKeyClient][BSGKeyContext];
 
-    id featureFlags = self.stateMetadataFromLastLaunch[BSGKeyClient][BSGKeyFeatureFlags];
+    id featureFlags = stateDict[BSGKeyClient][BSGKeyFeatureFlags];
     event.featureFlagStore = BSGFeatureFlagStoreFromJSON(featureFlags);
 
     return event;

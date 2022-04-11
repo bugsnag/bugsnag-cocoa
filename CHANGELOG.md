@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Skip unnecessary file reading at startup when no unexpected app termination is detected.
+  [#1334](https://github.com/bugsnag/bugsnag-cocoa/pull/1334)
+
 * Fix duplication of `app` and `device` data in session payloads.
   [#1332](https://github.com/bugsnag/bugsnag-cocoa/pull/1332)
 
