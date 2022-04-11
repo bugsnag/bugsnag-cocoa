@@ -142,7 +142,7 @@ static NSMutableDictionary* initCurrentState(BugsnagKVStore *kvstore, BugsnagCon
 #else
     device[@"simulator"] = @NO;
 #endif
-    device[@"totalMemory"] = systemInfo[@BSG_KSSystemField_Memory][@"usable"];
+    device[@"totalMemory"] = systemInfo[@ BSG_KSSystemField_Memory][@ BSG_KSSystemField_Size];
 
     NSMutableDictionary *state = [NSMutableDictionary new];
     state[BSGKeyApp] = app;

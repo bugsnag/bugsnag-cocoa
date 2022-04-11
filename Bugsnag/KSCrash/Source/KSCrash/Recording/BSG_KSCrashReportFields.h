@@ -115,7 +115,6 @@
 
 #define BSG_KSCrashField_Free "free"
 #define BSG_KSCrashField_Size "size"
-#define BSG_KSCrashField_Usable "usable"
 
 #pragma mark - Error -
 

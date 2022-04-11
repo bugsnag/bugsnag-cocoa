@@ -1159,8 +1159,6 @@ void bsg_kscrw_i_writeMemoryInfo(const BSG_KSCrashReportWriter *const writer,
                                  const char *const key) {
     writer->beginObject(writer, key);
     {
-        writer->addUIntegerElement(writer, BSG_KSCrashField_Usable,
-                                   bsg_ksmachusableMemory());
         writer->addUIntegerElement(writer, BSG_KSCrashField_Free,
                                    bsg_ksmachfreeMemory());
     }
