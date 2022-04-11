@@ -202,10 +202,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             return [[BugsnagMetadata alloc] initWithDictionary:dict];
         }) ?: [[BugsnagMetadata alloc] init];
 
-        _session = BSGDeserializeObject(json[BSGKeySession], ^id _Nullable(NSDictionary * _Nonnull dict) {
-            return [BugsnagSession fromJson:dict];
-        });
-
         _threads = BSGDeserializeArrayOfObjects(json[BSGKeyThreads], ^id _Nullable(NSDictionary * _Nonnull dict) {
             return [BugsnagThread threadFromJson:dict];
         }) ?: @[];
@@ -213,6 +209,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         _user = BSGDeserializeObject(json[BSGKeyUser], ^id _Nullable(NSDictionary * _Nonnull dict) {
             return [[BugsnagUser alloc] initWithDictionary:dict];
         }) ?: [[BugsnagUser alloc] init];
+
+        _session = BSGSessionFromEventJson(json[BSGKeySession], _app, _device, _user);
     }
     return self;
 }
@@ -295,9 +293,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     } else {
         depth = 0;
     }
-    BugsnagSession *session = BSGDeserializeObject(event[BSGKeyUser], ^id _Nullable(NSDictionary * _Nonnull userDict) {
-        return userDict[@"id"] ? [[BugsnagSession alloc] initWithDictionary:userDict] : nil;
-    });
+
+    BugsnagSession *session = BSGSessionFromDictionary(event[BSGKeyUser]);
 
     // generate threads/error info
     NSArray *binaryImages = event[@"binary_images"];
@@ -591,17 +588,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     // add user
     event[BSGKeyUser] = [self.user toJson];
 
-    if (self.session) {
-        // Different from the payload returned by [BugsnagSession toDictionary] or [BugsnagSession toJson]
-        event[BSGKeySession] = @{
-            BSGKeyId: self.session.id ?: @"",
-            @"startedAt": [BSG_RFC3339DateTool stringFromDate:self.session.startedAt] ?: @"",
-            @"events": @{
-                    @"handled": @(self.session.handledCount),
-                    @"unhandled": @(self.session.unhandledCount)
-            }
-        };
-    }
+    event[BSGKeySession] = self.session ? BSGSessionToEventJson((BugsnagSession *_Nonnull)self.session) : nil;
+
     return event;
 }
 

@@ -23,9 +23,7 @@
     [super setUp];
     self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     self.configuration.autoTrackSessions = NO;
-    self.tracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
-                                                          client:nil
-                                              postRecordCallback:nil];
+    self.tracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration client:nil callback:^(BugsnagSession *session) {}];
 }
 
 /**

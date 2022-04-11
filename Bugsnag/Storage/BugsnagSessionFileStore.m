@@ -35,20 +35,14 @@ static NSString *const kSessionStoreSuffix = @"-Session-";
 }
 
 - (void)write:(BugsnagSession *)session {
-    // serialise session
     NSString *filepath = [self pathToFileWithId:session.id];
-    NSDictionary *dict = [session toJson];
-
+    NSDictionary *dict = BSGSessionToDictionary(session);
     NSError *error;
-    NSData *json = [BSGJSONSerialization dataWithJSONObject:dict options:0 error:&error];
-
-    if (error != nil || ![json writeToFile:filepath atomically:YES]) {
+    if ([BSGJSONSerialization writeJSONObject:dict toFile:filepath options:0 error:&error]) {
         bsg_log_err(@"Failed to write session %@", error);
         return;
     }
-    
     [self pruneFilesLeaving:(int)self.maxPersistedSessions];
 }
-
 
 @end

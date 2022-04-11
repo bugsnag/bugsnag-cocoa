@@ -25,6 +25,7 @@
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagKVStoreObjC.h"
 #import "BugsnagLogger.h"
+#import "BugsnagSession+Private.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagSystemState.h"
 
@@ -229,18 +230,13 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
             [strongSelf setValue:@YES forAppKey:SYSTEMSTATE_APP_IS_IN_FOREGROUND];
         }];
 #endif
-        [center addObserver:self selector:@selector(sessionUpdateNotification:) name:BSGSessionUpdateNotification object:nil];
     }
     return self;
 }
 
-- (void)sessionUpdateNotification:(NSNotification *)notification {
-    if (notification.object && ![BSGJSONSerialization isValidJSONObject:notification.object]) {
-        bsg_log_err("Invalid session payload in notification");
-        return;
-    }
+- (void)setSession:(nullable BugsnagSession *)session {
     [self mutateLaunchState:^(NSMutableDictionary *state) {
-        state[BSGKeySession] = notification.object;
+        state[BSGKeySession] = session ? BSGSessionToEventJson((BugsnagSession *_Nonnull)session) : nil;
     }];
 }
 

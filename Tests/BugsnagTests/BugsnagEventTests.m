@@ -57,9 +57,8 @@
     BugsnagApp *app;
     BugsnagDevice *device;
     BugsnagSession *bugsnagSession = [[BugsnagSession alloc] initWithId:@"123"
-                                                              startDate:now
+                                                              startedAt:now
                                                                    user:nil
-                                                           autoCaptured:NO
                                                                     app:app
                                                                  device:device];
     bugsnagSession.handledCount = 2;

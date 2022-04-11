@@ -72,7 +72,11 @@
             [self.activeIds addObject:fileId];
         }
 
-        BugsnagSession *session = [[BugsnagSession alloc] initWithDictionary:fileContents];
+        BugsnagSession *session = BSGSessionFromDictionary(fileContents);
+        if (!session) {
+            [self.fileStore deleteFileWithId:fileId];
+            return;
+        }
 
         [self sendSession:session completionHandler:^(BugsnagApiClientDeliveryStatus status) {
             if (status != BugsnagApiClientDeliveryStatusFailed) {
