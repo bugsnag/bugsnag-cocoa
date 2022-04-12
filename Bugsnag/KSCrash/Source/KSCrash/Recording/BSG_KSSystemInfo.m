@@ -50,6 +50,7 @@
 
 
 static inline bool is_jailbroken() {
+#if !TARGET_OS_WATCH
     static bool initialized_jb;
     static bool is_jb;
     if(!initialized_jb) {
@@ -63,6 +64,9 @@ static inline bool is_jailbroken() {
     }
 
     return is_jb;
+#else
+    return false;
+#endif
 }
 
 /**
@@ -77,7 +81,11 @@ static NSDictionary * bsg_systemversion() {
     int fd = -1;
     char buffer[1024] = {0};
     const char *file = "/System/Library/CoreServices/SystemVersion.plist";
+#if TARGET_OS_WATCH
+    fd = open(file, O_RDONLY);
+#else
     bsg_syscall_open(file, O_RDONLY, 0, &fd);
+#endif
     if (fd < 0) {
         bsg_log_err(@"Could not open SystemVersion.plist");
         return nil;
@@ -369,6 +377,8 @@ static NSDictionary * bsg_systemversion() {
     }
 #elif TARGET_OS_TV
     NSString *systemName = @"tvOS";
+#elif TARGET_OS_WATCH
+    NSString *systemName = @"watchOS";
 #endif
 
     sysInfo[@BSG_KSSystemField_SystemName] = systemName;

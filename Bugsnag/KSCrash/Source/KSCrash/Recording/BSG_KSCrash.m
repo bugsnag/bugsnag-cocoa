@@ -73,8 +73,8 @@
     free(crashReportPath);
     free(recrashReportPath);
     
-    NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
 #if TARGET_OS_IOS || TARGET_OS_TV
+    NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
     [nCenter addObserver:self
                 selector:@selector(applicationDidBecomeActive)
                     name:UIApplicationDidBecomeActiveNotification
@@ -93,6 +93,7 @@
                   object:nil];
 #elif TARGET_OS_OSX
     // MacOS "active" serves the same purpose as "foreground" in iOS
+    NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
     [nCenter addObserver:self
                 selector:@selector(applicationDidEnterBackground)
                     name:NSApplicationDidResignActiveNotification

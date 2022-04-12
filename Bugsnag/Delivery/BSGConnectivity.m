@@ -24,6 +24,10 @@
 // THE SOFTWARE.
 //
 
+#include <TargetConditionals.h>
+
+#if !TARGET_OS_WATCH
+
 #import "BSGConnectivity.h"
 #import "Bugsnag.h"
 
@@ -142,3 +146,5 @@ void BSGConnectivityCallback(__attribute__((unused)) SCNetworkReachabilityRef ta
 }
 
 @end
+
+#endif

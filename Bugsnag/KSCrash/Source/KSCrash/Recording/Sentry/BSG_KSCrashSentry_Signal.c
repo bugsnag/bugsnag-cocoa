@@ -58,7 +58,7 @@ static volatile sig_atomic_t bsg_g_installed = 0;
  */
 static volatile sig_atomic_t bsg_g_enabled = 0;
 
-#if !TARGET_OS_TV
+#if !(TARGET_OS_TV || TARGET_OS_WATCH)
 /** Our custom signal stack. The signal handler will use this as its stack. */
 static stack_t bsg_g_signalStack = {0};
 #endif
@@ -161,7 +161,7 @@ bool bsg_kscrashsentry_installSignalHandler(
 
     bsg_g_context = context;
 
-#if !TARGET_OS_TV
+#if !(TARGET_OS_TV || TARGET_OS_WATCH)
     if (bsg_g_signalStack.ss_size == 0) {
         BSG_KSLOG_DEBUG("Allocating signal stack area.");
         bsg_g_signalStack.ss_size = SIGSTKSZ;

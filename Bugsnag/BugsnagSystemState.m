@@ -176,7 +176,7 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
         _lastLaunchState = loadPreviousState(_kvStore, _persistenceFilePath);
         _currentLaunchState = initCurrentState(_kvStore, config);
         _consecutiveLaunchCrashes = [_lastLaunchState[InternalKey][ConsecutiveLaunchCrashesKey] unsignedIntegerValue];
-        if (@available(iOS 11.0, tvOS 11.0, *)) {
+        if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
             [self setThermalState:NSProcessInfo.processInfo.thermalState];
         }
         [self sync];

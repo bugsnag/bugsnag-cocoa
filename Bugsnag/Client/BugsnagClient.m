@@ -259,7 +259,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
         [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
         [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
-        if (@available(iOS 11.0, tvOS 11.0, *)) {
+        if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
             _lastThermalState = NSProcessInfo.processInfo.thermalState;
             [self.metadata addMetadata:BSGStringFromThermalState(_lastThermalState)
                                withKey:BSGKeyThermalState
@@ -334,13 +334,14 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self batteryChanged:nil];
 #endif
 
-    if (@available(iOS 11.0, tvOS 11.0, *)) {
+    if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
         [center addObserver:self
                    selector:@selector(thermalStateDidChange:)
                        name:NSProcessInfoThermalStateDidChangeNotification
                      object:nil];
     }
 
+#if !TARGET_OS_WATCH
     [center addObserver:self
                selector:@selector(applicationWillTerminate:)
 #if TARGET_OS_IOS || TARGET_OS_TV
@@ -349,7 +350,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                    name:NSApplicationWillTerminateNotification
 #endif
                  object:nil];
-
+#endif
+    
     self.started = YES;
 
     id<BugsnagPlugin> reactNativePlugin = [NSClassFromString(@"BugsnagReactNativePlugin") new];
@@ -494,7 +496,9 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 - (void)applicationWillTerminate:(__unused NSNotification *)notification {
     [[NSNotificationCenter defaultCenter] removeObserver:self.sessionTracker];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+#if !TARGET_OS_WATCH
     [BSGConnectivity stopMonitoring];
+#endif
 
 #if TARGET_OS_IOS
     [UIDEVICE currentDevice].batteryMonitoringEnabled = NO;
@@ -550,6 +554,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
  * changes as breadcrumbs, if configured to do so.
  */
 - (void)setupConnectivityListener {
+#if !TARGET_OS_WATCH
     NSURL *url = self.configuration.notifyURL;
 
     // ARC Reference - 4.2 __weak Semantics
@@ -568,6 +573,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                 withMessage:@"Connectivity changed"
                                 andMetadata:@{@"type": connectionType}];
     }];
+#endif
 }
 
 // =============================================================================

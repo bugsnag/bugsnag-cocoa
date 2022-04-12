@@ -24,8 +24,13 @@
 // THE SOFTWARE.
 //
 
+#include <TargetConditionals.h>
+
+#if !TARGET_OS_WATCH
+
 #import <Foundation/Foundation.h>
-#import <SystemConfiguration/SystemConfiguration.h>
+// &&&
+//#import <SystemConfiguration/SystemConfiguration.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -61,10 +66,13 @@ typedef void (^BSGConnectivityChangeBlock)(BOOL connected, NSString *typeDescrip
 
 @end
 
-void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void * _Nullable);
-
-NSString *BSGConnectivityFlagRepresentation(SCNetworkReachabilityFlags flags);
-
-BOOL BSGConnectivityShouldReportChange(SCNetworkReachabilityFlags flags);
+// &&&
+//void BSGConnectivityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void * _Nullable);
+//
+//NSString *BSGConnectivityFlagRepresentation(SCNetworkReachabilityFlags flags);
+//
+//BOOL BSGConnectivityShouldReportChange(SCNetworkReachabilityFlags flags);
 
 NS_ASSUME_NONNULL_END
+
+#endif

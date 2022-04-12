@@ -6,6 +6,10 @@
 //  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
+#include <TargetConditionals.h>
+
+#if !TARGET_OS_WATCH
+
 #import <AppKit/AppKit.h>
 
 // Daemons and other processes running in non-UI sessions should not link against AppKit.
@@ -37,3 +41,5 @@
 #define NSWindowWillMiniaturizeNotification                 @"NSWindowWillMiniaturizeNotification"
 #define NSWorkspaceScreensDidSleepNotification              @"NSWorkspaceScreensDidSleepNotification"
 #define NSWorkspaceScreensDidWakeNotification               @"NSWorkspaceScreensDidWakeNotification"
+
+#endif

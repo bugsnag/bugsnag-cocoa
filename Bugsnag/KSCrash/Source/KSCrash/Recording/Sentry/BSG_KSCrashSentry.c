@@ -73,10 +73,12 @@ static size_t bsg_g_sentriesCount =
 /** Context to fill with crash information. */
 static BSG_KSCrash_SentryContext *bsg_g_context = NULL;
 
+#if !TARGET_OS_WATCH
 /** Keeps track of whether threads have already been suspended or not.
  * This won't handle multiple suspends in a row.
  */
 static bool bsg_g_threads_are_running = true;
+#endif
 
 // ============================================================================
 #pragma mark - API -
@@ -140,6 +142,7 @@ void bsg_kscrashsentry_uninstall(BSG_KSCrashType crashTypes) {
 // ============================================================================
 
 void bsg_kscrashsentry_suspendThreads(void) {
+#if !TARGET_OS_WATCH
     BSG_KSLOG_DEBUG("Suspending threads.");
     if (!bsg_g_threads_are_running) {
         BSG_KSLOG_DEBUG("Threads already suspended.");
@@ -167,9 +170,11 @@ void bsg_kscrashsentry_suspendThreads(void) {
     }
     bsg_g_threads_are_running = false;
     BSG_KSLOG_DEBUG("Suspend complete.");
+#endif
 }
 
 void bsg_kscrashsentry_resumeThreads(void) {
+#if !TARGET_OS_WATCH
     BSG_KSLOG_DEBUG("Resuming threads.");
     if (bsg_g_threads_are_running) {
         BSG_KSLOG_DEBUG("Threads already resumed.");
@@ -194,6 +199,7 @@ void bsg_kscrashsentry_resumeThreads(void) {
     }
     bsg_g_threads_are_running = true;
     BSG_KSLOG_DEBUG("Resume complete.");
+#endif
 }
 
 void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext *context) {

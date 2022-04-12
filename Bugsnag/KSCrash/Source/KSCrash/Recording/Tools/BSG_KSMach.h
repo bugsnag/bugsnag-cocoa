@@ -40,6 +40,7 @@ extern "C" {
 #include <pthread.h>
 #include <stdbool.h>
 #include <sys/ucontext.h>
+#include <TargetConditionals.h>
 
 // ============================================================================
 #pragma mark - Initialization -
@@ -352,6 +353,7 @@ unsigned bsg_ksmachremoveThreadsFromList(thread_t *srcThreads, unsigned srcThrea
                                          thread_t *omitThreads, unsigned omitThreadsCount,
                                          thread_t *dstThreads, unsigned maxDstThreads);
 
+#if !TARGET_OS_WATCH
 /** Suspend a list of threads.
  * Note: The current thread cannot be suspended via this function.
  *
@@ -369,6 +371,7 @@ void bsg_ksmachsuspendThreads(thread_t *threads, unsigned threadsCount);
  * @param threadsCount The number of threads in the list.
  */
 void bsg_ksmachresumeThreads(thread_t *threads, unsigned threadsCount);
+#endif
 
 /** Copy memory safely. If the memory is not accessible, returns false
  * rather than crashing.

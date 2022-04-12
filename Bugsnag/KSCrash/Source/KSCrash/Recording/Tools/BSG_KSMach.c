@@ -199,6 +199,9 @@ const char *bsg_ksmachkernelReturnCodeName(const kern_return_t returnCode) {
 bool bsg_ksmachfillState(const thread_t thread, const thread_state_t state,
                          const thread_state_flavor_t flavor,
                          const mach_msg_type_number_t stateCount) {
+#if TARGET_OS_WATCH
+    return false;
+#else
     mach_msg_type_number_t stateCountBuff = stateCount;
     kern_return_t kr;
 
@@ -210,6 +213,7 @@ bool bsg_ksmachfillState(const thread_t thread, const thread_state_t state,
         return false;
     }
     return true;
+#endif
 }
 
 void bsg_ksmach_init(void) {
@@ -445,6 +449,7 @@ unsigned bsg_ksmachremoveThreadsFromList(thread_t *srcThreads, unsigned srcThrea
     return iDst;
 }
 
+#if !TARGET_OS_WATCH
 void bsg_ksmachsuspendThreads(thread_t *threads, unsigned threadsCount) {
     const thread_t thisThread = bsg_ksmachthread_self();
     for (unsigned i = 0; i < threadsCount; i++) {
@@ -484,6 +489,7 @@ void bsg_ksmachresumeThreads(thread_t *threads, unsigned threadsCount) {
         }
     }
 }
+#endif
 
 kern_return_t bsg_ksmachcopyMem(const void *const src, void *const dst,
                                 const size_t numBytes) {

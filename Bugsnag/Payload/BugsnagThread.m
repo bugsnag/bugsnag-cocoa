@@ -323,11 +323,12 @@ cleanup:
     }
 
     threadState = thread_state_name(bsg_ksmachgetThreadState(thread));
-    BOOL needsResume = thread_suspend(thread) == KERN_SUCCESS;
+// &&&
+//    BOOL needsResume = thread_suspend(thread) == KERN_SUCCESS;
     backtrace_for_thread(thread, &backtrace);
-    if (needsResume) {
-        thread_resume(thread);
-    }
+//    if (needsResume) {
+//        thread_resume(thread);
+//    }
     object = [[BugsnagThread alloc] initWithMachThread:thread
                                                  state:threadState
                                     backtraceAddresses:backtrace.addresses
