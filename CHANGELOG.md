@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix underreporting of `device.totalMemory`, which now matches `NSProcessInfo.physicalMemory`.
+  [#1335](https://github.com/bugsnag/bugsnag-cocoa/pull/1335)
+
 * Skip unnecessary file reading at startup when no unexpected app termination is detected.
   [#1334](https://github.com/bugsnag/bugsnag-cocoa/pull/1334)
 
