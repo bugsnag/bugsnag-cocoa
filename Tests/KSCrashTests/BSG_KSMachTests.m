@@ -109,12 +109,6 @@ void * executeBlock(void *ptr)
     XCTAssertTrue(freeMem > 0, @"");
 }
 
-- (void) testUsableMemory
-{
-    uint64_t usableMem = bsg_ksmachusableMemory();
-    XCTAssertTrue(usableMem > 0, @"");
-}
-
 - (void) testSuspendThreads
 {
 #if TARGET_CPU_X86_64 && defined(XCTSkipIf)

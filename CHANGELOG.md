@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## 6.16.7 (2022-04-13)
+
+### Bug fixes
+
+* Fix underreporting of `device.totalMemory`, which now matches `NSProcessInfo.physicalMemory`.
+  [#1335](https://github.com/bugsnag/bugsnag-cocoa/pull/1335)
+
+* Skip unnecessary file reading at startup when no unexpected app termination is detected.
+  [#1334](https://github.com/bugsnag/bugsnag-cocoa/pull/1334)
+
+* Fix duplication of `app` and `device` data in session payloads.
+  [#1332](https://github.com/bugsnag/bugsnag-cocoa/pull/1332)
+
 ## 6.16.6 (2022-04-06)
 
 ### Changes

@@ -94,17 +94,6 @@ uint64_t bsg_ksmachfreeMemory(void) {
     return 0;
 }
 
-uint64_t bsg_ksmachusableMemory(void) {
-    vm_statistics_data_t vmStats;
-    vm_size_t pageSize;
-    if (bsg_ksmachi_VMStats(&vmStats, &pageSize)) {
-        return ((uint64_t)pageSize) *
-               (vmStats.active_count + vmStats.inactive_count +
-                vmStats.wire_count + vmStats.free_count);
-    }
-    return 0;
-}
-
 const char *bsg_ksmachcurrentCPUArch(void) {
     const NXArchInfo *archInfo = NXGetLocalArchInfo();
     return archInfo == NULL ? NULL : archInfo->name;

@@ -429,7 +429,6 @@ static NSDictionary * bsg_systemversion() {
     sysInfo[@BSG_KSSystemField_TimeZone] = [[NSTimeZone localTimeZone] abbreviation];
     sysInfo[@BSG_KSSystemField_Memory] = @{
         @BSG_KSCrashField_Free: @(bsg_ksmachfreeMemory()),
-        @BSG_KSCrashField_Usable: @(bsg_ksmachusableMemory()),
         @BSG_KSSystemField_Size: [self int64Sysctl:@"hw.memsize"]
     };
 

@@ -109,6 +109,13 @@ Then('the error is valid for the error reporting API ignoring breadcrumb timesta
   else
     raise "Unknown platform: #{platform}"
   end
+  payload = Maze::Server.errors.current[:body]
+  payload['events'].each do |event|
+    session = event['session']
+    # verify that the session contains the expected keys
+    Maze.check.equal(session.keys.sort, %w[events id startedAt]) unless session.nil?
+    Maze.check.equal(session['events'].keys.sort, %w[handled unhandled]) unless session.nil?
+  end
 end
 
 Then('the session is valid for the session reporting API') do
@@ -124,6 +131,13 @@ Then('the session is valid for the session reporting API') do
     )
   else
     raise "Unknown platform: #{platform}"
+  end
+  payload = Maze::Server.sessions.current[:body]
+  # verify that the payload contains the expected keys
+  Maze.check.equal(payload.keys.sort, %w[app device notifier sessions])
+  # verify that each session contains the expected keys
+  payload['sessions'].each do |session|
+    Maze.check.equal(session.keys.sort, %w[id startedAt user])
   end
 end
 

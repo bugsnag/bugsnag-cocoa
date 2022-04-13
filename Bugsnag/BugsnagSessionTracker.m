@@ -45,9 +45,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 
 @implementation BugsnagSessionTracker
 
-- (instancetype)initWithConfig:(BugsnagConfiguration *)config
-                        client:(BugsnagClient *)client
-            postRecordCallback:(void(^)(BugsnagSession *))callback {
+- (instancetype)initWithConfig:(BugsnagConfiguration *)config client:(BugsnagClient *)client callback:(SessionTrackerCallback)callback {
     if ((self = [super init])) {
         _config = config;
         _client = client;
@@ -117,32 +115,22 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 
 #pragma mark - Creating and sending a new session
 
-- (void)startNewSession {
-    [self startNewSessionWithAutoCaptureValue:NO];
-}
-
 - (void)pauseSession {
-    [[self currentSession] stop];
+    self.currentSession.stopped = YES;
 
-    if (self.callback) {
-        self.callback(nil);
-    }
-    [self postUpdateNotice];
+    self.callback(nil);
 }
 
 - (BOOL)resumeSession {
     BugsnagSession *session = self.currentSession;
 
     if (session == nil) {
-        [self startNewSessionWithAutoCaptureValue:NO];
+        [self startNewSession];
         return NO;
     } else {
         BOOL stopped = session.isStopped;
-        [session resume];
-        if (self.callback) {
-            self.callback(session);
-        }
-        [self postUpdateNotice];
+        session.stopped = NO;
+        self.callback(session);
         return stopped;
     }
 }
@@ -158,11 +146,11 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 
 - (void)startNewSessionIfAutoCaptureEnabled {
     if (self.config.autoTrackSessions) {
-        [self startNewSessionWithAutoCaptureValue:YES];
+        [self startNewSession];
     }
 }
 
-- (void)startNewSessionWithAutoCaptureValue:(BOOL)isAutoCaptured {
+- (void)startNewSession {
     NSSet<NSString *> *releaseStages = self.config.enabledReleaseStages;
     if (releaseStages != nil && ![releaseStages containsObject:self.config.releaseStage ?: @""]) {
         return;
@@ -180,9 +168,8 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
     [device appendRuntimeInfo:self.extraRuntimeInfo];
 
     BugsnagSession *newSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
-                                                          startDate:[NSDate date]
+                                                          startedAt:[NSDate date]
                                                                user:self.client.user
-                                                       autoCaptured:isAutoCaptured
                                                                 app:app
                                                              device:device];
 
@@ -198,10 +185,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 
     self.currentSession = newSession;
 
-    if (self.callback) {
-        self.callback(self.currentSession);
-    }
-    [self postUpdateNotice];
+    self.callback(newSession);
 
     [self.sessionUploader uploadSession:newSession];
 }
@@ -222,22 +206,14 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
         self.currentSession = nil;
     } else {
         self.currentSession = [[BugsnagSession alloc] initWithId:sessionId
-                                                       startDate:startedAt
+                                                       startedAt:startedAt
                                                             user:user
-                                                    handledCount:handledCount
-                                                  unhandledCount:unhandledCount
                                                              app:[BugsnagApp new]
                                                           device:[BugsnagDevice new]];
+        self.currentSession.handledCount = handledCount;
+        self.currentSession.unhandledCount = unhandledCount;
     }
-    if (self.callback) {
-        self.callback(self.currentSession);
-    }
-    [self postUpdateNotice];
-}
-
-- (void)postUpdateNotice {
-    [[NSNotificationCenter defaultCenter] postNotificationName:BSGSessionUpdateNotification
-                                                        object:[self.runningSession toDictionary]];
+    self.callback(self.currentSession);
 }
 
 #pragma mark - Handling events
@@ -267,10 +243,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
         } else {
             session.handledCount++;
         }
-        if (self.callback) {
-            self.callback(session);
-        }
-        [self postUpdateNotice];
+        self.callback(session);
     }
 }
 

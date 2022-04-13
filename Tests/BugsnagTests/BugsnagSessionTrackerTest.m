@@ -26,9 +26,7 @@
     [super setUp];
     self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [self.configuration deletePersistedUserData];
-    self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
-                                                                 client:nil
-                                                     postRecordCallback:nil];
+    self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration client:nil callback:^(BugsnagSession *session) {}];
 }
 
 - (void)testStartNewSession {
@@ -38,7 +36,6 @@
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
-    XCTAssertFalse(session.autoCaptured);
 }
 
 - (void)testStartNewSessionWithUser {
@@ -50,7 +47,6 @@
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
-    XCTAssertFalse(session.autoCaptured);
 }
 
 - (void)testStartNewAutoCapturedSession {
@@ -61,7 +57,6 @@
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
-    XCTAssertTrue(session.autoCaptured);
     XCTAssertNil(session.user.name);
     XCTAssertNil(session.user.id);
     XCTAssertNil(session.user.email);
@@ -76,7 +71,6 @@
     XCTAssertNotNil(session);
     XCTAssertNotNil(session.id);
     XCTAssertTrue([[NSDate date] timeIntervalSinceDate:session.startedAt] < 1);
-    XCTAssertTrue(session.autoCaptured);
 }
 
 - (void)testStartNewAutoCapturedSessionWithAutoCaptureDisabled {
@@ -129,9 +123,7 @@
     [self.configuration addOnSessionBlock:^BOOL(BugsnagSession *sessionPayload) {
         return NO;
     }];
-    self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
-                                                                 client:nil
-                                                     postRecordCallback:nil];
+    self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration client:nil callback:^(BugsnagSession *session) {}];
     [self.sessionTracker startNewSession];
     XCTAssertNil(self.sessionTracker.currentSession);
 }
@@ -144,9 +136,7 @@
         [expectation fulfill];
         return YES;
     }];
-    self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration
-                                                                 client:nil
-                                                     postRecordCallback:nil];
+    self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration client:nil callback:^(BugsnagSession *session) {}];
     [self.sessionTracker startNewSession];
     [self waitForExpectations:@[expectation] timeout:2];
     XCTAssertNotNil(self.sessionTracker.currentSession);

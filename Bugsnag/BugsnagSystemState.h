@@ -12,6 +12,8 @@
 
 #import "BSGKeys.h"
 
+@class BugsnagSession;
+
 #define SYSTEMSTATE_KEY_APP @"app"
 #define SYSTEMSTATE_KEY_DEVICE @"device"
 
@@ -51,6 +53,8 @@ NS_ASSUME_NONNULL_BEGIN
  * Purge all stored system state.
  */
 - (void)purge;
+
+- (void)setSession:(nullable BugsnagSession *)session;
 
 - (void)setThermalState:(NSProcessInfoThermalState)thermalState API_AVAILABLE(ios(11.0), tvos(11.0));
 
