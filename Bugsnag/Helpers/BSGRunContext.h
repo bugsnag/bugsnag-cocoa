@@ -5,6 +5,13 @@
 //  Copyright © 2022 Bugsnag Inc. All rights reserved.
 //
 
+//
+// The struct version should be incremented prior to a release if changes have
+// been made to BSGRunContext.
+//
+// During development this is not strictly necessary since last run's data will
+// not be loaded if the struct's size has changed.
+//
 #define BSGRUNCONTEXT_VERSION 1
 
 struct BSGRunContext {
