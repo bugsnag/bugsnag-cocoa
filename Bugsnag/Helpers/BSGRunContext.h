@@ -5,6 +5,8 @@
 //  Copyright © 2022 Bugsnag Inc. All rights reserved.
 //
 
+#include <stdbool.h>
+
 //
 // The struct version should be incremented prior to a release if changes have
 // been made to BSGRunContext.
@@ -16,6 +18,11 @@
 
 struct BSGRunContext {
     long structVersion;
+    bool isDebuggerAttached;
+    bool isLaunching;
+    bool isForeground;
+    bool isTerminating;
+    long thermalState;
 };
 
 /// Information about the current run of the app / process.
@@ -28,4 +35,25 @@ extern struct BSGRunContext *_Nonnull bsg_runContext;
 /// Information about the last run of the app / process, if it could be loaded.
 extern const struct BSGRunContext *_Nullable bsg_lastRunContext;
 
+#pragma mark -
+
 void BSGRunContextInit(const char *_Nonnull path);
+
+#pragma mark -
+
+#ifdef FOUNDATION_EXTERN
+static inline bool BSGRunContextWasCriticalThermalState() {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+    return bsg_lastRunContext && bsg_lastRunContext->thermalState == NSProcessInfoThermalStateCritical;
+#pragma clang diagnostic pop
+}
+#endif
+
+static inline bool BSGRunContextWasLaunching() {
+    return bsg_lastRunContext && bsg_lastRunContext->isLaunching;
+}
+
+static inline bool BSGRunContextWasTerminating() {
+    return bsg_lastRunContext && bsg_lastRunContext->isTerminating;
+}
