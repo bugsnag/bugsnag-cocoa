@@ -261,8 +261,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     [self.configuration validate];
 
-    BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
     BSGRunContextInit(BSGFileLocations.current.runContext.fileSystemRepresentation);
+    BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
     [self computeDidCrashLastLaunch];
@@ -357,7 +357,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         BSGWriteSessionCrashData(session);
         [weakSelf.systemState setSession:session];
     }];
-    [self.sessionTracker startWithNotificationCenter:center isInForeground:bsg_kscrashstate_currentState()->applicationIsInForeground];
+    [self.sessionTracker startWithNotificationCenter:center isInForeground:bsg_runContext->isForeground];
 
     // Record a "Bugsnag Loaded" message
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState withMessage:@"Bugsnag loaded" andMetadata:nil];

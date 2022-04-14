@@ -65,17 +65,6 @@ id blankIfNil(id value) {
 static NSMutableDictionary * initCurrentState(BugsnagConfiguration *config) {
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
 
-#if TARGET_OS_OSX
-    // MacOS "active" serves the same purpose as "foreground" in iOS
-    bsg_runContext->isForeground = [NSAPPLICATION sharedApplication].active;
-#else
-    const BSG_KSCrash_State *crashState = bsg_kscrashstate_currentState();
-    NSCParameterAssert(crashState != nil);
-    if (crashState) {
-        bsg_runContext->isForeground = crashState->applicationIsInForeground;
-    }
-#endif
-
     NSMutableDictionary *app = [NSMutableDictionary new];
     app[BSGKeyId] = blankIfNil(systemInfo[@BSG_KSSystemField_BundleID]);
     app[BSGKeyName] = blankIfNil(systemInfo[@BSG_KSSystemField_BundleName]);
