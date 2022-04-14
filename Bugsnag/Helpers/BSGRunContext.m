@@ -39,6 +39,7 @@ static void BSGRunContextLoadLast(int fd) {
 static void BSGRunContextResizeAndMapFile(int fd) {
     static struct BSGRunContext fallback;
     
+    // Note: ftruncate fills the file with zeros when extending.
     int err = ftruncate(fd, SIZEOF_STRUCT);
     if (err != 0) {
         bsg_log_warn(@"ftruncate failed: %d", err);
@@ -51,6 +52,7 @@ static void BSGRunContextResizeAndMapFile(int fd) {
         goto fail;
     }
     
+    memset(ptr, 0, SIZEOF_STRUCT);
     bsg_runContext = ptr;
     return;
     
@@ -60,7 +62,8 @@ fail:
 
 /// Populates `bsg_runContext`
 static void BSGRunContextPopulate() {
-    memset(bsg_runContext, 0, SIZEOF_STRUCT);
+    // Set `structVersion` last so that BSGRunContextLoadLast() will reject data
+    // that is not fully initialised.
     bsg_runContext->structVersion = BSGRUNCONTEXT_VERSION;
 }
 
