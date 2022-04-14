@@ -40,6 +40,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic) NSString *metadata;
 
 /**
+ * BSGRunContext
+ */
+@property (readonly, nonatomic) NSString *runContext;
+
+/**
  * State info that gets added to the low level crash report.
  */
 @property (readonly, nonatomic) NSString *state;

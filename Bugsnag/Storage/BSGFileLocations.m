@@ -99,6 +99,7 @@ static NSString *getAndCreateSubdir(NSString *rootPath, NSString *relativePath) 
         _flagHandledCrash = [root stringByAppendingPathComponent:@"bugsnag_handled_crash.txt"];
         _configuration = [root stringByAppendingPathComponent:@"config.json"];
         _metadata = [root stringByAppendingPathComponent:@"metadata.json"];
+        _runContext = [root stringByAppendingPathComponent:@"run_context"];
         _state = [root stringByAppendingPathComponent:@"state.json"];
         _systemState = [root stringByAppendingPathComponent:@"system_state.json"];
     }

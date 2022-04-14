@@ -35,6 +35,7 @@
 #import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
 #import "BSGNotificationBreadcrumbs.h"
+#import "BSGRunContext.h"
 #import "BSGSerialization.h"
 #import "BSGUtils.h"
 #import "BSG_KSCrash.h"
@@ -262,6 +263,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     __weak typeof(self) weakSelf = self;
 
     [self.configuration validate];
+
+    BSGRunContextInit(BSGFileLocations.current.runContext.fileSystemRepresentation);
     BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
