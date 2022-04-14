@@ -627,6 +627,13 @@
 		01468F5625876DC1002B0519 /* BSGNotificationBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = 01468F5125876DC1002B0519 /* BSGNotificationBreadcrumbs.m */; };
 		01468F5725876DC1002B0519 /* BSGNotificationBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = 01468F5125876DC1002B0519 /* BSGNotificationBreadcrumbs.m */; };
 		01468F5825876DC1002B0519 /* BSGNotificationBreadcrumbs.m in Sources */ = {isa = PBXBuildFile; fileRef = 01468F5125876DC1002B0519 /* BSGNotificationBreadcrumbs.m */; };
+		0154E20228070AEA009044E4 /* BSGRunContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 0154E20028070AEA009044E4 /* BSGRunContext.h */; };
+		0154E20328070AEA009044E4 /* BSGRunContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 0154E20028070AEA009044E4 /* BSGRunContext.h */; };
+		0154E20428070AEA009044E4 /* BSGRunContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 0154E20028070AEA009044E4 /* BSGRunContext.h */; };
+		0154E20528070AEA009044E4 /* BSGRunContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154E20128070AEA009044E4 /* BSGRunContext.m */; };
+		0154E20628070AEA009044E4 /* BSGRunContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154E20128070AEA009044E4 /* BSGRunContext.m */; };
+		0154E20728070AEA009044E4 /* BSGRunContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154E20128070AEA009044E4 /* BSGRunContext.m */; };
+		0154E20828070AEA009044E4 /* BSGRunContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154E20128070AEA009044E4 /* BSGRunContext.m */; };
 		015F528425C15BB7000D1915 /* MRCCanary.m in Sources */ = {isa = PBXBuildFile; fileRef = 015F528325C15BB7000D1915 /* MRCCanary.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		015F528525C15BB7000D1915 /* MRCCanary.m in Sources */ = {isa = PBXBuildFile; fileRef = 015F528325C15BB7000D1915 /* MRCCanary.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		015F528625C15BB7000D1915 /* MRCCanary.m in Sources */ = {isa = PBXBuildFile; fileRef = 015F528325C15BB7000D1915 /* MRCCanary.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -1328,6 +1335,8 @@
 		0140D24725765F8F00FD0306 /* BSGUIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGUIKit.h; sourceTree = "<group>"; };
 		01468F5025876DC1002B0519 /* BSGNotificationBreadcrumbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGNotificationBreadcrumbs.h; sourceTree = "<group>"; };
 		01468F5125876DC1002B0519 /* BSGNotificationBreadcrumbs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGNotificationBreadcrumbs.m; sourceTree = "<group>"; };
+		0154E20028070AEA009044E4 /* BSGRunContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGRunContext.h; sourceTree = "<group>"; };
+		0154E20128070AEA009044E4 /* BSGRunContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGRunContext.m; sourceTree = "<group>"; };
 		015F528325C15BB7000D1915 /* MRCCanary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MRCCanary.m; sourceTree = "<group>"; };
 		0163BF5825823D8D008DC28B /* BSGNotificationBreadcrumbsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGNotificationBreadcrumbsTests.m; sourceTree = "<group>"; };
 		016875C4258D003200DFFF69 /* NSUserDefaultsStub.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSUserDefaultsStub.h; sourceTree = "<group>"; };
@@ -1889,6 +1898,8 @@
 				CBCF77A125010648004AF22A /* BSGJSONSerialization.h */,
 				CBCF77A225010648004AF22A /* BSGJSONSerialization.m */,
 				008968152486DA5600DC48C2 /* BSGKeys.h */,
+				0154E20028070AEA009044E4 /* BSGRunContext.h */,
+				0154E20128070AEA009044E4 /* BSGRunContext.m */,
 				008968112486DA5600DC48C2 /* BSGSerialization.h */,
 				008968162486DA5600DC48C2 /* BSGSerialization.m */,
 				0140D24725765F8F00FD0306 /* BSGUIKit.h */,
@@ -2095,6 +2106,7 @@
 				008969DE2486DAD100DC48C2 /* BSG_KSCrashC.h in Headers */,
 				0089699F2486DAD100DC48C2 /* BSG_KSJSONCodecObjC.h in Headers */,
 				0089697E2486DAD100DC48C2 /* BSG_KSArchSpecific.h in Headers */,
+				0154E20228070AEA009044E4 /* BSGRunContext.h in Headers */,
 				008969BA2486DAD100DC48C2 /* BSG_KSJSONCodec.h in Headers */,
 				008969E72486DAD100DC48C2 /* BSG_KSSystemInfoC.h in Headers */,
 				CBAA6ABB250BA70E00713376 /* BugsnagKVStore.h in Headers */,
@@ -2199,6 +2211,7 @@
 				008969DF2486DAD100DC48C2 /* BSG_KSCrashC.h in Headers */,
 				008969A02486DAD100DC48C2 /* BSG_KSJSONCodecObjC.h in Headers */,
 				0089697F2486DAD100DC48C2 /* BSG_KSArchSpecific.h in Headers */,
+				0154E20328070AEA009044E4 /* BSGRunContext.h in Headers */,
 				008969BB2486DAD100DC48C2 /* BSG_KSJSONCodec.h in Headers */,
 				008969E82486DAD100DC48C2 /* BSG_KSSystemInfoC.h in Headers */,
 				CBAA6ABC250BA70E00713376 /* BugsnagKVStore.h in Headers */,
@@ -2303,6 +2316,7 @@
 				008969E02486DAD100DC48C2 /* BSG_KSCrashC.h in Headers */,
 				008969A12486DAD100DC48C2 /* BSG_KSJSONCodecObjC.h in Headers */,
 				008969802486DAD100DC48C2 /* BSG_KSArchSpecific.h in Headers */,
+				0154E20428070AEA009044E4 /* BSGRunContext.h in Headers */,
 				008969BC2486DAD100DC48C2 /* BSG_KSJSONCodec.h in Headers */,
 				008969E92486DAD100DC48C2 /* BSG_KSSystemInfoC.h in Headers */,
 				CBAA6ABD250BA70F00713376 /* BugsnagKVStore.h in Headers */,
@@ -2651,6 +2665,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBAA6AB5250BA01D00713376 /* BugsnagKVStore.c in Sources */,
+				0154E20528070AEA009044E4 /* BSGRunContext.m in Sources */,
 				008969992486DAD100DC48C2 /* BSG_KSMach_Arm64.c in Sources */,
 				008967E82486DA2D00DC48C2 /* BugsnagErrorTypes.m in Sources */,
 				0126F7AE25DD5118008483C2 /* BSGEventUploadFileOperation.m in Sources */,
@@ -2895,6 +2910,7 @@
 				008969AF2486DAD100DC48C2 /* NSError+BSG_SimpleConstructor.m in Sources */,
 				008968CC2486DA9600DC48C2 /* BugsnagThread.m in Sources */,
 				0126F78F25DD508C008483C2 /* BSGEventUploadOperation.m in Sources */,
+				0154E20628070AEA009044E4 /* BSGRunContext.m in Sources */,
 				008968032486DA4500DC48C2 /* BSGConnectivity.m in Sources */,
 				CBE9062E25A34DAB0045B965 /* BSGStorageMigratorV0V1.m in Sources */,
 				010FF28825ED2A8D00E4F2B0 /* BSGAppHangDetector.m in Sources */,
@@ -2998,6 +3014,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBAA6AB7250BA01D00713376 /* BugsnagKVStore.c in Sources */,
+				0154E20728070AEA009044E4 /* BSGRunContext.m in Sources */,
 				0089699B2486DAD100DC48C2 /* BSG_KSMach_Arm64.c in Sources */,
 				008967EA2486DA2D00DC48C2 /* BugsnagErrorTypes.m in Sources */,
 				008968742486DA9500DC48C2 /* BugsnagDevice.m in Sources */,
@@ -3171,6 +3188,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBAA6AB8250BA01D00713376 /* BugsnagKVStore.c in Sources */,
+				0154E20828070AEA009044E4 /* BSGRunContext.m in Sources */,
 				CB33CD042703438400C76656 /* BSG_KSCrashNames.c in Sources */,
 				E7462909248907E500F92D67 /* BSG_KSMach_x86_32.c in Sources */,
 				E746290B248907E500F92D67 /* BSG_KSMach_Arm.c in Sources */,
