@@ -40,15 +40,16 @@ static void BSGRunContextResizeAndMapFile(int fd) {
     static struct BSGRunContext fallback;
     
     // Note: ftruncate fills the file with zeros when extending.
-    int err = ftruncate(fd, SIZEOF_STRUCT);
-    if (err != 0) {
-        bsg_log_warn(@"ftruncate failed: %d", err);
+    if (ftruncate(fd, SIZEOF_STRUCT) != 0) {
+        bsg_log_warn(@"ftruncate failed: %d", errno);
         goto fail;
     }
     
-    struct BSGRunContext *ptr = mmap(0, SIZEOF_STRUCT, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0);
+    const int prot = PROT_READ | PROT_WRITE;
+    const int flags = MAP_FILE | MAP_SHARED;
+    void *ptr = mmap(0, SIZEOF_STRUCT, prot, flags, fd, 0);
     if (ptr == MAP_FAILED) {
-        bsg_log_warn(@"mmap failed");
+        bsg_log_warn(@"mmap failed: %d", errno);
         goto fail;
     }
     
