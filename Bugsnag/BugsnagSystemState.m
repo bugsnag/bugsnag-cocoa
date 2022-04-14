@@ -21,7 +21,6 @@
 #import "BSGRunContext.h"
 #import "BSGUtils.h"
 #import "BSG_KSCrashState.h"
-#import "BSG_KSMach.h"
 #import "BSG_KSSystemInfo.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagLogger.h"
@@ -76,8 +75,6 @@ static NSMutableDictionary * initCurrentState(BugsnagConfiguration *config) {
         bsg_runContext->isForeground = crashState->applicationIsInForeground;
     }
 #endif
-    bsg_runContext->isDebuggerAttached = bsg_ksmachisBeingTraced();
-    bsg_runContext->isLaunching = YES;
 
     NSMutableDictionary *app = [NSMutableDictionary new];
     app[BSGKeyId] = blankIfNil(systemInfo[@BSG_KSSystemField_BundleID]);
@@ -149,45 +146,7 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
         _lastLaunchState = loadPreviousState(_persistenceFilePath);
         _currentLaunchState = initCurrentState(config);
         _consecutiveLaunchCrashes = [_lastLaunchState[InternalKey][ConsecutiveLaunchCrashesKey] unsignedIntegerValue];
-        if (@available(iOS 11.0, tvOS 11.0, *)) {
-            bsg_runContext->thermalState = NSProcessInfo.processInfo.thermalState;
-            // BugsnagClient updates thermalState in response to notifications
-        }
         [self sync];
-
-        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-#if TARGET_OS_OSX
-        [center addObserverForName:NSApplicationWillTerminateNotification object:nil queue:nil
-                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
-            bsg_runContext->isTerminating = YES;
-        }];
-        // MacOS "active" serves the same purpose as "foreground" in iOS
-        [center addObserverForName:NSApplicationDidBecomeActiveNotification object:nil queue:nil
-                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
-            bsg_runContext->isForeground = YES;
-        }];
-        [center addObserverForName:NSApplicationDidResignActiveNotification object:nil queue:nil
-                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
-            bsg_runContext->isForeground = NO;
-        }];
-#else
-        [center addObserverForName:UIApplicationWillTerminateNotification object:nil queue:nil
-                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
-            bsg_runContext->isTerminating = YES;
-        }];
-        [center addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:nil
-                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
-            bsg_runContext->isForeground = YES;
-        }];
-        [center addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:nil
-                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
-            bsg_runContext->isForeground = NO;
-        }];
-        [center addObserverForName:UIApplicationDidBecomeActiveNotification object:nil queue:nil
-                        usingBlock:^(__attribute__((unused)) NSNotification * _Nonnull note) {
-            bsg_runContext->isForeground = YES;
-        }];
-#endif
     }
     return self;
 }

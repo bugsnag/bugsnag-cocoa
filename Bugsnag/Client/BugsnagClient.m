@@ -487,17 +487,16 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 - (void)thermalStateDidChange:(NSNotification *)notification API_AVAILABLE(ios(11.0), tvos(11.0)) {
     NSProcessInfo *processInfo = notification.object;
     
-    NSProcessInfoThermalState lastThermalState = bsg_runContext->thermalState;
-    bsg_runContext->thermalState = processInfo.thermalState;
-    
     NSString *thermalStateString = BSGStringFromThermalState(processInfo.thermalState);
+    NSString *previousStateString = [self.metadata getMetadataFromSection:BSGKeyDevice
+                                                                  withKey:BSGKeyThermalState];
     
     [self.metadata addMetadata:thermalStateString
                        withKey:BSGKeyThermalState
                      toSection:BSGKeyDevice];
     
     NSMutableDictionary *breadcrumbMetadata = [NSMutableDictionary dictionary];
-    breadcrumbMetadata[@"from"] = BSGStringFromThermalState(lastThermalState);
+    breadcrumbMetadata[@"from"] = previousStateString;
     breadcrumbMetadata[@"to"] = thermalStateString;
     
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
