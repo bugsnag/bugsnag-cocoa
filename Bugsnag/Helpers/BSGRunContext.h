@@ -6,6 +6,8 @@
 //
 
 #include <stdbool.h>
+#include <stdint.h>
+#include <uuid/uuid.h>
 
 //
 // The struct version should be incremented prior to a release if changes have
@@ -23,6 +25,8 @@ struct BSGRunContext {
     bool isForeground;
     bool isTerminating;
     long thermalState;
+    uint64_t bootTime;
+    uuid_t machoUUID;
 };
 
 /// Information about the current run of the app / process.

@@ -9,11 +9,13 @@
 
 #import "BSG_KSLogger.h"
 #import "BSG_KSMach.h"
+#import "BSG_KSMachHeaders.h"
 #import "BSG_KSSystemInfo.h"
 
 #import <Foundation/Foundation.h>
 #import <sys/mman.h>
 #import <sys/stat.h>
+#import <sys/sysctl.h>
 
 #if TARGET_OS_IOS
 #import "BSGUIKit.h"
@@ -26,6 +28,7 @@
 
 #pragma mark Forward declarations
 
+static uint64_t BSGRunContextGetBootTime(void);
 static bool BSGRunContextGetIsForeground(void);
 
 
@@ -45,9 +48,24 @@ static void BSGRunContextInitCurrent() {
         bsg_runContext->thermalState = NSProcessInfo.processInfo.thermalState;
     }
     
+    bsg_runContext->bootTime = BSGRunContextGetBootTime();
+    
+    BSG_Mach_Header_Info *image = bsg_mach_headers_get_main_image();
+    if (image && image->uuid) {
+        uuid_copy(bsg_runContext->machoUUID, image->uuid);
+    }
+    
     // Set `structVersion` last so that BSGRunContextLoadLast() will reject data
     // that is not fully initialised.
     bsg_runContext->structVersion = BSGRUNCONTEXT_VERSION;
+}
+
+static uint64_t BSGRunContextGetBootTime() {
+    struct timeval tv;
+    size_t len = sizeof(tv);
+    int ret = sysctl((int[]){CTL_KERN, KERN_BOOTTIME}, 2, &tv, &len, NULL, 0);
+    if (ret == -1) return 0;
+    return (uint64_t)tv.tv_sec * USEC_PER_SEC + (uint64_t)tv.tv_usec;
 }
 
 static bool BSGRunContextGetIsForeground() {

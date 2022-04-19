@@ -70,8 +70,11 @@
 }
 
 - (void)testLastLaunchTerminatedUnexpectedly {
+    if (!bsg_runContext) {
+        BSGRunContextInit(BSGFileLocations.current.runContext.fileSystemRepresentation);
+    }
     const struct BSGRunContext *oldContext = bsg_lastRunContext;
-    struct BSGRunContext lastRunContext = {0};
+    struct BSGRunContext lastRunContext = *bsg_runContext;
     bsg_lastRunContext = &lastRunContext;
     
     BugsnagSystemState *(^ systemState)() = ^{
@@ -116,6 +119,14 @@
     lastRunContext.isTerminating = false;
     lastRunContext.isForeground = true;
     XCTAssertTrue(systemState().lastLaunchTerminatedUnexpectedly);
+    
+    uuid_generate(lastRunContext.machoUUID);
+    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    uuid_copy(lastRunContext.machoUUID, bsg_runContext->machoUUID);
+    
+    lastRunContext.bootTime = 0;
+    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    lastRunContext.bootTime = bsg_runContext->bootTime;
 
     lastRunContext.isDebuggerAttached = false;
     lastRunContext.isTerminating = false;

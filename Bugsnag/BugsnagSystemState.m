@@ -22,16 +22,10 @@
 #import "BSGUtils.h"
 #import "BSG_KSCrashState.h"
 #import "BSG_KSSystemInfo.h"
-#import "BSG_RFC3339DateTool.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSession+Private.h"
 
 #import <stdatomic.h>
-
-#define SYSTEMSTATE_APP_VERSION @"version"
-#define SYSTEMSTATE_APP_BUNDLE_VERSION @"bundleVersion"
-
-#define SYSTEMSTATE_DEVICE_BOOT_TIME @"bootTime"
 
 static NSString * const ConsecutiveLaunchCrashesKey = @"consecutiveLaunchCrashes";
 static NSString * const InternalKey = @"internal";
@@ -82,7 +76,6 @@ static NSMutableDictionary * initCurrentState(BugsnagConfiguration *config) {
 #endif
 
     NSMutableDictionary *device = [NSMutableDictionary new];
-    device[SYSTEMSTATE_DEVICE_BOOT_TIME] = [BSG_RFC3339DateTool stringFromDate:systemInfo[@BSG_KSSystemField_BootTime]];
     device[@"id"] = systemInfo[@BSG_KSSystemField_DeviceAppHash];
     device[@"jailbroken"] = systemInfo[@BSG_KSSystemField_Jailbroken];
     device[@"osBuild"] = systemInfo[@BSG_KSSystemField_OSVersion];
@@ -222,11 +215,6 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
         return NO;
     }
     
-    NSDictionary *currentAppState = self.currentLaunchState[SYSTEMSTATE_KEY_APP];
-    NSDictionary *previousAppState = self.lastLaunchState[SYSTEMSTATE_KEY_APP];
-    NSDictionary *currentDeviceState = self.currentLaunchState[SYSTEMSTATE_KEY_DEVICE];
-    NSDictionary *previousDeviceState = self.lastLaunchState[SYSTEMSTATE_KEY_DEVICE];
-    
     if (bsg_lastRunContext->isTerminating) {
         return NO; // The app terminated normally
     }
@@ -241,17 +229,11 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
     }
     
     // Ignore unexpected terminations that may have been due to the app being upgraded
-    NSString *currentAppVersion = currentAppState[SYSTEMSTATE_APP_VERSION];
-    NSString *currentAppBundleVersion = currentAppState[SYSTEMSTATE_APP_BUNDLE_VERSION];
-    if (!currentAppVersion || ![previousAppState[SYSTEMSTATE_APP_VERSION] isEqualToString:currentAppVersion] ||
-        !currentAppBundleVersion || ![previousAppState[SYSTEMSTATE_APP_BUNDLE_VERSION] isEqualToString:currentAppBundleVersion]) {
+    if (uuid_compare(bsg_lastRunContext->machoUUID, bsg_runContext->machoUUID)) {
         return NO;
     }
     
-    id currentBootTime = currentDeviceState[SYSTEMSTATE_DEVICE_BOOT_TIME];
-    id previousBootTime = previousDeviceState[SYSTEMSTATE_DEVICE_BOOT_TIME];
-    BOOL didReboot = currentBootTime && previousBootTime && ![currentBootTime isEqual:previousBootTime];
-    if (didReboot) {
+    if (bsg_lastRunContext->bootTime != bsg_runContext->bootTime) {
         return NO; // The app may have been terminated due to the reboot
     }
     
