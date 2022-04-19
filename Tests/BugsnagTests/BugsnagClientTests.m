@@ -321,31 +321,4 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     return dict;
 }
 
-#if TARGET_OS_IOS || TARGET_OS_TV
-
-static BOOL testOnCrashHandlerNotCalledForOOM_didCallOnCrashHandler;
-
-static void testOnCrashHandlerNotCalledForOOM_onCrashHandler(const BSG_KSCrashReportWriter *writer) {
-    testOnCrashHandlerNotCalledForOOM_didCallOnCrashHandler = YES;
-}
-
-static BOOL testOnCrashHandlerNotCalledForOOM_lastLaunchTerminatedUnexpectedly(id self, SEL _cmd) {
-    return YES;
-}
-
-- (void)testOnCrashHandlerNotCalledForOOM {
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    configuration.onCrashHandler = testOnCrashHandlerNotCalledForOOM_onCrashHandler;
-    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
-    Method method = class_getInstanceMethod([BugsnagSystemState class], @selector(lastLaunchTerminatedUnexpectedly));
-    NSParameterAssert(method != NULL);
-    void *originalImplementation = method_setImplementation(method, (void *)testOnCrashHandlerNotCalledForOOM_lastLaunchTerminatedUnexpectedly);
-    [client start];
-    method_setImplementation(method, originalImplementation);
-    XCTAssertFalse(testOnCrashHandlerNotCalledForOOM_didCallOnCrashHandler, @"onCrashHandler should not be called for OOMs");
-    XCTAssertTrue(client.lastRunInfo.crashed);
-}
-
-#endif
-
 @end

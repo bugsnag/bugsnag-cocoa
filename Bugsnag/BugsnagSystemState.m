@@ -203,41 +203,4 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
     self.lastLaunchState = loadPreviousState(self.persistenceFilePath);
 }
 
-// MARK: -
-
-- (BOOL)lastLaunchTerminatedUnexpectedly {
-    // App extensions have a different lifecycle and the heuristic used for finding app terminations rooted in fixable code does not apply
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
-        return NO;
-    }
-    
-    if (!bsg_lastRunContext) {
-        return NO;
-    }
-    
-    if (bsg_lastRunContext->isTerminating) {
-        return NO; // The app terminated normally
-    }
-    
-    if (bsg_lastRunContext->isDebuggerAttached) {
-        return NO; // The debugger may have killed the app
-    }
-    
-    // If the app was in the background, we cannot determine whether the termination was unexpected
-    if (!bsg_lastRunContext->isForeground) {
-        return NO;
-    }
-    
-    // Ignore unexpected terminations that may have been due to the app being upgraded
-    if (uuid_compare(bsg_lastRunContext->machoUUID, bsg_runContext->machoUUID)) {
-        return NO;
-    }
-    
-    if (bsg_lastRunContext->bootTime != bsg_runContext->bootTime) {
-        return NO; // The app may have been terminated due to the reboot
-    }
-    
-    return YES;
-}
-
 @end

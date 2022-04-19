@@ -188,6 +188,46 @@ CFNotificationSuspensionBehaviorDeliverImmediately)
 }
 
 
+#pragma mark - Kill detection
+
+bool BSGRunContextWasKilled() {
+    // App extensions have a different lifecycle and the heuristic used for
+    // finding app terminations rooted in fixable code does not apply
+    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+        return NO;
+    }
+    
+    if (!bsg_lastRunContext) {
+        return NO;
+    }
+    
+    if (bsg_lastRunContext->isTerminating) {
+        return NO; // The app terminated normally
+    }
+    
+    if (bsg_lastRunContext->isDebuggerAttached) {
+        return NO; // The debugger may have killed the app
+    }
+    
+    // Once the app is in the background we cannot determine between good (user
+    // swiping up to close app) and bad (OS killing the app) terminations.
+    if (!bsg_lastRunContext->isForeground) {
+        return NO;
+    }
+    
+    if (bsg_lastRunContext->bootTime != bsg_runContext->bootTime) {
+        return NO; // The app may have been terminated due to the reboot
+    }
+    
+    // Ignore unexpected terminations due to the app being upgraded
+    if (uuid_compare(bsg_lastRunContext->machoUUID, bsg_runContext->machoUUID)) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+
 #pragma mark - File handling & memory mapping
 
 #define SIZEOF_STRUCT sizeof(struct BSGRunContext)

@@ -427,7 +427,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         bsg_log_info(@"Last run terminated during an app hang.");
         didCrash = YES;
     }
-    else if (self.configuration.autoDetectErrors && self.systemState.lastLaunchTerminatedUnexpectedly) {
+    else if (self.configuration.autoDetectErrors && BSGRunContextWasKilled()) {
         if (BSGRunContextWasCriticalThermalState()) {
             bsg_log_info(@"Last run terminated during a critical thermal state.");
             if (self.configuration.enabledErrorTypes.thermalKills) {

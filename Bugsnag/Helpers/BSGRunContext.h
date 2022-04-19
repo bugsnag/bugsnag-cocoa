@@ -54,6 +54,8 @@ static inline bool BSGRunContextWasCriticalThermalState() {
 }
 #endif
 
+bool BSGRunContextWasKilled(void);
+
 static inline bool BSGRunContextWasLaunching() {
     return bsg_lastRunContext && bsg_lastRunContext->isLaunching;
 }
