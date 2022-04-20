@@ -9,11 +9,13 @@
 
 #import "BSG_KSLogger.h"
 #import "BSG_KSMach.h"
+#import "BSG_KSMachHeaders.h"
 #import "BSG_KSSystemInfo.h"
 
 #import <Foundation/Foundation.h>
 #import <sys/mman.h>
 #import <sys/stat.h>
+#import <sys/sysctl.h>
 
 #if TARGET_OS_IOS
 #import "BSGUIKit.h"
@@ -26,6 +28,7 @@
 
 #pragma mark Forward declarations
 
+static uint64_t BSGRunContextGetBootTime(void);
 static bool BSGRunContextGetIsForeground(void);
 
 
@@ -45,9 +48,24 @@ static void BSGRunContextInitCurrent() {
         bsg_runContext->thermalState = NSProcessInfo.processInfo.thermalState;
     }
     
+    bsg_runContext->bootTime = BSGRunContextGetBootTime();
+    
+    BSG_Mach_Header_Info *image = bsg_mach_headers_get_main_image();
+    if (image && image->uuid) {
+        uuid_copy(bsg_runContext->machoUUID, image->uuid);
+    }
+    
     // Set `structVersion` last so that BSGRunContextLoadLast() will reject data
     // that is not fully initialised.
     bsg_runContext->structVersion = BSGRUNCONTEXT_VERSION;
+}
+
+static uint64_t BSGRunContextGetBootTime() {
+    struct timeval tv;
+    size_t len = sizeof(tv);
+    int ret = sysctl((int[]){CTL_KERN, KERN_BOOTTIME}, 2, &tv, &len, NULL, 0);
+    if (ret == -1) return 0;
+    return (uint64_t)tv.tv_sec * USEC_PER_SEC + (uint64_t)tv.tv_usec;
 }
 
 static bool BSGRunContextGetIsForeground() {
@@ -167,6 +185,46 @@ CFNotificationSuspensionBehaviorDeliverImmediately)
     if (@available(iOS 11.0, tvOS 11.0, *)) {
         OBSERVE(NSProcessInfoThermalStateDidChangeNotification, BSGRunContextNoteThermalStateDidChange);
     }
+}
+
+
+#pragma mark - Kill detection
+
+bool BSGRunContextWasKilled() {
+    // App extensions have a different lifecycle and the heuristic used for
+    // finding app terminations rooted in fixable code does not apply
+    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+        return NO;
+    }
+    
+    if (!bsg_lastRunContext) {
+        return NO;
+    }
+    
+    if (bsg_lastRunContext->isTerminating) {
+        return NO; // The app terminated normally
+    }
+    
+    if (bsg_lastRunContext->isDebuggerAttached) {
+        return NO; // The debugger may have killed the app
+    }
+    
+    // Once the app is in the background we cannot determine between good (user
+    // swiping up to close app) and bad (OS killing the app) terminations.
+    if (!bsg_lastRunContext->isForeground) {
+        return NO;
+    }
+    
+    if (bsg_lastRunContext->bootTime != bsg_runContext->bootTime) {
+        return NO; // The app may have been terminated due to the reboot
+    }
+    
+    // Ignore unexpected terminations due to the app being upgraded
+    if (uuid_compare(bsg_lastRunContext->machoUUID, bsg_runContext->machoUUID)) {
+        return NO;
+    }
+    
+    return YES;
 }
 
 

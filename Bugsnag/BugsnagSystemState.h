@@ -33,8 +33,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) NSUInteger consecutiveLaunchCrashes;
 
-@property (readonly, nonatomic) BOOL lastLaunchTerminatedUnexpectedly;
-
 /**
  * Purge all stored system state.
  */

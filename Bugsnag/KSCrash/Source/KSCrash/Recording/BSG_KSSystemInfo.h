@@ -26,7 +26,6 @@
 
 #define BSG_KSSystemField_AppUUID "app_uuid"
 #define BSG_KSSystemField_BinaryArch "binary_arch"
-#define BSG_KSSystemField_BootTime "boot_time"
 #define BSG_KSSystemField_BundleID "CFBundleIdentifier"
 #define BSG_KSSystemField_BundleName "CFBundleName"
 #define BSG_KSSystemField_BundleExecutable "CFBundleExecutable"

@@ -70,57 +70,64 @@
 }
 
 - (void)testLastLaunchTerminatedUnexpectedly {
+    if (!bsg_runContext) {
+        BSGRunContextInit(BSGFileLocations.current.runContext.fileSystemRepresentation);
+    }
     const struct BSGRunContext *oldContext = bsg_lastRunContext;
-    struct BSGRunContext lastRunContext = {0};
+    struct BSGRunContext lastRunContext = *bsg_runContext;
     bsg_lastRunContext = &lastRunContext;
-    
-    BugsnagSystemState *(^ systemState)() = ^{
-        return [[BugsnagSystemState alloc] initWithConfiguration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1]];
-    };
 
     // Debugger active
     
     lastRunContext.isDebuggerAttached = true;
     lastRunContext.isTerminating = true;
     lastRunContext.isForeground = true;
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    XCTAssertFalse(BSGRunContextWasKilled());
 
     lastRunContext.isDebuggerAttached = true;
     lastRunContext.isTerminating = true;
     lastRunContext.isForeground = false;
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    XCTAssertFalse(BSGRunContextWasKilled());
 
     lastRunContext.isDebuggerAttached = true;
     lastRunContext.isTerminating = false;
     lastRunContext.isForeground = true;
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    XCTAssertFalse(BSGRunContextWasKilled());
 
     lastRunContext.isDebuggerAttached = true;
     lastRunContext.isTerminating = false;
     lastRunContext.isForeground = false;
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    XCTAssertFalse(BSGRunContextWasKilled());
 
     // Debugger inactive
 
     lastRunContext.isDebuggerAttached = false;
     lastRunContext.isTerminating = true;
     lastRunContext.isForeground = true;
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    XCTAssertFalse(BSGRunContextWasKilled());
 
     lastRunContext.isDebuggerAttached = false;
     lastRunContext.isTerminating = true;
     lastRunContext.isForeground = false;
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    XCTAssertFalse(BSGRunContextWasKilled());
 
     lastRunContext.isDebuggerAttached = false;
     lastRunContext.isTerminating = false;
     lastRunContext.isForeground = true;
-    XCTAssertTrue(systemState().lastLaunchTerminatedUnexpectedly);
+    XCTAssertTrue(BSGRunContextWasKilled());
+    
+    uuid_generate(lastRunContext.machoUUID);
+    XCTAssertFalse(BSGRunContextWasKilled());
+    uuid_copy(lastRunContext.machoUUID, bsg_runContext->machoUUID);
+    
+    lastRunContext.bootTime = 0;
+    XCTAssertFalse(BSGRunContextWasKilled());
+    lastRunContext.bootTime = bsg_runContext->bootTime;
 
     lastRunContext.isDebuggerAttached = false;
     lastRunContext.isTerminating = false;
     lastRunContext.isForeground = false;
-    XCTAssertFalse(systemState().lastLaunchTerminatedUnexpectedly);
+    XCTAssertFalse(BSGRunContextWasKilled());
     
     bsg_lastRunContext = oldContext;
 }
