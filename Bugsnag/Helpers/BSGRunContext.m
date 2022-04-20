@@ -51,6 +51,10 @@ static void BSGRunContextInitCurrent() {
 }
 
 static bool BSGRunContextGetIsForeground() {
+#if TARGET_OS_OSX
+    return [[NSAPPLICATION sharedApplication] isActive];
+#endif
+    
 #if TARGET_OS_IOS
     //
     // Work around unreliability of -[UIApplication applicationState] which
@@ -106,8 +110,6 @@ static bool BSGRunContextGetIsForeground() {
     }
 
     return applicationState != UIApplicationStateBackground;
-#else
-    return [[NSAPPLICATION sharedApplication] isActive];
 #endif
 }
 
