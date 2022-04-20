@@ -12,7 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BSGFileLocations : NSObject
 
-@property (readonly, nonatomic) NSString *kvStore;
 @property (readonly, nonatomic) NSString *breadcrumbs;
 @property (readonly, nonatomic) NSString *events;
 @property (readonly, nonatomic) NSString *kscrashReports;

@@ -38,12 +38,7 @@
 #import "BSGRunContext.h"
 #import "BSGSerialization.h"
 #import "BSGUtils.h"
-#import "BSG_KSCrash.h"
 #import "BSG_KSCrashC.h"
-#import "BSG_KSCrashReport.h"
-#import "BSG_KSCrashState.h"
-#import "BSG_KSCrashType.h"
-#import "BSG_KSMach.h"
 #import "BSG_KSSystemInfo.h"
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag.h"
@@ -183,8 +178,6 @@ void BSGWriteSessionCrashData(BugsnagSession *session) {
 
 @property (readwrite, nullable, nonatomic) BugsnagLastRunInfo *lastRunInfo;
 
-@property (nonatomic) NSProcessInfoThermalState lastThermalState API_AVAILABLE(ios(11.0), tvos(11.0));
-
 @end
 
 
@@ -244,8 +237,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
         [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
         if (@available(iOS 11.0, tvOS 11.0, *)) {
-            _lastThermalState = NSProcessInfo.processInfo.thermalState;
-            [self.metadata addMetadata:BSGStringFromThermalState(_lastThermalState)
+            [self.metadata addMetadata:BSGStringFromThermalState(NSProcessInfo.processInfo.thermalState)
                                withKey:BSGKeyThermalState
                              toSection:BSGKeyDevice];
         }
@@ -360,7 +352,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         BSGWriteSessionCrashData(session);
         [weakSelf.systemState setSession:session];
     }];
-    [self.sessionTracker startWithNotificationCenter:center isInForeground:bsg_kscrashstate_currentState()->applicationIsInForeground];
+    [self.sessionTracker startWithNotificationCenter:center isInForeground:bsg_runContext->isForeground];
 
     // Record a "Bugsnag Loaded" message
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState withMessage:@"Bugsnag loaded" andMetadata:nil];
@@ -395,7 +387,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     bsg_log_debug(@"App has finished launching");
     [self.appLaunchTimer invalidate];
     [self.state addMetadata:@NO withKey:BSGKeyIsLaunching toSection:BSGKeyApp];
-    [self.systemState markLaunchCompleted];
+    bsg_runContext->isLaunching = NO;
 }
 
 - (void)sendLaunchCrashSynchronously {
@@ -436,7 +428,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         didCrash = YES;
     }
     else if (self.configuration.autoDetectErrors && self.systemState.lastLaunchTerminatedUnexpectedly) {
-        if (self.systemState.lastLaunchCriticalThermalState) {
+        if (BSGRunContextWasCriticalThermalState()) {
             bsg_log_info(@"Last run terminated during a critical thermal state.");
             if (self.configuration.enabledErrorTypes.thermalKills) {
                 self.eventFromLastLaunch = [self generateThermalKillEvent];
@@ -454,12 +446,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     
     self.appDidCrashLastLaunch = didCrash;
     
-    NSNumber *wasLaunching = ({
-        // BugsnagSystemState's KV-store is now the reliable source of the isLaunching status.
-        self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP][SYSTEMSTATE_APP_IS_LAUNCHING];
-    });
-    
-    BOOL didCrashDuringLaunch = didCrash && wasLaunching.boolValue;
+    BOOL didCrashDuringLaunch = didCrash && BSGRunContextWasLaunching();
     if (didCrashDuringLaunch) {
         self.systemState.consecutiveLaunchCrashes++;
     } else {
@@ -495,23 +482,21 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 - (void)thermalStateDidChange:(NSNotification *)notification API_AVAILABLE(ios(11.0), tvos(11.0)) {
     NSProcessInfo *processInfo = notification.object;
     
-    [self.systemState setThermalState:processInfo.thermalState];
-    
     NSString *thermalStateString = BSGStringFromThermalState(processInfo.thermalState);
+    NSString *previousStateString = [self.metadata getMetadataFromSection:BSGKeyDevice
+                                                                  withKey:BSGKeyThermalState];
     
     [self.metadata addMetadata:thermalStateString
                        withKey:BSGKeyThermalState
                      toSection:BSGKeyDevice];
     
     NSMutableDictionary *breadcrumbMetadata = [NSMutableDictionary dictionary];
-    breadcrumbMetadata[@"from"] = BSGStringFromThermalState(self.lastThermalState);
+    breadcrumbMetadata[@"from"] = previousStateString;
     breadcrumbMetadata[@"to"] = thermalStateString;
     
     [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
                       withMessage:@"Thermal State Changed"
                       andMetadata:breadcrumbMetadata];
-    
-    self.lastThermalState = processInfo.thermalState;
 }
 
 // =============================================================================
@@ -1236,7 +1221,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     }
 
     // Receipt of the willTerminateNotification indicates that an app hang was not the cause of the termination, so treat as non-fatal.
-    if ([self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP][SYSTEMSTATE_APP_WAS_TERMINATED] boolValue]) {
+    if (BSGRunContextWasTerminating()) {
         if (self.configuration.appHangThresholdMillis == BugsnagAppHangThresholdFatalOnly) {
             return nil;
         }

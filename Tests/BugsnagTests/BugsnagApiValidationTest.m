@@ -9,7 +9,6 @@
 #import <XCTest/XCTest.h>
 #import <Bugsnag/Bugsnag.h>
 #import "BugsnagTestConstants.h"
-#import "BugsnagKVStoreObjC.h"
 #import "TestSupport.h"
 
 /**

@@ -27,12 +27,9 @@
 
 #import "FileBasedTestCase.h"
 
+#import "BSGRunContext.h"
 #import "BSG_KSCrashState.h"
 #import "BSG_KSCrashC.h"
-
-#if TARGET_OS_TV
-#import "UIApplicationStub.h"
-#endif
 
 
 @interface bsg_kscrashstate_Tests : FileBasedTestCase
@@ -41,11 +38,18 @@
 
 @implementation bsg_kscrashstate_Tests
 
-#if TARGET_OS_TV // Not needed on iOS because there the tests are injected into a host app
+#if TARGET_OS_OSX || TARGET_OS_TV // Not needed on iOS because there the tests are injected into a host app
 
 - (void)setUp
 {
-    [self setUpUIApplicationStub]; // These tests assume applicationState == .active
+    
+    struct BSGRunContext *oldContext = bsg_runContext;
+    static struct BSGRunContext context = {0};
+    context.isForeground = YES; // These tests assume applicationState == .active
+    bsg_runContext = &context;
+    [self addTeardownBlock:^{
+        bsg_runContext = oldContext;
+    }];
     
     [super setUp];
 }
