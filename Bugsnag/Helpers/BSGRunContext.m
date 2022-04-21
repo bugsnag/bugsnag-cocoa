@@ -28,27 +28,27 @@
 
 #pragma mark Forward declarations
 
-static uint64_t BSGRunContextGetBootTime(void);
-static bool BSGRunContextGetIsForeground(void);
+static uint64_t GetBootTime(void);
+static bool GetIsForeground(void);
 
 
 #pragma mark - Initial setup
 
 /// Populates `bsg_runContext`
-static void BSGRunContextInitCurrent() {
+static void InitRunContext() {
     bsg_runContext->isDebuggerAttached = bsg_ksmachisBeingTraced();
     
     bsg_runContext->isLaunching = YES;
     
     // On iOS/tvOS, the app may have launched in the background due to a fetch
     // event or notification (or prewarming on iOS 15+)
-    bsg_runContext->isForeground = BSGRunContextGetIsForeground();
+    bsg_runContext->isForeground = GetIsForeground();
     
     if (@available(iOS 11.0, tvOS 11.0, *)) {
         bsg_runContext->thermalState = NSProcessInfo.processInfo.thermalState;
     }
     
-    bsg_runContext->bootTime = BSGRunContextGetBootTime();
+    bsg_runContext->bootTime = GetBootTime();
     
     BSG_Mach_Header_Info *image = bsg_mach_headers_get_main_image();
     if (image && image->uuid) {
@@ -60,7 +60,7 @@ static void BSGRunContextInitCurrent() {
     bsg_runContext->structVersion = BSGRUNCONTEXT_VERSION;
 }
 
-static uint64_t BSGRunContextGetBootTime() {
+static uint64_t GetBootTime() {
     struct timeval tv;
     size_t len = sizeof(tv);
     int ret = sysctl((int[]){CTL_KERN, KERN_BOOTTIME}, 2, &tv, &len, NULL, 0);
@@ -68,7 +68,7 @@ static uint64_t BSGRunContextGetBootTime() {
     return (uint64_t)tv.tv_sec * USEC_PER_SEC + (uint64_t)tv.tv_usec;
 }
 
-static bool BSGRunContextGetIsForeground() {
+static bool GetIsForeground() {
 #if TARGET_OS_OSX
     return [[NSAPPLICATION sharedApplication] isActive];
 #endif
@@ -136,54 +136,53 @@ static bool BSGRunContextGetIsForeground() {
 
 #if TARGET_OS_IOS || TARGET_OS_OSX
 
-static void BSGRunContextNoteAppBackground() {
+static void NoteAppBackground() {
     bsg_runContext->isForeground = NO;
 }
 
-static void BSGRunContextNoteAppForeground() {
+static void NoteAppForeground() {
     bsg_runContext->isForeground = YES;
 }
 
-static void BSGRunContextNoteAppWillTerminate() {
+static void NoteAppWillTerminate() {
     bsg_runContext->isTerminating = YES;
 }
 
 #endif
 
-static void
-BSGRunContextNoteThermalStateDidChange(__unused CFNotificationCenterRef center,
-                                       __unused void *observer,
-                                       __unused CFNotificationName name,
-                                       const void *object,
-                                       __unused CFDictionaryRef userInfo) {
+static void NoteThermalStateDidChange(__unused CFNotificationCenterRef center,
+                                      __unused void *observer,
+                                      __unused CFNotificationName name,
+                                      const void *object,
+                                      __unused CFDictionaryRef userInfo) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
     bsg_runContext->thermalState = ((__bridge NSProcessInfo *)object).thermalState;
 #pragma clang diagnostic pop
 }
 
-static void BSGRunContextAddObservers() {
+static void AddObservers() {
     CFNotificationCenterRef center = CFNotificationCenterGetLocalCenter();
     
 #define OBSERVE(name, function) CFNotificationCenterAddObserver(\
-center, NULL, function, (__bridge CFStringRef)name, NULL, \
-CFNotificationSuspensionBehaviorDeliverImmediately)
+    center, NULL, function, (__bridge CFStringRef)name, NULL, \
+    CFNotificationSuspensionBehaviorDeliverImmediately)
     
 #if TARGET_OS_IOS
-    OBSERVE(UIApplicationDidBecomeActiveNotification, BSGRunContextNoteAppForeground);
-    OBSERVE(UIApplicationDidEnterBackgroundNotification, BSGRunContextNoteAppBackground);
-    OBSERVE(UIApplicationWillEnterForegroundNotification, BSGRunContextNoteAppForeground);
-    OBSERVE(UIApplicationWillTerminateNotification, BSGRunContextNoteAppWillTerminate);
+    OBSERVE(UIApplicationDidBecomeActiveNotification, NoteAppForeground);
+    OBSERVE(UIApplicationDidEnterBackgroundNotification, NoteAppBackground);
+    OBSERVE(UIApplicationWillEnterForegroundNotification, NoteAppForeground);
+    OBSERVE(UIApplicationWillTerminateNotification, NoteAppWillTerminate);
 #endif
     
 #if TARGET_OS_OSX
-    OBSERVE(NSApplicationDidBecomeActiveNotification, BSGRunContextNoteAppForeground);
-    OBSERVE(NSApplicationDidResignActiveNotification, BSGRunContextNoteAppBackground);
-    OBSERVE(NSApplicationWillTerminateNotification, BSGRunContextNoteAppWillTerminate);
+    OBSERVE(NSApplicationDidBecomeActiveNotification, NoteAppForeground);
+    OBSERVE(NSApplicationDidResignActiveNotification, NoteAppBackground);
+    OBSERVE(NSApplicationWillTerminateNotification, NoteAppWillTerminate);
 #endif
     
     if (@available(iOS 11.0, tvOS 11.0, *)) {
-        OBSERVE(NSProcessInfoThermalStateDidChangeNotification, BSGRunContextNoteThermalStateDidChange);
+        OBSERVE(NSProcessInfoThermalStateDidChangeNotification, NoteThermalStateDidChange);
     }
 }
 
@@ -238,7 +237,7 @@ const struct BSGRunContext *bsg_lastRunContext;
 
 /// Loads the contents of the state file into memory and sets the
 /// `bsg_lastRunContext` pointer if the contents are valid.
-static void BSGRunContextLoadLast(int fd) {
+static void LoadLastRunContext(int fd) {
     struct stat sb;
     // Only expose previous state if size matches...
     if (fstat(fd, &sb) == 0 && sb.st_size == SIZEOF_STRUCT) {
@@ -253,7 +252,7 @@ static void BSGRunContextLoadLast(int fd) {
 
 /// Truncates or extends the file to the size of struct BSGRunContext,
 /// maps it into memory, and sets the `bsg_runContext` pointer.
-static void BSGRunContextResizeAndMapFile(int fd) {
+static void ResizeAndMapFile(int fd) {
     static struct BSGRunContext fallback;
     
     // Note: ftruncate fills the file with zeros when extending.
@@ -283,10 +282,10 @@ void BSGRunContextInit(const char *path) {
     if (fd < 0) {
         bsg_log_warn(@"Could not open %s", path);
     }
-    BSGRunContextLoadLast(fd);
-    BSGRunContextResizeAndMapFile(fd);
-    BSGRunContextInitCurrent();
-    BSGRunContextAddObservers();
+    LoadLastRunContext(fd);
+    ResizeAndMapFile(fd);
+    InitRunContext();
+    AddObservers();
     if (fd > 0) {
         close(fd);
     }
