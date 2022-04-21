@@ -13,18 +13,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void (^SessionTrackerCallback)(BugsnagSession *_Nullable session);
-
 @interface BugsnagSessionTracker : NSObject
 
 /**
  Create a new session tracker
 
  @param config The Bugsnag configuration to use
- @param callback A callback invoked each time a new session is started
  @return A new session tracker
  */
-- (instancetype)initWithConfig:(BugsnagConfiguration *)config client:(nullable BugsnagClient *)client callback:(SessionTrackerCallback)callback;
+- (instancetype)initWithConfig:(BugsnagConfiguration *)config client:(nullable BugsnagClient *)client;
 
 - (void)startWithNotificationCenter:(NSNotificationCenter *)notificationCenter isInForeground:(BOOL)isInForeground;
 

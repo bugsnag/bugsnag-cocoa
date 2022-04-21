@@ -294,8 +294,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         depth = 0;
     }
 
-    BugsnagSession *session = BSGSessionFromDictionary(event[BSGKeyUser]);
-
     // generate threads/error info
     NSArray *binaryImages = event[@"binary_images"];
     NSArray *threadDict = [event valueForKeyPath:@"crash.threads"];
@@ -352,6 +350,9 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
                                     [configDict isKindOfClass:[NSDictionary class]] ? configDict : @{}];
 
     BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:event config:config codeBundleId:self.codeBundleId];
+
+    BugsnagSession *session = BSGSessionFromCrashReport(event, app, device, user);
+
     BugsnagEvent *obj = [self initWithApp:app
                                    device:device
                              handledState:handledState

@@ -63,6 +63,10 @@ Feature: Barebone tests
     And the event "metaData.user.group" equals "users"
     And the event "metaData.user.id" is null
     And the event "metaData.user.name" is null
+    And the event "session.id" is not null
+    And the event "session.startedAt" is not null
+    And the event "session.events.handled" equals 0
+    And the event "session.events.unhandled" equals 1
     And the event "severity" equals "warning"
     And the event "severityReason.type" equals "handledException"
     And the event "severityReason.unhandledOverridden" is true
@@ -157,6 +161,10 @@ Feature: Barebone tests
     And the event "metaData.user.group" equals "users"
     And the event "metaData.user.id" is null
     And the event "metaData.user.name" is null
+    And the event "session.id" is not null
+    And the event "session.startedAt" is not null
+    And the event "session.events.handled" equals 0
+    And the event "session.events.unhandled" equals 1
     And the event "severity" equals "error"
     And the event "severityReason.type" equals "unhandledException"
     And the event "severityReason.unhandledOverridden" is null

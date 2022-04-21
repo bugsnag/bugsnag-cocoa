@@ -12,8 +12,6 @@
 
 #import "BSGKeys.h"
 
-@class BugsnagSession;
-
 #define SYSTEMSTATE_KEY_APP @"app"
 #define SYSTEMSTATE_KEY_DEVICE @"device"
 
@@ -37,8 +35,6 @@ NS_ASSUME_NONNULL_BEGIN
  * Purge all stored system state.
  */
 - (void)purge;
-
-- (void)setSession:(nullable BugsnagSession *)session;
 
 @end
 
