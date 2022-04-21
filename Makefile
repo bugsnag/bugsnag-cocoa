@@ -144,7 +144,9 @@ ifneq ($(shell git diff origin/master..master),)
 	$(error you have unpushed commits on the master branch)
 endif
 	@git tag v$(PRESET_VERSION)
-	@git push origin v$(PRESET_VERSION)
+	# Swift Package Manager prefers tags to be unprefixed package versions
+	@git tag $(PRESET_VERSION)
+	@git push origin v$(PRESET_VERSION) $(PRESET_VERSION)
 	@git checkout next
 	@git rebase origin/next
 	@git merge master
