@@ -27,6 +27,10 @@ struct BSGRunContext {
     long thermalState;
     uint64_t bootTime;
     uuid_t machoUUID;
+    uuid_string_t sessionId;
+    double sessionStartTime;
+    unsigned long handledCount;
+    unsigned long unhandledCount;
 };
 
 /// Information about the current run of the app / process.

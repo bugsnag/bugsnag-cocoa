@@ -95,12 +95,8 @@ static struct {
     void (*onCrash)(const BSG_KSCrashReportWriter *writer);
 } bsg_g_bugsnag_data;
 
-static char sessionId[128];
-static char sessionStartDate[128];
 static char *watchdogSentinelPath = NULL;
 static char *crashSentinelPath;
-static NSUInteger handledCount;
-static NSUInteger unhandledCount;
 
 /**
  *  Handler executed when the application crashes. Writes information about the
@@ -110,14 +106,7 @@ static NSUInteger unhandledCount;
  */
 void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
     BOOL isCrash = YES;
-    if (sessionId[0]) { // a session is available
-        // persist session info
-        writer->addStringElement(writer, "id", (const char *) sessionId);
-        writer->addStringElement(writer, "startedAt", (const char *) sessionStartDate);
-        writer->addUIntegerElement(writer, "handledCount", handledCount);
-        NSUInteger unhandledEvents = unhandledCount + (isCrash ? 1 : 0);
-        writer->addUIntegerElement(writer, "unhandledCount", unhandledEvents);
-    }
+    BSGSessionWriteCrashReport(writer);
     if (isCrash) {
         writer->addJSONFileElement(writer, "config", bsg_g_bugsnag_data.configPath);
         writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metadataJSON);
@@ -139,29 +128,6 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
     if (bsg_g_bugsnag_data.onCrash) {
         bsg_g_bugsnag_data.onCrash(writer);
     }
-}
-
-/**
- Save info about the current session to crash data. Ensures that session
- data is written to unhandled error reports.
-
- @param session The current session
- */
-void BSGWriteSessionCrashData(BugsnagSession *session) {
-    if (session == nil) {
-        sessionId[0] = 0;
-        sessionStartDate[0] = 0;
-        return;
-    }
-    
-    [session.id getCString:sessionId maxLength:sizeof(sessionId) encoding:NSUTF8StringEncoding];
-    
-    NSString *dateString = [BSG_RFC3339DateTool stringFromDate:session.startedAt];
-    [dateString getCString:sessionStartDate maxLength:sizeof(sessionStartDate) encoding:NSUTF8StringEncoding];
-
-    // record info for C JSON serialiser
-    handledCount = session.handledCount;
-    unhandledCount = session.unhandledCount;
 }
 
 // =============================================================================
@@ -252,8 +218,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 }
 
 - (void)start {
-    __weak typeof(self) weakSelf = self;
-
     [self.configuration validate];
 
     BSGRunContextInit(BSGFileLocations.current.runContext.fileSystemRepresentation);
@@ -289,6 +253,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                    name:UIDeviceOrientationDidChangeNotification
                  object:nil];
 
+    __weak typeof(self) weakSelf = self;
     // DISPATCH_SOURCE_TYPE_MEMORYPRESSURE arrives slightly sooner than UIApplicationDidReceiveMemoryWarningNotification
     dispatch_queue_global_t queue = dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0);
     uintptr_t mask = DISPATCH_MEMORYPRESSURE_NORMAL | DISPATCH_MEMORYPRESSURE_WARN | DISPATCH_MEMORYPRESSURE_CRITICAL;
@@ -348,10 +313,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         }
     }
 
-    self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration client:self callback:^(BugsnagSession *session) {
-        BSGWriteSessionCrashData(session);
-        [weakSelf.systemState setSession:session];
-    }];
+    self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration client:self];
     [self.sessionTracker startWithNotificationCenter:center isInForeground:bsg_runContext->isForeground];
 
     // Record a "Bugsnag Loaded" message
@@ -1290,8 +1252,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     NSDictionary *userDict = stateDict[BSGKeyUser];
     BugsnagUser *user = [[BugsnagUser alloc] initWithDictionary:userDict];
 
-    NSDictionary *sessionDict = self.systemState.lastLaunchState[BSGKeySession];
-    BugsnagSession *session = BSGSessionFromEventJson(sessionDict, app, device, user);
+    BugsnagSession *session = BSGSessionFromLastRunContext(app, device, user);
     session.unhandledCount += 1;
 
     BugsnagEvent *event =

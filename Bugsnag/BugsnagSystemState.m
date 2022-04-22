@@ -23,7 +23,6 @@
 #import "BSG_KSCrashState.h"
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagLogger.h"
-#import "BugsnagSession+Private.h"
 
 #import <stdatomic.h>
 
@@ -131,12 +130,6 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
         [self sync];
     }
     return self;
-}
-
-- (void)setSession:(nullable BugsnagSession *)session {
-    [self mutateLaunchState:^(NSMutableDictionary *state) {
-        state[BSGKeySession] = session ? BSGSessionToEventJson((BugsnagSession *_Nonnull)session) : nil;
-    }];
 }
 
 - (void)setCodeBundleID:(NSString*)codeBundleID {

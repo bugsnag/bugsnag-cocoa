@@ -63,7 +63,7 @@
     config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notify.example.com"
                                                                    sessions:@""];
     BugsnagSessionTracker *sessionTracker
-    = [[BugsnagSessionTracker alloc] initWithConfig:config client:nil callback:^(BugsnagSession *session) {}];
+    = [[BugsnagSessionTracker alloc] initWithConfig:config client:nil];
 
     XCTAssertNil(sessionTracker.runningSession);
     [sessionTracker startNewSession];
@@ -75,7 +75,7 @@
     config.endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:@"http://notify.example.com"
                                                                    sessions:@"f"];
     BugsnagSessionTracker *sessionTracker
-    = [[BugsnagSessionTracker alloc] initWithConfig:config client:nil callback:^(BugsnagSession *session) {}];
+    = [[BugsnagSessionTracker alloc] initWithConfig:config client:nil];
 
     XCTAssertNil(sessionTracker.runningSession);
     [sessionTracker startNewSession];
