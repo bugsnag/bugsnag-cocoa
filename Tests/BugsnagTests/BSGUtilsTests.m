@@ -24,6 +24,7 @@
     XCTAssertEqualObjects(BSGStringFromDeviceOrientation(UIDeviceOrientationLandscapeLeft), @"landscapeleft");
     XCTAssertEqualObjects(BSGStringFromDeviceOrientation(UIDeviceOrientationFaceUp), @"faceup");
     XCTAssertEqualObjects(BSGStringFromDeviceOrientation(UIDeviceOrientationFaceDown), @"facedown");
+    XCTAssertNil(BSGStringFromDeviceOrientation(UIDeviceOrientationUnknown));
     XCTAssertNil(BSGStringFromDeviceOrientation(-1));
     XCTAssertNil(BSGStringFromDeviceOrientation(99));
 }
