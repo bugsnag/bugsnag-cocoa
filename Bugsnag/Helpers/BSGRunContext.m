@@ -150,11 +150,6 @@ static void NoteAppWillTerminate() {
 
 #endif
 
-static void NoteThermalStateDidChange(__unused CFNotificationCenterRef center,
-                                      __unused void *observer,
-                                      __unused CFNotificationName name,
-                                      const void *object,
-                                      __unused CFDictionaryRef userInfo) {
 #if TARGET_OS_IOS
 
 static void NoteBatteryLevel() {
@@ -174,6 +169,11 @@ static void NoteOrientation() {
 
 #endif
 
+static void NoteThermalState(__unused CFNotificationCenterRef center,
+                             __unused void *observer,
+                             __unused CFNotificationName name,
+                             const void *object,
+                             __unused CFDictionaryRef userInfo) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
     bsg_runContext->thermalState = ((__bridge NSProcessInfo *)object).thermalState;
@@ -222,7 +222,7 @@ static void AddObservers() {
 #endif
     
     if (@available(iOS 11.0, tvOS 11.0, *)) {
-        OBSERVE(NSProcessInfoThermalStateDidChangeNotification, NoteThermalStateDidChange);
+        OBSERVE(NSProcessInfoThermalStateDidChangeNotification, NoteThermalState);
     }
     
 #if TARGET_OS_IOS
