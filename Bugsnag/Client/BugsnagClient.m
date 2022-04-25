@@ -119,6 +119,7 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
         }
         writer->addIntegerElement(writer, "orientation", bsg_runContext->lastKnownOrientation);
 #endif
+        writer->addBooleanElement(writer, "isLaunching", bsg_runContext->isLaunching);
         writer->addIntegerElement(writer, "thermalState", bsg_runContext->thermalState);
 
         BugsnagBreadcrumbsWriteCrashReport(writer);
@@ -180,7 +181,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         _featureFlagStore = [configuration.featureFlagStore mutableCopy];
         
         _state = [[BugsnagMetadata alloc] initWithDictionary:@{
-            BSGKeyApp: @{BSGKeyIsLaunching: @YES},
             BSGKeyClient: @{
                 BSGKeyContext: _configuration.context ?: [NSNull null],
                 BSGKeyFeatureFlags: BSGFeatureFlagStoreToJSON(_featureFlagStore),
@@ -297,7 +297,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 - (void)markLaunchCompleted {
     bsg_log_debug(@"App has finished launching");
     [self.appLaunchTimer invalidate];
-    [self.state addMetadata:@NO withKey:BSGKeyIsLaunching toSection:BSGKeyApp];
     bsg_runContext->isLaunching = NO;
 }
 
@@ -878,13 +877,14 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 // MARK: - event data population
 
 - (BugsnagAppWithState *)generateAppWithState:(NSDictionary *)systemInfo {
-    // Replicate the parts of a KSCrashReport that +[BugsnagAppWithState appWithDictionary:config:codeBundleId:] examines
-    NSDictionary *kscrashDict = @{BSGKeySystem: systemInfo, @"user": @{@"state": [self.state deepCopy].dictionary}};
-    return [BugsnagAppWithState appWithDictionary:kscrashDict config:self.configuration codeBundleId:self.codeBundleId];
+    BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:@{BSGKeySystem: systemInfo}
+                                                               config:self.configuration codeBundleId:self.codeBundleId];
+    app.isLaunching = bsg_runContext->isLaunching;
+    return app;
 }
 
 - (BugsnagDeviceWithState *)generateDeviceWithState:(NSDictionary *)systemInfo {
-    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithKSCrashReport:@{@"system": systemInfo}];
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithKSCrashReport:@{BSGKeySystem: systemInfo}];
     device.time = [NSDate date]; // default to current time for handled errors
     [device appendRuntimeInfo:self.extraRuntimeInfo];
 #if TARGET_OS_IOS
@@ -1107,7 +1107,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     NSDictionary *appDict = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP];
     BugsnagAppWithState *app = [BugsnagAppWithState appFromJson:appDict];
     app.dsymUuid = appDict[BSGKeyMachoUUID];
-    app.isLaunching = [stateDict[BSGKeyApp][BSGKeyIsLaunching] boolValue];
+    app.inForeground = bsg_lastRunContext->isForeground;
+    app.isLaunching = bsg_lastRunContext->isLaunching;
 
     NSDictionary *configDict = [BSGJSONSerialization JSONObjectWithContentsOfFile:BSGFileLocations.current.configuration options:0 error:nil];
     if (configDict) {
