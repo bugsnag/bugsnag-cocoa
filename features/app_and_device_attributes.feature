@@ -31,9 +31,7 @@ Feature: App and Device attributes present
 
     And the error payload field "events.0.device.freeDisk" is an integer
     And the error payload field "events.0.device.freeMemory" is an integer
-    And the error payload field "events.0.device.orientation" equals the platform-dependent string:
-      | ios   | @not_null |
-      | macos | @null     |
+    And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the error payload field "events.0.device.time" is a date
     And the event "device.freeMemory" is less than the event "device.totalMemory"
 

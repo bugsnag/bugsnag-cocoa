@@ -150,16 +150,56 @@ static void NoteAppWillTerminate() {
 
 #endif
 
-static void NoteThermalStateDidChange(__unused CFNotificationCenterRef center,
-                                      __unused void *observer,
-                                      __unused CFNotificationName name,
-                                      const void *object,
-                                      __unused CFDictionaryRef userInfo) {
+#if TARGET_OS_IOS
+
+static void NoteBatteryLevel() {
+    bsg_runContext->batteryLevel = [UIDEVICE currentDevice].batteryLevel;
+}
+
+static void NoteBatteryState() {
+    bsg_runContext->batteryState = [UIDEVICE currentDevice].batteryState;
+}
+
+static void NoteOrientation() {
+    UIDeviceOrientation orientation = [UIDEVICE currentDevice].orientation;
+    if (orientation != UIDeviceOrientationUnknown) {
+        bsg_runContext->lastKnownOrientation = orientation;
+    }
+}
+
+#endif
+
+static void NoteThermalState(__unused CFNotificationCenterRef center,
+                             __unused void *observer,
+                             __unused CFNotificationName name,
+                             const void *object,
+                             __unused CFDictionaryRef userInfo) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
     bsg_runContext->thermalState = ((__bridge NSProcessInfo *)object).thermalState;
 #pragma clang diagnostic pop
 }
+
+#if TARGET_OS_IOS
+
+static void ObserveMemoryPressure() {
+    // DISPATCH_SOURCE_TYPE_MEMORYPRESSURE arrives slightly sooner than
+    // UIApplicationDidReceiveMemoryWarningNotification
+    dispatch_source_t source =
+    dispatch_source_create(DISPATCH_SOURCE_TYPE_MEMORYPRESSURE, 0,
+                           DISPATCH_MEMORYPRESSURE_NORMAL |
+                           DISPATCH_MEMORYPRESSURE_WARN |
+                           DISPATCH_MEMORYPRESSURE_CRITICAL,
+                           // Using a high pririty queue to increase chances of
+                           // running before OS kills the app.
+                           dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0));
+    dispatch_source_set_event_handler(source, ^{
+        bsg_runContext->memoryPressure = dispatch_source_get_data(source);
+    });
+    dispatch_resume(source);
+}
+
+#endif
 
 static void AddObservers() {
     CFNotificationCenterRef center = CFNotificationCenterGetLocalCenter();
@@ -182,8 +222,25 @@ static void AddObservers() {
 #endif
     
     if (@available(iOS 11.0, tvOS 11.0, *)) {
-        OBSERVE(NSProcessInfoThermalStateDidChangeNotification, NoteThermalStateDidChange);
+        OBSERVE(NSProcessInfoThermalStateDidChangeNotification, NoteThermalState);
     }
+    
+#if TARGET_OS_IOS
+    UIDevice *currentDevice = [UIDEVICE currentDevice];
+    
+    currentDevice.batteryMonitoringEnabled = YES;
+    bsg_runContext->batteryLevel = currentDevice.batteryLevel;
+    OBSERVE(UIDeviceBatteryLevelDidChangeNotification, NoteBatteryLevel);
+    
+    bsg_runContext->batteryState = currentDevice.batteryState;
+    OBSERVE(UIDeviceBatteryStateDidChangeNotification, NoteBatteryState);
+    
+    [currentDevice beginGeneratingDeviceOrientationNotifications];
+    bsg_runContext->lastKnownOrientation = currentDevice.orientation;
+    OBSERVE(UIDeviceOrientationDidChangeNotification, NoteOrientation);
+    
+    ObserveMemoryPressure();
+#endif
 }
 
 

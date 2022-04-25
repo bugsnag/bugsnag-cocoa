@@ -11,6 +11,7 @@
 #import "BSGFeatureFlagStore.h"
 #import "BSGKeys.h"
 #import "BSGSerialization.h"
+#import "BSGUtils.h"
 #import "BSG_KSCrashReportFields.h"
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag+Private.h"
@@ -281,8 +282,20 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         metadata = [BugsnagMetadata new];
     }
 
-    // Cocoa-specific, non-spec., device and app data
-    [metadata addMetadata:BSGParseDeviceMetadata(event) toSection:BSGKeyDevice];
+    // Device information that isn't part of `event.device`
+    NSMutableDictionary *deviceMetadata = BSGParseDeviceMetadata(event);
+#if TARGET_OS_IOS
+    deviceMetadata[BSGKeyBatteryLevel] = [event valueForKeyPath:@"user.batteryLevel"];
+    deviceMetadata[BSGKeyCharging] = [event valueForKeyPath:@"user.charging"];
+#endif
+    if (@available(iOS 11.0, tvOS 11.0, *)) {
+        NSNumber *thermalState = [event valueForKeyPath:@"user.thermalState"];
+        if ([thermalState isKindOfClass:[NSNumber class]]) {
+            deviceMetadata[BSGKeyThermalState] = BSGStringFromThermalState(thermalState.longValue);
+        }
+    }
+    [metadata addMetadata:deviceMetadata toSection:BSGKeyDevice];
+
     [metadata addMetadata:BSGParseAppMetadata(event) toSection:BSGKeyApp];
 
     NSDictionary *recordedState = [event valueForKeyPath:@"user.handledState"];
@@ -343,6 +356,13 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     NSString *deviceAppHash = [event valueForKeyPath:@"system.device_app_hash"];
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithKSCrashReport:event];
+#if TARGET_OS_IOS
+    NSNumber *orientation = [event valueForKeyPath:@"user.orientation"];
+    if ([orientation isKindOfClass:[NSNumber class]]) {
+        device.orientation = BSGStringFromDeviceOrientation(orientation.longValue);
+    }
+#endif
+
     BugsnagUser *user = [self parseUser:event deviceAppHash:deviceAppHash deviceId:device.id];
 
     NSDictionary *configDict = [event valueForKeyPath:@"user.config"];

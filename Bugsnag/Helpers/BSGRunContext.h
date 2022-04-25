@@ -5,6 +5,7 @@
 //  Copyright © 2022 Bugsnag Inc. All rights reserved.
 //
 
+#include <dispatch/dispatch.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <uuid/uuid.h>
@@ -31,6 +32,12 @@ struct BSGRunContext {
     double sessionStartTime;
     unsigned long handledCount;
     unsigned long unhandledCount;
+#if TARGET_OS_IOS
+    float batteryLevel;
+    long batteryState;
+    long lastKnownOrientation;
+    dispatch_source_memorypressure_flags_t memoryPressure;
+#endif
 };
 
 /// Information about the current run of the app / process.
@@ -63,6 +70,12 @@ bool BSGRunContextWasKilled(void);
 static inline bool BSGRunContextWasLaunching() {
     return bsg_lastRunContext && bsg_lastRunContext->isLaunching;
 }
+
+#if TARGET_OS_IOS
+static inline bool BSGRunContextWasMemoryWarning() {
+    return bsg_lastRunContext && bsg_lastRunContext->memoryPressure > DISPATCH_MEMORYPRESSURE_NORMAL;
+}
+#endif
 
 static inline bool BSGRunContextWasTerminating() {
     return bsg_lastRunContext && bsg_lastRunContext->isTerminating;
