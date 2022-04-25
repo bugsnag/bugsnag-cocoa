@@ -203,8 +203,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration notifier:_notifier];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
 
-        _notificationBreadcrumbs = [[BSGNotificationBreadcrumbs alloc] initWithConfiguration:_configuration breadcrumbSink:self];
-
         self.breadcrumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
 
         // Start with a copy of the configuration metadata
@@ -235,23 +233,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self.breadcrumbs removeAllBreadcrumbs];
 
     [self setupConnectivityListener];
+    
+    self.notificationBreadcrumbs = [[BSGNotificationBreadcrumbs alloc] initWithConfiguration:self.configuration breadcrumbSink:self];
     [self.notificationBreadcrumbs start];
 
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-
-#if TARGET_OS_IOS
-    [center addObserver:self
-               selector:@selector(orientationDidChange:)
-                   name:UIDeviceOrientationDidChangeNotification
-                 object:nil];
-#endif
-
-    if (@available(iOS 11.0, tvOS 11.0, *)) {
-        [center addObserver:self
-                   selector:@selector(thermalStateDidChange:)
-                       name:NSProcessInfoThermalStateDidChangeNotification
-                     object:nil];
-    }
 
     [center addObserver:self
                selector:@selector(applicationWillTerminate:)
@@ -402,24 +388,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [UIDEVICE currentDevice].batteryMonitoringEnabled = NO;
     [[UIDEVICE currentDevice] endGeneratingDeviceOrientationNotifications];
 #endif
-}
-
-- (void)thermalStateDidChange:(NSNotification *)notification API_AVAILABLE(ios(11.0), tvos(11.0)) {
-    NSProcessInfo *processInfo = notification.object;
-    
-    static NSProcessInfoThermalState previousThermalState;
-    if (processInfo.thermalState == previousThermalState) {
-        return;
-    }
-
-    NSMutableDictionary *breadcrumbMetadata = [NSMutableDictionary dictionary];
-    breadcrumbMetadata[@"from"] = BSGStringFromThermalState(previousThermalState);
-    breadcrumbMetadata[@"to"] = BSGStringFromThermalState(processInfo.thermalState);
-    previousThermalState = processInfo.thermalState;
-    
-    [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
-                      withMessage:@"Thermal State Changed"
-                      andMetadata:breadcrumbMetadata];
 }
 
 // =============================================================================
@@ -790,36 +758,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 - (void)addBreadcrumbWithBlock:(void (^)(BugsnagBreadcrumb *))block {
     [self.breadcrumbs addBreadcrumbWithBlock:block];
 }
-
-#if TARGET_OS_IOS
-
-/**
- * Called when an orientation change notification is received to record an
- * equivalent breadcrumb.
- *
- * @param notification The orientation-change notification
- */
-- (void)orientationDidChange:(NSNotification *)notification {
-    UIDevice *device = notification.object;
-
-    static UIDeviceOrientation previousOrientation;
-    if (device.orientation == UIDeviceOrientationUnknown ||
-        device.orientation == previousOrientation) {
-        return;
-    }
-
-    NSMutableDictionary *breadcrumbMetadata = [NSMutableDictionary dictionary];
-    breadcrumbMetadata[@"from"] = BSGStringFromDeviceOrientation(previousOrientation);
-    breadcrumbMetadata[@"to"] =  BSGStringFromDeviceOrientation(device.orientation);
-    previousOrientation = device.orientation;
-    NSLog(@"%@", breadcrumbMetadata);
-
-    [self addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
-                      withMessage:[self.notificationBreadcrumbs messageForNotificationName:notification.name]
-                      andMetadata:breadcrumbMetadata];
-}
-
-#endif
 
 /**
  * A convenience safe-wrapper for conditionally recording automatic breadcrumbs

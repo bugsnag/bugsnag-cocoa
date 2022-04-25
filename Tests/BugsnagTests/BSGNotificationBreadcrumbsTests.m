@@ -84,6 +84,25 @@
 #endif
 @end
 
+
+#if TARGET_OS_IOS
+@interface MockDevice : NSObject
+@property UIDeviceOrientation orientation;
+@end
+
+@implementation MockDevice
+@end
+#endif
+
+
+@interface MockProcessInfo : NSObject
+@property NSProcessInfoThermalState thermalState API_AVAILABLE(ios(11.0), tvos(11.0));
+@end
+
+@implementation MockProcessInfo
+@end
+
+
 #pragma mark -
 
 @implementation BSGNotificationBreadcrumbsTests
@@ -94,7 +113,9 @@
     self.breadcrumb = nil;
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
     self.notificationBreadcrumbs = [[BSGNotificationBreadcrumbs alloc] initWithConfiguration:configuration breadcrumbSink:self];
-    self.notificationCenter = NSNotificationCenter.defaultCenter;
+    self.notificationBreadcrumbs.notificationCenter = [[NSNotificationCenter alloc] init];
+    self.notificationBreadcrumbs.workspaceNotificationCenter = [[NSNotificationCenter alloc] init];
+    self.notificationCenter = self.notificationBreadcrumbs.notificationCenter; 
     self.notificationObject = nil;
     self.notificationUserInfo = nil;
     [self.notificationBreadcrumbs start];
@@ -134,6 +155,25 @@
     TEST(NSUndoManagerDidUndoChangeNotification, BSGBreadcrumbTypeState, @"Undo Operation", @{});
 }
 
+- (void)testNSProcessInfoThermalStateThermalStateNotifications {
+    if (@available(iOS 13.0, tvOS 13.0, *)) {
+        MockProcessInfo *processInfo = [[MockProcessInfo alloc] init];
+        self.notificationObject = processInfo;
+        
+        // Set initial state
+        processInfo.thermalState = NSProcessInfoThermalStateNominal;
+        [self breadcrumbForNotificationWithName:NSProcessInfoThermalStateDidChangeNotification];
+        
+        processInfo.thermalState = NSProcessInfoThermalStateCritical;
+        TEST(NSProcessInfoThermalStateDidChangeNotification, BSGBreadcrumbTypeState,
+             @"Thermal State Changed", (@{@"from": @"nominal", @"to": @"critical"}));
+        
+        processInfo.thermalState = NSProcessInfoThermalStateCritical;
+        XCTAssertNil([self breadcrumbForNotificationWithName:NSProcessInfoThermalStateDidChangeNotification],
+                     @"No breadcrumb should be left if state did not change");
+    }
+}
+
 #pragma mark iOS Tests
 
 #if TARGET_OS_IOS
@@ -146,6 +186,27 @@
     TEST(UIApplicationWillTerminateNotification, BSGBreadcrumbTypeState, @"App Will Terminate", @{});
 }
  
+- (void)testUIDeviceOrientationNotifications {
+    MockDevice *device = [[MockDevice alloc] init];
+    self.notificationObject = device;
+    
+    // Set initial state
+    device.orientation = UIDeviceOrientationPortrait;
+    [self breadcrumbForNotificationWithName:UIDeviceOrientationDidChangeNotification];
+    
+    device.orientation = UIDeviceOrientationLandscapeLeft;
+    TEST(UIDeviceOrientationDidChangeNotification, BSGBreadcrumbTypeState,
+         @"Orientation Changed", (@{@"from": @"portrait", @"to": @"landscapeleft"}));
+    
+    device.orientation = UIDeviceOrientationUnknown;
+    XCTAssertNil([self breadcrumbForNotificationWithName:UIDeviceOrientationDidChangeNotification],
+                 @"UIDeviceOrientationUnknown should be ignored");
+    
+    device.orientation = UIDeviceOrientationLandscapeLeft;
+    XCTAssertNil([self breadcrumbForNotificationWithName:UIDeviceOrientationDidChangeNotification],
+                 @"No breadcrumb should be left if orientation did not change");
+}
+
 - (void)testUIKeyboardNotifications {
     TEST(UIKeyboardDidHideNotification, BSGBreadcrumbTypeState, @"Keyboard Became Hidden", @{});
     TEST(UIKeyboardDidShowNotification, BSGBreadcrumbTypeState, @"Keyboard Became Visible", @{});
@@ -380,7 +441,7 @@
 }
 
 - (void)testNSWorkspaceNotifications {
-    self.notificationCenter = NSWorkspace.sharedWorkspace.notificationCenter;
+    self.notificationCenter = self.notificationBreadcrumbs.workspaceNotificationCenter;
     TEST(NSWorkspaceScreensDidSleepNotification, BSGBreadcrumbTypeState, @"Workspace Screen Slept", @{});
     TEST(NSWorkspaceScreensDidWakeNotification, BSGBreadcrumbTypeState, @"Workspace Screen Awoke", @{});
 }
