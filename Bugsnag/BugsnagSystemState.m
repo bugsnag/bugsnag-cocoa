@@ -18,7 +18,6 @@
 
 #import "BSGFileLocations.h"
 #import "BSGJSONSerialization.h"
-#import "BSGRunContext.h"
 #import "BSGUtils.h"
 #import "BSG_KSCrashState.h"
 #import "BSG_KSSystemInfo.h"
@@ -30,20 +29,12 @@ static NSString * const ConsecutiveLaunchCrashesKey = @"consecutiveLaunchCrashes
 static NSString * const InternalKey = @"internal";
 
 static NSDictionary * loadPreviousState(NSString *jsonPath) {
-    if (!bsg_lastRunContext) {
-        return @{};
-    }
-
     NSError *error = nil;
     NSMutableDictionary *state = [BSGJSONSerialization JSONObjectWithContentsOfFile:jsonPath options:NSJSONReadingMutableContainers error:&error];
     if(![state isKindOfClass:[NSMutableDictionary class]]) {
         bsg_log_err(@"Could not load system_state.json: %@", error);
         return @{};
     }
-
-    NSMutableDictionary *app = state[SYSTEMSTATE_KEY_APP];
-    app[@"inForeground"]    = @(bsg_lastRunContext->isForeground);
-    app[BSGKeyIsLaunching]  = @(bsg_lastRunContext->isLaunching);
 
     return state;
 }

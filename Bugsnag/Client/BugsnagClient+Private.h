@@ -74,7 +74,6 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 /// {
 ///     "app": {
 ///         "codeBundleId": "com.example.app",
-///         "isLaunching": true
 ///     },
 ///     "client": {
 ///         "context": "MyViewController",

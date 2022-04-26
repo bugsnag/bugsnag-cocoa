@@ -193,7 +193,6 @@ bool bsg_kscrashstate_init(const char *const stateFilePath,
 
 void bsg_kscrashstate_notifyAppInForeground(const bool isInForeground) {
     BSG_KSCrash_State *const state = bsg_g_state;
-    const char *const stateFilePath = bsg_g_stateFilePath;
 
     if (state->applicationIsInForeground == isInForeground) {
         return;
@@ -206,7 +205,6 @@ void bsg_kscrashstate_notifyAppInForeground(const bool isInForeground) {
         state->backgroundDurationSinceLaunch += duration;
     } else {
         state->foregroundDurationSinceLaunch += duration;
-        bsg_kscrashstate_i_saveState(state, stateFilePath);
     }
     state->lastUpdateDurationsTime = timeNow;
 }
