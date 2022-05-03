@@ -21,7 +21,7 @@
 @implementation OOMScenario
 
 void onCrashHandler(const BSG_KSCrashReportWriter *writer) {
-    assert(!!"onCrashHandler should not be called for OOMs");
+    assert(!"onCrashHandler should not be called for OOMs");
 }
 
 - (void)startBugsnag {
