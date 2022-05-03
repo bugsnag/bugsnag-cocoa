@@ -146,7 +146,7 @@ Create a `BugsnagXYZ.podspec.json` file similar to the existing `Bugsnag.podspec
     "Bugsnag": "6.11.0"
   },
   "platforms": {
-    "ios": "9.3",
+    "ios": "9.0",
     "osx": "10.11",
     "tvos": "9.2"
   },

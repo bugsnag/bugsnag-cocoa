@@ -6,7 +6,7 @@ let package = Package(
     platforms: [
         .macOS(.v10_11),
         .tvOS("9.2"),
-        .iOS("9.3"),
+        .iOS("9.0"),
     ],
     products: [
         .library(name: "Bugsnag", targets: ["Bugsnag"]),
