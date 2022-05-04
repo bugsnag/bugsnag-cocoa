@@ -1339,6 +1339,7 @@
 		019480D32625F3EB00E833ED /* BSGAppKitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGAppKitTests.m; sourceTree = "<group>"; };
 		0195FC3B256BC81400DE6646 /* BugsnagEvent+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagEvent+Private.h"; sourceTree = "<group>"; };
 		0198762E2567D5AB000A7AF3 /* BugsnagStackframe+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagStackframe+Private.h"; sourceTree = "<group>"; };
+		019D165A2822B791009B35C9 /* BSGDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGDefines.h; sourceTree = "<group>"; };
 		01A2C540271EB9B300A27B23 /* BSG_Symbolicate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BSG_Symbolicate.c; sourceTree = "<group>"; };
 		01A2C541271EB9B300A27B23 /* BSG_Symbolicate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSG_Symbolicate.h; sourceTree = "<group>"; };
 		01A6176B2733CFEA00024A0B /* TestHost-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TestHost-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1868,6 +1869,7 @@
 				010FF28225ED2A8D00E4F2B0 /* BSGAppHangDetector.h */,
 				010FF28325ED2A8D00E4F2B0 /* BSGAppHangDetector.m */,
 				019480C42625EE9800E833ED /* BSGAppKit.h */,
+				019D165A2822B791009B35C9 /* BSGDefines.h */,
 				0109939A273D13D800128BBE /* BSGFeatureFlagStore.h */,
 				0109939B273D13D800128BBE /* BSGFeatureFlagStore.m */,
 				01847D942644140F00ADA4C7 /* BSGInternalErrorReporter.h */,
