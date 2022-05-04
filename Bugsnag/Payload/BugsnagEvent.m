@@ -432,17 +432,22 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             @BSG_KSCrashField_State,
             @BSG_KSCrashField_Config,
             @BSG_KSCrashField_DiscardDepth,
+            @"batteryLevel",
             @"breadcrumbs",
-            @"startedAt",
-            @"unhandledCount",
+            @"charging",
             @"handledCount",
             @"id",
+            @"isLaunching",
+            @"orientation",
+            @"startedAt",
+            @"thermalState",
+            @"unhandledCount",
     ];
     [userAtCrash removeObjectsForKeys:keysToRemove];
 
     for (NSString *key in [userAtCrash allKeys]) { // remove any non-dictionary values
         if (![userAtCrash[key] isKindOfClass:[NSDictionary class]]) {
-            bsg_log_warn(@"Removing value added in onCrashHandler for key %@ as it is not a dictionary value", key);
+            bsg_log_debug(@"Removing value added in onCrashHandler for key %@ as it is not a dictionary value", key);
             [userAtCrash removeObjectForKey:key];
         }
     }
