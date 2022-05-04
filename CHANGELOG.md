@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 6.16.8 (2022-05-04)
+
+### Changes
+
+* Change minimum supported iOS version to 9.0.
+  [#1352](https://github.com/bugsnag/bugsnag-cocoa/pull/1352)
+
 ## 6.16.7 (2022-04-13)
 
 ### Bug fixes

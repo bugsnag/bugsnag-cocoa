@@ -1,5 +1,5 @@
 target 'objective-c-ios' do
-    platform :ios, "9.3"
+    platform :ios, "9.0"
     pod 'Bugsnag', :path => "../.."
     pod 'BugsnagNetworkRequestPlugin', :path => "../.."
 end

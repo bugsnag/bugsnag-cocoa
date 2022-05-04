@@ -93,7 +93,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.13
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=9.3 DEVICE=iPhone\ 5s XCODEBUILD_EXTRA_ARGS=-skip-testing:BugsnagNetworkRequestPlugin-iOSTests
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=9.0 DEVICE=iPhone\ 5s XCODEBUILD_EXTRA_ARGS=-skip-testing:BugsnagNetworkRequestPlugin-iOSTests
     artifact_paths:
       - logs/*
 

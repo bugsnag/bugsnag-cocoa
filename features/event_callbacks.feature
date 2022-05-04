@@ -122,6 +122,8 @@ Feature: Callbacks can access and modify event information
     And I run "OnSendErrorPersistenceScenario"
     And I wait to receive an error
     And I clear the error queue
+    # Wait for fixture to receive the response and save the payload
+    And I wait for 2 seconds
     And I relaunch the app
     And I configure Bugsnag for "OnSendErrorPersistenceScenario"
     And I wait to receive an error
