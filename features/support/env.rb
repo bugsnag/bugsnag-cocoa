@@ -51,6 +51,10 @@ Before('@stress_test') do |_scenario|
   skip_this_scenario('Skipping: Run is not configured for stress tests') if ENV['STRESS_TEST'].nil?
 end
 
+Maze.hooks.before do |_scenario|
+  $started_at = Time.now
+end
+
 Maze.hooks.after do |scenario|
   folder1 = File.join(Dir.pwd, 'maze_output')
   folder2 = scenario.failed? ? 'failed' : 'passed'
@@ -62,9 +66,15 @@ Maze.hooks.after do |scenario|
 
   if Maze.config.os == 'macos'
     FileUtils.mv('/tmp/kscrash.log', path)
-    FileUtils.mv('macOSTestApp.log', path)
     Process.kill('KILL', $fixture_pid) if $fixture_pid
     $fixture_pid = nil
+    Process.wait(
+      Process.spawn(
+        '/usr/bin/log', 'show', '--predicate', 'process == "macOSTestApp"',
+        '--style', 'syslog', '--start', $started_at.strftime('%Y-%m-%d %H:%M:%S%z'),
+        out: File.open(File.join(path, 'device.log'), 'w')
+      )
+    )
   else
     data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
     File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
