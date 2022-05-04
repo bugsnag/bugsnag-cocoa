@@ -32,7 +32,9 @@ static NSDictionary * loadPreviousState(NSString *jsonPath) {
     NSError *error = nil;
     NSMutableDictionary *state = [BSGJSONSerialization JSONObjectWithContentsOfFile:jsonPath options:NSJSONReadingMutableContainers error:&error];
     if(![state isKindOfClass:[NSMutableDictionary class]]) {
-        bsg_log_err(@"Could not load system_state.json: %@", error);
+        if (!(error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError)) {
+            bsg_log_err(@"Could not load system_state.json: %@", error);
+        }
         return @{};
     }
 
