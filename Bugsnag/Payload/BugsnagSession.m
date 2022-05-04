@@ -115,6 +115,7 @@ void BSGSessionUpdateRunContext(BugsnagSession *_Nullable session) {
         bzero(bsg_runContext->sessionId, sizeof(bsg_runContext->sessionId));
         bsg_runContext->sessionStartTime = 0;
     }
+    BSGRunContextUpdateTimestamp();
 }
 
 BugsnagSession * BSGSessionFromLastRunContext(BugsnagApp *app, BugsnagDevice *device, BugsnagUser *user) {

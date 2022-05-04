@@ -48,6 +48,7 @@ Feature: Out of memory errors
     And the event "device.manufacturer" equals "Apple"
     And the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the event "device.runtimeVersions" is not null
+    And the event "device.time" is a timestamp
     And the event "device.totalMemory" is not null
     And the event "metaData.custom.bar" equals "foo"
     And the event "session.id" is not null

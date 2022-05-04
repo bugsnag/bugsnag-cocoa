@@ -25,6 +25,7 @@ Feature: Thermal State
     And the exception "message" equals "The app was terminated by the operating system due to a critical thermal state"
     And the event "metaData.device.thermalState" matches "critical"
     And the event has a critical thermal state breadcrumb
+    And the event "device.time" is a timestamp
     And the event "session.events.handled" equals 0
     And the event "session.events.unhandled" equals 1
     And the event "severity" equals "error"

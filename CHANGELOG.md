@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Add `device.time` to OOM and Thermal Kill events.
+  [#1355](https://github.com/bugsnag/bugsnag-cocoa/pull/1355)
+
 ## 6.16.8 (2022-05-04)
 
 ### Changes

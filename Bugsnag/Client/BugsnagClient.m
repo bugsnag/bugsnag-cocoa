@@ -298,6 +298,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     bsg_log_debug(@"App has finished launching");
     [self.appLaunchTimer invalidate];
     bsg_runContext->isLaunching = NO;
+    BSGRunContextUpdateTimestamp();
 }
 
 - (void)sendLaunchCrashSynchronously {
@@ -756,6 +757,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
 - (void)addBreadcrumbWithBlock:(void (^)(BugsnagBreadcrumb *))block {
     [self.breadcrumbs addBreadcrumbWithBlock:block];
+    BSGRunContextUpdateTimestamp();
 }
 
 /**
@@ -1121,6 +1123,9 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 #if TARGET_OS_IOS
     device.orientation = BSGStringFromDeviceOrientation(bsg_lastRunContext->lastKnownOrientation);
 #endif
+    if (bsg_lastRunContext->timestamp > 0) {
+        device.time = [NSDate dateWithTimeIntervalSinceReferenceDate:bsg_lastRunContext->timestamp];
+    }
 
     NSDictionary *metadataDict = [BSGJSONSerialization JSONObjectWithContentsOfFile:BSGFileLocations.current.metadata options:0 error:nil];
     BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:metadataDict ?: @{}];
