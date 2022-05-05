@@ -1,8 +1,22 @@
 # A collection of steps that could be added to Maze Runner
 
+Then(/^on (iOS|macOS), (.+)/) do |platform, step_text|
+  step(step_text) if platform.downcase == Maze::Helper.get_current_platform
+end
+
 Then('the event {string} equals one of:') do |field, possible_values|
   value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
   Maze.check.includes(possible_values.raw.flatten, value)
+end
+
+Then('the event {string} is a boolean') do |field|
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
+  Maze.check.include [true, false], value
+end
+
+Then('the event {string} is a number') do |field|
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
+  Maze.check.kind_of Numeric, value
 end
 
 Then('the event {string} is within {int} seconds of the current timestamp') do |field, threshold_secs|

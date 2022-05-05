@@ -109,7 +109,6 @@ class BareboneTestUnhandledErrorScenario: Scenario {
     private var payload: Payload!
     
     override func startBugsnag() {
-        config.autoTrackSessions = false
         if eventMode == "report" {
             // The version of the app at report time.
             config.appVersion = "23.4"

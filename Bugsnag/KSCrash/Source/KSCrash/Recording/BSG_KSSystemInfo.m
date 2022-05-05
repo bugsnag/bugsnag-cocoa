@@ -399,7 +399,6 @@ static NSDictionary * bsg_systemversion() {
 #endif // TARGET_OS_SIMULATOR
 
     sysInfo[@BSG_KSSystemField_OSVersion] = [self osBuildVersion];
-    sysInfo[@BSG_KSSystemField_BootTime] = [self dateSysctl:@"kern.boottime"];
     sysInfo[@BSG_KSSystemField_BundleID] = infoDict[@"CFBundleIdentifier"];
     sysInfo[@BSG_KSSystemField_BundleName] = infoDict[@"CFBundleName"];
     sysInfo[@BSG_KSSystemField_BundleExecutable] = infoDict[@"CFBundleExecutable"];

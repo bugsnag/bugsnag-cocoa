@@ -11,7 +11,7 @@
 #import <Bugsnag/BugsnagConfiguration.h>
 #import <Bugsnag/BugsnagErrorTypes.h>
 
-#import "BSG_KSCrashState.h"
+#import "BSGRunContext.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagCollections.h"
@@ -146,7 +146,7 @@
         }
 #endif
         
-        if (shouldReportAppHang && !bsg_kscrashstate_currentState()->applicationIsInForeground) {
+        if (shouldReportAppHang && !bsg_runContext->isForeground) {
             bsg_log_debug(@"Ignoring app hang because app is in the background");
             shouldReportAppHang = NO;
         }

@@ -35,7 +35,6 @@ static BSGKey const BSGKeyContext                   = @"context";
 static BSGKey const BSGKeyCppException              = @"cpp_exception";
 static BSGKey const BSGKeyDevelopment               = @"development";
 static BSGKey const BSGKeyDevice                    = @"device";
-static BSGKey const BSGKeyDeviceState               = @"deviceState";
 static BSGKey const BSGKeyEmail                     = @"email";
 static BSGKey const BSGKeyEnabledReleaseStages      = @"enabledReleaseStages";
 static BSGKey const BSGKeyEndpoints                 = @"endpoints";

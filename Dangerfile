@@ -33,4 +33,11 @@ if defined?(github) && github.branch_for_base == 'master' && !github.branch_for_
   failure 'Only release PRs should target the master branch'
 end
 
+begin
+  diff = git.diff_for_file Dir['Bugsnag/**/BSGRunContext.h'][0]
+  if diff && diff.patch !~ /BSGRUNCONTEXT_VERSION/
+    warn 'This PR modifies `BSGRunContext.h` but does not change `BSGRUNCONTEXT_VERSION`'
+  end
+end
+
 framework_size
