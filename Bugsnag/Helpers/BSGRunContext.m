@@ -30,6 +30,7 @@
 
 static uint64_t GetBootTime(void);
 static bool GetIsForeground(void);
+static void InstallTimer(void);
 
 
 #pragma mark - Initial setup
@@ -54,6 +55,9 @@ static void InitRunContext() {
     if (image && image->uuid) {
         uuid_copy(bsg_runContext->machoUUID, image->uuid);
     }
+    
+    BSGRunContextUpdateTimestamp();
+    InstallTimer();
     
     // Set `structVersion` last so that BSGRunContextLoadLast() will reject data
     // that is not fully initialised.
@@ -131,6 +135,24 @@ static bool GetIsForeground() {
 #endif
 }
 
+static void InstallTimer() {
+    static dispatch_source_t timer;
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0);
+    
+    timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    
+    dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, 0),
+                              /* interval */ NSEC_PER_SEC / 2,
+                              /* leeway */   NSEC_PER_SEC / 4);
+    
+    dispatch_source_set_event_handler(timer, ^{
+        BSGRunContextUpdateTimestamp();
+    });
+    
+    dispatch_resume(timer);
+}
+
 
 #pragma mark - Observation
 
@@ -138,14 +160,17 @@ static bool GetIsForeground() {
 
 static void NoteAppBackground() {
     bsg_runContext->isForeground = NO;
+    BSGRunContextUpdateTimestamp();
 }
 
 static void NoteAppForeground() {
     bsg_runContext->isForeground = YES;
+    BSGRunContextUpdateTimestamp();
 }
 
 static void NoteAppWillTerminate() {
     bsg_runContext->isTerminating = YES;
+    BSGRunContextUpdateTimestamp();
 }
 
 #endif
@@ -165,6 +190,7 @@ static void NoteOrientation() {
     if (orientation != UIDeviceOrientationUnknown) {
         bsg_runContext->lastKnownOrientation = orientation;
     }
+    BSGRunContextUpdateTimestamp();
 }
 
 #endif
@@ -178,6 +204,7 @@ static void NoteThermalState(__unused CFNotificationCenterRef center,
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
     bsg_runContext->thermalState = ((__bridge NSProcessInfo *)object).thermalState;
 #pragma clang diagnostic pop
+    BSGRunContextUpdateTimestamp();
 }
 
 #if TARGET_OS_IOS
@@ -195,6 +222,7 @@ static void ObserveMemoryPressure() {
                            dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0));
     dispatch_source_set_event_handler(source, ^{
         bsg_runContext->memoryPressure = dispatch_source_get_data(source);
+        BSGRunContextUpdateTimestamp();
     });
     dispatch_resume(source);
 }
@@ -241,6 +269,13 @@ static void AddObservers() {
     
     ObserveMemoryPressure();
 #endif
+}
+
+
+#pragma mark -
+
+void BSGRunContextUpdateTimestamp() {
+    bsg_runContext->timestamp = CFAbsoluteTimeGetCurrent();
 }
 
 

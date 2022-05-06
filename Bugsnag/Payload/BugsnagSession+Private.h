@@ -8,9 +8,8 @@
 
 #import <Bugsnag/BugsnagSession.h>
 
+#import "BSGDefines.h"
 #import "BSG_KSCrashReportWriter.h"
-
-#define BSG_PRIVATE __attribute__((visibility("hidden")))
 
 NS_ASSUME_NONNULL_BEGIN
 

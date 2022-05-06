@@ -243,7 +243,7 @@ Feature: Barebone tests
     And the event "device.osVersion" matches "\d+\.\d+"
     And the event "device.runtimeVersions.clangVersion" is not null
     And the event "device.runtimeVersions.osBuild" is not null
-    And the event "device.time" is null
+    And the event "device.time" is a timestamp
     And the event "device.totalMemory" is not null
     And the event "metaData.app.name" equals "iOSTestApp"
     And the event "metaData.custom.bar" equals "foo"

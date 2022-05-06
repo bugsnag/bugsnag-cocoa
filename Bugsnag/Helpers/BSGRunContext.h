@@ -10,6 +10,8 @@
 #include <stdint.h>
 #include <uuid/uuid.h>
 
+#include "BSGDefines.h"
+
 //
 // The struct version should be incremented prior to a release if changes have
 // been made to BSGRunContext.
@@ -38,6 +40,7 @@ struct BSGRunContext {
     long lastKnownOrientation;
     dispatch_source_memorypressure_flags_t memoryPressure;
 #endif
+    double timestamp;
 };
 
 /// Information about the current run of the app / process.
@@ -53,6 +56,10 @@ extern const struct BSGRunContext *_Nullable bsg_lastRunContext;
 #pragma mark -
 
 void BSGRunContextInit(const char *_Nonnull path);
+
+#pragma mark -
+
+BSG_PRIVATE void BSGRunContextUpdateTimestamp(void);
 
 #pragma mark -
 
