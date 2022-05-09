@@ -146,6 +146,6 @@ def run_macos_app
   $fixture_pid = Process.spawn(
     { 'MAZE_RUNNER' => 'TRUE' },
     'features/fixtures/macos/output/macOSTestApp.app/Contents/MacOS/macOSTestApp',
-    %i[err out] => ['macOSTestApp.log', File::APPEND | File::CREAT | File::RDWR]
+    %i[err out] => :close
   )
 end

@@ -109,11 +109,12 @@ Feature: App hangs
     And I configure Bugsnag for "AppHangFatalOnlyScenario"
     And I wait to receive an error
     And I clear the error queue
+    # Wait for fixture to receive the response and save the payload
+    And I wait for 2 seconds
     And I relaunch the app
     And I set the HTTP status code to 200
     And I configure Bugsnag for "AppHangFatalOnlyScenario"
     And I wait to receive an error
-
     And the event "severity" equals "error"
     And the event "severityReason.type" equals "appHang"
     And the event "threads.0.errorReportingThread" is true
