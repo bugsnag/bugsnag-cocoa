@@ -53,7 +53,7 @@ end
 
 Maze.hooks.before do |_scenario|
   $started_at = Time.now
-  if Maze.config.os == 'macos' && Maze.config.farm == :local
+  if Maze.config.os == 'ios' && Maze.config.farm == :local
     begin
       $logger_pid = Process.spawn(
         'idevicesyslog', '-u', Maze.config.device_id, '-p', 'iOSTestApp',
