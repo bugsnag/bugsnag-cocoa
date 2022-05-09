@@ -17,6 +17,10 @@
 #import <sys/stat.h>
 #import <sys/sysctl.h>
 
+#if __has_include(<os/proc.h>) && TARGET_OS_IPHONE && !TARGET_OS_MACCATALYST
+#include <os/proc.h>
+#endif
+
 #if TARGET_OS_IOS
 #import "BSGUIKit.h"
 #endif
@@ -31,6 +35,7 @@
 static uint64_t GetBootTime(void);
 static bool GetIsForeground(void);
 static void InstallTimer(void);
+static void UpdateAvailableMemory(void);
 
 
 #pragma mark - Initial setup
@@ -58,6 +63,8 @@ static void InitRunContext() {
     
     BSGRunContextUpdateTimestamp();
     InstallTimer();
+    
+    UpdateAvailableMemory();
     
     // Set `structVersion` last so that BSGRunContextLoadLast() will reject data
     // that is not fully initialised.
@@ -148,6 +155,7 @@ static void InstallTimer() {
     
     dispatch_source_set_event_handler(timer, ^{
         BSGRunContextUpdateTimestamp();
+        UpdateAvailableMemory();
     });
     
     dispatch_resume(timer);
@@ -223,6 +231,7 @@ static void ObserveMemoryPressure() {
     dispatch_source_set_event_handler(source, ^{
         bsg_runContext->memoryPressure = dispatch_source_get_data(source);
         BSGRunContextUpdateTimestamp();
+        UpdateAvailableMemory();
     });
     dispatch_resume(source);
 }
@@ -272,10 +281,20 @@ static void AddObservers() {
 }
 
 
-#pragma mark -
+#pragma mark - Misc
 
 void BSGRunContextUpdateTimestamp() {
     bsg_runContext->timestamp = CFAbsoluteTimeGetCurrent();
+}
+
+static void UpdateAvailableMemory() {
+    // Deliberately avoids use of bsg_ksmachfreeMemory() because that falls back
+    // to a much more expensive (~5x) system call on earlier releases.
+#if __has_include(<os/proc.h>) && TARGET_OS_IPHONE && !TARGET_OS_MACCATALYST
+    if (__builtin_available(iOS 13.0, tvOS 13.0, watchOS 6.0, *)) {
+        bsg_runContext->availableMemory = os_proc_available_memory();
+    }
+#endif
 }
 
 

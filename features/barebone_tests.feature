@@ -236,6 +236,7 @@ Feature: Barebone tests
     And the event "device.modelNumber" equals the platform-dependent string:
       | ios   | @not_null |
       | macos | @null     |
+    And on iOS 13 and later, the event "device.freeMemory" is an integer
     And the event "device.osName" equals the platform-dependent string:
       | ios   | iOS    |
       | macos | Mac OS |
@@ -244,7 +245,7 @@ Feature: Barebone tests
     And the event "device.runtimeVersions.clangVersion" is not null
     And the event "device.runtimeVersions.osBuild" is not null
     And the event "device.time" is a timestamp
-    And the event "device.totalMemory" is not null
+    And the event "device.totalMemory" is an integer
     And the event "metaData.app.name" equals "iOSTestApp"
     And the event "metaData.custom.bar" equals "foo"
     And the event "metaData.device.batteryLevel" is a number
@@ -278,7 +279,5 @@ Feature: Barebone tests
     And the error payload field "events.0.app.duration" is null
     And the error payload field "events.0.app.durationInForeground" is null
     And the error payload field "events.0.device.freeDisk" is null
-    And the error payload field "events.0.device.freeMemory" is null
     And the error payload field "events.0.device.model" matches the test device model
-    And the error payload field "events.0.device.totalMemory" is an integer
     And the error payload field "events.0.threads" is an array with 0 elements
