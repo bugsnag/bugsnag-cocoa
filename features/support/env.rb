@@ -53,6 +53,16 @@ end
 
 Maze.hooks.before do |_scenario|
   $started_at = Time.now
+  if Maze.config.os == 'macos' && Maze.config.farm == :local
+    begin
+      $logger_pid = Process.spawn(
+        'idevicesyslog', '-u', Maze.config.device_id, '-p', 'iOSTestApp',
+        out: File.open('device.log', 'w')
+      )
+    rescue Errno::ENOENT
+      # Use of idevicesyslog is optional
+    end
+  end
 end
 
 Maze.hooks.after do |scenario|
@@ -76,9 +86,17 @@ Maze.hooks.after do |scenario|
       )
     )
   else
+    if Maze.config.farm == :local
+      if $logger_pid
+        Process.kill('TERM', $logger_pid)
+        Process.waitpid($logger_pid)
+        $logger_pid = nil
+      end
+      FileUtils.mv('device.log', path)
+    end
     data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
     File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
   end
-rescue
+rescue StandardError
   # pull_file can fail on BrowserStack iOS 10 with "Error: Command 'umount' not found"
 end
