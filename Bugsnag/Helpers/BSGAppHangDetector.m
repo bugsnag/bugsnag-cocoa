@@ -8,6 +8,8 @@
 
 #import "BSGAppHangDetector.h"
 
+#if BSG_HAVE_APP_HANG_DETECTION
+
 #import <Bugsnag/BugsnagConfiguration.h>
 #import <Bugsnag/BugsnagErrorTypes.h>
 
@@ -17,6 +19,7 @@
 #import "BugsnagCollections.h"
 #import "BugsnagLogger.h"
 #import "BugsnagThread+Private.h"
+#import "BSGDefines.h"
 
 
 @interface BSGAppHangDetector ()
@@ -205,3 +208,6 @@
 }
 
 @end
+
+#endif
+

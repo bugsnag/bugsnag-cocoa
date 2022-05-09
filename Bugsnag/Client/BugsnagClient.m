@@ -69,17 +69,12 @@
 #import "BugsnagSystemState.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
+#import "BSGDefines.h"
 
-#if TARGET_OS_IOS || TARGET_OS_TV
-#define BSG_OOM_AVAILABLE 1
-#else
-#define BSG_OOM_AVAILABLE 0
-#endif
-
-#if TARGET_OS_IOS
-#import "BSGUIKit.h"
-#elif TARGET_OS_OSX
+#if BSG_HAVE_APPKIT
 #import "BSGAppKit.h"
+#else
+#import "BSGUIKit.h"
 #endif
 
 static NSString *const BSTabCrash = @"crash";
@@ -259,7 +254,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
         [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
         [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
-        if (@available(iOS 11.0, tvOS 11.0, *)) {
+        if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
             _lastThermalState = NSProcessInfo.processInfo.thermalState;
             [self.metadata addMetadata:BSGStringFromThermalState(_lastThermalState)
                                withKey:BSGKeyThermalState
@@ -283,7 +278,9 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
     [self computeDidCrashLastLaunch];
     [self.breadcrumbs removeAllBreadcrumbs];
+#if BSG_HAVE_REACHABILITY
     [self setupConnectivityListener];
+#endif
     [self.notificationBreadcrumbs start];
 
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
@@ -334,7 +331,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self batteryChanged:nil];
 #endif
 
-    if (@available(iOS 11.0, tvOS 11.0, *)) {
+    if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
         [center addObserver:self
                    selector:@selector(thermalStateDidChange:)
                        name:NSProcessInfoThermalStateDidChangeNotification
@@ -343,10 +340,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     [center addObserver:self
                selector:@selector(applicationWillTerminate:)
-#if TARGET_OS_IOS || TARGET_OS_TV
-                   name:UIApplicationWillTerminateNotification
-#elif TARGET_OS_OSX
+#if BSG_HAVE_APPKIT
                    name:NSApplicationWillTerminateNotification
+#else
+                   name:UIApplicationWillTerminateNotification
 #endif
                  object:nil];
 
@@ -386,9 +383,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     
     [self.eventUploader uploadStoredEvents];
     
+#if BSG_HAVE_APP_HANG_DETECTION
     // App hang detector deliberately started after sendLaunchCrashSynchronously (which by design may itself trigger an app hang)
     // Note: BSGAppHangDetector itself checks configuration.enabledErrorTypes.appHangs
     [self startAppHangDetector];
+#endif
     
     self.configMetadataFromLastLaunch = nil;
     self.metadataFromLastLaunch = nil;
@@ -449,7 +448,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
             if (self.configuration.enabledErrorTypes.thermalKills) {
                 self.eventFromLastLaunch = [self generateThermalKillEvent];
             }
-#if BSG_OOM_AVAILABLE
+#if BSG_HAVE_OOM_DETECTION
         } else {
             bsg_log_info(@"Last run terminated unexpectedly; possible Out Of Memory.");
             if (self.configuration.enabledErrorTypes.ooms) {
@@ -494,7 +493,9 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 - (void)applicationWillTerminate:(__unused NSNotification *)notification {
     [[NSNotificationCenter defaultCenter] removeObserver:self.sessionTracker];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+#if BSG_HAVE_REACHABILITY
     [BSGConnectivity stopMonitoring];
+#endif
 
 #if TARGET_OS_IOS
     [UIDEVICE currentDevice].batteryMonitoringEnabled = NO;
@@ -544,6 +545,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 // MARK: - Connectivity Listener
 // =============================================================================
 
+#if BSG_HAVE_REACHABILITY
 /**
  * Monitor the Bugsnag endpoint to detect changes in connectivity,
  * flush pending events when (re)connected and report connectivity
@@ -569,6 +571,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                 andMetadata:@{@"type": connectionType}];
     }];
 }
+#endif
 
 // =============================================================================
 // MARK: - Breadcrumbs
@@ -1159,12 +1162,14 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
 // MARK: - App Hangs
 
+#if BSG_HAVE_APP_HANG_DETECTION
 - (void)startAppHangDetector {
     [NSFileManager.defaultManager removeItemAtPath:BSGFileLocations.current.appHangEvent error:nil];
 
     self.appHangDetector = [[BSGAppHangDetector alloc] init];
     [self.appHangDetector startWithDelegate:self];
 }
+#endif
 
 - (void)appHangDetectedAtDate:(NSDate *)date withThreads:(NSArray<BugsnagThread *> *)threads systemInfo:(NSDictionary *)systemInfo {
     NSString *message = [NSString stringWithFormat:@"The app's main thread failed to respond to an event within %d milliseconds",

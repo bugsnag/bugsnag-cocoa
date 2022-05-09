@@ -166,6 +166,8 @@
     XCTAssertNil(self.sessionTracker.runningSession, @"There should be no running session after starting tracker in background");
 #if TARGET_OS_IOS || TARGET_OS_TV
     [NSNotificationCenter.defaultCenter postNotificationName:UIApplicationDidBecomeActiveNotification object:nil];
+#elif TARGET_OS_WATCH
+    [NSNotificationCenter.defaultCenter postNotificationName:@"WKApplicationDidBecomeActiveNotification" object:nil];
 #elif TARGET_OS_OSX
     [NSNotificationCenter.defaultCenter postNotificationName:NSApplicationDidBecomeActiveNotification object:nil];
 #endif

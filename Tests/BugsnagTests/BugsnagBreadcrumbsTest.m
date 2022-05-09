@@ -13,6 +13,7 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagTestConstants.h"
+#import "BSGDefines.h"
 
 #import <XCTest/XCTest.h>
 #import <mach/mach_init.h>
@@ -462,6 +463,7 @@ static void * executeBlock(void *ptr) {
     return NULL;
 }
 
+#if BSG_HAVE_MACH_THREADS
 - (void)testCrashReportWriterConcurrency {
 #if defined(__has_feature) && __has_feature(thread_sanitizer)
     NSLog(@"Skipping test because ThreadSanitizer deadlocks if other threads are suspended");
@@ -541,6 +543,7 @@ static void * executeBlock(void *ptr) {
         pthread_join(threads[i], NULL);
     }
 }
+#endif
 
 - (void)testPerformance {
     NSInteger maxBreadcrumbs = 100;

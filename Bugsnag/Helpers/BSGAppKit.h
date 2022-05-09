@@ -6,6 +6,10 @@
 //  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
+#include "BSGDefines.h"
+
+#if BSG_HAVE_APPKIT
+
 #import <AppKit/AppKit.h>
 
 // Daemons and other processes running in non-UI sessions should not link against AppKit.
@@ -37,3 +41,5 @@
 #define NSWindowWillMiniaturizeNotification                 @"NSWindowWillMiniaturizeNotification"
 #define NSWorkspaceScreensDidSleepNotification              @"NSWorkspaceScreensDidSleepNotification"
 #define NSWorkspaceScreensDidWakeNotification               @"NSWorkspaceScreensDidWakeNotification"
+
+#endif

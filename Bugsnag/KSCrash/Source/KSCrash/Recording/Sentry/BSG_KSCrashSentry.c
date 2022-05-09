@@ -33,6 +33,7 @@
 #include "BSG_KSCrashSentry_Signal.h"
 #include "BSG_KSLogger.h"
 #include "BSG_KSMach.h"
+#include "BSGDefines.h"
 
 #include <stdatomic.h>
 
@@ -53,10 +54,12 @@ static BSG_CrashSentry bsg_g_sentries[] = {
         bsg_kscrashsentry_uninstallMachHandler,
     },
 #endif
+#if BSG_HAVE_SIGNAL
     {
         BSG_KSCrashTypeSignal, bsg_kscrashsentry_installSignalHandler,
         bsg_kscrashsentry_uninstallSignalHandler,
     },
+#endif
     {
         BSG_KSCrashTypeCPPException,
         bsg_kscrashsentry_installCPPExceptionHandler,
@@ -146,10 +149,13 @@ void bsg_kscrashsentry_suspendThreads(void) {
         return;
     }
 
-
     if (bsg_g_context != NULL) {
         bsg_g_context->allThreads = bsg_ksmachgetAllThreads(&bsg_g_context->allThreadsCount);
         bsg_ksmachgetThreadStates(bsg_g_context->allThreads, bsg_g_context->allThreadRunStates, bsg_g_context->allThreadsCount);
+    }
+
+#if BSG_HAVE_MACH_THREADS
+    if (bsg_g_context != NULL) {
         bsg_g_context->threadsToResumeCount = bsg_ksmachremoveThreadsFromList(bsg_g_context->allThreads,
                                                                               bsg_g_context->allThreadsCount,
                                                                               bsg_g_context->reservedThreads,
@@ -167,9 +173,11 @@ void bsg_kscrashsentry_suspendThreads(void) {
     }
     bsg_g_threads_are_running = false;
     BSG_KSLOG_DEBUG("Suspend complete.");
+#endif
 }
 
 void bsg_kscrashsentry_resumeThreads(void) {
+#if BSG_HAVE_MACH_THREADS
     BSG_KSLOG_DEBUG("Resuming threads.");
     if (bsg_g_threads_are_running) {
         BSG_KSLOG_DEBUG("Threads already resumed.");
@@ -194,6 +202,7 @@ void bsg_kscrashsentry_resumeThreads(void) {
     }
     bsg_g_threads_are_running = true;
     BSG_KSLOG_DEBUG("Resume complete.");
+#endif
 }
 
 void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext *context) {

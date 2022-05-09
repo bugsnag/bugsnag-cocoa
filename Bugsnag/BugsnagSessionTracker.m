@@ -17,11 +17,14 @@
 #import "BugsnagDevice+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSession+Private.h"
+#import "BSGDefines.h"
 
-#if TARGET_OS_IOS || TARGET_OS_TV
-#import "BSGUIKit.h"
-#elif TARGET_OS_OSX
+#if BSG_HAVE_APPKIT
 #import "BSGAppKit.h"
+#elif BSG_HAVE_WATCHKIT
+#import "BSGWatchKit.h"
+#else
+#import "BSGUIKit.h"
 #endif
 
 /**
@@ -74,25 +77,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
         bsg_log_debug(@"Not starting session because app is not in the foreground");
     }
 
-#if TARGET_OS_IOS || TARGET_OS_TV
-
-    [notificationCenter addObserver:self
-               selector:@selector(handleAppForegroundEvent)
-                   name:UIApplicationWillEnterForegroundNotification
-                 object:nil];
-
-    [notificationCenter addObserver:self
-               selector:@selector(handleAppForegroundEvent)
-                   name:UIApplicationDidBecomeActiveNotification
-                 object:nil];
-
-    [notificationCenter addObserver:self
-               selector:@selector(handleAppBackgroundEvent)
-                   name:UIApplicationDidEnterBackgroundNotification
-                 object:nil];
-
-#elif TARGET_OS_OSX
-
+#if BSG_HAVE_APPKIT
     [notificationCenter addObserver:self
                selector:@selector(handleAppForegroundEvent)
                    name:NSApplicationWillBecomeActiveNotification
@@ -106,6 +91,36 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
     [notificationCenter addObserver:self
                selector:@selector(handleAppBackgroundEvent)
                    name:NSApplicationDidResignActiveNotification
+                 object:nil];
+#elif BSG_HAVE_WATCHKIT
+    [notificationCenter addObserver:self
+               selector:@selector(handleAppForegroundEvent)
+                   name:WKApplicationWillEnterForegroundNotification
+                 object:nil];
+
+    [notificationCenter addObserver:self
+               selector:@selector(handleAppForegroundEvent)
+                   name:WKApplicationDidBecomeActiveNotification
+                 object:nil];
+
+    [notificationCenter addObserver:self
+               selector:@selector(handleAppBackgroundEvent)
+                   name:WKApplicationDidEnterBackgroundNotification
+                 object:nil];
+#else
+    [notificationCenter addObserver:self
+               selector:@selector(handleAppForegroundEvent)
+                   name:UIApplicationWillEnterForegroundNotification
+                 object:nil];
+
+    [notificationCenter addObserver:self
+               selector:@selector(handleAppForegroundEvent)
+                   name:UIApplicationDidBecomeActiveNotification
+                 object:nil];
+
+    [notificationCenter addObserver:self
+               selector:@selector(handleAppBackgroundEvent)
+                   name:UIApplicationDidEnterBackgroundNotification
                  object:nil];
 #endif
 }

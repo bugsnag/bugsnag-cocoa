@@ -29,6 +29,7 @@
 
 #import "BSG_KSMach.h"
 #import "BSG_KSMachApple.h"
+#import "BSGDefines.h"
 
 #import <mach/mach_time.h>
 #import <sys/sysctl.h>
@@ -115,6 +116,7 @@ void * executeBlock(void *ptr)
     XCTAssertTrue(usableMem > 0, @"");
 }
 
+#if BSG_HAVE_MACH_THREADS
 - (void) testSuspendThreads
 {
 #if TARGET_CPU_X86_64 && defined(XCTSkipIf)
@@ -130,6 +132,7 @@ void * executeBlock(void *ptr)
     bsg_ksmachsuspendThreads(threads, threadsCount);
     bsg_ksmachresumeThreads(threads, threadsCount);
 }
+#endif
 
 - (void) testCopyMem
 {
@@ -283,6 +286,7 @@ void * executeBlock(void *ptr)
     }
 }
 
+#if BSG_HAVE_MACH_THREADS
 - (void) testThreadState
 {
     TestThread* thread = [[TestThread alloc] init];
@@ -368,6 +372,7 @@ void * executeBlock(void *ptr)
     thread_resume(thread.thread);
     [thread cancel];
 }
+#endif
 
 - (void) testStackGrowDirection
 {

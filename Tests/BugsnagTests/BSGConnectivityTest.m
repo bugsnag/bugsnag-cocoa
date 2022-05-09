@@ -1,6 +1,7 @@
 #import <XCTest/XCTest.h>
 
 #import "BSGConnectivity.h"
+#import "BSGDefines.h"
 
 @interface BSGConnectivityTest : XCTestCase
 @end
@@ -16,7 +17,7 @@
 - (void)testConnectivityRepresentations {
     XCTAssertEqualObjects(@"none", BSGConnectivityFlagRepresentation(0));
     XCTAssertEqualObjects(@"none", BSGConnectivityFlagRepresentation(kSCNetworkReachabilityFlagsIsDirect));
-    #if TARGET_OS_TV || TARGET_OS_IPHONE
+    #if BSG_HAVE_REACHABILITY_WWAN
         // kSCNetworkReachabilityFlagsIsWWAN does not exist on macOS
         XCTAssertEqualObjects(@"none", BSGConnectivityFlagRepresentation(kSCNetworkReachabilityFlagsIsWWAN));
         XCTAssertEqualObjects(@"cellular", BSGConnectivityFlagRepresentation(kSCNetworkReachabilityFlagsIsWWAN | kSCNetworkReachabilityFlagsReachable));

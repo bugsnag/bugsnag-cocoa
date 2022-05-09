@@ -15,6 +15,7 @@
 #import "BugsnagSystemState.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagUser.h"
+#import "BSGDefines.h"
 
 #import <objc/runtime.h>
 #import <XCTest/XCTest.h>
@@ -321,7 +322,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     return dict;
 }
 
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if BSG_HAVE_OOM_DETECTION
 
 static BOOL testOnCrashHandlerNotCalledForOOM_didCallOnCrashHandler;
 

@@ -44,9 +44,11 @@
 #include "BSG_KSCrashContext.h"
 #include "BSG_KSCrashSentry.h"
 #include "BSG_Symbolicate.h"
+#include "BSGDefines.h"
 
 #include <mach-o/loader.h>
 #include <sys/time.h>
+#include <execinfo.h>
 
 #ifdef __arm64__
 #include <sys/_types/_ucontext64.h>
@@ -340,6 +342,7 @@ bool bsg_kscrw_i_isValidString(const void *const address) {
                                                    sizeof(buffer));
 }
 
+#if BSG_HAVE_MACH_THREADS
 /** Get all parts of the machine state required for a dump.
  * This includes basic thread state, and exception registers.
  *
@@ -359,6 +362,7 @@ bool bsg_kscrw_i_fetchMachineState(
 
     return true;
 }
+#endif
 
 /** Get the machine context for the specified thread.
  *
@@ -390,12 +394,14 @@ BSG_STRUCT_MCONTEXT_L *bsg_kscrw_i_getMachineContext(
         return NULL;
     }
 
-    if (!bsg_kscrw_i_fetchMachineState(thread, machineContextBuffer)) {
-        BSG_KSLOG_ERROR("Failed to fetch machine state for thread %d", thread);
-        return NULL;
+#if BSG_HAVE_MACH_THREADS
+    if (bsg_kscrw_i_fetchMachineState(thread, machineContextBuffer)) {
+        return machineContextBuffer;
     }
+    BSG_KSLOG_ERROR("Failed to fetch machine context for thread %d", thread);
+#endif
 
-    return machineContextBuffer;
+    return NULL;
 }
 
 /** Get the backtrace for the specified thread.
@@ -435,23 +441,38 @@ uintptr_t *bsg_kscrw_i_getBacktrace(
         }
     }
 
-    if (machineContext == NULL) {
-        return NULL;
-    }
-
     int actualSkippedEntries = 0;
-    int actualLength = bsg_ksbt_backtraceLength(machineContext);
-    if (actualLength >= BSG_kStackOverflowThreshold) {
-        actualSkippedEntries = actualLength - *backtraceLength;
+
+    if (machineContext != NULL) {
+        int actualLength = bsg_ksbt_backtraceLength(machineContext);
+        if (actualLength >= BSG_kStackOverflowThreshold) {
+            actualSkippedEntries = actualLength - *backtraceLength;
+        }
+
+        *backtraceLength =
+            bsg_ksbt_backtraceThreadState(machineContext, backtraceBuffer,
+                                          actualSkippedEntries, *backtraceLength);
+        if (skippedEntries != NULL) {
+            *skippedEntries = actualSkippedEntries;
+        }
+        return backtraceBuffer;
     }
 
-    *backtraceLength =
-        bsg_ksbt_backtraceThreadState(machineContext, backtraceBuffer,
-                                      actualSkippedEntries, *backtraceLength);
-    if (skippedEntries != NULL) {
-        *skippedEntries = actualSkippedEntries;
+    if (thread == mach_thread_self()) {
+        int actualLength = backtrace((void**)backtraceBuffer, *backtraceLength);
+        uintptr_t *backtraceStart = backtraceBuffer;
+        if (actualLength > BSG_kStackOverflowThreshold) {
+            actualSkippedEntries = actualLength - BSG_kStackOverflowThreshold;
+            backtraceStart += actualSkippedEntries;
+        }
+        *backtraceLength = actualLength - actualSkippedEntries;
+        if (skippedEntries != NULL) {
+            *skippedEntries = actualSkippedEntries;
+        }
+        return backtraceStart;
     }
-    return backtraceBuffer;
+
+    return NULL;
 }
 
 /** Check if the stack for the specified thread has overflowed.
@@ -587,7 +608,6 @@ void bsg_kscrw_i_logCrashThreadBacktrace(
 
     BSG_STRUCT_MCONTEXT_L *machineContext =
         bsg_kscrw_i_getMachineContext(crash, thread, &concreteMachineContext);
-
     int skippedEntries = 0;
     uintptr_t *backtrace = bsg_kscrw_i_getBacktrace(
         crash, thread, machineContext, concreteBacktrace, &backtraceLength,
@@ -1009,7 +1029,6 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
 
     BSG_STRUCT_MCONTEXT_L *machineContext =
         bsg_kscrw_i_getMachineContext(crash, thread, &machineContextBuffer);
-
     uintptr_t *backtrace =
         bsg_kscrw_i_getBacktrace(crash, thread, machineContext, backtraceBuffer,
                                  &backtraceLength, &skippedEntries);

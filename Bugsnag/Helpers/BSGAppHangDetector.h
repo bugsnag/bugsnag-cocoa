@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BSGDefines.h"
 
 @class BugsnagConfiguration;
 @class BugsnagEvent;
@@ -14,8 +15,21 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol BSGAppHangDetectorDelegate;
+@protocol BSGAppHangDetectorDelegate <NSObject>
 
+@property (readonly) BugsnagConfiguration *configuration;
+
+#if BSG_HAVE_APP_HANG_DETECTION
+
+- (void)appHangDetectedAtDate:(NSDate *)date withThreads:(NSArray<BugsnagThread *> *)threads systemInfo:(NSDictionary *)systemInfo;
+
+- (void)appHangEnded;
+
+#endif
+
+@end
+
+#if BSG_HAVE_APP_HANG_DETECTION
 
 @interface BSGAppHangDetector : NSObject
 
@@ -25,15 +39,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-
-@protocol BSGAppHangDetectorDelegate <NSObject>
-
-@property (readonly) BugsnagConfiguration *configuration;
-
-- (void)appHangDetectedAtDate:(NSDate *)date withThreads:(NSArray<BugsnagThread *> *)threads systemInfo:(NSDictionary *)systemInfo;
-
-- (void)appHangEnded;
-
-@end
+#endif
 
 NS_ASSUME_NONNULL_END

@@ -26,6 +26,7 @@
 
 #import "BSG_KSCrashState.h"
 
+#import "BSGDefines.h"
 #import "BSGJSONSerialization.h"
 #import "BSG_KSFile.h"
 #import "BSG_KSJSONCodec.h"
@@ -33,14 +34,8 @@
 #import "BSG_KSMach.h"
 #import "BSG_KSSystemInfo.h"
 
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if !BSG_HAVE_APPKIT
 #import "BSGUIKit.h"
-#endif
-
-#if TARGET_OS_IOS
-#import <mach/mach_init.h>
-#import <mach/task.h>
-#import <mach/task_policy.h>
 #endif
 
 #import <errno.h>

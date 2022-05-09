@@ -10,13 +10,14 @@
 
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagConfiguration+Private.h"
+#import "BSGDefines.h"
 #import "BSGKeys.h"
 #import "BSGUtils.h"
 
-#if TARGET_OS_IOS || TARGET_OS_TV
-#import "BSGUIKit.h"
-#else
+#if BSG_HAVE_APPKIT
 #import "BSGAppKit.h"
+#else
+#import "BSGUIKit.h"
 #endif
 
 
@@ -150,28 +151,38 @@
 }
 
 - (NSArray<NSNotificationName> *)automaticBreadcrumbControlEvents {
-#if TARGET_OS_TV
+#if !BSG_HAVE_TEXT_CONTROL
     return nil;
-#elif TARGET_OS_IOS
+#else
+
+#if TARGET_OS_OSX
+    return @[
+        NSControlTextDidBeginEditingNotification,
+        NSControlTextDidEndEditingNotification
+    ];
+#else
     return @[
         UITextFieldTextDidBeginEditingNotification,
         UITextFieldTextDidEndEditingNotification,
         UITextViewTextDidBeginEditingNotification,
         UITextViewTextDidEndEditingNotification
     ];
-#elif TARGET_OS_OSX
-    return @[
-        NSControlTextDidBeginEditingNotification,
-        NSControlTextDidEndEditingNotification
-    ];
+#endif
+
 #endif
 }
 
 - (NSArray<NSNotificationName> *)automaticBreadcrumbTableItemEvents {
-#if TARGET_OS_IOS || TARGET_OS_TV
-    return @[ UITableViewSelectionDidChangeNotification ];
-#elif TARGET_OS_OSX
+#if !BSG_HAVE_TABLE_VIEW
+    return @[];
+#else
+
+#if TARGET_OS_OSX
     return @[ NSTableViewSelectionDidChangeNotification ];
+#else
+    return @[ UITableViewSelectionDidChangeNotification ];
+#endif
+
 #endif
 }
 
@@ -257,8 +268,9 @@
 }
 
 - (BOOL)tryAddSceneNotification:(NSNotification *)notification {
-#if (defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0) || \
-    (defined(__TVOS_13_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_13_0)
+#if !TARGET_OS_WATCH && \
+    ((defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0) || \
+    (defined(__TVOS_13_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_13_0))
     if (@available(iOS 13.0, tvOS 13.0, *)) {
         if ([notification.name hasPrefix:@"UIScene"] && [notification.object isKindOfClass:UISCENE]) {
             UIScene *scene = notification.object;
@@ -272,19 +284,42 @@
             return YES;
         }
     }
-#else
-    (void)notification;
 #endif
+    (void)notification;
     return NO;
 }
 
+#if !TARGET_OS_WATCH
 static NSString *nullStringIfBlank(NSString *str) {
     return str.length == 0 ? nil : str;
 }
+#endif
 
-- (BOOL)tryAddWindowNotification:(NSNotification *)notification {
-#if !TARGET_OS_OSX && \
-    (defined(__IPHONE_2_0) || (defined(__TVOS_9_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_9_0))
+#if TARGET_OS_OSX
+- (BOOL)tryAddWindowNotification_osx:(NSNotification *)notification {
+    if ([notification.name hasPrefix:@"NSWindow"] && [notification.object isKindOfClass:NSWINDOW]) {
+        NSWindow *window = notification.object;
+        NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
+        metadata[@"description"] = nullStringIfBlank(window.description);
+        metadata[@"title"] = nullStringIfBlank(window.title);
+#if defined(__MAC_11_0) && __MAC_OS_VERSION_MAX_ALLOWED >= __MAC_11_0
+        if (@available(macOS 11.0, *)) {
+            metadata[@"subtitle"] = nullStringIfBlank(window.subtitle);
+        }
+#endif
+        metadata[@"representedURL"] = nullStringIfBlank(window.representedURL.absoluteString);
+        metadata[@"viewController"] = nullStringIfBlank(window.contentViewController.description);
+        metadata[@"viewControllerTitle"] = nullStringIfBlank(window.contentViewController.title);
+        [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name metadata:metadata];
+        return YES;
+    }
+    return NO;
+}
+#endif
+
+#if TARGET_OS_IOS || TARGET_OS_TV
+- (BOOL)tryAddWindowNotification_ios_tv:(NSNotification *)notification {
+#if defined(__IPHONE_2_0) || (defined(__TVOS_9_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_9_0)
     if ([notification.name hasPrefix:@"UIWindow"] && [notification.object isKindOfClass:UIWINDOW]) {
         UIWindow *window = notification.object;
         NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
@@ -306,23 +341,15 @@ static NSString *nullStringIfBlank(NSString *str) {
         return YES;
     }
 #endif
-#if TARGET_OS_OSX
-    if ([notification.name hasPrefix:@"NSWindow"] && [notification.object isKindOfClass:NSWINDOW]) {
-        NSWindow *window = notification.object;
-        NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
-        metadata[@"description"] = nullStringIfBlank(window.description);
-        metadata[@"title"] = nullStringIfBlank(window.title);
-#if defined(__MAC_11_0) && __MAC_OS_VERSION_MAX_ALLOWED >= __MAC_11_0
-        if (@available(macOS 11.0, *)) {
-            metadata[@"subtitle"] = nullStringIfBlank(window.subtitle);
-        }
+    return NO;
+}
 #endif
-        metadata[@"representedURL"] = nullStringIfBlank(window.representedURL.absoluteString);
-        metadata[@"viewController"] = nullStringIfBlank(window.contentViewController.description);
-        metadata[@"viewControllerTitle"] = nullStringIfBlank(window.contentViewController.title);
-        [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name metadata:metadata];
-        return YES;
-    }
+
+- (BOOL)tryAddWindowNotification:(NSNotification *)notification {
+#if TARGET_OS_IOS || TARGET_OS_TV
+    return [self tryAddWindowNotification_ios_tv:notification];
+#elif TARGET_OS_OSX
+    return [self tryAddWindowNotification_osx:notification];
 #endif
     return NO;
 }

@@ -12,11 +12,13 @@
 
 #import "BSGNotificationBreadcrumbs.h"
 #import "BugsnagBreadcrumb+Private.h"
+#import "BSGDefines.h"
 
 #if TARGET_OS_IOS || TARGET_OS_TV
 #import "UISceneStub.h"
 #endif
 
+#define BSG_HAS_WINDOW (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV)
 
 @interface BSGNotificationBreadcrumbsTests : XCTestCase <BSGBreadcrumbSink>
 
@@ -57,6 +59,7 @@
 @implementation BSGMockViewController
 @end
 
+#if BSG_HAS_WINDOW
 
 #if TARGET_OS_OSX
 @interface BSGMockWindow: NSWindow
@@ -83,6 +86,8 @@
 - (UIViewController *)rootViewController {return (UIViewController *)self.mockViewController;}
 #endif
 @end
+
+#endif
 
 #pragma mark -
 
