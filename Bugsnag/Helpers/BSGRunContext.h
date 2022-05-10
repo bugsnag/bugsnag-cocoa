@@ -41,6 +41,7 @@ struct BSGRunContext {
     dispatch_source_memorypressure_flags_t memoryPressure;
 #endif
     double timestamp;
+    size_t availableMemory;
 };
 
 /// Information about the current run of the app / process.

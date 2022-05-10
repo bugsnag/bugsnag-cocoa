@@ -1,7 +1,13 @@
+# frozen_string_literal: true
+
 # A collection of steps that could be added to Maze Runner
 
 Then(/^on (iOS|macOS), (.+)/) do |platform, step_text|
   step(step_text) if platform.downcase == Maze::Helper.get_current_platform
+end
+
+Then(/^on (iOS|macOS) (\d+) and later, (.+)/) do |platform, version, step_text|
+  step(step_text) if platform.downcase == Maze::Helper.get_current_platform && Maze.config.os_version >= version
 end
 
 Then('the event {string} equals one of:') do |field, possible_values|
@@ -17,6 +23,11 @@ end
 Then('the event {string} is a number') do |field|
   value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
   Maze.check.kind_of Numeric, value
+end
+
+Then('the event {string} is an integer') do |field|
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
+  Maze.check.kind_of Integer, value
 end
 
 Then('the event {string} is within {int} seconds of the current timestamp') do |field, threshold_secs|
