@@ -235,6 +235,7 @@
     expectation2.inverted = YES;
     
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    configuration.autoTrackSessions = NO;
 
     // non-sending bugsnag
     [configuration addOnSendErrorBlock:^BOOL(BugsnagEvent *_Nonnull event) {
@@ -257,6 +258,7 @@
 
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
     [client start];
+    [client startSession];
     [self waitForExpectations:@[expectation1] timeout:1.0];
     
     [client pauseSession];

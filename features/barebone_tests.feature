@@ -37,6 +37,7 @@ Feature: Barebone tests
     And the event "device.modelNumber" equals the platform-dependent string:
       | ios   | @not_null |
       | macos | @null     |
+    And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the event "device.osName" equals the platform-dependent string:
       | ios   | iOS    |
       | macos | Mac OS |
@@ -44,15 +45,8 @@ Feature: Barebone tests
     And the event "device.runtimeVersions.clangVersion" is not null
     And the event "device.runtimeVersions.osBuild" is not null
     And the event "device.time" is a timestamp
-    And the event "metaData.device.batteryLevel" equals the platform-dependent string:
-      | ios   | @not_null |
-      | macos | @null     |
-    And the event "metaData.device.charging" equals the platform-dependent string:
-      | ios   | @not_null |
-      | macos | @null     |
-    And the event "metaData.device.orientation" equals the platform-dependent string:
-      | ios   | @not_null |
-      | macos | @null     |
+    And on iOS, the event "metaData.device.batteryLevel" is a number
+    And on iOS, the event "metaData.device.charging" is a boolean
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.wordSize" is not null
@@ -63,6 +57,10 @@ Feature: Barebone tests
     And the event "metaData.user.group" equals "users"
     And the event "metaData.user.id" is null
     And the event "metaData.user.name" is null
+    And the event "session.id" is not null
+    And the event "session.startedAt" is not null
+    And the event "session.events.handled" equals 0
+    And the event "session.events.unhandled" equals 1
     And the event "severity" equals "warning"
     And the event "severityReason.type" equals "handledException"
     And the event "severityReason.unhandledOverridden" is true
@@ -140,6 +138,7 @@ Feature: Barebone tests
     And the event "device.jailbroken" is false
     And the event "device.locale" is not null
     And the event "device.manufacturer" equals "Apple"
+    And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the event "device.osName" equals the platform-dependent string:
       | ios   | iOS    |
       | macos | Mac OS |
@@ -147,6 +146,9 @@ Feature: Barebone tests
     And the event "device.runtimeVersions.clangVersion" is not null
     And the event "device.runtimeVersions.osBuild" is not null
     And the event "device.time" is a timestamp
+    And on iOS, the event "metaData.device.batteryLevel" is a number
+    And on iOS, the event "metaData.device.charging" is a boolean
+    And the event "metaData.device.simulator" is false
     And the event "metaData.error.mach.code_name" equals "KERN_INVALID_ADDRESS"
     And the event "metaData.error.mach.code" equals "0x1"
     And the event "metaData.error.mach.exception_name" is not null
@@ -157,6 +159,10 @@ Feature: Barebone tests
     And the event "metaData.user.group" equals "users"
     And the event "metaData.user.id" is null
     And the event "metaData.user.name" is null
+    And the event "session.id" is not null
+    And the event "session.startedAt" is not null
+    And the event "session.events.handled" equals 0
+    And the event "session.events.unhandled" equals 1
     And the event "severity" equals "error"
     And the event "severityReason.type" equals "unhandledException"
     And the event "severityReason.unhandledOverridden" is null
@@ -230,28 +236,21 @@ Feature: Barebone tests
     And the event "device.modelNumber" equals the platform-dependent string:
       | ios   | @not_null |
       | macos | @null     |
+    And on iOS 13 and later, the event "device.freeMemory" is an integer
     And the event "device.osName" equals the platform-dependent string:
       | ios   | iOS    |
       | macos | Mac OS |
+    And the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the event "device.osVersion" matches "\d+\.\d+"
     And the event "device.runtimeVersions.clangVersion" is not null
     And the event "device.runtimeVersions.osBuild" is not null
-    And the event "device.time" is null
-    And the event "device.totalMemory" is not null
+    And the event "device.time" is a timestamp
+    And the event "device.totalMemory" is an integer
     And the event "metaData.app.name" equals "iOSTestApp"
     And the event "metaData.custom.bar" equals "foo"
-    And the event "metaData.device.batteryLevel" equals the platform-dependent string:
-      | ios   | @not_null |
-      | macos | @null     |
-    And the event "metaData.device.charging" equals the platform-dependent string:
-      | ios   | @not_null |
-      | macos | @null     |
-    And the event "metaData.device.orientation" equals the platform-dependent string:
-      | ios   | @not_null |
-      | macos | @null     |
-    And the event "metaData.device.lowMemoryWarning" equals the platform-dependent string:
-      | ios   | @not_null |
-      | macos | @null     |
+    And the event "metaData.device.batteryLevel" is a number
+    And the event "metaData.device.charging" is a boolean
+    And the event "metaData.device.lowMemoryWarning" is true
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.wordSize" is not null
@@ -280,7 +279,5 @@ Feature: Barebone tests
     And the error payload field "events.0.app.duration" is null
     And the error payload field "events.0.app.durationInForeground" is null
     And the error payload field "events.0.device.freeDisk" is null
-    And the error payload field "events.0.device.freeMemory" is null
     And the error payload field "events.0.device.model" matches the test device model
-    And the error payload field "events.0.device.totalMemory" is an integer
     And the error payload field "events.0.threads" is an array with 0 elements

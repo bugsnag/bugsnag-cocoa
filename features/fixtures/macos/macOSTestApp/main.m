@@ -9,6 +9,12 @@
 #import <Cocoa/Cocoa.h>
 
 int main(int argc, const char * argv[]) {
+    NSString *tmpdir = [[[NSProcessInfo processInfo] environment] objectForKey:@"TMPDIR"];
+    [[NSFileManager defaultManager] removeItemAtPath:
+     // Avoids a crash observed in -[NSPersistentUICrashHandler inspectCrashDataWithModification:handler:]
+     // that seems to occur if "$TMPDIR/com.bugsnag.macOSTestApp.savedState" is corrupted
+     [tmpdir stringByAppendingPathComponent:@"com.bugsnag.macOSTestApp.savedState"] error:nil];
+    
     [[NSUserDefaults standardUserDefaults] registerDefaults:@{
         // Disable state restoration to prevent the following dialog being shown after crashes
         // "The last time you opened macOSTestApp, it unexpectedly quit while reopening windows.

@@ -33,9 +33,8 @@ Feature: Out of memory errors
 
     # Ensure the basic data from OOMs are present
     And the event "device.jailbroken" is false
-    And the event "metaData.device.batteryLevel" is not null
-    And the event "metaData.device.charging" is not null
-    And the event "metaData.device.orientation" is not null
+    And the event "metaData.device.batteryLevel" is a number
+    And the event "metaData.device.charging" is a boolean
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.wordSize" is not null
@@ -46,9 +45,12 @@ Feature: Out of memory errors
     And the event "app.bundleVersion" is not null
     And the event "app.dsymUUIDs" is not null
     And the event "app.version" is not null
+    And on iOS 13 and later, the event "device.freeMemory" is an integer
     And the event "device.manufacturer" equals "Apple"
+    And the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the event "device.runtimeVersions" is not null
-    And the event "device.totalMemory" is not null
+    And the event "device.time" is a timestamp
+    And the event "device.totalMemory" is an integer
     And the event "metaData.custom.bar" equals "foo"
     And the event "session.id" is not null
     And the event "session.startedAt" is not null

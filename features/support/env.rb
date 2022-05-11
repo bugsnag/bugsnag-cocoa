@@ -51,6 +51,20 @@ Before('@stress_test') do |_scenario|
   skip_this_scenario('Skipping: Run is not configured for stress tests') if ENV['STRESS_TEST'].nil?
 end
 
+Maze.hooks.before do |_scenario|
+  $started_at = Time.now
+  if Maze.config.os == 'ios' && Maze.config.farm == :local
+    begin
+      $logger_pid = Process.spawn(
+        'idevicesyslog', '-u', Maze.config.device_id, '-m', 'iOSTestApp',
+        %i[err out] => File.open('device.log', 'w')
+      )
+    rescue Errno::ENOENT
+      p 'Install libimobiledevice to capture iOS device logs'
+    end
+  end
+end
+
 Maze.hooks.after do |scenario|
   folder1 = File.join(Dir.pwd, 'maze_output')
   folder2 = scenario.failed? ? 'failed' : 'passed'
@@ -61,14 +75,32 @@ Maze.hooks.after do |scenario|
   FileUtils.makedirs(path)
 
   if Maze.config.os == 'macos'
-    FileUtils.mv('/tmp/kscrash.log', path)
-    FileUtils.mv('macOSTestApp.log', path)
-    Process.kill('KILL', $fixture_pid) if $fixture_pid
-    $fixture_pid = nil
+    if $fixture_pid # will be nil if scenario was skipped
+      Process.kill 'KILL', $fixture_pid
+      Process.waitpid $fixture_pid
+      $fixture_pid = nil
+      sleep 1 # prevent log bleed between scenarios due to second precision of --start
+      log = Process.spawn(
+        '/usr/bin/log', 'show', '--style', 'syslog', '--predicate',
+        'eventMessage contains "macOSTestApp" OR process == "macOSTestApp"',
+        '--start', $started_at.strftime('%Y-%m-%d %H:%M:%S%z'),
+        out: File.open(File.join(path, 'device.log'), 'w')
+      )
+      Process.wait log
+      FileUtils.mv '/tmp/kscrash.log', path
+    end
   else
-    data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
-    File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
+    if $logger_pid
+      Process.kill 'TERM', $logger_pid
+      Process.waitpid $logger_pid
+      $logger_pid = nil
+      FileUtils.mv 'device.log', path
+    end
+    begin
+      data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
+      File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
+    rescue StandardError
+      p "Maze.driver.pull_file failed: #{$ERROR_INFO}"
+    end
   end
-rescue
-  # pull_file can fail on BrowserStack iOS 10 with "Error: Command 'umount' not found"
 end

@@ -20,9 +20,14 @@
 
 @implementation OOMScenario
 
+void onCrashHandler(const BSG_KSCrashReportWriter *writer) {
+    assert(!"onCrashHandler should not be called for OOMs");
+}
+
 - (void)startBugsnag {
     self.config.autoTrackSessions = YES;
     self.config.enabledErrorTypes.ooms = YES;
+    self.config.onCrashHandler = onCrashHandler;
     self.config.launchDurationMillis = 0; // Ensure isLaunching will be true for the OOM, no matter how long it takes to occur.
     self.config.appType = @"vanilla";
     self.config.appVersion = @"3.2.1";

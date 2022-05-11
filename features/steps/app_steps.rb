@@ -142,10 +142,13 @@ def wait_for_true
 end
 
 def run_macos_app
-  Process.kill('KILL', $fixture_pid) if $fixture_pid
+  if $fixture_pid
+    Process.kill 'KILL', $fixture_pid
+    Process.waitpid $fixture_pid
+  end
   $fixture_pid = Process.spawn(
     { 'MAZE_RUNNER' => 'TRUE' },
     'features/fixtures/macos/output/macOSTestApp.app/Contents/MacOS/macOSTestApp',
-    %i[err out] => ['macOSTestApp.log', File::APPEND | File::CREAT | File::RDWR]
+    %i[err out] => :close
   )
 end

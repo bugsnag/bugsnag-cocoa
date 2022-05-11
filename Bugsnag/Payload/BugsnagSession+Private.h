@@ -8,6 +8,9 @@
 
 #import <Bugsnag/BugsnagSession.h>
 
+#import "BSGDefines.h"
+#import "BSG_KSCrashReportWriter.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @class BugsnagUser;
@@ -47,5 +50,17 @@ NSDictionary * BSGSessionToEventJson(BugsnagSession *session);
 
 /// Parses a session dictionary from an event's JSON representation.
 BugsnagSession *_Nullable BSGSessionFromEventJson(NSDictionary *_Nullable json, BugsnagApp *app, BugsnagDevice *device, BugsnagUser *user);
+
+/// Saves the session info into bsg_runContext.
+BSG_PRIVATE void BSGSessionUpdateRunContext(BugsnagSession *_Nullable session);
+
+/// Returns session information from bsg_lastRunContext.
+BSG_PRIVATE BugsnagSession *_Nullable BSGSessionFromLastRunContext(BugsnagApp *app, BugsnagDevice *device, BugsnagUser *user);
+
+/// Saves current session information (from bsg_runContext) into a crash report.
+BSG_PRIVATE void BSGSessionWriteCrashReport(const BSG_KSCrashReportWriter *writer);
+
+/// Returns session information from a crash report previously written to by BSGSessionWriteCrashReport or BSSerializeDataCrashHandler.
+BSG_PRIVATE BugsnagSession *_Nullable BSGSessionFromCrashReport(NSDictionary *report, BugsnagApp *app, BugsnagDevice *device, BugsnagUser *user);
 
 NS_ASSUME_NONNULL_END

@@ -56,10 +56,6 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 @property (nonatomic) NSMutableDictionary *extraRuntimeInfo;
 
-#if TARGET_OS_IOS
-@property (strong, nullable, nonatomic) NSString *lastOrientation;
-#endif
-
 @property (strong, nonatomic) BugsnagMetadata *metadata; // Used in BugsnagReactNative
 
 @property (readonly, nonatomic) BugsnagNotifier *notifier; // Used in BugsnagReactNative
@@ -78,16 +74,9 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 /// {
 ///     "app": {
 ///         "codeBundleId": "com.example.app",
-///         "isLaunching": true
 ///     },
 ///     "client": {
 ///         "context": "MyViewController",
-///     },
-///     "deviceState": {
-///         "batteryLevel": 0.5,
-///         "charging": false,
-///         "lowMemoryWarning": "2021-01-01T15:29:02.170Z",
-///         "orientation": "portrait"
 ///     },
 ///     "user": {
 ///         "id": "abc123",
@@ -121,8 +110,6 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 - (BugsnagAppWithState *)generateAppWithState:(NSDictionary *)systemInfo;
 
 - (BugsnagDeviceWithState *)generateDeviceWithState:(NSDictionary *)systemInfo;
-
-- (BugsnagEvent *)generateOutOfMemoryEvent;
 
 - (void)notifyInternal:(BugsnagEvent *)event block:(nullable BugsnagOnErrorBlock)block;
 
