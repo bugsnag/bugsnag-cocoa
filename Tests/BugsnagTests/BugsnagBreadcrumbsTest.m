@@ -13,6 +13,7 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagTestConstants.h"
+#import "BSGDefines.h"
 
 #import <XCTest/XCTest.h>
 #import <mach/mach_init.h>
@@ -27,11 +28,13 @@ struct json_buffer {
     char *buffer;
 };
 
+#if BSG_HAVE_MACH_THREADS
 static int json_buffer_append(const char *data, size_t length, struct json_buffer *buffer) {
     memcpy(buffer->buffer + buffer->length, data, length);
     buffer->length += length;
     return BSG_KSJSON_OK;
 }
+#endif
 
 static int addJSONData(const char *data, size_t length, NSMutableData *userData) {
     [userData appendBytes:data length:length];
@@ -457,6 +460,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqualObjects(breadcrumbs[2][@"metaData"], @{});
 }
 
+#if BSG_HAVE_MACH_THREADS
 static void * executeBlock(void *ptr) {
     ((__bridge_transfer dispatch_block_t)ptr)();
     return NULL;
@@ -541,6 +545,7 @@ static void * executeBlock(void *ptr) {
         pthread_join(threads[i], NULL);
     }
 }
+#endif
 
 - (void)testPerformance {
     NSInteger maxBreadcrumbs = 100;

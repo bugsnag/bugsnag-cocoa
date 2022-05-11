@@ -21,14 +21,9 @@
 #include <os/proc.h>
 #endif
 
-#if TARGET_OS_IOS
 #import "BSGUIKit.h"
-#endif
-
-#if TARGET_OS_OSX
 #import "BSGAppKit.h"
-#endif
-
+#import "BSGWatchKit.h"
 
 #pragma mark Forward declarations
 
@@ -139,6 +134,10 @@ static bool GetIsForeground() {
     }
 
     return applicationState != UIApplicationStateBackground;
+#endif
+
+#if TARGET_OS_WATCH
+    return [WKExtension sharedExtension].applicationState != WKApplicationStateBackground;
 #endif
 }
 

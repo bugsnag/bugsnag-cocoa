@@ -13,6 +13,8 @@
 #import "BugsnagSession+Private.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagTestConstants.h"
+#import "BSGDefines.h"
+#import "BSGWatchKit.h"
 
 @interface BugsnagSessionTrackerTest : XCTestCase
 @property BugsnagConfiguration *configuration;
@@ -154,10 +156,12 @@
 - (void)testStartInBackground {
     [self.sessionTracker startWithNotificationCenter:NSNotificationCenter.defaultCenter isInForeground:NO];
     XCTAssertNil(self.sessionTracker.runningSession, @"There should be no running session after starting tracker in background");
-#if TARGET_OS_IOS || TARGET_OS_TV
-    [NSNotificationCenter.defaultCenter postNotificationName:UIApplicationDidBecomeActiveNotification object:nil];
-#elif TARGET_OS_OSX
+#if BSG_HAVE_WATCHKIT
+    [NSNotificationCenter.defaultCenter postNotificationName:WKApplicationDidBecomeActiveNotification object:nil];
+#elif BSG_HAVE_APPKIT
     [NSNotificationCenter.defaultCenter postNotificationName:NSApplicationDidBecomeActiveNotification object:nil];
+#else
+    [NSNotificationCenter.defaultCenter postNotificationName:UIApplicationDidBecomeActiveNotification object:nil];
 #endif
     XCTAssertNotNil(self.sessionTracker.runningSession, @"There should be a running session after receiving didBecomeActiveNotification");
 }

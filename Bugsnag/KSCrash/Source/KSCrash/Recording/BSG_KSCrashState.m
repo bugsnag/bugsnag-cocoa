@@ -33,16 +33,7 @@
 #import "BSG_KSLogger.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSSystemInfo.h"
-
-#if TARGET_OS_IOS || TARGET_OS_TV
 #import "BSGUIKit.h"
-#endif
-
-#if TARGET_OS_IOS
-#import <mach/mach_init.h>
-#import <mach/task.h>
-#import <mach/task_policy.h>
-#endif
 
 #import <errno.h>
 #import <fcntl.h>
