@@ -10,6 +10,10 @@ def request_matches_row(body, row)
   true
 end
 
+Then('I wait for the fixture to process the response') do
+  sleep 2
+end
+
 Then('the error payload field {string} is equal for error {int} and error {int}') do |key, index_a, index_b|
   Maze.check.true(request_fields_are_equal(key, index_a, index_b))
 end
