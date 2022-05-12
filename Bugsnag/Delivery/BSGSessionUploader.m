@@ -191,8 +191,9 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
         NSString *file = [dir stringByAppendingPathComponent:name];
         NSDate *date = [fileManager attributesOfItemAtPath:file error:nil].fileCreationDate;
         if (!date) {
-            bsg_log_debug(@"Could not determine fileCreationDate for session %@",
+            bsg_log_debug(@"Deleting session %@ because fileCreationDate is nil",
                           file.lastPathComponent.stringByDeletingPathExtension);
+            [fileManager removeItemAtPath:file error:nil];
         }
         dates[file] = date;
     }
