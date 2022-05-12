@@ -40,14 +40,11 @@
 #import "BSG_KSSysCtl.h"
 #import "BSG_KSSystemInfoC.h"
 #import "BugsnagCollections.h"
+#import "BSGDefines.h"
+#import "BSGUIKit.h"
 
 #import <CommonCrypto/CommonDigest.h>
 #import <mach-o/dyld.h>
-
-#if TARGET_OS_IOS || TARGET_OS_TV
-#import "BSGUIKit.h"
-#endif
-
 
 static inline bool is_jailbroken() {
     static bool initialized_jb;
@@ -77,7 +74,11 @@ static NSDictionary * bsg_systemversion() {
     int fd = -1;
     char buffer[1024] = {0};
     const char *file = "/System/Library/CoreServices/SystemVersion.plist";
+#if BSG_HAVE_SYSCALL
     bsg_syscall_open(file, O_RDONLY, 0, &fd);
+#else
+    fd = open(file, O_RDONLY);
+#endif
     if (fd < 0) {
         bsg_log_err(@"Could not open SystemVersion.plist");
         return nil;
@@ -208,7 +209,7 @@ static NSDictionary * bsg_systemversion() {
 + (NSString *)deviceAndAppHash {
     NSMutableData *data = nil;
 
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if BSG_HAVE_UIDEVICE
     if ([[UIDEVICE currentDevice]
             respondsToSelector:@selector(identifierForVendor)]) {
         data = [NSMutableData dataWithLength:16];
@@ -282,6 +283,14 @@ static NSDictionary * bsg_systemversion() {
             return @"arm64";
         }
     }
+    case CPU_TYPE_ARM64_32: {
+        switch (subType) {
+            case CPU_SUBTYPE_ARM64_32_V8:
+                return @"arm64_32_v8";
+            default:
+                return @"arm64_32";
+        }
+    }
     case CPU_TYPE_X86:
         return @"x86";
     case CPU_TYPE_X86_64:
@@ -342,6 +351,9 @@ static NSDictionary * bsg_systemversion() {
 #elif TARGET_OS_TV
     sysInfo[@BSG_KSSystemField_SystemName] = @"tvOS";
 #endif // TARGET_OS_IOS
+#if TARGET_OS_WATCH
+    sysInfo[@BSG_KSSystemField_SystemName] = @"watchOS";
+#endif
 
     NSDictionary *env = NSProcessInfo.processInfo.environment;
     sysInfo[@BSG_KSSystemField_SystemVersion] = env[@"SIMULATOR_RUNTIME_VERSION"];
@@ -369,6 +381,8 @@ static NSDictionary * bsg_systemversion() {
     }
 #elif TARGET_OS_TV
     NSString *systemName = @"tvOS";
+#elif TARGET_OS_WATCH
+    NSString *systemName = @"watchOS";
 #endif
 
     sysInfo[@BSG_KSSystemField_SystemName] = systemName;

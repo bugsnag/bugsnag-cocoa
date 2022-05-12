@@ -64,18 +64,9 @@
 #import "BugsnagSystemState.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
-
-#if TARGET_OS_IOS || TARGET_OS_TV
-#define BSG_OOM_AVAILABLE 1
-#else
-#define BSG_OOM_AVAILABLE 0
-#endif
-
-#if TARGET_OS_IOS
-#import "BSGUIKit.h"
-#elif TARGET_OS_OSX
+#import "BSGDefines.h"
 #import "BSGAppKit.h"
-#endif
+#import "BSGUIKit.h"
 
 static NSString *const BSTabCrash = @"crash";
 static NSString *const BSAttributeDepth = @"depth";
@@ -146,7 +137,7 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 
 // MARK: -
 
-@interface BugsnagClient () <BSGAppHangDetectorDelegate, BSGBreadcrumbSink, BSGInternalErrorReporterDataSource>
+@interface BugsnagClient () <BSGBreadcrumbSink, BSGInternalErrorReporterDataSource>
 
 @property (nonatomic) BSGNotificationBreadcrumbs *notificationBreadcrumbs;
 
@@ -158,6 +149,10 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 
 @end
 
+#if BSG_HAVE_APP_HANG_DETECTION
+@interface BugsnagClient () <BSGAppHangDetectorDelegate>
+@end
+#endif
 
 // MARK: -
 
@@ -232,8 +227,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
     [self.breadcrumbs removeAllBreadcrumbs];
 
+#if BSG_HAVE_REACHABILITY
     [self setupConnectivityListener];
-    
+#endif
+
     self.notificationBreadcrumbs = [[BSGNotificationBreadcrumbs alloc] initWithConfiguration:self.configuration breadcrumbSink:self];
     [self.notificationBreadcrumbs start];
 
@@ -241,10 +238,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     [center addObserver:self
                selector:@selector(applicationWillTerminate:)
-#if TARGET_OS_IOS || TARGET_OS_TV
-                   name:UIApplicationWillTerminateNotification
-#elif TARGET_OS_OSX
+#if BSG_HAVE_APPKIT
                    name:NSApplicationWillTerminateNotification
+#else
+                   name:UIApplicationWillTerminateNotification
 #endif
                  object:nil];
 
@@ -285,9 +282,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     
     [self.eventUploader uploadStoredEvents];
     
+#if BSG_HAVE_APP_HANG_DETECTION
     // App hang detector deliberately started after sendLaunchCrashSynchronously (which by design may itself trigger an app hang)
     // Note: BSGAppHangDetector itself checks configuration.enabledErrorTypes.appHangs
     [self startAppHangDetector];
+#endif
 }
 
 - (void)appLaunchTimerFired:(__attribute__((unused)) NSTimer *)timer {
@@ -333,18 +332,20 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         unlink(crashSentinelPath);
         didCrash = YES;
     }
+#if BSG_HAVE_APP_HANG_DETECTION
     // Was the app terminated while the main thread was hung?
     else if ((self.eventFromLastLaunch = [self loadAppHangEvent]).unhandled) {
         bsg_log_info(@"Last run terminated during an app hang.");
         didCrash = YES;
     }
+#endif
     else if (self.configuration.autoDetectErrors && BSGRunContextWasKilled()) {
         if (BSGRunContextWasCriticalThermalState()) {
             bsg_log_info(@"Last run terminated during a critical thermal state.");
             if (self.configuration.enabledErrorTypes.thermalKills) {
                 self.eventFromLastLaunch = [self generateThermalKillEvent];
             }
-#if BSG_OOM_AVAILABLE
+#if BSG_HAVE_OOM_DETECTION
         } else {
             bsg_log_info(@"Last run terminated unexpectedly; possible Out Of Memory.");
             if (self.configuration.enabledErrorTypes.ooms) {
@@ -382,7 +383,9 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 - (void)applicationWillTerminate:(__unused NSNotification *)notification {
     [[NSNotificationCenter defaultCenter] removeObserver:self.sessionTracker];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+#if BSG_HAVE_REACHABILITY
     [BSGConnectivity stopMonitoring];
+#endif
 
 #if TARGET_OS_IOS
     [UIDEVICE currentDevice].batteryMonitoringEnabled = NO;
@@ -410,6 +413,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 // MARK: - Connectivity Listener
 // =============================================================================
 
+#if BSG_HAVE_REACHABILITY
 /**
  * Monitor the Bugsnag endpoint to detect changes in connectivity,
  * flush pending events when (re)connected and report connectivity
@@ -435,6 +439,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                 andMetadata:@{@"type": connectionType}];
     }];
 }
+#endif
 
 // =============================================================================
 // MARK: - Breadcrumbs
@@ -971,14 +976,17 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
 // MARK: - App Hangs
 
+#if BSG_HAVE_APP_HANG_DETECTION
 - (void)startAppHangDetector {
     [NSFileManager.defaultManager removeItemAtPath:BSGFileLocations.current.appHangEvent error:nil];
 
     self.appHangDetector = [[BSGAppHangDetector alloc] init];
     [self.appHangDetector startWithDelegate:self];
 }
+#endif
 
 - (void)appHangDetectedAtDate:(NSDate *)date withThreads:(NSArray<BugsnagThread *> *)threads systemInfo:(NSDictionary *)systemInfo {
+#if BSG_HAVE_APP_HANG_DETECTION
     NSString *message = [NSString stringWithFormat:@"The app's main thread failed to respond to an event within %d milliseconds",
                          (int)self.configuration.appHangThresholdMillis];
 
@@ -1026,9 +1034,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     if (![BSGJSONSerialization writeJSONObject:json toFile:BSGFileLocations.current.appHangEvent options:0 error:&writeError]) {
         bsg_log_err(@"Could not write app_hang.json: %@", error);
     }
+#endif
 }
 
 - (void)appHangEnded {
+#if BSG_HAVE_APP_HANG_DETECTION
     NSError *error = nil;
     if (![NSFileManager.defaultManager removeItemAtPath:BSGFileLocations.current.appHangEvent error:&error]) {
         bsg_log_err(@"Could not delete app_hang.json: %@", error);
@@ -1039,8 +1049,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         [self notifyInternal:(BugsnagEvent * _Nonnull)self.appHangEvent block:nil];
     }
     self.appHangEvent = nil;
+#endif
 }
 
+#if BSG_HAVE_APP_HANG_DETECTION
 - (nullable BugsnagEvent *)loadAppHangEvent {
     NSError *error = nil;
     NSDictionary *json = [BSGJSONSerialization JSONObjectWithContentsOfFile:BSGFileLocations.current.appHangEvent options:0 error:&error];
@@ -1078,6 +1090,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     return event;
 }
+#endif
 
 // MARK: - Event generation
 

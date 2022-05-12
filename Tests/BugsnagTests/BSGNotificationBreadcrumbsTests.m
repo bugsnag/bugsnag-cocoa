@@ -12,6 +12,7 @@
 
 #import "BSGNotificationBreadcrumbs.h"
 #import "BugsnagBreadcrumb+Private.h"
+#import "BSGDefines.h"
 
 #if TARGET_OS_IOS || TARGET_OS_TV
 #import "UISceneStub.h"
@@ -57,6 +58,7 @@
 @implementation BSGMockViewController
 @end
 
+#if BSG_HAVE_WINDOW
 
 #if TARGET_OS_OSX
 @interface BSGMockWindow: NSWindow
@@ -83,6 +85,8 @@
 - (UIViewController *)rootViewController {return (UIViewController *)self.mockViewController;}
 #endif
 @end
+
+#endif
 
 
 #if TARGET_OS_IOS
