@@ -7,8 +7,7 @@ Feature: Delivery of errors
     When I set the HTTP status code for the next request to 500
     And I run "HandledExceptionScenario"
     And I wait to receive an error
-    # Wait for fixture to receive the response and save the payload
-    And I wait for 2 seconds
+    And I wait for the fixture to process the response
     And I relaunch the app
     And I clear the error queue
     And I configure Bugsnag for "HandledExceptionScenario"
@@ -50,3 +49,27 @@ Feature: Delivery of errors
     And I wait to receive 2 errors
     And I discard the oldest error
     And the event "metaData.bugsnag.startDuration" is between 0.0 and 0.5
+
+  Scenario: Session delivery should be retried for recent payloads
+    Given I set the HTTP status code for the next request to 500
+    And I run "AutoSessionScenario"
+    And I wait to receive a session
+    And I wait for the fixture to process the response
+    And I relaunch the app
+    When I run "AutoSessionScenario"
+    Then I wait to receive 3 sessions
+
+  Scenario: Session delivery should not be retried for old payloads
+    Given I set the HTTP status code for the next request to 500
+    And I set the app to "old" mode
+    And I run "OldSessionScenario"
+    And I wait to receive a session
+    And I wait for the fixture to process the response
+    And I discard the oldest session
+    And I relaunch the app
+    When I set the app to "new" mode
+    And I run "OldSessionScenario"
+    And I wait to receive a session
+    Then the session "user.id" equals "new"
+    And I discard the oldest session
+    And I should receive no requests
