@@ -50,14 +50,8 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
                   toURL:(NSURL *)url
       completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error))completionHandler {
     
-    if (![BSGJSONSerialization isValidJSONObject:payload]) {
-        bsg_log_err(@"Error: Invalid JSON payload passed to %s", __PRETTY_FUNCTION__);
-        completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, nil);
-        return;
-    }
-    
     NSError *error = nil;
-    NSData *data = [BSGJSONSerialization dataWithJSONObject:payload options:0 error:&error];
+    NSData *data = BSGJSONDataFromDictionary(payload, &error);
     if (!data) {
         bsg_log_err(@"Error: Could not encode JSON payload passed to %s", __PRETTY_FUNCTION__);
         completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, error);

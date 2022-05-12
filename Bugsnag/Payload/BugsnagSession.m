@@ -67,9 +67,6 @@ NSDictionary * BSGSessionToDictionary(BugsnagSession *session) {
 }
 
 BugsnagSession *_Nullable BSGSessionFromDictionary(NSDictionary *json) {
-    if (![json isKindOfClass:[NSDictionary class]]) {
-        return nil;
-    }
     NSString *sessionId = json[BSGKeyId];
     NSDate *startedAt = [BSG_RFC3339DateTool dateFromString:json[BSGKeyStartedAt]];
     if (!sessionId || !startedAt) {

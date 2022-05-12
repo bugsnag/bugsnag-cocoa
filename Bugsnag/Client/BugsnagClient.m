@@ -227,7 +227,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self computeDidCrashLastLaunch];
 
     // These files can only be overwritten once the previous contents have been read; see -generateEventForLastLaunchWithError:
-    [BSGJSONSerialization writeJSONObject:self.configuration.dictionaryRepresentation toFile:BSGFileLocations.current.configuration options:0 error:nil];
+    BSGJSONWriteDictionaryToFile(self.configuration.dictionaryRepresentation, BSGFileLocations.current.configuration, nil);
     [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:BSGFileLocations.current.metadata];
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
     [self.breadcrumbs removeAllBreadcrumbs];
@@ -1023,8 +1023,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     
     NSError *writeError = nil;
     NSDictionary *json = [self.appHangEvent toJsonWithRedactedKeys:self.configuration.redactedKeys];
-    if (![BSGJSONSerialization writeJSONObject:json toFile:BSGFileLocations.current.appHangEvent options:0 error:&writeError]) {
-        bsg_log_err(@"Could not write app_hang.json: %@", error);
+    if (!BSGJSONWriteDictionaryToFile(json, BSGFileLocations.current.appHangEvent, &writeError)) {
+        bsg_log_err(@"Could not write app_hang.json: %@", writeError);
     }
 }
 
@@ -1043,7 +1043,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
 - (nullable BugsnagEvent *)loadAppHangEvent {
     NSError *error = nil;
-    NSDictionary *json = [BSGJSONSerialization JSONObjectWithContentsOfFile:BSGFileLocations.current.appHangEvent options:0 error:&error];
+    NSDictionary *json = BSGJSONDictionaryFromFile(BSGFileLocations.current.appHangEvent, 0, &error);
     if (!json) {
         if (!(error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError)) {
             bsg_log_err(@"Could not read app_hang.json: %@", error);
@@ -1104,7 +1104,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         return nil;
     }
     
-    NSDictionary *stateDict = [BSGJSONSerialization JSONObjectWithContentsOfFile:BSGFileLocations.current.state options:0 error:nil];
+    NSDictionary *stateDict = BSGJSONDictionaryFromFile(BSGFileLocations.current.state, 0, nil);
 
     NSDictionary *appDict = self.systemState.lastLaunchState[SYSTEMSTATE_KEY_APP];
     BugsnagAppWithState *app = [BugsnagAppWithState appFromJson:appDict];
@@ -1112,7 +1112,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     app.inForeground = bsg_lastRunContext->isForeground;
     app.isLaunching = bsg_lastRunContext->isLaunching;
 
-    NSDictionary *configDict = [BSGJSONSerialization JSONObjectWithContentsOfFile:BSGFileLocations.current.configuration options:0 error:nil];
+    NSDictionary *configDict = BSGJSONDictionaryFromFile(BSGFileLocations.current.configuration, 0, nil);
     if (configDict) {
         [app setValuesFromConfiguration:[[BugsnagConfiguration alloc] initWithDictionaryRepresentation:configDict]];
     }
@@ -1130,7 +1130,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         device.freeMemory = @(bsg_lastRunContext->availableMemory);
     }
 
-    NSDictionary *metadataDict = [BSGJSONSerialization JSONObjectWithContentsOfFile:BSGFileLocations.current.metadata options:0 error:nil];
+    NSDictionary *metadataDict = BSGJSONDictionaryFromFile(BSGFileLocations.current.metadata, 0, nil);
     BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:metadataDict ?: @{}];
     
     // Device information that isn't part of `event.device`

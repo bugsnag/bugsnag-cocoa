@@ -102,10 +102,8 @@ bool bsg_kscrashstate_i_loadState(BSG_KSCrash_State *const context,
         return false;
     }
     NSError *error;
-    NSDictionary *dict = [BSGJSONSerialization
-                          JSONObjectWithContentsOfFile:file
-                          options:0 error:&error];
-    if (![dict isKindOfClass:[NSDictionary class]]) {
+    NSDictionary *dict = BSGJSONDictionaryFromFile(file, 0, &error);
+    if (!dict) {
         if (!(error.domain == NSCocoaErrorDomain &&
               error.code == NSFileReadNoSuchFileError)) {
             bsg_log_err(@"%s: Could not load file: %@", path, error);

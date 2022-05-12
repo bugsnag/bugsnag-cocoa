@@ -71,7 +71,7 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
                       stringByAppendingPathExtension:@"json"];
     
     NSError *error;
-    if ([BSGJSONSerialization writeJSONObject:json toFile:file options:0 error:&error]) {
+    if (BSGJSONWriteDictionaryToFile(json, file, &error)) {
         bsg_log_debug(@"Stored session %@", session.id);
         [self pruneFiles];
     } else {
@@ -92,7 +92,7 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
             continue;
         }
         
-        NSDictionary *json = [BSGJSONSerialization JSONObjectWithContentsOfFile:file options:0 error:nil];
+        NSDictionary *json = BSGJSONDictionaryFromFile(file, 0, nil);
         BugsnagSession *session = BSGSessionFromDictionary(json);
         if (!session) {
             bsg_log_debug(@"Deleting invalid session %@",
