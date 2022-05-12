@@ -93,13 +93,6 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
         }
         
         NSDictionary *json = [BSGJSONSerialization JSONObjectWithContentsOfFile:file options:0 error:nil];
-        if (![json isKindOfClass:[NSDictionary class]]) {
-            bsg_log_debug(@"Deleting invalid session %@",
-                          file.lastPathComponent.stringByDeletingPathExtension);
-            [fileManager removeItemAtPath:file error:nil];
-            continue;
-        }
-        
         BugsnagSession *session = BSGSessionFromDictionary(json);
         if (!session) {
             bsg_log_debug(@"Deleting invalid session %@",
