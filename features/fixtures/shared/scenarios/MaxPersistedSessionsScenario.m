@@ -19,11 +19,17 @@
 
     [super startBugsnag];
 
-    [Bugsnag setUser:[self nextUserId] withEmail:nil andName:nil];
-    [Bugsnag startSession];
+    [self performBlockAndWaitForSessionDelivery:^{
+        [Bugsnag setUser:[self nextUserId] withEmail:nil andName:nil];
+        [Bugsnag startSession];
+    }];
 }
 
 - (void)run {
+    // Filesystem timestamps have a resolution of 1 second, so wait to ensure
+    // that the first persisted session will have an older file creation date.
+    [NSThread sleepForTimeInterval:1];
+
     [Bugsnag setUser:[self nextUserId] withEmail:nil andName:nil];
     [Bugsnag startSession];
 }
