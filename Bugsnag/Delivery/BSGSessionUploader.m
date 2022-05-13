@@ -124,8 +124,11 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
     NSMutableArray *sortedFiles = [SortedFiles(fileManager, NULL) mutableCopy];
     
     while (sortedFiles.count > self.config.maxPersistedSessions) {
-        [fileManager removeItemAtPath:(id _Nonnull)sortedFiles.lastObject error:nil];
-        [sortedFiles removeLastObject];
+        NSString *file = sortedFiles[0];
+        bsg_log_debug(@"Deleting %@ to comply with maxPersistedSessions",
+                      file.lastPathComponent.stringByDeletingPathExtension);
+        [fileManager removeItemAtPath:file error:nil];
+        [sortedFiles removeObject:file];
     }
 }
 
