@@ -73,3 +73,19 @@ Feature: Delivery of errors
     Then the session "user.id" equals "new"
     And I discard the oldest session
     And I should receive no requests
+
+  Scenario: The oldest sessions should be deleted to comply with maxPersistedSessions
+    Given I set the HTTP status code to 500
+    And I run "MaxPersistedSessionsScenario"
+    And I wait to receive 2 sessions
+    And the session "user.id" equals "1"
+    And I discard the oldest session
+    And the session "user.id" equals "2"
+    And I discard the oldest session
+    When I set the HTTP status code to 200
+    And I relaunch the app
+    And I configure Bugsnag for "MaxPersistedSessionsScenario"
+    And I wait to receive 2 sessions
+    Then the session "user.id" equals "3"
+    And I discard the oldest session
+    And the session "user.id" equals "2"
