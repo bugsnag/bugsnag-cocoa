@@ -85,7 +85,7 @@ NSDictionary * BSGJSONDictionary(NSDictionary *dictionary) {
     if (!dictionary) {
         return nil;
     }
-    if (BSGJSONDictionaryIsValid(dictionary)) {
+    if (BSGJSONDictionaryIsValid(dictionary, nil)) {
         return dictionary;
     }
     NSMutableDictionary *json = [NSMutableDictionary dictionary];
@@ -94,7 +94,7 @@ NSDictionary * BSGJSONDictionary(NSDictionary *dictionary) {
             continue;
         }
         const id value = dictionary[key];
-        if (BSGJSONDictionaryIsValid(@{key: value})) {
+        if (BSGJSONDictionaryIsValid(@{key: value}, nil)) {
             json[key] = value;
         } else if ([value isKindOfClass:[NSDictionary class]]) {
             json[key] = BSGJSONDictionary(value);

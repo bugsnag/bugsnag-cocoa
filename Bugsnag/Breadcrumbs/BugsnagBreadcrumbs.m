@@ -213,9 +213,10 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
 #pragma mark - File storage
 
 - (NSData *)dataForBreadcrumb:(BugsnagBreadcrumb *)breadcrumb {
+    NSData *data = nil;
     NSError *error = nil;
-    NSData *data = BSGJSONDataFromDictionary([breadcrumb objectValue], &error);
-    if (!data) {
+    NSDictionary *json = [breadcrumb objectValue];
+    if (!json || !(data = BSGJSONDataFromDictionary(json, &error))) {
         bsg_log_err(@"Unable to serialize breadcrumb: %@", error);
     }
     return data;

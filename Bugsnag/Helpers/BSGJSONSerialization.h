@@ -17,13 +17,13 @@ NS_ASSUME_NONNULL_BEGIN
  * This wrapper catches all exceptions and forces everything to be returned as an error.
  */
 
-BOOL BSGJSONDictionaryIsValid(NSDictionary *_Nullable dictionary);
+BOOL BSGJSONDictionaryIsValid(NSDictionary *dictionary, NSError **error);
 
-NSData *_Nullable BSGJSONDataFromDictionary(NSDictionary *_Nullable dictionary, NSError **error);
+NSData *_Nullable BSGJSONDataFromDictionary(NSDictionary *dictionary, NSError **error);
 
 NSDictionary *_Nullable BSGJSONDictionaryFromData(NSData *data, NSJSONReadingOptions options, NSError **error);
 
-BOOL BSGJSONWriteDictionaryToFile(NSDictionary *_Nullable dictionary, NSString *file, NSError **error);
+BOOL BSGJSONWriteDictionaryToFile(NSDictionary *dictionary, NSString *file, NSError **error);
 
 NSDictionary *_Nullable BSGJSONDictionaryFromFile(NSString *file, NSJSONReadingOptions options, NSError **error);
 
