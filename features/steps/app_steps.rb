@@ -26,7 +26,7 @@ def run_and_relaunch
   steps %(
     Given I click the element "run_scenario"
     And the app is not running
-    Then I relaunch the app
+    Then I kill and relaunch the app
   )
 end
 
@@ -38,11 +38,12 @@ When('I configure Bugsnag for {string}') do |scenario_name|
   execute_command :start_bugsnag, scenario_name
 end
 
-When('I relaunch the app') do
+When('I kill and relaunch the app') do
   case Maze::Helper.get_current_platform
   when 'macos'
     # Pass
   else
+    Maze.driver.close_app
     Maze.driver.launch_app
   end
 end

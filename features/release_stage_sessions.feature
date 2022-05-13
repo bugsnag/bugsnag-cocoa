@@ -8,7 +8,7 @@ Feature: Discarding sessions based on release stage
     And I wait to receive a session
     And the session is valid for the session reporting API
 
-    And I relaunch the app
+    And I kill and relaunch the app
     And I configure Bugsnag for "DisabledReleaseStageAutoSessionScenario"
     Then I should receive no errors
 
@@ -17,6 +17,6 @@ Feature: Discarding sessions based on release stage
     And I wait to receive a session
     And the session is valid for the session reporting API
 
-    And I relaunch the app
+    And I kill and relaunch the app
     And I configure Bugsnag for "DisabledReleaseStageManualSessionScenario"
     Then I should receive no errors

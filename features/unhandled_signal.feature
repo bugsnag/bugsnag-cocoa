@@ -59,7 +59,7 @@ Feature: Signals are captured as error reports in Bugsnag
   Scenario: No error should be reported if SIGPIPE is ignored
     Given I run "SIGPIPEIgnoredScenario"
     And I wait to receive a session
-    And I relaunch the app
+    And I kill and relaunch the app
     And I configure Bugsnag for "SIGPIPEIgnoredScenario"
     Then I should receive no errors
 

@@ -147,7 +147,7 @@ Feature: Reporting crash events
     # Sleep and relaunch here instead of checking the app state as this specific
     # crash seems to inhibit Appium's ability to check the app state on iOS 10
     And I wait for 3 seconds
-    And I relaunch the app
+    And I kill and relaunch the app
 
     And I configure Bugsnag for "AsyncSafeThreadScenario"
     And I wait to receive an error

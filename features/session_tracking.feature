@@ -107,7 +107,7 @@ Feature: Session Tracking
   Scenario: Encountering an unhandled event during a session
     When I run "AutoSessionUnhandledScenario"
     And I wait for 4 seconds
-    And I relaunch the app
+    And I kill and relaunch the app
     And I set the app to "noevent" mode
     And I configure Bugsnag for "AutoSessionUnhandledScenario"
     And I wait to receive a session
@@ -127,7 +127,7 @@ Feature: Session Tracking
   Scenario: Encountering handled and unhandled events during a session
     When I run "AutoSessionMixedEventsScenario"
     And I wait for 5 seconds
-    And I relaunch the app
+    And I kill and relaunch the app
     And I configure Bugsnag for "AutoSessionMixedEventsScenario"
     And I wait to receive 2 sessions
     Then the session is valid for the session reporting API
