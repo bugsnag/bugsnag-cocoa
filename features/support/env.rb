@@ -52,7 +52,11 @@ Before('@stress_test') do |_scenario|
 end
 
 Maze.hooks.before do |_scenario|
+  # Reset to defaults in case previous scenario changed them
+  Maze.config.captured_invalid_requests = Set[:errors, :sessions, :builds, :uploads, :sourcemaps]
+
   $started_at = Time.now
+
   if Maze.config.os == 'ios' && Maze.config.farm == :local
     begin
       $logger_pid = Process.spawn(

@@ -2,6 +2,7 @@ Feature: Launch detection
 
   Background:
     Given I clear all persistent data
+    And I ignore invalid sessions
 
   Scenario: LastRunInfo consecutiveLaunchCrashes increments when isLaunching is true
     When I run "LastRunInfoScenario" and relaunch the crashed app
