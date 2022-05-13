@@ -61,7 +61,7 @@ NSDictionary *_Nullable BSGJSONDictionaryFromData(NSData *data, NSJSONReadingOpt
     return nil;
 }
 
-BOOL BSGJSONWriteDictionaryToFile(NSDictionary *JSONObject, NSString *file, NSError **errorPtr) {
+BOOL BSGJSONWriteToFileAtomically(NSDictionary *JSONObject, NSString *file, NSError **errorPtr) {
     NSData *data = BSGJSONDataFromDictionary(JSONObject, errorPtr);
     return [data writeToFile:file options:NSDataWritingAtomic error:errorPtr];
 }

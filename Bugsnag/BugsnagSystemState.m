@@ -174,7 +174,7 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
 - (void)sync {
     NSDictionary *state = self.currentLaunchState;
     NSError *error = nil;
-    if (!BSGJSONWriteDictionaryToFile(state, self.persistenceFilePath, &error)) {
+    if (!BSGJSONWriteToFileAtomically(state, self.persistenceFilePath, &error)) {
         bsg_log_err(@"System state cannot be written as JSON: %@", error);
     }
 }

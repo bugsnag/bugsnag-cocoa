@@ -71,7 +71,7 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
                       stringByAppendingPathExtension:@"json"];
     
     NSError *error;
-    if (BSGJSONWriteDictionaryToFile(json, file, &error)) {
+    if (BSGJSONWriteToFileAtomically(json, file, &error)) {
         bsg_log_debug(@"Stored session %@", session.id);
         [self pruneFiles];
     } else {

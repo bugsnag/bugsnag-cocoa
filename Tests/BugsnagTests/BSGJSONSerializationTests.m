@@ -37,14 +37,14 @@
     
     NSString *file = [NSTemporaryDirectory() stringByAppendingPathComponent:@(__PRETTY_FUNCTION__)];
     
-    XCTAssertTrue(BSGJSONWriteDictionaryToFile(validJSON, file, nil));
+    XCTAssertTrue(BSGJSONWriteToFileAtomically(validJSON, file, nil));
 
     XCTAssertEqualObjects(BSGJSONDictionaryFromFile(file, 0, nil), @{@"foo": @"bar"});
     
     [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
     
     NSError *error = nil;
-    XCTAssertFalse(BSGJSONWriteDictionaryToFile(invalidJSON, file, &error));
+    XCTAssertFalse(BSGJSONWriteToFileAtomically(invalidJSON, file, &error));
     XCTAssertNotNil(error);
     
     error = nil;
@@ -54,7 +54,7 @@
     NSString *unwritablePath = @"/System/Library/foobar";
     
     error = nil;
-    XCTAssertFalse(BSGJSONWriteDictionaryToFile(validJSON, unwritablePath, &error));
+    XCTAssertFalse(BSGJSONWriteToFileAtomically(validJSON, unwritablePath, &error));
     XCTAssertNotNil(error);
     
     error = nil;

@@ -254,7 +254,7 @@ static NSString * const RecrashReportPrefix = @"RecrashReport-";
     dispatch_sync(BSGGetFileSystemQueue(), ^{
         NSString *file = [[self.eventsDirectory stringByAppendingPathComponent:[NSUUID UUID].UUIDString] stringByAppendingPathExtension:@"json"];
         NSError *error = nil;
-        if (!BSGJSONWriteDictionaryToFile(eventPayload, file, &error)) {
+        if (!BSGJSONWriteToFileAtomically(eventPayload, file, &error)) {
             bsg_log_err(@"Error encountered while saving event payload for retry: %@", error);
             return;
         }

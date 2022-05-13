@@ -23,7 +23,7 @@ NSData *_Nullable BSGJSONDataFromDictionary(NSDictionary *dictionary, NSError **
 
 NSDictionary *_Nullable BSGJSONDictionaryFromData(NSData *data, NSJSONReadingOptions options, NSError **error);
 
-BOOL BSGJSONWriteDictionaryToFile(NSDictionary *dictionary, NSString *file, NSError **error);
+BOOL BSGJSONWriteToFileAtomically(NSDictionary *dictionary, NSString *file, NSError **error);
 
 NSDictionary *_Nullable BSGJSONDictionaryFromFile(NSString *file, NSJSONReadingOptions options, NSError **error);
 

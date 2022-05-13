@@ -227,7 +227,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self computeDidCrashLastLaunch];
 
     // These files can only be overwritten once the previous contents have been read; see -generateEventForLastLaunchWithError:
-    BSGJSONWriteDictionaryToFile(self.configuration.dictionaryRepresentation, BSGFileLocations.current.configuration, nil);
+    BSGJSONWriteToFileAtomically(self.configuration.dictionaryRepresentation, BSGFileLocations.current.configuration, nil);
     [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:BSGFileLocations.current.metadata];
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
     [self.breadcrumbs removeAllBreadcrumbs];
@@ -1023,7 +1023,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     
     NSError *writeError = nil;
     NSDictionary *json = [self.appHangEvent toJsonWithRedactedKeys:self.configuration.redactedKeys];
-    if (!BSGJSONWriteDictionaryToFile(json, BSGFileLocations.current.appHangEvent, &writeError)) {
+    if (!BSGJSONWriteToFileAtomically(json, BSGFileLocations.current.appHangEvent, &writeError)) {
         bsg_log_err(@"Could not write app_hang.json: %@", writeError);
     }
 }
