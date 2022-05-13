@@ -84,10 +84,10 @@ Build the test iOS fixture:
 
 1. Run Maze Runner as follows, adjusting for your specific device:
     ```shell script
-    bundle exec maze-runner --app=features/fixtures/ios/output/iOSTestApp.ipa \
+    bundle exec maze-runner --farm=local                                      \
+                            --app=features/fixtures/ios/output/iOSTestApp.ipa \
                             --udid=<udid>                                     \
                             --os=ios                                          \
-                            --os-version=14                                   \
                             features/app_and_device_attributes.feature
     ```
    `<udid>` is the device Identifier found under Devices and Simulators in Xcode.
