@@ -25,8 +25,8 @@
 }
 
 - (BugsnagEvent *)loadEventAndReturnError:(NSError * __autoreleasing *)errorPtr {
-    id json = [BSGJSONSerialization JSONObjectWithContentsOfFile:self.file options:0 error:errorPtr];
-    if (![json isKindOfClass:[NSDictionary class]]) {
+    NSDictionary *json = BSGJSONDictionaryFromFile(self.file, 0, errorPtr);
+    if (!json) {
         return nil;
     }
     return [[BugsnagEvent alloc] initWithJson:json];
