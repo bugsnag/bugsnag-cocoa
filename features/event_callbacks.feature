@@ -124,7 +124,7 @@ Feature: Callbacks can access and modify event information
     And I clear the error queue
     # Wait for fixture to receive the response and save the payload
     And I wait for 2 seconds
-    And I relaunch the app
+    And I kill and relaunch the app
     And I configure Bugsnag for "OnSendErrorPersistenceScenario"
     And I wait to receive an error
     Then the event "metaData.unexpected.message" is null

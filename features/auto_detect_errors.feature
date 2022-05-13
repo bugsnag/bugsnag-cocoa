@@ -12,7 +12,7 @@ Feature: autoDetectErrors flag controls whether errors are captured automaticall
         And the error payload field "events" is an array with 1 elements
         And the event "unhandled" is false
         And I discard the oldest error
-        And I relaunch the app
+        And I kill and relaunch the app
         When I run "AutoDetectFalseNSExceptionScenario" and relaunch the crashed app
         And I configure Bugsnag for "AutoDetectFalseHandledScenario"
         Then I should receive no requests
@@ -24,7 +24,7 @@ Feature: autoDetectErrors flag controls whether errors are captured automaticall
         And the error payload field "events" is an array with 1 elements
         And the event "unhandled" is false
         And I discard the oldest error
-        And I relaunch the app
+        And I kill and relaunch the app
         When I run "AutoDetectFalseAbortScenario" and relaunch the crashed app
         And I configure Bugsnag for "AutoDetectFalseHandledScenario"
         Then I should receive no requests

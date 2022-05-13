@@ -2,7 +2,7 @@
 Feature: Out of memory errors
 
 # Due to the combination of BrowserStack's behaviour when resetting the app and the way that our OOM detection works,
-# the I relaunch the app steps are currently sufficient to trigger the OOM mechanism. However, these tests may not
+# the I kill and relaunch the app steps are currently sufficient to trigger the OOM mechanism. However, these tests may not
 # behave in the same way on local devices, device farms other that BrowserStack, or if we change that OOM detection works.
 
   Background:
@@ -21,7 +21,7 @@ Feature: Out of memory errors
     And the event has a "manual" breadcrumb named "OOMLoadScenarioBreadcrumb"
     And I discard the oldest error
 
-    When I relaunch the app
+    When I kill and relaunch the app
     And I configure Bugsnag for "OOMLoadScenario"
 
     And I wait to receive a session
@@ -76,7 +76,7 @@ Feature: Out of memory errors
     And the exception "message" equals "OOMAutoDetectErrorsScenario"
     And I discard the oldest error
 
-    And I relaunch the app
+    And I kill and relaunch the app
     And I run "OOMAutoDetectErrorsScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -91,7 +91,7 @@ Feature: Out of memory errors
     And the exception "message" equals "OOMEnabledErrorTypesScenario"
     And I discard the oldest error
 
-    And I relaunch the app
+    And I kill and relaunch the app
     And I run "OOMEnabledErrorTypesScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
