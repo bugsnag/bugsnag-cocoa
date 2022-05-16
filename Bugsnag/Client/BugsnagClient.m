@@ -697,7 +697,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         deviceMetadata[BSGKeyCharging] = bsg_runContext->batteryState >= UIDeviceBatteryStateCharging ? @YES : @NO;
     }
 #endif
-    if (@available(iOS 11.0, tvOS 11.0, *)) {
+    if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
         deviceMetadata[BSGKeyThermalState] = BSGStringFromThermalState(bsg_runContext->thermalState);
     }
     [event.metadata addMetadata:deviceMetadata toSection:BSGKeyDevice];
@@ -1157,7 +1157,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     // Don't set to @NO because server may interpret any non-nil value as meaning true
     deviceMetadata[BSGKeyLowMemoryWarning] = BSGRunContextWasMemoryWarning() ? @YES : nil;
 #endif
-    if (@available(iOS 11.0, tvOS 11.0, *)) {
+    if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
         deviceMetadata[BSGKeyThermalState] = BSGStringFromThermalState(bsg_lastRunContext->thermalState);
     }
     [metadata addMetadata:deviceMetadata toSection:BSGKeyDevice];

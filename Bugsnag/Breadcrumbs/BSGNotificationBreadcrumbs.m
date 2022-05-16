@@ -237,7 +237,7 @@
                                       object:nil];
 #endif
         
-        if (@available(iOS 11.0, tvOS 11.0, *)) {
+        if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
             [self.notificationCenter addObserver:self
                                         selector:@selector(thermalStateDidChange:)
                                             name:NSProcessInfoThermalStateDidChangeNotification

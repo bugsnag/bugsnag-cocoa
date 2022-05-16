@@ -462,6 +462,8 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                          params:nil];
         }];
 
+#if !TARGET_OS_WATCH
+        // TODO: Rewrite these to support the much more strict HTTP library in watchOS and later iOS
         [self resetBreadcrumbs];
         [self runMultipartTasksWithURL:urlString
                            method:@"GET"
@@ -476,6 +478,7 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                             url:urlString
                          params:nil];
         }];
+#endif
 
         [self resetBreadcrumbs];
         [self runDownloadTasksWithURL:urlString
@@ -492,6 +495,8 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                          params:nil];
         }];
 
+#if !TARGET_OS_WATCH
+        // TODO: Rewrite these to support the much more strict HTTP library in watchOS and later iOS
         [self resetBreadcrumbs];
         [self runUploadTasksWithURL:urlString
                        statusCode:statusCode
@@ -505,11 +510,17 @@ typedef void (^CompletionHandler)(NSData *data, NSURLResponse *response, NSError
                             url:urlString
                          params:nil];
         }];
+#endif
     }
 }
 
 - (void)testTaskMethods {
+#if TARGET_OS_WATCH
+    // TODO: Rewrite these to support the much more strict HTTP library in watchOS and later iOS
+    for (NSString *method in @[@"GET", @"HEAD"]) {
+#else
     for (NSString *method in @[@"GET", @"HEAD", @"POST", @"PUT", @"DELETE", @"CONNECT", @"OPTIONS", @"TRACE", @"PATCH"]) {
+#endif
         [self resetBreadcrumbs];
         [self runDataTasksWithURL:@"https://bugsnag.com/?a=b&c=d"
                            method:method
