@@ -83,7 +83,7 @@ Feature: Delivery of errors
     And the session "user.id" equals "2"
     And I discard the oldest session
     When I set the HTTP status code to 200
-    And I relaunch the app
+    And I kill and relaunch the app
     And I configure Bugsnag for "MaxPersistedSessionsScenario"
     And I wait to receive 2 sessions
     Then the session "user.id" equals "3"
