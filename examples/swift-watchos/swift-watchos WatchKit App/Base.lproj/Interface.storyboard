@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="20037" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+    <device id="watch38"/>
+    <dependencies>
+        <deployment identifier="watchOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="20006"/>
+    </dependencies>
+    <scenes>
+        <!--Interface Controller-->
+        <scene sceneID="aou-V4-d1y">
+            <objects>
+                <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="swift_watchos_WatchKit_App" customModuleProvider="target">
+                    <items>
+                        <label alignment="left" text="Crashes:" id="iWa-e7-zvs"/>
+                        <button width="1" alignment="left" title="C++ Exception" id="WDK-Zw-div">
+                            <connections>
+                                <action selector="generateCPPException" destination="AgC-eL-Hgc" id="vsp-Zp-ovv"/>
+                            </connections>
+                        </button>
+                        <button width="1" alignment="left" title="ObjC Exception" id="56K-Bd-A6M">
+                            <connections>
+                                <action selector="generateObjCException" destination="AgC-eL-Hgc" id="5JQ-M9-dgx"/>
+                            </connections>
+                        </button>
+                        <separator alignment="left" id="u2a-9K-iBf"/>
+                        <label alignment="left" text="Handled:" id="Fw1-Wj-Ayo"/>
+                        <button width="1" alignment="left" title="Handled Error" id="5S1-x0-uO0">
+                            <connections>
+                                <action selector="generateHandledError" destination="AgC-eL-Hgc" id="j63-Yb-Cp6"/>
+                            </connections>
+                        </button>
+                        <separator alignment="left" id="wP1-S5-gbO"/>
+                        <label alignment="left" text="Metadata:" id="Usu-oo-A34"/>
+                        <button width="1" alignment="left" title="Add" id="nNs-fe-YkI">
+                            <connections>
+                                <action selector="addClientMetadata" destination="AgC-eL-Hgc" id="9LJ-zu-BUV"/>
+                            </connections>
+                        </button>
+                        <button width="1" alignment="left" title="Add Filtered" id="YaI-LY-whV">
+                            <connections>
+                                <action selector="addFilteredMetadata" destination="AgC-eL-Hgc" id="whx-NY-xlZ"/>
+                            </connections>
+                        </button>
+                        <button width="1" alignment="left" title="Clear" id="oE3-rx-rjF">
+                            <connections>
+                                <action selector="clearMetadata" destination="AgC-eL-Hgc" id="9sL-O7-FDZ"/>
+                            </connections>
+                        </button>
+                        <separator alignment="left" id="W7V-xH-MNV"/>
+                        <label alignment="left" text="Breadcrumbs:" id="KPk-gp-Iyb"/>
+                        <button width="1" alignment="left" title="Add" id="NXF-mW-pCa">
+                            <connections>
+                                <action selector="addCustomBreadcrumb" destination="AgC-eL-Hgc" id="1Cp-ck-qCc"/>
+                            </connections>
+                        </button>
+                        <button width="1" alignment="left" title="Add + Callback" id="yRb-Jf-RWH">
+                            <connections>
+                                <action selector="addBreadcrumbWithCallback" destination="AgC-eL-Hgc" id="CEt-xh-m33"/>
+                            </connections>
+                        </button>
+                        <separator alignment="left" id="PYs-zP-eRc"/>
+                        <label height="20" alignment="left" text="User:" id="R0M-UZ-sGa"/>
+                        <button width="1" alignment="left" title="Set User" id="edH-n1-cq0">
+                            <connections>
+                                <action selector="setUser" destination="AgC-eL-Hgc" id="M1a-Sb-yum"/>
+                            </connections>
+                        </button>
+                        <separator alignment="left" id="0IR-0E-hb2"/>
+                        <label alignment="left" text="Sessions:" id="5hR-oc-RFp"/>
+                        <button width="1" alignment="left" title="New" id="yV8-og-hTW">
+                            <connections>
+                                <action selector="startNewSession" destination="AgC-eL-Hgc" id="oKn-u1-MCh"/>
+                            </connections>
+                        </button>
+                        <button width="1" alignment="left" title="Pause" id="Yks-30-EdY">
+                            <connections>
+                                <action selector="pauseCurrentSession" destination="AgC-eL-Hgc" id="Yub-6s-6EO"/>
+                            </connections>
+                        </button>
+                        <button width="1" alignment="left" title="Resume" id="rlg-gE-AFR">
+                            <connections>
+                                <action selector="resumeCurrentSession" destination="AgC-eL-Hgc" id="HER-cI-8bG"/>
+                            </connections>
+                        </button>
+                    </items>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="-26" y="-44"/>
+        </scene>
+    </scenes>
+</document>
