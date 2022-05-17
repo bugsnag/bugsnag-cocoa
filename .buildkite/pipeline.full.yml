@@ -28,7 +28,7 @@ steps:
           - "--fail-fast"
           - "--exclude=features/[h-z].*.feature$"
           - "--order=random"
-    concurrency: 9
+    concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
     retry:
@@ -57,7 +57,7 @@ steps:
           - "--fail-fast"
           - "--exclude=features/[a-g].*.feature$"
           - "--order=random"
-    concurrency: 9
+    concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
     retry:
@@ -86,7 +86,7 @@ steps:
           - "--fail-fast"
           - "--exclude=features/[h-z].*.feature$"
           - "--order=random"
-    concurrency: 9
+    concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
     retry:
@@ -115,7 +115,7 @@ steps:
           - "--fail-fast"
           - "--exclude=features/[a-g].*.feature$"
           - "--order=random"
-    concurrency: 9
+    concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
     retry:
@@ -144,7 +144,7 @@ steps:
           - "--fail-fast"
           - "--exclude=features/[h-z].*.feature$"
           - "--order=random"
-    concurrency: 9
+    concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
     retry:
@@ -173,7 +173,7 @@ steps:
           - "--fail-fast"
           - "--exclude=features/[a-g].*.feature$"
           - "--order=random"
-    concurrency: 9
+    concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
     retry:
@@ -204,7 +204,7 @@ steps:
           - "--fail-fast"
           - "--exclude=features/[h-z].*.feature$"
           - "--order=random"
-    concurrency: 9
+    concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
     retry:
@@ -235,7 +235,7 @@ steps:
           - "--fail-fast"
           - "--exclude=features/[a-g].*.feature$"
           - "--order=random"
-    concurrency: 9
+    concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
     retry:
