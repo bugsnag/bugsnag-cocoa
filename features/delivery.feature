@@ -23,6 +23,58 @@ Feature: Delivery of errors
     And I configure Bugsnag for "HandledExceptionScenario"
     Then I should receive no requests
 
+  Scenario: Delivery is not retried for oversized handled payloads
+    Given I set the HTTP status code to 500
+    When I run "OversizedHandledErrorScenario"
+    And I wait to receive an error
+    And I wait for the fixture to process the response
+    # The error should not have been persited
+    And I kill and relaunch the app
+    And I clear the error queue
+    And I configure Bugsnag for "OversizedHandledErrorScenario"
+    Then I should receive no requests
+
+  Scenario: Delivery is not retried for old handled payloads
+    Given I set the HTTP status code to 500
+    When I run "OldHandledErrorScenario"
+    And I wait to receive an error
+    And I wait for the fixture to process the response
+    # The error should now have been persisted
+    And I kill and relaunch the app
+    And I clear the error queue
+    And I configure Bugsnag for "OldHandledErrorScenario"
+    And I wait to receive an error
+    And I wait for the fixture to process the response
+    # The error should now have been deleted 
+    And I kill and relaunch the app
+    And I clear the error queue
+    And I configure Bugsnag for "OldHandledErrorScenario"
+    Then I should receive no requests
+
+  Scenario: Delivery is not retried for oversized crash payloads
+    Given I set the HTTP status code to 500
+    When I run "OversizedCrashReportScenario" and relaunch the crashed app
+    And I configure Bugsnag for "OversizedCrashReportScenario"
+    And I wait to receive an error
+    And I wait for the fixture to process the response
+    # The crash report should now have been deleted
+    And I kill and relaunch the app
+    And I clear the error queue
+    And I configure Bugsnag for "OversizedCrashReportScenario"
+    Then I should receive no requests
+
+  Scenario: Delivery is not retried for old crash payloads
+    Given I set the HTTP status code to 500
+    When I run "OldCrashReportScenario" and relaunch the crashed app
+    And I configure Bugsnag for "OldCrashReportScenario"
+    And I wait to receive an error
+    And I wait for the fixture to process the response
+    # The crash report should now have been deleted
+    And I kill and relaunch the app
+    And I clear the error queue
+    And I configure Bugsnag for "OldCrashReportScenario"
+    Then I should receive no requests
+
   Scenario: Bugsnag.start() should block for 2 seconds after a launch crash
     When I run "SendLaunchCrashesSynchronouslyScenario" and relaunch the crashed app
     And I set the response delay for the next request to 5000 milliseconds
