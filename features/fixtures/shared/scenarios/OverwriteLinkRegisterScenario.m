@@ -24,14 +24,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "OverwriteLinkRegisterScenario.h"
-#include "spin_malloc.h"
+#import "Scenario.h"
+
+#import "spin_malloc.h"
 
 /**
  * Trigger a crash after first overwriting the link register. Crash reporters that insert a stack frame
  * based on the link register can generate duplicate or incorrect stack frames in the report.
  * This does not apply to architectures that do not use a link register, such as x86-64.
  */
+@interface OverwriteLinkRegisterScenario : Scenario
+@end
+
 @implementation OverwriteLinkRegisterScenario
 
 - (NSString *)desc {

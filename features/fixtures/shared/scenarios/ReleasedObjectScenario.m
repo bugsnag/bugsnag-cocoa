@@ -24,12 +24,16 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "ReleasedObjectScenario.h"
+#import "Scenario.h"
+
 #import <objc/message.h>
 
 /**
  * Send a message to an object whose memory has already been freed.
  */
+@interface ReleasedObjectScenario : Scenario
+@end
+
 @implementation ReleasedObjectScenario
 
 - (NSString *)category { return @"Objective-C"; }

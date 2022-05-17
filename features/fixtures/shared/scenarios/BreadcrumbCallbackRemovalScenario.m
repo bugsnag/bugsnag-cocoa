@@ -6,7 +6,10 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "BreadcrumbCallbackRemovalScenario.h"
+#import "Scenario.h"
+
+@interface BreadcrumbCallbackRemovalScenario : Scenario
+@end
 
 @implementation BreadcrumbCallbackRemovalScenario
 

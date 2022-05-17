@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "Scenario.h"
+#import "MarkUnhandledHandledScenario.h"
 
 #import <stdexcept>
 
@@ -32,10 +32,10 @@
  * Throw an uncaught C++ exception. This is a difficult case for crash reporters to handle,
  * as it involves the destruction of the data necessary to generate a correct backtrace.
  */
-@interface CxxExceptionScenario : Scenario
+@interface CxxExceptionOverrideScenario : MarkUnhandledHandledScenario
 @end
 
-@implementation CxxExceptionScenario
+@implementation CxxExceptionOverrideScenario
 
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;

@@ -6,12 +6,12 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "Scenario.h"
+#import "MarkUnhandledHandledScenario.h"
 
-@interface UnhandledMachExceptionScenario : Scenario
+@interface UnhandledMachExceptionOverrideScenario : MarkUnhandledHandledScenario
 @end
 
-@implementation UnhandledMachExceptionScenario
+@implementation UnhandledMachExceptionOverrideScenario
 
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;

@@ -1,5 +1,7 @@
-#import "NSExceptionShiftScenario.h"
-#import <Bugsnag/Bugsnag.h>
+#import "Scenario.h"
+
+@interface NSExceptionShiftScenario : Scenario
+@end
 
 @implementation NSExceptionShiftScenario
 

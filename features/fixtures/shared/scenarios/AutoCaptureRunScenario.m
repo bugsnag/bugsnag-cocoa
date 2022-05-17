@@ -6,7 +6,10 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "AutoCaptureRunScenario.h"
+#import "Scenario.h"
+
+@interface AutoCaptureRunScenario : Scenario
+@end
 
 @implementation AutoCaptureRunScenario
 

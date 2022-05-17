@@ -6,7 +6,13 @@
 //  Copyright © 2018 Bugsnag. All rights reserved.
 //
 
-#import "AutoSessionMixedEventsScenario.h"
+#import "Scenario.h"
+
+@interface AutoSessionMixedEventsScenario : Scenario
+
+@property (copy, nonatomic) dispatch_block_t onEventDelivery;
+
+@end
 
 @interface FirstErr : NSError
 @end

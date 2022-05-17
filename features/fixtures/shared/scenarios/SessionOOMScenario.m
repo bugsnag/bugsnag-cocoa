@@ -1,5 +1,9 @@
-#import "SessionOOMScenario.h"
+#import "Scenario.h"
+
 #import <signal.h>
+
+@interface SessionOOMScenario : Scenario
+@end
 
 @implementation SessionOOMScenario
 

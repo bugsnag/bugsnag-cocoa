@@ -6,7 +6,10 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "SIGILLScenario.h"
+#import "Scenario.h"
+
+@interface SIGILLScenario : Scenario
+@end
 
 @implementation SIGILLScenario
 

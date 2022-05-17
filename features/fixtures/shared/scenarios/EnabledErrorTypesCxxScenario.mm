@@ -1,4 +1,5 @@
-#import "EnabledErrorTypesCxxScenario.h"
+#import "Scenario.h"
+
 #import <exception>
 
 class disabled_cxx_reporting_kaboom_exception : public std::exception {
@@ -13,6 +14,9 @@ const char *disabled_cxx_reporting_kaboom_exception::what() const throw() {
  * Throw an uncaught C++ exception. This is a difficult case for crash reporters to handle,
  * as it involves the destruction of the data necessary to generate a correct backtrace.
  */
+@interface EnabledErrorTypesCxxScenario : Scenario
+@end
+
 @implementation EnabledErrorTypesCxxScenario
 
 - (void)startBugsnag {

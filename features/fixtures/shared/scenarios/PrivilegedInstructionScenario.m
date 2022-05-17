@@ -24,12 +24,16 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "PrivilegedInstructionScenario.h"
-#include "spin_malloc.h"
+#import "Scenario.h"
+
+#import "spin_malloc.h"
 
 /**
  * Attempt to execute an instruction that can only be executed in supervisor mode.
  */
+@interface PrivilegedInstructionScenario : Scenario
+@end
+
 @implementation PrivilegedInstructionScenario
 
 - (void)startBugsnag {

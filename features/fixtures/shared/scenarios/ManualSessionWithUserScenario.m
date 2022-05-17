@@ -6,7 +6,10 @@
 //  Copyright © 2018 Bugsnag. All rights reserved.
 //
 
-#import "ManualSessionWithUserScenario.h"
+#import "Scenario.h"
+
+@interface ManualSessionWithUserScenario : Scenario
+@end
 
 @implementation ManualSessionWithUserScenario
 

@@ -1,4 +1,7 @@
-#import "ResumeSessionOOMScenario.h"
+#import "Scenario.h"
+
+@interface ResumeSessionOOMScenario : Scenario
+@end
 
 @implementation ResumeSessionOOMScenario
 

@@ -24,9 +24,20 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-#import "Scenario.h"
+#import "MarkUnhandledHandledScenario.h"
 
+@interface AbortOverrideScenario : MarkUnhandledHandledScenario
+@end
 
-@interface UndefinedInstructionScenario : Scenario
+@implementation AbortOverrideScenario
+
+- (void)startBugsnag {
+    self.config.autoTrackSessions = NO;
+    [super startBugsnag];
+}
+
+- (void)run {
+    abort();
+}
+
 @end
