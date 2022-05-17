@@ -218,7 +218,6 @@
     NSParameterAssert(context.applicationIsInForeground);
     usleep(1);
     bsg_kscrashstate_notifyAppInForeground(false);
-    BSG_KSCrash_State checkpoint0 = context;
     usleep(1);
 
     memset(&context, 0, sizeof(context));

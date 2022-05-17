@@ -86,7 +86,7 @@
     const int numFrames = 500;
     uintptr_t stackTrace[numFrames];
     for (int i = 0; i < numFrames; i++) {
-        stackTrace[i] = NSLog;
+        stackTrace[i] = (uintptr_t)NSLog;
         assert(stackTrace[i] != 0);
     }
     

@@ -160,7 +160,7 @@
 }
 
 - (void)testNSProcessInfoThermalStateThermalStateNotifications {
-    if (@available(iOS 13.0, tvOS 13.0, *)) {
+    if (@available(iOS 13.0, tvOS 13.0, watchOS 4.0, *)) {
         MockProcessInfo *processInfo = [[MockProcessInfo alloc] init];
         self.notificationObject = processInfo;
         

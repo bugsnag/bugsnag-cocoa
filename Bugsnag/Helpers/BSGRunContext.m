@@ -45,7 +45,7 @@ static void InitRunContext() {
     // event or notification (or prewarming on iOS 15+)
     bsg_runContext->isForeground = GetIsForeground();
     
-    if (@available(iOS 11.0, tvOS 11.0, *)) {
+    if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
         bsg_runContext->thermalState = NSProcessInfo.processInfo.thermalState;
     }
     
@@ -137,7 +137,11 @@ static bool GetIsForeground() {
 #endif
 
 #if TARGET_OS_WATCH
-    return [WKExtension sharedExtension].applicationState != WKApplicationStateBackground;
+    if (@available(watchOS 3.0, *)) {
+        return [WKExtension sharedExtension].applicationState != WKApplicationStateBackground;
+    } else {
+        return false;
+    }
 #endif
 }
 
@@ -257,7 +261,7 @@ static void AddObservers() {
     OBSERVE(NSApplicationWillTerminateNotification, NoteAppWillTerminate);
 #endif
     
-    if (@available(iOS 11.0, tvOS 11.0, *)) {
+    if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
         OBSERVE(NSProcessInfoThermalStateDidChangeNotification, NoteThermalState);
     }
     
