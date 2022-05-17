@@ -34,22 +34,3 @@ class SendLaunchCrashesSynchronouslyScenario: Scenario {
         }
     }
 }
-
-class SendLaunchCrashesSynchronouslyFalseScenario: SendLaunchCrashesSynchronouslyScenario {
-    
-    override func startBugsnag() {
-        config.sendLaunchCrashesSynchronously = false
-        super.startBugsnag()
-    }
-}
-
-class SendLaunchCrashesSynchronouslyLaunchCompletedScenario: SendLaunchCrashesSynchronouslyScenario {
-    
-    override func run() {
-        if eventMode != "report" {
-            NSLog(">>> Calling markLaunchCompleted()")
-            Bugsnag.markLaunchCompleted()
-        }
-        super.run()
-    }
-}

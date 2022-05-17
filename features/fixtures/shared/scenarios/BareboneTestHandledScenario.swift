@@ -1,5 +1,5 @@
 //
-//  BareboneTestScenarios.swift
+//  BareboneTestHandledScenario.swift
 //  macOSTestApp
 //
 //  Created by Nick Dowell on 16/12/2020.
@@ -100,49 +100,4 @@ class BareboneTestHandledScenario: Scenario {
             }
         }
     }
-}
-
-// MARK: -
-
-class BareboneTestUnhandledErrorScenario: Scenario {
-    
-    private var payload: Payload!
-    
-    override func startBugsnag() {
-        if eventMode == "report" {
-            // The version of the app at report time.
-            config.appVersion = "23.4"
-            config.bundleVersion = "23401"
-            config.addOnSendError {
-                if let lastRunInfo = Bugsnag.lastRunInfo {
-                    $0.addMetadata(
-                        ["consecutiveLaunchCrashes": lastRunInfo.consecutiveLaunchCrashes,
-                         "crashed": lastRunInfo.crashed,
-                         "crashedDuringLaunch": lastRunInfo.crashedDuringLaunch
-                        ], section: "lastRunInfo")
-                }
-                return true
-            }
-        } else {
-            // The version of the app at crash time.
-            config.addFeatureFlag(name: "Testing")
-            config.addMetadata(["group": "users"], section: "user")
-            config.appVersion = "12.3"
-            config.bundleVersion = "12301"
-            config.context = "Something"
-            config.setUser("barfoo", withEmail: "barfoo@example.com", andName: "Bar Foo")
-        }
-        super.startBugsnag()
-    }
-    
-    override func run() {
-        // Triggers "Fatal error: Unexpectedly found nil while implicitly unwrapping an Optional value: ..."
-        print(payload.name)
-    }
-}
-
-// MARK: -
-
-private struct Payload: Decodable {
-    let name: String
 }
