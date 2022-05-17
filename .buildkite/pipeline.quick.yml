@@ -79,15 +79,6 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: watchOS 5 unit tests
-    timeout_in_minutes: 10
-    agents:
-      queue: opensource-mac-cocoa-10.15
-    commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=5.1
-    artifact_paths:
-      - logs/*
-
   ##############################################################################
   #
   # E2E tests
