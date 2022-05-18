@@ -10,6 +10,7 @@
 
 #import "BSGKeys.h"
 #import "BSG_KSCrashReportFields.h"
+#import "BSG_KSSysCtl.h"
 #import "BSG_KSSystemInfo.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagApiClient.h"
@@ -26,6 +27,14 @@
 #import "BugsnagStackframe+Private.h"
 #import "BugsnagUser+Private.h"
 
+#if TARGET_OS_IOS || TARGET_OS_TV
+#import "BSGUIKit.h"
+#elif TARGET_OS_WATCH
+#import <WatchKit/WatchKit.h>
+#endif
+
+#import <CommonCrypto/CommonDigest.h>
+
 static NSString * const EventPayloadVersion = @"4.0";
 
 static NSString * const BugsnagDiagnosticsKey = @"BugsnagDiagnostics";
@@ -37,6 +46,8 @@ NSString *BSGErrorDescription(NSError *error) {
     return [NSString stringWithFormat:@"%@ %ld: %@", error.domain, (long)error.code,
             error.userInfo[NSDebugDescriptionErrorKey] ?: error.localizedDescription];
 }
+
+static NSString * DeviceId(void);
 
 
 // MARK: -
@@ -197,9 +208,12 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
     
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     
+    BugsnagDeviceWithState *device = [dataSource generateDeviceWithState:systemInfo];
+    device.id = DeviceId();
+    
     BugsnagEvent *event =
     [[BugsnagEvent alloc] initWithApp:[dataSource generateAppWithState:systemInfo]
-                               device:[dataSource generateDeviceWithState:systemInfo]
+                               device:device
                          handledState:[BugsnagHandledState handledStateWithSeverityReason:HandledError]
                                  user:[[BugsnagUser alloc] init]
                              metadata:metadata
@@ -266,3 +280,43 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
 }
 
 @end
+
+
+// MARK: -
+
+static NSString * DeviceId() {
+    CC_SHA1_CTX ctx;
+    CC_SHA1_Init(&ctx);
+
+#if TARGET_OS_OSX
+    char mac[6] = {0};
+    bsg_kssysctl_getMacAddress(BSGKeyDefaultMacName, mac);
+    CC_SHA1_Update(&ctx, mac, sizeof(mac));
+#elif TARGET_OS_IOS || TARGET_OS_TV
+    uuid_t uuid = {0};
+    [[[UIDEVICE currentDevice] identifierForVendor] getUUIDBytes:uuid];
+    CC_SHA1_Update(&ctx, uuid, sizeof(uuid));
+#elif TARGET_OS_WATCH
+    uuid_t uuid = {0};
+    [[[NSClassFromString(@"WKInterfaceDevice") currentDevice] identifierForVendor] getUUIDBytes:uuid];
+    CC_SHA1_Update(&ctx, uuid, sizeof(uuid));
+#else
+#error Unsupported target platform
+#endif
+    
+    const char *name = (NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName).UTF8String;
+    if (name) {
+        CC_SHA1_Update(&ctx, name, (CC_LONG)strlen(name));
+    }
+    
+    unsigned char md[CC_SHA1_DIGEST_LENGTH];
+    CC_SHA1_Final(md, &ctx);
+    
+    char hex[2 * sizeof(md)];
+    for (size_t i = 0; i < sizeof(md); i++) {
+        static char lookup[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+        hex[i * 2 + 0] = lookup[(md[i] & 0x0f)];
+        hex[i * 2 + 1] = lookup[(md[i] & 0xf0) >> 8];
+    }
+    return [[NSString alloc] initWithBytes:hex length:sizeof(hex) encoding:NSASCIIStringEncoding];
+}

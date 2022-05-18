@@ -11,6 +11,9 @@
 #import <Bugsnag/Bugsnag.h>
 
 #import "BSGInternalErrorReporter.h"
+#import "BSG_KSSystemInfo.h"
+#import "BugsnagAppWithState+Private.h"
+#import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagNotifier.h"
 
@@ -44,6 +47,9 @@
     
     NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
     XCTAssertEqualObjects(diagnostics[@"apiKey"], configuration.apiKey);
+    
+    XCTAssertNotNil(event.device.id);
+    XCTAssertNotEqualObjects(event.device.id, [BSG_KSSystemInfo deviceAndAppHash], @"Internal errors must use a different device id");
 }
 
 - (void)testEventWithException {
@@ -67,6 +73,9 @@
     
     NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
     XCTAssertEqualObjects(diagnostics[@"apiKey"], configuration.apiKey);
+    
+    XCTAssertNotNil(event.device.id);
+    XCTAssertNotEqualObjects(event.device.id, [BSG_KSSystemInfo deviceAndAppHash], @"Internal errors must use a different device id");
 }
 
 - (void)testEventWithRecrashReport {
@@ -82,6 +91,9 @@
     XCTAssertEqualObjects(event.errors[0].stacktrace[1].method, @"BSSerializeDataCrashHandler");
     XCTAssertEqualObjects(event.threads, @[]);
     XCTAssertNil(event.apiKey);
+    
+    XCTAssertNotNil(event.device.id);
+    XCTAssertNotEqualObjects(event.device.id, [BSG_KSSystemInfo deviceAndAppHash], @"Internal errors must use a different device id");
     
     NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
     XCTAssertEqualObjects(diagnostics[@"apiKey"], configuration.apiKey);
@@ -134,11 +146,13 @@
 // MARK: - BSGInternalErrorReporterDataSource
 
 - (BugsnagAppWithState *)generateAppWithState:(nonnull NSDictionary *)systemInfo {
-    return [[BugsnagAppWithState alloc] init];
+    return [BugsnagAppWithState appWithDictionary:@{@"system": systemInfo} config:self.configuration codeBundleId:nil];
 }
 
 - (BugsnagDeviceWithState *)generateDeviceWithState:(nonnull NSDictionary *)systemInfo {
-     return [[BugsnagDeviceWithState alloc] init];
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithKSCrashReport:@{@"system": systemInfo}];
+    device.time = [NSDate date]; // default to current time for handled errors
+    return device;
 }
 
 @end
