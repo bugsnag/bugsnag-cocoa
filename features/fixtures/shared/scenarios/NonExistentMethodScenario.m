@@ -3,8 +3,13 @@
 // Copyright (c) 2018 Bugsnag. All rights reserved.
 //
 
-#import "NonExistentMethodScenario.h"
+#import "Scenario.h"
 
+/**
+ * Calls a non-existent method on an object
+ */
+@interface NonExistentMethodScenario : Scenario
+@end
 
 @implementation NonExistentMethodScenario
 

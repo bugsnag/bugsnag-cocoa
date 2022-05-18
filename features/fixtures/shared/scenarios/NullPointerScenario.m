@@ -23,12 +23,16 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-#import "NullPointerScenario.h"
-#include "spin_malloc.h"
+#import "Scenario.h"
+
+#import "spin_malloc.h"
 
 /**
  * Attempts to read from 0x0, which causes a segmentation violation.
  */
+@interface NullPointerScenario : Scenario
+@end
+
 @implementation NullPointerScenario
 
 - (void)startBugsnag {

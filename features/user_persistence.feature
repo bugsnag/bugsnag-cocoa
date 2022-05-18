@@ -8,7 +8,7 @@ Feature: Persisting User Information
 
     # User is set and comes through
     And I wait to receive a session
-    And I relaunch the app
+    And I kill and relaunch the app
     Then the session is valid for the session reporting API
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
@@ -19,7 +19,7 @@ Feature: Persisting User Information
     Then I run "UserPersistenceNoUserScenario"
     And I wait to receive a session
     And I wait to receive an error
-    And I relaunch the app
+    And I kill and relaunch the app
 
     # Session - User persisted
     Then the session is valid for the session reporting API
@@ -39,7 +39,7 @@ Scenario: User Info is persisted from client across app runs
     # Session is captured before the user can be set on the Client
     And I wait to receive a session
     And I wait for 1 second
-    And I relaunch the app
+    And I kill and relaunch the app
 
     Then the session is valid for the session reporting API
     And the session "user.id" is not null
@@ -51,7 +51,7 @@ Scenario: User Info is persisted from client across app runs
     Then I run "UserPersistenceNoUserScenario"
     And I wait to receive a session
     And I wait to receive an error
-    And I relaunch the app
+    And I kill and relaunch the app
 
     # Session - User persisted
     Then the session is valid for the session reporting API
@@ -72,7 +72,7 @@ Scenario: User Info is persisted from client across app runs
     # User is set and comes through
     And I wait to receive a session
     And I wait to receive an error
-    And I relaunch the app
+    And I kill and relaunch the app
 
     # First Session
     Then the session is valid for the session reporting API

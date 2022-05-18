@@ -6,7 +6,7 @@
 //  Copyright © 2021 Bugsnag. All rights reserved.
 //
 
-#import "OOMScenario.h"
+#import "Scenario.h"
 
 #import <UIKit/UIKit.h>
 
@@ -17,6 +17,9 @@
 #include <sys/utsname.h>
 
 #define MEGABYTE 0x100000
+
+@interface OOMScenario : Scenario
+@end
 
 @implementation OOMScenario
 

@@ -6,7 +6,10 @@
 //  Copyright © 2018 Bugsnag. All rights reserved.
 //
 
-#import "AutoSessionWithUserScenario.h"
+#import "Scenario.h"
+
+@interface AutoSessionWithUserScenario : Scenario
+@end
 
 @implementation AutoSessionWithUserScenario
 
@@ -15,8 +18,7 @@
     [super startBugsnag];
 }
 
-- (void) run {
-    
+- (void)run {
 }
 
 @end

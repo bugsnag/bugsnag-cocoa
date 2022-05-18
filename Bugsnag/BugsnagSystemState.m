@@ -30,7 +30,7 @@ static NSString * const InternalKey = @"internal";
 
 static NSDictionary * loadPreviousState(NSString *jsonPath) {
     NSError *error = nil;
-    NSMutableDictionary *state = [BSGJSONSerialization JSONObjectWithContentsOfFile:jsonPath options:NSJSONReadingMutableContainers error:&error];
+    NSMutableDictionary *state = (NSMutableDictionary *)BSGJSONDictionaryFromFile(jsonPath, NSJSONReadingMutableContainers, &error);
     if(![state isKindOfClass:[NSMutableDictionary class]]) {
         if (!(error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError)) {
             bsg_log_err(@"Could not load system_state.json: %@", error);
@@ -173,9 +173,8 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
 
 - (void)sync {
     NSDictionary *state = self.currentLaunchState;
-    NSAssert([BSGJSONSerialization isValidJSONObject:state], @"BugsnagSystemState cannot be converted to JSON data");
     NSError *error = nil;
-    if (![BSGJSONSerialization writeJSONObject:state toFile:self.persistenceFilePath options:0 error:&error]) {
+    if (!BSGJSONWriteToFileAtomically(state, self.persistenceFilePath, &error)) {
         bsg_log_err(@"System state cannot be written as JSON: %@", error);
     }
 }

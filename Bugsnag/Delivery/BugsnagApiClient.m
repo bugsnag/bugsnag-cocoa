@@ -45,23 +45,17 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
 
 #pragma mark - Delivery
 
-- (void)sendJSONPayload:(NSDictionary *)payload
-                headers:(NSDictionary<BugsnagHTTPHeaderName, NSString *> *)headers
-                  toURL:(NSURL *)url
-      completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error))completionHandler {
-    
-    if (![BSGJSONSerialization isValidJSONObject:payload]) {
-        bsg_log_err(@"Error: Invalid JSON payload passed to %s", __PRETTY_FUNCTION__);
-        completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, nil);
-        return;
-    }
+- (NSData *)sendJSONPayload:(NSDictionary *)payload
+                    headers:(NSDictionary<BugsnagHTTPHeaderName, NSString *> *)headers
+                      toURL:(NSURL *)url
+          completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError *_Nullable error))completionHandler {
     
     NSError *error = nil;
-    NSData *data = [BSGJSONSerialization dataWithJSONObject:payload options:0 error:&error];
+    NSData *data = BSGJSONDataFromDictionary(payload, &error);
     if (!data) {
         bsg_log_err(@"Error: Could not encode JSON payload passed to %s", __PRETTY_FUNCTION__);
         completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, error);
-        return;
+        return nil;
     }
     
     NSMutableDictionary<BugsnagHTTPHeaderName, NSString *> *mutableHeaders = [headers mutableCopy];
@@ -108,6 +102,7 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
         
         completionHandler(BugsnagApiClientDeliveryStatusFailed, connectionError);
     }] resume];
+    return data;
 }
 
 - (NSMutableURLRequest *)prepareRequest:(NSURL *)url

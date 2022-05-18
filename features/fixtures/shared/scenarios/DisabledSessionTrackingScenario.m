@@ -3,8 +3,10 @@
 // Copyright (c) 2018 Bugsnag. All rights reserved.
 //
 
-#import "DisabledSessionTrackingScenario.h"
+#import "Scenario.h"
 
+@interface DisabledSessionTrackingScenario : Scenario
+@end
 
 @implementation DisabledSessionTrackingScenario
 

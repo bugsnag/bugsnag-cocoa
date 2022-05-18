@@ -6,10 +6,10 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "SessionCallbackRemovalScenario.h"
+#import "Scenario.h"
 
-#import <Bugsnag/Bugsnag.h>
-
+@interface SessionCallbackRemovalScenario : Scenario
+@end
 
 @implementation SessionCallbackRemovalScenario
 

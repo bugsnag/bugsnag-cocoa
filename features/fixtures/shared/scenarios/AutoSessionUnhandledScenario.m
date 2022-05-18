@@ -6,7 +6,10 @@
 //  Copyright © 2018 Bugsnag. All rights reserved.
 //
 
-#import "AutoSessionUnhandledScenario.h"
+#import "Scenario.h"
+
+@interface AutoSessionUnhandledScenario : Scenario
+@end
 
 @implementation AutoSessionUnhandledScenario
 

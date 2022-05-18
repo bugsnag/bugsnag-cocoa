@@ -6,7 +6,10 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "SIGBUSScenario.h"
+#import "Scenario.h"
+
+@interface SIGBUSScenario : Scenario
+@end
 
 @implementation SIGBUSScenario
 

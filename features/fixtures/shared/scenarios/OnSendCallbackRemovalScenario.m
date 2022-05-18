@@ -6,11 +6,14 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "OnSendCallbackRemovalScenario.h"
+#import "Scenario.h"
 
 /**
  * Verifies that removing an OnSend callback does not affect other OnSend callbacks
  */
+@interface OnSendCallbackRemovalScenario : Scenario
+@end
+
 @implementation OnSendCallbackRemovalScenario
 
 - (void)startBugsnag {

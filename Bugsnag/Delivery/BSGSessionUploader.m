@@ -8,6 +8,7 @@
 #import "BSGSessionUploader.h"
 
 #import "BSGFileLocations.h"
+#import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagApiClient.h"
@@ -19,15 +20,18 @@
 #import "BugsnagNotifier.h"
 #import "BugsnagSession+Private.h"
 #import "BugsnagSession.h"
-#import "BugsnagSessionFileStore.h"
 #import "BugsnagUser+Private.h"
+
+/// Persisted sessions older than this should be deleted without sending.
+static const NSTimeInterval MaxPersistedAge = 60 * 24 * 60 * 60;
+
+static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSString *, NSDate *> **creationDates);
 
 
 @interface BSGSessionUploader ()
 @property (nonatomic) NSMutableSet *activeIds;
 @property (nonatomic) BugsnagApiClient *apiClient;
 @property(nonatomic) BugsnagConfiguration *config;
-@property (nonatomic) BugsnagSessionFileStore *fileStore;
 @end
 
 
@@ -38,7 +42,6 @@
         _activeIds = [NSMutableSet new];
         _apiClient = [[BugsnagApiClient alloc] initWithSession:config.session];
         _config = config;
-        _fileStore = [BugsnagSessionFileStore storeWithPath:[BSGFileLocations current].sessions maxPersistedSessions:config.maxPersistedSessions];
         _notifier = notifier;
     }
     return self;
@@ -48,11 +51,11 @@
     [self sendSession:session completionHandler:^(BugsnagApiClientDeliveryStatus status) {
         switch (status) {
             case BugsnagApiClientDeliveryStatusDelivered:
-                [self uploadStoredSessions];
+                [self processStoredSessions];
                 break;
                 
             case BugsnagApiClientDeliveryStatusFailed:
-                [self.fileStore write:session]; // Retry later
+                [self storeSession:session]; // Retry later
                 break;
                 
             case BugsnagApiClientDeliveryStatusUndeliverable:
@@ -61,32 +64,72 @@
     }];
 }
 
-- (void)uploadStoredSessions {
-    [[self.fileStore allFilesByName] enumerateKeysAndObjectsUsingBlock:^(NSString *fileId, NSDictionary *fileContents, __unused BOOL *stop) {
-        // De-duplicate files as deletion of the file is asynchronous and so multiple calls
-        // to this method will result in multiple send requests
-        @synchronized (self.activeIds) {
-            if ([self.activeIds containsObject:fileId]) {
-                return;
-            }
-            [self.activeIds addObject:fileId];
-        }
+- (void)storeSession:(BugsnagSession *)session {
+    NSDictionary *json = BSGSessionToDictionary(session);
+    NSString *file = [[BSGFileLocations.current.sessions
+                       stringByAppendingPathComponent:session.id]
+                      stringByAppendingPathExtension:@"json"];
+    
+    NSError *error;
+    if (BSGJSONWriteToFileAtomically(json, file, &error)) {
+        bsg_log_debug(@"Stored session %@", session.id);
+        [self pruneFiles];
+    } else {
+        bsg_log_debug(@"Failed to write session %@", error);
+    }
+}
 
-        BugsnagSession *session = BSGSessionFromDictionary(fileContents);
+- (void)processStoredSessions {
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    NSMutableDictionary<NSString *, NSDate *> *creationDates = nil;
+    NSArray *sortedFiles = SortedFiles(fileManager, &creationDates);
+    
+    for (NSString *file in sortedFiles) {
+        if (creationDates[file].timeIntervalSinceNow < -MaxPersistedAge) {
+            bsg_log_debug(@"Deleting stale session %@",
+                          file.lastPathComponent.stringByDeletingPathExtension);
+            [fileManager removeItemAtPath:file error:nil];
+            continue;
+        }
+        
+        NSDictionary *json = BSGJSONDictionaryFromFile(file, 0, nil);
+        BugsnagSession *session = BSGSessionFromDictionary(json);
         if (!session) {
-            [self.fileStore deleteFileWithId:fileId];
-            return;
+            bsg_log_debug(@"Deleting invalid session %@",
+                          file.lastPathComponent.stringByDeletingPathExtension);
+            [fileManager removeItemAtPath:file error:nil];
+            continue;
         }
-
+        
+        @synchronized (self.activeIds) {
+            if ([self.activeIds containsObject:file]) {
+                continue;
+            }
+            [self.activeIds addObject:file];
+        }
+        
         [self sendSession:session completionHandler:^(BugsnagApiClientDeliveryStatus status) {
             if (status != BugsnagApiClientDeliveryStatusFailed) {
-                [self.fileStore deleteFileWithId:fileId];
+                [fileManager removeItemAtPath:file error:nil];
             }
             @synchronized (self.activeIds) {
-                [self.activeIds removeObject:fileId];
+                [self.activeIds removeObject:file];
             }
         }];
-    }];
+    }
+}
+
+- (void)pruneFiles {
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    NSMutableArray *sortedFiles = [SortedFiles(fileManager, NULL) mutableCopy];
+    
+    while (sortedFiles.count > self.config.maxPersistedSessions) {
+        NSString *file = sortedFiles[0];
+        bsg_log_debug(@"Deleting %@ to comply with maxPersistedSessions",
+                      file.lastPathComponent.stringByDeletingPathExtension);
+        [fileManager removeItemAtPath:file error:nil];
+        [sortedFiles removeObject:file];
+    }
 }
 
 //
@@ -141,3 +184,28 @@
 }
 
 @end
+
+
+static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSString *, NSDate *> **outDates) {
+    NSString *dir = BSGFileLocations.current.sessions;
+    NSMutableDictionary<NSString *, NSDate *> *dates = [NSMutableDictionary dictionary];
+    
+    for (NSString *name in [fileManager contentsOfDirectoryAtPath:dir error:nil]) {
+        NSString *file = [dir stringByAppendingPathComponent:name];
+        NSDate *date = [fileManager attributesOfItemAtPath:file error:nil].fileCreationDate;
+        if (!date) {
+            bsg_log_debug(@"Deleting session %@ because fileCreationDate is nil",
+                          file.lastPathComponent.stringByDeletingPathExtension);
+            [fileManager removeItemAtPath:file error:nil];
+        }
+        dates[file] = date;
+    }
+    
+    if (outDates) {
+        *outDates = dates;
+    }
+    
+    return [dates.allKeys sortedArrayUsingComparator:^(NSString *a, NSString *b) {
+        return [dates[a] compare:dates[b] ?: NSDate.distantPast];
+    }];
+}

@@ -6,23 +6,12 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "UnhandledMachExceptionScenario.h"
+#import "Scenario.h"
 
-@implementation UnhandledMachExceptionScenario
-
-- (void)startBugsnag {
-    self.config.autoTrackSessions = NO;
-    [super startBugsnag];
-}
-
-- (void)run {
-    void (*ptr)(void) = (void *)0xDEADBEEF;
-    ptr();
-}
-
+@interface UnhandledMachExceptionScenario : Scenario
 @end
 
-@implementation UnhandledMachExceptionOverrideScenario
+@implementation UnhandledMachExceptionScenario
 
 - (void)startBugsnag {
     self.config.autoTrackSessions = NO;

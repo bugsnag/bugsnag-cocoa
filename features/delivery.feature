@@ -7,9 +7,8 @@ Feature: Delivery of errors
     When I set the HTTP status code for the next request to 500
     And I run "HandledExceptionScenario"
     And I wait to receive an error
-    # Wait for fixture to receive the response and save the payload
-    And I wait for 2 seconds
-    And I relaunch the app
+    And I wait for the fixture to process the response
+    And I kill and relaunch the app
     And I clear the error queue
     And I configure Bugsnag for "HandledExceptionScenario"
     And I wait to receive an error
@@ -19,9 +18,61 @@ Feature: Delivery of errors
     When I set the HTTP status code for the next request to 400
     And I run "HandledExceptionScenario"
     And I wait to receive an error
-    And I relaunch the app
+    And I kill and relaunch the app
     And I clear the error queue
     And I configure Bugsnag for "HandledExceptionScenario"
+    Then I should receive no requests
+
+  Scenario: Delivery is not retried for oversized handled payloads
+    Given I set the HTTP status code to 500
+    When I run "OversizedHandledErrorScenario"
+    And I wait to receive an error
+    And I wait for the fixture to process the response
+    # The error should not have been persited
+    And I kill and relaunch the app
+    And I clear the error queue
+    And I configure Bugsnag for "OversizedHandledErrorScenario"
+    Then I should receive no requests
+
+  Scenario: Delivery is not retried for old handled payloads
+    Given I set the HTTP status code to 500
+    When I run "OldHandledErrorScenario"
+    And I wait to receive an error
+    And I wait for the fixture to process the response
+    # The error should now have been persisted
+    And I kill and relaunch the app
+    And I clear the error queue
+    And I configure Bugsnag for "OldHandledErrorScenario"
+    And I wait to receive an error
+    And I wait for the fixture to process the response
+    # The error should now have been deleted 
+    And I kill and relaunch the app
+    And I clear the error queue
+    And I configure Bugsnag for "OldHandledErrorScenario"
+    Then I should receive no requests
+
+  Scenario: Delivery is not retried for oversized crash payloads
+    Given I set the HTTP status code to 500
+    When I run "OversizedCrashReportScenario" and relaunch the crashed app
+    And I configure Bugsnag for "OversizedCrashReportScenario"
+    And I wait to receive an error
+    And I wait for the fixture to process the response
+    # The crash report should now have been deleted
+    And I kill and relaunch the app
+    And I clear the error queue
+    And I configure Bugsnag for "OversizedCrashReportScenario"
+    Then I should receive no requests
+
+  Scenario: Delivery is not retried for old crash payloads
+    Given I set the HTTP status code to 500
+    When I run "OldCrashReportScenario" and relaunch the crashed app
+    And I configure Bugsnag for "OldCrashReportScenario"
+    And I wait to receive an error
+    And I wait for the fixture to process the response
+    # The crash report should now have been deleted
+    And I kill and relaunch the app
+    And I clear the error queue
+    And I configure Bugsnag for "OldCrashReportScenario"
     Then I should receive no requests
 
   Scenario: Bugsnag.start() should block for 2 seconds after a launch crash
@@ -50,3 +101,43 @@ Feature: Delivery of errors
     And I wait to receive 2 errors
     And I discard the oldest error
     And the event "metaData.bugsnag.startDuration" is between 0.0 and 0.5
+
+  Scenario: Session delivery should be retried for recent payloads
+    Given I set the HTTP status code for the next request to 500
+    And I run "AutoSessionScenario"
+    And I wait to receive a session
+    And I wait for the fixture to process the response
+    And I kill and relaunch the app
+    When I run "AutoSessionScenario"
+    Then I wait to receive 3 sessions
+
+  Scenario: Session delivery should not be retried for old payloads
+    Given I set the HTTP status code for the next request to 500
+    And I set the app to "old" mode
+    And I run "OldSessionScenario"
+    And I wait to receive a session
+    And I wait for the fixture to process the response
+    And I discard the oldest session
+    And I kill and relaunch the app
+    When I set the app to "new" mode
+    And I run "OldSessionScenario"
+    And I wait to receive a session
+    Then the session "user.id" equals "new"
+    And I discard the oldest session
+    And I should receive no requests
+
+  Scenario: The oldest sessions should be deleted to comply with maxPersistedSessions
+    Given I set the HTTP status code to 500
+    And I run "MaxPersistedSessionsScenario"
+    And I wait to receive 2 sessions
+    And the session "user.id" equals "1"
+    And I discard the oldest session
+    And the session "user.id" equals "2"
+    And I discard the oldest session
+    When I set the HTTP status code to 200
+    And I kill and relaunch the app
+    And I configure Bugsnag for "MaxPersistedSessionsScenario"
+    And I wait to receive 2 sessions
+    Then the session "user.id" equals "3"
+    And I discard the oldest session
+    And the session "user.id" equals "2"
