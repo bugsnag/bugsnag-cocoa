@@ -2,6 +2,10 @@
 
 # A collection of steps that could be added to Maze Runner
 
+When('I ignore invalid {word}') do |type|
+  Maze.config.captured_invalid_requests.delete(type.to_sym)
+end
+
 Then(/^on (iOS|macOS), (.+)/) do |platform, step_text|
   step(step_text) if platform.downcase == Maze::Helper.get_current_platform
 end

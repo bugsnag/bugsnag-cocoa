@@ -28,6 +28,7 @@ static char ksLogPath[PATH_MAX];
 
 @implementation Scenario {
     dispatch_block_t _onEventDelivery;
+    dispatch_block_t _onSessionDelivery;
 }
 
 + (void)load {
@@ -109,10 +110,24 @@ static char ksLogPath[PATH_MAX];
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
 }
 
+- (void)performBlockAndWaitForSessionDelivery:(dispatch_block_t)block NS_SWIFT_NAME(performBlockAndWaitForSessionDelivery(_:)) {
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    _onSessionDelivery = ^{
+        dispatch_semaphore_signal(semaphore);
+    };
+    block();
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+}
+
 - (void)requestDidComplete:(NSURLRequest *)request {
     dispatch_block_t block = _onEventDelivery;
     if (block && [request.URL.absoluteString isEqual:self.config.endpoints.notify]) {
         _onEventDelivery = nil;
+        block();
+    }
+    block = _onSessionDelivery;
+    if (block && [request.URL.absoluteString isEqual:self.config.endpoints.sessions]) {
+        _onSessionDelivery = nil;
         block();
     }
 }

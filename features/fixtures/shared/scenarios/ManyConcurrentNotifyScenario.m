@@ -1,7 +1,6 @@
-#import "ManyConcurrentNotifyScenario.h"
-#import <Bugsnag/Bugsnag.h>
+#import "Scenario.h"
 
-@interface ManyConcurrentNotifyScenario ()
+@interface ManyConcurrentNotifyScenario : Scenario
 @property (nonatomic) dispatch_queue_t queue1;
 @property (nonatomic) dispatch_queue_t queue2;
 @end

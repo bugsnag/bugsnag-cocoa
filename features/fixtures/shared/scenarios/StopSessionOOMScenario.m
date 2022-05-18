@@ -1,4 +1,7 @@
-#import "StopSessionOOMScenario.h"
+#import "Scenario.h"
+
+@interface StopSessionOOMScenario : Scenario
+@end
 
 @implementation StopSessionOOMScenario
 

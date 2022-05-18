@@ -8,7 +8,7 @@ Feature: Thrown C++ exceptions are captured by Bugsnag
     And I configure Bugsnag for "CxxExceptionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
-    And the exception "errorClass" equals "P16kaboom_exception"
+    And the exception "errorClass" equals "PSt13runtime_error"
     And the exception "type" equals "cocoa"
     And the stacktrace is valid for the event
     And the event "severity" equals "error"
@@ -20,7 +20,7 @@ Feature: Thrown C++ exceptions are captured by Bugsnag
     And I configure Bugsnag for "CxxExceptionOverrideScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
-    And the exception "errorClass" equals "P16kaboom_exception"
+    And the exception "errorClass" equals "PSt13runtime_error"
     And the exception "type" equals "cocoa"
     And the stacktrace is valid for the event
     And the event "severity" equals "error"

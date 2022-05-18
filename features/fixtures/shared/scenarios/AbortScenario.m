@@ -24,7 +24,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "AbortScenario.h"
+#import "Scenario.h"
+
+@interface AbortScenario : Scenario
+@end
 
 @implementation AbortScenario
 
@@ -35,19 +38,6 @@
 
 - (void)run {
 	abort();
-}
-
-@end
-
-@implementation AbortOverrideScenario
-
-- (void)startBugsnag {
-    self.config.autoTrackSessions = NO;
-    [super startBugsnag];
-}
-
-- (void)run {
-    abort();
 }
 
 @end

@@ -6,7 +6,10 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "SIGFPEScenario.h"
+#import "Scenario.h"
+
+@interface SIGFPEScenario : Scenario
+@end
 
 @implementation SIGFPEScenario
 

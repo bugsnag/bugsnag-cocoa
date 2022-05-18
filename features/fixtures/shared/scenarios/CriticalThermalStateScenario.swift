@@ -11,16 +11,30 @@ import Foundation
 @available(iOS 11.0, tvOS 11.0, *)
 class CriticalThermalStateScenario: Scenario {
     
-    override func run() {
+    override func startBugsnag() {
+        config.autoTrackSessions = false
         
-        NotificationCenter.default.post(name: ProcessInfo.thermalStateDidChangeNotification, object: ProcessInfoStub())
+        super.startBugsnag()
+
+        performBlockAndWaitForSessionDelivery {
+            Bugsnag.startSession()
+        }
+    }
+    
+    override func run() {
+        let mockThermalState: @convention(block) () -> ProcessInfo.ThermalState = { .critical }
+
+        method_setImplementation(
+            class_getInstanceMethod(ProcessInfo.self, #selector(getter:ProcessInfo.thermalState))!,
+            imp_implementationWithBlock(mockThermalState)
+        )
+        
+        NotificationCenter.default.post(
+            name: ProcessInfo.thermalStateDidChangeNotification, object: ProcessInfo.processInfo)
+        
         after(.seconds(3)) {
             kill(getpid(), SIGKILL)
         }
-    }
-
-    class ProcessInfoStub: NSObject {
-        @objc let thermalState: ProcessInfo.ThermalState = .critical
     }
 }
 

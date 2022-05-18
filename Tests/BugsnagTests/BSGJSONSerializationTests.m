@@ -20,26 +20,12 @@
     NSData* badJSONData = [@"{123=\"test\"}" dataUsingEncoding:NSUTF8StringEncoding];
     id result;
     NSError* error;
-    result = [BSGJSONSerialization dataWithJSONObject:badDict options:0 error:&error];
+    result = BSGJSONDataFromDictionary(badDict, &error);
     XCTAssertNotNil(error);
     XCTAssertNil(result);
     error = nil;
     
-    result = [BSGJSONSerialization JSONObjectWithData:badJSONData options:0 error:&error];
-    XCTAssertNotNil(error);
-    XCTAssertNil(result);
-    error = nil;
-
-    NSOutputStream* outstream = [NSOutputStream outputStreamToMemory];
-    [outstream open];
-    [BSGJSONSerialization writeJSONObject:badDict toStream:outstream options:0 error:&error];
-    XCTAssertNotNil(error);
-    error = nil;
-    
-    NSInputStream* instream = [NSInputStream inputStreamWithData:badJSONData];
-    [instream open];
-
-    result = [BSGJSONSerialization JSONObjectWithStream:instream options:0 error:&error];
+    result = BSGJSONDictionaryFromData(badJSONData, 0, &error);
     XCTAssertNotNil(error);
     XCTAssertNil(result);
     error = nil;
@@ -51,28 +37,28 @@
     
     NSString *file = [NSTemporaryDirectory() stringByAppendingPathComponent:@(__PRETTY_FUNCTION__)];
     
-    XCTAssertTrue([BSGJSONSerialization writeJSONObject:validJSON toFile:file options:0 error:nil]);
+    XCTAssertTrue(BSGJSONWriteToFileAtomically(validJSON, file, nil));
 
-    XCTAssertEqualObjects([BSGJSONSerialization JSONObjectWithContentsOfFile:file options:0 error:nil], @{@"foo": @"bar"});
+    XCTAssertEqualObjects(BSGJSONDictionaryFromFile(file, 0, nil), @{@"foo": @"bar"});
     
     [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
     
     NSError *error = nil;
-    XCTAssertFalse([BSGJSONSerialization writeJSONObject:invalidJSON toFile:file options:0 error:&error]);
+    XCTAssertFalse(BSGJSONWriteToFileAtomically(invalidJSON, file, &error));
     XCTAssertNotNil(error);
     
     error = nil;
-    XCTAssertNil([BSGJSONSerialization JSONObjectWithContentsOfFile:file options:0 error:&error]);
+    XCTAssertNil(BSGJSONDictionaryFromFile(file, 0, &error));
     XCTAssertNotNil(error);
 
     NSString *unwritablePath = @"/System/Library/foobar";
     
     error = nil;
-    XCTAssertFalse([BSGJSONSerialization writeJSONObject:validJSON toFile:unwritablePath options:0 error:&error]);
+    XCTAssertFalse(BSGJSONWriteToFileAtomically(validJSON, unwritablePath, &error));
     XCTAssertNotNil(error);
     
     error = nil;
-    XCTAssertNil([BSGJSONSerialization JSONObjectWithContentsOfFile:unwritablePath options:0 error:&error]);
+    XCTAssertNil(BSGJSONDictionaryFromFile(file, 0, &error));
     XCTAssertNotNil(error);
 }
 
@@ -80,7 +66,7 @@
     NSError *error = nil;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"
-    XCTAssertNil([BSGJSONSerialization JSONObjectWithData:nil options:0 error:&error]);
+    XCTAssertNil(BSGJSONDictionaryFromData(nil, 0, &error));
 #pragma clang diagnostic pop
     XCTAssertNotNil(error);
     id underlyingError = error.userInfo[NSUnderlyingErrorKey];

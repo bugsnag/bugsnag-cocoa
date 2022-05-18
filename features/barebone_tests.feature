@@ -206,7 +206,7 @@ Feature: Barebone tests
     # immediately after an app has stopped running
     And I wait for 2 seconds
 
-    And I relaunch the app
+    And I kill and relaunch the app
     And I configure Bugsnag for "OOMScenario"
     And I wait to receive a session
 

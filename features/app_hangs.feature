@@ -104,14 +104,14 @@ Feature: App hangs
   Scenario: Fatal app hangs should be reported if appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly
     When I run "AppHangFatalOnlyScenario"
     And I wait for 3 seconds
-    And I relaunch the app
+    And I kill and relaunch the app
     And I set the HTTP status code to 500
     And I configure Bugsnag for "AppHangFatalOnlyScenario"
     And I wait to receive an error
     And I clear the error queue
     # Wait for fixture to receive the response and save the payload
     And I wait for 2 seconds
-    And I relaunch the app
+    And I kill and relaunch the app
     And I set the HTTP status code to 200
     And I configure Bugsnag for "AppHangFatalOnlyScenario"
     And I wait to receive an error
@@ -133,7 +133,7 @@ Feature: App hangs
   Scenario: Fatal app hangs should not be reported if enabledErrorTypes.appHangs = false
     When I run "AppHangFatalDisabledScenario"
     And I wait for 3 seconds
-    And I relaunch the app
+    And I kill and relaunch the app
     And I configure Bugsnag for "AppHangFatalDisabledScenario"
     Then I should receive no errors
 
@@ -141,7 +141,7 @@ Feature: App hangs
   Scenario: Fatal app hangs should be reported if the app hangs before going to the background
     When I run "AppHangFatalOnlyScenario"
     And I send the app to the background for 3 seconds
-    And I relaunch the app
+    And I kill and relaunch the app
     And I configure Bugsnag for "AppHangFatalOnlyScenario"
     And I wait to receive an error
     And the exception "message" equals "The app was terminated while unresponsive"
@@ -150,7 +150,7 @@ Feature: App hangs
   Scenario: Fatal app hangs should not be reported if they occur once the app is in the background
     When I run "AppHangDidEnterBackgroundScenario"
     And I send the app to the background for 3 seconds
-    And I relaunch the app
+    And I kill and relaunch the app
     And I configure Bugsnag for "AppHangDidEnterBackgroundScenario"
     Then I should receive no errors
 
