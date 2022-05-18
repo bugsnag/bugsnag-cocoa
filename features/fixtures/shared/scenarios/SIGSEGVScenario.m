@@ -6,7 +6,10 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "SIGSEGVScenario.h"
+#import "Scenario.h"
+
+@interface SIGSEGVScenario : Scenario
+@end
 
 @implementation SIGSEGVScenario
 

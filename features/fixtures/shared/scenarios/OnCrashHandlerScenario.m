@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "OnCrashHandlerScenario.h"
+#import "Scenario.h"
 
 // Create crash handler
 void HandleCrashedThread(const BSG_KSCrashReportWriter *writer) {
@@ -34,6 +34,9 @@ void HandleCrashedThread(const BSG_KSCrashReportWriter *writer) {
     }
     writer->endContainer(writer);
 }
+
+@interface OnCrashHandlerScenario : Scenario
+@end
 
 @implementation OnCrashHandlerScenario
 

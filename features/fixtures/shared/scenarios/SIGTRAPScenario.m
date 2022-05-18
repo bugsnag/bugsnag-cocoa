@@ -6,7 +6,10 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "SIGTRAPScenario.h"
+#import "Scenario.h"
+
+@interface SIGTRAPScenario : Scenario
+@end
 
 @implementation SIGTRAPScenario
 

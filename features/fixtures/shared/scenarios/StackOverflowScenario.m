@@ -24,12 +24,15 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "StackOverflowScenario.h"
+#import "Scenario.h"
 
 /**
  * Execute an infinitely recursive method, which overflows the stack and
  * causes a crash by attempting to write to the guard page at the end.
  */
+@interface StackOverflowScenario : Scenario
+@end
+
 @implementation StackOverflowScenario
 
 - (void)startBugsnag {

@@ -1,5 +1,7 @@
-#import "CustomPluginNotifierDescriptionScenario.h"
-#import <Bugsnag/Bugsnag.h>
+#import "Scenario.h"
+
+@interface CustomPluginNotifierDescriptionScenario : Scenario
+@end
 
 @interface Bugsnag ()
 + (BugsnagClient *)client;

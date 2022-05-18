@@ -3,11 +3,12 @@
 // Copyright (c) 2018 Bugsnag. All rights reserved.
 //
 
-#import "ManualSessionScenario.h"
-#import <Bugsnag/Bugsnag.h>
+#import "Scenario.h"
 
-@interface BugsnagConfiguration ()
-- (void)deletePersistedUserData;
+/**
+ * Sends a manual session payload to Bugsnag.
+ */
+@interface ManualSessionScenario : Scenario
 @end
 
 @implementation ManualSessionScenario

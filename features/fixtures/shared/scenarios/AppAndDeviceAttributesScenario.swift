@@ -3,8 +3,6 @@
 // Copyright (c) 2020 Bugsnag. All rights reserved.
 //
 
-import Foundation
-
 /**
  * Sends a handled Error to Bugsnag
  */
@@ -24,124 +22,6 @@ class AppAndDeviceAttributesScenario: Scenario {
         }
     }
 }
-
-// MARK: -
-
-/**
- * Override default values in config
- */
-class AppAndDeviceAttributesConfigOverrideScenario: Scenario {
-
-    override func startBugsnag() {
-        self.config.autoTrackSessions = false
-
-        self.config.appType = "iLeet"
-        self.config.bundleVersion = "12345"
-        self.config.context = "myContext"
-        self.config.releaseStage = "secondStage"
-
-        super.startBugsnag()
-    }
-
-    override func run() {
-        let error = NSError(domain: "AppAndDeviceAttributesConfigOverrideScenario", code: 100, userInfo: nil)
-        Bugsnag.notifyError(error)
-    }
-}
-
-// MARK: -
-
-class AppAndDeviceAttributesCallbackOverrideScenario: Scenario {
-
-    override func startBugsnag() {
-        self.config.autoTrackSessions = false
-
-        self.config.addOnSendError { (event) -> Bool in
-            event.app.type = "newAppType"
-            event.app.releaseStage = "thirdStage"
-            event.app.version = "999"
-            event.app.bundleVersion = "42"
-            event.device.manufacturer = "Nokia"
-            event.device.modelNumber = "0898"
-
-            return true
-        }
-
-        super.startBugsnag()
-    }
-
-    override func run() {
-        let error = NSError(domain: "AppAndDeviceAttributesCallbackOverrideScenario", code: 100, userInfo: nil)
-        Bugsnag.notifyError(error)
-    }
-}
-
-// MARK: -
-
-/**
- * Call startWithApiKey
- */
-class AppAndDeviceAttributesStartWithApiKeyScenario: Scenario {
-
-    override func startBugsnag() {
-        Bugsnag.start(withApiKey: "12312312312312312312312312312312")
-
-        super.startBugsnag()
-    }
-
-    override func run() {
-        let error = NSError(domain: "AppAndDeviceAttributesStartWithApiKeyScenario", code: 100, userInfo: nil)
-        Bugsnag.notifyError(error)
-    }
-}
-
-// MARK: -
-
-class AppAndDeviceAttributesInfiniteLaunchDurationScenario: Scenario {
-
-    override func startBugsnag() {
-        config.autoTrackSessions = false
-        config.launchDurationMillis = 0
-        super.startBugsnag()
-    }
-
-    override func run() {
-        after(.seconds(6)) {
-            Bugsnag.notify(NSException(name: .genericException, reason: "isLaunching should be true if `launchDurationMillis` is 0"))
-        }
-    }
-}
-
-// MARK: -
-
-class AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario: Scenario {
-
-    override func startBugsnag() {
-        config.autoTrackSessions = false
-        super.startBugsnag()
-    }
-
-    override func run() {
-        NSException(name: .genericException, reason: "isLaunching should be true").raise()
-    }
-}
-
-// MARK: -
-
-class AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario: Scenario {
-
-    override func startBugsnag() {
-        config.autoTrackSessions = false
-        super.startBugsnag()
-    }
-
-    override func run() {
-        Bugsnag.markLaunchCompleted()
-        NSException(name: .genericException, reason: "isLaunching should be false after `Bugsnag.markLaunchCompleted()`").raise()
-    }
-}
-
-// MARK: -
 
 private func after(_ interval: DispatchTimeInterval, execute work: @escaping @convention(block) () -> Void) {
     DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + interval, execute: work)

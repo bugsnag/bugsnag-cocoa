@@ -1,7 +1,10 @@
 
-#import "OOMWillTerminateScenario.h"
+#import "Scenario.h"
 
 #import <signal.h>
+
+@interface OOMWillTerminateScenario : Scenario
+@end
 
 @implementation OOMWillTerminateScenario
 

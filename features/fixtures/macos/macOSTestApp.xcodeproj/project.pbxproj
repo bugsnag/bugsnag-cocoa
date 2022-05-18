@@ -8,18 +8,60 @@
 
 /* Begin PBXBuildFile section */
 		01018BAB25E417EC000312C6 /* AsyncSafeMallocScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01018BAA25E417EC000312C6 /* AsyncSafeMallocScenario.m */; };
+		010BAB5E2833D34A0003FF36 /* AppAndDeviceAttributesInfiniteLaunchDurationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB422833D34A0003FF36 /* AppAndDeviceAttributesInfiniteLaunchDurationScenario.swift */; };
+		010BAB5F2833D34A0003FF36 /* BareboneTestUnhandledErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB432833D34A0003FF36 /* BareboneTestUnhandledErrorScenario.swift */; };
+		010BAB602833D34A0003FF36 /* AppHangScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB442833D34A0003FF36 /* AppHangScenario.swift */; };
+		010BAB612833D34A0003FF36 /* DiscardClassesUnhandledCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB452833D34A0003FF36 /* DiscardClassesUnhandledCrashScenario.swift */; };
+		010BAB622833D34A0003FF36 /* UnhandledErrorChangeInvalidReleaseStageScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB462833D34A0003FF36 /* UnhandledErrorChangeInvalidReleaseStageScenario.swift */; };
+		010BAB632833D34A0003FF36 /* UnhandledErrorChangeValidReleaseStageScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB472833D34A0003FF36 /* UnhandledErrorChangeValidReleaseStageScenario.swift */; };
+		010BAB642833D34A0003FF36 /* EnabledReleaseStageAutoSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB482833D34A0003FF36 /* EnabledReleaseStageAutoSessionScenario.swift */; };
+		010BAB652833D34A0003FF36 /* AppHangDisabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB492833D34A0003FF36 /* AppHangDisabledScenario.swift */; };
+		010BAB662833D34A0003FF36 /* UnhandledErrorValidReleaseStageScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB4A2833D34A0003FF36 /* UnhandledErrorValidReleaseStageScenario.swift */; };
+		010BAB672833D34A0003FF36 /* HandledErrorValidReleaseStageScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB4B2833D34A0003FF36 /* HandledErrorValidReleaseStageScenario.swift */; };
+		010BAB682833D34A0003FF36 /* DisabledReleaseStageAutoSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB4C2833D34A0003FF36 /* DisabledReleaseStageAutoSessionScenario.swift */; };
+		010BAB692833D34A0003FF36 /* AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB4D2833D34A0003FF36 /* AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario.swift */; };
+		010BAB6A2833D34A0003FF36 /* AppHangFatalDisabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB4E2833D34A0003FF36 /* AppHangFatalDisabledScenario.swift */; };
+		010BAB6B2833D34A0003FF36 /* UnhandledErrorInvalidReleaseStageScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB4F2833D34A0003FF36 /* UnhandledErrorInvalidReleaseStageScenario.swift */; };
+		010BAB6C2833D34A0003FF36 /* AppHangDefaultConfigScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB502833D34A0003FF36 /* AppHangDefaultConfigScenario.swift */; };
+		010BAB6D2833D34A0003FF36 /* SendLaunchCrashesSynchronouslyLaunchCompletedScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB512833D34A0003FF36 /* SendLaunchCrashesSynchronouslyLaunchCompletedScenario.swift */; };
+		010BAB6E2833D34A0003FF36 /* AppAndDeviceAttributesConfigOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB522833D34A0003FF36 /* AppAndDeviceAttributesConfigOverrideScenario.swift */; };
+		010BAB6F2833D34A0003FF36 /* AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB532833D34A0003FF36 /* AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario.swift */; };
+		010BAB702833D34A0003FF36 /* AppHangFatalOnlyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB542833D34A0003FF36 /* AppHangFatalOnlyScenario.swift */; };
+		010BAB712833D34A0003FF36 /* AppAndDeviceAttributesCallbackOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB552833D34A0003FF36 /* AppAndDeviceAttributesCallbackOverrideScenario.swift */; };
+		010BAB722833D34A0003FF36 /* BareboneTestHandledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB562833D34A0003FF36 /* BareboneTestHandledScenario.swift */; };
+		010BAB732833D34A0003FF36 /* AppAndDeviceAttributesStartWithApiKeyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB572833D34A0003FF36 /* AppAndDeviceAttributesStartWithApiKeyScenario.swift */; };
+		010BAB742833D34A0003FF36 /* DisabledReleaseStageManualSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB582833D34A0003FF36 /* DisabledReleaseStageManualSessionScenario.swift */; };
+		010BAB752833D34A0003FF36 /* SendLaunchCrashesSynchronouslyFalseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB592833D34A0003FF36 /* SendLaunchCrashesSynchronouslyFalseScenario.swift */; };
+		010BAB762833D34A0003FF36 /* DiscardClassesUnhandledExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB5A2833D34A0003FF36 /* DiscardClassesUnhandledExceptionScenario.swift */; };
+		010BAB772833D34A0003FF36 /* DiscardClassesHandledExceptionRegexScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB5B2833D34A0003FF36 /* DiscardClassesHandledExceptionRegexScenario.swift */; };
+		010BAB782833D34A0003FF36 /* EnabledReleaseStageManualSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB5C2833D34A0003FF36 /* EnabledReleaseStageManualSessionScenario.swift */; };
+		010BAB792833D34A0003FF36 /* HandledErrorInvalidReleaseStageScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB5D2833D34A0003FF36 /* HandledErrorInvalidReleaseStageScenario.swift */; };
 		011B7A4C26CD52080071C3EB /* ThermalStateBreadcrumbScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011B7A4B26CD52080071C3EB /* ThermalStateBreadcrumbScenario.swift */; };
 		0123189C275921590007EFD7 /* RecrashScenarios.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0123189B275921590007EFD7 /* RecrashScenarios.mm */; };
 		015AE23A276B88300044B1AE /* OnSendErrorPersistenceScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 015AE239276B88300044B1AE /* OnSendErrorPersistenceScenario.m */; };
-		0163BF9B2583AF2A008DC28B /* DiscardClassesScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0163BF9A2583AF2A008DC28B /* DiscardClassesScenarios.swift */; };
 		0176C0AE254AE81B0066E0F3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0176C0AD254AE81B0066E0F3 /* main.m */; };
 		0176C0B1254AE81B0066E0F3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0176C0B0254AE81B0066E0F3 /* AppDelegate.m */; };
 		0176C0B3254AE81B0066E0F3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0176C0B2254AE81B0066E0F3 /* Images.xcassets */; };
 		0176C0B6254AE81B0066E0F3 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0176C0B4254AE81B0066E0F3 /* MainMenu.xib */; };
+		017D9CFC2833C81100B0AA87 /* DisableMachExceptionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CEB2833C81100B0AA87 /* DisableMachExceptionScenario.m */; };
+		017D9CFD2833C81100B0AA87 /* AbortOverrideScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CEC2833C81100B0AA87 /* AbortOverrideScenario.m */; };
+		017D9CFE2833C81100B0AA87 /* UnhandledMachExceptionOverrideScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CED2833C81100B0AA87 /* UnhandledMachExceptionOverrideScenario.m */; };
+		017D9CFF2833C81100B0AA87 /* HandledErrorThreadSendUnhandledOnlyScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CEE2833C81100B0AA87 /* HandledErrorThreadSendUnhandledOnlyScenario.m */; };
+		017D9D002833C81100B0AA87 /* DisableSignalsExceptionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CEF2833C81100B0AA87 /* DisableSignalsExceptionScenario.m */; };
+		017D9D012833C81100B0AA87 /* UserPersistencePersistUserClientScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CF02833C81100B0AA87 /* UserPersistencePersistUserClientScenario.m */; };
+		017D9D022833C81100B0AA87 /* UserPersistenceNoUserScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CF12833C81100B0AA87 /* UserPersistenceNoUserScenario.m */; };
+		017D9D032833C81100B0AA87 /* DisableNSExceptionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CF22833C81100B0AA87 /* DisableNSExceptionScenario.m */; };
+		017D9D042833C81100B0AA87 /* HandledErrorThreadSendAlwaysScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CF32833C81100B0AA87 /* HandledErrorThreadSendAlwaysScenario.m */; };
+		017D9D052833C81100B0AA87 /* DisableAllExceptManualExceptionsAndCrashScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CF42833C81100B0AA87 /* DisableAllExceptManualExceptionsAndCrashScenario.m */; };
+		017D9D062833C81100B0AA87 /* UserPersistenceDontPersistUserScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CF52833C81100B0AA87 /* UserPersistenceDontPersistUserScenario.m */; };
+		017D9D072833C81100B0AA87 /* UnhandledErrorThreadSendNeverScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CF62833C81100B0AA87 /* UnhandledErrorThreadSendNeverScenario.m */; };
+		017D9D082833C81100B0AA87 /* UnhandledErrorThreadSendAlwaysScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CF72833C81100B0AA87 /* UnhandledErrorThreadSendAlwaysScenario.m */; };
+		017D9D092833C81100B0AA87 /* UserPersistencePersistUserScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CF82833C81100B0AA87 /* UserPersistencePersistUserScenario.m */; };
+		017D9D0A2833C81100B0AA87 /* ObjCExceptionOverrideScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CF92833C81100B0AA87 /* ObjCExceptionOverrideScenario.m */; };
+		017D9D0B2833C81100B0AA87 /* CxxExceptionOverrideScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 017D9CFB2833C81100B0AA87 /* CxxExceptionOverrideScenario.mm */; };
 		017FBFB8254B09C300809042 /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 017FBFB6254B09C300809042 /* MainWindowController.m */; };
 		017FBFB9254B09C300809042 /* MainWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 017FBFB7254B09C300809042 /* MainWindowController.xib */; };
 		01847DCD26443DF000ADA4C7 /* InvalidCrashReportScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01847DCC26443DF000ADA4C7 /* InvalidCrashReportScenario.m */; };
-		01AF6A50258A00DE00FFC803 /* BareboneTestScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A4F258A00DE00FFC803 /* BareboneTestScenarios.swift */; };
 		01AF6A84258BB38A00FFC803 /* DispatchCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A83258BB38A00FFC803 /* DispatchCrashScenario.swift */; };
 		01AFCFC7282C058D00D48D45 /* OldSessionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AFCFC6282C058D00D48D45 /* OldSessionScenario.m */; };
 		01B6BB7225D56CBF00FC4DE6 /* LastRunInfoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B6BB7125D56CBF00FC4DE6 /* LastRunInfoScenario.swift */; };
@@ -30,7 +72,6 @@
 		01ECBCF425A7522000FC0678 /* OnErrorOverwriteUnhandledFalseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ECBCF225A7522000FC0678 /* OnErrorOverwriteUnhandledFalseScenario.swift */; };
 		01ECBCF525A7522000FC0678 /* OnErrorOverwriteUnhandledTrueScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ECBCF325A7522000FC0678 /* OnErrorOverwriteUnhandledTrueScenario.swift */; };
 		01F115C727BAA67B00892B1E /* SIGPIPEIgnoredScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F115C627BAA67B00892B1E /* SIGPIPEIgnoredScenario.m */; };
-		01F1473A25F2817100C2DC65 /* AppHangScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F1473925F2817100C2DC65 /* AppHangScenarios.swift */; };
 		01F47CC4254B1B3100B184AD /* OriginalErrorNSExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C21254B1B2C00B184AD /* OriginalErrorNSExceptionScenario.swift */; };
 		01F47CC5254B1B3100B184AD /* LoadConfigFromFileAutoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C23254B1B2C00B184AD /* LoadConfigFromFileAutoScenario.swift */; };
 		01F47CC6254B1B3100B184AD /* HandledExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C28254B1B2C00B184AD /* HandledExceptionScenario.swift */; };
@@ -74,7 +115,6 @@
 		01F47CEC254B1B3100B184AD /* SessionCallbackCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C64254B1B2E00B184AD /* SessionCallbackCrashScenario.swift */; };
 		01F47CED254B1B3100B184AD /* ResumedSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C67254B1B2E00B184AD /* ResumedSessionScenario.swift */; };
 		01F47CEE254B1B3100B184AD /* AutoDetectFalseAbortScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C68254B1B2E00B184AD /* AutoDetectFalseAbortScenario.swift */; };
-		01F47CEF254B1B3100B184AD /* EnabledErrorTypesScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C6B254B1B2E00B184AD /* EnabledErrorTypesScenario.m */; };
 		01F47CF0254B1B3100B184AD /* OnSendOverwriteScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C6C254B1B2E00B184AD /* OnSendOverwriteScenario.swift */; };
 		01F47CF2254B1B3100B184AD /* ManyConcurrentNotifyScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C6E254B1B2E00B184AD /* ManyConcurrentNotifyScenario.m */; };
 		01F47CF3254B1B3100B184AD /* AutoCaptureRunScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C6F254B1B2E00B184AD /* AutoCaptureRunScenario.m */; };
@@ -84,7 +124,6 @@
 		01F47CF8254B1B3100B184AD /* ModifyBreadcrumbInNotifyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C78254B1B2F00B184AD /* ModifyBreadcrumbInNotifyScenario.swift */; };
 		01F47CF9254B1B3100B184AD /* BreadcrumbCallbackDiscardScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C79254B1B2F00B184AD /* BreadcrumbCallbackDiscardScenario.swift */; };
 		01F47CFA254B1B3100B184AD /* BreadcrumbCallbackOrderScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C7A254B1B2F00B184AD /* BreadcrumbCallbackOrderScenario.swift */; };
-		01F47CFB254B1B3100B184AD /* ReleaseStageScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C7D254B1B2F00B184AD /* ReleaseStageScenarios.swift */; };
 		01F47CFC254B1B3100B184AD /* SessionCallbackOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C7E254B1B2F00B184AD /* SessionCallbackOverrideScenario.swift */; };
 		01F47CFD254B1B3100B184AD /* OnCrashHandlerScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C7F254B1B2F00B184AD /* OnCrashHandlerScenario.m */; };
 		01F47CFE254B1B3100B184AD /* MetadataRedactionNestedScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C80254B1B2F00B184AD /* MetadataRedactionNestedScenario.swift */; };
@@ -105,14 +144,11 @@
 		01F47D10254B1B3100B184AD /* AutoSessionWithUserScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C98254B1B2F00B184AD /* AutoSessionWithUserScenario.m */; };
 		01F47D11254B1B3100B184AD /* NSExceptionShiftScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C99254B1B2F00B184AD /* NSExceptionShiftScenario.m */; };
 		01F47D12254B1B3100B184AD /* OnSendCallbackRemovalScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C9B254B1B2F00B184AD /* OnSendCallbackRemovalScenario.m */; };
-		01F47D13254B1B3100B184AD /* UserPersistenceScenarios.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C9C254B1B3000B184AD /* UserPersistenceScenarios.m */; };
 		01F47D14254B1B3100B184AD /* OOMEnabledErrorTypesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C9D254B1B3000B184AD /* OOMEnabledErrorTypesScenario.swift */; };
 		01F47D15254B1B3100B184AD /* UndefinedInstructionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C9E254B1B3000B184AD /* UndefinedInstructionScenario.m */; };
 		01F47D16254B1B3100B184AD /* NewSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CA0254B1B3000B184AD /* NewSessionScenario.swift */; };
-		01F47D17254B1B3100B184AD /* ReleaseStageSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CA1254B1B3000B184AD /* ReleaseStageSessionScenario.swift */; };
 		01F47D18254B1B3100B184AD /* SIGBUSScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CA2254B1B3000B184AD /* SIGBUSScenario.m */; };
 		01F47D19254B1B3100B184AD /* UserFromClientScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CA3254B1B3000B184AD /* UserFromClientScenario.swift */; };
-		01F47D1A254B1B3100B184AD /* ThreadScenarios.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CA4254B1B3000B184AD /* ThreadScenarios.m */; };
 		01F47D1B254B1B3100B184AD /* SIGSEGVScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CA5254B1B3000B184AD /* SIGSEGVScenario.m */; };
 		01F47D1C254B1B3100B184AD /* SessionCallbackRemovalScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CA7254B1B3000B184AD /* SessionCallbackRemovalScenario.m */; };
 		01F47D1D254B1B3100B184AD /* DiscardedBreadcrumbTypeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CA8254B1B3000B184AD /* DiscardedBreadcrumbTypeScenario.swift */; };
@@ -126,7 +162,6 @@
 		01F47D25254B1B3100B184AD /* AutoContextNSErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CB1254B1B3000B184AD /* AutoContextNSErrorScenario.swift */; };
 		01F47D26254B1B3100B184AD /* PrivilegedInstructionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CB2254B1B3000B184AD /* PrivilegedInstructionScenario.m */; };
 		01F47D28254B1B3100B184AD /* ReadGarbagePointerScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CB4254B1B3000B184AD /* ReadGarbagePointerScenario.m */; };
-		01F47D29254B1B3100B184AD /* DiscardSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CB6254B1B3000B184AD /* DiscardSessionScenario.swift */; };
 		01F47D2B254B1B3100B184AD /* AutoSessionUnhandledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CB8254B1B3000B184AD /* AutoSessionUnhandledScenario.m */; };
 		01F47D2C254B1B3100B184AD /* SIGSYSScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CB9254B1B3000B184AD /* SIGSYSScenario.m */; };
 		01F47D2D254B1B3100B184AD /* OnErrorOverwriteScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47CBA254B1B3000B184AD /* OnErrorOverwriteScenario.swift */; };
@@ -165,11 +200,38 @@
 
 /* Begin PBXFileReference section */
 		01018BAA25E417EC000312C6 /* AsyncSafeMallocScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncSafeMallocScenario.m; sourceTree = "<group>"; };
+		010BAB422833D34A0003FF36 /* AppAndDeviceAttributesInfiniteLaunchDurationScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppAndDeviceAttributesInfiniteLaunchDurationScenario.swift; sourceTree = "<group>"; };
+		010BAB432833D34A0003FF36 /* BareboneTestUnhandledErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestUnhandledErrorScenario.swift; sourceTree = "<group>"; };
+		010BAB442833D34A0003FF36 /* AppHangScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppHangScenario.swift; sourceTree = "<group>"; };
+		010BAB452833D34A0003FF36 /* DiscardClassesUnhandledCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardClassesUnhandledCrashScenario.swift; sourceTree = "<group>"; };
+		010BAB462833D34A0003FF36 /* UnhandledErrorChangeInvalidReleaseStageScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnhandledErrorChangeInvalidReleaseStageScenario.swift; sourceTree = "<group>"; };
+		010BAB472833D34A0003FF36 /* UnhandledErrorChangeValidReleaseStageScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnhandledErrorChangeValidReleaseStageScenario.swift; sourceTree = "<group>"; };
+		010BAB482833D34A0003FF36 /* EnabledReleaseStageAutoSessionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnabledReleaseStageAutoSessionScenario.swift; sourceTree = "<group>"; };
+		010BAB492833D34A0003FF36 /* AppHangDisabledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppHangDisabledScenario.swift; sourceTree = "<group>"; };
+		010BAB4A2833D34A0003FF36 /* UnhandledErrorValidReleaseStageScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnhandledErrorValidReleaseStageScenario.swift; sourceTree = "<group>"; };
+		010BAB4B2833D34A0003FF36 /* HandledErrorValidReleaseStageScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorValidReleaseStageScenario.swift; sourceTree = "<group>"; };
+		010BAB4C2833D34A0003FF36 /* DisabledReleaseStageAutoSessionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisabledReleaseStageAutoSessionScenario.swift; sourceTree = "<group>"; };
+		010BAB4D2833D34A0003FF36 /* AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario.swift; sourceTree = "<group>"; };
+		010BAB4E2833D34A0003FF36 /* AppHangFatalDisabledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppHangFatalDisabledScenario.swift; sourceTree = "<group>"; };
+		010BAB4F2833D34A0003FF36 /* UnhandledErrorInvalidReleaseStageScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnhandledErrorInvalidReleaseStageScenario.swift; sourceTree = "<group>"; };
+		010BAB502833D34A0003FF36 /* AppHangDefaultConfigScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppHangDefaultConfigScenario.swift; sourceTree = "<group>"; };
+		010BAB512833D34A0003FF36 /* SendLaunchCrashesSynchronouslyLaunchCompletedScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendLaunchCrashesSynchronouslyLaunchCompletedScenario.swift; sourceTree = "<group>"; };
+		010BAB522833D34A0003FF36 /* AppAndDeviceAttributesConfigOverrideScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppAndDeviceAttributesConfigOverrideScenario.swift; sourceTree = "<group>"; };
+		010BAB532833D34A0003FF36 /* AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario.swift; sourceTree = "<group>"; };
+		010BAB542833D34A0003FF36 /* AppHangFatalOnlyScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppHangFatalOnlyScenario.swift; sourceTree = "<group>"; };
+		010BAB552833D34A0003FF36 /* AppAndDeviceAttributesCallbackOverrideScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppAndDeviceAttributesCallbackOverrideScenario.swift; sourceTree = "<group>"; };
+		010BAB562833D34A0003FF36 /* BareboneTestHandledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestHandledScenario.swift; sourceTree = "<group>"; };
+		010BAB572833D34A0003FF36 /* AppAndDeviceAttributesStartWithApiKeyScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppAndDeviceAttributesStartWithApiKeyScenario.swift; sourceTree = "<group>"; };
+		010BAB582833D34A0003FF36 /* DisabledReleaseStageManualSessionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisabledReleaseStageManualSessionScenario.swift; sourceTree = "<group>"; };
+		010BAB592833D34A0003FF36 /* SendLaunchCrashesSynchronouslyFalseScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendLaunchCrashesSynchronouslyFalseScenario.swift; sourceTree = "<group>"; };
+		010BAB5A2833D34A0003FF36 /* DiscardClassesUnhandledExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardClassesUnhandledExceptionScenario.swift; sourceTree = "<group>"; };
+		010BAB5B2833D34A0003FF36 /* DiscardClassesHandledExceptionRegexScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardClassesHandledExceptionRegexScenario.swift; sourceTree = "<group>"; };
+		010BAB5C2833D34A0003FF36 /* EnabledReleaseStageManualSessionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnabledReleaseStageManualSessionScenario.swift; sourceTree = "<group>"; };
+		010BAB5D2833D34A0003FF36 /* HandledErrorInvalidReleaseStageScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorInvalidReleaseStageScenario.swift; sourceTree = "<group>"; };
 		011B7A4B26CD52080071C3EB /* ThermalStateBreadcrumbScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThermalStateBreadcrumbScenario.swift; sourceTree = "<group>"; };
 		0123189B275921590007EFD7 /* RecrashScenarios.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RecrashScenarios.mm; sourceTree = "<group>"; };
 		01452360254AFEA700D436AA /* macOSTestApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "macOSTestApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		015AE239276B88300044B1AE /* OnSendErrorPersistenceScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OnSendErrorPersistenceScenario.m; sourceTree = "<group>"; };
-		0163BF9A2583AF2A008DC28B /* DiscardClassesScenarios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardClassesScenarios.swift; sourceTree = "<group>"; };
 		0176C0A8254AE81B0066E0F3 /* macOSTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = macOSTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0176C0AC254AE81B0066E0F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; usesTabs = 1; };
 		0176C0AD254AE81B0066E0F3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -177,11 +239,27 @@
 		0176C0B0254AE81B0066E0F3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		0176C0B2254AE81B0066E0F3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		0176C0B5254AE81B0066E0F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		017D9CEB2833C81100B0AA87 /* DisableMachExceptionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisableMachExceptionScenario.m; sourceTree = "<group>"; };
+		017D9CEC2833C81100B0AA87 /* AbortOverrideScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbortOverrideScenario.m; sourceTree = "<group>"; };
+		017D9CED2833C81100B0AA87 /* UnhandledMachExceptionOverrideScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnhandledMachExceptionOverrideScenario.m; sourceTree = "<group>"; };
+		017D9CEE2833C81100B0AA87 /* HandledErrorThreadSendUnhandledOnlyScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HandledErrorThreadSendUnhandledOnlyScenario.m; sourceTree = "<group>"; };
+		017D9CEF2833C81100B0AA87 /* DisableSignalsExceptionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisableSignalsExceptionScenario.m; sourceTree = "<group>"; };
+		017D9CF02833C81100B0AA87 /* UserPersistencePersistUserClientScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserPersistencePersistUserClientScenario.m; sourceTree = "<group>"; };
+		017D9CF12833C81100B0AA87 /* UserPersistenceNoUserScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserPersistenceNoUserScenario.m; sourceTree = "<group>"; };
+		017D9CF22833C81100B0AA87 /* DisableNSExceptionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisableNSExceptionScenario.m; sourceTree = "<group>"; };
+		017D9CF32833C81100B0AA87 /* HandledErrorThreadSendAlwaysScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HandledErrorThreadSendAlwaysScenario.m; sourceTree = "<group>"; };
+		017D9CF42833C81100B0AA87 /* DisableAllExceptManualExceptionsAndCrashScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisableAllExceptManualExceptionsAndCrashScenario.m; sourceTree = "<group>"; };
+		017D9CF52833C81100B0AA87 /* UserPersistenceDontPersistUserScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserPersistenceDontPersistUserScenario.m; sourceTree = "<group>"; };
+		017D9CF62833C81100B0AA87 /* UnhandledErrorThreadSendNeverScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnhandledErrorThreadSendNeverScenario.m; sourceTree = "<group>"; };
+		017D9CF72833C81100B0AA87 /* UnhandledErrorThreadSendAlwaysScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnhandledErrorThreadSendAlwaysScenario.m; sourceTree = "<group>"; };
+		017D9CF82833C81100B0AA87 /* UserPersistencePersistUserScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserPersistencePersistUserScenario.m; sourceTree = "<group>"; };
+		017D9CF92833C81100B0AA87 /* ObjCExceptionOverrideScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionOverrideScenario.m; sourceTree = "<group>"; };
+		017D9CFA2833C81100B0AA87 /* spin_malloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spin_malloc.h; sourceTree = "<group>"; };
+		017D9CFB2833C81100B0AA87 /* CxxExceptionOverrideScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxExceptionOverrideScenario.mm; sourceTree = "<group>"; };
 		017FBFB5254B09C300809042 /* MainWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainWindowController.h; sourceTree = "<group>"; };
 		017FBFB6254B09C300809042 /* MainWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainWindowController.m; sourceTree = "<group>"; };
 		017FBFB7254B09C300809042 /* MainWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindowController.xib; sourceTree = "<group>"; };
 		01847DCC26443DF000ADA4C7 /* InvalidCrashReportScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InvalidCrashReportScenario.m; sourceTree = "<group>"; };
-		01AF6A4F258A00DE00FFC803 /* BareboneTestScenarios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BareboneTestScenarios.swift; sourceTree = "<group>"; };
 		01AF6A83258BB38A00FFC803 /* DispatchCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchCrashScenario.swift; sourceTree = "<group>"; };
 		01AFCFC6282C058D00D48D45 /* OldSessionScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OldSessionScenario.m; sourceTree = "<group>"; };
 		01B6BB7125D56CBF00FC4DE6 /* LastRunInfoScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastRunInfoScenario.swift; sourceTree = "<group>"; };
@@ -192,55 +270,31 @@
 		01ECBCF225A7522000FC0678 /* OnErrorOverwriteUnhandledFalseScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteUnhandledFalseScenario.swift; sourceTree = "<group>"; };
 		01ECBCF325A7522000FC0678 /* OnErrorOverwriteUnhandledTrueScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteUnhandledTrueScenario.swift; sourceTree = "<group>"; };
 		01F115C627BAA67B00892B1E /* SIGPIPEIgnoredScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIGPIPEIgnoredScenario.m; sourceTree = "<group>"; };
-		01F1473925F2817100C2DC65 /* AppHangScenarios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHangScenarios.swift; sourceTree = "<group>"; };
 		01F47C21254B1B2C00B184AD /* OriginalErrorNSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OriginalErrorNSExceptionScenario.swift; sourceTree = "<group>"; };
-		01F47C22254B1B2C00B184AD /* ThreadScenarios.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadScenarios.h; sourceTree = "<group>"; };
 		01F47C23254B1B2C00B184AD /* LoadConfigFromFileAutoScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadConfigFromFileAutoScenario.swift; sourceTree = "<group>"; };
-		01F47C24254B1B2C00B184AD /* NonExistentMethodScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NonExistentMethodScenario.h; sourceTree = "<group>"; };
-		01F47C25254B1B2C00B184AD /* OverwriteLinkRegisterScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverwriteLinkRegisterScenario.h; sourceTree = "<group>"; };
-		01F47C26254B1B2C00B184AD /* CxxExceptionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CxxExceptionScenario.h; sourceTree = "<group>"; };
-		01F47C27254B1B2C00B184AD /* ObjCExceptionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCExceptionScenario.h; sourceTree = "<group>"; };
 		01F47C28254B1B2C00B184AD /* HandledExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledExceptionScenario.swift; sourceTree = "<group>"; };
 		01F47C29254B1B2C00B184AD /* MetadataRedactionDefaultScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataRedactionDefaultScenario.swift; sourceTree = "<group>"; };
 		01F47C2A254B1B2C00B184AD /* AutoSessionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoSessionScenario.m; sourceTree = "<group>"; };
 		01F47C2B254B1B2D00B184AD /* BuiltinTrapScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BuiltinTrapScenario.m; sourceTree = "<group>"; };
-		01F47C2C254B1B2D00B184AD /* BreadcrumbCallbackRemovalScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BreadcrumbCallbackRemovalScenario.h; sourceTree = "<group>"; };
 		01F47C2D254B1B2D00B184AD /* ManualSessionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManualSessionScenario.m; sourceTree = "<group>"; };
-		01F47C2E254B1B2D00B184AD /* AutoSessionWithUserScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoSessionWithUserScenario.h; sourceTree = "<group>"; };
 		01F47C2F254B1B2D00B184AD /* BreadcrumbCallbackCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreadcrumbCallbackCrashScenario.swift; sourceTree = "<group>"; };
 		01F47C30254B1B2D00B184AD /* OnSendCallbackOrderScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnSendCallbackOrderScenario.swift; sourceTree = "<group>"; };
-		01F47C31254B1B2D00B184AD /* PrivilegedInstructionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrivilegedInstructionScenario.h; sourceTree = "<group>"; };
-		01F47C32254B1B2D00B184AD /* ReadGarbagePointerScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadGarbagePointerScenario.h; sourceTree = "<group>"; };
-		01F47C33254B1B2D00B184AD /* ManyConcurrentNotifyScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManyConcurrentNotifyScenario.h; sourceTree = "<group>"; };
 		01F47C34254B1B2D00B184AD /* NullPointerScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NullPointerScenario.m; sourceTree = "<group>"; };
 		01F47C35254B1B2D00B184AD /* ReadOnlyPageScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadOnlyPageScenario.m; sourceTree = "<group>"; };
 		01F47C36254B1B2D00B184AD /* ObjCExceptionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionScenario.m; sourceTree = "<group>"; };
-		01F47C37254B1B2D00B184AD /* UndefinedInstructionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UndefinedInstructionScenario.h; sourceTree = "<group>"; };
-		01F47C38254B1B2D00B184AD /* UnhandledMachExceptionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnhandledMachExceptionScenario.h; sourceTree = "<group>"; };
 		01F47C39254B1B2D00B184AD /* StackOverflowScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StackOverflowScenario.m; sourceTree = "<group>"; };
-		01F47C3A254B1B2D00B184AD /* EnabledErrorTypesScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnabledErrorTypesScenario.h; sourceTree = "<group>"; };
 		01F47C3B254B1B2D00B184AD /* ManualContextClientScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManualContextClientScenario.swift; sourceTree = "<group>"; };
 		01F47C3C254B1B2D00B184AD /* Scenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scenario.m; sourceTree = "<group>"; };
 		01F47C3D254B1B2D00B184AD /* EnabledBreadcrumbTypesIsNilScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnabledBreadcrumbTypesIsNilScenario.swift; sourceTree = "<group>"; };
-		01F47C3E254B1B2D00B184AD /* SIGILLScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIGILLScenario.h; sourceTree = "<group>"; };
-		01F47C3F254B1B2D00B184AD /* StopSessionOOMScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopSessionOOMScenario.h; sourceTree = "<group>"; };
 		01F47C40254B1B2D00B184AD /* AsyncSafeThreadScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncSafeThreadScenario.m; sourceTree = "<group>"; };
 		01F47C41254B1B2D00B184AD /* OOMAutoDetectErrorsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OOMAutoDetectErrorsScenario.swift; sourceTree = "<group>"; };
 		01F47C42254B1B2D00B184AD /* SIGILLScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIGILLScenario.m; sourceTree = "<group>"; };
-		01F47C43254B1B2D00B184AD /* DisabledSessionTrackingScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisabledSessionTrackingScenario.h; sourceTree = "<group>"; };
 		01F47C44254B1B2D00B184AD /* AutoDetectFalseHandledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoDetectFalseHandledScenario.swift; sourceTree = "<group>"; };
-		01F47C45254B1B2D00B184AD /* SIGSYSScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIGSYSScenario.h; sourceTree = "<group>"; };
-		01F47C46254B1B2D00B184AD /* StackOverflowScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StackOverflowScenario.h; sourceTree = "<group>"; };
 		01F47C47254B1B2D00B184AD /* ManualContextConfigurationScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManualContextConfigurationScenario.swift; sourceTree = "<group>"; };
 		01F47C48254B1B2D00B184AD /* SessionCallbackDiscardScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionCallbackDiscardScenario.swift; sourceTree = "<group>"; };
-		01F47C49254B1B2D00B184AD /* ManualSessionWithUserScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManualSessionWithUserScenario.h; sourceTree = "<group>"; };
-		01F47C4A254B1B2D00B184AD /* AccessNonObjectScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccessNonObjectScenario.h; sourceTree = "<group>"; };
 		01F47C4B254B1B2D00B184AD /* NonExistentMethodScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NonExistentMethodScenario.m; sourceTree = "<group>"; };
 		01F47C4C254B1B2D00B184AD /* UnhandledMachExceptionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnhandledMachExceptionScenario.m; sourceTree = "<group>"; };
-		01F47C4D254B1B2D00B184AD /* ObjCMsgSendScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCMsgSendScenario.h; sourceTree = "<group>"; };
 		01F47C4E254B1B2D00B184AD /* HandledErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorScenario.swift; sourceTree = "<group>"; };
-		01F47C4F254B1B2D00B184AD /* NullPointerScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NullPointerScenario.h; sourceTree = "<group>"; };
-		01F47C50254B1B2D00B184AD /* SIGSEGVScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIGSEGVScenario.h; sourceTree = "<group>"; };
 		01F47C51254B1B2D00B184AD /* StopSessionOOMScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StopSessionOOMScenario.m; sourceTree = "<group>"; };
 		01F47C52254B1B2D00B184AD /* Scenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scenario.h; sourceTree = "<group>"; };
 		01F47C53254B1B2D00B184AD /* ReleasedObjectScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasedObjectScenario.m; sourceTree = "<group>"; };
@@ -250,78 +304,51 @@
 		01F47C57254B1B2E00B184AD /* SwiftCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftCrashScenario.swift; sourceTree = "<group>"; };
 		01F47C58254B1B2E00B184AD /* MetadataRedactionRegexScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataRedactionRegexScenario.swift; sourceTree = "<group>"; };
 		01F47C59254B1B2E00B184AD /* AutoDetectFalseNSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoDetectFalseNSExceptionScenario.swift; sourceTree = "<group>"; };
-		01F47C5A254B1B2E00B184AD /* AutoSessionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoSessionScenario.h; sourceTree = "<group>"; };
 		01F47C5B254B1B2E00B184AD /* AccessNonObjectScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccessNonObjectScenario.m; sourceTree = "<group>"; };
-		01F47C5C254B1B2E00B184AD /* EnabledErrorTypesCxxScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnabledErrorTypesCxxScenario.h; sourceTree = "<group>"; };
 		01F47C5D254B1B2E00B184AD /* HandledErrorOverrideScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledErrorOverrideScenario.swift; sourceTree = "<group>"; };
 		01F47C5E254B1B2E00B184AD /* NotifyCallbackCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotifyCallbackCrashScenario.swift; sourceTree = "<group>"; };
-		01F47C5F254B1B2E00B184AD /* ManualSessionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManualSessionScenario.h; sourceTree = "<group>"; };
 		01F47C60254B1B2E00B184AD /* AppAndDeviceAttributesScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppAndDeviceAttributesScenario.swift; sourceTree = "<group>"; };
 		01F47C61254B1B2E00B184AD /* SIGTRAPScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIGTRAPScenario.m; sourceTree = "<group>"; };
 		01F47C62254B1B2E00B184AD /* AutoSessionMixedEventsScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoSessionMixedEventsScenario.m; sourceTree = "<group>"; };
 		01F47C63254B1B2E00B184AD /* AutoSessionHandledEventsScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoSessionHandledEventsScenario.m; sourceTree = "<group>"; };
 		01F47C64254B1B2E00B184AD /* SessionCallbackCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionCallbackCrashScenario.swift; sourceTree = "<group>"; };
-		01F47C65254B1B2E00B184AD /* UserPersistenceScenarios.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserPersistenceScenarios.h; sourceTree = "<group>"; };
-		01F47C66254B1B2E00B184AD /* OOMWillTerminateScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMWillTerminateScenario.h; sourceTree = "<group>"; };
 		01F47C67254B1B2E00B184AD /* ResumedSessionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResumedSessionScenario.swift; sourceTree = "<group>"; };
 		01F47C68254B1B2E00B184AD /* AutoDetectFalseAbortScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoDetectFalseAbortScenario.swift; sourceTree = "<group>"; };
-		01F47C69254B1B2E00B184AD /* OnSendCallbackRemovalScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnSendCallbackRemovalScenario.h; sourceTree = "<group>"; };
-		01F47C6A254B1B2E00B184AD /* SIGPIPEScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIGPIPEScenario.h; sourceTree = "<group>"; };
-		01F47C6B254B1B2E00B184AD /* EnabledErrorTypesScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnabledErrorTypesScenario.m; sourceTree = "<group>"; };
 		01F47C6C254B1B2E00B184AD /* OnSendOverwriteScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnSendOverwriteScenario.swift; sourceTree = "<group>"; };
 		01F47C6E254B1B2E00B184AD /* ManyConcurrentNotifyScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManyConcurrentNotifyScenario.m; sourceTree = "<group>"; };
 		01F47C6F254B1B2E00B184AD /* AutoCaptureRunScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoCaptureRunScenario.m; sourceTree = "<group>"; };
 		01F47C70254B1B2E00B184AD /* OOMSessionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OOMSessionScenario.swift; sourceTree = "<group>"; };
-		01F47C71254B1B2E00B184AD /* SessionCallbackRemovalScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionCallbackRemovalScenario.h; sourceTree = "<group>"; };
-		01F47C72254B1B2E00B184AD /* SessionOOMScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionOOMScenario.h; sourceTree = "<group>"; };
-		01F47C73254B1B2E00B184AD /* AsyncSafeThreadScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncSafeThreadScenario.h; sourceTree = "<group>"; };
 		01F47C74254B1B2E00B184AD /* StoppedSessionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoppedSessionScenario.swift; sourceTree = "<group>"; };
 		01F47C76254B1B2E00B184AD /* OnSendErrorCallbackCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnSendErrorCallbackCrashScenario.swift; sourceTree = "<group>"; };
-		01F47C77254B1B2E00B184AD /* CustomPluginNotifierDescriptionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomPluginNotifierDescriptionScenario.h; sourceTree = "<group>"; };
 		01F47C78254B1B2F00B184AD /* ModifyBreadcrumbInNotifyScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifyBreadcrumbInNotifyScenario.swift; sourceTree = "<group>"; };
 		01F47C79254B1B2F00B184AD /* BreadcrumbCallbackDiscardScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreadcrumbCallbackDiscardScenario.swift; sourceTree = "<group>"; };
 		01F47C7A254B1B2F00B184AD /* BreadcrumbCallbackOrderScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreadcrumbCallbackOrderScenario.swift; sourceTree = "<group>"; };
-		01F47C7B254B1B2F00B184AD /* NSExceptionShiftScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSExceptionShiftScenario.h; sourceTree = "<group>"; };
-		01F47C7C254B1B2F00B184AD /* ReadOnlyPageScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadOnlyPageScenario.h; sourceTree = "<group>"; };
-		01F47C7D254B1B2F00B184AD /* ReleaseStageScenarios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleaseStageScenarios.swift; sourceTree = "<group>"; };
 		01F47C7E254B1B2F00B184AD /* SessionCallbackOverrideScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionCallbackOverrideScenario.swift; sourceTree = "<group>"; };
 		01F47C7F254B1B2F00B184AD /* OnCrashHandlerScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnCrashHandlerScenario.m; sourceTree = "<group>"; };
 		01F47C80254B1B2F00B184AD /* MetadataRedactionNestedScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataRedactionNestedScenario.swift; sourceTree = "<group>"; };
 		01F47C81254B1B2F00B184AD /* EnabledErrorTypesCxxScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EnabledErrorTypesCxxScenario.mm; sourceTree = "<group>"; };
 		01F47C82254B1B2F00B184AD /* ManualContextOnErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManualContextOnErrorScenario.swift; sourceTree = "<group>"; };
 		01F47C83254B1B2F00B184AD /* SessionCallbackOrderScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionCallbackOrderScenario.swift; sourceTree = "<group>"; };
-		01F47C84254B1B2F00B184AD /* AutoCaptureRunScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoCaptureRunScenario.h; sourceTree = "<group>"; };
 		01F47C85254B1B2F00B184AD /* CustomPluginNotifierDescriptionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomPluginNotifierDescriptionScenario.m; sourceTree = "<group>"; };
 		01F47C86254B1B2F00B184AD /* OriginalErrorNSErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OriginalErrorNSErrorScenario.swift; sourceTree = "<group>"; };
 		01F47C87254B1B2F00B184AD /* ModifyBreadcrumbScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifyBreadcrumbScenario.swift; sourceTree = "<group>"; };
 		01F47C88254B1B2F00B184AD /* DisabledSessionTrackingScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisabledSessionTrackingScenario.m; sourceTree = "<group>"; };
 		01F47C8B254B1B2F00B184AD /* AutoSessionCustomVersionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoSessionCustomVersionScenario.m; sourceTree = "<group>"; };
 		01F47C8C254B1B2F00B184AD /* BreadcrumbCallbackOverrideScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreadcrumbCallbackOverrideScenario.swift; sourceTree = "<group>"; };
-		01F47C8D254B1B2F00B184AD /* AutoSessionMixedEventsScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoSessionMixedEventsScenario.h; sourceTree = "<group>"; };
-		01F47C8E254B1B2F00B184AD /* SIGTRAPScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIGTRAPScenario.h; sourceTree = "<group>"; };
 		01F47C8F254B1B2F00B184AD /* CxxExceptionScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxExceptionScenario.mm; sourceTree = "<group>"; };
 		01F47C90254B1B2F00B184AD /* UnhandledInternalNotifyScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnhandledInternalNotifyScenario.swift; sourceTree = "<group>"; };
-		01F47C91254B1B2F00B184AD /* AbortScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbortScenario.h; sourceTree = "<group>"; };
-		01F47C92254B1B2F00B184AD /* ReleasedObjectScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasedObjectScenario.h; sourceTree = "<group>"; };
 		01F47C93254B1B2F00B184AD /* UserEventOverrideScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEventOverrideScenario.swift; sourceTree = "<group>"; };
 		01F47C94254B1B2F00B184AD /* LoadConfigFromFileScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadConfigFromFileScenario.swift; sourceTree = "<group>"; };
-		01F47C96254B1B2F00B184AD /* AutoSessionUnhandledScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoSessionUnhandledScenario.h; sourceTree = "<group>"; };
 		01F47C97254B1B2F00B184AD /* OOMWillTerminateScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOMWillTerminateScenario.m; sourceTree = "<group>"; };
 		01F47C98254B1B2F00B184AD /* AutoSessionWithUserScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoSessionWithUserScenario.m; sourceTree = "<group>"; };
 		01F47C99254B1B2F00B184AD /* NSExceptionShiftScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSExceptionShiftScenario.m; sourceTree = "<group>"; };
-		01F47C9A254B1B2F00B184AD /* AutoSessionHandledEventsScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoSessionHandledEventsScenario.h; sourceTree = "<group>"; };
 		01F47C9B254B1B2F00B184AD /* OnSendCallbackRemovalScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnSendCallbackRemovalScenario.m; sourceTree = "<group>"; };
-		01F47C9C254B1B3000B184AD /* UserPersistenceScenarios.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserPersistenceScenarios.m; sourceTree = "<group>"; };
 		01F47C9D254B1B3000B184AD /* OOMEnabledErrorTypesScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OOMEnabledErrorTypesScenario.swift; sourceTree = "<group>"; };
 		01F47C9E254B1B3000B184AD /* UndefinedInstructionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UndefinedInstructionScenario.m; sourceTree = "<group>"; };
-		01F47C9F254B1B3000B184AD /* OnCrashHandlerScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnCrashHandlerScenario.h; sourceTree = "<group>"; };
 		01F47CA0254B1B3000B184AD /* NewSessionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewSessionScenario.swift; sourceTree = "<group>"; };
-		01F47CA1254B1B3000B184AD /* ReleaseStageSessionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleaseStageSessionScenario.swift; sourceTree = "<group>"; };
 		01F47CA2254B1B3000B184AD /* SIGBUSScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIGBUSScenario.m; sourceTree = "<group>"; };
 		01F47CA3254B1B3000B184AD /* UserFromClientScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFromClientScenario.swift; sourceTree = "<group>"; };
-		01F47CA4254B1B3000B184AD /* ThreadScenarios.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadScenarios.m; sourceTree = "<group>"; };
 		01F47CA5254B1B3000B184AD /* SIGSEGVScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIGSEGVScenario.m; sourceTree = "<group>"; };
-		01F47CA6254B1B3000B184AD /* ResumeSessionOOMScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResumeSessionOOMScenario.h; sourceTree = "<group>"; };
 		01F47CA7254B1B3000B184AD /* SessionCallbackRemovalScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionCallbackRemovalScenario.m; sourceTree = "<group>"; };
 		01F47CA8254B1B3000B184AD /* DiscardedBreadcrumbTypeScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardedBreadcrumbTypeScenario.swift; sourceTree = "<group>"; };
 		01F47CA9254B1B3000B184AD /* SIGPIPEScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIGPIPEScenario.m; sourceTree = "<group>"; };
@@ -335,20 +362,15 @@
 		01F47CB1254B1B3000B184AD /* AutoContextNSErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoContextNSErrorScenario.swift; sourceTree = "<group>"; };
 		01F47CB2254B1B3000B184AD /* PrivilegedInstructionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivilegedInstructionScenario.m; sourceTree = "<group>"; };
 		01F47CB4254B1B3000B184AD /* ReadGarbagePointerScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadGarbagePointerScenario.m; sourceTree = "<group>"; };
-		01F47CB5254B1B3000B184AD /* BuiltinTrapScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BuiltinTrapScenario.h; sourceTree = "<group>"; };
-		01F47CB6254B1B3000B184AD /* DiscardSessionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardSessionScenario.swift; sourceTree = "<group>"; };
 		01F47CB8254B1B3000B184AD /* AutoSessionUnhandledScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoSessionUnhandledScenario.m; sourceTree = "<group>"; };
 		01F47CB9254B1B3000B184AD /* SIGSYSScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIGSYSScenario.m; sourceTree = "<group>"; };
 		01F47CBA254B1B3000B184AD /* OnErrorOverwriteScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteScenario.swift; sourceTree = "<group>"; };
 		01F47CBB254B1B3000B184AD /* OOMLoadScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OOMLoadScenario.swift; sourceTree = "<group>"; };
-		01F47CBC254B1B3000B184AD /* AutoSessionCustomVersionScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoSessionCustomVersionScenario.h; sourceTree = "<group>"; };
 		01F47CBD254B1B3000B184AD /* MetadataMergeScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataMergeScenario.swift; sourceTree = "<group>"; };
 		01F47CBE254B1B3000B184AD /* AttachCustomStacktraceHook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttachCustomStacktraceHook.h; sourceTree = "<group>"; };
 		01F47CBF254B1B3000B184AD /* AutoContextNSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoContextNSExceptionScenario.swift; sourceTree = "<group>"; };
 		01F47CC0254B1B3000B184AD /* OverwriteLinkRegisterScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverwriteLinkRegisterScenario.m; sourceTree = "<group>"; };
 		01F47CC1254B1B3000B184AD /* ResumeSessionOOMScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResumeSessionOOMScenario.m; sourceTree = "<group>"; };
-		01F47CC2254B1B3000B184AD /* SIGBUSScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIGBUSScenario.h; sourceTree = "<group>"; };
-		01F47CC3254B1B3100B184AD /* SIGFPEScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIGFPEScenario.h; sourceTree = "<group>"; };
 		01F54383282E50FE00684474 /* MaxPersistedSessionsScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MaxPersistedSessionsScenario.m; sourceTree = "<group>"; };
 		01F6B7482832381300B75C5D /* OldCrashReportScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldCrashReportScenario.swift; sourceTree = "<group>"; };
 		01F6B7492832381300B75C5D /* OversizedHandledErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OversizedHandledErrorScenario.swift; sourceTree = "<group>"; };
@@ -382,68 +404,76 @@
 		01452234254AFCD600D436AA /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
-				01F47C91254B1B2F00B184AD /* AbortScenario.h */,
+				017D9CEC2833C81100B0AA87 /* AbortOverrideScenario.m */,
 				01F47C54254B1B2E00B184AD /* AbortScenario.m */,
-				01F47C4A254B1B2D00B184AD /* AccessNonObjectScenario.h */,
 				01F47C5B254B1B2E00B184AD /* AccessNonObjectScenario.m */,
+				010BAB552833D34A0003FF36 /* AppAndDeviceAttributesCallbackOverrideScenario.swift */,
+				010BAB522833D34A0003FF36 /* AppAndDeviceAttributesConfigOverrideScenario.swift */,
+				010BAB422833D34A0003FF36 /* AppAndDeviceAttributesInfiniteLaunchDurationScenario.swift */,
 				01F47C60254B1B2E00B184AD /* AppAndDeviceAttributesScenario.swift */,
+				010BAB572833D34A0003FF36 /* AppAndDeviceAttributesStartWithApiKeyScenario.swift */,
+				010BAB4D2833D34A0003FF36 /* AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario.swift */,
+				010BAB532833D34A0003FF36 /* AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario.swift */,
 				01E0DB0425E8E90500A740ED /* AppDurationScenario.swift */,
+				010BAB502833D34A0003FF36 /* AppHangDefaultConfigScenario.swift */,
+				010BAB492833D34A0003FF36 /* AppHangDisabledScenario.swift */,
+				010BAB4E2833D34A0003FF36 /* AppHangFatalDisabledScenario.swift */,
+				010BAB542833D34A0003FF36 /* AppHangFatalOnlyScenario.swift */,
 				01FA9EC526D64FFF0059FF4A /* AppHangInTerminationScenario.swift */,
-				01F1473925F2817100C2DC65 /* AppHangScenarios.swift */,
+				010BAB442833D34A0003FF36 /* AppHangScenario.swift */,
 				01018BAA25E417EC000312C6 /* AsyncSafeMallocScenario.m */,
-				01F47C73254B1B2E00B184AD /* AsyncSafeThreadScenario.h */,
 				01F47C40254B1B2D00B184AD /* AsyncSafeThreadScenario.m */,
 				01F47CBE254B1B3000B184AD /* AttachCustomStacktraceHook.h */,
-				01F47C84254B1B2F00B184AD /* AutoCaptureRunScenario.h */,
 				01F47C6F254B1B2E00B184AD /* AutoCaptureRunScenario.m */,
 				01F47CB1254B1B3000B184AD /* AutoContextNSErrorScenario.swift */,
 				01F47CBF254B1B3000B184AD /* AutoContextNSExceptionScenario.swift */,
 				01F47C68254B1B2E00B184AD /* AutoDetectFalseAbortScenario.swift */,
 				01F47C44254B1B2D00B184AD /* AutoDetectFalseHandledScenario.swift */,
 				01F47C59254B1B2E00B184AD /* AutoDetectFalseNSExceptionScenario.swift */,
-				01F47CBC254B1B3000B184AD /* AutoSessionCustomVersionScenario.h */,
 				01F47C8B254B1B2F00B184AD /* AutoSessionCustomVersionScenario.m */,
-				01F47C9A254B1B2F00B184AD /* AutoSessionHandledEventsScenario.h */,
 				01F47C63254B1B2E00B184AD /* AutoSessionHandledEventsScenario.m */,
-				01F47C8D254B1B2F00B184AD /* AutoSessionMixedEventsScenario.h */,
 				01F47C62254B1B2E00B184AD /* AutoSessionMixedEventsScenario.m */,
-				01F47C5A254B1B2E00B184AD /* AutoSessionScenario.h */,
 				01F47C2A254B1B2C00B184AD /* AutoSessionScenario.m */,
-				01F47C96254B1B2F00B184AD /* AutoSessionUnhandledScenario.h */,
 				01F47CB8254B1B3000B184AD /* AutoSessionUnhandledScenario.m */,
-				01F47C2E254B1B2D00B184AD /* AutoSessionWithUserScenario.h */,
 				01F47C98254B1B2F00B184AD /* AutoSessionWithUserScenario.m */,
-				01AF6A4F258A00DE00FFC803 /* BareboneTestScenarios.swift */,
+				010BAB562833D34A0003FF36 /* BareboneTestHandledScenario.swift */,
+				010BAB432833D34A0003FF36 /* BareboneTestUnhandledErrorScenario.swift */,
 				01F47C2F254B1B2D00B184AD /* BreadcrumbCallbackCrashScenario.swift */,
 				01F47C79254B1B2F00B184AD /* BreadcrumbCallbackDiscardScenario.swift */,
 				01F47C7A254B1B2F00B184AD /* BreadcrumbCallbackOrderScenario.swift */,
 				01F47C8C254B1B2F00B184AD /* BreadcrumbCallbackOverrideScenario.swift */,
-				01F47C2C254B1B2D00B184AD /* BreadcrumbCallbackRemovalScenario.h */,
 				01F47CAE254B1B3000B184AD /* BreadcrumbCallbackRemovalScenario.m */,
 				01F47CAC254B1B3000B184AD /* BugsnagHooks.h */,
-				01F47CB5254B1B3000B184AD /* BuiltinTrapScenario.h */,
 				01F47C2B254B1B2D00B184AD /* BuiltinTrapScenario.m */,
 				01DCB82C279868160048640A /* ConcurrentCrashesScenario.mm */,
 				01DE903926CEAD1200455213 /* CriticalThermalStateScenario.swift */,
-				01F47C77254B1B2E00B184AD /* CustomPluginNotifierDescriptionScenario.h */,
 				01F47C85254B1B2F00B184AD /* CustomPluginNotifierDescriptionScenario.m */,
 				8A096DF927C7E6D800DB6ECC /* CxxBareThrowScenario.mm */,
-				01F47C26254B1B2C00B184AD /* CxxExceptionScenario.h */,
+				017D9CFB2833C81100B0AA87 /* CxxExceptionOverrideScenario.mm */,
 				01F47C8F254B1B2F00B184AD /* CxxExceptionScenario.mm */,
 				8A096DF727C7E63A00DB6ECC /* CxxUnexpectedScenario.mm */,
-				01F47C43254B1B2D00B184AD /* DisabledSessionTrackingScenario.h */,
+				017D9CF42833C81100B0AA87 /* DisableAllExceptManualExceptionsAndCrashScenario.m */,
+				010BAB4C2833D34A0003FF36 /* DisabledReleaseStageAutoSessionScenario.swift */,
+				010BAB582833D34A0003FF36 /* DisabledReleaseStageManualSessionScenario.swift */,
 				01F47C88254B1B2F00B184AD /* DisabledSessionTrackingScenario.m */,
-				0163BF9A2583AF2A008DC28B /* DiscardClassesScenarios.swift */,
+				017D9CEB2833C81100B0AA87 /* DisableMachExceptionScenario.m */,
+				017D9CF22833C81100B0AA87 /* DisableNSExceptionScenario.m */,
+				017D9CEF2833C81100B0AA87 /* DisableSignalsExceptionScenario.m */,
+				010BAB5B2833D34A0003FF36 /* DiscardClassesHandledExceptionRegexScenario.swift */,
+				010BAB452833D34A0003FF36 /* DiscardClassesUnhandledCrashScenario.swift */,
+				010BAB5A2833D34A0003FF36 /* DiscardClassesUnhandledExceptionScenario.swift */,
 				01F47CA8254B1B3000B184AD /* DiscardedBreadcrumbTypeScenario.swift */,
-				01F47CB6254B1B3000B184AD /* DiscardSessionScenario.swift */,
 				01AF6A83258BB38A00FFC803 /* DispatchCrashScenario.swift */,
 				01F47C3D254B1B2D00B184AD /* EnabledBreadcrumbTypesIsNilScenario.swift */,
-				01F47C5C254B1B2E00B184AD /* EnabledErrorTypesCxxScenario.h */,
 				01F47C81254B1B2F00B184AD /* EnabledErrorTypesCxxScenario.mm */,
-				01F47C3A254B1B2D00B184AD /* EnabledErrorTypesScenario.h */,
-				01F47C6B254B1B2E00B184AD /* EnabledErrorTypesScenario.m */,
+				010BAB482833D34A0003FF36 /* EnabledReleaseStageAutoSessionScenario.swift */,
+				010BAB5C2833D34A0003FF36 /* EnabledReleaseStageManualSessionScenario.swift */,
+				010BAB5D2833D34A0003FF36 /* HandledErrorInvalidReleaseStageScenario.swift */,
 				01F47C5D254B1B2E00B184AD /* HandledErrorOverrideScenario.swift */,
 				01F47C4E254B1B2D00B184AD /* HandledErrorScenario.swift */,
+				017D9CF32833C81100B0AA87 /* HandledErrorThreadSendAlwaysScenario.m */,
+				017D9CEE2833C81100B0AA87 /* HandledErrorThreadSendUnhandledOnlyScenario.m */,
+				010BAB4B2833D34A0003FF36 /* HandledErrorValidReleaseStageScenario.swift */,
 				01F47C28254B1B2C00B184AD /* HandledExceptionScenario.swift */,
 				01F47C55254B1B2E00B184AD /* HandledInternalNotifyScenario.swift */,
 				01847DCC26443DF000ADA4C7 /* InvalidCrashReportScenario.m */,
@@ -453,11 +483,8 @@
 				01F47C3B254B1B2D00B184AD /* ManualContextClientScenario.swift */,
 				01F47C47254B1B2D00B184AD /* ManualContextConfigurationScenario.swift */,
 				01F47C82254B1B2F00B184AD /* ManualContextOnErrorScenario.swift */,
-				01F47C5F254B1B2E00B184AD /* ManualSessionScenario.h */,
 				01F47C2D254B1B2D00B184AD /* ManualSessionScenario.m */,
-				01F47C49254B1B2D00B184AD /* ManualSessionWithUserScenario.h */,
 				01F47C56254B1B2E00B184AD /* ManualSessionWithUserScenario.m */,
-				01F47C33254B1B2D00B184AD /* ManyConcurrentNotifyScenario.h */,
 				01F47C6E254B1B2E00B184AD /* ManyConcurrentNotifyScenario.m */,
 				CBB7878D2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.h */,
 				CBB7878C2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.m */,
@@ -470,27 +497,21 @@
 				01F47C87254B1B2F00B184AD /* ModifyBreadcrumbScenario.swift */,
 				01F73659278D90440000113C /* NetworkBreadcrumbsScenario.swift */,
 				01F47CA0254B1B3000B184AD /* NewSessionScenario.swift */,
-				01F47C24254B1B2C00B184AD /* NonExistentMethodScenario.h */,
 				01F47C4B254B1B2D00B184AD /* NonExistentMethodScenario.m */,
 				01F47C5E254B1B2E00B184AD /* NotifyCallbackCrashScenario.swift */,
-				01F47C7B254B1B2F00B184AD /* NSExceptionShiftScenario.h */,
 				01F47C99254B1B2F00B184AD /* NSExceptionShiftScenario.m */,
-				01F47C4F254B1B2D00B184AD /* NullPointerScenario.h */,
 				01F47C34254B1B2D00B184AD /* NullPointerScenario.m */,
-				01F47C27254B1B2C00B184AD /* ObjCExceptionScenario.h */,
+				017D9CF92833C81100B0AA87 /* ObjCExceptionOverrideScenario.m */,
 				01F47C36254B1B2D00B184AD /* ObjCExceptionScenario.m */,
-				01F47C4D254B1B2D00B184AD /* ObjCMsgSendScenario.h */,
 				01F47CAB254B1B3000B184AD /* ObjCMsgSendScenario.m */,
 				01F6B7482832381300B75C5D /* OldCrashReportScenario.swift */,
 				01F6B74A2832381300B75C5D /* OldHandledErrorScenario.swift */,
 				01AFCFC6282C058D00D48D45 /* OldSessionScenario.m */,
-				01F47C9F254B1B3000B184AD /* OnCrashHandlerScenario.h */,
 				01F47C7F254B1B2F00B184AD /* OnCrashHandlerScenario.m */,
 				01F47CBA254B1B3000B184AD /* OnErrorOverwriteScenario.swift */,
 				01ECBCF225A7522000FC0678 /* OnErrorOverwriteUnhandledFalseScenario.swift */,
 				01ECBCF325A7522000FC0678 /* OnErrorOverwriteUnhandledTrueScenario.swift */,
 				01F47C30254B1B2D00B184AD /* OnSendCallbackOrderScenario.swift */,
-				01F47C69254B1B2E00B184AD /* OnSendCallbackRemovalScenario.h */,
 				01F47C9B254B1B2F00B184AD /* OnSendCallbackRemovalScenario.m */,
 				01F47C76254B1B2E00B184AD /* OnSendErrorCallbackCrashScenario.swift */,
 				015AE239276B88300044B1AE /* OnSendErrorPersistenceScenario.m */,
@@ -499,80 +520,68 @@
 				01F47C9D254B1B3000B184AD /* OOMEnabledErrorTypesScenario.swift */,
 				01F47CBB254B1B3000B184AD /* OOMLoadScenario.swift */,
 				01F47C70254B1B2E00B184AD /* OOMSessionScenario.swift */,
-				01F47C66254B1B2E00B184AD /* OOMWillTerminateScenario.h */,
 				01F47C97254B1B2F00B184AD /* OOMWillTerminateScenario.m */,
 				01F47C86254B1B2F00B184AD /* OriginalErrorNSErrorScenario.swift */,
 				01F47C21254B1B2C00B184AD /* OriginalErrorNSExceptionScenario.swift */,
 				01F6B74B2832381300B75C5D /* OversizedCrashReportScenario.swift */,
 				01F6B7492832381300B75C5D /* OversizedHandledErrorScenario.swift */,
-				01F47C25254B1B2C00B184AD /* OverwriteLinkRegisterScenario.h */,
 				01F47CC0254B1B3000B184AD /* OverwriteLinkRegisterScenario.m */,
-				01F47C31254B1B2D00B184AD /* PrivilegedInstructionScenario.h */,
 				01F47CB2254B1B3000B184AD /* PrivilegedInstructionScenario.m */,
-				01F47C32254B1B2D00B184AD /* ReadGarbagePointerScenario.h */,
 				01F47CB4254B1B3000B184AD /* ReadGarbagePointerScenario.m */,
-				01F47C7C254B1B2F00B184AD /* ReadOnlyPageScenario.h */,
 				01F47C35254B1B2D00B184AD /* ReadOnlyPageScenario.m */,
 				0123189B275921590007EFD7 /* RecrashScenarios.mm */,
-				01F47C92254B1B2F00B184AD /* ReleasedObjectScenario.h */,
 				01F47C53254B1B2D00B184AD /* ReleasedObjectScenario.m */,
-				01F47C7D254B1B2F00B184AD /* ReleaseStageScenarios.swift */,
-				01F47CA1254B1B3000B184AD /* ReleaseStageSessionScenario.swift */,
 				01F47C67254B1B2E00B184AD /* ResumedSessionScenario.swift */,
-				01F47CA6254B1B3000B184AD /* ResumeSessionOOMScenario.h */,
 				01F47CC1254B1B3000B184AD /* ResumeSessionOOMScenario.m */,
 				01F47C52254B1B2D00B184AD /* Scenario.h */,
 				01F47C3C254B1B2D00B184AD /* Scenario.m */,
+				010BAB592833D34A0003FF36 /* SendLaunchCrashesSynchronouslyFalseScenario.swift */,
+				010BAB512833D34A0003FF36 /* SendLaunchCrashesSynchronouslyLaunchCompletedScenario.swift */,
 				01B6BBA125DA774C00FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift */,
 				01F47C64254B1B2E00B184AD /* SessionCallbackCrashScenario.swift */,
 				01F47C48254B1B2D00B184AD /* SessionCallbackDiscardScenario.swift */,
 				01F47C83254B1B2F00B184AD /* SessionCallbackOrderScenario.swift */,
 				01F47C7E254B1B2F00B184AD /* SessionCallbackOverrideScenario.swift */,
-				01F47C71254B1B2E00B184AD /* SessionCallbackRemovalScenario.h */,
 				01F47CA7254B1B3000B184AD /* SessionCallbackRemovalScenario.m */,
-				01F47C72254B1B2E00B184AD /* SessionOOMScenario.h */,
 				01F47CAA254B1B3000B184AD /* SessionOOMScenario.m */,
-				01F47CC2254B1B3000B184AD /* SIGBUSScenario.h */,
 				01F47CA2254B1B3000B184AD /* SIGBUSScenario.m */,
-				01F47CC3254B1B3100B184AD /* SIGFPEScenario.h */,
 				01F47CAD254B1B3000B184AD /* SIGFPEScenario.m */,
-				01F47C3E254B1B2D00B184AD /* SIGILLScenario.h */,
 				01F47C42254B1B2D00B184AD /* SIGILLScenario.m */,
 				01F115C627BAA67B00892B1E /* SIGPIPEIgnoredScenario.m */,
-				01F47C6A254B1B2E00B184AD /* SIGPIPEScenario.h */,
 				01F47CA9254B1B3000B184AD /* SIGPIPEScenario.m */,
-				01F47C50254B1B2D00B184AD /* SIGSEGVScenario.h */,
 				01F47CA5254B1B3000B184AD /* SIGSEGVScenario.m */,
-				01F47C45254B1B2D00B184AD /* SIGSYSScenario.h */,
 				01F47CB9254B1B3000B184AD /* SIGSYSScenario.m */,
-				01F47C8E254B1B2F00B184AD /* SIGTRAPScenario.h */,
 				01F47C61254B1B2E00B184AD /* SIGTRAPScenario.m */,
-				01F47C46254B1B2D00B184AD /* StackOverflowScenario.h */,
+				017D9CFA2833C81100B0AA87 /* spin_malloc.h */,
 				01F47C39254B1B2D00B184AD /* StackOverflowScenario.m */,
 				01F47C74254B1B2E00B184AD /* StoppedSessionScenario.swift */,
-				01F47C3F254B1B2D00B184AD /* StopSessionOOMScenario.h */,
 				01F47C51254B1B2D00B184AD /* StopSessionOOMScenario.m */,
 				01F47CAF254B1B3000B184AD /* SwiftAssertionScenario.swift */,
 				01F47C57254B1B2E00B184AD /* SwiftCrashScenario.swift */,
 				011B7A4B26CD52080071C3EB /* ThermalStateBreadcrumbScenario.swift */,
-				01F47C22254B1B2C00B184AD /* ThreadScenarios.h */,
-				01F47CA4254B1B3000B184AD /* ThreadScenarios.m */,
-				01F47C37254B1B2D00B184AD /* UndefinedInstructionScenario.h */,
 				01F47C9E254B1B3000B184AD /* UndefinedInstructionScenario.m */,
+				010BAB462833D34A0003FF36 /* UnhandledErrorChangeInvalidReleaseStageScenario.swift */,
+				010BAB472833D34A0003FF36 /* UnhandledErrorChangeValidReleaseStageScenario.swift */,
+				010BAB4F2833D34A0003FF36 /* UnhandledErrorInvalidReleaseStageScenario.swift */,
+				017D9CF72833C81100B0AA87 /* UnhandledErrorThreadSendAlwaysScenario.m */,
+				017D9CF62833C81100B0AA87 /* UnhandledErrorThreadSendNeverScenario.m */,
+				010BAB4A2833D34A0003FF36 /* UnhandledErrorValidReleaseStageScenario.swift */,
 				01F47C90254B1B2F00B184AD /* UnhandledInternalNotifyScenario.swift */,
-				01F47C38254B1B2D00B184AD /* UnhandledMachExceptionScenario.h */,
+				017D9CED2833C81100B0AA87 /* UnhandledMachExceptionOverrideScenario.m */,
 				01F47C4C254B1B2D00B184AD /* UnhandledMachExceptionScenario.m */,
 				01F47C93254B1B2F00B184AD /* UserEventOverrideScenario.swift */,
 				01F47CA3254B1B3000B184AD /* UserFromClientScenario.swift */,
 				AA6ACD192773E098006464C4 /* UserFromConfigScenario.swift */,
 				AA6ACD1D2773E39C006464C4 /* UserInfoScenario.swift */,
-				01F47C65254B1B2E00B184AD /* UserPersistenceScenarios.h */,
-				01F47C9C254B1B3000B184AD /* UserPersistenceScenarios.m */,
+				017D9CF52833C81100B0AA87 /* UserPersistenceDontPersistUserScenario.m */,
+				017D9CF12833C81100B0AA87 /* UserPersistenceNoUserScenario.m */,
+				017D9CF02833C81100B0AA87 /* UserPersistencePersistUserClientScenario.m */,
+				017D9CF82833C81100B0AA87 /* UserPersistencePersistUserScenario.m */,
 				01F47CB0254B1B3000B184AD /* UserSessionOverrideScenario.swift */,
 			);
 			name = scenarios;
 			path = ../shared/scenarios;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		01452352254AFD7C00D436AA /* Frameworks */ = {
 			isa = PBXGroup;
@@ -748,6 +757,7 @@
 			files = (
 				01F6B74F2832381300B75C5D /* OversizedCrashReportScenario.swift in Sources */,
 				01F54384282E50FE00684474 /* MaxPersistedSessionsScenario.m in Sources */,
+				010BAB792833D34A0003FF36 /* HandledErrorInvalidReleaseStageScenario.swift in Sources */,
 				01F47CD9254B1B3100B184AD /* SessionCallbackDiscardScenario.swift in Sources */,
 				01F47CD0254B1B3100B184AD /* StackOverflowScenario.m in Sources */,
 				01F115C727BAA67B00892B1E /* SIGPIPEIgnoredScenario.m in Sources */,
@@ -758,7 +768,9 @@
 				01F47CC6254B1B3100B184AD /* HandledExceptionScenario.swift in Sources */,
 				01F47D0D254B1B3100B184AD /* LoadConfigFromFileScenario.swift in Sources */,
 				01F47CF5254B1B3100B184AD /* StoppedSessionScenario.swift in Sources */,
+				010BAB772833D34A0003FF36 /* DiscardClassesHandledExceptionRegexScenario.swift in Sources */,
 				01F47D23254B1B3100B184AD /* SwiftAssertionScenario.swift in Sources */,
+				010BAB642833D34A0003FF36 /* EnabledReleaseStageAutoSessionScenario.swift in Sources */,
 				01F47D1C254B1B3100B184AD /* SessionCallbackRemovalScenario.m in Sources */,
 				01F47CE3254B1B3100B184AD /* MetadataRedactionRegexScenario.swift in Sources */,
 				01F47D25254B1B3100B184AD /* AutoContextNSErrorScenario.swift in Sources */,
@@ -767,72 +779,82 @@
 				01F47CCF254B1B3100B184AD /* ObjCExceptionScenario.m in Sources */,
 				01ECBCF425A7522000FC0678 /* OnErrorOverwriteUnhandledFalseScenario.swift in Sources */,
 				011B7A4C26CD52080071C3EB /* ThermalStateBreadcrumbScenario.swift in Sources */,
-				01AF6A50258A00DE00FFC803 /* BareboneTestScenarios.swift in Sources */,
 				01F47CED254B1B3100B184AD /* ResumedSessionScenario.swift in Sources */,
+				010BAB742833D34A0003FF36 /* DisabledReleaseStageManualSessionScenario.swift in Sources */,
 				01F47CE8254B1B3100B184AD /* AppAndDeviceAttributesScenario.swift in Sources */,
-				01F47D1A254B1B3100B184AD /* ThreadScenarios.m in Sources */,
 				01F47CE2254B1B3100B184AD /* SwiftCrashScenario.swift in Sources */,
 				01F47CE9254B1B3100B184AD /* SIGTRAPScenario.m in Sources */,
 				01F47CC8254B1B3100B184AD /* AutoSessionScenario.m in Sources */,
+				010BAB6E2833D34A0003FF36 /* AppAndDeviceAttributesConfigOverrideScenario.swift in Sources */,
 				01E0DB0625E8E95700A740ED /* AppDurationScenario.swift in Sources */,
 				01847DCD26443DF000ADA4C7 /* InvalidCrashReportScenario.m in Sources */,
+				017D9D022833C81100B0AA87 /* UserPersistenceNoUserScenario.m in Sources */,
 				01F6B74E2832381300B75C5D /* OldHandledErrorScenario.swift in Sources */,
 				01F47D2D254B1B3100B184AD /* OnErrorOverwriteScenario.swift in Sources */,
+				017D9D062833C81100B0AA87 /* UserPersistenceDontPersistUserScenario.m in Sources */,
 				01F47CC7254B1B3100B184AD /* MetadataRedactionDefaultScenario.swift in Sources */,
 				01F47CEC254B1B3100B184AD /* SessionCallbackCrashScenario.swift in Sources */,
 				01F47D1F254B1B3100B184AD /* SessionOOMScenario.m in Sources */,
 				01F47CE7254B1B3100B184AD /* NotifyCallbackCrashScenario.swift in Sources */,
 				01F47D19254B1B3100B184AD /* UserFromClientScenario.swift in Sources */,
+				010BAB622833D34A0003FF36 /* UnhandledErrorChangeInvalidReleaseStageScenario.swift in Sources */,
+				010BAB632833D34A0003FF36 /* UnhandledErrorChangeValidReleaseStageScenario.swift in Sources */,
 				01F47D05254B1B3100B184AD /* DisabledSessionTrackingScenario.m in Sources */,
 				01F47D11254B1B3100B184AD /* NSExceptionShiftScenario.m in Sources */,
+				010BAB602833D34A0003FF36 /* AppHangScenario.swift in Sources */,
 				01F47CF2254B1B3100B184AD /* ManyConcurrentNotifyScenario.m in Sources */,
 				01F47D0B254B1B3100B184AD /* UnhandledInternalNotifyScenario.swift in Sources */,
 				01F47CDD254B1B3100B184AD /* StopSessionOOMScenario.m in Sources */,
 				01F47CDC254B1B3100B184AD /* HandledErrorScenario.swift in Sources */,
 				01F47CFD254B1B3100B184AD /* OnCrashHandlerScenario.m in Sources */,
-				01F47D29254B1B3100B184AD /* DiscardSessionScenario.swift in Sources */,
 				CBB7878E2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.m in Sources */,
 				01F47CCC254B1B3100B184AD /* OnSendCallbackOrderScenario.swift in Sources */,
+				017D9D042833C81100B0AA87 /* HandledErrorThreadSendAlwaysScenario.m in Sources */,
 				01F47D04254B1B3100B184AD /* ModifyBreadcrumbScenario.swift in Sources */,
 				01F47CD3254B1B3100B184AD /* EnabledBreadcrumbTypesIsNilScenario.swift in Sources */,
 				01F47CC4254B1B3100B184AD /* OriginalErrorNSExceptionScenario.swift in Sources */,
 				01F47D0C254B1B3100B184AD /* UserEventOverrideScenario.swift in Sources */,
 				01F47CD6254B1B3100B184AD /* SIGILLScenario.m in Sources */,
 				01F47D32254B1B3100B184AD /* ResumeSessionOOMScenario.m in Sources */,
-				01F47D13254B1B3100B184AD /* UserPersistenceScenarios.m in Sources */,
+				010BAB722833D34A0003FF36 /* BareboneTestHandledScenario.swift in Sources */,
+				017D9CFC2833C81100B0AA87 /* DisableMachExceptionScenario.m in Sources */,
 				01DE903A26CEAD1200455213 /* CriticalThermalStateScenario.swift in Sources */,
 				01F47CF9254B1B3100B184AD /* BreadcrumbCallbackDiscardScenario.swift in Sources */,
 				AA6ACD1E2773E39C006464C4 /* UserInfoScenario.swift in Sources */,
 				01018BAB25E417EC000312C6 /* AsyncSafeMallocScenario.m in Sources */,
 				01F47CE6254B1B3100B184AD /* HandledErrorOverrideScenario.swift in Sources */,
+				010BAB6A2833D34A0003FF36 /* AppHangFatalDisabledScenario.swift in Sources */,
 				01F47D26254B1B3100B184AD /* PrivilegedInstructionScenario.m in Sources */,
 				01F47D18254B1B3100B184AD /* SIGBUSScenario.m in Sources */,
 				01F47D2F254B1B3100B184AD /* MetadataMergeScenario.swift in Sources */,
 				01F47CCE254B1B3100B184AD /* ReadOnlyPageScenario.m in Sources */,
+				010BAB782833D34A0003FF36 /* EnabledReleaseStageManualSessionScenario.swift in Sources */,
 				01F47CEA254B1B3100B184AD /* AutoSessionMixedEventsScenario.m in Sources */,
 				AA6ACD1A2773E098006464C4 /* UserFromConfigScenario.swift in Sources */,
+				017D9CFE2833C81100B0AA87 /* UnhandledMachExceptionOverrideScenario.m in Sources */,
 				01F47CE4254B1B3100B184AD /* AutoDetectFalseNSExceptionScenario.swift in Sources */,
 				01F47D0F254B1B3100B184AD /* OOMWillTerminateScenario.m in Sources */,
-				01F47CFB254B1B3100B184AD /* ReleaseStageScenarios.swift in Sources */,
+				017D9D082833C81100B0AA87 /* UnhandledErrorThreadSendAlwaysScenario.m in Sources */,
 				015AE23A276B88300044B1AE /* OnSendErrorPersistenceScenario.m in Sources */,
-				01F47D17254B1B3100B184AD /* ReleaseStageSessionScenario.swift in Sources */,
 				01F47CD2254B1B3100B184AD /* Scenario.m in Sources */,
 				8A096DFA27C7E6D800DB6ECC /* CxxBareThrowScenario.mm in Sources */,
 				017FBFB8254B09C300809042 /* MainWindowController.m in Sources */,
 				01F47CF0254B1B3100B184AD /* OnSendOverwriteScenario.swift in Sources */,
 				01F47D1B254B1B3100B184AD /* SIGSEGVScenario.m in Sources */,
-				01F1473A25F2817100C2DC65 /* AppHangScenarios.swift in Sources */,
-				0163BF9B2583AF2A008DC28B /* DiscardClassesScenarios.swift in Sources */,
 				01F47D09254B1B3100B184AD /* BreadcrumbCallbackOverrideScenario.swift in Sources */,
+				010BAB612833D34A0003FF36 /* DiscardClassesUnhandledCrashScenario.swift in Sources */,
 				0176C0B1254AE81B0066E0F3 /* AppDelegate.m in Sources */,
 				01F47CD7254B1B3100B184AD /* AutoDetectFalseHandledScenario.swift in Sources */,
 				01F47CEE254B1B3100B184AD /* AutoDetectFalseAbortScenario.swift in Sources */,
 				01F47CCD254B1B3100B184AD /* NullPointerScenario.m in Sources */,
 				01F47D30254B1B3100B184AD /* AutoContextNSExceptionScenario.swift in Sources */,
+				010BAB692833D34A0003FF36 /* AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario.swift in Sources */,
+				017D9D052833C81100B0AA87 /* DisableAllExceptManualExceptionsAndCrashScenario.m in Sources */,
 				01F47CE1254B1B3100B184AD /* ManualSessionWithUserScenario.m in Sources */,
 				01FA9EC626D64FFF0059FF4A /* AppHangInTerminationScenario.swift in Sources */,
 				8A096DF827C7E63A00DB6ECC /* CxxUnexpectedScenario.mm in Sources */,
 				01F47D01254B1B3100B184AD /* SessionCallbackOrderScenario.swift in Sources */,
+				010BAB6F2833D34A0003FF36 /* AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario.swift in Sources */,
 				01AF6A84258BB38A00FFC803 /* DispatchCrashScenario.swift in Sources */,
 				01F47D0A254B1B3100B184AD /* CxxExceptionScenario.mm in Sources */,
 				01F47D03254B1B3100B184AD /* OriginalErrorNSErrorScenario.swift in Sources */,
@@ -848,19 +870,33 @@
 				01F47D22254B1B3100B184AD /* BreadcrumbCallbackRemovalScenario.m in Sources */,
 				01F47CFF254B1B3100B184AD /* EnabledErrorTypesCxxScenario.mm in Sources */,
 				01F47CD5254B1B3100B184AD /* OOMAutoDetectErrorsScenario.swift in Sources */,
+				010BAB5E2833D34A0003FF36 /* AppAndDeviceAttributesInfiniteLaunchDurationScenario.swift in Sources */,
+				010BAB712833D34A0003FF36 /* AppAndDeviceAttributesCallbackOverrideScenario.swift in Sources */,
+				010BAB6B2833D34A0003FF36 /* UnhandledErrorInvalidReleaseStageScenario.swift in Sources */,
+				010BAB652833D34A0003FF36 /* AppHangDisabledScenario.swift in Sources */,
 				0176C0AE254AE81B0066E0F3 /* main.m in Sources */,
 				01F47CDB254B1B3100B184AD /* UnhandledMachExceptionScenario.m in Sources */,
 				01F47D12254B1B3100B184AD /* OnSendCallbackRemovalScenario.m in Sources */,
+				017D9D0B2833C81100B0AA87 /* CxxExceptionOverrideScenario.mm in Sources */,
 				01F47D24254B1B3100B184AD /* UserSessionOverrideScenario.swift in Sources */,
+				010BAB662833D34A0003FF36 /* UnhandledErrorValidReleaseStageScenario.swift in Sources */,
+				010BAB762833D34A0003FF36 /* DiscardClassesUnhandledExceptionScenario.swift in Sources */,
 				01F47CD8254B1B3100B184AD /* ManualContextConfigurationScenario.swift in Sources */,
 				01F47CFA254B1B3100B184AD /* BreadcrumbCallbackOrderScenario.swift in Sources */,
 				01F47CF3254B1B3100B184AD /* AutoCaptureRunScenario.m in Sources */,
 				01F47CF8254B1B3100B184AD /* ModifyBreadcrumbInNotifyScenario.swift in Sources */,
 				01F47D14254B1B3100B184AD /* OOMEnabledErrorTypesScenario.swift in Sources */,
+				017D9CFD2833C81100B0AA87 /* AbortOverrideScenario.m in Sources */,
+				017D9D032833C81100B0AA87 /* DisableNSExceptionScenario.m in Sources */,
 				01F47CDA254B1B3100B184AD /* NonExistentMethodScenario.m in Sources */,
 				01F47CFE254B1B3100B184AD /* MetadataRedactionNestedScenario.swift in Sources */,
+				010BAB6C2833D34A0003FF36 /* AppHangDefaultConfigScenario.swift in Sources */,
+				010BAB682833D34A0003FF36 /* DisabledReleaseStageAutoSessionScenario.swift in Sources */,
+				010BAB6D2833D34A0003FF36 /* SendLaunchCrashesSynchronouslyLaunchCompletedScenario.swift in Sources */,
 				01B6BBA225DA774C00FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift in Sources */,
+				017D9D0A2833C81100B0AA87 /* ObjCExceptionOverrideScenario.m in Sources */,
 				01F47CE0254B1B3100B184AD /* HandledInternalNotifyScenario.swift in Sources */,
+				010BAB752833D34A0003FF36 /* SendLaunchCrashesSynchronouslyFalseScenario.swift in Sources */,
 				01F47D1D254B1B3100B184AD /* DiscardedBreadcrumbTypeScenario.swift in Sources */,
 				01F47CC5254B1B3100B184AD /* LoadConfigFromFileAutoScenario.swift in Sources */,
 				01F47CCB254B1B3100B184AD /* BreadcrumbCallbackCrashScenario.swift in Sources */,
@@ -873,15 +909,23 @@
 				0123189C275921590007EFD7 /* RecrashScenarios.mm in Sources */,
 				01F47CDE254B1B3100B184AD /* ReleasedObjectScenario.m in Sources */,
 				01F47D16254B1B3100B184AD /* NewSessionScenario.swift in Sources */,
+				017D9D072833C81100B0AA87 /* UnhandledErrorThreadSendNeverScenario.m in Sources */,
 				01F47CF4254B1B3100B184AD /* OOMSessionScenario.swift in Sources */,
+				017D9D092833C81100B0AA87 /* UserPersistencePersistUserScenario.m in Sources */,
+				017D9D012833C81100B0AA87 /* UserPersistencePersistUserClientScenario.m in Sources */,
+				017D9CFF2833C81100B0AA87 /* HandledErrorThreadSendUnhandledOnlyScenario.m in Sources */,
+				010BAB5F2833D34A0003FF36 /* BareboneTestUnhandledErrorScenario.swift in Sources */,
 				01F47D21254B1B3100B184AD /* SIGFPEScenario.m in Sources */,
 				01F47CEB254B1B3100B184AD /* AutoSessionHandledEventsScenario.m in Sources */,
 				01B6BB7225D56CBF00FC4DE6 /* LastRunInfoScenario.swift in Sources */,
+				010BAB702833D34A0003FF36 /* AppHangFatalOnlyScenario.swift in Sources */,
 				01AFCFC7282C058D00D48D45 /* OldSessionScenario.m in Sources */,
+				017D9D002833C81100B0AA87 /* DisableSignalsExceptionScenario.m in Sources */,
 				01F47CF7254B1B3100B184AD /* OnSendErrorCallbackCrashScenario.swift in Sources */,
 				01F47CDF254B1B3100B184AD /* AbortScenario.m in Sources */,
+				010BAB672833D34A0003FF36 /* HandledErrorValidReleaseStageScenario.swift in Sources */,
 				01F47CD1254B1B3100B184AD /* ManualContextClientScenario.swift in Sources */,
-				01F47CEF254B1B3100B184AD /* EnabledErrorTypesScenario.m in Sources */,
+				010BAB732833D34A0003FF36 /* AppAndDeviceAttributesStartWithApiKeyScenario.swift in Sources */,
 				01F47CC9254B1B3100B184AD /* BuiltinTrapScenario.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -24,11 +24,14 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "AccessNonObjectScenario.h"
+#import "Scenario.h"
 
 /**
  * Call NSLog(@"%@", 16);, causing a crash when the runtime attempts to treat 16 as a pointer to an object.
  */
+@interface AccessNonObjectScenario : Scenario
+@end
+
 @implementation AccessNonObjectScenario
 
 - (void)startBugsnag {

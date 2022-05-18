@@ -6,9 +6,10 @@
 //  Copyright © 2018 Bugsnag. All rights reserved.
 //
 
-#import "AutoSessionCustomVersionScenario.h"
+#import "Scenario.h"
 
-#import <Bugsnag/Bugsnag.h>
+@interface AutoSessionCustomVersionScenario : Scenario
+@end
 
 @implementation AutoSessionCustomVersionScenario
 

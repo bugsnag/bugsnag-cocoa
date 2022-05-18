@@ -24,12 +24,16 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "UndefinedInstructionScenario.h"
-#include "spin_malloc.h"
+#import "Scenario.h"
+
+#import "spin_malloc.h"
 
 /**
  * Attempt to execute an instruction not to be defined on the current architecture.
  */
+@interface UndefinedInstructionScenario : Scenario
+@end
+
 @implementation UndefinedInstructionScenario
 
 - (void)startBugsnag {

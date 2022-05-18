@@ -24,13 +24,16 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "AsyncSafeThreadScenario.h"
+#import "Scenario.h"
 #import <pthread.h>
 
 /**
  * Triggers a crash with libsystem_pthread's _pthread_list_lock held,
  * causing non-async-safe crash reporters that use pthread APIs to deadlock.
  */
+@interface AsyncSafeThreadScenario : Scenario
+@end
+
 @implementation AsyncSafeThreadScenario
 
 - (void)startBugsnag {
