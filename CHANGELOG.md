@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## 6.17.1 (2022-05-18)
+
+### Bug fixes
+
+* Prevent error or session delivery being retried indefinitely.
+  [#1362](https://github.com/bugsnag/bugsnag-cocoa/pull/1362)
+  [#1367](https://github.com/bugsnag/bugsnag-cocoa/pull/1367)
+
 ## 6.17.0 (2022-05-11)
 
 ### Enhancements
