@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Add `configuration.telemetry` to allow sending of internal errors to be disabled.
+  [#1375](https://github.com/bugsnag/bugsnag-cocoa/pull/1375)
+
 ## 6.17.1 (2022-05-18)
 
 ### Bug fixes

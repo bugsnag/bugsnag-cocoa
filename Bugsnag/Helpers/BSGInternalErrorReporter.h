@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "BSGDefines.h"
+
 @class BugsnagAppWithState;
 @class BugsnagConfiguration;
 @class BugsnagDeviceWithState;
@@ -17,7 +19,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// Returns a concise desription of the error including its domain, code, and debug description or localizedDescription.
-FOUNDATION_EXPORT NSString *BSGErrorDescription(NSError *error);
+BSG_PRIVATE NSString *BSGErrorDescription(NSError *error);
 
 // MARK: -
 
@@ -35,7 +37,7 @@ FOUNDATION_EXPORT NSString *BSGErrorDescription(NSError *error);
 
 @interface BSGInternalErrorReporter : NSObject
 
-@property (class, nonatomic) BSGInternalErrorReporter *sharedInstance;
+@property (class, nullable, nonatomic) BSGInternalErrorReporter *sharedInstance;
 
 /// Runs the block immediately if sharedInstance exists, otherwise runs the block once sharedInstance has been created.
 + (void)performBlock:(void (^)(BSGInternalErrorReporter *))block;

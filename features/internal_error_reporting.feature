@@ -20,3 +20,9 @@ Feature: Internal error reporting
     And the event "unhandled" is false
     And the exception "errorClass" equals "JSON parsing error"
     And the exception "message" matches "NSCocoaErrorDomain 3840: No string key for value in object around .+\."
+
+  Scenario: Internal errors are not sent if disabled
+    When I run "InvalidCrashReportScenario" and relaunch the crashed app
+    And I set the app to "internalErrorsDisabled" mode
+    And I configure Bugsnag for "InvalidCrashReportScenario"
+    Then I should receive no requests
