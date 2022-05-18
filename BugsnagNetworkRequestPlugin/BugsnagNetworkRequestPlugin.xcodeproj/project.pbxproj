@@ -26,6 +26,7 @@
 		CB2430E126F1DABE00CB5EC4 /* BSGURLSessionTracingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */; };
 		CB2430E226F1DABE00CB5EC4 /* NSURLSession+Tracing.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */; };
 		CB2430E326F1DAC500CB5EC4 /* BugsnagNetworkRequestPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */; };
+		CB26E9C628351469005A1865 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB26E9C528351469005A1865 /* Bugsnag.framework */; };
 		CB3B7F942832709000CAD67A /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB3B7F8C2832709000CAD67A /* BugsnagNetworkRequestPlugin.framework */; };
 		CB3B7FA1283270E500CAD67A /* BugsnagNetworkRequestPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */; };
 		CB3B7FA2283270E900CAD67A /* BSGURLSessionTracingDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */; };
@@ -35,7 +36,6 @@
 		CB3B7FA62832710000CAD67A /* BSGURLSessionTracingProxyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */; };
 		CB3B7FA72832710300CAD67A /* BugsnagNetworkRequestPluginTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487A6726D7B109004F6B87 /* BugsnagNetworkRequestPluginTests.m */; };
 		CB3B7FA82832746000CAD67A /* BugsnagNetworkRequestPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CB3B7FAA2832752600CAD67A /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB3B7FA92832752600CAD67A /* Bugsnag.framework */; };
 		CB487A6326D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */; };
 		CB487A7526D7B12F004F6B87 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A7426D7B12F004F6B87 /* Bugsnag.framework */; };
 		CB487A8626D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A7D26D7B144004F6B87 /* BugsnagNetworkRequestPlugin.framework */; };
@@ -152,6 +152,9 @@
 		01DC33B42733FC9B005B2BDD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		01DC33B52733FC9B005B2BDD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		CB2430D726F1DA8A00CB5EC4 /* libBugsnagNetworkRequestPluginStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnagNetworkRequestPluginStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB26E9BD283510D8005A1865 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB26E9C128351217005A1865 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB26E9C528351469005A1865 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB3B7F8C2832709000CAD67A /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB3B7F932832709000CAD67A /* BugsnagNetworkRequestPlugin-watchOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagNetworkRequestPlugin-watchOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB3B7FA92832752600CAD67A /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -198,7 +201,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB3B7FAA2832752600CAD67A /* Bugsnag.framework in Frameworks */,
+				CB26E9C628351469005A1865 /* Bugsnag.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +337,9 @@
 		CB487A7326D7B12F004F6B87 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CB26E9C528351469005A1865 /* Bugsnag.framework */,
+				CB26E9C128351217005A1865 /* Bugsnag.framework */,
+				CB26E9BD283510D8005A1865 /* Bugsnag.framework */,
 				CB3B7FA92832752600CAD67A /* Bugsnag.framework */,
 				CB487AB426D7B191004F6B87 /* Bugsnag.framework */,
 				CB487A9426D7B166004F6B87 /* Bugsnag.framework */,
