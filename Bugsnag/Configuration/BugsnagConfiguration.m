@@ -114,6 +114,7 @@ static NSUserDefaults *userDefaults;
     [copy setOnBreadcrumbBlocks:self.onBreadcrumbBlocks];
     [copy setOnSendBlocks:self.onSendBlocks];
     [copy setOnSessionBlocks:self.onSessionBlocks];
+    [copy setTelemetry:self.telemetry];
     return copy;
 }
 
@@ -201,6 +202,8 @@ static NSUserDefaults *userDefaults;
             sessionWithConfiguration:[NSURLSessionConfiguration
                                          defaultSessionConfiguration]];
     }
+    
+    _telemetry = BSGTelemetryInternalErrors;
     
     NSString *releaseStage = nil;
     #if DEBUG
