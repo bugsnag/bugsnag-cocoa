@@ -37,10 +37,10 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
     BSGInternalErrorReporter *reporter = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
     
-    BugsnagEvent *event = [reporter eventWithErrorClass:@"Internal error" message:@"Something went wrong" diagnostics:@{} groupingHash:@"test"];
+    BugsnagEvent *event = [reporter eventWithErrorClass:@"Internal error" context:@"test" message:@"Something went wrong" diagnostics:@{}];
     XCTAssertEqualObjects(event.errors[0].errorClass, @"Internal error");
     XCTAssertEqualObjects(event.errors[0].errorMessage, @"Something went wrong");
-    XCTAssertEqualObjects(event.groupingHash, @"test");
+    XCTAssertEqualObjects(event.context, @"test");
     XCTAssertEqualObjects(event.threads, @[]);
     XCTAssertEqual(event.errors[0].stacktrace.count, 0);
     XCTAssertNil(event.apiKey);

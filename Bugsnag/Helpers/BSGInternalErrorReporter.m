@@ -43,8 +43,8 @@ static BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameInternalError = @"Bugsna
 
 
 NSString *BSGErrorDescription(NSError *error) {
-    return [NSString stringWithFormat:@"%@ %ld: %@", error.domain, (long)error.code,
-            error.userInfo[NSDebugDescriptionErrorKey] ?: error.localizedDescription];
+    return error ? [NSString stringWithFormat:@"%@ %ld: %@", error.domain, (long)error.code,
+                    error.userInfo[NSDebugDescriptionErrorKey] ?: error.localizedDescription] : nil;
 }
 
 static NSString * DeviceId(void);
@@ -96,11 +96,11 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
 // MARK: Public API
 
 - (void)reportErrorWithClass:(NSString *)errorClass
+                     context:(nullable NSString *)context
                      message:(nullable NSString *)message
-                 diagnostics:(nullable NSDictionary<NSString *, id> *)diagnostics
-                groupingHash:(nullable NSString *)groupingHash {
+                 diagnostics:(nullable NSDictionary<NSString *, id> *)diagnostics {
     @try {
-        BugsnagEvent *event = [self eventWithErrorClass:errorClass message:message diagnostics:diagnostics groupingHash:groupingHash];
+        BugsnagEvent *event = [self eventWithErrorClass:errorClass context:context message:message diagnostics:diagnostics];
         if (event) {
             [self sendEvent:event];
         }
@@ -136,9 +136,9 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
 // MARK: Private API
 
 - (nullable BugsnagEvent *)eventWithErrorClass:(NSString *)errorClass
+                                       context:(nullable NSString *)context
                                        message:(nullable NSString *)message
-                                   diagnostics:(nullable NSDictionary<NSString *, id> *)diagnostics
-                                  groupingHash:(nullable NSString *)groupingHash {
+                                   diagnostics:(nullable NSDictionary<NSString *, id> *)diagnostics {
     
     BugsnagError *error =
     [[BugsnagError alloc] initWithErrorClass:errorClass
@@ -146,7 +146,7 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
                                    errorType:BSGErrorTypeCocoa
                                   stacktrace:nil];
     
-    return [self eventWithError:error diagnostics:diagnostics groupingHash:groupingHash];
+    return [self eventWithError:error context:context diagnostics:diagnostics groupingHash:nil];
 }
 
 - (nullable BugsnagEvent *)eventWithException:(NSException *)exception
@@ -161,7 +161,7 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
                                    errorType:BSGErrorTypeCocoa
                                   stacktrace:stacktrace];
     
-    return [self eventWithError:error diagnostics:diagnostics groupingHash:groupingHash];
+    return [self eventWithError:error context:nil diagnostics:diagnostics groupingHash:groupingHash];
 }
 
 - (nullable BugsnagEvent *)eventWithRecrashReport:(NSDictionary *)recrashReport {
@@ -186,12 +186,13 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
                                    errorType:BSGErrorTypeCocoa
                                   stacktrace:stacktrace];
     
-    BugsnagEvent *event = [self eventWithError:error diagnostics:recrashReport groupingHash:nil];
+    BugsnagEvent *event = [self eventWithError:error context:nil diagnostics:recrashReport groupingHash:nil];
     event.handledState = [BugsnagHandledState handledStateWithSeverityReason:Signal];
     return event;
 }
 
 - (nullable BugsnagEvent *)eventWithError:(BugsnagError *)error
+                                  context:(nullable NSString *)context
                               diagnostics:(nullable NSDictionary<NSString *, id> *)diagnostics
                              groupingHash:(nullable NSString *)groupingHash {
     
@@ -222,6 +223,7 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
                               threads:@[]
                               session:nil];
     
+    event.context = context;
     event.groupingHash = groupingHash;
     
     return event;
