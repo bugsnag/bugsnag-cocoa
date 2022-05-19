@@ -1,4 +1,4 @@
-platform :watchos, '6.0'
+platform :watchos, '6.3'
 use_frameworks!
 
 target 'swift-watchos WatchKit Extension' do
