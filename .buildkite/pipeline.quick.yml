@@ -10,7 +10,7 @@ steps:
   - label: macOS 11 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: macos-11
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=macOS
     artifact_paths:
@@ -28,7 +28,7 @@ steps:
   - label: iOS 14 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5
     artifact_paths:
@@ -37,7 +37,7 @@ steps:
   - label: iOS 11 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: macos-11
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=11.4
     artifact_paths:
@@ -46,7 +46,7 @@ steps:
   - label: iOS 10 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: macos-10.15
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=10.3.1 DEVICE=iPhone\ 5s
     artifact_paths:
@@ -55,7 +55,7 @@ steps:
   - label: tvOS 14 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.5
     artifact_paths:
@@ -64,7 +64,7 @@ steps:
   - label: tvOS 11 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: macos-11
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=11.4
     artifact_paths:
@@ -73,7 +73,7 @@ steps:
   - label: tvOS 10 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: macos-10.15
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=10.2
     artifact_paths:
@@ -89,7 +89,7 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: macos-10.15
     plugins:
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
