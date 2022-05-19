@@ -28,7 +28,7 @@ steps:
   - label: iOS 14 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5
     artifact_paths:
@@ -55,7 +55,7 @@ steps:
   - label: tvOS 14 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.5
     artifact_paths:
