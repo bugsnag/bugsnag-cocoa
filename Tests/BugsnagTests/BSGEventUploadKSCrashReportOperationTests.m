@@ -103,4 +103,27 @@
     XCTAssertNil(self.message);
 }
 
+- (void)testSimpleJSONError {
+    NSString *file = [self temporaryFileWithContents:@"{\"report\":{},\"system\":{},\"user_atcrash\":{error:true}}"];
+    BSGEventUploadKSCrashReportOperation *operation = [self operationWithFile:file];
+    XCTAssertNil([operation loadEventAndReturnError:nil]);
+    XCTAssertEqualObjects(self.errorClass, @"Invalid crash report");
+    XCTAssertEqualObjects(self.context, @"JSON parsing error");
+    XCTAssertEqualObjects(self.diagnostics[@"keys"], (@[@"report", @"system", @"user_atcrash"]));
+}
+
+- (void)testCorruptKSCrashReport {
+    NSString *file = [[NSBundle bundleForClass:[self class]] pathForResource:@"KSCrashReport1" ofType:@"json" inDirectory:@"Data"];
+    NSMutableString *JSONString = [NSMutableString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil];
+    [JSONString replaceCharactersInRange:NSMakeRange(106094, 1) withString:@""];
+    file = [self temporaryFileWithContents:JSONString];
+    BSGEventUploadKSCrashReportOperation *operation = [self operationWithFile:file];
+    XCTAssertNil([operation loadEventAndReturnError:nil]);
+    XCTAssertEqualObjects(self.errorClass, @"Invalid crash report");
+    XCTAssertEqualObjects(self.context, @"JSON parsing error");
+    XCTAssertEqualObjects(self.diagnostics[@"keys"], (@[
+        @"report", @"process", @"system", @"system_atcrash", @"binary_images", @"crash", @"threads",
+        @"error", @"user_atcrash", @"config", @"metaData", @"state", @"breadcrumbs", @"metaData"]));
+}
+
 @end

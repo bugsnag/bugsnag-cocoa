@@ -24,6 +24,12 @@ Then('the event {string} is a boolean') do |field|
   Maze.check.include [true, false], value
 end
 
+Then('the event {string} is a non-empty array') do |field|
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
+  Maze.check.kind_of Array, value
+  Maze.check.true(value.length.positive?, "the field '#{field}' must be a non-empty array")
+end
+
 Then('the event {string} is a number') do |field|
   value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
   Maze.check.kind_of Numeric, value

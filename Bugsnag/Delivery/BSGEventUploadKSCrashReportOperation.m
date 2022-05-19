@@ -20,12 +20,44 @@
 #import "BugsnagLogger.h"
 
 
+/// Returns a list of the crash report keys present in the valid portion of the JSON data
+static NSArray * CrashReportKeys(NSData *data, NSError *error) {
+    NSString *description = error.userInfo[NSDebugDescriptionErrorKey]; 
+    for (NSString *separator in @[@" around character ", @"around line 1, column "]) {
+        if ([description containsString:separator]) {
+            NSUInteger end = (NSUInteger)[description componentsSeparatedByString:separator].lastObject.intValue;
+            if (!end) {
+                return nil;
+            }
+            NSData *subdata = [data subdataWithRange:NSMakeRange(0, end)];
+            if (!subdata) {
+                return nil;
+            }
+            NSString *string = [[NSString alloc] initWithData:subdata encoding:NSUTF8StringEncoding];
+            if (!string) {
+                return nil;
+            }
+            NSMutableArray *keys = [NSMutableArray array];
+            NSString *pattern = @"\"(report|process|system|system_atcrash|binary_images|crash|threads|error|user_atcrash|config|metaData|state|breadcrumbs)\":";
+            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
+            for (NSTextCheckingResult *result in [regex matchesInString:string options:0 range:NSMakeRange(0, string.length)]) {
+                if ([result numberOfRanges] == 2) {
+                    [keys addObject:[string substringWithRange:[result rangeAtIndex:1]]];
+                }
+            }
+            return keys;
+        }
+    }
+    return nil;
+}
+
+
 @implementation BSGEventUploadKSCrashReportOperation
 
 - (BugsnagEvent *)loadEventAndReturnError:(NSError * __autoreleasing *)errorPtr {
     __block NSError *error = nil;
     
-    void (^ reportError)(NSString *) = ^(NSString *context) {
+    void (^ reportError)(NSString *, NSData *) = ^(NSString *context, NSData *data) {
         NSMutableDictionary *diagnostics = [NSMutableDictionary dictionary];
         diagnostics[@"fileName"] = self.file.lastPathComponent;
         diagnostics[@"errorInfo"] = error.userInfo;
@@ -40,6 +72,10 @@
             diagnostics[@"modificationInterval"] = @([modificationDate timeIntervalSinceDate:creationDate]);
         }
         
+        if (data && error.domain == NSCocoaErrorDomain && error.code == NSPropertyListReadCorruptError) {
+            diagnostics[@"keys"] = CrashReportKeys(data, error);
+        }
+        
         [BSGInternalErrorReporter.sharedInstance
          reportErrorWithClass:@"Invalid crash report" context:context message:BSGErrorDescription(error) diagnostics:diagnostics];
     };
@@ -47,7 +83,7 @@
     NSData *data = [NSData dataWithContentsOfFile:self.file options:0 error:&error];
     if (!data) {
         if (!(error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError)) {
-            reportError(@"File could not be read");
+            reportError(@"File could not be read", nil);
         }
         if (errorPtr) {
             *errorPtr = error;
@@ -62,21 +98,21 @@
         }
         
         if (!data.length || !data.bytes) {
-            reportError(@"File is empty");
+            reportError(@"File is empty", nil);
             return nil;
         }
         
         if (((const char *)data.bytes)[0] != '{') {
-            reportError(@"Does not start with \"{\"");
+            reportError(@"Does not start with \"{\"", nil);
             return nil;
         }
         
         if (((const char *)data.bytes)[data.length - 1] != '}') {
-            reportError(@"Does not end with \"}\"");
+            reportError(@"Does not end with \"}\"", data);
             return nil;
         }
         
-        reportError(@"JSON parsing error");
+        reportError(@"JSON parsing error", data);
         return nil;
     }
     
@@ -87,7 +123,7 @@
     
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:crashReport];
     if (!event) {
-        reportError(@"Invalid JSON payload");
+        reportError(@"Invalid JSON payload", nil);
     }
     
     if (!event.app.type) {
