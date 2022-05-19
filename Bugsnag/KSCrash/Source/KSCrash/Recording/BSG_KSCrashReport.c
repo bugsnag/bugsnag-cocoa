@@ -399,6 +399,8 @@ BSG_STRUCT_MCONTEXT_L *bsg_kscrw_i_getMachineContext(
         return machineContextBuffer;
     }
     BSG_KSLOG_ERROR("Failed to fetch machine state for thread %d", thread);
+#else
+    (void)machineContextBuffer; // Suppress unused parameter warning
 #endif
 
     return NULL;
