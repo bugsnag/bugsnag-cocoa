@@ -10,7 +10,7 @@ steps:
   - label: macOS 11 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: macos-11
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=macOS
     artifact_paths:
@@ -37,7 +37,7 @@ steps:
   - label: iOS 11 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: macos-11
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=11.4
     artifact_paths:
@@ -64,7 +64,7 @@ steps:
   - label: tvOS 11 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: macos-11
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=11.4
     artifact_paths:
