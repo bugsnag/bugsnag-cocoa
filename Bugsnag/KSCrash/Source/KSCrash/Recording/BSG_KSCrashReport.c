@@ -460,6 +460,13 @@ uintptr_t *bsg_kscrw_i_getBacktrace(
         return backtraceBuffer;
      }
 
+#if TARGET_OS_WATCH
+    // The C++ exception stack trace trick doesn't work on watchOS, so don't capture it.
+    if (crash->crashType == BSG_KSCrashTypeCPPException && thread == mach_thread_self()) {
+        return NULL;
+    }
+#endif
+
     // WatchOS can't get a machine context, and can't get a backtrace via mach threads.
     // In this case we use the standard backtrace() function if it's the current thread.
     if (thread == mach_thread_self()) {
