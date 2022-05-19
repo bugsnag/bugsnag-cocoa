@@ -28,10 +28,17 @@ else
   SDK?=appletvsimulator
   DESTINATION?=platform=tvOS Simulator,name=Apple TV,OS=$(OS)
  else
-  SDK?=iphonesimulator
-  DEVICE?=iPhone 8
-  DESTINATION?=platform=iOS Simulator,name=$(DEVICE),OS=$(OS)
-  RELEASE_DIR=Release-iphoneos
+  ifeq ($(PLATFORM),iOS)
+   SDK?=iphonesimulator
+   DEVICE?=iPhone 8
+   DESTINATION?=platform=iOS Simulator,name=$(DEVICE),OS=$(OS)
+   RELEASE_DIR=Release-iphoneos
+  else
+   SDK?=watchsimulator8.5
+   DEVICE?=Apple Watch Series 5 - 40mm
+   DESTINATION?=platform=watchOS Simulator,name=$(DEVICE),OS=$(OS)
+   RELEASE_DIR=Release-watchos
+  endif
  endif
  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "$(DESTINATION)" -configuration $(TEST_CONFIGURATION)
 endif
