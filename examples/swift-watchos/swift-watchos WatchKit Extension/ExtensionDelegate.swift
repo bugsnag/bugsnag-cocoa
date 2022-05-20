@@ -7,6 +7,7 @@
 
 import WatchKit
 import Bugsnag
+import BugsnagNetworkRequestPlugin
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
@@ -26,7 +27,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         
         // Create config object from the application plist
 //      let config = BugsnagConfiguration.loadConfig()
-        
         // ... or construct an empty object
 //      let config = BugsnagConfiguration("YOUR-API-KEY")
 
