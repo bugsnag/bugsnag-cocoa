@@ -13,6 +13,7 @@
 #import "BSG_KSSystemInfo.h"
 
 #import <Foundation/Foundation.h>
+#import <stdatomic.h>
 #import <sys/mman.h>
 #import <sys/stat.h>
 #import <sys/sysctl.h>
@@ -28,6 +29,14 @@
 #if TARGET_OS_OSX
 #import "BSGAppKit.h"
 #endif
+
+
+// Fields which may be updated from arbitrary threads simultaneously should be
+// updated using this macro to avoid data races (which are detected by TSan.)
+#define ATOMIC_SET(field, value) do { \
+    typeof(field) newValue_ = (value); \
+    atomic_store((_Atomic(typeof(field)) *)&field, newValue_); \
+} while (0)
 
 
 #pragma mark Forward declarations
@@ -284,7 +293,7 @@ static void AddObservers() {
 #pragma mark - Misc
 
 void BSGRunContextUpdateTimestamp() {
-    bsg_runContext->timestamp = CFAbsoluteTimeGetCurrent();
+    ATOMIC_SET(bsg_runContext->timestamp, CFAbsoluteTimeGetCurrent());
 }
 
 static void UpdateAvailableMemory() {
@@ -292,7 +301,7 @@ static void UpdateAvailableMemory() {
     // to a much more expensive (~5x) system call on earlier releases.
 #if __has_include(<os/proc.h>) && TARGET_OS_IPHONE && !TARGET_OS_MACCATALYST
     if (__builtin_available(iOS 13.0, tvOS 13.0, watchOS 6.0, *)) {
-        bsg_runContext->availableMemory = os_proc_available_memory();
+        ATOMIC_SET(bsg_runContext->availableMemory, os_proc_available_memory());
     }
 #endif
 }
