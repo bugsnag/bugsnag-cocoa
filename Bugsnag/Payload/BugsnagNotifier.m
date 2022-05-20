@@ -18,6 +18,8 @@
         _name = @"iOS Bugsnag Notifier";
 #elif TARGET_OS_OSX
         _name = @"OSX Bugsnag Notifier";
+#elif TARGET_OS_WATCH
+        _name = @"watchOS Bugsnag Notifier";
 #else
         _name = @"Bugsnag Objective-C";
 #endif

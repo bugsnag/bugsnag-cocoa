@@ -216,6 +216,8 @@ static NSUserDefaults *userDefaults;
         appType = @"iOS";
     #elif TARGET_OS_OSX
         appType = @"macOS";
+    #elif TARGET_OS_WATCH
+        appType = @"watchOS";
     #else
         appType = @"unknown";
     #endif
