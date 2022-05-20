@@ -350,10 +350,9 @@ static NSDictionary * bsg_systemversion() {
     sysInfo[@BSG_KSSystemField_SystemName] = @"iOS";
 #elif TARGET_OS_TV
     sysInfo[@BSG_KSSystemField_SystemName] = @"tvOS";
-#endif // TARGET_OS_IOS
-#if TARGET_OS_WATCH
+#elif TARGET_OS_WATCH
     sysInfo[@BSG_KSSystemField_SystemName] = @"watchOS";
-#endif
+#endif // TARGET_OS_IOS
 
     NSDictionary *env = NSProcessInfo.processInfo.environment;
     sysInfo[@BSG_KSSystemField_SystemVersion] = env[@"SIMULATOR_RUNTIME_VERSION"];
