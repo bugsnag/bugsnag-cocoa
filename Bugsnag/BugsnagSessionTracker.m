@@ -48,6 +48,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 }
 
 - (void)startWithNotificationCenter:(NSNotificationCenter *)notificationCenter isInForeground:(BOOL)isInForeground {
+#if !TARGET_OS_WATCH
     if ([BSG_KSSystemInfo isRunningInAppExtension]) {
         // UIApplication lifecycle notifications and UIApplicationState, which the automatic session tracking logic
         // depends on, are not available in app extensions.
@@ -56,6 +57,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
         }
         return;
     }
+#endif
     
     if (isInForeground) {
         [self startNewSessionIfAutoCaptureEnabled];
