@@ -105,7 +105,6 @@ void __cxa_throw(void *thrown_exception, std::type_info *tinfo,
 static void CPPExceptionTerminate(void) {
     BSG_KSLOG_DEBUG("Trapped c++ exception");
 
-    bool isNSException = false;
     char descriptionBuff[DESCRIPTION_BUFFER_LENGTH];
     const char *name = NULL;
     const char *crashReason = NULL;
@@ -131,15 +130,13 @@ static void CPPExceptionTerminate(void) {
     try {
         throw;
     } catch (NSException *exception) {
-        BSG_KSLOG_DEBUG("Detected NSException. Recording details and letting "
-                        "the current NSException handler deal with it.");
-        isNSException = true;
-        // recordException() doesn't call beginHandlingCrash()
-        if (bsg_kscrashsentry_isNSExceptionHandlerInstalled() &&
-            bsg_kscrashsentry_beginHandlingCrash(bsg_ksmachthread_self())) {
-            bsg_recordException(exception);
-            bsg_kscrashsentry_endHandlingCrash();
+        if (bsg_g_originalTerminateHandler != NULL) {
+            BSG_KSLOG_DEBUG("Detected NSException. Passing to the current NSException handler.");
+            bsg_g_originalTerminateHandler();
+        } else {
+            BSG_KSLOG_DEBUG("Detected NSException, but there was no original C++ terminate handler.");
         }
+        return;
     } catch (std::exception &exc) {
         strlcpy(descriptionBuff, exc.what(), sizeof(descriptionBuff));
         crashReason = descriptionBuff;
@@ -173,8 +170,7 @@ static void CPPExceptionTerminate(void) {
 after_rethrow:
     bsg_g_captureNextStackTrace = (bsg_g_installed != 0);
 
-    if (!isNSException &&
-        bsg_kscrashsentry_beginHandlingCrash(bsg_ksmachthread_self())) {
+    if (bsg_kscrashsentry_beginHandlingCrash(bsg_ksmachthread_self())) {
 
         BSG_KSLOG_DEBUG("Suspending all threads.");
         bsg_kscrashsentry_suspendThreads();
