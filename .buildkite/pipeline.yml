@@ -27,6 +27,7 @@ steps:
       - features/fixtures/macos/output/macOSTestApp.zip
       - features/fixtures/ios/output/ipa_url.txt
     commands:
+      - bundle install
       - make test-fixtures
       - bundle exec upload-app --app=./features/fixtures/ios/output/iOSTestApp.ipa --app-id-file=./features/fixtures/ios/output/ipa_url.txt
 
