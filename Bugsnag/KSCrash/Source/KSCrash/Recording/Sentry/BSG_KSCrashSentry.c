@@ -229,7 +229,7 @@ bool bsg_kscrashsentry_beginHandlingCrash(const thread_t offender) {
         return true;
     }
 
-    if (offender == firstHandlingThread) {
+    if (bsg_g_context->handlingCrash) {
         BSG_KSLOG_INFO("Detected crash in the crash reporter. "
                        "Restoring original handlers.");
         bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
@@ -256,5 +256,6 @@ bool bsg_kscrashsentry_beginHandlingCrash(const thread_t offender) {
 
 void bsg_kscrashsentry_endHandlingCrash(void) {
     BSG_KSLOG_DEBUG("Noting completion of crash handling");
+    bsg_g_context->handlingCrash = false;
     atomic_store(&bsg_g_didHandleCrash, true);
 }
