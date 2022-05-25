@@ -75,7 +75,7 @@ static NSUserDefaults *userDefaults;
  *
  * @param zone This parameter is ignored. Memory zones are no longer used by Objective-C.
  */
-- (nonnull id)copyWithZone:(nullable __attribute__((unused)) NSZone *)zone {
+- (nonnull id)copyWithZone:(nullable NSZone *)zone {
     BugsnagConfiguration *copy = [[BugsnagConfiguration alloc] initWithApiKey:[self.apiKey copy]];
     // Omit apiKey - it's set explicitly in the line above
     [copy setAppHangThresholdMillis:self.appHangThresholdMillis];
@@ -101,7 +101,7 @@ static NSUserDefaults *userDefaults;
     [copy setEndpoints:self.endpoints];
     [copy setOnCrashHandler:self.onCrashHandler];
     [copy setPersistUser:self.persistUser];
-    [copy setPlugins:[self.plugins copy]];
+    [copy setPlugins:[self.plugins mutableCopyWithZone:zone]];
     [copy setReleaseStage:self.releaseStage];
     copy.session = self.session; // NSURLSession does not declare conformance to NSCopying
     [copy setSendThreads:self.sendThreads];
