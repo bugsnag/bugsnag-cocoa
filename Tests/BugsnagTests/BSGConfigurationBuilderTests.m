@@ -4,6 +4,7 @@
 #import "BSGConfigurationBuilder.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
+#import <TargetConditionals.h>
 
 @interface BSGConfigurationBuilderTests : XCTestCase
 @end
@@ -60,7 +61,11 @@
     XCTAssertEqual(config.maxBreadcrumbs, 50);
     XCTAssertTrue(config.persistUser);
     XCTAssertEqualObjects(@[@"password"], [config.redactedKeys allObjects]);
+#if TARGET_OS_WATCH
+    XCTAssertEqual(BSGThreadSendPolicyNever, config.sendThreads);
+#else
     XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);
+#endif
     XCTAssertEqual(BSGEnabledBreadcrumbTypeAll, config.enabledBreadcrumbTypes);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
