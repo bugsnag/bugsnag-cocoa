@@ -265,16 +265,20 @@ static void AddObservers() {
         OBSERVE(NSProcessInfoThermalStateDidChangeNotification, NoteThermalState);
     }
     
+#if BSG_HAVE_BATTERY
 #if TARGET_OS_IOS
     UIDevice *currentDevice = [UIDEVICE currentDevice];
-    
+    OBSERVE(UIDeviceBatteryLevelDidChangeNotification, NoteBatteryLevel);
+    OBSERVE(UIDeviceBatteryStateDidChangeNotification, NoteBatteryState);
+#elif TARGET_OS_WATCH
+    WKInterfaceDevice *currentDevice = [WKInterfaceDevice currentDevice];
+#endif
     currentDevice.batteryMonitoringEnabled = YES;
     bsg_runContext->batteryLevel = currentDevice.batteryLevel;
-    OBSERVE(UIDeviceBatteryLevelDidChangeNotification, NoteBatteryLevel);
-    
     bsg_runContext->batteryState = currentDevice.batteryState;
-    OBSERVE(UIDeviceBatteryStateDidChangeNotification, NoteBatteryState);
-    
+#endif // BSG_HAVE_BATTERY
+
+#if TARGET_OS_IOS
     [currentDevice beginGeneratingDeviceOrientationNotifications];
     bsg_runContext->lastKnownOrientation = currentDevice.orientation;
     OBSERVE(UIDeviceOrientationDidChangeNotification, NoteOrientation);

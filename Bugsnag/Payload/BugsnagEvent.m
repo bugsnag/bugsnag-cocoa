@@ -31,6 +31,7 @@
 #import "BugsnagStacktrace.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
+#import "BSGDefines.h"
 
 static NSString * const RedactedMetadataValue = @"[REDACTED]";
 
@@ -284,7 +285,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     // Device information that isn't part of `event.device`
     NSMutableDictionary *deviceMetadata = BSGParseDeviceMetadata(event);
-#if TARGET_OS_IOS
+#if BSG_HAVE_BATTERY
     deviceMetadata[BSGKeyBatteryLevel] = [event valueForKeyPath:@"user.batteryLevel"];
     deviceMetadata[BSGKeyCharging] = [event valueForKeyPath:@"user.charging"];
 #endif
