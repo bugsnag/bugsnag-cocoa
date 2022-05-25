@@ -35,6 +35,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagUser+Private.h"
+#import "BSGDefines.h"
 
 const NSUInteger BugsnagAppHangThresholdFatalOnly = INT_MAX;
 
@@ -185,7 +186,11 @@ static NSUserDefaults *userDefaults;
     _maxPersistedEvents = 32;
     _maxPersistedSessions = 128;
     _autoTrackSessions = YES;
+#if BSG_HAVE_MACH_THREADS
     _sendThreads = BSGThreadSendPolicyAlways;
+#else
+    _sendThreads = BSGThreadSendPolicyNever;
+#endif
     // Default to recording all error types
     _enabledErrorTypes = [BugsnagErrorTypes new];
 
@@ -464,6 +469,12 @@ static NSUserDefaults *userDefaults;
 // -----------------------------------------------------------------------------
 // MARK: - Properties: Getters and Setters
 // -----------------------------------------------------------------------------
+
+- (void)setSendThreads:(BSGThreadSendPolicy)sendThreads {
+#if BSG_HAVE_MACH_THREADS
+    _sendThreads = sendThreads;
+#endif
+}
 
 - (void)setAppHangThresholdMillis:(NSUInteger)appHangThresholdMillis {
     if (appHangThresholdMillis >= 250) {

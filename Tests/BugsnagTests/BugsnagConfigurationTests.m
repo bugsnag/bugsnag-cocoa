@@ -13,6 +13,7 @@
 #import "BugsnagNotifier.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagTestConstants.h"
+#import <TargetConditionals.h>
 
 // =============================================================================
 // MARK: - Tests
@@ -657,7 +658,11 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertEqualObjects(@"production", config.releaseStage);
 #endif
 
+#if TARGET_OS_WATCH
+    XCTAssertEqual(BSGThreadSendPolicyNever, config.sendThreads);
+#else
     XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);
+#endif
 }
 
 // =============================================================================
@@ -841,7 +846,11 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 - (void)testSendThreadsDefault {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+#if TARGET_OS_WATCH
+    XCTAssertEqual(BSGThreadSendPolicyNever, config.sendThreads);
+#else
     XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);
+#endif
 }
 
 - (void)testNSCopying {

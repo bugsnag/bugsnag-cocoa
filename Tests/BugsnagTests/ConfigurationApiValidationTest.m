@@ -11,6 +11,7 @@
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagPlugin.h"
 #import "BugsnagTestConstants.h"
+#import <TargetConditionals.h>
 
 @interface FooPlugin: NSObject<BugsnagPlugin>
 @end
@@ -84,11 +85,19 @@
 
 - (void)testValidSendThreads {
     self.config.sendThreads = BSGThreadSendPolicyAlways;
+#if TARGET_OS_WATCH
+    XCTAssertEqual(BSGThreadSendPolicyNever, self.config.sendThreads);
+#else
     XCTAssertEqual(BSGThreadSendPolicyAlways, self.config.sendThreads);
+#endif
     self.config.sendThreads = BSGThreadSendPolicyNever;
     XCTAssertEqual(BSGThreadSendPolicyNever, self.config.sendThreads);
     self.config.sendThreads = BSGThreadSendPolicyUnhandledOnly;
+#if TARGET_OS_WATCH
+    XCTAssertEqual(BSGThreadSendPolicyNever, self.config.sendThreads);
+#else
     XCTAssertEqual(BSGThreadSendPolicyUnhandledOnly, self.config.sendThreads);
+#endif
 }
 
 - (void)testValidAutoDetectErrors {
