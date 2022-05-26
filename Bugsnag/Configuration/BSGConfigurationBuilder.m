@@ -110,6 +110,7 @@ static BOOL BSGValueIsBoolean(id object) {
 }
 
 + (void)loadSendThreads:(BugsnagConfiguration *)config options:(NSDictionary *)options {
+#if !TARGET_OS_WATCH
     if (options[BSGKeySendThreads] && [options[BSGKeySendThreads] isKindOfClass:[NSString class]]) {
         NSString *sendThreads = [options[BSGKeySendThreads] lowercaseString];
 
@@ -121,6 +122,7 @@ static BOOL BSGValueIsBoolean(id object) {
             config.sendThreads = BSGThreadSendPolicyNever;
         }
     }
+#endif
 }
 
 @end

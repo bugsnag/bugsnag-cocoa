@@ -21,9 +21,11 @@ void BSGCrashSentryInstall(BugsnagConfiguration *config, BSG_KSReportWriteCallba
 
     bsg_kscrash_setCrashNotifyCallback(onCrash);
 
+#if !TARGET_OS_WATCH
     // overridden elsewhere for handled errors, so we can assume that this only
     // applies to unhandled errors
     bsg_kscrash_setThreadTracingEnabled(config.sendThreads != BSGThreadSendPolicyNever);
+#endif
 
     BSG_KSCrashType crashTypes = 0;
     if (config.autoDetectErrors) {
@@ -52,6 +54,9 @@ void BSGCrashSentryInstall(BugsnagConfiguration *config, BSG_KSReportWriteCallba
 BSG_KSCrashType BSG_KSCrashTypeFromBugsnagErrorTypes(BugsnagErrorTypes *errorTypes) {
     return ((errorTypes.unhandledExceptions ?   BSG_KSCrashTypeNSException : 0)     |
             (errorTypes.cppExceptions ?         BSG_KSCrashTypeCPPException : 0)    |
+#if !TARGET_OS_WATCH
             (errorTypes.signals ?               BSG_KSCrashTypeSignal : 0)          |
-            (errorTypes.machExceptions ?        BSG_KSCrashTypeMachException : 0)   );
+            (errorTypes.machExceptions ?        BSG_KSCrashTypeMachException : 0)   |
+#endif
+            0);
 }

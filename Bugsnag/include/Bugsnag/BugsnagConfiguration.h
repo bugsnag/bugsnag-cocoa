@@ -216,7 +216,7 @@ typedef id<NSObject> BugsnagOnSessionRef;
  * BSGThreadSendPolicyNever to disable or BSGThreadSendPolicyUnhandledOnly
  * to only do so for unhandled errors.
  */
-@property (nonatomic) BSGThreadSendPolicy sendThreads;
+@property (nonatomic) BSGThreadSendPolicy sendThreads API_UNAVAILABLE(watchos);
 
 /**
  *  Optional handler invoked when an error or crash occurs
