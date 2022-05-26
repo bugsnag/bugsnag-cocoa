@@ -67,15 +67,7 @@
 #import "BSGDefines.h"
 #import "BSGAppKit.h"
 #import "BSGUIKit.h"
-#import "BSGWatchKit.h"
-
-#if TARGET_OS_IOS
-#define BATTERY_STATE_UNKNOWN  UIDeviceBatteryStateUnknown
-#define BATTERY_STATE_CHARGING UIDeviceBatteryStateCharging
-#elif TARGET_OS_WATCH
-#define BATTERY_STATE_UNKNOWN  WKInterfaceDeviceBatteryStateUnknown
-#define BATTERY_STATE_CHARGING WKInterfaceDeviceBatteryStateCharging
-#endif
+#import "BSGHardware.h"
 
 static NSString *const BSTabCrash = @"crash";
 static NSString *const BSAttributeDepth = @"depth";
@@ -113,9 +105,9 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
         writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
 
 #if BSG_HAVE_BATTERY
-        if (bsg_runContext->batteryState != BATTERY_STATE_UNKNOWN) {
+        if (BSGIsBatteryStateKnown(bsg_runContext->batteryState)) {
             writer->addFloatingPointElement(writer, "batteryLevel", bsg_runContext->batteryLevel);
-            writer->addBooleanElement(writer, "charging", bsg_runContext->batteryState >= BATTERY_STATE_CHARGING);
+            writer->addBooleanElement(writer, "charging", BSGIsBatteryCharging(bsg_runContext->batteryState));
         }
 #endif
 #if TARGET_OS_IOS
@@ -399,7 +391,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 #endif
 
 #if BSG_HAVE_BATTERY
-    [UIDEVICE currentDevice].batteryMonitoringEnabled = NO;
+    BSGGetDevice().batteryMonitoringEnabled = FALSE;
 #endif
 
 #if TARGET_OS_IOS
@@ -705,10 +697,9 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     // Device information that isn't part of `event.device`
     NSMutableDictionary *deviceMetadata = [NSMutableDictionary dictionary];
 #if BSG_HAVE_BATTERY
-    if (bsg_runContext->batteryState != BATTERY_STATE_UNKNOWN) {
-        deviceMetadata[BSGKeyBatteryLevel] = @(bsg_runContext->batteryLevel);
-        // Our intepretation of "charging" really means "plugged in" 
-        deviceMetadata[BSGKeyCharging] = bsg_runContext->batteryState >= BATTERY_STATE_CHARGING ? @YES : @NO;
+    if (BSGIsBatteryStateKnown(BSGGetDevice().batteryState)) {
+        deviceMetadata[BSGKeyBatteryLevel] = @(BSGGetDevice().batteryLevel);
+        deviceMetadata[BSGKeyCharging] = BSGIsBatteryCharging(BSGGetDevice().batteryState) ? @YES : @NO;
     }
 #endif
     if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
@@ -1163,10 +1154,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     // Device information that isn't part of `event.device`
     NSMutableDictionary *deviceMetadata = [NSMutableDictionary dictionary];
 #if BSG_HAVE_BATTERY
-    if (bsg_lastRunContext->batteryState != BATTERY_STATE_UNKNOWN) {
+    if (BSGIsBatteryStateKnown(bsg_lastRunContext->batteryState)) {
         deviceMetadata[BSGKeyBatteryLevel] = @(bsg_lastRunContext->batteryLevel);
         // Our intepretation of "charging" really means "plugged in" 
-        deviceMetadata[BSGKeyCharging] = bsg_lastRunContext->batteryState >= BATTERY_STATE_CHARGING ? @YES : @NO;
+        deviceMetadata[BSGKeyCharging] = BSGIsBatteryCharging(bsg_lastRunContext->batteryState) ? @YES : @NO;
     }
 #endif
 #if TARGET_OS_IOS
