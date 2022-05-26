@@ -859,6 +859,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
                                                  dependencies:@[[[BugsnagNotifier alloc] init]]]];
     [config setPersistUser:YES];
     [config setSendThreads:BSGThreadSendPolicyUnhandledOnly];
+    [config addPlugin:(id)[NSNull null]];
     BugsnagOnSendErrorBlock onSendBlock1 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
     BugsnagOnSendErrorBlock onSendBlock2 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
 
@@ -907,6 +908,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertEqualObjects(clone.notifier.name, config.notifier.name);
     XCTAssertEqualObjects(clone.notifier.version, config.notifier.version);
     XCTAssertEqualObjects(clone.notifier.url, config.notifier.url);
+
+    // Plugins
+    XCTAssert([clone.plugins containsObject:[NSNull null]]);
+    XCTAssertNoThrow([clone.plugins removeObject:[NSNull null]]);
 }
 
 - (void)testMetadataMutability {
