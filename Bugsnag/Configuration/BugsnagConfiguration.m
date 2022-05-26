@@ -107,7 +107,7 @@ static NSUserDefaults *userDefaults;
     [copy setPlugins:[self.plugins copy]];
     [copy setReleaseStage:self.releaseStage];
     copy.session = self.session; // NSURLSession does not declare conformance to NSCopying
-#if !TARGET_OS_WATCH
+#if BSG_HAVE_MACH_THREADS
     [copy setSendThreads:self.sendThreads];
 #endif
     [copy setUser:self.user.id

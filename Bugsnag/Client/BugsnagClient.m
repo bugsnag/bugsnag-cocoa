@@ -644,11 +644,12 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         // Use the current call stack instead.
         callStack = BSGArraySubarrayFromIndex(NSThread.callStackReturnAddresses, depth);
     }
-#if TARGET_OS_WATCH
-    NSArray *threads = @[];
-#else
+    
+#if BSG_HAVE_MACH_THREADS
     BOOL recordAllThreads = self.configuration.sendThreads == BSGThreadSendPolicyAlways;
     NSArray *threads = recordAllThreads ? [BugsnagThread allThreads:YES callStackReturnAddresses:callStack] : @[];
+#else
+    NSArray *threads = @[];
 #endif
     
     NSArray<BugsnagStackframe *> *stacktrace = [BugsnagStackframe stackframesWithCallStackReturnAddresses:callStack];
@@ -935,9 +936,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 }
 
 - (NSArray *)collectThreads:(BOOL)unhandled {
-#if TARGET_OS_WATCH
-    return @[];
-#else
+#if BSG_HAVE_MACH_THREADS
     // discard the following
     // 1. [BugsnagReactNative getPayloadInfo:resolve:reject:]
     // 2. [BugsnagClient collectThreads:]
@@ -948,6 +947,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
             || (unhandled && sendThreads == BSGThreadSendPolicyUnhandledOnly);
     NSArray<BugsnagThread *> *threads = [BugsnagThread allThreads:recordAllThreads callStackReturnAddresses:callStack];
     return [BugsnagThread serializeThreads:threads];
+#else
+    return @[];
 #endif
 }
 
