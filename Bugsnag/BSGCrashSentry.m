@@ -8,6 +8,7 @@
 
 #import "BSGCrashSentry.h"
 
+#import "BSGDefines.h"
 #import "BSGFileLocations.h"
 #import "BSG_KSCrash.h"
 #import "BSG_KSCrashC.h"
@@ -21,7 +22,7 @@ void BSGCrashSentryInstall(BugsnagConfiguration *config, BSG_KSReportWriteCallba
 
     bsg_kscrash_setCrashNotifyCallback(onCrash);
 
-#if !TARGET_OS_WATCH
+#if BSG_HAVE_MACH_THREADS
     // overridden elsewhere for handled errors, so we can assume that this only
     // applies to unhandled errors
     bsg_kscrash_setThreadTracingEnabled(config.sendThreads != BSGThreadSendPolicyNever);
