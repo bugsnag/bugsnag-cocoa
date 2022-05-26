@@ -284,12 +284,8 @@ static NSDictionary * bsg_systemversion() {
         }
     }
     case CPU_TYPE_ARM64_32: {
-        switch (subType) {
-            case CPU_SUBTYPE_ARM64_32_V8:
-                return @"arm64_32_v8";
-            default:
-                return @"arm64_32";
-        }
+        // Ignore arm64_32_v8 subtype
+        return @"arm64_32";
     }
     case CPU_TYPE_X86:
         return @"x86";
