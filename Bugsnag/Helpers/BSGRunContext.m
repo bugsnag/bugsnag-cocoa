@@ -11,6 +11,7 @@
 #import "BSG_KSMach.h"
 #import "BSG_KSMachHeaders.h"
 #import "BSG_KSSystemInfo.h"
+#import "BSGHardware.h"
 
 #import <Foundation/Foundation.h>
 #import <sys/mman.h>
@@ -189,11 +190,11 @@ static void NoteAppWillTerminate() {
 #if TARGET_OS_IOS
 
 static void NoteBatteryLevel() {
-    bsg_runContext->batteryLevel = [UIDEVICE currentDevice].batteryLevel;
+    bsg_runContext->batteryLevel = BSGGetDevice().batteryLevel;
 }
 
 static void NoteBatteryState() {
-    bsg_runContext->batteryState = [UIDEVICE currentDevice].batteryState;
+    bsg_runContext->batteryState = BSGGetDevice().batteryState;
 }
 
 static void NoteOrientation() {
@@ -265,20 +266,20 @@ static void AddObservers() {
         OBSERVE(NSProcessInfoThermalStateDidChangeNotification, NoteThermalState);
     }
     
+#if BSG_HAVE_BATTERY
+    BSGGetDevice().batteryMonitoringEnabled = YES;
+    bsg_runContext->batteryLevel = BSGGetDevice().batteryLevel;
+    bsg_runContext->batteryState = BSGGetDevice().batteryState;
+#endif
+
 #if TARGET_OS_IOS
     UIDevice *currentDevice = [UIDEVICE currentDevice];
-    
-    currentDevice.batteryMonitoringEnabled = YES;
-    bsg_runContext->batteryLevel = currentDevice.batteryLevel;
-    OBSERVE(UIDeviceBatteryLevelDidChangeNotification, NoteBatteryLevel);
-    
-    bsg_runContext->batteryState = currentDevice.batteryState;
-    OBSERVE(UIDeviceBatteryStateDidChangeNotification, NoteBatteryState);
-    
     [currentDevice beginGeneratingDeviceOrientationNotifications];
     bsg_runContext->lastKnownOrientation = currentDevice.orientation;
     OBSERVE(UIDeviceOrientationDidChangeNotification, NoteOrientation);
-    
+    OBSERVE(UIDeviceBatteryLevelDidChangeNotification, NoteBatteryLevel);
+    OBSERVE(UIDeviceBatteryStateDidChangeNotification, NoteBatteryState);
+
     ObserveMemoryPressure();
 #endif
 }

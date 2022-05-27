@@ -34,9 +34,11 @@ struct BSGRunContext {
     double sessionStartTime;
     unsigned long handledCount;
     unsigned long unhandledCount;
-#if TARGET_OS_IOS
+#if BSG_HAVE_BATTERY
     float batteryLevel;
     long batteryState;
+#endif
+#if TARGET_OS_IOS
     long lastKnownOrientation;
     dispatch_source_memorypressure_flags_t memoryPressure;
 #endif
