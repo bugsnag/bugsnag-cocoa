@@ -1,5 +1,6 @@
 #import "BSGConfigurationBuilder.h"
 
+#import "BSGDefines.h"
 #import "BSGKeys.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagEndpointConfiguration.h"
@@ -110,6 +111,7 @@ static BOOL BSGValueIsBoolean(id object) {
 }
 
 + (void)loadSendThreads:(BugsnagConfiguration *)config options:(NSDictionary *)options {
+#if BSG_HAVE_MACH_THREADS
     if (options[BSGKeySendThreads] && [options[BSGKeySendThreads] isKindOfClass:[NSString class]]) {
         NSString *sendThreads = [options[BSGKeySendThreads] lowercaseString];
 
@@ -121,6 +123,7 @@ static BOOL BSGValueIsBoolean(id object) {
             config.sendThreads = BSGThreadSendPolicyNever;
         }
     }
+#endif
 }
 
 @end

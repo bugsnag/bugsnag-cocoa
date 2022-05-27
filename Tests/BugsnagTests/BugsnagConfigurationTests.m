@@ -638,11 +638,13 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertNil(config.context);
     XCTAssertEqual(BSGEnabledBreadcrumbTypeAll, config.enabledBreadcrumbTypes);
     XCTAssertTrue(config.enabledErrorTypes.cppExceptions);
-    XCTAssertTrue(config.enabledErrorTypes.machExceptions);
-    XCTAssertTrue(config.enabledErrorTypes.signals);
     XCTAssertTrue(config.enabledErrorTypes.unhandledExceptions);
     XCTAssertTrue(config.enabledErrorTypes.unhandledRejections);
+#if !TARGET_OS_WATCH
+    XCTAssertTrue(config.enabledErrorTypes.machExceptions);
+    XCTAssertTrue(config.enabledErrorTypes.signals);
     XCTAssertTrue(config.enabledErrorTypes.ooms);
+#endif
 
     XCTAssertNil(config.enabledReleaseStages);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
@@ -658,9 +660,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertEqualObjects(@"production", config.releaseStage);
 #endif
 
-#if TARGET_OS_WATCH
-    XCTAssertEqual(BSGThreadSendPolicyNever, config.sendThreads);
-#else
+#if !TARGET_OS_WATCH
     XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);
 #endif
 }
@@ -743,6 +743,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertEqualObjects(@"test@example.com", config.user.email);
 }
 
+#if !TARGET_OS_WATCH
+
 -(void)testBSGErrorTypes {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
 
@@ -801,6 +803,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
                    BSG_KSCrashTypeCPPException | BSG_KSCrashTypeSignal);
 }
 
+#endif
+
 /**
  * Test that removeOnSendBlock() performs as expected.
  * Note: We don't test that set blocks are executed since this is tested elsewhere
@@ -845,10 +849,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 }
 
 - (void)testSendThreadsDefault {
+#if !TARGET_OS_WATCH
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-#if TARGET_OS_WATCH
-    XCTAssertEqual(BSGThreadSendPolicyNever, config.sendThreads);
-#else
     XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);
 #endif
 }
@@ -867,7 +869,9 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
                                                           url:@"https://example.com"
                                                  dependencies:@[[[BugsnagNotifier alloc] init]]]];
     [config setPersistUser:YES];
+#if !TARGET_OS_WATCH
     [config setSendThreads:BSGThreadSendPolicyUnhandledOnly];
+#endif
     BugsnagOnSendErrorBlock onSendBlock1 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
     BugsnagOnSendErrorBlock onSendBlock2 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
 
@@ -883,8 +887,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     // Redacted keys
     XCTAssertEqualObjects(config.redactedKeys, clone.redactedKeys);
 
+#if !TARGET_OS_WATCH
     // sendThreads
     XCTAssertEqual(config.sendThreads, clone.sendThreads);
+#endif
 
     // Object
     [clone setUser:@"Cthulu" withEmail:@"hp@lovecraft.com" andName:@"Howard"];

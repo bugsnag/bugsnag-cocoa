@@ -79,7 +79,9 @@ static NSUserDefaults *userDefaults;
 - (nonnull id)copyWithZone:(nullable __attribute__((unused)) NSZone *)zone {
     BugsnagConfiguration *copy = [[BugsnagConfiguration alloc] initWithApiKey:[self.apiKey copy]];
     // Omit apiKey - it's set explicitly in the line above
+#if BSG_HAVE_APP_HANG_DETECTION
     [copy setAppHangThresholdMillis:self.appHangThresholdMillis];
+#endif
     [copy setAppType:self.appType];
     [copy setAppVersion:self.appVersion];
     [copy setAutoDetectErrors:self.autoDetectErrors];
@@ -105,7 +107,9 @@ static NSUserDefaults *userDefaults;
     [copy setPlugins:[self.plugins copy]];
     [copy setReleaseStage:self.releaseStage];
     copy.session = self.session; // NSURLSession does not declare conformance to NSCopying
+#if BSG_HAVE_MACH_THREADS
     [copy setSendThreads:self.sendThreads];
+#endif
     [copy setUser:self.user.id
         withEmail:self.user.email
           andName:self.user.name];
@@ -172,7 +176,9 @@ static NSUserDefaults *userDefaults;
     _metadata = [[BugsnagMetadata alloc] init];
     _endpoints = [BugsnagEndpointConfiguration new];
     _autoDetectErrors = YES;
+#if BSG_HAVE_APP_HANG_DETECTION
     _appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly;
+#endif
     _onSendBlocks = [NSMutableArray new];
     _onSessionBlocks = [NSMutableArray new];
     _onBreadcrumbBlocks = [NSMutableArray new];

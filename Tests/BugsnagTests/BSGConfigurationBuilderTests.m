@@ -61,15 +61,13 @@
     XCTAssertEqual(config.maxBreadcrumbs, 50);
     XCTAssertTrue(config.persistUser);
     XCTAssertEqualObjects(@[@"password"], [config.redactedKeys allObjects]);
-#if TARGET_OS_WATCH
-    XCTAssertEqual(BSGThreadSendPolicyNever, config.sendThreads);
-#else
-    XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);
-#endif
     XCTAssertEqual(BSGEnabledBreadcrumbTypeAll, config.enabledBreadcrumbTypes);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
+#if !TARGET_OS_WATCH
     XCTAssertTrue(config.enabledErrorTypes.ooms);
+    XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);
+#endif
 
 #if DEBUG
     XCTAssertEqualObjects(@"development", config.releaseStage);
@@ -79,10 +77,12 @@
 
     XCTAssertNil(config.enabledReleaseStages);
     XCTAssertTrue(config.enabledErrorTypes.unhandledExceptions);
-    XCTAssertTrue(config.enabledErrorTypes.signals);
     XCTAssertTrue(config.enabledErrorTypes.cppExceptions);
-    XCTAssertTrue(config.enabledErrorTypes.machExceptions);
     XCTAssertTrue(config.enabledErrorTypes.unhandledRejections);
+#if !TARGET_OS_WATCH
+    XCTAssertTrue(config.enabledErrorTypes.signals);
+    XCTAssertTrue(config.enabledErrorTypes.machExceptions);
+#endif
 }
 
 - (void)testDecodeFullConfig {
@@ -119,20 +119,23 @@
     XCTAssertEqual(27, config.maxBreadcrumbs);
     XCTAssertFalse(config.persistUser);
     XCTAssertEqualObjects(@[@"foo"], config.redactedKeys);
-    XCTAssertEqual(BSGThreadSendPolicyNever, config.sendThreads);
     XCTAssertEqualObjects(@"beta1", config.releaseStage);
     XCTAssertEqualObjects(@"https://reports.example.co", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.example.co", config.endpoints.sessions);
 
     NSArray *releaseStages = @[@"beta2", @"prod"];
     XCTAssertEqualObjects(releaseStages, config.enabledReleaseStages);
-    XCTAssertTrue(config.enabledErrorTypes.ooms);
 
     XCTAssertTrue(config.enabledErrorTypes.unhandledExceptions);
-    XCTAssertTrue(config.enabledErrorTypes.signals);
     XCTAssertTrue(config.enabledErrorTypes.cppExceptions);
-    XCTAssertTrue(config.enabledErrorTypes.machExceptions);
     XCTAssertTrue(config.enabledErrorTypes.unhandledRejections);
+
+#if !TARGET_OS_WATCH
+    XCTAssertEqual(BSGThreadSendPolicyNever, config.sendThreads);
+    XCTAssertTrue(config.enabledErrorTypes.ooms);
+    XCTAssertTrue(config.enabledErrorTypes.signals);
+    XCTAssertTrue(config.enabledErrorTypes.machExceptions);
+#endif
 }
 
 // MARK: - invalid config options
