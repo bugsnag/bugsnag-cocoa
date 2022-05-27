@@ -38,7 +38,7 @@
     NSString *key = @"sessionCounter";
     NSInteger sessionCounter = [NSUserDefaults.standardUserDefaults integerForKey:key] + 1;
     [NSUserDefaults.standardUserDefaults setInteger:sessionCounter forKey:key];
-    return [NSString stringWithFormat:@"%ld", sessionCounter];
+    return [NSString stringWithFormat:@"%ld", (long) sessionCounter];
 }
 
 @end
