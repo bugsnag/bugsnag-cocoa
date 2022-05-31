@@ -14,41 +14,39 @@
 
 - (void)testDecodeEmptyApiKey {
     BugsnagConfiguration *configuration;
-    XCTAssertNoThrow(configuration = [BSGConfigurationBuilder configurationFromOptions:@{@"apiKey": @""}]);
+    XCTAssertNoThrow(configuration = BSGConfigurationWithOptions(@{@"apiKey": @""}));
     XCTAssertEqualObjects(configuration.apiKey, @"");
     XCTAssertThrows([configuration validate]);
 }
 
 - (void)testDecodeInvalidTypeApiKey {
-    XCTAssertThrows([BSGConfigurationBuilder
-                     configurationFromOptions:@{@"apiKey": @[@"one"]}]);
+    XCTAssertThrows(BSGConfigurationWithOptions(@{@"apiKey": @[@"one"]}));
 }
 
 - (void)testDecodeWithoutApiKey {
     BugsnagConfiguration *configuration;
-    XCTAssertNoThrow(configuration = [BSGConfigurationBuilder configurationFromOptions:@{@"autoDetectErrors": @NO}]);
+    XCTAssertNoThrow(configuration = BSGConfigurationWithOptions(@{@"autoDetectErrors": @NO}));
     XCTAssertNil(configuration.apiKey);
     XCTAssertFalse(configuration.autoDetectErrors);
     XCTAssertThrows([configuration validate]);
 }
 
 - (void)testDecodeUnknownKeys {
-    BugsnagConfiguration *config = [BSGConfigurationBuilder configurationFromOptions:@{
+    BugsnagConfiguration *config = BSGConfigurationWithOptions(@{
             @"giraffes": @3,
             @"apiKey": DUMMY_APIKEY_32CHAR_1
-    }];
+    });
     XCTAssertNotNil(config);
 }
 
 - (void)testDecodeEmptyOptions {
-    XCTAssertNoThrow([BSGConfigurationBuilder configurationFromOptions:@{}]);
+    XCTAssertNoThrow(BSGConfigurationWithOptions(@{}));
 }
 
 // MARK: - config loading
 
 - (void)testDecodeDefaultValues {
-    BugsnagConfiguration *config = [BSGConfigurationBuilder
-            configurationFromOptions:@{@"apiKey": DUMMY_APIKEY_32CHAR_1}];
+    BugsnagConfiguration *config = BSGConfigurationWithOptions(@{@"apiKey": DUMMY_APIKEY_32CHAR_1});
     XCTAssertNotNil(config);
     XCTAssertEqualObjects(DUMMY_APIKEY_32CHAR_1, config.apiKey);
     XCTAssertNotNil(config.appType);
@@ -82,7 +80,7 @@
 
 - (void)testDecodeFullConfig {
     BugsnagConfiguration *config =
-            [BSGConfigurationBuilder configurationFromOptions:@{
+    BSGConfigurationWithOptions(@{
                     @"apiKey": DUMMY_APIKEY_32CHAR_1,
                     @"appType": @"cocoa-custom",
                     @"appVersion": @"5.2.33",
@@ -101,7 +99,7 @@
                     @"redactedKeys": @[@"foo"],
                     @"sendThreads": @"never",
                     @"releaseStage": @"beta1",
-            }];
+            });
     XCTAssertNotNil(config);
     XCTAssertEqualObjects(DUMMY_APIKEY_32CHAR_1, config.apiKey);
     XCTAssertEqualObjects(@"cocoa-custom", config.appType);
@@ -113,14 +111,13 @@
     XCTAssertEqual(19, config.maxPersistedSessions);
     XCTAssertEqual(27, config.maxBreadcrumbs);
     XCTAssertFalse(config.persistUser);
-    XCTAssertEqualObjects(@[@"foo"], config.redactedKeys);
+    XCTAssertEqualObjects(config.redactedKeys, [NSSet setWithObject:@"foo"]);
     XCTAssertEqual(BSGThreadSendPolicyNever, config.sendThreads);
     XCTAssertEqualObjects(@"beta1", config.releaseStage);
     XCTAssertEqualObjects(@"https://reports.example.co", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.example.co", config.endpoints.sessions);
 
-    NSArray *releaseStages = @[@"beta2", @"prod"];
-    XCTAssertEqualObjects(releaseStages, config.enabledReleaseStages);
+    XCTAssertEqualObjects(config.enabledReleaseStages, ([NSSet setWithObjects:@"beta2", @"prod", nil]));
     XCTAssertTrue(config.enabledErrorTypes.ooms);
 
     XCTAssertTrue(config.enabledErrorTypes.unhandledExceptions);
@@ -134,7 +131,7 @@
 
 - (void)testInvalidConfigOptions {
     BugsnagConfiguration *config =
-            [BSGConfigurationBuilder configurationFromOptions:@{
+    BSGConfigurationWithOptions(@{
                     @"apiKey": DUMMY_APIKEY_32CHAR_1,
                     @"appType": @[],
                     @"appVersion": @99,
@@ -151,86 +148,86 @@
                     @"redactedKeys": @[@77],
                     @"sendThreads": @"nev",
                     @"releaseStage": @YES,
-            }];
+            });
     XCTAssertNotNil(config); // no exception should be thrown when loading
 }
 
 - (void)testDecodeEnabledReleaseStagesInvalidTypes {
-    BugsnagConfiguration *config = [BSGConfigurationBuilder configurationFromOptions:@{
+    BugsnagConfiguration *config = BSGConfigurationWithOptions(@{
             @"enabledReleaseStages": @[@"beta", @"prod", @300],
             @"apiKey": DUMMY_APIKEY_32CHAR_1
-    }];
+    });
     XCTAssertNotNil(config);
     XCTAssertNil(config.enabledReleaseStages);
 
-    config = [BSGConfigurationBuilder configurationFromOptions:@{
+    config = BSGConfigurationWithOptions(@{
             @"enabledReleaseStages": @{@"name": @"foo"},
             @"apiKey": DUMMY_APIKEY_32CHAR_1
-    }];
+    });
     XCTAssertNotNil(config);
     XCTAssertNil(config.enabledReleaseStages);
 
-    config = [BSGConfigurationBuilder configurationFromOptions:@{
+    config = BSGConfigurationWithOptions(@{
             @"enabledReleaseStages": @"fooo",
             @"apiKey": DUMMY_APIKEY_32CHAR_1
-    }];
+    });
     XCTAssertNotNil(config);
     XCTAssertNil(config.enabledReleaseStages);
 }
 
 - (void)testDecodeEndpointsInvalidTypes {
-    BugsnagConfiguration *config = [BSGConfigurationBuilder configurationFromOptions:@{
+    BugsnagConfiguration *config = BSGConfigurationWithOptions(@{
             @"endpoints": @"foo",
             @"apiKey": DUMMY_APIKEY_32CHAR_1
-    }];
+    });
     XCTAssertNotNil(config);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
 
-    config = [BSGConfigurationBuilder configurationFromOptions:@{
+    config = BSGConfigurationWithOptions(@{
             @"endpoints": @[@"http://example.com", @"http://foo.example.com"],
             @"apiKey": DUMMY_APIKEY_32CHAR_1
-    }];
+    });
     XCTAssertNotNil(config);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
 
-    config = [BSGConfigurationBuilder configurationFromOptions:@{
+    config = BSGConfigurationWithOptions(@{
             @"endpoints": @{},
             @"apiKey": DUMMY_APIKEY_32CHAR_1
-    }];
+    });
     XCTAssertNotNil(config);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
 }
 
 - (void)testDecodeEndpointsOnlyNotifySet {
-    BugsnagConfiguration *config = [BSGConfigurationBuilder configurationFromOptions:@{
+    BugsnagConfiguration *config = BSGConfigurationWithOptions(@{
             @"apiKey": DUMMY_APIKEY_32CHAR_1,
             @"endpoints": @{
                     @"notify": @"https://notify.example.com",
             },
-    }];
+    });
     XCTAssertNotNil(config);
     XCTAssertEqualObjects(@"https://notify.example.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
 }
 
 - (void)testDecodeEndpointsOnlySessionsSet {
-    BugsnagConfiguration *config = [BSGConfigurationBuilder configurationFromOptions:@{
+    BugsnagConfiguration *config = BSGConfigurationWithOptions(@{
             @"apiKey": DUMMY_APIKEY_32CHAR_1,
             @"endpoints": @{@"sessions": @"https://sessions.example.com"},
-    }];
+    });
     XCTAssertNotNil(config);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.example.com", config.endpoints.sessions);
 }
 
 - (void)testDecodeReleaseStageInvalidType {
-    BugsnagConfiguration *config = [BSGConfigurationBuilder configurationFromOptions:@{
+    BugsnagConfiguration *config = BSGConfigurationWithOptions(@{
             @"releaseStage": @NO,
             @"apiKey": DUMMY_APIKEY_32CHAR_1
-    }];
+    });
     XCTAssertNotNil(config);
 
 #if DEBUG

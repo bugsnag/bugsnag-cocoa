@@ -59,11 +59,7 @@ static NSUserDefaults *userDefaults;
 
 + (instancetype _Nonnull)loadConfig {
     NSDictionary *options = [[NSBundle mainBundle] infoDictionary][@"bugsnag"];
-    return [BSGConfigurationBuilder configurationFromOptions:options];
-}
-
-+ (instancetype)loadConfigFromOptions:(NSDictionary *)options {
-    return [BSGConfigurationBuilder configurationFromOptions:options];
+    return BSGConfigurationWithOptions(options);
 }
 
 // -----------------------------------------------------------------------------
