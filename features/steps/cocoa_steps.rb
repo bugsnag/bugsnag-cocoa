@@ -94,6 +94,11 @@ Then('the error is valid for the error reporting API') do
       Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
       Then the breadcrumb timestamps are valid for the event
     )
+  when 'watchos'
+    steps %(
+      Then the error is valid for the error reporting API version "4.0" for the "watchOS Bugsnag Notifier" notifier
+      Then the breadcrumb timestamps are valid for the event
+    )
   else
     raise "Unknown platform: #{platform}"
   end
@@ -109,6 +114,10 @@ Then('the error is valid for the error reporting API ignoring breadcrumb timesta
   when 'macos'
     steps %(
       Then the error is valid for the error reporting API version "4.0" for the "OSX Bugsnag Notifier" notifier
+    )
+  when 'watchos'
+    steps %(
+      Then the error is valid for the error reporting API version "4.0" for the "watchOS Bugsnag Notifier" notifier
     )
   else
     raise "Unknown platform: #{platform}"
@@ -133,6 +142,10 @@ Then('the session is valid for the session reporting API') do
     steps %(
       Then the session is valid for the session reporting API version "1.0" for the "OSX Bugsnag Notifier" notifier
     )
+  when 'watchos'
+    steps %(
+      Then the session is valid for the session reporting API version "1.0" for the "watchOS Bugsnag Notifier" notifier
+    )
   else
     raise "Unknown platform: #{platform}"
   end
@@ -150,8 +163,7 @@ Then('the breadcrumb timestamps are valid for the event') do
   unless device['time'].nil?
     breadcrumbs = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.breadcrumbs')
     breadcrumbs.each do |breadcrumb|
-      assert(breadcrumb['timestamp'] <= device['time'],
-        "Expected breadcrumb timestamp (#{breadcrumb['timestamp']}) <= event timestamp (#{device['time']})")
+      Maze.check.operator(breadcrumb['timestamp'], :<=, device['time'])
     end
   end
 end

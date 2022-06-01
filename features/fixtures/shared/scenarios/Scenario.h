@@ -42,7 +42,7 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 
 + (void)clearPersistentData;
 
-+ (void)executeMazeRunnerCommand:(void (^)(NSString *action, NSString *scenarioName, NSString *scenarioMode))preHandler;
++ (void)executeMazeRunnerCommand:(nullable void (^)(NSString *action, NSString *scenarioName, NSString *scenarioMode))preHandler;
 
 @end
 

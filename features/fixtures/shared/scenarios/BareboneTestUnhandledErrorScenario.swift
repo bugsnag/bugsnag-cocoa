@@ -30,8 +30,7 @@ class BareboneTestUnhandledErrorScenario: Scenario {
     }
     
     override func run() {
-        // Triggers "Fatal error: Unexpectedly found nil while implicitly unwrapping an Optional value: ..."
-        print(payload.name)
+        NSArray().object(at: 42)
     }
 }
 

@@ -137,6 +137,19 @@ e2e_macos:
 	./features/scripts/export_mac_app.sh
 	bundle exec maze-runner --app=macOSTestApp --os=macOS --os-version=11 $(FEATURES)
 
+.PHONY: e2e_watchos
+e2e_watchos: features/fixtures/watchos/Podfile.lock features/fixtures/shared/scenarios/watchos_maze_host.h
+	open --background features/fixtures/watchos/watchOSTestApp.xcworkspace
+	bundle exec maze-runner --os=watchos --tags @watchos
+
+features/fixtures/watchos/Podfile.lock: features/fixtures/watchos/Podfile
+	cd features/fixtures/watchos && pod install
+
+.PHONY: features/fixtures/shared/scenarios/watchos_maze_host.h
+features/fixtures/shared/scenarios/watchos_maze_host.h:
+	printf '#define WATCHOS_MAZE_HOST ' > $@
+	ruby -r socket -e 'p Socket.ip_address_list.select{ |a| a.ipv4_private? }[0].ip_address' >> $@
+
 #--------------------------------------------------------------------------
 # Release
 #

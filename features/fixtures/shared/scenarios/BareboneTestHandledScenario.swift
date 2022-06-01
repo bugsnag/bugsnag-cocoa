@@ -42,7 +42,9 @@ class BareboneTestHandledScenario: Scenario {
         config.addMetadata(["Testing": true], section: "Flags")
         config.addMetadata(["password": "123456"], section: "Other")
         config.launchDurationMillis = 0
+#if !os(watchOS)
         config.sendThreads = .unhandledOnly
+#endif
         config.setUser("foobar", withEmail: "foobar@example.com", andName: "Foo Bar")
         config.addMetadata(["group": "users"], section: "user")
         config.addFeatureFlag(name: "Testing")
