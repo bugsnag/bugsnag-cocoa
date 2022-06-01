@@ -77,10 +77,6 @@ void bsg_kscrash_i_onCrash(BSG_KSCrash_Context *context) {
 
     bsg_kscrashstate_notifyAppCrash();
 
-    if (context->config.printTraceToStdout) {
-        bsg_kscrashreport_logCrash(context);
-    }
-
     if (context->crash.crashedDuringCrashHandling) {
         bsg_kscrashreport_writeMinimalReport(context,
                                              context->config.recrashReportFilePath);
@@ -169,10 +165,6 @@ BSG_KSCrashType bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashType crashTypes) {
     }
 
     return crashTypes;
-}
-
-void bsg_kscrash_setPrintTraceToStdout(bool printTraceToStdout) {
-    crashContext()->config.printTraceToStdout = printTraceToStdout;
 }
 
 void bsg_kscrash_setIntrospectMemory(bool introspectMemory) {

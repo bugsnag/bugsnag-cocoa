@@ -212,6 +212,9 @@ void bsg_ksmach_init(void) {
         if ((kr = task_threads(thisTask, &threads, &numThreads)) !=
             KERN_SUCCESS) {
             BSG_KSLOG_ERROR("task_threads: %s", mach_error_string(kr));
+#if !BSG_KSLOG_PRINTS_AT_LEVEL(BSG_KSLogger_Level_Error)
+            (void)kr;
+#endif
             return;
         }
 
@@ -395,6 +398,9 @@ thread_t *bsg_ksmachgetAllThreads(unsigned *threadCount) {
 
     if ((kr = task_threads(thisTask, &threads, &numThreads)) != KERN_SUCCESS) {
         BSG_KSLOG_ERROR("task_threads: %s", mach_error_string(kr));
+#if !BSG_KSLOG_PRINTS_AT_LEVEL(BSG_KSLogger_Level_Error)
+        (void)kr;
+#endif
         return NULL;
     }
 
@@ -570,6 +576,9 @@ bool bsg_ksmachi_VMStats(vm_statistics_data_t *const vmStats,
 
     if ((kr = host_page_size(hostPort, pageSize)) != KERN_SUCCESS) {
         BSG_KSLOG_ERROR("host_page_size: %s", mach_error_string(kr));
+#if !BSG_KSLOG_PRINTS_AT_LEVEL(BSG_KSLogger_Level_Error)
+        (void)kr;
+#endif
         return false;
     }
 

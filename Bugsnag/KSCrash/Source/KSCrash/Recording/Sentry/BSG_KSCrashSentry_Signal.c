@@ -32,12 +32,12 @@
 #include "BSG_KSMach.h"
 #include "BSG_KSSignalInfo.h"
 #include "BSG_KSCrashC.h"
+#include "BSG_KSCrashStringConversion.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 
 #include <errno.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 // ============================================================================
@@ -197,14 +197,15 @@ bool bsg_kscrashsentry_installSignalHandler(
         BSG_KSLOG_DEBUG("Assigning handler for signal %d", fatalSignals[i]);
         if (sigaction(fatalSignals[i], &action,
                       &bsg_g_previousSignalHandlers[i]) != 0) {
+#if BSG_KSLOG_PRINTS_AT_LEVEL(BSG_KSLogger_Level_Error)
             char sigNameBuff[30];
             const char *sigName = bsg_kssignal_signalName(fatalSignals[i]);
             if (sigName == NULL) {
-                snprintf(sigNameBuff, sizeof(sigNameBuff), "%d",
-                         fatalSignals[i]);
+                bsg_int64_to_string(fatalSignals[i], sigNameBuff);
                 sigName = sigNameBuff;
             }
             BSG_KSLOG_ERROR("sigaction (%s): %s", sigName, strerror(errno));
+#endif
             // Try to reverse the damage
             for (i--; i >= 0; i--) {
                 sigaction(fatalSignals[i], &bsg_g_previousSignalHandlers[i],
