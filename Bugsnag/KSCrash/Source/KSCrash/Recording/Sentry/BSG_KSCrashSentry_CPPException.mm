@@ -28,6 +28,7 @@
 #include "BSG_KSCrashSentry_Private.h"
 #include "BSG_KSMach.h"
 #include "BSG_KSCrashC.h"
+#include "BSG_KSCrashStringConversion.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
@@ -144,26 +145,42 @@ static void CPPExceptionTerminate(void) {
         strlcpy(descriptionBuff, exc->what(), sizeof(descriptionBuff));
         crashReason = descriptionBuff;
     }
-#define CATCH_VALUE(TYPE, PRINTFTYPE)                                          \
-    catch (TYPE value) {                                                       \
-        snprintf(descriptionBuff, sizeof(descriptionBuff), "%" #PRINTFTYPE,    \
-                 value);                                                       \
-        crashReason = descriptionBuff;                                         \
+#define CATCH_INT(TYPE)                                           \
+    catch (TYPE value) {                                          \
+        bsg_int64_to_string(value, descriptionBuff);              \
+        crashReason = descriptionBuff;                            \
     }
-    CATCH_VALUE(char, d)
-    CATCH_VALUE(short, d)
-    CATCH_VALUE(int, d)
-    CATCH_VALUE(long, ld)
-    CATCH_VALUE(long long, lld)
-    CATCH_VALUE(unsigned char, u)
-    CATCH_VALUE(unsigned short, u)
-    CATCH_VALUE(unsigned int, u)
-    CATCH_VALUE(unsigned long, lu)
-    CATCH_VALUE(unsigned long long, llu)
-    CATCH_VALUE(float, f)
-    CATCH_VALUE(double, f)
-    CATCH_VALUE(long double, Lf)
-    CATCH_VALUE(char *, s)
+#define CATCH_UINT(TYPE)                                          \
+    catch (TYPE value) {                                          \
+        bsg_uint64_to_string(value, descriptionBuff);             \
+        crashReason = descriptionBuff;                            \
+    }
+#define CATCH_DOUBLE(TYPE)                                        \
+    catch (TYPE value) {                                          \
+        bsg_double_to_string((double)value, descriptionBuff, 16); \
+        crashReason = descriptionBuff;                            \
+    }
+#define CATCH_STRING(TYPE)                                        \
+    catch (TYPE value) {                                          \
+        strncpy(descriptionBuff, value, sizeof(descriptionBuff)); \
+        descriptionBuff[sizeof(descriptionBuff)-1] = 0;           \
+        crashReason = descriptionBuff;                            \
+    }
+
+    CATCH_INT(char)
+    CATCH_INT(short)
+    CATCH_INT(int)
+    CATCH_INT(long)
+    CATCH_INT(long long)
+    CATCH_UINT(unsigned char)
+    CATCH_UINT(unsigned short)
+    CATCH_UINT(unsigned int)
+    CATCH_UINT(unsigned long)
+    CATCH_UINT(unsigned long long)
+    CATCH_DOUBLE(float)
+    CATCH_DOUBLE(double)
+    CATCH_DOUBLE(long double)
+    CATCH_STRING(char *)
     catch (...) {
     }
 
