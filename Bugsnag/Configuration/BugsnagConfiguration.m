@@ -60,11 +60,7 @@ static NSUserDefaults *userDefaults;
 
 + (instancetype _Nonnull)loadConfig {
     NSDictionary *options = [[NSBundle mainBundle] infoDictionary][@"bugsnag"];
-    return [BSGConfigurationBuilder configurationFromOptions:options];
-}
-
-+ (instancetype)loadConfigFromOptions:(NSDictionary *)options {
-    return [BSGConfigurationBuilder configurationFromOptions:options];
+    return BSGConfigurationWithOptions(options);
 }
 
 // -----------------------------------------------------------------------------
@@ -76,7 +72,7 @@ static NSUserDefaults *userDefaults;
  *
  * @param zone This parameter is ignored. Memory zones are no longer used by Objective-C.
  */
-- (nonnull id)copyWithZone:(nullable __attribute__((unused)) NSZone *)zone {
+- (nonnull id)copyWithZone:(nullable NSZone *)zone {
     BugsnagConfiguration *copy = [[BugsnagConfiguration alloc] initWithApiKey:[self.apiKey copy]];
     // Omit apiKey - it's set explicitly in the line above
 #if BSG_HAVE_APP_HANG_DETECTION
@@ -104,7 +100,7 @@ static NSUserDefaults *userDefaults;
     [copy setEndpoints:self.endpoints];
     [copy setOnCrashHandler:self.onCrashHandler];
     [copy setPersistUser:self.persistUser];
-    [copy setPlugins:[self.plugins copy]];
+    [copy setPlugins:[self.plugins mutableCopyWithZone:zone]];
     [copy setReleaseStage:self.releaseStage];
     copy.session = self.session; // NSURLSession does not declare conformance to NSCopying
 #if BSG_HAVE_MACH_THREADS
@@ -119,6 +115,7 @@ static NSUserDefaults *userDefaults;
     [copy setOnBreadcrumbBlocks:self.onBreadcrumbBlocks];
     [copy setOnSendBlocks:self.onSendBlocks];
     [copy setOnSessionBlocks:self.onSessionBlocks];
+    [copy setTelemetry:self.telemetry];
     return copy;
 }
 
@@ -212,6 +209,8 @@ static NSUserDefaults *userDefaults;
             sessionWithConfiguration:[NSURLSessionConfiguration
                                          defaultSessionConfiguration]];
     }
+    
+    _telemetry = BSGTelemetryInternalErrors;
     
     NSString *releaseStage = nil;
     #if DEBUG

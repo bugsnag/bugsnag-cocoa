@@ -68,6 +68,17 @@ typedef NS_ENUM(NSInteger, BSGThreadSendPolicy) {
 };
 
 /**
+ * Types of telemetry that may be sent to Bugsnag for product improvement purposes.
+ */
+typedef NS_OPTIONS(NSUInteger, BSGTelemetryOptions) {
+
+    /**
+     * Errors within the Bugsnag SDK.
+     */
+    BSGTelemetryInternalErrors = (1UL << 0),
+};
+
+/**
  * Setting `BugsnagConfiguration.appHangThresholdMillis` to this value disables the reporting of
  * app hangs that ended before the app was terminated.
  */
@@ -315,10 +326,6 @@ typedef id<NSObject> BugsnagOnSessionRef;
  */
 @property (nonatomic) BOOL persistUser;
 
-// -----------------------------------------------------------------------------
-// MARK: - Methods
-// -----------------------------------------------------------------------------
-
 /**
  * A class defining the types of error that are reported. By default,
  * all properties are true.
@@ -444,6 +451,17 @@ typedef id<NSObject> BugsnagOnSessionRef;
 - (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock)block
     BSG_DEPRECATED_WITH_REPLACEMENT("removeOnBreadcrumb:")
     NS_SWIFT_NAME(removeOnBreadcrumb(block:));
+
+// =============================================================================
+// MARK: - Telemetry
+// =============================================================================
+
+/**
+ * The types of telemetry that may be sent to Bugsnag for product improvement purposes.
+ *
+ * By default all types of telemetry are enabled.
+ */
+@property (nonatomic) BSGTelemetryOptions telemetry;
 
 // =============================================================================
 // MARK: - Plugins

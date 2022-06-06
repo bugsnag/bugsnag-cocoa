@@ -1,5 +1,5 @@
 steps:
-  - block: 'Trigger all iOS end-to-end tests'
+  - block: 'Trigger a full build'
     key: 'trigger-full-build'
 
   - label: 'Upload the full test pipeline'

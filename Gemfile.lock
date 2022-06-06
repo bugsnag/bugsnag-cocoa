@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: 7af6c9b23048cae8b475770911827d8101a201f4
-  tag: v6.16.0
+  revision: 3b17fc0bb0c9027520ece3cd66bb656b28bc6f53
+  tag: v6.17.0
   specs:
-    bugsnag-maze-runner (6.16.0)
+    bugsnag-maze-runner (6.17.0)
       appium_lib (~> 11.2.0)
       bugsnag (~> 6.24)
       cucumber (~> 7.1)
@@ -209,4 +209,4 @@ DEPENDENCIES
   jazzy
 
 BUNDLED WITH
-   2.3.0
+   2.3.11

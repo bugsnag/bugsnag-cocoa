@@ -92,12 +92,6 @@ void bsg_kscrash_reinstall(const char *const crashReportFilePath,
                            const char *const stateFilePath,
                            const char *const crashID);
 
-/** Set whether or not to print a stack trace to stdout when a crash occurs.
- *
- * Default: false
- */
-void bsg_kscrash_setPrintTraceToStdout(bool printTraceToStdout);
-
 /** If true, introspect memory contents during a crash.
  * Any Objective-C objects or C strings near the stack pointer or referenced by
  * cpu registers or exceptions will be recorded in the crash report, along with

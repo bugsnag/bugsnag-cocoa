@@ -38,6 +38,7 @@
 #include "BSG_KSString.h"
 #include "BSG_KSMachHeaders.h"
 #include "BSG_KSCrashNames.h"
+#include "BSG_KSCrashStringConversion.h"
 
 //#define BSG_kSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
@@ -78,10 +79,6 @@ typedef ucontext_t SignalUserContext;
  */
 #define BSG_kStackOverflowThreshold 200
 
-/** Maximum number of lines to print when printing a stack trace to the console.
- */
-#define BSG_kMaxStackTracePrintLines 40
-
 /** The minimum length for a valid string. */
 #define BSG_kMinStringLength 4
 
@@ -89,20 +86,6 @@ typedef struct {
     char *data;
     size_t allocated_size;
 } BSG_ThreadDataBuffer;
-
-// ============================================================================
-#pragma mark - Formatting -
-// ============================================================================
-
-#if defined(__LP64__)
-#define BSG_TRACE_FMT "%-4d%-31s 0x%016lx %s + %lu"
-#define BSG_POINTER_FMT "0x%016lx"
-#define BSG_POINTER_SHORT_FMT "0x%lx"
-#else
-#define BSG_TRACE_FMT "%-4d%-31s 0x%08lx %s + %lu"
-#define BSG_POINTER_FMT "0x%08lx"
-#define BSG_POINTER_SHORT_FMT "0x%lx"
-#endif
 
 // ============================================================================
 #pragma mark - JSON Encoding -
@@ -251,9 +234,10 @@ void bsg_kscrw_i_addJSONElement(const BSG_KSCrashReportWriter *const writer,
     int jsonResult = bsg_ksjsonaddJSONElement(bsg_getJsonContext(writer), key,
                                               jsonElement, strlen(jsonElement));
     if (jsonResult != BSG_KSJSON_OK) {
-        char errorBuff[100];
-        snprintf(errorBuff, sizeof(errorBuff), "Invalid JSON data: %s",
-                 bsg_ksjsonstringForError(jsonResult));
+        char errorBuff[100] = "Invalid JSON data: ";
+        const size_t baseLength = strlen(errorBuff);
+        strncpy(errorBuff+baseLength, bsg_ksjsonstringForError(jsonResult), sizeof(errorBuff) - baseLength);
+        errorBuff[sizeof(errorBuff)-1] = 0;
         bsg_ksjsonbeginObject(bsg_getJsonContext(writer), key);
         bsg_ksjsonaddStringElement(bsg_getJsonContext(writer),
                                    BSG_KSCrashField_Error, errorBuff,
@@ -508,129 +492,6 @@ bool bsg_kscrw_i_isStackOverflow(const BSG_KSCrash_SentryContext *const crash,
 }
 
 // ============================================================================
-#pragma mark - Console Logging -
-// ============================================================================
-
-/** Print the crash type and location to the log.
- *
- * @param sentryContext The crash sentry context.
- */
-void bsg_kscrw_i_logCrashType(
-    const BSG_KSCrash_SentryContext *const sentryContext) {
-    switch (sentryContext->crashType) {
-    case BSG_KSCrashTypeMachException: {
-        int machExceptionType = sentryContext->mach.type;
-        kern_return_t machCode = (kern_return_t)sentryContext->mach.code;
-        const char *machExceptionName =
-            bsg_ksmachexceptionName(machExceptionType);
-        const char *machCodeName =
-            machCode == 0 ? NULL : bsg_ksmachkernelReturnCodeName(machCode);
-        BSG_KSLOGBASIC_INFO("App crashed due to mach exception: [%s: %s] at %lu",
-                            machExceptionName, machCodeName,
-                            sentryContext->faultAddress);
-        break;
-    }
-    case BSG_KSCrashTypeCPPException: {
-        BSG_KSLOG_INFO("App crashed due to C++ exception: %s: %s",
-                       sentryContext->CPPException.name,
-                       sentryContext->crashReason);
-        break;
-    }
-    case BSG_KSCrashTypeNSException: {
-        BSG_KSLOGBASIC_INFO("App crashed due to NSException: %s: %s",
-                            sentryContext->NSException.name,
-                            sentryContext->crashReason);
-        break;
-    }
-    case BSG_KSCrashTypeSignal: {
-        int sigNum = sentryContext->signal.signalInfo->si_signo;
-        int sigCode = sentryContext->signal.signalInfo->si_code;
-        const char *sigName = bsg_kssignal_signalName(sigNum);
-        const char *sigCodeName = bsg_kssignal_signalCodeName(sigNum, sigCode);
-        BSG_KSLOGBASIC_INFO("App crashed due to signal: [%s, %s] at %08lx",
-                            sigName, sigCodeName, sentryContext->faultAddress);
-        break;
-    }
-    }
-}
-
-/** Print a backtrace entry in the standard format to the log.
- *
- * @param entryNum The backtrace entry number.
- *
- * @param address The program counter or return address value.
- *
- * @param info Information about the function that contains the address.
- */
-void bsg_kscrw_i_logBacktraceEntry(const int entryNum, const uintptr_t address,
-                                   struct bsg_symbolicate_result *info) {
-    char faddrBuff[20];
-    char saddrBuff[20];
-
-    const char *fname = info->image ? bsg_ksfulastPathEntry(info->image->name) : NULL;
-    if (fname == NULL && info->image) {
-        sprintf(faddrBuff, BSG_POINTER_FMT, (uintptr_t)info->image->header);
-        fname = faddrBuff;
-    }
-
-    uintptr_t offset = address - (uintptr_t)info->function_address;
-    const char *sname = info->function_name;
-    if (sname == NULL && info->image) {
-        sprintf(saddrBuff, BSG_POINTER_SHORT_FMT, (uintptr_t)info->image->header);
-        sname = saddrBuff;
-        offset = address - (uintptr_t)info->image->header;
-    }
-
-    BSG_KSLOGBASIC_ALWAYS(BSG_TRACE_FMT, entryNum, fname, address, sname,
-                          offset);
-}
-
-/** Print a backtrace to the log.
- *
- * @param backtrace The backtrace to print.
- *
- * @param backtraceLength The length of the backtrace.
- */
-void bsg_kscrw_i_logBacktrace(const uintptr_t *const backtrace,
-                              const int backtraceLength,
-                              const int skippedEntries) {
-    if (backtraceLength > 0) {
-        struct bsg_symbolicate_result symbolicated[backtraceLength];
-        bsg_ksbt_symbolicate(backtrace, symbolicated, backtraceLength,
-                             skippedEntries);
-
-        for (int i = 0; i < backtraceLength; i++) {
-            bsg_kscrw_i_logBacktraceEntry(i, backtrace[i], &symbolicated[i]);
-        }
-    }
-}
-
-/** Print the backtrace for the crashed thread to the log.
- *
- * @param crash The crash handler context.
- */
-void bsg_kscrw_i_logCrashThreadBacktrace(
-    const BSG_KSCrash_SentryContext *const crash) {
-    thread_t thread = crash->offendingThread;
-    BSG_STRUCT_MCONTEXT_L concreteMachineContext;
-    uintptr_t concreteBacktrace[BSG_kMaxStackTracePrintLines];
-    int backtraceLength =
-        sizeof(concreteBacktrace) / sizeof(*concreteBacktrace);
-
-    BSG_STRUCT_MCONTEXT_L *machineContext =
-        bsg_kscrw_i_getMachineContext(crash, thread, &concreteMachineContext);
-
-    int skippedEntries = 0;
-    uintptr_t *backtrace = bsg_kscrw_i_getBacktrace(
-        crash, thread, machineContext, concreteBacktrace, &backtraceLength,
-        &skippedEntries);
-
-    if (backtrace != NULL) {
-        bsg_kscrw_i_logBacktrace(backtrace, backtraceLength, skippedEntries);
-    }
-}
-
-// ============================================================================
 #pragma mark - Report Writing -
 // ============================================================================
 
@@ -877,8 +738,8 @@ void bsg_kscrw_i_writeBasicRegisters(
         for (int reg = 0; reg < numRegisters; reg++) {
             registerName = bsg_ksmachregisterName(reg);
             if (registerName == NULL) {
-                snprintf(registerNameBuff, sizeof(registerNameBuff), "r%d",
-                         reg);
+                registerNameBuff[0] = 'r';
+                bsg_int64_to_string(reg, registerNameBuff+1);
                 registerName = registerNameBuff;
             }
             writer->addUIntegerElement(
@@ -908,8 +769,8 @@ void bsg_kscrw_i_writeExceptionRegisters(
         for (int reg = 0; reg < numRegisters; reg++) {
             registerName = bsg_ksmachexceptionRegisterName(reg);
             if (registerName == NULL) {
-                snprintf(registerNameBuff, sizeof(registerNameBuff), "r%d",
-                         reg);
+                registerNameBuff[0] = 'r';
+                bsg_int64_to_string(reg, registerNameBuff+1);
                 registerName = registerNameBuff;
             }
             writer->addUIntegerElement(
@@ -961,7 +822,8 @@ void bsg_kscrw_i_writeNotableRegisters(
     for (int reg = 0; reg < numRegisters; reg++) {
         registerName = bsg_ksmachregisterName(reg);
         if (registerName == NULL) {
-            snprintf(registerNameBuff, sizeof(registerNameBuff), "r%d", reg);
+            registerNameBuff[0] = 'r';
+            bsg_int64_to_string(reg, registerNameBuff+1);
             registerName = registerNameBuff;
         }
         bsg_kscrw_i_writeMemoryContentsIfNotable(
@@ -1288,7 +1150,7 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
         case BSG_KSCrashTypeMachException:
             writer->beginObject(writer, BSG_KSCrashField_Mach);
             {
-                char buffer[20] = {0};
+                char buffer[20] = "0x";
                 
                 writer->addUIntegerElement(writer, BSG_KSCrashField_Exception,
                                            (unsigned)machExceptionType);
@@ -1297,7 +1159,7 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
                                              machExceptionName);
                 }
                 
-                snprintf(buffer, sizeof(buffer), "0x%llx", machCode);
+                bsg_uint64_to_hex((uint64_t)machCode, buffer+2, 0);
                 writer->addStringElement(writer, BSG_KSCrashField_Code, buffer);
                 
                 if (machCodeName != NULL) {
@@ -1305,7 +1167,7 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
                                              machCodeName);
                 }
                 
-                snprintf(buffer, sizeof(buffer), "0x%llx", machSubCode);
+                bsg_uint64_to_hex((uint64_t)machSubCode, buffer+2, 0);
                 writer->addStringElement(writer, BSG_KSCrashField_Subcode, buffer);
             }
             writer->endContainer(writer);
@@ -1430,7 +1292,8 @@ void bsg_kscrw_i_writeReportInfo(const BSG_KSCrashReportWriter *const writer,
         struct timeval t;
         if (!gettimeofday(&t, NULL)) {
             writer->addIntegerElement(writer, BSG_KSCrashField_Timestamp_Millis,
-                                      t.tv_sec * 1000 + t.tv_usec / 1000);
+                                      (long long)t.tv_sec * 1000 +
+                                      (long long)t.tv_usec / 1000);
         }
         writer->addStringElement(writer, BSG_KSCrashField_Type, type);
     }
@@ -1632,12 +1495,6 @@ void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext,
     writer->endContainer(writer);
 
     bsg_kscrw_i_writeTraceInfo(crashContext, writer);
-}
-
-void bsg_kscrashreport_logCrash(const BSG_KSCrash_Context *const crashContext) {
-    const BSG_KSCrash_SentryContext *crash = &crashContext->crash;
-    bsg_kscrw_i_logCrashType(crash);
-    bsg_kscrw_i_logCrashThreadBacktrace(&crashContext->crash);
 }
 
 void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext,

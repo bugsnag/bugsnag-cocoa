@@ -19,7 +19,7 @@
 // During development this is not strictly necessary since last run's data will
 // not be loaded if the struct's size has changed.
 //
-#define BSGRUNCONTEXT_VERSION 1
+#define BSGRUNCONTEXT_VERSION 2
 
 struct BSGRunContext {
     long structVersion;
@@ -42,7 +42,7 @@ struct BSGRunContext {
     long lastKnownOrientation;
     dispatch_source_memorypressure_flags_t memoryPressure;
 #endif
-    double timestamp;
+    double timestamp __attribute__((aligned(8)));
     size_t availableMemory;
 };
 

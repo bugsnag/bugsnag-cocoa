@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Add `configuration.telemetry` to allow sending of internal errors to be disabled.
+  [#1375](https://github.com/bugsnag/bugsnag-cocoa/pull/1375)
+
+### Bug fixes
+
+* Fix data races detected by TSan in `BSGRunContextUpdateTimestamp` and `UpdateAvailableMemory`. 
+  [#1384](https://github.com/bugsnag/bugsnag-cocoa/pull/1384)
+
+* Fix incorrect `device.time` in 32-bit crash reports.
+  [#1399](https://github.com/bugsnag/bugsnag-cocoa/pull/1399)
+
 ## 6.17.1 (2022-05-18)
 
 ### Bug fixes

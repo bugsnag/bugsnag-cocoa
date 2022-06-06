@@ -21,18 +21,20 @@ steps:
     key: cocoa_fixture
     timeout_in_minutes: 30
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
     artifact_paths:
       - features/fixtures/ios/output/iOSTestApp.ipa
       - features/fixtures/macos/output/macOSTestApp.zip
       - features/fixtures/ios/output/ipa_url.txt
     commands:
-      - ./features/scripts/build_and_upload_app.rb
+      - bundle install
+      - make test-fixtures
+      - bundle exec upload-app --app=./features/fixtures/ios/output/iOSTestApp.ipa --app-id-file=./features/fixtures/ios/output/ipa_url.txt
 
   - label: Static framework and Swift Package Manager builds
     timeout_in_minutes: 10
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
     commands:
       - make build_swift
       - make build_ios_static
@@ -40,7 +42,7 @@ steps:
   - label: Carthage
     timeout_in_minutes: 15
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
     commands:
       - ./scripts/build-carthage.sh
     plugins:
@@ -55,7 +57,16 @@ steps:
   - label: ARM macOS 12 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=macOS
+    artifact_paths:
+      - logs/*
+
+  - label: macOS 11 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-11
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=macOS
     artifact_paths:
@@ -64,7 +75,16 @@ steps:
   - label: macOS 10.15 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: macos-10.15
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=macOS
+    artifact_paths:
+      - logs/*
+
+  - label: macOS 10.14 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-10.14
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=macOS
     artifact_paths:
@@ -82,9 +102,36 @@ steps:
   - label: iOS 15 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.0
+    artifact_paths:
+      - logs/*
+
+  - label: iOS 14 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-12-arm
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5
+    artifact_paths:
+      - logs/*
+
+  - label: iOS 11 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-11
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=11.4
+    artifact_paths:
+      - logs/*
+
+  - label: iOS 10 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-10.15
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=10.3.1 DEVICE=iPhone\ 5s
     artifact_paths:
       - logs/*
 
@@ -100,9 +147,36 @@ steps:
   - label: tvOS 15 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=15.0
+    artifact_paths:
+      - logs/*
+
+  - label: tvOS 14 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-12-arm
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.5
+    artifact_paths:
+      - logs/*
+
+  - label: tvOS 11 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-11
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=11.4
+    artifact_paths:
+      - logs/*
+
+  - label: tvOS 10 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-10.15
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=10.2
     artifact_paths:
       - logs/*
 
@@ -142,10 +216,10 @@ steps:
   # Barebones E2E tests
   #
 
-  - label: 'iOS 15 barebones E2E tests'
+  - label: 'iOS 15 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 10
+    timeout_in_minutes: 60
     agents:
       queue: opensource
     plugins:
@@ -156,11 +230,12 @@ steps:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "features/barebone_tests.feature"
           - "--app=@build/ipa_url.txt"
           - "--farm=bs"
           - "--device=IOS_15"
           - "--appium-version=1.21.0"
+          - "--fail-fast"
+          - "--exclude=features/[h-z].*.feature$"
           - "--order=random"
     concurrency: 24
     concurrency_group: browserstack-app
@@ -170,10 +245,10 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'iOS 10 barebones E2E tests'
+  - label: 'iOS 15 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 10
+    timeout_in_minutes: 60
     agents:
       queue: opensource
     plugins:
@@ -184,12 +259,69 @@ steps:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "features/barebone_tests.feature"
+          - "--app=@build/ipa_url.txt"
+          - "--farm=bs"
+          - "--device=IOS_15"
+          - "--appium-version=1.21.0"
+          - "--fail-fast"
+          - "--exclude=features/[a-g].*.feature$"
+          - "--order=random"
+    concurrency: 24
+    concurrency_group: browserstack-app
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: 'iOS 10 E2E tests batch 1'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        command:
           - "--app=@build/ipa_url.txt"
           - "--farm=bs"
           - "--device=IOS_10"
           - "--appium-version=1.8.0"
           - "--capabilities={\"browserstack.networkLogs\":\"true\"}"
+          - "--exclude=features/[h-z].*.feature$"
+          - "--order=random"
+    concurrency: 24
+    concurrency_group: browserstack-app
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: 'iOS 10 E2E tests batch 2'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        command:
+          - "--app=@build/ipa_url.txt"
+          - "--farm=bs"
+          - "--device=IOS_10"
+          - "--appium-version=1.8.0"
+          - "--exclude=features/[a-g].*.feature$"
           - "--order=random"
     concurrency: 24
     concurrency_group: browserstack-app
@@ -221,22 +353,19 @@ steps:
         --fail-fast
         --order=random
 
-  - label: 'macOS 10.15 barebones E2E tests'
+  - label: 'macOS 10.15 E2E tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 10
+    timeout_in_minutes: 60
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: macos-10.15
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/macos/output/macOSTestApp.zip"
-        upload:
-          - "macOSTestApp.log"
-          - "maze_output/failed/**/*"
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/barebone_tests.feature
         --os=macos
         --os-version=10.15
         --app=macOSTestApp
@@ -248,7 +377,7 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 10
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
     plugins:
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp.zip"
@@ -268,7 +397,7 @@ steps:
   - label: 'macOS 12 stress test'
     timeout_in_minutes: 3
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
     env:
       STRESS_TEST: "true"
     commands:

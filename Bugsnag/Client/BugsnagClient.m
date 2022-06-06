@@ -209,13 +209,17 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
         [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
         [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
-
-        BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
     }
     return self;
 }
 
 - (void)start {
+    if (self.configuration.telemetry & BSGTelemetryInternalErrors) {
+        BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
+    } else {
+        bsg_log_debug(@"Internal error reporting was disable in config");
+    }
+
     [self.configuration validate];
 
     BSGRunContextInit(BSGFileLocations.current.runContext.fileSystemRepresentation);
