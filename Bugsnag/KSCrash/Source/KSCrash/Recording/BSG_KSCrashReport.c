@@ -1260,7 +1260,8 @@ void bsg_kscrw_i_writeReportInfo(const BSG_KSCrashReportWriter *const writer,
         struct timeval t;
         if (!gettimeofday(&t, NULL)) {
             writer->addIntegerElement(writer, BSG_KSCrashField_Timestamp_Millis,
-                                      t.tv_sec * 1000 + t.tv_usec / 1000);
+                                      (long long)t.tv_sec * 1000 +
+                                      (long long)t.tv_usec / 1000);
         }
         writer->addStringElement(writer, BSG_KSCrashField_Type, type);
     }
