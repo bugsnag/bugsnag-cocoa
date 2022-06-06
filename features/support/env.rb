@@ -91,6 +91,7 @@ Maze.hooks.after do |scenario|
         out: File.open(File.join(path, 'device.log'), 'w')
       )
       Process.wait log
+      FileUtils.mv '/tmp/kscrash.log', path
     end
   else
     if $logger_pid
@@ -98,6 +99,12 @@ Maze.hooks.after do |scenario|
       Process.waitpid $logger_pid
       $logger_pid = nil
       FileUtils.mv 'device.log', path
+    end
+    begin
+      data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
+      File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
+    rescue StandardError
+      p "Maze.driver.pull_file failed: #{$ERROR_INFO}"
     end
   end
 end
