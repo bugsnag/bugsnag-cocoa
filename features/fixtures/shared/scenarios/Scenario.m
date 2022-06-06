@@ -6,6 +6,8 @@
 
 #import <objc/runtime.h>
 
+extern bool bsg_kslog_setLogFilename(const char *filename, bool overwrite);
+
 extern void bsg_i_kslog_logCBasic(const char *fmt, ...) __printflike(1, 2);
 
 void kslog(const char *message) {
@@ -19,6 +21,8 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
 // MARK: -
 
 static Scenario *theScenario;
+
+static char ksLogPath[PATH_MAX];
 
 @implementation Scenario {
     dispatch_block_t _onEventDelivery;
@@ -140,7 +144,16 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 
 + (void)initialize {
     if (self == [Scenario self]) {
-                Method method = class_getInstanceMethod([NSURLSession class], @selector(uploadTaskWithRequest:fromData:completionHandler:));
+#if TARGET_OS_IPHONE
+        NSString *logPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0]
+                             stringByAppendingPathComponent:@"kscrash.log"];
+#else
+        NSString *logPath = @"/tmp/kscrash.log";
+#endif
+        [logPath getFileSystemRepresentation:ksLogPath maxLength:sizeof(ksLogPath)];
+        bsg_kslog_setLogFilename(ksLogPath, false);
+        
+        Method method = class_getInstanceMethod([NSURLSession class], @selector(uploadTaskWithRequest:fromData:completionHandler:));
         NSURLSession_uploadTaskWithRequest_fromData_completionHandler =
         (void *)method_setImplementation(method, (void *)uploadTaskWithRequest_fromData_completionHandler);
     }
@@ -175,6 +188,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
             NSLog(@"%@", error);
         }
     }
+    bsg_kslog_setLogFilename(ksLogPath, true);
 }
 
 + (void)executeMazeRunnerCommand:(void (^)(NSString *action, NSString *scenarioName, NSString *scenarioMode))preHandler {

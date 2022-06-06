@@ -21,7 +21,7 @@ xcrun xcodebuild \
   -quiet \
   archive \
   CLANG_ENABLE_MODULES=NO \
-  GCC_PREPROCESSOR_DEFINITIONS='$(inherited) BSG_LOG_LEVEL=BSG_LOGLEVEL_DEBUG'
+  GCC_PREPROCESSOR_DEFINITIONS='$(inherited) BSG_LOG_LEVEL=BSG_LOGLEVEL_DEBUG BSG_KSLOG_ENABLED=1'
 
 echo "--- iOSTestApp: xcodebuild -exportArchive"
 
