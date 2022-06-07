@@ -3,6 +3,7 @@ Feature: Delivery of errors
   Background:
     Given I clear all persistent data
 
+  @watchos
   Scenario: Delivery is retried after an HTTP 500 error
     When I set the HTTP status code for the next request to 500
     And I run "HandledExceptionScenario"

@@ -18,6 +18,8 @@
 		01479B55284779A500E53BB9 /* Scenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01479AA6284779A400E53BB9 /* Scenario.m */; };
 		01479BA82847923A00E53BB9 /* BareboneTestHandledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01479BA72847923A00E53BB9 /* BareboneTestHandledScenario.swift */; };
 		01479BAA284792B100E53BB9 /* BareboneTestUnhandledErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01479BA9284792B100E53BB9 /* BareboneTestUnhandledErrorScenario.swift */; };
+		018F050D284F314D004EA50D /* HandledExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018F050C284F314D004EA50D /* HandledExceptionScenario.swift */; };
+		018F050F284F3155004EA50D /* NetworkBreadcrumbsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018F050E284F3155004EA50D /* NetworkBreadcrumbsScenario.swift */; };
 		C1AD3C358BC309F832CCC972 /* Pods_watchOSTestApp_WatchKit_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B2DE4764F62DB21DAE7435C /* Pods_watchOSTestApp_WatchKit_Extension.framework */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +81,8 @@
 		01479BA628477A0000E53BB9 /* Swift-Objc-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Swift-Objc-Bridging-Header.h"; sourceTree = "<group>"; };
 		01479BA72847923A00E53BB9 /* BareboneTestHandledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestHandledScenario.swift; sourceTree = "<group>"; };
 		01479BA9284792B100E53BB9 /* BareboneTestUnhandledErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestUnhandledErrorScenario.swift; sourceTree = "<group>"; };
+		018F050C284F314D004EA50D /* HandledExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledExceptionScenario.swift; sourceTree = "<group>"; };
+		018F050E284F3155004EA50D /* NetworkBreadcrumbsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkBreadcrumbsScenario.swift; sourceTree = "<group>"; };
 		5B2DE4764F62DB21DAE7435C /* Pods_watchOSTestApp_WatchKit_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_watchOSTestApp_WatchKit_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7F2423F2C2AA215837EC98D /* Pods-watchOSTestApp WatchKit Extension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOSTestApp WatchKit Extension.release.xcconfig"; path = "Target Support Files/Pods-watchOSTestApp WatchKit Extension/Pods-watchOSTestApp WatchKit Extension.release.xcconfig"; sourceTree = "<group>"; };
 		F7B7E9CC24320877BE6D3B95 /* Pods-watchOSTestApp WatchKit Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watchOSTestApp WatchKit Extension.debug.xcconfig"; path = "Target Support Files/Pods-watchOSTestApp WatchKit Extension/Pods-watchOSTestApp WatchKit Extension.debug.xcconfig"; sourceTree = "<group>"; };
@@ -153,6 +157,8 @@
 			children = (
 				01479BA72847923A00E53BB9 /* BareboneTestHandledScenario.swift */,
 				01479BA9284792B100E53BB9 /* BareboneTestUnhandledErrorScenario.swift */,
+				018F050C284F314D004EA50D /* HandledExceptionScenario.swift */,
+				018F050E284F3155004EA50D /* NetworkBreadcrumbsScenario.swift */,
 				01479A46284779A400E53BB9 /* Scenario.h */,
 				01479AA6284779A400E53BB9 /* Scenario.m */,
 			);
@@ -350,9 +356,11 @@
 			files = (
 				01479BAA284792B100E53BB9 /* BareboneTestUnhandledErrorScenario.swift in Sources */,
 				01479A2B2847775600E53BB9 /* ContentView.swift in Sources */,
+				018F050D284F314D004EA50D /* HandledExceptionScenario.swift in Sources */,
 				01479A2D2847775600E53BB9 /* watchOSTestApp.swift in Sources */,
 				01479A2F2847775600E53BB9 /* ComplicationController.swift in Sources */,
 				01479BA82847923A00E53BB9 /* BareboneTestHandledScenario.swift in Sources */,
+				018F050F284F3155004EA50D /* NetworkBreadcrumbsScenario.swift in Sources */,
 				01479B55284779A500E53BB9 /* Scenario.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

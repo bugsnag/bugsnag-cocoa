@@ -17,6 +17,8 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 
 @interface Scenario : NSObject
 
+@property (class, readonly) NSURL *mazeRunnerURL;  
+
 @property (strong, nonatomic, nonnull) BugsnagConfiguration *config;
 
 + (Scenario *)createScenarioNamed:(NSString *)className withConfig:(nullable BugsnagConfiguration *)config;

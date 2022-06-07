@@ -42,11 +42,15 @@ end
 
 When('I kill and relaunch the app') do
   case Maze::Helper.get_current_platform
-  when 'macos'
-    # Pass
-  else
+  when 'ios'
     Maze.driver.close_app
     Maze.driver.launch_app
+  when 'macos'
+    # noop
+  when 'watchos'
+    # noop
+  else
+    raise 'Unsupported platform'
   end
 end
 

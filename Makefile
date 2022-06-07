@@ -140,7 +140,11 @@ e2e_macos:
 .PHONY: e2e_watchos
 e2e_watchos: features/fixtures/watchos/Podfile.lock features/fixtures/shared/scenarios/watchos_maze_host.h
 	open --background features/fixtures/watchos/watchOSTestApp.xcworkspace
+ifneq ($(FEATURES),)
+	bundle exec maze-runner --os=watchos $(FEATURES)
+else
 	bundle exec maze-runner --os=watchos --tags @watchos
+endif
 
 features/fixtures/watchos/Podfile.lock: features/fixtures/watchos/Podfile
 	cd features/fixtures/watchos && pod install

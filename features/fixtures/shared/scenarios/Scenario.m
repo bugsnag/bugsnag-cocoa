@@ -7,14 +7,14 @@
 #import <objc/runtime.h>
 
 #if TARGET_OS_IOS
-#define BASE_URL "http://bs-local.com:9339"
+#define MAZE_RUNNER_URL "http://bs-local.com:9339"
 #define SWIFT_MODULE "iOSTestApp"
 #elif TARGET_OS_OSX
-#define BASE_URL "http://localhost:9339"
+#define MAZE_RUNNER_URL "http://localhost:9339"
 #define SWIFT_MODULE "macOSTestApp"
 #elif TARGET_OS_WATCH
 #import "watchos_maze_host.h"
-#define BASE_URL "http://" WATCHOS_MAZE_HOST ":9339"
+#define MAZE_RUNNER_URL "http://" WATCHOS_MAZE_HOST ":9339"
 #define SWIFT_MODULE "watchOSTestApp_WatchKit_Extension"
 #else
 #error Unsupported TARGET_OS
@@ -71,6 +71,10 @@ static char ksLogPath[PATH_MAX];
     }];
 }
 
++ (NSURL *)mazeRunnerURL {
+    return [NSURL URLWithString:@MAZE_RUNNER_URL];
+}
+
 + (Scenario *)createScenarioNamed:(NSString *)className withConfig:(BugsnagConfiguration *)config {
     Class class = NSClassFromString(className) ?:
     NSClassFromString([@SWIFT_MODULE "." stringByAppendingString:className]);
@@ -92,8 +96,8 @@ static char ksLogPath[PATH_MAX];
             _config = config;
         } else {
             _config = [[BugsnagConfiguration alloc] initWithApiKey:@"12312312312312312312312312312312"];
-            _config.endpoints.notify = @BASE_URL "/notify";
-            _config.endpoints.sessions = @BASE_URL "/sessions";
+            _config.endpoints.notify = @MAZE_RUNNER_URL "/notify";
+            _config.endpoints.sessions = @MAZE_RUNNER_URL "/sessions";
         }
 #if !TARGET_OS_WATCH
         _config.enabledErrorTypes.ooms = NO;
@@ -215,7 +219,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
     NSLog(@"%s", __PRETTY_FUNCTION__);
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
     
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@BASE_URL "/command"]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@MAZE_RUNNER_URL "/command"]];
     [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (![response isKindOfClass:[NSHTTPURLResponse class]] || [(NSHTTPURLResponse *)response statusCode] != 200) {
             NSLog(@"%s request failed with %@", __PRETTY_FUNCTION__, response ?: error);
