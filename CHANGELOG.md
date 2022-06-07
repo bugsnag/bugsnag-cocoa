@@ -5,6 +5,15 @@ Changelog
 
 ### Enhancements
 
+* Add support for watchOS (>= 6.3).
+
+  Unhandled Objective-C & C++ exceptions will automatically be reported but OOMs,
+  app hangs, thermal kills, stack overflows, memory access issues and Swift fatal
+  errors cannot be detected due to Mach exception and signal APIs being
+  prohibited on watchOS.
+
+  For more information see [the documentation](https://docs.bugsnag.com/platforms/watchos/).
+
 * Add `configuration.telemetry` to allow sending of internal errors to be disabled.
   [#1375](https://github.com/bugsnag/bugsnag-cocoa/pull/1375)
 
