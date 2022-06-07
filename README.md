@@ -1,4 +1,4 @@
-# Bugsnag exception reporter for iOS, macOS and tvOS
+# Bugsnag error monitoring & exception reporter for iOS, macOS, tvOS and watchOS
 [![iOS Documentation](https://img.shields.io/badge/ios_documentation-latest-blue.svg)](https://docs.bugsnag.com/platforms/ios/)
 [![macOS Documentation](https://img.shields.io/badge/macos_documentation-latest-blue.svg)](https://docs.bugsnag.com/platforms/macos/)
 [![tvOS Documentation](https://img.shields.io/badge/tvos_documentation-latest-blue.svg)](https://docs.bugsnag.com/platforms/tvos/)
