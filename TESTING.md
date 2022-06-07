@@ -92,9 +92,43 @@ Build the test iOS fixture:
     ```
    `<udid>` is the device Identifier found under Devices and Simulators in Xcode.
 
+### Running tests on Apple Watch
+
+#### Prerequisites
+
+1. The `xcdebug` command line tool - included in Xcode 13.4 and later.
+
+2. An Apple Watch paired to an iPhone that is connected via USB and visible in Xcode's devices window.
+
+3. The Apple Watch must be on the same WiFi network as the computer executing Maze runner.
+
+#### Running tests
+
+Due to device and tooling constraints, not all tests are suitable for running on Apple Watch.
+
+Tests that support Apple Watch are [tagged](https://cucumber.io/docs/cucumber/api/#tags) with `@watchos`.
+
+1. To run all supported tests:
+    ```shell script
+    make e2e_watchos
+    ```
+
+2. To run an individual test:
+    ```shell script
+    make e2e_watchos FEATURES=features/breadcrumbs.feature:59
+    ```
+
+#### Troubleshooting
+
+E2E testing for Apple Watch relies on the `xcdebug` to build and run the test fixture.
+
+`xcdebug` triggers actions in the Xcode IDE, but does not provide feedback about the success of those actions, so Maze runner will not be able to detect failures.
+
+Pay attention to Xcode's UI to see if there are any build or run failures.
+
 ### Notes
 
 1. Maze Runner supports various other options, as well as all those that Cucumber does. For full details run:
     ```shell script
-    `bundle exec maze-runner --help`
+    bundle exec maze-runner --help
     ```
