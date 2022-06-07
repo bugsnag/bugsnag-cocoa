@@ -20,7 +20,7 @@ When("I run the configured scenario and relaunch the crashed app") do
     run_watchos_app
     sleep 10 # we don't have a way to check if the app is still running
   else
-    raise 'Unsupported platform'
+    raise "Unsupported platform: #{Maze::Helper.get_current_platform}"
   end
 end
 
@@ -50,7 +50,7 @@ When('I kill and relaunch the app') do
   when 'watchos'
     # noop
   else
-    raise 'Unsupported platform'
+    raise "Unsupported platform: #{Maze::Helper.get_current_platform}"
   end
 end
 
@@ -66,7 +66,7 @@ When("I relaunch the app after a crash") do
   when 'watchos'
     sleep 5 # We have no way to poll the app state on watchOS
   else
-    raise 'Unsupported platform'
+    raise "Unsupported platform: #{Maze::Helper.get_current_platform}"
   end
 end
 
@@ -142,7 +142,7 @@ def trigger_app_command
   when 'watchos'
     run_watchos_app
   else
-    raise 'Unsupported platform'
+    raise "Unsupported platform: #{Maze::Helper.get_current_platform}"
   end
 end
 
