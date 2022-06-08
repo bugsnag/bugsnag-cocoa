@@ -82,7 +82,7 @@ typedef NS_OPTIONS(NSUInteger, BSGTelemetryOptions) {
  * Setting `BugsnagConfiguration.appHangThresholdMillis` to this value disables the reporting of
  * app hangs that ended before the app was terminated.
  */
-extern const NSUInteger BugsnagAppHangThresholdFatalOnly;
+extern const NSUInteger BugsnagAppHangThresholdFatalOnly API_UNAVAILABLE(watchos);
 
 /**
  *  A configuration block for modifying an error report
@@ -227,7 +227,7 @@ typedef id<NSObject> BugsnagOnSessionRef;
  * BSGThreadSendPolicyNever to disable or BSGThreadSendPolicyUnhandledOnly
  * to only do so for unhandled errors.
  */
-@property (nonatomic) BSGThreadSendPolicy sendThreads;
+@property (nonatomic) BSGThreadSendPolicy sendThreads API_UNAVAILABLE(watchos);
 
 /**
  *  Optional handler invoked when an error or crash occurs
@@ -249,7 +249,7 @@ typedef id<NSObject> BugsnagOnSessionRef;
  * By default this is `BugsnagAppHangThresholdFatalOnly`, and can be set to a minimum of 250
  * milliseconds.
  */
-@property (nonatomic) NSUInteger appHangThresholdMillis;
+@property (nonatomic) NSUInteger appHangThresholdMillis API_UNAVAILABLE(watchos);
 
 /**
  * Determines whether app sessions should be tracked automatically. By default this value is true.

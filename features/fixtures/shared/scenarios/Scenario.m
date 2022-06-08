@@ -6,6 +6,20 @@
 
 #import <objc/runtime.h>
 
+#if TARGET_OS_IOS
+#define MAZE_RUNNER_URL "http://bs-local.com:9339"
+#define SWIFT_MODULE "iOSTestApp"
+#elif TARGET_OS_OSX
+#define MAZE_RUNNER_URL "http://localhost:9339"
+#define SWIFT_MODULE "macOSTestApp"
+#elif TARGET_OS_WATCH
+#import "watchos_maze_host.h"
+#define MAZE_RUNNER_URL "http://" WATCHOS_MAZE_HOST ":9339"
+#define SWIFT_MODULE "watchOSTestApp_WatchKit_Extension"
+#else
+#error Unsupported TARGET_OS
+#endif
+
 extern bool bsg_kslog_setLogFilename(const char *filename, bool overwrite);
 
 extern void bsg_i_kslog_logCBasic(const char *fmt, ...) __printflike(1, 2);
@@ -22,7 +36,9 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
 
 static Scenario *theScenario;
 
+#if !TARGET_OS_WATCH
 static char ksLogPath[PATH_MAX];
+#endif
 
 @implementation Scenario {
     dispatch_block_t _onEventDelivery;
@@ -55,10 +71,13 @@ static char ksLogPath[PATH_MAX];
     }];
 }
 
++ (NSURL *)mazeRunnerURL {
+    return [NSURL URLWithString:@MAZE_RUNNER_URL];
+}
+
 + (Scenario *)createScenarioNamed:(NSString *)className withConfig:(BugsnagConfiguration *)config {
     Class class = NSClassFromString(className) ?:
-    NSClassFromString([@"iOSTestApp." stringByAppendingString:className]) ?:
-    NSClassFromString([@"macOSTestApp." stringByAppendingString:className]);
+    NSClassFromString([@SWIFT_MODULE "." stringByAppendingString:className]);
 
     if (!class) {
         [NSException raise:NSInvalidArgumentException format:@"Failed to find scenario class named %@", className];
@@ -77,10 +96,12 @@ static char ksLogPath[PATH_MAX];
             _config = config;
         } else {
             _config = [[BugsnagConfiguration alloc] initWithApiKey:@"12312312312312312312312312312312"];
-            _config.endpoints.notify = @"http://bs-local.com:9339/notify";
-            _config.endpoints.sessions = @"http://bs-local.com:9339/sessions";
+            _config.endpoints.notify = @MAZE_RUNNER_URL "/notify";
+            _config.endpoints.sessions = @MAZE_RUNNER_URL "/sessions";
         }
+#if !TARGET_OS_WATCH
         _config.enabledErrorTypes.ooms = NO;
+#endif
     }
     return self;
 }
@@ -144,6 +165,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 
 + (void)initialize {
     if (self == [Scenario self]) {
+#if !TARGET_OS_WATCH
 #if TARGET_OS_IPHONE
         NSString *logPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0]
                              stringByAppendingPathComponent:@"kscrash.log"];
@@ -152,7 +174,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 #endif
         [logPath getFileSystemRepresentation:ksLogPath maxLength:sizeof(ksLogPath)];
         bsg_kslog_setLogFilename(ksLogPath, false);
-        
+#endif
         Method method = class_getInstanceMethod([NSURLSession class], @selector(uploadTaskWithRequest:fromData:completionHandler:));
         NSURLSession_uploadTaskWithRequest_fromData_completionHandler =
         (void *)method_setImplementation(method, (void *)uploadTaskWithRequest_fromData_completionHandler);
@@ -188,14 +210,16 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
             NSLog(@"%@", error);
         }
     }
+#if !TARGET_OS_WATCH
     bsg_kslog_setLogFilename(ksLogPath, true);
+#endif
 }
 
 + (void)executeMazeRunnerCommand:(void (^)(NSString *action, NSString *scenarioName, NSString *scenarioMode))preHandler {
     NSLog(@"%s", __PRETTY_FUNCTION__);
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
     
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://bs-local.com:9339/command"]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@MAZE_RUNNER_URL "/command"]];
     [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (![response isKindOfClass:[NSHTTPURLResponse class]] || [(NSHTTPURLResponse *)response statusCode] != 200) {
             NSLog(@"%s request failed with %@", __PRETTY_FUNCTION__, response ?: error);
@@ -219,9 +243,11 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
             [self clearPersistentData];
         }
 
-        dispatch_async(dispatch_get_main_queue(), ^{
-            preHandler(action, scenarioName, eventMode);
-        });
+        if (preHandler) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                preHandler(action, scenarioName, eventMode);
+            });
+        }
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if ([action isEqualToString:@"run_scenario"]) {

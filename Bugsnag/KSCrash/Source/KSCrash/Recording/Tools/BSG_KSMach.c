@@ -27,6 +27,7 @@
 #include "BSG_KSMach.h"
 
 #include "BSG_KSMachApple.h"
+#include "BSGDefines.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
@@ -185,6 +186,7 @@ const char *bsg_ksmachkernelReturnCodeName(const kern_return_t returnCode) {
 #pragma mark - Thread State Info -
 // ============================================================================
 
+#if BSG_HAVE_MACH_THREADS
 bool bsg_ksmachfillState(const thread_t thread, const thread_state_t state,
                          const thread_state_flavor_t flavor,
                          const mach_msg_type_number_t stateCount) {
@@ -200,6 +202,7 @@ bool bsg_ksmachfillState(const thread_t thread, const thread_state_t state,
     }
     return true;
 }
+#endif
 
 void bsg_ksmach_init(void) {
     static volatile sig_atomic_t initialized = 0;
@@ -440,6 +443,7 @@ unsigned bsg_ksmachremoveThreadsFromList(thread_t *srcThreads, unsigned srcThrea
     return iDst;
 }
 
+#if BSG_HAVE_MACH_THREADS
 void bsg_ksmachsuspendThreads(thread_t *threads, unsigned threadsCount) {
     const thread_t thisThread = bsg_ksmachthread_self();
     for (unsigned i = 0; i < threadsCount; i++) {
@@ -479,6 +483,7 @@ void bsg_ksmachresumeThreads(thread_t *threads, unsigned threadsCount) {
         }
     }
 }
+#endif
 
 kern_return_t bsg_ksmachcopyMem(const void *const src, void *const dst,
                                 const size_t numBytes) {

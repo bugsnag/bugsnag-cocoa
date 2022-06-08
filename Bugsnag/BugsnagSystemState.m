@@ -65,6 +65,8 @@ static NSMutableDictionary * initCurrentState(BugsnagConfiguration *config) {
     app[BSGKeyType] = @"iOS";
 #elif TARGET_OS_OSX
     app[BSGKeyType] = @"macOS";
+#elif TARGET_OS_WATCH
+    app[BSGKeyType] = @"watchOS";
 #endif
 
     NSMutableDictionary *device = [NSMutableDictionary new];

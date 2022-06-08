@@ -32,6 +32,7 @@
 #include "BSG_KSObjC.h"
 #include "BSG_KSString.h"
 #include "BSG_KSSystemInfoC.h"
+#include "BSGDefines.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
@@ -184,5 +185,9 @@ void bsg_kscrash_setReportWhenDebuggerIsAttached(
 }
 
 void bsg_kscrash_setThreadTracingEnabled(bool threadTracingEnabled) {
+#if BSG_HAVE_MACH_THREADS
     crashContext()->crash.threadTracingEnabled = threadTracingEnabled;
+#else
+    (void)threadTracingEnabled;
+#endif
 }

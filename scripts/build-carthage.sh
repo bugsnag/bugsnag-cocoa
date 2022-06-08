@@ -24,7 +24,7 @@ cd "$dir"
 cat Cartfile
 
 
-for platform in iOS macOS tvOS
+for platform in iOS macOS tvOS watchOS
 do
 	cmdline=("carthage" "update" "--platform" "$platform" "--log-path" "./carthage-${platform}.log")
 	if [ "$xcode_version_major" -ge 12 ]

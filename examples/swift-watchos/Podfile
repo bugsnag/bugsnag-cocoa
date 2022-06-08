@@ -1,0 +1,7 @@
+platform :watchos, '6.3'
+use_frameworks!
+
+target 'swift-watchos WatchKit Extension' do
+  pod 'Bugsnag', :path => "../.."
+  pod 'BugsnagNetworkRequestPlugin', :path => "../.."
+end

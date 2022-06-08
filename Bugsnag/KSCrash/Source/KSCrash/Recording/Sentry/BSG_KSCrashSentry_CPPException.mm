@@ -24,11 +24,12 @@
 
 #import <Foundation/Foundation.h>
 
+#include "BSGDefines.h"
+#include "BSG_KSCrashC.h"
 #include "BSG_KSCrashSentry_CPPException.h"
 #include "BSG_KSCrashSentry_Private.h"
-#include "BSG_KSMach.h"
-#include "BSG_KSCrashC.h"
 #include "BSG_KSCrashStringConversion.h"
+#include "BSG_KSMach.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
@@ -189,8 +190,16 @@ after_rethrow:
 
     if (bsg_kscrashsentry_beginHandlingCrash(bsg_ksmachthread_self())) {
 
+#if BSG_HAVE_MACH_THREADS
         BSG_KSLOG_DEBUG("Suspending all threads.");
         bsg_kscrashsentry_suspendThreads();
+#else
+        // We still need the threads list for other purposes:
+        // - Stack traces
+        // - Thread names
+        // - Thread states
+        bsg_g_context->allThreads = bsg_ksmachgetAllThreads(&bsg_g_context->allThreadsCount);
+#endif
 
         bsg_g_context->crashType = BSG_KSCrashTypeCPPException;
         bsg_g_context->registersAreValid = false;
@@ -206,7 +215,9 @@ after_rethrow:
         BSG_KSLOG_DEBUG(
             "Crash handling complete. Restoring original handlers.");
         bsg_kscrashsentry_uninstall((BSG_KSCrashType)BSG_KSCrashTypeAll);
+#if BSG_HAVE_MACH_THREADS
         bsg_kscrashsentry_resumeThreads();
+#endif
         bsg_kscrashsentry_endHandlingCrash();
     }
     if (bsg_g_originalTerminateHandler != NULL) {

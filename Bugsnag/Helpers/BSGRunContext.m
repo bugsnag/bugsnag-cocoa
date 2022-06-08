@@ -11,6 +11,7 @@
 #import "BSG_KSMach.h"
 #import "BSG_KSMachHeaders.h"
 #import "BSG_KSSystemInfo.h"
+#import "BSGHardware.h"
 
 #import <Foundation/Foundation.h>
 #import <stdatomic.h>
@@ -22,14 +23,9 @@
 #include <os/proc.h>
 #endif
 
-#if TARGET_OS_IOS
 #import "BSGUIKit.h"
-#endif
-
-#if TARGET_OS_OSX
 #import "BSGAppKit.h"
-#endif
-
+#import "BSGWatchKit.h"
 
 // Fields which may be updated from arbitrary threads simultaneously should be
 // updated using this macro to avoid data races (which are detected by TSan.)
@@ -59,7 +55,7 @@ static void InitRunContext() {
     // event or notification (or prewarming on iOS 15+)
     bsg_runContext->isForeground = GetIsForeground();
     
-    if (@available(iOS 11.0, tvOS 11.0, *)) {
+    if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
         bsg_runContext->thermalState = NSProcessInfo.processInfo.thermalState;
     }
     
@@ -149,6 +145,14 @@ static bool GetIsForeground() {
 
     return applicationState != UIApplicationStateBackground;
 #endif
+
+#if TARGET_OS_WATCH
+    if (@available(watchOS 3.0, *)) {
+        return [WKExtension sharedExtension].applicationState != WKApplicationStateBackground;
+    } else {
+        return false;
+    }
+#endif
 }
 
 static void InstallTimer() {
@@ -195,11 +199,11 @@ static void NoteAppWillTerminate() {
 #if TARGET_OS_IOS
 
 static void NoteBatteryLevel() {
-    bsg_runContext->batteryLevel = [UIDEVICE currentDevice].batteryLevel;
+    bsg_runContext->batteryLevel = BSGGetDevice().batteryLevel;
 }
 
 static void NoteBatteryState() {
-    bsg_runContext->batteryState = [UIDEVICE currentDevice].batteryState;
+    bsg_runContext->batteryState = BSGGetDevice().batteryState;
 }
 
 static void NoteOrientation() {
@@ -267,24 +271,24 @@ static void AddObservers() {
     OBSERVE(NSApplicationWillTerminateNotification, NoteAppWillTerminate);
 #endif
     
-    if (@available(iOS 11.0, tvOS 11.0, *)) {
+    if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
         OBSERVE(NSProcessInfoThermalStateDidChangeNotification, NoteThermalState);
     }
     
+#if BSG_HAVE_BATTERY
+    BSGGetDevice().batteryMonitoringEnabled = YES;
+    bsg_runContext->batteryLevel = BSGGetDevice().batteryLevel;
+    bsg_runContext->batteryState = BSGGetDevice().batteryState;
+#endif
+
 #if TARGET_OS_IOS
     UIDevice *currentDevice = [UIDEVICE currentDevice];
-    
-    currentDevice.batteryMonitoringEnabled = YES;
-    bsg_runContext->batteryLevel = currentDevice.batteryLevel;
-    OBSERVE(UIDeviceBatteryLevelDidChangeNotification, NoteBatteryLevel);
-    
-    bsg_runContext->batteryState = currentDevice.batteryState;
-    OBSERVE(UIDeviceBatteryStateDidChangeNotification, NoteBatteryState);
-    
     [currentDevice beginGeneratingDeviceOrientationNotifications];
     bsg_runContext->lastKnownOrientation = currentDevice.orientation;
     OBSERVE(UIDeviceOrientationDidChangeNotification, NoteOrientation);
-    
+    OBSERVE(UIDeviceBatteryLevelDidChangeNotification, NoteBatteryLevel);
+    OBSERVE(UIDeviceBatteryStateDidChangeNotification, NoteBatteryState);
+
     ObserveMemoryPressure();
 #endif
 }
@@ -309,6 +313,7 @@ static void UpdateAvailableMemory() {
 
 #pragma mark - Kill detection
 
+#if !TARGET_OS_WATCH
 bool BSGRunContextWasKilled() {
     // App extensions have a different lifecycle and the heuristic used for
     // finding app terminations rooted in fixable code does not apply
@@ -345,6 +350,7 @@ bool BSGRunContextWasKilled() {
     
     return YES;
 }
+#endif
 
 
 #pragma mark - File handling & memory mapping

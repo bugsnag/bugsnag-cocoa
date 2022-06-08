@@ -45,9 +45,11 @@
 #include "BSG_KSCrashContext.h"
 #include "BSG_KSCrashSentry.h"
 #include "BSG_Symbolicate.h"
+#include "BSGDefines.h"
 
 #include <mach-o/loader.h>
 #include <sys/time.h>
+#include <execinfo.h>
 
 #ifdef __arm64__
 #include <sys/_types/_ucontext64.h>
@@ -324,6 +326,7 @@ bool bsg_kscrw_i_isValidString(const void *const address) {
                                                    sizeof(buffer));
 }
 
+#if BSG_HAVE_MACH_THREADS
 /** Get all parts of the machine state required for a dump.
  * This includes basic thread state, and exception registers.
  *
@@ -343,6 +346,7 @@ bool bsg_kscrw_i_fetchMachineState(
 
     return true;
 }
+#endif
 
 /** Get the machine context for the specified thread.
  *
@@ -374,12 +378,16 @@ BSG_STRUCT_MCONTEXT_L *bsg_kscrw_i_getMachineContext(
         return NULL;
     }
 
-    if (!bsg_kscrw_i_fetchMachineState(thread, machineContextBuffer)) {
-        BSG_KSLOG_ERROR("Failed to fetch machine state for thread %d", thread);
-        return NULL;
+#if BSG_HAVE_MACH_THREADS
+    if (bsg_kscrw_i_fetchMachineState(thread, machineContextBuffer)) {
+        return machineContextBuffer;
     }
+    BSG_KSLOG_ERROR("Failed to fetch machine state for thread %d", thread);
+#else
+    (void)machineContextBuffer; // Suppress unused parameter warning
+#endif
 
-    return machineContextBuffer;
+    return NULL;
 }
 
 /** Get the backtrace for the specified thread.
@@ -419,23 +427,47 @@ uintptr_t *bsg_kscrw_i_getBacktrace(
         }
     }
 
-    if (machineContext == NULL) {
+    int actualSkippedEntries = 0;
+
+    if (machineContext != NULL) {
+        int actualLength = bsg_ksbt_backtraceLength(machineContext);
+        if (actualLength >= BSG_kStackOverflowThreshold) {
+            actualSkippedEntries = actualLength - *backtraceLength;
+        }
+
+        *backtraceLength =
+            bsg_ksbt_backtraceThreadState(machineContext, backtraceBuffer,
+                                          actualSkippedEntries, *backtraceLength);
+        if (skippedEntries != NULL) {
+            *skippedEntries = actualSkippedEntries;
+        }
+        return backtraceBuffer;
+     }
+
+#if TARGET_OS_WATCH
+    // The C++ exception stack trace trick doesn't work on watchOS, so don't capture it.
+    if (crash->crashType == BSG_KSCrashTypeCPPException && thread == mach_thread_self()) {
         return NULL;
     }
+#endif
 
-    int actualSkippedEntries = 0;
-    int actualLength = bsg_ksbt_backtraceLength(machineContext);
-    if (actualLength >= BSG_kStackOverflowThreshold) {
-        actualSkippedEntries = actualLength - *backtraceLength;
+    // WatchOS can't get a machine context, and can't get a backtrace via mach threads.
+    // In this case we use the standard backtrace() function if it's the current thread.
+    if (thread == mach_thread_self()) {
+        int actualLength = backtrace((void**)backtraceBuffer, *backtraceLength);
+        uintptr_t *backtraceStart = backtraceBuffer;
+        if (actualLength > BSG_kStackOverflowThreshold) {
+            actualSkippedEntries = actualLength - BSG_kStackOverflowThreshold;
+            backtraceStart += actualSkippedEntries;
+        }
+        *backtraceLength = actualLength - actualSkippedEntries;
+        if (skippedEntries != NULL) {
+            *skippedEntries = actualSkippedEntries;
+        }
+        return backtraceStart;
     }
-
-    *backtraceLength =
-        bsg_ksbt_backtraceThreadState(machineContext, backtraceBuffer,
-                                      actualSkippedEntries, *backtraceLength);
-    if (skippedEntries != NULL) {
-        *skippedEntries = actualSkippedEntries;
-    }
-    return backtraceBuffer;
+    
+    return NULL;
 }
 
 /** Check if the stack for the specified thread has overflowed.

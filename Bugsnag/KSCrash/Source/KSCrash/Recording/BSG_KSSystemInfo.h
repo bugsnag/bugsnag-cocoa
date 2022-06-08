@@ -49,10 +49,6 @@
 
 #import <Foundation/Foundation.h>
 
-#if TARGET_OS_IOS || TARGET_OS_TV
-#import "BSGUIKit.h"
-#endif
-
 /**
  * Provides system information useful for a crash report.
  */

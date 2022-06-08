@@ -4,6 +4,7 @@
 #import "BSGConfigurationBuilder.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
+#import <TargetConditionals.h>
 
 @interface BSGConfigurationBuilderTests : XCTestCase
 @end
@@ -58,11 +59,13 @@
     XCTAssertEqual(config.maxBreadcrumbs, 50);
     XCTAssertTrue(config.persistUser);
     XCTAssertEqualObjects(@[@"password"], [config.redactedKeys allObjects]);
-    XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);
     XCTAssertEqual(BSGEnabledBreadcrumbTypeAll, config.enabledBreadcrumbTypes);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
+#if !TARGET_OS_WATCH
     XCTAssertTrue(config.enabledErrorTypes.ooms);
+    XCTAssertEqual(BSGThreadSendPolicyAlways, config.sendThreads);
+#endif
 
 #if DEBUG
     XCTAssertEqualObjects(@"development", config.releaseStage);
@@ -72,10 +75,12 @@
 
     XCTAssertNil(config.enabledReleaseStages);
     XCTAssertTrue(config.enabledErrorTypes.unhandledExceptions);
-    XCTAssertTrue(config.enabledErrorTypes.signals);
     XCTAssertTrue(config.enabledErrorTypes.cppExceptions);
-    XCTAssertTrue(config.enabledErrorTypes.machExceptions);
     XCTAssertTrue(config.enabledErrorTypes.unhandledRejections);
+#if !TARGET_OS_WATCH
+    XCTAssertTrue(config.enabledErrorTypes.signals);
+    XCTAssertTrue(config.enabledErrorTypes.machExceptions);
+#endif
 }
 
 - (void)testDecodeFullConfig {
@@ -112,19 +117,22 @@
     XCTAssertEqual(27, config.maxBreadcrumbs);
     XCTAssertFalse(config.persistUser);
     XCTAssertEqualObjects(config.redactedKeys, [NSSet setWithObject:@"foo"]);
-    XCTAssertEqual(BSGThreadSendPolicyNever, config.sendThreads);
     XCTAssertEqualObjects(@"beta1", config.releaseStage);
     XCTAssertEqualObjects(@"https://reports.example.co", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.example.co", config.endpoints.sessions);
 
     XCTAssertEqualObjects(config.enabledReleaseStages, ([NSSet setWithObjects:@"beta2", @"prod", nil]));
-    XCTAssertTrue(config.enabledErrorTypes.ooms);
 
     XCTAssertTrue(config.enabledErrorTypes.unhandledExceptions);
-    XCTAssertTrue(config.enabledErrorTypes.signals);
     XCTAssertTrue(config.enabledErrorTypes.cppExceptions);
-    XCTAssertTrue(config.enabledErrorTypes.machExceptions);
     XCTAssertTrue(config.enabledErrorTypes.unhandledRejections);
+
+#if !TARGET_OS_WATCH
+    XCTAssertEqual(BSGThreadSendPolicyNever, config.sendThreads);
+    XCTAssertTrue(config.enabledErrorTypes.ooms);
+    XCTAssertTrue(config.enabledErrorTypes.signals);
+    XCTAssertTrue(config.enabledErrorTypes.machExceptions);
+#endif
 }
 
 // MARK: - invalid config options

@@ -189,6 +189,28 @@ steps:
     artifact_paths:
       - logs/*
 
+  - label: watchOS 8 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-arm-mac-cocoa-12
+    env:
+      DEVELOPER_DIR: /Applications/Xcode13.4.app
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.3
+    artifact_paths:
+      - logs/*
+
+  - label: watchOS 7 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-arm-mac-cocoa-12
+    env:
+      DEVELOPER_DIR: /Applications/Xcode13.4.app
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=7.4
+    artifact_paths:
+      - logs/*
+
   ##############################################################################
   #
   # Barebones E2E tests
