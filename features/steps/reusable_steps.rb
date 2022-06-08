@@ -6,12 +6,16 @@ When('I ignore invalid {word}') do |type|
   Maze.config.captured_invalid_requests.delete(type.to_sym)
 end
 
-Then(/^on (iOS|macOS), (.+)/) do |platform, step_text|
+Then(/^on (iOS|macOS|watchOS), (.+)/) do |platform, step_text|
   step(step_text) if platform.downcase == Maze::Helper.get_current_platform
 end
 
 Then(/^on (iOS|macOS) (\d+) and later, (.+)/) do |platform, version, step_text|
   step(step_text) if platform.downcase == Maze::Helper.get_current_platform && Maze.config.os_version >= version
+end
+
+Then(/^on !(iOS|macOS|watchOS), (.+)/) do |platform, step_text|
+  step(step_text) unless platform.downcase == Maze::Helper.get_current_platform
 end
 
 Then('the event {string} equals one of:') do |field, possible_values|
@@ -33,6 +37,12 @@ end
 Then('the event {string} is a number') do |field|
   value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
   Maze.check.kind_of Numeric, value
+end
+
+Then('the event {string} is an array with {int} elements') do |field, count|
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
+  Maze.check.kind_of Array, value
+  Maze.check.equal(count, value.length)
 end
 
 Then('the event {string} is an integer') do |field|

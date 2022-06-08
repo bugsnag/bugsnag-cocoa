@@ -78,7 +78,8 @@ Maze.hooks.after do |scenario|
 
   FileUtils.makedirs(path)
 
-  if Maze.config.os == 'macos'
+  case Maze.config.os
+  when 'macos'
     if $fixture_pid # will be nil if scenario was skipped
       Process.kill 'KILL', $fixture_pid
       Process.waitpid $fixture_pid
@@ -93,7 +94,7 @@ Maze.hooks.after do |scenario|
       Process.wait log
       FileUtils.mv '/tmp/kscrash.log', path
     end
-  else
+  when 'ios'
     if $logger_pid
       Process.kill 'TERM', $logger_pid
       Process.waitpid $logger_pid
