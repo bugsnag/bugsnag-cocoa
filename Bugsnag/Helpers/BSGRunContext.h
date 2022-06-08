@@ -75,7 +75,9 @@ static inline bool BSGRunContextWasCriticalThermalState() {
 }
 #endif
 
+#if !TARGET_OS_WATCH
 bool BSGRunContextWasKilled(void);
+#endif
 
 static inline bool BSGRunContextWasLaunching() {
     return bsg_lastRunContext && bsg_lastRunContext->isLaunching;
