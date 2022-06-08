@@ -11,6 +11,7 @@
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagPlugin.h"
 #import "BugsnagTestConstants.h"
+#import <TargetConditionals.h>
 
 @interface FooPlugin: NSObject<BugsnagPlugin>
 @end
@@ -83,12 +84,13 @@
 }
 
 - (void)testValidSendThreads {
-    self.config.sendThreads = BSGThreadSendPolicyAlways;
+#if !TARGET_OS_WATCH
     XCTAssertEqual(BSGThreadSendPolicyAlways, self.config.sendThreads);
     self.config.sendThreads = BSGThreadSendPolicyNever;
     XCTAssertEqual(BSGThreadSendPolicyNever, self.config.sendThreads);
     self.config.sendThreads = BSGThreadSendPolicyUnhandledOnly;
     XCTAssertEqual(BSGThreadSendPolicyUnhandledOnly, self.config.sendThreads);
+#endif
 }
 
 - (void)testValidAutoDetectErrors {
@@ -172,16 +174,20 @@
 
 - (void)testValidEnabledErrorTypes {
     BugsnagErrorTypes *types = [BugsnagErrorTypes new];
+#if !TARGET_OS_WATCH
     types.ooms = true;
+#endif
     types.cppExceptions = false;
     self.config.enabledErrorTypes = types;
     XCTAssertEqualObjects(types, self.config.enabledErrorTypes);
-    XCTAssertTrue(types.ooms);
     XCTAssertTrue(types.unhandledExceptions);
-    XCTAssertTrue(types.signals);
     XCTAssertFalse(types.cppExceptions);
-    XCTAssertTrue(types.machExceptions);
     XCTAssertTrue(types.unhandledRejections);
+#if !TARGET_OS_WATCH
+    XCTAssertTrue(types.signals);
+    XCTAssertTrue(types.machExceptions);
+    XCTAssertTrue(types.ooms);
+#endif
 }
 
 - (void)testValidEndpoints {

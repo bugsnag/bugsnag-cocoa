@@ -11,6 +11,9 @@
 #import <Bugsnag/Bugsnag.h>
 
 #import "BSGInternalErrorReporter.h"
+#import "BSG_KSSystemInfo.h"
+#import "BugsnagAppWithState+Private.h"
+#import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagNotifier.h"
 
@@ -34,16 +37,19 @@
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
     BSGInternalErrorReporter *reporter = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
     
-    BugsnagEvent *event = [reporter eventWithErrorClass:@"Internal error" message:@"Something went wrong" diagnostics:@{} groupingHash:@"test"];
+    BugsnagEvent *event = [reporter eventWithErrorClass:@"Internal error" context:@"test" message:@"Something went wrong" diagnostics:@{}];
     XCTAssertEqualObjects(event.errors[0].errorClass, @"Internal error");
     XCTAssertEqualObjects(event.errors[0].errorMessage, @"Something went wrong");
-    XCTAssertEqualObjects(event.groupingHash, @"test");
+    XCTAssertEqualObjects(event.context, @"test");
     XCTAssertEqualObjects(event.threads, @[]);
     XCTAssertEqual(event.errors[0].stacktrace.count, 0);
     XCTAssertNil(event.apiKey);
     
     NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
     XCTAssertEqualObjects(diagnostics[@"apiKey"], configuration.apiKey);
+    
+    XCTAssertNotNil(event.device.id);
+    XCTAssertNotEqualObjects(event.device.id, [BSG_KSSystemInfo deviceAndAppHash], @"Internal errors must use a different device id");
 }
 
 - (void)testEventWithException {
@@ -67,6 +73,9 @@
     
     NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
     XCTAssertEqualObjects(diagnostics[@"apiKey"], configuration.apiKey);
+    
+    XCTAssertNotNil(event.device.id);
+    XCTAssertNotEqualObjects(event.device.id, [BSG_KSSystemInfo deviceAndAppHash], @"Internal errors must use a different device id");
 }
 
 - (void)testEventWithRecrashReport {
@@ -82,6 +91,9 @@
     XCTAssertEqualObjects(event.errors[0].stacktrace[1].method, @"BSSerializeDataCrashHandler");
     XCTAssertEqualObjects(event.threads, @[]);
     XCTAssertNil(event.apiKey);
+    
+    XCTAssertNotNil(event.device.id);
+    XCTAssertNotEqualObjects(event.device.id, [BSG_KSSystemInfo deviceAndAppHash], @"Internal errors must use a different device id");
     
     NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
     XCTAssertEqualObjects(diagnostics[@"apiKey"], configuration.apiKey);
@@ -134,11 +146,13 @@
 // MARK: - BSGInternalErrorReporterDataSource
 
 - (BugsnagAppWithState *)generateAppWithState:(nonnull NSDictionary *)systemInfo {
-    return [[BugsnagAppWithState alloc] init];
+    return [BugsnagAppWithState appWithDictionary:@{@"system": systemInfo} config:self.configuration codeBundleId:nil];
 }
 
 - (BugsnagDeviceWithState *)generateDeviceWithState:(nonnull NSDictionary *)systemInfo {
-     return [[BugsnagDeviceWithState alloc] init];
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithKSCrashReport:@{@"system": systemInfo}];
+    device.time = [NSDate date]; // default to current time for handled errors
+    return device;
 }
 
 @end

@@ -99,7 +99,9 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         config.appVersion = nil
         config.appVersion = "vers"
         config.session = URLSession(configuration: URLSessionConfiguration.default);
+#if !os(watchOS)
         config.sendThreads = .always
+#endif
 
         config.onCrashHandler = nil
         config.onCrashHandler = { (writer) in }
@@ -118,9 +120,11 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         
         let errorTypes =  BugsnagErrorTypes()
         errorTypes.cppExceptions = true
+#if !os(watchOS)
         errorTypes.ooms = true
         errorTypes.machExceptions = true
         errorTypes.signals = true
+#endif
         errorTypes.unhandledExceptions = true
         errorTypes.unhandledRejections = true
         config.enabledErrorTypes = errorTypes

@@ -24,13 +24,15 @@
 // THE SOFTWARE.
 //
 
+#include "BSGDefines.h"
+
+#if BSG_HAVE_MACH_EXCEPTIONS
+
 #include "BSG_KSCrashSentry_MachException.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 #include "BSG_KSCrashC.h"
-
-#if MACH_EXCEPTION_HANDLING_AVAILABLE
 
 #include "BSG_KSMach.h"
 #include "BSG_KSCrashSentry_Private.h"
@@ -461,14 +463,4 @@ void bsg_kscrashsentry_uninstallMachHandler(void) {
     }
 }
 
-#else // MACH_EXCEPTION_HANDLING_AVAILABLE
-
-bool bsg_kscrashsentry_installMachHandler(
-    __unused BSG_KSCrash_SentryContext *const context) {
-    BSG_KSLOG_WARN("Mach exception handler not available on this platform.");
-    return false;
-}
-
-void bsg_kscrashsentry_uninstallMachHandler(void) {}
-
-#endif // MACH_EXCEPTION_HANDLING_AVAILABLE
+#endif

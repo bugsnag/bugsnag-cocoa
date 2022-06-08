@@ -1,6 +1,33 @@
 Changelog
 =========
 
+## 6.18.0 (2022-06-08)
+
+### Enhancements
+
+* Add support for watchOS (>= 6.3).
+
+  Unhandled Objective-C & C++ exceptions will automatically be reported but OOMs,
+  app hangs, thermal kills, stack overflows, memory access issues and Swift fatal
+  errors cannot be detected due to Mach exception and signal APIs being
+  prohibited on watchOS.
+
+  For more information see [the documentation](https://docs.bugsnag.com/platforms/watchos/).
+
+* Add `configuration.telemetry` to allow sending of internal errors to be disabled.
+  [#1375](https://github.com/bugsnag/bugsnag-cocoa/pull/1375)
+
+### Bug fixes
+
+* Fix data races detected by TSan in `BSGRunContextUpdateTimestamp` and `UpdateAvailableMemory`. 
+  [#1384](https://github.com/bugsnag/bugsnag-cocoa/pull/1384)
+
+* Fix potential deadlocks caused by use of `libc` `printf` functions.
+  [#1397](https://github.com/bugsnag/bugsnag-cocoa/pull/1397)
+
+* Fix incorrect `device.time` in 32-bit crash reports.
+  [#1399](https://github.com/bugsnag/bugsnag-cocoa/pull/1399)
+
 ## 6.17.1 (2022-05-18)
 
 ### Bug fixes

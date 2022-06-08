@@ -28,6 +28,7 @@
 #import "BSG_KSCrashSentry_Private.h"
 #include "BSG_KSMach.h"
 #include "BSG_KSCrashC.h"
+#include "BSGDefines.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
@@ -124,13 +125,23 @@ void bsg_recordException(NSException *exception) {
         bsg_g_context->stackTrace = callstack;
         bsg_g_context->stackTraceLength = callstack ? (int)numFrames : 0;
 
+#if BSG_HAVE_MACH_THREADS
         BSG_KSLOG_DEBUG("Suspending all threads.");
         bsg_kscrashsentry_suspendThreads();
+#else
+        // We still need the threads list for other purposes:
+        // - Stack traces
+        // - Thread names
+        // - Thread states
+        bsg_g_context->allThreads = bsg_ksmachgetAllThreads(&bsg_g_context->allThreadsCount);
+#endif
 
         BSG_KSLOG_DEBUG("Calling main crash handler.");
         bsg_g_context->onCrash(crashContext());
-        
+
+#if BSG_HAVE_MACH_THREADS
         bsg_kscrashsentry_resumeThreads();
+#endif
     }
 }
 

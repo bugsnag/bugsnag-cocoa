@@ -60,9 +60,6 @@ typedef struct {
     /** System information in JSON format (to be written to the report). */
     char *systemInfoJSON;
 
-    /** When writing the crash report, print a stack trace to STDOUT as well. */
-    bool printTraceToStdout;
-
     /** The types of crashes that will be handled. */
     BSG_KSCrashType handlingCrashTypes;
 

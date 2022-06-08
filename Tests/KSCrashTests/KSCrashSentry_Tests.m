@@ -29,6 +29,7 @@
 
 #import "BSG_KSCrashSentry.h"
 #import "BSG_KSCrashSentry_Private.h"
+#import "BSGDefines.h"
 
 static void onCrash(void *context)
 {
@@ -46,6 +47,7 @@ static BSG_KSCrash_SentryContext context;
     bsg_kscrashsentry_installWithContext(&context, BSG_KSCrashTypeAll, onCrash);
 }
 
+#if BSG_HAVE_MACH_THREADS
 - (void) testSuspendResumeThreads
 {
     bsg_kscrashsentry_suspendThreads();
@@ -53,5 +55,6 @@ static BSG_KSCrash_SentryContext context;
     bsg_kscrashsentry_resumeThreads();
     bsg_kscrashsentry_resumeThreads();
 }
+#endif
 
 @end

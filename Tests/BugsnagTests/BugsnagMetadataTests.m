@@ -8,6 +8,7 @@
 
 #import "BugsnagMetadata.h"
 #import "BugsnagMetadata+Private.h"
+#import "BSGDefines.h"
 
 #import <XCTest/XCTest.h>
 #import <mach/mach_init.h>
@@ -359,6 +360,7 @@
     XCTAssertEqualObjects([metadata getMetadataFromSection:@"foo"], @{@"foo": @"baz"});
 }
 
+#if BSG_HAVE_MACH_THREADS
 - (void)testMetadataStorageBuffer {
     BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:@{}];
     
@@ -440,5 +442,6 @@
     free(buffer);
     free(scratch);
 }
+#endif
 
 @end

@@ -28,10 +28,17 @@ else
   SDK?=appletvsimulator
   DESTINATION?=platform=tvOS Simulator,name=Apple TV,OS=$(OS)
  else
-  SDK?=iphonesimulator
-  DEVICE?=iPhone 8
-  DESTINATION?=platform=iOS Simulator,name=$(DEVICE),OS=$(OS)
-  RELEASE_DIR=Release-iphoneos
+  ifeq ($(PLATFORM),iOS)
+   SDK?=iphonesimulator
+   DEVICE?=iPhone 8
+   DESTINATION?=platform=iOS Simulator,name=$(DEVICE),OS=$(OS)
+   RELEASE_DIR=Release-iphoneos
+  else
+   SDK?=watchsimulator8.5
+   DEVICE?=Apple Watch Series 5 - 40mm
+   DESTINATION?=platform=watchOS Simulator,name=$(DEVICE),OS=$(OS)
+   RELEASE_DIR=Release-watchos
+  endif
  endif
  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "$(DESTINATION)" -configuration $(TEST_CONFIGURATION)
 endif
@@ -129,6 +136,23 @@ e2e_ios_local:
 e2e_macos:
 	./features/scripts/export_mac_app.sh
 	bundle exec maze-runner --app=macOSTestApp --os=macOS --os-version=11 $(FEATURES)
+
+.PHONY: e2e_watchos
+e2e_watchos: features/fixtures/watchos/Podfile.lock features/fixtures/shared/scenarios/watchos_maze_host.h
+	open --background features/fixtures/watchos/watchOSTestApp.xcworkspace
+ifneq ($(FEATURES),)
+	bundle exec maze-runner --os=watchos $(FEATURES)
+else
+	bundle exec maze-runner --os=watchos --tags @watchos
+endif
+
+features/fixtures/watchos/Podfile.lock: features/fixtures/watchos/Podfile
+	cd features/fixtures/watchos && pod install
+
+.PHONY: features/fixtures/shared/scenarios/watchos_maze_host.h
+features/fixtures/shared/scenarios/watchos_maze_host.h:
+	printf '#define WATCHOS_MAZE_HOST ' > $@
+	ruby -r socket -e 'p Socket.ip_address_list.select{ |a| a.ipv4_private? }[0].ip_address' >> $@
 
 #--------------------------------------------------------------------------
 # Release

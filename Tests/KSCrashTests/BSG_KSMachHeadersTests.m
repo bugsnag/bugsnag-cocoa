@@ -89,10 +89,10 @@ const struct segment_command command2 = {
     bsg_mach_headers_add_image(&header2, 0);
     
     BSG_Mach_Header_Info *item;
-    item = bsg_mach_headers_image_at_address(&header1);
+    item = bsg_mach_headers_image_at_address((uintptr_t)&header1);
     XCTAssertEqual(item->imageVmAddr, 111);
     
-    item = bsg_mach_headers_image_at_address(&header2);
+    item = bsg_mach_headers_image_at_address((uintptr_t)&header2);
     XCTAssertEqual(item->imageVmAddr, 222);
 }
 
@@ -117,7 +117,7 @@ const struct segment_command command2 = {
         uintptr_t address = number.unsignedIntegerValue;
         BSG_Mach_Header_Info *image = bsg_mach_headers_image_at_address(address);
         struct dl_info dlinfo = {0};
-        if (dladdr(address, &dlinfo) != 0) {
+        if (dladdr((const void*)address, &dlinfo) != 0) {
             // If dladdr was able to locate the image, so should bsg_mach_headers_image_at_address
             XCTAssertEqual(image->header, dlinfo.dli_fbase);
             XCTAssertEqual(image->imageVmAddr + image->slide, (uint64_t)dlinfo.dli_fbase);

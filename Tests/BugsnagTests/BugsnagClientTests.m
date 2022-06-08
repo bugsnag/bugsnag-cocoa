@@ -190,11 +190,8 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     XCTAssertEqual(expected.context, actual.context);
     XCTAssertEqual(expected.enabledBreadcrumbTypes, actual.enabledBreadcrumbTypes);
     XCTAssertEqual(expected.enabledErrorTypes.cppExceptions, actual.enabledErrorTypes.cppExceptions);
-    XCTAssertEqual(expected.enabledErrorTypes.machExceptions, actual.enabledErrorTypes.machExceptions);
-    XCTAssertEqual(expected.enabledErrorTypes.signals, actual.enabledErrorTypes.signals);
     XCTAssertEqual(expected.enabledErrorTypes.unhandledExceptions, actual.enabledErrorTypes.unhandledExceptions);
     XCTAssertEqual(expected.enabledErrorTypes.unhandledRejections, actual.enabledErrorTypes.unhandledRejections);
-    XCTAssertEqual(expected.enabledErrorTypes.ooms, actual.enabledErrorTypes.ooms);
     XCTAssertEqual(expected.enabledReleaseStages, actual.enabledReleaseStages);
     XCTAssertEqualObjects(expected.endpoints.notify, actual.endpoints.notify);
     XCTAssertEqualObjects(expected.endpoints.sessions, actual.endpoints.sessions);
@@ -205,7 +202,12 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     XCTAssertEqual([expected.redactedKeys count], [actual.redactedKeys count]);
     XCTAssertEqualObjects([expected.redactedKeys allObjects][0], [actual.redactedKeys allObjects][0]);
     XCTAssertEqualObjects(expected.releaseStage, actual.releaseStage);
+#if !TARGET_OS_WATCH
+    XCTAssertEqual(expected.enabledErrorTypes.machExceptions, actual.enabledErrorTypes.machExceptions);
+    XCTAssertEqual(expected.enabledErrorTypes.signals, actual.enabledErrorTypes.signals);
+    XCTAssertEqual(expected.enabledErrorTypes.ooms, actual.enabledErrorTypes.ooms);
     XCTAssertEqual(expected.sendThreads, actual.sendThreads);
+#endif
 }
 
 /**

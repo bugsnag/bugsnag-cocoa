@@ -17,12 +17,10 @@
 #import "BugsnagDevice+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSession+Private.h"
-
-#if TARGET_OS_IOS || TARGET_OS_TV
-#import "BSGUIKit.h"
-#elif TARGET_OS_OSX
+#import "BSGDefines.h"
 #import "BSGAppKit.h"
-#endif
+#import "BSGWatchKit.h"
+#import "BSGUIKit.h"
 
 /**
  Number of seconds in background required to make a new session
@@ -50,6 +48,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 }
 
 - (void)startWithNotificationCenter:(NSNotificationCenter *)notificationCenter isInForeground:(BOOL)isInForeground {
+#if !TARGET_OS_WATCH
     if ([BSG_KSSystemInfo isRunningInAppExtension]) {
         // UIApplication lifecycle notifications and UIApplicationState, which the automatic session tracking logic
         // depends on, are not available in app extensions.
@@ -58,6 +57,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
         }
         return;
     }
+#endif
     
     if (isInForeground) {
         [self startNewSessionIfAutoCaptureEnabled];
@@ -65,25 +65,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
         bsg_log_debug(@"Not starting session because app is not in the foreground");
     }
 
-#if TARGET_OS_IOS || TARGET_OS_TV
-
-    [notificationCenter addObserver:self
-               selector:@selector(handleAppForegroundEvent)
-                   name:UIApplicationWillEnterForegroundNotification
-                 object:nil];
-
-    [notificationCenter addObserver:self
-               selector:@selector(handleAppForegroundEvent)
-                   name:UIApplicationDidBecomeActiveNotification
-                 object:nil];
-
-    [notificationCenter addObserver:self
-               selector:@selector(handleAppBackgroundEvent)
-                   name:UIApplicationDidEnterBackgroundNotification
-                 object:nil];
-
-#elif TARGET_OS_OSX
-
+#if BSG_HAVE_APPKIT
     [notificationCenter addObserver:self
                selector:@selector(handleAppForegroundEvent)
                    name:NSApplicationWillBecomeActiveNotification
@@ -97,6 +79,36 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
     [notificationCenter addObserver:self
                selector:@selector(handleAppBackgroundEvent)
                    name:NSApplicationDidResignActiveNotification
+                 object:nil];
+#elif BSG_HAVE_WATCHKIT
+    [notificationCenter addObserver:self
+               selector:@selector(handleAppForegroundEvent)
+                   name:WKApplicationWillEnterForegroundNotification
+                 object:nil];
+
+    [notificationCenter addObserver:self
+               selector:@selector(handleAppForegroundEvent)
+                   name:WKApplicationDidBecomeActiveNotification
+                 object:nil];
+
+    [notificationCenter addObserver:self
+               selector:@selector(handleAppBackgroundEvent)
+                   name:WKApplicationDidEnterBackgroundNotification
+                 object:nil];
+#else
+    [notificationCenter addObserver:self
+               selector:@selector(handleAppForegroundEvent)
+                   name:UIApplicationWillEnterForegroundNotification
+                 object:nil];
+
+    [notificationCenter addObserver:self
+               selector:@selector(handleAppForegroundEvent)
+                   name:UIApplicationDidBecomeActiveNotification
+                 object:nil];
+
+    [notificationCenter addObserver:self
+               selector:@selector(handleAppBackgroundEvent)
+                   name:UIApplicationDidEnterBackgroundNotification
                  object:nil];
 #endif
 }

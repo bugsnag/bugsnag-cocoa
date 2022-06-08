@@ -64,18 +64,10 @@
 #import "BugsnagSystemState.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
-
-#if TARGET_OS_IOS || TARGET_OS_TV
-#define BSG_OOM_AVAILABLE 1
-#else
-#define BSG_OOM_AVAILABLE 0
-#endif
-
-#if TARGET_OS_IOS
-#import "BSGUIKit.h"
-#elif TARGET_OS_OSX
+#import "BSGDefines.h"
 #import "BSGAppKit.h"
-#endif
+#import "BSGUIKit.h"
+#import "BSGHardware.h"
 
 static NSString *const BSTabCrash = @"crash";
 static NSString *const BSAttributeDepth = @"depth";
@@ -112,11 +104,13 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
         writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metadataJSON);
         writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
 
-#if TARGET_OS_IOS
-        if (bsg_runContext->batteryState != UIDeviceBatteryStateUnknown) {
+#if BSG_HAVE_BATTERY
+        if (BSGIsBatteryStateKnown(bsg_runContext->batteryState)) {
             writer->addFloatingPointElement(writer, "batteryLevel", bsg_runContext->batteryLevel);
-            writer->addBooleanElement(writer, "charging", bsg_runContext->batteryState >= UIDeviceBatteryStateCharging);
+            writer->addBooleanElement(writer, "charging", BSGIsBatteryCharging(bsg_runContext->batteryState));
         }
+#endif
+#if TARGET_OS_IOS
         writer->addIntegerElement(writer, "orientation", bsg_runContext->lastKnownOrientation);
 #endif
         writer->addBooleanElement(writer, "isLaunching", bsg_runContext->isLaunching);
@@ -146,7 +140,7 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 
 // MARK: -
 
-@interface BugsnagClient () <BSGAppHangDetectorDelegate, BSGBreadcrumbSink, BSGInternalErrorReporterDataSource>
+@interface BugsnagClient () <BSGBreadcrumbSink, BSGInternalErrorReporterDataSource>
 
 @property (nonatomic) BSGNotificationBreadcrumbs *notificationBreadcrumbs;
 
@@ -158,6 +152,10 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 
 @end
 
+#if BSG_HAVE_APP_HANG_DETECTION
+@interface BugsnagClient () <BSGAppHangDetectorDelegate>
+@end
+#endif
 
 // MARK: -
 
@@ -211,13 +209,17 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
         [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
         [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
-
-        BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
     }
     return self;
 }
 
 - (void)start {
+    if (self.configuration.telemetry & BSGTelemetryInternalErrors) {
+        BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
+    } else {
+        bsg_log_debug(@"Internal error reporting was disable in config");
+    }
+
     [self.configuration validate];
 
     BSGRunContextInit(BSGFileLocations.current.runContext.fileSystemRepresentation);
@@ -232,8 +234,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
     [self.breadcrumbs removeAllBreadcrumbs];
 
+#if BSG_HAVE_REACHABILITY
     [self setupConnectivityListener];
-    
+#endif
+
     self.notificationBreadcrumbs = [[BSGNotificationBreadcrumbs alloc] initWithConfiguration:self.configuration breadcrumbSink:self];
     [self.notificationBreadcrumbs start];
 
@@ -241,10 +245,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     [center addObserver:self
                selector:@selector(applicationWillTerminate:)
-#if TARGET_OS_IOS || TARGET_OS_TV
-                   name:UIApplicationWillTerminateNotification
-#elif TARGET_OS_OSX
+#if BSG_HAVE_APPKIT
                    name:NSApplicationWillTerminateNotification
+#else
+                   name:UIApplicationWillTerminateNotification
 #endif
                  object:nil];
 
@@ -285,9 +289,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     
     [self.eventUploader uploadStoredEvents];
     
+#if BSG_HAVE_APP_HANG_DETECTION
     // App hang detector deliberately started after sendLaunchCrashSynchronously (which by design may itself trigger an app hang)
     // Note: BSGAppHangDetector itself checks configuration.enabledErrorTypes.appHangs
     [self startAppHangDetector];
+#endif
 }
 
 - (void)appLaunchTimerFired:(__attribute__((unused)) NSTimer *)timer {
@@ -333,18 +339,21 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         unlink(crashSentinelPath);
         didCrash = YES;
     }
+#if BSG_HAVE_APP_HANG_DETECTION
     // Was the app terminated while the main thread was hung?
     else if ((self.eventFromLastLaunch = [self loadAppHangEvent]).unhandled) {
         bsg_log_info(@"Last run terminated during an app hang.");
         didCrash = YES;
     }
+#endif
+#if !TARGET_OS_WATCH
     else if (self.configuration.autoDetectErrors && BSGRunContextWasKilled()) {
         if (BSGRunContextWasCriticalThermalState()) {
             bsg_log_info(@"Last run terminated during a critical thermal state.");
             if (self.configuration.enabledErrorTypes.thermalKills) {
                 self.eventFromLastLaunch = [self generateThermalKillEvent];
             }
-#if BSG_OOM_AVAILABLE
+#if BSG_HAVE_OOM_DETECTION
         } else {
             bsg_log_info(@"Last run terminated unexpectedly; possible Out Of Memory.");
             if (self.configuration.enabledErrorTypes.ooms) {
@@ -354,6 +363,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         }
         didCrash = YES;
     }
+#endif
     
     self.appDidCrashLastLaunch = didCrash;
     
@@ -382,10 +392,15 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 - (void)applicationWillTerminate:(__unused NSNotification *)notification {
     [[NSNotificationCenter defaultCenter] removeObserver:self.sessionTracker];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+#if BSG_HAVE_REACHABILITY
     [BSGConnectivity stopMonitoring];
+#endif
+
+#if BSG_HAVE_BATTERY
+    BSGGetDevice().batteryMonitoringEnabled = FALSE;
+#endif
 
 #if TARGET_OS_IOS
-    [UIDEVICE currentDevice].batteryMonitoringEnabled = NO;
     [[UIDEVICE currentDevice] endGeneratingDeviceOrientationNotifications];
 #endif
 }
@@ -410,6 +425,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 // MARK: - Connectivity Listener
 // =============================================================================
 
+#if BSG_HAVE_REACHABILITY
 /**
  * Monitor the Bugsnag endpoint to detect changes in connectivity,
  * flush pending events when (re)connected and report connectivity
@@ -435,6 +451,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                 andMetadata:@{@"type": connectionType}];
     }];
 }
+#endif
 
 // =============================================================================
 // MARK: - Breadcrumbs
@@ -639,8 +656,13 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         // Use the current call stack instead.
         callStack = BSGArraySubarrayFromIndex(NSThread.callStackReturnAddresses, depth);
     }
+    
+#if BSG_HAVE_MACH_THREADS
     BOOL recordAllThreads = self.configuration.sendThreads == BSGThreadSendPolicyAlways;
     NSArray *threads = recordAllThreads ? [BugsnagThread allThreads:YES callStackReturnAddresses:callStack] : @[];
+#else
+    NSArray *threads = @[];
+#endif
     
     NSArray<BugsnagStackframe *> *stacktrace = [BugsnagStackframe stackframesWithCallStackReturnAddresses:callStack];
     
@@ -685,14 +707,13 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     
     // Device information that isn't part of `event.device`
     NSMutableDictionary *deviceMetadata = [NSMutableDictionary dictionary];
-#if TARGET_OS_IOS
-    if (bsg_runContext->batteryState != UIDeviceBatteryStateUnknown) {
-        deviceMetadata[BSGKeyBatteryLevel] = @(bsg_runContext->batteryLevel);
-        // Our intepretation of "charging" really means "plugged in" 
-        deviceMetadata[BSGKeyCharging] = bsg_runContext->batteryState >= UIDeviceBatteryStateCharging ? @YES : @NO;
+#if BSG_HAVE_BATTERY
+    if (BSGIsBatteryStateKnown(BSGGetDevice().batteryState)) {
+        deviceMetadata[BSGKeyBatteryLevel] = @(BSGGetDevice().batteryLevel);
+        deviceMetadata[BSGKeyCharging] = BSGIsBatteryCharging(BSGGetDevice().batteryState) ? @YES : @NO;
     }
 #endif
-    if (@available(iOS 11.0, tvOS 11.0, *)) {
+    if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
         deviceMetadata[BSGKeyThermalState] = BSGStringFromThermalState(bsg_runContext->thermalState);
     }
     [event.metadata addMetadata:deviceMetadata toSection:BSGKeyDevice];
@@ -926,6 +947,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 }
 
 - (NSArray *)collectThreads:(BOOL)unhandled {
+#if BSG_HAVE_MACH_THREADS
     // discard the following
     // 1. [BugsnagReactNative getPayloadInfo:resolve:reject:]
     // 2. [BugsnagClient collectThreads:]
@@ -936,6 +958,9 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
             || (unhandled && sendThreads == BSGThreadSendPolicyUnhandledOnly);
     NSArray<BugsnagThread *> *threads = [BugsnagThread allThreads:recordAllThreads callStackReturnAddresses:callStack];
     return [BugsnagThread serializeThreads:threads];
+#else
+    return @[];
+#endif
 }
 
 - (void)addRuntimeVersionInfo:(NSString *)info
@@ -971,14 +996,17 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
 // MARK: - App Hangs
 
+#if BSG_HAVE_APP_HANG_DETECTION
 - (void)startAppHangDetector {
     [NSFileManager.defaultManager removeItemAtPath:BSGFileLocations.current.appHangEvent error:nil];
 
     self.appHangDetector = [[BSGAppHangDetector alloc] init];
     [self.appHangDetector startWithDelegate:self];
 }
+#endif
 
 - (void)appHangDetectedAtDate:(NSDate *)date withThreads:(NSArray<BugsnagThread *> *)threads systemInfo:(NSDictionary *)systemInfo {
+#if BSG_HAVE_APP_HANG_DETECTION
     NSString *message = [NSString stringWithFormat:@"The app's main thread failed to respond to an event within %d milliseconds",
                          (int)self.configuration.appHangThresholdMillis];
 
@@ -1026,9 +1054,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     if (!BSGJSONWriteToFileAtomically(json, BSGFileLocations.current.appHangEvent, &writeError)) {
         bsg_log_err(@"Could not write app_hang.json: %@", writeError);
     }
+#endif
 }
 
 - (void)appHangEnded {
+#if BSG_HAVE_APP_HANG_DETECTION
     NSError *error = nil;
     if (![NSFileManager.defaultManager removeItemAtPath:BSGFileLocations.current.appHangEvent error:&error]) {
         bsg_log_err(@"Could not delete app_hang.json: %@", error);
@@ -1039,8 +1069,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         [self notifyInternal:(BugsnagEvent * _Nonnull)self.appHangEvent block:nil];
     }
     self.appHangEvent = nil;
+#endif
 }
 
+#if BSG_HAVE_APP_HANG_DETECTION
 - (nullable BugsnagEvent *)loadAppHangEvent {
     NSError *error = nil;
     NSDictionary *json = BSGJSONDictionaryFromFile(BSGFileLocations.current.appHangEvent, 0, &error);
@@ -1078,6 +1110,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     return event;
 }
+#endif
 
 // MARK: - Event generation
 
@@ -1135,16 +1168,18 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     
     // Device information that isn't part of `event.device`
     NSMutableDictionary *deviceMetadata = [NSMutableDictionary dictionary];
-#if TARGET_OS_IOS
-    if (bsg_lastRunContext->batteryState != UIDeviceBatteryStateUnknown) {
+#if BSG_HAVE_BATTERY
+    if (BSGIsBatteryStateKnown(bsg_lastRunContext->batteryState)) {
         deviceMetadata[BSGKeyBatteryLevel] = @(bsg_lastRunContext->batteryLevel);
         // Our intepretation of "charging" really means "plugged in" 
-        deviceMetadata[BSGKeyCharging] = bsg_lastRunContext->batteryState >= UIDeviceBatteryStateCharging ? @YES : @NO;
+        deviceMetadata[BSGKeyCharging] = BSGIsBatteryCharging(bsg_lastRunContext->batteryState) ? @YES : @NO;
     }
+#endif
+#if TARGET_OS_IOS
     // Don't set to @NO because server may interpret any non-nil value as meaning true
     deviceMetadata[BSGKeyLowMemoryWarning] = BSGRunContextWasMemoryWarning() ? @YES : nil;
 #endif
-    if (@available(iOS 11.0, tvOS 11.0, *)) {
+    if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
         deviceMetadata[BSGKeyThermalState] = BSGStringFromThermalState(bsg_lastRunContext->thermalState);
     }
     [metadata addMetadata:deviceMetadata toSection:BSGKeyDevice];

@@ -3,6 +3,7 @@ Feature: Barebone tests
   Background:
     Given I clear all persistent data
 
+  @watchos
   Scenario: Barebone test: handled errors
     When I run "BareboneTestHandledScenario"
     And I wait to receive a session
@@ -18,14 +19,16 @@ Feature: Barebone tests
     And the event "app.binaryArch" matches "(arm|x86)"
     And the event "app.bundleVersion" equals "12301"
     And the event "app.id" equals the platform-dependent string:
-      | ios   | com.bugsnag.iOSTestApp   |
-      | macos | com.bugsnag.macOSTestApp |
+      | ios     | com.bugsnag.iOSTestApp                                   |
+      | macos   | com.bugsnag.macOSTestApp                                 |
+      | watchos | com.bugsnag.watchOSTestApp.watchkitapp.watchkitextension |
     And the event "app.inForeground" is true
     And the event "app.isLaunching" is true
     And the event "app.releaseStage" equals "development"
     And the event "app.type" equals the platform-dependent string:
-      | ios   | iOS   |
-      | macos | macOS |
+      | ios     | iOS     |
+      | macos   | macOS   |
+      | watchos | watchOS |
     And the event "app.version" equals "12.3"
     And the event "breadcrumbs.0.name" equals "Running BareboneTestHandledScenario"
     And the event "breadcrumbs.1.name" equals "This is super <redacted>"
@@ -35,18 +38,20 @@ Feature: Barebone tests
     And the event "device.locale" is not null
     And the event "device.manufacturer" equals "Apple"
     And the event "device.modelNumber" equals the platform-dependent string:
-      | ios   | @not_null |
-      | macos | @null     |
+      | ios     | @not_null |
+      | macos   | @null     |
+      | watchos | @not_null |
     And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the event "device.osName" equals the platform-dependent string:
-      | ios   | iOS    |
-      | macos | Mac OS |
+      | ios     | iOS     |
+      | macos   | Mac OS  |
+      | watchos | watchOS |
     And the event "device.osVersion" matches "\d+\.\d+"
     And the event "device.runtimeVersions.clangVersion" is not null
     And the event "device.runtimeVersions.osBuild" is not null
     And the event "device.time" is a timestamp
-    And on iOS, the event "metaData.device.batteryLevel" is a number
-    And on iOS, the event "metaData.device.charging" is a boolean
+    And on !macOS, the event "metaData.device.batteryLevel" is a number
+    And on !macOS, the event "metaData.device.charging" is a boolean
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.wordSize" is not null
@@ -114,6 +119,7 @@ Feature: Barebone tests
     And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
     And the stacktrace is valid for the event
 
+  @watchos
   Scenario: Barebone test: unhandled error
     When I run "BareboneTestUnhandledErrorScenario" and relaunch the crashed app
     And I set the app to "report" mode
@@ -127,8 +133,9 @@ Feature: Barebone tests
     And the event "app.isLaunching" is true
     And the event "app.releaseStage" equals "development"
     And the event "app.type" equals the platform-dependent string:
-      | ios   | iOS   |
-      | macos | macOS |
+      | ios     | iOS     |
+      | macos   | macOS   |
+      | watchos | watchOS |
     And the event "app.version" equals "12.3"
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" is null
@@ -140,18 +147,16 @@ Feature: Barebone tests
     And the event "device.manufacturer" equals "Apple"
     And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the event "device.osName" equals the platform-dependent string:
-      | ios   | iOS    |
-      | macos | Mac OS |
+      | ios     | iOS     |
+      | macos   | Mac OS  |
+      | watchos | watchOS |
     And the event "device.osVersion" matches "\d+\.\d+"
     And the event "device.runtimeVersions.clangVersion" is not null
     And the event "device.runtimeVersions.osBuild" is not null
     And the event "device.time" is a timestamp
-    And on iOS, the event "metaData.device.batteryLevel" is a number
-    And on iOS, the event "metaData.device.charging" is a boolean
+    And on !macOS, the event "metaData.device.batteryLevel" is a number
+    And on !macOS, the event "metaData.device.charging" is a boolean
     And the event "metaData.device.simulator" is false
-    And the event "metaData.error.mach.code_name" equals "KERN_INVALID_ADDRESS"
-    And the event "metaData.error.mach.code" equals "0x1"
-    And the event "metaData.error.mach.exception_name" is not null
     And the event "metaData.lastRunInfo.consecutiveLaunchCrashes" equals 1
     And the event "metaData.lastRunInfo.crashed" is true
     And the event "metaData.lastRunInfo.crashedDuringLaunch" is true
@@ -166,10 +171,10 @@ Feature: Barebone tests
     And the event "severity" equals "error"
     And the event "severityReason.type" equals "unhandledException"
     And the event "severityReason.unhandledOverridden" is null
-    And the event "threads.0.errorReportingThread" is true
-    And the event "threads.0.id" equals "0"
-    And the event "threads.0.state" is not null
-    And the event "threads.0.stacktrace.0.method" matches "(assertionFailure|fatalErrorMessage|<redacted>)"
+    And on !watchOS, the event "threads.0.errorReportingThread" is true
+    And on !watchOS, the event "threads.0.id" equals "0"
+    And on !watchOS, the event "threads.0.state" is not null
+    And on watchOS, the event "threads" is an array with 0 elements
     And the event "unhandled" is true
     And the event "user.email" equals "barfoo@example.com"
     And the event "user.id" equals "barfoo"
@@ -177,8 +182,8 @@ Feature: Barebone tests
     And the event contains the following feature flags:
       | featureFlag | variant |
       | Testing     |         |
-    And the exception "errorClass" equals "Fatal error"
-    And the exception "message" equals "Unexpectedly found nil while implicitly unwrapping an Optional value"
+    And the exception "errorClass" equals "NSRangeException"
+    And the exception "message" equals "*** -[__NSArray0 objectAtIndex:]: index 42 beyond bounds for empty NSArray"
     And the exception "type" equals "cocoa"
     And the error payload field "events.0.app.dsymUUIDs" is a non-empty array
     And the error payload field "events.0.app.duration" is a number
@@ -187,9 +192,8 @@ Feature: Barebone tests
     And the error payload field "events.0.device.freeMemory" is an integer
     And the error payload field "events.0.device.model" matches the test device model
     And the error payload field "events.0.device.totalMemory" is an integer
-    And the error payload field "events.0.threads" is a non-empty array
-    And the error payload field "events.0.threads.1" is not null
-    And the "method" of stack frame 0 matches "(assertionFailure|fatalErrorMessage|<redacted>)"
+    And on !watchOS, the error payload field "events.0.threads" is a non-empty array
+    And on !watchOS, the error payload field "events.0.threads.1" is not null
     And the stacktrace is valid for the event
 
   @skip_macos

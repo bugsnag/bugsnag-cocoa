@@ -1,0 +1,13 @@
+platform :watchos, '6.3'
+
+# target 'watchOSTestApp' do
+# end
+
+# target 'watchOSTestApp WatchKit App' do
+# end
+
+target 'watchOSTestApp WatchKit Extension' do
+  use_frameworks!
+  pod 'Bugsnag', path: '../../..'
+  pod 'BugsnagNetworkRequestPlugin', path: '../../..'
+end

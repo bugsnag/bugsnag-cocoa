@@ -12,6 +12,7 @@
 #import "BSG_KSCrashReport.h"
 #import "BSG_KSCrashSentry_Private.h"
 #import "BSG_KSMach.h"
+#import "BSGDefines.h"
 
 #import <execinfo.h>
 
@@ -47,9 +48,13 @@
     context->crash.threadTracingEnabled = false;
     
     const char *reportPath = [crashReportFilePath fileSystemRepresentation];
+#if BSG_HAVE_MACH_THREADS
     bsg_kscrashsentry_suspendThreads();
+#endif
     bsg_kscrashreport_writeStandardReport(context, reportPath);
+#if BSG_HAVE_MACH_THREADS
     bsg_kscrashsentry_resumeThreads();
+#endif
     
     NSDictionary *report = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:crashReportFilePath] options:0 error:nil];
     
@@ -81,7 +86,7 @@
     const int numFrames = 500;
     uintptr_t stackTrace[numFrames];
     for (int i = 0; i < numFrames; i++) {
-        stackTrace[i] = NSLog;
+        stackTrace[i] = (uintptr_t)NSLog;
         assert(stackTrace[i] != 0);
     }
     
@@ -99,9 +104,13 @@
         const char *reportPath = [crashReportFilePath fileSystemRepresentation];
         
         [self startMeasuring]; {
+#if BSG_HAVE_MACH_THREADS
             bsg_kscrashsentry_suspendThreads();
+#endif
             bsg_kscrashreport_writeStandardReport(context, reportPath);
+#if BSG_HAVE_MACH_THREADS
             bsg_kscrashsentry_resumeThreads();
+#endif
         }
         [self stopMeasuring];
         
