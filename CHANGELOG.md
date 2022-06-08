@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 6.18.0 (2022-06-08)
 
 ### Enhancements
 
@@ -21,6 +21,9 @@ Changelog
 
 * Fix data races detected by TSan in `BSGRunContextUpdateTimestamp` and `UpdateAvailableMemory`. 
   [#1384](https://github.com/bugsnag/bugsnag-cocoa/pull/1384)
+
+* Fix potential deadlocks caused by use of `libc` `printf` functions.
+  [#1397](https://github.com/bugsnag/bugsnag-cocoa/pull/1397)
 
 * Fix incorrect `device.time` in 32-bit crash reports.
   [#1399](https://github.com/bugsnag/bugsnag-cocoa/pull/1399)
