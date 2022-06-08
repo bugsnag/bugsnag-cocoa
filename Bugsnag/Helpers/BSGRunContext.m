@@ -313,6 +313,7 @@ static void UpdateAvailableMemory() {
 
 #pragma mark - Kill detection
 
+#if !TARGET_OS_WATCH
 bool BSGRunContextWasKilled() {
     // App extensions have a different lifecycle and the heuristic used for
     // finding app terminations rooted in fixable code does not apply
@@ -349,6 +350,7 @@ bool BSGRunContextWasKilled() {
     
     return YES;
 }
+#endif
 
 
 #pragma mark - File handling & memory mapping

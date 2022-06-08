@@ -346,6 +346,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         didCrash = YES;
     }
 #endif
+#if !TARGET_OS_WATCH
     else if (self.configuration.autoDetectErrors && BSGRunContextWasKilled()) {
         if (BSGRunContextWasCriticalThermalState()) {
             bsg_log_info(@"Last run terminated during a critical thermal state.");
@@ -362,6 +363,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         }
         didCrash = YES;
     }
+#endif
     
     self.appDidCrashLastLaunch = didCrash;
     

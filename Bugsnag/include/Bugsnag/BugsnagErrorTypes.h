@@ -34,7 +34,7 @@
  *
  * This flag is true by default.
  */
-@property (nonatomic) BOOL thermalKills;
+@property (nonatomic) BOOL thermalKills API_UNAVAILABLE(watchos);
 
 /**
  * Determines whether NSExceptions should be reported to bugsnag.
