@@ -126,6 +126,8 @@ E2E testing for Apple Watch relies on the `xcdebug` to build and run the test fi
 
 Pay attention to Xcode's UI to see if there are any build or run failures.
 
+Ensure Xcode's run destination is set to the Apple Watch.
+
 ### Notes
 
 1. Maze Runner supports various other options, as well as all those that Cucumber does. For full details run:

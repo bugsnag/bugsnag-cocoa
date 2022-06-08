@@ -10,14 +10,15 @@
 		01479A1B2847775500E53BB9 /* watchOSTestApp WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 01479A1A2847775500E53BB9 /* watchOSTestApp WatchKit App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		01479A202847775600E53BB9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01479A1F2847775600E53BB9 /* Assets.xcassets */; };
 		01479A262847775600E53BB9 /* watchOSTestApp WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 01479A252847775600E53BB9 /* watchOSTestApp WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		01479A2B2847775600E53BB9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01479A2A2847775600E53BB9 /* ContentView.swift */; };
-		01479A2D2847775600E53BB9 /* watchOSTestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01479A2C2847775600E53BB9 /* watchOSTestApp.swift */; };
 		01479A2F2847775600E53BB9 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01479A2E2847775600E53BB9 /* ComplicationController.swift */; };
 		01479A312847775800E53BB9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01479A302847775800E53BB9 /* Assets.xcassets */; };
 		01479A342847775800E53BB9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01479A332847775800E53BB9 /* Preview Assets.xcassets */; };
 		01479B55284779A500E53BB9 /* Scenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01479AA6284779A400E53BB9 /* Scenario.m */; };
 		01479BA82847923A00E53BB9 /* BareboneTestHandledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01479BA72847923A00E53BB9 /* BareboneTestHandledScenario.swift */; };
 		01479BAA284792B100E53BB9 /* BareboneTestUnhandledErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01479BA9284792B100E53BB9 /* BareboneTestUnhandledErrorScenario.swift */; };
+		01515B1928508CD800E498EC /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01515B1728508BA600E498EC /* Interface.storyboard */; };
+		01515B1C28508DBB00E498EC /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01515B1A28508DBB00E498EC /* InterfaceController.swift */; };
+		01515B1D28508DBB00E498EC /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01515B1B28508DBB00E498EC /* ExtensionDelegate.swift */; };
 		018F050D284F314D004EA50D /* HandledExceptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018F050C284F314D004EA50D /* HandledExceptionScenario.swift */; };
 		018F050F284F3155004EA50D /* NetworkBreadcrumbsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018F050E284F3155004EA50D /* NetworkBreadcrumbsScenario.swift */; };
 		C1AD3C358BC309F832CCC972 /* Pods_watchOSTestApp_WatchKit_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B2DE4764F62DB21DAE7435C /* Pods_watchOSTestApp_WatchKit_Extension.framework */; };
@@ -70,8 +71,6 @@
 		01479A1A2847775500E53BB9 /* watchOSTestApp WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "watchOSTestApp WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01479A1F2847775600E53BB9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01479A252847775600E53BB9 /* watchOSTestApp WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "watchOSTestApp WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		01479A2A2847775600E53BB9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		01479A2C2847775600E53BB9 /* watchOSTestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = watchOSTestApp.swift; sourceTree = "<group>"; };
 		01479A2E2847775600E53BB9 /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
 		01479A302847775800E53BB9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01479A332847775800E53BB9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -81,6 +80,9 @@
 		01479BA628477A0000E53BB9 /* Swift-Objc-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Swift-Objc-Bridging-Header.h"; sourceTree = "<group>"; };
 		01479BA72847923A00E53BB9 /* BareboneTestHandledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestHandledScenario.swift; sourceTree = "<group>"; };
 		01479BA9284792B100E53BB9 /* BareboneTestUnhandledErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestUnhandledErrorScenario.swift; sourceTree = "<group>"; };
+		01515B1728508BA600E498EC /* Interface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Interface.storyboard; sourceTree = "<group>"; };
+		01515B1A28508DBB00E498EC /* InterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
+		01515B1B28508DBB00E498EC /* ExtensionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
 		018F050C284F314D004EA50D /* HandledExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandledExceptionScenario.swift; sourceTree = "<group>"; };
 		018F050E284F3155004EA50D /* NetworkBreadcrumbsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkBreadcrumbsScenario.swift; sourceTree = "<group>"; };
 		5B2DE4764F62DB21DAE7435C /* Pods_watchOSTestApp_WatchKit_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_watchOSTestApp_WatchKit_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -124,6 +126,7 @@
 		01479A1E2847775500E53BB9 /* watchOSTestApp WatchKit App */ = {
 			isa = PBXGroup;
 			children = (
+				01515B1728508BA600E498EC /* Interface.storyboard */,
 				01479A1F2847775600E53BB9 /* Assets.xcassets */,
 			);
 			path = "watchOSTestApp WatchKit App";
@@ -132,9 +135,9 @@
 		01479A292847775600E53BB9 /* watchOSTestApp WatchKit Extension */ = {
 			isa = PBXGroup;
 			children = (
-				01479A2A2847775600E53BB9 /* ContentView.swift */,
-				01479A2C2847775600E53BB9 /* watchOSTestApp.swift */,
 				01479A2E2847775600E53BB9 /* ComplicationController.swift */,
+				01515B1B28508DBB00E498EC /* ExtensionDelegate.swift */,
+				01515B1A28508DBB00E498EC /* InterfaceController.swift */,
 				01479BA628477A0000E53BB9 /* Swift-Objc-Bridging-Header.h */,
 				01479A302847775800E53BB9 /* Assets.xcassets */,
 				01479A352847775800E53BB9 /* Info.plist */,
@@ -292,6 +295,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01515B1928508CD800E498EC /* Interface.storyboard in Resources */,
 				01479A202847775600E53BB9 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -355,10 +359,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				01479BAA284792B100E53BB9 /* BareboneTestUnhandledErrorScenario.swift in Sources */,
-				01479A2B2847775600E53BB9 /* ContentView.swift in Sources */,
 				018F050D284F314D004EA50D /* HandledExceptionScenario.swift in Sources */,
-				01479A2D2847775600E53BB9 /* watchOSTestApp.swift in Sources */,
+				01515B1D28508DBB00E498EC /* ExtensionDelegate.swift in Sources */,
 				01479A2F2847775600E53BB9 /* ComplicationController.swift in Sources */,
+				01515B1C28508DBB00E498EC /* InterfaceController.swift in Sources */,
 				01479BA82847923A00E53BB9 /* BareboneTestHandledScenario.swift in Sources */,
 				018F050F284F3155004EA50D /* NetworkBreadcrumbsScenario.swift in Sources */,
 				01479B55284779A500E53BB9 /* Scenario.m in Sources */,
@@ -437,6 +441,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				WATCHOS_DEPLOYMENT_TARGET = 6.3;
 			};
 			name = Debug;
 		};
@@ -490,6 +495,7 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 6.3;
 			};
 			name = Release;
 		};
@@ -500,7 +506,7 @@
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"watchOSTestApp WatchKit Extension/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -508,6 +514,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "watchOSTestApp WatchKit Extension";
 				INFOPLIST_KEY_CLKComplicationPrincipalClass = "$(PRODUCT_MODULE_NAME).ComplicationController";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_WKExtensionDelegateClassName = "$(PRODUCT_MODULE_NAME).ExtensionDelegate";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -523,7 +530,6 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "watchOSTestApp WatchKit Extension/Swift-Objc-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 8.5;
 			};
 			name = Debug;
 		};
@@ -534,7 +540,7 @@
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"watchOSTestApp WatchKit Extension/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -542,6 +548,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "watchOSTestApp WatchKit Extension";
 				INFOPLIST_KEY_CLKComplicationPrincipalClass = "$(PRODUCT_MODULE_NAME).ComplicationController";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_WKExtensionDelegateClassName = "$(PRODUCT_MODULE_NAME).ExtensionDelegate";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -557,7 +564,6 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "watchOSTestApp WatchKit Extension/Swift-Objc-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 8.5;
 			};
 			name = Release;
 		};
@@ -582,7 +588,6 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 8.5;
 			};
 			name = Debug;
 		};
@@ -607,7 +612,6 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 8.5;
 			};
 			name = Release;
 		};
