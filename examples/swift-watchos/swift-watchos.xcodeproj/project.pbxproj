@@ -200,6 +200,7 @@
 				CB3B7FC32833C1EF00CAD67A /* Frameworks */,
 				CB3B7FC42833C1EF00CAD67A /* Resources */,
 				AAA327408B6C42133D8452F6 /* [CP] Embed Pods Frameworks */,
+				01515B1E2850F2E300E498EC /* Upload Bugsnag dSYM */,
 			);
 			buildRules = (
 			);
@@ -280,6 +281,26 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		01515B1E2850F2E300E498EC /* Upload Bugsnag dSYM */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+			);
+			name = "Upload Bugsnag dSYM";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /usr/bin/ruby;
+			shellScript = "Dir[\"#{ENV['DWARF_DSYM_FOLDER_PATH']}/*/Contents/Resources/DWARF/*\"].each do |dsym|\n  Process.detach Process.spawn('/usr/bin/curl', '--http1.1',\n    '-F', \"dsym=@#{dsym}\",\n    '-F', \"projectRoot=#{ENV[\"PROJECT_DIR\"]}\",\n    'https://upload.bugsnag.com/',\n    %i[err out] => :close\n  )\nend\n";
+			showEnvVarsInLog = 0;
+		};
 		912FB2F2D4B33747C43FBBD9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
