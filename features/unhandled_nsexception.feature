@@ -19,6 +19,7 @@ Feature: Uncaught NSExceptions are captured by Bugsnag
     And the event "severity" equals "error"
     And the event "unhandled" is true
     And the event "severityReason.type" equals "unhandledException"
+    And the event "threads.0.name" equals "BSG MAIN THREAD"
 
   Scenario: Throw a NSException with unhandled override
     When I run "ObjCExceptionOverrideScenario" and relaunch the crashed app
@@ -37,3 +38,4 @@ Feature: Uncaught NSExceptions are captured by Bugsnag
     And the event "unhandled" is false
     And the event "severityReason.unhandledOverridden" is true
     And the event "severityReason.type" equals "unhandledException"
+    And the event "threads.0.name" equals "メインスレッド"

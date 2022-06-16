@@ -276,7 +276,7 @@ pthread_t bsg_ksmachpthreadFromMachThread(const thread_t thread) {
 
 bool bsg_ksmachgetThreadName(const thread_t thread, char *const buffer,
                              size_t bufLength) {
-    // WARNING: This implementation is no longer async-safe!
+    // WARNING: This implementation is only async-safe for the current thread!
 
     const pthread_t pthread = pthread_from_mach_thread_np(thread);
     if (pthread == NULL) {

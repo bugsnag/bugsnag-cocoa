@@ -43,6 +43,7 @@
 }
 
 - (void)run {
+    [[NSThread mainThread] setName:@"BSG MAIN THREAD"];
     [self crash];
 }
 

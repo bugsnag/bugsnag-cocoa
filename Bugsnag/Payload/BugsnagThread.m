@@ -108,6 +108,7 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
     if ((self = [super init])) {
         _errorReportingThread = [thread[@BSG_KSCrashField_Crashed] boolValue];
         _id = [thread[@BSG_KSCrashField_Index] stringValue];
+        _name = thread[@BSG_KSCrashField_Name];
         _type = BSGThreadTypeCocoa;
         _state = thread[@BSG_KSCrashField_State];
         _crashInfoMessage = [thread[@BSG_KSCrashField_CrashInfoMessage] copy];

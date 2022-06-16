@@ -895,6 +895,7 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
                              const integer_t threadRunState,
                              const bool writeNotableAddresses) {
     bool isCrashedThread = thread == crash->offendingThread;
+    bool isSelfThread = thread == bsg_ksmachthread_self();
     BSG_STRUCT_MCONTEXT_L machineContextBuffer;
     uintptr_t backtraceBuffer[BSG_kMaxBacktraceDepth];
     int backtraceLength = sizeof(backtraceBuffer) / sizeof(*backtraceBuffer);
@@ -926,7 +927,12 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
         writer->addBooleanElement(writer, BSG_KSCrashField_Crashed,
                                   isCrashedThread);
         writer->addBooleanElement(writer, BSG_KSCrashField_CurrentThread,
-                                  thread == bsg_ksmachthread_self());
+                                  isSelfThread);
+        if (isSelfThread) {
+            char buff[100];
+            bsg_ksmachgetThreadName(thread, buff, sizeof(buff));
+            writer->addStringElement(writer, BSG_KSCrashField_Name, buff);
+        }
         if (isCrashedThread && machineContext != NULL) {
             bsg_kscrw_i_writeStackOverflow(writer, BSG_KSCrashField_Stack,
                                            machineContext, skippedEntries > 0);
