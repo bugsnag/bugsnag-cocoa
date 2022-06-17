@@ -14,7 +14,8 @@ Feature: Thrown C++ exceptions are captured by Bugsnag
     And the event "severity" equals "error"
     And the event "unhandled" is true
     And the event "severityReason.type" equals "unhandledException"
-    And the event "threads.0.name" equals "потік"
+    And on iOS 12 and later, the event "threads.0.name" equals "потік"
+    And on macOS 10.14 and later, the event "threads.0.name" equals "потік"
 
   Scenario: Throwing a C++ exception with unhandled override
     When I run "CxxExceptionOverrideScenario" and relaunch the crashed app
@@ -28,7 +29,8 @@ Feature: Thrown C++ exceptions are captured by Bugsnag
     And the event "unhandled" is false
     And the event "severityReason.unhandledOverridden" is true
     And the event "severityReason.type" equals "unhandledException"
-    And the event "threads.0.name" equals "BSG MAIN THREAD"
+    And on iOS 12 and later, the event "threads.0.name" equals "BSG MAIN THREAD"
+    And on macOS 10.14 and later, the event "threads.0.name" equals "BSG MAIN THREAD"
 
   Scenario: Throwing without an exception
     When I run "CxxBareThrowScenario" and relaunch the crashed app
@@ -38,7 +40,8 @@ Feature: Thrown C++ exceptions are captured by Bugsnag
     And the exception "errorClass" equals "std::terminate"
     And the exception "message" equals "throw may have been called without an exception"
     And the "method" of stack frame 2 equals "-[CxxBareThrowScenario run]"
-    And the event "threads.0.name" equals "œ´¨ø“‘"
+    And on iOS 12 and later, the event "threads.0.name" equals "œ´¨ø“‘"
+    And on macOS 10.14 and later, the event "threads.0.name" equals "œ´¨ø“‘"
 
   Scenario: Causing an unexpected event
     When I run "CxxUnexpectedScenario" and relaunch the crashed app
@@ -48,4 +51,5 @@ Feature: Thrown C++ exceptions are captured by Bugsnag
     And the exception "errorClass" equals "std::terminate"
     And the exception "message" equals "throw may have been called without an exception"
     And the "method" of stack frame 4 equals "-[CxxUnexpectedScenario run]"
-    And the event "threads.0.name" equals "BSG MAIN THREAD"
+    And on iOS 12 and later, the event "threads.0.name" equals "BSG MAIN THREAD"
+    And on macOS 10.14 and later, the event "threads.0.name" equals "BSG MAIN THREAD"

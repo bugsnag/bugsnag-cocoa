@@ -928,10 +928,15 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
                                   isCrashedThread);
         writer->addBooleanElement(writer, BSG_KSCrashField_CurrentThread,
                                   isSelfThread);
-        if (isSelfThread) {
-            char buff[100];
-            bsg_ksmachgetThreadName(thread, buff, sizeof(buff));
-            writer->addStringElement(writer, BSG_KSCrashField_Name, buff);
+
+        // Fetching the current thread name is only safe as of libpthread-330.201.1
+        // which was used in ios+tvos 12 and macos 10.14
+        if(__builtin_available(iOS 12.0, tvOS 12.0, macOS 10.14, *)) {
+            if (isSelfThread) {
+                char buff[100];
+                bsg_ksmachgetThreadName(thread, buff, sizeof(buff));
+                writer->addStringElement(writer, BSG_KSCrashField_Name, buff);
+            }
         }
         if (isCrashedThread && machineContext != NULL) {
             bsg_kscrw_i_writeStackOverflow(writer, BSG_KSCrashField_Stack,
