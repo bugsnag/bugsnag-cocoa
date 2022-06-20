@@ -372,6 +372,9 @@ static int OpenFile(const char *path) {
     // File content protection can invalidate mappings when a device is
     // locked, so must be disabled to prevent segfaults when accessing 
     // bsg_runContext
+    
+    // NSURLFileProtectionKey is unavailable in macOS SDKs prior to 11.0
+#if !TARGET_OS_OSX || defined(__MAC_11_0)
     if (@available(macOS 11.0, *)) {
         NSError *error = nil;
         NSURL *url = [NSURL fileURLWithPath:(NSString *_Nonnull)@(path)
@@ -384,6 +387,7 @@ static int OpenFile(const char *path) {
             return -1;
         }
     }
+#endif
     
     return fd;
 }
