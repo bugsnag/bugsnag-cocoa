@@ -7,11 +7,14 @@
 
 #import "BSGRunContext.h"
 
+#import "BSGAppKit.h"
+#import "BSGHardware.h"
+#import "BSGUIKit.h"
+#import "BSGWatchKit.h"
 #import "BSG_KSLogger.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSMachHeaders.h"
 #import "BSG_KSSystemInfo.h"
-#import "BSGHardware.h"
 
 #import <Foundation/Foundation.h>
 #import <stdatomic.h>
@@ -23,9 +26,6 @@
 #include <os/proc.h>
 #endif
 
-#import "BSGUIKit.h"
-#import "BSGAppKit.h"
-#import "BSGWatchKit.h"
 
 // Fields which may be updated from arbitrary threads simultaneously should be
 // updated using this macro to avoid data races (which are detected by TSan.)
@@ -378,8 +378,18 @@ static void LoadLastRunContext(int fd) {
 
 /// Truncates or extends the file to the size of struct BSGRunContext,
 /// maps it into memory, and sets the `bsg_runContext` pointer.
-static void ResizeAndMapFile(int fd) {
+static void ResizeAndMapFile(const char *path, int fd) {
     static struct BSGRunContext fallback;
+    
+    // Content protection can invalidate the mapping when a device is locked
+    // and must be disabled to prevent segfaults. 
+    NSError *error = nil;
+    NSURL *url = [NSURL fileURLWithPath:(NSString *_Nonnull)@(path)];
+    if (![url setResourceValue:NSURLFileProtectionNone
+                        forKey:NSURLFileProtectionKey error:&error]) {
+        bsg_log_warn(@"Setting NSURLFileProtectionKey failed: %@", error);
+        goto fail;
+    }
     
     // Note: ftruncate fills the file with zeros when extending.
     if (ftruncate(fd, SIZEOF_STRUCT) != 0) {
@@ -409,7 +419,7 @@ void BSGRunContextInit(const char *path) {
         bsg_log_warn(@"Could not open %s", path);
     }
     LoadLastRunContext(fd);
-    ResizeAndMapFile(fd);
+    ResizeAndMapFile(path, fd);
     InitRunContext();
     AddObservers();
     if (fd > 0) {
