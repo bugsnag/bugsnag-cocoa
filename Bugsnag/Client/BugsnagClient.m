@@ -1159,9 +1159,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     if (bsg_lastRunContext->timestamp > 0) {
         device.time = [NSDate dateWithTimeIntervalSinceReferenceDate:bsg_lastRunContext->timestamp];
     }
-    if (bsg_lastRunContext->availableMemory) {
-        device.freeMemory = @(bsg_lastRunContext->availableMemory);
-    }
 
     NSDictionary *metadataDict = BSGJSONDictionaryFromFile(BSGFileLocations.current.metadata, 0, nil);
     BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:metadataDict ?: @{}];

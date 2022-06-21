@@ -241,7 +241,7 @@ Feature: Barebone tests
     And the event "device.modelNumber" equals the platform-dependent string:
       | ios   | @not_null |
       | macos | @null     |
-    And on iOS 13 and later, the event "device.freeMemory" is an integer
+    And the event "device.freeMemory" is null
     And the event "device.osName" equals the platform-dependent string:
       | ios   | iOS    |
       | macos | Mac OS |
