@@ -12,14 +12,12 @@ end
 
 Then(/^on (\w+) ([0-9.]+) and later, (.+)/) do |test_platform, test_version, step_text|
   actual_platform = Maze::Helper.get_current_platform
-  actual_version = Maze.config.os_version
-
-  $logger.info "Detected actual platform/version: #{actual_platform} #{actual_version}"
-
-  unless test_platform.downcase == actual_platform && actual_version >= test_version.to_f
-    $logger.info "Skipping #{test_platform} #{test_version} check on #{actual_platform} #{actual_version}"
-    next
+  unless %w[ios macos].include? actual_platform
+    raise "Unexpected platform #{actual_platform}, this step can only handle ios and macos"
   end
+
+  actual_version = Maze.config.os_version
+  next unless test_platform.downcase == actual_platform && actual_version >= test_version.to_f
 
   step(step_text)
 end
