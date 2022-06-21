@@ -121,6 +121,7 @@ Feature: Barebone tests
 
   @watchos
   Scenario: Barebone test: unhandled error
+    Given I ignore invalid sessions
     When I run "BareboneTestUnhandledErrorScenario" and relaunch the crashed app
     And I set the app to "report" mode
     And I configure Bugsnag for "BareboneTestUnhandledErrorScenario"
