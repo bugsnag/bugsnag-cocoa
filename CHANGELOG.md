@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix a crash that could occur in apps that set `com.apple.developer.default-data-protection` to `NSFileProtectionComplete`.
+  [#1407](https://github.com/bugsnag/bugsnag-cocoa/pull/1407)
+
 ## 6.18.0 (2022-06-08)
 
 ### Enhancements
