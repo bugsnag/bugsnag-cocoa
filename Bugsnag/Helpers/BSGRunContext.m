@@ -7,11 +7,14 @@
 
 #import "BSGRunContext.h"
 
+#import "BSGAppKit.h"
+#import "BSGHardware.h"
+#import "BSGUIKit.h"
+#import "BSGWatchKit.h"
 #import "BSG_KSLogger.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSMachHeaders.h"
 #import "BSG_KSSystemInfo.h"
-#import "BSGHardware.h"
 
 #import <Foundation/Foundation.h>
 #import <stdatomic.h>
@@ -23,9 +26,6 @@
 #include <os/proc.h>
 #endif
 
-#import "BSGUIKit.h"
-#import "BSGAppKit.h"
-#import "BSGWatchKit.h"
 
 // Fields which may be updated from arbitrary threads simultaneously should be
 // updated using this macro to avoid data races (which are detected by TSan.)
@@ -361,6 +361,37 @@ struct BSGRunContext *bsg_runContext;
 
 const struct BSGRunContext *bsg_lastRunContext;
 
+/// Opens the file and disables content protection, returning -1 on error.
+static int OpenFile(const char *path) {
+    int fd = open(path, O_RDWR | O_CREAT, 0600);
+    if (fd == -1) {
+        bsg_log_warn(@"Could not open %s", path);
+        return -1;
+    }
+    
+    // File content protection can invalidate mappings when a device is
+    // locked, so must be disabled to prevent segfaults when accessing 
+    // bsg_runContext
+    
+    // NSURLFileProtectionKey is unavailable in macOS SDKs prior to 11.0
+#if !TARGET_OS_OSX || defined(__MAC_11_0)
+    if (@available(macOS 11.0, *)) {
+        NSError *error = nil;
+        NSURL *url = [NSURL fileURLWithPath:(NSString *_Nonnull)@(path)
+                                isDirectory:NO];
+        
+        if (![url setResourceValue:NSURLFileProtectionNone
+                            forKey:NSURLFileProtectionKey error:&error]) {
+            bsg_log_warn(@"Setting NSURLFileProtectionKey failed: %@", error);
+            close(fd);
+            return -1;
+        }
+    }
+#endif
+    
+    return fd;
+}
+
 /// Loads the contents of the state file into memory and sets the
 /// `bsg_lastRunContext` pointer if the contents are valid.
 static void LoadLastRunContext(int fd) {
@@ -404,10 +435,7 @@ fail:
 }
 
 void BSGRunContextInit(const char *path) {
-    int fd = open(path, O_RDWR | O_CREAT, 0600);
-    if (fd < 0) {
-        bsg_log_warn(@"Could not open %s", path);
-    }
+    int fd = OpenFile(path);
     LoadLastRunContext(fd);
     ResizeAndMapFile(fd);
     InitRunContext();

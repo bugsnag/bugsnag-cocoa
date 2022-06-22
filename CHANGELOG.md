@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## 6.18.1 (2022-06-22)
+
+### Bug fixes
+
+* Remove `device.freeMemory` from OOM and Thermal Kill events.
+  This indicated the app's remaining quota rather than the device's free memory, so has been removed to avoid confusion.
+  [#1408](https://github.com/bugsnag/bugsnag-cocoa/pull/1408)
+
+* Fix a crash that could occur in apps that set `com.apple.developer.default-data-protection` to `NSFileProtectionComplete`.
+  [#1407](https://github.com/bugsnag/bugsnag-cocoa/pull/1407)
+
 ## 6.18.0 (2022-06-08)
 
 ### Enhancements
