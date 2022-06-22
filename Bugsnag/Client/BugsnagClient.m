@@ -68,6 +68,7 @@
 #import "BSGAppKit.h"
 #import "BSGUIKit.h"
 #import "BSGHardware.h"
+#import "BSGOS.h"
 
 static NSString *const BSTabCrash = @"crash";
 static NSString *const BSAttributeDepth = @"depth";
@@ -214,6 +215,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 }
 
 - (void)start {
+    bsgos_init();
+
     if (self.configuration.telemetry & BSGTelemetryInternalErrors) {
         BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
     } else {

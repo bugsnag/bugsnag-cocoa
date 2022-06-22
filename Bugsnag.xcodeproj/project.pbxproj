@@ -896,6 +896,15 @@
 		CB6419B625A7419400613D25 /* v0_files in Resources */ = {isa = PBXBuildFile; fileRef = CB6419B325A7419400613D25 /* v0_files */; };
 		CB7FEA45282BD8F700D5356A /* BSGRunContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154E20128070AEA009044E4 /* BSGRunContext.m */; };
 		CB9103642502320A00E9D1E2 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
+		CB9C1EE52863007B00569006 /* BSGOS.h in Headers */ = {isa = PBXBuildFile; fileRef = CB9C1EE32863007B00569006 /* BSGOS.h */; };
+		CB9C1EE62863007B00569006 /* BSGOS.h in Headers */ = {isa = PBXBuildFile; fileRef = CB9C1EE32863007B00569006 /* BSGOS.h */; };
+		CB9C1EE72863007B00569006 /* BSGOS.h in Headers */ = {isa = PBXBuildFile; fileRef = CB9C1EE32863007B00569006 /* BSGOS.h */; };
+		CB9C1EE82863007B00569006 /* BSGOS.h in Headers */ = {isa = PBXBuildFile; fileRef = CB9C1EE32863007B00569006 /* BSGOS.h */; };
+		CB9C1EE92863007B00569006 /* BSGOS.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9C1EE42863007B00569006 /* BSGOS.m */; };
+		CB9C1EEA2863007C00569006 /* BSGOS.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9C1EE42863007B00569006 /* BSGOS.m */; };
+		CB9C1EEB2863007C00569006 /* BSGOS.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9C1EE42863007B00569006 /* BSGOS.m */; };
+		CB9C1EEC2863007C00569006 /* BSGOS.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9C1EE42863007B00569006 /* BSGOS.m */; };
+		CB9C1EED2863007C00569006 /* BSGOS.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9C1EE42863007B00569006 /* BSGOS.m */; };
 		CBA2249B251E429C00B87416 /* TestSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = CBA2249A251E429C00B87416 /* TestSupport.m */; };
 		CBA2249C251E429C00B87416 /* TestSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = CBA2249A251E429C00B87416 /* TestSupport.m */; };
 		CBA2249D251E429C00B87416 /* TestSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = CBA2249A251E429C00B87416 /* TestSupport.m */; };
@@ -1650,6 +1659,8 @@
 		CB6419AA25A73E8C00613D25 /* BSGStorageMigratorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGStorageMigratorTests.m; sourceTree = "<group>"; };
 		CB6419B325A7419400613D25 /* v0_files */ = {isa = PBXFileReference; lastKnownFileType = folder; path = v0_files; sourceTree = "<group>"; };
 		CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagApiClientTest.m; sourceTree = "<group>"; };
+		CB9C1EE32863007B00569006 /* BSGOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGOS.h; sourceTree = "<group>"; };
+		CB9C1EE42863007B00569006 /* BSGOS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGOS.m; sourceTree = "<group>"; };
 		CBA22499251E429C00B87416 /* TestSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestSupport.h; sourceTree = "<group>"; };
 		CBA2249A251E429C00B87416 /* TestSupport.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestSupport.m; sourceTree = "<group>"; };
 		CBB0928A2519F891007698BC /* BugsnagSystemState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagSystemState.m; sourceTree = "<group>"; };
@@ -2159,6 +2170,8 @@
 				CBCF77A125010648004AF22A /* BSGJSONSerialization.h */,
 				CBCF77A225010648004AF22A /* BSGJSONSerialization.m */,
 				008968152486DA5600DC48C2 /* BSGKeys.h */,
+				CB9C1EE32863007B00569006 /* BSGOS.h */,
+				CB9C1EE42863007B00569006 /* BSGOS.m */,
 				0154E20028070AEA009044E4 /* BSGRunContext.h */,
 				0154E20128070AEA009044E4 /* BSGRunContext.m */,
 				008968112486DA5600DC48C2 /* BSGSerialization.h */,
@@ -2407,6 +2420,7 @@
 				01CCAEEA25D414D60057268D /* BugsnagLastRunInfo.h in Headers */,
 				010993B1273D2F6200128BBE /* BugsnagFeatureFlagStore.h in Headers */,
 				01099393273D123800128BBE /* BugsnagFeatureFlag.h in Headers */,
+				CB9C1EE52863007B00569006 /* BSGOS.h in Headers */,
 				01468F5225876DC1002B0519 /* BSGNotificationBreadcrumbs.h in Headers */,
 				00896A292486DAD100DC48C2 /* BSG_KSCrashType.h in Headers */,
 				008969DB2486DAD100DC48C2 /* BSG_KSCrash.h in Headers */,
@@ -2510,6 +2524,7 @@
 				01468F5325876DC1002B0519 /* BSGNotificationBreadcrumbs.h in Headers */,
 				010993B2273D2F6200128BBE /* BugsnagFeatureFlagStore.h in Headers */,
 				01099394273D123800128BBE /* BugsnagFeatureFlag.h in Headers */,
+				CB9C1EE62863007B00569006 /* BSGOS.h in Headers */,
 				01CCAEEB25D414D60057268D /* BugsnagLastRunInfo.h in Headers */,
 				00896A2A2486DAD100DC48C2 /* BSG_KSCrashType.h in Headers */,
 				008969DC2486DAD100DC48C2 /* BSG_KSCrash.h in Headers */,
@@ -2613,6 +2628,7 @@
 				01468F5425876DC1002B0519 /* BSGNotificationBreadcrumbs.h in Headers */,
 				010993B3273D2F6200128BBE /* BugsnagFeatureFlagStore.h in Headers */,
 				01099395273D123800128BBE /* BugsnagFeatureFlag.h in Headers */,
+				CB9C1EE72863007B00569006 /* BSGOS.h in Headers */,
 				01CCAEEC25D414D60057268D /* BugsnagLastRunInfo.h in Headers */,
 				00896A2B2486DAD100DC48C2 /* BSG_KSCrashType.h in Headers */,
 				008969DD2486DAD100DC48C2 /* BSG_KSCrash.h in Headers */,
@@ -2653,6 +2669,7 @@
 				CBBDE931280068AD0070DCD3 /* BSGEventUploadOperation.h in Headers */,
 				CBBDE9BA280069B20070DCD3 /* BSG_KSBacktrace_Private.h in Headers */,
 				CBBDE95B280068FD0070DCD3 /* BugsnagBreadcrumb.h in Headers */,
+				CB9C1EE82863007B00569006 /* BSGOS.h in Headers */,
 				CBBDE99B2800699C0070DCD3 /* BSG_KSCrashSentry_MachException.h in Headers */,
 				CBBDE917280068560070DCD3 /* BugsnagSessionTracker.h in Headers */,
 				CBBDE93F280068D40070DCD3 /* BSGSerialization.h in Headers */,
@@ -3151,6 +3168,7 @@
 				01B79DAC267CC4A000C8CC5E /* BSGUtils.m in Sources */,
 				008969E42486DAD100DC48C2 /* BSG_KSCrashIdentifier.m in Sources */,
 				008967DA2486DA2D00DC48C2 /* BugsnagConfiguration.m in Sources */,
+				CB9C1EE92863007B00569006 /* BSGOS.m in Sources */,
 				008969A52486DAD100DC48C2 /* BSG_KSBacktrace.c in Sources */,
 				00896A202486DAD100DC48C2 /* BSG_KSCrashSentry.c in Sources */,
 				00AD1F272486A17900A27979 /* BSGCrashSentry.m in Sources */,
@@ -3324,6 +3342,7 @@
 				00896A362486DAD100DC48C2 /* BSG_KSSystemInfo.m in Sources */,
 				01B79DAD267CC4A000C8CC5E /* BSGUtils.m in Sources */,
 				008969E52486DAD100DC48C2 /* BSG_KSCrashIdentifier.m in Sources */,
+				CB9C1EEA2863007C00569006 /* BSGOS.m in Sources */,
 				008967DB2486DA2D00DC48C2 /* BugsnagConfiguration.m in Sources */,
 				008969A62486DAD100DC48C2 /* BSG_KSBacktrace.c in Sources */,
 				00896A212486DAD100DC48C2 /* BSG_KSCrashSentry.c in Sources */,
@@ -3494,6 +3513,7 @@
 				01B79DAE267CC4A000C8CC5E /* BSGUtils.m in Sources */,
 				008969E62486DAD100DC48C2 /* BSG_KSCrashIdentifier.m in Sources */,
 				008967DC2486DA2D00DC48C2 /* BugsnagConfiguration.m in Sources */,
+				CB9C1EEB2863007C00569006 /* BSGOS.m in Sources */,
 				008969A72486DAD100DC48C2 /* BSG_KSBacktrace.c in Sources */,
 				00896A222486DAD100DC48C2 /* BSG_KSCrashSentry.c in Sources */,
 				00AD1F292486A17900A27979 /* BSGCrashSentry.m in Sources */,
@@ -3655,6 +3675,7 @@
 				008968872486DA9600DC48C2 /* BugsnagNotifier.m in Sources */,
 				CBE9063025A34DAB0045B965 /* BSGStorageMigratorV0V1.m in Sources */,
 				0089683D2486DA6C00DC48C2 /* BugsnagMetadata.m in Sources */,
+				CB9C1EED2863007C00569006 /* BSGOS.m in Sources */,
 				0089682E2486DA5600DC48C2 /* BSGSerialization.m in Sources */,
 				015F528725C15BB7000D1915 /* MRCCanary.m in Sources */,
 				0089686E2486DA9500DC48C2 /* BugsnagEvent.m in Sources */,
@@ -3763,6 +3784,7 @@
 				CBBDE939280068D40070DCD3 /* BSGJSONSerialization.m in Sources */,
 				CBBDE9A02800699C0070DCD3 /* BSG_KSCrashSentry_Signal.c in Sources */,
 				CB7FEA45282BD8F700D5356A /* BSGRunContext.m in Sources */,
+				CB9C1EEC2863007C00569006 /* BSGOS.m in Sources */,
 				CBBDE96A280069290070DCD3 /* BugsnagEvent.m in Sources */,
 				CBBDE91B2800687B0070DCD3 /* BSGNotificationBreadcrumbs.m in Sources */,
 				CBBDE9662800691A0070DCD3 /* BugsnagBreadcrumb.m in Sources */,
