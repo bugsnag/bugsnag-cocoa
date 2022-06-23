@@ -43,6 +43,7 @@
 }
 
 - (void)run {
+    [[NSThread mainThread] setName:@"потік"];
     [self crash];
 }
 

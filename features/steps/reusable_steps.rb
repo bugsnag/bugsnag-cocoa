@@ -10,8 +10,16 @@ Then(/^on (iOS|macOS|watchOS), (.+)/) do |platform, step_text|
   step(step_text) if platform.downcase == Maze::Helper.get_current_platform
 end
 
-Then(/^on (iOS|macOS) (\d+) and later, (.+)/) do |platform, version, step_text|
-  step(step_text) if platform.downcase == Maze::Helper.get_current_platform && Maze.config.os_version >= version
+Then(/^on (\w+) ([0-9.]+) and later, (.+)/) do |test_platform, test_version, step_text|
+  actual_platform = Maze::Helper.get_current_platform
+  unless %w[ios macos].include? actual_platform
+    raise "Unexpected platform #{actual_platform}, this step can only handle ios and macos"
+  end
+
+  actual_version = Maze.config.os_version
+  next unless test_platform.downcase == actual_platform && actual_version >= test_version.to_f
+
+  step(step_text)
 end
 
 Then(/^on !(iOS|macOS|watchOS), (.+)/) do |platform, step_text|

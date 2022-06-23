@@ -31,4 +31,7 @@
 // Capabilities dependent upon previously defined capabilities
 #define BSG_HAVE_APP_HANG_DETECTION           (BSG_HAVE_MACH_THREADS)
 
+// Reference: http://iphonedevwiki.net/index.php/CoreFoundation.framework
+#define kCFCoreFoundationVersionNumber_iOS_12_0 1556.00
+
 #endif /* BSGDefines_h */

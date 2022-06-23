@@ -15,6 +15,7 @@
 @implementation CxxBareThrowScenario
 
 - (void)run {
+    [[NSThread mainThread] setName:@"œ´¨ø“‘"];
     try {
         throw;
     } catch (...) {
