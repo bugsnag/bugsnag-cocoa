@@ -46,7 +46,6 @@
 #include "BSG_KSCrashSentry.h"
 #include "BSG_Symbolicate.h"
 #include "BSGDefines.h"
-#include "BSGOS.h"
 
 #include <mach-o/loader.h>
 #include <sys/time.h>
@@ -932,9 +931,7 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
 
         // Fetching the current thread name is only safe as of libpthread-330.201.1
         // which was used in ios+tvos 12 and macos 10.14
-        if (bsgos_available(BSGOS_IOS, 12, 0) ||
-            bsgos_available(BSGOS_TVOS, 12, 0) ||
-            bsgos_available(BSGOS_MACOS, 10, 14)) {
+        if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_12_0) {
             if (isSelfThread) {
                 char buff[100];
                 bsg_ksmachgetThreadName(thread, buff, sizeof(buff));
