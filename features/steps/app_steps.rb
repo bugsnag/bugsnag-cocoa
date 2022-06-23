@@ -4,31 +4,9 @@ end
 
 When("I run {string} and relaunch the crashed app") do |event_type|
   steps %(
+    Given I ignore invalid sessions
     Given I run \"#{event_type}\"
     And I relaunch the app after a crash
-  )
-end
-
-When("I run the configured scenario and relaunch the crashed app") do
-  case Maze::Helper.get_current_platform
-  when 'ios'
-    run_and_relaunch
-  when 'macos'
-    $scenario_mode = $last_scenario[:scenario_mode]
-    execute_command($last_scenario[:action], $last_scenario[:scenario_name])
-  when 'watchos'
-    run_watchos_app
-    sleep 10 # we don't have a way to check if the app is still running
-  else
-    raise "Unsupported platform: #{Maze::Helper.get_current_platform}"
-  end
-end
-
-def run_and_relaunch
-  steps %(
-    Given I click the element "run_scenario"
-    And the app is not running
-    Then I kill and relaunch the app
   )
 end
 
