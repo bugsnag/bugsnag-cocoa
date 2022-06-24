@@ -78,7 +78,7 @@ static struct {
     // Contains the user-specified metadata, including the user tab from config.
     char *metadataJSON;
     // Contains the Bugsnag configuration, all under the "config" tab.
-    char *configPath;
+    char *configJSON;
     // Contains notifier state under "deviceState", and crash-specific
     // information under "crash".
     char *stateJSON;
@@ -100,7 +100,7 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
     BSGSessionWriteCrashReport(writer);
 
     if (isCrash) {
-        writer->addJSONFileElement(writer, "config", bsg_g_bugsnag_data.configPath);
+        writer->addJSONElement(writer, "config", bsg_g_bugsnag_data.configJSON);
         writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metadataJSON);
         writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
 
@@ -193,8 +193,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         NSString *crashPath = fileLocations.flagHandledCrash;
         crashSentinelPath = strdup(crashPath.fileSystemRepresentation);
         
-        bsg_g_bugsnag_data.configPath = strdup(fileLocations.configuration.fileSystemRepresentation);
-        
         self.stateEventBlocks = [NSMutableArray new];
         self.extraRuntimeInfo = [NSMutableDictionary new];
 
@@ -222,14 +220,18 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     [self.configuration validate];
 
-    BSGRunContextInit(BSGFileLocations.current.runContext.fileSystemRepresentation);
+    BSGRunContextInit(BSGFileLocations.current.runContext);
     BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
     [self computeDidCrashLastLaunch];
 
     // These files can only be overwritten once the previous contents have been read; see -generateEventForLastLaunchWithError:
-    BSGJSONWriteToFileAtomically(self.configuration.dictionaryRepresentation, BSGFileLocations.current.configuration, nil);
+    NSData *configData = BSGJSONDataFromDictionary(self.configuration.dictionaryRepresentation, NULL);
+    [configData writeToFile:BSGFileLocations.current.configuration options:NSDataWritingAtomic error:nil];
+    if ((bsg_g_bugsnag_data.configJSON = calloc(1, configData.length + 1))) {
+        memcpy(bsg_g_bugsnag_data.configJSON, configData.bytes, configData.length);
+    }
     [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:BSGFileLocations.current.metadata];
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
     [self.breadcrumbs removeAllBreadcrumbs];
