@@ -82,21 +82,25 @@
     lastRunContext.isDebuggerAttached = true;
     lastRunContext.isTerminating = true;
     lastRunContext.isForeground = true;
+    lastRunContext.isActive = true;
     XCTAssertFalse(BSGRunContextWasKilled());
 
     lastRunContext.isDebuggerAttached = true;
     lastRunContext.isTerminating = true;
     lastRunContext.isForeground = false;
+    lastRunContext.isActive = false;
     XCTAssertFalse(BSGRunContextWasKilled());
 
     lastRunContext.isDebuggerAttached = true;
     lastRunContext.isTerminating = false;
     lastRunContext.isForeground = true;
+    lastRunContext.isActive = true;
     XCTAssertFalse(BSGRunContextWasKilled());
 
     lastRunContext.isDebuggerAttached = true;
     lastRunContext.isTerminating = false;
     lastRunContext.isForeground = false;
+    lastRunContext.isActive = false;
     XCTAssertFalse(BSGRunContextWasKilled());
 
     // Debugger inactive
@@ -104,16 +108,25 @@
     lastRunContext.isDebuggerAttached = false;
     lastRunContext.isTerminating = true;
     lastRunContext.isForeground = true;
+    lastRunContext.isActive = true;
     XCTAssertFalse(BSGRunContextWasKilled());
 
     lastRunContext.isDebuggerAttached = false;
     lastRunContext.isTerminating = true;
     lastRunContext.isForeground = false;
+    lastRunContext.isActive = false;
     XCTAssertFalse(BSGRunContextWasKilled());
 
     lastRunContext.isDebuggerAttached = false;
     lastRunContext.isTerminating = false;
     lastRunContext.isForeground = true;
+    lastRunContext.isActive = false;
+    XCTAssertFalse(BSGRunContextWasKilled());
+
+    lastRunContext.isDebuggerAttached = false;
+    lastRunContext.isTerminating = false;
+    lastRunContext.isForeground = true;
+    lastRunContext.isActive = true;
     XCTAssertTrue(BSGRunContextWasKilled());
     
     uuid_generate(lastRunContext.machoUUID);
@@ -127,6 +140,7 @@
     lastRunContext.isDebuggerAttached = false;
     lastRunContext.isTerminating = false;
     lastRunContext.isForeground = false;
+    lastRunContext.isActive = false;
     XCTAssertFalse(BSGRunContextWasKilled());
     
     bsg_lastRunContext = oldContext;

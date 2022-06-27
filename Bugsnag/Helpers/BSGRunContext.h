@@ -19,13 +19,14 @@
 // During development this is not strictly necessary since last run's data will
 // not be loaded if the struct's size has changed.
 //
-#define BSGRUNCONTEXT_VERSION 2
+#define BSGRUNCONTEXT_VERSION 3
 
 struct BSGRunContext {
     long structVersion;
     bool isDebuggerAttached;
     bool isLaunching;
     bool isForeground;
+    bool isActive;
     bool isTerminating;
     long thermalState;
     uint64_t bootTime;
@@ -40,6 +41,8 @@ struct BSGRunContext {
 #endif
 #if TARGET_OS_IOS
     long lastKnownOrientation;
+#endif
+#if BSG_HAVE_OOM_DETECTION
     dispatch_source_memorypressure_flags_t memoryPressure;
 #endif
     double timestamp __attribute__((aligned(8)));

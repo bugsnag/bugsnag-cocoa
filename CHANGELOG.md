@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Ignore OOMs that occur while the app is inactive, reverting an inadvertent change in v6.16.4.
+  [#1416](https://github.com/bugsnag/bugsnag-cocoa/pull/1416)
+
 ## 6.18.1 (2022-06-22)
 
 ### Bug fixes

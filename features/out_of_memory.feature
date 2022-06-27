@@ -104,3 +104,8 @@ Feature: Out of memory errors
     And I wait to receive an error
     Then the error is an OOM event
     And the event "user.id" is not null
+
+  Scenario: Out of memory errors are not reported from UIApplicationStateInactive
+    Given I run "OOMInactiveScenario" and relaunch the crashed app
+    And I configure Bugsnag for "OOMInactiveScenario"
+    Then I should receive no errors
