@@ -22,18 +22,6 @@ jobs:
           git config user.name "Bugsnag Bot"
           git config user.email notifiers@bugsnag.com
 
-      - uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
-
-      - name: Bundle install
-        run: |
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-
       - name: Update docs
         run: make docs
 
