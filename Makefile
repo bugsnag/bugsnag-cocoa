@@ -224,7 +224,7 @@ archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip
 
 docs: ## Generate or update HTML documentation
 	@rm -rf docs/*
-	@bundle exec jazzy
+	@jazzy
 ifneq ($(wildcard docs/.git),)
 	@cd docs && git add --all . && git commit -m "Docs update for $(PRESET_VERSION) release"
 endif
