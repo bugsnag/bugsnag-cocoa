@@ -71,7 +71,7 @@
 
 - (void)testLastLaunchTerminatedUnexpectedly {
     if (!bsg_runContext) {
-        BSGRunContextInit(BSGFileLocations.current.runContext.fileSystemRepresentation);
+        BSGRunContextInit(BSGFileLocations.current.runContext);
     }
     const struct BSGRunContext *oldContext = bsg_lastRunContext;
     struct BSGRunContext lastRunContext = *bsg_runContext;

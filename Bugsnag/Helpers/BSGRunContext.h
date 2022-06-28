@@ -61,7 +61,7 @@ extern const struct BSGRunContext *_Nullable bsg_lastRunContext;
 
 #pragma mark -
 
-void BSGRunContextInit(const char *_Nonnull path);
+void BSGRunContextInit(NSString *_Nonnull path);
 
 #pragma mark -
 

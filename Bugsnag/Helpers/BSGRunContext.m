@@ -10,6 +10,7 @@
 #import "BSGAppKit.h"
 #import "BSGHardware.h"
 #import "BSGUIKit.h"
+#import "BSGUtils.h"
 #import "BSGWatchKit.h"
 #import "BSG_KSLogger.h"
 #import "BSG_KSMach.h"
@@ -413,32 +414,20 @@ struct BSGRunContext *bsg_runContext;
 const struct BSGRunContext *bsg_lastRunContext;
 
 /// Opens the file and disables content protection, returning -1 on error.
-static int OpenFile(const char *path) {
-    int fd = open(path, O_RDWR | O_CREAT, 0600);
+static int OpenFile(NSString *_Nonnull path) {
+    int fd = open(path.fileSystemRepresentation, O_RDWR | O_CREAT, 0600);
     if (fd == -1) {
-        bsg_log_warn(@"Could not open %s", path);
+        bsg_log_warn(@"Could not open %@", path);
         return -1;
     }
     
-    // File content protection can invalidate mappings when a device is
+    // NSFileProtectionComplete invalidates mappings 10 seconds after device is
     // locked, so must be disabled to prevent segfaults when accessing 
     // bsg_runContext
-    
-    // NSURLFileProtectionKey is unavailable in macOS SDKs prior to 11.0
-#if !TARGET_OS_OSX || defined(__MAC_11_0)
-    if (@available(macOS 11.0, *)) {
-        NSError *error = nil;
-        NSURL *url = [NSURL fileURLWithPath:(NSString *_Nonnull)@(path)
-                                isDirectory:NO];
-        
-        if (![url setResourceValue:NSURLFileProtectionNone
-                            forKey:NSURLFileProtectionKey error:&error]) {
-            bsg_log_warn(@"Setting NSURLFileProtectionKey failed: %@", error);
-            close(fd);
-            return -1;
-        }
+    if (!BSGDisableNSFileProtectionComplete(path)) {
+        close(fd);
+        return -1;
     }
-#endif
     
     return fd;
 }
@@ -485,7 +474,7 @@ fail:
     bsg_runContext = &fallback;
 }
 
-void BSGRunContextInit(const char *path) {
+void BSGRunContextInit(NSString *_Nonnull path) {
     int fd = OpenFile(path);
     LoadLastRunContext(fd);
     ResizeAndMapFile(fd);
