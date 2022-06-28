@@ -27,16 +27,20 @@
 #import "BugsnagClient+Private.h"
 
 #import "BSGAppHangDetector.h"
+#import "BSGAppKit.h"
 #import "BSGConnectivity.h"
 #import "BSGCrashSentry.h"
+#import "BSGDefines.h"
 #import "BSGEventUploader.h"
 #import "BSGFileLocations.h"
+#import "BSGHardware.h"
 #import "BSGInternalErrorReporter.h"
 #import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
 #import "BSGNotificationBreadcrumbs.h"
 #import "BSGRunContext.h"
 #import "BSGSerialization.h"
+#import "BSGUIKit.h"
 #import "BSGUtils.h"
 #import "BSG_KSCrashC.h"
 #import "BSG_KSSystemInfo.h"
@@ -64,17 +68,8 @@
 #import "BugsnagSystemState.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
-#import "BSGDefines.h"
-#import "BSGAppKit.h"
-#import "BSGUIKit.h"
-#import "BSGHardware.h"
-
-static NSString *const BSTabCrash = @"crash";
-static NSString *const BSAttributeDepth = @"depth";
 
 static struct {
-    // Contains the state of the event (handled/unhandled)
-    char *handledState;
     // Contains the user-specified metadata, including the user tab from config.
     char *metadataJSON;
     // Contains the Bugsnag configuration, all under the "config" tab.
@@ -86,7 +81,6 @@ static struct {
     void (*onCrash)(const BSG_KSCrashReportWriter *writer);
 } bsg_g_bugsnag_data;
 
-static char *watchdogSentinelPath = NULL;
 static char *crashSentinelPath;
 
 /**
@@ -118,10 +112,6 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 
         BugsnagBreadcrumbsWriteCrashReport(writer);
 
-        if (watchdogSentinelPath != NULL) {
-            // Delete the file to indicate a handled termination
-            unlink(watchdogSentinelPath);
-        }
         // Create a file to indicate that the crash has been handled by
         // the library. This exists in case the subsequent `onCrash` handler
         // crashes or otherwise corrupts the crash report file.
