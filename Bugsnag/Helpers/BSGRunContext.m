@@ -10,6 +10,7 @@
 #import "BSGAppKit.h"
 #import "BSGHardware.h"
 #import "BSGUIKit.h"
+#import "BSGUtils.h"
 #import "BSGWatchKit.h"
 #import "BSG_KSLogger.h"
 #import "BSG_KSMach.h"
@@ -38,7 +39,11 @@
 #pragma mark Forward declarations
 
 static uint64_t GetBootTime(void);
+static bool GetIsActive(void);
 static bool GetIsForeground(void);
+#if TARGET_OS_IOS || TARGET_OS_TV
+static UIApplication * GetUIApplication(void);
+#endif
 static void InstallTimer(void);
 static void UpdateAvailableMemory(void);
 
@@ -66,6 +71,14 @@ static void InitRunContext() {
         uuid_copy(bsg_runContext->machoUUID, image->uuid);
     }
     
+    if ([NSThread isMainThread]) {
+        bsg_runContext->isActive = GetIsActive();
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            bsg_runContext->isActive = GetIsActive();
+        });
+    }
+    
     BSGRunContextUpdateTimestamp();
     InstallTimer();
     
@@ -82,6 +95,22 @@ static uint64_t GetBootTime() {
     int ret = sysctl((int[]){CTL_KERN, KERN_BOOTTIME}, 2, &tv, &len, NULL, 0);
     if (ret == -1) return 0;
     return (uint64_t)tv.tv_sec * USEC_PER_SEC + (uint64_t)tv.tv_usec;
+}
+
+static bool GetIsActive() {
+#if TARGET_OS_OSX
+    return GetIsForeground();
+#endif
+
+#if TARGET_OS_IOS || TARGET_OS_TV
+    UIApplication *app = GetUIApplication();
+    return app && app.applicationState == UIApplicationStateActive;
+#endif
+
+#if TARGET_OS_WATCH
+    WKExtension *ext = [WKExtension sharedExtension];
+    return ext && ext.applicationState == WKApplicationStateActive;
+#endif
 }
 
 static bool GetIsForeground() {
@@ -115,17 +144,7 @@ static bool GetIsForeground() {
 #endif
 
 #if TARGET_OS_IOS || TARGET_OS_TV
-    // +sharedApplication is unavailable to app extensions
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
-        // Returning "foreground" seems wrong but matches what
-        // +[BSG_KSSystemInfo currentAppState] used to return
-        return true;
-    }
-
-    // Using performSelector: to avoid a compile-time check that
-    // +sharedApplication is not called from app extensions
-    UIApplication *application = [UIAPPLICATION performSelector:
-                                  @selector(sharedApplication)];
+    UIApplication *application = GetUIApplication();
 
     // There will be no UIApplication if UIApplicationMain() has not yet been
     // called - e.g. from a SwiftUI app's init() function or UIKit app's main()
@@ -147,13 +166,24 @@ static bool GetIsForeground() {
 #endif
 
 #if TARGET_OS_WATCH
-    if (@available(watchOS 3.0, *)) {
-        return [WKExtension sharedExtension].applicationState != WKApplicationStateBackground;
-    } else {
-        return false;
-    }
+    WKExtension *ext = [WKExtension sharedExtension];
+    return ext && ext.applicationState != WKApplicationStateBackground;
 #endif
 }
+
+#if TARGET_OS_IOS || TARGET_OS_TV
+
+static UIApplication * GetUIApplication(void) {
+    // +sharedApplication is unavailable to app extensions
+    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+        return nil;
+    }
+    // Using performSelector: to avoid a compile-time check that
+    // +sharedApplication is not called from app extensions
+    return [UIAPPLICATION performSelector:@selector(sharedApplication)];
+}
+
+#endif
 
 static void InstallTimer() {
     static dispatch_source_t timer;
@@ -177,17 +207,27 @@ static void InstallTimer() {
 
 #pragma mark - Observation
 
-#if TARGET_OS_IOS || TARGET_OS_OSX
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_OSX
+
+static void NoteAppActive() {
+    bsg_runContext->isActive = YES;
+    bsg_runContext->isForeground = YES;
+    BSGRunContextUpdateTimestamp();
+}
 
 static void NoteAppBackground() {
+    bsg_runContext->isActive = NO;
     bsg_runContext->isForeground = NO;
     BSGRunContextUpdateTimestamp();
 }
 
-static void NoteAppForeground() {
+#if !TARGET_OS_OSX
+static void NoteAppInactive() {
+    bsg_runContext->isActive = NO;
     bsg_runContext->isForeground = YES;
     BSGRunContextUpdateTimestamp();
 }
+#endif
 
 static void NoteAppWillTerminate() {
     bsg_runContext->isTerminating = YES;
@@ -228,7 +268,7 @@ static void NoteThermalState(__unused CFNotificationCenterRef center,
     BSGRunContextUpdateTimestamp();
 }
 
-#if TARGET_OS_IOS
+#if BSG_HAVE_OOM_DETECTION
 
 static void ObserveMemoryPressure() {
     // DISPATCH_SOURCE_TYPE_MEMORYPRESSURE arrives slightly sooner than
@@ -258,15 +298,16 @@ static void AddObservers() {
     center, NULL, function, (__bridge CFStringRef)name, NULL, \
     CFNotificationSuspensionBehaviorDeliverImmediately)
     
-#if TARGET_OS_IOS
-    OBSERVE(UIApplicationDidBecomeActiveNotification, NoteAppForeground);
+#if TARGET_OS_IOS || TARGET_OS_TV
+    OBSERVE(UIApplicationDidBecomeActiveNotification, NoteAppActive);
     OBSERVE(UIApplicationDidEnterBackgroundNotification, NoteAppBackground);
-    OBSERVE(UIApplicationWillEnterForegroundNotification, NoteAppForeground);
+    OBSERVE(UIApplicationWillEnterForegroundNotification, NoteAppInactive);
+    OBSERVE(UIApplicationWillResignActiveNotification, NoteAppInactive);
     OBSERVE(UIApplicationWillTerminateNotification, NoteAppWillTerminate);
 #endif
     
 #if TARGET_OS_OSX
-    OBSERVE(NSApplicationDidBecomeActiveNotification, NoteAppForeground);
+    OBSERVE(NSApplicationDidBecomeActiveNotification, NoteAppActive);
     OBSERVE(NSApplicationDidResignActiveNotification, NoteAppBackground);
     OBSERVE(NSApplicationWillTerminateNotification, NoteAppWillTerminate);
 #endif
@@ -288,7 +329,9 @@ static void AddObservers() {
     OBSERVE(UIDeviceOrientationDidChangeNotification, NoteOrientation);
     OBSERVE(UIDeviceBatteryLevelDidChangeNotification, NoteBatteryLevel);
     OBSERVE(UIDeviceBatteryStateDidChangeNotification, NoteBatteryState);
+#endif
 
+#if BSG_HAVE_OOM_DETECTION
     ObserveMemoryPressure();
 #endif
 }
@@ -314,6 +357,7 @@ static void UpdateAvailableMemory() {
 #pragma mark - Kill detection
 
 #if !TARGET_OS_WATCH
+
 bool BSGRunContextWasKilled() {
     // App extensions have a different lifecycle and the heuristic used for
     // finding app terminations rooted in fixable code does not apply
@@ -333,12 +377,6 @@ bool BSGRunContextWasKilled() {
         return NO; // The debugger may have killed the app
     }
     
-    // Once the app is in the background we cannot determine between good (user
-    // swiping up to close app) and bad (OS killing the app) terminations.
-    if (!bsg_lastRunContext->isForeground) {
-        return NO;
-    }
-    
     if (bsg_lastRunContext->bootTime != bsg_runContext->bootTime) {
         return NO; // The app may have been terminated due to the reboot
     }
@@ -348,8 +386,22 @@ bool BSGRunContextWasKilled() {
         return NO;
     }
     
+    // Once the app is in the background we cannot determine between good (user
+    // closed from the app switcher) and bad (OS killed the app) terminations.
+    if (!bsg_lastRunContext->isForeground) {
+        bsg_log_debug(@"Ignoring kill that occurred while in background");
+        return NO;
+    }
+    
+    // PLAT-3259: Do not report OOMs from UIApplicationStateInactive.
+    if (!bsg_lastRunContext->isActive) {
+        bsg_log_debug(@"Ignoring kill that occurred while inactive");
+        return NO;
+    }
+    
     return YES;
 }
+
 #endif
 
 
@@ -362,32 +414,20 @@ struct BSGRunContext *bsg_runContext;
 const struct BSGRunContext *bsg_lastRunContext;
 
 /// Opens the file and disables content protection, returning -1 on error.
-static int OpenFile(const char *path) {
-    int fd = open(path, O_RDWR | O_CREAT, 0600);
+static int OpenFile(NSString *_Nonnull path) {
+    int fd = open(path.fileSystemRepresentation, O_RDWR | O_CREAT, 0600);
     if (fd == -1) {
-        bsg_log_warn(@"Could not open %s", path);
+        bsg_log_warn(@"Could not open %@", path);
         return -1;
     }
     
-    // File content protection can invalidate mappings when a device is
+    // NSFileProtectionComplete invalidates mappings 10 seconds after device is
     // locked, so must be disabled to prevent segfaults when accessing 
     // bsg_runContext
-    
-    // NSURLFileProtectionKey is unavailable in macOS SDKs prior to 11.0
-#if !TARGET_OS_OSX || defined(__MAC_11_0)
-    if (@available(macOS 11.0, *)) {
-        NSError *error = nil;
-        NSURL *url = [NSURL fileURLWithPath:(NSString *_Nonnull)@(path)
-                                isDirectory:NO];
-        
-        if (![url setResourceValue:NSURLFileProtectionNone
-                            forKey:NSURLFileProtectionKey error:&error]) {
-            bsg_log_warn(@"Setting NSURLFileProtectionKey failed: %@", error);
-            close(fd);
-            return -1;
-        }
+    if (!BSGDisableNSFileProtectionComplete(path)) {
+        close(fd);
+        return -1;
     }
-#endif
     
     return fd;
 }
@@ -434,7 +474,7 @@ fail:
     bsg_runContext = &fallback;
 }
 
-void BSGRunContextInit(const char *path) {
+void BSGRunContextInit(NSString *_Nonnull path) {
     int fd = OpenFile(path);
     LoadLastRunContext(fd);
     ResizeAndMapFile(fd);

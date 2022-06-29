@@ -10,6 +10,7 @@
 
 #import "BSGDefines.h"
 #import "BSGFileLocations.h"
+#import "BSGUtils.h"
 #import "BSG_KSCrash.h"
 #import "BSG_KSCrashC.h"
 #import "BSG_KSMach.h"
@@ -37,9 +38,15 @@ void BSGCrashSentryInstall(BugsnagConfiguration *config, BSG_KSReportWriteCallba
         }
     }
 
+    NSString *crashReportsDirectory = BSGFileLocations.current.kscrashReports;
+
+    // NSFileProtectionComplete prevents new crash reports being written when
+    // the device is locked, so must be disabled.
+    BSGDisableNSFileProtectionComplete(crashReportsDirectory);
+
     // In addition to installing crash handlers, -[BSG_KSCrash install:] initializes various
     // subsystems that Bugsnag relies on, so needs to be called even if autoDetectErrors is disabled.
-    if ((![ksCrash install:crashTypes directory:[BSGFileLocations current].kscrashReports] && crashTypes)) {
+    if ((![ksCrash install:crashTypes directory:crashReportsDirectory] && crashTypes)) {
         bsg_log_err(@"Failed to install crash handlers; no exceptions or crashes will be reported");
     }
 }

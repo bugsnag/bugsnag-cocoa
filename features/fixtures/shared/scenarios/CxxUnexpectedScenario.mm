@@ -15,6 +15,7 @@
 @implementation CxxUnexpectedScenario
 
 - (void)run {
+    [[NSThread mainThread] setName:@"BSG MAIN THREAD"];
     std::unexpected();
 }
 

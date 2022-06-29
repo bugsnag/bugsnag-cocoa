@@ -42,6 +42,7 @@
 }
 
 - (void)run  __attribute__((noreturn)) {
+    [[NSThread mainThread] setName:@"メインスレッド"];
     @throw [NSException exceptionWithName:NSGenericException reason:@"An uncaught exception! SCREAM."
                                  userInfo:@{NSLocalizedDescriptionKey: @"I'm in your program, catching your exceptions!"}];
 }

@@ -30,6 +30,15 @@
     [Bugsnag leaveBreadcrumbWithMessage:@"Received memory warning"];
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    UIButton *button = cell.contentView.subviews.firstObject; 
+    [button sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+#pragma mark -
+
 /**
  This method generates an out-of-memory (OOM) exception.  The method of generating this error can be seen in the `OutOfMemoryController` file.
  

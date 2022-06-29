@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## 6.19.0 (2022-06-29)
+
+### Enhancements
+
+* Capture the crashing thread's name when possible.
+  [#1406](https://github.com/bugsnag/bugsnag-cocoa/pull/1406)
+
+### Bug fixes
+
+* Ignore OOMs that occur while the app is inactive, reverting an inadvertent change in v6.16.4.
+  [#1416](https://github.com/bugsnag/bugsnag-cocoa/pull/1416)
+
+* Fix reporting of crashes that occur while device is locked in apps using `NSFileProtectionComplete`.
+  [#1415](https://github.com/bugsnag/bugsnag-cocoa/pull/1415)
+
 ## 6.18.1 (2022-06-22)
 
 ### Bug fixes

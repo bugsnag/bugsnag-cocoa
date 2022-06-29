@@ -119,6 +119,10 @@ bool bsg_kscrashstate_i_loadState(BSG_KSCrash_State *const context,
  */
 bool bsg_kscrashstate_i_saveState(const BSG_KSCrash_State *const state,
                                   const char *const path) {
+
+    // Opening an existing file fails under NSFileProtectionComplete*
+    unlink(path);
+
     int fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
     if (fd < 0) {
         bsg_log_err(@"Could not open file %s for writing: %s", path, strerror(errno));

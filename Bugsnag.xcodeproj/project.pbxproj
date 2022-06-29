@@ -560,6 +560,10 @@
 		010993B1273D2F6200128BBE /* BugsnagFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 010993B0273D2F6100128BBE /* BugsnagFeatureFlagStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		010993B2273D2F6200128BBE /* BugsnagFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 010993B0273D2F6100128BBE /* BugsnagFeatureFlagStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		010993B3273D2F6200128BBE /* BugsnagFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 010993B0273D2F6100128BBE /* BugsnagFeatureFlagStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		010F80C228645B4200D6569E /* BSGDefinesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 010F80C128645B4200D6569E /* BSGDefinesTests.m */; };
+		010F80C328645B4200D6569E /* BSGDefinesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 010F80C128645B4200D6569E /* BSGDefinesTests.m */; };
+		010F80C428645B4200D6569E /* BSGDefinesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 010F80C128645B4200D6569E /* BSGDefinesTests.m */; };
+		010F80C528645B4200D6569E /* BSGDefinesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 010F80C128645B4200D6569E /* BSGDefinesTests.m */; };
 		010FF28425ED2A8D00E4F2B0 /* BSGAppHangDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = 010FF28225ED2A8D00E4F2B0 /* BSGAppHangDetector.h */; };
 		010FF28525ED2A8D00E4F2B0 /* BSGAppHangDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = 010FF28225ED2A8D00E4F2B0 /* BSGAppHangDetector.h */; };
 		010FF28625ED2A8D00E4F2B0 /* BSGAppHangDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = 010FF28225ED2A8D00E4F2B0 /* BSGAppHangDetector.h */; };
@@ -1542,6 +1546,7 @@
 		0109939B273D13D800128BBE /* BSGFeatureFlagStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGFeatureFlagStore.m; sourceTree = "<group>"; };
 		010993A3273D188B00128BBE /* BSGFeatureFlagStoreTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGFeatureFlagStoreTests.m; sourceTree = "<group>"; };
 		010993B0273D2F6100128BBE /* BugsnagFeatureFlagStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagFeatureFlagStore.h; sourceTree = "<group>"; };
+		010F80C128645B4200D6569E /* BSGDefinesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGDefinesTests.m; sourceTree = "<group>"; };
 		010FF28225ED2A8D00E4F2B0 /* BSGAppHangDetector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGAppHangDetector.h; sourceTree = "<group>"; };
 		010FF28325ED2A8D00E4F2B0 /* BSGAppHangDetector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGAppHangDetector.m; sourceTree = "<group>"; };
 		012482A225627B51003F7243 /* UIKitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIKitTests.m; sourceTree = "<group>"; };
@@ -2017,6 +2022,7 @@
 				008966BD2486D43500DC48C2 /* BSGClientObserverTests.m */,
 				00896A3F2486DBDD00DC48C2 /* BSGConfigurationBuilderTests.m */,
 				008966C62486D43600DC48C2 /* BSGConnectivityTest.m */,
+				010F80C128645B4200D6569E /* BSGDefinesTests.m */,
 				01BDB1CE25DEBF4600A91FAF /* BSGEventUploadKSCrashReportOperationTests.m */,
 				010993A3273D188B00128BBE /* BSGFeatureFlagStoreTests.m */,
 				01847DAB26441A5E00ADA4C7 /* BSGInternalErrorReporterTests.m */,
@@ -2071,17 +2077,17 @@
 				016875C5258D003200DFFF69 /* NSUserDefaultsStub.m */,
 				01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */,
 				008966B72486D43500DC48C2 /* report.json */,
-				CB6419B325A7419400613D25 /* v0_files */,
 				004E35392487B375007FBAE4 /* Tests-Bridging-Header.h */,
 				CBA22499251E429C00B87416 /* TestSupport.h */,
 				CBA2249A251E429C00B87416 /* TestSupport.m */,
 				01935AE0275E68E9007498B3 /* UIApplicationStub.h */,
 				01935AE1275E68E9007498B3 /* UIApplicationStub.m */,
+				012482A225627B51003F7243 /* UIKitTests.m */,
 				013D9CCF26C5262F0077F0AD /* UISceneStub.h */,
 				013D9CD026C5262F0077F0AD /* UISceneStub.m */,
 				01E8765C256684E700F4B70A /* URLSessionMock.h */,
 				01E8765D256684E700F4B70A /* URLSessionMock.m */,
-				012482A225627B51003F7243 /* UIKitTests.m */,
+				CB6419B325A7419400613D25 /* v0_files */,
 			);
 			path = BugsnagTests;
 			sourceTree = "<group>";
@@ -3208,6 +3214,7 @@
 				008967872486D43700DC48C2 /* KSCrashSentry_NSException_Tests.m in Sources */,
 				0089679C2486D43700DC48C2 /* KSFileUtils_Tests.m in Sources */,
 				008966EE2486D43700DC48C2 /* BugsnagClientPayloadInfoTest.m in Sources */,
+				010F80C228645B4200D6569E /* BSGDefinesTests.m in Sources */,
 				01BDB1F525DEBFB200A91FAF /* BSGEventUploadKSCrashReportOperationTests.m in Sources */,
 				008967782486D43700DC48C2 /* BSG_KSMachHeadersTests.m in Sources */,
 				0089673F2486D43700DC48C2 /* BugsnagAppTest.m in Sources */,
@@ -3391,6 +3398,7 @@
 				004E35402487B3BE007FBAE4 /* BugsnagSwiftConfigurationTests.swift in Sources */,
 				008966F52486D43700DC48C2 /* BugsnagThreadTests.m in Sources */,
 				0089679D2486D43700DC48C2 /* KSFileUtils_Tests.m in Sources */,
+				010F80C328645B4200D6569E /* BSGDefinesTests.m in Sources */,
 				008967A32486D43700DC48C2 /* KSCrashSentry_Signal_Tests.m in Sources */,
 				010993A5273D188B00128BBE /* BSGFeatureFlagStoreTests.m in Sources */,
 				004E353B2487B3B3007FBAE4 /* BugsnagSwiftPublicAPITests.swift in Sources */,
@@ -3514,6 +3522,7 @@
 				0089679B2486D43700DC48C2 /* FileBasedTestCase.m in Sources */,
 				008967922486D43700DC48C2 /* KSJSONCodec_Tests.m in Sources */,
 				008967742486D43700DC48C2 /* KSSysCtl_Tests.m in Sources */,
+				010F80C428645B4200D6569E /* BSGDefinesTests.m in Sources */,
 				CBDD6D0F25AC3EFF00A2E12B /* BSGStorageMigratorTests.m in Sources */,
 				008967502486D43700DC48C2 /* BugsnagPluginTest.m in Sources */,
 				008967142486D43700DC48C2 /* BugsnagEventTests.m in Sources */,
@@ -3797,6 +3806,7 @@
 				CB28F0B028294D4F003AB200 /* KSFileUtils_Tests.m in Sources */,
 				CB28F0DC282A4BEE003AB200 /* BugsnagSessionTrackerTest.m in Sources */,
 				CB28F0B728294DE1003AB200 /* BSGFeatureFlagStoreTests.m in Sources */,
+				010F80C528645B4200D6569E /* BSGDefinesTests.m in Sources */,
 				CB28F0A028294D44003AB200 /* BSG_KSFileTests.m in Sources */,
 				CB28F09E28294D44003AB200 /* BSG_KSMachHeadersTests.m in Sources */,
 				CB28F0D0282A4A2E003AB200 /* BugsnagClientPayloadInfoTest.m in Sources */,
