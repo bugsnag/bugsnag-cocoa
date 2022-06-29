@@ -1,7 +1,12 @@
 Changelog
 =========
 
-## TBD
+## 6.19.0 (2022-06-29)
+
+### Enhancements
+
+* Capture the crashing thread's name when possible.
+  [#1406](https://github.com/bugsnag/bugsnag-cocoa/pull/1406)
 
 ### Bug fixes
 
