@@ -345,15 +345,17 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
             if (self.configuration.enabledErrorTypes.thermalKills) {
                 self.eventFromLastLaunch = [self generateThermalKillEvent];
             }
+            didCrash = YES;
+        }
 #if BSG_HAVE_OOM_DETECTION
-        } else {
+        else {
             bsg_log_info(@"Last run terminated unexpectedly; possible Out Of Memory.");
             if (self.configuration.enabledErrorTypes.ooms) {
                 self.eventFromLastLaunch = [self generateOutOfMemoryEvent];
             }
-#endif
+            didCrash = YES;
         }
-        didCrash = YES;
+#endif
     }
 #endif
     
@@ -1164,7 +1166,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         deviceMetadata[BSGKeyCharging] = BSGIsBatteryCharging(bsg_lastRunContext->batteryState) ? @YES : @NO;
     }
 #endif
-#if TARGET_OS_IOS
+#if BSG_HAVE_OOM_DETECTION
     // Don't set to @NO because server may interpret any non-nil value as meaning true
     deviceMetadata[BSGKeyLowMemoryWarning] = BSGRunContextWasMemoryWarning() ? @YES : nil;
 #endif
