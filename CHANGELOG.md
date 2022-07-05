@@ -3,6 +3,11 @@ Changelog
 
 ## TBD
 
+### Enhancements
+
+* Send usage telemetry to Bugsnag for product improvement purposes. Can be disabled using `configuration.telemetry`.
+  [#1422](https://github.com/bugsnag/bugsnag-cocoa/pull/1422)
+
 ### Bug fixes
 
 * Prevent reporting of OOMs on simulators. 
