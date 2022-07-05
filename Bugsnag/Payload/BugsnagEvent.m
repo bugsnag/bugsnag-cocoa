@@ -208,6 +208,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             return [BugsnagThread threadFromJson:dict];
         }) ?: @[];
 
+        _usage = BSGDeserializeDict(json[BSGKeyUsage]);
+
         _user = BSGDeserializeObject(json[BSGKeyUser], ^id _Nullable(NSDictionary * _Nonnull dict) {
             return [[BugsnagUser alloc] initWithDictionary:dict];
         }) ?: [[BugsnagUser alloc] init];
@@ -393,6 +395,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     obj.customException = BSGParseCustomException(event, [errors[0].errorClass copy], [errors[0].errorMessage copy]);
     obj.error = error;
     obj.depth = depth;
+    obj.usage = [event valueForKeyPath:@"user.usage"];
     return obj;
 }
 
@@ -616,6 +619,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     event[BSGKeyUser] = [self.user toJson];
 
     event[BSGKeySession] = self.session ? BSGSessionToEventJson((BugsnagSession *_Nonnull)self.session) : nil;
+
+    event[BSGKeyUsage] = self.usage;
 
     return event;
 }

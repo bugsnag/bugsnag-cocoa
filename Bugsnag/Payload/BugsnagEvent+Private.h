@@ -46,6 +46,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// An array of string representations of BSGErrorType describing the types of stackframe / stacktrace in this error.
 @property (readonly, nonatomic) NSArray<NSString *> *stacktraceTypes;
 
+/// Usage telemetry info, from BSGTelemetryCreateUsage()
+@property (readwrite, nullable, nonatomic) NSDictionary *usage;
+
 @property (readwrite, nonnull, nonatomic) BugsnagUser *user;
 
 - (instancetype)initWithApp:(BugsnagAppWithState *)app

@@ -1,4 +1,4 @@
-Feature: Internal error reporting
+Feature: Telemetry
 
   Background:
     Given I clear all persistent data
@@ -27,3 +27,8 @@ Feature: Internal error reporting
     And I set the app to "internalErrorsDisabled" mode
     And I configure Bugsnag for "InvalidCrashReportScenario"
     Then I should receive no requests
+
+  Scenario: Usage telemetry is not send if disabled
+    When I run "TelemetryUsageDisabledScenario"
+    And I wait to receive an error
+    Then the event "usage" is null

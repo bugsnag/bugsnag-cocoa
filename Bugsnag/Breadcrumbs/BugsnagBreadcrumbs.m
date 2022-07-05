@@ -121,9 +121,7 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
     if (!newItem) {
         return;
     }
-    [data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, __unused BOOL *stop) {
-        memcpy(newItem->jsonData + byteRange.location, bytes, byteRange.length);
-    }];
+    [data getBytes:newItem->jsonData length:data.length];
     
     @synchronized (self) {
         const unsigned int fileNumber = self.nextFileNumber;

@@ -257,13 +257,10 @@
 // Metadata is stored in memory as a JSON encoded C string so that it is accessible at crash time.
 //
 - (void)writeData:(NSData *)data toBuffer:(char **)buffer {
-    char *newbuffer = calloc(1, data.length + 1);
+    char *newbuffer = BSGCStringWithData(data);
     if (!newbuffer) {
         return;
     }
-    [data enumerateByteRangesUsingBlock:^(const void * _Nonnull bytes, NSRange byteRange, __unused BOOL * _Nonnull stop) {
-        memcpy(newbuffer + byteRange.location, bytes, byteRange.length);
-    }];
     char *oldbuffer = *buffer;
     *buffer = newbuffer;
     free(oldbuffer);

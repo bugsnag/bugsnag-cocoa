@@ -59,6 +59,7 @@
 		01221E55282E5538008095C3 /* MaxPersistedSessionsScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01221E54282E5538008095C3 /* MaxPersistedSessionsScenario.m */; };
 		0163BFA72583B3CF008DC28B /* DiscardClassesHandledExceptionRegexScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0163BFA62583B3CF008DC28B /* DiscardClassesHandledExceptionRegexScenario.swift */; };
 		017B4134276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */; };
+		017DCFA028743FB5000ECB22 /* TelemetryUsageDisabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017DCF9F28743FB5000ECB22 /* TelemetryUsageDisabledScenario.swift */; };
 		01847DD626453D4E00ADA4C7 /* InvalidCrashReportScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01847DD526453D4E00ADA4C7 /* InvalidCrashReportScenario.m */; };
 		01AF6A53258A112F00FFC803 /* BareboneTestHandledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A52258A112F00FFC803 /* BareboneTestHandledScenario.swift */; };
 		01AFCFCB282CE9F700D48D45 /* OldSessionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AFCFCA282CE9F700D48D45 /* OldSessionScenario.m */; };
@@ -246,6 +247,7 @@
 		01221E54282E5538008095C3 /* MaxPersistedSessionsScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MaxPersistedSessionsScenario.m; sourceTree = "<group>"; };
 		0163BFA62583B3CF008DC28B /* DiscardClassesHandledExceptionRegexScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardClassesHandledExceptionRegexScenario.swift; sourceTree = "<group>"; };
 		017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnSendErrorPersistenceScenario.m; sourceTree = "<group>"; };
+		017DCF9F28743FB5000ECB22 /* TelemetryUsageDisabledScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryUsageDisabledScenario.swift; sourceTree = "<group>"; };
 		01847DD526453D4E00ADA4C7 /* InvalidCrashReportScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InvalidCrashReportScenario.m; sourceTree = "<group>"; };
 		01AF6A52258A112F00FFC803 /* BareboneTestHandledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestHandledScenario.swift; sourceTree = "<group>"; };
 		01AFCFCA282CE9F700D48D45 /* OldSessionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OldSessionScenario.m; sourceTree = "<group>"; };
@@ -605,6 +607,7 @@
 				8AF6FD76225E3F870056EF9E /* StopSessionOOMScenario.m */,
 				8A840FB921AF5C450041DBFA /* SwiftAssertionScenario.swift */,
 				F4295EEDC00E5ED3C166DBF0 /* SwiftCrashScenario.swift */,
+				017DCF9F28743FB5000ECB22 /* TelemetryUsageDisabledScenario.swift */,
 				01E356BF26CD5B6A00BE3F64 /* ThermalStateBreadcrumbScenario.swift */,
 				F429538D19421F28D8EB0446 /* UndefinedInstructionScenario.m */,
 				010BAB362833D2080003FF36 /* UnhandledErrorChangeInvalidReleaseStageScenario.swift */,
@@ -896,6 +899,7 @@
 				F42958BE5DDACDBF653CA926 /* ManualSessionScenario.m in Sources */,
 				010BAB1D2833CFB00003FF36 /* AppHangDidBecomeActiveScenario.swift in Sources */,
 				01AFCFCB282CE9F700D48D45 /* OldSessionScenario.m in Sources */,
+				017DCFA028743FB5000ECB22 /* TelemetryUsageDisabledScenario.swift in Sources */,
 				E7A324E8247E9D9A008B0052 /* BreadcrumbCallbackOrderScenario.swift in Sources */,
 				F42951BF19D7F35A03273CFB /* AutoSessionScenario.m in Sources */,
 				E700EE4A247D1164008CFFB6 /* UserSessionOverrideScenario.swift in Sources */,

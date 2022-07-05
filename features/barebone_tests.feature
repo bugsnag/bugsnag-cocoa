@@ -70,6 +70,12 @@ Feature: Barebone tests
     And the event "severityReason.type" equals "handledException"
     And the event "severityReason.unhandledOverridden" is true
     And the event "unhandled" is true
+    And the event "usage.callbacks" is not null
+    And the event "usage.config" is not null
+    And the event "usage.config.staticallyLinked" equals the platform-dependent boolean:
+      | ios     | true  |
+      | macos   | @null |
+      | watchos | @null |
     And the event "user.email" equals "foobar@example.com"
     And the event "user.id" equals "foobar"
     And the event "user.name" equals "Foo Bar"
@@ -176,6 +182,8 @@ Feature: Barebone tests
     And on !watchOS, the event "threads.0.state" is not null
     And on watchOS, the event "threads" is an array with 0 elements
     And the event "unhandled" is true
+    And the event "usage.callbacks" is not null
+    And the event "usage.config" is not null
     And the event "user.email" equals "barfoo@example.com"
     And the event "user.id" equals "barfoo"
     And the event "user.name" equals "Bar Foo"

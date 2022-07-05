@@ -10,6 +10,15 @@
 
 #import "BugsnagLogger.h"
 
+char *_Nullable BSGCStringWithData(NSData *_Nullable data) {
+    char *buffer;
+    if (data.length && (buffer = calloc(1, data.length + 1))) {
+        [data getBytes:buffer length:data.length];
+        return buffer;
+    }
+    return NULL;
+}
+
 BOOL BSGDisableNSFileProtectionComplete(NSString *path) {
     // Using NSFileProtection* causes run-time link errors on older versions of macOS.
     // NSURLFileProtectionKey is unavailable in macOS SDKs prior to 11.0

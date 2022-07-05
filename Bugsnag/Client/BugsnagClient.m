@@ -40,6 +40,7 @@
 #import "BSGNotificationBreadcrumbs.h"
 #import "BSGRunContext.h"
 #import "BSGSerialization.h"
+#import "BSGTelemetry.h"
 #import "BSGUIKit.h"
 #import "BSGUtils.h"
 #import "BSG_KSCrashC.h"
@@ -77,6 +78,8 @@ static struct {
     // Contains notifier state under "deviceState", and crash-specific
     // information under "crash".
     char *stateJSON;
+    // Usage telemetry, from BSGTelemetryCreateUsage()
+    char *usageJSON;
     // User onCrash handler
     void (*onCrash)(const BSG_KSCrashReportWriter *writer);
 } bsg_g_bugsnag_data;
@@ -119,6 +122,10 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
         if (fd > -1) {
             close(fd);
         }
+    }
+
+    if (bsg_g_bugsnag_data.usageJSON) {
+        writer->addJSONElement(writer, "usage", bsg_g_bugsnag_data.usageJSON);
     }
 
     if (bsg_g_bugsnag_data.onCrash) {
@@ -216,12 +223,15 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     [self computeDidCrashLastLaunch];
 
+    NSDictionary *usage = BSGTelemetryCreateUsage(self.configuration);
+    if (usage) {
+        bsg_g_bugsnag_data.usageJSON = BSGCStringWithData(BSGJSONDataFromDictionary(usage, NULL));
+    }
+
     // These files can only be overwritten once the previous contents have been read; see -generateEventForLastLaunchWithError:
     NSData *configData = BSGJSONDataFromDictionary(self.configuration.dictionaryRepresentation, NULL);
     [configData writeToFile:BSGFileLocations.current.configuration options:NSDataWritingAtomic error:nil];
-    if ((bsg_g_bugsnag_data.configJSON = calloc(1, configData.length + 1))) {
-        memcpy(bsg_g_bugsnag_data.configJSON, configData.bytes, configData.length);
-    }
+    bsg_g_bugsnag_data.configJSON = BSGCStringWithData(configData);
     [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:BSGFileLocations.current.metadata];
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
     [self.breadcrumbs removeAllBreadcrumbs];
@@ -733,6 +743,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     [self.sessionTracker incrementEventCountUnhandled:event.handledState.unhandled];
     event.session = self.sessionTracker.runningSession;
+
+    event.usage = BSGTelemetryCreateUsage(self.configuration);
 
     if (event.unhandled) {
         // Unhandled Javscript exceptions from React Native result in the app being terminated shortly after the
