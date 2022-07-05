@@ -9,14 +9,14 @@
 #import <Foundation/Foundation.h>
 
 #import "BSGDefines.h"
-
-#if TARGET_OS_IOS
 #import "BSGUIKit.h"
-#endif
 
 __BEGIN_DECLS
 
 NS_ASSUME_NONNULL_BEGIN
+
+/// Returns a heap allocated null-terminated C string with the contents of `data`, or NULL if `data` is nil or empty.
+BSG_PRIVATE char *_Nullable BSGCStringWithData(NSData *_Nullable data);
 
 /// Changes the NSFileProtectionKey attribute of the specified file or directory from NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen.
 /// Has no effect if the specified file or directory does not have NSFileProtectionComplete.

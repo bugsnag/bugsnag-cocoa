@@ -219,9 +219,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     // These files can only be overwritten once the previous contents have been read; see -generateEventForLastLaunchWithError:
     NSData *configData = BSGJSONDataFromDictionary(self.configuration.dictionaryRepresentation, NULL);
     [configData writeToFile:BSGFileLocations.current.configuration options:NSDataWritingAtomic error:nil];
-    if ((bsg_g_bugsnag_data.configJSON = calloc(1, configData.length + 1))) {
-        memcpy(bsg_g_bugsnag_data.configJSON, configData.bytes, configData.length);
-    }
+    bsg_g_bugsnag_data.configJSON = BSGCStringWithData(configData);
     [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:BSGFileLocations.current.metadata];
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
     [self.breadcrumbs removeAllBreadcrumbs];
