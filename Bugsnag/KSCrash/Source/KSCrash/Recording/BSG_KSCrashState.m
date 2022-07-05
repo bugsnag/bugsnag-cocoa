@@ -203,23 +203,21 @@ void bsg_kscrashstate_notifyAppInForeground(const bool isInForeground) {
 }
 
 void bsg_kscrashstate_notifyAppCrash(void) {
-    BSG_KSCrash_State *const state = bsg_g_state;
-    const char *const stateFilePath = bsg_g_stateFilePath;
-    bsg_kscrashstate_updateDurationStats(state);
-    state->crashedThisLaunch = YES;
-    bsg_kscrashstate_i_saveState(state, stateFilePath);
+    bsg_kscrashstate_updateDurationStats();
+    bsg_g_state->crashedThisLaunch = YES;
+    bsg_kscrashstate_i_saveState(bsg_g_state, bsg_g_stateFilePath);
 }
 
-void bsg_kscrashstate_updateDurationStats(BSG_KSCrash_State *const state) {
+void bsg_kscrashstate_updateDurationStats() {
     uint64_t timeNow = mach_absolute_time();
     const double duration = bsg_ksmachtimeDifferenceInSeconds(
-        timeNow, state->lastUpdateDurationsTime ?: state->appLaunchTime);
-    if (state->applicationIsInForeground) {
-        state->foregroundDurationSinceLaunch += duration;
+        timeNow, bsg_g_state->lastUpdateDurationsTime ?: bsg_g_state->appLaunchTime);
+    if (bsg_g_state->applicationIsInForeground) {
+        bsg_g_state->foregroundDurationSinceLaunch += duration;
     } else {
-        state->backgroundDurationSinceLaunch += duration;
+        bsg_g_state->backgroundDurationSinceLaunch += duration;
     }
-    state->lastUpdateDurationsTime = timeNow;
+    bsg_g_state->lastUpdateDurationsTime = timeNow;
 }
 
 const BSG_KSCrash_State *bsg_kscrashstate_currentState(void) {
