@@ -9,6 +9,7 @@
 #import "BSGTelemetry.h"
 
 #import "BSGDefines.h"
+#import "BSG_KSMachHeaders.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagErrorTypes.h"
 
@@ -18,6 +19,10 @@ static NSNumber *_Nullable BooleanValue(BOOL actual, BOOL defaultValue) {
 
 static NSNumber *_Nullable IntegerValue(NSUInteger actual, NSUInteger defaultValue) {
     return actual != defaultValue ? @(actual) : nil;
+}
+
+static BOOL IsStaticallyLinked(void) {
+    return bsg_mach_headers_get_self_image() == bsg_mach_headers_get_main_image();
 }
 
 static NSDictionary * ConfigValue(BugsnagConfiguration *configuration) {
@@ -38,6 +43,7 @@ static NSDictionary * ConfigValue(BugsnagConfiguration *configuration) {
     config[@"maxPersistedSessions"] = IntegerValue(configuration.maxPersistedSessions, defaults.maxPersistedSessions);
     config[@"persistUser"] = BooleanValue(configuration.persistUser, defaults.persistUser);
     config[@"pluginCount"] = IntegerValue(configuration.plugins.count, 0);
+    config[@"staticallyLinked"] = BooleanValue(IsStaticallyLinked(), NO);
     
     BSGEnabledBreadcrumbType enabledBreadcrumbTypes = configuration.enabledBreadcrumbTypes;
     if (enabledBreadcrumbTypes != defaults.enabledBreadcrumbTypes) {

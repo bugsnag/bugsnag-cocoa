@@ -72,6 +72,10 @@ Feature: Barebone tests
     And the event "unhandled" is true
     And the event "usage.callbacks" is not null
     And the event "usage.config" is not null
+    And the event "usage.config.staticallyLinked" equals the platform-dependent boolean:
+      | ios     | true  |
+      | macos   | @null |
+      | watchos | @null |
     And the event "user.email" equals "foobar@example.com"
     And the event "user.id" equals "foobar"
     And the event "user.name" equals "Foo Bar"
