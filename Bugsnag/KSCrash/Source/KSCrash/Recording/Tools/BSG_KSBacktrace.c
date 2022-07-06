@@ -144,13 +144,13 @@ int bsg_ksbt_backtraceThreadState(
     const uintptr_t framePtr = bsg_ksmachframePointer(machineContext);
     if (framePtr == 0 || bsg_ksmachcopyMem((void *)framePtr, &frame,
                                            sizeof(frame)) != KERN_SUCCESS) {
-        return 0;
+        return i;
     }
     for (int j = 1; j < skipEntries; j++) {
         if (frame.previous == 0 ||
             bsg_ksmachcopyMem(frame.previous, &frame, sizeof(frame)) !=
                 KERN_SUCCESS) {
-            return 0;
+            return i;
         }
     }
 
