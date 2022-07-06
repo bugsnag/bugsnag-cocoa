@@ -28,6 +28,7 @@ Podfile.lock
 .swiftpm
 Package.resolved
 /compile_commands.json
+/coverage
 /docs/
 /infer-out
 /oclint.json
