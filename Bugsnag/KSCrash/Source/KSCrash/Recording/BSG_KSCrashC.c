@@ -94,6 +94,7 @@ void bsg_kscrash_init(void) {
     if (!bsg_g_initialised) {
         bsg_g_initialised = true;
         bsg_g_crashReportContext.config.handlingCrashTypes = BSG_KSCrashTypeProductionSafe;
+        bsg_ksmach_init();
     }
 }
 
@@ -111,7 +112,6 @@ BSG_KSCrashType bsg_kscrash_install(const char *const crashReportFilePath,
     }
     bsg_g_installed = 1;
 
-    bsg_ksmach_init();
 
     if (context->config.introspectionRules.enabled) {
         bsg_ksobjc_init();
