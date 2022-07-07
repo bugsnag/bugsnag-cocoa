@@ -58,6 +58,11 @@ Feature: Barebone tests
     And the event "metaData.Exception.info" equals "Some error specific information"
     And the event "metaData.Flags.Testing" is true
     And the event "metaData.Other.password" equals "[REDACTED]"
+    And the event "metaData.nsexception.name" equals "NSRangeException"
+    And the event "metaData.nsexception.reason" equals "-[__NSSingleObjectArrayI objectAtIndex:]: index 1 beyond bounds [0 .. 0]"
+    And the event "metaData.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
+    And the event "metaData.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
+    And the event "metaData.nsexception.userInfo.scenario" equals "BareboneTestHandledScenario"
     And the event "metaData.user.email" is null
     And the event "metaData.user.group" equals "users"
     And the event "metaData.user.id" is null
@@ -166,6 +171,11 @@ Feature: Barebone tests
     And the event "metaData.lastRunInfo.consecutiveLaunchCrashes" equals 1
     And the event "metaData.lastRunInfo.crashed" is true
     And the event "metaData.lastRunInfo.crashedDuringLaunch" is true
+    And the event "metaData.nsexception.name" equals "NSRangeException"
+    And the event "metaData.nsexception.reason" equals "*** -[__NSArray0 objectAtIndex:]: index 42 beyond bounds for empty NSArray"
+    And the event "metaData.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
+    And the event "metaData.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
+    And the event "metaData.nsexception.userInfo.scenario" equals "BareboneTestUnhandledErrorScenario"
     And the event "metaData.user.email" is null
     And the event "metaData.user.group" equals "users"
     And the event "metaData.user.id" is null

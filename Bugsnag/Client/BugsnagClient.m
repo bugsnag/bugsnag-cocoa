@@ -569,80 +569,70 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 // the same number of stackframes are used for each call.
 // see notify:handledState:block for further info
 
-- (void)notifyError:(NSError *_Nonnull)error {
-    bsg_log_debug(@"Notify called with %@", error);
-    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError
-                                                                            severity:BSGSeverityWarning
-                                                                           attrValue:error.domain];
-    [self notify:[self createNSErrorWrapper:error]
-    handledState:state
-           block:^BOOL(BugsnagEvent *_Nonnull event) {
-               return [self appendNSErrorInfo:error block:nil event:event];
-           }];
+- (void)notifyError:(NSError *)error {
+    bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
+    [self notifyErrorOrException:error block:nil];
 }
 
-- (void)notifyError:(NSError *)error
-              block:(BugsnagOnErrorBlock)block
-{
-    bsg_log_debug(@"Notify called with %@", error);
-    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledError
-                                                                            severity:BSGSeverityWarning
-                                                                           attrValue:error.domain];
-    [self notify:[self createNSErrorWrapper:error]
-    handledState:state
-           block:^BOOL(BugsnagEvent *_Nonnull event) {
-               return [self appendNSErrorInfo:error block:block event:event];
-           }];
+- (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
+    bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
+    [self notifyErrorOrException:error block:block];
 }
 
-- (NSException *)createNSErrorWrapper:(NSError *)error {
-    return [NSException exceptionWithName:NSStringFromClass([error class])
-                                   reason:error.localizedDescription
-                                 userInfo:error.userInfo];
+- (void)notify:(NSException *)exception {
+    bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
+    [self notifyErrorOrException:exception block:nil];
 }
 
-- (BOOL)appendNSErrorInfo:(NSError *)error
-                    block:(BugsnagOnErrorBlock)block
-                    event:(BugsnagEvent *)event {
-    event.originalError = error;
+- (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
+    bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
+    [self notifyErrorOrException:exception block:block];
+}
 
-    NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
-    metadata[@"code"] = @(error.code);
-    metadata[@"domain"] = error.domain;
-    metadata[BSGKeyReason] = error.localizedFailureReason;
-    metadata[@"userInfo"] = BSGJSONDictionary(error.userInfo);
-    [event addMetadata:metadata toSection:@"nserror"];
+// MARK: - Notify (Internal)
 
-    if (event.context == nil) { // set context as error domain
-         event.context = [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code];
+- (void)notifyErrorOrException:(id)errorOrException block:(BugsnagOnErrorBlock)block {
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    BugsnagMetadata *metadata = [self.metadata deepCopy];
+    
+    NSArray<NSNumber *> *callStack = nil;
+    NSString *context = self.context;
+    NSString *errorClass = nil;
+    NSString *errorMessage = nil;
+    BugsnagHandledState *handledState = nil;
+    
+    if ([errorOrException isKindOfClass:[NSException class]]) {
+        NSException *exception = errorOrException;
+        callStack = exception.callStackReturnAddresses;
+        errorClass = exception.name;
+        errorMessage = exception.reason;
+        handledState = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+        NSMutableDictionary *meta = [NSMutableDictionary dictionary];
+        meta[@"name"] = exception.name;
+        meta[@"reason"] = exception.reason;
+        meta[@"userInfo"] = exception.userInfo ? BSGJSONDictionary((NSDictionary *_Nonnull)exception.userInfo) : nil;
+        [metadata addMetadata:meta toSection:@"nsexception"];
     }
-
-    if (block) {
-        return block(event);
+    else if ([errorOrException isKindOfClass:[NSError class]]) {
+        NSError *error = errorOrException;
+        if (!context) {
+            context = [NSString stringWithFormat:@"%@ (%ld)", error.domain, (long)error.code];
+        }
+        errorClass = NSStringFromClass([error class]);
+        errorMessage = error.localizedDescription;
+        handledState = [BugsnagHandledState handledStateWithSeverityReason:HandledError];
+        NSMutableDictionary *meta = [NSMutableDictionary dictionary];
+        meta[@"code"] = @(error.code);
+        meta[@"domain"] = error.domain;
+        meta[@"reason"] = error.localizedFailureReason;
+        meta[@"userInfo"] = BSGJSONDictionary(error.userInfo);
+        [metadata addMetadata:meta toSection:@"nserror"];
     }
-    return YES;
-}
-
-- (void)notify:(NSException *_Nonnull)exception {
-    bsg_log_debug(@"Notify called with %@", exception);
-    BugsnagHandledState *state =
-            [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    [self notify:exception handledState:state block:nil];
-}
-
-- (void)notify:(NSException *)exception
-         block:(BugsnagOnErrorBlock)block
-{
-    bsg_log_debug(@"Notify called with %@", exception);
-    BugsnagHandledState *state =
-        [BugsnagHandledState handledStateWithSeverityReason:HandledException];
-    [self notify:exception handledState:state block:block];
-}
-
-- (void)notify:(NSException *)exception
-  handledState:(BugsnagHandledState *_Nonnull)handledState
-         block:(BugsnagOnErrorBlock)block
-{
+    else {
+        bsg_log_warn(@"Unsupported error type passed to notify: %@", NSStringFromClass([errorOrException class]));
+        return;
+    }
+    
     /**
      * Stack frames starting from this one are removed by setting the depth.
      * This helps remove bugsnag frames from showing in NSErrors as their
@@ -656,8 +646,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
      * 3. -[BugsnagClient notify:handledState:block:]
      */
     NSUInteger depth = 3;
-
-    NSArray<NSNumber *> *callStack = exception.callStackReturnAddresses;
+    
     if (!callStack.count) {
         // If the NSException was not raised by the Objective-C runtime, it will be missing a call stack.
         // Use the current call stack instead.
@@ -673,14 +662,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     
     NSArray<BugsnagStackframe *> *stacktrace = [BugsnagStackframe stackframesWithCallStackReturnAddresses:callStack];
     
-    BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:exception.name ?: NSStringFromClass([exception class])
-                                                      errorMessage:exception.reason ?: @""
+    BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:errorClass
+                                                      errorMessage:errorMessage
                                                          errorType:BSGErrorTypeCocoa
                                                         stacktrace:stacktrace];
 
-    BugsnagMetadata *metadata = [self.metadata deepCopy];
-
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithApp:[self generateAppWithState:systemInfo]
                                                      device:[self generateDeviceWithState:systemInfo]
                                                handledState:handledState
@@ -691,8 +677,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                                     threads:threads
                                                     session:nil /* the session's event counts have not yet been incremented! */];
     event.apiKey = self.configuration.apiKey;
-    event.context = self.context;
-    event.originalError = exception;
+    event.context = context;
+    event.originalError = errorOrException;
 
     [self notifyInternal:event block:block];
 }

@@ -133,6 +133,7 @@ typedef struct BSG_KSCrash_SentryContext {
         /** The exception name. */
         const char *name;
 
+        const char *userInfo;
     } NSException;
 
     struct {
