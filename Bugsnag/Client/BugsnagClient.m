@@ -994,8 +994,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         };
         
         @synchronized (self.featureFlagStore) {
-            for (NSString *name in self.featureFlagStore) {
-                observer(BSGClientObserverAddFeatureFlag, [BugsnagFeatureFlag flagWithName:name variant:self.featureFlagStore[name]]);
+            for (BugsnagFeatureFlag *flag in self.featureFlagStore) {
+                observer(BSGClientObserverAddFeatureFlag, flag);
             }
         }
     } else {

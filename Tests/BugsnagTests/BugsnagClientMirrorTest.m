@@ -63,7 +63,7 @@
             @"eventUploader @16@0:8",
             @"extraRuntimeInfo @16@0:8",
             @"featureFlagStore @16@0:8",
-            @"featureFlagStore ^{NSMutableDictionary=#}16@0:8",
+            @"featureFlagStore ^{NSMutableArray=#}16@0:8",
             @"generateAppWithState: @24@0:8@16",
             @"generateDeviceWithState: @24@0:8@16",
             @"generateEventForLastLaunchWithError:handledState: @32@0:8@16@24",
