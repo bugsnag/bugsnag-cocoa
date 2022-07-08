@@ -8,6 +8,9 @@ Changelog
 * Capture `userInfo` from all NSExceptions and include the `error` metadata tab for handled exceptions.
   [#1428](https://github.com/bugsnag/bugsnag-cocoa/pull/1428)
 
+* Feature flags are now kept in order of insertion or modification rather than in alphabetical order.
+  [#1429](https://github.com/bugsnag/bugsnag-android/pull/1429)
+
 * Send usage telemetry to Bugsnag for product improvement purposes. Can be disabled using `configuration.telemetry`.
   [#1422](https://github.com/bugsnag/bugsnag-cocoa/pull/1422)
 

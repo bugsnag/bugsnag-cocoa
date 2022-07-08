@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NSMutableDictionary<NSString *, id> BSGFeatureFlagStore;
+typedef NSMutableArray<BugsnagFeatureFlag *> BSGFeatureFlagStore;
 
 void BSGFeatureFlagStoreAddFeatureFlag(BSGFeatureFlagStore *store, NSString *name, NSString *_Nullable variant);
 
