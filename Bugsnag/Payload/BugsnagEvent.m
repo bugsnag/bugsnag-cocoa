@@ -283,16 +283,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         metadata = [BugsnagMetadata new];
     }
 
-    if ([errorType isEqualToString:@ BSG_KSCrashExcType_NSException]) {
-        NSDictionary *exception = error[@ BSG_KSCrashField_NSException];
-        NSMutableDictionary *meta = [NSMutableDictionary dictionary];
-        meta[@"name"] = exception[@ BSG_KSCrashField_Name];
-        meta[@"reason"] = error[@ BSG_KSCrashField_Reason];
-        meta[@"userInfo"] = exception[@ BSG_KSCrashField_UserInfo];
-        [metadata addMetadata:meta toSection:@"nsexception"];
-    } else {
-        [metadata addMetadata:error toSection:BSGKeyError];
-    }
+    [metadata addMetadata:error toSection:BSGKeyError];
 
     // Device information that isn't part of `event.device`
     NSMutableDictionary *deviceMetadata = BSGParseDeviceMetadata(event);

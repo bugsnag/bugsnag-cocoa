@@ -608,10 +608,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         errorMessage = exception.reason;
         handledState = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
         NSMutableDictionary *meta = [NSMutableDictionary dictionary];
-        meta[@"name"] = exception.name;
+        NSDictionary *userInfo = exception.userInfo ? BSGJSONDictionary((NSDictionary *_Nonnull)exception.userInfo) : nil;
+        meta[@"nsexception"] = [NSDictionary dictionaryWithObjectsAndKeys:exception.name, @"name", userInfo, @"userInfo", nil];
         meta[@"reason"] = exception.reason;
-        meta[@"userInfo"] = exception.userInfo ? BSGJSONDictionary((NSDictionary *_Nonnull)exception.userInfo) : nil;
-        [metadata addMetadata:meta toSection:@"nsexception"];
+        meta[@"type"] = @"nsexception";
+        [metadata addMetadata:meta toSection:@"error"];
     }
     else if ([errorOrException isKindOfClass:[NSError class]]) {
         NSError *error = errorOrException;

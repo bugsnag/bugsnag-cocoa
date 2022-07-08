@@ -5,7 +5,7 @@ Changelog
 
 ### Enhancements
 
-* Capture userInfo from NSExceptions, under a new `nsexception` tab. This replaces the `error` tab for uncaught exceptions.
+* Capture `userInfo` from all NSExceptions and include the `error` metadata tab for handled exceptions.
   [#1428](https://github.com/bugsnag/bugsnag-cocoa/pull/1428)
 
 * Send usage telemetry to Bugsnag for product improvement purposes. Can be disabled using `configuration.telemetry`.
