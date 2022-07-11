@@ -16,6 +16,9 @@ Changelog
 * Prevent reporting of OOMs on simulators. 
   [#1421](https://github.com/bugsnag/bugsnag-cocoa/pull/1421)
 
+* Fix a rare crash in `BugsnagBreadcrumbsWriteCrashReport()`.
+  [#1430](https://github.com/bugsnag/bugsnag-cocoa/pull/1430)
+
 ## 6.19.0 (2022-06-29)
 
 ### Enhancements
