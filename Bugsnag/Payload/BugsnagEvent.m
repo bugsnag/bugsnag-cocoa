@@ -696,8 +696,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 // MARK: - <BugsnagFeatureFlagStore>
 
-- (NSMutableArray<BugsnagFeatureFlag *> *) featureFlags {
-    return self.featureFlagStore;
+- (NSArray<BugsnagFeatureFlag *> *)featureFlags {
+    return [self.featureFlagStore copy];
 }
 
 - (void)addFeatureFlagWithName:(NSString *)name variant:(nullable NSString *)variant {
