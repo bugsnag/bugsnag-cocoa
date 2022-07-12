@@ -32,6 +32,7 @@ Feature: Barebone tests
     And the event "app.version" equals "12.3"
     And the event "breadcrumbs.0.name" equals "Running BareboneTestHandledScenario"
     And the event "breadcrumbs.1.name" equals "This is super <redacted>"
+    And the event "context" is null
     And the event "device.freeMemory" is less than the event "device.totalMemory"
     And the event "device.id" is not null
     And the event "device.jailbroken" is false
@@ -114,6 +115,7 @@ Feature: Barebone tests
     And the event "breadcrumbs.2.name" equals "NSRangeException"
     And the event "breadcrumbs.2.type" equals "error"
     And the event "breadcrumbs.3.name" equals "About to decode a payload..."
+    And the event "context" equals "NSCocoaErrorDomain (4864)"
     And the event "metaData.nserror.code" equals 4864
     And the event "metaData.nserror.domain" equals "NSCocoaErrorDomain"
     And the event "metaData.nserror.reason" equals "The data isn’t in the correct format."
