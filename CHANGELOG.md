@@ -5,6 +5,9 @@ Changelog
 
 ### Enhancements
 
+* Feature flags can now be accessed in the onSend callbacks.
+  [#1432](https://github.com/bugsnag/bugsnag-android/pull/1432)
+
 * Capture `userInfo` from all NSExceptions and include the `error` metadata tab for handled exceptions.
   [#1428](https://github.com/bugsnag/bugsnag-cocoa/pull/1428)
 

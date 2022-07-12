@@ -68,6 +68,11 @@ typedef NS_ENUM(NSUInteger, BSGSeverity) {
 @property (readwrite, copy, nonnull, nonatomic) NSArray<BugsnagBreadcrumb *> *breadcrumbs;
 
 /**
+ * Feature flags that were active when the error occurred
+ */
+@property (readonly, strong, nonnull, nonatomic) NSArray<BugsnagFeatureFlag *> *featureFlags;
+
+/**
  * A per-event override for the apiKey.
  * - The default value of nil results in the BugsnagConfiguration apiKey being used.
  * - Writes are not persisted to BugsnagConfiguration.

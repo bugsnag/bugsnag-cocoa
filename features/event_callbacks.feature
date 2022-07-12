@@ -3,6 +3,15 @@ Feature: Callbacks can access and modify event information
   Background:
     Given I clear all persistent data
 
+  Scenario: Accessing feature flags from the OnSend callback
+    When I run "OnSendErrorCallbackFeatureFlagsScenario"
+    And I wait to receive an error
+    Then the error is valid for the error reporting API
+    And the event "featureFlags.0.featureFlag" equals "fromStartup"
+    And the event "featureFlags.0.variant" equals "a"
+    And the event "featureFlags.1.featureFlag" equals "fromCallback"
+    And the event "featureFlags.1.variant" equals "a"
+
   Scenario: Removing an OnSend callback does not affect other OnSend callbacks
     When I run "OnSendCallbackRemovalScenario"
     And I wait to receive an error
