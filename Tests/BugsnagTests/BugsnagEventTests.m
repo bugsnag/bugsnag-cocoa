@@ -390,6 +390,7 @@
         [event clearMetadataFromSection:@"app"];
         [event clearMetadataFromSection:@"user"];
         [event clearMetadataFromSection:@"device"];
+        [event clearMetadataFromSection:@"error"];
         NSDictionary *invalidDict = @{};
         NSDictionary *validDict = @{@"myKey" : @"myValue"};
         [event addMetadata:invalidDict toSection:@"mySection"];
@@ -410,6 +411,7 @@
         [event clearMetadataFromSection:@"app"];
         [event clearMetadataFromSection:@"user"];
         [event clearMetadataFromSection:@"device"];
+        [event clearMetadataFromSection:@"error"];
         [event addMetadata:[NSNull null] withKey:@"myKey" toSection:@"mySection"];
 
         // Invalid value for a non-existant section doesn't cause the section to be created

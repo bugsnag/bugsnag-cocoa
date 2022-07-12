@@ -25,10 +25,14 @@
 //
 
 #import "BSG_KSCrashSentry_NSException.h"
+
+#import "BSGDefines.h"
+#import "BSGJSONSerialization.h"
+#import "BSGUtils.h"
+#import "BSG_KSCrashC.h"
 #import "BSG_KSCrashSentry_Private.h"
-#include "BSG_KSMach.h"
-#include "BSG_KSCrashC.h"
-#include "BSGDefines.h"
+#import "BSG_KSMach.h"
+#import "BugsnagCollections.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #import "BSG_KSLogger.h"
@@ -56,6 +60,12 @@ static NSException *bsg_lastHandledException = NULL;
 static char * CopyUTF8String(NSString *string) {
     const char *UTF8String = [string UTF8String];
     return UTF8String ? strdup(UTF8String) : NULL;
+}
+
+static char * CopyJSON(NSDictionary *userInfo) {
+    NSDictionary *json = BSGJSONDictionary(userInfo);
+    NSData *data = BSGJSONDataFromDictionary(json, NULL);
+    return BSGCStringWithData(data);
 }
 
 // ============================================================================
@@ -121,6 +131,7 @@ void bsg_recordException(NSException *exception) {
         bsg_g_context->offendingThread = bsg_ksmachthread_self();
         bsg_g_context->registersAreValid = false;
         bsg_g_context->NSException.name = CopyUTF8String([exception name]);
+        bsg_g_context->NSException.userInfo = CopyJSON([exception userInfo]);
         bsg_g_context->crashReason = CopyUTF8String([exception reason]);
         bsg_g_context->stackTrace = callstack;
         bsg_g_context->stackTraceLength = callstack ? (int)numFrames : 0;
