@@ -125,7 +125,7 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
     }
 
     if (bsg_g_bugsnag_data.usageJSON) {
-        writer->addJSONElement(writer, "usage", bsg_g_bugsnag_data.usageJSON);
+        writer->addJSONElement(writer, "_usage", bsg_g_bugsnag_data.usageJSON);
     }
 
     if (bsg_g_bugsnag_data.onCrash) {

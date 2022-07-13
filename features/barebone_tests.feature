@@ -53,6 +53,7 @@ Feature: Barebone tests
     And the event "device.time" is a timestamp
     And on !macOS, the event "metaData.device.batteryLevel" is a number
     And on !macOS, the event "metaData.device.charging" is a boolean
+    And the event "metaData._usage" is null
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.wordSize" is not null
@@ -65,6 +66,7 @@ Feature: Barebone tests
     And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestHandledScenario"
     And the event "metaData.error.reason" equals "-[__NSSingleObjectArrayI objectAtIndex:]: index 1 beyond bounds [0 .. 0]"
     And the event "metaData.error.type" equals "nsexception"
+    And the event "metaData.usage" is null
     And the event "metaData.user.email" is null
     And the event "metaData.user.group" equals "users"
     And the event "metaData.user.id" is null
@@ -116,12 +118,14 @@ Feature: Barebone tests
     And the event "breadcrumbs.2.type" equals "error"
     And the event "breadcrumbs.3.name" equals "About to decode a payload..."
     And the event "context" equals "NSCocoaErrorDomain (4864)"
+    And the event "metaData._usage" is null
     And the event "metaData.nserror.code" equals 4864
     And the event "metaData.nserror.domain" equals "NSCocoaErrorDomain"
     And the event "metaData.nserror.reason" equals "The data isn’t in the correct format."
     And the event "metaData.nserror.userInfo.NSCodingPath" is not null
     And the event "metaData.nserror.userInfo.NSDebugDescription" equals "The given data was not valid JSON."
     And the event "metaData.nserror.userInfo.NSUnderlyingError" matches "Error Domain=NSCocoaErrorDomain Code=3840"
+    And the event "metaData.usage" is null
     And the event "severity" equals "warning"
     And the event "severityReason.type" equals "handledError"
     And the event "severityReason.unhandledOverridden" is null
@@ -170,6 +174,7 @@ Feature: Barebone tests
     And the event "device.time" is a timestamp
     And on !macOS, the event "metaData.device.batteryLevel" is a number
     And on !macOS, the event "metaData.device.charging" is a boolean
+    And the event "metaData._usage" is null
     And the event "metaData.device.simulator" is false
     And the event "metaData.lastRunInfo.consecutiveLaunchCrashes" equals 1
     And the event "metaData.lastRunInfo.crashed" is true
@@ -180,6 +185,7 @@ Feature: Barebone tests
     And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestUnhandledErrorScenario"
     And the event "metaData.error.reason" equals "*** -[__NSArray0 objectAtIndex:]: index 42 beyond bounds for empty NSArray"
     And the event "metaData.error.type" equals "nsexception"
+    And the event "metaData.usage" is null
     And the event "metaData.user.email" is null
     And the event "metaData.user.group" equals "users"
     And the event "metaData.user.id" is null
@@ -272,6 +278,7 @@ Feature: Barebone tests
     And the event "device.runtimeVersions.osBuild" is not null
     And the event "device.time" is a timestamp
     And the event "device.totalMemory" is an integer
+    And the event "metaData._usage" is null
     And the event "metaData.app.name" equals "iOSTestApp"
     And the event "metaData.custom.bar" equals "foo"
     And the event "metaData.device.batteryLevel" is a number
@@ -283,6 +290,7 @@ Feature: Barebone tests
     And the event "metaData.lastRunInfo.consecutiveLaunchCrashes" equals 1
     And the event "metaData.lastRunInfo.crashed" is true
     And the event "metaData.lastRunInfo.crashedDuringLaunch" is true
+    And the event "metaData.usage" is null
     And the event "metaData.user.email" is null
     And the event "metaData.user.group" equals "users"
     And the event "metaData.user.id" is null
