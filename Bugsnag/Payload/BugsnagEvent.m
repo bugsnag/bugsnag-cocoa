@@ -394,7 +394,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     obj.context = [event valueForKeyPath:@"user.state.client.context"];
     obj.customException = BSGParseCustomException(event, [errors[0].errorClass copy], [errors[0].errorMessage copy]);
     obj.depth = depth;
-    obj.usage = [event valueForKeyPath:@"user.usage"];
+    obj.usage = [event valueForKeyPath:@"user._usage"];
     return obj;
 }
 
@@ -447,7 +447,11 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     ];
     [userAtCrash removeObjectsForKeys:keysToRemove];
 
-    for (NSString *key in [userAtCrash allKeys]) { // remove any non-dictionary values
+    for (NSString *key in [userAtCrash allKeys]) {
+        if ([key hasPrefix:@"_"]) {
+            [userAtCrash removeObjectForKey:key];
+            continue;
+        }
         if (![userAtCrash[key] isKindOfClass:[NSDictionary class]]) {
             bsg_log_debug(@"Removing value added in onCrashHandler for key %@ as it is not a dictionary value", key);
             [userAtCrash removeObjectForKey:key];
