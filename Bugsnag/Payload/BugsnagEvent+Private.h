@@ -28,9 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// The release stages used to notify at the time this report is captured.
 @property (readwrite, copy, nullable, nonatomic) NSArray *enabledReleaseStages;
 
-/// Raw error data added to metadata.
-@property (readwrite, copy, nullable, nonatomic) NSDictionary *error;
-
 @property (readwrite, strong, nonnull, nonatomic) BSGFeatureFlagStore *featureFlagStore;
 
 /// The event state (whether the error is handled/unhandled.)
@@ -45,6 +42,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// An array of string representations of BSGErrorType describing the types of stackframe / stacktrace in this error.
 @property (readonly, nonatomic) NSArray<NSString *> *stacktraceTypes;
+
+/// Usage telemetry info, from BSGTelemetryCreateUsage()
+@property (readwrite, nullable, nonatomic) NSDictionary *usage;
 
 @property (readwrite, nonnull, nonatomic) BugsnagUser *user;
 

@@ -28,7 +28,6 @@
 
 #import "BSGKeys.h"
 #import "BSG_Jailbreak.h"
-#import "BSG_KSCrash.h"
 #import "BSG_KSCrashC.h"
 #import "BSG_KSCrashReportFields.h"
 #import "BSG_KSFileUtils.h"
@@ -453,8 +452,8 @@ static NSDictionary * bsg_systemversion() {
         }
     }
 
+    bsg_kscrashstate_updateDurationStats();
     BSG_KSCrash_State state = crashContext()->state;
-    bsg_kscrashstate_updateDurationStats(&state);
     NSMutableDictionary *statsInfo = [NSMutableDictionary dictionary];
     statsInfo[@ BSG_KSCrashField_ActiveTimeSinceLaunch] = @(state.foregroundDurationSinceLaunch);
     statsInfo[@ BSG_KSCrashField_BGTimeSinceLaunch] = @(state.backgroundDurationSinceLaunch);

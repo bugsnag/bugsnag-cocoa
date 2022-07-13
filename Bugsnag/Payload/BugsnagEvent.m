@@ -188,8 +188,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             return [BugsnagDeviceWithState deviceFromJson:dict];
         }) ?: [[BugsnagDeviceWithState alloc] init];
 
-        _error = BSGDeserializeDict(json[BSGKeyMetadata][BSGKeyError]);
-
         _errors = BSGDeserializeArrayOfObjects(json[BSGKeyExceptions], ^id _Nullable(NSDictionary * _Nonnull dict) {
             return [BugsnagError errorFromJson:dict];
         }) ?: @[];
@@ -207,6 +205,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         _threads = BSGDeserializeArrayOfObjects(json[BSGKeyThreads], ^id _Nullable(NSDictionary * _Nonnull dict) {
             return [BugsnagThread threadFromJson:dict];
         }) ?: @[];
+
+        _usage = BSGDeserializeDict(json[BSGKeyUsage]);
 
         _user = BSGDeserializeObject(json[BSGKeyUser], ^id _Nullable(NSDictionary * _Nonnull dict) {
             return [[BugsnagUser alloc] initWithDictionary:dict];
@@ -283,6 +283,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         metadata = [BugsnagMetadata new];
     }
 
+    [metadata addMetadata:error toSection:BSGKeyError];
+
     // Device information that isn't part of `event.device`
     NSMutableDictionary *deviceMetadata = BSGParseDeviceMetadata(event);
 #if BSG_HAVE_BATTERY
@@ -331,7 +333,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     if (errorReportingThread.crashInfoMessage) {
         [errors[0] updateWithCrashInfoMessage:(NSString * _Nonnull)errorReportingThread.crashInfoMessage];
-        error[@"crashInfo"] = errorReportingThread.crashInfoMessage;
+        [metadata addMetadata:errorReportingThread.crashInfoMessage withKey:@"crashInfo" toSection:@"error"];
     }
     
     BugsnagHandledState *handledState;
@@ -391,8 +393,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     obj.featureFlagStore = BSGFeatureFlagStoreFromJSON([event valueForKeyPath:@"user.state.client.featureFlags"]);
     obj.context = [event valueForKeyPath:@"user.state.client.context"];
     obj.customException = BSGParseCustomException(event, [errors[0].errorClass copy], [errors[0].errorMessage copy]);
-    obj.error = error;
     obj.depth = depth;
+    obj.usage = [event valueForKeyPath:@"user._usage"];
     return obj;
 }
 
@@ -414,7 +416,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     _context = BSGDeserializeString(json[BSGKeyContext]);
     _featureFlagStore = [[BSGFeatureFlagStore alloc] init];
     _groupingHash = BSGDeserializeString(json[BSGKeyGroupingHash]);
-    _error = [self getMetadataFromSection:BSGKeyError];
 
     if (_errors.count) {
         BugsnagError *error = _errors[0];
@@ -446,7 +447,11 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     ];
     [userAtCrash removeObjectsForKeys:keysToRemove];
 
-    for (NSString *key in [userAtCrash allKeys]) { // remove any non-dictionary values
+    for (NSString *key in [userAtCrash allKeys]) {
+        if ([key hasPrefix:@"_"]) {
+            [userAtCrash removeObjectForKey:key];
+            continue;
+        }
         if (![userAtCrash[key] isKindOfClass:[NSDictionary class]]) {
             bsg_log_debug(@"Removing value added in onCrashHandler for key %@ as it is not a dictionary value", key);
             [userAtCrash removeObjectForKey:key];
@@ -609,13 +614,13 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     //  Inserted into `context` property
     [metadata removeObjectForKey:BSGKeyContext];
-    // Build metadata
-    metadata[BSGKeyError] = self.error;
 
     // add user
     event[BSGKeyUser] = [self.user toJson];
 
     event[BSGKeySession] = self.session ? BSGSessionToEventJson((BugsnagSession *_Nonnull)self.session) : nil;
+
+    event[BSGKeyUsage] = self.usage;
 
     return event;
 }
@@ -694,6 +699,10 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 }
 
 // MARK: - <BugsnagFeatureFlagStore>
+
+- (NSArray<BugsnagFeatureFlag *> *)featureFlags {
+    return [self.featureFlagStore copy];
+}
 
 - (void)addFeatureFlagWithName:(NSString *)name variant:(nullable NSString *)variant {
     BSGFeatureFlagStoreAddFeatureFlag(self.featureFlagStore, name, variant);

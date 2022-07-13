@@ -28,13 +28,11 @@ struct json_buffer {
     char *buffer;
 };
 
-#if BSG_HAVE_MACH_THREADS
 static int json_buffer_append(const char *data, size_t length, struct json_buffer *buffer) {
     memcpy(buffer->buffer + buffer->length, data, length);
     buffer->length += length;
     return BSG_KSJSON_OK;
 }
-#endif
 
 static int addJSONData(const char *data, size_t length, NSMutableData *userData) {
     [userData appendBytes:data length:length];
@@ -460,7 +458,6 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqualObjects(breadcrumbs[2][@"metaData"], @{});
 }
 
-#if BSG_HAVE_MACH_THREADS
 static void * executeBlock(void *ptr) {
     ((__bridge_transfer dispatch_block_t)ptr)();
     return NULL;
@@ -473,7 +470,7 @@ static void * executeBlock(void *ptr) {
 #endif
     //
     // The aim of this test is to ensure that BugsnagBreadcrumbsWriteCrashReport will insert only valid JSON
-    // into a crash report when other threads are (paused while) updating the breadcrumbs linked list.
+    // into a crash report when other threads are updating the breadcrumbs linked list.
     //
     // So that the test spends less time serialising breadcrumbs and more time updating the linked list, the
     // breadcrumb data is precomputed and not written to disk.
@@ -510,11 +507,6 @@ static void * executeBlock(void *ptr) {
     for (int i = 0; i < 5000; i++) {
         buffer.length = 0;
         
-        // BugsnagBreadcrumbsWriteCrashReport() requires other threads to be suspended.
-        for (int i = 0; i < threadCount; i++) {
-            thread_suspend(machThreads[i]);
-        }
-        
         BSG_KSJSONEncodeContext context;
         BSG_KSCrashReportWriter writer;
         bsg_kscrw_i_prepareReportWriter(&writer, &context);
@@ -522,10 +514,6 @@ static void * executeBlock(void *ptr) {
         writer.beginObject(&writer, "");
         BugsnagBreadcrumbsWriteCrashReport(&writer);
         writer.endContainer(&writer);
-        
-        for (int i = 0; i < threadCount; i++) {
-            thread_resume(machThreads[i]);
-        }
         
         NSError *error = nil;
         NSData *data = [NSData dataWithBytesNoCopy:buffer.buffer length:buffer.length freeWhenDone:NO];
@@ -545,7 +533,6 @@ static void * executeBlock(void *ptr) {
         pthread_join(threads[i], NULL);
     }
 }
-#endif
 
 - (void)testPerformance {
     NSInteger maxBreadcrumbs = 100;

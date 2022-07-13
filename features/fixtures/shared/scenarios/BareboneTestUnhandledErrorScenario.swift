@@ -30,7 +30,15 @@ class BareboneTestUnhandledErrorScenario: Scenario {
     }
     
     override func run() {
-        NSArray().object(at: 42)
+        // Manually constructing an exception to verify handling of userInfo
+        NSException(
+            name: .rangeException,
+            reason: "*** -[__NSArray0 objectAtIndex:]: index 42 beyond bounds for empty NSArray",
+            userInfo: [
+                "date": Date(timeIntervalSinceReferenceDate: 0),
+                "scenario": "BareboneTestUnhandledErrorScenario",
+                NSUnderlyingErrorKey: NSError(domain: "ErrorDomain", code: 0)])
+        .raise()
     }
 }
 

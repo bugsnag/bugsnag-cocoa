@@ -18,6 +18,7 @@
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagLogger.h"
 
+#import <stdatomic.h>
 
 //
 // Breadcrumbs are stored as a linked list of JSON encoded C strings
@@ -29,7 +30,8 @@ struct bsg_breadcrumb_list_item {
     char jsonData[]; // MUST be null terminated
 };
 
-static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
+static _Atomic(struct bsg_breadcrumb_list_item *) g_breadcrumbs_head;
+static atomic_bool g_writing_crash_report;
 
 #pragma mark -
 
@@ -64,7 +66,7 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
 - (NSArray<BugsnagBreadcrumb *> *)breadcrumbs {
     NSMutableArray<BugsnagBreadcrumb *> *breadcrumbs = [NSMutableArray array];
     @synchronized (self) {
-        for (struct bsg_breadcrumb_list_item *item = g_breadcrumbs_head; item != NULL; item = item->next) {
+        for (struct bsg_breadcrumb_list_item *item = atomic_load(&g_breadcrumbs_head); item != NULL; item = item->next) {
             NSError *error = nil;
             NSData *data = [NSData dataWithBytesNoCopy:item->jsonData length:strlen(item->jsonData) freeWhenDone:NO];
             NSDictionary *JSONObject = BSGJSONDictionaryFromData(data, 0, &error);
@@ -121,29 +123,27 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
     if (!newItem) {
         return;
     }
-    [data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, __unused BOOL *stop) {
-        memcpy(newItem->jsonData + byteRange.location, bytes, byteRange.length);
-    }];
+    [data getBytes:newItem->jsonData length:data.length];
     
     @synchronized (self) {
         const unsigned int fileNumber = self.nextFileNumber;
         const BOOL deleteOld = fileNumber >= self.maxBreadcrumbs;
         self.nextFileNumber = fileNumber + 1;
         
-        if (g_breadcrumbs_head) {
-            struct bsg_breadcrumb_list_item *tail = g_breadcrumbs_head;
+        struct bsg_breadcrumb_list_item *head = atomic_load(&g_breadcrumbs_head);
+        if (head) {
+            struct bsg_breadcrumb_list_item *tail = head;
             while (tail->next) {
                 tail = tail->next;
             }
             tail->next = newItem;
             if (deleteOld) {
-                struct bsg_breadcrumb_list_item *head = g_breadcrumbs_head;
-                g_breadcrumbs_head = head->next;
-                head->next = NULL;
+                atomic_store(&g_breadcrumbs_head, head->next);
+                while (atomic_load(&g_writing_crash_report)) { continue; }
                 free(head);
             }
         } else {
-            g_breadcrumbs_head = newItem;
+            atomic_store(&g_breadcrumbs_head, newItem);
         }
         
         if (!writeToDisk) {
@@ -198,8 +198,7 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
 
 - (void)removeAllBreadcrumbs {
     @synchronized (self) {
-        struct bsg_breadcrumb_list_item *item = g_breadcrumbs_head;
-        g_breadcrumbs_head = NULL;
+        struct bsg_breadcrumb_list_item *item = atomic_exchange(&g_breadcrumbs_head, NULL);
         while (item) {
             struct bsg_breadcrumb_list_item *next = item->next;
             free(item);
@@ -290,11 +289,17 @@ static struct bsg_breadcrumb_list_item *g_breadcrumbs_head;
 #pragma mark -
 
 void BugsnagBreadcrumbsWriteCrashReport(const BSG_KSCrashReportWriter *writer) {
+    atomic_store(&g_writing_crash_report, true);
+    
     writer->beginArray(writer, "breadcrumbs");
     
-    for (struct bsg_breadcrumb_list_item *item = g_breadcrumbs_head; item != NULL; item = item->next) {
+    struct bsg_breadcrumb_list_item *item = atomic_load(&g_breadcrumbs_head);
+    while (item) {
         writer->addJSONElement(writer, NULL, item->jsonData);
+        item = item->next;
     }
     
     writer->endContainer(writer);
+    
+    atomic_store(&g_writing_crash_report, false);
 }

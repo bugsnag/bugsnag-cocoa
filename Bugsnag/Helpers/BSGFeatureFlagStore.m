@@ -11,19 +11,24 @@
 #import "BSGKeys.h"
 #import "BugsnagFeatureFlag.h"
 
+static void internalAddFeatureFlag(BSGFeatureFlagStore *store, BugsnagFeatureFlag *flag) {
+    [store removeObject:flag];
+    [store addObject:flag];
+}
+
 void BSGFeatureFlagStoreAddFeatureFlag(BSGFeatureFlagStore *store, NSString *name, NSString *_Nullable variant) {
-    store[name] = variant ?: [NSNull null];
+    internalAddFeatureFlag(store, [BugsnagFeatureFlag flagWithName:name variant:variant]);
 }
 
 void BSGFeatureFlagStoreAddFeatureFlags(BSGFeatureFlagStore *store, NSArray<BugsnagFeatureFlag *> *featureFlags) {
     for (BugsnagFeatureFlag *featureFlag in featureFlags) {
-        store[featureFlag.name] = featureFlag.variant ?: [NSNull null];
+        internalAddFeatureFlag(store, featureFlag);
     }
 }
 
 void BSGFeatureFlagStoreClear(BSGFeatureFlagStore *store, NSString *_Nullable name) {
     if (name) {
-        [store removeObjectForKey:(NSString *_Nonnull)name];
+        [store removeObject:[BugsnagFeatureFlag flagWithName:(NSString * _Nonnull)name]];
     } else {
         [store removeAllObjects];
     }
@@ -31,29 +36,28 @@ void BSGFeatureFlagStoreClear(BSGFeatureFlagStore *store, NSString *_Nullable na
 
 NSArray<NSDictionary *> * BSGFeatureFlagStoreToJSON(BSGFeatureFlagStore *store) {
     NSMutableArray<NSDictionary *> *result = [NSMutableArray array];
-    for (NSString *name in store) {
-        id variant = store[name];
-        if ([variant isKindOfClass:[NSString class]]) {
-            [result addObject:@{BSGKeyFeatureFlag: name, BSGKeyVariant: variant}];
+    for (BugsnagFeatureFlag *flag in store) {
+        if (flag.variant) {
+            [result addObject:@{BSGKeyFeatureFlag: flag.name, BSGKeyVariant: (NSString * _Nonnull)flag.variant}];
         } else {
-            [result addObject:@{BSGKeyFeatureFlag: name}];
+            [result addObject:@{BSGKeyFeatureFlag: flag.name}];
         }
     }
-    [result sortUsingComparator:^NSComparisonResult(NSDictionary *_Nonnull obj1, NSDictionary *_Nonnull obj2) {
-        return [(NSString *)obj1[BSGKeyFeatureFlag] compare:(NSString *)obj2[BSGKeyFeatureFlag]];
-    }];
     return result;
 }
 
 BSGFeatureFlagStore * BSGFeatureFlagStoreFromJSON(id json) {
-    BSGFeatureFlagStore *store = [NSMutableDictionary dictionary];
+    BSGFeatureFlagStore *store = [NSMutableArray array];
     if ([json isKindOfClass:[NSArray class]]) {
         for (id item in json) {
             if ([item isKindOfClass:[NSDictionary class]]) {
                 NSString *featureFlag = item[BSGKeyFeatureFlag];
                 if ([featureFlag isKindOfClass:[NSString class]]) {
                     id variant = item[BSGKeyVariant];
-                    store[featureFlag] = [variant isKindOfClass:[NSString class]] ? variant : [NSNull null];
+                    if (![variant isKindOfClass:[NSString class]]) {
+                        variant = nil;
+                    }
+                    [store addObject:[BugsnagFeatureFlag flagWithName:featureFlag variant:variant]];
                 }
             }
         }

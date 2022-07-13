@@ -1204,6 +1204,10 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
             {
                 writer->addStringElement(writer, BSG_KSCrashField_Name,
                                          exceptionName);
+                if (crash->NSException.userInfo) {
+                    writer->addJSONElement(writer, BSG_KSCrashField_UserInfo,
+                                           crash->NSException.userInfo);
+                }
                 bsg_kscrw_i_writeAddressReferencedByString(
                     writer, BSG_KSCrashField_ReferencedObject, crashReason);
             }

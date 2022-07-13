@@ -108,6 +108,7 @@ static BSGKey const BSGKeyUnhandled                 = @"unhandled";
 static BSGKey const BSGKeyUnhandledCount            = @"unhandledCount";
 static BSGKey const BSGKeyUnhandledOverridden       = @"unhandledOverridden";
 static BSGKey const BSGKeyUrl                       = @"url";
+static BSGKey const BSGKeyUsage                     = @"usage";
 static BSGKey const BSGKeyUser                      = @"user";
 static BSGKey const BSGKeyUuid                      = @"uuid";
 static BSGKey const BSGKeyVariant                   = @"variant";

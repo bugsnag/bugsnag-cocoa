@@ -86,7 +86,7 @@ static inline bool BSGRunContextWasLaunching() {
     return bsg_lastRunContext && bsg_lastRunContext->isLaunching;
 }
 
-#if TARGET_OS_IOS
+#if BSG_HAVE_OOM_DETECTION
 static inline bool BSGRunContextWasMemoryWarning() {
     return bsg_lastRunContext && bsg_lastRunContext->memoryPressure > DISPATCH_MEMORYPRESSURE_NORMAL;
 }

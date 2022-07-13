@@ -55,7 +55,7 @@ Build the test iOS fixture:
     ```
 5. To run all features, omit the final argument.
 
-### Running tests on your own device
+### Running tests on your own iOS device
 
 #### Prerequisites
 
@@ -91,6 +91,21 @@ Build the test iOS fixture:
                             features/app_and_device_attributes.feature
     ```
    `<udid>` is the device Identifier found under Devices and Simulators in Xcode.
+
+### Running tests on macOS
+
+1. Use `make e2e_macos` to run tests and use the `FEATURES` environment variable to specify which tests to run:
+    ```shell script
+    make e2e_macos FEATURES='features/barebone_tests.feature features/telemetry.feature'
+    ```
+
+#### Gathering code coverage
+
+1. To create a code coverage report, set `ENABLE_CODE_COVERAGE=YES` like so:
+    ```shell script
+    make e2e_macos ENABLE_CODE_COVERAGE=YES
+    ````
+   Open `coverage/index.html` to view the coverage report.
 
 ### Running tests on Apple Watch
 

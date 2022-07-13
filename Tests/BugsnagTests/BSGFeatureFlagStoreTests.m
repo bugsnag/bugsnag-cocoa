@@ -19,27 +19,45 @@
 - (void)test {
     BSGFeatureFlagStore *store = [[BSGFeatureFlagStore alloc] init];
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store), @[]);
+
+    BSGFeatureFlagStoreAddFeatureFlag(store, @"featureC", @"checked");
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
+                          (@[@{@"featureFlag": @"featureC", @"variant": @"checked"}]));
     
     BSGFeatureFlagStoreAddFeatureFlag(store, @"featureA", @"enabled");
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
-                          (@[@{@"featureFlag": @"featureA", @"variant": @"enabled"}]));
-    
-    BSGFeatureFlagStoreAddFeatureFlags(store, @[[BugsnagFeatureFlag flagWithName:@"featureA"]]);
-    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
-                          @[@{@"featureFlag": @"featureA"}]);
-    
+                          (@[
+                            @{@"featureFlag": @"featureC", @"variant": @"checked"},
+                            @{@"featureFlag": @"featureA", @"variant": @"enabled"}
+                          ]));
+
     BSGFeatureFlagStoreAddFeatureFlag(store, @"featureB", nil);
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
-                          (@[@{@"featureFlag": @"featureA"},
-                             @{@"featureFlag": @"featureB"}]));
-    
+                          (@[
+                            @{@"featureFlag": @"featureC", @"variant": @"checked"},
+                            @{@"featureFlag": @"featureA", @"variant": @"enabled"},
+                            @{@"featureFlag": @"featureB"}
+                          ]));
+
+
+    BSGFeatureFlagStoreAddFeatureFlags(store, @[[BugsnagFeatureFlag flagWithName:@"featureA"]]);
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
+                          (@[
+                            @{@"featureFlag": @"featureC", @"variant": @"checked"},
+                            @{@"featureFlag": @"featureB"},
+                            @{@"featureFlag": @"featureA"}
+                          ]));
+
     XCTAssertEqualObjects(BSGFeatureFlagStoreFromJSON(BSGFeatureFlagStoreToJSON(store)),
                           store);
     
-    BSGFeatureFlagStoreClear(store, @"featureA");
+    BSGFeatureFlagStoreClear(store, @"featureB");
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
-                          @[@{@"featureFlag": @"featureB"}]);
-    
+                          (@[
+                            @{@"featureFlag": @"featureC", @"variant": @"checked"},
+                            @{@"featureFlag": @"featureA"}
+                          ]));
+
     BSGFeatureFlagStoreClear(store, nil);
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store), @[]);
 }

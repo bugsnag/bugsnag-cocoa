@@ -78,7 +78,11 @@ class BareboneTestHandledScenario: Scenario {
         
         self.afterSendErrorBlock = self.afterSendError
         
-        Bugsnag.notify(NSException(name: .rangeException, reason: "-[__NSSingleObjectArrayI objectAtIndex:]: index 1 beyond bounds [0 .. 0]")) {
+        Bugsnag.notify(NSException(name: .rangeException,
+                                   reason: "-[__NSSingleObjectArrayI objectAtIndex:]: index 1 beyond bounds [0 .. 0]",
+                                   userInfo: ["date": Date(timeIntervalSinceReferenceDate: 0),
+                                              "scenario": "BareboneTestHandledScenario",
+                                              NSUnderlyingErrorKey: NSError(domain: "ErrorDomain", code: 0)])) {
             $0.addFeatureFlag(name: "notify", variant: "rangeException")
             $0.addMetadata(["info": "Some error specific information"], section: "Exception")
             $0.unhandled = true

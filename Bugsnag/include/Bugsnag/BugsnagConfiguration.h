@@ -76,6 +76,16 @@ typedef NS_OPTIONS(NSUInteger, BSGTelemetryOptions) {
      * Errors within the Bugsnag SDK.
      */
     BSGTelemetryInternalErrors = (1UL << 0),
+
+    /**
+     * Information about how Bugsnag has been configured.
+     */
+    BSGTelemetryUsage = (1UL << 1),
+
+    /**
+     * All types of telemetry are enabled by default.
+     */
+    BSGTelemetryAll = (BSGTelemetryInternalErrors | BSGTelemetryUsage)
 };
 
 /**

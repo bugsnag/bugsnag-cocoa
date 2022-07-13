@@ -210,7 +210,7 @@ static NSUserDefaults *userDefaults;
                                          defaultSessionConfiguration]];
     }
     
-    _telemetry = BSGTelemetryInternalErrors;
+    _telemetry = BSGTelemetryAll;
     
     NSString *releaseStage = nil;
     #if DEBUG

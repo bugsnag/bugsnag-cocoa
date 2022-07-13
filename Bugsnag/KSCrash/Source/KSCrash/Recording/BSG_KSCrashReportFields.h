@@ -62,6 +62,7 @@
 #define BSG_KSCrashField_Name "name"
 #define BSG_KSCrashField_ReferencedObject "referenced_object"
 #define BSG_KSCrashField_Type "type"
+#define BSG_KSCrashField_UserInfo "userInfo"
 #define BSG_KSCrashField_UUID "uuid"
 #define BSG_KSCrashField_Value "value"
 

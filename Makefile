@@ -136,6 +136,12 @@ e2e_ios_local:
 e2e_macos:
 	./features/scripts/export_mac_app.sh
 	bundle exec maze-runner --app=macOSTestApp --os=macOS --os-version=11 $(FEATURES)
+ifeq ($(ENABLE_CODE_COVERAGE), YES)
+	xcrun llvm-profdata merge -sparse *.profraw -o default.profdata
+	rm -rf *.profraw
+	xcrun llvm-cov show -format html -output-dir coverage -instr-profile default.profdata features/fixtures/macos/output/macOSTestApp.app/Contents/Frameworks/Bugsnag.framework/Versions/A/Bugsnag -arch $(shell uname -m)
+	rm default.profdata
+endif
 
 .PHONY: e2e_watchos
 e2e_watchos: features/fixtures/watchos/Podfile.lock features/fixtures/shared/scenarios/watchos_maze_host.h
@@ -224,7 +230,7 @@ archive: build/Bugsnag-$(PLATFORM)-$(PRESET_VERSION).zip
 
 docs: ## Generate or update HTML documentation
 	@rm -rf docs/*
-	@bundle exec jazzy
+	@jazzy
 ifneq ($(wildcard docs/.git),)
 	@cd docs && git add --all . && git commit -m "Docs update for $(PRESET_VERSION) release"
 endif
