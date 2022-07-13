@@ -17,7 +17,7 @@
     <a title="BugsnagEvent Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Bugsnag 6.17.1 Docs</a></p>
+        <p><a href="../index.html">Bugsnag 6.20.0 Docs</a></p>
         <p class="header-right"><a href="https://github.com/bugsnag/bugsnag-cocoa"><img src="../img/gh.png" alt="GitHub"/>View on GitHub</a></p>
         <p class="header-right"><a href="dash-feed://https%3A%2F%2Fbugsnag.github.io%2Fbugsnag-cocoa%2Fdocsets%2FBugsnag.xml"><img src="../img/dash.png" alt="Dash"/>Install in Dash</a></p>
         <div class="header-right">
@@ -123,6 +123,9 @@
                 <a href="../Enums/BSGSeverity.html">BSGSeverity</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Enums/BSGTelemetryOptions.html">BSGTelemetryOptions</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Enums/BSGThreadSendPolicy.html">BSGThreadSendPolicy</a>
               </li>
               <li class="nav-group-task">
@@ -212,7 +215,7 @@
             <p>Represents an occurrence of an error, along with information about the state of the app and device.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L37-L129">Show on GitHub</a>
+                <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L37-L134">Show on GitHub</a>
               </div>
           </section>
           <section class="section task-group-section">
@@ -249,7 +252,7 @@ of the event</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L47">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L47">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -284,7 +287,7 @@ of the event</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L52">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L52">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -321,7 +324,7 @@ from the cause.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L59">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L59">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -356,7 +359,7 @@ from the cause.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L64">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L64">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -391,7 +394,42 @@ from the cause.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L68">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L68">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)BugsnagEvent(py)featureFlags"></a>
+                    <a name="//apple_ref/objc/Property/featureFlags" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)BugsnagEvent(py)featureFlags">featureFlags</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Feature flags that were active when the error occurred</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight objective_c"><code><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">,</span> <span class="n">readonly</span><span class="p">,</span> <span class="n">nonnull</span><span class="p">)</span> <span class="n">NSArray</span><span class="o">&lt;</span><span class="n"><a href="../Classes/BugsnagFeatureFlag.html">BugsnagFeatureFlag</a></span> <span class="o">*&gt;</span> <span class="o">*</span><span class="n">featureFlags</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">featureFlags</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/BugsnagFeatureFlag.html">BugsnagFeatureFlag</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L73">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -431,7 +469,7 @@ from the cause.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L75">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L80">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -466,7 +504,7 @@ from the cause.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L80">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L85">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -501,7 +539,7 @@ from the cause.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L85">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L90">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -537,7 +575,7 @@ continued running.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L91">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L96">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -572,7 +610,7 @@ continued running.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L96">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L101">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -612,7 +650,7 @@ continued running.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L106">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L111">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -647,7 +685,7 @@ continued running.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L116">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L121">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -727,7 +765,7 @@ continued running.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.17.1/Bugsnag/include/Bugsnag/BugsnagEvent.h#L125-L127">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L130-L132">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -737,8 +775,8 @@ continued running.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2022 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external noopener">Bugsnag Inc</a>. All rights reserved. (Last updated: 2022-05-18)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+          <p>&copy; 2022 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external noopener">Bugsnag Inc</a>. All rights reserved. (Last updated: 2022-07-13)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
     </div>

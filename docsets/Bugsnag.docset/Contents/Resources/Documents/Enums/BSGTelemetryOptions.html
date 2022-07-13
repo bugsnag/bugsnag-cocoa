@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>BSGErrorType Enumeration Reference</title>
+    <title>BSGTelemetryOptions Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,8 +13,8 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/objc/Enum/BSGErrorType" class="dashAnchor"></a>
-    <a title="BSGErrorType Enumeration Reference"></a>
+    <a name="//apple_ref/objc/Enum/BSGTelemetryOptions" class="dashAnchor"></a>
+    <a title="BSGTelemetryOptions Enumeration Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Bugsnag 6.20.0 Docs</a></p>
@@ -31,7 +31,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Bugsnag Reference</a>
         <img id="carat" src="../img/carat.png" alt=""/>
-        BSGErrorType Enumeration Reference
+        BSGTelemetryOptions Enumeration Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -198,23 +198,23 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>BSGErrorType</h1>
+            <h1>BSGTelemetryOptions</h1>
               <div class="declaration">
                 <div class="language">
                   <p class="aside-title">Objective-C</p>
-                  <pre class="highlight objective_c"><code><span class="k">enum</span> <span class="n">BSGErrorType</span> <span class="o">:</span> <span class="n">NSUInteger</span> <span class="p">{}</span></code></pre>
+                  <pre class="highlight objective_c"><code><span class="k">enum</span> <span class="n">BSGTelemetryOptions</span> <span class="o">:</span> <span class="n">NSUInteger</span> <span class="p">{}</span></code></pre>
 
                 </div>
                 <div class="language">
                   <p class="aside-title">Swift</p>
-                  <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">BSGErrorType</span> <span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">BSGTelemetryOptions</span> <span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
 
                 </div>
               </div>
-            <p>Denote which platform or runtime the Error occurred in.</p>
+            <p>Types of telemetry that may be sent to Bugsnag for product improvement purposes.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagError.h#L16-L20">Show on GitHub</a>
+                <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L73-L89">Show on GitHub</a>
               </div>
           </section>
           <section class="section task-group-section">
@@ -223,9 +223,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@E@BSGErrorType@BSGErrorTypeCocoa"></a>
-                    <a name="//apple_ref/objc/Case/BSGErrorTypeCocoa" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@E@BSGErrorType@BSGErrorTypeCocoa">BSGErrorTypeCocoa</a>
+                    <a name="/c:@E@BSGTelemetryOptions@BSGTelemetryInternalErrors"></a>
+                    <a name="//apple_ref/objc/Case/BSGTelemetryInternalErrors" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@E@BSGTelemetryOptions@BSGTelemetryInternalErrors">BSGTelemetryInternalErrors</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -233,24 +233,24 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Errors within the Bugsnag SDK.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Objective-C</p>
-                          <pre class="highlight objective_c"><code><span class="n">BSGErrorTypeCocoa</span></code></pre>
+                          <pre class="highlight objective_c"><code><span class="n">BSGTelemetryInternalErrors</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1UL</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">)</span></code></pre>
 
                         </div>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">var</span> <span class="nv">cocoa</span><span class="p">:</span> <span class="kt">BSGErrorType</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">var</span> <span class="nv">internalErrors</span><span class="p">:</span> <span class="kt">BSGTelemetryOptions</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagError.h#L17">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L78">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -258,9 +258,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@E@BSGErrorType@BSGErrorTypeC"></a>
-                    <a name="//apple_ref/objc/Case/BSGErrorTypeC" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@E@BSGErrorType@BSGErrorTypeC">BSGErrorTypeC</a>
+                    <a name="/c:@E@BSGTelemetryOptions@BSGTelemetryUsage"></a>
+                    <a name="//apple_ref/objc/Case/BSGTelemetryUsage" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@E@BSGTelemetryOptions@BSGTelemetryUsage">BSGTelemetryUsage</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -268,24 +268,24 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Information about how Bugsnag has been configured.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Objective-C</p>
-                          <pre class="highlight objective_c"><code><span class="n">BSGErrorTypeC</span></code></pre>
+                          <pre class="highlight objective_c"><code><span class="n">BSGTelemetryUsage</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1UL</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span></code></pre>
 
                         </div>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">var</span> <span class="nv">c</span><span class="p">:</span> <span class="kt">BSGErrorType</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">var</span> <span class="nv">usage</span><span class="p">:</span> <span class="kt">BSGTelemetryOptions</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagError.h#L18">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L83">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -293,9 +293,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@E@BSGErrorType@BSGErrorTypeReactNativeJs"></a>
-                    <a name="//apple_ref/objc/Case/BSGErrorTypeReactNativeJs" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@E@BSGErrorType@BSGErrorTypeReactNativeJs">BSGErrorTypeReactNativeJs</a>
+                    <a name="/c:@E@BSGTelemetryOptions@BSGTelemetryAll"></a>
+                    <a name="//apple_ref/objc/Case/BSGTelemetryAll" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@E@BSGTelemetryOptions@BSGTelemetryAll">BSGTelemetryAll</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -303,24 +303,24 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>All types of telemetry are enabled by default.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Objective-C</p>
-                          <pre class="highlight objective_c"><code><span class="n">BSGErrorTypeReactNativeJs</span></code></pre>
+                          <pre class="highlight objective_c"><code><span class="n">BSGTelemetryAll</span> <span class="o">=</span> <span class="p">(</span><span class="n"><a href="../Enums/BSGTelemetryOptions.html#/c:@E@BSGTelemetryOptions@BSGTelemetryInternalErrors">BSGTelemetryInternalErrors</a></span> <span class="o">|</span> <span class="n"><a href="../Enums/BSGTelemetryOptions.html#/c:@E@BSGTelemetryOptions@BSGTelemetryUsage">BSGTelemetryUsage</a></span><span class="p">)</span></code></pre>
 
                         </div>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">var</span> <span class="nv">reactNativeJs</span><span class="p">:</span> <span class="kt">BSGErrorType</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">var</span> <span class="nv">all</span><span class="p">:</span> <span class="kt">BSGTelemetryOptions</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagError.h#L19">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.20.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L88">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

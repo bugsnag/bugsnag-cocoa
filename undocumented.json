@@ -121,7 +121,7 @@
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagConfiguration.h",
-      "line": 286,
+      "line": 307,
       "symbol": "BugsnagConfiguration.appType",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"
