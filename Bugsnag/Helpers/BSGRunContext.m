@@ -23,10 +23,6 @@
 #import <sys/stat.h>
 #import <sys/sysctl.h>
 
-#if __has_include(<os/proc.h>) && TARGET_OS_IPHONE && !TARGET_OS_MACCATALYST
-#include <os/proc.h>
-#endif
-
 
 // Fields which may be updated from arbitrary threads simultaneously should be
 // updated using this macro to avoid data races (which are detected by TSan.)
@@ -45,7 +41,6 @@ static bool GetIsForeground(void);
 static UIApplication * GetUIApplication(void);
 #endif
 static void InstallTimer(void);
-static void UpdateAvailableMemory(void);
 
 
 #pragma mark - Initial setup
@@ -82,7 +77,10 @@ static void InitRunContext() {
     BSGRunContextUpdateTimestamp();
     InstallTimer();
     
-    UpdateAvailableMemory();
+    BSGRunContextUpdateMemory();
+    if (!bsg_runContext->memoryLimit) {
+        bsg_log_debug(@"Cannot query `memoryLimit` on this device");
+    }
     
     // Set `structVersion` last so that BSGRunContextLoadLast() will reject data
     // that is not fully initialised.
@@ -192,13 +190,13 @@ static void InstallTimer() {
     
     timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
     
-    dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, 0),
+    dispatch_source_set_timer(timer, DISPATCH_TIME_NOW,
                               /* interval */ NSEC_PER_SEC / 2,
                               /* leeway */   NSEC_PER_SEC / 4);
     
     dispatch_source_set_event_handler(timer, ^{
         BSGRunContextUpdateTimestamp();
-        UpdateAvailableMemory();
+        BSGRunContextUpdateMemory();
     });
     
     dispatch_resume(timer);
@@ -284,7 +282,7 @@ static void ObserveMemoryPressure() {
     dispatch_source_set_event_handler(source, ^{
         bsg_runContext->memoryPressure = dispatch_source_get_data(source);
         BSGRunContextUpdateTimestamp();
-        UpdateAvailableMemory();
+        BSGRunContextUpdateMemory();
     });
     dispatch_resume(source);
 }
@@ -343,14 +341,53 @@ void BSGRunContextUpdateTimestamp() {
     ATOMIC_SET(bsg_runContext->timestamp, CFAbsoluteTimeGetCurrent());
 }
 
-static void UpdateAvailableMemory() {
-    // Deliberately avoids use of bsg_ksmachfreeMemory() because that falls back
-    // to a much more expensive (~5x) system call on earlier releases.
-#if __has_include(<os/proc.h>) && TARGET_OS_IPHONE && !TARGET_OS_MACCATALYST
-    if (__builtin_available(iOS 13.0, tvOS 13.0, watchOS 6.0, *)) {
-        ATOMIC_SET(bsg_runContext->availableMemory, os_proc_available_memory());
+static void UpdateHostMemory() {
+    static mach_port_t host;
+    if (!host) {
+        host = mach_host_self();
+    }
+    
+    vm_statistics_data_t host_vm;
+    mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
+    kern_return_t kr = host_statistics(host, HOST_VM_INFO,
+                                       (host_info_t)&host_vm, &count);
+    if (kr != KERN_SUCCESS) {
+        bsg_log_debug(@"host_statistics: %d", kr);
+        return;
+    }
+    
+    size_t hostMemoryFree = host_vm.free_count * vm_kernel_page_size;
+    ATOMIC_SET(bsg_runContext->hostMemoryFree, hostMemoryFree);
+}
+
+static void UpdateTaskMemory() {
+    task_vm_info_data_t task_vm = {0};
+    mach_msg_type_number_t count = TASK_VM_INFO_COUNT;
+    kern_return_t kr = task_info(current_task(), TASK_VM_INFO,
+                                 (task_info_t)&task_vm, &count);
+    if (kr != KERN_SUCCESS) {
+        bsg_log_debug(@"task_info: %d", kr);
+        return;
+    }
+    
+    unsigned long long footprint = task_vm.phys_footprint;
+    ATOMIC_SET(bsg_runContext->memoryFootprint, footprint);
+    
+    // Since limit_bytes_remaining was added in iOS 13 (xnu-6153)
+    // this code must be compiled out when building with older SDKs.
+#ifdef TASK_VM_INFO_REV4_COUNT
+    if (task_vm.limit_bytes_remaining) {
+        unsigned long long available = task_vm.limit_bytes_remaining;
+        unsigned long long limit = footprint + available;
+        ATOMIC_SET(bsg_runContext->memoryAvailable, available);
+        ATOMIC_SET(bsg_runContext->memoryLimit, limit);
     }
 #endif
+}
+
+void BSGRunContextUpdateMemory() {
+    UpdateTaskMemory();
+    UpdateHostMemory();
 }
 
 

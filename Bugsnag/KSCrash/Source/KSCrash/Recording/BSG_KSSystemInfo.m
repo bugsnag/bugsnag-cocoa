@@ -27,6 +27,7 @@
 #import "BSG_KSSystemInfo.h"
 
 #import "BSGKeys.h"
+#import "BSGRunContext.h"
 #import "BSG_Jailbreak.h"
 #import "BSG_KSCrashC.h"
 #import "BSG_KSCrashReportFields.h"
@@ -435,8 +436,8 @@ static NSDictionary * bsg_systemversion() {
     sysInfo[@BSG_KSSystemField_Jailbroken] = @(is_jailbroken());
     sysInfo[@BSG_KSSystemField_TimeZone] = [[NSTimeZone localTimeZone] abbreviation];
     sysInfo[@BSG_KSSystemField_Memory] = @{
-        @BSG_KSCrashField_Free: @(bsg_ksmachfreeMemory()),
-        @BSG_KSSystemField_Size: [self int64Sysctl:@"hw.memsize"]
+        @BSG_KSCrashField_Free: @(bsg_runContext->hostMemoryFree),
+        @BSG_KSCrashField_Size: @(NSProcessInfo.processInfo.physicalMemory)
     };
 
     NSString *dir = NSSearchPathForDirectoriesInDomains(

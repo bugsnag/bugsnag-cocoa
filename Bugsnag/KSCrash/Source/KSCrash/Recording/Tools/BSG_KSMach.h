@@ -47,20 +47,13 @@ extern "C" {
 // ============================================================================
 
 /** Initializes KSMach.
- * Some functions (currently only bsg_ksmachpthreadFromMachThread and
- * bsg_ksmachfreeMemory) require initialization before use.
+ * bsg_ksmachpthreadFromMachThread requires initialization before use.
  */
 void bsg_ksmach_init(void);
 
 // ============================================================================
 #pragma mark - General Information -
 // ============================================================================
-
-/** Get the total memory that is currently free.
- *
- * @return total free memory.
- */
-uint64_t bsg_ksmachfreeMemory(void);
 
 /** Get the current CPU architecture.
  *

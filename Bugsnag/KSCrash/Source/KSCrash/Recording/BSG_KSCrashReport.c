@@ -46,6 +46,7 @@
 #include "BSG_KSCrashSentry.h"
 #include "BSG_Symbolicate.h"
 #include "BSGDefines.h"
+#include "BSGRunContext.h"
 
 #include <mach-o/loader.h>
 #include <sys/time.h>
@@ -1065,7 +1066,7 @@ void bsg_kscrw_i_writeMemoryInfo(const BSG_KSCrashReportWriter *const writer,
     writer->beginObject(writer, key);
     {
         writer->addUIntegerElement(writer, BSG_KSCrashField_Free,
-                                   bsg_ksmachfreeMemory());
+                                   bsg_runContext->hostMemoryFree);
     }
     writer->endContainer(writer);
 }
@@ -1502,6 +1503,7 @@ void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext,
 
     writer->beginObject(writer, BSG_KSCrashField_SystemAtCrash);
     {
+        BSGRunContextUpdateMemory();
         bsg_kscrw_i_writeMemoryInfo(writer, BSG_KSCrashField_Memory);
         bsg_kscrw_i_writeAppStats(writer, BSG_KSCrashField_AppStats,
                 &crashContext->state);

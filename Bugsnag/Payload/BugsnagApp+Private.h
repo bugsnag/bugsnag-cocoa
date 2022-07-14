@@ -8,7 +8,11 @@
 
 #import <Bugsnag/BugsnagApp.h>
 
+#import "BSGDefines.h"
+
 @class BugsnagConfiguration;
+
+struct BSGRunContext;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -27,5 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NSDictionary *BSGParseAppMetadata(NSDictionary *event);
+
+BSG_PRIVATE NSDictionary *BSGAppMetadataFromRunContext(const struct BSGRunContext *context);
 
 NS_ASSUME_NONNULL_END

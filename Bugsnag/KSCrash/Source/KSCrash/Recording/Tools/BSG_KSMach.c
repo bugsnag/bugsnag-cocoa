@@ -37,63 +37,13 @@
 #include <mach/mach_time.h>
 #include <sys/sysctl.h>
 
-#if __has_include(<os/proc.h>) && TARGET_OS_IPHONE && !TARGET_OS_MACCATALYST
-#include <os/proc.h>
-#endif
-
 // Avoiding static functions due to linker issues.
-
-/** Get the current VM stats.
- *
- * @param vmStats Gets filled with the VM stats.
- *
- * @param pageSize gets filled with the page size.
- *
- * @return true if the operation was successful.
- */
-bool bsg_ksmachi_VMStats(vm_statistics_data_t *const vmStats,
-                         vm_size_t *const pageSize);
 
 static pthread_t bsg_g_topThread;
 
 // ============================================================================
 #pragma mark - General Information -
 // ============================================================================
-
-/**
- * A pointer to `os_proc_available_memory` if it is available and usable.
- *
- * We cannot use the `__builtin_available` check at runtime because its
- * implementation uses malloc() which is not async-signal-safe and can result in
- * a deadlock if called from a crash handler or while threads are suspended.
- */
-static size_t (* get_available_memory)(void);
-
-static void bsg_ksmachfreeMemory_init(void) {
-#if __has_include(<os/proc.h>) && TARGET_OS_IPHONE && !TARGET_OS_MACCATALYST
-    if (__builtin_available(iOS 13.0, tvOS 13.0, watchOS 6.0, *)) {
-        // Only use `os_proc_available_memory` if it appears to be working.
-        // 0 is returned if the calling process is not an app or is running
-        // on a Simulator, and may also erroneously be returned by some early
-        // implementations like iOS 13.0.
-        if (os_proc_available_memory()) {
-            get_available_memory = os_proc_available_memory;
-        }
-    }
-#endif
-}
-
-uint64_t bsg_ksmachfreeMemory(void) {
-    if (get_available_memory) {
-        return get_available_memory();
-    }
-    vm_statistics_data_t vmStats;
-    vm_size_t pageSize;
-    if (bsg_ksmachi_VMStats(&vmStats, &pageSize)) {
-        return ((uint64_t)pageSize) * vmStats.free_count;
-    }
-    return 0;
-}
 
 const char *bsg_ksmachcurrentCPUArch(void) {
     const NXArchInfo *archInfo = NXGetLocalArchInfo();
@@ -228,8 +178,6 @@ void bsg_ksmach_init(void) {
         }
         vm_deallocate(thisTask, (vm_address_t)threads,
                       sizeof(thread_t) * numThreads);
-        
-        bsg_ksmachfreeMemory_init();
         
         initialized = true;
     }
@@ -569,32 +517,4 @@ bool bsg_ksmachisBeingTraced(void) {
     }
 
     return (procInfo.kp_proc.p_flag & P_TRACED) != 0;
-}
-
-// ============================================================================
-#pragma mark - (internal) -
-// ============================================================================
-
-bool bsg_ksmachi_VMStats(vm_statistics_data_t *const vmStats,
-                         vm_size_t *const pageSize) {
-    kern_return_t kr;
-    const mach_port_t hostPort = mach_host_self();
-
-    if ((kr = host_page_size(hostPort, pageSize)) != KERN_SUCCESS) {
-        BSG_KSLOG_ERROR("host_page_size: %s", mach_error_string(kr));
-#if !BSG_KSLOG_PRINTS_AT_LEVEL(BSG_KSLogger_Level_Error)
-        (void)kr;
-#endif
-        return false;
-    }
-
-    mach_msg_type_number_t hostSize = sizeof(*vmStats) / sizeof(natural_t);
-    kr = host_statistics(hostPort, HOST_VM_INFO, (host_info_t)vmStats,
-                         &hostSize);
-    if (kr != KERN_SUCCESS) {
-        BSG_KSLOG_ERROR("host_statistics: %s", mach_error_string(kr));
-        return false;
-    }
-
-    return true;
 }

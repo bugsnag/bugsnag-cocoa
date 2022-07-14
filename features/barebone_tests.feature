@@ -53,7 +53,10 @@ Feature: Barebone tests
     And the event "device.time" is a timestamp
     And on !macOS, the event "metaData.device.batteryLevel" is a number
     And on !macOS, the event "metaData.device.charging" is a boolean
+    And on iOS 13 and later, the event "metaData.app.freeMemory" is a number
+    And on iOS 13 and later, the event "metaData.app.memoryLimit" is a number
     And the event "metaData._usage" is null
+    And the event "metaData.app.memoryUsage" is a number
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.wordSize" is not null
@@ -118,7 +121,10 @@ Feature: Barebone tests
     And the event "breadcrumbs.2.type" equals "error"
     And the event "breadcrumbs.3.name" equals "About to decode a payload..."
     And the event "context" equals "NSCocoaErrorDomain (4864)"
+    And on iOS 13 and later, the event "metaData.app.freeMemory" is a number
+    And on iOS 13 and later, the event "metaData.app.memoryLimit" is a number
     And the event "metaData._usage" is null
+    And the event "metaData.app.memoryUsage" is a number
     And the event "metaData.nserror.code" equals 4864
     And the event "metaData.nserror.domain" equals "NSCocoaErrorDomain"
     And the event "metaData.nserror.reason" equals "The data isn’t in the correct format."
@@ -174,7 +180,10 @@ Feature: Barebone tests
     And the event "device.time" is a timestamp
     And on !macOS, the event "metaData.device.batteryLevel" is a number
     And on !macOS, the event "metaData.device.charging" is a boolean
+    And on iOS 13 and later, the event "metaData.app.freeMemory" is a number
+    And on iOS 13 and later, the event "metaData.app.memoryLimit" is a number
     And the event "metaData._usage" is null
+    And the event "metaData.app.memoryUsage" is a number
     And the event "metaData.device.simulator" is false
     And the event "metaData.lastRunInfo.consecutiveLaunchCrashes" equals 1
     And the event "metaData.lastRunInfo.crashed" is true
@@ -268,7 +277,7 @@ Feature: Barebone tests
     And the event "device.modelNumber" equals the platform-dependent string:
       | ios   | @not_null |
       | macos | @null     |
-    And the event "device.freeMemory" is null
+    And the event "device.freeMemory" is less than the event "device.totalMemory"
     And the event "device.osName" equals the platform-dependent string:
       | ios   | iOS    |
       | macos | Mac OS |
@@ -278,7 +287,10 @@ Feature: Barebone tests
     And the event "device.runtimeVersions.osBuild" is not null
     And the event "device.time" is a timestamp
     And the event "device.totalMemory" is an integer
+    And on iOS 13 and later, the event "metaData.app.freeMemory" is a number
+    And on iOS 13 and later, the event "metaData.app.memoryLimit" is a number
     And the event "metaData._usage" is null
+    And the event "metaData.app.memoryUsage" is a number
     And the event "metaData.app.name" equals "iOSTestApp"
     And the event "metaData.custom.bar" equals "foo"
     And the event "metaData.device.batteryLevel" is a number

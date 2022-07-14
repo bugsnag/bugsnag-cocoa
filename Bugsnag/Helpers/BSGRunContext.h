@@ -19,7 +19,7 @@
 // During development this is not strictly necessary since last run's data will
 // not be loaded if the struct's size has changed.
 //
-#define BSGRUNCONTEXT_VERSION 3
+#define BSGRUNCONTEXT_VERSION 4
 
 struct BSGRunContext {
     long structVersion;
@@ -46,7 +46,10 @@ struct BSGRunContext {
     dispatch_source_memorypressure_flags_t memoryPressure;
 #endif
     double timestamp __attribute__((aligned(8)));
-    size_t availableMemory;
+    unsigned long long hostMemoryFree;
+    unsigned long long memoryAvailable;
+    unsigned long long memoryFootprint;
+    unsigned long long memoryLimit;
 };
 
 /// Information about the current run of the app / process.
@@ -61,9 +64,13 @@ extern const struct BSGRunContext *_Nullable bsg_lastRunContext;
 
 #pragma mark -
 
+#ifdef FOUNDATION_EXTERN
 void BSGRunContextInit(NSString *_Nonnull path);
+#endif
 
 #pragma mark -
+
+BSG_PRIVATE void BSGRunContextUpdateMemory(void);
 
 BSG_PRIVATE void BSGRunContextUpdateTimestamp(void);
 
