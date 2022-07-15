@@ -99,7 +99,6 @@
 #define BSG_KSCrashField_CrashInfoMessage "crash_info_message"
 #define BSG_KSCrashField_CurrentThread "current_thread"
 #define BSG_KSCrashField_DispatchQueue "dispatch_queue"
-#define BSG_KSCrashField_NotableAddresses "notable_addresses"
 #define BSG_KSCrashField_Registers "registers"
 #define BSG_KSCrashField_Skipped "skipped"
 #define BSG_KSCrashField_Stack "stack"

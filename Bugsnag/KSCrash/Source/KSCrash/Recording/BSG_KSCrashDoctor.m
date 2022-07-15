@@ -240,24 +240,6 @@ typedef NS_ENUM(NSUInteger, BSG_CPUFamily) {
 
 - (BOOL)isMemoryCorruption:(NSDictionary *)report {
     NSDictionary *crashedThread = [self crashedThreadReport:report];
-    NSArray *notableAddresses =
-            crashedThread[@BSG_KSCrashField_NotableAddresses];
-    for (NSDictionary *address in [notableAddresses objectEnumerator]) {
-        NSString *type = address[@BSG_KSCrashField_Type];
-        if ([type isEqualToString:@"string"]) {
-            NSString *value = address[@BSG_KSCrashField_Value];
-            if ([value rangeOfString:@"autorelease pool page"].location !=
-                    NSNotFound &&
-                [value rangeOfString:@"corrupted"].location != NSNotFound) {
-                return YES;
-            }
-            if ([value rangeOfString:@"incorrect checksum for freed object"]
-                    .location != NSNotFound) {
-                return YES;
-            }
-        }
-    }
-
     NSArray *backtrace = [self backtraceFromThreadReport:crashedThread];
     for (NSDictionary *entry in backtrace) {
         NSString *objectName =
