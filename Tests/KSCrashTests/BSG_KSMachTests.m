@@ -104,12 +104,6 @@ void * executeBlock(void *ptr)
     XCTAssertTrue(result == NULL, @"");
 }
 
-- (void) testFreeMemory
-{
-    uint64_t freeMem = bsg_ksmachfreeMemory();
-    XCTAssertTrue(freeMem > 0, @"");
-}
-
 #if BSG_HAVE_MACH_THREADS
 - (void) testSuspendThreads
 {
