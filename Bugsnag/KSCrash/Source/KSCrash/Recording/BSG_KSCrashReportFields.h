@@ -140,7 +140,6 @@
 #pragma mark - Report -
 
 #define BSG_KSCrashField_Crash "crash"
-#define BSG_KSCrashField_Diagnosis "diagnosis"
 #define BSG_KSCrashField_ID "id"
 #define BSG_KSCrashField_ProcessName "process_name"
 #define BSG_KSCrashField_Report "report"

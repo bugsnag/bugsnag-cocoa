@@ -134,24 +134,6 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
 - (void)testErrorMessageParse {
     XCTAssertEqualObjects(@"", BSGParseErrorMessage(@{}, @{}, @""));
     XCTAssertEqualObjects(@"foo", BSGParseErrorMessage(@{}, @{@"reason": @"foo"}, @""));
-
-    XCTAssertEqualObjects(@"Exception", BSGParseErrorMessage(@{
-            @"crash": @{
-                    @"diagnosis": @"Exception"
-            }
-    }, @{}, @"signal"));
-
-    XCTAssertEqualObjects(@"Exceptional circumstance", BSGParseErrorMessage(@{
-            @"crash": @{
-                    @"diagnosis": @"Exceptional circumstance\ntest"
-            }
-    }, @{}, @"mach"));
-
-    XCTAssertEqualObjects(@"", BSGParseErrorMessage(@{
-            @"crash": @{
-                    @"diagnosis": @"No diagnosis foo"
-            }
-    }, @{}, @"mach"));
 }
 
 - (void)testStacktraceOverride {
