@@ -69,10 +69,6 @@ typedef ucontext_t SignalUserContext;
 /** Maximum depth allowed for a backtrace. */
 #define BSG_kMaxBacktraceDepth 150
 
-/** Default number of objects, subobjects, and ivars to record from a memory loc
- */
-#define BSG_kDefaultMemorySearchDepth 15
-
 /** Length at which we consider a backtrace to represent a stack overflow.
  * If it reaches this point, we start cutting off from the top of the stack
  * rather than the bottom.
@@ -516,56 +512,6 @@ bool bsg_kscrw_i_exceedsBufferLen(const size_t length);
 void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext,
                                           BSG_KSCrashReportWriter *writer,
                                           const char *const path);
-
-/** Write the contents of a memory location.
- * Also writes meta information about the data.
- *
- * @param writer The writer.
- *
- * @param key The object key, if needed.
- *
- * @param address The memory address.
- *
- * @param limit How many more subreferenced objects to write, if any.
- */
-void bsg_kscrw_i_writeMemoryContents(
-    const BSG_KSCrashReportWriter *const writer, const char *const key,
-    const uintptr_t address, int *limit) {
-    (*limit)--;
-    const void *object = (const void *)address;
-    if (bsg_kscrw_i_isValidString(object)) {
-        writer->beginObject(writer, key);
-        {
-            writer->addUIntegerElement(writer, BSG_KSCrashField_Address, address);
-            writer->addStringElement(writer, BSG_KSCrashField_Type,
-                                     BSG_KSCrashMemType_String);
-            writer->addStringElement(writer, BSG_KSCrashField_Value,
-                                     (const char *)object);
-        }
-        writer->endContainer(writer);
-    }
-}
-
-/** Look for a hex value in a string and try to write whatever it references.
- *
- * @param writer The writer.
- *
- * @param key The object key, if needed.
- *
- * @param string The string to search.
- */
-void bsg_kscrw_i_writeAddressReferencedByString(
-    const BSG_KSCrashReportWriter *const writer, const char *const key,
-    const char *string) {
-    uint64_t address = 0;
-    if (string == NULL ||
-        !bsg_ksstring_extractHexValue(string, strlen(string), &address)) {
-        return;
-    }
-
-    int limit = BSG_kDefaultMemorySearchDepth;
-    bsg_kscrw_i_writeMemoryContents(writer, key, (uintptr_t)address, &limit);
-}
 
 #pragma mark Backtrace
 
@@ -1111,8 +1057,6 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
                     writer->addJSONElement(writer, BSG_KSCrashField_UserInfo,
                                            crash->NSException.userInfo);
                 }
-                bsg_kscrw_i_writeAddressReferencedByString(
-                    writer, BSG_KSCrashField_ReferencedObject, crashReason);
             }
             writer->endContainer(writer);
             break;
