@@ -140,7 +140,7 @@
             shouldReportAppHang = NO;
         }
         
-#if DEBUG
+#if defined(DEBUG) && DEBUG
         if (shouldReportAppHang && bsg_ksmachisBeingTraced()) {
             bsg_log_debug(@"Ignoring app hang because debugger is attached");
             shouldReportAppHang = NO;

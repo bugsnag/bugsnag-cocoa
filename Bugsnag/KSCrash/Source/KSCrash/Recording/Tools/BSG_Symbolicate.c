@@ -136,7 +136,7 @@ void bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
             if (leb128_uintptr_decode(&context, data[i], &delta) && delta) {
                 addr += delta;
                 uintptr_t next_func_start = addr;
-#if __arm__
+#if defined(__arm__)
 #define THUMB_INSTRUCTION_TAG 1ul
                 // ld64 sets the least significant bit for thumb instructions, which needs to be
                 // zeroed to recover the original address - see FunctionStartsAtom<A>::encode()

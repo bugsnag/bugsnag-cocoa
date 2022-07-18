@@ -213,7 +213,7 @@ static NSUserDefaults *userDefaults;
     _telemetry = BSGTelemetryAll;
     
     NSString *releaseStage = nil;
-    #if DEBUG
+    #if defined(DEBUG) && DEBUG
         releaseStage = BSGKeyDevelopment;
     #else
         releaseStage = BSGKeyProduction;
