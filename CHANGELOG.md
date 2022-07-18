@@ -5,6 +5,9 @@ Changelog
 
 ### Enhancements
 
+* Add `configuration.reportBackgroundAppHangs` to allow background app hangs to be reported.
+  [#1439](https://github.com/bugsnag/bugsnag-cocoa/pull/1439)
+
 * Add `freeMemory`, `memoryLimit` and `memoryUsage` to `metaData.app`.
   Always report the device (not app) free memory in `device.freeMemory`.
   [#1435](https://github.com/bugsnag/bugsnag-cocoa/pull/1435)

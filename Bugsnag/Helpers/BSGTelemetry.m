@@ -32,6 +32,7 @@ static NSDictionary * ConfigValue(BugsnagConfiguration *configuration) {
     
 #if BSG_HAVE_APP_HANG_DETECTION
     config[@"appHangThresholdMillis"] = IntegerValue(configuration.appHangThresholdMillis, defaults.appHangThresholdMillis);
+    config[@"reportBackgroundAppHangs"] = BooleanValue(configuration.reportBackgroundAppHangs, defaults.reportBackgroundAppHangs);
 #endif
     
     config[@"autoDetectErrors"] = BooleanValue(configuration.autoDetectErrors, defaults.autoDetectErrors);

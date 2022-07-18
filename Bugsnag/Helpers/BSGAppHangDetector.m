@@ -23,7 +23,6 @@
 @interface BSGAppHangDetector ()
 
 @property (weak, nonatomic) id<BSGAppHangDetectorDelegate> delegate;
-@property (nonatomic) BOOL recordAllThreads;
 @property (nonatomic) CFRunLoopObserverRef observer;
 @property (atomic) dispatch_time_t processingDeadline;
 @property (nonatomic) dispatch_semaphore_t processingStarted;
@@ -67,7 +66,6 @@
     bsg_log_debug(@"Starting App Hang detector with threshold = %g seconds", threshold);
     
     self.delegate = delegate;
-    self.recordAllThreads = configuration.sendThreads == BSGThreadSendPolicyAlways;
     self.processingStarted = dispatch_semaphore_create(0);
     self.processingFinished = dispatch_semaphore_create(0);
     
@@ -147,7 +145,7 @@
         }
 #endif
         
-        if (shouldReportAppHang && !bsg_runContext->isForeground) {
+        if (shouldReportAppHang && !bsg_runContext->isForeground && !self.delegate.configuration.reportBackgroundAppHangs) {
             bsg_log_debug(@"Ignoring app hang because app is in the background");
             shouldReportAppHang = NO;
         }
@@ -172,9 +170,10 @@
     
     NSDate *date = [NSDate date];
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    id<BSGAppHangDetectorDelegate> delegate = self.delegate;
     
     NSArray<BugsnagThread *> *threads = nil;
-    if (self.recordAllThreads) {
+    if (delegate.configuration.sendThreads == BSGThreadSendPolicyAlways) {
         threads = [BugsnagThread allThreads:YES callStackReturnAddresses:NSThread.callStackReturnAddresses];
         // By default the calling thread is marked as "Error reported from this thread", which is not correct case for app hangs.
         [threads enumerateObjectsUsingBlock:^(BugsnagThread * _Nonnull thread, NSUInteger idx,
@@ -185,7 +184,7 @@
         threads = BSGArrayWithObject([BugsnagThread mainThread]);
     }
     
-    [self.delegate appHangDetectedAtDate:date withThreads:threads systemInfo:systemInfo];
+    [delegate appHangDetectedAtDate:date withThreads:threads systemInfo:systemInfo];
 }
 
 - (void)appHangEnded {
