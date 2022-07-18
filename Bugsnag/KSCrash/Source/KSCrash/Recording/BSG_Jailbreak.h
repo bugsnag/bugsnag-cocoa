@@ -105,7 +105,7 @@ static inline bool bsg_local_is_insert_libraries_env_var(const char* str) {
     } \
 } while(0)
 
-#elif TARGET_CPU_X86_64 && __GCC_ASM_FLAG_OUTPUTS__
+#elif TARGET_CPU_X86_64 && defined(__GCC_ASM_FLAG_OUTPUTS__)
 #define BSG_HAS_CUSTOM_SYSCALL 1
 
 // X86_64 3-parameter syscall

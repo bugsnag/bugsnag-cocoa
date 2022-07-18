@@ -46,7 +46,7 @@
 #define kThreadPrimary "KSCrash Exception Handler (Primary)"
 #define kThreadSecondary "KSCrash Exception Handler (Secondary)"
 
-#if __LP64__
+#ifdef __LP64__
     #define MACH_ERROR_CODE_MASK 0xFFFFFFFFFFFFFFFF
 #else
     #define MACH_ERROR_CODE_MASK 0xFFFFFFFF

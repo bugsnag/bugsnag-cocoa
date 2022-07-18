@@ -182,7 +182,7 @@ static void bsg_reportException(id self, SEL _cmd, NSException *exception) {
         bsg_kscrashsentry_endHandlingCrash();
     }
 
-#if TARGET_OS_MACCATALYST
+#if defined(TARGET_OS_MACCATALYST) && TARGET_OS_MACCATALYST
     // Mac Catalyst apps continue to run after an uncaught exception is thrown
     // while handling a UI event. Our crash sentries should remain installed to
     // catch any subsequent unhandled exceptions or crashes.
