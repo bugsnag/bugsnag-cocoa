@@ -171,3 +171,14 @@ Feature: App hangs
     And the exception "errorClass" equals "App Hang"
     And the exception "message" equals "The app's main thread failed to respond to an event within 2000 milliseconds"
     And the exception "type" equals "cocoa"
+
+  @skip_macos
+  Scenario: Background app hangs should be reported if reportBackgroundAppHangs = true
+    When I run "ReportBackgroundAppHangScenario"
+    And I send the app to the background for 3 seconds
+    And I wait to receive an error
+    Then the exception "errorClass" equals "App Hang"
+    And the exception "message" equals "The app's main thread failed to respond to an event within 1000 milliseconds"
+    And the event "app.inForeground" is false
+    And the event "usage.config.appHangThresholdMillis" equals 1000
+    And the event "usage.config.reportBackgroundAppHangs" is true

@@ -262,6 +262,13 @@ typedef id<NSObject> BugsnagOnSessionRef;
 @property (nonatomic) NSUInteger appHangThresholdMillis API_UNAVAILABLE(watchos);
 
 /**
+ * Whether Bugsnag should report app hangs that occur while the app is in the background.
+ *
+ * By default this is false.
+ */
+@property (nonatomic) BOOL reportBackgroundAppHangs API_UNAVAILABLE(watchos);
+
+/**
  * Determines whether app sessions should be tracked automatically. By default this value is true.
  * If this value is updated after +[Bugsnag start] is called, only subsequent automatic sessions
  * will be captured.
