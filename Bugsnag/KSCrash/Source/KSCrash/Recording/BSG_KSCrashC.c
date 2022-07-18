@@ -29,7 +29,6 @@
 #include "BSG_KSCrashReport.h"
 #include "BSG_KSMach.h"
 #include "BSG_KSMachHeaders.h"
-#include "BSG_KSObjC.h"
 #include "BSG_KSString.h"
 #include "BSG_KSSystemInfoC.h"
 #include "BSGDefines.h"
@@ -112,11 +111,6 @@ BSG_KSCrashType bsg_kscrash_install(const char *const crashReportFilePath,
     }
     bsg_g_installed = 1;
 
-
-    if (context->config.introspectionRules.enabled) {
-        bsg_ksobjc_init();
-    }
-
     bsg_kscrash_reinstall(crashReportFilePath, recrashReportFilePath,
                           stateFilePath, crashID);
 
@@ -166,10 +160,6 @@ BSG_KSCrashType bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashType crashTypes) {
     }
 
     return crashTypes;
-}
-
-void bsg_kscrash_setIntrospectMemory(bool introspectMemory) {
-    crashContext()->config.introspectionRules.enabled = introspectMemory;
 }
 
 void bsg_kscrash_setCrashNotifyCallback(
