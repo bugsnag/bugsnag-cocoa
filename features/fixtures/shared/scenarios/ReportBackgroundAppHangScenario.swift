@@ -5,6 +5,12 @@ class ReportBackgroundAppHangScenario: Scenario {
     override func startBugsnag() {
         self.config.appHangThresholdMillis = 1_000
         self.config.reportBackgroundAppHangs = true
+        self.config.addOnSendError { event in
+            !event.errors[0].stacktrace.contains { stackframe in
+                // CABackingStoreCollectBlocking is known to hang for several seconds upon entering the background
+                stackframe.method == "CABackingStoreCollectBlocking"
+            }
+        }
         super.startBugsnag()
     }
 

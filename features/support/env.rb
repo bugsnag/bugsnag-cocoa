@@ -5,12 +5,21 @@ BeforeAll do
 
   $app_env = {
     'LLVM_PROFILE_FILE' => '%c%p.profraw',
-    'MallocCheckHeapAbort' => 'TRUE',
-    'MallocCheckHeapStart' => '1000',
-    'MallocErrorAbort' => 'TRUE',
-    'MallocGuardEdges' => 'TRUE',
-    'MallocScribble' => 'TRUE',
-    'MAZE_RUNNER' => 'TRUE' }
+    'MAZE_RUNNER' => 'TRUE'
+  }
+
+  # MallocScribble results in intermittent crashes in CFNetwork on macOS 10.13
+  if Maze.config.os == 'macos' && Maze.config.os_version > 10.13
+    $logger.info 'Enabling MallocScribble'
+    env = {
+      'MallocCheckHeapAbort' => 'TRUE',
+      'MallocCheckHeapStart' => '1000',
+      'MallocErrorAbort' => 'TRUE',
+      'MallocGuardEdges' => 'TRUE',
+      'MallocScribble' => 'TRUE'
+    }
+    $app_env.merge!(env)
+  end
 
   Maze.config.receive_no_requests_wait = 15
 
