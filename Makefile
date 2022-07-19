@@ -133,7 +133,7 @@ e2e_ios_local:
 
 e2e_macos:
 	./features/scripts/export_mac_app.sh
-	bundle exec maze-runner --app=macOSTestApp --os=macOS --os-version=11 $(FEATURES)
+	bundle exec maze-runner --app=macOSTestApp --os=macOS --os-version=$(shell sw_vers -productVersion) $(FEATURES)
 ifeq ($(ENABLE_CODE_COVERAGE), YES)
 	xcrun llvm-profdata merge -sparse *.profraw -o default.profdata
 	rm -rf *.profraw
