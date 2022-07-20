@@ -43,8 +43,8 @@
         return self;
     } else {
         return [[BugsnagUser alloc] initWithId:[BSG_KSSystemInfo deviceAndAppHash]
-                                              name:self.name
-                                      emailAddress:self.email];
+                                          name:self.name
+                                  emailAddress:self.email];
     }
 }
 
