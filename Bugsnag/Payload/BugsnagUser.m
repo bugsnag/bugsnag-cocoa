@@ -8,7 +8,7 @@
 
 #import "BugsnagUser+Private.h"
 
-#import "BugsnagCollections.h"
+#import "BSG_KSSystemInfo.h"
 
 @implementation BugsnagUser
 
@@ -21,18 +21,13 @@
     return self;
 }
 
-- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress {
-    self = [super init];
-    if (self) {
-        _id = userId;
+- (instancetype)initWithId:(NSString *)id name:(NSString *)name emailAddress:(NSString *)emailAddress {
+    if ((self = [super init])) {
+        _id = id;
         _name = name;
         _email = emailAddress;
     }
     return self;
-}
-
-+ (instancetype)userWithUserId:(NSString *)userId name:(NSString *)name emailAddress:(NSString *)emailAddress {
-    return [[self alloc] initWithUserId:userId name:name emailAddress:emailAddress];
 }
 
 - (NSDictionary *)toJson {
@@ -41,6 +36,16 @@
     dict[@"email"] = self.email;
     dict[@"name"] = self.name;
     return [NSDictionary dictionaryWithDictionary:dict];
+}
+
+- (BugsnagUser *)withId {
+    if (self.id) {
+        return self;
+    } else {
+        return [[BugsnagUser alloc] initWithId:[BSG_KSSystemInfo deviceAndAppHash]
+                                              name:self.name
+                                      emailAddress:self.email];
+    }
 }
 
 @end

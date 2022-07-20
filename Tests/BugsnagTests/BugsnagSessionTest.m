@@ -108,7 +108,7 @@
 
 - (void)testPayloadSerialization {
     NSDate *now = [NSDate date];
-    BugsnagUser *user = [[BugsnagUser alloc] initWithUserId:@"123" name:@"Joe Bloggs" emailAddress:@"joe@example.com"];
+    BugsnagUser *user = [[BugsnagUser alloc] initWithId:@"123" name:@"Joe Bloggs" emailAddress:@"joe@example.com"];
     BugsnagSession *payload = [[BugsnagSession alloc] initWithId:@"test"
                                                        startedAt:now
                                                             user:user

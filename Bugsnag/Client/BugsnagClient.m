@@ -682,7 +682,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithApp:[self generateAppWithState:systemInfo]
                                                      device:[self generateDeviceWithState:systemInfo]
                                                handledState:handledState
-                                                       user:self.user
+                                                       user:[self.user withId]
                                                    metadata:metadata
                                                 breadcrumbs:self.breadcrumbs.breadcrumbs ?: @[]
                                                      errors:@[error]
@@ -724,6 +724,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
             event.featureFlagStore = [self.featureFlagStore mutableCopy];
         }
     }
+
+    event.user = [event.user withId];
 
     BOOL originalUnhandledValue = event.unhandled;
     @try {
@@ -1041,7 +1043,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [[BugsnagEvent alloc] initWithApp:app
                                device:device
                          handledState:handledState
-                                 user:self.configuration.user
+                                 user:[self.user withId]
                              metadata:metadata
                           breadcrumbs:breadcrumbs
                                errors:@[error]

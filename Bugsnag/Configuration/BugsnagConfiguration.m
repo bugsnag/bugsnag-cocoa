@@ -201,7 +201,6 @@ static NSUserDefaults *userDefaults;
     // Enabling OOM detection only happens in release builds, to avoid triggering
     // the heuristic when killing/restarting an app in Xcode or similar.
     _persistUser = YES;
-    // Only gets persisted user data if there is any, otherwise nil
     // persistUser isn't settable until post-init.
     _user = [self getPersistedUserData];
 
@@ -283,7 +282,7 @@ static NSUserDefaults *userDefaults;
 - (void)setUser:(NSString *_Nullable)userId
       withEmail:(NSString *_Nullable)email
         andName:(NSString *_Nullable)name {
-    self.user = [[BugsnagUser alloc] initWithUserId:userId name:name emailAddress:email];
+    self.user = [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email];
 
     if (self.persistUser) {
         [self persistUserData];
@@ -410,20 +409,12 @@ static NSUserDefaults *userDefaults;
     }
 }
 
-/**
- * Retrieve a persisted user, if we have any valid, persisted fields, or nil otherwise
- */
 - (BugsnagUser *)getPersistedUserData {
     @synchronized(self) {
         NSString *email = [userDefaults objectForKey:kBugsnagUserEmailAddress];
         NSString *name = [userDefaults objectForKey:kBugsnagUserName];
         NSString *userId = [userDefaults objectForKey:kBugsnagUserUserId];
-
-        if (email || name || userId) {
-            return [[BugsnagUser alloc] initWithUserId:userId name:name emailAddress:email];
-        } else {
-            return [[BugsnagUser alloc] initWithUserId:nil name:nil emailAddress:nil];
-        }
+        return [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email];
     }
 }
 
