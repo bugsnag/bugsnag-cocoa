@@ -87,6 +87,10 @@ Feature: App hangs
     And the error payload field "events.0.breadcrumbs" is an array with 1 elements
     And the error payload field "events.0.breadcrumbs.0.name" equals "This breadcrumb was left during the hang, before detection"
 
+    And on iOS 13 and later, the event "metaData.app.freeMemory" is a number
+    And on iOS 13 and later, the event "metaData.app.memoryLimit" is a number
+    And the event "metaData.app.memoryUsage" is a number
+
     # Stack trace
 
     And the "method" of stack frame 0 matches "__semwait_signal"
@@ -122,6 +126,9 @@ Feature: App hangs
     And the event contains the following feature flags:
       | featureFlag | variant |
       | Testing     |         |
+    And on iOS 13 and later, the event "metaData.app.freeMemory" is a number
+    And on iOS 13 and later, the event "metaData.app.memoryLimit" is a number
+    And the event "metaData.app.memoryUsage" is a number
 
     And the exception "errorClass" equals "App Hang"
     And the exception "message" equals "The app was terminated while unresponsive"

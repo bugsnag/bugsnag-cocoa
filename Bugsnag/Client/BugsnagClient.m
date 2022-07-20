@@ -1032,12 +1032,17 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     NSArray<BugsnagBreadcrumb *> *breadcrumbs = [self.breadcrumbs breadcrumbsBeforeDate:date];
 
+    BugsnagMetadata *metadata = [self.metadata deepCopy];
+
+    [metadata addMetadata:BSGAppMetadataFromRunContext(bsg_runContext) toSection:BSGKeyApp];
+    [metadata addMetadata:BSGDeviceMetadataFromRunContext(bsg_runContext) toSection:BSGKeyDevice];
+
     self.appHangEvent =
     [[BugsnagEvent alloc] initWithApp:app
                                device:device
                          handledState:handledState
                                  user:self.configuration.user
-                             metadata:[self.metadata deepCopy]
+                             metadata:metadata
                           breadcrumbs:breadcrumbs
                                errors:@[error]
                               threads:threads
