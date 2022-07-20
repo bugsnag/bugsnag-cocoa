@@ -142,7 +142,7 @@ def run_macos_app
     Process.waitpid $fixture_pid
   end
   $fixture_pid = Process.spawn(
-    { 'MAZE_RUNNER' => 'TRUE', 'LLVM_PROFILE_FILE' => '%c%p.profraw' },
+    $app_env,
     'features/fixtures/macos/output/macOSTestApp.app/Contents/MacOS/macOSTestApp',
     %i[err out] => '/dev/null'
   )

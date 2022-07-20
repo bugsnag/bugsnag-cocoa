@@ -3,10 +3,39 @@ require 'fileutils'
 BeforeAll do
   $api_key = "12312312312312312312312312312312"
 
+  $app_env = {
+    'LLVM_PROFILE_FILE' => '%c%p.profraw',
+    'MAZE_RUNNER' => 'TRUE'
+  }
+
+  # MallocScribble results in intermittent crashes in CFNetwork on macOS 10.13
+  if Maze.config.os == 'macos' && Maze.config.os_version > 10.13
+    $logger.info 'Enabling MallocScribble'
+    env = {
+      'MallocCheckHeapAbort' => 'TRUE',
+      'MallocCheckHeapStart' => '1000',
+      'MallocErrorAbort' => 'TRUE',
+      'MallocGuardEdges' => 'TRUE',
+      'MallocScribble' => 'TRUE'
+    }
+    $app_env.merge!(env)
+  end
+
   Maze.config.receive_no_requests_wait = 15
 
   # Setup a 3 minute timeout for receiving requests is STRESS_TEST env var is set
   Maze.config.receive_requests_wait = 180 unless ENV['STRESS_TEST'].nil?
+
+  if Maze.config.os == 'ios' && Maze.config.farm == :local
+    # Recent Appium versions don't always uninstall the old version of the app ¯\_(ツ)_/¯
+    system('ideviceinstaller --uninstall com.bugsnag.iOSTestApp')
+  end
+
+  if Maze.config.os == 'ios'
+    capabilities = JSON.parse(Maze.config.capabilities_option)
+    capabilities['processArguments'] = { 'env' => $app_env }
+    Maze.config.capabilities_option = JSON.dump(capabilities)
+  end
 
   # Additional require MacOS configuration
   if Maze.config.os == 'macos'

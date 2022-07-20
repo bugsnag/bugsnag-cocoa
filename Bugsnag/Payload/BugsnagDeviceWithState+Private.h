@@ -8,6 +8,10 @@
 
 #import <Bugsnag/BugsnagDeviceWithState.h>
 
+#import "BSGDefines.h"
+
+struct BSGRunContext;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagDeviceWithState ()
@@ -27,5 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NSMutableDictionary *BSGParseDeviceMetadata(NSDictionary *event);
+
+BSG_PRIVATE NSDictionary * BSGDeviceMetadataFromRunContext(const struct BSGRunContext *context);
 
 NS_ASSUME_NONNULL_END

@@ -27,6 +27,7 @@
 #import "BSG_KSSystemInfo.h"
 
 #import "BSGKeys.h"
+#import "BSGRunContext.h"
 #import "BSG_Jailbreak.h"
 #import "BSG_KSCrashC.h"
 #import "BSG_KSCrashReportFields.h"
@@ -417,7 +418,7 @@ static NSDictionary * bsg_systemversion() {
     sysInfo[@BSG_KSSystemField_BinaryArch] = [self CPUArchForCPUType:header->cputype subType:header->cpusubtype];
     sysInfo[@BSG_KSSystemField_DeviceAppHash] = [self deviceAndAppHash];
 
-#if TARGET_OS_OSX || TARGET_OS_MACCATALYST || TARGET_OS_SIMULATOR
+#if TARGET_OS_OSX || (defined(TARGET_OS_MACCATALYST) && TARGET_OS_MACCATALYST) || TARGET_OS_SIMULATOR
     // https://developer.apple.com/documentation/apple-silicon/about-the-rosetta-translation-environment
     int proc_translated = 0;
     size_t size = sizeof(proc_translated);
@@ -435,8 +436,8 @@ static NSDictionary * bsg_systemversion() {
     sysInfo[@BSG_KSSystemField_Jailbroken] = @(is_jailbroken());
     sysInfo[@BSG_KSSystemField_TimeZone] = [[NSTimeZone localTimeZone] abbreviation];
     sysInfo[@BSG_KSSystemField_Memory] = @{
-        @BSG_KSCrashField_Free: @(bsg_ksmachfreeMemory()),
-        @BSG_KSSystemField_Size: [self int64Sysctl:@"hw.memsize"]
+        @BSG_KSCrashField_Free: @(bsg_runContext->hostMemoryFree),
+        @BSG_KSCrashField_Size: @(NSProcessInfo.processInfo.physicalMemory)
     };
 
     NSString *dir = NSSearchPathForDirectoriesInDomains(

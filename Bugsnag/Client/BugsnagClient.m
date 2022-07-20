@@ -92,7 +92,7 @@ static char *crashSentinelPath;
  *
  *  @param writer report writer which will receive updated metadata
  */
-void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
+static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
     BOOL isCrash = YES;
     BSGSessionWriteCrashReport(writer);
 
@@ -100,6 +100,17 @@ void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
         writer->addJSONElement(writer, "config", bsg_g_bugsnag_data.configJSON);
         writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metadataJSON);
         writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
+
+        writer->beginObject(writer, "app"); {
+            if (bsg_runContext->memoryLimit) {
+                writer->addUIntegerElement(writer, "freeMemory", bsg_runContext->memoryAvailable);
+                writer->addUIntegerElement(writer, "memoryLimit", bsg_runContext->memoryLimit);
+            }
+            if (bsg_runContext->memoryFootprint) {
+                writer->addUIntegerElement(writer, "memoryUsage", bsg_runContext->memoryFootprint);
+            }
+        }
+        writer->endContainer(writer);
 
 #if BSG_HAVE_BATTERY
         if (BSGIsBatteryStateKnown(bsg_runContext->batteryState)) {
@@ -699,18 +710,13 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         return;
     }
     
-    // Device information that isn't part of `event.device`
-    NSMutableDictionary *deviceMetadata = [NSMutableDictionary dictionary];
-#if BSG_HAVE_BATTERY
-    if (BSGIsBatteryStateKnown(BSGGetDevice().batteryState)) {
-        deviceMetadata[BSGKeyBatteryLevel] = @(BSGGetDevice().batteryLevel);
-        deviceMetadata[BSGKeyCharging] = BSGIsBatteryCharging(BSGGetDevice().batteryState) ? @YES : @NO;
-    }
+#if TARGET_OS_WATCH
+    // Update BSGRunContext because we cannot observe battery level or state on watchOS :-(
+    bsg_runContext->batteryLevel = BSGGetDevice().batteryLevel;
+    bsg_runContext->batteryState = BSGGetDevice().batteryState;
 #endif
-    if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
-        deviceMetadata[BSGKeyThermalState] = BSGStringFromThermalState(bsg_runContext->thermalState);
-    }
-    [event.metadata addMetadata:deviceMetadata toSection:BSGKeyDevice];
+    [event.metadata addMetadata:BSGAppMetadataFromRunContext(bsg_runContext) toSection:BSGKeyApp];
+    [event.metadata addMetadata:BSGDeviceMetadataFromRunContext(bsg_runContext) toSection:BSGKeyDevice];
 
     // App hang events will already contain feature flags
     if (!event.featureFlagStore.count) {
@@ -1026,12 +1032,17 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     NSArray<BugsnagBreadcrumb *> *breadcrumbs = [self.breadcrumbs breadcrumbsBeforeDate:date];
 
+    BugsnagMetadata *metadata = [self.metadata deepCopy];
+
+    [metadata addMetadata:BSGAppMetadataFromRunContext(bsg_runContext) toSection:BSGKeyApp];
+    [metadata addMetadata:BSGDeviceMetadataFromRunContext(bsg_runContext) toSection:BSGKeyDevice];
+
     self.appHangEvent =
     [[BugsnagEvent alloc] initWithApp:app
                                device:device
                          handledState:handledState
                                  user:self.configuration.user
-                             metadata:[self.metadata deepCopy]
+                             metadata:metadata
                           breadcrumbs:breadcrumbs
                                errors:@[error]
                               threads:threads
@@ -1155,27 +1166,21 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     if (bsg_lastRunContext->timestamp > 0) {
         device.time = [NSDate dateWithTimeIntervalSinceReferenceDate:bsg_lastRunContext->timestamp];
     }
+    device.freeMemory = @(bsg_lastRunContext->hostMemoryFree);
 
     NSDictionary *metadataDict = BSGJSONDictionaryFromFile(BSGFileLocations.current.metadata, 0, nil);
     BugsnagMetadata *metadata = [[BugsnagMetadata alloc] initWithDictionary:metadataDict ?: @{}];
     
-    // Device information that isn't part of `event.device`
-    NSMutableDictionary *deviceMetadata = [NSMutableDictionary dictionary];
-#if BSG_HAVE_BATTERY
-    if (BSGIsBatteryStateKnown(bsg_lastRunContext->batteryState)) {
-        deviceMetadata[BSGKeyBatteryLevel] = @(bsg_lastRunContext->batteryLevel);
-        // Our intepretation of "charging" really means "plugged in" 
-        deviceMetadata[BSGKeyCharging] = BSGIsBatteryCharging(bsg_lastRunContext->batteryState) ? @YES : @NO;
-    }
-#endif
+    [metadata addMetadata:BSGAppMetadataFromRunContext((const struct BSGRunContext *_Nonnull)bsg_lastRunContext) toSection:BSGKeyApp];
+    [metadata addMetadata:BSGDeviceMetadataFromRunContext((const struct BSGRunContext *_Nonnull)bsg_lastRunContext) toSection:BSGKeyDevice];
+    
 #if BSG_HAVE_OOM_DETECTION
-    // Don't set to @NO because server may interpret any non-nil value as meaning true
-    deviceMetadata[BSGKeyLowMemoryWarning] = BSGRunContextWasMemoryWarning() ? @YES : nil;
-#endif
-    if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
-        deviceMetadata[BSGKeyThermalState] = BSGStringFromThermalState(bsg_lastRunContext->thermalState);
+    if (BSGRunContextWasMemoryWarning()) {
+        [metadata addMetadata:@YES
+                      withKey:BSGKeyLowMemoryWarning
+                    toSection:BSGKeyDevice];
     }
-    [metadata addMetadata:deviceMetadata toSection:BSGKeyDevice];
+#endif
 
     NSDictionary *userDict = stateDict[BSGKeyUser];
     BugsnagUser *user = [[BugsnagUser alloc] initWithDictionary:userDict];

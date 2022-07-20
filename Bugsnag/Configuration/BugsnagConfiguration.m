@@ -77,6 +77,7 @@ static NSUserDefaults *userDefaults;
     // Omit apiKey - it's set explicitly in the line above
 #if BSG_HAVE_APP_HANG_DETECTION
     [copy setAppHangThresholdMillis:self.appHangThresholdMillis];
+    [copy setReportBackgroundAppHangs:self.reportBackgroundAppHangs];
 #endif
     [copy setAppType:self.appType];
     [copy setAppVersion:self.appVersion];
@@ -213,7 +214,7 @@ static NSUserDefaults *userDefaults;
     _telemetry = BSGTelemetryAll;
     
     NSString *releaseStage = nil;
-    #if DEBUG
+    #if defined(DEBUG) && DEBUG
         releaseStage = BSGKeyDevelopment;
     #else
         releaseStage = BSGKeyProduction;

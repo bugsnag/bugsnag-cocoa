@@ -10,7 +10,6 @@
 
 #import "BSGInternalErrorReporter.h"
 #import "BSGJSONSerialization.h"
-#import "BSG_KSCrashDoctor.h"
 #import "BSG_KSCrashReportFields.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagAppWithState.h"
@@ -163,8 +162,6 @@ static NSArray * CrashReportKeys(NSData *data, NSError *error) {
     NSMutableDictionary *crashReport =
             [report[@BSG_KSCrashField_Crash] mutableCopy];
     mutableReport[@BSG_KSCrashField_Crash] = crashReport;
-    BSG_KSCrashDoctor *doctor = [BSG_KSCrashDoctor doctor];
-    crashReport[@BSG_KSCrashField_Diagnosis] = [doctor diagnoseCrash:report];
 
     return mutableReport;
 }

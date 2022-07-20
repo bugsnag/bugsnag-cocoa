@@ -10,8 +10,6 @@
 
 @interface BSG_KSCrashDoctor : NSObject
 
-+ (BSG_KSCrashDoctor *)doctor;
-
 - (NSString *)diagnoseCrash:(NSDictionary *)crashReport;
 
 @end

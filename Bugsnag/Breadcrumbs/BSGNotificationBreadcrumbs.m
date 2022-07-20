@@ -273,9 +273,8 @@
 }
 
 - (BOOL)tryAddSceneNotification:(NSNotification *)notification {
-#if !TARGET_OS_WATCH && \
-    ((defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0) || \
-    (defined(__TVOS_13_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_13_0))
+#if (TARGET_OS_IOS && defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0) || \
+    (TARGET_OS_TV && defined(__TVOS_13_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_13_0)
     if (@available(iOS 13.0, tvOS 13.0, *)) {
         if ([notification.name hasPrefix:@"UIScene"] && [notification.object isKindOfClass:UISCENE]) {
             UIScene *scene = notification.object;
@@ -304,13 +303,12 @@ static NSString *nullStringIfBlank(NSString *str) {
 - (BOOL)tryAddWindowNotification:(NSNotification *)notification {
 #if BSG_HAVE_WINDOW
 
-#if !TARGET_OS_OSX && \
-    (defined(__IPHONE_2_0) || (defined(__TVOS_9_0) && __TV_OS_VERSION_MAX_ALLOWED >= __TVOS_9_0))
+#if TARGET_OS_IOS || TARGET_OS_TV
     if ([notification.name hasPrefix:@"UIWindow"] && [notification.object isKindOfClass:UIWINDOW]) {
         UIWindow *window = notification.object;
         NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
         metadata[@"description"] = nullStringIfBlank(window.description);
-#if !TARGET_OS_TV && (defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0)
+#if TARGET_OS_IOS && defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
         if (@available(iOS 13.0, *)) {
             UIWindowScene *scene = window.windowScene;
             metadata[@"sceneTitle"] = nullStringIfBlank(scene.title);
@@ -327,13 +325,14 @@ static NSString *nullStringIfBlank(NSString *str) {
         return YES;
     }
 #endif
+
 #if TARGET_OS_OSX
     if ([notification.name hasPrefix:@"NSWindow"] && [notification.object isKindOfClass:NSWINDOW]) {
         NSWindow *window = notification.object;
         NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
         metadata[@"description"] = nullStringIfBlank(window.description);
         metadata[@"title"] = nullStringIfBlank(window.title);
-#if defined(__MAC_11_0) && __MAC_OS_VERSION_MAX_ALLOWED >= __MAC_11_0
+#if defined(__MAC_11_0) && __MAC_OS_X_VERSION_MAX_ALLOWED >= __MAC_11_0
         if (@available(macOS 11.0, *)) {
             metadata[@"subtitle"] = nullStringIfBlank(window.subtitle);
         }

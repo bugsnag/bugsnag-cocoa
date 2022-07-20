@@ -129,13 +129,11 @@ test-fixtures: ## Build the end-to-end test fixture
 
 e2e_ios_local:
 	@./features/scripts/export_ios_app.sh
-	# Recent Appium versions don't always uninstall the old version of the app ¯\_(ツ)_/¯
-	-ideviceinstaller --uninstall com.bugsnag.iOSTestApp
 	bundle exec maze-runner --app=features/fixtures/ios/output/iOSTestApp.ipa --farm=local --os=ios --apple-team-id=372ZUL2ZB7 --udid="$(shell idevice_id -l)" $(FEATURES)
 
 e2e_macos:
 	./features/scripts/export_mac_app.sh
-	bundle exec maze-runner --app=macOSTestApp --os=macOS --os-version=11 $(FEATURES)
+	bundle exec maze-runner --app=macOSTestApp --os=macOS --os-version=$(shell sw_vers -productVersion) $(FEATURES)
 ifeq ($(ENABLE_CODE_COVERAGE), YES)
 	xcrun llvm-profdata merge -sparse *.profraw -o default.profdata
 	rm -rf *.profraw
