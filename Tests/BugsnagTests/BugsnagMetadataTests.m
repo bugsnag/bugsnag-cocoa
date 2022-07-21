@@ -205,11 +205,15 @@
     BugsnagMetadata *metadata = [BugsnagMetadata new];
     [metadata addMetadata:@"myKey" withKey:@"myValue" toSection:@"section1"];
     
-    BugsnagMetadata *clone = [metadata deepCopy];
+    BugsnagMetadata *clone = [metadata copy];
     XCTAssertNotEqual(metadata, clone);
     
     // Until/unless it's decided otherwise the copy is a shallow one.
     XCTAssertEqualObjects([metadata getMetadataFromSection:@"section1"], [clone getMetadataFromSection:@"section1"]);
+    
+    [metadata clearMetadataFromSection:@"section1" withKey:@"myValue"];
+    XCTAssertEqualObjects([metadata getMetadataFromSection:@"section1"], @{});
+    XCTAssertEqualObjects([clone getMetadataFromSection:@"section1"], @{@"myValue":@"myKey"});
 }
 
 -(void)testClearMetadataInSectionWithKey {
