@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^ BSGMetadataObserver)(BugsnagMetadata *);
 
-@interface BugsnagMetadata ()
+@interface BugsnagMetadata () <NSCopying>
 
 #pragma mark Properties
 
@@ -23,8 +23,6 @@ typedef void (^ BSGMetadataObserver)(BugsnagMetadata *);
 #pragma mark Methods
 
 - (NSDictionary *)toDictionary;
-
-- (instancetype)deepCopy;
 
 @end
 

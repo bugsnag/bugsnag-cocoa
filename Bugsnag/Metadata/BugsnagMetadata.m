@@ -111,16 +111,9 @@
 
 // MARK: - <NSCopying>
 
-- (id)copyWithZone:(__attribute__((unused)) NSZone *)zone {
-    return [self deepCopy];
-}
-
-// MARK: - <NSMutableCopying>
-
-- (instancetype)mutableCopyWithZone:(__attribute__((unused)) NSZone *)zone {
+- (id)copyWithZone:(NSZone *)zone {
     @synchronized(self) {
-        NSMutableDictionary *dict = [self.dictionary mutableCopy];
-        return [[BugsnagMetadata alloc] initWithDictionary:dict];
+        return [[BugsnagMetadata allocWithZone:zone] initWithDictionary:self.dictionary];
     }
 }
 
@@ -135,12 +128,6 @@
 {
     @synchronized(self) {
         return self.dictionary[sectionName][key];
-    }
-}
-
-- (instancetype)deepCopy {
-    @synchronized(self) {
-        return [[BugsnagMetadata alloc] initWithDictionary:self.dictionary];
     }
 }
 

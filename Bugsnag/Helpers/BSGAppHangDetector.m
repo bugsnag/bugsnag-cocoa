@@ -72,7 +72,7 @@
     __block BOOL isProcessing = NO;
     
     void (^ observerBlock)(CFRunLoopObserverRef, CFRunLoopActivity) =
-    ^(__attribute__((unused)) CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+    ^(__unused CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
         
         if (activity == kCFRunLoopAfterWaiting || activity == kCFRunLoopBeforeSources) {
             if (isProcessing) {
@@ -177,7 +177,7 @@
         threads = [BugsnagThread allThreads:YES callStackReturnAddresses:NSThread.callStackReturnAddresses];
         // By default the calling thread is marked as "Error reported from this thread", which is not correct case for app hangs.
         [threads enumerateObjectsUsingBlock:^(BugsnagThread * _Nonnull thread, NSUInteger idx,
-                                              __attribute__((unused)) BOOL * _Nonnull stop) {
+                                              __unused BOOL * _Nonnull stop) {
             thread.errorReportingThread = idx == 0;
         }];
     } else {
