@@ -62,7 +62,7 @@ uintptr_t bsg_ksmachinstructionAddress(
 
 uintptr_t
 bsg_ksmachlinkRegister(const BSG_STRUCT_MCONTEXT_L *const machineContext
-                       __attribute__((unused))) {
+                       __unused) {
     return 0;
 }
 

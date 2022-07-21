@@ -312,7 +312,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 #endif
 }
 
-- (void)appLaunchTimerFired:(__attribute__((unused)) NSTimer *)timer {
+- (void)appLaunchTimerFired:(__unused NSTimer *)timer {
     [self markLaunchCompleted];
 }
 

@@ -131,7 +131,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     
     __block NSData *HTTPBody =
     [delegate.apiClient sendJSONPayload:requestPayload headers:requestHeaders toURL:notifyURL
-                      completionHandler:^(BugsnagApiClientDeliveryStatus status, __attribute__((unused)) NSError *deliveryError) {
+                      completionHandler:^(BugsnagApiClientDeliveryStatus status, __unused NSError *deliveryError) {
         
         switch (status) {
             case BugsnagApiClientDeliveryStatusDelivered:
@@ -156,7 +156,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
 
 // MARK: Subclassing
 
-- (BugsnagEvent *)loadEventAndReturnError:(__attribute__((unused)) NSError * __autoreleasing *)errorPtr {
+- (BugsnagEvent *)loadEventAndReturnError:(__unused NSError * __autoreleasing *)errorPtr {
     // Must be implemented by all subclasses
     [self doesNotRecognizeSelector:_cmd];
     return nil;

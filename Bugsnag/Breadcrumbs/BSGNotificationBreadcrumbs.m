@@ -359,7 +359,7 @@ static NSString *nullStringIfBlank(NSString *str) {
     [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name];
 }
 
-- (void)addBreadcrumbForTableViewNotification:(__attribute__((unused)) NSNotification *)notification {
+- (void)addBreadcrumbForTableViewNotification:(__unused NSNotification *)notification {
 #if BSG_HAVE_TABLE_VIEW
 
 #if TARGET_OS_IOS || TARGET_OS_TV
@@ -375,7 +375,7 @@ static NSString *nullStringIfBlank(NSString *str) {
 #endif
 }
 
-- (void)addBreadcrumbForMenuItemNotification:(__attribute__((unused)) NSNotification *)notification {
+- (void)addBreadcrumbForMenuItemNotification:(__unused NSNotification *)notification {
 #if TARGET_OS_OSX
     NSMenuItem *menuItem = [[notification userInfo] valueForKey:@"MenuItem"];
     [self addBreadcrumbWithType:BSGBreadcrumbTypeState forNotificationName:notification.name metadata:
@@ -383,7 +383,7 @@ static NSString *nullStringIfBlank(NSString *str) {
 #endif
 }
 
-- (void)addBreadcrumbForControlNotification:(__attribute__((unused)) NSNotification *)notification {
+- (void)addBreadcrumbForControlNotification:(__unused NSNotification *)notification {
 #if TARGET_OS_IOS
     NSString *label = ((UIControl *)notification.object).accessibilityLabel;
     [self addBreadcrumbWithType:BSGBreadcrumbTypeUser forNotificationName:notification.name metadata:

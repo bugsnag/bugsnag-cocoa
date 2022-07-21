@@ -64,7 +64,7 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
     NSMutableURLRequest *request = [self prepareRequest:url headers:mutableHeaders];
     bsg_log_debug(@"Sending %lu byte payload to %@", (unsigned long)data.length, url);
     
-    [[self.session uploadTaskWithRequest:request fromData:data completionHandler:^(__attribute__((unused)) NSData *responseData,
+    [[self.session uploadTaskWithRequest:request fromData:data completionHandler:^(__unused NSData *responseData,
                                                                                    NSURLResponse *response, NSError *connectionError) {
         if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
             bsg_log_debug(@"Request to %@ completed with error %@", url, error);
