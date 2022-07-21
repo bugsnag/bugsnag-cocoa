@@ -19,6 +19,7 @@
 }
 
 - (void)run {
+    [Bugsnag setUser:nil withEmail:nil andName:nil];
     void (*ptr)(void) = (void *)0xDEADBEEF;
     ptr();
 }

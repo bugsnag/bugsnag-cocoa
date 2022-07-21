@@ -16,7 +16,8 @@ Feature: Reporting User Information
     # User fields set as null
     Then the error is valid for the error reporting API
     And the exception "message" equals "The operation couldn’t be completed. (UserDisabled error 100.)"
-    And the event "user.id" is null
+    And the error payload field "events.0.device.id" is stored as the value "device_id"
+    And the error payload field "events.0.user.id" equals the stored value "device_id"
     And the event "user.email" is null
     And the event "user.name" is null
     And I discard the oldest error
@@ -24,7 +25,7 @@ Feature: Reporting User Information
     # Only User email field set
     Then the error is valid for the error reporting API
     And the exception "message" equals "The operation couldn’t be completed. (UserEmail error 100.)"
-    And the event "user.id" is null
+    And the error payload field "events.0.user.id" equals the stored value "device_id"
     And the event "user.email" equals "user@example.com"
     And the event "user.name" is null
     And I discard the oldest error
@@ -74,3 +75,19 @@ Feature: Reporting User Information
     And the session "user.id" equals "def"
     And the session "user.email" equals "sue@gmail.com"
     And the session "user.name" equals "Sue"
+
+  Scenario: Setting the user ID to nil
+    When I run "UserNilScenario"
+    And I wait to receive 2 sessions
+    And I wait to receive an error
+    Then the session payload field "device.id" is stored as the value "device_id"
+    And the session payload field "sessions.0.user.id" equals the stored value "device_id"
+    And the session "user.email" is null
+    And the session "user.name" is null
+    And I discard the oldest session
+    And the session "user.id" is null
+    And the session "user.email" is null
+    And the session "user.name" is null
+    And the event "user.id" is null
+    And the event "user.email" is null
+    And the event "user.name" is null

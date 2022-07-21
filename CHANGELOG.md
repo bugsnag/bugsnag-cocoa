@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Set `user.id` to to `device.id` for all events and sessions if `BugsnagClient.user.id` is set to nil.
+  To prevent collection, set it to an empty string or update it in `OnSendError` / `OnSession`.
+  [#1442](https://github.com/bugsnag/bugsnag-cocoa/pull/1442)
+
 ## 6.21.0 (2022-07-20)
 
 ### Enhancements

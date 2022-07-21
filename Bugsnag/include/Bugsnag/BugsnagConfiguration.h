@@ -375,6 +375,8 @@ typedef id<NSObject> BugsnagOnSessionRef;
  *  @param userId ID of the user
  *  @param name   Name of the user
  *  @param email  Email address of the user
+ *
+ *  If user ID is nil, a Bugsnag-generated Device ID is used for the `user.id` property of events and sessions.
  */
 - (void)setUser:(NSString *_Nullable)userId
       withEmail:(NSString *_Nullable)email

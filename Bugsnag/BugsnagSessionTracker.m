@@ -8,7 +8,11 @@
 
 #import "BugsnagSessionTracker.h"
 
+#import "BSGAppKit.h"
+#import "BSGDefines.h"
 #import "BSGSessionUploader.h"
+#import "BSGUIKit.h"
+#import "BSGWatchKit.h"
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagApp+Private.h"
 #import "BugsnagClient+Private.h"
@@ -17,10 +21,7 @@
 #import "BugsnagDevice+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagSession+Private.h"
-#import "BSGDefines.h"
-#import "BSGAppKit.h"
-#import "BSGWatchKit.h"
-#import "BSGUIKit.h"
+#import "BugsnagUser+Private.h"
 
 /**
  Number of seconds in background required to make a new session
@@ -174,7 +175,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 
     BugsnagSession *newSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                           startedAt:[NSDate date]
-                                                               user:self.client.user
+                                                               user:[self.client.user withId]
                                                                 app:app
                                                              device:device];
 

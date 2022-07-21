@@ -57,6 +57,7 @@
 		010BAB3F2833D29A0003FF36 /* EnabledReleaseStageManualSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB3E2833D29A0003FF36 /* EnabledReleaseStageManualSessionScenario.swift */; };
 		010BAB412833D2AA0003FF36 /* DisabledReleaseStageAutoSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BAB402833D2AA0003FF36 /* DisabledReleaseStageAutoSessionScenario.swift */; };
 		010BDFB92885562D007025F9 /* ReportBackgroundAppHangScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BDFB82885562D007025F9 /* ReportBackgroundAppHangScenario.swift */; };
+		010BDFBD28883714007025F9 /* UserNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BDFBC28883714007025F9 /* UserNilScenario.swift */; };
 		01221E55282E5538008095C3 /* MaxPersistedSessionsScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01221E54282E5538008095C3 /* MaxPersistedSessionsScenario.m */; };
 		0163BFA72583B3CF008DC28B /* DiscardClassesHandledExceptionRegexScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0163BFA62583B3CF008DC28B /* DiscardClassesHandledExceptionRegexScenario.swift */; };
 		017B4134276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */; };
@@ -247,6 +248,7 @@
 		010BAB3E2833D29A0003FF36 /* EnabledReleaseStageManualSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnabledReleaseStageManualSessionScenario.swift; sourceTree = "<group>"; };
 		010BAB402833D2AA0003FF36 /* DisabledReleaseStageAutoSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisabledReleaseStageAutoSessionScenario.swift; sourceTree = "<group>"; };
 		010BDFB82885562D007025F9 /* ReportBackgroundAppHangScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportBackgroundAppHangScenario.swift; sourceTree = "<group>"; };
+		010BDFBC28883714007025F9 /* UserNilScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserNilScenario.swift; sourceTree = "<group>"; };
 		01221E54282E5538008095C3 /* MaxPersistedSessionsScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MaxPersistedSessionsScenario.m; sourceTree = "<group>"; };
 		0163BFA62583B3CF008DC28B /* DiscardClassesHandledExceptionRegexScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardClassesHandledExceptionRegexScenario.swift; sourceTree = "<group>"; };
 		017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnSendErrorPersistenceScenario.m; sourceTree = "<group>"; };
@@ -629,6 +631,7 @@
 				E700EE4D247D1317008CFFB6 /* UserFromClientScenario.swift */,
 				AA6ACD1B2773E0B3006464C4 /* UserFromConfigScenario.swift */,
 				AA6ACD1F2773E3F0006464C4 /* UserInfoScenario.swift */,
+				010BDFBC28883714007025F9 /* UserNilScenario.swift */,
 				010BAAF12833CE570003FF36 /* UserPersistenceDontPersistUserScenario.m */,
 				010BAAFE2833CE570003FF36 /* UserPersistenceNoUserScenario.m */,
 				010BAAF22833CE570003FF36 /* UserPersistencePersistUserClientScenario.m */,
@@ -854,6 +857,7 @@
 				001E5502243B8FDA0009E31D /* AutoCaptureRunScenario.m in Sources */,
 				0104085F258CA0A100933C60 /* DispatchCrashScenario.swift in Sources */,
 				E700EE55247D3204008CFFB6 /* OnSendOverwriteScenario.swift in Sources */,
+				010BDFBD28883714007025F9 /* UserNilScenario.swift in Sources */,
 				CB0AE1F1287D89C90079B28E /* OnSendErrorCallbackFeatureFlagsScenario.swift in Sources */,
 				F429538D8941382EC2C857CE /* AsyncSafeThreadScenario.m in Sources */,
 				F42955869D33EE0E510B9651 /* ReadGarbagePointerScenario.m in Sources */,
