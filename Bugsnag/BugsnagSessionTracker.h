@@ -11,6 +11,8 @@
 #import <Bugsnag/BugsnagConfiguration.h>
 #import <Bugsnag/BugsnagSession.h>
 
+#import "BSGSessionUploader.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagSessionTracker : NSObject
@@ -81,6 +83,8 @@ NS_ASSUME_NONNULL_BEGIN
  * Retrieves the running session, or nil if the session is stopped or has not yet been started/resumed.
  */
 @property (nullable, readonly, nonatomic) BugsnagSession *runningSession;
+
+@property (strong, nonatomic) BSGSessionUploader *sessionUploader;
 
 - (void)addRuntimeVersionInfo:(NSString *)info
                       withKey:(NSString *)key;

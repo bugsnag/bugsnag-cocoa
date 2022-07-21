@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Attempt to send sessions stored on disk when connection regained.
+  [#1445](https://github.com/bugsnag/bugsnag-cocoa/pull/1445)
+
 * Set `user.id` to to `device.id` for all events and sessions if `BugsnagClient.user.id` is set to nil.
   To prevent collection, set it to an empty string or update it in `OnSendError` / `OnSession`.
   [#1442](https://github.com/bugsnag/bugsnag-cocoa/pull/1442)
