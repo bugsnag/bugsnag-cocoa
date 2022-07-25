@@ -462,6 +462,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (connected) {
             [strongSelf.eventUploader uploadStoredEvents];
+            [strongSelf.sessionTracker.sessionUploader processStoredSessions];
         }
 
         [strongSelf addAutoBreadcrumbOfType:BSGBreadcrumbTypeState

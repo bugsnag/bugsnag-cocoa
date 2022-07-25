@@ -10,7 +10,6 @@
 
 #import "BSGAppKit.h"
 #import "BSGDefines.h"
-#import "BSGSessionUploader.h"
 #import "BSGUIKit.h"
 #import "BSGWatchKit.h"
 #import "BSG_KSSystemInfo.h"
@@ -31,7 +30,6 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 @interface BugsnagSessionTracker ()
 @property (strong, nonatomic) BugsnagConfiguration *config;
 @property (weak, nonatomic) BugsnagClient *client;
-@property (strong, nonatomic) BSGSessionUploader *sessionUploader;
 @property (strong, nonatomic) NSDate *backgroundStartTime;
 @property (nonatomic) NSMutableDictionary *extraRuntimeInfo;
 @end
