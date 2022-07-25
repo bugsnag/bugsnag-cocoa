@@ -3,6 +3,11 @@ Changelog
 
 ## TBD
 
+### Enhancements
+
+* Add `+[BugsnagStackframe stackframesWithCallStackReturnAddresses:]` to public headers. 
+  [#1446](https://github.com/bugsnag/bugsnag-cocoa/pull/1446)
+
 ### Bug fixes
 
 * Attempt to send sessions stored on disk when connection regained.

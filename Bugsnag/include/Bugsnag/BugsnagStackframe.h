@@ -70,9 +70,19 @@ FOUNDATION_EXPORT BugsnagStackframeType const BugsnagStackframeTypeCocoa;
 @property (copy, nullable, nonatomic) BugsnagStackframeType type;
 
 /**
- * Returns an array of stackframe objects representing the provided call stack strings.
+ * Creates an array of stackframe objects representing the provided call stack.
  *
- * The call stack strings should follow the format used by `[NSThread callStackSymbols]` and `backtrace_symbols()`.
+ * @param callStackReturnAddresses An array containing the call stack return addresses, as returned by
+ * `NSThread.callStackReturnAddresses` or `NSException.callStackReturnAddresses`.
+ */
++ (NSArray<BugsnagStackframe *> *)stackframesWithCallStackReturnAddresses:(NSArray<NSNumber *> *)callStackReturnAddresses;
+
+/**
+ * Creates an array of stackframe objects representing the provided call stack.
+ *
+ * @param callStackSymbols An array containing the call stack symbols, as returned by `NSThread.callStackSymbols`.
+ * Each element should be in a format determined by the `backtrace_symbols()` function.
+
  */
 + (nullable NSArray<BugsnagStackframe *> *)stackframesWithCallStackSymbols:(NSArray<NSString *> *)callStackSymbols;
 
