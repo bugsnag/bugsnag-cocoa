@@ -8,15 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+#import <Bugsnag/BugsnagDefines.h>
+
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NSString * BugsnagStackframeType NS_TYPED_ENUM;
 
-FOUNDATION_EXPORT BugsnagStackframeType const BugsnagStackframeTypeCocoa;
+BUGSNAG_EXTERN BugsnagStackframeType const BugsnagStackframeTypeCocoa;
 
 /**
  * Represents a single stackframe from a stacktrace.
  */
+BUGSNAG_EXTERN
 @interface BugsnagStackframe : NSObject
 
 /**

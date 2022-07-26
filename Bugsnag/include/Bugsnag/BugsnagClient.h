@@ -27,6 +27,7 @@
 #import <Foundation/Foundation.h>
 
 #import <Bugsnag/BugsnagConfiguration.h>
+#import <Bugsnag/BugsnagDefines.h>
 #import <Bugsnag/BugsnagLastRunInfo.h>
 #import <Bugsnag/BugsnagFeatureFlagStore.h>
 #import <Bugsnag/BugsnagMetadata.h>
@@ -39,6 +40,7 @@
  * 
  * Use the static access provided by the Bugsnag class instead.
  */
+BUGSNAG_EXTERN
 @interface BugsnagClient : NSObject<BSGBreadcrumbSink, BugsnagFeatureFlagStore, BugsnagMetadataStore>
 
 /**
@@ -206,7 +208,7 @@ NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
  * Deprecated
  */
 - (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull )block
-    BSG_DEPRECATED_WITH_REPLACEMENT("removeOnSession:")
+    BUGSNAG_DEPRECATED_WITH_REPLACEMENT("removeOnSession:")
     NS_SWIFT_NAME(removeOnSession(block:));
 
 // =============================================================================
@@ -221,7 +223,7 @@ NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
 /**
  * @return YES if Bugsnag has been started and the previous launch crashed
  */
-- (BOOL)appDidCrashLastLaunch BSG_DEPRECATED_WITH_REPLACEMENT("lastRunInfo.crashed");
+- (BOOL)appDidCrashLastLaunch BUGSNAG_DEPRECATED_WITH_REPLACEMENT("lastRunInfo.crashed");
 
 /**
  * Information about the last run of the app, and whether it crashed.
@@ -283,7 +285,7 @@ NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
  * Deprecated
  */
 - (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block
-    BSG_DEPRECATED_WITH_REPLACEMENT("removeOnBreadcrumb:")
+    BUGSNAG_DEPRECATED_WITH_REPLACEMENT("removeOnBreadcrumb:")
     NS_SWIFT_NAME(removeOnBreadcrumb(block:));
 
 @end

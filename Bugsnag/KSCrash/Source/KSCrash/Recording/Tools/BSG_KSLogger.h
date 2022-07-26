@@ -31,6 +31,7 @@
 extern "C" {
 #endif
 
+#include <Bugsnag/BugsnagDefines.h>
 
 #include "BugsnagLogger.h"
 
@@ -143,6 +144,7 @@ void bsg_i_kslog_logC(const char *level, const char *file, int line,
                       const char *function, const char *fmt, ...)
                                                 __printflike(5, 6);
 
+BUGSNAG_EXTERN
 void bsg_i_kslog_logCBasic(const char *fmt, ...) __printflike(1, 2);
 
 #define i_KSLOG_FULL bsg_i_kslog_logC
@@ -212,6 +214,7 @@ void bsg_i_kslog_logCBasic(const char *fmt, ...) __printflike(1, 2);
  *
  * @param overwrite If true, overwrite the log file.
  */
+BUGSNAG_EXTERN
 bool bsg_kslog_setLogFilename(const char *filename, bool overwrite);
 
 /** Tests if the logger would print at the specified level.

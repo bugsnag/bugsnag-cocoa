@@ -10,8 +10,6 @@
 
 #include <TargetConditionals.h>
 
-#define BSG_PRIVATE __attribute__((visibility("hidden")))
-
 // Capabilities dependent upon system defines and files
 #define BSG_HAVE_APPKIT                       __has_include(<AppKit/AppKit.h>)
 #define BSG_HAVE_BATTERY                      (                 TARGET_OS_IOS                 || TARGET_OS_WATCH)

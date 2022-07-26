@@ -1,9 +1,8 @@
 //
-//  BugsnagMetaData.h
+//  BugsnagDefines.h
+//  Bugsnag
 //
-//  Created by Conrad Irwin on 2014-10-01.
-//
-//  Copyright (c) 2014 Bugsnag, Inc. All rights reserved.
+//  Copyright © 2022 Bugsnag Inc. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,25 +23,19 @@
 // THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#ifndef BugsnagDefines_h
+#define BugsnagDefines_h
 
-#import <Bugsnag/BugsnagDefines.h>
-#import <Bugsnag/BugsnagMetadataStore.h>
+#ifndef BUGSNAG_DEPRECATED_WITH_REPLACEMENT
+#define BUGSNAG_DEPRECATED_WITH_REPLACEMENT(REPLACEMENT) __attribute__((deprecated ("", REPLACEMENT)))
+#endif
 
-NS_ASSUME_NONNULL_BEGIN
+#ifndef BUGSNAG_EXTERN
+#ifdef __cplusplus
+#define BUGSNAG_EXTERN extern "C" __attribute__((visibility ("default")))
+#else
+#define BUGSNAG_EXTERN extern __attribute__((visibility ("default")))
+#endif
+#endif
 
-/// :nodoc:
-BUGSNAG_EXTERN
-@interface BugsnagMetadata : NSObject <BugsnagMetadataStore>
-
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
-
-/// Configures the metadata object to serialize itself to the provided buffer and file immediately, and upon each change.
-- (void)setStorageBuffer:(char *_Nullable *_Nullable)buffer file:(nullable NSString *)file;
-
-/// Exposed to facilitate unit testing.
-- (void)writeData:(NSData *)data toBuffer:(char *_Nullable *_Nonnull)buffer;
-
-@end
-
-NS_ASSUME_NONNULL_END
+#endif
