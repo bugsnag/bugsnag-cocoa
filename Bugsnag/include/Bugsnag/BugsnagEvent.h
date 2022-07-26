@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+#import <Bugsnag/BugsnagDefines.h>
 #import <Bugsnag/BugsnagFeatureFlagStore.h>
 #import <Bugsnag/BugsnagMetadataStore.h>
 
@@ -34,6 +35,7 @@ typedef NS_ENUM(NSUInteger, BSGSeverity) {
 /**
  * Represents an occurrence of an error, along with information about the state of the app and device.
  */
+BUGSNAG_EXTERN
 @interface BugsnagEvent : NSObject <BugsnagFeatureFlagStore, BugsnagMetadataStore>
 
 // -----------------------------------------------------------------------------

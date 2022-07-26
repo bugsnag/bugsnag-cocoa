@@ -25,6 +25,8 @@
 //
 #import <Foundation/Foundation.h>
 
+#import <Bugsnag/BugsnagDefines.h>
+
 /**
  * Types of breadcrumbs
  */
@@ -89,6 +91,7 @@ typedef NS_OPTIONS(NSUInteger, BSGEnabledBreadcrumbType) {
  */
 @class BugsnagBreadcrumb;
 
+BUGSNAG_EXTERN
 @interface BugsnagBreadcrumb : NSObject
 
 /**

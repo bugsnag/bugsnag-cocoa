@@ -32,6 +32,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 NSMutableDictionary *BSGParseDeviceMetadata(NSDictionary *event);
 
-BSG_PRIVATE NSDictionary * BSGDeviceMetadataFromRunContext(const struct BSGRunContext *context);
+NSDictionary * BSGDeviceMetadataFromRunContext(const struct BSGRunContext *context);
 
 NS_ASSUME_NONNULL_END

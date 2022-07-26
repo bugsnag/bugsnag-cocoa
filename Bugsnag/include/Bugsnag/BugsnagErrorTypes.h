@@ -8,9 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+#import <Bugsnag/BugsnagDefines.h>
+
 /**
  * The types of error that should be reported.
  */
+BUGSNAG_EXTERN
 @interface BugsnagErrorTypes : NSObject
 
 /**

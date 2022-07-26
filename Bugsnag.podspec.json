@@ -38,6 +38,9 @@
       "Security"
     ]
   },
+  "compiler_flags": [
+    "-fvisibility=hidden"
+  ],
   "libraries": [
     "c++", "z"
   ],

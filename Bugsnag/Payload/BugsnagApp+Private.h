@@ -32,6 +32,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 NSDictionary *BSGParseAppMetadata(NSDictionary *event);
 
-BSG_PRIVATE NSDictionary *BSGAppMetadataFromRunContext(const struct BSGRunContext *context);
+NSDictionary *BSGAppMetadataFromRunContext(const struct BSGRunContext *context);
 
 NS_ASSUME_NONNULL_END
