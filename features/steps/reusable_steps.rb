@@ -125,3 +125,18 @@ Then('the stacktrace contains methods:') do |table|
   contains = actual.each_cons(expected.length).to_a.include? expected
   Maze.check.true(contains, "Stacktrace methods #{actual} did not contain #{expected}")
 end
+
+Then('the received sessions match:') do |table|
+  requests = Maze::Server.sessions.remaining
+  match_count = 0
+
+  # iterate through each row in the table. exactly 1 request should match each row.
+  table.hashes.each do |row|
+    requests.each do |request|
+      sessions = request.dig(:body, 'sessions')
+      Maze.check.equal(1, sessions.length, 'Expected exactly one session per request')
+      match_count += 1 if Maze::Assertions::RequestSetAssertions.request_matches_row(sessions[0], row)
+    end
+  end
+  Maze.check.equal(requests.size, match_count, 'Unexpected number of requests matched the received payloads')
+end
