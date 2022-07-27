@@ -1,15 +1,3 @@
-def request_matches_row(body, row)
-  row.each do |key, expected_value|
-    obs_val = Maze::Helper.read_key_path(body, key)
-    next if ('null'.eql? expected_value) && obs_val.nil? # Both are null/nil
-    next if !obs_val.nil? && (expected_value.to_s.eql? obs_val.to_s) # Values match
-    # Match not found - return false
-    return false
-  end
-  # All matched - return true
-  true
-end
-
 Then('I wait for the fixture to process the response') do
   sleep 2
 end

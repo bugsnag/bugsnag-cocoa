@@ -79,15 +79,11 @@ Feature: Reporting User Information
   Scenario: Setting the user ID to nil
     When I run "UserNilScenario"
     And I wait to receive 2 sessions
+    Then the received sessions match:
+      | user.id   | user.email | user.name |
+      | @not_null | null       | null      |
+      | null      | null       | null      |
     And I wait to receive an error
-    Then the session payload field "device.id" is stored as the value "device_id"
-    And the session payload field "sessions.0.user.id" equals the stored value "device_id"
-    And the session "user.email" is null
-    And the session "user.name" is null
-    And I discard the oldest session
-    And the session "user.id" is null
-    And the session "user.email" is null
-    And the session "user.name" is null
     And the event "user.id" is null
     And the event "user.email" is null
     And the event "user.name" is null
