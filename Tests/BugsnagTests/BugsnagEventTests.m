@@ -321,6 +321,58 @@
     }
 }
 
+- (void)testTruncateStrings {
+    BugsnagEvent *event = [BugsnagEvent new];
+    
+    BugsnagBreadcrumb * (^ MakeBreadcrumb)() = ^(NSString *message) {
+        BugsnagBreadcrumb *breadcrumb = [BugsnagBreadcrumb new];
+        breadcrumb.message = message;
+        breadcrumb.metadata = @{@"string": message};
+        return breadcrumb;
+    };
+    
+    event.breadcrumbs = @[
+        MakeBreadcrumb(@"Lorem ipsum dolor si"
+        "t amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."),
+        
+        MakeBreadcrumb(@"Lorem ipsum is place"
+        "holder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups."),
+        
+        MakeBreadcrumb(@"20 characters string")];
+    
+    event.metadata = [[BugsnagMetadata alloc] initWithDictionary:@{}];
+    [event addMetadata:@"From its medieval or"
+     "igins to the digital era, learn everything there is to know about the ubiquitous lorem ipsum passage."
+               withKey:@"name" toSection:@"test"];
+    
+    event.usage = @{}; // Enable gathering telemetry
+    
+    [event truncateStrings:20];
+    
+    XCTAssertEqualObjects([event.usage valueForKeyPath:@"system.stringsTruncated"], @5);
+    
+    XCTAssertEqualObjects([event.usage valueForKeyPath:@"system.stringCharsTruncated"], @(103 + 103 + 117 + 117 + 101));
+    
+    XCTAssertEqualObjects(event.breadcrumbs[0].message, @"Lorem ipsum dolor si"
+                          "\n***103 CHARS TRUNCATED***");
+    
+    XCTAssertEqualObjects(event.breadcrumbs[0].metadata[@"string"], @"Lorem ipsum dolor si"
+                          "\n***103 CHARS TRUNCATED***");
+    
+    XCTAssertEqualObjects(event.breadcrumbs[1].message, @"Lorem ipsum is place"
+                          "\n***117 CHARS TRUNCATED***");
+    
+    XCTAssertEqualObjects(event.breadcrumbs[1].metadata[@"string"], @"Lorem ipsum is place"
+                          "\n***117 CHARS TRUNCATED***");
+    
+    XCTAssertEqualObjects(event.breadcrumbs[2].message, @"20 characters string");
+    
+    XCTAssertEqualObjects(event.breadcrumbs[2].metadata[@"string"], @"20 characters string");
+    
+    XCTAssertEqualObjects([event getMetadataFromSection:@"test" withKey:@"name"], @"From its medieval or"
+                          "\n***101 CHARS TRUNCATED***");
+}
+
 // MARK: - Feature flags interface
 
 - (void)testFeatureFlags {
@@ -679,4 +731,5 @@
     };
     XCTAssertEqualObjects(expected, event.device.runtimeVersions);
 }
+
 @end

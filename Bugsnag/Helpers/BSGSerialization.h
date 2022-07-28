@@ -1,7 +1,6 @@
-#ifndef BugsnagJSONSerializable_h
-#define BugsnagJSONSerializable_h
-
 #import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /**
  Removes any values which would be rejected by NSJSONSerialization for
@@ -10,7 +9,7 @@
  @param input an array
  @return a new array
  */
-NSArray *_Nonnull BSGSanitizeArray(NSArray *_Nonnull input);
+NSArray * BSGSanitizeArray(NSArray *input);
 
 /**
  Removes any values which would be rejected by NSJSONSerialization for
@@ -19,7 +18,7 @@ NSArray *_Nonnull BSGSanitizeArray(NSArray *_Nonnull input);
  @param input a dictionary
  @return a new dictionary
  */
-NSDictionary *_Nonnull BSGSanitizeDict(NSDictionary *_Nonnull input);
+NSDictionary * BSGSanitizeDict(NSDictionary *input);
 
 /**
  Checks whether the base type would be accepted by the serialization process
@@ -37,4 +36,14 @@ BOOL BSGIsSanitizedType(id _Nullable obj);
  */
 id _Nullable BSGSanitizeObject(id _Nullable obj);
 
-#endif
+typedef struct _BSGTruncateContext {
+    NSUInteger maxLength;
+    NSUInteger strings;
+    NSUInteger length;
+} BSGTruncateContext;
+
+NSString * BSGTruncateString(BSGTruncateContext *context, NSString *string);
+
+id BSGTruncateStrings(BSGTruncateContext *context, id object);
+
+NS_ASSUME_NONNULL_END

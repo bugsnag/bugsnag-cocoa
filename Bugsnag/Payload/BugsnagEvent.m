@@ -8,6 +8,7 @@
 
 #import "BugsnagEvent+Private.h"
 
+#import "BSGDefines.h"
 #import "BSGFeatureFlagStore.h"
 #import "BSGKeys.h"
 #import "BSGSerialization.h"
@@ -31,7 +32,6 @@
 #import "BugsnagStacktrace.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
-#import "BSGDefines.h"
 
 static NSString * const RedactedMetadataValue = @"[REDACTED]";
 
@@ -687,6 +687,32 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         for (BugsnagStackframe *stackframe in thread.stacktrace) {
             [stackframe symbolicateIfNeeded];
         }
+    }
+}
+
+- (void)truncateStrings:(NSUInteger)maxLength {
+    BSGTruncateContext context = {
+        .maxLength = maxLength
+    };
+    
+    for (BugsnagBreadcrumb *breadcrumb in self.breadcrumbs) {
+        breadcrumb.message = BSGTruncateString(&context, breadcrumb.message);
+        breadcrumb.metadata = BSGTruncateStrings(&context, breadcrumb.metadata);
+    }
+    
+    BugsnagMetadata *metadata = self.metadata; 
+    if (metadata) {
+        self.metadata = [[BugsnagMetadata alloc] initWithDictionary:
+                         BSGTruncateStrings(&context, metadata.dictionary)];
+    }
+    
+    NSDictionary *usage = self.usage;
+    if (usage) {
+        self.usage = BSGDictMerge(@{
+            @"system": @{
+                @"stringCharsTruncated": @(context.length),
+                @"stringsTruncated": @(context.strings)}
+        }, usage);
     }
 }
 

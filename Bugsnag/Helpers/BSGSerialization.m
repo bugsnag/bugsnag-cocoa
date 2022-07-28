@@ -58,3 +58,37 @@ NSArray *BSGSanitizeArray(NSArray *input) {
     }
     return output;
 }
+
+NSString * BSGTruncateString(BSGTruncateContext *context, NSString *string) {
+    const NSUInteger inputLength = string.length;
+    if (inputLength <= context->maxLength) return string;
+    // Prevent chopping in the middle of a composed character sequence
+    NSRange range = [string rangeOfComposedCharacterSequenceAtIndex:context->maxLength];
+    NSString *output = [string substringToIndex:range.location];
+    NSUInteger count = inputLength - range.location;
+    context->strings++;
+    context->length += count;
+    return [output stringByAppendingFormat:@"\n***%lu CHARS TRUNCATED***", (unsigned long)count];
+}
+
+id BSGTruncateStrings(BSGTruncateContext *context, id object) {
+    if ([object isKindOfClass:[NSString class]]) {
+        return BSGTruncateString(context, object);
+    }
+    if ([object isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary *output = [NSMutableDictionary dictionaryWithCapacity:((NSDictionary *)object).count];
+        for (NSString *key in (NSDictionary *)object) {
+            id value = ((NSDictionary *)object)[key];
+            output[key] = BSGTruncateStrings(context, value);
+        }
+        return output;
+    }
+    if ([object isKindOfClass:[NSArray class]]) {
+        NSMutableArray *output = [NSMutableArray arrayWithCapacity:((NSArray *)object).count];
+        for (id element in (NSArray *)object) {
+            [output addObject:BSGTruncateStrings(context, element)];
+        }
+        return output;
+    }
+    return object;
+}
