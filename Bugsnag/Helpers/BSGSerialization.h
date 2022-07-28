@@ -4,35 +4,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Removes any values which would be rejected by NSJSONSerialization for
- documented reasons
-
- @param input an array
- @return a new array
- */
-NSArray * BSGSanitizeArray(NSArray *input);
-
-/**
- Removes any values which would be rejected by NSJSONSerialization for
- documented reasons
+ documented reasons or is NSNull
 
  @param input a dictionary
  @return a new dictionary
  */
-NSDictionary * BSGSanitizeDict(NSDictionary *input);
-
-/**
- Checks whether the base type would be accepted by the serialization process
-
- @param obj any object or nil
- @return YES if the object is an Array, Dictionary, String, Number, or NSNull
- */
-BOOL BSGIsSanitizedType(id _Nullable obj);
+NSMutableDictionary * BSGSanitizeDict(NSDictionary *input);
 
 /**
  Cleans the object, including nested dictionary and array values
 
  @param obj any object or nil
- @return a new object for serialization or nil if the obj was incompatible
+ @return a new object for serialization or nil if the obj was incompatible or NSNull
  */
 id _Nullable BSGSanitizeObject(id _Nullable obj);
 

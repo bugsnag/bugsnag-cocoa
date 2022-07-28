@@ -16,6 +16,21 @@
 
 @implementation BSGSerializationTests
 
+- (void)testSanitizeObject {
+    XCTAssertEqualObjects(BSGSanitizeObject(@""), @"");
+    XCTAssertEqualObjects(BSGSanitizeObject(@42), @42);
+    XCTAssertEqualObjects(BSGSanitizeObject(@[@42]), @[@42]);
+    XCTAssertEqualObjects(BSGSanitizeObject(@[self]), @[]);
+    XCTAssertEqualObjects(BSGSanitizeObject(@{@"a": @"b"}), @{@"a": @"b"});
+    XCTAssertEqualObjects(BSGSanitizeObject(@{@"self": self}), @{});
+    XCTAssertNil(BSGSanitizeObject(@(INFINITY)));
+    XCTAssertNil(BSGSanitizeObject(@(NAN)));
+    XCTAssertNil(BSGSanitizeObject([NSDate date]));
+    XCTAssertNil(BSGSanitizeObject([NSDecimalNumber notANumber]));
+    XCTAssertNil(BSGSanitizeObject([NSNull null]));
+    XCTAssertNil(BSGSanitizeObject(self));
+}
+
 - (void)testTruncateString {
     BSGTruncateContext context = {0};
     

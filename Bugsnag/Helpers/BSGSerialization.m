@@ -1,41 +1,26 @@
 #import "BSGSerialization.h"
-#import "BugsnagLogger.h"
+
 #import "BSGJSONSerialization.h"
+#import "BugsnagLogger.h"
 
-BOOL BSGIsSanitizedType(id obj) {
-    static dispatch_once_t onceToken;
-    static NSArray *allowedTypes = nil;
-    dispatch_once(&onceToken, ^{
-      allowedTypes = @[
-          [NSArray class], [NSDictionary class], [NSNull class],
-          [NSNumber class], [NSString class]
-      ];
-    });
-
-    for (Class klass in allowedTypes) {
-        if ([obj isKindOfClass:klass])
-            return YES;
-    }
-    return NO;
-}
+static NSArray * BSGSanitizeArray(NSArray *input);
 
 id BSGSanitizeObject(id obj) {
-    if ([obj isKindOfClass:[NSNumber class]]) {
-        NSNumber *number = obj;
-        if (![number isEqualToNumber:[NSDecimalNumber notANumber]] &&
-            !isinf([number doubleValue]))
-            return obj;
-    } else if ([obj isKindOfClass:[NSArray class]]) {
+    if ([obj isKindOfClass:[NSArray class]]) {
         return BSGSanitizeArray(obj);
     } else if ([obj isKindOfClass:[NSDictionary class]]) {
         return BSGSanitizeDict(obj);
-    } else if (BSGIsSanitizedType(obj)) {
+    } else if ([obj isKindOfClass:[NSString class]]) {
+        return obj;
+    } else if ([obj isKindOfClass:[NSNumber class]]
+               && ![obj isEqualToNumber:[NSDecimalNumber notANumber]]
+               && !isinf([obj doubleValue])) {
         return obj;
     }
     return nil;
 }
 
-NSDictionary *_Nonnull BSGSanitizeDict(NSDictionary *input) {
+NSMutableDictionary * BSGSanitizeDict(NSDictionary *input) {
     __block NSMutableDictionary *output =
         [NSMutableDictionary dictionaryWithCapacity:[input count]];
     [input enumerateKeysAndObjectsUsingBlock:^(id _Nonnull key, id _Nonnull obj,
@@ -49,7 +34,7 @@ NSDictionary *_Nonnull BSGSanitizeDict(NSDictionary *input) {
     return output;
 }
 
-NSArray *BSGSanitizeArray(NSArray *input) {
+static NSArray * BSGSanitizeArray(NSArray *input) {
     NSMutableArray *output = [NSMutableArray arrayWithCapacity:[input count]];
     for (id obj in input) {
         id cleanedObject = BSGSanitizeObject(obj);
