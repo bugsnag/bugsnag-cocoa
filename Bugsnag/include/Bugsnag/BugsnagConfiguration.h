@@ -335,6 +335,15 @@ BUGSNAG_EXTERN
 @property (nonatomic) NSUInteger maxBreadcrumbs;
 
 /**
+ * The maximum length of breadcrumb messages and metadata string values.
+ * 
+ * Values longer than this will be truncated prior to sending, after running any OnSendError blocks.
+ *
+ * The default value is 10000.
+ */
+@property (nonatomic) NSUInteger maxStringValueLength;
+
+/**
  * Whether User information should be persisted to disk between application runs.
  * Defaults to True.
  */
