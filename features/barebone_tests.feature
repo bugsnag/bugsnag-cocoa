@@ -63,6 +63,7 @@ Feature: Barebone tests
     And the event "metaData.Exception.info" equals "Some error specific information"
     And the event "metaData.Flags.Testing" is true
     And the event "metaData.Other.password" equals "[REDACTED]"
+    And the event "metaData.Other.shouldBeTruncated" matches "\n\*\*\*345 CHARS TRUNCATED\*\*\*"
     And the event "metaData.error.nsexception.name" equals "NSRangeException"
     And the event "metaData.error.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
     And the event "metaData.error.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
@@ -88,6 +89,8 @@ Feature: Barebone tests
       | ios     | true  |
       | macos   | @null |
       | watchos | @null |
+    And the event "usage.system.stringCharsTruncated" equals 345
+    And the event "usage.system.stringsTruncated" equals 1
     And the event "user.email" equals "foobar@example.com"
     And the event "user.id" equals "foobar"
     And the event "user.name" equals "Foo Bar"

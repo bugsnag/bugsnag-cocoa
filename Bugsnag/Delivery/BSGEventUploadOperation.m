@@ -95,9 +95,13 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     
     NSDictionary *eventPayload;
     @try {
+        [event truncateStrings:configuration.maxStringValueLength];
         eventPayload = [event toJsonWithRedactedKeys:configuration.redactedKeys];
     } @catch (NSException *exception) {
         bsg_log_err(@"Discarding event %@ because an exception was thrown by -toJsonWithRedactedKeys: %@", self.name, exception);
+        [BSGInternalErrorReporter.sharedInstance reportException:exception diagnostics:nil groupingHash:
+         [NSString stringWithFormat:@"BSGEventUploadOperation -[runWithDelegate:completionHandler:] %@ %@",
+          exception.name, exception.reason]];
         [self deleteEvent];
         completionHandler();
         return;

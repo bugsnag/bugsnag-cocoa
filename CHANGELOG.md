@@ -5,6 +5,9 @@ Changelog
 
 ### Enhancements
 
+* Truncate breadcrumb and metadata strings that are longer than `configuration.maxStringValueLength`.
+  [#1449](https://github.com/bugsnag/bugsnag-cocoa/pull/1449)
+
 * Add `+[BugsnagStackframe stackframesWithCallStackReturnAddresses:]` to public headers. 
   [#1446](https://github.com/bugsnag/bugsnag-cocoa/pull/1446)
 

@@ -42,6 +42,7 @@ class BareboneTestHandledScenario: Scenario {
         config.addMetadata(["Testing": true], section: "Flags")
         config.addMetadata(["password": "123456"], section: "Other")
         config.launchDurationMillis = 0
+        config.maxStringValueLength = 100
 #if !os(watchOS)
         config.sendThreads = .unhandledOnly
 #endif
@@ -77,6 +78,15 @@ class BareboneTestHandledScenario: Scenario {
         Bugsnag.leaveBreadcrumb(withMessage: "This is super secret")
         
         self.afterSendErrorBlock = self.afterSendError
+        
+        Bugsnag.addMetadata("""
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod \
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, \
+            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu \
+            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in \
+            culpa qui officia deserunt mollit anim id est laborum.
+            """, key: "shouldBeTruncated", section: "Other")
         
         Bugsnag.notify(NSException(name: .rangeException,
                                    reason: "-[__NSSingleObjectArrayI objectAtIndex:]: index 1 beyond bounds [0 .. 0]",
