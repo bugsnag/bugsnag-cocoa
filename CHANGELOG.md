@@ -5,6 +5,9 @@ Changelog
 
 ### Enhancements
 
+* Trim breadcrumb messages & metadata in payloads that exceed the size limit.
+  [#1451](https://github.com/bugsnag/bugsnag-cocoa/pull/1451)
+
 * Truncate breadcrumb and metadata strings that are longer than `configuration.maxStringValueLength`.
   [#1449](https://github.com/bugsnag/bugsnag-cocoa/pull/1449)
 

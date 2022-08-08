@@ -142,3 +142,17 @@ Feature: Delivery of errors
     Then the session "user.id" equals "3"
     And I discard the oldest session
     And the session "user.id" equals "2"
+
+  Scenario: Breadcrumbs should be trimmed if payload is oversized
+    When I run "OversizedBreadcrumbsScenario"
+    And I wait to receive an error
+    Then the event "breadcrumbs" is an array with 10 elements
+    And the error "Content-Length" header matches the regex "^9\d{5}$"
+    And the event "breadcrumbs.0.metaData.a" is null
+    And the event "breadcrumbs.0.name" equals "Removed, along with 16 older breadcrumbs, to reduce payload size"
+    And the event "breadcrumbs.9.metaData.a" is not null
+    And the event "breadcrumbs.9.name" equals "Breadcrumb 25"
+    And the event "usage.system.breadcrumbBytesRemoved" equals 1602740
+    And the event "usage.system.breadcrumbsRemoved" equals 17
+    And the event "usage.system.stringCharsTruncated" is not null
+    And the event "usage.system.stringsTruncated" is not null

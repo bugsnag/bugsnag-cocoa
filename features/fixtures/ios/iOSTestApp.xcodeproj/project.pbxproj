@@ -61,6 +61,7 @@
 		01221E55282E5538008095C3 /* MaxPersistedSessionsScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01221E54282E5538008095C3 /* MaxPersistedSessionsScenario.m */; };
 		0163BFA72583B3CF008DC28B /* DiscardClassesHandledExceptionRegexScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0163BFA62583B3CF008DC28B /* DiscardClassesHandledExceptionRegexScenario.swift */; };
 		017B4134276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */; };
+		017BA42428A1558A00CB985E /* OversizedBreadcrumbsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017BA42328A1558A00CB985E /* OversizedBreadcrumbsScenario.swift */; };
 		017DCFA028743FB5000ECB22 /* TelemetryUsageDisabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017DCF9F28743FB5000ECB22 /* TelemetryUsageDisabledScenario.swift */; };
 		01847DD626453D4E00ADA4C7 /* InvalidCrashReportScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01847DD526453D4E00ADA4C7 /* InvalidCrashReportScenario.m */; };
 		01AF6A53258A112F00FFC803 /* BareboneTestHandledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A52258A112F00FFC803 /* BareboneTestHandledScenario.swift */; };
@@ -252,6 +253,7 @@
 		01221E54282E5538008095C3 /* MaxPersistedSessionsScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MaxPersistedSessionsScenario.m; sourceTree = "<group>"; };
 		0163BFA62583B3CF008DC28B /* DiscardClassesHandledExceptionRegexScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardClassesHandledExceptionRegexScenario.swift; sourceTree = "<group>"; };
 		017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnSendErrorPersistenceScenario.m; sourceTree = "<group>"; };
+		017BA42328A1558A00CB985E /* OversizedBreadcrumbsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OversizedBreadcrumbsScenario.swift; sourceTree = "<group>"; };
 		017DCF9F28743FB5000ECB22 /* TelemetryUsageDisabledScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryUsageDisabledScenario.swift; sourceTree = "<group>"; };
 		01847DD526453D4E00ADA4C7 /* InvalidCrashReportScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InvalidCrashReportScenario.m; sourceTree = "<group>"; };
 		01AF6A52258A112F00FFC803 /* BareboneTestHandledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestHandledScenario.swift; sourceTree = "<group>"; };
@@ -579,6 +581,7 @@
 				010BAAFC2833CE570003FF36 /* OOMWillTerminateScenario.m */,
 				E700EE58247D321B008CFFB6 /* OriginalErrorNSErrorScenario.swift */,
 				E700EE5A247D3224008CFFB6 /* OriginalErrorNSExceptionScenario.swift */,
+				017BA42328A1558A00CB985E /* OversizedBreadcrumbsScenario.swift */,
 				01F6B75C2832757F00B75C5D /* OversizedCrashReportScenario.swift */,
 				01F6B75D2832757F00B75C5D /* OversizedHandledErrorScenario.swift */,
 				F4295B041F9CC494473DD226 /* OverwriteLinkRegisterScenario.m */,
@@ -745,6 +748,7 @@
 				010BAB252833D0070003FF36 /* AppHangDisabledScenario.swift in Sources */,
 				E75040A02478019D005D33BD /* AutoDetectFalseHandledScenario.swift in Sources */,
 				01F115C927BAAF2D00892B1E /* SIGPIPEIgnoredScenario.m in Sources */,
+				017BA42428A1558A00CB985E /* OversizedBreadcrumbsScenario.swift in Sources */,
 				8AB8866620404DD30003E444 /* ViewController.swift in Sources */,
 				010BAB0E2833CE570003FF36 /* UnhandledMachExceptionOverrideScenario.m in Sources */,
 				8AB8866420404DD30003E444 /* AppDelegate.swift in Sources */,

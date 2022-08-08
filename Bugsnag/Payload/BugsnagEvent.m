@@ -10,6 +10,7 @@
 
 #import "BSGDefines.h"
 #import "BSGFeatureFlagStore.h"
+#import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
 #import "BSGSerialization.h"
 #import "BSGUtils.h"
@@ -687,6 +688,41 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         for (BugsnagStackframe *stackframe in thread.stacktrace) {
             [stackframe symbolicateIfNeeded];
         }
+    }
+}
+
+- (void)trimBreadcrumbs:(const NSUInteger)bytesToRemove {
+    NSMutableArray *breadcrumbs = [self.breadcrumbs mutableCopy];
+    BugsnagBreadcrumb *lastRemovedBreadcrumb = nil;
+    NSUInteger bytesRemoved = 0, count = 0;
+    
+    while (bytesRemoved < bytesToRemove && breadcrumbs.count) {
+        lastRemovedBreadcrumb = [breadcrumbs firstObject];
+        [breadcrumbs removeObjectAtIndex:0];
+        
+        NSDictionary *dict = [lastRemovedBreadcrumb objectValue];
+        NSData *data = BSGJSONDataFromDictionary(dict, NULL);
+        bytesRemoved += data.length;
+        count++;
+    }
+    
+    if (lastRemovedBreadcrumb) {
+        lastRemovedBreadcrumb.message = count < 2 ? @"Removed to reduce payload size" :
+        [NSString stringWithFormat:@"Removed, along with %lu older breadcrumb%s, to reduce payload size",
+         (unsigned long)(count - 1), count == 2 ? "" : "s"];
+        lastRemovedBreadcrumb.metadata = @{};
+        [breadcrumbs insertObject:lastRemovedBreadcrumb atIndex:0];
+    }
+    
+    self.breadcrumbs = breadcrumbs;
+    
+    NSDictionary *usage = self.usage;
+    if (usage) {
+        self.usage = BSGDictMerge(@{
+            @"system": @{
+                @"breadcrumbBytesRemoved": @(bytesRemoved),
+                @"breadcrumbsRemoved": @(count)}
+        }, usage);
     }
 }
 
