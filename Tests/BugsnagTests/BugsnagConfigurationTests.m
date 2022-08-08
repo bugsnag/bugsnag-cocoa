@@ -650,6 +650,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
     XCTAssertEqual(50, config.maxBreadcrumbs);
+    XCTAssertEqual(config.maxStringValueLength, 10000);
     XCTAssertTrue(config.persistUser);
     XCTAssertEqual(1, [config.redactedKeys count]);
     XCTAssertEqualObjects(@"password", [config.redactedKeys allObjects][0]);
@@ -872,6 +873,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 #if !TARGET_OS_WATCH
     [config setSendThreads:BSGThreadSendPolicyUnhandledOnly];
 #endif
+    [config setMaxStringValueLength:100];
     [config addPlugin:(id)[NSNull null]];
 
     BugsnagOnSendErrorBlock onSendBlock1 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
@@ -928,6 +930,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     // Plugins
     XCTAssert([clone.plugins containsObject:[NSNull null]]);
     XCTAssertNoThrow([clone.plugins removeObject:[NSNull null]]);
+    
+    XCTAssertEqual(clone.maxStringValueLength, 100);
 }
 
 - (void)testMetadataMutability {

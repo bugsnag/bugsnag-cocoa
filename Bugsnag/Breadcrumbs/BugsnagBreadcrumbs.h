@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)config;
 
 /**
- * The breadcrumbs stored in memory.
+ * Returns an array of new objects representing the breadcrumbs stored in memory.
  */
 @property (readonly, nonatomic) NSArray<BugsnagBreadcrumb *> *breadcrumbs;
 

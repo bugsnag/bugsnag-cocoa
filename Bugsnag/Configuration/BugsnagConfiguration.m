@@ -94,6 +94,7 @@ static NSUserDefaults *userDefaults;
     [copy setSendLaunchCrashesSynchronously:self.sendLaunchCrashesSynchronously];
     [copy setMaxPersistedEvents:self.maxPersistedEvents];
     [copy setMaxPersistedSessions:self.maxPersistedSessions];
+    [copy setMaxStringValueLength:self.maxStringValueLength];
     [copy setMaxBreadcrumbs:self.maxBreadcrumbs];
     [copy setNotifier:self.notifier];
     [copy setFeatureFlagStore:self.featureFlagStore];
@@ -189,6 +190,7 @@ static NSUserDefaults *userDefaults;
     _maxBreadcrumbs = 50;
     _maxPersistedEvents = 32;
     _maxPersistedSessions = 128;
+    _maxStringValueLength = 10000;
     _autoTrackSessions = YES;
 #if BSG_HAVE_MACH_THREADS
     _sendThreads = BSGThreadSendPolicyAlways;
