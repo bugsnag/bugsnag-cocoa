@@ -7,6 +7,7 @@
 
 #import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
+#import "BSG_RFC3339DateTool.h"
 #import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagLogger.h"
@@ -58,10 +59,16 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
         return nil;
     }
     
-    NSMutableDictionary<BugsnagHTTPHeaderName, NSString *> *mutableHeaders = [headers mutableCopy];
-    mutableHeaders[BugsnagHTTPHeaderNameIntegrity] = [NSString stringWithFormat:@"sha1 %@", [BugsnagApiClient SHA1HashStringWithData:data]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15];
+    request.HTTPMethod = @"POST";
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:[NSString stringWithFormat:@"sha1 %@", [BugsnagApiClient SHA1HashStringWithData:data]] forHTTPHeaderField:BugsnagHTTPHeaderNameIntegrity];
+    [request setValue:[BSG_RFC3339DateTool stringFromDate:[NSDate date]] forHTTPHeaderField:BugsnagHTTPHeaderNameSentAt];
     
-    NSMutableURLRequest *request = [self prepareRequest:url headers:mutableHeaders];
+    for (BugsnagHTTPHeaderName name in headers) {
+        [request setValue:headers[name] forHTTPHeaderField:name];
+    }
+    
     bsg_log_debug(@"Sending %lu byte payload to %@", (unsigned long)data.length, url);
     
     [[self.session uploadTaskWithRequest:request fromData:data completionHandler:^(__unused NSData *responseData,
@@ -103,21 +110,6 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
         completionHandler(BugsnagApiClientDeliveryStatusFailed, connectionError);
     }] resume];
     return data;
-}
-
-- (NSMutableURLRequest *)prepareRequest:(NSURL *)url
-                                headers:(NSDictionary *)headers {
-    NSMutableURLRequest *request = [NSMutableURLRequest
-            requestWithURL:url
-               cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
-           timeoutInterval:15];
-    request.HTTPMethod = @"POST";
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-
-    for (NSString *key in [headers allKeys]) {
-        [request setValue:headers[key] forHTTPHeaderField:key];
-    }
-    return request;
 }
 
 + (NSString *)SHA1HashStringWithData:(NSData *)data {

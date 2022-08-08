@@ -38,14 +38,6 @@
     XCTAssertTrue([config autoTrackSessions]);
 }
 
-- (void)testSessionApiHeaders {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    NSDictionary *headers = [config sessionApiHeaders];
-    XCTAssertEqualObjects(config.apiKey, headers[@"Bugsnag-Api-Key"]);
-    XCTAssertNotNil(headers[@"Bugsnag-Sent-At"]);
-    XCTAssertNotNil(headers[@"Bugsnag-Payload-Version"]);
-}
-
 - (void)testSessionEndpoints {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
 

@@ -11,7 +11,6 @@
 #import "BSGFileLocations.h"
 #import "BSGInternalErrorReporter.h"
 #import "BSGKeys.h"
-#import "BSG_RFC3339DateTool.h"
 #import "BugsnagAppWithState+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagError+Private.h"
@@ -123,7 +122,6 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     NSMutableDictionary *requestHeaders = [NSMutableDictionary dictionary];
     requestHeaders[BugsnagHTTPHeaderNameApiKey] = apiKey;
     requestHeaders[BugsnagHTTPHeaderNamePayloadVersion] = EventPayloadVersion;
-    requestHeaders[BugsnagHTTPHeaderNameSentAt] = [BSG_RFC3339DateTool stringFromDate:[NSDate date]];
     requestHeaders[BugsnagHTTPHeaderNameStacktraceTypes] = [event.stacktraceTypes componentsJoinedByString:@","];
     
     NSURL *notifyURL = configuration.notifyURL;

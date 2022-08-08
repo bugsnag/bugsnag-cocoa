@@ -152,8 +152,7 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
     
     NSDictionary *headers = @{
         BugsnagHTTPHeaderNameApiKey: apiKey,
-        BugsnagHTTPHeaderNamePayloadVersion: @"1.0",
-        BugsnagHTTPHeaderNameSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate date]] ?: [NSNull null]
+        BugsnagHTTPHeaderNamePayloadVersion: @"1.0"
     };
     
     NSDictionary *payload = @{

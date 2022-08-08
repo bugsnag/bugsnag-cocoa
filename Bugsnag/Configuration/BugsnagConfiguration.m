@@ -28,7 +28,6 @@
 
 #import "BSGConfigurationBuilder.h"
 #import "BSGKeys.h"
-#import "BSG_RFC3339DateTool.h"
 #import "BugsnagApiClient.h"
 #import "BugsnagEndpointConfiguration.h"
 #import "BugsnagErrorTypes.h"
@@ -360,13 +359,6 @@ static NSUserDefaults *userDefaults;
 // =============================================================================
 // MARK: -
 // =============================================================================
-
-- (NSDictionary *)sessionApiHeaders {
-    return @{BugsnagHTTPHeaderNameApiKey: self.apiKey ?: @"",
-             BugsnagHTTPHeaderNamePayloadVersion: @"1.0",
-             BugsnagHTTPHeaderNameSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate date]]
-    };
-}
 
 - (void)setEndpoints:(BugsnagEndpointConfiguration *)endpoints {
     if ([self isValidURLString:endpoints.notify]) {
