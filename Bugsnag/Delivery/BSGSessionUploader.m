@@ -30,7 +30,6 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
 
 @interface BSGSessionUploader ()
 @property (nonatomic) NSMutableSet *activeIds;
-@property (nonatomic) BugsnagApiClient *apiClient;
 @property(nonatomic) BugsnagConfiguration *config;
 @end
 
@@ -40,7 +39,6 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config notifier:(BugsnagNotifier *)notifier {
     if ((self = [super init])) {
         _activeIds = [NSMutableSet new];
-        _apiClient = [[BugsnagApiClient alloc] initWithSession:config.session];
         _config = config;
         _notifier = notifier;
     }
@@ -173,7 +171,7 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
         return;
     }
     
-    [self.apiClient postJSONData:data headers:headers toURL:url completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
+    BSGPostJSONData(self.config.session, data, headers, url, ^(BugsnagApiClientDeliveryStatus status, NSError *error) {
         switch (status) {
             case BugsnagApiClientDeliveryStatusDelivered:
                 bsg_log_info(@"Sent session %@", session.id);
@@ -186,7 +184,7 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
                 break;
         }
         completionHandler(status);
-    }];
+    });
 }
 
 @end

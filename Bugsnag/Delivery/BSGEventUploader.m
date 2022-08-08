@@ -40,13 +40,11 @@ static NSString * const RecrashReportPrefix = @"RecrashReport-";
 
 @implementation BSGEventUploader
 
-@synthesize apiClient = _apiClient;
 @synthesize configuration = _configuration;
 @synthesize notifier = _notifier;
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration notifier:(BugsnagNotifier *)notifier {
     if ((self = [super init])) {
-        _apiClient = [[BugsnagApiClient alloc] initWithSession:configuration.session];
         _configuration = configuration;
         _eventsDirectory = [BSGFileLocations current].events;
         _kscrashReportsDirectory = [BSGFileLocations current].kscrashReports;

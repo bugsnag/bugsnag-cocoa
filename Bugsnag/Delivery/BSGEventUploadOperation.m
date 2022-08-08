@@ -140,9 +140,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
         return;
     }
     
-    [delegate.apiClient postJSONData:data headers:requestHeaders toURL:notifyURL
-                      completionHandler:^(BugsnagApiClientDeliveryStatus status, __unused NSError *deliveryError) {
-        
+    BSGPostJSONData(configuration.session, data, requestHeaders, notifyURL, ^(BugsnagApiClientDeliveryStatus status, __unused NSError *deliveryError) {
         switch (status) {
             case BugsnagApiClientDeliveryStatusDelivered:
                 bsg_log_debug(@"Uploaded event %@", self.name);
@@ -161,7 +159,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
         }
         
         completionHandler();
-    }];
+    });
 }
 
 // MARK: Subclassing

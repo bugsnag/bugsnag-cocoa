@@ -31,30 +31,16 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
     HTTPStatusCodeTooManyRequests = 429,
 };
 
-@interface BugsnagApiClient()
-@property (nonatomic, strong) NSURLSession *session;
-@end
-
-@implementation BugsnagApiClient
-
-- (instancetype)initWithSession:(nullable NSURLSession *)session {
-    if ((self = [super init])) {
-        _session = session ?: [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
-    }
-    return self;
-}
-
-#pragma mark - Delivery
-
-- (void)postJSONData:(NSData *)data
-             headers:(NSDictionary<BugsnagHTTPHeaderName, NSString *> *)headers
-               toURL:(NSURL *)url
-   completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError *_Nullable error))completionHandler {
+void BSGPostJSONData(NSURLSession *URLSession,
+                     NSData *data,
+                     NSDictionary<BugsnagHTTPHeaderName, NSString *> *headers,
+                     NSURL *url,
+                     void (^ completionHandler)(BugsnagApiClientDeliveryStatus status, NSError *_Nullable error)) {
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15];
     request.HTTPMethod = @"POST";
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [request setValue:[NSString stringWithFormat:@"sha1 %@", [BugsnagApiClient SHA1HashStringWithData:data]] forHTTPHeaderField:BugsnagHTTPHeaderNameIntegrity];
+    [request setValue:BSGIntegrityHeaderValue(data) forHTTPHeaderField:BugsnagHTTPHeaderNameIntegrity];
     [request setValue:[BSG_RFC3339DateTool stringFromDate:[NSDate date]] forHTTPHeaderField:BugsnagHTTPHeaderNameSentAt];
     
     for (BugsnagHTTPHeaderName name in headers) {
@@ -63,8 +49,7 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
     
     bsg_log_debug(@"Sending %lu byte payload to %@", (unsigned long)data.length, url);
     
-    [[self.session uploadTaskWithRequest:request fromData:data completionHandler:^(__unused NSData *responseData,
-                                                                                   NSURLResponse *response, NSError *error) {
+    [[URLSession uploadTaskWithRequest:request fromData:data completionHandler:^(__unused NSData *responseData, NSURLResponse *response, NSError *error) {
         if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
             bsg_log_debug(@"Request to %@ completed with error %@", url, error);
             completionHandler(BugsnagApiClientDeliveryStatusFailed, error ?:
@@ -103,17 +88,15 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
     }] resume];
 }
 
-+ (NSString *)SHA1HashStringWithData:(NSData *)data {
+NSString * BSGIntegrityHeaderValue(NSData *data) {
     if (!data) {
         return nil;
     }
     unsigned char md[CC_SHA1_DIGEST_LENGTH];
     CC_SHA1(data.bytes, (CC_LONG)data.length, md);
-    return [NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+    return [NSString stringWithFormat:@"sha1 %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
             md[0], md[1], md[2], md[3], md[4],
             md[5], md[6], md[7], md[8], md[9],
             md[10], md[11], md[12], md[13], md[14],
             md[15], md[16], md[17], md[18], md[19]];
 }
-
-@end

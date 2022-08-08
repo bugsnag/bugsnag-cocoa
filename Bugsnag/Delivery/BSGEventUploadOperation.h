@@ -54,8 +54,6 @@ static const NSUInteger MaxPersistedSize = 1000000;
 
 @protocol BSGEventUploadOperationDelegate <NSObject>
 
-@property (readonly, nonatomic) BugsnagApiClient *apiClient;
-
 @property (readonly, nonatomic) BugsnagConfiguration *configuration;
 
 @property (readonly, nonatomic) BugsnagNotifier *notifier;

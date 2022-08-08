@@ -24,17 +24,12 @@ typedef NS_ENUM(NSInteger, BugsnagApiClientDeliveryStatus) {
     BugsnagApiClientDeliveryStatusUndeliverable,
 };
 
-@interface BugsnagApiClient : NSObject
+void BSGPostJSONData(NSURLSession *URLSession,
+                     NSData *data,
+                     NSDictionary<BugsnagHTTPHeaderName, NSString *> *headers,
+                     NSURL *url,
+                     void (^ completionHandler)(BugsnagApiClientDeliveryStatus status, NSError *_Nullable error));
 
-- (instancetype)initWithSession:(nullable NSURLSession *)session;
-
-- (void)postJSONData:(NSData *)data
-             headers:(NSDictionary<BugsnagHTTPHeaderName, NSString *> *)headers
-               toURL:(NSURL *)url
-   completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError *_Nullable error))completionHandler;
-
-+ (NSString *)SHA1HashStringWithData:(NSData *)data;
-
-@end
+NSString *_Nullable BSGIntegrityHeaderValue(NSData *_Nullable data);
 
 NS_ASSUME_NONNULL_END
