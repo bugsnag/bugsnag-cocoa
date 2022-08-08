@@ -22,34 +22,34 @@
     NSURL *url = [NSURL URLWithString:@"https://example.com"];
     id URLSession = [[URLSessionMock alloc] init];
     
-    void (^ test)(NSInteger, BugsnagApiClientDeliveryStatus, BOOL) =
-    ^(NSInteger statusCode, BugsnagApiClientDeliveryStatus expectedDeliveryStatus, BOOL expectError) {
+    void (^ test)(NSInteger, BSGDeliveryStatus, BOOL) =
+    ^(NSInteger statusCode, BSGDeliveryStatus expectedDeliveryStatus, BOOL expectError) {
         XCTestExpectation *expectation = [self expectationWithDescription:@"completionHandler should be called"];
         id response = [[NSHTTPURLResponse alloc] initWithURL:url statusCode:statusCode HTTPVersion:@"1.1" headerFields:nil];
         [URLSession mockData:[NSData data] response:response error:nil];
-        BSGPostJSONData(URLSession, [NSData data], @{}, url, ^(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error) {
+        BSGPostJSONData(URLSession, [NSData data], @{}, url, ^(BSGDeliveryStatus status, NSError * _Nullable error) {
             XCTAssertEqual(status, expectedDeliveryStatus);
             expectError ? XCTAssertNotNil(error) : XCTAssertNil(error);
             [expectation fulfill];
         });
     };
     
-    test(200, BugsnagApiClientDeliveryStatusDelivered, NO);
+    test(200, BSGDeliveryStatusDelivered, NO);
     
     // Permanent failures
-    test(400, BugsnagApiClientDeliveryStatusUndeliverable, YES);
-    test(401, BugsnagApiClientDeliveryStatusUndeliverable, YES);
-    test(403, BugsnagApiClientDeliveryStatusUndeliverable, YES);
-    test(404, BugsnagApiClientDeliveryStatusUndeliverable, YES);
-    test(405, BugsnagApiClientDeliveryStatusUndeliverable, YES);
-    test(406, BugsnagApiClientDeliveryStatusUndeliverable, YES);
+    test(400, BSGDeliveryStatusUndeliverable, YES);
+    test(401, BSGDeliveryStatusUndeliverable, YES);
+    test(403, BSGDeliveryStatusUndeliverable, YES);
+    test(404, BSGDeliveryStatusUndeliverable, YES);
+    test(405, BSGDeliveryStatusUndeliverable, YES);
+    test(406, BSGDeliveryStatusUndeliverable, YES);
     
     // Transient failures
-    test(402, BugsnagApiClientDeliveryStatusFailed, YES);
-    test(407, BugsnagApiClientDeliveryStatusFailed, YES);
-    test(408, BugsnagApiClientDeliveryStatusFailed, YES);
-    test(429, BugsnagApiClientDeliveryStatusFailed, YES);
-    test(500, BugsnagApiClientDeliveryStatusFailed, YES);
+    test(402, BSGDeliveryStatusFailed, YES);
+    test(407, BSGDeliveryStatusFailed, YES);
+    test(408, BSGDeliveryStatusFailed, YES);
+    test(429, BSGDeliveryStatusFailed, YES);
+    test(500, BSGDeliveryStatusFailed, YES);
     
     [self waitForExpectationsWithTimeout:1 handler:nil];
 }
@@ -62,8 +62,8 @@
     [URLSession mockData:nil response:nil error:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorNotConnectedToInternet userInfo:@{
         NSURLErrorFailingURLErrorKey: url,
     }]];
-    BSGPostJSONData(URLSession, [NSData data], @{}, url, ^(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error) {
-        XCTAssertEqual(status, BugsnagApiClientDeliveryStatusFailed);
+    BSGPostJSONData(URLSession, [NSData data], @{}, url, ^(BSGDeliveryStatus status, NSError * _Nullable error) {
+        XCTAssertEqual(status, BSGDeliveryStatusFailed);
         XCTAssertNotNil(error);
         XCTAssertEqualObjects(error.domain, NSURLErrorDomain);
         [expectation fulfill];

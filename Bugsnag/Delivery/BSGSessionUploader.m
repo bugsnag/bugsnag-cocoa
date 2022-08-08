@@ -46,17 +46,17 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
 }
 
 - (void)uploadSession:(BugsnagSession *)session {
-    [self sendSession:session completionHandler:^(BugsnagApiClientDeliveryStatus status) {
+    [self sendSession:session completionHandler:^(BSGDeliveryStatus status) {
         switch (status) {
-            case BugsnagApiClientDeliveryStatusDelivered:
+            case BSGDeliveryStatusDelivered:
                 [self processStoredSessions];
                 break;
                 
-            case BugsnagApiClientDeliveryStatusFailed:
+            case BSGDeliveryStatusFailed:
                 [self storeSession:session]; // Retry later
                 break;
                 
-            case BugsnagApiClientDeliveryStatusUndeliverable:
+            case BSGDeliveryStatusUndeliverable:
                 break;
         }
     }];
@@ -106,8 +106,8 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
             [self.activeIds addObject:file];
         }
         
-        [self sendSession:session completionHandler:^(BugsnagApiClientDeliveryStatus status) {
-            if (status != BugsnagApiClientDeliveryStatusFailed) {
+        [self sendSession:session completionHandler:^(BSGDeliveryStatus status) {
+            if (status != BSGDeliveryStatusFailed) {
                 [fileManager removeItemAtPath:file error:nil];
             }
             @synchronized (self.activeIds) {
@@ -133,18 +133,18 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
 //
 // https://bugsnagsessiontrackingapi.docs.apiary.io/#reference/0/session/report-a-session-starting
 //
-- (void)sendSession:(BugsnagSession *)session completionHandler:(nonnull void (^)(BugsnagApiClientDeliveryStatus status))completionHandler {
+- (void)sendSession:(BugsnagSession *)session completionHandler:(nonnull void (^)(BSGDeliveryStatus status))completionHandler {
     NSString *apiKey = [self.config.apiKey copy];
     if (!apiKey) {
         bsg_log_err(@"Cannot send session because no apiKey is configured.");
-        completionHandler(BugsnagApiClientDeliveryStatusUndeliverable);
+        completionHandler(BSGDeliveryStatusUndeliverable);
         return;
     }
     
     NSURL *url = self.config.sessionURL;
     if (!url) {
         bsg_log_err(@"Cannot send session because no endpoint is configured.");
-        completionHandler(BugsnagApiClientDeliveryStatusUndeliverable);
+        completionHandler(BSGDeliveryStatusUndeliverable);
         return;
     }
     
@@ -167,19 +167,19 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
     NSData *data = BSGJSONDataFromDictionary(payload, NULL);
     if (!data) {
         bsg_log_err(@"Failed to encode session %@", session.id);
-        completionHandler(BugsnagApiClientDeliveryStatusUndeliverable);
+        completionHandler(BSGDeliveryStatusUndeliverable);
         return;
     }
     
-    BSGPostJSONData(self.config.session, data, headers, url, ^(BugsnagApiClientDeliveryStatus status, NSError *error) {
+    BSGPostJSONData(self.config.session, data, headers, url, ^(BSGDeliveryStatus status, NSError *error) {
         switch (status) {
-            case BugsnagApiClientDeliveryStatusDelivered:
+            case BSGDeliveryStatusDelivered:
                 bsg_log_info(@"Sent session %@", session.id);
                 break;
-            case BugsnagApiClientDeliveryStatusFailed:
+            case BSGDeliveryStatusFailed:
                 bsg_log_warn(@"Failed to send sessions: %@", error);
                 break;
-            case BugsnagApiClientDeliveryStatusUndeliverable:
+            case BSGDeliveryStatusUndeliverable:
                 bsg_log_warn(@"Failed to send sessions: %@", error);
                 break;
         }

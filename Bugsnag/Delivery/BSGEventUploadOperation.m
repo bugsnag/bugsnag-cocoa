@@ -140,19 +140,19 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
         return;
     }
     
-    BSGPostJSONData(configuration.session, data, requestHeaders, notifyURL, ^(BugsnagApiClientDeliveryStatus status, __unused NSError *deliveryError) {
+    BSGPostJSONData(configuration.session, data, requestHeaders, notifyURL, ^(BSGDeliveryStatus status, __unused NSError *deliveryError) {
         switch (status) {
-            case BugsnagApiClientDeliveryStatusDelivered:
+            case BSGDeliveryStatusDelivered:
                 bsg_log_debug(@"Uploaded event %@", self.name);
                 [self deleteEvent];
                 break;
                 
-            case BugsnagApiClientDeliveryStatusFailed:
+            case BSGDeliveryStatusFailed:
                 bsg_log_debug(@"Upload failed retryably for event %@", self.name);
                 [self prepareForRetry:originalPayload ?: eventPayload HTTPBodySize:data.length];
                 break;
                 
-            case BugsnagApiClientDeliveryStatusUndeliverable:
+            case BSGDeliveryStatusUndeliverable:
                 bsg_log_debug(@"Upload failed; will discard event %@", self.name);
                 [self deleteEvent];
                 break;

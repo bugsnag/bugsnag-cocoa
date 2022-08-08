@@ -35,7 +35,7 @@ void BSGPostJSONData(NSURLSession *URLSession,
                      NSData *data,
                      NSDictionary<BugsnagHTTPHeaderName, NSString *> *headers,
                      NSURL *url,
-                     void (^ completionHandler)(BugsnagApiClientDeliveryStatus status, NSError *_Nullable error)) {
+                     void (^ completionHandler)(BSGDeliveryStatus status, NSError *_Nullable error)) {
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15];
     request.HTTPMethod = @"POST";
@@ -52,7 +52,7 @@ void BSGPostJSONData(NSURLSession *URLSession,
     [[URLSession uploadTaskWithRequest:request fromData:data completionHandler:^(__unused NSData *responseData, NSURLResponse *response, NSError *error) {
         if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
             bsg_log_debug(@"Request to %@ completed with error %@", url, error);
-            completionHandler(BugsnagApiClientDeliveryStatusFailed, error ?:
+            completionHandler(BSGDeliveryStatusFailed, error ?:
                               [NSError errorWithDomain:@"BugsnagApiClientErrorDomain" code:0 userInfo:@{
                                   NSLocalizedDescriptionKey: @"Request failed: no response was received",
                                   NSURLErrorFailingURLErrorKey: url }]);
@@ -63,7 +63,7 @@ void BSGPostJSONData(NSURLSession *URLSession,
         bsg_log_debug(@"Request to %@ completed with status code %ld", url, (long)statusCode);
         
         if (statusCode / 100 == 2) {
-            completionHandler(BugsnagApiClientDeliveryStatusDelivered, nil);
+            completionHandler(BSGDeliveryStatusDelivered, nil);
             return;
         }
         
@@ -80,11 +80,11 @@ void BSGPostJSONData(NSURLSession *URLSession,
             statusCode != HTTPStatusCodeProxyAuthenticationRequired &&
             statusCode != HTTPStatusCodeClientTimeout &&
             statusCode != HTTPStatusCodeTooManyRequests) {
-            completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, error);
+            completionHandler(BSGDeliveryStatusUndeliverable, error);
             return;
         }
         
-        completionHandler(BugsnagApiClientDeliveryStatusFailed, error);
+        completionHandler(BSGDeliveryStatusFailed, error);
     }] resume];
 }
 
