@@ -10,8 +10,8 @@
 
 #import "BSGFileLocations.h"
 #import "BSGInternalErrorReporter.h"
+#import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
-#import "BSG_RFC3339DateTool.h"
 #import "BugsnagAppWithState+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagError+Private.h"
@@ -123,7 +123,6 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     NSMutableDictionary *requestHeaders = [NSMutableDictionary dictionary];
     requestHeaders[BugsnagHTTPHeaderNameApiKey] = apiKey;
     requestHeaders[BugsnagHTTPHeaderNamePayloadVersion] = EventPayloadVersion;
-    requestHeaders[BugsnagHTTPHeaderNameSentAt] = [BSG_RFC3339DateTool stringFromDate:[NSDate date]];
     requestHeaders[BugsnagHTTPHeaderNameStacktraceTypes] = [event.stacktraceTypes componentsJoinedByString:@","];
     
     NSURL *notifyURL = configuration.notifyURL;
@@ -133,29 +132,34 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
         return;
     }
     
-    __block NSData *HTTPBody =
-    [delegate.apiClient sendJSONPayload:requestPayload headers:requestHeaders toURL:notifyURL
-                      completionHandler:^(BugsnagApiClientDeliveryStatus status, __unused NSError *deliveryError) {
-        
+    NSData *data = BSGJSONDataFromDictionary(requestPayload, NULL);
+    if (!data) {
+        bsg_log_debug(@"Encoding failed; will discard event %@", self.name);
+        [self deleteEvent];
+        completionHandler();
+        return;
+    }
+    
+    BSGPostJSONData(configuration.session, data, requestHeaders, notifyURL, ^(BSGDeliveryStatus status, __unused NSError *deliveryError) {
         switch (status) {
-            case BugsnagApiClientDeliveryStatusDelivered:
+            case BSGDeliveryStatusDelivered:
                 bsg_log_debug(@"Uploaded event %@", self.name);
                 [self deleteEvent];
                 break;
                 
-            case BugsnagApiClientDeliveryStatusFailed:
+            case BSGDeliveryStatusFailed:
                 bsg_log_debug(@"Upload failed retryably for event %@", self.name);
-                [self prepareForRetry:originalPayload ?: eventPayload HTTPBodySize:HTTPBody.length];
+                [self prepareForRetry:originalPayload ?: eventPayload HTTPBodySize:data.length];
                 break;
                 
-            case BugsnagApiClientDeliveryStatusUndeliverable:
+            case BSGDeliveryStatusUndeliverable:
                 bsg_log_debug(@"Upload failed; will discard event %@", self.name);
                 [self deleteEvent];
                 break;
         }
         
         completionHandler();
-    }];
+    });
 }
 
 // MARK: Subclassing
