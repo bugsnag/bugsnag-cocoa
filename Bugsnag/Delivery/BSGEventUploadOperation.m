@@ -10,6 +10,7 @@
 
 #import "BSGFileLocations.h"
 #import "BSGInternalErrorReporter.h"
+#import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
 #import "BugsnagAppWithState+Private.h"
 #import "BugsnagConfiguration+Private.h"
@@ -131,8 +132,15 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
         return;
     }
     
-    __block NSData *HTTPBody =
-    [delegate.apiClient sendJSONPayload:requestPayload headers:requestHeaders toURL:notifyURL
+    NSData *data = BSGJSONDataFromDictionary(requestPayload, NULL);
+    if (!data) {
+        bsg_log_debug(@"Encoding failed; will discard event %@", self.name);
+        [self deleteEvent];
+        completionHandler();
+        return;
+    }
+    
+    [delegate.apiClient postJSONData:data headers:requestHeaders toURL:notifyURL
                       completionHandler:^(BugsnagApiClientDeliveryStatus status, __unused NSError *deliveryError) {
         
         switch (status) {
@@ -143,7 +151,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
                 
             case BugsnagApiClientDeliveryStatusFailed:
                 bsg_log_debug(@"Upload failed retryably for event %@", self.name);
-                [self prepareForRetry:originalPayload ?: eventPayload HTTPBodySize:HTTPBody.length];
+                [self prepareForRetry:originalPayload ?: eventPayload HTTPBodySize:data.length];
                 break;
                 
             case BugsnagApiClientDeliveryStatusUndeliverable:

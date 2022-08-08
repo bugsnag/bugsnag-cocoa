@@ -46,18 +46,10 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
 
 #pragma mark - Delivery
 
-- (NSData *)sendJSONPayload:(NSDictionary *)payload
-                    headers:(NSDictionary<BugsnagHTTPHeaderName, NSString *> *)headers
-                      toURL:(NSURL *)url
-          completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError *_Nullable error))completionHandler {
-    
-    NSError *error = nil;
-    NSData *data = BSGJSONDataFromDictionary(payload, &error);
-    if (!data) {
-        bsg_log_err(@"Error: Could not encode JSON payload passed to %s", __PRETTY_FUNCTION__);
-        completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, error);
-        return nil;
-    }
+- (void)postJSONData:(NSData *)data
+             headers:(NSDictionary<BugsnagHTTPHeaderName, NSString *> *)headers
+               toURL:(NSURL *)url
+   completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError *_Nullable error))completionHandler {
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15];
     request.HTTPMethod = @"POST";
@@ -72,10 +64,10 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
     bsg_log_debug(@"Sending %lu byte payload to %@", (unsigned long)data.length, url);
     
     [[self.session uploadTaskWithRequest:request fromData:data completionHandler:^(__unused NSData *responseData,
-                                                                                   NSURLResponse *response, NSError *connectionError) {
+                                                                                   NSURLResponse *response, NSError *error) {
         if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
             bsg_log_debug(@"Request to %@ completed with error %@", url, error);
-            completionHandler(BugsnagApiClientDeliveryStatusFailed, connectionError ?:
+            completionHandler(BugsnagApiClientDeliveryStatusFailed, error ?:
                               [NSError errorWithDomain:@"BugsnagApiClientErrorDomain" code:0 userInfo:@{
                                   NSLocalizedDescriptionKey: @"Request failed: no response was received",
                                   NSURLErrorFailingURLErrorKey: url }]);
@@ -90,7 +82,7 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
             return;
         }
         
-        connectionError = [NSError errorWithDomain:@"BugsnagApiClientErrorDomain" code:1 userInfo:@{
+        error = [NSError errorWithDomain:@"BugsnagApiClientErrorDomain" code:1 userInfo:@{
             NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Request failed: unacceptable status code %ld (%@)",
                                         (long)statusCode, [NSHTTPURLResponse localizedStringForStatusCode:statusCode]],
             NSURLErrorFailingURLErrorKey: url }];
@@ -103,13 +95,12 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
             statusCode != HTTPStatusCodeProxyAuthenticationRequired &&
             statusCode != HTTPStatusCodeClientTimeout &&
             statusCode != HTTPStatusCodeTooManyRequests) {
-            completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, connectionError);
+            completionHandler(BugsnagApiClientDeliveryStatusUndeliverable, error);
             return;
         }
         
-        completionHandler(BugsnagApiClientDeliveryStatusFailed, connectionError);
+        completionHandler(BugsnagApiClientDeliveryStatusFailed, error);
     }] resume];
-    return data;
 }
 
 + (NSString *)SHA1HashStringWithData:(NSData *)data {

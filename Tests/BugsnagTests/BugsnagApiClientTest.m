@@ -18,12 +18,6 @@
 
 @implementation BugsnagApiClientTest
 
-- (void)testBadJSON {
-    BugsnagApiClient *client = [[BugsnagApiClient alloc] initWithSession:nil];
-    XCTAssertNoThrow([client sendJSONPayload:(id)@{@1: @"a"} headers:(id)@{@1: @"a"} toURL:[NSURL URLWithString:@"file:///dev/null"]
-                           completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error) {}]);
-}
-
 - (void)testHTTPStatusCodes {
     NSURL *url = [NSURL URLWithString:@"https://example.com"];
     URLSessionMock *session = [[URLSessionMock alloc] init];
@@ -34,7 +28,7 @@
         XCTestExpectation *expectation = [self expectationWithDescription:@"completionHandler should be called"];
         id response = [[NSHTTPURLResponse alloc] initWithURL:url statusCode:statusCode HTTPVersion:@"1.1" headerFields:nil];
         [session mockData:[NSData data] response:response error:nil];
-        [client sendJSONPayload:@{} headers:@{} toURL:url completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error) {
+        [client postJSONData:[NSData data] headers:@{} toURL:url completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error) {
             XCTAssertEqual(status, expectedDeliveryStatus);
             expectError ? XCTAssertNotNil(error) : XCTAssertNil(error);
             [expectation fulfill];
@@ -70,7 +64,7 @@
     [session mockData:nil response:nil error:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorNotConnectedToInternet userInfo:@{
         NSURLErrorFailingURLErrorKey: url,
     }]];
-    [client sendJSONPayload:@{} headers:@{} toURL:url completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error) {
+    [client postJSONData:[NSData data] headers:@{} toURL:url completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError * _Nullable error) {
         XCTAssertEqual(status, BugsnagApiClientDeliveryStatusFailed);
         XCTAssertNotNil(error);
         XCTAssertEqualObjects(error.domain, NSURLErrorDomain);

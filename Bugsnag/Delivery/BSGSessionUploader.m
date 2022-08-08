@@ -166,7 +166,14 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
         }]
     };
     
-    [self.apiClient sendJSONPayload:payload headers:headers toURL:url completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
+    NSData *data = BSGJSONDataFromDictionary(payload, NULL);
+    if (!data) {
+        bsg_log_err(@"Failed to encode session %@", session.id);
+        completionHandler(BugsnagApiClientDeliveryStatusUndeliverable);
+        return;
+    }
+    
+    [self.apiClient postJSONData:data headers:headers toURL:url completionHandler:^(BugsnagApiClientDeliveryStatus status, NSError *error) {
         switch (status) {
             case BugsnagApiClientDeliveryStatusDelivered:
                 bsg_log_info(@"Sent session %@", session.id);

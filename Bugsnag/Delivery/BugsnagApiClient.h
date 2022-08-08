@@ -28,10 +28,10 @@ typedef NS_ENUM(NSInteger, BugsnagApiClientDeliveryStatus) {
 
 - (instancetype)initWithSession:(nullable NSURLSession *)session;
 
-- (nullable NSData *)sendJSONPayload:(NSDictionary *)payload
-                             headers:(NSDictionary<BugsnagHTTPHeaderName, NSString *> *)headers
-                               toURL:(NSURL *)url
-                   completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError *_Nullable error))completionHandler;
+- (void)postJSONData:(NSData *)data
+             headers:(NSDictionary<BugsnagHTTPHeaderName, NSString *> *)headers
+               toURL:(NSURL *)url
+   completionHandler:(void (^)(BugsnagApiClientDeliveryStatus status, NSError *_Nullable error))completionHandler;
 
 + (NSString *)SHA1HashStringWithData:(NSData *)data;
 
