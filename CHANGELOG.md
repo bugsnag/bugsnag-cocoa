@@ -19,6 +19,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix a potential deadlock when capturing the crashing thread's name.
+  [#1453](https://github.com/bugsnag/bugsnag-cocoa/pull/1453)
+
 * Attempt to send sessions stored on disk when connection regained.
   [#1445](https://github.com/bugsnag/bugsnag-cocoa/pull/1445)
 
