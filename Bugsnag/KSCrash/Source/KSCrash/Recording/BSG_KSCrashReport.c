@@ -756,6 +756,7 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
     int backtraceLength = sizeof(backtraceBuffer) / sizeof(*backtraceBuffer);
     int skippedEntries = 0;
     const char* state = bsg_kscrashthread_state_name(threadRunState);
+    char name[MAXTHREADNAMESIZE] = {0};
 
     BSG_STRUCT_MCONTEXT_L *machineContext =
         bsg_kscrw_i_getMachineContext(crash, thread, &machineContextBuffer);
@@ -784,14 +785,13 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
         writer->addBooleanElement(writer, BSG_KSCrashField_CurrentThread,
                                   isSelfThread);
 
-        // Fetching the current thread name is only safe as of libpthread-330.201.1
-        // which was used in ios+tvos 12 and macos 10.14
-        if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_12_0) {
-            if (isSelfThread) {
-                char buff[100];
-                bsg_ksmachgetThreadName(thread, buff, sizeof(buff));
-                writer->addStringElement(writer, BSG_KSCrashField_Name, buff);
-            }
+        // pthread_getname_np() acquires no locks if passed pthread_self() as
+        // of libpthread-330.201.1 (macOS 10.14 / iOS 12)
+        if (isSelfThread &&
+            kCFCoreFoundationVersionNumber >=
+            kCFCoreFoundationVersionNumber_iOS_12_0 &&
+            !pthread_getname_np(pthread_self(), name, sizeof(name))) {
+            writer->addStringElement(writer, BSG_KSCrashField_Name, name);
         }
         if (isCrashedThread && machineContext != NULL) {
             bsg_kscrw_i_writeStackOverflow(writer, BSG_KSCrashField_Stack,
