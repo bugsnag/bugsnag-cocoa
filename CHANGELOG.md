@@ -5,6 +5,9 @@ Changelog
 
 ### Enhancements
 
+* Increase default and maximum values for `configuration.maxBreadcrumbs` to 100 and 500, respectively.
+  [#1452](https://github.com/bugsnag/bugsnag-cocoa/pull/1452)
+
 * Trim breadcrumb messages & metadata in payloads that exceed the size limit.
   [#1451](https://github.com/bugsnag/bugsnag-cocoa/pull/1451)
 

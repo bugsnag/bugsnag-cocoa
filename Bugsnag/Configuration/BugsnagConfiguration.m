@@ -186,7 +186,7 @@ static NSUserDefaults *userDefaults;
     _enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeAll;
     _launchDurationMillis = 5000;
     _sendLaunchCrashesSynchronously = YES;
-    _maxBreadcrumbs = 50;
+    _maxBreadcrumbs = 100;
     _maxPersistedEvents = 32;
     _maxPersistedSessions = 128;
     _maxStringValueLength = 10000;
@@ -509,15 +509,18 @@ static NSUserDefaults *userDefaults;
     }
 }
 
-- (void)setMaxBreadcrumbs:(NSUInteger)maxBreadcrumbs {
+- (void)setMaxBreadcrumbs:(NSUInteger)newValue {
+    static const NSUInteger maxAllowed = 500;
+    if (newValue > maxAllowed) {
+        bsg_log_err(@"Invalid configuration value detected. "
+                    "Option maxBreadcrumbs should be an integer between 0-%lu. "
+                    "Supplied value is %lu",
+                    (unsigned long)maxAllowed,
+                    (unsigned long)newValue);
+        return;
+    }
     @synchronized (self) {
-        if (maxBreadcrumbs <= 100) {
-            _maxBreadcrumbs = maxBreadcrumbs;
-        } else {
-            bsg_log_err(@"Invalid configuration value detected. Option maxBreadcrumbs "
-                        "should be an integer between 0-100. Supplied value is %lu",
-                        (unsigned long) maxBreadcrumbs);
-        }
+        _maxBreadcrumbs = newValue;
     }
 }
 

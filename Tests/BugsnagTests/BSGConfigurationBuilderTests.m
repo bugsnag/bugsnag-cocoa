@@ -56,7 +56,7 @@
     XCTAssertTrue(config.autoTrackSessions);
     XCTAssertEqual(config.maxPersistedEvents, 32);
     XCTAssertEqual(config.maxPersistedSessions, 128);
-    XCTAssertEqual(config.maxBreadcrumbs, 50);
+    XCTAssertEqual(config.maxBreadcrumbs, 100);
     XCTAssertTrue(config.persistUser);
     XCTAssertEqualObjects(@[@"password"], [config.redactedKeys allObjects]);
     XCTAssertEqual(BSGEnabledBreadcrumbTypeAll, config.enabledBreadcrumbTypes);

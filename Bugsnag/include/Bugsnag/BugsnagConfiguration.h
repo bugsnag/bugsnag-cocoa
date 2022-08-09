@@ -330,7 +330,7 @@ BUGSNAG_EXTERN
  * Sets the maximum number of breadcrumbs which will be stored. Once the threshold is reached,
  * the oldest breadcrumbs will be deleted.
  *
- * By default, 25 breadcrumbs are stored: this can be amended up to a maximum of 100.
+ * By default, 100 breadcrumbs are stored: this can be amended up to a maximum of 500.
  */
 @property (nonatomic) NSUInteger maxBreadcrumbs;
 
