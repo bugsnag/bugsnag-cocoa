@@ -11,6 +11,7 @@
 
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag.h"
+#import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
@@ -319,6 +320,66 @@
         NSDictionary *toJson = [event toJsonWithRedactedKeys:nil];
         XCTAssertEqualObjects(json, toJson, @"Input and output JSON do not match");
     }
+}
+
+- (void)testTrimBreadcrumbs {
+    BugsnagEvent *event = [BugsnagEvent new];
+    
+    BugsnagBreadcrumb * (^ MakeBreadcrumb)() = ^(BSGBreadcrumbType type, NSString *message, NSDictionary *metadata) {
+        BugsnagBreadcrumb *breadcrumb = [BugsnagBreadcrumb new];
+        breadcrumb.type = type;
+        breadcrumb.message = message;
+        breadcrumb.metadata = metadata;
+        return breadcrumb;
+    };
+    
+    event.breadcrumbs = @[
+        MakeBreadcrumb(BSGBreadcrumbTypeState, @"Test started", @{}), // 91 bytes
+        MakeBreadcrumb(BSGBreadcrumbTypeLog, @"Some log message", @{@"some": @"metadata"}), // 110 bytes
+        MakeBreadcrumb(BSGBreadcrumbTypeManual, @"The final breadcrumb", @{@"key": @"untouched"})];
+    
+    event.usage = @{@"sentinel": @42}; // Enable gathering telemetry
+    
+    [event trimBreadcrumbs:100];
+    
+    XCTAssertEqual(event.breadcrumbs.count, 2);
+    
+    XCTAssertEqual       (event.breadcrumbs[0].type, BSGBreadcrumbTypeLog);
+    XCTAssertEqualObjects(event.breadcrumbs[0].message, @"Removed, along with 1 older breadcrumb, to reduce payload size");
+    XCTAssertEqualObjects(event.breadcrumbs[0].metadata, @{});
+    
+    XCTAssertEqual       (event.breadcrumbs[1].type, BSGBreadcrumbTypeManual);
+    XCTAssertEqualObjects(event.breadcrumbs[1].message, @"The final breadcrumb");
+    XCTAssertEqualObjects(event.breadcrumbs[1].metadata, @{@"key": @"untouched"});
+    
+    XCTAssertEqualObjects(event.usage, (@{@"system": @{@"breadcrumbBytesRemoved": @(91 + 110), @"breadcrumbsRemoved": @2}, @"sentinel": @42}));
+}
+
+- (void)testTrimSingleBreadcrumbs {
+    BugsnagEvent *event = [BugsnagEvent new];
+    
+    BugsnagBreadcrumb *breadcrumb = [BugsnagBreadcrumb new]; 
+    breadcrumb.message = @""
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i"
+    "ncididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostru"
+    "d exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aut"
+    "e irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat n"
+    "ulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui"
+    " officia deserunt mollit anim id est laborum.";
+    breadcrumb.metadata = @{@"something": @"👍🏾🔥"};
+    breadcrumb.type = BSGBreadcrumbTypeError;
+    event.breadcrumbs = @[breadcrumb];
+    
+    NSUInteger byteCount = [NSJSONSerialization dataWithJSONObject:[breadcrumb objectValue] options:0 error:NULL].length; 
+    
+    event.usage = @{}; // Enable gathering telemetry
+    
+    [event trimBreadcrumbs:100];
+    
+    XCTAssertEqual       (event.breadcrumbs[0].type, BSGBreadcrumbTypeError);
+    XCTAssertEqualObjects(event.breadcrumbs[0].message, @"Removed to reduce payload size");
+    XCTAssertEqualObjects(event.breadcrumbs[0].metadata, @{});
+    XCTAssertEqualObjects(event.usage, (@{@"system": @{@"breadcrumbBytesRemoved": @(byteCount), @"breadcrumbsRemoved": @1}}));
 }
 
 - (void)testTruncateStrings {

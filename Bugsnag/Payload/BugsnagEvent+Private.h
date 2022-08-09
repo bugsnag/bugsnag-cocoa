@@ -73,6 +73,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSDictionary *)toJsonWithRedactedKeys:(nullable NSSet *)redactedKeys;
 
+- (void)trimBreadcrumbs:(NSUInteger)bytesToRemove;
+
 - (void)truncateStrings:(NSUInteger)maxLength;
 
 - (void)notifyUnhandledOverridden;
