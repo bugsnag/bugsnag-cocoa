@@ -206,7 +206,15 @@ static atomic_bool g_writing_crash_report;
         }
         self.nextFileNumber = 0;
     }
-    [self deleteBreadcrumbFiles];
+    dispatch_async(BSGGetFileSystemQueue(), ^{
+        NSError *error = nil;
+        NSString *directory = self.breadcrumbsPath;
+        NSFileManager *fileManager = [NSFileManager new];
+        if (![fileManager removeItemAtPath:directory error:&error] ||
+            ![fileManager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:&error]) {
+            bsg_log_debug(@"%s: %@", __FUNCTION__, error);
+        }
+    });
 }
 
 #pragma mark - File storage
@@ -273,15 +281,6 @@ static atomic_bool g_writing_crash_report;
     }
     
     return breadcrumbs;
-}
-
-- (void)deleteBreadcrumbFiles {
-    [[NSFileManager defaultManager] removeItemAtPath:self.breadcrumbsPath error:NULL];
-    
-    NSError *error = nil;
-    if (![[NSFileManager defaultManager] createDirectoryAtPath:self.breadcrumbsPath withIntermediateDirectories:YES attributes:nil error:&error]) {
-        bsg_log_err(@"Unable to create breadcrumbs directory: %@", error);
-    }
 }
 
 @end
