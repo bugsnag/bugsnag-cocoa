@@ -93,7 +93,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value) {
 }
 
 - (BOOL)isValid {
-    return self.message.length > 0 && (self.timestampString || self.timestamp);
+    return self.message.length > 0 && ([BSG_RFC3339DateTool isLikelyDateString:self.timestampString] || self.timestamp);
 }
 
 - (NSDictionary *)objectValue {
@@ -132,17 +132,6 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value) {
     self.timestamp = nil;
 }
 
-+ (instancetype)breadcrumbWithBlock:(BSGBreadcrumbConfiguration)block {
-    BugsnagBreadcrumb *crumb = [self new];
-    if (block) {
-        block(crumb);
-    }
-    if ([crumb isValid]) {
-        return crumb;
-    }
-    return nil;
-}
-
 + (instancetype)breadcrumbFromDict:(NSDictionary *)dict {
     NSDictionary *metadata = BSGDeserializeDict(dict[BSGKeyMetadata] ?: dict[@"metadata"] /* react-native uses lowercase key */);
     NSString *message = BSGDeserializeString(dict[BSGKeyMessage] ?: dict[BSGKeyName] /* Accept legacy 'name' value */);
@@ -160,4 +149,3 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value) {
 }
 
 @end
-

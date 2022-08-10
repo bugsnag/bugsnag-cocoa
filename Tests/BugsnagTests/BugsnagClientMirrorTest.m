@@ -32,7 +32,6 @@
             @".cxx_destruct v16@0:8",
             @"addAutoBreadcrumbForEvent: v24@0:8@16",
             @"addAutoBreadcrumbOfType:withMessage:andMetadata: v40@0:8Q16@24@32",
-            @"addBreadcrumbWithBlock: v24@0:8@?16",
             @"appHangDetectedAtDate:withThreads:systemInfo: v40@0:8@16@24@32",
             @"appHangDetector @16@0:8",
             @"appHangEnded v16@0:8",

@@ -95,8 +95,6 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 #pragma mark Methods
 
-- (void)addBreadcrumbWithBlock:(void (^)(BugsnagBreadcrumb *))block;
-
 - (void)addRuntimeVersionInfo:(NSString *)info withKey:(NSString *)key;
 
 - (NSDictionary *)collectAppWithState; // Used in BugsnagReactNative

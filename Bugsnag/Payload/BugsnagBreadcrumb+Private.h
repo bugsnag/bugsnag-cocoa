@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (nullable instancetype)breadcrumbFromDict:(NSDictionary *)dict;
 
-+ (nullable instancetype)breadcrumbWithBlock:(void (^)(BugsnagBreadcrumb *))block;
+- (BOOL)isValid;
 
 - (nullable NSDictionary *)objectValue;
 

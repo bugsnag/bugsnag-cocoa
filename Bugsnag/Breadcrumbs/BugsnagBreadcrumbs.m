@@ -97,18 +97,11 @@ static atomic_bool g_writing_crash_report;
     });
 }
 
-- (void)addBreadcrumb:(NSString *)breadcrumbMessage {
-    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
-        crumb.message = breadcrumbMessage;
-    }];
-}
-
-- (void)addBreadcrumbWithBlock:(BSGBreadcrumbConfiguration)block {
+- (void)addBreadcrumb:(BugsnagBreadcrumb *)crumb {
     if (self.maxBreadcrumbs == 0) {
         return;
     }
-    BugsnagBreadcrumb *crumb = [BugsnagBreadcrumb breadcrumbWithBlock:block];
-    if (!crumb || ![self shouldSendBreadcrumb:crumb]) {
+    if (![crumb isValid] || ![self shouldSendBreadcrumb:crumb]) {
         return;
     }
     NSData *data = [self dataForBreadcrumb:crumb];
