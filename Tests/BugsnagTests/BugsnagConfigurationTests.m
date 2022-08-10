@@ -38,14 +38,6 @@
     XCTAssertTrue([config autoTrackSessions]);
 }
 
-- (void)testSessionApiHeaders {
-    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    NSDictionary *headers = [config sessionApiHeaders];
-    XCTAssertEqualObjects(config.apiKey, headers[@"Bugsnag-Api-Key"]);
-    XCTAssertNotNil(headers[@"Bugsnag-Sent-At"]);
-    XCTAssertNotNil(headers[@"Bugsnag-Payload-Version"]);
-}
-
 - (void)testSessionEndpoints {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
 
@@ -593,15 +585,15 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
 - (void)testMaxBreadcrumb {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    XCTAssertEqual(50, config.maxBreadcrumbs);
+    XCTAssertEqual(100, config.maxBreadcrumbs);
 
     // alter to valid value
     config.maxBreadcrumbs = 10;
     XCTAssertEqual(10, config.maxBreadcrumbs);
 
     // alter to max value
-    config.maxBreadcrumbs = 100;
-    XCTAssertEqual(100, config.maxBreadcrumbs);
+    config.maxBreadcrumbs = 500;
+    XCTAssertEqual(500, config.maxBreadcrumbs);
 
     // alter to min value
     config.maxBreadcrumbs = 0;
@@ -611,8 +603,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     config.maxBreadcrumbs = -1;
     XCTAssertEqual(0, config.maxBreadcrumbs);
 
-    // alter to negative value (overflows)
-    config.maxBreadcrumbs = 500;
+    // alter to too large value
+    config.maxBreadcrumbs = 501;
     XCTAssertEqual(0, config.maxBreadcrumbs);
 }
 
@@ -649,7 +641,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertNil(config.enabledReleaseStages);
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
-    XCTAssertEqual(50, config.maxBreadcrumbs);
+    XCTAssertEqual(config.maxStringValueLength, 10000);
     XCTAssertTrue(config.persistUser);
     XCTAssertEqual(1, [config.redactedKeys count]);
     XCTAssertEqualObjects(@"password", [config.redactedKeys allObjects][0]);
@@ -872,6 +864,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 #if !TARGET_OS_WATCH
     [config setSendThreads:BSGThreadSendPolicyUnhandledOnly];
 #endif
+    [config setMaxStringValueLength:100];
     [config addPlugin:(id)[NSNull null]];
 
     BugsnagOnSendErrorBlock onSendBlock1 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
@@ -928,6 +921,8 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     // Plugins
     XCTAssert([clone.plugins containsObject:[NSNull null]]);
     XCTAssertNoThrow([clone.plugins removeObject:[NSNull null]]);
+    
+    XCTAssertEqual(clone.maxStringValueLength, 100);
 }
 
 - (void)testMetadataMutability {

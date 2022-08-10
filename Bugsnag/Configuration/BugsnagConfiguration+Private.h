@@ -46,8 +46,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, nonatomic) BOOL shouldSendReports;
 
-@property (readonly, nonatomic) NSDictionary<NSString *, id> *sessionApiHeaders;
-
 @property (readonly, nullable, nonatomic) NSURL *sessionURL;
 
 @property (readwrite, retain, nonnull, nonatomic) BugsnagUser *user;

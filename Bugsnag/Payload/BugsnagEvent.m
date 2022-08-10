@@ -8,7 +8,9 @@
 
 #import "BugsnagEvent+Private.h"
 
+#import "BSGDefines.h"
 #import "BSGFeatureFlagStore.h"
+#import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
 #import "BSGSerialization.h"
 #import "BSGUtils.h"
@@ -31,7 +33,6 @@
 #import "BugsnagStacktrace.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
-#import "BSGDefines.h"
 
 static NSString * const RedactedMetadataValue = @"[REDACTED]";
 
@@ -350,7 +351,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         handledState.unhandledOverridden = isUnhandledOverridden;
     }
 
-    [[self parseOnCrashData:event] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, __attribute__((unused)) BOOL *stop) {
+    [[self parseOnCrashData:event] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, __unused BOOL *stop) {
         if ([key isKindOfClass:[NSString class]] &&
             [obj isKindOfClass:[NSDictionary class]]) {
             [metadata addMetadata:obj toSection:key];
@@ -530,7 +531,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 - (void)setUser:(NSString *_Nullable)userId
       withEmail:(NSString *_Nullable)email
         andName:(NSString *_Nullable)name {
-    self.user = [[BugsnagUser alloc] initWithUserId:userId name:name emailAddress:email];
+    self.user = [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email];
 }
 
 /**
@@ -565,7 +566,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     event[BSGKeyExceptions] = ({
         NSMutableArray *array = [NSMutableArray array];
-        [self.errors enumerateObjectsUsingBlock:^(BugsnagError *error, NSUInteger idx, __attribute__((unused)) BOOL *stop) {
+        [self.errors enumerateObjectsUsingBlock:^(BugsnagError *error, NSUInteger idx, __unused BOOL *stop) {
             if (self.customException != nil && idx == 0) {
                 [array addObject:(NSDictionary * _Nonnull)self.customException];
             } else {
@@ -687,6 +688,67 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         for (BugsnagStackframe *stackframe in thread.stacktrace) {
             [stackframe symbolicateIfNeeded];
         }
+    }
+}
+
+- (void)trimBreadcrumbs:(const NSUInteger)bytesToRemove {
+    NSMutableArray *breadcrumbs = [self.breadcrumbs mutableCopy];
+    BugsnagBreadcrumb *lastRemovedBreadcrumb = nil;
+    NSUInteger bytesRemoved = 0, count = 0;
+    
+    while (bytesRemoved < bytesToRemove && breadcrumbs.count) {
+        lastRemovedBreadcrumb = [breadcrumbs firstObject];
+        [breadcrumbs removeObjectAtIndex:0];
+        
+        NSDictionary *dict = [lastRemovedBreadcrumb objectValue];
+        NSData *data = BSGJSONDataFromDictionary(dict, NULL);
+        bytesRemoved += data.length;
+        count++;
+    }
+    
+    if (lastRemovedBreadcrumb) {
+        lastRemovedBreadcrumb.message = count < 2 ? @"Removed to reduce payload size" :
+        [NSString stringWithFormat:@"Removed, along with %lu older breadcrumb%s, to reduce payload size",
+         (unsigned long)(count - 1), count == 2 ? "" : "s"];
+        lastRemovedBreadcrumb.metadata = @{};
+        [breadcrumbs insertObject:lastRemovedBreadcrumb atIndex:0];
+    }
+    
+    self.breadcrumbs = breadcrumbs;
+    
+    NSDictionary *usage = self.usage;
+    if (usage) {
+        self.usage = BSGDictMerge(@{
+            @"system": @{
+                @"breadcrumbBytesRemoved": @(bytesRemoved),
+                @"breadcrumbsRemoved": @(count)}
+        }, usage);
+    }
+}
+
+- (void)truncateStrings:(NSUInteger)maxLength {
+    BSGTruncateContext context = {
+        .maxLength = maxLength
+    };
+    
+    for (BugsnagBreadcrumb *breadcrumb in self.breadcrumbs) {
+        breadcrumb.message = BSGTruncateString(&context, breadcrumb.message);
+        breadcrumb.metadata = BSGTruncateStrings(&context, breadcrumb.metadata);
+    }
+    
+    BugsnagMetadata *metadata = self.metadata; 
+    if (metadata) {
+        self.metadata = [[BugsnagMetadata alloc] initWithDictionary:
+                         BSGTruncateStrings(&context, metadata.dictionary)];
+    }
+    
+    NSDictionary *usage = self.usage;
+    if (usage) {
+        self.usage = BSGDictMerge(@{
+            @"system": @{
+                @"stringCharsTruncated": @(context.length),
+                @"stringsTruncated": @(context.strings)}
+        }, usage);
     }
 }
 

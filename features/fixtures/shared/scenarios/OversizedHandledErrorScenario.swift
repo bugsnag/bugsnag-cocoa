@@ -3,6 +3,7 @@ class OversizedHandledErrorScenario: Scenario {
     override func startBugsnag() {
         config.autoTrackSessions = false
         config.enabledErrorTypes.ooms = false
+        config.maxStringValueLength = UInt.max
         config.addOnSendError {
             var data = Data(count: 1024 * 1024)
             _ = data.withUnsafeMutableBytes {

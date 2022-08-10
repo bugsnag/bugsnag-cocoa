@@ -7,6 +7,7 @@
 //
 
 #import <Bugsnag/BugsnagBreadcrumb.h>
+#import <Bugsnag/BugsnagDefines.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -23,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-FOUNDATION_EXPORT NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type);
-FOUNDATION_EXPORT BSGBreadcrumbType BSGBreadcrumbTypeFromString( NSString * _Nullable value);
+BUGSNAG_EXTERN NSString * BSGBreadcrumbTypeValue(BSGBreadcrumbType type);
+BUGSNAG_EXTERN BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString * _Nullable value);
 
 NS_ASSUME_NONNULL_END

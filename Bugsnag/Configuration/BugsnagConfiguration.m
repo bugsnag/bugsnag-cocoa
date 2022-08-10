@@ -28,7 +28,6 @@
 
 #import "BSGConfigurationBuilder.h"
 #import "BSGKeys.h"
-#import "BSG_RFC3339DateTool.h"
 #import "BugsnagApiClient.h"
 #import "BugsnagEndpointConfiguration.h"
 #import "BugsnagErrorTypes.h"
@@ -94,6 +93,7 @@ static NSUserDefaults *userDefaults;
     [copy setSendLaunchCrashesSynchronously:self.sendLaunchCrashesSynchronously];
     [copy setMaxPersistedEvents:self.maxPersistedEvents];
     [copy setMaxPersistedSessions:self.maxPersistedSessions];
+    [copy setMaxStringValueLength:self.maxStringValueLength];
     [copy setMaxBreadcrumbs:self.maxBreadcrumbs];
     [copy setNotifier:self.notifier];
     [copy setFeatureFlagStore:self.featureFlagStore];
@@ -186,9 +186,10 @@ static NSUserDefaults *userDefaults;
     _enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeAll;
     _launchDurationMillis = 5000;
     _sendLaunchCrashesSynchronously = YES;
-    _maxBreadcrumbs = 50;
+    _maxBreadcrumbs = 100;
     _maxPersistedEvents = 32;
     _maxPersistedSessions = 128;
+    _maxStringValueLength = 10000;
     _autoTrackSessions = YES;
 #if BSG_HAVE_MACH_THREADS
     _sendThreads = BSGThreadSendPolicyAlways;
@@ -201,7 +202,6 @@ static NSUserDefaults *userDefaults;
     // Enabling OOM detection only happens in release builds, to avoid triggering
     // the heuristic when killing/restarting an app in Xcode or similar.
     _persistUser = YES;
-    // Only gets persisted user data if there is any, otherwise nil
     // persistUser isn't settable until post-init.
     _user = [self getPersistedUserData];
 
@@ -283,7 +283,7 @@ static NSUserDefaults *userDefaults;
 - (void)setUser:(NSString *_Nullable)userId
       withEmail:(NSString *_Nullable)email
         andName:(NSString *_Nullable)name {
-    self.user = [[BugsnagUser alloc] initWithUserId:userId name:name emailAddress:email];
+    self.user = [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email];
 
     if (self.persistUser) {
         [self persistUserData];
@@ -360,13 +360,6 @@ static NSUserDefaults *userDefaults;
 // MARK: -
 // =============================================================================
 
-- (NSDictionary *)sessionApiHeaders {
-    return @{BugsnagHTTPHeaderNameApiKey: self.apiKey ?: @"",
-             BugsnagHTTPHeaderNamePayloadVersion: @"1.0",
-             BugsnagHTTPHeaderNameSentAt: [BSG_RFC3339DateTool stringFromDate:[NSDate date]]
-    };
-}
-
 - (void)setEndpoints:(BugsnagEndpointConfiguration *)endpoints {
     if ([self isValidURLString:endpoints.notify]) {
         _endpoints.notify = [endpoints.notify copy];
@@ -410,20 +403,12 @@ static NSUserDefaults *userDefaults;
     }
 }
 
-/**
- * Retrieve a persisted user, if we have any valid, persisted fields, or nil otherwise
- */
 - (BugsnagUser *)getPersistedUserData {
     @synchronized(self) {
         NSString *email = [userDefaults objectForKey:kBugsnagUserEmailAddress];
         NSString *name = [userDefaults objectForKey:kBugsnagUserName];
         NSString *userId = [userDefaults objectForKey:kBugsnagUserUserId];
-
-        if (email || name || userId) {
-            return [[BugsnagUser alloc] initWithUserId:userId name:name emailAddress:email];
-        } else {
-            return [[BugsnagUser alloc] initWithUserId:nil name:nil emailAddress:nil];
-        }
+        return [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email];
     }
 }
 
@@ -524,15 +509,18 @@ static NSUserDefaults *userDefaults;
     }
 }
 
-- (void)setMaxBreadcrumbs:(NSUInteger)maxBreadcrumbs {
+- (void)setMaxBreadcrumbs:(NSUInteger)newValue {
+    static const NSUInteger maxAllowed = 500;
+    if (newValue > maxAllowed) {
+        bsg_log_err(@"Invalid configuration value detected. "
+                    "Option maxBreadcrumbs should be an integer between 0-%lu. "
+                    "Supplied value is %lu",
+                    (unsigned long)maxAllowed,
+                    (unsigned long)newValue);
+        return;
+    }
     @synchronized (self) {
-        if (maxBreadcrumbs <= 100) {
-            _maxBreadcrumbs = maxBreadcrumbs;
-        } else {
-            bsg_log_err(@"Invalid configuration value detected. Option maxBreadcrumbs "
-                        "should be an integer between 0-100. Supplied value is %lu",
-                        (unsigned long) maxBreadcrumbs);
-        }
+        _maxBreadcrumbs = newValue;
     }
 }
 

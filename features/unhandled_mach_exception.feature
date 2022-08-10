@@ -23,6 +23,7 @@ Feature: Bugsnag captures an unhandled mach exception
     And the event "metaData.error.mach.subcode" equals "0xdeadbeef"
     And the event "severity" equals "error"
     And the event "unhandled" is true
+    And the event "user.id" is not null
     And the event "severityReason.type" equals "unhandledException"
 
   Scenario: Trigger a mach exception with unhandled override

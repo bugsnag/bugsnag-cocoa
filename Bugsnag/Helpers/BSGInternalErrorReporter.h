@@ -19,7 +19,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// Returns a concise desription of the error including its domain, code, and debug description or localizedDescription.
-BSG_PRIVATE NSString *_Nullable BSGErrorDescription(NSError *_Nullable error);
+NSString *_Nullable BSGErrorDescription(NSError *_Nullable error);
 
 // MARK: -
 

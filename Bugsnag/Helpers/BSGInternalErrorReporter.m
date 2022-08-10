@@ -258,7 +258,7 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
     
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
     headers[@"Content-Type"] = @"application/json";
-    headers[BugsnagHTTPHeaderNameIntegrity] = [NSString stringWithFormat:@"sha1 %@", [BugsnagApiClient SHA1HashStringWithData:data]];
+    headers[BugsnagHTTPHeaderNameIntegrity] = BSGIntegrityHeaderValue(data);
     headers[BugsnagHTTPHeaderNameInternalError] = @"bugsnag-cocoa";
     headers[BugsnagHTTPHeaderNamePayloadVersion] = EventPayloadVersion;
     headers[BugsnagHTTPHeaderNameSentAt] = [BSG_RFC3339DateTool stringFromDate:[NSDate date]];

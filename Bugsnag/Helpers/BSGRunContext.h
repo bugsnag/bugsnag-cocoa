@@ -70,9 +70,9 @@ void BSGRunContextInit(NSString *_Nonnull path);
 
 #pragma mark -
 
-BSG_PRIVATE void BSGRunContextUpdateMemory(void);
+void BSGRunContextUpdateMemory(void);
 
-BSG_PRIVATE void BSGRunContextUpdateTimestamp(void);
+void BSGRunContextUpdateTimestamp(void);
 
 #pragma mark -
 

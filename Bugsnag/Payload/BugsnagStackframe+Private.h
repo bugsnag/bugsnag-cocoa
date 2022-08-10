@@ -14,8 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSArray<BugsnagStackframe *> *)stackframesWithBacktrace:(uintptr_t *)backtrace length:(NSUInteger)length;
 
-+ (NSArray<BugsnagStackframe *> *)stackframesWithCallStackReturnAddresses:(NSArray<NSNumber *> *)callStackReturnAddresses;
-
 /// Constructs a stackframe object from a stackframe dictionary and list of images captured by KSCrash.
 + (nullable instancetype)frameFromDict:(NSDictionary<NSString *, id> *)dict withImages:(NSArray<NSDictionary<NSString *, id> *> *)binaryImages;
 

@@ -1,6 +1,34 @@
 Changelog
 =========
 
+## 6.22.0 (2022-08-10)
+
+### Enhancements
+
+* Increase default and maximum values for `configuration.maxBreadcrumbs` to 100 and 500, respectively.
+  [#1452](https://github.com/bugsnag/bugsnag-cocoa/pull/1452)
+
+* Trim breadcrumb messages & metadata in payloads that exceed the size limit.
+  [#1451](https://github.com/bugsnag/bugsnag-cocoa/pull/1451)
+
+* Truncate breadcrumb and metadata strings that are longer than `configuration.maxStringValueLength`.
+  [#1449](https://github.com/bugsnag/bugsnag-cocoa/pull/1449)
+
+* Add `+[BugsnagStackframe stackframesWithCallStackReturnAddresses:]` to public headers. 
+  [#1446](https://github.com/bugsnag/bugsnag-cocoa/pull/1446)
+
+### Bug fixes
+
+* Fix a potential deadlock when capturing the crashing thread's name.
+  [#1453](https://github.com/bugsnag/bugsnag-cocoa/pull/1453)
+
+* Attempt to send sessions stored on disk when connection regained.
+  [#1445](https://github.com/bugsnag/bugsnag-cocoa/pull/1445)
+
+* Set `user.id` to to `device.id` for all events and sessions if `BugsnagClient.user.id` is set to nil.
+  To prevent collection, set it to an empty string or update it in `OnSendError` / `OnSession`.
+  [#1442](https://github.com/bugsnag/bugsnag-cocoa/pull/1442)
+
 ## 6.21.0 (2022-07-20)
 
 ### Enhancements

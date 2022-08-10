@@ -8,15 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+#import <Bugsnag/BugsnagDefines.h>
+
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NSString * BugsnagStackframeType NS_TYPED_ENUM;
 
-FOUNDATION_EXPORT BugsnagStackframeType const BugsnagStackframeTypeCocoa;
+BUGSNAG_EXTERN BugsnagStackframeType const BugsnagStackframeTypeCocoa;
 
 /**
  * Represents a single stackframe from a stacktrace.
  */
+BUGSNAG_EXTERN
 @interface BugsnagStackframe : NSObject
 
 /**
@@ -70,9 +73,19 @@ FOUNDATION_EXPORT BugsnagStackframeType const BugsnagStackframeTypeCocoa;
 @property (copy, nullable, nonatomic) BugsnagStackframeType type;
 
 /**
- * Returns an array of stackframe objects representing the provided call stack strings.
+ * Creates an array of stackframe objects representing the provided call stack.
  *
- * The call stack strings should follow the format used by `[NSThread callStackSymbols]` and `backtrace_symbols()`.
+ * @param callStackReturnAddresses An array containing the call stack return addresses, as returned by
+ * `NSThread.callStackReturnAddresses` or `NSException.callStackReturnAddresses`.
+ */
++ (NSArray<BugsnagStackframe *> *)stackframesWithCallStackReturnAddresses:(NSArray<NSNumber *> *)callStackReturnAddresses;
+
+/**
+ * Creates an array of stackframe objects representing the provided call stack.
+ *
+ * @param callStackSymbols An array containing the call stack symbols, as returned by `NSThread.callStackSymbols`.
+ * Each element should be in a format determined by the `backtrace_symbols()` function.
+
  */
 + (nullable NSArray<BugsnagStackframe *> *)stackframesWithCallStackSymbols:(NSArray<NSString *> *)callStackSymbols;
 

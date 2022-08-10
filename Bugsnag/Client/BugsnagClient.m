@@ -210,7 +210,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         self.breadcrumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
 
         // Start with a copy of the configuration metadata
-        self.metadata = [[_configuration metadata] deepCopy];
+        self.metadata = [[_configuration metadata] copy];
     }
     return self;
 }
@@ -312,7 +312,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 #endif
 }
 
-- (void)appLaunchTimerFired:(__attribute__((unused)) NSTimer *)timer {
+- (void)appLaunchTimerFired:(__unused NSTimer *)timer {
     [self markLaunchCompleted];
 }
 
@@ -462,6 +462,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (connected) {
             [strongSelf.eventUploader uploadStoredEvents];
+            [strongSelf.sessionTracker.sessionUploader processStoredSessions];
         }
 
         [strongSelf addAutoBreadcrumbOfType:BSGBreadcrumbTypeState
@@ -604,7 +605,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
 - (void)notifyErrorOrException:(id)errorOrException block:(BugsnagOnErrorBlock)block {
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
-    BugsnagMetadata *metadata = [self.metadata deepCopy];
+    BugsnagMetadata *metadata = [self.metadata copy];
     
     NSArray<NSNumber *> *callStack = nil;
     NSString *context = self.context;
@@ -682,7 +683,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithApp:[self generateAppWithState:systemInfo]
                                                      device:[self generateDeviceWithState:systemInfo]
                                                handledState:handledState
-                                                       user:self.user
+                                                       user:[self.user withId]
                                                    metadata:metadata
                                                 breadcrumbs:self.breadcrumbs.breadcrumbs ?: @[]
                                                      errors:@[error]
@@ -724,6 +725,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
             event.featureFlagStore = [self.featureFlagStore mutableCopy];
         }
     }
+
+    event.user = [event.user withId];
 
     BOOL originalUnhandledValue = event.unhandled;
     @try {
@@ -1032,7 +1035,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     NSArray<BugsnagBreadcrumb *> *breadcrumbs = [self.breadcrumbs breadcrumbsBeforeDate:date];
 
-    BugsnagMetadata *metadata = [self.metadata deepCopy];
+    BugsnagMetadata *metadata = [self.metadata copy];
 
     [metadata addMetadata:BSGAppMetadataFromRunContext(bsg_runContext) toSection:BSGKeyApp];
     [metadata addMetadata:BSGDeviceMetadataFromRunContext(bsg_runContext) toSection:BSGKeyDevice];
@@ -1041,7 +1044,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [[BugsnagEvent alloc] initWithApp:app
                                device:device
                          handledState:handledState
-                                 user:self.configuration.user
+                                 user:[self.user withId]
                              metadata:metadata
                           breadcrumbs:breadcrumbs
                                errors:@[error]

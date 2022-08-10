@@ -17,6 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)configuration notifier:(BugsnagNotifier *)notifier;
 
+/// Scans previously persisted sessions and either discards or attempts upload.
+- (void)processStoredSessions;
+
 - (void)uploadSession:(BugsnagSession *)session;
 
 @property (copy, nonatomic) NSString *codeBundleId;

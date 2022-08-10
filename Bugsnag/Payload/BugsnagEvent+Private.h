@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// An array of string representations of BSGErrorType describing the types of stackframe / stacktrace in this error.
 @property (readonly, nonatomic) NSArray<NSString *> *stacktraceTypes;
 
-/// Usage telemetry info, from BSGTelemetryCreateUsage()
+/// Usage telemetry info, from BSGTelemetryCreateUsage(), or nil if BSGTelemetryUsage is not enabled.
 @property (readwrite, nullable, nonatomic) NSDictionary *usage;
 
 @property (readwrite, nonnull, nonatomic) BugsnagUser *user;
@@ -72,6 +72,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)symbolicateIfNeeded;
 
 - (NSDictionary *)toJsonWithRedactedKeys:(nullable NSSet *)redactedKeys;
+
+- (void)trimBreadcrumbs:(NSUInteger)bytesToRemove;
+
+- (void)truncateStrings:(NSUInteger)maxLength;
 
 - (void)notifyUnhandledOverridden;
 
